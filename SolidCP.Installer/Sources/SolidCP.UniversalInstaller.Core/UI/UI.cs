@@ -35,6 +35,7 @@ namespace SolidCP.UniversalInstaller
 		public EnterpriseServerSettings EnterpriseServerSettings => Installer.EnterpriseServerSettings;
 		public WebPortalSettings WebPortalSettings => Installer.WebPortalSettings;
 		public abstract void Init();
+		public abstract void Exit();
 		public abstract string GetRootPassword();
 		public abstract ServerSettings GetServerSettings();
 		public abstract EnterpriseServerSettings GetEnterpriseServerSettings();
@@ -52,5 +53,6 @@ namespace SolidCP.UniversalInstaller
 			Installer.Log($"SolidCP UniversalInstaller {version}");
 		}
 
+		public abstract void CheckPrerequisites();
 	}
 }

@@ -24,6 +24,7 @@ namespace SolidCP.UniversalInstaller
 				Installer.Current.UI.PrintInstallerVersion();
 				Installer.Current.InstallAll();
 			} catch (Exception ex) {
+				Console.WriteLine(ex.ToString());
 			}
 		}
 	}

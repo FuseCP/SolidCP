@@ -244,6 +244,8 @@ namespace SolidCP.UniversalInstaller
 
 			if (!IsRunningAsAdmin()) RestartAsAdmin();
 
+			UI.CheckPrerequisites();
+
 			var packages = UI.GetPackagesToInstall();
 
 			bool installServer = false, installEnterpriseServer = false, installPortal = false;
@@ -314,6 +316,11 @@ namespace SolidCP.UniversalInstaller
 				}
 			}
 		}
+
+		public abstract bool CheckOSSupported();
+		public abstract bool CheckSystemdSupported();
+		public abstract bool CheckIISVersionSupported();
+		public abstract bool CheckNetVersionSupported();
 
 		static Installer current;
 		public static Installer Current

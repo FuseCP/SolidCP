@@ -327,6 +327,14 @@ namespace SolidCP.UniversalInstaller
 			return new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
 		}
 
+		public override bool CheckOSSupported() => OSInfo.WindowsVersion >= WindowsVersion.WindowsServer2003;
+
+		public override bool CheckIISVersionSupported() => CheckOSSupported();
+
+		public override bool CheckSystemdSupported() => false;
+
+		public override bool CheckNetVersionSupported() => OSInfo.IsNet48 || OSInfo.IsCore && int.Parse(Regex.Match(OSInfo.FrameworkDescription, "[0-9]+").Value) >= 8;
+
 		public override void RestartAsAdmin()
 		{
 			if (RunAsAdmin)

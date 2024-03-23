@@ -362,7 +362,7 @@ namespace SolidCP.Providers.Web
 		private AnonymAuthModuleService anonymAuthSvc;
 		private WindowsAuthModuleService winAuthSvc;
 		private BasicAuthModuleService basicAuthSvc;
-        private CompressionModuleService comprSvc;
+		private CompressionModuleService comprSvc;
 		private DefaultDocsModuleService defaultDocSvc;
 		private CustomHttpErrorsModuleService customErrorsSvc;
 		private CustomHttpHeadersModuleService customHeadersSvc;
@@ -390,7 +390,7 @@ namespace SolidCP.Providers.Web
 		public const string FRONTPAGE_PORT_REGLOC_x86 = @"SOFTWARE\Microsoft\Shared Tools\Web Server Extensions\Ports\";
 		public const string FRONTPAGE_PORT_REGLOC_x64 = @"SOFTWARE\Wow6432Node\Microsoft\Shared Tools\Web Server Extensions\Ports\";
 
-	    private string[] INSTALL_SECTIONS_ALLOWED = new string[] {
+		private string[] INSTALL_SECTIONS_ALLOWED = new string[] {
 			Constants.CachingSection,
 			Constants.DefaultDocumentsSection,
 			Constants.DirectoryBrowseSection,
@@ -535,7 +535,7 @@ namespace SolidCP.Providers.Web
 				winAuthSvc = new WindowsAuthModuleService();
 				anonymAuthSvc = new AnonymAuthModuleService();
 				basicAuthSvc = new BasicAuthModuleService();
-                comprSvc = new CompressionModuleService();
+				comprSvc = new CompressionModuleService();
 				defaultDocSvc = new DefaultDocsModuleService();
 				classicAspSvc = new ClassicAspModuleService();
 				httpRedirectSvc = new HttpRedirectModuleService();
@@ -631,34 +631,10 @@ namespace SolidCP.Providers.Web
 			}
 		}
 
-        private void FillVirtualDirectoryFromIISObject(ServerManager srvman, WebVirtualDirectory virtualDir)
-        {
-            // Set physical path.
-            virtualDir.ContentPath = webObjectsSvc.GetPhysicalPathNonApp(srvman, virtualDir);
-            // load iisDirObject browse
-            PropertyBag bag = dirBrowseSvc.GetDirectoryBrowseSettings(srvman, virtualDir.FullQualifiedPath);
-            virtualDir.EnableDirectoryBrowsing = (bool)bag[DirectoryBrowseGlobals.Enabled];
-
-            // load anonym auth
-            bag = anonymAuthSvc.GetAuthenticationSettings(srvman, virtualDir.FullQualifiedPath);
-            virtualDir.AnonymousUsername = (string)bag[AuthenticationGlobals.AnonymousAuthenticationUserName];
-            virtualDir.AnonymousUserPassword = (string)bag[AuthenticationGlobals.AnonymousAuthenticationPassword];
-            virtualDir.EnableAnonymousAccess = (bool)bag[AuthenticationGlobals.Enabled];
-
-            // load windows auth 
-            bag = winAuthSvc.GetAuthenticationSettings(srvman, virtualDir.FullQualifiedPath);
-            virtualDir.EnableWindowsAuthentication = (bool)bag[AuthenticationGlobals.Enabled];
-            // load basic auth
-            basicAuthSvc.GetAuthenticationSettingsNonApp(srvman, virtualDir);
-
-
-            virtualDir.IIs7 = true;
-        }
-
-        private void FillAppVirtualDirectoryFromIISObject(ServerManager srvman, WebAppVirtualDirectory virtualDir)
+		private void FillVirtualDirectoryFromIISObject(ServerManager srvman, WebVirtualDirectory virtualDir)
 		{
 			// Set physical path.
-            virtualDir.ContentPath = webObjectsSvc.GetPhysicalPath(srvman, virtualDir);
+			virtualDir.ContentPath = webObjectsSvc.GetPhysicalPathNonApp(srvman, virtualDir);
 			// load iisDirObject browse
 			PropertyBag bag = dirBrowseSvc.GetDirectoryBrowseSettings(srvman, virtualDir.FullQualifiedPath);
 			virtualDir.EnableDirectoryBrowsing = (bool)bag[DirectoryBrowseGlobals.Enabled];
@@ -673,7 +649,31 @@ namespace SolidCP.Providers.Web
 			bag = winAuthSvc.GetAuthenticationSettings(srvman, virtualDir.FullQualifiedPath);
 			virtualDir.EnableWindowsAuthentication = (bool)bag[AuthenticationGlobals.Enabled];
 			// load basic auth
-            basicAuthSvc.GetAuthenticationSettings(srvman, virtualDir);
+			basicAuthSvc.GetAuthenticationSettingsNonApp(srvman, virtualDir);
+
+
+			virtualDir.IIs7 = true;
+		}
+
+		private void FillAppVirtualDirectoryFromIISObject(ServerManager srvman, WebAppVirtualDirectory virtualDir)
+		{
+			// Set physical path.
+			virtualDir.ContentPath = webObjectsSvc.GetPhysicalPath(srvman, virtualDir);
+			// load iisDirObject browse
+			PropertyBag bag = dirBrowseSvc.GetDirectoryBrowseSettings(srvman, virtualDir.FullQualifiedPath);
+			virtualDir.EnableDirectoryBrowsing = (bool)bag[DirectoryBrowseGlobals.Enabled];
+
+			// load anonym auth
+			bag = anonymAuthSvc.GetAuthenticationSettings(srvman, virtualDir.FullQualifiedPath);
+			virtualDir.AnonymousUsername = (string)bag[AuthenticationGlobals.AnonymousAuthenticationUserName];
+			virtualDir.AnonymousUserPassword = (string)bag[AuthenticationGlobals.AnonymousAuthenticationPassword];
+			virtualDir.EnableAnonymousAccess = (bool)bag[AuthenticationGlobals.Enabled];
+
+			// load windows auth 
+			bag = winAuthSvc.GetAuthenticationSettings(srvman, virtualDir.FullQualifiedPath);
+			virtualDir.EnableWindowsAuthentication = (bool)bag[AuthenticationGlobals.Enabled];
+			// load basic auth
+			basicAuthSvc.GetAuthenticationSettings(srvman, virtualDir);
 
 			// load default docs
 			virtualDir.DefaultDocs = defaultDocSvc.GetDefaultDocumentSettings(srvman, virtualDir.FullQualifiedPath);
@@ -683,63 +683,63 @@ namespace SolidCP.Providers.Web
 			virtualDir.EnableParentPaths = (bool)bag[ClassicAspGlobals.EnableParentPaths];
 			//
 
-            //gzip
-            bag = comprSvc.GetSettings(srvman, virtualDir.FullQualifiedPath);
-            virtualDir.EnableDynamicCompression = (bool)bag[CompressionGlobals.DynamicCompression];
-            virtualDir.EnableStaticCompression = (bool)bag[CompressionGlobals.StaticCompression];
+			//gzip
+			bag = comprSvc.GetSettings(srvman, virtualDir.FullQualifiedPath);
+			virtualDir.EnableDynamicCompression = (bool)bag[CompressionGlobals.DynamicCompression];
+			virtualDir.EnableStaticCompression = (bool)bag[CompressionGlobals.StaticCompression];
 
 			virtualDir.IIs7 = true;
 		}
 
-        private void FillIISObjectFromVirtualDirectory(WebVirtualDirectory virtualDir)
-        {
-            dirBrowseSvc.SetDirectoryBrowseEnabled(virtualDir.FullQualifiedPath, virtualDir.EnableDirectoryBrowsing);
-            //
-            SetAnonymousAuthenticationNonApp(virtualDir);
-            // 
-            winAuthSvc.SetEnabled(virtualDir.FullQualifiedPath, virtualDir.EnableWindowsAuthentication);
-            //
-            basicAuthSvc.SetAuthenticationSettings(virtualDir);
-            //
-            comprSvc.SetSettings(virtualDir.FullQualifiedPath, virtualDir.EnableDynamicCompression, virtualDir.EnableStaticCompression);
-            //
-            
+		private void FillIISObjectFromVirtualDirectory(WebVirtualDirectory virtualDir)
+		{
+			dirBrowseSvc.SetDirectoryBrowseEnabled(virtualDir.FullQualifiedPath, virtualDir.EnableDirectoryBrowsing);
+			//
+			SetAnonymousAuthenticationNonApp(virtualDir);
+			// 
+			winAuthSvc.SetEnabled(virtualDir.FullQualifiedPath, virtualDir.EnableWindowsAuthentication);
+			//
+			basicAuthSvc.SetAuthenticationSettings(virtualDir);
+			//
+			comprSvc.SetSettings(virtualDir.FullQualifiedPath, virtualDir.EnableDynamicCompression, virtualDir.EnableStaticCompression);
+			//
 
-        }
 
-        private void FillIISObjectFromAppVirtualDirectory(WebAppVirtualDirectory virtualDir)
-        {
-            dirBrowseSvc.SetDirectoryBrowseEnabled(virtualDir.FullQualifiedPath, virtualDir.EnableDirectoryBrowsing);
-            //
-            SetAnonymousAuthentication(virtualDir);
-            // 
-            winAuthSvc.SetEnabled(virtualDir.FullQualifiedPath, virtualDir.EnableWindowsAuthentication);
-            //
-            basicAuthSvc.SetAuthenticationSettings(virtualDir);
-            //
-            comprSvc.SetSettings(virtualDir.FullQualifiedPath, virtualDir.EnableDynamicCompression, virtualDir.EnableStaticCompression);
-            //
-            defaultDocSvc.SetDefaultDocumentSettings(virtualDir.FullQualifiedPath, virtualDir.DefaultDocs);
-            //
-            classicAspSvc.SetClassicAspSettings(virtualDir);
+		}
 
-        }
+		private void FillIISObjectFromAppVirtualDirectory(WebAppVirtualDirectory virtualDir)
+		{
+			dirBrowseSvc.SetDirectoryBrowseEnabled(virtualDir.FullQualifiedPath, virtualDir.EnableDirectoryBrowsing);
+			//
+			SetAnonymousAuthentication(virtualDir);
+			// 
+			winAuthSvc.SetEnabled(virtualDir.FullQualifiedPath, virtualDir.EnableWindowsAuthentication);
+			//
+			basicAuthSvc.SetAuthenticationSettings(virtualDir);
+			//
+			comprSvc.SetSettings(virtualDir.FullQualifiedPath, virtualDir.EnableDynamicCompression, virtualDir.EnableStaticCompression);
+			//
+			defaultDocSvc.SetDefaultDocumentSettings(virtualDir.FullQualifiedPath, virtualDir.DefaultDocs);
+			//
+			classicAspSvc.SetClassicAspSettings(virtualDir);
 
-        private void FillVirtualDirectoryRestFromIISObject(ServerManager srvman, WebVirtualDirectory virtualDir)
-        {
-                                                    //
-            var config = srvman.GetWebConfiguration(virtualDir.FullQualifiedPath);
-            var handlersSection = config.GetSection(Constants.HandlersSection);
+		}
 
-            //
-            string fqPath = virtualDir.FullQualifiedPath;
-            if (!fqPath.EndsWith(@"/"))
-                fqPath += "/";
-            //
+		private void FillVirtualDirectoryRestFromIISObject(ServerManager srvman, WebVirtualDirectory virtualDir)
+		{
+			//
+			var config = srvman.GetWebConfiguration(virtualDir.FullQualifiedPath);
+			var handlersSection = config.GetSection(Constants.HandlersSection);
 
-        }
+			//
+			string fqPath = virtualDir.FullQualifiedPath;
+			if (!fqPath.EndsWith(@"/"))
+				fqPath += "/";
+			//
 
-        private void FillAppVirtualDirectoryRestFromIISObject(ServerManager srvman, WebAppVirtualDirectory virtualDir)
+		}
+
+		private void FillAppVirtualDirectoryRestFromIISObject(ServerManager srvman, WebAppVirtualDirectory virtualDir)
 		{
 			// HTTP REDIRECT
 			httpRedirectSvc.GetHttpRedirectSettings(srvman, virtualDir);
@@ -761,7 +761,7 @@ namespace SolidCP.Providers.Web
 			virtualDir.PerlInstalled = false; // not installed
 			virtualDir.PythonInstalled = false; // not installed
 			virtualDir.ColdFusionInstalled = false; // not installed
-			//
+																 //
 			var config = srvman.GetWebConfiguration(virtualDir.FullQualifiedPath);
 			var handlersSection = config.GetSection(Constants.HandlersSection);
 
@@ -778,9 +778,9 @@ namespace SolidCP.Providers.Web
 				if (!String.IsNullOrEmpty(AspPath) && String.Equals(AspPath, processor, StringComparison.InvariantCultureIgnoreCase))
 					virtualDir.AspInstalled = true;
 
-                //// Detect whether PHP 5 scripting is enabled (non fast_cgi)
-                if (PhpMode != Constants.PhpMode.FastCGI && !String.IsNullOrEmpty(PhpExecutablePath) && String.Equals(PhpExecutablePath, processor, StringComparison.InvariantCultureIgnoreCase))
-                    virtualDir.PhpInstalled = PHP_5;
+				//// Detect whether PHP 5 scripting is enabled (non fast_cgi)
+				if (PhpMode != Constants.PhpMode.FastCGI && !String.IsNullOrEmpty(PhpExecutablePath) && String.Equals(PhpExecutablePath, processor, StringComparison.InvariantCultureIgnoreCase))
+					virtualDir.PhpInstalled = PHP_5;
 
 				// Detect whether PHP 4 scripting is enabled
 				if (!String.IsNullOrEmpty(Php4Path) && String.Equals(Php4Path, processor, StringComparison.InvariantCultureIgnoreCase))
@@ -795,16 +795,16 @@ namespace SolidCP.Providers.Web
 					virtualDir.PerlInstalled = true;
 			}
 
-            // Detect PHP 5 Fast_cgi version(s)
-		    var activePhp5Handler = GetActivePhpHandlerName(srvman, virtualDir);
-		    if (!string.IsNullOrEmpty(activePhp5Handler))
-		    {
-			    virtualDir.PhpInstalled = PHP_5 + "|" + activePhp5Handler;
-		        var versions = GetPhpVersions(srvman, virtualDir);
-                // This versionstring is used in UI to view and change php5 version.
-		        var versionString = string.Join("|", versions.Select(v => v.HandlerName + ";" + v.Version).ToArray());
-                virtualDir.Php5VersionsInstalled = versionString;
-		    }
+			// Detect PHP 5 Fast_cgi version(s)
+			var activePhp5Handler = GetActivePhpHandlerName(srvman, virtualDir);
+			if (!string.IsNullOrEmpty(activePhp5Handler))
+			{
+				virtualDir.PhpInstalled = PHP_5 + "|" + activePhp5Handler;
+				var versions = GetPhpVersions(srvman, virtualDir);
+				// This versionstring is used in UI to view and change php5 version.
+				var versionString = string.Join("|", versions.Select(v => v.HandlerName + ";" + v.Version).ToArray());
+				virtualDir.Php5VersionsInstalled = versionString;
+			}
 
 			//
 			string fqPath = virtualDir.FullQualifiedPath;
@@ -884,22 +884,22 @@ namespace SolidCP.Providers.Web
 					x => aphl.isolation(x.Mode) == SiteAppPoolMode.Dedicated);
 
 				// cleanup app pools
-                using (var srvman = webObjectsSvc.GetServerManager())
-                {
-                    foreach (var item in dedicatedPools)
-                    {
-                        string poolName = WSHelper.InferAppPoolName(item.Name, siteName, item.Mode);
-                        //
-                        ApplicationPool pool = srvman.ApplicationPools[poolName];
-                        if (pool == null)
-                            continue;
-                        //
-                        srvman.ApplicationPools.Remove(pool);
-                    }
+				using (var srvman = webObjectsSvc.GetServerManager())
+				{
+					foreach (var item in dedicatedPools)
+					{
+						string poolName = WSHelper.InferAppPoolName(item.Name, siteName, item.Mode);
+						//
+						ApplicationPool pool = srvman.ApplicationPools[poolName];
+						if (pool == null)
+							continue;
+						//
+						srvman.ApplicationPools.Remove(pool);
+					}
 
-                    // save changes
-                    srvman.CommitChanges();
-                }
+					// save changes
+					srvman.CommitChanges();
+				}
 			}
 			catch (Exception ex)
 			{
@@ -943,60 +943,60 @@ namespace SolidCP.Providers.Web
 			#endregion
 
 			#region PHP 5 script mappings
-		    if (!string.IsNullOrEmpty(virtualDir.PhpInstalled) && virtualDir.PhpInstalled.StartsWith(PHP_5))
-		    {
-		        if (PhpMode == Constants.PhpMode.FastCGI && virtualDir.PhpInstalled.Contains('|'))
-		        {
-		            var args = virtualDir.PhpInstalled.Split('|');
+			if (!string.IsNullOrEmpty(virtualDir.PhpInstalled) && virtualDir.PhpInstalled.StartsWith(PHP_5))
+			{
+				if (PhpMode == Constants.PhpMode.FastCGI && virtualDir.PhpInstalled.Contains('|'))
+				{
+					var args = virtualDir.PhpInstalled.Split('|');
 
-		            if (args.Count() > 1)
-		            {
-    		            // Handler name is present, use it to set choosen version
-                        var handlerName = args[1];
+					if (args.Count() > 1)
+					{
+						// Handler name is present, use it to set choosen version
+						var handlerName = args[1];
 
-		                if (handlerName != GetActivePhpHandlerName(virtualDir))
-		                {
-		                    // Only change handler if it is different from the current one
-                            handlersSvc.CopyInheritedHandlers(GetSiteIdFromVirtualDir(virtualDir), virtualDir.VirtualPath);
-		                    MakeHandlerActive(handlerName, virtualDir);
-		                }
-		            }
-		        }
-		        else
-		        {
-		            if (!String.IsNullOrEmpty(PhpExecutablePath) && File.Exists(PhpExecutablePath))
-		            {
-		                switch (PhpMode)
-		                {
-		                    case Constants.PhpMode.FastCGI:
-		                        handlersSvc.AddScriptMaps(virtualDir, PHP_EXTENSIONS,
-		                            PhpExecutablePath, Constants.HandlerAlias.PHP_FASTCGI, Constants.FastCgiModule);
-		                        break;
-		                    case Constants.PhpMode.CGI:
-		                        handlersSvc.AddScriptMaps(virtualDir, PHP_EXTENSIONS,
-		                            PhpExecutablePath, Constants.HandlerAlias.PHP_CGI, Constants.CgiModule);
-		                        break;
-		                    case Constants.PhpMode.ISAPI:
-		                        handlersSvc.AddScriptMaps(virtualDir, PHP_EXTENSIONS,
-		                            PhpExecutablePath, Constants.HandlerAlias.PHP_ISAPI, Constants.IsapiModule);
-		                        break;
-		                }
-		            }
-		        }
-		    }
-		    else
-		    {
-		        if (PhpMode == Constants.PhpMode.FastCGI && GetPhpVersions(virtualDir).Any())
-		        {
-                    // Don't erase handler mappings, if we do, the virtualDir cannot see and choose what version of PHP to run later
-		        }
-		        else
-		        {
-		            handlersSvc.RemoveScriptMaps(virtualDir, PHP_EXTENSIONS, PhpExecutablePath);
-		        }
-		    }
+						if (handlerName != GetActivePhpHandlerName(virtualDir))
+						{
+							// Only change handler if it is different from the current one
+							handlersSvc.CopyInheritedHandlers(GetSiteIdFromVirtualDir(virtualDir), virtualDir.VirtualPath);
+							MakeHandlerActive(handlerName, virtualDir);
+						}
+					}
+				}
+				else
+				{
+					if (!String.IsNullOrEmpty(PhpExecutablePath) && File.Exists(PhpExecutablePath))
+					{
+						switch (PhpMode)
+						{
+							case Constants.PhpMode.FastCGI:
+								handlersSvc.AddScriptMaps(virtualDir, PHP_EXTENSIONS,
+									 PhpExecutablePath, Constants.HandlerAlias.PHP_FASTCGI, Constants.FastCgiModule);
+								break;
+							case Constants.PhpMode.CGI:
+								handlersSvc.AddScriptMaps(virtualDir, PHP_EXTENSIONS,
+									 PhpExecutablePath, Constants.HandlerAlias.PHP_CGI, Constants.CgiModule);
+								break;
+							case Constants.PhpMode.ISAPI:
+								handlersSvc.AddScriptMaps(virtualDir, PHP_EXTENSIONS,
+									 PhpExecutablePath, Constants.HandlerAlias.PHP_ISAPI, Constants.IsapiModule);
+								break;
+						}
+					}
+				}
+			}
+			else
+			{
+				if (PhpMode == Constants.PhpMode.FastCGI && GetPhpVersions(virtualDir).Any())
+				{
+					// Don't erase handler mappings, if we do, the virtualDir cannot see and choose what version of PHP to run later
+				}
+				else
+				{
+					handlersSvc.RemoveScriptMaps(virtualDir, PHP_EXTENSIONS, PhpExecutablePath);
+				}
+			}
 
-		    //
+			//
 			#endregion
 
 			#region PHP 4 script mappings (IsapiModule only)
@@ -1039,7 +1039,7 @@ namespace SolidCP.Providers.Web
 
 
 			#region ColdFusion script mappings
-            //ColdFusion code
+			//ColdFusion code
 			if (virtualDir.ColdFusionInstalled)
 			{
 				handlersSvc.AddScriptMaps(virtualDir, COLDFUSION_EXTENSIONS, ColdFusionPath,
@@ -1069,53 +1069,53 @@ namespace SolidCP.Providers.Web
 			fqPath += CGI_BIN_FOLDER;
 			string cgiBinPath = Path.Combine(virtualDir.ContentPath, CGI_BIN_FOLDER);
 
-            using (ServerManager srvman = webObjectsSvc.GetServerManager())
-            {
-                //
-                HandlerAccessPolicy policy = handlersSvc.GetHandlersAccessPolicy(srvman, fqPath);
-                policy &= ~HandlerAccessPolicy.Execute;
-                //
-                if (virtualDir.CgiBinInstalled)
-                {
-                    // create folder if not exists
-                    if (!FileUtils.DirectoryExists(cgiBinPath))
-                        FileUtils.CreateDirectory(cgiBinPath);
-                    //
-                    policy |= HandlerAccessPolicy.Execute;
-                }
+			using (ServerManager srvman = webObjectsSvc.GetServerManager())
+			{
+				//
+				HandlerAccessPolicy policy = handlersSvc.GetHandlersAccessPolicy(srvman, fqPath);
+				policy &= ~HandlerAccessPolicy.Execute;
+				//
+				if (virtualDir.CgiBinInstalled)
+				{
+					// create folder if not exists
+					if (!FileUtils.DirectoryExists(cgiBinPath))
+						FileUtils.CreateDirectory(cgiBinPath);
+					//
+					policy |= HandlerAccessPolicy.Execute;
+				}
 
-                //
-                if (FileUtils.DirectoryExists(cgiBinPath))
-                    handlersSvc.SetHandlersAccessPolicy(srvman, fqPath, policy);
+				//
+				if (FileUtils.DirectoryExists(cgiBinPath))
+					handlersSvc.SetHandlersAccessPolicy(srvman, fqPath, policy);
 
-                // save
-                srvman.CommitChanges();
-            }
+				// save
+				srvman.CommitChanges();
+			}
 		}
 
-        /// <summary>
-        /// Sets anonymous authentication for the virtual iisDirObject
-        /// </summary>
-        /// <param name="vdir"></param>
-        /// 
-        private void SetAnonymousAuthenticationNonApp(WebVirtualDirectory virtualDir, bool configureConnectAs = true)
-        {
-            // set anonymous credentials
-            anonymAuthSvc.SetAuthenticationSettings(virtualDir.FullQualifiedPath,
-                    GetQualifiedAccountName(virtualDir.AnonymousUsername),
-                    virtualDir.AnonymousUserPassword, virtualDir.EnableAnonymousAccess);
-            // configure "Connect As" feature
-            if (virtualDir.ContentPath.StartsWith(@"\\") && configureConnectAs)
-                webObjectsSvc.ConfigureConnectAsFeature(virtualDir);
-        }
-        private void SetAnonymousAuthentication(WebAppVirtualDirectory virtualDir, bool configureConnectAs = true)
+		/// <summary>
+		/// Sets anonymous authentication for the virtual iisDirObject
+		/// </summary>
+		/// <param name="vdir"></param>
+		/// 
+		private void SetAnonymousAuthenticationNonApp(WebVirtualDirectory virtualDir, bool configureConnectAs = true)
+		{
+			// set anonymous credentials
+			anonymAuthSvc.SetAuthenticationSettings(virtualDir.FullQualifiedPath,
+					  GetQualifiedAccountName(virtualDir.AnonymousUsername),
+					  virtualDir.AnonymousUserPassword, virtualDir.EnableAnonymousAccess);
+			// configure "Connect As" feature
+			if (virtualDir.ContentPath.StartsWith(@"\\") && configureConnectAs)
+				webObjectsSvc.ConfigureConnectAsFeature(virtualDir);
+		}
+		private void SetAnonymousAuthentication(WebAppVirtualDirectory virtualDir, bool configureConnectAs = true)
 		{
 			// set anonymous credentials
 			anonymAuthSvc.SetAuthenticationSettings(virtualDir.FullQualifiedPath,
 					GetQualifiedAccountName(virtualDir.AnonymousUsername),
 					virtualDir.AnonymousUserPassword, virtualDir.EnableAnonymousAccess);
 			// configure "Connect As" feature
-            if (virtualDir.ContentPath.StartsWith(@"\\") && configureConnectAs)
+			if (virtualDir.ContentPath.StartsWith(@"\\") && configureConnectAs)
 				webObjectsSvc.ConfigureConnectAsFeature(virtualDir);
 		}
 
@@ -1176,22 +1176,22 @@ namespace SolidCP.Providers.Web
 			site.ApplicationPool = WSHelper.InferAppPoolName(siteAppPool.Name, site.Name, siteAppPool.Mode);
 		}
 
-        private void CheckEnableWritePermissionsNonApp(ServerManager srvman, WebVirtualDirectory virtualDir)
-        {
-            string anonymousUsername = virtualDir.AnonymousUsername;
+		private void CheckEnableWritePermissionsNonApp(ServerManager srvman, WebVirtualDirectory virtualDir)
+		{
+			string anonymousUsername = virtualDir.AnonymousUsername;
 
-            if (!String.IsNullOrEmpty(anonymousUsername))
-                virtualDir.EnableWritePermissions = CheckWriteAccessEnabled(virtualDir.ContentPath,
-                    GetNonQualifiedAccountName(anonymousUsername));
-        }
+			if (!String.IsNullOrEmpty(anonymousUsername))
+				virtualDir.EnableWritePermissions = CheckWriteAccessEnabled(virtualDir.ContentPath,
+					 GetNonQualifiedAccountName(anonymousUsername));
+		}
 
-        private void CheckEnableWritePermissions(ServerManager srvman, WebAppVirtualDirectory virtualDir)
+		private void CheckEnableWritePermissions(ServerManager srvman, WebAppVirtualDirectory virtualDir)
 		{
 			string anonymousUsername = virtualDir.AnonymousUsername;
 			//
 			if (virtualDir.DedicatedApplicationPool)
 			{
-                ApplicationPool appPool = webObjectsSvc.GetApplicationPool(srvman, virtualDir);
+				ApplicationPool appPool = webObjectsSvc.GetApplicationPool(srvman, virtualDir);
 				//
 				if (appPool != null)
 					anonymousUsername = appPool.ProcessModel.UserName;
@@ -1213,169 +1213,169 @@ namespace SolidCP.Providers.Web
 
 		public override ServerState GetSiteState(string siteId)
 		{
-            using (ServerManager srvman = webObjectsSvc.GetServerManager())
-            {
-                return GetSiteState(srvman, siteId);
-            }
+			using (ServerManager srvman = webObjectsSvc.GetServerManager())
+			{
+				return GetSiteState(srvman, siteId);
+			}
 		}
 
-        public ServerState GetSiteState(ServerManager srvman, string siteId)
-        {
-            return webObjectsSvc.GetSiteState(srvman, siteId);
-        }
+		public ServerState GetSiteState(ServerManager srvman, string siteId)
+		{
+			return webObjectsSvc.GetSiteState(srvman, siteId);
+		}
 
 		public override bool SiteExists(string siteId)
 		{
-            using (ServerManager srvman = webObjectsSvc.GetServerManager())
-            {
-                return webObjectsSvc.SiteExists(srvman, siteId);
-            }
+			using (ServerManager srvman = webObjectsSvc.GetServerManager())
+			{
+				return webObjectsSvc.SiteExists(srvman, siteId);
+			}
 		}
 
 		public override string[] GetSites()
 		{
-            using (ServerManager srvman = webObjectsSvc.GetServerManager())
-            {
-                return webObjectsSvc.GetSites(srvman);
-            }
+			using (ServerManager srvman = webObjectsSvc.GetServerManager())
+			{
+				return webObjectsSvc.GetSites(srvman);
+			}
 		}
 
 		public new string GetSiteId(string siteName)
 		{
-            using (ServerManager srvman = webObjectsSvc.GetServerManager())
-            {
-                return webObjectsSvc.GetWebSiteNameFromIIS(srvman, siteName);
-            }
+			using (ServerManager srvman = webObjectsSvc.GetServerManager())
+			{
+				return webObjectsSvc.GetWebSiteNameFromIIS(srvman, siteName);
+			}
 		}
 
 		public override WebSite GetSite(string siteId)
 		{
-            WebSite site = null;
-            using (ServerManager srvman = webObjectsSvc.GetServerManager())
-            {
-                WebAppPoolHelper aphl = new WebAppPoolHelper(ProviderSettings);
-                //
-                site = webObjectsSvc.GetWebSiteFromIIS(srvman, siteId);
-                //
-                site.Bindings = webObjectsSvc.GetSiteBindings(srvman, siteId);
-                //
-                FillAppVirtualDirectoryFromIISObject(srvman, site);
-                //
-                FillAppVirtualDirectoryRestFromIISObject(srvman, site);
+			WebSite site = null;
+			using (ServerManager srvman = webObjectsSvc.GetServerManager())
+			{
+				WebAppPoolHelper aphl = new WebAppPoolHelper(ProviderSettings);
+				//
+				site = webObjectsSvc.GetWebSiteFromIIS(srvman, siteId);
+				//
+				site.Bindings = webObjectsSvc.GetSiteBindings(srvman, siteId);
+				//
+				FillAppVirtualDirectoryFromIISObject(srvman, site);
+				//
+				FillAppVirtualDirectoryRestFromIISObject(srvman, site);
 
-                // check frontpage
-                site.FrontPageAvailable = IsFrontPageSystemInstalled();
-                site.FrontPageInstalled = IsFrontPageInstalled(srvman, siteId);
+				// check frontpage
+				site.FrontPageAvailable = IsFrontPageSystemInstalled();
+				site.FrontPageInstalled = IsFrontPageInstalled(srvman, siteId);
 
-                //check ColdFusion
-                if (IsColdFusionSystemInstalled())
-                {
-                    if (IsColdFusion7Installed())
-                    {
-                        site.ColdFusionVersion = "7";
-                        site.ColdFusionAvailable = true;
-                    }
-                    else
-                    {
-                        if (IsColdFusion8Installed())
-                        {
-                            site.ColdFusionVersion = "8";
-                            site.ColdFusionAvailable = true;
-                        }
-                    }
+				//check ColdFusion
+				if (IsColdFusionSystemInstalled())
+				{
+					if (IsColdFusion7Installed())
+					{
+						site.ColdFusionVersion = "7";
+						site.ColdFusionAvailable = true;
+					}
+					else
+					{
+						if (IsColdFusion8Installed())
+						{
+							site.ColdFusionVersion = "8";
+							site.ColdFusionAvailable = true;
+						}
+					}
 
-                    if (IsColdFusion9Installed())
-                    {
-                        site.ColdFusionVersion = "9";
-                        site.ColdFusionAvailable = true;
-                    }
-					
-                    if (IsColdFusion10Installed())
-                    {
-                        site.ColdFusionVersion = "10";
-                        site.ColdFusionAvailable = true;
-                    }
-					
-                    if (IsColdFusion11Installed())
-                    {
-                        site.ColdFusionVersion = "11";
-                        site.ColdFusionAvailable = true;
-                    }
-					
-                    if (IsColdFusion2016Installed())
-                    {
-                        site.ColdFusionVersion = "2016";
-                        site.ColdFusionAvailable = true;
-                    }
-					
-                }
-                else
-                {
-                    site.ColdFusionAvailable = false;
-                }
+					if (IsColdFusion9Installed())
+					{
+						site.ColdFusionVersion = "9";
+						site.ColdFusionAvailable = true;
+					}
 
-                site.CreateCFAppVirtualDirectories = ColdFusionDirectoriesAdded(srvman, siteId);
+					if (IsColdFusion10Installed())
+					{
+						site.ColdFusionVersion = "10";
+						site.ColdFusionAvailable = true;
+					}
 
-                //site.ColdFusionInstalled = IsColdFusionEnabledOnSite(GetSiteId(site.Name));
+					if (IsColdFusion11Installed())
+					{
+						site.ColdFusionVersion = "11";
+						site.ColdFusionAvailable = true;
+					}
 
-                // check sharepoint
-                site.SharePointInstalled = false;
-                //
-                site.DedicatedApplicationPool = !aphl.is_shared_pool(site.ApplicationPool);
-                //
-                CheckEnableWritePermissions(srvman, site);
-                //
-                ReadWebManagementAccessDetails(srvman, site);
-                //
-                ReadWebDeployPublishingAccessDetails(site);
-                //
-                site.SecuredFoldersInstalled = IsSecuredFoldersInstalled(srvman, siteId);
+					if (IsColdFusion2016Installed())
+					{
+						site.ColdFusionVersion = "2016";
+						site.ColdFusionAvailable = true;
+					}
 
-                // check Helicon Ape
-                HeliconApeStatus heliconApeStatus = GetHeliconApeStatus(srvman, siteId);
-                site.HeliconApeInstalled = heliconApeStatus.IsInstalled;
-                site.HeliconApeEnabled = heliconApeStatus.IsEnabled;
-                site.HeliconApeStatus = heliconApeStatus;
+				}
+				else
+				{
+					site.ColdFusionAvailable = false;
+				}
 
-                //
-                site.SiteState = GetSiteState(srvman, siteId);
-                //
-                site.SecuredFoldersInstalled = IsSecuredFoldersInstalled(srvman, siteId);
-                //
-                site.SiteState = GetSiteState(srvman, siteId);
-                //
-                site.SniEnabled = false;
-            }
+				site.CreateCFAppVirtualDirectories = ColdFusionDirectoriesAdded(srvman, siteId);
+
+				//site.ColdFusionInstalled = IsColdFusionEnabledOnSite(GetSiteId(site.Name));
+
+				// check sharepoint
+				site.SharePointInstalled = false;
+				//
+				site.DedicatedApplicationPool = !aphl.is_shared_pool(site.ApplicationPool);
+				//
+				CheckEnableWritePermissions(srvman, site);
+				//
+				ReadWebManagementAccessDetails(srvman, site);
+				//
+				ReadWebDeployPublishingAccessDetails(site);
+				//
+				site.SecuredFoldersInstalled = IsSecuredFoldersInstalled(srvman, siteId);
+
+				// check Helicon Ape
+				HeliconApeStatus heliconApeStatus = GetHeliconApeStatus(srvman, siteId);
+				site.HeliconApeInstalled = heliconApeStatus.IsInstalled;
+				site.HeliconApeEnabled = heliconApeStatus.IsEnabled;
+				site.HeliconApeStatus = heliconApeStatus;
+
+				//
+				site.SiteState = GetSiteState(srvman, siteId);
+				//
+				site.SecuredFoldersInstalled = IsSecuredFoldersInstalled(srvman, siteId);
+				//
+				site.SiteState = GetSiteState(srvman, siteId);
+				//
+				site.SniEnabled = false;
+			}
 			return site;
 		}
 
 		public new string[] GetSitesAccounts(string[] siteIds)
 		{
-            List<string> accounts = new List<string>();
+			List<string> accounts = new List<string>();
 
-            using (ServerManager srvman = webObjectsSvc.GetServerManager())
-            {
-                for (int i = 0; i < siteIds.Length; i++)
-                {
-                    try
-                    {
-                        accounts.Add((string)anonymAuthSvc.GetAuthenticationSettings(srvman, siteIds[i])[AuthenticationGlobals.AnonymousAuthenticationUserName]);
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.WriteError(String.Format("Web site {0} is either deleted or doesn't exist", siteIds[i]), ex);
-                    }
-                }
-            }
+			using (ServerManager srvman = webObjectsSvc.GetServerManager())
+			{
+				for (int i = 0; i < siteIds.Length; i++)
+				{
+					try
+					{
+						accounts.Add((string)anonymAuthSvc.GetAuthenticationSettings(srvman, siteIds[i])[AuthenticationGlobals.AnonymousAuthenticationUserName]);
+					}
+					catch (Exception ex)
+					{
+						Log.WriteError(String.Format("Web site {0} is either deleted or doesn't exist", siteIds[i]), ex);
+					}
+				}
+			}
 			return accounts.ToArray();
 		}
 
 		public override ServerBinding[] GetSiteBindings(string siteId)
 		{
-            using (ServerManager srvman = webObjectsSvc.GetServerManager())
-            {
-                return webObjectsSvc.GetSiteBindings(srvman, siteId);
-            }
+			using (ServerManager srvman = webObjectsSvc.GetServerManager())
+			{
+				return webObjectsSvc.GetSiteBindings(srvman, siteId);
+			}
 		}
 
 		public override string CreateSite(WebSite site)
@@ -1528,86 +1528,86 @@ namespace SolidCP.Providers.Web
 			}
 
 			#region ColdFusion Virtual Directories
-            using (ServerManager srvman = webObjectsSvc.GetServerManager())
-            {
-                //TODO: NANOFIX:Added the If block and put the rest of the code in the else block(For Virtual Directory)
-                if (string.IsNullOrEmpty(base.CFFlashRemotingDirPath))
-                {
-                    DeleteCFAppVirtualDirectories(site.SiteId);
-                    site.CreateCFAppVirtualDirectories = false;
+			using (ServerManager srvman = webObjectsSvc.GetServerManager())
+			{
+				//TODO: NANOFIX:Added the If block and put the rest of the code in the else block(For Virtual Directory)
+				if (string.IsNullOrEmpty(base.CFFlashRemotingDirPath))
+				{
+					DeleteCFAppVirtualDirectories(site.SiteId);
+					site.CreateCFAppVirtualDirectories = false;
 					site.CreateCFAppVirtualDirectoriesPol = false;
-                }
-                else
-                {
-                    if (ColdFusionDirectoriesAdded(srvman, site.SiteId))
-                    {
-                        if (!site.CreateCFAppVirtualDirectories)
-                        {
-                            DeleteCFAppVirtualDirectories(site.SiteId);
-                            site.CreateCFAppVirtualDirectories = false;
+				}
+				else
+				{
+					if (ColdFusionDirectoriesAdded(srvman, site.SiteId))
+					{
+						if (!site.CreateCFAppVirtualDirectories)
+						{
+							DeleteCFAppVirtualDirectories(site.SiteId);
+							site.CreateCFAppVirtualDirectories = false;
 							site.CreateCFAppVirtualDirectoriesPol = false;
-                        }
-                    }
-                    else
-                    {
-                        if (site.CreateCFAppVirtualDirectories)
-                        {
-                            CreateCFAppVirtualDirectories(site.SiteId);
-                            site.CreateCFAppVirtualDirectories = true;
+						}
+					}
+					else
+					{
+						if (site.CreateCFAppVirtualDirectories)
+						{
+							CreateCFAppVirtualDirectories(site.SiteId);
+							site.CreateCFAppVirtualDirectories = true;
 							site.CreateCFAppVirtualDirectoriesPol = true;
-                        }
-                    }
-                }
-            }
+						}
+					}
+				}
+			}
 			#endregion
 
-            #region ColdFusionHandlerFix
-            //TODO: NANOFIX: Region Added for Cold Fusion Handler Fix
-            using (ServerManager srvman = webObjectsSvc.GetServerManager())
-            {
-                var appConfig = srvman.GetApplicationHostConfiguration();
-                ConfigurationSection handlersSection = appConfig.GetSection(Constants.HandlersSection, (site as WebAppVirtualDirectory).FullQualifiedPath); 
+			#region ColdFusionHandlerFix
+			//TODO: NANOFIX: Region Added for Cold Fusion Handler Fix
+			using (ServerManager srvman = webObjectsSvc.GetServerManager())
+			{
+				var appConfig = srvman.GetApplicationHostConfiguration();
+				ConfigurationSection handlersSection = appConfig.GetSection(Constants.HandlersSection, (site as WebAppVirtualDirectory).FullQualifiedPath);
 
-                var handlersCollection = handlersSection.GetCollection();
+				var handlersCollection = handlersSection.GetCollection();
 
-                List<ConfigurationElement> cfElementList = new List<ConfigurationElement>();
-                foreach (var action in handlersCollection)
-                {
-                    var name = action["name"].ToString();
-                    if (string.Compare(name, "coldfusion", true) == 0)
-                    {
-                        cfElementList.Add(action);
-                    }
-                }
-                foreach (var e in cfElementList)
-                {
-                    handlersCollection.Remove(e);
-                }
-                if (site.ColdFusionInstalled)
-                {
+				List<ConfigurationElement> cfElementList = new List<ConfigurationElement>();
+				foreach (var action in handlersCollection)
+				{
+					var name = action["name"].ToString();
+					if (string.Compare(name, "coldfusion", true) == 0)
+					{
+						cfElementList.Add(action);
+					}
+				}
+				foreach (var e in cfElementList)
+				{
+					handlersCollection.Remove(e);
+				}
+				if (site.ColdFusionInstalled)
+				{
 
-                    if (IsColdFusion7Installed() || IsColdFusion8Installed() || IsColdFusion9Installed()) 
+					if (IsColdFusion7Installed() || IsColdFusion8Installed() || IsColdFusion9Installed())
 					{
 						var cfElement = handlersCollection.CreateElement("add");
-	
-	                    cfElement["name"] = "coldfusion";
-	                    cfElement["modules"] = "IsapiModule";
-	                    cfElement["path"] = "*";
-	                    cfElement["scriptProcessor"] = base.ColdFusionPath;
-	                    cfElement["verb"] = "*";
-	                    cfElement["resourceType"] = "Unspecified";
-	                    cfElement["requireAccess"] = "None";
-	                    cfElement["preCondition"] = "bitness64";
-	                    handlersCollection.AddAt(0, cfElement);
+
+						cfElement["name"] = "coldfusion";
+						cfElement["modules"] = "IsapiModule";
+						cfElement["path"] = "*";
+						cfElement["scriptProcessor"] = base.ColdFusionPath;
+						cfElement["verb"] = "*";
+						cfElement["resourceType"] = "Unspecified";
+						cfElement["requireAccess"] = "None";
+						cfElement["preCondition"] = "bitness64";
+						handlersCollection.AddAt(0, cfElement);
 					}
 
 
-                }
-                srvman.CommitChanges();
-            }
-            #endregion
+				}
+				srvman.CommitChanges();
+			}
+			#endregion
 
-            // remove dedicated pools if any
+			// remove dedicated pools if any
 			if (deleteDedicatedPools)
 				DeleteDedicatedPoolsAllocated(site.Name);
 
@@ -1684,189 +1684,189 @@ namespace SolidCP.Providers.Web
 			}
 		}
 
-        // AppPool
-        public override void ChangeAppPoolState(string siteId, AppPoolState state)
-        {
-            webObjectsSvc.ChangeAppPoolState(siteId, state);
-        }
+		// AppPool
+		public override void ChangeAppPoolState(string siteId, AppPoolState state)
+		{
+			webObjectsSvc.ChangeAppPoolState(siteId, state);
+		}
 
-        public override AppPoolState GetAppPoolState(string siteId)
-        {
-            using (ServerManager srvman = webObjectsSvc.GetServerManager())
-            {
-                return GetAppPoolState(srvman, siteId);
-            }
-        }
+		public override AppPoolState GetAppPoolState(string siteId)
+		{
+			using (ServerManager srvman = webObjectsSvc.GetServerManager())
+			{
+				return GetAppPoolState(srvman, siteId);
+			}
+		}
 
-        public virtual AppPoolState GetAppPoolState(ServerManager srvman, string siteId)
-        {
-            return webObjectsSvc.GetAppPoolState(srvman, siteId);
-        }
-
-
+		public virtual AppPoolState GetAppPoolState(ServerManager srvman, string siteId)
+		{
+			return webObjectsSvc.GetAppPoolState(srvman, siteId);
+		}
 
 
-        /// <summary>
-        /// Checks whether virtual iisDirObject with supplied name under specified site exists.
-        /// </summary>
-        /// <param name="siteId">Site id.</param>
-        /// <param name="directoryName">Directory name to check.</param>
-        /// <returns>true - if it exists; false - otherwise.</returns>
-        public override bool VirtualDirectoryExists(string siteId, string directoryName)
-        {
-            return this.webObjectsSvc.VirtualDirectoryExists(siteId, directoryName);
-        }
-
-        /// <summary>
-        /// Gets virtual directories that belong to site with supplied id.
-        /// </summary>
-        /// <param name="siteId">Site's id to get virtual directories for.</param>
-        /// <returns>virtual directories that belong to site with supplied id.</returns>
-        public override WebVirtualDirectory[] GetVirtualDirectories(string siteId)
-        {
 
 
-            using (ServerManager srvman = webObjectsSvc.GetServerManager())
-            {
-                return GetVirtualDirectories(srvman, siteId);
-            }
-        }
+		/// <summary>
+		/// Checks whether virtual iisDirObject with supplied name under specified site exists.
+		/// </summary>
+		/// <param name="siteId">Site id.</param>
+		/// <param name="directoryName">Directory name to check.</param>
+		/// <returns>true - if it exists; false - otherwise.</returns>
+		public override bool VirtualDirectoryExists(string siteId, string directoryName)
+		{
+			return this.webObjectsSvc.VirtualDirectoryExists(siteId, directoryName);
+		}
 
-        private WebVirtualDirectory[] GetVirtualDirectories(ServerManager srvman, string siteId)
-        {
-            // get all virt dirs
-            WebVirtualDirectory[] virtDirs = webObjectsSvc.GetVirtualDirectories(srvman, siteId);
-
-            // filter
-            string sharedToolsFolder = GetMicrosoftSharedFolderPath();
-            List<WebVirtualDirectory> result = new List<WebVirtualDirectory>();
-            foreach (WebVirtualDirectory dir in virtDirs)
-            {
-                // check if this is a system (FrontPage or SharePoint) virtual iisDirObject
-                if (!String.IsNullOrEmpty(sharedToolsFolder)
-                    && dir.ContentPath.ToLower().StartsWith(sharedToolsFolder.ToLower()))
-                    continue;
-                result.Add(dir);
-            }
-            return result.ToArray();
-        }
-
-        /// <summary>
-        /// Gets virtual iisDirObject description that belongs to site with supplied id and has specified name.
-        /// </summary>
-        /// <param name="siteId">Site's id that owns virtual iisDirObject.</param>
-        /// <param name="directoryName">Directory's name to get description for.</param>
-        /// <returns>virtual iisDirObject description that belongs to site with supplied id and has specified name.</returns>
-        public override WebVirtualDirectory GetVirtualDirectory(string siteId, string directoryName)
-        {
-            using (ServerManager srvman = webObjectsSvc.GetServerManager())
-            {
-
-                WebVirtualDirectory webVirtualDirectory = webObjectsSvc.GetVirtualDirectory(siteId, directoryName);
-                //
-                this.FillVirtualDirectoryFromIISObject(srvman, webVirtualDirectory);
-                this.FillVirtualDirectoryRestFromIISObject(srvman, webVirtualDirectory);
-                //
-                CheckEnableWritePermissionsNonApp(srvman, webVirtualDirectory);
-                //
-                ReadWebManagementAccessDetailsNonApp(srvman, webVirtualDirectory);
-                //
-                return webVirtualDirectory;
-
-            }
-        }
-
-        /// <summary>
-        /// Creates virtual iisDirObject under site with specified id.
-        /// </summary>
-        /// <param name="siteId">Site's id to create virtual iisDirObject under.</param>
-        /// <param name="iisDirObject">Virtual iisDirObject description.</param>
-        public override void CreateVirtualDirectory(string siteId, WebVirtualDirectory directory)
-        {
-            // Create iisDirObject folder if not exists.
-            if (!FileUtils.DirectoryExists(directory.ContentPath))
-            {
-                FileUtils.CreateDirectory(directory.ContentPath);
-            }
-            //
-            WebSite webSite = GetSite(siteId);
-            // copy props from parent site
-            directory.ParentSiteName = siteId;
-
-            // Create record in IIS's configuration.
-            webObjectsSvc.CreateVirtualDirectory(siteId, directory.VirtualPath, directory.ContentPath);
-
-            using (ServerManager srvman = webObjectsSvc.GetServerManager())
-            {
-                PropertyBag bag = anonymAuthSvc.GetAuthenticationSettings(srvman, siteId);
-                directory.AnonymousUsername = (string)bag[AuthenticationGlobals.AnonymousAuthenticationUserName];
-                directory.AnonymousUserPassword = (string)bag[AuthenticationGlobals.AnonymousAuthenticationPassword];
-                directory.EnableAnonymousAccess = (bool)bag[AuthenticationGlobals.Enabled];
-                // Update virtual iisDirObject.
-                this.UpdateVirtualDirectory(siteId, directory);
-            }
-        }
-
- 
-        /// <summary>
-        /// Updates virtual iisDirObject settings.
-        /// </summary>
-        /// <param name="siteId">Site's id that owns supplied iisDirObject.</param>
-        /// <param name="iisDirObject">Web iisDirObject that needs to be updated.</param>
-        public override void UpdateVirtualDirectory(string siteId, WebVirtualDirectory directory)
-        {
-            string origPath = null;
-            using (ServerManager srvman = webObjectsSvc.GetServerManager())
-            {
-                if (!this.webObjectsSvc.SiteExists(srvman, siteId))
-                    return;
-
-                // get original path
-               origPath = webObjectsSvc.GetPhysicalPathNonApp(srvman, directory);
-            }
-
-            
-            directory.ParentSiteName = siteId;
-
-            // remove unnecessary permissions
-            // if original folder has been changed
-            if (String.Compare(origPath, directory.ContentPath, true) != 0)
-                RemoveWebFolderPermissions(origPath, GetNonQualifiedAccountName(directory.AnonymousUsername));
-            // set folder permissions
-            SetWebFolderPermissionsNonApp(directory.ContentPath, GetNonQualifiedAccountName(directory.AnonymousUsername),
-                    directory.EnableWritePermissions);
-
-            webObjectsSvc.UpdateVirtualDirectory(directory);
-            //
-            this.FillIISObjectFromVirtualDirectory(directory);
-
-        }
-
-        /// <summary>
-        /// Deletes virtual iisDirObject within specified site.
-        /// </summary>
-        /// <param name="siteId">Site id.</param>
-        /// <param name="directoryName">Directory name to delete.</param>
-        public override void DeleteVirtualDirectory(string siteId, string directoryName)
-        {
-            var virtualDir = new WebVirtualDirectory
-            {
-                ParentSiteName = siteId,
-                Name = directoryName
-            };
-            //
-            webObjectsSvc.DeleteVirtualDirectory(virtualDir);
-            anonymAuthSvc.RemoveAuthenticationSettings(virtualDir.FullQualifiedPath);
-        }
+		/// <summary>
+		/// Gets virtual directories that belong to site with supplied id.
+		/// </summary>
+		/// <param name="siteId">Site's id to get virtual directories for.</param>
+		/// <returns>virtual directories that belong to site with supplied id.</returns>
+		public override WebVirtualDirectory[] GetVirtualDirectories(string siteId)
+		{
 
 
-        /// <summary>
-        /// Checks whether virtual iisDirObject with supplied name under specified site exists.
-        /// </summary>
-        /// <param name="siteId">Site id.</param>
-        /// <param name="directoryName">Directory name to check.</param>
-        /// <returns>true - if it exists; false - otherwise.</returns>
-        public override bool AppVirtualDirectoryExists(string siteId, string directoryName)
+			using (ServerManager srvman = webObjectsSvc.GetServerManager())
+			{
+				return GetVirtualDirectories(srvman, siteId);
+			}
+		}
+
+		private WebVirtualDirectory[] GetVirtualDirectories(ServerManager srvman, string siteId)
+		{
+			// get all virt dirs
+			WebVirtualDirectory[] virtDirs = webObjectsSvc.GetVirtualDirectories(srvman, siteId);
+
+			// filter
+			string sharedToolsFolder = GetMicrosoftSharedFolderPath();
+			List<WebVirtualDirectory> result = new List<WebVirtualDirectory>();
+			foreach (WebVirtualDirectory dir in virtDirs)
+			{
+				// check if this is a system (FrontPage or SharePoint) virtual iisDirObject
+				if (!String.IsNullOrEmpty(sharedToolsFolder)
+					 && dir.ContentPath.ToLower().StartsWith(sharedToolsFolder.ToLower()))
+					continue;
+				result.Add(dir);
+			}
+			return result.ToArray();
+		}
+
+		/// <summary>
+		/// Gets virtual iisDirObject description that belongs to site with supplied id and has specified name.
+		/// </summary>
+		/// <param name="siteId">Site's id that owns virtual iisDirObject.</param>
+		/// <param name="directoryName">Directory's name to get description for.</param>
+		/// <returns>virtual iisDirObject description that belongs to site with supplied id and has specified name.</returns>
+		public override WebVirtualDirectory GetVirtualDirectory(string siteId, string directoryName)
+		{
+			using (ServerManager srvman = webObjectsSvc.GetServerManager())
+			{
+
+				WebVirtualDirectory webVirtualDirectory = webObjectsSvc.GetVirtualDirectory(siteId, directoryName);
+				//
+				this.FillVirtualDirectoryFromIISObject(srvman, webVirtualDirectory);
+				this.FillVirtualDirectoryRestFromIISObject(srvman, webVirtualDirectory);
+				//
+				CheckEnableWritePermissionsNonApp(srvman, webVirtualDirectory);
+				//
+				ReadWebManagementAccessDetailsNonApp(srvman, webVirtualDirectory);
+				//
+				return webVirtualDirectory;
+
+			}
+		}
+
+		/// <summary>
+		/// Creates virtual iisDirObject under site with specified id.
+		/// </summary>
+		/// <param name="siteId">Site's id to create virtual iisDirObject under.</param>
+		/// <param name="iisDirObject">Virtual iisDirObject description.</param>
+		public override void CreateVirtualDirectory(string siteId, WebVirtualDirectory directory)
+		{
+			// Create iisDirObject folder if not exists.
+			if (!FileUtils.DirectoryExists(directory.ContentPath))
+			{
+				FileUtils.CreateDirectory(directory.ContentPath);
+			}
+			//
+			WebSite webSite = GetSite(siteId);
+			// copy props from parent site
+			directory.ParentSiteName = siteId;
+
+			// Create record in IIS's configuration.
+			webObjectsSvc.CreateVirtualDirectory(siteId, directory.VirtualPath, directory.ContentPath);
+
+			using (ServerManager srvman = webObjectsSvc.GetServerManager())
+			{
+				PropertyBag bag = anonymAuthSvc.GetAuthenticationSettings(srvman, siteId);
+				directory.AnonymousUsername = (string)bag[AuthenticationGlobals.AnonymousAuthenticationUserName];
+				directory.AnonymousUserPassword = (string)bag[AuthenticationGlobals.AnonymousAuthenticationPassword];
+				directory.EnableAnonymousAccess = (bool)bag[AuthenticationGlobals.Enabled];
+				// Update virtual iisDirObject.
+				this.UpdateVirtualDirectory(siteId, directory);
+			}
+		}
+
+
+		/// <summary>
+		/// Updates virtual iisDirObject settings.
+		/// </summary>
+		/// <param name="siteId">Site's id that owns supplied iisDirObject.</param>
+		/// <param name="iisDirObject">Web iisDirObject that needs to be updated.</param>
+		public override void UpdateVirtualDirectory(string siteId, WebVirtualDirectory directory)
+		{
+			string origPath = null;
+			using (ServerManager srvman = webObjectsSvc.GetServerManager())
+			{
+				if (!this.webObjectsSvc.SiteExists(srvman, siteId))
+					return;
+
+				// get original path
+				origPath = webObjectsSvc.GetPhysicalPathNonApp(srvman, directory);
+			}
+
+
+			directory.ParentSiteName = siteId;
+
+			// remove unnecessary permissions
+			// if original folder has been changed
+			if (String.Compare(origPath, directory.ContentPath, true) != 0)
+				RemoveWebFolderPermissions(origPath, GetNonQualifiedAccountName(directory.AnonymousUsername));
+			// set folder permissions
+			SetWebFolderPermissionsNonApp(directory.ContentPath, GetNonQualifiedAccountName(directory.AnonymousUsername),
+					  directory.EnableWritePermissions);
+
+			webObjectsSvc.UpdateVirtualDirectory(directory);
+			//
+			this.FillIISObjectFromVirtualDirectory(directory);
+
+		}
+
+		/// <summary>
+		/// Deletes virtual iisDirObject within specified site.
+		/// </summary>
+		/// <param name="siteId">Site id.</param>
+		/// <param name="directoryName">Directory name to delete.</param>
+		public override void DeleteVirtualDirectory(string siteId, string directoryName)
+		{
+			var virtualDir = new WebVirtualDirectory
+			{
+				ParentSiteName = siteId,
+				Name = directoryName
+			};
+			//
+			webObjectsSvc.DeleteVirtualDirectory(virtualDir);
+			anonymAuthSvc.RemoveAuthenticationSettings(virtualDir.FullQualifiedPath);
+		}
+
+
+		/// <summary>
+		/// Checks whether virtual iisDirObject with supplied name under specified site exists.
+		/// </summary>
+		/// <param name="siteId">Site id.</param>
+		/// <param name="directoryName">Directory name to check.</param>
+		/// <returns>true - if it exists; false - otherwise.</returns>
+		public override bool AppVirtualDirectoryExists(string siteId, string directoryName)
 		{
 			return this.webObjectsSvc.AppVirtualDirectoryExists(siteId, directoryName);
 		}
@@ -1878,32 +1878,32 @@ namespace SolidCP.Providers.Web
 		/// <returns>virtual directories that belong to site with supplied id.</returns>
 		public override WebAppVirtualDirectory[] GetAppVirtualDirectories(string siteId)
 		{
-            
 
-            using (ServerManager srvman = webObjectsSvc.GetServerManager())
-            {
-                return GetAppVirtualDirectories(srvman, siteId);
-            }
+
+			using (ServerManager srvman = webObjectsSvc.GetServerManager())
+			{
+				return GetAppVirtualDirectories(srvman, siteId);
+			}
 		}
 
-        private WebAppVirtualDirectory[] GetAppVirtualDirectories(ServerManager srvman, string siteId)
-        {
-            // get all virt dirs
-            WebAppVirtualDirectory[] virtDirs = webObjectsSvc.GetAppVirtualDirectories(srvman, siteId);
+		private WebAppVirtualDirectory[] GetAppVirtualDirectories(ServerManager srvman, string siteId)
+		{
+			// get all virt dirs
+			WebAppVirtualDirectory[] virtDirs = webObjectsSvc.GetAppVirtualDirectories(srvman, siteId);
 
-            // filter
-            string sharedToolsFolder = GetMicrosoftSharedFolderPath();
-            List<WebAppVirtualDirectory> result = new List<WebAppVirtualDirectory>();
-            foreach (WebAppVirtualDirectory dir in virtDirs)
-            {
-                // check if this is a system (FrontPage or SharePoint) virtual iisDirObject
-                if (!String.IsNullOrEmpty(sharedToolsFolder)
-                    && dir.ContentPath.ToLower().StartsWith(sharedToolsFolder.ToLower()))
-                    continue;
-                result.Add(dir);
-            }
-            return result.ToArray();
-        }
+			// filter
+			string sharedToolsFolder = GetMicrosoftSharedFolderPath();
+			List<WebAppVirtualDirectory> result = new List<WebAppVirtualDirectory>();
+			foreach (WebAppVirtualDirectory dir in virtDirs)
+			{
+				// check if this is a system (FrontPage or SharePoint) virtual iisDirObject
+				if (!String.IsNullOrEmpty(sharedToolsFolder)
+					 && dir.ContentPath.ToLower().StartsWith(sharedToolsFolder.ToLower()))
+					continue;
+				result.Add(dir);
+			}
+			return result.ToArray();
+		}
 
 		/// <summary>
 		/// Gets virtual iisDirObject description that belongs to site with supplied id and has specified name.
@@ -1913,33 +1913,33 @@ namespace SolidCP.Providers.Web
 		/// <returns>virtual iisDirObject description that belongs to site with supplied id and has specified name.</returns>
 		public override WebAppVirtualDirectory GetAppVirtualDirectory(string siteId, string directoryName)
 		{
-            using (ServerManager srvman = webObjectsSvc.GetServerManager())
-            {
-                WebAppPoolHelper aphl = new WebAppPoolHelper(ProviderSettings);
-                //
-                WebAppVirtualDirectory webAppVirtualDirectory = webObjectsSvc.GetAppVirtualDirectory(siteId, directoryName);
-                //
-                this.FillAppVirtualDirectoryFromIISObject(srvman, webAppVirtualDirectory);
-                this.FillAppVirtualDirectoryRestFromIISObject(srvman, webAppVirtualDirectory);
-                //
-                webAppVirtualDirectory.DedicatedApplicationPool = !aphl.is_shared_pool(webAppVirtualDirectory.ApplicationPool);
-                //
-                CheckEnableWritePermissions(srvman, webAppVirtualDirectory);
-                //
-                ReadWebManagementAccessDetails(srvman, webAppVirtualDirectory);
-                //
-                ReadWebDeployPublishingAccessDetails(webAppVirtualDirectory);
-                //
-                return webAppVirtualDirectory;
-            }
+			using (ServerManager srvman = webObjectsSvc.GetServerManager())
+			{
+				WebAppPoolHelper aphl = new WebAppPoolHelper(ProviderSettings);
+				//
+				WebAppVirtualDirectory webAppVirtualDirectory = webObjectsSvc.GetAppVirtualDirectory(siteId, directoryName);
+				//
+				this.FillAppVirtualDirectoryFromIISObject(srvman, webAppVirtualDirectory);
+				this.FillAppVirtualDirectoryRestFromIISObject(srvman, webAppVirtualDirectory);
+				//
+				webAppVirtualDirectory.DedicatedApplicationPool = !aphl.is_shared_pool(webAppVirtualDirectory.ApplicationPool);
+				//
+				CheckEnableWritePermissions(srvman, webAppVirtualDirectory);
+				//
+				ReadWebManagementAccessDetails(srvman, webAppVirtualDirectory);
+				//
+				ReadWebDeployPublishingAccessDetails(webAppVirtualDirectory);
+				//
+				return webAppVirtualDirectory;
+			}
 		}
 
-        /// <summary>
-        /// Creates virtual iisDirObject under site with specified id.
-        /// </summary>
-        /// <param name="siteId">Site's id to create virtual iisDirObject under.</param>
-        /// <param name="iisDirObject">Virtual iisDirObject description.</param>
-        public override void CreateAppVirtualDirectory(string siteId, WebAppVirtualDirectory directory)
+		/// <summary>
+		/// Creates virtual iisDirObject under site with specified id.
+		/// </summary>
+		/// <param name="siteId">Site's id to create virtual iisDirObject under.</param>
+		/// <param name="iisDirObject">Virtual iisDirObject description.</param>
+		public override void CreateAppVirtualDirectory(string siteId, WebAppVirtualDirectory directory)
 		{
 			// Create iisDirObject folder if not exists.
 			if (!FileUtils.DirectoryExists(directory.ContentPath))
@@ -1955,49 +1955,49 @@ namespace SolidCP.Providers.Web
 			// Create record in IIS's configuration.
 			webObjectsSvc.CreateAppVirtualDirectory(siteId, directory.VirtualPath, directory.ContentPath);
 
-            using (ServerManager srvman = webObjectsSvc.GetServerManager())
-            {
-                PropertyBag bag = anonymAuthSvc.GetAuthenticationSettings(srvman, siteId);
-                directory.AnonymousUsername = (string)bag[AuthenticationGlobals.AnonymousAuthenticationUserName];
-                directory.AnonymousUserPassword = (string)bag[AuthenticationGlobals.AnonymousAuthenticationPassword];
-                directory.EnableAnonymousAccess = (bool)bag[AuthenticationGlobals.Enabled];
-                // Update virtual iisDirObject.
-                this.UpdateAppVirtualDirectory(siteId, directory);
-            }
+			using (ServerManager srvman = webObjectsSvc.GetServerManager())
+			{
+				PropertyBag bag = anonymAuthSvc.GetAuthenticationSettings(srvman, siteId);
+				directory.AnonymousUsername = (string)bag[AuthenticationGlobals.AnonymousAuthenticationUserName];
+				directory.AnonymousUserPassword = (string)bag[AuthenticationGlobals.AnonymousAuthenticationPassword];
+				directory.EnableAnonymousAccess = (bool)bag[AuthenticationGlobals.Enabled];
+				// Update virtual iisDirObject.
+				this.UpdateAppVirtualDirectory(siteId, directory);
+			}
 		}
 
-        /// <summary>
-        /// Creates virtual iisDirObject under site (Enterprise Storage) with specified id.
-        /// </summary>
-        /// <param name="siteId">Site's id to create virtual iisDirObject under.</param>
-        /// <param name="iisDirObject">Virtual iisDirObject description.</param>
-        public override void CreateEnterpriseStorageAppVirtualDirectory(string siteId, WebAppVirtualDirectory directory)
-        {
-            // Create iisDirObject folder if not exists.
-            if (!FileUtils.DirectoryExists(directory.ContentPath) && new Uri(directory.ContentPath).IsUnc == false)
-            {
-                FileUtils.CreateDirectory(directory.ContentPath);
-            }
-            //
-            WebSite webSite = GetSite(siteId);
-            // copy props from parent site
-            directory.ParentSiteName = siteId;
-            directory.AspNetInstalled = webSite.AspNetInstalled;
-            directory.ApplicationPool = webSite.ApplicationPool;
-            // Create record in IIS's configuration.
-            webObjectsSvc.CreateAppVirtualDirectory(siteId, directory.VirtualPath, directory.ContentPath);
+		/// <summary>
+		/// Creates virtual iisDirObject under site (Enterprise Storage) with specified id.
+		/// </summary>
+		/// <param name="siteId">Site's id to create virtual iisDirObject under.</param>
+		/// <param name="iisDirObject">Virtual iisDirObject description.</param>
+		public override void CreateEnterpriseStorageAppVirtualDirectory(string siteId, WebAppVirtualDirectory directory)
+		{
+			// Create iisDirObject folder if not exists.
+			if (!FileUtils.DirectoryExists(directory.ContentPath) && new Uri(directory.ContentPath).IsUnc == false)
+			{
+				FileUtils.CreateDirectory(directory.ContentPath);
+			}
+			//
+			WebSite webSite = GetSite(siteId);
+			// copy props from parent site
+			directory.ParentSiteName = siteId;
+			directory.AspNetInstalled = webSite.AspNetInstalled;
+			directory.ApplicationPool = webSite.ApplicationPool;
+			// Create record in IIS's configuration.
+			webObjectsSvc.CreateAppVirtualDirectory(siteId, directory.VirtualPath, directory.ContentPath);
 
-            using (ServerManager srvman = webObjectsSvc.GetServerManager())
-            {
-                PropertyBag bag = anonymAuthSvc.GetAuthenticationSettings(srvman, siteId);
-                directory.AnonymousUsername = (string)bag[AuthenticationGlobals.AnonymousAuthenticationUserName];
-                directory.AnonymousUserPassword = (string)bag[AuthenticationGlobals.AnonymousAuthenticationPassword];
-            }
-            // Update virtual directory (set parent site pool)
-            webObjectsSvc.UpdateAppVirtualDirectory(directory);
-            // Disable Anonymous Authentication
-            SetAnonymousAuthentication(directory, false);
-        }
+			using (ServerManager srvman = webObjectsSvc.GetServerManager())
+			{
+				PropertyBag bag = anonymAuthSvc.GetAuthenticationSettings(srvman, siteId);
+				directory.AnonymousUsername = (string)bag[AuthenticationGlobals.AnonymousAuthenticationUserName];
+				directory.AnonymousUserPassword = (string)bag[AuthenticationGlobals.AnonymousAuthenticationPassword];
+			}
+			// Update virtual directory (set parent site pool)
+			webObjectsSvc.UpdateAppVirtualDirectory(directory);
+			// Disable Anonymous Authentication
+			SetAnonymousAuthentication(directory, false);
+		}
 
 		/// <summary>
 		/// Updates virtual iisDirObject settings.
@@ -2006,15 +2006,15 @@ namespace SolidCP.Providers.Web
 		/// <param name="iisDirObject">Web iisDirObject that needs to be updated.</param>
 		public override void UpdateAppVirtualDirectory(string siteId, WebAppVirtualDirectory directory)
 		{
-            string origPath = null;
-            using (ServerManager srvman = webObjectsSvc.GetServerManager())
-            {
-                if (!this.webObjectsSvc.SiteExists(srvman, siteId))
-                    return;
+			string origPath = null;
+			using (ServerManager srvman = webObjectsSvc.GetServerManager())
+			{
+				if (!this.webObjectsSvc.SiteExists(srvman, siteId))
+					return;
 
-                // get original path
-                origPath = webObjectsSvc.GetPhysicalPath(srvman, directory);
-            }
+				// get original path
+				origPath = webObjectsSvc.GetPhysicalPath(srvman, directory);
+			}
 
 			WebAppPoolHelper aphl = new WebAppPoolHelper(ProviderSettings);
 			//
@@ -2071,43 +2071,43 @@ namespace SolidCP.Providers.Web
 
 		protected override bool IsSecuredFoldersInstalled(string siteId)
 		{
-            using (var srvman = webObjectsSvc.GetServerManager())
-            {
-                return IsSecuredFoldersInstalled(srvman, siteId);
-            }
+			using (var srvman = webObjectsSvc.GetServerManager())
+			{
+				return IsSecuredFoldersInstalled(srvman, siteId);
+			}
 		}
 
-        private bool IsSecuredFoldersInstalled(ServerManager srvman, string siteId)
-        {
-            var appConfig = srvman.GetApplicationHostConfiguration();
-            //
-            var modulesSection = appConfig.GetSection(Constants.ModulesSection, siteId);
-            //
-            var modulesCollection = modulesSection.GetCollection();
-            //
-            foreach (var moduleEntry in modulesCollection)
-            {
-                if (
-                    String.Equals(moduleEntry["name"].ToString(), Constants.SolidCP_IISMODULES, StringComparison.InvariantCultureIgnoreCase)
-                    || String.Equals(moduleEntry["name"].ToString(), Constants.DOTNETPANEL_IISMODULES, StringComparison.InvariantCultureIgnoreCase)
-                    )
-                    return true;
-            }
-            //
-            return false;
-        }
+		private bool IsSecuredFoldersInstalled(ServerManager srvman, string siteId)
+		{
+			var appConfig = srvman.GetApplicationHostConfiguration();
+			//
+			var modulesSection = appConfig.GetSection(Constants.ModulesSection, siteId);
+			//
+			var modulesCollection = modulesSection.GetCollection();
+			//
+			foreach (var moduleEntry in modulesCollection)
+			{
+				if (
+					 String.Equals(moduleEntry["name"].ToString(), Constants.SolidCP_IISMODULES, StringComparison.InvariantCultureIgnoreCase)
+					 || String.Equals(moduleEntry["name"].ToString(), Constants.DOTNETPANEL_IISMODULES, StringComparison.InvariantCultureIgnoreCase)
+					 )
+					return true;
+			}
+			//
+			return false;
+		}
 
-        protected override string GetSiteContentPath(string siteId)
-        {
-            using (var srvman = webObjectsSvc.GetServerManager())
-            {
-                return GetSiteContentPath(srvman, siteId);
-            }
-        }
+		protected override string GetSiteContentPath(string siteId)
+		{
+			using (var srvman = webObjectsSvc.GetServerManager())
+			{
+				return GetSiteContentPath(srvman, siteId);
+			}
+		}
 
 		protected string GetSiteContentPath(ServerManager srvman, string siteId)
 		{
-            var webSite = webObjectsSvc.GetWebSiteFromIIS(srvman, siteId);
+			var webSite = webObjectsSvc.GetWebSiteFromIIS(srvman, siteId);
 			//
 			if (webSite != null)
 				return webObjectsSvc.GetPhysicalPath(srvman, webSite);
@@ -2123,70 +2123,70 @@ namespace SolidCP.Providers.Web
 		/// <param name="siteId"></param>
 		public override void InstallSecuredFolders(string siteId)
 		{
-            using (var srvman = webObjectsSvc.GetServerManager())
-            {
-                //
-                if (String.IsNullOrEmpty(siteId))
-                    throw new ArgumentNullException("siteId");
+			using (var srvman = webObjectsSvc.GetServerManager())
+			{
+				//
+				if (String.IsNullOrEmpty(siteId))
+					throw new ArgumentNullException("siteId");
 
-                // SolidCP.IIsModules works for apps working in Integrated Pipeline mode
-                #region Switch automatically to the app pool with Integrated Pipeline enabled
-                var webSite = webObjectsSvc.GetWebSiteFromIIS(srvman, siteId);
-                //
-                if (webSite == null)
-                    throw new ApplicationException(String.Format("Could not find a web site with the following identifier: {0}.", siteId));
-                //
-                var aphl = new WebAppPoolHelper(ProviderSettings);
-                // Fill ASP.NET settings
-                FillAspNetSettingsFromIISObject(srvman, webSite);
-                //
-                var currentPool = aphl.match_webapp_pool(webSite);
-                var dotNetVersion = aphl.dotNetVersion(currentPool.Mode);
-                var sisMode = aphl.isolation(currentPool.Mode);
-                // AT least ASP.NET 2.0 is allowed to provide such capabilities...
-                if (dotNetVersion == SiteAppPoolMode.dotNetFramework1)
-                    dotNetVersion = SiteAppPoolMode.dotNetFramework2;
-                // and Integrated pipeline...
-                if (aphl.pipeline(currentPool.Mode) != SiteAppPoolMode.Integrated)
-                {
-                    // Lookup for the opposite pool matching the criteria
-                    var oppositePool = Array.Find<WebAppPool>(aphl.SupportedAppPools.ToArray(),
-                        x => aphl.dotNetVersion(x.Mode) == dotNetVersion && aphl.isolation(x.Mode) == sisMode
-                            && aphl.pipeline(x.Mode) == SiteAppPoolMode.Integrated);
-                    //
-                    webSite.AspNetInstalled = oppositePool.AspNetInstalled;
-                    //
-                    SetWebSiteApplicationPool(webSite, false);
-                    //
+				// SolidCP.IIsModules works for apps working in Integrated Pipeline mode
+				#region Switch automatically to the app pool with Integrated Pipeline enabled
+				var webSite = webObjectsSvc.GetWebSiteFromIIS(srvman, siteId);
+				//
+				if (webSite == null)
+					throw new ApplicationException(String.Format("Could not find a web site with the following identifier: {0}.", siteId));
+				//
+				var aphl = new WebAppPoolHelper(ProviderSettings);
+				// Fill ASP.NET settings
+				FillAspNetSettingsFromIISObject(srvman, webSite);
+				//
+				var currentPool = aphl.match_webapp_pool(webSite);
+				var dotNetVersion = aphl.dotNetVersion(currentPool.Mode);
+				var sisMode = aphl.isolation(currentPool.Mode);
+				// AT least ASP.NET 2.0 is allowed to provide such capabilities...
+				if (dotNetVersion == SiteAppPoolMode.dotNetFramework1)
+					dotNetVersion = SiteAppPoolMode.dotNetFramework2;
+				// and Integrated pipeline...
+				if (aphl.pipeline(currentPool.Mode) != SiteAppPoolMode.Integrated)
+				{
+					// Lookup for the opposite pool matching the criteria
+					var oppositePool = Array.Find<WebAppPool>(aphl.SupportedAppPools.ToArray(),
+						 x => aphl.dotNetVersion(x.Mode) == dotNetVersion && aphl.isolation(x.Mode) == sisMode
+							  && aphl.pipeline(x.Mode) == SiteAppPoolMode.Integrated);
+					//
+					webSite.AspNetInstalled = oppositePool.AspNetInstalled;
+					//
+					SetWebSiteApplicationPool(webSite, false);
+					//
 
-                    var iisSiteObject = srvman.Sites[siteId];
-                    iisSiteObject.Applications["/"].ApplicationPoolName = webSite.ApplicationPool;
-                    //
-                    srvman.CommitChanges();
-                }
-            }
+					var iisSiteObject = srvman.Sites[siteId];
+					iisSiteObject.Applications["/"].ApplicationPoolName = webSite.ApplicationPool;
+					//
+					srvman.CommitChanges();
+				}
+			}
 			#endregion
 
 			#region Disable automatically Integrated Windows Authentication
-            //
-            using (var srvman = webObjectsSvc.GetServerManager())
-            {
-                PropertyBag winAuthBag = winAuthSvc.GetAuthenticationSettings(srvman, siteId);
-                //
-                if ((bool)winAuthBag[AuthenticationGlobals.Enabled])
-                {
+			//
+			using (var srvman = webObjectsSvc.GetServerManager())
+			{
+				PropertyBag winAuthBag = winAuthSvc.GetAuthenticationSettings(srvman, siteId);
+				//
+				if ((bool)winAuthBag[AuthenticationGlobals.Enabled])
+				{
 
-                    Configuration config = srvman.GetApplicationHostConfiguration();
+					Configuration config = srvman.GetApplicationHostConfiguration();
 
-                    ConfigurationSection windowsAuthenticationSection = config.GetSection(
-                        "system.webServer/security/authentication/windowsAuthentication",
-                        siteId);
-                    //
-                    windowsAuthenticationSection["enabled"] = false;
-                    //
-                    srvman.CommitChanges();
-                }
-            }
+					ConfigurationSection windowsAuthenticationSection = config.GetSection(
+						 "system.webServer/security/authentication/windowsAuthentication",
+						 siteId);
+					//
+					windowsAuthenticationSection["enabled"] = false;
+					//
+					srvman.CommitChanges();
+				}
+			}
 			#endregion
 
 			//
@@ -2232,23 +2232,23 @@ namespace SolidCP.Providers.Web
 				{
 					if (String.Equals(moduleEntry["name"].ToString(), Constants.SolidCP_IISMODULES, StringComparison.InvariantCultureIgnoreCase))
 					{
-                        modulesCollection.Remove(moduleEntry);
-                        break;
+						modulesCollection.Remove(moduleEntry);
+						break;
 					}
 
 				}
 
-                foreach (ConfigurationElement moduleEntry in modulesCollection)
-                {
-                    if (String.Equals(moduleEntry["name"].ToString(), Constants.DOTNETPANEL_IISMODULES, StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        modulesCollection.Remove(moduleEntry);
-                        break;
-                    }
-                }
+				foreach (ConfigurationElement moduleEntry in modulesCollection)
+				{
+					if (String.Equals(moduleEntry["name"].ToString(), Constants.DOTNETPANEL_IISMODULES, StringComparison.InvariantCultureIgnoreCase))
+					{
+						modulesCollection.Remove(moduleEntry);
+						break;
+					}
+				}
 
-                srvman.CommitChanges();
-                
+				srvman.CommitChanges();
+
 			}
 		}
 
@@ -2256,72 +2256,72 @@ namespace SolidCP.Providers.Web
 
 		#region Helicon Ape
 
-        public override HeliconApeStatus GetHeliconApeStatus(string siteId)
-        {
-            using (ServerManager srvman = webObjectsSvc.GetServerManager())
-            {
-                return GetHeliconApeStatus(srvman, siteId);
-            }
-        }
+		public override HeliconApeStatus GetHeliconApeStatus(string siteId)
+		{
+			using (ServerManager srvman = webObjectsSvc.GetServerManager())
+			{
+				return GetHeliconApeStatus(srvman, siteId);
+			}
+		}
 
-        private HeliconApeStatus GetHeliconApeStatus(ServerManager srvman, string siteId)
-        {
-            string installDir = GetHeliconApeInstallDir(siteId);
-            string registrationInfo = GetRegistrationInfo(siteId, installDir);
+		private HeliconApeStatus GetHeliconApeStatus(ServerManager srvman, string siteId)
+		{
+			string installDir = GetHeliconApeInstallDir(siteId);
+			string registrationInfo = GetRegistrationInfo(siteId, installDir);
 
-            return new HeliconApeStatus
-            {
-                IsEnabled = IsHeliconApeEnabled(srvman, siteId),
-                InstallDir = installDir,
-                IsInstalled = IsHeliconApeInstalled(srvman, siteId, installDir),
-                Version = GetHeliconApeVersion(siteId, installDir),
-                IsRegistered = IsHeliconApeRegistered(siteId, registrationInfo),
-                RegistrationInfo = registrationInfo
-            };
-        }
+			return new HeliconApeStatus
+			{
+				IsEnabled = IsHeliconApeEnabled(srvman, siteId),
+				InstallDir = installDir,
+				IsInstalled = IsHeliconApeInstalled(srvman, siteId, installDir),
+				Version = GetHeliconApeVersion(siteId, installDir),
+				IsRegistered = IsHeliconApeRegistered(siteId, registrationInfo),
+				RegistrationInfo = registrationInfo
+			};
+		}
 
-        private bool IsHeliconApeEnabled(ServerManager srvman, string siteId)
-        {
-            if (!string.IsNullOrEmpty(siteId))
-            {
-                // Check the web site app pool in integrated pipeline mode
-                WebSite webSite = null;
-                webSite = webObjectsSvc.GetWebSiteFromIIS(srvman, siteId);
-                if (webSite == null)
-                    throw new ApplicationException(
-                        String.Format("Could not find a web site with the following identifier: {0}.", siteId));
+		private bool IsHeliconApeEnabled(ServerManager srvman, string siteId)
+		{
+			if (!string.IsNullOrEmpty(siteId))
+			{
+				// Check the web site app pool in integrated pipeline mode
+				WebSite webSite = null;
+				webSite = webObjectsSvc.GetWebSiteFromIIS(srvman, siteId);
+				if (webSite == null)
+					throw new ApplicationException(
+						 String.Format("Could not find a web site with the following identifier: {0}.", siteId));
 
-                // Fill ASP.NET settings
-                FillAspNetSettingsFromIISObject(srvman, webSite);
+				// Fill ASP.NET settings
+				FillAspNetSettingsFromIISObject(srvman, webSite);
 
-                var aphl = new WebAppPoolHelper(ProviderSettings);
-                var currentPool = aphl.match_webapp_pool(webSite);
+				var aphl = new WebAppPoolHelper(ProviderSettings);
+				var currentPool = aphl.match_webapp_pool(webSite);
 
-                if (aphl.pipeline(currentPool.Mode) != SiteAppPoolMode.Integrated)
-                {
-                    // Ape is not working in not Integrated pipeline mode
-                    return false;
-                }
-            }
+				if (aphl.pipeline(currentPool.Mode) != SiteAppPoolMode.Integrated)
+				{
+					// Ape is not working in not Integrated pipeline mode
+					return false;
+				}
+			}
 
 
-            var appConfig = srvman.GetApplicationHostConfiguration();
-            var modulesSection = appConfig.GetSection(Constants.ModulesSection, siteId);
-            var modulesCollection = modulesSection.GetCollection();
+			var appConfig = srvman.GetApplicationHostConfiguration();
+			var modulesSection = appConfig.GetSection(Constants.ModulesSection, siteId);
+			var modulesCollection = modulesSection.GetCollection();
 
-            foreach (var moduleEntry in modulesCollection)
-            {
-                if (
-                    String.Equals(moduleEntry["name"].ToString(), Constants.HeliconApeModule, StringComparison.InvariantCultureIgnoreCase)
-                    ||
-                    String.Equals(moduleEntry["name"].ToString(), Constants.HeliconApeModulePrevName, StringComparison.InvariantCultureIgnoreCase)
-                )
-                    return true;
-            }
-            //
-            return false;
+			foreach (var moduleEntry in modulesCollection)
+			{
+				if (
+					 String.Equals(moduleEntry["name"].ToString(), Constants.HeliconApeModule, StringComparison.InvariantCultureIgnoreCase)
+					 ||
+					 String.Equals(moduleEntry["name"].ToString(), Constants.HeliconApeModulePrevName, StringComparison.InvariantCultureIgnoreCase)
+				)
+					return true;
+			}
+			//
+			return false;
 
-        }
+		}
 
 		/// <summary>
 		/// Creates the specified account and grants it Web Publishing Access permissions
@@ -2353,11 +2353,11 @@ namespace SolidCP.Providers.Web
 
 		private void RemoveDelegationRulesRestrictions(string siteName, string accountName)
 		{
-            WebSite webSite = null;
-            using (ServerManager srvman = webObjectsSvc.GetServerManager())
-            {
-                webSite = webObjectsSvc.GetWebSiteFromIIS(srvman, siteName);
-            }
+			WebSite webSite = null;
+			using (ServerManager srvman = webObjectsSvc.GetServerManager())
+			{
+				webSite = webObjectsSvc.GetWebSiteFromIIS(srvman, siteName);
+			}
 			var moduleService = new DelegationRulesModuleService();
 			// Adjust web publishing permissions to the user accordingly to deny some rules for shared app pools
 
@@ -2377,11 +2377,11 @@ namespace SolidCP.Providers.Web
 
 		public void EnforceDelegationRulesRestrictions(string siteName, string accountName)
 		{
-            WebSite webSite = null;
-            using (ServerManager srvman = webObjectsSvc.GetServerManager())
-            {
-                webSite = webObjectsSvc.GetWebSiteFromIIS(srvman, siteName);
-            }
+			WebSite webSite = null;
+			using (ServerManager srvman = webObjectsSvc.GetServerManager())
+			{
+				webSite = webObjectsSvc.GetWebSiteFromIIS(srvman, siteName);
+			}
 
 			var moduleService = new DelegationRulesModuleService();
 			// Adjust web publishing permissions to the user accordingly to deny some rules for shared app pools
@@ -2403,1030 +2403,1030 @@ namespace SolidCP.Providers.Web
 				moduleService.AllowRuleToUser("appPoolPipeline,appPoolNetFx", "{userScope}", fqUsername);
 			}
 		}
-        
-        private string GetHeliconApeInstallDir(string siteId)
-        {
-            //Check global registration
-            string installDir = Registry.GetValue(Constants.heliconApeRegistryPathWow6432, "InstallDir", string.Empty) as string;
-            if (string.Empty == installDir)
-            {
-                installDir = Registry.GetValue(Constants.HeliconApeRegistryPath, "InstallDir", string.Empty) as string;
-            }
-
-            return installDir;
-        }
-
-        private bool IsHeliconApeInstalled(ServerManager srvman, string siteId, string installDir)
-        {
-            //Check global registration
-            bool result =  !string.IsNullOrEmpty(installDir);
-
-            if (!result && !string.IsNullOrEmpty(siteId))
-            {
-                //Check per-site installation
-                string sitepath = GetSiteContentPath(srvman, siteId);
-                string dllPath = Path.Combine(sitepath, "Bin\\Helicon.Ape.dll");
-
-                result = File.Exists(dllPath);
-
-            }
-            return result;
-        }
-
-	    private static string HELICON_APE_NOT_REGISTERED = "Not registered";
-
-        private string GetHeliconApeVersion(string siteId, string installDir)
-        {
-            if (string.IsNullOrEmpty(installDir))
-                return HELICON_APE_NOT_REGISTERED;
-
-            string apeModulePath = Path.Combine(installDir, "bin\\Helicon.Ape.dll");
-            if (File.Exists(apeModulePath))
-            {
-                return System.Diagnostics.FileVersionInfo.GetVersionInfo(apeModulePath).FileVersion;
-            }
-
-            apeModulePath = Path.Combine(installDir, "ManualInstall\\bin\\Helicon.Ape.dll");
-            if (File.Exists(apeModulePath))
-            {
-                return System.Diagnostics.FileVersionInfo.GetVersionInfo(apeModulePath).FileVersion;
-            }
-
-            apeModulePath = Path.Combine(installDir, "Helicon.Ape.dll");
-            if (File.Exists(apeModulePath))
-            {
-                return System.Diagnostics.FileVersionInfo.GetVersionInfo(apeModulePath).FileVersion;
-            }
-
-
-            return HELICON_APE_NOT_REGISTERED;
-        }
-
-        private string GetHeliconApeModuleType(string siteId)
-        {
-            string installDir = GetHeliconApeInstallDir(siteId);
-            string version = GetHeliconApeVersion(siteId, installDir);
-            
-            if (version.Equals(HELICON_APE_NOT_REGISTERED))
-            {
-                // Ape installed for site
-                return "Helicon.Ape.ApeModule";
-            }
-            else
-            {
-                // Ape installed globally in GAC
-                // return full type with version
-                return
-                    string.Format(
-                        "Helicon.Ape.ApeModule, Helicon.Ape, Version={0}, Culture=neutral, PublicKeyToken=95bfbfd1a38437eb",
-                        version);
-            }
-        }
-
-        private string GetHeliconApeHandlerType(string siteId)
-        {
-            string installDir = GetHeliconApeInstallDir(siteId);
-            string version = GetHeliconApeVersion(siteId, installDir);
-            
-            if (version.Equals(HELICON_APE_NOT_REGISTERED))
-            {
-                // Ape installed for site
-                return "Helicon.Ape.Handler";
-            }
-            else
-            {
-                // Ape installed globally in GAC
-                // return full type with version
-                return
-                    string.Format(
-                        "Helicon.Ape.Handler, Helicon.Ape, Version={0}, Culture=neutral, PublicKeyToken=95bfbfd1a38437eb",
-                        version);
-            }
-        }
-
-        private string FindregistrationInfo(string path)
-        {
-            System.Text.RegularExpressions.Regex reRegistrationName = new System.Text.RegularExpressions.Regex("^\\s*RegistrationName\\s*=\\s*([^#=]+)\\s*(?:#.*)?", System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.CultureInvariant | System.Text.RegularExpressions.RegexOptions.Compiled);
 
-            string registrationName = "";
+		private string GetHeliconApeInstallDir(string siteId)
+		{
+			//Check global registration
+			string installDir = Registry.GetValue(Constants.heliconApeRegistryPathWow6432, "InstallDir", string.Empty) as string;
+			if (string.Empty == installDir)
+			{
+				installDir = Registry.GetValue(Constants.HeliconApeRegistryPath, "InstallDir", string.Empty) as string;
+			}
+
+			return installDir;
+		}
+
+		private bool IsHeliconApeInstalled(ServerManager srvman, string siteId, string installDir)
+		{
+			//Check global registration
+			bool result = !string.IsNullOrEmpty(installDir);
+
+			if (!result && !string.IsNullOrEmpty(siteId))
+			{
+				//Check per-site installation
+				string sitepath = GetSiteContentPath(srvman, siteId);
+				string dllPath = Path.Combine(sitepath, "Bin\\Helicon.Ape.dll");
+
+				result = File.Exists(dllPath);
+
+			}
+			return result;
+		}
+
+		private static string HELICON_APE_NOT_REGISTERED = "Not registered";
+
+		private string GetHeliconApeVersion(string siteId, string installDir)
+		{
+			if (string.IsNullOrEmpty(installDir))
+				return HELICON_APE_NOT_REGISTERED;
+
+			string apeModulePath = Path.Combine(installDir, "bin\\Helicon.Ape.dll");
+			if (File.Exists(apeModulePath))
+			{
+				return System.Diagnostics.FileVersionInfo.GetVersionInfo(apeModulePath).FileVersion;
+			}
+
+			apeModulePath = Path.Combine(installDir, "ManualInstall\\bin\\Helicon.Ape.dll");
+			if (File.Exists(apeModulePath))
+			{
+				return System.Diagnostics.FileVersionInfo.GetVersionInfo(apeModulePath).FileVersion;
+			}
+
+			apeModulePath = Path.Combine(installDir, "Helicon.Ape.dll");
+			if (File.Exists(apeModulePath))
+			{
+				return System.Diagnostics.FileVersionInfo.GetVersionInfo(apeModulePath).FileVersion;
+			}
+
+
+			return HELICON_APE_NOT_REGISTERED;
+		}
+
+		private string GetHeliconApeModuleType(string siteId)
+		{
+			string installDir = GetHeliconApeInstallDir(siteId);
+			string version = GetHeliconApeVersion(siteId, installDir);
+
+			if (version.Equals(HELICON_APE_NOT_REGISTERED))
+			{
+				// Ape installed for site
+				return "Helicon.Ape.ApeModule";
+			}
+			else
+			{
+				// Ape installed globally in GAC
+				// return full type with version
+				return
+					 string.Format(
+						  "Helicon.Ape.ApeModule, Helicon.Ape, Version={0}, Culture=neutral, PublicKeyToken=95bfbfd1a38437eb",
+						  version);
+			}
+		}
+
+		private string GetHeliconApeHandlerType(string siteId)
+		{
+			string installDir = GetHeliconApeInstallDir(siteId);
+			string version = GetHeliconApeVersion(siteId, installDir);
+
+			if (version.Equals(HELICON_APE_NOT_REGISTERED))
+			{
+				// Ape installed for site
+				return "Helicon.Ape.Handler";
+			}
+			else
+			{
+				// Ape installed globally in GAC
+				// return full type with version
+				return
+					 string.Format(
+						  "Helicon.Ape.Handler, Helicon.Ape, Version={0}, Culture=neutral, PublicKeyToken=95bfbfd1a38437eb",
+						  version);
+			}
+		}
+
+		private string FindregistrationInfo(string path)
+		{
+			System.Text.RegularExpressions.Regex reRegistrationName = new System.Text.RegularExpressions.Regex("^\\s*RegistrationName\\s*=\\s*([^#=]+)\\s*(?:#.*)?", System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.CultureInvariant | System.Text.RegularExpressions.RegexOptions.Compiled);
 
+			string registrationName = "";
 
-            using (StreamReader sr = File.OpenText(path))
-            {
-                while (sr.Peek() >= 0)
-                {
-                    string line = sr.ReadLine();
-                    if (reRegistrationName.Match(line).Success)
-                    {
-                        registrationName = reRegistrationName.Match(line).Groups[1].Value;
 
-                        if (
-                            !string.IsNullOrEmpty(registrationName)
-                            )
-                        {
-                            return string.Format("Registered to: {0}", registrationName);
-                        }
+			using (StreamReader sr = File.OpenText(path))
+			{
+				while (sr.Peek() >= 0)
+				{
+					string line = sr.ReadLine();
+					if (reRegistrationName.Match(line).Success)
+					{
+						registrationName = reRegistrationName.Match(line).Groups[1].Value;
 
+						if (
+							 !string.IsNullOrEmpty(registrationName)
+							 )
+						{
+							return string.Format("Registered to: {0}", registrationName);
+						}
 
 
-                        break;
-                    }
-                }
-            }
 
+						break;
+					}
+				}
+			}
 
 
-            //Not found
-            return string.Empty;
 
+			//Not found
+			return string.Empty;
 
-        }
 
-        private string GetRegistrationInfo(string siteId, string installDir)
-        {
-            if (string.IsNullOrEmpty(installDir))
-                return string.Empty;
+		}
 
-            
-
-            string registrationInfo = FindregistrationInfo(Path.Combine(installDir, "licenses.conf"));
-            if (!string.IsNullOrEmpty(registrationInfo))
-                return registrationInfo;
-
-
-
-            registrationInfo = FindregistrationInfo(Path.Combine(installDir, "httpd.conf"));
-            if (!string.IsNullOrEmpty(registrationInfo))
-                return registrationInfo;
-
-            string apeRegistryPath = Constants.HeliconApeRegistryPath;
-            long dtFirstRunBinary = 0L;
-
-            try
-            {
-                dtFirstRunBinary = (long) Registry.GetValue(apeRegistryPath, "FirstRun", 0L);
-            }
-            catch(NullReferenceException)
-            {
-                // nothing
-            }
-
-            if (0 == dtFirstRunBinary)
-            {
-                apeRegistryPath = Constants.heliconApeRegistryPathWow6432;
-                try
-                {
-                    dtFirstRunBinary = (long) Registry.GetValue(apeRegistryPath, "FirstRun", 0L);
-                }
-                catch(NullReferenceException)
-                {
-                    // nothing
-                }
-            }
-
-            DateTime dtFirstRun;
-            if (0 == dtFirstRunBinary)
-            {
-                dtFirstRun = DateTime.Now;
-                Registry.SetValue(apeRegistryPath, "FirstRun", dtFirstRun.ToBinary(),RegistryValueKind.QWord );
-            }
-            else
-            {
-                dtFirstRun = DateTime.FromBinary(dtFirstRunBinary);
-            }
-
-            int trialDays = 45 - (DateTime.Now - dtFirstRun).Days;
-            if (trialDays < 0)
-                trialDays = 0;
-
-
-            return string.Format("Trial days left: {0}", trialDays);
-
-
-        }
-
-        private bool IsHeliconApeRegistered(string siteId, string registrationInfo)
-        {
-            if (string.IsNullOrEmpty(registrationInfo))
-                return false;
-
-
-            return registrationInfo.StartsWith("Registered to:");
-        }
-
-        /// <summary>
-        /// Enables Helicon Ape module & handler on the web site or server globally.
-        /// </summary>
-        /// <param name="siteId">
-        /// Web site id or empty string ("") for server-wide enabling
-        /// </param>
-        public override void EnableHeliconApe(string siteId)
-        {
-            if (null == siteId)
-            {
-                throw new ArgumentNullException("siteId");
-            }
-
-            if ("" != siteId)
-            {
-                // prepare enabling Ape for web site
-
-                WebSite webSite = null;
-                using (ServerManager srvman = webObjectsSvc.GetServerManager())
-                {
-                    // Helicon.Ape.ApeModule works for apps working in Integrated Pipeline mode
-                    // Switch automatically to the app pool with Integrated Pipeline enabled
-                    webSite = webObjectsSvc.GetWebSiteFromIIS(srvman, siteId);
-                    if (webSite == null)
-                        throw new ApplicationException(
-                            String.Format("Could not find a web site with the following identifier: {0}.", siteId));
-
-                    // Fill ASP.NET settings
-                    FillAspNetSettingsFromIISObject(srvman, webSite);
-                }
-
-                //
-                var aphl = new WebAppPoolHelper(ProviderSettings);
-                var currentPool = aphl.match_webapp_pool(webSite);
-                var dotNetVersion = aphl.dotNetVersion(currentPool.Mode);
-                var sisMode = aphl.isolation(currentPool.Mode);
-                // AT least ASP.NET 2.0 is allowed to provide such capabilities...
-                if (dotNetVersion == SiteAppPoolMode.dotNetFramework1)
-                    dotNetVersion = SiteAppPoolMode.dotNetFramework2;
-                // and Integrated pipeline...
-                if (aphl.pipeline(currentPool.Mode) != SiteAppPoolMode.Integrated)
-                {
-                    // Lookup for the opposite pool matching the criteria
-                    var oppositePool = Array.Find<WebAppPool>(aphl.SupportedAppPools.ToArray(),
-                                                              x =>
-                                                              aphl.dotNetVersion(x.Mode) == dotNetVersion &&
-                                                              aphl.isolation(x.Mode) == sisMode
-                                                              && aphl.pipeline(x.Mode) == SiteAppPoolMode.Integrated);
-                    //
-                    webSite.AspNetInstalled = oppositePool.AspNetInstalled;
-                    //
-                    SetWebSiteApplicationPool(webSite, false);
-                    //
-                    using (var srvman = webObjectsSvc.GetServerManager())
-                    {
-                        var iisSiteObject = srvman.Sites[siteId];
-                        iisSiteObject.Applications["/"].ApplicationPoolName = webSite.ApplicationPool;
-                        //
-                        srvman.CommitChanges();
-                    }
-                }
-
-                #region Disable automatically Integrated Windows Authentication
-
-                using (var srvman = webObjectsSvc.GetServerManager())
-                {
-                    PropertyBag winAuthBag = winAuthSvc.GetAuthenticationSettings(srvman, siteId);
-                    //
-                    if ((bool) winAuthBag[AuthenticationGlobals.Enabled])
-                    {
-                        Configuration config = srvman.GetApplicationHostConfiguration();
-
-                        ConfigurationSection windowsAuthenticationSection = config.GetSection(
-                            "system.webServer/security/authentication/windowsAuthentication",
-                            siteId);
-                        //
-                        windowsAuthenticationSection["enabled"] = false;
-                        //
-                        srvman.CommitChanges();
-                    }
-                }
-
-                #endregion
-
-                #region Disable automatically Secured Folders
-
-                if (IsSecuredFoldersInstalled(siteId))
-                {
-                    UninstallSecuredFolders(siteId);
-                }
-
-                #endregion
-            }
-
-            using (var srvman = webObjectsSvc.GetServerManager())
-            {
-                if (!IsHeliconApeEnabled(srvman, siteId))
-                {
-
-                    Configuration appConfig = srvman.GetApplicationHostConfiguration();
-
-                    // add Helicon.Ape module
-                    ConfigurationSection modulesSection = appConfig.GetSection(Constants.ModulesSection, siteId);
-                    ConfigurationElementCollection modulesCollection = modulesSection.GetCollection();
-
-                    // <add name="Helicon.Ape" />
-                    ConfigurationElement heliconApeModuleEntry = modulesCollection.CreateElement("add");
-                    heliconApeModuleEntry["name"] = Constants.HeliconApeModule;
-                    heliconApeModuleEntry["type"] = GetHeliconApeModuleType(siteId);
-
-                    // this way make <clear/> and copy all modules list from ancestor
-                    //modulesCollection.AddAt(0, heliconApeModuleEntry);
-                    // this way just insert single ape module entry
-                    modulesCollection.Add(heliconApeModuleEntry);
-
-
-
-
-                    // add Helicon.Ape handler
-                    ConfigurationSection handlersSection = appConfig.GetSection(Constants.HandlersSection, siteId);
-                    ConfigurationElementCollection handlersCollection = handlersSection.GetCollection();
-
-                    // <add name="Helicon.Ape" />
-                    ConfigurationElement heliconApeHandlerEntry = handlersCollection.CreateElement("add");
-                    heliconApeHandlerEntry["name"] = Constants.HeliconApeHandler;
-                    heliconApeHandlerEntry["type"] = GetHeliconApeHandlerType(siteId);
-                    heliconApeHandlerEntry["path"] = Constants.HeliconApeHandlerPath;
-                    heliconApeHandlerEntry["verb"] = "*";
-                    heliconApeHandlerEntry["resourceType"] = "Unspecified";
-
-                    handlersCollection.AddAt(0, heliconApeHandlerEntry);
-
-                    srvman.CommitChanges();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Disables Helicon Ape module & handler on the web site or server globally.
-        /// </summary>
-        /// <param name="siteId">
-        /// Web site id or empty string ("") for server-wide disabling
-        /// </param>
-        public override void DisableHeliconApe(string siteId)
-        {
-            if (null == siteId)
-                throw new ArgumentNullException("siteId");
-
-            using (var srvman = webObjectsSvc.GetServerManager())
-            {
-                bool alterConfiguration = false;
-                //
-                Configuration appConfig = srvman.GetApplicationHostConfiguration();
-
-
-
-                
-                // remove Helicon.Ape module
-                ConfigurationSection modulesSection = appConfig.GetSection(Constants.ModulesSection, siteId);
-                ConfigurationElementCollection modulesCollection = modulesSection.GetCollection();
-                //List<ConfigurationElement> heliconApeModuleEntriesList = new List<ConfigurationElement>();
-                //foreach (ConfigurationElement moduleEntry in modulesCollection)
-                //{
-                //    if (
-                //        String.Equals(moduleEntry["name"].ToString(), Constants.HeliconApeModule, StringComparison.InvariantCultureIgnoreCase)
-                //        ||
-                //        String.Equals(moduleEntry["name"].ToString(), Constants.HeliconApeModulePrevName, StringComparison.InvariantCultureIgnoreCase)
-                //    )
-                //    {
-                //        heliconApeModuleEntriesList.Add(moduleEntry);
-                //    }
-                //}
-                //foreach (ConfigurationElement heliconApeElement in heliconApeModuleEntriesList)
-                //{
-                //    modulesCollection.Remove(heliconApeElement);
-                //}
-
-                for (int i = 0; i < modulesCollection.Count; )
-                {
-                    ConfigurationElement moduleEntry = modulesCollection[i];
-
-                    string type = moduleEntry["type"].ToString();
-
-                    if (type.IndexOf(Constants.HeliconApeModuleType, StringComparison.Ordinal) >= 0)
-                    {
-                        modulesCollection.RemoveAt(i);
-                        alterConfiguration = true;
-                    }
-                    else
-                    {
-                        ++i;
-                    }
-
-                }
-
-                // remove Helicon.Ape handler
-                ConfigurationSection handlersSection = appConfig.GetSection(Constants.HandlersSection, siteId);
-                ConfigurationElementCollection handlersCollection = handlersSection.GetCollection();
-                //List<ConfigurationElement> heliconApeHandlerEntriesList = new List<ConfigurationElement>();
-                //foreach (ConfigurationElement handlerEntry in handlersCollection)
-                //{
-                //    if (
-                //        String.Equals(handlerEntry["name"].ToString(), Constants.HeliconApeModule, StringComparison.InvariantCultureIgnoreCase)
-                //        ||
-                //        String.Equals(handlerEntry["name"].ToString(), Constants.HeliconApeModulePrevName, StringComparison.InvariantCultureIgnoreCase)
-                //        ||
-                //        String.Equals(handlerEntry["name"].ToString(), Constants.HeliconApeHandler, StringComparison.InvariantCultureIgnoreCase)
-                //    )
-                //    {
-                //        heliconApeHandlerEntriesList.Add(handlerEntry);
-                //    }
-                //}
-                ////
-                //foreach (ConfigurationElement heliconApeHandlerEntry in heliconApeHandlerEntriesList)
-                //{
-                //    handlersCollection.Remove(heliconApeHandlerEntry);
-                //}
-
-                //// commit changes to metabase
-                //if (heliconApeModuleEntriesList.Count > 0 || heliconApeHandlerEntriesList.Count > 0)
-                //{
-                //    srvman.CommitChanges();
-                //}
-
-                for (int i = 0; i < handlersCollection.Count; )
-                {
-
-                    string type = handlersCollection[i]["type"].ToString();
-
-                    if (type.IndexOf(Constants.HeliconApeHandlerType, StringComparison.Ordinal) >= 0)
-                    {
-                        handlersCollection.RemoveAt(i);
-                        alterConfiguration = true;
-                    }
-                    else
-                    {
-                        ++i;
-                    }
-
-                }
-
-                if (alterConfiguration)
-                {
-                    srvman.CommitChanges();    
-                }
-                
-
-            }
-        }
-
-        public override List<HtaccessFolder> GetHeliconApeFolders(string siteId)
-        {
-            string siteRootPath = GetSiteContentPath(siteId);
-            List<HtaccessFolder> folders = new List<HtaccessFolder>();
-
-            // walk through the virtual directories
-            WebAppVirtualDirectory[] virtualDirectories = GetAppVirtualDirectories(siteId);
-            foreach (WebAppVirtualDirectory webAppVirtualDirectory in virtualDirectories)
-            {
-                HtaccessFolder.GetDirectoriesWithHtaccess(siteRootPath, "\\" + webAppVirtualDirectory.FullQualifiedPath, webAppVirtualDirectory.ContentPath, webAppVirtualDirectory.ContentPath, folders);
-            }
-
-            // walk through the filesystem
-            HtaccessFolder.GetDirectoriesWithHtaccess(siteRootPath, "", siteRootPath, siteRootPath, folders);
-
-            folders.Sort();
-
-            return folders;
-        }
-
-        public override HtaccessFolder GetHeliconApeFolder(string siteId, string folderPath)
-        {
-            // search folder
-            List<HtaccessFolder> htaccessFolders = GetHeliconApeFolders(siteId);
-
-            foreach (HtaccessFolder htaccessFolder in htaccessFolders)
-            {
-                if (string.Equals(folderPath, htaccessFolder.Path, StringComparison.OrdinalIgnoreCase))
-                {
-                    htaccessFolder.ReadHtaccess();
-                    return htaccessFolder;
-                }
-            }
-
-            // create new htaccess folder
-            return HtaccessFolder.CreateHtaccessFolder(GetSiteContentPath(siteId), folderPath);
-        }
-
-        public override HtaccessFolder GetHeliconApeHttpdFolder()
-        {
-            return HtaccessFolder.CreateHttpdConfFolder(GetHeliconApeInstallDir("-1"));
-        }
-
-        public override void UpdateHeliconApeFolder(string siteId, HtaccessFolder folder)
-        {
-            if (null != folder)
-            {
-                if (string.IsNullOrEmpty(folder.ContentPath))
-                {
-                    HtaccessFolder newFolder = GetHeliconApeFolder(siteId, folder.Path);
-                    newFolder.HtaccessContent = folder.HtaccessContent;
-                    newFolder.Update();
-                }
-                else
-                {
-                    if (string.IsNullOrEmpty(folder.SiteRootPath))
-                    {
-                        folder.SiteRootPath = GetSiteContentPath(siteId);
-                    }
-                    folder.Update();
-                }
-            }
-        }
-
-        public override void UpdateHeliconApeHttpdFolder(HtaccessFolder folder)
-        {
-            if (null != folder)
-            {
-                HtaccessFolder newFolder = GetHeliconApeHttpdFolder();
-                newFolder.HtaccessContent = folder.HtaccessContent;
-                newFolder.Update();
-            }
-        }
-
-        public override void DeleteHeliconApeFolder(string siteId, string folderPath)
-        {
-            string rootPath = GetSiteContentPath(siteId);
-            string contentPath = Path.Combine(rootPath, folderPath);
-            string htaccessPath = Path.Combine(contentPath, HtaccessFolder.HTACCESS_FILE);
-
-            if (File.Exists(htaccessPath))
-            {
-                File.Delete(htaccessPath);
-            }
-
-            return;
-        }
-
-        #endregion
-
-        #region Helicon Zoo
-
-        public override WebAppVirtualDirectory[] GetZooApplications(string siteId)
-        {
-            using (ServerManager srvman = webObjectsSvc.GetServerManager())
-            {
-                return webObjectsSvc.GetZooApplications(srvman, siteId);
-            }
-        }
-
-        public override StringResultObject SetZooEnvironmentVariable(string siteId, string appName, string envName, string envValue)
-        {
-            StringResultObject result = new StringResultObject();
-
-            try
-            {
-                using (ServerManager srvman = webObjectsSvc.GetServerManager())
-                {
-                    webObjectsSvc.SetZooEnvironmentVariable(srvman, siteId, appName, envName, envValue);
-                }
-                
-                result.IsSuccess = true;
-            }
-            catch (Exception e)
-            {
-                result.AddError("Exception", e);
-            }
-
-            return result;
-        }
-
-
-        public override StringResultObject SetZooConsoleEnabled(string siteId, string appName)
-        {
-            StringResultObject result = new StringResultObject();
-
-            try
-            {
-                using (ServerManager srvman = webObjectsSvc.GetServerManager())
-                {
-                    webObjectsSvc.SetZooConsoleEnabled(srvman, siteId, appName);
-                }
-
-                result.IsSuccess = true;
-            }
-            catch (Exception e)
-            {
-                result.AddError("Exception", e);
-            }
-
-            return result;
-        }
-
-        public override StringResultObject SetZooConsoleDisabled(string siteId, string appName)
-        {
-            StringResultObject result = new StringResultObject();
-
-            try
-            {
-                using (ServerManager srvman = webObjectsSvc.GetServerManager())
-                {
-                    webObjectsSvc.SetZooConsoleDisabled(srvman, siteId, appName);
-                }
-
-                result.IsSuccess = true;
-            }
-            catch (Exception e)
-            {
-                result.AddError("Exception", e);
-            }
-
-            return result;
-        }
-
-
-        
-
-        #endregion
-
-        #region Secured Helicon Ape Users
-
-        public static string GeneratePasswordHash(HtaccessUser user)
-	    {
-	        if (HtaccessFolder.AUTH_TYPE_BASIC == user.AuthType)
-	        {
-
-	            // BASIC
-	            switch (user.EncType)
-	            {
-	                case HtaccessUser.ENCODING_TYPE_APACHE_MD5:
-	                    return PasswdHelper.MD5Encode(user.Password, PasswdHelper.GetRandomSalt());
-	                case HtaccessUser.ENCODING_TYPE_SHA1:
-	                    return PasswdHelper.SHA1Encode(user.Password);
-	                case HtaccessUser.ENCODING_TYPE_UNIX_CRYPT:
-	                default:
-	                    BsdDES bsdDes = new BsdDES();
-	                    return  bsdDes.Crypt(user.Password);
-	            }
-	        }
-
-	        // DIGEST
-	        return string.Format("{0}:{1}", user.Realm, PasswdHelper.DigestEncode(user.Name, user.Password, user.Realm));
-	    }
-
-        public override List<HtaccessUser> GetHeliconApeUsers(string siteId)
-        {
-            string rootPath = GetSiteContentPath(siteId);
-            List<HtaccessUser> users = new List<HtaccessUser>();
-
-            //users.Add(new WebUser {Name = HtaccessFolder.VALID_USER});
-
-            // load users file
-            string usersPath = Path.Combine(rootPath, HtaccessFolder.HTPASSWDS_FILE);
-            List<string> lines = HtaccessFolder.ReadLinesFile(usersPath);
-
-            // iterate through all lines
-            for (int i = 0; i < lines.Count; i++)
-            {
-                string line = lines[i];
-
-                int colonIdx = line.IndexOf(":");
-                if (colonIdx != -1)
-                {
-                    string username = line.Substring(0, colonIdx);
-
-                    // add it to the return collection
-                    users.Add(GetHeliconApeUser(siteId, username));
-                }
-            }
-
-            return users;
-        }
-
-        public override HtaccessUser GetHeliconApeUser(string siteId, string userName)
-        {
-            // load users file
-            string rootPath = GetSiteContentPath(siteId);
-            string usersPath = Path.Combine(rootPath, HtaccessFolder.HTPASSWDS_FILE);
-            List<string> lines = HtaccessFolder.ReadLinesFile(usersPath);
-
-            // iterate through all lines
-            HtaccessUser user = null;
-            for (int i = 0; i < lines.Count; i++)
-            {
-                string line = lines[i];
-
-                int colonIdx = line.IndexOf(":");
-                if (colonIdx != -1)
-                {
-                    string username = line.Substring(0, colonIdx);
-                    string password = line.Substring(colonIdx + 1);
-                    if (String.Compare(username, userName, true) == 0)
-                    {
-                        // exists
-                        user = new HtaccessUser();
-                        user.Name = username;
-                        user.Password = password;
-                        break;
-                    }
-                }
-            }
-
-            if (user == null)
-                return null; // user doesn't exist
-
-            List<string> userGroups = new List<string>();
-
-            // read groups information
-            // open groups file
-            string groupsPath = Path.Combine(rootPath, HtaccessFolder.HTGROUPS_FILE);
-            List<string> groupLines = HtaccessFolder.ReadLinesFile(groupsPath);
-
-            for (int i = 0; i < groupLines.Count; i++)
-            {
-                string groupLine = groupLines[i];
-                int colonIdx = groupLine.IndexOf(":");
-                if (colonIdx != -1)
-                {
-                    string groupName = groupLine.Substring(0, colonIdx);
-                    string[] groupMembers = groupLine.Substring(colonIdx + 1).Split(' ');
-
-                    // check group members
-                    for (int j = 0; j < groupMembers.Length; j++)
-                    {
-                        if (String.Compare(groupMembers[j], user.Name, true) == 0)
-                        {
-                            userGroups.Add(groupName);
-                            break;
-                        }
-                    }
-                }
-            } // end iterating groups
-            user.Groups = userGroups.ToArray();
-
-            return user;
-        }
-
-        public override void UpdateHeliconApeUser(string siteId, HtaccessUser user)
-        {
-            UpdateHeliconApeUser(siteId, user, false);
-        }
-
-        private void UpdateHeliconApeUser(string siteId, HtaccessUser user, bool deleteUser)
-        {
-            if (HtaccessFolder.VALID_USER == user.Name)
-                return;
-
-            string rootPath = GetSiteContentPath(siteId);
-            string usersPath = Path.Combine(rootPath, HtaccessFolder.HTPASSWDS_FILE);
-
-            // load users file
-            List<string> lines = HtaccessFolder.ReadLinesFile(usersPath);
-
-            // check if the user already exists
-            List<string> updatedLines = new List<string>();
-            bool exists = false;
-            for (int i = 0; i < lines.Count; i++)
-            {
-                string line = lines[i];
-                string updatedLine = line;
-
-                int colonIdx = line.IndexOf(":");
-                if (colonIdx != -1)
-                {
-                    string username = line.Substring(0, colonIdx);
-                    string password = line.Substring(colonIdx + 1);
-                    if (String.Compare(username, user.Name, true) == 0)
-                    {
-                        // already exists
-                        exists = true;
-
-                        // check if we need to delete this user
-                        if (deleteUser)
-                            continue;
-
-                        // change password if required
-                        if (!String.IsNullOrEmpty(user.Password))
-                        {
-                            // hash password
-                            password = GeneratePasswordHash(user);
-
-                            // update line
-                            updatedLine = username + ":" + password;
-                        }
-                    }
-                }
-
-                updatedLines.Add(updatedLine);
-            }
-
-            if (!exists && !deleteUser)
-            {
-                // new user has been added
-                updatedLines.Add(user.Name + ":" + GeneratePasswordHash(user));
-            }
-
-            // save users file
-            HtaccessFolder.WriteLinesFile(usersPath, updatedLines);
-
-            if (user.Groups == null)
-                user.Groups = new string[] { };
-
-            // update groups
-            // open groups file
-            string groupsPath = Path.Combine(rootPath, HtaccessFolder.HTGROUPS_FILE);
-            List<string> groupLines = HtaccessFolder.ReadLinesFile(groupsPath);
-
-            for (int i = 0; i < groupLines.Count; i++)
-            {
-                string groupLine = groupLines[i];
-                int colonIdx = groupLine.IndexOf(":");
-                if (colonIdx != -1)
-                {
-                    string groupName = groupLine.Substring(0, colonIdx);
-                    string[] groupMembers = groupLine.Substring(colonIdx + 1).Split(' ');
-
-                    // check if user is assigned to this group
-                    bool assigned = false;
-                    for (int j = 0; j < user.Groups.Length; j++)
-                    {
-                        if (String.Compare(user.Groups[j], groupName, true) == 0)
-                        {
-                            assigned = true;
-                            break;
-                        }
-                    }
-
-                    // remove current user
-                    List<string> updatedMembers = new List<string>();
-                    for (int j = 0; j < groupMembers.Length; j++)
-                    {
-                        // user exists in the members
-                        // check if he should be really added to this group
-                        if (String.Compare(groupMembers[j], user.Name, true) == 0)
-                            continue;
-
-                        updatedMembers.Add(groupMembers[j]);
-                    }
-
-                    if (assigned)
-                        updatedMembers.Add(user.Name);
-
-                    // modify group line
-                    groupLines[i] = groupName + ":" + String.Join(" ", updatedMembers.ToArray());
-                }
-            } // end iterating groups
-
-            // save group file
-            HtaccessFolder.WriteLinesFile(groupsPath, groupLines);
-        }
-
-        public override void DeleteHeliconApeUser(string siteId, string userName)
-        {
-            string rootPath = GetSiteContentPath(siteId);
-            HtaccessUser user = new HtaccessUser();
-            user.Name = userName;
-
-            // update users and groups
-            UpdateHeliconApeUser(siteId, user, true);
-
-            // update foleds
-            //DeleteNonexistentUsersAndGroups(rootPath);
-        }
-        #endregion
-
-        #region Secured Helicon Ape Groups
-        public override List<WebGroup> GetHeliconApeGroups(string siteId)
-        {
-            string rootPath = GetSiteContentPath(siteId);
-            List<WebGroup> groups = new List<WebGroup>();
-
-            // open groups file
-            string groupsPath = Path.Combine(rootPath, HtaccessFolder.HTGROUPS_FILE);
-            List<string> groupLines = HtaccessFolder.ReadLinesFile(groupsPath);
-
-            for (int i = 0; i < groupLines.Count; i++)
-            {
-                string groupLine = groupLines[i];
-                int colonIdx = groupLine.IndexOf(":");
-                if (colonIdx != -1)
-                {
-                    string name = groupLine.Substring(0, colonIdx);
-
-                    // add group to the collection
-                    groups.Add(GetHeliconApeGroup(siteId, name));
-                }
-            } // end iterating groups
-
-            return groups;
-        }
-
-        public override WebGroup GetHeliconApeGroup(string siteId, string groupName)
-        {
-            string rootPath = GetSiteContentPath(siteId);
-            // open groups file
-            string groupsPath = Path.Combine(rootPath, HtaccessFolder.HTGROUPS_FILE);
-            List<string> groupLines = HtaccessFolder.ReadLinesFile(groupsPath);
-
-            WebGroup group = null;
-            for (int i = 0; i < groupLines.Count; i++)
-            {
-                string groupLine = groupLines[i];
-                int colonIdx = groupLine.IndexOf(":");
-                if (colonIdx != -1)
-                {
-                    string name = groupLine.Substring(0, colonIdx);
-                    string[] members = groupLine.Substring(colonIdx + 1).Split(' ');
-
-                    if (String.Compare(groupName, name, true) == 0)
-                    {
-                        group = new WebGroup();
-                        group.Name = groupName;
-                        group.Users = members;
-                    }
-                }
-            } // end iterating groups
-
-            return group;
-        }
-
-        public override void UpdateHeliconApeGroup(string siteId, WebGroup group)
-        {
-            UpdateHeliconApeGroup(siteId, group, false);
-        }
-
-        private void UpdateHeliconApeGroup(string siteId, WebGroup group, bool deleteGroup)
-        {
-            string rootPath = GetSiteContentPath(siteId);
-
-            if (group.Users == null)
-                group.Users = new string[] { };
-
-            List<string> updatedGroups = new List<string>();
-
-            // open groups file
-            string groupsPath = Path.Combine(rootPath, HtaccessFolder.HTGROUPS_FILE);
-            List<string> groupLines = HtaccessFolder.ReadLinesFile(groupsPath);
-
-            bool exists = false;
-            for (int i = 0; i < groupLines.Count; i++)
-            {
-                string groupLine = groupLines[i];
-                int colonIdx = groupLine.IndexOf(":");
-                if (colonIdx != -1)
-                {
-                    string name = groupLine.Substring(0, colonIdx);
-
-                    // add group to the collection
-                    if (String.Compare(group.Name, name, true) == 0)
-                    {
-                        exists = true;
-
-                        if (deleteGroup)
-                            continue;
-
-                        // update group members
-                        groupLine = group.Name + ":" + String.Join(" ", group.Users);
-                    }
-                }
-
-                updatedGroups.Add(groupLine);
-            } // end iterating groups
-
-            if (!exists && !deleteGroup)
-                updatedGroups.Add(group.Name + ":" + String.Join(" ", group.Users));
-
-            // save groups
-            HtaccessFolder.WriteLinesFile(groupsPath, updatedGroups);
-        }
-
-        public override void DeleteHeliconApeGroup(string siteId, string groupName)
-        {
-            string rootPath = GetSiteContentPath(siteId);
-
-            // delete group
-            WebGroup group = new WebGroup();
-            group.Name = groupName;
-            UpdateHeliconApeGroup(siteId, group, true);
-
-            // update foleds
-            //DeleteNonexistentUsersAndGroups(rootPath);
-        }
-
-        #endregion
-
-        #region FrontPage
+		private string GetRegistrationInfo(string siteId, string installDir)
+		{
+			if (string.IsNullOrEmpty(installDir))
+				return string.Empty;
+
+
+
+			string registrationInfo = FindregistrationInfo(Path.Combine(installDir, "licenses.conf"));
+			if (!string.IsNullOrEmpty(registrationInfo))
+				return registrationInfo;
+
+
+
+			registrationInfo = FindregistrationInfo(Path.Combine(installDir, "httpd.conf"));
+			if (!string.IsNullOrEmpty(registrationInfo))
+				return registrationInfo;
+
+			string apeRegistryPath = Constants.HeliconApeRegistryPath;
+			long dtFirstRunBinary = 0L;
+
+			try
+			{
+				dtFirstRunBinary = (long)Registry.GetValue(apeRegistryPath, "FirstRun", 0L);
+			}
+			catch (NullReferenceException)
+			{
+				// nothing
+			}
+
+			if (0 == dtFirstRunBinary)
+			{
+				apeRegistryPath = Constants.heliconApeRegistryPathWow6432;
+				try
+				{
+					dtFirstRunBinary = (long)Registry.GetValue(apeRegistryPath, "FirstRun", 0L);
+				}
+				catch (NullReferenceException)
+				{
+					// nothing
+				}
+			}
+
+			DateTime dtFirstRun;
+			if (0 == dtFirstRunBinary)
+			{
+				dtFirstRun = DateTime.Now;
+				Registry.SetValue(apeRegistryPath, "FirstRun", dtFirstRun.ToBinary(), RegistryValueKind.QWord);
+			}
+			else
+			{
+				dtFirstRun = DateTime.FromBinary(dtFirstRunBinary);
+			}
+
+			int trialDays = 45 - (DateTime.Now - dtFirstRun).Days;
+			if (trialDays < 0)
+				trialDays = 0;
+
+
+			return string.Format("Trial days left: {0}", trialDays);
+
+
+		}
+
+		private bool IsHeliconApeRegistered(string siteId, string registrationInfo)
+		{
+			if (string.IsNullOrEmpty(registrationInfo))
+				return false;
+
+
+			return registrationInfo.StartsWith("Registered to:");
+		}
+
+		/// <summary>
+		/// Enables Helicon Ape module & handler on the web site or server globally.
+		/// </summary>
+		/// <param name="siteId">
+		/// Web site id or empty string ("") for server-wide enabling
+		/// </param>
+		public override void EnableHeliconApe(string siteId)
+		{
+			if (null == siteId)
+			{
+				throw new ArgumentNullException("siteId");
+			}
+
+			if ("" != siteId)
+			{
+				// prepare enabling Ape for web site
+
+				WebSite webSite = null;
+				using (ServerManager srvman = webObjectsSvc.GetServerManager())
+				{
+					// Helicon.Ape.ApeModule works for apps working in Integrated Pipeline mode
+					// Switch automatically to the app pool with Integrated Pipeline enabled
+					webSite = webObjectsSvc.GetWebSiteFromIIS(srvman, siteId);
+					if (webSite == null)
+						throw new ApplicationException(
+							 String.Format("Could not find a web site with the following identifier: {0}.", siteId));
+
+					// Fill ASP.NET settings
+					FillAspNetSettingsFromIISObject(srvman, webSite);
+				}
+
+				//
+				var aphl = new WebAppPoolHelper(ProviderSettings);
+				var currentPool = aphl.match_webapp_pool(webSite);
+				var dotNetVersion = aphl.dotNetVersion(currentPool.Mode);
+				var sisMode = aphl.isolation(currentPool.Mode);
+				// AT least ASP.NET 2.0 is allowed to provide such capabilities...
+				if (dotNetVersion == SiteAppPoolMode.dotNetFramework1)
+					dotNetVersion = SiteAppPoolMode.dotNetFramework2;
+				// and Integrated pipeline...
+				if (aphl.pipeline(currentPool.Mode) != SiteAppPoolMode.Integrated)
+				{
+					// Lookup for the opposite pool matching the criteria
+					var oppositePool = Array.Find<WebAppPool>(aphl.SupportedAppPools.ToArray(),
+																			x =>
+																			aphl.dotNetVersion(x.Mode) == dotNetVersion &&
+																			aphl.isolation(x.Mode) == sisMode
+																			&& aphl.pipeline(x.Mode) == SiteAppPoolMode.Integrated);
+					//
+					webSite.AspNetInstalled = oppositePool.AspNetInstalled;
+					//
+					SetWebSiteApplicationPool(webSite, false);
+					//
+					using (var srvman = webObjectsSvc.GetServerManager())
+					{
+						var iisSiteObject = srvman.Sites[siteId];
+						iisSiteObject.Applications["/"].ApplicationPoolName = webSite.ApplicationPool;
+						//
+						srvman.CommitChanges();
+					}
+				}
+
+				#region Disable automatically Integrated Windows Authentication
+
+				using (var srvman = webObjectsSvc.GetServerManager())
+				{
+					PropertyBag winAuthBag = winAuthSvc.GetAuthenticationSettings(srvman, siteId);
+					//
+					if ((bool)winAuthBag[AuthenticationGlobals.Enabled])
+					{
+						Configuration config = srvman.GetApplicationHostConfiguration();
+
+						ConfigurationSection windowsAuthenticationSection = config.GetSection(
+							 "system.webServer/security/authentication/windowsAuthentication",
+							 siteId);
+						//
+						windowsAuthenticationSection["enabled"] = false;
+						//
+						srvman.CommitChanges();
+					}
+				}
+
+				#endregion
+
+				#region Disable automatically Secured Folders
+
+				if (IsSecuredFoldersInstalled(siteId))
+				{
+					UninstallSecuredFolders(siteId);
+				}
+
+				#endregion
+			}
+
+			using (var srvman = webObjectsSvc.GetServerManager())
+			{
+				if (!IsHeliconApeEnabled(srvman, siteId))
+				{
+
+					Configuration appConfig = srvman.GetApplicationHostConfiguration();
+
+					// add Helicon.Ape module
+					ConfigurationSection modulesSection = appConfig.GetSection(Constants.ModulesSection, siteId);
+					ConfigurationElementCollection modulesCollection = modulesSection.GetCollection();
+
+					// <add name="Helicon.Ape" />
+					ConfigurationElement heliconApeModuleEntry = modulesCollection.CreateElement("add");
+					heliconApeModuleEntry["name"] = Constants.HeliconApeModule;
+					heliconApeModuleEntry["type"] = GetHeliconApeModuleType(siteId);
+
+					// this way make <clear/> and copy all modules list from ancestor
+					//modulesCollection.AddAt(0, heliconApeModuleEntry);
+					// this way just insert single ape module entry
+					modulesCollection.Add(heliconApeModuleEntry);
+
+
+
+
+					// add Helicon.Ape handler
+					ConfigurationSection handlersSection = appConfig.GetSection(Constants.HandlersSection, siteId);
+					ConfigurationElementCollection handlersCollection = handlersSection.GetCollection();
+
+					// <add name="Helicon.Ape" />
+					ConfigurationElement heliconApeHandlerEntry = handlersCollection.CreateElement("add");
+					heliconApeHandlerEntry["name"] = Constants.HeliconApeHandler;
+					heliconApeHandlerEntry["type"] = GetHeliconApeHandlerType(siteId);
+					heliconApeHandlerEntry["path"] = Constants.HeliconApeHandlerPath;
+					heliconApeHandlerEntry["verb"] = "*";
+					heliconApeHandlerEntry["resourceType"] = "Unspecified";
+
+					handlersCollection.AddAt(0, heliconApeHandlerEntry);
+
+					srvman.CommitChanges();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Disables Helicon Ape module & handler on the web site or server globally.
+		/// </summary>
+		/// <param name="siteId">
+		/// Web site id or empty string ("") for server-wide disabling
+		/// </param>
+		public override void DisableHeliconApe(string siteId)
+		{
+			if (null == siteId)
+				throw new ArgumentNullException("siteId");
+
+			using (var srvman = webObjectsSvc.GetServerManager())
+			{
+				bool alterConfiguration = false;
+				//
+				Configuration appConfig = srvman.GetApplicationHostConfiguration();
+
+
+
+
+				// remove Helicon.Ape module
+				ConfigurationSection modulesSection = appConfig.GetSection(Constants.ModulesSection, siteId);
+				ConfigurationElementCollection modulesCollection = modulesSection.GetCollection();
+				//List<ConfigurationElement> heliconApeModuleEntriesList = new List<ConfigurationElement>();
+				//foreach (ConfigurationElement moduleEntry in modulesCollection)
+				//{
+				//    if (
+				//        String.Equals(moduleEntry["name"].ToString(), Constants.HeliconApeModule, StringComparison.InvariantCultureIgnoreCase)
+				//        ||
+				//        String.Equals(moduleEntry["name"].ToString(), Constants.HeliconApeModulePrevName, StringComparison.InvariantCultureIgnoreCase)
+				//    )
+				//    {
+				//        heliconApeModuleEntriesList.Add(moduleEntry);
+				//    }
+				//}
+				//foreach (ConfigurationElement heliconApeElement in heliconApeModuleEntriesList)
+				//{
+				//    modulesCollection.Remove(heliconApeElement);
+				//}
+
+				for (int i = 0; i < modulesCollection.Count;)
+				{
+					ConfigurationElement moduleEntry = modulesCollection[i];
+
+					string type = moduleEntry["type"].ToString();
+
+					if (type.IndexOf(Constants.HeliconApeModuleType, StringComparison.Ordinal) >= 0)
+					{
+						modulesCollection.RemoveAt(i);
+						alterConfiguration = true;
+					}
+					else
+					{
+						++i;
+					}
+
+				}
+
+				// remove Helicon.Ape handler
+				ConfigurationSection handlersSection = appConfig.GetSection(Constants.HandlersSection, siteId);
+				ConfigurationElementCollection handlersCollection = handlersSection.GetCollection();
+				//List<ConfigurationElement> heliconApeHandlerEntriesList = new List<ConfigurationElement>();
+				//foreach (ConfigurationElement handlerEntry in handlersCollection)
+				//{
+				//    if (
+				//        String.Equals(handlerEntry["name"].ToString(), Constants.HeliconApeModule, StringComparison.InvariantCultureIgnoreCase)
+				//        ||
+				//        String.Equals(handlerEntry["name"].ToString(), Constants.HeliconApeModulePrevName, StringComparison.InvariantCultureIgnoreCase)
+				//        ||
+				//        String.Equals(handlerEntry["name"].ToString(), Constants.HeliconApeHandler, StringComparison.InvariantCultureIgnoreCase)
+				//    )
+				//    {
+				//        heliconApeHandlerEntriesList.Add(handlerEntry);
+				//    }
+				//}
+				////
+				//foreach (ConfigurationElement heliconApeHandlerEntry in heliconApeHandlerEntriesList)
+				//{
+				//    handlersCollection.Remove(heliconApeHandlerEntry);
+				//}
+
+				//// commit changes to metabase
+				//if (heliconApeModuleEntriesList.Count > 0 || heliconApeHandlerEntriesList.Count > 0)
+				//{
+				//    srvman.CommitChanges();
+				//}
+
+				for (int i = 0; i < handlersCollection.Count;)
+				{
+
+					string type = handlersCollection[i]["type"].ToString();
+
+					if (type.IndexOf(Constants.HeliconApeHandlerType, StringComparison.Ordinal) >= 0)
+					{
+						handlersCollection.RemoveAt(i);
+						alterConfiguration = true;
+					}
+					else
+					{
+						++i;
+					}
+
+				}
+
+				if (alterConfiguration)
+				{
+					srvman.CommitChanges();
+				}
+
+
+			}
+		}
+
+		public override List<HtaccessFolder> GetHeliconApeFolders(string siteId)
+		{
+			string siteRootPath = GetSiteContentPath(siteId);
+			List<HtaccessFolder> folders = new List<HtaccessFolder>();
+
+			// walk through the virtual directories
+			WebAppVirtualDirectory[] virtualDirectories = GetAppVirtualDirectories(siteId);
+			foreach (WebAppVirtualDirectory webAppVirtualDirectory in virtualDirectories)
+			{
+				HtaccessFolder.GetDirectoriesWithHtaccess(siteRootPath, "\\" + webAppVirtualDirectory.FullQualifiedPath, webAppVirtualDirectory.ContentPath, webAppVirtualDirectory.ContentPath, folders);
+			}
+
+			// walk through the filesystem
+			HtaccessFolder.GetDirectoriesWithHtaccess(siteRootPath, "", siteRootPath, siteRootPath, folders);
+
+			folders.Sort();
+
+			return folders;
+		}
+
+		public override HtaccessFolder GetHeliconApeFolder(string siteId, string folderPath)
+		{
+			// search folder
+			List<HtaccessFolder> htaccessFolders = GetHeliconApeFolders(siteId);
+
+			foreach (HtaccessFolder htaccessFolder in htaccessFolders)
+			{
+				if (string.Equals(folderPath, htaccessFolder.Path, StringComparison.OrdinalIgnoreCase))
+				{
+					htaccessFolder.ReadHtaccess();
+					return htaccessFolder;
+				}
+			}
+
+			// create new htaccess folder
+			return HtaccessFolder.CreateHtaccessFolder(GetSiteContentPath(siteId), folderPath);
+		}
+
+		public override HtaccessFolder GetHeliconApeHttpdFolder()
+		{
+			return HtaccessFolder.CreateHttpdConfFolder(GetHeliconApeInstallDir("-1"));
+		}
+
+		public override void UpdateHeliconApeFolder(string siteId, HtaccessFolder folder)
+		{
+			if (null != folder)
+			{
+				if (string.IsNullOrEmpty(folder.ContentPath))
+				{
+					HtaccessFolder newFolder = GetHeliconApeFolder(siteId, folder.Path);
+					newFolder.HtaccessContent = folder.HtaccessContent;
+					newFolder.Update();
+				}
+				else
+				{
+					if (string.IsNullOrEmpty(folder.SiteRootPath))
+					{
+						folder.SiteRootPath = GetSiteContentPath(siteId);
+					}
+					folder.Update();
+				}
+			}
+		}
+
+		public override void UpdateHeliconApeHttpdFolder(HtaccessFolder folder)
+		{
+			if (null != folder)
+			{
+				HtaccessFolder newFolder = GetHeliconApeHttpdFolder();
+				newFolder.HtaccessContent = folder.HtaccessContent;
+				newFolder.Update();
+			}
+		}
+
+		public override void DeleteHeliconApeFolder(string siteId, string folderPath)
+		{
+			string rootPath = GetSiteContentPath(siteId);
+			string contentPath = Path.Combine(rootPath, folderPath);
+			string htaccessPath = Path.Combine(contentPath, HtaccessFolder.HTACCESS_FILE);
+
+			if (File.Exists(htaccessPath))
+			{
+				File.Delete(htaccessPath);
+			}
+
+			return;
+		}
+
+		#endregion
+
+		#region Helicon Zoo
+
+		public override WebAppVirtualDirectory[] GetZooApplications(string siteId)
+		{
+			using (ServerManager srvman = webObjectsSvc.GetServerManager())
+			{
+				return webObjectsSvc.GetZooApplications(srvman, siteId);
+			}
+		}
+
+		public override StringResultObject SetZooEnvironmentVariable(string siteId, string appName, string envName, string envValue)
+		{
+			StringResultObject result = new StringResultObject();
+
+			try
+			{
+				using (ServerManager srvman = webObjectsSvc.GetServerManager())
+				{
+					webObjectsSvc.SetZooEnvironmentVariable(srvman, siteId, appName, envName, envValue);
+				}
+
+				result.IsSuccess = true;
+			}
+			catch (Exception e)
+			{
+				result.AddError("Exception", e);
+			}
+
+			return result;
+		}
+
+
+		public override StringResultObject SetZooConsoleEnabled(string siteId, string appName)
+		{
+			StringResultObject result = new StringResultObject();
+
+			try
+			{
+				using (ServerManager srvman = webObjectsSvc.GetServerManager())
+				{
+					webObjectsSvc.SetZooConsoleEnabled(srvman, siteId, appName);
+				}
+
+				result.IsSuccess = true;
+			}
+			catch (Exception e)
+			{
+				result.AddError("Exception", e);
+			}
+
+			return result;
+		}
+
+		public override StringResultObject SetZooConsoleDisabled(string siteId, string appName)
+		{
+			StringResultObject result = new StringResultObject();
+
+			try
+			{
+				using (ServerManager srvman = webObjectsSvc.GetServerManager())
+				{
+					webObjectsSvc.SetZooConsoleDisabled(srvman, siteId, appName);
+				}
+
+				result.IsSuccess = true;
+			}
+			catch (Exception e)
+			{
+				result.AddError("Exception", e);
+			}
+
+			return result;
+		}
+
+
+
+
+		#endregion
+
+		#region Secured Helicon Ape Users
+
+		public static string GeneratePasswordHash(HtaccessUser user)
+		{
+			if (HtaccessFolder.AUTH_TYPE_BASIC == user.AuthType)
+			{
+
+				// BASIC
+				switch (user.EncType)
+				{
+					case HtaccessUser.ENCODING_TYPE_APACHE_MD5:
+						return PasswdHelper.MD5Encode(user.Password, PasswdHelper.GetRandomSalt());
+					case HtaccessUser.ENCODING_TYPE_SHA1:
+						return PasswdHelper.SHA1Encode(user.Password);
+					case HtaccessUser.ENCODING_TYPE_UNIX_CRYPT:
+					default:
+						BsdDES bsdDes = new BsdDES();
+						return bsdDes.Crypt(user.Password);
+				}
+			}
+
+			// DIGEST
+			return string.Format("{0}:{1}", user.Realm, PasswdHelper.DigestEncode(user.Name, user.Password, user.Realm));
+		}
+
+		public override List<HtaccessUser> GetHeliconApeUsers(string siteId)
+		{
+			string rootPath = GetSiteContentPath(siteId);
+			List<HtaccessUser> users = new List<HtaccessUser>();
+
+			//users.Add(new WebUser {Name = HtaccessFolder.VALID_USER});
+
+			// load users file
+			string usersPath = Path.Combine(rootPath, HtaccessFolder.HTPASSWDS_FILE);
+			List<string> lines = HtaccessFolder.ReadLinesFile(usersPath);
+
+			// iterate through all lines
+			for (int i = 0; i < lines.Count; i++)
+			{
+				string line = lines[i];
+
+				int colonIdx = line.IndexOf(":");
+				if (colonIdx != -1)
+				{
+					string username = line.Substring(0, colonIdx);
+
+					// add it to the return collection
+					users.Add(GetHeliconApeUser(siteId, username));
+				}
+			}
+
+			return users;
+		}
+
+		public override HtaccessUser GetHeliconApeUser(string siteId, string userName)
+		{
+			// load users file
+			string rootPath = GetSiteContentPath(siteId);
+			string usersPath = Path.Combine(rootPath, HtaccessFolder.HTPASSWDS_FILE);
+			List<string> lines = HtaccessFolder.ReadLinesFile(usersPath);
+
+			// iterate through all lines
+			HtaccessUser user = null;
+			for (int i = 0; i < lines.Count; i++)
+			{
+				string line = lines[i];
+
+				int colonIdx = line.IndexOf(":");
+				if (colonIdx != -1)
+				{
+					string username = line.Substring(0, colonIdx);
+					string password = line.Substring(colonIdx + 1);
+					if (String.Compare(username, userName, true) == 0)
+					{
+						// exists
+						user = new HtaccessUser();
+						user.Name = username;
+						user.Password = password;
+						break;
+					}
+				}
+			}
+
+			if (user == null)
+				return null; // user doesn't exist
+
+			List<string> userGroups = new List<string>();
+
+			// read groups information
+			// open groups file
+			string groupsPath = Path.Combine(rootPath, HtaccessFolder.HTGROUPS_FILE);
+			List<string> groupLines = HtaccessFolder.ReadLinesFile(groupsPath);
+
+			for (int i = 0; i < groupLines.Count; i++)
+			{
+				string groupLine = groupLines[i];
+				int colonIdx = groupLine.IndexOf(":");
+				if (colonIdx != -1)
+				{
+					string groupName = groupLine.Substring(0, colonIdx);
+					string[] groupMembers = groupLine.Substring(colonIdx + 1).Split(' ');
+
+					// check group members
+					for (int j = 0; j < groupMembers.Length; j++)
+					{
+						if (String.Compare(groupMembers[j], user.Name, true) == 0)
+						{
+							userGroups.Add(groupName);
+							break;
+						}
+					}
+				}
+			} // end iterating groups
+			user.Groups = userGroups.ToArray();
+
+			return user;
+		}
+
+		public override void UpdateHeliconApeUser(string siteId, HtaccessUser user)
+		{
+			UpdateHeliconApeUser(siteId, user, false);
+		}
+
+		private void UpdateHeliconApeUser(string siteId, HtaccessUser user, bool deleteUser)
+		{
+			if (HtaccessFolder.VALID_USER == user.Name)
+				return;
+
+			string rootPath = GetSiteContentPath(siteId);
+			string usersPath = Path.Combine(rootPath, HtaccessFolder.HTPASSWDS_FILE);
+
+			// load users file
+			List<string> lines = HtaccessFolder.ReadLinesFile(usersPath);
+
+			// check if the user already exists
+			List<string> updatedLines = new List<string>();
+			bool exists = false;
+			for (int i = 0; i < lines.Count; i++)
+			{
+				string line = lines[i];
+				string updatedLine = line;
+
+				int colonIdx = line.IndexOf(":");
+				if (colonIdx != -1)
+				{
+					string username = line.Substring(0, colonIdx);
+					string password = line.Substring(colonIdx + 1);
+					if (String.Compare(username, user.Name, true) == 0)
+					{
+						// already exists
+						exists = true;
+
+						// check if we need to delete this user
+						if (deleteUser)
+							continue;
+
+						// change password if required
+						if (!String.IsNullOrEmpty(user.Password))
+						{
+							// hash password
+							password = GeneratePasswordHash(user);
+
+							// update line
+							updatedLine = username + ":" + password;
+						}
+					}
+				}
+
+				updatedLines.Add(updatedLine);
+			}
+
+			if (!exists && !deleteUser)
+			{
+				// new user has been added
+				updatedLines.Add(user.Name + ":" + GeneratePasswordHash(user));
+			}
+
+			// save users file
+			HtaccessFolder.WriteLinesFile(usersPath, updatedLines);
+
+			if (user.Groups == null)
+				user.Groups = new string[] { };
+
+			// update groups
+			// open groups file
+			string groupsPath = Path.Combine(rootPath, HtaccessFolder.HTGROUPS_FILE);
+			List<string> groupLines = HtaccessFolder.ReadLinesFile(groupsPath);
+
+			for (int i = 0; i < groupLines.Count; i++)
+			{
+				string groupLine = groupLines[i];
+				int colonIdx = groupLine.IndexOf(":");
+				if (colonIdx != -1)
+				{
+					string groupName = groupLine.Substring(0, colonIdx);
+					string[] groupMembers = groupLine.Substring(colonIdx + 1).Split(' ');
+
+					// check if user is assigned to this group
+					bool assigned = false;
+					for (int j = 0; j < user.Groups.Length; j++)
+					{
+						if (String.Compare(user.Groups[j], groupName, true) == 0)
+						{
+							assigned = true;
+							break;
+						}
+					}
+
+					// remove current user
+					List<string> updatedMembers = new List<string>();
+					for (int j = 0; j < groupMembers.Length; j++)
+					{
+						// user exists in the members
+						// check if he should be really added to this group
+						if (String.Compare(groupMembers[j], user.Name, true) == 0)
+							continue;
+
+						updatedMembers.Add(groupMembers[j]);
+					}
+
+					if (assigned)
+						updatedMembers.Add(user.Name);
+
+					// modify group line
+					groupLines[i] = groupName + ":" + String.Join(" ", updatedMembers.ToArray());
+				}
+			} // end iterating groups
+
+			// save group file
+			HtaccessFolder.WriteLinesFile(groupsPath, groupLines);
+		}
+
+		public override void DeleteHeliconApeUser(string siteId, string userName)
+		{
+			string rootPath = GetSiteContentPath(siteId);
+			HtaccessUser user = new HtaccessUser();
+			user.Name = userName;
+
+			// update users and groups
+			UpdateHeliconApeUser(siteId, user, true);
+
+			// update foleds
+			//DeleteNonexistentUsersAndGroups(rootPath);
+		}
+		#endregion
+
+		#region Secured Helicon Ape Groups
+		public override List<WebGroup> GetHeliconApeGroups(string siteId)
+		{
+			string rootPath = GetSiteContentPath(siteId);
+			List<WebGroup> groups = new List<WebGroup>();
+
+			// open groups file
+			string groupsPath = Path.Combine(rootPath, HtaccessFolder.HTGROUPS_FILE);
+			List<string> groupLines = HtaccessFolder.ReadLinesFile(groupsPath);
+
+			for (int i = 0; i < groupLines.Count; i++)
+			{
+				string groupLine = groupLines[i];
+				int colonIdx = groupLine.IndexOf(":");
+				if (colonIdx != -1)
+				{
+					string name = groupLine.Substring(0, colonIdx);
+
+					// add group to the collection
+					groups.Add(GetHeliconApeGroup(siteId, name));
+				}
+			} // end iterating groups
+
+			return groups;
+		}
+
+		public override WebGroup GetHeliconApeGroup(string siteId, string groupName)
+		{
+			string rootPath = GetSiteContentPath(siteId);
+			// open groups file
+			string groupsPath = Path.Combine(rootPath, HtaccessFolder.HTGROUPS_FILE);
+			List<string> groupLines = HtaccessFolder.ReadLinesFile(groupsPath);
+
+			WebGroup group = null;
+			for (int i = 0; i < groupLines.Count; i++)
+			{
+				string groupLine = groupLines[i];
+				int colonIdx = groupLine.IndexOf(":");
+				if (colonIdx != -1)
+				{
+					string name = groupLine.Substring(0, colonIdx);
+					string[] members = groupLine.Substring(colonIdx + 1).Split(' ');
+
+					if (String.Compare(groupName, name, true) == 0)
+					{
+						group = new WebGroup();
+						group.Name = groupName;
+						group.Users = members;
+					}
+				}
+			} // end iterating groups
+
+			return group;
+		}
+
+		public override void UpdateHeliconApeGroup(string siteId, WebGroup group)
+		{
+			UpdateHeliconApeGroup(siteId, group, false);
+		}
+
+		private void UpdateHeliconApeGroup(string siteId, WebGroup group, bool deleteGroup)
+		{
+			string rootPath = GetSiteContentPath(siteId);
+
+			if (group.Users == null)
+				group.Users = new string[] { };
+
+			List<string> updatedGroups = new List<string>();
+
+			// open groups file
+			string groupsPath = Path.Combine(rootPath, HtaccessFolder.HTGROUPS_FILE);
+			List<string> groupLines = HtaccessFolder.ReadLinesFile(groupsPath);
+
+			bool exists = false;
+			for (int i = 0; i < groupLines.Count; i++)
+			{
+				string groupLine = groupLines[i];
+				int colonIdx = groupLine.IndexOf(":");
+				if (colonIdx != -1)
+				{
+					string name = groupLine.Substring(0, colonIdx);
+
+					// add group to the collection
+					if (String.Compare(group.Name, name, true) == 0)
+					{
+						exists = true;
+
+						if (deleteGroup)
+							continue;
+
+						// update group members
+						groupLine = group.Name + ":" + String.Join(" ", group.Users);
+					}
+				}
+
+				updatedGroups.Add(groupLine);
+			} // end iterating groups
+
+			if (!exists && !deleteGroup)
+				updatedGroups.Add(group.Name + ":" + String.Join(" ", group.Users));
+
+			// save groups
+			HtaccessFolder.WriteLinesFile(groupsPath, updatedGroups);
+		}
+
+		public override void DeleteHeliconApeGroup(string siteId, string groupName)
+		{
+			string rootPath = GetSiteContentPath(siteId);
+
+			// delete group
+			WebGroup group = new WebGroup();
+			group.Name = groupName;
+			UpdateHeliconApeGroup(siteId, group, true);
+
+			// update foleds
+			//DeleteNonexistentUsersAndGroups(rootPath);
+		}
+
+		#endregion
+
+		#region FrontPage
 
 		public override bool IsFrontPageInstalled(string siteId)
 		{
-            using (ServerManager srvman = webObjectsSvc.GetServerManager())
-            {
-                return IsFrontPageInstalled(srvman, siteId);
-            }
+			using (ServerManager srvman = webObjectsSvc.GetServerManager())
+			{
+				return IsFrontPageInstalled(srvman, siteId);
+			}
 		}
 
-        private bool IsFrontPageInstalled(ServerManager srvman, string siteId)
-        {
-            // Get IIS web site id
-            string m_webSiteId = webObjectsSvc.GetWebSiteIdFromIIS(srvman, siteId, "W3SVC/{0}");
-            // site port
-            RegistryKey sitePortKey = Registry.LocalMachine.OpenSubKey(String.Format("{0}Port /LM/{1}:",
-                FRONTPAGE_PORT_REGLOC, m_webSiteId));
+		private bool IsFrontPageInstalled(ServerManager srvman, string siteId)
+		{
+			// Get IIS web site id
+			string m_webSiteId = webObjectsSvc.GetWebSiteIdFromIIS(srvman, siteId, "W3SVC/{0}");
+			// site port
+			RegistryKey sitePortKey = Registry.LocalMachine.OpenSubKey(String.Format("{0}Port /LM/{1}:",
+				 FRONTPAGE_PORT_REGLOC, m_webSiteId));
 
-            if (sitePortKey == null)
-                return false;
+			if (sitePortKey == null)
+				return false;
 
-            // get required keys
-            string keyAuthoring = (string)sitePortKey.GetValue("authoring");
-            string keyFrontPageRoot = (string)sitePortKey.GetValue("frontpageroot");
+			// get required keys
+			string keyAuthoring = (string)sitePortKey.GetValue("authoring");
+			string keyFrontPageRoot = (string)sitePortKey.GetValue("frontpageroot");
 
-            return (keyAuthoring != null && keyAuthoring.ToUpper() == "ENABLED" &&
-                keyFrontPageRoot != null && keyFrontPageRoot.IndexOf("\\50") != -1);
-        }
+			return (keyAuthoring != null && keyAuthoring.ToUpper() == "ENABLED" &&
+				 keyFrontPageRoot != null && keyFrontPageRoot.IndexOf("\\50") != -1);
+		}
 
 		public override bool InstallFrontPage(string siteId, string username, string password)
 		{
@@ -3456,45 +3456,45 @@ namespace SolidCP.Providers.Web
 
 			try
 			{
-                using (ServerManager srvman = webObjectsSvc.GetServerManager())
-                {
-                    string cmdPath = null;
-                    string cmdArgs = null;
-                    //
-                    string m_webSiteId = webObjectsSvc.GetWebSiteIdFromIIS(srvman, siteId, null);
+				using (ServerManager srvman = webObjectsSvc.GetServerManager())
+				{
+					string cmdPath = null;
+					string cmdArgs = null;
+					//
+					string m_webSiteId = webObjectsSvc.GetWebSiteIdFromIIS(srvman, siteId, null);
 
-                    // try to install FPSE2002
-                    // add registry key for anonymous group if not exists
-                    RegistryKey portsKey = Registry.LocalMachine.OpenSubKey(FRONTPAGE_ALLPORTS_REGLOC, true);
-                    portsKey.SetValue("anonusergroupprefix", "anonfp");
+					// try to install FPSE2002
+					// add registry key for anonymous group if not exists
+					RegistryKey portsKey = Registry.LocalMachine.OpenSubKey(FRONTPAGE_ALLPORTS_REGLOC, true);
+					portsKey.SetValue("anonusergroupprefix", "anonfp");
 
-                    #region Create anonymous group to get FPSE work
+					#region Create anonymous group to get FPSE work
 
-                    string groupName = "anonfp_" + m_webSiteId;
-                    if (!SecurityUtils.GroupExists(groupName, ServerSettings, GroupsOU))
-                    {
-                        SystemGroup fpseGroup = new SystemGroup();
-                        fpseGroup.Name = groupName;
-                        fpseGroup.Description = "Anonymous FPSE group for " + siteId + " web site";
-                        fpseGroup.Members = new string[] { username };
-                        SecurityUtils.CreateGroup(fpseGroup, ServerSettings, UsersOU, GroupsOU);
-                    }
+					string groupName = "anonfp_" + m_webSiteId;
+					if (!SecurityUtils.GroupExists(groupName, ServerSettings, GroupsOU))
+					{
+						SystemGroup fpseGroup = new SystemGroup();
+						fpseGroup.Name = groupName;
+						fpseGroup.Description = "Anonymous FPSE group for " + siteId + " web site";
+						fpseGroup.Members = new string[] { username };
+						SecurityUtils.CreateGroup(fpseGroup, ServerSettings, UsersOU, GroupsOU);
+					}
 
-                    #endregion
+					#endregion
 
-                    #region Install FPSE 2002 to the website by owsadm.exe install command
+					#region Install FPSE 2002 to the website by owsadm.exe install command
 
-                    cmdPath = Environment.ExpandEnvironmentVariables(FPSE2002_OWSADM_PATH);
-                    cmdArgs = String.Format("-o install -p /LM/W3SVC/{0} -u {1}", m_webSiteId, username);
-                    Log.WriteInfo("Command path: " + cmdPath);
-                    Log.WriteInfo("Command path: " + cmdArgs);
-                    Log.WriteInfo("FPSE2002 Install Log: " + FileUtils.ExecuteSystemCommand(cmdPath, cmdArgs));
+					cmdPath = Environment.ExpandEnvironmentVariables(FPSE2002_OWSADM_PATH);
+					cmdArgs = String.Format("-o install -p /LM/W3SVC/{0} -u {1}", m_webSiteId, username);
+					Log.WriteInfo("Command path: " + cmdPath);
+					Log.WriteInfo("Command path: " + cmdArgs);
+					Log.WriteInfo("FPSE2002 Install Log: " + FileUtils.ExecuteSystemCommand(cmdPath, cmdArgs));
 
-                    #endregion
-                }
+					#endregion
+				}
 
-                // Enable Windows Authentication mode
-                winAuthSvc.SetEnabled(siteId, true);
+				// Enable Windows Authentication mode
+				winAuthSvc.SetEnabled(siteId, true);
 
 			}
 			catch (Exception ex)
@@ -3509,47 +3509,47 @@ namespace SolidCP.Providers.Web
 
 		public override void UninstallFrontPage(string siteId, string username)
 		{
-            using (ServerManager srvman = webObjectsSvc.GetServerManager())
-            {
-                // Ensure a web site exists
-                if (!webObjectsSvc.SiteExists(srvman, siteId))
-                    return;
+			using (ServerManager srvman = webObjectsSvc.GetServerManager())
+			{
+				// Ensure a web site exists
+				if (!webObjectsSvc.SiteExists(srvman, siteId))
+					return;
 
-                try
-                {
-                    string m_webSiteId = webObjectsSvc.GetWebSiteIdFromIIS(srvman, siteId, null);
+				try
+				{
+					string m_webSiteId = webObjectsSvc.GetWebSiteIdFromIIS(srvman, siteId, null);
 
-                    // remove anonymous group
-                    string groupName = "anonfp_" + m_webSiteId;
-                    if (SecurityUtils.GroupExists(groupName, ServerSettings, GroupsOU))
-                        SecurityUtils.DeleteGroup(groupName, ServerSettings, GroupsOU);
+					// remove anonymous group
+					string groupName = "anonfp_" + m_webSiteId;
+					if (SecurityUtils.GroupExists(groupName, ServerSettings, GroupsOU))
+						SecurityUtils.DeleteGroup(groupName, ServerSettings, GroupsOU);
 
-                    #region Trying to uninstall FPSE2002 from the web site
+					#region Trying to uninstall FPSE2002 from the web site
 
-                    //
-                    string cmdPath = null;
-                    string cmdArgs = null;
+					//
+					string cmdPath = null;
+					string cmdArgs = null;
 
-                    cmdPath = Environment.ExpandEnvironmentVariables(FPSE2002_OWSADM_PATH);
-                    cmdArgs = String.Format("-o fulluninstall -p /LM/W3SVC/{0}", m_webSiteId);
+					cmdPath = Environment.ExpandEnvironmentVariables(FPSE2002_OWSADM_PATH);
+					cmdArgs = String.Format("-o fulluninstall -p /LM/W3SVC/{0}", m_webSiteId);
 
-                    // launch system process
-                    Log.WriteInfo("FPSE2002 Uninstall Log: " + FileUtils.ExecuteSystemCommand(cmdPath, cmdArgs));
+					// launch system process
+					Log.WriteInfo("FPSE2002 Uninstall Log: " + FileUtils.ExecuteSystemCommand(cmdPath, cmdArgs));
 
-                    #endregion
+					#endregion
 
-                    // delete user account
-                    if (SecurityUtils.UserExists(username, ServerSettings, UsersOU))
-                        SecurityUtils.DeleteUser(username, ServerSettings, UsersOU);
+					// delete user account
+					if (SecurityUtils.UserExists(username, ServerSettings, UsersOU))
+						SecurityUtils.DeleteUser(username, ServerSettings, UsersOU);
 
-                    // Disable Windows Authentication mode
-                    winAuthSvc.SetEnabled(siteId, false);
-                }
-                catch (Exception ex)
-                {
-                    Log.WriteError(String.Format("FPSE2002 uninstall error. Web site: {0}.", siteId), ex);
-                }
-            }
+					// Disable Windows Authentication mode
+					winAuthSvc.SetEnabled(siteId, false);
+				}
+				catch (Exception ex)
+				{
+					Log.WriteError(String.Format("FPSE2002 uninstall error. Web site: {0}.", siteId), ex);
+				}
+			}
 		}
 
 		public override bool IsFrontPageSystemInstalled()
@@ -3597,13 +3597,13 @@ namespace SolidCP.Providers.Web
 
 			WebAppVirtualDirectory flashRemotingDir = new WebAppVirtualDirectory();
 			if (IsColdFusion10Installed() || IsColdFusion11Installed() || IsColdFusion2016Installed())
-				{
-					flashRemotingDir.Name = "jakarta";
-				}
+			{
+				flashRemotingDir.Name = "jakarta";
+			}
 			else
-				{
-					flashRemotingDir.Name = "JRunScripts";
-				}			
+			{
+				flashRemotingDir.Name = "JRunScripts";
+			}
 			flashRemotingDir.ContentPath = CFFlashRemotingDirPath;
 			flashRemotingDir.EnableAnonymousAccess = true;
 			flashRemotingDir.EnableWindowsAuthentication = true;
@@ -3621,17 +3621,17 @@ namespace SolidCP.Providers.Web
 
 		public override void DeleteCFAppVirtualDirectories(string siteId)
 		{
-			
+
 			if (IsColdFusion10Installed() || IsColdFusion11Installed() || IsColdFusion2016Installed())
-				{
-					DeleteAppVirtualDirectory(siteId, "CFIDE");
-					DeleteAppVirtualDirectory(siteId, "jakarta");
-				}
+			{
+				DeleteAppVirtualDirectory(siteId, "CFIDE");
+				DeleteAppVirtualDirectory(siteId, "jakarta");
+			}
 			else
-				{
-					DeleteAppVirtualDirectory(siteId, "CFIDE");
-					DeleteAppVirtualDirectory(siteId, "JRunScripts");
-				}
+			{
+				DeleteAppVirtualDirectory(siteId, "CFIDE");
+				DeleteAppVirtualDirectory(siteId, "JRunScripts");
+			}
 
 		}
 
@@ -3644,15 +3644,15 @@ namespace SolidCP.Providers.Web
 			// TODO check if there is no bug here
 			foreach (WebAppVirtualDirectory dir in dirs)
 			{
-			if (IsColdFusion10Installed() || IsColdFusion11Installed() || IsColdFusion2016Installed())
+				if (IsColdFusion10Installed() || IsColdFusion11Installed() || IsColdFusion2016Installed())
 				{
-				if (dir.FullQualifiedPath.Equals("CFIDE") || dir.FullQualifiedPath.Equals("jakarta"))
-					identifier++;
+					if (dir.FullQualifiedPath.Equals("CFIDE") || dir.FullQualifiedPath.Equals("jakarta"))
+						identifier++;
 				}
-			else
+				else
 				{
-				if (dir.FullQualifiedPath.Equals("CFIDE") || dir.FullQualifiedPath.Equals("JRunScripts"))
-					identifier++;
+					if (dir.FullQualifiedPath.Equals("CFIDE") || dir.FullQualifiedPath.Equals("JRunScripts"))
+						identifier++;
 				}
 			}
 			return identifier.Equals(2);
@@ -3662,30 +3662,30 @@ namespace SolidCP.Providers.Web
 		{
 			bool isCFenabled = false;
 
-            using (ServerManager srvman = webObjectsSvc.GetServerManager())
-            {
-                string ID = webObjectsSvc.GetWebSiteIdFromIIS(srvman, siteId, "{0}");
+			using (ServerManager srvman = webObjectsSvc.GetServerManager())
+			{
+				string ID = webObjectsSvc.GetWebSiteIdFromIIS(srvman, siteId, "{0}");
 
-                if (IsColdFusionSystemInstalled())
-                {
-                    string pathWsConfigSettings = Path.Combine(GetColdFusionRootPath(), @"runtime\lib\wsconfig\wsconfig.properties");
-                    StreamReader file = new StreamReader(pathWsConfigSettings);
-                    string line = String.Empty;
-                    int counter = 0;
-                    while ((line = file.ReadLine()) != null)
-                    {
-                        if (line.Contains(String.Format("=IIS,{0},", ID)))
-                        {
-                            isCFenabled = true;
-                            break;
-                        }
-                        counter++;
-                    }
-                    file.Close();
-                }
+				if (IsColdFusionSystemInstalled())
+				{
+					string pathWsConfigSettings = Path.Combine(GetColdFusionRootPath(), @"runtime\lib\wsconfig\wsconfig.properties");
+					StreamReader file = new StreamReader(pathWsConfigSettings);
+					string line = String.Empty;
+					int counter = 0;
+					while ((line = file.ReadLine()) != null)
+					{
+						if (line.Contains(String.Format("=IIS,{0},", ID)))
+						{
+							isCFenabled = true;
+							break;
+						}
+						counter++;
+					}
+					file.Close();
+				}
 
-                return isCFenabled;
-            }
+				return isCFenabled;
+			}
 		}
 
 		#endregion
@@ -3693,21 +3693,21 @@ namespace SolidCP.Providers.Web
 		#region HostingServiceProvider methods
 		public override SettingPair[] GetProviderDefaultSettings()
 		{
-            List<SettingPair> allSettings = new List<SettingPair>();
+			List<SettingPair> allSettings = new List<SettingPair>();
 
-            using (ServerManager srvman = webObjectsSvc.GetServerManager())
-            {
-                allSettings.AddRange(extensionsSvc.GetExtensionsInstalled(srvman));
+			using (ServerManager srvman = webObjectsSvc.GetServerManager())
+			{
+				allSettings.AddRange(extensionsSvc.GetExtensionsInstalled(srvman));
 
-                // add default web management settings
-                WebManagementServiceSettings wmSettings = GetWebManagementServiceSettings();
-                if (wmSettings != null)
-                {
-                    allSettings.Add(new SettingPair("WmSvc.Port", wmSettings.Port));
-                    allSettings.Add(new SettingPair("WmSvc.ServiceUrl", wmSettings.ServiceUrl));
-                    allSettings.Add(new SettingPair("WmSvc.RequiresWindowsCredentials", wmSettings.RequiresWindowsCredentials.ToString()));
-                }
-            }
+				// add default web management settings
+				WebManagementServiceSettings wmSettings = GetWebManagementServiceSettings();
+				if (wmSettings != null)
+				{
+					allSettings.Add(new SettingPair("WmSvc.Port", wmSettings.Port));
+					allSettings.Add(new SettingPair("WmSvc.ServiceUrl", wmSettings.ServiceUrl));
+					allSettings.Add(new SettingPair("WmSvc.RequiresWindowsCredentials", wmSettings.RequiresWindowsCredentials.ToString()));
+				}
+			}
 
 			// return settings
 			return allSettings.ToArray();
@@ -3844,7 +3844,7 @@ namespace SolidCP.Providers.Web
 		public const string WDeployAppHostConfigWriter = "WDeployAppHostConfigWriter";
 		public const string WDeployAppPoolConfigEditor = "WDeployAppPoolConfigEditor";
 
-	    private void SetupWebDeployPublishingOnServer(List<string> messages)
+		private void SetupWebDeployPublishingOnServer(List<string> messages)
 		{
 			if (IsWebDeployInstalled() == false
 				|| String.IsNullOrEmpty(ProviderSettings[WDeployEnabled]))
@@ -4097,7 +4097,7 @@ namespace SolidCP.Providers.Web
 			return itemsBandwidth;
 		}
 
-        public override ServiceProviderItemDiskSpace[] GetServiceItemsDiskSpace(ServiceProviderItem[] items)
+		public override ServiceProviderItemDiskSpace[] GetServiceItemsDiskSpace(ServiceProviderItem[] items)
 		{
 			List<ServiceProviderItemDiskSpace> itemsDiskspace = new List<ServiceProviderItemDiskSpace>();
 
@@ -4133,42 +4133,42 @@ namespace SolidCP.Providers.Web
 
 		#endregion
 
-        #region Directory Browsing
+		#region Directory Browsing
 
-        public override bool GetDirectoryBrowseEnabled(string siteId)
-        {
-            var uri = new Uri(siteId);
-            var host = uri.Host;
-            var site = uri.Host + Uri.UnescapeDataString(uri.PathAndQuery);
+		public override bool GetDirectoryBrowseEnabled(string siteId)
+		{
+			var uri = new Uri(siteId);
+			var host = uri.Host;
+			var site = uri.Host + Uri.UnescapeDataString(uri.PathAndQuery);
 
-            if (SiteExists(host))
-            {
-                using (ServerManager srvman = webObjectsSvc.GetServerManager())
-                {
-                    var enabled = dirBrowseSvc.GetDirectoryBrowseSettings(srvman, site)[DirectoryBrowseGlobals.Enabled];
+			if (SiteExists(host))
+			{
+				using (ServerManager srvman = webObjectsSvc.GetServerManager())
+				{
+					var enabled = dirBrowseSvc.GetDirectoryBrowseSettings(srvman, site)[DirectoryBrowseGlobals.Enabled];
 
-                    return enabled != null ? (bool)enabled : false;
-                }
-            }
+					return enabled != null ? (bool)enabled : false;
+				}
+			}
 
-            return false;
-        }
+			return false;
+		}
 
-        public override void SetDirectoryBrowseEnabled(string siteId, bool enabled)
-        {
-            var uri = new Uri(siteId);
-            var host = uri.Host;
-            var site = uri.Host + Uri.UnescapeDataString(uri.PathAndQuery);
+		public override void SetDirectoryBrowseEnabled(string siteId, bool enabled)
+		{
+			var uri = new Uri(siteId);
+			var host = uri.Host;
+			var site = uri.Host + Uri.UnescapeDataString(uri.PathAndQuery);
 
-            if (SiteExists(host))
-            {
-                dirBrowseSvc.SetDirectoryBrowseEnabled(site, enabled);
-            }
-        }
-        
+			if (SiteExists(host))
+			{
+				dirBrowseSvc.SetDirectoryBrowseEnabled(site, enabled);
+			}
+		}
 
 
-        #endregion
+
+		#endregion
 
 		public override bool IsIISInstalled()
 		{
@@ -4220,7 +4220,7 @@ namespace SolidCP.Providers.Web
 			}
 		}
 
-        public override ResultObject CheckWebManagementPasswordComplexity(string accountPassword)
+		public override ResultObject CheckWebManagementPasswordComplexity(string accountPassword)
 		{
 			// Preserve setting to restore it back
 			bool adEnabled = ServerSettings.ADEnabled;
@@ -4249,7 +4249,7 @@ namespace SolidCP.Providers.Web
 			return result;
 		}
 
-        public override void GrantWebManagementAccess(string siteName, string accountName, string accountPassword)
+		public override void GrantWebManagementAccess(string siteName, string accountName, string accountPassword)
 		{
 			// Remote Management Access feature requires Modify permissions on the web site's wwwroot folder
 			GrantWebManagementAccessInternally(siteName, accountName, accountPassword, NTFSPermission.Modify);
@@ -4271,29 +4271,29 @@ namespace SolidCP.Providers.Web
 				siteName, accountName, accountPassword, fqWebPath);
 
 
-            string contentPath = string.Empty;
-            using (ServerManager srvman = webObjectsSvc.GetServerManager())
-            {
-                WebSite site = webObjectsSvc.GetWebSiteFromIIS(srvman, siteName);
-                //
-                contentPath = webObjectsSvc.GetPhysicalPath(srvman, site);
-                //
-                Log.WriteInfo("Site Content Path: {0};", contentPath);
-            }
+			string contentPath = string.Empty;
+			using (ServerManager srvman = webObjectsSvc.GetServerManager())
+			{
+				WebSite site = webObjectsSvc.GetWebSiteFromIIS(srvman, siteName);
+				//
+				contentPath = webObjectsSvc.GetPhysicalPath(srvman, site);
+				//
+				Log.WriteInfo("Site Content Path: {0};", contentPath);
+			}
 
-            string FTPRoot = string.Empty;
-            string FTPDir = string.Empty;
+			string FTPRoot = string.Empty;
+			string FTPDir = string.Empty;
 
 
-            if (contentPath.IndexOf("\\\\") != -1)
-            {
-                string[] Tmp = contentPath.Split('\\');
-                FTPRoot = "\\\\" + Tmp[2] + "\\" + Tmp[3];
-                FTPDir = contentPath.Replace(FTPRoot, "");
-            }
+			if (contentPath.IndexOf("\\\\") != -1)
+			{
+				string[] Tmp = contentPath.Split('\\');
+				FTPRoot = "\\\\" + Tmp[2] + "\\" + Tmp[3];
+				FTPDir = contentPath.Replace(FTPRoot, "");
+			}
 
-            //
-            string accountNameSid = string.Empty;
+			//
+			string accountNameSid = string.Empty;
 
 
 			//
@@ -4315,35 +4315,35 @@ namespace SolidCP.Providers.Web
 						AccountDisabled = false,
 						Password = accountPassword,
 						System = true,
-                        MsIIS_FTPDir = FTPDir,
-                        MsIIS_FTPRoot = FTPRoot
+						MsIIS_FTPDir = FTPDir,
+						MsIIS_FTPRoot = FTPRoot
 					},
 					ServerSettings,
-                    UsersOU,
-                    GroupsOU);
+						  UsersOU,
+						  GroupsOU);
 
 				// Convert account name to the full-qualified one
-                accountName = GetFullQualifiedAccountName(accountName);
-                accountNameSid = GetFullQualifiedAccountNameSid(accountName);
+				accountName = GetFullQualifiedAccountName(accountName);
+				accountNameSid = GetFullQualifiedAccountNameSid(accountName);
 				//
 				Log.WriteInfo("FQ Account Name: {0};", accountName);
 			}
 
-            ManagementAuthorization.Grant(accountName, fqWebPath, false);
-            //
+			ManagementAuthorization.Grant(accountName, fqWebPath, false);
+			//
 
-            if (IdentityCredentialsMode == "IISMNGR")
-            {
-                SecurityUtils.GrantNtfsPermissionsBySid(contentPath, SystemSID.LOCAL_SERVICE, permissions, true, true);
-            }
-            else
-            {
-                SecurityUtils.GrantNtfsPermissions(contentPath, accountNameSid, NTFSPermission.Modify, true, true, ServerSettings, UsersOU, GroupsOU);
-            }
-        }
+			if (IdentityCredentialsMode == "IISMNGR")
+			{
+				SecurityUtils.GrantNtfsPermissionsBySid(contentPath, SystemSID.LOCAL_SERVICE, permissions, true, true);
+			}
+			else
+			{
+				SecurityUtils.GrantNtfsPermissions(contentPath, accountNameSid, NTFSPermission.Modify, true, true, ServerSettings, UsersOU, GroupsOU);
+			}
+		}
 
 
-        public override void ChangeWebManagementAccessPassword(string accountName, string accountPassword)
+		public override void ChangeWebManagementAccessPassword(string accountName, string accountPassword)
 		{
 			// Preserve setting to restore it back
 			bool adEnabled = ServerSettings.ADEnabled;
@@ -4371,7 +4371,7 @@ namespace SolidCP.Providers.Web
 			ServerSettings.ADEnabled = adEnabled;
 		}
 
-        public override void RevokeWebManagementAccess(string siteName, string accountName)
+		public override void RevokeWebManagementAccess(string siteName, string accountName)
 		{
 			// Preserve setting to restore it back
 			bool adEnabled = ServerSettings.ADEnabled;
@@ -4384,46 +4384,46 @@ namespace SolidCP.Providers.Web
 			Log.WriteInfo("Site Name: {0}; Account Name: {1}; FqWebPath: {2};",
 				siteName, accountName, fqWebPath);
 
-            using (ServerManager srvman = webObjectsSvc.GetServerManager())
-            {
-                //
-                WebSite site = webObjectsSvc.GetWebSiteFromIIS(srvman, siteName);
-                //
-                string contentPath = webObjectsSvc.GetPhysicalPath(srvman, site);
-                //
-                Log.WriteInfo("Site Content Path: {0};", contentPath);
-                // Revoke access permissions
-                if (IdentityCredentialsMode == "IISMNGR")
-                {
-                    ManagementAuthorization.Revoke(accountName, fqWebPath);
-                    ManagementAuthentication.DeleteUser(accountName);
-                    SecurityUtils.RemoveNtfsPermissionsBySid(contentPath, SystemSID.LOCAL_SERVICE);
-                }
-                else
-                {
-                    if (adEnabled)
-                    {
-                        ManagementAuthorization.Revoke(GetFullQualifiedAccountName(accountName), fqWebPath);
-                        SecurityUtils.RemoveNtfsPermissions(contentPath, GetNonQualifiedAccountName(accountName), ServerSettings, UsersOU, GroupsOU);
-                        SecurityUtils.DeleteUser(GetNonQualifiedAccountName(accountName), ServerSettings, UsersOU);
-                    }
-                    else
-                    {
-                        ManagementAuthorization.Revoke(GetFullQualifiedAccountName(accountName), fqWebPath);
-                        SecurityUtils.RemoveNtfsPermissions(contentPath, GetNonQualifiedAccountName(accountName), ServerSettings, String.Empty, String.Empty);
-                        SecurityUtils.DeleteUser(GetNonQualifiedAccountName(accountName), ServerSettings, String.Empty);
-                    }
-                }
-                // Restore setting back
-                ServerSettings.ADEnabled = adEnabled;
-            }
+			using (ServerManager srvman = webObjectsSvc.GetServerManager())
+			{
+				//
+				WebSite site = webObjectsSvc.GetWebSiteFromIIS(srvman, siteName);
+				//
+				string contentPath = webObjectsSvc.GetPhysicalPath(srvman, site);
+				//
+				Log.WriteInfo("Site Content Path: {0};", contentPath);
+				// Revoke access permissions
+				if (IdentityCredentialsMode == "IISMNGR")
+				{
+					ManagementAuthorization.Revoke(accountName, fqWebPath);
+					ManagementAuthentication.DeleteUser(accountName);
+					SecurityUtils.RemoveNtfsPermissionsBySid(contentPath, SystemSID.LOCAL_SERVICE);
+				}
+				else
+				{
+					if (adEnabled)
+					{
+						ManagementAuthorization.Revoke(GetFullQualifiedAccountName(accountName), fqWebPath);
+						SecurityUtils.RemoveNtfsPermissions(contentPath, GetNonQualifiedAccountName(accountName), ServerSettings, UsersOU, GroupsOU);
+						SecurityUtils.DeleteUser(GetNonQualifiedAccountName(accountName), ServerSettings, UsersOU);
+					}
+					else
+					{
+						ManagementAuthorization.Revoke(GetFullQualifiedAccountName(accountName), fqWebPath);
+						SecurityUtils.RemoveNtfsPermissions(contentPath, GetNonQualifiedAccountName(accountName), ServerSettings, String.Empty, String.Empty);
+						SecurityUtils.DeleteUser(GetNonQualifiedAccountName(accountName), ServerSettings, String.Empty);
+					}
+				}
+				// Restore setting back
+				ServerSettings.ADEnabled = adEnabled;
+			}
 
-            //
+			//
 			RemoveDelegationRulesRestrictions(siteName, accountName);
 		}
 
-        
-        private void ReadWebDeployPublishingAccessDetails(WebAppVirtualDirectory iisObject)
+
+		private void ReadWebDeployPublishingAccessDetails(WebAppVirtualDirectory iisObject)
 		{
 			iisObject.WebDeployPublishingAvailable = IsWebDeployInstalled() && IsWebManagementServiceInstalled();
 			// No way to find out Web Deploy Publishing Access password
@@ -4456,57 +4456,57 @@ namespace SolidCP.Providers.Web
 
 		private bool? isWmSvcInstalled;
 
-        protected void ReadWebManagementAccessDetailsNonApp(ServerManager srvman, WebVirtualDirectory iisObject)
-        {
-            bool wmSvcAvailable = IsWebManagementServiceInstalled();
-            //
-            iisObject.SetValue<bool>(WebSite.WmSvcAvailable, wmSvcAvailable);
-            //
-            if (wmSvcAvailable)
-            {
-                //
-                iisObject.SetValue<bool>(
-                    WebVirtualDirectory.WmSvcSiteEnabled,
-                    IsWebManagementAccessEnabledNonApp(iisObject));
+		protected void ReadWebManagementAccessDetailsNonApp(ServerManager srvman, WebVirtualDirectory iisObject)
+		{
+			bool wmSvcAvailable = IsWebManagementServiceInstalled();
+			//
+			iisObject.SetValue<bool>(WebSite.WmSvcAvailable, wmSvcAvailable);
+			//
+			if (wmSvcAvailable)
+			{
+				//
+				iisObject.SetValue<bool>(
+					 WebVirtualDirectory.WmSvcSiteEnabled,
+					 IsWebManagementAccessEnabledNonApp(iisObject));
 
-                //
-                string fqWebPath = @"/" + iisObject.FullQualifiedPath;
-                //
-                Configuration config = srvman.GetAdministrationConfiguration();
-                ConfigurationSection authorizationSection = config.GetSection("system.webServer/management/authorization");
-                ConfigurationElementCollection authorizationRulesCollection = authorizationSection.GetCollection("authorizationRules");
+				//
+				string fqWebPath = @"/" + iisObject.FullQualifiedPath;
+				//
+				Configuration config = srvman.GetAdministrationConfiguration();
+				ConfigurationSection authorizationSection = config.GetSection("system.webServer/management/authorization");
+				ConfigurationElementCollection authorizationRulesCollection = authorizationSection.GetCollection("authorizationRules");
 
-                ConfigurationElement scopeElement = FindElement(authorizationRulesCollection, "scope", "path", fqWebPath);
+				ConfigurationElement scopeElement = FindElement(authorizationRulesCollection, "scope", "path", fqWebPath);
 
-                Log.WriteInfo("FQ WebPath: " + fqWebPath);
+				Log.WriteInfo("FQ WebPath: " + fqWebPath);
 
-                if (scopeElement != null)
-                {
-                    ConfigurationElementCollection scopeCollection = scopeElement.GetCollection();
-                    // Retrieve account name
-                    if (scopeCollection.Count > 0)
-                    {
-                        /*
-                        iisObject.SetValue<string>(
-							WebSite.WmSvcAccountName,
-							GetNonQualifiedAccountName((String)scopeCollection[0]["name"]));
-                         */
-                        iisObject.SetValue<string>(
-                            WebSite.WmSvcAccountName, (String)scopeCollection[0]["name"]);
-                        //
-                        iisObject.SetValue<string>(
-                            WebSite.WmSvcServiceUrl, ProviderSettings["WmSvc.ServiceUrl"]);
-                        //
-                        iisObject.SetValue<string>(
-                            WebSite.WmSvcServicePort, ProviderSettings["WmSvc.Port"]);
-                    }
-                }
-            }
-        }
+				if (scopeElement != null)
+				{
+					ConfigurationElementCollection scopeCollection = scopeElement.GetCollection();
+					// Retrieve account name
+					if (scopeCollection.Count > 0)
+					{
+						/*
+						iisObject.SetValue<string>(
+					WebSite.WmSvcAccountName,
+					GetNonQualifiedAccountName((String)scopeCollection[0]["name"]));
+						 */
+						iisObject.SetValue<string>(
+							 WebSite.WmSvcAccountName, (String)scopeCollection[0]["name"]);
+						//
+						iisObject.SetValue<string>(
+							 WebSite.WmSvcServiceUrl, ProviderSettings["WmSvc.ServiceUrl"]);
+						//
+						iisObject.SetValue<string>(
+							 WebSite.WmSvcServicePort, ProviderSettings["WmSvc.Port"]);
+					}
+				}
+			}
+		}
 
-        
 
-        protected void ReadWebManagementAccessDetails(ServerManager srvman, WebAppVirtualDirectory iisObject)
+
+		protected void ReadWebManagementAccessDetails(ServerManager srvman, WebAppVirtualDirectory iisObject)
 		{
 			bool wmSvcAvailable = IsWebManagementServiceInstalled();
 			//
@@ -4541,9 +4541,9 @@ namespace SolidCP.Providers.Web
 							WebSite.WmSvcAccountName,
 							GetNonQualifiedAccountName((String)scopeCollection[0]["name"]));
                          */
-                        iisObject.SetValue<string>(
-                            WebSite.WmSvcAccountName, (String)scopeCollection[0]["name"]);
-                        						//
+						iisObject.SetValue<string>(
+							 WebSite.WmSvcAccountName, (String)scopeCollection[0]["name"]);
+						//
 						iisObject.SetValue<string>(
 							WebSite.WmSvcServiceUrl, ProviderSettings["WmSvc.ServiceUrl"]);
 						//
@@ -4584,36 +4584,36 @@ namespace SolidCP.Providers.Web
 			return null;
 		}
 
-        private bool IsWebManagementAccessEnabledNonApp(WebVirtualDirectory iisObject)
-        {
-            using (var serverManager = webObjectsSvc.GetServerManager())
-            {
-                //
-                string fqWebPath = String.Format("/{0}", iisObject.FullQualifiedPath);
-                //
-                Log.WriteInfo("FQ Web Path: " + fqWebPath);
-                //
-                Configuration config = serverManager.GetAdministrationConfiguration();
-                ConfigurationSection authorizationSection = config.GetSection("system.webServer/management/authorization");
-                ConfigurationElementCollection authorizationRulesCollection = authorizationSection.GetCollection("authorizationRules");
+		private bool IsWebManagementAccessEnabledNonApp(WebVirtualDirectory iisObject)
+		{
+			using (var serverManager = webObjectsSvc.GetServerManager())
+			{
+				//
+				string fqWebPath = String.Format("/{0}", iisObject.FullQualifiedPath);
+				//
+				Log.WriteInfo("FQ Web Path: " + fqWebPath);
+				//
+				Configuration config = serverManager.GetAdministrationConfiguration();
+				ConfigurationSection authorizationSection = config.GetSection("system.webServer/management/authorization");
+				ConfigurationElementCollection authorizationRulesCollection = authorizationSection.GetCollection("authorizationRules");
 
-                ConfigurationElement scopeElement = FindElement(authorizationRulesCollection, "scope", "path", fqWebPath);
+				ConfigurationElement scopeElement = FindElement(authorizationRulesCollection, "scope", "path", fqWebPath);
 
-                if (scopeElement != null)
-                {
-                    // At least one authorization rule exists
-                    if (scopeElement.GetCollection().Count > 0)
-                    {
-                        return true;
-                    }
-                }
-            }
+				if (scopeElement != null)
+				{
+					// At least one authorization rule exists
+					if (scopeElement.GetCollection().Count > 0)
+					{
+						return true;
+					}
+				}
+			}
 
-            //
-            return false;
-        }
+			//
+			return false;
+		}
 
-        private bool IsWebManagementAccessEnabled(WebAppVirtualDirectory iisObject)
+		private bool IsWebManagementAccessEnabled(WebAppVirtualDirectory iisObject)
 		{
 			using (var serverManager = webObjectsSvc.GetServerManager())
 			{
@@ -4727,30 +4727,30 @@ namespace SolidCP.Providers.Web
 		}
 
 
-        protected string GetFullQualifiedAccountNameSid(string accountName)
-        {
-            //
-            if (!ServerSettings.ADEnabled)
-                return String.Format(@"{0}\{1}", Environment.MachineName, accountName);
+		protected string GetFullQualifiedAccountNameSid(string accountName)
+		{
+			//
+			if (!ServerSettings.ADEnabled)
+				return String.Format(@"{0}\{1}", Environment.MachineName, accountName);
 
-            if (accountName.IndexOf("\\") != -1)
-                return accountName; // already has domain information
+			if (accountName.IndexOf("\\") != -1)
+				return accountName; // already has domain information
 
-            // DO IT FOR ACTIVE DIRECTORY MODE ONLY
-            string domainName = null;
-            try
-            {
-                DirectoryContext objContext = new DirectoryContext(DirectoryContextType.Domain, ServerSettings.ADRootDomain);
-                Domain objDomain = Domain.GetDomain(objContext);
-                domainName = objDomain.Name;
-            }
-            catch (Exception ex)
-            {
-                Log.WriteError("Get domain name error", ex);
-            }
+			// DO IT FOR ACTIVE DIRECTORY MODE ONLY
+			string domainName = null;
+			try
+			{
+				DirectoryContext objContext = new DirectoryContext(DirectoryContextType.Domain, ServerSettings.ADRootDomain);
+				Domain objDomain = Domain.GetDomain(objContext);
+				domainName = objDomain.Name;
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError("Get domain name error", ex);
+			}
 
-            return domainName != null ? domainName + "\\" + accountName : accountName;
-        }
+			return domainName != null ? domainName + "\\" + accountName : accountName;
+		}
 		#endregion
 
 		#region SSL
@@ -4767,33 +4767,33 @@ namespace SolidCP.Providers.Web
 		public override SSLCertificate InstallCertificate(SSLCertificate certificate, WebSite website)
 		{
 			var sslObjectService = new SSLModuleService();
-            //
-            Log.WriteInfo("SSLCertificate installCertificate");
+			//
+			Log.WriteInfo("SSLCertificate installCertificate");
 			return sslObjectService.InstallCertificate(certificate, website);
 		}
 
-        public override String LEInstallCertificate(WebSite website, string email)
-        {
-            var sslObjectService = new SSLModuleService();
-            //
-            return sslObjectService.LEInstallCertificate(website, email);
-        }
+		public override String LEInstallCertificate(WebSite website, string email)
+		{
+			var sslObjectService = new SSLModuleService();
+			//
+			return sslObjectService.LEInstallCertificate(website, email);
+		}
 
-        public override List<SSLCertificate> GetServerCertificates()
+		public override List<SSLCertificate> GetServerCertificates()
 		{
 			var sslObjectService = new SSLModuleService();
 			//
 			return sslObjectService.GetServerCertificates();
 		}
 
-        public override SSLCertificate InstallPFX(byte[] certificate, string password, WebSite website)
-        {
-            var sslObjectService = new SSLModuleService();
-            //
-            return sslObjectService.InstallPfx(certificate, password, website);
-        }
+		public override SSLCertificate InstallPFX(byte[] certificate, string password, WebSite website)
+		{
+			var sslObjectService = new SSLModuleService();
+			//
+			return sslObjectService.InstallPfx(certificate, password, website);
+		}
 
-        public override byte[] ExportCertificate(string serialNumber, string password)
+		public override byte[] ExportCertificate(string serialNumber, string password)
 		{
 			var sslObjectService = new SSLModuleService();
 			//
@@ -4822,186 +4822,204 @@ namespace SolidCP.Providers.Web
 		}
 		#endregion
 
-        #region Web Platform Installer Application Gallery
+		#region Web Platform Installer Application Gallery
 
-        // moved down to IIs60
+		// moved down to IIs60
 
-        override public bool CheckLoadUserProfile()
-        {
-            using (var srvman = new ServerManager())
-            {
-                string poolName = Environment.GetEnvironmentVariable("APP_POOL_ID", EnvironmentVariableTarget.Process);
-                ApplicationPool pool = srvman.ApplicationPools[poolName];
-                if (pool == null)
-                    throw new Exception("ApplicationPool pool is null" + poolName);
+		override public bool CheckLoadUserProfile()
+		{
+			using (var srvman = new ServerManager())
+			{
+				string poolName = Environment.GetEnvironmentVariable("APP_POOL_ID", EnvironmentVariableTarget.Process);
+				ApplicationPool pool = srvman.ApplicationPools[poolName];
+				if (pool == null)
+					throw new Exception("ApplicationPool pool is null" + poolName);
 
-                return pool.ProcessModel.LoadUserProfile;
-            }
+				return pool.ProcessModel.LoadUserProfile;
+			}
 
-        }
+		}
 
-        override public void EnableLoadUserProfile()
-        {
-            using (var srvman = new ServerManager())
-            {
-                string poolName = Environment.GetEnvironmentVariable("APP_POOL_ID", EnvironmentVariableTarget.Process);
-                ApplicationPool pool = srvman.ApplicationPools[poolName];
-                if (pool == null)
-                    throw new Exception("ApplicationPool pool is null" + poolName);
+		override public void EnableLoadUserProfile()
+		{
+			using (var srvman = new ServerManager())
+			{
+				string poolName = Environment.GetEnvironmentVariable("APP_POOL_ID", EnvironmentVariableTarget.Process);
+				ApplicationPool pool = srvman.ApplicationPools[poolName];
+				if (pool == null)
+					throw new Exception("ApplicationPool pool is null" + poolName);
 
-                pool.ProcessModel.LoadUserProfile = true;
-                // save changes
-                srvman.CommitChanges();
-            }
-        }
-
-
-        #endregion
-
-        #region Php Management
-
-        protected void AddUniquePhpHandlerToList(List<PhpVersion> result, ConfigurationElement handler)
-        {
-            if (string.Equals(handler["path"].ToString(), "*.php", StringComparison.OrdinalIgnoreCase))
-            {
-                var executable = handler["ScriptProcessor"].ToString().Split('|')[0];
-                if (string.Equals(handler["Modules"].ToString(), "FastCgiModule", StringComparison.OrdinalIgnoreCase) && File.Exists(executable))
-                {
-                    var handlerName = handler["Name"].ToString();
-                    if (!result.Exists(v => v.HandlerName == handlerName && v.ExecutionPath == handler["ScriptProcessor"].ToString()))
-                    {
-                        result.Add(new PhpVersion() { HandlerName = handlerName, Version = GetPhpExecutableVersion(executable), ExecutionPath = handler["ScriptProcessor"].ToString() });
-                    }
-                }
-            }
-        }
-
-	    protected PhpVersion[] GetPhpVersions(ServerManager srvman, WebAppVirtualDirectory virtualDir)
-	    {
-	        var result = new List<PhpVersion>();
-
-	        // Loop through all available maps installed for virtualDir, site and server and and fill installed processors
-            var config = srvman.GetWebConfiguration(GetSiteIdFromVirtualDir(virtualDir), virtualDir.VirtualPath);
-            var handlersSection = config.GetSection(Constants.HandlersSection);
-	        foreach (var handler in handlersSection.GetCollection())
-	        {
-                AddUniquePhpHandlerToList(result, handler);
-	        }
-
-            if (!(virtualDir is WebSite))
-            {
-                var siteConfig = srvman.GetWebConfiguration(GetSiteIdFromVirtualDir(virtualDir), "/");
-                var siteHandlersSection = siteConfig.GetSection(Constants.HandlersSection);
-
-                foreach (var handler in siteHandlersSection.GetCollection())
-                {
-                    AddUniquePhpHandlerToList(result, handler);
-                }
-            }
-
-	        var srvConfig = srvman.GetApplicationHostConfiguration();
-            var srvHandlersSection = srvConfig.GetSection(Constants.HandlersSection);
-            foreach (var handler in srvHandlersSection.GetCollection())
-	        {
-                AddUniquePhpHandlerToList(result, handler);
-	        }
-
-	        return result.ToArray();
-	    }
-
-	    protected PhpVersion[] GetPhpVersions(WebAppVirtualDirectory virtualDir)
-	    {
-	        using (var srvman = webObjectsSvc.GetServerManager())
-	        {
-	            return GetPhpVersions(srvman, virtualDir);
-	        }
-	    }
-
-	    protected string GetActivePhpHandlerName(WebAppVirtualDirectory virtualDir)
-	    {
-	        using (var srvman = webObjectsSvc.GetServerManager())
-	        {
-	            return GetActivePhpHandlerName(srvman, virtualDir);
-	        }
-	    }
+				pool.ProcessModel.LoadUserProfile = true;
+				// save changes
+				srvman.CommitChanges();
+			}
+		}
 
 
-	    protected string GetActivePhpHandlerName(ServerManager srvman, WebAppVirtualDirectory virtualDir)
-	    {
-	        var config = srvman.GetWebConfiguration(GetSiteIdFromVirtualDir(virtualDir), virtualDir.VirtualPath);
-	        var handlersSection = config.GetSection(Constants.HandlersSection);
+		#endregion
 
-	        // Find first handler for *.php
-	        return (from handler in handlersSection.GetCollection() 
-                    where string.Equals(handler["path"].ToString(), "*.php", StringComparison.OrdinalIgnoreCase) &&  string.Equals(handler["Modules"].ToString(), "FastCgiModule", StringComparison.OrdinalIgnoreCase)
-                    select handler["name"].ToString()
-                    ).FirstOrDefault();
-	    }
+		#region Php Management
 
-	    protected static string GetPhpExecutableVersion(string phpexePath)
-        {
-            return FileVersionInfo.GetVersionInfo(phpexePath).ProductVersion;
-        }
+		protected void AddUniquePhpHandlerToList(List<PhpVersion> result, ConfigurationElement handler)
+		{
+			if (string.Equals(handler["path"].ToString(), "*.php", StringComparison.OrdinalIgnoreCase))
+			{
+				var executable = handler["ScriptProcessor"].ToString().Split('|')[0];
+				if (string.Equals(handler["Modules"].ToString(), "FastCgiModule", StringComparison.OrdinalIgnoreCase) && File.Exists(executable))
+				{
+					var handlerName = handler["Name"].ToString();
+					if (!result.Exists(v => v.HandlerName == handlerName && v.ExecutionPath == handler["ScriptProcessor"].ToString()))
+					{
+						result.Add(new PhpVersion() { HandlerName = handlerName, Version = GetPhpExecutableVersion(executable), ExecutionPath = handler["ScriptProcessor"].ToString() });
+					}
+				}
+			}
+		}
 
-	    protected void MakeHandlerActive(string handlerName, WebAppVirtualDirectory virtualDir)
-	    {
-	        using (var srvman = webObjectsSvc.GetServerManager())
-	        {
+		protected PhpVersion[] GetPhpVersions(ServerManager srvman, WebAppVirtualDirectory virtualDir)
+		{
+			var result = new List<PhpVersion>();
+
+			// Loop through all available maps installed for virtualDir, site and server and and fill installed processors
+			var config = srvman.GetWebConfiguration(GetSiteIdFromVirtualDir(virtualDir), virtualDir.VirtualPath);
+			var handlersSection = config.GetSection(Constants.HandlersSection);
+			foreach (var handler in handlersSection.GetCollection())
+			{
+				AddUniquePhpHandlerToList(result, handler);
+			}
+
+			if (!(virtualDir is WebSite))
+			{
+				var siteConfig = srvman.GetWebConfiguration(GetSiteIdFromVirtualDir(virtualDir), "/");
+				var siteHandlersSection = siteConfig.GetSection(Constants.HandlersSection);
+
+				foreach (var handler in siteHandlersSection.GetCollection())
+				{
+					AddUniquePhpHandlerToList(result, handler);
+				}
+			}
+
+			var srvConfig = srvman.GetApplicationHostConfiguration();
+			var srvHandlersSection = srvConfig.GetSection(Constants.HandlersSection);
+			foreach (var handler in srvHandlersSection.GetCollection())
+			{
+				AddUniquePhpHandlerToList(result, handler);
+			}
+
+			return result.ToArray();
+		}
+
+		protected PhpVersion[] GetPhpVersions(WebAppVirtualDirectory virtualDir)
+		{
+			using (var srvman = webObjectsSvc.GetServerManager())
+			{
+				return GetPhpVersions(srvman, virtualDir);
+			}
+		}
+
+		protected string GetActivePhpHandlerName(WebAppVirtualDirectory virtualDir)
+		{
+			using (var srvman = webObjectsSvc.GetServerManager())
+			{
+				return GetActivePhpHandlerName(srvman, virtualDir);
+			}
+		}
+
+
+		protected string GetActivePhpHandlerName(ServerManager srvman, WebAppVirtualDirectory virtualDir)
+		{
+			var config = srvman.GetWebConfiguration(GetSiteIdFromVirtualDir(virtualDir), virtualDir.VirtualPath);
+			var handlersSection = config.GetSection(Constants.HandlersSection);
+
+			// Find first handler for *.php
+			return (from handler in handlersSection.GetCollection()
+					  where string.Equals(handler["path"].ToString(), "*.php", StringComparison.OrdinalIgnoreCase) && string.Equals(handler["Modules"].ToString(), "FastCgiModule", StringComparison.OrdinalIgnoreCase)
+					  select handler["name"].ToString()
+						).FirstOrDefault();
+		}
+
+		protected static string GetPhpExecutableVersion(string phpexePath)
+		{
+			return FileVersionInfo.GetVersionInfo(phpexePath).ProductVersion;
+		}
+
+		protected void MakeHandlerActive(string handlerName, WebAppVirtualDirectory virtualDir)
+		{
+			using (var srvman = webObjectsSvc.GetServerManager())
+			{
 				var config = srvman.GetWebConfiguration(GetSiteIdFromVirtualDir(virtualDir), virtualDir.VirtualPath);
 
-                var handlersSection = (HandlersSection)config.GetSection(Constants.HandlersSection, typeof(HandlersSection));
+				var handlersSection = (HandlersSection)config.GetSection(Constants.HandlersSection, typeof(HandlersSection));
 
-	            var handlersCollection = handlersSection.Handlers;
+				var handlersCollection = handlersSection.Handlers;
 
-	            var handlerElement = handlersCollection[handlerName];
+				var handlerElement = handlersCollection[handlerName];
 
-                var updatingHandlerOrder = true;
+				var updatingHandlerOrder = true;
 
-                if (handlerElement == null)
-                {
-                    // If handlerElement is null it is not found in the current virtual dirs handlers collection, 
-                    // search in site config and in server config and add the new handler
-                    updatingHandlerOrder = false;
+				if (handlerElement == null)
+				{
+					// If handlerElement is null it is not found in the current virtual dirs handlers collection, 
+					// search in site config and in server config and add the new handler
+					updatingHandlerOrder = false;
 
-                    if (!(virtualDir is WebSite))
-                    {
-                        var siteConfig = srvman.GetWebConfiguration(GetSiteIdFromVirtualDir(virtualDir), "/");
-                        var siteHandlersSection = (HandlersSection)siteConfig.GetSection(Constants.HandlersSection, typeof(HandlersSection));
-                        var siteHandlersCollection = siteHandlersSection.Handlers;
+					if (!(virtualDir is WebSite))
+					{
+						var siteConfig = srvman.GetWebConfiguration(GetSiteIdFromVirtualDir(virtualDir), "/");
+						var siteHandlersSection = (HandlersSection)siteConfig.GetSection(Constants.HandlersSection, typeof(HandlersSection));
+						var siteHandlersCollection = siteHandlersSection.Handlers;
 
-                        handlerElement = siteHandlersCollection[handlerName];
-                    }
-                }
+						handlerElement = siteHandlersCollection[handlerName];
+					}
+				}
 
-                if (handlerElement == null)
-                {
-                    var serverConfig = srvman.GetApplicationHostConfiguration();
-                    var serverHandlersSection = (HandlersSection)serverConfig.GetSection(Constants.HandlersSection, typeof(HandlersSection));
-                    var serverHandlersCollection = serverHandlersSection.Handlers;
+				if (handlerElement == null)
+				{
+					var serverConfig = srvman.GetApplicationHostConfiguration();
+					var serverHandlersSection = (HandlersSection)serverConfig.GetSection(Constants.HandlersSection, typeof(HandlersSection));
+					var serverHandlersCollection = serverHandlersSection.Handlers;
 
-                    handlerElement = serverHandlersCollection[handlerName];
-                }
+					handlerElement = serverHandlersCollection[handlerName];
+				}
 
-                var activeHandlerElement = handlersCollection[GetActivePhpHandlerName(srvman, virtualDir)];
-                
-                var activeHandlerIndex = handlersCollection.IndexOf(activeHandlerElement);
+				var activeHandlerElement = handlersCollection[GetActivePhpHandlerName(srvman, virtualDir)];
 
-                if (updatingHandlerOrder)
-                {
-                    handlersCollection.Remove(handlerElement);
-                }
-                
-                handlersCollection.AddCopyAt(activeHandlerIndex, handlerElement);
+				var activeHandlerIndex = handlersCollection.IndexOf(activeHandlerElement);
 
-                srvman.CommitChanges();
-	        }
-	    }
+				if (updatingHandlerOrder)
+				{
+					handlersCollection.Remove(handlerElement);
+				}
 
-	    protected string GetSiteIdFromVirtualDir(WebAppVirtualDirectory virtualDir)
-	    {
-	        return string.IsNullOrEmpty(virtualDir.ParentSiteName) ? ((WebSite) virtualDir).SiteId : virtualDir.ParentSiteName;
-	    }
+				handlersCollection.AddCopyAt(activeHandlerIndex, handlerElement);
 
-	    #endregion
+				srvman.CommitChanges();
+			}
+		}
+
+		protected string GetSiteIdFromVirtualDir(WebAppVirtualDirectory virtualDir)
+		{
+			return string.IsNullOrEmpty(virtualDir.ParentSiteName) ? ((WebSite)virtualDir).SiteId : virtualDir.ParentSiteName;
+		}
+
+		#endregion
+
+		public virtual Version DefaultVersion => new Version(7, 0);
+		public override Version Version
+		{
+			get
+			{
+				RegistryKey root = Registry.LocalMachine;
+				RegistryKey rk = root.OpenSubKey("SOFTWARE\\Microsoft\\InetStp");
+				if (rk != null)
+				{
+					var major = (int)rk.GetValue("MajorVersion", null);
+					var minor = (int)rk.GetValue("MinorVersion", null);
+					rk.Close();
+					return new Version(major, minor);
+				}
+				else return DefaultVersion;
+			}
+		}
     }
 }

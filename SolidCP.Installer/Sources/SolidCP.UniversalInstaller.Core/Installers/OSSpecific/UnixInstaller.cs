@@ -8,6 +8,7 @@ using System.Security.Cryptography.X509Certificates;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using SolidCP.EnterpriseServer;
+using System.Text.RegularExpressions;
 
 namespace SolidCP.UniversalInstaller
 {
@@ -194,6 +195,14 @@ namespace SolidCP.UniversalInstaller
 			var euid = Mono.Unix.Native.Syscall.geteuid();
 			return euid == 0;
 		}
+
+		public override bool CheckOSSupported() => CheckSystemdSupported();
+
+		public override bool CheckIISVersionSupported() => false;
+
+		public override bool CheckSystemdSupported() => new SystemdServiceController().IsInstalled;
+
+		public override bool CheckNetVersionSupported() => OSInfo.IsMono || OSInfo.IsCore && int.Parse(Regex.Match(OSInfo.FrameworkDescription, "[0-9]+").Value) >= 8;
 
 		public override void RestartAsAdmin()
 		{

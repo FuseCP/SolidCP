@@ -407,7 +407,7 @@ namespace SolidCP.UniversalInstaller
 			Console.CursorVisible = false;
 			Console.SetCursorPosition(0, Y);
 			Console.Write(Template);
-			SetFocus(Fields.FirstOrDefault(f => f.CanFocus));
+			//SetFocus(Fields.FirstOrDefault(f => f.CanFocus));
 
 			foreach (var field in Fields)
 				field.Show();
