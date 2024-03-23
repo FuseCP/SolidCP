@@ -400,7 +400,7 @@ Checking System Requirements
 					form[2].Text = "!";
 					ok = false;
 				}
-				form["NET"].Text = " "+Regex.Replace(OSInfo.FrameworkDescription, @"(?<=[0-9]+)\.[0-9.]*", "");
+				form["NET"].Text = " "+OSInfo.NetDescription;
 				form.Show();
 				if (Installer.CheckIISVersionSupported()) form[4].Text = "x";
 				else {

@@ -44,6 +44,24 @@ namespace SolidCP.Providers.OS
 		static OSFlavor flavor = OSFlavor.Unknown;
 		static Version version = new Version("0.0.0.0");
 
+		public static string NetVersion
+		{
+			get
+			{
+				if (IsMono || IsCore) return Regex.Match(FrameworkDescription, @"[0-9]+(\.[0-9]+)?").Value;
+
+				return WindowsOSInfo.NetFXVersion;
+			}
+		}
+
+		public static string NetDescription
+		{
+			get
+			{
+				if (IsMono || IsCore) return FrameworkDescription;
+				return $".NET Framework {NetVersion}";
+			}
+		}
 		public static OSPlatform OSPlatform => IsWindows ? OSPlatform.Windows :
 			 (IsMac ? OSPlatform.Mac :
 			 (IsLinux ? OSPlatform.Linux :
