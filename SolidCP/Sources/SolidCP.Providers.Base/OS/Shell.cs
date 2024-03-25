@@ -359,7 +359,10 @@ namespace SolidCP.Providers.OS
 			lock (error) error.Append(text);
 			if (Redirect) Console.Error.Write(text);
 		}
-
-		public static Shell Default => OSInfo.Current.DefaultShell;
+#if wpkg
+		public readonly static Shell Default = new CmdShell(); // OSInfo.Current.DefaultShell;
+#else
+		public static Shell Default = OSInfo.Current.DefaultShell;
+#endif
 	}
 }
