@@ -362,7 +362,7 @@ namespace SolidCP.Providers.OS
 #if wpkg
 		public readonly static Shell Default = new CmdShell(); // OSInfo.Current.DefaultShell;
 #else
-		public static Shell Default = OSInfo.Current.DefaultShell;
+		public static Shell Default => OSInfo.Current.DefaultShell;
 #endif
 	}
 }
