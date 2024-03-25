@@ -24,9 +24,9 @@ namespace SolidCP.UniversalInstaller
 
 		public override void InstallNet8Runtime()
 		{
-			if (OSInfo.OSVersion.Major < 11) throw new PlatformNotSupportedException("Cannot install NET 8 on Debian below version 11.");
+			if (CheckNet8RuntimeInstalled()) return;
 
-			CheckNet8RuntimeInstalled();
+			if (OSInfo.OSVersion.Major < 11) throw new PlatformNotSupportedException("Cannot install NET 8 on Debian below version 11.");
 
 			if (!HasDotnet)
 			{
