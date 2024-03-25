@@ -17,7 +17,7 @@ namespace SolidCP.UniversalInstaller
 				if (current == null)
 				{
 #if NETFRAMEWORK
-                    current = new WinFormsUI();
+               current = new WinFormsUI();
 #else
 					current = new ConsoleUI();
 #endif

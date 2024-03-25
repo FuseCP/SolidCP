@@ -63,6 +63,7 @@ bin/Release
 *.log
 
 /SolidCP/Sources/packages
+packages/
 /SolidCP/msbuild.log
 /SolidCP/Sources/Tools/SCPTransportAgent/SCPTransportAgent.dll
 /SolidCP.Installer/Sources/packages/
