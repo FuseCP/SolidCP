@@ -9,6 +9,7 @@
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<StartupObject>SolidCP.UniversalInstaller.Program</StartupObject>
 		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+		<ApplicationIcon>Resources\SolidCP.ico</ApplicationIcon>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -120,6 +121,7 @@
 			<OutputItemType>EmbeddedResource</OutputItemType>
 			<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
 		</ProjectReference>
+		<ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Server.WPIServiceContract\SolidCP.Server.WPIServiceContract.csproj" />
 		<ProjectReference Include="..\SolidCP.UniversalInstaller.Core\SolidCP.UniversalInstaller.Core.csproj">
 			<OutputItemType>EmbeddedResource</OutputItemType>
 			<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
@@ -128,6 +130,10 @@
 
 	<ItemGroup>
 		<Compile Include="..\..\..\SolidCP\Sources\VersionInfo.cs" Link="VersionInfo.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="Resources\SolidCP.ico" />
 	</ItemGroup>
 
 	<ItemGroup>
