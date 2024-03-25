@@ -20,16 +20,22 @@
 
 		<GZipCmd Condition=" '$(OS)' == 'Windows_NT' ">"$(RootFolder)\tools\gzip\bin\gzip.exe"</GZipCmd>
 		<GZipCmd Condition=" '$(OS)' == 'Unix' ">gzip</GZipCmd>
+        <NuGetCmd Condition=" '$(OS)' == 'Windows_NT' ">$(TrunkFolder)\Sources\.nuget\NuGet.exe</NuGetCmd>
+        <NuGetCmd Condition=" '$(OS)' == 'Unix' ">dotnet</NuGetCmd>
         <WpkgCmd>"$(RootFolder)\tools\wpkg\bin\$(Configuration)\wpkg.exe"</WpkgCmd>
     </PropertyGroup>
 
     <Target Name="BuildWpkg">
-	    <Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(RootFolder)\tools\wpkg\wpkg.sln" />
-
+	    <Exec Command="$(NuGetCmd) restore $(RootFolder)\tools\wpkg\wpkg.sln" />
         <MSBuild Projects="$(RootFolder)\tools\wpkg\wpkg.sln" Properties="Configuration=$(Configuration)" />
     </Target>
 
-    <Target Name="CleanOutput" DependsOnTargets="BuildWpkg">
+    <Target Name="BuildUniversalInstaller" Condition=" '$(OS)' == 'Unix' ">
+        <Exec Command="$(NuGetCmd) restore $(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller.sln" />
+        <MSBuild Projects="$(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller.sln" Properties="Configuration=$(Configuration)" />
+    </Target>
+
+    <Target Name="CleanOutput" DependsOnTargets="BuildWpkg;BuildUniversalInstaller">
         <ItemGroup>
             <OutputPackageFiles Include="$(PackagesFolder)\bin\*.*" /> 
         </ItemGroup>
