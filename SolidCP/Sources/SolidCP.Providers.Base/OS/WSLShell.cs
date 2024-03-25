@@ -11,11 +11,39 @@ namespace SolidCP.Providers.OS
 	public class WSLShell : Shell
 	{
 		public enum Distro { Default, Ubuntu, Debian, Kali, Ubuntu18, Ubuntu20, Ubuntu22, Ubuntu24, Oracle7, Oracle8, Oracle9, openSUSELeap, SUSE15_4, SUSE15_5, openSUSEThumbleweed, FedoraRemix, Other };
-		public override string ShellExe => CurrentDistro == Distro.Default ? "wsl" : $"wsl --distribution {DistroName(CurrentDistro)}";
+		public override string ShellExe => CurrentDistro == Distro.Default ? "wsl" : $"wsl --distribution {CurrentDistroName}";
 
-		public WSLShell() { }
-		public WSLShell(string distro) => Use(distro);
-		public WSLShell(Distro distro) => Use(distro);
+		public WSLShell() : base() { BaseShell = Shell.Default; }
+		public WSLShell(string distro) : this() => Use(distro);
+		public WSLShell(Distro distro) : this() => Use(distro);
+
+		Shell baseShell = null;
+
+		public Shell BaseShell
+		{
+			get => baseShell;
+			set
+			{
+				if (baseShell != value)
+				{
+					if (baseShell != null)
+					{
+						baseShell.Log -= OnBaseLog;
+						baseShell.LogCommandEnd -= OnBaseLogCommandEnd;
+						baseShell.LogOutput -= OnBaseLogOutput;
+						baseShell.LogError -= OnBaseLogError;
+					}
+					baseShell = value;
+					if (value != null)
+					{
+						value.Log += OnBaseLog;
+						value.LogCommandEnd += OnBaseLogCommandEnd;
+						value.LogOutput += OnBaseLogOutput;
+						value.LogError += OnBaseLogError;
+					}
+				}
+			}
+		}
 		protected string DistroName(Distro distro)
 		{
 			switch (distro)
@@ -44,6 +72,7 @@ namespace SolidCP.Providers.OS
 		public string OtherDistroName = null;
 
 		public Distro CurrentDistro = Distro.Default;
+		public string CurrentDistroName => DistroName(CurrentDistro);
 		public void Use(Distro distro) => CurrentDistro = distro;
 		public void Use(string distro)
 		{
@@ -51,15 +80,16 @@ namespace SolidCP.Providers.OS
 			OtherDistroName = distro;
 		}
 
-		public string[] InstalledDistros => base.Find("wsl") == null ? new string[0] : Regex.Matches(base.Exec($"wsl --list --verbose").Output().Result, @"(?<=\n\*?\s*)[^\s]+")
+		protected string WSLList => BaseShell.SilentClone.Exec($"wsl --list --verbose", Encoding.Unicode).Output().Result;
+		public string[] InstalledDistros => base.Find("wsl") == null ? new string[0] : Regex.Matches(WSLList, @"(?<=\n\*?\s+)[^\s]+")
 			.OfType<Match>()
 			.Select(match => match.Value)
 			.ToArray();
-		public string DefaultDistro => base.Find("wsl") == null ? null : Regex.Match(base.Exec($"wsl --list --verbose").Output().Result, @"(?<=\n\*\s*)[^\s]+").Value;
+		public string DefaultDistro => base.Find("wsl") == null ? null : Regex.Match(WSLList, @"(?<=\n\*\s+)[^\s]+").Value;
 		public bool IsInstalled(Distro distro) => IsInstalled(DistroName(distro));
-		public bool IsInstalled(string distroName) => Regex.IsMatch(base.Exec($"wsl --list --verbose").Output().Result, $@"^\*?\s*{Regex.Escape(distroName)}\s", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+		public bool IsInstalled(string distroName) => Regex.IsMatch(WSLList, $@"^\*?\s+{Regex.Escape(distroName)}\s", RegexOptions.IgnoreCase | RegexOptions.Multiline);
 		public bool IsInstalledAny() => base.Find("wsl") != null && InstalledDistros.Length > 0;
-		public bool IsInstalled() => IsInstalled(DistroName(CurrentDistro));
+		public bool IsInstalled() => IsInstalled(CurrentDistroName);
 
 		public string WSLPath(string path) => Regex.Replace(Path.GetFullPath(path), "^(?<drive>[A-Z]):",
 			match => $"/mnt/{match.Groups["drive"].Value.ToLower()}", RegexOptions.IgnoreCase | RegexOptions.Singleline)
@@ -72,17 +102,21 @@ namespace SolidCP.Providers.OS
 			return WSLPath(localTmp);
 		}
 
-		public override Shell ExecAsync(string command)
+		public override Shell ExecAsync(string command, Encoding encoding = null)
 		{
-			return base.ExecAsync($"{ShellExe} {command}");
+			LogCommand?.Invoke(command);
+
+			return BaseShell.ExecAsync($"{ShellExe} {command}", encoding);
 		}
-		public override Shell ExecScriptAsync(string script)
+		public override Shell ExecScriptAsync(string script, Encoding encoding = null)
 		{
+			LogCommand?.Invoke($"bash {script}");
+
 			script = script.Trim();
 			// adjust new lines to OS type
 			script = Regex.Replace(script, @"\r?\n", Environment.NewLine);
 			var file = ToTempFile(script.Trim());
-			var shell = base.ExecAsync($"{ShellExe} \"{file}\"");
+			var shell = BaseShell.ExecAsync($"{ShellExe} \"{file}\"", encoding);
 			if (shell.Process != null)
 			{
 				shell.Process.Exited += (sender, args) =>
@@ -95,15 +129,50 @@ namespace SolidCP.Providers.OS
 			return shell;
 		}
 
+		public override Shell Clone
+		{
+			get
+			{
+				var clone = (WSLShell)base.Clone;
+				clone.CurrentDistro = CurrentDistro;
+				clone.OtherDistroName = OtherDistroName;
+				clone.Redirect = Redirect;
+				clone.LogFile = LogFile;
+				return clone;
+			}
+		}
+		public override Shell SilentClone
+		{
+			get
+			{
+				var clone = (WSLShell)base.SilentClone;
+				clone.BaseShell = BaseShell.SilentClone;
+				clone.Redirect = false;
+				return clone;
+			}
+		}
 		public override string Find(string cmd)
 		{
-			if (!IsInstalled()) return null;
+			var shell = (WSLShell)SilentClone;
 
-			var output = Exec($"which {cmd}").Output().Result.Trim();
+			if (!shell.IsInstalled()) return null;
+
+			var output = shell.Exec($"which {cmd}").Output().Result.Trim();
 			if (string.IsNullOrEmpty(output)) return null;
-			
+
 			return output;
 		}
+
+		protected override void OnLogCommand(string text)
+		{
+			text = $"{CurrentDistroName}> {text}";
+			if (Redirect) Console.WriteLine(text);
+			if (LogFile != null) File.AppendAllText(LogFile, text);
+		}
+		protected void OnBaseLog(string msg) => Log?.Invoke(msg);
+		protected void OnBaseLogCommandEnd() => LogCommandEnd?.Invoke();
+		protected void OnBaseLogOutput(string msg) => LogOutput?.Invoke(msg);
+		protected void OnBaseLogError(string msg) => LogError?.Invoke(msg);
 
 		public new readonly static WSLShell Default = new WSLShell();
 	}

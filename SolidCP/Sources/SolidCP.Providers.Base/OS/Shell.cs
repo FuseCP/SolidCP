@@ -5,11 +5,11 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.DirectoryServices;
 using System.Runtime.CompilerServices;
 using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Text.RegularExpressions;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace SolidCP.Providers.OS
 {
@@ -27,6 +27,8 @@ namespace SolidCP.Providers.OS
 			error = new StringBuilder();
 			outputAndError = new StringBuilder();
 			Log += OnLog;
+			LogCommand += OnLogCommand;
+			LogCommandEnd += OnLogCommandEnd;
 			LogError += OnLogError;
 			LogOutput += OnLogOutput;
 		}
@@ -120,11 +122,9 @@ namespace SolidCP.Providers.OS
 			cnt?.Invoke();
 		}
 
-		public virtual Shell ExecAsync(string cmd)
+		public virtual Shell ExecAsync(string cmd, Encoding encoding = null)
 		{
-			var cmdlog = $"{cmd}{Environment.NewLine}";
-			Log(cmdlog);
-			LogOutput(cmdlog);
+			LogCommand?.Invoke(cmd);
 
 			// separate command from arguments
 			string arguments;
@@ -174,6 +174,8 @@ namespace SolidCP.Providers.OS
 				process.StartInfo.WindowStyle = WindowStyle;
 				process.StartInfo.RedirectStandardOutput = true;
 				process.StartInfo.RedirectStandardError = true;
+				process.StartInfo.StandardOutputEncoding = encoding ?? Encoding.Default;
+				process.StartInfo.StandardErrorEncoding = encoding ?? Encoding.Default;
 				process.Exited += (obj, args) =>
 				{
 					child.exitCode = child.Process.ExitCode;
@@ -194,8 +196,8 @@ namespace SolidCP.Providers.OS
 						var shell = child;
 						while (shell != null)
 						{
-							shell.Log(line);
-							shell.LogError(line);
+							shell.Log?.Invoke(line);
+							shell.LogError?.Invoke(line);
 							shell = shell.Parent;
 						}
 					}
@@ -206,6 +208,7 @@ namespace SolidCP.Providers.OS
 					{
 						lock (child) child.outputEOF = true;
 						child.CheckCompleted();
+						LogCommandEnd?.Invoke();
 					}
 					else
 					{
@@ -213,8 +216,8 @@ namespace SolidCP.Providers.OS
 						var shell = child;
 						while (shell != null)
 						{
-							shell.Log(line);
-							shell.LogOutput(line);
+							shell.Log?.Invoke(line);
+							shell.LogOutput?.Invoke(line);
 							shell = shell.Parent;
 						}
 					}
@@ -226,14 +229,14 @@ namespace SolidCP.Providers.OS
 			}
 			else
 			{
-				LogError($"Error {cmd} not found.{Environment.NewLine}");
+				LogError?.Invoke($"Error {cmd} not found.{Environment.NewLine}");
 				var child = Clone;
 				child.Process = null;
 				child.NotFound = true;
 				return child;
 			}
 		}
-		public virtual Shell Exec(string command) => ExecAsync(command).Task().Result;
+		public virtual Shell Exec(string command, Encoding encoding = null) => ExecAsync(command, encoding).Task().Result;
 		public virtual Shell Clone
 		{
 			get
@@ -244,13 +247,24 @@ namespace SolidCP.Providers.OS
 			}
 		}
 
-		public virtual Shell ExecScriptAsync(string script)
+		public virtual Shell SilentClone
+		{
+			get
+			{
+				var clone = Clone;
+				clone.Log = clone.LogCommand = clone.LogOutput = clone.LogError = null;
+				clone.Parent = null;
+				return clone;
+			}
+		}
+
+		public virtual Shell ExecScriptAsync(string script, Encoding encoding = null)
 		{
 			script = script.Trim();
 			// adjust new lines to OS type
 			script = Regex.Replace(script, @"\r?\n", Environment.NewLine);
 			var file = ToTempFile(script.Trim());
-			var shell = ExecAsync($"{ShellExe} \"{file}\"");
+			var shell = ExecAsync($"{ShellExe} \"{file}\"", encoding);
 			if (shell.Process != null)
 			{
 				shell.Process.Exited += (sender, args) =>
@@ -261,7 +275,7 @@ namespace SolidCP.Providers.OS
 			return shell;
 		}
 
-		public virtual Shell ExecScript(string script) => ExecScriptAsync(script).Task().Result;
+		public virtual Shell ExecScript(string script, Encoding encoding = null) => ExecScriptAsync(script, encoding).Task().Result;
 
 
 		/* public virtual async Task<Shell> Wait(int milliseconds = Timeout.Infinite)
@@ -272,6 +286,8 @@ namespace SolidCP.Providers.OS
 		} */
 
 		public Action<string> Log { get; set; }
+		public Action<string> LogCommand { get; set; }
+		public Action LogCommandEnd { get; set; }
 		public Action<string> LogOutput { get; set; }
 		public Action<string> LogError { get; set; }
 
@@ -316,10 +332,20 @@ namespace SolidCP.Providers.OS
 			{
 				outputAndError.Append(text);
 				if (LogFile != null) File.AppendAllText(LogFile, text);
-
 			}
 		}
 
+		protected virtual void OnLogCommand(string text)
+		{
+			text = $"> {text}";
+			if (Redirect) Console.WriteLine(text);
+			if (LogFile != null) File.AppendAllText(LogFile, text);
+		}
+		protected virtual void OnLogCommandEnd()
+		{
+			if (Redirect) Console.WriteLine();
+			if (LogFile != null) File.AppendAllText(LogFile, Environment.NewLine);
+		}
 		protected virtual void OnLogOutput(string text)
 		{
 			lock (output)
