@@ -73,7 +73,7 @@ namespace SolidCP.Providers.Web.Apache
 				setting.IsSection ? $"_section{index}" : 
 				setting.NameIndex == 0 ? setting.Name : $"{setting.Name}{setting.NameIndex}";
 		}
-		public string this[string key]
+		public new string this[string key]
 		{
 			get
 			{
@@ -131,7 +131,7 @@ namespace SolidCP.Providers.Web.Apache
 		{
 			public string Text;
 			public int LineNumber;
-			public Match? Match;
+			public Match Match;
 		} 
 		IEnumerable<LineInfo> ParseLines(string configuration)
 		{
@@ -250,9 +250,14 @@ namespace SolidCP.Providers.Web.Apache
 		{
 			Add(new Setting() { Parent = this, IsComment = false, Name = section.Name, Section = section });
 		}
-		public void Add(IEnumerable<ConfigSection> range)
+		public void AddRange(IEnumerable<ConfigSection> range)
 		{
 			foreach (var section in range) Add(section);
+		}
+		public new void Add(Setting setting)
+		{
+			setting.Parent = this;
+			base.Add(setting);
 		}
 
 		public void AddComment(string comment)
@@ -305,6 +310,15 @@ namespace SolidCP.Providers.Web.Apache
 			{
 				w.Write(Ident); w.Write("</"); w.Write(Name); w.WriteLine(">");
 			}
+		}
+	}
+
+	public class Comment: ConfigSection.Setting {
+	
+		public Comment(): base() { }
+		public Comment(string text): this()
+		{
+			Value = text; IsComment = true;
 		}
 	}
 
@@ -539,7 +553,7 @@ namespace SolidCP.Providers.Web.Apache
 			File.Delete(FullName);
 		}
 
-		public void Include()
+		public new void Include()
 		{
 			var files = GetAll("Include")
 				.Concat(GetAll("IncludeOptional"))

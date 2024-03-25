@@ -96,7 +96,7 @@
 		</Reference>
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)' != 'net48'">
-		<PackageReference Include="CoreWCF.Primitives" Version="1.5.1" />
+		<PackageReference Include="CoreWCF.Primitives" Version="1.5.2" />
 		<PackageReference Include="CoreWCF.WebHttp" Version="1.5.1" />
 	</ItemGroup>
 	<ItemGroup>

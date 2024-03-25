@@ -30,6 +30,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#if NETFRAMEWORK
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -37,8 +39,6 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-
-#if NETFRAMEWORK
 
 namespace SolidCP.UniversalInstaller
 {
@@ -53,8 +53,6 @@ namespace SolidCP.UniversalInstaller
 			button.Click += (sender, args) => Close();
 			ActiveControl = txtPassword;
 		}
-
-
 	}
 }
 

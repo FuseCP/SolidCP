@@ -44,8 +44,9 @@ namespace SolidCP.Providers.DNS
         {
             // Create PowerShell helper
             ps = new PowerShellHelper();
-            if (!this.IsInstalled())
-                return;
+            /* FIX: this code here is bogus 
+             if (!this.IsInstalled())
+                return; */
         }
 
         #region Zones

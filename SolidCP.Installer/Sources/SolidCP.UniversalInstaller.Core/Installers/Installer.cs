@@ -8,6 +8,7 @@ using Ionic.Zip;
 using System.Globalization;
 using System.Security.Policy;
 using System.Diagnostics.Contracts;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Data;
@@ -115,12 +116,13 @@ namespace SolidCP.UniversalInstaller
 		public virtual void RemoveFirewallRule(int port) { }
 		public virtual void InstallWebsite(string name, string path, string urls, string username, string password)
 		{
+			/* var remoteServerSettings = new RemoteServerSettings() { ADEnabled = false };
 			// Create web users group
-			if (!SecurityUtils.GroupExists(SolidCPWebUsersGroup, null, ""))
+			if (!SecurityUtils.GroupExists(SolidCPWebUsersGroup, remoteServerSettings, ""))
 			{
-				var group = new SystemGroup() { GroupName = SolidCPWebUsersGroup, Name = SolidCPWebUsersGroup };
-				SecurityUtils.CreateGroup(group, null, "", "");
-			}
+				var group = new SystemGroup() { GroupName = SolidCPWebUsersGroup, Name = SolidCPWebUsersGroup, Description = "SolidCP Website User Group" };
+				SecurityUtils.CreateGroup(group, remoteServerSettings, "", "");
+			} */
 
 			var site = new WebSite()
 			{
@@ -242,7 +244,9 @@ namespace SolidCP.UniversalInstaller
 
 			Shell.LogFile = "SolidCP.Installer.log";
 
-			if (!IsRunningAsAdmin()) RestartAsAdmin();
+			if (!IsRunningAsAdmin() && !Debugger.IsAttached) RestartAsAdmin();
+
+			UI.CheckPrerequisites();
 
 			var packages = UI.GetPackagesToInstall();
 
@@ -315,6 +319,11 @@ namespace SolidCP.UniversalInstaller
 			}
 		}
 
+		public abstract bool CheckOSSupported();
+		public abstract bool CheckSystemdSupported();
+		public abstract bool CheckIISVersionSupported();
+		public abstract bool CheckNetVersionSupported();
+
 		static Installer current;
 		public static Installer Current
 		{
@@ -330,6 +339,7 @@ namespace SolidCP.UniversalInstaller
 						case OSFlavor.Debian: current = new DebianInstaller(); break;
 						case OSFlavor.Ubuntu: current = new UbuntuInstaller(); break;
 						case OSFlavor.Mint: current = new MintInstaller(); break;
+						case OSFlavor.Kali: current = new KaliInstaller(); break;
 						case OSFlavor.Fedora: current = new FedoraInstaller(); break;
 						case OSFlavor.RedHat: current = new RedHatInstaller(); break;
 						case OSFlavor.CentOS: current = new CentOSInstaller(); break;

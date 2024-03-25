@@ -153,7 +153,7 @@ namespace SolidCP.Providers.OS
 		[DllImport("kernel32")]
 		private static extern int GetVersionEx(ref OSVERSIONINFOEX lpVersionInformation);
 
-	
+
 		/*public static string GetVersionEx()
 		{
 			OSVERSIONINFO osvi = new OSVERSIONINFO();
@@ -428,7 +428,7 @@ namespace SolidCP.Providers.OS
 						case 10:
 							int ReleaseId = GetReleaseId();
 							// Server 2016
-							if ((ReleaseId == 1607 || ReleaseId == 1709 || ReleaseId == 1803) && 
+							if ((ReleaseId == 1607 || ReleaseId == 1709 || ReleaseId == 1803) &&
 								info.wProductType != (byte)WinPlatform.VER_NT_WORKSTATION) ret = WindowsVersion.WindowsServer2016;
 							// Windows 10 below 1903
 							else if (ReleaseId == 1507 || ReleaseId == 1511 || ReleaseId == 1607 || ReleaseId == 1703 || ReleaseId == 1709 || ReleaseId == 1803) ret = WindowsVersion.Windows10;
@@ -477,9 +477,9 @@ namespace SolidCP.Providers.OS
 			return false;
 		}
 		public static int GetReleaseId()
-        {
-            return Convert.ToInt32(Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId", "0"));
-        }
+		{
+			return Convert.ToInt32(Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId", "0"));
+		}
 
 		/// <summary>
 		/// Returns Windows directory
@@ -489,36 +489,85 @@ namespace SolidCP.Providers.OS
 		{
 			return Environment.GetEnvironmentVariable("windir");
 		}
-        /// <summary>
-        /// Checks Whether the FSRM role services are installed
-        /// </summary>
-        /// <returns></returns>
-        public static bool CheckFileServicesInstallation()
-        {
+		/// <summary>
+		/// Checks Whether the FSRM role services are installed
+		/// </summary>
+		/// <returns></returns>
+		public static bool CheckFileServicesInstallation()
+		{
 
-            ManagementClass objMC = new ManagementClass("Win32_ServerFeature");
-            ManagementObjectCollection objMOC = objMC.GetInstances();
+			ManagementClass objMC = new ManagementClass("Win32_ServerFeature");
+			ManagementObjectCollection objMOC = objMC.GetInstances();
 
-            // 01.09.2015 roland.breitschaft@x-company.de
-            // Problem: Method not work on German Systems, because the searched Feature-Name does not exist
-            // Fix: Add German String for FSRM-Feature            
+			// 01.09.2015 roland.breitschaft@x-company.de
+			// Problem: Method not work on German Systems, because the searched Feature-Name does not exist
+			// Fix: Add German String for FSRM-Feature            
 
-            //foreach (ManagementObject objMO in objMOC)
-            //    if (objMO.Properties["Name"].Value.ToString().ToLower().Contains("file server resource manager"))
-            //        return true;
-            foreach (ManagementObject objMO in objMOC)
-            {
-                var id = objMO.Properties["ID"].Value.ToString().ToLower();
-                var name = objMO.Properties["Name"].Value.ToString().ToLower();
-                if (id.Contains("72") || id.Contains("104"))
-                    return true;
-                else if (name.Contains("file server resource manager")
-                    || name.Contains("ressourcen-manager f�r dateiserver"))
-                    return true;
-            }
+			//foreach (ManagementObject objMO in objMOC)
+			//    if (objMO.Properties["Name"].Value.ToString().ToLower().Contains("file server resource manager"))
+			//        return true;
+			foreach (ManagementObject objMO in objMOC)
+			{
+				var id = objMO.Properties["ID"].Value.ToString().ToLower();
+				var name = objMO.Properties["Name"].Value.ToString().ToLower();
+				if (id.Contains("72") || id.Contains("104"))
+					return true;
+				else if (name.Contains("file server resource manager")
+					 || name.Contains("ressourcen-manager f�r dateiserver"))
+					return true;
+			}
 
-            return false;
-        }
-    }
+			return false;
+		}
+
+		public static string NetFXVersion
+		{
+			get
+			{
+				const string subkey = @"SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\";
+
+				using (var ndpKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32).OpenSubKey(subkey))
+				{
+					if (ndpKey != null && ndpKey.GetValue("Release") != null)
+					{
+						return CheckFor45PlusVersion((int)ndpKey.GetValue("Release"));
+					}
+					else
+					{
+						return $"{Environment.Version.Major}.{Environment.Version.Minor}";
+					}
+				}
+			}
+		}
+		// Checking the version using >= enables forward compatibility.
+		static string CheckFor45PlusVersion(int releaseKey)
+		{
+			if (releaseKey >= 533320)
+				return "4.8.1";
+			if (releaseKey >= 528040)
+				return "4.8";
+			if (releaseKey >= 461808)
+				return "4.7.2";
+			if (releaseKey >= 461308)
+				return "4.7.1";
+			if (releaseKey >= 460798)
+				return "4.7";
+			if (releaseKey >= 394802)
+				return "4.6.2";
+			if (releaseKey >= 394254)
+				return "4.6.1";
+			if (releaseKey >= 393295)
+				return "4.6";
+			if (releaseKey >= 379893)
+				return "4.5.2";
+			if (releaseKey >= 378675)
+				return "4.5.1";
+			if (releaseKey >= 378389)
+				return "4.5";
+			// This code should never execute. A non-null release key should mean
+			// that 4.5 or later is installed.
+			return "4.0";
+		}
+	}
 }
 

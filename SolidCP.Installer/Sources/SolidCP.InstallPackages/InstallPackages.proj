@@ -1,0 +1,142 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+
+	<PropertyGroup>
+		<Version Condition=" '$(Version)' == '' ">1.5.0</Version>
+		<FileVersion Condition=" '$(FileVersion)' == '' ">$(BUILD_NUMBER)</FileVersion>
+		<VersionLabel Condition=" '$(VersionLabel)' == '' ">$(BUILD_NUMBER)</VersionLabel>
+		<ReleaseDate Condition=" '$(ReleaseDate)' == '' ">2023-01-31</ReleaseDate>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <BuildConfiguration>$(Configuration)</BuildConfiguration>
+		<RootFolder>..\..\..</RootFolder>
+		<TrunkFolder>$(RootFolder)\SolidCP</TrunkFolder>
+
+		<SetupTrunkFolder>$(RootFolder)\SolidCP.Installer</SetupTrunkFolder>
+		<SetupBuildFolder>$(SetupTrunkFolder)\Build\$(BuildConfiguration)</SetupBuildFolder>
+		<MSBuildCommunityTasksPath>$(RootFolder)\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
+
+		<BuildFolder>$(TrunkFolder)\Build\$(BuildConfiguration)</BuildFolder>
+		<DeployFolder>$(TrunkFolder)\Deploy\$(BuildConfiguration)</DeployFolder>
+        <PackagesFolder>$(SetupTrunkFolder)\Sources\SolidCP.InstallPackages</PackagesFolder>
+
+		<GZipCmd Condition=" '$(OS)' == 'Windows_NT' ">"$(RootFolder)\tools\gzip\bin\gzip.exe"</GZipCmd>
+		<GZipCmd Condition=" '$(OS)' == 'Unix' ">gzip</GZipCmd>
+        <NuGetCmd Condition=" '$(OS)' == 'Windows_NT' ">$(TrunkFolder)\Sources\.nuget\NuGet.exe</NuGetCmd>
+        <NuGetCmd Condition=" '$(OS)' == 'Unix' ">dotnet</NuGetCmd>
+        <WpkgCmd>"$(RootFolder)\tools\wpkg\bin\$(Configuration)\wpkg.exe"</WpkgCmd>
+    </PropertyGroup>
+
+    <Target Name="BuildWpkg">
+	    <Exec Command="$(NuGetCmd) restore $(RootFolder)\tools\wpkg\wpkg.sln" />
+        <MSBuild Projects="$(RootFolder)\tools\wpkg\wpkg.sln" Properties="Configuration=$(Configuration)" />
+    </Target>
+
+    <Target Name="BuildUniversalInstaller" Condition=" '$(OS)' == 'Unix' ">
+        <Exec Command="$(NuGetCmd) restore $(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller.sln" />
+        <MSBuild Projects="$(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller.sln" Properties="Configuration=$(Configuration)" />
+    </Target>
+
+    <Target Name="CleanOutput" DependsOnTargets="BuildWpkg;BuildUniversalInstaller">
+        <ItemGroup>
+            <OutputPackageFiles Include="$(PackagesFolder)\bin\*.*" /> 
+        </ItemGroup>
+
+        <Delete Files="@(OutputPackageFiles)" />
+    </Target>
+
+    <Target Name="Dos2Unix" DependsOnTargets="CleanOutput">
+        <ItemGroup>
+            <TextFiles Include="$(PackagesFolder)\src\doc\*.*" />
+            <TextFiles Include="$(PackagesFolder)\src\man\*.*" />
+            <TextFiles Include="$(PackagesFolder)\src\dektop\*.*" />
+            <TextFiles Include="$(PackagesFolder)\Debian\DEBIAN\*.*" />
+            <TextFiles Include="$(PackagesFolder)\Debian\usr\bin\*.*" />
+            <TextFiles Include="$(PackagesFolder)\Fedora\SPECS\*.*" />
+            <TextFiles Include="$(PackagesFolder)\Fedora\usr\bin\*.*" />
+        </ItemGroup>
+
+        <Exec Command="$(WpkgCmd) -d2u &quot;@(TextFiles)&quot;">
+            <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfDos2Unix" />
+        </Exec>
+        <Message Text="$(OutputOfDos2Unix)" />
+    </Target>
+
+    <Target Name="Debian" DependsOnTargets="Dos2Unix">
+        
+        <Message Text="Preparing Debian Files"/>
+
+        <ItemGroup>
+            <DocFilesDebianExclude Include="$(PackagesFolder)\src\doc\ChangeLog" />
+            <DocFilesDebian Include="$(PackagesFolder)\src\doc\*.*" Exclude="@(DocFilesDebianExclude)" />
+        </ItemGroup>
+
+		<Copy SourceFiles="$(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller\bin\$(Configuration)\net48\SolidCP.UniversalInstaller.exe" DestinationFolder="$(PackagesFolder)\Debian\usr\share\solidcp" />
+		<Copy SourceFiles="$(PackagesFolder)\src\man\solidcp-universalinstaller.1" DestinationFiles="$(PackagesFolder)\Debian\usr\share\man\man1\solidcp-universalinstaller.1" />
+		<Copy SourceFiles="$(PackagesFolder)\src\icon\SolidCP.png" DestinationFiles="$(PackagesFolder)\Debian\usr\share\pixmaps\SolidCP.png" />
+		<Copy SourceFiles="$(PackagesFolder)\src\desktop\solidcp-universalinstaller.desktop" DestinationFolder="$(PackagesFolder)\Debian\usr\share\applications" />
+		<Copy SourceFiles="@(DocFilesDebian)" DestinationFolder="$(PackagesFolder)\Debian\usr\share\doc\solidcp" />
+
+        <Delete Files="$(PackagesFolder)\Debian\usr\share\man\man1\solidcp-universalinstaller.1.gz" />
+        <Exec Command="$(GZipCmd) -9 -n &quot;$(PackagesFolder)\Debian\usr\share\man\man1\solidcp-universalinstaller.1&quot;">
+            <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfZip" />
+        </Exec>
+        <Message Text="$(OutputOfZip)" />
+        <Delete Files="$(PackagesFolder)\Debian\usr\share\man\man1\solidcp-universalinstaller" />
+
+        <Delete Files="$(PackagesFolder)\Debian\usr\share\doc\solidcp\changelog.Debian.gz" />
+        <Exec Command="$(GZipCmd) -9 -n &quot;$(PackagesFolder)\Debian\usr\share\doc\solidcp\changelog.Debian&quot;">
+             <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfGZip" />
+        </Exec>
+        <Message Text="$(OutputOfGZip)" />
+        <Delete Files="$(PackagesFolder)\Debian\usr\share\doc\solidcp\changelog.Debian" />
+
+        <Exec Command="powershell -NonInteractive -ExecutionPolicy Unrestricted -command  &quot;&amp; { .\src\scripts\ConfigureDebian.ps1 '$(FileVersion)' }&quot;" />
+
+        <Exec Command="$(WpkgCmd) -b &quot;$(PackagesFolder)\Debian&quot;">
+            <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfWpkg" />
+        </Exec>
+        <Message Text="$(OutputOfWpkg)" />
+        <Move SourceFiles="$(PackagesFolder)\Debian\solidcp.deb" DestinationFiles="$(PackagesFolder)\bin\solidcp_$(FileVersion)-1_all.deb" />
+
+    </Target>
+
+    <Target Name="Fedora" DependsOnTargets="Debian">
+        
+        <Message Text="Preparing Fedora Files"/>
+
+        <ItemGroup>
+            <DocFilesFedoraExclude Include="$(PackagesFolder)\src\doc\changelog.Debian" />
+            <DocFilesFedora Include="$(PackagesFolder)\src\doc\*.*" Exclude="@(DocFilesFedoraExclude)" /> 
+        </ItemGroup>
+
+		<Copy SourceFiles="$(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller\bin\$(Configuration)\net48\SolidCP.UniversalInstaller.exe" DestinationFolder="$(PackagesFolder)\Fedora\usr\share\solidcp" />
+		<Copy SourceFiles="$(PackagesFolder)\src\man\solidcp-universalinstaller.1" DestinationFiles="$(PackagesFolder)\Fedora\usr\share\man\man1\solidcp-universalinstaller.1" />
+		<Copy SourceFiles="$(PackagesFolder)\src\icon\SolidCP.png" DestinationFiles="$(PackagesFolder)\Fedora\usr\share\pixmaps\SolidCP.png" />
+		<Copy SourceFiles="$(PackagesFolder)\src\desktop\solidcp-universalinstaller.desktop" DestinationFolder="$(PackagesFolder)\Fedora\usr\share\applications" />
+		<Copy SourceFiles="@(DocFilesFedora)" DestinationFolder="$(PackagesFolder)\Fedora\usr\share\doc\solidcp" />
+
+        <Delete Files="$(PackagesFolder)\Fedora\usr\share\man\man1\solidcp-universalinstaller.1.gz" />
+        <Exec Command="$(GZipCmd) -9 -n &quot;$(PackagesFolder)\Fedora\usr\share\man\man1\solidcp-universalinstaller.1&quot;">
+            <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfZip" />
+        </Exec>
+        <Message Text="$(OutputOfZip)" />
+        <Delete Files="$(PackagesFolder)\Fedora\usr\share\man\man1\solidcp-universalinstaller" />
+
+        <Exec Command="powershell -NonInteractive -ExecutionPolicy Unrestricted -command  &quot;&amp; { .\src\scripts\ConfigureFedora.ps1 '$(FileVersion)' }&quot;" />
+
+        <Exec Command="$(WpkgCmd) -r &quot;$(PackagesFolder)\Fedora&quot;">
+            <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfWpkg" />
+        </Exec>
+        <Message Text="$(OutputOfWpkg)" />
+
+        <ItemGroup>
+            <RpmFiles Include="$(PackagesFolder)\Fedora\*.rpm" />
+        </ItemGroup>
+
+        <Move SourceFiles="@(RpmFiles)" DestinationFolder="$(PackagesFolder)\bin" />
+
+    </Target>
+
+    <Target Name="Build" DependsOnTargets="Fedora" />
+
+</Project>
+

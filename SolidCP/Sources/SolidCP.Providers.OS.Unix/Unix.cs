@@ -688,7 +688,7 @@ namespace SolidCP.Providers.OS
 				{
 					isInstalledChecked = true;
 					serviceController = serviceController ?? (serviceController = new SystemdServiceController());
-					if (!serviceController.IsInstalled) serviceController = null;
+					if (!serviceController.IsInstalled) throw new PlatformNotSupportedException("This operating system does not use Systemd.");
 				}
 				return serviceController;
 			}

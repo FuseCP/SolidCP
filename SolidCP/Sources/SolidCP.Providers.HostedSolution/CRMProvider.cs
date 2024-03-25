@@ -1526,6 +1526,8 @@ namespace SolidCP.Providers.HostedSolution
 
 		public override bool IsInstalled()
 		{
+			if (!SolidCP.Providers.OS.OSInfo.IsWindows) return false;
+
 			string value = string.Empty;
 			try
 			{

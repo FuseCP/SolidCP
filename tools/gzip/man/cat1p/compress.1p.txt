@@ -1,0 +1,217 @@
+COMPRESS(P)                POSIX Programmer's Manual               COMPRESS(P)
+
+
+
+NAME
+       compress - compress data
+
+SYNOPSIS
+       compress [-fv][-b bits][file ...]
+
+       compress [-cfv][-b bits][file]
+
+
+DESCRIPTION
+       The compress utility shall attempt to reduce the size of
+       the named files  by  using  adaptive  Lempel-Ziv  coding
+       algorithm.
+
+       Note:  Lempel-Ziv   is  US  Patent  4464650,  issued  to
+              William Eastman, Abraham Lempel, Jacob Ziv,  Mar-
+              tin  Cohn  on  August  7th, 1984, and assigned to
+              Sperry Corporation.
+
+       Lempel-Ziv-Welch compression is  covered  by  US  Patent
+       4558302,  issued  to  Terry  A.  Welch on December 10th,
+       1985, and assigned to Sperry Corporation.
+
+       On systems not  supporting  adaptive  Lempel-Ziv  coding
+       algorithm,  the  input files shall not be changed and an
+       error value greater than two shall be  returned.  Except
+       when  the  output  is  to the standard output, each file
+       shall be replaced by one with the extension .Z.  If  the
+       invoking  process has appropriate privileges, the owner-
+       ship, modes, access time, and modification time  of  the
+       original  file are preserved. If appending the .Z to the
+       filename would make the name  exceed  {NAME_MAX}  bytes,
+       the  command  shall fail. If no files are specified, the
+       standard input shall be compressed to the standard  out-
+       put.
+
+OPTIONS
+       The  compress  utility shall conform to the Base Defini-
+       tions  volume  of  IEEE Std 1003.1-2001,  Section  12.2,
+       Utility Syntax Guidelines.
+
+       The following options shall be supported:
+
+       -b  bits
+              Specify  the  maximum  number of bits to use in a
+              code. For  a  conforming  application,  the  bits
+              argument shall be:
+
+
+              9 <= bits <= 14
+
+       The implementation may allow bits values of greater than
+       14.  The default is 14, 15, or 16.
+
+       -c     Cause compress to write to the  standard  output;
+              the  input  file  is not changed, and no .Z files
+              are created.
+
+       -f     Force compression of file, even if  it  does  not
+              actually  reduce  the size of the file, or if the
+              corresponding file .Z file already exists. If the
+              -f  option  is  not given, and the process is not
+              running in the background, the user  is  prompted
+              as  to whether an existing file .Z file should be
+              overwritten.
+
+       -v     Write the percentage reduction of  each  file  to
+              standard error.
+
+
+OPERANDS
+       The following operand shall be supported:
+
+       file   A pathname of a file to be compressed.
+
+
+STDIN
+       The  standard  input  shall  be  used  only  if  no file
+       operands are specified, or if a file operand is '-' .
+
+INPUT FILES
+       If file operands are specified, the input files  contain
+       the data to be compressed.
+
+ENVIRONMENT VARIABLES
+       The  following  environment  variables  shall affect the
+       execution of compress:
+
+       LANG   Provide a default value for the internationaliza-
+              tion  variables  that are unset or null. (See the
+              Base Definitions volume of  IEEE Std 1003.1-2001,
+              Section  8.2,  Internationalization Variables for
+              the precedence of internationalization  variables
+              used  to  determine  the  values  of locale cate-
+              gories.)
+
+       LC_ALL If set to a non-empty string value, override  the
+              values  of  all  the  other  internationalization
+              variables.
+
+       LC_CTYPE
+              Determine the locale for  the  interpretation  of
+              sequences  of  bytes  of  text data as characters
+              (for example, single-byte as  opposed  to  multi-
+              byte characters in arguments).
+
+       LC_MESSAGES
+              Determine  the  locale  that  should  be  used to
+              affect the format and contents of diagnostic mes-
+              sages written to standard error.
+
+       NLSPATH
+              Determine  the  location  of message catalogs for
+              the processing of LC_MESSAGES .
+
+
+ASYNCHRONOUS EVENTS
+       Default.
+
+STDOUT
+       If no file operands are specified, or if a file  operand
+       is  '-' , or if the -c option is specified, the standard
+       output contains the compressed output.
+
+STDERR
+       The standard error shall be used only for diagnostic and
+       prompt messages and the output from -v.
+
+OUTPUT FILES
+       The  output  files  shall contain the compressed output.
+       The format of compressed files is unspecified and inter-
+       change  of such files between implementations (including
+       access via unspecified file sharing mechanisms)  is  not
+       required by IEEE Std 1003.1-2001.
+
+EXTENDED DESCRIPTION
+       None.
+
+EXIT STATUS
+       The following exit values shall be returned:
+
+        0     Successful completion.
+
+        1     An error occurred.
+
+        2     One  or  more  files  were not compressed because
+              they would have increased in  size  (and  the  -f
+              option was not specified).
+
+       >2     An error occurred.
+
+
+CONSEQUENCES OF ERRORS
+       The input file shall remain unmodified.
+
+       The following sections are informative.
+
+APPLICATION USAGE
+       The  amount  of compression obtained depends on the size
+       of the input, the number of bits per code, and the  dis-
+       tribution  of common substrings. Typically, text such as
+       source code or English is reduced by 50-60%. Compression
+       is  generally  much better than that achieved by Huffman
+       coding or adaptive Huffman coding ( compact), and  takes
+       less time to compute.
+
+       Although  compress  strictly follows the default actions
+       upon receipt of a signal or when an error  occurs,  some
+       unexpected results may occur. In some implementations it
+       is likely that a partially compressed file  is  left  in
+       place,  alongside its uncompressed input file. Since the
+       general operation of compress is to  delete  the  uncom-
+       pressed  file  only  after the .Z file has been success-
+       fully filled, an  application  should  always  carefully
+       check  the  exit  status  of compress before arbitrarily
+       deleting files that have like-named  neighbors  with  .Z
+       suffixes.
+
+       The  limit  of  14  on  the  bits  option-argument is to
+       achieve portability to all systems (within the  restric-
+       tions  imposed by the lack of an explicit published file
+       format). Some implementations based on 16-bit  architec-
+       tures cannot support 15 or 16-bit uncompression.
+
+EXAMPLES
+       None.
+
+RATIONALE
+       None.
+
+FUTURE DIRECTIONS
+       None.
+
+SEE ALSO
+       uncompress , zcat
+
+COPYRIGHT
+       Portions  of  this  text are reprinted and reproduced in
+       electronic form from  IEEE  Std  1003.1,  2003  Edition,
+       Standard  for Information Technology -- Portable Operat-
+       ing System Interface (POSIX), The Open Group Base Speci-
+       fications Issue 6, Copyright (C) 2001-2003 by the Insti-
+       tute of Electrical and Electronics  Engineers,  Inc  and
+       The  Open Group. In the event of any discrepancy between
+       this version and the original IEEE and  The  Open  Group
+       Standard,  the original IEEE and The Open Group Standard
+       is the referee document. The original  Standard  can  be
+       obtained        online        at        http://www.open-
+       group.org/unix/online.html .
+
+
+
+IEEE/The Open Group                  2003                          COMPRESS(P)
