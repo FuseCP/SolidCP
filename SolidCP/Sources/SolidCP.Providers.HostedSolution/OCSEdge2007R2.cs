@@ -138,6 +138,8 @@ namespace SolidCP.Providers.HostedSolution
 
 		public override bool IsInstalled()
 		{
+			if (!SolidCP.Providers.OS.OSInfo.IsWindows) return false;
+
 			try
 			{
 				Wmi.GetWmiObjects("MSFT_SIPFederationInternalDomainData", null);

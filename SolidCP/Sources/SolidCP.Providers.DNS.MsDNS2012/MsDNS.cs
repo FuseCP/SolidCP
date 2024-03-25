@@ -78,8 +78,9 @@ namespace SolidCP.Providers.DNS
 		{
 			// Create PowerShell helper
 			ps = new PowerShellHelper();
-			if( !this.IsInstalled() )
-				return;
+			/* FIX: the following code is useless.
+				if( !this.IsInstalled() )
+				return; */
 		}
 
 		#region Zones
@@ -248,6 +249,8 @@ namespace SolidCP.Providers.DNS
 
 		public override bool IsInstalled()
 		{
+			if (!OS.OSInfo.IsWindows) return false;
+
 			return ps.Test_DnsServer();
 		}
 	}
