@@ -99,25 +99,29 @@ namespace SolidCP.UniversalInstaller
 			ServerSettings = new ServerSettings();
 
 			var confFile = Path.Combine(InstallWebRootPath, ServerFolder, "bin", "web.config");
-			var webconf = XElement.Load(confFile);
-			var configuration = webconf.Element("configuration");
 
-			// server certificate
-			var cert = configuration?.Element("system.serviceModel/behaviors/serviceBehaviors/behavior/serviceCredentials/serviceCertificate");
-			if (cert != null)
+			if (File.Exists(confFile))
 			{
-				ServerSettings.CertificateStoreLocation = cert.Attribute("storeLocation")?.Value;
-				ServerSettings.CertificateStoreName = cert.Attribute("storeName")?.Value;
-				ServerSettings.CertificateFindType = cert.Attribute("X509FindType")?.Value;
-				ServerSettings.CertificateFindValue = cert.Attribute("findValue")?.Value;
-			}
+				var webconf = XElement.Load(confFile);
+				var configuration = webconf.Element("configuration");
 
-			ServerSettings.ServerPasswordSHA1 = ServerSettings.ServerPassword = "";
-			// server password
-			var password = configuration?.Element("SolidCP.server/security/password");
-			if (password != null)
-			{
-				ServerSettings.ServerPasswordSHA1 = password.Attribute("value")?.Value;
+				// server certificate
+				var cert = configuration?.Element("system.serviceModel/behaviors/serviceBehaviors/behavior/serviceCredentials/serviceCertificate");
+				if (cert != null)
+				{
+					ServerSettings.CertificateStoreLocation = cert.Attribute("storeLocation")?.Value;
+					ServerSettings.CertificateStoreName = cert.Attribute("storeName")?.Value;
+					ServerSettings.CertificateFindType = cert.Attribute("X509FindType")?.Value;
+					ServerSettings.CertificateFindValue = cert.Attribute("findValue")?.Value;
+				}
+
+				ServerSettings.ServerPasswordSHA1 = ServerSettings.ServerPassword = "";
+				// server password
+				var password = configuration?.Element("SolidCP.server/security/password");
+				if (password != null)
+				{
+					ServerSettings.ServerPasswordSHA1 = password.Attribute("value")?.Value;
+				}
 			}
 		}
 
