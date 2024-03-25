@@ -25,3 +25,11 @@ sudo dnf install rpmdevtools rpmlint
   the Fedora\SPECS folder.
 * In the src folder there are the some common files that will be copied to the Debian and Fedora
   folder before build.
+
+# Build the Packages
+
+In order to build the Packages use
+
+msbuild -p:FileVersion=<Version>
+
+where <Version> is the version number of SolidCP.

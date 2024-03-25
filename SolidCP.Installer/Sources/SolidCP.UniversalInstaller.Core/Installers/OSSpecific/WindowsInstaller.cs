@@ -18,7 +18,7 @@ namespace SolidCP.UniversalInstaller
 {
 	public class WindowsInstaller : Installer
 	{
-		const bool Net8RuntimeNeeded = false;
+		const bool Net8RuntimeNeededOnWindows = false;
 
 		public override string InstallExeRootPath
 		{
@@ -34,7 +34,7 @@ namespace SolidCP.UniversalInstaller
 
 		public override void InstallNet8Runtime()
 		{
-			if (Net8RuntimeNeeded)
+			if (Net8RuntimeNeededOnWindows)
 			{
 				if (CheckNet8RuntimeInstalled()) return;
 

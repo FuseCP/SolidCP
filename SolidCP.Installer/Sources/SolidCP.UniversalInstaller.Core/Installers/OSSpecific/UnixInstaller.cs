@@ -186,7 +186,7 @@ namespace SolidCP.UniversalInstaller
 		}
 		public override void InstallServerPrerequisites()
 		{
-			InstallNet8Runtime();
+			if (!CheckNet8RuntimeInstalled()) InstallNet8Runtime();
 		}
 		public override Func<string, string> UnzipFilter => Net8UnzipFilter;
 		public override bool IsRunningAsAdmin()

@@ -55,9 +55,5 @@ namespace SolidCP.UniversalInstaller
 			Apt.Remove("aspnetcore-runtime-8.0");
 			ResetHasDotnet();
 		}
-		public override void InstallServerPrerequisites()
-		{
-			InstallNet8Runtime();
-		}
 	}
 }

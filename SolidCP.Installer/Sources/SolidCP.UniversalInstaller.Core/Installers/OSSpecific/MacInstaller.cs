@@ -33,11 +33,5 @@ namespace SolidCP.UniversalInstaller
 		{
 			throw new NotImplementedException();
 		}
-
-		public override void InstallServerPrerequisites()
-		{
-			InstallNet8Runtime();
-		}
-
 	}
 }
