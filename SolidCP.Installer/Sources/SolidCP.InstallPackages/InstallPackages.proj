@@ -18,8 +18,8 @@
 		<DeployFolder>$(TrunkFolder)\Deploy\$(BuildConfiguration)</DeployFolder>
         <PackagesFolder>$(SetupTrunkFolder)\Sources\SolidCP.InstallPackages</PackagesFolder>
 
-		<ZipCmd>"$(RootFolder)\tools\7-Zip\7z.exe"</ZipCmd>
-		<GZipCmd>"$(RootFolder)\tools\gzip\bin\gzip.exe"</GZipCmd>
+		<GZipCmd Condition=" '$(OS)' == 'Windows_NT' ">"$(RootFolder)\tools\gzip\bin\gzip.exe"</GZipCmd>
+		<GZipCmd Condition=" '$(OS)' == 'Unix' ">gzip</GZipCmd>
         <WpkgCmd>"$(RootFolder)\tools\wpkg\bin\$(Configuration)\wpkg.exe"</WpkgCmd>
     </PropertyGroup>
 
