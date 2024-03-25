@@ -89,5 +89,6 @@ namespace SolidCP.Providers.OS
 		Installer Chocolatey { get; }
 		Shell Cmd { get; }
 		Shell PowerShell { get; }
+		WSLShell WSLShell { get; }
 	}
 }

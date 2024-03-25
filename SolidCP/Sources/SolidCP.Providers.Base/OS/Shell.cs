@@ -122,7 +122,10 @@ namespace SolidCP.Providers.OS
 
 		public virtual Shell ExecAsync(string cmd)
 		{
-			Log($"{cmd}{Environment.NewLine}");
+			var cmdlog = $"{cmd}{Environment.NewLine}";
+			Log(cmdlog);
+			LogOutput(cmdlog);
+
 			// separate command from arguments
 			string arguments;
 			if (cmd.Length > 0 && cmd[0] == '"') // command is a " delimited string
@@ -247,7 +250,7 @@ namespace SolidCP.Providers.OS
 			// adjust new lines to OS type
 			script = Regex.Replace(script, @"\r?\n", Environment.NewLine);
 			var file = ToTempFile(script.Trim());
-			var shell = ExecAsync($"{ShellExe} {file}");
+			var shell = ExecAsync($"{ShellExe} \"{file}\"");
 			if (shell.Process != null)
 			{
 				shell.Process.Exited += (sender, args) =>
@@ -257,6 +260,7 @@ namespace SolidCP.Providers.OS
 			}
 			return shell;
 		}
+
 		public virtual Shell ExecScript(string script) => ExecScriptAsync(script).Task().Result;
 
 
@@ -304,23 +308,30 @@ namespace SolidCP.Providers.OS
 			await this;
 			return exitCode;
 		}
-		public string LogFile { get; set; } = null;
+		public bool Redirect = false;
+		public string LogFile = null;
 		protected virtual void OnLog(string text)
 		{
 			lock (outputAndError)
 			{
 				outputAndError.Append(text);
 				if (LogFile != null) File.AppendAllText(LogFile, text);
+
 			}
 		}
 
 		protected virtual void OnLogOutput(string text)
 		{
-			lock (output) output.Append(text);
+			lock (output)
+			{
+				output.Append(text);
+				if (Redirect) Console.Write(text);
+			}
 		}
 		protected virtual void OnLogError(string text)
 		{
 			lock (error) error.Append(text);
+			if (Redirect) Console.Error.Write(text);
 		}
 
 		public static Shell Default => OSInfo.Current.DefaultShell;

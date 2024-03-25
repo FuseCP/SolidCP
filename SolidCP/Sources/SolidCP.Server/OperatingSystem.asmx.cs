@@ -1308,10 +1308,11 @@ namespace SolidCP.Server
 				throw;
 			}
 		}
-        #endregion
+		#endregion
 
-        public Providers.Web.IWebServer WebServer => throw new NotSupportedException();
-		public ServiceController ServiceController => throw new NotSupportedException();
+		public Providers.Web.IWebServer WebServer => WinProvider.WebServer;
+		public ServiceController ServiceController => WinProvider.ServiceController;
+		public WSLShell WSLShell => WinProvider.WSLShell;
 
-    }
+	}
 }

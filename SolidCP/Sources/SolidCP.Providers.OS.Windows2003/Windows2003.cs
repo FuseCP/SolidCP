@@ -1912,5 +1912,6 @@ namespace SolidCP.Providers.OS
 			(webServer = (Web.IWebServer)Activator.CreateInstance(Type.GetType("SolidCP.Providers.Web.IIs60, SolidCP.Providers.Web.IIs60")));
 		public virtual ServiceController ServiceController => throw new NotImplementedException();
 
+		public virtual WSLShell WSLShell => WSLShell.Default;
 	}
 }

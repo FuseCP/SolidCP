@@ -37,13 +37,30 @@
         <Delete Files="@(OutputPackageFiles)" />
     </Target>
 
-    <Target Name="Debian" DependsOnTargets="CleanOutput">
+    <Target Name="Dos2Unix" DependsOnTargets="CleanOutput">
+        <ItemGroup>
+            <TextFiles Include="$(PackagesFolder)\src\doc\*.*" />
+            <TextFiles Include="$(PackagesFolder)\src\man\*.*" />
+            <TextFiles Include="$(PackagesFolder)\src\dektop\*.*" />
+            <TextFiles Include="$(PackagesFolder)\Debian\DEBIAN\*.*" />
+            <TextFiles Include="$(PackagesFolder)\Debian\usr\bin\*.*" />
+            <TextFiles Include="$(PackagesFolder)\Fedora\SPECS\*.*" />
+            <TextFiles Include="$(PackagesFolder)\Fedora\usr\bin\*.*" />
+        </ItemGroup>
+
+        <Exec Command="$(WpkgCmd) -d2u &quot;@(TextFiles)&quot;">
+            <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfDos2Unix" />
+        </Exec>
+        <Message Text="$(OutputOfDos2Unix)" />
+    </Target>
+
+    <Target Name="Debian" DependsOnTargets="Dos2Unix">
         
         <Message Text="Preparing Debian Files"/>
 
         <ItemGroup>
             <DocFilesDebianExclude Include="$(PackagesFolder)\src\doc\ChangeLog" />
-            <DocFilesDebian Include="$(PackagesFolder)\src\doc\*.*" Exclude="@(DocFilesDebianExclude)" />    
+            <DocFilesDebian Include="$(PackagesFolder)\src\doc\*.*" Exclude="@(DocFilesDebianExclude)" />
         </ItemGroup>
 
 		<Copy SourceFiles="$(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller\bin\$(Configuration)\net48\SolidCP.UniversalInstaller.exe" DestinationFolder="$(PackagesFolder)\Debian\usr\share\solidcp" />
@@ -85,7 +102,7 @@
             <DocFilesFedora Include="$(PackagesFolder)\src\doc\*.*" Exclude="@(DocFilesFedoraExclude)" /> 
         </ItemGroup>
 
-		<Copy SourceFiles="$(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller\bin\$(Configuration)\net48\SolidCP.UniversalInstaller.exe" DestinationFolder="$(PackagesFolder)\Debian\usr\share\solidcp" />
+		<Copy SourceFiles="$(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller\bin\$(Configuration)\net48\SolidCP.UniversalInstaller.exe" DestinationFolder="$(PackagesFolder)\Fedora\usr\share\solidcp" />
 		<Copy SourceFiles="$(PackagesFolder)\src\man\solidcp-universalinstaller.1" DestinationFiles="$(PackagesFolder)\Fedora\usr\share\man\man1\solidcp-universalinstaller.1" />
 		<Copy SourceFiles="$(PackagesFolder)\src\icon\SolidCP.png" DestinationFiles="$(PackagesFolder)\Fedora\usr\share\pixmaps\SolidCP.png" />
 		<Copy SourceFiles="$(PackagesFolder)\src\desktop\solidcp-universalinstaller.desktop" DestinationFolder="$(PackagesFolder)\Fedora\usr\share\applications" />
