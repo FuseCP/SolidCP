@@ -18,6 +18,10 @@ and inside Fedora run
 
 sudo dnf install rpmdevtools rpmlint
 
-# Structure of Fedora folder
+# Structure of the Folders
 
-For Fedora, the .specs file must reside in the Fedora\SPECS folder.
+* The content of the Debian package resides in the Debian folder.
+* The content of the RPM package resides in the Fedora folder. For Fedora, the .specs file must reside in
+  the Fedora\SPECS folder.
+* In the src folder there are the some common files that will be copied to the Debian and Fedora
+  folder before build.
