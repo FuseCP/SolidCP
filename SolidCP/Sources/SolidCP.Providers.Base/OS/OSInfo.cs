@@ -87,8 +87,16 @@ namespace SolidCP.Providers.OS
 						var osRelease = File.ReadAllText(OsReleaseFile);
 						var match = Regex.Match(osRelease, "(?<=^NAME\\s*=\\s*\")[^\"]+(?=\")", RegexOptions.IgnoreCase | RegexOptions.Multiline);
 						if (match.Success) name = match.Value;
-						match = Regex.Match(osRelease, @"(?<=^VERSION\s*=\s*""[^""0-9]*?)[0-9]+\.[0-9]+(\.[0-9]+)?(\.[0-9]+)?", RegexOptions.IgnoreCase | RegexOptions.Multiline);
-						if (match.Success) Version.TryParse(match.Value, out version);
+						match = Regex.Match(osRelease, @"(?<=^VERSION_ID\s*=\s*""[^""0-9]*?)[0-9]+(\.[0-9]+)?(\.[0-9]+)?(\.[0-9]+)?", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+						Version osReleaseVersion;
+						int intVersion;
+						if (match.Success)
+						{
+							if (Version.TryParse(match.Value, out osReleaseVersion)) version = osReleaseVersion;
+							else if (int.TryParse(match.Value, out intVersion)) {
+								version = new Version(intVersion, 0);
+							}
+						}
 					}
 					if (name == null)
 					{

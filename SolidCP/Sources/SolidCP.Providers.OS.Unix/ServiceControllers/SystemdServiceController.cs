@@ -41,7 +41,7 @@ namespace SolidCP.Providers.OS
 			var output = Shell.Exec($"systemctl status {serviceId}.service --no-pager --full").Output().Result;
 			if (output == null) return null;
 
-			var match = Regex.Match(output, $@"^\s*Loaded:\s*(?<loaded>[^\s$]+).*?$(^.*$)*^\s*Active:\s*(?<active>[^\s$]+)\s+\((?<status>[^\)]+)\)", RegexOptions.Multiline);
+			var match = Regex.Match(output, @"^\s*Loaded:\s*(?<loaded>[^\s$]+).*?$(^.*$\r?\n)*\s*Active:\s*(?<active>[^\s$]+)\s+\((?<status>[^\)]+)\)", RegexOptions.Multiline);
 
 			string loaded, active, status = null;
 			if (match.Success)
