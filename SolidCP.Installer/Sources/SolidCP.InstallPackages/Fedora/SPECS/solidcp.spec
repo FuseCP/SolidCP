@@ -1,5 +1,5 @@
 Name: solidcp
-Version:1.5.0
+Version:1.4.9
 Release: 1%{?dist}
 Summary: This is the SolidCP Server component
 License: Creative Commons Share-alike    

@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Text.RegularExpressions;
 using static System.Net.Mime.MediaTypeNames;
+using System.Collections.Generic;
 
 namespace SolidCP.Providers.OS
 {
@@ -75,6 +76,27 @@ namespace SolidCP.Providers.OS
 		}
 
 		public bool NotFound { get; set; }
+		public static IEnumerable<string> Paths
+		{
+			get
+			{
+				string proc, machine = "", user = "";
+				string[] sources;
+				proc = Environment.GetEnvironmentVariable("PATH");
+				if (OSInfo.IsWindows)
+				{
+					machine = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Machine);
+					user = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.User);
+					sources = new string[] { proc, machine, user };
+				} else sources = new string[] { proc };
+
+				return sources
+					.SelectMany(paths => paths.Split(new char[] { Path.PathSeparator }, StringSplitOptions.RemoveEmptyEntries))
+					.Select(path => path.Trim())
+					.Distinct();
+			}
+		}
+
 		public virtual string Find(string cmd)
 		{
 			string file = null;
@@ -84,8 +106,7 @@ namespace SolidCP.Providers.OS
 			}
 			else
 			{
-				file = Environment.GetEnvironmentVariable("PATH")
-					  .Split(new char[] { PathSeparator })
+				file = Paths
 					  .SelectMany(p =>
 					  {
 						  var p1 = Path.Combine(p, cmd);
