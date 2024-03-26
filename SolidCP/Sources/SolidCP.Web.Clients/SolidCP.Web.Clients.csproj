@@ -34,8 +34,11 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <PackageReference Include="SSH.NET" Version="2024.0.0" />
+	  <PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.0" />
 	</ItemGroup>
 	<ItemGroup>
+		<ProjectReference Include="..\..\Lib\Compat.Runtime.Serialization.Signed\Compat.Runtime.Serialization\Compat.Runtime.Serialization.csproj" />
 		<ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
 	</ItemGroup>
+	
 </Project>

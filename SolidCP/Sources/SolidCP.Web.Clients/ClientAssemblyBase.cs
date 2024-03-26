@@ -56,19 +56,24 @@ namespace SolidCP.Web.Clients
 			// set soap headers
 			if (Client.HasSoapHeaders)
 			{
+				var soapHeader = DataContractCopier.Clone(Client.SoapHeader);
 				var attr = method.GetCustomAttribute<SoapHeaderAttribute>();
 				var prop = type.GetProperty(attr.Field);
 				if (prop == null)
 				{
 					var field = type.GetField(attr.Field);
-					field.SetValue(service, Client.SoapHeader);
+					field.SetValue(service, soapHeader);
 				}
 				else
 				{
-					prop.SetValue(service, Client.SoapHeader);
+					prop.SetValue(service, soapHeader);
 				}
 			}
-			return (T)method.Invoke(service, parameters);
+
+			// Clone parameters
+			parameters = (object[])DataContractCopier.Clone(parameters);
+
+			return (T)DataContractCopier.Clone(method.Invoke(service, parameters));
 		}
 		protected void Invoke(string typeName, string methodName, params object[] parameters)
 		{

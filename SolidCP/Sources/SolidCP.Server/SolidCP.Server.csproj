@@ -128,8 +128,11 @@
 			<FilesToDelete Include="bin\RazorBlade.*" />
 			<FilesToDelete Include="bin\SolidCP.Build.*" />
 			<FilesToDelete Include="bin\WebServices\**\*.*" />
+			<FilesToDelete Include="bin\Microsoft.Web.Administration.*" />
+			<FilesToMove Include="bin\SwaggerWcf.*" />
 		</ItemGroup>
 		<Delete Files="@(FilesToDelete)" />
+		<Move FileS="@(FilesToMove)" DestinationFolder="bin\Providers" />
 	</Target>
 
 </Project>
