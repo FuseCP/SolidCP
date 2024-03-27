@@ -77,7 +77,10 @@
 	<Target Name="RestorePackages">
 	    <Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(TrunkFolder)\Sources\SolidCP.EnterpriseServer.sln" />
 	    <Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(TrunkFolder)\Sources\SolidCP.WebPortal.sln" />
-	    <Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(TrunkFolder)\Sources\SolidCP.Server.sln" />
+	    <!--  The following does not work due to project imports in SolidCP.Providers.Virtualization.Proxmox
+			 that depend on PackageReference
+			<Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(TrunkFolder)\Sources\SolidCP.Server.sln" />-->
+		<Exec Command="dotnet restore $(TrunkFolder)\Sources\SolidCP.Server.sln" />
 	</Target>
 
 	<Target Name="GenerateBuildVersionFilesInstaller" DependsOnTargets="RestorePackages">
