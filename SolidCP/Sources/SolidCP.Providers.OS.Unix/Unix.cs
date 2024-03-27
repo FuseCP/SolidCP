@@ -693,5 +693,7 @@ namespace SolidCP.Providers.OS
 				return serviceController;
 			}
 		}
+
+		public bool IsSystemd => new SystemdServiceController().IsInstalled;
 	}
 }

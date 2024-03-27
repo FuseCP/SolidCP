@@ -76,5 +76,6 @@ namespace SolidCP.Providers.OS
 		Installer Apt { get; }
 		Installer Yum { get; }
 		Installer Brew { get; }
+		bool IsSystemd { get; }
 	}
 }

@@ -133,6 +133,8 @@ namespace SolidCP.Web.Services
 			{
 				options.AllowSynchronousIO = true;
 
+				if (OSInfo.IsUnix && OSInfo.Unix.IsSystemd) options.UseSystemd();
+
 				if (HttpPort.HasValue) options.ListenAnyIP(HttpPort.Value, listenOptions =>
 					{
 						if (Debugger.IsAttached) listenOptions.UseConnectionLogging();
