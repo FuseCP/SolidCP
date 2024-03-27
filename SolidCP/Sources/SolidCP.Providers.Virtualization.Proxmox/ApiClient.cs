@@ -48,12 +48,16 @@ namespace SolidCP.Providers.Virtualization
 			//request.RootElement = RequestRootElement;
 			//HostedSolutionLog.DebugInfo("Login - request: {0}", request.ToString());
 			var response = restClient.Execute(request);
+			if (response.StatusCode == HttpStatusCode.ServiceUnavailable) throw new Exception($"Proxmox Server API Service at {baseUrl} unavaliable.");
 			//HostedSolutionLog.DebugInfo("Login - response Content: {0}", response.Content.ToString());
-			dynamic json = JObject.Parse(response.Content);
+			JObject json = JObject.Parse(response.Content);
+			
+			var data = json["data"];
 			ApiTicket apiTicketdata = new ApiTicket();
-			apiTicketdata.ticket = json.data.ticket;
-			apiTicketdata.username = json.data.username;
-			apiTicketdata.CSRFPreventionToken = json.data.CSRFPreventionToken;
+			
+			apiTicketdata.ticket = (string)data["ticket"];
+			apiTicketdata.username = (string)data["username"];
+			apiTicketdata.CSRFPreventionToken = (string)data["CSRFPreventionToken"];
 			apiTicket = apiTicketdata;
 			//HostedSolutionLog.DebugInfo("Login - apiTicket: {0}", apiTicket.ticket);
 			return response;
