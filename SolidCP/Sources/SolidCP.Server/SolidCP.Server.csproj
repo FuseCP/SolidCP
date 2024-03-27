@@ -132,7 +132,7 @@
 			<FilesToMove Include="bin\SwaggerWcf.*" />
 		</ItemGroup>
 		<Delete Files="@(FilesToDelete)" />
-		<Move FileS="@(FilesToMove)" DestinationFolder="bin\Providers" />
+		<Move SourceFiles="@(FilesToMove)" DestinationFolder="bin\Providers" />
 	</Target>
 
 </Project>

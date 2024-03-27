@@ -15,20 +15,25 @@
 		<Nullable>disable</Nullable>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-		<DebugType>full</DebugType>
+		<DebugType>portable</DebugType>
+		<DefineConstants>$(DefineConstants);UseGDIPlus;UseSkia</DefineConstants>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-		<DebugType>none</DebugType>
+		<DebugType>portable</DebugType>
+		<DefineConstants>$(DefineConstants);UseGDIPlus;UseSkia</DefineConstants>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="RestSharp" Version="110.2.0" />
-		<PackageReference Include="SkiaSharp" Version="2.88.7" />
-		<PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="2.88.7" />
+		<PackageReference Include="RestSharp" Version="110.2.0" GeneratePathProperty="true" />
+		<PackageReference Include="SkiaSharp" Version="2.88.7" GeneratePathProperty="true" />
+		<PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.7" GeneratePathProperty="true" />
+		<PackageReference Include="SkiaSharp.NativeAssets.macOS" Version="2.88.7" GeneratePathProperty="true" />
+		<PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="2.88.7" GeneratePathProperty="true" />
 		<PackageReference Include="SSH.NET" Version="2024.0.0" />
 		<PackageReference Include="System.Buffers" Version="4.5.1" />
+		<PackageReference Include="System.Drawing.Common" Version="8.0.3" />
 		<PackageReference Include="System.Memory" Version="4.5.5" />
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
 		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
@@ -52,4 +57,14 @@
 		<ProjectReference Include="..\SolidCP.Providers.HostedSolution\SolidCP.Providers.HostedSolution.csproj" />
 		<ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
 	</ItemGroup>
+
+	<Import Project="$(PkgSkiaSharp_NativeAssets_Linux)\build\net462\SkiaSharp.NativeAssets.Linux.targets" />
+	<Import Project="$(PkgSkiaSharp_NativeAssets_macOS)\build\net462\SkiaSharp.NativeAssets.macOS.targets" />
+	<Import Project="$(PkgSkiaSharp_NativeAssets_Win32)\build\net462\SkiaSharp.NativeAssets.Win32.targets" />
+
+	<Target Name="CopyPackageReferences" AfterTargets="Build">
+		<Copy SourceFiles="$(PkgSkiaSharp)\lib\netstandard2.0\SkiaSharp.dll" DestinationFolder="$(OutputPath)" />
+		<Copy SourceFiles="$(PkgRestSharp)\lib\netstandard2.0\RestSharp.dll" DestinationFolder="$(OutputPath)" />
+	</Target>
+
 </Project>
