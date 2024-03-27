@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -102,13 +102,13 @@ namespace SolidCP.Providers.OS
 			return WSLPath(localTmp);
 		}
 
-		public override Shell ExecAsync(string command, Encoding encoding = null)
+		public override Shell ExecAsync(string command, Encoding encoding = null, StringDictionary environmentVariables = null)
 		{
 			LogCommand?.Invoke(command);
 
-			return BaseShell.ExecAsync($"{ShellExe} {command}", encoding);
+			return BaseShell.ExecAsync($"{ShellExe} {command}", encoding, environmentVariables);
 		}
-		public override Shell ExecScriptAsync(string script, Encoding encoding = null)
+		public override Shell ExecScriptAsync(string script, Encoding encoding = null, StringDictionary environmentVariables = null)
 		{
 			LogCommand?.Invoke($"bash {script}");
 
@@ -116,7 +116,7 @@ namespace SolidCP.Providers.OS
 			// adjust new lines to OS type
 			script = Regex.Replace(script, @"\r?\n", Environment.NewLine);
 			var file = ToTempFile(script.Trim());
-			var shell = BaseShell.ExecAsync($"{ShellExe} \"{file}\"", encoding);
+			var shell = BaseShell.ExecAsync($"{ShellExe} \"{file}\"", encoding, environmentVariables);
 			if (shell.Process != null)
 			{
 				shell.Process.Exited += (sender, args) =>

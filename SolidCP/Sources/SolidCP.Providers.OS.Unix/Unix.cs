@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Text;
 using Mono.Unix;
@@ -527,7 +528,9 @@ namespace SolidCP.Providers.OS
 		public OSProcess[] GetOSProcesses()
 		{
 			// Use POSIX ps command
-			var output = Shell.Default.Exec("ps -A -o pid=,user=,vsz=,pcpu=,args=").Output().Result;
+			var env = new StringDictionary();
+			env["COLUMNS"] = "1024";
+			var output = Shell.Default.Exec("ps -A -o pid=,user=,vsz=,pcpu=,args=", null, env).Output().Result;
 			if (output == null) throw new PlatformNotSupportedException("ps command not found on this system.");
 			var matches = Regex.Matches(output, @"^\s*(?<pid>[^\s]+)\s+(?<user>[^\s]+)\s+(?<mem>[^\s]+)\s+(?<cpu>[^\s]+)\s+(?<cmd>[^""][^\s$]*|""[^""]*"")\s+(?<args>.*?)\s*$", RegexOptions.Multiline);
 

@@ -1,5 +1,7 @@
 using System;
 using System.Linq;
+using System.Collections;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -143,7 +145,7 @@ namespace SolidCP.Providers.OS
 			cnt?.Invoke();
 		}
 
-		public virtual Shell ExecAsync(string cmd, Encoding encoding = null)
+		public virtual Shell ExecAsync(string cmd, Encoding encoding = null, StringDictionary environmentVariables = null)
 		{
 			LogCommand?.Invoke(cmd);
 
@@ -197,6 +199,10 @@ namespace SolidCP.Providers.OS
 				process.StartInfo.RedirectStandardError = true;
 				process.StartInfo.StandardOutputEncoding = encoding ?? Encoding.Default;
 				process.StartInfo.StandardErrorEncoding = encoding ?? Encoding.Default;
+				foreach (DictionaryEntry variable in environmentVariables)
+				{
+					process.StartInfo.EnvironmentVariables.Add(variable.Key as string, variable.Value as string);
+				}
 				process.Exited += (obj, args) =>
 				{
 					child.exitCode = child.Process.ExitCode;
@@ -257,7 +263,7 @@ namespace SolidCP.Providers.OS
 				return child;
 			}
 		}
-		public virtual Shell Exec(string command, Encoding encoding = null) => ExecAsync(command, encoding).Task().Result;
+		public virtual Shell Exec(string command, Encoding encoding = null, StringDictionary environmentVariables = null) => ExecAsync(command, encoding).Task().Result;
 		public virtual Shell Clone
 		{
 			get
@@ -279,7 +285,7 @@ namespace SolidCP.Providers.OS
 			}
 		}
 
-		public virtual Shell ExecScriptAsync(string script, Encoding encoding = null)
+		public virtual Shell ExecScriptAsync(string script, Encoding encoding = null, StringDictionary environmentVariables = null)
 		{
 			script = script.Trim();
 			// adjust new lines to OS type
@@ -296,7 +302,7 @@ namespace SolidCP.Providers.OS
 			return shell;
 		}
 
-		public virtual Shell ExecScript(string script, Encoding encoding = null) => ExecScriptAsync(script, encoding).Task().Result;
+		public virtual Shell ExecScript(string script, Encoding encoding = null, StringDictionary environmentVariables = null) => ExecScriptAsync(script, encoding, environmentVariables).Task().Result;
 
 
 		/* public virtual async Task<Shell> Wait(int milliseconds = Timeout.Infinite)
