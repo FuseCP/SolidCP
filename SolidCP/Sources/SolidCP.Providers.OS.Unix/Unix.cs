@@ -526,24 +526,24 @@ namespace SolidCP.Providers.OS
 
 		public OSProcess[] GetOSProcesses()
 		{
-			var output = Shell.Default.Exec("top cwbn 1").Output().Result;
-			if (output == null) throw new PlatformNotSupportedException("top command not found on this system.");
-			var matches = Regex.Matches(output, @"^\s*(?<pid>[0-9]+)\s+(?<user>[^\s]+)\s+-?[0-9]+\s+-?[0-9]+\s+[0-9.GgTt]+\s+(?<mem>[0-9.GgTt]+)\s+[0-9.GgTt]+\s+[^\s]+\s+(?<cpu>[0-9.]+)\s+(?<relmem>[0-9.]+)\s+[0-9:.]+\s+(?<cmd>(?:(?:[^""][^\s$]*)|""[^""]*""))[ \t]*(?<args>.*?)$", RegexOptions.Multiline);
+			// Use POSIX ps command
+			var output = Shell.Default.Exec("ps -A -o pid=,user=,vsz=,pcpu=,args=").Output().Result;
+			if (output == null) throw new PlatformNotSupportedException("ps command not found on this system.");
+			var matches = Regex.Matches(output, @"^\s*(?<pid>[^\s]+)\s+(?<user>[^\s]+)\s+(?<mem>[^\s]+)\s+(?<cpu>[^\s]+)\s+(?<cmd>[^""][^\s$]*|""[^""]*"")\s+(?<args>.*?)\s*$", RegexOptions.Multiline);
 
-			//TODO username & cpu usage
 			return matches
 				.OfType<Match>()
 				.Select(m =>
 				{
-					var pid = int.Parse(m.Groups["pid"].Value);
-					string name = Path.GetFileName(m.Groups["cmd"].Value);
-					var memtxt = m.Groups["mem"].Value;
-					var cmd = m.Groups["cmd"].Value;
-					cmd = cmd.Trim('"');
-					long mem;
-					if (memtxt.EndsWith("t", StringComparison.OrdinalIgnoreCase)) mem = (long)double.Parse(memtxt.Substring(0, memtxt.Length - 1)) * 1024 * 1024 * 1024;
-					else if (memtxt.EndsWith("g", StringComparison.OrdinalIgnoreCase)) mem = (long)double.Parse(memtxt.Substring(0, memtxt.Length - 1)) * 1024 * 1024;
-					else mem = long.Parse(memtxt) * 1024;
+					var cmd = (m.Groups["cmd"].Success ? m.Groups["cmd"].Value : "").Trim('"');
+					int pid = -1;
+					int.TryParse(m.Groups["pid"].Value, out pid);
+					var name = Path.GetFileName(cmd);
+					long mem = 0;
+					long.TryParse(m.Groups["mem"].Value, out mem);
+					mem = mem * 1024;
+					float cpu = 0;
+					float.TryParse(m.Groups["cpu"].Value, out cpu);
 
 					return new OSProcess()
 					{
@@ -551,7 +551,7 @@ namespace SolidCP.Providers.OS
 						Name = name,
 						MemUsage = mem,
 						Command = cmd,
-						CpuUsage = float.Parse(m.Groups["cpu"].Value) / 100 / Environment.ProcessorCount,
+						CpuUsage = cpu,
 						Arguments = m.Groups["args"].Value,
 						Username = m.Groups["user"].Value
 					};

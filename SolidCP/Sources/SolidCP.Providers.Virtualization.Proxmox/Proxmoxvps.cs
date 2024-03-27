@@ -86,7 +86,7 @@ namespace SolidCP.Providers.Virtualization
 	{
 
 		#region Provider Settings
-		protected string ProxmoxClusterServerHost
+		protected virtual string ProxmoxClusterServerHost
 		{
 			get { return ProviderSettings["ProxmoxClusterServerHost"]; }
 		}
