@@ -16,16 +16,23 @@
 		<DebugType>none</DebugType>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="SyslogNet.ClientStandard" Version="0.3.4" />
-		<PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" />
+		<PackageReference Include="SyslogNet.ClientStandard" Version="0.3.4" GeneratePathPropery="true" />
+		<PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" GeneratePathProperty="true" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
 		<ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
 	</ItemGroup>
 
-	<Target Name="CopyMonoPosicNETStandard" AfterTargets="Build">
-		<Copy SourceFiles="..\..\Lib\Mono.Posix.NETStandard.dll" DestinationFolder="..\SolidCP.Server\bin\netstandard" />
+	<Target Name="CopyMonoPosixNETStandard" AfterTargets="Build">
+		<ItemGroup>
+			<CopyFiles Include="..\..\Lib\Mono.Posix.NETStandard.dll" />
+			<CopyFiles Include="$(PkgSyslogNet_ClientStandard)\lib\netstandard2.0\SyslogNet.Client.*" />
+		</ItemGroup>
+
+		<Message Text="Copy Files: @(CopyFiles)" Importance="high" />
+		
+		<Copy SourceFiles="@(CopyFiles)" DestinationFolder="$(OutputPath)" />
 	</Target>
 	
 </Project>

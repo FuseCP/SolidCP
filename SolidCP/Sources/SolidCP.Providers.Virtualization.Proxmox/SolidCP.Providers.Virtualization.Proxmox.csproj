@@ -13,27 +13,38 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<LangVersion>11</LangVersion>
 		<Nullable>disable</Nullable>
+		<UseSkia>true</UseSkia>
+		<UseGDIPlus>false</UseGDIPlus>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 		<DebugType>portable</DebugType>
-		<DefineConstants>$(DefineConstants);UseGDIPlus;UseSkia</DefineConstants>
+		<DefineConstants Condition=" '$(UseGDIPlus)' == 'true' ">$(DefineConstants);UseGDIPlus</DefineConstants>
+		<DefineConstants Condition=" '$(UseSkia)' == 'true' ">$(DefineConstants);UseSkia</DefineConstants>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
 		<DebugType>portable</DebugType>
-		<DefineConstants>$(DefineConstants);UseGDIPlus;UseSkia</DefineConstants>
+		<DefineConstants Condition=" '$(UseGDIPlus)' == 'true' ">$(DefineConstants);UseGDIPlus</DefineConstants>
+		<DefineConstants Condition=" '$(UseSkia)' == 'true' ">$(DefineConstants);UseSkia</DefineConstants>
 	</PropertyGroup>
+	
+	<ItemGroup Condition=" '$(UseSkia)' == 'true' ">
+		<PackageReference Include="SkiaSharp" Version="2.88.7" GeneratePathProperty="true" />
+		<PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.7" GeneratePathProperty="true" />
+		<PackageReference Include="SkiaSharp.NativeAssets.macOS" Version="2.88.7" GeneratePathProperty="true" />
+		<PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="2.88.7" GeneratePathProperty="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(UseGDIPlus)' == 'true' ">
+		<PackageReference Include="System.Drawing.Common" Version="8.0.3" Condition="" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="RestSharp" Version="110.2.0" GeneratePathProperty="true" />
-		<PackageReference Include="SkiaSharp" Version="2.88.7" GeneratePathProperty="true" />
-		<PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.7" GeneratePathProperty="true" />
-		<PackageReference Include="SkiaSharp.NativeAssets.macOS" Version="2.88.7" GeneratePathProperty="true" />
-		<PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="2.88.7" GeneratePathProperty="true" />
 		<PackageReference Include="SSH.NET" Version="2024.0.0" />
 		<PackageReference Include="System.Buffers" Version="4.5.1" />
-		<PackageReference Include="System.Drawing.Common" Version="8.0.3" />
 		<PackageReference Include="System.Memory" Version="4.5.5" />
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
 		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
@@ -42,6 +53,7 @@
 		<PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
 		<PackageReference Include="System.ValueTuple" Version="4.5.0" />
 	</ItemGroup>
+	
 	<ItemGroup>
 		<Reference Include="System.Management" />
 		<Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -63,8 +75,12 @@
 	<Import Project="$(PkgSkiaSharp_NativeAssets_Win32)\build\net462\SkiaSharp.NativeAssets.Win32.targets" />
 
 	<Target Name="CopyPackageReferences" AfterTargets="Build">
-		<Copy SourceFiles="$(PkgSkiaSharp)\lib\netstandard2.0\SkiaSharp.dll" DestinationFolder="$(OutputPath)" />
-		<Copy SourceFiles="$(PkgRestSharp)\lib\netstandard2.0\RestSharp.dll" DestinationFolder="$(OutputPath)" />
+		<ItemGroup>
+			<CopyToOutputFiles Include="$(PkgSkiaSharp)\lib\netstandard2.0\SkiaSharp.*" />
+			<CopyToOutputFiles SourceFiles="$(PkgRestSharp)\lib\netstandard2.0\RestSharp.*" />
+		</ItemGroup>
+		
+		<Copy SourceFiles="@(CopyToOutputFiles)" DestinationFolder="$(OutputPath)" />
 	</Target>
 
 </Project>

@@ -536,8 +536,20 @@ namespace SolidCP.Providers.Virtualization
 
 			byte[] buffer = null;
 
-			buffer = GetVirtualMachineThumbnailImageGDIPlus(vmId, width, height);
-			if (buffer == null) buffer = GetVirtualMachineThumbnailImageSkia(vmId, width, height);
+			try
+			{
+				buffer = GetVirtualMachineThumbnailImageGDIPlus(vmId, width, height);
+			}
+			catch { // catch errors when GDI+ is not available
+			}
+
+			try
+			{
+				if (buffer == null) buffer = GetVirtualMachineThumbnailImageSkia(vmId, width, height);
+			}
+			catch { // catch dll load errors when Skia is not correctly installed
+			}
+
 			if (buffer != null) return buffer;
 
 			throw new NotImplementedException();
