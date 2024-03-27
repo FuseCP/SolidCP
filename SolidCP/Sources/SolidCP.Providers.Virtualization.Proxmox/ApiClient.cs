@@ -48,7 +48,7 @@ namespace SolidCP.Providers.Virtualization
 			//request.RootElement = RequestRootElement;
 			//HostedSolutionLog.DebugInfo("Login - request: {0}", request.ToString());
 			var response = restClient.Execute(request);
-			if (response.StatusCode == HttpStatusCode.ServiceUnavailable) throw new Exception($"Proxmox Server API Service at {baseUrl} unavaliable.");
+			if (response == null || response.Content == null || response.StatusCode == HttpStatusCode.ServiceUnavailable) throw new Exception($"Proxmox Server API Service at {baseUrl} unavaliable.");
 			//HostedSolutionLog.DebugInfo("Login - response Content: {0}", response.Content.ToString());
 			JObject json = JObject.Parse(response.Content);
 			
