@@ -1,4 +1,4 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
 	<PropertyGroup>
 		<Version>$(Version)</Version>
 		<FileVersion>$(BUILD_NUMBER)</FileVersion>
@@ -80,7 +80,8 @@
 	    <!--  The following does not work due to project imports in SolidCP.Providers.Virtualization.Proxmox
 			 that depend on PackageReference
 			<Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(TrunkFolder)\Sources\SolidCP.Server.sln" />-->
-		<Exec Command="dotnet restore $(TrunkFolder)\Sources\SolidCP.Server.sln" />
+		<!--<Exec Command="dotnet restore $(TrunkFolder)\Sources\SolidCP.Server.sln" />-->
+		
 	</Target>
 
 	<Target Name="GenerateBuildVersionFilesInstaller" DependsOnTargets="RestorePackages">
