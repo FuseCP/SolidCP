@@ -123,13 +123,25 @@
   <data name="cmdContinue.Text" xml:space="preserve">
     <value>Continue</value>
   </data>
+  <data name="cmdContinue.ToolTip" xml:space="preserve">
+    <value>Continue</value>
+  </data>
   <data name="cmdPause.Text" xml:space="preserve">
+    <value>Pause</value>
+  </data>
+  <data name="cmdPause.ToolTip" xml:space="preserve">
     <value>Pause</value>
   </data>
   <data name="cmdStart.Text" xml:space="preserve">
     <value>Start</value>
   </data>
+  <data name="cmdStart.ToolTip" xml:space="preserve">
+    <value>Start</value>
+  </data>
   <data name="cmdStop.Text" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="cmdStop.ToolTip" xml:space="preserve">
     <value>Stop</value>
   </data>
   <data name="gvServices.Empty" xml:space="preserve">

@@ -120,17 +120,29 @@
   <data name="btnCancel.Text" xml:space="preserve">
     <value>Abbrechen</value>
   </data>
+  <data name="cmdContine.ToolTip" xml:space="preserve">
+    <value>Wiederaufnehmen</value>
+  </data>
   <data name="cmdContinue.Text" xml:space="preserve">
     <value>Fortsetzen</value>
   </data>
   <data name="cmdPause.Text" xml:space="preserve">
     <value>Anhalten</value>
   </data>
+  <data name="cmdPause.ToolTip" xml:space="preserve">
+    <value>Pause</value>
+  </data>
   <data name="cmdStart.Text" xml:space="preserve">
     <value>Starten</value>
   </data>
+  <data name="cmdStart.ToolTip" xml:space="preserve">
+    <value>Start</value>
+  </data>
   <data name="cmdStop.Text" xml:space="preserve">
     <value>Beenden</value>
+  </data>
+  <data name="cmdStop.ToolTip" xml:space="preserve">
+    <value>Stop</value>
   </data>
   <data name="gvServices.Empty" xml:space="preserve">
     <value>Keine Windows-Dienste gefunden.</value>
