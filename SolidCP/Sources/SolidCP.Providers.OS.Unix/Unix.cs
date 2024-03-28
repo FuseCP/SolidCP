@@ -420,13 +420,15 @@ namespace SolidCP.Providers.OS
 
 			return logs
 				.Select(log => LogName(log))
-				.Where(log => log != null)
+				.Where(log => log != null && !log.Contains(':'))
 				.Distinct()
 				.ToList();
 		}
 
 		private IEnumerable<SystemLogEntry> GetLogEntriesAsEnumerableRaw(string logName)
 		{
+			if (string.IsNullOrEmpty(logName)) yield break;
+
 			var logs = EnumerateLogFiles(LogDir);
 			logs = logs.Where(l => LogName(l) == logName);
 			foreach (var log in logs)
@@ -443,29 +445,64 @@ namespace SolidCP.Providers.OS
 						yield break;
 					}
 					if (Path.GetExtension(log) == ".gz") file = new GZipStream(file, CompressionMode.Decompress);
-					var reader = new StreamReader(file, Encoding.UTF8, true);
+					TextReader reader = new StreamReader(file, Encoding.UTF8, true);
 
 					var text = reader.ReadToEnd();
 
-					var matches = Regex.Matches(text, @"(?<=^|\n)(?<date>(?:[0-9]{4}-[0-9]{2}-[0-9]{2}|[A-Za-z]+\s+[0-9]+))(?:(?:T|\s+)[0-9]{2}:[0-9]{2}(?::[0-9]{2}(?:,[0-9]+|Z|\+[0-9]+|-[0-9]+)?)?)?)\s*(?<text>.*?)\s*(?=$|(?<=^|\n)(?:[0-9]{4}-[0-9]{2}-[0-9]{2}|[A-Za-z]+\s+[0-9]+)(?:(?:T|\s+)[0-9]{2}:[0-9]{2}(?::[0-9]{2}(?:,[0-9]+|Z|\+[0-9]+|-[0-9]+)?)?)?)", RegexOptions.Singleline);
+					var matches = Regex.Matches(text, @"(?<=^|\n)(?<date>(?:[0-9]{4}-[0-9]{2}-[0-9]{2}|[A-Za-z]+\s+[0-9]+))(?:(?:T|\s+)(?<time>[0-9]{2}:[0-9]{2}(?::[0-9]{2}(?:(?:,|\.)[0-9]+|Z|\+[0-9]+|-[0-9]+)?)?))?\s*(?<text>.*?)\s*(?=$|(?<=^|\n)(?<date>(?:[0-9]{4}-[0-9]{2}-[0-9]{2}|[A-Za-z]+\s+[0-9]+))(?:(?:T|\s+)(?<time>[0-9]{2}:[0-9]{2}(?::[0-9]{2}(?:(?:,|\.)[0-9]+|Z|\+[0-9]+|-[0-9]+)?)?))?)", RegexOptions.Singleline);
 
-					foreach (Match match in matches)
+					if (matches.Count > 0)
 					{
-						DateTime time;
-						if (!DateTime.TryParse(match.Groups["date"].Value, out time)) yield break;
-						var msg = match.Groups["text"].Value;
-						
+
+						foreach (Match match in matches)
+						{
+							DateTime date, time;
+							var datetxt = match.Groups["date"].Value;
+							if (!DateTime.TryParse(datetxt, out date)) yield break;
+							if (match.Groups["time"].Success)
+							{
+								var timetxt = match.Groups["time"].Value;
+								if (!timetxt.Contains("Z") || !DateTime.TryParse($"{datetxt}T{timetxt}", out time))
+								{
+									if (DateTime.TryParse(timetxt, out time)) time = date.Add(time.TimeOfDay);
+									else time = date;
+								}
+							}
+							else time = date;
+
+							var msg = match.Groups["text"].Value ?? "";
+
+							var entry = new SystemLogEntry()
+							{
+								Created = time,
+								Category = logName,
+								EntryType = msg.IndexOf("error", StringComparison.OrdinalIgnoreCase) >= 0 ?
+									SystemLogEntryType.Error :
+									(msg.IndexOf("warning", StringComparison.OrdinalIgnoreCase) >= 0 ?
+									SystemLogEntryType.Warning : SystemLogEntryType.Information),
+								MachineName = Environment.MachineName,
+								EventID = 0,
+								Message = msg,
+								Source = logName,
+								UserName = "" //Process.GetCurrentProcess().StartInfo.UserName
+							};
+							yield return entry;
+						}
+					}
+					else if (!string.IsNullOrWhiteSpace(text))
+					{
+						var created = File.GetCreationTimeUtc(log);
 						var entry = new SystemLogEntry()
 						{
-							Created = time,
+							Created = created,
 							Category = logName,
-							EntryType = msg.IndexOf("error", StringComparison.OrdinalIgnoreCase) >= 0 ?
-								SystemLogEntryType.Error :
-								(msg.IndexOf("warning", StringComparison.OrdinalIgnoreCase) >= 0 ?
-								SystemLogEntryType.Warning : SystemLogEntryType.Information),
+							EntryType = text.IndexOf("error", StringComparison.OrdinalIgnoreCase) >= 0 ?
+									SystemLogEntryType.Error :
+									(text.IndexOf("warning", StringComparison.OrdinalIgnoreCase) >= 0 ?
+									SystemLogEntryType.Warning : SystemLogEntryType.Information),
 							MachineName = Environment.MachineName,
 							EventID = 0,
-							Message = msg,
+							Message = text,
 							Source = logName,
 							UserName = "" //Process.GetCurrentProcess().StartInfo.UserName
 						};
@@ -503,11 +540,11 @@ namespace SolidCP.Providers.OS
 
 		public SystemLogEntriesPaged GetLogEntriesPaged(string logName, int startRow, int maximumRows)
 		{
-			var entries = GetLogEntriesAsEnumerable(logName)
-				.Skip(startRow - 1)
+			SystemLogEntry[] entries;
+			entries = GetLogEntriesAsEnumerable(logName)
+				.Skip(startRow)
 				.Take(maximumRows)
 				.ToArray();
-
 			return new SystemLogEntriesPaged()
 			{
 				Entries = entries,
@@ -562,7 +599,7 @@ namespace SolidCP.Providers.OS
 						Name = name,
 						MemUsage = mem,
 						Command = cmd,
-						CpuUsage = cpu/100,
+						CpuUsage = cpu / 100,
 						Arguments = m.Groups["args"].Value,
 						Username = m.Groups["user"].Value
 					};
@@ -578,7 +615,8 @@ namespace SolidCP.Providers.OS
 				var process = Process.GetProcessById(pid);
 				if (process != null) process.Kill();
 			}
-			catch (Exception ex) {
+			catch (Exception ex)
+			{
 			}
 		}
 
@@ -669,7 +707,7 @@ namespace SolidCP.Providers.OS
 						if (OSInfo.OSVersion.Major >= 9 && Dnf.IsInstallerInstalled) return Dnf;
 						else return Yum;
 					case OSFlavor.CentOS:
-						if (OSInfo.OSVersion.Major >= 8 && Dnf.IsInstallerInstalled) return Dnf;		
+						if (OSInfo.OSVersion.Major >= 8 && Dnf.IsInstallerInstalled) return Dnf;
 						else return Yum;
 					case OSFlavor.Oracle:
 						if (OSInfo.OSVersion.Major >= 8 && Dnf.IsInstallerInstalled) return Dnf;

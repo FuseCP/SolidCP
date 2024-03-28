@@ -34,7 +34,14 @@ namespace SolidCP.Web.Clients
 			writer.Flush();
 			mem.Seek(0, SeekOrigin.Begin);
 
-			var reader = XmlDictionaryReader.CreateBinaryReader(mem, new XmlDictionaryReaderQuotas());
+			var reader = XmlDictionaryReader.CreateBinaryReader(mem, new XmlDictionaryReaderQuotas()
+			{
+				MaxArrayLength = int.MaxValue,
+				MaxBytesPerRead = int.MaxValue,
+				MaxDepth = int.MaxValue,
+				MaxNameTableCharCount = int.MaxValue,
+				MaxStringContentLength = int.MaxValue
+			});
 			var copy = serializer.ReadObject(reader);
 			mem.Dispose();
 			return copy;
