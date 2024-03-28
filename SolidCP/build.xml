@@ -63,7 +63,7 @@
 		<WIX Condition=" '$(WIX)' == '' ">$(RootFolder)\tools\WIX\x86</WIX>
 		<!-- Include pdb's since users can send back StackTraces to ISP's, and with the pdb's the StackTraces contain
 				line numbers and the ISP's can debug SolidCP. -->
-		<IncludeReleasePdbs>True</IncludeReleasePdbs>
+		<IncludeReleasePdbs>true</IncludeReleasePdbs>
 
 		<ftphost></ftphost>
 		<ftpUsername></ftpUsername>
@@ -164,7 +164,7 @@
 			<ServerBuildExclude Include="$(ServerSrc)\bin_dotnet\WebServices\**" />
 			<ServerBuildExclude Include="$(ServerSrc)\bin\wwwroot\**" />
 			<ServerBuildExclude Include="$(ServerSrc)\Pages\**" />
-			<ServerBuildExclude Include="$(ServerSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And '$(IncludeReleasePdbs)' != 'True' " />
+			<ServerBuildExclude Include="$(ServerSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And !$(IncludeReleasePdbs)" />
 			<ServerBuildExclude Include="$(ServerSrc)\**\*.user" />
 			<ServerBuildExclude Include="$(ServerSrc)\**\*.suo" />
 			<ServerBuildExclude Include="$(ServerSrc)\**\*.cs" />
@@ -197,7 +197,7 @@
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\Release\**" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\Debug\**" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\Images\**" />
-			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And '$(IncludeReleasePdbs)' != 'True' " />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And !$(IncludeReleasePdbs) " />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.user" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.suo" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.cs" />
@@ -224,7 +224,7 @@
 			<PortalBuildExclude Include="$(PortalSrc)\bin\*.xml" />
 			<PortalBuildExclude Include="$(PortalSrc)\**\Release\**" />
 			<PortalBuildExclude Include="$(PortalSrc)\**\Debug\**" />
-			<PortalBuildExclude Include="$(PortalSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And '$(IncludeReleasePdbs)' != 'True' " />
+			<PortalBuildExclude Include="$(PortalSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And !$(IncludeReleasePdbs) " />
 			<PortalBuildExclude Include="$(PortalSrc)\**\*.user" />
 			<PortalBuildExclude Include="$(PortalSrc)\**\*.suo" />
 			<PortalBuildExclude Include="$(PortalSrc)\**\*.cs" />
@@ -247,7 +247,7 @@
 			<SchBuildExclude Include="$(SchedulerServiceSrc)\bin\*.xml" />
 			<SchBuildExclude Include="$(SchedulerServiceSrc)\**\Release\**" />
 			<SchBuildExclude Include="$(SchedulerServiceSrc)\**\Debug\**" />
-			<SchBuildExclude Include="$(SchedulerServiceSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And '$(IncludeReleasePdbs)' != 'True' " />
+			<SchBuildExclude Include="$(SchedulerServiceSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And !$(IncludeReleasePdbs) " />
 			<SchBuildExclude Include="$(SchedulerServiceSrc)\**\*.user" />
 			<SchBuildExclude Include="$(SchedulerServiceSrc)\**\*.suo" />
 			<SchBuildExclude Include="$(SchedulerServiceSrc)\**\*.snk" />
@@ -268,7 +268,7 @@
       <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\bin\*.xml" />
       <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\Release\**" />
       <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\Debug\**" />
-      <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And '$(IncludeReleasePdbs)' != 'True' " />
+      <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And !$(IncludeReleasePdbs) " />
       <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.user" />
 	  <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.suo" />
 	  <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.cs" />
@@ -285,7 +285,7 @@
 
 	<Target Name="CreateImportCsvBuild" DependsOnTargets="CreateWebDavPortalBuild">
 		<ItemGroup>
-			<ImportCsvExclude Include="$(ImportCsvSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And '$(IncludeReleasePdbs)' != 'True' " />
+			<ImportCsvExclude Include="$(ImportCsvSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And !$(IncludeReleasePdbs) " />
 			<ImportCsvExclude Include="$(ImportCsvSrc)\**\*.vshost.*" />
 			<ImportCsvBuildFiles Include="$(ImportCsvSrc)\**\*.*" Exclude="@(ImportCsvExclude)" />
 		</ItemGroup>
@@ -294,7 +294,7 @@
 
   <Target Name="CreateHyperVUtilsBuild" DependsOnTargets="CreateImportCsvBuild">
 		<ItemGroup>
-			<HyperVUtilsExclude Include="$(HyperVUtilsSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And '$(IncludeReleasePdbs)' != 'True' " />
+			<HyperVUtilsExclude Include="$(HyperVUtilsSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And !$(IncludeReleasePdbs) " />
 			<HyperVUtilsExclude Include="$(HyperVUtilsSrc)\**\*.vshost.*" />
 			<HyperVUtilsBuildFiles Include="$(HyperVUtilsSrc)\**\*.*" Exclude="@(HyperVUtilsExclude)" />
 		</ItemGroup>
@@ -303,7 +303,7 @@
 
   <Target Name="CreateVMConfigBuild" DependsOnTargets="CreateHyperVUtilsBuild">
 		<ItemGroup>
-			<VMConfigExclude Include="$(VMConfigSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And '$(IncludeReleasePdbs)' != 'True' " />
+			<VMConfigExclude Include="$(VMConfigSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And !$(IncludeReleasePdbs) " />
 			<VMConfigExclude Include="$(VMConfigSrc)\**\*.vshost.*" />
 			<VMConfigBuildFiles Include="$(VMConfigSrc)\**\*.*" Exclude="@(VMConfigExclude)" />
 		</ItemGroup>
@@ -312,7 +312,7 @@
 
 	<Target Name="CreateImportEnterpriseBuild" DependsOnTargets="CreateVMConfigBuild">
 		<ItemGroup>
-			<ImportEnterpriseExclude Include="$(ImportEnterpriseSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And '$(IncludeReleasePdbs)' != 'True' " />
+			<ImportEnterpriseExclude Include="$(ImportEnterpriseSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And !$(IncludeReleasePdbs) " />
 			<ImportEnterpriseExclude Include="$(ImportEnterpriseSrc)\**\*.vshost.*" />
 			<ImportEnterpriseBuildFiles Include="$(ImportEnterpriseSrc)\**\*.*" Exclude="@(ImportEnterpriseExclude)" />
 		</ItemGroup>
@@ -326,7 +326,7 @@
 			<AWStatsViewerBuildExclude Include="$(AWStatsViewerSrc)\bin\*.xml" />
 			<AWStatsViewerBuildExclude Include="$(AWStatsViewerSrc)\**\Release\**" />
 			<AWStatsViewerBuildExclude Include="$(AWStatsViewerSrc)\**\Debug\**" />
-			<AWStatsViewerBuildExclude Include="$(AWStatsViewerSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And '$(IncludeReleasePdbs)' != 'True' " />
+			<AWStatsViewerBuildExclude Include="$(AWStatsViewerSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And !$(IncludeReleasePdbs) " />
 			<AWStatsViewerBuildExclude Include="$(AWStatsViewerSrc)\**\*.user" />
 			<AWStatsViewerBuildExclude Include="$(AWStatsViewerSrc)\**\*.suo" />
 			<AWStatsViewerBuildExclude Include="$(AWStatsViewerSrc)\**\*.cs" />
@@ -347,7 +347,7 @@
 				<SCPTransportAgentBuildExclude Include="$(SCPTransportAgentSrc)\**\microsoft.*" />
 				<SCPTransportAgentBuildExclude Include="$(SCPTransportAgentSrc)\**\app.config" />
 				<SCPTransportAgentBuildExclude Include="$(SCPTransportAgentSrc)\**\*.txt" />
-				<SCPTransportAgentBuildExclude Include="$(SCPTransportAgentSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And '$(IncludeReleasePdbs)' != 'True' " />
+				<SCPTransportAgentBuildExclude Include="$(SCPTransportAgentSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And !$(IncludeReleasePdbs) " />
 				<SCPTransportAgentBuildExclude Include="$(SCPTransportAgentSrc)\**\*.user" />
 				<SCPTransportAgentBuildExclude Include="$(SCPTransportAgentSrc)\**\*.suo" />
 				<SCPTransportAgentBuildExclude Include="$(SCPTransportAgentSrc)\**\*.cs" />
@@ -462,7 +462,7 @@
 
   <Target Name="CreateFixDefaultPublicFolderMailboxBuild" DependsOnTargets="CreateSetupBuild">
     <ItemGroup>
-      <FixDefaultPublicFolderMailboxExclude Include="$(FixDefaultPublicFolderMailboxSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And '$(IncludeReleasePdbs)' != 'True' " />
+      <FixDefaultPublicFolderMailboxExclude Include="$(FixDefaultPublicFolderMailboxSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And !$(IncludeReleasePdbs) " />
       <FixDefaultPublicFolderMailboxExclude Include="$(FixDefaultPublicFolderMailboxSrc)\**\*.vshost.*" />
       <FixDefaultPublicFolderMailboxBuildFiles Include="$(FixDefaultPublicFolderMailboxSrc)\**\*.*" Exclude="@(FixDefaultPublicFolderMailboxExclude)" />
     </ItemGroup>
@@ -805,32 +805,32 @@
 		<!-- Copy Setup.dll -->
 		<MakeDir Directories="$(ServerInstall)\Setup"/>
 		<Copy SourceFiles="$(SetupBuildFolder)\setup.dll" DestinationFolder="$(ServerInstall)\Setup" />
-		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(ServerInstall)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or '$(IncludeReleasePdbs)' == 'True' " />
+		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(ServerInstall)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or $(IncludeReleasePdbs) " />
 		<Copy SourceFiles="$(SetupBuildFolder)\setup.dll" DestinationFolder="$(ServerUpdate)\Setup" />
-		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(ServerUpdate)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or '$(IncludeReleasePdbs)' == 'True' " />
+		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(ServerUpdate)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or $(IncludeReleasePdbs) " />
 
 		<Copy SourceFiles="$(SetupBuildFolder)\setup.dll" DestinationFolder="$(EnterpriseServerInstall)\Setup" />
-		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(EnterpriseServerInstall)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or '$(IncludeReleasePdbs)' == 'True' " />
+		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(EnterpriseServerInstall)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or $(IncludeReleasePdbs) " />
 		<Copy SourceFiles="$(SetupBuildFolder)\setup.dll" DestinationFolder="$(EnterpriseServerUpdate)\Setup" />
-		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(EnterpriseServerUpdate)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or '$(IncludeReleasePdbs)' == 'True' " />
+		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(EnterpriseServerUpdate)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or $(IncludeReleasePdbs) " />
 
 		<MakeDir Directories="$(PortalInstall)\Setup"/>
 		<Copy SourceFiles="$(SetupBuildFolder)\setup.dll" DestinationFolder="$(PortalInstall)\Setup" />
-		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(PortalInstall)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or '$(IncludeReleasePdbs)' == 'True' " />
+		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(PortalInstall)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or $(IncludeReleasePdbs) " />
 		<Copy SourceFiles="$(SetupBuildFolder)\setup.dll" DestinationFolder="$(PortalUpdate)\Setup" />
-		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(PortalUpdate)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or '$(IncludeReleasePdbs)' == 'True' " />
+		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(PortalUpdate)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or $(IncludeReleasePdbs) " />
 
 		<MakeDir Directories="$(WebDavPortalInstall)\Setup"/>
 		<Copy SourceFiles="$(SetupBuildFolder)\setup.dll" DestinationFolder="$(WebDavPortalInstall)\Setup" />
-		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(WebDavPortalInstall)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or '$(IncludeReleasePdbs)' == 'True' " />
+		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(WebDavPortalInstall)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or $(IncludeReleasePdbs) " />
 		<Copy SourceFiles="$(SetupBuildFolder)\setup.dll" DestinationFolder="$(WebDavPortalUpdate)\Setup" />
-		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(WebDavPortalUpdate)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or '$(IncludeReleasePdbs)' == 'True' " />
+		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(WebDavPortalUpdate)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or $(IncludeReleasePdbs) " />
 
 		<RemoveDir Directories="$(StandaloneInstall)"/>
 		<MakeDir Directories="$(StandaloneInstall)"/>
 		<MakeDir Directories="$(StandaloneInstall)\Setup"/>
 		<Copy SourceFiles="$(SetupBuildFolder)\setup.dll" DestinationFolder="$(StandaloneInstall)\Setup" />
-		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(StandaloneInstall)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or '$(IncludeReleasePdbs)' == 'True' " />
+		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(StandaloneInstall)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or $(IncludeReleasePdbs) " />
 	</Target>
 
     <UsingTask TaskName="RegExpReplace" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
