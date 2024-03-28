@@ -35,6 +35,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Data;
 using System.Linq;
+using System.Web.Services.Description;
 using System.Web.UI.WebControls;
 using SolidCP.EnterpriseServer;
 using SolidCP.Providers.Common;
@@ -42,187 +43,193 @@ using SolidCP.Providers.Virtualization;
 
 namespace SolidCP.Portal.ProviderControls
 {
-    public partial class Proxmox_Settings : SolidCPControlBase, IHostingServiceProviderSettings
-    {
-        protected void Page_Load(object sender, EventArgs e)
-        {
-        }
-        
-        void IHostingServiceProviderSettings.BindSettings(StringDictionary settings)
-        {
+	public partial class Proxmox_Settings : SolidCPControlBase, IHostingServiceProviderSettings
+	{
+		protected void Page_Load(object sender, EventArgs e)
+		{
+		}
 
-            // Proxmox Cluster Settings
-            txtProxmoxClusterServerHost.Text = settings["ProxmoxClusterServerHost"];
-            txtProxmoxClusterServerPort.Text = settings["ProxmoxClusterServerPort"];
-            txtProxmoxClusterAdminUser.Text = settings["ProxmoxClusterAdminUser"];
-            txtProxmoxClusterRealm.Text = settings["ProxmoxClusterRealm"];
-            ViewState["PWD"] = settings["ProxmoxClusterAdminPass"];
-            rowPassword.Visible = ((string)ViewState["PWD"]) != "";
+		void IHostingServiceProviderSettings.BindSettings(StringDictionary settings)
+		{
+			// Distinguish between Proxmox and Proxmox (localhost)
+			var service = ES.Services.Servers.GetServiceInfo(PanelRequest.ServiceId);
+			var provider = ES.Services.Servers.GetProvider(service.ProviderId);
+			var isLocal = provider.ProviderName.Contains("local");
+		
+			txtProxmoxClusterServerHost.Enabled = ProxmoxClusterServerHostValidator.Visible = !isLocal;
 
-            // Proxmox SSH Settings
-            txtDeploySSHServerHost.Text = settings["DeploySSHServerHost"];
-            txtDeploySSHServerPort.Text = settings["DeploySSHServerPort"];
-            txtDeploySSHUser.Text = settings["DeploySSHUser"];
-            ViewState["SSHPWD"] = settings["DeploySSHPass"];
-            rowSSHPassword.Visible = ((string)ViewState["SSHPWD"]) != "";
-            txtDeploySSHKey.Text = settings["DeploySSHKey"];
-            ViewState["SSHKEYPWD"] = settings["DeploySSHKeyPass"];
-            rowSSHKEYPassword.Visible = ((string)ViewState["SSHKEYPWD"]) != "";
-            txtDeploySSHScript.Text = settings["DeploySSHScript"];
-            txtDeploySSHScriptParams.Text = settings["DeploySSHScriptParams"];
+			// Proxmox Cluster Settings
+			txtProxmoxClusterServerHost.Text = isLocal ? "localhost" : settings["ProxmoxClusterServerHost"];
+			txtProxmoxClusterServerPort.Text = settings["ProxmoxClusterServerPort"] ?? "8006";
+			txtProxmoxClusterAdminUser.Text = settings["ProxmoxClusterAdminUser"];
+			txtProxmoxClusterRealm.Text = settings["ProxmoxClusterRealm"] ?? "pam";
+			ViewState["PWD"] = settings["ProxmoxClusterAdminPass"];
+			rowPassword.Visible = ((string)ViewState["PWD"]) != "";
 
-            // OS Templates
-            //txtOSTemplatesPath.Text = settings["OsTemplatesPath"];
-            repOsTemplates.DataSource = new ConfigFile(settings["OsTemplates"]).LibraryItems; //ES.Services.VPS2012.GetOperatingSystemTemplatesByServiceId(PanelRequest.ServiceId).ToList();
-            repOsTemplates.DataBind();
+			// Proxmox SSH Settings
+			txtDeploySSHServerHost.Text = settings["DeploySSHServerHost"];
+			txtDeploySSHServerPort.Text = settings["DeploySSHServerPort"] ?? "22";
+			txtDeploySSHUser.Text = settings["DeploySSHUser"];
+			ViewState["SSHPWD"] = settings["DeploySSHPass"];
+			rowSSHPassword.Visible = ((string)ViewState["SSHPWD"]) != "";
+			txtDeploySSHKey.Text = settings["DeploySSHKey"];
+			ViewState["SSHKEYPWD"] = settings["DeploySSHKeyPass"];
+			rowSSHKEYPassword.Visible = ((string)ViewState["SSHKEYPWD"]) != "";
+			txtDeploySSHScript.Text = settings["DeploySSHScript"];
+			txtDeploySSHScriptParams.Text = settings["DeploySSHScriptParams"];
 
-            // DVD Path
-            txtProxmoxIsosonStorage.Text = settings["ProxmoxIsosonStorage"];
+			// OS Templates
+			//txtOSTemplatesPath.Text = settings["OsTemplatesPath"];
+			repOsTemplates.DataSource = new ConfigFile(settings["OsTemplates"]).LibraryItems; //ES.Services.VPS2012.GetOperatingSystemTemplatesByServiceId(PanelRequest.ServiceId).ToList();
+			repOsTemplates.DataBind();
 
-            // host name
-            txtHostnamePattern.Text = settings["HostnamePattern"];
+			// DVD Path
+			txtProxmoxIsosonStorage.Text = settings["ProxmoxIsosonStorage"];
 
-        }
+			// host name
+			txtHostnamePattern.Text = settings["HostnamePattern"];
 
-        void IHostingServiceProviderSettings.SaveSettings(StringDictionary settings)
-        {
+		}
 
-            // Proxmox Cluster Settings
-            settings["ProxmoxClusterServerHost"] = txtProxmoxClusterServerHost.Text.Trim();
-            settings["ProxmoxClusterServerPort"] = txtProxmoxClusterServerPort.Text.Trim();
-            settings["ProxmoxClusterAdminUser"] = txtProxmoxClusterAdminUser.Text.Trim();
-            settings["ProxmoxClusterRealm"] = txtProxmoxClusterRealm.Text.Trim();
-            settings["ProxmoxClusterAdminPass"] = (txtProxmoxClusterAdminPass.Text.Length > 0) ? txtProxmoxClusterAdminPass.Text : (string)ViewState["PWD"];
+		void IHostingServiceProviderSettings.SaveSettings(StringDictionary settings)
+		{
 
-            // Proxmox SSH Settings
-            settings["DeploySSHServerHost"] = txtDeploySSHServerHost.Text.Trim();
-            settings["DeploySSHServerPort"] = txtDeploySSHServerPort.Text.Trim();
-            settings["DeploySSHUser"] = txtDeploySSHUser.Text.Trim();
-            settings["DeploySSHPass"] = (txtDeploySSHPass.Text.Length > 0) ? txtDeploySSHPass.Text : (string)ViewState["SSHPWD"];
-            if (chkdelsshpass.Checked == true)
-                settings["DeploySSHPass"] = "";
-            settings["DeploySSHKey"] = txtDeploySSHKey.Text.Trim();
-            settings["DeploySSHKeyPass"] = (txtDeploySSHKeyPass.Text.Length > 0) ? txtDeploySSHKeyPass.Text : (string)ViewState["SSHKEYPWD"];
-            if (chkdelsshkeypass.Checked == true)
-                settings["DeploySSHKeyPass"] = "";
-            settings["DeploySSHScript"] = txtDeploySSHScript.Text.Trim();
-            settings["DeploySSHScriptParams"] = txtDeploySSHScriptParams.Text.Trim();
+			// Proxmox Cluster Settings
+			settings["ProxmoxClusterServerHost"] = txtProxmoxClusterServerHost.Text.Trim();
+			settings["ProxmoxClusterServerPort"] = txtProxmoxClusterServerPort.Text.Trim();
+			settings["ProxmoxClusterAdminUser"] = txtProxmoxClusterAdminUser.Text.Trim();
+			settings["ProxmoxClusterRealm"] = txtProxmoxClusterRealm.Text.Trim();
+			settings["ProxmoxClusterAdminPass"] = (txtProxmoxClusterAdminPass.Text.Length > 0) ? txtProxmoxClusterAdminPass.Text : (string)ViewState["PWD"];
 
-            // OS Templates
-            settings["OsTemplates"] = GetConfigXml(GetOsTemplates());
-            //settings["OsTemplatesPath"] = txtOSTemplatesPath.Text.Trim();
+			// Proxmox SSH Settings
+			settings["DeploySSHServerHost"] = txtDeploySSHServerHost.Text.Trim();
+			settings["DeploySSHServerPort"] = txtDeploySSHServerPort.Text.Trim();
+			settings["DeploySSHUser"] = txtDeploySSHUser.Text.Trim();
+			settings["DeploySSHPass"] = (txtDeploySSHPass.Text.Length > 0) ? txtDeploySSHPass.Text : (string)ViewState["SSHPWD"];
+			if (chkdelsshpass.Checked == true)
+				settings["DeploySSHPass"] = "";
+			settings["DeploySSHKey"] = txtDeploySSHKey.Text.Trim();
+			settings["DeploySSHKeyPass"] = (txtDeploySSHKeyPass.Text.Length > 0) ? txtDeploySSHKeyPass.Text : (string)ViewState["SSHKEYPWD"];
+			if (chkdelsshkeypass.Checked == true)
+				settings["DeploySSHKeyPass"] = "";
+			settings["DeploySSHScript"] = txtDeploySSHScript.Text.Trim();
+			settings["DeploySSHScriptParams"] = txtDeploySSHScriptParams.Text.Trim();
 
-            // DVD Path
-            settings["ProxmoxIsosonStorage"] = txtProxmoxIsosonStorage.Text.Trim();
+			// OS Templates
+			settings["OsTemplates"] = GetConfigXml(GetOsTemplates());
+			//settings["OsTemplatesPath"] = txtOSTemplatesPath.Text.Trim();
 
-            // host name
-            settings["HostnamePattern"] = txtHostnamePattern.Text.Trim();
+			// DVD Path
+			settings["ProxmoxIsosonStorage"] = txtProxmoxIsosonStorage.Text.Trim();
 
-        }
+			// host name
+			settings["HostnamePattern"] = txtHostnamePattern.Text.Trim();
 
-        private List<ServiceInfo> GetServices(string data)
-        {
-            if (string.IsNullOrEmpty(data))
-                return null;
-            List<ServiceInfo> list = new List<ServiceInfo>();
-            string[] servicesIds = data.Split(',');
-            foreach (string current in servicesIds)
-            {
-                ServiceInfo serviceInfo = ES.Services.Servers.GetServiceInfo(Utils.ParseInt(current));
-                list.Add(serviceInfo);
-            }
+		}
 
-            return list;
-        }
+		private List<ServiceInfo> GetServices(string data)
+		{
+			if (string.IsNullOrEmpty(data))
+				return null;
+			List<ServiceInfo> list = new List<ServiceInfo>();
+			string[] servicesIds = data.Split(',');
+			foreach (string current in servicesIds)
+			{
+				ServiceInfo serviceInfo = ES.Services.Servers.GetServiceInfo(Utils.ParseInt(current));
+				list.Add(serviceInfo);
+			}
 
-        private StringDictionary ConvertArrayToDictionary(string[] settings)
-        {
-            StringDictionary r = new StringDictionary();
-            foreach (string setting in settings)
-            {
-                int idx = setting.IndexOf('=');
-                r.Add(setting.Substring(0, idx), setting.Substring(idx + 1));
-            }
-            return r;
-        }
+			return list;
+		}
 
-
-
-
-
-        // OS Templates
-        protected void btnAddOsTemplate_Click(object sender, EventArgs e)
-        {
-            var templates = GetOsTemplates();
-
-            templates.Add(new LibraryItem());
-
-            RebindOsTemplate(templates);
-        }
-
-        protected void btnRemoveOsTemplate_OnCommand(object sender, CommandEventArgs e)
-        {
-            var templates = GetOsTemplates();
-
-            templates.RemoveAt(Convert.ToInt32(e.CommandArgument));
-
-            RebindOsTemplate(templates);
-        }
-
-        private List<LibraryItem> GetOsTemplates()
-        {
-            var result = new List<LibraryItem>();
-
-            foreach (RepeaterItem item in repOsTemplates.Items)
-            {
-                var template = new LibraryItem();
-                int processVolume;
-
-                template.Name = GetTextBoxText(item, "txtTemplateName");
-                template.Path = GetTextBoxText(item, "txtTemplateFileName");
-
-                template.DeployScriptParams = GetTextBoxText(item, "txtDeployScriptParams");
-
-                int.TryParse(GetTextBoxText(item, "txtProcessVolume"), out processVolume);
-                template.ProcessVolume = processVolume;
-
-                template.LegacyNetworkAdapter = GetCheckBoxValue(item, "chkLegacyNetworkAdapter");
-                template.RemoteDesktop = true; // obsolete
-                template.ProvisionComputerName = GetCheckBoxValue(item, "chkCanSetComputerName");
-                template.ProvisionAdministratorPassword = GetCheckBoxValue(item, "chkCanSetAdminPass");
-                template.ProvisionNetworkAdapters = GetCheckBoxValue(item, "chkCanSetNetwork");
-                
-
-                var syspreps = GetTextBoxText(item, "txtSysprep").Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries);
-                template.SysprepFiles = syspreps.Select(s => s.Trim()).ToArray();
-
-                result.Add(template);
-            }
-
-            return result;
-        }
-        private void RebindOsTemplate(List<LibraryItem> templates)
-        {
-            repOsTemplates.DataSource = templates;
-            repOsTemplates.DataBind();
-        }
-
-        private string GetConfigXml(List<LibraryItem> items)
-        {
-            var templates = items.ToArray();
-            return new ConfigFile(templates).Xml;
-        }
-
-        private string GetTextBoxText(RepeaterItem item, string name)
-        {
-            return (item.FindControl(name) as TextBox).Text;
-        }
-
-        private bool GetCheckBoxValue(RepeaterItem item, string name)
-        {
-            return (item.FindControl(name) as CheckBox).Checked;
-        }
+		private StringDictionary ConvertArrayToDictionary(string[] settings)
+		{
+			StringDictionary r = new StringDictionary();
+			foreach (string setting in settings)
+			{
+				int idx = setting.IndexOf('=');
+				r.Add(setting.Substring(0, idx), setting.Substring(idx + 1));
+			}
+			return r;
+		}
 
 
-    }
+
+
+
+		// OS Templates
+		protected void btnAddOsTemplate_Click(object sender, EventArgs e)
+		{
+			var templates = GetOsTemplates();
+
+			templates.Add(new LibraryItem());
+
+			RebindOsTemplate(templates);
+		}
+
+		protected void btnRemoveOsTemplate_OnCommand(object sender, CommandEventArgs e)
+		{
+			var templates = GetOsTemplates();
+
+			templates.RemoveAt(Convert.ToInt32(e.CommandArgument));
+
+			RebindOsTemplate(templates);
+		}
+
+		private List<LibraryItem> GetOsTemplates()
+		{
+			var result = new List<LibraryItem>();
+
+			foreach (RepeaterItem item in repOsTemplates.Items)
+			{
+				var template = new LibraryItem();
+				int processVolume;
+
+				template.Name = GetTextBoxText(item, "txtTemplateName");
+				template.Path = GetTextBoxText(item, "txtTemplateFileName");
+
+				template.DeployScriptParams = GetTextBoxText(item, "txtDeployScriptParams");
+
+				int.TryParse(GetTextBoxText(item, "txtProcessVolume"), out processVolume);
+				template.ProcessVolume = processVolume;
+
+				template.LegacyNetworkAdapter = GetCheckBoxValue(item, "chkLegacyNetworkAdapter");
+				template.RemoteDesktop = true; // obsolete
+				template.ProvisionComputerName = GetCheckBoxValue(item, "chkCanSetComputerName");
+				template.ProvisionAdministratorPassword = GetCheckBoxValue(item, "chkCanSetAdminPass");
+				template.ProvisionNetworkAdapters = GetCheckBoxValue(item, "chkCanSetNetwork");
+
+
+				var syspreps = GetTextBoxText(item, "txtSysprep").Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries);
+				template.SysprepFiles = syspreps.Select(s => s.Trim()).ToArray();
+
+				result.Add(template);
+			}
+
+			return result;
+		}
+		private void RebindOsTemplate(List<LibraryItem> templates)
+		{
+			repOsTemplates.DataSource = templates;
+			repOsTemplates.DataBind();
+		}
+
+		private string GetConfigXml(List<LibraryItem> items)
+		{
+			var templates = items.ToArray();
+			return new ConfigFile(templates).Xml;
+		}
+
+		private string GetTextBoxText(RepeaterItem item, string name)
+		{
+			return (item.FindControl(name) as TextBox).Text;
+		}
+
+		private bool GetCheckBoxValue(RepeaterItem item, string name)
+		{
+			return (item.FindControl(name) as CheckBox).Checked;
+		}
+
+
+	}
 }
