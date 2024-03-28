@@ -177,6 +177,24 @@ namespace SolidCP.Portal.ProviderControls
 		protected global::System.Web.UI.WebControls.TextBox txtProxmoxClusterAdminPass;
 
 		/// <summary>
+		/// locProxmoxTrustServerCertificate control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.Localize locProxmoxTrustServerCertificate;
+
+		/// <summary>
+		/// chkProxmoxTrustServerCertificate control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.CheckBox chkProxmoxTrustServerCertificate;
+
+		/// <summary>
 		/// locProxmoxSSH control.
 		/// </summary>
 		/// <remarks>

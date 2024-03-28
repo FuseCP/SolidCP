@@ -63,6 +63,10 @@ namespace SolidCP.Portal.ProviderControls
 			txtProxmoxClusterServerPort.Text = settings["ProxmoxClusterServerPort"] ?? "8006";
 			txtProxmoxClusterAdminUser.Text = settings["ProxmoxClusterAdminUser"];
 			txtProxmoxClusterRealm.Text = settings["ProxmoxClusterRealm"] ?? "pam";
+			bool trustCert = isLocal;
+			bool.TryParse(settings["ProxmoxTrustClusterServerCertificate"] ?? $"{isLocal}", out trustCert);
+			chkProxmoxTrustServerCertificate.Checked = trustCert;
+			chkProxmoxTrustServerCertificate.Enabled = !isLocal;
 			ViewState["PWD"] = settings["ProxmoxClusterAdminPass"];
 			rowPassword.Visible = ((string)ViewState["PWD"]) != "";
 
@@ -100,6 +104,7 @@ namespace SolidCP.Portal.ProviderControls
 			settings["ProxmoxClusterAdminUser"] = txtProxmoxClusterAdminUser.Text.Trim();
 			settings["ProxmoxClusterRealm"] = txtProxmoxClusterRealm.Text.Trim();
 			settings["ProxmoxClusterAdminPass"] = (txtProxmoxClusterAdminPass.Text.Length > 0) ? txtProxmoxClusterAdminPass.Text : (string)ViewState["PWD"];
+			settings["ProxmoxTrustClusterServerCertificate"] = chkProxmoxTrustServerCertificate.Checked.ToString();
 
 			// Proxmox SSH Settings
 			settings["DeploySSHServerHost"] = txtDeploySSHServerHost.Text.Trim();

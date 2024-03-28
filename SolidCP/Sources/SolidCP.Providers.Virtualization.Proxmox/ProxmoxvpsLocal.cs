@@ -9,7 +9,7 @@ namespace SolidCP.Providers.Virtualization
 {
 	public class ProxmoxvpsLocal : Proxmoxvps
 	{
-		protected override string ProxmoxClusterServerHost => "127.0.0.1";
+		protected override string ProxmoxClusterServerHost => "localhost";
 		public string GetInstalledVersion()
 		{
 			try

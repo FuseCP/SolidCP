@@ -110,6 +110,16 @@ namespace SolidCP.Providers.Virtualization
 		{
 			get { return ProviderSettings["ProxmoxClusterAdminPass"]; }
 		}
+		protected bool? ProxmoxTrustClusterServerCertificate
+		{
+			get { 
+				var setting = ProviderSettings["ProxmoxTrustClusterServerCertificate"];
+				if (string.IsNullOrEmpty(setting)) return null;
+				bool trustCert = false;
+				bool.TryParse(setting, out trustCert);
+				return trustCert;
+			}
+		}
 
 		/*
 		protected string ProxmoxClusterNode
@@ -234,7 +244,11 @@ namespace SolidCP.Providers.Virtualization
 		private User user;
 		private ProxmoxServer server;
 
-		public virtual bool ValidateServerCertificate => !string.IsNullOrEmpty(ProxmoxClusterServerHost) && ProxmoxClusterServerHost != "localhost";
+		public virtual bool IsLocalServer => string.IsNullOrEmpty(ProxmoxClusterServerHost) || ProxmoxClusterServerHost == "localhost" ||
+			ProxmoxClusterServerHost.StartsWith("127.0.0.") || ProxmoxClusterServerHost == "::1" || ProxmoxClusterServerHost == "[::1]";
+		public virtual bool ValidateServerCertificate => !IsLocalServer || 
+			!ProxmoxTrustClusterServerCertificate.HasValue || !ProxmoxTrustClusterServerCertificate.Value;
+
 
 		#endregion
 

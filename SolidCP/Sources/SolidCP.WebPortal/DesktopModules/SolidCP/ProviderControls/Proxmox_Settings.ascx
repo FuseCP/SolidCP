@@ -78,6 +78,15 @@
 
 			</td>
 		</tr>
+		<tr>
+			<td class="SubHead" style="width: 200px;">
+				<asp:Localize ID="locProxmoxTrustServerCertificate" runat="server" meta:resourcekey="locProxmoxTrustServerCertificate" Text="Always trust Proxomox Server Certificate:"></asp:Localize>
+			</td>
+			<td>
+				<asp:CheckBox Width="250px" CssClass="form-control" runat="server" ID="chkProxmoxTrustServerCertificate"></asp:CheckBox>
+
+			</td>
+		</tr>
 		<%--
 	    <tr>
 		    <td class="SubHead" style="width:200px;">
