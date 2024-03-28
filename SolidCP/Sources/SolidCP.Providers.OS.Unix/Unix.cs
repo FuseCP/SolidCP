@@ -637,12 +637,14 @@ namespace SolidCP.Providers.OS
 			env["COLUMNS"] = "1024";
 			var output = Shell.Default.Exec("ps -A -o pid=,user=,rss=,vsz=,pcpu=,args=", null, env).Output().Result;
 			if (output == null) throw new PlatformNotSupportedException("ps command not found on this system.");
-			if (output.Contains("error"))
-			{
+			if (Regex.IsMatch(output,  @"^\s*error", RegexOptions.Singleline))
+			{	// error using -o rss (-o rss option is not POSIX), use POSIX ps, use -o vsz instead
 				output = Shell.Default.Exec("ps -A -o pid=,user=,vsz=,vsz=,pcpu=,args=", null, env).Output().Result;
 			}
 			if (output == null) throw new PlatformNotSupportedException("ps command not found on this system.");
-			var matches = Regex.Matches(output, @"^\s*(?<pid>[^\s]+)\s+(?<user>[^\s]+)\s+(?<mem>[^\s]+)\s+(?<vmem>[^\s]+)\s+(?<cpu>[^\s]+)\s+(?<cmd>[^""][^\s$]*|""[^""]*"")\s+(?<args>.*?)\s*$", RegexOptions.Multiline);
+			if (Regex.IsMatch(output, @"^\s*error", RegexOptions.Singleline)) throw new PlatformNotSupportedException("Error: ps on this OS not POSIX compliant.");
+
+			var matches = Regex.Matches(output, @"^\s*(?<pid>[0-9]+)\s+(?<user>[^\s]+)\s+(?<mem>[0-9]+)\s+(?<vmem>[0-9]+)\s+(?<cpu>[0-9\.,]+)\s+(?<cmd>[^""][^\s$]*|""[^""]*"")\s+(?<args>.*?)\s*$", RegexOptions.Multiline);
 
 			return matches
 				.OfType<Match>()
