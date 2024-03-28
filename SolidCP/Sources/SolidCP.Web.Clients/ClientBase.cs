@@ -223,14 +223,14 @@ namespace SolidCP.Web.Clients
 
 		public bool IsLocalAddress(string adr)
 		{
-			return Regex.IsMatch(adr, @"(^127\.)|(^192\.168\.)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^::1$)|(^[fF][cCdD])", RegexOptions.Singleline);
+			return Regex.IsMatch(adr, @"(^127\.)|(^192\.168\.)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^\[?::1\]?$)|(^\[?[fF][cCdD])", RegexOptions.Singleline);
 		}
 
 
 		public bool IsHostLocal(string host)
 		{
-			var isHostIP = Regex.IsMatch(host, @"^[0.9]{1,3}(?:\.[0-9]{1,3}){3}$", RegexOptions.Singleline) || Regex.IsMatch(host, @"^[0-9a-fA-F:]+$", RegexOptions.Singleline);
-			if (host == "localhost" || host == "127.0.0.1" || host == "::1" ||
+			var isHostIP = Regex.IsMatch(host, @"^[0.9]{1,3}(?:\.[0-9]{1,3}){3}$", RegexOptions.Singleline) || Regex.IsMatch(host, @"^\[?[0-9a-fA-F:]+\]?$", RegexOptions.Singleline);
+			if (host == "localhost" || host == "127.0.0.1" || host == "::1" || host == "[::1]" ||
 				isHostIP && IsLocalAddress(host)) return true;
 
 			if (!isHostIP)

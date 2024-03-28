@@ -17,7 +17,7 @@
 		<DebugType>full</DebugType>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-		<DebugType>none</DebugType>
+		<DebugType>portable</DebugType>
 	</PropertyGroup>
 	<ItemGroup>
 		<Reference Include="Microsoft.Practices.EnterpriseLibrary.Caching, Version=3.1.0.0, Culture=neutral, processorArchitecture=MSIL">

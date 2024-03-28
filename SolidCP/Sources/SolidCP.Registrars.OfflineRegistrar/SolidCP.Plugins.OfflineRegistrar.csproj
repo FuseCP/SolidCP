@@ -47,7 +47,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>none</DebugType>
+    <DebugType>portable</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\SolidCP.EnterpriseServer\bin\Plugins</OutputPath>
     <DefineConstants>TRACE</DefineConstants>

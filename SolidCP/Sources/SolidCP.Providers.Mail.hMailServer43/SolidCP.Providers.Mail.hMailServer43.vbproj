@@ -20,7 +20,7 @@
 		<DefineDebug>true</DefineDebug>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-		<DebugType>None</DebugType>
+		<DebugType>portable</DebugType>
 		<DefineDebug>false</DefineDebug>
 	</PropertyGroup>
 	<ItemGroup>

@@ -13,7 +13,7 @@
 		<OutputPath>bin\$(Configuration)\net48</OutputPath>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-		<DebugType>none</DebugType>
+		<DebugType>portable</DebugType>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="SyslogNet.ClientStandard" Version="0.3.4" GeneratePathPropery="true" />
