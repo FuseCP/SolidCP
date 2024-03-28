@@ -199,9 +199,12 @@ namespace SolidCP.Providers.OS
 				process.StartInfo.RedirectStandardError = true;
 				process.StartInfo.StandardOutputEncoding = encoding ?? Encoding.Default;
 				process.StartInfo.StandardErrorEncoding = encoding ?? Encoding.Default;
-				foreach (DictionaryEntry variable in environmentVariables)
+				if (environmentVariables != null)
 				{
-					process.StartInfo.EnvironmentVariables.Add(variable.Key as string, variable.Value as string);
+					foreach (DictionaryEntry variable in environmentVariables)
+					{
+						process.StartInfo.EnvironmentVariables.Add(variable.Key as string, variable.Value as string);
+					}
 				}
 				process.Exited += (obj, args) =>
 				{

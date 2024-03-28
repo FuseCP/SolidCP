@@ -16,6 +16,7 @@ namespace SolidCP.Providers.Virtualization
 	public class ApiClient
 	{
 		private string baseUrl;
+		private bool validateCertificate;
 		//private string node;
 		private ApiTicket apiTicket;
 
@@ -25,19 +26,28 @@ namespace SolidCP.Providers.Virtualization
 		//public ApiClient(ProxmoxServer server, string node)
 		public ApiClient(ProxmoxServer server)
 		{
-			this.baseUrl = "https://" + server.Ip + ":" + server.Port + "/api2/json/";
+			this.baseUrl = "https://" + server.Ip + ":" + server.Port + "/api2/json";
+			this.validateCertificate = server.ValidateCertificate;
 			//this.node = node;
 			//HostedSolutionLog.DebugInfo("APIClient: {0}", this.baseUrl);
 		}
 
-		public RestResponse Login(User user)
+		RestClient GetRestClient(int timeout = 0)
 		{
 			var options = new RestClientOptions(baseUrl)
 			{
-				RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true
+				RemoteCertificateValidationCallback = validateCertificate ? null :
+				(sender, certificate, chain, sslPolicyErrors) =>
+					true
 			};
+			if (timeout == -1) options.MaxTimeout = int.MaxValue;
+			else if (timeout != 0) options.MaxTimeout = timeout;
+			return new RestClient(options);
+		}
+		public RestResponse Login(User user)
+		{
 			//HostedSolutionLog.DebugInfo("Login"); 
-			var restClient = new RestClient(baseUrl);
+			var restClient = GetRestClient();
 			//HostedSolutionLog.DebugInfo("Login - baseUrl: {0}", baseUrl);
 			var request = new RestRequest("access/ticket", Method.Post);
 			//request.AddHeader("content-type", "application/json");
@@ -48,13 +58,13 @@ namespace SolidCP.Providers.Virtualization
 			//request.RootElement = RequestRootElement;
 			//HostedSolutionLog.DebugInfo("Login - request: {0}", request.ToString());
 			var response = restClient.Execute(request);
-			if (response == null || response.Content == null || response.StatusCode == HttpStatusCode.ServiceUnavailable) throw new Exception($"Proxmox Server API Service at {baseUrl} unavaliable.");
+			if (response == null || response.Content == null || response.StatusCode == HttpStatusCode.ServiceUnavailable) throw new Exception($"Proxmox Server API Service at {baseUrl} unavaliable.\n{response.ErrorMessage}\n{response.ErrorException}");
 			//HostedSolutionLog.DebugInfo("Login - response Content: {0}", response.Content.ToString());
 			JObject json = JObject.Parse(response.Content);
-			
+
 			var data = json["data"];
 			ApiTicket apiTicketdata = new ApiTicket();
-			
+
 			apiTicketdata.ticket = (string)data["ticket"];
 			apiTicketdata.username = (string)data["username"];
 			apiTicketdata.CSRFPreventionToken = (string)data["CSRFPreventionToken"];
@@ -66,7 +76,7 @@ namespace SolidCP.Providers.Virtualization
 
 		public dynamic Status(string vmId)
 		{
-			var client = new RestClient(baseUrl);
+			var client = GetRestClient();
 			var request = PrepareGetRequest(string.Format("nodes/{0}/qemu/{1}/status/current", nodeid(vmId).node, nodeid(vmId).id));
 			var response = client.Execute<VMStatusInfo>(request);
 			//HostedSolutionLog.DebugInfo("Status - response Content: {0}", response.Content.ToString());
@@ -76,53 +86,53 @@ namespace SolidCP.Providers.Virtualization
 
 		public RestResponse<Upid> Start(string vmId)
 		{
-			var client = new RestClient(baseUrl);
+			var client = GetRestClient();
 			var request = PreparePostRequest(string.Format("nodes/{0}/qemu/{1}/status/start", nodeid(vmId).node, nodeid(vmId).id));
 			return client.Execute<Upid>(request);
 		}
 
 		public RestResponse<Upid> Stop(string vmId)
 		{
-			var client = new RestClient(baseUrl);
+			var client = GetRestClient();
 			var request = PreparePostRequest(string.Format("nodes/{0}/qemu/{1}/status/stop", nodeid(vmId).node, nodeid(vmId).id));
 			return client.Execute<Upid>(request);
 		}
 
 		public RestResponse<Upid> Shutdown(string vmId)
 		{
-			var client = new RestClient(baseUrl);
+			var client = GetRestClient();
 			var request = PreparePostRequest(string.Format("nodes/{0}/qemu/{1}/status/shutdown", nodeid(vmId).node, nodeid(vmId).id));
 			return client.Execute<Upid>(request);
 		}
 
 		public RestResponse<Upid> Reset(string vmId)
 		{
-			var client = new RestClient(baseUrl);
+			var client = GetRestClient();
 			var request = PreparePostRequest(string.Format("nodes/{0}/qemu/{1}/status/reset", nodeid(vmId).node, nodeid(vmId).id));
 			return client.Execute<Upid>(request);
 		}
 
 		public RestResponse<Upid> Suspend(string vmId)
 		{
-			var client = new RestClient(baseUrl);
+			var client = GetRestClient();
 			var request = PreparePostRequest(string.Format("nodes/{0}/qemu/{1}/status/suspend", nodeid(vmId).node, nodeid(vmId).id));
 			return client.Execute<Upid>(request);
 		}
 
 		public RestResponse<Upid> Resume(string vmId)
 		{
-			var client = new RestClient(baseUrl);
+			var client = GetRestClient();
 			var request = PreparePostRequest(string.Format("nodes/{0}/qemu/{1}/status/resume", nodeid(vmId).node, nodeid(vmId).id));
 			return client.Execute<Upid>(request);
 		}
 
 		public RestResponse<Upid> ChangeName(string vmId, string newhostname)
 		{
-			var client = new RestClient(baseUrl);
+			var client = GetRestClient();
 			var request = new RestRequest(string.Format("nodes/{0}/qemu/{1}/config", nodeid(vmId).node, nodeid(vmId).id), Method.Post);
 			request.RequestFormat = DataFormat.Json;
 			request.AddHeader("CSRFPreventionToken", apiTicket.CSRFPreventionToken);
-			request.AddCookie("PVEAuthCookie", apiTicket.ticket, request.Resource, new Uri(baseUrl).Host);
+			request.AddCookie("PVEAuthCookie", apiTicket.ticket, new Uri(baseUrl).AbsolutePath, new Uri(baseUrl).Host);
 			//request.RootElement = "root";
 			request.AddParameter("name", newhostname);
 			return client.Execute<Upid>(request);
@@ -131,7 +141,7 @@ namespace SolidCP.Providers.Virtualization
 
 		public RestResponse<NodeStatus> NodeStatus(string node)
 		{
-			var client = new RestClient(baseUrl);
+			var client = GetRestClient();
 			var request = PrepareGetRequest(string.Format("nodes/{0}/status", node));
 			return client.Execute<NodeStatus>(request);
 		}
@@ -139,25 +149,25 @@ namespace SolidCP.Providers.Virtualization
 
 		public RestResponse<VMConfig> VMConfig(string vmId)
 		{
-			var client = new RestClient(baseUrl);
+			var client = GetRestClient();
 			var request = PrepareGetRequest(string.Format("nodes/{0}/qemu/{1}/config", nodeid(vmId).node, nodeid(vmId).id));
 			return client.Execute<VMConfig>(request);
 		}
 
 		public RestResponse<Upid> Delete(string vmId)
 		{
-			var client = new RestClient(baseUrl);
+			var client = GetRestClient();
 			var request = PrepareDeleteRequest(string.Format("nodes/{0}/qemu/{1}", nodeid(vmId).node, nodeid(vmId).id));
 			return client.Execute<Upid>(request);
 		}
 
 		public RestResponse<Upid> Unlink(string vmId, string device)
 		{
-			var client = new RestClient(baseUrl);
+			var client = GetRestClient();
 			var request = new RestRequest(string.Format("nodes/{0}/qemu/{1}/unlink", nodeid(vmId).node, nodeid(vmId).id), Method.Put);
 			request.RequestFormat = DataFormat.Json;
 			request.AddHeader("CSRFPreventionToken", apiTicket.CSRFPreventionToken);
-			request.AddCookie("PVEAuthCookie", apiTicket.ticket, request.Resource, new Uri(baseUrl).Host);
+			request.AddCookie("PVEAuthCookie", apiTicket.ticket, new Uri(baseUrl).AbsolutePath, new Uri(baseUrl).Host);
 			//request.RootElement = "root";
 			request.AddParameter("idlist", device);
 			return client.Execute<Upid>(request);
@@ -165,11 +175,11 @@ namespace SolidCP.Providers.Virtualization
 
 		public RestResponse<Upid> CreateSnapshot(string vmId, string name, string description)
 		{
-			var client = new RestClient(baseUrl);
+			var client = GetRestClient();
 			var request = new RestRequest(string.Format("nodes/{0}/qemu/{1}/snapshot", nodeid(vmId).node, nodeid(vmId).id), Method.Post);
 			request.RequestFormat = DataFormat.Json;
 			request.AddHeader("CSRFPreventionToken", apiTicket.CSRFPreventionToken);
-			request.AddCookie("PVEAuthCookie", apiTicket.ticket, request.Resource, new Uri(baseUrl).Host);
+			request.AddCookie("PVEAuthCookie", apiTicket.ticket, new Uri(baseUrl).AbsolutePath, new Uri(baseUrl).Host);
 			//request.RootElement = "root";
 			request.AddParameter("snapname", name);
 			request.AddParameter("description", description);
@@ -178,25 +188,25 @@ namespace SolidCP.Providers.Virtualization
 
 		public RestResponse<ListProxmoxSnapshots> ListSnapshots(string vmId)
 		{
-			var client = new RestClient(baseUrl);
+			var client = GetRestClient();
 			var request = PrepareGetRequest(string.Format("nodes/{0}/qemu/{1}/snapshot", nodeid(vmId).node, nodeid(vmId).id));
 			return client.Execute<ListProxmoxSnapshots>(request);
 		}
 
 		public RestResponse<SnapshotConfig> GetSnapshot(string vmId, string snapshotid)
 		{
-			var client = new RestClient(baseUrl);
+			var client = GetRestClient();
 			var request = PrepareGetRequest(string.Format("nodes/{0}/qemu/{1}/snapshot/{2}/config", nodeid(vmId).node, nodeid(vmId).id, snapshotid));
 			return client.Execute<SnapshotConfig>(request);
 		}
 
 		public RestResponse<Upid> RenameSnapshot(string vmId, string snapshotid, string description)
 		{
-			var client = new RestClient(baseUrl);
+			var client = GetRestClient();
 			var request = new RestRequest(string.Format("nodes/{0}/qemu/{1}/snapshot/{2}/config", nodeid(vmId).node, nodeid(vmId).id, snapshotid), Method.Put);
 			request.RequestFormat = DataFormat.Json;
 			request.AddHeader("CSRFPreventionToken", apiTicket.CSRFPreventionToken);
-			request.AddCookie("PVEAuthCookie", apiTicket.ticket, request.Resource, new Uri(baseUrl).Host);
+			request.AddCookie("PVEAuthCookie", apiTicket.ticket, new Uri(baseUrl).AbsolutePath, new Uri(baseUrl).Host);
 			//request.RootElement = "root";
 			request.AddParameter("description", description);
 			return client.Execute<Upid>(request);
@@ -204,14 +214,14 @@ namespace SolidCP.Providers.Virtualization
 
 		public RestResponse<Upid> DeleteSnapshot(string vmId, string snapshotid)
 		{
-			var client = new RestClient(baseUrl);
+			var client = GetRestClient();
 			var request = PrepareDeleteRequest(string.Format("nodes/{0}/qemu/{1}/snapshot/{2}", nodeid(vmId).node, nodeid(vmId).id, snapshotid));
 			return client.Execute<Upid>(request);
 		}
 
 		public RestResponse<Upid> rollback(string vmId, string snapshotid)
 		{
-			var client = new RestClient(baseUrl);
+			var client = GetRestClient();
 			var request = PreparePostRequest(string.Format("nodes/{0}/qemu/{1}/snapshot/{2}/rollback", nodeid(vmId).node, nodeid(vmId).id, snapshotid));
 			return client.Execute<Upid>(request);
 		}
@@ -219,7 +229,7 @@ namespace SolidCP.Providers.Virtualization
 
 		public RestResponse ListISOs(string vmId, string storage)
 		{
-			var client = new RestClient(baseUrl);
+			var client = GetRestClient();
 			var request = PrepareGetRequest(string.Format("nodes/{0}/storage/{1}/content", nodeid(vmId).node, storage));
 			return client.Execute(request);
 		}
@@ -227,14 +237,14 @@ namespace SolidCP.Providers.Virtualization
 
 		public RestResponse<ProxmoxTaskStatus> TaskStatus(string upid)
 		{
-			var client = new RestClient(baseUrl);
+			var client = GetRestClient();
 			var request = PrepareGetRequest(string.Format("nodes/{0}/tasks/{1}/status", upid2node(upid), upid));
 			return client.Execute<ProxmoxTaskStatus>(request);
 		}
 
 		public RestResponse<List<TaskLog>> TaskLog(string upid)
 		{
-			var client = new RestClient(baseUrl);
+			var client = GetRestClient();
 			var request = PrepareGetRequest(string.Format("nodes/{0}/tasks/{1}/log", upid2node(upid), upid));
 			return client.Execute<List<TaskLog>>(request);
 		}
@@ -261,7 +271,7 @@ namespace SolidCP.Providers.Virtualization
 		/*
 		public RestResponse<List<TaskStatus>> TaskStatusList()
 		{
-			 var client = new RestClient(baseUrl);
+			 var client = GetRestClient();
 			 var request = PrepareGetRequest(string.Format("nodes/{0}/tasks/", node));
 			 return client.Execute<List<TaskStatus>>(request);
 		}
@@ -269,19 +279,15 @@ namespace SolidCP.Providers.Virtualization
 
 		public RestResponse ClusterResources()
 		{
-			var client = new RestClient(baseUrl);
+			var client = GetRestClient();
 			var request = PrepareGetRequest("cluster/resources");
 			return client.Execute(request);
 		}
 
 		public RestResponse ClusterVMList()
 		{
-			var options = new RestClientOptions(baseUrl)
-			{
-				RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true
-			};
 			//HostedSolutionLog.LogStart("ClusterVMList");
-			var client = new RestClient(options);
+			var client = GetRestClient();
 			var request = PrepareGetRequest("cluster/resources?type=vm");
 			//HostedSolutionLog.LogEnd("ClusterVMList");
 			return client.Execute(request);
@@ -289,11 +295,11 @@ namespace SolidCP.Providers.Virtualization
 
 		public RestResponse<Upid> UpdateConfig(String vmId, UpdateConfiguration template)
 		{
-			var client = new RestClient(baseUrl);
+			var client = GetRestClient();
 			var request = new RestRequest(string.Format("nodes/{0}/qemu/{1}/config", nodeid(vmId).node, nodeid(vmId).id), Method.Post);
 			request.RequestFormat = DataFormat.Json;
 			request.AddHeader("CSRFPreventionToken", apiTicket.CSRFPreventionToken);
-			request.AddCookie("PVEAuthCookie", apiTicket.ticket, request.Resource, new Uri(baseUrl).Host);
+			request.AddCookie("PVEAuthCookie", apiTicket.ticket, new Uri(baseUrl).AbsolutePath, new Uri(baseUrl).Host);
 			//request.RootElement = "root";
 			request.AddParameter("cores", template.cores);
 			request.AddParameter("memory", template.memory);
@@ -302,11 +308,11 @@ namespace SolidCP.Providers.Virtualization
 
 		public RestResponse<Upid> UpdateDVD(String vmId, UpdateDVD template)
 		{
-			var client = new RestClient(baseUrl);
+			var client = GetRestClient();
 			var request = new RestRequest(string.Format("nodes/{0}/qemu/{1}/config", nodeid(vmId).node, nodeid(vmId).id), Method.Post);
 			request.RequestFormat = DataFormat.Json;
 			request.AddHeader("CSRFPreventionToken", apiTicket.CSRFPreventionToken);
-			request.AddCookie("PVEAuthCookie", apiTicket.ticket, request.Resource, new Uri(baseUrl).Host);
+			request.AddCookie("PVEAuthCookie", apiTicket.ticket, new Uri(baseUrl).AbsolutePath, new Uri(baseUrl).Host);
 			//request.RootElement = "root";
 			request.AddParameter("ide2", template.ide2);
 			return client.Execute<Upid>(request);
@@ -314,11 +320,11 @@ namespace SolidCP.Providers.Virtualization
 
 		public RestResponse<Upid> ResizeDisk(string vmId, string disk, string size)
 		{
-			var client = new RestClient(baseUrl);
+			var client = GetRestClient();
 			var request = new RestRequest(string.Format("nodes/{0}/qemu/{1}/resize", nodeid(vmId).node, nodeid(vmId).id), Method.Put);
 			request.RequestFormat = DataFormat.Json;
 			request.AddHeader("CSRFPreventionToken", apiTicket.CSRFPreventionToken);
-			request.AddCookie("PVEAuthCookie", apiTicket.ticket, request.Resource, new Uri(baseUrl).Host);
+			request.AddCookie("PVEAuthCookie", apiTicket.ticket, new Uri(baseUrl).AbsolutePath, new Uri(baseUrl).Host);
 			//request.RootElement = "root";
 			request.AddParameter("disk", disk);
 			request.AddParameter("size", size);
@@ -331,7 +337,7 @@ namespace SolidCP.Providers.Virtualization
 			var request = new RestRequest(resource, Method.Post);
 			request.RequestFormat = DataFormat.Json;
 			request.AddHeader("CSRFPreventionToken", apiTicket.CSRFPreventionToken);
-			request.AddCookie("PVEAuthCookie", apiTicket.ticket, request.Resource, new Uri(baseUrl).Host);
+			request.AddCookie("PVEAuthCookie", apiTicket.ticket, new Uri(baseUrl).AbsolutePath, new Uri(baseUrl).Host);
 			//request.RootElement = rootElement;
 			return request;
 		}
@@ -343,7 +349,7 @@ namespace SolidCP.Providers.Virtualization
 			//HostedSolutionLog.DebugInfo("PrepareGetRequest Request: {0}", request.ToString());
 			request.RequestFormat = DataFormat.Json;
 			//HostedSolutionLog.DebugInfo("PrepareGetRequest - PVEAuthCookie: {0)", apiTicket.ticket); 
-			request.AddCookie("PVEAuthCookie", apiTicket.ticket, request.Resource, new Uri(baseUrl).Host);
+			request.AddCookie("PVEAuthCookie", apiTicket.ticket, new Uri(baseUrl).AbsolutePath, new Uri(baseUrl).Host);
 			//request.RootElement = rootElement;
 			//HostedSolutionLog.DebugInfo("PrepareGetRequest Request2: {0}", request);
 			return request;
@@ -354,7 +360,7 @@ namespace SolidCP.Providers.Virtualization
 			var request = new RestRequest(resource, Method.Delete);
 			request.RequestFormat = DataFormat.Json;
 			request.AddHeader("CSRFPreventionToken", apiTicket.CSRFPreventionToken);
-			request.AddCookie("PVEAuthCookie", apiTicket.ticket, request.Resource, new Uri(baseUrl).Host);
+			request.AddCookie("PVEAuthCookie", apiTicket.ticket, new Uri(baseUrl).AbsolutePath, new Uri(baseUrl).Host);
 			//request.RootElement = rootElement;
 			return request;
 		}

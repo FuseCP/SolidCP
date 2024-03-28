@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace SolidCP.Providers.Virtualization.Proxmox
 {
-    public class ProxmoxServer
-    {
-        public string Hostname { get; set; }
-        public string Ip { get; set; }
-        public string Port { get; set; }
-    }
+	public class ProxmoxServer
+	{
+		public string Hostname { get; set; }
+		public string Ip { get; set; }
+		public string Port { get; set; }
+		public bool ValidateCertificate { get; set; }
+
+	}
 }

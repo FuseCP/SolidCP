@@ -234,6 +234,8 @@ namespace SolidCP.Providers.Virtualization
 		private User user;
 		private ProxmoxServer server;
 
+		public virtual bool ValidateServerCertificate => !string.IsNullOrEmpty(ProxmoxClusterServerHost) && ProxmoxClusterServerHost != "localhost";
+
 		#endregion
 
 		#region Constructors
@@ -2314,7 +2316,7 @@ namespace SolidCP.Providers.Virtualization
 
 			user = new User { Username = ProxmoxClusterAdminUser, Password = ProxmoxClusterAdminPass, Realm = clusterrealm };
 			//HostedSolutionLog.DebugInfo("ApiClientSetup: user: {0}", user);
-			server = new ProxmoxServer { Ip = ProxmoxClusterServerHost, Port = ProxmoxClusterServerPort };
+			server = new ProxmoxServer { Ip = string.IsNullOrEmpty(ProxmoxClusterServerHost) ? "127.0.0.1" : ProxmoxClusterServerHost, Port = ProxmoxClusterServerPort, ValidateCertificate = ValidateServerCertificate };
 			//HostedSolutionLog.DebugInfo("ApiClientSetup: server: {0}", server);
 
 			//client = new ApiClient(server, ProxmoxClusterNode);
