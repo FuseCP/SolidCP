@@ -900,7 +900,7 @@ namespace SolidCP.Providers.OS
 
 		public virtual bool CheckFileServicesInstallation()
 		{
-			return SolidCP.Providers.OS.WindowsOSInfo.CheckFileServicesInstallation();
+			return WindowsOSInfo.CheckFileServicesInstallation();
 
 		}
 
@@ -1782,6 +1782,7 @@ namespace SolidCP.Providers.OS
 					OSService winService = new OSService();
 					winService.Id = service.ServiceName;
 					winService.Name = service.DisplayName;
+					winService.Description = service.DisplayName;
 					winService.CanStop = service.CanStop;
 					winService.CanPauseAndContinue = service.CanPauseAndContinue;
 

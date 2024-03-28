@@ -25,7 +25,7 @@ namespace SolidCP.Providers.OS
 
 				var srvc = new OSService()
 				{
-					Name = name,
+					Name = desc,
 					Id = name,
 					Description = desc,
 					CanStop = loaded == "loaded" && active == "active" && state == "running",

@@ -530,9 +530,14 @@ namespace SolidCP.Providers.OS
 			// Use POSIX ps command
 			var env = new StringDictionary();
 			env["COLUMNS"] = "1024";
-			var output = Shell.Default.Exec("ps -A -o pid=,user=,vsz=,pcpu=,args=", null, env).Output().Result;
+			var output = Shell.Default.Exec("ps -A -o pid=,user=,rss=,vsz=,pcpu=,args=", null, env).Output().Result;
 			if (output == null) throw new PlatformNotSupportedException("ps command not found on this system.");
-			var matches = Regex.Matches(output, @"^\s*(?<pid>[^\s]+)\s+(?<user>[^\s]+)\s+(?<mem>[^\s]+)\s+(?<cpu>[^\s]+)\s+(?<cmd>[^""][^\s$]*|""[^""]*"")\s+(?<args>.*?)\s*$", RegexOptions.Multiline);
+			if (output.Contains("error"))
+			{
+				output = Shell.Default.Exec("ps -A -o pid=,user=,vsz=,vsz=,pcpu=,args=", null, env).Output().Result;
+			}
+			if (output == null) throw new PlatformNotSupportedException("ps command not found on this system.");
+			var matches = Regex.Matches(output, @"^\s*(?<pid>[^\s]+)\s+(?<user>[^\s]+)\s+(?<mem>[^\s]+)\s+(?<vmem>[^\s]+)\s+(?<cpu>[^\s]+)\s+(?<cmd>[^""][^\s$]*|""[^""]*"")\s+(?<args>.*?)\s*$", RegexOptions.Multiline);
 
 			return matches
 				.OfType<Match>()
@@ -543,7 +548,10 @@ namespace SolidCP.Providers.OS
 					int.TryParse(m.Groups["pid"].Value, out pid);
 					var name = Path.GetFileName(cmd);
 					long mem = 0;
-					long.TryParse(m.Groups["mem"].Value, out mem);
+					if (!long.TryParse(m.Groups["mem"].Value, out mem))
+					{
+						long.TryParse(m.Groups["vmem"].Value, out mem);
+					};
 					mem = mem * 1024;
 					float cpu = 0;
 					float.TryParse(m.Groups["cpu"].Value, out cpu);
@@ -554,7 +562,7 @@ namespace SolidCP.Providers.OS
 						Name = name,
 						MemUsage = mem,
 						Command = cmd,
-						CpuUsage = cpu,
+						CpuUsage = cpu/100,
 						Arguments = m.Groups["args"].Value,
 						Username = m.Groups["user"].Value
 					};
