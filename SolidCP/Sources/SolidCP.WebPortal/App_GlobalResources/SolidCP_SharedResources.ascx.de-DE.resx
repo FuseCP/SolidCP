@@ -1980,22 +1980,22 @@
   <data name="Quota.MsSQL2019.Users" xml:space="preserve">
     <value>Benutzer</value>
   </data>
-	<data name="Quota.MsSQL2022.Backup" xml:space="preserve">
+  <data name="Quota.MsSQL2022.Backup" xml:space="preserve">
     <value>Datenbanksicherungen</value>
   </data>
-	<data name="Quota.MsSQL2022.Databases" xml:space="preserve">
+  <data name="Quota.MsSQL2022.Databases" xml:space="preserve">
     <value>Datenbanken</value>
   </data>
-	<data name="Quota.MsSQL2022.MaxDatabaseSize" xml:space="preserve">
+  <data name="Quota.MsSQL2022.MaxDatabaseSize" xml:space="preserve">
     <value>Max. Datenbankgröße, MB</value>
   </data>
-	<data name="Quota.MsSQL2022.Restore" xml:space="preserve">
+  <data name="Quota.MsSQL2022.Restore" xml:space="preserve">
     <value>Datenbankwiederherstellungen</value>
   </data>
-	<data name="Quota.MsSQL2022.Truncate" xml:space="preserve">
+  <data name="Quota.MsSQL2022.Truncate" xml:space="preserve">
     <value>Datenbankverkleinerung</value>
   </data>
-	<data name="Quota.MsSQL2022.Users" xml:space="preserve">
+  <data name="Quota.MsSQL2022.Users" xml:space="preserve">
     <value>Benutzer</value>
   </data>
   <data name="Quota.MySQL5.Backup" xml:space="preserve">
@@ -2103,7 +2103,7 @@
   <data name="ResourceGroup.MsSQL2019" xml:space="preserve">
     <value>SQL Server 2019</value>
   </data>
-	<data name="ResourceGroup.MsSQL2022" xml:space="preserve">
+  <data name="ResourceGroup.MsSQL2022" xml:space="preserve">
     <value>SQL Server 2022</value>
   </data>
   <data name="ResourceGroup.MailFilters" xml:space="preserve">
@@ -2334,10 +2334,10 @@
   <data name="ServiceItemType.MsSQL2019User" xml:space="preserve">
     <value>MS SQL 2019 Benutzer</value>
   </data>
-	<data name="ServiceItemType.MsSQL2022Database" xml:space="preserve">
+  <data name="ServiceItemType.MsSQL2022Database" xml:space="preserve">
     <value>MS SQL 2022 Datenbank</value>
   </data>
-	<data name="ServiceItemType.MsSQL2022User" xml:space="preserve">
+  <data name="ServiceItemType.MsSQL2022User" xml:space="preserve">
     <value>MS SQL 2022 Benutzer</value>
   </data>
   <data name="ServiceItemType.MySQL4Database" xml:space="preserve">
@@ -3861,7 +3861,7 @@
   <data name="Quota.MsSQL2019.MaxLogSize" xml:space="preserve">
     <value>Max. Log-Größe, MB</value>
   </data>
-	<data name="Quota.MsSQL2022.MaxLogSize" xml:space="preserve">
+  <data name="Quota.MsSQL2022.MaxLogSize" xml:space="preserve">
     <value>Max. Log-Größe, MB</value>
   </data>
   <data name="Error.EXCHANGE_UPDATE_MAILBOX_PERMISSIONS" xml:space="preserve">
@@ -5562,7 +5562,7 @@
   <data name="ReportResourceGroup.MsSQL2019" xml:space="preserve">
     <value>SQL Server 2019</value>
   </data>
-	<data name="ReportResourceGroup.MsSQL2022" xml:space="preserve">
+  <data name="ReportResourceGroup.MsSQL2022" xml:space="preserve">
     <value>SQL Server 2022</value>
   </data>
   <data name="WebAppGallery.ApplicationInstallationError" xml:space="preserve">
@@ -6905,5 +6905,65 @@
   </data>
   <data name="TaskActivity.VPS2012_SET_PRIMARY_PRIVATE_IP" xml:space="preserve">
     <value>Primäre private IP-Adresse wird gesetzt</value>
+  </data>
+  <data name="Quota.PROXMOX.Bandwidth" xml:space="preserve">
+    <value>Monthly bandwidth, GB</value>
+  </data>
+  <data name="Quota.PROXMOX.BootCdAllowed" xml:space="preserve">
+    <value>Erlaube von CD zu Booten</value>
+  </data>
+  <data name="Quota.PROXMOX.BootCdEnabled" xml:space="preserve">
+    <value>Boote von CD</value>
+  </data>
+  <data name="Quota.PROXMOX.CpuNumber" xml:space="preserve">
+    <value>Anzahl CPU Cores</value>
+  </data>
+  <data name="Quota.PROXMOX.DvdEnabled" xml:space="preserve">
+    <value>DVD Laufwerk</value>
+  </data>
+  <data name="Quota.PROXMOX.ExternalIPAddressesNumber" xml:space="preserve">
+    <value>Anzahl externer IP Adressen</value>
+  </data>
+  <data name="Quota.PROXMOX.ExternalNetworkEnabled" xml:space="preserve">
+    <value>Externes Netzwerk</value>
+  </data>
+  <data name="Quota.PROXMOX.Hdd" xml:space="preserve">
+    <value>Harddisk Größe, GB</value>
+  </data>
+  <data name="Quota.PROXMOX.ManagingAllowed" xml:space="preserve">
+    <value>Erlaube VPS zu Erstellen</value>
+  </data>
+  <data name="Quota.PROXMOX.PauseResumeAllowed" xml:space="preserve">
+    <value>Erlaube VPS zu Pausieren &amp; Fortzufahren</value>
+  </data>
+  <data name="Quota.PROXMOX.PrivateIPAddressesNumber" xml:space="preserve">
+    <value>Anzahl private IP Adressen pro VPS</value>
+  </data>
+  <data name="Quota.PROXMOX.PrivateNetworkEnabled" xml:space="preserve">
+    <value>Privates Netzwerk</value>
+  </data>
+  <data name="Quota.PROXMOX.Ram" xml:space="preserve">
+    <value>RAM Größe, MB</value>
+  </data>
+  <data name="Quota.PROXMOX.RebootAllowed" xml:space="preserve">
+    <value>Erlaube VPS Neuzustarten</value>
+  </data>
+  <data name="Quota.PROXMOX.ReinstallAllowed" xml:space="preserve">
+    <value>Erlaube VPS zu Reinstallieren</value>
+  </data>
+  <data name="Quota.PROXMOX.ReplicationEnabled" xml:space="preserve">
+    <value>Erlaube VPS zu Replizieren</value>
+  </data>
+  <data name="Quota.PROXMOX.ResetAlowed" xml:space="preserve">
+    <value>Erlaube VPS Zurückzusetzen</value>
+  </data>
+  <data name="Quota.PROXMOX.ServersNumber" xml:space="preserve">
+    <value>Anzahl VPS</value>
+  </data>
+  <data name="Quota.PROXMOX.SnapshotsNumber" xml:space="preserve">
+    <value>Anzahl Snaphots</value>
+  </data>
+  <data name="Quota.PROXMOX.StartShutdownAllowed" xml:space="preserve">
+    <value>Erlaube VPS zu Starten, Auszuschalten und Herunterzufahren</value>
   </data>
 </root>
