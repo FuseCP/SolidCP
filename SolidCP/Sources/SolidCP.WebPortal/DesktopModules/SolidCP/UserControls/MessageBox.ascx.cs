@@ -92,9 +92,9 @@ namespace SolidCP.Portal
 					litSelectedUser.Text = PanelSecurity.SelectedUser.Username;
 					litPackageName.Text = PanelSecurity.PackageId.ToString();
 					ViewState["MessageBox.StackTrace"] = ex.ToString();
-					var stackhtml = ex.ToString();
+					var stackhtml = ex.ToString().Trim();
 					var fileVersion = OSInfo.SolidCPVersion;
-					stackhtml = Regex.Replace(stackhtml, @"(?<=\n\s*at\s+.+\)\s+in\s+)(?:[A-Za-z]:\\|/)[^:]+(?=:line\s+[0-9]+\r?\n)", match =>
+					stackhtml = Regex.Replace(stackhtml, @"(?<=\n\s*at\s+.+?\)\s+in\s+)(?:[A-Za-z]:\\|/)[^:]+(?=:line\s+[0-9]+(?:\r?\n|$))", match =>
 					{
 						var file = match.Value.Replace(Path.DirectorySeparatorChar, '/');
 						file = Regex.Replace(file, @"^.*?(?=/SolidCP/(?:Sources|Lib)/)", "");
