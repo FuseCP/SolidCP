@@ -1657,10 +1657,10 @@
     <value>Dateimanager</value>
   </data>
   <data name="Quota.OS.NotAllowTenantCreateDomains" xml:space="preserve">
-    <value>Mandant darf keine Top-Level Domains erstellen.</value>
+    <value>Mandant darf keine Top-Level Domains erstellen</value>
   </data>
   <data name="Quota.OS.NotAllowTenantDeleteDomains" xml:space="preserve">
-    <value>Mandant darf keine Top-Level Domains löschen.</value>
+    <value>Mandant darf keine Top-Level Domains löschen</value>
   </data>
   <data name="Quota.SharePoint.Groups" xml:space="preserve">
     <value>SharePoint-Gruppen</value>
