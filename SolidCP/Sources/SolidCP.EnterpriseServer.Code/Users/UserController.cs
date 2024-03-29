@@ -40,6 +40,7 @@ using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using System.Linq;
 using Google.Authenticator;
+using System.Threading;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -55,119 +56,127 @@ namespace SolidCP.EnterpriseServer
 			return (user != null);
 		}
 
-        public static int AuthenticateUser(string username, string password, string ip)
-        {
-            // start task
-            TaskManager.StartTask("USER", "AUTHENTICATE", username);
-            TaskManager.WriteParameter("IP", ip);
+		public static int AuthenticateUser(string username, string password, string ip)
+		{
+			// start task
+			TaskManager.StartTask("USER", "AUTHENTICATE", username);
+			TaskManager.WriteParameter("IP", ip);
 
-            try
-            {
-                int result = 0;
+			try
+			{
+				int result = 0;
 
-                // try to get user from database
-                UserInfoInternal user = GetUserInternally(username);
+				// try to get user from database
+				UserInfoInternal user = GetUserInternally(username);
 
-                // check if the user exists
-                if (user == null)
-                {
-                    TaskManager.WriteWarning("Wrong username");
-                    return BusinessErrorCodes.ERROR_USER_WRONG_USERNAME;
-                }
+				// check if the user exists
+				if (user == null)
+				{
+					TaskManager.WriteWarning("Wrong username");
+					return BusinessErrorCodes.ERROR_USER_WRONG_USERNAME;
+				}
 
-                // check if the user is disabled
-                if (user.LoginStatus == UserLoginStatus.Disabled)
-                {
-                    TaskManager.WriteWarning("User disabled");
-                    return BusinessErrorCodes.ERROR_USER_ACCOUNT_DISABLED;
-                }
+				// check if the user is disabled
+				if (user.LoginStatus == UserLoginStatus.Disabled)
+				{
+					TaskManager.WriteWarning("User disabled");
+					return BusinessErrorCodes.ERROR_USER_ACCOUNT_DISABLED;
+				}
 
-                // check if the user is locked out
-                if (user.LoginStatus == UserLoginStatus.LockedOut)
-                {
-                    TaskManager.WriteWarning("User locked out");
-                    return BusinessErrorCodes.ERROR_USER_ACCOUNT_LOCKEDOUT;
-                }
+				// check if the user is locked out
+				if (user.LoginStatus == UserLoginStatus.LockedOut)
+				{
+					TaskManager.WriteWarning("User locked out");
+					return BusinessErrorCodes.ERROR_USER_ACCOUNT_LOCKEDOUT;
+				}
 
-                //Get the password policy
-                UserSettings userSettings = UserController.GetUserSettings(user.UserId, UserSettings.SolidCP_POLICY);
-                int lockOut = -1;
+				//Get the password policy
+				UserSettings userSettings = UserController.GetUserSettings(user.UserId, UserSettings.SolidCP_POLICY);
+				int lockOut = -1;
 
-                if (!string.IsNullOrEmpty(userSettings["PasswordPolicy"]))
-                {
-                    string passwordPolicy = userSettings["PasswordPolicy"];
-                    try
-                    {
-                        // parse settings
-                        string[] parts = passwordPolicy.Split(';');
-                        lockOut = Convert.ToInt32(parts[7]);
-                    }
-                    catch { /* skip */ }
-                }
+				if (!string.IsNullOrEmpty(userSettings["PasswordPolicy"]))
+				{
+					string passwordPolicy = userSettings["PasswordPolicy"];
+					try
+					{
+						// parse settings
+						string[] parts = passwordPolicy.Split(';');
+						lockOut = Convert.ToInt32(parts[7]);
+					}
+					catch { /* skip */ }
+				}
 
 
-                // compare user passwords
-                if ((CryptoUtils.SHA1(user.Password) == password) || (user.Password == password))
-                {
-                    switch (user.OneTimePasswordState)
-                    {
-                        case OneTimePasswordStates.Active:
-                            result = BusinessSuccessCodes.SUCCESS_USER_ONETIMEPASSWORD;
-                            OneTimePasswordHelper.FireSuccessAuth(user);
-                            break;
-                        case OneTimePasswordStates.Expired:
-                            if (lockOut >= 0) DataProvider.UpdateUserFailedLoginAttempt(user.UserId, lockOut, false);
-                            TaskManager.WriteWarning("Expired one time password");
-                            return BusinessErrorCodes.ERROR_USER_EXPIRED_ONETIMEPASSWORD;
-                            break;
-                    }
-                }
-                else
-                {
-                    if (lockOut >= 0)
-                        DataProvider.UpdateUserFailedLoginAttempt(user.UserId, lockOut, false);
+				// compare user passwords
+				if ((CryptoUtils.SHA1(user.Password) == password) || (user.Password == password))
+				{
+					switch (user.OneTimePasswordState)
+					{
+						case OneTimePasswordStates.Active:
+							result = BusinessSuccessCodes.SUCCESS_USER_ONETIMEPASSWORD;
+							OneTimePasswordHelper.FireSuccessAuth(user);
+							break;
+						case OneTimePasswordStates.Expired:
+							if (lockOut >= 0) DataProvider.UpdateUserFailedLoginAttempt(user.UserId, lockOut, false);
+							TaskManager.WriteWarning("Expired one time password");
+							return BusinessErrorCodes.ERROR_USER_EXPIRED_ONETIMEPASSWORD;
+							break;
+					}
+				}
+				else
+				{
+					if (lockOut >= 0)
+						DataProvider.UpdateUserFailedLoginAttempt(user.UserId, lockOut, false);
 
-                    TaskManager.WriteWarning("Wrong password");
-                    return BusinessErrorCodes.ERROR_USER_WRONG_PASSWORD;  
-                }
-                    
-                DataProvider.UpdateUserFailedLoginAttempt(user.UserId, lockOut, true);
+					TaskManager.WriteWarning("Wrong password");
+					return BusinessErrorCodes.ERROR_USER_WRONG_PASSWORD;
+				}
 
-                // check status
-                if (user.Status == UserStatus.Cancelled)
-                {
-                    TaskManager.WriteWarning("Account cancelled");
-                    return BusinessErrorCodes.ERROR_USER_ACCOUNT_CANCELLED;
-                }
+				DataProvider.UpdateUserFailedLoginAttempt(user.UserId, lockOut, true);
 
-                if (user.Status == UserStatus.Pending)
-                {
-                    TaskManager.WriteWarning("Account pending");
-                    return BusinessErrorCodes.ERROR_USER_ACCOUNT_PENDING;
-                }
+				// check status
+				if (user.Status == UserStatus.Cancelled)
+				{
+					TaskManager.WriteWarning("Account cancelled");
+					return BusinessErrorCodes.ERROR_USER_ACCOUNT_CANCELLED;
+				}
+
+				if (user.Status == UserStatus.Pending)
+				{
+					TaskManager.WriteWarning("Account pending");
+					return BusinessErrorCodes.ERROR_USER_ACCOUNT_PENDING;
+				}
+
+				// init users SSH tunnel server connections
+				ThreadPool.QueueUserWorkItem(arg =>
+				{
+					var servers = GetUserPackagesServersUrls(user.UserId)
+						.Where(url => url.StartsWith("ssh://"));
+					Web.Clients.ClientBase.StartAllSshTunnels(servers);
+				});
 
 				// if onetimepassword no MFA
 				if (user.MfaMode > 0 && result != BusinessSuccessCodes.SUCCESS_USER_ONETIMEPASSWORD)
 				{
-					if(user.MfaMode == 1)
-                    {
+					if (user.MfaMode == 1)
+					{
 						SendVerificationCode(username);
 					}
 					TaskManager.Write("MFA active");
 					return BusinessSuccessCodes.SUCCESS_USER_MFA_ACTIVE;
 				}
-				
+
 				return result;
-            }
-            catch (Exception ex)
-            {
-                throw TaskManager.WriteError(ex);
-            }
-            finally
-            {
-                TaskManager.CompleteTask();
-            }
-        }
+			}
+			catch (Exception ex)
+			{
+				throw TaskManager.WriteError(ex);
+			}
+			finally
+			{
+				TaskManager.CompleteTask();
+			}
+		}
 
 		public static bool ValidatePin(string username, string pin, TimeSpan timeTolerance)
 		{
@@ -178,7 +187,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 		private static string[] GetCurrentPins(UserInfoInternal user, TimeSpan timeTolerance)
-        {
+		{
 			TwoFactorAuthenticator twoFactorAuthenticator = new TwoFactorAuthenticator();
 			var pins = twoFactorAuthenticator.GetCurrentPINs(CryptoUtils.Decrypt(user.PinSecret), timeTolerance);
 			return pins;
@@ -239,7 +248,7 @@ namespace SolidCP.EnterpriseServer
 		public static bool ActivateUserMfaQrCode(string username, string pin)
 		{
 			UserInfoInternal user = GetUserInternally(username);
-			if(user.MfaMode == 0)
+			if (user.MfaMode == 0)
 				return false;
 
 			var valid = ValidatePin(username, pin, TimeSpan.FromSeconds(60));
@@ -249,7 +258,7 @@ namespace SolidCP.EnterpriseServer
 			DataProvider.UpdateUserMfaMode(SecurityContext.User.UserId, user.UserId, 2);
 			return true;
 		}
-		
+
 		public static bool CanUserChangeMfa(int changeUserId)
 		{
 			var currentUserId = SecurityContext.User.UserId;
@@ -281,19 +290,19 @@ namespace SolidCP.EnterpriseServer
 				}
 
 				// compare user passwords
-                if ((CryptoUtils.SHA1(user.Password) == password) || (user.Password == password))
-                {
+				if ((CryptoUtils.SHA1(user.Password) == password) || (user.Password == password))
+				{
 					AuditLog.AddAuditLogInfoRecord("USER", "GET_BY_USERNAME_PASSWORD", username, new string[] { "IP: " + ip });
 					return new UserInfo(user);
 				}
-					
+
 
 				return null;
 			}
 			catch (Exception ex)
 			{
-				AuditLog.AddAuditLogErrorRecord("USER", "GET_BY_USERNAME_PASSWORD", username, 
-					new string[] { 
+				AuditLog.AddAuditLogErrorRecord("USER", "GET_BY_USERNAME_PASSWORD", username,
+					new string[] {
 						"IP: " + ip,
 						"Message: " + ex.Message,
 						"StackTrace: " + ex.StackTrace
@@ -301,13 +310,13 @@ namespace SolidCP.EnterpriseServer
 				//throw TaskManager.WriteError(ex);
 				throw ex;
 			}
-            //finally
-            //{
-            //    TaskManager.CompleteTask();
-            //}
-        }
+			//finally
+			//{
+			//    TaskManager.CompleteTask();
+			//}
+		}
 
-        public static int ChangeUserPassword(string username, string oldPassword, string newPassword, string ip)
+		public static int ChangeUserPassword(string username, string oldPassword, string newPassword, string ip)
 		{
 			// place log record
 			TaskManager.StartTask("USER", "CHANGE_PASSWORD_BY_USERNAME_PASSWORD", username);
@@ -369,16 +378,16 @@ namespace SolidCP.EnterpriseServer
 
 				if (body == null || body == "")
 					return BusinessErrorCodes.ERROR_SETTINGS_PASSWORD_LETTER_EMPTY_BODY;
-                
-                // One Time Password feature
-                user.Password = OneTimePasswordHelper.SetOneTimePassword(user.UserId);
 
-                // set template context items
-                Hashtable items = new Hashtable();
-                items["user"] = user;
-                items["Email"] = true;
+				// One Time Password feature
+				user.Password = OneTimePasswordHelper.SetOneTimePassword(user.UserId);
 
-			    // get reseller details
+				// set template context items
+				Hashtable items = new Hashtable();
+				items["user"] = user;
+				items["Email"] = true;
+
+				// get reseller details
 				UserInfoInternal reseller = UserController.GetUser(user.OwnerId);
 				if (reseller != null)
 				{
@@ -418,12 +427,12 @@ namespace SolidCP.EnterpriseServer
 					return 1;
 				}
 
-				if(user.MfaMode == 2)
-                {
+				if (user.MfaMode == 2)
+				{
 					TaskManager.WriteWarning("Mode is 2 Email will not be sent");
 					return 2;
 				}
-				
+
 
 				UserSettings settings = UserController.GetUserSettings(user.UserId, UserSettings.VERIFICATION_CODE_LETTER);
 				string from = settings["From"];
@@ -465,36 +474,36 @@ namespace SolidCP.EnterpriseServer
 
 		internal static UserInfoInternal GetUserInternally(int userId)
 		{
-            return GetUser(DataProvider.GetUserByIdInternally(userId));
+			return GetUser(DataProvider.GetUserByIdInternally(userId));
 		}
 
 		internal static UserInfoInternal GetUserInternally(string username)
 		{
-            return GetUser(DataProvider.GetUserByUsernameInternally(username));
+			return GetUser(DataProvider.GetUserByUsernameInternally(username));
 		}
 
-        public static UserInfoInternal GetUser(int userId)
+		public static UserInfoInternal GetUser(int userId)
 		{
-            return GetUser(DataProvider.GetUserById(SecurityContext.User.UserId, userId));
+			return GetUser(DataProvider.GetUserById(SecurityContext.User.UserId, userId));
 		}
 
-        public static UserInfoInternal GetUser(string username)
+		public static UserInfoInternal GetUser(string username)
 		{
-            return GetUser(DataProvider.GetUserByUsername(SecurityContext.User.UserId, username));
+			return GetUser(DataProvider.GetUserByUsername(SecurityContext.User.UserId, username));
 		}
 
-        private static UserInfoInternal GetUser(IDataReader reader)
-        {
-            // try to get user from database
-            UserInfoInternal user = ObjectUtils.FillObjectFromDataReader<UserInfoInternal>(reader);
-            
-            if (user != null)
-            {
-                user.Password = CryptoUtils.Decrypt(user.Password);
-            }
+		private static UserInfoInternal GetUser(IDataReader reader)
+		{
+			// try to get user from database
+			UserInfoInternal user = ObjectUtils.FillObjectFromDataReader<UserInfoInternal>(reader);
 
-            return user;
-        }
+			if (user != null)
+			{
+				user.Password = CryptoUtils.Decrypt(user.Password);
+			}
+
+			return user;
+		}
 
 		public static List<UserInfo> GetUserParents(int userId)
 		{
@@ -573,20 +582,20 @@ namespace SolidCP.EnterpriseServer
 
 			if (userId > 0 && notes != null)
 			{
-				foreach(string note in notes)
+				foreach (string note in notes)
 				{
 					// user added successfully, save the notes
 					DataProvider.AddComment(
 						SecurityContext.User.UserId,
-						"USER", 
+						"USER",
 						userId,
-						note, 
+						note,
 						1
 						);
 				}
 
 			}
-			
+
 			return userId;
 		}
 
@@ -627,8 +636,8 @@ namespace SolidCP.EnterpriseServer
 					user.OwnerId,
 					user.RoleId,
 					user.StatusId,
-                    user.SubscriberNumber,
-                    user.LoginStatusId,
+						  user.SubscriberNumber,
+						  user.LoginStatusId,
 					user.IsDemo,
 					user.IsPeer,
 					user.Comments,
@@ -657,12 +666,12 @@ namespace SolidCP.EnterpriseServer
 					return BusinessErrorCodes.ERROR_USER_ALREADY_EXISTS;
 				}
 
-                BackgroundTask topTask = TaskManager.TopTask;
+				BackgroundTask topTask = TaskManager.TopTask;
 
-			    topTask.ItemId = userId;
-                topTask.UpdateParamValue("SendLetter", sendLetter);
+				topTask.ItemId = userId;
+				topTask.UpdateParamValue("SendLetter", sendLetter);
 
-                TaskController.UpdateTaskWithParams(topTask);
+				TaskController.UpdateTaskWithParams(topTask);
 
 				return userId;
 			}
@@ -676,40 +685,40 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-        const string userAdditionalParamsTemplate = @"<Params><VLans/></Params>";
+		const string userAdditionalParamsTemplate = @"<Params><VLans/></Params>";
 
-        public static void AddUserVLan(int userId, UserVlan vLan)
-        {
-            UserInfo user = GetUser(userId);
-            //
-			if (user == null)
-                throw new ApplicationException(String.Format("User with UserID={0} not found", userId));
-
-            XDocument doc = XDocument.Parse(user.AdditionalParams ?? userAdditionalParamsTemplate);
-            XElement vlans = doc.Root.Element("VLans");
-            vlans.Add(new XElement("VLan", new XAttribute("VLanID", vLan.VLanID), new XAttribute("Comment", vLan.Comment)));
-
-            user.AdditionalParams = doc.ToString();
-            UpdateUser(user);
-        }
-
-        public static void DeleteUserVLan(int userId, ushort vLanId)
-        {
-            UserInfo user = GetUser(userId);
+		public static void AddUserVLan(int userId, UserVlan vLan)
+		{
+			UserInfo user = GetUser(userId);
 			//
-            if (user == null)
-                throw new ApplicationException(String.Format("User with UserID={0} not found", userId));
+			if (user == null)
+				throw new ApplicationException(String.Format("User with UserID={0} not found", userId));
 
-            XDocument doc = XDocument.Parse(user.AdditionalParams ?? userAdditionalParamsTemplate);
-            XElement vlans = doc.Root.Element("VLans");
-            if (vlans != null)
-                foreach (XElement element in vlans.Elements("VLan"))
-                    if (ushort.Parse(element.Attribute("VLanID").Value) == vLanId)
-                        element.Remove();
+			XDocument doc = XDocument.Parse(user.AdditionalParams ?? userAdditionalParamsTemplate);
+			XElement vlans = doc.Root.Element("VLans");
+			vlans.Add(new XElement("VLan", new XAttribute("VLanID", vLan.VLanID), new XAttribute("Comment", vLan.Comment)));
 
-            user.AdditionalParams = doc.ToString();
-            UpdateUser(user);
-        }
+			user.AdditionalParams = doc.ToString();
+			UpdateUser(user);
+		}
+
+		public static void DeleteUserVLan(int userId, ushort vLanId)
+		{
+			UserInfo user = GetUser(userId);
+			//
+			if (user == null)
+				throw new ApplicationException(String.Format("User with UserID={0} not found", userId));
+
+			XDocument doc = XDocument.Parse(user.AdditionalParams ?? userAdditionalParamsTemplate);
+			XElement vlans = doc.Root.Element("VLans");
+			if (vlans != null)
+				foreach (XElement element in vlans.Elements("VLan"))
+					if (ushort.Parse(element.Attribute("VLanID").Value) == vLanId)
+						element.Remove();
+
+			user.AdditionalParams = doc.ToString();
+			UpdateUser(user);
+		}
 
 		public static int UpdateUser(UserInfo user)
 		{
@@ -775,8 +784,8 @@ namespace SolidCP.EnterpriseServer
 					user.UserId,
 					user.RoleId,
 					user.StatusId,
-                    user.SubscriberNumber,
-                    user.LoginStatusId,
+						  user.SubscriberNumber,
+						  user.LoginStatusId,
 					user.IsDemo,
 					user.IsPeer,
 					user.Comments,
@@ -796,7 +805,7 @@ namespace SolidCP.EnterpriseServer
 					user.HtmlMail,
 					user.CompanyName,
 					user.EcommerceEnabled,
-                    user.AdditionalParams);
+						  user.AdditionalParams);
 
 				return 0;
 			}
@@ -849,9 +858,9 @@ namespace SolidCP.EnterpriseServer
 			UserInfo user = GetUserInternally(userId);
 
 			// place log record
-            TaskManager.StartTask("USER", "CHANGE_PASSWORD", user.Username, user.UserId);
+			TaskManager.StartTask("USER", "CHANGE_PASSWORD", user.Username, user.UserId);
 
-            try
+			try
 			{
 
 				DataProvider.ChangeUserPassword(SecurityContext.User.UserId, userId,
@@ -888,11 +897,11 @@ namespace SolidCP.EnterpriseServer
 			// place log record
 			TaskManager.StartTask(taskId, "USER", "CHANGE_STATUS", user.Username, user.UserId);
 
-            // update user packages
-            List<PackageInfo> packages = new List<PackageInfo>();
+			// update user packages
+			List<PackageInfo> packages = new List<PackageInfo>();
 
-            // Add the users package(s)
-            packages.AddRange(PackageController.GetPackages(userId));
+			// Add the users package(s)
+			packages.AddRange(PackageController.GetPackages(userId));
 
 			try
 			{
@@ -915,22 +924,22 @@ namespace SolidCP.EnterpriseServer
 				List<UserInfo> children = GetUsers(userId, true);
 				foreach (UserInfo child in children)
 				{
-                    // Add the child users packages
-                    packages.AddRange(PackageController.GetPackages(child.UserId));
+					// Add the child users packages
+					packages.AddRange(PackageController.GetPackages(child.UserId));
 
-                    // change child user peers
-                    List<UserInfo> childPeers = GetUserPeers(child.UserId);
-                    foreach (UserInfo peer in childPeers)
-                    {
-                        result = ChangeUserStatusInternal(peer.UserId, status);
-                        if (result < 0)
-                            return result;
-                    }
+					// change child user peers
+					List<UserInfo> childPeers = GetUserPeers(child.UserId);
+					foreach (UserInfo peer in childPeers)
+					{
+						result = ChangeUserStatusInternal(peer.UserId, status);
+						if (result < 0)
+							return result;
+					}
 
-                    // change child account
-                    result = ChangeUserStatusInternal(child.UserId, status);
-                    if (result < 0)
-                        return result;
+					// change child account
+					result = ChangeUserStatusInternal(child.UserId, status);
+					if (result < 0)
+						return result;
 				}
 
 				PackageStatus packageStatus = PackageStatus.Active;
@@ -958,6 +967,19 @@ namespace SolidCP.EnterpriseServer
 			{
 				TaskManager.CompleteTask();
 			}
+		}
+
+		private class ServerUrlBag
+		{
+			public string ServerUrl { get; set; }
+		}
+
+		public static IEnumerable<string> GetUserPackagesServersUrls(int userId)
+		{
+			var urlbags = new List<ServerUrlBag>();
+			ObjectUtils.FillCollectionFromDataReader<ServerUrlBag>(urlbags, DataProvider.GetUserPackagesServersUrl(userId));
+			return urlbags
+				.Select(bag => CryptoUtils.DecryptServerUrl(bag.ServerUrl));
 		}
 
 		private static int ChangeUserStatusInternal(int userId, UserStatus status)
@@ -1006,7 +1028,7 @@ namespace SolidCP.EnterpriseServer
 			UserInfo user = GetUserInternally(settings.UserId);
 
 			// place log record
-            TaskManager.StartTask("USER", "UPDATE_SETTINGS", user.Username, user.UserId);
+			TaskManager.StartTask("USER", "UPDATE_SETTINGS", user.Username, user.UserId);
 
 			try
 			{

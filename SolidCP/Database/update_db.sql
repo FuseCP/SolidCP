@@ -20328,3 +20328,23 @@ AS
 
 	RETURN
 GO
+
+
+-- Initialize user's SSH Tunnel server connections on Login
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetUserPackagesServerUrls')
+DROP PROCEDURE GetUserPackagesServerUrls
+GO
+
+CREATE PROCEDURE [dbo].[GetUserPackagesServerUrls]
+(
+	@UserId INT
+)
+AS
+	SELECT Servers.ServerUrl
+	FROM Servers
+	INNER JOIN Packages
+	ON Servers.ServerId = Packages.ServerId
+	WHERE Packages.UserID = @UserId
+	RETURN
+GO

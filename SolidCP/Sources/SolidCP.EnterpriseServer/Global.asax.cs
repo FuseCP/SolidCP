@@ -58,13 +58,6 @@ namespace SolidCP.EnterpriseServer
 			//if (!Debugger.IsAttached) Debugger.Launch();
 			UsernamePasswordValidator.Init();
 			Web.Clients.CertificateValidator.Init();
-			ThreadPool.QueueUserWorkItem(state =>
-			{
-				var sshServers = ServerController.GetServers()
-					.Select(server => server.ServerUrl)
-					.Where(serverUrl => serverUrl.StartsWith("ssh://"));
-				ClientBase.StartAllSshTunnels(sshServers);
-			});
 			Web.Services.StartupNetFX.Start();
 			Web.Clients.AssemblyLoader.Init(null, null, false);
 		}
