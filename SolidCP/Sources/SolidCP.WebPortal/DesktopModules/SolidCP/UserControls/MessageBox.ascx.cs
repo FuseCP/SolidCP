@@ -93,7 +93,8 @@ namespace SolidCP.Portal
 					litLoggedUser.Text = PanelSecurity.LoggedUser.Username;
 					litSelectedUser.Text = PanelSecurity.SelectedUser.Username;
 					litPackageName.Text = PanelSecurity.PackageId.ToString();
-					var stackhtml = ex.ToString().Trim();
+					var stacktxt = ex.ToString().Trim();
+					var stackhtml = stacktxt;
 					var fileVersion = OSInfo.SolidCPVersion;
 					stackhtml = Regex.Replace(stackhtml, @"(?<=\n\s*at\s+.+?\)\s+in\s+)(?:[A-Za-z]:\\|/)[^:]+(?=:line\s+[0-9]+(?:\r?\n|$))", match =>
 					{
@@ -110,7 +111,6 @@ namespace SolidCP.Portal
 					if (!String.IsNullOrEmpty(PortalUtils.FromEmail))
 						litSendFrom.Text = PortalUtils.FromEmail;
 
-					//litSendTo.Text = this.PortalSettings.Email;
 					litSendTo.Text = PortalUtils.AdminEmail;
 					litSendCC.Text = PanelSecurity.LoggedUser.Email;
 					litSendSubject.Text = GetLocalizedString("Text.Subject");
@@ -121,9 +121,23 @@ namespace SolidCP.Portal
 					sb.Append("Logged User: ").Append(litLoggedUser.Text).Append("\n\n");
 					sb.Append("Selected User: ").Append(litSelectedUser.Text).Append("\n\n");
 					sb.Append("Package ID: ").Append(litPackageName.Text).Append("\n\n");
-					sb.Append("Stack Trace: ").Append(ex.ToString().Trim()).Append("\n\n");
-					sb.Append("Personal Comments: ").Append(txtSendComments.Text).Append("\n\n");
-					emailMessage = sb.ToString();
+					sb.Append("Stack Trace: ").Append(stackhtml).Append("\n\n");
+					sb.Append("Personal Comments: ").Append("%Comments%").Append("\n\n");
+					emailMessage = $@"
+<html>
+	<head>
+		<title>SolidCP Error User Report</title>
+	</head>
+	<body>
+
+		<h1>SolidCP Error User Report</h1>
+
+		<p>
+			{sb.ToString().Replace("\n", "<br/>\n")}
+		</p>
+
+	</body>
+</html>";
 				}
 				catch { /* skip */ }
 			}
@@ -143,9 +157,13 @@ namespace SolidCP.Portal
 				btnSend.Visible = false;
 				lblSentMessage.Visible = true;
 
+				var from = PanelSecurity.LoggedUser.Email;
+				var to = PortalUtils.AdminEmail;
+				var subject = GetLocalizedString("Text.Subject");
+				emailMessage = emailMessage.Replace("%Comments%", $"<p>{txtSendComments.Text}</p>".Replace("\n", "<br/>\n"));
+
 				// send mail
-				PortalUtils.SendMail(litSendFrom.Text, litSendTo.Text, litSendFrom.Text,
-					 litSendSubject.Text, emailMessage);
+				PortalUtils.SendMail(from, to, from, subject, emailMessage, true);
 
 				lblSentMessage.Text = GetLocalizedString("Text.MessageSent");
 			}

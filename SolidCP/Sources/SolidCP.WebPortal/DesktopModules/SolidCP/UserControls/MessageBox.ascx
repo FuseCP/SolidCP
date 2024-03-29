@@ -16,7 +16,7 @@
                     <td>
                         <table cellspacing="0" cellpadding="3">
                             <tr>
-                                <td class="NormalBold" width="150" nowrap>
+                                <td class="NormalBold" width="150" style="white-space:nowrap;" >
                                     <asp:Label ID="lblPageUrl" runat="server" meta:resourcekey="lblPageUrl" Text="Page URL:"></asp:Label>
                                 </td>
                                 <td class="Normal">
@@ -102,9 +102,9 @@
                     <td class="NormalBold" valign="top">
                         <asp:Label ID="lblComments" runat="server" meta:resourcekey="lblComments" Text="Personal Comments:"></asp:Label>
                     </td>
-                    <td class="Normal" valign="top">
+                    <td class="Normal" valign="top" style="width:85%;">
                         <asp:TextBox ID="txtSendComments" runat="server" CssClass="LogArea TechnicalDetailsTable" Rows="5" TextMode="MultiLine"
-                            Width="400px"></asp:TextBox></td>
+                            style="width:85%;"></asp:TextBox></td>
                 </tr>
                 <tr>
                     <td colspan="2">

@@ -36,11 +36,18 @@ using System.Web.Security;
 using System.Collections.Concurrent;
 using SolidCP.EnterpriseServer.Client;
 using SolidCP.EnterpriseServer;
-using SolidCP.Providers.HostedSolution;
+//using SolidCP.Providers.HostedSolution;
 using SolidCP.EnterpriseServer.Base;
 
+#if Modules
 namespace SolidCP.Portal
 {
+#else
+namespace SolidCP.WebPortal
+{
+	using SolidCP.Portal;
+#endif
+
 	// ES.Services
 
 	public class ES
@@ -301,7 +308,7 @@ namespace SolidCP.Portal
 			where T: Web.Clients.ClientBase
 		{
 			Type t = typeof(T);
-			var proxy = cache.GetOrAdd(t, t => Activator.CreateInstance<T>());
+			var proxy = cache.GetOrAdd(t, type => Activator.CreateInstance<T>());
 
 			// configure proxy
 			PortalUtils.ConfigureEnterpriseServerProxy(proxy, secureCalls, AuthTicket);
