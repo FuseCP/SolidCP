@@ -20341,7 +20341,7 @@ CREATE PROCEDURE [dbo].[GetUserPackagesServerUrls]
 	@UserId INT
 )
 AS
-	SELECT Servers.ServerUrl
+	SELECT DISTINCT Servers.ServerUrl
 	FROM Servers
 	INNER JOIN Packages
 	ON Servers.ServerId = Packages.ServerId
