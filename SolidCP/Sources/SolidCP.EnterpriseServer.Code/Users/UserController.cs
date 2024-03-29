@@ -977,7 +977,7 @@ namespace SolidCP.EnterpriseServer
 		public static IEnumerable<string> GetUserPackagesServerUrls(int userId)
 		{
 			var urlbags = new List<ServerUrlBag>();
-			ObjectUtils.FillCollectionFromDataReader<ServerUrlBag>(urlbags, DataProvider.GetUserPackagesServerUrl(userId));
+			ObjectUtils.FillCollectionFromDataReader<ServerUrlBag>(urlbags, DataProvider.GetUserPackagesServerUrls(userId));
 			return urlbags
 				.Select(bag => CryptoUtils.DecryptServerUrl(bag.ServerUrl));
 		}
