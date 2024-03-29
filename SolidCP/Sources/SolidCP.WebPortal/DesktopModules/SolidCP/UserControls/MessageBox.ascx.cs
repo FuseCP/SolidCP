@@ -61,6 +61,8 @@ namespace SolidCP.Portal
 			}
 		}
 
+		string emailMessage = null;
+
 		public void RenderMessage(MessageBoxType messageType, string message, string description,
 			 Exception ex, params string[] additionalParameters)
 		{
@@ -91,7 +93,6 @@ namespace SolidCP.Portal
 					litLoggedUser.Text = PanelSecurity.LoggedUser.Username;
 					litSelectedUser.Text = PanelSecurity.SelectedUser.Username;
 					litPackageName.Text = PanelSecurity.PackageId.ToString();
-					ViewState["MessageBox.StackTrace"] = ex.ToString();
 					var stackhtml = ex.ToString().Trim();
 					var fileVersion = OSInfo.SolidCPVersion;
 					stackhtml = Regex.Replace(stackhtml, @"(?<=\n\s*at\s+.+?\)\s+in\s+)(?:[A-Za-z]:\\|/)[^:]+(?=:line\s+[0-9]+(?:\r?\n|$))", match =>
@@ -113,6 +114,16 @@ namespace SolidCP.Portal
 					litSendTo.Text = PortalUtils.AdminEmail;
 					litSendCC.Text = PanelSecurity.LoggedUser.Email;
 					litSendSubject.Text = GetLocalizedString("Text.Subject");
+
+					// compose email message
+					StringBuilder sb = new StringBuilder();
+					sb.Append("Page URL: ").Append(litPageUrl.Text).Append("\n\n");
+					sb.Append("Logged User: ").Append(litLoggedUser.Text).Append("\n\n");
+					sb.Append("Selected User: ").Append(litSelectedUser.Text).Append("\n\n");
+					sb.Append("Package ID: ").Append(litPackageName.Text).Append("\n\n");
+					sb.Append("Stack Trace: ").Append(ex.ToString().Trim()).Append("\n\n");
+					sb.Append("Personal Comments: ").Append(txtSendComments.Text).Append("\n\n");
+					emailMessage = sb.ToString();
 				}
 				catch { /* skip */ }
 			}
@@ -127,14 +138,6 @@ namespace SolidCP.Portal
 			EnableViewState = true;
 			ViewState["ShowNextTime"] = true;
 
-			StringBuilder sb = new StringBuilder();
-			sb.Append("Page URL: ").Append(litPageUrl.Text).Append("\n\n");
-			sb.Append("Logged User: ").Append(litLoggedUser.Text).Append("\n\n");
-			sb.Append("Selected User: ").Append(litSelectedUser.Text).Append("\n\n");
-			sb.Append("Package ID: ").Append(litPackageName.Text).Append("\n\n");
-			sb.Append("Stack Trace: ").Append((string)ViewState["MessageBox.StackTrace"]).Append("\n\n");
-			sb.Append("Personal Comments: ").Append(txtSendComments.Text).Append("\n\n");
-
 			try
 			{
 				btnSend.Visible = false;
@@ -142,7 +145,7 @@ namespace SolidCP.Portal
 
 				// send mail
 				PortalUtils.SendMail(litSendFrom.Text, litSendTo.Text, litSendFrom.Text,
-					 litSendSubject.Text, sb.ToString());
+					 litSendSubject.Text, emailMessage);
 
 				lblSentMessage.Text = GetLocalizedString("Text.MessageSent");
 			}
@@ -151,5 +154,58 @@ namespace SolidCP.Portal
 				lblSentMessage.Text = GetLocalizedString("Text.MessageSentError");
 			}
 		}
+
+		// Use control state for emailMessage because ViewState won't always work
+		protected override void OnInit(EventArgs e)
+		{
+			base.OnInit(e);
+			Page.RegisterRequiresControlState(this);
+		}
+
+		protected override object SaveControlState()
+		{
+			object obj = base.SaveControlState();
+
+			if (emailMessage != null)
+			{
+				if (obj != null)
+				{
+					return new Pair(obj, emailMessage);
+				}
+				else
+				{
+					return emailMessage;
+				}
+			}
+			else
+			{
+				return obj;
+			}
+		}
+
+		protected override void LoadControlState(object state)
+		{
+			if (state != null)
+			{
+				Pair p = state as Pair;
+				if (p != null)
+				{
+					base.LoadControlState(p.First);
+					emailMessage = (string)p.Second;
+				}
+				else
+				{
+					if (state is string)
+					{
+						emailMessage = (string)state;
+					}
+					else
+					{
+						base.LoadControlState(state);
+					}
+				}
+			}
+		}
+
 	}
 }
