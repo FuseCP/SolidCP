@@ -6907,7 +6907,7 @@
     <value>Primäre private IP-Adresse wird gesetzt</value>
   </data>
   <data name="Quota.PROXMOX.Bandwidth" xml:space="preserve">
-    <value>Monthly bandwidth, GB</value>
+    <value>Monatliche Bandbreite, GB</value>
   </data>
   <data name="Quota.PROXMOX.BootCdAllowed" xml:space="preserve">
     <value>Erlaube von CD zu Booten</value>
