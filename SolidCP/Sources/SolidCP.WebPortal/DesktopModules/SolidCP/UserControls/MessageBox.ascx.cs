@@ -41,102 +41,189 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
-
+using System.Text.RegularExpressions;
 using System.Web.Services.Protocols;
+using System.IO;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Portal
 {
-    public partial class MessageBox : SolidCPControlBase, IMessageBoxControl, INamingContainer
-    {
-        protected void Page_Load(object sender, EventArgs e)
-        {
-            //this.Visible = false;
-            if (ViewState["ShowNextTime"] != null)
-            {
-                this.Visible = true;
-                ViewState["ShowNextTime"] = null;
-            }
-        }
+	public partial class MessageBox : SolidCPControlBase, IMessageBoxControl, INamingContainer
+	{
+		const string SolidCPGithubUrl = "https://github.com/FuseCP/SolidCP";
+		protected void Page_Load(object sender, EventArgs e)
+		{
+			//this.Visible = false;
+			if (ViewState["ShowNextTime"] != null)
+			{
+				this.Visible = true;
+				ViewState["ShowNextTime"] = null;
+			}
+		}
 
-        public void RenderMessage(MessageBoxType messageType, string message, string description,
-            Exception ex, params string[] additionalParameters)
-        {
-            this.Visible = true; // show message
+		string emailMessage = null;
 
-            // set icon and styles
-            string boxStyle = "MessageBox Green";
-            if (messageType == MessageBoxType.Warning)
-                boxStyle = "MessageBox Yellow";
-            else if (messageType == MessageBoxType.Error)
-                boxStyle = "MessageBox Red";
+		public void RenderMessage(MessageBoxType messageType, string message, string description,
+			 Exception ex, params string[] additionalParameters)
+		{
+			this.Visible = true; // show message
 
-            tblMessageBox.Attributes["class"] = boxStyle;
+			// set icon and styles
+			string boxStyle = "MessageBox Green";
+			if (messageType == MessageBoxType.Warning)
+				boxStyle = "MessageBox Yellow";
+			else if (messageType == MessageBoxType.Error)
+				boxStyle = "MessageBox Red";
 
-            // set texts
-            litMessage.Text = message;
-            litDescription.Text = !String.IsNullOrEmpty(description)
-                ? String.Format("<br/><span class=\"description\">{0}</span>", description) : "";
+			tblMessageBox.Attributes["class"] = boxStyle;
 
-            // show exception
-            if (ex != null)
-            {
-                // show error
-                try
-                {
-                    // technical details
-                    litPageUrl.Text = PortalAntiXSS.Encode(Request.Url.ToString());
-                    litLoggedUser.Text = PanelSecurity.LoggedUser.Username;
-                    litSelectedUser.Text = PanelSecurity.SelectedUser.Username;
-                    litPackageName.Text = PanelSecurity.PackageId.ToString();
-                    litStackTrace.Text = ex.ToString().Replace("\n", "<br/>");
+			// set texts
+			litMessage.Text = message;
+			litDescription.Text = !String.IsNullOrEmpty(description)
+				 ? String.Format("<br/><span class=\"description\">{0}</span>", description) : "";
 
-                    // send form
-                    litSendFrom.Text = PanelSecurity.LoggedUser.Email;
+			// show exception
+			if (ex != null)
+			{
+				// show error
+				try
+				{
+					// technical details
+					litPageUrl.Text = PortalAntiXSS.Encode(Request.Url.ToString());
+					litLoggedUser.Text = PanelSecurity.LoggedUser.Username;
+					litSelectedUser.Text = PanelSecurity.SelectedUser.Username;
+					litPackageName.Text = PanelSecurity.PackageId.ToString();
+					var stacktxt = ex.ToString().Trim();
+					var stackhtml = stacktxt;
+					var fileVersion = OSInfo.SolidCPVersion;
+					stackhtml = Regex.Replace(stackhtml, @"(?<=\n\s*at\s+.+?\)\s+in\s+)(?:[A-Za-z]:\\|/)[^:]+(?=:line\s+[0-9]+(?:\r?\n|$))", match =>
+					{
+						var file = match.Value.Replace(Path.DirectorySeparatorChar, '/');
+						file = Regex.Replace(file, @"^.*?(?=/SolidCP/(?:Sources|Lib)/)", "");
+						return $@"<a href=""{SolidCPGithubUrl}/tree/v{fileVersion}{file}"">{file}</a>";
+					}, RegexOptions.Multiline);
+					stackhtml = stackhtml.Replace("\n", "<br/>");
+					litStackTrace.Text = stackhtml;
 
-                    if (!String.IsNullOrEmpty(PortalUtils.FromEmail))
-                        litSendFrom.Text = PortalUtils.FromEmail;
+					// send form
+					litSendFrom.Text = PanelSecurity.LoggedUser.Email;
 
-                    //litSendTo.Text = this.PortalSettings.Email;
-                    litSendTo.Text = PortalUtils.AdminEmail;
-                    litSendCC.Text = PanelSecurity.LoggedUser.Email;
-                    litSendSubject.Text = GetLocalizedString("Text.Subject");
-                }
-                catch { /* skip */ }
-            }
-            else
-            {
-                rowTechnicalDetails.Visible = false;
-            }
-        }
+					if (!String.IsNullOrEmpty(PortalUtils.FromEmail))
+						litSendFrom.Text = PortalUtils.FromEmail;
 
-        protected void btnSend_Click(object sender, EventArgs e)
-        {
-            EnableViewState = true;
-            ViewState["ShowNextTime"] = true;
+					litSendTo.Text = PortalUtils.AdminEmail;
+					litSendCC.Text = PanelSecurity.LoggedUser.Email;
+					litSendSubject.Text = GetLocalizedString("Text.Subject");
 
-            StringBuilder sb = new StringBuilder();
-            sb.Append("Page URL: ").Append(litPageUrl.Text).Append("\n\n");
-            sb.Append("Logged User: ").Append(litLoggedUser.Text).Append("\n\n");
-            sb.Append("Selected User: ").Append(litSelectedUser.Text).Append("\n\n");
-            sb.Append("Package ID: ").Append(litPackageName.Text).Append("\n\n");
-            sb.Append("Stack Trace: ").Append(litStackTrace.Text.Replace("<br/>", "\n")).Append("\n\n");
-            sb.Append("Personal Comments: ").Append(txtSendComments.Text).Append("\n\n");
+					// compose email message
+					StringBuilder sb = new StringBuilder();
+					sb.Append("Page URL: ").Append(litPageUrl.Text).Append("\n\n");
+					sb.Append("Logged User: ").Append(litLoggedUser.Text).Append("\n\n");
+					sb.Append("Selected User: ").Append(litSelectedUser.Text).Append("\n\n");
+					sb.Append("Package ID: ").Append(litPackageName.Text).Append("\n\n");
+					sb.Append("Stack Trace: ").Append(stackhtml).Append("\n\n");
+					sb.Append("Personal Comments: ").Append("%Comments%").Append("\n\n");
+					emailMessage = $@"
+<html>
+	<head>
+		<title>SolidCP Error User Report</title>
+	</head>
+	<body>
 
-            try
-            {
-                btnSend.Visible = false;
-                lblSentMessage.Visible = true;
+		<h1>SolidCP Error User Report</h1>
 
-                // send mail
-                PortalUtils.SendMail(litSendFrom.Text, litSendTo.Text, litSendFrom.Text,
-                    litSendSubject.Text, sb.ToString());
+		<p>
+			{sb.ToString().Replace("\n", "<br/>\n")}
+		</p>
 
-                lblSentMessage.Text = GetLocalizedString("Text.MessageSent");
-            }
-            catch
-            {
-                lblSentMessage.Text = GetLocalizedString("Text.MessageSentError");
-            }
-        }
-    }
+	</body>
+</html>";
+				}
+				catch { /* skip */ }
+			}
+			else
+			{
+				rowTechnicalDetails.Visible = false;
+			}
+		}
+
+		protected void btnSend_Click(object sender, EventArgs e)
+		{
+			EnableViewState = true;
+			ViewState["ShowNextTime"] = true;
+
+			try
+			{
+				btnSend.Visible = false;
+				lblSentMessage.Visible = true;
+
+				var from = PanelSecurity.LoggedUser.Email;
+				var to = PortalUtils.AdminEmail;
+				var subject = GetLocalizedString("Text.Subject");
+				emailMessage = emailMessage.Replace("%Comments%", $"<p>{txtSendComments.Text}</p>".Replace("\n", "<br/>\n"));
+
+				// send mail
+				PortalUtils.SendMail(from, to, from, subject, emailMessage, true);
+
+				lblSentMessage.Text = GetLocalizedString("Text.MessageSent");
+			}
+			catch
+			{
+				lblSentMessage.Text = GetLocalizedString("Text.MessageSentError");
+			}
+		}
+
+		// Use control state for emailMessage because ViewState won't always work
+		protected override void OnInit(EventArgs e)
+		{
+			base.OnInit(e);
+			Page.RegisterRequiresControlState(this);
+		}
+
+		protected override object SaveControlState()
+		{
+			object obj = base.SaveControlState();
+
+			if (emailMessage != null)
+			{
+				if (obj != null)
+				{
+					return new Pair(obj, emailMessage);
+				}
+				else
+				{
+					return emailMessage;
+				}
+			}
+			else
+			{
+				return obj;
+			}
+		}
+
+		protected override void LoadControlState(object state)
+		{
+			if (state != null)
+			{
+				Pair p = state as Pair;
+				if (p != null)
+				{
+					base.LoadControlState(p.First);
+					emailMessage = (string)p.Second;
+				}
+				else
+				{
+					if (state is string)
+					{
+						emailMessage = (string)state;
+					}
+					else
+					{
+						base.LoadControlState(state);
+					}
+				}
+			}
+		}
+
+	}
 }

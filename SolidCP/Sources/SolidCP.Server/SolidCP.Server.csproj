@@ -34,7 +34,10 @@
 
 	<ItemGroup>
 		<Compile Remove="WebServices\**\*.*" />
-		<None Include="WebServices\**\*.*" />
+		<Content Remove="WebServices\**\*.*" />
+		<EmbeddedResource Remove="WebServices\**\*.*" />
+		<None Include="WebServices\**\*.cs" Exclude="WebServices\SolidCP.Build\obj\**\*.cs" />
+		<None Remove="WebServices\SolidCP.Build\obj\**" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
@@ -70,7 +73,7 @@
 		<Compile Remove="Code\WPIHelper.cs" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\SolidCP.Build\SolidCP.Build.csproj"  OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+		<ProjectReference Include="..\SolidCP.Build\SolidCP.Build.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 		<ProjectReference Include="..\SolidCP.Web.Services\SolidCP.Web.Services.csproj" />
 		<ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
 		<ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
@@ -114,7 +117,11 @@
 		</Content>
 	</ItemGroup>
 
-	<Target Name="DeleteUnusedDlls" AfterTargets="Build" Condition="'$(TargetFramework)' == 'net48'">
+	<PropertyGroup>
+		<BuildDependsOn>$(BuildDependsOn);DeleteUnusedDlls</BuildDependsOn>
+	</PropertyGroup>
+
+	<Target Name="DeleteUnusedDlls" Condition="'$(TargetFramework)' == 'net48'">
 		<Message Text="Delete unused dll files" Importance="high" />
 		<ItemGroup>
 			<FilesToDelete Include="bin\SolidCP.Server.Utils.*" />
@@ -128,8 +135,12 @@
 			<FilesToDelete Include="bin\RazorBlade.*" />
 			<FilesToDelete Include="bin\SolidCP.Build.*" />
 			<FilesToDelete Include="bin\WebServices\**\*.*" />
+			<FilesToDelete Include="bin\Microsoft.Web.Administration.*" />
+			<FilesToMove Include="bin\SwaggerWcf.*" />
 		</ItemGroup>
 		<Delete Files="@(FilesToDelete)" />
+		<Move SourceFiles="@(FilesToMove)" DestinationFolder="bin\Providers" />
+		<RemoveDir Directories="bin\bin_dotnet;bin\WebServices" />
 	</Target>
 
 </Project>

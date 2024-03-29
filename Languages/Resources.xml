@@ -19202,6 +19202,11 @@
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\ServersEditWindowsServices.ascx.resx</File>
+    <Key>gvServicesDescription.Header</Key>
+    <DefaultValue>Description</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\ServersEditWindowsServices.ascx.resx</File>
     <Key>gvServicesId.Header</Key>
     <DefaultValue>Id</DefaultValue>
   </Resource>
@@ -44262,6 +44267,11 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
 The following substitution variables can be used in the pattern:&lt;br/&gt;
 [FQDN], [CPUCORES], [RAMSIZE], [HDDSIZE], [OSTEMPLATENAME], [OSTEMPLATEFILE]&lt;br/&gt;
 [ADMINPASS], [MAC], [VLAN], [IP], [NETMASK], [GATEWAY]</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Proxmox_Settings.ascx.resx</File>
+    <Key>locProxmoxTrustServerCertificate</Key>
+    <DefaultValue>Always trust Proxomox Server Certificate:</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\RDS_Settings.ascx.resx</File>

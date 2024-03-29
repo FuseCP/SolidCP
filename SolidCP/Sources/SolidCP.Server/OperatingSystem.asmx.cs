@@ -1313,6 +1313,7 @@ namespace SolidCP.Server
 		public Providers.Web.IWebServer WebServer => WinProvider.WebServer;
 		public ServiceController ServiceController => WinProvider.ServiceController;
 		public WSLShell WSLShell => WinProvider.WSLShell;
+		public bool IsSystemd => UnixProvider.IsSystemd;
 
 	}
 }

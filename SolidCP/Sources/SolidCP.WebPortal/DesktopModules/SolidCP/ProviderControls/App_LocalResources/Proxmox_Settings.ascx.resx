@@ -563,5 +563,7 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
 [FQDN], [CPUCORES], [RAMSIZE], [HDDSIZE], [OSTEMPLATENAME], [OSTEMPLATEFILE]&lt;br/&gt;
 [ADMINPASS], [MAC], [VLAN], [IP], [NETMASK], [GATEWAY]</value>
   </data>
-  
+  <data name="locProxmoxTrustServerCertificate" xml:space="preserve">
+    <value>Always trust Proxomox Server Certificate:</value>
+  </data>
 </root>

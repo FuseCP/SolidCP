@@ -887,6 +887,7 @@ namespace SolidCP.Providers.Web
 						if (match.Success)
 						{
 							var ver = match.Groups["version"].Value.Trim('.');
+							return ver;
 						}
 					}
 					catch { }

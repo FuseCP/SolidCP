@@ -1,5 +1,7 @@
 using System;
 using System.Linq;
+using System.Collections;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -10,6 +12,7 @@ using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Text.RegularExpressions;
 using static System.Net.Mime.MediaTypeNames;
+using System.Collections.Generic;
 
 namespace SolidCP.Providers.OS
 {
@@ -75,6 +78,27 @@ namespace SolidCP.Providers.OS
 		}
 
 		public bool NotFound { get; set; }
+		public static IEnumerable<string> Paths
+		{
+			get
+			{
+				string proc, machine = "", user = "";
+				string[] sources;
+				proc = Environment.GetEnvironmentVariable("PATH");
+				if (OSInfo.IsWindows)
+				{
+					machine = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Machine);
+					user = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.User);
+					sources = new string[] { proc, machine, user };
+				} else sources = new string[] { proc };
+
+				return sources
+					.SelectMany(paths => paths.Split(new char[] { Path.PathSeparator }, StringSplitOptions.RemoveEmptyEntries))
+					.Select(path => path.Trim())
+					.Distinct();
+			}
+		}
+
 		public virtual string Find(string cmd)
 		{
 			string file = null;
@@ -84,8 +108,7 @@ namespace SolidCP.Providers.OS
 			}
 			else
 			{
-				file = Environment.GetEnvironmentVariable("PATH")
-					  .Split(new char[] { PathSeparator })
+				file = Paths
 					  .SelectMany(p =>
 					  {
 						  var p1 = Path.Combine(p, cmd);
@@ -122,7 +145,7 @@ namespace SolidCP.Providers.OS
 			cnt?.Invoke();
 		}
 
-		public virtual Shell ExecAsync(string cmd, Encoding encoding = null)
+		public virtual Shell ExecAsync(string cmd, Encoding encoding = null, StringDictionary environmentVariables = null)
 		{
 			LogCommand?.Invoke(cmd);
 
@@ -176,6 +199,13 @@ namespace SolidCP.Providers.OS
 				process.StartInfo.RedirectStandardError = true;
 				process.StartInfo.StandardOutputEncoding = encoding ?? Encoding.Default;
 				process.StartInfo.StandardErrorEncoding = encoding ?? Encoding.Default;
+				if (environmentVariables != null)
+				{
+					foreach (DictionaryEntry variable in environmentVariables)
+					{
+						process.StartInfo.EnvironmentVariables.Add(variable.Key as string, variable.Value as string);
+					}
+				}
 				process.Exited += (obj, args) =>
 				{
 					child.exitCode = child.Process.ExitCode;
@@ -236,7 +266,7 @@ namespace SolidCP.Providers.OS
 				return child;
 			}
 		}
-		public virtual Shell Exec(string command, Encoding encoding = null) => ExecAsync(command, encoding).Task().Result;
+		public virtual Shell Exec(string command, Encoding encoding = null, StringDictionary environmentVariables = null) => ExecAsync(command, encoding).Task().Result;
 		public virtual Shell Clone
 		{
 			get
@@ -258,7 +288,7 @@ namespace SolidCP.Providers.OS
 			}
 		}
 
-		public virtual Shell ExecScriptAsync(string script, Encoding encoding = null)
+		public virtual Shell ExecScriptAsync(string script, Encoding encoding = null, StringDictionary environmentVariables = null)
 		{
 			script = script.Trim();
 			// adjust new lines to OS type
@@ -275,7 +305,7 @@ namespace SolidCP.Providers.OS
 			return shell;
 		}
 
-		public virtual Shell ExecScript(string script, Encoding encoding = null) => ExecScriptAsync(script, encoding).Task().Result;
+		public virtual Shell ExecScript(string script, Encoding encoding = null, StringDictionary environmentVariables = null) => ExecScriptAsync(script, encoding, environmentVariables).Task().Result;
 
 
 		/* public virtual async Task<Shell> Wait(int milliseconds = Timeout.Infinite)

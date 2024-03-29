@@ -14,11 +14,11 @@
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly> 
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugType>full</DebugType>
+    <DebugType>portable</DebugType>
     <WarningsAsErrors>618</WarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>none</DebugType>
+    <DebugType>portable</DebugType>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />

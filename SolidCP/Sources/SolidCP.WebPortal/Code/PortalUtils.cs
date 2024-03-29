@@ -67,7 +67,6 @@ namespace SolidCP.Portal
 		public const string SPACE_ID_PARAM = "SpaceID";
 		public const string SEARCH_QUERY_PARAM = "Query";
 
-
 		public static string CultureCookieName
 		{
 			get { return PortalConfiguration.SiteSettings["CultureCookieName"]; }
@@ -187,17 +186,34 @@ namespace SolidCP.Portal
 			get { return PortalConfiguration.SiteSettings["FromEmail"]; }
 		}
 
-		public static void SendMail(string from, string to, string bcc, string subject, string body)
+		public static void SendMail(string from, string to, string bcc, string subject, string body, bool isBodyHtml = false)
 		{
 			// Command line argument must the the SMTP host.
 			SmtpClient client = new SmtpClient();
 
 			// set SMTP client settings
+
 			client.Host = PortalConfiguration.SiteSettings["SmtpHost"];
-			client.Port = Int32.Parse(PortalConfiguration.SiteSettings["SmtpPort"]);
-			string smtpUsername = PortalConfiguration.SiteSettings["SmtpUsername"];
-			string smtpPassword = PortalConfiguration.SiteSettings["SmtpPassword"];
-			if (String.IsNullOrEmpty(smtpUsername))
+			if (string.IsNullOrEmpty(client.Host)) return; // when the host is not configured, don't send the mail
+
+			var portsetting = PortalConfiguration.SiteSettings["SmtpPort"];
+			client.Port = Int32.Parse(!string.IsNullOrEmpty(portsetting) ? portsetting : "25");
+
+			var useSsl = PortalConfiguration.SiteSettings["SmtpUseSsl"];
+			client.EnableSsl = bool.Parse(string.IsNullOrEmpty(useSsl) ? "false" : useSsl);
+			string smtpUsername = PortalConfiguration.SiteSettings["SmtpUsername"] ?? "";
+			string smtpPassword = PortalConfiguration.SiteSettings["SmtpPassword"] ?? "";
+
+			/* Does not work since GetSystemSettings is not public
+			var settings = ES.Services.System.GetSystemSettings(SystemSettings.SMTP_SETTINGS);
+			client.Host = settings[SMTP_SERVER];
+			client.Port = Int32.Parse(settings[SMTP_PORT]);
+			client.EnableSsl = bool.Parse(settings[SMTP_ENABLE_SSL] ?? "false");
+			string smtpUsername = settings[SMTP_USERNAME];
+			string smtpPassword = settings[SMTP_PASSWORD]; */
+
+			client.UseDefaultCredentials = string.IsNullOrEmpty(smtpUsername);
+			if (!client.UseDefaultCredentials)
 			{
 				client.Credentials = new NetworkCredential(smtpUsername, smtpPassword);
 			}
@@ -206,7 +222,7 @@ namespace SolidCP.Portal
 			MailMessage message = new MailMessage(from, to);
 			message.Body = body;
 			message.BodyEncoding = System.Text.Encoding.UTF8;
-			message.IsBodyHtml = false;
+			message.IsBodyHtml = isBodyHtml;
 			message.Subject = subject;
 			message.SubjectEncoding = System.Text.Encoding.UTF8;
 			if (!String.IsNullOrEmpty(bcc))
@@ -216,6 +232,8 @@ namespace SolidCP.Portal
 			try
 			{
 				client.Send(message);
+			} catch (Exception ex)
+			{
 			}
 			finally
 			{

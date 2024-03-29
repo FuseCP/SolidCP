@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Text;
 using Mono.Unix;
@@ -363,6 +364,74 @@ namespace SolidCP.Providers.OS
 		{
 			return !OSInfo.IsWindows;
 		}
+		#region HostingServiceProvider methods
+		public override string[] Install()
+		{
+			List<string> messages = new List<string>();
+
+			// create folder if it not exists
+			try
+			{
+				if (!FileUtils.DirectoryExists(UsersHome))
+				{
+					FileUtils.CreateDirectory(UsersHome);
+				}
+			}
+			catch (Exception ex)
+			{
+				messages.Add(String.Format("Folder '{0}' could not be created: {1}",
+					 UsersHome, ex.Message));
+			}
+			return messages.ToArray();
+		}
+
+		public override void DeleteServiceItems(ServiceProviderItem[] items)
+		{
+			foreach (ServiceProviderItem item in items)
+			{
+				try
+				{
+					if (item is HomeFolder)
+						// delete home folder
+						DeleteFile(item.Name);
+				}
+				catch (Exception ex)
+				{
+					Log.WriteError(String.Format("Error deleting '{0}' {1}", item.Name, item.GetType().Name), ex);
+				}
+			}
+		}
+
+		public override ServiceProviderItemDiskSpace[] GetServiceItemsDiskSpace(ServiceProviderItem[] items)
+		{
+			List<ServiceProviderItemDiskSpace> itemsDiskspace = new List<ServiceProviderItemDiskSpace>();
+			foreach (ServiceProviderItem item in items)
+			{
+				if (item is HomeFolder)
+				{
+					try
+					{
+						string path = item.Name;
+
+						Log.WriteStart(String.Format("Calculating '{0}' folder size", path));
+
+						// calculate disk space
+						ServiceProviderItemDiskSpace diskspace = new ServiceProviderItemDiskSpace();
+						diskspace.ItemId = item.Id;
+						diskspace.DiskSpace = FileUtils.CalculateFolderSize(path);
+						itemsDiskspace.Add(diskspace);
+
+						Log.WriteEnd(String.Format("Calculating '{0}' folder size", path));
+					}
+					catch (Exception ex)
+					{
+						Log.WriteError(ex);
+					}
+				}
+			}
+			return itemsDiskspace.ToArray();
+		}
+		#endregion
 
 		protected string LogName(string fullpath)
 		{
@@ -419,13 +488,15 @@ namespace SolidCP.Providers.OS
 
 			return logs
 				.Select(log => LogName(log))
-				.Where(log => log != null)
+				.Where(log => log != null && !log.Contains(':'))
 				.Distinct()
 				.ToList();
 		}
 
 		private IEnumerable<SystemLogEntry> GetLogEntriesAsEnumerableRaw(string logName)
 		{
+			if (string.IsNullOrEmpty(logName)) yield break;
+
 			var logs = EnumerateLogFiles(LogDir);
 			logs = logs.Where(l => LogName(l) == logName);
 			foreach (var log in logs)
@@ -442,29 +513,64 @@ namespace SolidCP.Providers.OS
 						yield break;
 					}
 					if (Path.GetExtension(log) == ".gz") file = new GZipStream(file, CompressionMode.Decompress);
-					var reader = new StreamReader(file, Encoding.UTF8, true);
+					TextReader reader = new StreamReader(file, Encoding.UTF8, true);
 
 					var text = reader.ReadToEnd();
 
-					var matches = Regex.Matches(text, @"(?<=^|\n)(?<date>(?:[0-9]{4}-[0-9]{2}-[0-9]{2}|[A-Za-z]+\s+[0-9]+))(?:(?:T|\s+)[0-9]{2}:[0-9]{2}(?::[0-9]{2}(?:,[0-9]+|Z|\+[0-9]+|-[0-9]+)?)?)?)\s*(?<text>.*?)\s*(?=$|(?<=^|\n)(?:[0-9]{4}-[0-9]{2}-[0-9]{2}|[A-Za-z]+\s+[0-9]+)(?:(?:T|\s+)[0-9]{2}:[0-9]{2}(?::[0-9]{2}(?:,[0-9]+|Z|\+[0-9]+|-[0-9]+)?)?)?)", RegexOptions.Singleline);
+					var matches = Regex.Matches(text, @"(?<=^|\n)(?<date>(?:[0-9]{4}-[0-9]{2}-[0-9]{2}|[A-Za-z]+\s+[0-9]+))(?:(?:T|\s+)(?<time>[0-9]{2}:[0-9]{2}(?::[0-9]{2}(?:(?:,|\.)[0-9]+|Z|\+[0-9]+|-[0-9]+)?)?))?\s*(?<text>.*?)\s*(?=$|(?<=^|\n)(?<date>(?:[0-9]{4}-[0-9]{2}-[0-9]{2}|[A-Za-z]+\s+[0-9]+))(?:(?:T|\s+)(?<time>[0-9]{2}:[0-9]{2}(?::[0-9]{2}(?:(?:,|\.)[0-9]+|Z|\+[0-9]+|-[0-9]+)?)?))?)", RegexOptions.Singleline);
 
-					foreach (Match match in matches)
+					if (matches.Count > 0)
 					{
-						DateTime time;
-						if (!DateTime.TryParse(match.Groups["date"].Value, out time)) yield break;
-						var msg = match.Groups["text"].Value;
-						
+
+						foreach (Match match in matches)
+						{
+							DateTime date, time;
+							var datetxt = match.Groups["date"].Value;
+							if (!DateTime.TryParse(datetxt, out date)) yield break;
+							if (match.Groups["time"].Success)
+							{
+								var timetxt = match.Groups["time"].Value;
+								if (!timetxt.Contains("Z") || !DateTime.TryParse($"{datetxt}T{timetxt}", out time))
+								{
+									if (DateTime.TryParse(timetxt, out time)) time = date.Add(time.TimeOfDay);
+									else time = date;
+								}
+							}
+							else time = date;
+
+							var msg = match.Groups["text"].Value ?? "";
+
+							var entry = new SystemLogEntry()
+							{
+								Created = time,
+								Category = logName,
+								EntryType = msg.IndexOf("error", StringComparison.OrdinalIgnoreCase) >= 0 ?
+									SystemLogEntryType.Error :
+									(msg.IndexOf("warning", StringComparison.OrdinalIgnoreCase) >= 0 ?
+									SystemLogEntryType.Warning : SystemLogEntryType.Information),
+								MachineName = Environment.MachineName,
+								EventID = 0,
+								Message = msg,
+								Source = logName,
+								UserName = "" //Process.GetCurrentProcess().StartInfo.UserName
+							};
+							yield return entry;
+						}
+					}
+					else if (!string.IsNullOrWhiteSpace(text))
+					{
+						var created = File.GetCreationTimeUtc(log);
 						var entry = new SystemLogEntry()
 						{
-							Created = time,
+							Created = created,
 							Category = logName,
-							EntryType = msg.IndexOf("error", StringComparison.OrdinalIgnoreCase) >= 0 ?
-								SystemLogEntryType.Error :
-								(msg.IndexOf("warning", StringComparison.OrdinalIgnoreCase) >= 0 ?
-								SystemLogEntryType.Warning : SystemLogEntryType.Information),
+							EntryType = text.IndexOf("error", StringComparison.OrdinalIgnoreCase) >= 0 ?
+									SystemLogEntryType.Error :
+									(text.IndexOf("warning", StringComparison.OrdinalIgnoreCase) >= 0 ?
+									SystemLogEntryType.Warning : SystemLogEntryType.Information),
 							MachineName = Environment.MachineName,
 							EventID = 0,
-							Message = msg,
+							Message = text,
 							Source = logName,
 							UserName = "" //Process.GetCurrentProcess().StartInfo.UserName
 						};
@@ -502,11 +608,11 @@ namespace SolidCP.Providers.OS
 
 		public SystemLogEntriesPaged GetLogEntriesPaged(string logName, int startRow, int maximumRows)
 		{
-			var entries = GetLogEntriesAsEnumerable(logName)
-				.Skip(startRow - 1)
+			SystemLogEntry[] entries;
+			entries = GetLogEntriesAsEnumerable(logName)
+				.Skip(startRow)
 				.Take(maximumRows)
 				.ToArray();
-
 			return new SystemLogEntriesPaged()
 			{
 				Entries = entries,
@@ -526,24 +632,36 @@ namespace SolidCP.Providers.OS
 
 		public OSProcess[] GetOSProcesses()
 		{
-			var output = Shell.Default.Exec("top cwbn 1").Output().Result;
-			if (output == null) throw new PlatformNotSupportedException("top command not found on this system.");
-			var matches = Regex.Matches(output, @"^\s*(?<pid>[0-9]+)\s+(?<user>[^\s]+)\s+-?[0-9]+\s+-?[0-9]+\s+[0-9.GgTt]+\s+(?<mem>[0-9.GgTt]+)\s+[0-9.GgTt]+\s+[^\s]+\s+(?<cpu>[0-9.]+)\s+(?<relmem>[0-9.]+)\s+[0-9:.]+\s+(?<cmd>(?:(?:[^""][^\s$]*)|""[^""]*""))[ \t]*(?<args>.*?)$", RegexOptions.Multiline);
+			// Use POSIX ps command
+			var env = new StringDictionary();
+			env["COLUMNS"] = "1024";
+			var output = Shell.Default.Exec("ps -A -o pid=,user=,rss=,vsz=,pcpu=,args=", null, env).Output().Result;
+			if (output == null) throw new PlatformNotSupportedException("ps command not found on this system.");
+			if (Regex.IsMatch(output, @"^[^\n]*?error", RegexOptions.Singleline | RegexOptions.IgnoreCase))
+			{	// error using -o rss (-o rss option is not POSIX), use POSIX ps, use -o vsz instead
+				output = Shell.Default.Exec("ps -A -o pid=,user=,vsz=,vsz=,pcpu=,args=", null, env).Output().Result;
+			}
+			if (output == null) throw new PlatformNotSupportedException("ps command not found on this system.");
+			if (Regex.IsMatch(output, @"^[^\n]*?error", RegexOptions.Singleline | RegexOptions.IgnoreCase)) throw new PlatformNotSupportedException("Error: ps on this OS not POSIX compliant.");
 
-			//TODO username & cpu usage
+			var matches = Regex.Matches(output, @"^\s*(?<pid>[0-9]+)\s+(?<user>[^\s]+)\s+(?<mem>[0-9]+)\s+(?<vmem>[0-9]+)\s+(?<cpu>[0-9\.,]+)\s+(?<cmd>[^""][^\s$]*|""[^""]*"")\s+(?<args>.*?)\s*$", RegexOptions.Multiline);
+
 			return matches
 				.OfType<Match>()
 				.Select(m =>
 				{
-					var pid = int.Parse(m.Groups["pid"].Value);
-					string name = Path.GetFileName(m.Groups["cmd"].Value);
-					var memtxt = m.Groups["mem"].Value;
-					var cmd = m.Groups["cmd"].Value;
-					cmd = cmd.Trim('"');
-					long mem;
-					if (memtxt.EndsWith("t", StringComparison.OrdinalIgnoreCase)) mem = (long)double.Parse(memtxt.Substring(0, memtxt.Length - 1)) * 1024 * 1024 * 1024;
-					else if (memtxt.EndsWith("g", StringComparison.OrdinalIgnoreCase)) mem = (long)double.Parse(memtxt.Substring(0, memtxt.Length - 1)) * 1024 * 1024;
-					else mem = long.Parse(memtxt) * 1024;
+					var cmd = (m.Groups["cmd"].Success ? m.Groups["cmd"].Value : "").Trim('"');
+					int pid = -1;
+					int.TryParse(m.Groups["pid"].Value, out pid);
+					var name = Path.GetFileName(cmd);
+					long mem = 0;
+					if (!long.TryParse(m.Groups["mem"].Value, out mem))
+					{
+						long.TryParse(m.Groups["vmem"].Value, out mem);
+					};
+					mem = mem * 1024;
+					float cpu = 0;
+					float.TryParse(m.Groups["cpu"].Value, out cpu);
 
 					return new OSProcess()
 					{
@@ -551,7 +669,7 @@ namespace SolidCP.Providers.OS
 						Name = name,
 						MemUsage = mem,
 						Command = cmd,
-						CpuUsage = float.Parse(m.Groups["cpu"].Value) / 100 / Environment.ProcessorCount,
+						CpuUsage = cpu / 100,
 						Arguments = m.Groups["args"].Value,
 						Username = m.Groups["user"].Value
 					};
@@ -567,7 +685,8 @@ namespace SolidCP.Providers.OS
 				var process = Process.GetProcessById(pid);
 				if (process != null) process.Kill();
 			}
-			catch (Exception ex) {
+			catch (Exception ex)
+			{
 			}
 		}
 
@@ -658,7 +777,7 @@ namespace SolidCP.Providers.OS
 						if (OSInfo.OSVersion.Major >= 9 && Dnf.IsInstallerInstalled) return Dnf;
 						else return Yum;
 					case OSFlavor.CentOS:
-						if (OSInfo.OSVersion.Major >= 8 && Dnf.IsInstallerInstalled) return Dnf;		
+						if (OSInfo.OSVersion.Major >= 8 && Dnf.IsInstallerInstalled) return Dnf;
 						else return Yum;
 					case OSFlavor.Oracle:
 						if (OSInfo.OSVersion.Major >= 8 && Dnf.IsInstallerInstalled) return Dnf;
@@ -693,5 +812,7 @@ namespace SolidCP.Providers.OS
 				return serviceController;
 			}
 		}
+
+		public bool IsSystemd => new SystemdServiceController().IsInstalled;
 	}
 }

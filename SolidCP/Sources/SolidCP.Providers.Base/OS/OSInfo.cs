@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
@@ -112,7 +113,7 @@ namespace SolidCP.Providers.OS
 					else if (Enum.TryParse<OSFlavor>(name, out f)) flavor = f;
 					else
 					{
-						for (var os = OSFlavor.Min; os <= OSFlavor.Max;  os++)
+						for (var os = OSFlavor.Min; os <= OSFlavor.Max; os++)
 						{
 							if (Regex.IsMatch(name, $"(?<=^|\\s){Regex.Escape(Enum.GetName(typeof(OSFlavor), os))}(?=\\s|$)", RegexOptions.IgnoreCase))
 							{
@@ -131,6 +132,19 @@ namespace SolidCP.Providers.OS
 			{
 				var flavor = OSFlavor;
 				return version;
+			}
+		}
+
+		public static string SolidCPVersion
+		{
+			get
+			{
+				var entryAssemblies = new string[] { "SolidCP.Server", "SolidCP.EnterpriseServer", "SolidCP.WebPortal", "SolidCP.WebDavPortal" };
+				var entryAssembly = AppDomain.CurrentDomain.GetAssemblies()
+					.FirstOrDefault(a => entryAssemblies.Any(name => a.GetName().Name == name)) ?? Assembly.GetEntryAssembly();
+				var fileVersion = entryAssembly.GetCustomAttribute<AssemblyFileVersionAttribute>();
+				if (fileVersion == null) return "";
+				else return fileVersion.Version;
 			}
 		}
 		public static WindowsVersion WindowsVersion => IsWindows ? WindowsOSInfo.GetVersion() : WindowsVersion.NonWindows;

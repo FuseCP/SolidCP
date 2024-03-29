@@ -37,8 +37,20 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 using System.Text;
-//using System.Drawing;
-//using System.Drawing.Imaging;
+
+#if UseGDIPlus && NETFRAMEWORK
+using System.Drawing;
+using System.Drawing.Imaging;
+#endif
+
+#if UseGDIPlus && !NETFRAMEWORK
+using System.Drawing;
+using System.Drawing.Imaging;
+#endif
+
+#if UseSkia
+using SkiaSharp;
+#endif
 
 using System.Management;
 using System.Management.Automation;
@@ -60,14 +72,13 @@ using SolidCP.Server.Utils;
 
 using System.Configuration;
 using System.Linq;
-using System.Text.Json;
-
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SolidCP.Providers.Virtualization.Extensions;
 using SolidCP.Providers.Virtualization.Proxmox;
 
 using Renci.SshNet;
 
-using SkiaSharp;
 
 namespace SolidCP.Providers.Virtualization
 {
@@ -75,7 +86,7 @@ namespace SolidCP.Providers.Virtualization
 	{
 
 		#region Provider Settings
-		protected string ProxmoxClusterServerHost
+		protected virtual string ProxmoxClusterServerHost
 		{
 			get { return ProviderSettings["ProxmoxClusterServerHost"]; }
 		}
@@ -98,6 +109,16 @@ namespace SolidCP.Providers.Virtualization
 		protected string ProxmoxClusterAdminPass
 		{
 			get { return ProviderSettings["ProxmoxClusterAdminPass"]; }
+		}
+		protected bool? ProxmoxTrustClusterServerCertificate
+		{
+			get { 
+				var setting = ProviderSettings["ProxmoxTrustClusterServerCertificate"];
+				if (string.IsNullOrEmpty(setting)) return null;
+				bool trustCert = false;
+				bool.TryParse(setting, out trustCert);
+				return trustCert;
+			}
 		}
 
 		/*
@@ -223,6 +244,12 @@ namespace SolidCP.Providers.Virtualization
 		private User user;
 		private ProxmoxServer server;
 
+		public virtual bool IsLocalServer => string.IsNullOrEmpty(ProxmoxClusterServerHost) || ProxmoxClusterServerHost == "localhost" ||
+			ProxmoxClusterServerHost.StartsWith("127.0.0.") || ProxmoxClusterServerHost == "::1" || ProxmoxClusterServerHost == "[::1]";
+		public virtual bool ValidateServerCertificate => !IsLocalServer || 
+			!ProxmoxTrustClusterServerCertificate.HasValue || !ProxmoxTrustClusterServerCertificate.Value;
+
+
 		#endregion
 
 		#region Constructors
@@ -253,10 +280,10 @@ namespace SolidCP.Providers.Virtualization
 			try
 			{
 				ApiClientSetup();
-				dynamic result = client.Status(vmId);
+				var result = client.Status(vmId);
 				HostedSolutionLog.DebugInfo("GetVirtualMachine - Virtual Machine: {0}", vmId);
 				var vmconfig = client.VMConfig(vmId);
-				if (result.data != null)
+				if (result != null)
 				{
 					HostedSolutionLog.DebugInfo("GetVirtualMachineInternal - vm.Name: {0}, State: {1}, Uptime: {2}", result.data.name, result.data.qmpstatus, result.data.uptime);
 					vm.Name = result.data.name;
@@ -287,22 +314,23 @@ namespace SolidCP.Providers.Virtualization
 						vm.HddSize = new[] { Convert.ToInt32(maxdisk / Constants.Size1G) };
 
 						//vmconfig
-						JsonElement vmconfigjsonResponse = JsonDocument.Parse(vmconfig.Content).RootElement;
-						JsonElement vmconfigconfigvalue = vmconfigjsonResponse.GetProperty("data");
+						//JsonObject vmconfigjsonResponse = (JsonObject)SimpleJson.DeserializeObject(vmconfig.Content);
+						//dynamic vmconfigconfigvalue = (JsonObject)SimpleJson.DeserializeObject(vmconfigjsonResponse["data"].ToString());
+						JToken vmconfigjsonResponse = JToken.Parse(vmconfig.Content);
+						JObject vmconfigconfigvalue = (JObject)vmconfigjsonResponse["data"];
 
 						// Checking for bootdisk as newer VMs use boot not bootorder
-						JsonElement bootdiskElement;
 						string bootdisk;
-						if (!vmconfigconfigvalue.TryGetProperty("bootdisk", out bootdiskElement))
+						if (!vmconfigconfigvalue.ContainsKey("bootdisk"))
 						{
-							string boot1 = vmconfigconfigvalue.GetProperty("boot").GetString();
+							string boot1 = (string)vmconfigconfigvalue["boot"];
 							var bootvar = boot1.Replace("order=", "").Split(';');
 							bootdisk = bootvar[0];
 
 						}
 						else
 						{
-							bootdisk = bootdiskElement.GetString();
+							bootdisk = (string)vmconfigconfigvalue["bootdisk"];
 						};
 
 
@@ -358,16 +386,19 @@ namespace SolidCP.Providers.Virtualization
 				//HostedSolutionLog.LogInfo("GetVirtualMachines - APIClientSetup Ran");
 				var RestResponse = client.ClusterVMList();
 				//HostedSolutionLog.LogInfo("GetVirtualMachines - ClusterVMList: {0}", RestResponse.Content.ToString());
-				JsonElement jsonResponse = JsonDocument.Parse(RestResponse.Content).RootElement;
-				JsonElement jsonResponsearray = jsonResponse.GetProperty("data");
+				//JsonObject jsonResponse = (JsonObject)SimpleJson.DeserializeObject(RestResponse.Content);
+				//JsonArray jsonResponsearray = (JsonArray)SimpleJson.DeserializeObject(jsonResponse["data"].ToString());
+				JToken jsonResponse = JToken.Parse(RestResponse.Content);
+				JArray jsonResponsearray = (JArray)jsonResponse["data"];
 
-				foreach (JsonElement resources in jsonResponsearray.EnumerateArray())
+
+				foreach (JObject resources in jsonResponsearray)
 				{
 					try
 					{
-						if (resources.GetProperty("type").GetString().Equals("qemu"))
+						if (resources["type"].ToString().Equals("qemu"))
 						{
-							string vmid = String.Format("{0}:{1}", resources.GetProperty("node").GetString(), resources.GetProperty("vmid").GetString());
+							string vmid = String.Format("{0}:{1}", resources["node"].ToString(), resources["vmid"].ToString());
 							HostedSolutionLog.LogInfo("GetVirtualMachines - vmObject: {0}", vmid);
 
 							var vm = GetVirtualMachineInternal(vmid, true);
@@ -398,8 +429,113 @@ namespace SolidCP.Providers.Virtualization
 
 		}
 
+		public byte[] GetVirtualMachineThumbnailImageGDIPlus(string vmId, int width, int height)
+		{
+#if UseGDIPlus
+			try
+			{
+				// create new bitmap
+				Bitmap bmp = new Bitmap(width, height);
+
+				Graphics g = Graphics.FromImage(bmp);
+
+				var vm = GetVirtualMachineInternal(vmId, false);
+				if (vm.State == VirtualMachineState.Running)
+				{
+					SolidBrush brush = new SolidBrush(Color.Black);
+					g.FillRectangle(brush, 0, 0, width, height);
+					RectangleF rectf = new RectangleF(0, (height / 3), width, (height / 2));
+
+					// Set format of string.
+					StringFormat drawFormat = new StringFormat();
+					drawFormat.Alignment = StringAlignment.Center;
+
+					g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+					g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+					g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+
+					// Draw string to screen.
+					g.DrawString(THUMB_PRINT_TEXT, new Font("Verdana", 10), Brushes.WhiteSmoke, rectf, drawFormat);
+				}
+				else
+				{
+					SolidBrush brush = new SolidBrush(Color.LightGray);
+					g.FillRectangle(brush, 0, 0, width, height);
+				}
+
+
+
+				MemoryStream stream = new MemoryStream();
+				bmp.Save(stream, ImageFormat.Png);
+
+				stream.Flush();
+				byte[] buffer = stream.ToArray();
+
+				bmp.Dispose();
+				stream.Dispose();
+
+				return buffer;
+			}
+			catch { }
+#endif
+			return null;
+		}
+		public byte[] GetVirtualMachineThumbnailImageSkia(string vmId, int width, int height)
+		{
+#if UseSkia
+			try
+			{
+				// SkiaSharp version
+				SKImageInfo info = new SKImageInfo(width, height);
+				SKSurface surface = SKSurface.Create(info);
+
+				SKCanvas canvas = surface.Canvas;
+
+				var vm = GetVirtualMachineInternal(vmId, false);
+				if (vm.State == VirtualMachineState.Running)
+				{
+					canvas.Clear(SKColors.Black);
+
+					SKPaint paint = new SKPaint()
+					{
+						Color = SKColors.WhiteSmoke,
+						TextSize = width / 10,
+						IsAntialias = true,
+						Typeface = SKTypeface.FromFamilyName("Verdana"),
+						TextAlign = SKTextAlign.Center,
+						IsStroke = false
+					};
+
+					// Draw string to canvas
+					canvas.DrawText(THUMB_PRINT_TEXT, width / 2, height * (2 / 3), paint);
+				}
+				else
+				{
+					canvas.Clear(SKColors.LightGray);
+				}
+
+				MemoryStream stream = new MemoryStream();
+
+				using (var image = surface.Snapshot())
+				using (var data = image.Encode(SKEncodedImageFormat.Png, 100))
+				{
+					data.SaveTo(stream);
+				}
+				stream.Flush();
+				var buffer = stream.ToArray();
+
+				return buffer;
+			}
+			catch { }
+#endif
+
+			return null;
+
+		}
+
 		public byte[] GetVirtualMachineThumbnailImage(string vmId, ThumbnailSize size)
 		{
+
 			int width = 80;
 			int height = 60;
 
@@ -414,88 +550,25 @@ namespace SolidCP.Providers.Virtualization
 				height = 240;
 			}
 
-			/* System.Drawing version
-			
-			// create new bitmap
-			Bitmap bmp = new Bitmap(width, height);
+			byte[] buffer = null;
 
-			Graphics g = Graphics.FromImage(bmp);
-
-			var vm = GetVirtualMachineInternal(vmId, false);
-			if (vm.State == VirtualMachineState.Running)
+			try
 			{
-				SolidBrush brush = new SolidBrush(Color.Black);
-				g.FillRectangle(brush, 0, 0, width, height);
-				RectangleF rectf = new RectangleF(0, (height / 3), width, (height / 2));
-
-				// Set format of string.
-				StringFormat drawFormat = new StringFormat();
-				drawFormat.Alignment = StringAlignment.Center;
-
-				g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-				g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-				g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-
-				// Draw string to screen.
-				g.DrawString(THUMB_PRINT_TEXT, new Font("Verdana", 10), Brushes.WhiteSmoke, rectf, drawFormat);
+				buffer = GetVirtualMachineThumbnailImageGDIPlus(vmId, width, height);
 			}
-			else
+			catch { // catch errors when GDI+ is not available
+			}
+
+			try
 			{
-				SolidBrush brush = new SolidBrush(Color.LightGray);
-				g.FillRectangle(brush, 0, 0, width, height);
+				if (buffer == null) buffer = GetVirtualMachineThumbnailImageSkia(vmId, width, height);
+			}
+			catch { // catch dll load errors when Skia is not correctly installed
 			}
 
-			MemoryStream stream = new MemoryStream();
-			bmp.Save(stream, ImageFormat.Png);
+			if (buffer != null) return buffer;
 
-			stream.Flush();
-			byte[] buffer = stream.ToArray();
-
-			bmp.Dispose();
-			stream.Dispose();
-			*/
-
-			// SkiaSharp version
-			SKImageInfo info = new SKImageInfo(width, height);
-			SKSurface surface = SKSurface.Create(info);
-
-			SKCanvas canvas = surface.Canvas;
-
-			var vm = GetVirtualMachineInternal(vmId, false);
-			if (vm.State == VirtualMachineState.Running)
-			{
-				canvas.Clear(SKColors.Black);
-
-				SKPaint paint = new SKPaint()
-				{
-					Color = SKColors.WhiteSmoke,
-					TextSize = width/10,
-					IsAntialias = true,
-					Typeface = SKTypeface.FromFamilyName("Verdana"),
-					TextAlign = SKTextAlign.Center,
-					IsStroke = false
-				};
-
-				// Draw string to canvas
-				canvas.DrawText(THUMB_PRINT_TEXT, width/2, height*(2/3), paint);
-			}
-			else
-			{
-				canvas.Clear(SKColors.LightGray);
-			}
-
-			MemoryStream stream = new MemoryStream();
-
-			using (var image = surface.Snapshot())
-			using (var data = image.Encode(SKEncodedImageFormat.Png, 100)) {
-				data.SaveTo(stream);
-			}
-
-			byte[] buffer = stream.ToArray();
-
-			stream.Dispose();
-
-			return buffer;
+			throw new NotImplementedException();
 		}
 
 
@@ -615,7 +688,7 @@ namespace SolidCP.Providers.Virtualization
 		{
 			HostedSolutionLog.LogStart("ChangeVirtualMachineState");
 			JobResult jobResult = ProxmoxJobHelper.CreateResult(ConcreteJobState.Running, ReturnCode.JobStarted);
-			RestSharp.RestResponse<Proxmox.Upid> resultclient = null;
+			RestResponse<Proxmox.Upid> resultclient = null;
 
 			try
 			{
@@ -780,30 +853,31 @@ namespace SolidCP.Providers.Virtualization
 				var vm = GetVirtualMachine(vmId);
 				ApiClientSetup();
 				var RestResponse = client.ListSnapshots(vmId);
-				JsonElement jsonResponse = JsonDocument.Parse(RestResponse.Content).RootElement;
-				JsonElement jsonResponsearray = jsonResponse.GetProperty("data");
+				//JsonObject jsonResponse = (JsonObject)SimpleJson.DeserializeObject(RestResponse.Content);
+				//JsonArray jsonResponsearray = (JsonArray)SimpleJson.DeserializeObject(jsonResponse["data"].ToString());
+				JToken jsonResponse = JToken.Parse(RestResponse.Content);
+				JArray jsonResponsearray = (JArray)jsonResponse["data"];
 
-				foreach (JsonElement snapshot in jsonResponsearray.EnumerateArray())
+				foreach (JObject snapshot in jsonResponsearray)
 				{
 					try
 					{
 						var proxmoxsnapshot = new VirtualMachineSnapshot
 						{
-							Id = snapshot.GetProperty("name").GetString(),
+							Id = snapshot["name"].ToString(),
 							Name = null,
 							VMName = vm.Name,
 							ParentId = null,
 							Created = DateTime.Now
 						};
 
-						JsonElement parentProperty, descriptionProperty, snaptimeProperty;
-						if (snapshot.TryGetProperty("parent", out parentProperty))
-							proxmoxsnapshot.ParentId = parentProperty.GetString();
-						if (snapshot.TryGetProperty("description", out descriptionProperty))
-							proxmoxsnapshot.Name = descriptionProperty.GetString();
+						if (snapshot.ContainsKey("parent"))
+							proxmoxsnapshot.ParentId = snapshot["parent"].ToString();
+						if (snapshot.ContainsKey("description"))
+							proxmoxsnapshot.Name = snapshot["description"].ToString();
 
-						if (snapshot.TryGetProperty("snaptime", out snaptimeProperty))
-							proxmoxsnapshot.Created = ConvertFromUnixTimestamp(snaptimeProperty.GetString());
+						if (snapshot.ContainsKey("snaptime"))
+							proxmoxsnapshot.Created = ConvertFromUnixTimestamp(snapshot["snaptime"].ToString());
 
 						if (proxmoxsnapshot.Id.Equals("current"))
 						{
@@ -962,8 +1036,8 @@ namespace SolidCP.Providers.Virtualization
 			{
 				ApiClientSetup();
 				var deleteresult = client.DeleteSnapshot(vmId, snapshotId);
-				JsonElement jsonResponse = JsonDocument.Parse(deleteresult.Content).RootElement;
-				String jobid = jsonResponse.GetProperty("data").GetString();
+				JToken jsonResponse = JToken.Parse(deleteresult.Content);
+				String jobid = jsonResponse["data"].ToString();
 
 				if (deleteresult.StatusCode.Equals(HttpStatusCode.OK))
 				{
@@ -1013,22 +1087,22 @@ namespace SolidCP.Providers.Virtualization
 			{
 				ApiClientSetup();
 				var RestResponse = client.ListISOs(vmId, ProxmoxIsosonStorage);
-				JsonElement jsonResponse = JsonDocument.Parse(RestResponse.Content).RootElement;
-				JsonElement jsonResponsearray = jsonResponse.GetProperty("data");
-		
-				foreach (JsonElement dvd in jsonResponsearray.EnumerateArray())
+				JToken jsonResponse = JToken.Parse(RestResponse.Content);
+				JArray jsonResponsearray = (JArray)jsonResponse["data"];
+
+				foreach (JObject dvd in jsonResponsearray)
 				{
 					try
 					{
-						if (dvd.GetProperty("content").GetString() == "iso" && dvd.GetProperty("format").GetString() == "iso")
+						if (dvd["content"].ToString() == "iso" && dvd["format"].ToString() == "iso")
 						{
 							LibraryItem item = new LibraryItem();
-							item.Path = dvd.GetProperty("volid").GetString();
-							string isoname = item.Path.Split('/')[1];
+							item.Path = dvd["volid"].ToString();
+							string isoname = dvd["volid"].ToString().Split('/')[1];
 							if (isoname == "")
-								isoname = item.Path.Split('/')[0];
+								isoname = dvd["volid"].ToString().Split('/')[0];
 							item.Name = isoname.Replace(".iso", "");
-							item.DiskSize = Convert.ToInt32(dvd.GetProperty("size").GetString());
+							item.DiskSize = Convert.ToInt32(dvd["size"].ToString());
 							imagelist.Add(item);
 						}
 
@@ -1765,16 +1839,18 @@ namespace SolidCP.Providers.Virtualization
 
 				ApiClientSetup();
 				var RestResponse = client.ClusterResources();
-				JsonElement jsonResponse = JsonDocument.Parse(RestResponse.Content).RootElement;
-				JsonElement jsonResponsearray = jsonResponse.GetProperty("data");
+				//JsonObject jsonResponse = (JsonObject)SimpleJson.DeserializeObject(RestResponse.Content);
+				//JsonArray jsonResponsearray = (JsonArray)SimpleJson.DeserializeObject(jsonResponse["data"].ToString());
+				JToken jsonResponse = JToken.Parse(RestResponse.Content);
+				JArray jsonResponsearray = (JArray)jsonResponse["data"];
 
-				foreach (JsonElement resources in jsonResponsearray.EnumerateArray())
+				foreach (JObject resources in jsonResponsearray)
 				{
 					try
 					{
-						if (resources.GetProperty("type").GetString().Equals("node"))
+						if (resources["type"].ToString().Equals("node"))
 						{
-							nodemaxcpu = Convert.ToInt32(resources.GetProperty("maxcpu").GetString());
+							nodemaxcpu = Convert.ToInt32(resources["maxcpu"].ToString());
 							if (nodemaxcpu > cores)
 								cores = nodemaxcpu;
 						}
@@ -2254,7 +2330,7 @@ namespace SolidCP.Providers.Virtualization
 
 			user = new User { Username = ProxmoxClusterAdminUser, Password = ProxmoxClusterAdminPass, Realm = clusterrealm };
 			//HostedSolutionLog.DebugInfo("ApiClientSetup: user: {0}", user);
-			server = new ProxmoxServer { Ip = ProxmoxClusterServerHost, Port = ProxmoxClusterServerPort };
+			server = new ProxmoxServer { Ip = string.IsNullOrEmpty(ProxmoxClusterServerHost) ? "127.0.0.1" : ProxmoxClusterServerHost, Port = ProxmoxClusterServerPort, ValidateCertificate = ValidateServerCertificate };
 			//HostedSolutionLog.DebugInfo("ApiClientSetup: server: {0}", server);
 
 			//client = new ApiClient(server, ProxmoxClusterNode);

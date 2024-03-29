@@ -149,7 +149,10 @@ namespace SolidCP.EnterpriseServer
 
 		public static void DecryptServerUrl(ServerInfo server)
 		{
-			server.ServerUrl = CryptoUtils.DecryptServerUrl(server.ServerUrl);
+			if (server != null)
+			{
+				server.ServerUrl = CryptoUtils.DecryptServerUrl(server.ServerUrl);
+			}
 		}
 
 		public static void EncryptServerUrl(ServerInfo server)

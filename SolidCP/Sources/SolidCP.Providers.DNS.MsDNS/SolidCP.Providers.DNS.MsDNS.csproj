@@ -16,7 +16,7 @@
 		<WarningsAsErrors>618</WarningsAsErrors>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-		<DebugType>none</DebugType>
+		<DebugType>portable</DebugType>
 	</PropertyGroup>
 	<ItemGroup>
 		<Reference Include="System.Management" />

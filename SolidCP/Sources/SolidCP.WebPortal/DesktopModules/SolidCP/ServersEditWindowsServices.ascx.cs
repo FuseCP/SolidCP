@@ -32,8 +32,10 @@
 
 using System;
 using System.Data;
+using System.Linq;
 using System.Configuration;
 using System.Collections;
+using System.Collections.Generic;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
@@ -45,73 +47,85 @@ using SolidCP.Providers.OS;
 
 namespace SolidCP.Portal
 {
-    public partial class ServersEditWindowsServices : SolidCPModuleBase
-    {
-        protected void Page_Load(object sender, EventArgs e)
-        {
-            BindServices();
-        }
+	public partial class ServersEditWindowsServices : SolidCPModuleBase
+	{
+		protected void Page_Load(object sender, EventArgs e)
+		{
+			BindServices();
+		}
 
-        private void BindServices()
-        {
-            try
-            {
-                gvServices.DataSource = ES.Services.Servers.GetOSServices(PanelRequest.ServerId);
-                gvServices.DataBind();
-            }
-            catch (Exception ex)
-            {
-                ShowErrorMessage("SERVER_GET_WIN_SERVICES", ex);
-                return;
-            }
-        }
+		public string WithMaxLength(string str, int len)
+		{
+			if (str.Length <= len) return str;
 
-        protected void gvServices_RowCommand(object sender, GridViewCommandEventArgs e)
-        {
-            OSServiceStatus status = (OSServiceStatus)Enum.Parse(typeof(OSServiceStatus), e.CommandName, true);
-            string id = (string)e.CommandArgument;
+			return str.Substring(0, len);
+		}
+		private void BindServices()
+		{
+			try
+			{
+				var services = ES.Services.Servers.GetOSServices(PanelRequest.ServerId)
+					.Select(srvc =>
+					{
+						srvc.Name = WithMaxLength(srvc.Name ?? "", 80);
+						return srvc;
+					});
+				gvServices.DataSource = services;
+				gvServices.DataBind();
+			}
+			catch (Exception ex)
+			{
+				ShowErrorMessage("SERVER_GET_WIN_SERVICES", ex);
+				return;
+			}
+		}
 
-            try
-            {
-                int result = ES.Services.Servers.ChangeOSServiceStatus(PanelRequest.ServerId, id, status);
-                if (result < 0)
-                {
-                    ShowResultMessage(result);
-                    return;
-                }
+		protected void gvServices_RowCommand(object sender, GridViewCommandEventArgs e)
+		{
+			OSServiceStatus status = (OSServiceStatus)Enum.Parse(typeof(OSServiceStatus), e.CommandName, true);
+			string id = (string)e.CommandArgument;
 
-                // rebind
-                BindServices();
-            }
-            catch (Exception ex)
-            {
-                ShowErrorMessage("SERVER_CHANGE_WIN_SERVICE_STATE", ex);
-                return;
-            }
-        }
+			try
+			{
+				int result = ES.Services.Servers.ChangeOSServiceStatus(PanelRequest.ServerId, id, status);
+				if (result < 0)
+				{
+					ShowResultMessage(result);
+					return;
+				}
 
-        protected void gvServices_RowDataBound(object sender, GridViewRowEventArgs e)
-        {
-            OSService serv = (OSService)e.Row.DataItem;
-            ImageButton cmdStart = (ImageButton)e.Row.FindControl("cmdStart");
-            ImageButton cmdPause = (ImageButton)e.Row.FindControl("cmdPause");
-            ImageButton cmdContinue = (ImageButton)e.Row.FindControl("cmdContinue");
-            ImageButton cmdStop = (ImageButton)e.Row.FindControl("cmdStop");
+				// rebind
+				BindServices();
+			}
+			catch (Exception ex)
+			{
+				ShowErrorMessage("SERVER_CHANGE_WIN_SERVICE_STATE", ex);
+				return;
+			}
+		}
 
-            if (cmdStart == null)
-                return;
+		protected void gvServices_RowDataBound(object sender, GridViewRowEventArgs e)
+		{
+			OSService serv = (OSService)e.Row.DataItem;
+			ImageButton cmdStart = (ImageButton)e.Row.FindControl("cmdStart");
+			ImageButton cmdPause = (ImageButton)e.Row.FindControl("cmdPause");
+			ImageButton cmdContinue = (ImageButton)e.Row.FindControl("cmdContinue");
+			ImageButton cmdStop = (ImageButton)e.Row.FindControl("cmdStop");
 
-            cmdStart.Visible = (serv.Status == OSServiceStatus.Stopped);
-            cmdPause.Visible = (serv.Status == OSServiceStatus.Running && serv.CanPauseAndContinue);
-            cmdContinue.Visible = (serv.Status == OSServiceStatus.Paused && serv.CanPauseAndContinue);
-            cmdStop.Visible = (serv.Status == OSServiceStatus.Running
-                || serv.Status == OSServiceStatus.Paused
-                && serv.CanStop);
-        }
+			if (cmdStart == null)
+				return;
 
-        protected void btnCancel_Click(object sender, EventArgs e)
-        {
-            Response.Redirect(EditUrl("ServerID", PanelRequest.ServerId.ToString(), "edit_server"));
-        }
-    }
+			cmdStart.Visible = (serv.Status == OSServiceStatus.Stopped);
+			cmdPause.Visible = (serv.Status == OSServiceStatus.Running && serv.CanPauseAndContinue);
+			cmdContinue.Visible = (serv.Status == OSServiceStatus.Paused && serv.CanPauseAndContinue);
+			cmdStop.Visible = (serv.Status == OSServiceStatus.Running
+				 || serv.Status == OSServiceStatus.Paused
+				 && serv.CanStop);
+		}
+
+		protected void btnCancel_Click(object sender, EventArgs e)
+		{
+			Response.Redirect(EditUrl("ServerID", PanelRequest.ServerId.ToString(), "edit_server"));
+		}
+	}
 }
