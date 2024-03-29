@@ -485,10 +485,10 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToBoolean(prmResult.Value);
 		}
 
-		public static IDataReader GetUserPackagesServersUrl(int userId)
+		public static IDataReader GetUserPackagesServerUrl(int userId)
 		{
 			return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetUserPackagesServersUrl",
+				 ObjectQualifier + "GetUserPackagesServerUrl",
 				 new SqlParameter("@UserId", userId));
 		}
 

@@ -150,7 +150,7 @@ namespace SolidCP.EnterpriseServer
 				// init users SSH tunnel server connections
 				ThreadPool.QueueUserWorkItem(arg =>
 				{
-					var servers = GetUserPackagesServersUrls(user.UserId)
+					var servers = GetUserPackagesServerUrls(user.UserId)
 						.Where(url => url.StartsWith("ssh://"));
 					Web.Clients.ClientBase.StartAllSshTunnels(servers);
 				});
@@ -974,10 +974,10 @@ namespace SolidCP.EnterpriseServer
 			public string ServerUrl { get; set; }
 		}
 
-		public static IEnumerable<string> GetUserPackagesServersUrls(int userId)
+		public static IEnumerable<string> GetUserPackagesServerUrls(int userId)
 		{
 			var urlbags = new List<ServerUrlBag>();
-			ObjectUtils.FillCollectionFromDataReader<ServerUrlBag>(urlbags, DataProvider.GetUserPackagesServersUrl(userId));
+			ObjectUtils.FillCollectionFromDataReader<ServerUrlBag>(urlbags, DataProvider.GetUserPackagesServerUrl(userId));
 			return urlbags
 				.Select(bag => CryptoUtils.DecryptServerUrl(bag.ServerUrl));
 		}
