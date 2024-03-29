@@ -60,7 +60,7 @@ namespace SolidCP.Providers.OS
     public class Windows2022 : Windows2003
     {
         #region Properties
-        internal string PrimaryDomainController
+        protected string PrimaryDomainController
         {
             get { return ProviderSettings["PrimaryDomainController"]; }
         }

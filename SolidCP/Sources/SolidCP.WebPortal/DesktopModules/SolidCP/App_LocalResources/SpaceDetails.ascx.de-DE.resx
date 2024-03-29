@@ -153,4 +153,13 @@
   <data name="cmdSuspend.AlternateText" xml:space="preserve">
     <value>Sperren</value>
   </data>
+  <data name="cmdActive.ToolTip" xml:space="preserve">
+    <value>Aktivieren</value>
+  </data>
+  <data name="cmdCancel.ToolTip" xml:space="preserve">
+    <value>Kündigen</value>
+  </data>
+  <data name="cmdSuspend.ToolTip" xml:space="preserve">
+    <value>Sperren</value>
+  </data>
 </root>
