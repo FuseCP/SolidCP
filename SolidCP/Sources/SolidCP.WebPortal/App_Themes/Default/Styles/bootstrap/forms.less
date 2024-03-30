@@ -112,7 +112,7 @@ output {
 // input[type="color"]
 
 .form-control {
-  display: block;
+  /* display: block; */
   width: 100%;
   height: @input-height-base; // Make inputs at least the height of their button counterpart (base line-height + padding + border)
   padding: @padding-base-vertical @padding-base-horizontal;
@@ -212,6 +212,8 @@ input[type="search"] {
 
 .form-group {
   margin-bottom: @form-group-margin-bottom;
+  box-sizing: content-box;
+  -webkit-box-sizing: content-box;
 }
 
 

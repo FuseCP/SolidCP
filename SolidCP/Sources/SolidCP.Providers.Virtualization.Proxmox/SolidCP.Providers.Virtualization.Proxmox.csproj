@@ -43,7 +43,7 @@
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="RestSharp" Version="110.2.0" GeneratePathProperty="true" />
-		<PackageReference Include="SSH.NET" Version="2024.0.0" />
+		<PackageReference Include="SSH.NET" Version="2024.0.0" GeneratePathProperty="true" />
 		<PackageReference Include="System.Buffers" Version="4.5.1" />
 		<PackageReference Include="System.Memory" Version="4.5.5" />
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
@@ -78,6 +78,7 @@
 		<ItemGroup>
 			<CopyToOutputFiles Include="$(PkgSkiaSharp)\lib\netstandard2.0\SkiaSharp.*" />
 			<CopyToOutputFiles Include="$(PkgRestSharp)\lib\netstandard2.0\RestSharp.*" />
+			<CopyToOutputFiles Include="$(PkgSSH_NET)\lib\netstandard2.0\Renci.SshNet.*" />
 		</ItemGroup>
 		
 		<Copy SourceFiles="@(CopyToOutputFiles)" DestinationFolder="$(OutputPath)" />

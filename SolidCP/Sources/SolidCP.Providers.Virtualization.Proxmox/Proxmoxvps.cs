@@ -234,7 +234,7 @@ namespace SolidCP.Providers.Virtualization
 		#region Fields
 		// proxmox
 		private const string THUMB_PRINT_TEXT = "PROXMOX VPS";
-		private const string SNAPSHOT_DESCR = "WebsitePanel Snapshot";
+		private const string SNAPSHOT_DESCR = "SolidCP Snapshot";
 		private const string PROXMOX_REALM = "pam";
 		private ApiClient client;
 		private RestResponse response;
@@ -572,7 +572,7 @@ namespace SolidCP.Providers.Virtualization
 		}
 
 
-		public VirtualMachine CreateVirtualMachine(VirtualMachine vm)
+		public virtual VirtualMachine CreateVirtualMachine(VirtualMachine vm)
 		{
 			string sshcmd = String.Format("{0} {1} {2}", DeploySSHScriptSettings, DeploySSHScriptParamsSettings, vm.OperatingSystemTemplateDeployParams);
 

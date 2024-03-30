@@ -732,6 +732,10 @@
     <Content Include="App_Themes\Default\Styles\Menus.less" />
     <Content Include="App_Themes\Default\Styles\defaultVariables.less" />
     <Content Include="Handlers\AsyncLoadHandler.ashx" />
+    <None Include="compilerconfig.json" />
+    <None Include="compilerconfig.json.defaults">
+      <DependentUpon>compilerconfig.json</DependentUpon>
+    </None>
     <None Include="Properties\PublishProfiles\Default Settings.pubxml" />
   </ItemGroup>
   <ItemGroup>

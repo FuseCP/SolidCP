@@ -1,0 +1,14 @@
+﻿[
+  {
+    "outputFile": "App_Themes/Default/Styles/bootstrap/forms.css",
+    "inputFile": "App_Themes/Default/Styles/bootstrap/forms.less"
+  },
+  {
+    "outputFile": "App_Themes/Default/Styles/defaultTheme.css",
+    "inputFile": "App_Themes/Default/Styles/defaultTheme.less"
+  },
+  {
+    "outputFile": "App_Themes/Default/Styles/defaultVariables.css",
+    "inputFile": "App_Themes/Default/Styles/defaultVariables.less"
+  }
+]
