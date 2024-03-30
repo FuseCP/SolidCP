@@ -81,7 +81,7 @@ namespace SolidCP.Providers.Virtualization
                 Add(powerShell, vm.Name, vm.ExternalSwitchId, vm.ExternalNicMacAddress, Constants.EXTERNAL_NETWORK_ADAPTER_NAME, vm.LegacyNetworkAdapter);
                 try
                 {
-                    SetVLAN(powerShell, vm.Name, Constants.EXTERNAL_NETWORK_ADAPTER_NAME, vm.defaultaccessvlan);
+                    SetVLAN(powerShell, vm.Name, Constants.EXTERNAL_NETWORK_ADAPTER_NAME, vm.DefaultAccessVlan);
                 }
                 catch (Exception ex)
                 {

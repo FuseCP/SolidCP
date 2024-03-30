@@ -24,7 +24,7 @@ namespace SolidCP.Providers.Virtualization
 			sshcmd = sshcmd.Replace("[OSTEMPLATENAME]", vm.OperatingSystemTemplate);
 			sshcmd = sshcmd.Replace("[OSTEMPLATEFILE]", vm.OperatingSystemTemplatePath);
 			sshcmd = sshcmd.Replace("[ADMINPASS]", vm.AdministratorPassword);
-			sshcmd = sshcmd.Replace("[VLAN]", vm.defaultaccessvlan.ToString());
+			sshcmd = sshcmd.Replace("[VLAN]", vm.DefaultAccessVlan.ToString());
 			sshcmd = sshcmd.Replace("[MAC]", vm.ExternalNicMacAddress);
 			if (vm.ExternalNetworkEnabled)
 			{
@@ -33,15 +33,23 @@ namespace SolidCP.Providers.Virtualization
 				sshcmd = sshcmd.Replace("[GATEWAY]", vm.PrimaryIP.DefaultGateway);
 			}
 
+			string error = "Error creating wirtual machine.";
 			try
 			{
 				var output = Shell.Default.Exec(sshcmd).Output().Result;
+				error = $"Error creating wirtual machine. VM deploy script output:\n{output}";
 
 				// Get created machine Id
 				vm.Name = vm.Name.Split('.')[0];
 				var createdMachine = GetVirtualMachines().FirstOrDefault(m => m.Name == vm.Name);
 				if (createdMachine == null)
-					throw new Exception("Can't find created machine");
+				{
+					error = $"Can't find created machine. VM deploy script output:\n{output}";
+					var ex = new Exception(error);
+
+					HostedSolutionLog.LogError(error, ex);
+					throw ex;
+				}
 				vm.VirtualMachineId = createdMachine.VirtualMachineId;
 
 				// Update common settings
@@ -49,7 +57,7 @@ namespace SolidCP.Providers.Virtualization
 			}
 			catch (Exception ex)
 			{
-				HostedSolutionLog.LogError("CreateVirtualMachine", ex);
+				HostedSolutionLog.LogError(error, ex);
 				throw;
 			}
 

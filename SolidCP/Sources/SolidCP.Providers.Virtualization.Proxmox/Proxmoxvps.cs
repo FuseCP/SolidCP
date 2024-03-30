@@ -583,7 +583,7 @@ namespace SolidCP.Providers.Virtualization
 			sshcmd = sshcmd.Replace("[OSTEMPLATENAME]", vm.OperatingSystemTemplate);
 			sshcmd = sshcmd.Replace("[OSTEMPLATEFILE]", vm.OperatingSystemTemplatePath);
 			sshcmd = sshcmd.Replace("[ADMINPASS]", vm.AdministratorPassword);
-			sshcmd = sshcmd.Replace("[VLAN]", vm.defaultaccessvlan.ToString());
+			sshcmd = sshcmd.Replace("[VLAN]", vm.DefaultAccessVlan.ToString());
 			sshcmd = sshcmd.Replace("[MAC]", vm.ExternalNicMacAddress);
 			if (vm.ExternalNetworkEnabled)
 			{
@@ -613,7 +613,7 @@ namespace SolidCP.Providers.Virtualization
 				);
 			}
 
-
+			string error = "Error creating wirtual machine.";
 			try
 			{
 				SshClient ssh = new SshClient(Conninfo);
@@ -623,11 +623,12 @@ namespace SolidCP.Providers.Virtualization
 				}
 				catch (Exception ex)
 				{
-					HostedSolutionLog.LogError("CreateVirtualMachine SSH Connection Error", ex);
+					HostedSolutionLog.LogError("Error creating virtual machine SSH connection error", ex);
 					throw;
 				}
 				SshCommand term = ssh.RunCommand(sshcmd);
 				string output = term.Result;
+				error = $"Error creating wirtual machine. VM deploy script output:\n{output}";
 				ssh.Disconnect();
 				ssh.Dispose();
 
@@ -636,7 +637,13 @@ namespace SolidCP.Providers.Virtualization
 				vm.Name = vm.Name.Split('.')[0];
 				var createdMachine = GetVirtualMachines().FirstOrDefault(m => m.Name == vm.Name);
 				if (createdMachine == null)
-					throw new Exception("Can't find created machine");
+				{
+					error = $"Can't find created machine. VM deploy script output:\n{output}";
+					var ex = new Exception(error);
+
+					HostedSolutionLog.LogError(error, ex);
+					throw ex;
+				}
 				vm.VirtualMachineId = createdMachine.VirtualMachineId;
 
 				// Update common settings
@@ -644,7 +651,7 @@ namespace SolidCP.Providers.Virtualization
 			}
 			catch (Exception ex)
 			{
-				HostedSolutionLog.LogError("CreateVirtualMachine", ex);
+				HostedSolutionLog.LogError(error, ex);
 				throw;
 			}
 
@@ -669,10 +676,9 @@ namespace SolidCP.Providers.Virtualization
 				ApiClientSetup();
 				var vmconfig = client.VMConfig(vm.VirtualMachineId);
 				if (vm.HddSize[0] != realVm.HddSize[0])
-					client.ResizeDisk(vm.VirtualMachineId, vmconfig.Data.bootdisk, String.Format("{0}G", vm.HddSize[0]));
+					client.ResizeDisk(vm.VirtualMachineId, vmconfig.Data.bootdisk, $"{vm.HddSize[0]}G");
 				client.UpdateConfig(vm.VirtualMachineId, configuration);
 				ProxmoxDvdDriveHelper.Update(client, realVm, vm.DvdDriveInstalled);
-
 			}
 			catch (Exception ex)
 			{
@@ -823,7 +829,6 @@ namespace SolidCP.Providers.Virtualization
 
 		public String GetVirtualMachineVNC(string vmId)
 		{
-
 
 			string result = null;
 			return result;

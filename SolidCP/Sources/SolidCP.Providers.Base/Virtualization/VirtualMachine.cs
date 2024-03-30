@@ -165,7 +165,7 @@ namespace SolidCP.Providers.Virtualization
         [Persistent]
         public string ParentSnapshotId { get; set; }
         [Persistent]
-        public int defaultaccessvlan { get; set; }//external network vlan
+        public int DefaultAccessVlan { get; set; }//external network vlan
         public VirtualMachineIPAddress PrimaryIP { get; set; }
         public bool NeedReboot { get; set; } //give access to force reboot a server.
         [Persistent]
