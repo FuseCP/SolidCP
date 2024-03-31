@@ -19,7 +19,7 @@ cd ./WSL2-Linux-Kernel
 
 #add properties to avoid using make menuconfig command (CONFIG_VHOST_NET and CONFIG_VHOST are already in the file)
 echo "Enable kvm, as described here https://wiki.gentoo.org/wiki/QEMU#Kernel"
-xdg-open https://wiki.gentoo.org/wiki/QEMU#Kernel
+xdg-open https://wiki.gentoo.org/wiki/QEMU#Kernel &
 echo "Save your edited configuration in the Microsoft folder when running make menuconfig"
 echo "Press any key to continue..."
 read -s -n 1
