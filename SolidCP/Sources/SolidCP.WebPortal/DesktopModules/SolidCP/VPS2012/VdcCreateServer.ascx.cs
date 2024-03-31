@@ -584,7 +584,7 @@ namespace SolidCP.Portal.VPS2012
 
 
                 // set default selected vlan
-                if (!String.IsNullOrEmpty(listVlanLists.SelectedValue)) virtualMachine.defaultaccessvlan = Convert.ToInt32(listVlanLists.SelectedValue);//external network vlan
+                if (!String.IsNullOrEmpty(listVlanLists.SelectedValue)) virtualMachine.DefaultAccessVlan = Convert.ToInt32(listVlanLists.SelectedValue);//external network vlan
 
                 // set private network vlan
                 if (listPrivateNetworkVLAN.Items.Count > 0)

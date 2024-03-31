@@ -275,8 +275,8 @@
 					</td>
 					<td>
 						<asp:TextBox CssClass="form-control" runat="server" ID="txtTemplateFileName" Text='<%# Eval("Path") %>'></asp:TextBox>
-						<asp:RequiredFieldValidator ID="TemplateFileNameValidator" runat="server" ControlToValidate="txtTemplateFileName"
-							Text="*" meta:resourcekey="TemplateFileNameValidator" Display="Dynamic" SetFocusOnError="true" />
+						<%--<asp:RequiredFieldValidator ID="TemplateFileNameValidator" runat="server" ControlToValidate="txtTemplateFileName"
+							Text="*" meta:resourcekey="TemplateFileNameValidator" Display="Dynamic" SetFocusOnError="true" />--%>
 					</td>
 				</tr>
 				<tr>

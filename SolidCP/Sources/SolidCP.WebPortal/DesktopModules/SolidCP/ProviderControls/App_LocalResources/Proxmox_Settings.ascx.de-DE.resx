@@ -468,7 +468,7 @@ Folgende Variablen können in dem Muster verwendet werden:&lt;br/&gt;
     <value>Kann IP Adresse ändern</value>
   </data>
   <data name="chkLegacyNetworkAdapter.Text" xml:space="preserve">
-    <value>Benutze Legacy Adapter</value>
+    <value>Benutze legacy Netzwerk Adapter</value>
   </data>
   <data name="DvdDescriptionValidator.ErrorMessage" xml:space="preserve">
     <value>Geben Sie eine DVD Beschreibung ein</value>

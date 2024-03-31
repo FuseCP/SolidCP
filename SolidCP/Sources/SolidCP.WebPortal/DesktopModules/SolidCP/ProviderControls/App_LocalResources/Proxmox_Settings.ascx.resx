@@ -468,7 +468,7 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <value>Can set Ip addresses</value>
   </data>
   <data name="chkLegacyNetworkAdapter.Text" xml:space="preserve">
-    <value>Use legacy adapter</value>
+    <value>Use legacy network adapter</value>
   </data>
   <data name="DvdDescriptionValidator.ErrorMessage" xml:space="preserve">
     <value>Enter DVD description</value>
