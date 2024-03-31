@@ -14633,9 +14633,20 @@ UPDATE [dbo].[Providers] SET [EditorControl] = N'Proxmox', [GroupID] = 167 WHERE
 END
 GO
 
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderName] = 'Proxmox (localhost)')
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderName] = 'Proxmox (remote)')
 BEGIN
-INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (371, 167, N'Proxmox (local)', N'Proxmox Virtualization (local)', N'SolidCP.Providers.Virtualization.ProxmoxvpsLocal, SolidCP.Providers.Virtualization.Proxmoxvps', N'Proxmox', 0)
+
+	IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderName] = 'Proxmox (local)')
+	BEGIN
+	UPDATE [dbo].[Providers] SET [ProviderName] = 'Proxmox (remote)', [DisplayName] = 'Proxmox Virtualization (remote)' WHERE [ProviderName] = 'Proxmox'
+	INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (371, 167, N'Proxmox', N'Proxmox Virtualization', N'SolidCP.Providers.Virtualization.ProxmoxvpsLocal, SolidCP.Providers.Virtualization.Proxmoxvps', N'Proxmox', 0)
+	END
+	ELSE
+	BEGIN
+	UPDATE [dbo].[Providers] SET [ProviderName] = 'Proxmox (remote)', [DisplayName] = 'Proxmox Virtualization (remote)' WHERE [ProviderName] = 'Proxmox'
+	UPDATE [dbo].[Providers] SET [ProviderName] = 'Proxmox', [DisplayName] = 'Proxmox Virtualization' WHERE [ProviderName] = 'Proxmox (local)'
+	END
+
 END
 
 IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetVirtualMachinesPagedProxmox')
