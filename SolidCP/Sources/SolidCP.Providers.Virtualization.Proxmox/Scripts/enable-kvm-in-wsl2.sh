@@ -1,6 +1,6 @@
 # If you have Proxmox installed inside WSL2, you can execute this script to enable KVM support in Proxmox
 
-#Fully based on https://boxofcables.dev/accelerated-kvm-guests-on-wsl-2/
+# Fully based on https://boxofcables.dev/accelerated-kvm-guests-on-wsl-2/
 
 if [ -z "$1" ]
   then
@@ -9,15 +9,15 @@ if [ -z "$1" ]
 fi
 WIN_USERNAME=$1
 
-#package updates and installations
+# package updates and installations
 sudo apt update && sudo apt -y install build-essential libncurses-dev bison flex libssl-dev libelf-dev cpu-checker qemu-kvm aria2 bc python3 pahole git
 
-#download WSL2 Kernel and backup config file
+# download WSL2 Kernel and backup config file
 cd ~
 git clone https://github.com/microsoft/WSL2-Linux-Kernel.git --depth=1 -b linux-msft-wsl-6.1.y
 cd ./WSL2-Linux-Kernel
 
-#add properties to avoid using make menuconfig command (CONFIG_VHOST_NET and CONFIG_VHOST are already in the file)
+# add properties to avoid using make menuconfig command (CONFIG_VHOST_NET and CONFIG_VHOST are already in the file)
 echo "Enable kvm, as described here https://wiki.gentoo.org/wiki/QEMU#Kernel"
 xdg-open https://wiki.gentoo.org/wiki/QEMU#Kernel &
 echo "Save your edited configuration in the Microsoft folder when running make menuconfig"
@@ -31,13 +31,13 @@ cd Microsoft
 cp "$(find . -maxdepth 1 -type f -exec ls -t {} + | head -1)" ../.config
 cd ..
 
-#build the kernel
+# build the kernel
 make -j8
 
-#install kernel modules
+# install kernel modules
 make modules_install
 
-#install the new wsl2 kernel
+# install the new wsl2 kernel
 cp arch/x86/boot/bzImage /mnt/c/Users/$WIN_USERNAME/bzImage
 echo -e "[wsl2]
 nestedVirtualization=true
@@ -45,7 +45,7 @@ kernel=C:\\Users\\$WIN_USERNAME\\bzImage" > /mnt/c/Users/$WIN_USERNAME/.wslconfi
 echo "Modified C:\\Users\\$WIN_USERNAME\\.wslconfig:"
 cat /mnt/c/Users/$WIN_USERNAME/.wslconfig
 
-#create kvm-nested.conf file and moves to /etc/modprobe.d/ folder
+# create kvm-nested.conf file and moves to /etc/modprobe.d/ folder
 echo 'options kvm-intel nested=1
 options kvm-intel enable_shadow_vmcs=1
 options kvm-intel enable_apicv=1
