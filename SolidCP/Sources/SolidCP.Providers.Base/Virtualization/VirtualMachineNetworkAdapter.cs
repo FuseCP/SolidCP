@@ -42,6 +42,6 @@ namespace SolidCP.Providers.Virtualization
         public string[] IPAddresses { get; set; }
         public string MacAddress { get; set; }
         public string SwitchName { get; set; }
-        public int vlan { get; set; }
+        public int VLAN { get; set; }
     }
 }

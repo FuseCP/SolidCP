@@ -44,14 +44,14 @@ namespace SolidCP.Providers.Virtualization
 
                     try
                     {
-                        adapter.vlan = resultvlan[i].GetInt("AccessVlanId");
+                        adapter.VLAN = resultvlan[i].GetInt("AccessVlanId");
                     }
                     catch
                     {
-                        adapter.vlan = defaultvlan;
+                        adapter.VLAN = defaultvlan;
                     }
-                    if (adapter.vlan == 0)
-                        adapter.vlan = defaultvlan;
+                    if (adapter.VLAN == 0)
+                        adapter.VLAN = defaultvlan;
                     //We can't do that things! https://docs.microsoft.com/en-us/powershell/module/hyper-v/remove-vmnetworkadapter
                     //adapter.Name = String.Format("{0} VLAN: {1}", psAdapter.GetString("Name"), adapter.vlan.ToString());
                     i++;

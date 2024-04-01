@@ -6,7 +6,8 @@ using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using System.Text;
-using System.Text.Json;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
 
 namespace SolidCP.Providers.Virtualization
@@ -20,16 +21,16 @@ namespace SolidCP.Providers.Virtualization
 			var result = client.VMConfig(vmId);
 
 			//vmconfig
-			JsonElement vmconfigjsonResponse = JsonDocument.Parse(result.Content).RootElement;
-			JsonElement vmconfigconfigvalue = vmconfigjsonResponse.GetProperty("data");
+			JToken vmconfigjsonResponse = JToken.Parse(result.Content);
+			JObject vmconfigconfigvalue = (JObject)vmconfigjsonResponse["data"];
 
 			if (result != null)
 			{
-				JsonElement ide2Property;
-				if (!vmconfigconfigvalue.TryGetProperty("ide2", out ide2Property) || ide2Property.GetString().Contains(",")) return info;
+				var ide2 = vmconfigconfigvalue["ide2"]?.Value<string>();
+				if (ide2 == null || ide2.Contains(",")) return info;
 				info = new DvdDriveInfo();
-				Array resultarr = ide2Property.GetString().Split(',');
-				foreach (String val in resultarr)
+				string[] resultarr = ide2.Split(',');
+				foreach (var val in resultarr)
 				{
 					if (val.Contains(":"))
 					{
@@ -45,7 +46,7 @@ namespace SolidCP.Providers.Virtualization
 		}
 
 
-		public static void Set(ApiClient client, string vmId, string path, int size)
+		public static void Set(ApiClient client, string vmId, string path, long size)
 		{
 			if (path == null)
 			{
@@ -56,7 +57,7 @@ namespace SolidCP.Providers.Virtualization
 			else
 			{
 				Proxmox.UpdateDVD configuration = new Proxmox.UpdateDVD { };
-				configuration.ide2 = String.Format("{0},media=cdrom,size={1}M", path, Convert.ToInt32(size / Constants.Size1M));
+				configuration.ide2 = $"{path},media=cdrom,size={size / Constants.Size1M}M";
 				client.UpdateDVD(vmId, configuration);
 			}
 		}

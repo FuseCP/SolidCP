@@ -2,8 +2,9 @@
 @using Microsoft.CodeAnalysis
 @using Microsoft.CodeAnalysis.CSharp
 @using Microsoft.CodeAnalysis.CSharp.Syntax
-@using System.Collections.Generic;
-@using System.Linq;
+@using System.Text.RegularExpressions
+@using System.Collections.Generic
+@using System.Linq
 
 @using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory
 
@@ -26,12 +27,19 @@ public class @(Class.Identifier): SolidCP.Web.Clients.ClientBase<I@(Class.Identi
 					.WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.AsyncKeyword)))
 					.WithParameterList(m.ParameterList),
 			IsVoid = (m.ReturnType is PredefinedTypeSyntax && ((PredefinedTypeSyntax)m.ReturnType).Keyword.IsKind(SyntaxKind.VoidKeyword)),
-			IsRefPar = (m.ParameterList.Parameters.Any(p => p.Modifiers.Any()))
-			}))
+			IsRefPar = (m.ParameterList.Parameters.Any(p => p.Modifiers.Any())),
+			HasSoapHeader = m.AttributeLists
+				.SelectMany(at => at.Attributes)
+				.Any(at => Regex.IsMatch(at.Name.ToString(), "(?:(?:SolidCP.)?Providers.)?SoapHeader(?:Attribute)?"))
+		}))
 	{
 		@method.Normal.NormalizeWhitespace()
 		<text>
 		{
+			@if (method.HasSoapHeader)
+			{
+				<text>base.CheckSoapHeader(nameof(@method.Method.Identifier));</text>
+			}
 			@(method.IsVoid ? "" : $"return ")base.Client.@(method.Method.Identifier)(
 		</text>
 
@@ -51,7 +59,11 @@ public class @(Class.Identifier): SolidCP.Web.Clients.ClientBase<I@(Class.Identi
 		{
 			@method.Async.NormalizeWhitespace()
 			<text>
+			{
+				@if (method.HasSoapHeader)
 				{
+					<text>base.CheckSoapHeader(nameof(@method.Method.Identifier));</text>
+				}
 				@(method.IsVoid ? "await " : $"return await ")base.Client.@(method.Method.Identifier)Async(
 			</text>
 

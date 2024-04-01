@@ -600,14 +600,13 @@ namespace SolidCP.Portal.ProviderControls
 
                 template.VhdBlockSizeBytes = GetBlockSizeBytes(item, "txtVhdBlockSizeBytes");
 
-                int diskSize = 0;
-                Int32.TryParse(GetTextBoxText(item, "txtDiskSize"), out diskSize);
+                long diskSize = 0;
+                Int64.TryParse(GetTextBoxText(item, "txtDiskSize"), out diskSize);
                 template.DiskSize = diskSize;
 
                 string timeZone = GetDropDownListSelectedValue(item, "ddlTemplateTimeZone");
                 template.TimeZoneId = string.IsNullOrEmpty(timeZone) ? GetTextBoxText(item, "txtManualTempplateTimeZone") : timeZone;
                 template.CDKey = GetTextBoxText(item, "txtTemplateCDKey");
-
 
                 result.Add(template);
             }

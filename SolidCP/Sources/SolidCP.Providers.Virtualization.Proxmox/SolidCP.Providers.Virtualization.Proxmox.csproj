@@ -32,13 +32,25 @@
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.7" GeneratePathProperty="true" />
 		<PackageReference Include="SkiaSharp.NativeAssets.macOS" Version="2.88.7" GeneratePathProperty="true" />
 		<PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="2.88.7" GeneratePathProperty="true" />
+		<!--<PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="2.88.7" GenerateProperty="true" />-->
 	</ItemGroup>
+
+	<!--<Import Project="$(PkgSkiaSharp_NativeAssets_Linux_NoDependencies)\build\net462\SkiaSharp.NativeAssets.Linux.NoDependencies.targets" Condition=" '$(UseSkia)' == 'true' " />-->
+	<Import Project="$(PkgSkiaSharp_NativeAssets_Linux)\build\net462\SkiaSharp.NativeAssets.Linux.targets" Condition=" '$(UseSkia)' == 'true' " />
+	<Import Project="$(PkgSkiaSharp_NativeAssets_macOS)\build\net462\SkiaSharp.NativeAssets.macOS.targets" Condition=" '$(UseSkia)' == 'true' " />
+	<Import Project="$(PkgSkiaSharp_NativeAssets_Win32)\build\net462\SkiaSharp.NativeAssets.Win32.targets" Condition=" '$(UseSkia)' == 'true' " />
 
 	<ItemGroup Condition=" '$(UseGDIPlus)' == 'true' ">
 		<PackageReference Include="System.Drawing.Common" Version="8.0.3" Condition="" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Roboto-Medium.ttf" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Corsinvest.ProxmoxVE.Api" Version="8.1.5" />
+		<PackageReference Include="Corsinvest.ProxmoxVE.Api.Shared" Version="8.1.5" />
 		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -48,8 +60,8 @@
 		<PackageReference Include="System.Memory" Version="4.5.5" />
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
 		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+		<PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
 		<PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" />
-		<PackageReference Include="System.Text.Json" Version="8.0.3" />
 		<PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
 		<PackageReference Include="System.ValueTuple" Version="4.5.0" />
 	</ItemGroup>
@@ -65,14 +77,15 @@
 		<Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
 	</ItemGroup>
 	<ItemGroup>
+	  <EmbeddedResource Include="Resources\Roboto-Medium.ttf">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	</ItemGroup>
+	<ItemGroup>
 		<ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
 		<ProjectReference Include="..\SolidCP.Providers.HostedSolution\SolidCP.Providers.HostedSolution.csproj" />
 		<ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
 	</ItemGroup>
-
-	<Import Project="$(PkgSkiaSharp_NativeAssets_Linux)\build\net462\SkiaSharp.NativeAssets.Linux.targets" />
-	<Import Project="$(PkgSkiaSharp_NativeAssets_macOS)\build\net462\SkiaSharp.NativeAssets.macOS.targets" />
-	<Import Project="$(PkgSkiaSharp_NativeAssets_Win32)\build\net462\SkiaSharp.NativeAssets.Win32.targets" />
 
 	<Target Name="CopyPackageReferences" AfterTargets="Build">
 		<ItemGroup>

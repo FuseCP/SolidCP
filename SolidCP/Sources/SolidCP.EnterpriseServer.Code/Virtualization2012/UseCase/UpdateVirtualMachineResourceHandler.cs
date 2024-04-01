@@ -153,7 +153,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
 
                 vm.ExternalNetworkEnabled = vmSettings.ExternalNetworkEnabled;
                 vm.PrivateNetworkEnabled = vmSettings.PrivateNetworkEnabled;
-                vm.defaultaccessvlan = vmSettings.defaultaccessvlan;
+                vm.DefaultAccessVlan = vmSettings.DefaultAccessVlan;
                 vm.PrivateNetworkVlan = vmSettings.PrivateNetworkVlan;
                 /////////////////////////////////////////////
 

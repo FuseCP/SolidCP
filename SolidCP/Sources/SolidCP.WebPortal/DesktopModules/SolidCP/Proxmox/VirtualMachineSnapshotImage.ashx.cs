@@ -39,38 +39,39 @@ using SolidCP.Providers.ResultObjects;
 
 namespace SolidCP.Portal.Proxmox
 {
-    /// <summary>
-    /// Summary description for $codebehindclassname$
-    /// </summary>
-    [WebService(Namespace = "http://tempuri.org/")]
-    [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
-    public class VirtualMachineSnapshotImage : IHttpHandler
-    {
+	/// <summary>
+	/// Summary description for $codebehindclassname$
+	/// </summary>
+	[WebService(Namespace = "http://tempuri.org/")]
+	[WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
+	public class VirtualMachineSnapshotImage : IHttpHandler
+	{
 
-        public void ProcessRequest(HttpContext context)
-        {
-            context.Response.Clear();
-            context.Response.ContentType = "image/png";
+		public void ProcessRequest(HttpContext context)
+		{
+			HttpRequest req = context.Request;
 
-            HttpRequest req = context.Request;
+			int itemId = Utils.ParseInt(req["ItemID"]);
+			string snapshotId = req["SnapshotID"];
 
-            int itemId = Utils.ParseInt(req["ItemID"]);
-            string snapshotId = req["SnapshotID"];
+			var image = ES.Services.Proxmox.GetSnapshotThumbnail(itemId, snapshotId,
+				 SolidCP.Providers.Virtualization.ThumbnailSize.Medium160x120);
 
-            byte[] res = ES.Services.Proxmox.GetSnapshotThumbnail(itemId, snapshotId,
-                SolidCP.Providers.Virtualization.ThumbnailSize.Medium160x120);
-            if (res != null)
-            {
-                context.Response.OutputStream.Write(res, 0, res.Length);
-            }
-        }
+			context.Response.Clear();
+			context.Response.ContentType = image?.MimeType ?? "image/png";
 
-        public bool IsReusable
-        {
-            get
-            {
-                return false;
-            }
-        }
-    }
+			if (image != null)
+			{
+				context.Response.OutputStream.Write(image.RawData, 0, image.RawData.Length);
+			}
+		}
+
+		public bool IsReusable
+		{
+			get
+			{
+				return false;
+			}
+		}
+	}
 }

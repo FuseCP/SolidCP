@@ -111,12 +111,12 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
-        public byte[] GetVirtualMachineThumbnailImage(string vmId, ThumbnailSize size)
+        public ImageFile GetVirtualMachineThumbnailImage(string vmId, ThumbnailSize size)
         {
             try
             {
                 Log.WriteStart("'{0}' GetVirtualMachineThumbnailImage", ProviderSettings.ProviderName);
-                byte[] result = VirtualizationProvider.GetVirtualMachineThumbnailImage(vmId, size);
+                ImageFile result = VirtualizationProvider.GetVirtualMachineThumbnailImage(vmId, size);
                 Log.WriteEnd("'{0}' GetVirtualMachineThumbnailImage", ProviderSettings.ProviderName);
                 return result;
             }
@@ -403,12 +403,12 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
-        public byte[] GetSnapshotThumbnailImage(string snapshotId, ThumbnailSize size)
+        public ImageFile GetSnapshotThumbnailImage(string snapshotId, ThumbnailSize size)
         {
             try
             {
                 Log.WriteStart("'{0}' GetSnapshotThumbnailImage", ProviderSettings.ProviderName);
-                byte[] result = VirtualizationProvider.GetSnapshotThumbnailImage(snapshotId, size);
+                ImageFile result = VirtualizationProvider.GetSnapshotThumbnailImage(snapshotId, size);
                 Log.WriteEnd("'{0}' GetSnapshotThumbnailImage", ProviderSettings.ProviderName);
                 return result;
             }

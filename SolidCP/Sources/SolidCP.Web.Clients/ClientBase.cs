@@ -215,9 +215,11 @@ namespace SolidCP.Web.Clients
 
 		public bool IsHttp => Protocol <= Protocols.WSHttp;
 		public bool IsHttps => Protocol >= Protocols.BasicHttps && Protocol <= Protocols.WSHttps;
-		public bool IsEncrypted => this.GetType().GetInterfaces()
-					.FirstOrDefault(i => i.GetCustomAttribute<ServiceContractAttribute>() != null)
-					?.GetCustomAttribute<HasPolicyAttribute>() != null;
+
+		public Type ServiceInterface => this.GetType().GetInterfaces()
+					.FirstOrDefault(i => i.GetCustomAttribute<ServiceContractAttribute>() != null);
+		public HasPolicyAttribute Policy => ServiceInterface?.GetCustomAttribute<HasPolicyAttribute>();
+		public bool IsEncrypted => Policy != null;
 
 		static Dictionary<string, System.Net.IPAddress[]> ResolvedHosts = new Dictionary<string, System.Net.IPAddress[]>();
 
@@ -225,7 +227,6 @@ namespace SolidCP.Web.Clients
 		{
 			return Regex.IsMatch(adr, @"(^127\.)|(^192\.168\.)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^\[?::1\]?$)|(^\[?[fF][cCdD])", RegexOptions.Singleline);
 		}
-
 
 		public bool IsHostLocal(string host)
 		{
@@ -262,15 +263,6 @@ namespace SolidCP.Web.Clients
 
 		public bool IsDefaultApi => !Regex.IsMatch(url, "(?:basic|net|ws|grpc|grpc/ssl|tcp|tcp/ssl|pipe|pipe/ssl)(?:/[A-Za-z0-9_¨]+)?/?(?:\\?|$)");
 
-		public HasPolicyAttribute Policy
-		{
-			get
-			{
-				var serviceInterface = this.GetType().GetInterfaces()
-					.FirstOrDefault(i => i.GetCustomAttribute<ServiceContractAttribute>() != null);
-				return serviceInterface?.GetCustomAttribute<HasPolicyAttribute>();
-			}
-		}
 		public bool IsAuthenticated
 		{
 			get
@@ -281,10 +273,14 @@ namespace SolidCP.Web.Clients
 				return policy != null && policy != HasPolicyAttribute.Encrypted;
 			}
 		}
-		public bool HasSoapHeaders => this.GetType().GetInterfaces()
-			.FirstOrDefault(i => i.GetCustomAttribute<ServiceContractAttribute>() != null)
-			?.GetCustomAttribute<SolidCP.Providers.SoapHeaderAttribute>()
-			!= null;
+		public bool HasSoapHeaders => ServiceInterface?.GetCustomAttribute<SolidCP.Providers.SoapHeaderAttribute>() != null;
+
+		public void CheckSoapHeader(string methodName)
+		{
+			var service = ServiceInterface;
+			var soapAttr = service.GetMethod(methodName).GetCustomAttribute<SolidCP.Providers.SoapHeaderAttribute>();
+			if (soapAttr != null && SoapHeader == null) throw new Exception($"Must assign a SoapHeader for calling method {this.GetType().Name}.{methodName}");
+		}
 
 		public static void StartAllSshTunnels(IEnumerable<string> urls) => ClientBase<ClientAssemblyBase, ClientAssemblyBase>.StartAllSshTunnels(urls);
 		public static void DisposeAllSshTunnels() => ClientBase<ClientAssemblyBase, ClientAssemblyBase>.DisposeAllSshTunnels();
@@ -701,6 +697,7 @@ namespace SolidCP.Web.Clients
 							FactoryPool[url] = null;
 						}
 					}
+
 					if (SoapHeader != null || Credentials != null && Credentials.Password != null && (IsSecureProtocol || IsLocal))
 					{
 						foreach (var b in factory.Endpoint.EndpointBehaviors.ToArray())
@@ -761,8 +758,7 @@ namespace SolidCP.Web.Clients
 			if (client != null && client is IClientChannel channel) channel.Close();
 		}
 
-
-		public ClientBase() { }
+		public ClientBase(): base() { }
 		public ClientBase(string url) : this()
 		{
 			Url = url;

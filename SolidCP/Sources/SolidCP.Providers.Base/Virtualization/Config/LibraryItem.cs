@@ -30,34 +30,35 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace SolidCP.Providers.Virtualization
 {
-    public class LibraryItem
-    {
-        public string Path { get; set; }
-        public string Name { get; set; }
-        public int Generation { get; set; }
-        public string SecureBootTemplate { get; set; }
-        public bool EnableSecureBoot { get; set; } = true; //by default is true
-        public string Description { get; set; }
-        public bool LegacyNetworkAdapter { get; set; }
-        public bool RemoteDesktop { get; set; }
-        public int DiskSize { get; set; }
-        public uint VhdBlockSizeBytes { get; set; }
-        public int ProcessVolume { get; set; }
-        public string[] SysprepFiles { get; set; }
-        public bool ProvisionAdministratorPassword { get; set; }
-        public bool ProvisionComputerName { get; set; }
-        public bool ProvisionNetworkAdapters { get; set; }
-        public string DeployScriptParams { get; set; }
-        public string CDKey { get; set; }
-        public string TimeZoneId { get; set; }
+	public class LibraryItem
+	{
+		public string LibraryID => $"{Name ?? ""}{Path ?? ""}{DeployScriptParams ?? ""}";
+		public string Path { get; set; }
+		public string Name { get; set; }
+		public int Generation { get; set; }
+		public string SecureBootTemplate { get; set; }
+		public bool EnableSecureBoot { get; set; } = true; //by default is true
+		public string Description { get; set; }
+		public bool LegacyNetworkAdapter { get; set; }
+		public bool RemoteDesktop { get; set; }
+		public long DiskSize { get; set; }
+		public uint VhdBlockSizeBytes { get; set; }
+		public int ProcessVolume { get; set; }
+		public string[] SysprepFiles { get; set; }
+		public bool ProvisionAdministratorPassword { get; set; }
+		public bool ProvisionComputerName { get; set; }
+		public bool ProvisionNetworkAdapters { get; set; }
+		public string DeployScriptParams { get; set; }
+		public string CDKey { get; set; }
+		public string TimeZoneId { get; set; }
 
-        public VirtualNetworkInfo[] Networks { get; set; }
-        
-    }
+		public VirtualNetworkInfo[] Networks { get; set; }
+
+	}
 }

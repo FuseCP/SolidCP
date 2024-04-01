@@ -191,14 +191,14 @@ namespace SolidCP.EnterpriseServer
 
         [WebMethod]
         public IntResult CreateVirtualMachine(int packageId,
-                string hostname, string osTemplateFile, string password, string summaryLetterEmail,
+                string hostname, string osTemplateId, string password, string summaryLetterEmail,
                 int cpuCores, int ramMB, int hddGB, int snapshots, bool dvdInstalled, bool bootFromCD, bool numLock,
                 bool startShutdownAllowed, bool pauseResumeAllowed, bool rebootAllowed, bool resetAllowed, bool reinstallAllowed,
                 bool externalNetworkEnabled, int externalAddressesNumber, bool randomExternalAddresses, int[] externalAddresses,
                 bool privateNetworkEnabled, int privateAddressesNumber, bool randomPrivateAddresses, string[] privateAddresses, VirtualMachine otherSettings)
         {
             return VirtualizationServerControllerProxmox.CreateVirtualMachine(packageId,
-                hostname, osTemplateFile, password, summaryLetterEmail,
+                hostname, osTemplateId, password, summaryLetterEmail,
                 cpuCores, ramMB, hddGB, snapshots, dvdInstalled, bootFromCD, numLock,
                 startShutdownAllowed, pauseResumeAllowed, rebootAllowed, resetAllowed, reinstallAllowed,
                 externalNetworkEnabled, externalAddressesNumber, randomExternalAddresses, externalAddresses,
@@ -226,7 +226,7 @@ namespace SolidCP.EnterpriseServer
 
         #region VPS – General
         [WebMethod]
-        public byte[] GetVirtualMachineThumbnail(int itemId, ThumbnailSize size)
+        public ImageFile GetVirtualMachineThumbnail(int itemId, ThumbnailSize size)
         {
             return VirtualizationServerControllerProxmox.GetVirtualMachineThumbnail(itemId, size);
         }
@@ -373,7 +373,7 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
-        public byte[] GetSnapshotThumbnail(int itemId, string snapshotId, ThumbnailSize size)
+        public ImageFile GetSnapshotThumbnail(int itemId, string snapshotId, ThumbnailSize size)
         {
             return VirtualizationServerControllerProxmox.GetSnapshotThumbnail(itemId, snapshotId, size);
         }

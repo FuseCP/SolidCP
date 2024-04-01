@@ -12,7 +12,7 @@ namespace SolidCP.Providers.Virtualization
 	public class ProxmoxvpsLocal : Proxmoxvps
 	{
 		protected override string ProxmoxClusterServerHost => "localhost";
-
+		protected override string ProxmoxClusterNode => Environment.MachineName;
 		public override VirtualMachine CreateVirtualMachine(VirtualMachine vm)
 		{
 			string sshcmd = String.Format("{0} {1} {2}", DeploySSHScriptSettings, DeploySSHScriptParamsSettings, vm.OperatingSystemTemplateDeployParams);
@@ -21,9 +21,9 @@ namespace SolidCP.Providers.Virtualization
 			sshcmd = sshcmd.Replace("[CPUCORES]", vm.CpuCores.ToString());
 			sshcmd = sshcmd.Replace("[RAMSIZE]", vm.RamSize.ToString());
 			sshcmd = sshcmd.Replace("[HDDSIZE]", vm.HddSize[0].ToString());
-			sshcmd = sshcmd.Replace("[OSTEMPLATENAME]", vm.OperatingSystemTemplate);
-			sshcmd = sshcmd.Replace("[OSTEMPLATEFILE]", vm.OperatingSystemTemplatePath);
-			sshcmd = sshcmd.Replace("[ADMINPASS]", vm.AdministratorPassword);
+			sshcmd = sshcmd.Replace("[OSTEMPLATENAME]", $"\"{vm.OperatingSystemTemplate}\"");
+			sshcmd = sshcmd.Replace("[OSTEMPLATEFILE]", $"\"{vm.OperatingSystemTemplatePath}\"");
+			sshcmd = sshcmd.Replace("[ADMINPASS]", $"\"{vm.AdministratorPassword}\"");
 			sshcmd = sshcmd.Replace("[VLAN]", vm.DefaultAccessVlan.ToString());
 			sshcmd = sshcmd.Replace("[MAC]", vm.ExternalNicMacAddress);
 			if (vm.ExternalNetworkEnabled)
@@ -31,6 +31,12 @@ namespace SolidCP.Providers.Virtualization
 				sshcmd = sshcmd.Replace("[IP]", vm.PrimaryIP.IPAddress);
 				sshcmd = sshcmd.Replace("[NETMASK]", vm.PrimaryIP.SubnetMask);
 				sshcmd = sshcmd.Replace("[GATEWAY]", vm.PrimaryIP.DefaultGateway);
+			}
+			else
+			{
+				sshcmd = sshcmd.Replace("[IP]", "\"\"");
+				sshcmd = sshcmd.Replace("[NETMASK]", "\"\"");
+				sshcmd = sshcmd.Replace("[GATEWAY]", "\"\"");
 			}
 
 			string error = "Error creating wirtual machine.";

@@ -98,7 +98,7 @@
 										meta:resourcekey="locOperatingSystem" Text="Operating system:"></asp:Localize></td>
 								<td>
 									<asp:DropDownList ID="listOperatingSystems" runat="server"
-										DataValueField="Path" DataTextField="Name">
+										DataValueField="LibraryID" DataTextField="Name">
 									</asp:DropDownList>
 									<asp:RequiredFieldValidator ID="OperatingSystemValidator" runat="server" Text="*" Display="Dynamic"
 										ControlToValidate="listOperatingSystems" meta:resourcekey="OperatingSystemValidator" SetFocusOnError="true"

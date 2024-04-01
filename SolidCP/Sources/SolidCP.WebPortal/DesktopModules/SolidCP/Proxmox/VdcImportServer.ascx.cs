@@ -178,7 +178,7 @@ namespace SolidCP.Portal.Proxmox
                     {
                         if (adapter.MacAddress == selectedmac)
                         {
-                            adaptervlan = adapter.vlan;
+                            adaptervlan = adapter.VLAN;
                         }
                     }
                 }

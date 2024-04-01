@@ -1227,7 +1227,7 @@ namespace SolidCP.Providers.Virtualization
 
                 // optional attributes
                 if (nodeItem.Attributes["diskSize"] != null)
-                    item.DiskSize = Int32.Parse(nodeItem.Attributes["diskSize"].Value);
+                    item.DiskSize = Int64.Parse(nodeItem.Attributes["diskSize"].Value);
 
                 if (nodeItem.Attributes["legacyNetworkAdapter"] != null)
                     item.LegacyNetworkAdapter = Boolean.Parse(nodeItem.Attributes["legacyNetworkAdapter"].Value);

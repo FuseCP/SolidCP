@@ -250,7 +250,7 @@
 						<asp:RequiredFieldValidator ID="TemplateNameValidator" runat="server" ControlToValidate="txtTemplateName"
 							Text="*" meta:resourcekey="TemplateNameValidator" Display="Dynamic" SetFocusOnError="true" />
 					</td>
-					<td rowspan="3">
+					<td rowspan="3" style="padding:8px;">
 						<asp:CheckBox ID="chkLegacyNetworkAdapter" runat="server" Checked='<%# Eval("LegacyNetworkAdapter") %>' meta:resourcekey="chkLegacyNetworkAdapter" Text="Use legacy adapter" />
 						<br />
 						<%--<asp:CheckBox ID="chkRemoteDesktop" runat="server" Checked='<%# Eval("RemoteDesktop") %>' meta:resourcekey="chkRemoteDesktop" Text="Remote desktop" /><br/>--%>

@@ -42,7 +42,7 @@ namespace SolidCP.Providers.Virtualization
         VirtualMachine GetVirtualMachine(string vmId);
         VirtualMachine GetVirtualMachineEx(string vmId);
         List<VirtualMachine> GetVirtualMachines();
-        byte[] GetVirtualMachineThumbnailImage(string vmId, ThumbnailSize size);
+        ImageFile GetVirtualMachineThumbnailImage(string vmId, ThumbnailSize size);
         VirtualMachine CreateVirtualMachine(VirtualMachine vm);
         VirtualMachine UpdateVirtualMachine(VirtualMachine vm);
         JobResult ChangeVirtualMachineState(string vmId, VirtualMachineRequestedState newState);
@@ -61,7 +61,7 @@ namespace SolidCP.Providers.Virtualization
         JobResult ApplySnapshot(string vmId, string snapshotId);
         JobResult DeleteSnapshot(string vmId, string snapshotId);
         JobResult DeleteSnapshotSubtree(string vmId, string snapshotId);
-        byte[] GetSnapshotThumbnailImage(string snapshotId, ThumbnailSize size);
+        ImageFile GetSnapshotThumbnailImage(string snapshotId, ThumbnailSize size);
 
         // Virtual Switches
         List<VirtualSwitch> GetExternalSwitches(string computerName);

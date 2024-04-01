@@ -572,4 +572,7 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   <data name="lstProxmoxClusterRealmPVE.Text" xml:space="preserve">
     <value>Proxmox VE authentication server</value>
   </data>
+  <data name="chkDeployScript.Text" xml:space="preserve">
+    <value>Use Deploy Script</value>
+  </data>
 </root>

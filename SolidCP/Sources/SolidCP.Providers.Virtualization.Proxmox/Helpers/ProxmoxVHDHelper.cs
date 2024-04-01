@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.Json;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
 using RestSharp;
 
@@ -17,18 +18,18 @@ namespace SolidCP.Providers.Virtualization.Proxmox
 
 			try
 			{
-				JsonElement jsonResponse = JsonDocument.Parse(Content).RootElement;
-				JsonElement configvalue = jsonResponse.GetProperty("data");
+				JToken jsonResponse = JToken.Parse(Content);
+				JObject configvalue = (JObject)jsonResponse["data"];
 
-				foreach (var property in configvalue.EnumerateObject())
+				foreach (var property in configvalue)
 				{
-					string val = property.Value.GetString();
-					if ((property.Name.Contains("ide") || property.Name.Contains("sata") || property.Name.Contains("virtio") || property.Name.Contains("scsi")) && val.Contains(":"))
+					string val = (string)property.Value;
+					if ((property.Key.Contains("ide") || property.Key.Contains("sata") || property.Key.Contains("virtio") || property.Key.Contains("scsi")) && val.Contains(":"))
 					{
 						VirtualHardDiskInfo disk = new VirtualHardDiskInfo();
 						disk.ControllerNumber = 1;
 						disk.ControllerLocation = 1;
-						if (property.Name.Contains("ide") || property.Name.Contains("virtio"))
+						if (property.Key.Contains("ide") || property.Key.Contains("virtio"))
 						{
 							disk.VHDControllerType = ControllerType.IDE;
 						}
@@ -37,7 +38,7 @@ namespace SolidCP.Providers.Virtualization.Proxmox
 							disk.VHDControllerType = ControllerType.SCSI;
 						}
 						disk.Path = parsepath(val);
-						disk.Name = property.Name;
+						disk.Name = property.Key;
 						disks.Add(disk);
 					}
 				}

@@ -56,17 +56,26 @@ namespace SolidCP.Web.Clients
 			// set soap headers
 			if (Client.HasSoapHeaders)
 			{
-				var soapHeader = DataContractCopier.Clone(Client.SoapHeader);
-				var attr = method.GetCustomAttribute<SoapHeaderAttribute>();
-				var prop = type.GetProperty(attr.Field);
-				if (prop == null)
+				var serviceInterface = Client.ServiceInterface;
+				var serviceMethod = serviceInterface.GetMethod(methodName);
+				var attr = serviceMethod.GetCustomAttribute<SoapHeaderAttribute>();
+				if (attr != null)
 				{
-					var field = type.GetField(attr.Field);
-					field.SetValue(service, soapHeader);
-				}
-				else
-				{
-					prop.SetValue(service, soapHeader);
+					var soapHeader = Client.SoapHeader;
+					if (soapHeader == null) throw new Exception($"The call to {type.Name}.{methodName} requires a SoapHeader.");
+
+					soapHeader = DataContractCopier.Clone(soapHeader);
+
+					var prop = type.GetProperty(attr.Field);
+					if (prop == null)
+					{
+						var field = type.GetField(attr.Field);
+						field.SetValue(service, soapHeader);
+					}
+					else
+					{
+						prop.SetValue(service, soapHeader);
+					}
 				}
 			}
 

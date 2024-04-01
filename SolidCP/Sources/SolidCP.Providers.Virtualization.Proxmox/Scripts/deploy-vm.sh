@@ -10,11 +10,11 @@
 #
 # and as VM Deploy Script Parameters:
 #
-# [FQDN] [OSTEMPLATE] [OSTEMPLATEFILE] [ADMINPASS] [IP] [GATEWY] [NETMASK]
+# [FQDN] [OSTEMPLATENAME] [OSTEMPLATEFILE] [ADMINPASS] [IP] [GATEWAY] [NETMASK]
 #
 # In the OS Templates, specify as Additional Deploy Script Parameters:
 #
-# <Guest OS flavor (Windows or Linux or Container)> <ID of the template VM> <Administartor Username (root for Linux guests, Adminstrator for Windows guests)>
+# <Guest OS flavor (Windows or Linux or Container)> <ID or name of the template VM> <Administartor username (root for Linux guests, Adminstrator for Windows guests)>
 #
 # When OS flavor is set to Container, specify the path to the distro tar.gz file in the OS Template File of the OS Template. 
 # (For example 'local:vztmpl/debian-10.0-standard_10.0-1_amd64.tar.gz' for a Debian distro on the local storage)
@@ -27,37 +27,41 @@
 echo "Deploy Proxmox VPS"
 echo ""
 
+debug=
+
 if [[ $1 = '-d' ]]
 then
     echo "Running in Debug mode"
     echo ""
-    debug=1
+    debug=true
     shift 1
 fi
 
-osflavor=$1
-templateVm=$2
-adminUsername=$3
-fullyQualifiedDomainName=$4
-templateName=$5
-tempalteFile=$6
-adminPassword=$7
-ip=$8
-gateway=$9
-netmask=$10
+fullyQualifiedDomainName=$1
+templateName=$2
+templateFile=$3
+adminPassword=$4
+ip=$5
+gateway=$6
+netmask=$7
+osflavor=$8
+templateVm=$9
+adminUsername=$10
 
 if [[ ! $templateVm =~ ^[0-9]+$ ]]
 then
-    # templateVm file is not a number (VM ID)
-    templateFile=$templateVm
-else
-    templateFile=''
+    # templateVm file is not a number (VM ID), lookup VM ID by VM Name
+    vmname=$templateVm
+    vmnameEscaped=$(sed 's/[^^ ]/[&]/g; s/\^/\\^/g' <<<"$vmname") # escape it.
+    vmlist=$(sudo -n qm list | sed -e '1d')
+    regex="^[ ]*([0-9]+)[ ]+$vmnameEscaped[ ]+[a-zA-Z]+[ ]+[0-9]+[ ]+[0-9.]+[ ]+[0-9]+[ ]*$"
+    templateVm=$(sed -r "s/$regex/\1/g" <<< $vmlist)
 fi
 
 hostname=`echo $fullyQualifiedDomainName | sed 's/\..*//'` 
 
 echo "Usage:
-./deploy-vm.sh [-d] <Guest OS flavor ('Windows', 'Linux' or 'Container')> <Template VM ID or template file> <Adminstrator username> <Fully qualified domain name> <OS Template Name> <OS Template File> <Administrator password> [<IP address>] [<Gateway>] [<Netmask>]" 
+./deploy-vm.sh [-d] <Guest OS flavor ('Windows', 'Linux' or 'Container')> <ID or name of the template VM> <Adminstrator username> <Fully qualified domain name> <OS Template Name> <OS Template File> <Administrator password> [<IP address>] [<Gateway>] [<Netmask>]" 
 echo "With the -d switch the script is running in debug mode without executing any commands"
 echo ""
 echo "OS Template VM: $templateVm"
@@ -72,7 +76,7 @@ echo "Gateway: $gateway"
 echo "Netmask: $netmask"
 
 # Get next free VM ID
-newVm="$(pvesh get /cluster/nextid)"
+newVm="$(sudo -n pvesh get /cluster/nextid)"
 echo "New VM Name: $templateName"
 echo "New VM ID: $newVm"
 echo ""
@@ -84,12 +88,12 @@ then
     echo "Setup LXC container"
 
     # check if $tempalteFile is set
-    if [[ ! $templateFile ]]
+    if [[ ! -z $templateFile ]]
     then
         # Clone container VM
         echo "Clone container VM"
         echo "> pct clone $templateVm $newVm -hostname $hostname"
-        if [[ ! $debug ]]
+        if [[ -z $debug ]]
         then
             pct clone $templateVm $newVm -hostname $hostname
         fi
@@ -97,7 +101,7 @@ then
         # Start the new VM
         echo "Start the new VM"
         echo "> pct start $newVm"
-        if [[ ! $debug ]]
+        if [[ -z $debug ]]
         then
             pct start $newVm
         fi
@@ -105,18 +109,18 @@ then
         # Change administrator password of the new VM
         echo "Change administrator password of the new VM"
         echo "> pct exec $newVm bash -c \"echo \\\"$adminPassword\\\\n$adminPassword\\\\n\\\" | passwd\""
-        if [[ ! $debug ]]
+        if [[ -z $debug ]]
         then
-            pct exec $newVm bash -c "echo -e \"$adminPassword\\\n$adminPassword\\\n\" | passwd"
+            pct exec $newVm "bash -c \"echo -e \\\"$adminPassword\\\\\n$adminPassword\\\\\n\\\" | passwd"
         fi
 
-        # Setup Network
+        # TODO Setup Network
         echo "Setup Network"
 
         # Stop the new VM
         echo "Stop the new VM"
         echo "> pct stop $newVm"
-        if [[ ! $debug ]]
+        if [[ -z $debug ]]
         then
             pct stop $newVm
         fi
@@ -124,26 +128,27 @@ then
     else
         # Create container VM
         echo "Create container VM"
-        echo "> pct create $newVm $templateVm -hostname $hostname -password $adminPassword"
+        echo "> pct create $newVm $templateFile -hostname $hostname -password $adminPassword"
         if [[ ! $debug ]]
         then
-            pct create $newVm $templateVm  -hostname $hostname -password $adminPassword
+            pct create $newVm $templateFile -hostname $hostname -password $adminPassword
         fi
 
         # Start the new VM
         echo "Start the new VM"
         echo "> pct start $newVm"
-        if [[ ! $debug ]]
+        if [[ -z $debug ]]
         then
             pct start $newVm
         fi
 
-        # Setup Network
+        # TODO Setup Network
+        echo "Setup Network"
 
         # Stop the new VM
         echo "Stop the new VM"
         echo "> pct stop $newVm"
-        if [[ ! $debug ]]
+        if [[ -z $debug ]]
         then
             pct stop $newVm
         fi
@@ -155,23 +160,23 @@ else
     # Clone the template VM
     echo "Clone the template VM"
     echo "> qm clone $templateVm $newVm --name $templateName"
-    if [[ ! $debug ]]
+    if [[ -z $debug ]]
     then
-        qm clone $templateVm $newVm --name "$hostname"
+        sudo -n qm clone $templateVm $newVm --name "$hostname"
     fi
 
     # Start the new VM
     echo "Start the new VM"
-    echo "> qm start $netVM"
-    if [[ ! $debug ]]
+    echo "> qm start $newVM"
+    if [[ -z $debug && $osflavor != 'Debug' ]]
     then
-        qm start $netVm
+        qm start $newVm
     fi
 
     # Change administrator password of the new VM
     echo "Change administrator password of the new VM"
     echo "> echo -e \"$adminPassword\\n$adminPassword\\n\" | qm guest passwd $newVm $adminUsername -pass-stdin"
-    if [[ ! $debug ]]
+    if [[ -z $debug && $osflavor != 'Debug' ]]
     then
         echo -e "$adminPassword\n$adminPassword\n" | qm guest passwd $newVm $adminUsername -pass-stdin
     fi
@@ -188,13 +193,13 @@ then
     # set hostname
     echo "Set hostname to $hostname"
     echo "> qm guest exe $newVm powershell Rename-Computer -NewName $hostname"
-    if [[ ! $debug ]]
+    if [[ -z $debug ]]
     then
         qm guest exe $newVm powershell Rename-Computer -NewName $hostname
     fi
 
-    # Setup Network
-    # ...
+    # TODO Setup Network
+    echo "Setup Network"
 
 fi
 
@@ -204,21 +209,21 @@ then
 
     # set hostname
     echo "Set hostname to $hostname"
-    echo "> qm guest exec $netVm hostnamectl set-hostname $hostname"
-    if [[ ! $debug ]]
+    echo "> qm guest exec $newVm hostnamectl set-hostname $hostname"
+    if [[ -z $debug ]]
     then
-        qm guest exec $netVm hostnamectl set-hostname $hostname
+        qm guest exec $newVm hostnamectl set-hostname $hostname
     fi
 
-    # Setup Network
-    # ...
+    # TODO Setup Network
+    echo "Setup Network"
 
 fi
 
 # Stop the new VM
 echo "Stop the new VM"
 echo "> qm stop $newVm"
-if [[ ! $debug ]]
+if [[ -z $debug && $osflavor != 'Debug' ]]
 then
     qm stop $newVm
 fi

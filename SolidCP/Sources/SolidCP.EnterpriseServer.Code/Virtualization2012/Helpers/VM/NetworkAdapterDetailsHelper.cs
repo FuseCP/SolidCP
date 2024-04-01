@@ -31,7 +31,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
 
             // update NIC
             nic.MacAddress = NetworkHelper.GetSymbolDelimitedMacAddress(vm.ExternalNicMacAddress, "-");
-            nic.VLAN = vm.defaultaccessvlan;
+            nic.VLAN = vm.DefaultAccessVlan;
 
             // load IP addresses
             nic.IPAddresses = ObjectUtils.CreateListFromDataReader<NetworkAdapterIPAddress>(

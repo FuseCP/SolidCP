@@ -56,7 +56,6 @@ namespace SolidCP.EnterpriseServer
     public class VirtualizationServerControllerProxmox
     {
 
-
         private const string SHUTDOWN_REASON = "WebsitePanel - Initiated by user";
         private const string SHUTDOWN_REASON_CHANGE_CONFIG = "WebsitePanel - changing VPS configuration";
         private const Int64 Size1G = 0x40000000;
@@ -325,7 +324,7 @@ namespace SolidCP.EnterpriseServer
         }
 
         public static IntResult CreateVirtualMachine(int packageId,
-                string hostname, string osTemplateFile, string password, string summaryLetterEmail,
+                string hostname, string osTemplateId, string password, string summaryLetterEmail,
                 int cpuCores, int ramMB, int hddGB, int snapshots,
                 bool dvdInstalled, bool bootFromCD, bool numLock,
                 bool startShutdownAllowed, bool pauseResumeAllowed, bool rebootAllowed, bool resetAllowed, bool reinstallAllowed,
@@ -493,7 +492,7 @@ namespace SolidCP.EnterpriseServer
                 vm.RebootAllowed = rebootAllowed;
                 vm.ResetAllowed = resetAllowed;
                 vm.ReinstallAllowed = reinstallAllowed;
-                vm.defaultaccessvlan = otherSettings.defaultaccessvlan;
+                vm.DefaultAccessVlan = otherSettings.DefaultAccessVlan;
 
 
                 // dynamic memory
@@ -516,7 +515,7 @@ namespace SolidCP.EnterpriseServer
                     LibraryItem[] osTemplates = GetOperatingSystemTemplates(vm.PackageId);
                     foreach (LibraryItem item in osTemplates)
                     {
-                        if (String.Compare(item.Path, osTemplateFile, true) == 0)
+                        if (String.Compare(item.LibraryID, osTemplateId, true) == 0)
                         {
                             osTemplate = item;
 
@@ -654,11 +653,11 @@ namespace SolidCP.EnterpriseServer
                     if (vm.ExternalNetworkEnabled)
                     {
                         // set VLAN for IPs
-                        int vlan = vm.defaultaccessvlan;
+                        int vlan = vm.DefaultAccessVlan;
 
                         // provision IP addresses
                         ResultObject privResult = AddVirtualMachineExternalIPAddresses(vm.Id, randomExternalAddresses,
-                            externalAddressesNumber, externalAddresses, false, vm.defaultaccessvlan);
+                            externalAddressesNumber, externalAddresses, false, vm.DefaultAccessVlan);
 
                         // set primary IP address
                         NetworkAdapterDetails extNic = GetExternalNetworkAdapterDetails(vm.Id);
@@ -1579,7 +1578,7 @@ namespace SolidCP.EnterpriseServer
             return retJobs;
         }
 
-        public static byte[] GetVirtualMachineThumbnail(int itemId, ThumbnailSize size)
+        public static ImageFile GetVirtualMachineThumbnail(int itemId, ThumbnailSize size)
         {
             // load meta item
             VirtualMachine vm = GetVirtualMachineByItemId(itemId);
@@ -2084,7 +2083,7 @@ namespace SolidCP.EnterpriseServer
                 vm.ResetAllowed = resetAllowed;
                 vm.RebootAllowed = rebootAllowed;
                 vm.ReinstallAllowed = reinstallAllowed;
-                vm.defaultaccessvlan = otherSettings.defaultaccessvlan;
+                vm.DefaultAccessVlan = otherSettings.DefaultAccessVlan;
 
                 vm.ExternalNetworkEnabled = externalNetworkEnabled;
                 vm.PrivateNetworkEnabled = privateNetworkEnabled;
@@ -2663,7 +2662,7 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        public static byte[] GetSnapshotThumbnail(int itemId, string snapshotId, ThumbnailSize size)
+        public static ImageFile GetSnapshotThumbnail(int itemId, string snapshotId, ThumbnailSize size)
         {
             // load service item
             VirtualMachine vm = (VirtualMachine)PackageController.GetPackageItem(itemId);
@@ -2700,12 +2699,12 @@ namespace SolidCP.EnterpriseServer
                     if (firstadapter)
                     {
                         firstadapter = false;
-                        adaptervlan = adapter.vlan;
+                        adaptervlan = adapter.VLAN;
                     }
                     // Overwrite First Adapter by Mac Match
                     if (adapter.MacAddress == vm.ExternalNicMacAddress)
                     {
-                        adaptervlan = adapter.vlan;
+                        adaptervlan = adapter.VLAN;
                     }
                 }
             }

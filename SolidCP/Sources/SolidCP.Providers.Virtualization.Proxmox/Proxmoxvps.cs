@@ -58,6 +58,7 @@ using System.Management.Automation.Runspaces;
 
 using System.Reflection;
 using System.Globalization;
+using System.Runtime.InteropServices;
 
 using RestSharp;
 using System.Net;
@@ -66,6 +67,7 @@ using System.Threading;
 
 using System.Xml;
 using SolidCP.Providers;
+using SolidCP.Providers.OS;
 using SolidCP.Providers.HostedSolution;
 using SolidCP.Providers.Utils;
 using SolidCP.Server.Utils;
@@ -121,6 +123,29 @@ namespace SolidCP.Providers.Virtualization
 			}
 		}
 
+		static string node = null;
+		protected virtual string ProxmoxClusterNode
+		{
+			get
+			{
+				if (node == null)
+				{
+					node = "";
+					try
+					{
+						var ssh = SshClient();
+						ssh.Connect();
+						var term = ssh.RunCommand("hostname");
+						node = term.Result;
+					}
+					catch (Exception ex)
+					{
+
+					}
+				}
+				return node;
+			}
+		}
 		/*
 		protected string ProxmoxClusterNode
 		{
@@ -289,7 +314,7 @@ namespace SolidCP.Providers.Virtualization
 					vm.Name = result.data.name;
 					vm.Uptime = result.data.uptime;
 					string qmpstatus = result.data.qmpstatus;
-					vm.State = getvmstate(qmpstatus);
+					vm.State = GetVMState(qmpstatus);
 					vm.CpuUsage = ConvertNullableToInt32(result.data.cpu * 100);
 					vm.ProcessorCount = result.data.cpus;
 					vm.CreatedDate = DateTime.Now;
@@ -326,7 +351,6 @@ namespace SolidCP.Providers.Virtualization
 							string boot1 = (string)vmconfigconfigvalue["boot"];
 							var bootvar = boot1.Replace("order=", "").Split(';');
 							bootdisk = bootvar[0];
-
 						}
 						else
 						{
@@ -396,9 +420,9 @@ namespace SolidCP.Providers.Virtualization
 				{
 					try
 					{
-						if (resources["type"].ToString().Equals("qemu"))
+						if (((string)resources["type"]).Equals("qemu"))
 						{
-							string vmid = String.Format("{0}:{1}", resources["node"].ToString(), resources["vmid"].ToString());
+							string vmid = String.Format("{0}:{1}", (string)resources["node"], (string)resources["vmid"]);
 							HostedSolutionLog.LogInfo("GetVirtualMachines - vmObject: {0}", vmid);
 
 							var vm = GetVirtualMachineInternal(vmid, true);
@@ -425,11 +449,9 @@ namespace SolidCP.Providers.Virtualization
 
 			HostedSolutionLog.LogEnd("GetVirtualMachines");
 			return vmachines;
-
-
 		}
 
-		public byte[] GetVirtualMachineThumbnailImageGDIPlus(string vmId, int width, int height)
+		public ImageFile GetVirtualMachineThumbnailImageGDIPlus(string vmId, int width, int height)
 		{
 #if UseGDIPlus
 			try
@@ -474,13 +496,113 @@ namespace SolidCP.Providers.Virtualization
 				bmp.Dispose();
 				stream.Dispose();
 
-				return buffer;
+				var imageFile = new ImageFile()
+				{
+					FileExtension = "png",
+					MimeType = "image/png",
+					RawData = buffer
+				};
+				return imageFile;
 			}
 			catch { }
 #endif
 			return null;
 		}
-		public byte[] GetVirtualMachineThumbnailImageSkia(string vmId, int width, int height)
+
+#if UseSkia
+
+		public bool IsLinuxMusl
+		{
+			get
+			{
+				if (!OSInfo.IsLinux) return false;
+				return OS.Shell.Default.Exec("ldd /bin/ls").OutputAndError().Result.Contains("musl");
+			}
+		}
+
+		Dictionary<string, IntPtr> loadedNativeDlls = new Dictionary<string, IntPtr>();
+		public IntPtr SkiaDllImportResolver(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
+		{
+			if (libraryName.Contains("SkiaSharp"))
+			{
+				lock (this)
+				{
+					IntPtr dll;
+					if (loadedNativeDlls.TryGetValue(libraryName, out dll)) return dll;
+
+					var runtimeInformation = typeof(RuntimeInformation);
+					var runtimeIdentifier = (string?)runtimeInformation.GetProperty("RuntimeIdentifier")?.GetValue(null);
+					if (runtimeIdentifier == "linux-x64" && IsLinuxMusl) runtimeIdentifier = "linux-musl-x64";
+					runtimeIdentifier = runtimeIdentifier.Replace("linux-", "");
+					var currentDllPath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
+					string libraryFileName = libraryName;
+					if (!libraryFileName.EndsWith(".so")) libraryFileName += ".so";
+					if (!libraryFileName.StartsWith("lib")) libraryFileName = "lib" + libraryFileName;
+					var nativeDllPath = Path.Combine(currentDllPath, runtimeIdentifier, libraryFileName);
+
+					if (File.Exists(nativeDllPath))
+					{
+						// call NativeLibrary.Load via reflection, becuase it's not available in NET Standard
+						var nativeLibrary = Type.GetType("System.Runtime.InteropServices.NativeLibrary, System.Runtime.InteropServices");
+						var load = nativeLibrary.GetMethod("Load", new Type[] { typeof(string), typeof(Assembly), typeof(DllImportSearchPath?) });
+						dll = (IntPtr)load?.Invoke(null, new object[] { nativeDllPath, assembly, searchPath });
+						loadedNativeDlls.Add(libraryName, dll);
+
+						return dll;
+					}
+				}
+			}
+
+			// Otherwise, fallback to default import resolver.
+			return IntPtr.Zero;
+		}
+
+
+		static bool nativeSkiaDllLoaded = false;
+		public void LoadSkiaNativeDlls()
+		{
+			if (nativeSkiaDllLoaded) return;
+			nativeSkiaDllLoaded = true;
+
+			if (OSInfo.IsLinux)
+			{
+				/*				var runtimeInformation = typeof(RuntimeInformation);
+								var runtimeIdentifier = (string?)runtimeInformation.GetProperty("RuntimeIdentifier")?.GetValue(null);
+								if (runtimeIdentifier == "linux-x64" && OSInfo.IsLinuxMusl) runtimeIdentifier = "linux-musl-x64";
+								runtimeIdentifier = runtimeIdentifier.Replace("linux-", "");
+								var currentDllPath = Path.GetDirectoryName(new Uri(Assembly.GetCallingAssembly().CodeBase).LocalPath);
+								var nativeDllPath = Path.Combine(currentDllPath, runtimeIdentifier, "libSkiaSharp.so");
+								if (File.Exists(nativeDllPath))
+								{
+									// call NativeLibrary.Load via reflection, becuase it's not available in NET Standard
+									var nativeLibrary = Type.GetType("System.Runtime.InteropServices.NativeLibrary, System.Runtime.InteropServices");
+									var load = nativeLibrary.GetMethod("Load", new Type[] { typeof(string) });
+									var ptr = (IntPtr)load?.Invoke(null, new object[] { nativeDllPath });
+								} */
+
+				// call NativeLibrary.SetDllImportResolver via reflection, becuase it's not available in NET Standard
+				var nativeLibrary = Type.GetType("System.Runtime.InteropServices.NativeLibrary, System.Runtime.InteropServices");
+				var dllImportResolver = Type.GetType("System.Runtime.InteropServices.DllImportResolver, System.Runtime.InteropServices");
+
+				Assembly skiaSharp = AppDomain.CurrentDomain.GetAssemblies()
+					.FirstOrDefault(a => a.GetName().Name == "SkiaSharp");
+				if (skiaSharp == null)
+				{
+					var currentDllPath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
+					var skiaSharpDll = Path.Combine(currentDllPath, "SkiaSharp.dll");
+					skiaSharp = Assembly.LoadFrom(skiaSharpDll);
+				}
+				var setDllImportResolver = nativeLibrary.GetMethod("SetDllImportResolver", new Type[] { typeof(Assembly), dllImportResolver });
+				//var importResolverMethod = this.GetType().GetMethod(nameof(SkiaDllImportResolver));
+
+				var skiaDllImportResolver = Delegate.CreateDelegate(dllImportResolver, this, nameof(SkiaDllImportResolver));
+				setDllImportResolver?.Invoke(null, new object[] { skiaSharp, skiaDllImportResolver });
+
+			}
+		}
+#endif
+
+		public ImageFile GetVirtualMachineThumbnailImageSkia(string vmId, int width, int height)
 		{
 #if UseSkia
 			try
@@ -496,18 +618,30 @@ namespace SolidCP.Providers.Virtualization
 				{
 					canvas.Clear(SKColors.Black);
 
-					SKPaint paint = new SKPaint()
+					var assembly = Assembly.GetExecutingAssembly();
+					var fontResource = assembly.GetManifestResourceNames()
+						.FirstOrDefault(name => name.EndsWith("Roboto-Medium.ttf", true, CultureInfo.InvariantCulture));
+					if (fontResource != null)
 					{
-						Color = SKColors.WhiteSmoke,
-						TextSize = width / 10,
-						IsAntialias = true,
-						Typeface = SKTypeface.FromFamilyName("Verdana"),
-						TextAlign = SKTextAlign.Center,
-						IsStroke = false
-					};
+						SKTypeface typeface;
+						using (var fontStream = assembly.GetManifestResourceStream(fontResource))
+						{
+							typeface = SKTypeface.FromStream(fontStream);
+						}
 
-					// Draw string to canvas
-					canvas.DrawText(THUMB_PRINT_TEXT, width / 2, height * (2 / 3), paint);
+						SKPaint paint = new SKPaint()
+						{
+							Color = SKColors.WhiteSmoke,
+							TextSize = width / 10,
+							IsAntialias = true,
+							Typeface = typeface, // SKTypeface.FromFile("Roboto-Medium.ttf"),
+							TextAlign = SKTextAlign.Center,
+							IsStroke = false
+						};
+
+						// Draw string to canvas
+						canvas.DrawText(THUMB_PRINT_TEXT, width / 2, height * (2 / 3), paint);
+					}
 				}
 				else
 				{
@@ -524,16 +658,31 @@ namespace SolidCP.Providers.Virtualization
 				stream.Flush();
 				var buffer = stream.ToArray();
 
-				return buffer;
+				var imageFile = new ImageFile()
+				{
+					FileExtension = "png",
+					MimeType = "image/png",
+					RawData = buffer
+				};
+				return imageFile;
 			}
-			catch { }
+			catch (Exception ex) {
+			
+			}
 #endif
 
 			return null;
 
 		}
 
-		public byte[] GetVirtualMachineThumbnailImage(string vmId, ThumbnailSize size)
+		public ImageFile GetVirtualMachineThumbnailImageScreenshot(string vmId, int width, int height)
+		{
+			//ApiClientSetup();
+			//client.
+			return null;
+		}
+
+		public ImageFile GetVirtualMachineThumbnailImage(string vmId, ThumbnailSize size)
 		{
 
 			int width = 80;
@@ -550,48 +699,33 @@ namespace SolidCP.Providers.Virtualization
 				height = 240;
 			}
 
-			byte[] buffer = null;
+			ImageFile file = null;
 
 			try
 			{
-				buffer = GetVirtualMachineThumbnailImageGDIPlus(vmId, width, height);
+				file = GetVirtualMachineThumbnailImageGDIPlus(vmId, width, height);
 			}
-			catch { // catch errors when GDI+ is not available
+			catch (Exception ex) { // catch errors when GDI+ is not available
 			}
 
 			try
 			{
-				if (buffer == null) buffer = GetVirtualMachineThumbnailImageSkia(vmId, width, height);
+				if (file == null)
+				{
+					LoadSkiaNativeDlls();
+					file = GetVirtualMachineThumbnailImageSkia(vmId, width, height);
+				}
 			}
-			catch { // catch dll load errors when Skia is not correctly installed
+			catch (Exception ex) { // catch dll load errors when Skia is not correctly installed
 			}
 
-			if (buffer != null) return buffer;
+			if (file != null) return file;
 
 			throw new NotImplementedException();
 		}
 
-
-		public virtual VirtualMachine CreateVirtualMachine(VirtualMachine vm)
+		protected virtual SshClient SshClient()
 		{
-			string sshcmd = String.Format("{0} {1} {2}", DeploySSHScriptSettings, DeploySSHScriptParamsSettings, vm.OperatingSystemTemplateDeployParams);
-
-			sshcmd = sshcmd.Replace("[FQDN]", vm.Name);
-			sshcmd = sshcmd.Replace("[CPUCORES]", vm.CpuCores.ToString());
-			sshcmd = sshcmd.Replace("[RAMSIZE]", vm.RamSize.ToString());
-			sshcmd = sshcmd.Replace("[HDDSIZE]", vm.HddSize[0].ToString());
-			sshcmd = sshcmd.Replace("[OSTEMPLATENAME]", vm.OperatingSystemTemplate);
-			sshcmd = sshcmd.Replace("[OSTEMPLATEFILE]", vm.OperatingSystemTemplatePath);
-			sshcmd = sshcmd.Replace("[ADMINPASS]", vm.AdministratorPassword);
-			sshcmd = sshcmd.Replace("[VLAN]", vm.DefaultAccessVlan.ToString());
-			sshcmd = sshcmd.Replace("[MAC]", vm.ExternalNicMacAddress);
-			if (vm.ExternalNetworkEnabled)
-			{
-				sshcmd = sshcmd.Replace("[IP]", vm.PrimaryIP.IPAddress);
-				sshcmd = sshcmd.Replace("[NETMASK]", vm.PrimaryIP.SubnetMask);
-				sshcmd = sshcmd.Replace("[GATEWAY]", vm.PrimaryIP.DefaultGateway);
-			}
-
 			// Setup Credentials and Server Information
 			ConnectionInfo Conninfo = new ConnectionInfo(DeploySSHServerHostSettings, Convert.ToInt32(DeploySSHServerPortSettings), DeploySSHUserSettings,
 				 new AuthenticationMethod[]{
@@ -613,10 +747,46 @@ namespace SolidCP.Providers.Virtualization
 				);
 			}
 
-			string error = "Error creating wirtual machine.";
 			try
 			{
 				SshClient ssh = new SshClient(Conninfo);
+				return ssh;
+			}
+			catch (Exception ex)
+			{
+				throw;
+			}
+		}
+
+		public virtual VirtualMachine CreateVirtualMachine(VirtualMachine vm)
+		{
+			string sshcmd = String.Format("\"{0}\" {1} {2}", DeploySSHScriptSettings, DeploySSHScriptParamsSettings, vm.OperatingSystemTemplateDeployParams);
+
+			sshcmd = sshcmd.Replace("[FQDN]", vm.Name);
+			sshcmd = sshcmd.Replace("[CPUCORES]", vm.CpuCores.ToString());
+			sshcmd = sshcmd.Replace("[RAMSIZE]", vm.RamSize.ToString());
+			sshcmd = sshcmd.Replace("[HDDSIZE]", vm.HddSize[0].ToString());
+			sshcmd = sshcmd.Replace("[OSTEMPLATENAME]", $"\"{vm.OperatingSystemTemplate}\"");
+			sshcmd = sshcmd.Replace("[OSTEMPLATEFILE]", $"\"{vm.OperatingSystemTemplatePath}\"");
+			sshcmd = sshcmd.Replace("[ADMINPASS]", $"\"{vm.AdministratorPassword}\"");
+			sshcmd = sshcmd.Replace("[VLAN]", vm.DefaultAccessVlan.ToString());
+			sshcmd = sshcmd.Replace("[MAC]", vm.ExternalNicMacAddress);
+			if (vm.ExternalNetworkEnabled)
+			{
+				sshcmd = sshcmd.Replace("[IP]", vm.PrimaryIP.IPAddress);
+				sshcmd = sshcmd.Replace("[NETMASK]", vm.PrimaryIP.SubnetMask);
+				sshcmd = sshcmd.Replace("[GATEWAY]", vm.PrimaryIP.DefaultGateway);
+			} else
+			{
+				sshcmd = sshcmd.Replace("[IP]", "\"\"");
+				sshcmd = sshcmd.Replace("[NETMASK]", "\"\"");
+				sshcmd = sshcmd.Replace("[GATEWAY]", "\"\"");
+			}
+
+			string error = "Error creating wirtual machine.";
+			try
+			{
+				SshClient ssh = SshClient();
 				try
 				{
 					ssh.Connect();
@@ -626,19 +796,23 @@ namespace SolidCP.Providers.Virtualization
 					HostedSolutionLog.LogError("Error creating virtual machine SSH connection error", ex);
 					throw;
 				}
-				SshCommand term = ssh.RunCommand(sshcmd);
+				var term = ssh.CreateCommand($"sudo -n {sshcmd}");
+				term.CommandTimeout = TimeSpan.FromMinutes(120);
+				term.Execute();
 				string output = term.Result;
-				error = $"Error creating wirtual machine. VM deploy script output:\n{output}";
+				string cmdError = term.Error;
+				error = $"Error creating wirtual machine. VM deploy script output:\n{cmdError}\n{output}";
 				ssh.Disconnect();
 				ssh.Dispose();
 
 
 				// Get created machine Id
 				vm.Name = vm.Name.Split('.')[0];
+				
 				var createdMachine = GetVirtualMachines().FirstOrDefault(m => m.Name == vm.Name);
 				if (createdMachine == null)
 				{
-					error = $"Can't find created machine. VM deploy script output:\n{output}";
+					error = $"Can't find created machine. VM deploy script output:\n{cmdError}\n{output}";
 					var ex = new Exception(error);
 
 					HostedSolutionLog.LogError(error, ex);
@@ -827,22 +1001,22 @@ namespace SolidCP.Providers.Virtualization
 			*/
 		}
 
-		public String GetVirtualMachineVNC(string vmId)
+		public string GetVirtualMachineVNC(string vmId)
 		{
 
-			string result = null;
-			return result;
+			//string result = null;
+			//return result;
 
-			throw new NotImplementedException();
-			/*
+			// throw new NotImplementedException();
+			
 			// DEBUG Test von VNC!!!
-			string authcookie = "NOTSETYET";
-			string url = String.Format("https://{0}:{1}/?console=kvm&novnc=1&vmid={2}&vmname=wsp&node={3}|{4}", ProxmoxClusterServerHost, ProxmoxClusterServerPort, vmId, ProxmoxClusterNode, authcookie);
+			var authcookie = "NOTSETYET";
+			var url = $"https://{ProxmoxClusterServerHost}:{ProxmoxClusterServerPort}/?console=kvm&novnc=1&vmid={vmId}&vmname=wsp&node={ProxmoxClusterNode}|{authcookie}";
 			byte[] bytes = System.Text.Encoding.UTF8.GetBytes(url);
-			string connect = Convert.ToBase64String(bytes);
-			string vmvncurl = String.Format("http://{0}/vnc/vnc.php?connect={1}&resolution=", ProxmoxClusterServerHost, connect);
+			var connect = Convert.ToBase64String(bytes);
+			var vmvncurl = $"http://{ProxmoxClusterServerHost}:{ProxmoxClusterServerPort}/vnc/vnc.php?connect={connect}&resolution=";
 			return vmvncurl;
-			*/
+			
 		}
 
 		#endregion
@@ -1016,7 +1190,7 @@ namespace SolidCP.Providers.Virtualization
 			try
 			{
 				ApiClientSetup();
-				var applyresult = client.rollback(vmId, snapshotId);
+				var applyresult = client.Rollback(vmId, snapshotId);
 				if (applyresult.StatusCode.Equals(HttpStatusCode.OK))
 				{
 					return ProxmoxJobHelper.CreateResultUpid(applyresult.Data, ConcreteJobState.Running, ReturnCode.JobStarted);
@@ -1077,7 +1251,7 @@ namespace SolidCP.Providers.Virtualization
 			}
 		}
 
-		public byte[] GetSnapshotThumbnailImage(string snapshotId, ThumbnailSize size)
+		public ImageFile GetSnapshotThumbnailImage(string snapshotId, ThumbnailSize size)
 		{
 			return null;
 		}
@@ -1107,7 +1281,7 @@ namespace SolidCP.Providers.Virtualization
 							if (isoname == "")
 								isoname = dvd["volid"].ToString().Split('/')[0];
 							item.Name = isoname.Replace(".iso", "");
-							item.DiskSize = Convert.ToInt32(dvd["size"].ToString());
+							item.DiskSize = Int64.Parse(dvd["size"].ToString());
 							imagelist.Add(item);
 						}
 
@@ -1156,7 +1330,7 @@ namespace SolidCP.Providers.Virtualization
 			HostedSolutionLog.DebugInfo("Virtual Machine: {0}", vmId);
 			HostedSolutionLog.DebugInfo("Path: {0}", isoPath);
 
-			int disksize = 0;
+			long disksize = 0;
 
 			// load library items
 			LibraryItem[] disks = GetDVDISOs(vmId);
@@ -1164,7 +1338,7 @@ namespace SolidCP.Providers.Virtualization
 			// find required disk
 			foreach (LibraryItem disk in disks)
 			{
-				if (String.Compare(isoPath, disk.Path, true) == 0)
+				if (string.Compare(isoPath, disk.Path, true) == 0)
 					disksize = disk.DiskSize;
 			}
 
@@ -1744,7 +1918,7 @@ namespace SolidCP.Providers.Virtualization
 		}
 
 
-		public string ReadRemoteFile(string path)
+		public virtual string ReadRemoteFile(string path)
 		{
 			throw new NotImplementedException();
 			/*
@@ -1771,7 +1945,7 @@ namespace SolidCP.Providers.Virtualization
 			*/
 		}
 
-		public void WriteRemoteFile(string path, string content)
+		public virtual void WriteRemoteFile(string path, string content)
 		{
 			throw new NotImplementedException();
 			/*
@@ -2355,7 +2529,7 @@ namespace SolidCP.Providers.Virtualization
 
 
 		#region Linux to Windows States & Formats
-		private VirtualMachineState getvmstate(string state)
+		private VirtualMachineState GetVMState(string state)
 		{
 			HostedSolutionLog.LogInfo("getvmstate - state: {0}", state);
 			VirtualMachineState vmstate;
