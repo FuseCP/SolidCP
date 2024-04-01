@@ -4,18 +4,21 @@ using System.Text;
 using System.IO;
 using SkiaSharp;
 
-namespace SolidCP.Providers.Virtualization.Helpers
+namespace SolidCP.Providers.Virtualization
 {
 	public class PpmImage
 	{
-		public enum ImageFormat { P3, P6 };
+		public SKImage SkiaImage { get; set; }
 
+		public static implicit operator SKImage(PpmImage img) => img.SkiaImage; 
+
+		public enum ImageFormat { P3, P6 };
 		public class Reader: IDisposable
 		{
 			public ImageFormat Format;
 			public Stream BaseStream;
 			public bool EOF = false;
-			public int Max;
+			public int MaxColor;
 
 			char[] token = new char[64];
 
@@ -55,9 +58,9 @@ namespace SolidCP.Providers.Virtualization.Helpers
 
 				if (Format == ImageFormat.P3)
 				{
-					color = new SKColor((byte)(int.Parse(ReadString() ?? "0") * 255 / Max),
-						(byte)(int.Parse(ReadString() ?? "0") * 255 / Max),
-						(byte)(int.Parse(ReadString() ?? "0") * 255 / Max));
+					color = new SKColor((byte)(int.Parse(ReadString() ?? "0") * 255 / MaxColor),
+						(byte)(int.Parse(ReadString() ?? "0") * 255 / MaxColor),
+						(byte)(int.Parse(ReadString() ?? "0") * 255 / MaxColor));
 					return true;
 				} else
 				{
@@ -81,7 +84,7 @@ namespace SolidCP.Providers.Virtualization.Helpers
 						EOF = true;
 						throw new Exception("Bad file format.");
 					}
-					color = new SKColor((byte)(red * 255 / Max), (byte)(green * 255 / Max), (byte)(blue * 255 / Max));
+					color = new SKColor((byte)(red * 255 / MaxColor), (byte)(green * 255 / MaxColor), (byte)(blue * 255 / MaxColor));
 					return true;
 				}
 			}
@@ -89,7 +92,7 @@ namespace SolidCP.Providers.Virtualization.Helpers
 			public void Dispose() => BaseStream?.Dispose();
 		}
 
-		public static SKImage FromStream(Stream stream)
+		public static SKImage SKImageFromStream(Stream stream)
 		{
 
 			using (var r = new Reader(stream))
@@ -101,7 +104,7 @@ namespace SolidCP.Providers.Virtualization.Helpers
 
 				int width = int.Parse(r.ReadString() ?? "0");
 				int height = int.Parse(r.ReadString() ?? "0");
-				r.Max = int.Parse(r.ReadString() ?? "255");
+				r.MaxColor = int.Parse(r.ReadString() ?? "255");
 
 				// prepare the bitmap
 				var bitmap = new SKBitmap(width, height, SKColorType.Rgb888x, SKAlphaType.Opaque);
@@ -116,10 +119,22 @@ namespace SolidCP.Providers.Virtualization.Helpers
 				return SKImage.FromBitmap(bitmap);
 			}
 		}
-		public static SKImage FromFile(string filename)
+		public static SKImage SKImageFromFile(string filename)
 		{
-			using (var file = File.OpenRead(filename)) return FromStream(file);
+			using (var file = File.OpenRead(filename)) return SKImageFromStream(file);
 		}
 
+		public PpmImage() { }
+		public PpmImage(Stream stream)
+		{
+			SkiaImage = SKImageFromStream(stream);
+		}
+		public PpmImage(string filename)
+		{
+			SkiaImage = SKImageFromFile(filename);
+		}
+
+		public static PpmImage FromStream(Stream stream) => new PpmImage(stream);
+		public static PpmImage FromFile(string filename) => new PpmImage(filename);
 	}
 }

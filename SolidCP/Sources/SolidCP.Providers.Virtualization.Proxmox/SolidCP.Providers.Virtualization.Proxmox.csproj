@@ -49,8 +49,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Corsinvest.ProxmoxVE.Api" Version="8.1.5" />
-		<PackageReference Include="Corsinvest.ProxmoxVE.Api.Shared" Version="8.1.5" />
+		<PackageReference Include="Corsinvest.ProxmoxVE.Api" Version="8.1.5" GeneratePathProperty="true" />
+		<PackageReference Include="Corsinvest.ProxmoxVE.Api.Shared" Version="8.1.5" GeneratePathProperty="true" />
 		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -92,6 +92,8 @@
 			<CopyToOutputFiles Include="$(PkgSkiaSharp)\lib\netstandard2.0\SkiaSharp.*" />
 			<CopyToOutputFiles Include="$(PkgRestSharp)\lib\netstandard2.0\RestSharp.*" />
 			<CopyToOutputFiles Include="$(PkgSSH_NET)\lib\netstandard2.0\Renci.SshNet.*" />
+			<CopyToOutputFiles Include="$(PkgCorsinvest_ProxmoxVE_Api)\lib\netstandard2.0\Corsinvest.ProxmoxVE.Api.*" />
+			<CopyToOutputFiles Include="$(PkgCorsinvest_ProxmoxVE_Api_Shared)\lib\netstandard2.0\Corsinvest.ProxmoxVE.Api.Shared.*" />
 		</ItemGroup>
 		
 		<Copy SourceFiles="@(CopyToOutputFiles)" DestinationFolder="$(OutputPath)" />

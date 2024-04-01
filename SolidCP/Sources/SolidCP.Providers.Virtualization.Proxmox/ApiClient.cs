@@ -10,6 +10,8 @@ using SolidCP.Providers.Virtualization.Proxmox;
 using SolidCP.Providers.HostedSolution;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Corsinvest.ProxmoxVE.Api;
+using Corsinvest.ProxmoxVE.Api.Shared;
 
 namespace SolidCP.Providers.Virtualization
 {
@@ -19,15 +21,20 @@ namespace SolidCP.Providers.Virtualization
 		private bool validateCertificate;
 		//private string node;
 		private ApiTicket apiTicket;
+		public PveClient Client { get; private set; }
+		private Proxmoxvps Provider { get; set; }
 
 		private const string TaskOk = "TASK OK";
 		private const string RequestRootElement = "data";
 
 		//public ApiClient(ProxmoxServer server, string node)
-		public ApiClient(ProxmoxServer server)
+		public ApiClient(ProxmoxServer server, Proxmoxvps provider)
 		{
 			this.baseUrl = "https://" + server.Ip + ":" + server.Port + "/api2/json";
 			this.validateCertificate = server.ValidateCertificate;
+			Client = new PveClient(server.Ip, int.Parse(server.Port));
+			Provider = provider;
+			// Client.ValidateCertificate = server.ValidateCertificate;
 			//this.node = node;
 			//HostedSolutionLog.DebugInfo("APIClient: {0}", this.baseUrl);
 		}
@@ -44,9 +51,9 @@ namespace SolidCP.Providers.Virtualization
 			else if (timeout != 0) options.MaxTimeout = timeout;
 			return new RestClient(options);
 		}
-		public RestResponse Login(User user)
+		public Result Login(User user)
 		{
-			//HostedSolutionLog.DebugInfo("Login"); 
+			/* //HostedSolutionLog.DebugInfo("Login"); 
 			var restClient = GetRestClient();
 			//HostedSolutionLog.DebugInfo("Login - baseUrl: {0}", baseUrl);
 			var request = new RestRequest("access/ticket", Method.Post);
@@ -70,11 +77,22 @@ namespace SolidCP.Providers.Virtualization
 			apiTicketdata.CSRFPreventionToken = (string)data["CSRFPreventionToken"];
 			apiTicket = apiTicketdata;
 			//HostedSolutionLog.DebugInfo("Login - apiTicket: {0}", apiTicket.ticket);
-			return response;
-		}
+			return response; */
+			if (!Client.Login(user.Username, user.Password, string.IsNullOrEmpty(user.Realm) ? "pam" : user.Realm).Result) 
+				throw new Exception($"Proxmox Server API Service at {baseUrl} unavaliable.\n{Client.LastResult.ReasonPhrase}");
+ 
+			ApiTicket apiTicketdata = new ApiTicket();
+			dynamic data = Client.LastResult.ToData();
+			apiTicketdata.ticket = data.ticket;
+            apiTicketdata.username = data.username;
+            apiTicketdata.CSRFPreventionToken = data.CSRFPreventionToken;
+            apiTicket = apiTicketdata;
+
+			return Client.LastResult;
+        }
 
 
-		public dynamic Status(string vmId)
+        public dynamic Status(string vmId)
 		{
 			var client = GetRestClient();
 			var nodeId = NodeId(vmId);
@@ -358,6 +376,27 @@ namespace SolidCP.Providers.Virtualization
 			return client.Execute<Upid>(request);
 		}
 
+		public PpmImage GetScreenshot(string vmId)
+		{
+			var client = Client;
+			var nodeId = NodeId(vmId);
+			var remoteTmpFile = $"/tmp/screendump-{vmId}-{DateTime.Now.Ticks}.ppm";
+			var result = client.Nodes[nodeId.node]?.Qemu[nodeId.id]?.Monitor.Monitor($"screendum {remoteTmpFile}");
+			var ssh = Provider.SshClient();
+			ssh.Connect();
+			ssh.RunCommand($"sudo -n chown {Provider.DeploySSHUserSettings} {remoteTmpFile}");
+			var cat = ssh.CreateCommand($"cat {remoteTmpFile}");
+			AutoResetEvent finished = new AutoResetEvent(false);
+            PpmImage image = null;
+            ThreadPool.QueueUserWorkItem(arg =>
+			{
+				using (var stream = cat.OutputStream) image = new PpmImage(stream);
+				finished.Set();
+			});
+			cat.Execute();
+			finished.WaitOne();
+			return image;
+		}
 
 		private RestRequest PreparePostRequest(string resource)
 		{
@@ -425,7 +464,6 @@ namespace SolidCP.Providers.Virtualization
 				{
 					apivm.node = vmId.Split(':')[0];
 				}
-
 			}
 			return apivm;
 		}

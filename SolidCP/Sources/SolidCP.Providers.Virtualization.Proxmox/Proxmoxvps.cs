@@ -80,6 +80,8 @@ using SolidCP.Providers.Virtualization.Extensions;
 using SolidCP.Providers.Virtualization.Proxmox;
 
 using Renci.SshNet;
+using Corsinvest.ProxmoxVE.Api;
+using Corsinvest.ProxmoxVE.Api.Shared;
 
 
 namespace SolidCP.Providers.Virtualization
@@ -173,7 +175,7 @@ namespace SolidCP.Providers.Virtualization
 			get { return ProviderSettings["DeploySSHServerPort"]; }
 		}
 
-		protected string DeploySSHUserSettings
+		public string DeploySSHUserSettings
 		{
 			get { return ProviderSettings["DeploySSHUser"]; }
 		}
@@ -274,6 +276,7 @@ namespace SolidCP.Providers.Virtualization
 		public virtual bool ValidateServerCertificate => !IsLocalServer || 
 			!ProxmoxTrustClusterServerCertificate.HasValue || !ProxmoxTrustClusterServerCertificate.Value;
 
+		public PveClient Client => new PveClient(string.IsNullOrEmpty(ProxmoxClusterServerHost) ? "127.0.0.1" : ProxmoxClusterServerHost, int.Parse(ProxmoxClusterServerPort));
 
 		#endregion
 
@@ -677,9 +680,29 @@ namespace SolidCP.Providers.Virtualization
 
 		public ImageFile GetVirtualMachineThumbnailImageScreenshot(string vmId, int width, int height)
 		{
-			//ApiClientSetup();
-			//client.
-			return null;
+			ApiClientSetup();
+			SKImage image = client.GetScreenshot(vmId);
+  
+            SKImageInfo thumbinfo = new SKImageInfo(width, height, SKColorType.Bgra8888);
+            SKImage thumb = SKImage.Create(thumbinfo);
+            image.ScalePixels(thumb.PeekPixels(), SKFilterQuality.Medium);
+
+            MemoryStream stream = new MemoryStream();
+
+            using (var data = thumb.Encode(SKEncodedImageFormat.Png, 100))
+            {
+                data.SaveTo(stream);
+            }
+            stream.Flush();
+            var buffer = stream.ToArray();
+
+            var imageFile = new ImageFile()
+            {
+                FileExtension = "png",
+                MimeType = "image/png",
+                RawData = buffer
+            };
+            return imageFile;
 		}
 
 		public ImageFile GetVirtualMachineThumbnailImage(string vmId, ThumbnailSize size)
@@ -701,6 +724,7 @@ namespace SolidCP.Providers.Virtualization
 
 			ImageFile file = null;
 
+			/*
 			try
 			{
 				file = GetVirtualMachineThumbnailImageGDIPlus(vmId, width, height);
@@ -718,13 +742,14 @@ namespace SolidCP.Providers.Virtualization
 			}
 			catch (Exception ex) { // catch dll load errors when Skia is not correctly installed
 			}
+			*/
 
-			if (file != null) return file;
+			return GetVirtualMachineThumbnailImageScreenshot(vmId, width, height);
 
-			throw new NotImplementedException();
+			//throw new NotImplementedException();
 		}
 
-		protected virtual SshClient SshClient()
+		public virtual SshClient SshClient()
 		{
 			// Setup Credentials and Server Information
 			ConnectionInfo Conninfo = new ConnectionInfo(DeploySSHServerHostSettings, Convert.ToInt32(DeploySSHServerPortSettings), DeploySSHUserSettings,
@@ -2513,18 +2538,16 @@ namespace SolidCP.Providers.Virtualization
 			//HostedSolutionLog.DebugInfo("ApiClientSetup: server: {0}", server);
 
 			//client = new ApiClient(server, ProxmoxClusterNode);
-			client = new ApiClient(server);
+			client = new ApiClient(server, this);
 
 
 			ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => { return true; };
 			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
 
-
-			response = client.Login(user);
+			client.Login(user);
 			//HostedSolutionLog.DebugInfo("ApiClientSetup: Login response: {0}", response.Content.ToString());
 
 		}
-
 		#endregion
 
 
