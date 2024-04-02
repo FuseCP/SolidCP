@@ -28,7 +28,6 @@ namespace SolidCP.Web.Services
 
 	public class ServiceTypes: KeyedCollection<string, ServiceType>
 	{
-		public static Assembly[] Assemblies { get; set; }
 
 		static string exposeWebServices = null;
 		public static string ExposeWebServices
@@ -38,7 +37,7 @@ namespace SolidCP.Web.Services
 				if (exposeWebServices == null)
 				{
 #if NETFRAMEWORK
-				exposeWebServices = (ConfigurationManager.AppSettings["ExposeWebServices"] ?? "").ToLower();
+					exposeWebServices = (ConfigurationManager.AppSettings["ExposeWebServices"] ?? "").ToLower();
 #else
 					throw new NotSupportedException("ExposeWebServices not set.");
 #endif
@@ -51,38 +50,49 @@ namespace SolidCP.Web.Services
 			}
 		}
 
+		public static Assembly[] assemblies = null;
 
-		public static IEnumerable<Type> GetWebServices()
+        public static Assembly[] Assemblies
 		{
-			Assembly eserver = null, server = null;
-
-			if (ExposeWebServices == "" || ExposeWebServices == "all" || ExposeWebServices == "true" ||
-				ExposeWebServices.Split(';', ',').Any(s => s.Trim() == "enterpriseserver"))
+			get
 			{
-				try
+				if (assemblies != null) return assemblies;
+
+				Assembly eserver = null, server = null;
+
+				if (ExposeWebServices == "" || ExposeWebServices == "all" || ExposeWebServices == "true" ||
+					ExposeWebServices.Split(';', ',').Any(s => s.Trim() == "enterpriseserver"))
 				{
-					eserver = Assembly.Load("SolidCP.EnterpriseServer");
+					try
+					{
+						eserver = Assembly.Load("SolidCP.EnterpriseServer");
+					}
+					catch { }
 				}
-				catch { }
-			}
 
-			if (ExposeWebServices == "" || ExposeWebServices == "all" || ExposeWebServices == "true" ||
-				ExposeWebServices.Split(';', ',').Any(s => s.Trim() == "server"))
-			{
-				try
+				if (ExposeWebServices == "" || ExposeWebServices == "all" || ExposeWebServices == "true" ||
+					ExposeWebServices.Split(';', ',').Any(s => s.Trim() == "server"))
 				{
-					server = Assembly.Load("SolidCP.Server");
+					try
+					{
+						server = Assembly.Load("SolidCP.Server");
+					}
+					catch { }
 				}
-				catch { }
-			}
-			
-			Assemblies = new Assembly[]
-			{
-				eserver, server
-			}
-			.Where(a => a != null)
-			.ToArray();
 
+				assemblies = new Assembly[]
+				{
+					eserver, server
+				}
+				.Where(a => a != null)
+				.ToArray();
+
+				return assemblies;
+			}
+		}
+
+        public static IEnumerable<Type> GetWebServices()
+		{
 			var types = Assemblies
 				.SelectMany(a => {
 					var attrTypes = a.GetCustomAttribute<WCFServiceTypesAttribute>()?.Types;
@@ -90,6 +100,18 @@ namespace SolidCP.Web.Services
 				});
 			return types;
 		}
+
+		public static IEnumerable<Type> GetHttpHandlers()
+		{
+			var types = Assemblies
+				.SelectMany(a =>
+				{
+					var attrTypes = a.GetCustomAttribute<HttpHandlerTypesAttribute>()?.Types;
+					return attrTypes ?? new Type[0];
+				});
+			return types;
+		}
+
 
 		protected override string GetKeyForItem(ServiceType type) => type.Service.Name;
 

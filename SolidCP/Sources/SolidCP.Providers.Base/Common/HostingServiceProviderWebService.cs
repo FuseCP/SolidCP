@@ -67,7 +67,7 @@ namespace SolidCP.Providers
             }
         }
 
-        protected RemoteServerSettings ServerSettings
+        public RemoteServerSettings ServerSettings
         {
             get
             {
@@ -80,7 +80,7 @@ namespace SolidCP.Providers
             }
         }
 
-        protected ServiceProviderSettings ProviderSettings
+        public ServiceProviderSettings ProviderSettings
         {
             get
             {

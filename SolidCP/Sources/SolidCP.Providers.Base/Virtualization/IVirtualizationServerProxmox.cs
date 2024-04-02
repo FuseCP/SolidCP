@@ -32,6 +32,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using System.Text;
 
 namespace SolidCP.Providers.Virtualization
@@ -116,5 +117,7 @@ namespace SolidCP.Providers.Virtualization
         ReplicationDetailInfo GetReplicationInfo(string vmId);
         void PauseReplication(string vmId);
         void ResumeReplication(string vmId);
+        VNCTunnel GetVirtualMachineVNCTunnel(string vmId);
+        Socket GetPveApiSocket();
     }
 }

@@ -903,6 +903,7 @@ namespace SolidCP.Providers.Virtualization
             return false;
         }
 
+        public bool IsHostIpV4 => true;
         public string GetVirtualMachineVNC(string vmId)
         {
             return null; // Not yet supprted. Needs a reverse proxy to the Proxmox API, because the viewer needs the
@@ -933,6 +934,53 @@ namespace SolidCP.Providers.Virtualization
         }
 
 
+        bool IsApiServerLoopback => true;
+        bool IsApiIpV4 => true;
+
+        object portForwardLock = new object();
+        SshClient portForwardClient = null;
+        public virtual int CreatePveApiSshTunnel()
+        {
+            if (IsApiServerLoopback) return int.Parse(ProxmoxClusterServerPort);
+
+            lock (portForwardLock)
+            {
+                if (portForwardClient != null) {
+                    return (int)portForwardClient.ForwardedPorts
+                        .OfType<ForwardedPortLocal>()
+                        .FirstOrDefault().BoundPort;
+                }
+                var ssh = SshClient();
+                ForwardedPortLocal fwdport;
+                if (IsHostIpV4)
+                {
+                    fwdport = new ForwardedPortLocal("127.0.0.1", ProxmoxClusterServerApiHost, uint.Parse(ProxmoxClusterServerPort));
+                } else
+                {
+                    fwdport = new ForwardedPortLocal("::1", ProxmoxClusterServerApiHost, uint.Parse(ProxmoxClusterServerPort));
+                }
+                ssh.AddForwardedPort(fwdport);
+                portForwardClient = ssh;
+                return (int)fwdport.BoundPort;
+            }
+        }
+        public virtual Socket GetPveApiSocket()
+        {
+            var port = CreatePveApiSshTunnel();
+
+            Socket socket;
+            if (IsApiIpV4)
+            {
+                socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                socket.Connect(new IPEndPoint(IPAddress.Loopback, port));
+            }
+            else
+            {
+                socket = new Socket(AddressFamily.InterNetworkV6, SocketType.Stream, ProtocolType.Tcp);
+                socket.Connect(new IPEndPoint(IPAddress.IPv6Loopback, port));
+            }
+            return socket;
+        }
         #endregion
 
 

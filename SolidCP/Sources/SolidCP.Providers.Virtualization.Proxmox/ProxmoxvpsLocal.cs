@@ -80,6 +80,11 @@ namespace SolidCP.Providers.Virtualization
 			return mem;
         }
 
+		public override int CreatePveApiSshTunnel()
+		{
+			return int.Parse(ProxmoxClusterServerPort);
+		}
+
         public string GetInstalledVersion()
 		{
 			try

@@ -888,7 +888,23 @@ namespace SolidCP.Server
         }
 
         #endregion
-
+        [WebMethod, SoapHeader("settings")]
+        public VNCTunnel GetVirtualMachineVNCTunnel(string vmId)
+        {
+            try
+            {
+                Log.WriteStart($"'{0}' {nameof(GetVirtualMachineVNCTunnel)}", ProviderSettings.ProviderName);
+                VNCTunnel result = VirtualizationProvider.GetVirtualMachineVNCTunnel(vmId);
+                Log.WriteEnd($"'{0}' {nameof(GetVirtualMachineVNCTunnel)}", ProviderSettings.ProviderName);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError($"'{ProviderSettings.ProviderName}' {nameof(GetVirtualMachineVNCTunnel)}", ex);
+                throw;
+            }
+        }
+        public System.Net.Sockets.Socket GetPveApiSocket() => VirtualizationProvider.GetPveApiSocket();
 
         #region Replication
 

@@ -83,6 +83,10 @@ namespace SolidCP.Providers
             {
                 return hash[settingName];
             }
+            set
+            {
+                hash[settingName] = value;
+            }
         }
 
         public int GetInt(string settingName)

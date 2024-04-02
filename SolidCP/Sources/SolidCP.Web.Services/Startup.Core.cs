@@ -198,6 +198,11 @@ namespace SolidCP.Web.Services
 
 			ConfigureWCF(app);
 
+			foreach (var handlerType in ServiceTypes.GetHttpHandlers()) {
+				var handler = (IRoutedHttpHandler)Activator.CreateInstance(handlerType);
+				handler.Init(app);
+			}
+
 			app.Run();
 		}
 
