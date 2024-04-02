@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using SolidCP.Providers.OS;
 using SolidCP.Providers.HostedSolution;
+using System.IO;
 
 namespace SolidCP.Providers.Virtualization
 {
@@ -70,7 +71,16 @@ namespace SolidCP.Providers.Virtualization
 			return vm;
 		}
 
-		public string GetInstalledVersion()
+        public override Stream GetFile(string vmId, string filename, bool delete = false)
+        {
+			var mem = new MemoryStream(); 
+			using (var stream = File.OpenRead(filename)) stream.CopyTo(mem);
+			if (delete) File.Delete(filename);
+			mem.Seek(0, SeekOrigin.Begin);
+			return mem;
+        }
+
+        public string GetInstalledVersion()
 		{
 			try
 			{

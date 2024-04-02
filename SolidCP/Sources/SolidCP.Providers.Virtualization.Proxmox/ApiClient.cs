@@ -78,7 +78,7 @@ namespace SolidCP.Providers.Virtualization
 			apiTicket = apiTicketdata;
 			//HostedSolutionLog.DebugInfo("Login - apiTicket: {0}", apiTicket.ticket);
 			return response; */
-			if (!Client.Login(user.Username, user.Password, string.IsNullOrEmpty(user.Realm) ? "pam" : user.Realm).Result) 
+			if (!Client.Login($"{user.Username}@{(string.IsNullOrEmpty(user.Realm) ? "pam" : user.Realm)}", user.Password).Result) 
 				throw new Exception($"Proxmox Server API Service at {baseUrl} unavaliable.\n{Client.LastResult.ReasonPhrase}");
  
 			ApiTicket apiTicketdata = new ApiTicket();
@@ -376,26 +376,17 @@ namespace SolidCP.Providers.Virtualization
 			return client.Execute<Upid>(request);
 		}
 
-		public PpmImage GetScreenshot(string vmId)
+        public virtual PpmImage GetScreenshot(string vmId)
 		{
 			var client = Client;
 			var nodeId = NodeId(vmId);
-			var remoteTmpFile = $"/tmp/screendump-{vmId}-{DateTime.Now.Ticks}.ppm";
-			var result = client.Nodes[nodeId.node]?.Qemu[nodeId.id]?.Monitor.Monitor($"screendum {remoteTmpFile}");
-			var ssh = Provider.SshClient();
-			ssh.Connect();
-			ssh.RunCommand($"sudo -n chown {Provider.DeploySSHUserSettings} {remoteTmpFile}");
-			var cat = ssh.CreateCommand($"cat {remoteTmpFile}");
-			AutoResetEvent finished = new AutoResetEvent(false);
-            PpmImage image = null;
-            ThreadPool.QueueUserWorkItem(arg =>
+			var remoteTmpFile = $"/tmp/screendump-{vmId.Replace(':','-')}-{DateTime.Now.Ticks}.ppm";
+            //var remoteTmpFile = $"/tmp/screendump.ppm";
+            var result = client.Nodes[nodeId.node]?.Qemu[nodeId.id]?.Monitor.Monitor($"screendump {remoteTmpFile}").Result;
+            using (var file = Provider.GetFile(vmId, remoteTmpFile, true))
 			{
-				using (var stream = cat.OutputStream) image = new PpmImage(stream);
-				finished.Set();
-			});
-			cat.Execute();
-			finished.WaitOne();
-			return image;
+				return PpmImage.FromStream(file);
+			}
 		}
 
 		private RestRequest PreparePostRequest(string resource)

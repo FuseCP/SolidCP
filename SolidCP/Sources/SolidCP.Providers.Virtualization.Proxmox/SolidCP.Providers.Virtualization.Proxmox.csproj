@@ -13,21 +13,15 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<LangVersion>11</LangVersion>
 		<Nullable>disable</Nullable>
-		<UseSkia>true</UseSkia>
-		<UseGDIPlus>false</UseGDIPlus>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 		<DebugType>portable</DebugType>
-		<DefineConstants Condition=" '$(UseGDIPlus)' == 'true' ">$(DefineConstants);UseGDIPlus</DefineConstants>
-		<DefineConstants Condition=" '$(UseSkia)' == 'true' ">$(DefineConstants);UseSkia</DefineConstants>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
 		<DebugType>portable</DebugType>
-		<DefineConstants Condition=" '$(UseGDIPlus)' == 'true' ">$(DefineConstants);UseGDIPlus</DefineConstants>
-		<DefineConstants Condition=" '$(UseSkia)' == 'true' ">$(DefineConstants);UseSkia</DefineConstants>
 	</PropertyGroup>
 	
-	<ItemGroup Condition=" '$(UseSkia)' == 'true' ">
+	<ItemGroup>
 		<PackageReference Include="SkiaSharp" Version="2.88.7" GeneratePathProperty="true" />
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.7" GeneratePathProperty="true" />
 		<PackageReference Include="SkiaSharp.NativeAssets.macOS" Version="2.88.7" GeneratePathProperty="true" />
@@ -36,16 +30,13 @@
 	</ItemGroup>
 
 	<!--<Import Project="$(PkgSkiaSharp_NativeAssets_Linux_NoDependencies)\build\net462\SkiaSharp.NativeAssets.Linux.NoDependencies.targets" Condition=" '$(UseSkia)' == 'true' " />-->
-	<Import Project="$(PkgSkiaSharp_NativeAssets_Linux)\build\net462\SkiaSharp.NativeAssets.Linux.targets" Condition=" '$(UseSkia)' == 'true' " />
-	<Import Project="$(PkgSkiaSharp_NativeAssets_macOS)\build\net462\SkiaSharp.NativeAssets.macOS.targets" Condition=" '$(UseSkia)' == 'true' " />
-	<Import Project="$(PkgSkiaSharp_NativeAssets_Win32)\build\net462\SkiaSharp.NativeAssets.Win32.targets" Condition=" '$(UseSkia)' == 'true' " />
-
-	<ItemGroup Condition=" '$(UseGDIPlus)' == 'true' ">
-		<PackageReference Include="System.Drawing.Common" Version="8.0.3" Condition="" />
-	</ItemGroup>
+	<Import Project="$(PkgSkiaSharp_NativeAssets_Linux)\build\net462\SkiaSharp.NativeAssets.Linux.targets" />
+	<Import Project="$(PkgSkiaSharp_NativeAssets_macOS)\build\net462\SkiaSharp.NativeAssets.macOS.targets" />
+	<Import Project="$(PkgSkiaSharp_NativeAssets_Win32)\build\net462\SkiaSharp.NativeAssets.Win32.targets" />
 
 	<ItemGroup>
 	  <None Remove="Resources\Roboto-Medium.ttf" />
+	  <None Remove="Resources\stop-sign-svgrepo-com.svg" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -57,6 +48,7 @@
 		<PackageReference Include="RestSharp" Version="110.2.0" GeneratePathProperty="true" />
 		<PackageReference Include="SSH.NET" Version="2024.0.0" GeneratePathProperty="true" />
 		<PackageReference Include="System.Buffers" Version="4.5.1" />
+		<PackageReference Include="System.IO.Pipelines" Version="8.0.0" />
 		<PackageReference Include="System.Memory" Version="4.5.5" />
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
 		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
@@ -80,6 +72,7 @@
 	  <EmbeddedResource Include="Resources\Roboto-Medium.ttf">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </EmbeddedResource>
+	  <EmbeddedResource Include="Resources\stop-sign-svgrepo-com.svg" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
