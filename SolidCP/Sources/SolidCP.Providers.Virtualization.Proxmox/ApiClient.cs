@@ -428,7 +428,7 @@ namespace SolidCP.Providers.Virtualization
 			return node;
 		}
 
-		private ApiVM NodeId(string vmId)
+		public ApiVM NodeId(string vmId)
 		{
 			ApiVM apivm = new ApiVM();
 			apivm.node = vmId.Split(':')[0];

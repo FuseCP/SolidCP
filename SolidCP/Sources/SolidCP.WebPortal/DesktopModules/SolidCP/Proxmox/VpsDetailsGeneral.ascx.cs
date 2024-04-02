@@ -57,7 +57,7 @@ namespace SolidCP.Portal.Proxmox
         private void BindGeneralDetails()
         {
             VirtualMachine item = VirtualMachinesProxmoxHelper.GetCachedVirtualMachine(PanelRequest.ItemID);
-            if (!String.IsNullOrEmpty(item.CurrentTaskId)
+            if (!string.IsNullOrEmpty(item.CurrentTaskId)
                 || item.ProvisioningStatus == VirtualMachineProvisioningStatus.Error)
             {
                 DetailsTable.Visible = false;
@@ -76,15 +76,16 @@ namespace SolidCP.Portal.Proxmox
 
             if (vm != null)
             {
-                bool displayRDP = (Request.Browser.Browser == "IE"
+                bool displayRDP = (/* Request.Browser.Browser == "IE"
                     && Request.Browser.ActiveXControls
                     && Request.Browser.VBScript
-                    && vm.State != VirtualMachineState.Off
+                    && */ vm.State != VirtualMachineState.Off
                     && vm.State != VirtualMachineState.Paused
                     && vm.State != VirtualMachineState.Saved
                     && item.RemoteDesktopEnabled);
                 lnkHostname.Text = item.Hostname.ToUpper();
                 lnkHostname.Visible = displayRDP;
+                lnkHostname.NavigateUrl = "javascript:OpenRemoteDesktopWindow('', 800, 600)";
 
                 litHostname.Text = item.Hostname.ToUpper();
                 litHostname.Visible = !displayRDP;
@@ -98,9 +99,10 @@ namespace SolidCP.Portal.Proxmox
                     txtDomain.Text = item.Domain;
                 }
 
-                lnkHostname.Visible = false;
-                //litRdpPageUrl.Text = Page.ResolveUrl(ES.Services.Proxmox.GetVirtualMachineVNCURL(PanelRequest.ItemID));
-                                
+                if (lnkHostname.Visible)
+                {
+                    litRdpPageUrl.Text = Page.ResolveUrl(ES.Services.Proxmox.GetVirtualMachineVNCURL(PanelRequest.ItemID));
+                }               
 
                 TimeSpan uptime = TimeSpan.FromMilliseconds(vm.Uptime * 1000);
                 uptime = uptime.Subtract(TimeSpan.FromMilliseconds(uptime.Milliseconds));

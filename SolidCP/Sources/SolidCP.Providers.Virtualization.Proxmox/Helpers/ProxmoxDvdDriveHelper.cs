@@ -43,42 +43,41 @@ namespace SolidCP.Providers.Virtualization
                     info.Name = Path.GetFileNameWithoutExtension(isoname);
                 }
             }
-			return info;
-		}
-
-
-    public static void Set(ApiClient client, string vmId, string path, long size)
-    {
-        if (path == null)
-        {
-            Proxmox.UpdateDVD configuration = new Proxmox.UpdateDVD { };
-            configuration.ide2 = "none,media=cdrom";
-            client.UpdateDVD(vmId, configuration);
+            return info;
         }
-        else
+
+        public static void Set(ApiClient client, string vmId, string path, long size)
         {
-            Proxmox.UpdateDVD configuration = new Proxmox.UpdateDVD { };
-            configuration.ide2 = $"{path},media=cdrom,size={size / Constants.Size1M}M";
-            client.UpdateDVD(vmId, configuration);
+            if (path == null)
+            {
+                Proxmox.UpdateDVD configuration = new Proxmox.UpdateDVD { };
+                configuration.ide2 = "none,media=cdrom";
+                client.UpdateDVD(vmId, configuration);
+            }
+            else
+            {
+                Proxmox.UpdateDVD configuration = new Proxmox.UpdateDVD { };
+                configuration.ide2 = $"{path},media=cdrom,size={size / Constants.Size1M}M";
+                client.UpdateDVD(vmId, configuration);
+            }
+        }
+
+        public static void Update(ApiClient client, VirtualMachine vm, bool dvdDriveShouldBeInstalled)
+        {
+            if (!vm.DvdDriveInstalled && dvdDriveShouldBeInstalled)
+                Add(client, vm.VirtualMachineId);
+            else if (vm.DvdDriveInstalled && !dvdDriveShouldBeInstalled)
+                Remove(client, vm.VirtualMachineId);
+        }
+
+        public static void Add(ApiClient client, string vmId)
+        {
+            Set(client, vmId, null, 0);
+        }
+
+        public static void Remove(ApiClient client, string vmId)
+        {
+            client.Unlink(vmId, "ide2");
         }
     }
-
-    public static void Update(ApiClient client, VirtualMachine vm, bool dvdDriveShouldBeInstalled)
-    {
-        if (!vm.DvdDriveInstalled && dvdDriveShouldBeInstalled)
-            Add(client, vm.VirtualMachineId);
-        else if (vm.DvdDriveInstalled && !dvdDriveShouldBeInstalled)
-            Remove(client, vm.VirtualMachineId);
-    }
-
-    public static void Add(ApiClient client, string vmId)
-    {
-        Set(client, vmId, null, 0);
-    }
-
-    public static void Remove(ApiClient client, string vmId)
-    {
-        client.Unlink(vmId, "ide2");
-    }
-}
 }

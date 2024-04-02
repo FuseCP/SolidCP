@@ -878,8 +878,10 @@ namespace SolidCP.Providers.Virtualization
             // throw new NotImplementedException();
 
             // DEBUG Test von VNC!!!
-            var authcookie = "NOTSETYET";
-            var url = $"https://{ProxmoxClusterServerHost}:{ProxmoxClusterServerPort}/?console=kvm&novnc=1&vmid={vmId}&vmname=wsp&node={ProxmoxClusterNode}|{authcookie}";
+            ApiClientSetup();
+            var nodeId = client.NodeId(vmId);
+            var vm = GetVirtualMachine(vmId);
+            var url = $"https://{ProxmoxClusterServerHost}:{ProxmoxClusterServerPort}/?console=kvm&novnc=1&vmid={nodeId.id}&vmname={HttpUtils.vm.Name}&node={nodeId.node}&resize=off";
             byte[] bytes = System.Text.Encoding.UTF8.GetBytes(url);
             var connect = Convert.ToBase64String(bytes);
             var vmvncurl = $"http://{ProxmoxClusterServerHost}:{ProxmoxClusterServerPort}/vnc/vnc.php?connect={connect}&resolution=";
