@@ -12,7 +12,7 @@ namespace SolidCP.Providers.Virtualization
 {
 	public class ProxmoxvpsLocal : Proxmoxvps
 	{
-		protected override string ProxmoxClusterServerHost => "localhost";
+		protected override string ProxmoxClusterServerApiHost => "localhost";
 		protected override string ProxmoxClusterNode => Environment.MachineName;
 		public override VirtualMachine CreateVirtualMachine(VirtualMachine vm)
 		{

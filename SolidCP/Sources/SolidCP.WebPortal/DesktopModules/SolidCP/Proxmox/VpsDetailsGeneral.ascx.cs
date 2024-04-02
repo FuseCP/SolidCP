@@ -83,12 +83,21 @@ namespace SolidCP.Portal.Proxmox
                     && vm.State != VirtualMachineState.Paused
                     && vm.State != VirtualMachineState.Saved
                     && item.RemoteDesktopEnabled);
+
+                string resolveUrl = null;
+
+                if (displayRDP) resolveUrl = ES.Services.Proxmox.GetVirtualMachineVNCURL(PanelRequest.ItemID);
+
+                displayRDP = displayRDP && resolveUrl != null;
+
                 lnkHostname.Text = item.Hostname.ToUpper();
-                lnkHostname.Visible = displayRDP;
-                lnkHostname.NavigateUrl = "javascript:OpenRemoteDesktopWindow('', 800, 600)";
+                lnkHostname.Visible = RdpPopup.Enabled = btnOpenRDP.Visible = RdpPopupButton.Enabled = displayRDP;
+
+                //lnkHostname.NavigateUrl = "javascript:OpenRemoteDesktopWindow('', 800, 600)";
 
                 litHostname.Text = item.Hostname.ToUpper();
                 litHostname.Visible = !displayRDP;
+
 
                 litDomain.Text = item.Domain;
 
@@ -99,10 +108,7 @@ namespace SolidCP.Portal.Proxmox
                     txtDomain.Text = item.Domain;
                 }
 
-                if (lnkHostname.Visible)
-                {
-                    litRdpPageUrl.Text = Page.ResolveUrl(ES.Services.Proxmox.GetVirtualMachineVNCURL(PanelRequest.ItemID));
-                }               
+                litRdpPageUrl.Text = resolveUrl ?? "";
 
                 TimeSpan uptime = TimeSpan.FromMilliseconds(vm.Uptime * 1000);
                 uptime = uptime.Subtract(TimeSpan.FromMilliseconds(uptime.Milliseconds));
@@ -206,7 +212,7 @@ namespace SolidCP.Portal.Proxmox
             else
             {
                 DetailsTable.Visible = false;
-                messageBox.ShowErrorMessage("VPS_LOAD_VM_ITEM");
+                messageBox.ShowErrorMessage("VPS_LOAD_PVEVM_ITEM");
             }
         }
 

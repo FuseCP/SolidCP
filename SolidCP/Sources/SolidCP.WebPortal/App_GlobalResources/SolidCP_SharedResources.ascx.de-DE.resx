@@ -6966,4 +6966,7 @@
   <data name="Quota.PROXMOX.StartShutdownAllowed" xml:space="preserve">
     <value>Erlaube VPS zu Starten, Auszuschalten und Herunterzufahren</value>
   </data>
+  <data name="ErrorDescription.VPS_LOAD_PVEVM_ITEM1" xml:space="preserve">
+    <value>Mögliche Ursachen für diesen Fehler sind:&lt;br/&gt;1. Die dem VPS-Metaeintrag zugeordnete virtuelle Maschine wurde vom Virtualisierungsserver gelöscht.&lt;br/&gt;2. Proxmox-Verwaltungsdienst wurde gestoppt.&lt;br/&gt;3. Keine Verbindung zum, auf dem Virtualisierungsserver installierten, SolidCP-Server.&lt;br/&gt;&lt;br/&gt;Lösungen:&lt;br/&gt;1. Stellen Sie sicher, dass die zugeordnete virtuelle Maschine auf dem Proxmox-Server existiert; andernfalls erstellen Sie diese VPS aus SolidCP erneut.&lt;br/&gt;2. Überprüfen Sie, dass der Proxmox-Verwaltungsdienst gestartet ist.&lt;br/&gt;3. Überprüfen Sie die SolidCP-Serververbindung.</value>
+  </data>
 </root>

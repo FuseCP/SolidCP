@@ -42,6 +42,15 @@ namespace SolidCP.Portal.Proxmox
         protected global::System.Web.UI.WebControls.Literal litRdpPageUrl;
 
         /// <summary>
+        /// litCsfrCookie control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal litCsfrCookie;
+
+        /// <summary>
         /// tabs control.
         /// </summary>
         /// <remarks>
@@ -103,6 +112,15 @@ namespace SolidCP.Portal.Proxmox
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton btnChangeHostnamePopup;
+
+        /// <summary>
+        /// btnOpenRDP control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ImageButton btnOpenRDP;
 
         /// <summary>
         /// RdpPanel control.
@@ -184,6 +202,15 @@ namespace SolidCP.Portal.Proxmox
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::AjaxControlToolkit.DropShadowExtender RdpShadow;
+
+        /// <summary>
+        /// RdpPopupButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.PopupControlExtender RdpPopupButton;
 
         /// <summary>
         /// locDomainTop control.

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace SolidCP.Providers.Virtualization.Proxmox
 {
-    class ApiVM
+    public class ApiVM
     {
-        public string node { get; set; }
-        public string id { get; set; }
+        public string Node { get; set; }
+        public string Id { get; set; }
     }
 }

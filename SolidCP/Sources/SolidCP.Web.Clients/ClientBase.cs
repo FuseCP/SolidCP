@@ -230,6 +230,8 @@ namespace SolidCP.Web.Clients
 
 		public bool IsHostLocal(string host)
 		{
+			if (host == null) return true;
+
 			var isHostIP = Regex.IsMatch(host, @"^[0.9]{1,3}(?:\.[0-9]{1,3}){3}$", RegexOptions.Singleline) || Regex.IsMatch(host, @"^\[?[0-9a-fA-F:]+\]?$", RegexOptions.Singleline);
 			if (host == "localhost" || host == "127.0.0.1" || host == "::1" || host == "[::1]" ||
 				isHostIP && IsLocalAddress(host)) return true;

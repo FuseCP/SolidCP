@@ -49,6 +49,7 @@ using System.Runtime.InteropServices;
 
 using RestSharp;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Dynamic;
 using System.Threading;
 
@@ -85,6 +86,8 @@ namespace SolidCP.Providers.Virtualization
         {
             get { return ProviderSettings["ProxmoxClusterServerHost"]; }
         }
+
+        protected virtual string ProxmoxClusterServerApiHost => ProxmoxClusterServerHost;
 
         protected string ProxmoxClusterServerPort
         {
@@ -263,12 +266,11 @@ namespace SolidCP.Providers.Virtualization
         private User user;
         private ProxmoxServer server;
 
-        public virtual bool IsLocalServer => string.IsNullOrEmpty(ProxmoxClusterServerHost) || ProxmoxClusterServerHost == "localhost" ||
-            ProxmoxClusterServerHost.StartsWith("127.0.0.") || ProxmoxClusterServerHost == "::1" || ProxmoxClusterServerHost == "[::1]";
+        public virtual bool IsLocalServer => IsHostLocal(ProxmoxClusterServerApiHost);
         public virtual bool ValidateServerCertificate => !IsLocalServer ||
             !ProxmoxTrustClusterServerCertificate.HasValue || !ProxmoxTrustClusterServerCertificate.Value;
 
-        public PveClient Client => new PveClient(string.IsNullOrEmpty(ProxmoxClusterServerHost) ? "127.0.0.1" : ProxmoxClusterServerHost, int.Parse(ProxmoxClusterServerPort));
+        public PveClient Client => new PveClient(string.IsNullOrEmpty(ProxmoxClusterServerApiHost) ? "127.0.0.1" : ProxmoxClusterServerApiHost, int.Parse(ProxmoxClusterServerPort));
 
         #endregion
 
@@ -869,27 +871,70 @@ namespace SolidCP.Providers.Virtualization
 			*/
         }
 
+        static Dictionary<string, System.Net.IPAddress[]> ResolvedHosts = new Dictionary<string, System.Net.IPAddress[]>();
+
+        public bool IsLocalAddress(string adr)
+        {
+            return Regex.IsMatch(adr, @"(^127\.)|(^192\.168\.)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^\[?::1\]?$)|(^\[?[fF][cCdD])", RegexOptions.Singleline);
+        }
+
+        public bool IsHostLocal(string host)
+        {
+            if (string.IsNullOrEmpty(host)) return true;
+
+            var isHostIP = Regex.IsMatch(host, @"^[0.9]{1,3}(?:\.[0-9]{1,3}){3}$", RegexOptions.Singleline) || Regex.IsMatch(host, @"^\[?[0-9a-fA-F:]+\]?$", RegexOptions.Singleline);
+            if (host == "localhost" || host == "127.0.0.1" || host == "::1" || host == "[::1]" || !isHostIP && !host.Contains('.') ||
+                isHostIP && IsLocalAddress(host)) return true;
+
+            if (!isHostIP)
+            {
+                IPAddress[] ips;
+                lock (ResolvedHosts)
+                {
+                    if (!ResolvedHosts.TryGetValue(host, out ips))
+                    {
+                        ResolvedHosts.Add(host, ips = Dns.GetHostEntry(host).AddressList);
+                    }
+                }
+                return ips
+                    .Where(ip => ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork || ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
+                    .All(ip => IsLocalAddress(ip.ToString()));
+            }
+            return false;
+        }
+
         public string GetVirtualMachineVNC(string vmId)
         {
+            return null; // Not yet supprted. Needs a reverse proxy to the Proxmox API, because the viewer needs the
+                         // CSFR cookie to be set.
 
-            //string result = null;
-            //return result;
+#if !DEBUG
+            if (IsHostLocal(ProxmoxClusterServerHost)) return null;
+#endif
 
-            // throw new NotImplementedException();
-
-            // DEBUG Test von VNC!!!
             ApiClientSetup();
             var nodeId = client.NodeId(vmId);
             var vm = GetVirtualMachine(vmId);
-            var url = $"https://{ProxmoxClusterServerHost}:{ProxmoxClusterServerPort}/?console=kvm&novnc=1&vmid={nodeId.id}&vmname={HttpUtils.vm.Name}&node={nodeId.node}&resize=off";
-            byte[] bytes = System.Text.Encoding.UTF8.GetBytes(url);
-            var connect = Convert.ToBase64String(bytes);
-            var vmvncurl = $"http://{ProxmoxClusterServerHost}:{ProxmoxClusterServerPort}/vnc/vnc.php?connect={connect}&resolution=";
-            return vmvncurl;
-
+            var url = $"https://{ProxmoxClusterServerHost}:{ProxmoxClusterServerPort}/?console=kvm&novnc=1&vmid={nodeId.Id}&vmname={WebUtility.UrlEncode(vm.Name)}&node={nodeId.Node}&resize=off";
+            return url;
         }
 
+        public VNCTunnel GetVirtualMachineVNCTunnel(string vmId)
+        {
+            ApiClientSetup();
+            var nodeId = client.NodeId(vmId);
+            var vm = GetVirtualMachine(vmId);
+            var url = $"https://{ProxmoxClusterServerHost}:{ProxmoxClusterServerPort}/?console=kvm&novnc=1&vmid={nodeId.Id}&vmname={WebUtility.UrlEncode(vm.Name)}&node={nodeId.Node}&resize=off";
+            return new VNCTunnel()
+            {
+                Url = url,
+                CSFRCookie = ""
+            };
+        }
+
+
         #endregion
+
 
         #region Snapshots
 
@@ -2472,7 +2517,7 @@ namespace SolidCP.Providers.Virtualization
 
             user = new User { Username = ProxmoxClusterAdminUser, Password = ProxmoxClusterAdminPass, Realm = clusterrealm };
             //HostedSolutionLog.DebugInfo("ApiClientSetup: user: {0}", user);
-            server = new ProxmoxServer { Ip = string.IsNullOrEmpty(ProxmoxClusterServerHost) ? "127.0.0.1" : ProxmoxClusterServerHost, Port = ProxmoxClusterServerPort, ValidateCertificate = ValidateServerCertificate };
+            server = new ProxmoxServer { Ip = string.IsNullOrEmpty(ProxmoxClusterServerApiHost) ? "127.0.0.1" : ProxmoxClusterServerApiHost, Port = ProxmoxClusterServerPort, ValidateCertificate = ValidateServerCertificate };
             //HostedSolutionLog.DebugInfo("ApiClientSetup: server: {0}", server);
 
             //client = new ApiClient(server, ProxmoxClusterNode);

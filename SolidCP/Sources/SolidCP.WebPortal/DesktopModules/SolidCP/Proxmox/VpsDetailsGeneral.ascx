@@ -14,9 +14,11 @@
 <script language="JavaScript" type="text/javascript">
 	function OpenRemoteDesktopWindow(resolution, width, height) {
 		$find("RdpPopup").hidePopup();
-		var rdpUrl = "<asp:literal id="litRdpPageUrl" runat="server" />";
+		var rdpUrl = "<asp:Literal id="litRdpPageUrl" runat="server" />";
+		var cookie = "<asp:Literal id="litCsfrCookie" runat="server" />";
 		var left = (screen.width - width) / 2;
 		var top = (screen.height - height) / 2;
+		desktop.cookie
 		my_window = window.open(rdpUrl + resolution, "RDP", "status=0,width=" + width + ",height=" + height + ",top=" + top + ",left=" + left);
 	}
 </script>
@@ -38,9 +40,13 @@
 										meta:resourcekey="locHostname" Text="Host name:" /></td>
 								<td>
 									<b>
-										<asp:HyperLink ID="lnkHostname" runat="server" NavigateUrl="javascript:void(0);" Text="[hostname]"></asp:HyperLink><asp:Literal ID="litHostname" runat="server" Text="[hostname]"></asp:Literal></b>
+										<asp:HyperLink ID="lnkHostname" runat="server" NavigateUrl="javascript:void(0);" Text="[hostname]"></asp:HyperLink>
+										<asp:Literal ID="litHostname" runat="server" Text="[hostname]"></asp:Literal></b>
+
 									&nbsp;<asp:LinkButton ID="btnChangeHostnamePopup" runat="server"
 										meta:resourcekey="btnChangeHostnamePopup" SkinID="EditSmall" Text="Edit"></asp:LinkButton>
+
+									<asp:ImageButton ID="btnOpenRDP" runat="server" SkinID="VpsRemoteDestop" meta:resourcekey="btnOpenRDP" />
 
 									<asp:Panel ID="RdpPanel" runat="server" CssClass="PopupExtender" Style="display: none;">
 										<div style="padding-bottom: 3px;">
@@ -60,6 +66,8 @@
 									<ajaxToolkit:PopupControlExtender ID="RdpPopup" BehaviorID="RdpPopup" runat="server" TargetControlID="lnkHostname"
 										PopupControlID="RdpPanel" Position="Bottom" />
 									<ajaxToolkit:DropShadowExtender ID="RdpShadow" runat="server" TargetControlID="RdpPanel" TrackPosition="true" Opacity="0.4" Width="3" />
+									<ajaxToolkit:PopupControlExtender ID="RdpPopupButton" BehaviorID="RdpPopup" runat="server" TargetControlID="btnOpenRDP"
+										PopupControlID="RdpPanel" Position="Bottom" />
 								</td>
 							</tr>
 							<tr>

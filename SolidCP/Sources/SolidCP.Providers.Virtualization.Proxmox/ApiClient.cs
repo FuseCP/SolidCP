@@ -96,7 +96,7 @@ namespace SolidCP.Providers.Virtualization
 		{
 			var client = GetRestClient();
 			var nodeId = NodeId(vmId);
-			var request = PrepareGetRequest($"nodes/{nodeId.node}/qemu/{nodeId.id}/status/current");
+			var request = PrepareGetRequest($"nodes/{nodeId.Node}/qemu/{nodeId.Id}/status/current");
 			var response = client.Execute<VMStatusInfo>(request);
 			//HostedSolutionLog.DebugInfo("Status - response Content: {0}", response.Content.ToString());
 			dynamic json = JObject.Parse(response.Content);
@@ -107,7 +107,7 @@ namespace SolidCP.Providers.Virtualization
 		{
 			var client = GetRestClient();
 			var nodeId = NodeId(vmId);
-			var request = PreparePostRequest($"nodes/{nodeId.node}/qemu/{nodeId.id}/status/start");
+			var request = PreparePostRequest($"nodes/{nodeId.Node}/qemu/{nodeId.Id}/status/start");
 			return client.Execute<Upid>(request);
 		}
 
@@ -115,7 +115,7 @@ namespace SolidCP.Providers.Virtualization
 		{
 			var client = GetRestClient();
 			var nodeId = NodeId(vmId);
-			var request = PreparePostRequest($"nodes/{nodeId.node}/qemu/{nodeId.id}/status/stop");
+			var request = PreparePostRequest($"nodes/{nodeId.Node}/qemu/{nodeId.Id}/status/stop");
 			return client.Execute<Upid>(request);
 		}
 
@@ -123,7 +123,7 @@ namespace SolidCP.Providers.Virtualization
 		{
 			var client = GetRestClient();
 			var nodeId = NodeId(vmId);
-			var request = PreparePostRequest($"nodes/{nodeId.node}/qemu/{nodeId.id}/status/shutdown");
+			var request = PreparePostRequest($"nodes/{nodeId.Node}/qemu/{nodeId.Id}/status/shutdown");
 			return client.Execute<Upid>(request);
 		}
 
@@ -131,7 +131,7 @@ namespace SolidCP.Providers.Virtualization
 		{
 			var client = GetRestClient();
 			var nodeId = NodeId(vmId);
-			var request = PreparePostRequest($"nodes/{nodeId.node}/qemu/{nodeId.id}/status/reset");
+			var request = PreparePostRequest($"nodes/{nodeId.Node}/qemu/{nodeId.Id}/status/reset");
 			return client.Execute<Upid>(request);
 		}
 
@@ -139,7 +139,7 @@ namespace SolidCP.Providers.Virtualization
 		{
 			var client = GetRestClient();
 			var nodeId = NodeId(vmId);
-			var request = PreparePostRequest($"nodes/{nodeId.node}/qemu/{nodeId.id}/status/suspend");
+			var request = PreparePostRequest($"nodes/{nodeId.Node}/qemu/{nodeId.Id}/status/suspend");
 			return client.Execute<Upid>(request);
 		}
 
@@ -147,7 +147,7 @@ namespace SolidCP.Providers.Virtualization
 		{
 			var client = GetRestClient();
 			var nodeId = NodeId(vmId);
-			var request = PreparePostRequest($"nodes/{nodeId.node}/qemu/{nodeId.id}/status/resume");
+			var request = PreparePostRequest($"nodes/{nodeId.Node}/qemu/{nodeId.Id}/status/resume");
 			return client.Execute<Upid>(request);
 		}
 
@@ -155,7 +155,7 @@ namespace SolidCP.Providers.Virtualization
 		{
 			var client = GetRestClient();
 			var nodeId = NodeId(vmId);
-			var request = new RestRequest($"nodes/{nodeId.node}/qemu/{nodeId.id}/config", Method.Post);
+			var request = new RestRequest($"nodes/{nodeId.Node}/qemu/{nodeId.Id}/config", Method.Post);
 			request.RequestFormat = DataFormat.Json;
 			request.AddHeader("CSRFPreventionToken", apiTicket.CSRFPreventionToken);
 			request.AddCookie("PVEAuthCookie", apiTicket.ticket, new Uri(baseUrl).AbsolutePath, new Uri(baseUrl).Host);
@@ -177,7 +177,7 @@ namespace SolidCP.Providers.Virtualization
 		{
 			var client = GetRestClient();
 			var nodeId = NodeId(vmId);
-			var request = PrepareGetRequest($"nodes/{nodeId.node}/qemu/{nodeId.id}/config");
+			var request = PrepareGetRequest($"nodes/{nodeId.Node}/qemu/{nodeId.Id}/config");
 			return client.Execute<VMConfig>(request);
 		}
 
@@ -185,7 +185,7 @@ namespace SolidCP.Providers.Virtualization
 		{
 			var client = GetRestClient();
 			var nodeId = NodeId(vmId);
-			var request = PrepareDeleteRequest($"nodes/{nodeId.node}/qemu/{nodeId.id}");
+			var request = PrepareDeleteRequest($"nodes/{nodeId.Node}/qemu/{nodeId.Id}");
 			return client.Execute<Upid>(request);
 		}
 
@@ -193,7 +193,7 @@ namespace SolidCP.Providers.Virtualization
 		{
 			var client = GetRestClient();
 			var nodeId = NodeId(vmId);
-			var request = new RestRequest($"nodes/{nodeId.node}/qemu/{nodeId.id}/unlink", Method.Put);
+			var request = new RestRequest($"nodes/{nodeId.Node}/qemu/{nodeId.Id}/unlink", Method.Put);
 			request.RequestFormat = DataFormat.Json;
 			request.AddHeader("CSRFPreventionToken", apiTicket.CSRFPreventionToken);
 			request.AddCookie("PVEAuthCookie", apiTicket.ticket, new Uri(baseUrl).AbsolutePath, new Uri(baseUrl).Host);
@@ -206,7 +206,7 @@ namespace SolidCP.Providers.Virtualization
 		{
 			var client = GetRestClient();
 			var nodeId = NodeId(vmId);
-			var request = new RestRequest($"nodes/{nodeId.node}/qemu/{nodeId.id}/snapshot", Method.Post);
+			var request = new RestRequest($"nodes/{nodeId.Node}/qemu/{nodeId.Id}/snapshot", Method.Post);
 			request.RequestFormat = DataFormat.Json;
 			request.AddHeader("CSRFPreventionToken", apiTicket.CSRFPreventionToken);
 			request.AddCookie("PVEAuthCookie", apiTicket.ticket, new Uri(baseUrl).AbsolutePath, new Uri(baseUrl).Host);
@@ -220,7 +220,7 @@ namespace SolidCP.Providers.Virtualization
 		{
 			var client = GetRestClient();
 			var nodeId = NodeId(vmId);
-			var request = PrepareGetRequest($"nodes/{nodeId.node}/qemu/{nodeId.id}/snapshot");
+			var request = PrepareGetRequest($"nodes/{nodeId.Node}/qemu/{nodeId.Id}/snapshot");
 			return client.Execute<ListProxmoxSnapshots>(request);
 		}
 
@@ -228,7 +228,7 @@ namespace SolidCP.Providers.Virtualization
 		{
 			var client = GetRestClient();
 			var nodeId = NodeId(vmId);
-			var request = PrepareGetRequest($"nodes/{nodeId.node}/qemu/{nodeId.id}/snapshot/{snapshotid}/config");
+			var request = PrepareGetRequest($"nodes/{nodeId.Node}/qemu/{nodeId.Id}/snapshot/{snapshotid}/config");
 			return client.Execute<SnapshotConfig>(request);
 		}
 
@@ -236,7 +236,7 @@ namespace SolidCP.Providers.Virtualization
 		{
 			var client = GetRestClient();
 			var nodeId = NodeId(vmId);
-			var request = new RestRequest($"nodes/{nodeId.node}/qemu/{nodeId.id}/snapshot/{snapshotid}/config", Method.Put);
+			var request = new RestRequest($"nodes/{nodeId.Node}/qemu/{nodeId.Id}/snapshot/{snapshotid}/config", Method.Put);
 			request.RequestFormat = DataFormat.Json;
 			request.AddHeader("CSRFPreventionToken", apiTicket.CSRFPreventionToken);
 			request.AddCookie("PVEAuthCookie", apiTicket.ticket, new Uri(baseUrl).AbsolutePath, new Uri(baseUrl).Host);
@@ -249,7 +249,7 @@ namespace SolidCP.Providers.Virtualization
 		{
 			var client = GetRestClient();
 			var nodeId = NodeId(vmId);
-			var request = PrepareDeleteRequest($"nodes/{nodeId.node}/qemu/{nodeId.id}/snapshot/{snapshotid}");
+			var request = PrepareDeleteRequest($"nodes/{nodeId.Node}/qemu/{nodeId.Id}/snapshot/{snapshotid}");
 			return client.Execute<Upid>(request);
 		}
 
@@ -257,7 +257,7 @@ namespace SolidCP.Providers.Virtualization
 		{
 			var client = GetRestClient();
 			var nodeId = NodeId(vmId);
-			var request = PreparePostRequest($"nodes/{nodeId.node}/qemu/{nodeId.id}/snapshot/{snapshotid}/rollback");
+			var request = PreparePostRequest($"nodes/{nodeId.Node}/qemu/{nodeId.Id}/snapshot/{snapshotid}/rollback");
 			return client.Execute<Upid>(request);
 		}
 
@@ -265,14 +265,14 @@ namespace SolidCP.Providers.Virtualization
 		{
 			var client = GetRestClient();
 			var nodeId = NodeId(vmId);
-			var request = PreparePostRequest($"nodes/{nodeId.node}/qemu/{nodeId.id}/monitor");
+			var request = PreparePostRequest($"nodes/{nodeId.Node}/qemu/{nodeId.Id}/monitor");
 			return client.Execute<Upid>(request);
 		}
 
 		public RestResponse ListISOs(string vmId, string storage)
 		{
 			var client = GetRestClient();
-			var request = PrepareGetRequest($"nodes/{NodeId(vmId).node}/storage/{storage}/content");
+			var request = PrepareGetRequest($"nodes/{NodeId(vmId).Node}/storage/{storage}/content");
 			return client.Execute(request);
 		}
 
@@ -339,7 +339,7 @@ namespace SolidCP.Providers.Virtualization
 		{
 			var client = GetRestClient();
 			var nodeId = NodeId(vmId);
-			var request = new RestRequest($"nodes/{nodeId.node}/qemu/{nodeId.id}/config", Method.Post);
+			var request = new RestRequest($"nodes/{nodeId.Node}/qemu/{nodeId.Id}/config", Method.Post);
 			request.RequestFormat = DataFormat.Json;
 			request.AddHeader("CSRFPreventionToken", apiTicket.CSRFPreventionToken);
 			request.AddCookie("PVEAuthCookie", apiTicket.ticket, new Uri(baseUrl).AbsolutePath, new Uri(baseUrl).Host);
@@ -353,7 +353,7 @@ namespace SolidCP.Providers.Virtualization
 		{
 			var client = GetRestClient();
 			var nodeId = NodeId(vmId);
-			var request = new RestRequest($"nodes/{nodeId.node}/qemu/{nodeId.id}/config", Method.Post);
+			var request = new RestRequest($"nodes/{nodeId.Node}/qemu/{nodeId.Id}/config", Method.Post);
 			request.RequestFormat = DataFormat.Json;
 			request.AddHeader("CSRFPreventionToken", apiTicket.CSRFPreventionToken);
 			request.AddCookie("PVEAuthCookie", apiTicket.ticket, new Uri(baseUrl).AbsolutePath, new Uri(baseUrl).Host);
@@ -366,7 +366,7 @@ namespace SolidCP.Providers.Virtualization
 		{
 			var client = GetRestClient();
 			var nodeId = NodeId(vmId);
-			var request = new RestRequest($"nodes/{nodeId.node}/qemu/{nodeId.id}/resize", Method.Put);
+			var request = new RestRequest($"nodes/{nodeId.Node}/qemu/{nodeId.Id}/resize", Method.Put);
 			request.RequestFormat = DataFormat.Json;
 			request.AddHeader("CSRFPreventionToken", apiTicket.CSRFPreventionToken);
 			request.AddCookie("PVEAuthCookie", apiTicket.ticket, new Uri(baseUrl).AbsolutePath, new Uri(baseUrl).Host);
@@ -382,7 +382,7 @@ namespace SolidCP.Providers.Virtualization
 			var nodeId = NodeId(vmId);
 			var remoteTmpFile = $"/tmp/screendump-{vmId.Replace(':','-')}-{DateTime.Now.Ticks}.ppm";
             //var remoteTmpFile = $"/tmp/screendump.ppm";
-            var result = client.Nodes[nodeId.node]?.Qemu[nodeId.id]?.Monitor.Monitor($"screendump {remoteTmpFile}").Result;
+            var result = client.Nodes[nodeId.Node]?.Qemu[nodeId.Id]?.Monitor.Monitor($"screendump {remoteTmpFile}").Result;
             using (var file = Provider.GetFile(vmId, remoteTmpFile, true))
 			{
 				return PpmImage.FromStream(file);
@@ -431,8 +431,8 @@ namespace SolidCP.Providers.Virtualization
 		public ApiVM NodeId(string vmId)
 		{
 			ApiVM apivm = new ApiVM();
-			apivm.node = vmId.Split(':')[0];
-			apivm.id = vmId.Split(':')[1];
+			apivm.Node = vmId.Split(':')[0];
+			apivm.Id = vmId.Split(':')[1];
 
 			var RestResponse = ClusterVMList();
 
@@ -443,9 +443,9 @@ namespace SolidCP.Providers.Virtualization
 			{
 				try
 				{
-					if (resources["type"].ToString().Equals("qemu") && resources["vmid"].ToString().Equals(apivm.id))
+					if (resources["type"].ToString().Equals("qemu") && resources["vmid"].ToString().Equals(apivm.Id))
 					{
-						apivm.node = resources["node"].ToString();
+						apivm.Node = resources["node"].ToString();
 						return apivm;
 					}
 				}
@@ -453,7 +453,7 @@ namespace SolidCP.Providers.Virtualization
 				catch (Exception ex)
 #pragma warning restore 0168
 				{
-					apivm.node = vmId.Split(':')[0];
+					apivm.Node = vmId.Split(':')[0];
 				}
 			}
 			return apivm;

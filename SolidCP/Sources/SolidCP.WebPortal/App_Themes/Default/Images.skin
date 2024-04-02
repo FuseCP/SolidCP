@@ -49,3 +49,4 @@ Default skin template. The following skins are provided as examples only.
 <asp:Image runat="server" SkinID="Vps16" ImageUrl="images/VPS/server.png" ImageAlign="AbsMiddle" Width="16" Height="16" />
 <asp:Image runat="server" SkinID="Vps2012_16" ImageUrl="images/VPS2012/server.png" ImageAlign="AbsMiddle" Width="16" Height="16" />
 <asp:Image runat="server" SkinID="Rdc16" ImageUrl="images/VPS/rdc16.png" ImageAlign="AbsMiddle" Width="16" Height="16" />
+<asp:Image runat="server" SkinID="VpsRemoteDesktop" ImageUrl="images/Proxmox/remote-desktop.svg" ImageAlign="AbsMiddle" Width="32" Height="32" />

@@ -56,15 +56,12 @@ namespace SolidCP.Portal.ProviderControls
 			var provider = ES.Services.Servers.GetProvider(service.ProviderId);
 			var isLocal = provider.ProviderType == "SolidCP.Providers.Virtualization.ProxmoxvpsLocal, SolidCP.Providers.Virtualization.Proxmoxvps";
 		
-			txtProxmoxClusterServerHost.Enabled = ProxmoxClusterServerHostValidator.Visible = !isLocal;
-
 			// Proxmox Cluster Settings
-			txtProxmoxClusterServerHost.Text = isLocal ? "localhost" : settings["ProxmoxClusterServerHost"];
+			txtProxmoxClusterServerHost.Text = settings["ProxmoxClusterServerHost"];
 			txtProxmoxClusterServerPort.Text = settings["ProxmoxClusterServerPort"] ?? "8006";
 			txtProxmoxClusterAdminUser.Text = settings["ProxmoxClusterAdminUser"];
-			// txtProxmoxClusterRealm.Text = settings["ProxmoxClusterRealm"] ?? "pam";
 			var realm = settings["ProxmoxClusterRealm"] ?? "pam";
-			if (realm == "pam") lstProxmoxClusterRealm.SelectedIndex = 0;
+			if (string.Equals(realm, "pam", StringComparison.OrdinalIgnoreCase)) lstProxmoxClusterRealm.SelectedIndex = 0;
 			else lstProxmoxClusterRealm.SelectedIndex = 1;
 			bool trustCert = isLocal;
 			bool.TryParse(settings["ProxmoxTrustClusterServerCertificate"] ?? $"{isLocal}", out trustCert);
