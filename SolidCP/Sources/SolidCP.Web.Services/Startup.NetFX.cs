@@ -56,10 +56,8 @@ namespace SolidCP.Web.Services
 			}
 			RouteTable.Routes.Add(new ServiceRoute("api-docs", new WebServiceHostFactory(), typeof(SwaggerWcfEndpoint)));
 
-			foreach (var handlerType in ServiceTypes.GetHttpHandlers()) {
-				var handler = (IRouteHandler)Activator.CreateInstance(handlerType);
-				RouteTable.Routes.Add(new Route(((IRoutedHttpHandler)handler).Route, handler));
-			}
+			var tunnelHandler = new TunnelHandlerNetFX();
+			RouteTable.Routes.Add(new Route(tunnelHandler.Route, tunnelHandler));
 #endif
 		}
 	}

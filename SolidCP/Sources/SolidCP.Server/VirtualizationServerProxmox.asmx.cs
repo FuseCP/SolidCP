@@ -34,6 +34,7 @@ using System;
 using System.Data;
 using System.Web;
 using System.Collections;
+using System.Threading.Tasks;
 using SolidCP.Web.Services;
 using System.ComponentModel;
 using SolidCP.Providers;
@@ -265,18 +266,18 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
-        public string GetVirtualMachineVNC(string vmId)
+        public VNCConsole GetVirtualMachineVNC(string vmId)
         {
             try
             {
                 Log.WriteStart("'{0}' GetVirtualMachineVNC", ProviderSettings.ProviderName);
-                string result = VirtualizationProvider.GetVirtualMachineVNC(vmId);
+                var result = VirtualizationProvider.GetVirtualMachineVNC(vmId);
                 Log.WriteEnd("'{0}' GetVirtualMachineVNC", ProviderSettings.ProviderName);
                 return result;
             }
             catch (Exception ex)
             {
-                Log.WriteError(String.Format("'{0}' GetVirtualMachine", ProviderSettings.ProviderName), ex);
+                Log.WriteError(String.Format("'{0}' GetVirtualMachineVNC", ProviderSettings.ProviderName), ex);
                 throw;
             }
         }
@@ -888,23 +889,7 @@ namespace SolidCP.Server
         }
 
         #endregion
-        [WebMethod, SoapHeader("settings")]
-        public VNCTunnel GetVirtualMachineVNCTunnel(string vmId)
-        {
-            try
-            {
-                Log.WriteStart($"'{0}' {nameof(GetVirtualMachineVNCTunnel)}", ProviderSettings.ProviderName);
-                VNCTunnel result = VirtualizationProvider.GetVirtualMachineVNCTunnel(vmId);
-                Log.WriteEnd($"'{0}' {nameof(GetVirtualMachineVNCTunnel)}", ProviderSettings.ProviderName);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                Log.WriteError($"'{ProviderSettings.ProviderName}' {nameof(GetVirtualMachineVNCTunnel)}", ex);
-                throw;
-            }
-        }
-        public System.Net.Sockets.Socket GetPveApiSocket() => VirtualizationProvider.GetPveApiSocket();
+        public async Task<TunnelSocket> GetPveApiSocket() => await VirtualizationProvider.GetPveApiSocket();
 
         #region Replication
 

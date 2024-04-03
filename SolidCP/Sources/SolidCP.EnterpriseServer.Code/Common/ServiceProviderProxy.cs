@@ -51,7 +51,7 @@ namespace SolidCP.EnterpriseServer
 			ServiceInfo service = ServerController.GetServiceInfo(serviceId);
 
 			if (service == null)
-				throw new Exception(String.Format("Service with ID {0} was not found", serviceId));
+				throw new Exception($"Service with ID {serviceId} was not found");
 
 			// set service settings
 			StringDictionary serviceSettings = ServerController.GetServiceSettings(serviceId);

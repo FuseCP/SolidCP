@@ -26,6 +26,7 @@ using System.Diagnostics.Eventing.Reader;
 using Microsoft.Extensions.Configuration;
 using System.Runtime.Intrinsics.X86;
 using System.IO;
+using SolidCP.Providers;
 using SolidCP.Providers.OS;
 
 namespace SolidCP.Web.Services
@@ -198,11 +199,9 @@ namespace SolidCP.Web.Services
 
 			ConfigureWCF(app);
 
-			foreach (var handlerType in ServiceTypes.GetHttpHandlers()) {
-				var handler = (IRoutedHttpHandler)Activator.CreateInstance(handlerType);
-				handler.Init(app);
-			}
-
+			var tunnelHandler = new TunnelHandlerCore();
+			tunnelHandler.Init(app);
+			
 			app.Run();
 		}
 

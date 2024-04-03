@@ -16,6 +16,7 @@ using System.Diagnostics;
 using System.IO;
 using Renci.SshNet;
 using SolidCP.Providers.OS;
+using System.Net.Sockets;
 
 #if !NETFRAMEWORK && gRPC
 using Grpc.Core;
@@ -232,8 +233,10 @@ namespace SolidCP.Web.Clients
 		{
 			if (host == null) return true;
 
-			var isHostIP = Regex.IsMatch(host, @"^[0.9]{1,3}(?:\.[0-9]{1,3}){3}$", RegexOptions.Singleline) || Regex.IsMatch(host, @"^\[?[0-9a-fA-F:]+\]?$", RegexOptions.Singleline);
-			if (host == "localhost" || host == "127.0.0.1" || host == "::1" || host == "[::1]" ||
+            IPAddress hostip;
+            var isHostIP = IPAddress.TryParse(host, out hostip);
+            isHostIP = isHostIP && (hostip.AddressFamily == AddressFamily.InterNetwork || hostip.AddressFamily == AddressFamily.InterNetworkV6);
+            if (host == "localhost" || host.StartsWith("127.0.0.") && isHostIP || host == "::1" || host == "[::1]" ||
 				isHostIP && IsLocalAddress(host)) return true;
 
 			if (!isHostIP)

@@ -92,5 +92,8 @@ namespace SolidCP.EnterpriseServer
 		{
 			return SystemController.GetThemeSetting(ThemeID, SettingsName);
 		}
+
+		[WebMethod]
+		public string GetCryptoKey() => new EnterpriseServerTunnelService().CryptoKey;
 	}
 }

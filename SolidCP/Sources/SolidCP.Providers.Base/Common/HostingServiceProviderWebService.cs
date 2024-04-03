@@ -91,6 +91,7 @@ namespace SolidCP.Providers
                 }
                 return providerSettings;
             }
+            set { providerSettings = value; }
         }
     }
 }

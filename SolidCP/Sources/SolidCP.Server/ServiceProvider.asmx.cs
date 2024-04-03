@@ -195,6 +195,9 @@ namespace SolidCP.Server
             }
         }
 
+        [WebMethod]
+        public string GetCryptoKey() => Settings.CryptoKey;
+
         private ServiceProviderItem[] UnwrapServiceProviderItems(SoapServiceProviderItem[] soapItems)
         {
             if (soapItems == null)

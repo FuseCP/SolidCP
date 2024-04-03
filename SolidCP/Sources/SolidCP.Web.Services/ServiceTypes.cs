@@ -52,7 +52,7 @@ namespace SolidCP.Web.Services
 
 		public static Assembly[] assemblies = null;
 
-        public static Assembly[] Assemblies
+        public static Assembly[] ExposedAssemblies
 		{
 			get
 			{
@@ -91,27 +91,22 @@ namespace SolidCP.Web.Services
 			}
 		}
 
+        public bool IsServerLoaded => AppDomain.CurrentDomain.GetAssemblies()
+            .Any(a => a.GetName().Name == "SolidCP.Server");
+        public bool IsEnterpriseServerLoaded => AppDomain.CurrentDomain.GetAssemblies()
+            .Any(a => a.GetName().Name == "SolidCP.EnterpriseServer");
+        public bool IsPortalLoaded => AppDomain.CurrentDomain.GetAssemblies()
+            .Any(a => a.GetName().Name == "SolidCP.WebPortal");
+
         public static IEnumerable<Type> GetWebServices()
 		{
-			var types = Assemblies
+			var types = ExposedAssemblies
 				.SelectMany(a => {
 					var attrTypes = a.GetCustomAttribute<WCFServiceTypesAttribute>()?.Types;
 					return attrTypes ?? new Type[0];
 				});
 			return types;
 		}
-
-		public static IEnumerable<Type> GetHttpHandlers()
-		{
-			var types = Assemblies
-				.SelectMany(a =>
-				{
-					var attrTypes = a.GetCustomAttribute<HttpHandlerTypesAttribute>()?.Types;
-					return attrTypes ?? new Type[0];
-				});
-			return types;
-		}
-
 
 		protected override string GetKeyForItem(ServiceType type) => type.Service.Name;
 

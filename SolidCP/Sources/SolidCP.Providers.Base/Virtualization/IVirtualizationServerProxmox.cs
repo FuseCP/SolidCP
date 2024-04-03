@@ -32,6 +32,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Net.Sockets;
 using System.Text;
 
@@ -52,7 +53,7 @@ namespace SolidCP.Providers.Virtualization
         JobResult RenameVirtualMachine(string vmId, string name);
         JobResult ExportVirtualMachine(string vmId, string exportPath);
         JobResult DeleteVirtualMachine(string vmId);
-        string GetVirtualMachineVNC(string vmId);
+        VNCConsole GetVirtualMachineVNC(string vmId);
 
         // Snapshots
         List<VirtualMachineSnapshot> GetVirtualMachineSnapshots(string vmId);
@@ -117,7 +118,6 @@ namespace SolidCP.Providers.Virtualization
         ReplicationDetailInfo GetReplicationInfo(string vmId);
         void PauseReplication(string vmId);
         void ResumeReplication(string vmId);
-        VNCTunnel GetVirtualMachineVNCTunnel(string vmId);
-        Socket GetPveApiSocket();
+        Task<TunnelSocket> GetPveApiSocket();
     }
 }

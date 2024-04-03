@@ -2166,17 +2166,14 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region VNC
-        public static string GetVirtualMachineVNCURL(int itemId)
+        public static VNCConsole GetVirtualMachineVNC(int itemId)
         {
             // load item
             VirtualMachine vm = GetVirtualMachineByItemId(itemId);
 
             // get proxy
             VirtualizationServerProxmox vs = GetVirtualizationProxy(vm.ServiceId);
-            string vncurl = vs.GetVirtualMachineVNC(vm.VirtualMachineId);
-
-            if (String.IsNullOrEmpty(vncurl))
-                return null;
+            var vncurl = vs.GetVirtualMachineVNC(vm.VirtualMachineId);
 
             return vncurl;
         }

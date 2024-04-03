@@ -32,6 +32,7 @@
 
 
 using System;
+using System.Web;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.ResultObjects;
 using SolidCP.Providers.Virtualization;
@@ -56,6 +57,8 @@ namespace SolidCP.Portal.Proxmox
 
         private void BindGeneralDetails()
         {
+            litLinkButtonSmallPressed.Visible = litLinkButtonMediumPressed.Visible = litLinkButtonBigPressed.Visible = false;
+
             VirtualMachine item = VirtualMachinesProxmoxHelper.GetCachedVirtualMachine(PanelRequest.ItemID);
             if (!string.IsNullOrEmpty(item.CurrentTaskId)
                 || item.ProvisioningStatus == VirtualMachineProvisioningStatus.Error)
@@ -84,11 +87,11 @@ namespace SolidCP.Portal.Proxmox
                     && vm.State != VirtualMachineState.Saved
                     && item.RemoteDesktopEnabled);
 
-                string resolveUrl = null;
+                VNCConsole console = null;
 
-                if (displayRDP) resolveUrl = ES.Services.Proxmox.GetVirtualMachineVNCURL(PanelRequest.ItemID);
+                if (displayRDP) console = ES.Services.Proxmox.GetVirtualMachineVNC(PanelRequest.ItemID);
 
-                displayRDP = displayRDP && resolveUrl != null;
+                displayRDP = displayRDP && console != null;
 
                 lnkHostname.Text = item.Hostname.ToUpper();
                 lnkHostname.Visible = RdpPopup.Enabled = btnOpenRDP.Visible = RdpPopupButton.Enabled = displayRDP;
@@ -97,7 +100,11 @@ namespace SolidCP.Portal.Proxmox
 
                 litHostname.Text = item.Hostname.ToUpper();
                 litHostname.Visible = !displayRDP;
-
+                if (!string.IsNullOrEmpty(console?.PVEAuthCookie))
+                {
+                    litAuthCookie.Text = $"PVEAuthCookie={HttpUtility.UrlEncode(console.PVEAuthCookie)};SameSite=Strict";
+                    litCSFRToken.Text = HttpUtility.UrlEncode(console.CSRFPreventionToken);
+                }
 
                 litDomain.Text = item.Domain;
 
@@ -108,7 +115,7 @@ namespace SolidCP.Portal.Proxmox
                     txtDomain.Text = item.Domain;
                 }
 
-                litRdpPageUrl.Text = resolveUrl ?? "";
+                litRdpPageUrl.Text = console?.Url ?? "";
 
                 TimeSpan uptime = TimeSpan.FromMilliseconds(vm.Uptime * 1000);
                 uptime = uptime.Subtract(TimeSpan.FromMilliseconds(uptime.Milliseconds));
@@ -316,5 +323,19 @@ namespace SolidCP.Portal.Proxmox
             }
         }
 
+        protected void lnkRdp800_Click(object sender, EventArgs e)
+        {
+            litLinkButtonSmallPressed.Visible = true;
+        }
+
+        protected void lnkRdp1024_Click(object sender, EventArgs e)
+        {
+            litLinkButtonMediumPressed.Visible = true;
+        }
+
+        protected void lnkRdp1280_Click(object sender, EventArgs e)
+        {
+            litLinkButtonBigPressed.Visible = true;
+        }
     }
 }

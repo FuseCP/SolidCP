@@ -4936,7 +4936,7 @@
   <data name="ErrorDescription.VPS_LOAD_PVEVM_ITEM" xml:space="preserve">
     <value>Possible reasons of this error are:&lt;br/&gt;1. Virtual machine associated with the VPS meta-item was deleted from virtualization server.&lt;br/&gt;2. Proxmox management service is stopped.&lt;br/&gt;3. No connectivity with SolidCP Server installed on virtualization server.&lt;br/&gt;&lt;br/&gt;Solutions:&lt;br/&gt;1. Make sure associated virtual machine exists on Proxmox server; otherwise re-create VPS from SolidCP.&lt;br/&gt;2. Check that Proxmox management service is started.&lt;br/&gt;3. Check SolidCP Server connectivity.</value>
   </data>
-	<data name="ErrorDescription.VPS_PROVISION_ERROR" xml:space="preserve">
+  <data name="ErrorDescription.VPS_PROVISION_ERROR" xml:space="preserve">
     <value>There was fatal error during provisioning and the entire process was aborted. Click "Audit Log" tab above and check what's gone wrong during VPS creation.&lt;br/&gt;&lt;br/&gt;Eliminate the cause of this issue and re-create VPS.</value>
   </data>
   <data name="ServiceItemType.VirtualMachine" xml:space="preserve">
@@ -7041,5 +7041,8 @@
   </data>
   <data name="Quota.PROXMOX.StartShutdownAllowed" xml:space="preserve">
     <value>Allow user to Start, Turn off and Shutdown VPS</value>
+  </data>
+  <data name="Error.VPS_LOAD_PVEVM_ITEM1" xml:space="preserve">
+    <value>Error loading virtual machine information</value>
   </data>
 </root>

@@ -6,15 +6,7 @@ namespace SolidCP.Server
 	public class PasswordValidator
 	{
 
-		public static bool Validate(string password)
-		{
-#if NETFRAMEWORK
-			return password == ServerConfiguration.Security.Password;
-#else
-			return password == StartupCore.Password;
-#endif
-
-		}
+		public static bool Validate(string password) => password == Settings.Password;
 
 		public static void Init()
 		{

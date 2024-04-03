@@ -272,9 +272,9 @@ namespace SolidCP.EnterpriseServer
 
         #region VNC
         [WebMethod]
-        public string GetVirtualMachineVNCURL(int itemId)
+        public VNCConsole GetVirtualMachineVNC(int itemId)
         {
-            return VirtualizationServerControllerProxmox.GetVirtualMachineVNCURL(itemId);
+            return VirtualizationServerControllerProxmox.GetVirtualMachineVNC(itemId);
         }
         #endregion
 

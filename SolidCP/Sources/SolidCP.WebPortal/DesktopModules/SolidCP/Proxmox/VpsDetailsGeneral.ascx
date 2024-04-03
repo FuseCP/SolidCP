@@ -12,15 +12,40 @@
 <asp:Timer runat="server" Interval="10000" ID="operationTimer" />
 
 <script language="JavaScript" type="text/javascript">
-	function OpenRemoteDesktopWindow(resolution, width, height) {
+	function OpenRemoteDesktopWindow(width, height) {
 		$find("RdpPopup").hidePopup();
 		var rdpUrl = "<asp:Literal id="litRdpPageUrl" runat="server" />";
-		var cookie = "<asp:Literal id="litCsfrCookie" runat="server" />";
+		var cookie = "<asp:Literal id="litAuthCookie" runat="server" />";
+		var csfrtoken = "<asp:Literal id="litCSFRToken" runat="server" />";
+
 		var left = (screen.width - width) / 2;
 		var top = (screen.height - height) / 2;
-		desktop.cookie
-		my_window = window.open(rdpUrl + resolution, "RDP", "status=0,width=" + width + ",height=" + height + ",top=" + top + ",left=" + left);
+		document.cookie = cookie;
+
+		const viewFile = async (url) => {
+
+			// Change this to use your HTTP client
+			fetch(url, {
+				headers: {
+					"Cookie": cookie,
+					"CSRFPreventionToken": csfrtoken
+					// 'Content-Type': 'application/x-www-form-urlencoded',
+				},
+				mode: "no-cors"
+				}) // FETCH BLOB FROM IT
+				.then((response) => response.blob())
+				.then((blob) => { // RETRIEVE THE BLOB AND CREATE LOCAL URL
+					var _url = window.URL.createObjectURL(blob);
+					window.open(_url, "RDP", "status=0,width=" + width + ",height=" + height + ",top=" + top + ",left=" + left).focus(); // window.open + focus
+				}).catch((err) => {
+					console.log(err);
+				});
+		};
+		viewFile(rdpUrl);
 	}
+	<asp:Literal ID="litLinkButtonSmallPressed" runat="server" Text="OpenRemoteDesktopWindow(800, 600);" />
+	<asp:Literal ID="litLinkButtonMediumPressed" runat="server" Text="OpenRemoteDesktopWindow(1024, 768);" />
+	<asp:Literal ID="litLinkButtonBigPressed" runat="server" Text="OpenRemoteDesktopWindow(1200, 1024);" />
 </script>
 
 <div class="Content">
@@ -53,14 +78,17 @@
 											<asp:Image ID="imgRdc" runat="server" SkinID="Rdc16" />&nbsp;
                                                     <asp:Localize ID="locRdpText" runat="server" meta:resourcekey="locRdpText" Text="Remote desktop"></asp:Localize><br />
 										</div>
-										<asp:HyperLink ID="lnkRdpFull" runat="server" NavigateUrl="javascript:OpenRemoteDesktopWindow(1, 800, 600);"
+										<%--<asp:HyperLink ID="lnkRdpFull" runat="server" NavigateUrl="javascript:OpenRemoteDesktopWindow(1, 800, 600);"
 											meta:resourcekey="lnkRdpFull" Text="Full screen"></asp:HyperLink><br />
 										<asp:HyperLink ID="lnkRdp800" runat="server" NavigateUrl="javascript:OpenRemoteDesktopWindow(2, 800, 600);"
 											meta:resourcekey="lnkRdp800" Text="800 x 600"></asp:HyperLink><br />
 										<asp:HyperLink ID="lnkRdp1024" runat="server" NavigateUrl="javascript:OpenRemoteDesktopWindow(3, 1024 , 768);"
 											meta:resourcekey="lnkRdp1024" Text="1024 x 768"></asp:HyperLink><br />
 										<asp:HyperLink ID="lnkRdp1280" runat="server" NavigateUrl="javascript:OpenRemoteDesktopWindow(4, 1280, 1024);"
-											meta:resourcekey="lnkRdp1280" Text="1280 x 1024"></asp:HyperLink><br />
+											meta:resourcekey="lnkRdp1280" Text="1280 x 1024"></asp:HyperLink><br />--%>
+										<asp:LinkButton ID="lnkRdp800" runat="server" meta:resourcekey="lnkRdp800" Text="800 x 600" OnClick="lnkRdp800_Click"></asp:LinkButton><br />
+										<asp:LinkButton ID="lnkRdp1024" runat="server" meta:resourcekey="lnkRdp1024" Text="1024 x 768" OnClick="lnkRdp1024_Click"></asp:LinkButton><br />
+										<asp:LinkButton ID="lnkRdp1280" runat="server" meta:resourcekey="lnkRdp1280" Text="1280 x 1024" OnClick="lnkRdp1280_Click"></asp:LinkButton><br />
 									</asp:Panel>
 
 									<ajaxToolkit:PopupControlExtender ID="RdpPopup" BehaviorID="RdpPopup" runat="server" TargetControlID="lnkHostname"
