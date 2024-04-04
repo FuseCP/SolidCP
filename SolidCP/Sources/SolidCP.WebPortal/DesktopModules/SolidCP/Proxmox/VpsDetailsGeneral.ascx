@@ -22,27 +22,9 @@
 		var top = (screen.height - height) / 2;
 		document.cookie = cookie;
 
-		const viewFile = async (url) => {
-
-			// Change this to use your HTTP client
-			fetch(url, {
-				headers: {
-					"Cookie": cookie,
-					"CSRFPreventionToken": csfrtoken
-					// 'Content-Type': 'application/x-www-form-urlencoded',
-				},
-				mode: "no-cors"
-				}) // FETCH BLOB FROM IT
-				.then((response) => response.blob())
-				.then((blob) => { // RETRIEVE THE BLOB AND CREATE LOCAL URL
-					var _url = window.URL.createObjectURL(blob);
-					window.open(_url, "RDP", "status=0,width=" + width + ",height=" + height + ",top=" + top + ",left=" + left).focus(); // window.open + focus
-				}).catch((err) => {
-					console.log(err);
-				});
-		};
-		viewFile(rdpUrl);
-	}
+		window.open(rdpUrl, "RDP", "status=0,width=" + width + ",height=" + height + ",top=" + top + ",left=" + left).focus(); // window.open + focus
+	};
+	
 	<asp:Literal ID="litLinkButtonSmallPressed" runat="server" Text="OpenRemoteDesktopWindow(800, 600);" />
 	<asp:Literal ID="litLinkButtonMediumPressed" runat="server" Text="OpenRemoteDesktopWindow(1024, 768);" />
 	<asp:Literal ID="litLinkButtonBigPressed" runat="server" Text="OpenRemoteDesktopWindow(1200, 1024);" />
