@@ -22,9 +22,9 @@ namespace SolidCP.Server.Client
 
         public override string CryptoKey => GetCryptoKey();
 
-        public override async Task<TunnelSocket> GetPveApiSocket(ServiceProviderSettings providerSettings)
+        public override async Task<TunnelSocket> GetPveVNCWebSocket(string vmId, ServiceProviderSettings providerSettings)
         {
-            return await GetSocket(nameof(GetPveApiSocket), providerSettings);
+            return await GetSocket(nameof(GetPveVNCWebSocket), vmId, providerSettings);
         }
     }
 }

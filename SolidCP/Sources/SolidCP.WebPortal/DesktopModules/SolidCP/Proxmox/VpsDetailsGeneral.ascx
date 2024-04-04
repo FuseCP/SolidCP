@@ -15,8 +15,6 @@
 	function OpenRemoteDesktopWindow(width, height) {
 		$find("RdpPopup").hidePopup();
 		var rdpUrl = "<asp:Literal id="litRdpPageUrl" runat="server" />";
-		var cookie = "<asp:Literal id="litAuthCookie" runat="server" />";
-		var csfrtoken = "<asp:Literal id="litCSFRToken" runat="server" />";
 
 		var left = (screen.width - width) / 2;
 		var top = (screen.height - height) / 2;
@@ -24,10 +22,6 @@
 
 		window.open(rdpUrl, "RDP", "status=0,width=" + width + ",height=" + height + ",top=" + top + ",left=" + left).focus(); // window.open + focus
 	};
-	
-	<asp:Literal ID="litLinkButtonSmallPressed" runat="server" Text="OpenRemoteDesktopWindow(800, 600);" />
-	<asp:Literal ID="litLinkButtonMediumPressed" runat="server" Text="OpenRemoteDesktopWindow(1024, 768);" />
-	<asp:Literal ID="litLinkButtonBigPressed" runat="server" Text="OpenRemoteDesktopWindow(1200, 1024);" />
 </script>
 
 <div class="Content">
@@ -54,7 +48,7 @@
 										meta:resourcekey="btnChangeHostnamePopup" SkinID="EditSmall" Text="Edit"></asp:LinkButton>
 
 									<asp:ImageButton ID="btnOpenRDP" runat="server" SkinID="VpsRemoteDestop" meta:resourcekey="btnOpenRDP" />
-
+									
 									<asp:Panel ID="RdpPanel" runat="server" CssClass="PopupExtender" Style="display: none;">
 										<div style="padding-bottom: 3px;">
 											<asp:Image ID="imgRdc" runat="server" SkinID="Rdc16" />&nbsp;
@@ -68,15 +62,15 @@
 											meta:resourcekey="lnkRdp1024" Text="1024 x 768"></asp:HyperLink><br />
 										<asp:HyperLink ID="lnkRdp1280" runat="server" NavigateUrl="javascript:OpenRemoteDesktopWindow(4, 1280, 1024);"
 											meta:resourcekey="lnkRdp1280" Text="1280 x 1024"></asp:HyperLink><br />--%>
-										<asp:LinkButton ID="lnkRdp800" runat="server" meta:resourcekey="lnkRdp800" Text="800 x 600" OnClick="lnkRdp800_Click"></asp:LinkButton><br />
-										<asp:LinkButton ID="lnkRdp1024" runat="server" meta:resourcekey="lnkRdp1024" Text="1024 x 768" OnClick="lnkRdp1024_Click"></asp:LinkButton><br />
-										<asp:LinkButton ID="lnkRdp1280" runat="server" meta:resourcekey="lnkRdp1280" Text="1280 x 1024" OnClick="lnkRdp1280_Click"></asp:LinkButton><br />
+										<asp:HyperLink ID="lnkRdp800" runat="server" meta:resourcekey="lnkRdp800" Text="800 x 600" OnClientClick="OpenRemoteDesktopWindow(800, 600);"></asp:HyperLink><br />
+										<asp:HyperLink ID="lnkRdp1024" runat="server" meta:resourcekey="lnkRdp1024" Text="1024 x 768" OnClientClick="OpenRemoteDesktopWindow(1024, 768);"></asp:HyperLink><br />
+										<asp:HyperLink ID="lnkRdp1280" runat="server" meta:resourcekey="lnkRdp1280" Text="1280 x 1024" OnClientClick="OpenRemoteDesktopWindow(1200, 1024);"></asp:HyperLink><br />
 									</asp:Panel>
 
 									<ajaxToolkit:PopupControlExtender ID="RdpPopup" BehaviorID="RdpPopup" runat="server" TargetControlID="lnkHostname"
 										PopupControlID="RdpPanel" Position="Bottom" />
 									<ajaxToolkit:DropShadowExtender ID="RdpShadow" runat="server" TargetControlID="RdpPanel" TrackPosition="true" Opacity="0.4" Width="3" />
-									<ajaxToolkit:PopupControlExtender ID="RdpPopupButton" BehaviorID="RdpPopup" runat="server" TargetControlID="btnOpenRDP"
+									<ajaxToolkit:PopupControlExtender ID="RdpPopupButton" BehaviorID="RdpPopupButton" runat="server" TargetControlID="btnOpenRDP"
 										PopupControlID="RdpPanel" Position="Bottom" />
 								</td>
 							</tr>

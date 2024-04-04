@@ -264,23 +264,6 @@ namespace SolidCP.Server
                 throw;
             }
         }
-
-        [WebMethod, SoapHeader("settings")]
-        public VNCConsole GetVirtualMachineVNC(string vmId)
-        {
-            try
-            {
-                Log.WriteStart("'{0}' GetVirtualMachineVNC", ProviderSettings.ProviderName);
-                var result = VirtualizationProvider.GetVirtualMachineVNC(vmId);
-                Log.WriteEnd("'{0}' GetVirtualMachineVNC", ProviderSettings.ProviderName);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                Log.WriteError(String.Format("'{0}' GetVirtualMachineVNC", ProviderSettings.ProviderName), ex);
-                throw;
-            }
-        }
         #endregion
 
         #region Snapshots
@@ -889,7 +872,7 @@ namespace SolidCP.Server
         }
 
         #endregion
-        public async Task<TunnelSocket> GetPveApiSocket() => await VirtualizationProvider.GetPveApiSocket();
+        public async Task<TunnelSocket> GetPveVNCWebSocket(string vmId) => await VirtualizationProvider.GetPveVNCWebSocket(vmId);
 
         #region Replication
 

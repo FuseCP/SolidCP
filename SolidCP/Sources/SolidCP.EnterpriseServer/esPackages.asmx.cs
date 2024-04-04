@@ -288,6 +288,9 @@ namespace SolidCP.EnterpriseServer
         {
             return PackageController.EvaluateUserPackageTempate(userId, packageId, template);
         }
+
+        [WebMethod]
+        public ServiceProviderItem GetPackageItem(int itemId) => PackageController.GetPackageItem(itemId);
         #endregion
 
         #region Package Settings

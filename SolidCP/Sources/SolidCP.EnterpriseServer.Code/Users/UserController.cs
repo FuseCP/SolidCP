@@ -151,7 +151,7 @@ namespace SolidCP.EnterpriseServer
 				ThreadPool.QueueUserWorkItem(arg =>
 				{
 					var servers = GetUserPackagesServerUrls(user.UserId)
-						.Where(url => url.StartsWith("ssh://"));
+						.Where(url => CryptoUtils.DecryptServerUrl(url).StartsWith("ssh://"));
 					Web.Clients.ClientBase.StartAllSshTunnels(servers);
 				});
 

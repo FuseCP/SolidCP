@@ -270,14 +270,6 @@ namespace SolidCP.EnterpriseServer
         }
         #endregion
 
-        #region VNC
-        [WebMethod]
-        public VNCConsole GetVirtualMachineVNC(int itemId)
-        {
-            return VirtualizationServerControllerProxmox.GetVirtualMachineVNC(itemId);
-        }
-        #endregion
-
         #region VPS - Configuration
         [WebMethod]
         public ResultObject ChangeAdministratorPassword(int itemId, string password)

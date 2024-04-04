@@ -88,6 +88,7 @@
 			<CopyToOutputFiles Include="$(PkgSSH_NET)\lib\netstandard2.0\Renci.SshNet.*" />
 			<CopyToOutputFiles Include="$(PkgCorsinvest_ProxmoxVE_Api)\lib\netstandard2.0\Corsinvest.ProxmoxVE.Api.*" />
 			<CopyToOutputFiles Include="$(PkgCorsinvest_ProxmoxVE_Api_Shared)\lib\netstandard2.0\Corsinvest.ProxmoxVE.Api.Shared.*" />
+			<!--<CopyNoVNCToPortal Include="" />-->
 		</ItemGroup>
 		
 		<Copy SourceFiles="@(CopyToOutputFiles)" DestinationFolder="$(OutputPath)" />

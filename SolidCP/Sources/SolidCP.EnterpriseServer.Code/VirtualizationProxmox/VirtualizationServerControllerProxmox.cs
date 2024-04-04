@@ -2165,20 +2165,6 @@ namespace SolidCP.EnterpriseServer
         }
         #endregion
 
-        #region VNC
-        public static VNCConsole GetVirtualMachineVNC(int itemId)
-        {
-            // load item
-            VirtualMachine vm = GetVirtualMachineByItemId(itemId);
-
-            // get proxy
-            VirtualizationServerProxmox vs = GetVirtualizationProxy(vm.ServiceId);
-            var vncurl = vs.GetVirtualMachineVNC(vm.VirtualMachineId);
-
-            return vncurl;
-        }
-        #endregion
-
         #region DVD
         public static LibraryItem GetInsertedDvdDisk(int itemId)
         {

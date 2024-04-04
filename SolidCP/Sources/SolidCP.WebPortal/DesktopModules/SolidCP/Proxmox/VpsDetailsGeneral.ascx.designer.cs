@@ -42,51 +42,6 @@ namespace SolidCP.Portal.Proxmox
         protected global::System.Web.UI.WebControls.Literal litRdpPageUrl;
 
         /// <summary>
-        /// litAuthCookie control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal litAuthCookie;
-
-        /// <summary>
-        /// litCSFRToken control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal litCSFRToken;
-
-        /// <summary>
-        /// litLinkButtonSmallPressed control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal litLinkButtonSmallPressed;
-
-        /// <summary>
-        /// litLinkButtonMediumPressed control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal litLinkButtonMediumPressed;
-
-        /// <summary>
-        /// litLinkButtonBigPressed control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal litLinkButtonBigPressed;
-
-        /// <summary>
         /// tabs control.
         /// </summary>
         /// <remarks>
@@ -192,7 +147,7 @@ namespace SolidCP.Portal.Proxmox
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton lnkRdp800;
+        protected global::System.Web.UI.WebControls.HyperLink lnkRdp800;
 
         /// <summary>
         /// lnkRdp1024 control.
@@ -201,7 +156,7 @@ namespace SolidCP.Portal.Proxmox
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton lnkRdp1024;
+        protected global::System.Web.UI.WebControls.HyperLink lnkRdp1024;
 
         /// <summary>
         /// lnkRdp1280 control.
@@ -210,7 +165,7 @@ namespace SolidCP.Portal.Proxmox
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton lnkRdp1280;
+        protected global::System.Web.UI.WebControls.HyperLink lnkRdp1280;
 
         /// <summary>
         /// RdpPopup control.

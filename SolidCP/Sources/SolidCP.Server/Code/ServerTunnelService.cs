@@ -14,11 +14,11 @@ namespace SolidCP.Server
         {
             PasswordValidator.Validate(password);
         }
-        public override async Task<TunnelSocket> GetPveApiSocket(ServiceProviderSettings providerSettings)
+        public override async Task<TunnelSocket> GetPveVNCWebSocket(string vmId, ServiceProviderSettings providerSettings)
         {
             var proxmox = new VirtualizationServerProxmox();
             proxmox.ProviderSettings = providerSettings;
-            return await proxmox.GetPveApiSocket();
+            return await proxmox.GetPveVNCWebSocket(vmId);
         }
     }
 }

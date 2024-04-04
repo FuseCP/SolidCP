@@ -12,25 +12,31 @@ namespace SolidCP.EnterpriseServer
         public override string CryptoKey => CryptoUtility.SHA1($"{CryptoUtils.CryptoKey}{DateTime.Now.Ticks}");
 
         public override void Authenticate(string user, string password) => UsernamePasswordValidator.Validate(user, password);
-
-        public override async Task<TunnelSocket> GetPveApiSocket(int serviceId)
+        
+        public override async Task<TunnelSocket> GetPveVNCWebSocket(int serviceId, int packageId, int serviceItemId)
         {
             // get service
             ServiceInfo service = ServerController.GetServiceInfo(serviceId);
+            if (service == null) throw new AccessViolationException("Service not found.");
 
+            var package = PackageController.GetPackage(packageId);
+            if (package == null) throw new AccessViolationException("Package not found.");
+            
             // Verfiy user has access to service 
             var user = UserController.GetUser(Username);
-            var serviceItems = PackageController.GetServiceItems(serviceId);
-            var packages = PackageController.GetPackages(user.UserId);
-            var ownsService = serviceItems
-                .Join(packages, serviceItem => serviceItem.PackageId, package => package.PackageId,
-                    (serviceItem, package) => package.UserId)
-                .Any(userId => userId == user.UserId);
-            if (!ownsService) throw new AccessViolationException("The current user has no access to this service.");
-           
-            return await GetPveApiSocket(service);
+            if (package.UserId != user.UserId) throw new AccessViolationException("The current user has no access to this service.");
+
+            var serviceItem = PackageController.GetPackageItem(serviceItemId);
+            if (serviceItem == null) throw new AccessViolationException("Service item not found.");
+            
+            if (serviceItem.ServiceId != serviceId || serviceItem.PackageId != packageId)
+                this new AccessViolationException("The current user has no access to this service");
+
+            var vmId = serviceItem["VirtualMachineId"];
+
+            return await GetPveVNCWebSocket(vmId, service);
         }
-        private async Task<TunnelSocket> GetPveApiSocket(ServiceInfo service)
+        private async Task<TunnelSocket> GetPveVNCWebSocket(string vmId, ServiceInfo service)
         {
             if (service == null)
                 throw new Exception($"Service with ID {service.ServiceId} was not found");
@@ -51,14 +57,14 @@ namespace SolidCP.EnterpriseServer
             ServerInfo server = ServerController.GetServerById(service.ServerId);
 
             var serverUrl = CryptoUtils.DecryptServerUrl(server.ServerUrl);
-            var password = CryptoUtils.SHA1(server.Password);
 
-            return await GetPveApiSocket(serverUrl, password, providerSettings); 
+            return await GetPveVNCWebSocket(serverUrl, server.Password, vmId, providerSettings); 
         }
-        private async Task<TunnelSocket> GetPveApiSocket(string serverUrl, string password, ServiceProviderSettings providerSettings) {
+        private async Task<TunnelSocket> GetPveVNCWebSocket(string serverUrl, string password, string vmId, ServiceProviderSettings providerSettings) {
+            password = CryptoUtils.SHA1(password);
             var client = new ServerTunnelClient() { ServerUrl = serverUrl, Password = password };
 
-            return await client.GetPveApiSocket(providerSettings);
+            return await client.GetPveVNCWebSocket(vmId, providerSettings);
         }
     }
 }

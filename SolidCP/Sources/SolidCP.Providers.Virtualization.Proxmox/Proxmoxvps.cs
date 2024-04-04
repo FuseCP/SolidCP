@@ -72,6 +72,7 @@ using Renci.SshNet.Common;
 using Corsinvest.ProxmoxVE.Api;
 using Corsinvest.ProxmoxVE.Api.Shared;
 using System.Net.Sockets;
+using System.Net.WebSockets;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -903,8 +904,7 @@ namespace SolidCP.Providers.Virtualization
             return false;
         }
 
-        public bool IsHostIpV4 => true;
-        public VNCConsole GetVirtualMachineVNC(string vmId)
+        public async Task<TunnelSocket> GetPveVNCWebSocket(string vmId)
         {
             ApiClientSetup();
             var nodeId = client.NodeId(vmId);
@@ -918,16 +918,16 @@ namespace SolidCP.Providers.Virtualization
 
             client.Client.Nodes[nodeId.Node].Qemu[nodeId.Id].Vncwebsocket.Vncwebsocket(port, ticket).Wait();
 
-            var url = $"https://{ProxmoxClusterServerHost}:{ProxmoxClusterServerPort}/?console=kvm&novnc=1&node={nodeId.Node}" +
-                $"&resize=1&vmid={nodeId.Id}&path=api2/json/nodes/{nodeId.Node}/qemu/{nodeId.Id}/vncwebsocket/port/{port}/vncticket/{ticket}";
+            //var url = $"https://{ProxmoxClusterServerHost}:{ProxmoxClusterServerPort}/?console=kvm&novnc=1&node={nodeId.Node}" +
+            //    $"&resize=1&vmid={nodeId.Id}&path=api2/json/nodes/{nodeId.Node}/qemu/{nodeId.Id}/vncwebsocket/port/{port}/vncticket/{ticket}";
+            var url = $"https://{ProxmoxClusterServerHost}:{ProxmoxClusterServerPort}/api2/json/nodes/{nodeId.Node}/qemu/{nodeId.Id}/vncwebsocket/port/{port}/vncticket/{ticket}";
 
-            //var url = $"https://{ProxmoxClusterServerHost}:{ProxmoxClusterServerPort}/?console=kvm&novnc=1&vmid={nodeId.Id}&vmname={WebUtility.UrlEncode(vm.Name)}&node={nodeId.Node}&resize=off";
-            return new VNCConsole()
-            {
-                Url = url,
-                PVEAuthCookie = client.Client.PVEAuthCookie,
-                CSRFPreventionToken = client.Client.CSRFPreventionToken
-            };
+            var socket = new ClientWebSocket();
+            socket.Options.SetRequestHeader("CSRFPreventionToken", client.Client.CSRFPreventionToken);
+            socket.Options.Cookies.Add(new Cookie("PVEAuthCookie", WebUtility.UrlEncode(client.Client.PVEAuthCookie) + ";SameSite=Strict;"));
+            await socket.ConnectAsync(new Uri(url), CancellationToken.None);
+
+            return new TunnelSocket(socket);
         }
 
         public bool IsHostLoopback(string host)
@@ -956,50 +956,32 @@ namespace SolidCP.Providers.Virtualization
             return false;
         }
 
-        bool IsApiServerLoopback => IsHostLoopback(ProxmoxClusterServerApiHost);
-        bool IsApiIpV4 => true;
-
-        object portForwardLock = new object();
-        SshClient portForwardClient = null;
-        public virtual int CreatePveApiSshTunnel()
+        public bool IsHostIpV4(string host)
         {
-            if (IsApiServerLoopback) return int.Parse(ProxmoxClusterServerPort);
-
-            lock (portForwardLock)
-            {
-                if (portForwardClient != null) {
-                    return (int)portForwardClient.ForwardedPorts
-                        .OfType<ForwardedPortLocal>()
-                        .FirstOrDefault().BoundPort;
-                }
-                var ssh = SshClient();
-                ssh.Connect();
-                ForwardedPortLocal fwdport;
-                if (IsHostIpV4)
-                {
-                    fwdport = new ForwardedPortLocal("127.0.0.1", ProxmoxClusterServerApiHost, uint.Parse(ProxmoxClusterServerPort));
-                } else
-                {
-                    fwdport = new ForwardedPortLocal("::1", ProxmoxClusterServerApiHost, uint.Parse(ProxmoxClusterServerPort));
-                }
-                ssh.AddForwardedPort(fwdport);
-                portForwardClient = ssh;
-                return (int)fwdport.BoundPort;
-            }
-        }
-        public virtual async Task<TunnelSocket> GetPveApiSocket()
-        {
-            var port = CreatePveApiSshTunnel();
+            if (host == null) return true;
 
             IPAddress ip;
-            if (IsApiIpV4) ip = IPAddress.Loopback;
-            else ip = IPAddress.IPv6Loopback;
-            
-            var socket = new TunnelSocket(ip);
-            await socket.ConnectAsync(ip, port);
-            
-            return socket;
+            var isHostIP = IPAddress.TryParse(host, out ip);
+            if (isHostIP) {
+                if (ip.AddressFamily == AddressFamily.InterNetwork) return true;
+            } else 
+            {
+                IPAddress[] ips;
+                lock (ResolvedHosts)
+                {
+                    if (!ResolvedHosts.TryGetValue(host, out ips))
+                    {
+                        ResolvedHosts.Add(host, ips = Dns.GetHostEntry(host).AddressList);
+                    }
+                }
+                return ips.Any(ip => ip.AddressFamily == AddressFamily.InterNetwork);
+            }
+
+            return false;
         }
+
+        bool IsApiServerLoopback => IsHostLoopback(ProxmoxClusterServerApiHost);
+        bool IsApiIpV4 => IsHostIpV4(ProxmoxClusterServerApiHost);
         #endregion
 
 

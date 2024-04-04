@@ -480,6 +480,7 @@
     <Content Include="tinymce\themes\inlite\src\test\.eslintrc" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Code\VncWebSocketHandler.cs" />
     <Compile Include="DesktopModules\SolidCP\Code\Framework\ES.cs" />
     <Compile Include="..\VersionInfo.cs">
       <Link>Code\VersionInfo.cs</Link>
@@ -1254,6 +1255,10 @@
     <ProjectReference Include="..\SolidCP.EnterpriseServer\WebServices\SolidCP.Build\SolidCP.EnterpriseServer.Client.csproj">
       <Project>{df3d477e-741c-4871-b838-c1635e72474b}</Project>
       <Name>SolidCP.EnterpriseServer.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj">
+      <Project>{684c932a-6c75-46ac-a327-f3689d89eb42}</Project>
+      <Name>SolidCP.Providers.Base</Name>
     </ProjectReference>
     <ProjectReference Include="..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj">
       <Project>{652639d5-59ce-4f42-8a5f-87cb1e812961}</Project>

@@ -53,8 +53,7 @@ namespace SolidCP.Providers.Virtualization
         JobResult RenameVirtualMachine(string vmId, string name);
         JobResult ExportVirtualMachine(string vmId, string exportPath);
         JobResult DeleteVirtualMachine(string vmId);
-        VNCConsole GetVirtualMachineVNC(string vmId);
-
+        Task<TunnelSocket> GetPveVNCWebSocket(string vmId);
         // Snapshots
         List<VirtualMachineSnapshot> GetVirtualMachineSnapshots(string vmId);
         VirtualMachineSnapshot GetSnapshot(string vmId, string snapshotId);
@@ -118,6 +117,5 @@ namespace SolidCP.Providers.Virtualization
         ReplicationDetailInfo GetReplicationInfo(string vmId);
         void PauseReplication(string vmId);
         void ResumeReplication(string vmId);
-        Task<TunnelSocket> GetPveApiSocket();
     }
 }

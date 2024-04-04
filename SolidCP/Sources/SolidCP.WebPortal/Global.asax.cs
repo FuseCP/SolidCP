@@ -38,6 +38,7 @@ using System.Web;
 using System.Web.Script;
 using System.Web.Security;
 using System.Web.SessionState;
+using System.Web.Routing;
 using System.Security.Principal;
 using System.Web.UI;
 using System.Net;
@@ -134,7 +135,11 @@ namespace SolidCP.WebPortal
 				Web.Clients.AssemblyLoader.Init();
 			}
 
-			ScriptManager.ScriptResourceMapping.AddDefinition("jquery",
+            var vncHandler = new VncWebSocketHandler();
+            RouteTable.Routes.Add(new Route("novnc/websocket", vncHandler));
+
+
+            ScriptManager.ScriptResourceMapping.AddDefinition("jquery",
 				new ScriptResourceDefinition
 				{
 					Path = "~/JavaScript/jquery-2.1.0.min.js"
