@@ -16,6 +16,7 @@ using System.Diagnostics;
 using System.IO;
 using Renci.SshNet;
 using SolidCP.Providers.OS;
+using SolidCP.Providers;
 using System.Net.Sockets;
 
 #if !NETFRAMEWORK && gRPC
@@ -224,45 +225,13 @@ namespace SolidCP.Web.Clients
 
 		static Dictionary<string, System.Net.IPAddress[]> ResolvedHosts = new Dictionary<string, System.Net.IPAddress[]>();
 
-		public bool IsLocalAddress(string adr)
-		{
-			return Regex.IsMatch(adr, @"(^127\.)|(^192\.168\.)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^\[?::1\]?$)|(^\[?[fF][cCdD])", RegexOptions.Singleline);
-		}
-
-		public bool IsHostLocal(string host)
-		{
-			if (host == null) return true;
-
-            IPAddress hostip;
-            var isHostIP = IPAddress.TryParse(host, out hostip);
-            isHostIP = isHostIP && (hostip.AddressFamily == AddressFamily.InterNetwork || hostip.AddressFamily == AddressFamily.InterNetworkV6);
-            if (host == "localhost" || host.StartsWith("127.0.0.") && isHostIP || host == "::1" || host == "[::1]" ||
-				isHostIP && IsLocalAddress(host)) return true;
-
-			if (!isHostIP)
-			{
-				IPAddress[] ips;
-				lock (ResolvedHosts)
-				{
-					if (!ResolvedHosts.TryGetValue(host, out ips))
-					{
-						ResolvedHosts.Add(host, ips = Dns.GetHostEntry(host).AddressList);
-					}
-				}
-				return ips
-					.Where(ip => ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork || ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
-					.All(ip => IsLocalAddress(ip.ToString()));
-			}
-			return false;
-		}
-
 		public bool IsLocal
 		{
 			get
 			{
 				if (IsSsh) return true;
 				var host = new Uri(url).Host;
-				return url.StartsWith("pipe://", StringComparison.OrdinalIgnoreCase) || IsHostLocal(host);
+				return url.StartsWith("pipe://", StringComparison.OrdinalIgnoreCase) || DnsService.IsHostLAN(host);
 			}
 		}
 
@@ -358,150 +327,38 @@ namespace SolidCP.Web.Clients
 			return pipe;
 		}
 
-		public class SshTunnel : IDisposable
-		{
-			public SshClient Client;
-			public ForwardedPortLocal Port;
-			public string Url;
-			public Exception Exception, ConnectException;
-			public bool IsConnecting;
-			public SshTunnel(string url, SshClient client, ForwardedPortLocal port)
-			{
-				Url = url;
-				Client = client;
-				Exception = null;
-				ConnectException = null;
-				Port = port;
-				IsConnecting = true;
-			}
-
-			bool isRestarting = false;
-			public void Restart(object sender, Renci.SshNet.Common.ExceptionEventArgs args)
-			{
-				lock (this)
-				{
-					if (isRestarting || Exception == args.Exception || ConnectException != null) return;
-					Exception = args.Exception;
-					isRestarting = true;
-					IsConnecting = true;
-					Client.ErrorOccurred -= Restart;
-					Port.Exception -= Restart;
-
-					Trace.TraceError($"Exception on SSH Tunnel {Url}: {Exception}");
-					
-					Disconnect();
-
-					ConnectException = null;
-					try
-					{
-						Client.Connect();
-						Port.Start();
-					}
-					catch (Exception ex)
-					{
-						ConnectException = ex;
-						isRestarting = false;
-						Disconnect();
-
-						Trace.TraceError($"Failed to reconnect SSH Tunnel to {Url}: {ex}");
-					}
-					isRestarting = IsConnecting = false;
-					Client.ErrorOccurred += Restart;
-					Port.Exception += Restart;
-				}
-			}
-
-			bool isDisposed = false;
-			public void Disconnect()
-			{
-				lock (this)
-				{
-					if (Port.IsStarted)
-					{
-						try
-						{
-							Port.Stop();
-						}
-						catch { }
-					}
-					if (Client.IsConnected)
-					{
-						try
-						{
-							Client.Disconnect();
-						}
-						catch { }
-					}
-				}
-			}
-			public void Dispose()
-			{
-				Disconnect();
-				if (!isDisposed)
-				{
-					isDisposed = true;
-					Client.Dispose();
-				}
-			}
-		}
 
 		static ConcurrentDictionary<string, SshTunnel> SshTunnels = new ConcurrentDictionary<string, SshTunnel>();
 		static object SshLock = new object();
 		static bool SshDisposed = false;
 
-		const string ParseSshUrlRegex = @"(?<=^[a-zA-Z.]+://)(?<sshlogin>[^/]*)/(?:(?<localport>[0-9]+):)?(?:(?<host>\[[0-9a-fA-F:]+\]|[0-9]+\.[0-9a-zA-Z_.-]+):)?(?<remoteport>[0-9]+)(?=/|$|\?)";
-
 		public static SshTunnel StartSshTunnel(string url)
 		{
 			lock (SshLock) if (SshDisposed) throw new ObjectDisposedException("Ssh tunnels have been disposed.");
 
-			var match = Regex.Match(url, ParseSshUrlRegex, RegexOptions.Singleline);
-			var uri = new Uri(url);
-			var userTokens = uri.UserInfo.Split(':');
-			var user = userTokens[0];
-			var password = "";
-			if (userTokens.Length >= 2) password = userTokens[1];
-			var localport = match.Groups["localport"].Success ? uint.Parse(match.Groups["localport"].Value) : uint.MaxValue;
-			var host = match.Groups["host"].Success ? match.Groups["host"].Value : "127.0.0.1";
-			var remoteport = uint.Parse(match.Groups["remoteport"].Value);
+			var tunnel = new SshTunnel(url);
 
-			var sshClient = new SshClient(uri.Host, uri.Port != -1 ? uri.Port : 22, user, password);
-			ForwardedPortLocal forwardedPort;
-			if (localport == uint.MaxValue) forwardedPort = new ForwardedPortLocal("127.0.0.1", host, remoteport);
-			else forwardedPort = new ForwardedPortLocal("127.0.0.1", localport, host, remoteport);
-
-			var tunnel = new SshTunnel(url, sshClient, forwardedPort);
-
-			ThreadPool.QueueUserWorkItem(state =>
-			{
-				lock (tunnel)
-				{
-					try
-					{
-						tunnel.IsConnecting = true;
-						sshClient.Connect();
-						sshClient.AddForwardedPort(forwardedPort);
-						forwardedPort.Start();
-						tunnel.IsConnecting = false;
-						sshClient.ErrorOccurred += tunnel.Restart;
-						forwardedPort.Exception += tunnel.Restart;
-						
-						Trace.TraceInformation($"SSH Tunnel on {url} started.");
-					}
-					catch (Exception ex)
-					{
-						tunnel.ConnectException = ex;
-						tunnel.IsConnecting = false;
-						tunnel.Disconnect();
-						
-						Trace.TraceError($"Failed to connect SSH Tunnel to {url}: {ex}");
-					}
-				}
+			ThreadPool.QueueUserWorkItem(state => {
+				lock (tunnel) tunnel.Create();
 			});
+
 			return tunnel;
 		}
 
-		public static new void StartAllSshTunnels(IEnumerable<string> urls)
+		public static void WaitForTunnelReady(SshTunnel tunnel)
+		{
+			Thread.Sleep(0);
+			// block until ssh tunnel is ready
+            bool wait;
+            lock (tunnel) wait = !tunnel.Client.IsConnected && !tunnel.Port.IsStarted && tunnel.IsConnecting && tunnel.ConnectException == null;
+            while (wait)
+            {
+                Thread.Sleep(1);
+                lock (tunnel) wait = !tunnel.Client.IsConnected && !tunnel.Port.IsStarted && tunnel.IsConnecting && tunnel.ConnectException == null;
+            }
+        }
+
+        public static new void StartAllSshTunnels(IEnumerable<string> urls)
 		{
 			foreach (var url in urls.Take(50)) // only pre start the first 50 servers due to performance reasons
 			{
@@ -531,16 +388,7 @@ namespace SolidCP.Web.Clients
 			SshTunnel tunnel;
 			lock (SshLock) tunnel = SshTunnels.GetOrAdd(url, StartSshTunnel);
 
-			Thread.Sleep(0);
-
-			// block until ssh tunnel is ready
-			bool wait;
-			lock (tunnel) wait = !tunnel.Client.IsConnected && !tunnel.Port.IsStarted && tunnel.IsConnecting && tunnel.ConnectException == null;
-			while (wait)
-			{
-				Thread.Sleep(1);
-				lock (tunnel) wait = !tunnel.Client.IsConnected && !tunnel.Port.IsStarted && tunnel.IsConnecting && tunnel.ConnectException == null;
-			}
+			WaitForTunnelReady(tunnel);
 
 			lock (tunnel)
 			{
@@ -554,7 +402,9 @@ namespace SolidCP.Web.Clients
 				}
 			}
 
-			if (IsHttp) serviceurl = serviceurl.SetScheme("http");
+			serviceurl = tunnel.AccessUrl;
+
+            if (IsHttp) serviceurl = serviceurl.SetScheme("http");
 			else if (Protocol == Protocols.NetTcp || Protocol == Protocols.NetTcpSsl)
 			{
 				if (Protocol == Protocols.NetTcpSsl) Protocol = Protocols.NetTcp;
@@ -563,7 +413,7 @@ namespace SolidCP.Web.Clients
 			else if (IsHttps) throw new NotSupportedException("Https over ssh tunnel is not supported.");
 			else throw new NotSupportedException("This protocol is not supported over ssh tunnel.");
 
-			return Regex.Replace(serviceurl, ParseSshUrlRegex, m => $"127.0.0.1:{tunnel.Port.BoundPort}", RegexOptions.Singleline);
+			return serviceurl;
 		}
 
 		protected T Client

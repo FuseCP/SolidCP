@@ -15,24 +15,22 @@ using Corsinvest.ProxmoxVE.Api.Shared;
 
 namespace SolidCP.Providers.Virtualization
 {
-	public class ApiClient
+	public class ApiClient: IDisposable
 	{
 		private string baseUrl;
 		private bool validateCertificate;
 		//private string node;
 		private ApiTicket apiTicket;
-		public PveClient Client { get; private set; }
 		private Proxmoxvps Provider { get; set; }
 
 		private const string TaskOk = "TASK OK";
 		private const string RequestRootElement = "data";
-
+		public PveClient Api2 => Provider.Api2;
 		//public ApiClient(ProxmoxServer server, string node)
-		public ApiClient(ProxmoxServer server, Proxmoxvps provider)
+		public ApiClient(Proxmoxvps provider)
 		{
-			this.baseUrl = "https://" + server.Ip + ":" + server.Port + "/api2/json";
-			this.validateCertificate = server.ValidateCertificate;
-			Client = new PveClient(server.Ip, int.Parse(server.Port));
+			this.baseUrl = "https://" + provider.Server.Ip + ":" + provider.Server.Port + "/api2/json";
+			this.validateCertificate = provider.Server.ValidateCertificate;
 			Provider = provider;
 			// Client.ValidateCertificate = server.ValidateCertificate;
 			//this.node = node;
@@ -78,17 +76,17 @@ namespace SolidCP.Providers.Virtualization
 			apiTicket = apiTicketdata;
 			//HostedSolutionLog.DebugInfo("Login - apiTicket: {0}", apiTicket.ticket);
 			return response; */
-			if (!Client.Login($"{user.Username}@{(string.IsNullOrEmpty(user.Realm) ? "pam" : user.Realm)}", user.Password).Result) 
-				throw new Exception($"Proxmox Server API Service at {baseUrl} unavaliable.\n{Client.LastResult.ReasonPhrase}");
+			if (!Api2.Login($"{user.Username}@{(string.IsNullOrEmpty(user.Realm) ? "pam" : user.Realm)}", user.Password).Result) 
+				throw new Exception($"Proxmox Server API Service at {baseUrl} unavaliable.\n{Api2.LastResult.ReasonPhrase}");
  
 			ApiTicket apiTicketdata = new ApiTicket();
-			dynamic data = Client.LastResult.ToData();
+			dynamic data = Api2.LastResult.ToData();
 			apiTicketdata.ticket = data.ticket;
             apiTicketdata.username = data.username;
             apiTicketdata.CSRFPreventionToken = data.CSRFPreventionToken;
             apiTicket = apiTicketdata;
 
-			return Client.LastResult;
+			return Api2.LastResult;
         }
 
 
@@ -378,7 +376,7 @@ namespace SolidCP.Providers.Virtualization
 
         public virtual PpmImage GetScreenshot(string vmId)
 		{
-			var client = Client;
+			var client = Api2;
 			var nodeId = NodeId(vmId);
 			var remoteTmpFile = $"/tmp/screendump-{vmId.Replace(':','-')}-{DateTime.Now.Ticks}.ppm";
             //var remoteTmpFile = $"/tmp/screendump.ppm";
@@ -458,7 +456,5 @@ namespace SolidCP.Providers.Virtualization
 			}
 			return apivm;
 		}
-
-	}
-
+    }
 }

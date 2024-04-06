@@ -38,6 +38,7 @@ using System.Threading.Tasks;
 using SolidCP.Web.Services;
 using System.ComponentModel;
 using SolidCP.Providers;
+using SolidCP.Providers.OS;
 using SolidCP.Providers.Virtualization;
 using SolidCP.Server.Utils;
 using System.Collections.Generic;
@@ -877,7 +878,7 @@ namespace SolidCP.Server
         #region Replication
 
         [WebMethod, SoapHeader("settings")]
-        public List<CertificateInfo> GetCertificates(string remoteServer)
+        public List<SolidCP.Providers.Virtualization.CertificateInfo> GetCertificates(string remoteServer)
         {
             try
             {

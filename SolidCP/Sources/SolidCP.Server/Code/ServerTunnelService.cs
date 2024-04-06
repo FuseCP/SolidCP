@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using SolidCP.Web.Services;
 using SolidCP.Providers;
+using SolidCP.Providers.OS;
 
 [assembly:TunnelService(typeof(SolidCP.Server.ServerTunnelService))]
 

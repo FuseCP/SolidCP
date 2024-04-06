@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using SolidCP.Providers;
+using SolidCP.Providers.OS;
 #if !NETFRAMEWORK
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;

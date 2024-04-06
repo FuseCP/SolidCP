@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SolidCP.Providers;
+using SolidCP.Providers.OS;
 
 [assembly:TunnelClient(typeof(SolidCP.Server.Client.ServerTunnelClient))]
 
