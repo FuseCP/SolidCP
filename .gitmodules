@@ -7,9 +7,15 @@
 [submodule "SolidCP/Lib/Compat.Runtime.Serialization.Signed"]
 	path = SolidCP/Lib/Compat.Runtime.Serialization.Signed
 	url = https://github.com/simonegli8/Compat.Runtime.Serialization.Signed
-[submodule "SolidCP/Lib/novnc-pve"]
-	path = SolidCP/Lib/novnc-pve
-	url = https://github.com/simonegli8/novnc-pve.git
 [submodule "solidcp/lib/noVNC"]
 	path = solidcp/lib/noVNC
 	url = https://github.com/novnc/noVNC.git
+[submodule "SolidCP/Lib/mirror_novnc"]
+	path = SolidCP/Lib/mirror_novnc
+	url = https://github.com/novnc/noVNC
+[submodule "SolidCP/Lib/novnc-pve"]
+	path = SolidCP/Lib/novnc-pve
+	url = git://git.proxmox.com/git/novnc-pve.git
+[submodule "SolidCP/Lib/novnc-solidcp"]
+	path = SolidCP/Lib/novnc-solidcp
+	url = https://github.com/simonegli8/noVNC
