@@ -10,21 +10,32 @@ using System.Threading.Tasks;
 using System.Net.Sockets;
 using System.Net.WebSockets;
 using System.Net;
-using Compat.Runtime.Serialization;
+using System.Runtime.Serialization;
+using System.Xml.Serialization;
 using Renci.SshNet;
 
 namespace SolidCP.Providers.OS
 {
     public class TunnelSocket : IDisposable, IAsyncDisposable
     {
-
+        [XmlIgnore, IgnoreDataMember]
         public Socket BaseSocket { get; set; }
+        [XmlIgnore, IgnoreDataMember]
         public WebSocket BaseWebSocket { get; set; }
+        [XmlIgnore, IgnoreDataMember]
         public SshTunnel BaseSshTunnel { get; set; }
+        public TunnelSocket TunnelOtherEnd { get; set; } = null;
 
         public TunnelSocket() { }
-        public TunnelSocket(Socket socket) : this() => BaseSocket = socket;
-        public TunnelSocket(WebSocket socket) : this() => BaseWebSocket = socket;
+        public TunnelSocket(Socket socket) : this() {
+            BaseSocket = socket;
+            url = "";
+        }
+
+        public TunnelSocket(WebSocket socket) : this() {
+            BaseWebSocket = socket;
+            url = "";
+        }
         public TunnelSocket(IPAddress address) : this(new Socket(address.AddressFamily, SocketType.Stream, ProtocolType.Tcp))
         {
             url = $"tcp://{address}";
@@ -35,9 +46,36 @@ namespace SolidCP.Providers.OS
         }
         public TunnelSocket(string url): this() => Url = url;
 
-        public bool IsWebSocket => BaseWebSocket != null;
-        public bool IsSocket => BaseSocket != null;
-        public bool IsSshTunnel => url.StartsWith("ssh://");
+        public TunnelSocket Clone
+        {
+            get
+            {
+                var clone = (TunnelSocket)Activator.CreateInstance(GetType());
+                clone.Url = Url;
+                clone.ServerTunnelSocketUrl = ServerTunnelSocketUrl;
+                clone.BaseSocket = BaseSocket;
+                clone.BaseWebSocket = BaseWebSocket;
+                clone.BaseSshTunnel = BaseSshTunnel;
+                foreach (var cookie in Cookies) clone.Cookies.Add(cookie);
+                foreach (var header in HttpHeaders) clone.HttpHeaders.Add(header.Key, header.Value);
+                return clone;
+            }
+        }
+
+        public void CopyFrom(TunnelSocket from)
+        {
+            Url = from.Url;
+            ServerTunnelSocketUrl = from.ServerTunnelSocketUrl;
+            BaseSocket = from.BaseSocket;
+            BaseWebSocket = from.BaseWebSocket;
+            BaseSshTunnel = from.BaseSshTunnel;
+            foreach (var cookie in from.Cookies) Cookies.Add(cookie);
+            foreach (var header in from.HttpHeaders) HttpHeaders.Add(header.Key, header.Value);
+        }
+
+        public bool IsWebSocket => url.StartsWith("http://") || url.StartsWith("https://") || BaseWebSocket != null;
+        public bool IsSocket => url.StartsWith("tcp://") || url.StartsWith("udp://") || BaseSocket != null;
+        public bool IsSshTunnel => url.StartsWith("ssh://") ||BaseSshTunnel != null;
 
         string url = null;
         public string Url
@@ -63,8 +101,7 @@ namespace SolidCP.Providers.OS
                     }
                     if (isListener)
                     {
-                        if (string.IsNullOrEmpty(query) && !isFallback) str.Append("?");
-                        else str.Append("&");
+                        str.Append("&");
                         str.Append("tunnel=listener");
                     }
                     url = str.ToString();
@@ -74,6 +111,7 @@ namespace SolidCP.Providers.OS
         public string RawUrl => Regex.Replace(Url ?? "", @"(?<=\?.*?)(?:(?<=\?)|&)(?:tunnel=listener|tunnel=fallback)(?=&|$)", "");
 
         int port = -1;
+        [XmlIgnore, IgnoreDataMember]
         public int Port
         {
             get => port;
@@ -94,7 +132,7 @@ namespace SolidCP.Providers.OS
         public TimeSpan ConnectTimeout { get; set; } = TimeSpan.FromSeconds(60);
         public TimeSpan WriteTimeout { get; set; } = TimeSpan.FromSeconds(60);
         public int MaxPendingConncections { get; set; } = 20;
-        public CookieContainer Cookies { get; set; }
+        public List<Cookie> Cookies { get; set; }
         public Dictionary<string, string> HttpHeaders { get; private set; } = new Dictionary<string, string>();
 
         async Task InitSocketAsync()
@@ -107,7 +145,7 @@ namespace SolidCP.Providers.OS
                 {
                     var baseWebSocket = new ClientWebSocket();
                     BaseWebSocket = baseWebSocket;
-                    baseWebSocket.Options.Cookies = Cookies;
+                    foreach (var cookie in Cookies) baseWebSocket.Options.Cookies.Add(cookie);
                     foreach (var item in HttpHeaders)
                     {
                         baseWebSocket.Options.SetRequestHeader(item.Key, item.Value);
@@ -124,7 +162,6 @@ namespace SolidCP.Providers.OS
             }
         }
 
-        public ForwardedPort BaseForwardedPort { get; set; } = null;
         public async Task<SshTunnel> GetSshTunnelAsync()
         {
             if (!Url.StartsWith("ssh://")) throw new ArgumentException("Not a ssh url");
@@ -134,7 +171,9 @@ namespace SolidCP.Providers.OS
             return BaseSshTunnel;
         }
 
-        public DateTime LastActivity { get; set; }
+        [XmlIgnore, IgnoreDataMember]
+        public DateTime LastActivity { get; set; } = DateTime.Now;
+
         bool isFallback, isListener;
         public bool IsFallback
         {
@@ -224,18 +263,18 @@ namespace SolidCP.Providers.OS
             if (IsSocket) BaseSocket.Close();
             if (IsWebSocket) await BaseWebSocket.CloseAsync(status, statusDescription, CancellationToken.None);
             if (IsSshTunnel) BaseSshTunnel.Dispose();
+            if (TunnelOtherEnd != null) await TunnelOtherEnd.CloseAsync(status, statusDescription);
         }
 
         public async Task Transmit(TunnelSocket dest)
         {
-            // handshake if dest is fallback TunnelSocket
-
+            if (dest.IsWebSocket && !dest.IsConnected) await dest.ConnectAsync();
 
             var buffer = new byte[1024 * 4];
             var result = await ReceiveAsync(new ArraySegment<byte>(buffer));
             WebSocketReceiveResult destResult = new WebSocketReceiveResult(0, WebSocketMessageType.Binary, true);
 
-            Task.Run(async () =>
+            var receivingTask = Task.Run(async () =>
             {
                 destResult = await dest.ReceiveAsync(new ArraySegment<byte>(buffer));
 
@@ -260,50 +299,121 @@ namespace SolidCP.Providers.OS
             await CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription);
         }
 
-        const string FallbackMessgae = "GetServerTunnelSocketUrl";
-        public virtual async Task<string> RequestServerTunnelSocketUrlAsync()
+        public bool IsConnected
         {
-            const int BufferSize = 4 * 1024;
-            BaseWebSocket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes(FallbackMessgae)), WebSocketMessageType.Text, true, CancellationToken.None);
-            var mem = new MemoryStream();
+            get
+            {
+                if (IsSocket) return BaseSocket.Connected;
+                if (IsWebSocket) return BaseWebSocket.State == WebSocketState.Open;
+                throw new NotSupportedException("IsConnected not supported on this TunnelSocket");
+            }
+        }
+
+        public virtual async Task<string> ReceiveMessageAsync() {
+            if (!IsWebSocket) throw new NotSupportedException("ReceiveMessageAsync is only supported on WebSockets");
+            const int BufferSize = 1024;
             var buffer = new byte[BufferSize];
-            WebSocketReceiveResult result = await BaseWebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), new CancellationTokenSource(IdleTimeout).Token));
+            var mem = new MemoryStream();
+            WebSocketReceiveResult result = await BaseWebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), new CancellationTokenSource(IdleTimeout).Token);
+            await mem.WriteAsync(buffer, 0, result.Count);
             while (!result.CloseStatus.HasValue && !result.EndOfMessage && result.MessageType == WebSocketMessageType.Text)
             {
+                result = await BaseWebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), new CancellationTokenSource(IdleTimeout).Token);
                 await mem.WriteAsync(buffer, 0, result.Count);
-                result = await BaseWebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), new CancellationTokenSource(IdleTimeout).Token));
             }
             if (!result.EndOfMessage || result.MessageType != WebSocketMessageType.Text)
             {
-                await BaseWebSocket.CloseAsync(WebSocketCloseStatus.InvalidMessageType, "This WebSocket does not support the fallback url protocol", CancellationToken.None);
+                throw new NotSupportedException("This WebSocket does not support the fallback protocol");
             }
             return Encoding.UTF8.GetString(mem.ToArray());
         }
 
-        public virtual async Task ProvideServerTunnelSocketUrlAsync(TunnelSocket destinationSocket)
+        public virtual async Task SendMessageAsync(string message)
         {
-            const int BufferSize = 1024;
-            var buffer = new byte[BufferSize];
-            var mem = new MemoryStream();
-            WebSocketReceiveResult result = await BaseWebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), new CancellationTokenSource(IdleTimeout).Token));
-            await mem.WriteAsync(buffer, 0, result.Count);
-            while (!result.CloseStatus.HasValue && !result.EndOfMessage && result.MessageType == WebSocketMessageType.Text)
+            if (!IsWebSocket) throw new NotSupportedException("SendMessageAsync is only supported on WebSockets");
+            var buffer = Encoding.UTF8.GetBytes(message);
+            await BaseWebSocket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, CancellationToken.None);
+        }
+
+        const string GetServerTunnelSocketUrlMessage = "GetServerTunnelSocketUrl";
+        const string UseServerTunnelSocketUrlMessage = "UseServerTunnelSocketUrl";
+
+        [XmlIgnore, IgnoreDataMember]
+        public bool SupportsFallbackProtocol { get; set; } = false;
+
+        [XmlIgnore, IgnoreDataMember]
+        public string ServerTunnelSocketUrl { get; set; } = null;
+        public bool HasServerTunnelSocketUrl => !string.IsNullOrEmpty(ServerTunnelSocketUrl);
+
+        public async Task UseServerTunnelSocketUrlAsync()
+        {
+            if (HasServerTunnelSocketUrl)
             {
-                result = await BaseWebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), new CancellationTokenSource(IdleTimeout).Token));
-                await mem.WriteAsync(buffer, 0, result.Count);
-            }
-            string message = Encoding.UTF8.GetString(mem.ToArray());
-            if (message == FallbackMessgae)
-            {
-                // Send destination socket's url so the client can try opening directly himself
-                buffer = Encoding.UTF8.GetBytes(destinationSocket.Url);
-                await BaseWebSocket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, CancellationToken.None);
-            } else {
-                await BaseWebSocket.CloseAsync(WebSocketCloseStatus.InvalidMessageType, "This WebSocket does not support the fallback url protocol", CancellationToken.None);
+                var newTunnelSocket = Clone;
+                newTunnelSocket.Url = ServerTunnelSocketUrl;
+                try
+                {
+                    await newTunnelSocket.ConnectAsync();
+                }
+                catch (Exception ex)
+                {
+
+                }
+                if (newTunnelSocket.IsConnected)
+                {
+                    // fire and forget CloseAsync
+                    var closeTask = Clone.CloseAsync(WebSocketCloseStatus.NormalClosure, "Use new TunnelSocket");
+                    CopyFrom(newTunnelSocket);
+                }
+                else
+                {
+                    // Tell child fallback TunnelSocket to use ServerTunnelSocketUrl
+                    if (TunnelOtherEnd != null && TunnelOtherEnd.IsFallback)
+                    {
+                        await TunnelOtherEnd.SendMessageAsync(UseServerTunnelSocketUrlMessage);
+                    }
+                }
+                ServerTunnelSocketUrl = null;
             }
         }
-        public async Task ConnectAsync()
+        public virtual async Task<string> RequestServerTunnelSocketUrlAsync()
         {
+            if (IsFallback)
+            {
+                await SendMessageAsync(GetServerTunnelSocketUrlMessage);
+                ServerTunnelSocketUrl = await ReceiveMessageAsync();
+            }
+            return ServerTunnelSocketUrl ?? Url;
+        }
+
+        public virtual async Task ProvideServerTunnelSocketUrlAsync(TunnelSocket destinationSocket)
+        {
+            SupportsFallbackProtocol = true;
+            
+            TunnelOtherEnd = destinationSocket;
+
+            string message = await ReceiveMessageAsync();
+            if (message == GetServerTunnelSocketUrlMessage)
+            {
+                var url = await destinationSocket.RequestServerTunnelSocketUrlAsync();
+                // Send destination socket's url so the client can try opening directly himself
+                await SendMessageAsync(url);
+                // Wait for the response
+                message = await ReceiveMessageAsync();
+                if (message == UseServerTunnelSocketUrlMessage)
+                {
+                   await destinationSocket.UseServerTunnelSocketUrlAsync();
+                }
+            } else {
+                // error, close sockets
+                await BaseWebSocket.CloseAsync(WebSocketCloseStatus.InvalidMessageType, "This WebSocket does not support the fallback url protocol", CancellationToken.None);
+                await destinationSocket.CloseAsync(WebSocketCloseStatus.InvalidMessageType, "This WebSocket does not support the fallback url protocol");
+            }
+        }
+        public async Task ConnectAsync(TunnelSocket listeningSocket = null)
+        {
+            if (IsConnected) return;
+
             await InitSocketAsync();
             if (IsSshTunnel) await GetSshTunnelAsync();
             if (IsSocket) {
@@ -320,9 +430,10 @@ namespace SolidCP.Providers.OS
                 if (BaseWebSocket is ClientWebSocket clientWebSocket)
                 {
                     await clientWebSocket.ConnectAsync(new Uri(Url), new CancellationTokenSource(ConnectTimeout).Token);
+                   
                     if (IsFallback)
                     {
-                        var url = await RequestServerTunnelSocketUrlAsync();
+                        
                     }
                 }
             }

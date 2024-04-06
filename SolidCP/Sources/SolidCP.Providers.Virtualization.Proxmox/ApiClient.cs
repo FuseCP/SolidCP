@@ -15,7 +15,7 @@ using Corsinvest.ProxmoxVE.Api.Shared;
 
 namespace SolidCP.Providers.Virtualization
 {
-	public class ApiClient: IDisposable
+	public class ApiClient: PveClient, IDisposable
 	{
 		private string baseUrl;
 		private bool validateCertificate;
@@ -25,9 +25,7 @@ namespace SolidCP.Providers.Virtualization
 
 		private const string TaskOk = "TASK OK";
 		private const string RequestRootElement = "data";
-		public PveClient Api2 => Provider.Api2;
-		//public ApiClient(ProxmoxServer server, string node)
-		public ApiClient(Proxmoxvps provider)
+		public ApiClient(Proxmoxvps provider): base(provider.Server.Ip, int.Parse(provider.Server.Port))
 		{
 			this.baseUrl = "https://" + provider.Server.Ip + ":" + provider.Server.Port + "/api2/json";
 			this.validateCertificate = provider.Server.ValidateCertificate;
@@ -76,17 +74,17 @@ namespace SolidCP.Providers.Virtualization
 			apiTicket = apiTicketdata;
 			//HostedSolutionLog.DebugInfo("Login - apiTicket: {0}", apiTicket.ticket);
 			return response; */
-			if (!Api2.Login($"{user.Username}@{(string.IsNullOrEmpty(user.Realm) ? "pam" : user.Realm)}", user.Password).Result) 
-				throw new Exception($"Proxmox Server API Service at {baseUrl} unavaliable.\n{Api2.LastResult.ReasonPhrase}");
+			if (!Login($"{user.Username}@{(string.IsNullOrEmpty(user.Realm) ? "pam" : user.Realm)}", user.Password).Result) 
+				throw new Exception($"Proxmox Server API Service at {baseUrl} unavaliable.\n{LastResult.ReasonPhrase}");
  
 			ApiTicket apiTicketdata = new ApiTicket();
-			dynamic data = Api2.LastResult.ToData();
+			dynamic data = LastResult.ToData();
 			apiTicketdata.ticket = data.ticket;
             apiTicketdata.username = data.username;
             apiTicketdata.CSRFPreventionToken = data.CSRFPreventionToken;
             apiTicket = apiTicketdata;
 
-			return Api2.LastResult;
+			return LastResult;
         }
 
 
@@ -376,11 +374,10 @@ namespace SolidCP.Providers.Virtualization
 
         public virtual PpmImage GetScreenshot(string vmId)
 		{
-			var client = Api2;
 			var nodeId = NodeId(vmId);
 			var remoteTmpFile = $"/tmp/screendump-{vmId.Replace(':','-')}-{DateTime.Now.Ticks}.ppm";
             //var remoteTmpFile = $"/tmp/screendump.ppm";
-            var result = client.Nodes[nodeId.Node]?.Qemu[nodeId.Id]?.Monitor.Monitor($"screendump {remoteTmpFile}").Result;
+            var result = Nodes[nodeId.Node]?.Qemu[nodeId.Id]?.Monitor.Monitor($"screendump {remoteTmpFile}").Result;
             using (var file = Provider.GetFile(vmId, remoteTmpFile, true))
 			{
 				return PpmImage.FromStream(file);
@@ -456,5 +453,7 @@ namespace SolidCP.Providers.Virtualization
 			}
 			return apivm;
 		}
+
+		public void Dispose() { }
     }
 }

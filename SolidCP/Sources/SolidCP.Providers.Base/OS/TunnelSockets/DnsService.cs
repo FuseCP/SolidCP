@@ -61,7 +61,7 @@ namespace SolidCP.Providers.OS
         public static IPAddress GetFirstIPV6Address(string host) => GetIPAddresses(host)
             .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetworkV6);
 
-        public bool IsHostLoopback(string host)
+        public static bool IsHostLoopback(string host)
         {
             if (host == null) return true;
 
@@ -80,7 +80,7 @@ namespace SolidCP.Providers.OS
             return false;
         }
 
-        public bool IsHostIpV4(string host)
+        public static bool IsHostIpV4(string host)
         {
             if (host == null) return true;
 
@@ -91,12 +91,12 @@ namespace SolidCP.Providers.OS
             return ips.Any(ip => ip.AddressFamily == AddressFamily.InterNetwork);
         }
 
-        public bool IsLANAddress(string adr)
+        public static bool IsLANAddress(string adr)
         {
             return Regex.IsMatch(adr, @"(^127\.)|(^192\.168\.)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^\[?::1\]?$)|(^\[?[fF][cCdD])", RegexOptions.Singleline);
         }
 
-        public bool IsHostLAN(string host)
+        public static bool IsHostLAN(string host)
         {
             if (host == null) return true;
 

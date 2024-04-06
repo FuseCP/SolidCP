@@ -83,33 +83,33 @@ namespace SolidCP.Providers.Virtualization
     {
 
         #region Provider Settings
-        protected virtual string ProxmoxClusterServerHost
+        public virtual string ProxmoxClusterServerHost
         {
             get { return ProviderSettings["ProxmoxClusterServerHost"]; }
         }
 
-        protected virtual string ProxmoxClusterServerApiHost => ProxmoxClusterServerHost;
+        public virtual string ProxmoxClusterServerApiHost => ProxmoxClusterServerHost;
 
-        protected string ProxmoxClusterServerPort
+        public string ProxmoxClusterServerPort
         {
             get { return ProviderSettings["ProxmoxClusterServerPort"]; }
         }
 
-        protected string ProxmoxClusterAdminUser
+        public string ProxmoxClusterAdminUser
         {
             get { return ProviderSettings["ProxmoxClusterAdminUser"]; }
         }
 
-        protected string ProxmoxClusterRealm
+        public string ProxmoxClusterRealm
         {
             get { return ProviderSettings["ProxmoxClusterRealm"]; }
         }
 
-        protected string ProxmoxClusterAdminPass
+        public string ProxmoxClusterAdminPass
         {
             get { return ProviderSettings["ProxmoxClusterAdminPass"]; }
         }
-        protected bool? ProxmoxTrustClusterServerCertificate
+        public bool? ProxmoxTrustClusterServerCertificate
         {
             get
             {
@@ -122,7 +122,7 @@ namespace SolidCP.Providers.Virtualization
         }
 
         static string node = null;
-        protected virtual string ProxmoxClusterNode
+        public virtual string ProxmoxClusterNode
         {
             get
             {
@@ -151,22 +151,22 @@ namespace SolidCP.Providers.Virtualization
 		}
 		*/
 
-        protected string ProxmoxIsosonStorage
+        public string ProxmoxIsosonStorage
         {
             get { return ProviderSettings["ProxmoxIsosonStorage"]; }
         }
 
-        protected string ServerNameSettings
+        public string ServerNameSettings
         {
             get { return ProviderSettings["ServerName"]; }
         }
 
-        protected string DeploySSHServerHostSettings
+        public string DeploySSHServerHostSettings
         {
             get { return ProviderSettings["DeploySSHServerHost"]; }
         }
 
-        protected string DeploySSHServerPortSettings
+        public string DeploySSHServerPortSettings
         {
             get { return ProviderSettings["DeploySSHServerPort"]; }
         }
@@ -176,27 +176,27 @@ namespace SolidCP.Providers.Virtualization
             get { return ProviderSettings["DeploySSHUser"]; }
         }
 
-        protected string DeploySSHPassSettings
+        public string DeploySSHPassSettings
         {
             get { return ProviderSettings["DeploySSHPass"]; }
         }
 
-        protected string DeploySSHKeySettings
+        public string DeploySSHKeySettings
         {
             get { return ProviderSettings["DeploySSHKey"]; }
         }
 
-        protected string DeploySSHKeyPassSettings
+        public string DeploySSHKeyPassSettings
         {
             get { return ProviderSettings["DeploySSHKeyPass"]; }
         }
 
-        protected string DeploySSHScriptSettings
+        public string DeploySSHScriptSettings
         {
             get { return ProviderSettings["DeploySSHScript"]; }
         }
 
-        protected string DeploySSHScriptParamsSettings
+        public string DeploySSHScriptParamsSettings
         {
             get { return ProviderSettings["DeploySSHScriptParams"]; }
         }
@@ -259,7 +259,7 @@ namespace SolidCP.Providers.Virtualization
         private const string THUMB_PRINT_TEXT = "PROXMOX VPS";
         private const string SNAPSHOT_DESCR = "SolidCP Snapshot";
         private const string PROXMOX_REALM = "pam";
-        private RestResponse Response;
+        public RestResponse Response;
         //private string upid;
 
 
@@ -267,8 +267,25 @@ namespace SolidCP.Providers.Virtualization
         public virtual bool ValidateServerCertificate => !IsLocalServer ||
             !ProxmoxTrustClusterServerCertificate.HasValue || !ProxmoxTrustClusterServerCertificate.Value;
 
-        PveClient api = null;
-        public PveClient Api2 => api ?? (api = new PveClient(string.IsNullOrEmpty(ProxmoxClusterServerApiHost) ? "127.0.0.1" : ProxmoxClusterServerApiHost, int.Parse(ProxmoxClusterServerPort)));
+        ProxmoxServer server;
+        public ProxmoxServer Server => server ?? (server = new ProxmoxServer { Ip = string.IsNullOrEmpty(ProxmoxClusterServerApiHost) ? "127.0.0.1" : ProxmoxClusterServerApiHost, Port = ProxmoxClusterServerPort, ValidateCertificate = ValidateServerCertificate });
+
+        ApiClient api = null;
+        public ApiClient Api
+        {
+            get
+            {
+                if (api != null) return api;
+                {
+                    api = new ApiClient(this);
+                    // TODO support certificate validation
+                    ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+                    api.Login(User);
+                }
+                return api;
+            }
+        }
 
         #endregion
 
@@ -300,9 +317,9 @@ namespace SolidCP.Providers.Virtualization
             vm.VirtualMachineId = vmId;
             try
             {
-                var result = Api1.Status(vmId);
+                var result = Api.Status(vmId);
                 HostedSolutionLog.DebugInfo("GetVirtualMachine - Virtual Machine: {0}", vmId);
-                var vmconfig = Api1.VMConfig(vmId);
+                var vmconfig = Api.VMConfig(vmId);
                 if (result != null)
                 {
                     HostedSolutionLog.DebugInfo("GetVirtualMachineInternal - vm.Name: {0}, State: {1}, Uptime: {2}", result.data.name, result.data.qmpstatus, result.data.uptime);
@@ -367,7 +384,7 @@ namespace SolidCP.Providers.Virtualization
                         vm.Adapters = ProxmoxNetworkHelper.Get(vmconfig.Content);
 
                         // DVD Drive
-                        var dvdInfo = ProxmoxDvdDriveHelper.Get(Api1, vmId);
+                        var dvdInfo = ProxmoxDvdDriveHelper.Get(Api, vmId);
                         vm.DvdDriveInstalled = (dvdInfo != null);
 
 
@@ -402,7 +419,7 @@ namespace SolidCP.Providers.Virtualization
             {
                 //HostedSolutionLog.LogInfo("GetVirtualMachines - Proxmox Cluster Status");
                 //HostedSolutionLog.LogInfo("GetVirtualMachines - APIClientSetup Ran");
-                var RestResponse = Api1.ClusterVMList();
+                var RestResponse = Api.ClusterVMList();
                 //HostedSolutionLog.LogInfo("GetVirtualMachines - ClusterVMList: {0}", RestResponse.Content.ToString());
                 //JsonObject jsonResponse = (JsonObject)SimpleJson.DeserializeObject(RestResponse.Content);
                 //JsonArray jsonResponsearray = (JsonArray)SimpleJson.DeserializeObject(jsonResponse["data"].ToString());
@@ -526,7 +543,7 @@ namespace SolidCP.Providers.Virtualization
             SKImage image = null;
             try
             {
-                image = (SKImage)Api1.GetScreenshot(vmId);
+                image = (SKImage)Api.GetScreenshot(vmId);
             }
             catch (Exception ex)
             {
@@ -712,11 +729,11 @@ namespace SolidCP.Providers.Virtualization
             {
                 var realVm = GetVirtualMachineEx(vm.VirtualMachineId);
 
-                var vmconfig = Api1.VMConfig(vm.VirtualMachineId);
+                var vmconfig = Api.VMConfig(vm.VirtualMachineId);
                 if (vm.HddSize[0] != realVm.HddSize[0])
-                    Api1.ResizeDisk(vm.VirtualMachineId, vmconfig.Data.bootdisk, $"{vm.HddSize[0]}G");
-                Api1.UpdateConfig(vm.VirtualMachineId, configuration);
-                ProxmoxDvdDriveHelper.Update(Api1, realVm, vm.DvdDriveInstalled);
+                    Api.ResizeDisk(vm.VirtualMachineId, vmconfig.Data.bootdisk, $"{vm.HddSize[0]}G");
+                Api.UpdateConfig(vm.VirtualMachineId, configuration);
+                ProxmoxDvdDriveHelper.Update(Api, realVm, vm.DvdDriveInstalled);
             }
             catch (Exception ex)
             {
@@ -739,22 +756,22 @@ namespace SolidCP.Providers.Virtualization
                 switch (newState)
                 {
                     case VirtualMachineRequestedState.Start:
-                        resultclient = Api1.Start(vmId);
+                        resultclient = Api.Start(vmId);
                         break;
                     case VirtualMachineRequestedState.Pause:
-                        resultclient = Api1.Suspend(vmId);
+                        resultclient = Api.Suspend(vmId);
                         break;
                     case VirtualMachineRequestedState.Reset:
-                        resultclient = Api1.Reset(vmId);
+                        resultclient = Api.Reset(vmId);
                         break;
                     case VirtualMachineRequestedState.Resume:
-                        resultclient = Api1.Resume(vmId);
+                        resultclient = Api.Resume(vmId);
                         break;
                     case VirtualMachineRequestedState.ShutDown:
-                        resultclient = Api1.Shutdown(vmId);
+                        resultclient = Api.Shutdown(vmId);
                         break;
                     case VirtualMachineRequestedState.TurnOff:
-                        resultclient = Api1.Stop(vmId);
+                        resultclient = Api.Stop(vmId);
                         break;
                     case VirtualMachineRequestedState.Save:
                         // TODO SAVE
@@ -814,7 +831,7 @@ namespace SolidCP.Providers.Virtualization
 
         public JobResult RenameVirtualMachine(string vmId, string name)
         {
-            var changedname = Api1.ChangeName(vmId, name);
+            var changedname = Api.ChangeName(vmId, name);
             if (changedname.StatusCode.Equals(HttpStatusCode.OK))
             {
                 return ProxmoxJobHelper.CreateSuccessResult(ReturnCode.OK);
@@ -832,7 +849,7 @@ namespace SolidCP.Providers.Virtualization
             if (vm.State != VirtualMachineState.Saved && vm.State != VirtualMachineState.Off)
                 throw new Exception("The virtual computer system must be in the powered off or saved state prior to calling Destroy method.");
 
-            var deleted = Api1.Delete(vmId);
+            var deleted = Api.Delete(vmId);
             if (deleted.StatusCode.Equals(HttpStatusCode.OK))
             {
                 return ProxmoxJobHelper.CreateSuccessResult(ReturnCode.JobStarted);
@@ -896,36 +913,30 @@ namespace SolidCP.Providers.Virtualization
 
         public async Task<TunnelSocket> GetPveVNCWebSocket(string vmId)
         {
-            var nodeId = Api1.NodeId(vmId);
+            var nodeId = Api.NodeId(vmId);
             //var vm = GetVirtualMachine(vmId);
 
-            var vnc = Api2.Nodes[nodeId.Node].Qemu[nodeId.Id].Vncproxy.Vncproxy().Result;
+            var vnc = Api.Nodes[nodeId.Node].Qemu[nodeId.Id].Vncproxy.Vncproxy().Result;
             var dic = vnc.ResponseToDictionary;
             var data = dic["data"] as IDictionary<string, object>;
             var ticket = WebUtility.UrlEncode(data["ticket"] as string);
             var port = int.Parse(data["port"] as string);
 
-            await Api2.Nodes[nodeId.Node].Qemu[nodeId.Id].Vncwebsocket.Vncwebsocket(port, ticket);
+            await Api.Nodes[nodeId.Node].Qemu[nodeId.Id].Vncwebsocket.Vncwebsocket(port, ticket);
 
             //var url = $"https://{ProxmoxClusterServerHost}:{ProxmoxClusterServerPort}/?console=kvm&novnc=1&node={nodeId.Node}" +
             //    $"&resize=1&vmid={nodeId.Id}&path=api2/json/nodes/{nodeId.Node}/qemu/{nodeId.Id}/vncwebsocket/port/{port}/vncticket/{ticket}";
             var url = $"https://{ProxmoxClusterServerHost}:{ProxmoxClusterServerPort}/api2/json/nodes/{nodeId.Node}/qemu/{nodeId.Id}/vncwebsocket/port/{port}/vncticket/{ticket}";
 
             var tunnel = new TunnelSocket(url);
-            tunnel.Cookies.Add(new Cookie("PVEAuthCookie", WebUtility.UrlEncode(Api1.Api2.PVEAuthCookie) + ";SameSite=Strict;"));
-            tunnel.HttpHeaders.Add("CSRFPreventionToken", Api1.Api2.CSRFPreventionToken);
-            await tunnel.ConnectAsync()
+            tunnel.Cookies.Add(new Cookie("PVEAuthCookie", WebUtility.UrlEncode(Api.PVEAuthCookie) + ";SameSite=Strict;"));
+            tunnel.HttpHeaders.Add("CSRFPreventionToken", Api.CSRFPreventionToken);
 
-            var socket = new ClientWebSocket();
-            socket.Options.SetRequestHeader();
-            socket.Options.Cookies.Add();
-            await socket.ConnectAsync(new Uri(url), CancellationToken.None);
-
-            return new TunnelSocket(socket);
+            return tunnel;
         }
 
-        bool IsApiServerLoopback => IsHostLoopback(ProxmoxClusterServerApiHost);
-        bool IsApiIpV4 => IsHostIpV4(ProxmoxClusterServerApiHost);
+        bool IsApiServerLoopback => DnsService.IsHostLoopback(ProxmoxClusterServerApiHost);
+        bool IsApiIpV4 => DnsService.IsHostIpV4(ProxmoxClusterServerApiHost);
         #endregion
 
 
@@ -938,8 +949,7 @@ namespace SolidCP.Providers.Virtualization
             {
                 String current_snapshot = "none";
                 var vm = GetVirtualMachine(vmId);
-                ApiClientSetup();
-                var RestResponse = Api1.ListSnapshots(vmId);
+                var RestResponse = Api.ListSnapshots(vmId);
                 //JsonObject jsonResponse = (JsonObject)SimpleJson.DeserializeObject(RestResponse.Content);
                 //JsonArray jsonResponsearray = (JsonArray)SimpleJson.DeserializeObject(jsonResponse["data"].ToString());
                 JToken jsonResponse = JToken.Parse(RestResponse.Content);
@@ -1007,8 +1017,7 @@ namespace SolidCP.Providers.Virtualization
             try
             {
                 var vm = GetVirtualMachine(vmId);
-                ApiClientSetup();
-                var snapshot = Api1.GetSnapshot(vmId, snapshotId);
+                var snapshot = Api.GetSnapshot(vmId, snapshotId);
                 var proxmoxsnapshot = new VirtualMachineSnapshot
                 {
                     Id = snapshotId,
@@ -1055,7 +1064,7 @@ namespace SolidCP.Providers.Virtualization
                 string snapdescr = $"{vm.Name} - {SNAPSHOT_DESCR} ({DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss")})";
 
                 // Save screenshot
-                SKImage img = Api1.GetScreenshot(vmId);
+                SKImage img = Api.GetScreenshot(vmId);
                 if (img != null)
                 {
                     var screenshotFile = SnapshotScreenshotFile(snapname);
@@ -1069,8 +1078,7 @@ namespace SolidCP.Providers.Virtualization
                     }
                 }
 
-                ApiClientSetup();
-                var snapshot = Api1.CreateSnapshot(vmId, snapname, snapdescr);
+                var snapshot = Api.CreateSnapshot(vmId, snapname, snapdescr);
                 if (snapshot.StatusCode.Equals(HttpStatusCode.OK))
                 {
                     return ProxmoxJobHelper.CreateResultUpid(snapshot.Data, ConcreteJobState.Running, ReturnCode.JobStarted);
@@ -1094,8 +1102,7 @@ namespace SolidCP.Providers.Virtualization
         {
             try
             {
-                ApiClientSetup();
-                var renameresult = Api1.RenameSnapshot(vmId, snapshotId, name);
+                var renameresult = Api.RenameSnapshot(vmId, snapshotId, name);
                 if (renameresult.StatusCode.Equals(HttpStatusCode.OK))
                 {
                     return ProxmoxJobHelper.CreateResult(ConcreteJobState.Completed, ReturnCode.OK);
@@ -1117,7 +1124,7 @@ namespace SolidCP.Providers.Virtualization
         {
             try
             {
-                var applyresult = Api1.Rollback(vmId, snapshotId);
+                var applyresult = Api.Rollback(vmId, snapshotId);
                 if (applyresult.StatusCode.Equals(HttpStatusCode.OK))
                 {
                     return ProxmoxJobHelper.CreateResultUpid(applyresult.Data, ConcreteJobState.Running, ReturnCode.JobStarted);
@@ -1146,8 +1153,7 @@ namespace SolidCP.Providers.Virtualization
             JobResult jobResult = ProxmoxJobHelper.CreateResult(ConcreteJobState.Running, ReturnCode.JobStarted);
             try
             {
-                ApiClientSetup();
-                var deleteresult = Api1.DeleteSnapshot(vmId, snapshotId);
+                var deleteresult = Api.DeleteSnapshot(vmId, snapshotId);
                 JToken jsonResponse = JToken.Parse(deleteresult.Content);
                 String jobid = jsonResponse["data"].ToString();
 
@@ -1264,8 +1270,7 @@ namespace SolidCP.Providers.Virtualization
             List<LibraryItem> imagelist = new List<LibraryItem>();
             try
             {
-                ApiClientSetup();
-                var RestResponse = Api1.ListISOs(vmId, ProxmoxIsosonStorage);
+                var RestResponse = Api.ListISOs(vmId, ProxmoxIsosonStorage);
                 JToken jsonResponse = JToken.Parse(RestResponse.Content);
                 JArray jsonResponsearray = (JArray)jsonResponse["data"];
 
@@ -1305,11 +1310,10 @@ namespace SolidCP.Providers.Virtualization
             HostedSolutionLog.LogStart("GetInsertedDVD");
             HostedSolutionLog.DebugInfo("Virtual Machine: {0}", vmId);
 
-            ApiClientSetup();
             DvdDriveInfo dvdInfo;
             try
             {
-                dvdInfo = ProxmoxDvdDriveHelper.Get(Api1, vmId);
+                dvdInfo = ProxmoxDvdDriveHelper.Get(Api, vmId);
             }
             catch (Exception ex)
             {
@@ -1342,10 +1346,9 @@ namespace SolidCP.Providers.Virtualization
                     disksize = disk.DiskSize;
             }
 
-            ApiClientSetup();
             try
             {
-                ProxmoxDvdDriveHelper.Set(Api1, vmId, isoPath, disksize);
+                ProxmoxDvdDriveHelper.Set(Api, vmId, isoPath, disksize);
             }
             catch (Exception ex)
             {
@@ -1363,10 +1366,9 @@ namespace SolidCP.Providers.Virtualization
             HostedSolutionLog.LogStart("InsertDVD");
             HostedSolutionLog.DebugInfo("Virtual Machine: {0}", vmId);
 
-            ApiClientSetup();
             try
             {
-                ProxmoxDvdDriveHelper.Set(Api1, vmId, null, 0);
+                ProxmoxDvdDriveHelper.Set(Api, vmId, null, 0);
             }
             catch (Exception ex)
             {
@@ -1973,8 +1975,7 @@ namespace SolidCP.Providers.Virtualization
         public ConcreteJob GetJob(string jobId)
         {
             ConcreteJob Job = new ConcreteJob();
-            ApiClientSetup();
-            var taskstatus = Api1.TaskStatus(jobId);
+            var taskstatus = Api.TaskStatus(jobId);
             Job.Id = taskstatus.Data.upid;
             Job.StartTime = ConvertFromUnixTimestamp(taskstatus.Data.starttime.ToString());
             Job.JobState = getjobstate(taskstatus.Data.status);
@@ -2016,8 +2017,7 @@ namespace SolidCP.Providers.Virtualization
             {
                 HostedSolutionLog.LogInfo("Proxmox Cluster Status");
 
-                ApiClientSetup();
-                var RestResponse = Api1.ClusterResources();
+                var RestResponse = Api.ClusterResources();
                 //JsonObject jsonResponse = (JsonObject)SimpleJson.DeserializeObject(RestResponse.Content);
                 //JsonArray jsonResponsearray = (JsonArray)SimpleJson.DeserializeObject(jsonResponse["data"].ToString());
                 JToken jsonResponse = JToken.Parse(RestResponse.Content);
@@ -2515,23 +2515,6 @@ namespace SolidCP.Providers.Virtualization
                 return user = new User { Username = ProxmoxClusterAdminUser, Password = ProxmoxClusterAdminPass, Realm = clusterrealm };
             }
         }
-
-        Server server;
-        public Server Server => server ?? (server = new ProxmoxServer { Ip = string.IsNullOrEmpty(ProxmoxClusterServerApiHost) ? "127.0.0.1" : ProxmoxClusterServerApiHost, Port = ProxmoxClusterServerPort, ValidateCertificate = ValidateServerCertificate });
-
-        ApiClient api1 = null;
-        public ApiClient Api1 {
-            get {
-                if (api1 != null) return api1;
-                {
-                    api1 = new ApiClient(this);
-                    ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
-                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
-                    api1.Login(User);
-                }
-                return api1;
-            }
-        }
         #endregion
 
 
@@ -2595,9 +2578,14 @@ namespace SolidCP.Providers.Virtualization
             return new MemoryStream(Encoding.UTF8.GetBytes(value ?? ""));
         }
 
+        bool isDisposed = false;
         public void Dispose()
         {
-            throw new NotImplementedException();
+            if (!isDisposed)
+            {
+                isDisposed = true;
+                Api.Dispose();
+            }
         }
 
         #endregion

@@ -12,8 +12,8 @@ namespace SolidCP.Providers.Virtualization
 {
 	public class ProxmoxvpsLocal : Proxmoxvps
 	{
-		protected override string ProxmoxClusterServerApiHost => "localhost";
-		protected override string ProxmoxClusterNode => Environment.MachineName;
+		public override string ProxmoxClusterServerApiHost => "localhost";
+		public override string ProxmoxClusterNode => Environment.MachineName;
 		public override VirtualMachine CreateVirtualMachine(VirtualMachine vm)
 		{
 			string sshcmd = String.Format("{0} {1} {2}", DeploySSHScriptSettings, DeploySSHScriptParamsSettings, vm.OperatingSystemTemplateDeployParams);
