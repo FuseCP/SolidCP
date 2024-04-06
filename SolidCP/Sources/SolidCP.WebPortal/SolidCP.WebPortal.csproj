@@ -478,6 +478,7 @@
     <Content Include="tinymce\skins\lightgray\fonts\tinymce.ttf" />
     <Content Include="tinymce\skins\lightgray\fonts\tinymce.woff" />
     <Content Include="tinymce\themes\inlite\src\test\.eslintrc" />
+    <Content Include="RdsServerStatusHandler.ashx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Code\VncWebSocketHandler.cs" />
@@ -679,6 +680,7 @@
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="novnc\**\*.*" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Browsers\CSSFriendlyAdapters.browser" />
@@ -1244,6 +1246,10 @@
     </ExcludeFromPackageFiles>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Lib\novnc-solidcp\SolidCP.Providers.Virtualization.NoVNC.csproj">
+      <Project>{d99efb18-ffe7-45bb-8ca8-29336f3e8c68}</Project>
+      <Name>SolidCP.Providers.Virtualization.NoVNC</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CPCC\CPCC.csproj">
       <Project>{68b50d26-3f14-4ac7-977a-2f6128088019}</Project>
       <Name>CPCC</Name>
