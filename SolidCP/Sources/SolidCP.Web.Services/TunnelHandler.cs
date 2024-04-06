@@ -73,7 +73,15 @@ namespace SolidCP.Web.Services
                 using (var webSocket = await context.WebSockets.AcceptWebSocketAsync())
                 {
                     var tunnel = new TunnelSocket(webSocket);
-                    await tunnel.Transmit(await GetSocket(caller, method, arguments));
+                    var dest = await GetSocket(caller, method, arguments);
+                    if (dest != null)
+                    {
+                        await tunnel.ProvideUpgradeTunnelSocketAsync(dest);
+                        await tunnel.Transmit(dest);
+                    } else
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.FailedDependency;
+                    }
                 }
             }
             else

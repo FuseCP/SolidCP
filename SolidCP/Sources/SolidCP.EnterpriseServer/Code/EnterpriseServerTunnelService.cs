@@ -3,6 +3,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using SolidCP.Providers;
+using SolidCP.Providers.OS;
 using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
@@ -30,7 +31,7 @@ namespace SolidCP.EnterpriseServer
             if (serviceItem == null) throw new AccessViolationException("Service item not found.");
             
             if (serviceItem.ServiceId != serviceId || serviceItem.PackageId != packageId)
-                this new AccessViolationException("The current user has no access to this service");
+                throw new AccessViolationException("The current user has no access to this service");
 
             var vmId = serviceItem["VirtualMachineId"];
 

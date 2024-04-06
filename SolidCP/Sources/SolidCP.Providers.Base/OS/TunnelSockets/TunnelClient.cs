@@ -76,9 +76,9 @@ namespace SolidCP.Providers.OS
             {
                 args = new object[] { Username, Password }.Concat(args).ToArray();
                 var url = $"{ServerUrl}?caller={WebUtility.UrlEncode(GetType().Name)}&method={WebUtility.UrlEncode(method)}&args={WebUtility.UrlEncode(Encrypt(args))}";
-                var client = new ClientWebSocket();
-                await client.ConnectAsync(new Uri(url), Cancel);
-                return new TunnelSocket(client);
+                var tunnel = new TunnelSocket(url);
+                tunnel.IsFallback = true;
+                return tunnel;
             }
             else
             {

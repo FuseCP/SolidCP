@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using SolidCP.Providers;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.EnterpriseServer.Client
 {

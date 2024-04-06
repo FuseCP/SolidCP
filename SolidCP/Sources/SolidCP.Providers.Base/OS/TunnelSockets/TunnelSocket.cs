@@ -12,6 +12,7 @@ using System.Net.WebSockets;
 using System.Net;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
+using Compat.Runtime.Serialization;
 using Renci.SshNet;
 
 namespace SolidCP.Providers.OS
@@ -27,12 +28,14 @@ namespace SolidCP.Providers.OS
         public TunnelSocket TunnelOtherEnd { get; set; } = null;
 
         public TunnelSocket() { }
-        public TunnelSocket(Socket socket) : this() {
+        public TunnelSocket(Socket socket) : this()
+        {
             BaseSocket = socket;
             url = "";
         }
 
-        public TunnelSocket(WebSocket socket) : this() {
+        public TunnelSocket(WebSocket socket) : this()
+        {
             BaseWebSocket = socket;
             url = "";
         }
@@ -44,7 +47,7 @@ namespace SolidCP.Providers.OS
         {
             url = $"tcp://{address}:{port}";
         }
-        public TunnelSocket(string url): this() => Url = url;
+        public TunnelSocket(string url) : this() => Url = url;
 
         public TunnelSocket Clone
         {
@@ -52,7 +55,7 @@ namespace SolidCP.Providers.OS
             {
                 var clone = (TunnelSocket)Activator.CreateInstance(GetType());
                 clone.Url = Url;
-                clone.ServerTunnelSocketUrl = ServerTunnelSocketUrl;
+                clone.UpgradeTunnelSocket = UpgradeTunnelSocket;
                 clone.BaseSocket = BaseSocket;
                 clone.BaseWebSocket = BaseWebSocket;
                 clone.BaseSshTunnel = BaseSshTunnel;
@@ -65,7 +68,7 @@ namespace SolidCP.Providers.OS
         public void CopyFrom(TunnelSocket from)
         {
             Url = from.Url;
-            ServerTunnelSocketUrl = from.ServerTunnelSocketUrl;
+            UpgradeTunnelSocket = from.UpgradeTunnelSocket;
             BaseSocket = from.BaseSocket;
             BaseWebSocket = from.BaseWebSocket;
             BaseSshTunnel = from.BaseSshTunnel;
@@ -75,7 +78,7 @@ namespace SolidCP.Providers.OS
 
         public bool IsWebSocket => url.StartsWith("http://") || url.StartsWith("https://") || BaseWebSocket != null;
         public bool IsSocket => url.StartsWith("tcp://") || url.StartsWith("udp://") || BaseSocket != null;
-        public bool IsSshTunnel => url.StartsWith("ssh://") ||BaseSshTunnel != null;
+        public bool IsSshTunnel => url.StartsWith("ssh://") || BaseSshTunnel != null;
 
         string url = null;
         public string Url
@@ -268,7 +271,7 @@ namespace SolidCP.Providers.OS
 
         public async Task Transmit(TunnelSocket dest)
         {
-            if (dest.IsWebSocket && !dest.IsConnected) await dest.ConnectAsync();
+            if (!dest.IsConnected) await dest.ConnectAsync();
 
             var buffer = new byte[1024 * 4];
             var result = await ReceiveAsync(new ArraySegment<byte>(buffer));
@@ -309,7 +312,8 @@ namespace SolidCP.Providers.OS
             }
         }
 
-        public virtual async Task<string> ReceiveMessageAsync() {
+        public virtual async Task<string> ReceiveMessageAsync()
+        {
             if (!IsWebSocket) throw new NotSupportedException("ReceiveMessageAsync is only supported on WebSockets");
             const int BufferSize = 1024;
             var buffer = new byte[BufferSize];
@@ -335,109 +339,155 @@ namespace SolidCP.Providers.OS
             await BaseWebSocket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, CancellationToken.None);
         }
 
-        const string GetServerTunnelSocketUrlMessage = "GetServerTunnelSocketUrl";
-        const string UseServerTunnelSocketUrlMessage = "UseServerTunnelSocketUrl";
-
-        [XmlIgnore, IgnoreDataMember]
-        public bool SupportsFallbackProtocol { get; set; } = false;
-
-        [XmlIgnore, IgnoreDataMember]
-        public string ServerTunnelSocketUrl { get; set; } = null;
-        public bool HasServerTunnelSocketUrl => !string.IsNullOrEmpty(ServerTunnelSocketUrl);
-
-        public async Task UseServerTunnelSocketUrlAsync()
+        public virtual async Task<T> ReceiveObjectAsync<T>()
         {
-            if (HasServerTunnelSocketUrl)
+            if (!IsWebSocket) throw new NotSupportedException("ReceiveObjectAsync is only supported on WebSockets");
+            const int BufferSize = 1024;
+            var buffer = new byte[BufferSize];
+            var mem = new MemoryStream();
+            WebSocketReceiveResult result = await BaseWebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), new CancellationTokenSource(IdleTimeout).Token);
+            await mem.WriteAsync(buffer, 0, result.Count);
+            while (!result.CloseStatus.HasValue && !result.EndOfMessage && result.MessageType == WebSocketMessageType.Text)
             {
-                var newTunnelSocket = Clone;
-                newTunnelSocket.Url = ServerTunnelSocketUrl;
+                result = await BaseWebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), new CancellationTokenSource(IdleTimeout).Token);
+                await mem.WriteAsync(buffer, 0, result.Count);
+            }
+            if (!result.EndOfMessage || result.MessageType != WebSocketMessageType.Text)
+            {
+                throw new NotSupportedException("This WebSocket does not support the fallback protocol");
+            }
+            mem.Seek(0, SeekOrigin.Begin);
+            var serializer = new NetDataContractSerializer();
+            return (T)serializer.Deserialize(mem);
+        }
+
+        public virtual async Task SendObjectAsync<T>(T obj)
+        {
+            if (!IsWebSocket) throw new NotSupportedException("SendObjectAsync is only supported on WebSockets");
+            var mem = new MemoryStream();
+            var serializer = new NetDataContractSerializer();
+            serializer.Serialize(mem, obj);
+            var buffer = mem.ToArray();
+            await BaseWebSocket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, CancellationToken.None);
+        }
+
+
+        const string GetUpgradeTunnelSocketMessage = nameof(GetUpgradeTunnelSocketMessage);
+        const string UseUpgradeTunnelSocketMessage = nameof(UseUpgradeTunnelSocketMessage);
+
+        [XmlIgnore, IgnoreDataMember]
+        public bool SupportsUpgradeTunnelSocketProtocol { get; set; } = false;
+
+        [XmlIgnore, IgnoreDataMember]
+        public TunnelSocket UpgradeTunnelSocket { get; set; } = null;
+        public bool HasUpgradeTunnelSocket => UpgradeTunnelSocket != null;
+
+        public async Task UseUpgradeTunnelSocketAsync()
+        {
+            if (HasUpgradeTunnelSocket)
+            {
                 try
                 {
-                    await newTunnelSocket.ConnectAsync();
+                    await UpgradeTunnelSocket.ConnectAsync();
                 }
                 catch (Exception ex)
                 {
 
                 }
-                if (newTunnelSocket.IsConnected)
+                if (UpgradeTunnelSocket.IsConnected)
                 {
-                    // fire and forget CloseAsync
+                    // fire and forget CloseAsync to close current connection
                     var closeTask = Clone.CloseAsync(WebSocketCloseStatus.NormalClosure, "Use new TunnelSocket");
-                    CopyFrom(newTunnelSocket);
+                    CopyFrom(UpgradeTunnelSocket);
+                    UpgradeTunnelSocket = null;
                 }
                 else
                 {
                     // Tell child fallback TunnelSocket to use ServerTunnelSocketUrl
                     if (TunnelOtherEnd != null && TunnelOtherEnd.IsFallback)
                     {
-                        await TunnelOtherEnd.SendMessageAsync(UseServerTunnelSocketUrlMessage);
+                        await TunnelOtherEnd.SendMessageAsync(UseUpgradeTunnelSocketMessage);
                     }
                 }
-                ServerTunnelSocketUrl = null;
+                UpgradeTunnelSocket = null;
             }
         }
-        public virtual async Task<string> RequestServerTunnelSocketUrlAsync()
+        public virtual async Task<TunnelSocket> RequestUpgradeTunnelSocketAsync(bool autoconnect = true)
         {
             if (IsFallback)
             {
-                await SendMessageAsync(GetServerTunnelSocketUrlMessage);
-                ServerTunnelSocketUrl = await ReceiveMessageAsync();
+                if (autoconnect && !IsConnected) await ConnectAsync();
+
+                await SendMessageAsync(GetUpgradeTunnelSocketMessage);
+                UpgradeTunnelSocket = await ReceiveObjectAsync<TunnelSocket>();
             }
-            return ServerTunnelSocketUrl ?? Url;
+            return UpgradeTunnelSocket ?? this;
         }
 
-        public virtual async Task ProvideServerTunnelSocketUrlAsync(TunnelSocket destinationSocket)
+        public virtual async Task ProvideUpgradeTunnelSocketAsync(TunnelSocket destinationSocket)
         {
-            SupportsFallbackProtocol = true;
-            
+            SupportsUpgradeTunnelSocketProtocol = true;
+
             TunnelOtherEnd = destinationSocket;
 
             string message = await ReceiveMessageAsync();
-            if (message == GetServerTunnelSocketUrlMessage)
+            if (message == GetUpgradeTunnelSocketMessage)
             {
-                var url = await destinationSocket.RequestServerTunnelSocketUrlAsync();
-                // Send destination socket's url so the client can try opening directly himself
-                await SendMessageAsync(url);
+                if (!destinationSocket.IsConnected) await destinationSocket.ConnectAsync();
+
+                var upgradeTunnel = await destinationSocket.RequestUpgradeTunnelSocketAsync();
+                // Send destination UpgradeTunnelSocket so the client can try connecting to it directly himself
+                await SendObjectAsync(upgradeTunnel);
                 // Wait for the response
                 message = await ReceiveMessageAsync();
-                if (message == UseServerTunnelSocketUrlMessage)
+                if (message == UseUpgradeTunnelSocketMessage)
                 {
-                   await destinationSocket.UseServerTunnelSocketUrlAsync();
+                    await destinationSocket.UseUpgradeTunnelSocketAsync();
                 }
-            } else {
+            }
+            else
+            {
                 // error, close sockets
                 await BaseWebSocket.CloseAsync(WebSocketCloseStatus.InvalidMessageType, "This WebSocket does not support the fallback url protocol", CancellationToken.None);
                 await destinationSocket.CloseAsync(WebSocketCloseStatus.InvalidMessageType, "This WebSocket does not support the fallback url protocol");
             }
         }
-        public async Task ConnectAsync(TunnelSocket listeningSocket = null)
+        public async Task ConnectAsync()
         {
             if (IsConnected) return;
 
             await InitSocketAsync();
             if (IsSshTunnel) await GetSshTunnelAsync();
-            if (IsSocket) {
+            if (IsSocket)
+            {
                 ProtocolType protocol;
                 if (url.StartsWith("tcp://")) protocol = ProtocolType.Tcp;
                 else if (url.StartsWith("udp://")) protocol = ProtocolType.Udp;
-                AutoResetEvent finished = new AutoResetEvent(false);
-                var args = new SocketAsyncEventArgs();
-                args.Completed += (sender, arguments) => finished.Set();
-                if (!BaseSocket.ConnectAsync(args)) return;
-                finished.WaitOne(ConnectTimeout);
-            } else if (IsWebSocket)
+                else throw new NotSupportedException("This url scheme is not supported");
+                var uri = new Uri(url);
+                var ip = DnsService.GetFirstIPAddress(uri.Host);
+                var port = uri.Port;
+
+                if (port != 0)
+                {
+                    await ConnectAsync(ip, port);
+                }
+                else
+                {
+                    await ListenAsync(ip);
+                }
+            }
+            else if (IsWebSocket)
             {
                 if (BaseWebSocket is ClientWebSocket clientWebSocket)
                 {
                     await clientWebSocket.ConnectAsync(new Uri(Url), new CancellationTokenSource(ConnectTimeout).Token);
-                   
-                    if (IsFallback)
-                    {
-                        
-                    }
+
+                    if (IsFallback) await RequestUpgradeTunnelSocketAsync(false);
                 }
             }
         }
+
         public async Task ConnectAsync(IPAddress address, int port)
         {
             var socket = BaseSocket;
@@ -466,7 +516,7 @@ namespace SolidCP.Providers.OS
             }
             catch (Exception ex)
             {
-                return -1;
+                return 0;
             }
         }
 
@@ -484,7 +534,15 @@ namespace SolidCP.Providers.OS
 
             } while (n++ < Retries);
 
-            return -1;
+            return 0;
+        }
+        public async Task<int> ListenAsync()
+        {
+            var uri = new Uri(url);
+            var ip = DnsService.GetFirstIPAddress(uri.Host);
+            var port = uri.Port;
+            if (port != null) return await ListenAsync(ip, port);
+            else return await ListenAsync(ip);
         }
 
         bool isDisposed = false;
