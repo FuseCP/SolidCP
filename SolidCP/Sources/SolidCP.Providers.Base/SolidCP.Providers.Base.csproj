@@ -51,6 +51,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
+		<PackageReference Include="SSH.NET" Version="2024.0.0" />
 		<PackageReference Include="System.DirectoryServices" Version="8.0.0" />
 		<PackageReference Include="System.Management" Version="8.0.0" />
 	</ItemGroup>

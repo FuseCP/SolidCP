@@ -35,6 +35,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Net.Sockets;
 using System.Text;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Providers.Virtualization
 {

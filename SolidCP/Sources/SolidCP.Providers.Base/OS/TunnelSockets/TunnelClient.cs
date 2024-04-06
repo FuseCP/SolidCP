@@ -11,7 +11,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SolidCP.Providers
+namespace SolidCP.Providers.OS
 {
     [AttributeUsage(AttributeTargets.Assembly)]
     public class TunnelClientAttribute : Attribute

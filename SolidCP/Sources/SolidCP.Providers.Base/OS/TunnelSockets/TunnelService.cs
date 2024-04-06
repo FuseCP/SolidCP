@@ -6,7 +6,7 @@ using System.IO;
 using Compat.Runtime.Serialization;
 using System.Threading.Tasks;
 
-namespace SolidCP.Providers
+namespace SolidCP.Providers.OS
 {
 
     [AttributeUsage(AttributeTargets.Assembly)]

@@ -34,7 +34,7 @@ using System;
 
 namespace SolidCP.Providers
 {
-    public abstract class HostingServiceProviderWebService
+    public abstract class HostingServiceProviderWebService: IDisposable
     {
         public ServiceProviderSettingsSoapHeader settings = new ServiceProviderSettingsSoapHeader();
 
@@ -92,6 +92,11 @@ namespace SolidCP.Providers
                 return providerSettings;
             }
             set { providerSettings = value; }
+        }
+
+        public void Dispose()
+        {
+            if (Provider is IDisposable disposableProvider) disposableProvider.Dispose();    
         }
     }
 }
