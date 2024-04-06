@@ -76,9 +76,11 @@ namespace SolidCP.Providers.OS
             foreach (var header in from.HttpHeaders) HttpHeaders.Add(header.Key, header.Value);
         }
 
-        public bool IsWebSocket => url.StartsWith("http://") || url.StartsWith("https://") || BaseWebSocket != null;
+        public bool IsWebSocket => url.StartsWith("http://") || url.StartsWith("https://") || IsWebSocketOverSsh ||
+            BaseWebSocket != null;
         public bool IsSocket => url.StartsWith("tcp://") || url.StartsWith("udp://") || BaseSocket != null;
         public bool IsSshTunnel => url.StartsWith("ssh://") || BaseSshTunnel != null;
+        public bool IsWebSocketOverSsh => Regex.IsMatch(url ?? "", @"(?<=\?.*?)(?:(?<=\?)|&)tunnel=ssh-https?)(?:&|$)");
 
         string url = null;
         public string Url
@@ -111,8 +113,44 @@ namespace SolidCP.Providers.OS
                 }
             }
         }
-        public string RawUrl => Regex.Replace(Url ?? "", @"(?<=\?.*?)(?:(?<=\?)|&)(?:tunnel=listener|tunnel=fallback)(?=&|$)", "");
+        public string RawUrl => Regex.Replace(Url ?? "", @"(?<=\?.*?)(?:(?<=\?)|&)(?:tunnel=listener|tunnel=fallback|tunnel=ssh-https?)(?=&|$)", "");
 
+        public async Task<string> GetSshWebSocketUrlAsync()
+        {
+            var match = Regex.Match(url ?? "", @"(?<=\?.*?)(?:(?<=\?)|&)tunnel=ssh-(?<tunnel>https?)(?:&|$)");
+            if (!match.Groups["type"].Success) return null;
+            var type = match.Groups["type"].Value;
+            var sshurl = RawUrl;
+            var uri = new Uri(sshurl);
+            // get the path stripped of the ssh remote host part
+            var path = Regex.Replace(uri.AbsolutePath, "^/?.*?/", "");
+            var tunnel = await GetSshTunnelAsync();
+            sshurl = $"{type}://{tunnel.Loopback}:{tunnel.Port}/{path}?{uri.Query}";
+            return sshurl;
+        }
+        public void UseSshWebSocket(string scheme)
+        {
+            if (IsWebSocket && (scheme == "http" || scheme == "https" || string.IsNullOrEmpty(scheme)))
+            {
+                // remove ssh query parameter
+                url = Regex.Replace(url ?? "", @"(?<=\?.*?)(?:(?<=\?)|&)tunnel=ssh-https?(?=&|$)", "");
+
+                if (!string.IsNullOrEmpty(scheme))
+                {
+                    // add query parameter
+                    var str = new StringBuilder(url);
+                    if (!(url.EndsWith("?") || url.EndsWith("&")))
+                    {
+                        if (url.Contains('?')) str.Append("&");
+                        else str.Append("?");
+                    }
+                    str.Append($"tunnel=ssh-{scheme}");
+
+                }
+            }
+            else throw new NotSupportedException("TunnelSocket is no WebSocket or invalid scheme");
+        }
+        
         int port = -1;
         [XmlIgnore, IgnoreDataMember]
         public int Port
@@ -138,6 +176,17 @@ namespace SolidCP.Providers.OS
         public List<Cookie> Cookies { get; set; }
         public Dictionary<string, string> HttpHeaders { get; private set; } = new Dictionary<string, string>();
 
+        public ClientWebSocket GetClientWebSocket()
+        {
+            var baseWebSocket = new ClientWebSocket();
+            foreach (var cookie in Cookies) baseWebSocket.Options.Cookies.Add(cookie);
+            foreach (var item in HttpHeaders)
+            {
+                baseWebSocket.Options.SetRequestHeader(item.Key, item.Value);
+            }
+            BaseWebSocket = baseWebSocket;
+            return baseWebSocket;
+        }
         async Task InitSocketAsync()
         {
             if (url == null) throw new ArgumentNullException("Url cannot be null");
@@ -146,15 +195,20 @@ namespace SolidCP.Providers.OS
                 var uri = new Uri(RawUrl);
                 if (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps)
                 {
-                    var baseWebSocket = new ClientWebSocket();
-                    BaseWebSocket = baseWebSocket;
-                    foreach (var cookie in Cookies) baseWebSocket.Options.Cookies.Add(cookie);
-                    foreach (var item in HttpHeaders)
+                    GetClientWebSocket();
+                }
+                else if (uri.Scheme == "ssh")
+                {
+                    if (IsWebSocketOverSsh)
                     {
-                        baseWebSocket.Options.SetRequestHeader(item.Key, item.Value);
+                        GetClientWebSocket();
+                    } else
+                    {
+                        var tunnel = await GetSshTunnelAsync();
+                        BaseSocket = new Socket(tunnel.Loopback.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
                     }
                 }
-                else if (uri.Scheme == "tcp" || uri.Scheme == "ssh")
+                else if (uri.Scheme == "tcp")
                 {
                     BaseSocket = new Socket((await GetIPAddressAsync()).AddressFamily, SocketType.Stream, ProtocolType.Tcp);
                 }
@@ -167,10 +221,13 @@ namespace SolidCP.Providers.OS
 
         public async Task<SshTunnel> GetSshTunnelAsync()
         {
-            if (!Url.StartsWith("ssh://")) throw new ArgumentException("Not a ssh url");
-            BaseSshTunnel = new SshTunnel(Url);
-            BaseSshTunnel.ConnectTimeout = ConnectTimeout;
-            await BaseSshTunnel.CreateAsync();
+            if (BaseSshTunnel == null)
+            {
+                if (!Url.StartsWith("ssh://")) throw new ArgumentException("Not a ssh url");
+                BaseSshTunnel = new SshTunnel(Url);
+                BaseSshTunnel.ConnectTimeout = ConnectTimeout;
+                await BaseSshTunnel.CreateAsync();
+            }
             return BaseSshTunnel;
         }
 
@@ -200,7 +257,6 @@ namespace SolidCP.Providers.OS
                     }
                     str.Append("tunnel=fallback");
                 }
-
             }
         }
         public bool IsListener
@@ -339,7 +395,7 @@ namespace SolidCP.Providers.OS
             await BaseWebSocket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, CancellationToken.None);
         }
 
-        public virtual async Task<T> ReceiveObjectAsync<T>()
+        public virtual async Task<T> ReceiveObjectAsync<T>() where T: class
         {
             if (!IsWebSocket) throw new NotSupportedException("ReceiveObjectAsync is only supported on WebSockets");
             const int BufferSize = 1024;
@@ -358,7 +414,7 @@ namespace SolidCP.Providers.OS
             }
             mem.Seek(0, SeekOrigin.Begin);
             var serializer = new NetDataContractSerializer();
-            return (T)serializer.Deserialize(mem);
+            return serializer.Deserialize(mem) as T;
         }
 
         public virtual async Task SendObjectAsync<T>(T obj)
@@ -403,7 +459,7 @@ namespace SolidCP.Providers.OS
                 }
                 else
                 {
-                    // Tell child fallback TunnelSocket to use ServerTunnelSocketUrl
+                    // Tell child fallback TunnelSocket to use it's UpgradeTunnelSocket
                     if (TunnelOtherEnd != null && TunnelOtherEnd.IsFallback)
                     {
                         await TunnelOtherEnd.SendMessageAsync(UseUpgradeTunnelSocketMessage);
@@ -419,7 +475,13 @@ namespace SolidCP.Providers.OS
                 if (autoconnect && !IsConnected) await ConnectAsync();
 
                 await SendMessageAsync(GetUpgradeTunnelSocketMessage);
-                UpgradeTunnelSocket = await ReceiveObjectAsync<TunnelSocket>();
+                var upgradeTunnelSocket = await ReceiveObjectAsync<TunnelSocket>();
+                if (upgradeTunnelSocket != null && DnsService.IsHostLoopback(new Uri(upgradeTunnelSocket.Url).Host))
+                {
+                    // if upgrade host is a loopback address we cannot use it as upgrade tunnel
+                    upgradeTunnelSocket = null;
+                }
+                UpgradeTunnelSocket = upgradeTunnelSocket;
             }
             return UpgradeTunnelSocket ?? this;
         }
@@ -448,8 +510,7 @@ namespace SolidCP.Providers.OS
             else
             {
                 // error, close sockets
-                await BaseWebSocket.CloseAsync(WebSocketCloseStatus.InvalidMessageType, "This WebSocket does not support the fallback url protocol", CancellationToken.None);
-                await destinationSocket.CloseAsync(WebSocketCloseStatus.InvalidMessageType, "This WebSocket does not support the fallback url protocol");
+                await CloseAsync(WebSocketCloseStatus.InvalidMessageType, "This WebSocket does not support the fallback url protocol");
             }
         }
         public async Task ConnectAsync()
@@ -481,7 +542,11 @@ namespace SolidCP.Providers.OS
             {
                 if (BaseWebSocket is ClientWebSocket clientWebSocket)
                 {
-                    await clientWebSocket.ConnectAsync(new Uri(Url), new CancellationTokenSource(ConnectTimeout).Token);
+                    Uri uri;
+                    if (IsWebSocketOverSsh) uri = new Uri(await GetSshWebSocketUrlAsync());
+                    else uri = new Uri(RawUrl);
+
+                    await clientWebSocket.ConnectAsync(uri, new CancellationTokenSource(ConnectTimeout).Token);
 
                     if (IsFallback) await RequestUpgradeTunnelSocketAsync(false);
                 }

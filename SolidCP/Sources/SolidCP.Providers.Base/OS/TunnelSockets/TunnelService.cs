@@ -52,10 +52,10 @@ namespace SolidCP.Providers.OS
         public string Password { get; private set; }
         public virtual string DecryptString(string secret) => new CryptoUtility(CryptoKey).Decrypt(secret);
 
-        public virtual object[] Decrypt(string args)
+        public virtual object[] Deserialize(string args, bool encrypted)
         {
-            var base64 = DecryptString(args);
-            var bytes = Convert.FromBase64String(base64);
+            if (encrypted) args = DecryptString(args);
+            var bytes = Convert.FromBase64String(args);
             var serializer = new NetDataContractSerializer();
             var mem = new MemoryStream(bytes);
             return (object[])serializer.ReadObject(mem);
@@ -66,9 +66,9 @@ namespace SolidCP.Providers.OS
         public TunnelService() { }
         public TunnelService(string callerType) : this() { CallerType = callerType; }
 
-        public virtual async Task<TunnelSocket> GetSocket(string method, string arguments)
+        public virtual async Task<TunnelSocket> GetSocket(string method, string arguments, bool encrypted)
         {
-            var args = Decrypt(arguments);
+            var args = Deserialize(arguments, encrypted);
             return await GetSocket(method, args);
         }
 

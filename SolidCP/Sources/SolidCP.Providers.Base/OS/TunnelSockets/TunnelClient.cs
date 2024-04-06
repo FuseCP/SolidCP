@@ -47,13 +47,14 @@ namespace SolidCP.Providers.OS
 
         public virtual string CryptoKey => "";
         public virtual string EncryptString(string secret) => new CryptoUtility(CryptoKey).Encrypt(secret);
-        public string Encrypt(params object[] args)
+        public string Serialize(bool encrypted, params object[] args)
         {
             var formatter = new NetDataContractSerializer();
             var mem = new MemoryStream();
             formatter.Serialize(mem, args);
             var base64 = Convert.ToBase64String(mem.ToArray());
-            return EncryptString(base64);
+            if (encrypted) base64 = EncryptString(base64);
+            return base64;
         }
 
         public virtual string ServerUrl { get; set; }
@@ -69,13 +70,14 @@ namespace SolidCP.Providers.OS
         }
         public CancellationToken Cancel { get; set; }
         public bool IsAssemblyBinding => ServerUrl?.StartsWith("assembly://") ?? false;
+        public bool IsSecure => (ServerUrl?.StartsWith("https://") ?? false) || (ServerUrl?.StartsWith("ssh://") ?? false);
 
         public virtual async Task<TunnelSocket> GetSocket(string method, params object[] args)
         {
             if (!IsAssemblyBinding)
             {
                 args = new object[] { Username, Password }.Concat(args).ToArray();
-                var url = $"{ServerUrl}?caller={WebUtility.UrlEncode(GetType().Name)}&method={WebUtility.UrlEncode(method)}&args={WebUtility.UrlEncode(Encrypt(args))}";
+                var url = $"{ServerUrl}?caller={WebUtility.UrlEncode(GetType().Name)}&method={WebUtility.UrlEncode(method)}&args{(!IsSecure ? "x" : "")}={WebUtility.UrlEncode(Serialize(!IsSecure, args))}";
                 var tunnel = new TunnelSocket(url);
                 tunnel.IsFallback = true;
                 return tunnel;
