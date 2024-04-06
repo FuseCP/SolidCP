@@ -65,6 +65,7 @@ bin/Release
 /SolidCP/Sources/packages
 packages/
 /SolidCP/msbuild.log
+/SolidCP/Sources/SolidCP.WebPortal/novnc/
 /SolidCP/Sources/Tools/SCPTransportAgent/SCPTransportAgent.dll
 /SolidCP.Installer/Sources/packages/
 /SolidCP.Installer/Sources/Setup.WIXBootstrapper/SolidCP.msi
