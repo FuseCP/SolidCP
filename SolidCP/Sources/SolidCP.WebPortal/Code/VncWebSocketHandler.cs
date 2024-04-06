@@ -32,7 +32,6 @@ namespace SolidCP.WebPortal
                     } else
                     {
                         context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                        context.Response.Status = "Not logged in or empty password.";
                         return;
                     }
                 }
@@ -45,7 +44,6 @@ namespace SolidCP.WebPortal
                     string.IsNullOrEmpty(service) ||
                     !int.TryParse(package, out packageId) || !int.TryParse(item, out itemId) || !int.TryParse(service, out serviceId))
                 {
-                    context.Response.Status = "Wrong parameters";
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 } else
                 {
@@ -63,7 +61,6 @@ namespace SolidCP.WebPortal
 
             } else
             {
-                context.Response.Status = "WebSocket expected";
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
             }
 
