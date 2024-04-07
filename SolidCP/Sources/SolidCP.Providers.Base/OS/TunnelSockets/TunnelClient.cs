@@ -116,11 +116,11 @@ namespace SolidCP.Providers.OS
 
     public abstract class EnterpriseServerTunnelClientBase : TunnelClient
     {
-        public abstract Task<TunnelSocket> GetPveVNCWebSocket(int serviceId, int packageId, int serviceItemId);
+        public abstract Task<TunnelSocket> GetPveVncWebSocketAsync(int serviceId, int packageId, int serviceItemId);
     }
 
     public abstract class ServerTunnelClientBase : TunnelClient
     {
-        public abstract Task<TunnelSocket> GetPveVNCWebSocket(string vmId, ServiceProviderSettings providerSettings);
+        public abstract Task<TunnelSocket> GetPveVNCWebSocketAsync(string vmId, ServiceProviderSettings providerSettings);
     }
 }

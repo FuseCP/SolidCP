@@ -14,7 +14,7 @@ namespace SolidCP.EnterpriseServer
 
         public override void Authenticate(string user, string password) => UsernamePasswordValidator.Validate(user, password);
         
-        public override async Task<TunnelSocket> GetPveVNCWebSocket(int serviceId, int packageId, int serviceItemId)
+        public override async Task<TunnelSocket> GetPveVncWebSocketAsync(int serviceId, int packageId, int serviceItemId)
         {
             // get service
             ServiceInfo service = ServerController.GetServiceInfo(serviceId);
@@ -65,7 +65,7 @@ namespace SolidCP.EnterpriseServer
             password = CryptoUtils.SHA1(password);
             var client = new ServerTunnelClient() { ServerUrl = serverUrl, Password = password };
 
-            return await client.GetPveVNCWebSocket(vmId, providerSettings);
+            return await client.GetPveVNCWebSocketAsync(vmId, providerSettings);
         }
     }
 }

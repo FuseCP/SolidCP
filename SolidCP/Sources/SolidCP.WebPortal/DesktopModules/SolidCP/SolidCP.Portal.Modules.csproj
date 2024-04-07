@@ -19,7 +19,7 @@
     </UpgradeBackupLocation>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <TargetFrameworkProfile />
-    <OutputPath>..\..\bin\Lazy</OutputPath>
+    <OutputPath>..\..\bin</OutputPath>
     <LangVersion>9</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

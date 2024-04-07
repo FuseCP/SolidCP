@@ -99,12 +99,12 @@ namespace SolidCP.Providers.OS
     public abstract class ServerTunnelServiceBase : TunnelService
     {
         public override TunnelService Service => ServerService;
-        public abstract Task<TunnelSocket> GetPveVNCWebSocket(string vmId, ServiceProviderSettings providerSettings);
+        public abstract Task<TunnelSocket> GetPveVncWebSocketAsync(string vmId, ServiceProviderSettings providerSettings);
     }
 
     public abstract class EnterpriseServerTunnelServiceBase : TunnelService
     {
         public override TunnelService Service => EnterpriseServerService;
-        public abstract Task<TunnelSocket> GetPveVNCWebSocket(int serviceId, int packageId, int serviceItemId);
+        public abstract Task<TunnelSocket> GetPveVncWebSocketAsync(int serviceId, int packageId, int serviceItemId);
     }
 }

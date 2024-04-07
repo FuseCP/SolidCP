@@ -911,12 +911,12 @@ namespace SolidCP.Providers.Virtualization
             return false;
         }
 
-        public async Task<TunnelSocket> GetPveVNCWebSocket(string vmId)
+        public async Task<TunnelSocket> GetPveVncWebSocketAsync(string vmId)
         {
             var nodeId = Api.NodeId(vmId);
             //var vm = GetVirtualMachine(vmId);
 
-            var vnc = Api.Nodes[nodeId.Node].Qemu[nodeId.Id].Vncproxy.Vncproxy().Result;
+            var vnc = await Api.Nodes[nodeId.Node].Qemu[nodeId.Id].Vncproxy.Vncproxy();
             var dic = vnc.ResponseToDictionary;
             var data = dic["data"] as IDictionary<string, object>;
             var ticket = WebUtility.UrlEncode(data["ticket"] as string);

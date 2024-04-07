@@ -54,7 +54,7 @@ namespace SolidCP.Providers.Virtualization
         JobResult RenameVirtualMachine(string vmId, string name);
         JobResult ExportVirtualMachine(string vmId, string exportPath);
         JobResult DeleteVirtualMachine(string vmId);
-        Task<TunnelSocket> GetPveVNCWebSocket(string vmId);
+        Task<TunnelSocket> GetPveVncWebSocketAsync(string vmId);
         // Snapshots
         List<VirtualMachineSnapshot> GetVirtualMachineSnapshots(string vmId);
         VirtualMachineSnapshot GetSnapshot(string vmId, string snapshotId);

@@ -873,7 +873,7 @@ namespace SolidCP.Server
         }
 
         #endregion
-        public async Task<TunnelSocket> GetPveVNCWebSocket(string vmId) => await VirtualizationProvider.GetPveVNCWebSocket(vmId);
+        public async Task<TunnelSocket> GetPveVncWebSocketAsync(string vmId) => await VirtualizationProvider.GetPveVncWebSocketAsync(vmId);
 
         #region Replication
 
