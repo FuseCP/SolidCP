@@ -10,72 +10,55 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 namespace SolidCP.Providers.OS
 {
     public class SshTunnel : IDisposable
     {
-        public string AccessUrl {
-            get {
-                // Delete keyfiles query parameter
-                var accessUrl = Regex.Replace(Url ?? "", @"(?<=\?.*?)(?:(?<=\?)|&)keyfiles=[^&$]*(?=&|$)", "");
-                // Replace authority and remote port path
-                const string ReplaceSshAuthorityRegex = @"(?<=^ssh://)(?<sshlogin>[^/]*)/(?:(?<localport>[0-9]+):)?(?:(?<host>\[[0-9a-fA-F:]+\]|[0-9a-zA-Z_.-]+):)?(?<remoteport>[0-9]+)";
-                accessUrl = Regex.Replace(accessUrl, ReplaceSshAuthorityRegex, $"{Loopback}:{Port.BoundPort}");
-                return accessUrl;
-            }
-        }
+        public string AccessUrl => Uri.AccessUrl(Loopback, Uri.Port);
 
-        public SshClient Client;
-        public ForwardedPortLocal Port;
-        public string Url;
-        public Exception Exception, ConnectException;
-        public bool IsConnecting;
-        public TimeSpan ConnectTimeout = TimeSpan.FromSeconds(15);
-        public IPAddress Loopback;
+        SshUri uri = new SshUri(null);
+        [XmlIgnore, IgnoreDataMember]
+        public SshUri Uri
+        {
+            get => uri;
+            set => uri = value;
+        }
+        [XmlIgnore, IgnoreDataMember]
+        public SshClient Client { get; set; }
+        [XmlIgnore, IgnoreDataMember]
+        public ForwardedPortLocal ForwardedPort { get; protected set; }
+        public string Url
+        {
+            get => Uri.Url;
+            set => Uri.Url = value;
+        }
+        [XmlIgnore, IgnoreDataMember]
+        public Exception Exception { get; set; }
+        [XmlIgnore, IgnoreDataMember]
+        public Exception ConnectException { get; set; }
+        public bool IsConnecting { get; protected set; }
+        public TimeSpan ConnectTimeout { get; set; } = TimeSpan.FromSeconds(15);
+        public IPAddress Loopback { get; protected set; }
+        
         public SshTunnel(string url)
         {
             Url = url;
             Client = null;
             Exception = null;
             ConnectException = null;
-            Port = null;
+            ForwardedPort = null;
             IsConnecting = true;
         }
 
-        public static void ParseSshUrl(string url, out string username, out string password, out string sshhost, out int sshport,
-            out uint localport, out string remotehost, out uint remoteport, out string[] keyfiles)
+        private async Task<SshUri> InitAsync()
         {
-            var uri = new Uri(url);
-            var userToken = uri.UserInfo.Split(':');
-            username = userToken.First();
-            password = userToken.Skip(1).FirstOrDefault();
-            sshhost = uri.Host;
-            sshport = uri.Port;
-            const string ParseSshUrlRegex = @"^ssh://(?<sshlogin>[^/]*)/(?:(?<localport>[0-9]+):)?(?:(?<host>\[[0-9a-fA-F:]+\]|[0-9a-zA-Z_.-]+):)?(?<remoteport>[0-9]+)(?:/(?<path>[^?$]*))?(?:$|(?:(?:\?|\?.*&)keyfiles=(?<keys>.*?)(?:&|$))?)";
-
-            var match = Regex.Match(url, ParseSshUrlRegex, RegexOptions.Singleline);
-            localport = match.Groups["localport"].Success ? uint.Parse(match.Groups["localport"].Value) : uint.MaxValue;
-            remoteport = uint.Parse(match.Groups["remoteport"].Value);
-            remotehost = match.Groups["host"].Success ? match.Groups["host"].Value : null;
-            keyfiles = WebUtility.UrlDecode(match.Groups["keys"].Success ? match.Groups["keys"].Value : "").Split(';');
-        }
-        private async Task InitAsync()
-        {
-            string username, password, sshhost, remotehost;
-            int sshport;
-            uint localport, remoteport;
-            string[] keyfilesFileNames;
-
-            ParseSshUrl(Url, out username, out password, out sshhost, out sshport, out localport, out remotehost,
-                out remoteport, out keyfilesFileNames);
-
-            var keyfiles = keyfilesFileNames.Select(file => new PrivateKeyFile(file)).ToArray();
-
-            var uri = new Uri(Url);
-
-            var sshhostip = await DnsService.GetFirstIPAddressAsync(sshhost);
-            if (remotehost == null)
+            var sshhost = Uri.DnsSafeHost;
+            var remotehost = Uri.RemoteForwardHost;
+            var sshhostip = await DnsService.GetFirstIPAddressAsync(Uri.DnsSafeHost);
+            if (uri.RemoteForwardHost == null)
             {
                 if (sshhostip.AddressFamily == AddressFamily.InterNetwork)
                 {
@@ -90,35 +73,27 @@ namespace SolidCP.Providers.OS
             }
             sshhost = sshhostip.ToString();
 
-            if (string.IsNullOrEmpty(password))
+            if (string.IsNullOrEmpty(Uri.Password))
             {
-                Client = new SshClient(sshhost, uri.Port != -1 ? uri.Port : 22, username, keyfiles);
+                Client = new SshClient(sshhost, Uri.Port != -1 ? Uri.Port : 22, Uri.Username, Uri.Keys);
             }
             else
             {
-                Client = new SshClient(sshhost, uri.Port != -1 ? uri.Port : 22, username, password);
+                Client = new SshClient(sshhost, Uri.Port != -1 ? Uri.Port : 22, Uri.Username, Uri.Password);
             }
 
-            if (localport == uint.MaxValue) Port = new ForwardedPortLocal(Loopback.ToString(), remotehost, remoteport);
-            else Port = new ForwardedPortLocal(Loopback.ToString(), localport, remotehost, remoteport);
+            if (Uri.LocalForwardPort == 0) ForwardedPort = new ForwardedPortLocal(Loopback.ToString(), remotehost, Uri.RemoteForwardPort);
+            else ForwardedPort = new ForwardedPortLocal(Loopback.ToString(), Uri.LocalForwardPort, remotehost, Uri.RemoteForwardPort);
+
+            return uri;
         }
 
-        private void Init()
+        private SshUri Init()
         {
-            string username, password, sshhost, remotehost;
-            int sshport;
-            uint localport, remoteport;
-            string[] keyfilesFileNames;
-
-            ParseSshUrl(Url, out username, out password, out sshhost, out sshport, out localport, out remotehost,
-                out remoteport, out keyfilesFileNames);
-
-            var keyfiles = keyfilesFileNames.Select(file => new PrivateKeyFile(file)).ToArray();
-
-            var uri = new Uri(Url);
-
-            var sshhostip = DnsService.GetFirstIPAddress(sshhost);
-            if (remotehost == null)
+            var sshhost = Uri.DnsSafeHost;
+            var remotehost = Uri.RemoteForwardHost;
+            var sshhostip = DnsService.GetFirstIPAddress(Uri.DnsSafeHost);
+            if (Uri.RemoteForwardHost == null)
             {
                 if (sshhostip.AddressFamily == AddressFamily.InterNetwork)
                 {
@@ -133,17 +108,19 @@ namespace SolidCP.Providers.OS
             }
             sshhost = sshhostip.ToString();
 
-            if (string.IsNullOrEmpty(password))
+            if (string.IsNullOrEmpty(Uri.Password))
             {
-                Client = new SshClient(sshhost, uri.Port != -1 ? uri.Port : 22, username, keyfiles);
+                Client = new SshClient(sshhost, Uri.Port != -1 ? Uri.Port : 22, Uri.Username, Uri.Keys);
             }
             else
             {
-                Client = new SshClient(sshhost, uri.Port != -1 ? uri.Port : 22, username, password);
+                Client = new SshClient(sshhost, Uri.Port != -1 ? Uri.Port : 22, Uri.Username, Uri.Password);
             }
 
-            if (localport == uint.MaxValue) Port = new ForwardedPortLocal(Loopback.ToString(), remotehost, remoteport);
-            else Port = new ForwardedPortLocal(Loopback.ToString(), localport, remotehost, remoteport);
+            if (Uri.LocalForwardPort == 0) ForwardedPort = new ForwardedPortLocal(Loopback.ToString(), remotehost, Uri.RemoteForwardPort);
+            else ForwardedPort = new ForwardedPortLocal(Loopback.ToString(), Uri.LocalForwardPort, remotehost, Uri.RemoteForwardPort);
+
+            return Uri;
         }
 
         public bool Create()
@@ -154,11 +131,11 @@ namespace SolidCP.Providers.OS
             {
                 IsConnecting = true;
                 Client.Connect();
-                Client.AddForwardedPort(Port);
-                Port.Start();
+                Client.AddForwardedPort(ForwardedPort);
+                ForwardedPort.Start();
                 IsConnecting = false;
                 Client.ErrorOccurred += Restart;
-                Port.Exception += Restart;
+                ForwardedPort.Exception += Restart;
 
                 Trace.TraceInformation($"SSH Tunnel on {Url} started.");
                 return true;
@@ -184,12 +161,12 @@ namespace SolidCP.Providers.OS
                 await Client.ConnectAsync(new CancellationTokenSource(ConnectTimeout).Token);
                 await Task.Run(() =>
                 {
-                    Client.AddForwardedPort(Port);
-                    Port.Start();
+                    Client.AddForwardedPort(ForwardedPort);
+                    ForwardedPort.Start();
                 });
                 IsConnecting = false;
                 Client.ErrorOccurred += Restart;
-                Port.Exception += Restart;
+                ForwardedPort.Exception += Restart;
                 Trace.TraceInformation($"SSH Tunnel on {Url} started.");
             }
             catch (Exception ex)
@@ -212,7 +189,7 @@ namespace SolidCP.Providers.OS
                 isRestarting = true;
                 IsConnecting = true;
                 Client.ErrorOccurred -= Restart;
-                Port.Exception -= Restart;
+                ForwardedPort.Exception -= Restart;
 
                 Trace.TraceError($"Exception on SSH Tunnel {Url}: {Exception}");
 
@@ -222,7 +199,7 @@ namespace SolidCP.Providers.OS
                 try
                 {
                     Client.Connect();
-                    Port.Start();
+                    ForwardedPort.Start();
                 }
                 catch (Exception ex)
                 {
@@ -234,7 +211,7 @@ namespace SolidCP.Providers.OS
                 }
                 isRestarting = IsConnecting = false;
                 Client.ErrorOccurred += Restart;
-                Port.Exception += Restart;
+                ForwardedPort.Exception += Restart;
             }
         }
 
@@ -243,11 +220,11 @@ namespace SolidCP.Providers.OS
         {
             lock (this)
             {
-                if (Port.IsStarted)
+                if (ForwardedPort.IsStarted)
                 {
                     try
                     {
-                        Port.Stop();
+                        ForwardedPort.Stop();
                     }
                     catch { }
                 }

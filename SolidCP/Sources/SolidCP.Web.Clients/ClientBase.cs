@@ -206,6 +206,34 @@ namespace SolidCP.Web.Clients
 			}
 		}
 
+		public Protocols ToHttp(Protocols protocol)
+		{
+			switch (protocol)
+			{
+				case Protocols.WSHttps: return Protocols.WSHttp;
+				case Protocols.NetHttps: return Protocols.NetHttp;
+				case Protocols.BasicHttps: return Protocols.BasicHttp;
+				case Protocols.RESTHttps: return Protocols.RESTHttp;
+				case Protocols.gRPCWebSsl: return Protocols.gRPCWeb;
+				default: return protocol;
+			}
+		}
+		public Protocols ToHttp() => Protocol = ToHttp(Protocol);
+
+		public Protocols ToHttps(Protocols protocol)
+		{
+			switch (protocol)
+			{
+				case Protocols.BasicHttp: return Protocols.BasicHttps;
+				case Protocols.NetHttp: return Protocols.NetHttps;
+				case Protocols.WSHttp: return Protocols.WSHttps;
+				case Protocols.RESTHttp: return Protocols.RESTHttps;
+				case Protocols.gRPCWeb: return Protocols.gRPCWebSsl;
+				default: return protocol;
+			}
+		}
+		public Protocols ToHttps() => Protocol = ToHttps(Protocol);
+
 		public bool IsWCF => Protocol < Protocols.gRPC;
 		public bool IsGRPC => Protocol >= Protocols.gRPC && Protocol < Protocols.Assembly;
 		public bool IsAssembly => Protocol == Protocols.Assembly;
@@ -222,8 +250,6 @@ namespace SolidCP.Web.Clients
 					.FirstOrDefault(i => i.GetCustomAttribute<ServiceContractAttribute>() != null);
 		public HasPolicyAttribute Policy => ServiceInterface?.GetCustomAttribute<HasPolicyAttribute>();
 		public bool IsEncrypted => Policy != null;
-
-		static Dictionary<string, System.Net.IPAddress[]> ResolvedHosts = new Dictionary<string, System.Net.IPAddress[]>();
 
 		public bool IsLocal
 		{
@@ -350,11 +376,11 @@ namespace SolidCP.Web.Clients
 			Thread.Sleep(0);
 			// block until ssh tunnel is ready
             bool wait;
-            lock (tunnel) wait = !tunnel.Client.IsConnected && !tunnel.Port.IsStarted && tunnel.IsConnecting && tunnel.ConnectException == null;
+            lock (tunnel) wait = !tunnel.Client.IsConnected && !tunnel.ForwardedPort.IsStarted && tunnel.IsConnecting && tunnel.ConnectException == null;
             while (wait)
             {
                 Thread.Sleep(1);
-                lock (tunnel) wait = !tunnel.Client.IsConnected && !tunnel.Port.IsStarted && tunnel.IsConnecting && tunnel.ConnectException == null;
+                lock (tunnel) wait = !tunnel.Client.IsConnected && !tunnel.ForwardedPort.IsStarted && tunnel.IsConnecting && tunnel.ConnectException == null;
             }
         }
 
@@ -404,16 +430,26 @@ namespace SolidCP.Web.Clients
 
 			serviceurl = tunnel.AccessUrl;
 
-            if (IsHttp) serviceurl = serviceurl.SetScheme("http");
-			else if (Protocol == Protocols.NetTcp || Protocol == Protocols.NetTcpSsl)
+			if (tunnel.Uri.Protocol == null)
 			{
-				if (Protocol == Protocols.NetTcpSsl) Protocol = Protocols.NetTcp;
-				serviceurl = serviceurl.SetScheme("net.tcp");
+				if (IsHttps)
+				{
+					ToHttp(); 
+					serviceurl = serviceurl.SetScheme("http");
+				}
+				else if (IsHttp) serviceurl = serviceurl.SetScheme("http");
+				else if (Protocol == Protocols.NetTcp || Protocol == Protocols.NetTcpSsl)
+				{
+					if (Protocol == Protocols.NetTcpSsl) Protocol = Protocols.NetTcp;
+					serviceurl = serviceurl.SetScheme("net.tcp");
+				}
+				else throw new NotSupportedException("This protocol is not supported over ssh tunnel.");
+			} else {
+				if (tunnel.Uri.Protocol == "http" && IsHttps) ToHttp();
+				else if (tunnel.Uri.Protocol == "https" && IsHttp) ToHttps();
 			}
-			else if (IsHttps) throw new NotSupportedException("Https over ssh tunnel is not supported.");
-			else throw new NotSupportedException("This protocol is not supported over ssh tunnel.");
 
-			return serviceurl;
+            return serviceurl;
 		}
 
 		protected T Client

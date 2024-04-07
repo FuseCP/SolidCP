@@ -93,7 +93,7 @@ namespace SolidCP.Portal.Proxmox
                    
                     var serviceItem = ES.Services.Packages.GetPackageItem(PanelRequest.ItemID);
                     string path = $"{baseUrl}/novnc/websocket?user={PanelSecurity.LoggedUser.Username}&service={serviceItem.ServiceId}&package={PanelRequest.PackageID}&item={serviceItem.Id}";
-                    litRdpPageUrl.Text = $"{baseUrl}/novnc/vnc.aspx?host={Request.Url.Host}&port={Request.Url.Port}&path={HttpUtility.UrlEncode(path)}";
+                    litRdpPageUrl.Text = $"{baseUrl}/novnc/vnc.aspx?autoconnect=true&host={Request.Url.Host}&port={Request.Url.Port}&path={HttpUtility.UrlEncode(path)}";
                 }
 
                 lnkHostname.Text = item.Hostname.ToUpper();

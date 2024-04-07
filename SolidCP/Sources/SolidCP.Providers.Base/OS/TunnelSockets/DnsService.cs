@@ -63,18 +63,37 @@ namespace SolidCP.Providers.OS
 
         public static bool IsHostLoopback(string host)
         {
-            if (host == null) return true;
+            if (string.IsNullOrEmpty(host)) return true;
 
             IPAddress ip;
             var isHostIP = IPAddress.TryParse(host, out ip);
             isHostIP = isHostIP && (ip.AddressFamily == AddressFamily.InterNetwork || ip.AddressFamily == AddressFamily.InterNetworkV6);
-            if (host == "localhost" || isHostIP && IPAddress.IsLoopback(IPAddress.Parse(host))) return true;
+            if (host == "localhost" || isHostIP && IPAddress.IsLoopback(ip)) return true;
 
             if (!isHostIP)
             {
                 IPAddress[] ips = GetIPAddresses(host);
                 return ips
-                    .Where(ip => ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork || ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
+                    .Where(ip => ip.AddressFamily == AddressFamily.InterNetwork || ip.AddressFamily == AddressFamily.InterNetworkV6)
+                    .Any(ip => IPAddress.IsLoopback(ip));
+            }
+            return false;
+        }
+
+        public static bool IsHostLoopbackOrUnknown(string host)
+        {
+            if (string.IsNullOrEmpty(host)) return true;
+
+            IPAddress ip;
+            var isHostIP = IPAddress.TryParse(host, out ip);
+            isHostIP = isHostIP && (ip.AddressFamily == AddressFamily.InterNetwork || ip.AddressFamily == AddressFamily.InterNetworkV6);
+            if (host == "localhost" || isHostIP && IPAddress.IsLoopback(ip)) return true;
+
+            if (!isHostIP)
+            {
+                IPAddress[] ips = GetIPAddresses(host);
+                return !ips.Any() || ips
+                    .Where(ip => ip.AddressFamily == AddressFamily.InterNetwork || ip.AddressFamily == AddressFamily.InterNetworkV6)
                     .Any(ip => IPAddress.IsLoopback(ip));
             }
             return false;

@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Concurrent;
+using System.Collections.Specialized;
 using System.Linq;
 using System.IO;
 using System.Text;
@@ -31,21 +32,21 @@ namespace SolidCP.Providers.OS
         public TunnelSocket(Socket socket) : this()
         {
             BaseSocket = socket;
-            url = "";
+            Url = "";
         }
 
         public TunnelSocket(WebSocket socket) : this()
         {
             BaseWebSocket = socket;
-            url = "";
+            Url = "";
         }
         public TunnelSocket(IPAddress address) : this(new Socket(address.AddressFamily, SocketType.Stream, ProtocolType.Tcp))
         {
-            url = $"tcp://{address}";
+            Url = $"tcp://{address}";
         }
         public TunnelSocket(IPAddress address, int port) : this(new Socket(address.AddressFamily, SocketType.Stream, ProtocolType.Tcp))
         {
-            url = $"tcp://{address}:{port}";
+            Url = $"tcp://{address}:{port}";
         }
         public TunnelSocket(string url) : this() => Url = url;
 
@@ -76,95 +77,54 @@ namespace SolidCP.Providers.OS
             foreach (var header in from.HttpHeaders) HttpHeaders.Add(header.Key, header.Value);
         }
 
+        public TunnelUri Uri { get; set; }
         public bool IsWebSocket => url.StartsWith("http://") || url.StartsWith("https://") || IsWebSocketOverSsh ||
             BaseWebSocket != null;
         public bool IsSocket => url.StartsWith("tcp://") || url.StartsWith("udp://") || BaseSocket != null;
         public bool IsSshTunnel => url.StartsWith("ssh://") || BaseSshTunnel != null;
-        public bool IsWebSocketOverSsh => Regex.IsMatch(url ?? "", @"(?<=\?.*?)(?:(?<=\?)|&)tunnel=ssh-https?)(?:&|$)");
-
-        string url = null;
-        public string Url
+        public bool IsWebSocketOverSsh
         {
-            get => url;
+            get => IsSshTunnel && Uri.Tunnel == "websocket";
             set
             {
-                if (url != value)
-                {
-                    url = value;
-                    var uri = new Uri(url ?? "");
-                    var query = uri.Query;
-                    port = uri.Port;
-                    isFallback = Regex.IsMatch(url ?? "", @"(?<=\?.*?)(?:(?<=\?)|&)tunnel=fallback(?:&|$)");
-                    isListener = Regex.IsMatch(url ?? "", @"(?<=\?.*?)(?:(?<=\?)|&)tunnel=listener(?:&|$)");
-                    var str = new StringBuilder();
-                    str.Append(url ?? "");
-                    if (isFallback)
-                    {
-                        if (string.IsNullOrEmpty(query)) str.Append("?");
-                        else str.Append("&");
-                        str.Append("tunnel=fallback");
-                    }
-                    if (isListener)
-                    {
-                        str.Append("&");
-                        str.Append("tunnel=listener");
-                    }
-                    url = str.ToString();
-                }
+                if (IsSshTunnel) Uri.Tunnel = "websocket";
             }
         }
-        public string RawUrl => Regex.Replace(Url ?? "", @"(?<=\?.*?)(?:(?<=\?)|&)(?:tunnel=listener|tunnel=fallback|tunnel=ssh-https?)(?=&|$)", "");
+        
+        string url;
+        public string Url
+        {
+            // Replace the url's QueryString
+            get => Uri?.Url;
+            set => Uri = (url = value).StartsWith("ssh://") ? new SshUri(url) : new TunnelUri(url);
+        }
+
+        public SshUri SshUri => (Uri is SshUri sshUri) ? sshUri : null;
+
+        public string RawUrl => Uri?.RawUrl;
 
         public async Task<string> GetSshWebSocketUrlAsync()
         {
-            var match = Regex.Match(url ?? "", @"(?<=\?.*?)(?:(?<=\?)|&)tunnel=ssh-(?<tunnel>https?)(?:&|$)");
-            if (!match.Groups["type"].Success) return null;
-            var type = match.Groups["type"].Value;
-            var sshurl = RawUrl;
-            var uri = new Uri(sshurl);
+            var uri = new SshUri(Url);
+
             // get the path stripped of the ssh remote host part
-            var path = Regex.Replace(uri.AbsolutePath, "^/?.*?/", "");
             var tunnel = await GetSshTunnelAsync();
-            sshurl = $"{type}://{tunnel.Loopback}:{tunnel.Port}/{path}?{uri.Query}";
-            return sshurl;
+            return uri.AccessUrl(tunnel.Loopback, tunnel.ForwardedPort.BoundPort);
         }
-        public void UseSshWebSocket(string scheme)
+        public void UseSshWebSocket(string protocol)
         {
-            if (IsWebSocket && (scheme == "http" || scheme == "https" || string.IsNullOrEmpty(scheme)))
+            if (IsWebSocket && IsSshTunnel && (protocol == "http" || protocol == "https" || string.IsNullOrEmpty(protocol)))
             {
-                // remove ssh query parameter
-                url = Regex.Replace(url ?? "", @"(?<=\?.*?)(?:(?<=\?)|&)tunnel=ssh-https?(?=&|$)", "");
-
-                if (!string.IsNullOrEmpty(scheme))
-                {
-                    // add query parameter
-                    var str = new StringBuilder(url);
-                    if (!(url.EndsWith("?") || url.EndsWith("&")))
-                    {
-                        if (url.Contains('?')) str.Append("&");
-                        else str.Append("?");
-                    }
-                    str.Append($"tunnel=ssh-{scheme}");
-
-                }
+                SshUri.Protocol = protocol;
             }
-            else throw new NotSupportedException("TunnelSocket is no WebSocket or invalid scheme");
+            else throw new NotSupportedException("TunnelSocket is no WebSocket or invalid protocol");
         }
         
-        int port = -1;
         [XmlIgnore, IgnoreDataMember]
         public int Port
         {
-            get => port;
-            set
-            {
-                if (port != value)
-                {
-                    port = value;
-                    var uri = new Uri(url ?? "");
-                    url = $"{uri.Scheme}://{(!string.IsNullOrEmpty(uri.UserInfo) ? $"{uri.UserInfo}@" : "")}{uri.Host}{port}{uri.PathAndQuery}";
-                }
-            }
+            get => Uri.Port;
+            set => Uri.Port = value;
         }
 
         public async Task<IPAddress> GetIPAddressAsync() => await DnsService.GetFirstIPAddressAsync(new Uri(url).Host);
@@ -193,7 +153,7 @@ namespace SolidCP.Providers.OS
             if (url != Url)
             {
                 var uri = new Uri(RawUrl);
-                if (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps)
+                if (uri.Scheme == System.Uri.UriSchemeHttp || uri.Scheme == System.Uri.UriSchemeHttps)
                 {
                     GetClientWebSocket();
                 }
@@ -234,54 +194,15 @@ namespace SolidCP.Providers.OS
         [XmlIgnore, IgnoreDataMember]
         public DateTime LastActivity { get; set; } = DateTime.Now;
 
-        bool isFallback, isListener;
         public bool IsFallback
         {
-            get => isFallback;
-            set
-            {
-                if (isFallback == value) return;
-
-                isFallback = value && IsWebSocket;
-                if (!isFallback)
-                {
-                    url = Regex.Replace(url ?? "", @"(?<=\?.*?)(?:(?<=\?)|&)tunnel=fallback(?=&|$)", "");
-                }
-                else if (!Regex.IsMatch(url, @"(?<=\?.*?)(?:(?<=\?)|&)tunnel=fallback(?:&|$)"))
-                {
-                    var str = new StringBuilder(url);
-                    if (!(url.EndsWith("?") || url.EndsWith("&")))
-                    {
-                        if (url.Contains('?')) str.Append("&");
-                        else str.Append("?");
-                    }
-                    str.Append("tunnel=fallback");
-                }
-            }
+            get => Uri.IsFallback;
+            set => Uri.IsFallback = value;
         }
         public bool IsListener
         {
-            get => isListener;
-            set
-            {
-                if (isListener == value) return;
-
-                isListener = value && IsSocket;
-                if (!isListener)
-                {
-                    url = Regex.Replace(url ?? "", @"(?<=\?.*?)(?:(?<=\?)|&)tunnel=listener(?=&|$)", "");
-                }
-                else if (!Regex.IsMatch(url, @"(?<=\?.*?)(?:(?<=\?)|&)tunnel=listener(?:&|$)"))
-                {
-                    var str = new StringBuilder(url);
-                    if (!(url.EndsWith("?") || url.EndsWith("&")))
-                    {
-                        if (url.Contains('?')) str.Append("&");
-                        else str.Append("?");
-                    }
-                    str.Append("tunnel=listener");
-                }
-            }
+            get => Uri.IsListener;
+            set => Uri.IsListener = value;
         }
 
         public async Task SendAsync(ArraySegment<byte> data, WebSocketMessageType messageType, bool endOfMessage)
@@ -362,9 +283,10 @@ namespace SolidCP.Providers.OS
         {
             get
             {
-                if (IsSocket) return BaseSocket.Connected;
-                if (IsWebSocket) return BaseWebSocket.State == WebSocketState.Open;
-                throw new NotSupportedException("IsConnected not supported on this TunnelSocket");
+                var tunnelConnected = IsSshTunnel ? BaseSshTunnel.Client.IsConnected && BaseSshTunnel.ForwardedPort.IsStarted : true;
+                if (IsSocket) return BaseSocket.Connected && tunnelConnected;
+                if (IsWebSocket) return BaseWebSocket.State == WebSocketState.Open && tunnelConnected;
+                return false;
             }
         }
 
@@ -476,9 +398,10 @@ namespace SolidCP.Providers.OS
 
                 await SendMessageAsync(GetUpgradeTunnelSocketMessage);
                 var upgradeTunnelSocket = await ReceiveObjectAsync<TunnelSocket>();
-                if (upgradeTunnelSocket != null && DnsService.IsHostLoopback(new Uri(upgradeTunnelSocket.Url).Host))
+                if (upgradeTunnelSocket != null && DnsService.IsHostLoopbackOrUnknown(upgradeTunnelSocket.Uri.Host) &&
+                    !DnsService.IsHostLoopback(Uri.Host))
                 {
-                    // if upgrade host is a loopback address we cannot use it as upgrade tunnel
+                    // if upgrade host is a loopback or unknown address we cannot use it as upgrade tunnel
                     upgradeTunnelSocket = null;
                 }
                 UpgradeTunnelSocket = upgradeTunnelSocket;
@@ -595,7 +518,7 @@ namespace SolidCP.Providers.OS
             {
                 port = new Random().Next(MinPort + 1, MaxPort);
                 port = await ListenAsync(address, port);
-                if (port != -1) return port;
+                if (port != 0) return port;
 
             } while (n++ < Retries);
 

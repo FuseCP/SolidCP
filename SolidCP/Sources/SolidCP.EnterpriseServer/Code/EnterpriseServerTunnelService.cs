@@ -65,7 +65,7 @@ namespace SolidCP.EnterpriseServer
             password = CryptoUtils.SHA1(password);
             var client = new ServerTunnelClient() { ServerUrl = serverUrl, Password = password };
 
-            return await client.GetPveVNCWebSocketAsync(vmId, providerSettings);
+            return await client.GetPveVncWebSocketAsync(vmId, providerSettings);
         }
     }
 }
