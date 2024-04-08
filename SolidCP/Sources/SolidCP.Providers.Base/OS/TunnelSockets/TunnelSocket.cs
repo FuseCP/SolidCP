@@ -13,7 +13,6 @@ using System.Net.WebSockets;
 using System.Net;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
-using Compat.Runtime.Serialization;
 using Renci.SshNet;
 
 namespace SolidCP.Providers.OS
@@ -335,16 +334,16 @@ namespace SolidCP.Providers.OS
                 throw new NotSupportedException("This WebSocket does not support the fallback protocol");
             }
             mem.Seek(0, SeekOrigin.Begin);
-            var serializer = new NetDataContractSerializer();
-            return serializer.Deserialize(mem) as T;
+            var serializer = new DataContractSerializer(typeof(T));
+            return serializer.ReadObject(mem) as T;
         }
 
         public virtual async Task SendObjectAsync<T>(T obj)
         {
             if (!IsWebSocket) throw new NotSupportedException("SendObjectAsync is only supported on WebSockets");
             var mem = new MemoryStream();
-            var serializer = new NetDataContractSerializer();
-            serializer.Serialize(mem, obj);
+            var serializer = new DataContractSerializer(typeof(T));
+            serializer.WriteObject(mem, obj);
             var buffer = mem.ToArray();
             await BaseWebSocket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, CancellationToken.None);
         }

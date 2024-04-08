@@ -55,7 +55,4 @@
 		<PackageReference Include="System.DirectoryServices" Version="8.0.0" />
 		<PackageReference Include="System.Management" Version="8.0.0" />
 	</ItemGroup>
-	<ItemGroup>
-	  <ProjectReference Include="..\..\Lib\Compat.Runtime.Serialization.Signed\Compat.Runtime.Serialization\Compat.Runtime.Serialization.csproj" />
-	</ItemGroup>
 </Project>

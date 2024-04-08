@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using Compat.Runtime.Serialization;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 namespace SolidCP.Providers.OS
@@ -52,12 +52,37 @@ namespace SolidCP.Providers.OS
         public string Password { get; private set; }
         public virtual string DecryptString(string secret) => new CryptoUtility(CryptoKey).Decrypt(secret);
 
-        public virtual object[] Deserialize(string args, bool encrypted)
+        public virtual object[] Deserialize(string method, string args, bool encrypted)
         {
             if (encrypted) args = DecryptString(args);
             var bytes = Convert.FromBase64String(args);
-            var serializer = new NetDataContractSerializer();
             var mem = new MemoryStream(bytes);
+            var typeSerializer = new DataContractSerializer(typeof(Type[]));
+            var parameterTypes = (Type[])typeSerializer.ReadObject(mem);
+            var types = (Type[])typeSerializer.ReadObject(mem);
+            var methodInfo = this.GetType().GetMethod(method, parameterTypes);
+            if (methodInfo == null) throw new ArgumentException("Method not found");
+
+            bool invalidTypes = false;
+            if (types.Length != parameterTypes.Length) invalidTypes = true;
+            else
+            {
+                for (int i = 0; i < types.Length; i++)
+                {
+                    if (types[i] != null && 
+                        (types[i] != parameterTypes[i] ||
+                        !types[i].IsSubclassOf(parameterTypes[i]))) {
+                        invalidTypes = true;
+                        break;
+                    }
+                }
+            }
+            if (invalidTypes) throw new ArgumentException("Invalid parameter types");
+
+            var knownTypes = parameterTypes.Concat(types)
+                .Distinct()
+                .Where(type => type != null);
+            var serializer = new DataContractSerializer(typeof(object[]), knownTypes);
             return (object[])serializer.ReadObject(mem);
         }
 
@@ -68,7 +93,7 @@ namespace SolidCP.Providers.OS
 
         public virtual async Task<TunnelSocket> GetSocket(string method, string arguments, bool encrypted)
         {
-            var args = Deserialize(arguments, encrypted);
+            var args = Deserialize(method, arguments, encrypted);
             return await GetSocket(method, args);
         }
 

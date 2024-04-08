@@ -24,7 +24,10 @@ namespace SolidCP.Web.Clients
 		{
 			var assembly = Assembly;
 			var type = assembly.GetType(typeName);
-			var method = type.GetMethod(methodName);
+			MethodInfo method = null;
+			method = method ?? type.GetMethod(methodName);			
+			if (method == null) throw new ArgumentException($"Method {methodName} not found");
+
 			// authentication
 			if (Client.IsAuthenticated)
 			{
@@ -79,8 +82,22 @@ namespace SolidCP.Web.Clients
 				}
 			}
 
-			// Clone parameters
-			parameters = (object[])DataContractCopier.Clone(parameters);
+            // Clone parameters
+            var types = parameters.Select(par => par?.GetType()).ToArray();
+            parameters = (object[])DataContractCopier.Clone(parameters, types);
+            var cloneTypes = parameters.Select(par => par?.GetType()).ToArray();
+			bool same = true;
+			if (types.Length == cloneTypes.Length) {
+				for (int i = 0; i < types.Length; i++)
+				{
+					if (types[i] != cloneTypes[i])
+					{
+						same = false;
+						break;
+					}
+				}
+			} else same = false;
+			if (!same) throw new Exception("DataContractCopier got wrong types back");
 
 			return (T)DataContractCopier.Clone(method.Invoke(service, parameters));
 		}

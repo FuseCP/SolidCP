@@ -13,12 +13,13 @@
 
 <script language="JavaScript" type="text/javascript">
 	function OpenRemoteDesktopWindow(width, height) {
-		$find("RdpPopup").hidePopup();
+		var popup = $find("RdpPopup");
+		if (popup != null) popup.hidePopup();
+
 		var rdpUrl = "<asp:Literal id="litRdpPageUrl" runat="server" />";
 
 		var left = (screen.width - width) / 2;
 		var top = (screen.height - height) / 2;
-		document.cookie = cookie;
 
 		window.open(rdpUrl, "RDP", "status=0,width=" + width + ",height=" + height + ",top=" + top + ",left=" + left).focus(); // window.open + focus
 	};
@@ -42,17 +43,14 @@
 								<td>
 									<b>
 										<asp:HyperLink ID="lnkHostname" runat="server" NavigateUrl="javascript:void(0);" Text="[hostname]"></asp:HyperLink>
-										<asp:Literal ID="litHostname" runat="server" Text="[hostname]"></asp:Literal></b>
+										<asp:Literal ID="litHostname" runat="server" Text="[hostname]" /></b>&nbsp;
+									<asp:LinkButton ID="btnChangeHostnamePopup" runat="server"
+										meta:resourcekey="btnChangeHostnamePopup" SkinID="EditSmall" Text="Edit" />
 
-									&nbsp;<asp:LinkButton ID="btnChangeHostnamePopup" runat="server"
-										meta:resourcekey="btnChangeHostnamePopup" SkinID="EditSmall" Text="Edit"></asp:LinkButton>
-
-									<asp:ImageButton ID="btnOpenRDP" runat="server" SkinID="VpsRemoteDestop" meta:resourcekey="btnOpenRDP" />
-									
 									<asp:Panel ID="RdpPanel" runat="server" CssClass="PopupExtender" Style="display: none;">
 										<div style="padding-bottom: 3px;">
 											<asp:Image ID="imgRdc" runat="server" SkinID="Rdc16" />&nbsp;
-                                                    <asp:Localize ID="locRdpText" runat="server" meta:resourcekey="locRdpText" Text="Remote desktop"></asp:Localize><br />
+                                 <asp:Localize ID="locRdpText" runat="server" meta:resourcekey="locRdpText" Text="Remote desktop"></asp:Localize><br />
 										</div>
 										<%--<asp:HyperLink ID="lnkRdpFull" runat="server" NavigateUrl="javascript:OpenRemoteDesktopWindow(1, 800, 600);"
 											meta:resourcekey="lnkRdpFull" Text="Full screen"></asp:HyperLink><br />
@@ -70,8 +68,6 @@
 									<ajaxToolkit:PopupControlExtender ID="RdpPopup" BehaviorID="RdpPopup" runat="server" TargetControlID="lnkHostname"
 										PopupControlID="RdpPanel" Position="Bottom" />
 									<ajaxToolkit:DropShadowExtender ID="RdpShadow" runat="server" TargetControlID="RdpPanel" TrackPosition="true" Opacity="0.4" Width="3" />
-									<ajaxToolkit:PopupControlExtender ID="RdpPopupButton" BehaviorID="RdpPopupButton" runat="server" TargetControlID="btnOpenRDP"
-										PopupControlID="RdpPanel" Position="Bottom" />
 								</td>
 							</tr>
 							<tr>
@@ -113,19 +109,20 @@
 											<asp:Literal ID="litCreated" runat="server" Text="[date]" /></td>
 									</tr>
 								</table>
+
+								<p />
+
+								<p>
+									<asp:ImageButton ID="btnOpenVNC" runat="server" OnClientClick="OpenRemoteDesktopWindow(800,600);" SkinID="PveRdc32"
+										meta:resourcekey="btnOpenVNC" />
+								</p>
 							</ContentTemplate>
 						</asp:UpdatePanel>
 
 					</td>
 					<td valign="top" style="width: 35%;">
 
-						<%--<asp:UpdatePanel runat="server" ID="UpdatePanel1" UpdateMode="Conditional">
-                                    <Triggers>
-                                        <asp:AsyncPostBackTrigger ControlID="operationTimer" EventName="Tick" />
-                                    </Triggers>
-                                    <ContentTemplate>--%>
-
-						<asp:Image ID="imgThumbnail" ClientIDMode="Static" runat="server" Width="160" Height="120" Style="border-style: ridge; border-width: 3px; border-color: #ffffff;" />
+						<asp:ImageButton ID="imgThumbnail" ClientIDMode="Static" runat="server" Width="160" Height="120" Style="border-style: ridge; border-width: 3px; border-color: #ffffff;" />
 
 						<script>
 							var img = document.getElementById('imgThumbnail');
@@ -137,10 +134,6 @@
 							}
 							img.src = imgUrl + '&stamp=' + Math.random();
 						</script>
-
-						<%--</ContentTemplate>
-				                 </asp:UpdatePanel>--%>
-
 
 					</td>
 					<td rowspan="2" valign="top">

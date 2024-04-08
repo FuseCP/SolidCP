@@ -4,7 +4,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.IO;
 using System.Text;
-using Compat.Runtime.Serialization;
+using System.Runtime.Serialization;
 using System.Net;
 using System.Net.WebSockets;
 using System.Reflection;
@@ -47,11 +47,41 @@ namespace SolidCP.Providers.OS
 
         public virtual string CryptoKey => "";
         public virtual string EncryptString(string secret) => new CryptoUtility(CryptoKey).Encrypt(secret);
-        public string Serialize(bool encrypted, params object[] args)
+        public string Serialize(string methodName, bool encrypted, params object[] args)
         {
-            var formatter = new NetDataContractSerializer();
             var mem = new MemoryStream();
-            formatter.Serialize(mem, args);
+            var types = args.Select(arg => arg?.GetType())
+                .ToArray();
+            var methods = GetType().GetMethods();
+            var method = methods
+                .Select(m => new
+                {
+                    Method = m,
+                    ParameterTypes = m.GetParameters()
+                    .Select(p => p.ParameterType)
+                    .ToArray()
+                })
+                .FirstOrDefault(m => {
+                    if (m.Method.Name != methodName) return false;
+
+                    if (m.ParameterTypes.Length != types.Length) return false;
+
+                    for (int i = 0; i < m.ParameterTypes.Length; i++)
+                    {
+                        if (m.ParameterTypes[i] != types[i] && types[i] != null) return false;
+                    }
+                    return true;
+                });
+            if (method == null) throw new ArgumentException($"Could not find method {methodName} with correct parameters");
+
+            var typeSerializer = new DataContractSerializer(typeof(Type));
+            typeSerializer.WriteObject(mem, method.ParameterTypes);
+            typeSerializer.WriteObject(mem, types);
+            var knownTypes = method.ParameterTypes.Concat(types)
+                .Distinct()
+                .Where(type => type != null);
+            var serializer = new DataContractSerializer(typeof(object[]), knownTypes);
+            serializer.WriteObject(mem, args);
             var base64 = Convert.ToBase64String(mem.ToArray());
             if (encrypted) base64 = EncryptString(base64);
             return base64;
@@ -77,7 +107,7 @@ namespace SolidCP.Providers.OS
             if (!IsAssemblyBinding)
             {
                 args = new object[] { Username, Password }.Concat(args).ToArray();
-                var url = $"{ServerUrl}?caller={WebUtility.UrlEncode(GetType().Name)}&method={WebUtility.UrlEncode(method)}&args{(!IsSecure ? "x" : "")}={WebUtility.UrlEncode(Serialize(!IsSecure, args))}";
+                var url = $"{ServerUrl}?caller={WebUtility.UrlEncode(GetType().Name)}&method={WebUtility.UrlEncode(method)}&args{(!IsSecure ? "x" : "")}={WebUtility.UrlEncode(Serialize(method, !IsSecure, args))}";
                 var tunnel = new TunnelSocket(url);
                 tunnel.IsFallback = true;
                 return tunnel;

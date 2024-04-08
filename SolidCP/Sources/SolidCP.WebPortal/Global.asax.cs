@@ -135,9 +135,7 @@ namespace SolidCP.WebPortal
 				Web.Clients.AssemblyLoader.Init();
 			}
 
-            var vncHandler = new VncWebSocketHandler();
-            RouteTable.Routes.Add(new Route("novnc/websocket", vncHandler));
-
+            VncWebSocketHandler.Init();
 
             ScriptManager.ScriptResourceMapping.AddDefinition("jquery",
 				new ScriptResourceDefinition

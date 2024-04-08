@@ -35,6 +35,7 @@
 	<Import Project="$(PkgSkiaSharp_NativeAssets_Win32)\build\net462\SkiaSharp.NativeAssets.Win32.targets" />
 
 	<ItemGroup>
+	  <None Remove="Resources\power-button.svg" />
 	  <None Remove="Resources\Roboto-Medium.ttf" />
 	  <None Remove="Resources\stop-sign-svgrepo-com.svg" />
 	</ItemGroup>
@@ -70,10 +71,7 @@
 		<Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
 	</ItemGroup>
 	<ItemGroup>
-	  <EmbeddedResource Include="Resources\Roboto-Medium.ttf">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="Resources\stop-sign-svgrepo-com.svg" />
+	  <EmbeddedResource Include="Resources\power-button.svg" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />

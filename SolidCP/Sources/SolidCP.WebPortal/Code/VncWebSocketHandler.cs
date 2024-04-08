@@ -65,5 +65,10 @@ namespace SolidCP.WebPortal
             }
 
         }
+
+        public static void Init()
+        {
+            RouteTable.Routes.Add(new Route("novnc/websocket", new VncWebSocketHandler()));
+        }
     }
 }

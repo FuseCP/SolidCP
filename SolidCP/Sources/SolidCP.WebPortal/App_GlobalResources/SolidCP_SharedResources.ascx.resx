@@ -7042,7 +7042,7 @@
   <data name="Quota.PROXMOX.StartShutdownAllowed" xml:space="preserve">
     <value>Allow user to Start, Turn off and Shutdown VPS</value>
   </data>
-  <data name="Error.VPS_LOAD_PVEVM_ITEM1" xml:space="preserve">
+  <data name="Error.VPS_LOAD_PVEVM_ITEM" xml:space="preserve">
     <value>Error loading virtual machine information</value>
   </data>
 </root>

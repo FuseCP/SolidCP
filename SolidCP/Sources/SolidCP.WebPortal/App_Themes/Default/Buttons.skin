@@ -40,6 +40,7 @@ Default skin template. The following skins are provided as examples only.
 <asp:ImageButton SkinID="ContinueSmall" runat="server" ImageUrl="Images/play_16.png" ImageAlign="AbsMiddle" Width="16" Height="16"/>
 <asp:ImageButton SkinID="ApplySmall" runat="server" ImageUrl="Images/apply_16.png" ImageAlign="AbsMiddle" Width="16" Height="16"/>
 
-
 <asp:ImageButton SkinID="VpsDelete" runat="server" ImageUrl="Images/VPS/delete.png" ImageAlign="AbsMiddle"  Width="16" Height="16"/>
 <asp:ImageButton SkinID="VpsDelete2012" runat="server" ImageUrl="Images/VPS2012/delete.png" ImageAlign="AbsMiddle"  Width="16" Height="16"/>
+
+<asp:ImageButton SkinID="PveRdc32" runat="server" ImageUrl="images/Proxmox/remote-desktop.svg" ImageAlign="AbsMiddle" Width="32" Height="32" />

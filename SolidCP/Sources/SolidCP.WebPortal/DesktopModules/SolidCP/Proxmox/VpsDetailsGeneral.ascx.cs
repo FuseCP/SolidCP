@@ -39,6 +39,7 @@ using SolidCP.Providers.Common;
 using SolidCP.Providers.ResultObjects;
 using SolidCP.Providers.Virtualization;
 using System.Collections.Generic;
+using System.Web.UI.MobileControls;
 
 namespace SolidCP.Portal.Proxmox
 {
@@ -97,7 +98,7 @@ namespace SolidCP.Portal.Proxmox
                 }
 
                 lnkHostname.Text = item.Hostname.ToUpper();
-                lnkHostname.Visible = RdpPopup.Enabled = btnOpenRDP.Visible = RdpPopupButton.Enabled = displayRDP;
+                lnkHostname.Visible = RdpPopup.Enabled = btnOpenVNC.Visible = displayRDP;
 
                 //lnkHostname.NavigateUrl = "javascript:OpenRemoteDesktopWindow('', 800, 600)";
 
@@ -173,11 +174,19 @@ namespace SolidCP.Portal.Proxmox
 
                 // draw buttons
                 List<ActionButton> buttons = new List<ActionButton>();
-
                 if (vmi.StartTurnOffAllowed
                     && (vm.State == VirtualMachineState.Off
                     || vm.State == VirtualMachineState.Saved))
+                {
                     buttons.Add(CreateActionButton("Start", "start.png"));
+                    imgThumbnail.OnClientClick = GetLocalizedString("OnClientClick.Start");
+                    imgThumbnail.Click += StartMachine;
+                } else
+                {
+                    imgThumbnail.CommandName = "";
+                    imgThumbnail.OnClientClick = "return false;";
+                    //imgThumbnail.Click = null;
+                }
 
                 if (vm.State == VirtualMachineState.Running)
                 {
@@ -234,6 +243,31 @@ namespace SolidCP.Portal.Proxmox
             btn.OnClientClick = GetLocalizedString("OnClientClick." + command);
 
             return btn;
+        }
+
+        protected void StartMachine(object sender, EventArgs e)
+        {
+            try
+            {
+                // call services
+                var res = ES.Services.Proxmox.ChangeVirtualMachineState(PanelRequest.ItemID, VirtualMachineRequestedState.Start);
+                // check resultsfn
+                if (res.IsSuccess)
+                {
+                    // return
+                    BindGeneralDetails();
+                    return;
+                }
+                else
+                {
+                    // show error
+                    messageBox.ShowMessage(res, "VPS_ERROR_CHANGE_VM_STATE", "VPS");
+                }
+            }
+            catch (Exception ex)
+            {
+                messageBox.ShowErrorMessage("VPS_ERROR_CHANGE_VM_STATE", ex);
+            }
         }
 
         protected void repButtons_ItemCommand(object source, System.Web.UI.WebControls.RepeaterCommandEventArgs e)

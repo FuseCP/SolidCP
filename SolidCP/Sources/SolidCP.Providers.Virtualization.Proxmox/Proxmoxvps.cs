@@ -549,7 +549,7 @@ namespace SolidCP.Providers.Virtualization
             {
                 var assembly = Assembly.GetExecutingAssembly();
                 var svgName = assembly.GetManifestResourceNames()
-                    .First(name => name.EndsWith("stop-sign-svgrepo-com.svg", StringComparison.OrdinalIgnoreCase));
+                    .First(name => name.EndsWith("power-button.svg", StringComparison.OrdinalIgnoreCase));
                 using (var res = assembly.GetManifestResourceStream(svgName))
                 {
                     var bytes = new byte[res.Length];
@@ -1247,7 +1247,7 @@ namespace SolidCP.Providers.Virtualization
             {
                 var assembly = Assembly.GetExecutingAssembly();
                 var svgName = assembly.GetManifestResourceNames()
-                    .First(name => name.EndsWith("stop-sign-svgrepo-com.svg", StringComparison.OrdinalIgnoreCase));
+                    .First(name => name.EndsWith("power-button.svg", StringComparison.OrdinalIgnoreCase));
                 using (var res = assembly.GetManifestResourceStream(svgName))
                 {
                     var bytes = new byte[res.Length];

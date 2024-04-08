@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 using System.Runtime.Remoting.Channels;
 using System.Xml;
 using System.IO;
-using Compat.Runtime.Serialization;
+using System.Runtime.Serialization;
 
 namespace SolidCP.Web.Clients
 {
@@ -17,9 +17,15 @@ namespace SolidCP.Web.Clients
 	{
 
 		public static readonly IByteBufferPool BufferPool = new ByteBufferPool(1000, 1024);
-		public static object Clone(object src)
+		public static object Clone(object src, IEnumerable<Type> knownTypes = null)
 		{
 			if (src == null) return null;
+
+			if (knownTypes == null) knownTypes = new Type[0];
+
+			knownTypes = knownTypes
+				.Distinct()
+				.Where(t => t != null);
 
 			var type = src.GetType();
 			if (type.IsPrimitive || type == typeof(string) ||
@@ -27,9 +33,26 @@ namespace SolidCP.Web.Clients
 				type == typeof(DateTimeOffset) || type == typeof(Guid) ||
 				type == typeof(Uri) || type == typeof(XmlQualifiedName)) return src;
 
+			if (type.IsArray && type.GetArrayRank() == 1) // treat array of primitive types special
+			{
+				var array = (Array)src;
+				if (array.OfType<object>().All(item =>
+				{
+					var it = item.GetType();
+					return it.IsPrimitive || it == typeof(string) ||
+						it == typeof(DateTime) || it == typeof(TimeSpan) ||
+						it == typeof(DateTimeOffset) || it == typeof(Guid) ||
+						it == typeof(Uri) || it == typeof(XmlQualifiedName);
+				}))
+				{
+					var arrayCopy = (Array)Activator.CreateInstance(type);
+					Array.Copy(array, arrayCopy, array.Length);
+					return arrayCopy;
+				}
+			}
 			var mem = new ChunkedMemoryStream(BufferPool);
 			var writer = XmlDictionaryWriter.CreateBinaryWriter(mem);
-			var serializer = new NetDataContractSerializer();
+			var serializer = new DataContractSerializer(type, knownTypes);
 			serializer.WriteObject(writer, src);
 			writer.Flush();
 			mem.Seek(0, SeekOrigin.Begin);

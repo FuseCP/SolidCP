@@ -265,6 +265,7 @@
     <Content Include="App_Themes\Default\Images\lyncuser.png" />
     <Content Include="App_Themes\Default\Images\lyncuserplan48.png" />
     <Content Include="App_Themes\Default\Images\lyncuserplanadd48.png" />
+    <Content Include="App_Themes\Default\Images\Proxmox\remote-desktop.svg" />
     <Content Include="App_Themes\Default\Images\restart_24.png" />
     <Content Include="App_Themes\Default\Images\search-result-img.png" />
     <Content Include="App_Themes\Default\Images\select2-spinner.gif" />

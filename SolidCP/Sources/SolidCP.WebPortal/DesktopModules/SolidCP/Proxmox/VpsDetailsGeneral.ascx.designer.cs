@@ -105,15 +105,6 @@ namespace SolidCP.Portal.Proxmox
         protected global::System.Web.UI.WebControls.LinkButton btnChangeHostnamePopup;
 
         /// <summary>
-        /// btnOpenRDP control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.ImageButton btnOpenRDP;
-
-        /// <summary>
         /// RdpPanel control.
         /// </summary>
         /// <remarks>
@@ -184,15 +175,6 @@ namespace SolidCP.Portal.Proxmox
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::AjaxControlToolkit.DropShadowExtender RdpShadow;
-
-        /// <summary>
-        /// RdpPopupButton control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.PopupControlExtender RdpPopupButton;
 
         /// <summary>
         /// locDomainTop control.
@@ -276,13 +258,22 @@ namespace SolidCP.Portal.Proxmox
         protected global::System.Web.UI.WebControls.Literal litCreated;
 
         /// <summary>
+        /// btnOpenVNC control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ImageButton btnOpenVNC;
+
+        /// <summary>
         /// imgThumbnail control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Image imgThumbnail;
+        protected global::System.Web.UI.WebControls.ImageButton imgThumbnail;
 
         /// <summary>
         /// repButtons control.
