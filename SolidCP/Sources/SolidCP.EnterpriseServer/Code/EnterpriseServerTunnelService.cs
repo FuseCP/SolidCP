@@ -59,10 +59,10 @@ namespace SolidCP.EnterpriseServer
 
             var serverUrl = CryptoUtils.DecryptServerUrl(server.ServerUrl);
 
-            return await GetPveVNCWebSocket(serverUrl, server.Password, vmId, providerSettings); 
+            return await GetPveVNCWebSocket(serverUrl, server.Password, server.SHA256Password, vmId, providerSettings); 
         }
-        private async Task<TunnelSocket> GetPveVNCWebSocket(string serverUrl, string password, string vmId, ServiceProviderSettings providerSettings) {
-            password = CryptoUtils.SHA1(password);
+        private async Task<TunnelSocket> GetPveVNCWebSocket(string serverUrl, string password, bool sha256Password, string vmId, ServiceProviderSettings providerSettings) {
+            password = sha256Password ? CryptoUtils.SHA256(password) : CryptoUtils.SHA1(password);
             var client = new ServerTunnelClient() { ServerUrl = serverUrl, Password = password };
 
             return await client.GetPveVncWebSocketAsync(vmId, providerSettings);

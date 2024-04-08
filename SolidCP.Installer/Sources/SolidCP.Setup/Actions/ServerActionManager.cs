@@ -855,7 +855,7 @@ namespace SolidCP.Setup.Actions
 				string hash;
 				// TODO is this a bug? ServerPasswordPage uses strange setting of Util.ComputeSHA1
 				if (vars.SetupAction == SetupActions.Setup) hash = vars.ServerPassword; 
-				else hash = Utils.ComputeSHA1(vars.ServerPassword);
+				else hash = Utils.ComputeSHAServerPassword(vars.ServerPassword);
 				var XmlDoc = new XmlDocument();
 				XmlDoc.Load(file);
 				var Node = XmlDoc.SelectSingleNode("configuration/SolidCP.server/security/password") as XmlElement;

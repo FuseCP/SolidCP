@@ -210,20 +210,35 @@ namespace SolidCP.Web.Clients
 
 				foreach (var p in dlls)
 				{
-					string file;
+					string file = null;
 					// Create shadow copy
 					if (OSInfo.IsWindows)
 					{
-						file = TempFile(p.FullName);
-						try
+						const int MaxTries = 7;
+
+						int n = 0;
+                        var temp0 = TempFile(p.FullName);
+						string lasttemp = temp0;
+                        while (n < MaxTries)
 						{
-							File.Copy(p.FullName, file, true);
-							var pdb = Path.ChangeExtension(p.FullName, ".pdb");
-							if (File.Exists(pdb)) File.Copy(pdb, Path.ChangeExtension(file, ".pdb"), true);
+							var temp = temp0;
+							if (n != 0) temp = Path.ChangeExtension(temp, $".{n}.dll");
+							lasttemp = temp;
+							try
+							{
+								File.Copy(p.FullName, temp, true);
+								var pdb = Path.ChangeExtension(p.FullName, ".pdb");
+                                if (File.Exists(pdb)) File.Copy(pdb, Path.ChangeExtension(temp, $".pdb"), true);
+								file = temp;
+								break;
+							}
+							catch {
+                            }
+                            n++;
 						}
-						catch { }
-					}
-					else file = p.FullName;
+						if (n >= MaxTries) throw new Exception($"Cannot load assembly {temp0} because it's used by another process");
+                    }
+                    else file = p.FullName;
 					// Load assembly
 					var a = Assembly.LoadFrom(file);
 					if (a != null)

@@ -115,12 +115,12 @@ namespace SolidCP.UniversalInstaller
 					ServerSettings.CertificateFindValue = cert.Attribute("findValue")?.Value;
 				}
 
-				ServerSettings.ServerPasswordSHA1 = ServerSettings.ServerPassword = "";
+				ServerSettings.ServerPasswordSHA = ServerSettings.ServerPassword = "";
 				// server password
 				var password = configuration?.Element("SolidCP.server/security/password");
 				if (password != null)
 				{
-					ServerSettings.ServerPasswordSHA1 = password.Attribute("value")?.Value;
+					ServerSettings.ServerPasswordSHA = password.Attribute("value")?.Value;
 				}
 			}
 		}
@@ -174,7 +174,7 @@ namespace SolidCP.UniversalInstaller
 			var server = configuration.Element("SolidCP.server");
 			var security = server?.Element("security");
 			var password = security?.Element("password");
-			var pwsha1 = string.IsNullOrEmpty(settings.ServerPassword) ? settings.ServerPasswordSHA1 : Utils.ComputeSHA1(settings.ServerPassword);
+			var pwsha1 = string.IsNullOrEmpty(settings.ServerPassword) ? settings.ServerPasswordSHA : Utils.ComputeSHAServerPassword(settings.ServerPassword);
 			password.Attribute("value").SetValue(pwsha1);
 
 			// Swagger Version

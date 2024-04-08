@@ -3450,7 +3450,7 @@ namespace SolidCP.Setup.Internal
 				var installer = UniversalInstaller.Installer.Current;
 				installer.InstallWebRootPath = Context.InstallationFolder;
 				installer.ReadServerConfiguration();
-				installer.ServerSettings.ServerPasswordSHA1 = Context.ServerPassword;
+				installer.ServerSettings.ServerPasswordSHA = Context.ServerPassword;
 				installer.ConfigureServer();
 				Log.WriteEnd("Updated configuration file");
 				InstallLog.AppendLine("- Updated password in the configuration file");
@@ -3477,7 +3477,7 @@ namespace SolidCP.Setup.Internal
 					return;
 
 				string path = Path.Combine(Context.InstallationFolder, Context.ConfigurationFile);
-				string hash = Utils.ComputeSHA1(Context.ServerPassword);
+				string hash = Utils.ComputeSHAServerPassword(Context.ServerPassword);
 
 				if (!File.Exists(path))
 				{
@@ -3522,7 +3522,7 @@ namespace SolidCP.Setup.Internal
 				var installer = UniversalInstaller.Installer.Current;
 				installer.InstallWebRootPath = Context.InstallationFolder;
 				installer.ReadServerConfiguration();
-				installer.ServerSettings.ServerPasswordSHA1 = Utils.ComputeSHA1(Context.ServerPassword);
+				installer.ServerSettings.ServerPasswordSHA = Utils.ComputeSHAServerPassword(Context.ServerPassword);
 				installer.ConfigureServer();
 				Log.WriteEnd("Updated configuration file");
 				InstallLog.AppendLine("- Updated password in the configuration file");

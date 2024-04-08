@@ -11,6 +11,29 @@ using Renci.SshNet;
 
 namespace SolidCP.Providers.OS
 {
+    /// <summary>
+    /// A class supporting uri's for SshTunnel's. The syntax of the url's for SshTunnels is as follows:
+    /// 
+    /// ssh://&lt;username&gt:&lt;password&gt;@&lt;&lt;sshhost&gt;:&lt;sshport&gt;/[[&lt;localport&gt;:]&lt;remotehost&gt;:]&lt;remoteport&gt[/&lt;path&gt;][?... protocol=&lt;protocol&gt; ... keyfiles=&lt;comma separated list of key files&gt; ... ]
+    /// 
+    /// The parameters are as follows:
+    /// - username: The username used to connect via ssh
+    /// - password: The password used to connect via ssh
+    /// - sshhost: The host to connect to via ssh
+    /// - sshport: The port to use to connect via ssh
+    /// - localport: The local port where the ssh tunnel will listen on
+    /// - remotehost: When specified the tunnel will go the the remotehost from sshost when not specified this will connect
+    ///   to the loopback address on the sshhost
+    /// - The port on the remotehost or sshhost to connect to
+    /// - protocol: The protocol to use when connecting over the SshTunnel, either http or https. When connecting to servers via 
+    ///   ordinary SolidCP.Web.Clients access, this parameter is not needed and the protocol will be determined automatically and
+    ///   will default to http. If you still want to connect using https, specify this parameter like protocol=https in the
+    ///   ServerUrl
+    /// - keyfile: A comma separated list of key files used to connect via ssh, if no password is specified
+    /// 
+    /// This class derives from TunnelUri, and as such inherits it's url manipulation properties Query, QueryString, Port and Tunnel
+    /// by which you can change the url very easily.
+    /// </summary>
     public class SshUri: TunnelUri
     {
         string url = null;

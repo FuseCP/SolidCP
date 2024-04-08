@@ -53,6 +53,7 @@ using System.Xml;
 using Whois.NET;
 using OS = SolidCP.Server.Client;
 using SolidCP.Server.Client;
+using System.Windows;
 //using System.Runtime.InteropServices;
 
 namespace SolidCP.EnterpriseServer
@@ -242,10 +243,65 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static void GetServerPlatform(string serverUrl, string password, out OSPlatform platform, out bool? isCore)
+		public static bool? GetServerIsSHA256Password(string serverUrl)
+		{
+            int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive
+                 | DemandAccount.IsAdmin);
+            if (accountCheck < 0) return null;
+
+            TaskManager.StartTask("SERVER", "GET_SERVER_PLATFORM", serverUrl);
+
+            try
+            {
+                var autoDiscovery = new AutoDiscovery();
+                ServiceProviderProxy.ServerInit(autoDiscovery, serverUrl, "", false);
+                return autoDiscovery.GetServerPasswordIsSHA256();
+            }
+            catch (WebException ex)
+            {
+                HttpWebResponse response = (HttpWebResponse)ex.Response;
+                if (response != null && response.StatusCode == HttpStatusCode.NotFound)
+                    return null;
+                else if (response != null && response.StatusCode == HttpStatusCode.BadRequest)
+                    return null;
+                else if (response != null && response.StatusCode == HttpStatusCode.InternalServerError)
+                    return null;
+                else if (response != null && response.StatusCode == HttpStatusCode.ServiceUnavailable)
+                    return null;
+                else if (response != null && response.StatusCode == HttpStatusCode.Unauthorized)
+                    return null;
+                if (ex.Message.Contains("The remote name could not be resolved") || ex.Message.Contains("Unable to connect"))
+                {
+                    TaskManager.WriteError("The remote server could not be resolved");
+                    return null;
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("The signature or decryption was invalid"))
+                {
+                    TaskManager.WriteWarning("Wrong server access credentials");
+                    return null;
+                }
+                else
+                {
+                    TaskManager.WriteError("General Server Error");
+                    TaskManager.WriteError(ex);
+                    return null;
+                }
+            }
+            finally
+            {
+                TaskManager.CompleteTask();
+            }
+        }
+
+        public static void GetServerPlatform(string serverUrl, string password, bool sha256Password, out OSPlatform platform, out bool? isCore)
 		{
 			platform = OSPlatform.Unknown;
 			isCore = null;
+
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive
 				 | DemandAccount.IsAdmin);
@@ -255,8 +311,8 @@ namespace SolidCP.EnterpriseServer
 
 			try
 			{
-				var os = new Server.Client.OperatingSystem();
-				ServiceProviderProxy.ServerInit(os, serverUrl, password);
+                var os = new Server.Client.OperatingSystem();
+				ServiceProviderProxy.ServerInit(os, serverUrl, password, sha256Password);
 				var p = os.GetOSPlatform();
 				platform = p.OSPlatform;
 				isCore = p.IsCore;
@@ -380,10 +436,12 @@ namespace SolidCP.EnterpriseServer
 
 				OSPlatform osPlatform;
 				bool? isCore;
-				GetServerPlatform(server.ServerUrl, server.Password,
-					out osPlatform, out isCore);
+				bool sha256Password = GetServerIsSHA256Password(server.ServerUrl) ?? true;
+
+				GetServerPlatform(server.ServerUrl, server.Password, sha256Password, out osPlatform, out isCore);
 				server.OSPlatform = osPlatform;
 				server.IsCore = isCore;
+				server.SHA256Password = sha256Password;
 			}
 
 			TaskManager.StartTask("SERVER", "ADD", server.ServerName);
@@ -391,9 +449,9 @@ namespace SolidCP.EnterpriseServer
 			var serverUrl = CryptoUtils.EncryptServerUrl(server.ServerUrl);
 
 			int serverId = DataProvider.AddServer(server.ServerName, serverUrl,
-				CryptoUtils.Encrypt(server.Password), server.Comments, server.VirtualServer, server.InstantDomainAlias,
+				CryptoUtils.EncryptServerPassword(server.Password), server.Comments, server.VirtualServer, server.InstantDomainAlias,
 				server.PrimaryGroupId, server.ADEnabled, server.ADRootDomain, server.ADUsername, CryptoUtils.Encrypt(server.ADPassword),
-				server.ADAuthenticationType, server.OSPlatform, server.IsCore);
+				server.ADAuthenticationType, server.OSPlatform, server.IsCore, server.SHA256Password);
 
 			if (autoDiscovery)
 			{
@@ -438,20 +496,23 @@ namespace SolidCP.EnterpriseServer
 				if (availResult < 0)
 					return availResult;
 
+				bool sha256Password = GetServerIsSHA256Password(server.ServerUrl) ?? true;
+
 				OSPlatform osPlatform = OSPlatform.Unknown;
 				bool? isCore = null;
-				GetServerPlatform(server.ServerUrl, server.Password, out osPlatform, out isCore);
+				GetServerPlatform(server.ServerUrl, server.Password, sha256Password, out osPlatform, out isCore);
 				server.OSPlatform = osPlatform;
 				server.IsCore = isCore;
+				server.SHA256Password = sha256Password;
 			}
 
 			var serverUrl = CryptoUtils.EncryptServerUrl(server.ServerUrl);
 
 			DataProvider.UpdateServer(server.ServerId, server.ServerName, serverUrl,
-				CryptoUtils.Encrypt(server.Password), server.Comments, server.InstantDomainAlias,
+				CryptoUtils.EncryptServerPassword(server.Password), server.Comments, server.InstantDomainAlias,
 				server.PrimaryGroupId, server.ADEnabled, server.ADRootDomain, server.ADUsername, CryptoUtils.Encrypt(server.ADPassword),
 				server.ADAuthenticationType, server.ADParentDomain, server.ADParentDomainController,
-				server.OSPlatform, server.IsCore);
+				server.OSPlatform, server.IsCore, server.SHA256Password);
 
 			TaskManager.CompleteTask();
 
@@ -472,15 +533,18 @@ namespace SolidCP.EnterpriseServer
 
 			// set password
 			server.Password = password;
+			var sha256Password = GetServerIsSHA256Password(server.ServerUrl);
+			if (sha256Password != null) server.SHA256Password = (bool)sha256Password;
+			else return -1;
 
 			var serverUrl = CryptoUtils.EncryptServerUrl(server.ServerUrl);
 
 			// update server
 			DataProvider.UpdateServer(server.ServerId, server.ServerName, serverUrl,
-				CryptoUtils.Encrypt(server.Password), server.Comments, server.InstantDomainAlias,
+				CryptoUtils.EncryptServerPassword(server.Password), server.Comments, server.InstantDomainAlias,
 				server.PrimaryGroupId, server.ADEnabled, server.ADRootDomain, server.ADUsername, CryptoUtils.Encrypt(server.ADPassword),
 				server.ADAuthenticationType, server.ADParentDomain, server.ADParentDomainController,
-				server.OSPlatform, server.IsCore);
+				server.OSPlatform, server.IsCore, server.SHA256Password);
 
 			TaskManager.CompleteTask();
 
@@ -506,10 +570,10 @@ namespace SolidCP.EnterpriseServer
 
 			// update server
 			DataProvider.UpdateServer(server.ServerId, server.ServerName, serverUrl,
-				CryptoUtils.Encrypt(server.Password), server.Comments, server.InstantDomainAlias,
+				CryptoUtils.EncryptServerPassword(server.Password), server.Comments, server.InstantDomainAlias,
 				server.PrimaryGroupId, server.ADEnabled, server.ADRootDomain, server.ADUsername, CryptoUtils.Encrypt(server.ADPassword),
 				server.ADAuthenticationType, server.ADParentDomain, server.ADParentDomainController,
-				server.OSPlatform, server.IsCore);
+				server.OSPlatform, server.IsCore, server.SHA256Password);
 
 			TaskManager.CompleteTask();
 
@@ -1158,7 +1222,7 @@ namespace SolidCP.EnterpriseServer
 			try
 			{
 				AutoDiscovery ad = new AutoDiscovery();
-				ServiceProviderProxy.ServerInit(ad, server.ServerUrl, server.Password);
+				ServiceProviderProxy.ServerInit(ad, server.ServerUrl, server.Password, false);
 
 				res = ad.IsInstalled(provider.ProviderType);
 			}

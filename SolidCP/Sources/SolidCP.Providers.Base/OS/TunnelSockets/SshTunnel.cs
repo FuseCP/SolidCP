@@ -15,6 +15,9 @@ using System.Xml.Serialization;
 
 namespace SolidCP.Providers.OS
 {
+    /// <summary>
+    /// A class that implements ssh port forwarding of a local port to a remote port over ssh
+    /// </summary>
     public class SshTunnel : IDisposable
     {
         public string AccessUrl => Uri.AccessUrl(Loopback, Uri.Port);

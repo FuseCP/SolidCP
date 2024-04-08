@@ -222,7 +222,7 @@ Caregories=Network".Replace("\r\n", Environment.NewLine));
 					if (vars.SetupAction == SetupActions.Setup)
 					{
 						settings.ServerPassword = "";
-						settings.ServerPasswordSHA1 = vars.ServerPassword;
+						settings.ServerPasswordSHA = vars.ServerPassword;
 					}
 					else
 					{

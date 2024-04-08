@@ -82,22 +82,7 @@ namespace SolidCP.Web.Clients
 				}
 			}
 
-            // Clone parameters
-            var types = parameters.Select(par => par?.GetType()).ToArray();
-            parameters = (object[])DataContractCopier.Clone(parameters, types);
-            var cloneTypes = parameters.Select(par => par?.GetType()).ToArray();
-			bool same = true;
-			if (types.Length == cloneTypes.Length) {
-				for (int i = 0; i < types.Length; i++)
-				{
-					if (types[i] != cloneTypes[i])
-					{
-						same = false;
-						break;
-					}
-				}
-			} else same = false;
-			if (!same) throw new Exception("DataContractCopier got wrong types back");
+            parameters = (object[])DataContractCopier.Clone(parameters);
 
 			return (T)DataContractCopier.Clone(method.Invoke(service, parameters));
 		}

@@ -562,7 +562,7 @@ namespace SolidCP.EnterpriseServer
 		public static int AddServer(string serverName, string serverUrl,
 			 string password, string comments, bool virtualServer, string instantDomainAlias,
 			 int primaryGroupId, bool adEnabled, string adRootDomain, string adUsername, string adPassword,
-			 string adAuthenticationType, OSPlatform osPlatform, bool? isCore)
+			 string adAuthenticationType, OSPlatform osPlatform, bool? isCore, bool SHA256Password)
 		{
 			SqlParameter prmServerId = new SqlParameter("@ServerID", SqlDbType.Int);
 			prmServerId.Direction = ParameterDirection.Output;
@@ -583,7 +583,8 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@AdPassword", adPassword),
 				 new SqlParameter("@AdAuthenticationType", adAuthenticationType),
 				 new SqlParameter("@OSPlatform", osPlatform),
-				 new SqlParameter("@IsCore", isCore));
+				 new SqlParameter("@IsCore", isCore),
+				 new SqlParameter("@SHA256Password", SHA256Password));
 
 			return Convert.ToInt32(prmServerId.Value);
 		}
@@ -592,7 +593,7 @@ namespace SolidCP.EnterpriseServer
 			 string password, string comments, string instantDomainAlias,
 			 int primaryGroupId, bool adEnabled, string adRootDomain, string adUsername, string adPassword,
 			 string adAuthenticationType, string adParentDomain, String adParentDomainController,
-			 OSPlatform osPlatform, bool? isCore)
+			 OSPlatform osPlatform, bool? isCore, bool SHA256Password)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "UpdateServer",
@@ -611,7 +612,8 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@AdParentDomain", adParentDomain),
 				 new SqlParameter("@AdParentDomainController", adParentDomainController),
 				 new SqlParameter("@OSPlatform", osPlatform),
-				 new SqlParameter("@IsCore", isCore));
+				 new SqlParameter("@IsCore", isCore),
+				 new SqlParameter("@SHA256Password", SHA256Password));
 
 		}
 

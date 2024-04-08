@@ -11,6 +11,19 @@ using System.Xml.Serialization;
 
 namespace SolidCP.Providers.OS
 {
+    /// <summary>
+    /// A class supporting uri's for TunnelSockes's. The class has public read and writable properties Query, QueryString, Port and Tunnel
+    /// The Url property that gets or sets the url string always reflects the setting in the Query, QueryString, Port and Tunnel
+    /// properties. Query is a StringDictionary of all query variables, whereas QueryString is just the string of the query url part.
+    /// Tunnel is a query string parameter named "tunnel=...". The tunnel parameter is used to specify special options for the
+    /// TunnelSocket in the url, like if the tunnel is a fallback tunnel or a listener tunnel.
+    /// Fallback TunnelSockets support upgrading their url according the url of the TunnelSocket's connected websockets url.
+    /// That way, instead of creating a tunnel from the Portal to EnterpriseServer and then to Server, each client can upgrade it's
+    /// url and the Portal can directly connect to the url that was able on the Server if it is possible to reach that url from the 
+    /// Portal.
+    /// A listener TunnelSocket is a TunnelSocket that listens on a local port with a Socket. When calling ConnectAsync, the
+    /// TunnelSocket will start listening on the port specified in the url.
+    /// </summary>
     public class TunnelUri
     {
         string url = null;

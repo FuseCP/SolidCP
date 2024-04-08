@@ -81,6 +81,7 @@ namespace SolidCP.Server.Client
 			set { this.serverPassword = value; }
 		}
 
+		public bool SHA256Password { get; set; } = false;
 		public int Timeout
 		{
 			get { return this.timeout; }

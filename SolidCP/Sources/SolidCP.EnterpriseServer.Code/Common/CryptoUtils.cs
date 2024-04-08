@@ -91,6 +91,8 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
+		public static string EncryptServerPassword(string password) => Encrypt(password);
+
 		public static string Encrypt(string InputText)
 		{
 			string Password = CryptoKey;
@@ -224,18 +226,26 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static string SHA1(string plainText)
+		static string Hash(string plainText, HashAlgorithm hash)
 		{
-			// Convert plain text into a byte array.
-			byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);
+            // Convert plain text into a byte array.
+            byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);
 
-			HashAlgorithm hash = new SHA1Managed(); ;
+            // Compute hash value of our plain text with appended salt.
+            byte[] hashBytes = hash.ComputeHash(plainTextBytes);
 
-			// Compute hash value of our plain text with appended salt.
-			byte[] hashBytes = hash.ComputeHash(plainTextBytes);
+            // Return the result.
+            return Convert.ToBase64String(hashBytes);
+        }
+		public static string SHA1(string plainText) => Hash(plainText, new SHA1Managed());
+		public static string SHA256(string plainText) => $"SHA256:{Hash(plainText, new SHA256Managed())}";
+		public static bool IsSHA256(string hash) => hash.StartsWith("SHA256:");
 
-			// Return the result.
-			return Convert.ToBase64String(hashBytes);
+		public static bool SHAEquals(string plainText, string hash)
+		{
+			if (plainText.StartsWith("SHA256:")) plainText = plainText.Substring("SHA256:".Length);
+			if (IsSHA256(hash)) return SHA256(plainText) == hash;
+			else return SHA1(plainText) == hash;
 		}
 
 		public static string DecryptServerUrl(string serverUrl)

@@ -108,7 +108,7 @@ namespace SolidCP.EnterpriseServer
 
 
 				// compare user passwords
-				if ((CryptoUtils.SHA1(user.Password) == password) || (user.Password == password))
+				if (CryptoUtils.SHAEquals(user.Password, password) || user.Password == password)
 				{
 					switch (user.OneTimePasswordState)
 					{
@@ -290,7 +290,7 @@ namespace SolidCP.EnterpriseServer
 				}
 
 				// compare user passwords
-				if ((CryptoUtils.SHA1(user.Password) == password) || (user.Password == password))
+				if (CryptoUtils.SHAEquals(user.Password, password) || user.Password == password)
 				{
 					AuditLog.AddAuditLogInfoRecord("USER", "GET_BY_USERNAME_PASSWORD", username, new string[] { "IP: " + ip });
 					return new UserInfo(user);

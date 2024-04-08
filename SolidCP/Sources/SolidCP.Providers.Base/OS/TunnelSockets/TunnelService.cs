@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace SolidCP.Providers.OS
 {
 
-    [AttributeUsage(AttributeTargets.Assembly)]
+    [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
     public class TunnelServiceAttribute : Attribute
     {
         public Type Client { get; set; }
@@ -17,6 +17,7 @@ namespace SolidCP.Providers.OS
 
         public TunnelServiceAttribute(Type client) { Client = client; }
     }
+
 
     public class TunnelService
     {
@@ -80,8 +81,8 @@ namespace SolidCP.Providers.OS
             if (invalidTypes) throw new ArgumentException("Invalid parameter types");
 
             var knownTypes = parameterTypes.Concat(types)
-                .Distinct()
-                .Where(type => type != null);
+                .Where(type => type != null)
+                .Distinct();
             var serializer = new DataContractSerializer(typeof(object[]), knownTypes);
             return (object[])serializer.ReadObject(mem);
         }

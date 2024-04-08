@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace SolidCP.Providers.OS
 {
+    /// <summary>
+    /// Basic DNS services
+    /// </summary>
     public class DnsService
     {
         static ConcurrentDictionary<string, Task<IPAddress[]>> ipforhost = new ConcurrentDictionary<string, Task<IPAddress[]>>();

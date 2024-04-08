@@ -17,6 +17,12 @@ using Renci.SshNet;
 
 namespace SolidCP.Providers.OS
 {
+    /// <summary>
+    /// Implements a Socket, that can be a connetion over a WebSocket, a Socket or an SshTunnel. The WebSocket supports
+    /// an initial fallback protocol to automatically upgrade the WebSocket to a upgrade url, if the url is reachable from
+    /// the server. This way Portal can create a TunnelSocket to a service directly on the Server without creating a tunnel
+    /// from Portal to EnterpriseServer and then to Server, if that service is also reachable from Portal.
+    /// </summary>
     public class TunnelSocket : IDisposable, IAsyncDisposable
     {
         [XmlIgnore, IgnoreDataMember]

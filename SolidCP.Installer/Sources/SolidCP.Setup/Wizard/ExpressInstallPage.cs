@@ -2675,7 +2675,7 @@ namespace SolidCP.Setup
 				var installer = UniversalInstaller.Installer.Current;
 				installer.InstallWebRootPath = Wizard.SetupVariables.InstallationFolder;
 				installer.ReadServerConfiguration();
-				installer.ServerSettings.ServerPasswordSHA1 = Wizard.SetupVariables.ServerPassword;
+				installer.ServerSettings.ServerPasswordSHA = Wizard.SetupVariables.ServerPassword;
 				installer.ConfigureServer();
 				Log.WriteEnd("Updated configuration file");
 				InstallLog.AppendLine("- Updated password in the configuration file");

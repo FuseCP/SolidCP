@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SolidCP.Providers.OS
 {
-    [AttributeUsage(AttributeTargets.Assembly)]
+    [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
     public class TunnelClientAttribute : Attribute
     {
         public Type Client { get; set; }
@@ -68,18 +68,21 @@ namespace SolidCP.Providers.OS
 
                     for (int i = 0; i < m.ParameterTypes.Length; i++)
                     {
-                        if (m.ParameterTypes[i] != types[i] && types[i] != null) return false;
+                        if (types[i] != null)
+                        {
+                            if (m.ParameterTypes[i] != types[i] && !types[i].IsSubclassOf(m.ParameterTypes[i])) return false;
+                        }
                     }
                     return true;
                 });
             if (method == null) throw new ArgumentException($"Could not find method {methodName} with correct parameters");
 
-            var typeSerializer = new DataContractSerializer(typeof(Type));
+            var typeSerializer = new DataContractSerializer(typeof(Type[]));
             typeSerializer.WriteObject(mem, method.ParameterTypes);
             typeSerializer.WriteObject(mem, types);
             var knownTypes = method.ParameterTypes.Concat(types)
-                .Distinct()
-                .Where(type => type != null);
+                .Where(type => type != null)
+                .Distinct();
             var serializer = new DataContractSerializer(typeof(object[]), knownTypes);
             serializer.WriteObject(mem, args);
             var base64 = Convert.ToBase64String(mem.ToArray());

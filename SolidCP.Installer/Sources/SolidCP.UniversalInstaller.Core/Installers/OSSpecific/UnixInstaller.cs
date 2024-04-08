@@ -95,7 +95,7 @@ namespace SolidCP.UniversalInstaller
 			{
 				var appsettings = JsonConvert.DeserializeObject<ServerAppSettings>(File.ReadAllText(appsettingsfile)) ?? new ServerAppSettings();
 				ServerSettings.Urls = appsettings.applicationUrls;
-				ServerSettings.ServerPasswordSHA1 = appsettings.Server?.Password ?? "";
+				ServerSettings.ServerPasswordSHA = appsettings.Server?.Password ?? "";
 				ServerSettings.ServerPassword = "";
 				ServerSettings.LetsEncryptCertificateEmail = appsettings.LettuceEncrypt?.EmailAddress;
 				ServerSettings.LetsEncryptCertificateDomains = (appsettings.LettuceEncrypt != null && appsettings.LettuceEncrypt.DomainNames != null) ? string.Join(", ", appsettings.LettuceEncrypt.DomainNames) : "";
@@ -123,15 +123,15 @@ namespace SolidCP.UniversalInstaller
 			if (allowedHosts.Any(host => host == "*")) appsettings.AllowedHosts = null;
 			else appsettings.AllowedHosts = string.Join(";", allowedHosts.Distinct());
 
-			if (!string.IsNullOrEmpty(ServerSettings.ServerPassword) || !string.IsNullOrEmpty(ServerSettings.ServerPasswordSHA1))
+			if (!string.IsNullOrEmpty(ServerSettings.ServerPassword) || !string.IsNullOrEmpty(ServerSettings.ServerPasswordSHA))
 			{
 				string pwsha1;
 				if (!string.IsNullOrEmpty(ServerSettings.ServerPassword))
 				{
-					pwsha1 = Utils.ComputeSHA1(ServerSettings.ServerPassword);
+					pwsha1 = Utils.ComputeSHAServerPassword(ServerSettings.ServerPassword);
 				} else
 				{
-					pwsha1 = ServerSettings.ServerPasswordSHA1;
+					pwsha1 = ServerSettings.ServerPasswordSHA;
 				}
 				appsettings.Server = new ServerAppSettings.ServerSetting() { Password = pwsha1 };
 			}
