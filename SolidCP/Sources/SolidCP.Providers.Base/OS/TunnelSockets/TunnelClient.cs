@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.WebSockets;
 using System.Reflection;
 using System.Threading;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SolidCP.Providers.OS
@@ -65,6 +66,8 @@ namespace SolidCP.Providers.OS
 
         public virtual string CryptoKey => "";
         public virtual string EncryptString(string secret) => new CryptoUtility(CryptoKey).Encrypt(secret);
+
+        string[] TypeNames(Type[] types) => types?.Select(type => type?.FullName).ToArray();
         public string Serialize(string methodName, bool encrypted, params object[] args)
         {
             var mem = new MemoryStream();
@@ -95,14 +98,17 @@ namespace SolidCP.Providers.OS
                 });
             if (method == null) throw new ArgumentException($"Could not find method {methodName} with correct parameters");
 
-            var typeSerializer = new DataContractSerializer(typeof(Type[]));
-            typeSerializer.WriteObject(mem, method.ParameterTypes);
-            typeSerializer.WriteObject(mem, types);
+            var typeSerializer = new DataContractSerializer(typeof(string[]));
+            typeSerializer.WriteObject(mem, TypeNames(method.ParameterTypes));
+            typeSerializer.WriteObject(mem, TypeNames(types));
             var knownTypes = method.ParameterTypes.Concat(types)
                 .Where(type => type != null)
                 .Distinct();
             var serializer = new DataContractSerializer(typeof(object[]), knownTypes);
-            serializer.WriteObject(mem, args);
+            var argsWithCredentials = new string[] { Username, Password }
+                .Concat(args)
+                .ToArray();
+            serializer.WriteObject(mem, argsWithCredentials);
             var base64 = Convert.ToBase64String(mem.ToArray());
             if (encrypted) base64 = EncryptString(base64);
             return base64;
@@ -121,15 +127,24 @@ namespace SolidCP.Providers.OS
         }
         public CancellationToken Cancel { get; set; }
         public bool IsAssemblyBinding => ServerUrl?.StartsWith("assembly://") ?? false;
-        public bool IsSecure => (ServerUrl?.StartsWith("https://") ?? false) || (ServerUrl?.StartsWith("ssh://") ?? false);
+        public bool IsSecure => (ServerUrl?.StartsWith("https://") ?? false) || (ServerUrl?.StartsWith("ssh://") ?? false) ||
+            DnsService.IsHostLAN(new Uri(ServerUrl ?? "").Host);
 
         public virtual async Task<TunnelSocket> GetSocket(string method, params object[] args)
         {
             if (!IsAssemblyBinding)
             {
-                args = new object[] { Username, Password }.Concat(args).ToArray();
-                var url = $"{ServerUrl}?caller={WebUtility.UrlEncode(GetType().Name)}&method={WebUtility.UrlEncode(method)}&args{(!IsSecure ? "x" : "")}={WebUtility.UrlEncode(Serialize(method, !IsSecure, args))}";
-                var tunnel = new TunnelSocket(url);
+                var url = $"{ServerUrl}/Tunnel";
+                var uri = new SshUri(url);
+                var scheme = uri.Scheme;
+                if (scheme == "ssh") uri.Protocol = uri.Protocol ?? "ws";
+                else if (scheme == "https") uri.Scheme = "wss";
+                else if (scheme == "http") uri.Scheme = "ws";
+                else throw new NotSupportedException($"The protocol {scheme} is not supported on GetSocket");
+                uri.Query["caller"] = GetType().FullName;
+                uri.Query["mehtod"] = method;
+                uri.Query[$"args{(!IsSecure ? "x" : "")}"] = Serialize(method, !IsSecure, args);
+                var tunnel = new TunnelSocket(uri.Url);
                 tunnel.IsFallback = true;
                 return tunnel;
             }
@@ -142,8 +157,8 @@ namespace SolidCP.Providers.OS
                 }
                 else
                 {
-                    var service = new TunnelService(GetType().Name);
-                    return await service.GetSocket(method, args);
+                    var service = new TunnelService(GetType().FullName);
+                    return await service.GetSocket(method, Username, Password, args);
                     
                     /*
                     var types = args.Select(arg => arg?.GetType()).ToArray();

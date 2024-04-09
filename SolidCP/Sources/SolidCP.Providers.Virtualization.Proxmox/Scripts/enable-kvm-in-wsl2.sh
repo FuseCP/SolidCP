@@ -24,7 +24,8 @@ echo "Save your edited configuration in the Microsoft folder when running make m
 echo "Press any key to continue..."
 read -s -n 1
 
-make menuconfig KCONFIG_CONFIG=Microsoft/config-wsl
+cp Microsoft/config-wsl Microsoft/config-wsl-custom
+make menuconfig KCONFIG_CONFIG=Microsoft/config-wsl-custom
 
 # copy newest config in Microsoft to .config
 cd Microsoft

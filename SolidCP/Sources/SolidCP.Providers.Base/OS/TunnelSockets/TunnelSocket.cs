@@ -66,7 +66,7 @@ namespace SolidCP.Providers.OS
                 clone.BaseWebSocket = BaseWebSocket;
                 clone.BaseSshTunnel = BaseSshTunnel;
                 foreach (var cookie in Cookies) clone.Cookies.Add(cookie);
-                foreach (var header in HttpHeaders) clone.HttpHeaders.Add(header.Key, header.Value);
+                foreach (DictionaryEntry header in HttpHeaders) clone.HttpHeaders.Add((string)header.Key, (string)header.Value);
                 return clone;
             }
         }
@@ -79,11 +79,11 @@ namespace SolidCP.Providers.OS
             BaseWebSocket = from.BaseWebSocket;
             BaseSshTunnel = from.BaseSshTunnel;
             foreach (var cookie in from.Cookies) Cookies.Add(cookie);
-            foreach (var header in from.HttpHeaders) HttpHeaders.Add(header.Key, header.Value);
+            foreach (DictionaryEntry header in from.HttpHeaders) HttpHeaders.Add((string)header.Key, (string)header.Value);
         }
 
         public TunnelUri Uri { get; set; }
-        public bool IsWebSocket => url.StartsWith("http://") || url.StartsWith("https://") || IsWebSocketOverSsh ||
+        public bool IsWebSocket => url.StartsWith("ws://") || url.StartsWith("wss://") || IsWebSocketOverSsh ||
             BaseWebSocket != null;
         public bool IsSocket => url.StartsWith("tcp://") || url.StartsWith("udp://") || BaseSocket != null;
         public bool IsSshTunnel => url.StartsWith("ssh://") || BaseSshTunnel != null;
@@ -95,7 +95,7 @@ namespace SolidCP.Providers.OS
                 if (IsSshTunnel) Uri.Tunnel = "websocket";
             }
         }
-        
+
         string url;
         public string Url
         {
@@ -124,7 +124,7 @@ namespace SolidCP.Providers.OS
             }
             else throw new NotSupportedException("TunnelSocket is no WebSocket or invalid protocol");
         }
-        
+
         [XmlIgnore, IgnoreDataMember]
         public int Port
         {
@@ -138,49 +138,47 @@ namespace SolidCP.Providers.OS
         public TimeSpan ConnectTimeout { get; set; } = TimeSpan.FromSeconds(60);
         public TimeSpan WriteTimeout { get; set; } = TimeSpan.FromSeconds(60);
         public int MaxPendingConncections { get; set; } = 20;
-        public List<Cookie> Cookies { get; set; }
-        public Dictionary<string, string> HttpHeaders { get; private set; } = new Dictionary<string, string>();
+        public List<Cookie> Cookies { get; set; } = new List<Cookie>();
+        public StringDictionary HttpHeaders { get; private set; } = new StringDictionary();
 
         public ClientWebSocket GetClientWebSocket()
         {
             var baseWebSocket = new ClientWebSocket();
             foreach (var cookie in Cookies) baseWebSocket.Options.Cookies.Add(cookie);
-            foreach (var item in HttpHeaders)
+            foreach (DictionaryEntry item in HttpHeaders)
             {
-                baseWebSocket.Options.SetRequestHeader(item.Key, item.Value);
+                baseWebSocket.Options.SetRequestHeader((string)item.Key, (string)item.Value);
             }
             BaseWebSocket = baseWebSocket;
             return baseWebSocket;
         }
         async Task InitSocketAsync()
         {
-            if (url == null) throw new ArgumentNullException("Url cannot be null");
-            if (url != Url)
+            if (Url == null) throw new ArgumentNullException("Url cannot be null");
+            var scheme = Uri.Scheme;
+            if (scheme == System.Uri.UriSchemeHttp || scheme == System.Uri.UriSchemeHttps)
             {
-                var uri = new Uri(RawUrl);
-                if (uri.Scheme == System.Uri.UriSchemeHttp || uri.Scheme == System.Uri.UriSchemeHttps)
+                GetClientWebSocket();
+            }
+            else if (scheme == "ssh")
+            {
+                if (IsWebSocketOverSsh)
                 {
                     GetClientWebSocket();
                 }
-                else if (uri.Scheme == "ssh")
+                else
                 {
-                    if (IsWebSocketOverSsh)
-                    {
-                        GetClientWebSocket();
-                    } else
-                    {
-                        var tunnel = await GetSshTunnelAsync();
-                        BaseSocket = new Socket(tunnel.Loopback.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-                    }
+                    var tunnel = await GetSshTunnelAsync();
+                    BaseSocket = new Socket(tunnel.Loopback.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
                 }
-                else if (uri.Scheme == "tcp")
-                {
-                    BaseSocket = new Socket((await GetIPAddressAsync()).AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-                }
-                else if (uri.Scheme == "udp")
-                {
-                    BaseSocket = new Socket((await GetIPAddressAsync()).AddressFamily, SocketType.Stream, ProtocolType.Udp);
-                }
+            }
+            else if (scheme == "tcp")
+            {
+                BaseSocket = new Socket((await GetIPAddressAsync()).AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            }
+            else if (scheme == "udp")
+            {
+                BaseSocket = new Socket((await GetIPAddressAsync()).AddressFamily, SocketType.Stream, ProtocolType.Udp);
             }
         }
 
@@ -290,7 +288,7 @@ namespace SolidCP.Providers.OS
             {
                 var tunnelConnected = IsSshTunnel ? BaseSshTunnel.Client.IsConnected && BaseSshTunnel.ForwardedPort.IsStarted : true;
                 if (IsSocket) return BaseSocket.Connected && tunnelConnected;
-                if (IsWebSocket) return BaseWebSocket.State == WebSocketState.Open && tunnelConnected;
+                if (IsWebSocket) return BaseWebSocket?.State == WebSocketState.Open && tunnelConnected;
                 return false;
             }
         }
@@ -322,7 +320,7 @@ namespace SolidCP.Providers.OS
             await BaseWebSocket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, CancellationToken.None);
         }
 
-        public virtual async Task<T> ReceiveObjectAsync<T>() where T: class
+        public virtual async Task<T> ReceiveObjectAsync<T>() where T : class
         {
             if (!IsWebSocket) throw new NotSupportedException("ReceiveObjectAsync is only supported on WebSockets");
             const int BufferSize = 1024;
@@ -472,9 +470,15 @@ namespace SolidCP.Providers.OS
                 {
                     Uri uri;
                     if (IsWebSocketOverSsh) uri = new Uri(await GetSshWebSocketUrlAsync());
-                    else uri = new Uri(RawUrl);
+                    else uri = new Uri(Url);
 
-                    await clientWebSocket.ConnectAsync(uri, new CancellationTokenSource(ConnectTimeout).Token);
+                    try
+                    {
+                        await clientWebSocket.ConnectAsync(uri, new CancellationTokenSource(ConnectTimeout).Token);
+                    } catch (Exception ex)
+                    {
+
+                    }
 
                     if (IsFallback) await RequestUpgradeTunnelSocketAsync(false);
                 }

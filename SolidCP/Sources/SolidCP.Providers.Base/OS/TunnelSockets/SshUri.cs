@@ -51,7 +51,7 @@ namespace SolidCP.Providers.OS
 
         public PrivateKeyFile[] Keys { get; protected set; } = new PrivateKeyFile[0];
 
-        public SshUri(string url): base(url) { this.url = url; }
+        public SshUri(string url): base(null) { Url = url; }
         public override string Url {
             get => base.Url;
             set
@@ -104,7 +104,7 @@ namespace SolidCP.Providers.OS
                         }
                         else throw new ArgumentException("This url is not a valid ssh url.");
 
-                        if (uri.Scheme != "ssh") throw new ArgumentException("This url is not a valid ssh url. Ssh urls must begin with ssh://");
+                        //if (uri.Scheme != "ssh") throw new ArgumentException("This url is not a valid ssh url. Ssh urls must begin with ssh://");
                     }
                 }
             }

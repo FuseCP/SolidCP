@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Net;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -33,6 +34,20 @@ namespace SolidCP.Providers.OS
             if (!string.IsNullOrEmpty(url)) Url = url;
             else this.url = url;
         }
+
+        string scheme = null;
+        public string Scheme
+        {
+            get => scheme;
+            set
+            {
+                if (scheme != value)
+                {
+                    scheme = value;
+                    if (!url.StartsWith($"{scheme}://")) url = Regex.Replace(url, @"^[a-zA-Z.-]+(?=://)", scheme);
+                }
+            }
+        }
         public string Username { get; protected set; }
         public string Password { get; protected set; }
         public string Host { get; protected set; }
@@ -42,7 +57,7 @@ namespace SolidCP.Providers.OS
         public string Path { get; protected set; }
 
         [XmlIgnore, IgnoreDataMember]
-        public StringDictionary Query { get; set; } = new StringDictionary();
+        public QueryStringDictionary Query { get; set; } = new QueryStringDictionary();
 
         [XmlIgnore, IgnoreDataMember]
         public string Tunnel
@@ -65,8 +80,9 @@ namespace SolidCP.Providers.OS
             set => Tunnel = value ? "fallback" : null;
         }
 
-        public virtual string Url {
-            get => !string.IsNullOrEmpty(url) ? Regex.Replace(url , @"\?.*?$", QueryString, RegexOptions.Singleline) : url;
+        public virtual string Url
+        {
+            get => !string.IsNullOrEmpty(url) ? Regex.Replace(url, @"(?<=\?).*?$", QueryString, RegexOptions.Singleline) : url;
             set
             {
                 if (url != value)
@@ -81,6 +97,7 @@ namespace SolidCP.Providers.OS
                     else
                     {
                         var uri = new Uri(url);
+                        scheme = uri.Scheme;
                         var userInfo = uri.UserInfo.Split(':');
                         Username = userInfo[0];
                         if (userInfo.Length > 1) Password = userInfo[1];
@@ -90,7 +107,7 @@ namespace SolidCP.Providers.OS
                         IdnHost = uri.IdnHost;
                         port = uri.Port == 0 ? 22 : uri.Port;
                         Path = uri.AbsolutePath;
-                        QueryString = uri.Query;
+                        Query = new QueryStringDictionary(url);
                     }
                 }
             }
@@ -106,40 +123,18 @@ namespace SolidCP.Providers.OS
                 if (port != value)
                 {
                     port = value;
-                    var uri = new Uri(Url ?? "");
-                    Url = $"{uri.Scheme}://{(!string.IsNullOrEmpty(uri.UserInfo) ? $"{uri.UserInfo}@" : "")}{uri.Host}{(port != 0 ? $":{port}" : "")}{uri.PathAndQuery}";
+                    url = Regex.Replace(url, "(?<=^[a-zA-Z.-]+://(?:[^@]+@)?[a-zA-Z0-9.-]+)(?::[0-9]+)?(/|$)", $":{port}$1");
                 }
             }
         }
 
+        public static string QueryEncode(string value) => QueryStringDictionary.QueryEncode(value);
+
         [XmlIgnore, IgnoreDataMember]
         public virtual string QueryString
         {
-            get
-            {
-                var str = new StringBuilder();
-                foreach (DictionaryEntry par in Query)
-                {
-                    if (str.Length > 0) str.Append("&");
-                    str.Append(par.Key);
-                    if ((string)par.Value != "")
-                    {
-                        str.Append("=");
-                        str.Append(par.Value);
-                    }
-                }
-                return str.ToString();
-            }
-            set
-            {
-                Query.Clear();
-                foreach (var par in value.Split('&', ';'))
-                {
-                    var tokens = par.Split('=');
-                    if (tokens.Length > 1) Query.Add(tokens[0].Trim(), tokens[1].Trim());
-                    else Query.Add(tokens[0].Trim(), "");
-                }
-            }
+            get => Query.QueryString;
+            set => Query.QueryString = value;
         }
 
         public virtual string RawUrl

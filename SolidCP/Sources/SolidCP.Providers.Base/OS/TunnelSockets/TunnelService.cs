@@ -53,17 +53,20 @@ namespace SolidCP.Providers.OS
         public string Password { get; private set; }
         public virtual string DecryptString(string secret) => new CryptoUtility(CryptoKey).Decrypt(secret);
 
+        Type[] TypesFromNames(string[] types) => types.Select(type => type != null ? Type.GetType(type) : null).ToArray();
         public virtual object[] Deserialize(string method, string args, bool encrypted)
         {
             if (encrypted) args = DecryptString(args);
             var bytes = Convert.FromBase64String(args);
             var mem = new MemoryStream(bytes);
-            var typeSerializer = new DataContractSerializer(typeof(Type[]));
-            var parameterTypes = (Type[])typeSerializer.ReadObject(mem);
-            var types = (Type[])typeSerializer.ReadObject(mem);
+            var typeSerializer = new DataContractSerializer(typeof(string[]));
+            var parameterTypes = TypesFromNames((string[])typeSerializer.ReadObject(mem));
+            var types = TypesFromNames((string[])typeSerializer.ReadObject(mem));
+
             var methodInfo = this.GetType().GetMethod(method, parameterTypes);
             if (methodInfo == null) throw new ArgumentException("Method not found");
 
+            // check if types are equal or subtype of parameterTypes
             bool invalidTypes = false;
             if (types.Length != parameterTypes.Length) invalidTypes = true;
             else
@@ -84,7 +87,11 @@ namespace SolidCP.Providers.OS
                 .Where(type => type != null)
                 .Distinct();
             var serializer = new DataContractSerializer(typeof(object[]), knownTypes);
-            return (object[])serializer.ReadObject(mem);
+            var argsWithCredentials = (object[])serializer.ReadObject(mem);
+            if (argsWithCredentials.Length < 2 || !(argsWithCredentials[0] is string) || !(argsWithCredentials[1] is string)) throw new ArgumentException("No credentials specified");
+            Username = argsWithCredentials[0] as string;
+            Password = argsWithCredentials[1] as string;
+            return argsWithCredentials.Skip(2).ToArray();
         }
 
         public virtual void Authenticate(string user, string password) => throw new NotSupportedException("Authentication is not supported in the base TunnelService class.");
@@ -95,6 +102,12 @@ namespace SolidCP.Providers.OS
         public virtual async Task<TunnelSocket> GetSocket(string method, string arguments, bool encrypted)
         {
             var args = Deserialize(method, arguments, encrypted);
+            return await GetSocket(method, args);
+        }
+
+        public virtual async Task<TunnelSocket> GetSocket(string method, string username, string password, object[] arguments)
+        {
+            var args = new string[] { username, password }.Concat(arguments).ToArray();
             return await GetSocket(method, args);
         }
 

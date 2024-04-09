@@ -35,6 +35,7 @@ using System;
 using System.Web;
 using System.Linq;
 using System.Text.RegularExpressions;
+using SolidCP.Providers.OS;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.ResultObjects;
 using SolidCP.Providers.Virtualization;
@@ -93,8 +94,8 @@ namespace SolidCP.Portal.Proxmox
                     var baseUrl = Regex.Match(Request.RawUrl, @"^.*(?=/Default.aspx\?)")?.Value;
                    
                     var serviceItem = ES.Services.Packages.GetPackageItem(PanelRequest.ItemID);
-                    string path = $"{baseUrl}/novnc/websocket?user={PanelSecurity.LoggedUser.Username}&item={serviceItem.Id}";
-                    litRdpPageUrl.Text = $"{baseUrl}/novnc/vnc.aspx?autoconnect=true&host={Request.Url.Host}&port={Request.Url.Port}&path={HttpUtility.UrlEncode(path)}";
+                    string path = TunnelUri.QueryEncode($"{baseUrl}/novnc/websocket?user={TunnelUri.QueryEncode(PanelSecurity.LoggedUser.Username)}&item={serviceItem.Id}");
+                    litRdpPageUrl.Text = $"{baseUrl}/novnc/vnc.aspx?autoconnect=true&host={Request.Url.Host}&port={Request.Url.Port}&path={path}";
                 }
 
                 lnkHostname.Text = item.Hostname.ToUpper();
