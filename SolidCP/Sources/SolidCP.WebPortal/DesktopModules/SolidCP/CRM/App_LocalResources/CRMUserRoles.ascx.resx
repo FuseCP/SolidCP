@@ -141,10 +141,10 @@
   <data name="FormComments.Text" xml:space="preserve">
     <value />
   </data>
-  <data name="btnActivate.Text" xml:space="preserve">
+  <data name="locBtnActivate.Text" xml:space="preserve">
     <value>Enable</value>
   </data>
-  <data name="btnDeactivate.Text" xml:space="preserve">
+  <data name="locBtnDeactivate.Text" xml:space="preserve">
     <value>Disable</value>
   </data>
   <data name="locDisabled.Text" xml:space="preserve">

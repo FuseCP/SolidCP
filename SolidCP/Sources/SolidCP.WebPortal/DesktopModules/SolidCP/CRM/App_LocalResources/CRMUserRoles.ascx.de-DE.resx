@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="locDisplayName.Text" xml:space="preserve">
     <value>Anzeigename:</value>
@@ -141,10 +141,10 @@
   <data name="FormComments.Text" xml:space="preserve">
     <value>&lt;p&gt;Wie ein Benutzer auf Daten zugreifen kann wird durch eine Kombination von Benutzerlizenz, Sicherheitsrolle, Geschäftseinheit und ein oder mehrere Teams bestimmt.&lt;/p&gt;</value>
   </data>
-  <data name="btnActivate.Text" xml:space="preserve">
+  <data name="locBtnActivate.Text" xml:space="preserve">
     <value>Aktivieren</value>
   </data>
-  <data name="btnDeactivate.Text" xml:space="preserve">
+  <data name="locBtnDeactivate.Text" xml:space="preserve">
     <value>Deaktivieren</value>
   </data>
   <data name="locDisabled.Text" xml:space="preserve">

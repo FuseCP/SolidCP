@@ -6,6 +6,8 @@ using SolidCP.Providers;
 using SolidCP.Providers.OS;
 using SolidCP.Server.Client;
 
+[assembly:TunnelService(typeof(SolidCP.EnterpriseServer.EnterpriseServerTunnelService))]
+
 namespace SolidCP.EnterpriseServer
 {
     public class EnterpriseServerTunnelService: EnterpriseServerTunnelServiceBase
@@ -14,24 +16,21 @@ namespace SolidCP.EnterpriseServer
 
         public override void Authenticate(string user, string password) => UsernamePasswordValidator.Validate(user, password);
         
-        public override async Task<TunnelSocket> GetPveVncWebSocketAsync(int serviceId, int packageId, int serviceItemId)
+        public override async Task<TunnelSocket> GetPveVncWebSocketAsync(int serviceItemId)
         {
+            var serviceItem = PackageController.GetPackageItem(serviceItemId);
+            if (serviceItem == null) throw new AccessViolationException("Service item not found.");
+
             // get service
-            ServiceInfo service = ServerController.GetServiceInfo(serviceId);
+            ServiceInfo service = ServerController.GetServiceInfo(serviceItem.ServiceId);
             if (service == null) throw new AccessViolationException("Service not found.");
 
-            var package = PackageController.GetPackage(packageId);
+            var package = PackageController.GetPackage(serviceItem.PackageId);
             if (package == null) throw new AccessViolationException("Package not found.");
             
             // Verfiy user has access to service 
             var user = UserController.GetUser(Username);
-            if (package.UserId != user.UserId) throw new AccessViolationException("The current user has no access to this service.");
-
-            var serviceItem = PackageController.GetPackageItem(serviceItemId);
-            if (serviceItem == null) throw new AccessViolationException("Service item not found.");
-            
-            if (serviceItem.ServiceId != serviceId || serviceItem.PackageId != packageId)
-                throw new AccessViolationException("The current user has no access to this service");
+            if (user.RoleId != 1 /* Administrator */ && package.UserId != user.UserId) throw new AccessViolationException("The current user has no access to this service.");
 
             var vmId = serviceItem["VirtualMachineId"];
 

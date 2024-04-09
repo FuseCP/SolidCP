@@ -32,18 +32,36 @@ namespace SolidCP.Providers.OS
             .Any(a => a.GetName().Name == "SolidCP.WebPortal");
 
         public ServerTunnelClientBase ServerClient => AppDomain.CurrentDomain.GetAssemblies()
-            .Where(a => a.GetName().Name == "SolidCP.Server")
+            .Where(a => a.GetName().Name == "SolidCP.Server.Client")
             .SelectMany(a => a.GetCustomAttributes(typeof(TunnelClientAttribute), false))
             .OfType<TunnelClientAttribute>()
             .Select(a => (ServerTunnelClientBase)CopyTo(a.Instance))
             .FirstOrDefault();
 
         public EnterpriseServerTunnelClientBase EnterpriseServerClient => AppDomain.CurrentDomain.GetAssemblies()
-            .Where(a => a.GetName().Name == "SolidCP.Server")
+            .Where(a => a.GetName().Name == "SolidCP.EnterpriseServer.Client")
             .SelectMany(a => a.GetCustomAttributes(typeof(TunnelClientAttribute), false))
             .OfType<TunnelClientAttribute>()
             .Select(a => (EnterpriseServerTunnelClientBase)CopyTo(a.Instance))
             .FirstOrDefault();
+
+        public TunnelClient Client
+        {
+            get
+            {
+                if (ServerUrl == "assembly://SolidCP.Server")
+                {
+                    if (!IsServerLoaded) Assembly.Load("SolidCP.Server");
+                    return ServerClient;
+                }
+                else if (ServerUrl == "assembly://SolidCP.EnterpriseServer")
+                {
+                    if (!IsEnterpriseServerLoaded) Assembly.Load("SolidCP.EnterpriseServer");
+                    return  EnterpriseServerClient;
+                }
+                throw new NotSupportedException("Unknown assembly in AssemblyBinding.");
+            }
+        }
 
         public virtual string CryptoKey => "";
         public virtual string EncryptString(string secret) => new CryptoUtility(CryptoKey).Encrypt(secret);
@@ -117,30 +135,45 @@ namespace SolidCP.Providers.OS
             }
             else
             {
+
                 if (this.GetType() == typeof(TunnelClient))
                 {
-                    if (ServerUrl == "assembly://SolidCP.Server")
-                    {
-                        if (!IsServerLoaded) Assembly.Load("SolidCP.Server");
-                        var client = ServerClient;
-                        return await client.GetSocket(method, args);
-                    }
-                    else if (ServerUrl == "assembly://SolidCP.EnterpriseServer")
-                    {
-                        if (!IsEnterpriseServerLoaded) Assembly.Load("SolidCP.EnterpriseServer");
-                        var client = EnterpriseServerClient;
-                        return await client.GetSocket(method, args);
-                    }
-                    throw new NotSupportedException("Unknown assembly in AssemblyBinding.");
+                    return await Client.GetSocket(method, args);
                 }
                 else
                 {
+                    var service = new TunnelService(GetType().Name);
+                    return await service.GetSocket(method, args);
+                    
+                    /*
                     var types = args.Select(arg => arg?.GetType()).ToArray();
-                    if (types.Any(type => type == null)) throw new ArgumentException("Cannot derive argument type because it is null.");
 
-                    var methodInfo = this.GetType().GetMethod(method, types);
-                    if (methodInfo == null) throw new ArgumentException("Method not found");
-                    return await (Task<TunnelSocket>)methodInfo?.Invoke(this, args);
+                    var service = Service;
+                    var methodInfos = service.GetType().GetMethods()
+                        .Where(m =>
+                        {
+                            if (m.Name != method || !m.IsPublic) return false;
+
+                            var pars = m.GetParameters();
+                            if (pars.Length != types.Length) return false;
+
+                            for (int i = 0; i < pars.Length; i++)
+                            {
+                                if (pars[i].ParameterType != types[i] && types[i] != null && !types[i].IsSubclassOf(pars[i].ParameterType))
+                                    return false;
+                            }
+
+                            return true;
+                        })
+                        .ToArray();
+
+                    if (methodInfos.Length == 0) throw new Exception($"No method {method} found with the correct signature");
+                    if (methodInfos.Length > 1) throw new Exception($"Cannot determin which method {method} to use");
+
+                    var methodInfo = methodInfos[0];
+
+                    return await (Task<TunnelSocket>)methodInfo?.Invoke(service, args);
+                    */
                 }
 
             }
@@ -149,7 +182,7 @@ namespace SolidCP.Providers.OS
 
     public abstract class EnterpriseServerTunnelClientBase : TunnelClient
     {
-        public abstract Task<TunnelSocket> GetPveVncWebSocketAsync(int serviceId, int packageId, int serviceItemId);
+        public abstract Task<TunnelSocket> GetPveVncWebSocketAsync(int serviceItemId);
     }
 
     public abstract class ServerTunnelClientBase : TunnelClient

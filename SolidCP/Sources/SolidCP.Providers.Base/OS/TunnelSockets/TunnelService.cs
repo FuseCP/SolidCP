@@ -111,14 +111,33 @@ namespace SolidCP.Providers.OS
                 Password = arguments[1] as string;
                 Service.Authenticate(Username, Password);
 
-                var types = arguments.Skip(2).Select(arg => arg?.GetType()).ToArray();
-                if (types.Any(type => type == null)) throw new ArgumentException("Cannot derive argument type because it is null.");
+                var args = arguments.Skip(2).ToArray();
+                var types = args.Select(arg => arg?.GetType()).ToArray();
 
-                var methodInfo = this.GetType().GetMethod(method, types);
-                if (methodInfo == null) throw new ArgumentException("Method not found");
-                return await (Task<TunnelSocket>)methodInfo?.Invoke(this, arguments);
+                var methodInfos = GetType().GetMethods()
+                    .Where(m =>
+                    {
+                        if (m.Name != method || !m.IsPublic) return false;
 
-                throw new NotSupportedException("Unsupported caller.");
+                        var pars = m.GetParameters();
+                        if (pars.Length != types.Length) return false;
+
+                        for (int i = 0; i < pars.Length; i++)
+                        {
+                            if (pars[i].ParameterType != types[i] && types[i] != null && !types[i].IsSubclassOf(pars[i].ParameterType))
+                                return false;
+                        }
+
+                        return true;
+                    })
+                    .ToArray();
+
+                if (methodInfos.Length == 0) throw new Exception($"No method {method} found with the correct signature");
+                if (methodInfos.Length > 1) throw new Exception($"Cannot determine which method {method} to use");
+
+                var methodInfo = methodInfos[0];
+
+                return await (Task<TunnelSocket>)methodInfo?.Invoke(this, args);
             }
         }
     }
@@ -131,6 +150,6 @@ namespace SolidCP.Providers.OS
     public abstract class EnterpriseServerTunnelServiceBase : TunnelService
     {
         public override TunnelService Service => EnterpriseServerService;
-        public abstract Task<TunnelSocket> GetPveVncWebSocketAsync(int serviceId, int packageId, int serviceItemId);
+        public abstract Task<TunnelSocket> GetPveVncWebSocketAsync(int serviceItemId);
     }
 }

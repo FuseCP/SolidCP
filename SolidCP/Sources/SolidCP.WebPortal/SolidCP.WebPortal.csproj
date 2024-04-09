@@ -1307,6 +1307,20 @@
       </FilesForPackagingFromProject>
     </ItemGroup>
   </Target>
+
+<Target Name="AspNetPrecompile">
+  <PropertyGroup>
+    <AspNetCompiler>$(WINDIR)\Microsoft.NET\Framework\v4.0.30319\aspnet_compiler.exe</AspNetCompiler>
+  </PropertyGroup>
+  <ItemGroup>
+    <ConfigObjFiles Include="obj/**/*.config" />
+  </ItemGroup>
+
+  <Delete Files="@(ConfigIObjFiles)" />
+
+  <Exec Command="$(AspNetCompiler) -p . -v /" />
+</Target>
+
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

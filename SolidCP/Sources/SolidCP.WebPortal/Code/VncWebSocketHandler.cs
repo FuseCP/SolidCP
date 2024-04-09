@@ -35,14 +35,10 @@ namespace SolidCP.WebPortal
                         return;
                     }
                 }
-                var service = query["service"];
-                var package = query["package"];
                 var item = query["item"];
-                int packageId, itemId, serviceId;
+                int itemId;
 
-                if (string.IsNullOrEmpty(user) || string.IsNullOrEmpty(package) || string.IsNullOrEmpty(item) ||
-                    string.IsNullOrEmpty(service) ||
-                    !int.TryParse(package, out packageId) || !int.TryParse(item, out itemId) || !int.TryParse(service, out serviceId))
+                if (string.IsNullOrEmpty(user) || string.IsNullOrEmpty(item) || !int.TryParse(item, out itemId))
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 } else
@@ -54,7 +50,7 @@ namespace SolidCP.WebPortal
                         esclient.Username = user;
                         esclient.Password = password;
                         esclient.ServerUrl = PortalConfiguration.SiteSettings["EnterpriseServer"];
-                        var outgoing = await esclient.GetPveVncWebSocketAsync(serviceId, packageId, itemId);
+                        var outgoing = await esclient.GetPveVncWebSocketAsync(itemId);
                         await incoming.Transmit(outgoing);
                     });
                 }
