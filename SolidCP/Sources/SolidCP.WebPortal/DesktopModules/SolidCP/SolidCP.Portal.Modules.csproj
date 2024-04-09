@@ -224,6 +224,13 @@
     <Compile Include="Code\ReportingServices\ReportingServicesUtils.cs" />
     <Compile Include="Code\UserControls\Tab.cs" />
     <Compile Include="App_Code\IPAddressExtensions.cs" />
+    <Compile Include="ExchangeServer\EnterpriseStorageSpaces.ascx.cs">
+      <DependentUpon>EnterpriseStorageSpaces.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ExchangeServer\EnterpriseStorageSpaces.ascx.designer.cs">
+      <DependentUpon>EnterpriseStorageSpaces.ascx</DependentUpon>
+    </Compile>
     <Compile Include="ExchangeServer\ExchangeCreateJournalingMailbox.ascx.cs">
       <DependentUpon>ExchangeCreateJournalingMailbox.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -5615,6 +5622,7 @@
   <ItemGroup>
     <Content Include="ApplyEnableHardQuotaFeature.ascx" />
     <Content Include="AutoUpdateServers.ascx" />
+    <Content Include="ExchangeServer\EnterpriseStorageSpaces.ascx" />
     <Content Include="ExchangeServer\ExchangeCreateJournalingMailbox.ascx" />
     <Content Include="ExchangeServer\ExchangeMailboxAutoReply.ascx" />
     <Content Include="ExchangeServer\ExchangeJournalingMailboxes.ascx" />

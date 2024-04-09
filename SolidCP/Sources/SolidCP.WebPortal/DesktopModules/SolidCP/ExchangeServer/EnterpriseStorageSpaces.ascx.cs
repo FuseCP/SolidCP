@@ -29,6 +29,7 @@
 using System;
 using System.Web.UI.WebControls;
 using SolidCP.EnterpriseServer;
+using SolidCP.EnterpriseServer.Base.HostedSolution;
 using SolidCP.Providers.HostedSolution;
 
 namespace SolidCP.Portal.ExchangeServer
