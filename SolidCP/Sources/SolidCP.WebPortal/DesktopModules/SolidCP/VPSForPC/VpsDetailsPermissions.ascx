@@ -55,9 +55,9 @@
 			            </Columns>
 		            </asp:GridView>
 		            <br />
-                    <<CPCC:StyleButton id="btnUpdateVpsPermissions" CssClass="btn btn-success" runat="server" CausesValidation="false" onclick="btnUpdateVpsPermissions_Click"> <i class="fa fa-refresh">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnUpdateVpsPermissionsText"/> </CPCC:StyleButton>
-                    <br />
-				    
+						<CPCC:StyleButton id="btnUpdateVpsPermissions" CssClass="btn btn-success" runat="server" CausesValidation="false" OnClick="btnUpdateVpsPermissions_Click"> <i class="fa fa-refresh">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnUpdateVpsPermissionsText"/> </CPCC:StyleButton>
+                  <br />
+				   
 			    </div>
 		    </div>
             </div>

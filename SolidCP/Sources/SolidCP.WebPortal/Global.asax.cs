@@ -34,6 +34,7 @@ using System;
 using System.Data;
 using System.Configuration;
 using System.Collections;
+using System.Diagnostics;
 using System.Web;
 using System.Web.Script;
 using System.Web.Security;
@@ -52,6 +53,7 @@ namespace SolidCP.WebPortal
 {
 	public class Global : System.Web.HttpApplication
 	{
+		const bool Debug = false;
 		private int keepAliveMinutes = 10;
 		private static string keepAliveUrl = "";
 		private static System.Timers.Timer timer = null;
@@ -111,9 +113,15 @@ namespace SolidCP.WebPortal
 
 		}
 
-		Task TouchTask;
+
+		protected void Application_OnStart(object sender, EventArgs e) => Application_Start(sender, e);
+
+
+        Task TouchTask;
 		protected void Application_Start(object sender, EventArgs e)
 		{
+			if (Debug && !Debugger.IsAttached) Debugger.Launch();
+
 			Web.Clients.CertificateValidator.Init();
 
 			// start Enterprise Server

@@ -117,7 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="btnCancel.Text" xml:space="preserve">
+  <data name="btnCancelText.Text" xml:space="preserve">
     <value>Cancel</value>
   </data>
   <data name="FormComments.Text" xml:space="preserve">
@@ -129,7 +129,7 @@
   <data name="btnMove.OnClientClick" xml:space="preserve">
     <value>ShowProgressDialog('Moving Virtual Machine...');</value>
   </data>
-  <data name="btnMove.Text" xml:space="preserve">
+  <data name="btnMoveText.Text" xml:space="preserve">
     <value>Move</value>
   </data>
   <data name="locDestinationService.Text" xml:space="preserve">

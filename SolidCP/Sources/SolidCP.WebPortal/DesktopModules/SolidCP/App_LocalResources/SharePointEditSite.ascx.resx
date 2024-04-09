@@ -120,14 +120,11 @@
   <data name="btnBackup.Text" xml:space="preserve">
     <value>Backup Site</value>
   </data>
-  <data name="btnCancel.Text" xml:space="preserve">
+  <data name="btnCancelText.Text" xml:space="preserve">
     <value>Cancel</value>
   </data>
   <data name="btnDelete.OnClientClick" xml:space="preserve">
     <value>if(!confirm('Delete this SharePoint site?')) return false; else ShowProgressDialog('Deleting SharePoint site...');</value>
-  </data>
-  <data name="btnDelete.Text" xml:space="preserve">
-    <value>Delete</value>
   </data>
   <data name="btnRestore.Text" xml:space="preserve">
     <value>Restore Site</value>
@@ -188,5 +185,8 @@
   </data>
   <data name="btnDeleteText.Text" xml:space="preserve">
     <value>Delete</value>
+  </data>
+  <data name="btnUpdateText.Text" xml:space="preserve">
+    <value>Update</value>
   </data>
 </root>

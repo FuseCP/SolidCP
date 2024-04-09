@@ -214,7 +214,22 @@ namespace SolidCP.Web.Clients
 #endif
         }
 
-        static readonly string exepath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
+        static string exepath = null;
+        static string Exepath
+        {
+            get
+            {
+                if (exepath != null) return exepath;
+
+                var path = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
+                if (path.EndsWith($"{Path.DirectorySeparatorChar}bin") || path.EndsWith($"{Path.DirectorySeparatorChar}bin_dotnet"))
+                {
+                    path = Path.GetDirectoryName(path);
+                }
+                return exepath = path;
+            }
+        }
+
         static string[] paths = null;
         static string ProbingPaths = null;
         static string[] Paths => paths != null ? paths : paths =
@@ -246,9 +261,10 @@ namespace SolidCP.Web.Clients
                 .Select(p =>
                 {
                     var relativename = Path.Combine(p, $"{name}.dll");
+                    var fullName = new DirectoryInfo(Path.Combine(Exepath, relativename)).FullName;
                     return new
                     {
-                        FullName = new DirectoryInfo(Path.Combine(exepath, relativename)).FullName,
+                        FullName = fullName,
                         Name = relativename
                     };
                 })

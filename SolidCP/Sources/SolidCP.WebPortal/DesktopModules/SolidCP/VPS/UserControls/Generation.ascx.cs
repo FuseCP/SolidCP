@@ -39,6 +39,8 @@ namespace SolidCP.Portal.VPS.UserControls
 
         public bool IsEditMode { get; set; }
 
+        public VirtualMachineSettingsMode Mode { get; set; }
+
         public void BindItem(VirtualMachine item)
         {
             var generation = item.Generation > 1 ? item.Generation : 1;
@@ -46,7 +48,7 @@ namespace SolidCP.Portal.VPS.UserControls
             lblGeneration.Text = generation.ToString();
         }
 
-        public void SaveItem(VirtualMachine item)
+        public void SaveItem(ref VirtualMachine item)
         {
             item.Generation = Convert.ToInt32(ddlGeneration.SelectedValue);
         }

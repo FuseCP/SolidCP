@@ -256,8 +256,8 @@
                     </asp:Panel>
                     
                     <p>
-                        <CPCC:StyleButton id="btnCancel" CssClass="btn btn-warning" runat="server" CausesValidation="False" OnClick="btnCancel_Click"> <i class="fa fa-times">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnCancel"/> </CPCC:StyleButton>&nbsp;
-                        <CPCC:StyleButton id="btnImport" CssClass="btn btn-success" runat="server" OnClick="btnImport_Click" ValidationGroup="ImportWizard"> <i class="fa fa-check">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnImport"/> </CPCC:StyleButton>
+                        <CPCC:StyleButton id="btnCancel" CssClass="btn btn-warning" runat="server" CausesValidation="False" OnClick="btnCancel_Click" meta:resourcekey="btnCancel"> <i class="fa fa-times">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnCancelText"/> </CPCC:StyleButton>&nbsp;
+                        <CPCC:StyleButton id="btnImport" CssClass="btn btn-success" runat="server" OnClick="btnImport_Click" ValidationGroup="ImportWizard" meta:resourcekey="btnImport"> <i class="fa fa-check">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnImportText"/> </CPCC:StyleButton>
                     </p>
                         
 			    </div>

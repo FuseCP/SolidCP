@@ -48,18 +48,35 @@ namespace SolidCP.Portal.ProviderControls
             set
             {
                 _isEditMode = value;
-                SettingContols.ForEach(s=>s.IsEditMode = _isEditMode);
+                if (_isEditMode)
+                {
+                    SettingContols.ForEach(s => s.Mode |= VirtualMachineSettingsMode.Edit);
+                } else
+                {
+                    SettingContols.ForEach(s => s.Mode &= ~VirtualMachineSettingsMode.Edit);
+                }
             }
         }
+
+        VirtualMachineSettingsMode mode;
+        public VirtualMachineSettingsMode Mode {
+            get => mode;
+            set
+            {
+                mode = value;
+                SettingContols.ForEach(s => s.Mode = mode);
+            }
+        }
+
 
         public void BindItem(VirtualMachine item)
         {
             SettingContols.ForEach(s => s.BindItem(item));
         }
 
-        public void SaveItem(VirtualMachine item)
+        public void SaveItem(ref VirtualMachine item)
         {
-            SettingContols.ForEach(s => s.SaveItem(item));
+            foreach (var s in SettingContols) s.SaveItem(ref item);
         }
 
         private List<IVirtualMachineSettingsControl> SettingContols

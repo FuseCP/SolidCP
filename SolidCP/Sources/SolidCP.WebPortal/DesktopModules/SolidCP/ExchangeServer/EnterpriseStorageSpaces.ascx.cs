@@ -86,7 +86,7 @@ namespace SolidCP.Portal.ExchangeServer
                 "SpaceID=" + PanelSecurity.PackageId));
         }
 
-        protected void gvDomains_RowCommand(object sender, GridViewCommandEventArgs e)
+        protected void gvSpaces_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName == "DeleteItem")
             {

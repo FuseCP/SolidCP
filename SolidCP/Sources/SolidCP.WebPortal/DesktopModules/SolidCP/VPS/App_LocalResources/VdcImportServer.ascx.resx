@@ -129,11 +129,8 @@
   <data name="AllowStartShutdown.Text" xml:space="preserve">
     <value>Start, Turn off and Shutdown</value>
   </data>
-  <data name="btnCancel.Text" xml:space="preserve">
+  <data name="btnCancelText.Text" xml:space="preserve">
     <value>Cancel</value>
-  </data>
-  <data name="btnImport.Text" xml:space="preserve">
-    <value>Import</value>
   </data>
   <data name="EnableRemoteDesktop.Text" xml:space="preserve">
     <value>Enable Remote Desktop Web Connection</value>

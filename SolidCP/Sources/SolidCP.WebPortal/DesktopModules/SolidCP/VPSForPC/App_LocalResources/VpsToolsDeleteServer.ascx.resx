@@ -117,13 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="btnCancel.Text" xml:space="preserve">
+  <data name="btnCancelText.Text" xml:space="preserve">
     <value>Cancel</value>
   </data>
   <data name="btnDelete.OnClientClick" xml:space="preserve">
     <value>ShowProgressDialog('Deleting Virtual Machine...');</value>
   </data>
-  <data name="btnDelete.Text" xml:space="preserve">
+  <data name="btnDeleteText.Text" xml:space="preserve">
     <value>Delete</value>
   </data>
   <data name="chkConfirmDelete.Text" xml:space="preserve">

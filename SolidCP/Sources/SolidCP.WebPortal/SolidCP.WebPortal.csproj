@@ -56,6 +56,12 @@
     <Prefer32Bit>false</Prefer32Bit>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <AspNetCompiler>$(WINDIR)\Microsoft.NET\Framework\v4.0.30319\aspnet_compiler.exe</AspNetCompiler>
+    <DeployDir>..\..\Build\$(Configuration)\Portal</DeployDir>
+  </PropertyGroup>
+
   <ItemGroup>
     <Reference Include="AdvancedStringBuilder, Version=0.1.0.0, Culture=neutral, PublicKeyToken=e818a2fc08933ddb, processorArchitecture=MSIL">
       <HintPath>..\packages\AdvancedStringBuilder.0.1.0\lib\net45\AdvancedStringBuilder.dll</HintPath>
@@ -1308,18 +1314,31 @@
     </ItemGroup>
   </Target>
 
-<Target Name="AspNetPrecompile">
-  <PropertyGroup>
-    <AspNetCompiler>$(WINDIR)\Microsoft.NET\Framework\v4.0.30319\aspnet_compiler.exe</AspNetCompiler>
-  </PropertyGroup>
-  <ItemGroup>
-    <ConfigObjFiles Include="obj/**/*.config" />
-  </ItemGroup>
+  <Target Name="DeleteConfigObjFiles">
+    <ItemGroup>
+      <ConfigObjFiles Include="obj/**/*.config" />
+   </ItemGroup>
 
-  <Delete Files="@(ConfigIObjFiles)" />
+    <Delete Files="@(ConfigIObjFiles)" />
+  </Target>
 
-  <Exec Command="$(AspNetCompiler) -p . -v /" />
-</Target>
+  <Target Name="Precompile" DependsOnTargets="DeleteConfigObjFiles">
+    <Exec Command="$(AspNetCompiler) -p . -v /" />
+  </Target>
+
+  <Target Name="Deploy" DependsOnTargets="DeleteConfigObjFiles">
+    <Exec Command="$(AspNetCompiler) -p . -f -v / $(DeployDir)" />
+    <ItemGroup>
+      <AppDlls Include="$(DeployDir)\bin\App_*.dll" Exclude="$(DeployDir)\bin\App_global.asax.dll;$(DeployDir)\bin\App_Browsers.dll;$(DeployDir)\bin\App_GlobalResources.dll;$(DeployDir)\bin\App_Theme_Default.dll" />
+    </ItemGroup>
+
+    <Move SourceFiles="@(AppDlls)" DestinationFolder="$(DeployDir)\bin\Lazy" />
+
+    <!-- Create App_GlobalResources.list file, because there is no App_GlobalResources folder anymore -->
+    <Exec Command="powershell &quot;Get-ChildItem App_GlobalResources -recurse -include *.resx | ForEach-Object { $_.Name } > $(DeployDir)\App_Data\App_GlobalResources.list&quot;" />
+    <!-- Correct ExternalProbingPaths in web.config -->
+    <Exec Command="powershell &quot;(Get-Content Web.config) -replace '\.\.\\SolidCP.EnterpriseServer', '..\EnterpriseServer' | Set-Content -Path $(DeployDir)\Web.config&quot;" />
+  </Target>
 
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
