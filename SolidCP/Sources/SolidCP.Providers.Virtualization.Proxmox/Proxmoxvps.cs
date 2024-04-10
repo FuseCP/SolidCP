@@ -930,7 +930,7 @@ namespace SolidCP.Providers.Virtualization
 
             //var url = $"https://{ProxmoxClusterServerHost}:{ProxmoxClusterServerPort}/?console=kvm&novnc=1&node={nodeId.Node}" +
             //    $"&resize=1&vmid={nodeId.Id}&path=api2/json/nodes/{nodeId.Node}/qemu/{nodeId.Id}/vncwebsocket/port/{port}/vncticket/{ticket}";
-            var url = $"wss://{ProxmoxClusterServerHost}:{ProxmoxClusterServerPort}/api2/json/nodes/{nodeId.Node}/qemu/{nodeId.Id}/vncwebsocket/port/{port}/vncticket/{ticket}";
+            var url = $"wss://{Server.Ip}:{Server.Port}/api2/json/nodes/{nodeId.Node}/qemu/{nodeId.Id}/vncwebsocket/port/{port}/vncticket/{ticket}";
 
             var tunnel = new TunnelSocket(url);
             tunnel.Cookies.Add(new Cookie("PVEAuthCookie", WebUtility.UrlEncode(Api.PVEAuthCookie) + ";SameSite=Strict;"));

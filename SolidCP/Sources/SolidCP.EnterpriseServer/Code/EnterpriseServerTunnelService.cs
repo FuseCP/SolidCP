@@ -2,6 +2,7 @@
 using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
+using System.DirectoryServices;
 using SolidCP.Providers;
 using SolidCP.Providers.OS;
 using SolidCP.Providers.Virtualization;
@@ -57,16 +58,30 @@ namespace SolidCP.EnterpriseServer
             providerSettings.ProviderType = provider.ProviderType;
 
             ServerInfo server = ServerController.GetServerById(service.ServerId);
+            
+            var serverSettings = new RemoteServerSettings();
+            serverSettings.ADEnabled = server.ADEnabled;
+            serverSettings.ADAuthenticationType = AuthenticationTypes.Secure;
+
+            AuthenticationTypes adAuthenticationType;
+            if (Enum.TryParse<AuthenticationTypes>(server.ADAuthenticationType, true, out adAuthenticationType))
+                serverSettings.ADAuthenticationType = adAuthenticationType;
+
+            serverSettings.ADRootDomain = server.ADRootDomain;
+            serverSettings.ADUsername = server.ADUsername;
+            serverSettings.ADPassword = server.ADPassword;
+            serverSettings.ADParentDomain = server.ADParentDomain;
+            serverSettings.ADParentDomainController = server.ADParentDomainController;
 
             var serverUrl = CryptoUtils.DecryptServerUrl(server.ServerUrl);
 
-            return await GetPveVNCWebSocket(serverUrl, server.Password, server.SHA256Password, vmId, providerSettings); 
+            return await GetPveVNCWebSocket(serverUrl, server.Password, server.SHA256Password, vmId, serverSettings, providerSettings); 
         }
-        private async Task<TunnelSocket> GetPveVNCWebSocket(string serverUrl, string password, bool sha256Password, string vmId, ServiceProviderSettings providerSettings) {
+        private async Task<TunnelSocket> GetPveVNCWebSocket(string serverUrl, string password, bool sha256Password, string vmId, RemoteServerSettings serverSettings, ServiceProviderSettings providerSettings) {
             password = sha256Password ? CryptoUtils.SHA256(password) : CryptoUtils.SHA1(password);
             var client = new ServerTunnelClient() { ServerUrl = serverUrl, Password = password };
 
-            return await client.GetPveVncWebSocketAsync(vmId, providerSettings);
+            return await client.GetPveVncWebSocketAsync(vmId, serverSettings, providerSettings);
         }
     }
 }

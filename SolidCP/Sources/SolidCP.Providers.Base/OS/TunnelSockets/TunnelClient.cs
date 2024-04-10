@@ -193,6 +193,6 @@ namespace SolidCP.Providers.OS
 
     public abstract class ServerTunnelClientBase : TunnelClient
     {
-        public abstract Task<TunnelSocket> GetPveVncWebSocketAsync(string vmId, ServiceProviderSettings providerSettings);
+        public abstract Task<TunnelSocket> GetPveVncWebSocketAsync(string vmId, RemoteServerSettings serverSettings, ServiceProviderSettings providerSettings);
     }
 }

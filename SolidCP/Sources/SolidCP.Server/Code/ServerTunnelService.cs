@@ -15,12 +15,12 @@ namespace SolidCP.Server
         {
             PasswordValidator.Validate(password);
         }
-        public override async Task<TunnelSocket> GetPveVncWebSocketAsync(string vmId, ServiceProviderSettings providerSettings)
+        public override async Task<TunnelSocket> GetPveVncWebSocketAsync(string vmId, RemoteServerSettings serverSettings, ServiceProviderSettings providerSettings)
         {
             using (var proxmox = new VirtualizationServerProxmox())
             {
                 proxmox.ProviderSettings = providerSettings;
-                proxmox.ServerSettings = new RemoteServerSettings();
+                proxmox.ServerSettings = serverSettings;
                 return await proxmox.GetPveVncWebSocketAsync(vmId);
             }
         }
