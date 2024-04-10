@@ -104,7 +104,7 @@ namespace SolidCP.Providers.OS
                         }
                         else throw new ArgumentException("This url is not a valid ssh url.");
 
-                        //if (uri.Scheme != "ssh") throw new ArgumentException("This url is not a valid ssh url. Ssh urls must begin with ssh://");
+                        if (uri.Scheme != "ssh") throw new ArgumentException("This url is not a valid ssh url. Ssh urls must begin with ssh://");
                     }
                 }
             }

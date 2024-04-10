@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace SolidCP.Providers.OS
 {
@@ -13,7 +14,8 @@ namespace SolidCP.Providers.OS
     public class TunnelServiceAttribute : Attribute
     {
         public Type Client { get; set; }
-        public TunnelService Instance => (TunnelService)Activator.CreateInstance(Client);
+        static TunnelService instance = null;
+        public TunnelService Instance => instance ?? (instance = (TunnelService)Activator.CreateInstance(Client));
 
         public TunnelServiceAttribute(Type client) { Client = client; }
     }
@@ -51,47 +53,90 @@ namespace SolidCP.Providers.OS
 
         public string Username { get; private set; }
         public string Password { get; private set; }
+
+        public TimeSpan RequestTimeout { get; set; } = TimeSpan.FromSeconds(60);
+
         public virtual string DecryptString(string secret) => new CryptoUtility(CryptoKey).Decrypt(secret);
 
-        Type[] TypesFromNames(string[] types) => types.Select(type => type != null ? Type.GetType(type) : null).ToArray();
+        Type[] TypesFromNames(IEnumerable<string?> types) => types
+            .Select(type => type != null ? Type.GetType(type) : null)
+            .ToArray();
+
+        IEnumerable<string?> ReadStrings(BinaryReader reader)
+        {
+            var line = reader.ReadString();
+            while (!string.IsNullOrEmpty(line)) {
+                yield return line == "!" ? null : line;
+                line = reader.ReadString();
+            }
+        }
+
+        Type[] ReadTypes(BinaryReader reader) => TypesFromNames(ReadStrings(reader));
+
         public virtual object[] Deserialize(string method, string args, bool encrypted)
         {
-            if (encrypted) args = DecryptString(args);
-            var bytes = Convert.FromBase64String(args);
-            var mem = new MemoryStream(bytes);
-            var typeSerializer = new DataContractSerializer(typeof(string[]));
-            var parameterTypes = TypesFromNames((string[])typeSerializer.ReadObject(mem));
-            var types = TypesFromNames((string[])typeSerializer.ReadObject(mem));
-
-            var methodInfo = this.GetType().GetMethod(method, parameterTypes);
-            if (methodInfo == null) throw new ArgumentException("Method not found");
-
-            // check if types are equal or subtype of parameterTypes
-            bool invalidTypes = false;
-            if (types.Length != parameterTypes.Length) invalidTypes = true;
-            else
+            try
             {
-                for (int i = 0; i < types.Length; i++)
+                if (encrypted) args = DecryptString(args);
+                var bytes = Convert.FromBase64String(args);
+                var mem = new MemoryStream(bytes);
+                Type[] parameterTypes, types;
+                using (var binaryReader = new BinaryReader(mem, Encoding.UTF8, true))
                 {
-                    if (types[i] != null && 
-                        (types[i] != parameterTypes[i] ||
-                        !types[i].IsSubclassOf(parameterTypes[i]))) {
-                        invalidTypes = true;
-                        break;
+                    parameterTypes = ReadTypes(binaryReader);
+                    types = ReadTypes(binaryReader);
+                }
+                var methodInfo = this.GetType().GetMethod(method, parameterTypes);
+                if (methodInfo == null) throw new ArgumentException("Method not found");
+
+                // check if types are equal or subtype of parameterTypes
+                bool invalidTypes = false;
+                if (types.Length != parameterTypes.Length) invalidTypes = true;
+                else
+                {
+                    for (int i = 0; i < types.Length; i++)
+                    {
+                        if (types[i] != null && types[i] != parameterTypes[i] && !types[i].IsSubclassOf(parameterTypes[i]))                        {
+                            invalidTypes = true;
+                            break;
+                        }
                     }
                 }
-            }
-            if (invalidTypes) throw new ArgumentException("Invalid parameter types");
+                if (invalidTypes) throw new ArgumentException("Invalid parameter types");
 
-            var knownTypes = parameterTypes.Concat(types)
-                .Where(type => type != null)
-                .Distinct();
-            var serializer = new DataContractSerializer(typeof(object[]), knownTypes);
-            var argsWithCredentials = (object[])serializer.ReadObject(mem);
-            if (argsWithCredentials.Length < 2 || !(argsWithCredentials[0] is string) || !(argsWithCredentials[1] is string)) throw new ArgumentException("No credentials specified");
-            Username = argsWithCredentials[0] as string;
-            Password = argsWithCredentials[1] as string;
-            return argsWithCredentials.Skip(2).ToArray();
+                var knownTypes = parameterTypes
+                    .Concat(types)
+                    .Concat(new Type[] { typeof(string) })
+                    .Where(type => type != null)
+                    .Distinct();
+                var serializer = new DataContractSerializer(typeof(object[]), knownTypes);
+                var reader = XmlDictionaryReader.CreateBinaryReader(mem, new XmlDictionaryReaderQuotas()
+                {
+                    MaxArrayLength = 64*1024,
+                    MaxBytesPerRead = 64*1024,
+                    MaxDepth = 256,
+                    MaxNameTableCharCount = 2048,
+                    MaxStringContentLength = 64*1024
+                });
+                var argsWithCredentials = (object[])serializer.ReadObject(reader);
+                if (argsWithCredentials.Length < 3 ||
+                    !(argsWithCredentials[0] is long) ||
+                    !(argsWithCredentials[1] == null || argsWithCredentials[1] is string) ||
+                    !(argsWithCredentials[2] == null || argsWithCredentials[2] is string))
+                    throw new AccessViolationException("No credentials specified");
+                // check timestamp
+                var timeStamp = (long)argsWithCredentials[0];
+                if (new DateTime(timeStamp).Add(RequestTimeout) < DateTime.Now) throw new AccessViolationException("Request is to old");
+
+                Username = argsWithCredentials[1] as string;
+                Password = argsWithCredentials[2] as string;
+
+                return argsWithCredentials.Skip(3).ToArray();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public virtual void Authenticate(string user, string password) => throw new NotSupportedException("Authentication is not supported in the base TunnelService class.");
@@ -99,33 +144,33 @@ namespace SolidCP.Providers.OS
         public TunnelService() { }
         public TunnelService(string callerType) : this() { CallerType = callerType; }
 
-        public virtual async Task<TunnelSocket> GetSocket(string method, string arguments, bool encrypted)
+        public virtual async Task<TunnelSocket> GetTunnel(string method, string arguments, bool encrypted)
         {
             var args = Deserialize(method, arguments, encrypted);
-            return await GetSocket(method, args);
+            return await GetTunnel(method, args);
         }
 
-        public virtual async Task<TunnelSocket> GetSocket(string method, string username, string password, object[] arguments)
+        public virtual async Task<TunnelSocket> GetTunnel(string method, string username, string password, object[] arguments)
         {
-            var args = new string[] { username, password }.Concat(arguments).ToArray();
-            return await GetSocket(method, args);
+            Username = username;
+            Password = password;
+            return await GetTunnel(method, arguments);
         }
 
-        public virtual async Task<TunnelSocket> GetSocket(string method, object[] arguments)
+        public virtual async Task<TunnelSocket> GetTunnel(string method, object[] arguments)
         {
 
             if (GetType() == typeof(TunnelService))
             {
-                return await Service.GetSocket(method, arguments);
+                Service.Username = Username;
+                Service.Password = Password;
+                return await Service.GetTunnel(method, arguments);
             }
             else
             {
-                Username = arguments[0] as string;
-                Password = arguments[1] as string;
                 Service.Authenticate(Username, Password);
 
-                var args = arguments.Skip(2).ToArray();
-                var types = args.Select(arg => arg?.GetType()).ToArray();
+                var types = arguments.Select(arg => arg?.GetType()).ToArray();
 
                 var methodInfos = GetType().GetMethods()
                     .Where(m =>
@@ -150,7 +195,7 @@ namespace SolidCP.Providers.OS
 
                 var methodInfo = methodInfos[0];
 
-                return await (Task<TunnelSocket>)methodInfo?.Invoke(this, args);
+                return await (Task<TunnelSocket>)methodInfo?.Invoke(this, arguments);
             }
         }
     }

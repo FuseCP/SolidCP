@@ -110,16 +110,17 @@ namespace SolidCP.Providers.OS
 
         public async Task<string> GetSshWebSocketUrlAsync()
         {
-            var uri = new SshUri(Url);
-
             // get the path stripped of the ssh remote host part
             var tunnel = await GetSshTunnelAsync();
-            return uri.AccessUrl(tunnel.Loopback, tunnel.ForwardedPort.BoundPort);
+            return SshUri.AccessUrl(tunnel.Loopback, tunnel.ForwardedPort.BoundPort);
         }
         public void UseSshWebSocket(string protocol)
         {
-            if (IsWebSocket && IsSshTunnel && (protocol == "http" || protocol == "https" || string.IsNullOrEmpty(protocol)))
+            if (IsWebSocket && IsSshTunnel && (protocol == "http" || protocol == "https" || protocol == "ws" ||
+                protocol == "wss" || string.IsNullOrEmpty(protocol)))
             {
+                if (protocol == "http") protocol = "ws";
+                else if (protocol == "https") protocol = "wss";
                 SshUri.Protocol = protocol;
             }
             else throw new NotSupportedException("TunnelSocket is no WebSocket or invalid protocol");
@@ -135,8 +136,8 @@ namespace SolidCP.Providers.OS
         public async Task<IPAddress> GetIPAddressAsync() => await DnsService.GetFirstIPAddressAsync(new Uri(url).Host);
 
         public TimeSpan IdleTimeout { get; set; } = TimeSpan.FromMinutes(15);
-        public TimeSpan ConnectTimeout { get; set; } = TimeSpan.FromSeconds(60);
-        public TimeSpan WriteTimeout { get; set; } = TimeSpan.FromSeconds(60);
+        public TimeSpan ConnectTimeout { get; set; } = TimeSpan.FromSeconds(10);
+        public TimeSpan WriteTimeout { get; set; } = TimeSpan.FromSeconds(10);
         public int MaxPendingConncections { get; set; } = 20;
         public List<Cookie> Cookies { get; set; } = new List<Cookie>();
         public StringDictionary HttpHeaders { get; private set; } = new StringDictionary();
@@ -156,7 +157,8 @@ namespace SolidCP.Providers.OS
         {
             if (Url == null) throw new ArgumentNullException("Url cannot be null");
             var scheme = Uri.Scheme;
-            if (scheme == System.Uri.UriSchemeHttp || scheme == System.Uri.UriSchemeHttps)
+            if (scheme == System.Uri.UriSchemeHttp || scheme == System.Uri.UriSchemeHttps ||
+                scheme == "ws" || scheme == "wss")
             {
                 GetClientWebSocket();
             }
@@ -447,34 +449,32 @@ namespace SolidCP.Providers.OS
             if (IsSshTunnel) await GetSshTunnelAsync();
             if (IsSocket)
             {
-                ProtocolType protocol;
+                ProtocolType protocol = ProtocolType.Tcp;
+                var url = Url;
                 if (url.StartsWith("tcp://")) protocol = ProtocolType.Tcp;
                 else if (url.StartsWith("udp://")) protocol = ProtocolType.Udp;
                 else throw new NotSupportedException("This url scheme is not supported");
-                var uri = new Uri(url);
-                var ip = DnsService.GetFirstIPAddress(uri.Host);
-                var port = uri.Port;
+                var ip = DnsService.GetFirstIPAddress(Uri.Host);
+                var port = Uri.Port;
 
                 if (port != 0)
                 {
-                    await ConnectAsync(ip, port);
+                    await ConnectAsync(ip, port, protocol);
                 }
                 else
                 {
-                    await ListenAsync(ip);
+                    await ListenAsync(ip, protocol);
                 }
             }
             else if (IsWebSocket)
             {
                 if (BaseWebSocket is ClientWebSocket clientWebSocket)
                 {
-                    Uri uri;
-                    if (IsWebSocketOverSsh) uri = new Uri(await GetSshWebSocketUrlAsync());
-                    else uri = new Uri(Url);
-
+                    var url = Url;
+                    if (IsWebSocketOverSsh) url = await GetSshWebSocketUrlAsync();
                     try
                     {
-                        await clientWebSocket.ConnectAsync(uri, new CancellationTokenSource(ConnectTimeout).Token);
+                        await clientWebSocket.ConnectAsync(new System.Uri(url), new CancellationTokenSource(ConnectTimeout).Token);
                     } catch (Exception ex)
                     {
 
@@ -485,7 +485,7 @@ namespace SolidCP.Providers.OS
             }
         }
 
-        public async Task ConnectAsync(IPAddress address, int port)
+        public async Task ConnectAsync(IPAddress address, int port, ProtocolType protocolType = ProtocolType.Tcp)
         {
             var socket = BaseSocket;
             if (socket == null || socket.AddressFamily != address.AddressFamily)
@@ -503,11 +503,11 @@ namespace SolidCP.Providers.OS
             throw new NotSupportedException("This addres family is not supported.");
         }
 
-        public async Task<int> ListenAsync(IPAddress address, int port)
+        public async Task<int> ListenAsync(IPAddress address, int port, ProtocolType protocol = ProtocolType.Tcp)
         {
             try
             {
-                await ConnectAsync(address, port);
+                await ConnectAsync(address, port, protocol);
                 BaseSocket.Listen(MaxPendingConncections);
                 return port;
             }
@@ -517,7 +517,7 @@ namespace SolidCP.Providers.OS
             }
         }
 
-        public async Task<int> ListenAsync(IPAddress address)
+        public async Task<int> ListenAsync(IPAddress address, ProtocolType protocol = ProtocolType.Tcp)
         {
             const int MinPort = 1024;
             const int MaxPort = UInt16.MaxValue;
@@ -526,7 +526,7 @@ namespace SolidCP.Providers.OS
             do
             {
                 port = new Random().Next(MinPort + 1, MaxPort);
-                port = await ListenAsync(address, port);
+                port = await ListenAsync(address, port, protocol);
                 if (port != 0) return port;
 
             } while (n++ < Retries);

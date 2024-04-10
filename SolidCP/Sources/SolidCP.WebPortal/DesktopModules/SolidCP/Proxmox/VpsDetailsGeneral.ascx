@@ -11,20 +11,6 @@
 
 <asp:Timer runat="server" Interval="10000" ID="operationTimer" />
 
-<script language="JavaScript" type="text/javascript">
-	function OpenRemoteDesktopWindow(width, height) {
-		var popup = $find("RdpPopup");
-		if (popup != null) popup.hidePopup();
-
-		var rdpUrl = "<asp:Literal id="litRdpPageUrl" runat="server" />";
-
-		var left = (screen.width - width) / 2;
-		var top = (screen.height - height) / 2;
-
-		window.open(rdpUrl, "RDP", "status=0,width=" + width + ",height=" + height + ",top=" + top + ",left=" + left).focus(); // window.open + focus
-	};
-</script>
-
 <div class="Content">
 	<div class="Center">
 		<div class="FormBody">
@@ -113,6 +99,20 @@
 								<p />
 
 								<p>
+									<script language="JavaScript" type="text/javascript">
+										function OpenRemoteDesktopWindow(width, height) {
+											var popup = $find("RdpPopup");
+											if (popup != null) popup.hidePopup();
+
+											var rdpUrl = "<asp:Literal id="litRdpPageUrl" runat="server" />";
+
+											var left = (screen.width - width) / 2;
+											var top = (screen.height - height) / 2;
+
+											window.open(rdpUrl, "RDP", "status=0,width=" + width + ",height=" + height + ",top=" + top + ",left=" + left).focus(); // window.open + focus
+										};
+									</script>
+
 									<asp:ImageButton ID="btnOpenVNC" runat="server" OnClientClick="OpenRemoteDesktopWindow(800,600);" SkinID="PveRdc32"
 										meta:resourcekey="btnOpenVNC" />
 								</p>

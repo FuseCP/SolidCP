@@ -10,6 +10,7 @@ using System.Net.WebSockets;
 using System.Reflection;
 using System.Threading;
 using System.Text.RegularExpressions;
+using System.Xml;
 using System.Threading.Tasks;
 
 namespace SolidCP.Providers.OS
@@ -18,7 +19,8 @@ namespace SolidCP.Providers.OS
     public class TunnelClientAttribute : Attribute
     {
         public Type Client { get; set; }
-        public TunnelClient Instance => (TunnelClient)Activator.CreateInstance(Client);
+        public TunnelClient instance = null;
+        public TunnelClient Instance => instance ?? (instance = (TunnelClient)Activator.CreateInstance(Client));
 
         public TunnelClientAttribute(Type client) { Client = client; }
     }
@@ -58,7 +60,7 @@ namespace SolidCP.Providers.OS
                 else if (ServerUrl == "assembly://SolidCP.EnterpriseServer")
                 {
                     if (!IsEnterpriseServerLoaded) Assembly.Load("SolidCP.EnterpriseServer");
-                    return  EnterpriseServerClient;
+                    return EnterpriseServerClient;
                 }
                 throw new NotSupportedException("Unknown assembly in AssemblyBinding.");
             }
@@ -67,7 +69,21 @@ namespace SolidCP.Providers.OS
         public virtual string CryptoKey => "";
         public virtual string EncryptString(string secret) => new CryptoUtility(CryptoKey).Encrypt(secret);
 
-        string[] TypeNames(Type[] types) => types?.Select(type => type?.FullName).ToArray();
+        IEnumerable<string> TypeNames(IEnumerable<Type> types) => types?.Select(type => type?.FullName);
+
+        void WriteStrings(BinaryWriter writer, IEnumerable<string?> strings)
+        {
+            if (strings != null)
+            {
+                foreach (var str in strings)
+                {
+                    writer.Write(str ?? "!");
+                }
+            }
+            writer.Write("");
+        }
+        void WriteTypes(BinaryWriter writer, IEnumerable<Type> types) => WriteStrings(writer, TypeNames(types));
+
         public string Serialize(string methodName, bool encrypted, params object[] args)
         {
             var mem = new MemoryStream();
@@ -82,33 +98,37 @@ namespace SolidCP.Providers.OS
                     .Select(p => p.ParameterType)
                     .ToArray()
                 })
-                .FirstOrDefault(m => {
+                .FirstOrDefault(m =>
+                {
                     if (m.Method.Name != methodName) return false;
 
                     if (m.ParameterTypes.Length != types.Length) return false;
 
                     for (int i = 0; i < m.ParameterTypes.Length; i++)
                     {
-                        if (types[i] != null)
-                        {
-                            if (m.ParameterTypes[i] != types[i] && !types[i].IsSubclassOf(m.ParameterTypes[i])) return false;
-                        }
+                        if (types[i] != null && m.ParameterTypes[i] != types[i] && !types[i].IsSubclassOf(m.ParameterTypes[i])) return false;
                     }
                     return true;
                 });
             if (method == null) throw new ArgumentException($"Could not find method {methodName} with correct parameters");
 
-            var typeSerializer = new DataContractSerializer(typeof(string[]));
-            typeSerializer.WriteObject(mem, TypeNames(method.ParameterTypes));
-            typeSerializer.WriteObject(mem, TypeNames(types));
-            var knownTypes = method.ParameterTypes.Concat(types)
+            using (var binaryWriter = new BinaryWriter(mem, Encoding.UTF8, true))
+            {
+                WriteTypes(binaryWriter, method.ParameterTypes);
+                WriteTypes(binaryWriter, types);
+            }
+            var knownTypes = method.ParameterTypes
+                .Concat(types)
+                .Concat(new Type[] { typeof(string), typeof(long) })
                 .Where(type => type != null)
                 .Distinct();
             var serializer = new DataContractSerializer(typeof(object[]), knownTypes);
-            var argsWithCredentials = new string[] { Username, Password }
+            var argsWithCredentials = new object[] { DateTime.Now.Ticks, Username, Password }
                 .Concat(args)
                 .ToArray();
-            serializer.WriteObject(mem, argsWithCredentials);
+            var writer = XmlDictionaryWriter.CreateBinaryWriter(mem);
+            serializer.WriteObject(writer, argsWithCredentials);
+            writer.Flush();
             var base64 = Convert.ToBase64String(mem.ToArray());
             if (encrypted) base64 = EncryptString(base64);
             return base64;
@@ -130,21 +150,19 @@ namespace SolidCP.Providers.OS
         public bool IsSecure => (ServerUrl?.StartsWith("https://") ?? false) || (ServerUrl?.StartsWith("ssh://") ?? false) ||
             DnsService.IsHostLAN(new Uri(ServerUrl ?? "").Host);
 
-        public virtual async Task<TunnelSocket> GetSocket(string method, params object[] args)
+        public virtual async Task<TunnelSocket> GetTunnel(string method, params object[] args)
         {
             if (!IsAssemblyBinding)
             {
                 var url = $"{ServerUrl}/Tunnel";
-                var uri = new SshUri(url);
-                var scheme = uri.Scheme;
-                if (scheme == "ssh") uri.Protocol = uri.Protocol ?? "ws";
-                else if (scheme == "https") uri.Scheme = "wss";
-                else if (scheme == "http") uri.Scheme = "ws";
-                else throw new NotSupportedException($"The protocol {scheme} is not supported on GetSocket");
-                uri.Query["caller"] = GetType().FullName;
-                uri.Query["mehtod"] = method;
-                uri.Query[$"args{(!IsSecure ? "x" : "")}"] = Serialize(method, !IsSecure, args);
-                var tunnel = new TunnelSocket(uri.Url);
+                var tunnel = new TunnelSocket(url);
+                var scheme = tunnel.Uri.Scheme;
+                if (scheme == "https") tunnel.Uri.Scheme = "wss";
+                else if (scheme == "http") tunnel.Uri.Scheme = "ws";
+                else if (scheme != "ssh" && scheme != "ws" && scheme != "wss") throw new NotSupportedException($"The protocol {scheme} is not supported on GetSocket");
+                tunnel.Uri.Query["caller"] = GetType().FullName;
+                tunnel.Uri.Query["method"] = method;
+                tunnel.Uri.Query[$"args{(!IsSecure ? "x" : "")}"] = Serialize(method, !IsSecure, args);
                 tunnel.IsFallback = true;
                 return tunnel;
             }
@@ -153,42 +171,15 @@ namespace SolidCP.Providers.OS
 
                 if (this.GetType() == typeof(TunnelClient))
                 {
-                    return await Client.GetSocket(method, args);
+                    Client.Username = Username;
+                    Client.Password = Password;
+                    Client.ServerUrl = ServerUrl;
+                    return await Client.GetTunnel(method, args);
                 }
                 else
                 {
                     var service = new TunnelService(GetType().FullName);
-                    return await service.GetSocket(method, Username, Password, args);
-                    
-                    /*
-                    var types = args.Select(arg => arg?.GetType()).ToArray();
-
-                    var service = Service;
-                    var methodInfos = service.GetType().GetMethods()
-                        .Where(m =>
-                        {
-                            if (m.Name != method || !m.IsPublic) return false;
-
-                            var pars = m.GetParameters();
-                            if (pars.Length != types.Length) return false;
-
-                            for (int i = 0; i < pars.Length; i++)
-                            {
-                                if (pars[i].ParameterType != types[i] && types[i] != null && !types[i].IsSubclassOf(pars[i].ParameterType))
-                                    return false;
-                            }
-
-                            return true;
-                        })
-                        .ToArray();
-
-                    if (methodInfos.Length == 0) throw new Exception($"No method {method} found with the correct signature");
-                    if (methodInfos.Length > 1) throw new Exception($"Cannot determin which method {method} to use");
-
-                    var methodInfo = methodInfos[0];
-
-                    return await (Task<TunnelSocket>)methodInfo?.Invoke(service, args);
-                    */
+                    return await service.GetTunnel(method, Username, Password, args);
                 }
 
             }

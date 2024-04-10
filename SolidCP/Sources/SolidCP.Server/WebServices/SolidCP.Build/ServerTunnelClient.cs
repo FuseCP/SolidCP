@@ -25,7 +25,7 @@ namespace SolidCP.Server.Client
 
         public override async Task<TunnelSocket> GetPveVncWebSocketAsync(string vmId, ServiceProviderSettings providerSettings)
         {
-            return await GetSocket(nameof(GetPveVncWebSocketAsync), vmId, providerSettings);
+            return await GetTunnel(nameof(GetPveVncWebSocketAsync), vmId, providerSettings);
         }
     }
 }

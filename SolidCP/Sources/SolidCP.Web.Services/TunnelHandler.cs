@@ -24,17 +24,10 @@ namespace SolidCP.Web.Services
     {
         public string Route => "Tunnel";
 
-        public static ConcurrentDictionary<string, Task<TunnelSocket>> Sockets = new ConcurrentDictionary<string, Task<TunnelSocket>>();
-
-        public async Task<TunnelSocket> GetSocket(string caller, string method, string arguments, bool encrypted)
+        public async Task<TunnelSocket> GetTunnel(string caller, string method, string arguments, bool encrypted)
         {
-            var key = $"{caller}/{method}/{arguments}";
-            var socket = Sockets.GetOrAdd(key, async key =>
-            {
-                var service = new TunnelService(caller);
-                return await service.Service.GetSocket(method, arguments, encrypted);
-            });
-            return await socket;
+            var service = new TunnelService(caller);
+            return await service.Service.GetTunnel(method, arguments, encrypted);
         }
     }
 
@@ -65,6 +58,11 @@ namespace SolidCP.Web.Services
                     args = context.Request.Query["args"];
                     argsx = context.Request.Query["argsx"];
                     if (string.IsNullOrEmpty(args)) args = argsx;
+                    if (string.IsNullOrEmpty(caller) || string.IsNullOrEmpty(method) || string.IsNullOrEmpty(args))
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        return;
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -75,7 +73,7 @@ namespace SolidCP.Web.Services
                 using (var webSocket = await context.WebSockets.AcceptWebSocketAsync())
                 {
                     var tunnel = new TunnelSocket(webSocket);
-                    var dest = await GetSocket(caller, method, args, !string.IsNullOrEmpty(argsx));
+                    var dest = await GetTunnel(caller, method, args, !string.IsNullOrEmpty(argsx));
                     if (dest != null)
                     {
                         await tunnel.ProvideUpgradeTunnelSocketAsync(dest);
@@ -116,7 +114,7 @@ namespace SolidCP.Web.Services
                 context.AcceptWebSocketRequest(async webSocketContext =>
                 {
                     var tunnel = new TunnelSocket(webSocketContext.WebSocket);
-                    await tunnel.Transmit(await GetSocket(caller, method, args, !string.IsNullOrEmpty(argsx)));
+                    await tunnel.Transmit(await GetTunnel(caller, method, args, !string.IsNullOrEmpty(argsx)));
                 });
             }
             else

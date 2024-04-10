@@ -47,6 +47,7 @@ using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 using System.Globalization;
 using SolidCP.Portal;
+using SolidCP.Providers.OS;
 using System.Linq;
 
 namespace SolidCP.WebPortal
@@ -197,7 +198,7 @@ namespace SolidCP.WebPortal
                 // redirect to login page
                 string returnUrl = Request.RawUrl;
                 Response.Redirect(DEFAULT_PAGE + "?" + PAGE_ID_PARAM + "=" +
-                    PortalConfiguration.SiteSettings["LoginPage"] + "&ReturnUrl=" + Server.UrlEncode(returnUrl));
+                    PortalConfiguration.SiteSettings["LoginPage"] + "&ReturnUrl=" + TunnelUri.QueryEncode(returnUrl));
             }
 
             Title = String.Format("{0} - {1}",

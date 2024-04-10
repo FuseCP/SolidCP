@@ -275,15 +275,19 @@ namespace SolidCP.Providers.Virtualization
         {
             get
             {
-                if (api != null) return api;
+                lock (this)
                 {
-                    api = new ApiClient(this);
-                    // TODO support certificate validation
-                    ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
-                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
-                    api.Login(User);
+                    if (api != null) return api;
+                    {
+                        api = new ApiClient(this);
+                 
+                        // TODO support certificate validation
+                        ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
+                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+                        api.Login(User);
+                    }
+                    return api;
                 }
-                return api;
             }
         }
 

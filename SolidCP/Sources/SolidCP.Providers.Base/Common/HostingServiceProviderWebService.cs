@@ -78,6 +78,7 @@ namespace SolidCP.Providers
                 }
                 return serverSettings;
             }
+            set => serverSettings = value;
         }
 
         public ServiceProviderSettings ProviderSettings

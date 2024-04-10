@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using SolidCP.Providers;
 using SolidCP.Providers.OS;
+using SolidCP.Providers.Virtualization;
+using SolidCP.EnterpriseServer;
 using SolidCP.Server.Client;
 
 [assembly:TunnelService(typeof(SolidCP.EnterpriseServer.EnterpriseServerTunnelService))]
@@ -18,7 +20,7 @@ namespace SolidCP.EnterpriseServer
         
         public override async Task<TunnelSocket> GetPveVncWebSocketAsync(int serviceItemId)
         {
-            var serviceItem = PackageController.GetPackageItem(serviceItemId);
+            var serviceItem = PackageController.GetPackageItem(serviceItemId) as VirtualMachine;
             if (serviceItem == null) throw new AccessViolationException("Service item not found.");
 
             // get service
@@ -30,9 +32,9 @@ namespace SolidCP.EnterpriseServer
             
             // Verfiy user has access to service 
             var user = UserController.GetUser(Username);
-            if (user.RoleId != 1 /* Administrator */ && package.UserId != user.UserId) throw new AccessViolationException("The current user has no access to this service.");
+            if (package.UserId != user.UserId && !user.Role.HasFlag(UserRole.Administrator)) throw new AccessViolationException("The current user has no access to this service.");
 
-            var vmId = serviceItem["VirtualMachineId"];
+            var vmId = serviceItem.VirtualMachineId;
 
             return await GetPveVNCWebSocket(vmId, service);
         }

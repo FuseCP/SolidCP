@@ -18,7 +18,7 @@ namespace SolidCP.EnterpriseServer.Client
         public override string CryptoKey => GetCryptoKey();
         public override async Task<TunnelSocket> GetPveVncWebSocketAsync(int serviceItemId)
         {
-            return await GetSocket(nameof(GetPveVncWebSocketAsync), serviceItemId);
+            return await GetTunnel(nameof(GetPveVncWebSocketAsync), serviceItemId);
         }
     }
 }

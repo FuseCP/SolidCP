@@ -17,9 +17,12 @@ namespace SolidCP.Server
         }
         public override async Task<TunnelSocket> GetPveVncWebSocketAsync(string vmId, ServiceProviderSettings providerSettings)
         {
-            var proxmox = new VirtualizationServerProxmox();
-            proxmox.ProviderSettings = providerSettings;
-            return await proxmox.GetPveVncWebSocketAsync(vmId);
+            using (var proxmox = new VirtualizationServerProxmox())
+            {
+                proxmox.ProviderSettings = providerSettings;
+                proxmox.ServerSettings = new RemoteServerSettings();
+                return await proxmox.GetPveVncWebSocketAsync(vmId);
+            }
         }
     }
 }

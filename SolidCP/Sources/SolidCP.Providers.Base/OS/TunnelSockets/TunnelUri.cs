@@ -36,6 +36,7 @@ namespace SolidCP.Providers.OS
         }
 
         string scheme = null;
+        [XmlIgnore, IgnoreDataMember]
         public string Scheme
         {
             get => scheme;
@@ -82,7 +83,13 @@ namespace SolidCP.Providers.OS
 
         public virtual string Url
         {
-            get => !string.IsNullOrEmpty(url) ? Regex.Replace(url, @"(?<=\?).*?$", QueryString, RegexOptions.Singleline) : url;
+            get
+            {
+                if (string.IsNullOrEmpty(url)) return url;
+                if (url.Contains('?')) return Regex.Replace(url, @"(?<=\?).*?$", QueryString, RegexOptions.Singleline);
+                if (Query.Count > 0) return $"{url}?{QueryString}";
+                return url;
+            }
             set
             {
                 if (url != value)

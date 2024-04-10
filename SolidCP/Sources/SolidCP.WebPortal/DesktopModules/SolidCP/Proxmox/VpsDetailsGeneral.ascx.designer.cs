@@ -33,15 +33,6 @@ namespace SolidCP.Portal.Proxmox
         protected global::System.Web.UI.Timer operationTimer;
 
         /// <summary>
-        /// litRdpPageUrl control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal litRdpPageUrl;
-
-        /// <summary>
         /// tabs control.
         /// </summary>
         /// <remarks>
@@ -256,6 +247,15 @@ namespace SolidCP.Portal.Proxmox
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal litCreated;
+
+        /// <summary>
+        /// litRdpPageUrl control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal litRdpPageUrl;
 
         /// <summary>
         /// btnOpenVNC control.
