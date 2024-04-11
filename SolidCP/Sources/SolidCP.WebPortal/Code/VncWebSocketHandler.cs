@@ -50,8 +50,13 @@ namespace SolidCP.WebPortal
                         esclient.Username = user;
                         esclient.Password = password;
                         esclient.ServerUrl = PortalConfiguration.SiteSettings["EnterpriseServer"];
-                        var outgoing = await esclient.GetPveVncWebSocketAsync(itemId);
-                        await incoming.Transmit(outgoing);
+                        try
+                        {
+                            var outgoing = await esclient.GetPveVncWebSocketAsync(itemId);
+                            await incoming.Transmit(outgoing);
+                        } catch (Exception ex)
+                        {
+                        }
                     });
                 }
 

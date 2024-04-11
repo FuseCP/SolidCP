@@ -34,6 +34,7 @@ namespace SolidCP.Providers.OS
     /// This class derives from TunnelUri, and as such inherits it's url manipulation properties Query, QueryString, Port and Tunnel
     /// by which you can change the url very easily.
     /// </summary>
+    [DataContract]
     public class SshUri: TunnelUri
     {
         string url = null;
@@ -42,7 +43,6 @@ namespace SolidCP.Providers.OS
         public uint LocalForwardPort { get; protected set; }
         public uint RemoteForwardPort { get; protected set; }
 
-        [XmlIgnore, IgnoreDataMember]
         public string Protocol
         {
             get => Query["protocol"];
@@ -51,7 +51,10 @@ namespace SolidCP.Providers.OS
 
         public PrivateKeyFile[] Keys { get; protected set; } = new PrivateKeyFile[0];
 
-        public SshUri(string url): base(null) { Url = url; }
+        public SshUri() { }
+        public SshUri(string url) => Url = url;
+
+        [DataMember]
         public override string Url {
             get => base.Url;
             set

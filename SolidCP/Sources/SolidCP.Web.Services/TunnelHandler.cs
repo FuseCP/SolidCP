@@ -21,6 +21,9 @@ namespace SolidCP.Web.Services
 {
 
     public class TunnelHandlerBase
+#if NETFRAMEWORK
+        : HttpTaskAsyncHandler
+#endif
     {
         public string Route => "Tunnel";
 
@@ -29,6 +32,25 @@ namespace SolidCP.Web.Services
             var service = new TunnelService(caller);
             return await service.Service.GetTunnel(method, arguments, encrypted);
         }
+
+        public async Task Transmit(TunnelSocket listener, TunnelSocket destination)
+        {
+            try
+            {
+                await listener.ProvideUpgradeTunnelSocketAsync(destination);
+                await listener.Transmit(destination);
+            }
+            catch (Exception ex)
+            {
+                if (listener.IsConnected) await listener.CloseAsync(WebSocketCloseStatus.InternalServerError, ex.StackTrace);
+                if (destination.IsConnected) await destination.CloseAsync(WebSocketCloseStatus.InternalServerError, ex.StackTrace);
+                throw ex;
+            }
+        }
+
+#if NETFRAMEWORK
+        public override Task ProcessRequestAsync(HttpContext context) => throw new NotImplementedException();
+#endif
     }
 
 #if !NETFRAMEWORK
@@ -70,18 +92,17 @@ namespace SolidCP.Web.Services
                     return;
                 }
 
-                using (var webSocket = await context.WebSockets.AcceptWebSocketAsync())
+                var dest = await GetTunnel(caller, method, args, !string.IsNullOrEmpty(argsx));
+                if (dest != null)
                 {
-                    var tunnel = new TunnelSocket(webSocket);
-                    var dest = await GetTunnel(caller, method, args, !string.IsNullOrEmpty(argsx));
-                    if (dest != null)
+                    using (var webSocket = await context.WebSockets.AcceptWebSocketAsync())
                     {
-                        await tunnel.ProvideUpgradeTunnelSocketAsync(dest);
-                        await tunnel.Transmit(dest);
-                    } else
-                    {
-                        context.Response.StatusCode = (int)HttpStatusCode.FailedDependency;
+                        var tunnel = new TunnelSocket(webSocket);
+                        await Transmit(tunnel, dest);
                     }
+                } else
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.FailedDependency;
                 }
             }
             else
@@ -93,7 +114,9 @@ namespace SolidCP.Web.Services
 #else
     public class TunnelHandlerNetFX : TunnelHandlerBase, IHttpHandler, IRouteHandler, ITunnelHandler
     {
-        public void ProcessRequest(HttpContext context)
+        public void ProcessRequest(HttpContext context) => throw new NotSupportedException("Handler cannot execute synchronously");
+
+        public override async Task ProcessRequestAsync(HttpContext context)
         {
             if (context.IsWebSocketRequest)
             {
@@ -110,12 +133,16 @@ namespace SolidCP.Web.Services
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     return;
                 }
-                
-                context.AcceptWebSocketRequest(async webSocketContext =>
+
+                var dest = await GetTunnel(caller, method, args, !string.IsNullOrEmpty(argsx));
+                if (dest != null)
                 {
-                    var tunnel = new TunnelSocket(webSocketContext.WebSocket);
-                    await tunnel.Transmit(await GetTunnel(caller, method, args, !string.IsNullOrEmpty(argsx)));
-                });
+                    context.AcceptWebSocketRequest(async webSocketContext =>
+                    {
+                        var tunnel = new TunnelSocket(webSocketContext.WebSocket);
+                        await Transmit(tunnel, dest);
+                    });
+                }   
             }
             else
             {

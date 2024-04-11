@@ -9,11 +9,13 @@ namespace SolidCP.Providers.OS
     {
 
         public QueryStringDictionary(): base() { }
-        public QueryStringDictionary(string url): base()
+        public QueryStringDictionary(string url) : base()
         {
-            int i = url.IndexOf('?');
-            if (i >= 0) QueryString = url.Substring(i + 1);
-            else Clear();
+            if (!string.IsNullOrEmpty(url))
+            {
+                int i = url.IndexOf('?');
+                if (i >= 0) QueryString = url.Substring(i + 1);
+            }
         }
 
         public static string QueryEncode(string value) => WebUtility.UrlEncode(value.Replace("%", "%25"))
@@ -42,12 +44,15 @@ namespace SolidCP.Providers.OS
             set
             {
                 Clear();
-                if (value.StartsWith("?")) value = value.Substring(1);
-                foreach (var par in value.Split('&', ';'))
+                if (!string.IsNullOrEmpty(value))
                 {
-                    var tokens = par.Split('=');
-                    if (tokens.Length > 1) Add(WebUtility.UrlDecode(tokens[0].Trim()), WebUtility.UrlDecode(tokens[1].Trim()));
-                    else Add(WebUtility.UrlDecode(tokens[0].Trim()), "");
+                    if (value.StartsWith("?")) value = value.Substring(1);
+                    foreach (var par in value.Split('&', ';'))
+                    {
+                        var tokens = par.Split('=');
+                        if (tokens.Length > 1) Add(WebUtility.UrlDecode(tokens[0].Trim()), WebUtility.UrlDecode(tokens[1].Trim()));
+                        else Add(WebUtility.UrlDecode(tokens[0].Trim()), "");
+                    }
                 }
             }
         }

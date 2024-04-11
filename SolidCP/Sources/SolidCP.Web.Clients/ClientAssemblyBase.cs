@@ -84,7 +84,9 @@ namespace SolidCP.Web.Clients
 
             parameters = (object[])DataContractCopier.Clone(parameters);
 
-			return (T)DataContractCopier.Clone(method.Invoke(service, parameters));
+			var result = method.Invoke(service, parameters);
+
+            return (T)DataContractCopier.Clone(result);
 		}
 		protected void Invoke(string typeName, string methodName, params object[] parameters)
 		{

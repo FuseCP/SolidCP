@@ -26,13 +26,11 @@ namespace SolidCP.Providers.OS
     /// the server. This way Portal can create a TunnelSocket to a service directly on the Server without creating a tunnel
     /// from Portal to EnterpriseServer and then to Server, if that service is also reachable from Portal.
     /// </summary>
+    [DataContract]
     public class TunnelSocket : IDisposable, IAsyncDisposable
     {
-        [XmlIgnore, IgnoreDataMember]
         public Socket BaseSocket { get; set; }
-        [XmlIgnore, IgnoreDataMember]
         public WebSocket BaseWebSocket { get; set; }
-        [XmlIgnore, IgnoreDataMember]
         public SshTunnel BaseSshTunnel { get; set; }
         public TunnelSocket TunnelOtherEnd { get; set; } = null;
 
@@ -98,8 +96,10 @@ namespace SolidCP.Providers.OS
                 if (IsSshTunnel) Uri.Tunnel = "websocket";
             }
         }
+        public bool IsSecure => url.StartsWith("wss://") || IsSshTunnel || url.StartsWith("https://");
 
         string url;
+        [DataMember]
         public string Url
         {
             // Replace the url's QueryString
@@ -107,7 +107,6 @@ namespace SolidCP.Providers.OS
             set => Uri = (url = value).StartsWith("ssh://") ? new SshUri(url) : new TunnelUri(url);
         }
 
-        bool validateCertificateSet = false;
         public bool ValidateCertificate { get; set; } = true;
         public SshUri SshUri => (Uri is SshUri sshUri) ? sshUri : null;
 
@@ -131,7 +130,6 @@ namespace SolidCP.Providers.OS
             else throw new NotSupportedException("TunnelSocket is no WebSocket or invalid protocol");
         }
 
-        [XmlIgnore, IgnoreDataMember]
         public int Port
         {
             get => Uri.Port;
@@ -140,14 +138,65 @@ namespace SolidCP.Providers.OS
 
         public async Task<IPAddress> GetIPAddressAsync() => await DnsService.GetFirstIPAddressAsync(new Uri(url).Host);
 
+        [DataMember]
         public TimeSpan IdleTimeout { get; set; } = TimeSpan.FromMinutes(15);
-        public TimeSpan ConnectTimeout { get; set; } = TimeSpan.FromSeconds(10);
-        public TimeSpan WriteTimeout { get; set; } = TimeSpan.FromSeconds(10);
+        [DataMember]
+        public TimeSpan ConnectTimeout { get; set; } = TimeSpan.FromSeconds(120); //TimeSpan.FromSeconds(10);
+        [DataMember] 
+        public TimeSpan WriteTimeout { get; set; } = TimeSpan.FromSeconds(120); //TimeSpan.FromSeconds(10);
+        [DataMember] 
         public int MaxPendingConncections { get; set; } = 20;
+        [DataMember]
+        public bool CanUpgrade { get; set; } = true;
+
+        [DataMember]
         public List<Cookie> Cookies { get; set; } = new List<Cookie>();
+        [DataMember]
         public StringDictionary HttpHeaders { get; private set; } = new StringDictionary();
 
-        public bool AlwaysTrustCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) => true;
+        bool AlwaysTrustCertificateCore<T,U,V, W>(T sender, U certificate, V chain, W sslPolicyErrors) => true;
+        bool AlwaysTrustCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) => true;
+
+        bool validateCertificateSet = false;
+        public bool SetRemoteValidationCallback()
+        {
+            if (IsWebSocket && BaseWebSocket != null && OSInfo.IsCore && !ValidateCertificate && !validateCertificateSet &&
+                IsSecure && BaseWebSocket is ClientWebSocket clientWebSocket)
+            {
+                // Set BaseWebSocket.Options.RemoteCertificateValidationCallback += AlwaysTrustCertificate with reflection,
+                // because this property is not present in NET Standard 2.0
+                validateCertificateSet = false;
+                var remoteCertificateValidationCallback = typeof(ClientWebSocketOptions).GetProperty("RemoteCertificateValidationCallback");
+                if (remoteCertificateValidationCallback != null)
+                {
+                    var delegateType = Type.GetType("System.Net.Security.RemoteCertificateValidationCallback, System.Net.Security");
+                    if (delegateType != null)
+                    {
+                        var method = GetType().GetMethod(nameof(AlwaysTrustCertificateCore), BindingFlags.NonPublic | BindingFlags.Instance);
+                        var delegateMethod = delegateType.GetMethod("Invoke");
+                        var cpars = delegateMethod.GetParameters().Select(p => p.ParameterType).ToArray();
+
+                        var objectType = cpars[0];
+                        var x509CertType = cpars[1];
+                        var x509ChainType = cpars[2];
+                        var sslPolicyType = cpars[3];
+                        method = method.MakeGenericMethod(objectType, x509CertType, x509ChainType, sslPolicyType);
+                        var mpars = method.GetParameters().Select(p => p.ParameterType).ToArray();
+                        var equal = Array.Equals(mpars, cpars);
+
+                        var alwaysTrust = Delegate.CreateDelegate(delegateType, method);
+
+                        Delegate validateDelegate = (Delegate)remoteCertificateValidationCallback?.GetValue(clientWebSocket.Options);
+                        if (validateDelegate == null) validateDelegate = alwaysTrust;
+                        else validateDelegate = Delegate.Combine(validateDelegate, alwaysTrust);
+
+                        remoteCertificateValidationCallback?.SetValue(clientWebSocket.Options, validateDelegate);
+                        validateCertificateSet = true;
+                    }
+                }
+            }
+            return validateCertificateSet;
+        }
 
         public ClientWebSocket GetClientWebSocket()
         {
@@ -162,33 +211,15 @@ namespace SolidCP.Providers.OS
                 {
                     baseWebSocket.Options.SetRequestHeader((string)item.Key, (string)item.Value);
                 }
-                if (OSInfo.IsCore && !ValidateCertificate)
-                {
-                    validateCertificateSet = false;
-                    var remoteCertificateValidationCallback = typeof(ClientWebSocketOptions).GetProperty("RemoteCertificateValidationCallback");
-                    if (remoteCertificateValidationCallback != null)
-                    {
-                        var delegateType = Type.GetType("System.Net.Security.RemoteCertificateValidationCallback, System.Net.Security");
-                        if (delegateType != null)
-                        {
-                            var method = GetType().GetMethod(nameof(AlwaysTrustCertificate), BindingFlags.NonPublic | BindingFlags.Instance);
-                            var alwaysTrust = Delegate.CreateDelegate(delegateType, method);
-
-                            Delegate validateDelegate = (Delegate)remoteCertificateValidationCallback?.GetValue(baseWebSocket.Options);
-                            if (validateDelegate == null) validateDelegate = alwaysTrust;
-                            else validateDelegate = Delegate.Combine(validateDelegate, alwaysTrust);
-
-                            remoteCertificateValidationCallback?.SetValue(baseWebSocket.Options, validateDelegate);
-                            validateCertificateSet = true;
-                        }
-                    }
-                }
 
                 BaseWebSocket = baseWebSocket;
+
+                SetRemoteValidationCallback();
+
                 return baseWebSocket;
             } catch (Exception ex)
             {
-                throw;
+                throw new IOException(ex.Message, ex);
             }
         }
         async Task InitSocketAsync()
@@ -234,7 +265,6 @@ namespace SolidCP.Providers.OS
             return BaseSshTunnel;
         }
 
-        [XmlIgnore, IgnoreDataMember]
         public DateTime LastActivity { get; set; } = DateTime.Now;
 
         public bool IsFallback
@@ -283,43 +313,121 @@ namespace SolidCP.Providers.OS
 
         public async Task CloseAsync(WebSocketCloseStatus status, string statusDescription)
         {
-            if (IsSocket) BaseSocket.Close();
-            if (IsWebSocket) await BaseWebSocket.CloseAsync(status, statusDescription, CancellationToken.None);
+            if (IsSocket && BaseSocket.Connected) BaseSocket.Close();
+            if (IsWebSocket && BaseWebSocket.State == WebSocketState.Open || BaseWebSocket.State == WebSocketState.Connecting ||
+                !BaseWebSocket.CloseStatus.HasValue) await BaseWebSocket.CloseAsync(status, statusDescription, CancellationToken.None);
             if (IsSshTunnel) BaseSshTunnel.Dispose();
-            if (TunnelOtherEnd != null) await TunnelOtherEnd.CloseAsync(status, statusDescription);
+            if (TunnelOtherEnd != null && TunnelOtherEnd.IsConnected) await TunnelOtherEnd.CloseAsync(status, statusDescription);
         }
 
         public async Task Transmit(TunnelSocket dest)
         {
             if (!dest.IsConnected) await dest.ConnectAsync();
 
-            var buffer = new byte[1024 * 4];
-            var result = await ReceiveAsync(new ArraySegment<byte>(buffer));
-            WebSocketReceiveResult destResult = new WebSocketReceiveResult(0, WebSocketMessageType.Binary, true);
+            var destResult = new WebSocketReceiveResult(0, WebSocketMessageType.Binary, true);
+            var listenerResult = new WebSocketReceiveResult(0, WebSocketMessageType.Binary, true);
 
+            object Lock = new object();
+
+            Task closeDestTask = null;
+            Exception destException = null, exception = null;
+
+            // listen on the dest tunnel and send to main tunnel on another thread.
             var receivingTask = Task.Run(async () =>
             {
-                destResult = await dest.ReceiveAsync(new ArraySegment<byte>(buffer));
-
-                while (!result.CloseStatus.HasValue && !destResult.CloseStatus.HasValue)
+                try
                 {
-                    if (destResult.Count > 0) await SendAsync(new ArraySegment<byte>(buffer, 0, destResult.Count), destResult.MessageType, destResult.EndOfMessage);
+                    WebSocketReceiveResult listenerResultSender, destResultSender;
+                    var buffer = new byte[1024 * 4];
+
+                    destResultSender = await dest.ReceiveAsync(new ArraySegment<byte>(buffer));
+
+                    lock (Lock)
+                    {
+                        destResult = destResultSender;
+                        listenerResultSender = listenerResult;
+                    }
+
+                    while (!listenerResultSender.CloseStatus.HasValue && !destResultSender.CloseStatus.HasValue)
+                    {
+                        if (destResult.Count > 0) await SendAsync(new ArraySegment<byte>(buffer, 0, destResultSender.Count), destResultSender.MessageType, destResultSender.EndOfMessage);
+
+                        destResultSender = await dest.ReceiveAsync(new ArraySegment<byte>(buffer));
+
+                        lock (Lock)
+                        {
+                            destResult = destResultSender;
+                            listenerResultSender = listenerResult;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    lock (Lock) destException = ex;
                 }
 
-                await dest.CloseAsync(destResult.CloseStatus.Value, destResult.CloseStatusDescription);
+                Task closeDestTaskSender = null;
+                lock (Lock)
+                {
+                    if (dest.IsConnected && closeDestTask == null) closeDestTask = closeDestTaskSender = dest.CloseAsync(destResult.CloseStatus.Value, destResult.CloseStatusDescription);
+                }
+                if (closeDestTaskSender != null) await closeDestTaskSender;
             });
 
-            while (!result.CloseStatus.HasValue && !destResult.CloseStatus.HasValue)
+            try
             {
-                if (result.MessageType == WebSocketMessageType.Binary)
+                // listen on the main tunnel and send to the dest tunnel
+                WebSocketReceiveResult listenerResultReceiver, destResultReceiver;
+                var buffer = new byte[1024 * 4];
+
+                listenerResultReceiver = await ReceiveAsync(new ArraySegment<byte>(buffer));
+
+                lock (Lock)
                 {
-                    // forward data to PveSocket
-                    await dest.SendAsync(new ArraySegment<byte>(buffer, 0, result.Count), result.MessageType, result.EndOfMessage);
+                    listenerResult = listenerResultReceiver;
+                    destResultReceiver = destResult;
                 }
-                result = await ReceiveAsync(new ArraySegment<byte>(buffer));
+
+                while (!listenerResultReceiver.CloseStatus.HasValue && !destResultReceiver.CloseStatus.HasValue)
+                {
+                    if (listenerResultReceiver.Count > 0) await dest.SendAsync(new ArraySegment<byte>(buffer, 0, listenerResultReceiver.Count), listenerResultReceiver.MessageType, listenerResultReceiver.EndOfMessage);
+
+                    listenerResultReceiver = await ReceiveAsync(new ArraySegment<byte>(buffer));
+
+                    lock (Lock)
+                    {
+                        listenerResult = listenerResultReceiver;
+                        destResultReceiver = destResult;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                exception = ex;
             }
 
-            await CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription);
+            WebSocketCloseStatus closeStatus;
+            string closeStatusDescription;
+
+            lock (Lock)
+            {
+                closeStatus = listenerResult.CloseStatus ?? destResult.CloseStatus.Value;
+                closeStatusDescription = listenerResult.CloseStatus.HasValue ? listenerResult.CloseStatusDescription : destResult.CloseStatusDescription;
+            }
+
+            if (IsConnected) await CloseAsync(closeStatus, closeStatusDescription);
+            Task closeDestTaskReceiver = null;
+            lock (Lock)
+            {
+                if (dest.IsConnected && closeDestTask == null) closeDestTask = closeDestTaskReceiver = dest.CloseAsync(closeStatus, closeStatusDescription);
+            }
+            await (closeDestTaskReceiver ?? Task.CompletedTask);
+
+            lock (Lock)
+            {
+                if (exception != null) throw new IOException(exception.Message, exception);
+                else if (destException != null) throw new IOException(destException.Message, destException);
+            }
         }
 
         public bool IsConnected
@@ -368,12 +476,12 @@ namespace SolidCP.Providers.OS
             var mem = new MemoryStream();
             WebSocketReceiveResult result = await BaseWebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), new CancellationTokenSource(IdleTimeout).Token);
             await mem.WriteAsync(buffer, 0, result.Count);
-            while (!result.CloseStatus.HasValue && !result.EndOfMessage && result.MessageType == WebSocketMessageType.Text)
+            while (!result.CloseStatus.HasValue && !result.EndOfMessage && result.MessageType == WebSocketMessageType.Binary)
             {
                 result = await BaseWebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), new CancellationTokenSource(IdleTimeout).Token);
                 await mem.WriteAsync(buffer, 0, result.Count);
             }
-            if (!result.EndOfMessage || result.MessageType != WebSocketMessageType.Text)
+            if (!result.EndOfMessage || result.MessageType != WebSocketMessageType.Binary)
             {
                 throw new NotSupportedException("This WebSocket does not support the fallback protocol");
             }
@@ -387,21 +495,26 @@ namespace SolidCP.Providers.OS
             if (!IsWebSocket) throw new NotSupportedException("SendObjectAsync is only supported on WebSockets");
             var mem = new MemoryStream();
             var serializer = new DataContractSerializer(typeof(T));
-            serializer.WriteObject(mem, obj);
+            try
+            {
+                serializer.WriteObject(mem, obj);
+            }
+            catch (Exception ex)
+            {
+                throw new IOException(ex.Message, ex);
+            }
             var buffer = mem.ToArray();
-            await BaseWebSocket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, CancellationToken.None);
+            await BaseWebSocket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Binary, true, CancellationToken.None);
         }
 
 
         const string GetUpgradeTunnelSocketMessage = nameof(GetUpgradeTunnelSocketMessage);
         const string UseUpgradeTunnelSocketMessage = nameof(UseUpgradeTunnelSocketMessage);
 
-        [XmlIgnore, IgnoreDataMember]
         public bool SupportsUpgradeTunnelSocketProtocol { get; set; } = false;
 
-        [XmlIgnore, IgnoreDataMember]
         public TunnelSocket UpgradeTunnelSocket { get; set; } = null;
-        public bool HasUpgradeTunnelSocket => UpgradeTunnelSocket != null;
+        public bool HasUpgradeTunnelSocket => UpgradeTunnelSocket != null && UpgradeTunnelSocket != this;
 
         public async Task UseUpgradeTunnelSocketAsync()
         {
@@ -418,7 +531,7 @@ namespace SolidCP.Providers.OS
                 if (UpgradeTunnelSocket.IsConnected)
                 {
                     // fire and forget CloseAsync to close current connection
-                    var closeTask = Clone.CloseAsync(WebSocketCloseStatus.NormalClosure, "Use new TunnelSocket");
+                    var closeTask = Clone.CloseAsync(WebSocketCloseStatus.NormalClosure, "Use upgrade tunnel");
                     CopyFrom(UpgradeTunnelSocket);
                     UpgradeTunnelSocket = null;
                 }
@@ -435,21 +548,21 @@ namespace SolidCP.Providers.OS
         }
         public virtual async Task<TunnelSocket> RequestUpgradeTunnelSocketAsync(bool autoconnect = true)
         {
-            if (IsFallback)
+            if (IsFallback && CanUpgrade)
             {
-                if (autoconnect && !IsConnected) await ConnectAsync();
+                if (autoconnect && !IsConnected) await ConnectAsync(false);
 
                 await SendMessageAsync(GetUpgradeTunnelSocketMessage);
                 var upgradeTunnelSocket = await ReceiveObjectAsync<TunnelSocket>();
-                if (upgradeTunnelSocket != null && DnsService.IsHostLoopbackOrUnknown(upgradeTunnelSocket.Uri.Host) &&
-                    !DnsService.IsHostLoopback(Uri.Host))
+                if (upgradeTunnelSocket != null && (!upgradeTunnelSocket.CanUpgrade || DnsService.IsHostLoopbackOrUnknown(upgradeTunnelSocket.Uri.Host) &&
+                    !DnsService.IsHostLoopback(Uri.Host)))
                 {
                     // if upgrade host is a loopback or unknown address we cannot use it as upgrade tunnel
                     upgradeTunnelSocket = null;
                 }
                 UpgradeTunnelSocket = upgradeTunnelSocket;
             }
-            return UpgradeTunnelSocket ?? this;
+            return UpgradeTunnelSocket ?? (CanUpgrade ? this : null);
         }
 
         public virtual async Task ProvideUpgradeTunnelSocketAsync(TunnelSocket destinationSocket)
@@ -461,20 +574,18 @@ namespace SolidCP.Providers.OS
             string message = await ReceiveMessageAsync();
             if (message == GetUpgradeTunnelSocketMessage)
             {
-                TunnelSocket upgradeTunnel;
-                if (destinationSocket.IsFallback)
-                {
-                    if (!destinationSocket.IsConnected) await destinationSocket.ConnectAsync();
-                    upgradeTunnel = await destinationSocket.RequestUpgradeTunnelSocketAsync();
-                }
-                else upgradeTunnel = destinationSocket;
+                
+                var upgradeTunnelSocket = await destinationSocket.RequestUpgradeTunnelSocketAsync();
+
                 // Send destination UpgradeTunnelSocket so the client can try connecting to it directly himself
-                await SendObjectAsync(upgradeTunnel);
+                await SendObjectAsync(upgradeTunnelSocket);
+                
                 // Wait for the response
                 message = await ReceiveMessageAsync();
+             
                 if (message == UseUpgradeTunnelSocketMessage)
                 {
-                    if (destinationSocket.IsFallback) await destinationSocket.UseUpgradeTunnelSocketAsync();
+                    await destinationSocket.UseUpgradeTunnelSocketAsync();
                 }
             }
             else
@@ -483,7 +594,7 @@ namespace SolidCP.Providers.OS
                 await CloseAsync(WebSocketCloseStatus.InvalidMessageType, "This WebSocket does not support the fallback url protocol");
             }
         }
-        public async Task ConnectAsync()
+        public async Task ConnectAsync(bool upgradeWhenAvailable = true)
         {
             if (IsConnected) return;
 
@@ -516,7 +627,7 @@ namespace SolidCP.Providers.OS
                     if (IsWebSocketOverSsh) url = await GetSshWebSocketUrlAsync();
                     try
                     {
-                        if (!ValidateCertificate && !validateCertificateSet)
+                        if (!ValidateCertificate && !SetRemoteValidationCallback())
                         {
                             ServicePointManager.ServerCertificateValidationCallback += AlwaysTrustCertificate;
                             await clientWebSocket.ConnectAsync(new System.Uri(url), new CancellationTokenSource(ConnectTimeout).Token);
@@ -531,7 +642,11 @@ namespace SolidCP.Providers.OS
 
                     }
 
-                    if (IsFallback) await RequestUpgradeTunnelSocketAsync(false);
+                    if (IsFallback && upgradeWhenAvailable)
+                    {
+                        var upgradeTunnel = await RequestUpgradeTunnelSocketAsync(false);
+                        if (upgradeTunnel != this) await UseUpgradeTunnelSocketAsync();
+                    }
                 }
             }
         }
@@ -605,6 +720,7 @@ namespace SolidCP.Providers.OS
                     .ContinueWith(task => BaseWebSocket?.Dispose());
                 BaseSshTunnel?.Disconnect();
                 BaseSshTunnel?.Dispose();
+                TunnelOtherEnd?.Dispose();
             }
         }
 
@@ -619,6 +735,7 @@ namespace SolidCP.Providers.OS
                 BaseWebSocket?.Dispose();
                 BaseSshTunnel?.Disconnect();
                 BaseSshTunnel?.Dispose();
+                TunnelOtherEnd?.Dispose();
             }
         }
     }

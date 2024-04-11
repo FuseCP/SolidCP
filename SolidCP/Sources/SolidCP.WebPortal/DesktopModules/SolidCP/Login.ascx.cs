@@ -77,7 +77,8 @@ namespace SolidCP.Portal
 				if (Request["returnurl"] != null)
 				{
 					// return to the url passed to signin
-					redirectUrl = HttpUtility.UrlDecode(Request["returnurl"]);
+					// redirectUrl = HttpUtility.UrlDecode(Request["returnurl"]);
+					redirectUrl = Request["ReturnUrl"];
 					if (!IsLocalUrl(redirectUrl))
 					{
 						redirectUrl = PortalUtils.LoginRedirectUrl;

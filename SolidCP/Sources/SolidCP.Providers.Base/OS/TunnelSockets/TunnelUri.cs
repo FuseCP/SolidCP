@@ -25,18 +25,16 @@ namespace SolidCP.Providers.OS
     /// A listener TunnelSocket is a TunnelSocket that listens on a local port with a Socket. When calling ConnectAsync, the
     /// TunnelSocket will start listening on the port specified in the url.
     /// </summary>
+    [DataContract]
+    [KnownType(typeof(SshUri))]
     public class TunnelUri
     {
         string url = null;
 
-        public TunnelUri(string url)
-        {
-            if (!string.IsNullOrEmpty(url)) Url = url;
-            else this.url = url;
-        }
+        public TunnelUri() { }
+        public TunnelUri(string url) => Url = url;
 
         string scheme = null;
-        [XmlIgnore, IgnoreDataMember]
         public string Scheme
         {
             get => scheme;
@@ -57,30 +55,27 @@ namespace SolidCP.Providers.OS
         public bool IsDefaultPort => Port == 22;
         public string Path { get; protected set; }
 
-        [XmlIgnore, IgnoreDataMember]
         public QueryStringDictionary Query { get; set; } = new QueryStringDictionary();
 
-        [XmlIgnore, IgnoreDataMember]
         public string Tunnel
         {
             get => Query["tunnel"];
             set => Query["tunnel"] = value;
         }
 
-        [XmlIgnore, IgnoreDataMember]
         public bool IsListener
         {
             get => Tunnel == "listener";
             set => Tunnel = value ? "listener" : null;
         }
 
-        [XmlIgnore, IgnoreDataMember]
         public bool IsFallback
         {
             get => Tunnel == "fallback";
             set => Tunnel = value ? "fallback" : null;
         }
 
+        [DataMember]
         public virtual string Url
         {
             get
@@ -121,7 +116,6 @@ namespace SolidCP.Providers.OS
         }
 
         int port = 0;
-        [XmlIgnore, IgnoreDataMember]
         public int Port
         {
             get => port;
@@ -137,7 +131,6 @@ namespace SolidCP.Providers.OS
 
         public static string QueryEncode(string value) => QueryStringDictionary.QueryEncode(value);
 
-        [XmlIgnore, IgnoreDataMember]
         public virtual string QueryString
         {
             get => Query.QueryString;

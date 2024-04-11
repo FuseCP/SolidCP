@@ -47,14 +47,14 @@ namespace SolidCP.Providers.OS
         public string CallerType { get; set; } = null;
         public virtual TunnelService Service => CallerType.StartsWith("SolidCP.EnterpriseServer.Client") ?
             EnterpriseServerService : (CallerType.StartsWith("SolidCP.Server.Client") ?
-            ServerService : throw new Exception("Invalid"));
+            ServerService : throw new Exception("Invalid caller type"));
 
         public virtual string CryptoKey => "";
 
         public string Username { get; private set; }
         public string Password { get; private set; }
 
-        public TimeSpan RequestTimeout { get; set; } = TimeSpan.FromSeconds(60);
+        public TimeSpan RequestTimeout { get; set; } = TimeSpan.FromSeconds(120);
 
         public virtual string DecryptString(string secret) => new CryptoUtility(CryptoKey).Decrypt(secret);
 
@@ -87,7 +87,7 @@ namespace SolidCP.Providers.OS
                     types = ReadTypes(binaryReader);
                 }
                 var methodInfo = this.GetType().GetMethod(method, parameterTypes);
-                if (methodInfo == null) throw new ArgumentException("Method not found");
+                if (methodInfo == null) throw new ArgumentException($"Method {method} not found");
 
                 // check if types are equal or subtype of parameterTypes
                 bool invalidTypes = false;
@@ -102,7 +102,7 @@ namespace SolidCP.Providers.OS
                         }
                     }
                 }
-                if (invalidTypes) throw new ArgumentException("Invalid parameter types");
+                if (invalidTypes) throw new ArgumentException($"Invalid parameter types for method {method}");
 
                 var knownTypes = parameterTypes
                     .Concat(types)
@@ -126,7 +126,7 @@ namespace SolidCP.Providers.OS
                     throw new AccessViolationException("No credentials specified");
                 // check timestamp
                 var timeStamp = (long)argsWithCredentials[0];
-                if (new DateTime(timeStamp).Add(RequestTimeout) < DateTime.Now) throw new AccessViolationException("Request is to old");
+                if (new DateTime(timeStamp).Add(RequestTimeout) < DateTime.Now) throw new AccessViolationException("Request is too old");
 
                 Username = argsWithCredentials[1] as string;
                 Password = argsWithCredentials[2] as string;
@@ -135,7 +135,7 @@ namespace SolidCP.Providers.OS
             }
             catch (Exception ex)
             {
-                throw;
+                throw new SerializationException(ex.Message, ex);
             }
         }
 

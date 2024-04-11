@@ -951,6 +951,14 @@ namespace SolidCP.Providers.Virtualization
             tunnel.HttpHeaders.Add("CSRFPreventionToken", Api.CSRFPreventionToken);
             tunnel.ValidateCertificate = Server.ValidateCertificate;
 
+            try
+            {
+                tunnel.ConnectAsync();
+            } catch (Exception ex)
+            {
+
+            }
+
             return tunnel;
         }
 
