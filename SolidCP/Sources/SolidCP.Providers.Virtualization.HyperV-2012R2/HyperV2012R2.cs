@@ -506,7 +506,7 @@ namespace SolidCP.Providers.Virtualization
                 vm.VirtualMachineId = result[0].GetProperty("VMId").ToString();
 
                 // Delete default adapter (MacAddress in not running and newly created VM is 00-00-00-00-00-00)
-                if(vm.ExternalNetworkEnabled || vm.PrivateNetworkEnabled) //leave the adapter as default if we do not configure a new one (bugfix for Windows Server 2019, ******* MS!)
+                if(vm.ExternalNetworkEnabled || vm.PrivateNetworkEnabled || vm.DmzNetworkEnabled) //leave the adapter as default if we do not configure a new one (bugfix for Windows Server 2019, ******* MS!)
                     NetworkAdapterHelper.Delete(PowerShell, vm.Name, "000000000000");
 
                 // Set VM
