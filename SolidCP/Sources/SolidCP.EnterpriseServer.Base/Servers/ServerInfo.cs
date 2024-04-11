@@ -165,6 +165,6 @@ namespace SolidCP.EnterpriseServer
 			set { adParentDomainController = value; }
 		}
 
-		public bool SHA256Password { get; set; } = false;
+		public bool PasswordIsSHA256 { get; set; } = false;
 	}
 }

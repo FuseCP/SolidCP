@@ -268,7 +268,12 @@ namespace SolidCP.Providers.Virtualization
             !ProxmoxTrustClusterServerCertificate.HasValue || !ProxmoxTrustClusterServerCertificate.Value;
 
         ProxmoxServer server;
-        public ProxmoxServer Server => server ?? (server = new ProxmoxServer { Ip = string.IsNullOrEmpty(ProxmoxClusterServerApiHost) ? "127.0.0.1" : ProxmoxClusterServerApiHost, Port = ProxmoxClusterServerPort, ValidateCertificate = ValidateServerCertificate });
+        public ProxmoxServer Server => server ?? (server = new ProxmoxServer {
+            Ip = string.IsNullOrEmpty(ProxmoxClusterServerApiHost) ? "127.0.0.1" : ProxmoxClusterServerApiHost,
+            Port = ProxmoxClusterServerPort,
+            ValidateCertificate = ValidateServerCertificate,
+            Hostname = ProxmoxClusterServerApiHost
+        });
 
         ApiClient api = null;
         public ApiClient Api
@@ -280,14 +285,17 @@ namespace SolidCP.Providers.Virtualization
                     if (api != null) return api;
                     {
                         api = new ApiClient(this);
-                 
-                        // TODO support certificate validation
-                        ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
+
+                        //ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
                         ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
                         api.Login(User);
                     }
                     return api;
                 }
+            }
+            private set
+            {
+                lock (this) { api = value; }
             }
         }
 
@@ -933,8 +941,15 @@ namespace SolidCP.Providers.Virtualization
             var url = $"wss://{Server.Ip}:{Server.Port}/api2/json/nodes/{nodeId.Node}/qemu/{nodeId.Id}/vncwebsocket/port/{port}/vncticket/{ticket}";
 
             var tunnel = new TunnelSocket(url);
-            tunnel.Cookies.Add(new Cookie("PVEAuthCookie", WebUtility.UrlEncode(Api.PVEAuthCookie) + ";SameSite=Strict;"));
+            /*var cookie = new Cookie("PVEAuthCookie", WebUtility.UrlEncode(Api.PVEAuthCookie) + ";SameSite=Strict", "/", ProxmoxClusterServerApiHost)
+            {
+                Secure = true,
+                HttpOnly = true
+            };
+            tunnel.Cookies.Add(cookie); */
+            tunnel.HttpHeaders.Add("set-cookie", $"PVEAuthCookie={WebUtility.UrlEncode(Api.PVEAuthCookie)};path=/;SameSite=Strict");
             tunnel.HttpHeaders.Add("CSRFPreventionToken", Api.CSRFPreventionToken);
+            tunnel.ValidateCertificate = Server.ValidateCertificate;
 
             return tunnel;
         }
@@ -2589,6 +2604,7 @@ namespace SolidCP.Providers.Virtualization
             {
                 isDisposed = true;
                 Api.Dispose();
+                Api = null;
             }
         }
 

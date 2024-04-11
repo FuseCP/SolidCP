@@ -75,7 +75,7 @@ namespace SolidCP.EnterpriseServer
 
             var serverUrl = CryptoUtils.DecryptServerUrl(server.ServerUrl);
 
-            return await GetPveVNCWebSocket(serverUrl, server.Password, server.SHA256Password, vmId, serverSettings, providerSettings); 
+            return await GetPveVNCWebSocket(serverUrl, server.Password, server.PasswordIsSHA256, vmId, serverSettings, providerSettings); 
         }
         private async Task<TunnelSocket> GetPveVNCWebSocket(string serverUrl, string password, bool sha256Password, string vmId, RemoteServerSettings serverSettings, ServiceProviderSettings providerSettings) {
             password = sha256Password ? CryptoUtils.SHA256(password) : CryptoUtils.SHA1(password);

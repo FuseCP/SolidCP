@@ -19874,7 +19874,20 @@ BEGIN
 	SET @NoIsCore = 1
 END
 
--- Add SHA256Password column to Servers
+-- Add PasswordIsSHA256 column to Servers
+DECLARE @NoPasswordIsSHA256 bit
+
+SET @NoPasswordIsSHA256 = 0
+
+IF NOT EXISTS (
+  SELECT * FROM sys.columns 
+  WHERE object_id = OBJECT_ID(N'[dbo].[Servers]') 
+  AND name = 'PasswordIsSHA256'
+)
+BEGIN
+	SET @NoPasswordIsSHA256 = 1
+END
+
 DECLARE @NoSHA256Password bit
 
 SET @NoSHA256Password = 0
@@ -19888,7 +19901,6 @@ BEGIN
 	SET @NoSHA256Password = 1
 END
 
-
 IF @NoPlatform = 1
 BEGIN
 	ALTER TABLE [dbo].[Servers] ADD [OSPlatform] INT NOT NULL DEFAULT 0
@@ -19899,12 +19911,16 @@ BEGIN
 	ALTER TABLE [dbo].[Servers] ADD [IsCore] BIT NULL
 END
 
-IF @NoSHA256Password = 1
+IF @NoPasswordIsSHA256 = 1 AND @NoSHA256Password = 1
 BEGIN
-	ALTER TABLE [dbo].[Servers] ADD [SHA256Password] BIT NOT NULL DEFAULT 0
+	ALTER TABLE [dbo].[Servers] ADD [PasswordIsSHA256] BIT NOT NULL DEFAULT 0
+END
+ELSE IF @NoPasswordIsSHA256 = 1 AND @NoSHA256Password = 0
+BEGIN
+    EXEC sp_RENAME '[dbo].[Servers].SHA256Password', 'PasswordIsSHA256', 'COLUMN';
 END
 
-IF @NoPlatform = 1 OR @NoIsCore = 1 OR @NoSHA256Password = 1
+IF @NoPlatform = 1 OR @NoIsCore = 1 OR @NoPasswordIsSHA256 = 1
 EXEC ('
 	ALTER PROCEDURE AddServer
 	(
@@ -19923,7 +19939,7 @@ EXEC ('
 		@ADAuthenticationType varchar(50),
 		@OSPlatform int,
 		@IsCore bit,
-		@SHA256Password bit
+		@PasswordIsSHA256 bit
 	)
 	AS
 
@@ -19947,7 +19963,7 @@ EXEC ('
 		ADAuthenticationType,
 		OSPlatform,
 		IsCore,
-		SHA256Password
+		PasswordIsSHA256
 	)
 	VALUES
 	(
@@ -19965,7 +19981,7 @@ EXEC ('
 		@ADAuthenticationType,
 		@OSPlatform,
 		@IsCore,
-		@SHA256Password
+		@PasswordIsSHA256
 	)
 
 	SET @ServerID = SCOPE_IDENTITY()
@@ -19973,7 +19989,7 @@ EXEC ('
 	RETURN
 	')
 
-IF @NoPlatform = 1 OR @NoIsCore = 1 OR @NoSHA256Password = 1
+IF @NoPlatform = 1 OR @NoIsCore = 1 OR @NoPasswordIsSHA256 = 1
 EXEC('
 	ALTER PROCEDURE GetServerInternal
 	(
@@ -19998,7 +20014,7 @@ EXEC('
 		ADParentDomainController,
 		OSPlatform,
 		IsCore,
-		SHA256Password
+		PasswordIsSHA256
 	FROM Servers
 	WHERE
 		ServerID = @ServerID
@@ -20006,7 +20022,7 @@ EXEC('
 	RETURN
 	')
 	
-IF @NoPlatform = 1 OR @NoIsCore = 1 OR @NoSHA256Password = 1
+IF @NoPlatform = 1 OR @NoIsCore = 1 OR @NoPasswordIsSHA256 = 1
 EXEC('
 	ALTER PROCEDURE GetServerByName
 	(
@@ -20035,7 +20051,7 @@ EXEC('
 		ADParentDomainController,
 		OSPlatform,
 		IsCore,
-		SHA256Password
+		PasswordIsSHA256
 	FROM Servers
 	WHERE
 		ServerName = @ServerName
@@ -20044,7 +20060,7 @@ EXEC('
 	RETURN
 	')
 
-IF @NoPlatform = 1 OR @NoIsCore = 1 OR @NoSHA256Password = 1
+IF @NoPlatform = 1 OR @NoIsCore = 1 OR @NoPasswordIsSHA256 = 1
 EXEC('
 	ALTER PROCEDURE UpdateServer
 	(
@@ -20064,7 +20080,7 @@ EXEC('
 		@ADParentDomainController nvarchar(200),
 		@OSPlatform int,
 		@IsCore bit,
-		@SHA256Password bit
+		@PasswordIsSHA256 bit
 	)
 	AS
 
@@ -20087,12 +20103,12 @@ EXEC('
 		ADParentDomainController = @ADParentDomainController,
 		OSPlatform = @OSPlatform,
 		IsCore = @IsCore,
-		SHA256Password = @SHA256Password
+		PasswordIsSHA256 = @PasswordIsSHA256
 	WHERE ServerID = @ServerID
 	RETURN
 	')
 
-IF @NoPlatform = 1 OR @NoIsCore = 1 OR @NoSHA256Password = 1
+IF @NoPlatform = 1 OR @NoIsCore = 1 OR @NoPasswordIsSHA256 = 1
 EXEC('
 ALTER PROCEDURE [dbo].[GetServer]
 (
@@ -20123,7 +20139,7 @@ SELECT
 	ADParentDomainController,
 	OSPlatform,
 	IsCore,
-	SHA256Password
+	PasswordIsSHA256
 
 FROM Servers
 WHERE
@@ -20257,7 +20273,7 @@ CREATE PROCEDURE AddServer
 	@ADAuthenticationType varchar(50),
 	@OSPlatform int,
 	@IsCore bit,
-	@SHA256Password bit
+	@PasswordIsSHA256 bit
 )
 AS
 
@@ -20281,7 +20297,7 @@ INSERT INTO Servers
 	ADAuthenticationType,
 	OSPlatform,
 	IsCore,
-	SHA256Password
+	PasswordIsSHA256
 )
 VALUES
 (
@@ -20299,7 +20315,7 @@ VALUES
 	@ADAuthenticationType,
 	@OSPlatform,
 	@IsCore,
-	@SHA256Password
+	@PasswordIsSHA256
 )
 
 SET @ServerID = SCOPE_IDENTITY()
@@ -20329,7 +20345,7 @@ CREATE PROCEDURE UpdateServer
 	@ADParentDomainController nvarchar(200),
 	@OSPlatform int,
 	@IsCore bit,
-	@SHA256Password bit
+	@PasswordIsSHA256 bit
 )
 AS
 
@@ -20352,7 +20368,7 @@ UPDATE Servers SET
 	ADParentDomainController = @ADParentDomainController,
 	OSPlatform = @OSPlatform,
 	IsCore = @IsCore,
-	SHA256Password = @SHA256Password
+	PasswordIsSHA256 = @PasswordIsSHA256
 WHERE ServerID = @ServerID
 RETURN
 

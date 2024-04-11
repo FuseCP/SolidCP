@@ -22,10 +22,10 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="SkiaSharp" Version="2.88.7" GeneratePathProperty="true" />
-		<PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.7" GeneratePathProperty="true" />
-		<PackageReference Include="SkiaSharp.NativeAssets.macOS" Version="2.88.7" GeneratePathProperty="true" />
-		<PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="2.88.7" GeneratePathProperty="true" />
+		<PackageReference Include="SkiaSharp" Version="2.88.8" GeneratePathProperty="true" />
+		<PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.8" GeneratePathProperty="true" />
+		<PackageReference Include="SkiaSharp.NativeAssets.macOS" Version="2.88.8" GeneratePathProperty="true" />
+		<PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="2.88.8" GeneratePathProperty="true" />
 		<!--<PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="2.88.7" GenerateProperty="true" />-->
 	</ItemGroup>
 
@@ -41,8 +41,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Corsinvest.ProxmoxVE.Api" Version="8.1.5" GeneratePathProperty="true" />
-		<PackageReference Include="Corsinvest.ProxmoxVE.Api.Shared" Version="8.1.5" GeneratePathProperty="true" />
+		<PackageReference Include="Corsinvest.ProxmoxVE.Api" Version="8.1.6" GeneratePathProperty="true" />
+		<PackageReference Include="Corsinvest.ProxmoxVE.Api.Shared" Version="8.1.6" GeneratePathProperty="true" />
 		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />

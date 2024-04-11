@@ -103,7 +103,7 @@ namespace SolidCP.EnterpriseServer
 			
 			// set if server is running on net core
 			cnfg.IsCore = server.IsCore;
-			cnfg.SHA256Password = server.SHA256Password;
+			cnfg.SHA256Password = server.PasswordIsSHA256;
 
 			return ServerInit(proxy, cnfg, server.ServerUrl, server.Password);
 		}

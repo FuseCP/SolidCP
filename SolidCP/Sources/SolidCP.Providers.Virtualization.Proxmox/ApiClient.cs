@@ -18,7 +18,6 @@ namespace SolidCP.Providers.Virtualization
 	public class ApiClient: PveClient, IDisposable
 	{
 		private string baseUrl;
-		private bool validateCertificate;
 		//private string node;
 		private ApiTicket apiTicket;
 		private Proxmoxvps Provider { get; set; }
@@ -28,9 +27,8 @@ namespace SolidCP.Providers.Virtualization
 		public ApiClient(Proxmoxvps provider): base(provider.Server.Ip, int.Parse(provider.Server.Port))
 		{
 			this.baseUrl = "https://" + provider.Server.Ip + ":" + provider.Server.Port + "/api2/json";
-			this.validateCertificate = provider.Server.ValidateCertificate;
 			Provider = provider;
-			// Client.ValidateCertificate = server.ValidateCertificate;
+			this.VerifyCertificate = provider.Server.ValidateCertificate;
 			//this.node = node;
 			//HostedSolutionLog.DebugInfo("APIClient: {0}", this.baseUrl);
 		}
@@ -39,7 +37,7 @@ namespace SolidCP.Providers.Virtualization
 		{
 			var options = new RestClientOptions(baseUrl)
 			{
-				RemoteCertificateValidationCallback = validateCertificate ? null :
+				RemoteCertificateValidationCallback = Provider.Server.ValidateCertificate ? null :
 				(sender, certificate, chain, sslPolicyErrors) =>
 					true
 			};
@@ -74,9 +72,15 @@ namespace SolidCP.Providers.Virtualization
 			apiTicket = apiTicketdata;
 			//HostedSolutionLog.DebugInfo("Login - apiTicket: {0}", apiTicket.ticket);
 			return response; */
-			if (!Login($"{user.Username}@{(string.IsNullOrEmpty(user.Realm) ? "pam" : user.Realm)}", user.Password).Result) 
-				throw new Exception($"Proxmox Server API Service at {baseUrl} unavaliable.\n{LastResult.ReasonPhrase}");
- 
+
+			try
+			{
+				if (!Login($"{user.Username}@{(string.IsNullOrEmpty(user.Realm) ? "pam" : user.Realm)}", user.Password).Result)
+					throw new Exception($"Proxmox Server API Service at {baseUrl} unavaliable.\n{LastResult.ReasonPhrase}");
+			} catch (Exception ex)
+			{
+				throw;
+			}
 			ApiTicket apiTicketdata = new ApiTicket();
 			dynamic data = LastResult.ToData();
 			apiTicketdata.ticket = data.ticket;
@@ -94,6 +98,7 @@ namespace SolidCP.Providers.Virtualization
 			var nodeId = NodeId(vmId);
 			var request = PrepareGetRequest($"nodes/{nodeId.Node}/qemu/{nodeId.Id}/status/current");
 			var response = client.Execute<VMStatusInfo>(request);
+			
 			//HostedSolutionLog.DebugInfo("Status - response Content: {0}", response.Content.ToString());
 			dynamic json = JObject.Parse(response.Content);
 			return json;
@@ -454,6 +459,9 @@ namespace SolidCP.Providers.Virtualization
 			return apivm;
 		}
 
-		public void Dispose() { }
+		bool isDisposed = false;
+		public void Dispose() {
+			isDisposed = true;
+		}
     }
 }

@@ -243,7 +243,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static bool? GetServerIsSHA256Password(string serverUrl)
+		public static bool? GetServerPasswordIsSHA256(string serverUrl)
 		{
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive
                  | DemandAccount.IsAdmin);
@@ -297,7 +297,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static void GetServerPlatform(string serverUrl, string password, bool sha256Password, out OSPlatform platform, out bool? isCore)
+        public static void GetServerPlatform(string serverUrl, string password, bool passwordIsSHA256, out OSPlatform platform, out bool? isCore)
 		{
 			platform = OSPlatform.Unknown;
 			isCore = null;
@@ -312,7 +312,7 @@ namespace SolidCP.EnterpriseServer
 			try
 			{
                 var os = new Server.Client.OperatingSystem();
-				ServiceProviderProxy.ServerInit(os, serverUrl, password, sha256Password);
+				ServiceProviderProxy.ServerInit(os, serverUrl, password, passwordIsSHA256);
 				var p = os.GetOSPlatform();
 				platform = p.OSPlatform;
 				isCore = p.IsCore;
@@ -436,12 +436,12 @@ namespace SolidCP.EnterpriseServer
 
 				OSPlatform osPlatform;
 				bool? isCore;
-				bool sha256Password = GetServerIsSHA256Password(server.ServerUrl) ?? true;
+				bool passwordIsSHA256 = GetServerPasswordIsSHA256(server.ServerUrl) ?? true;
 
-				GetServerPlatform(server.ServerUrl, server.Password, sha256Password, out osPlatform, out isCore);
+				GetServerPlatform(server.ServerUrl, server.Password, passwordIsSHA256, out osPlatform, out isCore);
 				server.OSPlatform = osPlatform;
 				server.IsCore = isCore;
-				server.SHA256Password = sha256Password;
+				server.PasswordIsSHA256 = passwordIsSHA256;
 			}
 
 			TaskManager.StartTask("SERVER", "ADD", server.ServerName);
@@ -451,7 +451,7 @@ namespace SolidCP.EnterpriseServer
 			int serverId = DataProvider.AddServer(server.ServerName, serverUrl,
 				CryptoUtils.EncryptServerPassword(server.Password), server.Comments, server.VirtualServer, server.InstantDomainAlias,
 				server.PrimaryGroupId, server.ADEnabled, server.ADRootDomain, server.ADUsername, CryptoUtils.Encrypt(server.ADPassword),
-				server.ADAuthenticationType, server.OSPlatform, server.IsCore, server.SHA256Password);
+				server.ADAuthenticationType, server.OSPlatform, server.IsCore, server.PasswordIsSHA256);
 
 			if (autoDiscovery)
 			{
@@ -496,14 +496,14 @@ namespace SolidCP.EnterpriseServer
 				if (availResult < 0)
 					return availResult;
 
-				bool sha256Password = GetServerIsSHA256Password(server.ServerUrl) ?? true;
+				bool passwordIsSHA256 = GetServerPasswordIsSHA256(server.ServerUrl) ?? true;
 
 				OSPlatform osPlatform = OSPlatform.Unknown;
 				bool? isCore = null;
-				GetServerPlatform(server.ServerUrl, server.Password, sha256Password, out osPlatform, out isCore);
+				GetServerPlatform(server.ServerUrl, server.Password, passwordIsSHA256, out osPlatform, out isCore);
 				server.OSPlatform = osPlatform;
 				server.IsCore = isCore;
-				server.SHA256Password = sha256Password;
+				server.PasswordIsSHA256 = passwordIsSHA256;
 			}
 
 			var serverUrl = CryptoUtils.EncryptServerUrl(server.ServerUrl);
@@ -512,7 +512,7 @@ namespace SolidCP.EnterpriseServer
 				CryptoUtils.EncryptServerPassword(server.Password), server.Comments, server.InstantDomainAlias,
 				server.PrimaryGroupId, server.ADEnabled, server.ADRootDomain, server.ADUsername, CryptoUtils.Encrypt(server.ADPassword),
 				server.ADAuthenticationType, server.ADParentDomain, server.ADParentDomainController,
-				server.OSPlatform, server.IsCore, server.SHA256Password);
+				server.OSPlatform, server.IsCore, server.PasswordIsSHA256);
 
 			TaskManager.CompleteTask();
 
@@ -533,8 +533,8 @@ namespace SolidCP.EnterpriseServer
 
 			// set password
 			server.Password = password;
-			var sha256Password = GetServerIsSHA256Password(server.ServerUrl);
-			if (sha256Password != null) server.SHA256Password = (bool)sha256Password;
+			var passwordIsSHA256 = GetServerPasswordIsSHA256(server.ServerUrl);
+			if (passwordIsSHA256 != null) server.PasswordIsSHA256 = (bool)passwordIsSHA256;
 			else return -1;
 
 			var serverUrl = CryptoUtils.EncryptServerUrl(server.ServerUrl);
@@ -544,7 +544,7 @@ namespace SolidCP.EnterpriseServer
 				CryptoUtils.EncryptServerPassword(server.Password), server.Comments, server.InstantDomainAlias,
 				server.PrimaryGroupId, server.ADEnabled, server.ADRootDomain, server.ADUsername, CryptoUtils.Encrypt(server.ADPassword),
 				server.ADAuthenticationType, server.ADParentDomain, server.ADParentDomainController,
-				server.OSPlatform, server.IsCore, server.SHA256Password);
+				server.OSPlatform, server.IsCore, server.PasswordIsSHA256);
 
 			TaskManager.CompleteTask();
 
@@ -573,7 +573,7 @@ namespace SolidCP.EnterpriseServer
 				CryptoUtils.EncryptServerPassword(server.Password), server.Comments, server.InstantDomainAlias,
 				server.PrimaryGroupId, server.ADEnabled, server.ADRootDomain, server.ADUsername, CryptoUtils.Encrypt(server.ADPassword),
 				server.ADAuthenticationType, server.ADParentDomain, server.ADParentDomainController,
-				server.OSPlatform, server.IsCore, server.SHA256Password);
+				server.OSPlatform, server.IsCore, server.PasswordIsSHA256);
 
 			TaskManager.CompleteTask();
 

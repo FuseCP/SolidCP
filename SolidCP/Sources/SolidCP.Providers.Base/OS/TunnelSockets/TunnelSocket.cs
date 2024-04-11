@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 using System.Net.Sockets;
 using System.Net.WebSockets;
 using System.Net;
+using System.Net.Security;
+using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
 using Renci.SshNet;
@@ -104,6 +107,8 @@ namespace SolidCP.Providers.OS
             set => Uri = (url = value).StartsWith("ssh://") ? new SshUri(url) : new TunnelUri(url);
         }
 
+        bool validateCertificateSet = false;
+        public bool ValidateCertificate { get; set; } = true;
         public SshUri SshUri => (Uri is SshUri sshUri) ? sshUri : null;
 
         public string RawUrl => Uri?.RawUrl;
@@ -142,16 +147,49 @@ namespace SolidCP.Providers.OS
         public List<Cookie> Cookies { get; set; } = new List<Cookie>();
         public StringDictionary HttpHeaders { get; private set; } = new StringDictionary();
 
+        public bool AlwaysTrustCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) => true;
+
         public ClientWebSocket GetClientWebSocket()
         {
-            var baseWebSocket = new ClientWebSocket();
-            foreach (var cookie in Cookies) baseWebSocket.Options.Cookies.Add(cookie);
-            foreach (DictionaryEntry item in HttpHeaders)
+            try {
+                var baseWebSocket = new ClientWebSocket();
+                foreach (var cookie in Cookies)
+                {
+                    if (baseWebSocket.Options.Cookies == null) baseWebSocket.Options.Cookies = new CookieContainer();
+                    baseWebSocket.Options.Cookies.Add(cookie);
+                }
+                foreach (DictionaryEntry item in HttpHeaders)
+                {
+                    baseWebSocket.Options.SetRequestHeader((string)item.Key, (string)item.Value);
+                }
+                if (OSInfo.IsCore && !ValidateCertificate)
+                {
+                    validateCertificateSet = false;
+                    var remoteCertificateValidationCallback = typeof(ClientWebSocketOptions).GetProperty("RemoteCertificateValidationCallback");
+                    if (remoteCertificateValidationCallback != null)
+                    {
+                        var delegateType = Type.GetType("System.Net.Security.RemoteCertificateValidationCallback, System.Net.Security");
+                        if (delegateType != null)
+                        {
+                            var method = GetType().GetMethod(nameof(AlwaysTrustCertificate), BindingFlags.NonPublic | BindingFlags.Instance);
+                            var alwaysTrust = Delegate.CreateDelegate(delegateType, method);
+
+                            Delegate validateDelegate = (Delegate)remoteCertificateValidationCallback?.GetValue(baseWebSocket.Options);
+                            if (validateDelegate == null) validateDelegate = alwaysTrust;
+                            else validateDelegate = Delegate.Combine(validateDelegate, alwaysTrust);
+
+                            remoteCertificateValidationCallback?.SetValue(baseWebSocket.Options, validateDelegate);
+                            validateCertificateSet = true;
+                        }
+                    }
+                }
+
+                BaseWebSocket = baseWebSocket;
+                return baseWebSocket;
+            } catch (Exception ex)
             {
-                baseWebSocket.Options.SetRequestHeader((string)item.Key, (string)item.Value);
+                throw;
             }
-            BaseWebSocket = baseWebSocket;
-            return baseWebSocket;
         }
         async Task InitSocketAsync()
         {
@@ -423,16 +461,20 @@ namespace SolidCP.Providers.OS
             string message = await ReceiveMessageAsync();
             if (message == GetUpgradeTunnelSocketMessage)
             {
-                if (!destinationSocket.IsConnected) await destinationSocket.ConnectAsync();
-
-                var upgradeTunnel = await destinationSocket.RequestUpgradeTunnelSocketAsync();
+                TunnelSocket upgradeTunnel;
+                if (destinationSocket.IsFallback)
+                {
+                    if (!destinationSocket.IsConnected) await destinationSocket.ConnectAsync();
+                    upgradeTunnel = await destinationSocket.RequestUpgradeTunnelSocketAsync();
+                }
+                else upgradeTunnel = destinationSocket;
                 // Send destination UpgradeTunnelSocket so the client can try connecting to it directly himself
                 await SendObjectAsync(upgradeTunnel);
                 // Wait for the response
                 message = await ReceiveMessageAsync();
                 if (message == UseUpgradeTunnelSocketMessage)
                 {
-                    await destinationSocket.UseUpgradeTunnelSocketAsync();
+                    if (destinationSocket.IsFallback) await destinationSocket.UseUpgradeTunnelSocketAsync();
                 }
             }
             else
@@ -474,7 +516,16 @@ namespace SolidCP.Providers.OS
                     if (IsWebSocketOverSsh) url = await GetSshWebSocketUrlAsync();
                     try
                     {
-                        await clientWebSocket.ConnectAsync(new System.Uri(url), new CancellationTokenSource(ConnectTimeout).Token);
+                        if (!ValidateCertificate && !validateCertificateSet)
+                        {
+                            ServicePointManager.ServerCertificateValidationCallback += AlwaysTrustCertificate;
+                            await clientWebSocket.ConnectAsync(new System.Uri(url), new CancellationTokenSource(ConnectTimeout).Token);
+                            ServicePointManager.ServerCertificateValidationCallback -= AlwaysTrustCertificate;
+                        }
+                        else {
+                            await clientWebSocket.ConnectAsync(new System.Uri(url), new CancellationTokenSource(ConnectTimeout).Token);
+                        }
+
                     } catch (Exception ex)
                     {
 
