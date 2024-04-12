@@ -8,6 +8,7 @@ using RestSharp;
 using System.Threading;
 using SolidCP.Providers.Virtualization.Proxmox;
 using SolidCP.Providers.HostedSolution;
+using System.Security.Authentication;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Corsinvest.ProxmoxVE.Api;
@@ -79,7 +80,7 @@ namespace SolidCP.Providers.Virtualization
 					throw new Exception($"Proxmox Server API Service at {baseUrl} unavaliable.\n{LastResult.ReasonPhrase}");
 			} catch (Exception ex)
 			{
-				throw;
+				throw new AuthenticationException(ex.Message, ex);
 			}
 			ApiTicket apiTicketdata = new ApiTicket();
 			dynamic data = LastResult.ToData();

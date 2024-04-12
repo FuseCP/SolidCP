@@ -8,6 +8,7 @@ using SolidCP.Providers.OS;
 using SolidCP.Providers.Virtualization;
 using SolidCP.EnterpriseServer;
 using SolidCP.Server.Client;
+using SolidCP.Providers.Virtualization;
 
 [assembly:TunnelService(typeof(SolidCP.EnterpriseServer.EnterpriseServerTunnelService))]
 
@@ -15,11 +16,12 @@ namespace SolidCP.EnterpriseServer
 {
     public class EnterpriseServerTunnelService: EnterpriseServerTunnelServiceBase
     {
-        public override string CryptoKey => CryptoUtility.SHA1($"{CryptoUtils.CryptoKey}{DateTime.Now.Ticks}");
+        string cryptoKey = null;
+        public override string CryptoKey => cryptoKey ?? (cryptoKey = CryptoUtility.SHA256($"{CryptoUtils.CryptoKey}{DateTime.Now.Ticks}"));
 
         public override void Authenticate(string user, string password) => UsernamePasswordValidator.Validate(user, password);
         
-        public override async Task<TunnelSocket> GetPveVncWebSocketAsync(int serviceItemId)
+        public override async Task<TunnelSocket> GetPveVncWebSocketAsync(int serviceItemId, ProxmoxVncCredentials credentials)
         {
             var serviceItem = PackageController.GetPackageItem(serviceItemId) as VirtualMachine;
             if (serviceItem == null) throw new AccessViolationException("Service item not found.");
@@ -33,13 +35,13 @@ namespace SolidCP.EnterpriseServer
             
             // Verfiy user has access to service 
             var user = UserController.GetUser(Username);
-            if (package.UserId != user.UserId && !user.Role.HasFlag(UserRole.Administrator)) throw new AccessViolationException("The current user has no access to this service.");
+            if (package.UserId != user.UserId && user.Role != UserRole.Administrator) throw new AccessViolationException("The current user has no access to this service.");
 
             var vmId = serviceItem.VirtualMachineId;
 
-            return await GetPveVNCWebSocket(vmId, service);
+            return await GetPveVNCWebSocket(vmId, credentials, service);
         }
-        private async Task<TunnelSocket> GetPveVNCWebSocket(string vmId, ServiceInfo service)
+        private async Task<TunnelSocket> GetPveVNCWebSocket(string vmId, ProxmoxVncCredentials credentials, ServiceInfo service)
         {
             if (service == null)
                 throw new Exception($"Service with ID {service.ServiceId} was not found");
@@ -75,13 +77,13 @@ namespace SolidCP.EnterpriseServer
 
             var serverUrl = CryptoUtils.DecryptServerUrl(server.ServerUrl);
 
-            return await GetPveVNCWebSocket(serverUrl, server.Password, server.PasswordIsSHA256, vmId, serverSettings, providerSettings); 
+            return await GetPveVNCWebSocket(serverUrl, server.Password, server.PasswordIsSHA256, vmId, credentials, serverSettings, providerSettings); 
         }
-        private async Task<TunnelSocket> GetPveVNCWebSocket(string serverUrl, string password, bool sha256Password, string vmId, RemoteServerSettings serverSettings, ServiceProviderSettings providerSettings) {
+        private async Task<TunnelSocket> GetPveVNCWebSocket(string serverUrl, string password, bool sha256Password, string vmId, ProxmoxVncCredentials credentials, RemoteServerSettings serverSettings, ServiceProviderSettings providerSettings) {
             password = sha256Password ? CryptoUtils.SHA256(password) : CryptoUtils.SHA1(password);
             var client = new ServerTunnelClient() { ServerUrl = serverUrl, Password = password };
 
-            return await client.GetPveVncWebSocketAsync(vmId, serverSettings, providerSettings);
+            return await client.GetPveVncWebSocketAsync(vmId, credentials, serverSettings, providerSettings);
         }
     }
 }

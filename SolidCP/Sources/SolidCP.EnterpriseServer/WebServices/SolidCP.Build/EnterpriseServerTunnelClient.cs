@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using SolidCP.Providers.OS;
+using SolidCP.Providers.Virtualization;
 
 [assembly:TunnelClient(typeof(SolidCP.EnterpriseServer.Client.EnterpriseServerTunnelClient))]
 
@@ -16,9 +17,9 @@ namespace SolidCP.EnterpriseServer.Client
             return system.GetCryptoKey();
         }
         public override string CryptoKey => GetCryptoKey();
-        public override async Task<TunnelSocket> GetPveVncWebSocketAsync(int serviceItemId)
+        public override async Task<TunnelSocket> GetPveVncWebSocketAsync(int serviceItemId, ProxmoxVncCredentials credentials)
         {
-            return await GetTunnel(nameof(GetPveVncWebSocketAsync), serviceItemId);
+            return await GetTunnel(nameof(GetPveVncWebSocketAsync), serviceItemId, credentials);
         }
     }
 }

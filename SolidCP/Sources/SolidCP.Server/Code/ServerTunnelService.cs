@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using SolidCP.Web.Services;
 using SolidCP.Providers;
 using SolidCP.Providers.OS;
+using SolidCP.Providers.Virtualization;
 
 [assembly:TunnelService(typeof(SolidCP.Server.ServerTunnelService))]
 
@@ -15,13 +16,13 @@ namespace SolidCP.Server
         {
             PasswordValidator.Validate(password);
         }
-        public override async Task<TunnelSocket> GetPveVncWebSocketAsync(string vmId, RemoteServerSettings serverSettings, ServiceProviderSettings providerSettings)
+        public override async Task<TunnelSocket> GetPveVncWebSocketAsync(string vmId, ProxmoxVncCredentials credentials, RemoteServerSettings serverSettings, ServiceProviderSettings providerSettings)
         {
             using (var proxmox = new VirtualizationServerProxmox())
             {
                 proxmox.ProviderSettings = providerSettings;
                 proxmox.ServerSettings = serverSettings;
-                return await proxmox.GetPveVncWebSocketAsync(vmId);
+                return await proxmox.GetPveVncWebSocketAsync(vmId, credentials);
             }
         }
     }

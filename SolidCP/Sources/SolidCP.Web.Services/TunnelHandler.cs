@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
+using System.IO;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using SolidCP.Providers;
@@ -27,10 +28,10 @@ namespace SolidCP.Web.Services
     {
         public string Route => "Tunnel";
 
-        public async Task<TunnelSocket> GetTunnel(string caller, string method, string arguments, bool encrypted)
+        public async Task<TunnelSocket> GetTunnel(string caller, string method, byte[] arguments)
         {
             var service = new TunnelService(caller);
-            return await service.Service.GetTunnel(method, arguments, encrypted);
+            return await service.Service.GetTunnel(method, arguments);
         }
 
         public async Task Transmit(TunnelSocket listener, TunnelSocket destination)
@@ -44,9 +45,11 @@ namespace SolidCP.Web.Services
             {
                 if (listener.IsConnected) await listener.CloseAsync(WebSocketCloseStatus.InternalServerError, ex.StackTrace);
                 if (destination.IsConnected) await destination.CloseAsync(WebSocketCloseStatus.InternalServerError, ex.StackTrace);
-                throw ex;
+                throw new IOException(ex.Message, ex);
             }
         }
+
+        public async Task<byte[]> ReadArgumentsAsync(TunnelSocket listener) => (await listener.ReceiveData()).ToArray();
 
 #if NETFRAMEWORK
         public override Task ProcessRequestAsync(HttpContext context) => throw new NotImplementedException();
@@ -72,37 +75,38 @@ namespace SolidCP.Web.Services
         {
             if (context.WebSockets.IsWebSocketRequest)
             {
-                string caller, method, args, argsx;
-                try
-                {
-                    caller = context.Request.Query["caller"];
-                    method = context.Request.Query["method"];
-                    args = context.Request.Query["args"];
-                    argsx = context.Request.Query["argsx"];
-                    if (string.IsNullOrEmpty(args)) args = argsx;
-                    if (string.IsNullOrEmpty(caller) || string.IsNullOrEmpty(method) || string.IsNullOrEmpty(args))
-                    {
-                        context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                        return;
-                    }
-                }
-                catch (Exception ex)
+                string caller, method;
+                caller = context.Request.Query["caller"];
+                method = context.Request.Query["method"];
+                if (string.IsNullOrEmpty(caller) || string.IsNullOrEmpty(method))
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     return;
                 }
 
-                var dest = await GetTunnel(caller, method, args, !string.IsNullOrEmpty(argsx));
-                if (dest != null)
+                using (var webSocket = await context.WebSockets.AcceptWebSocketAsync())
                 {
-                    using (var webSocket = await context.WebSockets.AcceptWebSocketAsync())
+                    try
                     {
                         var tunnel = new TunnelSocket(webSocket);
-                        await Transmit(tunnel, dest);
+
+                        var args = await ReadArgumentsAsync(tunnel);
+
+                        var dest = await GetTunnel(caller, method, args);
+                        if (dest != null)
+                        {
+                            await Transmit(tunnel, dest);
+                        }
+                        else
+                        {
+                            await webSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, "Cannot get a tunnel", CancellationToken.None);
+                        }
+
                     }
-                } else
-                {
-                    context.Response.StatusCode = (int)HttpStatusCode.FailedDependency;
+                    catch (Exception ex)
+                    {
+                        await webSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, $"{ex.Message}\n{ex.StackTrace}", CancellationToken.None);
+                    }
                 }
             }
             else
@@ -114,35 +118,45 @@ namespace SolidCP.Web.Services
 #else
     public class TunnelHandlerNetFX : TunnelHandlerBase, IHttpHandler, IRouteHandler, ITunnelHandler
     {
-        public void ProcessRequest(HttpContext context) => throw new NotSupportedException("Handler cannot execute synchronously");
+        public override void ProcessRequest(HttpContext context) => throw new NotSupportedException("Handler cannot execute synchronously");
 
         public override async Task ProcessRequestAsync(HttpContext context)
         {
             if (context.IsWebSocketRequest)
             {
                 string caller, method, args, argsx;
-                try
-                {
-                    caller = context.Request.QueryString["caller"];
-                    method = context.Request.QueryString["method"];
-                    args = context.Request.QueryString["args"];
-                    argsx = context.Request.QueryString["argsx"];
-                    if (string.IsNullOrEmpty(args)) args = argsx;
-                } catch (Exception ex)
+                caller = context.Request.QueryString["caller"];
+                method = context.Request.QueryString["method"];
+                if (string.IsNullOrEmpty(caller) || string.IsNullOrEmpty(method))
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     return;
                 }
 
-                var dest = await GetTunnel(caller, method, args, !string.IsNullOrEmpty(argsx));
-                if (dest != null)
+                context.AcceptWebSocketRequest(async webSocketContext =>
                 {
-                    context.AcceptWebSocketRequest(async webSocketContext =>
+                    var tunnel = new TunnelSocket(webSocketContext.WebSocket);
+
+                    try
                     {
-                        var tunnel = new TunnelSocket(webSocketContext.WebSocket);
-                        await Transmit(tunnel, dest);
-                    });
-                }   
+                        var args = await ReadArgumentsAsync(tunnel);
+
+                        var dest = await GetTunnel(caller, method, args);
+                        if (dest != null)
+                        {
+                            await Transmit(tunnel, dest);
+                        }
+                        else
+                        {
+                            await tunnel.CloseAsync(WebSocketCloseStatus.InternalServerError, "Cannot get a tunnel");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        await tunnel.CloseAsync(WebSocketCloseStatus.InternalServerError, $"{ex.Message}\n{ex.StackTrace}");
+                    }
+
+                });
             }
             else
             {

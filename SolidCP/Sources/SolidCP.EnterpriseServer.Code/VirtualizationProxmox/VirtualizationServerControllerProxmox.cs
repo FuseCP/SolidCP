@@ -99,6 +99,21 @@ namespace SolidCP.EnterpriseServer
             // load details
             return vps.GetVirtualMachines().ToArray();
         }
+
+        public static ProxmoxVncCredentials GetPveVncCredentials(int itemId)
+        {
+            // load meta item
+            VirtualMachine vm = GetVirtualMachineByItemId(itemId);
+
+            if (vm == null)
+                return null;
+
+            // get proxy
+            VirtualizationServerProxmox vps = GetVirtualizationProxy(vm.ServiceId);
+
+            // load details
+            return vps.GetPveVncCredentials(vm.VirtualMachineId);
+        }
         #endregion
 
         #region Private Network

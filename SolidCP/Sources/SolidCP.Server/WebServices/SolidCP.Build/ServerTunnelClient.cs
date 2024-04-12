@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SolidCP.Providers;
 using SolidCP.Providers.OS;
+using SolidCP.Providers.Virtualization;
 
 [assembly:TunnelClient(typeof(SolidCP.Server.Client.ServerTunnelClient))]
 
@@ -18,14 +19,16 @@ namespace SolidCP.Server.Client
 
             var serviceProviderClient = new ServiceProvider();
             serviceProviderClient.Url = ServerUrl;
+            serviceProviderClient.Credentials.UserName = "";
+            serviceProviderClient.Credentials.Password = Password;
             return serviceProviderClient.GetCryptoKey();
         }
 
         public override string CryptoKey => GetCryptoKey();
 
-        public override async Task<TunnelSocket> GetPveVncWebSocketAsync(string vmId, RemoteServerSettings serverSettings, ServiceProviderSettings providerSettings)
+        public override async Task<TunnelSocket> GetPveVncWebSocketAsync(string vmId, ProxmoxVncCredentials credentials, RemoteServerSettings serverSettings, ServiceProviderSettings providerSettings)
         {
-            return await GetTunnel(nameof(GetPveVncWebSocketAsync), vmId, serverSettings, providerSettings);
+            return await GetTunnel(nameof(GetPveVncWebSocketAsync), vmId, credentials, serverSettings, providerSettings);
         }
     }
 }

@@ -12,6 +12,9 @@ using System.Xml.Serialization;
 
 namespace SolidCP.Providers.OS
 {
+
+    public enum TunnelOption { None, Fallback, Listener, WebSocket }
+
     /// <summary>
     /// A class supporting uri's for TunnelSockes's. The class has public read and writable properties Query, QueryString, Port and Tunnel
     /// The Url property that gets or sets the url string always reflects the setting in the Query, QueryString, Port and Tunnel
@@ -57,22 +60,28 @@ namespace SolidCP.Providers.OS
 
         public QueryStringDictionary Query { get; set; } = new QueryStringDictionary();
 
-        public string Tunnel
+        public TunnelOption Tunnel
         {
-            get => Query["tunnel"];
-            set => Query["tunnel"] = value;
+            get
+            {
+                var tunnel = Query["tunnel"];
+                TunnelOption option = TunnelOption.None;
+                Enum.TryParse(tunnel, true, out option);
+                return option;
+            }
+            set => Query["tunnel"] = value == TunnelOption.None ? null : value.ToString().ToLower();
         }
 
         public bool IsListener
         {
-            get => Tunnel == "listener";
-            set => Tunnel = value ? "listener" : null;
+            get => Tunnel == TunnelOption.Listener;
+            set => Tunnel = value ? TunnelOption.Listener : TunnelOption.None;
         }
 
         public bool IsFallback
         {
-            get => Tunnel == "fallback";
-            set => Tunnel = value ? "fallback" : null;
+            get => Tunnel == TunnelOption.Fallback;
+            set => Tunnel = value ? TunnelOption.Fallback : TunnelOption.None;
         }
 
         [DataMember]
@@ -93,7 +102,7 @@ namespace SolidCP.Providers.OS
                     if (string.IsNullOrEmpty(url))
                     {
                         Username = Password = Host = DnsSafeHost = IdnHost = Path = QueryString = null;
-                        Tunnel = null;
+                        Tunnel = TunnelOption.None;
                         port = 0;
                     }
                     else
@@ -142,7 +151,7 @@ namespace SolidCP.Providers.OS
             get
             {
                 var copy = new TunnelUri(Url);
-                copy.Tunnel = null;
+                copy.Tunnel = TunnelOption.None;
                 return copy.Url;
             }
         }

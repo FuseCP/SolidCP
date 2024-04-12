@@ -268,6 +268,12 @@ namespace SolidCP.EnterpriseServer
             return VirtualizationServerControllerProxmox.GetVirtualMachineJobs(itemId);
 
         }
+
+        [WebMethod]
+        public ProxmoxVncCredentials GetPveVncCredentials(int itemId)
+        {
+            return VirtualizationServerControllerProxmox.GetPveVncCredentials(itemId);
+        }
         #endregion
 
         #region VPS - Configuration

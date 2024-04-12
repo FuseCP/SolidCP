@@ -6,6 +6,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using System.Xml;
+using SolidCP.Providers.Virtualization;
 
 namespace SolidCP.Providers.OS
 {
@@ -56,7 +57,7 @@ namespace SolidCP.Providers.OS
 
         public TimeSpan RequestTimeout { get; set; } = TimeSpan.FromSeconds(120);
 
-        public virtual string DecryptString(string secret) => new CryptoUtility(CryptoKey).Decrypt(secret);
+        public virtual byte[] DecryptData(ArraySegment<byte> secret) => new CryptoUtility(CryptoKey).Decrypt(secret);
 
         Type[] TypesFromNames(IEnumerable<string?> types) => types
             .Select(type => type != null ? Type.GetType(type) : null)
@@ -73,13 +74,21 @@ namespace SolidCP.Providers.OS
 
         Type[] ReadTypes(BinaryReader reader) => TypesFromNames(ReadStrings(reader));
 
-        public virtual object[] Deserialize(string method, string args, bool encrypted)
+        public virtual object[] Deserialize(string method, byte[] args)
         {
             try
             {
-                if (encrypted) args = DecryptString(args);
-                var bytes = Convert.FromBase64String(args);
-                var mem = new MemoryStream(bytes);
+                var encrypted = args[0] != 0;
+                MemoryStream mem;
+                if (encrypted)
+                {
+                    args = DecryptData(new ArraySegment<byte>(args, 1, args.Length - 1));
+                    mem = new MemoryStream(args);
+                } else {
+                    mem = new MemoryStream(args);
+                    mem.Seek(1, SeekOrigin.Begin);
+                }
+
                 Type[] parameterTypes, types;
                 using (var binaryReader = new BinaryReader(mem, Encoding.UTF8, true))
                 {
@@ -109,16 +118,9 @@ namespace SolidCP.Providers.OS
                     .Concat(new Type[] { typeof(string) })
                     .Where(type => type != null)
                     .Distinct();
-                var serializer = new DataContractSerializer(typeof(object[]), knownTypes);
-                var reader = XmlDictionaryReader.CreateBinaryReader(mem, new XmlDictionaryReaderQuotas()
-                {
-                    MaxArrayLength = 64*1024,
-                    MaxBytesPerRead = 64*1024,
-                    MaxDepth = 256,
-                    MaxNameTableCharCount = 2048,
-                    MaxStringContentLength = 64*1024
-                });
-                var argsWithCredentials = (object[])serializer.ReadObject(reader);
+
+                var argsWithCredentials = TunnelSocket.Deserialize<object[]>(mem, knownTypes);
+
                 if (argsWithCredentials.Length < 3 ||
                     !(argsWithCredentials[0] is long) ||
                     !(argsWithCredentials[1] == null || argsWithCredentials[1] is string) ||
@@ -144,9 +146,9 @@ namespace SolidCP.Providers.OS
         public TunnelService() { }
         public TunnelService(string callerType) : this() { CallerType = callerType; }
 
-        public virtual async Task<TunnelSocket> GetTunnel(string method, string arguments, bool encrypted)
+        public virtual async Task<TunnelSocket> GetTunnel(string method, byte[] arguments)
         {
-            var args = Deserialize(method, arguments, encrypted);
+            var args = Deserialize(method, arguments);
             return await GetTunnel(method, args);
         }
 
@@ -202,12 +204,12 @@ namespace SolidCP.Providers.OS
     public abstract class ServerTunnelServiceBase : TunnelService
     {
         public override TunnelService Service => ServerService;
-        public abstract Task<TunnelSocket> GetPveVncWebSocketAsync(string vmId, RemoteServerSettings serverSettings, ServiceProviderSettings providerSettings);
+        public abstract Task<TunnelSocket> GetPveVncWebSocketAsync(string vmId, ProxmoxVncCredentials credentials, RemoteServerSettings serverSettings, ServiceProviderSettings providerSettings);
     }
 
     public abstract class EnterpriseServerTunnelServiceBase : TunnelService
     {
         public override TunnelService Service => EnterpriseServerService;
-        public abstract Task<TunnelSocket> GetPveVncWebSocketAsync(int serviceItemId);
+        public abstract Task<TunnelSocket> GetPveVncWebSocketAsync(int serviceItemId, ProxmoxVncCredentials credentials);
     }
 }

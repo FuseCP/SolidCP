@@ -265,6 +265,26 @@ namespace SolidCP.Server
                 throw;
             }
         }
+
+        [WebMethod, SoapHeader("settings")]
+        public ProxmoxVncCredentials GetPveVncCredentials(string vmId)
+        {
+            var msg = $"'{ProviderSettings.ProviderName}' {nameof(GetPveVncCredentials)}";
+            try
+            {
+                Log.WriteStart(msg);
+                var result = VirtualizationProvider.GetPveVncCredentials(vmId);
+                Log.WriteEnd(msg);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(msg, ex);
+                throw;
+            }
+
+        }
+        public async Task<TunnelSocket> GetPveVncWebSocketAsync(string vmId, ProxmoxVncCredentials credentials) => await VirtualizationProvider.GetPveVncWebSocketAsync(vmId, credentials);
         #endregion
 
         #region Snapshots
@@ -873,7 +893,6 @@ namespace SolidCP.Server
         }
 
         #endregion
-        public async Task<TunnelSocket> GetPveVncWebSocketAsync(string vmId) => await VirtualizationProvider.GetPveVncWebSocketAsync(vmId);
 
         #region Replication
 

@@ -76,7 +76,6 @@ namespace SolidCP.Portal.Proxmox
             // admin operations column
             gvServers.Columns[7].Visible = false;
            //(PanelSecurity.EffectiveUser.Role == UserRole.Administrator);
-
         }
 
         public string GetServerEditUrl(string itemID)
@@ -109,6 +108,12 @@ namespace SolidCP.Portal.Proxmox
 
             var vmItem = ES.Services.Proxmox.GetVirtualMachineItem(itemID);
             if (vmItem == null) return "";
+
+            if (_machines == null)
+            {
+                //var packageVm = ES.Services.Proxmox.GetVirtualMachineItem(itemID);
+                _machines = ES.Services.Proxmox.GetVirtualMachinesByServiceId(vmItem.ServiceId);
+            }
 
             var vm = _machines.FirstOrDefault(v => v.VirtualMachineId == vmItem.VirtualMachineId);
             return vm != null ? vm.ReplicationState.ToString() : "";

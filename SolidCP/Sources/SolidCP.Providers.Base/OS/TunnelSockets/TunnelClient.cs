@@ -10,8 +10,10 @@ using System.Net.WebSockets;
 using System.Reflection;
 using System.Threading;
 using System.Text.RegularExpressions;
+using System.Security.Cryptography;
 using System.Xml;
 using System.Threading.Tasks;
+using SolidCP.Providers.Virtualization;
 
 namespace SolidCP.Providers.OS
 {
@@ -67,8 +69,6 @@ namespace SolidCP.Providers.OS
         }
 
         public virtual string CryptoKey => "";
-        public virtual string EncryptString(string secret) => new CryptoUtility(CryptoKey).Encrypt(secret);
-
         IEnumerable<string> TypeNames(IEnumerable<Type> types) => types?.Select(type => type?.FullName);
 
         void WriteStrings(BinaryWriter writer, IEnumerable<string?> strings)
@@ -84,9 +84,12 @@ namespace SolidCP.Providers.OS
         }
         void WriteTypes(BinaryWriter writer, IEnumerable<Type> types) => WriteStrings(writer, TypeNames(types));
 
-        public string Serialize(string methodName, bool encrypted, params object[] args)
+        public byte[] Serialize(string methodName, bool encrypted, params object[] args)
         {
             var mem = new MemoryStream();
+            if (encrypted) mem.WriteByte(1);
+            else mem.WriteByte(0);
+
             var types = args.Select(arg => arg?.GetType())
                 .ToArray();
             var methods = GetType().GetMethods();
@@ -116,22 +119,25 @@ namespace SolidCP.Providers.OS
             {
                 WriteTypes(binaryWriter, method.ParameterTypes);
                 WriteTypes(binaryWriter, types);
+                binaryWriter.Flush();
             }
             var knownTypes = method.ParameterTypes
                 .Concat(types)
                 .Concat(new Type[] { typeof(string), typeof(long) })
                 .Where(type => type != null)
                 .Distinct();
-            var serializer = new DataContractSerializer(typeof(object[]), knownTypes);
             var argsWithCredentials = new object[] { DateTime.Now.Ticks, Username, Password }
                 .Concat(args)
                 .ToArray();
-            var writer = XmlDictionaryWriter.CreateBinaryWriter(mem);
-            serializer.WriteObject(writer, argsWithCredentials);
-            writer.Flush();
-            var base64 = Convert.ToBase64String(mem.ToArray());
-            if (encrypted) base64 = EncryptString(base64);
-            return base64;
+
+            using (var stream = encrypted ? new CryptoUtility(CryptoKey).EncryptStream(mem) : mem)
+            {
+                TunnelSocket.Serialize<object[]>(argsWithCredentials, stream, knownTypes);
+
+                if (stream is CryptoStream crStream) crStream.FlushFinalBlock();
+
+                return mem.ToArray();
+            }
         }
 
         public virtual string ServerUrl { get; set; }
@@ -162,7 +168,7 @@ namespace SolidCP.Providers.OS
                 else if (scheme != "ssh" && scheme != "ws" && scheme != "wss") throw new NotSupportedException($"The protocol {scheme} is not supported on GetSocket");
                 tunnel.Uri.Query["caller"] = GetType().FullName;
                 tunnel.Uri.Query["method"] = method;
-                tunnel.Uri.Query[$"args{(!IsSecure ? "x" : "")}"] = Serialize(method, !IsSecure, args);
+                tunnel.Arguments = Serialize(method, !IsSecure, args);
                 tunnel.IsFallback = true;
                 return tunnel;
             }
@@ -188,11 +194,11 @@ namespace SolidCP.Providers.OS
 
     public abstract class EnterpriseServerTunnelClientBase : TunnelClient
     {
-        public abstract Task<TunnelSocket> GetPveVncWebSocketAsync(int serviceItemId);
+        public abstract Task<TunnelSocket> GetPveVncWebSocketAsync(int serviceItemId, ProxmoxVncCredentials credentials);
     }
 
     public abstract class ServerTunnelClientBase : TunnelClient
     {
-        public abstract Task<TunnelSocket> GetPveVncWebSocketAsync(string vmId, RemoteServerSettings serverSettings, ServiceProviderSettings providerSettings);
+        public abstract Task<TunnelSocket> GetPveVncWebSocketAsync(string vmId, ProxmoxVncCredentials credentials, RemoteServerSettings serverSettings, ServiceProviderSettings providerSettings);
     }
 }

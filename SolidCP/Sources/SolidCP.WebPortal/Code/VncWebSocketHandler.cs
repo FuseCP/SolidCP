@@ -4,7 +4,9 @@ using System.Linq;
 using System.Web;
 using System.Web.Routing;
 using System.Net;
+using System.IO;
 using SolidCP.Providers.OS;
+using SolidCP.Providers.Virtualization;
 using SolidCP.EnterpriseServer.Client;
 using SolidCP.Portal;
 
@@ -37,25 +39,36 @@ namespace SolidCP.WebPortal
                 }
                 var item = query["item"];
                 int itemId;
+                string portText = query["port"];
+                int port;
+                string ticket = query["ticket"];
 
-                if (string.IsNullOrEmpty(user) || string.IsNullOrEmpty(item) || !int.TryParse(item, out itemId))
+                if (string.IsNullOrEmpty(user) || string.IsNullOrEmpty(item) || !int.TryParse(item, out itemId) ||
+                    string.IsNullOrEmpty(portText) || !int.TryParse(portText, out port) || string.IsNullOrEmpty(ticket))
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 } else
                 {
                     context.AcceptWebSocketRequest(async socketContext =>
                     {
+                        TunnelSocket outgoing;
                         var incoming = new TunnelSocket(socketContext.WebSocket);
                         var esclient = new EnterpriseServerTunnelClient();
                         esclient.Username = user;
                         esclient.Password = password;
                         esclient.ServerUrl = PortalConfiguration.SiteSettings["EnterpriseServer"];
+                        var credentials = new ProxmoxVncCredentials()
+                        {
+                            Ticket = ticket,
+                            Port = port
+                        };
                         try
                         {
-                            var outgoing = await esclient.GetPveVncWebSocketAsync(itemId);
+                            outgoing = await esclient.GetPveVncWebSocketAsync(itemId, credentials);
                             await incoming.Transmit(outgoing);
                         } catch (Exception ex)
                         {
+                            throw new IOException(ex.Message, ex);
                         }
                     });
                 }
@@ -64,7 +77,6 @@ namespace SolidCP.WebPortal
             {
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
             }
-
         }
 
         public static void Init()

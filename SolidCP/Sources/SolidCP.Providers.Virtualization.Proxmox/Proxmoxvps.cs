@@ -35,6 +35,7 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Concurrent;
 
 using System.Text;
 using SkiaSharp;
@@ -268,7 +269,8 @@ namespace SolidCP.Providers.Virtualization
             !ProxmoxTrustClusterServerCertificate.HasValue || !ProxmoxTrustClusterServerCertificate.Value;
 
         ProxmoxServer server;
-        public ProxmoxServer Server => server ?? (server = new ProxmoxServer {
+        public ProxmoxServer Server => server ?? (server = new ProxmoxServer
+        {
             Ip = string.IsNullOrEmpty(ProxmoxClusterServerApiHost) ? "127.0.0.1" : ProxmoxClusterServerApiHost,
             Port = ProxmoxClusterServerPort,
             ValidateCertificate = ValidateServerCertificate,
@@ -923,41 +925,81 @@ namespace SolidCP.Providers.Virtualization
             return false;
         }
 
-        public async Task<TunnelSocket> GetPveVncWebSocketAsync(string vmId)
+        ConcurrentDictionary<string, object> vmLocks = new ConcurrentDictionary<string, object>();
+        static DateTime lastAccess;
+        public ProxmoxVncCredentials GetPveVncCredentials(string vmId)
         {
             var nodeId = Api.NodeId(vmId);
-            //var vm = GetVirtualMachine(vmId);
 
-            var vnc = await Api.Nodes[nodeId.Node].Qemu[nodeId.Id].Vncproxy.Vncproxy();
+            var vnc = Api.Nodes[nodeId.Node].Qemu[nodeId.Id].Vncproxy.Vncproxy(true, true).Result;
             var dic = vnc.ResponseToDictionary;
             var data = dic["data"] as IDictionary<string, object>;
-            var ticket = WebUtility.UrlEncode(data["ticket"] as string);
+            var ticket = data["ticket"] as string;
             var port = int.Parse(data["port"] as string);
 
-            await Api.Nodes[nodeId.Node].Qemu[nodeId.Id].Vncwebsocket.Vncwebsocket(port, ticket);
+            lastAccess = DateTime.Now;
 
-            //var url = $"https://{ProxmoxClusterServerHost}:{ProxmoxClusterServerPort}/?console=kvm&novnc=1&node={nodeId.Node}" +
-            //    $"&resize=1&vmid={nodeId.Id}&path=api2/json/nodes/{nodeId.Node}/qemu/{nodeId.Id}/vncwebsocket/port/{port}/vncticket/{ticket}";
-            var url = $"wss://{Server.Ip}:{Server.Port}/api2/json/nodes/{nodeId.Node}/qemu/{nodeId.Id}/vncwebsocket/port/{port}/vncticket/{ticket}";
+            var credentials = new ProxmoxVncCredentials()
+            {
+                Ticket = ticket,
+                Port = port
+            };
+
+            var vmlock = vmLocks.GetOrAdd(vmId, new object());
+
+            lock (vmlock)
+            {
+                var tunnel = GetPveVncWebSocketAsync(vmId, credentials).Result;
+
+                var connectDelay = DateTime.Now.Subtract(lastAccess);
+                Console.WriteLine(connectDelay);
+
+                try
+                {
+                    tunnel.ConnectAsync().Wait();
+                }
+                catch (Exception ex)
+                {
+                    throw new IOException(ex.Message, ex);
+                }
+            }
+            return credentials;
+        }
+
+        async Task<TunnelSocket> ConnectVncWebSocket(ApiVM nodeId, string url, ProxmoxVncCredentials credentials)
+        {
+            await Api.Nodes[nodeId.Node].Qemu[nodeId.Id].Vncwebsocket.Vncwebsocket(credentials.Port, credentials.Ticket);
+
+            if (Api.LastResult.ResponseInError) throw new ArgumentException($"PVE Api Vncwebsocket returned error: {Api.LastResult.GetError()}");
 
             var tunnel = new TunnelSocket(url);
-            /*var cookie = new Cookie("PVEAuthCookie", WebUtility.UrlEncode(Api.PVEAuthCookie) + ";SameSite=Strict", "/", ProxmoxClusterServerApiHost)
-            {
-                Secure = true,
-                HttpOnly = true
-            };
-            tunnel.Cookies.Add(cookie); */
-            tunnel.HttpHeaders.Add("set-cookie", $"PVEAuthCookie={WebUtility.UrlEncode(Api.PVEAuthCookie)};path=/;SameSite=Strict");
-            tunnel.HttpHeaders.Add("CSRFPreventionToken", Api.CSRFPreventionToken);
+            var cookie = new Cookie(nameof(Api.PVEAuthCookie), Api.PVEAuthCookie, "/", Server.Hostname);
+            tunnel.Cookies.Add(cookie);
+            tunnel.HttpHeaders.Add(nameof(Api.CSRFPreventionToken), Api.CSRFPreventionToken);
             tunnel.ValidateCertificate = Server.ValidateCertificate;
-
-            try
+            tunnel.CanUpgrade = false;
+            tunnel.Disposing += (sender, args) =>
             {
-                tunnel.ConnectAsync();
-            } catch (Exception ex)
-            {
+                Task<TunnelSocket> task;
+                tunnelSockets.TryRemove(((TunnelSocket)sender).Url, out task);
+            };
 
-            }
+            return tunnel;
+        }
+
+        static ConcurrentDictionary<string, Task<TunnelSocket>> tunnelSockets = new ConcurrentDictionary<string, Task<TunnelSocket>>();
+        public async Task<TunnelSocket> GetPveVncWebSocketAsync(string vmId, ProxmoxVncCredentials credentials)
+        {
+
+            var nodeId = Api.NodeId(vmId);
+
+            var url = $"wss://{Server.Ip}:{Server.Port}/api2/json/nodes/{nodeId.Node}/qemu/{nodeId.Id}/vncwebsocket?port={credentials.Port}&vncticket={WebUtility.UrlEncode(credentials.Ticket)}";
+
+            var tunnel = await tunnelSockets.GetOrAdd(url, async url => await ConnectVncWebSocket(nodeId, url, credentials));
+
+            // if tunnel is connected remove it, only use it once
+            Task<TunnelSocket> task;
+            if (tunnel.IsConnected) tunnelSockets.TryRemove(url, out task);
 
             return tunnel;
         }
@@ -1077,7 +1119,8 @@ namespace SolidCP.Providers.Virtualization
             }
         }
 
-        public string SnapshotScreenshotFile(string snapshotId) {
+        public string SnapshotScreenshotFile(string snapshotId)
+        {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SolidCP", "Snapshots", $"proxmox-screenshot-{snapshotId}.png");
         }
 

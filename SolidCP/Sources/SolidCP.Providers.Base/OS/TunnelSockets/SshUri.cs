@@ -118,7 +118,7 @@ namespace SolidCP.Providers.OS
             get
             {
                 var uri = new SshUri(url);
-                uri.Tunnel = null;
+                uri.Tunnel = TunnelOption.None;
                 uri.Protocol = null;
                 return uri.Url;
             }
