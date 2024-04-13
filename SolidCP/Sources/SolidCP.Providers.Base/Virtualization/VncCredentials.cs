@@ -4,9 +4,8 @@ using System.Text;
 
 namespace SolidCP.Providers.Virtualization
 {
-    public class ProxmoxVncCredentials
+    public class VncCredentials
     {
-        public string Ticket { get; set; }
-        public int Port { get; set; }
+        public string Password { get; set; }
     }
 }

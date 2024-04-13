@@ -194,11 +194,11 @@ namespace SolidCP.Providers.OS
 
     public abstract class EnterpriseServerTunnelClientBase : TunnelClient
     {
-        public abstract Task<TunnelSocket> GetPveVncWebSocketAsync(int serviceItemId, ProxmoxVncCredentials credentials);
+        public abstract Task<TunnelSocket> GetPveVncWebSocketAsync(int serviceItemId, VncCredentials credentials);
     }
 
     public abstract class ServerTunnelClientBase : TunnelClient
     {
-        public abstract Task<TunnelSocket> GetPveVncWebSocketAsync(string vmId, ProxmoxVncCredentials credentials, RemoteServerSettings serverSettings, ServiceProviderSettings providerSettings);
+        public abstract Task<TunnelSocket> GetPveVncWebSocketAsync(string vmId, VncCredentials credentials, RemoteServerSettings serverSettings, ServiceProviderSettings providerSettings);
     }
 }

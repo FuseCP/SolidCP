@@ -270,7 +270,7 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
-        public ProxmoxVncCredentials GetPveVncCredentials(int itemId)
+        public VncCredentials GetPveVncCredentials(int itemId)
         {
             return VirtualizationServerControllerProxmox.GetPveVncCredentials(itemId);
         }

@@ -318,7 +318,7 @@ namespace SolidCP.Providers.OS
             var destResult = new WebSocketReceiveResult(0, WebSocketMessageType.Binary, true);
             var listenerResult = new WebSocketReceiveResult(0, WebSocketMessageType.Binary, true);
 
-            object Lock = new object();
+            var Lock = new SemaphoreSlim(1, 1);
 
             Task closeDestTask = null;
             Exception destException = null, exception = null;
@@ -333,11 +333,10 @@ namespace SolidCP.Providers.OS
 
                     destResultSender = await dest.ReceiveAsync(new ArraySegment<byte>(buffer));
 
-                    lock (Lock)
-                    {
-                        destResult = destResultSender;
-                        listenerResultSender = listenerResult;
-                    }
+                    await Lock.WaitAsync();
+                    destResult = destResultSender;
+                    listenerResultSender = listenerResult;
+                    Lock.Release();
 
                     while (!listenerResultSender.CloseStatus.HasValue && !destResultSender.CloseStatus.HasValue)
                     {
@@ -345,23 +344,30 @@ namespace SolidCP.Providers.OS
 
                         destResultSender = await dest.ReceiveAsync(new ArraySegment<byte>(buffer));
 
-                        lock (Lock)
-                        {
-                            destResult = destResultSender;
-                            listenerResultSender = listenerResult;
-                        }
+                        await Lock.WaitAsync();
+                        destResult = destResultSender;
+                        listenerResultSender = listenerResult;
+                        Lock.Release();
                     }
                 }
                 catch (Exception ex)
                 {
-                    lock (Lock) destException = ex;
+                    await Lock.WaitAsync();
+                    destException = ex;
+                    Lock.Release();
                 }
 
                 Task closeDestTaskSender = null;
-                lock (Lock)
+                await Lock.WaitAsync();
+                try
                 {
                     if (dest.IsConnected && closeDestTask == null) closeDestTask = closeDestTaskSender = dest.CloseAsync(destResult.CloseStatus.Value, destResult.CloseStatusDescription);
                 }
+                finally
+                {
+                    Lock.Release();
+                }
+
                 if (closeDestTaskSender != null) await closeDestTaskSender;
             });
 
@@ -373,11 +379,10 @@ namespace SolidCP.Providers.OS
 
                 listenerResultReceiver = await ReceiveAsync(new ArraySegment<byte>(buffer));
 
-                lock (Lock)
-                {
-                    listenerResult = listenerResultReceiver;
-                    destResultReceiver = destResult;
-                }
+                await Lock.WaitAsync();
+                listenerResult = listenerResultReceiver;
+                destResultReceiver = destResult;
+                Lock.Release();
 
                 while (!listenerResultReceiver.CloseStatus.HasValue && !destResultReceiver.CloseStatus.HasValue)
                 {
@@ -385,11 +390,10 @@ namespace SolidCP.Providers.OS
 
                     listenerResultReceiver = await ReceiveAsync(new ArraySegment<byte>(buffer));
 
-                    lock (Lock)
-                    {
-                        listenerResult = listenerResultReceiver;
-                        destResultReceiver = destResult;
-                    }
+                    await Lock.WaitAsync();
+                    listenerResult = listenerResultReceiver;
+                    destResultReceiver = destResult;
+                    Lock.Release();
                 }
             }
             catch (Exception ex)
@@ -400,24 +404,39 @@ namespace SolidCP.Providers.OS
             WebSocketCloseStatus closeStatus;
             string closeStatusDescription;
 
-            lock (Lock)
+            await Lock.WaitAsync();
+            try
             {
                 closeStatus = listenerResult.CloseStatus ?? destResult.CloseStatus.Value;
                 closeStatusDescription = listenerResult.CloseStatus.HasValue ? listenerResult.CloseStatusDescription : destResult.CloseStatusDescription;
             }
+            finally
+            {
+                Lock.Release();
+            }
 
             if (IsConnected) await CloseAsync(closeStatus, closeStatusDescription);
             Task closeDestTaskReceiver = null;
-            lock (Lock)
+            await Lock.WaitAsync();
+            try
             {
                 if (dest.IsConnected && closeDestTask == null) closeDestTask = closeDestTaskReceiver = dest.CloseAsync(closeStatus, closeStatusDescription);
+                dest.Dispose();
             }
+            finally
+            {
+                Lock.Release();
+            }
+
             await (closeDestTaskReceiver ?? Task.CompletedTask);
 
-            lock (Lock)
+            await Lock.WaitAsync();
+            try
             {
                 if (exception != null) throw new IOException(exception.Message, exception);
                 else if (destException != null) throw new IOException(destException.Message, destException);
+            } finally {
+                Lock.Release();
             }
         }
 
@@ -581,7 +600,8 @@ namespace SolidCP.Providers.OS
                     }
                 }
                 UpgradeTunnelSocket = null;
-            } else
+            }
+            else
             {
                 if (IsFallback)
                 {
@@ -635,9 +655,38 @@ namespace SolidCP.Providers.OS
                 await CloseAsync(WebSocketCloseStatus.InvalidMessageType, "This WebSocket does not support the fallback url protocol");
             }
         }
+
+        bool isConnected = false;
+
+        SemaphoreSlim ConnectLock = new SemaphoreSlim(1, 1);
+        public bool HasConnectBeenCalled
+        {
+            get
+            {
+                ConnectLock.Wait();
+                try
+                {
+                    return isConnected;
+                }
+                finally
+                {
+                    ConnectLock.Release();
+                }
+            }
+        }
+
         public async Task ConnectAsync(bool upgradeWhenAvailable = true)
         {
-            if (IsConnected) return;
+            await ConnectLock.WaitAsync();
+            try
+            {
+                if (IsConnected || isConnected) return;
+                isConnected = true; // only call ConnectAsync once if it's called concurrently
+            }
+            finally
+            {
+                ConnectLock.Release();
+            }
 
             try
             {
@@ -669,18 +718,21 @@ namespace SolidCP.Providers.OS
                         var url = Url;
                         if (IsWebSocketOverSsh) url = await GetSshWebSocketUrlAsync();
 
-                        var connect = async () => await clientWebSocket.ConnectAsync(new System.Uri(url), new CancellationTokenSource(ConnectTimeout).Token);
-                        if (!ValidateCertificate && !SetRemoteValidationCallback())
-                        {
-                            ServicePointManager.ServerCertificateValidationCallback += AlwaysTrustCertificate;
-                            await connect();
-                            ServicePointManager.ServerCertificateValidationCallback -= AlwaysTrustCertificate;
-                        }
-                        else
-                        {
-                            await connect();
-                        }
+                        var setValidationCallback = !ValidateCertificate && !SetRemoteValidationCallback();
+                        if (setValidationCallback) ServicePointManager.ServerCertificateValidationCallback += AlwaysTrustCertificate;
 
+                        try
+                        {
+                            await clientWebSocket.ConnectAsync(new System.Uri(url), new CancellationTokenSource(ConnectTimeout).Token);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw ex;
+                        }
+                        finally
+                        {
+                            if (setValidationCallback) ServicePointManager.ServerCertificateValidationCallback -= AlwaysTrustCertificate;
+                        }
                         if (Arguments != null) await SendData(Arguments);
 
                         if (IsFallback && upgradeWhenAvailable)
@@ -708,7 +760,8 @@ namespace SolidCP.Providers.OS
                 }
                 await socket.ConnectAsync(new IPEndPoint(address, port));
                 BaseSocket = socket;
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw new IOException(ex.Message, ex);
             }

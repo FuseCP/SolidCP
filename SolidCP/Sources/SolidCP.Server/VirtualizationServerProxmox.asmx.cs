@@ -267,7 +267,7 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
-        public ProxmoxVncCredentials GetPveVncCredentials(string vmId)
+        public VncCredentials GetPveVncCredentials(string vmId)
         {
             var msg = $"'{ProviderSettings.ProviderName}' {nameof(GetPveVncCredentials)}";
             try
@@ -284,7 +284,7 @@ namespace SolidCP.Server
             }
 
         }
-        public async Task<TunnelSocket> GetPveVncWebSocketAsync(string vmId, ProxmoxVncCredentials credentials) => await VirtualizationProvider.GetPveVncWebSocketAsync(vmId, credentials);
+        public async Task<TunnelSocket> GetPveVncWebSocketAsync(string vmId, VncCredentials credentials) => await VirtualizationProvider.GetPveVncWebSocketAsync(vmId, credentials);
         #endregion
 
         #region Snapshots

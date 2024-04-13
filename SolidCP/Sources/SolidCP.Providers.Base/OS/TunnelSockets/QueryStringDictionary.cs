@@ -18,12 +18,6 @@ namespace SolidCP.Providers.OS
             }
         }
 
-        public static string QueryEncode(string value) => WebUtility.UrlEncode(value.Replace("%", "%25"))
-            .Replace("?", "%3F")
-            .Replace("&", "%26")
-            .Replace("=", "%3D")
-            .Replace(";", "%3B");
-
         public virtual string QueryString
         {
             get
@@ -32,11 +26,11 @@ namespace SolidCP.Providers.OS
                 foreach (var par in this)
                 {
                     if (str.Length > 0) str.Append("&");
-                    str.Append(QueryEncode(par.Key));
+                    str.Append(Uri.EscapeDataString(par.Key));
                     if ((string)par.Value != "")
                     {
                         str.Append("=");
-                        str.Append(QueryEncode(par.Value));
+                        str.Append(Uri.EscapeDataString(par.Value));
                     }
                 }
                 return str.ToString();
@@ -50,8 +44,8 @@ namespace SolidCP.Providers.OS
                     foreach (var par in value.Split('&', ';'))
                     {
                         var tokens = par.Split('=');
-                        if (tokens.Length > 1) Add(WebUtility.UrlDecode(tokens[0].Trim()), WebUtility.UrlDecode(tokens[1].Trim()));
-                        else Add(WebUtility.UrlDecode(tokens[0].Trim()), "");
+                        if (tokens.Length > 1) Add(Uri.UnescapeDataString(tokens[0].Trim()), Uri.UnescapeDataString(tokens[1].Trim()));
+                        else Add(Uri.UnescapeDataString(tokens[0].Trim()), "");
                     }
                 }
             }

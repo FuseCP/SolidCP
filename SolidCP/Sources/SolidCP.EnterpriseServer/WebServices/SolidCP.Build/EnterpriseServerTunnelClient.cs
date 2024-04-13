@@ -17,7 +17,7 @@ namespace SolidCP.EnterpriseServer.Client
             return system.GetCryptoKey();
         }
         public override string CryptoKey => GetCryptoKey();
-        public override async Task<TunnelSocket> GetPveVncWebSocketAsync(int serviceItemId, ProxmoxVncCredentials credentials)
+        public override async Task<TunnelSocket> GetPveVncWebSocketAsync(int serviceItemId, VncCredentials credentials)
         {
             return await GetTunnel(nameof(GetPveVncWebSocketAsync), serviceItemId, credentials);
         }

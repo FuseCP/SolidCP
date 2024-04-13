@@ -198,7 +198,7 @@ namespace SolidCP.WebPortal
                 // redirect to login page
                 string returnUrl = Request.RawUrl;
                 Response.Redirect(DEFAULT_PAGE + "?" + PAGE_ID_PARAM + "=" +
-                    PortalConfiguration.SiteSettings["LoginPage"] + "&ReturnUrl=" + TunnelUri.QueryEncode(returnUrl));
+                    PortalConfiguration.SiteSettings["LoginPage"] + "&ReturnUrl=" + Uri.EscapeDataString(returnUrl));
             }
 
             Title = String.Format("{0} - {1}",

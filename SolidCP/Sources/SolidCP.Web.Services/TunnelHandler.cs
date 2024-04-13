@@ -46,6 +46,9 @@ namespace SolidCP.Web.Services
                 if (listener.IsConnected) await listener.CloseAsync(WebSocketCloseStatus.InternalServerError, ex.StackTrace);
                 if (destination.IsConnected) await destination.CloseAsync(WebSocketCloseStatus.InternalServerError, ex.StackTrace);
                 throw new IOException(ex.Message, ex);
+            } finally
+            {
+                destination.Dispose();
             }
         }
 
@@ -99,14 +102,14 @@ namespace SolidCP.Web.Services
                         }
                         else
                         {
-                            await webSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, "Cannot get a tunnel", CancellationToken.None);
+                                await webSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, "Cannot get a tunnel", CancellationToken.None);
                         }
-
                     }
                     catch (Exception ex)
                     {
                         await webSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, $"{ex.Message}\n{ex.StackTrace}", CancellationToken.None);
                     }
+
                 }
             }
             else

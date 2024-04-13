@@ -21,7 +21,7 @@ namespace SolidCP.EnterpriseServer
 
         public override void Authenticate(string user, string password) => UsernamePasswordValidator.Validate(user, password);
         
-        public override async Task<TunnelSocket> GetPveVncWebSocketAsync(int serviceItemId, ProxmoxVncCredentials credentials)
+        public override async Task<TunnelSocket> GetPveVncWebSocketAsync(int serviceItemId, VncCredentials credentials)
         {
             var serviceItem = PackageController.GetPackageItem(serviceItemId) as VirtualMachine;
             if (serviceItem == null) throw new AccessViolationException("Service item not found.");
@@ -41,7 +41,7 @@ namespace SolidCP.EnterpriseServer
 
             return await GetPveVNCWebSocket(vmId, credentials, service);
         }
-        private async Task<TunnelSocket> GetPveVNCWebSocket(string vmId, ProxmoxVncCredentials credentials, ServiceInfo service)
+        private async Task<TunnelSocket> GetPveVNCWebSocket(string vmId, VncCredentials credentials, ServiceInfo service)
         {
             if (service == null)
                 throw new Exception($"Service with ID {service.ServiceId} was not found");
@@ -79,7 +79,7 @@ namespace SolidCP.EnterpriseServer
 
             return await GetPveVNCWebSocket(serverUrl, server.Password, server.PasswordIsSHA256, vmId, credentials, serverSettings, providerSettings); 
         }
-        private async Task<TunnelSocket> GetPveVNCWebSocket(string serverUrl, string password, bool sha256Password, string vmId, ProxmoxVncCredentials credentials, RemoteServerSettings serverSettings, ServiceProviderSettings providerSettings) {
+        private async Task<TunnelSocket> GetPveVNCWebSocket(string serverUrl, string password, bool sha256Password, string vmId, VncCredentials credentials, RemoteServerSettings serverSettings, ServiceProviderSettings providerSettings) {
             password = sha256Password ? CryptoUtils.SHA256(password) : CryptoUtils.SHA1(password);
             var client = new ServerTunnelClient() { ServerUrl = serverUrl, Password = password };
 

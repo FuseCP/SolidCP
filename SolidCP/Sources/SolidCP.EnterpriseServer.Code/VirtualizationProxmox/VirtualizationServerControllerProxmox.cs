@@ -100,7 +100,7 @@ namespace SolidCP.EnterpriseServer
             return vps.GetVirtualMachines().ToArray();
         }
 
-        public static ProxmoxVncCredentials GetPveVncCredentials(int itemId)
+        public static VncCredentials GetPveVncCredentials(int itemId)
         {
             // load meta item
             VirtualMachine vm = GetVirtualMachineByItemId(itemId);

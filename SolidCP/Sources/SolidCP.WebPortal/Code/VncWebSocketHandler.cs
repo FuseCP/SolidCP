@@ -25,6 +25,7 @@ namespace SolidCP.WebPortal
                 var query = context.Request.QueryString;
                 var user = query["user"];
                 var password = query["password"];
+                var vncpassword = query["vncpassword"];
                 if (string.IsNullOrEmpty(password))
                 {
                     var authTicket = PortalUtils.AuthTicket;
@@ -39,29 +40,21 @@ namespace SolidCP.WebPortal
                 }
                 var item = query["item"];
                 int itemId;
-                string portText = query["port"];
-                int port;
-                string ticket = query["ticket"];
-
                 if (string.IsNullOrEmpty(user) || string.IsNullOrEmpty(item) || !int.TryParse(item, out itemId) ||
-                    string.IsNullOrEmpty(portText) || !int.TryParse(portText, out port) || string.IsNullOrEmpty(ticket))
+                    string.IsNullOrEmpty(vncpassword))
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 } else
                 {
                     context.AcceptWebSocketRequest(async socketContext =>
                     {
-                        TunnelSocket outgoing;
+                        TunnelSocket outgoing = null;
                         var incoming = new TunnelSocket(socketContext.WebSocket);
                         var esclient = new EnterpriseServerTunnelClient();
                         esclient.Username = user;
                         esclient.Password = password;
                         esclient.ServerUrl = PortalConfiguration.SiteSettings["EnterpriseServer"];
-                        var credentials = new ProxmoxVncCredentials()
-                        {
-                            Ticket = ticket,
-                            Port = port
-                        };
+                        var credentials = new VncCredentials() { Password = vncpassword };
                         try
                         {
                             outgoing = await esclient.GetPveVncWebSocketAsync(itemId, credentials);
@@ -69,6 +62,9 @@ namespace SolidCP.WebPortal
                         } catch (Exception ex)
                         {
                             throw new IOException(ex.Message, ex);
+                        } finally
+                        {
+                            outgoing?.Dispose();
                         }
                     });
                 }

@@ -138,8 +138,6 @@ namespace SolidCP.Providers.OS
             }
         }
 
-        public static string QueryEncode(string value) => QueryStringDictionary.QueryEncode(value);
-
         public virtual string QueryString
         {
             get => Query.QueryString;

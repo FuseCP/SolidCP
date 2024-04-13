@@ -12,7 +12,6 @@ namespace SolidCP.Web.Clients
 {
 	public class ClientAssemblyBase
 	{
-
 		public string AssemblyName { get; set; }
 		public ClientBase Client { get; set; }
 
@@ -20,14 +19,25 @@ namespace SolidCP.Web.Clients
 		static Assembly serviceAssembly = null;
 		static object Lock = new object();
 
+		void GetMethod(string typeName, string methodName, out Assembly assembly, out Type type, out MethodInfo method)
+		{
+            assembly = Assembly;
+            type = assembly.GetType(typeName);
+            method = type.GetMethod(methodName);
+            if (method == null) throw new ArgumentException($"Method {methodName} not found");
+        }
+
 		protected T Invoke<T>(string typeName, string methodName, params object[] parameters)
 		{
-			var assembly = Assembly;
-			var type = assembly.GetType(typeName);
-			MethodInfo method = null;
-			method = method ?? type.GetMethod(methodName);			
-			if (method == null) throw new ArgumentException($"Method {methodName} not found");
+			Assembly assembly;
+			Type type;
+			MethodInfo method;
+			GetMethod(typeName, methodName, out assembly, out type, out method);
+			return Invoke<T>(assembly, type, method, methodName, parameters);
+		}
 
+		protected T Invoke<T>(Assembly assembly, Type type, MethodInfo method, string methodName, params object[] parameters)
+		{
 			// authentication
 			if (Client.IsAuthenticated)
 			{
@@ -102,8 +112,8 @@ namespace SolidCP.Web.Clients
 		}
 
 		protected Task<T> InvokeAsync<T>(string typeName, string methodName, params object[] parameters)
-		{
-			return Task.Factory.StartNew<T>(() => Invoke<T>(typeName, methodName, parameters),
+		{			
+            return Task.Factory.StartNew<T>(() => Invoke<T>(typeName, methodName, parameters),
 				CancellationToken.None,
 				TaskCreationOptions.None,
 				TaskScheduler.FromCurrentSynchronizationContext());
@@ -122,6 +132,5 @@ namespace SolidCP.Web.Clients
 				TaskCreationOptions.None,
 				TaskScheduler.FromCurrentSynchronizationContext());
 		}
-
 	}
 }

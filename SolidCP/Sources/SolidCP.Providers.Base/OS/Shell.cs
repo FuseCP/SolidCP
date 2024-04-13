@@ -36,13 +36,19 @@ namespace SolidCP.Providers.OS
 			LogOutput += OnLogOutput;
 		}
 
+		SemaphoreSlim Lock = new SemaphoreSlim(1,1), OutputLock = new SemaphoreSlim(1,1),
+			ErrorLock = new SemaphoreSlim(1,1), OutputAndErrorLock = new SemaphoreSlim(1,1);
+
 		//methods to support await on Shell type
 		public Shell GetAwaiter() => this;
 
 		Action Continuation = null;
 		public void OnCompleted(Action continuation)
 		{
-			lock (this) Continuation += continuation;
+			Lock.Wait();
+			Continuation += continuation;
+			Lock.Release();
+
 			CheckCompleted();
 		}
 
@@ -68,11 +74,10 @@ namespace SolidCP.Providers.OS
 			{
 				if (process != value)
 				{
-					lock (this)
-					{
-						hasProcessExited = outputEOF = errorEOF = value == null;
-						process = value;
-					}
+					Lock.Wait();
+					hasProcessExited = outputEOF = errorEOF = value == null;
+					process = value;
+					Lock.Release();
 				}
 			}
 		}
@@ -131,8 +136,8 @@ namespace SolidCP.Providers.OS
 		{
 			Action cnt = null;
 			var exited = Process.HasExited;
-			lock (this)
-			{
+			Lock.Wait();
+			try {
 				hasProcessExited = hasProcessExited || exited;
 				checkHasExited = false;
 				if (IsCompleted && Continuation != null)
@@ -141,6 +146,9 @@ namespace SolidCP.Providers.OS
 					Continuation = null;
 				}
 				checkHasExited = true;
+			} finally
+			{
+				Lock.Release();
 			}
 			cnt?.Invoke();
 		}
@@ -209,7 +217,10 @@ namespace SolidCP.Providers.OS
 				process.Exited += (obj, args) =>
 				{
 					child.exitCode = child.Process.ExitCode;
-					lock (child) child.hasProcessExited = true;
+					child.Lock.Wait();
+					child.hasProcessExited = true;
+					child.Lock.Release();
+					
 					child.CheckCompleted();
 				};
 				process.EnableRaisingEvents = true;
@@ -217,7 +228,10 @@ namespace SolidCP.Providers.OS
 				{
 					if (data.Data == null)
 					{
-						lock (child) child.errorEOF = true;
+						child.Lock.Wait();
+						child.errorEOF = true;
+						child.Lock.Release();
+						
 						child.CheckCompleted();
 					}
 					else
@@ -236,7 +250,10 @@ namespace SolidCP.Providers.OS
 				{
 					if (data.Data == null)
 					{
-						lock (child) child.outputEOF = true;
+						child.Lock.Wait();
+						child.outputEOF = true;
+						child.Lock.Release();
+
 						child.CheckCompleted();
 						LogCommandEnd?.Invoke();
 					}
@@ -332,20 +349,39 @@ namespace SolidCP.Providers.OS
 		{
 			if (Process == null && NotFound) return null;
 			await this;
-			lock (output) return output.ToString();
+			await OutputLock.WaitAsync();
+			try {
+				return output.ToString();
+			} finally
+			{
+				OutputLock.Release();
+			}
 		}
 
 		public async Task<string> Error()
 		{
 			if (Process == null && NotFound) return null;
 			await this;
-			lock (error) return error.ToString();
+			await ErrorLock.WaitAsync();
+			try {
+				return error.ToString();
+			} finally
+			{
+				ErrorLock.Release();
+			}
 		}
 		public async Task<string> OutputAndError()
 		{
 			if (Process == null && NotFound) return null;
 			await this;
-			lock (outputAndError) return outputAndError.ToString();
+			await OutputAndErrorLock.WaitAsync();
+			try
+			{
+				return outputAndError.ToString();
+			} finally
+			{
+				OutputAndErrorLock.Release();
+			}
 		}
 
 		public async Task<int> ExitCode()
@@ -358,10 +394,13 @@ namespace SolidCP.Providers.OS
 		public string LogFile = null;
 		protected virtual void OnLog(string text)
 		{
-			lock (outputAndError)
-			{
+			OutputAndErrorLock.Wait();
+			try {
 				outputAndError.Append(text);
 				if (LogFile != null) File.AppendAllText(LogFile, text);
+			} finally
+			{
+				OutputAndErrorLock.Release();
 			}
 		}
 
@@ -378,15 +417,26 @@ namespace SolidCP.Providers.OS
 		}
 		protected virtual void OnLogOutput(string text)
 		{
-			lock (output)
-			{
+			OutputLock.Wait();
+			try {
 				output.Append(text);
 				if (Redirect) Console.Write(text);
+			} finally
+			{
+				OutputLock.Release();
 			}
 		}
 		protected virtual void OnLogError(string text)
 		{
-			lock (error) error.Append(text);
+			ErrorLock.Wait();
+			try
+			{
+				error.Append(text);
+			} finally
+			{
+				ErrorLock.Release();
+			}
+
 			if (Redirect) Console.Error.Write(text);
 		}
 #if wpkg

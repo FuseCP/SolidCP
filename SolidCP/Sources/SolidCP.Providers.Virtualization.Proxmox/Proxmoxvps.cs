@@ -925,50 +925,87 @@ namespace SolidCP.Providers.Virtualization
             return false;
         }
 
-        ConcurrentDictionary<string, object> vmLocks = new ConcurrentDictionary<string, object>();
-        static DateTime lastAccess;
-        public ProxmoxVncCredentials GetPveVncCredentials(string vmId)
+        class VncConnection : IEquatable<VncConnection>, IDisposable
         {
-            var nodeId = Api.NodeId(vmId);
+            public ApiVM Vm { get; set; }
+            public string Password { get; set; }
+            public bool Equals(VncConnection other) => Vm.Equals(other.Vm) && Password == other.Password;
+            public override int GetHashCode() => Vm.GetHashCode() ^ Password.GetHashCode();
+            public virtual void Dispose() { }
+        }
 
-            var vnc = Api.Nodes[nodeId.Node].Qemu[nodeId.Id].Vncproxy.Vncproxy(true, true).Result;
+        class ConnectedVncConnection : VncConnection, IEquatable<VncConnection>, IDisposable
+        {
+            public int Port { get; set; }
+            public string Ticket { get; set; }
+            public Task<TunnelSocket> Tunnel { get; set; }
+            public DateTime Requested { get; set; }
+
+            bool isDisposed = false;
+            public override void Dispose()
+            {
+                if (!isDisposed)
+                {
+                    isDisposed = true;
+                    Tunnel?.Dispose();
+                }
+            }
+        }
+
+        static ConcurrentDictionary<VncConnection, VncConnection> VncConnections = new ConcurrentDictionary<VncConnection, VncConnection>();
+
+        public VncCredentials GetPveVncCredentials(string vmId)
+        {
+            vmId = vmId.Trim();
+
+            var vm = Api.NodeId(vmId);
+
+            var vnc = Api.Nodes[vm.Node].Qemu[vm.Id].Vncproxy.Vncproxy(true, true).Result;
+            var vncRequested = DateTime.Now;
             var dic = vnc.ResponseToDictionary;
             var data = dic["data"] as IDictionary<string, object>;
             var ticket = data["ticket"] as string;
+            var password = data["password"] as string;
             var port = int.Parse(data["port"] as string);
 
-            lastAccess = DateTime.Now;
+            var credentials = new VncCredentials() { Password = password };
 
-            var credentials = new ProxmoxVncCredentials()
+            var connection = new ConnectedVncConnection()
             {
+                Vm = vm,
                 Ticket = ticket,
-                Port = port
+                Port = port,
+                Password = password,
+                Requested = DateTime.Now
             };
+            connection.Tunnel = GetPveWebSocketAsync(connection);
+ 
+            VncConnections.AddOrUpdate(connection, connection, (key, con) => connection);
 
-            var vmlock = vmLocks.GetOrAdd(vmId, new object());
-
-            lock (vmlock)
-            {
-                var tunnel = GetPveVncWebSocketAsync(vmId, credentials).Result;
-
-                var connectDelay = DateTime.Now.Subtract(lastAccess);
-                Console.WriteLine(connectDelay);
-
-                try
-                {
-                    tunnel.ConnectAsync().Wait();
-                }
-                catch (Exception ex)
-                {
-                    throw new IOException(ex.Message, ex);
-                }
-            }
             return credentials;
         }
 
-        async Task<TunnelSocket> ConnectVncWebSocket(ApiVM nodeId, string url, ProxmoxVncCredentials credentials)
+        public async Task<TunnelSocket> GetPveVncWebSocketAsync(string vmId, VncCredentials credentials)
         {
-            await Api.Nodes[nodeId.Node].Qemu[nodeId.Id].Vncwebsocket.Vncwebsocket(credentials.Port, credentials.Ticket);
+            var vm = Api.NodeId(vmId);
+            var key = new VncConnection() { Password = credentials.Password, Vm = vm };
+            var connection = VncConnections.GetOrAdd(key, key);
+            if (connection != null && connection is ConnectedVncConnection opencon)
+            {
+                try
+                {
+                    return await opencon.Tunnel;
+                } catch (Exception ex) {
+                    throw new IOException(ex.Message, ex);
+                }
+            }
+            else throw new Exception("GetPveWebSocketAsync called without requesting credentials first with GetPveVncCredentials");
+        }
+        async Task<TunnelSocket> GetPveWebSocketAsync(ConnectedVncConnection connection)
+        {
+            var url = $"wss://{Server.Ip}:{Server.Port}/api2/json/nodes/{connection.Vm.Node}/qemu/{connection.Vm.Id}/vncwebsocket?port={connection.Port}&vncticket={Uri.EscapeDataString(connection.Ticket)}";
+
+            await Api.Nodes[connection.Vm.Node].Qemu[connection.Vm.Id].Vncwebsocket.Vncwebsocket(connection.Port, connection.Ticket);
 
             if (Api.LastResult.ResponseInError) throw new ArgumentException($"PVE Api Vncwebsocket returned error: {Api.LastResult.GetError()}");
 
@@ -980,26 +1017,24 @@ namespace SolidCP.Providers.Virtualization
             tunnel.CanUpgrade = false;
             tunnel.Disposing += (sender, args) =>
             {
-                Task<TunnelSocket> task;
-                tunnelSockets.TryRemove(((TunnelSocket)sender).Url, out task);
+                VncConnection con;
+                VncConnections.TryRemove(connection, out con);
             };
 
-            return tunnel;
-        }
+            try
+            {
+                await tunnel.ConnectAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new IOException(ex.Message, ex);
+            }
 
-        static ConcurrentDictionary<string, Task<TunnelSocket>> tunnelSockets = new ConcurrentDictionary<string, Task<TunnelSocket>>();
-        public async Task<TunnelSocket> GetPveVncWebSocketAsync(string vmId, ProxmoxVncCredentials credentials)
-        {
+            var connectDelay = DateTime.Now.Subtract(connection.Requested);
 
-            var nodeId = Api.NodeId(vmId);
+            if (connectDelay > TimeSpan.FromSeconds(10)) Console.WriteLine("Warning: VNC Websocket access was slower than 10 seconds timeout value");
 
-            var url = $"wss://{Server.Ip}:{Server.Port}/api2/json/nodes/{nodeId.Node}/qemu/{nodeId.Id}/vncwebsocket?port={credentials.Port}&vncticket={WebUtility.UrlEncode(credentials.Ticket)}";
-
-            var tunnel = await tunnelSockets.GetOrAdd(url, async url => await ConnectVncWebSocket(nodeId, url, credentials));
-
-            // if tunnel is connected remove it, only use it once
-            Task<TunnelSocket> task;
-            if (tunnel.IsConnected) tunnelSockets.TryRemove(url, out task);
+            Console.WriteLine($"VNC Websocket access delay: {connectDelay}");
 
             return tunnel;
         }

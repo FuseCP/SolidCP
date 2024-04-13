@@ -16,7 +16,7 @@ namespace SolidCP.Server
         {
             PasswordValidator.Validate(password);
         }
-        public override async Task<TunnelSocket> GetPveVncWebSocketAsync(string vmId, ProxmoxVncCredentials credentials, RemoteServerSettings serverSettings, ServiceProviderSettings providerSettings)
+        public override async Task<TunnelSocket> GetPveVncWebSocketAsync(string vmId, VncCredentials credentials, RemoteServerSettings serverSettings, ServiceProviderSettings providerSettings)
         {
             using (var proxmox = new VirtualizationServerProxmox())
             {
