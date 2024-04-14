@@ -274,9 +274,12 @@ namespace SolidCP.Setup
 
 		public string UpdateVersion { get; set; }
 
-		public string EnterpriseServerURL { get; set; }
+        public string EnterpriseServerURL { get; set; }
+        public bool EmbedEnterpriseServer { get; set; }
+        public string EnterpriseServerPath { get; set; }
+		public bool ExposeEnterpriseServerWebservices { get; set; }
 
-		public string UserDomain { get; set; }
+        public string UserDomain { get; set; }
 
 		public string Domain
 		{

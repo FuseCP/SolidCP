@@ -322,7 +322,7 @@ namespace SolidCP.UniversalInstaller
 			var confFile = Path.Combine(InstallWebRootPath, PortalFolder, "App_Data", "SiteSettings.config");
 			var conf = XElement.Load(confFile);
 			var enterpriseServer = conf.Element("SiteSettings/EnterpriseServer");
-			enterpriseServer.Value = settings.EnterpriseServerUrl;
+			enterpriseServer.Value = settings.EmbedEnterpriseServer ? "assembly://SolidCP.EnterpriseServer" : settings.EnterpriseServerUrl;
 			conf.Save(confFile);
 		}
 

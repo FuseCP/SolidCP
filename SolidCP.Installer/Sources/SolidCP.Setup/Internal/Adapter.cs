@@ -5083,6 +5083,7 @@ namespace SolidCP.Setup.Internal
 			new EnsureServiceAccntSecured(),
 			//new CopyFilesAction(),
 			new CopyWebConfigAction(),
+			new ConfigureEmbeddedEnterpriseServerAction(),
 			new CreateWindowsAccountAction(),
 			new ConfigureAspNetTempFolderPermissionsAction(),
 			new SetNtfsPermissionsAction(),
