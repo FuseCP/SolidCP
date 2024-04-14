@@ -61,9 +61,13 @@
 		<FixDefaultPublicFolderMailboxBuild>$(BuildFolder)\FixDefaultPublicFolderMailbox</FixDefaultPublicFolderMailboxBuild>
         <WiXInstallerBuild>$(BuildFolder)\WiXInstaller</WiXInstallerBuild>
 		<WIX Condition=" '$(WIX)' == '' ">$(RootFolder)\tools\WIX\x86</WIX>
+
 		<!-- Include pdb's since users can send back StackTraces to ISP's, and with the pdb's the StackTraces contain
 				line numbers and the ISP's can debug SolidCP. -->
 		<IncludeReleasePdbs>true</IncludeReleasePdbs>
+
+		<!-- Use aspnet_compiler to precompile WebPortal if set to true (This also checks all ascx and aspx files for errors) -->
+		<UseAspNetPrecompile>true</UseAspNetPrecompile>
 
 		<ftphost></ftphost>
 		<ftpUsername></ftpUsername>
@@ -237,7 +241,12 @@
 			<PortalBuildExclude Include="$(PortalSrc)\DesktopModules\**\web.config" />
 			<PortalBuildFiles Include="$(PortalSrc)\**\*.*" Exclude="@(PortalBuildExclude)" />
 		</ItemGroup>
-		<Copy SourceFiles="@(PortalBuildFiles)" DestinationFolder="$(PortalBuild)\%(RecursiveDir)" />
+
+		<Copy SourceFiles="@(PortalBuildFiles)" DestinationFolder="$(PortalBuild)\%(RecursiveDir)" Condition=" '$(UseAspNetPrecompile)' != 'true' " />
+
+		<!-- Use aspnet_compiler to percompile WebPortal if UseAspNetPrecompile is set to true -->
+		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.WebPortal\SolidCP.WebPortal.csproj" Properties="Configuration=$(BuildConfiguration)" Targets="Deploy" 
+			Condition=" '$(UseAspNetPrecompile)' == 'true' " />
 	</Target>
 
 		<Target Name="CreateSchedulerBuild" DependsOnTargets="CreatePortalBuild">

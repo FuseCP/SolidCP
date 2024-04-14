@@ -10178,6 +10178,11 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>ErrorDescription.VPS_LOAD_PVEVM_ITEM</Key>
+    <DefaultValue>Possible reasons of this error are:&lt;br/&gt;1. Virtual machine associated with the VPS meta-item was deleted from virtualization server.&lt;br/&gt;2. Proxmox management service is stopped.&lt;br/&gt;3. No connectivity with SolidCP Server installed on virtualization server.&lt;br/&gt;&lt;br/&gt;Solutions:&lt;br/&gt;1. Make sure associated virtual machine exists on Proxmox server; otherwise re-create VPS from SolidCP.&lt;br/&gt;2. Check that Proxmox management service is started.&lt;br/&gt;3. Check SolidCP Server connectivity.</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>ErrorDescription.VPS_PROVISION_ERROR</Key>
     <DefaultValue>There was fatal error during provisioning and the entire process was aborted. Click "Audit Log" tab above and check what's gone wrong during VPS creation.&lt;br/&gt;&lt;br/&gt;Eliminate the cause of this issue and re-create VPS.</DefaultValue>
   </Resource>
@@ -13585,6 +13590,111 @@
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>TaskActivity.VPS2012_SET_PRIMARY_PRIVATE_IP</Key>
     <DefaultValue>Setting private primary IP address</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.PROXMOX.Bandwidth</Key>
+    <DefaultValue>Monthly bandwidth, GB</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.PROXMOX.BootCdAllowed</Key>
+    <DefaultValue>Boot from CD allowed</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.PROXMOX.BootCdEnabled</Key>
+    <DefaultValue>Boot from CD</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.PROXMOX.CpuNumber</Key>
+    <DefaultValue>Number of CPU cores</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.PROXMOX.DvdEnabled</Key>
+    <DefaultValue>DVD drive</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.PROXMOX.ExternalIPAddressesNumber</Key>
+    <DefaultValue>Number of External IP addresses</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.PROXMOX.ExternalNetworkEnabled</Key>
+    <DefaultValue>External Network</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.PROXMOX.Hdd</Key>
+    <DefaultValue>Hard Drive size, GB</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.PROXMOX.ManagingAllowed</Key>
+    <DefaultValue>Allow user to create VPS</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.PROXMOX.PauseResumeAllowed</Key>
+    <DefaultValue>Allow user to Pause, Resume VPS</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.PROXMOX.PrivateIPAddressesNumber</Key>
+    <DefaultValue>Number of Private IP addresses per VPS</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.PROXMOX.PrivateNetworkEnabled</Key>
+    <DefaultValue>Private Network</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.PROXMOX.Ram</Key>
+    <DefaultValue>RAM size, MB</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.PROXMOX.RebootAllowed</Key>
+    <DefaultValue>Allow user to Reboot VPS</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.PROXMOX.ReinstallAllowed</Key>
+    <DefaultValue>Allow user to Re-install VPS</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.PROXMOX.ReplicationEnabled</Key>
+    <DefaultValue>Allow user to Replication</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.PROXMOX.ResetAlowed</Key>
+    <DefaultValue>Allow user to Reset VPS</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.PROXMOX.ServersNumber</Key>
+    <DefaultValue>Number of VPS</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.PROXMOX.SnapshotsNumber</Key>
+    <DefaultValue>Number of Snaphots</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.PROXMOX.StartShutdownAllowed</Key>
+    <DefaultValue>Allow user to Start, Turn off and Shutdown VPS</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Error.VPS_LOAD_PVEVM_ITEM</Key>
+    <DefaultValue>Error loading virtual machine information</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\ApplyEnableHardQuotaFeature.ascx.resx</File>
@@ -19182,7 +19292,17 @@
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\ServersEditWindowsServices.ascx.resx</File>
+    <Key>cmdContinue.ToolTip</Key>
+    <DefaultValue>Continue</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\ServersEditWindowsServices.ascx.resx</File>
     <Key>cmdPause.Text</Key>
+    <DefaultValue>Pause</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\ServersEditWindowsServices.ascx.resx</File>
+    <Key>cmdPause.ToolTip</Key>
     <DefaultValue>Pause</DefaultValue>
   </Resource>
   <Resource>
@@ -19192,7 +19312,17 @@
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\ServersEditWindowsServices.ascx.resx</File>
+    <Key>cmdStart.ToolTip</Key>
+    <DefaultValue>Start</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\ServersEditWindowsServices.ascx.resx</File>
     <Key>cmdStop.Text</Key>
+    <DefaultValue>Stop</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\ServersEditWindowsServices.ascx.resx</File>
+    <Key>cmdStop.ToolTip</Key>
     <DefaultValue>Stop</DefaultValue>
   </Resource>
   <Resource>
@@ -21532,18 +21662,13 @@
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\SharePointEditSite.ascx.resx</File>
-    <Key>btnCancel.Text</Key>
+    <Key>btnCancelText.Text</Key>
     <DefaultValue>Cancel</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\SharePointEditSite.ascx.resx</File>
     <Key>btnDelete.OnClientClick</Key>
     <DefaultValue>if(!confirm('Delete this SharePoint site?')) return false; else ShowProgressDialog('Deleting SharePoint site...');</DefaultValue>
-  </Resource>
-  <Resource>
-    <File>DesktopModules\SolidCP\App_LocalResources\SharePointEditSite.ascx.resx</File>
-    <Key>btnDelete.Text</Key>
-    <DefaultValue>Delete</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\SharePointEditSite.ascx.resx</File>
@@ -21644,6 +21769,11 @@
     <File>DesktopModules\SolidCP\App_LocalResources\SharePointEditSite.ascx.resx</File>
     <Key>btnDeleteText.Text</Key>
     <DefaultValue>Delete</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\SharePointEditSite.ascx.resx</File>
+    <Key>btnUpdateText.Text</Key>
+    <DefaultValue>Update</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\SharePointGroups.ascx.resx</File>
@@ -21939,6 +22069,21 @@
     <File>DesktopModules\SolidCP\App_LocalResources\SpaceDetails.ascx.resx</File>
     <Key>lblSuspendedDate.Text</Key>
     <DefaultValue>Suspended:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\SpaceDetails.ascx.resx</File>
+    <Key>cmdActive.ToolTip</Key>
+    <DefaultValue>Activate</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\SpaceDetails.ascx.resx</File>
+    <Key>cmdCancel.ToolTip</Key>
+    <DefaultValue>Cancel</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\SpaceDetails.ascx.resx</File>
+    <Key>cmdSuspend.ToolTip</Key>
+    <DefaultValue>Suspend</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\SpaceDetailsHeaderControl.ascx.resx</File>
@@ -28178,12 +28323,12 @@ After creating your virtual directory go to FP administrator and create a subweb
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\CRM\App_LocalResources\CRMUserRoles.ascx.resx</File>
-    <Key>btnActivate.Text</Key>
+    <Key>locBtnActivate.Text</Key>
     <DefaultValue>Enable</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\CRM\App_LocalResources\CRMUserRoles.ascx.resx</File>
-    <Key>btnDeactivate.Text</Key>
+    <Key>locBtnDeactivate.Text</Key>
     <DefaultValue>Disable</DefaultValue>
   </Resource>
   <Resource>
@@ -43658,7 +43803,7 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Proxmox_Settings.ascx.resx</File>
     <Key>locResellerAccountText.Text</Key>
-    <DefaultValue>For automatic provisioning of WebsitePanel control panel inside VPS please enter WebsitePanel reseller account details below:</DefaultValue>
+    <DefaultValue>For automatic provisioning of SolidCP control panel inside VPS please enter SolidCP reseller account details below:</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Proxmox_Settings.ascx.resx</File>
@@ -44113,7 +44258,7 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Proxmox_Settings.ascx.resx</File>
     <Key>chkLegacyNetworkAdapter.Text</Key>
-    <DefaultValue>Use legacy adapter</DefaultValue>
+    <DefaultValue>Use legacy network adapter</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Proxmox_Settings.ascx.resx</File>
@@ -44218,7 +44363,7 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Proxmox_Settings.ascx.resx</File>
     <Key>locProxmoxClusterAdminPass.Text</Key>
-    <DefaultValue>Proxmox Admin PAM Password:</DefaultValue>
+    <DefaultValue>Proxmox Admin Password:</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Proxmox_Settings.ascx.resx</File>
@@ -44228,7 +44373,7 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Proxmox_Settings.ascx.resx</File>
     <Key>locDeploySSH.Text</Key>
-    <DefaultValue>Proxmox VM deploy SSH:</DefaultValue>
+    <DefaultValue>Proxmox VM Deploy:</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Proxmox_Settings.ascx.resx</File>
@@ -44270,8 +44415,23 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Proxmox_Settings.ascx.resx</File>
-    <Key>locProxmoxTrustServerCertificate</Key>
+    <Key>locProxmoxTrustServerCertificate.Text</Key>
     <DefaultValue>Always trust Proxomox Server Certificate:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Proxmox_Settings.ascx.resx</File>
+    <Key>lstProxmoxClusterRealmPAM.Text</Key>
+    <DefaultValue>Linux PAM standard authentication</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Proxmox_Settings.ascx.resx</File>
+    <Key>lstProxmoxClusterRealmPVE.Text</Key>
+    <DefaultValue>Proxmox VE authentication server</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Proxmox_Settings.ascx.resx</File>
+    <Key>chkDeployScript.Text</Key>
+    <DefaultValue>Use Deploy Script</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\RDS_Settings.ascx.resx</File>
@@ -55177,13 +55337,8 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPS\App_LocalResources\VdcImportServer.ascx.resx</File>
-    <Key>btnCancel.Text</Key>
+    <Key>btnCancelText.Text</Key>
     <DefaultValue>Cancel</DefaultValue>
-  </Resource>
-  <Resource>
-    <File>DesktopModules\SolidCP\VPS\App_LocalResources\VdcImportServer.ascx.resx</File>
-    <Key>btnImport.Text</Key>
-    <DefaultValue>Import</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPS\App_LocalResources\VdcImportServer.ascx.resx</File>
@@ -56682,7 +56837,7 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPS\App_LocalResources\VpsMoveServer.ascx.resx</File>
-    <Key>btnCancel.Text</Key>
+    <Key>btnCancelText.Text</Key>
     <DefaultValue>Cancel</DefaultValue>
   </Resource>
   <Resource>
@@ -56699,11 +56854,6 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <File>DesktopModules\SolidCP\VPS\App_LocalResources\VpsMoveServer.ascx.resx</File>
     <Key>btnMove.OnClientClick</Key>
     <DefaultValue>ShowProgressDialog('Moving Virtual Server...');</DefaultValue>
-  </Resource>
-  <Resource>
-    <File>DesktopModules\SolidCP\VPS\App_LocalResources\VpsMoveServer.ascx.resx</File>
-    <Key>btnMove.Text</Key>
-    <DefaultValue>Move</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPS\App_LocalResources\VpsMoveServer.ascx.resx</File>
@@ -60667,7 +60817,7 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPSForPC\App_LocalResources\VdcFastCreateServer.ascx.resx</File>
-    <Key>btnCancel.Text</Key>
+    <Key>btnCancelText.Text</Key>
     <DefaultValue>Cancel</DefaultValue>
   </Resource>
   <Resource>
@@ -60677,7 +60827,7 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPSForPC\App_LocalResources\VdcFastCreateServer.ascx.resx</File>
-    <Key>btnCreate.Text</Key>
+    <Key>btnCreateText.Text</Key>
     <DefaultValue>Create</DefaultValue>
   </Resource>
   <Resource>
@@ -60882,12 +61032,12 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPSForPC\App_LocalResources\VdcImportServer.ascx.resx</File>
-    <Key>btnCancel.Text</Key>
+    <Key>btnCancelText.Text</Key>
     <DefaultValue>Cancel</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPSForPC\App_LocalResources\VdcImportServer.ascx.resx</File>
-    <Key>btnImport.Text</Key>
+    <Key>btnImportText.Text</Key>
     <DefaultValue>Import</DefaultValue>
   </Resource>
   <Resource>
@@ -61597,7 +61747,7 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPSForPC\App_LocalResources\VpsDetailsEditConfiguration.ascx.resx</File>
-    <Key>btnCancel.Text</Key>
+    <Key>btnCancelText.Text</Key>
     <DefaultValue>Cancel</DefaultValue>
   </Resource>
   <Resource>
@@ -61607,7 +61757,7 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPSForPC\App_LocalResources\VpsDetailsEditConfiguration.ascx.resx</File>
-    <Key>btnUpdate.Text</Key>
+    <Key>btnUpdateText.Text</Key>
     <DefaultValue>Update</DefaultValue>
   </Resource>
   <Resource>
@@ -62632,7 +62782,7 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPSForPC\App_LocalResources\VpsMoveServer.ascx.resx</File>
-    <Key>btnCancel.Text</Key>
+    <Key>btnCancelText.Text</Key>
     <DefaultValue>Cancel</DefaultValue>
   </Resource>
   <Resource>
@@ -62652,7 +62802,7 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPSForPC\App_LocalResources\VpsMoveServer.ascx.resx</File>
-    <Key>btnMove.Text</Key>
+    <Key>btnMoveText.Text</Key>
     <DefaultValue>Move</DefaultValue>
   </Resource>
   <Resource>
@@ -62677,7 +62827,7 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPSForPC\App_LocalResources\VpsToolsDeleteServer.ascx.resx</File>
-    <Key>btnCancel.Text</Key>
+    <Key>btnCancelText.Text</Key>
     <DefaultValue>Cancel</DefaultValue>
   </Resource>
   <Resource>
@@ -62687,7 +62837,7 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPSForPC\App_LocalResources\VpsToolsDeleteServer.ascx.resx</File>
-    <Key>btnDelete.Text</Key>
+    <Key>btnDeleteText.Text</Key>
     <DefaultValue>Delete</DefaultValue>
   </Resource>
   <Resource>

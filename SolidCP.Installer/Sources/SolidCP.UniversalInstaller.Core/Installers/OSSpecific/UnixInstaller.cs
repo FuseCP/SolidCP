@@ -110,7 +110,17 @@ namespace SolidCP.UniversalInstaller
 
 		public override void ConfigureServer()
 		{
-			var appsettings = new ServerAppSettings();
+			ServerAppSettings appsettings = null;
+            var appsettingsfile = Path.Combine(InstallWebRootPath, ServerFolder, "bin_dotnet", "appsettings.json");
+			if (File.Exists(appsettingsfile))
+			{
+				appsettings = JsonConvert.DeserializeObject<ServerAppSettings>(File.ReadAllText(appsettingsfile)) ?? new ServerAppSettings();
+			}
+			else
+			{
+				appsettings = new ServerAppSettings();
+			}
+
 			appsettings.applicationUrls = ServerSettings.Urls;
 			var allowedHosts = (ServerSettings?.Urls ?? "").Split(',', ';')
 				.Select(url => new Uri(url.Trim()).Host)
@@ -176,7 +186,8 @@ namespace SolidCP.UniversalInstaller
 				Enum.TryParse<X509FindType>(ServerSettings.CertificateFindType, out appsettings.Certificate.FindType);
 			}
 
-			var appsettingsfile = Path.Combine(InstallWebRootPath, ServerFolder, "bin_dotnet", "appsettings.json");
+			if (string.IsNullOrEmpty(appsettings.probingPaths)) appsettings.probingPaths = "..\\bin\\netstandard";
+
 			var path = Path.GetDirectoryName(appsettingsfile);
 			if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 			File.WriteAllText(appsettingsfile, JsonConvert.SerializeObject(appsettings, Formatting.Indented, new JsonSerializerSettings()

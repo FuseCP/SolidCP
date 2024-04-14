@@ -48,6 +48,7 @@ namespace SolidCP.UniversalInstaller
 		}
 
 		public string applicationUrls { get; set; } = null;
+		public string probingPaths { get; set; } = null;
 		public string AllowedHosts { get; set; } = null;
 		public ServerSetting Server { get; set; }
 		public CertificateSetting Certificate { get; set; }
