@@ -13,3 +13,4 @@
 [submodule "SolidCP/Lib/novnc-solidcp"]
 	path = SolidCP/Lib/novnc-solidcp
 	url = https://github.com/simonegli8/novnc-solidcp
+	branch = solidcp1.4.0
