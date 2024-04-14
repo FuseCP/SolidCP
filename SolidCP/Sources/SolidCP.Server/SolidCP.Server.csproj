@@ -91,6 +91,7 @@
 		<Reference Include="System.ServiceModel" />
 		<Reference Include="System.ServiceModel.Web" />
 		<Reference Include="System.Web" />
+		<Reference Include="System.Net" />
 		<Reference Include="System.Xml" />
 		<Reference Include="System.Xml.Linq" />
 		<Reference Include="System.Runtime.Remoting" />
@@ -101,6 +102,7 @@
 	<ItemGroup Condition="'$(TargetFramework)' != 'net48'">
 		<PackageReference Include="CoreWCF.Primitives" Version="1.5.2" />
 		<PackageReference Include="CoreWCF.WebHttp" Version="1.5.1" />
+		<PackageReference Include="System.Net.Primitives" Version="4.3.1" />
 	</ItemGroup>
 	<ItemGroup>
 		<Analyzer Include="..\SolidCP.Build\bin\$(Configuration)\netstandard2.0\RazorBlade.dll" />
