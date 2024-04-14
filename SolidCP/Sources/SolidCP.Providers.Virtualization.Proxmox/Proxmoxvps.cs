@@ -978,6 +978,8 @@ namespace SolidCP.Providers.Virtualization
                 Password = password,
                 Requested = DateTime.Now
             };
+
+            // fire and forget GetPveWebScocketAsync
             connection.Tunnel = GetPveWebSocketAsync(connection);
  
             VncConnections.AddOrUpdate(connection, connection, (key, con) => connection);

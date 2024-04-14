@@ -12,4 +12,4 @@
 	url = git://git.proxmox.com/git/novnc-pve.git
 [submodule "SolidCP/Lib/novnc-solidcp"]
 	path = SolidCP/Lib/novnc-solidcp
-	url = https://github.com/simonegli8/noVNC
+	url = https://github.com/simonegli8/novnc-solidcp

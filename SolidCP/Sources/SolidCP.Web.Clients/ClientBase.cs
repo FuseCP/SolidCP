@@ -275,11 +275,14 @@ namespace SolidCP.Web.Clients
 		}
 		public bool HasSoapHeaders => ServiceInterface?.GetCustomAttribute<SolidCP.Providers.SoapHeaderAttribute>() != null;
 
-		public void CheckSoapHeader(string methodName)
+		public bool CheckSoapHeader(string methodName)
 		{
 			var service = ServiceInterface;
-			var soapAttr = service.GetMethod(methodName).GetCustomAttribute<SolidCP.Providers.SoapHeaderAttribute>();
+			var method = service.GetMethod(methodName);
+			if (method == null) throw new ArgumentException($"Method {this.GetType().Name}.{methodName} not found");
+            var soapAttr = method.GetCustomAttribute<SolidCP.Providers.SoapHeaderAttribute>();
 			if (soapAttr != null && SoapHeader == null) throw new Exception($"Must assign a SoapHeader for calling method {this.GetType().Name}.{methodName}");
+			return soapAttr != null;
 		}
 
 		public static void StartAllSshTunnels(IEnumerable<string> urls) => ClientBase<ClientAssemblyBase, ClientAssemblyBase>.StartAllSshTunnels(urls);
