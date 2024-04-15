@@ -343,7 +343,7 @@ namespace SolidCP.Providers.Virtualization
                     result = PowerShell.Execute(command, true, true);
                     int vlan = 0;
                     Int32.TryParse(result[0].GetString("AccessVlanId"), out vlan);
-                    adapter.VLAN = vlan;
+                    adapter.vlan = vlan;
                 }
             }
             catch (Exception ex)

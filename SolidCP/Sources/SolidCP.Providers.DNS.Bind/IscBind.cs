@@ -998,10 +998,9 @@ namespace SolidCP.Providers.DNS
         private void ReloadBIND(string Args, string zoneName)
         {
             var cmd = BindReloadBatch;
-            var path = cmd.Trim('"');
-            if (!File.Exists(path))
+            if (Shell.Default.Find(cmd) == null)
             {
-                var msg = $"BIND reload batch {path} does not exist";
+                var msg = $"BIND reload batch {cmd} does not exist";
                 var ex = new Exception(msg);
                 Log.WriteError(msg, ex);
                 throw ex;

@@ -285,7 +285,7 @@ namespace SolidCP.Portal.VPS2012
                 virtualMachine.ExternalNetworkEnabled = chkExternalNetworkEnabled.Checked;
                 virtualMachine.PrivateNetworkEnabled = chkPrivateNetworkEnabled.Checked;
                 virtualMachine.NeedReboot = chkForceReboot.Checked;
-                virtualMachine.DefaultAccessVlan = vm.DefaultAccessVlan;
+                virtualMachine.defaultaccessvlan = vm.defaultaccessvlan;
                 virtualMachine.PrivateNetworkVlan = vm.PrivateNetworkVlan;
 
                 bool setupExternalNetwork = !vm.ExternalNetworkEnabled && chkExternalNetworkEnabled.Checked;
@@ -298,7 +298,7 @@ namespace SolidCP.Portal.VPS2012
                     PackageIPAddress[] ips = ES.Services.Servers.GetPackageUnassignedIPAddresses(PanelSecurity.PackageId, 0, IPAddressPool.VpsExternalNetwork);
                     if (ips.Length > 0)
                     {
-                        virtualMachine.DefaultAccessVlan = ips[0].VLAN;
+                        virtualMachine.defaultaccessvlan = ips[0].VLAN;
                         ipId[0] = ips[0].PackageAddressID;
                     }
                 }

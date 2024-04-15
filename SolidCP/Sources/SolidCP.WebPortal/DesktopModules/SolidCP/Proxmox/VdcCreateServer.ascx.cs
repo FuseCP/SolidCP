@@ -390,7 +390,7 @@ namespace SolidCP.Portal.Proxmox
 					externalenabled = true;
 
 				// set default selected vlan
-				virtualMachine.DefaultAccessVlan = Convert.ToInt32(listVlanLists.SelectedValue);
+				virtualMachine.defaultaccessvlan = Convert.ToInt32(listVlanLists.SelectedValue);
 
 				// create virtual machine
 				IntResult res = ES.Services.Proxmox.CreateVirtualMachine(PanelSecurity.PackageId,

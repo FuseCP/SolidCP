@@ -86,7 +86,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Tasks
                     {
                         // provision IP addresses
                         ResultObject privResult = IpAddressExternalHelper.AddVirtualMachineInternalIPAddresses(vm.Id, randomExternalAddresses,
-                            externalAddressesNumber, externalAddresses, 0, vm.DefaultAccessVlan);
+                            externalAddressesNumber, externalAddresses, 0, vm.defaultaccessvlan);
 
                         // set primary IP address
                         NetworkAdapterDetails extNic = NetworkAdapterDetailsHelper.GetExternalNetworkAdapterDetails(vm.Id);

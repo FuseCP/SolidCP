@@ -56,8 +56,8 @@ namespace SolidCP.EnterpriseServer
     public class VirtualizationServerControllerProxmox
     {
 
-        private const string SHUTDOWN_REASON = "WebsitePanel - Initiated by user";
-        private const string SHUTDOWN_REASON_CHANGE_CONFIG = "WebsitePanel - changing VPS configuration";
+        private const string SHUTDOWN_REASON = "SolidCP - Initiated by user";
+        private const string SHUTDOWN_REASON_CHANGE_CONFIG = "SolidCP - changing VPS configuration";
         private const Int64 Size1G = 0x40000000;
         private const string MS_MAC_PREFIX = "00155D"; // IEEE prefix of MS MAC addresses
 
@@ -507,7 +507,7 @@ namespace SolidCP.EnterpriseServer
                 vm.RebootAllowed = rebootAllowed;
                 vm.ResetAllowed = resetAllowed;
                 vm.ReinstallAllowed = reinstallAllowed;
-                vm.DefaultAccessVlan = otherSettings.DefaultAccessVlan;
+                vm.defaultaccessvlan = otherSettings.defaultaccessvlan;
 
 
                 // dynamic memory
@@ -668,11 +668,11 @@ namespace SolidCP.EnterpriseServer
                     if (vm.ExternalNetworkEnabled)
                     {
                         // set VLAN for IPs
-                        int vlan = vm.DefaultAccessVlan;
+                        int vlan = vm.defaultaccessvlan;
 
                         // provision IP addresses
                         ResultObject privResult = AddVirtualMachineExternalIPAddresses(vm.Id, randomExternalAddresses,
-                            externalAddressesNumber, externalAddresses, false, vm.DefaultAccessVlan);
+                            externalAddressesNumber, externalAddresses, false, vm.defaultaccessvlan);
 
                         // set primary IP address
                         NetworkAdapterDetails extNic = GetExternalNetworkAdapterDetails(vm.Id);
@@ -2098,7 +2098,7 @@ namespace SolidCP.EnterpriseServer
                 vm.ResetAllowed = resetAllowed;
                 vm.RebootAllowed = rebootAllowed;
                 vm.ReinstallAllowed = reinstallAllowed;
-                vm.DefaultAccessVlan = otherSettings.DefaultAccessVlan;
+                vm.defaultaccessvlan = otherSettings.defaultaccessvlan;
 
                 vm.ExternalNetworkEnabled = externalNetworkEnabled;
                 vm.PrivateNetworkEnabled = privateNetworkEnabled;
@@ -2697,12 +2697,12 @@ namespace SolidCP.EnterpriseServer
                     if (firstadapter)
                     {
                         firstadapter = false;
-                        adaptervlan = adapter.VLAN;
+                        adaptervlan = adapter.vlan;
                     }
                     // Overwrite First Adapter by Mac Match
                     if (adapter.MacAddress == vm.ExternalNicMacAddress)
                     {
-                        adaptervlan = adapter.VLAN;
+                        adaptervlan = adapter.vlan;
                     }
                 }
             }

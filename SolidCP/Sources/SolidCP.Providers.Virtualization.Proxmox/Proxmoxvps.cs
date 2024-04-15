@@ -664,7 +664,7 @@ namespace SolidCP.Providers.Virtualization
             sshcmd = sshcmd.Replace("[OSTEMPLATENAME]", $"\"{vm.OperatingSystemTemplate}\"");
             sshcmd = sshcmd.Replace("[OSTEMPLATEFILE]", $"\"{vm.OperatingSystemTemplatePath}\"");
             sshcmd = sshcmd.Replace("[ADMINPASS]", $"\"{vm.AdministratorPassword}\"");
-            sshcmd = sshcmd.Replace("[VLAN]", vm.DefaultAccessVlan.ToString());
+            sshcmd = sshcmd.Replace("[VLAN]", vm.defaultaccessvlan.ToString());
             sshcmd = sshcmd.Replace("[MAC]", vm.ExternalNicMacAddress);
             if (vm.ExternalNetworkEnabled)
             {

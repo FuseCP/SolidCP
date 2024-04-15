@@ -33,12 +33,12 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
                     if (firstadapter)
                     {
                         firstadapter = false;
-                        adaptervlan = adapter.VLAN;
+                        adaptervlan = adapter.vlan;
                     }
                     // Overwrite First Adapter by Mac Match
                     if (adapter.MacAddress == vm.ExternalNicMacAddress)
                     {
-                        adaptervlan = adapter.VLAN;
+                        adaptervlan = adapter.vlan;
                     }
                 }
             }

@@ -107,6 +107,7 @@ namespace SolidCP.Providers.OS
 		public virtual string Find(string cmd)
 		{
 			string file = null;
+			cmd = cmd.Trim('"');
 			if (cmd.IndexOf(Path.DirectorySeparatorChar) >= 0)
 			{
 				if (File.Exists(cmd)) file = cmd;

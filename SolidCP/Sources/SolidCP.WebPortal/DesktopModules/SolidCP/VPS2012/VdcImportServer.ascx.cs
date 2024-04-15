@@ -205,7 +205,7 @@ namespace SolidCP.Portal.VPS2012
                     {
                         if (adapter.MacAddress == selectedmac)
                         {
-                            adaptervlan = adapter.VLAN;
+                            adaptervlan = adapter.vlan;
                         }
                     }
                 }

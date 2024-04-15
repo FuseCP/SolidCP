@@ -38,7 +38,7 @@ namespace SolidCP.Providers.Virtualization
 {
 	public class LibraryItem
 	{
-		public string LibraryID => $"{Name ?? ""}{Path ?? ""}{DeployScriptParams ?? ""}";
+		public string LibraryID => $"{Name ?? ""}/{Path ?? ""}/{DeployScriptParams ?? ""}";
 		public string Path { get; set; }
 		public string Name { get; set; }
 		public int Generation { get; set; }

@@ -44,14 +44,14 @@ namespace SolidCP.Providers.Virtualization
 
                     try
                     {
-                        adapter.VLAN = resultvlan[i].GetInt("AccessVlanId");
+                        adapter.vlan = resultvlan[i].GetInt("AccessVlanId");
                     }
                     catch
                     {
-                        adapter.VLAN = defaultvlan;
+                        adapter.vlan = defaultvlan;
                     }
-                    if (adapter.VLAN == 0)
-                        adapter.VLAN = defaultvlan;
+                    if (adapter.vlan == 0)
+                        adapter.vlan = defaultvlan;
                     //We can't do that things! https://docs.microsoft.com/en-us/powershell/module/hyper-v/remove-vmnetworkadapter
                     //adapter.Name = String.Format("{0} VLAN: {1}", psAdapter.GetString("Name"), adapter.vlan.ToString());
                     i++;
@@ -81,7 +81,7 @@ namespace SolidCP.Providers.Virtualization
                 Add(powerShell, vm.Name, vm.ExternalSwitchId, vm.ExternalNicMacAddress, Constants.EXTERNAL_NETWORK_ADAPTER_NAME, vm.LegacyNetworkAdapter);
                 try
                 {
-                    SetVLAN(powerShell, vm.Name, Constants.EXTERNAL_NETWORK_ADAPTER_NAME, vm.DefaultAccessVlan);
+                    SetVLAN(powerShell, vm.Name, Constants.EXTERNAL_NETWORK_ADAPTER_NAME, vm.defaultaccessvlan);
                 }
                 catch (Exception ex)
                 {

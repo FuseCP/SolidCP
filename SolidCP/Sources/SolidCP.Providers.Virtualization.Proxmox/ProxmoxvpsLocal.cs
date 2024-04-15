@@ -16,34 +16,34 @@ namespace SolidCP.Providers.Virtualization
 		public override string ProxmoxClusterNode => Environment.MachineName;
 		public override VirtualMachine CreateVirtualMachine(VirtualMachine vm)
 		{
-			string sshcmd = String.Format("{0} {1} {2}", DeploySSHScriptSettings, DeploySSHScriptParamsSettings, vm.OperatingSystemTemplateDeployParams);
+			string cmd = $"{DeploySSHScriptSettings} {DeploySSHScriptParamsSettings} {vm.OperatingSystemTemplateDeployParams}";
 
-			sshcmd = sshcmd.Replace("[FQDN]", vm.Name);
-			sshcmd = sshcmd.Replace("[CPUCORES]", vm.CpuCores.ToString());
-			sshcmd = sshcmd.Replace("[RAMSIZE]", vm.RamSize.ToString());
-			sshcmd = sshcmd.Replace("[HDDSIZE]", vm.HddSize[0].ToString());
-			sshcmd = sshcmd.Replace("[OSTEMPLATENAME]", $"\"{vm.OperatingSystemTemplate}\"");
-			sshcmd = sshcmd.Replace("[OSTEMPLATEFILE]", $"\"{vm.OperatingSystemTemplatePath}\"");
-			sshcmd = sshcmd.Replace("[ADMINPASS]", $"\"{vm.AdministratorPassword}\"");
-			sshcmd = sshcmd.Replace("[VLAN]", vm.DefaultAccessVlan.ToString());
-			sshcmd = sshcmd.Replace("[MAC]", vm.ExternalNicMacAddress);
+			cmd = cmd.Replace("[FQDN]", vm.Name);
+			cmd = cmd.Replace("[CPUCORES]", vm.CpuCores.ToString());
+			cmd = cmd.Replace("[RAMSIZE]", vm.RamSize.ToString());
+			cmd = cmd.Replace("[HDDSIZE]", vm.HddSize[0].ToString());
+			cmd = cmd.Replace("[OSTEMPLATENAME]", $"\"{vm.OperatingSystemTemplate}\"");
+			cmd = cmd.Replace("[OSTEMPLATEFILE]", $"\"{vm.OperatingSystemTemplatePath}\"");
+			cmd = cmd.Replace("[ADMINPASS]", $"\"{vm.AdministratorPassword}\"");
+			cmd = cmd.Replace("[VLAN]", vm.defaultaccessvlan.ToString());
+			cmd = cmd.Replace("[MAC]", vm.ExternalNicMacAddress);
 			if (vm.ExternalNetworkEnabled)
 			{
-				sshcmd = sshcmd.Replace("[IP]", vm.PrimaryIP.IPAddress);
-				sshcmd = sshcmd.Replace("[NETMASK]", vm.PrimaryIP.SubnetMask);
-				sshcmd = sshcmd.Replace("[GATEWAY]", vm.PrimaryIP.DefaultGateway);
+				cmd = cmd.Replace("[IP]", vm.PrimaryIP.IPAddress);
+				cmd = cmd.Replace("[NETMASK]", vm.PrimaryIP.SubnetMask);
+				cmd = cmd.Replace("[GATEWAY]", vm.PrimaryIP.DefaultGateway);
 			}
 			else
 			{
-				sshcmd = sshcmd.Replace("[IP]", "\"\"");
-				sshcmd = sshcmd.Replace("[NETMASK]", "\"\"");
-				sshcmd = sshcmd.Replace("[GATEWAY]", "\"\"");
+				cmd = cmd.Replace("[IP]", "\"\"");
+				cmd = cmd.Replace("[NETMASK]", "\"\"");
+				cmd = cmd.Replace("[GATEWAY]", "\"\"");
 			}
 
 			string error = "Error creating wirtual machine.";
 			try
 			{
-				var output = Shell.Default.Exec(sshcmd).Output().Result;
+				var output = Shell.Default.Exec(cmd).Output().Result;
 				error = $"Error creating wirtual machine. VM deploy script output:\n{output}";
 
 				// Get created machine Id

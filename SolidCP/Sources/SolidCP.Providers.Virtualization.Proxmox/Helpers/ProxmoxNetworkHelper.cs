@@ -26,7 +26,7 @@ namespace SolidCP.Providers.Virtualization.Proxmox
 					if (property.Key.Contains("net"))
 					{
 						VirtualMachineNetworkAdapter adapter = CreateAdapter(val);
-						adapter.Name = String.Format("{0} {1} VLAN {2}", property.Key, adapter.Name, adapter.VLAN);
+						adapter.Name = String.Format("{0} {1} VLAN {2}", property.Key, adapter.Name, adapter.vlan);
 						adapters.Add(adapter);
 					}
 				}
@@ -43,7 +43,7 @@ namespace SolidCP.Providers.Virtualization.Proxmox
 			VirtualMachineNetworkAdapter adapter = new VirtualMachineNetworkAdapter();
 			try
 			{
-				adapter.VLAN = defaultvlan;
+				adapter.vlan = defaultvlan;
 				Array adapterarray = adapterinfo.Split(',');
 				foreach (String adapterval in adapterarray)
 				{
@@ -59,7 +59,7 @@ namespace SolidCP.Providers.Virtualization.Proxmox
 					}
 					else if (adapterval.Contains("tag"))
 					{
-						adapter.VLAN = Convert.ToInt32(adapterval.Split('=')[1]);
+						adapter.vlan = Convert.ToInt32(adapterval.Split('=')[1]);
 					}
 
 				}

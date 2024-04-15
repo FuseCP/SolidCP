@@ -1,11 +1,8 @@
 ﻿using System.Diagnostics;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using SyslogNet.Client;
 using SyslogNet.Client.Serialization;
 using SyslogNet.Client.Transport;
-using Renci.SshNet.Messages;
 
 namespace SolidCP.Providers.OS
 {
