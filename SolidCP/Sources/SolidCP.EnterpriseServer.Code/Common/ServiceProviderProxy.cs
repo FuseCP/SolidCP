@@ -115,7 +115,7 @@ namespace SolidCP.EnterpriseServer
 			cnfg.ServerUrl = CryptoUtils.DecryptServerUrl(serverUrl);
 			if (proxy.IsAuthenticated)
 			{
-				cnfg.ServerPassword = cnfg.SHA256Password ? CryptoUtils.SHA256(serverPassword) : CryptoUtils.SHA1(serverPassword);
+				cnfg.ServerPassword = cnfg.PasswordIsSHA256 ? CryptoUtils.SHA256(serverPassword) : CryptoUtils.SHA1(serverPassword);
 			}
 
 			// configure proxy!
@@ -127,7 +127,7 @@ namespace SolidCP.EnterpriseServer
 		public static SolidCP.Web.Clients.ClientBase ServerInit(SolidCP.Web.Clients.ClientBase proxy,
 			 string serverUrl, string serverPassword, bool sha256Password)
 		{
-			return ServerInit(proxy, new ServerProxyConfigurator() { SHA256Password = sha256Password }, serverUrl, serverPassword);
+			return ServerInit(proxy, new ServerProxyConfigurator() { PasswordIsSHA256 = sha256Password }, serverUrl, serverPassword);
 		}
 
 		public static SolidCP.Web.Clients.ClientBase ServerInit(SolidCP.Web.Clients.ClientBase proxy, int serverId)
