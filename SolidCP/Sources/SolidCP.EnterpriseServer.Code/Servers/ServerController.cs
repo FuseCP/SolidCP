@@ -53,8 +53,6 @@ using System.Xml;
 using Whois.NET;
 using OS = SolidCP.Server.Client;
 using SolidCP.Server.Client;
-using System.Windows;
-//using System.Runtime.InteropServices;
 
 namespace SolidCP.EnterpriseServer
 {
