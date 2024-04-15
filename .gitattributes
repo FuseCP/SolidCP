@@ -1,3 +1,3 @@
-# Set line endings to LF, even on Windows. Otherwise, execution within Docker fails.
+# Set line endings to LF for unix shell scripts, even on Windows.
 # See https://help.github.com/articles/dealing-with-line-endings/
 *.sh text eol=lf
