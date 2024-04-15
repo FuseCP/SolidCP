@@ -111,7 +111,7 @@ namespace SolidCP.Build
 	{
 
 		public const bool Debug = false; // Set to true to debug SolidCP.Build
-		public const bool EmitOpenApiTypes = true;
+		public const bool EmitOpenApiTypes = false;
 
 		public static readonly string NewLine = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "\r\n" : "\n";
 
