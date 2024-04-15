@@ -16,7 +16,7 @@ namespace SolidCP.EnterpriseServer
 {
     public class EnterpriseServerTunnelService: EnterpriseServerTunnelServiceBase
     {
-        string cryptoKey = null;
+        static string cryptoKey = null;
         public override string CryptoKey => cryptoKey ?? (cryptoKey = CryptoUtility.SHA256($"{CryptoUtils.CryptoKey}{DateTime.Now.Ticks}"));
 
         public override void Authenticate(string user, string password) => UsernamePasswordValidator.Validate(user, password);
