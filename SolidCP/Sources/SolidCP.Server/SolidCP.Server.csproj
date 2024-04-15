@@ -138,9 +138,9 @@
             <FilesToMove Include="bin\Microsoft.Web.Administration.*" />
             <FilesToMove Include="bin\SwaggerWcf.*" />
         </ItemGroup>
-        <Delete Files="@(FilesToDelete)" />
-        <Move SourceFiles="@(FilesToMove)" DestinationFolder="bin\Providers" />
-        <RemoveDir Directories="bin\bin_dotnet;bin\WebServices" />
+        <Delete Files="@(FilesToDelete)" ContinueOnError="true" />
+        <Move SourceFiles="@(FilesToMove)" DestinationFolder="bin\Providers" ContinueOnError="true" />
+        <RemoveDir Directories="bin\bin_dotnet;bin\WebServices" ContinueOnError="true" />
     </Target>
 
 </Project>

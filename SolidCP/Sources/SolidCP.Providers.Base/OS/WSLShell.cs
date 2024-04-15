@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static SolidCP.Providers.OS.WSLShell;
 
 namespace SolidCP.Providers.OS
 {
@@ -194,7 +195,7 @@ namespace SolidCP.Providers.OS
             }
         }
 
-        public class ExperimentalSection: ConfigurationSection
+        public class ExperimentalSection : ConfigurationSection
         {
             public override string Title => "Experimental";
             public string? AutoMemoryReclaim
@@ -325,7 +326,7 @@ namespace SolidCP.Providers.OS
 
             public void Open()
             {
-                var configTxt = Shell.ReadTextFile(Shell.CurrentDistroName, File);
+                var configTxt = Shell.ReadTextFile(File);
                 var match = Regex.Match(configTxt, @"(?<trivia>^.*?)(?<body>(?<=^|\n)\[[^]\n]\].*$)", RegexOptions.Singleline);
                 leadingTrivia = match.Groups["trivia"].Value;
                 var sections = match.Groups["body"].Value;
@@ -345,7 +346,8 @@ namespace SolidCP.Providers.OS
                     else if (line.StartsWith("#") || string.IsNullOrWhiteSpace(line) || !line.Contains("="))
                     {
                         section.AddTrivia(line);
-                    } else
+                    }
+                    else
                     {
                         var tokens = line.Split('=').Select(token => token.Trim()).ToArray();
                         if (tokens.Length != 2) section.AddTrivia(line);
@@ -366,7 +368,7 @@ namespace SolidCP.Providers.OS
                 {
                     section.Value.Write(sb);
                 }
-                if (IsWslFile) Shell.WriteTextFile(Shell.CurrentDistroName, sb.ToString(), File);
+                if (IsWslFile) Shell.WriteTextFile(sb.ToString(), File);
             }
             public override ConfigurationSection this[string section]
             {
@@ -387,7 +389,7 @@ namespace SolidCP.Providers.OS
             }
         }
 
-        public class WSLConfiguration: ConfigurationBase
+        public class WSLConfiguration : ConfigurationBase
         {
             public WSLConfiguration(WSLShell shell) : base(shell) { }
             public override string File => "/etc/wsl.conf";
@@ -399,7 +401,7 @@ namespace SolidCP.Providers.OS
             public UserSection User => (UserSection)this[nameof(User)];
         }
 
-        public class WSLGlobalConfiguration: ConfigurationBase
+        public class WSLGlobalConfiguration : ConfigurationBase
         {
             public WSLGlobalConfiguration(WSLShell shell) : base(shell) { }
             public WSLGlobalConfiguration(WSLShell shell, string user) { User = user; Shell = shell; Open(); }
@@ -412,12 +414,31 @@ namespace SolidCP.Providers.OS
             public ExperimentalSection Experimental => (ExperimentalSection)this[nameof(Experimental)];
         }
 
+        public class WSLDistro
+        {
+            public Distro Distro { get; set; }
+            public string OtherDistroName { get; set; }
+
+            public static implicit operator string(WSLDistro distro) => GetDistroName(distro) ?? distro.OtherDistroName;
+            public static implicit operator Distro(WSLDistro distro) => distro.Distro;
+            public static implicit operator WSLDistro(string distro) {
+                var wslDistro = new WSLDistro() { OtherDistroName = null };
+                for (Distro d = Distro.Default; d <= Distro.Other; d++)
+                {
+                    wslDistro.Distro = d;
+                    if (GetDistroName(wslDistro) == distro) return new WSLDistro() { Distro = d, OtherDistroName = null };
+                }
+                return new WSLDistro() { Distro = Distro.Other, OtherDistroName = distro };
+            }
+            public static implicit operator WSLDistro(Distro distro) => new WSLDistro() { Distro = distro, OtherDistroName = null };
+            public override string ToString() => GetDistroName(this) ?? OtherDistroName;
+        }
+
         public enum Distro { Default, Ubuntu, Debian, Kali, Ubuntu18, Ubuntu20, Ubuntu22, Ubuntu24, Oracle7, Oracle8, Oracle9, openSUSELeap, SUSE15_4, SUSE15_5, openSUSEThumbleweed, FedoraRemix, Other };
         public override string ShellExe => CurrentDistro == Distro.Default ? "wsl" : $"wsl --distribution {CurrentDistroName}";
 
         public WSLShell() : base() { BaseShell = Shell.Default; }
-        public WSLShell(string distro) : this() => Use(distro);
-        public WSLShell(Distro distro) : this() => Use(distro);
+        public WSLShell(WSLDistro distro) : this() => Use(distro);
 
         Shell baseShell = null;
 
@@ -446,9 +467,9 @@ namespace SolidCP.Providers.OS
                 }
             }
         }
-        protected string DistroName(Distro distro)
+        public static string GetDistroName(WSLDistro distro)
         {
-            switch (distro)
+            switch (distro.Distro)
             {
                 default:
                 case Distro.Default: return "wsl";
@@ -467,43 +488,37 @@ namespace SolidCP.Providers.OS
                 case Distro.SUSE15_5: return "SUSE-Linux-Enterprise-15-SP5";
                 case Distro.openSUSEThumbleweed: return "openSUSE-Tumbleweed";
                 case Distro.FedoraRemix: return "fedoraremix";
-                case Distro.Other: return OtherDistroName;
+                case Distro.Other: return distro.OtherDistroName;
             }
         }
-
-        public string OtherDistroName = null;
-
-        public Distro CurrentDistro = Distro.Default;
+        protected string DistroName(WSLDistro distro) => GetDistroName(distro);
+        public WSLDistro CurrentDistro { get; set; } = Distro.Default;
         public string CurrentDistroName => DistroName(CurrentDistro);
-        public void Use(Distro distro) => CurrentDistro = distro;
-        public void Use(string distro)
+        public void Use(WSLDistro distro) => CurrentDistro = distro;
+        public WSLShell For(WSLDistro distro)
         {
-            CurrentDistro = Distro.Other;
-            OtherDistroName = distro;
+            var clone = (WSLShell)Clone;
+            clone.CurrentDistro = distro;
+            return clone;
         }
-
         protected string WSLList => BaseShell.SilentClone.Exec($"wsl --list --verbose", Encoding.Unicode).Output().Result;
-        public string[] InstalledDistros => base.Find("wsl") == null ? new string[0] : Regex.Matches(WSLList, @"(?<=\n\*?\s+)[^\s]+")
+        public WSLDistro[] InstalledDistros => base.Find("wsl") == null ? new WSLDistro[0] : Regex.Matches(WSLList, @"(?<=\n\*?\s+)[^\s]+")
             .OfType<Match>()
-            .Select(match => match.Value)
+            .Select(match => (WSLDistro)match.Value)
             .ToArray();
-        public string DefaultDistro => base.Find("wsl") == null ? null : Regex.Match(WSLList, @"(?<=\n\*\s+)[^\s]+").Value;
-        public bool IsInstalled(Distro distro) => IsInstalled(DistroName(distro));
-        public bool IsInstalled(string distroName) => Regex.IsMatch(WSLList, $@"^\*?\s+{Regex.Escape(distroName)}\s", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+        public bool IsWslInstalled => base.Find("wsl") != null;
+        public WSLDistro DefaultDistro => !IsWslInstalled ? null : Regex.Match(WSLList, @"(?<=\n\*\s+)[^\s]+").Value;
+        public bool IsInstalled(WSLDistro distro) => Regex.IsMatch(WSLList, $@"^\*?\s+{Regex.Escape(distro)}\s", RegexOptions.IgnoreCase | RegexOptions.Multiline);
         public bool IsInstalledAny() => base.Find("wsl") != null && InstalledDistros.Length > 0;
         public bool IsInstalled() => IsInstalled(CurrentDistroName);
         public void ShutdownAll() => base.Exec("wsl --shutdown");
-        public void Terminate(string distro) => base.Exec($"wsl --terminate {distro}");
-        public void Terminate(Distro distro) => Terminate(DistroName(distro));
-        public void Install(string distro) => base.Exec($"wsl --install {distro}");
-        public void Install(Distro distro) => Install(DistroName(distro));
-        public void Uninstall(string distro) => base.Exec($"wsl --unregister {distro}");
-        public void Uninstall(Distro distro) => Uninstall(DistroName(distro));
-        public void Import(string distro, string file) => base.Exec($"wsl --import {distro} {file}{(file.EndsWith(".vhdx", StringComparison.OrdinalIgnoreCase) ? " --vhd" : "")}");
-        public void Export(string distro, string file) => base.Exec($"wsl --export {distro} {file}{(file.EndsWith(".vhdx", StringComparison.OrdinalIgnoreCase) ? " --vhd" : "")}");
-        public void Export(Distro distro, string file) => Export(DistroName(distro), file);
-        public string ReadTextFile(string distro, string path) => Exec($"cat {path}").Output().Result;
-        public void WriteTextFile(string distro, string content, string path)
+        public void Terminate(WSLDistro distro) => base.Exec($"wsl --terminate {distro}");
+        public void Install(WSLDistro distro) => base.Exec($"wsl --install {distro}");
+        public void Uninstall(WSLDistro distro) => base.Exec($"wsl --unregister {distro}");
+        public void Import(WSLDistro distro, string file) => base.Exec($"wsl --import {distro} {file}{(file.EndsWith(".vhdx", StringComparison.OrdinalIgnoreCase) ? " --vhd" : "")}");
+        public void Export(WSLDistro distro, string file) => base.Exec($"wsl --export {distro} {file}{(file.EndsWith(".vhdx", StringComparison.OrdinalIgnoreCase) ? " --vhd" : "")}");
+        public string ReadTextFile(string path) => Exec($"cat {path}").Output().Result;
+        public void WriteTextFile(string content, string path)
         {
             var shell = ExecAsync($"cat > {path}");
             shell.StandardInput.Write(content);
@@ -564,7 +579,6 @@ namespace SolidCP.Providers.OS
             {
                 var clone = (WSLShell)base.Clone;
                 clone.CurrentDistro = CurrentDistro;
-                clone.OtherDistroName = OtherDistroName;
                 clone.Redirect = Redirect;
                 clone.LogFile = LogFile;
                 return clone;
