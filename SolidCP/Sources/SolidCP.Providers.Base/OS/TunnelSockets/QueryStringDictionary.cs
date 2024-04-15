@@ -5,7 +5,7 @@ using System.Net;
 
 namespace SolidCP.Providers.OS
 {
-    public class QueryStringDictionary: OrderedStringDictionary
+    public class QueryStringDictionary: OrderedNameDictionary<string?>
     {
 
         public QueryStringDictionary(): base() { }

@@ -85,7 +85,7 @@ namespace SolidCP.Providers.OS
 
         public TunnelUri Uri { get; set; }
         public bool IsWebSocket => url.StartsWith("ws://") || url.StartsWith("wss://") || IsWebSocketOverSsh ||
-            BaseWebSocket != null;
+             BaseWebSocket != null;
         public bool IsSocket => url.StartsWith("tcp://") || url.StartsWith("udp://") || BaseSocket != null;
         public bool IsSshTunnel => url.StartsWith("ssh://") || BaseSshTunnel != null;
         public bool IsWebSocketOverSsh
@@ -121,7 +121,7 @@ namespace SolidCP.Providers.OS
         public void UseSshWebSocket(string protocol)
         {
             if (IsWebSocket && IsSshTunnel && (protocol == "http" || protocol == "https" || protocol == "ws" ||
-                protocol == "wss" || string.IsNullOrEmpty(protocol)))
+                 protocol == "wss" || string.IsNullOrEmpty(protocol)))
             {
                 if (protocol == "http") protocol = "ws";
                 else if (protocol == "https") protocol = "wss";
@@ -161,7 +161,7 @@ namespace SolidCP.Providers.OS
         public bool SetRemoteValidationCallback()
         {
             if (IsWebSocket && BaseWebSocket != null && OSInfo.IsCore && !ValidateCertificate && !validateCertificateSet &&
-                IsSecure && BaseWebSocket is ClientWebSocket clientWebSocket)
+                 IsSecure && BaseWebSocket is ClientWebSocket clientWebSocket)
             {
                 // Set BaseWebSocket.Options.RemoteCertificateValidationCallback += AlwaysTrustCertificate with reflection,
                 // because this property is not present in NET Standard 2.0
@@ -219,7 +219,7 @@ namespace SolidCP.Providers.OS
             if (Url == null) throw new ArgumentNullException("Url cannot be null");
             var scheme = Uri.Scheme;
             if (scheme == System.Uri.UriSchemeHttp || scheme == System.Uri.UriSchemeHttps ||
-                scheme == "ws" || scheme == "wss")
+                 scheme == "ws" || scheme == "wss")
             {
                 GetClientWebSocket();
             }
@@ -307,7 +307,7 @@ namespace SolidCP.Providers.OS
         {
             if (IsSocket && BaseSocket.Connected) BaseSocket.Close();
             if (IsWebSocket && BaseWebSocket.State == WebSocketState.Open || BaseWebSocket.State == WebSocketState.Connecting ||
-                !BaseWebSocket.CloseStatus.HasValue) await BaseWebSocket.CloseAsync(status, statusDescription, CancellationToken.None);
+                 !BaseWebSocket.CloseStatus.HasValue) await BaseWebSocket.CloseAsync(status, statusDescription, CancellationToken.None);
             if (IsSshTunnel) BaseSshTunnel.Dispose();
         }
 
@@ -435,7 +435,9 @@ namespace SolidCP.Providers.OS
             {
                 if (exception != null) throw new IOException(exception.Message, exception);
                 else if (destException != null) throw new IOException(destException.Message, destException);
-            } finally {
+            }
+            finally
+            {
                 Lock.Release();
             }
         }
@@ -618,7 +620,7 @@ namespace SolidCP.Providers.OS
                 await SendMessageAsync(GetUpgradeTunnelSocketMessage);
                 var upgradeTunnelSocket = await ReceiveObjectAsync<TunnelSocket>();
                 if (upgradeTunnelSocket != null && (!CanUpgrade || !upgradeTunnelSocket.CanUpgrade || upgradeTunnelSocket.IsConnected || DnsService.IsHostLoopbackOrUnknown(upgradeTunnelSocket.Uri.Host) &&
-                    !DnsService.IsHostLoopback(Uri.Host)))
+                     !DnsService.IsHostLoopback(Uri.Host)))
                 {
                     // if upgrade host is a loopback or unknown address we cannot use it as upgrade tunnel
                     upgradeTunnelSocket = null;
@@ -700,6 +702,9 @@ namespace SolidCP.Providers.OS
                     else if (url.StartsWith("udp://")) protocol = ProtocolType.Udp;
                     else throw new NotSupportedException("This url scheme is not supported");
                     var ip = DnsService.GetFirstIPAddress(Uri.Host);
+
+                    if (ip == default) throw new IOException($"Could not resolve host {Uri.Host}");
+
                     var port = Uri.Port;
 
                     if (port != 0)
@@ -808,6 +813,9 @@ namespace SolidCP.Providers.OS
         {
             var uri = new Uri(url);
             var ip = DnsService.GetFirstIPAddress(uri.Host);
+
+            if (ip == default) throw new IOException($"Cannot resolve host {uri.Host}");
+
             var port = uri.Port;
             if (port != 0) return await ListenAsync(ip, port);
             else return await ListenAsync(ip);
@@ -824,7 +832,7 @@ namespace SolidCP.Providers.OS
                 BaseSocket?.Close();
                 BaseSocket?.Dispose();
                 BaseWebSocket?.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None)
-                    .ContinueWith(task => BaseWebSocket?.Dispose());
+                     .ContinueWith(task => BaseWebSocket?.Dispose());
                 BaseSshTunnel?.Disconnect();
                 BaseSshTunnel?.Dispose();
                 Disposing?.Invoke(this, EventArgs.Empty);

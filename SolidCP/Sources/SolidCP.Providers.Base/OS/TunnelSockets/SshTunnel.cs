@@ -45,7 +45,7 @@ namespace SolidCP.Providers.OS
         public bool IsConnecting { get; protected set; }
         public TimeSpan ConnectTimeout { get; set; } = TimeSpan.FromSeconds(15);
         public IPAddress Loopback { get; protected set; }
-        
+
         public SshTunnel(string url)
         {
             Url = url;
@@ -102,14 +102,19 @@ namespace SolidCP.Providers.OS
                 {
                     remotehost = IPAddress.Loopback.ToString();
                     Loopback = IPAddress.Loopback;
+                    sshhost = sshhostip.ToString();
                 }
-                else
+                else if (sshhostip.AddressFamily == AddressFamily.InterNetworkV6)
                 {
                     remotehost = IPAddress.IPv6Loopback.ToString();
                     Loopback = IPAddress.IPv6Loopback;
+                    sshhost = sshhostip.ToString();
+                }
+                else if (sshhostip != default(IPAddress))
+                {
+                    throw new ArgumentException("No supported ip adress");
                 }
             }
-            sshhost = sshhostip.ToString();
 
             if (string.IsNullOrEmpty(Uri.Password))
             {

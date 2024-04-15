@@ -153,6 +153,7 @@ namespace SolidCP.Providers.OS
 			cnt?.Invoke();
 		}
 
+		public virtual StreamWriter StandardInput => process.StandardInput;
 		public virtual Shell ExecAsync(string cmd, Encoding encoding = null, StringDictionary environmentVariables = null)
 		{
 			LogCommand?.Invoke(cmd);
@@ -205,6 +206,7 @@ namespace SolidCP.Providers.OS
 				process.StartInfo.WindowStyle = WindowStyle;
 				process.StartInfo.RedirectStandardOutput = true;
 				process.StartInfo.RedirectStandardError = true;
+				process.StartInfo.RedirectStandardInput = true;
 				process.StartInfo.StandardOutputEncoding = encoding ?? Encoding.Default;
 				process.StartInfo.StandardErrorEncoding = encoding ?? Encoding.Default;
 				if (environmentVariables != null)
@@ -344,6 +346,8 @@ namespace SolidCP.Providers.OS
 		{
 			return await this;
 		}
+
+		public void Wait() => Task().Wait();
 
 		public async Task<string> Output()
 		{

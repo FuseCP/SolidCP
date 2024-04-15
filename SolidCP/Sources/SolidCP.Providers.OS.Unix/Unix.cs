@@ -814,5 +814,8 @@ namespace SolidCP.Providers.OS
 		}
 
 		public bool IsSystemd => new SystemdServiceController().IsInstalled;
-	}
+
+		static TraceListener defaultTraceListener = null;
+		public TraceListener DefaultTraceListener => defaultTraceListener ?? (defaultTraceListener = new SyslogTraceListener());
+    }
 }

@@ -27,25 +27,23 @@
 									<asp:Localize ID="locHostname" runat="server"
 										meta:resourcekey="locHostname" Text="Host name:" /></td>
 								<td>
-									<b>
-										<asp:HyperLink ID="lnkHostname" runat="server" NavigateUrl="javascript:void(0);" Text="[hostname]"></asp:HyperLink>
-										<asp:Literal ID="litHostname" runat="server" Text="[hostname]" /></b>&nbsp;
+									<b><asp:Literal ID="litHostname" runat="server" Text="[hostname]" /></b>&nbsp;
 									<asp:LinkButton ID="btnChangeHostnamePopup" runat="server"
 										meta:resourcekey="btnChangeHostnamePopup" SkinID="EditSmall" Text="Edit" />
 
-									<asp:Panel ID="RdpPanel" runat="server" CssClass="PopupExtender" Style="display: none;">
+									<%--<asp:Panel ID="RdpPanel" runat="server" CssClass="PopupExtender" Style="display: none;">
 										<div style="padding-bottom: 3px;">
 											<asp:Image ID="imgRdc" runat="server" SkinID="Rdc16" />&nbsp;
                                  <asp:Localize ID="locRdpText" runat="server" meta:resourcekey="locRdpText" Text="Remote desktop"></asp:Localize><br />
 										</div>
-										<%--<asp:HyperLink ID="lnkRdpFull" runat="server" NavigateUrl="javascript:OpenRemoteDesktopWindow(1, 800, 600);"
+										<asp:HyperLink ID="lnkRdpFull" runat="server" NavigateUrl="javascript:OpenRemoteDesktopWindow(1, 800, 600);"
 											meta:resourcekey="lnkRdpFull" Text="Full screen"></asp:HyperLink><br />
 										<asp:HyperLink ID="lnkRdp800" runat="server" NavigateUrl="javascript:OpenRemoteDesktopWindow(2, 800, 600);"
 											meta:resourcekey="lnkRdp800" Text="800 x 600"></asp:HyperLink><br />
 										<asp:HyperLink ID="lnkRdp1024" runat="server" NavigateUrl="javascript:OpenRemoteDesktopWindow(3, 1024 , 768);"
 											meta:resourcekey="lnkRdp1024" Text="1024 x 768"></asp:HyperLink><br />
 										<asp:HyperLink ID="lnkRdp1280" runat="server" NavigateUrl="javascript:OpenRemoteDesktopWindow(4, 1280, 1024);"
-											meta:resourcekey="lnkRdp1280" Text="1280 x 1024"></asp:HyperLink><br />--%>
+											meta:resourcekey="lnkRdp1280" Text="1280 x 1024"></asp:HyperLink><br />
 										<asp:HyperLink ID="lnkRdp800" runat="server" meta:resourcekey="lnkRdp800" Text="800 x 600" OnClientClick="OpenRemoteDesktopWindow(800, 600);"></asp:HyperLink><br />
 										<asp:HyperLink ID="lnkRdp1024" runat="server" meta:resourcekey="lnkRdp1024" Text="1024 x 768" OnClientClick="OpenRemoteDesktopWindow(1024, 768);"></asp:HyperLink><br />
 										<asp:HyperLink ID="lnkRdp1280" runat="server" meta:resourcekey="lnkRdp1280" Text="1280 x 1024" OnClientClick="OpenRemoteDesktopWindow(1200, 1024);"></asp:HyperLink><br />
@@ -53,7 +51,7 @@
 
 									<ajaxToolkit:PopupControlExtender ID="RdpPopup" BehaviorID="RdpPopup" runat="server" TargetControlID="lnkHostname"
 										PopupControlID="RdpPanel" Position="Bottom" />
-									<ajaxToolkit:DropShadowExtender ID="RdpShadow" runat="server" TargetControlID="RdpPanel" TrackPosition="true" Opacity="0.4" Width="3" />
+									<ajaxToolkit:DropShadowExtender ID="RdpShadow" runat="server" TargetControlID="RdpPanel" TrackPosition="true" Opacity="0.4" Width="3" />--%>
 								</td>
 							</tr>
 							<tr>
@@ -104,7 +102,7 @@
 											var popup = $find("RdpPopup");
 											if (popup != null) popup.hidePopup();
 
-											var rdpUrl = "<asp:Literal id="litRdpPageUrl" runat="server" />";
+											var rdpUrl = '<%= RdpPageUrl %>';
 
 											var left = (screen.width - width) / 2;
 											var top = (screen.height - height) / 2;
@@ -115,6 +113,8 @@
 
 									<asp:ImageButton ID="btnOpenVNC" runat="server" OnClientClick="OpenRemoteDesktopWindow(800,600);" SkinID="PveRdc32"
 										meta:resourcekey="btnOpenVNC" />
+                           <a href="javascript:OpenRemoteDesktopWindow(800,600);"><asp:Localize ID="locRdpText" runat="server" meta:resourcekey="locRdpText" Text="Remote desktop" /></a>
+
 								</p>
 							</ContentTemplate>
 						</asp:UpdatePanel>

@@ -16,15 +16,14 @@ namespace SolidCP.Providers.OS
     public class DnsService
     {
         static ConcurrentDictionary<string, Task<IPAddress[]>> ipforhost = new ConcurrentDictionary<string, Task<IPAddress[]>>();
-
         public static async Task<IPAddress> GetFirstIPAddressAsync(string host) => (await GetIPAddressesAsync(host))
-            .OrderBy(ip => ip.AddressFamily) // Get IPv4 address first
-            .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork || ip.AddressFamily == AddressFamily.InterNetworkV6);
+                .OrderBy(ip => ip.AddressFamily) // Get IPv4 address first
+                .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork || ip.AddressFamily == AddressFamily.InterNetworkV6);
 
         public static async Task<IPAddress> GetFirstIPV4AddressAsync(string host) => (await GetIPAddressesAsync(host))
-            .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
+             .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
         public static async Task<IPAddress> GetFirstIPV6AddressAsync(string host) => (await GetIPAddressesAsync(host))
-            .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetworkV6);
+             .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetworkV6);
         public static async Task<IPAddress[]> GetIPAddressesAsync(string host)
         {
             IPAddress ip;
@@ -33,9 +32,10 @@ namespace SolidCP.Providers.OS
                 var ips = await ipforhost.GetOrAdd(host, async host =>
                 {
                     var dnsips = await Dns.GetHostAddressesAsync(host);
-                    if (dnsips.Length == 0) throw new ArgumentException($"Could not resolve ip for {host}");
+                    //if (dnsips.Length == 0) throw new ArgumentException($"Could not resolve ip for {host}");
                     return dnsips;
                 });
+                return ips;
             }
             return new IPAddress[] { ip };
         }
@@ -45,24 +45,34 @@ namespace SolidCP.Providers.OS
             IPAddress ip;
             if (!IPAddress.TryParse(host, out ip))
             {
-                var ips = ipforhost.GetOrAdd(host, async host =>
+                var ipsTask = ipforhost.GetOrAdd(host, host =>
                 {
-                    var dnsips = await Dns.GetHostAddressesAsync(host);
-                    if (dnsips.Length == 0) throw new ArgumentException($"Could not resolve ip for {host}");
+                    var dnsips = Dns.GetHostAddresses(host);
+                    //if (dnsips.Length == 0) throw new ArgumentException($"Could not resolve ip for {host}");
+                    return Task.FromResult(dnsips);
+                });
+                // avoid deadlock on ipsTask.Result
+                if (ipsTask.IsCompleted) return ipsTask.Result;
+                else
+                {
+                    var dnsips = Dns.GetHostAddresses(host);
+                    //if (dnsips.Length == 0) throw new ArgumentException($"Could not resolve ip for {host}");
+                    ipsTask = Task.FromResult(dnsips);
+                    ipforhost.AddOrUpdate(host, ipsTask, (host, ips) => ipsTask);
                     return dnsips;
-                }).Result;
+                }
             }
             return new IPAddress[] { ip };
         }
 
         public static IPAddress GetFirstIPAddress(string host) => GetIPAddresses(host)
-            .OrderBy(ip => ip.AddressFamily) // Get IPv4 address first
-            .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork || ip.AddressFamily == AddressFamily.InterNetworkV6);
+             .OrderBy(ip => ip.AddressFamily) // Get IPv4 address first
+             .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork || ip.AddressFamily == AddressFamily.InterNetworkV6);
 
         public static IPAddress GetFirstIPV4Address(string host) => GetIPAddresses(host)
-            .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
+             .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
         public static IPAddress GetFirstIPV6Address(string host) => GetIPAddresses(host)
-            .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetworkV6);
+             .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetworkV6);
 
         public static bool IsHostLoopback(string host)
         {
@@ -77,8 +87,8 @@ namespace SolidCP.Providers.OS
             {
                 IPAddress[] ips = GetIPAddresses(host);
                 return ips
-                    .Where(ip => ip.AddressFamily == AddressFamily.InterNetwork || ip.AddressFamily == AddressFamily.InterNetworkV6)
-                    .Any(ip => IPAddress.IsLoopback(ip));
+                     .Where(ip => ip.AddressFamily == AddressFamily.InterNetwork || ip.AddressFamily == AddressFamily.InterNetworkV6)
+                     .Any(ip => IPAddress.IsLoopback(ip));
             }
             return false;
         }
@@ -96,8 +106,8 @@ namespace SolidCP.Providers.OS
             {
                 IPAddress[] ips = GetIPAddresses(host);
                 return !ips.Any() || ips
-                    .Where(ip => ip.AddressFamily == AddressFamily.InterNetwork || ip.AddressFamily == AddressFamily.InterNetworkV6)
-                    .Any(ip => IPAddress.IsLoopback(ip));
+                     .Where(ip => ip.AddressFamily == AddressFamily.InterNetwork || ip.AddressFamily == AddressFamily.InterNetworkV6)
+                     .Any(ip => IPAddress.IsLoopback(ip));
             }
             return false;
         }
@@ -126,14 +136,14 @@ namespace SolidCP.Providers.OS
             var isHostIP = IPAddress.TryParse(host, out hostip);
             isHostIP = isHostIP && (hostip.AddressFamily == AddressFamily.InterNetwork || hostip.AddressFamily == AddressFamily.InterNetworkV6);
             if (host == "localhost" || host.StartsWith("127.0.0.") && isHostIP || host == "::1" || host == "[::1]" ||
-                isHostIP && IsLANAddress(host)) return true;
+                 isHostIP && IsLANAddress(host)) return true;
 
             if (!isHostIP)
             {
                 IPAddress[] ips = GetIPAddresses(host);
                 return ips
-                    .Where(ip => ip.AddressFamily == AddressFamily.InterNetwork || ip.AddressFamily == AddressFamily.InterNetworkV6)
-                    .All(ip => IsLANAddress(ip.ToString()));
+                     .Where(ip => ip.AddressFamily == AddressFamily.InterNetwork || ip.AddressFamily == AddressFamily.InterNetworkV6)
+                     .All(ip => IsLANAddress(ip.ToString()));
             }
             return false;
         }

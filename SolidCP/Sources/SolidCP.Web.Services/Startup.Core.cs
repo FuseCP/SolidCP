@@ -108,12 +108,10 @@ namespace SolidCP.Web.Services
 			KeyFile = builder.Configuration.GetValue<string>("ServerCertificate:KeyFile");
 			ServiceTypes.ExposeWebServices = builder.Configuration.GetValue<string>("exposeWebServices") ?? "";
 
-			if (TraceLevel != TraceLevel.Off && (OSInfo.IsLinux || OSInfo.IsMac))
+			if (TraceLevel != TraceLevel.Off)
 			{
-				TraceListener syslog = (TraceListener)Activator.CreateInstance(Type.GetType("SolidCP.Providers.OS.SyslogTraceListener, SolidCP.Providers.OS.Unix"));
-				var level = syslog.GetType().GetProperty("Level");
-				level.SetValue(syslog, TraceLevel);
-				Trace.Listeners.Add(syslog);
+				var listener = OSInfo.Current.DefaultTraceListener;
+				Trace.Listeners.Add(listener);
 				Log($"Trace level set to {TraceLevel}");
 			}
 			IsLocalService = AllowedHosts.Split(';')

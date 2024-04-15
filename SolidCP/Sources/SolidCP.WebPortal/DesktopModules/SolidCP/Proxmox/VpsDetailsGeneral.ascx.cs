@@ -59,6 +59,7 @@ namespace SolidCP.Portal.Proxmox
             BindGeneralDetails();
         }
 
+         protected string RdpPageUrl { get; set; }
         private void BindGeneralDetails()
         {
             VirtualMachine item = VirtualMachinesProxmoxHelper.GetCachedVirtualMachine(PanelRequest.ItemID);
@@ -92,10 +93,9 @@ namespace SolidCP.Portal.Proxmox
                 var baseUrl = Regex.Match(Request.RawUrl, @"^.*?(?=/Default.aspx)")?.Value;
                    
                 //string path = TunnelUri.QueryEncode($"{baseUrl}/novnc/websocket?user={TunnelUri.QueryEncode(PanelSecurity.LoggedUser.Username)}&item={serviceItem.Id}");
-                litRdpPageUrl.Text = $"{baseUrl}/novnc/vnc.aspx?item={PanelRequest.ItemID}";
+                RdpPageUrl = $"{baseUrl}/novnc/vnc.aspx?item={PanelRequest.ItemID}";
 
-                lnkHostname.Text = item.Hostname.ToUpper();
-                lnkHostname.Visible = RdpPopup.Enabled = btnOpenVNC.Visible = displayRDP;
+                btnOpenVNC.Visible = displayRDP;
 
                 //lnkHostname.NavigateUrl = "javascript:OpenRemoteDesktopWindow('', 800, 600)";
 

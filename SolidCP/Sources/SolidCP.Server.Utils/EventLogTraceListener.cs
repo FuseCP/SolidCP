@@ -91,6 +91,8 @@ namespace SolidCP.Server.Utils
             this.eventLog.ModifyOverflowPolicy(OverflowAction.OverwriteAsNeeded, 0);
         }
 
+        public EventLogTraceListener() : this("SolidCP") { }
+
         private EventInstance CreateEventInstance(TraceEventType severity, int id)
         {
             if (id > 0xffff)
@@ -101,42 +103,42 @@ namespace SolidCP.Server.Utils
             {
                 id = 0;
             }
-            EventInstance instance1 = new EventInstance((long)id, 0);
+            EventInstance instance = new EventInstance((long)id, 0);
             if ((severity == TraceEventType.Error) || (severity == TraceEventType.Critical))
             {
-                instance1.EntryType = EventLogEntryType.Error;
-                return instance1;
+                instance.EntryType = EventLogEntryType.Error;
+                return instance;
             }
             if (severity == TraceEventType.Warning)
             {
-                instance1.EntryType = EventLogEntryType.Warning;
-                return instance1;
+                instance.EntryType = EventLogEntryType.Warning;
+                return instance;
             }
-            instance1.EntryType = EventLogEntryType.Information;
-            return instance1;
+            instance.EntryType = EventLogEntryType.Information;
+            return instance;
         }
 
         public override void TraceData(TraceEventCache eventCache, string source, TraceEventType severity, int id, params object[] data)
         {
             if ((base.Filter == null) || base.Filter.ShouldTrace(eventCache, source, severity, id, null, null, null, data))
             {
-                EventInstance instance1 = this.CreateEventInstance(severity, id);
-                StringBuilder builder1 = new StringBuilder();
+                EventInstance instance = this.CreateEventInstance(severity, id);
+                StringBuilder builder = new StringBuilder();
                 if (data != null)
                 {
-                    for (int num1 = 0; num1 < data.Length; num1++)
+                    for (int num = 0; num < data.Length; num++)
                     {
-                        if (num1 != 0)
+                        if (num != 0)
                         {
-                            builder1.Append(", ");
+                            builder.Append(", ");
                         }
-                        if (data[num1] != null)
+                        if (data[num] != null)
                         {
-                            builder1.Append(data[num1].ToString());
+                            builder.Append(data[num].ToString());
                         }
                     }
                 }
-                this.eventLog.WriteEvent(instance1, new object[] { builder1.ToString() });
+                this.eventLog.WriteEvent(instance, new object[] { builder.ToString() });
             }
         }
 
@@ -144,8 +146,8 @@ namespace SolidCP.Server.Utils
         {
             if ((base.Filter == null) || base.Filter.ShouldTrace(eventCache, source, severity, id, null, null, data, null))
             {
-                EventInstance instance1 = this.CreateEventInstance(severity, id);
-                this.eventLog.WriteEvent(instance1, new object[] { data });
+                EventInstance instance = this.CreateEventInstance(severity, id);
+                this.eventLog.WriteEvent(instance, new object[] { data });
             }
         }
 
@@ -153,8 +155,8 @@ namespace SolidCP.Server.Utils
         {
             if ((base.Filter == null) || base.Filter.ShouldTrace(eventCache, source, severity, id, message, null, null, null))
             {
-                EventInstance instance1 = this.CreateEventInstance(severity, id);
-                this.eventLog.WriteEvent(instance1, new object[] { message });
+                EventInstance instance = this.CreateEventInstance(severity, id);
+                this.eventLog.WriteEvent(instance, new object[] { message });
             }
         }
 

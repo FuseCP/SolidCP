@@ -1914,5 +1914,8 @@ namespace SolidCP.Providers.OS
 		public virtual ServiceController ServiceController => throw new NotImplementedException();
 
 		public virtual WSLShell WSLShell => WSLShell.Default;
+
+		static TraceListener defaultTraceListener = null;
+		public TraceListener DefaultTraceListener => defaultTraceListener ?? (defaultTraceListener = new SolidCP.Server.Utils.EventLogTraceListener());
 	}
 }

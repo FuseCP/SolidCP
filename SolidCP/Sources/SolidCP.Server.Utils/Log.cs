@@ -31,6 +31,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
+using System.Configuration;
 using System.Diagnostics;
 
 
@@ -42,9 +43,13 @@ namespace SolidCP.Server.Utils
     public sealed class Log
     {
         private static TraceSwitch logSeverity = new TraceSwitch("Log", "General trace switch");
-
         private Log()
         {
+        }
+        public static TraceLevel LogLevel
+        {
+            get => logSeverity.Level;
+            set => logSeverity.Level = value;
         }
 
         /// <summary>

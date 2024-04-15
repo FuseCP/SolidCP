@@ -45,10 +45,10 @@ using System.Runtime.InteropServices;
 
 namespace SolidCP.Providers.OS
 {
-    /// <summary>
-    /// Summary description for IOperationSystem.
-    /// </summary>
-    public interface IOperatingSystem
+	/// <summary>
+	/// Summary description for IOperationSystem.
+	/// </summary>
+	public interface IOperatingSystem
 	{
 		// files
 		string CreatePackageFolder(string initialPath);
@@ -114,6 +114,8 @@ namespace SolidCP.Providers.OS
 		Installer DefaultInstaller { get; }
 		Web.IWebServer WebServer { get; }
 		ServiceController ServiceController { get; }
+
+		TraceListener DefaultTraceListener { get; }
 	}
 
 }
