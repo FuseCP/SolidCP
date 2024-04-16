@@ -37,7 +37,6 @@ using System.Collections;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Text;
-using System.Data.SqlClient;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -171,7 +170,7 @@ namespace SolidCP.EnterpriseServer
                         SchedulerController.UpdateSchedule(schedule.ScheduleInfo);
                         break;
                     }
-                    catch (SqlException)
+                    catch (System.Data.Common.DbException)
                     {
                         System.Threading.Thread.Sleep(1000);
                     }

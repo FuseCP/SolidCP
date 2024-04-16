@@ -21,6 +21,7 @@
         <PackageReference Include="DotNetZip.NetStandard" Version="1.12.0" />
         <PackageReference Include="GoogleAuthenticator" Version="3.2.0" />
         <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="QRCoder" Version="1.4.3" />
         <PackageReference Include="RestSharp" Version="110.2.0" />
@@ -55,6 +56,7 @@
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj" />
+        <ProjectReference Include="..\SolidCP.EnterpriseServer.Data\SolidCP.EnterpriseServer.Data.csproj" />
         <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
         <ProjectReference Include="..\SolidCP.Server\WebServices\SolidCP.Build\SolidCP.Server.Client.csproj" />
         <ProjectReference Include="..\SolidCP.Templates\SolidCP.Templates.csproj" />

@@ -173,7 +173,7 @@ namespace SolidCP.EnterpriseServer
                         success = true;
                         break;
                     }
-                    catch (System.Data.SqlClient.SqlException ex)
+                    catch (System.Data.Common.DbException ex)
                     {
                         exception = ex;
                         TaskManager.WriteError(ex);

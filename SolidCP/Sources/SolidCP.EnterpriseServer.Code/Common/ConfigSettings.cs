@@ -41,6 +41,8 @@ namespace SolidCP.EnterpriseServer
     /// </summary>
     public class ConfigSettings
     {
+
+        public static bool UseEntityFramework => ConfigurationManager.AppSettings["SolidCP.EnterpriseServer.UseEntityFramework"]?.ToString().ToLower() == "true";
         public static string DataProviderType
         {
             get { return ConfigurationManager.AppSettings["SolidCP.EnterpriseServer.DataProvider"]; }
