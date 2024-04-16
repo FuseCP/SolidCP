@@ -41,8 +41,10 @@ using System.Collections.Specialized;
 using System.Collections.Generic;
 using System.Xml;
 using System.Net.Mail;
+#if NETFRAMEWORK
 using System.Web;
 using System.Web.Caching;
+#endif
 
 using SolidCP.Providers;
 using SolidCP.Providers.Web;
