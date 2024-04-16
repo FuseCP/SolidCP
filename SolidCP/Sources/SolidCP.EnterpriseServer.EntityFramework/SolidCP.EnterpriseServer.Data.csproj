@@ -1,0 +1,70 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;net8.0;net48</TargetFrameworks>
+        <LangVersion>10</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.4" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.4" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="8.0.4" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.4" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.4" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+      <PackageReference Include="EntityFramework" Version="6.4.4" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="Model\Core\Entities\**\*.*" />
+        <Compile Remove="Model\Core\Entities\**\*.*" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Model\Core\Generator\CreateModel.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="Model\Core\Generator\CreateModel.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>CreateModel.tt</DependentUpon>
+      </None>
+      <None Include="Model\NetFX\Generator\CreateModel.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>CreateModel.tt</DependentUpon>
+      </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Model\NetFX\Generator\CreateModel.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>CreateModel.tt</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="Model\Core\Generator\CreateModel.tt">
+        <Generator>TextTemplatingFileGenerator</Generator>
+        <LastGenOutput>CreateModel.cs</LastGenOutput>
+      </None>
+      <None Update="Model\NetFX\Generator\CreateModel.tt">
+        <LastGenOutput>CreateModel.cs</LastGenOutput>
+        <Generator>TextTemplatingFileGenerator</Generator>
+      </None>
+    </ItemGroup>
+
+</Project>

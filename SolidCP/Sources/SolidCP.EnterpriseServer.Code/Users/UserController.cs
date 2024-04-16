@@ -130,7 +130,6 @@ namespace SolidCP.EnterpriseServer
                             if (lockOut >= 0) DataProvider.UpdateUserFailedLoginAttempt(user.UserId, lockOut, false);
                             TaskManager.WriteWarning("Expired one time password");
                             return BusinessErrorCodes.ERROR_USER_EXPIRED_ONETIMEPASSWORD;
-                            break;
                     }
                 }
                 else

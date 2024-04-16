@@ -8,7 +8,6 @@ using SolidCP.Providers.OS;
 using SolidCP.Providers.Virtualization;
 using SolidCP.EnterpriseServer;
 using SolidCP.Server.Client;
-using SolidCP.Providers.Virtualization;
 
 [assembly:TunnelService(typeof(SolidCP.EnterpriseServer.EnterpriseServerTunnelService))]
 

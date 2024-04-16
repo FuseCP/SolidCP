@@ -841,10 +841,15 @@ namespace SolidCP.EnterpriseServer
                     settings.EncryptionLevel = EncryptionLevel.ClientCompatible.ToString();
                 }
 
+                // TODO: This is a bug? Value can never be null, since it's not nullable
+                /*???
+                
                 if (settings.AuthenticateUsingNLA == null)
                 {
                     settings.AuthenticateUsingNLA = true;
                 }
+                
+                */
             }
 
             return settings;
