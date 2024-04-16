@@ -306,7 +306,7 @@ namespace SolidCP.Providers.Virtualization
         #region Constructors
         public Proxmoxvps()
         {
-            LoadSkiaNativeDlls();
+            OS.SkiaSharp.LoadNativeDlls();
         }
         #endregion
 
@@ -475,82 +475,6 @@ namespace SolidCP.Providers.Virtualization
             HostedSolutionLog.LogEnd("GetVirtualMachines");
             return vmachines;
         }
-        public bool IsLinuxMusl
-        {
-            get
-            {
-                if (!OSInfo.IsLinux) return false;
-                return OS.Shell.Default.Exec("ldd /bin/ls").OutputAndError().Result.Contains("musl");
-            }
-        }
-
-        Dictionary<string, IntPtr> loadedNativeDlls = new Dictionary<string, IntPtr>();
-        public IntPtr SkiaDllImportResolver(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
-        {
-            if (libraryName.Contains("SkiaSharp"))
-            {
-                lock (this)
-                {
-                    IntPtr dll;
-                    if (loadedNativeDlls.TryGetValue(libraryName, out dll)) return dll;
-
-                    var runtimeInformation = typeof(RuntimeInformation);
-                    var runtimeIdentifier = (string?)runtimeInformation.GetProperty("RuntimeIdentifier")?.GetValue(null);
-                    if (runtimeIdentifier == "linux-x64" && IsLinuxMusl) runtimeIdentifier = "linux-musl-x64";
-                    runtimeIdentifier = runtimeIdentifier.Replace("linux-", "");
-                    var currentDllPath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
-                    string libraryFileName = libraryName;
-                    if (!libraryFileName.EndsWith(".so")) libraryFileName += ".so";
-                    if (!libraryFileName.StartsWith("lib")) libraryFileName = "lib" + libraryFileName;
-                    var nativeDllPath = Path.Combine(currentDllPath, runtimeIdentifier, libraryFileName);
-
-                    if (File.Exists(nativeDllPath))
-                    {
-                        // call NativeLibrary.Load via reflection, becuase it's not available in NET Standard
-                        var nativeLibrary = Type.GetType("System.Runtime.InteropServices.NativeLibrary, System.Runtime.InteropServices");
-                        var load = nativeLibrary.GetMethod("Load", new Type[] { typeof(string), typeof(Assembly), typeof(DllImportSearchPath?) });
-                        dll = (IntPtr)load?.Invoke(null, new object[] { nativeDllPath, assembly, searchPath });
-                        loadedNativeDlls.Add(libraryName, dll);
-
-                        Console.WriteLine($"Loaded native library: {nativeDllPath}");
-
-                        return dll;
-                    }
-                }
-            }
-
-            // Otherwise, fallback to default import resolver.
-            return IntPtr.Zero;
-        }
-
-
-        static bool nativeSkiaDllLoaded = false;
-        public void LoadSkiaNativeDlls()
-        {
-            if (nativeSkiaDllLoaded) return;
-            nativeSkiaDllLoaded = true;
-
-            if (OSInfo.IsLinux)
-            {
-                // call NativeLibrary.SetDllImportResolver via reflection, becuase it's not available in NET Standard
-                var nativeLibrary = Type.GetType("System.Runtime.InteropServices.NativeLibrary, System.Runtime.InteropServices");
-                var dllImportResolver = Type.GetType("System.Runtime.InteropServices.DllImportResolver, System.Runtime.InteropServices");
-
-                Assembly skiaSharp = AppDomain.CurrentDomain.GetAssemblies()
-                    .FirstOrDefault(a => a.GetName().Name == "SkiaSharp");
-                if (skiaSharp == null)
-                {
-                    skiaSharp = Assembly.Load("SkiaSharp");
-                }
-                var setDllImportResolver = nativeLibrary.GetMethod("SetDllImportResolver", new Type[] { typeof(Assembly), dllImportResolver });
-                //var importResolverMethod = this.GetType().GetMethod(nameof(SkiaDllImportResolver));
-
-                var skiaDllImportResolver = Delegate.CreateDelegate(dllImportResolver, this, nameof(SkiaDllImportResolver));
-                setDllImportResolver?.Invoke(null, new object[] { skiaSharp, skiaDllImportResolver });
-
-                Console.WriteLine("Added SkiaSharp DllImportResolver");
-            }
-        }
 
         public ImageFile GetVirtualMachineThumbnailImageScreenshot(string vmId, int width, int height)
         {
@@ -601,7 +525,6 @@ namespace SolidCP.Providers.Virtualization
 
         public ImageFile GetVirtualMachineThumbnailImage(string vmId, ThumbnailSize size)
         {
-
             int width = 80;
             int height = 60;
 
