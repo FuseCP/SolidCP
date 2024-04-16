@@ -41,6 +41,9 @@ using System.Collections.Specialized;
 using System.Collections.Generic;
 using System.Xml;
 using System.Net.Mail;
+using System.Web;
+using System.Web.Caching;
+
 using SolidCP.Providers;
 using SolidCP.Providers.Web;
 using SolidCP.Providers.FTP;
@@ -49,8 +52,6 @@ using SolidCP.Providers.Database;
 using SolidCP.Providers.OS;
 using OS = SolidCP.Server.Client;
 using SolidCP.Server.Client;
-using System.Web;
-using System.Web.Caching;
 
 namespace SolidCP.EnterpriseServer
 {
