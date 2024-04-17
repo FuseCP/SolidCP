@@ -65,31 +65,8 @@ namespace SolidCP.EnterpriseServer
 			return value;
 		}
 
-		public static string CryptoKey
-		{
-			get
-			{
-				string Key = ConfigurationManager.AppSettings["SolidCP.AltCryptoKey"];
-				string value = string.Empty;
-
-				if (OSInfo.IsWindows) value = GetKeyFromRegistry(Key);
-
-				if (!string.IsNullOrEmpty(value))
-					return value;
-				else
-					return ConfigurationManager.AppSettings["SolidCP.CryptoKey"];
-
-			}
-		}
-
-		public static bool EncryptionEnabled
-		{
-			get
-			{
-				return (ConfigurationManager.AppSettings["SolidCP.EncryptionEnabled"] != null)
-					? Boolean.Parse(ConfigurationManager.AppSettings["SolidCP.EncryptionEnabled"]) : true;
-			}
-		}
+		public static string CryptoKey => ConfigSettings.CryptoKey;
+		public static bool EncryptionEnabled => ConfigSettings.EncryptionEnabled;
 
 		public static string EncryptServerPassword(string password) => Encrypt(password);
 

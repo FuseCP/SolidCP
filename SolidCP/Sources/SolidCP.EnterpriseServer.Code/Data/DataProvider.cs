@@ -33,7 +33,11 @@
 using System;
 using System.Configuration;
 using System.Data;
+#if NET8_0
+using Microsoft.Data.SqlClient;
+#else
 using System.Data.SqlClient;
+#endif
 using System.Text.RegularExpressions;
 using SolidCP.EnterpriseServer.Base.HostedSolution;
 using SolidCP.Providers.HostedSolution;
@@ -54,33 +58,7 @@ namespace SolidCP.EnterpriseServer
 	public static class DataProvider
 	{
 
-		static string EnterpriseServerRegistryPath = "SOFTWARE\\SolidCP\\EnterpriseServer";
-
-		private static string ConnectionString
-		{
-			get
-			{
-				string ConnectionKey = ConfigurationManager.AppSettings["SolidCP.AltConnectionString"];
-				string value = string.Empty;
-
-				if (!string.IsNullOrEmpty(ConnectionKey))
-				{
-					RegistryKey root = Registry.LocalMachine;
-					RegistryKey rk = root.OpenSubKey(EnterpriseServerRegistryPath);
-					if (rk != null)
-					{
-						value = (string)rk.GetValue(ConnectionKey, null);
-						rk.Close();
-					}
-				}
-
-				if (!string.IsNullOrEmpty(value))
-					return value;
-				else
-					return ConfigurationManager.ConnectionStrings["EnterpriseServer"].ConnectionString;
-			}
-		}
-
+		public static string ConnectionString => ConfigSettings.ConnectionString;
 		private static string ObjectQualifier
 		{
 			get

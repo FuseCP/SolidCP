@@ -1,4 +1,26 @@
-<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="SolidCP.EnterpriseServer.DefaultPage" %>
+﻿@page "/"
+@using System.Reflection
+@using SolidCP.Providers.OS
+
+@functions {
+    string Version {get; set; }
+    string Bitness { get; set; }
+    string OS { get; set; }
+    //string Url { get; set; }
+}
+
+@{
+    // set version
+    object[] attrs = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true);
+    if(attrs.Length > 0)
+        Version = ((AssemblyFileVersionAttribute)attrs[0]).Version;
+
+    // asp.net mode
+    Bitness = (IntPtr.Size == 8) ? "64-bit" : "32-bit";
+    OS = OSInfo.IsWindows ? "Windows" :
+	    (OSInfo.IsMac ? "Mac" : 
+        (OSInfo.IsLinux ? "Linux" :"Unix"));
+}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head runat="server">
@@ -51,14 +73,13 @@
     </style>
 </head>
 <body>
-    <form id="AspForm" runat="server">
-		<div class="Content">
-			<div>
-				<asp:Image ID="imgLogo" runat="server" ImageUrl="~/wwwroot/img/logo.png" />
-			</div>
-		
+    <form id="AspForm">
+        <div class="Content">
+            <div>
+                <img src="img/logo.png" />
+            </div>
 			<h1>Enterprise Server</h1>
-			
+
 			<table cellpadding="0" cellspacing="1" align="center">
 				<tr>
 					<td class="FieldName">Status:</td>
@@ -66,17 +87,17 @@
 				</tr>
 				<tr>
 					<td class="FieldName">Version:</td>
-					<td><asp:Literal id="litVersion" runat="server"></asp:Literal></td>
+					<td>@Version</td>
 				</tr>
 				<tr>
 					<td class="FieldName">URL:</td>
-					<td><asp:Literal id="litUrl" runat="server"/></td>
+					<td>@(HttpContext.Request.Scheme)://@(HttpContext.Request.Host)@(HttpContext.Request.Path)</td>
 				</tr>
 			</table>
-            <br />
-			<asp:HyperLink runat="server" id="lnkDocs" NavigateUrl="~/api-docs">API Documentation</asp:HyperLink> <br />
-            <a href="https://solidcp.com">SolidCP</a> &COPY; Copyright <%=DateTime.Now.Year%> All Rights Reserved.
+			<br />
+			<a href="swagger/index.html">API Documentation</a> <br />
+			<a href="https://solidcp.com">SolidCP</a> &COPY; Copyright @DateTime.Now.Year All Rights Reserved.
 		</div>
-    </form>
+	</form>
 </body>
 </html>

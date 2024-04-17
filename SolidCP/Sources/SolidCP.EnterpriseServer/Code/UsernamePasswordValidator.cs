@@ -1,4 +1,7 @@
 ﻿using System.ServiceModel;
+#if !NETFRAMEWORK
+
+#endif
 
 namespace SolidCP.EnterpriseServer
 {
@@ -7,7 +10,7 @@ namespace SolidCP.EnterpriseServer
 
 		public static bool Validate(string username, string password)
 		{
-			UserInfo user = UserController.GetUserByUsernamePassword(username, password, System.Web.HttpContext.Current.Request.UserHostAddress);
+			UserInfo user = UserController.GetUserByUsernamePassword(username, password, Web.Services.Server.UserHostAddress);
 
 			if (user == null) return false;
 

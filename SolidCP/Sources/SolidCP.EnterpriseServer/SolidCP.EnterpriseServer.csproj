@@ -2,30 +2,13 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFrameworks>net48</TargetFrameworks>
+        <TargetFrameworks>net48;net8.0</TargetFrameworks>
         <Nullable>disable</Nullable>
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>WebServices</CompilerGeneratedFilesOutputPath>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <LangVersion>11</LangVersion>
-        <ProjectGuid>{59C7623A-5181-48A5-880A-C9B82B48F589}</ProjectGuid>
         <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(TargetFramework)' == 'net7.0'">
-        <OutputPath>bin_dotnet</OutputPath>
-        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-        <StartupObject>SolidCP.EnterpriseServer.Program</StartupObject>
-        <ImplicitUsings>enable</ImplicitUsings>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
-        <OutputPath>bin_dotnet</OutputPath>
-        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-        <StartupObject>SolidCP.EnterpriseServer.Program</StartupObject>
-        <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
@@ -42,32 +25,36 @@
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <ImplicitUsings>disable</ImplicitUsings>
-        <RunCommand>$(MSBuildExtensionsPath64)\..\IIS Express\iisexpress</RunCommand>
-        <RunArguments>/path:"$(MSBuildProjectDirectory)" /port:9901</RunArguments>
     </PropertyGroup>
+    
+    <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+        <None Include="Default.aspx.designer.cs" />
+        <None Include="Default.aspx.cs" />
+        <Compile Remove="Default.aspx.designer.cs" />
+        <Compile Remove="Default.aspx.cs" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+        <Content Remove="Pages\Index.cshtml" />
+        <None Include="Pages\Index.cshtml" />
+    </ItemGroup>    
 
     <ItemGroup>
+        <Content Remove="WebServces\**\*.*" />
         <Compile Remove="WebServices\**\*.*" />
         <None Include="WebServices\**\*.*" />
+        <Content Remove="bin_dotnet\**\*.*" />
+        <None Remove="bin_dotnet\**\*.*" />
+        <Compile Remove="bin_dotnet\**\*.*" />
         <None Remove="**\*.asmx" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Compile Remove="Code\OperatingSystems\OperatingSystemController.cs" />
-        <Compile Remove="Code\WebServers\WebServerController.cs" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Remove="WebServices\SolidCP.Build\EnterpriseServerProxyConfigurator.cs" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\SolidCP.Build\SolidCP.Build.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
         <ProjectReference Include="..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj" />
         <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
-        <ProjectReference Include="..\SolidCP.EnterpriseServer.Code\SolidCP.EnterpriseServer.Code.csproj">
-            <Private>False</Private>
-        </ProjectReference>
+        <ProjectReference Include="..\SolidCP.EnterpriseServer.Code\SolidCP.EnterpriseServer.Code.csproj" ExcludeAssets="buildTransitive" />
+        <ProjectReference Include="..\SolidCP.Providers.OS.Unix\SolidCP.Providers.OS.Unix.csproj" />
         <ProjectReference Include="..\SolidCP.Server\WebServices\SolidCP.Build\SolidCP.Server.Client.csproj" />
         <ProjectReference Include="..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj" />
         <ProjectReference Include="..\SolidCP.Web.Services\SolidCP.Web.Services.csproj" />
@@ -77,8 +64,8 @@
         <Reference Include="System" />
         <Reference Include="System.Security" />
         <Reference Include="System.Xml" />
-        <Reference Include="System.Configuration" />
         <Reference Include="System.Xml.Linq" />
+        <Reference Include="System.Configuration" />
         <Reference Include="System.ServiceModel" />
         <Reference Include="System.ServiceModel.Web" />
         <Reference Include="System.Web" />
@@ -89,8 +76,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="Code\OperatingSystems\OperatingSystemController.cs" />
-        <None Include="Code\WebServers\WebServerController.cs" />
         <None Include="Web.config">
             <SubType>Designer</SubType>
         </None>
@@ -103,7 +88,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="Images\logo.png" />
         <None Include="Properties\PublishProfiles\Default Settings %282%29.pubxml" />
         <None Include="Properties\PublishProfiles\Default Settings %283%29.pubxml" />
         <None Include="Properties\PublishProfiles\Default Settings.pubxml" />
@@ -113,6 +97,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Folder Include="Pages\" />
         <Folder Include="WebServices\SolidCP.Build\SolidCP.Build.WebServices\" />
     </ItemGroup>
 
@@ -120,27 +105,46 @@
         <Analyzer Include="..\SolidCP.Build\bin\$(Configuration)\netstandard2.0\RazorBlade.dll" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Update="wwwroot\img\logo.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
     <Target Name="DeleteUnusedDlls" AfterTargets="Build">
+
+        <!-- move lazy loaded assemblies to bin\Code and delete unused assemblies in bin -->
         <Message Text="Delete unused dll files" Importance="high" />
         <ItemGroup>
-            <FilesToDelete Include="bin\Google.Authenticator.*" />
-            <FilesToDelete Include="bin\Microsoft.Bcl.AsyncInterfaces.*" />
-            <FilesToDelete Include="bin\Microsoft.Win32.Registry.*" />
-            <FilesToDelete Include="bin\Newtonsoft.Json.*" />
-            <FilesToDelete Include="bin\QRCoder.*" />
-            <FilesToDelete Include="bin\RestSharp.*" />
-            <FilesToDelete Include="bin\IPAddressRange.*" />
-            <FilesToDelete Include="bin\DotNetZip.*" />
-            <FilesToDelete Include="bin\Microsoft.IdentityModel.Logging.*" />
-            <FilesToDelete Include="bin\Microsoft.IdentityModel.Tokens.*" />
-            <FilesToDelete Include="bin\SolidCP.Server.Client.*" />
-            <FilesToDelete Include="bin\SolidCP.Web.Clients.*" />
-            <FilesToDelete Include="bin\WhoisClient.*" />
-            <FilesToDelete Include="bin\Twilio.*" />
-            <FilesToDelete Include="bin\SolidCP.Templates.*" />
-            <FilesToDelete Include="bin\System.*" />
-
+            <FilesToMove Include="bin\Google.Authenticator.*" />
+            <FilesToMove Include="bin\Microsoft.Bcl.AsyncInterfaces.*" />
+            <FilesToMove Include="bin\Microsoft.Win32.Registry.*" />
+            <FilesToMove Include="bin\Newtonsoft.Json.*" />
+            <FilesToMove Include="bin\QRCoder.*" />
+            <FilesToMove Include="bin\RestSharp.*" />
+            <FilesToMove Include="bin\IPAddressRange.*" />
+            <FilesToMove Include="bin\DotNetZip.*" />
+            <FilesToMove Include="bin\Microsoft.IdentityModel.Logging.*" />
+            <FilesToMove Include="bin\Microsoft.IdentityModel.Tokens.*" />
+            <FilesToMove Include="bin\Microsoft.IdentityModel.JsonWebTokens.*" />
+            <FilesToMove Include="bin\Microsoft.IdentityModel.Abstractions.*" />
+            <FilesToMove Include="bin\Microsoft.Web.Administration.*" />
+            <FilesToMove Include="bin\SolidCP.Server.Client.*" />
+            <FilesToMove Include="bin\SolidCP.Web.Clients.*" />
+            <FilesToMove Include="bin\WhoisClient.*" />
+            <FilesToMove Include="bin\Twilio.*" />
+            <FilesToMove Include="bin\SolidCP.Templates.*" />
+            <FilesToMove Include="bin\System.*" />
+            <FilesToMove Include="bin\SwaggerWcf.*" />
+            <FilesToMove Include="bin\Renci.SshNet.*" />
+            <FilesToMove Include="bin\SkiaSharp.*" />
+            <FilesToDelete Include="bin\WebServices\**\*.*" />
+            <FilesToDelete Include="bin_dotnet\WebServices\**\*.*" />
+            <FilesToDelete Include="bin\refs\**\*.*" />
         </ItemGroup>
-        <Delete Files="@(FilesToDelete)" />
+        
+        <Delete Files="@(FilesToDelete)" ContinueOnError="true" />
+        <Move SourceFiles="@(FilesToMove)" DestinationFolder="bin\Code" ContinueOnError="true" />
+        <RemoveDir Directories="bin\WebServices;bin\refs;bin_dotnet\WebServices" ContinueOnError="true" />
     </Target>
 </Project>

@@ -45,6 +45,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.EnterpriseServer.Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Web.Services", "SolidCP.Web.Services\SolidCP.Web.Services.csproj", "{2882CB44-0941-4AB7-B8AA-920D367C41F3}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Providers.OS.Unix", "SolidCP.Providers.OS.Unix\SolidCP.Providers.OS.Unix.csproj", "{A2DCB86C-F28C-4CEC-9275-E0FBCCDACD8E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -107,6 +109,10 @@ Global
 		{2882CB44-0941-4AB7-B8AA-920D367C41F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2882CB44-0941-4AB7-B8AA-920D367C41F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2882CB44-0941-4AB7-B8AA-920D367C41F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2DCB86C-F28C-4CEC-9275-E0FBCCDACD8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2DCB86C-F28C-4CEC-9275-E0FBCCDACD8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2DCB86C-F28C-4CEC-9275-E0FBCCDACD8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2DCB86C-F28C-4CEC-9275-E0FBCCDACD8E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

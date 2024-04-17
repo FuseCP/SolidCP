@@ -5,7 +5,7 @@
       "executablePath": "C:\\Program Files\\IIS Express\\iisexpress.exe",
       "commandLineArgs": "/site:solidcp.enterpriseserver"
     }, */
-    "net6": {
+    "net8": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

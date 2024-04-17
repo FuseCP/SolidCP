@@ -57,7 +57,11 @@
 using System;
 using System.Data;
 using System.Xml;
+#if NET8_0
+using Microsoft.Data.SqlClient;
+#else
 using System.Data.SqlClient;
+#endif
 using System.Collections;
 
 namespace Microsoft.ApplicationBlocks.Data
@@ -1885,7 +1889,7 @@ namespace Microsoft.ApplicationBlocks.Data
 			if( mustCloseConnection )
 				connection.Close();
 		}
-		#endregion
+        #endregion
         
         #region UpdateDataset
         /// <summary>
@@ -2437,7 +2441,7 @@ namespace Microsoft.ApplicationBlocks.Data
 	/// </summary>
 	public sealed class SqlHelperParameterCache
 	{
-		#region private methods, variables, and constructors
+        #region private methods, variables, and constructors
 
 		//Since this class provides only static methods, make the default constructor private to prevent 
 		//instances from being created with "new SqlHelperParameterCache()"
@@ -2498,9 +2502,9 @@ namespace Microsoft.ApplicationBlocks.Data
 			return clonedParameters;
 		}
 
-		#endregion private methods, variables, and constructors
+        #endregion private methods, variables, and constructors
 
-		#region caching functions
+        #region caching functions
 
 		/// <summary>
 		/// Add parameter array to the cache
@@ -2542,9 +2546,9 @@ namespace Microsoft.ApplicationBlocks.Data
 			}
 		}
 
-		#endregion caching functions
+        #endregion caching functions
 
-		#region Parameter Discovery Functions
+        #region Parameter Discovery Functions
 
 		/// <summary>
 		/// Retrieves the set of SqlParameters appropriate for the stored procedure
@@ -2641,7 +2645,7 @@ namespace Microsoft.ApplicationBlocks.Data
             return CloneParameters(cachedParameters);
         }
         
-		#endregion Parameter Discovery Functions
+        #endregion Parameter Discovery Functions
 
 	}
 }

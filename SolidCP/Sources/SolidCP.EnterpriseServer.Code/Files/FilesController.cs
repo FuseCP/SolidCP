@@ -38,7 +38,9 @@ using System.Collections.Specialized;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+#if NETFRAMEWORK
 using System.Web;
+#endif
 
 using SolidCP.Providers;
 using OS = SolidCP.Server.Client;
@@ -67,19 +69,24 @@ namespace SolidCP.EnterpriseServer
             return os;
         }
 
+
         public static string GetHomeFolder(int packageId)
         {
             // check context
             string key = "HomeFolder" + packageId.ToString();
+
+#if NETFRAMEWORK
             if (HttpContext.Current != null && HttpContext.Current.Items[key] != null)
                 return (string)HttpContext.Current.Items[key];
-
+#endif
             List<ServiceProviderItem> items = PackageController.GetPackageItemsByType(packageId, typeof(HomeFolder));
             string path = (items.Count > 0) ? items[0].Name : null;
-            
+
+#if NETFRAMEWORK
             // place to context
             if (HttpContext.Current != null)
                 HttpContext.Current.Items[key] = path;
+#endif
 
             return path;
         }

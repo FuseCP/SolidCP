@@ -49,8 +49,10 @@ using SolidCP.Providers.Database;
 using SolidCP.Providers.OS;
 using OS = SolidCP.Server.Client;
 using SolidCP.Server.Client;
+#if NETFRAMEWORK
 using System.Web;
 using System.Web.Caching;
+#endif
 
 namespace SolidCP.EnterpriseServer
 {

@@ -31,6 +31,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
+using System.Data;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Threading;
@@ -173,7 +174,7 @@ namespace SolidCP.EnterpriseServer
                         success = true;
                         break;
                     }
-                    catch (System.Data.SqlClient.SqlException ex)
+                    catch (System.Data.Common.DbException ex)
                     {
                         exception = ex;
                         TaskManager.WriteError(ex);
