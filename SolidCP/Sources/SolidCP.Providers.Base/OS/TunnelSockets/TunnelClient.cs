@@ -130,11 +130,12 @@ namespace SolidCP.Providers.OS
                 .Concat(args)
                 .ToArray();
 
-            using (var stream = encrypted ? new Cryptor(CryptoKey).EncryptStream(mem) : mem)
+            using (var stream = encrypted ? new Cryptor(CryptoKey).EncryptorStream(mem) : mem)
             {
                 TunnelSocket.Serialize<object[]>(argsWithCredentials, stream, knownTypes);
 
                 if (stream is CryptoStream crStream) crStream.FlushFinalBlock();
+                else stream.Flush();
 
                 return mem.ToArray();
             }
