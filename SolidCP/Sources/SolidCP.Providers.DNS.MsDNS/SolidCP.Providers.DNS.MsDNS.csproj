@@ -7,6 +7,8 @@
 		<Product>SolidCP.Providers.DNS.MsDNS</Product>
 		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
 		<OutputPath>..\SolidCP.Server\bin\DNS\</OutputPath>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 		<LangVersion>11</LangVersion>
 		<Nullable>disable</Nullable>
 		<CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>

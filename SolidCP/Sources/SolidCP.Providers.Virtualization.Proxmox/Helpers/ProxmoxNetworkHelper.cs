@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.Json;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
 using RestSharp;
 
@@ -17,15 +18,15 @@ namespace SolidCP.Providers.Virtualization.Proxmox
 			List<VirtualMachineNetworkAdapter> adapters = new List<VirtualMachineNetworkAdapter>();
 			try
 			{
-				JsonElement jsonResponse = JsonDocument.Parse(Content).RootElement;
-				JsonElement configvalue = jsonResponse.GetProperty("data");
-				foreach (var property in configvalue.EnumerateObject())
+				JToken jsonResponse = JToken.Parse(Content);
+				JObject configvalue = (JObject)jsonResponse["data"];
+				foreach (var property in configvalue)
 				{
-					string val = property.Value.GetString();
-					if (property.Name.Contains("net"))
+					string val = (string)property.Value;
+					if (property.Key.Contains("net"))
 					{
 						VirtualMachineNetworkAdapter adapter = CreateAdapter(val);
-						adapter.Name = String.Format("{0} {1} VLAN {2}", property.Name, adapter.Name, adapter.vlan);
+						adapter.Name = String.Format("{0} {1} VLAN {2}", property.Key, adapter.Name, adapter.vlan);
 						adapters.Add(adapter);
 					}
 				}

@@ -39,11 +39,13 @@ namespace SolidCP.Portal.VPS.UserControls
 
         public bool IsEditMode { get; set; }
 
+        public VirtualMachineSettingsMode Mode { get; set; }
+
         public void BindItem(VirtualMachine item)
         {
         }
 
-        public void SaveItem(VirtualMachine item)
+        public void SaveItem(ref VirtualMachine item)
         {
         }
     }

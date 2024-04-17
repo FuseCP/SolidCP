@@ -14633,9 +14633,20 @@ UPDATE [dbo].[Providers] SET [EditorControl] = N'Proxmox', [GroupID] = 167 WHERE
 END
 GO
 
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderName] = 'Proxmox (localhost)')
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderName] = 'Proxmox (remote)')
 BEGIN
-INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (371, 167, N'Proxmox (local)', N'Proxmox Virtualization (local)', N'SolidCP.Providers.Virtualization.ProxmoxvpsLocal, SolidCP.Providers.Virtualization.Proxmoxvps', N'Proxmox', 0)
+
+	IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderName] = 'Proxmox (local)')
+	BEGIN
+	UPDATE [dbo].[Providers] SET [ProviderName] = 'Proxmox (remote)', [DisplayName] = 'Proxmox Virtualization (remote)' WHERE [ProviderName] = 'Proxmox'
+	INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (371, 167, N'Proxmox', N'Proxmox Virtualization', N'SolidCP.Providers.Virtualization.ProxmoxvpsLocal, SolidCP.Providers.Virtualization.Proxmoxvps', N'Proxmox', 0)
+	END
+	ELSE
+	BEGIN
+	UPDATE [dbo].[Providers] SET [ProviderName] = 'Proxmox (remote)', [DisplayName] = 'Proxmox Virtualization (remote)' WHERE [ProviderName] = 'Proxmox'
+	UPDATE [dbo].[Providers] SET [ProviderName] = 'Proxmox', [DisplayName] = 'Proxmox Virtualization' WHERE [ProviderName] = 'Proxmox (local)'
+	END
+
 END
 
 IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetVirtualMachinesPagedProxmox')
@@ -19863,6 +19874,33 @@ BEGIN
 	SET @NoIsCore = 1
 END
 
+-- Add PasswordIsSHA256 column to Servers
+DECLARE @NoPasswordIsSHA256 bit
+
+SET @NoPasswordIsSHA256 = 0
+
+IF NOT EXISTS (
+  SELECT * FROM sys.columns 
+  WHERE object_id = OBJECT_ID(N'[dbo].[Servers]') 
+  AND name = 'PasswordIsSHA256'
+)
+BEGIN
+	SET @NoPasswordIsSHA256 = 1
+END
+
+DECLARE @NoSHA256Password bit
+
+SET @NoSHA256Password = 0
+
+IF NOT EXISTS (
+  SELECT * FROM sys.columns 
+  WHERE object_id = OBJECT_ID(N'[dbo].[Servers]') 
+  AND name = 'SHA256Password'
+)
+BEGIN
+	SET @NoSHA256Password = 1
+END
+
 IF @NoPlatform = 1
 BEGIN
 	ALTER TABLE [dbo].[Servers] ADD [OSPlatform] INT NOT NULL DEFAULT 0
@@ -19873,7 +19911,16 @@ BEGIN
 	ALTER TABLE [dbo].[Servers] ADD [IsCore] BIT NULL
 END
 
-IF @NoPlatform = 1 OR @NoIsCore = 1
+IF @NoPasswordIsSHA256 = 1 AND @NoSHA256Password = 1
+BEGIN
+	ALTER TABLE [dbo].[Servers] ADD [PasswordIsSHA256] BIT NOT NULL DEFAULT 0
+END
+ELSE IF @NoPasswordIsSHA256 = 1 AND @NoSHA256Password = 0
+BEGIN
+    EXEC sp_RENAME '[dbo].[Servers].SHA256Password', 'PasswordIsSHA256', 'COLUMN';
+END
+
+IF @NoPlatform = 1 OR @NoIsCore = 1 OR @NoPasswordIsSHA256 = 1
 EXEC ('
 	ALTER PROCEDURE AddServer
 	(
@@ -19891,7 +19938,8 @@ EXEC ('
 		@ADPassword nvarchar(100),
 		@ADAuthenticationType varchar(50),
 		@OSPlatform int,
-		@IsCore bit
+		@IsCore bit,
+		@PasswordIsSHA256 bit
 	)
 	AS
 
@@ -19914,7 +19962,8 @@ EXEC ('
 		ADPassword,
 		ADAuthenticationType,
 		OSPlatform,
-		IsCore
+		IsCore,
+		PasswordIsSHA256
 	)
 	VALUES
 	(
@@ -19931,7 +19980,8 @@ EXEC ('
 		@ADPassword,
 		@ADAuthenticationType,
 		@OSPlatform,
-		@IsCore
+		@IsCore,
+		@PasswordIsSHA256
 	)
 
 	SET @ServerID = SCOPE_IDENTITY()
@@ -19939,7 +19989,7 @@ EXEC ('
 	RETURN
 	')
 
-IF @NoPlatform = 1 OR @NoIsCore = 1
+IF @NoPlatform = 1 OR @NoIsCore = 1 OR @NoPasswordIsSHA256 = 1
 EXEC('
 	ALTER PROCEDURE GetServerInternal
 	(
@@ -19963,7 +20013,8 @@ EXEC('
 		ADParentDomain,
 		ADParentDomainController,
 		OSPlatform,
-		IsCore
+		IsCore,
+		PasswordIsSHA256
 	FROM Servers
 	WHERE
 		ServerID = @ServerID
@@ -19971,8 +20022,7 @@ EXEC('
 	RETURN
 	')
 	
-IF @NoPlatform =
-1 OR @NoIsCore = 1
+IF @NoPlatform = 1 OR @NoIsCore = 1 OR @NoPasswordIsSHA256 = 1
 EXEC('
 	ALTER PROCEDURE GetServerByName
 	(
@@ -20000,7 +20050,8 @@ EXEC('
 		ADParentDomain,
 		ADParentDomainController,
 		OSPlatform,
-		IsCore
+		IsCore,
+		PasswordIsSHA256
 	FROM Servers
 	WHERE
 		ServerName = @ServerName
@@ -20009,7 +20060,7 @@ EXEC('
 	RETURN
 	')
 
-IF @NoPlatform = 1 OR @NoIsCore = 1
+IF @NoPlatform = 1 OR @NoIsCore = 1 OR @NoPasswordIsSHA256 = 1
 EXEC('
 	ALTER PROCEDURE UpdateServer
 	(
@@ -20028,7 +20079,8 @@ EXEC('
 		@ADParentDomain nvarchar(200),
 		@ADParentDomainController nvarchar(200),
 		@OSPlatform int,
-		@IsCore bit
+		@IsCore bit,
+		@PasswordIsSHA256 bit
 	)
 	AS
 
@@ -20050,12 +20102,13 @@ EXEC('
 		ADParentDomain = @ADParentDomain,
 		ADParentDomainController = @ADParentDomainController,
 		OSPlatform = @OSPlatform,
-		IsCore = @IsCore
+		IsCore = @IsCore,
+		PasswordIsSHA256 = @PasswordIsSHA256
 	WHERE ServerID = @ServerID
 	RETURN
 	')
 
-IF @NoPlatform = 1 OR @NoIsCore = 1
+IF @NoPlatform = 1 OR @NoIsCore = 1 OR @NoPasswordIsSHA256 = 1
 EXEC('
 ALTER PROCEDURE [dbo].[GetServer]
 (
@@ -20085,7 +20138,8 @@ SELECT
 	ADParentDomain,
 	ADParentDomainController,
 	OSPlatform,
-	IsCore
+	IsCore,
+	PasswordIsSHA256
 
 FROM Servers
 WHERE
@@ -20110,6 +20164,13 @@ INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [Property
 END
 GO
 
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderName] = 'vsftpd FTP Server 3')
+BEGIN
+UPDATE [dbo].[Providers] SET [ProviderName] = 'vsftpd FTP Server 3 (Experimental)' WHERE [ProviderName] = 'vsftpd FTP Server 3'
+END
+GO
+
+
 -- Apache
 IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1911')
 BEGIN
@@ -20122,6 +20183,12 @@ BEGIN
 INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1911, N'ConfigPath', N'/etc/apache2')
 INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1911, N'ConfigFile', N'/etc/apache2/apache2.conf')
 INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1911, N'BinPath', N'')
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderName] = 'Apache Web Server 2.4')
+BEGIN
+UPDATE [dbo].[Providers] SET [ProviderName] = 'Apache Web Server 2.4 (Experimental)' WHERE [ProviderName] = 'Apache Web Server 2.4'
 END
 GO
 
@@ -20205,7 +20272,8 @@ CREATE PROCEDURE AddServer
 	@ADPassword nvarchar(100),
 	@ADAuthenticationType varchar(50),
 	@OSPlatform int,
-	@IsCore bit
+	@IsCore bit,
+	@PasswordIsSHA256 bit
 )
 AS
 
@@ -20228,7 +20296,8 @@ INSERT INTO Servers
 	ADPassword,
 	ADAuthenticationType,
 	OSPlatform,
-	IsCore
+	IsCore,
+	PasswordIsSHA256
 )
 VALUES
 (
@@ -20245,7 +20314,8 @@ VALUES
 	@ADPassword,
 	@ADAuthenticationType,
 	@OSPlatform,
-	@IsCore
+	@IsCore,
+	@PasswordIsSHA256
 )
 
 SET @ServerID = SCOPE_IDENTITY()
@@ -20274,7 +20344,8 @@ CREATE PROCEDURE UpdateServer
 	@ADParentDomain nvarchar(200),
 	@ADParentDomainController nvarchar(200),
 	@OSPlatform int,
-	@IsCore bit
+	@IsCore bit,
+	@PasswordIsSHA256 bit
 )
 AS
 
@@ -20296,7 +20367,8 @@ UPDATE Servers SET
 	ADParentDomain = @ADParentDomain,
 	ADParentDomainController = @ADParentDomainController,
 	OSPlatform = @OSPlatform,
-	IsCore = @IsCore
+	IsCore = @IsCore,
+	PasswordIsSHA256 = @PasswordIsSHA256
 WHERE ServerID = @ServerID
 RETURN
 
@@ -20326,5 +20398,25 @@ AS
 			SET @Exists = 1
 		END
 
+	RETURN
+GO
+
+
+-- Initialize user's SSH Tunnel server connections on Login
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetUserPackagesServerUrls')
+DROP PROCEDURE GetUserPackagesServerUrls
+GO
+
+CREATE PROCEDURE [dbo].[GetUserPackagesServerUrls]
+(
+	@UserId INT
+)
+AS
+	SELECT DISTINCT Servers.ServerUrl
+	FROM Servers
+	INNER JOIN Packages
+	ON Servers.ServerId = Packages.ServerId
+	WHERE Packages.UserID = @UserId
 	RETURN
 GO

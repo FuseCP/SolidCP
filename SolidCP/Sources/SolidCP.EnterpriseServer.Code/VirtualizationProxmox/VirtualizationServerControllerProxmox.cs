@@ -56,9 +56,8 @@ namespace SolidCP.EnterpriseServer
     public class VirtualizationServerControllerProxmox
     {
 
-
-        private const string SHUTDOWN_REASON = "WebsitePanel - Initiated by user";
-        private const string SHUTDOWN_REASON_CHANGE_CONFIG = "WebsitePanel - changing VPS configuration";
+        private const string SHUTDOWN_REASON = "SolidCP - Initiated by user";
+        private const string SHUTDOWN_REASON_CHANGE_CONFIG = "SolidCP - changing VPS configuration";
         private const Int64 Size1G = 0x40000000;
         private const string MS_MAC_PREFIX = "00155D"; // IEEE prefix of MS MAC addresses
 
@@ -99,6 +98,21 @@ namespace SolidCP.EnterpriseServer
 
             // load details
             return vps.GetVirtualMachines().ToArray();
+        }
+
+        public static VncCredentials GetPveVncCredentials(int itemId)
+        {
+            // load meta item
+            VirtualMachine vm = GetVirtualMachineByItemId(itemId);
+
+            if (vm == null)
+                return null;
+
+            // get proxy
+            VirtualizationServerProxmox vps = GetVirtualizationProxy(vm.ServiceId);
+
+            // load details
+            return vps.GetPveVncCredentials(vm.VirtualMachineId);
         }
         #endregion
 
@@ -325,7 +339,7 @@ namespace SolidCP.EnterpriseServer
         }
 
         public static IntResult CreateVirtualMachine(int packageId,
-                string hostname, string osTemplateFile, string password, string summaryLetterEmail,
+                string hostname, string osTemplateId, string password, string summaryLetterEmail,
                 int cpuCores, int ramMB, int hddGB, int snapshots,
                 bool dvdInstalled, bool bootFromCD, bool numLock,
                 bool startShutdownAllowed, bool pauseResumeAllowed, bool rebootAllowed, bool resetAllowed, bool reinstallAllowed,
@@ -516,7 +530,7 @@ namespace SolidCP.EnterpriseServer
                     LibraryItem[] osTemplates = GetOperatingSystemTemplates(vm.PackageId);
                     foreach (LibraryItem item in osTemplates)
                     {
-                        if (String.Compare(item.Path, osTemplateFile, true) == 0)
+                        if (String.Compare(item.LibraryID, osTemplateId, true) == 0)
                         {
                             osTemplate = item;
 
@@ -1579,7 +1593,7 @@ namespace SolidCP.EnterpriseServer
             return retJobs;
         }
 
-        public static byte[] GetVirtualMachineThumbnail(int itemId, ThumbnailSize size)
+        public static ImageFile GetVirtualMachineThumbnail(int itemId, ThumbnailSize size)
         {
             // load meta item
             VirtualMachine vm = GetVirtualMachineByItemId(itemId);
@@ -2166,23 +2180,6 @@ namespace SolidCP.EnterpriseServer
         }
         #endregion
 
-        #region VNC
-        public static string GetVirtualMachineVNCURL(int itemId)
-        {
-            // load item
-            VirtualMachine vm = GetVirtualMachineByItemId(itemId);
-
-            // get proxy
-            VirtualizationServerProxmox vs = GetVirtualizationProxy(vm.ServiceId);
-            string vncurl = vs.GetVirtualMachineVNC(vm.VirtualMachineId);
-
-            if (String.IsNullOrEmpty(vncurl))
-                return null;
-
-            return vncurl;
-        }
-        #endregion
-
         #region DVD
         public static LibraryItem GetInsertedDvdDisk(int itemId)
         {
@@ -2663,7 +2660,7 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        public static byte[] GetSnapshotThumbnail(int itemId, string snapshotId, ThumbnailSize size)
+        public static ImageFile GetSnapshotThumbnail(int itemId, string snapshotId, ThumbnailSize size)
         {
             // load service item
             VirtualMachine vm = (VirtualMachine)PackageController.GetPackageItem(itemId);

@@ -44,5 +44,10 @@ namespace SolidCP.Portal.VPSForPC
         {
 
         }
+
+        public void btnUpdateVpsPermissions_Click(object sender, EventArgs args)
+        {
+
+        }
     }
 }

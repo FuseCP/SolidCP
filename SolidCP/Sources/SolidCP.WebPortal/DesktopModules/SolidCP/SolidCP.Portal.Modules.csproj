@@ -19,7 +19,7 @@
     </UpgradeBackupLocation>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <TargetFrameworkProfile />
-    <OutputPath>..\..\bin\Lazy</OutputPath>
+    <OutputPath>..\..\bin</OutputPath>
     <LangVersion>9</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -224,6 +224,13 @@
     <Compile Include="Code\ReportingServices\ReportingServicesUtils.cs" />
     <Compile Include="Code\UserControls\Tab.cs" />
     <Compile Include="App_Code\IPAddressExtensions.cs" />
+    <Compile Include="ExchangeServer\EnterpriseStorageSpaces.ascx.cs">
+      <DependentUpon>EnterpriseStorageSpaces.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ExchangeServer\EnterpriseStorageSpaces.ascx.designer.cs">
+      <DependentUpon>EnterpriseStorageSpaces.ascx</DependentUpon>
+    </Compile>
     <Compile Include="ExchangeServer\ExchangeCreateJournalingMailbox.ascx.cs">
       <DependentUpon>ExchangeCreateJournalingMailbox.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -251,6 +258,20 @@
     </Compile>
     <Compile Include="ExchangeServer\ExchangeJournalingMailboxGeneralSettings.ascx.designer.cs">
       <DependentUpon>ExchangeJournalingMailboxGeneralSettings.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ProviderControls\HyperV2016_Settings.ascx.cs">
+      <DependentUpon>HyperV2016_Settings.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ProviderControls\HyperV2016_Settings.ascx.designer.cs">
+      <DependentUpon>HyperV2016_Settings.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ProviderControls\RemoteDesktopServices_Settings.ascx.cs">
+      <DependentUpon>RemoteDesktopServices_Settings.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ProviderControls\RemoteDesktopServices_Settings.ascx.designer.cs">
+      <DependentUpon>RemoteDesktopServices_Settings.ascx</DependentUpon>
     </Compile>
     <Compile Include="ProviderControls\Unix_Settings.ascx.cs">
       <DependentUpon>Unix_Settings.ascx</DependentUpon>
@@ -5123,6 +5144,34 @@
     <Compile Include="VPSForPC\VpsEventsLog.ascx.designer.cs">
       <DependentUpon>VpsEventsLog.ascx</DependentUpon>
     </Compile>
+    <Compile Include="VPS\ProviderControls\HyperV2012R2_Create.ascx.cs">
+      <DependentUpon>HyperV2012R2_Create.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="VPS\ProviderControls\HyperV2012R2_Create.ascx.designer.cs">
+      <DependentUpon>HyperV2012R2_Create.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="VPS\ProviderControls\HyperV2012R2_Edit.ascx.cs">
+      <DependentUpon>HyperV2012R2_Edit.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="VPS\ProviderControls\HyperV2012R2_Edit.ascx.designer.cs">
+      <DependentUpon>HyperV2012R2_Edit.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="VPS\UserControls\DynamicMemory.ascx.cs">
+      <DependentUpon>DynamicMemory.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="VPS\UserControls\DynamicMemory.ascx.designer.cs">
+      <DependentUpon>DynamicMemory.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="VPS\UserControls\Generation.ascx.cs">
+      <DependentUpon>Generation.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="VPS\UserControls\Generation.ascx.designer.cs">
+      <DependentUpon>Generation.ascx</DependentUpon>
+    </Compile>
     <Compile Include="VPS\VpsMoveServer.ascx.cs">
       <DependentUpon>VpsMoveServer.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -5615,10 +5664,13 @@
   <ItemGroup>
     <Content Include="ApplyEnableHardQuotaFeature.ascx" />
     <Content Include="AutoUpdateServers.ascx" />
+    <Content Include="ExchangeServer\EnterpriseStorageSpaces.ascx" />
     <Content Include="ExchangeServer\ExchangeCreateJournalingMailbox.ascx" />
     <Content Include="ExchangeServer\ExchangeMailboxAutoReply.ascx" />
     <Content Include="ExchangeServer\ExchangeJournalingMailboxes.ascx" />
     <Content Include="ExchangeServer\ExchangeJournalingMailboxGeneralSettings.ascx" />
+    <Content Include="ProviderControls\HyperV2016_Settings.ascx" />
+    <Content Include="ProviderControls\RemoteDesktopServices_Settings.ascx" />
     <Content Include="ProviderControls\Unix_Settings.ascx" />
     <Content Include="ProviderControls\vsftpd_Settings.ascx" />
     <Content Include="ProviderControls\CerberusFTP6_EditAccount.ascx" />
@@ -5712,6 +5764,8 @@
     <Content Include="VPS\App_LocalResources\VpsMoveServer.ascx.de-DE.resx" />
     <Content Include="VPS\App_LocalResources\VpsToolsDeleteServer.ascx.de-DE.resx" />
     <Content Include="VPS\App_LocalResources\VpsToolsReinstallServer.ascx.de-DE.resx" />
+    <Content Include="VPS\ProviderControls\HyperV2012R2_Create.ascx" />
+    <Content Include="VPS\ProviderControls\HyperV2012R2_Edit.ascx" />
     <Content Include="VPS\RemoteDesktop\App_LocalResources\Connect.aspx.de-DE.resx" />
     <Content Include="VPS\UserControls\App_LocalResources\DynamicMemory.ascx.de-DE.resx" />
     <Content Include="VPS\UserControls\App_LocalResources\Generation.ascx.de-DE.resx" />
@@ -5793,6 +5847,8 @@
     <Content Include="Proxmox\VirtualMachineSnapshotImage.ashx" />
     <Content Include="VPS2012\App_LocalResources\VdcAddPrivateNetworkVLAN.ascx.resx" />
     <Content Include="VPS2012\App_LocalResources\VdcAddPrivateNetworkVLAN.ascx.de-DE.resx" />
+    <Content Include="VPS\ProviderControls\App_LocalResources\HyperV2012R2_Create.ascx.resx" />
+    <Content Include="VPS\ProviderControls\App_LocalResources\HyperV2012R2_Edit.ascx.resx" />
     <None Include="packages.config" />
     <None Include="Resources\PlusSign.ico" />
     <Content Include="SettingsMariaDBPolicy.ascx" />
@@ -6634,6 +6690,7 @@
     <Content Include="ProviderControls\App_LocalResources\Unix_Settings.ascx.de-DE.resx">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="ProviderControls\App_LocalResources\Proxmox_Settings.ascx.de-DE.resx" />
     <EmbeddedResource Include="RDS\App_LocalResources\RDSEditCollectionSettings.ascx.resx" />
     <Content Include="RDSServersEditServer.ascx" />
     <Content Include="RDS\AssignedRDSServers.ascx" />
@@ -6837,6 +6894,8 @@
     <Content Include="UserControls\UserDetails.ascx" />
     <Content Include="UserControls\UserLookup.ascx" />
     <Content Include="UserControls\UsernameControl.ascx" />
+    <Content Include="VPS\UserControls\DynamicMemory.ascx" />
+    <Content Include="VPS\UserControls\Generation.ascx" />
     <Content Include="WebSitesAddVirtualDir.ascx" />
     <Content Include="WebSitesEditVirtualDir.ascx" />
     <Content Include="WebSitesHeliconZooControl.ascx" />

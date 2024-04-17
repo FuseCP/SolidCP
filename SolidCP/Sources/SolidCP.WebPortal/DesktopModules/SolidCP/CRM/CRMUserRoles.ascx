@@ -36,8 +36,8 @@
                                 <tr>
                                     <td><asp:Localize runat="server" ID="locState" meta:resourcekey="locState" /></td>
                                     <td><asp:Localize runat="server" ID="locEnabled" meta:resourcekey="locEnabled" /><asp:Localize runat="server" ID="locDisabled" meta:resourcekey="locDisabled" />&nbsp;
-                                        <CPCC:StyleButton id="btnActive" CssClass="btn btn-success" runat="server" OnClick="btnActive_Click"> <i class="fa fa-check">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnActivate"/> </CPCC:StyleButton>&nbsp;
-                                        <CPCC:StyleButton id="btnDeactivate" CssClass="btn btn-warning" runat="server" CausesValidation="False" OnClick="btnDeactivate_Click"> <i class="fa fa-times">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnDeactivate"/> </CPCC:StyleButton>
+                                        <CPCC:StyleButton id="btnActive" CssClass="btn btn-success" runat="server" OnClick="btnActive_Click" meta:resourcekey="btnActivate"> <i class="fa fa-check">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="locBtnActivate" /> </CPCC:StyleButton>&nbsp;
+                                        <CPCC:StyleButton id="btnDeactivate" CssClass="btn btn-warning" runat="server" CausesValidation="False" OnClick="btnDeactivate_Click" meta:resourcekey="btnDeactivate"> <i class="fa fa-times">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="locBtnDeactivate" /> </CPCC:StyleButton>
 
                                     </td>
                                 </tr>

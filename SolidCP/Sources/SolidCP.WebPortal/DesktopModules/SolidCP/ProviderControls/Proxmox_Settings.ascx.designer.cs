@@ -123,22 +123,13 @@ namespace SolidCP.Portal.ProviderControls
 		protected global::System.Web.UI.WebControls.Localize locProxmoxClusterRealm;
 
 		/// <summary>
-		/// txtProxmoxClusterRealm control.
+		/// lstProxmoxClusterRealm control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.TextBox txtProxmoxClusterRealm;
-
-		/// <summary>
-		/// ProxmoxClusterRealmValidator control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.RequiredFieldValidator ProxmoxClusterRealmValidator;
+		protected global::System.Web.UI.WebControls.DropDownList lstProxmoxClusterRealm;
 
 		/// <summary>
 		/// rowPassword control.
@@ -202,6 +193,15 @@ namespace SolidCP.Portal.ProviderControls
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
 		protected global::System.Web.UI.WebControls.Localize locProxmoxSSH;
+
+		/// <summary>
+		/// pnlSshSettings control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.PlaceHolder pnlSshSettings;
 
 		/// <summary>
 		/// locDeploySSHServerHost control.

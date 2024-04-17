@@ -13,43 +13,49 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<LangVersion>11</LangVersion>
 		<Nullable>disable</Nullable>
-		<UseSkia>true</UseSkia>
-		<UseGDIPlus>false</UseGDIPlus>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 		<DebugType>portable</DebugType>
-		<DefineConstants Condition=" '$(UseGDIPlus)' == 'true' ">$(DefineConstants);UseGDIPlus</DefineConstants>
-		<DefineConstants Condition=" '$(UseSkia)' == 'true' ">$(DefineConstants);UseSkia</DefineConstants>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
 		<DebugType>portable</DebugType>
-		<DefineConstants Condition=" '$(UseGDIPlus)' == 'true' ">$(DefineConstants);UseGDIPlus</DefineConstants>
-		<DefineConstants Condition=" '$(UseSkia)' == 'true' ">$(DefineConstants);UseSkia</DefineConstants>
 	</PropertyGroup>
 	
-	<ItemGroup Condition=" '$(UseSkia)' == 'true' ">
-		<PackageReference Include="SkiaSharp" Version="2.88.7" GeneratePathProperty="true" />
-		<PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.7" GeneratePathProperty="true" />
-		<PackageReference Include="SkiaSharp.NativeAssets.macOS" Version="2.88.7" GeneratePathProperty="true" />
-		<PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="2.88.7" GeneratePathProperty="true" />
+	<ItemGroup>
+		<PackageReference Include="SkiaSharp" Version="2.88.8" GeneratePathProperty="true" />
+		<PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.8" GeneratePathProperty="true" />
+		<PackageReference Include="SkiaSharp.NativeAssets.macOS" Version="2.88.8" GeneratePathProperty="true" />
+		<PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="2.88.8" GeneratePathProperty="true" />
+		<!--<PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="2.88.7" GenerateProperty="true" />-->
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(UseGDIPlus)' == 'true' ">
-		<PackageReference Include="System.Drawing.Common" Version="8.0.3" Condition="" />
+	<!--<Import Project="$(PkgSkiaSharp_NativeAssets_Linux_NoDependencies)\build\net462\SkiaSharp.NativeAssets.Linux.NoDependencies.targets" Condition=" '$(UseSkia)' == 'true' " />-->
+	<Import Project="$(PkgSkiaSharp_NativeAssets_Linux)\build\net462\SkiaSharp.NativeAssets.Linux.targets" />
+	<Import Project="$(PkgSkiaSharp_NativeAssets_macOS)\build\net462\SkiaSharp.NativeAssets.macOS.targets" />
+	<Import Project="$(PkgSkiaSharp_NativeAssets_Win32)\build\net462\SkiaSharp.NativeAssets.Win32.targets" />
+
+	<ItemGroup>
+	  <None Remove="Resources\power-button.svg" />
+	  <None Remove="Resources\Roboto-Medium.ttf" />
+	  <None Remove="Resources\stop-sign-svgrepo-com.svg" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Corsinvest.ProxmoxVE.Api" Version="8.1.6" GeneratePathProperty="true" />
+		<PackageReference Include="Corsinvest.ProxmoxVE.Api.Shared" Version="8.1.6" GeneratePathProperty="true" />
 		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="RestSharp" Version="110.2.0" GeneratePathProperty="true" />
-		<PackageReference Include="SSH.NET" Version="2024.0.0" />
+		<PackageReference Include="SSH.NET" Version="2024.0.0" GeneratePathProperty="true" />
 		<PackageReference Include="System.Buffers" Version="4.5.1" />
+		<PackageReference Include="System.IO.Pipelines" Version="8.0.0" />
 		<PackageReference Include="System.Memory" Version="4.5.5" />
+		<PackageReference Include="System.Net.Primitives" Version="4.3.1" />
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
 		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+		<PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
 		<PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" />
-		<PackageReference Include="System.Text.Json" Version="8.0.3" />
 		<PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
 		<PackageReference Include="System.ValueTuple" Version="4.5.0" />
 	</ItemGroup>
@@ -65,19 +71,22 @@
 		<Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
 	</ItemGroup>
 	<ItemGroup>
+	  <EmbeddedResource Include="Resources\power-button.svg" />
+	</ItemGroup>
+	<ItemGroup>
 		<ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
 		<ProjectReference Include="..\SolidCP.Providers.HostedSolution\SolidCP.Providers.HostedSolution.csproj" />
 		<ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
 	</ItemGroup>
 
-	<Import Project="$(PkgSkiaSharp_NativeAssets_Linux)\build\net462\SkiaSharp.NativeAssets.Linux.targets" />
-	<Import Project="$(PkgSkiaSharp_NativeAssets_macOS)\build\net462\SkiaSharp.NativeAssets.macOS.targets" />
-	<Import Project="$(PkgSkiaSharp_NativeAssets_Win32)\build\net462\SkiaSharp.NativeAssets.Win32.targets" />
-
 	<Target Name="CopyPackageReferences" AfterTargets="Build">
 		<ItemGroup>
 			<CopyToOutputFiles Include="$(PkgSkiaSharp)\lib\netstandard2.0\SkiaSharp.*" />
 			<CopyToOutputFiles Include="$(PkgRestSharp)\lib\netstandard2.0\RestSharp.*" />
+			<CopyToOutputFiles Include="$(PkgSSH_NET)\lib\netstandard2.0\Renci.SshNet.*" />
+			<CopyToOutputFiles Include="$(PkgCorsinvest_ProxmoxVE_Api)\lib\netstandard2.0\Corsinvest.ProxmoxVE.Api.*" />
+			<CopyToOutputFiles Include="$(PkgCorsinvest_ProxmoxVE_Api_Shared)\lib\netstandard2.0\Corsinvest.ProxmoxVE.Api.Shared.*" />
+			<!--<CopyNoVNCToPortal Include="" />-->
 		</ItemGroup>
 		
 		<Copy SourceFiles="@(CopyToOutputFiles)" DestinationFolder="$(OutputPath)" />

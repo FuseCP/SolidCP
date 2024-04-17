@@ -110,7 +110,7 @@ namespace SolidCP.Setup
 				//
 				if (Wizard.SetupVariables.SetupAction == SetupActions.Setup)
 				{
-					Wizard.SetupVariables.ServerPassword = Utils.ComputeSHA1(txtPassword.Text);
+					Wizard.SetupVariables.ServerPassword = Utils.ComputeSHAServerPassword(txtPassword.Text);
 				}
 				else
 				{

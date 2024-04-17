@@ -12,7 +12,6 @@ namespace SolidCP.Web.Clients
 {
 	public class ClientAssemblyBase
 	{
-
 		public string AssemblyName { get; set; }
 		public ClientBase Client { get; set; }
 
@@ -20,11 +19,25 @@ namespace SolidCP.Web.Clients
 		static Assembly serviceAssembly = null;
 		static object Lock = new object();
 
+		void GetMethod(string typeName, string methodName, out Assembly assembly, out Type type, out MethodInfo method)
+		{
+            assembly = Assembly;
+            type = assembly.GetType(typeName);
+            method = type.GetMethod(methodName);
+            if (method == null) throw new ArgumentException($"Method {methodName} not found");
+        }
+
 		protected T Invoke<T>(string typeName, string methodName, params object[] parameters)
 		{
-			var assembly = Assembly;
-			var type = assembly.GetType(typeName);
-			var method = type.GetMethod(methodName);
+			Assembly assembly;
+			Type type;
+			MethodInfo method;
+			GetMethod(typeName, methodName, out assembly, out type, out method);
+			return Invoke<T>(assembly, type, method, methodName, parameters);
+		}
+
+		protected T Invoke<T>(Assembly assembly, Type type, MethodInfo method, string methodName, params object[] parameters)
+		{
 			// authentication
 			if (Client.IsAuthenticated)
 			{
@@ -56,24 +69,34 @@ namespace SolidCP.Web.Clients
 			// set soap headers
 			if (Client.HasSoapHeaders)
 			{
-				var soapHeader = DataContractCopier.Clone(Client.SoapHeader);
-				var attr = method.GetCustomAttribute<SoapHeaderAttribute>();
-				var prop = type.GetProperty(attr.Field);
-				if (prop == null)
+				var serviceInterface = Client.ServiceInterface;
+				var serviceMethod = serviceInterface.GetMethod(methodName);
+				var attr = serviceMethod.GetCustomAttribute<SoapHeaderAttribute>();
+				if (attr != null)
 				{
-					var field = type.GetField(attr.Field);
-					field.SetValue(service, soapHeader);
-				}
-				else
-				{
-					prop.SetValue(service, soapHeader);
+					var soapHeader = Client.SoapHeader;
+					if (soapHeader == null) throw new Exception($"The call to {type.Name}.{methodName} requires a SoapHeader.");
+
+					soapHeader = DataContractCopier.Clone(soapHeader);
+
+					var prop = type.GetProperty(attr.Field);
+					if (prop == null)
+					{
+						var field = type.GetField(attr.Field);
+						field.SetValue(service, soapHeader);
+					}
+					else
+					{
+						prop.SetValue(service, soapHeader);
+					}
 				}
 			}
 
-			// Clone parameters
-			parameters = (object[])DataContractCopier.Clone(parameters);
+            parameters = (object[])DataContractCopier.Clone(parameters);
 
-			return (T)DataContractCopier.Clone(method.Invoke(service, parameters));
+			var result = method.Invoke(service, parameters);
+
+            return (T)DataContractCopier.Clone(result);
 		}
 		protected void Invoke(string typeName, string methodName, params object[] parameters)
 		{
@@ -89,8 +112,8 @@ namespace SolidCP.Web.Clients
 		}
 
 		protected Task<T> InvokeAsync<T>(string typeName, string methodName, params object[] parameters)
-		{
-			return Task.Factory.StartNew<T>(() => Invoke<T>(typeName, methodName, parameters),
+		{			
+            return Task.Factory.StartNew<T>(() => Invoke<T>(typeName, methodName, parameters),
 				CancellationToken.None,
 				TaskCreationOptions.None,
 				TaskScheduler.FromCurrentSynchronizationContext());
@@ -109,6 +132,5 @@ namespace SolidCP.Web.Clients
 				TaskCreationOptions.None,
 				TaskScheduler.FromCurrentSynchronizationContext());
 		}
-
 	}
 }

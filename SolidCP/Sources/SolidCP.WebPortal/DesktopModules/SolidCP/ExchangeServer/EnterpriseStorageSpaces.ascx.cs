@@ -29,6 +29,7 @@
 using System;
 using System.Web.UI.WebControls;
 using SolidCP.EnterpriseServer;
+using SolidCP.EnterpriseServer.Base.HostedSolution;
 using SolidCP.Providers.HostedSolution;
 
 namespace SolidCP.Portal.ExchangeServer
@@ -85,7 +86,7 @@ namespace SolidCP.Portal.ExchangeServer
                 "SpaceID=" + PanelSecurity.PackageId));
         }
 
-        protected void gvDomains_RowCommand(object sender, GridViewCommandEventArgs e)
+        protected void gvSpaces_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName == "DeleteItem")
             {

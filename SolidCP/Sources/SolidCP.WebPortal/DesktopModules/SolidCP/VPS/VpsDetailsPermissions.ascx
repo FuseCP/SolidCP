@@ -53,7 +53,7 @@
 			            </Columns>
 		            </asp:GridView>
 		            <br />
-                    <CPCC:StyleButton id="btnUpdateVpsPermissions" CssClass="btn btn-success" runat="server" CausesValidation="false"> <i class="fa fa-refresh">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnUpdateVpsPermissionsText"/> </CPCC:StyleButton>
+                    <CPCC:StyleButton id="btnUpdateVpsPermissions" CssClass="btn btn-success" runat="server" CausesValidation="false" meta:resourcekey="btnUpdateVpsPermissions"> <i class="fa fa-refresh">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnUpdateVpsPermissionsText"/> </CPCC:StyleButton>
                     <br />
 			    </div>
                 </div>

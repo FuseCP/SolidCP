@@ -15,4 +15,14 @@ namespace SolidCP.Web.Services
 			Types = types;
 		}
 	}
+
+    [AttributeUsage(AttributeTargets.Assembly)]
+    public class HttpHandlerTypesAttribute : Attribute
+    {
+        public Type[] Types { get; set; }
+        public HttpHandlerTypesAttribute(Type[] types)
+        {
+            Types = types;
+        }
+    }
 }

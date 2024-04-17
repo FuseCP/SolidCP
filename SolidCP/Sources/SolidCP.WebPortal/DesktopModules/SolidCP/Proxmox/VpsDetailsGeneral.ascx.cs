@@ -32,10 +32,15 @@
 
 
 using System;
+using System.Web;
+using System.Linq;
+using System.Text.RegularExpressions;
+using SolidCP.Providers.OS;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.ResultObjects;
 using SolidCP.Providers.Virtualization;
 using System.Collections.Generic;
+using System.Web.UI.MobileControls;
 
 namespace SolidCP.Portal.Proxmox
 {
@@ -54,10 +59,11 @@ namespace SolidCP.Portal.Proxmox
             BindGeneralDetails();
         }
 
+         protected string RdpPageUrl { get; set; }
         private void BindGeneralDetails()
         {
             VirtualMachine item = VirtualMachinesProxmoxHelper.GetCachedVirtualMachine(PanelRequest.ItemID);
-            if (!String.IsNullOrEmpty(item.CurrentTaskId)
+            if (!string.IsNullOrEmpty(item.CurrentTaskId)
                 || item.ProvisioningStatus == VirtualMachineProvisioningStatus.Error)
             {
                 DetailsTable.Visible = false;
@@ -76,18 +82,26 @@ namespace SolidCP.Portal.Proxmox
 
             if (vm != null)
             {
-                bool displayRDP = (Request.Browser.Browser == "IE"
+                bool displayRDP = (/* Request.Browser.Browser == "IE"
                     && Request.Browser.ActiveXControls
                     && Request.Browser.VBScript
-                    && vm.State != VirtualMachineState.Off
+                    && */ vm.State != VirtualMachineState.Off
                     && vm.State != VirtualMachineState.Paused
                     && vm.State != VirtualMachineState.Saved
                     && item.RemoteDesktopEnabled);
-                lnkHostname.Text = item.Hostname.ToUpper();
-                lnkHostname.Visible = displayRDP;
+
+                var baseUrl = Regex.Match(Request.RawUrl, @"^.*?(?=/Default.aspx)")?.Value;
+                   
+                //string path = TunnelUri.QueryEncode($"{baseUrl}/novnc/websocket?user={TunnelUri.QueryEncode(PanelSecurity.LoggedUser.Username)}&item={serviceItem.Id}");
+                RdpPageUrl = $"{baseUrl}/novnc/vnc.aspx?item={PanelRequest.ItemID}";
+
+                btnOpenVNC.Visible = displayRDP;
+
+                //lnkHostname.NavigateUrl = "javascript:OpenRemoteDesktopWindow('', 800, 600)";
 
                 litHostname.Text = item.Hostname.ToUpper();
                 litHostname.Visible = !displayRDP;
+
 
                 litDomain.Text = item.Domain;
 
@@ -97,10 +111,6 @@ namespace SolidCP.Portal.Proxmox
                     txtHostname.Text = item.Hostname;
                     txtDomain.Text = item.Domain;
                 }
-
-                lnkHostname.Visible = false;
-                //litRdpPageUrl.Text = Page.ResolveUrl(ES.Services.Proxmox.GetVirtualMachineVNCURL(PanelRequest.ItemID));
-                                
 
                 TimeSpan uptime = TimeSpan.FromMilliseconds(vm.Uptime * 1000);
                 uptime = uptime.Subtract(TimeSpan.FromMilliseconds(uptime.Milliseconds));
@@ -161,11 +171,19 @@ namespace SolidCP.Portal.Proxmox
 
                 // draw buttons
                 List<ActionButton> buttons = new List<ActionButton>();
-
                 if (vmi.StartTurnOffAllowed
                     && (vm.State == VirtualMachineState.Off
                     || vm.State == VirtualMachineState.Saved))
+                {
                     buttons.Add(CreateActionButton("Start", "start.png"));
+                    imgThumbnail.OnClientClick = GetLocalizedString("OnClientClick.Start");
+                    imgThumbnail.Click += StartMachine;
+                } else
+                {
+                    imgThumbnail.CommandName = "";
+                    imgThumbnail.OnClientClick = "return false;";
+                    //imgThumbnail.Click = null;
+                }
 
                 if (vm.State == VirtualMachineState.Running)
                 {
@@ -204,7 +222,7 @@ namespace SolidCP.Portal.Proxmox
             else
             {
                 DetailsTable.Visible = false;
-                messageBox.ShowErrorMessage("VPS_LOAD_VM_ITEM");
+                messageBox.ShowErrorMessage("VPS_LOAD_PVEVM_ITEM");
             }
         }
 
@@ -222,6 +240,31 @@ namespace SolidCP.Portal.Proxmox
             btn.OnClientClick = GetLocalizedString("OnClientClick." + command);
 
             return btn;
+        }
+
+        protected void StartMachine(object sender, EventArgs e)
+        {
+            try
+            {
+                // call services
+                var res = ES.Services.Proxmox.ChangeVirtualMachineState(PanelRequest.ItemID, VirtualMachineRequestedState.Start);
+                // check resultsfn
+                if (res.IsSuccess)
+                {
+                    // return
+                    BindGeneralDetails();
+                    return;
+                }
+                else
+                {
+                    // show error
+                    messageBox.ShowMessage(res, "VPS_ERROR_CHANGE_VM_STATE", "VPS");
+                }
+            }
+            catch (Exception ex)
+            {
+                messageBox.ShowErrorMessage("VPS_ERROR_CHANGE_VM_STATE", ex);
+            }
         }
 
         protected void repButtons_ItemCommand(object source, System.Web.UI.WebControls.RepeaterCommandEventArgs e)
@@ -307,6 +350,5 @@ namespace SolidCP.Portal.Proxmox
                 messageBox.ShowErrorMessage("VPS_CHANGE_VM_HOSTNAME", ex);
             }
         }
-
     }
 }

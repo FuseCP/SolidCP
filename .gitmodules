@@ -4,6 +4,7 @@
 [submodule "tools/wpkg"]
 	path = tools/wpkg
 	url = https://github.com/simonegli8/wpkg
-[submodule "SolidCP/Lib/Compat.Runtime.Serialization.Signed"]
-	path = SolidCP/Lib/Compat.Runtime.Serialization.Signed
-	url = https://github.com/simonegli8/Compat.Runtime.Serialization.Signed
+[submodule "SolidCP/Lib/novnc-solidcp"]
+	path = SolidCP/Lib/novnc-solidcp
+	url = https://github.com/simonegli8/novnc-solidcp
+	branch = solidcp1.4.0

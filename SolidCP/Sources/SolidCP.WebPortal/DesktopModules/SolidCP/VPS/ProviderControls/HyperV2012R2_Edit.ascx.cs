@@ -37,16 +37,17 @@ namespace SolidCP.Portal.ProviderControls
         {
         }
 
-        public bool IsEditMode { get; set; }
+        //public bool IsEditMode { get; set; }
 
+        public VirtualMachineSettingsMode Mode { get; set; }
         public void BindItem(VirtualMachine item)
         {
             DynamicMemorySetting.BindItem(item);
         }
 
-        public void SaveItem(VirtualMachine item)
+        public void SaveItem(ref VirtualMachine item)
         {
-            DynamicMemorySetting.SaveItem(item);
+            DynamicMemorySetting.SaveItem(ref item);
         }
     }
 }

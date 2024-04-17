@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="ApiClient.ts.cshtml" />
+    <None Remove="test.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="test.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NSwag.CodeGeneration.TypeScript" Version="14.0.7" />
+    <PackageReference Include="NSwag.Core" Version="14.0.7" />
+    <PackageReference Include="RazorBlade" Version="0.6.0" />
+  </ItemGroup>
+
+</Project>

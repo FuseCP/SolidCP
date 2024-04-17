@@ -70,5 +70,8 @@ namespace SolidCP.Server
             return OSInfo.Current.GetOSPlatform();
         }
 
+        [WebMethod]
+        public bool GetServerPasswordIsSHA256() => AutoDiscoveryHelper.IsServerPasswordSHA256;
+
 	}
 }

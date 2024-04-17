@@ -112,22 +112,19 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="btnBackup.Text" xml:space="preserve">
     <value>Seite sichern</value>
   </data>
-  <data name="btnCancel.Text" xml:space="preserve">
+  <data name="btnCancelText.Text" xml:space="preserve">
     <value>Abbrechen</value>
   </data>
   <data name="btnDelete.OnClientClick" xml:space="preserve">
     <value>if(!confirm('Sind Sie sicher, dass Sie diese SharePoint-Seite löschen wollen?')) return false; else ShowProgressDialog('SharePoint-Seite wird gelöscht...');</value>
-  </data>
-  <data name="btnDelete.Text" xml:space="preserve">
-    <value>Löschen</value>
   </data>
   <data name="btnRestore.Text" xml:space="preserve">
     <value>Seite wiederherstellen</value>
@@ -188,5 +185,8 @@
   </data>
   <data name="btnDeleteText.Text" xml:space="preserve">
     <value>Löschen</value>
+  </data>
+  <data name="btnUpdateText.Text" xml:space="preserve">
+    <value>Aktualisieren</value>
   </data>
 </root>

@@ -69,7 +69,7 @@ namespace SolidCP.Web.Services {
 #endif
 					return true;
 
-				} catch (FaultException)
+				} catch (Exception ex)
 				{
 					return false;
 				}

@@ -1,1 +1,1 @@
-<%@ Application Codebehind="Global.asax.cs" Inherits="SolidCP.WebPortal.Global" Language="C#" %>
+<%@ Application Inherits="SolidCP.WebPortal.Global" Language="C#" %>

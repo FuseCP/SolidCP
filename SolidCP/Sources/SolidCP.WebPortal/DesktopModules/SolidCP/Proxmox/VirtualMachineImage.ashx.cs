@@ -38,34 +38,35 @@ using SolidCP.Providers.ResultObjects;
 
 namespace SolidCP.Portal.Proxmox
 {
-    /// <summary>
-    /// Summary description for $codebehindclassname$
-    /// </summary>
-    [WebService(Namespace = "http://tempuri.org/")]
-    [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
-    public class VirtualMachineImage : IHttpHandler
-    {
+	/// <summary>
+	/// Summary description for $codebehindclassname$
+	/// </summary>
+	[WebService(Namespace = "http://tempuri.org/")]
+	[WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
+	public class VirtualMachineImage : IHttpHandler
+	{
 
-        public void ProcessRequest(HttpContext context)
-        {
-            context.Response.Clear();
-            context.Response.ContentType = "image/png";
+		public void ProcessRequest(HttpContext context)
+		{
+			int itemId = Utils.ParseInt(context.Request.QueryString["ItemID"]);
+			var image = ES.Services.Proxmox.GetVirtualMachineThumbnail(itemId,
+				 SolidCP.Providers.Virtualization.ThumbnailSize.Medium160x120);
+			
+			context.Response.Clear();
+			context.Response.ContentType = image?.MimeType ?? "image/png";
 
-            int itemId =  Utils.ParseInt(context.Request.QueryString["ItemID"]);
-            byte[] buffer = ES.Services.Proxmox.GetVirtualMachineThumbnail(itemId,
-                SolidCP.Providers.Virtualization.ThumbnailSize.Medium160x120);
-            if (buffer != null)
-            {
-                context.Response.OutputStream.Write(buffer, 0, buffer.Length);                
-            }
-        }
+			if (image != null)
+			{
+				context.Response.OutputStream.Write(image.RawData, 0, image.RawData.Length);
+			}
+		}
 
-        public bool IsReusable
-        {
-            get
-            {
-                return false;
-            }
-        }
-    }
+		public bool IsReusable
+		{
+			get
+			{
+				return false;
+			}
+		}
+	}
 }

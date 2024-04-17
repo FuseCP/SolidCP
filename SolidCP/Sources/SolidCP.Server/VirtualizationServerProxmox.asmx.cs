@@ -34,9 +34,11 @@ using System;
 using System.Data;
 using System.Web;
 using System.Collections;
+using System.Threading.Tasks;
 using SolidCP.Web.Services;
 using System.ComponentModel;
 using SolidCP.Providers;
+using SolidCP.Providers.OS;
 using SolidCP.Providers.Virtualization;
 using SolidCP.Server.Utils;
 using System.Collections.Generic;
@@ -111,12 +113,12 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
-        public byte[] GetVirtualMachineThumbnailImage(string vmId, ThumbnailSize size)
+        public ImageFile GetVirtualMachineThumbnailImage(string vmId, ThumbnailSize size)
         {
             try
             {
                 Log.WriteStart("'{0}' GetVirtualMachineThumbnailImage", ProviderSettings.ProviderName);
-                byte[] result = VirtualizationProvider.GetVirtualMachineThumbnailImage(vmId, size);
+                ImageFile result = VirtualizationProvider.GetVirtualMachineThumbnailImage(vmId, size);
                 Log.WriteEnd("'{0}' GetVirtualMachineThumbnailImage", ProviderSettings.ProviderName);
                 return result;
             }
@@ -265,21 +267,24 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
-        public string GetVirtualMachineVNC(string vmId)
+        public VncCredentials GetPveVncCredentials(string vmId)
         {
+            var msg = $"'{ProviderSettings.ProviderName}' {nameof(GetPveVncCredentials)}";
             try
             {
-                Log.WriteStart("'{0}' GetVirtualMachineVNC", ProviderSettings.ProviderName);
-                string result = VirtualizationProvider.GetVirtualMachineVNC(vmId);
-                Log.WriteEnd("'{0}' GetVirtualMachineVNC", ProviderSettings.ProviderName);
+                Log.WriteStart(msg);
+                var result = VirtualizationProvider.GetPveVncCredentials(vmId);
+                Log.WriteEnd(msg);
                 return result;
             }
             catch (Exception ex)
             {
-                Log.WriteError(String.Format("'{0}' GetVirtualMachine", ProviderSettings.ProviderName), ex);
+                Log.WriteError(msg, ex);
                 throw;
             }
+
         }
+        public async Task<TunnelSocket> GetPveVncWebSocketAsync(string vmId, VncCredentials credentials) => await VirtualizationProvider.GetPveVncWebSocketAsync(vmId, credentials);
         #endregion
 
         #region Snapshots
@@ -403,12 +408,12 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
-        public byte[] GetSnapshotThumbnailImage(string snapshotId, ThumbnailSize size)
+        public ImageFile GetSnapshotThumbnailImage(string snapshotId, ThumbnailSize size)
         {
             try
             {
                 Log.WriteStart("'{0}' GetSnapshotThumbnailImage", ProviderSettings.ProviderName);
-                byte[] result = VirtualizationProvider.GetSnapshotThumbnailImage(snapshotId, size);
+                ImageFile result = VirtualizationProvider.GetSnapshotThumbnailImage(snapshotId, size);
                 Log.WriteEnd("'{0}' GetSnapshotThumbnailImage", ProviderSettings.ProviderName);
                 return result;
             }
@@ -889,11 +894,10 @@ namespace SolidCP.Server
 
         #endregion
 
-
         #region Replication
 
         [WebMethod, SoapHeader("settings")]
-        public List<CertificateInfo> GetCertificates(string remoteServer)
+        public List<SolidCP.Providers.Virtualization.CertificateInfo> GetCertificates(string remoteServer)
         {
             try
             {

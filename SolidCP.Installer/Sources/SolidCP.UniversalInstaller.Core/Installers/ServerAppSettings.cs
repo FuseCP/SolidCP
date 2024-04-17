@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,9 +49,11 @@ namespace SolidCP.UniversalInstaller
 		}
 
 		public string applicationUrls { get; set; } = null;
+		public string probingPaths { get; set; } = null;
 		public string AllowedHosts { get; set; } = null;
 		public ServerSetting Server { get; set; }
 		public CertificateSetting Certificate { get; set; }
 		public LettuceEncryptSetting LettuceEncrypt { get; set; }
+		public TraceLevel TraceLevel { get; set; }
 	}
 }

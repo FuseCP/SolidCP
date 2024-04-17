@@ -195,7 +195,7 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <value>Private Network</value>
   </data>
   <data name="locResellerAccountText.Text" xml:space="preserve">
-    <value>For automatic provisioning of WebsitePanel control panel inside VPS please enter WebsitePanel reseller account details below:</value>
+    <value>For automatic provisioning of SolidCP control panel inside VPS please enter SolidCP reseller account details below:</value>
   </data>
   <data name="locResellerConfirmPassword.Text" xml:space="preserve">
     <value>Confirm password:</value>
@@ -468,7 +468,7 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <value>Can set Ip addresses</value>
   </data>
   <data name="chkLegacyNetworkAdapter.Text" xml:space="preserve">
-    <value>Use legacy adapter</value>
+    <value>Use legacy network adapter</value>
   </data>
   <data name="DvdDescriptionValidator.ErrorMessage" xml:space="preserve">
     <value>Enter DVD description</value>
@@ -531,13 +531,13 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <value>Proxmox Admin User:</value>
   </data>
   <data name="locProxmoxClusterAdminPass.Text" xml:space="preserve">
-    <value>Proxmox Admin PAM Password:</value>
+    <value>Proxmox Admin Password:</value>
   </data>
   <data name="locProxmoxClusterNode.Text" xml:space="preserve">
     <value>Proxmox Server Node:</value>
   </data>
   <data name="locDeploySSH.Text" xml:space="preserve">
-    <value>Proxmox VM deploy SSH:</value>
+    <value>Proxmox VM Deploy:</value>
   </data>
   <data name="locDeploySSHServerHost.Text" xml:space="preserve">
     <value>SSH Server Host:</value>
@@ -563,7 +563,16 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
 [FQDN], [CPUCORES], [RAMSIZE], [HDDSIZE], [OSTEMPLATENAME], [OSTEMPLATEFILE]&lt;br/&gt;
 [ADMINPASS], [MAC], [VLAN], [IP], [NETMASK], [GATEWAY]</value>
   </data>
-  <data name="locProxmoxTrustServerCertificate" xml:space="preserve">
+  <data name="locProxmoxTrustServerCertificate.Text" xml:space="preserve">
     <value>Always trust Proxomox Server Certificate:</value>
+  </data>
+  <data name="lstProxmoxClusterRealmPAM.Text" xml:space="preserve">
+    <value>Linux PAM standard authentication</value>
+  </data>
+  <data name="lstProxmoxClusterRealmPVE.Text" xml:space="preserve">
+    <value>Proxmox VE authentication server</value>
+  </data>
+  <data name="chkDeployScript.Text" xml:space="preserve">
+    <value>Use Deploy Script</value>
   </data>
 </root>

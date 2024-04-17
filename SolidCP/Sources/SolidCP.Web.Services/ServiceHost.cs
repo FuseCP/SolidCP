@@ -89,8 +89,7 @@ namespace SolidCP.Web.Services
 				.GetInterfaces()
 				.FirstOrDefault(i => i.GetCustomAttributes(false).OfType<ServiceContractAttribute>().Any());
 
-			if (contract == null) throw new NotSupportedException();
-
+			if (contract == null) throw new NotSupportedException("The type has no ServiceContract attribute.");
 
 			var policy = contract.GetCustomAttributes(false).OfType<PolicyAttribute>().FirstOrDefault();
 			var isEncrypted = policy != null;

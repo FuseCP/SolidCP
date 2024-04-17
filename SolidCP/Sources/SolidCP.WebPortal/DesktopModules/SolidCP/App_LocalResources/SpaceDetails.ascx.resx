@@ -156,4 +156,13 @@
   <data name="lblSuspendedDate.Text" xml:space="preserve">
     <value>Suspended:</value>
   </data>
+  <data name="cmdActive.ToolTip" xml:space="preserve">
+    <value>Activate</value>
+  </data>
+  <data name="cmdCancel.ToolTip" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="cmdSuspend.ToolTip" xml:space="preserve">
+    <value>Suspend</value>
+  </data>
 </root>

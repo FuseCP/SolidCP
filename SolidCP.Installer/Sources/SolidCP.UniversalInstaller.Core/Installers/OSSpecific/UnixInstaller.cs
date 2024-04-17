@@ -95,7 +95,7 @@ namespace SolidCP.UniversalInstaller
 			{
 				var appsettings = JsonConvert.DeserializeObject<ServerAppSettings>(File.ReadAllText(appsettingsfile)) ?? new ServerAppSettings();
 				ServerSettings.Urls = appsettings.applicationUrls;
-				ServerSettings.ServerPasswordSHA1 = appsettings.Server?.Password ?? "";
+				ServerSettings.ServerPasswordSHA = appsettings.Server?.Password ?? "";
 				ServerSettings.ServerPassword = "";
 				ServerSettings.LetsEncryptCertificateEmail = appsettings.LettuceEncrypt?.EmailAddress;
 				ServerSettings.LetsEncryptCertificateDomains = (appsettings.LettuceEncrypt != null && appsettings.LettuceEncrypt.DomainNames != null) ? string.Join(", ", appsettings.LettuceEncrypt.DomainNames) : "";
@@ -110,7 +110,17 @@ namespace SolidCP.UniversalInstaller
 
 		public override void ConfigureServer()
 		{
-			var appsettings = new ServerAppSettings();
+			ServerAppSettings appsettings = null;
+            var appsettingsfile = Path.Combine(InstallWebRootPath, ServerFolder, "bin_dotnet", "appsettings.json");
+			if (File.Exists(appsettingsfile))
+			{
+				appsettings = JsonConvert.DeserializeObject<ServerAppSettings>(File.ReadAllText(appsettingsfile)) ?? new ServerAppSettings();
+			}
+			else
+			{
+				appsettings = new ServerAppSettings();
+			}
+
 			appsettings.applicationUrls = ServerSettings.Urls;
 			var allowedHosts = (ServerSettings?.Urls ?? "").Split(',', ';')
 				.Select(url => new Uri(url.Trim()).Host)
@@ -123,15 +133,15 @@ namespace SolidCP.UniversalInstaller
 			if (allowedHosts.Any(host => host == "*")) appsettings.AllowedHosts = null;
 			else appsettings.AllowedHosts = string.Join(";", allowedHosts.Distinct());
 
-			if (!string.IsNullOrEmpty(ServerSettings.ServerPassword) || !string.IsNullOrEmpty(ServerSettings.ServerPasswordSHA1))
+			if (!string.IsNullOrEmpty(ServerSettings.ServerPassword) || !string.IsNullOrEmpty(ServerSettings.ServerPasswordSHA))
 			{
 				string pwsha1;
 				if (!string.IsNullOrEmpty(ServerSettings.ServerPassword))
 				{
-					pwsha1 = Utils.ComputeSHA1(ServerSettings.ServerPassword);
+					pwsha1 = Utils.ComputeSHAServerPassword(ServerSettings.ServerPassword);
 				} else
 				{
-					pwsha1 = ServerSettings.ServerPasswordSHA1;
+					pwsha1 = ServerSettings.ServerPasswordSHA;
 				}
 				appsettings.Server = new ServerAppSettings.ServerSetting() { Password = pwsha1 };
 			}
@@ -176,7 +186,8 @@ namespace SolidCP.UniversalInstaller
 				Enum.TryParse<X509FindType>(ServerSettings.CertificateFindType, out appsettings.Certificate.FindType);
 			}
 
-			var appsettingsfile = Path.Combine(InstallWebRootPath, ServerFolder, "bin_dotnet", "appsettings.json");
+			if (string.IsNullOrEmpty(appsettings.probingPaths)) appsettings.probingPaths = "..\\bin\\netstandard";
+
 			var path = Path.GetDirectoryName(appsettingsfile);
 			if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 			File.WriteAllText(appsettingsfile, JsonConvert.SerializeObject(appsettings, Formatting.Indented, new JsonSerializerSettings()

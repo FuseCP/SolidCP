@@ -6,9 +6,13 @@ using System.Threading.Tasks;
 
 namespace SolidCP.Providers.Virtualization.Proxmox
 {
-    class ApiVM
+    public class ApiVM: IEquatable<ApiVM>
     {
-        public string node { get; set; }
-        public string id { get; set; }
+        public string Node { get; set; }
+        public string Id { get; set; }
+
+        public bool Equals(ApiVM other) => Node == other.Node && Id == other.Id;
+
+        public override int GetHashCode() => Node.GetHashCode() ^ Id.GetHashCode();
     }
 }

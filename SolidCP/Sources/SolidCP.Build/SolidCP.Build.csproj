@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <EmitCompilerGeneratedFiles>false</EmitCompilerGeneratedFiles>
     <CompilerGeneratedFilesOutputPath>Razor</CompilerGeneratedFilesOutputPath>
     <LangVersion>11.0</LangVersion>
     <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
@@ -17,17 +17,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.9.2" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.9.2" />
-    <PackageReference Include="RazorBlade" Version="0.5.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Razor\RazorBlade.Analyzers\RazorBlade.Analyzers.RazorBladeSourceGenerator\" />
-    <Compile Remove="Razor\**\*.*" />
-    <None Include="Razor\**\*.*" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <RazorBlade Include="Razor\**\*.cshtml" />
+    <PackageReference Include="RazorBlade" Version="0.6.0" />
   </ItemGroup>
 
   <ItemGroup>

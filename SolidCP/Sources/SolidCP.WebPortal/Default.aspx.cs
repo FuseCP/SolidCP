@@ -47,6 +47,7 @@ using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 using System.Globalization;
 using SolidCP.Portal;
+using SolidCP.Providers.OS;
 using System.Linq;
 
 namespace SolidCP.WebPortal
@@ -59,7 +60,7 @@ namespace SolidCP.WebPortal
         public const string MODULE_ID_PARAM = "mid";
         public const string THEMES_FOLDER = "App_Themes";
         public const string IMAGES_FOLDER = "Images";
-		public const string ICONS_FOLDER = "Icons";
+        public const string ICONS_FOLDER = "Icons";
         public const string SKINS_FOLDER = "App_Skins";
         public const string CONTAINERS_FOLDER = "App_Containers";
         public const string CONTENT_PANE_NAME = "ContentPane";
@@ -69,9 +70,9 @@ namespace SolidCP.WebPortal
         public const string DESKTOP_MODULES_FOLDER = "DesktopModules";
 
         protected string CultureCookieName
-		{
-			get { return PortalConfiguration.SiteSettings["CultureCookieName"]; }
-		}
+        {
+            get { return PortalConfiguration.SiteSettings["CultureCookieName"]; }
+        }
 
         private string CurrentPageID
         {
@@ -83,7 +84,7 @@ namespace SolidCP.WebPortal
                     // get default page
                     pid = PortalConfiguration.SiteSettings["DefaultPage"];
                 }
-				return pid.ToLower(CultureInfo.InvariantCulture);
+                return pid.ToLower(CultureInfo.InvariantCulture);
             }
         }
 
@@ -175,15 +176,15 @@ namespace SolidCP.WebPortal
         }
 
         protected void Page_PreInit(object sender, EventArgs e)
-		{
-			Theme = PortalThemeProvider.Instance.GetTheme();
-		}
+        {
+            Theme = PortalThemeProvider.Instance.GetTheme();
+        }
 
         protected void Page_Init(object sender, EventArgs e)
         {
             // get page info
             string pid = CurrentPageID;
-            if(PortalConfiguration.Site.Pages[pid] == null)
+            if (PortalConfiguration.Site.Pages[pid] == null)
             {
                 ShowError(skinPlaceHolder, String.Format("Page with ID '{0}' is not found", HttpUtility.HtmlEncode(pid)));
                 return;
@@ -197,18 +198,18 @@ namespace SolidCP.WebPortal
                 // redirect to login page
                 string returnUrl = Request.RawUrl;
                 Response.Redirect(DEFAULT_PAGE + "?" + PAGE_ID_PARAM + "=" +
-                    PortalConfiguration.SiteSettings["LoginPage"] + "&ReturnUrl=" + Server.UrlEncode(returnUrl));
+                    PortalConfiguration.SiteSettings["LoginPage"] + "&ReturnUrl=" + Uri.EscapeDataString(returnUrl));
             }
 
-			Title = String.Format("{0} - {1}",
-				PortalConfiguration.SiteSettings["PortalName"],
-				PageTitleProvider.Instance.ProcessPageTitle(GetLocalizedPageTitle(page.Name)));
+            Title = String.Format("{0} - {1}",
+                PortalConfiguration.SiteSettings["PortalName"],
+                PageTitleProvider.Instance.ProcessPageTitle(GetLocalizedPageTitle(page.Name)));
 
             // load skin
             bool editMode = (ModuleControlID != "" && ModuleID > 0);
 
             string skinName = page.SkinSrc;
-            if(!editMode)
+            if (!editMode)
             {
                 // browse skin
                 if (String.IsNullOrEmpty(skinName))
@@ -220,10 +221,10 @@ namespace SolidCP.WebPortal
             else
             {
                 // edit skin
-				if (!String.IsNullOrEmpty(page.AdminSkinSrc))
-					skinName = page.AdminSkinSrc;
-				else
-					skinName =  PortalConfiguration.SiteSettings["AdminSkin"];
+                if (!String.IsNullOrEmpty(page.AdminSkinSrc))
+                    skinName = page.AdminSkinSrc;
+                else
+                    skinName = PortalConfiguration.SiteSettings["AdminSkin"];
             }
 
             // load skin control
@@ -286,31 +287,31 @@ namespace SolidCP.WebPortal
                 if (ctrlPane != null && page.ContentPanes.ContainsKey(LEFT_PANE_NAME))
                 {
                     ContentPane pane = page.ContentPanes[LEFT_PANE_NAME];
-                     foreach (PageModule module in pane.Modules)
+                    foreach (PageModule module in pane.Modules)
+                    {
+                        if (IsAccessibleToUser(Context, module.ViewRoles))
                         {
-                            if (IsAccessibleToUser(Context, module.ViewRoles))
-                            {
-                                // add module
-                                AddModuleToContentPane(ctrlPane, module, "", false);
-                            }
+                            // add module
+                            AddModuleToContentPane(ctrlPane, module, "", false);
                         }
+                    }
                 }
             }
         }
 
-		protected void Page_PreRender(object sender, EventArgs e)
-		{
-			// Ensure the page's form action attribute is not empty
-			if (Request.RawUrl.Equals("/") == false)
-				return;
-			// Assign default page to avoid ASP.NET 4 issue w/ Extensionless URL Module & Custom HTTP Modules
-			Form.Action = Form.ResolveUrl(DEFAULT_PAGE);
-		}
+        protected void Page_PreRender(object sender, EventArgs e)
+        {
+            // Ensure the page's form action attribute is not empty
+            if (Request.RawUrl.Equals("/") == false)
+                return;
+            // Assign default page to avoid ASP.NET 4 issue w/ Extensionless URL Module & Custom HTTP Modules
+            Form.Action = Form.ResolveUrl(DEFAULT_PAGE);
+        }
 
         private void AddModuleToContentPane(Control pane, PageModule module, string ctrlKey, bool editMode)
         {
             string defId = module.ModuleDefinitionID;
-            if(!PortalConfiguration.ModuleDefinitions.ContainsKey(defId))
+            if (!PortalConfiguration.ModuleDefinitions.ContainsKey(defId))
             {
                 ShowError(pane, String.Format("Module definition '{0}' could not be found", defId));
                 return;
@@ -318,15 +319,15 @@ namespace SolidCP.WebPortal
 
             ModuleDefinition definition = PortalConfiguration.ModuleDefinitions[defId];
             ModuleControl control = null;
-            if(String.IsNullOrEmpty(ctrlKey))
+            if (String.IsNullOrEmpty(ctrlKey))
                 control = definition.DefaultControl;
             else
             {
-                if(definition.Controls.ContainsKey(ctrlKey))
+                if (definition.Controls.ContainsKey(ctrlKey))
                     control = definition.Controls[ctrlKey];
             }
 
-            if(control == null)
+            if (control == null)
                 return;
 
             // container
@@ -336,8 +337,8 @@ namespace SolidCP.WebPortal
             if (!editMode && !String.IsNullOrEmpty(module.ContainerSrc))
                 containerName = module.ContainerSrc;
 
-			if (editMode && !String.IsNullOrEmpty(module.AdminContainerSrc))
-				containerName = module.AdminContainerSrc;
+            if (editMode && !String.IsNullOrEmpty(module.AdminContainerSrc))
+                containerName = module.AdminContainerSrc;
 
             // load container
             string containerPath = "~/" + CONTAINERS_FOLDER + "/" + this.Theme + "/" + containerName;
@@ -368,10 +369,10 @@ namespace SolidCP.WebPortal
 
             // set title
             Label lblModuleTitle = (Label)ctrlContainer.FindControl(MODULE_TITLE_CONTROL_ID);
-			if (lblModuleTitle != null)
-			{
-				lblModuleTitle.Text = GetLocalizedModuleTitle(title);
-			}
+            if (lblModuleTitle != null)
+            {
+                lblModuleTitle.Text = GetLocalizedModuleTitle(title);
+            }
 
             // set icon
             System.Web.UI.WebControls.Image imgModuleIcon = (System.Web.UI.WebControls.Image)ctrlContainer.FindControl(MODULE_ICON_CONTROL_ID);
@@ -415,25 +416,25 @@ namespace SolidCP.WebPortal
             pane.Controls.Add(ctrlContainer);
         }
 
-		protected override void InitializeCulture()
-		{
-			HttpCookie localeCrub = Request.Cookies[CultureCookieName];
+        protected override void InitializeCulture()
+        {
+            HttpCookie localeCrub = Request.Cookies[CultureCookieName];
 
-			if (localeCrub != null)
-			{
-				string localeCode = localeCrub.Value;
-				UICulture = localeCode;
-				Culture = localeCode;
+            if (localeCrub != null)
+            {
+                string localeCode = localeCrub.Value;
+                UICulture = localeCode;
+                Culture = localeCode;
 
-				System.Globalization.CultureInfo ci = System.Globalization.CultureInfo.CreateSpecificCulture(localeCode);
+                System.Globalization.CultureInfo ci = System.Globalization.CultureInfo.CreateSpecificCulture(localeCode);
 
-				if (ci != null)
-				{
-					// Reset currency symbol to deal with the existing ISO currency symbol implementation
-					ci.NumberFormat.CurrencySymbol = String.Empty;
-					// Setting up culture
-					System.Threading.Thread.CurrentThread.CurrentCulture = ci;
-					System.Threading.Thread.CurrentThread.CurrentUICulture = ci;
+                if (ci != null)
+                {
+                    // Reset currency symbol to deal with the existing ISO currency symbol implementation
+                    ci.NumberFormat.CurrencySymbol = String.Empty;
+                    // Setting up culture
+                    System.Threading.Thread.CurrentThread.CurrentCulture = ci;
+                    System.Threading.Thread.CurrentThread.CurrentUICulture = ci;
 
                     if (ci.TextInfo.IsRightToLeft)
                     {
@@ -449,11 +450,11 @@ namespace SolidCP.WebPortal
                             HttpContext.Current.Response.Cookies.Remove("UserRTL");
                         }
                     }
-				}
-			}
+                }
+            }
 
-			base.InitializeCulture();
-		}
+            base.InitializeCulture();
+        }
 
         private void ShowError(Control placeholder, string message)
         {
@@ -467,73 +468,85 @@ namespace SolidCP.WebPortal
             placeholder.Controls.Add(lbl);
         }
 
-		public static string GetLocalizedModuleTitle(string moduleName)
-		{
+        public static string GetLocalizedModuleTitle(string moduleName)
+        {
             string localizedString = GetLocalizedResourceString("Modules", String.Concat("ModuleTitle.", moduleName));
             return localizedString != null ? localizedString : moduleName;
-		}
+        }
 
-		public static string GetLocalizedPageTitle(string tabName)
-		{
+        public static string GetLocalizedPageTitle(string tabName)
+        {
             string localizedString = GetLocalizedResourceString("Pages", String.Concat("PageTitle.", tabName));
             return localizedString != null ? localizedString : tabName;
-		}
+        }
 
-		public static string GetLocalizedPageName(string tabName)
-		{
-			return GetLocalizedResourceString("Pages", String.Concat("PageName.", tabName));
-		}
+        public static string GetLocalizedPageName(string tabName)
+        {
+            return GetLocalizedResourceString("Pages", String.Concat("PageName.", tabName));
+        }
 
-		private static string GetLocalizedResourceString(string suffix, string key)
-		{
-			List<string> list1 = null;
-			if (suffix == "Pages")
-			{
-				list1 = GetResourceFiles("Pages", "SCPLocaleAdapterPages");
-			}
-			else
-			{
-				list1 = GetResourceFiles("Modules", "SCPLocaleAdapterModules");
-			}
+        private static string GetLocalizedResourceString(string suffix, string key)
+        {
+            List<string> list1 = null;
+            if (suffix == "Pages")
+            {
+                list1 = GetResourceFiles("Pages", "SCPLocaleAdapterPages");
+            }
+            else
+            {
+                list1 = GetResourceFiles("Modules", "SCPLocaleAdapterModules");
+            }
 
-			string text1 = null;
-			foreach (string text2 in list1)
-			{
-				text1 = GetGlobalLocalizedString(text2, key);
+            string text1 = null;
+            foreach (string text2 in list1)
+            {
+                text1 = GetGlobalLocalizedString(text2, key);
 
-				if (!String.IsNullOrEmpty(text1))
-				{
-					return text1;
-				}
-			}
-			return text1;
-		}
+                if (!String.IsNullOrEmpty(text1))
+                {
+                    return text1;
+                }
+            }
+            return text1;
+        }
 
-		private static List<string> GetResourceFiles(string suffix, string cacheKey)
-		{
-			List<string> list1 = (List<string>)HttpContext.Current.Cache[cacheKey];
-			if (list1 == null)
-			{
-				list1 = new List<string>();
-				string text2 = HttpContext.Current.Server.MapPath("~/App_GlobalResources");
+        private static List<string> GetResourceFiles(string suffix, string cacheKey)
+        {
+            List<string> list = (List<string>)HttpContext.Current.Cache[cacheKey];
+            if (list == null)
+            {
+                string resDir = HttpContext.Current.Server.MapPath("~/App_GlobalResources");
 
-				FileInfo[] infoArray1 = new DirectoryInfo(text2).GetFiles("*_" + suffix + ".ascx.resx");
+                if (Directory.Exists(resDir))
+                {
+                    FileInfo[] infoArray1 = new DirectoryInfo(resDir).GetFiles("*_" + suffix + ".ascx.resx");
 
-				foreach (FileInfo info1 in infoArray1)
-				{
-					list1.Add(info1.Name);
-				}
+                    list = new List<string>();
+                    foreach (FileInfo info1 in infoArray1)
+                    {
+                        list.Add(info1.Name);
+                    }
+                }
+                else // when app is precompiled there is no App_GlobalResources directory so use a file with the
+                     // resource names instead. The file is created by the SolidCP.WebPortal.csproj when you execute
+                     // its Deploy target
+                {
+                    var resNamesFile = HttpContext.Current.Server.MapPath("~/App_Data/App_GlobalResources.list");
+                    list = File.ReadAllLines(resNamesFile)
+                        .Where(file => file.EndsWith($"_{suffix}.ascx.resx"))
+                        .ToList();
+                }
 
-				HttpContext.Current.Cache.Insert(cacheKey, list1, new CacheDependency(text2));
-			}
-			return list1;
-		}
+                HttpContext.Current.Cache.Insert(cacheKey, list, new CacheDependency(resDir));
+            }
+            return list;
+        }
 
-		public static string GetGlobalLocalizedString(string fileName, string resourceKey)
-		{
-			string className = fileName.Replace(".resx", "");
-			return (string)HttpContext.GetGlobalResourceObject(className, resourceKey);
-		}
+        public static string GetGlobalLocalizedString(string fileName, string resourceKey)
+        {
+            string className = fileName.Replace(".resx", "");
+            return (string)HttpContext.GetGlobalResourceObject(className, resourceKey);
+        }
 
         public void Recreatehtmlclasses()
         {

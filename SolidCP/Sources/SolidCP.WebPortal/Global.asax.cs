@@ -34,10 +34,12 @@ using System;
 using System.Data;
 using System.Configuration;
 using System.Collections;
+using System.Diagnostics;
 using System.Web;
 using System.Web.Script;
 using System.Web.Security;
 using System.Web.SessionState;
+using System.Web.Routing;
 using System.Security.Principal;
 using System.Web.UI;
 using System.Net;
@@ -51,6 +53,7 @@ namespace SolidCP.WebPortal
 {
 	public class Global : System.Web.HttpApplication
 	{
+		const bool Debug = false;
 		private int keepAliveMinutes = 10;
 		private static string keepAliveUrl = "";
 		private static System.Timers.Timer timer = null;
@@ -110,9 +113,15 @@ namespace SolidCP.WebPortal
 
 		}
 
-		Task TouchTask;
+
+		protected void Application_OnStart(object sender, EventArgs e) => Application_Start(sender, e);
+
+
+        Task TouchTask;
 		protected void Application_Start(object sender, EventArgs e)
 		{
+			if (Debug && !Debugger.IsAttached) Debugger.Launch();
+
 			Web.Clients.CertificateValidator.Init();
 
 			// start Enterprise Server
@@ -134,7 +143,9 @@ namespace SolidCP.WebPortal
 				Web.Clients.AssemblyLoader.Init();
 			}
 
-			ScriptManager.ScriptResourceMapping.AddDefinition("jquery",
+            VncWebSocketHandler.Init();
+
+            ScriptManager.ScriptResourceMapping.AddDefinition("jquery",
 				new ScriptResourceDefinition
 				{
 					Path = "~/JavaScript/jquery-2.1.0.min.js"

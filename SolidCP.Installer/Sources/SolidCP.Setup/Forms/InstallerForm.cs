@@ -46,7 +46,12 @@ namespace SolidCP.Setup
 		public InstallerForm()
 		{
 			InitializeComponent();
-			LifetimeServices.LeaseTime = TimeSpan.Zero;
+			try
+			{
+				LifetimeServices.LeaseTime = TimeSpan.Zero;
+			}
+			catch {
+			}
 			Log.WriteInfo("Setup wizard loaded.");
 		}
 

@@ -116,7 +116,7 @@ namespace SolidCP.Setup.Actions
 		}
 	}
 
-	public class SetupAssembyResolverAction : Action, IInstallAction
+	public class SetupAssemblyResolverAction : Action, IInstallAction
 	{
 		void IInstallAction.Run(SetupVariables vars)
 		{

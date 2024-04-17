@@ -316,8 +316,14 @@ namespace SolidCP.Portal
 					//
 					if (authCookie != null)
 					{
-						authTicket = FormsAuthentication.Decrypt(authCookie.Value);
-						HttpContext.Current.Items[FormsAuthentication.FormsCookieName] = authTicket;
+						try
+						{
+							authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+							HttpContext.Current.Items[FormsAuthentication.FormsCookieName] = authTicket;
+						} catch (Exception ex)
+						{
+
+						}
 					}
 				}
 

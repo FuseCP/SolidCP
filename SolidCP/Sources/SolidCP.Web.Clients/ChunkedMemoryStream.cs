@@ -12,7 +12,6 @@
 //==========================================================================
  
 using System;
-using System.IO;
 using System.Runtime.Remoting.Channels;
  
 namespace System.Runtime.Remoting.Channels

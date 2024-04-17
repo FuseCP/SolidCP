@@ -108,5 +108,7 @@ namespace SolidCP.Server.Code
         }
         public static string OS => OSInfo.IsWindows ? "Windows" :
 				(OSInfo.IsMac ? "Mac" : "Unix");
+
+        public static bool IsServerPasswordSHA256 => CryptoUtility.IsSHA256(Settings.Password);
 	}
 }

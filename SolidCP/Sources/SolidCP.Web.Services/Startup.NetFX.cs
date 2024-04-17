@@ -9,9 +9,8 @@ using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.Web;
 using System.Web.Routing;
+using System.Web.Configuration;
 using SwaggerWcf;
-#else
-using CoreWCF;
 #endif
 //using Microsoft.Web.Infrastructure;
 using System.ComponentModel;
@@ -27,19 +26,21 @@ namespace SolidCP.Web.Services
 
 		public static void Start()
 		{
-
+#if NETFRAMEWORK
 			lock (startLock)
 			{
 				if (wasCalled) return;
 				wasCalled = true;
 			}
-
 			AddServiceRoutes(ServiceTypes.Types.Select(srvc => srvc.Service));
 			//SvcVirtualPathProvider.SetupSvcServices(webServices);
 			//DictionaryVirtualPathProvider.Startup();
-		}
 
-		static void AddServiceRoutes(IEnumerable<Type> services)
+			// set Log trace switch, as it is not working
+#endif
+        }
+
+        static void AddServiceRoutes(IEnumerable<Type> services)
 		{
 #if NETFRAMEWORK
 			foreach (var service in services)
@@ -55,6 +56,9 @@ namespace SolidCP.Web.Services
                 RouteTable.Routes.Add(new ServiceRoute($"api/{service.Name}", new ServiceHostFactory(), service));
 			}
 			RouteTable.Routes.Add(new ServiceRoute("api-docs", new WebServiceHostFactory(), typeof(SwaggerWcfEndpoint)));
+
+			var tunnelHandler = new TunnelHandlerNetFX();
+			RouteTable.Routes.Add(new Route(tunnelHandler.Route, tunnelHandler));
 #endif
 		}
 	}

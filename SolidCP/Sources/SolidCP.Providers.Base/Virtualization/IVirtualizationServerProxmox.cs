@@ -32,7 +32,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Net.Sockets;
 using System.Text;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Providers.Virtualization
 {
@@ -42,7 +45,7 @@ namespace SolidCP.Providers.Virtualization
         VirtualMachine GetVirtualMachine(string vmId);
         VirtualMachine GetVirtualMachineEx(string vmId);
         List<VirtualMachine> GetVirtualMachines();
-        byte[] GetVirtualMachineThumbnailImage(string vmId, ThumbnailSize size);
+        ImageFile GetVirtualMachineThumbnailImage(string vmId, ThumbnailSize size);
         VirtualMachine CreateVirtualMachine(VirtualMachine vm);
         VirtualMachine UpdateVirtualMachine(VirtualMachine vm);
         JobResult ChangeVirtualMachineState(string vmId, VirtualMachineRequestedState newState);
@@ -51,8 +54,8 @@ namespace SolidCP.Providers.Virtualization
         JobResult RenameVirtualMachine(string vmId, string name);
         JobResult ExportVirtualMachine(string vmId, string exportPath);
         JobResult DeleteVirtualMachine(string vmId);
-        string GetVirtualMachineVNC(string vmId);
-
+        VncCredentials GetPveVncCredentials(string vmId);
+        Task<TunnelSocket> GetPveVncWebSocketAsync(string vmId, VncCredentials credentials);
         // Snapshots
         List<VirtualMachineSnapshot> GetVirtualMachineSnapshots(string vmId);
         VirtualMachineSnapshot GetSnapshot(string vmId, string snapshotId);
@@ -61,7 +64,7 @@ namespace SolidCP.Providers.Virtualization
         JobResult ApplySnapshot(string vmId, string snapshotId);
         JobResult DeleteSnapshot(string vmId, string snapshotId);
         JobResult DeleteSnapshotSubtree(string vmId, string snapshotId);
-        byte[] GetSnapshotThumbnailImage(string snapshotId, ThumbnailSize size);
+        ImageFile GetSnapshotThumbnailImage(string snapshotId, ThumbnailSize size);
 
         // Virtual Switches
         List<VirtualSwitch> GetExternalSwitches(string computerName);

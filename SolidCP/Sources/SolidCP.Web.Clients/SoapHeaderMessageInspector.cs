@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.ServiceModel.Dispatcher;
@@ -24,7 +25,10 @@ namespace SolidCP.Web.Clients
 
 		public object BeforeSendRequest(ref Message request, IClientChannel channel)
 		{
-			if (SoapHeader != null || Client.Credentials != null && Client.Credentials.Password != null && 
+			var methodName = Regex.Match(request.Headers.Action, "(?<=/)[^/]*?$").Value;
+			var hasSoapHeader = Client.CheckSoapHeader(methodName);
+
+			if (hasSoapHeader || Client.Credentials != null && Client.Credentials.Password != null && 
 				(Client.IsSecureProtocol || Client.IsLocal))
 			{
 				// Prepare the request message copy to be modified
@@ -32,11 +36,10 @@ namespace SolidCP.Web.Clients
 				request = buffer.CreateMessage();
 			}
 
-			if (SoapHeader != null)
+			if (hasSoapHeader)
 			{
 				var header = MessageHeader.CreateHeader(SoapHeader.GetType().Name, $"{Namespace}{SoapHeader.GetType().Name}", SoapHeader);
 				request.Headers.Add(header);
-				Client.SoapHeader = null;
 			}
 			if (Client.Credentials != null && Client.Credentials.Password != null && Client.IsAuthenticated && (Client.IsSecureProtocol || Client.IsLocal))
 			{

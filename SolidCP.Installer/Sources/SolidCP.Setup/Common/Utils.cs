@@ -78,27 +78,38 @@ namespace SolidCP.Setup
 			Stream ret = asm.GetManifestResourceStream(resourceName);
 			return ret;
 		}
-		#endregion
+        #endregion
 
-		#region Crypting
+        #region Crypting
 
-		/// <summary>
-		/// Computes the SHA1 hash value
-		/// </summary>
-		/// <param name="plainText"></param>
-		/// <returns></returns>
-		public static string ComputeSHA1(string plainText)
-		{
-			// Convert plain text into a byte array.
-			byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);
-			HashAlgorithm hash = new SHA1Managed();
-			// Compute hash value of our plain text with appended salt.
-			byte[] hashBytes = hash.ComputeHash(plainTextBytes);
-			// Return the result.
-			return Convert.ToBase64String(hashBytes);
-		}
 
-		public static string CreateCryptoKey(int len)
+        static string ComputeHash(string plainText, HashAlgorithm hash)
+        {
+            // Convert plain text into a byte array.
+            byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);
+
+            // Compute hash value of our plain text with appended salt.
+            byte[] hashBytes = hash.ComputeHash(plainTextBytes);
+            // Return the result.
+            return Convert.ToBase64String(hashBytes);
+        }
+
+        /// <summary>
+        /// Computes the SHA1 hash value
+        /// </summary>
+        /// <param name="plainText"></param>
+        /// <returns></returns>
+        public static string ComputeSHA1(string plainText) => ComputeHash(plainText, new SHA1Managed());
+        public static string ComputeSHA256(string plainText) => $"SHA256:{ComputeHash(plainText, new SHA256Managed())}";
+        public static string ComputeSHAServerPassword(string password) => ComputeSHA256(password);
+		public static bool IsSHA256(string hash) => hash.StartsWith("SHA256:");
+        public static bool SHAEquals(string plainText, string hash)
+        {
+            if (IsSHA256(hash)) return ComputeSHA256(plainText) == hash;
+            else return ComputeSHA1(plainText) == hash;
+        }
+
+        public static string CreateCryptoKey(int len)
 		{
 			byte[] bytes = new byte[len];
 			new RNGCryptoServiceProvider().GetBytes(bytes);

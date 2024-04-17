@@ -60,7 +60,7 @@ namespace SolidCP.Providers.OS
 	public class Windows2019 : Windows2003
 	{
 		#region Properties
-		internal string PrimaryDomainController
+		protected string PrimaryDomainController
 		{
 			get { return ProviderSettings["PrimaryDomainController"]; }
 		}

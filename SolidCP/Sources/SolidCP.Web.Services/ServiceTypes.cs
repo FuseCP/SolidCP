@@ -28,7 +28,6 @@ namespace SolidCP.Web.Services
 
 	public class ServiceTypes: KeyedCollection<string, ServiceType>
 	{
-		public static Assembly[] Assemblies { get; set; }
 
 		static string exposeWebServices = null;
 		public static string ExposeWebServices
@@ -38,7 +37,7 @@ namespace SolidCP.Web.Services
 				if (exposeWebServices == null)
 				{
 #if NETFRAMEWORK
-				exposeWebServices = (ConfigurationManager.AppSettings["ExposeWebServices"] ?? "").ToLower();
+					exposeWebServices = (ConfigurationManager.AppSettings["ExposeWebServices"] ?? "").ToLower();
 #else
 					throw new NotSupportedException("ExposeWebServices not set.");
 #endif
@@ -51,39 +50,57 @@ namespace SolidCP.Web.Services
 			}
 		}
 
+		public static Assembly[] assemblies = null;
 
-		public static IEnumerable<Type> GetWebServices()
+        public static Assembly[] ExposedAssemblies
 		{
-			Assembly eserver = null, server = null;
-
-			if (ExposeWebServices == "" || ExposeWebServices == "all" || ExposeWebServices == "true" ||
-				ExposeWebServices.Split(';', ',').Any(s => s.Trim() == "enterpriseserver"))
+			get
 			{
-				try
+				if (assemblies != null) return assemblies;
+
+				Assembly eserver = null, server = null;
+
+				if (ExposeWebServices == "" || ExposeWebServices == "all" || ExposeWebServices == "true" ||
+					ExposeWebServices.Split(';', ',').Any(s => s.Trim() == "enterpriseserver"))
 				{
-					eserver = Assembly.Load("SolidCP.EnterpriseServer");
+					try
+					{
+						eserver = Assembly.Load("SolidCP.EnterpriseServer");
+					}
+					catch { }
 				}
-				catch { }
-			}
 
-			if (ExposeWebServices == "" || ExposeWebServices == "all" || ExposeWebServices == "true" ||
-				ExposeWebServices.Split(';', ',').Any(s => s.Trim() == "server"))
-			{
-				try
+				if (ExposeWebServices == "" || ExposeWebServices == "all" || ExposeWebServices == "true" ||
+					ExposeWebServices.Split(';', ',').Any(s => s.Trim() == "server"))
 				{
-					server = Assembly.Load("SolidCP.Server");
+					try
+					{
+						server = Assembly.Load("SolidCP.Server");
+					}
+					catch { }
 				}
-				catch { }
-			}
-			
-			Assemblies = new Assembly[]
-			{
-				eserver, server
-			}
-			.Where(a => a != null)
-			.ToArray();
 
-			var types = Assemblies
+				assemblies = new Assembly[]
+				{
+					eserver, server
+				}
+				.Where(a => a != null)
+				.ToArray();
+
+				return assemblies;
+			}
+		}
+
+        public bool IsServerLoaded => AppDomain.CurrentDomain.GetAssemblies()
+            .Any(a => a.GetName().Name == "SolidCP.Server");
+        public bool IsEnterpriseServerLoaded => AppDomain.CurrentDomain.GetAssemblies()
+            .Any(a => a.GetName().Name == "SolidCP.EnterpriseServer");
+        public bool IsPortalLoaded => AppDomain.CurrentDomain.GetAssemblies()
+            .Any(a => a.GetName().Name == "SolidCP.WebPortal");
+
+        public static IEnumerable<Type> GetWebServices()
+		{
+			var types = ExposedAssemblies
 				.SelectMany(a => {
 					var attrTypes = a.GetCustomAttribute<WCFServiceTypesAttribute>()?.Types;
 					return attrTypes ?? new Type[0];

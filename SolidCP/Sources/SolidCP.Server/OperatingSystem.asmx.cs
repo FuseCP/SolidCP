@@ -33,6 +33,7 @@
 using System;
 using System.Data;
 using System.Web;
+using System.Diagnostics;
 using System.Collections;
 using System.Runtime.InteropServices;
 using SolidCP.Web.Services;
@@ -1312,8 +1313,9 @@ namespace SolidCP.Server
 
 		public Providers.Web.IWebServer WebServer => WinProvider.WebServer;
 		public ServiceController ServiceController => WinProvider.ServiceController;
-		public WSLShell WSLShell => WinProvider.WSLShell;
+		public WSLShell WSL => WinProvider.WSL;
 		public bool IsSystemd => UnixProvider.IsSystemd;
+		public TraceListener DefaultTraceListener => OSProvider.DefaultTraceListener;
 
 	}
 }

@@ -16,6 +16,8 @@ using System.Diagnostics;
 using System.IO;
 using Renci.SshNet;
 using SolidCP.Providers.OS;
+using SolidCP.Providers;
+using System.Net.Sockets;
 
 #if !NETFRAMEWORK && gRPC
 using Grpc.Core;
@@ -204,6 +206,34 @@ namespace SolidCP.Web.Clients
 			}
 		}
 
+		public Protocols ToHttp(Protocols protocol)
+		{
+			switch (protocol)
+			{
+				case Protocols.WSHttps: return Protocols.WSHttp;
+				case Protocols.NetHttps: return Protocols.NetHttp;
+				case Protocols.BasicHttps: return Protocols.BasicHttp;
+				case Protocols.RESTHttps: return Protocols.RESTHttp;
+				case Protocols.gRPCWebSsl: return Protocols.gRPCWeb;
+				default: return protocol;
+			}
+		}
+		public Protocols ToHttp() => Protocol = ToHttp(Protocol);
+
+		public Protocols ToHttps(Protocols protocol)
+		{
+			switch (protocol)
+			{
+				case Protocols.BasicHttp: return Protocols.BasicHttps;
+				case Protocols.NetHttp: return Protocols.NetHttps;
+				case Protocols.WSHttp: return Protocols.WSHttps;
+				case Protocols.RESTHttp: return Protocols.RESTHttps;
+				case Protocols.gRPCWeb: return Protocols.gRPCWebSsl;
+				default: return protocol;
+			}
+		}
+		public Protocols ToHttps() => Protocol = ToHttps(Protocol);
+
 		public bool IsWCF => Protocol < Protocols.gRPC;
 		public bool IsGRPC => Protocol >= Protocols.gRPC && Protocol < Protocols.Assembly;
 		public bool IsAssembly => Protocol == Protocols.Assembly;
@@ -215,40 +245,11 @@ namespace SolidCP.Web.Clients
 
 		public bool IsHttp => Protocol <= Protocols.WSHttp;
 		public bool IsHttps => Protocol >= Protocols.BasicHttps && Protocol <= Protocols.WSHttps;
-		public bool IsEncrypted => this.GetType().GetInterfaces()
-					.FirstOrDefault(i => i.GetCustomAttribute<ServiceContractAttribute>() != null)
-					?.GetCustomAttribute<HasPolicyAttribute>() != null;
 
-		static Dictionary<string, System.Net.IPAddress[]> ResolvedHosts = new Dictionary<string, System.Net.IPAddress[]>();
-
-		public bool IsLocalAddress(string adr)
-		{
-			return Regex.IsMatch(adr, @"(^127\.)|(^192\.168\.)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^\[?::1\]?$)|(^\[?[fF][cCdD])", RegexOptions.Singleline);
-		}
-
-
-		public bool IsHostLocal(string host)
-		{
-			var isHostIP = Regex.IsMatch(host, @"^[0.9]{1,3}(?:\.[0-9]{1,3}){3}$", RegexOptions.Singleline) || Regex.IsMatch(host, @"^\[?[0-9a-fA-F:]+\]?$", RegexOptions.Singleline);
-			if (host == "localhost" || host == "127.0.0.1" || host == "::1" || host == "[::1]" ||
-				isHostIP && IsLocalAddress(host)) return true;
-
-			if (!isHostIP)
-			{
-				IPAddress[] ips;
-				lock (ResolvedHosts)
-				{
-					if (!ResolvedHosts.TryGetValue(host, out ips))
-					{
-						ResolvedHosts.Add(host, ips = Dns.GetHostEntry(host).AddressList);
-					}
-				}
-				return ips
-					.Where(ip => ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork || ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
-					.All(ip => IsLocalAddress(ip.ToString()));
-			}
-			return false;
-		}
+		public Type ServiceInterface => this.GetType().GetInterfaces()
+					.FirstOrDefault(i => i.GetCustomAttribute<ServiceContractAttribute>() != null);
+		public HasPolicyAttribute Policy => ServiceInterface?.GetCustomAttribute<HasPolicyAttribute>();
+		public bool IsEncrypted => Policy != null;
 
 		public bool IsLocal
 		{
@@ -256,21 +257,12 @@ namespace SolidCP.Web.Clients
 			{
 				if (IsSsh) return true;
 				var host = new Uri(url).Host;
-				return url.StartsWith("pipe://", StringComparison.OrdinalIgnoreCase) || IsHostLocal(host);
+				return url.StartsWith("pipe://", StringComparison.OrdinalIgnoreCase) || DnsService.IsHostLAN(host);
 			}
 		}
 
 		public bool IsDefaultApi => !Regex.IsMatch(url, "(?:basic|net|ws|grpc|grpc/ssl|tcp|tcp/ssl|pipe|pipe/ssl)(?:/[A-Za-z0-9_¨]+)?/?(?:\\?|$)");
 
-		public HasPolicyAttribute Policy
-		{
-			get
-			{
-				var serviceInterface = this.GetType().GetInterfaces()
-					.FirstOrDefault(i => i.GetCustomAttribute<ServiceContractAttribute>() != null);
-				return serviceInterface?.GetCustomAttribute<HasPolicyAttribute>();
-			}
-		}
 		public bool IsAuthenticated
 		{
 			get
@@ -281,10 +273,17 @@ namespace SolidCP.Web.Clients
 				return policy != null && policy != HasPolicyAttribute.Encrypted;
 			}
 		}
-		public bool HasSoapHeaders => this.GetType().GetInterfaces()
-			.FirstOrDefault(i => i.GetCustomAttribute<ServiceContractAttribute>() != null)
-			?.GetCustomAttribute<SolidCP.Providers.SoapHeaderAttribute>()
-			!= null;
+		public bool HasSoapHeaders => ServiceInterface?.GetCustomAttribute<SolidCP.Providers.SoapHeaderAttribute>() != null;
+
+		public bool CheckSoapHeader(string methodName)
+		{
+			var service = ServiceInterface;
+			var method = service.GetMethod(methodName);
+			if (method == null) throw new ArgumentException($"Method {this.GetType().Name}.{methodName} not found");
+            var soapAttr = method.GetCustomAttribute<SolidCP.Providers.SoapHeaderAttribute>();
+			if (soapAttr != null && SoapHeader == null) throw new Exception($"Must assign a SoapHeader for calling method {this.GetType().Name}.{methodName}");
+			return soapAttr != null;
+		}
 
 		public static void StartAllSshTunnels(IEnumerable<string> urls) => ClientBase<ClientAssemblyBase, ClientAssemblyBase>.StartAllSshTunnels(urls);
 		public static void DisposeAllSshTunnels() => ClientBase<ClientAssemblyBase, ClientAssemblyBase>.DisposeAllSshTunnels();
@@ -357,155 +356,43 @@ namespace SolidCP.Web.Clients
 			return pipe;
 		}
 
-		public class SshTunnel : IDisposable
-		{
-			public SshClient Client;
-			public ForwardedPortLocal Port;
-			public string Url;
-			public Exception Exception, ConnectException;
-			public bool IsConnecting;
-			public SshTunnel(string url, SshClient client, ForwardedPortLocal port)
-			{
-				Url = url;
-				Client = client;
-				Exception = null;
-				ConnectException = null;
-				Port = port;
-				IsConnecting = true;
-			}
-
-			bool isRestarting = false;
-			public void Restart(object sender, Renci.SshNet.Common.ExceptionEventArgs args)
-			{
-				lock (this)
-				{
-					if (isRestarting || Exception == args.Exception || ConnectException != null) return;
-					Exception = args.Exception;
-					isRestarting = true;
-					IsConnecting = true;
-					Client.ErrorOccurred -= Restart;
-					Port.Exception -= Restart;
-
-					Trace.TraceError($"Exception on SSH Tunnel {Url}: {Exception}");
-					
-					Disconnect();
-
-					ConnectException = null;
-					try
-					{
-						Client.Connect();
-						Port.Start();
-					}
-					catch (Exception ex)
-					{
-						ConnectException = ex;
-						isRestarting = false;
-						Disconnect();
-
-						Trace.TraceError($"Failed to reconnect SSH Tunnel to {Url}: {ex}");
-					}
-					isRestarting = IsConnecting = false;
-					Client.ErrorOccurred += Restart;
-					Port.Exception += Restart;
-				}
-			}
-
-			bool isDisposed = false;
-			public void Disconnect()
-			{
-				lock (this)
-				{
-					if (Port.IsStarted)
-					{
-						try
-						{
-							Port.Stop();
-						}
-						catch { }
-					}
-					if (Client.IsConnected)
-					{
-						try
-						{
-							Client.Disconnect();
-						}
-						catch { }
-					}
-				}
-			}
-			public void Dispose()
-			{
-				Disconnect();
-				if (!isDisposed)
-				{
-					isDisposed = true;
-					Client.Dispose();
-				}
-			}
-		}
 
 		static ConcurrentDictionary<string, SshTunnel> SshTunnels = new ConcurrentDictionary<string, SshTunnel>();
 		static object SshLock = new object();
 		static bool SshDisposed = false;
 
-		const string ParseSshUrlRegex = @"(?<=^[a-zA-Z.]+://)(?<sshlogin>[^/]*)/(?:(?<localport>[0-9]+):)?(?:(?<host>\[[0-9a-fA-F:]+\]|[0-9]+\.[0-9a-zA-Z_.-]+):)?(?<remoteport>[0-9]+)(?=/|$|\?)";
-
 		public static SshTunnel StartSshTunnel(string url)
 		{
 			lock (SshLock) if (SshDisposed) throw new ObjectDisposedException("Ssh tunnels have been disposed.");
 
-			var match = Regex.Match(url, ParseSshUrlRegex, RegexOptions.Singleline);
-			var uri = new Uri(url);
-			var userTokens = uri.UserInfo.Split(':');
-			var user = userTokens[0];
-			var password = "";
-			if (userTokens.Length >= 2) password = userTokens[1];
-			var localport = match.Groups["localport"].Success ? uint.Parse(match.Groups["localport"].Value) : uint.MaxValue;
-			var host = match.Groups["host"].Success ? match.Groups["host"].Value : "127.0.0.1";
-			var remoteport = uint.Parse(match.Groups["remoteport"].Value);
+			var tunnel = new SshTunnel(url);
 
-			var sshClient = new SshClient(uri.Host, uri.Port != -1 ? uri.Port : 22, user, password);
-			ForwardedPortLocal forwardedPort;
-			if (localport == uint.MaxValue) forwardedPort = new ForwardedPortLocal("127.0.0.1", host, remoteport);
-			else forwardedPort = new ForwardedPortLocal("127.0.0.1", localport, host, remoteport);
-
-			var tunnel = new SshTunnel(url, sshClient, forwardedPort);
-
-			ThreadPool.QueueUserWorkItem(state =>
-			{
-				lock (tunnel)
-				{
-					try
-					{
-						tunnel.IsConnecting = true;
-						sshClient.Connect();
-						sshClient.AddForwardedPort(forwardedPort);
-						forwardedPort.Start();
-						tunnel.IsConnecting = false;
-						sshClient.ErrorOccurred += tunnel.Restart;
-						forwardedPort.Exception += tunnel.Restart;
-						
-						Trace.TraceInformation($"SSH Tunnel on {url} started.");
-					}
-					catch (Exception ex)
-					{
-						tunnel.ConnectException = ex;
-						tunnel.IsConnecting = false;
-						tunnel.Disconnect();
-						
-						Trace.TraceError($"Failed to connect SSH Tunnel to {url}: {ex}");
-					}
-				}
+			ThreadPool.QueueUserWorkItem(state => {
+				lock (tunnel) tunnel.Create();
 			});
+
 			return tunnel;
 		}
 
-		//TODO Run StartAllSshTunnels on user login with servers occupied by the user instead of on application start
-		// with all servers
-		public static new void StartAllSshTunnels(IEnumerable<string> urls)
+		public static void WaitForTunnelReady(SshTunnel tunnel)
+		{
+			Thread.Sleep(0);
+			// block until ssh tunnel is ready
+            bool wait;
+            lock (tunnel) wait = !tunnel.Client.IsConnected && !tunnel.ForwardedPort.IsStarted && tunnel.IsConnecting && tunnel.ConnectException == null;
+            while (wait)
+            {
+                Thread.Sleep(1);
+                lock (tunnel) wait = !tunnel.Client.IsConnected && !tunnel.ForwardedPort.IsStarted && tunnel.IsConnecting && tunnel.ConnectException == null;
+            }
+        }
+
+        public static new void StartAllSshTunnels(IEnumerable<string> urls)
 		{
 			foreach (var url in urls.Take(50)) // only pre start the first 50 servers due to performance reasons
 			{
+				if (!url.StartsWith("ssh://")) continue;
+
 				lock (SshLock) SshTunnels.GetOrAdd(url, StartSshTunnel);
 			}
 		}
@@ -530,16 +417,7 @@ namespace SolidCP.Web.Clients
 			SshTunnel tunnel;
 			lock (SshLock) tunnel = SshTunnels.GetOrAdd(url, StartSshTunnel);
 
-			Thread.Sleep(0);
-
-			// block until ssh tunnel is ready
-			bool wait;
-			lock (tunnel) wait = !tunnel.Client.IsConnected && !tunnel.Port.IsStarted && tunnel.IsConnecting && tunnel.ConnectException == null;
-			while (wait)
-			{
-				Thread.Sleep(1);
-				lock (tunnel) wait = !tunnel.Client.IsConnected && !tunnel.Port.IsStarted && tunnel.IsConnecting && tunnel.ConnectException == null;
-			}
+			WaitForTunnelReady(tunnel);
 
 			lock (tunnel)
 			{
@@ -553,16 +431,28 @@ namespace SolidCP.Web.Clients
 				}
 			}
 
-			if (IsHttp) serviceurl = serviceurl.SetScheme("http");
-			else if (Protocol == Protocols.NetTcp || Protocol == Protocols.NetTcpSsl)
-			{
-				if (Protocol == Protocols.NetTcpSsl) Protocol = Protocols.NetTcp;
-				serviceurl = serviceurl.SetScheme("net.tcp");
-			}
-			else if (IsHttps) throw new NotSupportedException("Https over ssh tunnel is not supported.");
-			else throw new NotSupportedException("This protocol is not supported over ssh tunnel.");
+			serviceurl = tunnel.AccessUrl;
 
-			return Regex.Replace(serviceurl, ParseSshUrlRegex, m => $"127.0.0.1:{tunnel.Port.BoundPort}", RegexOptions.Singleline);
+			if (tunnel.Uri.Protocol == null)
+			{
+				if (IsHttps)
+				{
+					ToHttp(); 
+					serviceurl = serviceurl.SetScheme("http");
+				}
+				else if (IsHttp) serviceurl = serviceurl.SetScheme("http");
+				else if (Protocol == Protocols.NetTcp || Protocol == Protocols.NetTcpSsl)
+				{
+					if (Protocol == Protocols.NetTcpSsl) Protocol = Protocols.NetTcp;
+					serviceurl = serviceurl.SetScheme("net.tcp");
+				}
+				else throw new NotSupportedException("This protocol is not supported over ssh tunnel.");
+			} else {
+				if (tunnel.Uri.Protocol == "http" && IsHttps) ToHttp();
+				else if (tunnel.Uri.Protocol == "https" && IsHttp) ToHttps();
+			}
+
+            return serviceurl;
 		}
 
 		protected T Client
@@ -701,6 +591,7 @@ namespace SolidCP.Web.Clients
 							FactoryPool[url] = null;
 						}
 					}
+
 					if (SoapHeader != null || Credentials != null && Credentials.Password != null && (IsSecureProtocol || IsLocal))
 					{
 						foreach (var b in factory.Endpoint.EndpointBehaviors.ToArray())
@@ -761,8 +652,7 @@ namespace SolidCP.Web.Clients
 			if (client != null && client is IClientChannel channel) channel.Close();
 		}
 
-
-		public ClientBase() { }
+		public ClientBase(): base() { }
 		public ClientBase(string url) : this()
 		{
 			Url = url;

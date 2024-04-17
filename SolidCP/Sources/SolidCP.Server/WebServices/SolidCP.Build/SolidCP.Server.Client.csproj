@@ -12,6 +12,7 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
 	</PropertyGroup>
+
 	<ItemGroup>
 		<Compile Remove="Microsoft.NET.Sdk.Razor.SourceGenerators\**" />
 		<EmbeddedResource Remove="Microsoft.NET.Sdk.Razor.SourceGenerators\**" />

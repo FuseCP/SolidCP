@@ -84,15 +84,22 @@ namespace SolidCP.Build
 		public static MethodDeclarationSyntax[] GlobalizedWebMethods(this ClassDeclarationSyntax classDeclaration, IEnumerable<MethodDeclarationSyntax> methods, SemanticModel model)
 		{
 			var globalizedMethods = methods
-				.Select(m =>
-				{
-					var method = MethodDeclaration(m.ReturnType.Globalized(model), m.Identifier)
-						//.WithAttributeLists(m.AttributeLists.
+				.Select(m => {
+					var methodDecl = MethodDeclaration(m.ReturnType.Globalized(model), m.Identifier)
 						.WithModifiers(m.Modifiers)
 						.WithParameterList(ParameterList(SeparatedList<ParameterSyntax>(
 							m.ParameterList.Parameters
 								.Select(p => Parameter(p.AttributeLists, p.Modifiers, p.Type.Globalized(model), p.Identifier, p.Default)))));
-					return method;
+					var soapHeaderAttribute = m.AttributeLists
+						.SelectMany(at => at.Attributes)
+						.FirstOrDefault(at => Regex.IsMatch(at.Name.ToString(), "(?:(?:SolidCP.)?Providers.)?SoapHeader(?:Attribute)?"));
+					if (soapHeaderAttribute != null)
+					{
+						methodDecl = methodDecl
+							.WithAttributeLists(SingletonList(AttributeList(SingletonSeparatedList(Attribute(IdentifierName("SolidCP.Providers.SoapHeader"),
+								soapHeaderAttribute.ArgumentList)))));
+					}
+					return methodDecl;
 				})
 				.ToArray();
 			return globalizedMethods;
@@ -103,13 +110,16 @@ namespace SolidCP.Build
 	public class WebServices : ISourceGenerator
 	{
 
+		public const bool Debug = false; // Set to true to debug SolidCP.Build
+		public const bool EmitOpenApiTypes = false;
+
 		public static readonly string NewLine = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "\r\n" : "\n";
 
 		public void Execute(GeneratorExecutionContext context)
 		{
 
 #if DEBUG
-			//if (!Debugger.IsAttached) Debugger.Launch();
+			if (Debug && !Debugger.IsAttached) Debugger.Launch();
 #endif
 
 			// get WebServices

@@ -54,15 +54,15 @@ namespace SolidCP.Portal.ProviderControls
 			// Distinguish between Proxmox and Proxmox (localhost)
 			var service = ES.Services.Servers.GetServiceInfo(PanelRequest.ServiceId);
 			var provider = ES.Services.Servers.GetProvider(service.ProviderId);
-			var isLocal = provider.ProviderName.Contains("local");
+			var isLocal = provider.ProviderType == "SolidCP.Providers.Virtualization.ProxmoxvpsLocal, SolidCP.Providers.Virtualization.Proxmoxvps";
 		
-			txtProxmoxClusterServerHost.Enabled = ProxmoxClusterServerHostValidator.Visible = !isLocal;
-
 			// Proxmox Cluster Settings
-			txtProxmoxClusterServerHost.Text = isLocal ? "localhost" : settings["ProxmoxClusterServerHost"];
+			txtProxmoxClusterServerHost.Text = settings["ProxmoxClusterServerHost"];
 			txtProxmoxClusterServerPort.Text = settings["ProxmoxClusterServerPort"] ?? "8006";
 			txtProxmoxClusterAdminUser.Text = settings["ProxmoxClusterAdminUser"];
-			txtProxmoxClusterRealm.Text = settings["ProxmoxClusterRealm"] ?? "pam";
+			var realm = settings["ProxmoxClusterRealm"] ?? "pam";
+			if (string.Equals(realm, "pam", StringComparison.OrdinalIgnoreCase)) lstProxmoxClusterRealm.SelectedIndex = 0;
+			else lstProxmoxClusterRealm.SelectedIndex = 1;
 			bool trustCert = isLocal;
 			bool.TryParse(settings["ProxmoxTrustClusterServerCertificate"] ?? $"{isLocal}", out trustCert);
 			chkProxmoxTrustServerCertificate.Checked = trustCert;
@@ -81,6 +81,8 @@ namespace SolidCP.Portal.ProviderControls
 			rowSSHKEYPassword.Visible = ((string)ViewState["SSHKEYPWD"]) != "";
 			txtDeploySSHScript.Text = settings["DeploySSHScript"];
 			txtDeploySSHScriptParams.Text = settings["DeploySSHScriptParams"];
+			DeploySSHServerHostValidator.Visible = DeploySSHServerPortValidator.Visible =
+				DeploySSHUserValidator.Visible = pnlSshSettings.Visible = !isLocal;
 
 			// OS Templates
 			//txtOSTemplatesPath.Text = settings["OsTemplatesPath"];
@@ -102,7 +104,7 @@ namespace SolidCP.Portal.ProviderControls
 			settings["ProxmoxClusterServerHost"] = txtProxmoxClusterServerHost.Text.Trim();
 			settings["ProxmoxClusterServerPort"] = txtProxmoxClusterServerPort.Text.Trim();
 			settings["ProxmoxClusterAdminUser"] = txtProxmoxClusterAdminUser.Text.Trim();
-			settings["ProxmoxClusterRealm"] = txtProxmoxClusterRealm.Text.Trim();
+			settings["ProxmoxClusterRealm"] = lstProxmoxClusterRealm.SelectedValue; // txtProxmoxClusterRealm.Text.Trim();
 			settings["ProxmoxClusterAdminPass"] = (txtProxmoxClusterAdminPass.Text.Length > 0) ? txtProxmoxClusterAdminPass.Text : (string)ViewState["PWD"];
 			settings["ProxmoxTrustClusterServerCertificate"] = chkProxmoxTrustServerCertificate.Checked.ToString();
 
@@ -205,8 +207,9 @@ namespace SolidCP.Portal.ProviderControls
 				template.ProvisionNetworkAdapters = GetCheckBoxValue(item, "chkCanSetNetwork");
 
 
-				var syspreps = GetTextBoxText(item, "txtSysprep").Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries);
-				template.SysprepFiles = syspreps.Select(s => s.Trim()).ToArray();
+				//var syspreps = GetTextBoxText(item, "txtSysprep").Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries);
+				//template.SysprepFiles = syspreps.Select(s => s.Trim()).ToArray();
+				template.SysprepFiles = new string[0];
 
 				result.Add(template);
 			}

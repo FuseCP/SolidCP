@@ -1,7 +1,7 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="True" CodeBehind="HeliconZoo_Settings.ascx.cs" Inherits="HeliconZoo_Settings" %>
 <%@ Register Src="../UserControls/PopupHeader.ascx" TagName="PopupHeader" TagPrefix="scp" %>
 <%@ Import Namespace="SolidCP.Portal.ProviderControls" %>
-<%@ Import Namespace="SolidCP.Server" %>
+<%@ Import Namespace="SolidCP.Providers.OS" %>
 
 <style>
 p.description {

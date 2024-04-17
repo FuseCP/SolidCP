@@ -88,7 +88,7 @@ namespace SolidCP.Providers.Virtualization
                     item.VhdBlockSizeBytes = UInt32.Parse(nodeItem.Attributes["vhdBlockSizeBytes"].Value);
 
                 if (nodeItem.Attributes["diskSize"] != null)
-                    item.DiskSize = Int32.Parse(nodeItem.Attributes["diskSize"].Value);
+                    item.DiskSize = Int64.Parse(nodeItem.Attributes["diskSize"].Value);
 
                 if (nodeItem.Attributes["DeployScriptParams"] != null)
                     item.DeployScriptParams = nodeItem.Attributes["DeployScriptParams"].Value;

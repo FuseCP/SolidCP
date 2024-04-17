@@ -83,6 +83,10 @@ namespace SolidCP.Providers
             {
                 return hash[settingName];
             }
+            set
+            {
+                hash[settingName] = value;
+            }
         }
 
         public int GetInt(string settingName)
@@ -143,6 +147,7 @@ namespace SolidCP.Providers
         public StringDictionary Settings
         {
             get { return hash; }
+            set { hash = value; }
         }
         #endregion
     }

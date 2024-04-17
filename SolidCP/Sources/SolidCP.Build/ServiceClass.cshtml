@@ -15,14 +15,41 @@
 #endif
 public class @(Class.Identifier): @(OldNamespace).@Class.Identifier, I@(Class.Identifier) {
 
-	@*
-	@foreach (var m in WebMethods) {
-		@:public new @m.ReturnType @(m.Identifier)@m.ParameterList {
-			@((m.ReturnType is PredefinedTypeSyntax && ((PredefinedTypeSyntax)m.ReturnType).Keyword.IsKind(SyntaxKind.VoidKeyword)) ? "base." : "return base.")@(m.Identifier)@(ArgumentList(
-				SeparatedList<ArgumentSyntax>(m.ParameterList.Parameters
-					.Select(par => Argument(IdentifierName(par.Identifier))))))<text>;</text>
-		<text>}</text>
-	} *@
+	@if (WebServices.EmitOpenApiTypes)
+	{
+		@foreach (MethodDeclarationSyntax method in WebMethods)
+		{
+			var argumentList = ArgumentList(
+				SeparatedList<ArgumentSyntax>(method.ParameterList.Parameters
+					.Select(par => new
+					{
+						Argument = Argument(IdentifierName(par.Identifier)),
+						Parameter = par
+					})
+					.Select(par =>
+					{
+						var arg = par.Argument;
+						return par.Parameter.Modifiers.Select(mod => arg = arg.WithRefKindKeyword(mod)).LastOrDefault() ?? arg;
+					})));
+
+			var callStatement = method.Modifiers.Any(mod => mod.IsKind(SyntaxKind.AsyncKeyword)) ?
+				(method.ReturnType is GenericNameSyntax ? "return await " : "await ") :
+				(method.ReturnType is PredefinedTypeSyntax pre && pre.Keyword.IsKind(SyntaxKind.VoidKeyword) ? "" : "return ");
+
+			var hasSwaggerReturnTypeAttribute = method.AttributeLists.Any(al => al.Attributes.Any(at => at.Name.ToString().EndsWith("SwaggerWcfReturnType")));
+			var hasOpenApiReturnTypeAttribute = method.AttributeLists.Any(al => al.Attributes.Any(at => at.Name.ToString().EndsWith("OpenApiResponse")));
+
+		<text>
+#if NETFRAMEWORK@(hasSwaggerReturnTypeAttribute ? "" : $"\n[SwaggerWcfReturnType(typeof({method.ReturnType}))]")
+#else@(hasOpenApiReturnTypeAttribute ? "" : $"\n[OpenApiResponse(Type=typeof({method.ReturnType}), StatusCode = System.Net.HttpStatusCode.OK)]")
+#endif	
+				@(method.AttributeLists)
+				@(method.Modifiers) new @(method.ReturnType) @(method.Identifier)@(method.ParameterList) {
+				@(callStatement)base.@(method.Identifier)@(argumentList)@(";")
+				}	
+			</text>
+		}
+	}
 }
 
 @functions

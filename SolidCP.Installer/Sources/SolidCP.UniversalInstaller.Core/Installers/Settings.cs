@@ -22,7 +22,7 @@ namespace SolidCP.UniversalInstaller
 	public class ServerSettings: CommonSettings
 	{
 		public string ServerPassword { get; set; }
-		public string ServerPasswordSHA1 { get; set; }
+		public string ServerPasswordSHA { get; set; }
 	}
 
 	public class EnterpriseServerSettings: CommonSettings
@@ -41,5 +41,6 @@ namespace SolidCP.UniversalInstaller
 		public string EnterpriseServerUrl { get; set; }
 		public string PortalUser { get; set; }
 		public string PortalUserPassword { get; set; }
+		public bool EmbedEnterpriseServer { get; set; }
 	}
 }
