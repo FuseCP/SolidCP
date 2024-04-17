@@ -14,6 +14,6 @@ namespace SolidCP.Server
 #endif
 
         static string cryptoKey = null;
-        public static string CryptoKey => cryptoKey ?? (cryptoKey = CryptoUtility.SHA256($"{Password}{DateTime.Now}"));
+        public static string CryptoKey => cryptoKey ?? (cryptoKey = Cryptor.SHA256($"{Password}{DateTime.Now}"));
     }
 }

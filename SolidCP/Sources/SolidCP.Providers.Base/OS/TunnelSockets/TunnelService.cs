@@ -57,7 +57,7 @@ namespace SolidCP.Providers.OS
 
         public TimeSpan RequestTimeout { get; set; } = TimeSpan.FromSeconds(120);
 
-        public virtual byte[] DecryptData(ArraySegment<byte> secret) => new CryptoUtility(CryptoKey).Decrypt(secret);
+        public virtual byte[] DecryptData(ArraySegment<byte> secret) => new Cryptor(CryptoKey).Decrypt(secret);
 
         Type[] TypesFromNames(IEnumerable<string?> types) => types
             .Select(type => type != null ? Type.GetType(type) : null)
