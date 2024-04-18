@@ -34,6 +34,8 @@ using System;
 using System.IO;
 using System.Text;
 using System.Security.Cryptography;
+using SolidCP.Providers.OS;
+using System.Linq;
 
 namespace SolidCP.Providers
 {
@@ -47,60 +49,53 @@ namespace SolidCP.Providers
         public Cryptor(string key) { CryptoKey = key; }
         public Cryptor(string key, bool encryptionEnabled) { CryptoKey = key; EncryptionEnabled = encryptionEnabled; }
 
-        public virtual string Encrypt(string InputText)
+        public virtual string Encrypt(string InputText, bool legacy = false)
         {
             string Password = CryptoKey;
 
             if (!EncryptionEnabled || string.IsNullOrEmpty(InputText)) return InputText;
 
             // First we need to turn the input strings into a byte array.
-            byte[] PlainText = System.Text.Encoding.Unicode.GetBytes(InputText);
+            byte[] PlainText;
+            if (legacy) PlainText = Encoding.Unicode.GetBytes(InputText);
+            else PlainText = Encoding.UTF8.GetBytes(InputText);
 
-            using (var memoryStream = new MemoryStream())
-            using (var cryptoStream = EncryptorStream(memoryStream))
-            {
-                // Start the encryption process.
-                cryptoStream.Write(PlainText, 0, PlainText.Length);
+            var CipherBytes = Encrypt(PlainText);
+            // Convert encrypted data into a base64-encoded string.
+            // A common mistake would be to use an Encoding class for that. 
+            // It does not work, because not all byte values can be
+            // represented by characters. We are going to be using Base64 encoding
+            // That is designed exactly for what we are trying to do. 
+            // We use the new UTF8 format, so prepend a ! character to the string to
+            // distinguish it from the old format that used UTF16.
+            // If we use UTF16 we essentially half the cypher strength as the first
+            // byte in UTF16 is always 0
+            string EncryptedData = Convert.ToBase64String(CipherBytes);
+            if (!legacy) EncryptedData = "!" + EncryptedData;
 
-                // Finish encrypting.
-                if (cryptoStream is CryptoStream cStream) cStream.FlushFinalBlock();
-                else cryptoStream.Flush();
-
-                // Convert our encrypted data from a memoryStream into a byte array.
-                byte[] CipherBytes = memoryStream.ToArray();
-
-                // Convert encrypted data into a base64-encoded string.
-                // A common mistake would be to use an Encoding class for that. 
-                // It does not work, because not all byte values can be
-                // represented by characters. We are going to be using Base64 encoding
-                // That is designed exactly for what we are trying to do. 
-                string EncryptedData = Convert.ToBase64String(CipherBytes);
-
-                // Return encrypted string.
-                return EncryptedData;
-            }
+            // Return encrypted string.
+            return EncryptedData;
         }
+        public virtual byte[] Encrypt(ArraySegment<byte> InputData)
+        {
+            if (!EncryptionEnabled || InputData == null || InputData.Count == 0)
+            {
+                if (InputData.Offset == 0 && InputData.Count == InputData.Array.Length) return InputData.Array;
+
+                var data = new byte[InputData.Count];
+                Array.Copy(InputData.Array, InputData.Offset, data, 0, InputData.Count);
+                return data;
+            }
+
+            var encryptor = Encryptor();
+            return encryptor.TransformFinalBlock(InputData.Array, InputData.Offset, InputData.Count);
+        }
+
         public virtual byte[] Encrypt(byte[] InputData)
         {
             if (!EncryptionEnabled || InputData == null || InputData.Length == 0) return InputData;
-
-            // Create a MemoryStream that is going to hold the encrypted bytes 
-            using (MemoryStream memoryStream = new MemoryStream())
-            using (var cryptoStream = EncryptorStream(memoryStream))
-            {
-                // Start the encryption process.
-                cryptoStream.Write(InputData, 0, InputData.Length);
-
-                // Finish encrypting.
-                if (cryptoStream is CryptoStream cStream) cStream.FlushFinalBlock();
-                else cryptoStream.Flush();
-
-                // Convert our encrypted data from a memoryStream into a byte array.
-                byte[] EncryptedData = memoryStream.ToArray();
-
-                // Return encrypted string.
-                return EncryptedData;
-            }
+            var encryptor = Encryptor();
+            return encryptor.TransformFinalBlock(InputData, 0, InputData.Length);
         }
 
         public virtual void Encrypt(Stream inputData, Stream writeTo)
@@ -128,7 +123,7 @@ namespace SolidCP.Providers
         public virtual ICryptoTransform Encryptor()
         {
             // Rihndael class.
-            RijndaelManaged RijndaelCipher = new RijndaelManaged();
+            SymmetricAlgorithm cipher = Aes.Create();
 
             // We are using salt to make it harder to guess our key
             // using a dictionary attack.
@@ -140,19 +135,23 @@ namespace SolidCP.Providers
 
             var key = SecretKey.GetBytes(32);
             var iv = SecretKey.GetBytes(16);
-            RijndaelCipher.Key = key;
+            cipher.Key = key;
+            cipher.IV = iv;
+            cipher.Mode = CipherMode.CBC;
+            cipher.Padding = PaddingMode.PKCS7;
+            cipher.BlockSize = 128;
+            cipher.FeedbackSize = 128;
 
             // Create a encryptor from the existing SecretKey bytes.
             // We use 32 bytes for the secret key 
             // (the default Rijndael key length is 256 bit = 32 bytes) and
             // then 16 bytes for the IV (initialization vector),
             // (the default Rijndael IV length is 128 bit = 16 bytes)
-            return RijndaelCipher.CreateEncryptor(RijndaelCipher.Key, iv);
+            return cipher.CreateEncryptor(cipher.Key, iv);
         }
 
         public ICryptoTransform Decryptor()
         {
-            RijndaelManaged RijndaelCipher = new RijndaelManaged();
 
             byte[] Salt = Encoding.ASCII.GetBytes(CryptoKey.Length.ToString());
 
@@ -160,18 +159,19 @@ namespace SolidCP.Providers
 
             var key = SecretKey.GetBytes(32);
             var iv = SecretKey.GetBytes(16);
-            RijndaelCipher.KeySize = 256;
-            RijndaelCipher.Key = key;
-            RijndaelCipher.IV = iv;
-            RijndaelCipher.Mode = CipherMode.CBC;
-            RijndaelCipher.Padding = PaddingMode.PKCS7;
-            RijndaelCipher.BlockSize = 256;
 
-            var keyBase64 = Convert.ToBase64String(key);
-            var ivBase64 = Convert.ToBase64String(iv);
- 
+            var cipher = Aes.Create();
+
+            cipher.KeySize = 256;
+            cipher.Key = key;
+            cipher.IV = iv;
+            cipher.Mode = CipherMode.CBC;
+            cipher.Padding = PaddingMode.PKCS7;
+            cipher.BlockSize = 128;
+            cipher.FeedbackSize = 128;
+
             // Create a decryptor from the existing SecretKey bytes.
-            var decryptor = RijndaelCipher.CreateDecryptor(RijndaelCipher.Key, iv);
+            var decryptor = cipher.CreateDecryptor(cipher.Key, iv);
             return decryptor;
         }
         public virtual Stream DecryptorStream(Stream input)
@@ -188,29 +188,24 @@ namespace SolidCP.Providers
 
             if (string.IsNullOrEmpty(InputText)) return InputText;
 
+            bool useUTF8 = InputText.StartsWith("!"); // use the new UTF8 format
+            if (useUTF8) InputText = InputText.Substring(1);
+         
+            
             byte[] EncryptedData = Convert.FromBase64String(InputText);
 
-            using (MemoryStream memoryStream = new MemoryStream(EncryptedData))
-            using (var cryptoStream = DecryptorStream(memoryStream))
-            {
-                // Since at this point we don't know what the size of decrypted data
-                // will be, allocate the buffer long enough to hold EncryptedData;
-                // DecryptedData is never longer than EncryptedData.
-                byte[] PlainText = new byte[EncryptedData.Length];
+            byte[] DecryptedData = Decrypt(EncryptedData);
 
-                // Start decrypting.
-                int DecryptedCount = cryptoStream.Read(PlainText, 0, PlainText.Length);
-
-                // Convert decrypted data into a string. 
-                string DecryptedData = Encoding.Unicode.GetString(PlainText, 0, DecryptedCount);
-
-                // Return decrypted string.   
-                return DecryptedData;
-            }
+            string DecryptedText;
+            if (useUTF8) DecryptedText = Encoding.UTF8.GetString(DecryptedData);
+            else DecryptedText = Encoding.Unicode.GetString(DecryptedData);
+            // Return decrypted string.
+            return DecryptedText;
         }
 
         public virtual byte[] Decrypt(byte[] InputData) => Decrypt(new ArraySegment<byte>(InputData));
 
+        byte[] buffer = new byte[1024];
         public virtual byte[] Decrypt(ArraySegment<byte> InputData)
         {
             if (!EncryptionEnabled || InputData == null || InputData.Count == 0)
@@ -222,29 +217,8 @@ namespace SolidCP.Providers
                 return data;
             }
 
-            using (MemoryStream memoryStream = new MemoryStream(InputData.Array))
-            {
-                memoryStream.Seek(InputData.Offset, SeekOrigin.Begin);
-
-                // Create a CryptoStream. (always use Read mode for decryption).
-                using (var cryptoStream = DecryptorStream(memoryStream))
-                {
-                    // Since at this point we don't know what the size of decrypted data
-                    // will be, allocate the buffer long enough to hold EncryptedData;
-                    // DecryptedData is never longer than EncryptedData.
-                    byte[] PlainData = new byte[InputData.Count];
-
-                    // Start decrypting.
-                    int DecryptedCount = cryptoStream.Read(PlainData, 0, PlainData.Length);
-
-
-                    byte[] DecryptedData = new byte[DecryptedCount];
-                    Array.Copy(PlainData, DecryptedData, DecryptedCount);
-
-                    // Return decrypted data.
-                    return DecryptedData;
-                }
-            }
+            var decryptor = Decryptor();
+            return decryptor.TransformFinalBlock(InputData.Array, InputData.Offset, InputData.Count);
         }
         static string Hash(string plainText, HashAlgorithm hash)
         {

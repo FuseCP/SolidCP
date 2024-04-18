@@ -84,7 +84,7 @@ namespace SolidCP.EnterpriseServer
 
 					string value = string.Empty;
 
-					if (!string.IsNullOrEmpty(ConnectionKey))
+					if (!string.IsNullOrEmpty(ConnectionKey) && OSInfo.IsWindows)
 					{
 						value = GetKeyFromRegistry(ConnectionKey);
 					}
