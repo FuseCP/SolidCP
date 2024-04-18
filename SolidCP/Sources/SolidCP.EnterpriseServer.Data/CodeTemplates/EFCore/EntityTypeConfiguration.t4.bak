@@ -1,0 +1,112 @@
+﻿<#@ template hostSpecific="true" #>
+<#@ assembly name="Microsoft.EntityFrameworkCore" #>
+<#@ assembly name="Microsoft.EntityFrameworkCore.Design" #>
+<#@ assembly name="Microsoft.EntityFrameworkCore.Relational" #>
+<#@ assembly name="Microsoft.Extensions.DependencyInjection.Abstractions" #>
+<#@ parameter name="EntityType" type="Microsoft.EntityFrameworkCore.Metadata.IEntityType" #>
+<#@ parameter name="Options" type="Microsoft.EntityFrameworkCore.Scaffolding.ModelCodeGenerationOptions" #>
+<#@ parameter name="NamespaceHint" type="System.String" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.ComponentModel.DataAnnotations" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="Microsoft.EntityFrameworkCore" #>
+<#@ import namespace="Microsoft.EntityFrameworkCore.Design" #>
+<#@ import namespace="Microsoft.Extensions.DependencyInjection" #>
+<#
+    if (EntityType.IsSimpleManyToManyJoinEntityType())
+    {
+        // Don't scaffold these
+        return "";
+    }
+
+    var services = (IServiceProvider)Host;
+    var annotationCodeGenerator = services.GetRequiredService<IAnnotationCodeGenerator>();
+    var code = services.GetRequiredService<ICSharpHelper>();
+
+    var usings = new List<string>
+    {
+        "System",
+        "System.Collections.Generic"
+    };
+    var usingscore = new List<string>()
+    {
+       "Microsoft.EntityFrameworkCore",
+       "Microsoft.EntityFrameworkCore.ChangeTracking"
+    };
+    var usingsfx = new List<string>()
+    {
+      "System.Data.Entity",
+      "System.Data.Entity.Core.Objects",
+      "System.Data.Entity.Infrastructure",
+      "System.Data.Entity.Infrastructure.Annotations",
+      "System.Data.Entity.Infrastructure.Interception",
+      "System.Data.Entity.Spatial",
+      "System.Data.Entity.Validation"
+    };
+
+    if (!string.IsNullOrEmpty(NamespaceHint))
+    {
+#>
+namespace <#= NamespaceHint #>;
+
+<#
+    }
+
+    if (!string.IsNullOrEmpty(EntityType.GetComment()))
+    {
+#>
+/// <summary>
+/// <#= code.XmlComment(EntityType.GetComment()) #>
+/// </summary>
+<#
+    }
+#>
+public partial class <#= EntityType.Name #>Configuration
+{
+}
+<#
+    var previousOutput = GenerationEnvironment;
+    GenerationEnvironment = new StringBuilder();
+
+    foreach (var ns in usings.Distinct().OrderBy(x => x, new NamespaceComparer()))
+    {
+#>
+using <#= ns #>;
+<#
+    }
+
+    if (usingscore.Any()) {
+#>
+#if !NETFRAMEWORK && !NETSTANDARD
+<#
+      foreach (var ns in usingscore.Distinct().OrderBy(x => x, new NamespaceComparer()))
+      {
+#>
+using <#= ns #>;
+<#
+      }
+#>
+#endif
+<#
+    }
+
+    if (usingsfx.Any()) {
+#>
+#if NETFRAMEWORK && !NETSTANDARD
+<#
+      foreach (var ns in usingsfx.Distinct().OrderBy(x => x, new NamespaceComparer()))
+      {
+#>
+using <#= ns #>;
+<#
+      }
+#>
+#endif
+<#    
+    }
+
+    WriteLine("");
+
+    GenerationEnvironment.Append(previousOutput);
+#>

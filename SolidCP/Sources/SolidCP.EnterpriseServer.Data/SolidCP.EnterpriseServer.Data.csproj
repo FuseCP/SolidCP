@@ -1,8 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>netstandard2.0;net8.0;net48</TargetFrameworks>
+        <TargetFrameworks>net8.0</TargetFrameworks>
         <LangVersion>10</LangVersion>
+        <ConnectionString>Server=(local);Database=SolidCP;uid=sa;pwd=Password12;TrustServerCertificate=true;Connection Timeout=300;command timeout=300</ConnectionString>
+        <DefineConstants>$(DebugSymbols);ScaffoldedTypes;ScaffoldedEntities;ScaffoldedDbContext;ScaffoldedConfigurations;</DefineConstants>
     </PropertyGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
@@ -24,37 +26,45 @@
         <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
     </ItemGroup>
 
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
+        <DefineConstants>$(DefineConstants);NetCore</DefineConstants>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net48'">
+        <DefineConstants>$(DefineConstants);NetFX</DefineConstants>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Remove="SolidCPDbContext.cs" />
+    </ItemGroup>
+
     <ItemGroup>
         <ProjectReference Include="..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj" />
     </ItemGroup>
+
+    <Target Name="Scaffold">
+        <Exec Command="dotnet ef dbcontext scaffold &quot;$(ConnectionString)&quot; Microsoft.EntityFrameworkCore.SqlServer --data-annotations --output-dir Entities --context-dir . --context SolidCPDbContext --force" />
+    </Target>
 
     <ItemGroup>
         <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="Model\Core\Entities\**\*.*" />
-        <Compile Remove="Model\Core\Entities\**\*.*" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Compile Remove="Model\Core\Generator\CreateModel.cs" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Include="Model\Core\Generator\CreateModel.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>CreateModel.tt</DependentUpon>
-        </None>
         <None Include="Model\NetFX\Generator\CreateModel.cs">
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>
             <DependentUpon>CreateModel.tt</DependentUpon>
         </None>
+        <None Include="SolidCPDbContext.cs" />
     </ItemGroup>
 
     <ItemGroup>
+        <Compile Update="Model\Core\Generator\CreateModel.cs">
+          <DesignTime>True</DesignTime>
+          <AutoGen>True</AutoGen>
+          <DependentUpon>CreateModel.tt</DependentUpon>
+        </Compile>
         <Compile Update="Model\NetFX\Generator\CreateModel.cs">
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>
@@ -63,9 +73,15 @@
     </ItemGroup>
 
     <ItemGroup>
+        <None Update="CodeTemplates\EFCore\EntityType.t4.bak">
+          <Generator></Generator>
+        </None>
+        <None Update="CodeTemplates\EFCore\EntityTypeConfiguration.t4.bak">
+          <Generator></Generator>
+        </None>
         <None Update="Model\Core\Generator\CreateModel.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>CreateModel.cs</LastGenOutput>
+          <Generator>TextTemplatingFileGenerator</Generator>
+          <LastGenOutput>CreateModel.cs</LastGenOutput>
         </None>
         <None Update="Model\NetFX\Generator\CreateModel.tt">
             <LastGenOutput>CreateModel.cs</LastGenOutput>
