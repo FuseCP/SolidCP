@@ -1,19 +1,12 @@
 ﻿#if ScaffoldedEntities
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-#if NetCore
-using Microsoft.EntityFrameworkCore;
-#endif
 
+// This file is auto generated, do not edit.
 namespace SolidCP.EnterpriseServer.Data.Entities;
 
 public partial class AuditLogSource
 {
-    [Key]
-    [StringLength(100)]
-    [Unicode(false)]
     public string SourceName { get; set; }
 }
 #endif

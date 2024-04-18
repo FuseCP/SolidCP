@@ -1,31 +1,20 @@
 ﻿#if ScaffoldedEntities
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-#if NetCore
-using Microsoft.EntityFrameworkCore;
-#endif
 
+// This file is auto generated, do not edit.
 namespace SolidCP.EnterpriseServer.Data.Entities;
 
-[Index("LyncUserPlanId", Name = "IX_LyncUserPlans", IsUnique = true)]
-[Index("ItemId", Name = "LyncUserPlansIdx_ItemID")]
 public partial class LyncUserPlan
 {
-    [Key]
     public int LyncUserPlanId { get; set; }
 
-    [Column("ItemID")]
     public int ItemId { get; set; }
 
-    [Required]
-    [StringLength(300)]
     public string LyncUserPlanName { get; set; }
 
     public int? LyncUserPlanType { get; set; }
 
-    [Column("IM")]
     public bool Im { get; set; }
 
     public bool Mobility { get; set; }
@@ -44,31 +33,22 @@ public partial class LyncUserPlan
 
     public bool RemoteUserAccess { get; set; }
 
-    [Column("PublicIMConnectivity")]
     public bool PublicImconnectivity { get; set; }
 
     public bool AllowOrganizeMeetingsWithExternalAnonymous { get; set; }
 
     public int? Telephony { get; set; }
 
-    [Column("ServerURI")]
-    [StringLength(300)]
     public string ServerUri { get; set; }
 
-    [StringLength(300)]
     public string ArchivePolicy { get; set; }
 
-    [StringLength(300)]
     public string TelephonyDialPlanPolicy { get; set; }
 
-    [StringLength(300)]
     public string TelephonyVoicePolicy { get; set; }
 
-    [ForeignKey("ItemId")]
-    [InverseProperty("LyncUserPlans")]
     public virtual ExchangeOrganization Item { get; set; }
 
-    [InverseProperty("LyncUserPlan")]
     public virtual ICollection<LyncUser> LyncUsers { get; set; } = new List<LyncUser>();
 }
 #endif

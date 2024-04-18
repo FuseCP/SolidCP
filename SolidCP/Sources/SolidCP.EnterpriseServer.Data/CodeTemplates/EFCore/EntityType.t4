@@ -42,6 +42,7 @@
     if (!string.IsNullOrEmpty(NamespaceHint))
     {
 #>
+// This file is auto generated, do not edit.
 namespace <#= NamespaceHint #>;
 
 <#
@@ -58,10 +59,30 @@ namespace <#= NamespaceHint #>;
 
     if (Options.UseDataAnnotations)
     {
-        foreach (var dataAnnotation in EntityType.GetDataAnnotations(annotationCodeGenerator))
+        var annotations = EntityType.GetDataAnnotations(annotationCodeGenerator);
+        var coreAnnotations = annotations.Where(a => a.Type.FullName.Contains("EntityFrameworkCore"));
+        var commonAnnotations = annotations.Where(a => !a.Type.FullName.Contains("EntityFrameworkCore"));
+
+        foreach (var commonAnnotation in commonAnnotations)
         {
 #>
-<#= code.Fragment(dataAnnotation) #>
+<#= code.Fragment(commonAnnotation) #>
+<#
+        }
+
+        if (coreAnnotations.Any())
+        {
+#>
+#if NetCore
+<#
+          foreach (var coreAnnotation in coreAnnotations)
+          {
+#>
+<#= code.Fragment(coreAnnotation) #>
+<#
+          }
+#>
+#endif
 <#
         }
     }
@@ -90,10 +111,30 @@ public partial class <#= EntityType.Name #>
         {
             var dataAnnotations = property.GetDataAnnotations(annotationCodeGenerator)
                 .Where(a => !(a.Type == typeof(RequiredAttribute) && Options.UseNullableReferenceTypes && !property.ClrType.IsValueType));
-            foreach (var dataAnnotation in dataAnnotations)
+            var annotations = property.GetDataAnnotations(annotationCodeGenerator);
+            var coreAnnotations = annotations.Where(a => a.Type.FullName.Contains("EntityFrameworkCore"));
+            var commonAnnotations = annotations.Where(a => !a.Type.FullName.Contains("EntityFrameworkCore"));
+
+            foreach (var commonAnnotation in commonAnnotations)
             {
 #>
-    <#= code.Fragment(dataAnnotation) #>
+    <#= code.Fragment(commonAnnotation) #>
+<#
+            }
+
+            if (coreAnnotations.Any())
+            {
+#>
+#if NetCore
+<#
+              foreach (var coreAnnotation in coreAnnotations)
+              {
+#>
+    <#= code.Fragment(coreAnnotation) #>
+<#
+              }
+#>
+#endif
 <#
             }
         }

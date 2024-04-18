@@ -32,6 +32,13 @@
         "Microsoft.EntityFrameworkCore"
     };
 
+    var nsusings = new List<string>
+    {
+        "Version = SolidCP.EnterpriseServer.Data.Entities.Version",
+        "GlobalDnsRecord = SolidCP.EnterpriseServer.Data.Entities.GlobalDnsRecord",
+        "BackgroundTaskParameter = SolidCP.EnterpriseServer.Data.Entities.BackgroundTaskParameter"
+    };
+
     var usingscore = new List<string>()
     {
         "Microsoft.EntityFrameworkCore",
@@ -58,34 +65,46 @@
     if (!string.IsNullOrEmpty(NamespaceHint))
     {
 #>
-namespace <#= NamespaceHint #>;
-
-<#
-    }
-#>
-public partial class <#= Options.ContextName #> : DbContext
+// This file is auto generated, only edit when you add tables without scaffolding.
+namespace <#= NamespaceHint.Replace(".Data", ".Context") #>
 {
-<#
-    if (!Options.SuppressOnConfiguring)
-    {
-#>
-    public <#= Options.ContextName #>()
-    {
-    }
 
 <#
     }
-#>
-    public <#= Options.ContextName #>(DbContextOptions<<#= Options.ContextName #>> options)
-        : base(options)
+
+    foreach (var u in nsusings)
     {
+#>
+    using <#= u #>;
+<#
     }
+#>
+
+    public partial class <#= Options.ContextName #> : DbContext, Data.IGenericDbContext
+    {
+
+        public <#= Options.ContextName #>()
+        {
+        }
+
+        Data.DbContext context;
+        public <#= Options.ContextName #>(Data.DbContext context)
+        {
+            this.context = context;
+        }
+
+#if NetCore
+        public <#= Options.ContextName #>(DbContextOptions<<#= Options.ContextName #>> options)
+            : base(options)
+        {
+        }
+#endif
 
 <#
     foreach (var entityType in Model.GetEntityTypes().Where(e => !e.IsSimpleManyToManyJoinEntityType()))
     {
 #>
-    public virtual DbSet<<#= entityType.Name #>> <#= entityType.GetDbSetName() #> { get; set; }
+        public virtual DbSet<<#= entityType.Name #>> <#= entityType.GetDbSetName() #> { get; set; }
 
 <#
     }
@@ -93,26 +112,36 @@ public partial class <#= Options.ContextName #> : DbContext
     if (!Options.SuppressOnConfiguring)
     {
 #>
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-<#
-    if (!Options.SuppressConnectionStringWarning)
-    {
-#>
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+#if NetCore
+        protected override void OnConfiguring(DbContextOptionsBuilder builder)
+        {
+            switch (context.Flavor)
+            {
+                case DbFlavor.MsSql:
+                    builder.UseSqlServer(context.ConnectionString);
+                    break;
+                case DbFlavor.SqlLite:
+                    builder.UseSqlite(context.ConnectionString);
+                    break;
+                case DbFlavor.MySql:
+                    builder.UseMySql(context.ConnectionString, ServerVersion.AutoDetect(context.ConnectionString));
+                    break;
+                case DbFlavor.MariaDb:
+                    builder.UseMariaDB(context.ConnectionString);
+                    break;
+                case DbFlavor.PostgreSql:
+                    builder.UseNpgsql(context.ConnectionString);
+                    break;
+                default: throw new NotSupportedException("This DB flavor is not supported");
+            }
+        }
+#endif
 <#
     }
 
-    var useProviderCall = providerCode.GenerateUseProvider(Options.ConnectionString);
-    usings.AddRange(useProviderCall.GetRequiredUsings());
 #>
-        => optionsBuilder<#= code.Fragment(useProviderCall, indent: 3) #>;
-
-<#
-    }
-
-#>
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
 <#
     var anyConfiguration = false;
 
@@ -121,7 +150,7 @@ public partial class <#= Options.ContextName #> : DbContext
     {
         usings.AddRange(modelFluentApiCalls.GetRequiredUsings());
 #>
-        modelBuilder<#= code.Fragment(modelFluentApiCalls, indent: 3) #>;
+            modelBuilder<#= code.Fragment(modelFluentApiCalls, indent: 3) #>;
 <#
         anyConfiguration = true;
     }
@@ -140,8 +169,8 @@ public partial class <#= Options.ContextName #> : DbContext
 
         var anyEntityTypeConfiguration = false;
 #>
-        modelBuilder.Entity<<#= entityType.Name #>>(entity =>
-        {
+            modelBuilder.Entity<<#= entityType.Name #>>(entity =>
+            {
 <#
         var key = entityType.FindPrimaryKey();
         if (key != null)
@@ -155,7 +184,7 @@ public partial class <#= Options.ContextName #> : DbContext
                     usings.AddRange(keyFluentApiCalls.GetRequiredUsings());
                 }
 #>
-            entity.HasKey(<#= code.Lambda(key.Properties, "e") #>)<#= code.Fragment(keyFluentApiCalls, indent: 4) #>;
+                entity.HasKey(<#= code.Lambda(key.Properties, "e") #>)<#= code.Fragment(keyFluentApiCalls, indent: 4) #>;
 <#
                 anyEntityTypeConfiguration = true;
             }
@@ -172,7 +201,7 @@ public partial class <#= Options.ContextName #> : DbContext
                 WriteLine("");
             }
 #>
-            entity<#= code.Fragment(entityTypeFluentApiCalls, indent: 4) #>;
+                entity<#= code.Fragment(entityTypeFluentApiCalls, indent: 4) #>;
 <#
             anyEntityTypeConfiguration = true;
         }
@@ -191,7 +220,7 @@ public partial class <#= Options.ContextName #> : DbContext
                 usings.AddRange(indexFluentApiCalls.GetRequiredUsings());
             }
 #>
-            entity.HasIndex(<#= code.Lambda(index.Properties, "e") #>, <#= code.Literal(index.GetDatabaseName()) #>)<#= code.Fragment(indexFluentApiCalls, indent: 4) #>;
+                entity.HasIndex(<#= code.Lambda(index.Properties, "e") #>, <#= code.Literal(index.GetDatabaseName()) #>)<#= code.Fragment(indexFluentApiCalls, indent: 4) #>;
 <#
             anyEntityTypeConfiguration = true;
         }
@@ -214,7 +243,7 @@ public partial class <#= Options.ContextName #> : DbContext
                 WriteLine("");
             }
 #>
-            entity.Property(e => e.<#= property.Name #>)<#= code.Fragment(propertyFluentApiCalls, indent: 4) #>;
+                entity.Property(e => e.<#= property.Name #>)<#= code.Fragment(propertyFluentApiCalls, indent: 4) #>;
 <#
             anyEntityTypeConfiguration = true;
             firstProperty = false;
@@ -236,7 +265,7 @@ public partial class <#= Options.ContextName #> : DbContext
                 WriteLine("");
             }
 #>
-            entity.HasOne(d => d.<#= foreignKey.DependentToPrincipal.Name #>).<#= foreignKey.IsUnique ? "WithOne" : "WithMany" #>(<#= foreignKey.PrincipalToDependent != null ? $"p => p.{foreignKey.PrincipalToDependent.Name}" : "" #>)<#= code.Fragment(foreignKeyFluentApiCalls, indent: 4) #>;
+                entity.HasOne(d => d.<#= foreignKey.DependentToPrincipal.Name #>).<#= foreignKey.IsUnique ? "WithOne" : "WithMany" #>(<#= foreignKey.PrincipalToDependent != null ? $"p => p.{foreignKey.PrincipalToDependent.Name}" : "" #>)<#= code.Fragment(foreignKeyFluentApiCalls, indent: 4) #>;
 <#
             anyEntityTypeConfiguration = true;
         }
@@ -264,13 +293,13 @@ public partial class <#= Options.ContextName #> : DbContext
                 usings.AddRange(rightFluentApiCalls.GetRequiredUsings());
             }
 #>
-            entity.HasMany(d => d.<#= skipNavigation.Name #>).WithMany(p => p.<#= skipNavigation.Inverse.Name #>)
-                .UsingEntity<Dictionary<string, object>>(
-                    <#= code.Literal(joinEntityType.Name) #>,
-                    r => r.HasOne<<#= right.PrincipalEntityType.Name #>>().WithMany()<#= code.Fragment(rightFluentApiCalls, indent: 6) #>,
-                    l => l.HasOne<<#= left.PrincipalEntityType.Name #>>().WithMany()<#= code.Fragment(leftFluentApiCalls, indent: 6) #>,
-                    j =>
-                    {
+                entity.HasMany(d => d.<#= skipNavigation.Name #>).WithMany(p => p.<#= skipNavigation.Inverse.Name #>)
+                    .UsingEntity<Dictionary<string, object>>(
+                        <#= code.Literal(joinEntityType.Name) #>,
+                        r => r.HasOne<<#= right.PrincipalEntityType.Name #>>().WithMany()<#= code.Fragment(rightFluentApiCalls, indent: 6) #>,
+                        l => l.HasOne<<#= left.PrincipalEntityType.Name #>>().WithMany()<#= code.Fragment(leftFluentApiCalls, indent: 6) #>,
+                        j =>
+                        {
 <#
             var joinKey = joinEntityType.FindPrimaryKey();
             var joinKeyFluentApiCalls = joinKey.GetFluentApiCalls(annotationCodeGenerator);
@@ -280,14 +309,14 @@ public partial class <#= Options.ContextName #> : DbContext
                 usings.AddRange(joinKeyFluentApiCalls.GetRequiredUsings());
             }
 #>
-                        j.HasKey(<#= code.Arguments(joinKey.Properties.Select(e => e.Name)) #>)<#= code.Fragment(joinKeyFluentApiCalls, indent: 7) #>;
+                            j.HasKey(<#= code.Arguments(joinKey.Properties.Select(e => e.Name)) #>)<#= code.Fragment(joinKeyFluentApiCalls, indent: 7) #>;
 <#
             var joinEntityTypeFluentApiCalls = joinEntityType.GetFluentApiCalls(annotationCodeGenerator);
             if (joinEntityTypeFluentApiCalls != null)
             {
                 usings.AddRange(joinEntityTypeFluentApiCalls.GetRequiredUsings());
 #>
-                        j<#= code.Fragment(joinEntityTypeFluentApiCalls, indent: 7) #>;
+                            j<#= code.Fragment(joinEntityTypeFluentApiCalls, indent: 7) #>;
 <#
             }
 
@@ -299,7 +328,7 @@ public partial class <#= Options.ContextName #> : DbContext
                     usings.AddRange(indexFluentApiCalls.GetRequiredUsings());
                 }
 #>
-                        j.HasIndex(<#= code.Literal(index.Properties.Select(e => e.Name).ToArray()) #>, <#= code.Literal(index.GetDatabaseName()) #>)<#= code.Fragment(indexFluentApiCalls, indent: 7) #>;
+                            j.HasIndex(<#= code.Literal(index.Properties.Select(e => e.Name).ToArray()) #>, <#= code.Literal(index.GetDatabaseName()) #>)<#= code.Fragment(indexFluentApiCalls, indent: 7) #>;
 <#
             }
 
@@ -313,16 +342,16 @@ public partial class <#= Options.ContextName #> : DbContext
 
                 usings.AddRange(propertyFluentApiCalls.GetRequiredUsings());
 #>
-                        j.IndexerProperty<<#= code.Reference(property.ClrType) #>>(<#= code.Literal(property.Name) #>)<#= code.Fragment(propertyFluentApiCalls, indent: 7) #>;
+                            j.IndexerProperty<<#= code.Reference(property.ClrType) #>>(<#= code.Literal(property.Name) #>)<#= code.Fragment(propertyFluentApiCalls, indent: 7) #>;
 <#
             }
 #>
-                    });
+                        });
 <#
             anyEntityTypeConfiguration = true;
         }
 #>
-        });
+            });
 <#
         // If any signicant code was generated, append it to the main environment
         if (anyEntityTypeConfiguration)
@@ -341,7 +370,7 @@ public partial class <#= Options.ContextName #> : DbContext
         var needsSchema = !string.IsNullOrEmpty(sequence.Schema) && sequence.Schema != sequence.Model.GetDefaultSchema();
         var sequenceFluentApiCalls = sequence.GetFluentApiCalls(annotationCodeGenerator);
 #>
-        modelBuilder.HasSequence<#= needsType ? $"<{code.Reference(sequence.Type)}>" : "" #>(<#= code.Literal(sequence.Name) #><#= needsSchema ? $", {code.Literal(sequence.Schema)}" : "" #>)<#= code.Fragment(sequenceFluentApiCalls, indent: 3) #>;
+            modelBuilder.HasSequence<#= needsType ? $"<{code.Reference(sequence.Type)}>" : "" #>(<#= code.Literal(sequence.Name) #><#= needsSchema ? $", {code.Literal(sequence.Schema)}" : "" #>)<#= code.Fragment(sequenceFluentApiCalls, indent: 3) #>;
 <#
     }
 
@@ -350,10 +379,37 @@ public partial class <#= Options.ContextName #> : DbContext
         WriteLine("");
     }
 #>
-        OnModelCreatingPartial(modelBuilder);
-    }
+            OnModelCreatingPartial(modelBuilder);
+        }
 
-    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+    }
+}
+
+namespace SolidCP.EnterpriseServer.Data {
+
+<#
+    foreach (var u in nsusings)
+    {
+#>
+    using <#= u #>;
+<#
+    }
+#>
+
+   public partial class DbContext {
+
+<#
+    foreach (var entityType in Model.GetEntityTypes().Where(e => !e.IsSimpleManyToManyJoinEntityType()))
+    {
+#>
+        DbSet<<#= entityType.Name #>> _<#= entityType.GetDbSetName() #> = null;
+        public virtual DbSet<<#= entityType.Name #>> <#= entityType.GetDbSetName() #> => _<#= entityType.GetDbSetName() #> ?? (_<#= entityType.GetDbSetName() #> = new DbSet<<#= entityType.Name #>>(BaseContext));
+
+<#
+    }
+#>
+    }
 }
 <#
     mainEnvironment = GenerationEnvironment;

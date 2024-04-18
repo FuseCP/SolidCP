@@ -2,7 +2,7 @@
     <PropertyGroup>
         <TargetFrameworks>net48;net8.0</TargetFrameworks>
         <Nullable>disable</Nullable>
-        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <UseSkia>true</UseSkia>

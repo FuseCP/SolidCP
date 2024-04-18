@@ -63,51 +63,8 @@ namespace SolidCP.EnterpriseServer
 			return value;
 		}
 
-
-		static string connectionString = null;
-		public static string ConnectionString
-		{
-			get
-			{
-				if (string.IsNullOrEmpty(connectionString))
-				{
-
-					string ConnectionKey;
-					if (OSInfo.IsNetFX)
-					{
-						ConnectionKey = ConfigurationManager.AppSettings["SolidCP.AltConnectionString"];
-					}
-					else
-					{
-						ConnectionKey = Web.Services.Configuration.AltConnectionString;
-					}
-
-					string value = string.Empty;
-
-					if (!string.IsNullOrEmpty(ConnectionKey) && OSInfo.IsWindows)
-					{
-						value = GetKeyFromRegistry(ConnectionKey);
-					}
-
-					if (!string.IsNullOrEmpty(value))
-					{
-						connectionString = value;
-					}
-					else
-					{
-						if (OSInfo.IsNetFX)
-						{
-							connectionString = ConfigurationManager.ConnectionStrings["EnterpriseServer"].ConnectionString;
-						}
-						else
-						{
-							connectionString = Web.Services.Configuration.ConnectionString;
-						}
-					}
-				}
-				return connectionString;
-			}
-		}
+		public static string ConnectionString => Data.DbSettings.ConnectionString;
+		public static string SpecificConnectionString => Data.DbSettings.SpecificConnectionString;
 
 		static string cryptoKey = null;
 		public static string CryptoKey

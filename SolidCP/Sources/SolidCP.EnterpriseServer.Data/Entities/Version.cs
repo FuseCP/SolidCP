@@ -1,22 +1,14 @@
 ﻿#if ScaffoldedEntities
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-#if NetCore
-using Microsoft.EntityFrameworkCore;
-#endif
 
+// This file is auto generated, do not edit.
 namespace SolidCP.EnterpriseServer.Data.Entities;
 
 public partial class Version
 {
-    [Key]
-    [StringLength(50)]
-    [Unicode(false)]
     public string DatabaseVersion { get; set; }
 
-    [Column(TypeName = "datetime")]
     public DateTime BuildDate { get; set; }
 }
 #endif

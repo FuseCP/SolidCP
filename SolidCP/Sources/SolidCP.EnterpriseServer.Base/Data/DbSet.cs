@@ -33,8 +33,8 @@ namespace SolidCP.EnterpriseServer.Data
         }
 #endif
 
-        #region Helper methods
-        MethodInfo GetMethod(object obj, string method, Type[] types) => obj.GetType().GetMethod(method, types);
+                    #region Helper methods
+                    MethodInfo GetMethod(object obj, string method, Type[] types) => obj.GetType().GetMethod(method, types);
         T Invoke<T>(object obj, MethodInfo method, params object[] args) => (T)method.Invoke(obj, args);
         T Invoke<T>(object obj, string method, Type[] types, params object[] args) => (T)Invoke<T>(obj, GetMethod(obj, method, types), args);
         T Invoke<T, U>(object obj, string method, Type[] types, params object[] args) => (T)Invoke<T>(obj, GetMethod(obj, method, types).MakeGenericMethod(typeof(U)), args);
@@ -87,14 +87,6 @@ namespace SolidCP.EnterpriseServer.Data
             }
         }
         public void UpdateRange(params TEntity[] entities) => UpdateRange((IEnumerable<TEntity>)entities);
-
-
-
-
-
-
-
-
 
         #region IQueryable methods
         public Expression Expression => Set.Expression;
