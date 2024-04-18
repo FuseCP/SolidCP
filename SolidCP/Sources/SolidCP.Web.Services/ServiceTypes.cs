@@ -39,14 +39,10 @@ namespace SolidCP.Web.Services
 #if NETFRAMEWORK
 					exposeWebServices = (ConfigurationManager.AppSettings["ExposeWebServices"] ?? "").ToLower();
 #else
-					throw new NotSupportedException("ExposeWebServices not set.");
+					exposeWebServices = Configuration.ExposeWebServices.ToLower();
 #endif
 				}
 				return exposeWebServices;
-			}
-			set
-			{
-				exposeWebServices = value.ToLower();
 			}
 		}
 

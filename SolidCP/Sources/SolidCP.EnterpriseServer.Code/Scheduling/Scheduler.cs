@@ -37,6 +37,11 @@ using System.Collections;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Text;
+#if NET8_0
+using Microsoft.Data.SqlClient;
+#else
+using System.Data.SqlClient;
+#endif
 
 namespace SolidCP.EnterpriseServer
 {

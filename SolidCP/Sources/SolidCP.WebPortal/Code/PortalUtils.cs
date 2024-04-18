@@ -388,19 +388,7 @@ namespace SolidCP.Portal
 			return DefaultPage.GetLocalizedPageName(pageId);
 		}
 
-		public static string SHA1(string plainText)
-		{
-			// Convert plain text into a byte array.
-			byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);
-
-			HashAlgorithm hash = new SHA1Managed(); ;
-
-			// Compute hash value of our plain text with appended salt.
-			byte[] hashBytes = hash.ComputeHash(plainTextBytes);
-
-			// Return the result.
-			return Convert.ToBase64String(hashBytes);
-		}
+		public static string SHA1(string plainText) => Providers.Cryptor.SHA1(plainText);
 
 		public static bool ValidatePin(string username, string pin)
 		{

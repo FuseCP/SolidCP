@@ -38,7 +38,15 @@ using System.Data;
 using System.Linq;
 using System.Net.Mail;
 using System.Threading;
+
+#if UseSkia
+using SkiaSharp;
+#endif
+
+#if NETFRAMEWORK
 using System.Drawing;
+#endif
+
 using System.IO;
 using SolidCP.EnterpriseServer.Base;
 using SolidCP.EnterpriseServer.Base.HostedSolution;
@@ -117,7 +125,7 @@ namespace SolidCP.EnterpriseServer
 
             return items.ConvertAll<Organization>(
                 new Converter<ServiceProviderItem, Organization>(
-                delegate(ServiceProviderItem item) { return (Organization)item; }));
+                delegate (ServiceProviderItem item) { return (Organization)item; }));
         }
 
         public static List<Organization> GetExchangeOrganizationsInternal(int packageId, bool recursive)
@@ -126,7 +134,7 @@ namespace SolidCP.EnterpriseServer
 
             return items.ConvertAll<Organization>(
                 new Converter<ServiceProviderItem, Organization>(
-                delegate(ServiceProviderItem item) { return (Organization)item; }));
+                delegate (ServiceProviderItem item) { return (Organization)item; }));
         }
 
         public static Organization GetOrganization(int itemId, bool withLog = true)
@@ -202,7 +210,7 @@ namespace SolidCP.EnterpriseServer
                     return null;
 
                 // Log Extension
-                LogExtension.WriteVariables(new {byOrganization});
+                LogExtension.WriteVariables(new { byOrganization });
 
                 OrganizationStatistics stats = new OrganizationStatistics();
 
@@ -241,7 +249,7 @@ namespace SolidCP.EnterpriseServer
                                 {
                                     // Log Extension
                                     LogExtension.WriteVariable("Nested Org", o.Name);
-                                   
+
                                     OrganizationStatistics tempStats = ObjectUtils.FillObjectFromDataReader<OrganizationStatistics>(DataProvider.GetExchangeOrganizationStatistics(o.Id));
 
                                     stats.CreatedMailboxes += tempStats.CreatedMailboxes;
@@ -293,7 +301,7 @@ namespace SolidCP.EnterpriseServer
                     stats.AllocatedSharedMailboxes = cntx.Quotas[Quotas.EXCHANGE2013_SHAREDMAILBOXES].QuotaAllocatedValue;
                     stats.AllocatedResourceMailboxes = cntx.Quotas[Quotas.EXCHANGE2013_RESOURCEMAILBOXES].QuotaAllocatedValue;
                 }
-              
+
                 return stats;
             }
             catch (Exception ex)
@@ -403,7 +411,7 @@ namespace SolidCP.EnterpriseServer
         {
             // place log record
             TaskManager.StartTask("EXCHANGE", "CREATE_ORG", org.Name, new BackgroundTaskParameter("Organization ID", org.OrganizationId));
-            
+
             // Log Extension
             LogExtension.WriteObject(org, o => o.DistinguishedName, o => o.OrganizationId);
 
@@ -652,7 +660,7 @@ namespace SolidCP.EnterpriseServer
                 // delete organization in Exchange
                 //System.Threading.Thread.Sleep(5000);
                 Organization org = GetOrganization(itemId);
-                
+
                 // Log Extension
                 LogExtension.SetItemName(org.DistinguishedName);
                 org.LogProperty(o => o.DistinguishedName);
@@ -665,7 +673,7 @@ namespace SolidCP.EnterpriseServer
 
                 // delete public folders
                 List<ExchangeAccount> folders = GetAccounts(itemId, ExchangeAccountType.PublicFolder);
-                folders.Sort(delegate(ExchangeAccount f1, ExchangeAccount f2) { return f2.AccountId.CompareTo(f1.AccountId); });
+                folders.Sort(delegate (ExchangeAccount f1, ExchangeAccount f2) { return f2.AccountId.CompareTo(f1.AccountId); });
 
                 foreach (ExchangeAccount folder in folders)
                     DeletePublicFolder(itemId, folder.AccountId);
@@ -740,7 +748,7 @@ namespace SolidCP.EnterpriseServer
 
             // place log record
             TaskManager.StartTask("EXCHANGE", "SET_ORG_LIMITS", itemId);
-            
+
             // Log Extension
             LogExtension.WriteVariables(new { issueWarningKB, prohibitSendKB, prohibitSendReceiveKB, keepDeletedItemsDays }, "Mailbox ");
 
@@ -749,7 +757,7 @@ namespace SolidCP.EnterpriseServer
                 Organization org = GetOrganization(itemId);
                 if (org == null)
                     return 0;
-                
+
                 // Log Extension
                 LogExtension.SetItemName(org.DistinguishedName);
 
@@ -1379,8 +1387,8 @@ namespace SolidCP.EnterpriseServer
 
                 // Log Extension
                 if (withLog)
-                    LogExtension.WriteObject(m1); 
-                
+                    LogExtension.WriteObject(m1);
+
                 return m1;
             }
             #endregion
@@ -1475,43 +1483,43 @@ namespace SolidCP.EnterpriseServer
 
             DataProvider.DeleteExchangeAccount(itemId, accountId);
         }
-/*
-        private static string BuildAccountName(string orgId, string name)
-        {
-            string accountName = name = name.Replace(" ", "");
-            int counter = 0;
-            bool bFound = false;
+        /*
+                private static string BuildAccountName(string orgId, string name)
+                {
+                    string accountName = name = name.Replace(" ", "");
+                    int counter = 0;
+                    bool bFound = false;
 
-            if (!AccountExists(accountName)) return accountName;
+                    if (!AccountExists(accountName)) return accountName;
 
-            do
-            {
-                accountName = genSamLogin(name, counter.ToString("d5"));
+                    do
+                    {
+                        accountName = genSamLogin(name, counter.ToString("d5"));
 
-                if (!AccountExists(accountName)) bFound = true;
+                        if (!AccountExists(accountName)) bFound = true;
 
-                counter++;
-            }
-            while (!bFound);
+                        counter++;
+                    }
+                    while (!bFound);
 
-            return accountName;
-        }
+                    return accountName;
+                }
 
-        private static string genSamLogin(string login, string strCounter)
-        {
-            int maxLogin = 20;
-            int fullLen = login.Length + strCounter.Length;
-            if (fullLen <= maxLogin)
-                return login + strCounter;
-            else
-            {
-                if (login.Length - (fullLen - maxLogin) > 0)
-                    return login.Substring(0, login.Length - (fullLen - maxLogin)) + strCounter;
-                else return strCounter; // ????
-            }
+                private static string genSamLogin(string login, string strCounter)
+                {
+                    int maxLogin = 20;
+                    int fullLen = login.Length + strCounter.Length;
+                    if (fullLen <= maxLogin)
+                        return login + strCounter;
+                    else
+                    {
+                        if (login.Length - (fullLen - maxLogin) > 0)
+                            return login.Substring(0, login.Length - (fullLen - maxLogin)) + strCounter;
+                        else return strCounter; // ????
+                    }
 
-        }
-*/
+                }
+        */
 
         #endregion
 
@@ -1647,12 +1655,12 @@ namespace SolidCP.EnterpriseServer
                 Organization org = GetOrganization(itemId);
                 if (org == null)
                     return -1;
-                
+
                 // load domain
                 DomainInfo domain = ServerController.GetDomain(domainId);
                 if (domain == null)
                     return -1;
-               
+
                 // Log Extension
                 LogExtension.SetItemName(domain.DomainName);
                 LogExtension.WriteObject(domain);
@@ -1801,7 +1809,7 @@ namespace SolidCP.EnterpriseServer
                 DomainInfo domain = ServerController.GetDomain(domainId);
                 if (domain == null)
                     return -1;
-                
+
                 // Log Extension
                 LogExtension.SetItemName(domain.DomainName);
                 LogExtension.WriteObject(domain);
@@ -2015,7 +2023,7 @@ namespace SolidCP.EnterpriseServer
 
             // place log record
             TaskManager.StartTask("EXCHANGE", "CREATE_MAILBOX", displayName, itemId);
-            
+
             // Log Extension
             LogExtension.WriteVariables(new { accountName, displayName, accountType });
 
@@ -2176,7 +2184,7 @@ namespace SolidCP.EnterpriseServer
                 {
                     TaskManager.WriteError("Error SetMailBoxRetentionPolicy: " + string.Join(", ", resPolicy.ErrorCodes.ToArray()));
                 }
-                
+
 
                 // send setup instructions
                 if (sendSetupInstructions)
@@ -2213,7 +2221,7 @@ namespace SolidCP.EnterpriseServer
                 }
 
                 // Log Extension
-                LogExtension.WriteVariables(new {email, samAccountName, accountId});
+                LogExtension.WriteVariables(new { email, samAccountName, accountId });
 
                 return accountId;
             }
@@ -2258,7 +2266,7 @@ namespace SolidCP.EnterpriseServer
 
                 // load account
                 ExchangeAccount account = GetAccount(itemId, accountId);
-                
+
                 // Log Extension
                 LogExtension.SetItemName(account.UserPrincipalName);
                 account.LogProperty(a => a.UserPrincipalName);
@@ -2296,7 +2304,7 @@ namespace SolidCP.EnterpriseServer
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
-            
+
             if (accountCheck < 0)
             {
                 return accountCheck;
@@ -2628,9 +2636,9 @@ namespace SolidCP.EnterpriseServer
 
             // place log record
             TaskManager.StartTask("EXCHANGE", "UPDATE_MAILBOX_GENERAL", itemId);
-           
+
             // Log Extension
-            LogExtension.WriteVariables(new {hideAddressBook, disabled}, "Try ");
+            LogExtension.WriteVariables(new { hideAddressBook, disabled }, "Try ");
 
             try
             {
@@ -2645,7 +2653,7 @@ namespace SolidCP.EnterpriseServer
 
                 // load account
                 ExchangeAccount account = GetAccount(itemId, accountId);
-                
+
                 // Log Extension
                 LogExtension.SetItemName(account.UserPrincipalName);
 
@@ -2809,7 +2817,7 @@ namespace SolidCP.EnterpriseServer
 
             // place log record
             TaskManager.StartTask("EXCHANGE", "ADD_MAILBOX_ADDRESS", itemId);
-           
+
             // Log Extension
             LogExtension.WriteVariable("Email Address added", emailAddress);
 
@@ -2830,7 +2838,7 @@ namespace SolidCP.EnterpriseServer
 
                 // load account
                 ExchangeAccount account = GetAccount(itemId, accountId);
-                
+
                 // Log Extension
                 LogExtension.SetItemName(account.PrimaryEmailAddress);
                 account.LogProperty(a => a.UserPrincipalName);
@@ -2883,7 +2891,7 @@ namespace SolidCP.EnterpriseServer
             {
                 // get account
                 ExchangeAccount account = GetAccount(itemId, accountId);
-                
+
                 // Log Extension
                 LogExtension.SetItemName(account.UserPrincipalName);
                 account.LogPropertyIfChanged(a => a.PrimaryEmailAddress, emailAddress);
@@ -3155,7 +3163,7 @@ namespace SolidCP.EnterpriseServer
 
                 // load account
                 ExchangeAccount account = GetAccount(itemId, accountId);
-                
+
                 var newAction = action;
 
                 // PMM settings
@@ -3249,7 +3257,7 @@ namespace SolidCP.EnterpriseServer
             if (!string.IsNullOrEmpty(passwordResetUrl))
             {
                 items["PswResetUrl"] = passwordResetUrl;
-            } 
+            }
 
 
             if (!String.IsNullOrEmpty(account.SamAccountName))
@@ -3678,8 +3686,8 @@ namespace SolidCP.EnterpriseServer
             try
             {
                 // Log Extension
-                LogExtension.WriteObject(mailboxPlan); 
-                
+                LogExtension.WriteObject(mailboxPlan);
+
                 Organization org = GetOrganization(itemID);
                 if (org == null)
                     return -1;
@@ -3770,7 +3778,7 @@ namespace SolidCP.EnterpriseServer
                 catch (Exception ex)
                 {
                     TaskManager.Write("Can't clone mailbox: " + ex.Message);
-                } 
+                }
 
                 Organization org = GetOrganization(itemID);
                 if (org == null)
@@ -3918,10 +3926,10 @@ namespace SolidCP.EnterpriseServer
             string RetentionPolicy = "";
 
             ExchangeMailboxPlan mailboxPlan = GetExchangeMailboxPlan(itemId, mailboxPlanId);
-            if ( mailboxPlan != null)
+            if (mailboxPlan != null)
             {
                 archiveQuotaKB = mailboxPlan.ArchiveSizeMB != -1 ? ((long)mailboxPlan.ArchiveSizeMB * 1024) : -1;
-                archiveWarningQuotaKB = mailboxPlan.ArchiveSizeMB != -1 ? (((long)mailboxPlan.ArchiveWarningPct * (long) mailboxPlan.ArchiveSizeMB * 1024) / 100) : -1;
+                archiveWarningQuotaKB = mailboxPlan.ArchiveSizeMB != -1 ? (((long)mailboxPlan.ArchiveWarningPct * (long)mailboxPlan.ArchiveSizeMB * 1024) / 100) : -1;
             }
 
 
@@ -4066,7 +4074,7 @@ namespace SolidCP.EnterpriseServer
             {
                 // Log Extension
                 LogExtension.WriteObject(tag);
-                
+
                 // load package context
                 PackageContext cntx = PackageController.GetPackageContext(org.PackageId);
 
@@ -4077,7 +4085,7 @@ namespace SolidCP.EnterpriseServer
 
                 int exchangeServiceId = GetExchangeServiceID(org.PackageId);
 
-                int tagId = DataProvider.AddExchangeRetentionPolicyTag(itemID, tag.TagName, tag.TagType, tag.AgeLimitForRetention, tag.RetentionAction );
+                int tagId = DataProvider.AddExchangeRetentionPolicyTag(itemID, tag.TagName, tag.TagType, tag.AgeLimitForRetention, tag.RetentionAction);
                 tag.TagID = tagId;
 
                 if (exchangeServiceId > 0)
@@ -4198,7 +4206,7 @@ namespace SolidCP.EnterpriseServer
 
                     ExchangeRetentionPolicyTag tag = GetExchangeRetentionPolicyTag(itemID, tagId);
                     if (tag == null) throw new ApplicationException("Tag is null");
-                    
+
                     // Log Extension
                     LogExtension.SetItemName(tag.TagName);
                     LogExtension.WriteObject(tag);
@@ -4208,7 +4216,7 @@ namespace SolidCP.EnterpriseServer
                     res.IsSuccess = res.IsSuccess && resTag.IsSuccess;
 
                 }
-                
+
                 if (res.IsSuccess)
                     DataProvider.DeleteExchangeRetentionPolicyTag(tagId);
 
@@ -4310,7 +4318,7 @@ namespace SolidCP.EnterpriseServer
             {
                 // Log Extension
                 LogExtension.WriteObject(planTag);
-                
+
                 // load package context
                 PackageContext cntx = PackageController.GetPackageContext(org.PackageId);
 
@@ -4365,7 +4373,7 @@ namespace SolidCP.EnterpriseServer
 
                 DataProvider.DeleteExchangeMailboxPlanRetentionPolicyTag(planTagId);
 
-                UpdateExchangeRetentionPolicy(itemID, policyId,res);
+                UpdateExchangeRetentionPolicy(itemID, policyId, res);
             }
             catch (Exception ex)
             {
@@ -4440,7 +4448,7 @@ namespace SolidCP.EnterpriseServer
                     email, org.DefaultDomain);
 
                 ExchangeContact contact = exchange.GetContactGeneralSettings(accountName);
-               
+
                 // Log Extension
                 LogExtension.WriteObject(contact);
 
@@ -4450,7 +4458,7 @@ namespace SolidCP.EnterpriseServer
                     0, contact.SAMAccountName, null, 0, null);
 
                 // Log Extension
-                LogExtension.WriteVariables(new {accountId});
+                LogExtension.WriteVariables(new { accountId });
 
                 return accountId;
             }
@@ -4710,10 +4718,10 @@ namespace SolidCP.EnterpriseServer
 
                 // load account
                 ExchangeAccount account = GetAccount(itemId, accountId);
-                
+
                 // Log Extension
                 LogExtension.SetItemName(account.DisplayName);
-                LogExtension.WriteVariables(new {acceptAccounts, rejectAccounts, requireSenderAuthentication});
+                LogExtension.WriteVariables(new { acceptAccounts, rejectAccounts, requireSenderAuthentication });
 
                 // get mailbox settings
                 int exchangeServiceId = GetExchangeServiceID(org.PackageId);
@@ -4770,7 +4778,7 @@ namespace SolidCP.EnterpriseServer
                 string email = name + "@" + domain;
 
                 // Log Extension
-                LogExtension.WriteVariables(new {email});
+                LogExtension.WriteVariables(new { email });
 
                 // check e-mail
                 if (EmailAddressExists(email, true))
@@ -5047,7 +5055,7 @@ namespace SolidCP.EnterpriseServer
 
             // place log record
             TaskManager.StartTask("EXCHANGE", "UPDATE_DISTR_LIST_MAILFLOW", itemId);
-            
+
             try
             {
                 // load organization
@@ -5194,7 +5202,7 @@ namespace SolidCP.EnterpriseServer
                 // Log Extension
                 LogExtension.SetItemName(account.UserPrincipalName);
                 account.LogPropertyIfChanged(a => a.PrimaryEmailAddress, emailAddress);
-                
+
                 account.PrimaryEmailAddress = emailAddress;
 
                 // update exchange
@@ -5327,7 +5335,7 @@ namespace SolidCP.EnterpriseServer
             try
             {
                 account = GetAccount(itemId, accountId);
-            
+
                 // Log Extension
                 LogExtension.SetItemName(account.UserPrincipalName);
                 LogExtension.WriteVariables(new { sendAsAccounts, sendOnBehalfAccounts });
@@ -5601,7 +5609,7 @@ namespace SolidCP.EnterpriseServer
 
             // place log record
             TaskManager.StartTask("EXCHANGE", "CREATE_PUBLIC_FOLDER", parentFolder + "\\" + folderName, itemId);
-            
+
             try
             {
                 // e-mail
@@ -5673,7 +5681,7 @@ namespace SolidCP.EnterpriseServer
                     AddAccountEmailAddress(accountId, email);
 
                 // Log Extension
-                LogExtension.WriteVariables(new {accountId, accountName, folderName, folderPath, email});
+                LogExtension.WriteVariables(new { accountId, accountName, folderName, folderPath, email });
 
                 return accountId;
             }
@@ -5872,7 +5880,7 @@ namespace SolidCP.EnterpriseServer
                 var addressesDeleted = addrs.ToArray();
 
                 // Log Extension
-                LogExtension.WriteVariables(new {addressesDeleted});
+                LogExtension.WriteVariables(new { addressesDeleted });
 
                 DeleteAccountEmailAddresses(accountId, addressesDeleted);
 
@@ -6274,7 +6282,7 @@ namespace SolidCP.EnterpriseServer
                 var emailAddressesDeleted = toDelete.ToArray();
 
                 // Log Extension
-                LogExtension.SetItemName(account.DisplayName); 
+                LogExtension.SetItemName(account.DisplayName);
                 LogExtension.WriteVariables(new { emailAddressesDeleted });
 
                 // delete from meta-base
@@ -6389,12 +6397,12 @@ namespace SolidCP.EnterpriseServer
 
                 List<ExchangeAccount> mailboxes = GetExchangeMailboxes(itemId);
 
-                foreach(ExchangeAccount mailbox in mailboxes)
+                foreach (ExchangeAccount mailbox in mailboxes)
                 {
                     string id = mailbox.PrimaryEmailAddress;
                     string[] defaultPublicFoldes = exchange.SetDefaultPublicFolderMailbox(id, org.OrganizationId, org.DistinguishedName);
 
-                    if (defaultPublicFoldes.Length==1)
+                    if (defaultPublicFoldes.Length == 1)
                         res += id + " has a value \"" + defaultPublicFoldes[0] + "\"" + Environment.NewLine;
 
                     if (defaultPublicFoldes.Length == 2)
@@ -6487,12 +6495,12 @@ namespace SolidCP.EnterpriseServer
 
             string[] exchangeSettings = ((ServiceProviderSettingsSoapHeader)ws.SoapHeader).Settings;
 
-			List<string> resSettings = new List<string>(exchangeSettings);
+            List<string> resSettings = new List<string>(exchangeSettings);
 
             string orgPrimaryDomainController = GetPrimaryDomainController(organizationServiceId);
 
             ExtendExchangeSettings(resSettings, orgPrimaryDomainController);
-			((ServiceProviderSettingsSoapHeader)ws.SoapHeader).Settings = resSettings.ToArray();
+            ((ServiceProviderSettingsSoapHeader)ws.SoapHeader).Settings = resSettings.ToArray();
             return ws;
         }
 
@@ -6504,12 +6512,12 @@ namespace SolidCP.EnterpriseServer
 
             string[] exchangeSettings = ((ServiceProviderSettingsSoapHeader)ws.SoapHeader).Settings;
 
-			List<string> resSettings = new List<string>(exchangeSettings);
+            List<string> resSettings = new List<string>(exchangeSettings);
 
             string orgPrimaryDomainController = GetPrimaryDomainController(organizationServiceId);
 
             ExtendExchangeSettings(resSettings, orgPrimaryDomainController);
-			((ServiceProviderSettingsSoapHeader)ws.SoapHeader).Settings = resSettings.ToArray();
+            ((ServiceProviderSettingsSoapHeader)ws.SoapHeader).Settings = resSettings.ToArray();
             return ws;
         }
 
@@ -6704,7 +6712,7 @@ namespace SolidCP.EnterpriseServer
 
             // place log record
             TaskManager.StartTask("EXCHANGE", "ADD_EXCHANGE_EXCHANGEDISCLAIMER", disclaimer.DisclaimerName, itemId);
-            
+
             // Log Extension
             LogExtension.WriteObject(disclaimer);
 
@@ -6883,10 +6891,10 @@ namespace SolidCP.EnterpriseServer
                 exchange.RemoveDisclaimer(oldTransportRuleName);
 
                 // update disclaimer
-                if (newDisclaimer!=null)
+                if (newDisclaimer != null)
                     exchange.SetDisclaimer(newDisclaimer.SCPUniqueName, newDisclaimer.DisclaimerText);
 
-                if (newExchangeDisclaimerId!=oldExchangeDisclaimerId)
+                if (newExchangeDisclaimerId != oldExchangeDisclaimerId)
                 {
                     if (oldDisclaimer != null)
                         exchange.RemoveDisclamerMember(oldDisclaimer.SCPUniqueName, account.PrimaryEmailAddress);
@@ -6934,8 +6942,9 @@ namespace SolidCP.EnterpriseServer
 
         #region Pictures
 
+#if !UseSkia || NETFRAMEWORK
         // proportional resizing
-        private static Bitmap ResizeBitmap(Bitmap srcBitmap, Size newSize)
+        private static Bitmap ResizeBitmapGdi(Bitmap srcBitmap, Size newSize)
         {
             try
             {
@@ -6972,8 +6981,64 @@ namespace SolidCP.EnterpriseServer
                 return null;
             }
         }
+#endif
+        public static byte[] ResizeImageGdi(byte[] picture, int width, int height)
+        {
+            if (!Providers.OS.OSInfo.IsWindows) return null;
 
+#if !UseSkia || NETFRAMEWORK
+            var bitmap = new Bitmap(new MemoryStream(picture));
 
+            MemoryStream pictureStream = new MemoryStream();
+
+            if (bitmap.Width > width || bitmap.Height > height)
+                bitmap = ResizeBitmapGdi(bitmap, new Size(width, height));
+
+            bitmap.Save(pictureStream, System.Drawing.Imaging.ImageFormat.Jpeg);
+
+            return pictureStream.ToArray();
+#else
+            return null;
+#endif
+        }
+
+        public static byte[] ResizeImageSkia(byte[] data, int width, int height)
+        {
+#if UseSkia
+            using (var bitmap = SKBitmap.Decode(data))
+            {
+
+                if (bitmap.Width > width || bitmap.Height > height)
+                {
+                    using (var scaledBitmap = bitmap.Resize(new SKImageInfo(width, height), SKFilterQuality.High))
+                    using (var scaledImage = SKImage.FromBitmap(scaledBitmap))
+                    using (var encodedImage = scaledImage.Encode(SKEncodedImageFormat.Jpeg, 50))
+                    {
+                        var stream = new MemoryStream();
+                        encodedImage.SaveTo(stream);
+                        stream.Seek(0, SeekOrigin.Begin);
+                        return stream.ToArray();
+                    }
+                }
+                else return data;
+            }
+#else
+            return null;
+#endif
+        }
+
+        public static byte[] ResizeImage(byte[] image, int width, int height)
+        {
+            if (image == null) return null;
+
+            image = ResizeImageGdi(image, width, height);
+
+            if (image != null) return image;
+
+            Providers.OS.SkiaSharp.LoadNativeDlls();
+
+            return ResizeImageSkia(image, width, height); 
+        }
         public static ResultObject SetPicture(int itemId, int accountID, byte[] picture)
         {
             ResultObject res = TaskManager.StartResultTask<ResultObject>("EXCHANGE", "SET_PICTURE", itemId);
@@ -6983,7 +7048,7 @@ namespace SolidCP.EnterpriseServer
                 throw new ApplicationException("Organization is null");
 
             ExchangeAccount account = GetAccount(itemId, accountID);
-            
+
             // Log Extension
             LogExtension.SetItemName(account.PrimaryEmailAddress);
 
@@ -6994,24 +7059,15 @@ namespace SolidCP.EnterpriseServer
                 {
                     ExchangeServer exchange = GetExchangeServer(exchangeServiceId, org.ServiceId);
 
-                    Bitmap bitmap;
-
                     if (picture == null)
                     {
                         res = exchange.SetPicture(account.AccountName, null);
                     }
                     else
                     {
-                        bitmap = new Bitmap(new MemoryStream(picture));
+                        picture = ResizeImage(picture, MAX_THUMBNAILPHOTO_SIZE, MAX_THUMBNAILPHOTO_SIZE);
 
-                        MemoryStream pictureStream = new MemoryStream();
-
-                        if ((bitmap.Width > MAX_THUMBNAILPHOTO_SIZE) || (bitmap.Height > MAX_THUMBNAILPHOTO_SIZE))
-                            bitmap = ResizeBitmap(bitmap, new Size(MAX_THUMBNAILPHOTO_SIZE, MAX_THUMBNAILPHOTO_SIZE));
-
-                        bitmap.Save(pictureStream, System.Drawing.Imaging.ImageFormat.Jpeg);
-
-                        res = exchange.SetPicture(account.AccountName, pictureStream.ToArray());
+                        res = exchange.SetPicture(account.AccountName, picture);
                     }
                 }
             }
@@ -7058,6 +7114,6 @@ namespace SolidCP.EnterpriseServer
 
         }
 
-        #endregion
+#endregion
     }
 }

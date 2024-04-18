@@ -32,53 +32,220 @@
 
 using System;
 using System.Configuration;
-using System.Web;
+using Microsoft.Win32;
+using SolidCP.Providers.OS;
+using SolidCP.Web.Services;
 
 namespace SolidCP.EnterpriseServer
 {
-    /// <summary>
-    /// Summary description for ConfigSettings.
-    /// </summary>
-    public class ConfigSettings
-    {
+	/// <summary>
+	/// Summary description for ConfigSettings.
+	/// </summary>
+	public class ConfigSettings
+	{
 
-        public static bool UseEntityFramework => ConfigurationManager.AppSettings["SolidCP.EnterpriseServer.UseEntityFramework"]?.ToString().ToLower() == "true";
-        public static string DataProviderType
-        {
-            get { return ConfigurationManager.AppSettings["SolidCP.EnterpriseServer.DataProvider"]; }
-        }
+		const string EnterpriseServerRegistryPath = "SOFTWARE\\SolidCP\\EnterpriseServer";
 
-        public static string WebApplicationsPath
-        {
-            get
-            {
-                string path = ConfigurationManager.AppSettings["SolidCP.EnterpriseServer.WebApplicationsPath"];
-                if (path.StartsWith("~") && HttpContext.Current != null)
-                    path = HttpContext.Current.Server.MapPath(path);
+		private static string GetKeyFromRegistry(string Key)
+		{
+			string value = string.Empty;
 
-                return path;
-            }
-        }
+			if (!string.IsNullOrEmpty(Key))
+			{
+				RegistryKey root = Registry.LocalMachine;
+				RegistryKey rk = root.OpenSubKey(EnterpriseServerRegistryPath);
+				if (rk != null)
+				{
+					value = (string)rk.GetValue(Key, null);
+					rk.Close();
+				}
+			}
+			return value;
+		}
 
-        public static string BackupsPath
-        {
-            get
-            {
+
+		static string connectionString = null;
+		public static string ConnectionString
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(connectionString))
+				{
+
+					string ConnectionKey;
+					if (OSInfo.IsNetFX)
+					{
+						ConnectionKey = ConfigurationManager.AppSettings["SolidCP.AltConnectionString"];
+					}
+					else
+					{
+						ConnectionKey = Web.Services.Configuration.AltConnectionString;
+					}
+
+					string value = string.Empty;
+
+					if (!string.IsNullOrEmpty(ConnectionKey) && OSInfo.IsWindows)
+					{
+						value = GetKeyFromRegistry(ConnectionKey);
+					}
+
+					if (!string.IsNullOrEmpty(value))
+					{
+						connectionString = value;
+					}
+					else
+					{
+						if (OSInfo.IsNetFX)
+						{
+							connectionString = ConfigurationManager.ConnectionStrings["EnterpriseServer"].ConnectionString;
+						}
+						else
+						{
+							connectionString = Web.Services.Configuration.ConnectionString;
+						}
+					}
+				}
+				return connectionString;
+			}
+		}
+
+		static string cryptoKey = null;
+		public static string CryptoKey
+		{
+			get
+			{
+				if (cryptoKey == null)
+				{
+					string key;
+					if (OSInfo.IsNetFX)
+					{
+						key = ConfigurationManager.AppSettings["SolidCP.AltCryptoKey"];
+					}
+					else
+					{
+						key = Web.Services.Configuration.AltCryptoKey;
+					}
+
+					string value = string.Empty;
+
+					if (OSInfo.IsWindows) value = GetKeyFromRegistry(key);
+
+					if (!string.IsNullOrEmpty(value))
+						cryptoKey = value;
+					else
+					{
+						if (OSInfo.IsNetFX)
+						{
+							cryptoKey = ConfigurationManager.AppSettings["SolidCP.CryptoKey"];
+						}
+						else
+						{
+							cryptoKey = Web.Services.Configuration.CryptoKey;
+						}
+					}
+				}
+				return cryptoKey;
+			}
+		}
+
+
+		static bool? encryptionEnabled = null;
+		public static bool EncryptionEnabled
+		{
+			get
+			{
+				if (encryptionEnabled == null)
+				{
+					if (OSInfo.IsNetFX)
+					{
+						encryptionEnabled = (ConfigurationManager.AppSettings["SolidCP.EncryptionEnabled"] != null)
+						? bool.Parse(ConfigurationManager.AppSettings["SolidCP.EncryptionEnabled"]) : true;
+					} else
+					{
+						encryptionEnabled = Web.Services.Configuration.EncryptionEnabled;
+					}
+				}
+				return encryptionEnabled.Value;
+			}
+		}
+
+
+		static string dataProviderType = null;
+		public static string DataProviderType
+		{
+			get
+			{
+				if (dataProviderType == null)
+				{
+					if (OSInfo.IsNetFX)
+					{
+						dataProviderType = ConfigurationManager.AppSettings["SolidCP.EnterpriseServer.DataProvider"];
+					}
+					else
+					{
+						dataProviderType = Web.Services.Configuration.DataProviderType;
+					}
+				}
+				return dataProviderType;
+			}
+		}
+
+		static string webApplicationPath = null;
+		public static string WebApplicationsPath
+		{
+			get
+			{
+				if (webApplicationPath == null)
+				{
+					if (OSInfo.IsNetFX)
+					{
+						webApplicationPath = ConfigurationManager.AppSettings["SolidCP.EnterpriseServer.WebApplicationsPath"];
+					}
+					else
+					{
+						webApplicationPath = Web.Services.Configuration.WebApplicationsPath;
+					}
+				}
+				if (webApplicationPath.StartsWith("~")) webApplicationPath = Web.Services.Server.MapPath(webApplicationPath);
+
+				return webApplicationPath;
+			}
+		}
+
+		public static string BackupsPath
+		{
+			get
+			{
 				SystemSettings settings = SystemController.GetSystemSettingsInternal(
 					SystemSettings.BACKUP_SETTINGS,
 					false
 				);
 
-                return settings["BackupsPath"];
-            }
-        }
+				return settings["BackupsPath"];
+			}
+		}
 
-        #region Communication
-        public static int ServerRequestTimeout
-        {
-            get { return Utils.ParseInt(
-                ConfigurationManager.AppSettings["SolidCP.EnterpriseServer.ServerRequestTimeout"], -1); }
-        }
-        #endregion
-    }
+		#region Communication
+		static int? serverRequestTimeout = null;
+		public static int ServerRequestTimeout
+		{
+			get
+			{
+				if (serverRequestTimeout != null)
+				{
+					if (OSInfo.IsNetFX)
+					{
+						serverRequestTimeout = Utils.ParseInt(
+							ConfigurationManager.AppSettings["SolidCP.EnterpriseServer.ServerRequestTimeout"], -1);
+					}
+					else
+					{
+						serverRequestTimeout = Web.Services.Configuration.ServerRequestTimeout ?? -1;
+					}
+				}
+				return serverRequestTimeout.Value;
+			}
+		}
+		#endregion
+	}
 }

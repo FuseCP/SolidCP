@@ -23,7 +23,7 @@ namespace SolidCP.Web.Services
 		static readonly string exepath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 		static string[] paths = null;
 		static string[] Paths => paths != null ? paths : paths =
-			StartupCore.ProbingPaths
+			Configuration.ProbingPaths
 				.Replace('\\', Path.DirectorySeparatorChar)
 				.Split(';');
 
