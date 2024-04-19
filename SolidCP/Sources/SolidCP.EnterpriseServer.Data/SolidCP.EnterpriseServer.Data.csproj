@@ -51,8 +51,8 @@
     </ItemGroup>
 
     <Target Name="Scaffold">
-        <Exec Command="dotnet ef dbcontext scaffold &quot;$(ConnectionString)&quot; Microsoft.EntityFrameworkCore.SqlServer --output-dir Entities --context-dir Configuration --context SolidCPBaseContext --force" />
-        <Move SourceFiles="Configuration\SolidCPBaseContext.cs" DestinationFiles="SolidCPBaseContext.cs" ContinueOnError="true" />
+        <Exec Command="dotnet ef dbcontext scaffold &quot;$(ConnectionString)&quot; Microsoft.EntityFrameworkCore.SqlServer --output-dir Entities --context-dir Configuration --context DbContextBase --force" />
+        <Move SourceFiles="Configuration\DbContextBase.cs" DestinationFiles="DbContextBase.cs" ContinueOnError="true" />
     </Target>
 
     <ItemGroup>
@@ -60,7 +60,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="Model\NetFX\Generator\CreateModel.cs">
+        <None Include="CodeTemplates\EFCore\Aliases.cs" />
+        <Compile Remove="CodeTemplates\EFCore\Aliases.cs" />
+
+		<None Include="Model\NetFX\Generator\CreateModel.cs">
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>
             <DependentUpon>CreateModel.tt</DependentUpon>

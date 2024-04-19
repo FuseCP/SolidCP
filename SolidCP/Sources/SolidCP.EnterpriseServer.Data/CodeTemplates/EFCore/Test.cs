@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
@@ -26,10 +27,12 @@ namespace SolidCP.EnterpriseServer.Data.CodeTemplates.EFCore
             var annotations = EntityType.GetDataAnnotations(annotationCodeGenerator);
             var coreAnnotations = annotations.Where(a => a.Type.FullName.Contains("EntityFrameworkCore"));
             var commonAnnotations = annotations.Except(coreAnnotations);
-            
-        }
 
-        public void Setup(DbContextOptionsBuilder builder)
+			var match = Regex.Match("", @$"^using\s+{Regex.Escape(EntityType.Name)}\s*=.*?$", RegexOptions.Multiline);
+
+		}
+
+		public void Setup(DbContextOptionsBuilder builder)
         {
             DbContext context = null;
             switch (context.Flavor)

@@ -7,7 +7,7 @@ using SolidCP.EnterpriseServer;
 
 namespace SolidCP.EnterpriseServer.Data
 {
-    public enum DbFlavor { Other, MsSql, MySql, MariaDb, SqlLite, PostgreSql }
+    public enum DbFlavor { Unknown, MsSql, MySql, MariaDb, SqlLite, PostgreSql, Other }
     public partial class DbContext: IDisposable
     {
         static string connectionString = null;
@@ -20,9 +20,9 @@ namespace SolidCP.EnterpriseServer.Data
         {
             get
             {
-                var flavorName = Regex.Match(DbSettings.ConnectionString, @"(?<=(?:;|^)\s*Flavor\s*=\s*)[^;$]*", RegexOptions.IgnoreCase).Value.Trim();
-                DbFlavor flavor = DbFlavor.Other;
-                if (!Enum.TryParse<DbFlavor>(flavorName, true, out flavor)) flavor = DbFlavor.Other;
+                var flavorName = Regex.Match(DbSettings.ConnectionString, @"(?<=(?:;|^)\s*Flavor\s*=\s*)[^;$]*", RegexOptions.IgnoreCase)?.Value.Trim();
+                DbFlavor flavor = DbFlavor.Unknown;
+                if (!string.IsNullOrEmpty(flavorName) && !Enum.TryParse<DbFlavor>(flavorName, true, out flavor)) flavor = DbFlavor.Other;
                 if (flavor == DbFlavor.Other) throw new NotSupportedException($"This DB flavor {flavorName} is not supported");
                 return flavor;
             }

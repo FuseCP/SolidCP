@@ -1,32 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+using SolidCP.EnterpriseServer.Data.Configuration;
+using SolidCP.EnterpriseServer.Data.Entities;
 #if NetCore
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 #endif
 #if NetFX
 using System.Data.Entity;
-using System.Data.Entity.Core.Objects;
-using System.Data.Entity.Infrastructure;
-using System.Data.Entity.Infrastructure.Annotations;
-using System.Data.Entity.Infrastructure.Interception;
+using System.Data.Entity.ModelConfiguration;
 using System.Data.Entity.Spatial;
 using System.Data.Entity.Validation;
 #endif
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-#if NetCore
-public partial class AuditLogTaskConfiguration //: IEntityTypeConfiguration<AuditLogTask>
-#else
-public partial class AuditLogTaskConfiguration //:
-#endif
+public partial class AuditLogTaskConfiguration: Extensions.EntityTypeConfiguration<AuditLogTask>
 {
+    public DbFlavor Flavor { get; set; } = DbFlavor.Unknown;
 
-#if NetCore
+    public AuditLogTaskConfiguration(): base() { }
+    public AuditLogTaskConfiguration(DbFlavor flavor): base(flavor) { }
 
-    //public partial void 
-
+#if NetCore || NetFX
+    public override void Configure() {
+        
+    }
 #endif
 
 }

@@ -3,13 +3,16 @@
 <#@ assembly name="Microsoft.EntityFrameworkCore.Design" #>
 <#@ assembly name="Microsoft.EntityFrameworkCore.Relational" #>
 <#@ assembly name="Microsoft.Extensions.DependencyInjection.Abstractions" #>
+<#@ assembly name="System.Text.RegularExpressions" #>
 <#@ parameter name="EntityType" type="Microsoft.EntityFrameworkCore.Metadata.IEntityType" #>
 <#@ parameter name="Options" type="Microsoft.EntityFrameworkCore.Scaffolding.ModelCodeGenerationOptions" #>
 <#@ parameter name="NamespaceHint" type="System.String" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.ComponentModel.DataAnnotations" #>
 <#@ import namespace="System.Linq" #>
+<#@ import namespace="System.IO" #>
 <#@ import namespace="System.Text" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
 <#@ import namespace="Microsoft.EntityFrameworkCore" #>
 <#@ import namespace="Microsoft.EntityFrameworkCore.Design" #>
 <#@ import namespace="Microsoft.Extensions.DependencyInjection" #>
@@ -27,24 +30,30 @@
     var usings = new List<string>
     {
         "System",
-        "System.Collections.Generic"
+        "System.Collections.Generic",
+        "SolidCP.EnterpriseServer.Data.Entities",
+        "SolidCP.EnterpriseServer.Data.Configuration"
     };
     var usingscore = new List<string>()
     {
        "Microsoft.EntityFrameworkCore",
-       "Microsoft.EntityFrameworkCore.ChangeTracking"
+       "Microsoft.EntityFrameworkCore.Metadata",
+       "Microsoft.EntityFrameworkCore.Metadata.Builders"
     };
     var usingsfx = new List<string>()
     {
       "System.Data.Entity",
-      "System.Data.Entity.Core.Objects",
-      "System.Data.Entity.Infrastructure",
-      "System.Data.Entity.Infrastructure.Annotations",
-      "System.Data.Entity.Infrastructure.Interception",
       "System.Data.Entity.Spatial",
-      "System.Data.Entity.Validation"
+      "System.Data.Entity.Validation",
+      "System.Data.Entity.ModelConfiguration"
     };
 
+    var aliasesTemplate = Path.Combine(Path.GetDirectoryName(Host.TemplateFile), "Aliases.cs");
+    var aliases = File.ReadAllText(aliasesTemplate);
+    var match = Regex.Match(aliases, @$"^using\s+{Regex.Escape(EntityType.Name)}\s*=.*?$", RegexOptions.Multiline);
+    if (match.Success) aliases = match.Value.Trim();
+    else aliases = null;
+    
     if (!string.IsNullOrEmpty(NamespaceHint))
     {
 #>
@@ -52,27 +61,19 @@ namespace <#= NamespaceHint #>;
 
 <#
     }
-
-    if (!string.IsNullOrEmpty(EntityType.GetComment()))
-    {
+    if (aliases != null) { WriteLine(aliases); WriteLine(""); }
 #>
-/// <summary>
-/// <#= code.XmlComment(EntityType.GetComment()) #>
-/// </summary>
-<#
-    }
-#>
-#if NetCore
-public partial class <#= EntityType.Name #>Configuration //: IEntityTypeConfiguration<<#= EntityType.Name #>>
-#else
-public partial class <#= EntityType.Name #>Configuration //:
-#endif
+public partial class <#= EntityType.Name #>Configuration: Extensions.EntityTypeConfiguration<<#= EntityType.Name #>>
 {
+    public DbFlavor Flavor { get; set; } = DbFlavor.Unknown;
 
-#if NetCore
+    public <#= EntityType.Name #>Configuration(): base() { }
+    public <#= EntityType.Name #>Configuration(DbFlavor flavor): base(flavor) { }
 
-    //public partial void 
-
+#if NetCore || NetFX
+    public override void Configure() {
+        
+    }
 #endif
 
 }

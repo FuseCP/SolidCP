@@ -3,12 +3,15 @@
 <#@ assembly name="Microsoft.EntityFrameworkCore.Design" #>
 <#@ assembly name="Microsoft.EntityFrameworkCore.Relational" #>
 <#@ assembly name="Microsoft.Extensions.DependencyInjection.Abstractions" #>
+<#@ assembly name="System.Text.RegularExpressions" #>
 <#@ parameter name="Model" type="Microsoft.EntityFrameworkCore.Metadata.IModel" #>
 <#@ parameter name="Options" type="Microsoft.EntityFrameworkCore.Scaffolding.ModelCodeGenerationOptions" #>
 <#@ parameter name="NamespaceHint" type="System.String" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
 <#@ import namespace="Microsoft.EntityFrameworkCore" #>
 <#@ import namespace="Microsoft.EntityFrameworkCore.Design" #>
 <#@ import namespace="Microsoft.EntityFrameworkCore.Infrastructure" #>
@@ -32,13 +35,6 @@
         "Microsoft.EntityFrameworkCore"
     };
 
-    var nsusings = new List<string>
-    {
-        "Version = SolidCP.EnterpriseServer.Data.Entities.Version",
-        "GlobalDnsRecord = SolidCP.EnterpriseServer.Data.Entities.GlobalDnsRecord",
-        "BackgroundTaskParameter = SolidCP.EnterpriseServer.Data.Entities.BackgroundTaskParameter"
-    };
-
     var usingscore = new List<string>()
     {
         "Microsoft.EntityFrameworkCore",
@@ -54,7 +50,9 @@
       "System.Data.Entity.Spatial",
       "System.Data.Entity.Validation"
     };
-
+    var aliasesTemplate = Path.Combine(Path.GetDirectoryName(Host.TemplateFile), "Aliases.cs");
+    var aliases = File.ReadAllText(aliasesTemplate);
+    aliases = Regex.Replace(aliases, "^", "    ", RegexOptions.Multiline);
 
     if (NamespaceHint != Options.ModelNamespace
         && !string.IsNullOrEmpty(Options.ModelNamespace))
@@ -65,39 +63,23 @@
     if (!string.IsNullOrEmpty(NamespaceHint))
     {
 #>
-// This file is auto generated, only edit when you add tables without scaffolding.
+// This file is auto generated, do not edit.
 namespace <#= NamespaceHint.Replace(".Data.Configuration", ".Context") #>
 {
 
 <#
     }
-
-    foreach (var u in nsusings)
-    {
 #>
-    using <#= u #>;
-<#
-    }
-#>
+<#= aliases #>
 
     public partial class <#= Options.ContextName #> : DbContext, Data.IGenericDbContext
     {
 
-        public <#= Options.ContextName #>()
-        {
-        }
-
-        Data.DbContext context;
-        public <#= Options.ContextName #>(Data.DbContext context)
-        {
-            this.context = context;
-        }
-
 #if NetCore
-        public <#= Options.ContextName #>(DbContextOptions<<#= Options.ContextName #>> options)
-            : base(options)
-        {
-        }
+        public <#= Options.ContextName #>(Data.DbContext context): this(new Data.Extensions.DbOptions<<#= Options.ContextName #>>(context)) { }
+        public <#= Options.ContextName #>(DbContextOptions<<#= Options.ContextName #>> options): base(options) { }
+#elif NetFX
+        public <#= Options.ContextName #>(Data.DbContext context): base(context.ConnectionString) { }
 #endif
 
 <#
@@ -115,30 +97,62 @@ namespace <#= NamespaceHint.Replace(".Data.Configuration", ".Context") #>
 #if NetCore
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
-            switch (context.Flavor)
+            if (!(builder.Options is Data.Extensions.DbOptions<<#= Options.ContextName #>> options)) throw new NotSupportedException("This type of Options is not supported");
+            switch (options.Flavor)
             {
                 case Data.DbFlavor.MsSql:
-                    builder.UseSqlServer(context.ConnectionString);
+                    builder.UseSqlServer(options.ConnectionString);
                     break;
                 case Data.DbFlavor.SqlLite:
-                    builder.UseSqlite(context.ConnectionString);
+                    builder.UseSqlite(options.ConnectionString);
                     break;
                 case Data.DbFlavor.MySql:
-                    builder.UseMySql(context.ConnectionString, ServerVersion.AutoDetect(context.ConnectionString));
+                    builder.UseMySql(options.ConnectionString, ServerVersion.AutoDetect(options.ConnectionString));
                     break;
                 case Data.DbFlavor.MariaDb:
-                    builder.UseMariaDB(context.ConnectionString);
+                    builder.UseMariaDB(options.ConnectionString);
                     break;
                 case Data.DbFlavor.PostgreSql:
-                    builder.UseNpgsql(context.ConnectionString);
+                    builder.UseNpgsql(options.ConnectionString);
                     break;
                 default: throw new NotSupportedException("This DB flavor is not supported");
             }
         }
 #endif
+
+#if NetCore
+        protected override void OnModelCreating(ModelBuilder model) {
+#elif NetFX
+        protected override void OnModelCreating(DbModelBuilder model) {
+#else
+        protected void OnModelCreating(DummyModel model) {
+#endif
+
+#if ScaffoldDbContextEntities
+<#
+    foreach (var entityType in Model.GetEntityTypes().Where(e => !e.IsSimpleManyToManyJoinEntityType()))
+    {
+#>
+              model.ApplyConfiguration(new <#= entityType.Name #>Configuration(Flavor));
+<#
+    }
+#>
+#endif
+
+            OnModelCreatingPartial(model);
+        }
+#if NetCore
+		partial void OnModelCreatingPartial(ModelBuilder model);
+#elif NetFX
+        partial void OnModelCreatingPartial(DbModelBuilder model);
+#else 
+        partial void OnModelCreatingPartial(DummyModel model);
+#endif
+
 <#
     }
 
+    #if false
 #>
 #if NetCore
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -385,22 +399,18 @@ namespace <#= NamespaceHint.Replace(".Data.Configuration", ".Context") #>
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 #endif
+<#
+#endif
+#>
     }
 }
 
 namespace SolidCP.EnterpriseServer.Data {
 
-<#
-    foreach (var u in nsusings)
-    {
-#>
-    using <#= u #>;
-<#
-    }
-#>
+<#= aliases #>
 
-#if ScaffoldDbContextProperties
-   public partial class DbContext {
+#if ScaffoldDbContextEntities
+    public partial class DbContext {
 <#
     foreach (var entityType in Model.GetEntityTypes().Where(e => !e.IsSimpleManyToManyJoinEntityType()))
     {
@@ -420,7 +430,7 @@ namespace SolidCP.EnterpriseServer.Data {
 #endif
 }
 <#
-    mainEnvironment = GenerationEnvironment;
+    var mainEnvironment = GenerationEnvironment;
     GenerationEnvironment = new StringBuilder();
     var fxusings = usings.Where(u => u.StartsWith("System.Data.Entity"));
     var coreusings = usings.Where(u => u.StartsWith("Microsoft.EntityFrameworkCore"));
