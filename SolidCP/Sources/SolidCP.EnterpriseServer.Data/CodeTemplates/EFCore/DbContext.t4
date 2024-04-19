@@ -18,6 +18,7 @@
 <#@ import namespace="Microsoft.EntityFrameworkCore.Scaffolding" #>
 <#@ import namespace="Microsoft.Extensions.DependencyInjection" #>
 <#
+
     if (!ProductInfo.GetVersion().StartsWith("8.0"))
     {
         Warning("Your templates were created using an older version of Entity Framework. Additional features and bug fixes may be available. See https://aka.ms/efcore-docs-updating-templates for more information.");
@@ -63,8 +64,7 @@
     if (!string.IsNullOrEmpty(NamespaceHint))
     {
 #>
-// This file is auto generated, do not edit.
-namespace <#= NamespaceHint.Replace(".Data.Configuration", ".Context") #>
+namespace <#= NamespaceHint.Replace(".Data.Configuration.Sources", ".Context") #>
 {
 
 <#
@@ -152,10 +152,13 @@ namespace <#= NamespaceHint.Replace(".Data.Configuration", ".Context") #>
 <#
     }
 
-    #if false
+    StringBuilder mainEnvironment;
+
+    #if ShowConfiguration
 #>
+#region Complete Model Configuration
 #if NetCore
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected void OnModelCreatingComplete(ModelBuilder modelBuilder)
         {
 <#
     var anyConfiguration = false;
@@ -170,7 +173,6 @@ namespace <#= NamespaceHint.Replace(".Data.Configuration", ".Context") #>
         anyConfiguration = true;
     }
 
-    StringBuilder mainEnvironment;
     foreach (var entityType in Model.GetEntityTypes().Where(e => !e.IsSimpleManyToManyJoinEntityType()))
     {
         // Save all previously generated code, and start generating into a new temporary environment
@@ -394,11 +396,12 @@ namespace <#= NamespaceHint.Replace(".Data.Configuration", ".Context") #>
         WriteLine("");
     }
 #>
-            OnModelCreatingPartial(modelBuilder);
+            OnModelCreatingPartialComplete(modelBuilder);
         }
 
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+        partial void OnModelCreatingPartialComplete(ModelBuilder modelBuilder);
 #endif
+#endregion
 <#
 #endif
 #>
@@ -430,7 +433,7 @@ namespace SolidCP.EnterpriseServer.Data {
 #endif
 }
 <#
-    var mainEnvironment = GenerationEnvironment;
+    mainEnvironment = GenerationEnvironment;
     GenerationEnvironment = new StringBuilder();
     var fxusings = usings.Where(u => u.StartsWith("System.Data.Entity"));
     var coreusings = usings.Where(u => u.StartsWith("Microsoft.EntityFrameworkCore"));
@@ -448,6 +451,7 @@ namespace SolidCP.EnterpriseServer.Data {
         .ToList();
 
 #>
+// This file is auto generated, do not edit.
 #if ScaffoldedDbContext
 <#
     foreach (var ns in usings)

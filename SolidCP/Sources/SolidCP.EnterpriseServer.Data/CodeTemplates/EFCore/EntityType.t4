@@ -42,7 +42,6 @@
     if (!string.IsNullOrEmpty(NamespaceHint))
     {
 #>
-// This file is auto generated, do not edit.
 namespace <#= NamespaceHint #>;
 
 <#
@@ -218,6 +217,7 @@ public partial class <#= EntityType.Name #>
         .ToList();
 
 #>
+// This file is auto generated, do not edit.
 #if ScaffoldedEntities
 <#
     foreach (var ns in usings)

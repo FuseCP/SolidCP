@@ -21,6 +21,7 @@ using System.Data.Entity;
 using System.Data.Entity.Spatial;
 using System.Data.Entity.Validation;
 using MC=System.Data.Entity.ModelConfiguration;
+using System.Data.Entity.ModelConfiguration.Configuration;
 #endif
 
 
@@ -54,6 +55,9 @@ namespace SolidCP.EnterpriseServer.Data.Extensions
 #if NetCore
 		EntityTypeBuilder<TEntity> Model = null;
 		public void Configure(EntityTypeBuilder<TEntity> model) { Model = model; Configure(); }
+		public EntityTypeBuilder<TEntity> Core => Model;
+#elif NetFX
+		public MC.EntityTypeConfiguration<TEntity> NetFX => (MC.EntityTypeConfiguration<TEntity>)this;
 #endif
 		public abstract void Configure();
 
@@ -133,6 +137,13 @@ namespace SolidCP.EnterpriseServer.Data.Extensions
 		//     An object that can be used to configure the primary key.
 #if NetCore
 		public virtual KeyBuilder HasKey(Expression<Func<TEntity, object?>> keyExpression) => Model.HasKey(keyExpression);
+#elif NetFX
+		public new virtual PrimaryKeyIndexConfiguration HasKey(Expression<Func<TEntity, object?>> keyExpression)
+		{
+			PrimaryKeyIndexConfiguration conf = null;
+			HasKey(keyExpression, key => conf = key);
+			return conf;
+		}
 #endif
 
 		//
@@ -147,7 +158,7 @@ namespace SolidCP.EnterpriseServer.Data.Extensions
 		// Returns:
 		//     An object that can be used to configure the primary key.
 #if NetCore
-		public virtual KeyBuilder<TEntity> HasKey(params string[] propertyNames) => Model.HasKey(propertyNames);
+		public virtual KeyBuilder<TEntity> HasKey(params string[] propertyNames ) => Model.HasKey(propertyNames);
 #endif
 
 		//
@@ -623,6 +634,8 @@ namespace SolidCP.EnterpriseServer.Data.Extensions
 		//     An object that can be used to configure the index.
 #if NetCore
 		public virtual IndexBuilder<TEntity> HasIndex(Expression<Func<TEntity, object?>> indexExpression, string name) => HasIndex(indexExpression, name);
+#elif NetFX
+		public virtual IndexConfiguration HasIndex(Expression<Func<TEntity, object?>> indexExpression, string name) => base.HasIndex(indexExpression).HasName(name);
 #endif
 
 		//
