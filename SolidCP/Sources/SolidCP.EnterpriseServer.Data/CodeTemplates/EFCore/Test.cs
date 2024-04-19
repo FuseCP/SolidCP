@@ -17,6 +17,7 @@ namespace SolidCP.EnterpriseServer.Data.CodeTemplates.EFCore
 {
     public class Test
     {
+
         public void Do(IEntityType EntityType, ModelCodeGenerationOptions Options, IServiceProvider services)
         {
             var annotationCodeGenerator = services.GetRequiredService<IAnnotationCodeGenerator>();
@@ -25,6 +26,7 @@ namespace SolidCP.EnterpriseServer.Data.CodeTemplates.EFCore
             var annotations = EntityType.GetDataAnnotations(annotationCodeGenerator);
             var coreAnnotations = annotations.Where(a => a.Type.FullName.Contains("EntityFrameworkCore"));
             var commonAnnotations = annotations.Except(coreAnnotations);
+            
         }
 
         public void Setup(DbContextOptionsBuilder builder)
@@ -50,6 +52,7 @@ namespace SolidCP.EnterpriseServer.Data.CodeTemplates.EFCore
                 default: throw new NotSupportedException("This DB flavor is not supported");
             }
         }
+
     }
 }
 #endif

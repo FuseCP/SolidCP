@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-#if !NETFRAMEWORK && !NETSTANDARD
+#if NetCore
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 #endif
-#if NETFRAMEWORK && !NETSTANDARD
+#if NetFX
 using System.Data.Entity;
 using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
@@ -16,6 +16,17 @@ using System.Data.Entity.Validation;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class AdditionalGroupConfiguration
+#if NetCore
+public partial class AdditionalGroupConfiguration //: IEntityTypeConfiguration<AdditionalGroup>
+#else
+public partial class AdditionalGroupConfiguration //:
+#endif
 {
+
+#if NetCore
+
+    //public partial void 
+
+#endif
+
 }

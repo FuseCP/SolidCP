@@ -202,10 +202,25 @@ public partial class <#= EntityType.Name #>
 <#
     var previousOutput = GenerationEnvironment;
     GenerationEnvironment = new StringBuilder();
+    var fxusings = usings.Where(u => u.StartsWith("System.Data.Entity"));
+    var coreusings = usings.Where(u => u.StartsWith("Microsoft.EntityFrameworkCore"));
+    usings = usings.Except(fxusings.Concat(coreusings))
+        .Distinct()
+        .OrderBy(x => x, new NamespaceComparer())
+        .ToList();
+    usingsfx = usingsfx.Concat(fxusings)
+        .Distinct()
+        .OrderBy(x => x, new NamespaceComparer())
+        .ToList();
+    usingscore = usingscore.Concat(coreusings)
+        .Distinct()
+        .OrderBy(x => x, new NamespaceComparer())
+        .ToList();
+
 #>
 #if ScaffoldedEntities
 <#
-    foreach (var ns in usings.Distinct().OrderBy(x => x, new NamespaceComparer()))
+    foreach (var ns in usings)
     {
 #>
 using <#= ns #>;
@@ -216,7 +231,7 @@ using <#= ns #>;
 #>
 #if NetCore
 <#
-      foreach (var ns in usingscore.Distinct().OrderBy(x => x, new NamespaceComparer()))
+      foreach (var ns in usingscore)
       {
 #>
 using <#= ns #>;
@@ -231,7 +246,7 @@ using <#= ns #>;
 #>
 #if NetFX
 <#
-      foreach (var ns in usingsfx.Distinct().OrderBy(x => x, new NamespaceComparer()))
+      foreach (var ns in usingsfx)
       {
 #>
 using <#= ns #>;

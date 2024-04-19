@@ -1,7 +1,6 @@
 ﻿#if ScaffoldedDbContext
 using System;
 using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
 using SolidCP.EnterpriseServer.Data.Entities;
 #if NetCore
 using Microsoft.EntityFrameworkCore;
@@ -230,25 +229,26 @@ namespace SolidCP.EnterpriseServer.Context
         {
             switch (context.Flavor)
             {
-                case DbFlavor.MsSql:
+                case Data.DbFlavor.MsSql:
                     builder.UseSqlServer(context.ConnectionString);
                     break;
-                case DbFlavor.SqlLite:
+                case Data.DbFlavor.SqlLite:
                     builder.UseSqlite(context.ConnectionString);
                     break;
-                case DbFlavor.MySql:
+                case Data.DbFlavor.MySql:
                     builder.UseMySql(context.ConnectionString, ServerVersion.AutoDetect(context.ConnectionString));
                     break;
-                case DbFlavor.MariaDb:
+                case Data.DbFlavor.MariaDb:
                     builder.UseMariaDB(context.ConnectionString);
                     break;
-                case DbFlavor.PostgreSql:
+                case Data.DbFlavor.PostgreSql:
                     builder.UseNpgsql(context.ConnectionString);
                     break;
                 default: throw new NotSupportedException("This DB flavor is not supported");
             }
         }
 #endif
+#if NetCore
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AccessToken>(entity =>
@@ -2123,6 +2123,7 @@ namespace SolidCP.EnterpriseServer.Context
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+#endif
     }
 }
 
@@ -2132,278 +2133,279 @@ namespace SolidCP.EnterpriseServer.Data {
     using GlobalDnsRecord = SolidCP.EnterpriseServer.Data.Entities.GlobalDnsRecord;
     using BackgroundTaskParameter = SolidCP.EnterpriseServer.Data.Entities.BackgroundTaskParameter;
 
+#if ScaffoldDbContextProperties
    public partial class DbContext {
+        DbSet<AccessToken> accessTokens = null;
+        public virtual DbSet<AccessToken> AccessTokens => accessTokens ?? (accessTokens = new DbSet<AccessToken>(BaseContext));
 
-        DbSet<AccessToken> _AccessTokens = null;
-        public virtual DbSet<AccessToken> AccessTokens => _AccessTokens ?? (_AccessTokens = new DbSet<AccessToken>(BaseContext));
+        DbSet<AdditionalGroup> additionalGroups = null;
+        public virtual DbSet<AdditionalGroup> AdditionalGroups => additionalGroups ?? (additionalGroups = new DbSet<AdditionalGroup>(BaseContext));
 
-        DbSet<AdditionalGroup> _AdditionalGroups = null;
-        public virtual DbSet<AdditionalGroup> AdditionalGroups => _AdditionalGroups ?? (_AdditionalGroups = new DbSet<AdditionalGroup>(BaseContext));
+        DbSet<AuditLog> auditLogs = null;
+        public virtual DbSet<AuditLog> AuditLogs => auditLogs ?? (auditLogs = new DbSet<AuditLog>(BaseContext));
 
-        DbSet<AuditLog> _AuditLogs = null;
-        public virtual DbSet<AuditLog> AuditLogs => _AuditLogs ?? (_AuditLogs = new DbSet<AuditLog>(BaseContext));
+        DbSet<AuditLogSource> auditLogSources = null;
+        public virtual DbSet<AuditLogSource> AuditLogSources => auditLogSources ?? (auditLogSources = new DbSet<AuditLogSource>(BaseContext));
 
-        DbSet<AuditLogSource> _AuditLogSources = null;
-        public virtual DbSet<AuditLogSource> AuditLogSources => _AuditLogSources ?? (_AuditLogSources = new DbSet<AuditLogSource>(BaseContext));
+        DbSet<AuditLogTask> auditLogTasks = null;
+        public virtual DbSet<AuditLogTask> AuditLogTasks => auditLogTasks ?? (auditLogTasks = new DbSet<AuditLogTask>(BaseContext));
 
-        DbSet<AuditLogTask> _AuditLogTasks = null;
-        public virtual DbSet<AuditLogTask> AuditLogTasks => _AuditLogTasks ?? (_AuditLogTasks = new DbSet<AuditLogTask>(BaseContext));
+        DbSet<BackgroundTask> backgroundTasks = null;
+        public virtual DbSet<BackgroundTask> BackgroundTasks => backgroundTasks ?? (backgroundTasks = new DbSet<BackgroundTask>(BaseContext));
 
-        DbSet<BackgroundTask> _BackgroundTasks = null;
-        public virtual DbSet<BackgroundTask> BackgroundTasks => _BackgroundTasks ?? (_BackgroundTasks = new DbSet<BackgroundTask>(BaseContext));
+        DbSet<BackgroundTaskLog> backgroundTaskLogs = null;
+        public virtual DbSet<BackgroundTaskLog> BackgroundTaskLogs => backgroundTaskLogs ?? (backgroundTaskLogs = new DbSet<BackgroundTaskLog>(BaseContext));
 
-        DbSet<BackgroundTaskLog> _BackgroundTaskLogs = null;
-        public virtual DbSet<BackgroundTaskLog> BackgroundTaskLogs => _BackgroundTaskLogs ?? (_BackgroundTaskLogs = new DbSet<BackgroundTaskLog>(BaseContext));
+        DbSet<BackgroundTaskParameter> backgroundTaskParameters = null;
+        public virtual DbSet<BackgroundTaskParameter> BackgroundTaskParameters => backgroundTaskParameters ?? (backgroundTaskParameters = new DbSet<BackgroundTaskParameter>(BaseContext));
 
-        DbSet<BackgroundTaskParameter> _BackgroundTaskParameters = null;
-        public virtual DbSet<BackgroundTaskParameter> BackgroundTaskParameters => _BackgroundTaskParameters ?? (_BackgroundTaskParameters = new DbSet<BackgroundTaskParameter>(BaseContext));
+        DbSet<BackgroundTaskStack> backgroundTaskStacks = null;
+        public virtual DbSet<BackgroundTaskStack> BackgroundTaskStacks => backgroundTaskStacks ?? (backgroundTaskStacks = new DbSet<BackgroundTaskStack>(BaseContext));
 
-        DbSet<BackgroundTaskStack> _BackgroundTaskStacks = null;
-        public virtual DbSet<BackgroundTaskStack> BackgroundTaskStacks => _BackgroundTaskStacks ?? (_BackgroundTaskStacks = new DbSet<BackgroundTaskStack>(BaseContext));
+        DbSet<BlackBerryUser> blackBerryUsers = null;
+        public virtual DbSet<BlackBerryUser> BlackBerryUsers => blackBerryUsers ?? (blackBerryUsers = new DbSet<BlackBerryUser>(BaseContext));
 
-        DbSet<BlackBerryUser> _BlackBerryUsers = null;
-        public virtual DbSet<BlackBerryUser> BlackBerryUsers => _BlackBerryUsers ?? (_BlackBerryUsers = new DbSet<BlackBerryUser>(BaseContext));
+        DbSet<Cluster> clusters = null;
+        public virtual DbSet<Cluster> Clusters => clusters ?? (clusters = new DbSet<Cluster>(BaseContext));
 
-        DbSet<Cluster> _Clusters = null;
-        public virtual DbSet<Cluster> Clusters => _Clusters ?? (_Clusters = new DbSet<Cluster>(BaseContext));
+        DbSet<Comment> comments = null;
+        public virtual DbSet<Comment> Comments => comments ?? (comments = new DbSet<Comment>(BaseContext));
 
-        DbSet<Comment> _Comments = null;
-        public virtual DbSet<Comment> Comments => _Comments ?? (_Comments = new DbSet<Comment>(BaseContext));
+        DbSet<Crmuser> crmusers = null;
+        public virtual DbSet<Crmuser> Crmusers => crmusers ?? (crmusers = new DbSet<Crmuser>(BaseContext));
 
-        DbSet<Crmuser> _Crmusers = null;
-        public virtual DbSet<Crmuser> Crmusers => _Crmusers ?? (_Crmusers = new DbSet<Crmuser>(BaseContext));
+        DbSet<Domain> domains = null;
+        public virtual DbSet<Domain> Domains => domains ?? (domains = new DbSet<Domain>(BaseContext));
 
-        DbSet<Domain> _Domains = null;
-        public virtual DbSet<Domain> Domains => _Domains ?? (_Domains = new DbSet<Domain>(BaseContext));
+        DbSet<DomainDnsRecord> domainDnsRecords = null;
+        public virtual DbSet<DomainDnsRecord> DomainDnsRecords => domainDnsRecords ?? (domainDnsRecords = new DbSet<DomainDnsRecord>(BaseContext));
 
-        DbSet<DomainDnsRecord> _DomainDnsRecords = null;
-        public virtual DbSet<DomainDnsRecord> DomainDnsRecords => _DomainDnsRecords ?? (_DomainDnsRecords = new DbSet<DomainDnsRecord>(BaseContext));
+        DbSet<EnterpriseFolder> enterpriseFolders = null;
+        public virtual DbSet<EnterpriseFolder> EnterpriseFolders => enterpriseFolders ?? (enterpriseFolders = new DbSet<EnterpriseFolder>(BaseContext));
 
-        DbSet<EnterpriseFolder> _EnterpriseFolders = null;
-        public virtual DbSet<EnterpriseFolder> EnterpriseFolders => _EnterpriseFolders ?? (_EnterpriseFolders = new DbSet<EnterpriseFolder>(BaseContext));
+        DbSet<EnterpriseFoldersOwaPermission> enterpriseFoldersOwaPermissions = null;
+        public virtual DbSet<EnterpriseFoldersOwaPermission> EnterpriseFoldersOwaPermissions => enterpriseFoldersOwaPermissions ?? (enterpriseFoldersOwaPermissions = new DbSet<EnterpriseFoldersOwaPermission>(BaseContext));
 
-        DbSet<EnterpriseFoldersOwaPermission> _EnterpriseFoldersOwaPermissions = null;
-        public virtual DbSet<EnterpriseFoldersOwaPermission> EnterpriseFoldersOwaPermissions => _EnterpriseFoldersOwaPermissions ?? (_EnterpriseFoldersOwaPermissions = new DbSet<EnterpriseFoldersOwaPermission>(BaseContext));
+        DbSet<ExchangeAccount> exchangeAccounts = null;
+        public virtual DbSet<ExchangeAccount> ExchangeAccounts => exchangeAccounts ?? (exchangeAccounts = new DbSet<ExchangeAccount>(BaseContext));
 
-        DbSet<ExchangeAccount> _ExchangeAccounts = null;
-        public virtual DbSet<ExchangeAccount> ExchangeAccounts => _ExchangeAccounts ?? (_ExchangeAccounts = new DbSet<ExchangeAccount>(BaseContext));
+        DbSet<ExchangeAccountEmailAddress> exchangeAccountEmailAddresses = null;
+        public virtual DbSet<ExchangeAccountEmailAddress> ExchangeAccountEmailAddresses => exchangeAccountEmailAddresses ?? (exchangeAccountEmailAddresses = new DbSet<ExchangeAccountEmailAddress>(BaseContext));
 
-        DbSet<ExchangeAccountEmailAddress> _ExchangeAccountEmailAddresses = null;
-        public virtual DbSet<ExchangeAccountEmailAddress> ExchangeAccountEmailAddresses => _ExchangeAccountEmailAddresses ?? (_ExchangeAccountEmailAddresses = new DbSet<ExchangeAccountEmailAddress>(BaseContext));
+        DbSet<ExchangeDeletedAccount> exchangeDeletedAccounts = null;
+        public virtual DbSet<ExchangeDeletedAccount> ExchangeDeletedAccounts => exchangeDeletedAccounts ?? (exchangeDeletedAccounts = new DbSet<ExchangeDeletedAccount>(BaseContext));
 
-        DbSet<ExchangeDeletedAccount> _ExchangeDeletedAccounts = null;
-        public virtual DbSet<ExchangeDeletedAccount> ExchangeDeletedAccounts => _ExchangeDeletedAccounts ?? (_ExchangeDeletedAccounts = new DbSet<ExchangeDeletedAccount>(BaseContext));
+        DbSet<ExchangeDisclaimer> exchangeDisclaimers = null;
+        public virtual DbSet<ExchangeDisclaimer> ExchangeDisclaimers => exchangeDisclaimers ?? (exchangeDisclaimers = new DbSet<ExchangeDisclaimer>(BaseContext));
 
-        DbSet<ExchangeDisclaimer> _ExchangeDisclaimers = null;
-        public virtual DbSet<ExchangeDisclaimer> ExchangeDisclaimers => _ExchangeDisclaimers ?? (_ExchangeDisclaimers = new DbSet<ExchangeDisclaimer>(BaseContext));
+        DbSet<ExchangeMailboxPlan> exchangeMailboxPlans = null;
+        public virtual DbSet<ExchangeMailboxPlan> ExchangeMailboxPlans => exchangeMailboxPlans ?? (exchangeMailboxPlans = new DbSet<ExchangeMailboxPlan>(BaseContext));
 
-        DbSet<ExchangeMailboxPlan> _ExchangeMailboxPlans = null;
-        public virtual DbSet<ExchangeMailboxPlan> ExchangeMailboxPlans => _ExchangeMailboxPlans ?? (_ExchangeMailboxPlans = new DbSet<ExchangeMailboxPlan>(BaseContext));
+        DbSet<ExchangeMailboxPlanRetentionPolicyTag> exchangeMailboxPlanRetentionPolicyTags = null;
+        public virtual DbSet<ExchangeMailboxPlanRetentionPolicyTag> ExchangeMailboxPlanRetentionPolicyTags => exchangeMailboxPlanRetentionPolicyTags ?? (exchangeMailboxPlanRetentionPolicyTags = new DbSet<ExchangeMailboxPlanRetentionPolicyTag>(BaseContext));
 
-        DbSet<ExchangeMailboxPlanRetentionPolicyTag> _ExchangeMailboxPlanRetentionPolicyTags = null;
-        public virtual DbSet<ExchangeMailboxPlanRetentionPolicyTag> ExchangeMailboxPlanRetentionPolicyTags => _ExchangeMailboxPlanRetentionPolicyTags ?? (_ExchangeMailboxPlanRetentionPolicyTags = new DbSet<ExchangeMailboxPlanRetentionPolicyTag>(BaseContext));
+        DbSet<ExchangeOrganization> exchangeOrganizations = null;
+        public virtual DbSet<ExchangeOrganization> ExchangeOrganizations => exchangeOrganizations ?? (exchangeOrganizations = new DbSet<ExchangeOrganization>(BaseContext));
 
-        DbSet<ExchangeOrganization> _ExchangeOrganizations = null;
-        public virtual DbSet<ExchangeOrganization> ExchangeOrganizations => _ExchangeOrganizations ?? (_ExchangeOrganizations = new DbSet<ExchangeOrganization>(BaseContext));
+        DbSet<ExchangeOrganizationDomain> exchangeOrganizationDomains = null;
+        public virtual DbSet<ExchangeOrganizationDomain> ExchangeOrganizationDomains => exchangeOrganizationDomains ?? (exchangeOrganizationDomains = new DbSet<ExchangeOrganizationDomain>(BaseContext));
 
-        DbSet<ExchangeOrganizationDomain> _ExchangeOrganizationDomains = null;
-        public virtual DbSet<ExchangeOrganizationDomain> ExchangeOrganizationDomains => _ExchangeOrganizationDomains ?? (_ExchangeOrganizationDomains = new DbSet<ExchangeOrganizationDomain>(BaseContext));
+        DbSet<ExchangeOrganizationSetting> exchangeOrganizationSettings = null;
+        public virtual DbSet<ExchangeOrganizationSetting> ExchangeOrganizationSettings => exchangeOrganizationSettings ?? (exchangeOrganizationSettings = new DbSet<ExchangeOrganizationSetting>(BaseContext));
 
-        DbSet<ExchangeOrganizationSetting> _ExchangeOrganizationSettings = null;
-        public virtual DbSet<ExchangeOrganizationSetting> ExchangeOrganizationSettings => _ExchangeOrganizationSettings ?? (_ExchangeOrganizationSettings = new DbSet<ExchangeOrganizationSetting>(BaseContext));
+        DbSet<ExchangeOrganizationSsFolder> exchangeOrganizationSsFolders = null;
+        public virtual DbSet<ExchangeOrganizationSsFolder> ExchangeOrganizationSsFolders => exchangeOrganizationSsFolders ?? (exchangeOrganizationSsFolders = new DbSet<ExchangeOrganizationSsFolder>(BaseContext));
 
-        DbSet<ExchangeOrganizationSsFolder> _ExchangeOrganizationSsFolders = null;
-        public virtual DbSet<ExchangeOrganizationSsFolder> ExchangeOrganizationSsFolders => _ExchangeOrganizationSsFolders ?? (_ExchangeOrganizationSsFolders = new DbSet<ExchangeOrganizationSsFolder>(BaseContext));
+        DbSet<ExchangeRetentionPolicyTag> exchangeRetentionPolicyTags = null;
+        public virtual DbSet<ExchangeRetentionPolicyTag> ExchangeRetentionPolicyTags => exchangeRetentionPolicyTags ?? (exchangeRetentionPolicyTags = new DbSet<ExchangeRetentionPolicyTag>(BaseContext));
 
-        DbSet<ExchangeRetentionPolicyTag> _ExchangeRetentionPolicyTags = null;
-        public virtual DbSet<ExchangeRetentionPolicyTag> ExchangeRetentionPolicyTags => _ExchangeRetentionPolicyTags ?? (_ExchangeRetentionPolicyTags = new DbSet<ExchangeRetentionPolicyTag>(BaseContext));
+        DbSet<GlobalDnsRecord> globalDnsRecords = null;
+        public virtual DbSet<GlobalDnsRecord> GlobalDnsRecords => globalDnsRecords ?? (globalDnsRecords = new DbSet<GlobalDnsRecord>(BaseContext));
 
-        DbSet<GlobalDnsRecord> _GlobalDnsRecords = null;
-        public virtual DbSet<GlobalDnsRecord> GlobalDnsRecords => _GlobalDnsRecords ?? (_GlobalDnsRecords = new DbSet<GlobalDnsRecord>(BaseContext));
+        DbSet<HostingPlan> hostingPlans = null;
+        public virtual DbSet<HostingPlan> HostingPlans => hostingPlans ?? (hostingPlans = new DbSet<HostingPlan>(BaseContext));
 
-        DbSet<HostingPlan> _HostingPlans = null;
-        public virtual DbSet<HostingPlan> HostingPlans => _HostingPlans ?? (_HostingPlans = new DbSet<HostingPlan>(BaseContext));
+        DbSet<HostingPlanQuota> hostingPlanQuotas = null;
+        public virtual DbSet<HostingPlanQuota> HostingPlanQuotas => hostingPlanQuotas ?? (hostingPlanQuotas = new DbSet<HostingPlanQuota>(BaseContext));
 
-        DbSet<HostingPlanQuota> _HostingPlanQuotas = null;
-        public virtual DbSet<HostingPlanQuota> HostingPlanQuotas => _HostingPlanQuotas ?? (_HostingPlanQuotas = new DbSet<HostingPlanQuota>(BaseContext));
+        DbSet<HostingPlanResource> hostingPlanResources = null;
+        public virtual DbSet<HostingPlanResource> HostingPlanResources => hostingPlanResources ?? (hostingPlanResources = new DbSet<HostingPlanResource>(BaseContext));
 
-        DbSet<HostingPlanResource> _HostingPlanResources = null;
-        public virtual DbSet<HostingPlanResource> HostingPlanResources => _HostingPlanResources ?? (_HostingPlanResources = new DbSet<HostingPlanResource>(BaseContext));
+        DbSet<Ipaddress> ipaddresses = null;
+        public virtual DbSet<Ipaddress> Ipaddresses => ipaddresses ?? (ipaddresses = new DbSet<Ipaddress>(BaseContext));
 
-        DbSet<Ipaddress> _Ipaddresses = null;
-        public virtual DbSet<Ipaddress> Ipaddresses => _Ipaddresses ?? (_Ipaddresses = new DbSet<Ipaddress>(BaseContext));
+        DbSet<LyncUser> lyncUsers = null;
+        public virtual DbSet<LyncUser> LyncUsers => lyncUsers ?? (lyncUsers = new DbSet<LyncUser>(BaseContext));
 
-        DbSet<LyncUser> _LyncUsers = null;
-        public virtual DbSet<LyncUser> LyncUsers => _LyncUsers ?? (_LyncUsers = new DbSet<LyncUser>(BaseContext));
+        DbSet<LyncUserPlan> lyncUserPlans = null;
+        public virtual DbSet<LyncUserPlan> LyncUserPlans => lyncUserPlans ?? (lyncUserPlans = new DbSet<LyncUserPlan>(BaseContext));
 
-        DbSet<LyncUserPlan> _LyncUserPlans = null;
-        public virtual DbSet<LyncUserPlan> LyncUserPlans => _LyncUserPlans ?? (_LyncUserPlans = new DbSet<LyncUserPlan>(BaseContext));
+        DbSet<Ocsuser> ocsusers = null;
+        public virtual DbSet<Ocsuser> Ocsusers => ocsusers ?? (ocsusers = new DbSet<Ocsuser>(BaseContext));
 
-        DbSet<Ocsuser> _Ocsusers = null;
-        public virtual DbSet<Ocsuser> Ocsusers => _Ocsusers ?? (_Ocsusers = new DbSet<Ocsuser>(BaseContext));
+        DbSet<Package> packages = null;
+        public virtual DbSet<Package> Packages => packages ?? (packages = new DbSet<Package>(BaseContext));
 
-        DbSet<Package> _Packages = null;
-        public virtual DbSet<Package> Packages => _Packages ?? (_Packages = new DbSet<Package>(BaseContext));
+        DbSet<PackageAddon> packageAddons = null;
+        public virtual DbSet<PackageAddon> PackageAddons => packageAddons ?? (packageAddons = new DbSet<PackageAddon>(BaseContext));
 
-        DbSet<PackageAddon> _PackageAddons = null;
-        public virtual DbSet<PackageAddon> PackageAddons => _PackageAddons ?? (_PackageAddons = new DbSet<PackageAddon>(BaseContext));
+        DbSet<PackageIpaddress> packageIpaddresses = null;
+        public virtual DbSet<PackageIpaddress> PackageIpaddresses => packageIpaddresses ?? (packageIpaddresses = new DbSet<PackageIpaddress>(BaseContext));
 
-        DbSet<PackageIpaddress> _PackageIpaddresses = null;
-        public virtual DbSet<PackageIpaddress> PackageIpaddresses => _PackageIpaddresses ?? (_PackageIpaddresses = new DbSet<PackageIpaddress>(BaseContext));
+        DbSet<PackageQuota> packageQuotas = null;
+        public virtual DbSet<PackageQuota> PackageQuotas => packageQuotas ?? (packageQuotas = new DbSet<PackageQuota>(BaseContext));
 
-        DbSet<PackageQuota> _PackageQuotas = null;
-        public virtual DbSet<PackageQuota> PackageQuotas => _PackageQuotas ?? (_PackageQuotas = new DbSet<PackageQuota>(BaseContext));
+        DbSet<PackageResource> packageResources = null;
+        public virtual DbSet<PackageResource> PackageResources => packageResources ?? (packageResources = new DbSet<PackageResource>(BaseContext));
 
-        DbSet<PackageResource> _PackageResources = null;
-        public virtual DbSet<PackageResource> PackageResources => _PackageResources ?? (_PackageResources = new DbSet<PackageResource>(BaseContext));
+        DbSet<PackageSetting> packageSettings = null;
+        public virtual DbSet<PackageSetting> PackageSettings => packageSettings ?? (packageSettings = new DbSet<PackageSetting>(BaseContext));
 
-        DbSet<PackageSetting> _PackageSettings = null;
-        public virtual DbSet<PackageSetting> PackageSettings => _PackageSettings ?? (_PackageSettings = new DbSet<PackageSetting>(BaseContext));
+        DbSet<PackageVlan> packageVlans = null;
+        public virtual DbSet<PackageVlan> PackageVlans => packageVlans ?? (packageVlans = new DbSet<PackageVlan>(BaseContext));
 
-        DbSet<PackageVlan> _PackageVlans = null;
-        public virtual DbSet<PackageVlan> PackageVlans => _PackageVlans ?? (_PackageVlans = new DbSet<PackageVlan>(BaseContext));
+        DbSet<PackagesBandwidth> packagesBandwidths = null;
+        public virtual DbSet<PackagesBandwidth> PackagesBandwidths => packagesBandwidths ?? (packagesBandwidths = new DbSet<PackagesBandwidth>(BaseContext));
 
-        DbSet<PackagesBandwidth> _PackagesBandwidths = null;
-        public virtual DbSet<PackagesBandwidth> PackagesBandwidths => _PackagesBandwidths ?? (_PackagesBandwidths = new DbSet<PackagesBandwidth>(BaseContext));
+        DbSet<PackagesDiskspace> packagesDiskspaces = null;
+        public virtual DbSet<PackagesDiskspace> PackagesDiskspaces => packagesDiskspaces ?? (packagesDiskspaces = new DbSet<PackagesDiskspace>(BaseContext));
 
-        DbSet<PackagesDiskspace> _PackagesDiskspaces = null;
-        public virtual DbSet<PackagesDiskspace> PackagesDiskspaces => _PackagesDiskspaces ?? (_PackagesDiskspaces = new DbSet<PackagesDiskspace>(BaseContext));
+        DbSet<PackagesTreeCache> packagesTreeCaches = null;
+        public virtual DbSet<PackagesTreeCache> PackagesTreeCaches => packagesTreeCaches ?? (packagesTreeCaches = new DbSet<PackagesTreeCache>(BaseContext));
 
-        DbSet<PackagesTreeCache> _PackagesTreeCaches = null;
-        public virtual DbSet<PackagesTreeCache> PackagesTreeCaches => _PackagesTreeCaches ?? (_PackagesTreeCaches = new DbSet<PackagesTreeCache>(BaseContext));
+        DbSet<PrivateIpaddress> privateIpaddresses = null;
+        public virtual DbSet<PrivateIpaddress> PrivateIpaddresses => privateIpaddresses ?? (privateIpaddresses = new DbSet<PrivateIpaddress>(BaseContext));
 
-        DbSet<PrivateIpaddress> _PrivateIpaddresses = null;
-        public virtual DbSet<PrivateIpaddress> PrivateIpaddresses => _PrivateIpaddresses ?? (_PrivateIpaddresses = new DbSet<PrivateIpaddress>(BaseContext));
+        DbSet<PrivateNetworkVlan> privateNetworkVlans = null;
+        public virtual DbSet<PrivateNetworkVlan> PrivateNetworkVlans => privateNetworkVlans ?? (privateNetworkVlans = new DbSet<PrivateNetworkVlan>(BaseContext));
 
-        DbSet<PrivateNetworkVlan> _PrivateNetworkVlans = null;
-        public virtual DbSet<PrivateNetworkVlan> PrivateNetworkVlans => _PrivateNetworkVlans ?? (_PrivateNetworkVlans = new DbSet<PrivateNetworkVlan>(BaseContext));
+        DbSet<Provider> providers = null;
+        public virtual DbSet<Provider> Providers => providers ?? (providers = new DbSet<Provider>(BaseContext));
 
-        DbSet<Provider> _Providers = null;
-        public virtual DbSet<Provider> Providers => _Providers ?? (_Providers = new DbSet<Provider>(BaseContext));
+        DbSet<Quota> quotas = null;
+        public virtual DbSet<Quota> Quotas => quotas ?? (quotas = new DbSet<Quota>(BaseContext));
 
-        DbSet<Quota> _Quotas = null;
-        public virtual DbSet<Quota> Quotas => _Quotas ?? (_Quotas = new DbSet<Quota>(BaseContext));
+        DbSet<Rdscertificate> rdscertificates = null;
+        public virtual DbSet<Rdscertificate> Rdscertificates => rdscertificates ?? (rdscertificates = new DbSet<Rdscertificate>(BaseContext));
 
-        DbSet<Rdscertificate> _Rdscertificates = null;
-        public virtual DbSet<Rdscertificate> Rdscertificates => _Rdscertificates ?? (_Rdscertificates = new DbSet<Rdscertificate>(BaseContext));
+        DbSet<Rdscollection> rdscollections = null;
+        public virtual DbSet<Rdscollection> Rdscollections => rdscollections ?? (rdscollections = new DbSet<Rdscollection>(BaseContext));
 
-        DbSet<Rdscollection> _Rdscollections = null;
-        public virtual DbSet<Rdscollection> Rdscollections => _Rdscollections ?? (_Rdscollections = new DbSet<Rdscollection>(BaseContext));
+        DbSet<RdscollectionSetting> rdscollectionSettings = null;
+        public virtual DbSet<RdscollectionSetting> RdscollectionSettings => rdscollectionSettings ?? (rdscollectionSettings = new DbSet<RdscollectionSetting>(BaseContext));
 
-        DbSet<RdscollectionSetting> _RdscollectionSettings = null;
-        public virtual DbSet<RdscollectionSetting> RdscollectionSettings => _RdscollectionSettings ?? (_RdscollectionSettings = new DbSet<RdscollectionSetting>(BaseContext));
+        DbSet<RdscollectionUser> rdscollectionUsers = null;
+        public virtual DbSet<RdscollectionUser> RdscollectionUsers => rdscollectionUsers ?? (rdscollectionUsers = new DbSet<RdscollectionUser>(BaseContext));
 
-        DbSet<RdscollectionUser> _RdscollectionUsers = null;
-        public virtual DbSet<RdscollectionUser> RdscollectionUsers => _RdscollectionUsers ?? (_RdscollectionUsers = new DbSet<RdscollectionUser>(BaseContext));
+        DbSet<Rdsmessage> rdsmessages = null;
+        public virtual DbSet<Rdsmessage> Rdsmessages => rdsmessages ?? (rdsmessages = new DbSet<Rdsmessage>(BaseContext));
 
-        DbSet<Rdsmessage> _Rdsmessages = null;
-        public virtual DbSet<Rdsmessage> Rdsmessages => _Rdsmessages ?? (_Rdsmessages = new DbSet<Rdsmessage>(BaseContext));
+        DbSet<Rdsserver> rdsservers = null;
+        public virtual DbSet<Rdsserver> Rdsservers => rdsservers ?? (rdsservers = new DbSet<Rdsserver>(BaseContext));
 
-        DbSet<Rdsserver> _Rdsservers = null;
-        public virtual DbSet<Rdsserver> Rdsservers => _Rdsservers ?? (_Rdsservers = new DbSet<Rdsserver>(BaseContext));
+        DbSet<RdsserverSetting> rdsserverSettings = null;
+        public virtual DbSet<RdsserverSetting> RdsserverSettings => rdsserverSettings ?? (rdsserverSettings = new DbSet<RdsserverSetting>(BaseContext));
 
-        DbSet<RdsserverSetting> _RdsserverSettings = null;
-        public virtual DbSet<RdsserverSetting> RdsserverSettings => _RdsserverSettings ?? (_RdsserverSettings = new DbSet<RdsserverSetting>(BaseContext));
+        DbSet<ResourceGroup> resourceGroups = null;
+        public virtual DbSet<ResourceGroup> ResourceGroups => resourceGroups ?? (resourceGroups = new DbSet<ResourceGroup>(BaseContext));
 
-        DbSet<ResourceGroup> _ResourceGroups = null;
-        public virtual DbSet<ResourceGroup> ResourceGroups => _ResourceGroups ?? (_ResourceGroups = new DbSet<ResourceGroup>(BaseContext));
+        DbSet<ResourceGroupDnsRecord> resourceGroupDnsRecords = null;
+        public virtual DbSet<ResourceGroupDnsRecord> ResourceGroupDnsRecords => resourceGroupDnsRecords ?? (resourceGroupDnsRecords = new DbSet<ResourceGroupDnsRecord>(BaseContext));
 
-        DbSet<ResourceGroupDnsRecord> _ResourceGroupDnsRecords = null;
-        public virtual DbSet<ResourceGroupDnsRecord> ResourceGroupDnsRecords => _ResourceGroupDnsRecords ?? (_ResourceGroupDnsRecords = new DbSet<ResourceGroupDnsRecord>(BaseContext));
+        DbSet<Schedule> schedules = null;
+        public virtual DbSet<Schedule> Schedules => schedules ?? (schedules = new DbSet<Schedule>(BaseContext));
 
-        DbSet<Schedule> _Schedules = null;
-        public virtual DbSet<Schedule> Schedules => _Schedules ?? (_Schedules = new DbSet<Schedule>(BaseContext));
+        DbSet<ScheduleParameter> scheduleParameters = null;
+        public virtual DbSet<ScheduleParameter> ScheduleParameters => scheduleParameters ?? (scheduleParameters = new DbSet<ScheduleParameter>(BaseContext));
 
-        DbSet<ScheduleParameter> _ScheduleParameters = null;
-        public virtual DbSet<ScheduleParameter> ScheduleParameters => _ScheduleParameters ?? (_ScheduleParameters = new DbSet<ScheduleParameter>(BaseContext));
+        DbSet<ScheduleTask> scheduleTasks = null;
+        public virtual DbSet<ScheduleTask> ScheduleTasks => scheduleTasks ?? (scheduleTasks = new DbSet<ScheduleTask>(BaseContext));
 
-        DbSet<ScheduleTask> _ScheduleTasks = null;
-        public virtual DbSet<ScheduleTask> ScheduleTasks => _ScheduleTasks ?? (_ScheduleTasks = new DbSet<ScheduleTask>(BaseContext));
+        DbSet<ScheduleTaskParameter> scheduleTaskParameters = null;
+        public virtual DbSet<ScheduleTaskParameter> ScheduleTaskParameters => scheduleTaskParameters ?? (scheduleTaskParameters = new DbSet<ScheduleTaskParameter>(BaseContext));
 
-        DbSet<ScheduleTaskParameter> _ScheduleTaskParameters = null;
-        public virtual DbSet<ScheduleTaskParameter> ScheduleTaskParameters => _ScheduleTaskParameters ?? (_ScheduleTaskParameters = new DbSet<ScheduleTaskParameter>(BaseContext));
+        DbSet<ScheduleTaskViewConfiguration> scheduleTaskViewConfigurations = null;
+        public virtual DbSet<ScheduleTaskViewConfiguration> ScheduleTaskViewConfigurations => scheduleTaskViewConfigurations ?? (scheduleTaskViewConfigurations = new DbSet<ScheduleTaskViewConfiguration>(BaseContext));
 
-        DbSet<ScheduleTaskViewConfiguration> _ScheduleTaskViewConfigurations = null;
-        public virtual DbSet<ScheduleTaskViewConfiguration> ScheduleTaskViewConfigurations => _ScheduleTaskViewConfigurations ?? (_ScheduleTaskViewConfigurations = new DbSet<ScheduleTaskViewConfiguration>(BaseContext));
+        DbSet<Server> servers = null;
+        public virtual DbSet<Server> Servers => servers ?? (servers = new DbSet<Server>(BaseContext));
 
-        DbSet<Server> _Servers = null;
-        public virtual DbSet<Server> Servers => _Servers ?? (_Servers = new DbSet<Server>(BaseContext));
+        DbSet<Service> services = null;
+        public virtual DbSet<Service> Services => services ?? (services = new DbSet<Service>(BaseContext));
 
-        DbSet<Service> _Services = null;
-        public virtual DbSet<Service> Services => _Services ?? (_Services = new DbSet<Service>(BaseContext));
+        DbSet<ServiceDefaultProperty> serviceDefaultProperties = null;
+        public virtual DbSet<ServiceDefaultProperty> ServiceDefaultProperties => serviceDefaultProperties ?? (serviceDefaultProperties = new DbSet<ServiceDefaultProperty>(BaseContext));
 
-        DbSet<ServiceDefaultProperty> _ServiceDefaultProperties = null;
-        public virtual DbSet<ServiceDefaultProperty> ServiceDefaultProperties => _ServiceDefaultProperties ?? (_ServiceDefaultProperties = new DbSet<ServiceDefaultProperty>(BaseContext));
+        DbSet<ServiceItem> serviceItems = null;
+        public virtual DbSet<ServiceItem> ServiceItems => serviceItems ?? (serviceItems = new DbSet<ServiceItem>(BaseContext));
 
-        DbSet<ServiceItem> _ServiceItems = null;
-        public virtual DbSet<ServiceItem> ServiceItems => _ServiceItems ?? (_ServiceItems = new DbSet<ServiceItem>(BaseContext));
+        DbSet<ServiceItemProperty> serviceItemProperties = null;
+        public virtual DbSet<ServiceItemProperty> ServiceItemProperties => serviceItemProperties ?? (serviceItemProperties = new DbSet<ServiceItemProperty>(BaseContext));
 
-        DbSet<ServiceItemProperty> _ServiceItemProperties = null;
-        public virtual DbSet<ServiceItemProperty> ServiceItemProperties => _ServiceItemProperties ?? (_ServiceItemProperties = new DbSet<ServiceItemProperty>(BaseContext));
+        DbSet<ServiceItemType> serviceItemTypes = null;
+        public virtual DbSet<ServiceItemType> ServiceItemTypes => serviceItemTypes ?? (serviceItemTypes = new DbSet<ServiceItemType>(BaseContext));
 
-        DbSet<ServiceItemType> _ServiceItemTypes = null;
-        public virtual DbSet<ServiceItemType> ServiceItemTypes => _ServiceItemTypes ?? (_ServiceItemTypes = new DbSet<ServiceItemType>(BaseContext));
+        DbSet<ServiceProperty> serviceProperties = null;
+        public virtual DbSet<ServiceProperty> ServiceProperties => serviceProperties ?? (serviceProperties = new DbSet<ServiceProperty>(BaseContext));
 
-        DbSet<ServiceProperty> _ServiceProperties = null;
-        public virtual DbSet<ServiceProperty> ServiceProperties => _ServiceProperties ?? (_ServiceProperties = new DbSet<ServiceProperty>(BaseContext));
+        DbSet<SfBuser> sfBusers = null;
+        public virtual DbSet<SfBuser> SfBusers => sfBusers ?? (sfBusers = new DbSet<SfBuser>(BaseContext));
 
-        DbSet<SfBuser> _SfBusers = null;
-        public virtual DbSet<SfBuser> SfBusers => _SfBusers ?? (_SfBusers = new DbSet<SfBuser>(BaseContext));
+        DbSet<SfBuserPlan> sfBuserPlans = null;
+        public virtual DbSet<SfBuserPlan> SfBuserPlans => sfBuserPlans ?? (sfBuserPlans = new DbSet<SfBuserPlan>(BaseContext));
 
-        DbSet<SfBuserPlan> _SfBuserPlans = null;
-        public virtual DbSet<SfBuserPlan> SfBuserPlans => _SfBuserPlans ?? (_SfBuserPlans = new DbSet<SfBuserPlan>(BaseContext));
+        DbSet<Sslcertificate> sslcertificates = null;
+        public virtual DbSet<Sslcertificate> Sslcertificates => sslcertificates ?? (sslcertificates = new DbSet<Sslcertificate>(BaseContext));
 
-        DbSet<Sslcertificate> _Sslcertificates = null;
-        public virtual DbSet<Sslcertificate> Sslcertificates => _Sslcertificates ?? (_Sslcertificates = new DbSet<Sslcertificate>(BaseContext));
+        DbSet<StorageSpace> storageSpaces = null;
+        public virtual DbSet<StorageSpace> StorageSpaces => storageSpaces ?? (storageSpaces = new DbSet<StorageSpace>(BaseContext));
 
-        DbSet<StorageSpace> _StorageSpaces = null;
-        public virtual DbSet<StorageSpace> StorageSpaces => _StorageSpaces ?? (_StorageSpaces = new DbSet<StorageSpace>(BaseContext));
+        DbSet<StorageSpaceFolder> storageSpaceFolders = null;
+        public virtual DbSet<StorageSpaceFolder> StorageSpaceFolders => storageSpaceFolders ?? (storageSpaceFolders = new DbSet<StorageSpaceFolder>(BaseContext));
 
-        DbSet<StorageSpaceFolder> _StorageSpaceFolders = null;
-        public virtual DbSet<StorageSpaceFolder> StorageSpaceFolders => _StorageSpaceFolders ?? (_StorageSpaceFolders = new DbSet<StorageSpaceFolder>(BaseContext));
+        DbSet<StorageSpaceLevel> storageSpaceLevels = null;
+        public virtual DbSet<StorageSpaceLevel> StorageSpaceLevels => storageSpaceLevels ?? (storageSpaceLevels = new DbSet<StorageSpaceLevel>(BaseContext));
 
-        DbSet<StorageSpaceLevel> _StorageSpaceLevels = null;
-        public virtual DbSet<StorageSpaceLevel> StorageSpaceLevels => _StorageSpaceLevels ?? (_StorageSpaceLevels = new DbSet<StorageSpaceLevel>(BaseContext));
+        DbSet<StorageSpaceLevelResourceGroup> storageSpaceLevelResourceGroups = null;
+        public virtual DbSet<StorageSpaceLevelResourceGroup> StorageSpaceLevelResourceGroups => storageSpaceLevelResourceGroups ?? (storageSpaceLevelResourceGroups = new DbSet<StorageSpaceLevelResourceGroup>(BaseContext));
 
-        DbSet<StorageSpaceLevelResourceGroup> _StorageSpaceLevelResourceGroups = null;
-        public virtual DbSet<StorageSpaceLevelResourceGroup> StorageSpaceLevelResourceGroups => _StorageSpaceLevelResourceGroups ?? (_StorageSpaceLevelResourceGroups = new DbSet<StorageSpaceLevelResourceGroup>(BaseContext));
+        DbSet<SupportServiceLevel> supportServiceLevels = null;
+        public virtual DbSet<SupportServiceLevel> SupportServiceLevels => supportServiceLevels ?? (supportServiceLevels = new DbSet<SupportServiceLevel>(BaseContext));
 
-        DbSet<SupportServiceLevel> _SupportServiceLevels = null;
-        public virtual DbSet<SupportServiceLevel> SupportServiceLevels => _SupportServiceLevels ?? (_SupportServiceLevels = new DbSet<SupportServiceLevel>(BaseContext));
+        DbSet<SystemSetting> systemSettings = null;
+        public virtual DbSet<SystemSetting> SystemSettings => systemSettings ?? (systemSettings = new DbSet<SystemSetting>(BaseContext));
 
-        DbSet<SystemSetting> _SystemSettings = null;
-        public virtual DbSet<SystemSetting> SystemSettings => _SystemSettings ?? (_SystemSettings = new DbSet<SystemSetting>(BaseContext));
+        DbSet<Theme> themes = null;
+        public virtual DbSet<Theme> Themes => themes ?? (themes = new DbSet<Theme>(BaseContext));
 
-        DbSet<Theme> _Themes = null;
-        public virtual DbSet<Theme> Themes => _Themes ?? (_Themes = new DbSet<Theme>(BaseContext));
+        DbSet<ThemeSetting> themeSettings = null;
+        public virtual DbSet<ThemeSetting> ThemeSettings => themeSettings ?? (themeSettings = new DbSet<ThemeSetting>(BaseContext));
 
-        DbSet<ThemeSetting> _ThemeSettings = null;
-        public virtual DbSet<ThemeSetting> ThemeSettings => _ThemeSettings ?? (_ThemeSettings = new DbSet<ThemeSetting>(BaseContext));
+        DbSet<User> users = null;
+        public virtual DbSet<User> Users => users ?? (users = new DbSet<User>(BaseContext));
 
-        DbSet<User> _Users = null;
-        public virtual DbSet<User> Users => _Users ?? (_Users = new DbSet<User>(BaseContext));
+        DbSet<UserSetting> userSettings = null;
+        public virtual DbSet<UserSetting> UserSettings => userSettings ?? (userSettings = new DbSet<UserSetting>(BaseContext));
 
-        DbSet<UserSetting> _UserSettings = null;
-        public virtual DbSet<UserSetting> UserSettings => _UserSettings ?? (_UserSettings = new DbSet<UserSetting>(BaseContext));
+        DbSet<UsersDetailed> usersDetaileds = null;
+        public virtual DbSet<UsersDetailed> UsersDetaileds => usersDetaileds ?? (usersDetaileds = new DbSet<UsersDetailed>(BaseContext));
 
-        DbSet<UsersDetailed> _UsersDetaileds = null;
-        public virtual DbSet<UsersDetailed> UsersDetaileds => _UsersDetaileds ?? (_UsersDetaileds = new DbSet<UsersDetailed>(BaseContext));
+        DbSet<Version> versions = null;
+        public virtual DbSet<Version> Versions => versions ?? (versions = new DbSet<Version>(BaseContext));
 
-        DbSet<Version> _Versions = null;
-        public virtual DbSet<Version> Versions => _Versions ?? (_Versions = new DbSet<Version>(BaseContext));
+        DbSet<VirtualGroup> virtualGroups = null;
+        public virtual DbSet<VirtualGroup> VirtualGroups => virtualGroups ?? (virtualGroups = new DbSet<VirtualGroup>(BaseContext));
 
-        DbSet<VirtualGroup> _VirtualGroups = null;
-        public virtual DbSet<VirtualGroup> VirtualGroups => _VirtualGroups ?? (_VirtualGroups = new DbSet<VirtualGroup>(BaseContext));
+        DbSet<VirtualService> virtualServices = null;
+        public virtual DbSet<VirtualService> VirtualServices => virtualServices ?? (virtualServices = new DbSet<VirtualService>(BaseContext));
 
-        DbSet<VirtualService> _VirtualServices = null;
-        public virtual DbSet<VirtualService> VirtualServices => _VirtualServices ?? (_VirtualServices = new DbSet<VirtualService>(BaseContext));
+        DbSet<WebDavAccessToken> webDavAccessTokens = null;
+        public virtual DbSet<WebDavAccessToken> WebDavAccessTokens => webDavAccessTokens ?? (webDavAccessTokens = new DbSet<WebDavAccessToken>(BaseContext));
 
-        DbSet<WebDavAccessToken> _WebDavAccessTokens = null;
-        public virtual DbSet<WebDavAccessToken> WebDavAccessTokens => _WebDavAccessTokens ?? (_WebDavAccessTokens = new DbSet<WebDavAccessToken>(BaseContext));
-
-        DbSet<WebDavPortalUsersSetting> _WebDavPortalUsersSettings = null;
-        public virtual DbSet<WebDavPortalUsersSetting> WebDavPortalUsersSettings => _WebDavPortalUsersSettings ?? (_WebDavPortalUsersSettings = new DbSet<WebDavPortalUsersSetting>(BaseContext));
+        DbSet<WebDavPortalUsersSetting> webDavPortalUsersSettings = null;
+        public virtual DbSet<WebDavPortalUsersSetting> WebDavPortalUsersSettings => webDavPortalUsersSettings ?? (webDavPortalUsersSettings = new DbSet<WebDavPortalUsersSetting>(BaseContext));
 
     }
+#endif
 }
 #endif

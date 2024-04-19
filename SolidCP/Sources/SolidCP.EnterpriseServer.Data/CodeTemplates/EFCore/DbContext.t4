@@ -66,7 +66,7 @@
     {
 #>
 // This file is auto generated, only edit when you add tables without scaffolding.
-namespace <#= NamespaceHint.Replace(".Data", ".Context") #>
+namespace <#= NamespaceHint.Replace(".Data.Configuration", ".Context") #>
 {
 
 <#
@@ -117,19 +117,19 @@ namespace <#= NamespaceHint.Replace(".Data", ".Context") #>
         {
             switch (context.Flavor)
             {
-                case DbFlavor.MsSql:
+                case Data.DbFlavor.MsSql:
                     builder.UseSqlServer(context.ConnectionString);
                     break;
-                case DbFlavor.SqlLite:
+                case Data.DbFlavor.SqlLite:
                     builder.UseSqlite(context.ConnectionString);
                     break;
-                case DbFlavor.MySql:
+                case Data.DbFlavor.MySql:
                     builder.UseMySql(context.ConnectionString, ServerVersion.AutoDetect(context.ConnectionString));
                     break;
-                case DbFlavor.MariaDb:
+                case Data.DbFlavor.MariaDb:
                     builder.UseMariaDB(context.ConnectionString);
                     break;
-                case DbFlavor.PostgreSql:
+                case Data.DbFlavor.PostgreSql:
                     builder.UseNpgsql(context.ConnectionString);
                     break;
                 default: throw new NotSupportedException("This DB flavor is not supported");
@@ -140,6 +140,7 @@ namespace <#= NamespaceHint.Replace(".Data", ".Context") #>
     }
 
 #>
+#if NetCore
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 <#
@@ -383,6 +384,7 @@ namespace <#= NamespaceHint.Replace(".Data", ".Context") #>
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+#endif
     }
 }
 
@@ -397,27 +399,48 @@ namespace SolidCP.EnterpriseServer.Data {
     }
 #>
 
+#if ScaffoldDbContextProperties
    public partial class DbContext {
-
 <#
     foreach (var entityType in Model.GetEntityTypes().Where(e => !e.IsSimpleManyToManyJoinEntityType()))
     {
+
+    var tmpVarName = entityType.GetDbSetName();
+    var ccTmpVarName = ToCamelCase(tmpVarName);
+    if (ccTmpVarName != tmpVarName) tmpVarName = ccTmpVarName;
+    else tmpVarName = $"_{ccTmpVarName}";
 #>
-        DbSet<<#= entityType.Name #>> _<#= entityType.GetDbSetName() #> = null;
-        public virtual DbSet<<#= entityType.Name #>> <#= entityType.GetDbSetName() #> => _<#= entityType.GetDbSetName() #> ?? (_<#= entityType.GetDbSetName() #> = new DbSet<<#= entityType.Name #>>(BaseContext));
+        DbSet<<#= entityType.Name #>> <#= tmpVarName #> = null;
+        public virtual DbSet<<#= entityType.Name #>> <#= entityType.GetDbSetName() #> => <#= tmpVarName #> ?? (<#= tmpVarName #> = new DbSet<<#= entityType.Name #>>(BaseContext));
 
 <#
     }
 #>
     }
+#endif
 }
 <#
     mainEnvironment = GenerationEnvironment;
     GenerationEnvironment = new StringBuilder();
+    var fxusings = usings.Where(u => u.StartsWith("System.Data.Entity"));
+    var coreusings = usings.Where(u => u.StartsWith("Microsoft.EntityFrameworkCore"));
+    usings = usings.Except(fxusings.Concat(coreusings))
+        .Distinct()
+        .OrderBy(x => x, new NamespaceComparer())
+        .ToList();
+    usingsfx = usingsfx.Concat(fxusings)
+        .Distinct()
+        .OrderBy(x => x, new NamespaceComparer())
+        .ToList();
+    usingscore = usingscore.Concat(coreusings)
+        .Distinct()
+        .OrderBy(x => x, new NamespaceComparer())
+        .ToList();
+
 #>
 #if ScaffoldedDbContext
 <#
-    foreach (var ns in usings.Distinct().OrderBy(x => x, new NamespaceComparer()))
+    foreach (var ns in usings)
     {
 #>
 using <#= ns #>;
@@ -428,7 +451,7 @@ using <#= ns #>;
 #>
 #if NetCore
 <#
-      foreach (var ns in usingscore.Distinct().OrderBy(x => x, new NamespaceComparer()))
+      foreach (var ns in usingscore)
       {
 #>
 using <#= ns #>;
@@ -443,7 +466,7 @@ using <#= ns #>;
 #>
 #if NetFX
 <#
-      foreach (var ns in usingsfx.Distinct().OrderBy(x => x, new NamespaceComparer()))
+      foreach (var ns in usingsfx)
       {
 #>
 using <#= ns #>;
@@ -459,3 +482,10 @@ using <#= ns #>;
     GenerationEnvironment.Append(mainEnvironment);
 #>
 #endif
+<#+
+    private string ToCamelCase(string name)
+    {
+        if (name != null && name.Length > 0 && char.IsUpper(name[0])) return char.ToLower(name[0]) + name.Substring(1);
+        return name;
+    }
+#>

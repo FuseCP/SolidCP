@@ -20,12 +20,14 @@
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
         <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
         <PackageReference Include="MySql.Data" Version="8.3.0" />
-    </ItemGroup>
+		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+	</ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
         <PackageReference Include="EntityFramework" Version="6.4.4" />
         <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
         <PackageReference Include="MySql.Data" Version="8.3.0" />
+		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
@@ -44,16 +46,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Compile Remove="SolidCPBaseContext.cs" />
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj" />
+        <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
     </ItemGroup>
 
     <Target Name="Scaffold">
         <Exec Command="dotnet ef dbcontext scaffold &quot;$(ConnectionString)&quot; Microsoft.EntityFrameworkCore.SqlServer --output-dir Entities --context-dir Configuration --context SolidCPBaseContext --force" />
-        <Move SourceFiles="Configuration\SolidCPContext.cs" DestinationFiles="SolidCPContext.cs" />
+        <Move SourceFiles="Configuration\SolidCPBaseContext.cs" DestinationFiles="SolidCPBaseContext.cs" ContinueOnError="true" />
     </Target>
 
     <ItemGroup>
@@ -66,7 +65,6 @@
             <AutoGen>True</AutoGen>
             <DependentUpon>CreateModel.tt</DependentUpon>
         </None>
-        <None Include="SolidCPBaseContext.cs" />
     </ItemGroup>
 
     <ItemGroup>
@@ -83,6 +81,9 @@
     </ItemGroup>
 
     <ItemGroup>
+        <None Update="CodeTemplates\EFCore\EntityType.t4">
+          <Generator></Generator>
+        </None>
         <None Update="CodeTemplates\EFCore\EntityTypeConfiguration.t4">
           <Generator></Generator>
         </None>

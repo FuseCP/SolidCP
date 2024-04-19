@@ -32,6 +32,7 @@
 
     <ItemGroup>
         <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
+        <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -55,10 +56,6 @@
         <None Include="Reports\OverusageReport.xss">
             <DependentUpon>OverusageReport.xsd</DependentUpon>
         </None>
-    </ItemGroup>
-    <ItemGroup>
-        <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-        <PackageReference Include="System.Runtime" Version="4.3.1" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />

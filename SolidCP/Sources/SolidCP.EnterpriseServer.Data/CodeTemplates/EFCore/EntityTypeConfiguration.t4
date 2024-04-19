@@ -62,8 +62,19 @@ namespace <#= NamespaceHint #>;
 <#
     }
 #>
-public partial class <#= EntityType.Name #>Configuration
+#if NetCore
+public partial class <#= EntityType.Name #>Configuration //: IEntityTypeConfiguration<<#= EntityType.Name #>>
+#else
+public partial class <#= EntityType.Name #>Configuration //:
+#endif
 {
+
+#if NetCore
+
+    //public partial void 
+
+#endif
+
 }
 <#
     var previousOutput = GenerationEnvironment;
@@ -78,7 +89,7 @@ using <#= ns #>;
 
     if (usingscore.Any()) {
 #>
-#if !NETFRAMEWORK && !NETSTANDARD
+#if NetCore
 <#
       foreach (var ns in usingscore.Distinct().OrderBy(x => x, new NamespaceComparer()))
       {
@@ -93,7 +104,7 @@ using <#= ns #>;
 
     if (usingsfx.Any()) {
 #>
-#if NETFRAMEWORK && !NETSTANDARD
+#if NetFX
 <#
       foreach (var ns in usingsfx.Distinct().OrderBy(x => x, new NamespaceComparer()))
       {
