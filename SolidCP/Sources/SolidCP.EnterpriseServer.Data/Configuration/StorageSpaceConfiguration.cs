@@ -1,26 +1,19 @@
-﻿// This file is auto generated, do not edit.
-using System;
+﻿using System;
 using System.Collections.Generic;
 using SolidCP.EnterpriseServer.Data.Configuration;
 using SolidCP.EnterpriseServer.Data.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
 #if NetCore
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 #endif
 #if NetFX
 using System.Data.Entity;
-using System.Data.Entity.ModelConfiguration;
-using System.Data.Entity.Spatial;
-using System.Data.Entity.Validation;
 #endif
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class StorageSpaceConfiguration: Extensions.EntityTypeConfiguration<StorageSpace>
 {
-    public DbFlavor Flavor { get; set; } = DbFlavor.Unknown;
-
     public StorageSpaceConfiguration(): base() { }
     public StorageSpaceConfiguration(DbFlavor flavor): base(flavor) { }
 
@@ -28,9 +21,14 @@ public partial class StorageSpaceConfiguration: Extensions.EntityTypeConfigurati
     public override void Configure() {
         HasKey(e => e.Id).HasName("PK__StorageS__3214EC07B8B9A6D1");
 
+#if NetCore
         HasOne(d => d.Server).WithMany(p => p.StorageSpaces).HasConstraintName("FK_StorageSpaces_ServerId");
 
         HasOne(d => d.Service).WithMany(p => p.StorageSpaces).HasConstraintName("FK_StorageSpaces_ServiceId");
+#else
+        HasRequired(d => d.Server).WithMany(p => p.StorageSpaces);
+        HasRequired(d => d.Service).WithMany(p => p.StorageSpaces);
+#endif
     }
 #endif
-}
+    }

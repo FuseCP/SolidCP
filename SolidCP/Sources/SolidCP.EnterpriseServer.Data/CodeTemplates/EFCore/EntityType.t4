@@ -52,6 +52,7 @@ namespace <#= NamespaceHint #>;
     if (!string.IsNullOrEmpty(EntityType.GetComment()))
     {
 #>
+// Type for <#= EntityType.ClrType #>
 /// <summary>
 /// <#= code.XmlComment(EntityType.GetComment()) #>
 /// </summary>

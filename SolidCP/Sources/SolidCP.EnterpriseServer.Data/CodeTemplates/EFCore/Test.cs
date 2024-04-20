@@ -19,6 +19,8 @@ namespace SolidCP.EnterpriseServer.Data.CodeTemplates.EFCore
     public class Test
     {
 
+
+
         public void Do(IEntityType EntityType, ModelCodeGenerationOptions Options, IServiceProvider services)
         {
             var annotationCodeGenerator = services.GetRequiredService<IAnnotationCodeGenerator>();

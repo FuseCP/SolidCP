@@ -1,32 +1,27 @@
-﻿// This file is auto generated, do not edit.
-using System;
+﻿using System;
 using System.Collections.Generic;
 using SolidCP.EnterpriseServer.Data.Configuration;
 using SolidCP.EnterpriseServer.Data.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
 #if NetCore
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 #endif
 #if NetFX
 using System.Data.Entity;
-using System.Data.Entity.ModelConfiguration;
-using System.Data.Entity.Spatial;
-using System.Data.Entity.Validation;
 #endif
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class PackageConfiguration: Extensions.EntityTypeConfiguration<Package>
 {
-    public DbFlavor Flavor { get; set; } = DbFlavor.Unknown;
-
     public PackageConfiguration(): base() { }
     public PackageConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {
-        ToTable(tb => tb.HasTrigger("Update_StatusIDchangeDate"));
+
+#if NetCore
+        Core.ToTable(tb => tb.HasTrigger("Update_StatusIDchangeDate"));
 
         Property(e => e.StatusIdchangeDate).HasDefaultValueSql("(getdate())");
 
@@ -55,6 +50,18 @@ public partial class PackageConfiguration: Extensions.EntityTypeConfiguration<Pa
                     j.IndexerProperty<int>("PackageId").HasColumnName("PackageID");
                     j.IndexerProperty<int>("ServiceId").HasColumnName("ServiceID");
                 });
+#else
+        HasOptional(p => p.ParentPackage).WithMany(p => p.InverseParentPackage);
+        HasRequired(p => p.Plan).WithMany(p => p.Packages);
+        HasRequired(p => p.Server).WithMany(p => p.Packages);
+        HasRequired(p => p.User).WithMany(p => p.Packages);
+
+        // TODO EF is this correct?
+        HasMany(p => p.Services).WithMany(p => p.Packages)
+            .Map(c => c.ToTable("PackageService")
+                .MapRightKey("ServiceId")
+                .MapLeftKey("PackageId"));
+#endif
     }
 #endif
 }

@@ -1,36 +1,37 @@
-﻿// This file is auto generated, do not edit.
-using System;
+﻿using System;
 using System.Collections.Generic;
 using SolidCP.EnterpriseServer.Data.Configuration;
 using SolidCP.EnterpriseServer.Data.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
 #if NetCore
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 #endif
 #if NetFX
 using System.Data.Entity;
-using System.Data.Entity.ModelConfiguration;
-using System.Data.Entity.Spatial;
-using System.Data.Entity.Validation;
 #endif
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class ExchangeAccountConfiguration: Extensions.EntityTypeConfiguration<ExchangeAccount>
+public partial class ExchangeAccountConfiguration : Extensions.EntityTypeConfiguration<ExchangeAccount>
 {
-    public DbFlavor Flavor { get; set; } = DbFlavor.Unknown;
-
-    public ExchangeAccountConfiguration(): base() { }
-    public ExchangeAccountConfiguration(DbFlavor flavor): base(flavor) { }
+	public ExchangeAccountConfiguration() : base() { }
+	public ExchangeAccountConfiguration(DbFlavor flavor) : base(flavor) { }
 
 #if NetCore || NetFX
-    public override void Configure() {
-        Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");
+	public override void Configure()
+	{
+
+#if NetCore
+        if (IsMsSql) Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");
 
         HasOne(d => d.Item).WithMany(p => p.ExchangeAccounts).HasConstraintName("FK_ExchangeAccounts_ServiceItems");
 
         HasOne(d => d.MailboxPlan).WithMany(p => p.ExchangeAccounts).HasConstraintName("FK_ExchangeAccounts_ExchangeMailboxPlans");
-    }
+#else
+		HasRequired(d => d.Item).WithMany(p => p.ExchangeAccounts);
+		// TODO optional or required?
+		HasOptional(d => d.MailboxPlan).WithMany(p => p.ExchangeAccounts);
+#endif
+	}
 #endif
 }
