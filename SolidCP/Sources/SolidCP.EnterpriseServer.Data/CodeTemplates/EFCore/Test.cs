@@ -30,6 +30,17 @@ namespace SolidCP.EnterpriseServer.Data.CodeTemplates.EFCore
 
 			var match = Regex.Match("", @$"^using\s+{Regex.Escape(EntityType.Name)}\s*=.*?$", RegexOptions.Multiline);
 
+			var firstProperty = true;
+            foreach (var property in EntityType.GetProperties())
+            {
+                var propertyFluentApiCalls = property.GetFluentApiCalls(annotationCodeGenerator)
+                    ?.FilterChain(c => !(Options.UseDataAnnotations && c.IsHandledByDataAnnotations)
+                        && !(c.Method == "IsRequired" && Options.UseNullableReferenceTypes && !property.ClrType.IsValueType));
+                if (propertyFluentApiCalls == null)
+                {
+                    continue;
+                }
+            }
 		}
 
 		public void Setup(DbContextOptionsBuilder builder)

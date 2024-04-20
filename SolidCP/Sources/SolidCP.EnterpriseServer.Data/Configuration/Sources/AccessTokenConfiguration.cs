@@ -28,18 +28,7 @@ public partial class AccessTokenConfiguration: Extensions.EntityTypeConfiguratio
     public override void Configure() {
         HasKey(e => e.Id).HasName("PK__AccessTo__3214EC27A32557FE");
 
-        HasIndex(e => e.AccountId, "AccessTokensIdx_AccountID");
-
-        Property(e => e.Id).HasColumnName("ID");
-        Property(e => e.AccountId).HasColumnName("AccountID");
-        Property(e => e.ExpirationDate).HasColumnType("datetime");
-        Property(e => e.SmsResponse)
-                .HasMaxLength(100)
-                .IsUnicode(false);
-
-        HasOne(d => d.Account).WithMany(p => p.AccessTokens)
-                .HasForeignKey(d => d.AccountId)
-                .HasConstraintName("FK_AccessTokens_UserId");
+        HasOne(d => d.Account).WithMany(p => p.AccessTokens).HasConstraintName("FK_AccessTokens_UserId");
     }
 #endif
 }

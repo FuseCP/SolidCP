@@ -17,15 +17,24 @@ using System.Data.Entity.Validation;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class SfBuserConfiguration: Extensions.EntityTypeConfiguration<SfBuser>
+public partial class AccessTokenConfiguration: Extensions.EntityTypeConfiguration<AccessToken>
 {
     public DbFlavor Flavor { get; set; } = DbFlavor.Unknown;
 
-    public SfBuserConfiguration(): base() { }
-    public SfBuserConfiguration(DbFlavor flavor): base(flavor) { }
+    public AccessTokenConfiguration(): base() { }
+    public AccessTokenConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {
+        HasKey(e => e.Id).HasName("PK__AccessTo__3214EC27A32557FE");
+
+        Property(e => e.SmsResponse).IsUnicode(false);
+#if NetCore
+        HasOne(d => d.Account).WithMany(p => p.AccessTokens).HasConstraintName("FK_AccessTokens_UserId");
+#else
+        // TODO HasRequired or HasOptional?
+        HasRequired(d => d.Account).WithMany(p => p.AccessTokens);
+#endif
     }
 #endif
-}
+    }

@@ -1,1 +1,1 @@
-﻿msbuild /t:Scaffold
+﻿dotnet build -target:Scaffold

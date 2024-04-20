@@ -33,7 +33,7 @@
     {
         "System",
         "System.Collections.Generic",
-        "Microsoft.EntityFrameworkCore"
+        "SolidCP.EnterpriseServer.Data.Configuration"
     };
 
     var usingscore = new List<string>()
@@ -79,9 +79,12 @@ namespace <#= NamespaceHint.Replace(".Data.Configuration.Sources", ".Context") #
         public <#= Options.ContextName #>(Data.DbContext context): this(new Data.Extensions.DbOptions<<#= Options.ContextName #>>(context)) { }
         public <#= Options.ContextName #>(DbContextOptions<<#= Options.ContextName #>> options): base(options) { }
 #elif NetFX
-        public <#= Options.ContextName #>(Data.DbContext context): base(context.ConnectionString) { }
+        public <#= Options.ContextName #>(Data.DbContext context): base(context.ConnectionString) {
+            if (options is Data.Extensions.DbOptions<DbContextBase> opts) Flavor = opts.Flavor;
+        }
 #endif
 
+        public Data.DbFlavor Flavor { get; set; } = Data.DbFlavor.Unknown;
 <#
     foreach (var entityType in Model.GetEntityTypes().Where(e => !e.IsSimpleManyToManyJoinEntityType()))
     {
@@ -130,11 +133,30 @@ namespace <#= NamespaceHint.Replace(".Data.Configuration.Sources", ".Context") #
 
 #if ScaffoldDbContextEntities
 <#
+    var anyConfiguration = false;
+
     foreach (var entityType in Model.GetEntityTypes().Where(e => !e.IsSimpleManyToManyJoinEntityType()))
     {
+        anyConfiguration = true;
 #>
-              model.ApplyConfiguration(new <#= entityType.Name #>Configuration(Flavor));
+            model.ApplyConfiguration(new <#= entityType.Name #>Configuration(Flavor));
 <#
+    }
+
+    foreach (var sequence in Model.GetSequences())
+    {
+        anyConfiguration = true;
+        var needsType = sequence.Type != typeof(long);
+        var needsSchema = !string.IsNullOrEmpty(sequence.Schema) && sequence.Schema != sequence.Model.GetDefaultSchema();
+        var sequenceFluentApiCalls = sequence.GetFluentApiCalls(annotationCodeGenerator);
+#>
+            modelBuilder.HasSequence<#= needsType ? $"<{code.Reference(sequence.Type)}>" : "" #>(<#= code.Literal(sequence.Name) #><#= needsSchema ? $", {code.Literal(sequence.Schema)}" : "" #>)<#= code.Fragment(sequenceFluentApiCalls, indent: 3) #>;
+<#
+    }
+
+    if (anyConfiguration)
+    {
+        WriteLine("");
     }
 #>
 #endif
@@ -161,7 +183,7 @@ namespace <#= NamespaceHint.Replace(".Data.Configuration.Sources", ".Context") #
         protected void OnModelCreatingComplete(ModelBuilder modelBuilder)
         {
 <#
-    var anyConfiguration = false;
+    anyConfiguration = false;
 
     var modelFluentApiCalls = Model.GetFluentApiCalls(annotationCodeGenerator);
     if (modelFluentApiCalls != null)

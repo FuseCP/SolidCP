@@ -14,6 +14,8 @@
 <#@ import namespace="Microsoft.EntityFrameworkCore.Design" #>
 <#@ import namespace="Microsoft.Extensions.DependencyInjection" #>
 <#
+    const bool AddNetCoreAnnotations = true;
+
     if (EntityType.IsSimpleManyToManyJoinEntityType())
     {
         // Don't scaffold these
@@ -69,7 +71,7 @@ namespace <#= NamespaceHint #>;
 <#
         }
 
-        if (coreAnnotations.Any())
+        if (AddNetCoreAnnotations && coreAnnotations.Any())
         {
 #>
 #if NetCore
@@ -108,9 +110,8 @@ public partial class <#= EntityType.Name #>
 
         if (Options.UseDataAnnotations)
         {
-            var dataAnnotations = property.GetDataAnnotations(annotationCodeGenerator)
+            var annotations = property.GetDataAnnotations(annotationCodeGenerator)
                 .Where(a => !(a.Type == typeof(RequiredAttribute) && Options.UseNullableReferenceTypes && !property.ClrType.IsValueType));
-            var annotations = property.GetDataAnnotations(annotationCodeGenerator);
             var coreAnnotations = annotations.Where(a => a.Type.FullName.Contains("EntityFrameworkCore"));
             var commonAnnotations = annotations.Where(a => !a.Type.FullName.Contains("EntityFrameworkCore"));
 
@@ -121,7 +122,7 @@ public partial class <#= EntityType.Name #>
 <#
             }
 
-            if (coreAnnotations.Any())
+            if (AddNetCoreAnnotations && coreAnnotations.Any())
             {
 #>
 #if NetCore
@@ -154,10 +155,30 @@ public partial class <#= EntityType.Name #>
 
         if (Options.UseDataAnnotations)
         {
-            foreach (var dataAnnotation in navigation.GetDataAnnotations(annotationCodeGenerator))
+            var annotations = navigation.GetDataAnnotations(annotationCodeGenerator);
+            var coreAnnotations = annotations.Where(a => a.Type.FullName.Contains("EntityFrameworkCore"));
+            var commonAnnotations = annotations.Where(a => !a.Type.FullName.Contains("EntityFrameworkCore"));
+
+            foreach (var annotation in commonAnnotations)
             {
 #>
-    <#= code.Fragment(dataAnnotation) #>
+    <#= code.Fragment(annotation) #>
+<#
+            }
+
+            if (AddNetCoreAnnotations && coreAnnotations.Any()) 
+            {
+#>
+@if NetCore
+<#
+                foreach (var annotation in coreAnnotations)
+                {
+#>
+    <#= code.Fragment(annotation) #>
+<#
+                }            
+#>
+#endif
 <#
             }
         }
@@ -185,10 +206,30 @@ public partial class <#= EntityType.Name #>
 
         if (Options.UseDataAnnotations)
         {
-            foreach (var dataAnnotation in skipNavigation.GetDataAnnotations(annotationCodeGenerator))
+            var annotations = skipNavigation.GetDataAnnotations(annotationCodeGenerator);
+            var coreAnnotations = annotations.Where(a => a.Type.FullName.Contains("EntityFrameworkCore"));
+            var commonAnnotations = annotations.Where(a => !a.Type.FullName.Contains("EntityFrameworkCore"));
+
+            foreach (var annotation in commonAnnotations)
             {
 #>
-    <#= code.Fragment(dataAnnotation) #>
+    <#= code.Fragment(annotation) #>
+<#
+            }
+
+            if (AddNetCoreAnnotations && coreAnnotations.Any())
+            {
+#>
+#if NetCore
+<#
+                foreach (var annotation in coreAnnotations)
+                {
+#>
+    <#= code.Fragment(annotation) #>
+<#
+                }
+#>
+#endif
 <#
             }
         }

@@ -51,7 +51,7 @@
     </ItemGroup>
 
     <Target Name="Scaffold">
-        <Exec Command="dotnet ef dbcontext scaffold &quot;$(ConnectionString)&quot; Microsoft.EntityFrameworkCore.SqlServer --output-dir Entities --context-dir Configuration\Sources --context DbContextBase --force" />
+        <Exec Command="dotnet ef dbcontext scaffold &quot;$(ConnectionString)&quot; Microsoft.EntityFrameworkCore.SqlServer --data-annotations --output-dir Entities --context-dir Configuration\Sources --context DbContextBase --force" />
         <Move SourceFiles="Configuration\Sources\DbContextBase.cs" DestinationFiles="DbContextBase.Source.cs" ContinueOnError="true" />
     </Target>
 
@@ -62,6 +62,8 @@
     <ItemGroup>
         <None Include="CodeTemplates\EFCore\Aliases.cs" />
         <Compile Remove="CodeTemplates\EFCore\Aliases.cs" />
+		<!--<Compile Remove="Configuration\**\*.cs" />
+		<None Include="Configuration\**\*.cs" />-->
 
 		<None Include="DbContextBase.Source.cs" />
 		<Compile Remove="DbContextBase.Source.cs" />

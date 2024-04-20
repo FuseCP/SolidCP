@@ -2,6 +2,7 @@
 #if ScaffoldedDbContext
 using System;
 using System.Collections.Generic;
+using SolidCP.EnterpriseServer.Data.Configuration;
 using SolidCP.EnterpriseServer.Data.Entities;
 #if NetCore
 using Microsoft.EntityFrameworkCore;
@@ -31,9 +32,12 @@ namespace SolidCP.EnterpriseServer.Context
         public DbContextBase(Data.DbContext context): this(new Data.Extensions.DbOptions<DbContextBase>(context)) { }
         public DbContextBase(DbContextOptions<DbContextBase> options): base(options) { }
 #elif NetFX
-        public DbContextBase(Data.DbContext context): base(context.ConnectionString) { }
+        public DbContextBase(Data.DbContext context): base(context.ConnectionString) {
+            if (options is Data.Extensions.DbOptions<DbContextBase> opts) Flavor = opts.Flavor;
+        }
 #endif
 
+        public Data.DbFlavor Flavor { get; set; } = Data.DbFlavor.Unknown;
         public virtual DbSet<AccessToken> AccessTokens { get; set; }
 
         public virtual DbSet<AdditionalGroup> AdditionalGroups { get; set; }
@@ -249,96 +253,97 @@ namespace SolidCP.EnterpriseServer.Context
 #endif
 
 #if ScaffoldDbContextEntities
-              model.ApplyConfiguration(new AccessTokenConfiguration(Flavor));
-              model.ApplyConfiguration(new AdditionalGroupConfiguration(Flavor));
-              model.ApplyConfiguration(new AuditLogConfiguration(Flavor));
-              model.ApplyConfiguration(new AuditLogSourceConfiguration(Flavor));
-              model.ApplyConfiguration(new AuditLogTaskConfiguration(Flavor));
-              model.ApplyConfiguration(new BackgroundTaskConfiguration(Flavor));
-              model.ApplyConfiguration(new BackgroundTaskLogConfiguration(Flavor));
-              model.ApplyConfiguration(new BackgroundTaskParameterConfiguration(Flavor));
-              model.ApplyConfiguration(new BackgroundTaskStackConfiguration(Flavor));
-              model.ApplyConfiguration(new BlackBerryUserConfiguration(Flavor));
-              model.ApplyConfiguration(new ClusterConfiguration(Flavor));
-              model.ApplyConfiguration(new CommentConfiguration(Flavor));
-              model.ApplyConfiguration(new CrmuserConfiguration(Flavor));
-              model.ApplyConfiguration(new DomainConfiguration(Flavor));
-              model.ApplyConfiguration(new DomainDnsRecordConfiguration(Flavor));
-              model.ApplyConfiguration(new EnterpriseFolderConfiguration(Flavor));
-              model.ApplyConfiguration(new EnterpriseFoldersOwaPermissionConfiguration(Flavor));
-              model.ApplyConfiguration(new ExchangeAccountConfiguration(Flavor));
-              model.ApplyConfiguration(new ExchangeAccountEmailAddressConfiguration(Flavor));
-              model.ApplyConfiguration(new ExchangeDeletedAccountConfiguration(Flavor));
-              model.ApplyConfiguration(new ExchangeDisclaimerConfiguration(Flavor));
-              model.ApplyConfiguration(new ExchangeMailboxPlanConfiguration(Flavor));
-              model.ApplyConfiguration(new ExchangeMailboxPlanRetentionPolicyTagConfiguration(Flavor));
-              model.ApplyConfiguration(new ExchangeOrganizationConfiguration(Flavor));
-              model.ApplyConfiguration(new ExchangeOrganizationDomainConfiguration(Flavor));
-              model.ApplyConfiguration(new ExchangeOrganizationSettingConfiguration(Flavor));
-              model.ApplyConfiguration(new ExchangeOrganizationSsFolderConfiguration(Flavor));
-              model.ApplyConfiguration(new ExchangeRetentionPolicyTagConfiguration(Flavor));
-              model.ApplyConfiguration(new GlobalDnsRecordConfiguration(Flavor));
-              model.ApplyConfiguration(new HostingPlanConfiguration(Flavor));
-              model.ApplyConfiguration(new HostingPlanQuotaConfiguration(Flavor));
-              model.ApplyConfiguration(new HostingPlanResourceConfiguration(Flavor));
-              model.ApplyConfiguration(new IpaddressConfiguration(Flavor));
-              model.ApplyConfiguration(new LyncUserConfiguration(Flavor));
-              model.ApplyConfiguration(new LyncUserPlanConfiguration(Flavor));
-              model.ApplyConfiguration(new OcsuserConfiguration(Flavor));
-              model.ApplyConfiguration(new PackageConfiguration(Flavor));
-              model.ApplyConfiguration(new PackageAddonConfiguration(Flavor));
-              model.ApplyConfiguration(new PackageIpaddressConfiguration(Flavor));
-              model.ApplyConfiguration(new PackageQuotaConfiguration(Flavor));
-              model.ApplyConfiguration(new PackageResourceConfiguration(Flavor));
-              model.ApplyConfiguration(new PackageSettingConfiguration(Flavor));
-              model.ApplyConfiguration(new PackageVlanConfiguration(Flavor));
-              model.ApplyConfiguration(new PackagesBandwidthConfiguration(Flavor));
-              model.ApplyConfiguration(new PackagesDiskspaceConfiguration(Flavor));
-              model.ApplyConfiguration(new PackagesTreeCacheConfiguration(Flavor));
-              model.ApplyConfiguration(new PrivateIpaddressConfiguration(Flavor));
-              model.ApplyConfiguration(new PrivateNetworkVlanConfiguration(Flavor));
-              model.ApplyConfiguration(new ProviderConfiguration(Flavor));
-              model.ApplyConfiguration(new QuotaConfiguration(Flavor));
-              model.ApplyConfiguration(new RdscertificateConfiguration(Flavor));
-              model.ApplyConfiguration(new RdscollectionConfiguration(Flavor));
-              model.ApplyConfiguration(new RdscollectionSettingConfiguration(Flavor));
-              model.ApplyConfiguration(new RdscollectionUserConfiguration(Flavor));
-              model.ApplyConfiguration(new RdsmessageConfiguration(Flavor));
-              model.ApplyConfiguration(new RdsserverConfiguration(Flavor));
-              model.ApplyConfiguration(new RdsserverSettingConfiguration(Flavor));
-              model.ApplyConfiguration(new ResourceGroupConfiguration(Flavor));
-              model.ApplyConfiguration(new ResourceGroupDnsRecordConfiguration(Flavor));
-              model.ApplyConfiguration(new ScheduleConfiguration(Flavor));
-              model.ApplyConfiguration(new ScheduleParameterConfiguration(Flavor));
-              model.ApplyConfiguration(new ScheduleTaskConfiguration(Flavor));
-              model.ApplyConfiguration(new ScheduleTaskParameterConfiguration(Flavor));
-              model.ApplyConfiguration(new ScheduleTaskViewConfigurationConfiguration(Flavor));
-              model.ApplyConfiguration(new ServerConfiguration(Flavor));
-              model.ApplyConfiguration(new ServiceConfiguration(Flavor));
-              model.ApplyConfiguration(new ServiceDefaultPropertyConfiguration(Flavor));
-              model.ApplyConfiguration(new ServiceItemConfiguration(Flavor));
-              model.ApplyConfiguration(new ServiceItemPropertyConfiguration(Flavor));
-              model.ApplyConfiguration(new ServiceItemTypeConfiguration(Flavor));
-              model.ApplyConfiguration(new ServicePropertyConfiguration(Flavor));
-              model.ApplyConfiguration(new SfBuserConfiguration(Flavor));
-              model.ApplyConfiguration(new SfBuserPlanConfiguration(Flavor));
-              model.ApplyConfiguration(new SslcertificateConfiguration(Flavor));
-              model.ApplyConfiguration(new StorageSpaceConfiguration(Flavor));
-              model.ApplyConfiguration(new StorageSpaceFolderConfiguration(Flavor));
-              model.ApplyConfiguration(new StorageSpaceLevelConfiguration(Flavor));
-              model.ApplyConfiguration(new StorageSpaceLevelResourceGroupConfiguration(Flavor));
-              model.ApplyConfiguration(new SupportServiceLevelConfiguration(Flavor));
-              model.ApplyConfiguration(new SystemSettingConfiguration(Flavor));
-              model.ApplyConfiguration(new ThemeConfiguration(Flavor));
-              model.ApplyConfiguration(new ThemeSettingConfiguration(Flavor));
-              model.ApplyConfiguration(new UserConfiguration(Flavor));
-              model.ApplyConfiguration(new UserSettingConfiguration(Flavor));
-              model.ApplyConfiguration(new UsersDetailedConfiguration(Flavor));
-              model.ApplyConfiguration(new VersionConfiguration(Flavor));
-              model.ApplyConfiguration(new VirtualGroupConfiguration(Flavor));
-              model.ApplyConfiguration(new VirtualServiceConfiguration(Flavor));
-              model.ApplyConfiguration(new WebDavAccessTokenConfiguration(Flavor));
-              model.ApplyConfiguration(new WebDavPortalUsersSettingConfiguration(Flavor));
+            model.ApplyConfiguration(new AccessTokenConfiguration(Flavor));
+            model.ApplyConfiguration(new AdditionalGroupConfiguration(Flavor));
+            model.ApplyConfiguration(new AuditLogConfiguration(Flavor));
+            model.ApplyConfiguration(new AuditLogSourceConfiguration(Flavor));
+            model.ApplyConfiguration(new AuditLogTaskConfiguration(Flavor));
+            model.ApplyConfiguration(new BackgroundTaskConfiguration(Flavor));
+            model.ApplyConfiguration(new BackgroundTaskLogConfiguration(Flavor));
+            model.ApplyConfiguration(new BackgroundTaskParameterConfiguration(Flavor));
+            model.ApplyConfiguration(new BackgroundTaskStackConfiguration(Flavor));
+            model.ApplyConfiguration(new BlackBerryUserConfiguration(Flavor));
+            model.ApplyConfiguration(new ClusterConfiguration(Flavor));
+            model.ApplyConfiguration(new CommentConfiguration(Flavor));
+            model.ApplyConfiguration(new CrmuserConfiguration(Flavor));
+            model.ApplyConfiguration(new DomainConfiguration(Flavor));
+            model.ApplyConfiguration(new DomainDnsRecordConfiguration(Flavor));
+            model.ApplyConfiguration(new EnterpriseFolderConfiguration(Flavor));
+            model.ApplyConfiguration(new EnterpriseFoldersOwaPermissionConfiguration(Flavor));
+            model.ApplyConfiguration(new ExchangeAccountConfiguration(Flavor));
+            model.ApplyConfiguration(new ExchangeAccountEmailAddressConfiguration(Flavor));
+            model.ApplyConfiguration(new ExchangeDeletedAccountConfiguration(Flavor));
+            model.ApplyConfiguration(new ExchangeDisclaimerConfiguration(Flavor));
+            model.ApplyConfiguration(new ExchangeMailboxPlanConfiguration(Flavor));
+            model.ApplyConfiguration(new ExchangeMailboxPlanRetentionPolicyTagConfiguration(Flavor));
+            model.ApplyConfiguration(new ExchangeOrganizationConfiguration(Flavor));
+            model.ApplyConfiguration(new ExchangeOrganizationDomainConfiguration(Flavor));
+            model.ApplyConfiguration(new ExchangeOrganizationSettingConfiguration(Flavor));
+            model.ApplyConfiguration(new ExchangeOrganizationSsFolderConfiguration(Flavor));
+            model.ApplyConfiguration(new ExchangeRetentionPolicyTagConfiguration(Flavor));
+            model.ApplyConfiguration(new GlobalDnsRecordConfiguration(Flavor));
+            model.ApplyConfiguration(new HostingPlanConfiguration(Flavor));
+            model.ApplyConfiguration(new HostingPlanQuotaConfiguration(Flavor));
+            model.ApplyConfiguration(new HostingPlanResourceConfiguration(Flavor));
+            model.ApplyConfiguration(new IpaddressConfiguration(Flavor));
+            model.ApplyConfiguration(new LyncUserConfiguration(Flavor));
+            model.ApplyConfiguration(new LyncUserPlanConfiguration(Flavor));
+            model.ApplyConfiguration(new OcsuserConfiguration(Flavor));
+            model.ApplyConfiguration(new PackageConfiguration(Flavor));
+            model.ApplyConfiguration(new PackageAddonConfiguration(Flavor));
+            model.ApplyConfiguration(new PackageIpaddressConfiguration(Flavor));
+            model.ApplyConfiguration(new PackageQuotaConfiguration(Flavor));
+            model.ApplyConfiguration(new PackageResourceConfiguration(Flavor));
+            model.ApplyConfiguration(new PackageSettingConfiguration(Flavor));
+            model.ApplyConfiguration(new PackageVlanConfiguration(Flavor));
+            model.ApplyConfiguration(new PackagesBandwidthConfiguration(Flavor));
+            model.ApplyConfiguration(new PackagesDiskspaceConfiguration(Flavor));
+            model.ApplyConfiguration(new PackagesTreeCacheConfiguration(Flavor));
+            model.ApplyConfiguration(new PrivateIpaddressConfiguration(Flavor));
+            model.ApplyConfiguration(new PrivateNetworkVlanConfiguration(Flavor));
+            model.ApplyConfiguration(new ProviderConfiguration(Flavor));
+            model.ApplyConfiguration(new QuotaConfiguration(Flavor));
+            model.ApplyConfiguration(new RdscertificateConfiguration(Flavor));
+            model.ApplyConfiguration(new RdscollectionConfiguration(Flavor));
+            model.ApplyConfiguration(new RdscollectionSettingConfiguration(Flavor));
+            model.ApplyConfiguration(new RdscollectionUserConfiguration(Flavor));
+            model.ApplyConfiguration(new RdsmessageConfiguration(Flavor));
+            model.ApplyConfiguration(new RdsserverConfiguration(Flavor));
+            model.ApplyConfiguration(new RdsserverSettingConfiguration(Flavor));
+            model.ApplyConfiguration(new ResourceGroupConfiguration(Flavor));
+            model.ApplyConfiguration(new ResourceGroupDnsRecordConfiguration(Flavor));
+            model.ApplyConfiguration(new ScheduleConfiguration(Flavor));
+            model.ApplyConfiguration(new ScheduleParameterConfiguration(Flavor));
+            model.ApplyConfiguration(new ScheduleTaskConfiguration(Flavor));
+            model.ApplyConfiguration(new ScheduleTaskParameterConfiguration(Flavor));
+            model.ApplyConfiguration(new ScheduleTaskViewConfigurationConfiguration(Flavor));
+            model.ApplyConfiguration(new ServerConfiguration(Flavor));
+            model.ApplyConfiguration(new ServiceConfiguration(Flavor));
+            model.ApplyConfiguration(new ServiceDefaultPropertyConfiguration(Flavor));
+            model.ApplyConfiguration(new ServiceItemConfiguration(Flavor));
+            model.ApplyConfiguration(new ServiceItemPropertyConfiguration(Flavor));
+            model.ApplyConfiguration(new ServiceItemTypeConfiguration(Flavor));
+            model.ApplyConfiguration(new ServicePropertyConfiguration(Flavor));
+            model.ApplyConfiguration(new SfBuserConfiguration(Flavor));
+            model.ApplyConfiguration(new SfBuserPlanConfiguration(Flavor));
+            model.ApplyConfiguration(new SslcertificateConfiguration(Flavor));
+            model.ApplyConfiguration(new StorageSpaceConfiguration(Flavor));
+            model.ApplyConfiguration(new StorageSpaceFolderConfiguration(Flavor));
+            model.ApplyConfiguration(new StorageSpaceLevelConfiguration(Flavor));
+            model.ApplyConfiguration(new StorageSpaceLevelResourceGroupConfiguration(Flavor));
+            model.ApplyConfiguration(new SupportServiceLevelConfiguration(Flavor));
+            model.ApplyConfiguration(new SystemSettingConfiguration(Flavor));
+            model.ApplyConfiguration(new ThemeConfiguration(Flavor));
+            model.ApplyConfiguration(new ThemeSettingConfiguration(Flavor));
+            model.ApplyConfiguration(new UserConfiguration(Flavor));
+            model.ApplyConfiguration(new UserSettingConfiguration(Flavor));
+            model.ApplyConfiguration(new UsersDetailedConfiguration(Flavor));
+            model.ApplyConfiguration(new VersionConfiguration(Flavor));
+            model.ApplyConfiguration(new VirtualGroupConfiguration(Flavor));
+            model.ApplyConfiguration(new VirtualServiceConfiguration(Flavor));
+            model.ApplyConfiguration(new WebDavAccessTokenConfiguration(Flavor));
+            model.ApplyConfiguration(new WebDavPortalUsersSettingConfiguration(Flavor));
+
 #endif
 
             OnModelCreatingPartial(model);
