@@ -15,7 +15,7 @@ namespace SolidCP.EnterpriseServer.Data.Extensions
 	{
 		public DbFlavor Flavor { get; private set; }
 		public string ConnectionString { get; private set; }
-		public DbOptions(Data.DbContext context) {
+		public DbOptions(DbContext context) {
 			Flavor = context.Flavor;
 			ConnectionString = context.ConnectionString;
 		}

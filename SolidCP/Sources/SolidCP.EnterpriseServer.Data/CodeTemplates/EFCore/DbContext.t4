@@ -77,14 +77,17 @@ namespace <#= NamespaceHint.Replace(".Data.Configuration.Sources", ".Context") #
 
 #if NetCore
         public <#= Options.ContextName #>(Data.DbContext context): this(new Data.Extensions.DbOptions<<#= Options.ContextName #>>(context)) { }
-        public <#= Options.ContextName #>(DbContextOptions<<#= Options.ContextName #>> options): base(options) { }
+        public <#= Options.ContextName #>(DbContextOptions<<#= Options.ContextName #>> options): base(options) {
+			if (options is Data.Extensions.DbOptions<DbContextBase> opts) Flavor = opts.Flavor;
+        }
 #elif NetFX
-        public <#= Options.ContextName #>(Data.DbContext context): base(context.ConnectionString) {
-            if (options is Data.Extensions.DbOptions<DbContextBase> opts) Flavor = opts.Flavor;
+        public <#= Options.ContextName #>(Data.DbContext context): base(context.ConnectionString) { 
+            Flavor = context.Flavor;
         }
 #endif
 
         public Data.DbFlavor Flavor { get; set; } = Data.DbFlavor.Unknown;
+
 <#
     foreach (var entityType in Model.GetEntityTypes().Where(e => !e.IsSimpleManyToManyJoinEntityType()))
     {

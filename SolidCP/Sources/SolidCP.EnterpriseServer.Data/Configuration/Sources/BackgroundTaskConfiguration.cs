@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using SolidCP.EnterpriseServer.Data.Configuration;
 using SolidCP.EnterpriseServer.Data.Entities;
-using System.ComponentModel.DataAnnotations.Schema;
+using SolidCP.EnterpriseServer.Data.Extensions;
 #if NetCore
 using Microsoft.EntityFrameworkCore;
 #endif
@@ -15,13 +15,12 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class BackgroundTaskConfiguration: Extensions.EntityTypeConfiguration<BackgroundTask>
 {
-
     public BackgroundTaskConfiguration(): base() { }
     public BackgroundTaskConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {
-        HasKey(e => e.Id).HasName("PK__Backgrou__3214EC271AFAB817");
+        HasKey(e => e.Id).HasName("PK__Backgrou__3214EC27E22B574F");
     }
 #endif
 }

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using SolidCP.EnterpriseServer.Data.Configuration;
 using SolidCP.EnterpriseServer.Data.Entities;
-using System.ComponentModel.DataAnnotations.Schema;
+using SolidCP.EnterpriseServer.Data.Extensions;
 #if NetCore
 using Microsoft.EntityFrameworkCore;
 #endif
@@ -15,13 +15,12 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class ExchangeMailboxPlanRetentionPolicyTagConfiguration: Extensions.EntityTypeConfiguration<ExchangeMailboxPlanRetentionPolicyTag>
 {
-
     public ExchangeMailboxPlanRetentionPolicyTagConfiguration(): base() { }
     public ExchangeMailboxPlanRetentionPolicyTagConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {
-        HasKey(e => e.PlanTagId).HasName("PK__Exchange__E467073C50CD805B");
+        HasKey(e => e.PlanTagId).HasName("PK__Exchange__E467073CCB4FBA16");
     }
 #endif
 }

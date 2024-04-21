@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using SolidCP.EnterpriseServer.Data.Configuration;
 using SolidCP.EnterpriseServer.Data.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
 #if NetCore
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -32,15 +33,15 @@ namespace SolidCP.EnterpriseServer.Context
         public DbContextBase(Data.DbContext context): this(new Data.Extensions.DbOptions<DbContextBase>(context)) { }
         public DbContextBase(DbContextOptions<DbContextBase> options): base(options) {
 			if (options is Data.Extensions.DbOptions<DbContextBase> opts) Flavor = opts.Flavor;
-        }
+		}
 #elif NetFX
-        public DbContextBase(Data.DbContext context): base(context.ConnectionString) { 
+        public DbContextBase(Data.DbContext context): base(context.ConnectionString) {
             Flavor = context.Flavor;
         }
 #endif
 
-        public Data.DbFlavor Flavor { get; set; } = Data.DbFlavor.Unknown;
-
+		public Data.DbFlavor Flavor { get; set; } = Data.DbFlavor.Unknown;
+        
         public virtual DbSet<AccessToken> AccessTokens { get; set; }
 
         public virtual DbSet<AdditionalGroup> AdditionalGroups { get; set; }

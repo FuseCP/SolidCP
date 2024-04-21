@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using SolidCP.EnterpriseServer.Data.Configuration;
 using SolidCP.EnterpriseServer.Data.Entities;
-using System.ComponentModel.DataAnnotations.Schema;
+using SolidCP.EnterpriseServer.Data.Extensions;
 #if NetCore
 using Microsoft.EntityFrameworkCore;
 #endif
@@ -15,13 +15,12 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class StorageSpaceConfiguration: Extensions.EntityTypeConfiguration<StorageSpace>
 {
-
     public StorageSpaceConfiguration(): base() { }
     public StorageSpaceConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {
-        HasKey(e => e.Id).HasName("PK__StorageS__3214EC07B8B9A6D1");
+        HasKey(e => e.Id).HasName("PK__StorageS__3214EC0756F21A09");
 
         HasOne(d => d.Server).WithMany(p => p.StorageSpaces).HasConstraintName("FK_StorageSpaces_ServerId");
 

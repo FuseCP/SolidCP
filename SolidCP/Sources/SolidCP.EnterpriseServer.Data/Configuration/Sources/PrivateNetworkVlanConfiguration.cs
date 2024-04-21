@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using SolidCP.EnterpriseServer.Data.Configuration;
 using SolidCP.EnterpriseServer.Data.Entities;
-using System.ComponentModel.DataAnnotations.Schema;
+using SolidCP.EnterpriseServer.Data.Extensions;
 #if NetCore
 using Microsoft.EntityFrameworkCore;
 #endif
@@ -15,13 +15,12 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class PrivateNetworkVlanConfiguration: Extensions.EntityTypeConfiguration<PrivateNetworkVlan>
 {
-
     public PrivateNetworkVlanConfiguration(): base() { }
     public PrivateNetworkVlanConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {
-        HasKey(e => e.VlanId).HasName("PK__PrivateN__8348135581B53618");
+        HasKey(e => e.VlanId).HasName("PK__PrivateN__83481355F80492B4");
 
         HasOne(d => d.Server).WithMany(p => p.PrivateNetworkVlans)
                 .OnDelete(DeleteBehavior.Cascade)

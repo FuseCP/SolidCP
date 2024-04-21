@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using SolidCP.EnterpriseServer.Data.Configuration;
 using SolidCP.EnterpriseServer.Data.Entities;
-using System.ComponentModel.DataAnnotations.Schema;
+using SolidCP.EnterpriseServer.Data.Extensions;
 #if NetCore
 using Microsoft.EntityFrameworkCore;
 #endif
@@ -15,13 +15,12 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class ExchangeRetentionPolicyTagConfiguration: Extensions.EntityTypeConfiguration<ExchangeRetentionPolicyTag>
 {
-
     public ExchangeRetentionPolicyTagConfiguration(): base() { }
     public ExchangeRetentionPolicyTagConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {
-        HasKey(e => e.TagId).HasName("PK__Exchange__657CFA4C02667D37");
+        HasKey(e => e.TagId).HasName("PK__Exchange__657CFA4C1980E084");
     }
 #endif
 }

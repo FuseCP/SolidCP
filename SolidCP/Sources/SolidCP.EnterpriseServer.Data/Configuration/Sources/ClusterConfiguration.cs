@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using SolidCP.EnterpriseServer.Data.Configuration;
 using SolidCP.EnterpriseServer.Data.Entities;
-using System.ComponentModel.DataAnnotations.Schema;
+using SolidCP.EnterpriseServer.Data.Extensions;
 #if NetCore
 using Microsoft.EntityFrameworkCore;
 #endif
@@ -15,7 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class ClusterConfiguration: Extensions.EntityTypeConfiguration<Cluster>
 {
-
     public ClusterConfiguration(): base() { }
     public ClusterConfiguration(DbFlavor flavor): base(flavor) { }
 

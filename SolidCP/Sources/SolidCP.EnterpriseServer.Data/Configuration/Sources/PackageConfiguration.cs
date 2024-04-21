@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using SolidCP.EnterpriseServer.Data.Configuration;
 using SolidCP.EnterpriseServer.Data.Entities;
-using System.ComponentModel.DataAnnotations.Schema;
+using SolidCP.EnterpriseServer.Data.Extensions;
 #if NetCore
 using Microsoft.EntityFrameworkCore;
 #endif
@@ -15,7 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class PackageConfiguration: Extensions.EntityTypeConfiguration<Package>
 {
-
     public PackageConfiguration(): base() { }
     public PackageConfiguration(DbFlavor flavor): base(flavor) { }
 
@@ -50,6 +49,15 @@ public partial class PackageConfiguration: Extensions.EntityTypeConfiguration<Pa
                     j.IndexerProperty<int>("PackageId").HasColumnName("PackageID");
                     j.IndexerProperty<int>("ServiceId").HasColumnName("ServiceID");
                 });
+
+#region Seed Data
+        HasData(
+            new Package() { PackageId = 1, BandwidthUpdated = null, DefaultTopPackage = false, OverrideQuotas = false, PackageComments = "", PackageName = "System",
+                ParentPackageId = null, PlanId = null, PurchaseDate = null, ServerId = null, StatusId = 1, StatusIdchangeDate = DateTime.Parse("2024-04-20T11:02:58.5600000"),
+                UserId = 1 }
+        );
+#endregion
+
     }
 #endif
 }

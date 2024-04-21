@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using SolidCP.EnterpriseServer.Data.Configuration;
 using SolidCP.EnterpriseServer.Data.Entities;
-using System.ComponentModel.DataAnnotations.Schema;
+using SolidCP.EnterpriseServer.Data.Extensions;
 #if NetCore
 using Microsoft.EntityFrameworkCore;
 #endif
@@ -15,13 +15,20 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class ScheduleParameterConfiguration: Extensions.EntityTypeConfiguration<ScheduleParameter>
 {
-
     public ScheduleParameterConfiguration(): base() { }
     public ScheduleParameterConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {
         HasOne(d => d.Schedule).WithMany(p => p.ScheduleParameters).HasConstraintName("FK_ScheduleParameters_Schedule");
+
+#region Seed Data
+        HasData(
+            new ScheduleParameter() { ScheduleId = 1, ParameterId = "SUSPEND_OVERUSED", ParameterValue = "false" },
+            new ScheduleParameter() { ScheduleId = 2, ParameterId = "SUSPEND_OVERUSED", ParameterValue = "false" }
+        );
+#endregion
+
     }
 #endif
 }

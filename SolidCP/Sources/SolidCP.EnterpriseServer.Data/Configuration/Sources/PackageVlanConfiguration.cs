@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using SolidCP.EnterpriseServer.Data.Configuration;
 using SolidCP.EnterpriseServer.Data.Entities;
-using System.ComponentModel.DataAnnotations.Schema;
+using SolidCP.EnterpriseServer.Data.Extensions;
 #if NetCore
 using Microsoft.EntityFrameworkCore;
 #endif
@@ -15,13 +15,12 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class PackageVlanConfiguration: Extensions.EntityTypeConfiguration<PackageVlan>
 {
-
     public PackageVlanConfiguration(): base() { }
     public PackageVlanConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {
-        HasKey(e => e.PackageVlanId).HasName("PK__PackageV__A9AABBF9C0C25CB3");
+        HasKey(e => e.PackageVlanId).HasName("PK__PackageV__A9AABBF954AA28C0");
 
         HasOne(d => d.Package).WithMany(p => p.PackageVlans).HasConstraintName("FK_PackageID");
 

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using SolidCP.EnterpriseServer.Data.Configuration;
 using SolidCP.EnterpriseServer.Data.Entities;
-using System.ComponentModel.DataAnnotations.Schema;
+using SolidCP.EnterpriseServer.Data.Extensions;
 #if NetCore
 using Microsoft.EntityFrameworkCore;
 #endif
@@ -15,7 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class PackagesTreeCacheConfiguration: Extensions.EntityTypeConfiguration<PackagesTreeCache>
 {
-
     public PackagesTreeCacheConfiguration(): base() { }
     public PackagesTreeCacheConfiguration(DbFlavor flavor): base(flavor) { }
 
@@ -30,6 +29,13 @@ public partial class PackagesTreeCacheConfiguration: Extensions.EntityTypeConfig
         HasOne(d => d.ParentPackage).WithMany()
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_PackagesTreeCache_Packages");
+
+#region Seed Data
+        HasData(
+            new PackagesTreeCache() { PackageId = 1, ParentPackageId = 1 }
+        );
+#endregion
+
     }
 #endif
 }

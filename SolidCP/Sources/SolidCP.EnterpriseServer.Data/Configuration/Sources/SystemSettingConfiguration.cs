@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using SolidCP.EnterpriseServer.Data.Configuration;
 using SolidCP.EnterpriseServer.Data.Entities;
-using System.ComponentModel.DataAnnotations.Schema;
+using SolidCP.EnterpriseServer.Data.Extensions;
 #if NetCore
 using Microsoft.EntityFrameworkCore;
 #endif
@@ -15,12 +15,25 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class SystemSettingConfiguration: Extensions.EntityTypeConfiguration<SystemSetting>
 {
-
     public SystemSettingConfiguration(): base() { }
     public SystemSettingConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {
+
+#region Seed Data
+        HasData(
+            new SystemSetting() { SettingsName = "AccessIpsSettings", PropertyName = "AccessIps", PropertyValue = "" },
+            new SystemSetting() { SettingsName = "AuthenticationSettings", PropertyName = "CanPeerChangeMfa", PropertyValue = "True" },
+            new SystemSetting() { SettingsName = "AuthenticationSettings", PropertyName = "MfaTokenAppDisplayName", PropertyValue = "SolidCP" },
+            new SystemSetting() { SettingsName = "BackupSettings", PropertyName = "BackupsPath", PropertyValue = "c:\\HostingBackups" },
+            new SystemSetting() { SettingsName = "SmtpSettings", PropertyName = "SmtpEnableSsl", PropertyValue = "False" },
+            new SystemSetting() { SettingsName = "SmtpSettings", PropertyName = "SmtpPort", PropertyValue = "25" },
+            new SystemSetting() { SettingsName = "SmtpSettings", PropertyName = "SmtpServer", PropertyValue = "127.0.0.1" },
+            new SystemSetting() { SettingsName = "SmtpSettings", PropertyName = "SmtpUsername", PropertyValue = "postmaster" }
+        );
+#endregion
+
     }
 #endif
 }

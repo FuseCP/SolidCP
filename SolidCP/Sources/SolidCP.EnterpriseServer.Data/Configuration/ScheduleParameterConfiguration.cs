@@ -26,6 +26,13 @@ public partial class ScheduleParameterConfiguration : Extensions.EntityTypeConfi
 #else
 		HasRequired(d => d.Schedule).WithMany(p => p.ScheduleParameters);
 #endif
+
+		#region Seed Data
+		HasData(
+			new ScheduleParameter() { ScheduleId = 1, ParameterId = "SUSPEND_OVERUSED", ParameterValue = "false" },
+			new ScheduleParameter() { ScheduleId = 2, ParameterId = "SUSPEND_OVERUSED", ParameterValue = "false" }
+		);
+		#endregion
 	}
 #endif
 }

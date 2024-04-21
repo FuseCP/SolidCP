@@ -17,6 +17,12 @@
 <#@ import namespace="Microsoft.EntityFrameworkCore" #>
 <#@ import namespace="Microsoft.EntityFrameworkCore.Design" #>
 <#@ import namespace="Microsoft.Extensions.DependencyInjection" #>
-<#+
 
+
+
+<#+
+	public class T4DbContext: DbContext {
+	
+		public T4DbContext(): base
+	}
 #>

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using SolidCP.EnterpriseServer.Data.Configuration;
 using SolidCP.EnterpriseServer.Data.Entities;
-using System.ComponentModel.DataAnnotations.Schema;
+using SolidCP.EnterpriseServer.Data.Extensions;
 #if NetCore
 using Microsoft.EntityFrameworkCore;
 #endif
@@ -17,17 +17,16 @@ using BackgroundTaskParameter = SolidCP.EnterpriseServer.Data.Entities.Backgroun
 
 public partial class BackgroundTaskParameterConfiguration: Extensions.EntityTypeConfiguration<BackgroundTaskParameter>
 {
-
     public BackgroundTaskParameterConfiguration(): base() { }
     public BackgroundTaskParameterConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {
-        HasKey(e => e.ParameterId).HasName("PK__Backgrou__F80C6297E2E5AF88");
+        HasKey(e => e.ParameterId).HasName("PK__Backgrou__F80C62971030BD7B");
 
         HasOne(d => d.Task).WithMany(p => p.BackgroundTaskParameters)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Backgroun__TaskI__03D16812");
+                .HasConstraintName("FK__Backgroun__TaskI__3F6663D5");
     }
 #endif
 }

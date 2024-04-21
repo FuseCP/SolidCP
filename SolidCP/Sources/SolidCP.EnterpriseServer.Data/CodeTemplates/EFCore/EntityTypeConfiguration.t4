@@ -4,9 +4,13 @@
 <#@ assembly name="Microsoft.EntityFrameworkCore.Relational" #>
 <#@ assembly name="Microsoft.Extensions.DependencyInjection.Abstractions" #>
 <#@ assembly name="System.Text.RegularExpressions" #>
+<#@ assembly name="System.Runtime" #>
+<#@ assembly name="SolidCP.EnterpriseServer.Data.Core" #>
 <#@ parameter name="EntityType" type="Microsoft.EntityFrameworkCore.Metadata.IEntityType" #>
 <#@ parameter name="Options" type="Microsoft.EntityFrameworkCore.Scaffolding.ModelCodeGenerationOptions" #>
 <#@ parameter name="NamespaceHint" type="System.String" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.Reflection" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.ComponentModel.DataAnnotations" #>
 <#@ import namespace="System.Linq" #>
@@ -15,7 +19,10 @@
 <#@ import namespace="System.Text.RegularExpressions" #>
 <#@ import namespace="Microsoft.EntityFrameworkCore" #>
 <#@ import namespace="Microsoft.EntityFrameworkCore.Design" #>
+<#@ import namespace="Microsoft.EntityFrameworkCore.Metadata" #>
+<#@ import namespace="Microsoft.EntityFrameworkCore.Scaffolding" #>
 <#@ import namespace="Microsoft.Extensions.DependencyInjection" #>
+<#@ import namespace="SolidCP.EnterpriseServer.Data.Scaffolding" #>
 <#
     if (EntityType.IsSimpleManyToManyJoinEntityType())
     {
@@ -245,14 +252,30 @@ public partial class <#= EntityType.Name #>Configuration: Extensions.EntityTypeC
 #>
                 });
 <#
-
         anyEntityTypeConfiguration = true;
+    }
+
+    var entityData = Scaffold.GetEntityDatasFromSeparateProcess(EntityType, Options, 12);
+
+    //Console.WriteLine(entityData);
+
+    if (entityData.Length > 0)
+    {
+#>
+
+#region Seed Data
+        HasData(
+<#= entityData #>
+        );
+#endregion
+
+<#
     }
 #>
     }
 #endif
 }
-<#
+<#    
     var previousOutput = GenerationEnvironment;
     GenerationEnvironment = new StringBuilder();
 
