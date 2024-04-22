@@ -50,13 +50,11 @@ public partial class PackageConfiguration: Extensions.EntityTypeConfiguration<Pa
                     j.IndexerProperty<int>("ServiceId").HasColumnName("ServiceID");
                 });
 
-#region Seed Data
-        HasData(
-            new Package() { PackageId = 1, BandwidthUpdated = null, DefaultTopPackage = false, OverrideQuotas = false, PackageComments = "", PackageName = "System",
-                ParentPackageId = null, PlanId = null, PurchaseDate = null, ServerId = null, StatusId = 1, StatusIdchangeDate = DateTime.Parse("2024-04-20T11:02:58.5600000"),
-                UserId = 1 }
-        );
-#endregion
+        #region Seed Data
+        HasData(() => new Package[] {
+            new Package() { PackageId = 1, PackageComments = "", PackageName = "System", StatusId = 1, StatusIdchangeDate = DateTime.Parse("2024-04-20T11:02:58.5600000"), UserId = 1 }
+        });
+        #endregion
 
     }
 #endif

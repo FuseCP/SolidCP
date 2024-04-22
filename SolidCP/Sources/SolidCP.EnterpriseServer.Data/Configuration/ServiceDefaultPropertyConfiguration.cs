@@ -29,8 +29,8 @@ public partial class ServiceDefaultPropertyConfiguration: Extensions.EntityTypeC
         HasRequired(d => d.Provider).WithMany(p => p.ServiceDefaultProperties);
 #endif
         
-#region Seed Data
-        HasData(
+        #region Seed Data
+        HasData(() => new ServiceDefaultProperty[] {
             new ServiceDefaultProperty() { ProviderId = 1, PropertyName = "UsersHome", PropertyValue = "%SYSTEMDRIVE%\\HostingSpaces" },
             new ServiceDefaultProperty() { ProviderId = 2, PropertyName = "AspNet11Path", PropertyValue = "%SYSTEMROOT%\\Microsoft.NET\\Framework\\v1.1.4322\\aspnet_isapi.dll" },
             new ServiceDefaultProperty() { ProviderId = 2, PropertyName = "AspNet11Pool", PropertyValue = "ASP.NET V1.1" },
@@ -77,13 +77,19 @@ public partial class ServiceDefaultPropertyConfiguration: Extensions.EntityTypeC
             new ServiceDefaultProperty() { ProviderId = 8, PropertyName = "BatchFileName", PropertyValue = "UpdateStats.bat" },
             new ServiceDefaultProperty() { ProviderId = 8, PropertyName = "BatchLineTemplate", PropertyValue = "%SYSTEMDRIVE%\\perl\\bin\\perl.exe awstats.pl config=[DOMAIN_NAME] -update" },
             new ServiceDefaultProperty() { ProviderId = 8, PropertyName = "ConfigFileName", PropertyValue = "awstats.[DOMAIN_NAME].conf" },
-            new ServiceDefaultProperty() { ProviderId = 8, PropertyName = "ConfigFileTemplate", PropertyValue = "LogFormat = \"%time2 %other %other %other %method %url %other %other %logname %ho" +
-                "st %other %ua %other %referer %other %code %other %other %bytesd %other %other\"\r" +
-                "\nLogSeparator = \" \"\r\nDNSLookup = 2\r\nDirCgi = \"/cgi-bin\"\r\nDirIcons = \"/icon\"\r\nAll" +
-                "owFullYearView=3\r\nAllowToUpdateStatsFromBrowser = 0\r\nUseFramesWhenCGI = 1\r\nShowF" +
-                "lagLinks = \"en fr de it nl es\"\r\nLogFile = \"[LOGS_FOLDER]\\ex%YY-3%MM-3%DD-3.log\"\r" +
-                "\nDirData = \"%SYSTEMDRIVE%\\AWStats\\data\"\r\nSiteDomain = \"[DOMAIN_NAME]\"\r\nHostAlias" +
-                "es = [DOMAIN_ALIASES]" },
+            new ServiceDefaultProperty() { ProviderId = 8, PropertyName = "ConfigFileTemplate", PropertyValue = @"LogFormat = ""%time2 %other %other %other %method %url %other %other %logname %host %other %ua %other %referer %other %code %other %other %bytesd %other %other""
+LogSeparator = "" ""
+DNSLookup = 2
+DirCgi = ""/cgi-bin""
+DirIcons = ""/icon""
+AllowFullYearView=3
+AllowToUpdateStatsFromBrowser = 0
+UseFramesWhenCGI = 1
+ShowFlagLinks = ""en fr de it nl es""
+LogFile = ""[LOGS_FOLDER]\ex%YY-3%MM-3%DD-3.log""
+DirData = ""%SYSTEMDRIVE%\AWStats\data""
+SiteDomain = ""[DOMAIN_NAME]""
+HostAliases = [DOMAIN_ALIASES]" },
             new ServiceDefaultProperty() { ProviderId = 8, PropertyName = "StatisticsURL", PropertyValue = "http://127.0.0.1/AWStats/cgi-bin/awstats.pl?config=[domain_name]" },
             new ServiceDefaultProperty() { ProviderId = 9, PropertyName = "AdminLogin", PropertyValue = "Admin" },
             new ServiceDefaultProperty() { ProviderId = 9, PropertyName = "ExpireLimit", PropertyValue = "1209600" },
@@ -118,7 +124,10 @@ public partial class ServiceDefaultPropertyConfiguration: Extensions.EntityTypeC
             new ServiceDefaultProperty() { ProviderId = 14, PropertyName = "ServerIPAddress", PropertyValue = "127.0.0.1;127.0.0.1" },
             new ServiceDefaultProperty() { ProviderId = 14, PropertyName = "ServiceUrl", PropertyValue = "http://127.0.0.1:9998/services" },
             new ServiceDefaultProperty() { ProviderId = 16, PropertyName = "BrowseMethod", PropertyValue = "POST" },
-            new ServiceDefaultProperty() { ProviderId = 16, PropertyName = "BrowseParameters", PropertyValue = "ServerName=[SERVER]\r\nLogin=[USER]\r\nPassword=[PASSWORD]\r\nProtocol=dbmssocn" },
+            new ServiceDefaultProperty() { ProviderId = 16, PropertyName = "BrowseParameters", PropertyValue = @"ServerName=[SERVER]
+Login=[USER]
+Password=[PASSWORD]
+Protocol=dbmssocn" },
             new ServiceDefaultProperty() { ProviderId = 16, PropertyName = "BrowseURL", PropertyValue = "http://localhost/MLA/silentlogon.aspx" },
             new ServiceDefaultProperty() { ProviderId = 16, PropertyName = "DatabaseLocation", PropertyValue = "%SYSTEMDRIVE%\\SQL2005Databases\\[USER_NAME]" },
             new ServiceDefaultProperty() { ProviderId = 16, PropertyName = "ExternalAddress", PropertyValue = "(local)" },
@@ -412,8 +421,8 @@ public partial class ServiceDefaultPropertyConfiguration: Extensions.EntityTypeC
             new ServiceDefaultProperty() { ProviderId = 1911, PropertyName = "BinPath", PropertyValue = "" },
             new ServiceDefaultProperty() { ProviderId = 1911, PropertyName = "ConfigFile", PropertyValue = "/etc/apache2/apache2.conf" },
             new ServiceDefaultProperty() { ProviderId = 1911, PropertyName = "ConfigPath", PropertyValue = "/etc/apache2" }
-        );
-#endregion
+        });
+        #endregion
 
     }
 #endif

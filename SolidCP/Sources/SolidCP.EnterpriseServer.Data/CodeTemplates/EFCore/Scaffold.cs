@@ -104,6 +104,7 @@ namespace SolidCP.EnterpriseServer.Data.Scaffolding
 			{
 				var entityClrType = entityType.ClrType;
 				if (entityClrType == null) return writer;
+				var defaultEntityData = Activator.CreateInstance(entityClrType);
 				var setType = typeof(DbSet<>).MakeGenericType(entityClrType);
 				var setMethod = db.BaseContext.GetType().GetMethod("Set", BindingFlags.Public | BindingFlags.Instance, new Type[0]);
 				var setGenericMethod = setMethod.MakeGenericMethod(entityClrType);
@@ -135,16 +136,35 @@ namespace SolidCP.EnterpriseServer.Data.Scaffolding
 						omit = false;
 						var rp = entityClrType.GetProperty(prop.Name);
 						var val = rp.GetValue(entity);
-						writer.Append(prop.Name);
-						writer.Append(" = ");
-						if (val == null)
+						var defaultVal = rp.GetValue(defaultEntityData);
+
+						if (val != null && val.Equals(defaultVal) ||
+							val == null && defaultVal == null)
 						{
 							omit = true;
 							continue;
 						}
-						else if (prop.ClrType == typeof(string) || prop.ClrType == typeof(string))
+
+						writer.Append(prop.Name);
+						writer.Append(" = ");
+
+						if (val == null)
 						{
-							writer.Append(AppendString((string)val, indent + tabSize));
+								writer.Append("null");
+						}
+						else if (prop.ClrType == typeof(string))
+						{
+							var str = (string)val;
+							if (str.Any(ch => Char.GetUnicodeCategory(ch) == UnicodeCategory.Control))
+							{
+								str = str.Replace("\"", "\"\"");
+								writer.AppendLine();
+								writer.Append("@\"");
+								writer.Append(str);
+								writer.AppendLine("\"");
+								for (int i = 0; i < indent + tabSize; i++) writer.Append(" ");
+							}
+							else writer.Append(AppendString((string)val, indent + tabSize));
 						}
 						else if (prop.ClrType == typeof(byte) || prop.ClrType == typeof(sbyte) ||
 							prop.ClrType == typeof(Int16) || prop.ClrType == typeof(UInt16) ||
@@ -204,6 +224,9 @@ namespace SolidCP.EnterpriseServer.Data.Scaffolding
 			return writer;
 		}
 
+		public static string Escape(string txt) => txt.Replace("\\", "\\\\").Replace("\r", "\\r").Replace("\n", "\\n");
+		public static string Unescape(string txt) => txt.Replace("\\n", "\n").Replace("\\r", "\r").Replace("\\\\", "\\");
+
 		const bool Prefetch = true;
 
 		static Dictionary<string, string> entityTypes = new Dictionary<string, string>();
@@ -215,7 +238,7 @@ namespace SolidCP.EnterpriseServer.Data.Scaffolding
 			foreach (Match match in tokens)
 			{
 				var type = Regex.Match(match.Groups["type"].Value.Trim(), @"(?<=\.|^)[^.]*?$").Value;
-				var ed = match.Groups["data"].Value;
+				var ed = Unescape(match.Groups["data"].Value);
 				if (!entityTypes.ContainsKey(type))
 				{
 					//Console.WriteLine($"Added type {type}");
@@ -224,6 +247,7 @@ namespace SolidCP.EnterpriseServer.Data.Scaffolding
 				else entityTypes[type] = ed;
 			}
 		}
+
 		public static string GetEntityDatasFromSeparateProcess(IEntityType entityType, ModelCodeGenerationOptions options, int indent, bool debug = false)
 		{
 			string entityData = "";
@@ -239,8 +263,8 @@ namespace SolidCP.EnterpriseServer.Data.Scaffolding
 			var fileInfos = contextDir.EnumerateFiles("*.cs")
 				.Where(fi => !fi.Name.Contains(options.ContextName));
 			if (dataInfo.Exists &&
-				(!fileInfos.All(fi => fi.LastWriteTime >= dataInfo.LastWriteTime) ||
-				fileInfos.Any(fi => fi.LastWriteTime >= dataInfo.LastWriteTime.AddMinutes(2))))
+				dataInfo.LastAccessTime > DateTime.Now.AddMinutes(-2) &&
+				!fileInfos.All(fi => fi.LastWriteTime >= dataInfo.LastWriteTime))
 			{
 				ParseData(File.ReadAllText(dataFile));
 			}

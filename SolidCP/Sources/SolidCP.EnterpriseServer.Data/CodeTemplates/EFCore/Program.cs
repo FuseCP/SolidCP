@@ -52,7 +52,7 @@ namespace SolidCP.EnterpriseServer.Data
 						options.ConnectionString = connectionString;
 						entityData = Scaffolding.Scaffold.GetEntityDatasFromSeparateProcess(entityType, options, indent);
 					}
-					Console.Write(entityData);
+					Console.Write(Scaffolding.Scaffold.Escape(entityData));
 					Console.WriteLine();
 				} else if (args.Length == 2)
 				{
@@ -65,7 +65,7 @@ namespace SolidCP.EnterpriseServer.Data
 					{
 						str.AppendLine(entityType.Name);
 						var data = scaffolder.GetEntityData(entityType, db, indent);
-						str.Append(data);
+						str.Append(Scaffolding.Scaffold.Escape(data.ToString()));
 						str.AppendLine();
 						str.AppendLine();
 					}

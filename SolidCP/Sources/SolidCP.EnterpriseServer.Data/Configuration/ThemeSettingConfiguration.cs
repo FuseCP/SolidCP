@@ -20,8 +20,8 @@ public partial class ThemeSettingConfiguration: Extensions.EntityTypeConfigurati
 #if NetCore || NetFX
     public override void Configure() {
 
-#region Seed Data
-        HasData(
+        #region Seed Data
+        HasData(() => new ThemeSetting[] {
             new ThemeSetting() { PropertyName = "Light", PropertyValue = "light-theme", SettingsName = "Style", ThemeId = 1 },
             new ThemeSetting() { PropertyName = "Dark", PropertyValue = "dark-theme", SettingsName = "Style", ThemeId = 1 },
             new ThemeSetting() { PropertyName = "Semi Dark", PropertyValue = "semi-dark", SettingsName = "Style", ThemeId = 1 },
@@ -42,8 +42,8 @@ public partial class ThemeSettingConfiguration: Extensions.EntityTypeConfigurati
             new ThemeSetting() { PropertyName = "#a04846", PropertyValue = "sidebarcolor6", SettingsName = "color-Sidebar", ThemeId = 1 },
             new ThemeSetting() { PropertyName = "#a65314", PropertyValue = "sidebarcolor7", SettingsName = "color-Sidebar", ThemeId = 1 },
             new ThemeSetting() { PropertyName = "#1f0e3b", PropertyValue = "sidebarcolor8", SettingsName = "color-Sidebar", ThemeId = 1 }
-        );
-#endregion
+        });
+        #endregion
     }
 #endif
 }

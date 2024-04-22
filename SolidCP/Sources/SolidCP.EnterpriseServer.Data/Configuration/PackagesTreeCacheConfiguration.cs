@@ -34,13 +34,11 @@ public partial class PackagesTreeCacheConfiguration: Extensions.EntityTypeConfig
         HasOptional(d => d.ParentPackage).WithMany();
 #endif
 
-
 		#region Seed Data
-		HasData(
+		HasData(() => new PackagesTreeCache[] {
 			new PackagesTreeCache() { PackageId = 1, ParentPackageId = 1 }
-		);
+		});
 		#endregion
-
 	}
 #endif
 }

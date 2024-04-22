@@ -28,10 +28,10 @@ public partial class ScheduleParameterConfiguration : Extensions.EntityTypeConfi
 #endif
 
 		#region Seed Data
-		HasData(
+		HasData(() => new ScheduleParameter[] {
 			new ScheduleParameter() { ScheduleId = 1, ParameterId = "SUSPEND_OVERUSED", ParameterValue = "false" },
 			new ScheduleParameter() { ScheduleId = 2, ParameterId = "SUSPEND_OVERUSED", ParameterValue = "false" }
-		);
+		});
 		#endregion
 	}
 #endif

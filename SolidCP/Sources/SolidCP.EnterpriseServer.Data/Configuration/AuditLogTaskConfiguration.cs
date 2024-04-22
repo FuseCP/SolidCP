@@ -21,8 +21,9 @@ public partial class AuditLogTaskConfiguration: Extensions.EntityTypeConfigurati
     public override void Configure() {
         HasKey(e => new { e.SourceName, e.TaskName }).HasName("PK_LogActions");
 
+
 		#region Seed Data
-		HasData(
+		HasData(() => new AuditLogTask[] {
 			new AuditLogTask() { SourceName = "APP_INSTALLER", TaskName = "INSTALL_APPLICATION", TaskDescription = "Install application" },
 			new AuditLogTask() { SourceName = "AUTO_DISCOVERY", TaskName = "IS_INSTALLED", TaskDescription = "Is installed" },
 			new AuditLogTask() { SourceName = "BACKUP", TaskName = "BACKUP", TaskDescription = "Backup" },
@@ -328,7 +329,7 @@ public partial class AuditLogTaskConfiguration: Extensions.EntityTypeConfigurati
 			new AuditLogTask() { SourceName = "WEB_SITE", TaskName = "UPDATE_SECURED_USER", TaskDescription = "Add/update secured user" },
 			new AuditLogTask() { SourceName = "WEB_SITE", TaskName = "UPDATE_SSL_FOLDER", TaskDescription = "Update shared SSL folder" },
 			new AuditLogTask() { SourceName = "WEB_SITE", TaskName = "UPDATE_VDIR", TaskDescription = "Update virtual directory" }
-		);
+		});
 		#endregion
 	}
 #endif

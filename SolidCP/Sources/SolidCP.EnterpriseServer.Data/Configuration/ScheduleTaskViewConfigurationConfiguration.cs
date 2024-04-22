@@ -28,8 +28,8 @@ public partial class ScheduleTaskViewConfigurationConfiguration: Extensions.Enti
         HasRequired(d => d.Task).WithMany(p => p.ScheduleTaskViewConfigurations);
 #endif
         
-#region Seed Data
-        HasData(
+        #region Seed Data
+        HasData(() => new ScheduleTaskViewConfiguration[] {
             new ScheduleTaskViewConfiguration() { ConfigurationId = "ASP_NET", TaskId = "SCHEDULE_TASK_ACTIVATE_PAID_INVOICES", Description = "~/DesktopModules/SolidCP/ScheduleTaskControls/EmptyView.ascx", Environment = "ASP.NET" },
             new ScheduleTaskViewConfiguration() { ConfigurationId = "ASP_NET", TaskId = "SCHEDULE_TASK_AUDIT_LOG_REPORT", Description = "~/DesktopModules/SolidCP/ScheduleTaskControls/AuditLogReportView.ascx", Environment = "ASP.NET" },
             new ScheduleTaskViewConfiguration() { ConfigurationId = "ASP_NET", TaskId = "SCHEDULE_TASK_BACKUP", Description = "~/DesktopModules/SolidCP/ScheduleTaskControls/Backup.ascx", Environment = "ASP.NET" },
@@ -53,8 +53,8 @@ public partial class ScheduleTaskViewConfigurationConfiguration: Extensions.Enti
             new ScheduleTaskViewConfiguration() { ConfigurationId = "ASP_NET", TaskId = "SCHEDULE_TASK_USER_PASSWORD_EXPIRATION_NOTIFICATION", Description = "~/DesktopModules/SolidCP/ScheduleTaskControls/UserPasswordExpirationNotification" +
                 "View.ascx", Environment = "ASP.NET" },
             new ScheduleTaskViewConfiguration() { ConfigurationId = "ASP_NET", TaskId = "SCHEDULE_TASK_ZIP_FILES", Description = "~/DesktopModules/SolidCP/ScheduleTaskControls/ZipFiles.ascx", Environment = "ASP.NET" }
-        );
-#endregion
+        });
+        #endregion
 
     }
 #endif

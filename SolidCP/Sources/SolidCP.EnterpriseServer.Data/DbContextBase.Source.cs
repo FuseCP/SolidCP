@@ -23,6 +23,7 @@ namespace SolidCP.EnterpriseServer.Context
 
     using Version = SolidCP.EnterpriseServer.Data.Entities.Version;
     using GlobalDnsRecord = SolidCP.EnterpriseServer.Data.Entities.GlobalDnsRecord;
+    using BackgroundTask = SolidCP.EnterpriseServer.Data.Entities.BackgroundTask;
     using BackgroundTaskParameter = SolidCP.EnterpriseServer.Data.Entities.BackgroundTaskParameter;
 
     public partial class DbContextBase : DbContext, Data.IGenericDbContext
@@ -366,6 +367,7 @@ namespace SolidCP.EnterpriseServer.Data {
 
     using Version = SolidCP.EnterpriseServer.Data.Entities.Version;
     using GlobalDnsRecord = SolidCP.EnterpriseServer.Data.Entities.GlobalDnsRecord;
+    using BackgroundTask = SolidCP.EnterpriseServer.Data.Entities.BackgroundTask;
     using BackgroundTaskParameter = SolidCP.EnterpriseServer.Data.Entities.BackgroundTaskParameter;
 
 #if ScaffoldDbContextEntities

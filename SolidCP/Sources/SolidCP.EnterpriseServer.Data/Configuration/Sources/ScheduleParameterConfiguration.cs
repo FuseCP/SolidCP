@@ -22,12 +22,12 @@ public partial class ScheduleParameterConfiguration: Extensions.EntityTypeConfig
     public override void Configure() {
         HasOne(d => d.Schedule).WithMany(p => p.ScheduleParameters).HasConstraintName("FK_ScheduleParameters_Schedule");
 
-#region Seed Data
-        HasData(
+        #region Seed Data
+        HasData(() => new ScheduleParameter[] {
             new ScheduleParameter() { ScheduleId = 1, ParameterId = "SUSPEND_OVERUSED", ParameterValue = "false" },
             new ScheduleParameter() { ScheduleId = 2, ParameterId = "SUSPEND_OVERUSED", ParameterValue = "false" }
-        );
-#endregion
+        });
+        #endregion
 
     }
 #endif

@@ -19,13 +19,12 @@ public partial class ThemeConfiguration: Extensions.EntityTypeConfiguration<Them
 
 #if NetCore || NetFX
     public override void Configure() {
-        
-#region Seed Data
-        HasData(
-            new Theme() { DisplayName = "SolidCP v1", DisplayOrder = 1, Enabled = 1, Ltrname = "Default", Rtlname = "Default", ThemeId = 1 }
-        );
-#endregion
 
-    }
+		#region Seed Data
+		HasData(() => new Theme[] {
+			new Theme() { DisplayName = "SolidCP v1", DisplayOrder = 1, Enabled = 1, Ltrname = "Default", Rtlname = "Default", ThemeId = 1 }
+		});
+		#endregion
+	}
 #endif
 }

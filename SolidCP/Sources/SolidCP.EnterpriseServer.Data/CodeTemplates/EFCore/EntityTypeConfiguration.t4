@@ -263,11 +263,11 @@ public partial class <#= EntityType.Name #>Configuration: Extensions.EntityTypeC
     {
 #>
 
-#region Seed Data
-        HasData(
+        #region Seed Data
+        HasData(() => new <#= EntityType.Name #>[] {
 <#= entityData #>
-        );
-#endregion
+        });
+        #endregion
 
 <#
     }

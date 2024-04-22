@@ -21,7 +21,7 @@ public partial class AuditLogSourceConfiguration: Extensions.EntityTypeConfigura
     public override void Configure() {
 
 		#region Seed Data
-		HasData(
+		HasData(() => new AuditLogSource[] {
 			new AuditLogSource() { SourceName = "APP_INSTALLER" },
 			new AuditLogSource() { SourceName = "AUTO_DISCOVERY" },
 			new AuditLogSource() { SourceName = "BACKUP" },
@@ -60,7 +60,7 @@ public partial class AuditLogSourceConfiguration: Extensions.EntityTypeConfigura
 			new AuditLogSource() { SourceName = "VPS2012" },
 			new AuditLogSource() { SourceName = "WAG_INSTALLER" },
 			new AuditLogSource() { SourceName = "WEB_SITE" }
-		);
+		});
 		#endregion
 
 	}

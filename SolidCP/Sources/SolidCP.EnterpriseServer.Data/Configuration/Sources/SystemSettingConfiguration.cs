@@ -21,8 +21,8 @@ public partial class SystemSettingConfiguration: Extensions.EntityTypeConfigurat
 #if NetCore || NetFX
     public override void Configure() {
 
-#region Seed Data
-        HasData(
+        #region Seed Data
+        HasData(() => new SystemSetting[] {
             new SystemSetting() { SettingsName = "AccessIpsSettings", PropertyName = "AccessIps", PropertyValue = "" },
             new SystemSetting() { SettingsName = "AuthenticationSettings", PropertyName = "CanPeerChangeMfa", PropertyValue = "True" },
             new SystemSetting() { SettingsName = "AuthenticationSettings", PropertyName = "MfaTokenAppDisplayName", PropertyValue = "SolidCP" },
@@ -31,8 +31,8 @@ public partial class SystemSettingConfiguration: Extensions.EntityTypeConfigurat
             new SystemSetting() { SettingsName = "SmtpSettings", PropertyName = "SmtpPort", PropertyValue = "25" },
             new SystemSetting() { SettingsName = "SmtpSettings", PropertyName = "SmtpServer", PropertyValue = "127.0.0.1" },
             new SystemSetting() { SettingsName = "SmtpSettings", PropertyName = "SmtpUsername", PropertyValue = "postmaster" }
-        );
-#endregion
+        });
+        #endregion
 
     }
 #endif

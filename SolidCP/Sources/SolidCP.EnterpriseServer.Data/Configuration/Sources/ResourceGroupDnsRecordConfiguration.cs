@@ -24,8 +24,8 @@ public partial class ResourceGroupDnsRecordConfiguration: Extensions.EntityTypeC
 
         HasOne(d => d.Group).WithMany(p => p.ResourceGroupDnsRecords).HasConstraintName("FK_ResourceGroupDnsRecords_ResourceGroups");
 
-#region Seed Data
-        HasData(
+        #region Seed Data
+        HasData(() => new ResourceGroupDnsRecord[] {
             new ResourceGroupDnsRecord() { RecordId = 1, GroupId = 2, Mxpriority = 0, RecordData = "[IP]", RecordName = "", RecordOrder = 1,
                 RecordType = "A" },
             new ResourceGroupDnsRecord() { RecordId = 2, GroupId = 2, Mxpriority = 0, RecordData = "[IP]", RecordName = "*", RecordOrder = 2,
@@ -58,8 +58,8 @@ public partial class ResourceGroupDnsRecordConfiguration: Extensions.EntityTypeC
                 RecordType = "CNAME" },
             new ResourceGroupDnsRecord() { RecordId = 17, GroupId = 12, Mxpriority = 0, RecordData = "", RecordName = "owa", RecordOrder = 4,
                 RecordType = "CNAME" }
-        );
-#endregion
+        });
+        #endregion
 
     }
 #endif

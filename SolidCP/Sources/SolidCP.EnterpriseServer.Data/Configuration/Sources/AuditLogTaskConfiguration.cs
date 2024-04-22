@@ -22,8 +22,8 @@ public partial class AuditLogTaskConfiguration: Extensions.EntityTypeConfigurati
     public override void Configure() {
         HasKey(e => new { e.SourceName, e.TaskName }).HasName("PK_LogActions");
 
-#region Seed Data
-        HasData(
+        #region Seed Data
+        HasData(() => new AuditLogTask[] {
             new AuditLogTask() { SourceName = "APP_INSTALLER", TaskName = "INSTALL_APPLICATION", TaskDescription = "Install application" },
             new AuditLogTask() { SourceName = "AUTO_DISCOVERY", TaskName = "IS_INSTALLED", TaskDescription = "Is installed" },
             new AuditLogTask() { SourceName = "BACKUP", TaskName = "BACKUP", TaskDescription = "Backup" },
@@ -125,7 +125,7 @@ public partial class AuditLogTaskConfiguration: Extensions.EntityTypeConfigurati
             new AuditLogTask() { SourceName = "FILES", TaskName = "DELETE_FILES", TaskDescription = "Delete files" },
             new AuditLogTask() { SourceName = "FILES", TaskName = "MOVE_FILES", TaskDescription = "Move files" },
             new AuditLogTask() { SourceName = "FILES", TaskName = "RENAME_FILE", TaskDescription = "Rename file" },
-            new AuditLogTask() { SourceName = "FILES", TaskName = "SET_PERMISSIONS", TaskDescription = null },
+            new AuditLogTask() { SourceName = "FILES", TaskName = "SET_PERMISSIONS",  },
             new AuditLogTask() { SourceName = "FILES", TaskName = "UNZIP_FILES", TaskDescription = "Unzip files" },
             new AuditLogTask() { SourceName = "FILES", TaskName = "UPDATE_BINARY_CONTENT", TaskDescription = "Update file binary content" },
             new AuditLogTask() { SourceName = "FILES", TaskName = "ZIP_FILES", TaskDescription = "Zip files" },
@@ -189,7 +189,7 @@ public partial class AuditLogTaskConfiguration: Extensions.EntityTypeConfigurati
             new AuditLogTask() { SourceName = "REMOTE_DESKTOP_SERVICES", TaskName = "ADD_RDS_SERVER", TaskDescription = "Add RDS server" },
             new AuditLogTask() { SourceName = "REMOTE_DESKTOP_SERVICES", TaskName = "RESTART_RDS_SERVER", TaskDescription = "Restart RDS server" },
             new AuditLogTask() { SourceName = "REMOTE_DESKTOP_SERVICES", TaskName = "SET_RDS_SERVER_NEW_CONNECTIONS_ALLOWED", TaskDescription = "Set RDS new connection allowed" },
-            new AuditLogTask() { SourceName = "SCHEDULER", TaskName = "RUN_SCHEDULE", TaskDescription = null },
+            new AuditLogTask() { SourceName = "SCHEDULER", TaskName = "RUN_SCHEDULE",  },
             new AuditLogTask() { SourceName = "SERVER", TaskName = "ADD", TaskDescription = "Add" },
             new AuditLogTask() { SourceName = "SERVER", TaskName = "ADD_SERVICE", TaskDescription = "Add service" },
             new AuditLogTask() { SourceName = "SERVER", TaskName = "CHANGE_WINDOWS_SERVICE_STATUS", TaskDescription = "Change Windows service status" },
@@ -329,8 +329,8 @@ public partial class AuditLogTaskConfiguration: Extensions.EntityTypeConfigurati
             new AuditLogTask() { SourceName = "WEB_SITE", TaskName = "UPDATE_SECURED_USER", TaskDescription = "Add/update secured user" },
             new AuditLogTask() { SourceName = "WEB_SITE", TaskName = "UPDATE_SSL_FOLDER", TaskDescription = "Update shared SSL folder" },
             new AuditLogTask() { SourceName = "WEB_SITE", TaskName = "UPDATE_VDIR", TaskDescription = "Update virtual directory" }
-        );
-#endregion
+        });
+        #endregion
 
     }
 #endif

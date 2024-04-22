@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,13 +10,13 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reflection;
 
-
 #if NetCore
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 #elif NetFX
 using System.Data.Entity;
 using System.Data.Entity.Spatial;
@@ -1635,7 +1636,26 @@ namespace SolidCP.EnterpriseServer.Data.Extensions
 		//     mode that was set on the model.
 #if NetCore
 		public virtual EntityTypeBuilder<TEntity> UsePropertyAccessMode(PropertyAccessMode propertyAccessMode) => Model.UsePropertyAccessMode(propertyAccessMode);
+
 #endif
+
+		IEnumerable<TEntity> data = null;
+		public IEnumerable<TEntity> EnumerateEntityData(Func<IEnumerable<TEntity>> dataProvider)
+		{
+			if (data == null) data = dataProvider();
+			if (!(data is Array || data is IList<TEntity>)) data = data.ToArray();
+
+			foreach (var d in data) yield return d;
+		}
+
+#if NetCore
+		public virtual DataBuilder<TEntity> HasData(Func<IEnumerable<TEntity>> dataProvider) => Model.HasData(EnumerateEntityData(dataProvider));
+#endif
+#if NetFX
+		public virtual object HasData(Func<IEnumerable<TEntity>> dataProvider) => new object();
+#endif
+
+
 
 		//
 		// Summary:
@@ -1649,9 +1669,9 @@ namespace SolidCP.EnterpriseServer.Data.Extensions
 		// Returns:
 		//     An object that can be used to configure the model data.
 #if NetCore
-		public virtual DataBuilder<TEntity> HasData(params TEntity[] data) => Model.HasData(data);
+		//public virtual DataBuilder<TEntity> HasData(params TEntity[] data) => Model.HasData(data);
 #elif NetFX
-		public virtual object HasData(params TEntity[] data) => new object();
+		//public virtual object HasData(params TEntity[] data) => new object();
 #endif
 
 		//
@@ -1666,9 +1686,9 @@ namespace SolidCP.EnterpriseServer.Data.Extensions
 		// Returns:
 		//     An object that can be used to configure the model data.
 #if NetCore
-		public virtual DataBuilder<TEntity> HasData(IEnumerable<TEntity> data) => HasData(data);
+		//public virtual DataBuilder<TEntity> HasData(IEnumerable<TEntity> data) => HasData(data);
 #elif NetFX
-		public virtual object HasData(IEnumerable<TEntity> data) => new object();
+		//public virtual object HasData(IEnumerable<TEntity> data) => new object();
 #endif
 
 		//
@@ -1683,9 +1703,9 @@ namespace SolidCP.EnterpriseServer.Data.Extensions
 		// Returns:
 		//     An object that can be used to configure the model data.
 #if NetCore
-		public virtual DataBuilder<TEntity> HasData(params object[] data) => Model.HasData(data);
+		//public virtual DataBuilder<TEntity> HasData(params object[] data) => Model.HasData(data);
 #elif NetFX
-		public virtual object HasData(params object[] data) => new object();
+		//public virtual object HasData(params object[] data) => new object();
 #endif
 
 		//
@@ -1700,9 +1720,9 @@ namespace SolidCP.EnterpriseServer.Data.Extensions
 		// Returns:
 		//     An object that can be used to configure the model data.
 #if NetCore
-		public virtual DataBuilder<TEntity> HasData(IEnumerable<object> data) => Model.HasData(data);
+		//public virtual DataBuilder<TEntity> HasData(IEnumerable<object> data) => Model.HasData(data);
 #elif NetFX
-		public virtual object HasData(IEnumerable<object> data) => new object();
+		//public virtual object HasData(IEnumerable<object> data) => new object();
 #endif
 	
 		//

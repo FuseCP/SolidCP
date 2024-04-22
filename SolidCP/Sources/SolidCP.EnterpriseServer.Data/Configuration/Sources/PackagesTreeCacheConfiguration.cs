@@ -30,11 +30,11 @@ public partial class PackagesTreeCacheConfiguration: Extensions.EntityTypeConfig
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_PackagesTreeCache_Packages");
 
-#region Seed Data
-        HasData(
+        #region Seed Data
+        HasData(() => new PackagesTreeCache[] {
             new PackagesTreeCache() { PackageId = 1, ParentPackageId = 1 }
-        );
-#endregion
+        });
+        #endregion
 
     }
 #endif
