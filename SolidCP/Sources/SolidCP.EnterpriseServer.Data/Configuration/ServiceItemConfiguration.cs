@@ -27,6 +27,7 @@ public partial class ServiceItemConfiguration: EntityTypeConfiguration<ServiceIt
         HasRequired(d => d.ItemType).WithMany(p => p.ServiceItems);
         HasRequired(d => d.Package).WithMany(p => p.ServiceItems);
         HasRequired(d => d.Service).WithMany(p => p.ServiceItems);
+        //HasOptional(d => d.ExchangeOrganization).WithRequired(p => p.Item);
 #endif
     }
 #endif

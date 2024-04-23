@@ -18,8 +18,8 @@ public partial class ExchangeOrganizationConfiguration: EntityTypeConfiguration<
 
         HasOne(d => d.Item).WithOne(p => p.ExchangeOrganization).HasConstraintName("FK_ExchangeOrganizations_ServiceItems");
 #else
-        HasRequired(d => d.Item).WithOptional(p => p.ExchangeOrganization);
+        HasRequired(d => d.Item); //.WithOptional(p => p.ExchangeOrganization);
 #endif    
     }
 #endif
-    }
+}

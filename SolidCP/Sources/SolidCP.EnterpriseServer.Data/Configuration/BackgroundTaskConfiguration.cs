@@ -12,6 +12,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
+using BackgroundTask = SolidCP.EnterpriseServer.Data.Entities.BackgroundTask;
+
 public partial class BackgroundTaskConfiguration: EntityTypeConfiguration<BackgroundTask>
 {
 #if NetCore || NetFX

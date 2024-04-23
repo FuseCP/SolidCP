@@ -40,7 +40,9 @@ public partial class ExchangeOrganization
     public virtual ICollection<ExchangeOrganizationSsFolder> ExchangeOrganizationSsFolders { get; set; } = new List<ExchangeOrganizationSsFolder>();
 
     [ForeignKey("ItemId")]
+#if NetCore
     [InverseProperty("ExchangeOrganization")]
+#endif
     public virtual ServiceItem Item { get; set; }
 
     [InverseProperty("Item")]

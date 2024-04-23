@@ -4,9 +4,11 @@ VisualStudioVersion = 17.5.33424.131
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BB38798E-1528-493C-868E-005102316536}"
 	ProjectSection(SolutionItems) = preProject
+		..\Database\install_db.sql = ..\Database\install_db.sql
 		..\..\LICENSE.txt = ..\..\LICENSE.txt
 		..\..\Readme.htm = ..\..\Readme.htm
 		..\..\ReleaseNotes.htm = ..\..\ReleaseNotes.htm
+		..\Database\update_db.sql = ..\Database\update_db.sql
 		VersionInfo.vb = VersionInfo.vb
 	EndProjectSection
 EndProject
@@ -49,7 +51,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Providers.OS.Unix",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.EnterpriseServer.Data", "SolidCP.EnterpriseServer.Data\SolidCP.EnterpriseServer.Data.csproj", "{164AA898-6535-4BC7-84D0-C6AD404F211D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "Tests\ConsoleApp1\ConsoleApp1.csproj", "{8E20E20F-2088-426A-9705-C4B8D7202514}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp1", "Tests\ConsoleApp1\ConsoleApp1.csproj", "{8E20E20F-2088-426A-9705-C4B8D7202514}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -128,9 +130,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{DF3D477E-741C-4871-B838-C1635E72474B} = {BB38798E-1528-493C-868E-005102316536}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6954C69F-1101-4780-93BC-DBF986F351F4}

@@ -47,10 +47,11 @@ public partial class ServiceItem
 
     [InverseProperty("Item")]
     public virtual ICollection<ExchangeAccount> ExchangeAccounts { get; set; } = new List<ExchangeAccount>();
-
+    //TODO make this work for NetFX too
+#if NetCore    
     [InverseProperty("Item")]
     public virtual ExchangeOrganization ExchangeOrganization { get; set; }
-
+#endif
     [InverseProperty("Item")]
     public virtual ICollection<ExchangeOrganizationDomain> ExchangeOrganizationDomains { get; set; } = new List<ExchangeOrganizationDomain>();
 
