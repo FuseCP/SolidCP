@@ -13,10 +13,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class OcsuserConfiguration: Extensions.EntityTypeConfiguration<Ocsuser>
+public partial class OcsuserConfiguration: EntityTypeConfiguration<Ocsuser>
 {
-    public OcsuserConfiguration(): base() { }
-    public OcsuserConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {

@@ -248,18 +248,24 @@ namespace SolidCP.EnterpriseServer.Data.Scaffolding
 			}
 		}
 
-		public static string GetEntityDatasFromSeparateProcess(IEntityType entityType, ModelCodeGenerationOptions options, int indent, bool debug = false)
+		public static string GetEntityDatasFromSeparateProcess(IEntityType entityType, ModelCodeGenerationOptions options, string templateFile, int indent, bool debug = false)
 		{
 			string entityData = "";
-			if (entityTypes.TryGetValue(entityType.Name, out entityData))
+			var typeName = Regex.Match(entityType.Name, @"(?<=\.|^)[^.]*?$").Value;
+
+			if (entityTypes.TryGetValue(typeName, out entityData))
 			{
 				if (!string.IsNullOrEmpty(entityData))
-					Console.WriteLine($"EntityData for {entityType.Name} found.");
+					Console.WriteLine($"EntityData for {typeName} found.");
 				return entityData;
 			}
 			var dataFile = Path.Combine(Path.GetTempPath(), "SolidCP.EntityData.txt");
 			var dataInfo = new FileInfo(dataFile);
-			var contextDir = new DirectoryInfo(Path.Combine(options.ProjectDir, "Configuration", options.ContextDir));
+			//Console.WriteLine($"TemplateFile: {templateFile}");
+			//Console.WriteLine($"ProjectDir: {options.ProjectDir}");
+			//Console.WriteLine($"ContextDir: {options.ContextDir}");
+			//Console.WriteLine($"CurrentDir: {Environment.CurrentDirectory}");
+			var contextDir = new DirectoryInfo(Path.Combine(Path.GetDirectoryName(templateFile), options.ContextDir));
 			var fileInfos = contextDir.EnumerateFiles("*.cs")
 				.Where(fi => !fi.Name.Contains(options.ContextName));
 			if (dataInfo.Exists &&
@@ -284,15 +290,15 @@ namespace SolidCP.EnterpriseServer.Data.Scaffolding
 				ParseData(output);
 			}
 
-			if (entityTypes.TryGetValue(entityType.Name, out entityData))
+			if (entityTypes.TryGetValue(typeName, out entityData))
 			{
 				if (!string.IsNullOrEmpty(entityData))
-					Console.WriteLine($"EntityData for {entityType.Name} found.");
+					Console.WriteLine($"EntityData for {typeName} found.");
 				return entityData;
 			}
 			return entityData;
 
-			Console.WriteLine($"Type not found {entityType.Name}.");
+			Console.WriteLine($"Type not found {typeName}.");
 
 			return "";
 		}

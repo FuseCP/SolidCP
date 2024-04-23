@@ -10,11 +10,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SolidCP.EnterpriseServer.Data.Entities;
 
-#if NetCore
-[Keyless]
-#endif
 public partial class UsersDetailed
 {
+    [Key]
     [Column("UserID")]
     public int UserId { get; set; }
 

@@ -13,10 +13,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class IpaddressConfiguration: Extensions.EntityTypeConfiguration<Ipaddress>
+public partial class IpaddressConfiguration: EntityTypeConfiguration<Ipaddress>
 {
-    public IpaddressConfiguration(): base() { }
-    public IpaddressConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {

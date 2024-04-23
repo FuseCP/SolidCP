@@ -13,10 +13,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class ServiceItemPropertyConfiguration: Extensions.EntityTypeConfiguration<ServiceItemProperty>
+public partial class ServiceItemPropertyConfiguration: EntityTypeConfiguration<ServiceItemProperty>
 {
-    public ServiceItemPropertyConfiguration(): base() { }
-    public ServiceItemPropertyConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {

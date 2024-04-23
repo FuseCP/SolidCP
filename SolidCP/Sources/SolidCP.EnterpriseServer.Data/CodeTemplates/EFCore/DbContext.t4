@@ -33,6 +33,7 @@
     {
         "System",
         "System.Collections.Generic",
+        "System.Collections.Concurrent",
         "SolidCP.EnterpriseServer.Data.Configuration"
     };
 
@@ -76,17 +77,22 @@ namespace <#= NamespaceHint.Replace(".Data.Configuration.Sources", ".Context") #
     {
 
 #if NetCore
-        public <#= Options.ContextName #>(Data.DbContext context): this(new Data.Extensions.DbOptions<<#= Options.ContextName #>>(context)) { }
+        public <#= Options.ContextName #>(Data.DbContext context): this(new Data.DbOptions<<#= Options.ContextName #>>(context)) { }
         public <#= Options.ContextName #>(DbContextOptions<<#= Options.ContextName #>> options): base(options) {
-			if (options is Data.Extensions.DbOptions<DbContextBase> opts) Flavor = opts.Flavor;
+			if (options is Data.DbOptions<DbContextBase> opts) {
+                DbType = opts.DbType;
+                InitSeedData = opts.InitSeedData;
+            }
         }
 #elif NetFX
         public <#= Options.ContextName #>(Data.DbContext context): base(context.ConnectionString) { 
-            Flavor = context.Flavor;
+            DbType = context.DbType;
+            InitSeedData = context.InitSeedData;
         }
 #endif
 
-        public Data.DbFlavor Flavor { get; set; } = Data.DbFlavor.Unknown;
+        public Data.DbType DbType { get; set; } = Data.DbType.Unknown;
+        public bool InitSeedData { get; set; } = false;
 
 <#
     foreach (var entityType in Model.GetEntityTypes().Where(e => !e.IsSimpleManyToManyJoinEntityType()))
@@ -100,25 +106,43 @@ namespace <#= NamespaceHint.Replace(".Data.Configuration.Sources", ".Context") #
     if (!Options.SuppressOnConfiguring)
     {
 #>
+
 #if NetCore
+        private void ApplyConfiguration<TEntity>(ModelBuilder model, Data.EntityTypeConfiguration<TEntity> configuration) where TEntity: class
+#elif NetFX
+        private void ApplyConfiguration<TEntity>(DbModelBuilder model, Data.EntityTypeConfiguration<TEntity> configuration) where TEntity: class
+#else 
+        private void ApplyConfiguration<TEntity>(DummyModel model, Data.EntityTypeConfiguration<TEntity> configuration) where TEntity: class
+#endif
+        {
+            configuration.DbType = DbType;
+            configuration.InitSeedData = InitSeedData;
+            model.ApplyConfiguration(configuration);
+        }
+
+#if NetCore
+		static ConcurrentDictionary<string, ServerVersion> serverVersions = new ConcurrentDictionary<string, ServerVersion>();
+
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
-            if (!(builder.Options is Data.Extensions.DbOptions<<#= Options.ContextName #>> options)) throw new NotSupportedException("This type of Options is not supported");
-            switch (options.Flavor)
+            if (!(builder.Options is Data.DbOptions<<#= Options.ContextName #>> options)) throw new NotSupportedException("This type of Options is not supported");
+  
+            InitSeedData = options.InitSeedData;
+
+            switch (options.DbType)
             {
-                case Data.DbFlavor.MsSql:
+                case Data.DbType.MsSql:
                     builder.UseSqlServer(options.ConnectionString);
                     break;
-                case Data.DbFlavor.SqlLite:
+                case Data.DbType.SqlLite:
                     builder.UseSqlite(options.ConnectionString);
                     break;
-                case Data.DbFlavor.MySql:
-                    builder.UseMySql(options.ConnectionString, ServerVersion.AutoDetect(options.ConnectionString));
-                    break;
-                case Data.DbFlavor.MariaDb:
-                    builder.UseMariaDB(options.ConnectionString);
-                    break;
-                case Data.DbFlavor.PostgreSql:
+				case Data.DbType.MySql:
+				case Data.DbType.MariaDb:
+					ServerVersion serverVersion = serverVersions.GetOrAdd(options.ConnectionString, connectionString => ServerVersion.AutoDetect(connectionString));
+					builder.UseMySql(options.ConnectionString, serverVersion);
+					break;
+                case Data.DbType.PostgreSql:
                     builder.UseNpgsql(options.ConnectionString);
                     break;
                 default: throw new NotSupportedException("This DB flavor is not supported");
@@ -142,7 +166,7 @@ namespace <#= NamespaceHint.Replace(".Data.Configuration.Sources", ".Context") #
     {
         anyConfiguration = true;
 #>
-            model.ApplyConfiguration(new <#= entityType.Name #>Configuration(Flavor));
+            ApplyConfiguration(model, new <#= entityType.Name #>Configuration());
 <#
     }
 
@@ -461,7 +485,8 @@ namespace SolidCP.EnterpriseServer.Data {
     mainEnvironment = GenerationEnvironment;
     GenerationEnvironment = new StringBuilder();
     var fxusings = usings.Where(u => u.StartsWith("System.Data.Entity"));
-    var coreusings = usings.Where(u => u.StartsWith("Microsoft.EntityFrameworkCore"));
+    var coreusings = usings.Where(u => u.StartsWith("Microsoft.EntityFrameworkCore") ||
+        u.StartsWith("Microsoft.Extensions"));
     usings = usings.Except(fxusings.Concat(coreusings))
         .Distinct()
         .OrderBy(x => x, new NamespaceComparer())

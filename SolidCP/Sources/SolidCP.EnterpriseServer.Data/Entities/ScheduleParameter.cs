@@ -16,11 +16,11 @@ namespace SolidCP.EnterpriseServer.Data.Entities;
 public partial class ScheduleParameter
 {
     [Key]
-    [Column("ScheduleID")]
+    [Column("ScheduleID", Order = 1)]
     public int ScheduleId { get; set; }
 
     [Key]
-    [Column("ParameterID")]
+    [Column("ParameterID", Order = 2)]
     [StringLength(100)]
     public string ParameterId { get; set; }
 

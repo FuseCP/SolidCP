@@ -17,11 +17,11 @@ namespace SolidCP.EnterpriseServer.Data.Entities;
 public partial class PackagesDiskspace
 {
     [Key]
-    [Column("PackageID")]
+    [Column("PackageID", Order = 1)]
     public int PackageId { get; set; }
 
     [Key]
-    [Column("GroupID")]
+    [Column("GroupID", Order = 2)]
     public int GroupId { get; set; }
 
     public long DiskSpace { get; set; }

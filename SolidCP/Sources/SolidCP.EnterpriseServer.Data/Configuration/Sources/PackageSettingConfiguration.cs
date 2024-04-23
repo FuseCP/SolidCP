@@ -13,10 +13,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class PackageSettingConfiguration: Extensions.EntityTypeConfiguration<PackageSetting>
+public partial class PackageSettingConfiguration: EntityTypeConfiguration<PackageSetting>
 {
-    public PackageSettingConfiguration(): base() { }
-    public PackageSettingConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {

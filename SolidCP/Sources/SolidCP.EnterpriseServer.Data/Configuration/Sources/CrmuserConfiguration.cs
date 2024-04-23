@@ -13,10 +13,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class CrmuserConfiguration: Extensions.EntityTypeConfiguration<Crmuser>
+public partial class CrmuserConfiguration: EntityTypeConfiguration<Crmuser>
 {
-    public CrmuserConfiguration(): base() { }
-    public CrmuserConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {

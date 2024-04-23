@@ -12,11 +12,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class ProviderConfiguration: Extensions.EntityTypeConfiguration<Provider>
+public partial class ProviderConfiguration: EntityTypeConfiguration<Provider>
 {
-    public ProviderConfiguration(): base() { }
-    public ProviderConfiguration(DbFlavor flavor): base(flavor) { }
-
 #if NetCore || NetFX
     public override void Configure() {
         HasKey(e => e.ProviderId).HasName("PK_ServiceTypes");

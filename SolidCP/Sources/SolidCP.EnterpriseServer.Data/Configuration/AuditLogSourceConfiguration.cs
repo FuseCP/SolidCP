@@ -12,13 +12,14 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class AuditLogSourceConfiguration: Extensions.EntityTypeConfiguration<AuditLogSource>
+public partial class AuditLogSourceConfiguration: EntityTypeConfiguration<AuditLogSource>
 {
-    public AuditLogSourceConfiguration(): base() { }
-    public AuditLogSourceConfiguration(DbFlavor flavor): base(flavor) { }
-
 #if NetCore || NetFX
-    public override void Configure() {
+	public override void Configure() {
+
+#if NetCore
+		Core.HasData(new AuditLogSource() { SourceName = "Test" });
+#endif
 
 		#region Seed Data
 		HasData(() => new AuditLogSource[] {

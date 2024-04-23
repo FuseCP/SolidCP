@@ -16,11 +16,11 @@ namespace SolidCP.EnterpriseServer.Data.Entities;
 public partial class HostingPlanQuota
 {
     [Key]
-    [Column("PlanID")]
+    [Column("PlanID", Order = 1)]
     public int PlanId { get; set; }
 
     [Key]
-    [Column("QuotaID")]
+    [Column("QuotaID", Order = 2)]
     public int QuotaId { get; set; }
 
     public int QuotaValue { get; set; }

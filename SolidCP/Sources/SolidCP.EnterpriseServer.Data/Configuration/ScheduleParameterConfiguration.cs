@@ -12,11 +12,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class ScheduleParameterConfiguration : Extensions.EntityTypeConfiguration<ScheduleParameter>
+public partial class ScheduleParameterConfiguration : EntityTypeConfiguration<ScheduleParameter>
 {
-	public ScheduleParameterConfiguration() : base() { }
-	public ScheduleParameterConfiguration(DbFlavor flavor) : base(flavor) { }
-
 #if NetCore || NetFX
 	public override void Configure()
 	{

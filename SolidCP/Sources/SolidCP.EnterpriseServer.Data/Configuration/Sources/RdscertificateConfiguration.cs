@@ -13,10 +13,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class RdscertificateConfiguration: Extensions.EntityTypeConfiguration<Rdscertificate>
+public partial class RdscertificateConfiguration: EntityTypeConfiguration<Rdscertificate>
 {
-    public RdscertificateConfiguration(): base() { }
-    public RdscertificateConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {

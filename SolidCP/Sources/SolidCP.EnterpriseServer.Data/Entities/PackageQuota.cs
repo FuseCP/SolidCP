@@ -16,11 +16,11 @@ namespace SolidCP.EnterpriseServer.Data.Entities;
 public partial class PackageQuota
 {
     [Key]
-    [Column("PackageID")]
+    [Column("PackageID", Order = 1)]
     public int PackageId { get; set; }
 
     [Key]
-    [Column("QuotaID")]
+    [Column("QuotaID", Order = 2)]
     public int QuotaId { get; set; }
 
     public int QuotaValue { get; set; }

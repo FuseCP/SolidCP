@@ -12,11 +12,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class ServiceItemConfiguration: Extensions.EntityTypeConfiguration<ServiceItem>
+public partial class ServiceItemConfiguration: EntityTypeConfiguration<ServiceItem>
 {
-    public ServiceItemConfiguration(): base() { }
-    public ServiceItemConfiguration(DbFlavor flavor): base(flavor) { }
-
 #if NetCore || NetFX
     public override void Configure() {
 

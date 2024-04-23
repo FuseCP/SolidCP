@@ -12,14 +12,16 @@ namespace SolidCP.EnterpriseServer.Data.Entities;
 
 [Table("PackagesTreeCache")]
 #if NetCore
-[Keyless]
+[PrimaryKey("ParentPackageId", "PackageId")]
 #endif
 public partial class PackagesTreeCache
 {
-    [Column("ParentPackageID")]
+    [Key]
+    [Column("ParentPackageID", Order = 1)]
     public int ParentPackageId { get; set; }
 
-    [Column("PackageID")]
+    [Key]
+    [Column("PackageID", Order = 2)]
     public int PackageId { get; set; }
 
     [ForeignKey("PackageId")]

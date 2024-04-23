@@ -12,11 +12,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class PackagesBandwidthConfiguration: Extensions.EntityTypeConfiguration<PackagesBandwidth>
+public partial class PackagesBandwidthConfiguration: EntityTypeConfiguration<PackagesBandwidth>
 {
-    public PackagesBandwidthConfiguration(): base() { }
-    public PackagesBandwidthConfiguration(DbFlavor flavor): base(flavor) { }
-
 #if NetCore || NetFX
     public override void Configure() {
 

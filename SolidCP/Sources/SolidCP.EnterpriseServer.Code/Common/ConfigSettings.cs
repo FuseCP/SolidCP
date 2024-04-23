@@ -64,7 +64,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 		public static string ConnectionString => Data.DbSettings.ConnectionString;
-		public static string SpecificConnectionString => Data.DbSettings.SpecificConnectionString;
+		public static string SpecificConnectionString => Data.DbSettings.NativeConnectionString;
 
 		static string cryptoKey = null;
 		public static string CryptoKey

@@ -1,9 +1,10 @@
 ﻿// This file is auto generated, do not edit.
 #if ScaffoldedDbContext
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using SolidCP.EnterpriseServer.Data.Configuration;
-using SolidCP.EnterpriseServer.Data.Entities;
+using SolidCP.EnterpriseServer.Data.Entities.Sources;
 #if NetCore
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -30,17 +31,22 @@ namespace SolidCP.EnterpriseServer.Context
     {
 
 #if NetCore
-        public DbContextBase(Data.DbContext context): this(new Data.Extensions.DbOptions<DbContextBase>(context)) { }
+        public DbContextBase(Data.DbContext context): this(new Data.DbOptions<DbContextBase>(context)) { }
         public DbContextBase(DbContextOptions<DbContextBase> options): base(options) {
-			if (options is Data.Extensions.DbOptions<DbContextBase> opts) Flavor = opts.Flavor;
+			if (options is Data.DbOptions<DbContextBase> opts) {
+                DbType = opts.DbType;
+                InitSeedData = opts.InitSeedData;
+            }
         }
 #elif NetFX
         public DbContextBase(Data.DbContext context): base(context.ConnectionString) { 
-            Flavor = context.Flavor;
+            DbType = context.DbType;
+            InitSeedData = context.InitSeedData;
         }
 #endif
 
-        public Data.DbFlavor Flavor { get; set; } = Data.DbFlavor.Unknown;
+        public Data.DbType DbType { get; set; } = Data.DbType.Unknown;
+        public bool InitSeedData { get; set; } = false;
 
         public virtual DbSet<AccessToken> AccessTokens { get; set; }
 
@@ -222,25 +228,43 @@ namespace SolidCP.EnterpriseServer.Context
 
         public virtual DbSet<WebDavPortalUsersSetting> WebDavPortalUsersSettings { get; set; }
 
+
 #if NetCore
+        private void ApplyConfiguration<TEntity>(ModelBuilder model, Data.EntityTypeConfiguration<TEntity> configuration) where TEntity: class
+#elif NetFX
+        private void ApplyConfiguration<TEntity>(DbModelBuilder model, Data.EntityTypeConfiguration<TEntity> configuration) where TEntity: class
+#else 
+        private void ApplyConfiguration<TEntity>(DummyModel model, Data.EntityTypeConfiguration<TEntity> configuration) where TEntity: class
+#endif
+        {
+            configuration.DbType = DbType;
+            configuration.InitSeedData = InitSeedData;
+            model.ApplyConfiguration(configuration);
+        }
+
+#if NetCore
+		static ConcurrentDictionary<string, ServerVersion> serverVersions = new ConcurrentDictionary<string, ServerVersion>();
+
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
-            if (!(builder.Options is Data.Extensions.DbOptions<DbContextBase> options)) throw new NotSupportedException("This type of Options is not supported");
-            switch (options.Flavor)
+            if (!(builder.Options is Data.DbOptions<DbContextBase> options)) throw new NotSupportedException("This type of Options is not supported");
+  
+            InitSeedData = options.InitSeedData;
+
+            switch (options.DbType)
             {
-                case Data.DbFlavor.MsSql:
+                case Data.DbType.MsSql:
                     builder.UseSqlServer(options.ConnectionString);
                     break;
-                case Data.DbFlavor.SqlLite:
+                case Data.DbType.SqlLite:
                     builder.UseSqlite(options.ConnectionString);
                     break;
-                case Data.DbFlavor.MySql:
-                    builder.UseMySql(options.ConnectionString, ServerVersion.AutoDetect(options.ConnectionString));
-                    break;
-                case Data.DbFlavor.MariaDb:
-                    builder.UseMariaDB(options.ConnectionString);
-                    break;
-                case Data.DbFlavor.PostgreSql:
+				case Data.DbType.MySql:
+				case Data.DbType.MariaDb:
+					ServerVersion serverVersion = serverVersions.GetOrAdd(options.ConnectionString, connectionString => ServerVersion.AutoDetect(connectionString));
+					builder.UseMySql(options.ConnectionString, serverVersion);
+					break;
+                case Data.DbType.PostgreSql:
                     builder.UseNpgsql(options.ConnectionString);
                     break;
                 default: throw new NotSupportedException("This DB flavor is not supported");
@@ -257,96 +281,96 @@ namespace SolidCP.EnterpriseServer.Context
 #endif
 
 #if ScaffoldDbContextEntities
-            model.ApplyConfiguration(new AccessTokenConfiguration(Flavor));
-            model.ApplyConfiguration(new AdditionalGroupConfiguration(Flavor));
-            model.ApplyConfiguration(new AuditLogConfiguration(Flavor));
-            model.ApplyConfiguration(new AuditLogSourceConfiguration(Flavor));
-            model.ApplyConfiguration(new AuditLogTaskConfiguration(Flavor));
-            model.ApplyConfiguration(new BackgroundTaskConfiguration(Flavor));
-            model.ApplyConfiguration(new BackgroundTaskLogConfiguration(Flavor));
-            model.ApplyConfiguration(new BackgroundTaskParameterConfiguration(Flavor));
-            model.ApplyConfiguration(new BackgroundTaskStackConfiguration(Flavor));
-            model.ApplyConfiguration(new BlackBerryUserConfiguration(Flavor));
-            model.ApplyConfiguration(new ClusterConfiguration(Flavor));
-            model.ApplyConfiguration(new CommentConfiguration(Flavor));
-            model.ApplyConfiguration(new CrmuserConfiguration(Flavor));
-            model.ApplyConfiguration(new DomainConfiguration(Flavor));
-            model.ApplyConfiguration(new DomainDnsRecordConfiguration(Flavor));
-            model.ApplyConfiguration(new EnterpriseFolderConfiguration(Flavor));
-            model.ApplyConfiguration(new EnterpriseFoldersOwaPermissionConfiguration(Flavor));
-            model.ApplyConfiguration(new ExchangeAccountConfiguration(Flavor));
-            model.ApplyConfiguration(new ExchangeAccountEmailAddressConfiguration(Flavor));
-            model.ApplyConfiguration(new ExchangeDeletedAccountConfiguration(Flavor));
-            model.ApplyConfiguration(new ExchangeDisclaimerConfiguration(Flavor));
-            model.ApplyConfiguration(new ExchangeMailboxPlanConfiguration(Flavor));
-            model.ApplyConfiguration(new ExchangeMailboxPlanRetentionPolicyTagConfiguration(Flavor));
-            model.ApplyConfiguration(new ExchangeOrganizationConfiguration(Flavor));
-            model.ApplyConfiguration(new ExchangeOrganizationDomainConfiguration(Flavor));
-            model.ApplyConfiguration(new ExchangeOrganizationSettingConfiguration(Flavor));
-            model.ApplyConfiguration(new ExchangeOrganizationSsFolderConfiguration(Flavor));
-            model.ApplyConfiguration(new ExchangeRetentionPolicyTagConfiguration(Flavor));
-            model.ApplyConfiguration(new GlobalDnsRecordConfiguration(Flavor));
-            model.ApplyConfiguration(new HostingPlanConfiguration(Flavor));
-            model.ApplyConfiguration(new HostingPlanQuotaConfiguration(Flavor));
-            model.ApplyConfiguration(new HostingPlanResourceConfiguration(Flavor));
-            model.ApplyConfiguration(new IpaddressConfiguration(Flavor));
-            model.ApplyConfiguration(new LyncUserConfiguration(Flavor));
-            model.ApplyConfiguration(new LyncUserPlanConfiguration(Flavor));
-            model.ApplyConfiguration(new OcsuserConfiguration(Flavor));
-            model.ApplyConfiguration(new PackageConfiguration(Flavor));
-            model.ApplyConfiguration(new PackageAddonConfiguration(Flavor));
-            model.ApplyConfiguration(new PackageIpaddressConfiguration(Flavor));
-            model.ApplyConfiguration(new PackageQuotaConfiguration(Flavor));
-            model.ApplyConfiguration(new PackageResourceConfiguration(Flavor));
-            model.ApplyConfiguration(new PackageSettingConfiguration(Flavor));
-            model.ApplyConfiguration(new PackageVlanConfiguration(Flavor));
-            model.ApplyConfiguration(new PackagesBandwidthConfiguration(Flavor));
-            model.ApplyConfiguration(new PackagesDiskspaceConfiguration(Flavor));
-            model.ApplyConfiguration(new PackagesTreeCacheConfiguration(Flavor));
-            model.ApplyConfiguration(new PrivateIpaddressConfiguration(Flavor));
-            model.ApplyConfiguration(new PrivateNetworkVlanConfiguration(Flavor));
-            model.ApplyConfiguration(new ProviderConfiguration(Flavor));
-            model.ApplyConfiguration(new QuotaConfiguration(Flavor));
-            model.ApplyConfiguration(new RdscertificateConfiguration(Flavor));
-            model.ApplyConfiguration(new RdscollectionConfiguration(Flavor));
-            model.ApplyConfiguration(new RdscollectionSettingConfiguration(Flavor));
-            model.ApplyConfiguration(new RdscollectionUserConfiguration(Flavor));
-            model.ApplyConfiguration(new RdsmessageConfiguration(Flavor));
-            model.ApplyConfiguration(new RdsserverConfiguration(Flavor));
-            model.ApplyConfiguration(new RdsserverSettingConfiguration(Flavor));
-            model.ApplyConfiguration(new ResourceGroupConfiguration(Flavor));
-            model.ApplyConfiguration(new ResourceGroupDnsRecordConfiguration(Flavor));
-            model.ApplyConfiguration(new ScheduleConfiguration(Flavor));
-            model.ApplyConfiguration(new ScheduleParameterConfiguration(Flavor));
-            model.ApplyConfiguration(new ScheduleTaskConfiguration(Flavor));
-            model.ApplyConfiguration(new ScheduleTaskParameterConfiguration(Flavor));
-            model.ApplyConfiguration(new ScheduleTaskViewConfigurationConfiguration(Flavor));
-            model.ApplyConfiguration(new ServerConfiguration(Flavor));
-            model.ApplyConfiguration(new ServiceConfiguration(Flavor));
-            model.ApplyConfiguration(new ServiceDefaultPropertyConfiguration(Flavor));
-            model.ApplyConfiguration(new ServiceItemConfiguration(Flavor));
-            model.ApplyConfiguration(new ServiceItemPropertyConfiguration(Flavor));
-            model.ApplyConfiguration(new ServiceItemTypeConfiguration(Flavor));
-            model.ApplyConfiguration(new ServicePropertyConfiguration(Flavor));
-            model.ApplyConfiguration(new SfBuserConfiguration(Flavor));
-            model.ApplyConfiguration(new SfBuserPlanConfiguration(Flavor));
-            model.ApplyConfiguration(new SslcertificateConfiguration(Flavor));
-            model.ApplyConfiguration(new StorageSpaceConfiguration(Flavor));
-            model.ApplyConfiguration(new StorageSpaceFolderConfiguration(Flavor));
-            model.ApplyConfiguration(new StorageSpaceLevelConfiguration(Flavor));
-            model.ApplyConfiguration(new StorageSpaceLevelResourceGroupConfiguration(Flavor));
-            model.ApplyConfiguration(new SupportServiceLevelConfiguration(Flavor));
-            model.ApplyConfiguration(new SystemSettingConfiguration(Flavor));
-            model.ApplyConfiguration(new ThemeConfiguration(Flavor));
-            model.ApplyConfiguration(new ThemeSettingConfiguration(Flavor));
-            model.ApplyConfiguration(new UserConfiguration(Flavor));
-            model.ApplyConfiguration(new UserSettingConfiguration(Flavor));
-            model.ApplyConfiguration(new UsersDetailedConfiguration(Flavor));
-            model.ApplyConfiguration(new VersionConfiguration(Flavor));
-            model.ApplyConfiguration(new VirtualGroupConfiguration(Flavor));
-            model.ApplyConfiguration(new VirtualServiceConfiguration(Flavor));
-            model.ApplyConfiguration(new WebDavAccessTokenConfiguration(Flavor));
-            model.ApplyConfiguration(new WebDavPortalUsersSettingConfiguration(Flavor));
+            ApplyConfiguration(model, new AccessTokenConfiguration());
+            ApplyConfiguration(model, new AdditionalGroupConfiguration());
+            ApplyConfiguration(model, new AuditLogConfiguration());
+            ApplyConfiguration(model, new AuditLogSourceConfiguration());
+            ApplyConfiguration(model, new AuditLogTaskConfiguration());
+            ApplyConfiguration(model, new BackgroundTaskConfiguration());
+            ApplyConfiguration(model, new BackgroundTaskLogConfiguration());
+            ApplyConfiguration(model, new BackgroundTaskParameterConfiguration());
+            ApplyConfiguration(model, new BackgroundTaskStackConfiguration());
+            ApplyConfiguration(model, new BlackBerryUserConfiguration());
+            ApplyConfiguration(model, new ClusterConfiguration());
+            ApplyConfiguration(model, new CommentConfiguration());
+            ApplyConfiguration(model, new CrmuserConfiguration());
+            ApplyConfiguration(model, new DomainConfiguration());
+            ApplyConfiguration(model, new DomainDnsRecordConfiguration());
+            ApplyConfiguration(model, new EnterpriseFolderConfiguration());
+            ApplyConfiguration(model, new EnterpriseFoldersOwaPermissionConfiguration());
+            ApplyConfiguration(model, new ExchangeAccountConfiguration());
+            ApplyConfiguration(model, new ExchangeAccountEmailAddressConfiguration());
+            ApplyConfiguration(model, new ExchangeDeletedAccountConfiguration());
+            ApplyConfiguration(model, new ExchangeDisclaimerConfiguration());
+            ApplyConfiguration(model, new ExchangeMailboxPlanConfiguration());
+            ApplyConfiguration(model, new ExchangeMailboxPlanRetentionPolicyTagConfiguration());
+            ApplyConfiguration(model, new ExchangeOrganizationConfiguration());
+            ApplyConfiguration(model, new ExchangeOrganizationDomainConfiguration());
+            ApplyConfiguration(model, new ExchangeOrganizationSettingConfiguration());
+            ApplyConfiguration(model, new ExchangeOrganizationSsFolderConfiguration());
+            ApplyConfiguration(model, new ExchangeRetentionPolicyTagConfiguration());
+            ApplyConfiguration(model, new GlobalDnsRecordConfiguration());
+            ApplyConfiguration(model, new HostingPlanConfiguration());
+            ApplyConfiguration(model, new HostingPlanQuotaConfiguration());
+            ApplyConfiguration(model, new HostingPlanResourceConfiguration());
+            ApplyConfiguration(model, new IpaddressConfiguration());
+            ApplyConfiguration(model, new LyncUserConfiguration());
+            ApplyConfiguration(model, new LyncUserPlanConfiguration());
+            ApplyConfiguration(model, new OcsuserConfiguration());
+            ApplyConfiguration(model, new PackageConfiguration());
+            ApplyConfiguration(model, new PackageAddonConfiguration());
+            ApplyConfiguration(model, new PackageIpaddressConfiguration());
+            ApplyConfiguration(model, new PackageQuotaConfiguration());
+            ApplyConfiguration(model, new PackageResourceConfiguration());
+            ApplyConfiguration(model, new PackageSettingConfiguration());
+            ApplyConfiguration(model, new PackageVlanConfiguration());
+            ApplyConfiguration(model, new PackagesBandwidthConfiguration());
+            ApplyConfiguration(model, new PackagesDiskspaceConfiguration());
+            ApplyConfiguration(model, new PackagesTreeCacheConfiguration());
+            ApplyConfiguration(model, new PrivateIpaddressConfiguration());
+            ApplyConfiguration(model, new PrivateNetworkVlanConfiguration());
+            ApplyConfiguration(model, new ProviderConfiguration());
+            ApplyConfiguration(model, new QuotaConfiguration());
+            ApplyConfiguration(model, new RdscertificateConfiguration());
+            ApplyConfiguration(model, new RdscollectionConfiguration());
+            ApplyConfiguration(model, new RdscollectionSettingConfiguration());
+            ApplyConfiguration(model, new RdscollectionUserConfiguration());
+            ApplyConfiguration(model, new RdsmessageConfiguration());
+            ApplyConfiguration(model, new RdsserverConfiguration());
+            ApplyConfiguration(model, new RdsserverSettingConfiguration());
+            ApplyConfiguration(model, new ResourceGroupConfiguration());
+            ApplyConfiguration(model, new ResourceGroupDnsRecordConfiguration());
+            ApplyConfiguration(model, new ScheduleConfiguration());
+            ApplyConfiguration(model, new ScheduleParameterConfiguration());
+            ApplyConfiguration(model, new ScheduleTaskConfiguration());
+            ApplyConfiguration(model, new ScheduleTaskParameterConfiguration());
+            ApplyConfiguration(model, new ScheduleTaskViewConfigurationConfiguration());
+            ApplyConfiguration(model, new ServerConfiguration());
+            ApplyConfiguration(model, new ServiceConfiguration());
+            ApplyConfiguration(model, new ServiceDefaultPropertyConfiguration());
+            ApplyConfiguration(model, new ServiceItemConfiguration());
+            ApplyConfiguration(model, new ServiceItemPropertyConfiguration());
+            ApplyConfiguration(model, new ServiceItemTypeConfiguration());
+            ApplyConfiguration(model, new ServicePropertyConfiguration());
+            ApplyConfiguration(model, new SfBuserConfiguration());
+            ApplyConfiguration(model, new SfBuserPlanConfiguration());
+            ApplyConfiguration(model, new SslcertificateConfiguration());
+            ApplyConfiguration(model, new StorageSpaceConfiguration());
+            ApplyConfiguration(model, new StorageSpaceFolderConfiguration());
+            ApplyConfiguration(model, new StorageSpaceLevelConfiguration());
+            ApplyConfiguration(model, new StorageSpaceLevelResourceGroupConfiguration());
+            ApplyConfiguration(model, new SupportServiceLevelConfiguration());
+            ApplyConfiguration(model, new SystemSettingConfiguration());
+            ApplyConfiguration(model, new ThemeConfiguration());
+            ApplyConfiguration(model, new ThemeSettingConfiguration());
+            ApplyConfiguration(model, new UserConfiguration());
+            ApplyConfiguration(model, new UserSettingConfiguration());
+            ApplyConfiguration(model, new UsersDetailedConfiguration());
+            ApplyConfiguration(model, new VersionConfiguration());
+            ApplyConfiguration(model, new VirtualGroupConfiguration());
+            ApplyConfiguration(model, new VirtualServiceConfiguration());
+            ApplyConfiguration(model, new WebDavAccessTokenConfiguration());
+            ApplyConfiguration(model, new WebDavPortalUsersSettingConfiguration());
 
 #endif
 

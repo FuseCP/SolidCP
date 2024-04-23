@@ -15,10 +15,8 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 using GlobalDnsRecord = SolidCP.EnterpriseServer.Data.Entities.GlobalDnsRecord;
 
-public partial class GlobalDnsRecordConfiguration: Extensions.EntityTypeConfiguration<GlobalDnsRecord>
+public partial class GlobalDnsRecordConfiguration: EntityTypeConfiguration<GlobalDnsRecord>
 {
-    public GlobalDnsRecordConfiguration(): base() { }
-    public GlobalDnsRecordConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {

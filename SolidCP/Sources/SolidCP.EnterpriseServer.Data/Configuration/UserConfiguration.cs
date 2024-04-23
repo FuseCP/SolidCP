@@ -12,11 +12,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class UserConfiguration: Extensions.EntityTypeConfiguration<User>
+public partial class UserConfiguration: EntityTypeConfiguration<User>
 {
-    public UserConfiguration(): base() { }
-    public UserConfiguration(DbFlavor flavor): base(flavor) { }
-
 #if NetCore || NetFX
     public override void Configure() {
 

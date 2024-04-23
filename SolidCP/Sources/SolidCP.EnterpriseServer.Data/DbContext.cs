@@ -4,44 +4,61 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using SolidCP.Providers.OS;
 using SolidCP.EnterpriseServer;
+#if NetFX
+using System.Data.Entity;
+#endif
 
 namespace SolidCP.EnterpriseServer.Data
 {
-    public enum DbFlavor { Unknown, MsSql, MySql, MariaDb, SqlLite, PostgreSql, Other }
     public partial class DbContext: IDisposable
-    {
+	{
         static string connectionString = null;
         public string ConnectionString
         {
-            get => connectionString ?? (connectionString = DbSettings.SpecificConnectionString);
+            get => connectionString ?? (connectionString = DbSettings.NativeConnectionString);
             set => connectionString = value;
         }
-        DbFlavor flavor = DbFlavor.Unknown;
-        public DbFlavor Flavor
+        DbType dbType = DbType.Unknown;
+        public DbType DbType
         {
             get
             {
-                if (flavor != DbFlavor.Unknown) return flavor;
-                var flavorName = Regex.Match(DbSettings.ConnectionString, @"(?<=(?:;|^)\s*Flavor\s*=\s*)[^;$]*", RegexOptions.IgnoreCase)?.Value.Trim();
-                if (!string.IsNullOrEmpty(flavorName) && !Enum.TryParse<DbFlavor>(flavorName, true, out flavor)) flavor = DbFlavor.Other;
-                if (flavor == DbFlavor.Other) throw new NotSupportedException($"This DB flavor {flavorName} is not supported");
-                return flavor;
+                if (dbType != DbType.Unknown) return dbType;
+                dbType = DbSettings.GetDbType(ConnectionString);
+                if (dbType == DbType.Unknown) dbType = DbSettings.DbType;
+                if (dbType == DbType.Other) throw new NotSupportedException($"Db type is not supported");
+                return dbType;
             }
-            set => flavor = value;
+            set => dbType = value;
         }
 
+        public bool InitSeedData { get; set; } = false;
+
         static Type contextType = null;
-        static Type ContextType
+        Type ContextType
         {
             get
             {
                 if (contextType == null)
                 {
 #if NETSTANDARD
-                    if (OSInfo.IsCore) contextType = Type.GetType("SolidCP.EnterpriseServer.Context.DbContextBase, SolidCP.EnterpriseServer.Data.Core");
-                    else contextType = Type.GetType("SolidCP.EnterpriseServer.Context.DbContextBase, SolidCP.EnterpriseServer.Data.NetFX");
+                    var dbType = DbType;
+                    if (dbType == DbType.MariaDb) dbType = DbType.MySql;
+                    if (OSInfo.IsCore) {    
+                        contextType = Type.GetType($"SolidCP.EnterpriseServer.Context.{dbType}DbContext, SolidCP.EnterpriseServer.Data.Core"); break;
+                    } else {
+                        contextType = Type.GetType($"SolidCP.EnterpriseServer.Context.{dbType}DbContext, SolidCP.EnterpriseServer.Data.Core");
+                    }
 #else
-                    contextType = typeof(Context.DbContextBase);
+					switch (DbType)
+                    {
+                        default:
+                        case DbType.MsSql: contextType = typeof(MsSqlDbContext); break;
+                        case DbType.MySql: contextType = typeof(MySqlDbContext); break;
+                        case DbType.MariaDb: contextType = typeof(MySqlDbContext); break;
+                        case DbType.PostgreSql: contextType = typeof(PostgreSqlDbContext); break;
+                        case DbType.Sqlite: contextType = typeof(SqliteDbContext); break;
+                    }
 #endif
                 }
                 return contextType;
@@ -58,10 +75,11 @@ namespace SolidCP.EnterpriseServer.Data
 #endif
         }
 
-        public DbContext(string connectionString, DbFlavor flavor = DbFlavor.Unknown)
+        public DbContext(string connectionString, DbType dbType = DbType.Unknown, bool initSeedData = false)
         {
-            Flavor = flavor;
+            DbType = dbType;
             ConnectionString = connectionString;
+            InitSeedData = initSeedData;
 #if NETSTANDARD
             BaseContext = (IGenericDbContext)Activator.CreateInstance(ContextType, this);
 #else
@@ -73,5 +91,17 @@ namespace SolidCP.EnterpriseServer.Data
         public int SaveChanges() => BaseContext.SaveChanges();
         public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken)) => BaseContext.SaveChangesAsync(cancellationToken);
         public void Dispose() => BaseContext.Dispose();
-    }
+
+        public static void Init()
+        {
+#if NetFX
+			Database.SetInitializer<MsSqlDbContext>(null);
+			Database.SetInitializer<MySqlDbContext>(null);
+			Database.SetInitializer<MariaDbDbContext>(null);
+			Database.SetInitializer<SqliteDbContext>(null);
+			Database.SetInitializer<PostgreSqlDbContext>(null);
+			Database.SetInitializer<Context.DbContextBase>(null);
+#endif
+		}
+	}
 }

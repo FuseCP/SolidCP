@@ -12,11 +12,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class PackagesDiskspaceConfiguration: Extensions.EntityTypeConfiguration<PackagesDiskspace>
+public partial class PackagesDiskspaceConfiguration: EntityTypeConfiguration<PackagesDiskspace>
 {
-    public PackagesDiskspaceConfiguration(): base() { }
-    public PackagesDiskspaceConfiguration(DbFlavor flavor): base(flavor) { }
-
 #if NetCore || NetFX
     public override void Configure() {
 

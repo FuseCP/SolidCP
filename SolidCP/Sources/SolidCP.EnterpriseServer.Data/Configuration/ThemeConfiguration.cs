@@ -12,11 +12,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class ThemeConfiguration: Extensions.EntityTypeConfiguration<Theme>
+public partial class ThemeConfiguration: EntityTypeConfiguration<Theme>
 {
-    public ThemeConfiguration(): base() { }
-    public ThemeConfiguration(DbFlavor flavor): base(flavor) { }
-
 #if NetCore || NetFX
     public override void Configure() {
 

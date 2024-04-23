@@ -16,6 +16,7 @@ namespace SolidCP.EnterpriseServer.Data.Entities;
 public partial class AuditLogTask
 {
     [Key]
+    [Column(Order = 1)]
     [StringLength(100)]
 #if NetCore
     [Unicode(false)]
@@ -23,6 +24,7 @@ public partial class AuditLogTask
     public string SourceName { get; set; }
 
     [Key]
+    [Column(Order = 2)]
     [StringLength(100)]
 #if NetCore
     [Unicode(false)]

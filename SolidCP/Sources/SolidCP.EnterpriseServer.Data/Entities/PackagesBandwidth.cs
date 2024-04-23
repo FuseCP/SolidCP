@@ -17,15 +17,15 @@ namespace SolidCP.EnterpriseServer.Data.Entities;
 public partial class PackagesBandwidth
 {
     [Key]
-    [Column("PackageID")]
+    [Column("PackageID", Order = 1)]
     public int PackageId { get; set; }
 
     [Key]
-    [Column("GroupID")]
+    [Column("GroupID", Order = 2)]
     public int GroupId { get; set; }
 
     [Key]
-    [Column(TypeName = "datetime")]
+    [Column(TypeName = "datetime", Order = 3)]
     public DateTime LogDate { get; set; }
 
     public long BytesSent { get; set; }

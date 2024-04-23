@@ -11,10 +11,12 @@ using Microsoft.EntityFrameworkCore;
 namespace SolidCP.EnterpriseServer.Data.Entities;
 
 #if NetCore
-[Keyless]
+//[Keyless]
 #endif
 public partial class Theme
 {
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     [Column("ThemeID")]
     public int ThemeId { get; set; }
 

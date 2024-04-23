@@ -14,11 +14,8 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 using Version = SolidCP.EnterpriseServer.Data.Entities.Version;
 
-public partial class VersionConfiguration: Extensions.EntityTypeConfiguration<Version>
+public partial class VersionConfiguration: EntityTypeConfiguration<Version>
 {
-    public VersionConfiguration(): base() { }
-    public VersionConfiguration(DbFlavor flavor): base(flavor) { }
-
 #if NetCore || NetFX
     public override void Configure() {
 

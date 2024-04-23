@@ -12,11 +12,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class PrivateIpaddressConfiguration: Extensions.EntityTypeConfiguration<PrivateIpaddress>
+public partial class PrivateIpaddressConfiguration: EntityTypeConfiguration<PrivateIpaddress>
 {
-    public PrivateIpaddressConfiguration(): base() { }
-    public PrivateIpaddressConfiguration(DbFlavor flavor): base(flavor) { }
-
 #if NetCore || NetFX
     public override void Configure() {
 #if NetCore

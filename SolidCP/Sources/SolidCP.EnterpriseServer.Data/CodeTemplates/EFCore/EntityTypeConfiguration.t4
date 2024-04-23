@@ -66,10 +66,8 @@ namespace <#= NamespaceHint.Replace(".Configuration.Sources", ".Configuration") 
     }
     if (aliases != null) { WriteLine(aliases); WriteLine(""); }
 #>
-public partial class <#= EntityType.Name #>Configuration: Extensions.EntityTypeConfiguration<<#= EntityType.Name #>>
+public partial class <#= EntityType.Name #>Configuration: EntityTypeConfiguration<<#= EntityType.Name #>>
 {
-    public <#= EntityType.Name #>Configuration(): base() { }
-    public <#= EntityType.Name #>Configuration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {
@@ -255,11 +253,9 @@ public partial class <#= EntityType.Name #>Configuration: Extensions.EntityTypeC
         anyEntityTypeConfiguration = true;
     }
 
-    var entityData = Scaffold.GetEntityDatasFromSeparateProcess(EntityType, Options, 12);
+    var entityData = Scaffold.GetEntityDatasFromSeparateProcess(EntityType, Options, Host.TemplateFile, 12);
 
-    //Console.WriteLine(entityData);
-
-    if (entityData.Length > 0)
+    if (!string.IsNullOrEmpty(entityData))
     {
 #>
 

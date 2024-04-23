@@ -13,10 +13,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class ExchangeAccountEmailAddressConfiguration: Extensions.EntityTypeConfiguration<ExchangeAccountEmailAddress>
+public partial class ExchangeAccountEmailAddressConfiguration: EntityTypeConfiguration<ExchangeAccountEmailAddress>
 {
-    public ExchangeAccountEmailAddressConfiguration(): base() { }
-    public ExchangeAccountEmailAddressConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {

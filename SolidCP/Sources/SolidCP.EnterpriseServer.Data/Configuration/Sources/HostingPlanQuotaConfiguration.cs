@@ -13,10 +13,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class HostingPlanQuotaConfiguration: Extensions.EntityTypeConfiguration<HostingPlanQuota>
+public partial class HostingPlanQuotaConfiguration: EntityTypeConfiguration<HostingPlanQuota>
 {
-    public HostingPlanQuotaConfiguration(): base() { }
-    public HostingPlanQuotaConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {

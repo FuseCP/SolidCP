@@ -13,10 +13,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class PrivateNetworkVlanConfiguration: Extensions.EntityTypeConfiguration<PrivateNetworkVlan>
+public partial class PrivateNetworkVlanConfiguration: EntityTypeConfiguration<PrivateNetworkVlan>
 {
-    public PrivateNetworkVlanConfiguration(): base() { }
-    public PrivateNetworkVlanConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {

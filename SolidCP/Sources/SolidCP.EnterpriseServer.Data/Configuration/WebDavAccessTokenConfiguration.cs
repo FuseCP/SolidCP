@@ -12,11 +12,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class WebDavAccessTokenConfiguration: Extensions.EntityTypeConfiguration<WebDavAccessToken>
+public partial class WebDavAccessTokenConfiguration: EntityTypeConfiguration<WebDavAccessToken>
 {
-    public WebDavAccessTokenConfiguration(): base() { }
-    public WebDavAccessTokenConfiguration(DbFlavor flavor): base(flavor) { }
-
 #if NetCore || NetFX
     public override void Configure() {
         HasKey(e => e.Id).HasName("PK__WebDavAc__3214EC27B27DC571");

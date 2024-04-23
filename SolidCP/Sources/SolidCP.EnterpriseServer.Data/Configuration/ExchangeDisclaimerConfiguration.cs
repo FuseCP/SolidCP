@@ -12,11 +12,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class ExchangeDisclaimerConfiguration : Extensions.EntityTypeConfiguration<ExchangeDisclaimer>
+public partial class ExchangeDisclaimerConfiguration : EntityTypeConfiguration<ExchangeDisclaimer>
 {
-	public ExchangeDisclaimerConfiguration() : base() { }
-	public ExchangeDisclaimerConfiguration(DbFlavor flavor) : base(flavor) { }
-
 #if NetCore || NetFX
 	public override void Configure()
 	{

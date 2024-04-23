@@ -12,11 +12,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class ResourceGroupDnsRecordConfiguration : Extensions.EntityTypeConfiguration<ResourceGroupDnsRecord>
+public partial class ResourceGroupDnsRecordConfiguration : EntityTypeConfiguration<ResourceGroupDnsRecord>
 {
-	public ResourceGroupDnsRecordConfiguration() : base() { }
-	public ResourceGroupDnsRecordConfiguration(DbFlavor flavor) : base(flavor) { }
-
 #if NetCore || NetFX
 	public override void Configure()
 	{

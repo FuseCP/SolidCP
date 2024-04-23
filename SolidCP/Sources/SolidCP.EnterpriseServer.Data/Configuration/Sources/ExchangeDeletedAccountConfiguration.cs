@@ -13,10 +13,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class ExchangeDeletedAccountConfiguration: Extensions.EntityTypeConfiguration<ExchangeDeletedAccount>
+public partial class ExchangeDeletedAccountConfiguration: EntityTypeConfiguration<ExchangeDeletedAccount>
 {
-    public ExchangeDeletedAccountConfiguration(): base() { }
-    public ExchangeDeletedAccountConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {

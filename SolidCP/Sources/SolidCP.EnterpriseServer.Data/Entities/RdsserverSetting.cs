@@ -16,15 +16,17 @@ namespace SolidCP.EnterpriseServer.Data.Entities;
 #endif
 public partial class RdsserverSetting
 {
-    [Key]
+    [Column(Order = 1)]
     public int RdsServerId { get; set; }
 
     [Key]
-    [StringLength(50)]
+	[Column(Order = 2)]
+	[StringLength(50)]
     public string SettingsName { get; set; }
 
     [Key]
-    [StringLength(50)]
+	[Column(Order = 3)]
+	[StringLength(50)]
     public string PropertyName { get; set; }
 
     [Column(TypeName = "ntext")]

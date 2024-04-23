@@ -12,11 +12,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class RdscollectionUserConfiguration: Extensions.EntityTypeConfiguration<RdscollectionUser>
+public partial class RdscollectionUserConfiguration: EntityTypeConfiguration<RdscollectionUser>
 {
-    public RdscollectionUserConfiguration(): base() { }
-    public RdscollectionUserConfiguration(DbFlavor flavor): base(flavor) { }
-
 #if NetCore || NetFX
     public override void Configure() {
         HasKey(e => e.Id).HasName("PK__RDSColle__3214EC2780141EF7");

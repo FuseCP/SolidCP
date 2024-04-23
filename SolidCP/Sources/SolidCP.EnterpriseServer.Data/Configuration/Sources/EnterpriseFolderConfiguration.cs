@@ -13,10 +13,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class EnterpriseFolderConfiguration: Extensions.EntityTypeConfiguration<EnterpriseFolder>
+public partial class EnterpriseFolderConfiguration: EntityTypeConfiguration<EnterpriseFolder>
 {
-    public EnterpriseFolderConfiguration(): base() { }
-    public EnterpriseFolderConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {

@@ -13,10 +13,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class WebDavPortalUsersSettingConfiguration: Extensions.EntityTypeConfiguration<WebDavPortalUsersSetting>
+public partial class WebDavPortalUsersSettingConfiguration: EntityTypeConfiguration<WebDavPortalUsersSetting>
 {
-    public WebDavPortalUsersSettingConfiguration(): base() { }
-    public WebDavPortalUsersSettingConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {

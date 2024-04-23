@@ -13,10 +13,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class PackageConfiguration: Extensions.EntityTypeConfiguration<Package>
+public partial class PackageConfiguration: EntityTypeConfiguration<Package>
 {
-    public PackageConfiguration(): base() { }
-    public PackageConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {
@@ -49,13 +47,6 @@ public partial class PackageConfiguration: Extensions.EntityTypeConfiguration<Pa
                     j.IndexerProperty<int>("PackageId").HasColumnName("PackageID");
                     j.IndexerProperty<int>("ServiceId").HasColumnName("ServiceID");
                 });
-
-        #region Seed Data
-        HasData(() => new Package[] {
-            new Package() { PackageId = 1, PackageComments = "", PackageName = "System", StatusId = 1, StatusIdchangeDate = DateTime.Parse("2024-04-20T11:02:58.5600000"), UserId = 1 }
-        });
-        #endregion
-
     }
 #endif
 }

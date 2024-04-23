@@ -17,12 +17,12 @@ namespace SolidCP.EnterpriseServer.Data.Entities;
 public partial class ScheduleTaskViewConfiguration
 {
     [Key]
-    [Column("TaskID")]
+    [Column("TaskID", Order = 1)]
     [StringLength(100)]
     public string TaskId { get; set; }
 
     [Key]
-    [Column("ConfigurationID")]
+    [Column("ConfigurationID", Order = 2)]
     [StringLength(100)]
     public string ConfigurationId { get; set; }
 

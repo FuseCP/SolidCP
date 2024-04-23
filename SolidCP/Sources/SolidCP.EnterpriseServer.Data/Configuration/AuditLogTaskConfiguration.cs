@@ -12,14 +12,11 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class AuditLogTaskConfiguration: Extensions.EntityTypeConfiguration<AuditLogTask>
+public partial class AuditLogTaskConfiguration: EntityTypeConfiguration<AuditLogTask>
 {
-    public AuditLogTaskConfiguration(): base() { }
-    public AuditLogTaskConfiguration(DbFlavor flavor): base(flavor) { }
-
 #if NetCore || NetFX
     public override void Configure() {
-        HasKey(e => new { e.SourceName, e.TaskName }).HasName("PK_LogActions");
+		HasKey(e => new { e.SourceName, e.TaskName }); //.HasName("PK_LogActions");
 
 
 		#region Seed Data

@@ -12,11 +12,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class EnterpriseFoldersOwaPermissionConfiguration: Extensions.EntityTypeConfiguration<EnterpriseFoldersOwaPermission>
+public partial class EnterpriseFoldersOwaPermissionConfiguration: EntityTypeConfiguration<EnterpriseFoldersOwaPermission>
 {
-    public EnterpriseFoldersOwaPermissionConfiguration(): base() { }
-    public EnterpriseFoldersOwaPermissionConfiguration(DbFlavor flavor): base(flavor) { }
-
 #if NetCore || NetFX
     public override void Configure() {
         HasKey(e => e.Id).HasName("PK__Enterpri__3214EC27D1B48691");

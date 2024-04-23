@@ -12,11 +12,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class PackagesTreeCacheConfiguration: Extensions.EntityTypeConfiguration<PackagesTreeCache>
+public partial class PackagesTreeCacheConfiguration: EntityTypeConfiguration<PackagesTreeCache>
 {
-    public PackagesTreeCacheConfiguration(): base() { }
-    public PackagesTreeCacheConfiguration(DbFlavor flavor): base(flavor) { }
-
 #if NetCore || NetFX
     public override void Configure() {
         HasIndex(e => new { e.ParentPackageId, e.PackageId }, "PackagesTreeCacheIndex").IsClustered();

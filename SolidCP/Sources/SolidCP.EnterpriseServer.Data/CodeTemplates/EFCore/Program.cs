@@ -24,11 +24,14 @@ namespace SolidCP.EnterpriseServer.Data
 
 		public static void Main(string[] args)
 		{
+			Console.ReadKey();
+			Console.WriteLine("SolidCP.EnterpriseServer.Data");
+
 			if (args.Length < 2) return;
 
 			var connectionString = args[0];
 
-			using (var db = new DbContext(connectionString, DbFlavor.MsSql))
+			using (var db = new DbContext(connectionString, DbType.MsSql))
 			{
 				if (args.Length >= 3)
 				{
@@ -48,9 +51,10 @@ namespace SolidCP.EnterpriseServer.Data
 						ModelCodeGenerationOptions options = new ModelCodeGenerationOptions();
 						options.ProjectDir = Environment.CurrentDirectory;
 						options.ContextName = "DbContextBase";
-						options.ContextDir = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"..\..\..\Configuration\Sources"));
+						options.ContextDir = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"..\..\Configuration\Sources"));
 						options.ConnectionString = connectionString;
-						entityData = Scaffolding.Scaffold.GetEntityDatasFromSeparateProcess(entityType, options, indent);
+						var templateFile = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"CodeTemplates\EFCore\bla.t4"));
+						entityData = Scaffolding.Scaffold.GetEntityDatasFromSeparateProcess(entityType, options, templateFile, indent);
 					}
 					Console.Write(Scaffolding.Scaffold.Escape(entityData));
 					Console.WriteLine();
@@ -72,6 +76,7 @@ namespace SolidCP.EnterpriseServer.Data
 					Console.WriteLine(str.ToString());
 				}
 			}
+			Console.ReadKey();
 		}
 	}
 }

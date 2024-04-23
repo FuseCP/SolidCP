@@ -12,11 +12,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class BackgroundTaskConfiguration: Extensions.EntityTypeConfiguration<BackgroundTask>
+public partial class BackgroundTaskConfiguration: EntityTypeConfiguration<BackgroundTask>
 {
-    public BackgroundTaskConfiguration(): base() { }
-    public BackgroundTaskConfiguration(DbFlavor flavor): base(flavor) { }
-
 #if NetCore || NetFX
     public override void Configure() {
         HasKey(e => e.Id).HasName("PK__Backgrou__3214EC271AFAB817");

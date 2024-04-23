@@ -13,10 +13,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class AuditLogConfiguration: Extensions.EntityTypeConfiguration<AuditLog>
+public partial class AuditLogConfiguration: EntityTypeConfiguration<AuditLog>
 {
-    public AuditLogConfiguration(): base() { }
-    public AuditLogConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {

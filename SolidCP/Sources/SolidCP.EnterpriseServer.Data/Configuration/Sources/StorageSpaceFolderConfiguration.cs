@@ -13,10 +13,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class StorageSpaceFolderConfiguration: Extensions.EntityTypeConfiguration<StorageSpaceFolder>
+public partial class StorageSpaceFolderConfiguration: EntityTypeConfiguration<StorageSpaceFolder>
 {
-    public StorageSpaceFolderConfiguration(): base() { }
-    public StorageSpaceFolderConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {

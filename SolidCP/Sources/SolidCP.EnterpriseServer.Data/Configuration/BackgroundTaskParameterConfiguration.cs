@@ -1,5 +1,4 @@
-﻿// This file is auto generated, do not edit.
-using System;
+﻿using System;
 using System.Collections.Generic;
 using SolidCP.EnterpriseServer.Data.Configuration;
 using SolidCP.EnterpriseServer.Data.Entities;
@@ -15,11 +14,8 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 using BackgroundTaskParameter = SolidCP.EnterpriseServer.Data.Entities.BackgroundTaskParameter;
 
-public partial class BackgroundTaskParameterConfiguration: Extensions.EntityTypeConfiguration<BackgroundTaskParameter>
+public partial class BackgroundTaskParameterConfiguration: EntityTypeConfiguration<BackgroundTaskParameter>
 {
-    public BackgroundTaskParameterConfiguration(): base() { }
-    public BackgroundTaskParameterConfiguration(DbFlavor flavor): base(flavor) { }
-
 #if NetCore || NetFX
     public override void Configure() {
         HasKey(e => e.ParameterId).HasName("PK__Backgrou__F80C6297E2E5AF88");
@@ -33,4 +29,4 @@ public partial class BackgroundTaskParameterConfiguration: Extensions.EntityType
 #endif
     }
 #endif
-    }
+}

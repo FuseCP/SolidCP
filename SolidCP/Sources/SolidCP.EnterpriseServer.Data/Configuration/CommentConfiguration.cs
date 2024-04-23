@@ -12,11 +12,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class CommentConfiguration: Extensions.EntityTypeConfiguration<Comment>
+public partial class CommentConfiguration: EntityTypeConfiguration<Comment>
 {
-    public CommentConfiguration(): base() { }
-    public CommentConfiguration(DbFlavor flavor): base(flavor) { }
-
 #if NetCore || NetFX
     public override void Configure() {
 #if NetCore

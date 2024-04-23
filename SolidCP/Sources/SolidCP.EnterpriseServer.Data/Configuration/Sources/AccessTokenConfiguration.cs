@@ -13,10 +13,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class AccessTokenConfiguration: Extensions.EntityTypeConfiguration<AccessToken>
+public partial class AccessTokenConfiguration: EntityTypeConfiguration<AccessToken>
 {
-    public AccessTokenConfiguration(): base() { }
-    public AccessTokenConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {

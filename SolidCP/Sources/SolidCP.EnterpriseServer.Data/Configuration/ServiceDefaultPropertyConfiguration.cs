@@ -12,11 +12,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class ServiceDefaultPropertyConfiguration: Extensions.EntityTypeConfiguration<ServiceDefaultProperty>
+public partial class ServiceDefaultPropertyConfiguration: EntityTypeConfiguration<ServiceDefaultProperty>
 {
-    public ServiceDefaultPropertyConfiguration(): base() { }
-    public ServiceDefaultPropertyConfiguration(DbFlavor flavor): base(flavor) { }
-
 #if NetCore || NetFX
     public override void Configure() {
         HasKey(e => new { e.ProviderId, e.PropertyName }).HasName("PK_ServiceDefaultProperties_1");

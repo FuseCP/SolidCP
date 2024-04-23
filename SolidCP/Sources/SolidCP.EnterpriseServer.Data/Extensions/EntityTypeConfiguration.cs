@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 using SolidCP.EnterpriseServer.Data.Entities;
 using SolidCP.EnterpriseServer.Data.Configuration;
 using System.Diagnostics.CodeAnalysis;
@@ -26,7 +27,7 @@ using System.Data.Entity.ModelConfiguration.Configuration;
 #endif
 
 
-namespace SolidCP.EnterpriseServer.Data.Extensions
+namespace SolidCP.EnterpriseServer.Data
 {
 #if NetCore
 	public abstract class EntityTypeConfiguration<TEntity> : IEntityTypeConfiguration<TEntity> where TEntity : class
@@ -43,15 +44,16 @@ namespace SolidCP.EnterpriseServer.Data.Extensions
 		public const bool IsNetFX = false;
 		public void ApplyConfiguration(EntityTypeConfiguration<TEntity> configuration) { }
 #endif
-		public DbFlavor Flavor { get; set; } = DbFlavor.Unknown;
-		public bool IsMsSql => Flavor == DbFlavor.MsSql;
-		public bool IsMySql => Flavor == DbFlavor.MySql;
-		public bool IsMariaDb => Flavor == DbFlavor.MariaDb;
-		public bool IsSqlLite => Flavor == DbFlavor.SqlLite;
-		public bool IsPostgreSql => Flavor == DbFlavor.PostgreSql;
+		public DbType DbType { get; set; } = DbType.Unknown;
+		public bool InitSeedData { get; set; } = false;
+		public bool IsMsSql => DbType == DbType.MsSql;
+		public bool IsMySql => DbType == DbType.MySql;
+		public bool IsMariaDb => DbType == DbType.MariaDb;
+		public bool IsSqlLite => DbType == DbType.Sqlite;
+		public bool IsPostgreSql => DbType == DbType.PostgreSql;
 
 		public EntityTypeConfiguration() : base() { }
-		public EntityTypeConfiguration(DbFlavor flavor) : this() { Flavor = flavor; Configure(); }
+		public EntityTypeConfiguration(DbType dbType, bool initSeedData = false) : this() { DbType = dbType; InitSeedData = initSeedData; }
 
 #if NetCore
 		EntityTypeBuilder<TEntity> Model = null;
@@ -634,7 +636,7 @@ namespace SolidCP.EnterpriseServer.Data.Extensions
 		// Returns:
 		//     An object that can be used to configure the index.
 #if NetCore
-		public virtual IndexBuilder<TEntity> HasIndex(Expression<Func<TEntity, object?>> indexExpression, string name) => HasIndex(indexExpression, name);
+		public virtual IndexBuilder<TEntity> HasIndex(Expression<Func<TEntity, object?>> indexExpression, string name) => Model.HasIndex(indexExpression, name);
 #elif NetFX
 		public virtual IndexConfiguration HasIndex(Expression<Func<TEntity, object?>> indexExpression, string name) => base.HasIndex(indexExpression).HasName(name);
 #endif
@@ -1639,17 +1641,29 @@ namespace SolidCP.EnterpriseServer.Data.Extensions
 
 #endif
 
-		IEnumerable<TEntity> data = null;
-		public IEnumerable<TEntity> EnumerateEntityData(Func<IEnumerable<TEntity>> dataProvider)
-		{
-			if (data == null) data = dataProvider();
-			if (!(data is Array || data is IList<TEntity>)) data = data.ToArray();
-
-			foreach (var d in data) yield return d;
-		}
-
 #if NetCore
-		public virtual DataBuilder<TEntity> HasData(Func<IEnumerable<TEntity>> dataProvider) => Model.HasData(EnumerateEntityData(dataProvider));
+		class EntityData : IEnumerable<TEntity>
+		{
+			Func<IEnumerable<TEntity>> dataProvider;
+			IEnumerable<TEntity> data = null;
+			public EntityData(Func<IEnumerable<TEntity>> dataProvider) { this.dataProvider = dataProvider; }
+			public IEnumerator<TEntity> GetEnumerator()
+			{
+				if (data == null) data = dataProvider();
+				if (!(data is Array || data is ICollection)) data = data.ToArray();
+
+				foreach (var d in data) yield return d;
+			}
+			IEnumerator IEnumerable.GetEnumerator()
+			{
+				if (data == null) data = dataProvider();
+				if (!(data is Array || data is ICollection)) data = data.ToArray();
+
+				foreach (var d in data) yield return d;
+			}
+		}
+		static TEntity[] emptyData = new TEntity[0];
+		public virtual DataBuilder<TEntity> HasData(Func<IEnumerable<TEntity>> dataProvider) => InitSeedData ? Model.HasData(new EntityData(dataProvider)) : Model.HasData(emptyData);
 #endif
 #if NetFX
 		public virtual object HasData(Func<IEnumerable<TEntity>> dataProvider) => new object();

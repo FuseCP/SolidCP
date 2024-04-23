@@ -12,13 +12,10 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class AccessTokenConfiguration: Extensions.EntityTypeConfiguration<AccessToken>
+public partial class AccessTokenConfiguration: EntityTypeConfiguration<AccessToken>
 {
-    public AccessTokenConfiguration(): base() { }
-    public AccessTokenConfiguration(DbFlavor flavor): base(flavor) { }
-
 #if NetCore || NetFX
-    public override void Configure() {
+	public override void Configure() {
         HasKey(e => e.Id).HasName("PK__AccessTo__3214EC27A32557FE");
 
         Property(e => e.SmsResponse).IsUnicode(false);
@@ -29,4 +26,4 @@ public partial class AccessTokenConfiguration: Extensions.EntityTypeConfiguratio
 #endif
     }
 #endif
-    }
+}

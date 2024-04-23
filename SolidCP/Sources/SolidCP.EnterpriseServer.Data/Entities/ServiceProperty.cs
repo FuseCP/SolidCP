@@ -16,10 +16,11 @@ namespace SolidCP.EnterpriseServer.Data.Entities;
 public partial class ServiceProperty
 {
     [Key]
-    [Column("ServiceID")]
+    [Column("ServiceID", Order = 1)]
     public int ServiceId { get; set; }
 
     [Key]
+    [Column(Order = 2)]
     [StringLength(50)]
     public string PropertyName { get; set; }
 

@@ -1,6 +1,7 @@
 ﻿#if NetCore
 using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -51,7 +52,7 @@ namespace SolidCP.EnterpriseServer.Data
 
 		public static void GetData(IEntityType EntityType, ModelCodeGenerationOptions Options, IServiceProvider services, int indent)
 		{
-			using (var db = new DbContext(Options.ConnectionString, DbFlavor.MsSql))
+			using (var db = new DbContext(Options.ConnectionString, DbType.MsSql))
 			{
 				var entityType = EntityType.ClrType;
 				var setType = typeof(DbSet<>).MakeGenericType(entityType);
@@ -118,27 +119,27 @@ namespace SolidCP.EnterpriseServer.Data
 			}
 		}
 
+		static ConcurrentDictionary<string, ServerVersion> serverVersions = new ConcurrentDictionary<string, ServerVersion>();
 		public void Setup(DbContextOptionsBuilder builder)
 		{
 			DbContext context = null;
-			switch (context.Flavor)
+			switch (context.DbType)
 			{
-				case DbFlavor.MsSql:
+				case DbType.MsSql:
 					builder.UseSqlServer(context.ConnectionString);
 					break;
-				case DbFlavor.SqlLite:
+				case DbType.Sqlite:
 					builder.UseSqlite(context.ConnectionString);
 					break;
-				case DbFlavor.MySql:
-					builder.UseMySql(context.ConnectionString, ServerVersion.AutoDetect(context.ConnectionString));
+				case DbType.MySql:
+				case DbType.MariaDb:
+					ServerVersion serverVersion = serverVersions.GetOrAdd(context.ConnectionString, connectionString => ServerVersion.AutoDetect(connectionString));
+					builder.UseMySql(context.ConnectionString, serverVersion);
 					break;
-				case DbFlavor.MariaDb:
-					builder.UseMariaDB(context.ConnectionString);
-					break;
-				case DbFlavor.PostgreSql:
+				case DbType.PostgreSql:
 					builder.UseNpgsql(context.ConnectionString);
 					break;
-				default: throw new NotSupportedException("This DB flavor is not supported");
+				default: throw new NotSupportedException("This DB type is not supported");
 			}
 		}
 

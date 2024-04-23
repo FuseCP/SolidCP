@@ -12,12 +12,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class ExchangeRetentionPolicyTagConfiguration : Extensions.EntityTypeConfiguration<ExchangeRetentionPolicyTag>
+public partial class ExchangeRetentionPolicyTagConfiguration : EntityTypeConfiguration<ExchangeRetentionPolicyTag>
 {
-
-	public ExchangeRetentionPolicyTagConfiguration() : base() { }
-	public ExchangeRetentionPolicyTagConfiguration(DbFlavor flavor) : base(flavor) { }
-
 #if NetCore || NetFX
 	public override void Configure()
 	{

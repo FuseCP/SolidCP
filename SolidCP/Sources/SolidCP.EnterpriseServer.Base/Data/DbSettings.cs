@@ -7,10 +7,13 @@ using System.Threading.Tasks;
 using System.Configuration;
 using Microsoft.Win32;
 using SolidCP.Providers.OS;
+using System.Data;
 
 namespace SolidCP.EnterpriseServer.Data
 {
-    public class DbSettings
+	public enum DbType { Unknown, MsSql, MySql, MariaDb, Sqlite, PostgreSql, Other }
+
+	public class DbSettings
     {
 
         const string EnterpriseServerRegistryPath = "SOFTWARE\\SolidCP\\EnterpriseServer";
@@ -34,51 +37,112 @@ namespace SolidCP.EnterpriseServer.Data
 
 
         static string connectionString = null;
-        public static string ConnectionString
+
+        static string ConnectionStringNetCore
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(connectionString))
+				{
+
+					string connectionKey = null;
+					if (OSInfo.IsNetFX)
+					{
+						//connectionKey = ConfigurationManager.AppSettings["SolidCP.AltConnectionString"];
+					}
+					else
+					{
+						connectionKey = Web.Services.Configuration.AltConnectionString;
+					}
+
+					string value = string.Empty;
+
+					if (!string.IsNullOrEmpty(connectionKey) && OSInfo.IsWindows)
+					{
+						value = GetKeyFromRegistry(connectionKey);
+					}
+
+					if (!string.IsNullOrEmpty(value))
+					{
+						connectionString = value;
+					}
+					else
+					{
+						if (OSInfo.IsNetFX)
+						{
+							//connectionString = ConfigurationManager.ConnectionStrings["EnterpriseServer"].ConnectionString;
+						}
+						else
+						{
+							connectionString = Web.Services.Configuration.ConnectionString;
+
+						}
+					}
+				}
+				return connectionString;
+			}
+		}
+		static string ConnectionStringNetFX
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(connectionString))
+				{
+
+					string connectionKey = null;
+					if (OSInfo.IsNetFX)
+					{
+						connectionKey = ConfigurationManager.AppSettings["SolidCP.AltConnectionString"];
+					}
+					else
+					{
+						//connectionKey = Web.Services.Configuration.AltConnectionString;
+					}
+
+					string value = string.Empty;
+
+					if (!string.IsNullOrEmpty(connectionKey) && OSInfo.IsWindows)
+					{
+						value = GetKeyFromRegistry(connectionKey);
+					}
+
+					if (!string.IsNullOrEmpty(value))
+					{
+						connectionString = value;
+					}
+					else
+					{
+						if (OSInfo.IsNetFX)
+						{
+							connectionString = ConfigurationManager.ConnectionStrings["EnterpriseServer"].ConnectionString;
+						}
+						else
+						{
+							//connectionString = Web.Services.Configuration.ConnectionString;
+
+						}
+					}
+				}
+				return connectionString;
+			}
+		}
+
+		public static string ConnectionString => OSInfo.IsNetFX ? ConnectionStringNetFX : ConnectionStringNetCore;
+		public static string NativeConnectionString => GetNativeConnectionString(ConnectionString);
+
+        public static string GetNativeConnectionString(string connectionString)
         {
-            get
-            {
-                if (string.IsNullOrEmpty(connectionString))
-                {
+            return Regex.Replace(connectionString, @$"^\s*{nameof(DbType)}\s*=[^;$]*;|;\s*{nameof(DbType)}\s*=[^;$]*", "", RegexOptions.IgnoreCase);
+		}
+		public static DbType GetDbType(string connectionString)
+        {
+            DbType dbType = DbType.Unknown;
+            var dbTypeName = Regex.Match(connectionString, @$"(?<=(?:;|^)\s*{nameof(DbType)}\s*=\s*)[^;$]*", RegexOptions.IgnoreCase)?.Value.Trim();
+			if (!string.IsNullOrEmpty(dbTypeName) && !Enum.TryParse<DbType>(dbTypeName, true, out dbType)) dbType = DbType.Other;
+            return dbType;
+		}
 
-                    string ConnectionKey;
-                    if (OSInfo.IsNetFX)
-                    {
-                        ConnectionKey = ConfigurationManager.AppSettings["SolidCP.AltConnectionString"];
-                    }
-                    else
-                    {
-                        ConnectionKey = Web.Services.Configuration.AltConnectionString;
-                    }
-
-                    string value = string.Empty;
-
-                    if (!string.IsNullOrEmpty(ConnectionKey) && OSInfo.IsWindows)
-                    {
-                        value = GetKeyFromRegistry(ConnectionKey);
-                    }
-
-                    if (!string.IsNullOrEmpty(value))
-                    {
-                        connectionString = value;
-                    }
-                    else
-                    {
-                        if (OSInfo.IsNetFX)
-                        {
-                            connectionString = ConfigurationManager.ConnectionStrings["EnterpriseServer"].ConnectionString;
-                        }
-                        else
-                        {
-                            connectionString = Web.Services.Configuration.ConnectionString;
-                        }
-                    }
-                }
-                return connectionString;
-            }
-        }
-
-        public static string SpecificConnectionString =>
-            Regex.Replace(DbSettings.ConnectionString, @"(?:;|^)\s*Flavor\s*=[^;$]*", "", RegexOptions.IgnoreCase);
-    }
+        static DbType dbType = DbType.Unknown;
+        public static DbType DbType => dbType != DbType.Unknown ? dbType : (dbType = GetDbType(ConnectionString));
+	}
 }

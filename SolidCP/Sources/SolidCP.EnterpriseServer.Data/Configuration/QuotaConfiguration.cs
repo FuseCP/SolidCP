@@ -12,11 +12,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class QuotaConfiguration: Extensions.EntityTypeConfiguration<Quota>
+public partial class QuotaConfiguration: EntityTypeConfiguration<Quota>
 {
-    public QuotaConfiguration(): base() { }
-    public QuotaConfiguration(DbFlavor flavor): base(flavor) { }
-
 #if NetCore || NetFX
     public override void Configure() {
 

@@ -16,15 +16,17 @@ namespace SolidCP.EnterpriseServer.Data.Entities;
 public partial class PackageSetting
 {
     [Key]
-    [Column("PackageID")]
+    [Column("PackageID", Order = 1)]
     public int PackageId { get; set; }
 
     [Key]
+    [Column(Order = 2)]
     [StringLength(50)]
     public string SettingsName { get; set; }
 
     [Key]
-    [StringLength(50)]
+	[Column(Order = 3)]
+	[StringLength(50)]
     public string PropertyName { get; set; }
 
     [Column(TypeName = "ntext")]

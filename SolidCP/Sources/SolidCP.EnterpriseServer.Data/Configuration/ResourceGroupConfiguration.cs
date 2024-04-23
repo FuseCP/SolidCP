@@ -13,11 +13,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class ResourceGroupConfiguration : Extensions.EntityTypeConfiguration<ResourceGroup>
+public partial class ResourceGroupConfiguration : EntityTypeConfiguration<ResourceGroup>
 {
-	public ResourceGroupConfiguration() : base() { }
-	public ResourceGroupConfiguration(DbFlavor flavor) : base(flavor) { }
-
 #if NetCore || NetFX
 	public override void Configure()
 	{

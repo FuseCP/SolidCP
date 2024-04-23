@@ -13,10 +13,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class HostingPlanConfiguration: Extensions.EntityTypeConfiguration<HostingPlan>
+public partial class HostingPlanConfiguration: EntityTypeConfiguration<HostingPlan>
 {
-    public HostingPlanConfiguration(): base() { }
-    public HostingPlanConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {

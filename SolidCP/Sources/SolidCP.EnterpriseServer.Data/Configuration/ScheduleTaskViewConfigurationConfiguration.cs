@@ -12,11 +12,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class ScheduleTaskViewConfigurationConfiguration: Extensions.EntityTypeConfiguration<ScheduleTaskViewConfiguration>
+public partial class ScheduleTaskViewConfigurationConfiguration: EntityTypeConfiguration<ScheduleTaskViewConfiguration>
 {
-    public ScheduleTaskViewConfigurationConfiguration(): base() { }
-    public ScheduleTaskViewConfigurationConfiguration(DbFlavor flavor): base(flavor) { }
-
 #if NetCore || NetFX
     public override void Configure() {
 

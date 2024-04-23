@@ -12,11 +12,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class BlackBerryUserConfiguration: Extensions.EntityTypeConfiguration<BlackBerryUser>
+public partial class BlackBerryUserConfiguration: EntityTypeConfiguration<BlackBerryUser>
 {
-    public BlackBerryUserConfiguration(): base() { }
-    public BlackBerryUserConfiguration(DbFlavor flavor): base(flavor) { }
-
 #if NetCore || NetFX
     public override void Configure() {
 

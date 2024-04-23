@@ -13,10 +13,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class ClusterConfiguration: Extensions.EntityTypeConfiguration<Cluster>
+public partial class ClusterConfiguration: EntityTypeConfiguration<Cluster>
 {
-    public ClusterConfiguration(): base() { }
-    public ClusterConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {

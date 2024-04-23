@@ -13,10 +13,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class RdsserverConfiguration: Extensions.EntityTypeConfiguration<Rdsserver>
+public partial class RdsserverConfiguration: EntityTypeConfiguration<Rdsserver>
 {
-    public RdsserverConfiguration(): base() { }
-    public RdsserverConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {

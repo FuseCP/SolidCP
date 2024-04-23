@@ -13,10 +13,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class ExchangeOrganizationConfiguration: Extensions.EntityTypeConfiguration<ExchangeOrganization>
+public partial class ExchangeOrganizationConfiguration: EntityTypeConfiguration<ExchangeOrganization>
 {
-    public ExchangeOrganizationConfiguration(): base() { }
-    public ExchangeOrganizationConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {

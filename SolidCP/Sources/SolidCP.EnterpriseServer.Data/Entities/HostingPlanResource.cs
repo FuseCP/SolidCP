@@ -16,11 +16,11 @@ namespace SolidCP.EnterpriseServer.Data.Entities;
 public partial class HostingPlanResource
 {
     [Key]
-    [Column("PlanID")]
+    [Column("PlanID", Order = 1)]
     public int PlanId { get; set; }
 
     [Key]
-    [Column("GroupID")]
+    [Column("GroupID", Order = 2)]
     public int GroupId { get; set; }
 
     public bool? CalculateDiskSpace { get; set; }

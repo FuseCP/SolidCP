@@ -4,7 +4,7 @@
         <TargetFrameworks>net8.0;net48</TargetFrameworks>
         <LangVersion>10</LangVersion>
         <ConnectionString>Server=(local);Database=SolidCPFresh;uid=sa;pwd=Password12;TrustServerCertificate=true;Connection Timeout=300;command timeout=300</ConnectionString>
-        <DefineConstants>$(DebugSymbols);ScaffoldedEntities;ScaffoldedDbContext;ScaffoldedConfigurations;</DefineConstants>
+        <DefineConstants>$(DefineConstants);ScaffoldedEntities;ScaffoldedDbContext;ScaffoldedConfigurations;</DefineConstants>
 		<OutputType>Exe</OutputType>
 		<StartupObject>SolidCP.EnterpriseServer.Data.Program</StartupObject>
 	</PropertyGroup>
@@ -12,6 +12,7 @@
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net48'">
 		<OutputType>Library</OutputType>
 		<ImplicitUsings>disable</ImplicitUsings>
+		<!--<StartupObject>SolidCP.EnterpriseServer.Data.Program</StartupObject>-->
 		<StartupObject></StartupObject>
 	</PropertyGroup>
 
@@ -23,7 +24,7 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.4" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.4" />
         <!--<PackageReference Include="Azure.Identity" Version="1.11.1" />-->
-        <PackageReference Include="CData.MariaDB.EntityFrameworkCore" Version="23.0.8839" />
+        <!--<PackageReference Include="CData.MariaDB.EntityFrameworkCore" Version="23.0.8839" />-->
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.4" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
         <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
@@ -61,7 +62,7 @@
     </ItemGroup>
 
     <Target Name="Scaffold">
-        <Exec Command="dotnet ef dbcontext scaffold &quot;$(ConnectionString)&quot; Microsoft.EntityFrameworkCore.SqlServer --data-annotations --output-dir Entities --context-dir Configuration\Sources --context DbContextBase --force" />
+        <Exec Command="dotnet ef dbcontext scaffold &quot;$(ConnectionString)&quot; Microsoft.EntityFrameworkCore.SqlServer --data-annotations --output-dir Entities\Sources --context-dir Configuration\Sources --context DbContextBase --force" />
         <Move SourceFiles="Configuration\Sources\DbContextBase.cs" DestinationFiles="DbContextBase.Source.cs" ContinueOnError="true" />
     </Target>
 
@@ -69,14 +70,23 @@
         <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
     </ItemGroup>
 
+	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+		<None Include="Migrations\**\*.cs" />
+		<Compile Remove="Migrations\**\*.cs" />
+	</ItemGroup>
+
     <ItemGroup>
         <None Include="CodeTemplates\EFCore\Aliases.cs" />
         <Compile Remove="CodeTemplates\EFCore\Aliases.cs" />
 		<!--<Compile Remove="Configuration\**\*.cs" />
 		<None Include="Configuration\**\*.cs" />-->
+		<Compile Remove="Model\**\*.cs" />
+		<None Include="Model\**\*.cs" />
 
 		<None Include="DbContextBase.Source.cs" />
 		<Compile Remove="DbContextBase.Source.cs" />
+		<Compile Remove="Migrations\MsSql\20240423190403_InitialCreate_StoredProcedures.cs" />
+		<None Include="Migrations\MsSql\20240423190403_InitialCreate_StoredProcedures.cs" />
 
 		<None Include="Model\NetFX\Generator\CreateModel.cs">
             <DesignTime>True</DesignTime>
@@ -121,11 +131,13 @@
 	<ItemGroup>
 		<None Include="Configuration\Sources\**\*.*" />
 		<Compile Remove="Configuration\Sources\**\*.*" />
+		<None Include="Entities\Sources\**\*.*" />
 	</ItemGroup>
 	
     <ItemGroup>
       <Folder Include="Configuration\Sources\" />
-      <Folder Include="Migrations\" />
+      <Folder Include="Entities\Sources\" />
+      <Folder Include="Migrations\PostgreSql\" />
     </ItemGroup>
 
 </Project>

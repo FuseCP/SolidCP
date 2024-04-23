@@ -13,10 +13,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class PackageQuotaConfiguration: Extensions.EntityTypeConfiguration<PackageQuota>
+public partial class PackageQuotaConfiguration: EntityTypeConfiguration<PackageQuota>
 {
-    public PackageQuotaConfiguration(): base() { }
-    public PackageQuotaConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {

@@ -15,10 +15,8 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 using BackgroundTask = SolidCP.EnterpriseServer.Data.Entities.BackgroundTask;
 
-public partial class BackgroundTaskConfiguration: Extensions.EntityTypeConfiguration<BackgroundTask>
+public partial class BackgroundTaskConfiguration: EntityTypeConfiguration<BackgroundTask>
 {
-    public BackgroundTaskConfiguration(): base() { }
-    public BackgroundTaskConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {

@@ -13,10 +13,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class BackgroundTaskLogConfiguration: Extensions.EntityTypeConfiguration<BackgroundTaskLog>
+public partial class BackgroundTaskLogConfiguration: EntityTypeConfiguration<BackgroundTaskLog>
 {
-    public BackgroundTaskLogConfiguration(): base() { }
-    public BackgroundTaskLogConfiguration(DbFlavor flavor): base(flavor) { }
 
 #if NetCore || NetFX
     public override void Configure() {

@@ -12,11 +12,8 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class StorageSpaceLevelConfiguration: Extensions.EntityTypeConfiguration<StorageSpaceLevel>
+public partial class StorageSpaceLevelConfiguration: EntityTypeConfiguration<StorageSpaceLevel>
 {
-    public StorageSpaceLevelConfiguration(): base() { }
-    public StorageSpaceLevelConfiguration(DbFlavor flavor): base(flavor) { }
-
 #if NetCore || NetFX
     public override void Configure() {
         HasKey(e => e.Id).HasName("PK__StorageS__3214EC07B8D82363");
