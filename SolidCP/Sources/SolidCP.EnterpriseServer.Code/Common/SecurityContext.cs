@@ -44,7 +44,7 @@ namespace SolidCP.EnterpriseServer
     /// <summary>
     /// Provides security utilities.
     /// </summary>
-    public class SecurityContext
+    public class SecurityContext: ControllerBase
     {
         public const string ROLE_ADMINISTRATOR = "Administrator";
         public const string ROLE_RESELLER = "Reseller";
@@ -56,7 +56,9 @@ namespace SolidCP.EnterpriseServer
 
         public const string CONTEXT_USER_INFO = "CONTEXT_USER_INFO";
 
-        public static void SetThreadPrincipal(int userId)
+        public SecurityContext(ControllerBase provider) : base(provider) { }
+
+        public void SetThreadPrincipal(int userId)
         {
             UserInfo user = UserController.GetUserInternally(userId);
             if (user == null)
@@ -65,7 +67,7 @@ namespace SolidCP.EnterpriseServer
             SetThreadPrincipal(user);
         }
 
-        public static void SetThreadPrincipal(UserInfo user)
+        public void SetThreadPrincipal(UserInfo user)
         {
             // set roles array
             List<string> roles = new List<string>();
@@ -106,7 +108,7 @@ namespace SolidCP.EnterpriseServer
             Thread.CurrentPrincipal = principal;
         }
 
-        public static void SetThreadSupervisorPrincipal()
+        public void SetThreadSupervisorPrincipal()
         {
             UserInfo user = new UserInfo();
             user.UserId = -1;
@@ -119,7 +121,7 @@ namespace SolidCP.EnterpriseServer
             SetThreadPrincipal(user);
         }
 
-        public static EnterpriseServerPrincipal User
+        public EnterpriseServerPrincipal User
         {
             get
             {
@@ -136,9 +138,9 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static bool CheckAccount(ResultObject res, DemandAccount demand)
+        public bool CheckAccount(ResultObject res, DemandAccount demand)
         {
-            int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
+            int accountCheck = CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
             if (accountCheck < 0)
             {
                 res.ErrorCodes.Add(BusinessErrorCodes.ToText(accountCheck));
@@ -147,7 +149,7 @@ namespace SolidCP.EnterpriseServer
             return true;
         }
 
-        public static int CheckAccount(DemandAccount demand)
+        public int CheckAccount(DemandAccount demand)
         {
             if ((demand & DemandAccount.NotDemo) == DemandAccount.NotDemo)
             {
@@ -215,9 +217,9 @@ namespace SolidCP.EnterpriseServer
             return 0;
         }
 
-        public static bool CheckPackage(ResultObject res, int packageId, DemandPackage demand)
+        public bool CheckPackage(ResultObject res, int packageId, DemandPackage demand)
         {
-            int packageCheck = SecurityContext.CheckPackage(packageId, DemandPackage.IsActive);
+            int packageCheck = CheckPackage(packageId, DemandPackage.IsActive);
             if (packageCheck < 0)
             {
                 res.ErrorCodes.Add(BusinessErrorCodes.ToText(packageCheck));
@@ -226,7 +228,7 @@ namespace SolidCP.EnterpriseServer
             return true;
         }
 
-        public static int CheckPackage(int packageId, DemandPackage demand)
+        public int CheckPackage(int packageId, DemandPackage demand)
         {
             // load package
             PackageInfo package = PackageController.GetPackage(packageId);
@@ -236,7 +238,7 @@ namespace SolidCP.EnterpriseServer
             return CheckPackage(package, demand);
         }
 
-        public static int CheckPackage(PackageInfo package, DemandPackage demand)
+        public int CheckPackage(PackageInfo package, DemandPackage demand)
         {
             if ((demand & DemandPackage.IsActive) == DemandPackage.IsActive)
             {

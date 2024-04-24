@@ -40,7 +40,7 @@ using SolidCP.EnterpriseServer.Code.Virtualization2012.Tasks;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class CreateServerAsyncWorker2012
+    public class CreateServerAsyncWorker2012: ControllerAsyncBase
     {
         #region Properties
         public int ThreadUserId { get; set; }

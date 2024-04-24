@@ -63,7 +63,7 @@ namespace SolidCP.EnterpriseServer
     {
         public const string UseStorageSpaces = "UseStorageSpaces";
 
-        public EnterpriseStorageController(WebServiceBase provider) : base(provider) { }
+        public EnterpriseStorageController(ControllerBase provider) : base(provider) { }
 
         #region Public Methods
 
@@ -998,7 +998,7 @@ namespace SolidCP.EnterpriseServer
 
                     if (UsingStorageSpaces(esId) && !rootFolder)
                     {
-                        var storageSpaceId = StorageSpacesController.FindBestStorageSpaceService(new EnterpriseStorageSpaceSelector(esId), 
+                        var storageSpaceId = StorageSpacesController.FindBestStorageSpaceService(new EnterpriseStorageSpaceSelector(this, esId), 
                             ResourceGroups.EnterpriseStorage, quotaInBytses);
 
                         if (!storageSpaceId.IsSuccess)
@@ -1363,7 +1363,7 @@ namespace SolidCP.EnterpriseServer
 
                 long quotaInBytses = ((long)systemFile.FRSMQuotaMB) * 1024 * 1024;
 
-                var storageSpaceId = StorageSpacesController.FindBestStorageSpaceService(new EnterpriseStorageSpaceSelector(esId),
+                var storageSpaceId = StorageSpacesController.FindBestStorageSpaceService(new EnterpriseStorageSpaceSelector(this, esId),
                            ResourceGroups.EnterpriseStorage, quotaInBytses);
 
                 if (!storageSpaceId.IsSuccess)

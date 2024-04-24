@@ -45,7 +45,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 {
     public class ReportController: ControllerBase
     {
-        public ReportController(WebServiceBase provider) : base(provider) { }
+        public ReportController(ControllerBase provider) : base(provider) { }
 
         private void PopulateOrganizationStatisticsReport(Organization org, EnterpriseSolutionStatisticsReport report, string topReseller)
         {

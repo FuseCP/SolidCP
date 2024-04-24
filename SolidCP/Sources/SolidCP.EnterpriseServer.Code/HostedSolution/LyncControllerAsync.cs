@@ -44,12 +44,10 @@ using SolidCP.EnterpriseServer.Code.HostedSolution;
 
 namespace SolidCP.EnterpriseServer.Code.HostedSolution
 {
-    public class LyncControllerAsync: ControllerBase
+    public class LyncControllerAsync: ControllerAsyncBase
     {
         private int lyncServiceId;
         private int organizationServiceId;
-
-        public LyncControllerAsync(WebServiceBase provider) : base(provider) { }
 
         public int LyncServiceId
         {

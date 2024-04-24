@@ -9,7 +9,7 @@ namespace SolidCP.EnterpriseServer
 {
     public class OrganizationFoldersManager : ControllerBase
     {
-        public OrganizationFoldersManager(WebServiceBase provider) : base(provider) { }
+        public OrganizationFoldersManager(ControllerBase provider) : base(provider) { }
 
         public List<StorageSpaceFolder> GetFolders(int itemId, string type)
         {
@@ -31,7 +31,7 @@ namespace SolidCP.EnterpriseServer
 
         public StorageSpaceFolder CreateFolder(string organizationId, int itemId, string type, long quotaInBytes, QuotaType qoutaType)
         {
-            var storageId = StorageSpacesController.FindBestStorageSpaceService(new DefaultStorageSpaceSelector(), ResourceGroups.HostedOrganizations, quotaInBytes);
+            var storageId = StorageSpacesController.FindBestStorageSpaceService(new DefaultStorageSpaceSelector(this), ResourceGroups.HostedOrganizations, quotaInBytes);
 
             if (!storageId.IsSuccess)
             {

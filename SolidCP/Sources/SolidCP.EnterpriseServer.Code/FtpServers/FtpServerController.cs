@@ -46,7 +46,7 @@ namespace SolidCP.EnterpriseServer
 {
     public class FtpServerController : ControllerBase, IImportController, IBackupController
     {
-        public FtpServerController(WebServiceBase provider): base(provider) { }
+        public FtpServerController(ControllerBase provider): base(provider) { }
 
         public FTPServer GetFTPServer(int serviceId)
         {

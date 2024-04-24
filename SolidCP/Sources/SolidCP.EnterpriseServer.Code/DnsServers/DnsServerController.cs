@@ -46,7 +46,7 @@ namespace SolidCP.EnterpriseServer
 {
     public class DnsServerController : ControllerBase, IImportController, IBackupController
     {
-        public DnsServerController(WebServiceBase provider) : base(provider) { }
+        public DnsServerController(ControllerBase provider) : base(provider) { }
 
         private string GetAsciiZoneName(string zoneName)
         {

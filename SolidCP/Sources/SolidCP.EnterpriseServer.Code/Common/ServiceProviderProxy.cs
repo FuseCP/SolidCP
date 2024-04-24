@@ -41,9 +41,11 @@ using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {
-	public class ServiceProviderProxy
+	public class ServiceProviderProxy: ControllerBase
 	{
-		public static SolidCP.Web.Clients.ClientBase Init(SolidCP.Web.Clients.ClientBase proxy, int serviceId, StringDictionary additionalSettings = null)
+		public ServiceProviderProxy(ControllerBase provider) : base(provider) { }
+
+		public SolidCP.Web.Clients.ClientBase Init(SolidCP.Web.Clients.ClientBase proxy, int serviceId, StringDictionary additionalSettings = null)
 		{
 			ServerProxyConfigurator cnfg = new ServerProxyConfigurator();
 
@@ -76,7 +78,7 @@ namespace SolidCP.EnterpriseServer
 			return ServerInit(proxy, cnfg, service.ServerId);
 		}
 
-		public static SolidCP.Web.Clients.ClientBase ServerInit(SolidCP.Web.Clients.ClientBase proxy, ServerProxyConfigurator cnfg, int serverId)
+		public SolidCP.Web.Clients.ClientBase ServerInit(SolidCP.Web.Clients.ClientBase proxy, ServerProxyConfigurator cnfg, int serverId)
 		{
 			// get server info
 			ServerInfo server = ServerController.GetServerByIdInternal(serverId);
@@ -124,13 +126,13 @@ namespace SolidCP.EnterpriseServer
 			return proxy;
 		}
 
-		public static SolidCP.Web.Clients.ClientBase ServerInit(SolidCP.Web.Clients.ClientBase proxy,
+		public SolidCP.Web.Clients.ClientBase ServerInit(SolidCP.Web.Clients.ClientBase proxy,
 			 string serverUrl, string serverPassword, bool sha256Password)
 		{
 			return ServerInit(proxy, new ServerProxyConfigurator() { PasswordIsSHA256 = sha256Password }, serverUrl, serverPassword);
 		}
 
-		public static SolidCP.Web.Clients.ClientBase ServerInit(SolidCP.Web.Clients.ClientBase proxy, int serverId)
+		public SolidCP.Web.Clients.ClientBase ServerInit(SolidCP.Web.Clients.ClientBase proxy, int serverId)
 		{
 			return ServerInit(proxy, new ServerProxyConfigurator(), serverId);
 		}

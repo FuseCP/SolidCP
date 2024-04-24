@@ -57,6 +57,14 @@ namespace SolidCP.EnterpriseServer
 	/// </summary>
 	public class DataProvider: Data.DbContext
 	{
+
+		ControllerBase Provider;
+		ServerController serverController;
+		protected ServerController ServerController => serverController ?? (serverController = new ServerController(Provider));
+
+		public DataProvider() : this(null) { }
+		public DataProvider(ControllerBase provider) { Provider = provider; }
+
 		//public string ConnectionString => ConfigSettings.ConnectionString;
 		private string ObjectQualifier
 		{

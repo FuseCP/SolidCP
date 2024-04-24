@@ -50,7 +50,7 @@ namespace SolidCP.EnterpriseServer
 	{
 		public MailServerController(ControllerBase provider): base(provider) { }
 
-		public static MailServer GetMailServer(int serviceId)
+		public MailServer GetMailServer(int serviceId)
 		{
 			MailServer mail = new MailServer();
 			ServiceProviderProxy.Init(mail, serviceId);
@@ -58,14 +58,14 @@ namespace SolidCP.EnterpriseServer
 		}
 
 		#region Mail Accounts
-		public static DataSet GetRawMailAccountsPaged(int packageId,
+		public DataSet GetRawMailAccountsPaged(int packageId,
 			string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
 		{
 			return PackageController.GetRawPackageItemsPaged(packageId, typeof(MailAccount),
 				true, filterColumn, filterValue, sortColumn, startRow, maximumRows);
 		}
 
-		public static List<MailAccount> GetMailAccounts(int packageId, bool recursive)
+		public List<MailAccount> GetMailAccounts(int packageId, bool recursive)
 		{
 			List<ServiceProviderItem> items = PackageController.GetPackageItemsByType(
 				packageId, typeof(MailAccount), recursive);
@@ -74,7 +74,7 @@ namespace SolidCP.EnterpriseServer
 				new Converter<ServiceProviderItem, MailAccount>(ConvertItemToMailAccount));
 		}
 
-		private static MailAccount ConvertItemToMailAccount(ServiceProviderItem item)
+		private MailAccount ConvertItemToMailAccount(ServiceProviderItem item)
 		{
 			MailAccount account = (MailAccount)item;
 			account.Password = CryptoUtils.Decrypt(account.Password);
@@ -82,7 +82,7 @@ namespace SolidCP.EnterpriseServer
 			return account;
 		}
 
-		public static MailAccount GetMailAccount(int itemId)
+		public MailAccount GetMailAccount(int itemId)
 		{
 			// load meta item
 			MailAccount item = (MailAccount)PackageController.GetPackageItem(itemId);
@@ -100,7 +100,7 @@ namespace SolidCP.EnterpriseServer
 			return account;
 		}
 
-		public static int AddMailAccount(MailAccount item)
+		public int AddMailAccount(MailAccount item)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -192,7 +192,7 @@ namespace SolidCP.EnterpriseServer
 			return itemId;
 		}
 
-		public static int UpdateMailAccount(MailAccount item)
+		public int UpdateMailAccount(MailAccount item)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -270,7 +270,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static int DeleteMailAccount(int itemId)
+		public int DeleteMailAccount(int itemId)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -315,7 +315,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		private static int GetMaxMailBoxSize(int packageId, MailAccount item)
+		private int GetMaxMailBoxSize(int packageId, MailAccount item)
 		{
 			// load package context
 			int maxSize = 0; // unlimited
@@ -347,7 +347,7 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        private static int GetParentMaxMailBoxSize(int packageId, MailAccount item)
+        private int GetParentMaxMailBoxSize(int packageId, MailAccount item)
         {
             // load package context
             int maxSize = 0; // unlimited
@@ -367,14 +367,14 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region Mail Forwardings
-		public static DataSet GetRawMailForwardingsPaged(int packageId,
+		public DataSet GetRawMailForwardingsPaged(int packageId,
 			string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
 		{
 			return PackageController.GetRawPackageItemsPaged(packageId, typeof(MailAlias),
 				true, filterColumn, filterValue, sortColumn, startRow, maximumRows);
 		}
 
-		public static List<MailAlias> GetMailForwardings(int packageId, bool recursive)
+		public List<MailAlias> GetMailForwardings(int packageId, bool recursive)
 		{
 			List<ServiceProviderItem> items = PackageController.GetPackageItemsByType(
 				packageId, typeof(MailAlias), recursive);
@@ -383,12 +383,12 @@ namespace SolidCP.EnterpriseServer
 				new Converter<ServiceProviderItem, MailAlias>(ConvertItemToMailForwarding));
 		}
 
-		private static MailAlias ConvertItemToMailForwarding(ServiceProviderItem item)
+		private MailAlias ConvertItemToMailForwarding(ServiceProviderItem item)
 		{
 			return (MailAlias)item;
 		}
 
-		public static MailAlias GetMailForwarding(int itemId)
+		public MailAlias GetMailForwarding(int itemId)
 		{
 			// load meta item
 			MailAlias item = (MailAlias)PackageController.GetPackageItem(itemId);
@@ -412,7 +412,7 @@ namespace SolidCP.EnterpriseServer
 			return item;
 		}
 
-		public static int AddMailForwarding(MailAlias item)
+		public int AddMailForwarding(MailAlias item)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -485,7 +485,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static int UpdateMailForwarding(MailAlias item)
+		public int UpdateMailForwarding(MailAlias item)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -533,7 +533,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static int DeleteMailForwarding(int itemId)
+		public int DeleteMailForwarding(int itemId)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -572,14 +572,14 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region Mail Groups
-		public static DataSet GetRawMailGroupsPaged(int packageId,
+		public DataSet GetRawMailGroupsPaged(int packageId,
 			string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
 		{
 			return PackageController.GetRawPackageItemsPaged(packageId, typeof(MailGroup),
 				true, filterColumn, filterValue, sortColumn, startRow, maximumRows);
 		}
 
-		public static List<MailGroup> GetMailGroups(int packageId, bool recursive)
+		public List<MailGroup> GetMailGroups(int packageId, bool recursive)
 		{
 			List<ServiceProviderItem> items = PackageController.GetPackageItemsByType(
 				packageId, typeof(MailGroup), recursive);
@@ -588,12 +588,12 @@ namespace SolidCP.EnterpriseServer
 				new Converter<ServiceProviderItem, MailGroup>(ConvertItemToMailGroup));
 		}
 
-		private static MailGroup ConvertItemToMailGroup(ServiceProviderItem item)
+		private MailGroup ConvertItemToMailGroup(ServiceProviderItem item)
 		{
 			return (MailGroup)item;
 		}
 
-		public static MailGroup GetMailGroup(int itemId)
+		public MailGroup GetMailGroup(int itemId)
 		{
 			// load meta item
 			MailGroup item = (MailGroup)PackageController.GetPackageItem(itemId);
@@ -611,7 +611,7 @@ namespace SolidCP.EnterpriseServer
 			return group;
 		}
 
-		public static int AddMailGroup(MailGroup item)
+		public int AddMailGroup(MailGroup item)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -684,7 +684,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static int UpdateMailGroup(MailGroup item)
+		public int UpdateMailGroup(MailGroup item)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -733,7 +733,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static int DeleteMailGroup(int itemId)
+		public int DeleteMailGroup(int itemId)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -776,7 +776,7 @@ namespace SolidCP.EnterpriseServer
 		/// <param name="itemName">Name of the item to search for.</param>
 		/// <param name="membersList">List of item members.</param>
 		/// <returns><paramref name="membersList"/> with no occurencies of <paramref name="itemName"/> in it.</returns>
-		private static string[] RemoveItemNameFromMembersList(string itemName, string[] membersList)
+		private string[] RemoveItemNameFromMembersList(string itemName, string[] membersList)
 		{
 			if (membersList == null)
 			{
@@ -806,7 +806,7 @@ namespace SolidCP.EnterpriseServer
 			return members.ToArray();
 		}
 
-		private static bool CheckRecipientsAllowedNumber(int packageId, string quotaName, string[] members)
+		private bool CheckRecipientsAllowedNumber(int packageId, string quotaName, string[] members)
 		{
 			// load package context
 			PackageContext cntx = PackageController.GetPackageContext(packageId);
@@ -821,14 +821,14 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region Mail Lists
-		public static DataSet GetRawMailListsPaged(int packageId,
+		public DataSet GetRawMailListsPaged(int packageId,
 			string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
 		{
 			return PackageController.GetRawPackageItemsPaged(packageId, typeof(MailList),
 				true, filterColumn, filterValue, sortColumn, startRow, maximumRows);
 		}
 
-		public static List<MailList> GetMailLists(int packageId, bool recursive)
+		public List<MailList> GetMailLists(int packageId, bool recursive)
 		{
 			List<ServiceProviderItem> items = PackageController.GetPackageItemsByType(
 				packageId, typeof(MailList), recursive);
@@ -837,12 +837,12 @@ namespace SolidCP.EnterpriseServer
 				new Converter<ServiceProviderItem, MailList>(ConvertItemToMailList));
 		}
 
-		private static MailList ConvertItemToMailList(ServiceProviderItem item)
+		private MailList ConvertItemToMailList(ServiceProviderItem item)
 		{
 			return (MailList)item;
 		}
 
-		public static MailList GetMailList(int itemId)
+		public MailList GetMailList(int itemId)
 		{
 			// load meta item
 			MailList item = (MailList)PackageController.GetPackageItem(itemId);
@@ -860,7 +860,7 @@ namespace SolidCP.EnterpriseServer
 			return list;
 		}
 
-		public static int AddMailList(MailList item)
+		public int AddMailList(MailList item)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -934,7 +934,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static int UpdateMailList(MailList item)
+		public int UpdateMailList(MailList item)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -990,7 +990,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static int DeleteMailList(int itemId)
+		public int DeleteMailList(int itemId)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -1029,14 +1029,14 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region Mail Domains
-		public static DataSet GetRawMailDomainsPaged(int packageId,
+		public DataSet GetRawMailDomainsPaged(int packageId,
 			string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
 		{
 			return PackageController.GetRawPackageItemsPaged(packageId, typeof(MailDomain),
 				true, filterColumn, filterValue, sortColumn, startRow, maximumRows);
 		}
 
-		public static List<MailDomain> GetMailDomains(int packageId, bool recursive)
+		public List<MailDomain> GetMailDomains(int packageId, bool recursive)
 		{
 			List<ServiceProviderItem> items = PackageController.GetPackageItemsByType(
 				packageId, typeof(MailDomain), recursive);
@@ -1045,12 +1045,12 @@ namespace SolidCP.EnterpriseServer
 				new Converter<ServiceProviderItem, MailDomain>(ConvertItemToMailDomain));
 		}
 
-		private static MailDomain ConvertItemToMailDomain(ServiceProviderItem item)
+		private MailDomain ConvertItemToMailDomain(ServiceProviderItem item)
 		{
 			return (MailDomain)item;
 		}
 
-		public static MailDomain GetMailDomain(int packageId, string mailDomainName)
+		public MailDomain GetMailDomain(int packageId, string mailDomainName)
 		{
 			ServiceProviderItem mailDomain = PackageController.GetPackageItemByName(packageId, mailDomainName, typeof(MailDomain));
 			if (mailDomain != null)
@@ -1059,7 +1059,7 @@ namespace SolidCP.EnterpriseServer
 				return null;
 		}
 
-		public static MailDomain GetMailDomain(int itemId)
+		public MailDomain GetMailDomain(int itemId)
 		{
 			// load meta item
 			MailDomain item = (MailDomain)PackageController.GetPackageItem(itemId);
@@ -1077,7 +1077,7 @@ namespace SolidCP.EnterpriseServer
 			return domain;
 		}
 
-		public static int AddMailDomain(int packageId, int serviceId, string domainName)
+		public int AddMailDomain(int packageId, int serviceId, string domainName)
 		{
 			MailDomain domain = new MailDomain();
 			domain.Name = domainName;
@@ -1087,7 +1087,7 @@ namespace SolidCP.EnterpriseServer
 			return AddMailDomain(domain);
 		}
 
-		public static int AddMailDomain(MailDomain item)
+		public int AddMailDomain(MailDomain item)
 		{
 			// check package items
 			if (PackageController.GetPackageItemByName(item.PackageId, item.Name, typeof(MailDomain)) != null)
@@ -1165,7 +1165,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static int UpdateMailDomain(MailDomain item)
+		public int UpdateMailDomain(MailDomain item)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -1208,7 +1208,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static int DeleteMailDomain(int itemId)
+		public int DeleteMailDomain(int itemId)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -1271,7 +1271,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static List<DomainInfo> GetMailDomainPointers(int itemId)
+		public List<DomainInfo> GetMailDomainPointers(int itemId)
 		{
 			List<DomainInfo> pointers = new List<DomainInfo>();
 
@@ -1293,7 +1293,7 @@ namespace SolidCP.EnterpriseServer
 			return pointers;
 		}
 
-		public static int AddMailDomainPointer( int itemId, int domainId)
+		public int AddMailDomainPointer( int itemId, int domainId)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -1358,7 +1358,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static int DeleteMailDomainPointer(int itemId, int domainId)
+		public int DeleteMailDomainPointer(int itemId, int domainId)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);

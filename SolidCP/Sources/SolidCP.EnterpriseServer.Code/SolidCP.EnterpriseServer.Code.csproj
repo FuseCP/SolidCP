@@ -66,25 +66,7 @@
     <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
         <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
     </ItemGroup>
-
-    <Target Name="SkiaRemoveDuplicateContentItems" BeforeTargets="CheckForDuplicateItems">
-        
-        <Message Importance="high" Text="RemoveDuplicateContentItems" />
-        
-        <RemoveDuplicates Inputs="@(Content)">
-            <Output TaskParameter="Filtered" ItemName="FilteredContent" />
-        </RemoveDuplicates>
-
-        <Message Importance="high" Text="Content: @(Content)" />
-
-        <ItemGroup>
-            <Content Remove="**\*.*" />
-            <Content Include="@(FilteredContent)" />
-        </ItemGroup>
-
-        <Message Importance="high" Text="Filtered Content: @(Content)" />
-    </Target>
-    
+  
     <!-- hack for SkiaSharp, so the native dlls go in the right place -->
     <Import Project="$(PkgSkiaSharp_NativeAssets_Linux)\build\net462\SkiaSharp.NativeAssets.Linux.targets" Condition="'$(TargetFramework)' != ''" />
     <Import Project="$(PkgSkiaSharp_NativeAssets_macOS)\build\net462\SkiaSharp.NativeAssets.macOS.targets" Condition="'$(TargetFramework)' != ''" />

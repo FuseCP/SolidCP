@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 
 namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
 {
-    public static class NetworkAdapterDetailsHelper
+    public class NetworkAdapterDetailsHelper: ControllerBase
     {
+        public NetworkAdapterDetailsHelper(ControllerBase provider) : base(provider) { }
 
-        public static NetworkAdapterDetails GetExternalNetworkDetails(int packageId)
+        public NetworkAdapterDetails GetExternalNetworkDetails(int packageId)
         {
             // load service
             int serviceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.VPS2012);
@@ -19,7 +20,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             return GetExternalNetworkDetailsInternal(serviceId);
         }
 
-        public static NetworkAdapterDetails GetExternalNetworkAdapterDetails(int itemId)
+        public NetworkAdapterDetails GetExternalNetworkAdapterDetails(int itemId)
         {
             // load service item
             VirtualMachine vm = (VirtualMachine)PackageController.GetPackageItem(itemId);
@@ -52,14 +53,14 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             return nic;
         }
 
-        public static NetworkAdapterDetails GetManagementNetworkDetails(int packageId)
+        public NetworkAdapterDetails GetManagementNetworkDetails(int packageId)
         {
             // load service
             int serviceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.VPS2012);
             return GetManagementNetworkDetailsInternal(serviceId);
         }
 
-        private static NetworkAdapterDetails GetExternalNetworkDetailsInternal(int serviceId)
+        private NetworkAdapterDetails GetExternalNetworkDetailsInternal(int serviceId)
         {
             // load service settings
             StringDictionary settings = ServerController.GetServiceSettings(serviceId);
@@ -72,7 +73,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             return nic;
         }
 
-        public static NetworkAdapterDetails GetManagementNetworkAdapterDetails(int itemId)
+        public NetworkAdapterDetails GetManagementNetworkAdapterDetails(int itemId)
         {
             // load service item
             VirtualMachine vm = (VirtualMachine)PackageController.GetPackageItem(itemId);
@@ -104,7 +105,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             return nic;
         }
 
-        private static NetworkAdapterDetails GetManagementNetworkDetailsInternal(int serviceId)
+        private NetworkAdapterDetails GetManagementNetworkDetailsInternal(int serviceId)
         {
             // load service settings
             StringDictionary settings = ServerController.GetServiceSettings(serviceId);
@@ -123,7 +124,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
         }
 
         #region PrivateNetworkDetails
-        public static NetworkAdapterDetails GetPrivateNetworkDetails(int packageId)
+        public NetworkAdapterDetails GetPrivateNetworkDetails(int packageId)
         {
             // load service
             int serviceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.VPS2012);
@@ -131,7 +132,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             return GetPrivateNetworkDetailsInternal(serviceId);
         }
 
-        public static NetworkAdapterDetails GetPrivateNetworkAdapterDetails(int itemId)
+        public NetworkAdapterDetails GetPrivateNetworkAdapterDetails(int itemId)
         {
             // load service item
             VirtualMachine vm = (VirtualMachine)PackageController.GetPackageItem(itemId);
@@ -167,7 +168,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             return nic;
         }
 
-        public static NetworkAdapterDetails GetPrivateNetworkDetailsInternal(int serviceId)
+        public NetworkAdapterDetails GetPrivateNetworkDetailsInternal(int serviceId)
         {
             // load service settings
             StringDictionary settings = ServerController.GetServiceSettings(serviceId);

@@ -54,7 +54,7 @@ namespace SolidCP.EnterpriseServer
 
 		public BackupController(ControllerBase provider) : base(provider) { }
 
-        public static int Backup(bool async, string taskId, int userId, int packageId, int serviceId, int serverId,
+        public int Backup(bool async, string taskId, int userId, int packageId, int serviceId, int serverId,
             string backupFileName, int storePackageId, string storePackageFolder, string storeServerFolder,
             bool deleteTempBackup)
         {
@@ -117,7 +117,7 @@ namespace SolidCP.EnterpriseServer
 			}
         }
 
-		public static int BackupInternal(string taskId, int userId, int packageId, int serviceId, int serverId,
+		public int BackupInternal(string taskId, int userId, int packageId, int serviceId, int serverId,
 			string backupFileName, int storePackageId, string storePackageFolder, string storeServerFolder,
 			bool deleteTempBackup)
 		{
@@ -374,7 +374,7 @@ namespace SolidCP.EnterpriseServer
 			return 0;
 		}
 
-        public static List<ServiceProviderItem> GetBackupItems(int userId,
+        public List<ServiceProviderItem> GetBackupItems(int userId,
             int packageId, int serviceId, int serverId)
         {
 			List<ServiceProviderItem> items = new List<ServiceProviderItem>();
@@ -411,7 +411,7 @@ namespace SolidCP.EnterpriseServer
 			return items;
 		}
 
-		public static KeyValueBunch GetBackupContentSummary(int userId, int packageId,
+		public KeyValueBunch GetBackupContentSummary(int userId, int packageId,
 			int serviceId, int serverId)
 		{
 			Dictionary<string, List<string>> summary = new Dictionary<string, List<string>>();
@@ -443,7 +443,7 @@ namespace SolidCP.EnterpriseServer
 			return result;
 		}
 
-        public static int Restore(bool async, string taskId, int userId, int packageId, int serviceId, int serverId,
+        public int Restore(bool async, string taskId, int userId, int packageId, int serviceId, int serverId,
             int storePackageId, string storePackageBackupPath, string storeServerBackupPath)
         {
             // check demo account
@@ -498,7 +498,7 @@ namespace SolidCP.EnterpriseServer
 			}
         }
 
-		public static int RestoreInternal(string taskId, int userId, int packageId, int serviceId, int serverId,
+		public int RestoreInternal(string taskId, int userId, int packageId, int serviceId, int serverId,
 			int storePackageId, string storePackageBackupPath, string storeServerBackupPath)
 		{
 			try
@@ -711,7 +711,7 @@ namespace SolidCP.EnterpriseServer
 			return 0;
 		}
 
-        public static int BackupItem(string tempFolder, XmlWriter writer, ServiceProviderItem item)
+        public int BackupItem(string tempFolder, XmlWriter writer, ServiceProviderItem item)
         {
             // load item type
             ServiceProviderItemType itemType = PackageController.GetServiceItemType(item.TypeId);
@@ -739,7 +739,7 @@ namespace SolidCP.EnterpriseServer
             return -2;
         }
 
-        private static int BackupItem(string tempFolder, XmlWriter writer,
+        private int BackupItem(string tempFolder, XmlWriter writer,
             ServiceProviderItem item, ResourceGroupInfo group, IBackupController controller)
         {
             writer.WriteStartElement("Item");
@@ -765,13 +765,13 @@ namespace SolidCP.EnterpriseServer
             return 0;
         }
 
-        public static int RestoreItem()
+        public int RestoreItem()
         {
 
             return 0;
         }
 
-		public static void WriteFileElement(XmlWriter writer, string fileName, string filePath, long size)
+		public void WriteFileElement(XmlWriter writer, string fileName, string filePath, long size)
 		{
 			writer.WriteStartElement("File");
 			writer.WriteAttributeString("name", fileName);
@@ -781,7 +781,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
         #region Utility Methods
-		public static bool FolderWriteAccessible(string path)
+		public bool FolderWriteAccessible(string path)
 		{
 			try
 			{
@@ -797,7 +797,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static bool RemoteServerFolderWriteAccessible(int packageId, string path)
+		public bool RemoteServerFolderWriteAccessible(int packageId, string path)
 		{
 			try
 			{
@@ -825,7 +825,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-        public static void SignXmlDocument(XmlDocument doc)
+        public void SignXmlDocument(XmlDocument doc)
         {
             // Create a SignedXml object.
             SignedXml signedXml = new SignedXml(doc);
@@ -855,7 +855,7 @@ namespace SolidCP.EnterpriseServer
             doc.DocumentElement.AppendChild(doc.ImportNode(xmlDigitalSignature, true));
         }
 
-        public static bool ValidateXmlDocument(XmlDocument doc)
+        public bool ValidateXmlDocument(XmlDocument doc)
         {
             // Create a new SignedXml object and pass it
             // the XML document class.
@@ -886,7 +886,7 @@ namespace SolidCP.EnterpriseServer
             return signedXml.CheckSignature(GetUserRSAKey());
         }
 
-        public static RSA GetUserRSAKey()
+        public RSA GetUserRSAKey()
         {
             int userId = SecurityContext.User.UserId;
             if(SecurityContext.User.IsPeer)
@@ -912,7 +912,7 @@ namespace SolidCP.EnterpriseServer
             return rsa;
         }
 
-        private static string GetLoggedUsername()
+        private string GetLoggedUsername()
         {
             string username = SecurityContext.User.Identity.Name;
             UserInfo user = UserController.GetUser(SecurityContext.User.UserId);
@@ -921,7 +921,7 @@ namespace SolidCP.EnterpriseServer
             return username;
         }
 
-        public static string GetTempBackupFolder()
+        public string GetTempBackupFolder()
         {
             string timeStamp = DateTime.Now.Ticks.ToString();
             string tempFolder = Path.Combine(ConfigSettings.BackupsPath, GetLoggedUsername() + "_" + timeStamp);

@@ -57,302 +57,302 @@ namespace SolidCP.EnterpriseServer
     {
         public RemoteDesktopServicesController(ControllerBase provider): base(provider) { }
 
-        public static int GetRemoteDesktopServiceId(int itemId)
+        public int GetRemoteDesktopServiceId(int itemId)
         {
             return GetRdsServiceId(itemId);
         }
 
-        public static RdsCollection GetRdsCollection(int collectionId, bool quick)
+        public RdsCollection GetRdsCollection(int collectionId, bool quick)
         {
             return GetRdsCollectionInternal(collectionId, quick);
         }
 
-        public static RdsCollectionSettings GetRdsCollectionSettings(int collectionId)
+        public RdsCollectionSettings GetRdsCollectionSettings(int collectionId)
         {
             return GetRdsCollectionSettingsInternal(collectionId);
         }
 
-        public static List<RdsCollection> GetOrganizationRdsCollections(int itemId)
+        public List<RdsCollection> GetOrganizationRdsCollections(int itemId)
         {
             return GetOrganizationRdsCollectionsInternal(itemId);
         }
 
-        public static int AddRdsCollection(int itemId, RdsCollection collection)
+        public int AddRdsCollection(int itemId, RdsCollection collection)
         {
             return AddRdsCollectionInternal(itemId, collection);
         }
 
-        public static ResultObject EditRdsCollection(int itemId, RdsCollection collection)
+        public ResultObject EditRdsCollection(int itemId, RdsCollection collection)
         {
             return EditRdsCollectionInternal(itemId, collection);
         }
 
-        public static ResultObject EditRdsCollectionSettings(int itemId, RdsCollection collection)
+        public ResultObject EditRdsCollectionSettings(int itemId, RdsCollection collection)
         {
             return EditRdsCollectionSettingsInternal(itemId, collection);
         }
 
-        public static RdsCollectionPaged GetRdsCollectionsPaged(int itemId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
+        public RdsCollectionPaged GetRdsCollectionsPaged(int itemId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             return GetRdsCollectionsPagedInternal(itemId, filterColumn, filterValue, sortColumn, startRow, maximumRows);
         }
 
-        public static ResultObject RemoveRdsCollection(int itemId, RdsCollection collection)
+        public ResultObject RemoveRdsCollection(int itemId, RdsCollection collection)
         {
             return RemoveRdsCollectionInternal(itemId, collection);
         }
 
-        public static List<StartMenuApp> GetAvailableRemoteApplications(int itemId, string collectionName)
+        public List<StartMenuApp> GetAvailableRemoteApplications(int itemId, string collectionName)
         {
             return GetAvailableRemoteApplicationsInternal(itemId, collectionName);
         }
 
-        public static RdsServersPaged GetRdsServersPaged(string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string rdsControllerServiceID)
+        public RdsServersPaged GetRdsServersPaged(string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string rdsControllerServiceID)
         {
             return GetRdsServersPagedInternal(filterColumn, filterValue, sortColumn, startRow, maximumRows, rdsControllerServiceID);
         }
 
-        public static List<RdsUserSession> GetRdsUserSessions(int collectionId)
+        public List<RdsUserSession> GetRdsUserSessions(int collectionId)
         {
             return GetRdsUserSessionsInternal(collectionId);
         }
 
-        public static RdsServersPaged GetFreeRdsServersPaged(int packageId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string ServiceId)
+        public RdsServersPaged GetFreeRdsServersPaged(int packageId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string ServiceId)
         {
             return GetFreeRdsServersPagedInternal(packageId, filterColumn, filterValue, sortColumn, startRow, maximumRows, ServiceId);
         }
 
-        public static RdsServersPaged GetOrganizationRdsServersPaged(int itemId, int? collectionId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string rdsControllerServiceID)
+        public RdsServersPaged GetOrganizationRdsServersPaged(int itemId, int? collectionId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string rdsControllerServiceID)
         {
             return GetOrganizationRdsServersPagedInternal(itemId, collectionId, filterColumn, filterValue, sortColumn, startRow, maximumRows, rdsControllerServiceID);
         }
 
-        public static RdsServersPaged GetOrganizationFreeRdsServersPaged(int itemId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string rdsControllerServiceID)
+        public RdsServersPaged GetOrganizationFreeRdsServersPaged(int itemId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string rdsControllerServiceID)
         {
             return GetOrganizationFreeRdsServersPagedInternal(itemId, filterColumn, filterValue, sortColumn, startRow, maximumRows, rdsControllerServiceID);
         }
 
-        public static RdsServer GetRdsServer(int rdsSeverId)
+        public RdsServer GetRdsServer(int rdsSeverId)
         {
             return GetRdsServerInternal(rdsSeverId);
         }
 
-        public static ResultObject SetRDServerNewConnectionAllowed(int itemId, string newConnectionAllowed, int rdsSeverId)
+        public ResultObject SetRDServerNewConnectionAllowed(int itemId, string newConnectionAllowed, int rdsSeverId)
         {
             return SetRDServerNewConnectionAllowedInternal(itemId, newConnectionAllowed, rdsSeverId);
         }
 
-        public static List<RdsServer> GetCollectionRdsServers(int collectionId)
+        public List<RdsServer> GetCollectionRdsServers(int collectionId)
         {            
             return GetCollectionRdsServersInternal(collectionId);
         }
 
-        public static List<RdsServer> GetOrganizationRdsServers(int itemId)
+        public List<RdsServer> GetOrganizationRdsServers(int itemId)
         {
             return GetOrganizationRdsServersInternal(itemId);
         }
 
-        public static ResultObject AddRdsServer(RdsServer rdsServer, string rdsControllerServiceID)
+        public ResultObject AddRdsServer(RdsServer rdsServer, string rdsControllerServiceID)
         {
             return AddRdsServerInternal(rdsServer, rdsControllerServiceID);
         }
 
-        public static ResultObject AddRdsServerToCollection(int itemId, RdsServer rdsServer, RdsCollection rdsCollection)
+        public ResultObject AddRdsServerToCollection(int itemId, RdsServer rdsServer, RdsCollection rdsCollection)
         {
             return AddRdsServerToCollectionInternal(itemId, rdsServer, rdsCollection);
         }
 
-        public static ResultObject AddRdsServerToOrganization(int itemId, int serverId)
+        public ResultObject AddRdsServerToOrganization(int itemId, int serverId)
         {
             return AddRdsServerToOrganizationInternal(itemId, serverId);
         }
 
-        public static ResultObject RemoveRdsServer(int rdsServerId)
+        public ResultObject RemoveRdsServer(int rdsServerId)
         {
             return RemoveRdsServerInternal(rdsServerId);
         }
 
-        public static ResultObject RemoveRdsServerFromCollection(int itemId, RdsServer rdsServer, RdsCollection rdsCollection)
+        public ResultObject RemoveRdsServerFromCollection(int itemId, RdsServer rdsServer, RdsCollection rdsCollection)
         {
             return RemoveRdsServerFromCollectionInternal(itemId, rdsServer, rdsCollection);
         }
 
-        public static ResultObject RemoveRdsServerFromOrganization(int itemId, int rdsServerId)
+        public ResultObject RemoveRdsServerFromOrganization(int itemId, int rdsServerId)
         {
             return RemoveRdsServerFromOrganizationInternal(itemId, rdsServerId);
         }
 
-        public static ResultObject UpdateRdsServer(RdsServer rdsServer)
+        public ResultObject UpdateRdsServer(RdsServer rdsServer)
         {
             return UpdateRdsServerInternal(rdsServer);
         }
 
-        public static List<OrganizationUser> GetRdsCollectionUsers(int collectionId)
+        public List<OrganizationUser> GetRdsCollectionUsers(int collectionId)
         {
             return GetRdsCollectionUsersInternal(collectionId);
         }
 
-        public static ResultObject SetUsersToRdsCollection(int itemId, int collectionId, List<OrganizationUser> users)
+        public ResultObject SetUsersToRdsCollection(int itemId, int collectionId, List<OrganizationUser> users)
         {
             return SetUsersToRdsCollectionInternal(itemId, collectionId, users);
         }
 
-        public static ResultObject AddRemoteApplicationToCollection(int itemId, RdsCollection collection, RemoteApplication application)
+        public ResultObject AddRemoteApplicationToCollection(int itemId, RdsCollection collection, RemoteApplication application)
         {
             return AddRemoteApplicationToCollectionInternal(itemId, collection, application);
         }
 
-        public static List<RemoteApplication> GetCollectionRemoteApplications(int itemId, string collectionName)
+        public List<RemoteApplication> GetCollectionRemoteApplications(int itemId, string collectionName)
         {
             return GetCollectionRemoteApplicationsInternal(itemId, collectionName);
         }
 
-        public static ResultObject RemoveRemoteApplicationFromCollection(int itemId, RdsCollection collection, RemoteApplication application)
+        public ResultObject RemoveRemoteApplicationFromCollection(int itemId, RdsCollection collection, RemoteApplication application)
         {
             return RemoveRemoteApplicationFromCollectionInternal(itemId, collection, application);
         }
 
-        public static ResultObject SetRemoteApplicationsToRdsCollection(int itemId, int collectionId, List<RemoteApplication> remoteApps)
+        public ResultObject SetRemoteApplicationsToRdsCollection(int itemId, int collectionId, List<RemoteApplication> remoteApps)
         {
             return SetRemoteApplicationsToRdsCollectionInternal(itemId, collectionId, remoteApps);
         }
 
-        public static ResultObject DeleteRemoteDesktopService(int itemId)
+        public ResultObject DeleteRemoteDesktopService(int itemId)
         {
             return DeleteRemoteDesktopServiceInternal(itemId);
         }
 
-        public static int GetOrganizationRdsUsersCount(int itemId)
+        public int GetOrganizationRdsUsersCount(int itemId)
         {
             return GetOrganizationRdsUsersCountInternal(itemId);
         }
 
-        public static int GetOrganizationRdsServersCount(int itemId)
+        public int GetOrganizationRdsServersCount(int itemId)
         {
             return GetOrganizationRdsServersCountInternal(itemId);
         }
 
-        public static int GetOrganizationRdsCollectionsCount(int itemId)
+        public int GetOrganizationRdsCollectionsCount(int itemId)
         {
             return GetOrganizationRdsCollectionsCountInternal(itemId);
         }
 
-        public static List<string> GetApplicationUsers(int itemId, int collectionId, RemoteApplication remoteApp)
+        public List<string> GetApplicationUsers(int itemId, int collectionId, RemoteApplication remoteApp)
         {
             return GetApplicationUsersInternal(itemId, collectionId, remoteApp);
         }
 
-        public static ResultObject SetApplicationUsers(int itemId, int collectionId, RemoteApplication remoteApp, List<string> users)
+        public ResultObject SetApplicationUsers(int itemId, int collectionId, RemoteApplication remoteApp, List<string> users)
         {
             return SetApplicationUsersInternal(itemId, collectionId, remoteApp, users);
         }
 
-        public static ResultObject LogOffRdsUser(int itemId, string unifiedSessionId, string hostServer)
+        public ResultObject LogOffRdsUser(int itemId, string unifiedSessionId, string hostServer)
         {
             return LogOffRdsUserInternal(itemId, unifiedSessionId, hostServer);
         }
 
-        public static List<string> GetRdsCollectionSessionHosts(int collectionId)
+        public List<string> GetRdsCollectionSessionHosts(int collectionId)
         {
             return GetRdsCollectionSessionHostsInternal(collectionId);
         }
 
-        public static RdsServerInfo GetRdsServerInfo(int? itemId, string fqdnName)
+        public RdsServerInfo GetRdsServerInfo(int? itemId, string fqdnName)
         {
             return GetRdsServerInfoInternal(itemId, fqdnName);
         }
 
-        public static string GetRdsServerStatus(int? itemId, string fqdnName)
+        public string GetRdsServerStatus(int? itemId, string fqdnName)
         {
             return GetRdsServerStatusInternal(itemId, fqdnName);
         }
 
-        public static ResultObject ShutDownRdsServer(int? itemId, string fqdnName)
+        public ResultObject ShutDownRdsServer(int? itemId, string fqdnName)
         {
             return ShutDownRdsServerInternal(itemId, fqdnName);
         }
 
-        public static ResultObject RestartRdsServer(int? itemId, string fqdnName)
+        public ResultObject RestartRdsServer(int? itemId, string fqdnName)
         {
             return RestartRdsServerInternal(itemId, fqdnName);
         }
 
-        public static List<OrganizationUser> GetRdsCollectionLocalAdmins(int collectionId)
+        public List<OrganizationUser> GetRdsCollectionLocalAdmins(int collectionId)
         {
             return GetRdsCollectionLocalAdminsInternal(collectionId);
         }
 
-        public static ResultObject SaveRdsCollectionLocalAdmins(OrganizationUser[] users, int collectionId)
+        public ResultObject SaveRdsCollectionLocalAdmins(OrganizationUser[] users, int collectionId)
         {
             return SaveRdsCollectionLocalAdminsInternal(users, collectionId);
         }
 
-        public static ResultObject InstallSessionHostsCertificate(RdsServer rdsServer)
+        public ResultObject InstallSessionHostsCertificate(RdsServer rdsServer)
         {
             return InstallSessionHostsCertificateInternal(rdsServer);
         }
 
-        public static RdsCertificate GetRdsCertificateByServiceId(int serviceId)
+        public RdsCertificate GetRdsCertificateByServiceId(int serviceId)
         {
             return GetRdsCertificateByServiceIdInternal(serviceId);
         }
 
-        public static RdsCertificate GetRdsCertificateByItemId(int? itemId)
+        public RdsCertificate GetRdsCertificateByItemId(int? itemId)
         {
             return GetRdsCertificateByItemIdInternal(itemId);
         }
 
-        public static ResultObject AddRdsCertificate(RdsCertificate certificate)
+        public ResultObject AddRdsCertificate(RdsCertificate certificate)
         {
             return AddRdsCertificateInternal(certificate);
         }
 
-        public static List<ServiceInfo> GetRdsServices()
+        public List<ServiceInfo> GetRdsServices()
         {
             return GetRdsServicesInternal();
         }        
 
-        public static string GetRdsSetupLetter(int itemId, int? accountId)
+        public string GetRdsSetupLetter(int itemId, int? accountId)
         {
             return GetRdsSetupLetterInternal(itemId, accountId);
         }
 
-        public static int SendRdsSetupLetter(int itemId, int? accountId, string to, string cc)
+        public int SendRdsSetupLetter(int itemId, int? accountId, string to, string cc)
         {
             return SendRdsSetupLetterInternal(itemId, accountId, to, cc);
         }
 
-        public static RdsServerSettings GetRdsServerSettings(int serverId, string settingsName)
+        public RdsServerSettings GetRdsServerSettings(int serverId, string settingsName)
         {
             return GetRdsServerSettingsInternal(serverId, settingsName);
         }              
 
-        public static int UpdateRdsServerSettings(int serverId, string settingsName, RdsServerSettings settings)
+        public int UpdateRdsServerSettings(int serverId, string settingsName, RdsServerSettings settings)
         {
             return UpdateRdsServerSettingsInternal(serverId, settingsName, settings);
         }
 
-        public static ResultObject ShadowSession(int itemId, string sessionId, bool control, string fqdName)
+        public ResultObject ShadowSession(int itemId, string sessionId, bool control, string fqdName)
         {
             return ShadowSessionInternal(itemId, sessionId, control, fqdName);
         }
 
-        public static ResultObject ImportCollection(int itemId, string collectionName, string rdsControllerServiceID)
+        public ResultObject ImportCollection(int itemId, string collectionName, string rdsControllerServiceID)
         {
             return ImportCollectionInternal(itemId, collectionName, rdsControllerServiceID);
         }
 
-        public static ResultObject SendMessage(RdsMessageRecipient[] recipients, string text, int itemId, int rdsCollectionId, string userName)
+        public ResultObject SendMessage(RdsMessageRecipient[] recipients, string text, int itemId, int rdsCollectionId, string userName)
         {
             return SendMessageInternal(recipients, text, itemId, rdsCollectionId, userName);
         }
 
-        public static List<RdsMessage> GetRdsMessagesByCollectionId(int rdsCollectionId)
+        public List<RdsMessage> GetRdsMessagesByCollectionId(int rdsCollectionId)
         {
             return GetRdsMessagesByCollectionIdInternal(rdsCollectionId);
         }
 
-        private static ResultObject SendMessageInternal(RdsMessageRecipient[] recipients, string text, int itemId, int rdsCollectionId, string userName)
+        private ResultObject SendMessageInternal(RdsMessageRecipient[] recipients, string text, int itemId, int rdsCollectionId, string userName)
         {
             var result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "SEND_MESSAGE");
 
@@ -391,12 +391,12 @@ namespace SolidCP.EnterpriseServer
             return result;
         }        
 
-        private static List<RdsMessage> GetRdsMessagesByCollectionIdInternal(int rdsCollectionId)
+        private List<RdsMessage> GetRdsMessagesByCollectionIdInternal(int rdsCollectionId)
         {
             return ObjectUtils.CreateListFromDataSet<RdsMessage>(DataProvider.GetRDSMessagesByCollectionId(rdsCollectionId));
         }
 
-        private static ResultObject ImportCollectionInternal(int itemId, string collectionName, string rdsControllerServiceID)
+        private ResultObject ImportCollectionInternal(int itemId, string collectionName, string rdsControllerServiceID)
         {
             var result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "IMPORT_RDS_COLLECTION");
 
@@ -465,7 +465,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static ResultObject ShadowSessionInternal(int itemId, string sessionId, bool control, string fqdName)
+        private ResultObject ShadowSessionInternal(int itemId, string sessionId, bool control, string fqdName)
         {
             var result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "SHADOW_RDS_SESSION");
 
@@ -503,7 +503,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static RdsServerSettings GetRdsServerSettingsInternal(int serverId, string settingsName)
+        private RdsServerSettings GetRdsServerSettingsInternal(int serverId, string settingsName)
         {
             IDataReader reader = DataProvider.GetRdsServerSettings(serverId, settingsName);
 
@@ -527,7 +527,7 @@ namespace SolidCP.EnterpriseServer
             return settings;
         }  
 
-        private static int UpdateRdsServerSettingsInternal(int serverId, string settingsName, RdsServerSettings settings)
+        private int UpdateRdsServerSettingsInternal(int serverId, string settingsName, RdsServerSettings settings)
         {
             TaskManager.StartTask("REMOTE_DESKTOP_SERVICES", "UPDATE_SETTINGS");
 
@@ -553,7 +553,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        private static string GetRdsSetupLetterInternal(int itemId, int? accountId)
+        private string GetRdsSetupLetterInternal(int itemId, int? accountId)
         {
             Organization org = OrganizationController.GetOrganization(itemId);
 
@@ -577,7 +577,7 @@ namespace SolidCP.EnterpriseServer
             return user.HtmlMail ? result : result.Replace("\n", "<br/>");
         }
 
-        private static int SendRdsSetupLetterInternal(int itemId, int? accountId, string to, string cc)
+        private int SendRdsSetupLetterInternal(int itemId, int? accountId, string to, string cc)
         {            
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
 
@@ -628,7 +628,7 @@ namespace SolidCP.EnterpriseServer
             return MailHelper.SendMessage(from, to, cc, subject, body, priority, isHtml);
         }
 
-        private static ResultObject InstallSessionHostsCertificateInternal(RdsServer rdsServer)
+        private ResultObject InstallSessionHostsCertificateInternal(RdsServer rdsServer)
         {
             var result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "INSTALL_CERTIFICATE");
 
@@ -665,14 +665,14 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static RdsCertificate GetRdsCertificateByServiceIdInternal(int serviceId)
+        private RdsCertificate GetRdsCertificateByServiceIdInternal(int serviceId)
         {
             var result = ObjectUtils.FillObjectFromDataReader<RdsCertificate>(DataProvider.GetRdsCertificateByServiceId(serviceId));
 
             return result;
         }
 
-        private static RdsCertificate GetRdsCertificateByItemIdInternal(int? itemId)
+        private RdsCertificate GetRdsCertificateByItemIdInternal(int? itemId)
         {            
             int serviceId = GetRdsServiceId(itemId);
             var result = ObjectUtils.FillObjectFromDataReader<RdsCertificate>(DataProvider.GetRdsCertificateByServiceId(serviceId));
@@ -680,7 +680,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static ResultObject AddRdsCertificateInternal(RdsCertificate certificate)
+        private ResultObject AddRdsCertificateInternal(RdsCertificate certificate)
         {
             var result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "ADD_RDS_SERVER");
 
@@ -716,7 +716,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static RdsCollection GetRdsCollectionInternal(int collectionId, bool quick)
+        private RdsCollection GetRdsCollectionInternal(int collectionId, bool quick)
         {
             var collection = ObjectUtils.FillObjectFromDataReader<RdsCollection>(DataProvider.GetRDSCollectionById(collectionId));
             var collectionSettings = ObjectUtils.FillObjectFromDataReader<RdsCollectionSettings>(DataProvider.GetRdsCollectionSettingsByCollectionId(collectionId));
@@ -761,7 +761,7 @@ namespace SolidCP.EnterpriseServer
             return collection;
         }
 
-        private static List<OrganizationUser> GetRdsCollectionLocalAdminsInternal(int collectionId)
+        private List<OrganizationUser> GetRdsCollectionLocalAdminsInternal(int collectionId)
         {
             var result = new List<OrganizationUser>();
             var collection = ObjectUtils.FillObjectFromDataReader<RdsCollection>(DataProvider.GetRDSCollectionById(collectionId));
@@ -781,7 +781,7 @@ namespace SolidCP.EnterpriseServer
             return organizationUsers.Where(o => organizationAdmins.Select(a => a.ToLower()).Contains(o.SamAccountName.ToLower())).ToList();
         }
 
-        private static ResultObject SaveRdsCollectionLocalAdminsInternal(OrganizationUser[] users, int collectionId)
+        private ResultObject SaveRdsCollectionLocalAdminsInternal(OrganizationUser[] users, int collectionId)
         {
             var result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "SAVE_LOCAL_ADMINS");
 
@@ -821,7 +821,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static RdsCollectionSettings GetRdsCollectionSettingsInternal(int collectionId)
+        private RdsCollectionSettings GetRdsCollectionSettingsInternal(int collectionId)
         {
             var collection = ObjectUtils.FillObjectFromDataReader<RdsCollection>(DataProvider.GetRDSCollectionById(collectionId));            
             var settings = ObjectUtils.FillObjectFromDataReader<RdsCollectionSettings>(DataProvider.GetRdsCollectionSettingsByCollectionId(collectionId));
@@ -852,7 +852,7 @@ namespace SolidCP.EnterpriseServer
             return settings;
         }
 
-        private static List<RdsCollection> GetOrganizationRdsCollectionsInternal(int itemId)
+        private List<RdsCollection> GetOrganizationRdsCollectionsInternal(int itemId)
         {
             var collections = ObjectUtils.CreateListFromDataReader<RdsCollection>(DataProvider.GetRDSCollectionsByItemId(itemId));
 
@@ -864,7 +864,7 @@ namespace SolidCP.EnterpriseServer
             return collections;
         }
 
-        private static int AddRdsCollectionInternal(int itemId, RdsCollection collection)
+        private int AddRdsCollectionInternal(int itemId, RdsCollection collection)
         {
             var result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "ADD_RDS_COLLECTION");
             var domainName = IPGlobalProperties.GetIPGlobalProperties().DomainName;
@@ -925,7 +925,7 @@ namespace SolidCP.EnterpriseServer
             return collection.Id;
         }
 
-        private static ResultObject EditRdsCollectionInternal(int itemId, RdsCollection collection)
+        private ResultObject EditRdsCollectionInternal(int itemId, RdsCollection collection)
         {
             var result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "EDIT_RDS_COLLECTION");
 
@@ -979,7 +979,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static ResultObject EditRdsCollectionSettingsInternal(int itemId, RdsCollection collection)
+        private ResultObject EditRdsCollectionSettingsInternal(int itemId, RdsCollection collection)
         {
             var result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "EDIT_RDS_COLLECTION_SETTINGS");
 
@@ -1027,7 +1027,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static RdsCollectionPaged GetRdsCollectionsPagedInternal(int itemId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
+        private RdsCollectionPaged GetRdsCollectionsPagedInternal(int itemId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             DataSet ds = DataProvider.GetRDSCollectionsPaged(itemId, filterColumn, filterValue, sortColumn, startRow, maximumRows);
 
@@ -1050,7 +1050,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static ResultObject RemoveRdsCollectionInternal(int itemId, RdsCollection collection)
+        private ResultObject RemoveRdsCollectionInternal(int itemId, RdsCollection collection)
         {
             var result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "REMOVE_RDS_COLLECTION");
 
@@ -1091,7 +1091,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static List<StartMenuApp> GetAvailableRemoteApplicationsInternal(int itemId, string collectionName)
+        private List<StartMenuApp> GetAvailableRemoteApplicationsInternal(int itemId, string collectionName)
         {
             var result = new List<StartMenuApp>();
 
@@ -1131,7 +1131,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static RdsServersPaged GetRdsServersPagedInternal(string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string rdsControllerServiceID)
+        private RdsServersPaged GetRdsServersPagedInternal(string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string rdsControllerServiceID)
         {
             DataSet ds = DataProvider.GetRDSServersPaged(null, null, filterColumn, filterValue, sortColumn, startRow, maximumRows, rdsControllerServiceID, true, true);
 
@@ -1152,7 +1152,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static List<RdsUserSession> GetRdsUserSessionsInternal(int collectionId)
+        private List<RdsUserSession> GetRdsUserSessionsInternal(int collectionId)
         {
             var result = new List<RdsUserSession>();
             var collection = ObjectUtils.FillObjectFromDataReader<RdsCollection>(DataProvider.GetRDSCollectionById(collectionId));
@@ -1181,7 +1181,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static RdsServersPaged GetFreeRdsServersPagedInternal(int itemId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string ServiceId)
+        private RdsServersPaged GetFreeRdsServersPagedInternal(int itemId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string ServiceId)
         {
             RdsServersPaged result = new RdsServersPaged();
             Organization org = OrganizationController.GetOrganization(itemId);
@@ -1209,7 +1209,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static List<string> GetRdsCollectionSessionHostsInternal(int collectionId)
+        private List<string> GetRdsCollectionSessionHostsInternal(int collectionId)
         {
             var result = new List<string>();
             var collection = ObjectUtils.FillObjectFromDataReader<RdsCollection>(DataProvider.GetRDSCollectionById(collectionId));
@@ -1226,7 +1226,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static RdsServersPaged GetOrganizationRdsServersPagedInternal(int itemId, int? collectionId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string rdsControllerServiceID)
+        private RdsServersPaged GetOrganizationRdsServersPagedInternal(int itemId, int? collectionId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string rdsControllerServiceID)
         {
             DataSet ds = DataProvider.GetRDSServersPaged(itemId, collectionId, filterColumn, filterValue, sortColumn, startRow, maximumRows, rdsControllerServiceID, ignoreRdsCollectionId: !collectionId.HasValue);
 
@@ -1242,7 +1242,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static RdsServersPaged GetOrganizationFreeRdsServersPagedInternal(int itemId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string rdsControllerServiceID)
+        private RdsServersPaged GetOrganizationFreeRdsServersPagedInternal(int itemId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string rdsControllerServiceID)
         {
             DataSet ds = DataProvider.GetRDSServersPaged(itemId, null, filterColumn, filterValue, sortColumn, startRow, maximumRows, rdsControllerServiceID);
 
@@ -1258,12 +1258,12 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static RdsServer GetRdsServerInternal(int rdsSeverId)
+        private RdsServer GetRdsServerInternal(int rdsSeverId)
         {
             return ObjectUtils.FillObjectFromDataReader<RdsServer>(DataProvider.GetRDSServerById(rdsSeverId));
         }
 
-        private static ResultObject SetRDServerNewConnectionAllowedInternal(int itemId, string newConnectionAllowed, int rdsSeverId)
+        private ResultObject SetRDServerNewConnectionAllowedInternal(int itemId, string newConnectionAllowed, int rdsSeverId)
         {
             ResultObject result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "SET_RDS_SERVER_NEW_CONNECTIONS_ALLOWED"); ;
             try
@@ -1311,7 +1311,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }        
 
-        private static ResultObject AddRdsServerInternal(RdsServer rdsServer, string rdsControllerServiceID)
+        private ResultObject AddRdsServerInternal(RdsServer rdsServer, string rdsControllerServiceID)
         {
             var result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "ADD_RDS_SERVER");
 
@@ -1357,7 +1357,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static ResultObject AddRdsServerToCollectionInternal(int itemId, RdsServer rdsServer, RdsCollection rdsCollection)
+        private ResultObject AddRdsServerToCollectionInternal(int itemId, RdsServer rdsServer, RdsCollection rdsCollection)
         {
             var result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "ADD_RDS_SERVER_TO_COLLECTION");
 
@@ -1402,7 +1402,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static ResultObject RemoveRdsServerFromCollectionInternal(int itemId, RdsServer rdsServer, RdsCollection rdsCollection)
+        private ResultObject RemoveRdsServerFromCollectionInternal(int itemId, RdsServer rdsServer, RdsCollection rdsCollection)
         {
             var result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "REMOVE_RDS_SERVER_FROM_COLLECTION");
 
@@ -1442,7 +1442,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static ResultObject UpdateRdsServerInternal(RdsServer rdsServer)
+        private ResultObject UpdateRdsServerInternal(RdsServer rdsServer)
         {
             var result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "UPDATE_RDS_SERVER");
 
@@ -1469,7 +1469,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static ResultObject AddRdsServerToOrganizationInternal(int itemId, int serverId)
+        private ResultObject AddRdsServerToOrganizationInternal(int itemId, int serverId)
         {
             var result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "ADD_RDS_SERVER_TO_ORGANIZATION");
 
@@ -1509,7 +1509,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static ResultObject RemoveRdsServerFromOrganizationInternal(int itemId, int rdsServerId)
+        private ResultObject RemoveRdsServerFromOrganizationInternal(int itemId, int rdsServerId)
         {
             var result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "REMOVE_RDS_SERVER_FROM_ORGANIZATION");            
 
@@ -1548,7 +1548,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static ResultObject RemoveRdsServerInternal(int rdsServerId)
+        private ResultObject RemoveRdsServerInternal(int rdsServerId)
         {
             var result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "REMOVE_RDS_SERVER");
 
@@ -1575,12 +1575,12 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static List<OrganizationUser> GetRdsCollectionUsersInternal(int collectionId)
+        private List<OrganizationUser> GetRdsCollectionUsersInternal(int collectionId)
         {
             return ObjectUtils.CreateListFromDataReader<OrganizationUser>(DataProvider.GetRDSCollectionUsersByRDSCollectionId(collectionId));
         }        
 
-        private static ResultObject SetUsersToRdsCollectionInternal(int itemId, int collectionId, List<OrganizationUser> users)
+        private ResultObject SetUsersToRdsCollectionInternal(int itemId, int collectionId, List<OrganizationUser> users)
         {
             var result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "ADD_USER_TO_RDS_COLLECTION");
 
@@ -1658,7 +1658,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static List<string> GetApplicationUsersInternal(int itemId, int collectionId, RemoteApplication remoteApp)
+        private List<string> GetApplicationUsersInternal(int itemId, int collectionId, RemoteApplication remoteApp)
         {
             var result = new List<string>();
             Organization org = OrganizationController.GetOrganization(itemId);
@@ -1683,7 +1683,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static ResultObject SetApplicationUsersInternal(int itemId, int collectionId, RemoteApplication remoteApp, List<string> users)
+        private ResultObject SetApplicationUsersInternal(int itemId, int collectionId, RemoteApplication remoteApp, List<string> users)
         {
             var result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "SET_REMOTE_APP_USERS");
 
@@ -1720,7 +1720,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static ResultObject LogOffRdsUserInternal(int itemId, string unifiedSessionId, string hostServer)
+        private ResultObject LogOffRdsUserInternal(int itemId, string unifiedSessionId, string hostServer)
         {
             var result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "LOG_OFF_RDS_USER");
 
@@ -1758,7 +1758,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static ResultObject AddRemoteApplicationToCollectionInternal(int itemId, RdsCollection collection, RemoteApplication remoteApp)
+        private ResultObject AddRemoteApplicationToCollectionInternal(int itemId, RdsCollection collection, RemoteApplication remoteApp)
         {
             var result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "ADD_REMOTE_APP_TO_COLLECTION");
 
@@ -1802,7 +1802,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }          
 
-        private static ResultObject ShutDownRdsServerInternal(int? itemId, string fqdnName)
+        private ResultObject ShutDownRdsServerInternal(int? itemId, string fqdnName)
         {
             var result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "SHUTDOWN_RDS_SERVER");
 
@@ -1835,7 +1835,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static ResultObject RestartRdsServerInternal(int? itemId, string fqdnName)
+        private ResultObject RestartRdsServerInternal(int? itemId, string fqdnName)
         {
             var result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "RESTART_RDS_SERVER");            
 
@@ -1868,7 +1868,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static List<RemoteApplication> GetCollectionRemoteApplicationsInternal(int itemId, string collectionName)
+        private List<RemoteApplication> GetCollectionRemoteApplicationsInternal(int itemId, string collectionName)
         {
             var result = new List<RemoteApplication>();
 
@@ -1887,7 +1887,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static ResultObject RemoveRemoteApplicationFromCollectionInternal(int itemId, RdsCollection collection, RemoteApplication application)
+        private ResultObject RemoveRemoteApplicationFromCollectionInternal(int itemId, RdsCollection collection, RemoteApplication application)
         {
             var result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "REMOVE_REMOTE_APP_FROM_COLLECTION");
 
@@ -1925,7 +1925,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static ResultObject SetRemoteApplicationsToRdsCollectionInternal(int itemId, int collectionId, List<RemoteApplication> remoteApps)
+        private ResultObject SetRemoteApplicationsToRdsCollectionInternal(int itemId, int collectionId, List<RemoteApplication> remoteApps)
         {
             ResultObject result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "SET_APPS_TO_RDS_COLLECTION"); ;
             try
@@ -1983,7 +1983,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }              
 
-        private static ResultObject DeleteRemoteDesktopServiceInternal(int itemId)
+        private ResultObject DeleteRemoteDesktopServiceInternal(int itemId)
         {
             var result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "CLEANUP");
 
@@ -2022,37 +2022,37 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static int GetOrganizationRdsUsersCountInternal(int itemId)
+        private int GetOrganizationRdsUsersCountInternal(int itemId)
         {
             return DataProvider.GetOrganizationRdsUsersCount(itemId);
         }
 
-        private static int GetOrganizationRdsServersCountInternal(int itemId)
+        private int GetOrganizationRdsServersCountInternal(int itemId)
         {
             return DataProvider.GetOrganizationRdsServersCount(itemId);
         }
 
-        private static int GetOrganizationRdsCollectionsCountInternal(int itemId)
+        private int GetOrganizationRdsCollectionsCountInternal(int itemId)
         {
             return DataProvider.GetOrganizationRdsCollectionsCount(itemId);
         }
 
-        private static List<RdsServer> GetCollectionRdsServersInternal(int collectionId)
+        private List<RdsServer> GetCollectionRdsServersInternal(int collectionId)
         {
             return ObjectUtils.CreateListFromDataReader<RdsServer>(DataProvider.GetRDSServersByCollectionId(collectionId)).ToList();
         }
 
-        private static List<RdsServer> GetOrganizationRdsServersInternal(int itemId)
+        private List<RdsServer> GetOrganizationRdsServersInternal(int itemId)
         {
             return ObjectUtils.CreateListFromDataReader<RdsServer>(DataProvider.GetRDSServersByItemId(itemId)).ToList();
         }
 
-        private static List<ServiceInfo> GetRdsServicesInternal()
+        private List<ServiceInfo> GetRdsServicesInternal()
         {
             return ObjectUtils.CreateListFromDataSet<ServiceInfo>(DataProvider.GetServicesByGroupName(SecurityContext.User.UserId, ResourceGroups.RDS, false));
         }
 
-        protected static int GetRdsMainServiceId()
+        protected int GetRdsMainServiceId()
         {
             var settings = SystemController.GetSystemSettings(SolidCP.EnterpriseServer.SystemSettings.RDS_SETTINGS);
 
@@ -2071,14 +2071,14 @@ namespace SolidCP.EnterpriseServer
             return -1;
         }
 
-        protected static RdsCollection FillRdsCollection(RdsCollection collection)
+        protected RdsCollection FillRdsCollection(RdsCollection collection)
         {
             collection.Servers = GetCollectionRdsServersInternal(collection.Id) ?? new List<RdsServer>();
 
             return collection;
         }
 
-        protected static int GetRdsServiceId(int? itemId)
+        protected int GetRdsServiceId(int? itemId)
         {
             int serviceId = -1;
 
@@ -2101,7 +2101,7 @@ namespace SolidCP.EnterpriseServer
             return serviceId;
         }
 
-        private static RdsServerInfo GetRdsServerInfoInternal(int? itemId, string fqdnName)
+        private RdsServerInfo GetRdsServerInfoInternal(int? itemId, string fqdnName)
         {
             int serviceId = RemoteDesktopServicesHelpers.GetRemoteDesktopControllerServiceIDbyFQDN(fqdnName);
             var result = new RdsServerInfo();
@@ -2115,7 +2115,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static string GetRdsServerStatusInternal(int? itemId, string fqdnName)
+        private string GetRdsServerStatusInternal(int? itemId, string fqdnName)
         {            
             var result = "Unavailable";
             int serviceId = RemoteDesktopServicesHelpers.GetRemoteDesktopControllerServiceIDbyFQDN(fqdnName);

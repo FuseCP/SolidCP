@@ -39,10 +39,8 @@ using SolidCP.Providers.Virtualization;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class CreateServerAsyncWorker: ControllerBase
+    public class CreateServerAsyncWorker: ControllerAsyncBase
     {
-        public CreateServerAsyncWorker(ControllerBase provider) : base(provider.Clone) { }
-
         #region Properties
         public int ThreadUserId { get; set; }
         public string TaskId { get; set; }

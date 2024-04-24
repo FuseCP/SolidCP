@@ -115,7 +115,7 @@ namespace SolidCP.EnterpriseServer
             
             try
             {
-                var objTask = (SchedulerTask)Activator.CreateInstance(Type.GetType(schedule.Task.TaskType));
+                var objTask = (ISchedulerTask)Activator.CreateInstance(Type.GetType(schedule.Task.TaskType));
 
                 objTask.DoWork();
             }

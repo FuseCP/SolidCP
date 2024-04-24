@@ -59,7 +59,7 @@ using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class WebServerController : IImportController, IBackupController
+    public class WebServerController : ControllerBase, IImportController, IBackupController
     {
         private const string LOG_SOURCE_WEB = "WEB";
 
@@ -72,7 +72,9 @@ namespace SolidCP.EnterpriseServer
         private const string WEBSITE_LOGS_FOLDER_PATTERN = "\\WebLogs\\[DOMAIN_NAME]";
         private const string WEBSITE_DATA_FOLDER_PATTERN = "\\WebData\\[DOMAIN_NAME]";
 
-        public static WebServer GetWebServer(int serviceId)
+        public WebServerController(ControllerBase provider) : base(provider) { }
+
+        public WebServer GetWebServer(int serviceId)
         {
             WebServer ws = new WebServer();
             ServiceProviderProxy.Init(ws, serviceId);
@@ -80,14 +82,14 @@ namespace SolidCP.EnterpriseServer
         }
 
         #region Web Sites
-        public static DataSet GetRawWebSitesPaged(int packageId,
+        public DataSet GetRawWebSitesPaged(int packageId,
             string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             return PackageController.GetRawPackageItemsPaged(packageId, typeof(WebSite),
                 true, filterColumn, filterValue, sortColumn, startRow, maximumRows);
         }
 
-        public static List<WebSite> GetWebSites(int packageId, bool recursive)
+        public List<WebSite> GetWebSites(int packageId, bool recursive)
         {
             List<ServiceProviderItem> items = PackageController.GetPackageItemsByType(
                 packageId, typeof(WebSite), recursive);
@@ -102,12 +104,12 @@ namespace SolidCP.EnterpriseServer
 			return sites;
         }
 
-        private static WebSite ConvertItemToWebSite(ServiceProviderItem item)
+        private WebSite ConvertItemToWebSite(ServiceProviderItem item)
         {
             return (WebSite)item;
         }
 
-        public static WebSite GetWebSite(int packageId, string siteName)
+        public WebSite GetWebSite(int packageId, string siteName)
         {
             ServiceProviderItem siteItem = PackageController.GetPackageItemByName(packageId, siteName, typeof(WebSite));
             if (siteItem == null)
@@ -116,7 +118,7 @@ namespace SolidCP.EnterpriseServer
             return GetWebSite(siteItem.Id);
         }
 
-        public static WebSite GetWebSite(int siteItemId)
+        public WebSite GetWebSite(int siteItemId)
         {
             // load site item
             WebSite siteItem = (WebSite)PackageController.GetPackageItem(siteItemId);
@@ -176,13 +178,13 @@ namespace SolidCP.EnterpriseServer
             return site;
         }
 
-        public static int AddWebSite(int packageId, string hostName, int domainId, int ipAddressId)
+        public int AddWebSite(int packageId, string hostName, int domainId, int ipAddressId)
         {
             return AddWebSite(packageId, hostName, domainId, ipAddressId, false, true);
         }
 
 
-        private static bool IsValidIPAdddress(string addr)
+        private bool IsValidIPAdddress(string addr)
         {
             System.Net.IPAddress ip;
             if (System.Net.IPAddress.TryParse(addr, out ip)) 
@@ -196,7 +198,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int AddWebSite(int packageId, string hostName, int domainId, int packageAddressId,
+        public int AddWebSite(int packageId, string hostName, int domainId, int packageAddressId,
             bool addPreviewDomain, bool ignoreGlobalDNSRecords)
         {
             // check account
@@ -503,7 +505,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int UpdateWebSite(WebSite site)
+        public int UpdateWebSite(WebSite site)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -556,12 +558,12 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int RepairWebSite(int siteItemId)
+        public int RepairWebSite(int siteItemId)
         {
             return 0;
         }
 
-        public static int ChangeSiteState(int siteItemId, ServerState state)
+        public int ChangeSiteState(int siteItemId, ServerState state)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -601,7 +603,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
         // AppPool
-        public static int ChangeAppPoolState(int siteItemId, AppPoolState state)
+        public int ChangeAppPoolState(int siteItemId, AppPoolState state)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -642,7 +644,7 @@ namespace SolidCP.EnterpriseServer
         }
 
         // RB ADDED to track Site State in IIS
-        public static ServerState GetSiteState(int siteItemId)
+        public ServerState GetSiteState(int siteItemId)
         {
 
             ServerState siteState = ServerState.Unknown;
@@ -683,7 +685,7 @@ namespace SolidCP.EnterpriseServer
 
         }
 
-        public static AppPoolState GetAppPoolState(int siteItemId)
+        public AppPoolState GetAppPoolState(int siteItemId)
         {
             AppPoolState state = AppPoolState.Unknown;
 
@@ -723,7 +725,7 @@ namespace SolidCP.EnterpriseServer
             return state;
         }
 
-        public static int DeleteWebSite(int siteItemId, bool deleteWebsiteDirectory)
+        public int DeleteWebSite(int siteItemId, bool deleteWebsiteDirectory)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -819,7 +821,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int SwitchWebSiteToDedicatedIP(int siteItemId, int ipAddressId)
+        public int SwitchWebSiteToDedicatedIP(int siteItemId, int ipAddressId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -1010,7 +1012,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int SwitchWebSiteToSharedIP(int siteItemId)
+        public int SwitchWebSiteToSharedIP(int siteItemId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -1187,7 +1189,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        private static void FillWebServerBindings(List<ServerBinding> bindings, List<GlobalDnsRecord> dnsRecords,
+        private void FillWebServerBindings(List<ServerBinding> bindings, List<GlobalDnsRecord> dnsRecords,
             string ipAddr, string hostName, string domainName, bool ignoreGlobalDNSRecords)
         // TODO test if IPv6 works
         {
@@ -1225,7 +1227,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        private static void AddBinding(List<ServerBinding> bindings, ServerBinding binding)
+        private void AddBinding(List<ServerBinding> bindings, ServerBinding binding)
         {
             foreach (ServerBinding b in bindings)
             {
@@ -1237,7 +1239,7 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        private static string GetWebSiteUsername(UserSettings webPolicy, string domainName)
+        private string GetWebSiteUsername(UserSettings webPolicy, string domainName)
         {
             UsernamePolicy policy = new UsernamePolicy(webPolicy["AnonymousAccountPolicy"]);
 
@@ -1271,7 +1273,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        private static string GetWebFolder(int packageId, string pattern, string domainName, string hostName, string domain)
+        private string GetWebFolder(int packageId, string pattern, string domainName, string hostName, string domain)
         {
             string path = Utils.ReplaceStringVariable(pattern, "domain_name", domainName);
             path = Utils.ReplaceStringVariable(path, "host", hostName);
@@ -1279,14 +1281,14 @@ namespace SolidCP.EnterpriseServer
             return FilesController.GetFullPackagePath(packageId, path);
         }
         
-        private static string GetFrontPageUsername(string domainName)
+        private string GetFrontPageUsername(string domainName)
         {
             int maxLength = MAX_ACCOUNT_LENGTH - FRONTPAGE_ACCOUNT_SUFFIX.Length - 1;
             string username = (domainName.Length > maxLength) ? domainName.Substring(0, maxLength) : domainName;
             return (username + FRONTPAGE_ACCOUNT_SUFFIX); // suffix
         }
 
-        public static string GetWebUsersOU(int packageId)
+        public string GetWebUsersOU(int packageId)
         {
             int webServiceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.Web);
             if (webServiceId > 0)
@@ -1300,7 +1302,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Web Site Pointers
-        public static List<DomainInfo> GetWebSitePointers(int siteItemId)
+        public List<DomainInfo> GetWebSitePointers(int siteItemId)
         {
             List<DomainInfo> pointers = new List<DomainInfo>();
 
@@ -1322,17 +1324,17 @@ namespace SolidCP.EnterpriseServer
             return pointers;
         }
 
-        public static int AddWebSitePointer(int siteItemId, string hostName, int domainId)
+        public int AddWebSitePointer(int siteItemId, string hostName, int domainId)
         {
             return AddWebSitePointer(siteItemId, hostName, domainId, true, true, false);
         }
 
-        internal static int AddWebSitePointer(int siteItemId, string hostName, int domainId, bool updateWebSite)
+        internal int AddWebSitePointer(int siteItemId, string hostName, int domainId, bool updateWebSite)
         {
             return AddWebSitePointer(siteItemId, hostName, domainId, updateWebSite, false, false);
         }
 
-        internal static int AddWebSitePointer(int siteItemId, string hostName, int domainId, bool updateWebSite, bool ignoreGlobalDNSRecords, bool rebuild)
+        internal int AddWebSitePointer(int siteItemId, string hostName, int domainId, bool updateWebSite, bool ignoreGlobalDNSRecords, bool rebuild)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -1533,12 +1535,12 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-		public static int DeleteWebSitePointer(int siteItemId, int domainId)
+		public int DeleteWebSitePointer(int siteItemId, int domainId)
 		{
 			return DeleteWebSitePointer(siteItemId, domainId, true, true, true);
 		}
 
-        public static int DeleteWebSitePointer(int siteItemId, int domainId, bool updateWebSite, bool ignoreGlobalDNSRecords, bool deleteDomainsRecord)
+        public int DeleteWebSitePointer(int siteItemId, int domainId, bool updateWebSite, bool ignoreGlobalDNSRecords, bool deleteDomainsRecord)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -1667,7 +1669,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Virtual Directories
-        public static List<WebVirtualDirectory> GetVirtualDirectories(int siteItemId)
+        public List<WebVirtualDirectory> GetVirtualDirectories(int siteItemId)
         {
             List<WebVirtualDirectory> dirs = new List<WebVirtualDirectory>();
 
@@ -1690,7 +1692,7 @@ namespace SolidCP.EnterpriseServer
             return dirs;
         }
 
-        public static WebVirtualDirectory GetVirtualDirectory(int siteItemId, string vdirName)
+        public WebVirtualDirectory GetVirtualDirectory(int siteItemId, string vdirName)
         {
             // load site item
             WebSite siteItem = (WebSite)PackageController.GetPackageItem(siteItemId);
@@ -1710,7 +1712,7 @@ namespace SolidCP.EnterpriseServer
             return vdir;
         }
 
-        public static int AddVirtualDirectory(int siteItemId, string vdirName, string vdirPath)
+        public int AddVirtualDirectory(int siteItemId, string vdirName, string vdirPath)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -1761,7 +1763,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int UpdateVirtualDirectory(int siteItemId, WebVirtualDirectory vdir)
+        public int UpdateVirtualDirectory(int siteItemId, WebVirtualDirectory vdir)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -1799,7 +1801,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int DeleteVirtualDirectory(int siteItemId, string vdirName)
+        public int DeleteVirtualDirectory(int siteItemId, string vdirName)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -1838,7 +1840,7 @@ namespace SolidCP.EnterpriseServer
 
 
 
-        public static List<WebAppVirtualDirectory> GetAppVirtualDirectories(int siteItemId)
+        public List<WebAppVirtualDirectory> GetAppVirtualDirectories(int siteItemId)
         {
             List<WebAppVirtualDirectory> dirs = new List<WebAppVirtualDirectory>();
 
@@ -1861,7 +1863,7 @@ namespace SolidCP.EnterpriseServer
             return dirs;
         }
 
-        public static WebAppVirtualDirectory GetAppVirtualDirectory(int siteItemId, string vdirName)
+        public WebAppVirtualDirectory GetAppVirtualDirectory(int siteItemId, string vdirName)
         {
             // load site item
             WebSite siteItem = (WebSite)PackageController.GetPackageItem(siteItemId);
@@ -1881,7 +1883,7 @@ namespace SolidCP.EnterpriseServer
             return vdir;
         }
 
-        public static int AddAppVirtualDirectory(int siteItemId, string vdirName, string vdirPath)
+        public int AddAppVirtualDirectory(int siteItemId, string vdirName, string vdirPath)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -1939,7 +1941,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int UpdateAppVirtualDirectory(int siteItemId, WebAppVirtualDirectory vdir)
+        public int UpdateAppVirtualDirectory(int siteItemId, WebAppVirtualDirectory vdir)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -1977,7 +1979,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int DeleteAppVirtualDirectory(int siteItemId, string vdirName)
+        public int DeleteAppVirtualDirectory(int siteItemId, string vdirName)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -2015,7 +2017,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region FrontPage
-        public static int InstallFrontPage(int siteItemId, string username, string password)
+        public int InstallFrontPage(int siteItemId, string username, string password)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -2072,7 +2074,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int UninstallFrontPage(int siteItemId)
+        public int UninstallFrontPage(int siteItemId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -2113,7 +2115,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int ChangeFrontPagePassword(int siteItemId, string password)
+        public int ChangeFrontPagePassword(int siteItemId, string password)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -2156,7 +2158,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Secured Folders
-        public static int InstallSecuredFolders(int siteItemId)
+        public int InstallSecuredFolders(int siteItemId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -2189,7 +2191,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int UninstallSecuredFolders(int siteItemId)
+        public int UninstallSecuredFolders(int siteItemId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -2221,7 +2223,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static WebFolder[] GetFolders(int siteItemId)
+        public WebFolder[] GetFolders(int siteItemId)
         {
             // load site item
             WebSite siteItem = (WebSite)PackageController.GetPackageItem(siteItemId);
@@ -2233,7 +2235,7 @@ namespace SolidCP.EnterpriseServer
             return web.GetFolders(siteItem.SiteId).ToArray();
         }
 
-        public static WebFolder GetFolder(int siteItemId, string folderPath)
+        public WebFolder GetFolder(int siteItemId, string folderPath)
         {
             // load site item
             WebSite siteItem = (WebSite)PackageController.GetPackageItem(siteItemId);
@@ -2245,7 +2247,7 @@ namespace SolidCP.EnterpriseServer
             return web.GetFolder(siteItem.SiteId, folderPath);
         }
 
-        public static int UpdateFolder(int siteItemId, WebFolder folder)
+        public int UpdateFolder(int siteItemId, WebFolder folder)
         {
             // load site item
             WebSite siteItem = (WebSite)PackageController.GetPackageItem(siteItemId);
@@ -2277,7 +2279,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int DeleteFolder(int siteItemId, string folderPath)
+        public int DeleteFolder(int siteItemId, string folderPath)
         {
             // load site item
             WebSite siteItem = (WebSite)PackageController.GetPackageItem(siteItemId);
@@ -2309,7 +2311,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Secured Users
-        public static WebUser[] GetUsers(int siteItemId)
+        public WebUser[] GetUsers(int siteItemId)
         {
             // load site item
             WebSite siteItem = (WebSite)PackageController.GetPackageItem(siteItemId);
@@ -2321,7 +2323,7 @@ namespace SolidCP.EnterpriseServer
             return web.GetUsers(siteItem.SiteId).ToArray();
         }
 
-        public static WebUser GetUser(int siteItemId, string userName)
+        public WebUser GetUser(int siteItemId, string userName)
         {
             // load site item
             WebSite siteItem = (WebSite)PackageController.GetPackageItem(siteItemId);
@@ -2333,7 +2335,7 @@ namespace SolidCP.EnterpriseServer
             return web.GetUser(siteItem.SiteId, userName);
         }
 
-        public static int UpdateUser(int siteItemId, WebUser user)
+        public int UpdateUser(int siteItemId, WebUser user)
         {
             // load site item
             WebSite siteItem = (WebSite)PackageController.GetPackageItem(siteItemId);
@@ -2363,7 +2365,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int DeleteUser(int siteItemId, string userName)
+        public int DeleteUser(int siteItemId, string userName)
         {
             // load site item
             WebSite siteItem = (WebSite)PackageController.GetPackageItem(siteItemId);
@@ -2395,7 +2397,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Secured Groups
-        public static WebGroup[] GetGroups(int siteItemId)
+        public WebGroup[] GetGroups(int siteItemId)
         {
             // load site item
             WebSite siteItem = (WebSite)PackageController.GetPackageItem(siteItemId);
@@ -2407,7 +2409,7 @@ namespace SolidCP.EnterpriseServer
             return web.GetGroups(siteItem.SiteId);
         }
 
-        public static WebGroup GetGroup(int siteItemId, string groupName)
+        public WebGroup GetGroup(int siteItemId, string groupName)
         {
             // load site item
             WebSite siteItem = (WebSite)PackageController.GetPackageItem(siteItemId);
@@ -2419,7 +2421,7 @@ namespace SolidCP.EnterpriseServer
             return web.GetGroup(siteItem.SiteId, groupName);
         }
 
-        public static int UpdateGroup(int siteItemId, WebGroup group)
+        public int UpdateGroup(int siteItemId, WebGroup group)
         {
             // load site item
             WebSite siteItem = (WebSite)PackageController.GetPackageItem(siteItemId);
@@ -2449,7 +2451,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int DeleteGroup(int siteItemId, string groupName)
+        public int DeleteGroup(int siteItemId, string groupName)
         {
             // load site item
             WebSite siteItem = (WebSite)PackageController.GetPackageItem(siteItemId);
@@ -2481,7 +2483,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Shared SSL Folders
-        public static List<string> GetSharedSSLDomains(int packageId)
+        public List<string> GetSharedSSLDomains(int packageId)
         {
             List<string> domains = new List<string>();
 
@@ -2492,14 +2494,14 @@ namespace SolidCP.EnterpriseServer
             return domains;
         }
 
-        public static DataSet GetRawSSLFoldersPaged(int packageId,
+        public DataSet GetRawSSLFoldersPaged(int packageId,
             string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             return PackageController.GetRawPackageItemsPaged(packageId, typeof(SharedSSLFolder),
                 true, filterColumn, filterValue, sortColumn, startRow, maximumRows);
         }
 
-        public static List<SharedSSLFolder> GetSharedSSLFolders(int packageId, bool recursive)
+        public List<SharedSSLFolder> GetSharedSSLFolders(int packageId, bool recursive)
         {
             List<ServiceProviderItem> items = PackageController.GetPackageItemsByType(
                 packageId, typeof(SharedSSLFolder), recursive);
@@ -2508,12 +2510,12 @@ namespace SolidCP.EnterpriseServer
                 new Converter<ServiceProviderItem, SharedSSLFolder>(ConvertItemToSharedSSLFolder));
         }
 
-        private static SharedSSLFolder ConvertItemToSharedSSLFolder(ServiceProviderItem item)
+        private SharedSSLFolder ConvertItemToSharedSSLFolder(ServiceProviderItem item)
         {
             return (SharedSSLFolder)item;
         }
 
-        public static SharedSSLFolder GetSharedSSLFolder(int itemId)
+        public SharedSSLFolder GetSharedSSLFolder(int itemId)
         {
             // load original item
             SharedSSLFolder vdirItem = (SharedSSLFolder)PackageController.GetPackageItem(itemId);
@@ -2542,7 +2544,7 @@ namespace SolidCP.EnterpriseServer
             return ObjectUtils.ConvertObject<WebAppVirtualDirectory, SharedSSLFolder>(vdir);
         }
 
-        public static int AddSharedSSLFolder(int packageId, string sslDomain, int webSiteId, string vdirName, string vdirPath)
+        public int AddSharedSSLFolder(int packageId, string sslDomain, int webSiteId, string vdirName, string vdirPath)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -2639,7 +2641,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int UpdateSharedSSLFolder(SharedSSLFolder vdir)
+        public int UpdateSharedSSLFolder(SharedSSLFolder vdir)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -2686,7 +2688,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int DeleteSharedSSLFolder(int itemId)
+        public int DeleteSharedSSLFolder(int itemId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -2732,7 +2734,7 @@ namespace SolidCP.EnterpriseServer
 
 		#region Web Deploy Publishing Access
 
-		public static ResultObject SaveWebDeployPublishingProfile(int siteItemId, int[] serviceItemIds)
+		public ResultObject SaveWebDeployPublishingProfile(int siteItemId, int[] serviceItemIds)
 		{
 			ResultObject result = new ResultObject { IsSuccess = true };
 
@@ -2825,7 +2827,7 @@ namespace SolidCP.EnterpriseServer
 			return result;
 		}
 
-		public static ResultObject GrantWebDeployPublishingAccess(int siteItemId, string accountName, string accountPassword)
+		public ResultObject GrantWebDeployPublishingAccess(int siteItemId, string accountName, string accountPassword)
 		{
 			ResultObject result = new ResultObject { IsSuccess = true };
 
@@ -2927,7 +2929,7 @@ namespace SolidCP.EnterpriseServer
 			return result;
 		}
 
-		public static void RevokeWebDeployPublishingAccess(int siteItemId)
+		public void RevokeWebDeployPublishingAccess(int siteItemId)
 		{
 			try
 			{
@@ -2991,7 +2993,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static ResultObject ChangeWebDeployPublishingPassword(int siteItemId, string newAccountPassword)
+		public ResultObject ChangeWebDeployPublishingPassword(int siteItemId, string newAccountPassword)
 		{
 			ResultObject result = new ResultObject { IsSuccess = true };
 			try
@@ -3056,7 +3058,7 @@ namespace SolidCP.EnterpriseServer
 			return result;
 		}
 
-		public static BytesResult GetWebDeployPublishingProfile(int siteItemId)
+		public BytesResult GetWebDeployPublishingProfile(int siteItemId)
 		{
 			var result = new BytesResult();
 			try
@@ -3204,7 +3206,7 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
         #region Helicon Ape
-        public static int EnableHeliconApe(int siteItemId)
+        public int EnableHeliconApe(int siteItemId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -3238,7 +3240,7 @@ namespace SolidCP.EnterpriseServer
 
         }
 
-        public static int DisableHeliconApe(int siteItemId)
+        public int DisableHeliconApe(int siteItemId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -3275,7 +3277,7 @@ namespace SolidCP.EnterpriseServer
         /// </summary>
         /// <param name="ServiceId"></param>
         /// <returns></returns>
-        public static int EnableHeliconApeGlobally(int ServiceId)
+        public int EnableHeliconApeGlobally(int ServiceId)
         {
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.IsAdmin | DemandAccount.IsActive | DemandAccount.NotDemo);
             if (accountCheck < 0)
@@ -3295,7 +3297,7 @@ namespace SolidCP.EnterpriseServer
         /// </summary>
         /// <param name="ServiceId"></param>
         /// <returns></returns>
-        public static int DisableHeliconApeGlobally(int ServiceId)
+        public int DisableHeliconApeGlobally(int ServiceId)
         {
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.IsAdmin | DemandAccount.IsActive | DemandAccount.NotDemo);
             //
@@ -3316,7 +3318,7 @@ namespace SolidCP.EnterpriseServer
 		/// </summary>
 		/// <param name="ServiceId"></param>
 		/// <returns></returns>
-        public static HeliconApeStatus GetHeliconApeStatus(int ServiceId)
+        public HeliconApeStatus GetHeliconApeStatus(int ServiceId)
         {
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.IsAdmin | DemandAccount.IsActive | DemandAccount.NotDemo);
 			//
@@ -3335,7 +3337,7 @@ namespace SolidCP.EnterpriseServer
 		/// </summary>
 		/// <param name="ServiceId"></param>
 		/// <returns></returns>
-        public static int InstallHeliconApe(int ServiceId)
+        public int InstallHeliconApe(int ServiceId)
         {
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.IsAdmin | DemandAccount.IsActive | DemandAccount.NotDemo);
 			//
@@ -3351,7 +3353,7 @@ namespace SolidCP.EnterpriseServer
 			return 0;
         }
 
-        public static HtaccessFolder[] GetHeliconApeFolders(int siteItemId)
+        public HtaccessFolder[] GetHeliconApeFolders(int siteItemId)
         {
             // load site item
             WebSite siteItem = (WebSite)PackageController.GetPackageItem(siteItemId);
@@ -3363,14 +3365,14 @@ namespace SolidCP.EnterpriseServer
             return web.GetHeliconApeFolders(siteItem.SiteId);
         }
 
-        public static HtaccessFolder GetHeliconApeHttpdFolder(int serviceId)
+        public HtaccessFolder GetHeliconApeHttpdFolder(int serviceId)
         {
             // get folder
             WebServer web = GetWebServer(serviceId);
             return web.GetHeliconApeHttpdFolder();
         }
 
-        public static HtaccessFolder GetHeliconApeFolder(int siteItemId, string folderPath)
+        public HtaccessFolder GetHeliconApeFolder(int siteItemId, string folderPath)
         {
             // load site item
             WebSite siteItem = (WebSite)PackageController.GetPackageItem(siteItemId);
@@ -3382,7 +3384,7 @@ namespace SolidCP.EnterpriseServer
             return web.GetHeliconApeFolder(siteItem.SiteId, folderPath);
         }
 
-        public static int UpdateHeliconApeFolder(int siteItemId, HtaccessFolder folder)
+        public int UpdateHeliconApeFolder(int siteItemId, HtaccessFolder folder)
         {
             // load site item
             WebSite siteItem = (WebSite)PackageController.GetPackageItem(siteItemId);
@@ -3414,7 +3416,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int UpdateHeliconApeHttpdFolder(int serviceId, HtaccessFolder folder)
+        public int UpdateHeliconApeHttpdFolder(int serviceId, HtaccessFolder folder)
         {
             folder.Path = FilesController.CorrectRelativePath(folder.Path);
 
@@ -3440,7 +3442,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int DeleteHeliconApeFolder(int siteItemId, string folderPath)
+        public int DeleteHeliconApeFolder(int siteItemId, string folderPath)
         {
             // load site item
             WebSite siteItem = (WebSite)PackageController.GetPackageItem(siteItemId);
@@ -3473,7 +3475,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Helicon Ape Users
-        public static HtaccessUser[] GetHeliconApeUsers(int siteItemId)
+        public HtaccessUser[] GetHeliconApeUsers(int siteItemId)
         {
             // load site item
             WebSite siteItem = (WebSite)PackageController.GetPackageItem(siteItemId);
@@ -3485,7 +3487,7 @@ namespace SolidCP.EnterpriseServer
             return web.GetHeliconApeUsers(siteItem.SiteId);
         }
 
-        public static HtaccessUser GetHeliconApeUser(int siteItemId, string userName)
+        public HtaccessUser GetHeliconApeUser(int siteItemId, string userName)
         {
             // load site item
             WebSite siteItem = (WebSite)PackageController.GetPackageItem(siteItemId);
@@ -3497,7 +3499,7 @@ namespace SolidCP.EnterpriseServer
             return web.GetHeliconApeUser(siteItem.SiteId, userName);
         }
 
-        public static int UpdateHeliconApeUser(int siteItemId, HtaccessUser user)
+        public int UpdateHeliconApeUser(int siteItemId, HtaccessUser user)
         {
             // load site item
             WebSite siteItem = (WebSite)PackageController.GetPackageItem(siteItemId);
@@ -3527,7 +3529,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int DeleteHeliconApeUser(int siteItemId, string userName)
+        public int DeleteHeliconApeUser(int siteItemId, string userName)
         {
             // load site item
             WebSite siteItem = (WebSite)PackageController.GetPackageItem(siteItemId);
@@ -3559,7 +3561,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Helicon Ape Groups
-        public static WebGroup[] GetHeliconApeGroups(int siteItemId)
+        public WebGroup[] GetHeliconApeGroups(int siteItemId)
         {
             // load site item
             WebSite siteItem = (WebSite)PackageController.GetPackageItem(siteItemId);
@@ -3571,7 +3573,7 @@ namespace SolidCP.EnterpriseServer
             return web.GetHeliconApeGroups(siteItem.SiteId);
         }
 
-        public static WebGroup GetHeliconApeGroup(int siteItemId, string groupName)
+        public WebGroup GetHeliconApeGroup(int siteItemId, string groupName)
         {
             // load site item
             WebSite siteItem = (WebSite)PackageController.GetPackageItem(siteItemId);
@@ -3583,7 +3585,7 @@ namespace SolidCP.EnterpriseServer
             return web.GetHeliconApeGroup(siteItem.SiteId, groupName);
         }
 
-        public static int UpdateHeliconApeGroup(int siteItemId, WebGroup group)
+        public int UpdateHeliconApeGroup(int siteItemId, WebGroup group)
         {
             // load site item
             WebSite siteItem = (WebSite)PackageController.GetPackageItem(siteItemId);
@@ -3613,7 +3615,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int DeleteHeliconApeGroup(int siteItemId, string groupName)
+        public int DeleteHeliconApeGroup(int siteItemId, string groupName)
         {
             // load site item
             WebSite siteItem = (WebSite)PackageController.GetPackageItem(siteItemId);
@@ -3646,7 +3648,7 @@ namespace SolidCP.EnterpriseServer
 
         #region Helicon Zoo
 
-        public static List<WebAppVirtualDirectory> GetZooApplications(int siteItemId)
+        public List<WebAppVirtualDirectory> GetZooApplications(int siteItemId)
         {
             List<WebAppVirtualDirectory> dirs = new List<WebAppVirtualDirectory>();
 
@@ -3669,7 +3671,7 @@ namespace SolidCP.EnterpriseServer
             return dirs;
         }
 
-        public static StringResultObject SetZooEnvironmentVariable(int siteItemId, string appName, string envName, string envValue)
+        public StringResultObject SetZooEnvironmentVariable(int siteItemId, string appName, string envName, string envValue)
         {
             StringResultObject result = new StringResultObject {IsSuccess = false};
 
@@ -3685,7 +3687,7 @@ namespace SolidCP.EnterpriseServer
             return web.SetZooEnvironmentVariable(siteItem.SiteId, appName, envName, envValue);
         }
 
-        public static StringResultObject SetZooConsoleEnabled(int siteItemId, string appName)
+        public StringResultObject SetZooConsoleEnabled(int siteItemId, string appName)
         {
             StringResultObject result = new StringResultObject { IsSuccess = false };
 
@@ -3702,7 +3704,7 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        public static StringResultObject SetZooConsoleDisabled(int siteItemId, string appName)
+        public StringResultObject SetZooConsoleDisabled(int siteItemId, string appName)
         {
             StringResultObject result = new StringResultObject { IsSuccess = false };
 
@@ -3718,7 +3720,7 @@ namespace SolidCP.EnterpriseServer
             return web.SetZooConsoleDisabled(siteItem.SiteId, appName);
         }
 
-        public static void TryEnableHeliconZooEngines(string siteId, int packageId)
+        public void TryEnableHeliconZooEngines(string siteId, int packageId)
         {
             try
             {
@@ -3743,7 +3745,7 @@ namespace SolidCP.EnterpriseServer
 
         #region WebManagement Access
 
-		public static ResultObject GrantWebManagementAccess(int siteItemId, string accountName, string accountPassword)
+		public ResultObject GrantWebManagementAccess(int siteItemId, string accountName, string accountPassword)
 		{
 			ResultObject result = new ResultObject { IsSuccess = true };
 
@@ -3833,7 +3835,7 @@ namespace SolidCP.EnterpriseServer
 			return result;
 		}
 
-		public static void RevokeWebManagementAccess(int siteItemId)
+		public void RevokeWebManagementAccess(int siteItemId)
 		{
 			try
 			{
@@ -3901,13 +3903,13 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-        protected static string GetNonQualifiedAccountName(string accountName)
+        protected string GetNonQualifiedAccountName(string accountName)
         {
             int idx = accountName.LastIndexOf("\\");
             return (idx != -1) ? accountName.Substring(idx + 1) : accountName;
         }
 
-		public static ResultObject ChangeWebManagementAccessPassword(int siteItemId, string accountPassword)
+		public ResultObject ChangeWebManagementAccessPassword(int siteItemId, string accountPassword)
 		{
 			ResultObject result = new ResultObject { IsSuccess = true };
 			try
@@ -4259,7 +4261,7 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
         }
 
 
-        public static int ImporHostHeader(int userId, int packageId, int siteId)
+        public int ImporHostHeader(int userId, int packageId, int siteId)
         {
             WebSite siteItem = (WebSite)PackageController.GetPackageItem(siteId);
             if (siteItem == null)
@@ -4306,7 +4308,7 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
             return 0;
         }
 
-        private static bool DoesHeaderExistInDomains(string header, List<DomainInfo> domains)
+        private bool DoesHeaderExistInDomains(string header, List<DomainInfo> domains)
         {
             bool bExist = false;
 
@@ -4326,7 +4328,7 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
         }
 
 
-        private static int FindDomainForHeader(string header, List<DomainInfo> domains)
+        private int FindDomainForHeader(string header, List<DomainInfo> domains)
         {
             int domainId = 0;
             int counter = 0;
@@ -4493,7 +4495,7 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
         #endregion
 
         #region SSL
-        public static SSLCertificate CertificateRequest(SSLCertificate certificate, int siteItemId)
+        public SSLCertificate CertificateRequest(SSLCertificate certificate, int siteItemId)
         {
 
             try
@@ -4538,7 +4540,7 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
 
         }
 
-        public static ResultObject InstallCertificate(SSLCertificate certificate, int siteItemId)
+        public ResultObject InstallCertificate(SSLCertificate certificate, int siteItemId)
         {
             ResultObject result = new ResultObject { IsSuccess = true };
             try
@@ -4589,7 +4591,7 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
             return result;
         }
 
-        public static ResultObject LEInstallCertificate(int siteItemId, string email)
+        public ResultObject LEInstallCertificate(int siteItemId, string email)
         {
             ResultObject result = new ResultObject { IsSuccess = true };
             try
@@ -4627,7 +4629,7 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
             return result;
         }
 
-        public static ResultObject InstallPfx(byte[] pfx, int siteItemId, string password)
+        public ResultObject InstallPfx(byte[] pfx, int siteItemId, string password)
         {
             ResultObject result = new ResultObject { IsSuccess = true };
             try
@@ -4682,7 +4684,7 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
             return result;
         }
 
-        public static List<SSLCertificate> GetPendingCertificates(int siteItemId)
+        public List<SSLCertificate> GetPendingCertificates(int siteItemId)
         {
             WebSite item = GetWebSite(siteItemId) as WebSite;
             List<SSLCertificate> certificates = new List<SSLCertificate>();
@@ -4691,30 +4693,30 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
 
         }
 
-        public static SSLCertificate GetSslCertificateById(int iD)
+        public SSLCertificate GetSslCertificateById(int iD)
         {
             return ObjectUtils.FillObjectFromDataReader<SSLCertificate>(
                 DataProvider.GetSSLCertificateByID(SecurityContext.User.UserId, iD));
         }
 
-        public static int CheckSSL(int siteID, bool renewal)
+        public int CheckSSL(int siteID, bool renewal)
         {
             return DataProvider.CheckSSL(siteID, renewal);
         }
 
-        public static ResultObject CheckSSLForDomain(string domain, int siteID)
+        public ResultObject CheckSSLForDomain(string domain, int siteID)
         {
             ResultObject result = new ResultObject { IsSuccess = true };
             return result;
         }
 
-        public static SSLCertificate GetSiteCert(int siteid)
+        public SSLCertificate GetSiteCert(int siteid)
         {
             return ObjectUtils.FillObjectFromDataReader<SSLCertificate>(
                 DataProvider.GetSiteCert(SecurityContext.User.UserId, siteid));
         }
 
-        public static List<SSLCertificate> GetCertificatesForSite(int siteId)
+        public List<SSLCertificate> GetCertificatesForSite(int siteId)
         {
             WebSite item = GetWebSite(siteId) as WebSite;
             List<SSLCertificate> certificates = new List<SSLCertificate>();
@@ -4722,7 +4724,7 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
                 DataProvider.GetCertificatesForSite(SecurityContext.User.UserId, item.PackageId, item.Id));
         }
 
-        public static byte[] ExportCertificate(int siteId, string serialNumber, string password)
+        public byte[] ExportCertificate(int siteId, string serialNumber, string password)
         {
             WebSite item = GetWebSite(siteId) as WebSite;
 
@@ -4730,7 +4732,7 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
             return server.ExportCertificate(serialNumber, password);
         }
 
-        public static ResultObject DeleteCertificate(int siteId, SSLCertificate certificate)
+        public ResultObject DeleteCertificate(int siteId, SSLCertificate certificate)
         {
 
             ResultObject result = new ResultObject { IsSuccess = true };
@@ -4765,7 +4767,7 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
             return result;
         }
 
-        public static ResultObject ImportCertificate(int siteId)
+        public ResultObject ImportCertificate(int siteId)
         {
             ResultObject result = new ResultObject { IsSuccess = true };
             try
@@ -4802,7 +4804,7 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
             return result;
         }
 
-        public static ResultObject CheckCertificate(int siteId)
+        public ResultObject CheckCertificate(int siteId)
         {
             ResultObject result = new ResultObject { IsSuccess = false };
             bool serverResult = false;
@@ -4826,7 +4828,7 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
             return result;
         }
 
-        public static ResultObject DeleteCertificateRequest(int siteId, int csrID)
+        public ResultObject DeleteCertificateRequest(int siteId, int csrID)
         {
             ResultObject result = new ResultObject { IsSuccess = true };
 
@@ -4847,7 +4849,7 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
         }
         #endregion
 
-        private static int GetWebServerServiceID(int packageId)
+        private int GetWebServerServiceID(int packageId)
         {
             return PackageController.GetPackageServiceId(packageId, ResourceGroups.Web);
         }

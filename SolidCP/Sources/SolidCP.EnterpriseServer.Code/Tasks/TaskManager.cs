@@ -55,12 +55,15 @@ namespace SolidCP.EnterpriseServer
         private ConcurrentDictionary<int, Thread> _taskThreadsDictionary = new ConcurrentDictionary<int, Thread>();
 
         // purge timer, used for killing old tasks from the hash
-        Timer purgeTimer = new Timer(new TimerCallback(PurgeCompletedTasks),
-                                            null,
-                                            60000, // start from 1 minute
-                                            60000); // invoke each minute
+        Timer purgeTimer = null;
 
-        public TaskManager(ControllerBase provider) : base(provider) { }
+        public TaskManager(): this(null) { }
+		public TaskManager(ControllerBase provider) : base(provider) {
+			purgeTimer = new Timer(new TimerCallback(PurgeCompletedTasks),
+												null,
+												60000, // start from 1 minute
+												60000);// invoke each minute
+		}
 
         public Guid Guid
         {

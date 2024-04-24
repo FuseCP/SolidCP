@@ -38,10 +38,8 @@ using System.Text;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class SchedulerJob: ControllerBase
+    public class SchedulerJob: ControllerAsyncBase
     {
-        public SchedulerJob(ControllerBase provider) : base(provider) { } 
-
         private ScheduleInfo scheduleInfo;
         private ScheduleTaskInfo task;
 
@@ -103,7 +101,7 @@ namespace SolidCP.EnterpriseServer
             try
             {
                 // create scheduled task object
-                SchedulerTask objTask = (SchedulerTask)Activator.CreateInstance(Type.GetType(task.TaskType));
+                ISchedulerTask objTask = (ISchedulerTask)Activator.CreateInstance(Type.GetType(task.TaskType));
 
                 if (objTask != null)
                     objTask.DoWork();

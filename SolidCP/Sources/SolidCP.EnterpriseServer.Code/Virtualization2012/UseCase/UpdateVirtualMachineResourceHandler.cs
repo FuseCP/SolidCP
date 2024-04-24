@@ -13,12 +13,14 @@ using System.Threading.Tasks;
 
 namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
 {
-    public static class UpdateVirtualMachineResourceHandler
+    public class UpdateVirtualMachineResourceHandler: ControllerBase
     {
         private const string SHUTDOWN_REASON_CHANGE_CONFIG = "SolidCP - changing VPS configuration";
         private const short MINIMUM_DYNAMIC_MEMORY_BUFFER = 5;
 
-        public static ResultObject UpdateVirtualMachineResource(int itemId, VirtualMachine vmSettings)
+        public UpdateVirtualMachineResourceHandler(ControllerBase provider): base(provider) { }
+
+        public ResultObject UpdateVirtualMachineResource(int itemId, VirtualMachine vmSettings)
         {
             ResultObject res = new ResultObject();
 

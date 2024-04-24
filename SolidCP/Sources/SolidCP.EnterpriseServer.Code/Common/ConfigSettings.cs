@@ -173,7 +173,7 @@ namespace SolidCP.EnterpriseServer
 		{
 			get
 			{
-				SystemSettings settings = SystemController.GetSystemSettingsInternal(
+				SystemSettings settings = new SystemController().GetSystemSettingsInternal(
 					SystemSettings.BACKUP_SETTINGS,
 					false
 				);

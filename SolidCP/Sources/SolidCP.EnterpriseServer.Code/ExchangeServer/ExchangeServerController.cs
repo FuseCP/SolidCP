@@ -65,7 +65,7 @@ namespace SolidCP.EnterpriseServer
     {
         public const int MAX_THUMBNAILPHOTO_SIZE = 96;
 
-        public ExchangeServerController(WebServiceBase db): base(db) { }
+        public ExchangeServerController(ControllerBase db): base(db) { }
 
         #region Organizations
         public DataSet GetRawExchangeOrganizationsPaged(int packageId, bool recursive,
@@ -334,7 +334,7 @@ namespace SolidCP.EnterpriseServer
                 prms.UserId = SecurityContext.User.UserId;
                 prms.Parameters = new object[] { itemId };
 
-                Thread t = new Thread(CalculateOrganizationDiskspaceAsync);
+                Thread t = new Thread(par => AsAsync<ExchangeServerController>().CalculateOrganizationDiskspaceAsync(par));
                 t.Start(prms);
                 return 0;
 

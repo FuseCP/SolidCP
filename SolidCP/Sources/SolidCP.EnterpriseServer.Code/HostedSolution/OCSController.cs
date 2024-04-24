@@ -43,7 +43,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 {
     public class OCSController: ControllerBase
     {
-        public OCSController(WebServiceBase provider) : base(provider) { }
+        public OCSController(ControllerBase provider) : base(provider) { }
 
         private OCSServer GetOCSProxy(int itemId)
         {

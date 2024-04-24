@@ -61,7 +61,7 @@ using System.Web.Caching;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class WebApplicationsInstaller
+    public class WebApplicationsInstaller: ControllerBase
     {
         public const string PROPERTY_CONTENT_PATH = "installer.contentpath";
         public const string PROPERTY_ABSOLUTE_CONTENT_PATH = "installer.absolute.contentpath";
@@ -75,7 +75,9 @@ namespace SolidCP.EnterpriseServer
         public const string PROPERTY_DELETE_DATABASE = "installer.deletedatabase";
         public const string PROPERTY_DELETE_USER = "installer.deleteuser";
 
-        public static int InstallApplication(InstallationInfo inst)
+        public WebApplicationsInstaller(ControllerBase provider) : base(provider) { }
+
+        public int InstallApplication(InstallationInfo inst)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -86,7 +88,7 @@ namespace SolidCP.EnterpriseServer
             if (packageCheck < 0) return packageCheck;
 
             // install application
-            WebApplicationsInstaller installer = new WebApplicationsInstaller();
+            WebApplicationsInstaller installer = AsAsync<WebApplicationsInstaller>();
             return installer.InstallWebApplication(inst);
         }
 
@@ -636,7 +638,7 @@ namespace SolidCP.EnterpriseServer
                     DatabaseServerController.DeleteSqlUser(inst.UserId);
         }
 
-        public static List<ApplicationCategory> GetCategories()
+        public List<ApplicationCategory> GetCategories()
         {
             List<ApplicationCategory> categories = null;
 
@@ -686,12 +688,12 @@ namespace SolidCP.EnterpriseServer
             return categories;
         }
 
-        public static List<ApplicationInfo> GetApplications(int packageId)
+        public List<ApplicationInfo> GetApplications(int packageId)
         {
             return GetApplications(packageId, null);
         }
 
-        public static List<ApplicationInfo> GetApplications(int packageId, string categoryId)
+        public List<ApplicationInfo> GetApplications(int packageId, string categoryId)
         {
             string key = "WebApplicationsList";
 
@@ -764,7 +766,7 @@ namespace SolidCP.EnterpriseServer
             return categoryApps;
         }
 
-        public static ApplicationInfo GetApplication(int packageId, string applicationId)
+        public ApplicationInfo GetApplication(int packageId, string applicationId)
         {
             // get all applications
             List<ApplicationInfo> apps = GetApplications(packageId);
@@ -783,7 +785,7 @@ namespace SolidCP.EnterpriseServer
             return null;
         }
 
-        public static bool IsApplicattionFitsRequirements(PackageContext cntx, ApplicationInfo app)
+        public bool IsApplicattionFitsRequirements(PackageContext cntx, ApplicationInfo app)
         {
             if (app.Requirements == null)
                 return true; // empty requirements
@@ -830,7 +832,7 @@ namespace SolidCP.EnterpriseServer
         }
 
         #region private helper methods
-        private static ApplicationInfo CreateApplicationInfoFromXml(string appFolder, XmlNode nodeApp)
+        private ApplicationInfo CreateApplicationInfoFromXml(string appFolder, XmlNode nodeApp)
         {
             ApplicationInfo app = new ApplicationInfo();
 
@@ -896,7 +898,7 @@ namespace SolidCP.EnterpriseServer
             return app;
         }
 
-        private static string GetNodeValue(XmlNode parentNode, string nodeName, string defaultValue)
+        private string GetNodeValue(XmlNode parentNode, string nodeName, string defaultValue)
         {
             XmlNode node = parentNode.SelectSingleNode(nodeName);
             if (node != null)

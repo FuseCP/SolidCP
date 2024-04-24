@@ -42,9 +42,9 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 {
     public class BlackBerryController: ControllerBase
     {
-        public BlackBerryController(WebServiceBase provider): base(provider) { }
+        public BlackBerryController(ControllerBase provider): base(provider) { }
 
-        private static bool CheckQuota(int itemId)
+        private bool CheckQuota(int itemId)
         {
             Organization org = OrganizationController.GetOrganization(itemId);
             PackageContext cntx = PackageController.GetPackageContext(org.PackageId);
@@ -56,7 +56,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             return allocatedBlackBerryUsers == -1 || allocatedBlackBerryUsers > userCount.Value;                        
         }
         
-        private static BlackBerry GetBlackBerryProxy(int itemId)
+        private BlackBerry GetBlackBerryProxy(int itemId)
         {
             Organization org = OrganizationController.GetOrganization(itemId);
             int serviceId = PackageController.GetPackageServiceId(org.PackageId, ResourceGroups.BlackBerry);
@@ -67,12 +67,12 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             return blackBerry;
         }
 
-        internal static bool CheckBlackBerryUserExists(int accountId)
+        internal bool CheckBlackBerryUserExists(int accountId)
         {
             return DataProvider.CheckBlackBerryUserExists(accountId);
         }
         
-        public static ResultObject CreateBlackBerryUser(int itemId, int accountId)
+        public ResultObject CreateBlackBerryUser(int itemId, int accountId)
         {
             ResultObject res = TaskManager.StartResultTask<ResultObject>("BLACBERRY", "CREATE_BLACKBERRY_USER");
             
@@ -197,7 +197,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             
         }
 
-        public static OrganizationUsersPagedResult GetBlackBerryUsers(int itemId, string sortColumn, string sortDirection, string name, string email, int startRow, int count)
+        public OrganizationUsersPagedResult GetBlackBerryUsers(int itemId, string sortColumn, string sortDirection, string name, string email, int startRow, int count)
         {
             OrganizationUsersPagedResult res = TaskManager.StartResultTask<OrganizationUsersPagedResult>("BLACKBERRY", "GET_BLACKBERRY_USERS");
 
@@ -228,7 +228,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             return res;
         }
 
-        public static IntResult GetBlackBerryUsersCount(int itemId, string name, string email)
+        public IntResult GetBlackBerryUsersCount(int itemId, string name, string email)
         {
             IntResult res = TaskManager.StartResultTask<IntResult>("BLACKBERRY", "GET_BLACKBERRY_USERS_COUNT");
             try
@@ -245,7 +245,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             return res;
         }
 
-        public static ResultObject DeleteBlackBerryUser(int itemId, int accountId)
+        public ResultObject DeleteBlackBerryUser(int itemId, int accountId)
         {
             ResultObject res = TaskManager.StartResultTask<ResultObject>("BLACKBERRY", "DELETE_BLACKBERRY_USER");
 
@@ -310,7 +310,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
         }
 
 
-        public static BlackBerryUserStatsResult GetBlackBerryUserStats(int itemId, int accountId)
+        public BlackBerryUserStatsResult GetBlackBerryUserStats(int itemId, int accountId)
         {
             BlackBerryUserStatsResult res = TaskManager.StartResultTask<BlackBerryUserStatsResult>("BLACKBERRY",
                                                                                                    "DELETE_BLACKBERRY_USER");
@@ -368,7 +368,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
         }
 
         
-        public static ResultObject SetActivationPasswordWithExpirationTime(int itemId, int accountId, string password, int time)
+        public ResultObject SetActivationPasswordWithExpirationTime(int itemId, int accountId, string password, int time)
         {
             BlackBerryUserStatsResult res = TaskManager.StartResultTask<BlackBerryUserStatsResult>("BLACKBERRY",
                                                                                                    "DELETE_BLACKBERRY_USER");
@@ -424,7 +424,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
         }
 
 
-        public static ResultObject SetEmailActivationPassword(int itemId, int accountId)
+        public ResultObject SetEmailActivationPassword(int itemId, int accountId)
         {
             ResultObject res = TaskManager.StartResultTask<BlackBerryUserStatsResult>("BLACKBERRY",
                                                                                                    "DELETE_BLACKBERRY_USER");
@@ -480,7 +480,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
         }
 
 
-        public static ResultObject DeleteDataFromBlackBerryDevice(int itemId, int accountId)
+        public ResultObject DeleteDataFromBlackBerryDevice(int itemId, int accountId)
         {
             ResultObject res = TaskManager.StartResultTask<BlackBerryUserStatsResult>("BLACKBERRY",
                                                                                                    "DELETE_BLACKBERRY_USER");

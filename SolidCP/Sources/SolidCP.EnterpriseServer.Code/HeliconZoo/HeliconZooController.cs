@@ -43,7 +43,7 @@ namespace SolidCP.EnterpriseServer
 {
     public class HeliconZooController: ControllerBase
     {
-        public HeliconZooController(WebServiceBase provider) : base(provider) { }
+        public HeliconZooController(ControllerBase provider) : base(provider) { }
 
         public const string HeliconZooQuotaPrefix = "HeliconZoo.";
 

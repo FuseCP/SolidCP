@@ -11,11 +11,13 @@ using System.Threading.Tasks;
 
 namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
 {
-    public static class ChangeVirtualMachineStateHandler
+    public class ChangeVirtualMachineStateHandler: ControllerBase
     {
         private const string SHUTDOWN_REASON = "SolidCP - Initiated by user";
 
-        public static ResultObject ChangeVirtualMachineState(int itemId, VirtualMachineRequestedState state)
+        public ChangeVirtualMachineStateHandler(ControllerBase provider) : base(provider) { }
+
+        public ResultObject ChangeVirtualMachineState(int itemId, VirtualMachineRequestedState state)
         {
             // start task
             ResultObject res = TaskManager.StartResultTask<ResultObject>("VPS2012", "CHANGE_STATE");

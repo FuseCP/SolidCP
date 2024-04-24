@@ -39,7 +39,7 @@ namespace SolidCP.EnterpriseServer
 {
     public class CommentsController : ControllerBase
     {
-        public CommentsController(WebServiceBase provider) : base(provider) { }
+        public CommentsController(ControllerBase provider) : base(provider) { }
         public DataSet GetComments(int userId, string itemTypeId, int itemId)
         {
             return DataProvider.GetComments(SecurityContext.User.UserId, userId, itemTypeId, itemId);

@@ -7,9 +7,11 @@ using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer.Code.VirtualizationProxmox
 {
-    public static class VirtualizationHelper
+    public class VirtualizationHelperProxmox: ControllerBase
     {
-        public static VirtualizationServerProxmox GetVirtualizationProxy(int serviceId)
+        public VirtualizationHelperProxmox(ControllerBase provider) : base(provider) { }
+
+        public VirtualizationServerProxmox GetVirtualizationProxy(int serviceId)
         {
             VirtualizationServerProxmox ws = new VirtualizationServerProxmox();
             ServiceProviderProxy.Init(ws, serviceId);

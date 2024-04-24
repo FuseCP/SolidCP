@@ -57,11 +57,15 @@ namespace SolidCP.EnterpriseServer
             SmtpClient client = new SmtpClient();
 
             // load SMTP client settings
-            SystemSettings settings = SystemController.GetSystemSettingsInternal(
-                SystemSettings.SMTP_SETTINGS,
-                true
-            );
+            SystemSettings settings;
 
+            using (var systemController = new SystemController())
+            {
+                settings = systemController.GetSystemSettingsInternal(
+                    SystemSettings.SMTP_SETTINGS,
+                    true
+                );
+            }
             client.Host = settings["SmtpServer"];
             client.Port = settings.GetInt("SmtpPort");
             if (!String.IsNullOrEmpty(settings["SmtpUsername"]))

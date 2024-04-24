@@ -12,11 +12,13 @@ using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer.Code.Virtualization2012
 {
-    public static class VirtualizationHelper
+    public class VirtualizationHelper: ControllerBase
     {
         private const string MAINTENANCE_MODE_EMABLED = "enabled";
 
-        public static VirtualizationServer2012 GetVirtualizationProxy(int serviceId)
+        public VirtualizationHelper(ControllerBase provider) : base(provider) { }
+
+        public VirtualizationServer2012 GetVirtualizationProxy(int serviceId)
         {
             VirtualizationServer2012 ws = new VirtualizationServer2012();
             ServiceProviderProxy.Init(ws, serviceId);
@@ -24,15 +26,15 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012
         }
 
         #region MaintenanceMode
-        public static bool IsMaintenanceMode(int itemId)
+        public bool IsMaintenanceMode(int itemId)
         {
             return IsMaintenanceMode(itemId, null);
         }
-        public static bool IsMaintenanceMode(StringDictionary settings)
+        public bool IsMaintenanceMode(StringDictionary settings)
         {
             return IsMaintenanceMode(-1, settings);
         }
-        public static bool IsMaintenanceMode(int itemId, StringDictionary settings)
+        public bool IsMaintenanceMode(int itemId, StringDictionary settings)
         {
             if (settings == null && itemId != -1)
             {
@@ -50,13 +52,13 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012
         }
         #endregion
 
-        public static int GetServiceId(int packageId)
+        public int GetServiceId(int packageId)
         {
             int serviceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.VPS2012);
             return serviceId;
         }
 
-        public static VirtualizationServer2012 GetVirtualizationProxyByPackageId(int packageId)
+        public VirtualizationServer2012 GetVirtualizationProxyByPackageId(int packageId)
         {
             // get service
             int serviceId = GetServiceId(packageId);
@@ -65,7 +67,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012
         }
 
         #region VPS OS
-        public static LibraryItem[] GetOperatingSystemTemplates(int packageId)
+        public LibraryItem[] GetOperatingSystemTemplates(int packageId)
         {
             // load service settings
             int serviceId = GetServiceId(packageId);
@@ -74,7 +76,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012
             return GetOperatingSystemTemplatesByServiceId(serviceId);
         }
 
-        public static LibraryItem[] GetOperatingSystemTemplatesByServiceId(int serviceId)
+        public LibraryItem[] GetOperatingSystemTemplatesByServiceId(int serviceId)
         {
             // load service settings
             StringDictionary settings = ServerController.GetServiceSettings(serviceId);
@@ -87,7 +89,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012
         #endregion
 
         #region VPS Configuration
-        public static int GetMaximumCpuCoresNumber(int packageId)
+        public int GetMaximumCpuCoresNumber(int packageId)
         {
             // get proxy
             VirtualizationServer2012 vs = GetVirtualizationProxyByPackageId(packageId);
@@ -95,7 +97,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012
             return vs.GetProcessorCoresNumber();
         }
 
-        public static string GetDefaultExportPath(int itemId)
+        public string GetDefaultExportPath(int itemId)
         {
             // load meta item
             VirtualMachine vm = VirtualMachineHelper.GetVirtualMachineByItemId(itemId);
@@ -109,7 +111,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012
         }
         #endregion
 
-        public static int DiscoverVirtualMachine(int itemId)
+        public int DiscoverVirtualMachine(int itemId)
         {
             try
             {
@@ -162,7 +164,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012
             return -1;
         }
 
-        private static bool CheckVmService(int serviceId, int itemId, string virtualMachineId)
+        private bool CheckVmService(int serviceId, int itemId, string virtualMachineId)
         {
             try
             {
@@ -178,7 +180,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012
             return false;
         }
 
-        public static string EnsurePrivateVirtualSwitch(ServiceProviderItem item)
+        public string EnsurePrivateVirtualSwitch(ServiceProviderItem item)
         {
             // try locate switch in the package
             List<ServiceProviderItem> items = PackageController.GetPackageItemsByType(item.PackageId, typeof(VirtualSwitch));

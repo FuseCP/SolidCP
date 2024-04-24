@@ -10,9 +10,11 @@ using System.Threading.Tasks;
 
 namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Tasks
 {
-    internal class ReinstallVirtualMachineTask
+    public class ReinstallVirtualMachineTask: ControllerBase
     {
-        internal static void ReinstallVirtualMachineNewTask(int itemId, VirtualMachine VMSettings, LibraryItem OsTemplate, string adminPassword, string[] privIps,
+        public ReinstallVirtualMachineTask(ControllerBase provider) : base(provider) { }
+
+        internal void ReinstallVirtualMachineNewTask(int itemId, VirtualMachine VMSettings, LibraryItem OsTemplate, string adminPassword, string[] privIps,
             bool saveVirtualDisk, bool exportVps, string exportPath)
         {
             string taskId = VMSettings.CurrentTaskId;
@@ -25,7 +27,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Tasks
             TaskManager.CompleteTask();
         }
 
-        private static void ReinstallVirtualMachineInternal(string taskId, int itemId, VirtualMachine VMSettings, LibraryItem OsTemplate, string adminPassword, string[] privIps,
+        private void ReinstallVirtualMachineInternal(string taskId, int itemId, VirtualMachine VMSettings, LibraryItem OsTemplate, string adminPassword, string[] privIps,
             bool saveVirtualDisk, bool exportVps, string exportPath)
         {
             //string taskId = VMSettings.CurrentTaskId;

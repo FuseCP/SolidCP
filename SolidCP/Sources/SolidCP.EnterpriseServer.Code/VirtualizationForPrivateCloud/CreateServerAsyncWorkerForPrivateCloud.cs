@@ -39,7 +39,7 @@ using SolidCP.Providers.VirtualizationForPC;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class CreateVMAsyncWorker
+    public class CreateVMAsyncWorker: ControllerAsyncBase
     {
         public int ThreadUserId { get; set; }
         public VMInfo vmTemplate { get; set; }

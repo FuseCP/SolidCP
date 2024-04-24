@@ -41,7 +41,8 @@ namespace SolidCP.EnterpriseServer
 {
 	public class SystemController: ControllerBase
 	{
-		private SystemController(ControllerBase provider): base(provider) { }
+		public SystemController() : this(null) { }
+		public SystemController(ControllerBase provider): base(provider) { }
 
 		public SystemSettings GetSystemSettings(string settingsName)
 		{

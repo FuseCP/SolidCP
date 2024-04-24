@@ -45,9 +45,9 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 {
     public class LyncController: ControllerBase
     {
-        public LyncController(WebServiceBase provider) : base(provider) { }
+        public LyncController(ControllerBase provider) : base(provider) { }
 
-        public static LyncServer GetLyncServer(int lyncServiceId, int organizationServiceId)
+        public LyncServer GetLyncServer(int lyncServiceId, int organizationServiceId)
         {
             LyncServer ws = new LyncServer();
 
@@ -66,7 +66,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             return ws;
         }
 
-        private static string GetProviderProperty(int organizationServiceId, string property)
+        private string GetProviderProperty(int organizationServiceId, string property)
         {
 
             Organizations orgProxy = new Organizations();
@@ -89,7 +89,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             return value;
         }
 
-        private static void ExtendLyncSettings(List<string> lyncSettings, string property, string value)
+        private void ExtendLyncSettings(List<string> lyncSettings, string property, string value)
         {
             bool isAdded = false;
             for (int i = 0; i < lyncSettings.Count; i++)
@@ -109,13 +109,13 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             }
         }
 
-        private static int GetLyncServiceID(int packageId)
+        private int GetLyncServiceID(int packageId)
         {
             return PackageController.GetPackageServiceId(packageId, ResourceGroups.Lync);
         }
 
 
-        private static bool CheckQuota(int itemId)
+        private bool CheckQuota(int itemId)
         {
             Organization org = OrganizationController.GetOrganization(itemId);
             PackageContext cntx = PackageController.GetPackageContext(org.PackageId);
@@ -128,7 +128,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
         }
 
 
-        public static LyncUserResult CreateLyncUser(int itemId, int accountId, int lyncUserPlanId)
+        public LyncUserResult CreateLyncUser(int itemId, int accountId, int lyncUserPlanId)
         {
             LyncUserResult res = TaskManager.StartResultTask<LyncUserResult>("LYNC", "CREATE_LYNC_USER");
 
@@ -300,7 +300,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
         }
 
 
-        private static int[] ParseMultiSetting(int lyncServiceId, string settingName)
+        private int[] ParseMultiSetting(int lyncServiceId, string settingName)
         {
             List<int> retIds = new List<int>();
             StringDictionary settings = ServerController.GetServiceSettings(lyncServiceId);
@@ -324,14 +324,14 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
         }
 
 
-        public static void GetLyncServices(int lyncServiceId, out int[] lyncServiceIds)
+        public void GetLyncServices(int lyncServiceId, out int[] lyncServiceIds)
         {
             lyncServiceIds = ParseMultiSetting(lyncServiceId, "LyncServersServiceID");
         }
 
 
 
-        public static LyncUser GetLyncUserGeneralSettings(int itemId, int accountId)
+        public LyncUser GetLyncUserGeneralSettings(int itemId, int accountId)
         {
             TaskManager.StartTask("LYNC", "GET_LYNC_USER_GENERAL_SETTINGS");
 
@@ -376,7 +376,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
         }
 
-        public static LyncUserResult SetLyncUserGeneralSettings(int itemId, int accountId, string sipAddress, string lineUri)
+        public LyncUserResult SetLyncUserGeneralSettings(int itemId, int accountId, string sipAddress, string lineUri)
         {
             LyncUserResult res = TaskManager.StartResultTask<LyncUserResult>("LYNC", "SET_LYNC_USER_GENERAL_SETTINGS");
 
@@ -456,7 +456,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
 
 
-        public static int DeleteOrganization(int itemId)
+        public int DeleteOrganization(int itemId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -489,7 +489,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
         }
 
 
-        public static LyncUserResult SetUserLyncPlan(int itemId, int accountId, int lyncUserPlanId)
+        public LyncUserResult SetUserLyncPlan(int itemId, int accountId, int lyncUserPlanId)
         {
             LyncUserResult res = TaskManager.StartResultTask<LyncUserResult>("LYNC", "SET_LYNC_USER_LYNCPLAN");
 
@@ -545,12 +545,12 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
         }
 
-        public static LyncUsersPagedResult GetLyncUsers(int itemId)
+        public LyncUsersPagedResult GetLyncUsers(int itemId)
         {
             return GetLyncUsersPaged(itemId, string.Empty, string.Empty, 0, int.MaxValue);
         }
 
-        public static LyncUsersPagedResult GetLyncUsersPaged(int itemId, string sortColumn, string sortDirection, int startRow, int count)
+        public LyncUsersPagedResult GetLyncUsersPaged(int itemId, string sortColumn, string sortDirection, int startRow, int count)
         {
             LyncUsersPagedResult res = TaskManager.StartResultTask<LyncUsersPagedResult>("LYNC", "GET_LYNC_USERS");
 
@@ -581,12 +581,12 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             return res;
         }
 
-        public static List<LyncUser> GetLyncUsersByPlanId(int itemId, int planId)
+        public List<LyncUser> GetLyncUsersByPlanId(int itemId, int planId)
         {
             return ObjectUtils.CreateListFromDataReader<LyncUser>(DataProvider.GetLyncUsersByPlanId(itemId, planId));
         }
 
-        public static IntResult GetLyncUsersCount(int itemId)
+        public IntResult GetLyncUsersCount(int itemId)
         {
             IntResult res = TaskManager.StartResultTask<IntResult>("LYNC", "GET_LYNC_USERS_COUNT");
             try
@@ -603,7 +603,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             return res;
         }
 
-        public static LyncUserResult DeleteLyncUser(int itemId, int accountId)
+        public LyncUserResult DeleteLyncUser(int itemId, int accountId)
         {
             LyncUserResult res = TaskManager.StartResultTask<LyncUserResult>("LYNC", "DELETE_LYNC_USER");
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -655,14 +655,14 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
         }
 
 
-        public static Organization GetOrganization(int itemId)
+        public Organization GetOrganization(int itemId)
         {
             return (Organization)PackageController.GetPackageItem(itemId);
         }
 
 
         #region Lync Plans
-        public static List<LyncUserPlan> GetLyncUserPlans(int itemId)
+        public List<LyncUserPlan> GetLyncUserPlans(int itemId)
         {
             // place log record
             TaskManager.StartTask("LYNC", "GET_LYNC_LYNCUSERPLANS", itemId);
@@ -702,7 +702,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             }
         }
 
-        private static void GetLyncUserPlansByUser(int itemId, UserInfo user, ref List<LyncUserPlan> plans)
+        private void GetLyncUserPlansByUser(int itemId, UserInfo user, ref List<LyncUserPlan> plans)
         {
             if ((user != null))
             {
@@ -743,7 +743,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
         }
 
 
-        public static LyncUserPlan GetLyncUserPlan(int itemID, int lyncUserPlanId)
+        public LyncUserPlan GetLyncUserPlan(int itemID, int lyncUserPlanId)
         {
 
             // place log record
@@ -764,7 +764,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             }
         }
 
-        public static int AddLyncUserPlan(int itemID, LyncUserPlan lyncUserPlan)
+        public int AddLyncUserPlan(int itemID, LyncUserPlan lyncUserPlan)
         {
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
             if (accountCheck < 0) return accountCheck;
@@ -804,7 +804,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
 
 
-        public static int UpdateLyncUserPlan(int itemID, LyncUserPlan lyncUserPlan)
+        public int UpdateLyncUserPlan(int itemID, LyncUserPlan lyncUserPlan)
         {
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
             if (accountCheck < 0) return accountCheck;
@@ -843,7 +843,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
         }
 
 
-        public static int DeleteLyncUserPlan(int itemID, int lyncUserPlanId)
+        public int DeleteLyncUserPlan(int itemID, int lyncUserPlanId)
         {
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
             if (accountCheck < 0) return accountCheck;
@@ -867,7 +867,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
         }
 
-        public static int SetOrganizationDefaultLyncUserPlan(int itemId, int lyncUserPlanId)
+        public int SetOrganizationDefaultLyncUserPlan(int itemId, int lyncUserPlanId)
         {
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
             if (accountCheck < 0) return accountCheck;
@@ -895,7 +895,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
         #endregion
 
         #region Federation Domains
-        public static LyncFederationDomain[] GetFederationDomains(int itemId)
+        public LyncFederationDomain[] GetFederationDomains(int itemId)
         {
             // place log record
             TaskManager.StartTask("LYNC", "GET_LYNC_FEDERATIONDOMAINS", itemId);
@@ -923,7 +923,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             return lyncFederationDomains;
         }
 
-        public static LyncUserResult AddFederationDomain(int itemId, string domainName, string proxyFqdn)
+        public LyncUserResult AddFederationDomain(int itemId, string domainName, string proxyFqdn)
         {
             List<BackgroundTaskParameter> parameters = new List<BackgroundTaskParameter>();
             parameters.Add(new BackgroundTaskParameter("domainName", domainName));
@@ -1001,7 +1001,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             return res;
         }
 
-        public static LyncUserResult RemoveFederationDomain(int itemId, string domainName)
+        public LyncUserResult RemoveFederationDomain(int itemId, string domainName)
         {
             LyncUserResult res = TaskManager.StartResultTask<LyncUserResult>("LYNC", "REMOVE_LYNC_FEDERATIONDOMAIN", itemId, new BackgroundTaskParameter("domainName", domainName));
 
@@ -1046,7 +1046,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
         #endregion
 
-        public static string[] GetPolicyList(int itemId, LyncPolicyType type, string name)
+        public string[] GetPolicyList(int itemId, LyncPolicyType type, string name)
         {
             string[] ret = null;
             try
@@ -1093,12 +1093,12 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
         }
 
         #region Private methods
-        public static UInt64 ConvertPhoneNumberToLong(string ip)
+        public UInt64 ConvertPhoneNumberToLong(string ip)
         {
             return Convert.ToUInt64(ip);
         }
 
-        public static string ConvertLongToPhoneNumber(UInt64 ip)
+        public string ConvertLongToPhoneNumber(UInt64 ip)
         {
             if (ip == 0)
                 return "";

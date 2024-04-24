@@ -47,7 +47,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 {
     public class SfBController: ControllerBase
     {
-        public SfBController(WebServiceBase provider) : base(provider) { }
+        public SfBController(ControllerBase provider) : base(provider) { }
 
         public SfBServer GetSfBServer(int sfbServiceId, int organizationServiceId)
         {

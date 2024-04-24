@@ -11,10 +11,11 @@ using System.Threading.Tasks;
 
 namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
 {
-    public static class KvpExchangeHelper
+    public class KvpExchangeHelper: ControllerBase
     {
-
-        public static JobResult SendComputerNameKVP(int itemId, string computerName)
+        public KvpExchangeHelper(ControllerBase provider) : base(provider) { }
+        
+        public JobResult SendComputerNameKVP(int itemId, string computerName)
         {
             // load item
             VirtualMachine vm = VirtualMachineHelper.GetVirtualMachineByItemId(itemId);
@@ -51,7 +52,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             return SendKvpItems(itemId, "ChangeComputerName", props);
         }
 
-        public static JobResult SendAdministratorPasswordKVP(int itemId, string password, bool cleanResult)
+        public JobResult SendAdministratorPasswordKVP(int itemId, string password, bool cleanResult)
         {
             // load item
             VirtualMachine vm = VirtualMachineHelper.GetVirtualMachineByItemId(itemId);
@@ -70,7 +71,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
                 return SendKvpItems(itemId, "ChangeAdministratorPassword", props);
         }
 
-        public static JobResult SendNetworkAdapterKVP(int itemId, string adapterName)
+        public JobResult SendNetworkAdapterKVP(int itemId, string adapterName)
         {
             // load item
             VirtualMachine vm = VirtualMachineHelper.GetVirtualMachineByItemId(itemId);
@@ -153,17 +154,17 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             return SendKvpItems(itemId, "SetupNetworkAdapter", props);
         }
 
-        public static JobResult SendKvpItems(int itemId, string taskName, Dictionary<string, string> taskProps)
+        public JobResult SendKvpItems(int itemId, string taskName, Dictionary<string, string> taskProps)
         {
             return SendKvpItemsInternal(itemId, taskName, taskProps, false);
         }
 
-        public static JobResult SendKvpItemsAndCleanResult(int itemId, string taskName, Dictionary<string, string> taskProps)
+        public JobResult SendKvpItemsAndCleanResult(int itemId, string taskName, Dictionary<string, string> taskProps)
         {
             return SendKvpItemsInternal(itemId, taskName, taskProps, true);
         }
 
-        public static JobResult SendKvpItemsInternal(int itemId, string taskName, Dictionary<string, string> taskProps, bool cleanResult)
+        public JobResult SendKvpItemsInternal(int itemId, string taskName, Dictionary<string, string> taskProps, bool cleanResult)
         {
             string TASK_PREFIX = "SCP-";
             string TASK_PREFIX_OLD = "WSP-"; //backward compatibility for the WSPanel and the MSPControl version 0000 < 3000 <= ????
@@ -260,7 +261,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             return null;
         }
 
-        private static void CleanLastKVPResult(ref VirtualMachine vm, ref VirtualizationServer2012 vs, string TASK_PREFIX, string TASK_PREFIX_OLD, string[] taskNameArr)
+        private void CleanLastKVPResult(ref VirtualMachine vm, ref VirtualizationServer2012 vs, string TASK_PREFIX, string TASK_PREFIX_OLD, string[] taskNameArr)
         {
             try
             {
@@ -293,7 +294,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             }
         }
 
-        private static void TryToDelUnusedTask(ref VirtualMachine vm, ref VirtualizationServer2012 vs, string taskName, string PREFIX, string REPLACE_PREFIX)
+        private void TryToDelUnusedTask(ref VirtualMachine vm, ref VirtualizationServer2012 vs, string taskName, string PREFIX, string REPLACE_PREFIX)
         {
             if (taskName.Substring(PREFIX.Length).Equals("CurrentTask")) //Ignore CurrentTask
             {

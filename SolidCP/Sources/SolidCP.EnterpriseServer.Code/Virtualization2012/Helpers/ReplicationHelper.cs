@@ -10,10 +10,11 @@ using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer.Code.Virtualization2012
 {
-    public static class ReplicationHelper
+    public class ReplicationHelper: ControllerBase
     {
+        public ReplicationHelper(ControllerBase provider): base(provider) { }
 
-        public static void CleanUpReplicaServer(VirtualMachine originalVm)
+        public void CleanUpReplicaServer(VirtualMachine originalVm)
         {
             try
             {
@@ -34,7 +35,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012
             catch { /* skip */ }
         }
 
-        public static ReplicationServerInfo GetReplicaInfoForService(int serviceId, ref ResultObject result)
+        public ReplicationServerInfo GetReplicaInfoForService(int serviceId, ref ResultObject result)
         {
             // Get service id of replica server
             StringDictionary vsSesstings = ServerController.GetServiceSettings(serviceId);
@@ -61,7 +62,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012
             return replicaServerInfo;
         }
 
-        public static VirtualizationServer2012 GetReplicaForService(int serviceId, ref ResultObject result)
+        public VirtualizationServer2012 GetReplicaForService(int serviceId, ref ResultObject result)
         {
             // Get service id of replica server
             StringDictionary vsSesstings = ServerController.GetServiceSettings(serviceId);
@@ -77,7 +78,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012
             return VirtualizationHelper.GetVirtualizationProxy(Convert.ToInt32(replicaServiceId));
         }
 
-        public static void CheckReplicationQuota(int packageId, ref ResultObject result)
+        public void CheckReplicationQuota(int packageId, ref ResultObject result)
         {
             List<string> quotaResults = new List<string>();
             PackageContext cntx = PackageController.GetPackageContext(packageId);

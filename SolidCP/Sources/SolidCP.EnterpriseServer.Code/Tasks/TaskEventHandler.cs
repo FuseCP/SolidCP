@@ -36,7 +36,7 @@ using System.Text;
 
 namespace SolidCP.EnterpriseServer
 {
-    public abstract class TaskEventHandler
+    public abstract class TaskEventHandler: ControllerAsyncBase
     {
         public abstract void OnStart();
         public abstract void OnComplete();

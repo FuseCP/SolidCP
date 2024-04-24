@@ -51,14 +51,14 @@ namespace SolidCP.EnterpriseServer
     {
         public UserController(ControllerBase provider) : base(provider) { }
 
-        public static bool UserExists(string username)
+        public bool UserExists(string username)
         {
             // try to get user from database
             UserInfo user = GetUserInternally(username);
             return (user != null);
         }
 
-        public static void InitSshServerTunnels(int userId)
+        public void InitSshServerTunnels(int userId)
         {
             // init users SSH tunnel server connections
             ThreadPool.QueueUserWorkItem(arg =>
@@ -68,7 +68,7 @@ namespace SolidCP.EnterpriseServer
                Web.Clients.ClientBase.StartAllSshTunnels(servers);
             });
         }
-        public static int AuthenticateUser(string username, string password, string ip)
+        public int AuthenticateUser(string username, string password, string ip)
         {
             // start task
             TaskManager.StartTask("USER", "AUTHENTICATE", username);
@@ -184,7 +184,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static bool ValidatePin(string username, string pin, TimeSpan timeTolerance)
+        public bool ValidatePin(string username, string pin, TimeSpan timeTolerance)
         {
             UserInfoInternal user = GetUserInternally(username);
             TwoFactorAuthenticator twoFactorAuthenticator = new TwoFactorAuthenticator();
@@ -192,21 +192,21 @@ namespace SolidCP.EnterpriseServer
             return isValid;
         }
 
-        private static string[] GetCurrentPins(UserInfoInternal user, TimeSpan timeTolerance)
+        private string[] GetCurrentPins(UserInfoInternal user, TimeSpan timeTolerance)
         {
             TwoFactorAuthenticator twoFactorAuthenticator = new TwoFactorAuthenticator();
             var pins = twoFactorAuthenticator.GetCurrentPINs(CryptoUtils.Decrypt(user.PinSecret), timeTolerance);
             return pins;
         }
 
-        private static string GetCurrentPin(UserInfoInternal user)
+        private string GetCurrentPin(UserInfoInternal user)
         {
             TwoFactorAuthenticator twoFactorAuthenticator = new TwoFactorAuthenticator();
             var pin = twoFactorAuthenticator.GetCurrentPIN(CryptoUtils.Decrypt(user.PinSecret));
             return pin;
         }
 
-        private static string GetRandomString(int length)
+        private string GetRandomString(int length)
         {
             Random random = new Random(Guid.NewGuid().GetHashCode());
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz!§$%&/()=?";
@@ -214,7 +214,7 @@ namespace SolidCP.EnterpriseServer
                 .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
-        public static bool UpdateUserMfaSecret(string username, bool activate)
+        public bool UpdateUserMfaSecret(string username, bool activate)
         {
             UserInfoInternal user = GetUserInternally(username);
 
@@ -236,7 +236,7 @@ namespace SolidCP.EnterpriseServer
             return userAfterUpdate.MfaMode > 0;
         }
 
-        public static string[] GetUserMfaQrCodeData(string username)
+        public string[] GetUserMfaQrCodeData(string username)
         {
             UserInfoInternal user = GetUserInternally(username);
 
@@ -251,7 +251,7 @@ namespace SolidCP.EnterpriseServer
             return new string[] { faSetupCode.ManualEntryKey, faSetupCode.QrCodeSetupImageUrl };
         }
 
-        public static bool ActivateUserMfaQrCode(string username, string pin)
+        public bool ActivateUserMfaQrCode(string username, string pin)
         {
             UserInfoInternal user = GetUserInternally(username);
             if (user.MfaMode == 0)
@@ -265,7 +265,7 @@ namespace SolidCP.EnterpriseServer
             return true;
         }
 
-        public static bool CanUserChangeMfa(int changeUserId)
+        public bool CanUserChangeMfa(int changeUserId)
         {
             var currentUserId = SecurityContext.User.UserId;
             var authSettings = SystemController.GetSystemSettingsInternal(SystemSettings.AUTHENTICATION_SETTINGS, false);
@@ -274,7 +274,7 @@ namespace SolidCP.EnterpriseServer
             return DataProvider.CanUserChangeMfa(currentUserId, changeUserId, canPeerChangeMfa);
         }
 
-        public static UserInfo GetUserByUsernamePassword(string username, string password, string ip)
+        public UserInfo GetUserByUsernamePassword(string username, string password, string ip)
         {
             // place log record
             // TaskManager create backgroundtasklogs in db and them immediately remove and move them into auditlog (if it is a short task).
@@ -322,7 +322,7 @@ namespace SolidCP.EnterpriseServer
             //}
         }
 
-        public static int ChangeUserPassword(string username, string oldPassword, string newPassword, string ip)
+        public int ChangeUserPassword(string username, string oldPassword, string newPassword, string ip)
         {
             // place log record
             TaskManager.StartTask("USER", "CHANGE_PASSWORD_BY_USERNAME_PASSWORD", username);
@@ -353,7 +353,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int SendPasswordReminder(string username, string ip)
+        public int SendPasswordReminder(string username, string ip)
         {
             // place log record
             TaskManager.StartTask("USER", "SEND_REMINDER", username);
@@ -418,7 +418,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int SendVerificationCode(string username)
+        public int SendVerificationCode(string username)
         {
             // place log record
             TaskManager.StartTask("USER", "SEND_VERIFICATION_CODE", username);
@@ -478,27 +478,27 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        internal static UserInfoInternal GetUserInternally(int userId)
+        internal UserInfoInternal GetUserInternally(int userId)
         {
             return GetUser(DataProvider.GetUserByIdInternally(userId));
         }
 
-        internal static UserInfoInternal GetUserInternally(string username)
+        internal UserInfoInternal GetUserInternally(string username)
         {
             return GetUser(DataProvider.GetUserByUsernameInternally(username));
         }
 
-        public static UserInfoInternal GetUser(int userId)
+        public UserInfoInternal GetUser(int userId)
         {
             return GetUser(DataProvider.GetUserById(SecurityContext.User.UserId, userId));
         }
 
-        public static UserInfoInternal GetUser(string username)
+        public UserInfoInternal GetUser(string username)
         {
             return GetUser(DataProvider.GetUserByUsername(SecurityContext.User.UserId, username));
         }
 
-        private static UserInfoInternal GetUser(IDataReader reader)
+        private UserInfoInternal GetUser(IDataReader reader)
         {
             // try to get user from database
             UserInfoInternal user = ObjectUtils.FillObjectFromDataReader<UserInfoInternal>(reader);
@@ -511,7 +511,7 @@ namespace SolidCP.EnterpriseServer
             return user;
         }
 
-        public static List<UserInfo> GetUserParents(int userId)
+        public List<UserInfo> GetUserParents(int userId)
         {
             // get users from database
             DataSet dsUsers = DataProvider.GetUserParents(SecurityContext.User.UserId, userId);
@@ -522,7 +522,7 @@ namespace SolidCP.EnterpriseServer
             return users;
         }
 
-        public static List<UserInfo> GetUsers(int userId, bool recursive)
+        public List<UserInfo> GetUsers(int userId, bool recursive)
         {
             // get users from database
             DataSet dsUsers = DataProvider.GetUsers(SecurityContext.User.UserId, userId, recursive);
@@ -533,7 +533,7 @@ namespace SolidCP.EnterpriseServer
             return users;
         }
 
-        public static DataSet GetUsersPaged(int userId, string filterColumn, string filterValue,
+        public DataSet GetUsersPaged(int userId, string filterColumn, string filterValue,
             int statusId, int roleId,
             string sortColumn, int startRow, int maximumRows)
         {
@@ -542,7 +542,7 @@ namespace SolidCP.EnterpriseServer
                 filterColumn, filterValue, statusId, roleId, sortColumn, startRow, maximumRows, false);
         }
 
-        public static DataSet GetUsersPagedRecursive(int userId, string filterColumn, string filterValue,
+        public DataSet GetUsersPagedRecursive(int userId, string filterColumn, string filterValue,
             int statusId, int roleId,
             string sortColumn, int startRow, int maximumRows)
         {
@@ -551,12 +551,12 @@ namespace SolidCP.EnterpriseServer
                 filterColumn, filterValue, statusId, roleId, sortColumn, startRow, maximumRows, true);
         }
 
-        public static DataSet GetUsersSummary(int userId)
+        public DataSet GetUsersSummary(int userId)
         {
             return DataProvider.GetUsersSummary(SecurityContext.User.UserId, userId);
         }
 
-        public static DataSet GetUserDomainsPaged(int userId, string filterColumn, string filterValue,
+        public DataSet GetUserDomainsPaged(int userId, string filterColumn, string filterValue,
             string sortColumn, int startRow, int maximumRows)
         {
             // get users from database
@@ -564,25 +564,25 @@ namespace SolidCP.EnterpriseServer
                 filterColumn, filterValue, sortColumn, startRow, maximumRows);
         }
 
-        public static List<UserInfo> GetUserPeers(int userId)
+        public List<UserInfo> GetUserPeers(int userId)
         {
             // get user peers from database
             return ObjectUtils.CreateListFromDataSet<UserInfo>(GetRawUserPeers(userId));
         }
 
-        public static DataSet GetRawUserPeers(int userId)
+        public DataSet GetRawUserPeers(int userId)
         {
             // get user peers from database
             return DataProvider.GetUserPeers(SecurityContext.User.UserId, userId);
         }
 
-        public static DataSet GetRawUsers(int ownerId, bool recursive)
+        public DataSet GetRawUsers(int ownerId, bool recursive)
         {
             // get users from database
             return DataProvider.GetUsers(SecurityContext.User.UserId, ownerId, recursive);
         }
 
-        public static int AddUser(UserInfo user, bool sendLetter, string password, string[] notes)
+        public int AddUser(UserInfo user, bool sendLetter, string password, string[] notes)
         {
             int userId = AddUser(user, sendLetter, password);
 
@@ -605,7 +605,7 @@ namespace SolidCP.EnterpriseServer
             return userId;
         }
 
-        public static int AddUser(UserInfo user, bool sendLetter, string password)
+        public int AddUser(UserInfo user, bool sendLetter, string password)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -693,7 +693,7 @@ namespace SolidCP.EnterpriseServer
 
         const string userAdditionalParamsTemplate = @"<Params><VLans/></Params>";
 
-        public static void AddUserVLan(int userId, UserVlan vLan)
+        public void AddUserVLan(int userId, UserVlan vLan)
         {
             UserInfo user = GetUser(userId);
             //
@@ -708,7 +708,7 @@ namespace SolidCP.EnterpriseServer
             UpdateUser(user);
         }
 
-        public static void DeleteUserVLan(int userId, ushort vLanId)
+        public void DeleteUserVLan(int userId, ushort vLanId)
         {
             UserInfo user = GetUser(userId);
             //
@@ -726,12 +726,12 @@ namespace SolidCP.EnterpriseServer
             UpdateUser(user);
         }
 
-        public static int UpdateUser(UserInfo user)
+        public int UpdateUser(UserInfo user)
         {
             return UpdateUser(null, user);
         }
 
-        public static int UpdateUserAsync(string taskId, UserInfo user)
+        public int UpdateUserAsync(string taskId, UserInfo user)
         {
             UserAsyncWorker usersWorker = new UserAsyncWorker();
             usersWorker.ThreadUserId = SecurityContext.User.UserId;
@@ -741,7 +741,7 @@ namespace SolidCP.EnterpriseServer
             return 0;
         }
 
-        public static int UpdateUser(string taskId, UserInfo user)
+        public int UpdateUser(string taskId, UserInfo user)
         {
             try
             {
@@ -830,12 +830,12 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int DeleteUser(int userId)
+        public int DeleteUser(int userId)
         {
             return DeleteUser(null, userId);
         }
 
-        public static int DeleteUser(string taskId, int userId)
+        public int DeleteUser(string taskId, int userId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -854,7 +854,7 @@ namespace SolidCP.EnterpriseServer
             return 0;
         }
 
-        public static int ChangeUserPassword(int userId, string password)
+        public int ChangeUserPassword(int userId, string password)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -884,12 +884,12 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int ChangeUserStatus(int userId, UserStatus status)
+        public int ChangeUserStatus(int userId, UserStatus status)
         {
             return ChangeUserStatus(null, userId, status);
         }
 
-        public static int ChangeUserStatus(string taskId, int userId, UserStatus status)
+        public int ChangeUserStatus(string taskId, int userId, UserStatus status)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -980,7 +980,7 @@ namespace SolidCP.EnterpriseServer
             public string ServerUrl { get; set; }
         }
 
-        public static IEnumerable<string> GetUserPackagesServerUrls(int userId)
+        public IEnumerable<string> GetUserPackagesServerUrls(int userId)
         {
             var urlbags = new List<ServerUrlBag>();
             ObjectUtils.FillCollectionFromDataReader<ServerUrlBag>(urlbags, DataProvider.GetUserPackagesServerUrls(userId));
@@ -988,7 +988,7 @@ namespace SolidCP.EnterpriseServer
                 .Select(bag => CryptoUtils.DecryptServerUrl(bag.ServerUrl));
         }
 
-        private static int ChangeUserStatusInternal(int userId, UserStatus status)
+        private int ChangeUserStatusInternal(int userId, UserStatus status)
         {
             // get user details
             UserInfo user = GetUser(userId);
@@ -1005,7 +1005,7 @@ namespace SolidCP.EnterpriseServer
         }
 
         #region User Settings
-        public static UserSettings GetUserSettings(int userId, string settingsName)
+        public UserSettings GetUserSettings(int userId, string settingsName)
         {
             IDataReader reader = DataProvider.GetUserSettings(
                 SecurityContext.User.UserId, userId, settingsName);
@@ -1024,7 +1024,7 @@ namespace SolidCP.EnterpriseServer
             return settings;
         }
 
-        public static int UpdateUserSettings(UserSettings settings)
+        public int UpdateUserSettings(UserSettings settings)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -1076,17 +1076,17 @@ namespace SolidCP.EnterpriseServer
 
         #region Themes
 
-        public static DataSet GetUserThemeSettings(int userId)
+        public DataSet GetUserThemeSettings(int userId)
         {
             return DataProvider.GetUserThemeSettings(SecurityContext.User.UserId, userId);
         }
 
-        public static void UpdateUserThemeSetting(int userId, string PropertyName, string PropertyValue)
+        public void UpdateUserThemeSetting(int userId, string PropertyName, string PropertyValue)
         {
             DataProvider.UpdateUserThemeSetting(SecurityContext.User.UserId, userId, PropertyName, PropertyValue);
         }
 
-        public static void DeleteUserThemeSetting(int userId, string PropertyName)
+        public void DeleteUserThemeSetting(int userId, string PropertyName)
         {
             DataProvider.DeleteUserThemeSetting(SecurityContext.User.UserId, userId, PropertyName);
         }

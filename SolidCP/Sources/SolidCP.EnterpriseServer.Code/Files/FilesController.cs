@@ -52,7 +52,7 @@ namespace SolidCP.EnterpriseServer
 {
     public class FilesController: ControllerBase
     {
-        public FilesController(WebServiceBase provider) : base(provider) { }
+        public FilesController(ControllerBase provider) : base(provider) { }
 
         public SystemSettings GetFileManagerSettings()
         {
@@ -759,7 +759,7 @@ namespace SolidCP.EnterpriseServer
                 prms.UserId = SecurityContext.User.UserId;
                 prms.Parameters = new object[] { packageId };
 
-                Thread t = new Thread(new ParameterizedThreadStart(CalculatePackageDiskspaceAsync));
+                Thread t = new Thread(new ParameterizedThreadStart(par => AsAsync<FilesController>().CalculatePackageDiskspaceAsync(par)));
                 t.Start(prms);
                 return 0;
 

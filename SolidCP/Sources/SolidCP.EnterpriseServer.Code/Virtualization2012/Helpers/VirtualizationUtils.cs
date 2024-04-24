@@ -10,18 +10,20 @@ using System.Threading.Tasks;
 
 namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers
 {    
-    public static class VirtualizationUtils
+    public class VirtualizationUtils: ControllerBase
     {
         public const Int64 Size1G = 0x40000000;
 
         private const string SCP_HOSTNAME_PREFIX = "SCP-"; //min and max are 4 symbols! ([0-9][A-z] and -)
 
-        public static string GetHyperVConfigurationVersionFromSettings(StringDictionary settings)
+        public VirtualizationUtils(ControllerBase provider) : base(provider) { }
+
+        public string GetHyperVConfigurationVersionFromSettings(StringDictionary settings)
         {
             return string.IsNullOrEmpty(settings["HyperVConfigurationVersion"]) ? "0.0" : settings["HyperVConfigurationVersion"];
         }
 
-        public static string GetCorrectVmRootFolderPath(StringDictionary settings, ServiceProviderItem vm)
+        public string GetCorrectVmRootFolderPath(StringDictionary settings, ServiceProviderItem vm)
         {
             string rootFolderPattern = settings["RootFolder"];
             if (rootFolderPattern.IndexOf("[") == -1)
@@ -32,7 +34,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers
                 rootFolderPattern += "[username]\\[vps_hostname]";
             }
 
-            string rootFolderPath = VirtualizationUtils.EvaluateItemVariables(rootFolderPattern, vm);
+            string rootFolderPath = EvaluateItemVariables(rootFolderPattern, vm);
             if (!rootFolderPath.EndsWith(vm.Name))  //we must be sure that Path ends with vm.Name (hostname)!
             {
                 rootFolderPath = Path.Combine(rootFolderPath, vm.Name);
@@ -40,7 +42,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers
             return rootFolderPath;
         }
 
-        public static string[] GetCorrectVmVirtualHardDrivePaths(int hddNumber, string vmName, string rootFolderPath, string vhdExtension)
+        public string[] GetCorrectVmVirtualHardDrivePaths(int hddNumber, string vmName, string rootFolderPath, string vhdExtension)
         {
             //var correctVhdPath = correctVhdPathOfTemplatesPathAndosTemplateFile;
             //string msHddHyperVFolderName = "Virtual Hard Disks\\" + vm.Name;
@@ -58,19 +60,19 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers
             return virtualHardDrivePath;
         }
 
-        public static string GetCorrectTemplateFilePath(string templatesPath, string osTemplateFile)
+        public string GetCorrectTemplateFilePath(string templatesPath, string osTemplateFile)
         {
             return Path.Combine(templatesPath, osTemplateFile);
         }
 
-        public static string EvaluateItemVariables(string str, ServiceProviderItem item)
+        public string EvaluateItemVariables(string str, ServiceProviderItem item)
         {
             str = Utils.ReplaceStringVariable(str, "vps_hostname", item.Name);
 
             return EvaluateSpaceVariables(str, item.PackageId);
         }
 
-        public static string EvaluateSpaceVariables(string str, int packageId)
+        public string EvaluateSpaceVariables(string str, int packageId)
         {
             // load package
             PackageInfo package = PackageController.GetPackage(packageId);
@@ -91,7 +93,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers
             return EvaluateRandomSymbolsVariables(str);
         }
 
-        public static string EvaluateRandomSymbolsVariables(string str)
+        public string EvaluateRandomSymbolsVariables(string str)
         {
             str = Utils.ReplaceStringVariable(str, "guid", Guid.NewGuid().ToString("N"));
             str = Utils.ReplaceStringVariable(str, "mac", NetworkHelper.GenerateMacAddress());
@@ -99,17 +101,17 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers
 
             return str;
         }
-        public static string GenerateFakeNetBIOS()
+        public string GenerateFakeNetBIOS()
         {
             return SCP_HOSTNAME_PREFIX + Utils.GetRandomString(11);
         }
 
-        public static string GetIPv4LastOctetsFromPackage(ushort octets, int packageId)
+        public string GetIPv4LastOctetsFromPackage(ushort octets, int packageId)
         {
             return GetIPv4LastOctetsFromPackage(octets, packageId, null);
         }
 
-        public static string GetIPv4LastOctetsFromPackage(ushort octets, int packageId, PackageIPAddress[] ips)
+        public string GetIPv4LastOctetsFromPackage(ushort octets, int packageId, PackageIPAddress[] ips)
         {
             int maxItems = 1;
             string ExternalIP = "127.0.0.1"; //just a default IP

@@ -48,7 +48,7 @@ namespace SolidCP.EnterpriseServer
 	/// <summary>
 	/// Summary description for ConfigSettings.
 	/// </summary>
-	public class WebAppGalleryController
+	public class WebAppGalleryController: ControllerBase
 	{
 		#region Constants
 		public const string NO_DB_PARAMETER_MATCHES_MSG = "Could not match the parameter by either the following {0} {1}. Please check parameters.xml file within the application package.";
@@ -64,9 +64,11 @@ namespace SolidCP.EnterpriseServer
 		public const string GET_SRV_GALLERY_APPS_TASK = "GET_SRV_GALLERY_APPS_TASK";
 		public const string GET_GALLERY_APP_DETAILS_TASK = "GET_GALLERY_APP_DETAILS_TASK";
 		public const string GET_GALLERY_CATEGORIES_TASK = "GET_GALLERY_CATEGORIES_TASK";
-		#endregion
+        #endregion
 
-        private static string[] getFeedsFromSettings(int packageId)
+        public WebAppGalleryController(ControllerBase provider) : base(provider) { }
+
+        private string[] getFeedsFromSettings(int packageId)
         {
             int serviceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.Web);
 
@@ -74,7 +76,7 @@ namespace SolidCP.EnterpriseServer
 
         }
 
-        private static string[] getFeedsFromSettingsByServiceId(int serviceId)
+        private string[] getFeedsFromSettingsByServiceId(int serviceId)
         {
             var wpiSettings = SystemController.GetSystemSettingsInternal(SystemSettings.WPI_SETTINGS,false);
 
@@ -103,7 +105,7 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        public static void InitFeedsByServiceId(int UserId, int serviceId)
+        public void InitFeedsByServiceId(int UserId, int serviceId)
         {
             string[] feeds = getFeedsFromSettingsByServiceId(serviceId);
 
@@ -113,7 +115,7 @@ namespace SolidCP.EnterpriseServer
         
 
 
-        public static void InitFeeds(int UserId, int packageId)
+        public void InitFeeds(int UserId, int packageId)
         {
             string[] feeds = getFeedsFromSettings(packageId);
             
@@ -123,13 +125,13 @@ namespace SolidCP.EnterpriseServer
 
         }
 
-        public static void SetResourceLanguage(int packageId, string resourceLanguage)
+        public void SetResourceLanguage(int packageId, string resourceLanguage)
         {
             GetAssociatedWebServer(packageId).SetResourceLanguage(SecurityContext.User.UserId,resourceLanguage);
         }
 
       
-        public static GalleryLanguagesResult GetGalleryLanguages(int packageId)
+        public GalleryLanguagesResult GetGalleryLanguages(int packageId)
         {
             GalleryLanguagesResult result;
 
@@ -153,7 +155,7 @@ namespace SolidCP.EnterpriseServer
 
         }
 
-		public static GalleryCategoriesResult GetGalleryCategories(int packageId)
+		public GalleryCategoriesResult GetGalleryCategories(int packageId)
 		{
 			GalleryCategoriesResult result;
 			//
@@ -189,7 +191,7 @@ namespace SolidCP.EnterpriseServer
 			return result;
 		}
 
-		public static GalleryApplicationsResult GetGalleryApplicationsByServiceId(int serviceId)
+		public GalleryApplicationsResult GetGalleryApplicationsByServiceId(int serviceId)
 		{
 			GalleryApplicationsResult result;
 			//
@@ -226,7 +228,7 @@ namespace SolidCP.EnterpriseServer
 			return result;
 		}
 
-        public static GalleryApplicationsResult GetGalleryApplications(int packageId, string categoryId)
+        public GalleryApplicationsResult GetGalleryApplications(int packageId, string categoryId)
 		{
 			GalleryApplicationsResult result;
 			//
@@ -302,7 +304,7 @@ namespace SolidCP.EnterpriseServer
 			return result;
 		}
 
-        private static void FilterResultApplications(int packageId, GalleryApplicationsResult result)
+        private void FilterResultApplications(int packageId, GalleryApplicationsResult result)
         {
             int userId = SecurityContext.User.UserId;
             //
@@ -339,7 +341,7 @@ namespace SolidCP.EnterpriseServer
             SecurityContext.SetThreadPrincipal(userId);
         }
 
-        public static GalleryApplicationsResult GetGalleryApplicationsFiltered(int packageId, string pattern)
+        public GalleryApplicationsResult GetGalleryApplicationsFiltered(int packageId, string pattern)
         {
             GalleryApplicationsResult result;
             //
@@ -376,7 +378,7 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-		internal static bool MatchParticularAppDependency(Dependency dependency, string[] dependencyIds)
+		internal bool MatchParticularAppDependency(Dependency dependency, string[] dependencyIds)
 		{
 			List<Dependency> nested = null;
 			// Web PI ver. 0.2
@@ -408,7 +410,7 @@ namespace SolidCP.EnterpriseServer
 			return false;
 		}
 
-		internal static bool MatchGalleryAppDependencies(Dependency dependency, string[] dependencyIds)
+		internal bool MatchGalleryAppDependencies(Dependency dependency, string[] dependencyIds)
 		{
 			List<Dependency> nested = null;
 			// Web PI ver. 0.2
@@ -454,7 +456,7 @@ namespace SolidCP.EnterpriseServer
 			return true;
 		}
 
-		public static GalleryApplicationResult GetGalleryApplicationDetails(int packageId, string applicationId)
+		public GalleryApplicationResult GetGalleryApplicationDetails(int packageId, string applicationId)
 		{
 			GalleryApplicationResult result;
 
@@ -566,7 +568,7 @@ namespace SolidCP.EnterpriseServer
 			return result;
 		}
 
-		public static DeploymentParametersResult GetGalleryApplicationParams(int packageId, string webAppId)
+		public DeploymentParametersResult GetGalleryApplicationParams(int packageId, string webAppId)
 		{
 			DeploymentParametersResult result = null;
 			//
@@ -598,7 +600,7 @@ namespace SolidCP.EnterpriseServer
 			return result;
 		}
 
-		public static StringResultObject Install(int packageId, string webAppId, string siteName, string virtualDir, List<DeploymentParameter> parameters, string languageId )
+		public StringResultObject Install(int packageId, string webAppId, string siteName, string virtualDir, List<DeploymentParameter> parameters, string languageId )
 		{
 			StringResultObject result = new StringResultObject();
 		    int originalUserId = SecurityContext.User.UserId;
@@ -923,7 +925,7 @@ namespace SolidCP.EnterpriseServer
             }
 		}
 
-        private static void AddDefaultDocument(WebAppVirtualDirectory iisApp, string document)
+        private void AddDefaultDocument(WebAppVirtualDirectory iisApp, string document)
         {
             // parse list
             List<string> documents = new List<string>();
@@ -938,7 +940,7 @@ namespace SolidCP.EnterpriseServer
             iisApp.DefaultDocs = String.Join(",", documents.ToArray());
         }
 
-		public static GalleryWebAppStatus GetGalleryApplicationStatus(int packageId, string webAppId)
+		public GalleryWebAppStatus GetGalleryApplicationStatus(int packageId, string webAppId)
 		{
 			try
 			{
@@ -973,14 +975,14 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		internal static WebServer GetAssociatedWebServer(int packageId)
+		internal WebServer GetAssociatedWebServer(int packageId)
 		{
 			int serviceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.Web);
 			//
 			return WebServerController.GetWebServer(serviceId);
 		}
 
-		internal static string[] GetServiceAppsCatalogFilter(int packageId)
+		internal string[] GetServiceAppsCatalogFilter(int packageId)
 		{
 			int serviceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.Web);
 			//
@@ -995,7 +997,7 @@ namespace SolidCP.EnterpriseServer
 				StringSplitOptions.RemoveEmptyEntries);
 		}
 
-		public static bool MatchParameterByNames(DeploymentParameter param, string[] namesMatches)
+		public bool MatchParameterByNames(DeploymentParameter param, string[] namesMatches)
 		{
 			foreach (string nameMatch in namesMatches)
 				if (MatchParameterName(param, nameMatch))
@@ -1004,17 +1006,17 @@ namespace SolidCP.EnterpriseServer
 			return false;
 		}
 
-        private static DeploymentParameter FindParameterByTag(List<DeploymentParameter> parameters, DeploymentParameterWellKnownTag tag)
+        private DeploymentParameter FindParameterByTag(List<DeploymentParameter> parameters, DeploymentParameterWellKnownTag tag)
         {
             return parameters.Find( p => { return (p.WellKnownTags & tag) == tag; });
         }
 
-        private static DeploymentParameter FindParameterByName(List<DeploymentParameter> parameters, string name)
+        private DeploymentParameter FindParameterByName(List<DeploymentParameter> parameters, string name)
         {
             return parameters.Find( p => { return String.Compare(p.Name, name, true) == 0; });
         }
 
-		public static bool MatchParameterName(DeploymentParameter param, string nameMatch)
+		public bool MatchParameterName(DeploymentParameter param, string nameMatch)
 		{
 			if (param == null || String.IsNullOrEmpty(nameMatch))
 				return false;
@@ -1026,27 +1028,27 @@ namespace SolidCP.EnterpriseServer
 		}
 
         #region Result object routines
-        private static T Warning<T>(params string[] messageParts)
+        private T Warning<T>(params string[] messageParts)
         {
             return Warning<T>(null, messageParts);
         }
 
-        private static T Warning<T>(ResultObject innerResult, params string[] messageParts)
+        private T Warning<T>(ResultObject innerResult, params string[] messageParts)
         {
             return Result<T>(innerResult, false, messageParts);
         }
 
-        private static T Error<T>(params string[] messageParts)
+        private T Error<T>(params string[] messageParts)
         {
             return Error<T>(null, messageParts);
         }
 
-        private static T Error<T>(ResultObject innerResult, params string[] messageParts)
+        private T Error<T>(ResultObject innerResult, params string[] messageParts)
         {
             return Result<T>(innerResult, true, messageParts);
         }
 
-        private static T Result<T>(ResultObject innerResult, bool isError, params string[] messageParts)
+        private T Result<T>(ResultObject innerResult, bool isError, params string[] messageParts)
         {
             object obj = Activator.CreateInstance<T>();
             ResultObject result = (ResultObject)obj;
@@ -1067,7 +1069,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 	}
 
-	public class WebAppGalleryAsyncWorker
+	public class WebAppGalleryAsyncWorker: ControllerAsyncBase
 	{
 		public int PackageId { get; set; }
 		public string WebAppId { get; set; }

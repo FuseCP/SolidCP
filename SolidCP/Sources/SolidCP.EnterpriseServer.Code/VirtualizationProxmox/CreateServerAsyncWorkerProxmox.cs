@@ -39,7 +39,7 @@ using SolidCP.Providers.Virtualization;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class CreateServerAsyncWorkerProxmox
+    public class CreateServerAsyncWorkerProxmox: ControllerAsyncBase
     {
         #region Properties
         public int ThreadUserId { get; set; }

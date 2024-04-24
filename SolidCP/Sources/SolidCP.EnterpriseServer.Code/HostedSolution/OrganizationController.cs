@@ -70,7 +70,8 @@ namespace SolidCP.EnterpriseServer
         public const string UseStorageSpaces = "UseStorageSpaces";
         private OrganizationFoldersManager foldersManager;
 
-        public OrganizationController(WebServiceBase provider): base(provider)
+        public OrganizationController() : this(null) { }
+        public OrganizationController(ControllerBase provider): base(provider)
         {
             foldersManager = new OrganizationFoldersManager(provider);
 

@@ -45,12 +45,11 @@ using SolidCP.EnterpriseServer.Code.HostedSolution;
 
 namespace SolidCP.EnterpriseServer.Code.HostedSolution
 {
-    public class SfBControllerAsync: ControllerBase
+    public class SfBControllerAsync: ControllerAsyncBase
     {
         private int sfbServiceId;
         private int organizationServiceId;
 
-        public SfBControllerAsync(WebServiceBase provider) : base(provider) { }
         public int SfBServiceId
         {
             get { return this.sfbServiceId; }
@@ -94,10 +93,6 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
                     continue;
                 }
             }
-
-
         }
-
-
     }
 }

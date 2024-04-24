@@ -39,13 +39,13 @@ using System.Text;
 namespace SolidCP.EnterpriseServer
 {
 	/// <summary>
-	/// Represents base class for task objects intended for scheduling.
+	/// Represents base type for task objects intended for scheduling.
 	/// </summary>
-    public abstract class SchedulerTask
+    public interface ISchedulerTask
     {
 		/// <summary>
 		/// When overridden performs actual action.
 		/// </summary>
-        public abstract void DoWork();
+        void DoWork();
     }
 }

@@ -7,11 +7,13 @@ using System.Threading.Tasks;
 
 namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
 {
-    public static class NetworkVLANHelper
+    public class NetworkVLANHelper: ControllerBase
     {
         private const int DEFAULT_VLAN = 0;
 
-        public static int GetExternalNetworkVLAN(int itemId)
+        public NetworkVLANHelper(ControllerBase provider) : base(provider) { }
+
+        public int GetExternalNetworkVLAN(int itemId)
         {
             int adaptervlan = DEFAULT_VLAN;
             VirtualMachine vm = null;

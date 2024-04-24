@@ -54,7 +54,7 @@ namespace SolidCP.EnterpriseServer
     {
         private const int FILE_BUFFER_LENGTH = 5000000; // ~5MB
 
-        public DatabaseServerController(WebServiceBase provider) : base(provider) { }
+        public DatabaseServerController(ControllerBase provider) : base(provider) { }
         public DatabaseServer GetDatabaseServer(int serviceId)
         {
             DatabaseServer db = new DatabaseServer();

@@ -46,7 +46,7 @@ namespace SolidCP.EnterpriseServer
 {
     public class CRMController: ControllerBase
     {
-        public CRMController(WebServiceBase provider) : base(provider) { }
+        public CRMController(ControllerBase provider) : base(provider) { }
 
         private CRM GetCRMProxy(int packageId)
         {

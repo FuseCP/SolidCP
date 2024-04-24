@@ -15,9 +15,11 @@ using System.Threading.Tasks;
 
 namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Tasks
 {
-    internal class CreateVirtualMachineTask
+    public class CreateVirtualMachineTask: ControllerBase
     {
-        internal static void CreateVirtualMachineNewTask(string taskId, VirtualMachine vm, LibraryItem osTemplate,
+        public CreateVirtualMachineTask(ControllerBase provider) : base(provider) { }
+
+        internal void CreateVirtualMachineNewTask(string taskId, VirtualMachine vm, LibraryItem osTemplate,
                 int externalAddressesNumber, bool randomExternalAddresses, int[] externalAddresses,
                 int privateAddressesNumber, bool randomPrivateAddresses, string[] privateAddresses,
                 string summaryLetterEmail)
@@ -34,7 +36,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Tasks
             TaskManager.CompleteTask();
         }
 
-        internal static void CreateVirtualMachineContinueTask(string taskId, VirtualMachine vm, LibraryItem osTemplate,
+        internal void CreateVirtualMachineContinueTask(string taskId, VirtualMachine vm, LibraryItem osTemplate,
                 int externalAddressesNumber, bool randomExternalAddresses, int[] externalAddresses,
                 int privateAddressesNumber, bool randomPrivateAddresses, string[] privateAddresses,
                 string summaryLetterEmail)
@@ -54,7 +56,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Tasks
 
 
         #region Create
-        private static void CreateVirtualMachineInternal(string taskId, VirtualMachine vm, LibraryItem osTemplate,
+        private void CreateVirtualMachineInternal(string taskId, VirtualMachine vm, LibraryItem osTemplate,
                 int externalAddressesNumber, bool randomExternalAddresses, int[] externalAddresses,
                 int privateAddressesNumber, bool randomPrivateAddresses, string[] privateAddresses,
                 string summaryLetterEmail)
