@@ -39,7 +39,7 @@ namespace SolidCP.EnterpriseServer
 		protected WebApplicationsInstaller WebApplicationsInstaller => webApplicationsInstaller ?? (webApplicationsInstaller = new WebApplicationsInstaller(this));
 
 		AuditLog auditLog = null;
-		protected AuditLog AuditLog => auditLog ?? Provider.AuditLog ?? (auditLog = new AuditLog(this));
+		protected AuditLog AuditLog => auditLog ?? (auditLog = new AuditLog(this));
 
 		BackupController backupController = null;
 		protected BackupController BackupController => backupController ?? (backupController = new BackupController(this));
