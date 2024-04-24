@@ -12,6 +12,9 @@ namespace SolidCP.EnterpriseServer.Data
 {
     public partial class DbContext: IDisposable
 	{
+
+        public const bool UseStoredProcedures = true;
+
         static string connectionString = null;
         public string ConnectionString
         {
@@ -87,6 +90,12 @@ namespace SolidCP.EnterpriseServer.Data
 #endif
 		}
 
+        public bool IsMsSql => DbType == DbType.MsSql;
+        public bool IsMySql => DbType == DbType.MySql;
+        public bool IsSqlite => DbType == DbType.Sqlite;
+        public bool IsPostgreSql => DbType == DbType.PostgreSql;
+        public bool IsMariaDb => DbType == DbType.MariaDb;
+        public bool HasProcedures => IsMsSql && UseStoredProcedures;
 
         public int SaveChanges() => BaseContext.SaveChanges();
         public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken)) => BaseContext.SaveChangesAsync(cancellationToken);

@@ -57,7 +57,11 @@ namespace SolidCP.EnterpriseServer
 	/// </summary>
 	public class DataProvider: Data.DbContext
 	{
-
+#if UseEntityFramework
+		public readonly bool UseEntityFramework = true;
+#else
+		public bool UseEntityFramework => !IsMsSql || !HasProcedures;
+#endif
 		ControllerBase Provider;
 		ServerController serverController;
 		protected ServerController ServerController => serverController ?? (serverController = new ServerController(Provider));

@@ -72,7 +72,7 @@ namespace SolidCP.EnterpriseServer
 		{
 			// create settings object
 			SystemSettings settings = new SystemSettings();
-
+			
 			// get service settings
 			IDataReader reader = null;
 
@@ -91,8 +91,6 @@ namespace SolidCP.EnterpriseServer
 
 					settings[name] = val;
 				}
-
-
 			}
 			finally
 			{

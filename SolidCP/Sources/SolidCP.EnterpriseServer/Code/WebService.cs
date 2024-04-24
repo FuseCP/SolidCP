@@ -1,4 +1,4 @@
-﻿namespace SolidCP.EnterpriseServer.Code
+﻿namespace SolidCP.EnterpriseServer
 {
 	public class WebService: ControllerBase
 	{

@@ -6,7 +6,8 @@
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <UseSkia>true</UseSkia>
-        <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
+		<UseEntityFramework>true</UseEntityFramework>
+		<IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(TargetFramework)' == 'net48'">
@@ -24,8 +25,12 @@
     <PropertyGroup Condition="'$(UseSkia)' == 'true'">
         <DefineConstants>$(DefineConstants);UseSkia</DefineConstants>
     </PropertyGroup>
-    
-    <ItemGroup>
+
+	<PropertyGroup Condition="'$(UseEntityFramework)' == 'true'">
+		<DefineConstants>$(DefineConstants);UseEntityFramework</DefineConstants>
+	</PropertyGroup>
+
+	<ItemGroup>
         <PackageReference Include="DotNetZip.NetStandard" Version="1.12.0" />
         <PackageReference Include="GoogleAuthenticator" Version="3.2.0" />
         <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />

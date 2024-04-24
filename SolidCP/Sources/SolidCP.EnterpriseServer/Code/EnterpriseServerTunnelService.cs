@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.DirectoryServices;
 using SolidCP.Providers;
 using SolidCP.Providers.OS;
+using SolidCP.Providers.Virtualization;
 using SolidCP.EnterpriseServer;
 using SolidCP.Server.Client;
 
@@ -14,6 +15,11 @@ namespace SolidCP.EnterpriseServer
 {
     public class EnterpriseServerTunnelService: EnterpriseServerTunnelServiceBase
     {
+        Controllers Controllers = new Controllers();
+        PackageController PackageController => Controllers.PackageController;
+        ServerController ServerController => Controllers.ServerController;
+        UserController UserController => Controllers.UserController;
+
         static string cryptoKey = null;
         public override string CryptoKey => cryptoKey ?? (cryptoKey = Cryptor.SHA256($"{CryptoUtils.CryptoKey}{DateTime.Now.Ticks}"));
 
@@ -61,6 +67,7 @@ namespace SolidCP.EnterpriseServer
             
             var serverSettings = new RemoteServerSettings();
             serverSettings.ADEnabled = server.ADEnabled;
+            // TODO support AutheticationTypes on Linux
             serverSettings.ADAuthenticationType = AuthenticationTypes.Secure;
 
             AuthenticationTypes adAuthenticationType;
