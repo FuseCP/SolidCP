@@ -47,7 +47,7 @@ namespace SolidCP.EnterpriseServer
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [Policy("EnterpriseServerPolicy")]
     [ToolboxItem(false)]
-    public class esTasks
+    public class esTasks: WebService
     {
         [WebMethod]
         public BackgroundTask GetTask(string taskId)

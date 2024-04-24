@@ -43,12 +43,14 @@ using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class PackageAsyncWorker
+    public class PackageAsyncWorker : ControllerBase
     {
         private int userId = -1;
         private List<PackageInfo> packages = new List<PackageInfo>();
         private PackageStatus itemsStatus = PackageStatus.Active;
 
+        public PackageAsyncWorker(ControllerBase provider) : base(provider) { }
+        
         #region Public properties
         public int UserId
         {

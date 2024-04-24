@@ -61,12 +61,14 @@ using SolidCP.Providers.ResultObjects;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class ExchangeServerController
+    public class ExchangeServerController: ControllerBase
     {
         public const int MAX_THUMBNAILPHOTO_SIZE = 96;
 
+        public ExchangeServerController(WebServiceBase db): base(db) { }
+
         #region Organizations
-        public static DataSet GetRawExchangeOrganizationsPaged(int packageId, bool recursive,
+        public DataSet GetRawExchangeOrganizationsPaged(int packageId, bool recursive,
             string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             #region Demo Mode
@@ -101,7 +103,7 @@ namespace SolidCP.EnterpriseServer
                 recursive, filterColumn, filterValue, sortColumn, startRow, maximumRows);
         }
 
-        public static OrganizationsPaged GetExchangeOrganizationsPaged(int packageId, bool recursive,
+        public OrganizationsPaged GetExchangeOrganizationsPaged(int packageId, bool recursive,
             string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             ServiceItemsPaged items = PackageController.GetPackageItemsPaged(
@@ -118,7 +120,7 @@ namespace SolidCP.EnterpriseServer
             return orgs;
         }
 
-        public static List<Organization> GetExchangeOrganizations(int packageId, bool recursive)
+        public List<Organization> GetExchangeOrganizations(int packageId, bool recursive)
         {
             List<ServiceProviderItem> items = PackageController.GetPackageItemsByType(
                 packageId, typeof(Organization), recursive);
@@ -128,7 +130,7 @@ namespace SolidCP.EnterpriseServer
                 delegate (ServiceProviderItem item) { return (Organization)item; }));
         }
 
-        public static List<Organization> GetExchangeOrganizationsInternal(int packageId, bool recursive)
+        public List<Organization> GetExchangeOrganizationsInternal(int packageId, bool recursive)
         {
             List<ServiceProviderItem> items = PackageController.GetPackageItemsByTypeInternal(packageId, null, typeof(Organization), recursive);
 
@@ -137,7 +139,7 @@ namespace SolidCP.EnterpriseServer
                 delegate (ServiceProviderItem item) { return (Organization)item; }));
         }
 
-        public static Organization GetOrganization(int itemId, bool withLog = true)
+        public Organization GetOrganization(int itemId, bool withLog = true)
         {
             #region Demo Mode
             if (IsDemoMode)
@@ -167,18 +169,18 @@ namespace SolidCP.EnterpriseServer
             return org;
         }
 
-        public static OrganizationStatistics GetOrganizationStatistics(int itemId)
+        public OrganizationStatistics GetOrganizationStatistics(int itemId)
         {
             return GetOrganizationStatisticsInternal(itemId, false);
         }
 
-        public static OrganizationStatistics GetOrganizationStatisticsByOrganization(int itemId)
+        public OrganizationStatistics GetOrganizationStatisticsByOrganization(int itemId)
         {
             return GetOrganizationStatisticsInternal(itemId, true);
         }
 
 
-        private static OrganizationStatistics GetOrganizationStatisticsInternal(int itemId, bool byOrganization)
+        private OrganizationStatistics GetOrganizationStatisticsInternal(int itemId, bool byOrganization)
         {
             #region Demo Mode
             if (IsDemoMode)
@@ -316,7 +318,7 @@ namespace SolidCP.EnterpriseServer
 
 
 
-        public static int CalculateOrganizationDiskspace(int itemId)
+        public int CalculateOrganizationDiskspace(int itemId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -347,7 +349,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        private static void CalculateOrganizationDiskspaceAsync(object objPrms)
+        private void CalculateOrganizationDiskspaceAsync(object objPrms)
         {
             ThreadStartParameters prms = (ThreadStartParameters)objPrms;
 
@@ -360,7 +362,7 @@ namespace SolidCP.EnterpriseServer
             CalculateOrganizationDiskspaceInternal(itemId);
         }
 
-        internal static void CalculateOrganizationDiskspaceInternal(int itemId)
+        internal void CalculateOrganizationDiskspaceInternal(int itemId)
         {
             try
             {
@@ -398,7 +400,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        private static bool OrganizationIdentifierExists(string organizationId)
+        private bool OrganizationIdentifierExists(string organizationId)
         {
             return DataProvider.ExchangeOrganizationExists(organizationId);
         }
@@ -407,7 +409,7 @@ namespace SolidCP.EnterpriseServer
 
 
 
-        private static int ExtendToExchangeOrganization(ref Organization org)
+        private int ExtendToExchangeOrganization(ref Organization org)
         {
             // place log record
             TaskManager.StartTask("EXCHANGE", "CREATE_ORG", org.Name, new BackgroundTaskParameter("Organization ID", org.OrganizationId));
@@ -615,7 +617,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        private static int[] ParseMultiSetting(int mailboxServiceId, string settingName)
+        private int[] ParseMultiSetting(int mailboxServiceId, string settingName)
         {
             List<int> retIds = new List<int>();
             StringDictionary settings = ServerController.GetServiceSettings(mailboxServiceId);
@@ -638,7 +640,7 @@ namespace SolidCP.EnterpriseServer
 
         }
 
-        private static void GetExchangeServices(int mailboxServiceId,
+        private void GetExchangeServices(int mailboxServiceId,
             out int[] hubTransportServiceIds, out int[] clientAccessServiceIds)
         {
             hubTransportServiceIds = ParseMultiSetting(mailboxServiceId, "HubTransportServiceID");
@@ -646,7 +648,7 @@ namespace SolidCP.EnterpriseServer
             clientAccessServiceIds = ParseMultiSetting(mailboxServiceId, "ClientAccessServiceID");
         }
 
-        public static int DeleteOrganization(int itemId)
+        public int DeleteOrganization(int itemId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -720,7 +722,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static Organization GetOrganizationStorageLimits(int itemId)
+        public Organization GetOrganizationStorageLimits(int itemId)
         {
             // place log record
             TaskManager.StartTask("EXCHANGE", "GET_ORG_LIMITS", itemId);
@@ -739,7 +741,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int SetOrganizationStorageLimits(int itemId, int issueWarningKB, int prohibitSendKB,
+        public int SetOrganizationStorageLimits(int itemId, int issueWarningKB, int prohibitSendKB,
             int prohibitSendReceiveKB, int keepDeletedItemsDays, bool applyToMailboxes)
         {
             // check account
@@ -802,7 +804,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static ExchangeItemStatistics[] GetMailboxesStatistics(int itemId)
+        public ExchangeItemStatistics[] GetMailboxesStatistics(int itemId)
         {
             #region Demo Mode
             if (IsDemoMode)
@@ -862,7 +864,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static ExchangeMailboxStatistics GetMailboxStatistics(int itemId, int accountId)
+        public ExchangeMailboxStatistics GetMailboxStatistics(int itemId, int accountId)
         {
             // place log record
             TaskManager.StartTask("EXCHANGE", "GET_MAILBOX_STATS", itemId);
@@ -894,7 +896,7 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        public static ExchangeItemStatistics[] GetPublicFoldersStatistics(int itemId)
+        public ExchangeItemStatistics[] GetPublicFoldersStatistics(int itemId)
         {
             #region Demo Mode
             if (IsDemoMode)
@@ -958,7 +960,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static ExchangeActiveSyncPolicy GetActiveSyncPolicy(int itemId)
+        public ExchangeActiveSyncPolicy GetActiveSyncPolicy(int itemId)
         {
             #region Demo Mode
             if (IsDemoMode)
@@ -1015,7 +1017,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int SetActiveSyncPolicy(int itemId, bool allowNonProvisionableDevices,
+        public int SetActiveSyncPolicy(int itemId, bool allowNonProvisionableDevices,
                 bool attachmentsEnabled, int maxAttachmentSizeKB, bool uncAccessEnabled, bool wssAccessEnabled,
                 bool devicePasswordEnabled, bool alphanumericPasswordRequired, bool passwordRecoveryEnabled,
                 bool deviceEncryptionEnabled, bool allowSimplePassword, int maxPasswordFailedAttempts, int minPasswordLength,
@@ -1077,12 +1079,12 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        private static void UpdateOrganization(Organization organization)
+        private void UpdateOrganization(Organization organization)
         {
             PackageController.UpdatePackageItem(organization);
         }
 
-        public static int GetExchServiceId(int? itemId)
+        public int GetExchServiceId(int? itemId)
         {
             int serviceId = -1;
 
@@ -1105,12 +1107,12 @@ namespace SolidCP.EnterpriseServer
 
         #region Accounts
 
-        private static bool AccountExists(string accountName)
+        private bool AccountExists(string accountName)
         {
             return DataProvider.ExchangeAccountExists(accountName);
         }
 
-        public static ExchangeAccountsPaged GetAccountsPaged(int itemId, string accountTypes,
+        public ExchangeAccountsPaged GetAccountsPaged(int itemId, string accountTypes,
             string filterColumn, string filterValue, string sortColumn,
             int startRow, int maximumRows, bool archiving)
         {
@@ -1163,7 +1165,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static List<ExchangeAccount> GetAccounts(int itemId, ExchangeAccountType accountType)
+        public List<ExchangeAccount> GetAccounts(int itemId, ExchangeAccountType accountType)
         {
             #region Demo Mode
             if (IsDemoMode)
@@ -1211,18 +1213,18 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        public static List<ExchangeAccount> GetExchangeAccountByMailboxPlanId(int itemId, int mailboxPlanId)
+        public List<ExchangeAccount> GetExchangeAccountByMailboxPlanId(int itemId, int mailboxPlanId)
         {
             return ObjectUtils.CreateListFromDataReader<ExchangeAccount>(DataProvider.GetExchangeAccountByMailboxPlanId(itemId, mailboxPlanId));
         }
 
 
-        public static List<ExchangeAccount> GetExchangeMailboxes(int itemId)
+        public List<ExchangeAccount> GetExchangeMailboxes(int itemId)
         {
             return ObjectUtils.CreateListFromDataReader<ExchangeAccount>(DataProvider.GetExchangeMailboxes(itemId));
         }
 
-        private static List<ExchangeAccount> GetDemoAccounts(bool includeMailboxes, bool includeContacts, bool includeDistributionLists,
+        private List<ExchangeAccount> GetDemoAccounts(bool includeMailboxes, bool includeContacts, bool includeDistributionLists,
             bool includeRooms, bool includeEquipment, bool IncludeSharedMailbox, bool includeSecurityGroups)
         {
             List<ExchangeAccount> demoAccounts = new List<ExchangeAccount>();
@@ -1324,7 +1326,7 @@ namespace SolidCP.EnterpriseServer
             return demoAccounts;
         }
 
-        public static List<ExchangeAccount> SearchAccounts(int itemId,
+        public List<ExchangeAccount> SearchAccounts(int itemId,
             bool includeMailboxes, bool includeContacts, bool includeDistributionLists,
             bool includeRooms, bool includeEquipment, bool IncludeSharedMailbox, bool includeSecurityGroups,
             string filterColumn, string filterValue, string sortColumn)
@@ -1343,7 +1345,7 @@ namespace SolidCP.EnterpriseServer
 
 
 
-        public static List<ExchangeAccount> SearchAccountsByTypes(int itemId,
+        public List<ExchangeAccount> SearchAccountsByTypes(int itemId,
                     ExchangeAccountType[] types,
                     string filterColumn, string filterValue, string sortColumn)
         {
@@ -1373,7 +1375,7 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        public static ExchangeAccount GetAccount(int itemId, int accountId, bool withLog = true)
+        public ExchangeAccount GetAccount(int itemId, int accountId, bool withLog = true)
         {
             #region Demo Mode
             if (IsDemoMode)
@@ -1406,7 +1408,7 @@ namespace SolidCP.EnterpriseServer
             return account;
         }
 
-        public static ExchangeAccount GetAccountByAccountName(string userPrincipalName)
+        public ExchangeAccount GetAccountByAccountName(string userPrincipalName)
         {
             ExchangeAccount account = ObjectUtils.FillObjectFromDataReader<ExchangeAccount>(
                 DataProvider.GetExchangeAccountByAccountNameWithoutItemId(userPrincipalName));
@@ -1417,7 +1419,7 @@ namespace SolidCP.EnterpriseServer
             return account;
         }
 
-        public static bool CheckAccountCredentials(int itemId, string email, string password)
+        public bool CheckAccountCredentials(int itemId, string email, string password)
         {
             // place log record
             TaskManager.StartTask("EXCHANGE", "AUTHENTICATE", email, itemId);
@@ -1445,7 +1447,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static ExchangeAccount SearchAccount(ExchangeAccountType accountType, string primaryEmailAddress)
+        public ExchangeAccount SearchAccount(ExchangeAccountType accountType, string primaryEmailAddress)
         {
             ExchangeAccount account = ObjectUtils.FillObjectFromDataReader<ExchangeAccount>(
                 DataProvider.SearchExchangeAccount(SecurityContext.User.UserId,
@@ -1457,7 +1459,7 @@ namespace SolidCP.EnterpriseServer
             return account;
         }
 
-        private static int AddAccount(int itemId, ExchangeAccountType accountType,
+        private int AddAccount(int itemId, ExchangeAccountType accountType,
             string accountName, string displayName, string primaryEmailAddress, bool mailEnabledPublicFolder,
             MailboxManagerActions mailboxManagerActions, string samAccountName, string accountPassword, int mailboxPlanId, string subscriberNumber)
         {
@@ -1466,7 +1468,7 @@ namespace SolidCP.EnterpriseServer
                 mailboxManagerActions.ToString(), samAccountName, mailboxPlanId, (string.IsNullOrEmpty(subscriberNumber) ? null : subscriberNumber.Trim()));
         }
 
-        private static void UpdateAccount(ExchangeAccount account)
+        private void UpdateAccount(ExchangeAccount account)
         {
             DataProvider.UpdateExchangeAccount(account.AccountId, account.AccountName, account.AccountType, account.DisplayName,
                 account.PrimaryEmailAddress, account.MailEnabledPublicFolder,
@@ -1475,7 +1477,7 @@ namespace SolidCP.EnterpriseServer
                 account.EnableArchiving);
         }
 
-        private static void DeleteAccount(int itemId, int accountId)
+        private void DeleteAccount(int itemId, int accountId)
         {
             // try to get organization
             if (GetOrganization(itemId, false) == null)
@@ -1484,7 +1486,7 @@ namespace SolidCP.EnterpriseServer
             DataProvider.DeleteExchangeAccount(itemId, accountId);
         }
         /*
-                private static string BuildAccountName(string orgId, string name)
+                private string BuildAccountName(string orgId, string name)
                 {
                     string accountName = name = name.Replace(" ", "");
                     int counter = 0;
@@ -1505,7 +1507,7 @@ namespace SolidCP.EnterpriseServer
                     return accountName;
                 }
 
-                private static string genSamLogin(string login, string strCounter)
+                private string genSamLogin(string login, string strCounter)
                 {
                     int maxLogin = 20;
                     int fullLen = login.Length + strCounter.Length;
@@ -1524,13 +1526,13 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Account Email Addresses
-        private static bool EmailAddressExists(string emailAddress, bool checkContacts)
+        private bool EmailAddressExists(string emailAddress, bool checkContacts)
         {
             return DataProvider.ExchangeAccountEmailAddressExists(emailAddress, checkContacts);
         }
 
 
-        private static ExchangeEmailAddress[] GetAccountEmailAddresses(int itemId, int accountId)
+        private ExchangeEmailAddress[] GetAccountEmailAddresses(int itemId, int accountId)
         {
             #region Demo Mode
             if (IsDemoMode)
@@ -1575,12 +1577,12 @@ namespace SolidCP.EnterpriseServer
             return emails.ToArray();
         }
 
-        private static void AddAccountEmailAddress(int accountId, string emailAddress)
+        private void AddAccountEmailAddress(int accountId, string emailAddress)
         {
             DataProvider.AddExchangeAccountEmailAddress(accountId, emailAddress);
         }
 
-        private static void DeleteAccountEmailAddresses(int accountId, string[] emailAddresses)
+        private void DeleteAccountEmailAddresses(int accountId, string[] emailAddresses)
         {
             foreach (string emailAddress in emailAddresses)
             {
@@ -1594,7 +1596,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Domains
-        public static List<ExchangeDomainName> GetOrganizationDomains(int itemId)
+        public List<ExchangeDomainName> GetOrganizationDomains(int itemId)
         {
             #region Demo Mode
             if (IsDemoMode)
@@ -1640,7 +1642,7 @@ namespace SolidCP.EnterpriseServer
             return domains;
         }
 
-        public static int AddAuthoritativeDomain(int itemId, int domainId)
+        public int AddAuthoritativeDomain(int itemId, int domainId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -1729,7 +1731,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int ChangeAcceptedDomainType(int itemId, int domainId, ExchangeAcceptedDomainType domainType)
+        public int ChangeAcceptedDomainType(int itemId, int domainId, ExchangeAcceptedDomainType domainType)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -1789,7 +1791,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int DeleteAuthoritativeDomain(int itemId, int domainId)
+        public int DeleteAuthoritativeDomain(int itemId, int domainId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -1879,7 +1881,7 @@ namespace SolidCP.EnterpriseServer
 
         #region Mailboxes
 
-        private static void UpdateExchangeAccount(int accountId, string accountName, ExchangeAccountType accountType,
+        private void UpdateExchangeAccount(int accountId, string accountName, ExchangeAccountType accountType,
             string displayName, string primaryEmailAddress, bool mailEnabledPublicFolder,
             string mailboxManagerActions, string samAccountName, string accountPassword, int mailboxPlanId, int archivePlanId, string subscriberNumber,
             bool EnableArchiving)
@@ -1896,7 +1898,7 @@ namespace SolidCP.EnterpriseServer
                 (string.IsNullOrEmpty(subscriberNumber) ? null : subscriberNumber.Trim()), EnableArchiving);
         }
 
-        public static string CreateJournalRule(int itemId, string journalEmail, string scope, string recipientEmail, bool enabled)
+        public string CreateJournalRule(int itemId, string journalEmail, string scope, string recipientEmail, bool enabled)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -1929,7 +1931,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static ExchangeJournalRule GetJournalRule(int itemId, string journalEmail)
+        public ExchangeJournalRule GetJournalRule(int itemId, string journalEmail)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -1959,7 +1961,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int SetJournalRule(int itemId, ExchangeJournalRule rule)
+        public int SetJournalRule(int itemId, ExchangeJournalRule rule)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -1990,7 +1992,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int CreateMailbox(int itemId, int accountId, ExchangeAccountType accountType, string accountName,
+        public int CreateMailbox(int itemId, int accountId, ExchangeAccountType accountType, string accountName,
             string displayName, string name, string domain, string password, bool sendSetupInstructions, string setupInstructionMailAddress, int mailboxPlanId, int archivedPlanId, string subscriberNumber, bool EnableArchiving)
         {
             // check account
@@ -2248,7 +2250,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int DisableMailbox(int itemId, int accountId)
+        public int DisableMailbox(int itemId, int accountId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -2300,7 +2302,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int ExportMailBox(int itemId, int accountId, string path)
+        public int ExportMailBox(int itemId, int accountId, string path)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -2340,7 +2342,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int SetDeletedMailbox(int itemId, int accountId)
+        public int SetDeletedMailbox(int itemId, int accountId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -2383,7 +2385,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int DeleteMailbox(int itemId, int accountId)
+        public int DeleteMailbox(int itemId, int accountId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -2443,7 +2445,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        private static ExchangeMailboxAutoReplySettings GetDemoMailboxAutoReplySettings()
+        private ExchangeMailboxAutoReplySettings GetDemoMailboxAutoReplySettings()
         {
             ExchangeMailboxAutoReplySettings ar = new ExchangeMailboxAutoReplySettings();
             ar.AutoReplyState = OofState.Enabled;
@@ -2453,7 +2455,7 @@ namespace SolidCP.EnterpriseServer
             return ar;
         }
 
-        private static ExchangeMailbox GetDemoMailboxSettings()
+        private ExchangeMailbox GetDemoMailboxSettings()
         {
             ExchangeMailbox mb = new ExchangeMailbox();
             mb.DisplayName = "John Smith";
@@ -2483,7 +2485,7 @@ namespace SolidCP.EnterpriseServer
             return mb;
         }
 
-        private static ExchangeResourceMailboxSettings GetDemoResourceMailboxSettings()
+        private ExchangeResourceMailboxSettings GetDemoResourceMailboxSettings()
         {
             ExchangeResourceMailboxSettings mb = new ExchangeResourceMailboxSettings();
             mb.DisplayName = "Meeting Room";
@@ -2501,7 +2503,7 @@ namespace SolidCP.EnterpriseServer
             return mb;
         }
 
-        public static ExchangeMailboxAutoReplySettings GetMailboxAutoReplySettings(int itemId, int accountId)
+        public ExchangeMailboxAutoReplySettings GetMailboxAutoReplySettings(int itemId, int accountId)
         {
             #region Demo Mode
             if (IsDemoMode)
@@ -2539,7 +2541,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int SetMailboxAutoReplySettings(int itemId, int accountId, ExchangeMailboxAutoReplySettings settings)
+        public int SetMailboxAutoReplySettings(int itemId, int accountId, ExchangeMailboxAutoReplySettings settings)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -2590,7 +2592,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static ExchangeMailbox GetMailboxGeneralSettings(int itemId, int accountId)
+        public ExchangeMailbox GetMailboxGeneralSettings(int itemId, int accountId)
         {
             #region Demo Mode
             if (IsDemoMode)
@@ -2628,7 +2630,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int SetMailboxGeneralSettings(int itemId, int accountId, bool hideAddressBook, bool disabled)
+        public int SetMailboxGeneralSettings(int itemId, int accountId, bool hideAddressBook, bool disabled)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -2694,7 +2696,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static ExchangeResourceMailboxSettings GetResourceMailboxSettings(int itemId, int accountId)
+        public ExchangeResourceMailboxSettings GetResourceMailboxSettings(int itemId, int accountId)
         {
             #region Demo Mode
             if (IsDemoMode)
@@ -2734,7 +2736,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int SetResourceMailboxSettings(int itemId, int accountId, ExchangeResourceMailboxSettings resourceSettings)
+        public int SetResourceMailboxSettings(int itemId, int accountId, ExchangeResourceMailboxSettings resourceSettings)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -2790,7 +2792,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static ExchangeEmailAddress[] GetMailboxEmailAddresses(int itemId, int accountId)
+        public ExchangeEmailAddress[] GetMailboxEmailAddresses(int itemId, int accountId)
         {
             // place log record
             TaskManager.StartTask("EXCHANGE", "GET_MAILBOX_ADDRESSES", itemId);
@@ -2809,7 +2811,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int AddMailboxEmailAddress(int itemId, int accountId, string emailAddress)
+        public int AddMailboxEmailAddress(int itemId, int accountId, string emailAddress)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -2866,7 +2868,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        private static OCSServer GetOCSProxy(int itemId)
+        private OCSServer GetOCSProxy(int itemId)
         {
             Organization org = OrganizationController.GetOrganization(itemId);
             int serviceId = PackageController.GetPackageServiceId(org.PackageId, ResourceGroups.OCS);
@@ -2878,7 +2880,7 @@ namespace SolidCP.EnterpriseServer
             return ocs;
         }
 
-        public static int SetMailboxPrimaryEmailAddress(int itemId, int accountId, string emailAddress)
+        public int SetMailboxPrimaryEmailAddress(int itemId, int accountId, string emailAddress)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -2946,7 +2948,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int DeleteMailboxEmailAddresses(int itemId, int accountId, string[] emailAddresses)
+        public int DeleteMailboxEmailAddresses(int itemId, int accountId, string[] emailAddresses)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -3000,7 +3002,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static ExchangeMailbox GetMailboxMailFlowSettings(int itemId, int accountId)
+        public ExchangeMailbox GetMailboxMailFlowSettings(int itemId, int accountId)
         {
             #region Demo Mode
             if (IsDemoMode)
@@ -3039,7 +3041,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int SetMailboxMailFlowSettings(int itemId, int accountId,
+        public int SetMailboxMailFlowSettings(int itemId, int accountId,
             bool enableForwarding, int SaveSentItems, string forwardingAccountName, bool forwardToBoth,
             string[] sendOnBehalfAccounts, string[] acceptAccounts, string[] rejectAccounts,
             bool requireSenderAuthentication)
@@ -3102,7 +3104,7 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        public static ExchangeMailbox GetMailboxAdvancedSettings(int itemId, int accountId)
+        public ExchangeMailbox GetMailboxAdvancedSettings(int itemId, int accountId)
         {
             #region Demo Mode
             if (IsDemoMode)
@@ -3141,7 +3143,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int SetMailboxManagerSettings(int itemId, int accountId, bool pmmAllowed, MailboxManagerActions action)
+        public int SetMailboxManagerSettings(int itemId, int accountId, bool pmmAllowed, MailboxManagerActions action)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -3191,7 +3193,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static string GetMailboxSetupInstructions(int itemId, int accountId, bool pmm, bool emailMode, bool signup, string passwordResetUrl)
+        public string GetMailboxSetupInstructions(int itemId, int accountId, bool pmm, bool emailMode, bool signup, string passwordResetUrl)
         {
             #region Demo Mode
             if (IsDemoMode)
@@ -3228,7 +3230,7 @@ namespace SolidCP.EnterpriseServer
             return user.HtmlMail ? result : result.Replace("\n", "<br/>");
         }
 
-        private static string EvaluateMailboxTemplate(int itemId, int accountId, bool pmm, bool emailMode, bool signup, string template, string passwordResetUrl)
+        private string EvaluateMailboxTemplate(int itemId, int accountId, bool pmm, bool emailMode, bool signup, string template, string passwordResetUrl)
         {
             Hashtable items = new Hashtable();
 
@@ -3296,7 +3298,7 @@ namespace SolidCP.EnterpriseServer
             return PackageController.EvaluateTemplate(template, items);
         }
 
-        public static int SendMailboxSetupInstructions(int itemId, int accountId, bool signup, string to, string cc)
+        public int SendMailboxSetupInstructions(int itemId, int accountId, bool signup, string to, string cc)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -3339,7 +3341,7 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        public static ExchangeMailbox GetMailboxPermissions(int itemId, int accountId)
+        public ExchangeMailbox GetMailboxPermissions(int itemId, int accountId)
         {
             // place log record
             TaskManager.StartTask("EXCHANGE", "GET_MAILBOX_PERMISSIONS", itemId);
@@ -3371,7 +3373,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int SetMailboxPermissions(int itemId, int accountId, string[] sendAsaccounts, string[] fullAccessAcounts, string[] onBehalfOfAccounts, ExchangeAccount[] calendarAccounts, ExchangeAccount[] contactAccounts)
+        public int SetMailboxPermissions(int itemId, int accountId, string[] sendAsaccounts, string[] fullAccessAcounts, string[] onBehalfOfAccounts, ExchangeAccount[] calendarAccounts, ExchangeAccount[] contactAccounts)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -3421,7 +3423,7 @@ namespace SolidCP.EnterpriseServer
 
 
         #region Mailbox plan
-        public static int SetExchangeMailboxPlan(int itemId, int accountId, int mailboxPlanId, int archivePlanId, bool EnableArchiving)
+        public int SetExchangeMailboxPlan(int itemId, int accountId, int mailboxPlanId, int archivePlanId, bool EnableArchiving)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -3572,7 +3574,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static List<ExchangeMailboxPlan> GetExchangeMailboxPlans(int itemId, bool archiving)
+        public List<ExchangeMailboxPlan> GetExchangeMailboxPlans(int itemId, bool archiving)
         {
             // place log record
             TaskManager.StartTask("EXCHANGE", "GET_EXCHANGE_MAILBOXPLANS", itemId);
@@ -3606,7 +3608,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        private static void GetExchangeMailboxPlansByUser(int itemId, UserInfo user, ref List<ExchangeMailboxPlan> mailboxPlans, ref int? defaultPlanId, bool archiving)
+        private void GetExchangeMailboxPlansByUser(int itemId, UserInfo user, ref List<ExchangeMailboxPlan> mailboxPlans, ref int? defaultPlanId, bool archiving)
         {
             if ((user != null))
             {
@@ -3657,7 +3659,7 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        public static ExchangeMailboxPlan GetExchangeMailboxPlan(int itemID, int mailboxPlanId)
+        public ExchangeMailboxPlan GetExchangeMailboxPlan(int itemID, int mailboxPlanId)
         {
 
             // place log record
@@ -3678,7 +3680,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int AddExchangeMailboxPlan(int itemID, ExchangeMailboxPlan mailboxPlan)
+        public int AddExchangeMailboxPlan(int itemID, ExchangeMailboxPlan mailboxPlan)
         {
             // place log record
             TaskManager.StartTask("EXCHANGE", "ADD_EXCHANGE_MAILBOXPLAN_RETENTIONPOLICY_ARCHIVING", mailboxPlan.MailboxPlan, itemID);
@@ -3761,7 +3763,7 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        public static int UpdateExchangeMailboxPlan(int itemID, ExchangeMailboxPlan mailboxPlan)
+        public int UpdateExchangeMailboxPlan(int itemID, ExchangeMailboxPlan mailboxPlan)
         {
             // place log record
             TaskManager.StartTask("EXCHANGE", "UPDATE_EXCHANGE_MAILBOXPLAN", mailboxPlan.MailboxPlan, itemID);
@@ -3852,7 +3854,7 @@ namespace SolidCP.EnterpriseServer
 
 
 
-        public static int DeleteExchangeMailboxPlan(int itemID, int mailboxPlanId)
+        public int DeleteExchangeMailboxPlan(int itemID, int mailboxPlanId)
         {
             TaskManager.StartTask("EXCHANGE", "DELETE_EXCHANGE_MAILBOXPLAN_RETENTIONPOLICY_ARCHIVING", itemID);
 
@@ -3885,7 +3887,7 @@ namespace SolidCP.EnterpriseServer
 
         }
 
-        public static void SetOrganizationDefaultExchangeMailboxPlan(int itemId, int mailboxPlanId)
+        public void SetOrganizationDefaultExchangeMailboxPlan(int itemId, int mailboxPlanId)
         {
             TaskManager.StartTask("EXCHANGE", "SET_EXCHANGE_MAILBOXPLAN", itemId);
 
@@ -3916,7 +3918,7 @@ namespace SolidCP.EnterpriseServer
 
         #region Exchange Retention Policy Tags
 
-        private static void SetMailBoxRetentionPolicyAndArchiving(int itemId, int mailboxPlanId, int retentionPolicyId, string accountName, ExchangeServer exchange, string orgId, ResultObject result, bool EnableArchiving)
+        private void SetMailBoxRetentionPolicyAndArchiving(int itemId, int mailboxPlanId, int retentionPolicyId, string accountName, ExchangeServer exchange, string orgId, ResultObject result, bool EnableArchiving)
         {
             // Log Extension
             LogExtension.WriteVariables(new { retentionPolicyId });
@@ -3962,7 +3964,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static List<ExchangeRetentionPolicyTag> GetExchangeRetentionPolicyTags(int itemId)
+        public List<ExchangeRetentionPolicyTag> GetExchangeRetentionPolicyTags(int itemId)
         {
             // place log record
             TaskManager.StartTask("EXCHANGE", "GET_EXCHANGE_RETENTIONPOLICYTAGS", itemId);
@@ -3990,7 +3992,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        private static void GetExchangeRetentionPolicyTagsByUser(int itemId, UserInfo user, ref List<ExchangeRetentionPolicyTag> retentionPolicyTags)
+        private void GetExchangeRetentionPolicyTagsByUser(int itemId, UserInfo user, ref List<ExchangeRetentionPolicyTag> retentionPolicyTags)
         {
             if ((user != null))
             {
@@ -4031,7 +4033,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static ExchangeRetentionPolicyTag GetExchangeRetentionPolicyTag(int itemID, int tagId)
+        public ExchangeRetentionPolicyTag GetExchangeRetentionPolicyTag(int itemID, int tagId)
         {
 
             // place log record
@@ -4052,7 +4054,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static IntResult AddExchangeRetentionPolicyTag(int itemID, ExchangeRetentionPolicyTag tag)
+        public IntResult AddExchangeRetentionPolicyTag(int itemID, ExchangeRetentionPolicyTag tag)
         {
             // place log record
             IntResult res = TaskManager.StartResultTask<IntResult>("EXCHANGE", "ADD_EXCHANGE_RETENTIONPOLICYTAG", tag.TagName, itemID);
@@ -4113,7 +4115,7 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        public static ResultObject UpdateExchangeRetentionPolicyTag(int itemID, ExchangeRetentionPolicyTag tag)
+        public ResultObject UpdateExchangeRetentionPolicyTag(int itemID, ExchangeRetentionPolicyTag tag)
         {
             // place log record
             ResultObject res = TaskManager.StartResultTask<ResultObject>("EXCHANGE", "UPDATE_EXCHANGE_RETENTIONPOLICYTAG", itemID);
@@ -4172,7 +4174,7 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        public static ResultObject DeleteExchangeRetentionPolicyTag(int itemID, int tagId)
+        public ResultObject DeleteExchangeRetentionPolicyTag(int itemID, int tagId)
         {
             ResultObject res = TaskManager.StartResultTask<ResultObject>("EXCHANGE", "DELETE_EXCHANGE_RETENTIONPOLICYTAG", itemID);
 
@@ -4233,7 +4235,7 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        public static List<ExchangeMailboxPlanRetentionPolicyTag> GetExchangeMailboxPlanRetentionPolicyTags(int policyId)
+        public List<ExchangeMailboxPlanRetentionPolicyTag> GetExchangeMailboxPlanRetentionPolicyTags(int policyId)
         {
             // place log record
             TaskManager.StartTask("EXCHANGE", "GET_EXCHANGE_RETENTIONPOLICYTAGS", policyId);
@@ -4256,7 +4258,7 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        private static void UpdateExchangeRetentionPolicy(int itemID, int policyId, ResultObject result)
+        private void UpdateExchangeRetentionPolicy(int itemID, int policyId, ResultObject result)
         {
             Organization org = GetOrganization(itemID);
             if (org == null)
@@ -4296,7 +4298,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static IntResult AddExchangeMailboxPlanRetentionPolicyTag(int itemID, ExchangeMailboxPlanRetentionPolicyTag planTag)
+        public IntResult AddExchangeMailboxPlanRetentionPolicyTag(int itemID, ExchangeMailboxPlanRetentionPolicyTag planTag)
         {
             // place log record
             IntResult res = TaskManager.StartResultTask<IntResult>("EXCHANGE", "ADD_EXCHANGE_RETENTIONPOLICYTAG", planTag.TagName, itemID);
@@ -4344,7 +4346,7 @@ namespace SolidCP.EnterpriseServer
 
         }
 
-        public static ResultObject DeleteExchangeMailboxPlanRetentionPolicyTag(int itemID, int policyId, int planTagId)
+        public ResultObject DeleteExchangeMailboxPlanRetentionPolicyTag(int itemID, int policyId, int planTagId)
         {
             ResultObject res = TaskManager.StartResultTask<ResultObject>("EXCHANGE", "DELETE_EXCHANGE_RETENTIONPOLICYTAG", itemID);
 
@@ -4390,7 +4392,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Contacts
-        public static int CreateContact(int itemId, string displayName, string email)
+        public int CreateContact(int itemId, string displayName, string email)
         {
             //if (EmailAddressExists(email))
             //  return BusinessErrorCodes.ERROR_EXCHANGE_EMAIL_EXISTS;
@@ -4472,7 +4474,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int DeleteContact(int itemId, int accountId)
+        public int DeleteContact(int itemId, int accountId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -4515,7 +4517,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        private static ExchangeContact GetDemoContactSettings()
+        private ExchangeContact GetDemoContactSettings()
         {
             ExchangeContact c = new ExchangeContact();
             c.DisplayName = "SolidCP Support";
@@ -4527,7 +4529,7 @@ namespace SolidCP.EnterpriseServer
             return c;
         }
 
-        public static ExchangeContact GetContactGeneralSettings(int itemId, int accountId)
+        public ExchangeContact GetContactGeneralSettings(int itemId, int accountId)
         {
             #region Demo Mode
             if (IsDemoMode)
@@ -4565,7 +4567,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int SetContactGeneralSettings(int itemId, int accountId, string displayName, string emailAddress,
+        public int SetContactGeneralSettings(int itemId, int accountId, string displayName, string emailAddress,
             bool hideAddressBook, string firstName, string initials,
             string lastName, string address, string city, string state, string zip, string country,
             string jobTitle, string company, string department, string office, string managerAccountName,
@@ -4655,7 +4657,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static ExchangeContact GetContactMailFlowSettings(int itemId, int accountId)
+        public ExchangeContact GetContactMailFlowSettings(int itemId, int accountId)
         {
             #region Demo Mode
             if (IsDemoMode)
@@ -4695,7 +4697,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int SetContactMailFlowSettings(int itemId, int accountId,
+        public int SetContactMailFlowSettings(int itemId, int accountId,
             string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication)
         {
             // check account
@@ -4753,7 +4755,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Distribution Lists
-        public static int CreateDistributionList(int itemId, string displayName, string name, string domain, int managerId)
+        public int CreateDistributionList(int itemId, string displayName, string name, string domain, int managerId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -4842,7 +4844,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int DeleteDistributionList(int itemId, int accountId)
+        public int DeleteDistributionList(int itemId, int accountId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -4885,7 +4887,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        private static ExchangeDistributionList GetDemoDistributionListSettings()
+        private ExchangeDistributionList GetDemoDistributionListSettings()
         {
             ExchangeDistributionList c = new ExchangeDistributionList();
             c.DisplayName = "Fabrikam Sales";
@@ -4896,7 +4898,7 @@ namespace SolidCP.EnterpriseServer
             return c;
         }
 
-        public static ExchangeDistributionList GetDistributionListGeneralSettings(int itemId, int accountId)
+        public ExchangeDistributionList GetDistributionListGeneralSettings(int itemId, int accountId)
         {
             #region Demo Mode
             if (IsDemoMode)
@@ -4934,7 +4936,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int SetDistributionListGeneralSettings(int itemId, int accountId, string displayName,
+        public int SetDistributionListGeneralSettings(int itemId, int accountId, string displayName,
             bool hideAddressBook, string managerAccount, string[] memberAccounts,
             string notes)
         {
@@ -5006,7 +5008,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static ExchangeDistributionList GetDistributionListMailFlowSettings(int itemId, int accountId)
+        public ExchangeDistributionList GetDistributionListMailFlowSettings(int itemId, int accountId)
         {
             #region Demo Mode
             if (IsDemoMode)
@@ -5046,7 +5048,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int SetDistributionListMailFlowSettings(int itemId, int accountId,
+        public int SetDistributionListMailFlowSettings(int itemId, int accountId,
             string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication)
         {
             // check account
@@ -5107,7 +5109,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static ExchangeEmailAddress[] GetDistributionListEmailAddresses(int itemId, int accountId)
+        public ExchangeEmailAddress[] GetDistributionListEmailAddresses(int itemId, int accountId)
         {
             // place log record
             TaskManager.StartTask("EXCHANGE", "GET_DISTR_LIST_ADDRESSES", itemId);
@@ -5126,7 +5128,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int AddDistributionListEmailAddress(int itemId, int accountId, string emailAddress)
+        public int AddDistributionListEmailAddress(int itemId, int accountId, string emailAddress)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -5185,7 +5187,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int SetDistributionListPrimaryEmailAddress(int itemId, int accountId, string emailAddress)
+        public int SetDistributionListPrimaryEmailAddress(int itemId, int accountId, string emailAddress)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -5241,7 +5243,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int DeleteDistributionListEmailAddresses(int itemId, int accountId, string[] emailAddresses)
+        public int DeleteDistributionListEmailAddresses(int itemId, int accountId, string[] emailAddresses)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -5301,7 +5303,7 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        public static ResultObject SetDistributionListPermissions(int itemId, int accountId, string[] sendAsAccounts, string[] sendOnBehalfAccounts)
+        public ResultObject SetDistributionListPermissions(int itemId, int accountId, string[] sendAsAccounts, string[] sendOnBehalfAccounts)
         {
             ResultObject res = TaskManager.StartResultTask<ResultObject>("EXCHANGE", "SET_DISTRIBUTION_LIST_PERMISSINS");
             Organization org;
@@ -5365,7 +5367,7 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        public static ExchangeDistributionListResult GetDistributionListPermissions(int itemId, int accountId)
+        public ExchangeDistributionListResult GetDistributionListPermissions(int itemId, int accountId)
         {
             Organization org;
             ExchangeDistributionListResult res = TaskManager.StartResultTask<ExchangeDistributionListResult>("EXCHANGE", "GET_DISTRIBUTION_LIST_RESULT");
@@ -5420,7 +5422,7 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        public static ExchangeAccount[] GetDistributionListsByMember(int itemId, int accountId)
+        public ExchangeAccount[] GetDistributionListsByMember(int itemId, int accountId)
         {
             #region Demo Mode
             if (IsDemoMode)
@@ -5476,7 +5478,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int AddDistributionListMember(int itemId, string distributionListName, int memberId)
+        public int AddDistributionListMember(int itemId, string distributionListName, int memberId)
         {
             #region Demo Mode
             if (IsDemoMode)
@@ -5534,7 +5536,7 @@ namespace SolidCP.EnterpriseServer
             return 0;
         }
 
-        public static int DeleteDistributionListMember(int itemId, string distributionListName, int memberId)
+        public int DeleteDistributionListMember(int itemId, string distributionListName, int memberId)
         {
             #region Demo Mode
             if (IsDemoMode)
@@ -5594,7 +5596,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Public Folders
-        public static int CreatePublicFolder(int itemId, string parentFolder, string folderName,
+        public int CreatePublicFolder(int itemId, string parentFolder, string folderName,
             bool mailEnabled, string name, string domain)
         {
             // check account
@@ -5695,7 +5697,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int DeletePublicFolders(int itemId, int[] accountIds)
+        public int DeletePublicFolders(int itemId, int[] accountIds)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -5711,7 +5713,7 @@ namespace SolidCP.EnterpriseServer
             return 0;
         }
 
-        public static int DeletePublicFolder(int itemId, int accountId)
+        public int DeletePublicFolder(int itemId, int accountId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -5762,7 +5764,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int EnableMailPublicFolder(int itemId, int accountId,
+        public int EnableMailPublicFolder(int itemId, int accountId,
             string name, string domain)
         {
             // check account
@@ -5832,7 +5834,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int DisableMailPublicFolder(int itemId, int accountId)
+        public int DisableMailPublicFolder(int itemId, int accountId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -5896,7 +5898,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        private static ExchangePublicFolder GetDemoPublicFolderSettings()
+        private ExchangePublicFolder GetDemoPublicFolderSettings()
         {
             ExchangePublicFolder c = new ExchangePublicFolder();
             c.DisplayName = "\\fabrikam\\Documents";
@@ -5907,7 +5909,7 @@ namespace SolidCP.EnterpriseServer
             return c;
         }
 
-        public static ExchangePublicFolder GetPublicFolderGeneralSettings(int itemId, int accountId)
+        public ExchangePublicFolder GetPublicFolderGeneralSettings(int itemId, int accountId)
         {
             #region Demo Mode
             if (IsDemoMode)
@@ -5947,7 +5949,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int SetPublicFolderGeneralSettings(int itemId, int accountId, string newName,
+        public int SetPublicFolderGeneralSettings(int itemId, int accountId, string newName,
             bool hideAddressBook, ExchangeAccount[] accounts)
         {
             // check account
@@ -6036,7 +6038,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static ExchangePublicFolder GetPublicFolderMailFlowSettings(int itemId, int accountId)
+        public ExchangePublicFolder GetPublicFolderMailFlowSettings(int itemId, int accountId)
         {
             #region Demo Mode
             if (IsDemoMode)
@@ -6076,7 +6078,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int SetPublicFolderMailFlowSettings(int itemId, int accountId,
+        public int SetPublicFolderMailFlowSettings(int itemId, int accountId,
             string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication)
         {
             // check account
@@ -6132,7 +6134,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static ExchangeEmailAddress[] GetPublicFolderEmailAddresses(int itemId, int accountId)
+        public ExchangeEmailAddress[] GetPublicFolderEmailAddresses(int itemId, int accountId)
         {
             // place log record
             TaskManager.StartTask("EXCHANGE", "GET_PUBLIC_FOLDER_ADDRESSES", itemId);
@@ -6151,7 +6153,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int AddPublicFolderEmailAddress(int itemId, int accountId, string emailAddress)
+        public int AddPublicFolderEmailAddress(int itemId, int accountId, string emailAddress)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -6206,7 +6208,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int SetPublicFolderPrimaryEmailAddress(int itemId, int accountId, string emailAddress)
+        public int SetPublicFolderPrimaryEmailAddress(int itemId, int accountId, string emailAddress)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -6258,7 +6260,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int DeletePublicFolderEmailAddresses(int itemId, int accountId, string[] emailAddresses)
+        public int DeletePublicFolderEmailAddresses(int itemId, int accountId, string[] emailAddresses)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -6314,7 +6316,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static string CreateOrganizationRootPublicFolder(int itemId)
+        public string CreateOrganizationRootPublicFolder(int itemId)
         {
             string res = null;
 
@@ -6365,7 +6367,7 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        public static string SetDefaultPublicFolderMailbox(int itemId)
+        public string SetDefaultPublicFolderMailbox(int itemId)
         {
             string res = "";
 
@@ -6425,7 +6427,7 @@ namespace SolidCP.EnterpriseServer
         #region Private Helpers
 
 
-        private static string GetPrimaryDomainController(int organizationServiceId)
+        private string GetPrimaryDomainController(int organizationServiceId)
         {
 
             Organizations orgProxy = new Organizations();
@@ -6450,7 +6452,7 @@ namespace SolidCP.EnterpriseServer
             return orgPrimaryDomainController;
         }
 
-        private static void ExtendExchangeSettings(List<string> exchangeSettings, string primaryDomainController)
+        private void ExtendExchangeSettings(List<string> exchangeSettings, string primaryDomainController)
         {
             bool isAdded = false;
             for (int i = 0; i < exchangeSettings.Count; i++)
@@ -6470,7 +6472,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        internal static ServiceProvider GetServiceProvider(int exchangeServiceId, int organizationServiceId)
+        internal ServiceProvider GetServiceProvider(int exchangeServiceId, int organizationServiceId)
         {
             ServiceProvider ws = new ServiceProvider();
 
@@ -6487,7 +6489,7 @@ namespace SolidCP.EnterpriseServer
             return ws;
         }
 
-        internal static ExchangeServer GetExchangeServer(int exchangeServiceId, int organizationServiceId)
+        internal ExchangeServer GetExchangeServer(int exchangeServiceId, int organizationServiceId)
         {
             ExchangeServer ws = new ExchangeServer();
 
@@ -6504,7 +6506,7 @@ namespace SolidCP.EnterpriseServer
             return ws;
         }
 
-        internal static ServiceProvider GetExchangeServiceProvider(int exchangeServiceId, int organizationServiceId)
+        internal ServiceProvider GetExchangeServiceProvider(int exchangeServiceId, int organizationServiceId)
         {
             ServiceProvider ws = new ServiceProvider();
 
@@ -6522,12 +6524,12 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        private static int GetExchangeServiceID(int packageId)
+        private int GetExchangeServiceID(int packageId)
         {
             return PackageController.GetPackageServiceId(packageId, ResourceGroups.Exchange);
         }
 
-        private static string[] GetAccountSimpleEmailAddresses(int itemId, int accountId)
+        private string[] GetAccountSimpleEmailAddresses(int itemId, int accountId)
         {
             ExchangeEmailAddress[] emails = GetAccountEmailAddresses(itemId, accountId);
             List<string> result = new List<string>();
@@ -6540,12 +6542,12 @@ namespace SolidCP.EnterpriseServer
             return result.ToArray();
         }
 
-        private static bool QuotaEnabled(PackageContext cntx, string quotaName)
+        private bool QuotaEnabled(PackageContext cntx, string quotaName)
         {
             return cntx.Quotas.ContainsKey(quotaName) && !cntx.Quotas[quotaName].QuotaExhausted;
         }
 
-        private static bool IsDemoMode
+        private bool IsDemoMode
         {
             get
             {
@@ -6554,7 +6556,7 @@ namespace SolidCP.EnterpriseServer
         }
         #endregion
 
-        public static ExchangeMobileDevice[] GetMobileDevices(int itemId, int accountId)
+        public ExchangeMobileDevice[] GetMobileDevices(int itemId, int accountId)
         {
             // place log record
             TaskManager.StartTask("EXCHANGE", "GET_MOBILE_DEVICES", itemId);
@@ -6584,7 +6586,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static ExchangeMobileDevice GetMobileDevice(int itemId, string deviceId)
+        public ExchangeMobileDevice GetMobileDevice(int itemId, string deviceId)
         {
             // place log record
             TaskManager.StartTask("EXCHANGE", "GET_MOBILE_DEVICE", itemId);
@@ -6611,7 +6613,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static void WipeDataFromDevice(int itemId, string deviceId)
+        public void WipeDataFromDevice(int itemId, string deviceId)
         {
             // place log record
             TaskManager.StartTask("EXCHANGE", "WIPE_DATA_FROM_DEVICE", deviceId, itemId);
@@ -6641,7 +6643,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static void CancelRemoteWipeRequest(int itemId, string deviceId)
+        public void CancelRemoteWipeRequest(int itemId, string deviceId)
         {
             // place log record
             TaskManager.StartTask("EXCHANGE", "CANCEL_REMOTE_WIPE_REQUEST", deviceId, itemId);
@@ -6671,7 +6673,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static void RemoveDevice(int itemId, string deviceId)
+        public void RemoveDevice(int itemId, string deviceId)
         {
             // place log record
             TaskManager.StartTask("EXCHANGE", "REMOVE_DEVICE", deviceId, itemId);
@@ -6703,7 +6705,7 @@ namespace SolidCP.EnterpriseServer
 
         #region Disclaimers
 
-        public static int AddExchangeDisclaimer(int itemId, ExchangeDisclaimer disclaimer)
+        public int AddExchangeDisclaimer(int itemId, ExchangeDisclaimer disclaimer)
         {
             int res = -1;
 
@@ -6740,7 +6742,7 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        public static int UpdateExchangeDisclaimer(int itemId, ExchangeDisclaimer disclaimer)
+        public int UpdateExchangeDisclaimer(int itemId, ExchangeDisclaimer disclaimer)
         {
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
             if (accountCheck < 0) return accountCheck;
@@ -6778,7 +6780,7 @@ namespace SolidCP.EnterpriseServer
             return 0;
         }
 
-        public static int DeleteExchangeDisclaimer(int itemId, int exchangeDisclaimerId)
+        public int DeleteExchangeDisclaimer(int itemId, int exchangeDisclaimerId)
         {
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
             if (accountCheck < 0) return accountCheck;
@@ -6817,7 +6819,7 @@ namespace SolidCP.EnterpriseServer
             return 0;
         }
 
-        public static ExchangeDisclaimer GetExchangeDisclaimer(int itemId, int exchangeDisclaimerId)
+        public ExchangeDisclaimer GetExchangeDisclaimer(int itemId, int exchangeDisclaimerId)
         {
 
             TaskManager.StartTask("EXCHANGE", "GET_EXCHANGE_EXCHANGEDISCLAIMER", itemId);
@@ -6838,7 +6840,7 @@ namespace SolidCP.EnterpriseServer
 
         }
 
-        public static List<ExchangeDisclaimer> GetExchangeDisclaimers(int itemId)
+        public List<ExchangeDisclaimer> GetExchangeDisclaimers(int itemId)
         {
             TaskManager.StartTask("EXCHANGE", "GET_EXCHANGE_EXCHANGEDISCLAIMER", itemId);
 
@@ -6858,7 +6860,7 @@ namespace SolidCP.EnterpriseServer
 
         }
 
-        public static int SetExchangeAccountDisclaimerId(int itemId, int accountID, int newExchangeDisclaimerId)
+        public int SetExchangeAccountDisclaimerId(int itemId, int accountID, int newExchangeDisclaimerId)
         {
             int res = 0;
 
@@ -6920,7 +6922,7 @@ namespace SolidCP.EnterpriseServer
 
         }
 
-        public static int GetExchangeAccountDisclaimerId(int itemId, int AccountID)
+        public int GetExchangeAccountDisclaimerId(int itemId, int AccountID)
         {
             TaskManager.StartTask("EXCHANGE", "GET_EXCHANGE_ACCOUNTDISCLAIMERID", AccountID);
 
@@ -6944,7 +6946,7 @@ namespace SolidCP.EnterpriseServer
 
 #if !UseSkia || NETFRAMEWORK
         // proportional resizing
-        private static Bitmap ResizeBitmapGdi(Bitmap srcBitmap, Size newSize)
+        private Bitmap ResizeBitmapGdi(Bitmap srcBitmap, Size newSize)
         {
             try
             {
@@ -6982,7 +6984,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 #endif
-        public static byte[] ResizeImageGdi(byte[] picture, int width, int height)
+        public byte[] ResizeImageGdi(byte[] picture, int width, int height)
         {
             if (!Providers.OS.OSInfo.IsWindows) return null;
 
@@ -7002,7 +7004,7 @@ namespace SolidCP.EnterpriseServer
 #endif
         }
 
-        public static byte[] ResizeImageSkia(byte[] data, int width, int height)
+        public byte[] ResizeImageSkia(byte[] data, int width, int height)
         {
 #if UseSkia
             using (var bitmap = SKBitmap.Decode(data))
@@ -7027,7 +7029,7 @@ namespace SolidCP.EnterpriseServer
 #endif
         }
 
-        public static byte[] ResizeImage(byte[] image, int width, int height)
+        public byte[] ResizeImage(byte[] image, int width, int height)
         {
             if (image == null) return null;
 
@@ -7039,7 +7041,7 @@ namespace SolidCP.EnterpriseServer
 
             return ResizeImageSkia(image, width, height); 
         }
-        public static ResultObject SetPicture(int itemId, int accountID, byte[] picture)
+        public ResultObject SetPicture(int itemId, int accountID, byte[] picture)
         {
             ResultObject res = TaskManager.StartResultTask<ResultObject>("EXCHANGE", "SET_PICTURE", itemId);
 
@@ -7083,7 +7085,7 @@ namespace SolidCP.EnterpriseServer
 
         }
 
-        public static BytesResult GetPicture(int itemId, int accountID)
+        public BytesResult GetPicture(int itemId, int accountID)
         {
             BytesResult res = TaskManager.StartResultTask<BytesResult>("EXCHANGE", "GET_PICTURE", itemId);
 

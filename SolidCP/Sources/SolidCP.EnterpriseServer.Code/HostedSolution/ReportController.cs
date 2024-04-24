@@ -43,9 +43,11 @@ using SolidCP.Providers.SharePoint;
 
 namespace SolidCP.EnterpriseServer.Code.HostedSolution
 {
-    public class ReportController
+    public class ReportController: ControllerBase
     {
-        private static void PopulateOrganizationStatisticsReport(Organization org, EnterpriseSolutionStatisticsReport report, string topReseller)
+        public ReportController(WebServiceBase provider) : base(provider) { }
+
+        private void PopulateOrganizationStatisticsReport(Organization org, EnterpriseSolutionStatisticsReport report, string topReseller)
         {
             OrganizationStatisticsRepotItem item = new OrganizationStatisticsRepotItem();
             PopulateBaseItem(item, org, topReseller);                        
@@ -181,32 +183,32 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
         }
 
 
-        private static HostedSharePointServer GetHostedSharePointServer(int serviceId)
+        private HostedSharePointServer GetHostedSharePointServer(int serviceId)
         {
             HostedSharePointServer sps = new HostedSharePointServer();
             ServiceProviderProxy.Init(sps, serviceId);
             return sps;
         }
 
-        private static int GetHostedSharePointServiceId(int packageId)
+        private int GetHostedSharePointServiceId(int packageId)
         {
             return PackageController.GetPackageServiceId(packageId, ResourceGroups.SharepointFoundationServer);
         }
 
 
-        private static HostedSharePointServerEnt GetHostedSharePointServerEnt(int serviceId)
+        private HostedSharePointServerEnt GetHostedSharePointServerEnt(int serviceId)
         {
             HostedSharePointServerEnt sps = new HostedSharePointServerEnt();
             ServiceProviderProxy.Init(sps, serviceId);
             return sps;
         }
 
-        private static int GetHostedSharePointEntServiceId(int packageId)
+        private int GetHostedSharePointEntServiceId(int packageId)
         {
             return PackageController.GetPackageServiceId(packageId, ResourceGroups.SharepointEnterpriseServer);
         }
         
-        private static void PopulateBaseItem(BaseStatistics stats, Organization org, string topReseller)
+        private void PopulateBaseItem(BaseStatistics stats, Organization org, string topReseller)
         {
             PackageInfo package;
             UserInfo user;
@@ -245,13 +247,13 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
         }
 
 
-        private static int GetCRMServiceId(int packageId)
+        private int GetCRMServiceId(int packageId)
         {
             int serviceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.HostedCRM);
             return serviceId;
         }
 
-        private static CRM GetCRMProxy(int packageId)
+        private CRM GetCRMProxy(int packageId)
         {
             int crmServiceId = GetCRMServiceId(packageId);
             CRM ws = new CRM();
@@ -259,7 +261,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             return ws;
         }
 
-        private static void PopulateCRMReportItems(Organization org, EnterpriseSolutionStatisticsReport report, string topReseller)
+        private void PopulateCRMReportItems(Organization org, EnterpriseSolutionStatisticsReport report, string topReseller)
         {
             if (org.CrmOrganizationId == Guid.Empty)
                 return;
@@ -324,7 +326,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             }
         }
 
-        private static void PopulateOrganizationData(Organization org, EnterpriseSolutionStatisticsReport report, string topReseller)
+        private void PopulateOrganizationData(Organization org, EnterpriseSolutionStatisticsReport report, string topReseller)
         {
             TaskManager.Write("Stat populate organization data "+org.Name);
 
@@ -430,23 +432,23 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             TaskManager.Write("End populate organization data " + org.Name);
         }
 
-        private static int GetExchangeServiceID(int packageId)
+        private int GetExchangeServiceID(int packageId)
         {
             return PackageController.GetPackageServiceId(packageId, ResourceGroups.Exchange);
         }
 
-        private static int GetLyncServiceID(int packageId)
+        private int GetLyncServiceID(int packageId)
         {
             return PackageController.GetPackageServiceId(packageId, ResourceGroups.Lync);
         }
 
-        private static int GetSfBServiceID(int packageId)
+        private int GetSfBServiceID(int packageId)
         {
             return PackageController.GetPackageServiceId(packageId, ResourceGroups.SfB);
         }
 
 
-        private static void PopulateSharePointItem(Organization org, EnterpriseSolutionStatisticsReport report, string topReseller)
+        private void PopulateSharePointItem(Organization org, EnterpriseSolutionStatisticsReport report, string topReseller)
         {
             List<SharePointSiteCollection> siteCollections;
             
@@ -500,7 +502,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
         }
 
 
-        private static void PopulateSharePointEnterpriseItem(Organization org, EnterpriseSolutionStatisticsReport report, string topReseller)
+        private void PopulateSharePointEnterpriseItem(Organization org, EnterpriseSolutionStatisticsReport report, string topReseller)
         {
             List<SharePointEnterpriseSiteCollection> siteCollections;
 
@@ -553,7 +555,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             }
         }
 
-        private static void PopulateExchangeReportItems(Organization org, EnterpriseSolutionStatisticsReport report, string topReseller)
+        private void PopulateExchangeReportItems(Organization org, EnterpriseSolutionStatisticsReport report, string topReseller)
         {
             TaskManager.Write("Exchange Report Items " + org.Name);
 
@@ -641,7 +643,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
 
 
-        private static void PopulateLyncReportItems(Organization org, EnterpriseSolutionStatisticsReport report, string topReseller)
+        private void PopulateLyncReportItems(Organization org, EnterpriseSolutionStatisticsReport report, string topReseller)
         {
 
             //Check if lync organization
@@ -706,7 +708,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
         }
 
-        private static void PopulateSfBReportItems(Organization org, EnterpriseSolutionStatisticsReport report, string topReseller)
+        private void PopulateSfBReportItems(Organization org, EnterpriseSolutionStatisticsReport report, string topReseller)
         {
 
             //Check if sfb organization
@@ -771,7 +773,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
         }
 
-        private static void PopulateSpaceData(int packageId, EnterpriseSolutionStatisticsReport report, string topReseller)
+        private void PopulateSpaceData(int packageId, EnterpriseSolutionStatisticsReport report, string topReseller)
         {
             TaskManager.Write("Populate SpaceData " + packageId);
 
@@ -802,7 +804,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             TaskManager.Write("End Populate SpaceData " + packageId);
         }
         
-        private static void PopulateUserData(UserInfo user, EnterpriseSolutionStatisticsReport report, string topReseller)
+        private void PopulateUserData(UserInfo user, EnterpriseSolutionStatisticsReport report, string topReseller)
         {
             TaskManager.Write("Populate UserData " + user.Username);
 
@@ -832,7 +834,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             TaskManager.Write("End Populate UserData " + user.Username);
         }
 
-        private static void GetUsersData(EnterpriseSolutionStatisticsReport report, int userId, bool generateExchangeReport, bool generateSharePointReport, bool generateCRMReport, bool generateOrganizationReport, bool generateLyncReport, bool generateSfBReport, string topReseller)
+        private void GetUsersData(EnterpriseSolutionStatisticsReport report, int userId, bool generateExchangeReport, bool generateSharePointReport, bool generateCRMReport, bool generateOrganizationReport, bool generateLyncReport, bool generateSfBReport, string topReseller)
         {
             TaskManager.Write("Get UsersData " + userId);
 
@@ -876,7 +878,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
         }
 
-        public static EnterpriseSolutionStatisticsReport GetEnterpriseSolutionStatisticsReport(int userId, bool generateExchangeReport, bool generateSharePointReport, bool generateCRMReport, bool generateOrganizationReport, bool generateLyncReport, bool generateSfBReport)
+        public EnterpriseSolutionStatisticsReport GetEnterpriseSolutionStatisticsReport(int userId, bool generateExchangeReport, bool generateSharePointReport, bool generateCRMReport, bool generateOrganizationReport, bool generateLyncReport, bool generateSfBReport)
         {
             TaskManager.Write("Get enterprise solution statistics report " + userId);
 

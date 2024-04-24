@@ -50,7 +50,7 @@ namespace SolidCP.EnterpriseServer
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [Policy("EnterpriseServerPolicy")]
     [ToolboxItem(false)]
-    public class esSharePointServers
+    public class esSharePointServers: WebService
     {
 
         #region Sites

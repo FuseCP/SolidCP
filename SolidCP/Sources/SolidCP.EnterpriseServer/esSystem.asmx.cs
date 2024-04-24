@@ -46,7 +46,7 @@ namespace SolidCP.EnterpriseServer
 	[WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
 	[Policy("EnterpriseServerPolicy")]
 	[ToolboxItem(false)]
-	public class esSystem
+	public class esSystem: WebService
 	{
 		[WebMethod]
 		public SystemSettings GetSystemSettings(string settingsName)

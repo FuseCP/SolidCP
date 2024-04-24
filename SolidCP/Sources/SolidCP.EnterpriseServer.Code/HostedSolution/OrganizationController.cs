@@ -64,18 +64,19 @@ using SolidCP.Providers.StorageSpaces;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class OrganizationController
+    public class OrganizationController: ControllerBase
     {
         public const string TemporyDomainName = "TempDomain";
         public const string UseStorageSpaces = "UseStorageSpaces";
-        private static readonly OrganizationFoldersManager _foldersManager;
+        private OrganizationFoldersManager foldersManager;
 
-        static OrganizationController()
+        public OrganizationController(WebServiceBase provider): base(provider)
         {
-            _foldersManager = new OrganizationFoldersManager();
-        }
+            foldersManager = new OrganizationFoldersManager(provider);
 
-        private static bool CheckUserQuota(int orgId, out int errorCode)
+		}
+
+        private bool CheckUserQuota(int orgId, out int errorCode)
         {
             errorCode = 0;
             OrganizationStatistics stats = GetOrganizationStatisticsByOrganization(orgId);
@@ -90,7 +91,7 @@ namespace SolidCP.EnterpriseServer
             return true;
         }
 
-        private static bool CheckDeletedUserQuota(int orgId, out int errorCode)
+        private bool CheckDeletedUserQuota(int orgId, out int errorCode)
         {
             errorCode = 0;
             OrganizationStatistics stats = GetOrganizationStatisticsByOrganization(orgId);
@@ -105,7 +106,7 @@ namespace SolidCP.EnterpriseServer
             return true;
         }
 
-        private static string EvaluateMailboxTemplate(int itemId, int accountId,
+        private string EvaluateMailboxTemplate(int itemId, int accountId,
             bool pmm, bool emailMode, bool signup, string template)
         {
             Hashtable items = new Hashtable();
@@ -125,7 +126,7 @@ namespace SolidCP.EnterpriseServer
             return PackageController.EvaluateTemplate(template, items);
         }
 
-        public static string GetOrganizationUserSummuryLetter(int itemId, int accountId, bool pmm, bool emailMode, bool signup)
+        public string GetOrganizationUserSummuryLetter(int itemId, int accountId, bool pmm, bool emailMode, bool signup)
         {
             // load organization
             Organization org = GetOrganization(itemId);
@@ -147,7 +148,7 @@ namespace SolidCP.EnterpriseServer
             return user.HtmlMail ? result : result.Replace("\n", "<br/>");
         }
 
-        public static int SendSummaryLetter(int itemId, int accountId, bool signup, string to, string cc)
+        public int SendSummaryLetter(int itemId, int accountId, bool signup, string to, string cc)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -189,7 +190,7 @@ namespace SolidCP.EnterpriseServer
             return MailHelper.SendMessage(from, to, cc, subject, body, priority, isHtml);
         }
 
-        private static bool CheckQuotas(int packageId, out int errorCode)
+        private bool CheckQuotas(int packageId, out int errorCode)
         {
 
             // check account
@@ -221,7 +222,7 @@ namespace SolidCP.EnterpriseServer
             return true;
         }
 
-        private static string CreateTemporyDomainName(int serviceId, string organizationId)
+        private string CreateTemporyDomainName(int serviceId, string organizationId)
         {
             // load service settings
             StringDictionary serviceSettings = ServerController.GetServiceSettings(serviceId);
@@ -230,7 +231,7 @@ namespace SolidCP.EnterpriseServer
             return String.IsNullOrEmpty(tempDomain) ? null : organizationId + "." + tempDomain;
         }
 
-        private static DomainInfo CreateNewDomain(int packageId, string domainName)
+        private DomainInfo CreateNewDomain(int packageId, string domainName)
         {
             // new domain
             DomainInfo domain = new DomainInfo();
@@ -242,7 +243,7 @@ namespace SolidCP.EnterpriseServer
             return domain;
         }
 
-        private static int CreateDomain(string domainName, int packageId, out bool domainCreated)
+        private int CreateDomain(string domainName, int packageId, out bool domainCreated)
         {
             // trying to locate (register) temp domain
             DomainInfo domain = null;
@@ -288,7 +289,7 @@ namespace SolidCP.EnterpriseServer
             return domainId;
         }
 
-        private static int AddOrganizationToPackageItems(Organization org, int serviceId, int packageId, string organizationName, string organizationId, string domainName)
+        private int AddOrganizationToPackageItems(Organization org, int serviceId, int packageId, string organizationName, string organizationId, string domainName)
         {
             org.ServiceId = serviceId;
             org.PackageId = packageId;
@@ -302,12 +303,12 @@ namespace SolidCP.EnterpriseServer
             return itemId;
         }
 
-        public static bool OrganizationIdentifierExists(string organizationId)
+        public bool OrganizationIdentifierExists(string organizationId)
         {
             return DataProvider.ExchangeOrganizationExists(organizationId);
         }
 
-        private static void RollbackOrganization(int packageId, string organizationId)
+        private void RollbackOrganization(int packageId, string organizationId)
         {
             try
             {
@@ -321,7 +322,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int CreateOrganization(int packageId, string organizationId, string organizationName, string domainName)
+        public int CreateOrganization(int packageId, string organizationId, string organizationName, string domainName)
         {
             int itemId = 0;
             int errorCode;
@@ -503,7 +504,7 @@ namespace SolidCP.EnterpriseServer
             return itemId;
         }
 
-        public static int DeleteOrganizationDomain(int itemId, int domainId)
+        public int DeleteOrganizationDomain(int itemId, int domainId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -569,7 +570,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static bool CheckDomainUsedByHostedOrganization(int itemId, int domainId)
+        public bool CheckDomainUsedByHostedOrganization(int itemId, int domainId)
         {
             DomainInfo domain = ServerController.GetDomain(domainId);
             if (domain == null)
@@ -578,7 +579,7 @@ namespace SolidCP.EnterpriseServer
             return (DataProvider.CheckDomainUsedByHostedOrganization(domain.DomainName) == 1);
         }
 
-        private static void DeleteOCSUsers(int itemId, ref bool successful)
+        private void DeleteOCSUsers(int itemId, ref bool successful)
         {
             try
             {
@@ -630,7 +631,7 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        private static bool DeleteLyncUsers(int itemId)
+        private bool DeleteLyncUsers(int itemId)
         {
             bool successful = false;
 
@@ -688,7 +689,7 @@ namespace SolidCP.EnterpriseServer
             return successful;
         }
 
-        private static bool DeleteSfBUsers(int itemId)
+        private bool DeleteSfBUsers(int itemId)
         {
             bool successful = false;
 
@@ -746,7 +747,7 @@ namespace SolidCP.EnterpriseServer
             return successful;
         }
 
-        public static int DeleteOrganization(int itemId)
+        public int DeleteOrganization(int itemId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -899,7 +900,7 @@ namespace SolidCP.EnterpriseServer
                 //Cleanup OrganizationFolders
                 try
                 {
-                    if (_foldersManager.DeleteFolders(itemId).IsSuccess == false)
+                    if (foldersManager.DeleteFolders(itemId).IsSuccess == false)
                     {
                         successful = false;
                     }
@@ -957,14 +958,14 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        public static Organizations GetOrganizationProxy(int serviceId)
+        public Organizations GetOrganizationProxy(int serviceId)
         {
             Organizations ws = new Organizations();
             ServiceProviderProxy.Init(ws, serviceId);
             return ws;
         }
 
-        public static List<Organization> GetOrganizations(int packageId, bool recursive)
+        public List<Organization> GetOrganizations(int packageId, bool recursive)
         {
             List<ServiceProviderItem> items = PackageController.GetPackageItemsByType(
                 packageId, typeof(Organization), recursive);
@@ -973,7 +974,7 @@ namespace SolidCP.EnterpriseServer
                 delegate(ServiceProviderItem item) { return (Organization)item; });
         }
 
-        public static DataSet GetRawOrganizationsPaged(int packageId, bool recursive,
+        public DataSet GetRawOrganizationsPaged(int packageId, bool recursive,
             string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             #region Demo Mode
@@ -1011,7 +1012,7 @@ namespace SolidCP.EnterpriseServer
                    recursive, filterColumn, filterValue, sortColumn, startRow, maximumRows);
         }
 
-        public static Organization GetOrganizationById(string organizationId)
+        public Organization GetOrganizationById(string organizationId)
         {
             if (string.IsNullOrEmpty(organizationId))
                 throw new ArgumentNullException("organizationId");
@@ -1023,7 +1024,7 @@ namespace SolidCP.EnterpriseServer
             return org;
         }
 
-        public static Organization GetOrganization(int itemId, bool withLog = true)
+        public Organization GetOrganization(int itemId, bool withLog = true)
         {
             #region Demo Mode
             if (IsDemoMode)
@@ -1054,18 +1055,18 @@ namespace SolidCP.EnterpriseServer
             return org;
         }
 
-        public static OrganizationStatistics GetOrganizationStatistics(int itemId)
+        public OrganizationStatistics GetOrganizationStatistics(int itemId)
         {
             return GetOrganizationStatisticsInternal(itemId, false);
         }
 
-        public static OrganizationStatistics GetOrganizationStatisticsByOrganization(int itemId)
+        public OrganizationStatistics GetOrganizationStatisticsByOrganization(int itemId)
         {
             return GetOrganizationStatisticsInternal(itemId, true);
         }
 
 
-        private static OrganizationStatistics GetOrganizationStatisticsInternal(int itemId, bool byOrganization)
+        private OrganizationStatistics GetOrganizationStatisticsInternal(int itemId, bool byOrganization)
         {
             #region Demo Mode
             if (IsDemoMode)
@@ -1381,7 +1382,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        private static List<QuotaValueInfo> GetServiceLevelQuotas(PackageContext cntx, int orgItemId)
+        private List<QuotaValueInfo> GetServiceLevelQuotas(PackageContext cntx, int orgItemId)
         {
             ServiceLevel[] serviceLevels = GetSupportServiceLevels();
             List<OrganizationUser> accounts = SearchAccounts(orgItemId, "", "", "", true);
@@ -1398,7 +1399,7 @@ namespace SolidCP.EnterpriseServer
             return quotas.ToList();
         }
 
-        public static int ChangeOrganizationDomainType(int itemId, int domainId, ExchangeAcceptedDomainType newDomainType)
+        public int ChangeOrganizationDomainType(int itemId, int domainId, ExchangeAcceptedDomainType newDomainType)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -1429,7 +1430,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int AddOrganizationDomain(int itemId, string domainName)
+        public int AddOrganizationDomain(int itemId, string domainName)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -1541,7 +1542,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int SetOrganizationDefaultDomain(int itemId, int domainId)
+        public int SetOrganizationDefaultDomain(int itemId, int domainId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -1565,7 +1566,7 @@ namespace SolidCP.EnterpriseServer
             return 0;
         }
 
-        public static void SetDefaultOrganization(int newDefaultOrganizationId, int currentDefaultOrganizationId)
+        public void SetDefaultOrganization(int newDefaultOrganizationId, int currentDefaultOrganizationId)
         {
             // place log record
             List<BackgroundTaskParameter> parameters = new List<BackgroundTaskParameter>();
@@ -1605,7 +1606,7 @@ namespace SolidCP.EnterpriseServer
 
         #region Users
 
-        public static List<OrganizationDeletedUser> GetOrganizationDeletedUsers(int itemId)
+        public List<OrganizationDeletedUser> GetOrganizationDeletedUsers(int itemId)
         {
             var result = new List<OrganizationDeletedUser>();
 
@@ -1627,7 +1628,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static OrganizationDeletedUsersPaged GetOrganizationDeletedUsersPaged(int itemId, string filterColumn, string filterValue, string sortColumn,
+        public OrganizationDeletedUsersPaged GetOrganizationDeletedUsersPaged(int itemId, string filterColumn, string filterValue, string sortColumn,
             int startRow, int maximumRows)
         {
             DataSet ds =
@@ -1664,7 +1665,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static OrganizationUsersPaged GetOrganizationUsersPaged(int itemId, string filterColumn, string filterValue, string sortColumn,
+        public OrganizationUsersPaged GetOrganizationUsersPaged(int itemId, string filterColumn, string filterValue, string sortColumn,
             int startRow, int maximumRows)
         {
 
@@ -1723,7 +1724,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static List<OrganizationUser> GetOrganizationUsersWithExpiredPassword(int itemId, int daysBeforeExpiration)
+        public List<OrganizationUser> GetOrganizationUsersWithExpiredPassword(int itemId, int daysBeforeExpiration)
         {
             // load organization
             Organization org = GetOrganization(itemId);
@@ -1749,7 +1750,7 @@ namespace SolidCP.EnterpriseServer
             return expiredUsersDb;
         }
 
-        public static ResultObject SendResetUserPasswordLinkSms(int itemId, int accountId, string reason,
+        public ResultObject SendResetUserPasswordLinkSms(int itemId, int accountId, string reason,
             string phoneTo = null)
         {
             var result = TaskManager.StartResultTask<ResultObject>("ORGANIZATION", "SEND_USER_PASSWORD_RESET_SMS",
@@ -1818,7 +1819,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static ResultObject SendUserPasswordRequestSms(int itemId, int accountId, string reason, string phoneTo = null)
+        public ResultObject SendUserPasswordRequestSms(int itemId, int accountId, string reason, string phoneTo = null)
         {
             var result = TaskManager.StartResultTask<ResultObject>("ORGANIZATION", "SEND_USER_PASSWORD_REQUEST_SMS",
                 itemId);
@@ -1885,7 +1886,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static ResultObject SendResetUserPasswordPincodeSms(Guid token, string phoneTo = null)
+        public ResultObject SendResetUserPasswordPincodeSms(Guid token, string phoneTo = null)
         {
             var result = TaskManager.StartResultTask<ResultObject>("ORGANIZATION", "SEND_USER_PASSWORD_RESET_SMS_PINCODE");
 
@@ -1952,7 +1953,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static ResultObject SendResetUserPasswordPincodeEmail(Guid token, string mailTo = null)
+        public ResultObject SendResetUserPasswordPincodeEmail(Guid token, string mailTo = null)
         {
             var result = TaskManager.StartResultTask<ResultObject>("ORGANIZATION", "SEND_USER_PASSWORD_RESET_EMAIL_PINCODE");
 
@@ -2036,14 +2037,14 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static string GeneratePincode()
+        private string GeneratePincode()
         {
             var random = new Random(Guid.NewGuid().GetHashCode());
 
             return random.Next(10000, 99999).ToString(CultureInfo.InvariantCulture);
         }
 
-        private static MessageResource SendSms(string to, string body)
+        private MessageResource SendSms(string to, string body)
         {
             SystemSettings settings = SystemController.GetSystemSettingsInternal(SystemSettings.TWILIO_SETTINGS, false);
 
@@ -2080,7 +2081,7 @@ namespace SolidCP.EnterpriseServer
         /// <param name="reason">Reason why reset email is sent.</param>
         /// <param name="mailTo">Optional, if null accountID user PrimaryEmailAddress will be used</param>
         /// <param name="finalStep">Url direction</param>
-        public static void SendResetUserPasswordEmail(int itemId, int accountId, string reason, string mailTo, bool finalStep)
+        public void SendResetUserPasswordEmail(int itemId, int accountId, string reason, string mailTo, bool finalStep)
         {
             // load organization
             Organization org = GetOrganization(itemId);
@@ -2110,7 +2111,7 @@ namespace SolidCP.EnterpriseServer
             SendUserPasswordEmail(owner, user, reason, mailTo, logoUrl, UserSettings.USER_PASSWORD_RESET_LETTER, "USER_PASSWORD_RESET_LETTER", finalStep);
         }
 
-        public static void SendUserPasswordRequestEmail(int itemId, int accountId, string reason, string mailTo, bool finalStep)
+        public void SendUserPasswordRequestEmail(int itemId, int accountId, string reason, string mailTo, bool finalStep)
         {
             // load organization
             Organization org = GetOrganization(itemId);
@@ -2137,12 +2138,12 @@ namespace SolidCP.EnterpriseServer
             SendUserPasswordEmail(owner, user, reason, mailTo, logoUrl, UserSettings.USER_PASSWORD_REQUEST_LETTER, "USER_PASSWORD_REQUEST_LETTER", finalStep);
         }
 
-        public static void SendUserExpirationPasswordEmail(UserInfo owner, OrganizationUser user, string reason, string mailTo, string logoUrl)
+        public void SendUserExpirationPasswordEmail(UserInfo owner, OrganizationUser user, string reason, string mailTo, string logoUrl)
         {
             SendUserPasswordEmail(owner, user, reason, user.PrimaryEmailAddress, logoUrl, UserSettings.USER_PASSWORD_EXPIRATION_LETTER, "USER_PASSWORD_EXPIRATION_LETTER", true);
         }
 
-        public static void SendUserPasswordEmail(UserInfo owner, OrganizationUser user, string reason, string mailTo, string logoUrl, string settingsName, string taskName, bool finalStep)
+        public void SendUserPasswordEmail(UserInfo owner, OrganizationUser user, string reason, string mailTo, string logoUrl, string settingsName, string taskName, bool finalStep)
         {
             UserSettings settings = UserController.GetUserSettings(owner.UserId,
                 settingsName);
@@ -2204,27 +2205,27 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static AccessToken GetAccessToken(Guid accessToken, AccessTokenTypes type)
+        public AccessToken GetAccessToken(Guid accessToken, AccessTokenTypes type)
         {
             return ObjectUtils.FillObjectFromDataReader<AccessToken>(DataProvider.GetAccessTokenByAccessToken(accessToken, type));
         }
 
-        public static void DeleteAccessToken(Guid accessToken, AccessTokenTypes type)
+        public void DeleteAccessToken(Guid accessToken, AccessTokenTypes type)
         {
             DataProvider.DeleteAccessToken(accessToken, type);
         }
 
-        public static void DeleteAllExpiredTokens()
+        public void DeleteAllExpiredTokens()
         {
             DataProvider.DeleteExpiredAccessTokens();
         }
 
-        public static SystemSettings GetWebDavSystemSettings()
+        public SystemSettings GetWebDavSystemSettings()
         {
             return SystemController.GetSystemSettingsInternal(SystemSettings.WEBDAV_PORTAL_SETTINGS, false);
         }
 
-        public static string GenerateUserPasswordResetLink(int itemId, int accountId, out Guid tokenGuid, string pincode = null, string resetUrl = null)
+        public string GenerateUserPasswordResetLink(int itemId, int accountId, out Guid tokenGuid, string pincode = null, string resetUrl = null)
         {
             var settings = GetWebDavSystemSettings();
             tokenGuid = new Guid();
@@ -2260,7 +2261,7 @@ namespace SolidCP.EnterpriseServer
             return resultUrl.ToString();
         }
 
-        public static AccessToken CreatePasswordResetAccessToken(int itemId, int accountId)
+        public AccessToken CreatePasswordResetAccessToken(int itemId, int accountId)
         {
             var settings = GetWebDavSystemSettings();
 
@@ -2274,7 +2275,7 @@ namespace SolidCP.EnterpriseServer
             return CreateAccessToken(itemId, accountId, AccessTokenTypes.PasswrodReset, hours);
         }
 
-        private static AccessToken CreateAccessToken(int itemId, int accountId, AccessTokenTypes type, int hours)
+        private AccessToken CreateAccessToken(int itemId, int accountId, AccessTokenTypes type, int hours)
         {
             var token = new AccessToken
             {
@@ -2290,12 +2291,12 @@ namespace SolidCP.EnterpriseServer
             return token;
         }
 
-        public static void SetAccessTokenResponse(Guid accessToken, string response)
+        public void SetAccessTokenResponse(Guid accessToken, string response)
         {
             DataProvider.SetAccessTokenResponseMessage(accessToken, response);
         }
 
-        public static bool CheckPhoneNumberIsInUse(int itemId, string phoneNumber, string userSamAccountName = null)
+        public bool CheckPhoneNumberIsInUse(int itemId, string phoneNumber, string userSamAccountName = null)
         {
             // load organization
             Organization org = GetOrganization(itemId);
@@ -2310,7 +2311,7 @@ namespace SolidCP.EnterpriseServer
             return orgProxy.CheckPhoneNumberIsInUse(phoneNumber, userSamAccountName);
         }
 
-        public static void UpdateOrganizationPasswordSettings(int itemId, OrganizationPasswordSettings settings)
+        public void UpdateOrganizationPasswordSettings(int itemId, OrganizationPasswordSettings settings)
         {
             TaskManager.StartTask("ORGANIZATION", "UPDATE_PASSWORD_SETTINGS");
 
@@ -2346,7 +2347,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static OrganizationPasswordSettings GetOrganizationPasswordSettings(int itemId)
+        public OrganizationPasswordSettings GetOrganizationPasswordSettings(int itemId)
         {
             var passwordSettings = GetOrganizationSettings<OrganizationPasswordSettings>(itemId, OrganizationSettings.PasswordSettings);
 
@@ -2408,7 +2409,7 @@ namespace SolidCP.EnterpriseServer
             return passwordSettings;
         }
 
-        public static T GetValueSafe<T>(string[] array, int index, T defaultValue)
+        public T GetValueSafe<T>(string[] array, int index, T defaultValue)
         {
             if (array.Length > index)
             {
@@ -2423,7 +2424,7 @@ namespace SolidCP.EnterpriseServer
             return defaultValue;
         }
 
-        public static void UpdateOrganizationGeneralSettings(int itemId, OrganizationGeneralSettings settings)
+        public void UpdateOrganizationGeneralSettings(int itemId, OrganizationGeneralSettings settings)
         {
             TaskManager.StartTask("ORGANIZATION", "UPDATE_GENERAL_SETTINGS");
 
@@ -2455,12 +2456,12 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static OrganizationGeneralSettings GetOrganizationGeneralSettings(int itemId)
+        public OrganizationGeneralSettings GetOrganizationGeneralSettings(int itemId)
         {
             return GetOrganizationSettings<OrganizationGeneralSettings>(itemId, OrganizationSettings.GeneralSettings);
         }
 
-        private static T GetOrganizationSettings<T>(int itemId, string settingsName)
+        private T GetOrganizationSettings<T>(int itemId, string settingsName)
         {
             var entity = ObjectUtils.FillObjectFromDataReader<OrganizationSettingsEntity>(DataProvider.GetOrganizationSettings(itemId, settingsName));
 
@@ -2472,20 +2473,20 @@ namespace SolidCP.EnterpriseServer
             return ObjectUtils.Deserialize<T>(entity.Xml);
         }
 
-        private static bool EmailAddressExists(string emailAddress, bool checkContacts)
+        private bool EmailAddressExists(string emailAddress, bool checkContacts)
         {
             return DataProvider.ExchangeAccountEmailAddressExists(emailAddress, checkContacts);
         }
 
 
-        private static int AddOrganizationUser(int itemId, string accountName, string displayName, string email, string sAMAccountName, string accountPassword, string subscriberNumber)
+        private int AddOrganizationUser(int itemId, string accountName, string displayName, string email, string sAMAccountName, string accountPassword, string subscriberNumber)
         {
             return DataProvider.AddExchangeAccount(itemId, (int)ExchangeAccountType.User, accountName, displayName, email, false, string.Empty,
                                             sAMAccountName, 0, subscriberNumber.Trim());
 
         }
 
-        public static string GetAccountName(string loginName)
+        public string GetAccountName(string loginName)
         {
             //string []parts = loginName.Split('@');
             //return parts != null && parts.Length > 1 ? parts[0] : loginName;
@@ -2493,7 +2494,7 @@ namespace SolidCP.EnterpriseServer
 
         }
 
-        public static int CreateUser(int itemId, string displayName, string name, string domain, string password, string subscriberNumber, bool enabled, bool sendNotification, string to, out string accountName)
+        public int CreateUser(int itemId, string displayName, string name, string domain, string password, string subscriberNumber, bool enabled, bool sendNotification, string to, out string accountName)
         {
             if (string.IsNullOrEmpty(displayName))
                 throw new ArgumentNullException("displayName");
@@ -2599,7 +2600,7 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        public static string BuildAccountNameEx(Organization org, string name)
+        public string BuildAccountNameEx(Organization org, string name)
         {
             StringDictionary serviceSettings = ServerController.GetServiceSettings(org.ServiceId);
 
@@ -2619,7 +2620,7 @@ namespace SolidCP.EnterpriseServer
         /// <summary> Checks should or not user name include organization id. </summary>
         /// <param name="serviceSettings"> The service settings. </param>
         /// <returns> True - if organization id should be appended. </returns>
-        private static UserFormatType GetUserFormatType(StringDictionary serviceSettings)
+        private UserFormatType GetUserFormatType(StringDictionary serviceSettings)
         {
             if (!serviceSettings.ContainsKey("usernameformat"))
             {
@@ -2639,7 +2640,7 @@ namespace SolidCP.EnterpriseServer
             return UserFormatType.AppendLongCounter;
         }
 
-        public static int ImportUser(int itemId, string accountName, string displayName, string name, string domain, string password, string subscriberNumber)
+        public int ImportUser(int itemId, string accountName, string displayName, string name, string domain, string password, string subscriberNumber)
         {
             if (string.IsNullOrEmpty(accountName))
                 throw new ArgumentNullException("accountName");
@@ -2720,12 +2721,12 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        private static void AddAccountEmailAddress(int accountId, string emailAddress)
+        private void AddAccountEmailAddress(int accountId, string emailAddress)
         {
             DataProvider.AddExchangeAccountEmailAddress(accountId, emailAddress);
         }
 
-        private static string BuildAccountName(string orgId, string name, int ServiceId)
+        private string BuildAccountName(string orgId, string name, int ServiceId)
         {
             string accountName = name = name.Replace(" ", "");
             int counter = 0;
@@ -2749,7 +2750,7 @@ namespace SolidCP.EnterpriseServer
         /// <param name="name"> The name. </param>
         /// <param name="serviceId"> The service identifier. </param>
         /// <returns> The account name with organization Id. </returns>
-        public static string BuildAccountNameWithOrgId(string orgId, string name, int serviceId)
+        public string BuildAccountNameWithOrgId(string orgId, string name, int serviceId)
         {
             name = ((orgId.Length + name.Length) > 19 && name.Length > 9) ? name.Substring(0, (19 - orgId.Length) < 10 ? 10 : 19 - orgId.Length) : name;
 
@@ -2787,7 +2788,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        private static string BuildAccountNameWithCounterIfNeeded(string orgId, string name, int ServiceId)
+        private string BuildAccountNameWithCounterIfNeeded(string orgId, string name, int ServiceId)
         {
             string accountName = name = name.Replace(" ", ""); //todo: this mutation of name is asking for trouble, as we use it later in the flow also.
             int counter = 0;
@@ -2805,7 +2806,7 @@ namespace SolidCP.EnterpriseServer
             return accountName;
         }
 
-        private static string genSamLogin(string login, string strCounter)
+        private string genSamLogin(string login, string strCounter)
         {
             int maxLogin = 20;
             int fullLen = login.Length + strCounter.Length;
@@ -2821,7 +2822,7 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        private static bool AccountExists(string accountName, int ServiceId)
+        private bool AccountExists(string accountName, int ServiceId)
         {
             if (!DataProvider.ExchangeAccountExists(accountName))
             {
@@ -2836,7 +2837,7 @@ namespace SolidCP.EnterpriseServer
 
         #region Deleted Users
 
-        public static int SetDeletedUser(int itemId, int accountId, bool enableForceArchive)
+        public int SetDeletedUser(int itemId, int accountId, bool enableForceArchive)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -2918,8 +2919,8 @@ namespace SolidCP.EnterpriseServer
 
                             if (UsingStorageSpaces(serviceId))
                             {
-                                var folder = _foldersManager.GetFolder(itemId, StorageSpaceFolderTypes.DeletedUsersData.ToString())
-                                    ?? _foldersManager.CreateFolder(org.OrganizationId, itemId, StorageSpaceFolderTypes.DeletedUsersData.ToString(),
+                                var folder = foldersManager.GetFolder(itemId, StorageSpaceFolderTypes.DeletedUsersData.ToString())
+                                    ?? foldersManager.CreateFolder(org.OrganizationId, itemId, StorageSpaceFolderTypes.DeletedUsersData.ToString(),
                                         StorageSpacesController.GetFsrmQuotaInBytes(diskSpaceQuota), QuotaType.Hard);
 
                                 deletedUser.StoragePath = StorageSpacesController.GetParentUnc(folder.UncPath);
@@ -2981,7 +2982,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static byte[] GetArchiveFileBinaryChunk(int packageId, int itemId, int deleteAccountId, int offset, int length)
+        public byte[] GetArchiveFileBinaryChunk(int packageId, int itemId, int deleteAccountId, int offset, int length)
         {
             var user = GetDeletedUser(deleteAccountId);
 
@@ -2994,7 +2995,7 @@ namespace SolidCP.EnterpriseServer
                 return os.GetFileBinaryChunk(path, offset, length);
             }
 
-            var folder = _foldersManager.GetFolder(itemId, StorageSpaceFolderTypes.DeletedUsersData.ToString());
+            var folder = foldersManager.GetFolder(itemId, StorageSpaceFolderTypes.DeletedUsersData.ToString());
 
             if (folder == null)
             {
@@ -3004,7 +3005,7 @@ namespace SolidCP.EnterpriseServer
             return StorageSpacesController.GetFileBinaryChunk(folder.StorageSpaceId, path, offset, length);
         }
 
-        private static bool UsingStorageSpaces(int serviceId)
+        private bool UsingStorageSpaces(int serviceId)
         {
             var settings = ServerController.GetServiceSettings(serviceId);
 
@@ -3026,7 +3027,7 @@ namespace SolidCP.EnterpriseServer
             return Convert.ToBoolean(settings[UseStorageSpaces]);
         }
 
-        private static bool CheckScheduleTaskRun(int packageId, string taskId)
+        private bool CheckScheduleTaskRun(int packageId, string taskId)
         {
             var schedules = new List<ScheduleInfo>();
 
@@ -3043,7 +3044,7 @@ namespace SolidCP.EnterpriseServer
             return false;
         }
 
-        private static int AddScheduleTask(int packageId, string taskId, string taskName)
+        private int AddScheduleTask(int packageId, string taskId, string taskName)
         {
             return SchedulerController.AddSchedule(new ScheduleInfo
                 {
@@ -3063,7 +3064,7 @@ namespace SolidCP.EnterpriseServer
                 });
         }
 
-        private static bool CheckFolderExists(int packageId, string path, string folderName)
+        private bool CheckFolderExists(int packageId, string path, string folderName)
         {
             var os = GetOS(packageId);
 
@@ -3075,7 +3076,7 @@ namespace SolidCP.EnterpriseServer
             return false;
         }
 
-        private static void CreateFolder(int packageId, string path, string folderName)
+        private void CreateFolder(int packageId, string path, string folderName)
         {
             var os = GetOS(packageId);
 
@@ -3085,7 +3086,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        private static void RemoveArchive(int packageId, string path, string folderName, string fileName)
+        private void RemoveArchive(int packageId, string path, string folderName, string fileName)
         {
             var os = GetOS(packageId);
 
@@ -3095,21 +3096,21 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        private static string GetLocationDrive(string path)
+        private string GetLocationDrive(string path)
         {
             var drive = System.IO.Path.GetPathRoot(path);
 
             return drive.Split(':')[0];
         }
 
-        private static string GetDirectory(string path)
+        private string GetDirectory(string path)
         {
             var drive = System.IO.Path.GetPathRoot(path);
             
             return path.Replace(drive, string.Empty);
         }
 
-        private static void SetFRSMQuotaOnFolder(int packageId, string path, string folderName, QuotaValueInfo quotaInfo, QuotaType quotaType)
+        private void SetFRSMQuotaOnFolder(int packageId, string path, string folderName, QuotaValueInfo quotaInfo, QuotaType quotaType)
         {
             var os = GetOS(packageId);
 
@@ -3138,7 +3139,7 @@ namespace SolidCP.EnterpriseServer
 
         #endregion
 
-        public static int DeleteUser(int itemId, int accountId)
+        public int DeleteUser(int itemId, int accountId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -3228,7 +3229,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static OrganizationDeletedUser GetDeletedUser(int accountId)
+        public OrganizationDeletedUser GetDeletedUser(int accountId)
         {
             OrganizationDeletedUser deletedUser = ObjectUtils.FillObjectFromDataReader<OrganizationDeletedUser>(
                 DataProvider.GetOrganizationDeletedUser(accountId));
@@ -3241,18 +3242,18 @@ namespace SolidCP.EnterpriseServer
             return deletedUser;
         }
 
-        private static int AddDeletedUser(OrganizationDeletedUser deletedUser)
+        private int AddDeletedUser(OrganizationDeletedUser deletedUser)
         {
             return DataProvider.AddOrganizationDeletedUser(
                 deletedUser.AccountId, (int)deletedUser.OriginAT, deletedUser.StoragePath, deletedUser.FolderName, deletedUser.FileName, deletedUser.ExpirationDate);
         }
 
-        private static void RemoveDeletedUser(int id)
+        private void RemoveDeletedUser(int id)
         {
             DataProvider.DeleteOrganizationDeletedUser(id);
         }
 
-        public static OrganizationUser GetAccount(int itemId, int userId, bool withLog = true)
+        public OrganizationUser GetAccount(int itemId, int userId, bool withLog = true)
         {
             OrganizationUser account = ObjectUtils.FillObjectFromDataReader<OrganizationUser>(
                 DataProvider.GetExchangeAccount(itemId, userId));
@@ -3267,7 +3268,7 @@ namespace SolidCP.EnterpriseServer
             return account;
         }
 
-        public static OrganizationUser GetAccountByAccountName(int itemId, string AccountName)
+        public OrganizationUser GetAccountByAccountName(int itemId, string AccountName)
         {
             OrganizationUser account = ObjectUtils.FillObjectFromDataReader<OrganizationUser>(
                 DataProvider.GetExchangeAccountByAccountName(itemId, AccountName));
@@ -3279,7 +3280,7 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        private static void DeleteUserFromMetabase(int itemId, int accountId)
+        private void DeleteUserFromMetabase(int itemId, int accountId)
         {
             // try to get organization
             if (GetOrganization(itemId, false) == null)
@@ -3288,7 +3289,7 @@ namespace SolidCP.EnterpriseServer
             DataProvider.DeleteExchangeAccount(itemId, accountId);
         }
 
-        public static OrganizationUser GetUserGeneralSettings(int itemId, int accountId)
+        public OrganizationUser GetUserGeneralSettings(int itemId, int accountId)
         {
             #region Demo Mode
             if (IsDemoMode)
@@ -3348,7 +3349,7 @@ namespace SolidCP.EnterpriseServer
             return (account);
         }
 
-        public static OrganizationUser GetUserGeneralSettingsWithExtraData(int itemId, int accountId)
+        public OrganizationUser GetUserGeneralSettingsWithExtraData(int itemId, int accountId)
         {
             OrganizationUser account = null;
             Organization org = null;
@@ -3394,7 +3395,7 @@ namespace SolidCP.EnterpriseServer
             return (account);
         }
 
-        public static int SetUserGeneralSettings(int itemId, int accountId, string displayName,
+        public int SetUserGeneralSettings(int itemId, int accountId, string displayName,
             string password, bool hideAddressBook, bool disabled, bool locked, string firstName, string initials,
             string lastName, string address, string city, string state, string zip, string country,
             string jobTitle, string company, string department, string office, string managerAccountName,
@@ -3502,7 +3503,7 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        public static int SetUserPrincipalName(int itemId, int accountId, string userPrincipalName, bool inherit)
+        public int SetUserPrincipalName(int itemId, int accountId, string userPrincipalName, bool inherit)
         {
 
             // check account
@@ -3612,7 +3613,7 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        public static int SetUserPassword(int itemId, int accountId, string password)
+        public int SetUserPassword(int itemId, int accountId, string password)
         {
 
             // check account
@@ -3663,12 +3664,12 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        private static void UpdateAccountServiceLevelSettings(ExchangeAccount account)
+        private void UpdateAccountServiceLevelSettings(ExchangeAccount account)
         {
             DataProvider.UpdateExchangeAccountServiceLevelSettings(account.AccountId, account.LevelId, account.IsVIP);
         }
 
-        private static void UpdateAccount(ExchangeAccount account)
+        private void UpdateAccount(ExchangeAccount account)
         {
             DataProvider.UpdateExchangeAccount(account.AccountId, account.AccountName, account.AccountType, account.DisplayName,
                 account.PrimaryEmailAddress, account.MailEnabledPublicFolder,
@@ -3678,7 +3679,7 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        public static List<OrganizationUser> SearchAccounts(int itemId,
+        public List<OrganizationUser> SearchAccounts(int itemId,
 
             string filterColumn, string filterValue, string sortColumn, bool includeMailboxes)
         {
@@ -3740,7 +3741,7 @@ namespace SolidCP.EnterpriseServer
              */
         }
 
-        public static int GetAccountIdByUserPrincipalName(int itemId, string userPrincipalName)
+        public int GetAccountIdByUserPrincipalName(int itemId, string userPrincipalName)
         {
             // place log record
             TaskManager.StartTask("ORGANIZATION", "GET_ACCOUNT_BYUPN", itemId);
@@ -3779,7 +3780,7 @@ namespace SolidCP.EnterpriseServer
 
         #endregion
 
-        public static List<OrganizationDomainName> GetOrganizationDomains(int itemId)
+        public List<OrganizationDomainName> GetOrganizationDomains(int itemId)
         {
 
             #region Demo Mode
@@ -3827,7 +3828,7 @@ namespace SolidCP.EnterpriseServer
             return domains;
         }
 
-        private static OrganizationUser GetDemoUserGeneralSettings()
+        private OrganizationUser GetDemoUserGeneralSettings()
         {
             OrganizationUser user = new OrganizationUser();
             user.DisplayName = "John Smith";
@@ -3838,7 +3839,7 @@ namespace SolidCP.EnterpriseServer
             return user;
         }
 
-        private static bool IsDemoMode
+        private bool IsDemoMode
         {
             get
             {
@@ -3847,7 +3848,7 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        public static PasswordPolicyResult GetPasswordPolicy(int itemId)
+        public PasswordPolicyResult GetPasswordPolicy(int itemId)
         {
             PasswordPolicyResult res = new PasswordPolicyResult { IsSuccess = true };
             try
@@ -3891,7 +3892,7 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        private static OCSServer GetOCSProxy(int itemId)
+        private OCSServer GetOCSProxy(int itemId)
         {
             Organization org = OrganizationController.GetOrganization(itemId);
             int serviceId = PackageController.GetPackageServiceId(org.PackageId, ResourceGroups.OCS);
@@ -3903,7 +3904,7 @@ namespace SolidCP.EnterpriseServer
             return ocs;
         }
 
-        private static int AddAccount(int itemId, ExchangeAccountType accountType,
+        private int AddAccount(int itemId, ExchangeAccountType accountType,
             string accountName, string displayName, string primaryEmailAddress, bool mailEnabledPublicFolder,
             MailboxManagerActions mailboxManagerActions, string samAccountName, string accountPassword, int mailboxPlanId, string subscriberNumber)
         {
@@ -3914,7 +3915,7 @@ namespace SolidCP.EnterpriseServer
 
         #region Additional Default Groups
 
-        public static List<AdditionalGroup> GetAdditionalGroups(int userId)
+        public List<AdditionalGroup> GetAdditionalGroups(int userId)
         {
             List<AdditionalGroup> additionalGroups = new List<AdditionalGroup>();
 
@@ -3934,24 +3935,24 @@ namespace SolidCP.EnterpriseServer
             return additionalGroups;
         }
 
-        public static void UpdateAdditionalGroup(int groupId, string groupName)
+        public void UpdateAdditionalGroup(int groupId, string groupName)
         {
             DataProvider.UpdateAdditionalGroup(groupId, groupName);
         }
 
-        public static void DeleteAdditionalGroup(int groupId)
+        public void DeleteAdditionalGroup(int groupId)
         {
             DataProvider.DeleteAdditionalGroup(groupId);
         }
 
-        public static int AddAdditionalGroup(int userId, string groupName)
+        public int AddAdditionalGroup(int userId, string groupName)
         {
             return DataProvider.AddAdditionalGroup(userId, groupName);
         }
 
         #endregion
 
-        public static int CreateSecurityGroup(int itemId, string displayName)
+        public int CreateSecurityGroup(int itemId, string displayName)
         {
             if (string.IsNullOrEmpty(displayName))
                 throw new ArgumentNullException("displayName");
@@ -4026,7 +4027,7 @@ namespace SolidCP.EnterpriseServer
             return securityGroupId;
         }
 
-        private static OrganizationSecurityGroup GetDemoSecurityGroupGeneralSettings()
+        private OrganizationSecurityGroup GetDemoSecurityGroupGeneralSettings()
         {
             OrganizationSecurityGroup c = new OrganizationSecurityGroup();
             c.DisplayName = "Fabrikam Sales";
@@ -4035,7 +4036,7 @@ namespace SolidCP.EnterpriseServer
             return c;
         }
 
-        private static void FillSecurityGroupsNotes(int itemId, List<ExchangeAccount> accounts)
+        private void FillSecurityGroupsNotes(int itemId, List<ExchangeAccount> accounts)
         {
             #region Demo Mode
             if (IsDemoMode)
@@ -4087,7 +4088,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static OrganizationSecurityGroup GetSecurityGroupGeneralSettings(int itemId, int accountId)
+        public OrganizationSecurityGroup GetSecurityGroupGeneralSettings(int itemId, int accountId)
         {
             #region Demo Mode
             if (IsDemoMode)
@@ -4157,7 +4158,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int DeleteSecurityGroup(int itemId, int accountId)
+        public int DeleteSecurityGroup(int itemId, int accountId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -4197,7 +4198,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int SetSecurityGroupGeneralSettings(int itemId, int accountId, string displayName, string[] memberAccounts, string notes)
+        public int SetSecurityGroupGeneralSettings(int itemId, int accountId, string displayName, string[] memberAccounts, string notes)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -4261,7 +4262,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static ExchangeAccountsPaged GetOrganizationSecurityGroupsPaged(int itemId, string filterColumn, string filterValue, string sortColumn,
+        public ExchangeAccountsPaged GetOrganizationSecurityGroupsPaged(int itemId, string filterColumn, string filterValue, string sortColumn,
             int startRow, int maximumRows)
         {
 
@@ -4310,7 +4311,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static int AddObjectToSecurityGroup(int itemId, int accountId, string groupName)
+        public int AddObjectToSecurityGroup(int itemId, int accountId, string groupName)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -4349,7 +4350,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int DeleteObjectFromSecurityGroup(int itemId, int accountId, string groupName)
+        public int DeleteObjectFromSecurityGroup(int itemId, int accountId, string groupName)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -4390,7 +4391,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static ExchangeAccount[] GetSecurityGroupsByMember(int itemId, int accountId)
+        public ExchangeAccount[] GetSecurityGroupsByMember(int itemId, int accountId)
         {
             #region Demo Mode
             if (IsDemoMode)
@@ -4449,7 +4450,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static List<ExchangeAccount> SearchOrganizationAccounts(int itemId, string filterColumn, string filterValue,
+        public List<ExchangeAccount> SearchOrganizationAccounts(int itemId, string filterColumn, string filterValue,
             string sortColumn, bool includeOnlySecurityGroups)
         {
             #region Demo Mode
@@ -4557,7 +4558,7 @@ namespace SolidCP.EnterpriseServer
             //return accounts;
         }
 
-        public static ExchangeAccount[] GetUserGroups(int itemId, int accountId)
+        public ExchangeAccount[] GetUserGroups(int itemId, int accountId)
         {
 
             // place log record
@@ -4660,7 +4661,7 @@ namespace SolidCP.EnterpriseServer
 
             #region Service Levels
 
-            public static int AddSupportServiceLevel(string levelName, string levelDescription)
+            public int AddSupportServiceLevel(string levelName, string levelDescription)
         {
             if (string.IsNullOrEmpty(levelName))
                 throw new ArgumentNullException("levelName");
@@ -4686,7 +4687,7 @@ namespace SolidCP.EnterpriseServer
             return levelID;
         }
 
-        public static ResultObject DeleteSupportServiceLevel(int levelId)
+        public ResultObject DeleteSupportServiceLevel(int levelId)
         {
             ResultObject res = TaskManager.StartResultTask<ResultObject>("ORGANIZATION", "DELETE_SUPPORT_SERVICE_LEVEL", levelId);
 
@@ -4709,7 +4710,7 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        public static void UpdateSupportServiceLevel(int levelID, string levelName, string levelDescription)
+        public void UpdateSupportServiceLevel(int levelID, string levelName, string levelDescription)
         {
             // place log record
             TaskManager.StartTask("ORGANIZATION", "UPDATE_SUPPORT_SERVICE_LEVEL", levelID);
@@ -4731,7 +4732,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static ServiceLevel[] GetSupportServiceLevels()
+        public ServiceLevel[] GetSupportServiceLevels()
         {
             // place log record
             TaskManager.StartTask("ORGANIZATION", "GET_SUPPORT_SERVICE_LEVELS");
@@ -4750,7 +4751,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static ServiceLevel GetSupportServiceLevel(int levelID)
+        public ServiceLevel GetSupportServiceLevel(int levelID)
         {
             // place log record
             TaskManager.StartTask("ORGANIZATION", "GET_SUPPORT_SERVICE_LEVEL", levelID);
@@ -4770,7 +4771,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        private static bool CheckServiceLevelUsage(int levelID)
+        private bool CheckServiceLevelUsage(int levelID)
         {
             return DataProvider.CheckServiceLevelUsage(levelID);
         }
@@ -4779,7 +4780,7 @@ namespace SolidCP.EnterpriseServer
 
         #region OS
 
-        private static SolidCP.Server.Client.OperatingSystem GetOS(int packageId)
+        private SolidCP.Server.Client.OperatingSystem GetOS(int packageId)
         {
             int sid = PackageController.GetPackageServiceId(packageId, ResourceGroups.Os);
             if (sid <= 0)
@@ -4793,7 +4794,7 @@ namespace SolidCP.EnterpriseServer
 
         #endregion
 
-        public static DataSet GetOrganizationObjectsByDomain(int itemId, string domainName)
+        public DataSet GetOrganizationObjectsByDomain(int itemId, string domainName)
         {
             return DataProvider.GetOrganizationObjectsByDomain(itemId, domainName);
         }

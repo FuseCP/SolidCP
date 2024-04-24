@@ -47,23 +47,25 @@ using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class StatisticsServerController : IImportController, IBackupController
+    public class StatisticsServerController : ControllerBase, IImportController, IBackupController
     {
-        public static StatisticsServer GetStatisticsServer(int serviceId)
+        public StatisticsServerController(ControllerBase provider) : base(provider) { }
+
+        public StatisticsServer GetStatisticsServer(int serviceId)
         {
             StatisticsServer stats = new StatisticsServer();
             ServiceProviderProxy.Init(stats, serviceId);
             return stats;
         }
 
-        public static DataSet GetRawStatisticsSitesPaged(int packageId,
+        public DataSet GetRawStatisticsSitesPaged(int packageId,
             string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             return PackageController.GetRawPackageItemsPaged(packageId, typeof(StatsSite),
                 true, filterColumn, filterValue, sortColumn, startRow, maximumRows);
         }
 
-        public static List<StatsSite> GetStatisticsSites(int packageId, bool recursive)
+        public List<StatsSite> GetStatisticsSites(int packageId, bool recursive)
         {
             List<ServiceProviderItem> items = PackageController.GetPackageItemsByType(
                 packageId, typeof(StatsSite), recursive);
@@ -72,12 +74,12 @@ namespace SolidCP.EnterpriseServer
                 new Converter<ServiceProviderItem, StatsSite>(ConvertItemToStatisticsSiteItem));
         }
 
-        private static StatsSite ConvertItemToStatisticsSiteItem(ServiceProviderItem item)
+        private StatsSite ConvertItemToStatisticsSiteItem(ServiceProviderItem item)
         {
             return (StatsSite)item;
         }
 
-        public static StatsServer[] GetServers(int serviceId)
+        public StatsServer[] GetServers(int serviceId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive
@@ -89,7 +91,7 @@ namespace SolidCP.EnterpriseServer
             return stats.GetServers();
         }
 
-        public static StatsSite GetSite(int itemId)
+        public StatsSite GetSite(int itemId)
         {
             // load meta item
             StatsSite item = (StatsSite)PackageController.GetPackageItem(itemId);
@@ -129,7 +131,7 @@ namespace SolidCP.EnterpriseServer
             return site;
         }
 
-        public static int AddSite(StatsSite item)
+        public int AddSite(StatsSite item)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -213,7 +215,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int UpdateSite(StatsSite item)
+        public int UpdateSite(StatsSite item)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -256,7 +258,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int DeleteSite(int itemId)
+        public int DeleteSite(int itemId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);

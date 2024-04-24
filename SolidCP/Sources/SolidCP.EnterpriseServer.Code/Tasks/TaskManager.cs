@@ -48,19 +48,21 @@ using SolidCP.Providers.HostedSolution;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class TaskManager
+    public class TaskManager : ControllerBase
     {
-        private static Hashtable eventHandlers = null;
+        private Hashtable eventHandlers = null;
         //using id instead of guid
-        private static ConcurrentDictionary<int, Thread> _taskThreadsDictionary = new ConcurrentDictionary<int, Thread>();
+        private ConcurrentDictionary<int, Thread> _taskThreadsDictionary = new ConcurrentDictionary<int, Thread>();
 
         // purge timer, used for killing old tasks from the hash
-        static Timer purgeTimer = new Timer(new TimerCallback(PurgeCompletedTasks),
+        Timer purgeTimer = new Timer(new TimerCallback(PurgeCompletedTasks),
                                             null,
                                             60000, // start from 1 minute
                                             60000); // invoke each minute
 
-        public static Guid Guid
+        public TaskManager(ControllerBase provider) : base(provider) { }
+
+        public Guid Guid
         {
             get
             {
@@ -75,57 +77,57 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static void StartTask(string source, string taskName)
+        public void StartTask(string source, string taskName)
         {
             StartTask(source, taskName, 0);
         }
 
-        public static void StartTask(string source, string taskName, int itemId)
+        public void StartTask(string source, string taskName, int itemId)
         {
             StartTask(source, taskName, itemId, new List<BackgroundTaskParameter>());
         }
 
-        public static void StartTask(string source, string taskName, int itemId, BackgroundTaskParameter parameter)
+        public void StartTask(string source, string taskName, int itemId, BackgroundTaskParameter parameter)
         {
             StartTask(source, taskName, null, itemId, parameter);
         }
 
-        public static void StartTask(string source, string taskName, int itemId, List<BackgroundTaskParameter> parameters)
+        public void StartTask(string source, string taskName, int itemId, List<BackgroundTaskParameter> parameters)
         {
             StartTask(source, taskName, null, itemId, parameters);
         }
 
-        public static void StartTask(string source, string taskName, object itemName)
+        public void StartTask(string source, string taskName, object itemName)
         {
             StartTask(source, taskName, itemName, 0);
         }
 
-        public static void StartTask(string source, string taskName, object itemName, int itemId)
+        public void StartTask(string source, string taskName, object itemName, int itemId)
         {
             StartTask(source, taskName, itemName, itemId, new List<BackgroundTaskParameter>());
         }
 
-        public static void StartTask(string source, string taskName, object itemName, BackgroundTaskParameter parameter)
+        public void StartTask(string source, string taskName, object itemName, BackgroundTaskParameter parameter)
         {
             StartTask(source, taskName, itemName, 0, parameter);
         }
 
-        public static void StartTask(string source, string taskName, object itemName, List<BackgroundTaskParameter> parameters)
+        public void StartTask(string source, string taskName, object itemName, List<BackgroundTaskParameter> parameters)
         {
             StartTask(source, taskName, itemName, 0, parameters);
         }
 
-        public static void StartTask(string source, string taskName, object itemName, int itemId, BackgroundTaskParameter parameter)
+        public void StartTask(string source, string taskName, object itemName, int itemId, BackgroundTaskParameter parameter)
         {
             StartTask(source, taskName, itemName, itemId, 0, parameter);
         }
 
-        public static void StartTask(string source, string taskName, object itemName, int itemId, List<BackgroundTaskParameter> parameters)
+        public void StartTask(string source, string taskName, object itemName, int itemId, List<BackgroundTaskParameter> parameters)
         {
             StartTask(source, taskName, itemName, itemId, 0, 0, -1, parameters);
         }
 
-        public static void StartTask(string source, string taskName, object itemName, int itemId, int packageId, BackgroundTaskParameter parameter)
+        public void StartTask(string source, string taskName, object itemName, int itemId, int packageId, BackgroundTaskParameter parameter)
         {
             List<BackgroundTaskParameter> parameters = new List<BackgroundTaskParameter>();
             if (parameter != null)
@@ -136,28 +138,28 @@ namespace SolidCP.EnterpriseServer
             StartTask(source, taskName, itemName, itemId, 0, packageId, -1, parameters);
         }
 
-        public static void StartTask(string taskId, string source, string taskName, object itemName, int itemId)
+        public void StartTask(string taskId, string source, string taskName, object itemName, int itemId)
         {
             StartTask(taskId, source, taskName, itemName, itemId, 0, 0, -1, new List<BackgroundTaskParameter>());
         }
 
-        public static void StartTask(string taskId, string source, string taskName, object itemName, int itemId, int packageId)
+        public void StartTask(string taskId, string source, string taskName, object itemName, int itemId, int packageId)
         {
             StartTask(taskId, source, taskName, itemName, itemId, 0, packageId, -1, new List<BackgroundTaskParameter>());
         }
 
-        public static void StartTask(string taskId, string source, string taskName, object itemName, int itemId, int packageId, int maximumExecutionSeconds)
+        public void StartTask(string taskId, string source, string taskName, object itemName, int itemId, int packageId, int maximumExecutionSeconds)
         {
             StartTask(taskId, source, taskName, itemName, itemId, 0, packageId, maximumExecutionSeconds, new List<BackgroundTaskParameter>());
         }
 
-        public static void StartTask(string source, string taskName, object itemName, int itemId,
+        public void StartTask(string source, string taskName, object itemName, int itemId,
             int scheduleId, int packageId, int maximumExecutionTime, List<BackgroundTaskParameter> parameters)
         {
             StartTask(null, source, taskName, itemName, itemId, scheduleId, packageId, maximumExecutionTime, parameters);
         }
 
-        public static void StartTask(string taskId, string source, string taskName, object itemName, int itemId,
+        public void StartTask(string taskId, string source, string taskName, object itemName, int itemId,
             int scheduleId, int packageId, int maximumExecutionTime, List<BackgroundTaskParameter> parameters)
         {
             if (String.IsNullOrEmpty(taskId))
@@ -203,30 +205,30 @@ namespace SolidCP.EnterpriseServer
             AddTaskThread(TaskController.AddTask(task), Thread.CurrentThread);
         }
 
-        public static void WriteParameter(string parameterName, object parameterValue)
+        public void WriteParameter(string parameterName, object parameterValue)
         {
             string val = parameterValue != null ? parameterValue.ToString() : "";
             WriteLogRecord(Guid, 0, parameterName + ": " + val, null, null);
         }
 
-        public static void Write(string text, params string[] textParameters)
+        public void Write(string text, params string[] textParameters)
         {
             // INFO
             WriteLogRecord(Guid, 0, text, null, textParameters);
         }
 
-        public static void WriteWarning(string text, params string[] textParameters)
+        public void WriteWarning(string text, params string[] textParameters)
         {
             WriteWarning(Guid, text, textParameters);
         }
 
-        public static void WriteWarning(Guid guid, string text, params string[] textParameters)
+        public void WriteWarning(Guid guid, string text, params string[] textParameters)
         {
             // WARNING
             WriteLogRecord(guid, 1, text, null, textParameters);
         }
 
-        public static Exception WriteError(Exception ex)
+        public Exception WriteError(Exception ex)
         {
             // ERROR
             WriteLogRecord(Guid, 2, ex.Message, ex.StackTrace);
@@ -237,7 +239,7 @@ namespace SolidCP.EnterpriseServer
                                      : String.Format("Error executing task"), ex);
         }
 
-        public static void WriteError(Exception ex, string text, params string[] textParameters)
+        public void WriteError(Exception ex, string text, params string[] textParameters)
         {
             // ERROR
             string[] prms = new string[] { ex.Message };
@@ -251,13 +253,13 @@ namespace SolidCP.EnterpriseServer
             WriteLogRecord(Guid, 2, text, ex.Message + "\n" + ex.StackTrace, prms);
         }
 
-        public static void WriteError(string text, params string[] textParameters)
+        public void WriteError(string text, params string[] textParameters)
         {
             // ERROR
             WriteLogRecord(Guid, 2, text, null, textParameters);
         }
 
-        private static void WriteLogRecord(Guid guid, int severity, string text, string stackTrace, params string[] textParameters)
+        private void WriteLogRecord(Guid guid, int severity, string text, string stackTrace, params string[] textParameters)
         {
             List<BackgroundTask> tasks = TaskController.GetTasks(guid);
 
@@ -284,7 +286,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static void CompleteTask()
+        public void CompleteTask()
         {
             List<BackgroundTask> tasks = TaskController.GetTasks(Guid);
 
@@ -311,7 +313,7 @@ namespace SolidCP.EnterpriseServer
             StopProcess(topTask);
         }
 
-        public static void UpdateParam(String name, Object value)
+        public void UpdateParam(String name, Object value)
         {
             BackgroundTask topTask = TopTask;
 
@@ -323,7 +325,7 @@ namespace SolidCP.EnterpriseServer
             TaskController.UpdateTaskWithParams(topTask);
         }
 
-        public static int ItemId
+        public int ItemId
         {
             set
             {
@@ -338,7 +340,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static String ItemName
+        public String ItemName
         {
             set
             {
@@ -353,7 +355,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static void UpdateParams(Hashtable parameters)
+        public void UpdateParams(Hashtable parameters)
         {
             BackgroundTask topTask = TopTask;
 
@@ -368,7 +370,7 @@ namespace SolidCP.EnterpriseServer
             TaskController.UpdateTaskWithParams(topTask);
         }
 
-        static string FormatExecutionLog(BackgroundTask task)
+        string FormatExecutionLog(BackgroundTask task)
         {
             StringWriter sw = new StringWriter();
             XmlWriter writer = new XmlTextWriter(sw);
@@ -420,7 +422,7 @@ namespace SolidCP.EnterpriseServer
             return sw.ToString();
         }
 
-        static void PurgeCompletedTasks(object obj)
+        void PurgeCompletedTasks(object obj)
         {
             List<BackgroundTask> tasks = TaskController.GetProcessTasks(BackgroundTaskStatus.Run);
 
@@ -436,7 +438,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int IndicatorMaximum
+        public int IndicatorMaximum
         {
             set
             {
@@ -453,7 +455,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int IndicatorCurrent
+        public int IndicatorCurrent
         {
             get
             {
@@ -474,7 +476,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int MaximumExecutionTime
+        public int MaximumExecutionTime
         {
             get
             {
@@ -495,17 +497,17 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static bool HasErrors(BackgroundTask task)
+        public bool HasErrors(BackgroundTask task)
         {
             return task.Severity == 2;
         }
 
-        public static BackgroundTask TopTask
+        public BackgroundTask TopTask
         {
             get { return TaskController.GetTopTask(Guid); }
         }
 
-        public static BackgroundTask GetTask(string taskId)
+        public BackgroundTask GetTask(string taskId)
         {
             BackgroundTask task = TaskController.GetTask(taskId);
 
@@ -515,7 +517,7 @@ namespace SolidCP.EnterpriseServer
             return task;
         }
 
-        public static BackgroundTask GetTaskWithLogRecords(string taskId, DateTime startLogTime)
+        public BackgroundTask GetTaskWithLogRecords(string taskId, DateTime startLogTime)
         {
             BackgroundTask task = GetTask(taskId);
 
@@ -527,7 +529,7 @@ namespace SolidCP.EnterpriseServer
             return task;
         }
 
-        public static Dictionary<int, BackgroundTask> GetScheduledTasks()
+        public Dictionary<int, BackgroundTask> GetScheduledTasks()
         {
             Dictionary<int, BackgroundTask> scheduledTasks = new Dictionary<int, BackgroundTask>();
             try
@@ -546,7 +548,7 @@ namespace SolidCP.EnterpriseServer
             return scheduledTasks;
         }
 
-        public static void SetTaskNotifyOnComplete(string taskId)
+        public void SetTaskNotifyOnComplete(string taskId)
         {
             BackgroundTask task = GetTask(taskId);
 
@@ -556,7 +558,7 @@ namespace SolidCP.EnterpriseServer
             task.NotifyOnComplete = true;
         }
 
-        internal static void AddTaskThread(int taskId, Thread taskThread)
+        internal void AddTaskThread(int taskId, Thread taskThread)
         {
             if (_taskThreadsDictionary.ContainsKey(taskId))
                 _taskThreadsDictionary[taskId] = taskThread;
@@ -564,7 +566,7 @@ namespace SolidCP.EnterpriseServer
                 _taskThreadsDictionary.AddOrUpdate(taskId, taskThread, (key, oldValue) => taskThread);
         }
 
-        public static void StopTask(string taskId)
+        public void StopTask(string taskId)
         {
             BackgroundTask task = GetTask(taskId);
 
@@ -591,7 +593,7 @@ namespace SolidCP.EnterpriseServer
             TaskController.UpdateTask(task);
         }
 
-        private static void StopProcess(BackgroundTask task)
+        private void StopProcess(BackgroundTask task)
         {
                 if (_taskThreadsDictionary.ContainsKey(task.Id))
                 {
@@ -607,7 +609,7 @@ namespace SolidCP.EnterpriseServer
                 }
         }
 
-        private static void AddAuditLog(BackgroundTask task)
+        private void AddAuditLog(BackgroundTask task)
         {
             task.Logs = TaskController.GetLogs(task, task.StartDate);
 
@@ -622,7 +624,7 @@ namespace SolidCP.EnterpriseServer
                                        task.TaskName, executionLog);
         }
 
-        public static List<BackgroundTask> GetUserTasks(int userId)
+        public List<BackgroundTask> GetUserTasks(int userId)
         {
             List<BackgroundTask> list = new List<BackgroundTask>();
 
@@ -643,19 +645,19 @@ namespace SolidCP.EnterpriseServer
             return list;
         }
 
-        public static List<BackgroundTask> GetUserCompletedTasks(int userId)
+        public List<BackgroundTask> GetUserCompletedTasks(int userId)
         {
             return new List<BackgroundTask>();
         }
 
-        public static int GetTasksNumber()
+        public int GetTasksNumber()
         {
             return TaskController.GetTasks().Count;
         }
 
         #region Private Helpers
 
-        private static void CallTaskEventHandler(BackgroundTask task, bool onComplete)
+        private void CallTaskEventHandler(BackgroundTask task, bool onComplete)
         {
             string[] taskHandlers = GetTaskEventHandlers(task.Source, task.TaskName);
             if (taskHandlers != null)
@@ -683,7 +685,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        private static string[] GetTaskEventHandlers(string source, string taskName)
+        private string[] GetTaskEventHandlers(string source, string taskName)
         {
             // load configuration
             string appRoot = AppDomain.CurrentDomain.BaseDirectory;
@@ -746,7 +748,7 @@ namespace SolidCP.EnterpriseServer
 
         #region ResultTasks
 
-        public static void CompleteResultTask(ResultObject res, string errorCode, Exception ex, string errorMessage)
+        public void CompleteResultTask(ResultObject res, string errorCode, Exception ex, string errorMessage)
         {
             if (res != null)
             {
@@ -767,27 +769,27 @@ namespace SolidCP.EnterpriseServer
 
         }
 
-        public static void CompleteResultTask(ResultObject res, string errorCode, Exception ex)
+        public void CompleteResultTask(ResultObject res, string errorCode, Exception ex)
         {
             CompleteResultTask(res, errorCode, ex, null);
         }
 
-        public static void CompleteResultTask(ResultObject res, string errorCode)
+        public void CompleteResultTask(ResultObject res, string errorCode)
         {
             CompleteResultTask(res, errorCode, null, null);
         }
 
-        public static void CompleteResultTask(ResultObject res)
+        public void CompleteResultTask(ResultObject res)
         {
             CompleteResultTask(res, null);
         }
 
-        public static void CompleteResultTask()
+        public void CompleteResultTask()
         {
             CompleteResultTask(null);
         }
 
-        public static T StartResultTask<T>(string source, string taskName) where T : ResultObject, new()
+        public T StartResultTask<T>(string source, string taskName) where T : ResultObject, new()
         {
             StartTask(source, taskName);
             T res = new T();
@@ -795,7 +797,7 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        public static T StartResultTask<T>(string source, string taskName, object itemName) where T : ResultObject, new()
+        public T StartResultTask<T>(string source, string taskName, object itemName) where T : ResultObject, new()
         {
             StartTask(source, taskName, itemName);
             T res = new T();
@@ -803,7 +805,7 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        public static T StartResultTask<T>(string source, string taskName, object itemName, int packageId) where T : ResultObject, new()
+        public T StartResultTask<T>(string source, string taskName, object itemName, int packageId) where T : ResultObject, new()
         {
             StartTask(source, taskName, itemName, 0, packageId, null);
             T res = new T();
@@ -811,7 +813,7 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        public static T StartResultTask<T>(string source, string taskName, int packageId) where T : ResultObject, new()
+        public T StartResultTask<T>(string source, string taskName, int packageId) where T : ResultObject, new()
         {
             StartTask(source, taskName, null, 0, packageId, null);
             T res = new T();
@@ -819,7 +821,7 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        public static T StartResultTask<T>(string source, string taskName, int itemId, BackgroundTaskParameter parameter) where T : ResultObject, new()
+        public T StartResultTask<T>(string source, string taskName, int itemId, BackgroundTaskParameter parameter) where T : ResultObject, new()
         {
             StartTask(source, taskName, itemId, parameter);
             T res = new T();
@@ -827,7 +829,7 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        public static T StartResultTask<T>(string source, string taskName, int itemId, List<BackgroundTaskParameter> parameters) where T : ResultObject, new()
+        public T StartResultTask<T>(string source, string taskName, int itemId, List<BackgroundTaskParameter> parameters) where T : ResultObject, new()
         {
             StartTask(source, taskName, itemId, parameters);
             T res = new T();
@@ -835,7 +837,7 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        public static T StartResultTask<T>(string source, string taskName, int itemId, object itemName, int packageId) where T : ResultObject, new()
+        public T StartResultTask<T>(string source, string taskName, int itemId, object itemName, int packageId) where T : ResultObject, new()
         {
             StartTask(source, taskName, itemName, itemId, packageId, null);
             T res = new T();
@@ -843,7 +845,7 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        public static T StartResultTask<T>(string source, string taskName, Guid taskId, object itemName, int packageId) where T : ResultObject, new()
+        public T StartResultTask<T>(string source, string taskName, Guid taskId, object itemName, int packageId) where T : ResultObject, new()
         {
             StartTask(taskId.ToString(), source, taskName, itemName, 0, packageId);
             T res = new T();
@@ -851,7 +853,7 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        public static T StartResultTask<T>(string source, string taskName, Guid taskId, int itemId, object itemName, int packageId) where T : ResultObject, new()
+        public T StartResultTask<T>(string source, string taskName, Guid taskId, int itemId, object itemName, int packageId) where T : ResultObject, new()
         {
             StartTask(taskId.ToString(), source, taskName, itemName, itemId, packageId);
             T res = new T();

@@ -54,7 +54,7 @@ using SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class VirtualizationServerController2012
+    public class VirtualizationServerController2012: ControllerBase
     {
         //private const string MS_MAC_PREFIX = "00155D"; // IEEE prefix of MS MAC addresses
 

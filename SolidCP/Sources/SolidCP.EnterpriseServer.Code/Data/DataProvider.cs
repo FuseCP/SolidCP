@@ -55,11 +55,10 @@ namespace SolidCP.EnterpriseServer
 	/// <summary>
 	/// Summary description for DataProvider.
 	/// </summary>
-	public static class DataProvider
+	public class DataProvider: Data.DbContext
 	{
-
-		public static string ConnectionString => ConfigSettings.ConnectionString;
-		private static string ObjectQualifier
+		//public string ConnectionString => ConfigSettings.ConnectionString;
+		private string ObjectQualifier
 		{
 			get
 			{
@@ -69,7 +68,7 @@ namespace SolidCP.EnterpriseServer
 
 		#region System Settings
 
-		public static IDataReader GetSystemSettings(string settingsName)
+		public IDataReader GetSystemSettings(string settingsName)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -79,7 +78,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void SetSystemSettings(string settingsName, string xml)
+		public void SetSystemSettings(string settingsName, string xml)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -94,21 +93,21 @@ namespace SolidCP.EnterpriseServer
 
 		#region Theme Settings
 
-		public static DataSet GetThemes()
+		public DataSet GetThemes()
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetThemes"
 			);
 		}
 
-		public static DataSet GetThemeSettings(int ThmemeID)
+		public DataSet GetThemeSettings(int ThmemeID)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetThemeSettings",
 				 new SqlParameter("@ThemeID", ThmemeID));
 		}
 
-		public static DataSet GetThemeSetting(int ThmemeID, string SettingsName)
+		public DataSet GetThemeSetting(int ThmemeID, string SettingsName)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetThemeSetting",
@@ -116,7 +115,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@SettingsName", SettingsName));
 		}
 
-		public static DataSet GetUserThemeSettings(int actorId, int userId)
+		public DataSet GetUserThemeSettings(int actorId, int userId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetUserSettings",
@@ -125,7 +124,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@SettingsName", "Theme"));
 		}
 
-		public static void UpdateUserThemeSetting(int actorId, int userId, string PropertyName, string PropertyValue)
+		public void UpdateUserThemeSetting(int actorId, int userId, string PropertyName, string PropertyValue)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "UpdateUserThemeSetting",
@@ -135,7 +134,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@PropertyValue", PropertyValue));
 		}
 
-		public static void DeleteUserThemeSetting(int actorId, int userId, string PropertyName)
+		public void DeleteUserThemeSetting(int actorId, int userId, string PropertyName)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "DeleteUserThemeSetting",
@@ -147,7 +146,7 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region Users
-		public static bool CheckUserExists(string username)
+		public bool CheckUserExists(string username)
 		{
 			SqlParameter prmExists = new SqlParameter("@Exists", SqlDbType.Bit);
 			prmExists.Direction = ParameterDirection.Output;
@@ -160,7 +159,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToBoolean(prmExists.Value);
 		}
 
-		public static DataSet GetUsersPaged(int actorId, int userId, string filterColumn, string filterValue,
+		public DataSet GetUsersPaged(int actorId, int userId, string filterColumn, string filterValue,
 			 int statusId, int roleId, string sortColumn, int startRow, int maximumRows, bool recursive)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
@@ -178,7 +177,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 		//TODO START
-		public static DataSet GetSearchObject(int actorId, int userId, string filterColumn, string filterValue,
+		public DataSet GetSearchObject(int actorId, int userId, string filterColumn, string filterValue,
 			int statusId, int roleId, string sortColumn, int startRow, int maximumRows, string colType, string fullType,
 			bool recursive, bool onlyFind)
 		{
@@ -198,7 +197,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@FullType", fullType),
 				 new SqlParameter("@OnlyFind", onlyFind));
 		}
-		public static DataSet GetSearchTableByColumns(string PagedStored, string FilterValue, int MaximumRows,
+		public DataSet GetSearchTableByColumns(string PagedStored, string FilterValue, int MaximumRows,
 			 bool Recursive, int PoolID, int ServerID, int ActorID, int StatusID, int PlanID, int OrgID,
 			 string ItemTypeName, string GroupName, int PackageID, string VPSType, int RoleID, int UserID,
 			 string FilterColumns)
@@ -226,7 +225,7 @@ namespace SolidCP.EnterpriseServer
 
 		//TODO END
 
-		public static DataSet GetUsersSummary(int actorId, int userId)
+		public DataSet GetUsersSummary(int actorId, int userId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetUsersSummary",
@@ -234,7 +233,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@UserID", userId));
 		}
 
-		public static DataSet GetUserDomainsPaged(int actorId, int userId, string filterColumn, string filterValue,
+		public DataSet GetUserDomainsPaged(int actorId, int userId, string filterColumn, string filterValue,
 			 string sortColumn, int startRow, int maximumRows)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
@@ -248,7 +247,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@maximumRows", maximumRows));
 		}
 
-		public static DataSet GetUsers(int actorId, int ownerId, bool recursive)
+		public DataSet GetUsers(int actorId, int ownerId, bool recursive)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetUsers",
@@ -257,7 +256,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@Recursive", recursive));
 		}
 
-		public static DataSet GetUserParents(int actorId, int userId)
+		public DataSet GetUserParents(int actorId, int userId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetUserParents",
@@ -265,7 +264,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@UserID", userId));
 		}
 
-		public static DataSet GetUserPeers(int actorId, int userId)
+		public DataSet GetUserPeers(int actorId, int userId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetUserPeers",
@@ -273,7 +272,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@userId", userId));
 		}
 
-		public static IDataReader GetUserByExchangeOrganizationIdInternally(int itemId)
+		public IDataReader GetUserByExchangeOrganizationIdInternally(int itemId)
 		{
 			return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetUserByExchangeOrganizationIdInternally",
@@ -282,21 +281,21 @@ namespace SolidCP.EnterpriseServer
 
 
 
-		public static IDataReader GetUserByIdInternally(int userId)
+		public IDataReader GetUserByIdInternally(int userId)
 		{
 			return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetUserByIdInternally",
 				 new SqlParameter("@UserID", userId));
 		}
 
-		public static IDataReader GetUserByUsernameInternally(string username)
+		public IDataReader GetUserByUsernameInternally(string username)
 		{
 			return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetUserByUsernameInternally",
 				 new SqlParameter("@Username", username));
 		}
 
-		public static IDataReader GetUserById(int actorId, int userId)
+		public IDataReader GetUserById(int actorId, int userId)
 		{
 			return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetUserById",
@@ -304,7 +303,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@UserID", userId));
 		}
 
-		public static IDataReader GetUserByUsername(int actorId, string username)
+		public IDataReader GetUserByUsername(int actorId, string username)
 		{
 			return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetUserByUsername",
@@ -312,7 +311,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@Username", username));
 		}
 
-		public static int AddUser(int actorId, int ownerId, int roleId, int statusId, string subscriberNumber, int loginStatusId, bool isDemo,
+		public int AddUser(int actorId, int ownerId, int roleId, int statusId, string subscriberNumber, int loginStatusId, bool isDemo,
 			 bool isPeer, string comments, string username, string password,
 			 string firstName, string lastName, string email, string secondaryEmail,
 			 string address, string city, string country, string state, string zip,
@@ -357,7 +356,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(prmUserId.Value);
 		}
 
-		public static void UpdateUser(int actorId, int userId, int roleId, int statusId, string subscriberNumber, int loginStatusId, bool isDemo,
+		public void UpdateUser(int actorId, int userId, int roleId, int statusId, string subscriberNumber, int loginStatusId, bool isDemo,
 			 bool isPeer, string comments, string firstName, string lastName, string email, string secondaryEmail,
 			 string address, string city, string country, string state, string zip,
 			 string primaryPhone, string secondaryPhone, string fax, string instantMessenger, bool htmlMail,
@@ -394,7 +393,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@AdditionalParams", additionalParams));
 		}
 
-		public static void UpdateUserFailedLoginAttempt(int userId, int lockOut, bool reset)
+		public void UpdateUserFailedLoginAttempt(int userId, int lockOut, bool reset)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "UpdateUserFailedLoginAttempt",
@@ -403,7 +402,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@Reset", reset));
 		}
 
-		public static void DeleteUser(int actorId, int userId)
+		public void DeleteUser(int actorId, int userId)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "DeleteUser",
@@ -411,7 +410,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@UserID", userId));
 		}
 
-		public static void ChangeUserPassword(int actorId, int userId, string password)
+		public void ChangeUserPassword(int actorId, int userId, string password)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "ChangeUserPassword",
@@ -420,7 +419,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@password", password));
 		}
 
-		public static void SetUserOneTimePassword(int userId, string password, int auths)
+		public void SetUserOneTimePassword(int userId, string password, int auths)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "SetUserOneTimePassword",
@@ -429,7 +428,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@OneTimePasswordState", auths));
 		}
 
-		public static void UpdateUserPinSecret(int actorId, int userId, string pinSecret)
+		public void UpdateUserPinSecret(int actorId, int userId, string pinSecret)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "UpdateUserPinSecret",
@@ -439,7 +438,7 @@ namespace SolidCP.EnterpriseServer
 				 );
 		}
 
-		public static void UpdateUserMfaMode(int actorId, int userId, int mfaMode)
+		public void UpdateUserMfaMode(int actorId, int userId, int mfaMode)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "UpdateUserMfaMode",
@@ -448,7 +447,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@MfaMode", mfaMode));
 		}
 
-		public static bool CanUserChangeMfa(int callerId, int changeUserId, bool canPeerChangeMfa)
+		public bool CanUserChangeMfa(int callerId, int changeUserId, bool canPeerChangeMfa)
 		{
 			SqlParameter prmResult = new SqlParameter("@Result", SqlDbType.Bit);
 			prmResult.Direction = ParameterDirection.Output;
@@ -463,7 +462,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToBoolean(prmResult.Value);
 		}
 
-		public static IDataReader GetUserPackagesServerUrls(int userId)
+		public IDataReader GetUserPackagesServerUrls(int userId)
 		{
 			return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetUserPackagesServerUrls",
@@ -473,7 +472,7 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region User Settings
-		public static IDataReader GetUserSettings(int actorId, int userId, string settingsName)
+		public IDataReader GetUserSettings(int actorId, int userId, string settingsName)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetUserSettings",
@@ -481,7 +480,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@UserID", userId),
 				 new SqlParameter("@SettingsName", settingsName));
 		}
-		public static void UpdateUserSettings(int actorId, int userId, string settingsName, string xml)
+		public void UpdateUserSettings(int actorId, int userId, string settingsName, string xml)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "UpdateUserSettings",
@@ -493,20 +492,20 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region Servers
-		public static DataSet GetAllServers(int actorId)
+		public DataSet GetAllServers(int actorId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetAllServers",
 				 new SqlParameter("@actorId", actorId));
 		}
-		public static DataSet GetServers(int actorId)
+		public DataSet GetServers(int actorId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetServers",
 				 new SqlParameter("@actorId", actorId));
 		}
 
-		public static IDataReader GetServer(int actorId, int serverId, bool forAutodiscover)
+		public IDataReader GetServer(int actorId, int serverId, bool forAutodiscover)
 		{
 			return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetServer",
@@ -515,14 +514,14 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@forAutodiscover", forAutodiscover));
 		}
 
-		public static IDataReader GetServerShortDetails(int serverId)
+		public IDataReader GetServerShortDetails(int serverId)
 		{
 			return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetServerShortDetails",
 				 new SqlParameter("@ServerID", serverId));
 		}
 
-		public static IDataReader GetServerByName(int actorId, string serverName)
+		public IDataReader GetServerByName(int actorId, string serverName)
 		{
 			return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetServerByName",
@@ -530,14 +529,14 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@ServerName", serverName));
 		}
 
-		public static IDataReader GetServerInternal(int serverId)
+		public IDataReader GetServerInternal(int serverId)
 		{
 			return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetServerInternal",
 				 new SqlParameter("@ServerID", serverId));
 		}
 
-		public static int AddServer(string serverName, string serverUrl,
+		public int AddServer(string serverName, string serverUrl,
 			 string password, string comments, bool virtualServer, string instantDomainAlias,
 			 int primaryGroupId, bool adEnabled, string adRootDomain, string adUsername, string adPassword,
 			 string adAuthenticationType, OSPlatform osPlatform, bool? isCore, bool PasswordIsSHA256)
@@ -567,7 +566,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(prmServerId.Value);
 		}
 
-		public static void UpdateServer(int serverId, string serverName, string serverUrl,
+		public void UpdateServer(int serverId, string serverName, string serverUrl,
 			 string password, string comments, string instantDomainAlias,
 			 int primaryGroupId, bool adEnabled, string adRootDomain, string adUsername, string adPassword,
 			 string adAuthenticationType, string adParentDomain, String adParentDomainController,
@@ -595,7 +594,7 @@ namespace SolidCP.EnterpriseServer
 
 		}
 
-		public static int DeleteServer(int serverId)
+		public int DeleteServer(int serverId)
 		{
 			SqlParameter prmResult = new SqlParameter("@Result", SqlDbType.Int);
 			prmResult.Direction = ParameterDirection.Output;
@@ -610,14 +609,14 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region Virtual Servers
-		public static DataSet GetVirtualServers(int actorId)
+		public DataSet GetVirtualServers(int actorId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetVirtualServers",
 				 new SqlParameter("@actorId", actorId));
 		}
 
-		public static DataSet GetAvailableVirtualServices(int actorId, int serverId)
+		public DataSet GetAvailableVirtualServices(int actorId, int serverId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetAvailableVirtualServices",
@@ -625,7 +624,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@ServerID", serverId));
 		}
 
-		public static DataSet GetVirtualServices(int actorId, int serverId, bool forAutodiscover)
+		public DataSet GetVirtualServices(int actorId, int serverId, bool forAutodiscover)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetVirtualServices",
@@ -634,7 +633,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@forAutodiscover", forAutodiscover));
 		}
 
-		public static void AddVirtualServices(int serverId, string xml)
+		public void AddVirtualServices(int serverId, string xml)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "AddVirtualServices",
@@ -642,7 +641,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@xml", xml));
 		}
 
-		public static void DeleteVirtualServices(int serverId, string xml)
+		public void DeleteVirtualServices(int serverId, string xml)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "DeleteVirtualServices",
@@ -650,7 +649,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@xml", xml));
 		}
 
-		public static void UpdateVirtualGroups(int serverId, string xml)
+		public void UpdateVirtualGroups(int serverId, string xml)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "UpdateVirtualGroups",
@@ -663,27 +662,27 @@ namespace SolidCP.EnterpriseServer
 
 		// Providers methods
 
-		public static DataSet GetProviders()
+		public DataSet GetProviders()
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetProviders");
 		}
 
-		public static DataSet GetGroupProviders(int groupId)
+		public DataSet GetGroupProviders(int groupId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetGroupProviders",
 				 new SqlParameter("@groupId", groupId));
 		}
 
-		public static IDataReader GetProvider(int providerId)
+		public IDataReader GetProvider(int providerId)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetProvider",
 				 new SqlParameter("@ProviderID", providerId));
 		}
 
-		public static IDataReader GetProviderByServiceID(int serviceId)
+		public IDataReader GetProviderByServiceID(int serviceId)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetProviderByServiceID",
@@ -693,7 +692,7 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region Private Network VLANs
-		public static int AddPrivateNetworkVLAN(int serverId, int vlan, string comments)
+		public int AddPrivateNetworkVLAN(int serverId, int vlan, string comments)
 		{
 			SqlParameter prmAddresId = new SqlParameter("@VlanID", SqlDbType.Int);
 			prmAddresId.Direction = ParameterDirection.Output;
@@ -708,7 +707,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(prmAddresId.Value);
 		}
 
-		public static int DeletePrivateNetworkVLAN(int vlanId)
+		public int DeletePrivateNetworkVLAN(int vlanId)
 		{
 			SqlParameter prmResult = new SqlParameter("@Result", SqlDbType.Int);
 			prmResult.Direction = ParameterDirection.Output;
@@ -721,7 +720,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(prmResult.Value);
 		}
 
-		public static IDataReader GetPrivateNetworVLANsPaged(int actorId, int serverId,
+		public IDataReader GetPrivateNetworVLANsPaged(int actorId, int serverId,
 			 string filterColumn, string filterValue,
 			 string sortColumn, int startRow, int maximumRows)
 		{
@@ -737,14 +736,14 @@ namespace SolidCP.EnterpriseServer
 			return reader;
 		}
 
-		public static IDataReader GetPrivateNetworVLAN(int vlanId)
+		public IDataReader GetPrivateNetworVLAN(int vlanId)
 		{
 			return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetPrivateNetworVLAN",
 				 new SqlParameter("@VlanID", vlanId));
 		}
 
-		public static void UpdatePrivateNetworVLAN(int vlanId, int serverId, int vlan, string comments)
+		public void UpdatePrivateNetworVLAN(int vlanId, int serverId, int vlan, string comments)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "UpdatePrivateNetworVLAN",
@@ -754,7 +753,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@Comments", comments));
 		}
 
-		public static IDataReader GetPackagePrivateNetworkVLANs(int packageId, string sortColumn, int startRow, int maximumRows)
+		public IDataReader GetPackagePrivateNetworkVLANs(int packageId, string sortColumn, int startRow, int maximumRows)
 		{
 			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 											 "GetPackagePrivateNetworkVLANs",
@@ -765,13 +764,13 @@ namespace SolidCP.EnterpriseServer
 			return reader;
 		}
 
-		public static void DeallocatePackageVLAN(int id)
+		public void DeallocatePackageVLAN(int id)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure, "DeallocatePackageVLAN",
 											  new SqlParameter("@PackageVlanID", id));
 		}
 
-		public static IDataReader GetUnallottedVLANs(int packageId, int serviceId)
+		public IDataReader GetUnallottedVLANs(int packageId, int serviceId)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 											 "GetUnallottedVLANs",
@@ -779,7 +778,7 @@ namespace SolidCP.EnterpriseServer
 												 new SqlParameter("@ServiceId", serviceId));
 		}
 
-		public static void AllocatePackageVLANs(int packageId, string xml)
+		public void AllocatePackageVLANs(int packageId, string xml)
 		{
 			SqlParameter[] param = new[]
 												{
@@ -792,14 +791,14 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region IPAddresses
-		public static IDataReader GetIPAddress(int ipAddressId)
+		public IDataReader GetIPAddress(int ipAddressId)
 		{
 			return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetIPAddress",
 				 new SqlParameter("@AddressID", ipAddressId));
 		}
 
-		public static IDataReader GetIPAddresses(int actorId, int poolId, int serverId)
+		public IDataReader GetIPAddresses(int actorId, int poolId, int serverId)
 		{
 			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 											 "GetIPAddresses",
@@ -809,7 +808,7 @@ namespace SolidCP.EnterpriseServer
 			return reader;
 		}
 
-		public static IDataReader GetIPAddressesPaged(int actorId, int poolId, int serverId,
+		public IDataReader GetIPAddressesPaged(int actorId, int poolId, int serverId,
 			 string filterColumn, string filterValue,
 			 string sortColumn, int startRow, int maximumRows)
 		{
@@ -826,7 +825,7 @@ namespace SolidCP.EnterpriseServer
 			return reader;
 		}
 
-		public static int AddIPAddress(int poolId, int serverId, string externalIP, string internalIP,
+		public int AddIPAddress(int poolId, int serverId, string externalIP, string internalIP,
 			 string subnetMask, string defaultGateway, string comments, int VLAN)
 		{
 			SqlParameter prmAddresId = new SqlParameter("@AddressID", SqlDbType.Int);
@@ -847,7 +846,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(prmAddresId.Value);
 		}
 
-		public static void UpdateIPAddress(int addressId, int poolId, int serverId,
+		public void UpdateIPAddress(int addressId, int poolId, int serverId,
 			 string externalIP, string internalIP, string subnetMask, string defaultGateway, string comments, int VLAN)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
@@ -863,7 +862,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@VLAN", VLAN));
 		}
 
-		public static void UpdateIPAddresses(string xmlIds, int poolId, int serverId,
+		public void UpdateIPAddresses(string xmlIds, int poolId, int serverId,
 			 string subnetMask, string defaultGateway, string comments, int VLAN)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
@@ -877,7 +876,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@VLAN", VLAN));
 		}
 
-		public static int DeleteIPAddress(int ipAddressId)
+		public int DeleteIPAddress(int ipAddressId)
 		{
 			SqlParameter prmResult = new SqlParameter("@Result", SqlDbType.Int);
 			prmResult.Direction = ParameterDirection.Output;
@@ -895,14 +894,14 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region Clusters
-		public static IDataReader GetClusters(int actorId)
+		public IDataReader GetClusters(int actorId)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetClusters",
 				 new SqlParameter("@actorId", actorId));
 		}
 
-		public static int AddCluster(string clusterName)
+		public int AddCluster(string clusterName)
 		{
 			SqlParameter prmId = new SqlParameter("@ClusterID", SqlDbType.Int);
 			prmId.Direction = ParameterDirection.Output;
@@ -915,7 +914,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(prmId.Value);
 		}
 
-		public static void DeleteCluster(int clusterId)
+		public void DeleteCluster(int clusterId)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "DeleteCluster",
@@ -925,7 +924,7 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region Global DNS records
-		public static DataSet GetDnsRecordsByService(int actorId, int serviceId)
+		public DataSet GetDnsRecordsByService(int actorId, int serviceId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetDnsRecordsByService",
@@ -933,7 +932,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@ServiceId", serviceId));
 		}
 
-		public static DataSet GetDnsRecordsByServer(int actorId, int serverId)
+		public DataSet GetDnsRecordsByServer(int actorId, int serverId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetDnsRecordsByServer",
@@ -941,7 +940,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@ServerId", serverId));
 		}
 
-		public static DataSet GetDnsRecordsByPackage(int actorId, int packageId)
+		public DataSet GetDnsRecordsByPackage(int actorId, int packageId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetDnsRecordsByPackage",
@@ -949,14 +948,14 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@PackageId", packageId));
 		}
 
-		public static DataSet GetDnsRecordsByGroup(int groupId)
+		public DataSet GetDnsRecordsByGroup(int groupId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetDnsRecordsByGroup",
 				 new SqlParameter("@GroupId", groupId));
 		}
 
-		public static DataSet GetDnsRecordsTotal(int actorId, int packageId)
+		public DataSet GetDnsRecordsTotal(int actorId, int packageId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetDnsRecordsTotal",
@@ -964,7 +963,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@packageId", packageId));
 		}
 
-		public static IDataReader GetDnsRecord(int actorId, int recordId)
+		public IDataReader GetDnsRecord(int actorId, int recordId)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetDnsRecord",
@@ -972,7 +971,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@RecordId", recordId));
 		}
 
-		public static void AddDnsRecord(int actorId, int serviceId, int serverId, int packageId, string recordType,
+		public void AddDnsRecord(int actorId, int serviceId, int serverId, int packageId, string recordType,
 			 string recordName, string recordData, int mxPriority, int SrvPriority, int SrvWeight, int SrvPort, int ipAddressId)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
@@ -991,7 +990,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@IpAddressId", ipAddressId));
 		}
 
-		public static void UpdateDnsRecord(int actorId, int recordId, string recordType,
+		public void UpdateDnsRecord(int actorId, int recordId, string recordType,
 			 string recordName, string recordData, int mxPriority, int SrvPriority, int SrvWeight, int SrvPort, int ipAddressId)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
@@ -1009,7 +1008,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 
-		public static void DeleteDnsRecord(int actorId, int recordId)
+		public void DeleteDnsRecord(int actorId, int recordId)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "DeleteDnsRecord",
@@ -1019,7 +1018,7 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region Domains
-		public static DataSet GetDomains(int actorId, int packageId, bool recursive)
+		public DataSet GetDomains(int actorId, int packageId, bool recursive)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetDomains",
@@ -1028,7 +1027,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@Recursive", recursive));
 		}
 
-		public static DataSet GetResellerDomains(int actorId, int packageId)
+		public DataSet GetResellerDomains(int actorId, int packageId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetResellerDomains",
@@ -1036,7 +1035,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@PackageId", packageId));
 		}
 
-		public static DataSet GetDomainsPaged(int actorId, int packageId, int serverId, bool recursive, string filterColumn, string filterValue,
+		public DataSet GetDomainsPaged(int actorId, int packageId, int serverId, bool recursive, string filterColumn, string filterValue,
 			 string sortColumn, int startRow, int maximumRows)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
@@ -1052,7 +1051,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@MaximumRows", maximumRows));
 		}
 
-		public static IDataReader GetDomain(int actorId, int domainId)
+		public IDataReader GetDomain(int actorId, int domainId)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetDomain",
@@ -1060,7 +1059,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@domainId", domainId));
 		}
 
-		public static IDataReader GetDomainByName(int actorId, string domainName, bool searchOnDomainPointer, bool isDomainPointer)
+		public IDataReader GetDomainByName(int actorId, string domainName, bool searchOnDomainPointer, bool isDomainPointer)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetDomainByName",
@@ -1071,7 +1070,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 
-		public static DataSet GetDomainsByZoneId(int actorId, int zoneId)
+		public DataSet GetDomainsByZoneId(int actorId, int zoneId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetDomainsByZoneID",
@@ -1079,7 +1078,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@ZoneID", zoneId));
 		}
 
-		public static DataSet GetDomainsByDomainItemId(int actorId, int domainId)
+		public DataSet GetDomainsByDomainItemId(int actorId, int domainId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetDomainsByDomainItemId",
@@ -1089,7 +1088,7 @@ namespace SolidCP.EnterpriseServer
 
 
 
-		public static int CheckDomain(int packageId, string domainName, bool isDomainPointer)
+		public int CheckDomain(int packageId, string domainName, bool isDomainPointer)
 		{
 			SqlParameter prmId = new SqlParameter("@Result", SqlDbType.Int);
 			prmId.Direction = ParameterDirection.Output;
@@ -1106,7 +1105,7 @@ namespace SolidCP.EnterpriseServer
 
 
 
-		public static int CheckDomainUsedByHostedOrganization(string domainName)
+		public int CheckDomainUsedByHostedOrganization(string domainName)
 		{
 			SqlParameter prmId = new SqlParameter("@Result", SqlDbType.Int);
 			prmId.Direction = ParameterDirection.Output;
@@ -1120,7 +1119,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 
-		public static int AddDomain(int actorId, int packageId, int zoneItemId, string domainName,
+		public int AddDomain(int actorId, int packageId, int zoneItemId, string domainName,
 			 bool hostingAllowed, int webSiteId, int mailDomainId, bool isSubDomain, bool isPreviewDomain, bool isDomainPointer)
 		{
 			SqlParameter prmId = new SqlParameter("@DomainID", SqlDbType.Int);
@@ -1143,7 +1142,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(prmId.Value);
 		}
 
-		public static void UpdateDomain(int actorId, int domainId, int zoneItemId,
+		public void UpdateDomain(int actorId, int domainId, int zoneItemId,
 			 bool hostingAllowed, int webSiteId, int mailDomainId, int domainItemId)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
@@ -1157,7 +1156,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@DomainItemId", domainItemId));
 		}
 
-		public static void DeleteDomain(int actorId, int domainId)
+		public void DeleteDomain(int actorId, int domainId)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "DeleteDomain",
@@ -1167,7 +1166,7 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region Services
-		public static IDataReader GetServicesByServerId(int actorId, int serverId)
+		public IDataReader GetServicesByServerId(int actorId, int serverId)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetServicesByServerID",
@@ -1175,7 +1174,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@ServerID", serverId));
 		}
 
-		public static IDataReader GetServicesByServerIdGroupName(int actorId, int serverId, string groupName)
+		public IDataReader GetServicesByServerIdGroupName(int actorId, int serverId, string groupName)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetServicesByServerIdGroupName",
@@ -1184,7 +1183,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@GroupName", groupName));
 		}
 
-		public static DataSet GetRawServicesByServerId(int actorId, int serverId)
+		public DataSet GetRawServicesByServerId(int actorId, int serverId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetRawServicesByServerID",
@@ -1192,7 +1191,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@ServerID", serverId));
 		}
 
-		public static DataSet GetServicesByGroupId(int actorId, int groupId)
+		public DataSet GetServicesByGroupId(int actorId, int groupId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetServicesByGroupID",
@@ -1200,7 +1199,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@groupId", groupId));
 		}
 
-		public static DataSet GetServicesByGroupName(int actorId, string groupName, bool forAutodiscover)
+		public DataSet GetServicesByGroupName(int actorId, string groupName, bool forAutodiscover)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetServicesByGroupName",
@@ -1209,7 +1208,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@forAutodiscover", forAutodiscover));
 		}
 
-		public static IDataReader GetService(int actorId, int serviceId)
+		public IDataReader GetService(int actorId, int serviceId)
 		{
 			return (IDataReader)SqlHelper.ExecuteReader(ConnectionString,
 				 CommandType.StoredProcedure,
@@ -1218,7 +1217,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@ServiceID", serviceId));
 		}
 
-		public static int AddService(int serverId, int providerId, string serviceName, int serviceQuotaValue,
+		public int AddService(int serverId, int providerId, string serviceName, int serviceQuotaValue,
 			 int clusterId, string comments)
 		{
 			SqlParameter prmServiceId = new SqlParameter("@ServiceID", SqlDbType.Int);
@@ -1238,7 +1237,7 @@ namespace SolidCP.EnterpriseServer
 
 			return Convert.ToInt32(prmServiceId.Value);
 		}
-		public static void UpdateServiceFully(int serviceId, int providerId, string serviceName, int serviceQuotaValue,
+		public void UpdateServiceFully(int serviceId, int providerId, string serviceName, int serviceQuotaValue,
 			 int clusterId, string comments)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
@@ -1251,7 +1250,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@Comments", comments));
 		}
 
-		public static void UpdateService(int serviceId, string serviceName, int serviceQuotaValue,
+		public void UpdateService(int serviceId, string serviceName, int serviceQuotaValue,
 			 int clusterId, string comments)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
@@ -1263,7 +1262,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@Comments", comments));
 		}
 
-		public static int DeleteService(int serviceId)
+		public int DeleteService(int serviceId)
 		{
 			SqlParameter prmResult = new SqlParameter("@Result", SqlDbType.Int);
 			prmResult.Direction = ParameterDirection.Output;
@@ -1276,7 +1275,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(prmResult.Value);
 		}
 
-		public static IDataReader GetServiceProperties(int actorId, int serviceId)
+		public IDataReader GetServiceProperties(int actorId, int serviceId)
 		{
 			return (IDataReader)SqlHelper.ExecuteReader(ConnectionString,
 				 CommandType.StoredProcedure,
@@ -1285,7 +1284,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@ServiceID", serviceId));
 		}
 
-		public static void UpdateServiceProperties(int serviceId, string xml)
+		public void UpdateServiceProperties(int serviceId, string xml)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "UpdateServiceProperties",
@@ -1293,7 +1292,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@Xml", xml));
 		}
 
-		public static IDataReader GetResourceGroup(int groupId)
+		public IDataReader GetResourceGroup(int groupId)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString,
 				 CommandType.StoredProcedure,
@@ -1301,14 +1300,14 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@groupId", groupId));
 		}
 
-		public static DataSet GetResourceGroups()
+		public DataSet GetResourceGroups()
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString,
 				 CommandType.StoredProcedure,
 				 ObjectQualifier + "GetResourceGroups");
 		}
 
-		public static IDataReader GetResourceGroupByName(string groupName)
+		public IDataReader GetResourceGroupByName(string groupName)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString,
 				 CommandType.StoredProcedure,
@@ -1319,7 +1318,7 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region Service Items
-		public static DataSet GetServiceItems(int actorId, int packageId, string groupName, string itemTypeName, bool recursive)
+		public DataSet GetServiceItems(int actorId, int packageId, string groupName, string itemTypeName, bool recursive)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetServiceItems",
@@ -1331,7 +1330,7 @@ namespace SolidCP.EnterpriseServer
 
 		}
 
-		public static DataSet GetServiceItemsPaged(int actorId, int packageId, string groupName, string itemTypeName,
+		public DataSet GetServiceItemsPaged(int actorId, int packageId, string groupName, string itemTypeName,
 			 int serverId, bool recursive, string filterColumn, string filterValue,
 			 string sortColumn, int startRow, int maximumRows)
 		{
@@ -1350,13 +1349,13 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@maximumRows", maximumRows));
 		}
 
-		public static DataSet GetSearchableServiceItemTypes()
+		public DataSet GetSearchableServiceItemTypes()
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetSearchableServiceItemTypes");
 		}
 
-		public static DataSet GetServiceItemsByService(int actorId, int serviceId)
+		public DataSet GetServiceItemsByService(int actorId, int serviceId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetServiceItemsByService",
@@ -1364,7 +1363,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@ServiceID", serviceId));
 		}
 
-		public static int GetServiceItemsCount(string typeName, string groupName, int serviceId)
+		public int GetServiceItemsCount(string typeName, string groupName, int serviceId)
 		{
 			SqlParameter prmTotalNumber = new SqlParameter("@TotalNumber", SqlDbType.Int);
 			prmTotalNumber.Direction = ParameterDirection.Output;
@@ -1380,7 +1379,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(prmTotalNumber.Value);
 		}
 
-		public static DataSet GetServiceItemsForStatistics(int actorId, int serviceId, int packageId,
+		public DataSet GetServiceItemsForStatistics(int actorId, int serviceId, int packageId,
 			 bool calculateDiskspace, bool calculateBandwidth, bool suspendable, bool disposable)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
@@ -1394,7 +1393,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@disposable", disposable));
 		}
 
-		public static DataSet GetServiceItemsByPackage(int actorId, int packageId)
+		public DataSet GetServiceItemsByPackage(int actorId, int packageId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetServiceItemsByPackage",
@@ -1402,7 +1401,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@PackageID", packageId));
 		}
 
-		public static DataSet GetServiceItem(int actorId, int itemId)
+		public DataSet GetServiceItem(int actorId, int itemId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetServiceItem",
@@ -1410,7 +1409,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@actorId", actorId));
 		}
 
-		public static bool CheckServiceItemExists(int serviceId, string itemName, string itemTypeName)
+		public bool CheckServiceItemExists(int serviceId, string itemName, string itemTypeName)
 		{
 			SqlParameter prmExists = new SqlParameter("@Exists", SqlDbType.Bit);
 			prmExists.Direction = ParameterDirection.Output;
@@ -1425,7 +1424,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToBoolean(prmExists.Value);
 		}
 
-		public static bool CheckServiceItemExists(string itemName, string groupName, string itemTypeName)
+		public bool CheckServiceItemExists(string itemName, string groupName, string itemTypeName)
 		{
 			SqlParameter prmExists = new SqlParameter("@Exists", SqlDbType.Bit);
 			prmExists.Direction = ParameterDirection.Output;
@@ -1440,7 +1439,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToBoolean(prmExists.Value);
 		}
 
-		public static DataSet GetServiceItemByName(int actorId, int packageId, string groupName,
+		public DataSet GetServiceItemByName(int actorId, int packageId, string groupName,
 			 string itemName, string itemTypeName)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
@@ -1452,7 +1451,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@groupName", groupName));
 		}
 
-		public static DataSet GetServiceItemsByName(int actorId, int packageId, string itemName)
+		public DataSet GetServiceItemsByName(int actorId, int packageId, string itemName)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetServiceItemsByName",
@@ -1461,7 +1460,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@itemName", itemName));
 		}
 
-		public static int GetServiceItemsCountByNameAndServiceId(int actorId, int serviceId, string groupName,
+		public int GetServiceItemsCountByNameAndServiceId(int actorId, int serviceId, string groupName,
 			 string itemName, string itemTypeName)
 		{
 			int res = 0;
@@ -1479,7 +1478,7 @@ namespace SolidCP.EnterpriseServer
 			return res;
 		}
 
-		public static int AddServiceItem(int actorId, int serviceId, int packageId, string itemName,
+		public int AddServiceItem(int actorId, int serviceId, int packageId, string itemName,
 			 string itemTypeName, string xmlProperties)
 		{
 			// add item
@@ -1500,7 +1499,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(prmItemId.Value);
 		}
 
-		public static void UpdateServiceItem(int actorId, int itemId, string itemName, string xmlProperties)
+		public void UpdateServiceItem(int actorId, int itemId, string itemName, string xmlProperties)
 		{
 			// update item
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
@@ -1511,7 +1510,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@XmlProperties", xmlProperties));
 		}
 
-		public static void DeleteServiceItem(int actorId, int itemId)
+		public void DeleteServiceItem(int actorId, int itemId)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "DeleteServiceItem",
@@ -1519,7 +1518,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@ItemID", itemId));
 		}
 
-		public static void MoveServiceItem(int actorId, int itemId, int destinationServiceId, bool forAutodiscover)
+		public void MoveServiceItem(int actorId, int itemId, int destinationServiceId, bool forAutodiscover)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "MoveServiceItem",
@@ -1529,7 +1528,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@forAutodiscover", forAutodiscover));
 		}
 
-		public static int GetPackageServiceId(int actorId, int packageId, string groupName)
+		public int GetPackageServiceId(int actorId, int packageId, string groupName)
 		{
 			SqlParameter prmServiceId = new SqlParameter("@ServiceID", SqlDbType.Int);
 			prmServiceId.Direction = ParameterDirection.Output;
@@ -1544,7 +1543,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(prmServiceId.Value);
 		}
 
-		public static string GetMailFilterURL(int actorId, int packageId, string groupName)
+		public string GetMailFilterURL(int actorId, int packageId, string groupName)
 		{
 			SqlParameter prmFilterUrl = new SqlParameter("@FilterUrl", SqlDbType.NVarChar, 200);
 			prmFilterUrl.Direction = ParameterDirection.Output;
@@ -1559,7 +1558,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToString(prmFilterUrl.Value);
 		}
 
-		public static string GetMailFilterUrlByHostingPlan(int actorId, int PlanID, string groupName)
+		public string GetMailFilterUrlByHostingPlan(int actorId, int PlanID, string groupName)
 		{
 			SqlParameter prmFilterUrl = new SqlParameter("@FilterUrl", SqlDbType.NVarChar, 200);
 			prmFilterUrl.Direction = ParameterDirection.Output;
@@ -1575,7 +1574,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 
-		public static void UpdatePackageDiskSpace(int packageId, string xml)
+		public void UpdatePackageDiskSpace(int packageId, string xml)
 		{
 			ExecuteLongNonQuery(
 				 ObjectQualifier + "UpdatePackageDiskSpace",
@@ -1583,7 +1582,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@xml", xml));
 		}
 
-		public static void UpdatePackageBandwidth(int packageId, string xml)
+		public void UpdatePackageBandwidth(int packageId, string xml)
 		{
 			ExecuteLongNonQuery(
 				 ObjectQualifier + "UpdatePackageBandwidth",
@@ -1591,7 +1590,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@xml", xml));
 		}
 
-		public static DateTime GetPackageBandwidthUpdate(int packageId)
+		public DateTime GetPackageBandwidthUpdate(int packageId)
 		{
 			SqlParameter prmUpdateDate = new SqlParameter("@UpdateDate", SqlDbType.DateTime);
 			prmUpdateDate.Direction = ParameterDirection.Output;
@@ -1604,7 +1603,7 @@ namespace SolidCP.EnterpriseServer
 			return (prmUpdateDate.Value != DBNull.Value) ? Convert.ToDateTime(prmUpdateDate.Value) : DateTime.MinValue;
 		}
 
-		public static void UpdatePackageBandwidthUpdate(int packageId, DateTime updateDate)
+		public void UpdatePackageBandwidthUpdate(int packageId, DateTime updateDate)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "UpdatePackageBandwidthUpdate",
@@ -1612,7 +1611,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@updateDate", updateDate));
 		}
 
-		public static IDataReader GetServiceItemType(int itemTypeId)
+		public IDataReader GetServiceItemType(int itemTypeId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -1622,7 +1621,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetServiceItemTypes()
+		public IDataReader GetServiceItemTypes()
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -1634,7 +1633,7 @@ namespace SolidCP.EnterpriseServer
 
 		#region Plans
 		// Plans methods
-		public static DataSet GetHostingPlans(int actorId, int userId)
+		public DataSet GetHostingPlans(int actorId, int userId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetHostingPlans",
@@ -1642,7 +1641,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@userId", userId));
 		}
 
-		public static DataSet GetHostingAddons(int actorId, int userId)
+		public DataSet GetHostingAddons(int actorId, int userId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetHostingAddons",
@@ -1650,7 +1649,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@userId", userId));
 		}
 
-		public static DataSet GetUserAvailableHostingPlans(int actorId, int userId)
+		public DataSet GetUserAvailableHostingPlans(int actorId, int userId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetUserAvailableHostingPlans",
@@ -1658,7 +1657,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@userId", userId));
 		}
 
-		public static DataSet GetUserAvailableHostingAddons(int actorId, int userId)
+		public DataSet GetUserAvailableHostingAddons(int actorId, int userId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetUserAvailableHostingAddons",
@@ -1666,7 +1665,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@userId", userId));
 		}
 
-		public static IDataReader GetHostingPlan(int actorId, int planId)
+		public IDataReader GetHostingPlan(int actorId, int planId)
 		{
 			return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetHostingPlan",
@@ -1674,7 +1673,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@PlanId", planId));
 		}
 
-		public static DataSet GetHostingPlanQuotas(int actorId, int packageId, int planId, int serverId)
+		public DataSet GetHostingPlanQuotas(int actorId, int packageId, int planId, int serverId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetHostingPlanQuotas",
@@ -1684,7 +1683,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@serverId", serverId));
 		}
 
-		public static int AddHostingPlan(int actorId, int userId, int packageId, string planName,
+		public int AddHostingPlan(int actorId, int userId, int packageId, string planName,
 			 string planDescription, bool available, int serverId, decimal setupPrice, decimal recurringPrice,
 			 int recurrenceUnit, int recurrenceLength, bool isAddon, string quotasXml)
 		{
@@ -1712,7 +1711,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(prmPlanId.Value);
 		}
 
-		public static DataSet UpdateHostingPlan(int actorId, int planId, int packageId, int serverId, string planName,
+		public DataSet UpdateHostingPlan(int actorId, int planId, int packageId, int serverId, string planName,
 			 string planDescription, bool available, decimal setupPrice, decimal recurringPrice,
 			 int recurrenceUnit, int recurrenceLength, string quotasXml)
 		{
@@ -1732,7 +1731,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@quotasXml", quotasXml));
 		}
 
-		public static int CopyHostingPlan(int planId, int userId, int packageId)
+		public int CopyHostingPlan(int planId, int userId, int packageId)
 		{
 			SqlParameter prmPlanId = new SqlParameter("@DestinationPlanID", SqlDbType.Int);
 			prmPlanId.Direction = ParameterDirection.Output;
@@ -1747,7 +1746,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(prmPlanId.Value);
 		}
 
-		public static int DeleteHostingPlan(int actorId, int planId)
+		public int DeleteHostingPlan(int actorId, int planId)
 		{
 			SqlParameter prmResult = new SqlParameter("@Result", SqlDbType.Int);
 			prmResult.Direction = ParameterDirection.Output;
@@ -1765,7 +1764,7 @@ namespace SolidCP.EnterpriseServer
 		#region Packages
 
 		// Packages
-		public static DataSet GetMyPackages(int actorId, int userId)
+		public DataSet GetMyPackages(int actorId, int userId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetMyPackages",
@@ -1773,7 +1772,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@UserID", userId));
 		}
 
-		public static DataSet GetPackages(int actorId, int userId)
+		public DataSet GetPackages(int actorId, int userId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetPackages",
@@ -1781,7 +1780,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@UserID", userId));
 		}
 
-		public static DataSet GetNestedPackagesSummary(int actorId, int packageId)
+		public DataSet GetNestedPackagesSummary(int actorId, int packageId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetNestedPackagesSummary",
@@ -1789,7 +1788,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@PackageID", packageId));
 		}
 
-		public static DataSet SearchServiceItemsPaged(int actorId, int userId, int itemTypeId, string filterValue,
+		public DataSet SearchServiceItemsPaged(int actorId, int userId, int itemTypeId, string filterValue,
 			 string sortColumn, int startRow, int maximumRows)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
@@ -1803,7 +1802,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@maximumRows", maximumRows));
 		}
 
-		public static DataSet GetPackagesPaged(int actorId, int userId, string filterColumn, string filterValue,
+		public DataSet GetPackagesPaged(int actorId, int userId, string filterColumn, string filterValue,
 			 string sortColumn, int startRow, int maximumRows)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
@@ -1817,7 +1816,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@maximumRows", maximumRows));
 		}
 
-		public static DataSet GetNestedPackagesPaged(int actorId, int packageId, string filterColumn, string filterValue,
+		public DataSet GetNestedPackagesPaged(int actorId, int packageId, string filterColumn, string filterValue,
 			 int statusId, int planId, int serverId, string sortColumn, int startRow, int maximumRows)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
@@ -1834,7 +1833,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@maximumRows", maximumRows));
 		}
 
-		public static DataSet GetPackagePackages(int actorId, int packageId, bool recursive)
+		public DataSet GetPackagePackages(int actorId, int packageId, bool recursive)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetPackagePackages",
@@ -1843,7 +1842,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@recursive", recursive));
 		}
 
-		public static IDataReader GetPackage(int actorId, int packageId)
+		public IDataReader GetPackage(int actorId, int packageId)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetPackage",
@@ -1851,7 +1850,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@PackageID", packageId));
 		}
 
-		public static DataSet GetPackageQuotas(int actorId, int packageId)
+		public DataSet GetPackageQuotas(int actorId, int packageId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetPackageQuotas",
@@ -1859,7 +1858,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@PackageID", packageId));
 		}
 
-		public static DataSet GetParentPackageQuotas(int actorId, int packageId)
+		public DataSet GetParentPackageQuotas(int actorId, int packageId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetParentPackageQuotas",
@@ -1867,7 +1866,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@PackageID", packageId));
 		}
 
-		public static DataSet GetPackageQuotasForEdit(int actorId, int packageId)
+		public DataSet GetPackageQuotasForEdit(int actorId, int packageId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetPackageQuotasForEdit",
@@ -1875,7 +1874,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@PackageID", packageId));
 		}
 
-		public static DataSet AddPackage(int actorId, out int packageId, int userId, int planId, string packageName,
+		public DataSet AddPackage(int actorId, out int packageId, int userId, int planId, string packageName,
 			 string packageComments, int statusId, DateTime purchaseDate)
 		{
 			SqlParameter prmPackageId = new SqlParameter("@PackageID", SqlDbType.Int);
@@ -1900,7 +1899,7 @@ namespace SolidCP.EnterpriseServer
 			return ds;
 		}
 
-		public static DataSet UpdatePackage(int actorId, int packageId, int planId, string packageName,
+		public DataSet UpdatePackage(int actorId, int packageId, int planId, string packageName,
 			 string packageComments, int statusId, DateTime purchaseDate,
 			 bool overrideQuotas, string quotasXml, bool defaultTopPackage)
 		{
@@ -1917,7 +1916,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@quotasXml", quotasXml),
 				 new SqlParameter("@defaultTopPackage", defaultTopPackage));
 		}
-		public static void ChangePackageUser(int actorId, int packageId, int userId)
+		public void ChangePackageUser(int actorId, int packageId, int userId)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "ChangePackageUser",
@@ -1926,7 +1925,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@UserId", userId));
 		}
 
-		public static void UpdatePackageName(int actorId, int packageId, string packageName,
+		public void UpdatePackageName(int actorId, int packageId, string packageName,
 			 string packageComments)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
@@ -1937,7 +1936,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@packageComments", packageComments));
 		}
 
-		public static void DeletePackage(int actorId, int packageId)
+		public void DeletePackage(int actorId, int packageId)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "DeletePackage",
@@ -1946,7 +1945,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 		// Package Add-ons
-		public static DataSet GetPackageAddons(int actorId, int packageId)
+		public DataSet GetPackageAddons(int actorId, int packageId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetPackageAddons",
@@ -1954,7 +1953,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@PackageID", packageId));
 		}
 
-		public static IDataReader GetPackageAddon(int actorId, int packageAddonId)
+		public IDataReader GetPackageAddon(int actorId, int packageAddonId)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetPackageAddon",
@@ -1962,7 +1961,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@PackageAddonID", packageAddonId));
 		}
 
-		public static DataSet AddPackageAddon(int actorId, out int addonId, int packageId, int planId, int quantity,
+		public DataSet AddPackageAddon(int actorId, out int addonId, int packageId, int planId, int quantity,
 			 int statusId, DateTime purchaseDate, string comments)
 		{
 			SqlParameter prmPackageAddonId = new SqlParameter("@PackageAddonID", SqlDbType.Int);
@@ -1985,7 +1984,7 @@ namespace SolidCP.EnterpriseServer
 			return ds;
 		}
 
-		public static DataSet UpdatePackageAddon(int actorId, int packageAddonId, int planId, int quantity,
+		public DataSet UpdatePackageAddon(int actorId, int packageAddonId, int planId, int quantity,
 			 int statusId, DateTime purchaseDate, string comments)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
@@ -1999,7 +1998,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@Comments", comments));
 		}
 
-		public static void DeletePackageAddon(int actorId, int packageAddonId)
+		public void DeletePackageAddon(int actorId, int packageAddonId)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "DeletePackageAddon",
@@ -2007,7 +2006,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@PackageAddonID", packageAddonId));
 		}
 
-		public static void UpdateServerPackageServices(int serverId)
+		public void UpdateServerPackageServices(int serverId)
 		{
 			// FIXME
 			int defaultActorID = 1;
@@ -2026,7 +2025,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static void DistributePackageServices(int actorId, int packageId)
+		public void DistributePackageServices(int actorId, int packageId)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "DistributePackageServices",
@@ -2037,7 +2036,7 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region Packages Settings
-		public static IDataReader GetPackageSettings(int actorId, int packageId, string settingsName)
+		public IDataReader GetPackageSettings(int actorId, int packageId, string settingsName)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetPackageSettings",
@@ -2045,7 +2044,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@PackageId", packageId),
 				 new SqlParameter("@SettingsName", settingsName));
 		}
-		public static void UpdatePackageSettings(int actorId, int packageId, string settingsName, string xml)
+		public void UpdatePackageSettings(int actorId, int packageId, string settingsName, string xml)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "UpdatePackageSettings",
@@ -2057,14 +2056,14 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region Quotas
-		public static IDataReader GetProviderServiceQuota(int providerId)
+		public IDataReader GetProviderServiceQuota(int providerId)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetProviderServiceQuota",
 				 new SqlParameter("@providerId", providerId));
 		}
 
-		public static IDataReader GetPackageQuota(int actorId, int packageId, string quotaName)
+		public IDataReader GetPackageQuota(int actorId, int packageId, string quotaName)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetPackageQuota",
@@ -2075,7 +2074,7 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region Log
-		public static void AddAuditLogRecord(string recordId, int severityId,
+		public void AddAuditLogRecord(string recordId, int severityId,
 			 int userId, string username, int packageId, int itemId, string itemName, DateTime startDate, DateTime finishDate, string sourceName,
 			 string taskName, string executionLog)
 		{
@@ -2095,7 +2094,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@executionLog", executionLog));
 		}
 
-		public static DataSet GetAuditLogRecordsPaged(int actorId, int userId, int packageId, int itemId, string itemName, DateTime startDate, DateTime endDate,
+		public DataSet GetAuditLogRecordsPaged(int actorId, int userId, int packageId, int itemId, string itemName, DateTime startDate, DateTime endDate,
 			 int severityId, string sourceName, string taskName, string sortColumn, int startRow, int maximumRows)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
@@ -2115,27 +2114,27 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@maximumRows", maximumRows));
 		}
 
-		public static DataSet GetAuditLogSources()
+		public DataSet GetAuditLogSources()
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetAuditLogSources");
 		}
 
-		public static DataSet GetAuditLogTasks(string sourceName)
+		public DataSet GetAuditLogTasks(string sourceName)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetAuditLogTasks",
 				 new SqlParameter("@sourceName", sourceName));
 		}
 
-		public static IDataReader GetAuditLogRecord(string recordId)
+		public IDataReader GetAuditLogRecord(string recordId)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetAuditLogRecord",
 				 new SqlParameter("@recordId", recordId));
 		}
 
-		public static void DeleteAuditLogRecords(int actorId, int userId, int itemId, string itemName, DateTime startDate, DateTime endDate,
+		public void DeleteAuditLogRecords(int actorId, int userId, int itemId, string itemName, DateTime startDate, DateTime endDate,
 			 int severityId, string sourceName, string taskName)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
@@ -2151,7 +2150,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@taskName", taskName));
 		}
 
-		public static void DeleteAuditLogRecordsComplete()
+		public void DeleteAuditLogRecordsComplete()
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "DeleteAuditLogRecordsComplete");
@@ -2160,7 +2159,7 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region Reports
-		public static DataSet GetPackagesBandwidthPaged(int actorId, int userId, int packageId,
+		public DataSet GetPackagesBandwidthPaged(int actorId, int userId, int packageId,
 			 DateTime startDate, DateTime endDate, string sortColumn,
 			 int startRow, int maximumRows)
 		{
@@ -2176,7 +2175,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@maximumRows", maximumRows));
 		}
 
-		public static DataSet GetPackagesDiskspacePaged(int actorId, int userId, int packageId, string sortColumn,
+		public DataSet GetPackagesDiskspacePaged(int actorId, int userId, int packageId, string sortColumn,
 			 int startRow, int maximumRows)
 		{
 			return ExecuteLongDataSet(
@@ -2189,7 +2188,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@maximumRows", maximumRows));
 		}
 
-		public static DataSet GetPackageBandwidth(int actorId, int packageId, DateTime startDate, DateTime endDate)
+		public DataSet GetPackageBandwidth(int actorId, int packageId, DateTime startDate, DateTime endDate)
 		{
 			return ExecuteLongDataSet(
 				 ObjectQualifier + "GetPackageBandwidth",
@@ -2199,7 +2198,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@EndDate", endDate));
 		}
 
-		public static DataSet GetPackageDiskspace(int actorId, int packageId)
+		public DataSet GetPackageDiskspace(int actorId, int packageId)
 		{
 			return ExecuteLongDataSet(
 				 ObjectQualifier + "GetPackageDiskspace",
@@ -2211,49 +2210,49 @@ namespace SolidCP.EnterpriseServer
 
 		#region Scheduler
 
-		public static IDataReader GetBackgroundTask(string taskId)
+		public IDataReader GetBackgroundTask(string taskId)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 													 ObjectQualifier + "GetBackgroundTask",
 													 new SqlParameter("@taskId", taskId));
 		}
 
-		public static IDataReader GetScheduleBackgroundTasks(int scheduleId)
+		public IDataReader GetScheduleBackgroundTasks(int scheduleId)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 													 ObjectQualifier + "GetScheduleBackgroundTasks",
 													 new SqlParameter("@scheduleId", scheduleId));
 		}
 
-		public static IDataReader GetBackgroundTasks(int actorId)
+		public IDataReader GetBackgroundTasks(int actorId)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 													 ObjectQualifier + "GetBackgroundTasks",
 													 new SqlParameter("@actorId", actorId));
 		}
 
-		public static IDataReader GetBackgroundTasks(Guid guid)
+		public IDataReader GetBackgroundTasks(Guid guid)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 													 ObjectQualifier + "GetThreadBackgroundTasks",
 													 new SqlParameter("@guid", guid));
 		}
 
-		public static IDataReader GetProcessBackgroundTasks(BackgroundTaskStatus status)
+		public IDataReader GetProcessBackgroundTasks(BackgroundTaskStatus status)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 													 ObjectQualifier + "GetProcessBackgroundTasks",
 													 new SqlParameter("@status", (int)status));
 		}
 
-		public static IDataReader GetBackgroundTopTask(Guid guid)
+		public IDataReader GetBackgroundTopTask(Guid guid)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 													 ObjectQualifier + "GetBackgroundTopTask",
 													 new SqlParameter("@guid", guid));
 		}
 
-		public static int AddBackgroundTask(Guid guid, string taskId, int scheduleId, int packageId, int userId,
+		public int AddBackgroundTask(Guid guid, string taskId, int scheduleId, int packageId, int userId,
 			 int effectiveUserId, string taskName, int itemId, string itemName, DateTime startDate,
 			 int indicatorCurrent, int indicatorMaximum, int maximumExecutionTime, string source,
 			 int severity, bool completed, bool notifyOnComplete, BackgroundTaskStatus status)
@@ -2287,7 +2286,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(prmId.Value);
 		}
 
-		public static void AddBackgroundTaskLog(int taskId, DateTime date, string exceptionStackTrace,
+		public void AddBackgroundTaskLog(int taskId, DateTime date, string exceptionStackTrace,
 			 bool innerTaskStart, int severity, string text, int textIdent, string xmlParameters)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
@@ -2302,7 +2301,7 @@ namespace SolidCP.EnterpriseServer
 											  new SqlParameter("@xmlParameters", xmlParameters));
 		}
 
-		public static IDataReader GetBackgroundTaskLogs(int taskId, DateTime startLogTime)
+		public IDataReader GetBackgroundTaskLogs(int taskId, DateTime startLogTime)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 													 ObjectQualifier + "GetBackgroundTaskLogs",
@@ -2310,7 +2309,7 @@ namespace SolidCP.EnterpriseServer
 													 new SqlParameter("@startLogTime", startLogTime));
 		}
 
-		public static void UpdateBackgroundTask(Guid guid, int taskId, int scheduleId, int packageId, string taskName, int itemId,
+		public void UpdateBackgroundTask(Guid guid, int taskId, int scheduleId, int packageId, string taskName, int itemId,
 			 string itemName, DateTime finishDate, int indicatorCurrent, int indicatorMaximum, int maximumExecutionTime,
 			 string source, int severity, bool completed, bool notifyOnComplete, BackgroundTaskStatus status)
 		{
@@ -2338,14 +2337,14 @@ namespace SolidCP.EnterpriseServer
 
 		}
 
-		public static IDataReader GetBackgroundTaskParams(int taskId)
+		public IDataReader GetBackgroundTaskParams(int taskId)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 													 ObjectQualifier + "GetBackgroundTaskParams",
 													 new SqlParameter("@taskId", taskId));
 		}
 
-		public static void AddBackgroundTaskParam(int taskId, string name, string value, string typeName)
+		public void AddBackgroundTaskParam(int taskId, string name, string value, string typeName)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 											  ObjectQualifier + "AddBackgroundTaskParam",
@@ -2355,42 +2354,42 @@ namespace SolidCP.EnterpriseServer
 											  new SqlParameter("@typeName", typeName));
 		}
 
-		public static void DeleteBackgroundTaskParams(int taskId)
+		public void DeleteBackgroundTaskParams(int taskId)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 											  ObjectQualifier + "DeleteBackgroundTaskParams",
 											  new SqlParameter("@taskId", taskId));
 		}
 
-		public static void AddBackgroundTaskStack(int taskId)
+		public void AddBackgroundTaskStack(int taskId)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 											  ObjectQualifier + "AddBackgroundTaskStack",
 											  new SqlParameter("@taskId", taskId));
 		}
 
-		public static void DeleteBackgroundTasks(Guid guid)
+		public void DeleteBackgroundTasks(Guid guid)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 											  ObjectQualifier + "DeleteBackgroundTasks",
 											  new SqlParameter("@guid", guid));
 		}
 
-		public static void DeleteBackgroundTask(int taskId)
+		public void DeleteBackgroundTask(int taskId)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 											  ObjectQualifier + "DeleteBackgroundTask",
 											  new SqlParameter("@id", taskId));
 		}
 
-		public static IDataReader GetScheduleTasks(int actorId)
+		public IDataReader GetScheduleTasks(int actorId)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetScheduleTasks",
 				 new SqlParameter("@actorId", actorId));
 		}
 
-		public static IDataReader GetScheduleTask(int actorId, string taskId)
+		public IDataReader GetScheduleTask(int actorId, string taskId)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetScheduleTask",
@@ -2398,7 +2397,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@taskId", taskId));
 		}
 
-		public static DataSet GetSchedules(int actorId, int packageId)
+		public DataSet GetSchedules(int actorId, int packageId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetSchedules",
@@ -2407,7 +2406,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@recursive", true));
 		}
 
-		public static DataSet GetSchedulesPaged(int actorId, int packageId, bool recursive,
+		public DataSet GetSchedulesPaged(int actorId, int packageId, bool recursive,
 			 string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
@@ -2422,25 +2421,25 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@maximumRows", maximumRows));
 		}
 
-		public static DataSet GetSchedule(int actorId, int scheduleId)
+		public DataSet GetSchedule(int actorId, int scheduleId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetSchedule",
 				 new SqlParameter("@actorId", actorId),
 				 new SqlParameter("@scheduleId", scheduleId));
 		}
-		public static IDataReader GetScheduleInternal(int scheduleId)
+		public IDataReader GetScheduleInternal(int scheduleId)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetScheduleInternal",
 				 new SqlParameter("@scheduleId", scheduleId));
 		}
-		public static DataSet GetNextSchedule()
+		public DataSet GetNextSchedule()
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetNextSchedule");
 		}
-		public static IDataReader GetScheduleParameters(int actorId, string taskId, int scheduleId)
+		public IDataReader GetScheduleParameters(int actorId, string taskId, int scheduleId)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetScheduleParameters",
@@ -2454,14 +2453,14 @@ namespace SolidCP.EnterpriseServer
 		/// </summary>
 		/// <param name="taskId">Task id which points to task for which view configuration will be loaded.</param>
 		/// <returns>View configuration for the task with supplied id.</returns>
-		public static IDataReader GetScheduleTaskViewConfigurations(string taskId)
+		public IDataReader GetScheduleTaskViewConfigurations(string taskId)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 													 ObjectQualifier + "GetScheduleTaskViewConfigurations",
 													 new SqlParameter("@taskId", taskId));
 		}
 
-		public static int AddSchedule(int actorId, string taskId, int packageId,
+		public int AddSchedule(int actorId, string taskId, int packageId,
 			 string scheduleName, string scheduleTypeId, int interval,
 			 DateTime fromTime, DateTime toTime, DateTime startTime,
 			 DateTime nextRun, bool enabled, string priorityId, int historiesNumber,
@@ -2494,7 +2493,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(prmId.Value);
 		}
 
-		public static void UpdateSchedule(int actorId, int scheduleId, string taskId,
+		public void UpdateSchedule(int actorId, int scheduleId, string taskId,
 			 string scheduleName, string scheduleTypeId, int interval,
 			 DateTime fromTime, DateTime toTime, DateTime startTime,
 			 DateTime lastRun, DateTime nextRun, bool enabled, string priorityId,
@@ -2521,7 +2520,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@xmlParameters", xmlParameters));
 		}
 
-		public static void DeleteSchedule(int actorId, int scheduleId)
+		public void DeleteSchedule(int actorId, int scheduleId)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "DeleteSchedule",
@@ -2529,21 +2528,21 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@scheduleId", scheduleId));
 		}
 
-		public static DataSet GetScheduleHistories(int actorId, int scheduleId)
+		public DataSet GetScheduleHistories(int actorId, int scheduleId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetScheduleHistories",
 				 new SqlParameter("@actorId", actorId),
 				 new SqlParameter("@scheduleId", scheduleId));
 		}
-		public static IDataReader GetScheduleHistory(int actorId, int scheduleHistoryId)
+		public IDataReader GetScheduleHistory(int actorId, int scheduleHistoryId)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetScheduleHistory",
 				 new SqlParameter("@actorId", actorId),
 				 new SqlParameter("@scheduleHistoryId", scheduleHistoryId));
 		}
-		public static int AddScheduleHistory(int actorId, int scheduleId,
+		public int AddScheduleHistory(int actorId, int scheduleId,
 			 DateTime startTime, DateTime finishTime, string statusId, string executionLog)
 		{
 			SqlParameter prmId = new SqlParameter("@ScheduleHistoryID", SqlDbType.Int);
@@ -2562,7 +2561,7 @@ namespace SolidCP.EnterpriseServer
 			// read identity
 			return Convert.ToInt32(prmId.Value);
 		}
-		public static void UpdateScheduleHistory(int actorId, int scheduleHistoryId,
+		public void UpdateScheduleHistory(int actorId, int scheduleHistoryId,
 			 DateTime startTime, DateTime finishTime, string statusId, string executionLog)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
@@ -2574,7 +2573,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@statusId", statusId),
 				 new SqlParameter("@executionLog", executionLog));
 		}
-		public static void DeleteScheduleHistories(int actorId, int scheduleId)
+		public void DeleteScheduleHistories(int actorId, int scheduleId)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "DeleteScheduleHistories",
@@ -2584,7 +2583,7 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region Comments
-		public static DataSet GetComments(int actorId, int userId, string itemTypeId, int itemId)
+		public DataSet GetComments(int actorId, int userId, string itemTypeId, int itemId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetComments",
@@ -2594,7 +2593,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@itemId", itemId));
 		}
 
-		public static void AddComment(int actorId, string itemTypeId, int itemId,
+		public void AddComment(int actorId, string itemTypeId, int itemId,
 			 string commentText, int severityId)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
@@ -2606,7 +2605,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@severityId", severityId));
 		}
 
-		public static void DeleteComment(int actorId, int commentId)
+		public void DeleteComment(int actorId, int commentId)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "DeleteComment",
@@ -2616,29 +2615,29 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region Helper Methods
-		private static string VerifyColumnName(string str)
+		private string VerifyColumnName(string str)
 		{
 			if (str == null)
 				str = "";
 			return Regex.Replace(str, @"[^\w\. ]", "");
 		}
 
-		private static string VerifyColumnValue(string str)
+		private string VerifyColumnValue(string str)
 		{
 			return String.IsNullOrEmpty(str) ? str : str.Replace("'", "''");
 		}
 
-		private static DataSet ExecuteLongDataSet(string spName, params SqlParameter[] parameters)
+		private DataSet ExecuteLongDataSet(string spName, params SqlParameter[] parameters)
 		{
 			return ExecuteLongDataSet(spName, CommandType.StoredProcedure, parameters);
 		}
 
-		private static DataSet ExecuteLongQueryDataSet(string spName, params SqlParameter[] parameters)
+		private DataSet ExecuteLongQueryDataSet(string spName, params SqlParameter[] parameters)
 		{
 			return ExecuteLongDataSet(spName, CommandType.Text, parameters);
 		}
 
-		private static DataSet ExecuteLongDataSet(string commandText, CommandType commandType, params SqlParameter[] parameters)
+		private DataSet ExecuteLongDataSet(string commandText, CommandType commandType, params SqlParameter[] parameters)
 		{
 			SqlConnection conn = new SqlConnection(ConnectionString);
 			SqlCommand cmd = new SqlCommand(commandText, conn);
@@ -2668,7 +2667,7 @@ namespace SolidCP.EnterpriseServer
 			return ds;
 		}
 
-		private static void ExecuteLongNonQuery(string spName, params SqlParameter[] parameters)
+		private void ExecuteLongNonQuery(string spName, params SqlParameter[] parameters)
 		{
 			SqlConnection conn = new SqlConnection(ConnectionString);
 			SqlCommand cmd = new SqlCommand(spName, conn);
@@ -2698,7 +2697,7 @@ namespace SolidCP.EnterpriseServer
 
 		#region Exchange Server
 
-		public static int AddExchangeAccount(int itemId, int accountType, string accountName,
+		public int AddExchangeAccount(int itemId, int accountType, string accountName,
 			 string displayName, string primaryEmailAddress, bool mailEnabledPublicFolder,
 			 string mailboxManagerActions, string samAccountName, int mailboxPlanId, string subscriberNumber)
 		{
@@ -2725,7 +2724,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(outParam.Value);
 		}
 
-		public static void AddExchangeAccountEmailAddress(int accountId, string emailAddress)
+		public void AddExchangeAccountEmailAddress(int accountId, string emailAddress)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -2736,7 +2735,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void AddExchangeOrganization(int itemId, string organizationId)
+		public void AddExchangeOrganization(int itemId, string organizationId)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -2747,7 +2746,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void AddExchangeOrganizationDomain(int itemId, int domainId, bool isHost)
+		public void AddExchangeOrganizationDomain(int itemId, int domainId, bool isHost)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -2759,7 +2758,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void ChangeExchangeAcceptedDomainType(int itemId, int domainId, int domainTypeId)
+		public void ChangeExchangeAcceptedDomainType(int itemId, int domainId, int domainTypeId)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -2771,7 +2770,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetExchangeOrganizationStatistics(int itemId)
+		public IDataReader GetExchangeOrganizationStatistics(int itemId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -2781,7 +2780,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void DeleteUserEmailAddresses(int accountId, string primaryAddress)
+		public void DeleteUserEmailAddresses(int accountId, string primaryAddress)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -2792,7 +2791,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void DeleteExchangeAccount(int itemId, int accountId)
+		public void DeleteExchangeAccount(int itemId, int accountId)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -2804,7 +2803,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 
-		public static void DeleteExchangeAccountEmailAddress(int accountId, string emailAddress)
+		public void DeleteExchangeAccountEmailAddress(int accountId, string emailAddress)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -2815,7 +2814,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void DeleteExchangeOrganization(int itemId)
+		public void DeleteExchangeOrganization(int itemId)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -2825,7 +2824,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void DeleteExchangeOrganizationDomain(int itemId, int domainId)
+		public void DeleteExchangeOrganizationDomain(int itemId, int domainId)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -2836,7 +2835,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static bool ExchangeAccountEmailAddressExists(string emailAddress, bool checkContacts)
+		public bool ExchangeAccountEmailAddressExists(string emailAddress, bool checkContacts)
 		{
 			SqlParameter outParam = new SqlParameter("@Exists", SqlDbType.Bit);
 			outParam.Direction = ParameterDirection.Output;
@@ -2853,7 +2852,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToBoolean(outParam.Value);
 		}
 
-		public static bool ExchangeOrganizationDomainExists(int domainId)
+		public bool ExchangeOrganizationDomainExists(int domainId)
 		{
 			SqlParameter outParam = new SqlParameter("@Exists", SqlDbType.Bit);
 			outParam.Direction = ParameterDirection.Output;
@@ -2869,7 +2868,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToBoolean(outParam.Value);
 		}
 
-		public static bool ExchangeOrganizationExists(string organizationId)
+		public bool ExchangeOrganizationExists(string organizationId)
 		{
 			SqlParameter outParam = new SqlParameter("@Exists", SqlDbType.Bit);
 			outParam.Direction = ParameterDirection.Output;
@@ -2885,7 +2884,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToBoolean(outParam.Value);
 		}
 
-		public static bool ExchangeAccountExists(string accountName)
+		public bool ExchangeAccountExists(string accountName)
 		{
 			SqlParameter outParam = new SqlParameter("@Exists", SqlDbType.Bit);
 			outParam.Direction = ParameterDirection.Output;
@@ -2901,7 +2900,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToBoolean(outParam.Value);
 		}
 
-		public static void UpdateExchangeAccount(int accountId, string accountName, ExchangeAccountType accountType,
+		public void UpdateExchangeAccount(int accountId, string accountName, ExchangeAccountType accountType,
 			 string displayName, string primaryEmailAddress, bool mailEnabledPublicFolder,
 			 string mailboxManagerActions, string samAccountName, int mailboxPlanId, int archivePlanId, string subscriberNumber,
 			 bool EnableArchiving)
@@ -2925,7 +2924,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void UpdateExchangeAccountServiceLevelSettings(int accountId, int levelId, bool isVIP)
+		public void UpdateExchangeAccountServiceLevelSettings(int accountId, int levelId, bool isVIP)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -2937,7 +2936,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void UpdateExchangeAccountUserPrincipalName(int accountId, string userPrincipalName)
+		public void UpdateExchangeAccountUserPrincipalName(int accountId, string userPrincipalName)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -2947,7 +2946,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@UserPrincipalName", userPrincipalName));
 		}
 
-		public static IDataReader GetExchangeAccount(int itemId, int accountId)
+		public IDataReader GetExchangeAccount(int itemId, int accountId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -2958,7 +2957,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetExchangeAccountByAccountName(int itemId, string accountName)
+		public IDataReader GetExchangeAccountByAccountName(int itemId, string accountName)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -2969,7 +2968,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetExchangeAccountByMailboxPlanId(int itemId, int MailboxPlanId)
+		public IDataReader GetExchangeAccountByMailboxPlanId(int itemId, int MailboxPlanId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -2981,7 +2980,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 
-		public static IDataReader GetExchangeAccountEmailAddresses(int accountId)
+		public IDataReader GetExchangeAccountEmailAddresses(int accountId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -2991,7 +2990,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetExchangeOrganizationDomains(int itemId)
+		public IDataReader GetExchangeOrganizationDomains(int itemId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -3002,7 +3001,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 
-		public static IDataReader GetExchangeAccounts(int itemId, int accountType)
+		public IDataReader GetExchangeAccounts(int itemId, int accountType)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -3013,7 +3012,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetExchangeAccountByAccountNameWithoutItemId(string userPrincipalName)
+		public IDataReader GetExchangeAccountByAccountNameWithoutItemId(string userPrincipalName)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -3024,7 +3023,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 
-		public static IDataReader GetExchangeMailboxes(int itemId)
+		public IDataReader GetExchangeMailboxes(int itemId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -3034,7 +3033,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader SearchExchangeAccountsByTypes(int actorId, int itemId, string accountTypes,
+		public IDataReader SearchExchangeAccountsByTypes(int actorId, int itemId, string accountTypes,
 			 string filterColumn, string filterValue, string sortColumn)
 		{
 			// check input parameters
@@ -3066,7 +3065,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static DataSet GetExchangeAccountsPaged(int actorId, int itemId, string accountTypes,
+		public DataSet GetExchangeAccountsPaged(int actorId, int itemId, string accountTypes,
 				  string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, bool archiving)
 		{
 			// check input parameters
@@ -3101,7 +3100,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader SearchExchangeAccounts(int actorId, int itemId, bool includeMailboxes,
+		public IDataReader SearchExchangeAccounts(int actorId, int itemId, bool includeMailboxes,
 				  bool includeContacts, bool includeDistributionLists, bool includeRooms, bool includeEquipment, bool IncludeSharedMailbox,
 				  bool includeSecurityGroups, string filterColumn, string filterValue, string sortColumn)
 		{
@@ -3124,7 +3123,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader SearchExchangeAccount(int actorId, int accountType, string primaryEmailAddress)
+		public IDataReader SearchExchangeAccount(int actorId, int accountType, string primaryEmailAddress)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -3139,7 +3138,7 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region Exchange Mailbox Plans
-		public static int AddExchangeMailboxPlan(int itemID, string mailboxPlan, bool enableActiveSync, bool enableIMAP, bool enableMAPI, bool enableOWA, bool enablePOP, bool enableAutoReply,
+		public int AddExchangeMailboxPlan(int itemID, string mailboxPlan, bool enableActiveSync, bool enableIMAP, bool enableMAPI, bool enableOWA, bool enablePOP, bool enableAutoReply,
 																  bool isDefault, int issueWarningPct, int keepDeletedItemsDays, int mailboxSizeMB, int maxReceiveMessageSizeKB, int maxRecipients,
 																  int maxSendMessageSizeKB, int prohibitSendPct, int prohibitSendReceivePct, bool hideFromAddressBook, int mailboxPlanType,
 																  bool enabledLitigationHold, int recoverabelItemsSpace, int recoverabelItemsWarning, string litigationHoldUrl, string litigationHoldMsg,
@@ -3190,7 +3189,7 @@ namespace SolidCP.EnterpriseServer
 
 
 
-		public static void UpdateExchangeMailboxPlan(int mailboxPlanID, string mailboxPlan, bool enableActiveSync, bool enableIMAP, bool enableMAPI, bool enableOWA, bool enablePOP, bool enableAutoReply,
+		public void UpdateExchangeMailboxPlan(int mailboxPlanID, string mailboxPlan, bool enableActiveSync, bool enableIMAP, bool enableMAPI, bool enableOWA, bool enablePOP, bool enableAutoReply,
 														bool isDefault, int issueWarningPct, int keepDeletedItemsDays, int mailboxSizeMB, int maxReceiveMessageSizeKB, int maxRecipients,
 														int maxSendMessageSizeKB, int prohibitSendPct, int prohibitSendReceivePct, bool hideFromAddressBook, int mailboxPlanType,
 														bool enabledLitigationHold, long recoverabelItemsSpace, long recoverabelItemsWarning, string litigationHoldUrl, string litigationHoldMsg,
@@ -3235,7 +3234,7 @@ namespace SolidCP.EnterpriseServer
 
 
 
-		public static void DeleteExchangeMailboxPlan(int mailboxPlanId)
+		public void DeleteExchangeMailboxPlan(int mailboxPlanId)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -3246,7 +3245,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 
-		public static IDataReader GetExchangeMailboxPlan(int mailboxPlanId)
+		public IDataReader GetExchangeMailboxPlan(int mailboxPlanId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -3256,7 +3255,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetExchangeMailboxPlans(int itemId, bool archiving)
+		public IDataReader GetExchangeMailboxPlans(int itemId, bool archiving)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -3268,7 +3267,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 
-		public static IDataReader GetExchangeOrganization(int itemId)
+		public IDataReader GetExchangeOrganization(int itemId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -3279,7 +3278,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 
-		public static void SetOrganizationDefaultExchangeMailboxPlan(int itemId, int mailboxPlanId)
+		public void SetOrganizationDefaultExchangeMailboxPlan(int itemId, int mailboxPlanId)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -3290,7 +3289,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void SetExchangeAccountMailboxPlan(int accountId, int mailboxPlanId, int archivePlanId, bool EnableArchiving)
+		public void SetExchangeAccountMailboxPlan(int accountId, int mailboxPlanId, int archivePlanId, bool EnableArchiving)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -3306,7 +3305,7 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region Exchange Retention Policy Tags
-		public static int AddExchangeRetentionPolicyTag(int ItemID, string TagName, int TagType, int AgeLimitForRetention, int RetentionAction)
+		public int AddExchangeRetentionPolicyTag(int ItemID, string TagName, int TagType, int AgeLimitForRetention, int RetentionAction)
 		{
 			SqlParameter outParam = new SqlParameter("@TagID", SqlDbType.Int);
 			outParam.Direction = ParameterDirection.Output;
@@ -3326,7 +3325,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(outParam.Value);
 		}
 
-		public static void UpdateExchangeRetentionPolicyTag(int TagID, int ItemID, string TagName, int TagType, int AgeLimitForRetention, int RetentionAction)
+		public void UpdateExchangeRetentionPolicyTag(int TagID, int ItemID, string TagName, int TagType, int AgeLimitForRetention, int RetentionAction)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -3341,7 +3340,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void DeleteExchangeRetentionPolicyTag(int TagID)
+		public void DeleteExchangeRetentionPolicyTag(int TagID)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -3351,7 +3350,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetExchangeRetentionPolicyTag(int TagID)
+		public IDataReader GetExchangeRetentionPolicyTag(int TagID)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -3361,7 +3360,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetExchangeRetentionPolicyTags(int itemId)
+		public IDataReader GetExchangeRetentionPolicyTags(int itemId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -3371,7 +3370,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static int AddExchangeMailboxPlanRetentionPolicyTag(int TagID, int MailboxPlanId)
+		public int AddExchangeMailboxPlanRetentionPolicyTag(int TagID, int MailboxPlanId)
 		{
 			SqlParameter outParam = new SqlParameter("@PlanTagID", SqlDbType.Int);
 			outParam.Direction = ParameterDirection.Output;
@@ -3388,7 +3387,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(outParam.Value);
 		}
 
-		public static void DeleteExchangeMailboxPlanRetentionPolicyTag(int PlanTagID)
+		public void DeleteExchangeMailboxPlanRetentionPolicyTag(int PlanTagID)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -3398,7 +3397,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetExchangeMailboxPlanRetentionPolicyTags(int MailboxPlanId)
+		public IDataReader GetExchangeMailboxPlanRetentionPolicyTags(int MailboxPlanId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -3412,7 +3411,7 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region Exchange Disclaimers
-		public static int AddExchangeDisclaimer(int itemID, ExchangeDisclaimer disclaimer)
+		public int AddExchangeDisclaimer(int itemID, ExchangeDisclaimer disclaimer)
 		{
 			SqlParameter outParam = new SqlParameter("@ExchangeDisclaimerId", SqlDbType.Int);
 			outParam.Direction = ParameterDirection.Output;
@@ -3431,7 +3430,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(outParam.Value);
 		}
 
-		public static void UpdateExchangeDisclaimer(int itemID, ExchangeDisclaimer disclaimer)
+		public void UpdateExchangeDisclaimer(int itemID, ExchangeDisclaimer disclaimer)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -3443,7 +3442,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void DeleteExchangeDisclaimer(int exchangeDisclaimerId)
+		public void DeleteExchangeDisclaimer(int exchangeDisclaimerId)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -3453,7 +3452,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetExchangeDisclaimer(int exchangeDisclaimerId)
+		public IDataReader GetExchangeDisclaimer(int exchangeDisclaimerId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -3463,7 +3462,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetExchangeDisclaimers(int itemId)
+		public IDataReader GetExchangeDisclaimers(int itemId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -3473,7 +3472,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void SetExchangeAccountDisclaimerId(int AccountID, int ExchangeDisclaimerId)
+		public void SetExchangeAccountDisclaimerId(int AccountID, int ExchangeDisclaimerId)
 		{
 			object id = null;
 			if (ExchangeDisclaimerId != -1) id = ExchangeDisclaimerId;
@@ -3487,7 +3486,7 @@ namespace SolidCP.EnterpriseServer
 							);
 		}
 
-		public static int GetExchangeAccountDisclaimerId(int AccountID)
+		public int GetExchangeAccountDisclaimerId(int AccountID)
 		{
 			object objReturn = SqlHelper.ExecuteScalar(
 								 ConnectionString,
@@ -3505,12 +3504,12 @@ namespace SolidCP.EnterpriseServer
 
 		#region Organizations
 
-		public static int AddAccessToken(AccessToken token)
+		public int AddAccessToken(AccessToken token)
 		{
 			return AddAccessToken(token.AccessTokenGuid, token.AccountId, token.ItemId, token.ExpirationDate, token.TokenType);
 		}
 
-		public static int AddAccessToken(Guid accessToken, int accountId, int itemId, DateTime expirationDate, AccessTokenTypes type)
+		public int AddAccessToken(Guid accessToken, int accountId, int itemId, DateTime expirationDate, AccessTokenTypes type)
 		{
 			SqlParameter prmId = new SqlParameter("@TokenID", SqlDbType.Int);
 			prmId.Direction = ParameterDirection.Output;
@@ -3531,7 +3530,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(prmId.Value);
 		}
 
-		public static void SetAccessTokenResponseMessage(Guid accessToken, string response)
+		public void SetAccessTokenResponseMessage(Guid accessToken, string response)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -3542,7 +3541,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void DeleteExpiredAccessTokens()
+		public void DeleteExpiredAccessTokens()
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -3551,7 +3550,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetAccessTokenByAccessToken(Guid accessToken, AccessTokenTypes type)
+		public IDataReader GetAccessTokenByAccessToken(Guid accessToken, AccessTokenTypes type)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -3562,7 +3561,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void DeleteAccessToken(Guid accessToken, AccessTokenTypes type)
+		public void DeleteAccessToken(Guid accessToken, AccessTokenTypes type)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -3573,7 +3572,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void UpdateOrganizationSettings(int itemId, string settingsName, string xml)
+		public void UpdateOrganizationSettings(int itemId, string settingsName, string xml)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "UpdateExchangeOrganizationSettings",
@@ -3582,7 +3581,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@Xml", xml));
 		}
 
-		public static IDataReader GetOrganizationSettings(int itemId, string settingsName)
+		public IDataReader GetOrganizationSettings(int itemId, string settingsName)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetExchangeOrganizationSettings",
@@ -3590,7 +3589,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@SettingsName", settingsName));
 		}
 
-		public static int AddOrganizationDeletedUser(int accountId, int originAT, string storagePath, string folderName, string fileName, DateTime expirationDate)
+		public int AddOrganizationDeletedUser(int accountId, int originAT, string storagePath, string folderName, string fileName, DateTime expirationDate)
 		{
 			SqlParameter outParam = new SqlParameter("@ID", SqlDbType.Int);
 			outParam.Direction = ParameterDirection.Output;
@@ -3611,7 +3610,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(outParam.Value);
 		}
 
-		public static void DeleteOrganizationDeletedUser(int id)
+		public void DeleteOrganizationDeletedUser(int id)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString,
 				 CommandType.StoredProcedure,
@@ -3619,7 +3618,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@ID", id));
 		}
 
-		public static IDataReader GetOrganizationDeletedUser(int accountId)
+		public IDataReader GetOrganizationDeletedUser(int accountId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -3629,7 +3628,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetAdditionalGroups(int userId)
+		public IDataReader GetAdditionalGroups(int userId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -3640,7 +3639,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 
-		public static int AddAdditionalGroup(int userId, string groupName)
+		public int AddAdditionalGroup(int userId, string groupName)
 		{
 			SqlParameter prmId = new SqlParameter("@GroupID", SqlDbType.Int);
 			prmId.Direction = ParameterDirection.Output;
@@ -3657,7 +3656,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(prmId.Value);
 		}
 
-		public static void DeleteAdditionalGroup(int groupId)
+		public void DeleteAdditionalGroup(int groupId)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString,
 				 CommandType.StoredProcedure,
@@ -3665,7 +3664,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@GroupID", groupId));
 		}
 
-		public static void UpdateAdditionalGroup(int groupId, string groupName)
+		public void UpdateAdditionalGroup(int groupId, string groupName)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -3676,12 +3675,12 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void DeleteOrganizationUser(int itemId)
+		public void DeleteOrganizationUser(int itemId)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure, "DeleteOrganizationUsers", new SqlParameter("@ItemID", itemId));
 		}
 
-		public static int GetItemIdByOrganizationId(string id)
+		public int GetItemIdByOrganizationId(string id)
 		{
 			object obj = SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "GetItemIdByOrganizationId",
 											new SqlParameter("@OrganizationId", id));
@@ -3690,7 +3689,7 @@ namespace SolidCP.EnterpriseServer
 
 		}
 
-		public static IDataReader GetOrganizationStatistics(int itemId)
+		public IDataReader GetOrganizationStatistics(int itemId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -3700,7 +3699,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetOrganizationGroupsByDisplayName(int itemId, string displayName)
+		public IDataReader GetOrganizationGroupsByDisplayName(int itemId, string displayName)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -3711,7 +3710,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader SearchOrganizationAccounts(int actorId, int itemId,
+		public IDataReader SearchOrganizationAccounts(int actorId, int itemId,
 				  string filterColumn, string filterValue, string sortColumn, bool includeMailboxes)
 		{
 			return SqlHelper.ExecuteReader(
@@ -3727,7 +3726,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static DataSet GetOrganizationObjectsByDomain(int itemId, string domainName)
+		public DataSet GetOrganizationObjectsByDomain(int itemId, string domainName)
 		{
 			return SqlHelper.ExecuteDataset(
 				 ConnectionString,
@@ -3743,7 +3742,7 @@ namespace SolidCP.EnterpriseServer
 
 		#region CRM
 
-		public static int GetCRMUsersCount(int itemId, string name, string email, int CALType)
+		public int GetCRMUsersCount(int itemId, string name, string email, int CALType)
 		{
 			SqlParameter[] sqlParams = new SqlParameter[]
 				 {
@@ -3757,7 +3756,7 @@ namespace SolidCP.EnterpriseServer
 
 		}
 
-		private static SqlParameter GetFilterSqlParam(string paramName, string value)
+		private SqlParameter GetFilterSqlParam(string paramName, string value)
 		{
 			if (string.IsNullOrEmpty(value))
 				return new SqlParameter(paramName, DBNull.Value);
@@ -3765,7 +3764,7 @@ namespace SolidCP.EnterpriseServer
 			return new SqlParameter(paramName, value);
 		}
 
-		public static IDataReader GetCrmUsers(int itemId, string sortColumn, string sortDirection, string name, string email, int startRow, int count)
+		public IDataReader GetCrmUsers(int itemId, string sortColumn, string sortDirection, string name, string email, int startRow, int count)
 		{
 			SqlParameter[] sqlParams = new SqlParameter[]
 				 {
@@ -3785,13 +3784,13 @@ namespace SolidCP.EnterpriseServer
 				 "GetCRMUsers", sqlParams);
 		}
 
-		public static IDataReader GetCRMOrganizationUsers(int itemId)
+		public IDataReader GetCRMOrganizationUsers(int itemId)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure, "GetCRMOrganizationUsers",
 													 new SqlParameter[] { new SqlParameter("@ItemID", itemId) });
 		}
 
-		public static void CreateCRMUser(int itemId, Guid crmId, Guid businessUnitId, int CALType)
+		public void CreateCRMUser(int itemId, Guid crmId, Guid businessUnitId, int CALType)
 		{
 			SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure, "InsertCRMUser",
 											new SqlParameter[]
@@ -3804,7 +3803,7 @@ namespace SolidCP.EnterpriseServer
 
 		}
 
-		public static void UpdateCRMUser(int itemId, int CALType)
+		public void UpdateCRMUser(int itemId, int CALType)
 		{
 			SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure, "UpdateCRMUser",
 											new SqlParameter[]
@@ -3815,7 +3814,7 @@ namespace SolidCP.EnterpriseServer
 
 		}
 
-		public static IDataReader GetCrmUser(int itemId)
+		public IDataReader GetCrmUser(int itemId)
 		{
 			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure, "GetCRMUser",
 											new SqlParameter[]
@@ -3826,13 +3825,13 @@ namespace SolidCP.EnterpriseServer
 
 		}
 
-		public static int GetCrmUserCount(int itemId)
+		public int GetCrmUserCount(int itemId)
 		{
 			return (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "GetOrganizationCRMUserCount",
 				 new SqlParameter[] { new SqlParameter("@ItemID", itemId) });
 		}
 
-		public static void DeleteCrmOrganization(int organizationId)
+		public void DeleteCrmOrganization(int organizationId)
 		{
 			SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "DeleteCRMOrganization",
 											new SqlParameter[] { new SqlParameter("@ItemID", organizationId) });
@@ -3842,7 +3841,7 @@ namespace SolidCP.EnterpriseServer
 
 		#region VPS - Virtual Private Servers
 
-		public static IDataReader GetVirtualMachinesPaged(int actorId, int packageId, string filterColumn, string filterValue,
+		public IDataReader GetVirtualMachinesPaged(int actorId, int packageId, string filterColumn, string filterValue,
 			 string sortColumn, int startRow, int maximumRows, bool recursive)
 		{
 			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
@@ -3857,7 +3856,7 @@ namespace SolidCP.EnterpriseServer
 												 new SqlParameter("@Recursive", recursive));
 			return reader;
 		}
-		public static IDataReader GetVirtualMachinesPaged2012(int actorId, int packageId, string filterColumn, string filterValue,
+		public IDataReader GetVirtualMachinesPaged2012(int actorId, int packageId, string filterColumn, string filterValue,
 			 string sortColumn, int startRow, int maximumRows, bool recursive)
 		{
 			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
@@ -3873,7 +3872,7 @@ namespace SolidCP.EnterpriseServer
 			return reader;
 		}
 
-		public static IDataReader GetVirtualMachinesPagedProxmox(int actorId, int packageId, string filterColumn, string filterValue,
+		public IDataReader GetVirtualMachinesPagedProxmox(int actorId, int packageId, string filterColumn, string filterValue,
 			 string sortColumn, int startRow, int maximumRows, bool recursive)
 		{
 			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
@@ -3891,7 +3890,7 @@ namespace SolidCP.EnterpriseServer
 
 		#endregion
 
-		public static IDataReader GetVirtualMachinesForPCPaged(int actorId, int packageId, string filterColumn, string filterValue,
+		public IDataReader GetVirtualMachinesForPCPaged(int actorId, int packageId, string filterColumn, string filterValue,
 			 string sortColumn, int startRow, int maximumRows, bool recursive)
 		{
 			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
@@ -3910,7 +3909,7 @@ namespace SolidCP.EnterpriseServer
 
 		#region VPS - External Network
 
-		public static IDataReader GetUnallottedIPAddresses(int packageId, int serviceId, int poolId)
+		public IDataReader GetUnallottedIPAddresses(int packageId, int serviceId, int poolId)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 											 "GetUnallottedIPAddresses",
@@ -3920,7 +3919,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 
-		public static void AllocatePackageIPAddresses(int packageId, int orgId, string xml)
+		public void AllocatePackageIPAddresses(int packageId, int orgId, string xml)
 		{
 			SqlParameter[] param = new[]
 												{
@@ -3932,7 +3931,7 @@ namespace SolidCP.EnterpriseServer
 			ExecuteLongNonQuery("AllocatePackageIPAddresses", param);
 		}
 
-		public static IDataReader GetPackageIPAddresses(int packageId, int orgId, int poolId, string filterColumn, string filterValue,
+		public IDataReader GetPackageIPAddresses(int packageId, int orgId, int poolId, string filterColumn, string filterValue,
 			 string sortColumn, int startRow, int maximumRows, bool recursive)
 		{
 			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
@@ -3949,7 +3948,7 @@ namespace SolidCP.EnterpriseServer
 			return reader;
 		}
 
-		public static int GetPackageIPAddressesCount(int packageId, int orgId, int poolId)
+		public int GetPackageIPAddressesCount(int packageId, int orgId, int poolId)
 		{
 			object obj = SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure,
 											 "GetPackageIPAddressesCount",
@@ -3961,7 +3960,7 @@ namespace SolidCP.EnterpriseServer
 			return res;
 		}
 
-		public static void DeallocatePackageIPAddress(int id)
+		public void DeallocatePackageIPAddress(int id)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure, "DeallocatePackageIPAddress",
 											  new SqlParameter("@PackageAddressID", id));
@@ -3970,7 +3969,7 @@ namespace SolidCP.EnterpriseServer
 
 		#region VPS - Private Network
 
-		public static IDataReader GetPackagePrivateIPAddressesPaged(int packageId, string filterColumn, string filterValue,
+		public IDataReader GetPackagePrivateIPAddressesPaged(int packageId, string filterColumn, string filterValue,
 			 string sortColumn, int startRow, int maximumRows)
 		{
 			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
@@ -3984,7 +3983,7 @@ namespace SolidCP.EnterpriseServer
 			return reader;
 		}
 
-		public static IDataReader GetPackagePrivateIPAddresses(int packageId)
+		public IDataReader GetPackagePrivateIPAddresses(int packageId)
 		{
 			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 											 "GetPackagePrivateIPAddresses",
@@ -3994,7 +3993,7 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region VPS - External Network Adapter
-		public static IDataReader GetPackageUnassignedIPAddresses(int actorId, int packageId, int orgId, int poolId)
+		public IDataReader GetPackageUnassignedIPAddresses(int actorId, int packageId, int orgId, int poolId)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 									  "GetPackageUnassignedIPAddresses",
@@ -4004,14 +4003,14 @@ namespace SolidCP.EnterpriseServer
 									  new SqlParameter("@PoolId", poolId));
 		}
 
-		public static IDataReader GetPackageIPAddress(int packageAddressId)
+		public IDataReader GetPackageIPAddress(int packageAddressId)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 									  "GetPackageIPAddress",
 									  new SqlParameter("@PackageAddressId", packageAddressId));
 		}
 
-		public static IDataReader GetItemIPAddresses(int actorId, int itemId, int poolId)
+		public IDataReader GetItemIPAddresses(int actorId, int itemId, int poolId)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 									  "GetItemIPAddresses",
@@ -4020,7 +4019,7 @@ namespace SolidCP.EnterpriseServer
 									  new SqlParameter("@PoolID", poolId));
 		}
 
-		public static int AddItemIPAddress(int actorId, int itemId, int packageAddressId)
+		public int AddItemIPAddress(int actorId, int itemId, int packageAddressId)
 		{
 			return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 									  "AddItemIPAddress",
@@ -4029,7 +4028,7 @@ namespace SolidCP.EnterpriseServer
 									  new SqlParameter("@PackageAddressID", packageAddressId));
 		}
 
-		public static int SetItemPrimaryIPAddress(int actorId, int itemId, int packageAddressId)
+		public int SetItemPrimaryIPAddress(int actorId, int itemId, int packageAddressId)
 		{
 			return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 									  "SetItemPrimaryIPAddress",
@@ -4038,7 +4037,7 @@ namespace SolidCP.EnterpriseServer
 									  new SqlParameter("@PackageAddressID", packageAddressId));
 		}
 
-		public static int DeleteItemIPAddress(int actorId, int itemId, int packageAddressId)
+		public int DeleteItemIPAddress(int actorId, int itemId, int packageAddressId)
 		{
 			return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 									  "DeleteItemIPAddress",
@@ -4047,7 +4046,7 @@ namespace SolidCP.EnterpriseServer
 									  new SqlParameter("@PackageAddressID", packageAddressId));
 		}
 
-		public static int DeleteItemIPAddresses(int actorId, int itemId)
+		public int DeleteItemIPAddresses(int actorId, int itemId)
 		{
 			return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 									  "DeleteItemIPAddresses",
@@ -4057,7 +4056,7 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region VPS - Private Network Adapter
-		public static IDataReader GetItemPrivateIPAddresses(int actorId, int itemId)
+		public IDataReader GetItemPrivateIPAddresses(int actorId, int itemId)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 									  "GetItemPrivateIPAddresses",
@@ -4065,7 +4064,7 @@ namespace SolidCP.EnterpriseServer
 									  new SqlParameter("@ItemID", itemId));
 		}
 
-		public static int AddItemPrivateIPAddress(int actorId, int itemId, string ipAddress)
+		public int AddItemPrivateIPAddress(int actorId, int itemId, string ipAddress)
 		{
 			return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 									  "AddItemPrivateIPAddress",
@@ -4074,7 +4073,7 @@ namespace SolidCP.EnterpriseServer
 									  new SqlParameter("@IPAddress", ipAddress));
 		}
 
-		public static int SetItemPrivatePrimaryIPAddress(int actorId, int itemId, int privateAddressId)
+		public int SetItemPrivatePrimaryIPAddress(int actorId, int itemId, int privateAddressId)
 		{
 			return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 									  "SetItemPrivatePrimaryIPAddress",
@@ -4083,7 +4082,7 @@ namespace SolidCP.EnterpriseServer
 									  new SqlParameter("@PrivateAddressID", privateAddressId));
 		}
 
-		public static int DeleteItemPrivateIPAddress(int actorId, int itemId, int privateAddressId)
+		public int DeleteItemPrivateIPAddress(int actorId, int itemId, int privateAddressId)
 		{
 			return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 									  "DeleteItemPrivateIPAddress",
@@ -4092,7 +4091,7 @@ namespace SolidCP.EnterpriseServer
 									  new SqlParameter("@PrivateAddressID", privateAddressId));
 		}
 
-		public static int DeleteItemPrivateIPAddresses(int actorId, int itemId)
+		public int DeleteItemPrivateIPAddresses(int actorId, int itemId)
 		{
 			return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 									  "DeleteItemPrivateIPAddresses",
@@ -4103,7 +4102,7 @@ namespace SolidCP.EnterpriseServer
 
 		#region BlackBerry
 
-		public static void AddBlackBerryUser(int accountId)
+		public void AddBlackBerryUser(int accountId)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString,
 											  CommandType.StoredProcedure,
@@ -4115,7 +4114,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 
-		public static bool CheckBlackBerryUserExists(int accountId)
+		public bool CheckBlackBerryUserExists(int accountId)
 		{
 			int res = (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "CheckBlackBerryUserExists",
 											new SqlParameter("@AccountID", accountId));
@@ -4123,7 +4122,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 
-		public static IDataReader GetBlackBerryUsers(int itemId, string sortColumn, string sortDirection, string name, string email, int startRow, int count)
+		public IDataReader GetBlackBerryUsers(int itemId, string sortColumn, string sortDirection, string name, string email, int startRow, int count)
 		{
 			SqlParameter[] sqlParams = new SqlParameter[]
 				 {
@@ -4143,7 +4142,7 @@ namespace SolidCP.EnterpriseServer
 				 "GetBlackBerryUsers", sqlParams);
 		}
 
-		public static int GetBlackBerryUsersCount(int itemId, string name, string email)
+		public int GetBlackBerryUsersCount(int itemId, string name, string email)
 		{
 			SqlParameter[] sqlParams = new SqlParameter[]
 													 {
@@ -4157,7 +4156,7 @@ namespace SolidCP.EnterpriseServer
 				 SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "GetBlackBerryUsersCount", sqlParams);
 		}
 
-		public static void DeleteBlackBerryUser(int accountId)
+		public void DeleteBlackBerryUser(int accountId)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString,
 											  CommandType.StoredProcedure,
@@ -4173,7 +4172,7 @@ namespace SolidCP.EnterpriseServer
 
 		#region OCS
 
-		public static void AddOCSUser(int accountId, string instanceId)
+		public void AddOCSUser(int accountId, string instanceId)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString,
 											  CommandType.StoredProcedure,
@@ -4186,7 +4185,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 
-		public static bool CheckOCSUserExists(int accountId)
+		public bool CheckOCSUserExists(int accountId)
 		{
 			int res = (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "CheckOCSUserExists",
 											new SqlParameter("@AccountID", accountId));
@@ -4194,7 +4193,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 
-		public static IDataReader GetOCSUsers(int itemId, string sortColumn, string sortDirection, string name, string email, int startRow, int count)
+		public IDataReader GetOCSUsers(int itemId, string sortColumn, string sortDirection, string name, string email, int startRow, int count)
 		{
 			SqlParameter[] sqlParams = new SqlParameter[]
 				 {
@@ -4214,7 +4213,7 @@ namespace SolidCP.EnterpriseServer
 				 "GetOCSUsers", sqlParams);
 		}
 
-		public static int GetOCSUsersCount(int itemId, string name, string email)
+		public int GetOCSUsersCount(int itemId, string name, string email)
 		{
 			SqlParameter[] sqlParams = new SqlParameter[]
 													 {
@@ -4228,7 +4227,7 @@ namespace SolidCP.EnterpriseServer
 				 SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "GetOCSUsersCount", sqlParams);
 		}
 
-		public static void DeleteOCSUser(string instanceId)
+		public void DeleteOCSUser(string instanceId)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString,
 											  CommandType.StoredProcedure,
@@ -4240,7 +4239,7 @@ namespace SolidCP.EnterpriseServer
 
 		}
 
-		public static string GetOCSUserInstanceID(int accountId)
+		public string GetOCSUserInstanceID(int accountId)
 		{
 			return (string)SqlHelper.ExecuteScalar(ConnectionString,
 											  CommandType.StoredProcedure,
@@ -4254,7 +4253,7 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region SSL
-		public static int AddSSLRequest(int actorId, int packageId, int siteID, int userID, string friendlyname, string hostname, string csr, int csrLength, string distinguishedName, bool isRenewal, int previousID)
+		public int AddSSLRequest(int actorId, int packageId, int siteID, int userID, string friendlyname, string hostname, string csr, int csrLength, string distinguishedName, bool isRenewal, int previousID)
 		{
 			SqlParameter prmId = new SqlParameter("@SSLID", SqlDbType.Int);
 			prmId.Direction = ParameterDirection.Output;
@@ -4276,7 +4275,7 @@ namespace SolidCP.EnterpriseServer
 
 		}
 
-		public static void CompleteSSLRequest(int actorId, int packageId, int id, string certificate, string distinguishedName, string serialNumber, byte[] hash, DateTime validFrom, DateTime expiryDate)
+		public void CompleteSSLRequest(int actorId, int packageId, int id, string certificate, string distinguishedName, string serialNumber, byte[] hash, DateTime validFrom, DateTime expiryDate)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "CompleteSSLRequest",
@@ -4292,7 +4291,7 @@ namespace SolidCP.EnterpriseServer
 
 		}
 
-		public static void AddPFX(int actorId, int packageId, int siteID, int userID, string hostname, string friendlyName, string distinguishedName, int csrLength, string serialNumber, DateTime validFrom, DateTime expiryDate)
+		public void AddPFX(int actorId, int packageId, int siteID, int userID, string hostname, string friendlyName, string distinguishedName, int csrLength, string serialNumber, DateTime validFrom, DateTime expiryDate)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "AddPFX",
@@ -4310,7 +4309,7 @@ namespace SolidCP.EnterpriseServer
 
 		}
 
-		public static DataSet GetSSL(int actorId, int packageId, int id)
+		public DataSet GetSSL(int actorId, int packageId, int id)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetSSL",
@@ -4318,7 +4317,7 @@ namespace SolidCP.EnterpriseServer
 
 		}
 
-		public static DataSet GetCertificatesForSite(int actorId, int packageId, int siteId)
+		public DataSet GetCertificatesForSite(int actorId, int packageId, int siteId)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetCertificatesForSite",
@@ -4328,7 +4327,7 @@ namespace SolidCP.EnterpriseServer
 
 		}
 
-		public static DataSet GetPendingCertificates(int actorId, int packageId, int id, bool recursive)
+		public DataSet GetPendingCertificates(int actorId, int packageId, int id, bool recursive)
 		{
 			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetPendingSSLForWebsite",
@@ -4339,7 +4338,7 @@ namespace SolidCP.EnterpriseServer
 
 		}
 
-		public static IDataReader GetSSLCertificateByID(int actorId, int id)
+		public IDataReader GetSSLCertificateByID(int actorId, int id)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetSSLCertificateByID",
@@ -4347,7 +4346,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@ID", id));
 		}
 
-		public static int CheckSSL(int siteID, bool renewal)
+		public int CheckSSL(int siteID, bool renewal)
 		{
 			SqlParameter prmId = new SqlParameter("@Result", SqlDbType.Int);
 			prmId.Direction = ParameterDirection.Output;
@@ -4361,7 +4360,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(prmId.Value);
 		}
 
-		public static IDataReader GetSiteCert(int actorId, int siteID)
+		public IDataReader GetSiteCert(int actorId, int siteID)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetSSLCertificateByID",
@@ -4369,7 +4368,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@ID", siteID));
 		}
 
-		public static void DeleteCertificate(int actorId, int packageId, int id)
+		public void DeleteCertificate(int actorId, int packageId, int id)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "DeleteCertificate",
@@ -4378,7 +4377,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@id", id));
 		}
 
-		public static bool CheckSSLExistsForWebsite(int siteId)
+		public bool CheckSSLExistsForWebsite(int siteId)
 		{
 			SqlParameter prmId = new SqlParameter("@Result", SqlDbType.Bit);
 			prmId.Direction = ParameterDirection.Output;
@@ -4392,7 +4391,7 @@ namespace SolidCP.EnterpriseServer
 
 		#region Lync
 
-		public static void AddLyncUser(int accountId, int lyncUserPlanId, string sipAddress)
+		public void AddLyncUser(int accountId, int lyncUserPlanId, string sipAddress)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString,
 											  CommandType.StoredProcedure,
@@ -4405,7 +4404,7 @@ namespace SolidCP.EnterpriseServer
 													});
 		}
 
-		public static void UpdateLyncUser(int accountId, string sipAddress)
+		public void UpdateLyncUser(int accountId, string sipAddress)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString,
 											  CommandType.StoredProcedure,
@@ -4418,14 +4417,14 @@ namespace SolidCP.EnterpriseServer
 		}
 
 
-		public static bool CheckLyncUserExists(int accountId)
+		public bool CheckLyncUserExists(int accountId)
 		{
 			int res = (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "CheckLyncUserExists",
 											new SqlParameter("@AccountID", accountId));
 			return res > 0;
 		}
 
-		public static bool LyncUserExists(int accountId, string sipAddress)
+		public bool LyncUserExists(int accountId, string sipAddress)
 		{
 			SqlParameter outParam = new SqlParameter("@Exists", SqlDbType.Bit);
 			outParam.Direction = ParameterDirection.Output;
@@ -4444,7 +4443,7 @@ namespace SolidCP.EnterpriseServer
 
 
 
-		public static IDataReader GetLyncUsers(int itemId, string sortColumn, string sortDirection, int startRow, int count)
+		public IDataReader GetLyncUsers(int itemId, string sortColumn, string sortDirection, int startRow, int count)
 		{
 			SqlParameter[] sqlParams = new SqlParameter[]
 				 {
@@ -4463,7 +4462,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 
-		public static IDataReader GetLyncUsersByPlanId(int itemId, int planId)
+		public IDataReader GetLyncUsersByPlanId(int itemId, int planId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -4474,7 +4473,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static int GetLyncUsersCount(int itemId)
+		public int GetLyncUsersCount(int itemId)
 		{
 			SqlParameter[] sqlParams = new SqlParameter[]
 													 {
@@ -4486,7 +4485,7 @@ namespace SolidCP.EnterpriseServer
 				 SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "GetLyncUsersCount", sqlParams);
 		}
 
-		public static void DeleteLyncUser(int accountId)
+		public void DeleteLyncUser(int accountId)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString,
 											  CommandType.StoredProcedure,
@@ -4498,7 +4497,7 @@ namespace SolidCP.EnterpriseServer
 
 		}
 
-		public static int AddLyncUserPlan(int itemID, LyncUserPlan lyncUserPlan)
+		public int AddLyncUserPlan(int itemID, LyncUserPlan lyncUserPlan)
 		{
 			SqlParameter outParam = new SqlParameter("@LyncUserPlanId", SqlDbType.Int);
 			outParam.Direction = ParameterDirection.Output;
@@ -4539,7 +4538,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 
-		public static void UpdateLyncUserPlan(int itemID, LyncUserPlan lyncUserPlan)
+		public void UpdateLyncUserPlan(int itemID, LyncUserPlan lyncUserPlan)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -4572,7 +4571,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void DeleteLyncUserPlan(int lyncUserPlanId)
+		public void DeleteLyncUserPlan(int lyncUserPlanId)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -4582,7 +4581,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetLyncUserPlan(int lyncUserPlanId)
+		public IDataReader GetLyncUserPlan(int lyncUserPlanId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -4593,7 +4592,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 
-		public static IDataReader GetLyncUserPlans(int itemId)
+		public IDataReader GetLyncUserPlans(int itemId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -4604,7 +4603,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 
-		public static void SetOrganizationDefaultLyncUserPlan(int itemId, int lyncUserPlanId)
+		public void SetOrganizationDefaultLyncUserPlan(int itemId, int lyncUserPlanId)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -4615,7 +4614,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetLyncUserPlanByAccountId(int AccountId)
+		public IDataReader GetLyncUserPlanByAccountId(int AccountId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -4626,7 +4625,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 
-		public static void SetLyncUserLyncUserplan(int accountId, int lyncUserPlanId)
+		public void SetLyncUserLyncUserplan(int accountId, int lyncUserPlanId)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -4642,7 +4641,7 @@ namespace SolidCP.EnterpriseServer
 
 		#region SfB
 
-		public static void AddSfBUser(int accountId, int sfbUserPlanId, string sipAddress)
+		public void AddSfBUser(int accountId, int sfbUserPlanId, string sipAddress)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString,
 											  CommandType.StoredProcedure,
@@ -4655,7 +4654,7 @@ namespace SolidCP.EnterpriseServer
 													});
 		}
 
-		public static void UpdateSfBUser(int accountId, string sipAddress)
+		public void UpdateSfBUser(int accountId, string sipAddress)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString,
 											  CommandType.StoredProcedure,
@@ -4668,14 +4667,14 @@ namespace SolidCP.EnterpriseServer
 		}
 
 
-		public static bool CheckSfBUserExists(int accountId)
+		public bool CheckSfBUserExists(int accountId)
 		{
 			int res = (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "CheckSfBUserExists",
 											new SqlParameter("@AccountID", accountId));
 			return res > 0;
 		}
 
-		public static bool SfBUserExists(int accountId, string sipAddress)
+		public bool SfBUserExists(int accountId, string sipAddress)
 		{
 			SqlParameter outParam = new SqlParameter("@Exists", SqlDbType.Bit);
 			outParam.Direction = ParameterDirection.Output;
@@ -4694,7 +4693,7 @@ namespace SolidCP.EnterpriseServer
 
 
 
-		public static IDataReader GetSfBUsers(int itemId, string sortColumn, string sortDirection, int startRow, int count)
+		public IDataReader GetSfBUsers(int itemId, string sortColumn, string sortDirection, int startRow, int count)
 		{
 			SqlParameter[] sqlParams = new SqlParameter[]
 				 {
@@ -4713,7 +4712,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 
-		public static IDataReader GetSfBUsersByPlanId(int itemId, int planId)
+		public IDataReader GetSfBUsersByPlanId(int itemId, int planId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -4724,7 +4723,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static int GetSfBUsersCount(int itemId)
+		public int GetSfBUsersCount(int itemId)
 		{
 			SqlParameter[] sqlParams = new SqlParameter[]
 													 {
@@ -4736,7 +4735,7 @@ namespace SolidCP.EnterpriseServer
 				 SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "GetSfBUsersCount", sqlParams);
 		}
 
-		public static void DeleteSfBUser(int accountId)
+		public void DeleteSfBUser(int accountId)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString,
 											  CommandType.StoredProcedure,
@@ -4748,7 +4747,7 @@ namespace SolidCP.EnterpriseServer
 
 		}
 
-		public static int AddSfBUserPlan(int itemID, SfBUserPlan sfbUserPlan)
+		public int AddSfBUserPlan(int itemID, SfBUserPlan sfbUserPlan)
 		{
 			SqlParameter outParam = new SqlParameter("@SfBUserPlanId", SqlDbType.Int);
 			outParam.Direction = ParameterDirection.Output;
@@ -4789,7 +4788,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 
-		public static void UpdateSfBUserPlan(int itemID, SfBUserPlan sfbUserPlan)
+		public void UpdateSfBUserPlan(int itemID, SfBUserPlan sfbUserPlan)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -4822,7 +4821,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void DeleteSfBUserPlan(int sfbUserPlanId)
+		public void DeleteSfBUserPlan(int sfbUserPlanId)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -4832,7 +4831,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetSfBUserPlan(int sfbUserPlanId)
+		public IDataReader GetSfBUserPlan(int sfbUserPlanId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -4843,7 +4842,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 
-		public static IDataReader GetSfBUserPlans(int itemId)
+		public IDataReader GetSfBUserPlans(int itemId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -4854,7 +4853,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 
-		public static void SetOrganizationDefaultSfBUserPlan(int itemId, int sfbUserPlanId)
+		public void SetOrganizationDefaultSfBUserPlan(int itemId, int sfbUserPlanId)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -4865,7 +4864,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetSfBUserPlanByAccountId(int AccountId)
+		public IDataReader GetSfBUserPlanByAccountId(int AccountId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -4876,7 +4875,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 
-		public static void SetSfBUserSfBUserplan(int accountId, int sfbUserPlanId)
+		public void SetSfBUserSfBUserplan(int accountId, int sfbUserPlanId)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -4890,7 +4889,7 @@ namespace SolidCP.EnterpriseServer
 
 		#endregion
 
-		public static int GetPackageIdByName(string Name)
+		public int GetPackageIdByName(string Name)
 		{
 			int packageId = -1;
 			List<ProviderInfo> providers = ServerController.GetProviders();
@@ -4911,7 +4910,7 @@ namespace SolidCP.EnterpriseServer
 			return packageId;
 		}
 
-		public static int GetServiceIdByProviderForServer(int providerId, int packageId)
+		public int GetServiceIdByProviderForServer(int providerId, int packageId)
 		{
 			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.Text,
 				 @"SELECT TOP 1 
@@ -4932,7 +4931,7 @@ namespace SolidCP.EnterpriseServer
 
 		#region Helicon Zoo
 
-		public static void GetHeliconZooProviderAndGroup(string providerName, out int providerId, out int groupId)
+		public void GetHeliconZooProviderAndGroup(string providerName, out int providerId, out int groupId)
 		{
 			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.Text,
 				 @"SELECT TOP 1 
@@ -4948,7 +4947,7 @@ namespace SolidCP.EnterpriseServer
 
 		}
 
-		public static IDataReader GetHeliconZooQuotas(int providerId)
+		public IDataReader GetHeliconZooQuotas(int providerId)
 		{
 			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.Text,
 				 @"SELECT
@@ -4966,7 +4965,7 @@ namespace SolidCP.EnterpriseServer
 			return reader;
 		}
 
-		public static void RemoveHeliconZooQuota(int groupId, string engineName)
+		public void RemoveHeliconZooQuota(int groupId, string engineName)
 		{
 			int quotaId;
 
@@ -4996,7 +4995,7 @@ namespace SolidCP.EnterpriseServer
 
 		}
 
-		public static void AddHeliconZooQuota(int groupId, int quotaId, string engineName, string engineDescription, int quotaOrder)
+		public void AddHeliconZooQuota(int groupId, int quotaId, string engineName, string engineDescription, int quotaOrder)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.Text,
 					  @"INSERT INTO Quotas (QuotaID, GroupID, QuotaOrder, QuotaName, QuotaDescription, QuotaTypeID, ServiceQuota)
@@ -5009,7 +5008,7 @@ namespace SolidCP.EnterpriseServer
 				 );
 		}
 
-		public static IDataReader GetEnabledHeliconZooQuotasForPackage(int packageId)
+		public IDataReader GetEnabledHeliconZooQuotasForPackage(int packageId)
 		{
 			int providerId, groupId;
 
@@ -5029,7 +5028,7 @@ namespace SolidCP.EnterpriseServer
 			return reader;
 		}
 
-		public static int GetServiceIdForProviderIdAndPackageId(int providerId, int packageId)
+		public int GetServiceIdForProviderIdAndPackageId(int providerId, int packageId)
 		{
 			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.Text,
 				 @"SELECT PackageServices.ServiceID 
@@ -5049,7 +5048,7 @@ namespace SolidCP.EnterpriseServer
 
 		}
 
-		public static int GetServerIdForPackage(int packageId)
+		public int GetServerIdForPackage(int packageId)
 		{
 			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.Text,
 				 @"SELECT TOP 1 
@@ -5071,7 +5070,7 @@ namespace SolidCP.EnterpriseServer
 
 		#region Enterprise Storage
 
-		public static int AddWebDavAccessToken(Base.HostedSolution.WebDavAccessToken accessToken)
+		public int AddWebDavAccessToken(Base.HostedSolution.WebDavAccessToken accessToken)
 		{
 			SqlParameter prmId = new SqlParameter("@TokenID", SqlDbType.Int);
 			prmId.Direction = ParameterDirection.Output;
@@ -5093,7 +5092,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(prmId.Value);
 		}
 
-		public static void DeleteExpiredWebDavAccessTokens()
+		public void DeleteExpiredWebDavAccessTokens()
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -5102,7 +5101,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetWebDavAccessTokenById(int id)
+		public IDataReader GetWebDavAccessTokenById(int id)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -5112,7 +5111,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetWebDavAccessTokenByAccessToken(Guid accessToken)
+		public IDataReader GetWebDavAccessTokenByAccessToken(Guid accessToken)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -5122,7 +5121,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static int AddEntepriseFolder(int itemId, string folderName, int folderQuota, string locationDrive, string homeFolder, string domain, int? storageSpaceFolderId)
+		public int AddEntepriseFolder(int itemId, string folderName, int folderQuota, string locationDrive, string homeFolder, string domain, int? storageSpaceFolderId)
 		{
 			SqlParameter prmId = new SqlParameter("@FolderID", SqlDbType.Int);
 			prmId.Direction = ParameterDirection.Output;
@@ -5145,7 +5144,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(prmId.Value);
 		}
 
-		public static void UpdateEntepriseFolderStorageSpaceFolder(int itemId, string folderName, int? storageSpaceFolderId)
+		public void UpdateEntepriseFolderStorageSpaceFolder(int itemId, string folderName, int? storageSpaceFolderId)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -5157,7 +5156,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void DeleteEnterpriseFolder(int itemId, string folderName)
+		public void DeleteEnterpriseFolder(int itemId, string folderName)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -5167,7 +5166,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@FolderName", folderName));
 		}
 
-		public static void UpdateEnterpriseFolder(int itemId, string folderID, string folderName, int folderQuota)
+		public void UpdateEnterpriseFolder(int itemId, string folderID, string folderName, int folderQuota)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -5179,7 +5178,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@FolderQuota", folderQuota));
 		}
 
-		public static IDataReader GetEnterpriseFolders(int itemId)
+		public IDataReader GetEnterpriseFolders(int itemId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -5189,7 +5188,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static DataSet GetEnterpriseFoldersPaged(int itemId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
+		public DataSet GetEnterpriseFoldersPaged(int itemId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
 		{
 			return SqlHelper.ExecuteDataset(
 				 ConnectionString,
@@ -5204,7 +5203,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetEnterpriseFolder(int itemId, string folderName)
+		public IDataReader GetEnterpriseFolder(int itemId, string folderName)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -5215,7 +5214,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetWebDavPortalUserSettingsByAccountId(int accountId)
+		public IDataReader GetWebDavPortalUserSettingsByAccountId(int accountId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -5225,7 +5224,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static int AddWebDavPortalUsersSettings(int accountId, string settings)
+		public int AddWebDavPortalUsersSettings(int accountId, string settings)
 		{
 			SqlParameter settingsId = new SqlParameter("@WebDavPortalUsersSettingsId", SqlDbType.Int);
 			settingsId.Direction = ParameterDirection.Output;
@@ -5243,7 +5242,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(settingsId.Value);
 		}
 
-		public static void UpdateWebDavPortalUsersSettings(int accountId, string settings)
+		public void UpdateWebDavPortalUsersSettings(int accountId, string settings)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -5254,7 +5253,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void DeleteAllEnterpriseFolderOwaUsers(int itemId, int folderId)
+		public void DeleteAllEnterpriseFolderOwaUsers(int itemId, int folderId)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -5265,7 +5264,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static int AddEnterpriseFolderOwaUser(int itemId, int folderId, int accountId)
+		public int AddEnterpriseFolderOwaUser(int itemId, int folderId, int accountId)
 		{
 			SqlParameter id = new SqlParameter("@ESOwsaUserId", SqlDbType.Int);
 			id.Direction = ParameterDirection.Output;
@@ -5284,7 +5283,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(id.Value);
 		}
 
-		public static IDataReader GetEnterpriseFolderOwaUsers(int itemId, int folderId)
+		public IDataReader GetEnterpriseFolderOwaUsers(int itemId, int folderId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -5295,7 +5294,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetEnterpriseFolderId(int itemId, string folderName)
+		public IDataReader GetEnterpriseFolderId(int itemId, string folderName)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -5306,7 +5305,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetUserEnterpriseFolderWithOwaEditPermission(int itemId, int accountId)
+		public IDataReader GetUserEnterpriseFolderWithOwaEditPermission(int itemId, int accountId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -5321,13 +5320,13 @@ namespace SolidCP.EnterpriseServer
 
 		#region Support Service Levels
 
-		public static IDataReader GetSupportServiceLevels()
+		public IDataReader GetSupportServiceLevels()
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetSupportServiceLevels");
 		}
 
-		public static int AddSupportServiceLevel(string levelName, string levelDescription)
+		public int AddSupportServiceLevel(string levelName, string levelDescription)
 		{
 			SqlParameter outParam = new SqlParameter("@LevelID", SqlDbType.Int);
 			outParam.Direction = ParameterDirection.Output;
@@ -5344,7 +5343,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(outParam.Value);
 		}
 
-		public static void UpdateSupportServiceLevel(int levelID, string levelName, string levelDescription)
+		public void UpdateSupportServiceLevel(int levelID, string levelName, string levelDescription)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -5356,7 +5355,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void DeleteSupportServiceLevel(int levelID)
+		public void DeleteSupportServiceLevel(int levelID)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -5366,7 +5365,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetSupportServiceLevel(int levelID)
+		public IDataReader GetSupportServiceLevel(int levelID)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -5376,7 +5375,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static bool CheckServiceLevelUsage(int levelID)
+		public bool CheckServiceLevelUsage(int levelID)
 		{
 			int res = (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "CheckServiceLevelUsage",
 											new SqlParameter("@LevelID", levelID));
@@ -5387,7 +5386,7 @@ namespace SolidCP.EnterpriseServer
 
 		#region Storage Spaces 
 
-		public static DataSet GetStorageSpaceLevelsPaged(string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
+		public DataSet GetStorageSpaceLevelsPaged(string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
 		{
 			return SqlHelper.ExecuteDataset(
 				 ConnectionString,
@@ -5401,7 +5400,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetStorageSpaceLevelById(int id)
+		public IDataReader GetStorageSpaceLevelById(int id)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -5411,7 +5410,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static int UpdateStorageSpaceLevel(StorageSpaceLevel level)
+		public int UpdateStorageSpaceLevel(StorageSpaceLevel level)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -5425,7 +5424,7 @@ namespace SolidCP.EnterpriseServer
 			return level.Id;
 		}
 
-		public static int InsertStorageSpaceLevel(StorageSpaceLevel level)
+		public int InsertStorageSpaceLevel(StorageSpaceLevel level)
 		{
 			SqlParameter id = new SqlParameter("@ID", SqlDbType.Int);
 			id.Direction = ParameterDirection.Output;
@@ -5443,7 +5442,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(id.Value);
 		}
 
-		public static void RemoveStorageSpaceLevel(int id)
+		public void RemoveStorageSpaceLevel(int id)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -5453,7 +5452,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetStorageSpaceLevelResourceGroups(int levelId)
+		public IDataReader GetStorageSpaceLevelResourceGroups(int levelId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -5463,7 +5462,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void RemoveStorageSpaceLevelResourceGroups(int levelId)
+		public void RemoveStorageSpaceLevelResourceGroups(int levelId)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -5473,7 +5472,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void AddStorageSpaceLevelResourceGroup(int levelId, int groupId)
+		public void AddStorageSpaceLevelResourceGroup(int levelId, int groupId)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -5484,7 +5483,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static DataSet GetStorageSpacesPaged(string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
+		public DataSet GetStorageSpacesPaged(string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
 		{
 			return SqlHelper.ExecuteDataset(
 				 ConnectionString,
@@ -5498,7 +5497,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetStorageSpaceById(int id)
+		public IDataReader GetStorageSpaceById(int id)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -5508,7 +5507,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetStorageSpaceByServiceAndPath(int serverId, string path)
+		public IDataReader GetStorageSpaceByServiceAndPath(int serverId, string path)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -5520,7 +5519,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static int UpdateStorageSpace(StorageSpace space)
+		public int UpdateStorageSpace(StorageSpace space)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -5542,7 +5541,7 @@ namespace SolidCP.EnterpriseServer
 			return space.Id;
 		}
 
-		public static int InsertStorageSpace(StorageSpace space)
+		public int InsertStorageSpace(StorageSpace space)
 		{
 			SqlParameter id = new SqlParameter("@ID", SqlDbType.Int);
 			id.Direction = ParameterDirection.Output;
@@ -5568,7 +5567,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(id.Value);
 		}
 
-		public static void RemoveStorageSpace(int id)
+		public void RemoveStorageSpace(int id)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -5578,7 +5577,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static DataSet GetStorageSpacesByLevelId(int levelId)
+		public DataSet GetStorageSpacesByLevelId(int levelId)
 		{
 			return SqlHelper.ExecuteDataset(
 				 ConnectionString,
@@ -5588,7 +5587,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetStorageSpacesByResourceGroupName(string groupName)
+		public IDataReader GetStorageSpacesByResourceGroupName(string groupName)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -5598,14 +5597,14 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static int CreateStorageSpaceFolder(StorageSpaceFolder folder)
+		public int CreateStorageSpaceFolder(StorageSpaceFolder folder)
 		{
 			folder.Id = CreateStorageSpaceFolder(folder.Name, folder.StorageSpaceId, folder.Path, folder.UncPath, folder.IsShared, folder.FsrmQuotaType, folder.FsrmQuotaSizeBytes);
 
 			return folder.Id;
 		}
 
-		public static int CreateStorageSpaceFolder(string name, int storageSpaceId, string path, string uncPath, bool isShared, QuotaType quotaType, long fsrmQuotaSizeBytes)
+		public int CreateStorageSpaceFolder(string name, int storageSpaceId, string path, string uncPath, bool isShared, QuotaType quotaType, long fsrmQuotaSizeBytes)
 		{
 			SqlParameter id = new SqlParameter("@ID", SqlDbType.Int);
 			id.Direction = ParameterDirection.Output;
@@ -5628,7 +5627,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(id.Value);
 		}
 
-		public static int UpdateStorageSpaceFolder(StorageSpaceFolder folder)
+		public int UpdateStorageSpaceFolder(StorageSpaceFolder folder)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -5647,7 +5646,7 @@ namespace SolidCP.EnterpriseServer
 			return folder.Id;
 		}
 
-		public static int UpdateStorageSpaceFolder(int id, string folderName, int storageSpaceId, string path, string uncPath, bool isShared, QuotaType type, long fsrmQuotaSizeBytes)
+		public int UpdateStorageSpaceFolder(int id, string folderName, int storageSpaceId, string path, string uncPath, bool isShared, QuotaType type, long fsrmQuotaSizeBytes)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -5666,7 +5665,7 @@ namespace SolidCP.EnterpriseServer
 			return id;
 		}
 
-		public static IDataReader GetStorageSpaceFoldersByStorageSpaceId(int id)
+		public IDataReader GetStorageSpaceFoldersByStorageSpaceId(int id)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -5676,7 +5675,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetStorageSpaceFolderById(int id)
+		public IDataReader GetStorageSpaceFolderById(int id)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -5686,7 +5685,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void RemoveStorageSpaceFolder(int id)
+		public void RemoveStorageSpaceFolder(int id)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -5700,7 +5699,7 @@ namespace SolidCP.EnterpriseServer
 
 		#region RDS
 
-		public static int CheckRDSServer(string ServerFQDN)
+		public int CheckRDSServer(string ServerFQDN)
 		{
 			SqlParameter prmId = new SqlParameter("@Result", SqlDbType.Int);
 			prmId.Direction = ParameterDirection.Output;
@@ -5713,7 +5712,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(prmId.Value);
 		}
 
-		public static IDataReader GetRdsServerSettings(int serverId, string settingsName)
+		public IDataReader GetRdsServerSettings(int serverId, string settingsName)
 		{
 			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetRDSServerSettings",
@@ -5721,7 +5720,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@SettingsName", settingsName));
 		}
 
-		public static void UpdateRdsServerSettings(int serverId, string settingsName, string xml)
+		public void UpdateRdsServerSettings(int serverId, string settingsName, string xml)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "UpdateRDSServerSettings",
@@ -5730,7 +5729,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@Xml", xml));
 		}
 
-		public static int AddRdsCertificate(int serviceId, string content, byte[] hash, string fileName, DateTime? validFrom, DateTime? expiryDate)
+		public int AddRdsCertificate(int serviceId, string content, byte[] hash, string fileName, DateTime? validFrom, DateTime? expiryDate)
 		{
 			SqlParameter rdsCertificateId = new SqlParameter("@RDSCertificateID", SqlDbType.Int);
 			rdsCertificateId.Direction = ParameterDirection.Output;
@@ -5751,7 +5750,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(rdsCertificateId.Value);
 		}
 
-		public static IDataReader GetRdsCertificateByServiceId(int serviceId)
+		public IDataReader GetRdsCertificateByServiceId(int serviceId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -5761,7 +5760,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetRdsCollectionSettingsByCollectionId(int collectionId)
+		public IDataReader GetRdsCollectionSettingsByCollectionId(int collectionId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -5771,14 +5770,14 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static int AddRdsCollectionSettings(RdsCollectionSettings settings)
+		public int AddRdsCollectionSettings(RdsCollectionSettings settings)
 		{
 			return AddRdsCollectionSettings(settings.RdsCollectionId, settings.DisconnectedSessionLimitMin, settings.ActiveSessionLimitMin, settings.IdleSessionLimitMin, settings.BrokenConnectionAction,
 				 settings.AutomaticReconnectionEnabled, settings.TemporaryFoldersDeletedOnExit, settings.TemporaryFoldersPerSession, settings.ClientDeviceRedirectionOptions, settings.ClientPrinterRedirected,
 				 settings.ClientPrinterAsDefault, settings.RDEasyPrintDriverEnabled, settings.MaxRedirectedMonitors, settings.SecurityLayer, settings.EncryptionLevel, settings.AuthenticateUsingNLA);
 		}
 
-		private static int AddRdsCollectionSettings(int rdsCollectionId, int disconnectedSessionLimitMin, int activeSessionLimitMin, int idleSessionLimitMin, string brokenConnectionAction,
+		private int AddRdsCollectionSettings(int rdsCollectionId, int disconnectedSessionLimitMin, int activeSessionLimitMin, int idleSessionLimitMin, string brokenConnectionAction,
 			 bool automaticReconnectionEnabled, bool temporaryFoldersDeletedOnExit, bool temporaryFoldersPerSession, string clientDeviceRedirectionOptions, bool ClientPrinterRedirected,
 			 bool clientPrinterAsDefault, bool rdEasyPrintDriverEnabled, int maxRedirectedMonitors, string SecurityLayer, string EncryptionLevel, bool AuthenticateUsingNLA)
 		{
@@ -5811,14 +5810,14 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(rdsCollectionSettingsId.Value);
 		}
 
-		public static void UpdateRDSCollectionSettings(RdsCollectionSettings settings)
+		public void UpdateRDSCollectionSettings(RdsCollectionSettings settings)
 		{
 			UpdateRDSCollectionSettings(settings.Id, settings.RdsCollectionId, settings.DisconnectedSessionLimitMin, settings.ActiveSessionLimitMin, settings.IdleSessionLimitMin, settings.BrokenConnectionAction,
 				 settings.AutomaticReconnectionEnabled, settings.TemporaryFoldersDeletedOnExit, settings.TemporaryFoldersPerSession, settings.ClientDeviceRedirectionOptions, settings.ClientPrinterRedirected,
 				 settings.ClientPrinterAsDefault, settings.RDEasyPrintDriverEnabled, settings.MaxRedirectedMonitors, settings.SecurityLayer, settings.EncryptionLevel, settings.AuthenticateUsingNLA);
 		}
 
-		public static void UpdateRDSCollectionSettings(int id, int rdsCollectionId, int disconnectedSessionLimitMin, int activeSessionLimitMin, int idleSessionLimitMin, string brokenConnectionAction,
+		public void UpdateRDSCollectionSettings(int id, int rdsCollectionId, int disconnectedSessionLimitMin, int activeSessionLimitMin, int idleSessionLimitMin, string brokenConnectionAction,
 			 bool automaticReconnectionEnabled, bool temporaryFoldersDeletedOnExit, bool temporaryFoldersPerSession, string clientDeviceRedirectionOptions, bool ClientPrinterRedirected,
 			 bool clientPrinterAsDefault, bool rdEasyPrintDriverEnabled, int maxRedirectedMonitors, string SecurityLayer, string EncryptionLevel, bool AuthenticateUsingNLA)
 		{
@@ -5846,7 +5845,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void DeleteRDSCollectionSettings(int id)
+		public void DeleteRDSCollectionSettings(int id)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -5856,7 +5855,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetRDSCollectionsByItemId(int itemId)
+		public IDataReader GetRDSCollectionsByItemId(int itemId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -5866,7 +5865,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetRDSCollectionByName(string name)
+		public IDataReader GetRDSCollectionByName(string name)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -5876,7 +5875,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetRDSCollectionById(int id)
+		public IDataReader GetRDSCollectionById(int id)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -5886,7 +5885,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static DataSet GetRDSCollectionsPaged(int itemId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
+		public DataSet GetRDSCollectionsPaged(int itemId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
 		{
 			return SqlHelper.ExecuteDataset(
 				 ConnectionString,
@@ -5901,7 +5900,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static int AddRDSCollection(int itemId, string name, string description, string displayName)
+		public int AddRDSCollection(int itemId, string name, string description, string displayName)
 		{
 			SqlParameter rdsCollectionId = new SqlParameter("@RDSCollectionID", SqlDbType.Int);
 			rdsCollectionId.Direction = ParameterDirection.Output;
@@ -5921,7 +5920,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(rdsCollectionId.Value);
 		}
 
-		public static int GetOrganizationRdsUsersCount(int itemId)
+		public int GetOrganizationRdsUsersCount(int itemId)
 		{
 			SqlParameter count = new SqlParameter("@TotalNumber", SqlDbType.Int);
 			count.Direction = ParameterDirection.Output;
@@ -5935,7 +5934,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(count.Value);
 		}
 
-		public static int GetOrganizationRdsCollectionsCount(int itemId)
+		public int GetOrganizationRdsCollectionsCount(int itemId)
 		{
 			SqlParameter count = new SqlParameter("@TotalNumber", SqlDbType.Int);
 			count.Direction = ParameterDirection.Output;
@@ -5949,7 +5948,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(count.Value);
 		}
 
-		public static int GetOrganizationRdsServersCount(int itemId)
+		public int GetOrganizationRdsServersCount(int itemId)
 		{
 			SqlParameter count = new SqlParameter("@TotalNumber", SqlDbType.Int);
 			count.Direction = ParameterDirection.Output;
@@ -5963,12 +5962,12 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(count.Value);
 		}
 
-		public static void UpdateRDSCollection(RdsCollection collection)
+		public void UpdateRDSCollection(RdsCollection collection)
 		{
 			UpdateRDSCollection(collection.Id, collection.ItemId, collection.Name, collection.Description, collection.DisplayName);
 		}
 
-		public static void UpdateRDSCollection(int id, int itemId, string name, string description, string displayName)
+		public void UpdateRDSCollection(int id, int itemId, string name, string description, string displayName)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -5982,7 +5981,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void DeleteRDSServerSettings(int serverId)
+		public void DeleteRDSServerSettings(int serverId)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -5992,7 +5991,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void DeleteRDSCollection(int id)
+		public void DeleteRDSCollection(int id)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -6002,7 +6001,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static int AddRDSServer(string name, string fqdName, string description, string controller)
+		public int AddRDSServer(string name, string fqdName, string description, string controller)
 		{
 			SqlParameter rdsServerId = new SqlParameter("@RDSServerID", SqlDbType.Int);
 			rdsServerId.Direction = ParameterDirection.Output;
@@ -6022,7 +6021,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(rdsServerId.Value);
 		}
 
-		public static IDataReader GetRDSServersByItemId(int itemId)
+		public IDataReader GetRDSServersByItemId(int itemId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -6032,7 +6031,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static DataSet GetRDSServersPaged(int? itemId, int? collectionId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string controller, bool ignoreItemId = false, bool ignoreRdsCollectionId = false)
+		public DataSet GetRDSServersPaged(int? itemId, int? collectionId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string controller, bool ignoreItemId = false, bool ignoreRdsCollectionId = false)
 		{
 			return SqlHelper.ExecuteDataset(
 				 ConnectionString,
@@ -6051,7 +6050,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetRDSServerById(int id)
+		public IDataReader GetRDSServerById(int id)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -6061,7 +6060,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetRDSServersByCollectionId(int collectionId)
+		public IDataReader GetRDSServersByCollectionId(int collectionId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -6071,7 +6070,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void DeleteRDSServer(int id)
+		public void DeleteRDSServer(int id)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -6081,13 +6080,13 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void UpdateRDSServer(RdsServer server)
+		public void UpdateRDSServer(RdsServer server)
 		{
 			UpdateRDSServer(server.Id, server.ItemId, server.Name, server.FqdName, server.Description,
 				 server.RdsCollectionId, server.ConnectionEnabled);
 		}
 
-		public static void UpdateRDSServer(int id, int? itemId, string name, string fqdName, string description, int? rdsCollectionId, string connectionEnabled)
+		public void UpdateRDSServer(int id, int? itemId, string name, string fqdName, string description, int? rdsCollectionId, string connectionEnabled)
 		{
 			byte connEnabled = 1;
 			if (!String.IsNullOrEmpty(connectionEnabled))
@@ -6108,7 +6107,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void AddRDSServerToCollection(int serverId, int rdsCollectionId)
+		public void AddRDSServerToCollection(int serverId, int rdsCollectionId)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -6119,7 +6118,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void AddRDSServerToOrganization(int itemId, int serverId)
+		public void AddRDSServerToOrganization(int itemId, int serverId)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -6130,7 +6129,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void RemoveRDSServerFromOrganization(int serverId)
+		public void RemoveRDSServerFromOrganization(int serverId)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -6140,7 +6139,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void RemoveRDSServerFromCollection(int serverId)
+		public void RemoveRDSServerFromCollection(int serverId)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -6150,7 +6149,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetRDSCollectionUsersByRDSCollectionId(int id)
+		public IDataReader GetRDSCollectionUsersByRDSCollectionId(int id)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -6160,7 +6159,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void AddRDSUserToRDSCollection(int rdsCollectionId, int accountId)
+		public void AddRDSUserToRDSCollection(int rdsCollectionId, int accountId)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -6171,7 +6170,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void RemoveRDSUserFromRDSCollection(int rdsCollectionId, int accountId)
+		public void RemoveRDSUserFromRDSCollection(int rdsCollectionId, int accountId)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -6182,7 +6181,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static int GetRDSControllerServiceIDbyFQDN(string fqdnName)
+		public int GetRDSControllerServiceIDbyFQDN(string fqdnName)
 		{
 			SqlParameter prmController = new SqlParameter("@Controller", SqlDbType.Int);
 			prmController.Direction = ParameterDirection.Output;
@@ -6199,7 +6198,7 @@ namespace SolidCP.EnterpriseServer
 
 		#region MX|NX Services
 
-		public static IDataReader GetAllPackages()
+		public IDataReader GetAllPackages()
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -6208,7 +6207,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetDomainDnsRecords(int domainId, DnsRecordType recordType)
+		public IDataReader GetDomainDnsRecords(int domainId, DnsRecordType recordType)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -6219,7 +6218,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetDomainAllDnsRecords(int domainId)
+		public IDataReader GetDomainAllDnsRecords(int domainId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -6229,7 +6228,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void AddDomainDnsRecord(DnsRecordInfo domainDnsRecord)
+		public void AddDomainDnsRecord(DnsRecordInfo domainDnsRecord)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -6243,7 +6242,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetScheduleTaskEmailTemplate(string taskId)
+		public IDataReader GetScheduleTaskEmailTemplate(string taskId)
 		{
 			return SqlHelper.ExecuteReader(
 					  ConnectionString,
@@ -6253,7 +6252,7 @@ namespace SolidCP.EnterpriseServer
 				 );
 		}
 
-		public static void DeleteDomainDnsRecord(int id)
+		public void DeleteDomainDnsRecord(int id)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -6263,22 +6262,22 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void UpdateDomainCreationDate(int domainId, DateTime date)
+		public void UpdateDomainCreationDate(int domainId, DateTime date)
 		{
 			UpdateDomainDate(domainId, "UpdateDomainCreationDate", date);
 		}
 
-		public static void UpdateDomainExpirationDate(int domainId, DateTime date)
+		public void UpdateDomainExpirationDate(int domainId, DateTime date)
 		{
 			UpdateDomainDate(domainId, "UpdateDomainExpirationDate", date);
 		}
 
-		public static void UpdateDomainLastUpdateDate(int domainId, DateTime date)
+		public void UpdateDomainLastUpdateDate(int domainId, DateTime date)
 		{
 			UpdateDomainDate(domainId, "UpdateDomainLastUpdateDate", date);
 		}
 
-		private static void UpdateDomainDate(int domainId, string stroredProcedure, DateTime date)
+		private void UpdateDomainDate(int domainId, string stroredProcedure, DateTime date)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -6289,7 +6288,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void UpdateDomainDates(int domainId, DateTime? domainCreationDate, DateTime? domainExpirationDate, DateTime? domainLastUpdateDate)
+		public void UpdateDomainDates(int domainId, DateTime? domainCreationDate, DateTime? domainExpirationDate, DateTime? domainLastUpdateDate)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -6302,7 +6301,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void UpdateWhoisDomainInfo(int domainId, DateTime? domainCreationDate, DateTime? domainExpirationDate, DateTime? domainLastUpdateDate, string registrarName)
+		public void UpdateWhoisDomainInfo(int domainId, DateTime? domainCreationDate, DateTime? domainExpirationDate, DateTime? domainLastUpdateDate, string registrarName)
 		{
 			SqlHelper.ExecuteNonQuery(
 				 ConnectionString,
@@ -6319,7 +6318,7 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region Organization Storage Space Folders
-		public static IDataReader GetOrganizationStoragSpaceFolders(int itemId)
+		public IDataReader GetOrganizationStoragSpaceFolders(int itemId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -6329,7 +6328,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static IDataReader GetOrganizationStoragSpacesFolderByType(int itemId, string type)
+		public IDataReader GetOrganizationStoragSpacesFolderByType(int itemId, string type)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -6340,7 +6339,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static void DeleteOrganizationStoragSpacesFolder(int id)
+		public void DeleteOrganizationStoragSpacesFolder(int id)
 		{
 			SqlHelper.ExecuteNonQuery(ConnectionString,
 				 CommandType.StoredProcedure,
@@ -6348,7 +6347,7 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@ID", id));
 		}
 
-		public static int AddOrganizationStoragSpacesFolder(int itemId, string type, int storageSpaceFolderId)
+		public int AddOrganizationStoragSpacesFolder(int itemId, string type, int storageSpaceFolderId)
 		{
 			SqlParameter outParam = new SqlParameter("@ID", SqlDbType.Int);
 			outParam.Direction = ParameterDirection.Output;
@@ -6366,7 +6365,7 @@ namespace SolidCP.EnterpriseServer
 			return Convert.ToInt32(outParam.Value);
 		}
 
-		public static IDataReader GetOrganizationStorageSpacesFolderById(int itemId, int folderId)
+		public IDataReader GetOrganizationStorageSpacesFolderById(int itemId, int folderId)
 		{
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -6380,7 +6379,7 @@ namespace SolidCP.EnterpriseServer
 
 		#region RDS Messages        
 
-		public static DataSet GetRDSMessagesByCollectionId(int rdsCollectionId)
+		public DataSet GetRDSMessagesByCollectionId(int rdsCollectionId)
 		{
 			return SqlHelper.ExecuteDataset(
 				 ConnectionString,
@@ -6390,7 +6389,7 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public static int AddRDSMessage(int rdsCollectionId, string messageText, string userName)
+		public int AddRDSMessage(int rdsCollectionId, string messageText, string userName)
 		{
 			SqlParameter rdsMessageId = new SqlParameter("@RDSMessageID", SqlDbType.Int);
 			rdsMessageId.Direction = ParameterDirection.Output;

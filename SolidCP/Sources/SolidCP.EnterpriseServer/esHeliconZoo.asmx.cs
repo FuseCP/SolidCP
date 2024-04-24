@@ -53,7 +53,7 @@ namespace SolidCP.EnterpriseServer
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [Policy("EnterpriseServerPolicy")]
     [ToolboxItem(false)]
-    public class esHeliconZoo
+    public class esHeliconZoo: WebService
     {
 
         [WebMethod]

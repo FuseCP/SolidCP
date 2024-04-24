@@ -13,15 +13,18 @@ using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class StorageSpacesController
+    public class StorageSpacesController: ControllerBase
     {
+        public StorageSpacesController(ControllerBase provider) : base(provider) { }
+
+
         #region Storage Spaces Levels
-        public static StorageSpaceLevelPaged GetStorageSpaceLevelsPaged(string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
+        public StorageSpaceLevelPaged GetStorageSpaceLevelsPaged(string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             return GetStorageSpaceLevelsPagedInternal(filterColumn, filterValue, sortColumn, startRow, maximumRows);
         }
 
-        private static StorageSpaceLevelPaged GetStorageSpaceLevelsPagedInternal(string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
+        private StorageSpaceLevelPaged GetStorageSpaceLevelsPagedInternal(string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             DataSet ds = DataProvider.GetStorageSpaceLevelsPaged(filterColumn, string.Format("%{0}%", filterValue), sortColumn, startRow, maximumRows);
 
@@ -39,22 +42,22 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static StorageSpaceLevel GetStorageSpaceLevelById(int levelId)
+        public StorageSpaceLevel GetStorageSpaceLevelById(int levelId)
         {
             return GetStorageSpaceLevelByIdInternal(levelId);
         }
 
-        private static StorageSpaceLevel GetStorageSpaceLevelByIdInternal(int levelId)
+        private StorageSpaceLevel GetStorageSpaceLevelByIdInternal(int levelId)
         {
             return ObjectUtils.FillObjectFromDataReader<StorageSpaceLevel>(DataProvider.GetStorageSpaceLevelById(levelId));
         }
 
-        public static IntResult SaveStorageSpaceLevel(StorageSpaceLevel level, List<ResourceGroupInfo> groups)
+        public IntResult SaveStorageSpaceLevel(StorageSpaceLevel level, List<ResourceGroupInfo> groups)
         {
             return SaveStorageSpaceLevelInternal(level, groups);
         }
 
-        private static IntResult SaveStorageSpaceLevelInternal(StorageSpaceLevel level, List<ResourceGroupInfo> groups)
+        private IntResult SaveStorageSpaceLevelInternal(StorageSpaceLevel level, List<ResourceGroupInfo> groups)
         {
 
             var result = TaskManager.StartResultTask<IntResult>("STORAGE_SPACES", "SAVE_STORAGE_SPACE_LEVEL");
@@ -111,12 +114,12 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static ResultObject RemoveStorageSpaceLevel(int id)
+        public ResultObject RemoveStorageSpaceLevel(int id)
         {
             return RemoveStorageSpaceLevelInternal(id);
         }
 
-        private static ResultObject RemoveStorageSpaceLevelInternal(int id)
+        private ResultObject RemoveStorageSpaceLevelInternal(int id)
         {
 
             var result = TaskManager.StartResultTask<ResultObject>("STORAGE_SPACES", "REMOVE_STORAGE_SPACE_LEVEL");
@@ -152,22 +155,22 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        public static List<ResourceGroupInfo> GetLevelResourceGroups(int levelId)
+        public List<ResourceGroupInfo> GetLevelResourceGroups(int levelId)
         {
             return GetLevelResourceGroupsInternal(levelId);
         }
 
-        private static List<ResourceGroupInfo> GetLevelResourceGroupsInternal(int levelId)
+        private List<ResourceGroupInfo> GetLevelResourceGroupsInternal(int levelId)
         {
             return ObjectUtils.CreateListFromDataReader<ResourceGroupInfo>(DataProvider.GetStorageSpaceLevelResourceGroups(levelId)).ToList();
         }
 
-        public static ResultObject SaveLevelResourceGroups(int levelId, List<ResourceGroupInfo> newGroups)
+        public ResultObject SaveLevelResourceGroups(int levelId, List<ResourceGroupInfo> newGroups)
         {
             return SaveLevelResourceGroupsInternal(levelId, newGroups);
         }
 
-        private static ResultObject SaveLevelResourceGroupsInternal(int levelId, IEnumerable<ResourceGroupInfo> newGroups)
+        private ResultObject SaveLevelResourceGroupsInternal(int levelId, IEnumerable<ResourceGroupInfo> newGroups)
         {
             var result = TaskManager.StartResultTask<ResultObject>("STORAGE_SPACES", "REMOVE_STORAGE_SPACE_LEVEL");
 
@@ -212,12 +215,12 @@ namespace SolidCP.EnterpriseServer
 
         #region Storage Spaces
 
-        public static StorageSpacesPaged GetStorageSpacesPaged(string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
+        public StorageSpacesPaged GetStorageSpacesPaged(string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             return GetStorageSpacePagedInternal(filterColumn, filterValue, sortColumn, startRow, maximumRows);
         }
 
-        private static StorageSpacesPaged GetStorageSpacePagedInternal(string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
+        private StorageSpacesPaged GetStorageSpacePagedInternal(string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             DataSet ds = DataProvider.GetStorageSpacesPaged(filterColumn, string.Format("%{0}%", filterValue), sortColumn, startRow, maximumRows);
 
@@ -237,7 +240,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static void GetStorageSpacesUsage(IEnumerable<StorageSpace> spaces)
+        private void GetStorageSpacesUsage(IEnumerable<StorageSpace> spaces)
         {
             var tasks = new List<Task>();
 
@@ -261,12 +264,12 @@ namespace SolidCP.EnterpriseServer
             Task.WaitAll(tasks.ToArray());
         }
 
-        public static List<StorageSpace> GetStorageSpacesByLevelId(int levelId)
+        public List<StorageSpace> GetStorageSpacesByLevelId(int levelId)
         {
             return GetStorageSpacesByLevelIdInternal(levelId);
         }
 
-        private static List<StorageSpace> GetStorageSpacesByLevelIdInternal(int levelId)
+        private List<StorageSpace> GetStorageSpacesByLevelIdInternal(int levelId)
         {
             DataSet ds = DataProvider.GetStorageSpacesByLevelId(levelId);
 
@@ -277,34 +280,34 @@ namespace SolidCP.EnterpriseServer
             return spaces;
         }
 
-        public static StorageSpace GetStorageSpaceById(int id)
+        public StorageSpace GetStorageSpaceById(int id)
         {
             return GetStorageSpaceByIdInternal(id);
         }
 
-        private static StorageSpace GetStorageSpaceByIdInternal(int id)
+        private StorageSpace GetStorageSpaceByIdInternal(int id)
         {
             return ObjectUtils.FillObjectFromDataReader<StorageSpace>(DataProvider.GetStorageSpaceById(id));
         }
 
-        public static bool CheckIsStorageSpacePathInUse(int serverId, string path, int currentServiceId)
+        public bool CheckIsStorageSpacePathInUse(int serverId, string path, int currentServiceId)
         {
             return CheckIsPathInUseInternal(serverId, path, currentServiceId);
         }
 
-        private static bool CheckIsPathInUseInternal(int serverId, string path, int currentStorageSpaceId)
+        private bool CheckIsPathInUseInternal(int serverId, string path, int currentStorageSpaceId)
         {
             var storage = ObjectUtils.FillObjectFromDataReader<StorageSpace>(DataProvider.GetStorageSpaceByServiceAndPath(serverId, path));
 
             return storage != null && storage.Id != currentStorageSpaceId;
         }
 
-        public static IntResult SaveStorageSpace(StorageSpace space)
+        public IntResult SaveStorageSpace(StorageSpace space)
         {
             return SaveStorageSpaceInternal(space);
         }
 
-        private static IntResult SaveStorageSpaceInternal(StorageSpace space, bool isShared = false)
+        private IntResult SaveStorageSpaceInternal(StorageSpace space, bool isShared = false)
         {
 
             var result = TaskManager.StartResultTask<IntResult>("STORAGE_SPACES", "SAVE_STORAGE_SPACE");
@@ -364,12 +367,12 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static ResultObject RemoveStorageSpace(int id)
+        public ResultObject RemoveStorageSpace(int id)
         {
             return RemoveStorageSpaceInternal(id);
         }
 
-        private static ResultObject RemoveStorageSpaceInternal(int id)
+        private ResultObject RemoveStorageSpaceInternal(int id)
         {
 
             var result = TaskManager.StartResultTask<ResultObject>("STORAGE_SPACES", "REMOVE_STORAGE_SPACE");
@@ -410,12 +413,12 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static IntResult FindBestStorageSpaceService(IStorageSpaceSelector selector, string groupName, long quotaSizeBytes)
+        public IntResult FindBestStorageSpaceService(IStorageSpaceSelector selector, string groupName, long quotaSizeBytes)
         {
             return FindBestStorageSpaceServiceInternal(selector, groupName, quotaSizeBytes);
         }
 
-        private static IntResult FindBestStorageSpaceServiceInternal(IStorageSpaceSelector selector, string groupName, long quotaSizeBytes)
+        private IntResult FindBestStorageSpaceServiceInternal(IStorageSpaceSelector selector, string groupName, long quotaSizeBytes)
         {
             var result = TaskManager.StartResultTask<IntResult>("STORAGE_SPACES", "FIND_BEST_STORAGE_SPACE_SERVICE");
 
@@ -449,12 +452,12 @@ namespace SolidCP.EnterpriseServer
 
         #region Storage Space Folders
 
-        public static IntResult CreateStorageSpaceFolder(int storageSpaceId, string groupName, string organizationId, string folderName, long quotaInBytes, QuotaType quotaType)
+        public IntResult CreateStorageSpaceFolder(int storageSpaceId, string groupName, string organizationId, string folderName, long quotaInBytes, QuotaType quotaType)
         {
             return CreateStorageSpaceFolderInternal(storageSpaceId, groupName, organizationId, folderName, quotaInBytes, quotaType);
         }
 
-        private static IntResult CreateStorageSpaceFolderInternal(int storageSpaceId, string groupName, string organizationId, string folderName, long quotaInBytes, QuotaType quotaType)
+        private IntResult CreateStorageSpaceFolderInternal(int storageSpaceId, string groupName, string organizationId, string folderName, long quotaInBytes, QuotaType quotaType)
         {
             var result = TaskManager.StartResultTask<IntResult>("STORAGE_SPACES", "CREATE_STORAGE_SPACE_FOLDER");
 
@@ -506,18 +509,18 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static string GenerateShareName(string organizationId, string folderName)
+        private string GenerateShareName(string organizationId, string folderName)
         {
             var hiddenfolderName = folderName + "$";
             return string.Join("-", organizationId, hiddenfolderName);
         }
 
-        public static ResultObject UpdateStorageSpaceFolder(int storageSpaceId, int storageSpaceFolderId, string organizationId, string groupName, string folderName, string uncPath, long quotaInBytes, QuotaType quotaType)
+        public ResultObject UpdateStorageSpaceFolder(int storageSpaceId, int storageSpaceFolderId, string organizationId, string groupName, string folderName, string uncPath, long quotaInBytes, QuotaType quotaType)
         {
             return UpdateStorageSpaceFolderInternal(storageSpaceId, storageSpaceFolderId, organizationId, groupName, folderName, uncPath, quotaInBytes, quotaType);
         }
 
-        private static ResultObject UpdateStorageSpaceFolderInternal(int storageSpaceId, int storageSpaceFolderId, string organizationId, string groupName, string folderName,string uncPath, long quotaInBytes, QuotaType quotaType)
+        private ResultObject UpdateStorageSpaceFolderInternal(int storageSpaceId, int storageSpaceFolderId, string organizationId, string groupName, string folderName,string uncPath, long quotaInBytes, QuotaType quotaType)
         {
             var result = TaskManager.StartResultTask<ResultObject>("STORAGE_SPACES", "UPDATE_STORAGE_SPACE_FOLDER");
 
@@ -561,12 +564,12 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static StorageSpaceFolderShare ShareStorageSpaceFolder(int storageSpaceId, string fullPath, string shareName)
+        public StorageSpaceFolderShare ShareStorageSpaceFolder(int storageSpaceId, string fullPath, string shareName)
         {
             return ShareStorageSpaceFolderInternal(storageSpaceId, fullPath, shareName);
         }
 
-        private static StorageSpaceFolderShare ShareStorageSpaceFolderInternal(int storageSpaceId, string fullPath, string shareName)
+        private StorageSpaceFolderShare ShareStorageSpaceFolderInternal(int storageSpaceId, string fullPath, string shareName)
         {
             var result = TaskManager.StartResultTask<ResultObject>("STORAGE_SPACES", "SHARE_STORAGE_SPACE_FOLDER");
 
@@ -609,7 +612,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        private static string CreateFilePath(string path, string organizationId, string groupName, string folderName)
+        private string CreateFilePath(string path, string organizationId, string groupName, string folderName)
         {
             // 06.09.2015 roland.breitschaft@x-company.de
             // Problem: The folder will not created in the Storage-Space
@@ -618,12 +621,12 @@ namespace SolidCP.EnterpriseServer
             return Path.Combine(path, organizationId, folderName);
         }
 
-        public static ResultObject DeleteStorageSpaceFolder(int storageSpaceId, int storageSpaceFolderId)
+        public ResultObject DeleteStorageSpaceFolder(int storageSpaceId, int storageSpaceFolderId)
         {
             return DeleteStorageSpaceFolderInternal(storageSpaceId, storageSpaceFolderId);
         }
 
-        private static ResultObject DeleteStorageSpaceFolderInternal(int storageSpaceId, int storageSpaceFolderId)
+        private ResultObject DeleteStorageSpaceFolderInternal(int storageSpaceId, int storageSpaceFolderId)
         {
             var result = TaskManager.StartResultTask<IntResult>("STORAGE_SPACES", "DELETE_STORAGE_SPACE_FOLDER");
 
@@ -684,12 +687,12 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static ResultObject SetStorageSpaceFolderQuota(int storageSpaceId, int storageSpaceFolderId, long quotaInBytes, QuotaType quotaType)
+        public ResultObject SetStorageSpaceFolderQuota(int storageSpaceId, int storageSpaceFolderId, long quotaInBytes, QuotaType quotaType)
         {
             return SetStorageSpaceFolderQuotaInternal(storageSpaceId, storageSpaceFolderId, quotaInBytes, quotaType);
         }
 
-        private static ResultObject SetStorageSpaceFolderQuotaInternal(int storageSpaceId, int storageSpaceFolderId, long quotaInBytes, QuotaType quotaType)
+        private ResultObject SetStorageSpaceFolderQuotaInternal(int storageSpaceId, int storageSpaceFolderId, long quotaInBytes, QuotaType quotaType)
         {
             var result = TaskManager.StartResultTask<IntResult>("STORAGE_SPACES", "SET_STORAGE_SPACE_FOLDER_QUOTA");
 
@@ -743,24 +746,24 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static List<StorageSpaceFolder> GetStorageSpaceFoldersByStorageSpaceId(int storageSpaceId)
+        public List<StorageSpaceFolder> GetStorageSpaceFoldersByStorageSpaceId(int storageSpaceId)
         {
             return GetStorageSpaceFoldersByStorageSpaceIdInternal(storageSpaceId);
         }
 
-        private static List<StorageSpaceFolder> GetStorageSpaceFoldersByStorageSpaceIdInternal(int storageSpaceId)
+        private List<StorageSpaceFolder> GetStorageSpaceFoldersByStorageSpaceIdInternal(int storageSpaceId)
         {
             var folders = ObjectUtils.CreateListFromDataReader<StorageSpaceFolder>(DataProvider.GetStorageSpaceFoldersByStorageSpaceId(storageSpaceId));
 
             return folders;
         }
 
-        public static ResultObject SetFolderNtfsPermissions(int storageSpaceId, string fullPath, UserPermission[] permissions, bool isProtected, bool preserveInheritance)
+        public ResultObject SetFolderNtfsPermissions(int storageSpaceId, string fullPath, UserPermission[] permissions, bool isProtected, bool preserveInheritance)
         {
             return SetFolderNtfsPermissionsInternal(storageSpaceId, fullPath, permissions, isProtected, preserveInheritance);
         }
 
-        private static ResultObject SetFolderNtfsPermissionsInternal(int storageSpaceId, string fullPath, UserPermission[] permissions, bool isProtected, bool preserveInheritance)
+        private ResultObject SetFolderNtfsPermissionsInternal(int storageSpaceId, string fullPath, UserPermission[] permissions, bool isProtected, bool preserveInheritance)
         {
             var result = TaskManager.StartResultTask<IntResult>("STORAGE_SPACES", "SET_NTFS_PERMISSIONS_ON_FOLDER");
 
@@ -808,12 +811,12 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static BoolResult StorageSpaceFileOrFolderExist(int storageSpaceId, string fullPath)
+        public BoolResult StorageSpaceFileOrFolderExist(int storageSpaceId, string fullPath)
         {
             return StorageSpaceFileOrFolderExistInternal(storageSpaceId, fullPath);
         }
 
-        private static BoolResult StorageSpaceFileOrFolderExistInternal(int storageSpaceId, string fullPath)
+        private BoolResult StorageSpaceFileOrFolderExistInternal(int storageSpaceId, string fullPath)
         {
             var result = TaskManager.StartResultTask<BoolResult>("STORAGE_SPACES", "FOLDER_OR_FOLDER_EXIST");
 
@@ -855,12 +858,12 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static ResultObject RenameStorageSpaceFolder(int storageSpaceId, int folderId, string organizationId, string group, string fullPath, string newName)
+        public ResultObject RenameStorageSpaceFolder(int storageSpaceId, int folderId, string organizationId, string group, string fullPath, string newName)
         {
             return RenameFolderInternal(storageSpaceId, folderId, organizationId, group, fullPath, newName);
         }
 
-        private static ResultObject RenameFolderInternal(int storageSpaceId, int folderId, string organizationId, string group, string fullPath, string newName)
+        private ResultObject RenameFolderInternal(int storageSpaceId, int folderId, string organizationId, string group, string fullPath, string newName)
         {
             var result = TaskManager.StartResultTask<ResultObject>("STORAGE_SPACES", "RENAME_FOLDER");
 
@@ -915,17 +918,17 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static StorageSpaceFolder GetStorageSpaceFolderById(int id)
+        public StorageSpaceFolder GetStorageSpaceFolderById(int id)
         {
             return GetStorageSpaceFolderByIdInternal(id);
         }
 
-        private static StorageSpaceFolder GetStorageSpaceFolderByIdInternal(int id)
+        private StorageSpaceFolder GetStorageSpaceFolderByIdInternal(int id)
         {
             return ObjectUtils.FillObjectFromDataReader<StorageSpaceFolder>(DataProvider.GetStorageSpaceFolderById(id));
         }
 
-        public static Quota GetFolderQuota(string fullPath, int storageSpaceid)
+        public Quota GetFolderQuota(string fullPath, int storageSpaceid)
         {
             var space = GetStorageSpaceById(storageSpaceid);
 
@@ -934,7 +937,7 @@ namespace SolidCP.EnterpriseServer
             return ss.GetFolderQuota(fullPath);
         }
 
-        public static void SetFolderQuota(int storageSpaceid, string fullPath, long quotaSizeBytes, QuotaType type)
+        public void SetFolderQuota(int storageSpaceid, string fullPath, long quotaSizeBytes, QuotaType type)
         {
             var space = GetStorageSpaceById(storageSpaceid);
 
@@ -943,7 +946,7 @@ namespace SolidCP.EnterpriseServer
             ss.UpdateFolderQuota(fullPath, quotaSizeBytes,type);
         }
 
-        public static List<Task<IEnumerable<SystemFile>>> SearchInStorageSpaceFolders(IEnumerable<StorageSpaceFolderSearchRequest> requests)
+        public List<Task<IEnumerable<SystemFile>>> SearchInStorageSpaceFolders(IEnumerable<StorageSpaceFolderSearchRequest> requests)
         {
             var tasks = new List<Task<IEnumerable<SystemFile>>>();
 
@@ -964,12 +967,12 @@ namespace SolidCP.EnterpriseServer
             return tasks;
         }
 
-        public static List<SystemFile> SearchInStorageSpaceFolder(int storageSpaceId, int storageSpaceFolderId, string searchPath, string searchValue)
+        public List<SystemFile> SearchInStorageSpaceFolder(int storageSpaceId, int storageSpaceFolderId, string searchPath, string searchValue)
         {
             return SearchInStorageSpaceFolderInternal(storageSpaceId, storageSpaceFolderId, searchPath, searchValue);
         }
 
-        private static List<SystemFile> SearchInStorageSpaceFolderInternal(int storageSpaceId, int storageSpaceFolderId, string searchPath, string searchValue)
+        private List<SystemFile> SearchInStorageSpaceFolderInternal(int storageSpaceId, int storageSpaceFolderId, string searchPath, string searchValue)
         {
             var storageSpace = StorageSpacesController.GetStorageSpaceById(storageSpaceId);
 
@@ -1014,12 +1017,12 @@ namespace SolidCP.EnterpriseServer
 
 
 
-        public static void SetStorageSpaceFolderAbeStatus(int storageSpaceFolderId, bool enabled)
+        public void SetStorageSpaceFolderAbeStatus(int storageSpaceFolderId, bool enabled)
         {
             SetStorageSpaceFolderAbeStatusInternal(storageSpaceFolderId, enabled);
         }
 
-        private static void SetStorageSpaceFolderAbeStatusInternal(int storageSpaceFolderId, bool enabled)
+        private void SetStorageSpaceFolderAbeStatusInternal(int storageSpaceFolderId, bool enabled)
         {
             TaskManager.StartTask("STORAGE_SPACES", "SET_ABE_STATUS");
 
@@ -1053,12 +1056,12 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static bool GetStorageSpaceFolderAbeStatus(int storageSpaceFolderId)
+        public bool GetStorageSpaceFolderAbeStatus(int storageSpaceFolderId)
         {
             return GetStorageSpaceFolderAbeStatusInternal(storageSpaceFolderId);
         }
 
-        private static bool GetStorageSpaceFolderAbeStatusInternal(int storageSpaceFolderId)
+        private bool GetStorageSpaceFolderAbeStatusInternal(int storageSpaceFolderId)
         {
 
             try
@@ -1087,12 +1090,12 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static void SetStorageSpaceFolderEncryptDataAccessStatus(int storageSpaceFolderId, bool enabled)
+        public void SetStorageSpaceFolderEncryptDataAccessStatus(int storageSpaceFolderId, bool enabled)
         {
             SetStorageSpaceFolderEncryptDataAccessStatusInternal(storageSpaceFolderId, enabled);
         }
 
-        private static void SetStorageSpaceFolderEncryptDataAccessStatusInternal(int storageSpaceFolderId, bool enabled)
+        private void SetStorageSpaceFolderEncryptDataAccessStatusInternal(int storageSpaceFolderId, bool enabled)
         {
             TaskManager.StartTask("STORAGE_SPACES", "SET_ENCRYPT_DATA_ACCESS_STATUS");
 
@@ -1126,12 +1129,12 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static bool GetStorageSpaceFolderEncryptDataAccessStatus(int storageSpaceFolderId)
+        public bool GetStorageSpaceFolderEncryptDataAccessStatus(int storageSpaceFolderId)
         {
             return GetStorageSpaceFolderEncryptDataAccessStatusInternal(storageSpaceFolderId);
         }
 
-        private static bool GetStorageSpaceFolderEncryptDataAccessStatusInternal(int storageSpaceFolderId)
+        private bool GetStorageSpaceFolderEncryptDataAccessStatusInternal(int storageSpaceFolderId)
         {
             try
             {
@@ -1163,12 +1166,12 @@ namespace SolidCP.EnterpriseServer
 
         #region Storage Spaces TreeView
 
-        public static SystemFile[] GetDriveLetters(int serviceId)
+        public SystemFile[] GetDriveLetters(int serviceId)
         {
             return GetDriveLettersInternal(serviceId);
         }
 
-        private static SystemFile[] GetDriveLettersInternal(int serviceId)
+        private SystemFile[] GetDriveLettersInternal(int serviceId)
         {
             
             var ss = GetStorageSpaceService(serviceId);
@@ -1176,12 +1179,12 @@ namespace SolidCP.EnterpriseServer
             return ss.GetAllDriveLetters();
         }
 
-        public static SystemFile[] GetSystemSubFolders(int serviceId, string path)
+        public SystemFile[] GetSystemSubFolders(int serviceId, string path)
         {
             return GetSystemSubFoldersInternal(serviceId, path);
         }
 
-        private static SystemFile[] GetSystemSubFoldersInternal(int serviceId, string path)
+        private SystemFile[] GetSystemSubFoldersInternal(int serviceId, string path)
         {
             var ss = GetStorageSpaceService(serviceId);
 
@@ -1190,7 +1193,7 @@ namespace SolidCP.EnterpriseServer
 
         #endregion
 
-        public static StorageSpaceServices GetStorageSpaceService(int serviceId)
+        public StorageSpaceServices GetStorageSpaceService(int serviceId)
         {
             var ss = new StorageSpaceServices();
             ServiceProviderProxy.Init(ss, serviceId);
@@ -1198,7 +1201,7 @@ namespace SolidCP.EnterpriseServer
             return ss;
         }
 
-        public static long GetFsrmQuotaInBytes(QuotaValueInfo quotaInfo)
+        public long GetFsrmQuotaInBytes(QuotaValueInfo quotaInfo)
         {
             if (quotaInfo.QuotaAllocatedValue == -1)
             {
@@ -1218,12 +1221,12 @@ namespace SolidCP.EnterpriseServer
             return quotaInfo.QuotaAllocatedValue * 1024 ;
         }
 
-        private static long ConvertMbToBytes(long mBytes)
+        private long ConvertMbToBytes(long mBytes)
         {
             return mBytes*1024*1024;
         }
 
-        public static byte[] GetFileBinaryChunk(int storageSpaceId, string path, int offset, int length)
+        public byte[] GetFileBinaryChunk(int storageSpaceId, string path, int offset, int length)
         {
             var storageSpace = StorageSpacesController.GetStorageSpaceById(storageSpaceId);
 
@@ -1237,7 +1240,7 @@ namespace SolidCP.EnterpriseServer
             return ss.GetFileBinaryChunk(path, offset, length);
         }
 
-        public static string GetParentUnc(string uncPath)
+        public string GetParentUnc(string uncPath)
         {
             var uri = new Uri(uncPath);
 

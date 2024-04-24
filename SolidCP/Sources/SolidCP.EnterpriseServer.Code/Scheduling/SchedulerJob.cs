@@ -38,8 +38,10 @@ using System.Text;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class SchedulerJob
+    public class SchedulerJob: ControllerBase
     {
+        public SchedulerJob(ControllerBase provider) : base(provider) { } 
+
         private ScheduleInfo scheduleInfo;
         private ScheduleTaskInfo task;
 
@@ -58,11 +60,6 @@ namespace SolidCP.EnterpriseServer
             set { this.task = value; }
         }
         #endregion
-
-        // Constructor
-        public SchedulerJob()
-        {
-        }
 
         // Sets the next time this Schedule is kicked off and kicks off events on
         // a seperate thread, freeing the Scheduler to continue

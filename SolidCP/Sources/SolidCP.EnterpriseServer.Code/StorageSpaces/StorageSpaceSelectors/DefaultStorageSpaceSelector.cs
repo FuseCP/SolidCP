@@ -4,8 +4,10 @@ using SolidCP.Providers.StorageSpaces;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class DefaultStorageSpaceSelector : IStorageSpaceSelector
+    public class DefaultStorageSpaceSelector : ControllerBase, IStorageSpaceSelector
     {
+        public DefaultStorageSpaceSelector(ControllerBase provider) : base(provider) { }
+
         public StorageSpace FindBest(string groupName, long quotaSizeInBytes)
         {
             if (string.IsNullOrEmpty(groupName))

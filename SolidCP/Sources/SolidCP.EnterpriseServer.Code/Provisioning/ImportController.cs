@@ -41,9 +41,11 @@ using SolidCP.Providers.Web;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class ImportController
+    public class ImportController: ControllerBase
     {
-        public static List<ServiceProviderItemType> GetImportableItemTypes(int packageId)
+        public ImportController(ControllerBase provider): base(provider) { }
+
+        public List<ServiceProviderItemType> GetImportableItemTypes(int packageId)
         {
             // load all service item types
             List<ServiceProviderItemType> itemTypes = PackageController.GetServiceItemTypes();
@@ -66,7 +68,7 @@ namespace SolidCP.EnterpriseServer
             return importableTypes;
         }
 
-        public static List<string> GetImportableItems(int packageId, int itemTypeId)
+        public List<string> GetImportableItems(int packageId, int itemTypeId)
         {
             List<string> items = new List<string>();
 
@@ -156,7 +158,7 @@ namespace SolidCP.EnterpriseServer
             return items;
         }
 
-		public static int ImportItems(bool async, string taskId, int packageId, string[] items)
+		public int ImportItems(bool async, string taskId, int packageId, string[] items)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsAdmin);
@@ -182,7 +184,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-        public static int ImportItemsInternal(string taskId, int packageId, string[] items)
+        public int ImportItemsInternal(string taskId, int packageId, string[] items)
         {
 			PackageInfo package = PackageController.GetPackage(packageId);
 
@@ -292,7 +294,7 @@ namespace SolidCP.EnterpriseServer
             return 0;
         }
 
-        private static List<string> GetImportableCustomItems(int packageId, int itemTypeId)
+        private List<string> GetImportableCustomItems(int packageId, int itemTypeId)
         {
 
             List<string> items = new List<string>();

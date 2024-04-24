@@ -49,9 +49,11 @@ namespace SolidCP.EnterpriseServer.Code.SharePoint
     /// <summary>
     /// Exposes handful API on hosted SharePoint site collections management.
     /// </summary>
-    public class HostedSharePointServerController : IImportController, IBackupController
+    public class HostedSharePointServerController : ControllerBase, IImportController, IBackupController
     {
         private const int FILE_BUFFER_LENGTH = 5000000; // ~5MB
+
+        public HostedSharePointServerController(ControllerBase provider) : base(provider) { }
 
         /// <summary>
         /// Gets site collections in raw form.
@@ -64,7 +66,7 @@ namespace SolidCP.EnterpriseServer.Code.SharePoint
         /// <param name="startRow">Row index to start from.</param>
         /// <param name="maximumRows">Maximum number of rows to retrieve.</param>
         /// <returns>Site collections that match.</returns>
-        public static SharePointSiteCollectionListPaged GetSiteCollectionsPaged(int packageId, int organizationId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
+        public SharePointSiteCollectionListPaged GetSiteCollectionsPaged(int packageId, int organizationId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             if (IsDemoMode)
             {
@@ -95,7 +97,7 @@ namespace SolidCP.EnterpriseServer.Code.SharePoint
             return paged;
         }
 
-        public static List<SharePointSiteCollection> GetSiteCollections(int organizationId)
+        public List<SharePointSiteCollection> GetSiteCollections(int organizationId)
         {
             Organization org = OrganizationController.GetOrganization(organizationId);
 
@@ -118,7 +120,7 @@ namespace SolidCP.EnterpriseServer.Code.SharePoint
         /// Gets list of supported languages by this installation of SharePoint.
         /// </summary>
         /// <returns>List of supported languages</returns>
-        public static int[] GetSupportedLanguages(int packageId)
+        public int[] GetSupportedLanguages(int packageId)
         {
             if (IsDemoMode)
             {
@@ -156,7 +158,7 @@ namespace SolidCP.EnterpriseServer.Code.SharePoint
         /// <param name="packageId">Package that owns site collections.</param>
         /// <param name="recursive">A value which shows whether nested spaces must be searched as well.</param>
         /// <returns>List of found site collections.</returns>
-        public static List<SharePointSiteCollection> GetSiteCollections(int packageId, bool recursive)
+        public List<SharePointSiteCollection> GetSiteCollections(int packageId, bool recursive)
         {
             if (IsDemoMode)
             {
@@ -198,7 +200,7 @@ namespace SolidCP.EnterpriseServer.Code.SharePoint
         /// </summary>
         /// <param name="itemId">Site collection id within metabase.</param>
         /// <returns>Site collection or null in case no such item exist.</returns>
-        public static SharePointSiteCollection GetSiteCollection(int itemId)
+        public SharePointSiteCollection GetSiteCollection(int itemId)
         {
             if (IsDemoMode)
             {
@@ -214,7 +216,7 @@ namespace SolidCP.EnterpriseServer.Code.SharePoint
         /// </summary>
         /// <param name="item">Site collection description.</param>
         /// <returns>Created site collection id within metabase.</returns>
-        public static int AddSiteCollection(SharePointSiteCollection item)
+        public int AddSiteCollection(SharePointSiteCollection item)
         {
 
             // Check account.
@@ -366,7 +368,7 @@ namespace SolidCP.EnterpriseServer.Code.SharePoint
         /// </summary>
         /// <param name="itemId">Site collection id within metabase.</param>
         /// <returns>?</returns>
-        public static int DeleteSiteCollection(int itemId)
+        public int DeleteSiteCollection(int itemId)
         {
             // Check account.
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -430,7 +432,7 @@ namespace SolidCP.EnterpriseServer.Code.SharePoint
         /// Deletes SharePoint site collections which belong to organization.
         /// </summary>
         /// <param name="organizationId">Site collection id within metabase.</param>
-        public static void DeleteSiteCollections(int organizationId)
+        public void DeleteSiteCollections(int organizationId)
         {
             Organization org = OrganizationController.GetOrganization(organizationId);
             SharePointSiteCollectionListPaged existentSiteCollections = GetSiteCollectionsPaged(org.PackageId, org.Id, String.Empty, String.Empty, String.Empty, 0, Int32.MaxValue);
@@ -449,7 +451,7 @@ namespace SolidCP.EnterpriseServer.Code.SharePoint
         /// <param name="download">A value which shows whether created back up must be downloaded.</param>
         /// <param name="folderName">Local folder to store downloaded backup.</param>
         /// <returns>Created backup file name. </returns>
-        public static string BackupSiteCollection(int itemId, string fileName, bool zipBackup, bool download, string folderName)
+        public string BackupSiteCollection(int itemId, string fileName, bool zipBackup, bool download, string folderName)
         {
             // Check account.
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -532,7 +534,7 @@ namespace SolidCP.EnterpriseServer.Code.SharePoint
         /// <param name="uploadedFile"></param>
         /// <param name="packageFile"></param>
         /// <returns></returns>
-        public static int RestoreSiteCollection(int itemId, string uploadedFile, string packageFile)
+        public int RestoreSiteCollection(int itemId, string uploadedFile, string packageFile)
         {
             // Check account.
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -620,7 +622,7 @@ namespace SolidCP.EnterpriseServer.Code.SharePoint
         /// <param name="offset">Offset from which to start data reading.</param>
         /// <param name="length">Binary data chunk length.</param>
         /// <returns>Binary data chunk read from file.</returns>
-        public static byte[] GetBackupBinaryChunk(int itemId, string path, int offset, int length)
+        public byte[] GetBackupBinaryChunk(int itemId, string path, int offset, int length)
         {
             // Load original meta item.
             SharePointSiteCollection item = (SharePointSiteCollection)PackageController.GetPackageItem(itemId);
@@ -641,7 +643,7 @@ namespace SolidCP.EnterpriseServer.Code.SharePoint
         /// <param name="path">Full path to existent file to append to.</param>
         /// <param name="chunk">Binary data chunk to append to.</param>
         /// <returns>Path to file that was appended with chunk.</returns>
-        public static string AppendBackupBinaryChunk(int itemId, string fileName, string path, byte[] chunk)
+        public string AppendBackupBinaryChunk(int itemId, string fileName, string path, byte[] chunk)
         {
             // Load original meta item.
             SharePointSiteCollection item = (SharePointSiteCollection)PackageController.GetPackageItem(itemId);
@@ -659,7 +661,7 @@ namespace SolidCP.EnterpriseServer.Code.SharePoint
         ///  </summary>
         /// <param name="serviceId">Hosted SharePoint service id.</param>
         /// <returns>Hosted SharePoint server proxy.</returns>
-        private static HostedSharePointServer GetHostedSharePointServer(int serviceId)
+        private HostedSharePointServer GetHostedSharePointServer(int serviceId)
         {
 
             HostedSharePointServer sps = new HostedSharePointServer();
@@ -795,12 +797,12 @@ namespace SolidCP.EnterpriseServer.Code.SharePoint
         }
 
 
-        private static int GetHostedSharePointServiceId(int packageId)
+        private int GetHostedSharePointServiceId(int packageId)
         {
             return PackageController.GetPackageServiceId(packageId, ResourceGroups.SharepointFoundationServer);
         }
 
-        private static List<SharePointSiteCollection> GetOrganizationSharePointSiteCollections(int orgId)
+        private List<SharePointSiteCollection> GetOrganizationSharePointSiteCollections(int orgId)
         {
             Organization org = OrganizationController.GetOrganization(orgId);
 
@@ -808,7 +810,7 @@ namespace SolidCP.EnterpriseServer.Code.SharePoint
             return siteCollections.SiteCollections;
         }
 
-        private static int RecalculateStorageMaxSize(int size, int packageId)
+        private int RecalculateStorageMaxSize(int size, int packageId)
         {
             PackageContext cntx = PackageController.GetPackageContext(packageId);
             QuotaValueInfo quota = cntx.Quotas[Quotas.HOSTED_SHAREPOINT_STORAGE_SIZE];
@@ -829,7 +831,7 @@ namespace SolidCP.EnterpriseServer.Code.SharePoint
             }
         }
 
-        private static int RecalculateMaxSize(int parentSize, int realSize)
+        private int RecalculateMaxSize(int parentSize, int realSize)
         {
             if (parentSize == -1)
             {
@@ -848,7 +850,7 @@ namespace SolidCP.EnterpriseServer.Code.SharePoint
         }
 
 
-        public static int SetStorageSettings(int itemId, int maxStorage, int warningStorage, bool applyToSiteCollections)
+        public int SetStorageSettings(int itemId, int maxStorage, int warningStorage, bool applyToSiteCollections)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -914,7 +916,7 @@ namespace SolidCP.EnterpriseServer.Code.SharePoint
             }
         }
 
-        public static SharePointSiteDiskSpace[] CalculateSharePointSitesDiskSpace(int itemId, out int errorCode)
+        public SharePointSiteDiskSpace[] CalculateSharePointSitesDiskSpace(int itemId, out int errorCode)
         {
             SharePointSiteDiskSpace[] retDiskSpace = null;
             errorCode = 0;
@@ -968,13 +970,13 @@ namespace SolidCP.EnterpriseServer.Code.SharePoint
             return retDiskSpace;
         }
 
-        private static void UpdateOrganization(Organization organization)
+        private void UpdateOrganization(Organization organization)
         {
             PackageController.UpdatePackageItem(organization);
         }
 
 
-        public static void UpdateQuota(int itemId, int siteCollectionId, int maxStorage, int warningStorage)
+        public void UpdateQuota(int itemId, int siteCollectionId, int maxStorage, int warningStorage)
         {
             TaskManager.StartTask("HOSTED_SHAREPOINT", "UPDATE_QUOTA");
             try
@@ -1012,7 +1014,7 @@ namespace SolidCP.EnterpriseServer.Code.SharePoint
         /// <summary>
         /// Gets a value if caller is in demo mode.
         /// </summary>
-        private static bool IsDemoMode
+        private bool IsDemoMode
         {
             get
             {

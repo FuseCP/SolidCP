@@ -40,26 +40,28 @@ using SolidCP.EnterpriseServer.Base.Scheduling;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class SchedulerController
+    public class SchedulerController: ControllerBase
     {
-        public static DateTime GetSchedulerTime()
+        public SchedulerController(ControllerBase provider) : base(provider) { }
+
+        public DateTime GetSchedulerTime()
         {
             return DateTime.Now;
         }
 
-        public static List<ScheduleTaskInfo> GetScheduleTasks()
+        public List<ScheduleTaskInfo> GetScheduleTasks()
         {
             return ObjectUtils.CreateListFromDataReader<ScheduleTaskInfo>(
                 DataProvider.GetScheduleTasks(SecurityContext.User.UserId));
         }
 
-        public static ScheduleTaskInfo GetScheduleTask(string taskId)
+        public ScheduleTaskInfo GetScheduleTask(string taskId)
         {
             return ObjectUtils.FillObjectFromDataReader<ScheduleTaskInfo>(
                 DataProvider.GetScheduleTask(SecurityContext.User.UserId, taskId));
         }
 
-        public static DataSet GetSchedules(int packageId)
+        public DataSet GetSchedules(int packageId)
         {
             DataSet ds = DataProvider.GetSchedules(SecurityContext.User.UserId, packageId);
 
@@ -72,7 +74,7 @@ namespace SolidCP.EnterpriseServer
             return ds;
         }
 
-        public static DataSet GetSchedulesPaged(int packageId, bool recursive,
+        public DataSet GetSchedulesPaged(int packageId, bool recursive,
             string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             DataSet ds = DataProvider.GetSchedulesPaged(SecurityContext.User.UserId, packageId,
@@ -87,7 +89,7 @@ namespace SolidCP.EnterpriseServer
             return ds;
         }
 
-        public static ScheduleInfo GetSchedule(int scheduleId)
+        public ScheduleInfo GetSchedule(int scheduleId)
         {
             DataSet ds = DataProvider.GetSchedule(SecurityContext.User.UserId, scheduleId);
             ScheduleInfo si = ObjectUtils.FillObjectFromDataView<ScheduleInfo>(ds.Tables[0].DefaultView);
@@ -99,25 +101,25 @@ namespace SolidCP.EnterpriseServer
         /// </summary>
         /// <param name="taskId">Task id for which view configuration is intended to be loeaded.</param>
         /// <returns>View configuration for the task with supplied id.</returns>
-        public static List<ScheduleTaskViewConfiguration> GetScheduleTaskViewConfigurations(string taskId)
+        public List<ScheduleTaskViewConfiguration> GetScheduleTaskViewConfigurations(string taskId)
         {
             List<ScheduleTaskViewConfiguration> c = ObjectUtils.CreateListFromDataReader<ScheduleTaskViewConfiguration>(DataProvider.GetScheduleTaskViewConfigurations(taskId));
             return c;
         }
 
-        internal static SchedulerJob GetScheduleComplete(int scheduleId)
+        internal SchedulerJob GetScheduleComplete(int scheduleId)
         {
             DataSet ds = DataProvider.GetSchedule(SecurityContext.User.UserId, scheduleId);
             return CreateCompleteScheduleFromDataSet(ds);
         }
 
-        internal static SchedulerJob GetNextSchedule()
+        internal SchedulerJob GetNextSchedule()
         {
             DataSet ds = DataProvider.GetNextSchedule();
             return CreateCompleteScheduleFromDataSet(ds);
         }
 
-        internal static SchedulerJob CreateCompleteScheduleFromDataSet(DataSet ds)
+        internal SchedulerJob CreateCompleteScheduleFromDataSet(DataSet ds)
         {
             if (ds.Tables[0].Rows.Count == 0)
                 return null;
@@ -139,20 +141,20 @@ namespace SolidCP.EnterpriseServer
             return schedule;
         }
 
-        public static ScheduleInfo GetScheduleInternal(int scheduleId)
+        public ScheduleInfo GetScheduleInternal(int scheduleId)
         {
             return ObjectUtils.FillObjectFromDataReader<ScheduleInfo>(
                 DataProvider.GetScheduleInternal(scheduleId));
         }
 
-        public static List<ScheduleTaskParameterInfo> GetScheduleParameters(string taskId, int scheduleId)
+        public List<ScheduleTaskParameterInfo> GetScheduleParameters(string taskId, int scheduleId)
         {
             return ObjectUtils.CreateListFromDataReader<ScheduleTaskParameterInfo>(
                 DataProvider.GetScheduleParameters(SecurityContext.User.UserId,
                 taskId, scheduleId));
         }
 
-        public static int StartSchedule(int scheduleId)
+        public int StartSchedule(int scheduleId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -204,7 +206,7 @@ namespace SolidCP.EnterpriseServer
             return 0;
         }        
 
-        public static int StopSchedule(int scheduleId)
+        public int StopSchedule(int scheduleId)
         {
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
 
@@ -226,7 +228,7 @@ namespace SolidCP.EnterpriseServer
 
         }
 
-        public static void CalculateNextStartTime(ScheduleInfo schedule)
+        public void CalculateNextStartTime(ScheduleInfo schedule)
         {
             if (schedule.ScheduleType == ScheduleType.OneTime)
             {
@@ -303,7 +305,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int AddSchedule(ScheduleInfo schedule)
+        public int AddSchedule(ScheduleInfo schedule)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -329,7 +331,7 @@ namespace SolidCP.EnterpriseServer
             return scheduleId;
         }
 
-        public static int UpdateSchedule(ScheduleInfo schedule)
+        public int UpdateSchedule(ScheduleInfo schedule)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -355,7 +357,7 @@ namespace SolidCP.EnterpriseServer
             return 0;
         }
 
-        private static string BuildParametersXml(ScheduleTaskParameterInfo[] parameters)
+        private string BuildParametersXml(ScheduleTaskParameterInfo[] parameters)
         {
             XmlDocument doc = new XmlDocument();
             XmlElement nodeProps = doc.CreateElement("parameters");
@@ -372,7 +374,7 @@ namespace SolidCP.EnterpriseServer
             return nodeProps.OuterXml;
         }
 
-        public static int DeleteSchedule(int scheduleId)
+        public int DeleteSchedule(int scheduleId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);

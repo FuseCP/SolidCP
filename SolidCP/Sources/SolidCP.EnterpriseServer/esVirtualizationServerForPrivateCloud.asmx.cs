@@ -51,7 +51,7 @@ namespace SolidCP.EnterpriseServer
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [Policy("EnterpriseServerPolicy")]
     [ToolboxItem(false)]
-    public class esVirtualizationServerForPrivateCloud
+    public class esVirtualizationServerForPrivateCloud: WebService
     {
         #region Huper-V Cloud
         [WebMethod]

@@ -39,9 +39,11 @@ using System.Collections.Specialized;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class SpamExpertsController
+    public class SpamExpertsController: ControllerBase
     {
-        internal static SpamExperts GetServer(int serviceId)
+        public SpamExpertsController(ControllerBase provider): base(provider) { }
+
+        public SpamExperts GetServer(int serviceId)
         {
             SpamExperts ws = new SpamExperts();
 
@@ -57,18 +59,18 @@ namespace SolidCP.EnterpriseServer
             return ws;
         }
 
-        private static int GetServiceId(int packageId)
+        private int GetServiceId(int packageId)
         {
             return PackageController.GetPackageServiceId(packageId, ResourceGroups.Filters);
         }
 
-        private static bool IsPackageServiceEnabled(int packageId, int serviceId)
+        private bool IsPackageServiceEnabled(int packageId, int serviceId)
         {
             QuotaValueInfo quota = PackageController.GetPackageQuota(packageId, Quotas.FILTERS_ENABLE);
             return (serviceId != 0 && Convert.ToBoolean(quota.QuotaAllocatedValue));
         }
 
-        public static SpamExpertsResult AddDomainFilter(SpamExpertsRoute route)
+        public SpamExpertsResult AddDomainFilter(SpamExpertsRoute route)
         {
             int serviceId = GetServiceId(route.PackageId);
 
@@ -80,7 +82,7 @@ namespace SolidCP.EnterpriseServer
             return server.AddDomainFilter(route.DomainName, "", "postmaster@" + route.DomainName, route.Destinations);
         }
 
-        public static void DeleteDomainFilter(DomainInfo domain)
+        public void DeleteDomainFilter(DomainInfo domain)
         {
             int serviceId = GetServiceId(domain.PackageId);
 
@@ -91,7 +93,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static SpamExpertsResult AddDomainFilterAlias(DomainInfo domain, string alias)
+        public SpamExpertsResult AddDomainFilterAlias(DomainInfo domain, string alias)
         {
             int serviceId = GetServiceId(domain.PackageId);
 
@@ -103,7 +105,7 @@ namespace SolidCP.EnterpriseServer
             return server.AddDomainFilterAlias(domain.DomainName, alias);
         }
 
-        public static void DeleteDomainFilterAlias(DomainInfo domain, string alias)
+        public void DeleteDomainFilterAlias(DomainInfo domain, string alias)
         {
             int serviceId = GetServiceId(domain.PackageId);
 
@@ -114,7 +116,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static SpamExpertsResult AddEmailFilter(int packageId, string username, string password, string domain)
+        public SpamExpertsResult AddEmailFilter(int packageId, string username, string password, string domain)
         {
             int serviceId = GetServiceId(packageId);
 
@@ -129,7 +131,7 @@ namespace SolidCP.EnterpriseServer
             return new SpamExpertsResult(SpamExpertsStatus.Error, "Service not enabled for users");
         }
 
-        public static void DeleteEmailFilter(int packageId, string email)
+        public void DeleteEmailFilter(int packageId, string email)
         {
             int serviceId = GetServiceId(packageId);
 
@@ -143,7 +145,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static void SetEmailFilterPassword(int packageId, string email, string password)
+        public void SetEmailFilterPassword(int packageId, string email, string password)
         {
             int serviceId = GetServiceId(packageId);
 
@@ -157,7 +159,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static bool IsSpamExpertsEnabled(int packageId, string group)
+        public bool IsSpamExpertsEnabled(int packageId, string group)
         {
             int serviceId = GetServiceId(packageId);
             if (IsPackageServiceEnabled(packageId, serviceId))

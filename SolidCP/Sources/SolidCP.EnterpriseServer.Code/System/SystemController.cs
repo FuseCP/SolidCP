@@ -39,13 +39,11 @@ using System.Text;
 
 namespace SolidCP.EnterpriseServer
 {
-	public class SystemController
+	public class SystemController: ControllerBase
 	{
-		private SystemController()
-		{
-		}
+		private SystemController(ControllerBase provider): base(provider) { }
 
-		public static SystemSettings GetSystemSettings(string settingsName)
+		public SystemSettings GetSystemSettings(string settingsName)
 		{
 			// check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.IsAdmin | DemandAccount.IsActive);
@@ -57,7 +55,7 @@ namespace SolidCP.EnterpriseServer
 			return GetSystemSettingsInternal(settingsName, !isDemoAccount);
 		}
 
-        public static SystemSettings GetSystemSettingsActive(string settingsName, bool decrypt)
+        public SystemSettings GetSystemSettingsActive(string settingsName, bool decrypt)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.IsActive);
@@ -69,7 +67,7 @@ namespace SolidCP.EnterpriseServer
             return GetSystemSettingsInternal(settingsName, decrypt && isDemoAccount);
         }
 
-		internal static SystemSettings GetSystemSettingsInternal(string settingsName, bool decryptPassword)
+		internal SystemSettings GetSystemSettingsInternal(string settingsName, bool decryptPassword)
 		{
 			// create settings object
 			SystemSettings settings = new SystemSettings();
@@ -104,7 +102,7 @@ namespace SolidCP.EnterpriseServer
 			return settings;
 		}
 
-		public static int SetSystemSettings(string settingsName, SystemSettings settings)
+		public int SetSystemSettings(string settingsName, SystemSettings settings)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsAdmin
@@ -135,7 +133,7 @@ namespace SolidCP.EnterpriseServer
 			return 0;
 		}
 
-		public static bool GetSystemSetupMode()
+		public bool GetSystemSetupMode()
 		{
 			var scpaSystemSettings = GetSystemSettings(SystemSettings.SETUP_SETTINGS);
 			// Flag either not found or empty
@@ -147,7 +145,7 @@ namespace SolidCP.EnterpriseServer
 			return true;
 		}
 
-		public static int SetupControlPanelAccounts(string passwordA, string passwordB, string ip)
+		public int SetupControlPanelAccounts(string passwordA, string passwordB, string ip)
 		{
 			try
 			{
@@ -207,7 +205,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-        public static bool CheckIsTwilioEnabled()
+        public bool CheckIsTwilioEnabled()
         {
             var settings = SystemController.GetSystemSettingsActive(SystemSettings.TWILIO_SETTINGS, false);
 
@@ -218,17 +216,17 @@ namespace SolidCP.EnterpriseServer
         }
 
 		//Theme options
-		public static DataSet GetThemes()
+		public DataSet GetThemes()
 		{
 			return DataProvider.GetThemes();
 		}
 
-		public static DataSet GetThemeSettings(int ThemeID)
+		public DataSet GetThemeSettings(int ThemeID)
 		{
 			return DataProvider.GetThemeSettings(ThemeID);
 		}
 
-		public static DataSet GetThemeSetting(int ThemeID, string SettingsName)
+		public DataSet GetThemeSetting(int ThemeID, string SettingsName)
 		{
 			return DataProvider.GetThemeSetting(ThemeID, SettingsName);
 		}

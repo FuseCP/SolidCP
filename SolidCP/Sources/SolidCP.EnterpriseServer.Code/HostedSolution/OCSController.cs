@@ -41,10 +41,11 @@ using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer.Code.HostedSolution
 {
-    public class OCSController
+    public class OCSController: ControllerBase
     {
+        public OCSController(WebServiceBase provider) : base(provider) { }
 
-        private static OCSServer GetOCSProxy(int itemId)
+        private OCSServer GetOCSProxy(int itemId)
         {
             Organization org = OrganizationController.GetOrganization(itemId);
             int serviceId = PackageController.GetPackageServiceId(org.PackageId, ResourceGroups.OCS);
@@ -56,7 +57,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             return ocs;
         }
         
-        private static bool CheckQuota(int itemId)
+        private bool CheckQuota(int itemId)
         {
             Organization org = OrganizationController.GetOrganization(itemId);
             PackageContext cntx = PackageController.GetPackageContext(org.PackageId);
@@ -68,7 +69,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             return allocatedBlackBerryUsers == -1 || allocatedBlackBerryUsers > userCount.Value;
         }
 
-        private static void SetUserGeneralSettingsByDefault(int itemId, string instanceId, OCSServer ocs)
+        private void SetUserGeneralSettingsByDefault(int itemId, string instanceId, OCSServer ocs)
         {
             Organization org = OrganizationController.GetOrganization(itemId);
             PackageContext cntx = PackageController.GetPackageContext(org.PackageId);
@@ -85,7 +86,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
         }
 
 
-        private static OCSEdgeServer[] GetEdgeServers(string edgeServices)
+        private OCSEdgeServer[] GetEdgeServers(string edgeServices)
         {
             List<OCSEdgeServer> list = new List<OCSEdgeServer>();
             if (!string.IsNullOrEmpty(edgeServices))
@@ -111,7 +112,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             return list.ToArray();
         }
 
-        public static void DeleteDomain(int itemId, string domainName)
+        public void DeleteDomain(int itemId, string domainName)
         {
             Organization org = OrganizationController.GetOrganization(itemId);
             if (org.IsOCSOrganization)
@@ -124,7 +125,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             }
         }
 
-        public static void DeleteDomain(string domainName, OCSEdgeServer[] edgeServers)
+        public void DeleteDomain(string domainName, OCSEdgeServer[] edgeServers)
         {
             foreach (OCSEdgeServer currentEdgeServer in edgeServers)
             {
@@ -139,7 +140,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             }
         }
 
-        public static void AddDomain(string domainName, OCSEdgeServer[] edgeServers)
+        public void AddDomain(string domainName, OCSEdgeServer[] edgeServers)
         {
             foreach (OCSEdgeServer currentEdgeServer in edgeServers)
             {
@@ -154,7 +155,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             }
         }
 
-        public static void  AddDomain(string domainName, int itemId)
+        public void  AddDomain(string domainName, int itemId)
         {
             Organization org = OrganizationController.GetOrganization(itemId);
             if (!org.IsOCSOrganization)
@@ -167,7 +168,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             }
         }
 
-        private static void CreateOCSDomains(int itemId)
+        private void CreateOCSDomains(int itemId)
         {
             Organization org = OrganizationController.GetOrganization(itemId);
             if (!org.IsOCSOrganization)
@@ -189,7 +190,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
         }
 
 
-        public static OCSUserResult CreateOCSUser(int itemId, int accountId)
+        public OCSUserResult CreateOCSUser(int itemId, int accountId)
         {
             OCSUserResult res = TaskManager.StartResultTask<OCSUserResult>("OCS", "CREATE_OCS_USER");
 
@@ -323,7 +324,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
         }
 
         
-        public static OCSUsersPagedResult GetOCSUsers(int itemId, string sortColumn, string sortDirection, string name, string email, int startRow, int count)
+        public OCSUsersPagedResult GetOCSUsers(int itemId, string sortColumn, string sortDirection, string name, string email, int startRow, int count)
         {
             OCSUsersPagedResult res = TaskManager.StartResultTask<OCSUsersPagedResult>("OCS", "GET_OCS_USERS");
 
@@ -354,7 +355,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             return res;
         }
 
-        public static IntResult GetOCSUsersCount(int itemId, string name, string email)
+        public IntResult GetOCSUsersCount(int itemId, string name, string email)
         {
             IntResult res = TaskManager.StartResultTask<IntResult>("OCS", "GET_OCS_USERS_COUNT");
             try
@@ -371,7 +372,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             return res;
         }
 
-        public static ResultObject DeleteOCSUser(int itemId, string instanceId)
+        public ResultObject DeleteOCSUser(int itemId, string instanceId)
         {
             ResultObject res = TaskManager.StartResultTask<ResultObject>("OCS", "DELETE_OCS_USER");
 
@@ -412,7 +413,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             return res;
         }
 
-        public static OCSUser GetUserGeneralSettings(int itemId, string instanceId)
+        public OCSUser GetUserGeneralSettings(int itemId, string instanceId)
         {
             TaskManager.StartTask("OCS", "GET_OCS_USER_GENERAL_SETTINGS");
 
@@ -433,7 +434,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
         }
 
-        public static void SetUserGeneralSettings(int itemId, string instanceId, bool enabledForFederation, bool enabledForPublicIMConnectivity, bool archiveInternalCommunications, bool archiveFederatedCommunications, bool enabledForEnhancedPresence)
+        public void SetUserGeneralSettings(int itemId, string instanceId, bool enabledForFederation, bool enabledForPublicIMConnectivity, bool archiveInternalCommunications, bool archiveFederatedCommunications, bool enabledForEnhancedPresence)
         {
             TaskManager.StartTask("OCS", "SET_OCS_USER_GENERAL_SETTINGS");
             try

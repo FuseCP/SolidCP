@@ -50,7 +50,7 @@ using System.Diagnostics;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class VirtualizationServerController
+    public class VirtualizationServerController: ControllerBase
     {
         private const string SHUTDOWN_REASON = "SolidCP - Initiated by user";
         private const string SHUTDOWN_REASON_CHANGE_CONFIG = "SolidCP - changing VPS configuration";
@@ -63,6 +63,7 @@ namespace SolidCP.EnterpriseServer
         private const int DEFAULT_HDD_SIZE = 20; // gigabytes
         private const int DEFAULT_PRIVATE_IPS_NUMBER = 1;
         private const int DEFAULT_SNAPSHOTS_NUMBER = 5;
+        public VirtualizationServerController(ControllerBase provider) : base(provider) { }
 
         #region Virtual Machines
         public static VirtualMachineMetaItemsPaged GetVirtualMachines(int packageId,

@@ -49,7 +49,7 @@ namespace SolidCP.EnterpriseServer
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [Policy("EnterpriseServerPolicy")]
     [ToolboxItem(false)]
-    public class esApplicationsInstaller
+    public class esApplicationsInstaller: WebService
     {
         [WebMethod]
         public int InstallApplication(InstallationInfo inst)

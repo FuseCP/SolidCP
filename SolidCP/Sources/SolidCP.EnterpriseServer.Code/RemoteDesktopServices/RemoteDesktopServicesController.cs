@@ -53,12 +53,9 @@ using SolidCP.EnterpriseServer.Base.RDS;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class RemoteDesktopServicesController
+    public class RemoteDesktopServicesController: ControllerBase
     {
-        private RemoteDesktopServicesController()
-        {
-
-        }
+        public RemoteDesktopServicesController(ControllerBase provider): base(provider) { }
 
         public static int GetRemoteDesktopServiceId(int itemId)
         {

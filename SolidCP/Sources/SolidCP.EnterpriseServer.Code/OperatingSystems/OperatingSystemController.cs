@@ -53,11 +53,12 @@ using System.Linq;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class OperatingSystemController : IImportController, IBackupController
+    public class OperatingSystemController : ControllerBase, IImportController, IBackupController
     {
         private const int FILE_BUFFER_LENGTH = 5000000; // ~5MB
+        public OperatingSystemController(ControllerBase provider) : base(provider) { }
 
-        private static OS.OperatingSystem GetOS(int serviceId)
+        private OS.OperatingSystem GetOS(int serviceId)
         {
             OS.OperatingSystem os = new OS.OperatingSystem();
             ServiceProviderProxy.Init(os, serviceId);
@@ -65,14 +66,14 @@ namespace SolidCP.EnterpriseServer
         }
 
         #region ODBC DSNs
-        public static DataSet GetRawOdbcSourcesPaged(int packageId,
+        public DataSet GetRawOdbcSourcesPaged(int packageId,
             string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             return PackageController.GetRawPackageItemsPaged(packageId, ResourceGroups.Os, typeof(SystemDSN),
                 true, filterColumn, filterValue, sortColumn, startRow, maximumRows);
         }
 
-        public static List<SystemDSN> GetOdbcSources(int packageId, bool recursive)
+        public List<SystemDSN> GetOdbcSources(int packageId, bool recursive)
         {
             List<ServiceProviderItem> items = PackageController.GetPackageItemsByType(
                 packageId, ResourceGroups.Os, typeof(SystemDSN), recursive);
@@ -81,12 +82,12 @@ namespace SolidCP.EnterpriseServer
                 new Converter<ServiceProviderItem, SystemDSN>(ConvertItemToSystemDSN));
         }
 
-        private static SystemDSN ConvertItemToSystemDSN(ServiceProviderItem item)
+        private SystemDSN ConvertItemToSystemDSN(ServiceProviderItem item)
         {
             return (SystemDSN)item;
         }
 
-        public static string[] GetInstalledOdbcDrivers(int packageId)
+        public string[] GetInstalledOdbcDrivers(int packageId)
         {
             // load service item
             int serviceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.Os);
@@ -94,7 +95,7 @@ namespace SolidCP.EnterpriseServer
             return os.GetInstalledOdbcDrivers();
         }
 
-        public static SystemDSN GetOdbcSource(int itemId)
+        public SystemDSN GetOdbcSource(int itemId)
         {
             // load meta item
             SystemDSN item = (SystemDSN)PackageController.GetPackageItem(itemId);
@@ -114,7 +115,7 @@ namespace SolidCP.EnterpriseServer
             return dsn;
         }
 
-        public static int AddOdbcSource(SystemDSN item)
+        public int AddOdbcSource(SystemDSN item)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -184,7 +185,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int UpdateOdbcSource(SystemDSN item)
+        public int UpdateOdbcSource(SystemDSN item)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -250,7 +251,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        private static string GetDatabaseServerName(string groupName, int packageId)
+        private string GetDatabaseServerName(string groupName, int packageId)
         {
             int sqlServiceId = PackageController.GetPackageServiceId(packageId, groupName);
             if (sqlServiceId > 0)
@@ -261,7 +262,7 @@ namespace SolidCP.EnterpriseServer
             return "";
         }
 
-        public static int DeleteOdbcSource(int itemId)
+        public int DeleteOdbcSource(int itemId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -299,7 +300,7 @@ namespace SolidCP.EnterpriseServer
         }
         #endregion
 
-        private static Server.Client.OperatingSystem GetServerService(int serverId)
+        private Server.Client.OperatingSystem GetServerService(int serverId)
         {
             Server.Client.OperatingSystem server = new Server.Client.OperatingSystem();
             ServiceProviderProxy.ServerInit(server, serverId);
@@ -307,12 +308,12 @@ namespace SolidCP.EnterpriseServer
         }
 
         #region Terminal Services Sessions
-        public static TerminalSession[] GetTerminalServicesSessions(int serverId)
+        public TerminalSession[] GetTerminalServicesSessions(int serverId)
 	    {
             return GetServerService(serverId).GetTerminalServicesSessions();
 	    }
 
-        public static int CloseTerminalServicesSession(int serverId, int sessionId)
+        public int CloseTerminalServicesSession(int serverId, int sessionId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsAdmin
@@ -342,12 +343,12 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region OS Processes
-        public static OSProcess[] GetOSProcesses(int serverId)
+        public OSProcess[] GetOSProcesses(int serverId)
         {
             return GetServerService(serverId).GetOSProcesses();
         }
 
-        public static int TerminateOSProcess(int serverId, int pid)
+        public int TerminateOSProcess(int serverId, int pid)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsAdmin
@@ -377,12 +378,12 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Windows Services
-        public static OSService[] GetOSServices(int serverId)
+        public OSService[] GetOSServices(int serverId)
         {
             return GetServerService(serverId).GetOSServices();
         }
 
-        public static int ChangeOSServiceStatus(int serverId, string id, OSServiceStatus status)
+        public int ChangeOSServiceStatus(int serverId, string id, OSServiceStatus status)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsAdmin
@@ -412,7 +413,7 @@ namespace SolidCP.EnterpriseServer
         }
 
         // Check If FSRM Role services were installed
-        public static bool CheckFileServicesInstallation(int serviceId)
+        public bool CheckFileServicesInstallation(int serviceId)
         {
             OS.OperatingSystem os = GetOS(serviceId);
             return os.CheckFileServicesInstallation();
@@ -423,7 +424,7 @@ namespace SolidCP.EnterpriseServer
 
         #region Web Platform Installer
 
-        public static bool CheckLoadUserProfile(int serverId)
+        public bool CheckLoadUserProfile(int serverId)
         {
             int serviceId = getWebServiceId(serverId);
             if (serviceId != -1)
@@ -434,7 +435,7 @@ namespace SolidCP.EnterpriseServer
             return false;
         }
 
-        private static int getWebServiceId(int serverId)
+        private int getWebServiceId(int serverId)
         {
             DataSet dsServices = ServerController.GetRawServicesByServerId(serverId);
 
@@ -466,7 +467,7 @@ namespace SolidCP.EnterpriseServer
 
 
 
-        public static void EnableLoadUserProfile(int serverId)
+        public void EnableLoadUserProfile(int serverId)
         {
             int serviceId = getWebServiceId(serverId);
             if (serviceId != -1)
@@ -477,63 +478,63 @@ namespace SolidCP.EnterpriseServer
 
         
 
-        public static void InitWPIFeeds(int serverId, string feedUrls)
+        public void InitWPIFeeds(int serverId, string feedUrls)
         {
             GetServerService(serverId).InitWPIFeeds(feedUrls);
         }
 
-        public static WPITab[] GetWPITabs(int serverId)
+        public WPITab[] GetWPITabs(int serverId)
         {
             return GetServerService(serverId).GetWPITabs();
         }
 
-        public static WPIKeyword[] GetWPIKeywords(int serverId)
+        public WPIKeyword[] GetWPIKeywords(int serverId)
         {
             return GetServerService(serverId).GetWPIKeywords();
         }
 
-        public static WPIProduct[] GetWPIProducts(int serverId, string tabId, string keywordId)
+        public WPIProduct[] GetWPIProducts(int serverId, string tabId, string keywordId)
         {
             return GetServerService(serverId).GetWPIProducts(tabId, keywordId);
         }
 
-        public static WPIProduct[] GetWPIProductsFiltered(int serverId, string keywordId)
+        public WPIProduct[] GetWPIProductsFiltered(int serverId, string keywordId)
         {
             return GetServerService(serverId).GetWPIProductsFiltered(keywordId);
         }
 
-        public static WPIProduct GetWPIProductById(int serverId, string productdId)
+        public WPIProduct GetWPIProductById(int serverId, string productdId)
         {
             return GetServerService(serverId).GetWPIProductById(productdId);
         }
 
         
 
-        public static WPIProduct[] GetWPIProductsWithDependencies(int serverId, string[] products)
+        public WPIProduct[] GetWPIProductsWithDependencies(int serverId, string[] products)
         {
             return GetServerService(serverId).GetWPIProductsWithDependencies(products);
         }
-        public static void InstallWPIProducts(int serverId, string[] products)
+        public void InstallWPIProducts(int serverId, string[] products)
         {
             GetServerService(serverId).InstallWPIProducts(products);
         }
 
-        public static void CancelInstallWPIProducts(int serverId)
+        public void CancelInstallWPIProducts(int serverId)
         {
             GetServerService(serverId).CancelInstallWPIProducts();
         }
 
-        public static string GetWPIStatus(int serverId)
+        public string GetWPIStatus(int serverId)
         {
             return GetServerService(serverId).GetWPIStatus();
         }
 
-        public static string WpiGetLogFileDirectory(int serverId)
+        public string WpiGetLogFileDirectory(int serverId)
         {
             return GetServerService(serverId).WpiGetLogFileDirectory();
         }
 
-        public static SettingPair[] WpiGetLogsInDirectory(int serverId, string Path)
+        public SettingPair[] WpiGetLogsInDirectory(int serverId, string Path)
         {
             return GetServerService(serverId).WpiGetLogsInDirectory(Path);
         }
@@ -542,22 +543,22 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Event Viewer
-        public static string[] GetLogNames(int serverId)
+        public string[] GetLogNames(int serverId)
         {
             return GetServerService(serverId).GetLogNames();
         }
 
-        public static SystemLogEntry[] GetLogEntries(int serverId, string logName)
+        public SystemLogEntry[] GetLogEntries(int serverId, string logName)
         {
             return GetServerService(serverId).GetLogEntries(logName);
         }
 
-        public static SystemLogEntriesPaged GetLogEntriesPaged(int serverId, string logName, int startRow, int maximumRows)
+        public SystemLogEntriesPaged GetLogEntriesPaged(int serverId, string logName, int startRow, int maximumRows)
         {
             return GetServerService(serverId).GetLogEntriesPaged(logName, startRow, maximumRows);
         }
 
-        public static int ClearLog(int serverId, string logName)
+        public int ClearLog(int serverId, string logName)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsAdmin
@@ -584,7 +585,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Server Reboot
-        public static int RebootSystem(int serverId)
+        public int RebootSystem(int serverId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsAdmin
@@ -614,7 +615,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region OS informations
-        public static Memory GetMemoryPackageId(int packageId)
+        public Memory GetMemoryPackageId(int packageId)
         {
             PackageInfo package = PackageController.GetPackage(packageId);
             if (package == null)
@@ -623,11 +624,11 @@ namespace SolidCP.EnterpriseServer
             }
             return GetMemoryInternal(package.ServerId);
         }
-        public static Memory GetMemory(int serverId)
+        public Memory GetMemory(int serverId)
         {
             return GetMemoryInternal(serverId);
         }
-        private static Memory GetMemoryInternal(int serverId)
+        private Memory GetMemoryInternal(int serverId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo| DemandAccount.IsActive);
@@ -761,7 +762,7 @@ namespace SolidCP.EnterpriseServer
             return 0;
         }
 
-        public static int CreateBackupZip(int packageId, string archivePath)
+        public int CreateBackupZip(int packageId, string archivePath)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);

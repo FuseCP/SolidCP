@@ -44,28 +44,30 @@ using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class DnsServerController : IImportController, IBackupController
+    public class DnsServerController : ControllerBase, IImportController, IBackupController
     {
-        private static string GetAsciiZoneName(string zoneName)
+        public DnsServerController(WebServiceBase provider) : base(provider) { }
+
+        private string GetAsciiZoneName(string zoneName)
         {
             if (string.IsNullOrEmpty(zoneName)) return zoneName;
             var idn = new IdnMapping();
             return idn.GetAscii(zoneName);
         }
 
-        private static DNSServer GetDNSServer(int serviceId)
+        private DNSServer GetDNSServer(int serviceId)
         {
             DNSServer dns = new DNSServer();
             ServiceProviderProxy.Init(dns, serviceId);
             return dns;
         }
 
-        public static int AddZone(int packageId, int serviceId, string zoneName)
+        public int AddZone(int packageId, int serviceId, string zoneName)
         {
             return AddZone(packageId, serviceId, zoneName, true, false);
         }
 
-        public static int AddZone(int packageId, int serviceId, string zoneName, bool addPackageItem, bool ignoreGlobalDNSRecords)
+        public int AddZone(int packageId, int serviceId, string zoneName, bool addPackageItem, bool ignoreGlobalDNSRecords)
         {
             // get DNS provider
             DNSServer dns = GetDNSServer(serviceId);
@@ -213,7 +215,7 @@ namespace SolidCP.EnterpriseServer
         }
 
         
-        private static int RegisterZoneItems(int spaceId, int serviceId, string zoneName, bool primaryZone)
+        private int RegisterZoneItems(int spaceId, int serviceId, string zoneName, bool primaryZone)
         {
             // zone item
             DnsZone zone = primaryZone ? new DnsZone() : new SecondaryDnsZone();
@@ -225,7 +227,7 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        public static int DeleteZone(int zoneItemId)
+        public int DeleteZone(int zoneItemId)
         {
             // delete DNS zone if applicable
             DnsZone zoneItem = (DnsZone)PackageController.GetPackageItem(zoneItemId);
@@ -300,7 +302,7 @@ namespace SolidCP.EnterpriseServer
             return 0;
         }
 
-        public static List<DnsRecord> BuildDnsResourceRecords(List<GlobalDnsRecord> records, string hostName, string domainName, string serviceIP)
+        public List<DnsRecord> BuildDnsResourceRecords(List<GlobalDnsRecord> records, string hostName, string domainName, string serviceIP)
         {
             List<DnsRecord> zoneRecords = new List<DnsRecord>();
 
@@ -354,7 +356,7 @@ namespace SolidCP.EnterpriseServer
             return zoneRecords.Distinct(new DnsComparer()).ToList();
         }
 
-        public static string[] GetExternalIPAddressesFromString(string str)
+        public string[] GetExternalIPAddressesFromString(string str)
         {
             List<string> ips = new List<string>();
 

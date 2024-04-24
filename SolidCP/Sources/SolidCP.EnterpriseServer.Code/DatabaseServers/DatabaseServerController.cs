@@ -50,11 +50,12 @@ using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class DatabaseServerController : IImportController, IBackupController
+    public class DatabaseServerController : ControllerBase, IImportController, IBackupController
     {
         private const int FILE_BUFFER_LENGTH = 5000000; // ~5MB
 
-        public static DatabaseServer GetDatabaseServer(int serviceId)
+        public DatabaseServerController(WebServiceBase provider) : base(provider) { }
+        public DatabaseServer GetDatabaseServer(int serviceId)
         {
             DatabaseServer db = new DatabaseServer();
             ServiceProviderProxy.Init(db, serviceId);
@@ -62,14 +63,14 @@ namespace SolidCP.EnterpriseServer
         }
 
         #region Databases
-        public static DataSet GetRawSqlDatabasesPaged(int packageId,
+        public DataSet GetRawSqlDatabasesPaged(int packageId,
             string groupName, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             return PackageController.GetRawPackageItemsPaged(packageId, groupName, typeof(SqlDatabase),
                 true, filterColumn, filterValue, sortColumn, startRow, maximumRows);
         }
 
-        public static List<SqlDatabase> GetSqlDatabases(int packageId, string groupName, bool recursive)
+        public List<SqlDatabase> GetSqlDatabases(int packageId, string groupName, bool recursive)
         {
             List<ServiceProviderItem> items = PackageController.GetPackageItemsByType(
                 packageId, groupName, typeof(SqlDatabase), recursive);
@@ -78,12 +79,12 @@ namespace SolidCP.EnterpriseServer
                 new Converter<ServiceProviderItem, SqlDatabase>(ConvertItemToSqlDatabase));
         }
 
-        private static SqlDatabase ConvertItemToSqlDatabase(ServiceProviderItem item)
+        private SqlDatabase ConvertItemToSqlDatabase(ServiceProviderItem item)
         {
             return (SqlDatabase)item;
         }
 
-        public static SqlDatabase GetSqlDatabase(int itemId)
+        public SqlDatabase GetSqlDatabase(int itemId)
         {
             // load meta item
             SqlDatabase item = (SqlDatabase)PackageController.GetPackageItem(itemId);
@@ -110,7 +111,7 @@ namespace SolidCP.EnterpriseServer
             return database;
         }
 
-        public static int AddSqlDatabase(SqlDatabase item, string groupName)
+        public int AddSqlDatabase(SqlDatabase item, string groupName)
         {
 			// check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -189,7 +190,7 @@ namespace SolidCP.EnterpriseServer
             return itemId;
         }
 
-        public static int UpdateSqlDatabase(SqlDatabase item)
+        public int UpdateSqlDatabase(SqlDatabase item)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -230,7 +231,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int DeleteSqlDatabase(int itemId)
+        public int DeleteSqlDatabase(int itemId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -270,7 +271,7 @@ namespace SolidCP.EnterpriseServer
         }
 
         
-        private static int GetMaxSize(int packageId, string groupName, string prefix)
+        private int GetMaxSize(int packageId, string groupName, string prefix)
         {
             // load package context
             int maxSize = 0; // unlimited
@@ -285,17 +286,17 @@ namespace SolidCP.EnterpriseServer
             return maxSize;
         }
         
-        private static int GetMaxDatabaseSize(int packageId, string groupName)
+        private int GetMaxDatabaseSize(int packageId, string groupName)
         {
             return GetMaxSize(packageId, groupName, ".MaxDatabaseSize");            
         }
 
-        private static int GetMaxLogSize(int packageId, string groupName)
+        private int GetMaxLogSize(int packageId, string groupName)
         {
             return GetMaxSize(packageId, groupName, ".MaxLogSize");
         }
 
-        public static string BackupSqlDatabase(int itemId, string backupName,
+        public string BackupSqlDatabase(int itemId, string backupName,
             bool zipBackup, bool download, string folderName)
         {
             // check account
@@ -361,7 +362,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static byte[] GetSqlBackupBinaryChunk(int itemId, string path, int offset, int length)
+        public byte[] GetSqlBackupBinaryChunk(int itemId, string path, int offset, int length)
         {
             // load original meta item
             SqlDatabase item = (SqlDatabase)PackageController.GetPackageItem(itemId);
@@ -373,7 +374,7 @@ namespace SolidCP.EnterpriseServer
             return sql.GetTempFileBinaryChunk(path, offset, length);
         }
 
-        public static string AppendSqlBackupBinaryChunk(int itemId, string fileName, string path, byte[] chunk)
+        public string AppendSqlBackupBinaryChunk(int itemId, string fileName, string path, byte[] chunk)
         {
             // load original meta item
             SqlDatabase item = (SqlDatabase)PackageController.GetPackageItem(itemId);
@@ -384,7 +385,7 @@ namespace SolidCP.EnterpriseServer
             return sql.AppendTempFileBinaryChunk(fileName, path, chunk);
         }
 
-        public static int RestoreSqlDatabase(int itemId, string[] uploadedFiles, string[] packageFiles)
+        public int RestoreSqlDatabase(int itemId, string[] uploadedFiles, string[] packageFiles)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -457,7 +458,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int TruncateSqlDatabase(int itemId)
+        public int TruncateSqlDatabase(int itemId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -491,7 +492,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        private static string[] GetSqlDatabasesArray(int packageId, string groupName)
+        private string[] GetSqlDatabasesArray(int packageId, string groupName)
         {
             List<SqlDatabase> databases = GetSqlDatabases(packageId, groupName, false);
             string[] arr = new string[databases.Count];
@@ -501,7 +502,7 @@ namespace SolidCP.EnterpriseServer
             return arr;
         }
 
-		public static DatabaseBrowserConfiguration GetDatabaseBrowserConfiguration(int packageId, string groupName)
+		public DatabaseBrowserConfiguration GetDatabaseBrowserConfiguration(int packageId, string groupName)
 		{
             DatabaseBrowserConfiguration config = new DatabaseBrowserConfiguration();
 
@@ -515,7 +516,7 @@ namespace SolidCP.EnterpriseServer
 			return config;
 		}
 
-		public static DatabaseBrowserConfiguration GetDatabaseBrowserLogonScript(int packageId,
+		public DatabaseBrowserConfiguration GetDatabaseBrowserLogonScript(int packageId,
 			string groupName, string username)
 		{
 			int serviceId = PackageController.GetPackageServiceId(packageId, groupName);
@@ -583,14 +584,14 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Users
-        public static DataSet GetRawSqlUsersPaged(int packageId,
+        public DataSet GetRawSqlUsersPaged(int packageId,
             string groupName, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             return PackageController.GetRawPackageItemsPaged(packageId, groupName, typeof(SqlUser),
                 true, filterColumn, filterValue, sortColumn, startRow, maximumRows);
         }
 
-        public static List<SqlUser> GetSqlUsers(int packageId, string groupName, bool recursive)
+        public List<SqlUser> GetSqlUsers(int packageId, string groupName, bool recursive)
         {
             List<ServiceProviderItem> items = PackageController.GetPackageItemsByType(
                 packageId, groupName, typeof(SqlUser), recursive);
@@ -599,12 +600,12 @@ namespace SolidCP.EnterpriseServer
                 new Converter<ServiceProviderItem, SqlUser>(ConvertItemToSqlUser));
         }
 
-        private static SqlUser ConvertItemToSqlUser(ServiceProviderItem item)
+        private SqlUser ConvertItemToSqlUser(ServiceProviderItem item)
         {
             return (SqlUser)item;
         }
 
-        public static SqlUser GetSqlUser(int itemId)
+        public SqlUser GetSqlUser(int itemId)
         {
             // load meta item
             SqlUser item = (SqlUser)PackageController.GetPackageItem(itemId);
@@ -623,7 +624,7 @@ namespace SolidCP.EnterpriseServer
             return user;
         }
 
-        public static int AddSqlUser(SqlUser item, string groupName)
+        public int AddSqlUser(SqlUser item, string groupName)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -685,7 +686,7 @@ namespace SolidCP.EnterpriseServer
             return itemId;
         }
 
-        public static int UpdateSqlUser(SqlUser item)
+        public int UpdateSqlUser(SqlUser item)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -733,7 +734,7 @@ namespace SolidCP.EnterpriseServer
             }
          }
 
-        public static int DeleteSqlUser(int itemId)
+        public int DeleteSqlUser(int itemId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);

@@ -37,12 +37,13 @@ using System.Text;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class UserAsyncWorker
+    public class UserAsyncWorker: ControllerBase
     {
         private int threadUserId = -1;
         private int userId;
         private string taskId;
         private UserInfo user;
+        public UserAsyncWorker(ControllerBase provider): base(provider) { }
 
         #region Public properties
         public int ThreadUserId

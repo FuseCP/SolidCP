@@ -46,11 +46,13 @@ using SolidCP.EnterpriseServer;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class BackupController
-    {
-        public const string BACKUP_CATALOG_FILE_NAME = "BackupCatalog.xml";
-        private const int FILE_BUFFER_LENGTH = 5000000; // ~5MB
-        private const string RSA_SETTINGS_KEY = "RSA_KEY";
+	public class BackupController : ControllerBase
+	{
+		public const string BACKUP_CATALOG_FILE_NAME = "BackupCatalog.xml";
+		private const int FILE_BUFFER_LENGTH = 5000000; // ~5MB
+		private const string RSA_SETTINGS_KEY = "RSA_KEY";
+
+		public BackupController(ControllerBase provider) : base(provider) { }
 
         public static int Backup(bool async, string taskId, int userId, int packageId, int serviceId, int serverId,
             string backupFileName, int storePackageId, string storePackageFolder, string storeServerFolder,

@@ -7,8 +7,10 @@ using SolidCP.Providers.StorageSpaces;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class OrganizationFoldersManager
+    public class OrganizationFoldersManager : ControllerBase
     {
+        public OrganizationFoldersManager(WebServiceBase provider) : base(provider) { }
+
         public List<StorageSpaceFolder> GetFolders(int itemId, string type)
         {
             var folders = new List<StorageSpaceFolder>();

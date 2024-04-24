@@ -47,7 +47,7 @@ namespace SolidCP.EnterpriseServer
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [Policy("EnterpriseServerPolicy")]
     [ToolboxItem(false)]
-    public class esUsers
+    public class esUsers: WebService
     {
         [WebMethod(Description = "Checks if the account with the specified username exists.")]
         public bool UserExists(string username)

@@ -46,8 +46,10 @@ using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {
-	public class MailServerController : IImportController, IBackupController
+	public class MailServerController : ControllerBase, IImportController, IBackupController
 	{
+		public MailServerController(ControllerBase provider): base(provider) { }
+
 		public static MailServer GetMailServer(int serviceId)
 		{
 			MailServer mail = new MailServer();

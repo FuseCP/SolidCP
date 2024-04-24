@@ -4,11 +4,11 @@ using SolidCP.Providers.StorageSpaces;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class EnterpriseStorageSpaceSelector : IStorageSpaceSelector
+    public class EnterpriseStorageSpaceSelector : ControllerBase, IStorageSpaceSelector
     {
         private readonly int _esId;
 
-        public EnterpriseStorageSpaceSelector(int esId)
+        public EnterpriseStorageSpaceSelector(ControllerBase provider, int esId): base(provider)
         {
             _esId = esId;
         }

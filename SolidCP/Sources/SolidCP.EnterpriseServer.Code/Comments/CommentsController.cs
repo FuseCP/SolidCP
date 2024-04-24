@@ -37,14 +37,15 @@ using System.Text;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class CommentsController
+    public class CommentsController : ControllerBase
     {
-        public static DataSet GetComments(int userId, string itemTypeId, int itemId)
+        public CommentsController(WebServiceBase provider) : base(provider) { }
+        public DataSet GetComments(int userId, string itemTypeId, int itemId)
         {
             return DataProvider.GetComments(SecurityContext.User.UserId, userId, itemTypeId, itemId);
         }
 
-        public static int AddComment(string itemTypeId, int itemId,
+        public int AddComment(string itemTypeId, int itemId,
             string commentText, int severityId)
         {
             // check account
@@ -58,7 +59,7 @@ namespace SolidCP.EnterpriseServer
             return 0;
         }
 
-        public static int DeleteComment(int commentId)
+        public int DeleteComment(int commentId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);

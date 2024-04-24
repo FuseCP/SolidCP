@@ -47,8 +47,10 @@ namespace SolidCP.EnterpriseServer
     /// <summary>
     /// Summary description for UserController.
     /// </summary>
-    public class UserController
+    public class UserController : ControllerBase
     {
+        public UserController(ControllerBase provider) : base(provider) { }
+
         public static bool UserExists(string username)
         {
             // try to get user from database

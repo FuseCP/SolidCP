@@ -15,14 +15,16 @@ using System.Data;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class RemoteDesktopServicesHelpers
+    public class RemoteDesktopServicesHelpers: ControllerBase
     {
-        public static string GetFormattedCollectionName(string displayName, string organizationId)
+        public RemoteDesktopServicesHelpers(ControllerBase provider) : base(provider) { }
+
+        public string GetFormattedCollectionName(string displayName, string organizationId)
         {
             return string.Format("{0}-{1}", organizationId, displayName.Replace(" ", "_"));
         }
 
-        public static string EvaluateMailboxTemplate(string template, Organization org, int? accountId, int itemId)
+        public string EvaluateMailboxTemplate(string template, Organization org, int? accountId, int itemId)
         {
             OrganizationUser user = null;
 
@@ -42,7 +44,7 @@ namespace SolidCP.EnterpriseServer
             return PackageController.EvaluateTemplate(template, items);
         }
 
-        public static RdsCollectionSettings GetDefaultCollectionSettings()
+        public RdsCollectionSettings GetDefaultCollectionSettings()
         {
             return new RdsCollectionSettings
             {
@@ -72,7 +74,7 @@ namespace SolidCP.EnterpriseServer
             };
         }
 
-        public static RdsServerSettings GetDefaultGpoSettings()
+        public RdsServerSettings GetDefaultGpoSettings()
         {
             var defaultSettings = UserController.GetUserSettings(SecurityContext.User.UserId, UserSettings.RDS_POLICY);
             var settings = new RdsServerSettings();
@@ -168,7 +170,7 @@ namespace SolidCP.EnterpriseServer
             return settings;
         }
 
-        public static RdsServerSettings GetEmptyGpoSettings()
+        public RdsServerSettings GetEmptyGpoSettings()
         {
             var defaultSettings = UserController.GetUserSettings(SecurityContext.User.UserId, UserSettings.RDS_POLICY);
             var settings = new RdsServerSettings();
@@ -242,7 +244,7 @@ namespace SolidCP.EnterpriseServer
             return settings;
         }
 
-        public static string GetSettingsXml(RdsServerSettings settings)
+        public string GetSettingsXml(RdsServerSettings settings)
         {
             XmlDocument doc = new XmlDocument();
             XmlElement nodeProps = doc.CreateElement("properties");
@@ -263,19 +265,19 @@ namespace SolidCP.EnterpriseServer
             return nodeProps.OuterXml;
         }
 
-        public static int GetRemoteDesktopServiceID(int packageId)
+        public int GetRemoteDesktopServiceID(int packageId)
         {
             return PackageController.GetPackageServiceId(packageId, ResourceGroups.RDS);
         }
 
-        public static int GetRemoteDesktopControllerServiceIDbyFQDN(string fqdnName)
+        public int GetRemoteDesktopControllerServiceIDbyFQDN(string fqdnName)
         {
             int serverid = DataProvider.GetRDSControllerServiceIDbyFQDN(fqdnName);
 
             return serverid;
         }
 
-        public static RemoteDesktopServices GetRemoteDesktopServices(int serviceId)
+        public RemoteDesktopServices GetRemoteDesktopServices(int serviceId)
         {
             var rds = new RemoteDesktopServices();
             ServiceProviderProxy.Init(rds, serviceId);
@@ -283,7 +285,7 @@ namespace SolidCP.EnterpriseServer
             return rds;
         }        
 
-        public static RdsServer FillRdsServerData(RdsServer server)
+        public RdsServer FillRdsServerData(RdsServer server)
         {
             int serviceId = RemoteDesktopServicesHelpers.GetRemoteDesktopControllerServiceIDbyFQDN(server.FqdName);
             var rds = RemoteDesktopServicesHelpers.GetRemoteDesktopServices(serviceId);
@@ -309,14 +311,14 @@ namespace SolidCP.EnterpriseServer
             return server;
         }
 
-        public static System.Net.IPAddress GetServerIp(string hostname, AddressFamily addressFamily = AddressFamily.InterNetwork)
+        public System.Net.IPAddress GetServerIp(string hostname, AddressFamily addressFamily = AddressFamily.InterNetwork)
         {
             var address = GetServerIps(hostname);
 
             return address.FirstOrDefault(x => x.AddressFamily == addressFamily);
         }
 
-        public static RdsCollectionSettings ParseCollectionSettings(List<RdsCollectionSetting> settings)
+        public RdsCollectionSettings ParseCollectionSettings(List<RdsCollectionSetting> settings)
         {
             var collectionSettings = new RdsCollectionSettings();
             var properties = typeof(RdsCollectionSettings).GetProperties().Where(p => p.Name.ToLower() != "id" && p.Name.ToLower() != "rdscollectionid");            
@@ -351,7 +353,7 @@ namespace SolidCP.EnterpriseServer
             return collectionSettings;
         }
 
-        public static void FillSessionHosts(IEnumerable<string> sessionHosts, IEnumerable<RdsServer> existingSessionHosts, int collectionId, int itemId)
+        public void FillSessionHosts(IEnumerable<string> sessionHosts, IEnumerable<RdsServer> existingSessionHosts, int collectionId, int itemId)
         {
             var domainName = string.Format(".{0}", IPGlobalProperties.GetIPGlobalProperties().DomainName);
 
@@ -375,7 +377,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        private static IEnumerable<System.Net.IPAddress> GetServerIps(string hostname)
+        private IEnumerable<System.Net.IPAddress> GetServerIps(string hostname)
         {
             try
             {

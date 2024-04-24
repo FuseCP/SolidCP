@@ -39,9 +39,11 @@ using System.Xml;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class AuditLog
+    public class AuditLog: ControllerBase
     {
-        public static DataSet GetAuditLogRecordsPaged(int userId, int packageId, int itemId, string itemName, DateTime startDate, DateTime endDate,
+        public AuditLog(ControllerBase provider) : base(provider) { }
+
+        public DataSet GetAuditLogRecordsPaged(int userId, int packageId, int itemId, string itemName, DateTime startDate, DateTime endDate,
             int severityId, string sourceName, string taskName, string sortColumn, int startRow, int maximumRows)
         {
             return DataProvider.GetAuditLogRecordsPaged(SecurityContext.User.UserId,
@@ -49,23 +51,23 @@ namespace SolidCP.EnterpriseServer
                 severityId, sourceName, taskName, sortColumn, startRow, maximumRows);
         }
 
-        public static DataSet GetAuditLogSources()
+        public DataSet GetAuditLogSources()
         {
             return DataProvider.GetAuditLogSources();
         }
 
-        public static DataSet GetAuditLogTasks(string sourceName)
+        public DataSet GetAuditLogTasks(string sourceName)
         {
             return DataProvider.GetAuditLogTasks(sourceName);
         }
 
-        public static LogRecord GetAuditLogRecord(string recordId)
+        public LogRecord GetAuditLogRecord(string recordId)
         {
             return ObjectUtils.FillObjectFromDataReader<LogRecord>(
                 DataProvider.GetAuditLogRecord(recordId));
         }
 
-        public static int DeleteAuditLogRecords(int userId, int itemId, string itemName,
+        public int DeleteAuditLogRecords(int userId, int itemId, string itemName,
             DateTime startDate, DateTime endDate, int severityId, string sourceName, string taskName)
         {
             // check account
@@ -78,7 +80,7 @@ namespace SolidCP.EnterpriseServer
             return 0;
         }
 
-        public static int DeleteAuditLogRecordsComplete()
+        public int DeleteAuditLogRecordsComplete()
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsAdmin);
@@ -89,28 +91,28 @@ namespace SolidCP.EnterpriseServer
             return 0;
         }
 
-        public static void AddAuditLogInfoRecord(string sourceName, string taskName, string itemName, 
+        public void AddAuditLogInfoRecord(string sourceName, string taskName, string itemName, 
             string[] executionValues, int packageId = 0, int itemId = 0)
         {
 
             AddAuditLogRecord(0, sourceName, taskName, itemName, executionValues);
         }
 
-        public static void AddAuditLogWarningRecord(string sourceName, string taskName, string itemName,
+        public void AddAuditLogWarningRecord(string sourceName, string taskName, string itemName,
             string[] executionValues, int packageId = 0, int itemId = 0)
         {
 
             AddAuditLogRecord(1, sourceName, taskName, itemName, executionValues);
         }
 
-        public static void AddAuditLogErrorRecord(string sourceName, string taskName, string itemName,
+        public void AddAuditLogErrorRecord(string sourceName, string taskName, string itemName,
             string[] executionValues, int packageId = 0, int itemId = 0)
         {
 
             AddAuditLogRecord(2, sourceName, taskName, itemName, executionValues);
         }
 
-        public static void AddAuditLogRecord(int severityId, string sourceName, string taskName, string itemName,
+        public void AddAuditLogRecord(int severityId, string sourceName, string taskName, string itemName,
             string[] executionValues, int packageId = 0, int itemId = 0)
         {
             string recordId = Guid.NewGuid().ToString("N");
@@ -129,7 +131,7 @@ namespace SolidCP.EnterpriseServer
                     startAndfinishDate, startAndfinishDate, sourceName, taskName, DummyFormatExecutionLog(startAndfinishDate, 0, executionValues));
         }
 
-        public static void AddAuditLogRecord(string recordId, int severityId, int userId, string username,
+        public void AddAuditLogRecord(string recordId, int severityId, int userId, string username,
             int packageId, int itemId, string itemName, DateTime startDate, DateTime finishDate,
             string sourceName, string taskName, string executionLog)
         {
@@ -141,18 +143,18 @@ namespace SolidCP.EnterpriseServer
             catch { }
         }
 
-        private static DateTime GetStartDate(DateTime d)
+        private DateTime GetStartDate(DateTime d)
         {
             return new DateTime(d.Year, d.Month, d.Day, 0, 0, 0);
         }
 
-        private static DateTime GetEndDate(DateTime d)
+        private DateTime GetEndDate(DateTime d)
         {
             return new DateTime(d.Year, d.Month, d.Day, 23, 59, 59);
         }
 
         //extremely simple and dummy creating XML string.
-        private static string DummyFormatExecutionLog(DateTime startDate, int severityId, string[] values)
+        private string DummyFormatExecutionLog(DateTime startDate, int severityId, string[] values)
         {
             StringWriter sw = new StringWriter();
             XmlWriter writer = new XmlTextWriter(sw);

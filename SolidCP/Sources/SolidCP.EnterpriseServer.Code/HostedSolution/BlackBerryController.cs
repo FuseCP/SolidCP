@@ -40,8 +40,10 @@ using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer.Code.HostedSolution
 {
-    public class BlackBerryController
+    public class BlackBerryController: ControllerBase
     {
+        public BlackBerryController(WebServiceBase provider): base(provider) { }
+
         private static bool CheckQuota(int itemId)
         {
             Organization org = OrganizationController.GetOrganization(itemId);

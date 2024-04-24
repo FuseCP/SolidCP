@@ -49,7 +49,7 @@ namespace SolidCP.EnterpriseServer
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [Policy("EnterpriseServerPolicy")]
     [ToolboxItem(false)]
-    public class esDatabaseServers
+    public class esDatabaseServers: WebService
     {
         #region Databases
         [WebMethod]

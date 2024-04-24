@@ -45,11 +45,11 @@ using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer.Code.HostedSolution
 {
-    public class SfBController
+    public class SfBController: ControllerBase
     {
+        public SfBController(WebServiceBase provider) : base(provider) { }
 
-
-        public static SfBServer GetSfBServer(int sfbServiceId, int organizationServiceId)
+        public SfBServer GetSfBServer(int sfbServiceId, int organizationServiceId)
         {
             SfBServer ws = new SfBServer();
 
@@ -68,7 +68,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             return ws;
         }
 
-        private static string GetProviderProperty(int organizationServiceId, string property)
+        private string GetProviderProperty(int organizationServiceId, string property)
         {
 
             Organizations orgProxy = new Organizations();
@@ -91,7 +91,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             return value;
         }
 
-        private static void ExtendSfBSettings(List<string> sfbSettings, string property, string value)
+        private void ExtendSfBSettings(List<string> sfbSettings, string property, string value)
         {
             bool isAdded = false;
             for (int i = 0; i < sfbSettings.Count; i++)
@@ -111,13 +111,13 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             }
         }
 
-        private static int GetSfBServiceID(int packageId)
+        private int GetSfBServiceID(int packageId)
         {
             return PackageController.GetPackageServiceId(packageId, ResourceGroups.SfB);
         }
 
 
-        private static bool CheckQuota(int itemId)
+        private bool CheckQuota(int itemId)
         {
             Organization org = OrganizationController.GetOrganization(itemId);
             PackageContext cntx = PackageController.GetPackageContext(org.PackageId);
@@ -130,7 +130,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
         }
 
 
-        public static SfBUserResult CreateSfBUser(int itemId, int accountId, int sfbUserPlanId)
+        public SfBUserResult CreateSfBUser(int itemId, int accountId, int sfbUserPlanId)
         {
             SfBUserResult res = TaskManager.StartResultTask<SfBUserResult>("SFB", "CREATE_SFB_USER");
 
@@ -302,7 +302,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
         }
 
 
-        private static int[] ParseMultiSetting(int sfbServiceId, string settingName)
+        private int[] ParseMultiSetting(int sfbServiceId, string settingName)
         {
             List<int> retIds = new List<int>();
             StringDictionary settings = ServerController.GetServiceSettings(sfbServiceId);
@@ -326,14 +326,14 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
         }
 
 
-        public static void GetSfBServices(int sfbServiceId, out int[] sfbServiceIds)
+        public void GetSfBServices(int sfbServiceId, out int[] sfbServiceIds)
         {
             sfbServiceIds = ParseMultiSetting(sfbServiceId, "SfBServersServiceID");
         }
 
 
 
-        public static SfBUser GetSfBUserGeneralSettings(int itemId, int accountId)
+        public SfBUser GetSfBUserGeneralSettings(int itemId, int accountId)
         {
             TaskManager.StartTask("SFB", "GET_SFB_USER_GENERAL_SETTINGS");
 
@@ -378,7 +378,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
         }
 
-        public static SfBUserResult SetSfBUserGeneralSettings(int itemId, int accountId, string sipAddress, string lineUri)
+        public SfBUserResult SetSfBUserGeneralSettings(int itemId, int accountId, string sipAddress, string lineUri)
         {
             SfBUserResult res = TaskManager.StartResultTask<SfBUserResult>("SFB", "SET_SFB_USER_GENERAL_SETTINGS");
 
@@ -458,7 +458,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
 
 
-        public static int DeleteOrganization(int itemId)
+        public int DeleteOrganization(int itemId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -491,7 +491,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
         }
 
 
-        public static SfBUserResult SetUserSfBPlan(int itemId, int accountId, int sfbUserPlanId)
+        public SfBUserResult SetUserSfBPlan(int itemId, int accountId, int sfbUserPlanId)
         {
             SfBUserResult res = TaskManager.StartResultTask<SfBUserResult>("SFB", "SET_SFB_USER_SFBPLAN");
 
@@ -547,12 +547,12 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
         }
 
-        public static SfBUsersPagedResult GetSfBUsers(int itemId)
+        public SfBUsersPagedResult GetSfBUsers(int itemId)
         {
             return GetSfBUsersPaged(itemId, string.Empty, string.Empty, 0, int.MaxValue);
         }
 
-        public static SfBUsersPagedResult GetSfBUsersPaged(int itemId, string sortColumn, string sortDirection, int startRow, int count)
+        public SfBUsersPagedResult GetSfBUsersPaged(int itemId, string sortColumn, string sortDirection, int startRow, int count)
         {
             SfBUsersPagedResult res = TaskManager.StartResultTask<SfBUsersPagedResult>("SFB", "GET_SFB_USERS");
 
@@ -583,12 +583,12 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             return res;
         }
 
-        public static List<SfBUser> GetSfBUsersByPlanId(int itemId, int planId)
+        public List<SfBUser> GetSfBUsersByPlanId(int itemId, int planId)
         {
             return ObjectUtils.CreateListFromDataReader<SfBUser>(DataProvider.GetSfBUsersByPlanId(itemId, planId));
         }
 
-        public static IntResult GetSfBUsersCount(int itemId)
+        public IntResult GetSfBUsersCount(int itemId)
         {
             IntResult res = TaskManager.StartResultTask<IntResult>("SFB", "GET_SFB_USERS_COUNT");
             try
@@ -605,7 +605,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             return res;
         }
 
-        public static SfBUserResult DeleteSfBUser(int itemId, int accountId)
+        public SfBUserResult DeleteSfBUser(int itemId, int accountId)
         {
             SfBUserResult res = TaskManager.StartResultTask<SfBUserResult>("SFB", "DELETE_SFB_USER");
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -657,14 +657,14 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
         }
 
 
-        public static Organization GetOrganization(int itemId)
+        public Organization GetOrganization(int itemId)
         {
             return (Organization)PackageController.GetPackageItem(itemId);
         }
 
 
         #region SfB Plans
-        public static List<SfBUserPlan> GetSfBUserPlans(int itemId)
+        public List<SfBUserPlan> GetSfBUserPlans(int itemId)
         {
             // place log record
             TaskManager.StartTask("SFB", "GET_SFB_SFBUSERPLANS", itemId);
@@ -704,7 +704,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             }
         }
 
-        private static void GetSfBUserPlansByUser(int itemId, UserInfo user, ref List<SfBUserPlan> plans)
+        private void GetSfBUserPlansByUser(int itemId, UserInfo user, ref List<SfBUserPlan> plans)
         {
             if ((user != null))
             {
@@ -745,7 +745,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
         }
 
 
-        public static SfBUserPlan GetSfBUserPlan(int itemID, int sfbUserPlanId)
+        public SfBUserPlan GetSfBUserPlan(int itemID, int sfbUserPlanId)
         {
 
             // place log record
@@ -766,7 +766,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             }
         }
 
-        public static int AddSfBUserPlan(int itemID, SfBUserPlan sfbUserPlan)
+        public int AddSfBUserPlan(int itemID, SfBUserPlan sfbUserPlan)
         {
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
             if (accountCheck < 0) return accountCheck;
@@ -806,7 +806,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
 
 
-        public static int UpdateSfBUserPlan(int itemID, SfBUserPlan sfbUserPlan)
+        public int UpdateSfBUserPlan(int itemID, SfBUserPlan sfbUserPlan)
         {
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
             if (accountCheck < 0) return accountCheck;
@@ -845,7 +845,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
         }
 
 
-        public static int DeleteSfBUserPlan(int itemID, int sfbUserPlanId)
+        public int DeleteSfBUserPlan(int itemID, int sfbUserPlanId)
         {
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
             if (accountCheck < 0) return accountCheck;
@@ -869,7 +869,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
         }
 
-        public static int SetOrganizationDefaultSfBUserPlan(int itemId, int sfbUserPlanId)
+        public int SetOrganizationDefaultSfBUserPlan(int itemId, int sfbUserPlanId)
         {
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
             if (accountCheck < 0) return accountCheck;
@@ -897,7 +897,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
         #endregion
 
         #region Federation Domains
-        public static SfBFederationDomain[] GetFederationDomains(int itemId)
+        public SfBFederationDomain[] GetFederationDomains(int itemId)
         {
             // place log record
             TaskManager.StartTask("SFB", "GET_SFB_FEDERATIONDOMAINS", itemId);
@@ -925,7 +925,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             return sfbFederationDomains;
         }
 
-        public static SfBUserResult AddFederationDomain(int itemId, string domainName, string proxyFqdn)
+        public SfBUserResult AddFederationDomain(int itemId, string domainName, string proxyFqdn)
         {
             List<BackgroundTaskParameter> parameters = new List<BackgroundTaskParameter>();
             parameters.Add(new BackgroundTaskParameter("domainName", domainName));
@@ -1003,7 +1003,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             return res;
         }
 
-        public static SfBUserResult RemoveFederationDomain(int itemId, string domainName)
+        public SfBUserResult RemoveFederationDomain(int itemId, string domainName)
         {
             SfBUserResult res = TaskManager.StartResultTask<SfBUserResult>("SFB", "REMOVE_SFB_FEDERATIONDOMAIN", itemId, new BackgroundTaskParameter("domainName", domainName));
 
@@ -1048,7 +1048,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
         #endregion
 
-        public static string[] GetPolicyList(int itemId, SfBPolicyType type, string name)
+        public string[] GetPolicyList(int itemId, SfBPolicyType type, string name)
         {
             string[] ret = null;
             try
@@ -1095,12 +1095,12 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
         }
 
         #region Private methods
-        public static UInt64 ConvertPhoneNumberToLong(string ip)
+        public UInt64 ConvertPhoneNumberToLong(string ip)
         {
             return Convert.ToUInt64(ip);
         }
 
-        public static string ConvertLongToPhoneNumber(UInt64 ip)
+        public string ConvertLongToPhoneNumber(UInt64 ip)
         {
             if (ip == 0)
                 return "";

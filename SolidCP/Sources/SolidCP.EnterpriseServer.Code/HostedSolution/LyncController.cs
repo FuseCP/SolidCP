@@ -43,9 +43,9 @@ using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer.Code.HostedSolution
 {
-    public class LyncController
+    public class LyncController: ControllerBase
     {
-
+        public LyncController(WebServiceBase provider) : base(provider) { }
 
         public static LyncServer GetLyncServer(int lyncServiceId, int organizationServiceId)
         {
