@@ -79,7 +79,7 @@ namespace SolidCP.EnterpriseServer
 			try
 			{
 				// get service settings
-				reader = DataProvider.GetSystemSettings(settingsName);
+				reader = Database.GetSystemSettings(settingsName);
 
 				while (reader.Read())
 				{
@@ -129,7 +129,7 @@ namespace SolidCP.EnterpriseServer
 				root.AppendChild(property);
 			}
 
-			DataProvider.SetSystemSettings(settingsName, root.OuterXml);
+			Database.SetSystemSettings(settingsName, root.OuterXml);
 
 			return 0;
 		}
@@ -219,17 +219,17 @@ namespace SolidCP.EnterpriseServer
 		//Theme options
 		public DataSet GetThemes()
 		{
-			return DataProvider.GetThemes();
+			return Database.GetThemes();
 		}
 
 		public DataSet GetThemeSettings(int ThemeID)
 		{
-			return DataProvider.GetThemeSettings(ThemeID);
+			return Database.GetThemeSettings(ThemeID);
 		}
 
 		public DataSet GetThemeSetting(int ThemeID, string SettingsName)
 		{
-			return DataProvider.GetThemeSetting(ThemeID, SettingsName);
+			return Database.GetThemeSetting(ThemeID, SettingsName);
 		}
 	}
 }

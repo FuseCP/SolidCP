@@ -282,7 +282,7 @@ namespace SolidCP.EnterpriseServer.Code.SharePoint
                 item.Name = String.Format("{0}://{1}", rootWebApplicationUri.Scheme, hostNameBase + "-" + counter.ToString() + "." + sslRoot);
                 siteName = String.Format("{0}", hostNameBase + "-" + counter.ToString() + "." + sslRoot);
 
-                while (DataProvider.CheckServiceItemExists(serviceId, item.Name, "SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection,   SolidCP.Providers.Base")) 
+                while (Database.CheckServiceItemExists(serviceId, item.Name, "SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection,   SolidCP.Providers.Base")) 
                 {
                     counter++;
                     item.Name = String.Format("{0}://{1}", rootWebApplicationUri.Scheme, hostNameBase + "-" + counter.ToString() + "." + sslRoot);

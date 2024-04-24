@@ -126,7 +126,7 @@ namespace SolidCP.EnterpriseServer
                 }
 
                 // delete user from database
-                DataProvider.DeleteUser(SecurityContext.User.UserId, userId);
+                Database.DeleteUser(SecurityContext.User.UserId, userId);
             }
             catch (Exception ex)
             {

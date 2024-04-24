@@ -12,11 +12,10 @@ namespace SolidCP.EnterpriseServer
 	public class ControllerBase: IDisposable
 	{
 		DataProvider db = null;
-		public DataProvider Db {
-			get => db ?? Provider?.Db ?? (db = new DataProvider(this));
+		public DataProvider Database {
+			get => db ?? Provider?.Database ?? (db = new DataProvider(this));
 			private set => db = value;
 		}
-		public DataProvider DataProvider => Db;
 
 		ControllerBase Provider = null;
 		public ControllerBase() { }

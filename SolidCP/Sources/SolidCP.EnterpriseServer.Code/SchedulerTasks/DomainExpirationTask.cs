@@ -165,7 +165,7 @@ namespace SolidCP.EnterpriseServer
             {
                 case UserRole.Administrator:
                 {
-                    packages = ObjectUtils.CreateListFromDataReader<PackageInfo>(DataProvider.GetAllPackages());
+                    packages = ObjectUtils.CreateListFromDataReader<PackageInfo>(Database.GetAllPackages());
                     break;
                 }
                 default:

@@ -46,7 +46,7 @@ namespace SolidCP.EnterpriseServer
         public BackgroundTask GetTask(string taskId)
         {
             BackgroundTask task = ObjectUtils.FillObjectFromDataReader<BackgroundTask>(
-                DataProvider.GetBackgroundTask(taskId));
+                Database.GetBackgroundTask(taskId));
 
             if (task == null)
             {
@@ -61,7 +61,7 @@ namespace SolidCP.EnterpriseServer
         public List<BackgroundTask> GetScheduleTasks(int scheduleId)
         {
             return ObjectUtils.CreateListFromDataReader<BackgroundTask>(
-                DataProvider.GetScheduleBackgroundTasks(scheduleId));
+                Database.GetScheduleBackgroundTasks(scheduleId));
         }
 
         public List<BackgroundTask> GetTasks()
@@ -74,25 +74,25 @@ namespace SolidCP.EnterpriseServer
         public List<BackgroundTask> GetTasks(int actorId)
         {
             return ObjectUtils.CreateListFromDataReader<BackgroundTask>(
-                DataProvider.GetBackgroundTasks(actorId));
+                Database.GetBackgroundTasks(actorId));
         }
 
         public List<BackgroundTask> GetTasks(Guid guid)
         {
             return ObjectUtils.CreateListFromDataReader<BackgroundTask>(
-                DataProvider.GetBackgroundTasks(guid));
+                Database.GetBackgroundTasks(guid));
         }
 
         public List<BackgroundTask> GetProcessTasks(BackgroundTaskStatus status)
         {
             return ObjectUtils.CreateListFromDataReader<BackgroundTask>(
-                DataProvider.GetProcessBackgroundTasks(status));
+                Database.GetProcessBackgroundTasks(status));
         }
 
         public BackgroundTask GetTopTask(Guid guid)
         {
             BackgroundTask task = ObjectUtils.FillObjectFromDataReader<BackgroundTask>(
-                DataProvider.GetBackgroundTopTask(guid));
+                Database.GetBackgroundTopTask(guid));
 
             if (task == null)
             {
@@ -106,7 +106,7 @@ namespace SolidCP.EnterpriseServer
 
         public int AddTask(BackgroundTask task)
         {
-            int taskId = DataProvider.AddBackgroundTask(task.Guid, task.TaskId, task.ScheduleId, task.PackageId, task.UserId,
+            int taskId = Database.AddBackgroundTask(task.Guid, task.TaskId, task.ScheduleId, task.PackageId, task.UserId,
                                                         task.EffectiveUserId, task.TaskName, task.ItemId, task.ItemName,
                                                         task.StartDate, task.IndicatorCurrent, task.IndicatorMaximum,
                                                         task.MaximumExecutionTime, task.Source, task.Severity, task.Completed,
@@ -114,7 +114,7 @@ namespace SolidCP.EnterpriseServer
 
             AddTaskParams(taskId, task.Params);
 
-            DataProvider.AddBackgroundTaskStack(taskId);
+            Database.AddBackgroundTaskStack(taskId);
 
             return taskId;
         }
@@ -143,7 +143,7 @@ namespace SolidCP.EnterpriseServer
                 return false;
             }
 
-            DataProvider.UpdateBackgroundTask(task.Guid, task.Id, task.ScheduleId, task.PackageId, task.TaskName, task.ItemId,
+            Database.UpdateBackgroundTask(task.Guid, task.Id, task.ScheduleId, task.PackageId, task.TaskName, task.ItemId,
                                               task.ItemName, task.FinishDate, task.IndicatorCurrent,
                                               task.IndicatorMaximum, task.MaximumExecutionTime, task.Source,
                                               task.Severity, task.Completed, task.NotifyOnComplete, task.Status);
@@ -153,40 +153,40 @@ namespace SolidCP.EnterpriseServer
 
         public void UpdateBackgroundTaskParams(BackgroundTask task)
         {
-            DataProvider.DeleteBackgroundTaskParams(task.Id);
+            Database.DeleteBackgroundTaskParams(task.Id);
 
             AddTaskParams(task.Id, task.Params);
         }
 
         public void DeleteBackgroundTasks(Guid guid)
         {
-            DataProvider.DeleteBackgroundTasks(guid);
+            Database.DeleteBackgroundTasks(guid);
         }
 
         public void DeleteBackgroundTask(int id)
         {
-            DataProvider.DeleteBackgroundTask(id);
+            Database.DeleteBackgroundTask(id);
         }
 
         public void AddTaskParams(int taskId, List<BackgroundTaskParameter> parameters)
         {
             foreach (BackgroundTaskParameter param in SerializeParams(parameters))
             {
-                DataProvider.AddBackgroundTaskParam(taskId, param.Name, param.SerializerValue, param.TypeName);
+                Database.AddBackgroundTaskParam(taskId, param.Name, param.SerializerValue, param.TypeName);
             }
         }
 
         public List<BackgroundTaskParameter> GetTaskParams(int taskId)
         {
             List<BackgroundTaskParameter> parameters = ObjectUtils.CreateListFromDataReader<BackgroundTaskParameter>(
-                DataProvider.GetBackgroundTaskParams(taskId));
+                Database.GetBackgroundTaskParams(taskId));
 
             return DeserializeParams(parameters);
         }
 
         public void AddLog(BackgroundTaskLogRecord log)
         {
-            DataProvider.AddBackgroundTaskLog(log.TaskId, log.Date, log.ExceptionStackTrace, log.InnerTaskStart,
+            Database.AddBackgroundTaskLog(log.TaskId, log.Date, log.ExceptionStackTrace, log.InnerTaskStart,
                                               log.Severity, log.Text, log.TextIdent, BuildParametersXml(log.TextParameters));
         }
 
@@ -198,7 +198,7 @@ namespace SolidCP.EnterpriseServer
             }
 
             List<BackgroundTaskLogRecord> logs = ObjectUtils.CreateListFromDataReader<BackgroundTaskLogRecord>(
-                DataProvider.GetBackgroundTaskLogs(task.Id, startLogTime));
+                Database.GetBackgroundTaskLogs(task.Id, startLogTime));
 
             foreach (BackgroundTaskLogRecord log in logs)
             {

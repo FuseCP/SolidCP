@@ -272,7 +272,7 @@ namespace SolidCP.EnterpriseServer
 
         public int GetRemoteDesktopControllerServiceIDbyFQDN(string fqdnName)
         {
-            int serverid = DataProvider.GetRDSControllerServiceIDbyFQDN(fqdnName);
+            int serverid = Database.GetRDSControllerServiceIDbyFQDN(fqdnName);
 
             return serverid;
         }
@@ -365,15 +365,15 @@ namespace SolidCP.EnterpriseServer
                 if (existingSessionHost == null)
                 {
                     var serverName = sessionHost.Replace(domainName, "");
-                    serverId = DataProvider.AddRDSServer(serverName, sessionHost, "", "");                    
+                    serverId = Database.AddRDSServer(serverName, sessionHost, "", "");                    
                 }
                 else
                 {
                     serverId = existingSessionHost.Id;
                 }
 
-                DataProvider.AddRDSServerToOrganization(itemId, serverId);
-                DataProvider.AddRDSServerToCollection(serverId, collectionId);
+                Database.AddRDSServerToOrganization(itemId, serverId);
+                Database.AddRDSServerToCollection(serverId, collectionId);
             }
         }
 

@@ -224,7 +224,7 @@ namespace SolidCP.EnterpriseServer
             if (PackageController.GetPackageItemByName(packageId, siteName, typeof(WebSite)) != null)
                 return BusinessErrorCodes.ERROR_WEB_SITE_ALREADY_EXISTS;
 
-            if (DataProvider.CheckDomain(domain.PackageId, siteName, true) != 0)
+            if (Database.CheckDomain(domain.PackageId, siteName, true) != 0)
                 return BusinessErrorCodes.ERROR_WEB_SITE_ALREADY_EXISTS;
 
 
@@ -314,7 +314,7 @@ namespace SolidCP.EnterpriseServer
                 //double check all bindings
                 foreach (ServerBinding b in bindings)
                 {
-                    if (DataProvider.CheckDomain(domain.PackageId, b.Host, true) != 0)
+                    if (Database.CheckDomain(domain.PackageId, b.Host, true) != 0)
                         return BusinessErrorCodes.ERROR_WEB_SITE_ALREADY_EXISTS;
                 }
 
@@ -1353,7 +1353,7 @@ namespace SolidCP.EnterpriseServer
             // check if the web site already exists
             if (!rebuild)
             {
-                if (DataProvider.CheckDomain(domain.PackageId, string.IsNullOrEmpty(hostName) ? domain.DomainName : hostName + "." + domain.DomainName, true) != 0)
+                if (Database.CheckDomain(domain.PackageId, string.IsNullOrEmpty(hostName) ? domain.DomainName : hostName + "." + domain.DomainName, true) != 0)
                     return BusinessErrorCodes.ERROR_WEB_SITE_ALREADY_EXISTS;
             }
 
@@ -1418,7 +1418,7 @@ namespace SolidCP.EnterpriseServer
                             if (r.RecordName != "*")
                             {
                                 // check if the web site already exists
-                                if (DataProvider.CheckDomain(domain.PackageId, string.IsNullOrEmpty(r.RecordName) ? domain.DomainName : r.RecordName + "." + domain.DomainName, true) != 0)
+                                if (Database.CheckDomain(domain.PackageId, string.IsNullOrEmpty(r.RecordName) ? domain.DomainName : r.RecordName + "." + domain.DomainName, true) != 0)
                                     return BusinessErrorCodes.ERROR_WEB_SITE_ALREADY_EXISTS;
                             }
                         }
@@ -4521,7 +4521,7 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
 
                 certificate.FriendlyName = String.Format("{0}_{1}", certificate.Hostname, ticks.ToString());
                 certificate = server.GenerateCSR(certificate);
-                certificate.id = DataProvider.AddSSLRequest(SecurityContext.User.UserId, item.PackageId,
+                certificate.id = Database.AddSSLRequest(SecurityContext.User.UserId, item.PackageId,
                     certificate.SiteID, certificate.UserID, certificate.FriendlyName, certificate.Hostname,
                     certificate.CSR, certificate.CSRLength, certificate.DistinguishedName, certificate.IsRenewal,
                     certificate.PreviousId);
@@ -4569,13 +4569,13 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
                 }
 
 
-                DataProvider.CompleteSSLRequest(SecurityContext.User.UserId, item.PackageId,
+                Database.CompleteSSLRequest(SecurityContext.User.UserId, item.PackageId,
                                                 certificate.id, certificate.Certificate,
                                                 certificate.DistinguishedName, certificate.SerialNumber,
                                                 certificate.Hash, certificate.ValidFrom, certificate.ExpiryDate);
                 if (certificate.IsRenewal)
                 {
-                    DataProvider.DeleteCertificate(SecurityContext.User.UserId, item.PackageId, certificate.PreviousId);
+                    Database.DeleteCertificate(SecurityContext.User.UserId, item.PackageId, certificate.PreviousId);
                 }
 
             }
@@ -4661,13 +4661,13 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
 
                 if (result.IsSuccess)
                 {
-                    DataProvider.AddPFX(SecurityContext.User.UserId, item.PackageId, item.Id, service.UserId, certificate.Hostname,
+                    Database.AddPFX(SecurityContext.User.UserId, item.PackageId, item.Id, service.UserId, certificate.Hostname,
                        certificate.FriendlyName, certificate.DistinguishedName, certificate.CSRLength, certificate.SerialNumber,
                        certificate.ValidFrom, certificate.ExpiryDate);
 
                     foreach (var certificateToDeleteFromMetaBase in certificatesToDeleteFromMetaBase)
                     {
-                        DataProvider.DeleteCertificate(SecurityContext.User.UserId, item.PackageId, certificateToDeleteFromMetaBase.id);
+                        Database.DeleteCertificate(SecurityContext.User.UserId, item.PackageId, certificateToDeleteFromMetaBase.id);
                     }
                 }
             }
@@ -4689,19 +4689,19 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
             WebSite item = GetWebSite(siteItemId) as WebSite;
             List<SSLCertificate> certificates = new List<SSLCertificate>();
             return ObjectUtils.CreateListFromDataSet<SSLCertificate>(
-                DataProvider.GetPendingCertificates(SecurityContext.User.UserId, item.PackageId, item.Id, false));
+                Database.GetPendingCertificates(SecurityContext.User.UserId, item.PackageId, item.Id, false));
 
         }
 
         public SSLCertificate GetSslCertificateById(int iD)
         {
             return ObjectUtils.FillObjectFromDataReader<SSLCertificate>(
-                DataProvider.GetSSLCertificateByID(SecurityContext.User.UserId, iD));
+                Database.GetSSLCertificateByID(SecurityContext.User.UserId, iD));
         }
 
         public int CheckSSL(int siteID, bool renewal)
         {
-            return DataProvider.CheckSSL(siteID, renewal);
+            return Database.CheckSSL(siteID, renewal);
         }
 
         public ResultObject CheckSSLForDomain(string domain, int siteID)
@@ -4713,7 +4713,7 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
         public SSLCertificate GetSiteCert(int siteid)
         {
             return ObjectUtils.FillObjectFromDataReader<SSLCertificate>(
-                DataProvider.GetSiteCert(SecurityContext.User.UserId, siteid));
+                Database.GetSiteCert(SecurityContext.User.UserId, siteid));
         }
 
         public List<SSLCertificate> GetCertificatesForSite(int siteId)
@@ -4721,7 +4721,7 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
             WebSite item = GetWebSite(siteId) as WebSite;
             List<SSLCertificate> certificates = new List<SSLCertificate>();
             return ObjectUtils.CreateListFromDataSet<SSLCertificate>(
-                DataProvider.GetCertificatesForSite(SecurityContext.User.UserId, item.PackageId, item.Id));
+                Database.GetCertificatesForSite(SecurityContext.User.UserId, item.PackageId, item.Id));
         }
 
         public byte[] ExportCertificate(int siteId, string serialNumber, string password)
@@ -4744,7 +4744,7 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
                 result = server.DeleteCertificate(certificate, item);
                 if (result.IsSuccess)
                 {
-                    DataProvider.DeleteCertificate(SecurityContext.User.UserId, item.PackageId, certificate.id);
+                    Database.DeleteCertificate(SecurityContext.User.UserId, item.PackageId, certificate.id);
                 }
                 else
                 {
@@ -4785,7 +4785,7 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
                 }
                 else
                 {
-                    DataProvider.AddPFX(SecurityContext.User.UserId, item.PackageId, item.Id, service.UserId, certificate.Hostname,
+                    Database.AddPFX(SecurityContext.User.UserId, item.PackageId, item.Id, service.UserId, certificate.Hostname,
                    certificate.FriendlyName, certificate.DistinguishedName, certificate.CSRLength, certificate.SerialNumber,
                    certificate.ValidFrom, certificate.ExpiryDate);
                 }
@@ -4814,7 +4814,7 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
                 WebSite item = GetWebSite(siteId) as WebSite;
                 WebServer server = GetWebServer(item.ServiceId);
                 serverResult = server.CheckCertificate(item);
-                if (serverResult && !DataProvider.CheckSSLExistsForWebsite(siteId))
+                if (serverResult && !Database.CheckSSLExistsForWebsite(siteId))
                 {
                     result.IsSuccess = true;
                 }
@@ -4837,7 +4837,7 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
                 WebSite item = GetWebSite(siteId);
                 PackageInfo service = PackageController.GetPackage(item.PackageId);
 
-                DataProvider.DeleteCertificate(SecurityContext.User.UserId, service.PackageId, csrID);
+                Database.DeleteCertificate(SecurityContext.User.UserId, service.PackageId, csrID);
             }
             catch (Exception ex)
             {

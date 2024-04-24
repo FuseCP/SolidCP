@@ -18,12 +18,12 @@ namespace SolidCP.EnterpriseServer
 
         public UserInfoInternal GetUser(string username)
         {
-            return GetUser(DataProvider.GetUserByUsernameInternally(username));
+            return GetUser(Database.GetUserByUsernameInternally(username));
         }
 
         public UserInfoInternal GetUser(int userId)
         {
-            return GetUser(DataProvider.GetUserById(SecurityContext.User.UserId, userId));
+            return GetUser(Database.GetUserById(SecurityContext.User.UserId, userId));
         }
 
         private UserInfoInternal GetUser(IDataReader reader)

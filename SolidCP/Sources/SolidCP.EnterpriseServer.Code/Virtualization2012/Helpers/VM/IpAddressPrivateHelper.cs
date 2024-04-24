@@ -16,7 +16,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
         public List<PrivateIPAddress> GetPackagePrivateIPAddresses(int packageId)
         {
             return ObjectUtils.CreateListFromDataReader<PrivateIPAddress>(
-                DataProvider.GetPackagePrivateIPAddresses(packageId));
+                Database.GetPackagePrivateIPAddresses(packageId));
         }
 
         public ResultObject RestoreVirtualMachinePrivateIPAddressesByInjection(int itemId)
@@ -158,7 +158,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
 
                 // add addresses to database
                 foreach (string address in addresses)
-                    DataProvider.AddItemPrivateIPAddress(SecurityContext.User.UserId, itemId, address);
+                    Database.AddItemPrivateIPAddress(SecurityContext.User.UserId, itemId, address);
 
                 // set primary IP address
                 if (wasEmptyList)
@@ -324,7 +324,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             try
             {
                 // call data access layer
-                DataProvider.SetItemPrivatePrimaryIPAddress(SecurityContext.User.UserId, itemId, addressId);
+                Database.SetItemPrivatePrimaryIPAddress(SecurityContext.User.UserId, itemId, addressId);
 
                 // send KVP config items
                 if (provisionKvp)
@@ -386,7 +386,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             {
                 // call data access layer
                 foreach (int addressId in addressIds)
-                    DataProvider.DeleteItemPrivateIPAddress(SecurityContext.User.UserId, itemId, addressId);
+                    Database.DeleteItemPrivateIPAddress(SecurityContext.User.UserId, itemId, addressId);
 
                 // send KVP config items
                 switch (provisionKvpType)

@@ -69,7 +69,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
         internal bool CheckBlackBerryUserExists(int accountId)
         {
-            return DataProvider.CheckBlackBerryUserExists(accountId);
+            return Database.CheckBlackBerryUserExists(accountId);
         }
         
         public ResultObject CreateBlackBerryUser(int itemId, int accountId)
@@ -81,7 +81,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
             try
             {
-                isBlackBerryUser = DataProvider.CheckBlackBerryUserExists(accountId);
+                isBlackBerryUser = Database.CheckBlackBerryUserExists(accountId);
             }
             catch(Exception ex)
             {
@@ -184,7 +184,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
             try
             {
-                DataProvider.AddBlackBerryUser(accountId);
+                Database.AddBlackBerryUser(accountId);
             }
             catch(Exception ex)
             {
@@ -204,7 +204,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             try
             {
                 IDataReader reader =
-                    DataProvider.GetBlackBerryUsers(itemId, sortColumn, sortDirection, name, email, startRow, count);
+                    Database.GetBlackBerryUsers(itemId, sortColumn, sortDirection, name, email, startRow, count);
                 List<OrganizationUser> accounts = new List<OrganizationUser>();
                 ObjectUtils.FillCollectionFromDataReader(accounts, reader);
                 res.Value = new OrganizationUsersPaged {PageUsers = accounts.ToArray()};
@@ -233,7 +233,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             IntResult res = TaskManager.StartResultTask<IntResult>("BLACKBERRY", "GET_BLACKBERRY_USERS_COUNT");
             try
             {
-                res.Value = DataProvider.GetBlackBerryUsersCount(itemId, name, email);
+                res.Value = Database.GetBlackBerryUsersCount(itemId, name, email);
             }
             catch (Exception ex)
             {
@@ -297,7 +297,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
             try
             {
-                DataProvider.DeleteBlackBerryUser(accountId);
+                Database.DeleteBlackBerryUser(accountId);
             }
             catch(Exception ex)
             {

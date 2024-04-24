@@ -26,7 +26,7 @@ namespace SolidCP.EnterpriseServer
 
         private StorageSpaceLevelPaged GetStorageSpaceLevelsPagedInternal(string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
-            DataSet ds = DataProvider.GetStorageSpaceLevelsPaged(filterColumn, string.Format("%{0}%", filterValue), sortColumn, startRow, maximumRows);
+            DataSet ds = Database.GetStorageSpaceLevelsPaged(filterColumn, string.Format("%{0}%", filterValue), sortColumn, startRow, maximumRows);
 
             var result = new StorageSpaceLevelPaged
             {
@@ -49,7 +49,7 @@ namespace SolidCP.EnterpriseServer
 
         private StorageSpaceLevel GetStorageSpaceLevelByIdInternal(int levelId)
         {
-            return ObjectUtils.FillObjectFromDataReader<StorageSpaceLevel>(DataProvider.GetStorageSpaceLevelById(levelId));
+            return ObjectUtils.FillObjectFromDataReader<StorageSpaceLevel>(Database.GetStorageSpaceLevelById(levelId));
         }
 
         public IntResult SaveStorageSpaceLevel(StorageSpaceLevel level, List<ResourceGroupInfo> groups)
@@ -71,7 +71,7 @@ namespace SolidCP.EnterpriseServer
 
                 if (level.Id > 0)
                 {
-                    DataProvider.UpdateStorageSpaceLevel(level);
+                    Database.UpdateStorageSpaceLevel(level);
 
                     TaskManager.Write("Updating Storage Space Level with id = {0}",
                         level.Id.ToString(CultureInfo.InvariantCulture));
@@ -80,7 +80,7 @@ namespace SolidCP.EnterpriseServer
                 }
                 else
                 {
-                    result.Value = DataProvider.InsertStorageSpaceLevel(level);
+                    result.Value = Database.InsertStorageSpaceLevel(level);
                     TaskManager.Write("Inserting new Storage Space Level, obtained id = {0}",
                         level.Id.ToString(CultureInfo.InvariantCulture));
 
@@ -131,7 +131,7 @@ namespace SolidCP.EnterpriseServer
                     throw new ArgumentException("Id must be greater than 0");
                 }
 
-                DataProvider.RemoveStorageSpaceLevel(id);
+                Database.RemoveStorageSpaceLevel(id);
 
             }
             catch (Exception exception)
@@ -162,7 +162,7 @@ namespace SolidCP.EnterpriseServer
 
         private List<ResourceGroupInfo> GetLevelResourceGroupsInternal(int levelId)
         {
-            return ObjectUtils.CreateListFromDataReader<ResourceGroupInfo>(DataProvider.GetStorageSpaceLevelResourceGroups(levelId)).ToList();
+            return ObjectUtils.CreateListFromDataReader<ResourceGroupInfo>(Database.GetStorageSpaceLevelResourceGroups(levelId)).ToList();
         }
 
         public ResultObject SaveLevelResourceGroups(int levelId, List<ResourceGroupInfo> newGroups)
@@ -181,13 +181,13 @@ namespace SolidCP.EnterpriseServer
                     throw new ArgumentException("Level Id must be greater than 0");
                 }
 
-                DataProvider.RemoveStorageSpaceLevelResourceGroups(levelId);
+                Database.RemoveStorageSpaceLevelResourceGroups(levelId);
 
                 if (newGroups != null)
                 {
                     foreach (var newGroup in newGroups)
                     {
-                        DataProvider.AddStorageSpaceLevelResourceGroup(levelId, newGroup.GroupId);
+                        Database.AddStorageSpaceLevelResourceGroup(levelId, newGroup.GroupId);
                     }
                 }
 
@@ -222,7 +222,7 @@ namespace SolidCP.EnterpriseServer
 
         private StorageSpacesPaged GetStorageSpacePagedInternal(string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
-            DataSet ds = DataProvider.GetStorageSpacesPaged(filterColumn, string.Format("%{0}%", filterValue), sortColumn, startRow, maximumRows);
+            DataSet ds = Database.GetStorageSpacesPaged(filterColumn, string.Format("%{0}%", filterValue), sortColumn, startRow, maximumRows);
 
             var result = new StorageSpacesPaged
             {
@@ -271,7 +271,7 @@ namespace SolidCP.EnterpriseServer
 
         private List<StorageSpace> GetStorageSpacesByLevelIdInternal(int levelId)
         {
-            DataSet ds = DataProvider.GetStorageSpacesByLevelId(levelId);
+            DataSet ds = Database.GetStorageSpacesByLevelId(levelId);
 
             var spaces = new List<StorageSpace>();
 
@@ -287,7 +287,7 @@ namespace SolidCP.EnterpriseServer
 
         private StorageSpace GetStorageSpaceByIdInternal(int id)
         {
-            return ObjectUtils.FillObjectFromDataReader<StorageSpace>(DataProvider.GetStorageSpaceById(id));
+            return ObjectUtils.FillObjectFromDataReader<StorageSpace>(Database.GetStorageSpaceById(id));
         }
 
         public bool CheckIsStorageSpacePathInUse(int serverId, string path, int currentServiceId)
@@ -297,7 +297,7 @@ namespace SolidCP.EnterpriseServer
 
         private bool CheckIsPathInUseInternal(int serverId, string path, int currentStorageSpaceId)
         {
-            var storage = ObjectUtils.FillObjectFromDataReader<StorageSpace>(DataProvider.GetStorageSpaceByServiceAndPath(serverId, path));
+            var storage = ObjectUtils.FillObjectFromDataReader<StorageSpace>(Database.GetStorageSpaceByServiceAndPath(serverId, path));
 
             return storage != null && storage.Id != currentStorageSpaceId;
         }
@@ -331,7 +331,7 @@ namespace SolidCP.EnterpriseServer
 
                 if (space.Id > 0)
                 {
-                    DataProvider.UpdateStorageSpace(space);
+                    Database.UpdateStorageSpace(space);
 
                     TaskManager.Write("Updating Storage Space with id = {0}", space.Id.ToString(CultureInfo.InvariantCulture));
 
@@ -339,7 +339,7 @@ namespace SolidCP.EnterpriseServer
                 }
                 else
                 {
-                    result.Value = DataProvider.InsertStorageSpace(space);
+                    result.Value = Database.InsertStorageSpace(space);
                     TaskManager.Write("Inserting new Storage Space, obtained id = {0}", space.Id.ToString(CultureInfo.InvariantCulture));
 
                     space.Id = result.Value;
@@ -390,7 +390,7 @@ namespace SolidCP.EnterpriseServer
 
                 ss.ClearStorageSettings(storage.Path, storage.UncPath);
 
-                DataProvider.RemoveStorageSpace(id);
+                Database.RemoveStorageSpace(id);
 
             }
             catch (Exception exception)
@@ -482,7 +482,7 @@ namespace SolidCP.EnterpriseServer
 
                 ss.UpdateFolderQuota(fullPath, quotaInBytes, quotaType);
 
-                result.Value = DataProvider.CreateStorageSpaceFolder(folderName, storageSpace.Id, fullPath, share.UncPath, true, quotaType, quotaInBytes);
+                result.Value = Database.CreateStorageSpaceFolder(folderName, storageSpace.Id, fullPath, share.UncPath, true, quotaType, quotaInBytes);
             }
             catch (Exception exception)
             {
@@ -491,7 +491,7 @@ namespace SolidCP.EnterpriseServer
 
                 if (result.Value > 0)
                 {
-                    DataProvider.RemoveStorageSpaceFolder(result.Value);
+                    Database.RemoveStorageSpaceFolder(result.Value);
                 }
             }
             finally
@@ -542,7 +542,7 @@ namespace SolidCP.EnterpriseServer
                     ss.UpdateFolderQuota(fullPath, quotaInBytes, quotaType);
                 }
 
-                DataProvider.UpdateStorageSpaceFolder(storageSpaceFolderId, folderName, storageSpace.Id, fullPath, uncPath, false, quotaType, quotaInBytes);
+                Database.UpdateStorageSpaceFolder(storageSpaceFolderId, folderName, storageSpace.Id, fullPath, uncPath, false, quotaType, quotaInBytes);
             }
             catch (Exception exception)
             {
@@ -660,7 +660,7 @@ namespace SolidCP.EnterpriseServer
 
                 ss.DeleteFolder(storageFolder.Path);
 
-                DataProvider.RemoveStorageSpaceFolder(storageSpaceFolderId);
+                Database.RemoveStorageSpaceFolder(storageSpaceFolderId);
             }
             catch (Exception exception)
             {
@@ -669,7 +669,7 @@ namespace SolidCP.EnterpriseServer
 
                 if (result.Value > 0)
                 {
-                    DataProvider.RemoveStorageSpaceFolder(result.Value);
+                    Database.RemoveStorageSpaceFolder(result.Value);
                 }
             }
             finally
@@ -719,7 +719,7 @@ namespace SolidCP.EnterpriseServer
 
                 SetFolderQuota(storageSpaceId, storageFolder.Path, quotaInBytes, quotaType);
 
-                DataProvider.UpdateStorageSpaceFolder(storageSpaceFolderId, storageFolder.Name, storageSpaceId, storageFolder.Path, storageFolder.UncPath, storageFolder.IsShared, quotaType, quotaInBytes);
+                Database.UpdateStorageSpaceFolder(storageSpaceFolderId, storageFolder.Name, storageSpaceId, storageFolder.Path, storageFolder.UncPath, storageFolder.IsShared, quotaType, quotaInBytes);
             }
             catch (Exception exception)
             {
@@ -728,7 +728,7 @@ namespace SolidCP.EnterpriseServer
 
                 if (result.Value > 0)
                 {
-                    DataProvider.RemoveStorageSpaceFolder(result.Value);
+                    Database.RemoveStorageSpaceFolder(result.Value);
                 }
             }
             finally
@@ -753,7 +753,7 @@ namespace SolidCP.EnterpriseServer
 
         private List<StorageSpaceFolder> GetStorageSpaceFoldersByStorageSpaceIdInternal(int storageSpaceId)
         {
-            var folders = ObjectUtils.CreateListFromDataReader<StorageSpaceFolder>(DataProvider.GetStorageSpaceFoldersByStorageSpaceId(storageSpaceId));
+            var folders = ObjectUtils.CreateListFromDataReader<StorageSpaceFolder>(Database.GetStorageSpaceFoldersByStorageSpaceId(storageSpaceId));
 
             return folders;
         }
@@ -793,7 +793,7 @@ namespace SolidCP.EnterpriseServer
 
                 if (result.Value > 0)
                 {
-                    DataProvider.RemoveStorageSpaceFolder(result.Value);
+                    Database.RemoveStorageSpaceFolder(result.Value);
                 }
             }
             finally
@@ -925,7 +925,7 @@ namespace SolidCP.EnterpriseServer
 
         private StorageSpaceFolder GetStorageSpaceFolderByIdInternal(int id)
         {
-            return ObjectUtils.FillObjectFromDataReader<StorageSpaceFolder>(DataProvider.GetStorageSpaceFolderById(id));
+            return ObjectUtils.FillObjectFromDataReader<StorageSpaceFolder>(Database.GetStorageSpaceFolderById(id));
         }
 
         public Quota GetFolderQuota(string fullPath, int storageSpaceid)

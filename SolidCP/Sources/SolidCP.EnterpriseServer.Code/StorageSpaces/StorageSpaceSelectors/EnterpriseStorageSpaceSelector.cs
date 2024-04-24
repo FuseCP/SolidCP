@@ -22,7 +22,7 @@ namespace SolidCP.EnterpriseServer
             }
 
 
-            var storages = ObjectUtils.CreateListFromDataReader<StorageSpace>(DataProvider.GetStorageSpacesByResourceGroupName(groupName)).Where(x => !x.IsDisabled).ToList();
+            var storages = ObjectUtils.CreateListFromDataReader<StorageSpace>(Database.GetStorageSpacesByResourceGroupName(groupName)).Where(x => !x.IsDisabled).ToList();
 
             if (!storages.Any())
             {

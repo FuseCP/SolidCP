@@ -264,7 +264,7 @@ namespace SolidCP.EnterpriseServer
                 if (domain.PackageId != packageId)
                     return checkResult;
 
-                if (DataProvider.ExchangeOrganizationDomainExists(domain.DomainId))
+                if (Database.ExchangeOrganizationDomainExists(domain.DomainId))
                     return BusinessErrorCodes.ERROR_ORGANIZATION_DOMAIN_IS_IN_USE;
 
                 domainId = domain.DomainId;
@@ -306,7 +306,7 @@ namespace SolidCP.EnterpriseServer
 
         public bool OrganizationIdentifierExists(string organizationId)
         {
-            return DataProvider.ExchangeOrganizationExists(organizationId);
+            return Database.ExchangeOrganizationExists(organizationId);
         }
 
         private void RollbackOrganization(int packageId, string organizationId)
@@ -412,10 +412,10 @@ namespace SolidCP.EnterpriseServer
                 itemId = AddOrganizationToPackageItems(org, serviceId, packageId, organizationName, organizationId, domainName);
 
                 // register org ID
-                DataProvider.AddExchangeOrganization(itemId, organizationId);
+                Database.AddExchangeOrganization(itemId, organizationId);
 
                 // register domain                
-                DataProvider.AddExchangeOrganizationDomain(itemId, domainId, true);
+                Database.AddExchangeOrganizationDomain(itemId, domainId, true);
 
                 // add UPNSuffics
                 orgProxy.CreateOrganizationDomain(org.DistinguishedName, domainName);
@@ -532,14 +532,14 @@ namespace SolidCP.EnterpriseServer
 
                 if (!string.IsNullOrEmpty(org.GlobalAddressList))
                 {
-                    if (DataProvider.CheckDomainUsedByHostedOrganization(domain.DomainName) == 1)
+                    if (Database.CheckDomainUsedByHostedOrganization(domain.DomainName) == 1)
                     {
                         return -1;
                     }
                 }
 
                 // unregister domain
-                DataProvider.DeleteExchangeOrganizationDomain(itemId, domainId);
+                Database.DeleteExchangeOrganizationDomain(itemId, domainId);
 
                 // remove service item
                 ServiceProviderItem itemDomain = PackageController.GetPackageItemByName(
@@ -577,7 +577,7 @@ namespace SolidCP.EnterpriseServer
             if (domain == null)
                 return false;
 
-            return (DataProvider.CheckDomainUsedByHostedOrganization(domain.DomainName) == 1);
+            return (Database.CheckDomainUsedByHostedOrganization(domain.DomainName) == 1);
         }
 
         private void DeleteOCSUsers(int itemId, ref bool successful)
@@ -941,7 +941,7 @@ namespace SolidCP.EnterpriseServer
 
                 }
 
-                DataProvider.DeleteOrganizationUser(itemId);
+                Database.DeleteOrganizationUser(itemId);
 
                 // delete meta-item
                 PackageController.DeletePackageItem(itemId);
@@ -1018,7 +1018,7 @@ namespace SolidCP.EnterpriseServer
             if (string.IsNullOrEmpty(organizationId))
                 throw new ArgumentNullException("organizationId");
 
-            int itemId = DataProvider.GetItemIdByOrganizationId(organizationId);
+            int itemId = Database.GetItemIdByOrganizationId(organizationId);
 
             Organization org = GetOrganization(itemId);
 
@@ -1109,7 +1109,7 @@ namespace SolidCP.EnterpriseServer
                 OrganizationStatistics stats = new OrganizationStatistics();
                 if (byOrganization)
                 {
-                    OrganizationStatistics tempStats = ObjectUtils.FillObjectFromDataReader<OrganizationStatistics>(DataProvider.GetOrganizationStatistics(org.Id));
+                    OrganizationStatistics tempStats = ObjectUtils.FillObjectFromDataReader<OrganizationStatistics>(Database.GetOrganizationStatistics(org.Id));
 
                     stats.CreatedUsers = tempStats.CreatedUsers;
                     stats.CreatedDomains = tempStats.CreatedDomains;
@@ -1189,7 +1189,7 @@ namespace SolidCP.EnterpriseServer
                 }
                 else
                 {
-                    UserInfo user = ObjectUtils.FillObjectFromDataReader<UserInfo>(DataProvider.GetUserByExchangeOrganizationIdInternally(org.Id));
+                    UserInfo user = ObjectUtils.FillObjectFromDataReader<UserInfo>(Database.GetUserByExchangeOrganizationIdInternally(org.Id));
 
                     List<PackageInfo> Packages = PackageController.GetPackages(user.UserId);
 
@@ -1205,7 +1205,7 @@ namespace SolidCP.EnterpriseServer
                             {
                                 foreach (Organization o in orgs)
                                 {
-                                    OrganizationStatistics tempStats = ObjectUtils.FillObjectFromDataReader<OrganizationStatistics>(DataProvider.GetOrganizationStatistics(o.Id));
+                                    OrganizationStatistics tempStats = ObjectUtils.FillObjectFromDataReader<OrganizationStatistics>(Database.GetOrganizationStatistics(o.Id));
 
                                     stats.CreatedUsers += tempStats.CreatedUsers;
                                     stats.CreatedDomains += tempStats.CreatedDomains;
@@ -1417,7 +1417,7 @@ namespace SolidCP.EnterpriseServer
 
                 // change accepted domain type in DB
                 int domainTypeId = (int)newDomainType;
-                DataProvider.ChangeExchangeAcceptedDomainType(itemId, domainId, domainTypeId);
+                Database.ChangeExchangeAcceptedDomainType(itemId, domainId, domainTypeId);
 
                 return checkResult;
             }
@@ -1472,7 +1472,7 @@ namespace SolidCP.EnterpriseServer
                     if (domain.PackageId != org.PackageId)
                         return checkResult;
 
-                    if (DataProvider.ExchangeOrganizationDomainExists(domain.DomainId))
+                    if (Database.ExchangeOrganizationDomainExists(domain.DomainId))
                         return BusinessErrorCodes.ERROR_ORGANIZATION_DOMAIN_IS_IN_USE;
                 }
                 else if (checkResult == BusinessErrorCodes.ERROR_RESTRICTED_DOMAIN)
@@ -1501,7 +1501,7 @@ namespace SolidCP.EnterpriseServer
                 LogExtension.WriteObject(domain);
 
                 // register domain
-                DataProvider.AddExchangeOrganizationDomain(itemId, domain.DomainId, false);
+                Database.AddExchangeOrganizationDomain(itemId, domain.DomainId, false);
 
                 // register service item
                 OrganizationDomain exchDomain = new OrganizationDomain();
@@ -1612,7 +1612,7 @@ namespace SolidCP.EnterpriseServer
             var result = new List<OrganizationDeletedUser>();
 
             var orgDeletedUsers = ObjectUtils.CreateListFromDataReader<OrganizationUser>(
-                DataProvider.GetExchangeAccounts(itemId, (int)ExchangeAccountType.DeletedUser));
+                Database.GetExchangeAccounts(itemId, (int)ExchangeAccountType.DeletedUser));
 
             foreach (var orgDeletedUser in orgDeletedUsers)
             {
@@ -1633,7 +1633,7 @@ namespace SolidCP.EnterpriseServer
             int startRow, int maximumRows)
         {
             DataSet ds =
-                DataProvider.GetExchangeAccountsPaged(SecurityContext.User.UserId, itemId, ((int)ExchangeAccountType.DeletedUser).ToString(),
+                Database.GetExchangeAccountsPaged(SecurityContext.User.UserId, itemId, ((int)ExchangeAccountType.DeletedUser).ToString(),
                 filterColumn, filterValue, sortColumn, startRow, maximumRows, false);
 
             OrganizationDeletedUsersPaged result = new OrganizationDeletedUsersPaged();
@@ -1701,7 +1701,7 @@ namespace SolidCP.EnterpriseServer
 
 
             DataSet ds =
-                DataProvider.GetExchangeAccountsPaged(SecurityContext.User.UserId, itemId, accountTypes, filterColumn,
+                Database.GetExchangeAccountsPaged(SecurityContext.User.UserId, itemId, accountTypes, filterColumn,
                                                       filterValue, sortColumn, startRow, maximumRows, false);
 
             OrganizationUsersPaged result = new OrganizationUsersPaged();
@@ -2208,17 +2208,17 @@ namespace SolidCP.EnterpriseServer
 
         public AccessToken GetAccessToken(Guid accessToken, AccessTokenTypes type)
         {
-            return ObjectUtils.FillObjectFromDataReader<AccessToken>(DataProvider.GetAccessTokenByAccessToken(accessToken, type));
+            return ObjectUtils.FillObjectFromDataReader<AccessToken>(Database.GetAccessTokenByAccessToken(accessToken, type));
         }
 
         public void DeleteAccessToken(Guid accessToken, AccessTokenTypes type)
         {
-            DataProvider.DeleteAccessToken(accessToken, type);
+            Database.DeleteAccessToken(accessToken, type);
         }
 
         public void DeleteAllExpiredTokens()
         {
-            DataProvider.DeleteExpiredAccessTokens();
+            Database.DeleteExpiredAccessTokens();
         }
 
         public SystemSettings GetWebDavSystemSettings()
@@ -2287,14 +2287,14 @@ namespace SolidCP.EnterpriseServer
                 ExpirationDate = DateTime.Now.AddHours(hours)
             };
 
-            token.Id = DataProvider.AddAccessToken(token);
+            token.Id = Database.AddAccessToken(token);
 
             return token;
         }
 
         public void SetAccessTokenResponse(Guid accessToken, string response)
         {
-            DataProvider.SetAccessTokenResponseMessage(accessToken, response);
+            Database.SetAccessTokenResponseMessage(accessToken, response);
         }
 
         public bool CheckPhoneNumberIsInUse(int itemId, string phoneNumber, string userSamAccountName = null)
@@ -2333,7 +2333,7 @@ namespace SolidCP.EnterpriseServer
 
                 var xml = ObjectUtils.Serialize(settings);
 
-                DataProvider.UpdateOrganizationSettings(itemId, OrganizationSettings.PasswordSettings, xml);
+                Database.UpdateOrganizationSettings(itemId, OrganizationSettings.PasswordSettings, xml);
 
                 // Log Extension
                 LogExtension.WriteVariable("Password Settings", xml);
@@ -2442,7 +2442,7 @@ namespace SolidCP.EnterpriseServer
 
                 var xml = ObjectUtils.Serialize(settings);
 
-                DataProvider.UpdateOrganizationSettings(itemId, OrganizationSettings.GeneralSettings, xml);
+                Database.UpdateOrganizationSettings(itemId, OrganizationSettings.GeneralSettings, xml);
 
                 // Log Extension
                 LogExtension.WriteVariable("General Settings", xml);
@@ -2464,7 +2464,7 @@ namespace SolidCP.EnterpriseServer
 
         private T GetOrganizationSettings<T>(int itemId, string settingsName)
         {
-            var entity = ObjectUtils.FillObjectFromDataReader<OrganizationSettingsEntity>(DataProvider.GetOrganizationSettings(itemId, settingsName));
+            var entity = ObjectUtils.FillObjectFromDataReader<OrganizationSettingsEntity>(Database.GetOrganizationSettings(itemId, settingsName));
 
             if (entity == null)
             {
@@ -2476,13 +2476,13 @@ namespace SolidCP.EnterpriseServer
 
         private bool EmailAddressExists(string emailAddress, bool checkContacts)
         {
-            return DataProvider.ExchangeAccountEmailAddressExists(emailAddress, checkContacts);
+            return Database.ExchangeAccountEmailAddressExists(emailAddress, checkContacts);
         }
 
 
         private int AddOrganizationUser(int itemId, string accountName, string displayName, string email, string sAMAccountName, string accountPassword, string subscriberNumber)
         {
-            return DataProvider.AddExchangeAccount(itemId, (int)ExchangeAccountType.User, accountName, displayName, email, false, string.Empty,
+            return Database.AddExchangeAccount(itemId, (int)ExchangeAccountType.User, accountName, displayName, email, false, string.Empty,
                                             sAMAccountName, 0, subscriberNumber.Trim());
 
         }
@@ -2724,7 +2724,7 @@ namespace SolidCP.EnterpriseServer
 
         private void AddAccountEmailAddress(int accountId, string emailAddress)
         {
-            DataProvider.AddExchangeAccountEmailAddress(accountId, emailAddress);
+            Database.AddExchangeAccountEmailAddress(accountId, emailAddress);
         }
 
         private string BuildAccountName(string orgId, string name, int ServiceId)
@@ -2825,7 +2825,7 @@ namespace SolidCP.EnterpriseServer
 
         private bool AccountExists(string accountName, int ServiceId)
         {
-            if (!DataProvider.ExchangeAccountExists(accountName))
+            if (!Database.ExchangeAccountExists(accountName))
             {
                 Organizations orgProxy = GetOrganizationProxy(ServiceId);
 
@@ -2858,17 +2858,17 @@ namespace SolidCP.EnterpriseServer
                     return BusinessErrorCodes.CURRENT_USER_IS_CRM_USER;
                 }
 
-                if (DataProvider.CheckOCSUserExists(accountId))
+                if (Database.CheckOCSUserExists(accountId))
                 {
                     return BusinessErrorCodes.CURRENT_USER_IS_OCS_USER;
                 }
 
-                if (DataProvider.CheckLyncUserExists(accountId))
+                if (Database.CheckLyncUserExists(accountId))
                 {
                     return BusinessErrorCodes.CURRENT_USER_IS_LYNC_USER;
                 }
 
-                if (DataProvider.CheckSfBUserExists(accountId))
+                if (Database.CheckSfBUserExists(accountId))
                 {
                     return BusinessErrorCodes.CURRENT_USER_IS_SFB_USER;
                 }
@@ -3157,17 +3157,17 @@ namespace SolidCP.EnterpriseServer
                     return BusinessErrorCodes.CURRENT_USER_IS_CRM_USER;
                 }
 
-                if (DataProvider.CheckOCSUserExists(accountId))
+                if (Database.CheckOCSUserExists(accountId))
                 {
                     return BusinessErrorCodes.CURRENT_USER_IS_OCS_USER;
                 }
 
-                if (DataProvider.CheckLyncUserExists(accountId))
+                if (Database.CheckLyncUserExists(accountId))
                 {
                     return BusinessErrorCodes.CURRENT_USER_IS_LYNC_USER;
                 }
 
-                if (DataProvider.CheckSfBUserExists(accountId))
+                if (Database.CheckSfBUserExists(accountId))
                 {
                     return BusinessErrorCodes.CURRENT_USER_IS_SFB_USER;
                 }
@@ -3233,7 +3233,7 @@ namespace SolidCP.EnterpriseServer
         public OrganizationDeletedUser GetDeletedUser(int accountId)
         {
             OrganizationDeletedUser deletedUser = ObjectUtils.FillObjectFromDataReader<OrganizationDeletedUser>(
-                DataProvider.GetOrganizationDeletedUser(accountId));
+                Database.GetOrganizationDeletedUser(accountId));
 
             if (deletedUser == null)
                 return null;
@@ -3245,19 +3245,19 @@ namespace SolidCP.EnterpriseServer
 
         private int AddDeletedUser(OrganizationDeletedUser deletedUser)
         {
-            return DataProvider.AddOrganizationDeletedUser(
+            return Database.AddOrganizationDeletedUser(
                 deletedUser.AccountId, (int)deletedUser.OriginAT, deletedUser.StoragePath, deletedUser.FolderName, deletedUser.FileName, deletedUser.ExpirationDate);
         }
 
         private void RemoveDeletedUser(int id)
         {
-            DataProvider.DeleteOrganizationDeletedUser(id);
+            Database.DeleteOrganizationDeletedUser(id);
         }
 
         public OrganizationUser GetAccount(int itemId, int userId, bool withLog = true)
         {
             OrganizationUser account = ObjectUtils.FillObjectFromDataReader<OrganizationUser>(
-                DataProvider.GetExchangeAccount(itemId, userId));
+                Database.GetExchangeAccount(itemId, userId));
 
             if (account == null)
                 return null;
@@ -3272,7 +3272,7 @@ namespace SolidCP.EnterpriseServer
         public OrganizationUser GetAccountByAccountName(int itemId, string AccountName)
         {
             OrganizationUser account = ObjectUtils.FillObjectFromDataReader<OrganizationUser>(
-                DataProvider.GetExchangeAccountByAccountName(itemId, AccountName));
+                Database.GetExchangeAccountByAccountName(itemId, AccountName));
 
             if (account == null)
                 return null;
@@ -3287,7 +3287,7 @@ namespace SolidCP.EnterpriseServer
             if (GetOrganization(itemId, false) == null)
                 return;
 
-            DataProvider.DeleteExchangeAccount(itemId, accountId);
+            Database.DeleteExchangeAccount(itemId, accountId);
         }
 
         public OrganizationUser GetUserGeneralSettings(int itemId, int accountId)
@@ -3331,9 +3331,9 @@ namespace SolidCP.EnterpriseServer
                 retUser.PrimaryEmailAddress = account.PrimaryEmailAddress;
                 retUser.AccountType = account.AccountType;
                 retUser.CrmUserId = CRMController.GetCrmUserId(accountId);
-                retUser.IsOCSUser = DataProvider.CheckOCSUserExists(accountId);
-                retUser.IsLyncUser = DataProvider.CheckLyncUserExists(accountId);
-                retUser.IsSfBUser = DataProvider.CheckSfBUserExists(accountId);
+                retUser.IsOCSUser = Database.CheckOCSUserExists(accountId);
+                retUser.IsLyncUser = Database.CheckLyncUserExists(accountId);
+                retUser.IsSfBUser = Database.CheckSfBUserExists(accountId);
                 retUser.IsBlackBerryUser = BlackBerryController.CheckBlackBerryUserExists(accountId);
                 retUser.SubscriberNumber = account.SubscriberNumber;
                 retUser.LevelId = account.LevelId;
@@ -3381,9 +3381,9 @@ namespace SolidCP.EnterpriseServer
                 retUser.PrimaryEmailAddress = account.PrimaryEmailAddress;
                 retUser.AccountType = account.AccountType;
                 retUser.CrmUserId = CRMController.GetCrmUserId(accountId);
-                retUser.IsOCSUser = DataProvider.CheckOCSUserExists(accountId);
-                retUser.IsLyncUser = DataProvider.CheckLyncUserExists(accountId);
-                retUser.IsSfBUser = DataProvider.CheckSfBUserExists(accountId);
+                retUser.IsOCSUser = Database.CheckOCSUserExists(accountId);
+                retUser.IsLyncUser = Database.CheckLyncUserExists(accountId);
+                retUser.IsSfBUser = Database.CheckSfBUserExists(accountId);
                 retUser.IsBlackBerryUser = BlackBerryController.CheckBlackBerryUserExists(accountId);
                 retUser.SubscriberNumber = account.SubscriberNumber;
                 retUser.LevelId = account.LevelId;
@@ -3562,7 +3562,7 @@ namespace SolidCP.EnterpriseServer
                                             user.AccountName,
                                             userPrincipalName.ToLower());
 
-                DataProvider.UpdateExchangeAccountUserPrincipalName(accountId, userPrincipalName.ToLower());
+                Database.UpdateExchangeAccountUserPrincipalName(accountId, userPrincipalName.ToLower());
 
                 if (inherit)
                 {
@@ -3575,14 +3575,14 @@ namespace SolidCP.EnterpriseServer
                     {
                         if (user.IsLyncUser)
                         {
-                            if (!DataProvider.LyncUserExists(accountId, userPrincipalName.ToLower()))
+                            if (!Database.LyncUserExists(accountId, userPrincipalName.ToLower()))
                             {
                                 LyncController.SetLyncUserGeneralSettings(itemId, accountId, userPrincipalName.ToLower(), null);
                             }
                         }
                         if (user.IsSfBUser)
                         {
-                            if (!DataProvider.SfBUserExists(accountId, userPrincipalName.ToLower()))
+                            if (!Database.SfBUserExists(accountId, userPrincipalName.ToLower()))
                             {
                                 SfBController.SetSfBUserGeneralSettings(itemId, accountId, userPrincipalName.ToLower(), null);
                             }
@@ -3592,7 +3592,7 @@ namespace SolidCP.EnterpriseServer
                             if (user.IsOCSUser)
                             {
                                 OCSServer ocs = GetOCSProxy(itemId);
-                                string instanceId = DataProvider.GetOCSUserInstanceID(user.AccountId);
+                                string instanceId = Database.GetOCSUserInstanceID(user.AccountId);
                                 ocs.SetUserPrimaryUri(instanceId, userPrincipalName.ToLower());
                             }
                         }
@@ -3667,12 +3667,12 @@ namespace SolidCP.EnterpriseServer
 
         private void UpdateAccountServiceLevelSettings(ExchangeAccount account)
         {
-            DataProvider.UpdateExchangeAccountServiceLevelSettings(account.AccountId, account.LevelId, account.IsVIP);
+            Database.UpdateExchangeAccountServiceLevelSettings(account.AccountId, account.LevelId, account.IsVIP);
         }
 
         private void UpdateAccount(ExchangeAccount account)
         {
-            DataProvider.UpdateExchangeAccount(account.AccountId, account.AccountName, account.AccountType, account.DisplayName,
+            Database.UpdateExchangeAccount(account.AccountId, account.AccountName, account.AccountType, account.DisplayName,
                 account.PrimaryEmailAddress, account.MailEnabledPublicFolder,
                 account.MailboxManagerActions.ToString(), account.SamAccountName, account.MailboxPlanId, account.ArchivingMailboxPlanId,
                 (string.IsNullOrEmpty(account.SubscriberNumber) ? null : account.SubscriberNumber.Trim()),
@@ -3724,7 +3724,7 @@ namespace SolidCP.EnterpriseServer
             #endregion
 
             List<OrganizationUser> Tmpaccounts = ObjectUtils.CreateListFromDataReader<OrganizationUser>(
-                                                  DataProvider.SearchOrganizationAccounts(SecurityContext.User.UserId, itemId,
+                                                  Database.SearchOrganizationAccounts(SecurityContext.User.UserId, itemId,
                                                   filterColumn, filterValue, sortColumn, includeMailboxes));
 
             return Tmpaccounts;
@@ -3814,7 +3814,7 @@ namespace SolidCP.EnterpriseServer
 
             // load all domains
             List<OrganizationDomainName> domains = ObjectUtils.CreateListFromDataReader<OrganizationDomainName>(
-                DataProvider.GetExchangeOrganizationDomains(itemId));
+                Database.GetExchangeOrganizationDomains(itemId));
 
             // set default domain
             foreach (OrganizationDomainName domain in domains)
@@ -3909,7 +3909,7 @@ namespace SolidCP.EnterpriseServer
             string accountName, string displayName, string primaryEmailAddress, bool mailEnabledPublicFolder,
             MailboxManagerActions mailboxManagerActions, string samAccountName, string accountPassword, int mailboxPlanId, string subscriberNumber)
         {
-            return DataProvider.AddExchangeAccount(itemId, (int)accountType,
+            return Database.AddExchangeAccount(itemId, (int)accountType,
                 accountName, displayName, primaryEmailAddress, mailEnabledPublicFolder,
                 mailboxManagerActions.ToString(), samAccountName, mailboxPlanId, (string.IsNullOrEmpty(subscriberNumber) ? null : subscriberNumber.Trim()));
         }
@@ -3920,7 +3920,7 @@ namespace SolidCP.EnterpriseServer
         {
             List<AdditionalGroup> additionalGroups = new List<AdditionalGroup>();
 
-            IDataReader reader = DataProvider.GetAdditionalGroups(userId);
+            IDataReader reader = Database.GetAdditionalGroups(userId);
 
             while (reader.Read())
             {
@@ -3938,17 +3938,17 @@ namespace SolidCP.EnterpriseServer
 
         public void UpdateAdditionalGroup(int groupId, string groupName)
         {
-            DataProvider.UpdateAdditionalGroup(groupId, groupName);
+            Database.UpdateAdditionalGroup(groupId, groupName);
         }
 
         public void DeleteAdditionalGroup(int groupId)
         {
-            DataProvider.DeleteAdditionalGroup(groupId);
+            Database.DeleteAdditionalGroup(groupId);
         }
 
         public int AddAdditionalGroup(int userId, string groupName)
         {
-            return DataProvider.AddAdditionalGroup(userId, groupName);
+            return Database.AddAdditionalGroup(userId, groupName);
         }
 
         #endregion
@@ -4298,7 +4298,7 @@ namespace SolidCP.EnterpriseServer
             string accountTypes = string.Format("{0}, {1}", ((int)ExchangeAccountType.SecurityGroup), ((int)ExchangeAccountType.DefaultSecurityGroup));
 
             DataSet ds =
-                DataProvider.GetExchangeAccountsPaged(SecurityContext.User.UserId, itemId, accountTypes, filterColumn,
+                Database.GetExchangeAccountsPaged(SecurityContext.User.UserId, itemId, accountTypes, filterColumn,
                                                       filterValue, sortColumn, startRow, maximumRows, false);
 
             ExchangeAccountsPaged result = new ExchangeAccountsPaged();
@@ -4524,7 +4524,7 @@ namespace SolidCP.EnterpriseServer
             }
 
             List<ExchangeAccount> tmpAccounts = ObjectUtils.CreateListFromDataReader<ExchangeAccount>(
-                                                  DataProvider.SearchExchangeAccountsByTypes(SecurityContext.User.UserId, itemId,
+                                                  Database.SearchExchangeAccountsByTypes(SecurityContext.User.UserId, itemId,
                                                   accountTypes, filterColumn, filterValue, sortColumn));
 
             return tmpAccounts;
@@ -4674,7 +4674,7 @@ namespace SolidCP.EnterpriseServer
 
             try
             {
-                levelID = DataProvider.AddSupportServiceLevel(levelName, levelDescription);
+                levelID = Database.AddSupportServiceLevel(levelName, levelDescription);
             }
             catch (Exception ex)
             {
@@ -4697,7 +4697,7 @@ namespace SolidCP.EnterpriseServer
                 if (CheckServiceLevelUsage(levelId)) res.AddError("SERVICE_LEVEL_IN_USE", new ApplicationException("Service Level is being used"));
 
                 if (res.IsSuccess)
-                DataProvider.DeleteSupportServiceLevel(levelId);
+                Database.DeleteSupportServiceLevel(levelId);
             }
             catch (Exception ex)
             {
@@ -4721,7 +4721,7 @@ namespace SolidCP.EnterpriseServer
                 // Log Extension
                 LogExtension.WriteVariables(new { levelID, levelName, levelDescription }); 
                 
-                DataProvider.UpdateSupportServiceLevel(levelID, levelName, levelDescription);
+                Database.UpdateSupportServiceLevel(levelID, levelName, levelDescription);
             }
             catch (Exception ex)
             {
@@ -4740,7 +4740,7 @@ namespace SolidCP.EnterpriseServer
 
             try
             {
-                return ObjectUtils.CreateListFromDataReader<ServiceLevel>(DataProvider.GetSupportServiceLevels()).ToArray();
+                return ObjectUtils.CreateListFromDataReader<ServiceLevel>(Database.GetSupportServiceLevels()).ToArray();
             }
             catch (Exception ex)
             {
@@ -4760,7 +4760,7 @@ namespace SolidCP.EnterpriseServer
             try
             {
                 return ObjectUtils.FillObjectFromDataReader<ServiceLevel>(
-                    DataProvider.GetSupportServiceLevel(levelID));
+                    Database.GetSupportServiceLevel(levelID));
             }
             catch (Exception ex)
             {
@@ -4774,7 +4774,7 @@ namespace SolidCP.EnterpriseServer
 
         private bool CheckServiceLevelUsage(int levelID)
         {
-            return DataProvider.CheckServiceLevelUsage(levelID);
+            return Database.CheckServiceLevelUsage(levelID);
         }
 
         #endregion
@@ -4797,7 +4797,7 @@ namespace SolidCP.EnterpriseServer
 
         public DataSet GetOrganizationObjectsByDomain(int itemId, string domainName)
         {
-            return DataProvider.GetOrganizationObjectsByDomain(itemId, domainName);
+            return Database.GetOrganizationObjectsByDomain(itemId, domainName);
         }
     }
 

@@ -199,7 +199,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
             try
             {
-                isOCSUser = DataProvider.CheckOCSUserExists(accountId);
+                isOCSUser = Database.CheckOCSUserExists(accountId);
             }
             catch (Exception ex)
             {
@@ -309,7 +309,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             
             try
             {
-                DataProvider.AddOCSUser(accountId, instanceId);
+                Database.AddOCSUser(accountId, instanceId);
             }
             catch (Exception ex)
             {
@@ -331,7 +331,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             try
             {
                 IDataReader reader =
-                    DataProvider.GetOCSUsers(itemId, sortColumn, sortDirection, name, email, startRow, count);
+                    Database.GetOCSUsers(itemId, sortColumn, sortDirection, name, email, startRow, count);
                 List<OCSUser> accounts = new List<OCSUser>();
                 ObjectUtils.FillCollectionFromDataReader(accounts, reader);
                 res.Value = new OCSUsersPaged { PageUsers = accounts.ToArray() };
@@ -360,7 +360,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             IntResult res = TaskManager.StartResultTask<IntResult>("OCS", "GET_OCS_USERS_COUNT");
             try
             {
-                res.Value = DataProvider.GetOCSUsersCount(itemId, name, email);
+                res.Value = Database.GetOCSUsersCount(itemId, name, email);
             }
             catch (Exception ex)
             {
@@ -401,7 +401,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
             try
             {
-                DataProvider.DeleteOCSUser(instanceId);
+                Database.DeleteOCSUser(instanceId);
             }
             catch (Exception ex)
             {

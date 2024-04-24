@@ -143,7 +143,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             LyncUser retLyncUser = new LyncUser();
             bool isLyncUser;
 
-            isLyncUser = DataProvider.CheckLyncUserExists(accountId);
+            isLyncUser = Database.CheckLyncUserExists(accountId);
             if (isLyncUser)
             {
                 TaskManager.CompleteResultTask(res, LyncErrorCodes.USER_IS_ALREADY_LYNC_USER);
@@ -285,7 +285,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
             try
             {
-                DataProvider.AddLyncUser(accountId, lyncUserPlanId, user.UserPrincipalName);
+                Database.AddLyncUser(accountId, lyncUserPlanId, user.UserPrincipalName);
             }
             catch (Exception ex)
             {
@@ -357,7 +357,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
                 if (user != null)
                 {
-                    LyncUserPlan plan = ObjectUtils.FillObjectFromDataReader<LyncUserPlan>(DataProvider.GetLyncUserPlanByAccountId(accountId));
+                    LyncUserPlan plan = ObjectUtils.FillObjectFromDataReader<LyncUserPlan>(Database.GetLyncUserPlanByAccountId(accountId));
 
                     if (plan != null)
                     {
@@ -409,7 +409,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
                 if (user != null)
                 {
-                    LyncUserPlan plan = ObjectUtils.FillObjectFromDataReader<LyncUserPlan>(DataProvider.GetLyncUserPlanByAccountId(accountId));
+                    LyncUserPlan plan = ObjectUtils.FillObjectFromDataReader<LyncUserPlan>(Database.GetLyncUserPlanByAccountId(accountId));
 
                     if (plan != null)
                     {
@@ -424,7 +424,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
                         {
                             if (sipAddress != usr.UserPrincipalName)
                             {
-                                if (DataProvider.LyncUserExists(accountId, sipAddress))
+                                if (Database.LyncUserExists(accountId, sipAddress))
                                 {
                                     TaskManager.CompleteResultTask(res, LyncErrorCodes.ADDRESS_ALREADY_USED);
                                     return res;
@@ -439,7 +439,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
                     lync.SetLyncUserGeneralSettings(org.OrganizationId, usr.UserPrincipalName, user);
 
-                    DataProvider.UpdateLyncUser(accountId, sipAddress);
+                    Database.UpdateLyncUser(accountId, sipAddress);
                 }
             }
             catch (Exception ex)
@@ -525,7 +525,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
                 try
                 {
-                    DataProvider.SetLyncUserLyncUserplan(accountId, lyncUserPlanId);
+                    Database.SetLyncUserLyncUserplan(accountId, lyncUserPlanId);
                 }
                 catch (Exception ex)
                 {
@@ -557,7 +557,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             try
             {
                 IDataReader reader =
-                    DataProvider.GetLyncUsers(itemId, sortColumn, sortDirection, startRow, count);
+                    Database.GetLyncUsers(itemId, sortColumn, sortDirection, startRow, count);
                 List<LyncUser> accounts = new List<LyncUser>();
                 ObjectUtils.FillCollectionFromDataReader(accounts, reader);
                 res.Value = new LyncUsersPaged { PageUsers = accounts.ToArray() };
@@ -583,7 +583,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
         public List<LyncUser> GetLyncUsersByPlanId(int itemId, int planId)
         {
-            return ObjectUtils.CreateListFromDataReader<LyncUser>(DataProvider.GetLyncUsersByPlanId(itemId, planId));
+            return ObjectUtils.CreateListFromDataReader<LyncUser>(Database.GetLyncUsersByPlanId(itemId, planId));
         }
 
         public IntResult GetLyncUsersCount(int itemId)
@@ -591,7 +591,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             IntResult res = TaskManager.StartResultTask<IntResult>("LYNC", "GET_LYNC_USERS_COUNT");
             try
             {
-                res.Value = DataProvider.GetLyncUsersCount(itemId);
+                res.Value = Database.GetLyncUsersCount(itemId);
             }
             catch (Exception ex)
             {
@@ -642,7 +642,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
             try
             {
-                DataProvider.DeleteLyncUser(accountId);
+                Database.DeleteLyncUser(accountId);
             }
             catch (Exception ex)
             {
@@ -671,7 +671,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             {
                 List<LyncUserPlan> plans = new List<LyncUserPlan>();
 
-                UserInfo user = ObjectUtils.FillObjectFromDataReader<UserInfo>(DataProvider.GetUserByExchangeOrganizationIdInternally(itemId));
+                UserInfo user = ObjectUtils.FillObjectFromDataReader<UserInfo>(Database.GetUserByExchangeOrganizationIdInternally(itemId));
                 
                 if (user.Role == UserRole.User)
                     LyncController.GetLyncUserPlansByUser(itemId, user, ref plans);
@@ -679,7 +679,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
                     LyncController.GetLyncUserPlansByUser(0, user, ref plans);
 
 
-                ExchangeOrganization ExchangeOrg = ObjectUtils.FillObjectFromDataReader<ExchangeOrganization>(DataProvider.GetExchangeOrganization(itemId));
+                ExchangeOrganization ExchangeOrg = ObjectUtils.FillObjectFromDataReader<ExchangeOrganization>(Database.GetExchangeOrganization(itemId));
 
                 if (ExchangeOrg != null)
                 {
@@ -728,7 +728,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
                 if (OrgId != -1)
                 {
-                    List<LyncUserPlan> Plans = ObjectUtils.CreateListFromDataReader<LyncUserPlan>(DataProvider.GetLyncUserPlans(OrgId));
+                    List<LyncUserPlan> Plans = ObjectUtils.CreateListFromDataReader<LyncUserPlan>(Database.GetLyncUserPlans(OrgId));
 
                     foreach (LyncUserPlan p in Plans)
                     {
@@ -752,7 +752,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             try
             {
                 return ObjectUtils.FillObjectFromDataReader<LyncUserPlan>(
-                    DataProvider.GetLyncUserPlan(lyncUserPlanId));
+                    Database.GetLyncUserPlan(lyncUserPlanId));
             }
             catch (Exception ex)
             {
@@ -787,7 +787,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
                     lyncUserPlan.VoicePolicy = LyncVoicePolicyType.None;
                 lyncUserPlan.IM = true;
 
-                return DataProvider.AddLyncUserPlan(itemID, lyncUserPlan);
+                return Database.AddLyncUserPlan(itemID, lyncUserPlan);
             }
             catch (Exception ex)
             {
@@ -827,7 +827,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
                     lyncUserPlan.VoicePolicy = LyncVoicePolicyType.None;
                 lyncUserPlan.IM = true;
 
-                DataProvider.UpdateLyncUserPlan(itemID, lyncUserPlan);
+                Database.UpdateLyncUserPlan(itemID, lyncUserPlan);
             }
             catch (Exception ex)
             {
@@ -852,7 +852,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
             try
             {
-                DataProvider.DeleteLyncUserPlan(lyncUserPlanId);
+                Database.DeleteLyncUserPlan(lyncUserPlanId);
 
                 return 0;
             }
@@ -876,7 +876,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
             try
             {
-                DataProvider.SetOrganizationDefaultLyncUserPlan(itemId, lyncUserPlanId);
+                Database.SetOrganizationDefaultLyncUserPlan(itemId, lyncUserPlanId);
 
             }
             catch (Exception ex)

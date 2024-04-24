@@ -218,7 +218,7 @@ namespace SolidCP.EnterpriseServer
 
                 if (byOrganization)
                 {
-                    OrganizationStatistics tempStats = ObjectUtils.FillObjectFromDataReader<OrganizationStatistics>(DataProvider.GetExchangeOrganizationStatistics(org.Id));
+                    OrganizationStatistics tempStats = ObjectUtils.FillObjectFromDataReader<OrganizationStatistics>(Database.GetExchangeOrganizationStatistics(org.Id));
 
                     stats.CreatedMailboxes = tempStats.CreatedMailboxes;
                     stats.CreatedContacts = tempStats.CreatedContacts;
@@ -234,7 +234,7 @@ namespace SolidCP.EnterpriseServer
                 }
                 else
                 {
-                    UserInfo user = ObjectUtils.FillObjectFromDataReader<UserInfo>(DataProvider.GetUserByExchangeOrganizationIdInternally(org.Id));
+                    UserInfo user = ObjectUtils.FillObjectFromDataReader<UserInfo>(Database.GetUserByExchangeOrganizationIdInternally(org.Id));
                     List<PackageInfo> Packages = PackageController.GetPackages(user.UserId);
 
                     if ((Packages != null) & (Packages.Count > 0))
@@ -252,7 +252,7 @@ namespace SolidCP.EnterpriseServer
                                     // Log Extension
                                     LogExtension.WriteVariable("Nested Org", o.Name);
 
-                                    OrganizationStatistics tempStats = ObjectUtils.FillObjectFromDataReader<OrganizationStatistics>(DataProvider.GetExchangeOrganizationStatistics(o.Id));
+                                    OrganizationStatistics tempStats = ObjectUtils.FillObjectFromDataReader<OrganizationStatistics>(Database.GetExchangeOrganizationStatistics(o.Id));
 
                                     stats.CreatedMailboxes += tempStats.CreatedMailboxes;
                                     stats.CreatedContacts += tempStats.CreatedContacts;
@@ -402,7 +402,7 @@ namespace SolidCP.EnterpriseServer
 
         private bool OrganizationIdentifierExists(string organizationId)
         {
-            return DataProvider.ExchangeOrganizationExists(organizationId);
+            return Database.ExchangeOrganizationExists(organizationId);
         }
 
 
@@ -1109,7 +1109,7 @@ namespace SolidCP.EnterpriseServer
 
         private bool AccountExists(string accountName)
         {
-            return DataProvider.ExchangeAccountExists(accountName);
+            return Database.ExchangeAccountExists(accountName);
         }
 
         public ExchangeAccountsPaged GetAccountsPaged(int itemId, string accountTypes,
@@ -1128,7 +1128,7 @@ namespace SolidCP.EnterpriseServer
             }
             #endregion
 
-            DataSet ds = DataProvider.GetExchangeAccountsPaged(SecurityContext.User.UserId, itemId,
+            DataSet ds = Database.GetExchangeAccountsPaged(SecurityContext.User.UserId, itemId,
                 accountTypes, filterColumn, filterValue, sortColumn, startRow, maximumRows, archiving);
 
             ExchangeAccountsPaged result = new ExchangeAccountsPaged();
@@ -1209,19 +1209,19 @@ namespace SolidCP.EnterpriseServer
             #endregion
 
             return ObjectUtils.CreateListFromDataReader<ExchangeAccount>(
-                DataProvider.GetExchangeAccounts(itemId, (int)accountType));
+                Database.GetExchangeAccounts(itemId, (int)accountType));
         }
 
 
         public List<ExchangeAccount> GetExchangeAccountByMailboxPlanId(int itemId, int mailboxPlanId)
         {
-            return ObjectUtils.CreateListFromDataReader<ExchangeAccount>(DataProvider.GetExchangeAccountByMailboxPlanId(itemId, mailboxPlanId));
+            return ObjectUtils.CreateListFromDataReader<ExchangeAccount>(Database.GetExchangeAccountByMailboxPlanId(itemId, mailboxPlanId));
         }
 
 
         public List<ExchangeAccount> GetExchangeMailboxes(int itemId)
         {
-            return ObjectUtils.CreateListFromDataReader<ExchangeAccount>(DataProvider.GetExchangeMailboxes(itemId));
+            return ObjectUtils.CreateListFromDataReader<ExchangeAccount>(Database.GetExchangeMailboxes(itemId));
         }
 
         private List<ExchangeAccount> GetDemoAccounts(bool includeMailboxes, bool includeContacts, bool includeDistributionLists,
@@ -1338,7 +1338,7 @@ namespace SolidCP.EnterpriseServer
             #endregion
 
             return ObjectUtils.CreateListFromDataReader<ExchangeAccount>(
-                DataProvider.SearchExchangeAccounts(SecurityContext.User.UserId, itemId, includeMailboxes, includeContacts,
+                Database.SearchExchangeAccounts(SecurityContext.User.UserId, itemId, includeMailboxes, includeContacts,
                 includeDistributionLists, includeRooms, includeEquipment, IncludeSharedMailbox, includeSecurityGroups,
                 filterColumn, filterValue, sortColumn));
         }
@@ -1370,7 +1370,7 @@ namespace SolidCP.EnterpriseServer
             }
 
             return ObjectUtils.CreateListFromDataReader<ExchangeAccount>(
-                                                              DataProvider.SearchExchangeAccountsByTypes(SecurityContext.User.UserId, itemId,
+                                                              Database.SearchExchangeAccountsByTypes(SecurityContext.User.UserId, itemId,
                                                               accountTypes, filterColumn, filterValue, sortColumn));
         }
 
@@ -1396,7 +1396,7 @@ namespace SolidCP.EnterpriseServer
             #endregion
 
             ExchangeAccount account = ObjectUtils.FillObjectFromDataReader<ExchangeAccount>(
-                DataProvider.GetExchangeAccount(itemId, accountId));
+                Database.GetExchangeAccount(itemId, accountId));
 
             if (account == null)
                 return null;
@@ -1411,7 +1411,7 @@ namespace SolidCP.EnterpriseServer
         public ExchangeAccount GetAccountByAccountName(string userPrincipalName)
         {
             ExchangeAccount account = ObjectUtils.FillObjectFromDataReader<ExchangeAccount>(
-                DataProvider.GetExchangeAccountByAccountNameWithoutItemId(userPrincipalName));
+                Database.GetExchangeAccountByAccountNameWithoutItemId(userPrincipalName));
 
             if (account == null)
                 return null;
@@ -1450,7 +1450,7 @@ namespace SolidCP.EnterpriseServer
         public ExchangeAccount SearchAccount(ExchangeAccountType accountType, string primaryEmailAddress)
         {
             ExchangeAccount account = ObjectUtils.FillObjectFromDataReader<ExchangeAccount>(
-                DataProvider.SearchExchangeAccount(SecurityContext.User.UserId,
+                Database.SearchExchangeAccount(SecurityContext.User.UserId,
                 (int)accountType, primaryEmailAddress));
 
             if (account == null)
@@ -1463,14 +1463,14 @@ namespace SolidCP.EnterpriseServer
             string accountName, string displayName, string primaryEmailAddress, bool mailEnabledPublicFolder,
             MailboxManagerActions mailboxManagerActions, string samAccountName, string accountPassword, int mailboxPlanId, string subscriberNumber)
         {
-            return DataProvider.AddExchangeAccount(itemId, (int)accountType,
+            return Database.AddExchangeAccount(itemId, (int)accountType,
                 accountName, displayName, primaryEmailAddress, mailEnabledPublicFolder,
                 mailboxManagerActions.ToString(), samAccountName, mailboxPlanId, (string.IsNullOrEmpty(subscriberNumber) ? null : subscriberNumber.Trim()));
         }
 
         private void UpdateAccount(ExchangeAccount account)
         {
-            DataProvider.UpdateExchangeAccount(account.AccountId, account.AccountName, account.AccountType, account.DisplayName,
+            Database.UpdateExchangeAccount(account.AccountId, account.AccountName, account.AccountType, account.DisplayName,
                 account.PrimaryEmailAddress, account.MailEnabledPublicFolder,
                 account.MailboxManagerActions.ToString(), account.SamAccountName, account.MailboxPlanId, account.ArchivingMailboxPlanId,
                 (string.IsNullOrEmpty(account.SubscriberNumber) ? null : account.SubscriberNumber.Trim()),
@@ -1483,7 +1483,7 @@ namespace SolidCP.EnterpriseServer
             if (GetOrganization(itemId, false) == null)
                 return;
 
-            DataProvider.DeleteExchangeAccount(itemId, accountId);
+            Database.DeleteExchangeAccount(itemId, accountId);
         }
         /*
                 private string BuildAccountName(string orgId, string name)
@@ -1528,7 +1528,7 @@ namespace SolidCP.EnterpriseServer
         #region Account Email Addresses
         private bool EmailAddressExists(string emailAddress, bool checkContacts)
         {
-            return DataProvider.ExchangeAccountEmailAddressExists(emailAddress, checkContacts);
+            return Database.ExchangeAccountEmailAddressExists(emailAddress, checkContacts);
         }
 
 
@@ -1555,7 +1555,7 @@ namespace SolidCP.EnterpriseServer
             #endregion
 
             List<ExchangeEmailAddress> emails = ObjectUtils.CreateListFromDataReader<ExchangeEmailAddress>(
-                DataProvider.GetExchangeAccountEmailAddresses(accountId));
+                Database.GetExchangeAccountEmailAddresses(accountId));
 
             // load account
             ExchangeAccount account = GetAccount(itemId, accountId, false);
@@ -1579,7 +1579,7 @@ namespace SolidCP.EnterpriseServer
 
         private void AddAccountEmailAddress(int accountId, string emailAddress)
         {
-            DataProvider.AddExchangeAccountEmailAddress(accountId, emailAddress);
+            Database.AddExchangeAccountEmailAddress(accountId, emailAddress);
         }
 
         private void DeleteAccountEmailAddresses(int accountId, string[] emailAddresses)
@@ -1589,7 +1589,7 @@ namespace SolidCP.EnterpriseServer
                 // Log Extension
                 LogExtension.WriteVariable("E-mail Addresses deleted", emailAddress);
 
-                DataProvider.DeleteExchangeAccountEmailAddress(accountId, emailAddress);
+                Database.DeleteExchangeAccountEmailAddress(accountId, emailAddress);
             }
         }
 
@@ -1627,7 +1627,7 @@ namespace SolidCP.EnterpriseServer
 
             // load all domains
             List<ExchangeDomainName> domains = ObjectUtils.CreateListFromDataReader<ExchangeDomainName>(
-                DataProvider.GetExchangeOrganizationDomains(itemId));
+                Database.GetExchangeOrganizationDomains(itemId));
 
             // set default domain
             foreach (ExchangeDomainName domain in domains)
@@ -1816,7 +1816,7 @@ namespace SolidCP.EnterpriseServer
                 LogExtension.SetItemName(domain.DomainName);
                 LogExtension.WriteObject(domain);
 
-                if (DataProvider.CheckDomainUsedByHostedOrganization(domain.DomainName) == 1)
+                if (Database.CheckDomainUsedByHostedOrganization(domain.DomainName) == 1)
                 {
                     return -1;
                 }
@@ -1886,7 +1886,7 @@ namespace SolidCP.EnterpriseServer
             string mailboxManagerActions, string samAccountName, string accountPassword, int mailboxPlanId, int archivePlanId, string subscriberNumber,
             bool EnableArchiving)
         {
-            DataProvider.UpdateExchangeAccount(accountId,
+            Database.UpdateExchangeAccount(accountId,
                 accountName,
                 accountType,
                 displayName,
@@ -2288,7 +2288,7 @@ namespace SolidCP.EnterpriseServer
                 account.AccountType = ExchangeAccountType.User;
                 account.MailEnabledPublicFolder = false;
                 UpdateAccount(account);
-                DataProvider.DeleteUserEmailAddresses(account.AccountId, account.PrimaryEmailAddress);
+                Database.DeleteUserEmailAddresses(account.AccountId, account.PrimaryEmailAddress);
 
                 return 0;
             }
@@ -2916,19 +2916,19 @@ namespace SolidCP.EnterpriseServer
                     account.UserPrincipalName,
                     emailAddress);
 
-                if (DataProvider.CheckOCSUserExists(account.AccountId))
+                if (Database.CheckOCSUserExists(account.AccountId))
                 {
                     OCSServer ocs = GetOCSProxy(itemId);
-                    string instanceId = DataProvider.GetOCSUserInstanceID(account.AccountId);
+                    string instanceId = Database.GetOCSUserInstanceID(account.AccountId);
                     ocs.SetUserPrimaryUri(instanceId, emailAddress);
                 }
 
-                if (DataProvider.CheckLyncUserExists(account.AccountId))
+                if (Database.CheckLyncUserExists(account.AccountId))
                 {
                     LyncController.SetLyncUserGeneralSettings(itemId, accountId, emailAddress, null);
                 }
 
-                if (DataProvider.CheckSfBUserExists(account.AccountId))
+                if (Database.CheckSfBUserExists(account.AccountId))
                 {
                     SfBController.SetSfBUserGeneralSettings(itemId, accountId, emailAddress, null);
                 }
@@ -3560,7 +3560,7 @@ namespace SolidCP.EnterpriseServer
                     TaskManager.WriteError("Error SetMailBoxRetentionPolicy: " + string.Join(", ", resPolicy.ErrorCodes.ToArray()));
                 }
 
-                DataProvider.SetExchangeAccountMailboxPlan(accountId, mailboxPlanId, archivePlanId, EnableArchiving);
+                Database.SetExchangeAccountMailboxPlan(accountId, mailboxPlanId, archivePlanId, EnableArchiving);
 
                 return 0;
             }
@@ -3584,7 +3584,7 @@ namespace SolidCP.EnterpriseServer
                 List<ExchangeMailboxPlan> mailboxPlans = new List<ExchangeMailboxPlan>();
                 int? defaultPlanId = null;
 
-                UserInfo user = ObjectUtils.FillObjectFromDataReader<UserInfo>(DataProvider.GetUserByExchangeOrganizationIdInternally(itemId));
+                UserInfo user = ObjectUtils.FillObjectFromDataReader<UserInfo>(Database.GetUserByExchangeOrganizationIdInternally(itemId));
 
                 if (user.Role == UserRole.User)
                     GetExchangeMailboxPlansByUser(itemId, user, ref mailboxPlans, ref defaultPlanId, archiving);
@@ -3635,7 +3635,7 @@ namespace SolidCP.EnterpriseServer
 
                 if (OrgId != -1)
                 {
-                    List<ExchangeMailboxPlan> Plans = ObjectUtils.CreateListFromDataReader<ExchangeMailboxPlan>(DataProvider.GetExchangeMailboxPlans(OrgId, archiving));
+                    List<ExchangeMailboxPlan> Plans = ObjectUtils.CreateListFromDataReader<ExchangeMailboxPlan>(Database.GetExchangeMailboxPlans(OrgId, archiving));
 
                     foreach (ExchangeMailboxPlan p in Plans)
                     {
@@ -3643,7 +3643,7 @@ namespace SolidCP.EnterpriseServer
                     }
 
                     // Set default plan
-                    ExchangeOrganization exchangeOrg = ObjectUtils.FillObjectFromDataReader<ExchangeOrganization>(DataProvider.GetExchangeOrganization(OrgId));
+                    ExchangeOrganization exchangeOrg = ObjectUtils.FillObjectFromDataReader<ExchangeOrganization>(Database.GetExchangeOrganization(OrgId));
 
                     // If the default plan has not been set by the setting of higher priority 
                     if (!defaultPlanId.HasValue && exchangeOrg != null && exchangeOrg.ExchangeMailboxPlanID > 0)
@@ -3668,7 +3668,7 @@ namespace SolidCP.EnterpriseServer
             try
             {
                 return ObjectUtils.FillObjectFromDataReader<ExchangeMailboxPlan>(
-                    DataProvider.GetExchangeMailboxPlan(mailboxPlanId));
+                    Database.GetExchangeMailboxPlan(mailboxPlanId));
             }
             catch (Exception ex)
             {
@@ -3744,7 +3744,7 @@ namespace SolidCP.EnterpriseServer
                             mailboxPlan.RecoverableItemsSpace = cntx.Quotas[Quotas.EXCHANGE2007_RECOVERABLEITEMSSPACE].QuotaAllocatedValuePerOrganization;
                 }
 
-                return DataProvider.AddExchangeMailboxPlan(itemID, mailboxPlan.MailboxPlan, mailboxPlan.EnableActiveSync, mailboxPlan.EnableIMAP, mailboxPlan.EnableMAPI, mailboxPlan.EnableOWA, mailboxPlan.EnablePOP, mailboxPlan.EnableAutoReply,
+                return Database.AddExchangeMailboxPlan(itemID, mailboxPlan.MailboxPlan, mailboxPlan.EnableActiveSync, mailboxPlan.EnableIMAP, mailboxPlan.EnableMAPI, mailboxPlan.EnableOWA, mailboxPlan.EnablePOP, mailboxPlan.EnableAutoReply,
                                                         mailboxPlan.IsDefault, mailboxPlan.IssueWarningPct, mailboxPlan.KeepDeletedItemsDays, mailboxPlan.MailboxSizeMB, mailboxPlan.MaxReceiveMessageSizeKB, mailboxPlan.MaxRecipients,
                                                         mailboxPlan.MaxSendMessageSizeKB, mailboxPlan.ProhibitSendPct, mailboxPlan.ProhibitSendReceivePct, mailboxPlan.HideFromAddressBook, mailboxPlan.MailboxPlanType,
                                                         mailboxPlan.AllowLitigationHold, mailboxPlan.RecoverableItemsSpace, mailboxPlan.RecoverableItemsWarningPct,
@@ -3828,7 +3828,7 @@ namespace SolidCP.EnterpriseServer
 
                 }
 
-                DataProvider.UpdateExchangeMailboxPlan(mailboxPlan.MailboxPlanId, mailboxPlan.MailboxPlan, mailboxPlan.EnableActiveSync, mailboxPlan.EnableIMAP, mailboxPlan.EnableMAPI, mailboxPlan.EnableOWA, mailboxPlan.EnablePOP, mailboxPlan.EnableAutoReply,
+                Database.UpdateExchangeMailboxPlan(mailboxPlan.MailboxPlanId, mailboxPlan.MailboxPlan, mailboxPlan.EnableActiveSync, mailboxPlan.EnableIMAP, mailboxPlan.EnableMAPI, mailboxPlan.EnableOWA, mailboxPlan.EnablePOP, mailboxPlan.EnableAutoReply,
                                                         mailboxPlan.IsDefault, mailboxPlan.IssueWarningPct, mailboxPlan.KeepDeletedItemsDays, mailboxPlan.MailboxSizeMB, mailboxPlan.MaxReceiveMessageSizeKB, mailboxPlan.MaxRecipients,
                                                         mailboxPlan.MaxSendMessageSizeKB, mailboxPlan.ProhibitSendPct, mailboxPlan.ProhibitSendReceivePct, mailboxPlan.HideFromAddressBook, mailboxPlan.MailboxPlanType,
                                                         mailboxPlan.AllowLitigationHold, mailboxPlan.RecoverableItemsSpace, mailboxPlan.RecoverableItemsWarningPct,
@@ -3872,7 +3872,7 @@ namespace SolidCP.EnterpriseServer
                     LogExtension.WriteObject(mailboxPlan);
                 }
 
-                DataProvider.DeleteExchangeMailboxPlan(mailboxPlanId);
+                Database.DeleteExchangeMailboxPlan(mailboxPlanId);
 
                 return 0;
             }
@@ -3899,7 +3899,7 @@ namespace SolidCP.EnterpriseServer
                 ExchangeMailboxPlan plan = GetExchangeMailboxPlan(itemId, mailboxPlanId);
                 LogExtension.WriteObject(plan);
 
-                DataProvider.SetOrganizationDefaultExchangeMailboxPlan(itemId, mailboxPlanId);
+                Database.SetOrganizationDefaultExchangeMailboxPlan(itemId, mailboxPlanId);
             }
             catch (Exception ex)
             {
@@ -3973,7 +3973,7 @@ namespace SolidCP.EnterpriseServer
             {
                 List<ExchangeRetentionPolicyTag> retentionPolicyTags = new List<ExchangeRetentionPolicyTag>();
 
-                UserInfo user = ObjectUtils.FillObjectFromDataReader<UserInfo>(DataProvider.GetUserByExchangeOrganizationIdInternally(itemId));
+                UserInfo user = ObjectUtils.FillObjectFromDataReader<UserInfo>(Database.GetUserByExchangeOrganizationIdInternally(itemId));
 
                 if (user.Role == UserRole.User)
                     ExchangeServerController.GetExchangeRetentionPolicyTagsByUser(itemId, user, ref retentionPolicyTags);
@@ -4019,7 +4019,7 @@ namespace SolidCP.EnterpriseServer
 
                 if (OrgId != -1)
                 {
-                    List<ExchangeRetentionPolicyTag> RetentionPolicy = ObjectUtils.CreateListFromDataReader<ExchangeRetentionPolicyTag>(DataProvider.GetExchangeRetentionPolicyTags(OrgId));
+                    List<ExchangeRetentionPolicyTag> RetentionPolicy = ObjectUtils.CreateListFromDataReader<ExchangeRetentionPolicyTag>(Database.GetExchangeRetentionPolicyTags(OrgId));
 
                     foreach (ExchangeRetentionPolicyTag p in RetentionPolicy)
                     {
@@ -4042,7 +4042,7 @@ namespace SolidCP.EnterpriseServer
             try
             {
                 return ObjectUtils.FillObjectFromDataReader<ExchangeRetentionPolicyTag>(
-                    DataProvider.GetExchangeRetentionPolicyTag(tagId));
+                    Database.GetExchangeRetentionPolicyTag(tagId));
             }
             catch (Exception ex)
             {
@@ -4087,7 +4087,7 @@ namespace SolidCP.EnterpriseServer
 
                 int exchangeServiceId = GetExchangeServiceID(org.PackageId);
 
-                int tagId = DataProvider.AddExchangeRetentionPolicyTag(itemID, tag.TagName, tag.TagType, tag.AgeLimitForRetention, tag.RetentionAction);
+                int tagId = Database.AddExchangeRetentionPolicyTag(itemID, tag.TagName, tag.TagType, tag.AgeLimitForRetention, tag.RetentionAction);
                 tag.TagID = tagId;
 
                 if (exchangeServiceId > 0)
@@ -4102,7 +4102,7 @@ namespace SolidCP.EnterpriseServer
                 if (res.IsSuccess)
                     res.Value = tagId;
                 else
-                    DataProvider.DeleteExchangeRetentionPolicyTag(tagId);
+                    Database.DeleteExchangeRetentionPolicyTag(tagId);
             }
             catch (Exception ex)
             {
@@ -4161,7 +4161,7 @@ namespace SolidCP.EnterpriseServer
                 }
 
                 if (res.IsSuccess)
-                    DataProvider.UpdateExchangeRetentionPolicyTag(tag.TagID, tag.ItemID, tag.TagName, tag.TagType, tag.AgeLimitForRetention, tag.RetentionAction);
+                    Database.UpdateExchangeRetentionPolicyTag(tag.TagID, tag.ItemID, tag.TagName, tag.TagType, tag.AgeLimitForRetention, tag.RetentionAction);
             }
             catch (Exception ex)
             {
@@ -4220,7 +4220,7 @@ namespace SolidCP.EnterpriseServer
                 }
 
                 if (res.IsSuccess)
-                    DataProvider.DeleteExchangeRetentionPolicyTag(tagId);
+                    Database.DeleteExchangeRetentionPolicyTag(tagId);
 
             }
             catch (Exception ex)
@@ -4243,7 +4243,7 @@ namespace SolidCP.EnterpriseServer
             try
             {
                 List<ExchangeMailboxPlanRetentionPolicyTag> tags =
-                    ObjectUtils.CreateListFromDataReader<ExchangeMailboxPlanRetentionPolicyTag>(DataProvider.GetExchangeMailboxPlanRetentionPolicyTags(policyId));
+                    ObjectUtils.CreateListFromDataReader<ExchangeMailboxPlanRetentionPolicyTag>(Database.GetExchangeMailboxPlanRetentionPolicyTags(policyId));
 
                 return tags;
             }
@@ -4329,7 +4329,7 @@ namespace SolidCP.EnterpriseServer
                     // quotas
                 }
 
-                res.Value = DataProvider.AddExchangeMailboxPlanRetentionPolicyTag(planTag.TagID, planTag.MailboxPlanId);
+                res.Value = Database.AddExchangeMailboxPlanRetentionPolicyTag(planTag.TagID, planTag.MailboxPlanId);
 
                 UpdateExchangeRetentionPolicy(itemID, planTag.MailboxPlanId, res);
 
@@ -4373,7 +4373,7 @@ namespace SolidCP.EnterpriseServer
                     // quotas
                 }
 
-                DataProvider.DeleteExchangeMailboxPlanRetentionPolicyTag(planTagId);
+                Database.DeleteExchangeMailboxPlanRetentionPolicyTag(planTagId);
 
                 UpdateExchangeRetentionPolicy(itemID, policyId, res);
             }
@@ -6726,7 +6726,7 @@ namespace SolidCP.EnterpriseServer
                 int exchangeServiceId = GetExchangeServiceID(org.PackageId);
                 ExchangeServer exchange = GetExchangeServer(exchangeServiceId, org.ServiceId);
 
-                res = DataProvider.AddExchangeDisclaimer(itemId, disclaimer);
+                res = Database.AddExchangeDisclaimer(itemId, disclaimer);
                 disclaimer.ExchangeDisclaimerId = res;
                 exchange.SetDisclaimer(disclaimer.SCPUniqueName, disclaimer.DisclaimerText);
             }
@@ -6763,7 +6763,7 @@ namespace SolidCP.EnterpriseServer
                 var oldObj = GetExchangeDisclaimer(itemId, disclaimer.ExchangeDisclaimerId);
 
                 exchange.SetDisclaimer(disclaimer.SCPUniqueName, disclaimer.DisclaimerText);
-                DataProvider.UpdateExchangeDisclaimer(itemId, disclaimer);
+                Database.UpdateExchangeDisclaimer(itemId, disclaimer);
 
                 // Log Extension
                 LogExtension.LogPropertiesIfChanged(oldObj, disclaimer);
@@ -6805,7 +6805,7 @@ namespace SolidCP.EnterpriseServer
                 ExchangeServer exchange = GetExchangeServer(exchangeServiceId, org.ServiceId);
 
                 if (exchange.RemoveDisclaimer(disclaimer.SCPUniqueName) != -1)
-                    DataProvider.DeleteExchangeDisclaimer(exchangeDisclaimerId);
+                    Database.DeleteExchangeDisclaimer(exchangeDisclaimerId);
             }
             catch (Exception ex)
             {
@@ -6827,7 +6827,7 @@ namespace SolidCP.EnterpriseServer
             try
             {
                 return ObjectUtils.FillObjectFromDataReader<ExchangeDisclaimer>(
-                    DataProvider.GetExchangeDisclaimer(exchangeDisclaimerId));
+                    Database.GetExchangeDisclaimer(exchangeDisclaimerId));
             }
             catch (Exception ex)
             {
@@ -6846,7 +6846,7 @@ namespace SolidCP.EnterpriseServer
 
             try
             {
-                List<ExchangeDisclaimer> disclaimers = ObjectUtils.CreateListFromDataReader<ExchangeDisclaimer>(DataProvider.GetExchangeDisclaimers(itemId));
+                List<ExchangeDisclaimer> disclaimers = ObjectUtils.CreateListFromDataReader<ExchangeDisclaimer>(Database.GetExchangeDisclaimers(itemId));
                 return disclaimers;
             }
             catch (Exception ex)
@@ -6905,7 +6905,7 @@ namespace SolidCP.EnterpriseServer
                         res = exchange.AddDisclamerMember(newDisclaimer.SCPUniqueName, account.PrimaryEmailAddress);
 
                     if (res == 0)
-                        DataProvider.SetExchangeAccountDisclaimerId(accountID, newExchangeDisclaimerId);
+                        Database.SetExchangeAccountDisclaimerId(accountID, newExchangeDisclaimerId);
                 }
 
             }
@@ -6928,7 +6928,7 @@ namespace SolidCP.EnterpriseServer
 
             try
             {
-                return DataProvider.GetExchangeAccountDisclaimerId(AccountID);
+                return Database.GetExchangeAccountDisclaimerId(AccountID);
             }
             catch (Exception ex)
             {

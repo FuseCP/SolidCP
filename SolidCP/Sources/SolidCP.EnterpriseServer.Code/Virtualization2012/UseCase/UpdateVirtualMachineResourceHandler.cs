@@ -273,7 +273,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
 
                 // unprovision private IP addresses
                 if (!vm.PrivateNetworkEnabled)
-                    DataProvider.DeleteItemPrivateIPAddresses(SecurityContext.User.UserId, itemId);
+                    Database.DeleteItemPrivateIPAddresses(SecurityContext.User.UserId, itemId);
                 //else //why should we do that??
                 //    // send KVP config items
                 //    SendNetworkAdapterKVP(itemId, "Private");

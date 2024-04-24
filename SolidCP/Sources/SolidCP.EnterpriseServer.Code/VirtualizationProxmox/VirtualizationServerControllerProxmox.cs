@@ -79,7 +79,7 @@ namespace SolidCP.EnterpriseServer
             VirtualMachineMetaItemsPaged result = new VirtualMachineMetaItemsPaged();
 
             // get reader
-            IDataReader reader = DataProvider.GetVirtualMachinesPagedProxmox(
+            IDataReader reader = Database.GetVirtualMachinesPagedProxmox(
                     SecurityContext.User.UserId,
                     packageId, filterColumn, filterValue, sortColumn, startRow, maximumRows, recursive);
 
@@ -126,7 +126,7 @@ namespace SolidCP.EnterpriseServer
             PrivateIPAddressesPaged result = new PrivateIPAddressesPaged();
 
             // get reader
-            IDataReader reader = DataProvider.GetPackagePrivateIPAddressesPaged(packageId, filterColumn, filterValue,
+            IDataReader reader = Database.GetPackagePrivateIPAddressesPaged(packageId, filterColumn, filterValue,
                 sortColumn, startRow, maximumRows);
 
             // number of items = first data reader
@@ -143,7 +143,7 @@ namespace SolidCP.EnterpriseServer
         public List<PrivateIPAddress> GetPackagePrivateIPAddresses(int packageId)
         {
             return ObjectUtils.CreateListFromDataReader<PrivateIPAddress>(
-                DataProvider.GetPackagePrivateIPAddresses(packageId));
+                Database.GetPackagePrivateIPAddresses(packageId));
         }
         #endregion
 
@@ -2156,7 +2156,7 @@ namespace SolidCP.EnterpriseServer
 
                 // unprovision private IP addresses
                 if (!vm.PrivateNetworkEnabled)
-                    DataProvider.DeleteItemPrivateIPAddresses(SecurityContext.User.UserId, itemId);
+                    Database.DeleteItemPrivateIPAddresses(SecurityContext.User.UserId, itemId);
                 else
                     // send KVP config items
                     SendNetworkAdapterKVP(itemId, "Private");
@@ -2735,7 +2735,7 @@ namespace SolidCP.EnterpriseServer
 
             // load IP addresses
             nic.IPAddresses = ObjectUtils.CreateListFromDataReader<NetworkAdapterIPAddress>(
-                DataProvider.GetItemIPAddresses(SecurityContext.User.UserId, itemId, (int)IPAddressPool.VpsExternalNetwork)).ToArray();
+                Database.GetItemIPAddresses(SecurityContext.User.UserId, itemId, (int)IPAddressPool.VpsExternalNetwork)).ToArray();
 
             // update subnet CIDR
             foreach (NetworkAdapterIPAddress ip in nic.IPAddresses)
@@ -2787,7 +2787,7 @@ namespace SolidCP.EnterpriseServer
 
             // load IP addresses
             nic.IPAddresses = ObjectUtils.CreateListFromDataReader<NetworkAdapterIPAddress>(
-                DataProvider.GetItemIPAddresses(SecurityContext.User.UserId, itemId, (int)IPAddressPool.VpsManagementNetwork)).ToArray();
+                Database.GetItemIPAddresses(SecurityContext.User.UserId, itemId, (int)IPAddressPool.VpsManagementNetwork)).ToArray();
 
             // update subnet CIDR
             foreach (NetworkAdapterIPAddress ip in nic.IPAddresses)
@@ -3014,7 +3014,7 @@ namespace SolidCP.EnterpriseServer
 
             // load IP addresses
             nic.IPAddresses = ObjectUtils.CreateListFromDataReader<NetworkAdapterIPAddress>(
-                DataProvider.GetItemPrivateIPAddresses(SecurityContext.User.UserId, itemId)).ToArray();
+                Database.GetItemPrivateIPAddresses(SecurityContext.User.UserId, itemId)).ToArray();
 
             foreach (NetworkAdapterIPAddress ip in nic.IPAddresses)
             {
@@ -3152,7 +3152,7 @@ namespace SolidCP.EnterpriseServer
 
                 // add addresses to database
                 foreach (string address in addresses)
-                    DataProvider.AddItemPrivateIPAddress(SecurityContext.User.UserId, itemId, address);
+                    Database.AddItemPrivateIPAddress(SecurityContext.User.UserId, itemId, address);
 
                 // set primary IP address
                 if (wasEmptyList)
@@ -3224,7 +3224,7 @@ namespace SolidCP.EnterpriseServer
             try
             {
                 // call data access layer
-                DataProvider.SetItemPrivatePrimaryIPAddress(SecurityContext.User.UserId, itemId, addressId);
+                Database.SetItemPrivatePrimaryIPAddress(SecurityContext.User.UserId, itemId, addressId);
 
                 // send KVP config items
                 if (provisionKvp)
@@ -3272,7 +3272,7 @@ namespace SolidCP.EnterpriseServer
             {
                 // call data access layer
                 foreach (int addressId in addressIds)
-                    DataProvider.DeleteItemPrivateIPAddress(SecurityContext.User.UserId, itemId, addressId);
+                    Database.DeleteItemPrivateIPAddress(SecurityContext.User.UserId, itemId, addressId);
 
                 // send KVP config items
                 if (provisionKvp)

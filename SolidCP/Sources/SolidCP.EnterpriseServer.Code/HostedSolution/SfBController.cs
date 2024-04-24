@@ -145,7 +145,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             SfBUser retSfBUser = new SfBUser();
             bool isSfBUser;
 
-            isSfBUser = DataProvider.CheckSfBUserExists(accountId);
+            isSfBUser = Database.CheckSfBUserExists(accountId);
             if (isSfBUser)
             {
                 TaskManager.CompleteResultTask(res, SfBErrorCodes.USER_IS_ALREADY_SFB_USER);
@@ -287,7 +287,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
             try
             {
-                DataProvider.AddSfBUser(accountId, sfbUserPlanId, user.UserPrincipalName);
+                Database.AddSfBUser(accountId, sfbUserPlanId, user.UserPrincipalName);
             }
             catch (Exception ex)
             {
@@ -359,7 +359,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
                 if (user != null)
                 {
-                    SfBUserPlan plan = ObjectUtils.FillObjectFromDataReader<SfBUserPlan>(DataProvider.GetSfBUserPlanByAccountId(accountId));
+                    SfBUserPlan plan = ObjectUtils.FillObjectFromDataReader<SfBUserPlan>(Database.GetSfBUserPlanByAccountId(accountId));
 
                     if (plan != null)
                     {
@@ -411,7 +411,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
                 if (user != null)
                 {
-                    SfBUserPlan plan = ObjectUtils.FillObjectFromDataReader<SfBUserPlan>(DataProvider.GetSfBUserPlanByAccountId(accountId));
+                    SfBUserPlan plan = ObjectUtils.FillObjectFromDataReader<SfBUserPlan>(Database.GetSfBUserPlanByAccountId(accountId));
 
                     if (plan != null)
                     {
@@ -426,7 +426,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
                         {
                             if (sipAddress != usr.UserPrincipalName)
                             {
-                                if (DataProvider.SfBUserExists(accountId, sipAddress))
+                                if (Database.SfBUserExists(accountId, sipAddress))
                                 {
                                     TaskManager.CompleteResultTask(res, SfBErrorCodes.ADDRESS_ALREADY_USED);
                                     return res;
@@ -441,7 +441,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
                     sfb.SetSfBUserGeneralSettings(org.OrganizationId, usr.UserPrincipalName, user);
 
-                    DataProvider.UpdateSfBUser(accountId, sipAddress);
+                    Database.UpdateSfBUser(accountId, sipAddress);
                 }
             }
             catch (Exception ex)
@@ -527,7 +527,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
                 try
                 {
-                    DataProvider.SetSfBUserSfBUserplan(accountId, sfbUserPlanId);
+                    Database.SetSfBUserSfBUserplan(accountId, sfbUserPlanId);
                 }
                 catch (Exception ex)
                 {
@@ -559,7 +559,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             try
             {
                 IDataReader reader =
-                    DataProvider.GetSfBUsers(itemId, sortColumn, sortDirection, startRow, count);
+                    Database.GetSfBUsers(itemId, sortColumn, sortDirection, startRow, count);
                 List<SfBUser> accounts = new List<SfBUser>();
                 ObjectUtils.FillCollectionFromDataReader(accounts, reader);
                 res.Value = new SfBUsersPaged { PageUsers = accounts.ToArray() };
@@ -585,7 +585,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
         public List<SfBUser> GetSfBUsersByPlanId(int itemId, int planId)
         {
-            return ObjectUtils.CreateListFromDataReader<SfBUser>(DataProvider.GetSfBUsersByPlanId(itemId, planId));
+            return ObjectUtils.CreateListFromDataReader<SfBUser>(Database.GetSfBUsersByPlanId(itemId, planId));
         }
 
         public IntResult GetSfBUsersCount(int itemId)
@@ -593,7 +593,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             IntResult res = TaskManager.StartResultTask<IntResult>("SFB", "GET_SFB_USERS_COUNT");
             try
             {
-                res.Value = DataProvider.GetSfBUsersCount(itemId);
+                res.Value = Database.GetSfBUsersCount(itemId);
             }
             catch (Exception ex)
             {
@@ -644,7 +644,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
             try
             {
-                DataProvider.DeleteSfBUser(accountId);
+                Database.DeleteSfBUser(accountId);
             }
             catch (Exception ex)
             {
@@ -673,7 +673,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             {
                 List<SfBUserPlan> plans = new List<SfBUserPlan>();
 
-                UserInfo user = ObjectUtils.FillObjectFromDataReader<UserInfo>(DataProvider.GetUserByExchangeOrganizationIdInternally(itemId));
+                UserInfo user = ObjectUtils.FillObjectFromDataReader<UserInfo>(Database.GetUserByExchangeOrganizationIdInternally(itemId));
                 
                 if (user.Role == UserRole.User)
                     SfBController.GetSfBUserPlansByUser(itemId, user, ref plans);
@@ -681,7 +681,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
                     SfBController.GetSfBUserPlansByUser(0, user, ref plans);
 
 
-                ExchangeOrganization ExchangeOrg = ObjectUtils.FillObjectFromDataReader<ExchangeOrganization>(DataProvider.GetExchangeOrganization(itemId));
+                ExchangeOrganization ExchangeOrg = ObjectUtils.FillObjectFromDataReader<ExchangeOrganization>(Database.GetExchangeOrganization(itemId));
 
                 if (ExchangeOrg != null)
                 {
@@ -730,7 +730,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
                 if (OrgId != -1)
                 {
-                    List<SfBUserPlan> Plans = ObjectUtils.CreateListFromDataReader<SfBUserPlan>(DataProvider.GetSfBUserPlans(OrgId));
+                    List<SfBUserPlan> Plans = ObjectUtils.CreateListFromDataReader<SfBUserPlan>(Database.GetSfBUserPlans(OrgId));
 
                     foreach (SfBUserPlan p in Plans)
                     {
@@ -754,7 +754,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
             try
             {
                 return ObjectUtils.FillObjectFromDataReader<SfBUserPlan>(
-                    DataProvider.GetSfBUserPlan(sfbUserPlanId));
+                    Database.GetSfBUserPlan(sfbUserPlanId));
             }
             catch (Exception ex)
             {
@@ -789,7 +789,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
                     sfbUserPlan.VoicePolicy = SfBVoicePolicyType.None;
                 sfbUserPlan.IM = true;
 
-                return DataProvider.AddSfBUserPlan(itemID, sfbUserPlan);
+                return Database.AddSfBUserPlan(itemID, sfbUserPlan);
             }
             catch (Exception ex)
             {
@@ -829,7 +829,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
                     sfbUserPlan.VoicePolicy = SfBVoicePolicyType.None;
                 sfbUserPlan.IM = true;
 
-                DataProvider.UpdateSfBUserPlan(itemID, sfbUserPlan);
+                Database.UpdateSfBUserPlan(itemID, sfbUserPlan);
             }
             catch (Exception ex)
             {
@@ -854,7 +854,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
             try
             {
-                DataProvider.DeleteSfBUserPlan(sfbUserPlanId);
+                Database.DeleteSfBUserPlan(sfbUserPlanId);
 
                 return 0;
             }
@@ -878,7 +878,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
             try
             {
-                DataProvider.SetOrganizationDefaultSfBUserPlan(itemId, sfbUserPlanId);
+                Database.SetOrganizationDefaultSfBUserPlan(itemId, sfbUserPlanId);
 
             }
             catch (Exception ex)

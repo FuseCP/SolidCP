@@ -129,7 +129,7 @@ namespace SolidCP.EnterpriseServer
                             OneTimePasswordHelper.FireSuccessAuth(user);
                             break;
                         case OneTimePasswordStates.Expired:
-                            if (lockOut >= 0) DataProvider.UpdateUserFailedLoginAttempt(user.UserId, lockOut, false);
+                            if (lockOut >= 0) Database.UpdateUserFailedLoginAttempt(user.UserId, lockOut, false);
                             TaskManager.WriteWarning("Expired one time password");
                             return BusinessErrorCodes.ERROR_USER_EXPIRED_ONETIMEPASSWORD;
                     }
@@ -137,13 +137,13 @@ namespace SolidCP.EnterpriseServer
                 else
                 {
                     if (lockOut >= 0)
-                        DataProvider.UpdateUserFailedLoginAttempt(user.UserId, lockOut, false);
+                        Database.UpdateUserFailedLoginAttempt(user.UserId, lockOut, false);
 
                     TaskManager.WriteWarning("Wrong password");
                     return BusinessErrorCodes.ERROR_USER_WRONG_PASSWORD;
                 }
 
-                DataProvider.UpdateUserFailedLoginAttempt(user.UserId, lockOut, true);
+                Database.UpdateUserFailedLoginAttempt(user.UserId, lockOut, true);
 
                 // check status
                 if (user.Status == UserStatus.Cancelled)
@@ -221,7 +221,7 @@ namespace SolidCP.EnterpriseServer
             var authSettings = SystemController.GetSystemSettingsInternal(SystemSettings.AUTHENTICATION_SETTINGS, false);
             var canPeerChangeMfa = Convert.ToBoolean(authSettings[SystemSettings.MFA_CAN_PEER_CHANGE_MFA]);
 
-            var canChange = DataProvider.CanUserChangeMfa(SecurityContext.User.UserId, user.UserId, canPeerChangeMfa);
+            var canChange = Database.CanUserChangeMfa(SecurityContext.User.UserId, user.UserId, canPeerChangeMfa);
 
             System.Diagnostics.Debug.WriteLine($"canPeerChangeMfa {canPeerChangeMfa} / canhange {canChange}");
 
@@ -229,8 +229,8 @@ namespace SolidCP.EnterpriseServer
                 return false;
 
             var pinSecret = activate ? CryptoUtils.Encrypt(GetRandomString(20)) : null;
-            DataProvider.UpdateUserPinSecret(SecurityContext.User.UserId, user.UserId, pinSecret);
-            DataProvider.UpdateUserMfaMode(SecurityContext.User.UserId, user.UserId, pinSecret != null ? 1 : 0);
+            Database.UpdateUserPinSecret(SecurityContext.User.UserId, user.UserId, pinSecret);
+            Database.UpdateUserMfaMode(SecurityContext.User.UserId, user.UserId, pinSecret != null ? 1 : 0);
 
             UserInfoInternal userAfterUpdate = GetUserInternally(username);
             return userAfterUpdate.MfaMode > 0;
@@ -261,7 +261,7 @@ namespace SolidCP.EnterpriseServer
             if (!valid)
                 return false;
 
-            DataProvider.UpdateUserMfaMode(SecurityContext.User.UserId, user.UserId, 2);
+            Database.UpdateUserMfaMode(SecurityContext.User.UserId, user.UserId, 2);
             return true;
         }
 
@@ -271,7 +271,7 @@ namespace SolidCP.EnterpriseServer
             var authSettings = SystemController.GetSystemSettingsInternal(SystemSettings.AUTHENTICATION_SETTINGS, false);
             var canPeerChangeMfa = Convert.ToBoolean(authSettings[SystemSettings.MFA_CAN_PEER_CHANGE_MFA]);
 
-            return DataProvider.CanUserChangeMfa(currentUserId, changeUserId, canPeerChangeMfa);
+            return Database.CanUserChangeMfa(currentUserId, changeUserId, canPeerChangeMfa);
         }
 
         public UserInfo GetUserByUsernamePassword(string username, string password, string ip)
@@ -338,7 +338,7 @@ namespace SolidCP.EnterpriseServer
                 }
 
                 // change password
-                DataProvider.ChangeUserPassword(-1, user.UserId,
+                Database.ChangeUserPassword(-1, user.UserId,
                     CryptoUtils.Encrypt(newPassword));
 
                 return 0;
@@ -480,22 +480,22 @@ namespace SolidCP.EnterpriseServer
 
         internal UserInfoInternal GetUserInternally(int userId)
         {
-            return GetUser(DataProvider.GetUserByIdInternally(userId));
+            return GetUser(Database.GetUserByIdInternally(userId));
         }
 
         internal UserInfoInternal GetUserInternally(string username)
         {
-            return GetUser(DataProvider.GetUserByUsernameInternally(username));
+            return GetUser(Database.GetUserByUsernameInternally(username));
         }
 
         public UserInfoInternal GetUser(int userId)
         {
-            return GetUser(DataProvider.GetUserById(SecurityContext.User.UserId, userId));
+            return GetUser(Database.GetUserById(SecurityContext.User.UserId, userId));
         }
 
         public UserInfoInternal GetUser(string username)
         {
-            return GetUser(DataProvider.GetUserByUsername(SecurityContext.User.UserId, username));
+            return GetUser(Database.GetUserByUsername(SecurityContext.User.UserId, username));
         }
 
         private UserInfoInternal GetUser(IDataReader reader)
@@ -514,7 +514,7 @@ namespace SolidCP.EnterpriseServer
         public List<UserInfo> GetUserParents(int userId)
         {
             // get users from database
-            DataSet dsUsers = DataProvider.GetUserParents(SecurityContext.User.UserId, userId);
+            DataSet dsUsers = Database.GetUserParents(SecurityContext.User.UserId, userId);
 
             // convert to arraylist
             List<UserInfo> users = new List<UserInfo>();
@@ -525,7 +525,7 @@ namespace SolidCP.EnterpriseServer
         public List<UserInfo> GetUsers(int userId, bool recursive)
         {
             // get users from database
-            DataSet dsUsers = DataProvider.GetUsers(SecurityContext.User.UserId, userId, recursive);
+            DataSet dsUsers = Database.GetUsers(SecurityContext.User.UserId, userId, recursive);
 
             // convert to arraylist
             List<UserInfo> users = new List<UserInfo>();
@@ -538,7 +538,7 @@ namespace SolidCP.EnterpriseServer
             string sortColumn, int startRow, int maximumRows)
         {
             // get users from database
-            return DataProvider.GetUsersPaged(SecurityContext.User.UserId, userId,
+            return Database.GetUsersPaged(SecurityContext.User.UserId, userId,
                 filterColumn, filterValue, statusId, roleId, sortColumn, startRow, maximumRows, false);
         }
 
@@ -547,20 +547,20 @@ namespace SolidCP.EnterpriseServer
             string sortColumn, int startRow, int maximumRows)
         {
             // get users from database
-            return DataProvider.GetUsersPaged(SecurityContext.User.UserId, userId,
+            return Database.GetUsersPaged(SecurityContext.User.UserId, userId,
                 filterColumn, filterValue, statusId, roleId, sortColumn, startRow, maximumRows, true);
         }
 
         public DataSet GetUsersSummary(int userId)
         {
-            return DataProvider.GetUsersSummary(SecurityContext.User.UserId, userId);
+            return Database.GetUsersSummary(SecurityContext.User.UserId, userId);
         }
 
         public DataSet GetUserDomainsPaged(int userId, string filterColumn, string filterValue,
             string sortColumn, int startRow, int maximumRows)
         {
             // get users from database
-            return DataProvider.GetUserDomainsPaged(SecurityContext.User.UserId, userId,
+            return Database.GetUserDomainsPaged(SecurityContext.User.UserId, userId,
                 filterColumn, filterValue, sortColumn, startRow, maximumRows);
         }
 
@@ -573,13 +573,13 @@ namespace SolidCP.EnterpriseServer
         public DataSet GetRawUserPeers(int userId)
         {
             // get user peers from database
-            return DataProvider.GetUserPeers(SecurityContext.User.UserId, userId);
+            return Database.GetUserPeers(SecurityContext.User.UserId, userId);
         }
 
         public DataSet GetRawUsers(int ownerId, bool recursive)
         {
             // get users from database
-            return DataProvider.GetUsers(SecurityContext.User.UserId, ownerId, recursive);
+            return Database.GetUsers(SecurityContext.User.UserId, ownerId, recursive);
         }
 
         public int AddUser(UserInfo user, bool sendLetter, string password, string[] notes)
@@ -591,7 +591,7 @@ namespace SolidCP.EnterpriseServer
                 foreach (string note in notes)
                 {
                     // user added successfully, save the notes
-                    DataProvider.AddComment(
+                    Database.AddComment(
                         SecurityContext.User.UserId,
                         "USER",
                         userId,
@@ -637,7 +637,7 @@ namespace SolidCP.EnterpriseServer
             try
             {
                 // add user to database
-                int userId = DataProvider.AddUser(
+                int userId = Database.AddUser(
                     SecurityContext.User.UserId,
                     user.OwnerId,
                     user.RoleId,
@@ -785,7 +785,7 @@ namespace SolidCP.EnterpriseServer
                 //    System.Threading.Thread.Sleep(1000);
                 //}
 
-                DataProvider.UpdateUser(
+                Database.UpdateUser(
                     SecurityContext.User.UserId,
                     user.UserId,
                     user.RoleId,
@@ -869,7 +869,7 @@ namespace SolidCP.EnterpriseServer
             try
             {
 
-                DataProvider.ChangeUserPassword(SecurityContext.User.UserId, userId,
+                Database.ChangeUserPassword(SecurityContext.User.UserId, userId,
                     CryptoUtils.Encrypt(password));
 
                 return 0;
@@ -983,7 +983,7 @@ namespace SolidCP.EnterpriseServer
         public IEnumerable<string> GetUserPackagesServerUrls(int userId)
         {
             var urlbags = new List<ServerUrlBag>();
-            ObjectUtils.FillCollectionFromDataReader<ServerUrlBag>(urlbags, DataProvider.GetUserPackagesServerUrls(userId));
+            ObjectUtils.FillCollectionFromDataReader<ServerUrlBag>(urlbags, Database.GetUserPackagesServerUrls(userId));
             return urlbags
                 .Select(bag => CryptoUtils.DecryptServerUrl(bag.ServerUrl));
         }
@@ -1007,7 +1007,7 @@ namespace SolidCP.EnterpriseServer
         #region User Settings
         public UserSettings GetUserSettings(int userId, string settingsName)
         {
-            IDataReader reader = DataProvider.GetUserSettings(
+            IDataReader reader = Database.GetUserSettings(
                 SecurityContext.User.UserId, userId, settingsName);
 
             UserSettings settings = new UserSettings();
@@ -1055,7 +1055,7 @@ namespace SolidCP.EnterpriseServer
                 string xml = nodeProps.OuterXml;
 
                 // update settings
-                DataProvider.UpdateUserSettings(SecurityContext.User.UserId,
+                Database.UpdateUserSettings(SecurityContext.User.UserId,
                     settings.UserId, settings.SettingsName, xml);
 
                 return 0;
@@ -1078,17 +1078,17 @@ namespace SolidCP.EnterpriseServer
 
         public DataSet GetUserThemeSettings(int userId)
         {
-            return DataProvider.GetUserThemeSettings(SecurityContext.User.UserId, userId);
+            return Database.GetUserThemeSettings(SecurityContext.User.UserId, userId);
         }
 
         public void UpdateUserThemeSetting(int userId, string PropertyName, string PropertyValue)
         {
-            DataProvider.UpdateUserThemeSetting(SecurityContext.User.UserId, userId, PropertyName, PropertyValue);
+            Database.UpdateUserThemeSetting(SecurityContext.User.UserId, userId, PropertyName, PropertyValue);
         }
 
         public void DeleteUserThemeSetting(int userId, string PropertyName)
         {
-            DataProvider.DeleteUserThemeSetting(SecurityContext.User.UserId, userId, PropertyName);
+            Database.DeleteUserThemeSetting(SecurityContext.User.UserId, userId, PropertyName);
         }
 
         #endregion

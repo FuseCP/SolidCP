@@ -370,7 +370,7 @@ namespace SolidCP.EnterpriseServer
 
                 var rds = RemoteDesktopServicesHelpers.GetRemoteDesktopServices(RemoteDesktopServicesHelpers.GetRemoteDesktopServiceID(org.PackageId));
                 rds.SendMessage(recipients, text);
-                DataProvider.AddRDSMessage(rdsCollectionId, text, userName);
+                Database.AddRDSMessage(rdsCollectionId, text, userName);
             }
             catch (Exception ex)
             {
@@ -393,7 +393,7 @@ namespace SolidCP.EnterpriseServer
 
         private List<RdsMessage> GetRdsMessagesByCollectionIdInternal(int rdsCollectionId)
         {
-            return ObjectUtils.CreateListFromDataSet<RdsMessage>(DataProvider.GetRDSMessagesByCollectionId(rdsCollectionId));
+            return ObjectUtils.CreateListFromDataSet<RdsMessage>(Database.GetRDSMessagesByCollectionId(rdsCollectionId));
         }
 
         private ResultObject ImportCollectionInternal(int itemId, string collectionName, string rdsControllerServiceID)
@@ -429,13 +429,13 @@ namespace SolidCP.EnterpriseServer
                     DisplayName = collection.CollectionName
                 };
 
-                newCollection.Id = DataProvider.AddRDSCollection(itemId, newCollection.Name, newCollection.Description, newCollection.DisplayName);
+                newCollection.Id = Database.AddRDSCollection(itemId, newCollection.Name, newCollection.Description, newCollection.DisplayName);
                 newCollection.Settings = RemoteDesktopServicesHelpers.ParseCollectionSettings(collection.CollectionSettings);
                 newCollection.Settings.RdsCollectionId = newCollection.Id;
-                newCollection.Settings.Id = DataProvider.AddRdsCollectionSettings(newCollection.Settings);
+                newCollection.Settings.Id = Database.AddRdsCollectionSettings(newCollection.Settings);
                 var existingSessionHosts = GetRdsServersPagedInternal("", "", "", 1, 1000, rdsControllerServiceID).Servers;
                 RemoteDesktopServicesHelpers.FillSessionHosts(collection.SessionHosts, existingSessionHosts, newCollection.Id, itemId);
-                newCollection.Servers = ObjectUtils.CreateListFromDataReader<RdsServer>(DataProvider.GetRDSServersByCollectionId(newCollection.Id)).ToList();
+                newCollection.Servers = ObjectUtils.CreateListFromDataReader<RdsServer>(Database.GetRDSServersByCollectionId(newCollection.Id)).ToList();
                 UserInfo user = PackageController.GetPackageOwner(org.PackageId);
                 var organizationUsers = OrganizationController.GetOrganizationUsersPaged(itemId, null, null, null, 0, Int32.MaxValue).PageUsers.Select(u => u.SamAccountName.Split('\\').Last().ToLower());
                 var newUsers = organizationUsers.Where(x => collection.UserGroups.Select(a => a.PropertyValue.ToString().Split('\\').Last().ToLower()).Contains(x));
@@ -444,7 +444,7 @@ namespace SolidCP.EnterpriseServer
 
                 var emptySettings = RemoteDesktopServicesHelpers.GetEmptyGpoSettings();
                 string xml = RemoteDesktopServicesHelpers.GetSettingsXml(emptySettings);
-                DataProvider.UpdateRdsServerSettings(newCollection.Id, string.Format("Collection-{0}-Settings", newCollection.Id), xml);
+                Database.UpdateRdsServerSettings(newCollection.Id, string.Format("Collection-{0}-Settings", newCollection.Id), xml);
             }            
             catch (Exception ex)
             {
@@ -505,7 +505,7 @@ namespace SolidCP.EnterpriseServer
 
         private RdsServerSettings GetRdsServerSettingsInternal(int serverId, string settingsName)
         {
-            IDataReader reader = DataProvider.GetRdsServerSettings(serverId, settingsName);
+            IDataReader reader = Database.GetRdsServerSettings(serverId, settingsName);
 
             var settings = new RdsServerSettings();
             settings.ServerId = serverId;
@@ -533,13 +533,13 @@ namespace SolidCP.EnterpriseServer
 
             try
             {                
-                var collection = ObjectUtils.FillObjectFromDataReader<RdsCollection>(DataProvider.GetRDSCollectionById(serverId));
+                var collection = ObjectUtils.FillObjectFromDataReader<RdsCollection>(Database.GetRDSCollectionById(serverId));
                 var rds = RemoteDesktopServicesHelpers.GetRemoteDesktopServices(GetRdsServiceId(collection.ItemId));
                 Organization org = OrganizationController.GetOrganization(collection.ItemId);
                 rds.ApplyGPO(org.OrganizationId, collection.Name, settings);
                 string xml = RemoteDesktopServicesHelpers.GetSettingsXml(settings);
 
-                DataProvider.UpdateRdsServerSettings(serverId, settingsName, xml);
+                Database.UpdateRdsServerSettings(serverId, settingsName, xml);
 
                 return 0;
             }
@@ -667,7 +667,7 @@ namespace SolidCP.EnterpriseServer
 
         private RdsCertificate GetRdsCertificateByServiceIdInternal(int serviceId)
         {
-            var result = ObjectUtils.FillObjectFromDataReader<RdsCertificate>(DataProvider.GetRdsCertificateByServiceId(serviceId));
+            var result = ObjectUtils.FillObjectFromDataReader<RdsCertificate>(Database.GetRdsCertificateByServiceId(serviceId));
 
             return result;
         }
@@ -675,7 +675,7 @@ namespace SolidCP.EnterpriseServer
         private RdsCertificate GetRdsCertificateByItemIdInternal(int? itemId)
         {            
             int serviceId = GetRdsServiceId(itemId);
-            var result = ObjectUtils.FillObjectFromDataReader<RdsCertificate>(DataProvider.GetRdsCertificateByServiceId(serviceId));
+            var result = ObjectUtils.FillObjectFromDataReader<RdsCertificate>(Database.GetRdsCertificateByServiceId(serviceId));
 
             return result;
         }
@@ -688,7 +688,7 @@ namespace SolidCP.EnterpriseServer
             {
                 byte[] hash = new byte[certificate.Hash.Length * sizeof(char)];
                 System.Buffer.BlockCopy(certificate.Hash.ToCharArray(), 0, hash, 0, hash.Length);
-                certificate.Id = DataProvider.AddRdsCertificate(certificate.ServiceId, certificate.Content, hash, certificate.FileName, certificate.ValidFrom, certificate.ExpiryDate);                
+                certificate.Id = Database.AddRdsCertificate(certificate.ServiceId, certificate.Content, hash, certificate.FileName, certificate.ValidFrom, certificate.ExpiryDate);                
             }
             catch (Exception ex)
             {
@@ -718,8 +718,8 @@ namespace SolidCP.EnterpriseServer
 
         private RdsCollection GetRdsCollectionInternal(int collectionId, bool quick)
         {
-            var collection = ObjectUtils.FillObjectFromDataReader<RdsCollection>(DataProvider.GetRDSCollectionById(collectionId));
-            var collectionSettings = ObjectUtils.FillObjectFromDataReader<RdsCollectionSettings>(DataProvider.GetRdsCollectionSettingsByCollectionId(collectionId));
+            var collection = ObjectUtils.FillObjectFromDataReader<RdsCollection>(Database.GetRDSCollectionById(collectionId));
+            var collectionSettings = ObjectUtils.FillObjectFromDataReader<RdsCollectionSettings>(Database.GetRdsCollectionSettingsByCollectionId(collectionId));
             collection.Settings = collectionSettings;
 
             var result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "GET_RDS_COLLECTION");
@@ -764,8 +764,8 @@ namespace SolidCP.EnterpriseServer
         private List<OrganizationUser> GetRdsCollectionLocalAdminsInternal(int collectionId)
         {
             var result = new List<OrganizationUser>();
-            var collection = ObjectUtils.FillObjectFromDataReader<RdsCollection>(DataProvider.GetRDSCollectionById(collectionId));
-            var servers = ObjectUtils.CreateListFromDataReader<RdsServer>(DataProvider.GetRDSServersByCollectionId(collection.Id)).ToList();
+            var collection = ObjectUtils.FillObjectFromDataReader<RdsCollection>(Database.GetRDSCollectionById(collectionId));
+            var servers = ObjectUtils.CreateListFromDataReader<RdsServer>(Database.GetRDSServersByCollectionId(collection.Id)).ToList();
             Organization org = OrganizationController.GetOrganization(collection.ItemId);
             
             if (org == null)
@@ -787,7 +787,7 @@ namespace SolidCP.EnterpriseServer
 
             try
             {
-                var collection = ObjectUtils.FillObjectFromDataReader<RdsCollection>(DataProvider.GetRDSCollectionById(collectionId));
+                var collection = ObjectUtils.FillObjectFromDataReader<RdsCollection>(Database.GetRDSCollectionById(collectionId));
                 Organization org = OrganizationController.GetOrganization(collection.ItemId);
 
                 if (org == null)
@@ -798,7 +798,7 @@ namespace SolidCP.EnterpriseServer
                 }
 
                 var rds = RemoteDesktopServicesHelpers.GetRemoteDesktopServices(RemoteDesktopServicesHelpers.GetRemoteDesktopServiceID(org.PackageId));
-                var servers = ObjectUtils.CreateListFromDataReader<RdsServer>(DataProvider.GetRDSServersByCollectionId(collection.Id)).ToList();                
+                var servers = ObjectUtils.CreateListFromDataReader<RdsServer>(Database.GetRDSServersByCollectionId(collection.Id)).ToList();                
 
                 rds.SaveRdsCollectionLocalAdmins(users.Select(u => u.AccountName).ToArray(), servers.Select(s => s.FqdName).ToArray(), org.OrganizationId, collection.Name);
             }
@@ -823,8 +823,8 @@ namespace SolidCP.EnterpriseServer
 
         private RdsCollectionSettings GetRdsCollectionSettingsInternal(int collectionId)
         {
-            var collection = ObjectUtils.FillObjectFromDataReader<RdsCollection>(DataProvider.GetRDSCollectionById(collectionId));            
-            var settings = ObjectUtils.FillObjectFromDataReader<RdsCollectionSettings>(DataProvider.GetRdsCollectionSettingsByCollectionId(collectionId));
+            var collection = ObjectUtils.FillObjectFromDataReader<RdsCollection>(Database.GetRDSCollectionById(collectionId));            
+            var settings = ObjectUtils.FillObjectFromDataReader<RdsCollectionSettings>(Database.GetRdsCollectionSettingsByCollectionId(collectionId));
 
             if (settings != null)
             {
@@ -854,7 +854,7 @@ namespace SolidCP.EnterpriseServer
 
         private List<RdsCollection> GetOrganizationRdsCollectionsInternal(int itemId)
         {
-            var collections = ObjectUtils.CreateListFromDataReader<RdsCollection>(DataProvider.GetRDSCollectionsByItemId(itemId));
+            var collections = ObjectUtils.CreateListFromDataReader<RdsCollection>(Database.GetRDSCollectionsByItemId(itemId));
 
             foreach (var rdsCollection in collections)
             {
@@ -893,17 +893,17 @@ namespace SolidCP.EnterpriseServer
                 rds.CreateCollection(org.OrganizationId, collection);
                 var defaultGpoSettings = RemoteDesktopServicesHelpers.GetDefaultGpoSettings();                
                 rds.ApplyGPO(org.OrganizationId, collection.Name, defaultGpoSettings);                
-                collection.Id = DataProvider.AddRDSCollection(itemId, collection.Name, collection.Description, collection.DisplayName);
+                collection.Id = Database.AddRDSCollection(itemId, collection.Name, collection.Description, collection.DisplayName);
                 string xml = RemoteDesktopServicesHelpers.GetSettingsXml(defaultGpoSettings);
-                DataProvider.UpdateRdsServerSettings(collection.Id, string.Format("Collection-{0}-Settings", collection.Id), xml);
+                Database.UpdateRdsServerSettings(collection.Id, string.Format("Collection-{0}-Settings", collection.Id), xml);
                 
                 collection.Settings.RdsCollectionId = collection.Id;
-                int settingsId = DataProvider.AddRdsCollectionSettings(collection.Settings);
+                int settingsId = Database.AddRdsCollectionSettings(collection.Settings);
                 collection.Settings.Id = settingsId;                
 
                 foreach (var server in collection.Servers)
                 {
-                    DataProvider.AddRDSServerToCollection(server.Id, collection.Id);
+                    Database.AddRDSServerToCollection(server.Id, collection.Id);
                 }
             }
             catch (Exception ex)
@@ -942,14 +942,14 @@ namespace SolidCP.EnterpriseServer
 
                 var rds = RemoteDesktopServicesHelpers.GetRemoteDesktopServices(RemoteDesktopServicesHelpers.GetRemoteDesktopServiceID(org.PackageId));
                 var existingServers =
-                    ObjectUtils.CreateListFromDataReader<RdsServer>(DataProvider.GetRDSServersByCollectionId(collection.Id)).ToList();
+                    ObjectUtils.CreateListFromDataReader<RdsServer>(Database.GetRDSServersByCollectionId(collection.Id)).ToList();
                 var removedServers = existingServers.Where(x => !collection.Servers.Select(y => y.Id).Contains(x.Id));
                 var newServers = collection.Servers.Where(x => !existingServers.Select(y => y.Id).Contains(x.Id));
 
                 foreach(var server in removedServers)
                 {
                     rds.RemoveSessionHostServerFromCollection(org.OrganizationId, collection.Name, server);
-                    DataProvider.RemoveRDSServerFromCollection(server.Id);
+                    Database.RemoveRDSServerFromCollection(server.Id);
                 }
 
                 rds.AddSessionHostServersToCollection(org.OrganizationId, collection.Name, newServers.ToArray());
@@ -957,7 +957,7 @@ namespace SolidCP.EnterpriseServer
 
                 foreach (var server in newServers)
                 {                    
-                    DataProvider.AddRDSServerToCollection(server.Id, collection.Id);
+                    Database.AddRDSServerToCollection(server.Id, collection.Id);
                 }
             }
             catch (Exception ex)
@@ -996,15 +996,15 @@ namespace SolidCP.EnterpriseServer
 
                 var rds = RemoteDesktopServicesHelpers.GetRemoteDesktopServices(RemoteDesktopServicesHelpers.GetRemoteDesktopServiceID(org.PackageId));
                 rds.EditRdsCollectionSettings(collection);
-                var collectionSettings = ObjectUtils.FillObjectFromDataReader<RdsCollectionSettings>(DataProvider.GetRdsCollectionSettingsByCollectionId(collection.Id));
+                var collectionSettings = ObjectUtils.FillObjectFromDataReader<RdsCollectionSettings>(Database.GetRdsCollectionSettingsByCollectionId(collection.Id));
 
                 if (collectionSettings == null)
                 {
-                    DataProvider.AddRdsCollectionSettings(collection.Settings);
+                    Database.AddRdsCollectionSettings(collection.Settings);
                 }
                 else
                 {
-                    DataProvider.UpdateRDSCollectionSettings(collection.Settings);
+                    Database.UpdateRDSCollectionSettings(collection.Settings);
                 }
             }
             catch (Exception ex)
@@ -1029,7 +1029,7 @@ namespace SolidCP.EnterpriseServer
 
         private RdsCollectionPaged GetRdsCollectionsPagedInternal(int itemId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
-            DataSet ds = DataProvider.GetRDSCollectionsPaged(itemId, filterColumn, filterValue, sortColumn, startRow, maximumRows);
+            DataSet ds = Database.GetRDSCollectionsPaged(itemId, filterColumn, filterValue, sortColumn, startRow, maximumRows);
 
             var result = new RdsCollectionPaged
             {
@@ -1066,11 +1066,11 @@ namespace SolidCP.EnterpriseServer
                 }
 
                 var rds = RemoteDesktopServicesHelpers.GetRemoteDesktopServices(RemoteDesktopServicesHelpers.GetRemoteDesktopServiceID(org.PackageId));
-                var servers = ObjectUtils.CreateListFromDataReader<RdsServer>(DataProvider.GetRDSServersByCollectionId(collection.Id)).ToArray();
+                var servers = ObjectUtils.CreateListFromDataReader<RdsServer>(Database.GetRDSServersByCollectionId(collection.Id)).ToArray();
                 rds.RemoveCollection(org.OrganizationId, collection.Name, servers);
 
-                DataProvider.DeleteRDSServerSettings(collection.Id);
-                DataProvider.DeleteRDSCollection(collection.Id);
+                Database.DeleteRDSServerSettings(collection.Id);
+                Database.DeleteRDSCollection(collection.Id);
             }
             catch (Exception ex)
             {
@@ -1133,7 +1133,7 @@ namespace SolidCP.EnterpriseServer
 
         private RdsServersPaged GetRdsServersPagedInternal(string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string rdsControllerServiceID)
         {
-            DataSet ds = DataProvider.GetRDSServersPaged(null, null, filterColumn, filterValue, sortColumn, startRow, maximumRows, rdsControllerServiceID, true, true);
+            DataSet ds = Database.GetRDSServersPaged(null, null, filterColumn, filterValue, sortColumn, startRow, maximumRows, rdsControllerServiceID, true, true);
 
             RdsServersPaged result = new RdsServersPaged();
             result.RecordsCount = (int)ds.Tables[0].Rows[0][0];
@@ -1155,7 +1155,7 @@ namespace SolidCP.EnterpriseServer
         private List<RdsUserSession> GetRdsUserSessionsInternal(int collectionId)
         {
             var result = new List<RdsUserSession>();
-            var collection = ObjectUtils.FillObjectFromDataReader<RdsCollection>(DataProvider.GetRDSCollectionById(collectionId));
+            var collection = ObjectUtils.FillObjectFromDataReader<RdsCollection>(Database.GetRDSCollectionById(collectionId));
             var organization = OrganizationController.GetOrganization(collection.ItemId);
 
             if (organization == null)
@@ -1197,7 +1197,7 @@ namespace SolidCP.EnterpriseServer
             var RDSController = (RemoteDesktopServicesHelpers.GetRemoteDesktopServiceID(org.PackageId)).ToString();
 
 
-            DataSet ds = DataProvider.GetRDSServersPaged(null, null, filterColumn, filterValue, sortColumn, startRow, maximumRows, RDSController);            
+            DataSet ds = Database.GetRDSServersPaged(null, null, filterColumn, filterValue, sortColumn, startRow, maximumRows, RDSController);            
             result.RecordsCount = (int)ds.Tables[0].Rows[0][0];
 
             List<RdsServer> tmpServers = new List<RdsServer>();
@@ -1212,7 +1212,7 @@ namespace SolidCP.EnterpriseServer
         private List<string> GetRdsCollectionSessionHostsInternal(int collectionId)
         {
             var result = new List<string>();
-            var collection = ObjectUtils.FillObjectFromDataReader<RdsCollection>(DataProvider.GetRDSCollectionById(collectionId));
+            var collection = ObjectUtils.FillObjectFromDataReader<RdsCollection>(Database.GetRDSCollectionById(collectionId));
             Organization org = OrganizationController.GetOrganization(collection.ItemId);
 
             if (org == null)
@@ -1228,7 +1228,7 @@ namespace SolidCP.EnterpriseServer
 
         private RdsServersPaged GetOrganizationRdsServersPagedInternal(int itemId, int? collectionId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string rdsControllerServiceID)
         {
-            DataSet ds = DataProvider.GetRDSServersPaged(itemId, collectionId, filterColumn, filterValue, sortColumn, startRow, maximumRows, rdsControllerServiceID, ignoreRdsCollectionId: !collectionId.HasValue);
+            DataSet ds = Database.GetRDSServersPaged(itemId, collectionId, filterColumn, filterValue, sortColumn, startRow, maximumRows, rdsControllerServiceID, ignoreRdsCollectionId: !collectionId.HasValue);
 
             RdsServersPaged result = new RdsServersPaged();
             result.RecordsCount = (int)ds.Tables[0].Rows[0][0];
@@ -1244,7 +1244,7 @@ namespace SolidCP.EnterpriseServer
 
         private RdsServersPaged GetOrganizationFreeRdsServersPagedInternal(int itemId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string rdsControllerServiceID)
         {
-            DataSet ds = DataProvider.GetRDSServersPaged(itemId, null, filterColumn, filterValue, sortColumn, startRow, maximumRows, rdsControllerServiceID);
+            DataSet ds = Database.GetRDSServersPaged(itemId, null, filterColumn, filterValue, sortColumn, startRow, maximumRows, rdsControllerServiceID);
 
             RdsServersPaged result = new RdsServersPaged();
             result.RecordsCount = (int)ds.Tables[0].Rows[0][0];
@@ -1260,7 +1260,7 @@ namespace SolidCP.EnterpriseServer
 
         private RdsServer GetRdsServerInternal(int rdsSeverId)
         {
-            return ObjectUtils.FillObjectFromDataReader<RdsServer>(DataProvider.GetRDSServerById(rdsSeverId));
+            return ObjectUtils.FillObjectFromDataReader<RdsServer>(Database.GetRDSServerById(rdsSeverId));
         }
 
         private ResultObject SetRDServerNewConnectionAllowedInternal(int itemId, string newConnectionAllowed, int rdsSeverId)
@@ -1290,7 +1290,7 @@ namespace SolidCP.EnterpriseServer
 
                 rds.SetRDServerNewConnectionAllowed(newConnectionAllowed, rdsServer);
                 rdsServer.ConnectionEnabled = newConnectionAllowed;
-                DataProvider.UpdateRDSServer(rdsServer);
+                Database.UpdateRDSServer(rdsServer);
             }
             catch (Exception ex)
             {
@@ -1316,7 +1316,7 @@ namespace SolidCP.EnterpriseServer
             var result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "ADD_RDS_SERVER");
 
             // check if the domain already exists
-            int checkResult = DataProvider.CheckRDSServer(rdsServer.FqdName);
+            int checkResult = Database.CheckRDSServer(rdsServer.FqdName);
 
             if (checkResult < 0)
             {
@@ -1334,7 +1334,7 @@ namespace SolidCP.EnterpriseServer
                      
                         rds.AddSessionHostFeatureToServer(rdsServer.FqdName);
                         rds.MoveSessionHostToRdsOU(rdsServer.Name);
-                        rdsServer.Id = DataProvider.AddRDSServer(rdsServer.Name, rdsServer.FqdName, rdsServer.Description, rdsControllerServiceID);
+                        rdsServer.Id = Database.AddRDSServer(rdsServer.Name, rdsServer.FqdName, rdsServer.Description, rdsControllerServiceID);
 
                 }
                 else
@@ -1381,7 +1381,7 @@ namespace SolidCP.EnterpriseServer
 
                 rds.AddSessionHostServerToCollection(org.OrganizationId, rdsCollection.Name, rdsServer);
 
-                DataProvider.AddRDSServerToCollection(rdsServer.Id, rdsCollection.Id);
+                Database.AddRDSServerToCollection(rdsServer.Id, rdsCollection.Id);
             }
             catch (Exception ex)
             {
@@ -1421,7 +1421,7 @@ namespace SolidCP.EnterpriseServer
 
                 rds.RemoveSessionHostServerFromCollection(org.OrganizationId, rdsCollection.Name, rdsServer);
 
-                DataProvider.RemoveRDSServerFromCollection(rdsServer.Id);
+                Database.RemoveRDSServerFromCollection(rdsServer.Id);
             }
             catch (Exception ex)
             {
@@ -1448,7 +1448,7 @@ namespace SolidCP.EnterpriseServer
 
             try
             {
-                DataProvider.UpdateRDSServer(rdsServer);
+                Database.UpdateRDSServer(rdsServer);
             }
             catch (Exception ex)
             {
@@ -1488,7 +1488,7 @@ namespace SolidCP.EnterpriseServer
 
                 RdsServer rdsServer = GetRdsServer(serverId);                
                 rds.MoveRdsServerToTenantOU(rdsServer.FqdName, org.OrganizationId);
-                DataProvider.AddRDSServerToOrganization(itemId, serverId);
+                Database.AddRDSServerToOrganization(itemId, serverId);
             }
             catch (Exception ex)
             {
@@ -1524,10 +1524,10 @@ namespace SolidCP.EnterpriseServer
                     return result;
                 }
 
-                var rdsServer = ObjectUtils.FillObjectFromDataReader<RdsServer>(DataProvider.GetRDSServerById(rdsServerId));
+                var rdsServer = ObjectUtils.FillObjectFromDataReader<RdsServer>(Database.GetRDSServerById(rdsServerId));
                 var rds = RemoteDesktopServicesHelpers.GetRemoteDesktopServices(RemoteDesktopServicesHelpers.GetRemoteDesktopServiceID(org.PackageId));
                 rds.RemoveRdsServerFromTenantOU(rdsServer.FqdName, org.OrganizationId);
-                DataProvider.RemoveRDSServerFromOrganization(rdsServerId);
+                Database.RemoveRDSServerFromOrganization(rdsServerId);
             }
             catch (Exception ex)
             {
@@ -1554,7 +1554,7 @@ namespace SolidCP.EnterpriseServer
 
             try
             {
-                DataProvider.DeleteRDSServer(rdsServerId);
+                Database.DeleteRDSServer(rdsServerId);
             }
             catch (Exception ex)
             {
@@ -1577,7 +1577,7 @@ namespace SolidCP.EnterpriseServer
 
         private List<OrganizationUser> GetRdsCollectionUsersInternal(int collectionId)
         {
-            return ObjectUtils.CreateListFromDataReader<OrganizationUser>(DataProvider.GetRDSCollectionUsersByRDSCollectionId(collectionId));
+            return ObjectUtils.CreateListFromDataReader<OrganizationUser>(Database.GetRDSCollectionUsersByRDSCollectionId(collectionId));
         }        
 
         private ResultObject SetUsersToRdsCollectionInternal(int itemId, int collectionId, List<OrganizationUser> users)
@@ -1625,7 +1625,7 @@ namespace SolidCP.EnterpriseServer
                 {
                     if (!accountNames.Contains(userInDb.AccountName))
                     {
-                        DataProvider.RemoveRDSUserFromRDSCollection(collectionId, userInDb.AccountId);
+                        Database.RemoveRDSUserFromRDSCollection(collectionId, userInDb.AccountId);
                     }
                 }
 
@@ -1634,7 +1634,7 @@ namespace SolidCP.EnterpriseServer
                 {
                     if (!usersInDb.Select(x => x.AccountName).Contains(user.AccountName))
                     {
-                        DataProvider.AddRDSUserToRDSCollection(collectionId, user.AccountId);
+                        Database.AddRDSUserToRDSCollection(collectionId, user.AccountId);
                     }
                 }
 
@@ -1669,7 +1669,7 @@ namespace SolidCP.EnterpriseServer
             }
 
             var rds = RemoteDesktopServicesHelpers.GetRemoteDesktopServices(RemoteDesktopServicesHelpers.GetRemoteDesktopServiceID(org.PackageId));
-            var collection = ObjectUtils.FillObjectFromDataReader<RdsCollection>(DataProvider.GetRDSCollectionById(collectionId));
+            var collection = ObjectUtils.FillObjectFromDataReader<RdsCollection>(Database.GetRDSCollectionById(collectionId));
             string alias = "";
 
             if (remoteApp != null)
@@ -1697,7 +1697,7 @@ namespace SolidCP.EnterpriseServer
                     return result;
                 }
 
-                var collection = ObjectUtils.FillObjectFromDataReader<RdsCollection>(DataProvider.GetRDSCollectionById(collectionId));
+                var collection = ObjectUtils.FillObjectFromDataReader<RdsCollection>(Database.GetRDSCollectionById(collectionId));
                 var rds = RemoteDesktopServicesHelpers.GetRemoteDesktopServices(RemoteDesktopServicesHelpers.GetRemoteDesktopServiceID(org.PackageId));
                 rds.SetApplicationUsers(collection.Name, remoteApp, users.ToArray());
             }
@@ -2024,32 +2024,32 @@ namespace SolidCP.EnterpriseServer
 
         private int GetOrganizationRdsUsersCountInternal(int itemId)
         {
-            return DataProvider.GetOrganizationRdsUsersCount(itemId);
+            return Database.GetOrganizationRdsUsersCount(itemId);
         }
 
         private int GetOrganizationRdsServersCountInternal(int itemId)
         {
-            return DataProvider.GetOrganizationRdsServersCount(itemId);
+            return Database.GetOrganizationRdsServersCount(itemId);
         }
 
         private int GetOrganizationRdsCollectionsCountInternal(int itemId)
         {
-            return DataProvider.GetOrganizationRdsCollectionsCount(itemId);
+            return Database.GetOrganizationRdsCollectionsCount(itemId);
         }
 
         private List<RdsServer> GetCollectionRdsServersInternal(int collectionId)
         {
-            return ObjectUtils.CreateListFromDataReader<RdsServer>(DataProvider.GetRDSServersByCollectionId(collectionId)).ToList();
+            return ObjectUtils.CreateListFromDataReader<RdsServer>(Database.GetRDSServersByCollectionId(collectionId)).ToList();
         }
 
         private List<RdsServer> GetOrganizationRdsServersInternal(int itemId)
         {
-            return ObjectUtils.CreateListFromDataReader<RdsServer>(DataProvider.GetRDSServersByItemId(itemId)).ToList();
+            return ObjectUtils.CreateListFromDataReader<RdsServer>(Database.GetRDSServersByItemId(itemId)).ToList();
         }
 
         private List<ServiceInfo> GetRdsServicesInternal()
         {
-            return ObjectUtils.CreateListFromDataSet<ServiceInfo>(DataProvider.GetServicesByGroupName(SecurityContext.User.UserId, ResourceGroups.RDS, false));
+            return ObjectUtils.CreateListFromDataSet<ServiceInfo>(Database.GetServicesByGroupName(SecurityContext.User.UserId, ResourceGroups.RDS, false));
         }
 
         protected int GetRdsMainServiceId()

@@ -30,14 +30,14 @@ namespace SolidCP.EnterpriseServer
             // generate password
             var password = Utils.GetRandomString(passwordLength);
 
-            DataProvider.SetUserOneTimePassword(userId, CryptoUtils.Encrypt(password), (int) OneTimePasswordStates.Active);
+            Database.SetUserOneTimePassword(userId, CryptoUtils.Encrypt(password), (int) OneTimePasswordStates.Active);
 
             return password;
         }
 
         public void FireSuccessAuth(UserInfoInternal user)
         {
-            DataProvider.SetUserOneTimePassword(user.UserId, CryptoUtils.Encrypt(user.Password), (int) OneTimePasswordStates.Expired);
+            Database.SetUserOneTimePassword(user.UserId, CryptoUtils.Encrypt(user.Password), (int) OneTimePasswordStates.Expired);
         }
     }
 }

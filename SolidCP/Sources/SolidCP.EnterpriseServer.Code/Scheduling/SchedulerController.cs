@@ -52,18 +52,18 @@ namespace SolidCP.EnterpriseServer
         public List<ScheduleTaskInfo> GetScheduleTasks()
         {
             return ObjectUtils.CreateListFromDataReader<ScheduleTaskInfo>(
-                DataProvider.GetScheduleTasks(SecurityContext.User.UserId));
+                Database.GetScheduleTasks(SecurityContext.User.UserId));
         }
 
         public ScheduleTaskInfo GetScheduleTask(string taskId)
         {
             return ObjectUtils.FillObjectFromDataReader<ScheduleTaskInfo>(
-                DataProvider.GetScheduleTask(SecurityContext.User.UserId, taskId));
+                Database.GetScheduleTask(SecurityContext.User.UserId, taskId));
         }
 
         public DataSet GetSchedules(int packageId)
         {
-            DataSet ds = DataProvider.GetSchedules(SecurityContext.User.UserId, packageId);
+            DataSet ds = Database.GetSchedules(SecurityContext.User.UserId, packageId);
 
             // set status to each returned schedule
             foreach (DataRow dr in ds.Tables[0].Rows)
@@ -77,7 +77,7 @@ namespace SolidCP.EnterpriseServer
         public DataSet GetSchedulesPaged(int packageId, bool recursive,
             string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
-            DataSet ds = DataProvider.GetSchedulesPaged(SecurityContext.User.UserId, packageId,
+            DataSet ds = Database.GetSchedulesPaged(SecurityContext.User.UserId, packageId,
                 recursive, filterColumn, filterValue, sortColumn, startRow, maximumRows);
 
             // set status to each returned schedule
@@ -91,7 +91,7 @@ namespace SolidCP.EnterpriseServer
 
         public ScheduleInfo GetSchedule(int scheduleId)
         {
-            DataSet ds = DataProvider.GetSchedule(SecurityContext.User.UserId, scheduleId);
+            DataSet ds = Database.GetSchedule(SecurityContext.User.UserId, scheduleId);
             ScheduleInfo si = ObjectUtils.FillObjectFromDataView<ScheduleInfo>(ds.Tables[0].DefaultView);
             return si;
         }
@@ -103,19 +103,19 @@ namespace SolidCP.EnterpriseServer
         /// <returns>View configuration for the task with supplied id.</returns>
         public List<ScheduleTaskViewConfiguration> GetScheduleTaskViewConfigurations(string taskId)
         {
-            List<ScheduleTaskViewConfiguration> c = ObjectUtils.CreateListFromDataReader<ScheduleTaskViewConfiguration>(DataProvider.GetScheduleTaskViewConfigurations(taskId));
+            List<ScheduleTaskViewConfiguration> c = ObjectUtils.CreateListFromDataReader<ScheduleTaskViewConfiguration>(Database.GetScheduleTaskViewConfigurations(taskId));
             return c;
         }
 
         internal SchedulerJob GetScheduleComplete(int scheduleId)
         {
-            DataSet ds = DataProvider.GetSchedule(SecurityContext.User.UserId, scheduleId);
+            DataSet ds = Database.GetSchedule(SecurityContext.User.UserId, scheduleId);
             return CreateCompleteScheduleFromDataSet(ds);
         }
 
         internal SchedulerJob GetNextSchedule()
         {
-            DataSet ds = DataProvider.GetNextSchedule();
+            DataSet ds = Database.GetNextSchedule();
             return CreateCompleteScheduleFromDataSet(ds);
         }
 
@@ -144,13 +144,13 @@ namespace SolidCP.EnterpriseServer
         public ScheduleInfo GetScheduleInternal(int scheduleId)
         {
             return ObjectUtils.FillObjectFromDataReader<ScheduleInfo>(
-                DataProvider.GetScheduleInternal(scheduleId));
+                Database.GetScheduleInternal(scheduleId));
         }
 
         public List<ScheduleTaskParameterInfo> GetScheduleParameters(string taskId, int scheduleId)
         {
             return ObjectUtils.CreateListFromDataReader<ScheduleTaskParameterInfo>(
-                DataProvider.GetScheduleParameters(SecurityContext.User.UserId,
+                Database.GetScheduleParameters(SecurityContext.User.UserId,
                 taskId, scheduleId));
         }
 
@@ -319,7 +319,7 @@ namespace SolidCP.EnterpriseServer
 
             string xmlParameters = BuildParametersXml(schedule.Parameters);
 
-            int scheduleId = DataProvider.AddSchedule(SecurityContext.User.UserId,
+            int scheduleId = Database.AddSchedule(SecurityContext.User.UserId,
                 schedule.TaskId, schedule.PackageId, schedule.ScheduleName, schedule.ScheduleTypeId,
                 schedule.Interval, schedule.FromTime, schedule.ToTime, schedule.StartTime,
                 schedule.NextRun, schedule.Enabled, schedule.PriorityId,
@@ -345,7 +345,7 @@ namespace SolidCP.EnterpriseServer
 
             string xmlParameters = BuildParametersXml(schedule.Parameters);
 
-            DataProvider.UpdateSchedule(SecurityContext.User.UserId,
+            Database.UpdateSchedule(SecurityContext.User.UserId,
                 schedule.ScheduleId, schedule.TaskId, schedule.ScheduleName, schedule.ScheduleTypeId,
                 schedule.Interval, schedule.FromTime, schedule.ToTime, schedule.StartTime,
                 schedule.LastRun, schedule.NextRun, schedule.Enabled, schedule.PriorityId,
@@ -384,7 +384,7 @@ namespace SolidCP.EnterpriseServer
             StopSchedule(scheduleId);
 
             // delete schedule
-            DataProvider.DeleteSchedule(SecurityContext.User.UserId, scheduleId);
+            Database.DeleteSchedule(SecurityContext.User.UserId, scheduleId);
 
             // re-schedule tasks
             //Scheduler.ScheduleTasks();

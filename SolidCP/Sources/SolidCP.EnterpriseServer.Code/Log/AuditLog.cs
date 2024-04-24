@@ -46,25 +46,25 @@ namespace SolidCP.EnterpriseServer
         public DataSet GetAuditLogRecordsPaged(int userId, int packageId, int itemId, string itemName, DateTime startDate, DateTime endDate,
             int severityId, string sourceName, string taskName, string sortColumn, int startRow, int maximumRows)
         {
-            return DataProvider.GetAuditLogRecordsPaged(SecurityContext.User.UserId,
+            return Database.GetAuditLogRecordsPaged(SecurityContext.User.UserId,
                 userId, packageId, itemId, itemName, GetStartDate(startDate), GetEndDate(endDate),
                 severityId, sourceName, taskName, sortColumn, startRow, maximumRows);
         }
 
         public DataSet GetAuditLogSources()
         {
-            return DataProvider.GetAuditLogSources();
+            return Database.GetAuditLogSources();
         }
 
         public DataSet GetAuditLogTasks(string sourceName)
         {
-            return DataProvider.GetAuditLogTasks(sourceName);
+            return Database.GetAuditLogTasks(sourceName);
         }
 
         public LogRecord GetAuditLogRecord(string recordId)
         {
             return ObjectUtils.FillObjectFromDataReader<LogRecord>(
-                DataProvider.GetAuditLogRecord(recordId));
+                Database.GetAuditLogRecord(recordId));
         }
 
         public int DeleteAuditLogRecords(int userId, int itemId, string itemName,
@@ -74,7 +74,7 @@ namespace SolidCP.EnterpriseServer
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
             if (accountCheck < 0) return accountCheck;
 
-            DataProvider.DeleteAuditLogRecords(SecurityContext.User.UserId,
+            Database.DeleteAuditLogRecords(SecurityContext.User.UserId,
                 userId, itemId, itemName, GetStartDate(startDate), GetEndDate(endDate), severityId, sourceName, taskName);
 
             return 0;
@@ -86,7 +86,7 @@ namespace SolidCP.EnterpriseServer
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsAdmin);
             if (accountCheck < 0) return accountCheck;
 
-            DataProvider.DeleteAuditLogRecordsComplete();
+            Database.DeleteAuditLogRecordsComplete();
 
             return 0;
         }
@@ -137,7 +137,7 @@ namespace SolidCP.EnterpriseServer
         {
             try
             {
-                DataProvider.AddAuditLogRecord(recordId, severityId, userId, username, packageId, itemId, itemName,
+                Database.AddAuditLogRecord(recordId, severityId, userId, username, packageId, itemId, itemName,
                     startDate, finishDate, sourceName, taskName, executionLog);
             }
             catch { }

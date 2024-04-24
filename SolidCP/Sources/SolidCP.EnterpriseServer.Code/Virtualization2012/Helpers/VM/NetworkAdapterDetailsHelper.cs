@@ -36,7 +36,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
 
             // load IP addresses
             nic.IPAddresses = ObjectUtils.CreateListFromDataReader<NetworkAdapterIPAddress>(
-                DataProvider.GetItemIPAddresses(SecurityContext.User.UserId, itemId, (int)IPAddressPool.VpsExternalNetwork)).ToArray();
+                Database.GetItemIPAddresses(SecurityContext.User.UserId, itemId, (int)IPAddressPool.VpsExternalNetwork)).ToArray();
 
             // update subnet CIDR
             foreach (NetworkAdapterIPAddress ip in nic.IPAddresses)
@@ -88,7 +88,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
 
             // load IP addresses
             nic.IPAddresses = ObjectUtils.CreateListFromDataReader<NetworkAdapterIPAddress>(
-                DataProvider.GetItemIPAddresses(SecurityContext.User.UserId, itemId, (int)IPAddressPool.VpsManagementNetwork)).ToArray();
+                Database.GetItemIPAddresses(SecurityContext.User.UserId, itemId, (int)IPAddressPool.VpsManagementNetwork)).ToArray();
 
             // update subnet CIDR
             foreach (NetworkAdapterIPAddress ip in nic.IPAddresses)
@@ -156,7 +156,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
 
             // load IP addresses
             nic.IPAddresses = ObjectUtils.CreateListFromDataReader<NetworkAdapterIPAddress>(
-            DataProvider.GetItemPrivateIPAddresses(SecurityContext.User.UserId, itemId)).ToArray();
+            Database.GetItemPrivateIPAddresses(SecurityContext.User.UserId, itemId)).ToArray();
 
             foreach (NetworkAdapterIPAddress ip in nic.IPAddresses)
             {

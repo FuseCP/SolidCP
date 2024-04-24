@@ -77,7 +77,7 @@ namespace SolidCP.EnterpriseServer
             VirtualMachineMetaItemsPaged result = new VirtualMachineMetaItemsPaged();
 
             // get reader
-            IDataReader reader = DataProvider.GetVirtualMachinesPaged2012(
+            IDataReader reader = Database.GetVirtualMachinesPaged2012(
                     SecurityContext.User.UserId,
                     packageId, filterColumn, filterValue, sortColumn, startRow, maximumRows, recursive);
 
@@ -109,7 +109,7 @@ namespace SolidCP.EnterpriseServer
             PrivateIPAddressesPaged result = new PrivateIPAddressesPaged();
 
             // get reader
-            IDataReader reader = DataProvider.GetPackagePrivateIPAddressesPaged(packageId, filterColumn, filterValue,
+            IDataReader reader = Database.GetPackagePrivateIPAddressesPaged(packageId, filterColumn, filterValue,
                 sortColumn, startRow, maximumRows);
 
             // number of items = first data reader

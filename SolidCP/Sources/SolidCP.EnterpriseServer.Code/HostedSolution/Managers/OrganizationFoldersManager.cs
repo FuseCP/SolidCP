@@ -15,7 +15,7 @@ namespace SolidCP.EnterpriseServer
         {
             var folders = new List<StorageSpaceFolder>();
 
-            ObjectUtils.FillCollectionFromDataReader(folders, DataProvider.GetOrganizationStoragSpacesFolderByType(itemId, type));
+            ObjectUtils.FillCollectionFromDataReader(folders, Database.GetOrganizationStoragSpacesFolderByType(itemId, type));
 
             return folders;
         }
@@ -24,7 +24,7 @@ namespace SolidCP.EnterpriseServer
         {
             var folders = new List<StorageSpaceFolder>();
 
-            ObjectUtils.FillCollectionFromDataReader(folders, DataProvider.GetOrganizationStoragSpacesFolderByType(itemId, type));
+            ObjectUtils.FillCollectionFromDataReader(folders, Database.GetOrganizationStoragSpacesFolderByType(itemId, type));
 
             return folders.FirstOrDefault();
         }
@@ -45,7 +45,7 @@ namespace SolidCP.EnterpriseServer
                 throw new Exception(string.Join("---------------------------------------", folder.ErrorCodes));
             }
 
-            DataProvider.AddOrganizationStoragSpacesFolder(itemId, type, folder.Value);
+            Database.AddOrganizationStoragSpacesFolder(itemId, type, folder.Value);
 
             return StorageSpacesController.GetStorageSpaceFolderById(folder.Value);
         }
@@ -63,7 +63,7 @@ namespace SolidCP.EnterpriseServer
                     throw new Exception("Folder not found");
                 }
 
-                DataProvider.DeleteOrganizationStoragSpacesFolder(folderId);
+                Database.DeleteOrganizationStoragSpacesFolder(folderId);
 
                 var deletionResult = StorageSpacesController.DeleteStorageSpaceFolder(folder.StorageSpaceId, folder.Id);
 

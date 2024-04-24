@@ -169,7 +169,7 @@ namespace SolidCP.EnterpriseServer
                     try
                     {
                         // delete package from database
-                        DataProvider.DeletePackage(SecurityContext.User.UserId, package.PackageId);
+                        Database.DeletePackage(SecurityContext.User.UserId, package.PackageId);
 
                         success = true;
                         break;

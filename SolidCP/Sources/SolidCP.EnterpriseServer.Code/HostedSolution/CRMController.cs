@@ -355,7 +355,7 @@ namespace SolidCP.EnterpriseServer
                 {
                     try
                     {
-                        DataProvider.CreateCRMUser(userId, crmUser.Value.CRMUserId, crmUser.Value.BusinessUnitId, 0);
+                        Database.CreateCRMUser(userId, crmUser.Value.CRMUserId, crmUser.Value.BusinessUnitId, 0);
                     }
                     catch (Exception ex)
                     {
@@ -564,7 +564,7 @@ namespace SolidCP.EnterpriseServer
                 
                 try
                 {
-                    DataProvider.DeleteCrmOrganization(organizationId);
+                    Database.DeleteCrmOrganization(organizationId);
                 }
                 catch(Exception ex)
                 {
@@ -642,7 +642,7 @@ namespace SolidCP.EnterpriseServer
             IntResult res = StartTask<IntResult>("CRM", "GET_CRM_USERS_COUNT");
             try
             {
-                res.Value = DataProvider.GetCRMUsersCount(itemId, name, email, CALType);
+                res.Value = Database.GetCRMUsersCount(itemId, name, email, CALType);
             }
             catch(Exception ex)
             {
@@ -658,7 +658,7 @@ namespace SolidCP.EnterpriseServer
         public List<OrganizationUser> GetCRMOrganizationUsers(int itemId)
         {
             IDataReader reader =
-                DataProvider.GetCRMOrganizationUsers(itemId);
+                Database.GetCRMOrganizationUsers(itemId);
             List<OrganizationUser> accounts = new List<OrganizationUser>();
             ObjectUtils.FillCollectionFromDataReader(accounts, reader);
 
@@ -674,7 +674,7 @@ namespace SolidCP.EnterpriseServer
             try
             {
                 IDataReader reader =
-                    DataProvider.GetCrmUsers(itemId, sortColumn, sortDirection, name, email, startRow, count);
+                    Database.GetCrmUsers(itemId, sortColumn, sortDirection, name, email, startRow, count);
                 List<OrganizationUser> accounts = new List<OrganizationUser>();
                 ObjectUtils.FillCollectionFromDataReader(accounts, reader);
                 res.Value = new OrganizationUsersPaged();
@@ -784,7 +784,7 @@ namespace SolidCP.EnterpriseServer
 
                 try
                 {
-                    DataProvider.CreateCRMUser(user.AccountId, crmId, businessUnitId, CALType);
+                    Database.CreateCRMUser(user.AccountId, crmId, businessUnitId, CALType);
                 }
                 catch (Exception ex)
                 {
@@ -912,7 +912,7 @@ namespace SolidCP.EnterpriseServer
         
         public Guid GetCrmUserId(int accountId)
         {
-            IDataReader reader = DataProvider.GetCrmUser(accountId);
+            IDataReader reader = Database.GetCrmUser(accountId);
             CrmUser user = ObjectUtils.FillObjectFromDataReader<CrmUser>(reader);
             return user == null ? Guid.Empty :user.CRMUserId;
                   
@@ -1079,7 +1079,7 @@ namespace SolidCP.EnterpriseServer
 
                 ResultObject rolesRes = crm.SetUserCALType(org.Name, crmUserId, CALType);
 
-                DataProvider.UpdateCRMUser(accountId, CALType);
+                Database.UpdateCRMUser(accountId, CALType);
 
                 res.ErrorCodes.AddRange(rolesRes.ErrorCodes);
                 if (!rolesRes.IsSuccess)

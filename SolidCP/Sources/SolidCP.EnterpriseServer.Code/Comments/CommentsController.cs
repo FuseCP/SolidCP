@@ -42,7 +42,7 @@ namespace SolidCP.EnterpriseServer
         public CommentsController(ControllerBase provider) : base(provider) { }
         public DataSet GetComments(int userId, string itemTypeId, int itemId)
         {
-            return DataProvider.GetComments(SecurityContext.User.UserId, userId, itemTypeId, itemId);
+            return Database.GetComments(SecurityContext.User.UserId, userId, itemTypeId, itemId);
         }
 
         public int AddComment(string itemTypeId, int itemId,
@@ -53,7 +53,7 @@ namespace SolidCP.EnterpriseServer
             if (accountCheck < 0) return accountCheck;
 
             // add comment
-            DataProvider.AddComment(SecurityContext.User.UserId, itemTypeId,
+            Database.AddComment(SecurityContext.User.UserId, itemTypeId,
                 itemId, commentText, severityId);
 
             return 0;
@@ -66,7 +66,7 @@ namespace SolidCP.EnterpriseServer
             if (accountCheck < 0) return accountCheck;
 
             // delete comment
-            DataProvider.DeleteComment(SecurityContext.User.UserId, commentId);
+            Database.DeleteComment(SecurityContext.User.UserId, commentId);
 
             return 0;
         }
