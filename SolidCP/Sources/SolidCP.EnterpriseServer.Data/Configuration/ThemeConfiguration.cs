@@ -19,7 +19,7 @@ public partial class ThemeConfiguration: EntityTypeConfiguration<Theme>
 
 		#region Seed Data
 		HasData(() => new Theme[] {
-			new Theme() { DisplayName = "SolidCP v1", DisplayOrder = 1, Enabled = 1, Ltrname = "Default", Rtlname = "Default", ThemeId = 1 }
+			new Theme() { DisplayName = "SolidCP v1", DisplayOrder = 1, Enabled = 1, LTRName = "Default", RTLName = "Default", ThemeId = 1 }
 		});
 		#endregion
 	}

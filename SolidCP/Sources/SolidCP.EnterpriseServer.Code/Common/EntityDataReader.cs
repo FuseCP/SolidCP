@@ -1,0 +1,130 @@
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Reflection;
+using System.Data;
+using System.Threading.Tasks;
+using System.Collections;
+
+namespace SolidCP.EnterpriseServer
+{
+
+	public class PropertyCollection: KeyedCollection<string, PropertyInfo>
+	{
+		protected override string GetKeyForItem(PropertyInfo item) => item.Name;
+	}
+	public class EntityDataReader<TEntity>: IDataReader, IEnumerable<TEntity> where TEntity : class
+	{
+		TEntity[] Set;
+		public EntityDataReader(IEnumerable<TEntity> set, bool setRecordsAffected = false) {
+			Set = set.ToArray();
+			if (setRecordsAffected) RecordsAffected = Set.Length;
+			else RecordsAffected = -1;
+			Type = typeof(TEntity);
+			if (Type == typeof(object)) Type = Set.FirstOrDefault(e => e != null)?.GetType();
+			var props = Type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
+				.Where(p => p.CanWrite && p.CanRead)
+				.ToArray();
+			Props = new PropertyCollection();
+			foreach (var prop in props) Props.Add(prop);
+		}
+
+		IEnumerator<TEntity> enumerator = null;
+		IEnumerator<TEntity> Enumerator => enumerator ?? (enumerator = ((IEnumerable<TEntity>)Set).GetEnumerator());
+
+		TEntity Current
+		{
+			get
+			{
+				if (IsClosed) throw new ArgumentException("DataReader is closed");
+				return Enumerator.Current;
+			}
+		}
+
+		Type Type;
+		PropertyCollection Props;
+
+		public int Depth => 1;
+
+		public bool IsClosed { get; private set; } = false;
+
+		public int RecordsAffected { get; private set; };
+
+		public int FieldCount => Props.Count;
+
+		public object this[string name] => Props[name].GetValue(Enumerator.Current);
+
+		public object this[int i] => Props[i].GetValue(Enumerator.Current);
+
+		public IEnumerator<TEntity> GetEnumerator() => ((IEnumerable<TEntity>)Set).GetEnumerator();
+
+		IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)Set).GetEnumerator();
+
+		public void Close() => Dispose();
+
+		public DataTable GetSchemaTable()
+		{
+			var table = new DataTable();
+			foreach (var prop in Props) table.Columns.Add(prop.Name, prop.PropertyType);
+			return table;
+		}
+
+		public bool NextResult() => false;
+		public bool Read() => !(IsClosed = !Enumerator.MoveNext());
+		public void Dispose() {
+			IsClosed = true;
+			Set = null;
+			enumerator = null;
+		}
+		public string GetName(int i) => Props[i].Name;
+		public string GetDataTypeName(int i) => Props[i].PropertyType.FullName;
+		public Type GetFieldType(int i) => Props[i].PropertyType;
+		public object GetValue(int i) => Props[i].GetValue(Enumerator.Current);
+		public int GetValues(object[] values) {
+			int n = 0;
+			foreach (var prop in Props)
+			{
+				if (n >= values.Length) break;
+				values[n++] = prop.GetValue(Enumerator.Current);
+			}
+			return n;
+		}
+		public int GetOrdinal(string name) => Props.IndexOf(Props[name]);
+		public bool GetBoolean(int i) => (bool)this[i];
+		public byte GetByte(int i) => (byte)this[i];
+		public long GetBytes(int i, long fieldOffset, byte[] buffer, int bufferoffset, int length)
+		{
+			var bytes = (byte[])this[i];
+			long len = Math.Min(length, Math.Min(bytes.Length - fieldOffset, buffer.Length - bufferoffset));
+			Array.Copy(bytes, fieldOffset, buffer, bufferoffset, len);
+			return len;
+		}
+		public char GetChar(int i) => (char)this[i];
+		public long GetChars(int i, long fieldoffset, char[] buffer, int bufferoffset, int length)
+		{
+			var chars = (char[])this[i];
+			long len = Math.Min(length, Math.Min(chars.Length - fieldoffset, buffer.Length - bufferoffset));
+			Array.Copy(chars, fieldoffset, buffer, bufferoffset, len);
+			return len;
+		}
+		public Guid GetGuid(int i) => (Guid)this[i];
+		public short GetInt16(int i) => (Int16)this[i];
+		public int GetInt32(int i) => (Int32)this[i];
+		public long GetInt64(int i) => (Int64)this[i];
+		public float GetFloat(int i) => (float)this[i];
+		public double GetDouble(int i) => (double)this[i];
+		public string GetString(int i) => (string)this[i];
+		public decimal GetDecimal(int i) => (decimal)this[i];
+		public DateTime GetDateTime(int i) => (DateTime)this[i];
+		public IDataReader GetData(int i)
+		{
+			var reader = new EntityDataReader<TEntity>(Set, RecordsAffected != -1);
+			var props = new PropertyCollection() { Props[i] };
+			reader.Props = props;
+			return reader;
+		}
+		public bool IsDBNull(int i) => this[i] == null;
+	}
+}

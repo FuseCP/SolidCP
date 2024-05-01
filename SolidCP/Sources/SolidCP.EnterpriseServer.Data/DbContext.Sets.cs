@@ -267,7 +267,7 @@ namespace SolidCP.EnterpriseServer.Data
 		public virtual DbSet<UserSetting> UserSettings => userSettings ?? (userSettings = new DbSet<UserSetting>(BaseContext));
 
 		DbSet<UsersDetailed> usersDetaileds = null;
-		public virtual DbSet<UsersDetailed> UsersDetaileds => usersDetaileds ?? (usersDetaileds = new DbSet<UsersDetailed>(BaseContext));
+		public virtual DbSet<UsersDetailed> UsersDetailed => usersDetaileds ?? (usersDetaileds = new DbSet<UsersDetailed>(BaseContext));
 
 		DbSet<Version> versions = null;
 		public virtual DbSet<Version> Versions => versions ?? (versions = new DbSet<Version>(BaseContext));

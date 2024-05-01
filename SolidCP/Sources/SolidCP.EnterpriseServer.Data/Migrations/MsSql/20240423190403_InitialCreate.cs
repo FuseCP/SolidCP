@@ -517,6 +517,19 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         principalColumn: "UserID");
                 });
 
+            // Create UsersDetailed view
+            migrationBuilder.Sql(@"
+CREATE VIEW UsersDetailed
+AS
+SELECT U.UserID, U.RoleID, U.StatusID, U.LoginStatusId, U.SubscriberNumber, U.FailedLogins, U.OwnerID, U.Created, U.Changed, U.IsDemo, U.Comments, U.IsPeer, U.Username, U.FirstName, U.LastName, U.Email,
+    U.CompanyName, U.FirstName + ' ' + U.LastName AS FullName, UP.Username AS OwnerUsername, UP.FirstName AS OwnerFirstName,
+    UP.LastName AS OwnerLastName, UP.RoleID AS OwnerRoleID, UP.FirstName + ' ' + UP.LastName AS OwnerFullName, UP.Email AS OwnerEmail, UP.RoleID AS OwnerRoleID,
+        (SELECT COUNT(PackageID) AS Expr1
+             FROM Packages AS P
+             WHERE (UserID = U.UserID)) AS PackagesNumber, U.EcommerceEnabled
+FROM Users AS U
+LEFT OUTER JOIN Users AS UP ON U.OwnerID = UP.UserID");
+
             migrationBuilder.CreateTable(
                 name: "Versions",
                 columns: table => new

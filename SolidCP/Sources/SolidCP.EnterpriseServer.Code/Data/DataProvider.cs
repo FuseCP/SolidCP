@@ -33,6 +33,11 @@
 using System;
 using System.Configuration;
 using System.Data;
+using System.Linq;
+using System.Xml.Linq;
+using System.Linq.Dynamic.Core;
+using System.Text;
+
 #if NET8_0
 using Microsoft.Data.SqlClient;
 #else
@@ -55,7 +60,7 @@ namespace SolidCP.EnterpriseServer
 	/// <summary>
 	/// Summary description for DataProvider.
 	/// </summary>
-	public class DataProvider: Data.DbContext
+	public class DataProvider : Data.DbContext
 	{
 #if UseEntityFramework
 		public readonly bool UseEntityFramework = true;
@@ -90,15 +95,37 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
+		public IQueryable<Data.Entities.SystemSetting> GetSystemSettingsEF(string settingsName)
+		{
+			return SystemSettings.Where(s => s.SettingsName == settingsName);
+		}
+
 		public void SetSystemSettings(string settingsName, string xml)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "SetSystemSettings",
-				 new SqlParameter("@SettingsName", settingsName),
-				 new SqlParameter("@Xml", xml)
-			);
+			if (UseEntityFramework)
+			{
+				var properties = XElement.Parse(xml);
+				foreach (var property in properties.Descendants())
+				{
+					var setting = new Data.Entities.SystemSetting()
+					{
+						SettingsName = settingsName,
+						PropertyName = (string)property.Attribute("name"),
+						PropertyValue = (string)property.Attribute("value")
+					};
+					SystemSettings.Add(setting);
+				}
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					 ConnectionString,
+					 CommandType.StoredProcedure,
+					 "SetSystemSettings",
+					 new SqlParameter("@SettingsName", settingsName),
+					 new SqlParameter("@Xml", xml)
+				);
+			}
 		}
 
 		#endregion
@@ -107,52 +134,169 @@ namespace SolidCP.EnterpriseServer
 
 		public DataSet GetThemes()
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetThemes"
-			);
+			if (UseEntityFramework)
+			{
+				return ObjectUtils.DataSetFromEntitySet(
+					Themes
+						.Where(t => t.Enabled == 1)
+						.OrderBy(t => t.DisplayOrder));
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetThemes");
+			}
 		}
 
-		public DataSet GetThemeSettings(int ThmemeID)
+		public DataSet GetThemeSettings(int ThemeID)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetThemeSettings",
-				 new SqlParameter("@ThemeID", ThmemeID));
+			if (UseEntityFramework)
+			{
+				return ObjectUtils.DataSetFromEntitySet(
+					ThemeSettings
+						.Where(ts => ts.ThemeId == ThemeID));
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetThemeSettings",
+					 new SqlParameter("@ThemeID", ThemeID));
+			}
 		}
 
-		public DataSet GetThemeSetting(int ThmemeID, string SettingsName)
+		public DataSet GetThemeSetting(int ThemeID, string SettingsName)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetThemeSetting",
-				 new SqlParameter("@ThemeID", ThmemeID),
-				 new SqlParameter("@SettingsName", SettingsName));
+			if (UseEntityFramework)
+			{
+				return ObjectUtils.DataSetFromEntitySet(
+					ThemeSettings
+						.Where(ts => ts.ThemeId == ThemeID && ts.SettingsName == SettingsName));
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetThemeSetting",
+					 new SqlParameter("@ThemeID", ThemeID),
+					 new SqlParameter("@SettingsName", SettingsName));
+			}
+		}
+
+		public bool CheckActorUserRights(int actorId, int userId)
+		{
+			if (actorId == -1 || userId == 0 ||
+				// check if the user requests himself
+				actorId == userId)
+				return true;
+
+
+			// check if the user requests his owner
+			var actor = Users.FirstOrDefault(u => u.UserId == actorId);
+
+			if (actor != null && actor.IsPeer) actorId = actor.OwnerId ?? -1;
+
+			if (actorId == userId) return true;
+
+			var id = userId;
+			do // check owners chain
+			{
+				var user = Users.FirstOrDefault(u => u.UserId == id);
+				if (user == null || user.OwnerId == null) return false;
+				else
+				{
+					id = user.OwnerId.Value;
+					if (id == actorId) return true;
+				}
+			} while (true);
 		}
 
 		public DataSet GetUserThemeSettings(int actorId, int userId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetUserSettings",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@UserID", userId),
-				 new SqlParameter("@SettingsName", "Theme"));
+			if (UseEntityFramework)
+			{
+				const string SettingsName = "Theme";
+				if (!CheckActorUserRights(actorId, userId)) throw new AccessViolationException("Not authorized");
+
+				var id = userId;
+				var setting = UserSettings.Where(s => s.UserId == id && s.SettingsName == SettingsName);
+				while (!setting.Any())
+				{
+					var user = Users.FirstOrDefault(u => u.UserId == id);
+					if (user != null && user.OwnerId != null)
+					{
+						id = user.OwnerId.Value;
+						setting = UserSettings.Where(s => s.UserId == id && s.SettingsName == SettingsName);
+					}
+					else break;
+				}
+				return ObjectUtils.DataSetFromEntitySet(setting);
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetUserSettings",
+					 new SqlParameter("@ActorId", actorId),
+					 new SqlParameter("@UserID", userId),
+					 new SqlParameter("@SettingsName", "Theme"));
+			}
 		}
 
 		public void UpdateUserThemeSetting(int actorId, int userId, string PropertyName, string PropertyValue)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "UpdateUserThemeSetting",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@UserID", userId),
-				 new SqlParameter("@PropertyName", PropertyName),
-				 new SqlParameter("@PropertyValue", PropertyValue));
+			if (UseEntityFramework)
+			{
+				const string SettingsName = "Theme";
+
+				if (!CheckActorUserRights(actorId, userId)) throw new AccessViolationException("Not authorized");
+
+				var setting = UserSettings.FirstOrDefault(s => s.UserId == userId &&
+					s.SettingsName == SettingsName &&
+					s.PropertyName == PropertyName);
+				if (setting != null)
+				{
+					setting.PropertyValue = PropertyValue;
+				} else
+				{
+					setting = new Data.Entities.UserSetting()
+					{
+						UserId = userId,
+						SettingsName = SettingsName,
+						PropertyName = PropertyName,
+						PropertyValue = PropertyValue
+					};
+					UserSettings.Add(setting);
+				}
+				SaveChanges();
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "UpdateUserThemeSetting",
+					 new SqlParameter("@ActorId", actorId),
+					 new SqlParameter("@UserID", userId),
+					 new SqlParameter("@PropertyName", PropertyName),
+					 new SqlParameter("@PropertyValue", PropertyValue));
+			}
 		}
 
 		public void DeleteUserThemeSetting(int actorId, int userId, string PropertyName)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "DeleteUserThemeSetting",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@UserID", userId),
-				 new SqlParameter("@PropertyName", PropertyName));
+			if (UseEntityFramework)
+			{
+				if (!CheckActorUserRights(actorId, userId)) throw new AccessViolationException("Not authorized");
+
+				UserSettings.RemoveRange(UserSettings.Where(s => s.UserId == userId &&
+					s.SettingsName == "Theme" && s.PropertyName == PropertyName));
+
+				SaveChanges();
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "DeleteUserThemeSetting",
+					 new SqlParameter("@ActorId", actorId),
+					 new SqlParameter("@UserID", userId),
+					 new SqlParameter("@PropertyName", PropertyName));
+			}
 		}
 
 		#endregion
@@ -160,32 +304,167 @@ namespace SolidCP.EnterpriseServer
 		#region Users
 		public bool CheckUserExists(string username)
 		{
-			SqlParameter prmExists = new SqlParameter("@Exists", SqlDbType.Bit);
-			prmExists.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
+				return Users.Any(u => u.Username == username);
+			}
+			else
+			{
+				SqlParameter prmExists = new SqlParameter("@Exists", SqlDbType.Bit);
+				prmExists.Direction = ParameterDirection.Output;
 
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "CheckUserExists",
-				 prmExists,
-				 new SqlParameter("@username", username));
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "CheckUserExists",
+					 prmExists,
+					 new SqlParameter("@username", username));
 
-			return Convert.ToBoolean(prmExists.Value);
+				return Convert.ToBoolean(prmExists.Value);
+			}
+		}
+
+		List<int> UserParents(int actorId, int userId)
+		{
+			var list = new List<int>();
+			var user = Users.FirstOrDefault(u => u.UserId == userId);
+			while (user != null)
+			{
+				list.Add(userId);
+				if (user.OwnerId.HasValue)
+				{
+					userId = user.OwnerId.Value;
+					user = Users.FirstOrDefault(u => u.UserId == userId);
+				}
+				else break;
+			}
+			return list;
+		}
+
+		bool CheckUserParent(int ownerId, int userId)
+		{
+			if (ownerId == userId) return true;
+
+			var owner = Users.FirstOrDefault(u => u.UserId == ownerId);
+			if (owner != null && owner.IsPeer && owner.OwnerId.HasValue) ownerId = owner.OwnerId.Value;
+
+			if (ownerId == userId) return true;
+
+			var id = userId;
+			var user = Users.FirstOrDefault(u => u.UserId == id);
+			while (user != null && user.OwnerId.HasValue && user.OwnerId.Value != ownerId)
+			{
+				id = user.OwnerId.Value;
+				user = Users.FirstOrDefault(u => u.UserId == id);
+			}
+
+			return user != null && user.OwnerId.HasValue && user.OwnerId.Value == ownerId;
+		}
+
+		string GetItemComments(int itemId, string itemTypeId, int actorId)
+		{
+			var comments = Comments.Join(Users, c => c.UserId, u => u.UserId, (com, user) => new
+				{
+					com.UserId,
+					com.ItemId,
+					com.ItemTypeId,
+					com.CreatedDate,
+					com.CommentText,
+					user.Username
+				})
+				.Where(c => c.ItemId == itemId && c.ItemTypeId == itemTypeId &&
+					CheckUserParent(actorId, c.UserId));
+
+			var sb = new StringBuilder();
+			foreach (var comment in comments)
+			{
+				sb.Append(comment.Username);
+				sb.Append(" - ");
+				sb.AppendLine(comment.CreatedDate.ToShortDateString());
+				sb.AppendLine(comment.CommentText);
+				sb.AppendLine("--------------------------------------");
+			}
+			return sb.ToString();
 		}
 
 		public DataSet GetUsersPaged(int actorId, int userId, string filterColumn, string filterValue,
 			 int statusId, int roleId, string sortColumn, int startRow, int maximumRows, bool recursive)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetUsersPaged",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@UserID", userId),
-				 new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
-				 new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
-				 new SqlParameter("@statusId", statusId),
-				 new SqlParameter("@roleId", roleId),
-				 new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
-				 new SqlParameter("@startRow", startRow),
-				 new SqlParameter("@maximumRows", maximumRows),
-				 new SqlParameter("@recursive", recursive));
+			if (UseEntityFramework)
+			{
+				var hasRights = CheckActorUserRights(actorId, userId);
+				var users = hasRights ?
+					UsersDetailed
+						.Where(u => u.UserId != userId && !u.IsPeer &&
+						(recursive ? CheckUserParent(userId, u.UserId) : u.OwnerId == userId) &&
+						(statusId == 0 || statusId > 0 && statusId == u.StatusId) &&
+						(roleId == 0 || roleId > 0 && roleId == u.RoleId)) :
+					UsersDetailed.Where(u => false);
+				
+				if (!string.IsNullOrEmpty(filterValue))
+				{
+					if (!string.IsNullOrEmpty(filterColumn))
+					{
+						users = users.Where($"{filterColumn} == @1", filterValue);
+					} else
+					{
+						users = users.Where(u => u.Username == filterValue ||
+							u.FullName == filterValue ||
+							u.Email == filterValue);
+					}
+				}
+
+				if (!string.IsNullOrEmpty(sortColumn))
+				{
+					users = users.OrderBy(sortColumn);
+				}
+
+				users = users.Skip(startRow).Take(maximumRows);
+
+				return ObjectUtils.DataSetFromEntitySet(users.Select(u => new
+				{
+					UserID = u.UserId,
+					RoleID = u.RoleId,
+					StatusID = u.StatusId,
+					SubscriberNumber = u.SubscriberNumber,
+					LoginStatusId = u.LoginStatusId,
+					FailedLogins = u.FailedLogins,
+					OwnerID = u.OwnerId,
+					Created = u.Created,
+					Changed = u.Changed,
+					IsDemo = u.IsDemo,
+					Comments = GetItemComments(u.UserId, "USER", actorId),
+					IsPeer = u.IsPeer,
+					Username = u.Username,
+					FirstName = u.FirstName,
+					LastName = u.LastName,
+					Email = u.Email,
+					FullName = u.FullName,
+					OwnerUsername = u.OwnerUsername,
+					OwnerFirstName = u.OwnerFirstName,
+					OwnerLastName = u.OwnerLastName,
+					OwnerRoleID = u.OwnerRoleId,
+					OwnerFullName = u.OwnerFullName,
+					OwnerEmail = u.OwnerEmail,
+					PackagesNumber = u.PackagesNumber,
+					CompanyName = u.CompanyName,
+					EcommerceEnabled = u.EcommerceEnabled
+				}));
+				
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetUsersPaged",
+					 new SqlParameter("@actorId", actorId),
+					 new SqlParameter("@UserID", userId),
+					 new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
+					 new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
+					 new SqlParameter("@statusId", statusId),
+					 new SqlParameter("@roleId", roleId),
+					 new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
+					 new SqlParameter("@startRow", startRow),
+					 new SqlParameter("@maximumRows", maximumRows),
+					 new SqlParameter("@recursive", recursive));
+			}
 		}
 
 		//TODO START
@@ -193,134 +472,479 @@ namespace SolidCP.EnterpriseServer
 			int statusId, int roleId, string sortColumn, int startRow, int maximumRows, string colType, string fullType,
 			bool recursive, bool onlyFind)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetSearchObject",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@UserID", userId),
-				 new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
-				 new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
-				 new SqlParameter("@StatusId", statusId),
-				 new SqlParameter("@RoleId", roleId),
-				 new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
-				 new SqlParameter("@StartRow", startRow),
-				 new SqlParameter("@MaximumRows", maximumRows),
-				 new SqlParameter("@Recursive", recursive),
-				 new SqlParameter("@ColType", colType),
-				 new SqlParameter("@FullType", fullType),
-				 new SqlParameter("@OnlyFind", onlyFind));
+			if (UseEntityFramework)
+			{
+				if (!CheckActorUserRights(actorId, userId)) throw new AccessViolationException("Not authorized");
+
+				if (colType == null) colType = "";
+
+				if (string.IsNullOrEmpty(filterColumn) && !string.IsNullOrEmpty(filterValue)) filterColumn = "TextSearch";
+
+				//TODO not yet implemented
+
+				throw new NotImplementedException();
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetSearchObject",
+					 new SqlParameter("@ActorId", actorId),
+					 new SqlParameter("@UserID", userId),
+					 new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
+					 new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
+					 new SqlParameter("@StatusId", statusId),
+					 new SqlParameter("@RoleId", roleId),
+					 new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
+					 new SqlParameter("@StartRow", startRow),
+					 new SqlParameter("@MaximumRows", maximumRows),
+					 new SqlParameter("@Recursive", recursive),
+					 new SqlParameter("@ColType", colType),
+					 new SqlParameter("@FullType", fullType),
+					 new SqlParameter("@OnlyFind", onlyFind));
+			}
 		}
+
 		public DataSet GetSearchTableByColumns(string PagedStored, string FilterValue, int MaximumRows,
 			 bool Recursive, int PoolID, int ServerID, int ActorID, int StatusID, int PlanID, int OrgID,
 			 string ItemTypeName, string GroupName, int PackageID, string VPSType, int RoleID, int UserID,
 			 string FilterColumns)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetSearchTableByColumns",
-				 new SqlParameter("@PagedStored", PagedStored),
-				 new SqlParameter("@FilterValue", FilterValue),
-				 new SqlParameter("@MaximumRows", MaximumRows),
-				 new SqlParameter("@Recursive", Recursive),
-				 new SqlParameter("@PoolID", PoolID),
-				 new SqlParameter("@ServerID", ServerID),
-				 new SqlParameter("@ActorID", ActorID),
-				 new SqlParameter("@StatusID", StatusID),
-				 new SqlParameter("@PlanID", PlanID),
-				 new SqlParameter("@OrgID", OrgID),
-				 new SqlParameter("@ItemTypeName", ItemTypeName),
-				 new SqlParameter("@GroupName", GroupName),
-				 new SqlParameter("@PackageID", PackageID),
-				 new SqlParameter("@VPSType", VPSType),
-				 new SqlParameter("@RoleID", RoleID),
-				 new SqlParameter("@UserID", UserID),
-				 new SqlParameter("@FilterColumns", FilterColumns));
+			if (UseEntityFramework)
+			{
+				throw new NotImplementedException();
+			}
+			else
+			{
+
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetSearchTableByColumns",
+					 new SqlParameter("@PagedStored", PagedStored),
+					 new SqlParameter("@FilterValue", FilterValue),
+					 new SqlParameter("@MaximumRows", MaximumRows),
+					 new SqlParameter("@Recursive", Recursive),
+					 new SqlParameter("@PoolID", PoolID),
+					 new SqlParameter("@ServerID", ServerID),
+					 new SqlParameter("@ActorID", ActorID),
+					 new SqlParameter("@StatusID", StatusID),
+					 new SqlParameter("@PlanID", PlanID),
+					 new SqlParameter("@OrgID", OrgID),
+					 new SqlParameter("@ItemTypeName", ItemTypeName),
+					 new SqlParameter("@GroupName", GroupName),
+					 new SqlParameter("@PackageID", PackageID),
+					 new SqlParameter("@VPSType", VPSType),
+					 new SqlParameter("@RoleID", RoleID),
+					 new SqlParameter("@UserID", UserID),
+					 new SqlParameter("@FilterColumns", FilterColumns));
+			}
 		}
 
 		//TODO END
-
 		public DataSet GetUsersSummary(int actorId, int userId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetUsersSummary",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@UserID", userId));
+			if (UseEntityFramework)
+			{
+				if (!CheckActorUserRights(actorId, userId)) throw new AccessViolationException("Not authorized");
+
+				var users = Users.Where(u => u.OwnerId == userId && !u.IsPeer);
+				var nofUsers = new { UsersNumber = users.Count() };
+				var usersByStatus = users
+					.GroupBy(u => u.StatusId)
+					.Select(g => new { StatusId = g.Key, UsersNumber = g.Count() })
+					.OrderBy(g => g.StatusId);
+				var usersByRole = users
+					.GroupBy(u => u.RoleId)
+					.Select(g => new { RoleId = g.Key, UsersNumber = g.Count() })
+					.OrderByDescending(g => g.RoleId);
+				
+				var set = new DataSet();
+				set.Tables.Add(ObjectUtils.DataTableFromEntitySet(new object[] { nofUsers }));
+				set.Tables.Add(ObjectUtils.DataTableFromEntitySet(usersByStatus));
+				set.Tables.Add(ObjectUtils.DataTableFromEntitySet(usersByRole));
+				
+				return set;
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetUsersSummary",
+					 new SqlParameter("@actorId", actorId),
+					 new SqlParameter("@UserID", userId));
+			}
 		}
 
+		int[] UsersTree(int ownerId, bool recursive)
+		{
+			if (!recursive) return new int[] { ownerId };
+			else
+			{
+				var list = new HashSet<int>();
+				list.Add(ownerId);
+
+				var newDescendants = Users.Where(u => list.Contains(u.OwnerId ?? -1) && !list.Contains(u.UserId))
+					.ToArray();
+				while (newDescendants.Any())
+				{
+					foreach (var d in newDescendants) list.Add(d.UserId);
+					newDescendants = Users.Where(u => list.Contains(u.OwnerId ?? -1) && !list.Contains(u.UserId))
+						.ToArray();
+				}
+				return list.ToArray();
+			}
+		}
 		public DataSet GetUserDomainsPaged(int actorId, int userId, string filterColumn, string filterValue,
 			 string sortColumn, int startRow, int maximumRows)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetUserDomainsPaged",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@UserID", userId),
-				 new SqlParameter("@filterColumn", VerifyColumnName(filterColumn)),
-				 new SqlParameter("@filterValue", VerifyColumnValue(filterValue)),
-				 new SqlParameter("@sortColumn", VerifyColumnName(sortColumn)),
-				 new SqlParameter("@startRow", startRow),
-				 new SqlParameter("@maximumRows", maximumRows));
+			if (UseEntityFramework)
+			{
+				var hasRights = CheckActorUserRights(actorId, userId);
+
+				var users = Users
+					.Join(UsersTree(userId, true), u => u.UserId, ut => ut, (user, ut) => user)
+					.Join(Packages, u => u.UserId, p => p.UserId, (user, package) => new { User = user, PackageId = package.PackageId })
+					.Join(Domains, up => up.PackageId, d => d.PackageId, (user, domain) => new
+					{
+						UserID = user.User.UserId,
+						RoleID = user.User.RoleId,
+						StatusID = user.User.StatusId,
+						user.User.SubscriberNumber,
+						user.User.LoginStatusId,
+						user.User.FailedLogins,
+						OwnerID = user.User.OwnerId,
+						user.User.Created,
+						user.User.Changed,
+						user.User.IsDemo,
+						user.User.Comments,
+						user.User.IsPeer,
+						user.User.Username,
+						user.User.FirstName,
+						user.User.LastName,
+						user.User.Email,
+						domain.DomainName
+					})
+					.Where(u => u.UserID != userId && !u.IsPeer && hasRights);
+
+				if (!string.IsNullOrEmpty(filterColumn) && !string.IsNullOrEmpty(filterValue))
+				{
+					users = users.Where($"{filterColumn} == @0", filterValue);
+				}
+
+				if (!string.IsNullOrEmpty(sortColumn))
+				{
+					users = users.OrderBy(sortColumn);
+				}
+
+				return ObjectUtils.DataSetFromEntitySet(users);
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetUserDomainsPaged",
+					 new SqlParameter("@actorId", actorId),
+					 new SqlParameter("@UserID", userId),
+					 new SqlParameter("@filterColumn", VerifyColumnName(filterColumn)),
+					 new SqlParameter("@filterValue", VerifyColumnValue(filterValue)),
+					 new SqlParameter("@sortColumn", VerifyColumnName(sortColumn)),
+					 new SqlParameter("@startRow", startRow),
+					 new SqlParameter("@maximumRows", maximumRows));
+			}
 		}
 
+		bool CanGetUserDetails(int actorId, int userId)
+		{
+			if (actorId == -1 || actorId == userId) return true;
+
+			var actor = Users.FirstOrDefault(u => u.UserId == actorId);
+			if (actor != null && actor.IsPeer && actor.OwnerId.HasValue)
+			{
+				actorId = actor.OwnerId.Value;
+				actor = Users.FirstOrDefault(u => u.UserId == actorId);
+			}
+
+			if (actor != null && actor.OwnerId.HasValue && userId == actor.OwnerId.Value) return true;
+
+			var id = userId;
+			var user = Users.FirstOrDefault(u => u.UserId == id);
+			while (user != null && user.OwnerId.HasValue && user.OwnerId != actorId)
+			{
+				id = user.OwnerId.Value;
+				user = Users.FirstOrDefault(u => u.UserId == id);
+			}
+
+			return user != null && user.OwnerId.HasValue && user.OwnerId == actorId;
+		}
 		public DataSet GetUsers(int actorId, int ownerId, bool recursive)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetUsers",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@OwnerID", ownerId),
-				 new SqlParameter("@Recursive", recursive));
+			if (UseEntityFramework)
+			{
+				var canGetDetails = CanGetUserDetails(actorId, ownerId);
+
+				var users = UsersDetailed
+					.Where(u => canGetDetails && u.UserId != ownerId && !u.IsPeer &&
+						(recursive ? CheckUserParent(ownerId, u.UserId) : u.OwnerId == ownerId));
+
+				return ObjectUtils.DataSetFromEntitySet(users);
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetUsers",
+					 new SqlParameter("@ActorId", actorId),
+					 new SqlParameter("@OwnerID", ownerId),
+					 new SqlParameter("@Recursive", recursive));
+			}
 		}
 
 		public DataSet GetUserParents(int actorId, int userId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetUserParents",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@UserID", userId));
+			if (UseEntityFramework)
+			{
+				if (!CheckActorUserRights(actorId, userId)) throw new AccessViolationException("Not authorized");
+
+				int n = 0;
+				var parents = UserParents(actorId, userId)
+					.Select(u => new { UserId = u, Order = n++ })
+					.ToArray();
+				var users = Users
+					.Join(parents, u => u.UserId, p => p.UserId, (user, parent) => new { User = user, Order = parent.Order })
+					.OrderByDescending(u => u.Order)
+					.Select(u => u.User);
+
+				return ObjectUtils.DataSetFromEntitySet(users);
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetUserParents",
+					 new SqlParameter("@ActorId", actorId),
+					 new SqlParameter("@UserID", userId));
+			}
 		}
 
 		public DataSet GetUserPeers(int actorId, int userId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetUserPeers",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@userId", userId));
+			if (UseEntityFramework)
+			{
+				var canGetDetails = CanGetUserDetails(actorId, userId);
+
+				var userPeers = UsersDetailed
+					.Where(u => canGetDetails && u.OwnerId == userId && u.IsPeer);
+
+				return ObjectUtils.DataSetFromEntitySet(userPeers);
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetUserPeers",
+					 new SqlParameter("@ActorId", actorId),
+					 new SqlParameter("@userId", userId));
+			}
 		}
 
 		public IDataReader GetUserByExchangeOrganizationIdInternally(int itemId)
 		{
-			return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetUserByExchangeOrganizationIdInternally",
-				 new SqlParameter("@ItemID", itemId));
+			if (UseEntityFramework)
+			{
+				var users = Users
+					.Join(Packages, u => u.UserId, p => p.UserId, (user, package) => new { User = user, package.PackageId })
+					.Join(ServiceItems, u => u.PackageId, s => s.PackageId, (user, serviceItem) => new { user.User, serviceItem.ItemId })
+					.Where(u => u.ItemId == itemId)
+					.Select(u => u.User);
+
+				return new EntityDataReader<Data.Entities.User>(users);
+			}
+			else
+			{
+				return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetUserByExchangeOrganizationIdInternally",
+					 new SqlParameter("@ItemID", itemId));
+			}
 		}
 
 
 
 		public IDataReader GetUserByIdInternally(int userId)
 		{
-			return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetUserByIdInternally",
-				 new SqlParameter("@UserID", userId));
+			if (UseEntityFramework)
+			{
+				return new EntityDataReader<Data.Entities.User>(Users.Where(u => u.UserId == userId));
+			}
+			else
+			{
+				return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetUserByIdInternally",
+					 new SqlParameter("@UserID", userId));
+			}
 		}
 
 		public IDataReader GetUserByUsernameInternally(string username)
 		{
-			return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetUserByUsernameInternally",
-				 new SqlParameter("@Username", username));
+			if (UseEntityFramework)
+			{
+				return new EntityDataReader<Data.Entities.User>(Users.Where(u => u.Username == username));
+			}
+			else
+			{
+				return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetUserByUsernameInternally",
+					 new SqlParameter("@Username", username));
+			}
 		}
 
+		bool CanGetUserPassword(int actorId, int userId)
+		{
+			if (actorId == -1 || actorId == userId) return true;
+
+			var actor = Users.FirstOrDefault(u => u.UserId == actorId);
+			if (actor != null && actor.IsPeer)
+			{
+				// peer can't get the password of his peers and his owner
+				if (actor.OwnerId == userId ||
+					Users.Any(u => u.IsPeer && u.OwnerId == actor.OwnerId && u.UserId == userId)) return false;
+
+				// set actor to his owner
+				actorId = actor.OwnerId ?? -1;
+			}
+
+			// get users owner
+			actor = Users.FirstOrDefault(u => u.UserId == actorId);
+			if (actor != null && actor.OwnerId == userId) return false; // user can't get the password of his owner
+
+			var id = userId;
+			var user = Users.FirstOrDefault(u => u.UserId == id);
+			while (user != null && user.OwnerId.HasValue && user.OwnerId != actorId)
+			{
+				id = user.OwnerId.Value;
+				user = Users.FirstOrDefault(u => u.UserId == id);
+			}
+			return user != null && user.OwnerId == actorId; // actor is owner of user
+		}
 		public IDataReader GetUserById(int actorId, int userId)
 		{
-			return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetUserById",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@UserID", userId));
+			if (UseEntityFramework)
+			{
+				var canGetUserDetails = CanGetUserDetails(actorId, userId);
+				var canGetUserPassword = CanGetUserPassword(actorId, userId);
+				var user = Users
+					.Where(u => u.UserId == userId && canGetUserDetails)
+					.Select(u => new Data.Entities.User() {
+						UserId = u.UserId,
+						RoleId = u.RoleId,
+						StatusId = u.StatusId,
+						SubscriberNumber = u.SubscriberNumber,
+						LoginStatusId = u.LoginStatusId,
+						FailedLogins = u.FailedLogins,
+						OwnerId = u.OwnerId,
+						Created = u.Created,
+						Changed = u.Changed,
+						IsDemo = u.IsDemo,
+						Comments = u.Comments,
+						IsPeer = u.IsPeer,
+						Username = u.Username,
+						Password = canGetUserPassword ? u.Password : "",
+						FirstName = u.FirstName,
+						LastName = u.LastName,
+						Email = u.Email,
+						SecondaryEmail = u.SecondaryEmail,
+						Address = u.Address,
+						City = u.City,
+						State = u.State,
+						Country = u.Country,
+						Zip = u.Zip,
+						PrimaryPhone = u.PrimaryPhone,
+						SecondaryPhone = u.SecondaryPhone,
+						Fax = u.Fax,
+						InstantMessenger = u.InstantMessenger,
+						HtmlMail = u.HtmlMail,
+						CompanyName = u.CompanyName,
+						EcommerceEnabled = u.EcommerceEnabled,
+						AdditionalParams = u.AdditionalParams,
+						MfaMode = u.MfaMode,
+						PinSecret = canGetUserPassword ? u.PinSecret : ""
+					});
+
+				return new EntityDataReader<Data.Entities.User>(user);
+			}
+			else
+			{
+				return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetUserById",
+					 new SqlParameter("@ActorId", actorId),
+					 new SqlParameter("@UserID", userId));
+			}
 		}
 
 		public IDataReader GetUserByUsername(int actorId, string username)
 		{
-			return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetUserByUsername",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@Username", username));
+			if (UseEntityFramework)
+			{
+				var user = Users
+					.Where(u => u.Username == username)
+					.Select(u => new Data.Entities.User()
+					{
+						UserId = u.UserId,
+						RoleId = u.RoleId,
+						StatusId = u.StatusId,
+						SubscriberNumber = u.SubscriberNumber,
+						LoginStatusId = u.LoginStatusId,
+						FailedLogins = u.FailedLogins,
+						OwnerId = u.OwnerId,
+						Created = u.Created,
+						Changed = u.Changed,
+						IsDemo = u.IsDemo,
+						Comments = u.Comments,
+						IsPeer = u.IsPeer,
+						Username = u.Username,
+						Password = CanGetUserPassword(actorId, u.UserId) ? u.Password : "",
+						FirstName = u.FirstName,
+						LastName = u.LastName,
+						Email = u.Email,
+						SecondaryEmail = u.SecondaryEmail,
+						Address = u.Address,
+						City = u.City,
+						State = u.State,
+						Country = u.Country,
+						Zip = u.Zip,
+						PrimaryPhone = u.PrimaryPhone,
+						SecondaryPhone = u.SecondaryPhone,
+						Fax = u.Fax,
+						InstantMessenger = u.InstantMessenger,
+						HtmlMail = u.HtmlMail,
+						CompanyName = u.CompanyName,
+						EcommerceEnabled = u.EcommerceEnabled,
+						AdditionalParams = u.AdditionalParams,
+						MfaMode = u.MfaMode,
+						PinSecret = CanGetUserPassword(actorId, u.UserId) ? u.PinSecret : ""
+					})
+					.Where(u => CanGetUserDetails(actorId, u.UserId));
+
+				return new EntityDataReader<Data.Entities.User>(user);
+			}
+			else
+			{
+				return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetUserByUsername",
+					 new SqlParameter("@ActorId", actorId),
+					 new SqlParameter("@Username", username));
+			}
+		}
+
+		bool CanCreateUser(int actorId, int ownerId)
+		{
+			if (actorId == -1 || actorId == ownerId) return true;
+
+			var actor = Users.FirstOrDefault(u => u.UserId == actorId);
+			if (actor != null && actor.IsPeer && actor.OwnerId.HasValue) actorId = actor.OwnerId.Value;
+			if (actorId == ownerId) return true;
+
+			var id = ownerId;
+			var user = Users.FirstOrDefault(u => u.UserId == id);
+			while (user != null && user.OwnerId.HasValue && user.OwnerId != actorId)
+			{
+				id = user.OwnerId.Value;
+				user = Users.FirstOrDefault(u => u.UserId == id);
+			}
+			return user != null && user.OwnerId == actorId;
 		}
 
 		public int AddUser(int actorId, int ownerId, int roleId, int statusId, string subscriberNumber, int loginStatusId, bool isDemo,
@@ -330,42 +954,109 @@ namespace SolidCP.EnterpriseServer
 			 string primaryPhone, string secondaryPhone, string fax, string instantMessenger, bool htmlMail,
 			 string companyName, bool ecommerceEnabled)
 		{
-			SqlParameter prmUserId = new SqlParameter("@UserID", SqlDbType.Int);
-			prmUserId.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
+				if (Users.Any(u => u.Username == username)) return -1;
+				if (!CanCreateUser(actorId, ownerId)) return -2;
+				var user = new Data.Entities.User()
+				{
+					OwnerId = ownerId,
+					RoleId = roleId,
+					StatusId = statusId,
+					SubscriberNumber = subscriberNumber,
+					LoginStatusId = loginStatusId,
+					IsDemo = isDemo,
+					IsPeer = isPeer,
+					Comments = comments,
+					Username = username,
+					Password = password,
+					FirstName = firstName,
+					LastName = lastName,
+					Email = email,
+					SecondaryEmail = secondaryEmail,
+					Address = address,
+					City = city,
+					Country = country,
+					State = state,
+					Zip = zip,
+					PrimaryPhone = primaryPhone,
+					SecondaryPhone = secondaryPhone,
+					Fax = fax,
+					InstantMessenger = instantMessenger,
+					HtmlMail = htmlMail,
+					CompanyName = companyName,
+					EcommerceEnabled = ecommerceEnabled
+				};
+				Users.Add(user);
+				SaveChanges();
 
-			// add user to SolidCP Users table
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "AddUser",
-				 prmUserId,
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@OwnerID", ownerId),
-				 new SqlParameter("@RoleID", roleId),
-				 new SqlParameter("@StatusId", statusId),
-				 new SqlParameter("@SubscriberNumber", subscriberNumber),
-				 new SqlParameter("@LoginStatusId", loginStatusId),
-				 new SqlParameter("@IsDemo", isDemo),
-				 new SqlParameter("@IsPeer", isPeer),
-				 new SqlParameter("@Comments", comments),
-				 new SqlParameter("@username", username),
-				 new SqlParameter("@password", password),
-				 new SqlParameter("@firstName", firstName),
-				 new SqlParameter("@lastName", lastName),
-				 new SqlParameter("@email", email),
-				 new SqlParameter("@secondaryEmail", secondaryEmail),
-				 new SqlParameter("@address", address),
-				 new SqlParameter("@city", city),
-				 new SqlParameter("@country", country),
-				 new SqlParameter("@state", state),
-				 new SqlParameter("@zip", zip),
-				 new SqlParameter("@primaryPhone", primaryPhone),
-				 new SqlParameter("@secondaryPhone", secondaryPhone),
-				 new SqlParameter("@fax", fax),
-				 new SqlParameter("@instantMessenger", instantMessenger),
-				 new SqlParameter("@htmlMail", htmlMail),
-				 new SqlParameter("@CompanyName", companyName),
-				 new SqlParameter("@EcommerceEnabled", ecommerceEnabled));
+				return user.UserId;
+			}
+			else
+			{
+				SqlParameter prmUserId = new SqlParameter("@UserID", SqlDbType.Int);
+				prmUserId.Direction = ParameterDirection.Output;
 
-			return Convert.ToInt32(prmUserId.Value);
+				// add user to SolidCP Users table
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "AddUser",
+					 prmUserId,
+					 new SqlParameter("@ActorId", actorId),
+					 new SqlParameter("@OwnerID", ownerId),
+					 new SqlParameter("@RoleID", roleId),
+					 new SqlParameter("@StatusId", statusId),
+					 new SqlParameter("@SubscriberNumber", subscriberNumber),
+					 new SqlParameter("@LoginStatusId", loginStatusId),
+					 new SqlParameter("@IsDemo", isDemo),
+					 new SqlParameter("@IsPeer", isPeer),
+					 new SqlParameter("@Comments", comments),
+					 new SqlParameter("@username", username),
+					 new SqlParameter("@password", password),
+					 new SqlParameter("@firstName", firstName),
+					 new SqlParameter("@lastName", lastName),
+					 new SqlParameter("@email", email),
+					 new SqlParameter("@secondaryEmail", secondaryEmail),
+					 new SqlParameter("@address", address),
+					 new SqlParameter("@city", city),
+					 new SqlParameter("@country", country),
+					 new SqlParameter("@state", state),
+					 new SqlParameter("@zip", zip),
+					 new SqlParameter("@primaryPhone", primaryPhone),
+					 new SqlParameter("@secondaryPhone", secondaryPhone),
+					 new SqlParameter("@fax", fax),
+					 new SqlParameter("@instantMessenger", instantMessenger),
+					 new SqlParameter("@htmlMail", htmlMail),
+					 new SqlParameter("@CompanyName", companyName),
+					 new SqlParameter("@EcommerceEnabled", ecommerceEnabled));
+
+				return Convert.ToInt32(prmUserId.Value);
+			}
+		}
+
+		bool CanUpdateUserDetails(int actorId, int userId)
+		{
+			if (actorId == -1 || actorId == userId) return true;
+
+			var actor = Users.FirstOrDefault(u => u.UserId == actorId);
+			if (actor != null && actor.IsPeer && actor.OwnerId.HasValue)
+			{
+				// check if the peer is trying to update his owner
+				if (actor.OwnerId == userId) return false;
+
+				// check if the peer is trying to update his peers
+				if (Users.Any(u => u.IsPeer && u.OwnerId == actor.OwnerId && u.UserId == userId)) return false;
+
+				actorId = actor.OwnerId.Value;
+			}
+
+			var id = userId;
+			var user = Users.FirstOrDefault(u => u.UserId == id);
+			while (user != null && user.OwnerId.HasValue && user.OwnerId != actorId)
+			{
+				id = user.OwnerId.Value;
+				user = Users.FirstOrDefault(u => u.UserId == id);
+			}
+			return user != null && user.OwnerId == actorId;
 		}
 
 		public void UpdateUser(int actorId, int userId, int roleId, int statusId, string subscriberNumber, int loginStatusId, bool isDemo,
@@ -374,111 +1065,301 @@ namespace SolidCP.EnterpriseServer
 			 string primaryPhone, string secondaryPhone, string fax, string instantMessenger, bool htmlMail,
 			 string companyName, bool ecommerceEnabled, string additionalParams)
 		{
-			// update user
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "UpdateUser",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@RoleID", roleId),
-				 new SqlParameter("@StatusId", statusId),
-				 new SqlParameter("@SubscriberNumber", subscriberNumber),
-				 new SqlParameter("@LoginStatusId", loginStatusId),
-				 new SqlParameter("@UserID", userId),
-				 new SqlParameter("@IsDemo", isDemo),
-				 new SqlParameter("@IsPeer", isPeer),
-				 new SqlParameter("@Comments", comments),
-				 new SqlParameter("@firstName", firstName),
-				 new SqlParameter("@lastName", lastName),
-				 new SqlParameter("@email", email),
-				 new SqlParameter("@secondaryEmail", secondaryEmail),
-				 new SqlParameter("@address", address),
-				 new SqlParameter("@city", city),
-				 new SqlParameter("@country", country),
-				 new SqlParameter("@state", state),
-				 new SqlParameter("@zip", zip),
-				 new SqlParameter("@primaryPhone", primaryPhone),
-				 new SqlParameter("@secondaryPhone", secondaryPhone),
-				 new SqlParameter("@fax", fax),
-				 new SqlParameter("@instantMessenger", instantMessenger),
-				 new SqlParameter("@htmlMail", htmlMail),
-				 new SqlParameter("@CompanyName", companyName),
-				 new SqlParameter("@EcommerceEnabled", ecommerceEnabled),
-				 new SqlParameter("@AdditionalParams", additionalParams));
+			if (UseEntityFramework)
+			{
+				if (CanUpdateUserDetails(actorId, userId))
+				{
+					var user = Users.FirstOrDefault(u => u.UserId == userId);
+					if (user != null)
+					{
+						if (loginStatusId == 0) user.FailedLogins = 0;
+						user.RoleId = roleId;
+						user.StatusId = statusId;
+						user.SubscriberNumber = subscriberNumber;
+						user.LoginStatusId = loginStatusId;
+						user.IsDemo = isDemo;
+						user.IsPeer = isPeer;
+						user.Comments = comments;
+						user.FirstName = firstName;
+						user.LastName = lastName;
+						user.Email = email;
+						user.SecondaryEmail = secondaryEmail;
+						user.Address = address;
+						user.City = city;
+						user.Country = country;
+						user.State = state;
+						user.Zip = zip;
+						user.PrimaryPhone = primaryPhone;
+						user.SecondaryPhone = secondaryPhone;
+						user.Fax = fax;
+						user.InstantMessenger = instantMessenger;
+						user.HtmlMail = htmlMail;
+						user.CompanyName = companyName;
+						user.EcommerceEnabled = ecommerceEnabled;
+						user.AdditionalParams = additionalParams;
+
+						SaveChanges();
+					}
+				}
+			}
+			else
+			{
+				// update user
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "UpdateUser",
+					 new SqlParameter("@ActorId", actorId),
+					 new SqlParameter("@RoleID", roleId),
+					 new SqlParameter("@StatusId", statusId),
+					 new SqlParameter("@SubscriberNumber", subscriberNumber),
+					 new SqlParameter("@LoginStatusId", loginStatusId),
+					 new SqlParameter("@UserID", userId),
+					 new SqlParameter("@IsDemo", isDemo),
+					 new SqlParameter("@IsPeer", isPeer),
+					 new SqlParameter("@Comments", comments),
+					 new SqlParameter("@firstName", firstName),
+					 new SqlParameter("@lastName", lastName),
+					 new SqlParameter("@email", email),
+					 new SqlParameter("@secondaryEmail", secondaryEmail),
+					 new SqlParameter("@address", address),
+					 new SqlParameter("@city", city),
+					 new SqlParameter("@country", country),
+					 new SqlParameter("@state", state),
+					 new SqlParameter("@zip", zip),
+					 new SqlParameter("@primaryPhone", primaryPhone),
+					 new SqlParameter("@secondaryPhone", secondaryPhone),
+					 new SqlParameter("@fax", fax),
+					 new SqlParameter("@instantMessenger", instantMessenger),
+					 new SqlParameter("@htmlMail", htmlMail),
+					 new SqlParameter("@CompanyName", companyName),
+					 new SqlParameter("@EcommerceEnabled", ecommerceEnabled),
+					 new SqlParameter("@AdditionalParams", additionalParams));
+			}
 		}
 
 		public void UpdateUserFailedLoginAttempt(int userId, int lockOut, bool reset)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "UpdateUserFailedLoginAttempt",
-				 new SqlParameter("@UserID", userId),
-				 new SqlParameter("@LockOut", lockOut),
-				 new SqlParameter("@Reset", reset));
+			if (UseEntityFramework)
+			{
+				var user = Users.FirstOrDefault(u => u.UserId == userId);
+				if (user == null) return;
+
+				if (reset) user.FailedLogins = 0;
+				else if (lockOut <= (user.FailedLogins ?? 0)) user.LoginStatusId = 2;
+				else user.FailedLogins = (user.FailedLogins ?? 0) + 1;
+				
+				SaveChanges();
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "UpdateUserFailedLoginAttempt",
+					 new SqlParameter("@UserID", userId),
+					 new SqlParameter("@LockOut", lockOut),
+					 new SqlParameter("@Reset", reset));
+			}
 		}
 
 		public void DeleteUser(int actorId, int userId)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "DeleteUser",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@UserID", userId));
+			if (UseEntityFramework)
+			{
+				if (!CanUpdateUserDetails(actorId, userId)) return;
+
+				// delete user comments
+				Comments.RemoveRange(Comments.Where(c => c.ItemId == userId && c.ItemTypeId == "USER"));
+				// delete reseller addon
+				HostingPlans.RemoveRange(HostingPlans.Where(h => h.UserId == userId && h.IsAddon == true));
+				// delete user peers
+				Users.RemoveRange(Users.Where(u => u.IsPeer && u.OwnerId == userId));
+				// delete user
+				Users.RemoveRange(Users.Where(u => u.UserId == userId));
+
+				SaveChanges();
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "DeleteUser",
+					 new SqlParameter("@ActorId", actorId),
+					 new SqlParameter("@UserID", userId));
+			}
 		}
 
 		public void ChangeUserPassword(int actorId, int userId, string password)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "ChangeUserPassword",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@UserID", userId),
-				 new SqlParameter("@password", password));
+			if (UseEntityFramework)
+			{
+				if (!CanUpdateUserDetails(actorId, userId)) return;
+
+				var user = Users.FirstOrDefault(u => u.UserId == userId);
+				if (user == null) return;
+
+				user.Password = password;
+				user.OneTimePasswordState = 0;
+
+				SaveChanges();
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "ChangeUserPassword",
+					 new SqlParameter("@ActorId", actorId),
+					 new SqlParameter("@UserID", userId),
+					 new SqlParameter("@password", password));
+			}
 		}
 
 		public void SetUserOneTimePassword(int userId, string password, int auths)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "SetUserOneTimePassword",
-				 new SqlParameter("@UserID", userId),
-				 new SqlParameter("@Password", password),
-				 new SqlParameter("@OneTimePasswordState", auths));
+			if (UseEntityFramework)
+			{
+				var user = Users.FirstOrDefault(u => u.UserId == userId);
+				if (user == null) return;
+				user.Password = password;
+				user.OneTimePasswordState = auths;
+				SaveChanges();
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "SetUserOneTimePassword",
+					 new SqlParameter("@UserID", userId),
+					 new SqlParameter("@Password", password),
+					 new SqlParameter("@OneTimePasswordState", auths));
+			}
 		}
 
 		public void UpdateUserPinSecret(int actorId, int userId, string pinSecret)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "UpdateUserPinSecret",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@UserID", userId),
-				 new SqlParameter("@PinSecret", pinSecret)
-				 );
+			if (UseEntityFramework)
+			{
+				if (!CanUpdateUserDetails(actorId, userId)) return;
+
+				var user = Users.FirstOrDefault(u => u.UserId == userId);
+				if (user == null) return;
+				
+				user.PinSecret = pinSecret;
+				
+				SaveChanges();
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "UpdateUserPinSecret",
+					 new SqlParameter("@ActorId", actorId),
+					 new SqlParameter("@UserID", userId),
+					 new SqlParameter("@PinSecret", pinSecret)
+					 );
+			}
 		}
 
 		public void UpdateUserMfaMode(int actorId, int userId, int mfaMode)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "UpdateUserMfaMode",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@UserID", userId),
-				 new SqlParameter("@MfaMode", mfaMode));
+			if (UseEntityFramework)
+			{
+				if (!CanUpdateUserDetails(actorId, userId)) return;
+
+				var user = Users.FirstOrDefault(u => u.UserId == userId);
+				
+				if (user == null) return;
+				
+				user.MfaMode = mfaMode;
+				
+				SaveChanges();
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "UpdateUserMfaMode",
+					 new SqlParameter("@ActorId", actorId),
+					 new SqlParameter("@UserID", userId),
+					 new SqlParameter("@MfaMode", mfaMode));
+			}
 		}
 
 		public bool CanUserChangeMfa(int callerId, int changeUserId, bool canPeerChangeMfa)
 		{
-			SqlParameter prmResult = new SqlParameter("@Result", SqlDbType.Bit);
-			prmResult.Direction = ParameterDirection.Output;
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "CanChangeMfa",
-				 new SqlParameter("@CallerID", callerId),
-				 new SqlParameter("@ChangeUserID", changeUserId),
-				 new SqlParameter("@CanPeerChangeMfa", canPeerChangeMfa ? 1 : 0),
-				 prmResult
-				 );
+			if (UseEntityFramework)
+			{
+				var user = Users.FirstOrDefault(u => u.UserId == callerId);
+				if (user == null) return false;
 
-			return Convert.ToBoolean(prmResult.Value);
+				if (user.OwnerId == null) return true; // serveradmin user
+
+				// check if the user requests himself
+				if (callerId == changeUserId && user.IsPeer && canPeerChangeMfa) return true;
+
+				if (callerId == changeUserId && !user.IsPeer) return true;
+
+				int generationNumber = 0, userId = user.UserId;
+				if (user.IsPeer)
+				{
+					userId = user.OwnerId.Value;
+					generationNumber = 1;
+				}
+
+				var generation = Users
+					.Where(u => u.UserId == userId)
+					.Select(u => new
+					{
+						u.UserId,
+						u.Username,
+						u.OwnerId,
+						u.IsPeer,
+						GenerationNumber = 0
+					});
+				var nextGeneration = Users.Join(generation, u => u.OwnerId, g => g.UserId, (usr, gen) => new {
+					usr.UserId,
+					usr.Username,
+					usr.OwnerId,
+					usr.IsPeer,
+					GenerationNumber = gen.GenerationNumber + 1
+				});
+				while (nextGeneration.Any())
+				{
+					generation = generation.Union(nextGeneration);
+				}
+
+				return generation.Join(Users, g => g.OwnerId, u => u.UserId, (gen, usr) => gen)
+					.Any(g => (g.GenerationNumber > generationNumber || !g.IsPeer) &&
+						g.UserId == changeUserId);
+			}
+			else
+			{
+				SqlParameter prmResult = new SqlParameter("@Result", SqlDbType.Bit);
+				prmResult.Direction = ParameterDirection.Output;
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "CanChangeMfa",
+					 new SqlParameter("@CallerID", callerId),
+					 new SqlParameter("@ChangeUserID", changeUserId),
+					 new SqlParameter("@CanPeerChangeMfa", canPeerChangeMfa ? 1 : 0),
+					 prmResult
+					 );
+
+				return Convert.ToBoolean(prmResult.Value);
+			}
 		}
 
 		public IDataReader GetUserPackagesServerUrls(int userId)
 		{
-			return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetUserPackagesServerUrls",
-				 new SqlParameter("@UserId", userId));
+			if (UseEntityFramework)
+			{
+				var serverUrls = Servers.Join(Packages, s => s.ServerId, p => p.ServerId, (server, package) => new
+				{
+					server.ServerUrl,
+					package.UserId
+				})
+				.Where(s => s.UserId == userId)
+				.Select(s => new { s.ServerUrl });
+
+				return new EntityDataReader<object>(serverUrls);
+			}
+			else
+			{
+				return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetUserPackagesServerUrls",
+					 new SqlParameter("@UserId", userId));
+			}
 		}
 
 		#endregion
@@ -486,11 +1367,18 @@ namespace SolidCP.EnterpriseServer
 		#region User Settings
 		public IDataReader GetUserSettings(int actorId, int userId, string settingsName)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetUserSettings",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@UserID", userId),
-				 new SqlParameter("@SettingsName", settingsName));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetUserSettings",
+					 new SqlParameter("@ActorId", actorId),
+					 new SqlParameter("@UserID", userId),
+					 new SqlParameter("@SettingsName", settingsName));
+			}
 		}
 		public void UpdateUserSettings(int actorId, int userId, string settingsName, string xml)
 		{

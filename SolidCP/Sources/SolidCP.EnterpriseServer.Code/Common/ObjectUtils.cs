@@ -479,6 +479,14 @@ namespace SolidCP.EnterpriseServer
 			return table;
 		}
 
+		public static DataSet DataSetFromEntitySet<TEntity>(IEnumerable<TEntity> set)
+		{
+			var type = typeof(TEntity);
+			DataSet dataSet = new DataSet(type.Name);
+			dataSet.Tables.Add(DataTableFromEntitySet(set));
+			return dataSet;
+		}
+
 		public static T FillObjectFromEntitySet<T, TEntity>(IEnumerable<TEntity> set) where T: class => FillObjectFromEntity<T, TEntity>(set.LastOrDefault());
 
 		public static T FillObjectFromDataReader<T>(IDataReader reader)

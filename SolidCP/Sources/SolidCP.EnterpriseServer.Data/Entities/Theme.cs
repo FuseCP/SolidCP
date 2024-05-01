@@ -24,11 +24,11 @@ public partial class Theme
 
     [Column("LTRName")]
     [StringLength(255)]
-    public string Ltrname { get; set; }
+    public string LTRName { get; set; }
 
     [Column("RTLName")]
     [StringLength(255)]
-    public string Rtlname { get; set; }
+    public string RTLName { get; set; }
 
     public int Enabled { get; set; }
 
