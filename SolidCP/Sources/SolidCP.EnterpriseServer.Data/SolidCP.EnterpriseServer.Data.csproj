@@ -80,32 +80,11 @@
         <Compile Remove="CodeTemplates\EFCore\Aliases.cs" />
 		<!--<Compile Remove="Configuration\**\*.cs" />
 		<None Include="Configuration\**\*.cs" />-->
-		<Compile Remove="Model\**\*.cs" />
-		<None Include="Model\**\*.cs" />
 
 		<None Include="DbContextBase.Source.cs" />
 		<Compile Remove="DbContextBase.Source.cs" />
 		<Compile Remove="Migrations\MsSql\20240423190403_InitialCreate_StoredProcedures.cs" />
 		<None Include="Migrations\MsSql\20240423190403_InitialCreate_StoredProcedures.cs" />
-
-		<None Include="Model\NetFX\Generator\CreateModel.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>CreateModel.tt</DependentUpon>
-        </None>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Compile Update="Model\Core\Generator\CreateModel.cs">
-          <DesignTime>True</DesignTime>
-          <AutoGen>True</AutoGen>
-          <DependentUpon>CreateModel.tt</DependentUpon>
-        </Compile>
-        <Compile Update="Model\NetFX\Generator\CreateModel.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>CreateModel.tt</DependentUpon>
-        </Compile>
     </ItemGroup>
 
     <ItemGroup>
@@ -117,14 +96,6 @@
         </None>
         <None Update="CodeTemplates\EFCore\EntityTypeConfiguration.t4">
           <Generator></Generator>
-        </None>
-        <None Update="Model\Core\Generator\CreateModel.tt">
-          <Generator>TextTemplatingFileGenerator</Generator>
-          <LastGenOutput>CreateModel.cs</LastGenOutput>
-        </None>
-        <None Update="Model\NetFX\Generator\CreateModel.tt">
-            <LastGenOutput>CreateModel.cs</LastGenOutput>
-            <Generator>TextTemplatingFileGenerator</Generator>
         </None>
     </ItemGroup>
 
