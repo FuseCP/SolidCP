@@ -1,5 +1,4 @@
-﻿// This file is auto generated, do not edit.
-#if ScaffoldedEntities
+﻿#if ScaffoldedEntities
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -16,7 +15,7 @@ namespace SolidCP.EnterpriseServer.Data.Entities;
 [Index("ItemId", Name = "PackageIPAddressesIdx_ItemID")]
 [Index("PackageId", Name = "PackageIPAddressesIdx_PackageID")]
 #endif
-public partial class PackageIpaddress
+public partial class PackageIpAddress
 {
     [Key]
     [Column("PackageAddressID")]
@@ -38,7 +37,7 @@ public partial class PackageIpaddress
 
     [ForeignKey("AddressId")]
     [InverseProperty("PackageIpaddresses")]
-    public virtual Ipaddress Address { get; set; }
+    public virtual IpAddress Address { get; set; }
 
     [ForeignKey("ItemId")]
     [InverseProperty("PackageIpaddresses")]

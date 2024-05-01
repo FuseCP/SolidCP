@@ -1,5 +1,4 @@
-﻿// This file is auto generated, do not edit.
-#if ScaffoldedEntities
+﻿#if ScaffoldedEntities
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -14,7 +13,7 @@ namespace SolidCP.EnterpriseServer.Data.Entities;
 #if NetCore
 [Index("ServerId", Name = "IPAddressesIdx_ServerID")]
 #endif
-public partial class Ipaddress
+public partial class IpAddress
 {
     [Key]
     [Column("AddressID")]
@@ -63,7 +62,7 @@ public partial class Ipaddress
     public virtual ICollection<GlobalDnsRecord> GlobalDnsRecords { get; set; } = new List<GlobalDnsRecord>();
 
     [InverseProperty("Address")]
-    public virtual ICollection<PackageIpaddress> PackageIpaddresses { get; set; } = new List<PackageIpaddress>();
+    public virtual ICollection<PackageIpAddress> PackageIpaddresses { get; set; } = new List<PackageIpAddress>();
 
     [ForeignKey("ServerId")]
     [InverseProperty("Ipaddresses")]

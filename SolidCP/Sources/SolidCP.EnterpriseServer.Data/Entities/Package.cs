@@ -1,5 +1,4 @@
-﻿// This file is auto generated, do not edit.
-#if ScaffoldedEntities
+﻿#if ScaffoldedEntities
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -72,7 +71,7 @@ public partial class Package
     public virtual ICollection<PackageAddon> PackageAddons { get; set; } = new List<PackageAddon>();
 
     [InverseProperty("Package")]
-    public virtual ICollection<PackageIpaddress> PackageIpaddresses { get; set; } = new List<PackageIpaddress>();
+    public virtual ICollection<PackageIpAddress> PackageIpaddresses { get; set; } = new List<PackageIpAddress>();
 
     [InverseProperty("Package")]
     public virtual ICollection<PackageQuota> PackageQuota { get; set; } = new List<PackageQuota>();

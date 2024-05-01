@@ -12,7 +12,7 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class IpaddressConfiguration: EntityTypeConfiguration<Ipaddress>
+public partial class IpAddressConfiguration: EntityTypeConfiguration<IpAddress>
 {
 #if NetCore || NetFX
     public override void Configure() {

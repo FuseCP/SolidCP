@@ -1,5 +1,4 @@
-﻿// This file is auto generated, do not edit.
-#if ScaffoldedEntities
+﻿#if ScaffoldedEntities
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace SolidCP.EnterpriseServer.Data.Entities;
 
 [Table("RDSCollections")]
-public partial class Rdscollection
+public partial class RdsCollection
 {
     [Key]
     [Column("ID")]
@@ -30,15 +29,15 @@ public partial class Rdscollection
     public string DisplayName { get; set; }
 
     [InverseProperty("Rdscollection")]
-    public virtual ICollection<RdscollectionSetting> RdscollectionSettings { get; set; } = new List<RdscollectionSetting>();
+    public virtual ICollection<RdsCollectionSetting> RdscollectionSettings { get; set; } = new List<RdsCollectionSetting>();
 
     [InverseProperty("Rdscollection")]
-    public virtual ICollection<RdscollectionUser> RdscollectionUsers { get; set; } = new List<RdscollectionUser>();
+    public virtual ICollection<RdsCollectionUser> RdscollectionUsers { get; set; } = new List<RdsCollectionUser>();
 
     [InverseProperty("Rdscollection")]
-    public virtual ICollection<Rdsmessage> Rdsmessages { get; set; } = new List<Rdsmessage>();
+    public virtual ICollection<RdsMessage> Rdsmessages { get; set; } = new List<RdsMessage>();
 
     [InverseProperty("Rdscollection")]
-    public virtual ICollection<Rdsserver> Rdsservers { get; set; } = new List<Rdsserver>();
+    public virtual ICollection<RdsServer> Rdsservers { get; set; } = new List<RdsServer>();
 }
 #endif

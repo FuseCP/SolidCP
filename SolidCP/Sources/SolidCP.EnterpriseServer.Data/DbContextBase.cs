@@ -75,7 +75,7 @@ namespace SolidCP.EnterpriseServer.Context
 
 		public virtual DbSet<Comment> Comments { get; set; }
 
-		public virtual DbSet<Crmuser> Crmusers { get; set; }
+		public virtual DbSet<CrmUser> Crmusers { get; set; }
 
 		public virtual DbSet<Domain> Domains { get; set; }
 
@@ -115,19 +115,19 @@ namespace SolidCP.EnterpriseServer.Context
 
 		public virtual DbSet<HostingPlanResource> HostingPlanResources { get; set; }
 
-		public virtual DbSet<Ipaddress> Ipaddresses { get; set; }
+		public virtual DbSet<IpAddress> Ipaddresses { get; set; }
 
 		public virtual DbSet<LyncUser> LyncUsers { get; set; }
 
 		public virtual DbSet<LyncUserPlan> LyncUserPlans { get; set; }
 
-		public virtual DbSet<Ocsuser> Ocsusers { get; set; }
+		public virtual DbSet<OcsUser> Ocsusers { get; set; }
 
 		public virtual DbSet<Package> Packages { get; set; }
 
 		public virtual DbSet<PackageAddon> PackageAddons { get; set; }
 
-		public virtual DbSet<PackageIpaddress> PackageIpaddresses { get; set; }
+		public virtual DbSet<PackageIpAddress> PackageIpaddresses { get; set; }
 
 		public virtual DbSet<PackageQuota> PackageQuotas { get; set; }
 
@@ -143,7 +143,7 @@ namespace SolidCP.EnterpriseServer.Context
 
 		public virtual DbSet<PackagesTreeCache> PackagesTreeCaches { get; set; }
 
-		public virtual DbSet<PrivateIpaddress> PrivateIpaddresses { get; set; }
+		public virtual DbSet<PrivateIpAddress> PrivateIpaddresses { get; set; }
 
 		public virtual DbSet<PrivateNetworkVlan> PrivateNetworkVlans { get; set; }
 
@@ -151,19 +151,19 @@ namespace SolidCP.EnterpriseServer.Context
 
 		public virtual DbSet<Quota> Quotas { get; set; }
 
-		public virtual DbSet<Rdscertificate> Rdscertificates { get; set; }
+		public virtual DbSet<RdsCertificate> Rdscertificates { get; set; }
 
-		public virtual DbSet<Rdscollection> Rdscollections { get; set; }
+		public virtual DbSet<RdsCollection> Rdscollections { get; set; }
 
-		public virtual DbSet<RdscollectionSetting> RdscollectionSettings { get; set; }
+		public virtual DbSet<RdsCollectionSetting> RdscollectionSettings { get; set; }
 
-		public virtual DbSet<RdscollectionUser> RdscollectionUsers { get; set; }
+		public virtual DbSet<RdsCollectionUser> RdscollectionUsers { get; set; }
 
-		public virtual DbSet<Rdsmessage> Rdsmessages { get; set; }
+		public virtual DbSet<RdsMessage> Rdsmessages { get; set; }
 
-		public virtual DbSet<Rdsserver> Rdsservers { get; set; }
+		public virtual DbSet<RdsServer> Rdsservers { get; set; }
 
-		public virtual DbSet<RdsserverSetting> RdsserverSettings { get; set; }
+		public virtual DbSet<RdsServerSetting> RdsserverSettings { get; set; }
 
 		public virtual DbSet<ResourceGroup> ResourceGroups { get; set; }
 
@@ -197,7 +197,7 @@ namespace SolidCP.EnterpriseServer.Context
 
 		public virtual DbSet<SfBuserPlan> SfBuserPlans { get; set; }
 
-		public virtual DbSet<Sslcertificate> Sslcertificates { get; set; }
+		public virtual DbSet<SslCertificate> Sslcertificates { get; set; }
 
 		public virtual DbSet<StorageSpace> StorageSpaces { get; set; }
 
@@ -294,7 +294,7 @@ namespace SolidCP.EnterpriseServer.Context
 			ApplyConfiguration(model, new BlackBerryUserConfiguration());
 			ApplyConfiguration(model, new ClusterConfiguration());
 			ApplyConfiguration(model, new CommentConfiguration());
-			ApplyConfiguration(model, new CrmuserConfiguration());
+			ApplyConfiguration(model, new CrmUserConfiguration());
 			ApplyConfiguration(model, new DomainConfiguration());
 			ApplyConfiguration(model, new DomainDnsRecordConfiguration());
 			ApplyConfiguration(model, new EnterpriseFolderConfiguration());
@@ -314,13 +314,13 @@ namespace SolidCP.EnterpriseServer.Context
 			ApplyConfiguration(model, new HostingPlanConfiguration());
 			ApplyConfiguration(model, new HostingPlanQuotaConfiguration());
 			ApplyConfiguration(model, new HostingPlanResourceConfiguration());
-			ApplyConfiguration(model, new IpaddressConfiguration());
+			ApplyConfiguration(model, new IpAddressConfiguration());
 			ApplyConfiguration(model, new LyncUserConfiguration());
 			ApplyConfiguration(model, new LyncUserPlanConfiguration());
-			ApplyConfiguration(model, new OcsuserConfiguration());
+			ApplyConfiguration(model, new OcsUserConfiguration());
 			ApplyConfiguration(model, new PackageConfiguration());
 			ApplyConfiguration(model, new PackageAddonConfiguration());
-			ApplyConfiguration(model, new PackageIpaddressConfiguration());
+			ApplyConfiguration(model, new PackageIpAddressConfiguration());
 			ApplyConfiguration(model, new PackageQuotaConfiguration());
 			ApplyConfiguration(model, new PackageResourceConfiguration());
 			ApplyConfiguration(model, new PackageSettingConfiguration());
@@ -328,17 +328,17 @@ namespace SolidCP.EnterpriseServer.Context
 			ApplyConfiguration(model, new PackagesBandwidthConfiguration());
 			ApplyConfiguration(model, new PackagesDiskspaceConfiguration());
 			ApplyConfiguration(model, new PackagesTreeCacheConfiguration());
-			ApplyConfiguration(model, new PrivateIpaddressConfiguration());
+			ApplyConfiguration(model, new PrivateIpAddressConfiguration());
 			ApplyConfiguration(model, new PrivateNetworkVlanConfiguration());
 			ApplyConfiguration(model, new ProviderConfiguration());
 			ApplyConfiguration(model, new QuotaConfiguration());
-			ApplyConfiguration(model, new RdscertificateConfiguration());
-			ApplyConfiguration(model, new RdscollectionConfiguration());
-			ApplyConfiguration(model, new RdscollectionSettingConfiguration());
-			ApplyConfiguration(model, new RdscollectionUserConfiguration());
-			ApplyConfiguration(model, new RdsmessageConfiguration());
-			ApplyConfiguration(model, new RdsserverConfiguration());
-			ApplyConfiguration(model, new RdsserverSettingConfiguration());
+			ApplyConfiguration(model, new RdsCertificateConfiguration());
+			ApplyConfiguration(model, new RdsCollectionConfiguration());
+			ApplyConfiguration(model, new RdsCollectionSettingConfiguration());
+			ApplyConfiguration(model, new RdsCollectionUserConfiguration());
+			ApplyConfiguration(model, new RdsMessageConfiguration());
+			ApplyConfiguration(model, new RdsServerConfiguration());
+			ApplyConfiguration(model, new RdsServerSettingConfiguration());
 			ApplyConfiguration(model, new ResourceGroupConfiguration());
 			ApplyConfiguration(model, new ResourceGroupDnsRecordConfiguration());
 			ApplyConfiguration(model, new ScheduleConfiguration());
@@ -355,7 +355,7 @@ namespace SolidCP.EnterpriseServer.Context
 			ApplyConfiguration(model, new ServicePropertyConfiguration());
 			ApplyConfiguration(model, new SfBuserConfiguration());
 			ApplyConfiguration(model, new SfBuserPlanConfiguration());
-			ApplyConfiguration(model, new SslcertificateConfiguration());
+			ApplyConfiguration(model, new SslCertificateConfiguration());
 			ApplyConfiguration(model, new StorageSpaceConfiguration());
 			ApplyConfiguration(model, new StorageSpaceFolderConfiguration());
 			ApplyConfiguration(model, new StorageSpaceLevelConfiguration());

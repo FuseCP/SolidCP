@@ -1,5 +1,4 @@
-﻿// This file is auto generated, do not edit.
-#if ScaffoldedEntities
+﻿#if ScaffoldedEntities
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -64,10 +63,10 @@ public partial class ServiceItem
     public virtual Package Package { get; set; }
 
     [InverseProperty("Item")]
-    public virtual ICollection<PackageIpaddress> PackageIpaddresses { get; set; } = new List<PackageIpaddress>();
+    public virtual ICollection<PackageIpAddress> PackageIpaddresses { get; set; } = new List<PackageIpAddress>();
 
     [InverseProperty("Item")]
-    public virtual ICollection<PrivateIpaddress> PrivateIpaddresses { get; set; } = new List<PrivateIpaddress>();
+    public virtual ICollection<PrivateIpAddress> PrivateIpaddresses { get; set; } = new List<PrivateIpAddress>();
 
     [ForeignKey("ServiceId")]
     [InverseProperty("ServiceItems")]

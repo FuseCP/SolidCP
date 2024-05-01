@@ -1,5 +1,4 @@
-﻿// This file is auto generated, do not edit.
-#if ScaffoldedEntities
+﻿#if ScaffoldedEntities
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -29,7 +28,7 @@ public partial class AccessToken
 
     public int ItemId { get; set; }
 
-    public int TokenType { get; set; }
+    public Base.HostedSolution.AccessTokenTypes TokenType { get; set; }
 
     [StringLength(100)]
 #if NetCore

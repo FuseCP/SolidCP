@@ -1,5 +1,4 @@
-﻿// This file is auto generated, do not edit.
-#if ScaffoldedEntities
+﻿#if ScaffoldedEntities
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -60,7 +59,7 @@ public partial class GlobalDnsRecord
 
     [ForeignKey("IpaddressId")]
     [InverseProperty("GlobalDnsRecords")]
-    public virtual Ipaddress Ipaddress { get; set; }
+    public virtual IpAddress Ipaddress { get; set; }
 
     [ForeignKey("PackageId")]
     [InverseProperty("GlobalDnsRecords")]

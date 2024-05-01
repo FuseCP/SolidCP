@@ -1,5 +1,4 @@
-﻿// This file is auto generated, do not edit.
-#if ScaffoldedEntities
+﻿#if ScaffoldedEntities
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -14,7 +13,7 @@ namespace SolidCP.EnterpriseServer.Data.Entities;
 #if NetCore
 [Index("RdscollectionId", Name = "RDSCollectionSettingsIdx_RDSCollectionId")]
 #endif
-public partial class RdscollectionSetting
+public partial class RdsCollectionSetting
 {
     [Key]
     [Column("ID")]
@@ -61,6 +60,6 @@ public partial class RdscollectionSetting
 
     [ForeignKey("RdscollectionId")]
     [InverseProperty("RdscollectionSettings")]
-    public virtual Rdscollection Rdscollection { get; set; }
+    public virtual RdsCollection Rdscollection { get; set; }
 }
 #endif

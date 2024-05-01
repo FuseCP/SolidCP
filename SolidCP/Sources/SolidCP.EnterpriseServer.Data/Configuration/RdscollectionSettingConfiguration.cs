@@ -12,7 +12,7 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class RdscollectionSettingConfiguration: EntityTypeConfiguration<RdscollectionSetting>
+public partial class RdsCollectionSettingConfiguration: EntityTypeConfiguration<RdsCollectionSetting>
 {
 #if NetCore || NetFX
     public override void Configure() {

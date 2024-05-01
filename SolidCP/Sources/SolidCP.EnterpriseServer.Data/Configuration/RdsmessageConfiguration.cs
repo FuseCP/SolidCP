@@ -12,7 +12,7 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class RdsmessageConfiguration: EntityTypeConfiguration<Rdsmessage>
+public partial class RdsMessageConfiguration: EntityTypeConfiguration<RdsMessage>
 {
 #if NetCore || NetFX
     public override void Configure() {

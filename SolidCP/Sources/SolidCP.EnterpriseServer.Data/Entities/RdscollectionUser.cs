@@ -1,5 +1,4 @@
-﻿// This file is auto generated, do not edit.
-#if ScaffoldedEntities
+﻿#if ScaffoldedEntities
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -15,7 +14,7 @@ namespace SolidCP.EnterpriseServer.Data.Entities;
 [Index("AccountId", Name = "RDSCollectionUsersIdx_AccountID")]
 [Index("RdscollectionId", Name = "RDSCollectionUsersIdx_RDSCollectionId")]
 #endif
-public partial class RdscollectionUser
+public partial class RdsCollectionUser
 {
     [Key]
     [Column("ID")]
@@ -33,6 +32,6 @@ public partial class RdscollectionUser
 
     [ForeignKey("RdscollectionId")]
     [InverseProperty("RdscollectionUsers")]
-    public virtual Rdscollection Rdscollection { get; set; }
+    public virtual RdsCollection Rdscollection { get; set; }
 }
 #endif

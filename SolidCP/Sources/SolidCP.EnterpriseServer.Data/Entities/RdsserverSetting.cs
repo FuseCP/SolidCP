@@ -1,5 +1,4 @@
-﻿// This file is auto generated, do not edit.
-#if ScaffoldedEntities
+﻿#if ScaffoldedEntities
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -14,7 +13,7 @@ namespace SolidCP.EnterpriseServer.Data.Entities;
 #if NetCore
 [PrimaryKey("RdsServerId", "SettingsName", "PropertyName")]
 #endif
-public partial class RdsserverSetting
+public partial class RdsServerSetting
 {
     [Column(Order = 1)]
     public int RdsServerId { get; set; }

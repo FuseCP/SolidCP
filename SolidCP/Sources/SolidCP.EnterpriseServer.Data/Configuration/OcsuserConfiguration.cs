@@ -13,7 +13,7 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class OcsuserConfiguration : EntityTypeConfiguration<Ocsuser>
+public partial class OcsUserConfiguration : EntityTypeConfiguration<OcsUser>
 {
 #if NetCore || NetFX
 	public override void Configure()

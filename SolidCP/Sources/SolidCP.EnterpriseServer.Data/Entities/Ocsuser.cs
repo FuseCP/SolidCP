@@ -1,5 +1,4 @@
-﻿// This file is auto generated, do not edit.
-#if ScaffoldedEntities
+﻿#if ScaffoldedEntities
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace SolidCP.EnterpriseServer.Data.Entities;
 
 [Table("OCSUsers")]
-public partial class Ocsuser
+public partial class OcsUser
 {
     [Key]
     [Column("OCSUserID")]

@@ -1,5 +1,4 @@
-﻿// This file is auto generated, do not edit.
-#if ScaffoldedEntities
+﻿#if ScaffoldedEntities
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -14,7 +13,7 @@ namespace SolidCP.EnterpriseServer.Data.Entities;
 #if NetCore
 [Index("ItemId", Name = "PrivateIPAddressesIdx_ItemID")]
 #endif
-public partial class PrivateIpaddress
+public partial class PrivateIpAddress
 {
     [Key]
     [Column("PrivateAddressID")]

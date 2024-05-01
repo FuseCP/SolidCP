@@ -12,7 +12,7 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class SslcertificateConfiguration: EntityTypeConfiguration<Sslcertificate>
+public partial class SslCertificateConfiguration: EntityTypeConfiguration<SslCertificate>
 {
 #if NetCore || NetFX
     public override void Configure() {
