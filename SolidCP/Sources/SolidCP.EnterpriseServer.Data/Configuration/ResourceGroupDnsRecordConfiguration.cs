@@ -18,6 +18,8 @@ public partial class ResourceGroupDnsRecordConfiguration : EntityTypeConfigurati
 	public override void Configure()
 	{
 
+        Property(e => e.RecordType).IsUnicode(false);
+
 #if NetCore
 		Property(e => e.RecordOrder).HasDefaultValue(1);
 

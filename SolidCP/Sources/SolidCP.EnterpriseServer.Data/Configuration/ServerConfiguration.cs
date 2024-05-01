@@ -17,8 +17,10 @@ public partial class ServerConfiguration: EntityTypeConfiguration<Server>
 #if NetCore || NetFX
     public override void Configure() {
 
+        Property(e => e.ADAuthenticationType).IsUnicode(false);
+
 #if NetCore
-        Property(e => e.Adenabled).HasDefaultValue(false);
+        Property(e => e.ADEnabled).HasDefaultValue(false);
         Property(e => e.ServerUrl).HasDefaultValue("");
 
         HasOne(d => d.PrimaryGroup).WithMany(p => p.Servers).HasConstraintName("FK_Servers_ResourceGroups");

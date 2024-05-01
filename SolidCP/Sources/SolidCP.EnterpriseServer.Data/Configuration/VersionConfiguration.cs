@@ -19,6 +19,8 @@ public partial class VersionConfiguration: EntityTypeConfiguration<Version>
 #if NetCore || NetFX
     public override void Configure() {
 
+        Property(e => e.DatabaseVersion).IsUnicode(false);
+
         #region Seed Data
         HasData(() => new Version[] {
             new Version() { DatabaseVersion = "1.0", BuildDate = DateTime.Parse("2010-04-10T00:00:00.0000000") },

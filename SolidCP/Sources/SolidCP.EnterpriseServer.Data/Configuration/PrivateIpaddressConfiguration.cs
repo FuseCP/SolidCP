@@ -16,6 +16,9 @@ public partial class PrivateIpAddressConfiguration: EntityTypeConfiguration<Priv
 {
 #if NetCore || NetFX
     public override void Configure() {
+
+        Property(e => e.IpAddress).IsUnicode(false);
+
 #if NetCore
         HasOne(d => d.Item).WithMany(p => p.PrivateIpaddresses).HasConstraintName("FK_PrivateIPAddresses_ServiceItems");
 #else

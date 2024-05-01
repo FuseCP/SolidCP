@@ -17,6 +17,12 @@ public partial class UserConfiguration: EntityTypeConfiguration<User>
 #if NetCore || NetFX
     public override void Configure() {
 
+		Property(e => e.Zip).IsUnicode(false);
+		Property(e => e.PrimaryPhone).IsUnicode(false);
+		Property(e => e.SecondaryPhone).IsUnicode(false);
+		Property(e => e.Fax).IsUnicode(false);
+		Property(e => e.InstantMessenger).IsUnicode(false);
+
 #if NetCore
         Property(e => e.HtmlMail).HasDefaultValue(true);
 

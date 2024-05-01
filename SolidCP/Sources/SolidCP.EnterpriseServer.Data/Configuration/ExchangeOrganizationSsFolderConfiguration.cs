@@ -19,6 +19,8 @@ public partial class ExchangeOrganizationSsFolderConfiguration : EntityTypeConfi
 	{
 		HasKey(e => e.Id).HasName("PK__Exchange__3214EC072DDBA072");
 
+		Property(e => e.Type).IsUnicode(false);
+
 #if NetCore
         HasOne(d => d.Item).WithMany(p => p.ExchangeOrganizationSsFolders)
             .HasConstraintName("FK_ExchangeOrganizationSsFolders_ItemId");

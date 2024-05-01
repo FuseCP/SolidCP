@@ -17,9 +17,7 @@ public partial class AuditLogSourceConfiguration: EntityTypeConfiguration<AuditL
 #if NetCore || NetFX
 	public override void Configure() {
 
-#if NetCore
-		Core.HasData(new AuditLogSource() { SourceName = "Test" });
-#endif
+		Property(e => e.SourceName).IsUnicode(false);
 
 		#region Seed Data
 		HasData(() => new AuditLogSource[] {

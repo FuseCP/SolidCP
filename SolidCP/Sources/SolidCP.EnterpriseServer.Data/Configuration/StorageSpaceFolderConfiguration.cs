@@ -18,6 +18,10 @@ public partial class StorageSpaceFolderConfiguration: EntityTypeConfiguration<St
     public override void Configure() {
         HasKey(e => e.Id).HasName("PK__StorageS__3214EC07AC0C9EB6");
 
+        Property(e => e.Name).IsUnicode(false);
+        Property(e => e.Path).IsUnicode(false);
+        Property(e => e.UncPath).IsUnicode(false);
+
 #if NetCore
         HasOne(d => d.StorageSpace).WithMany(p => p.StorageSpaceFolders).HasConstraintName("FK_StorageSpaceFolders_StorageSpaceId");
 #else

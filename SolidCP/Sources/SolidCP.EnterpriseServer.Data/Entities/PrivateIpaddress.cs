@@ -28,7 +28,7 @@ public partial class PrivateIpAddress
 #if NetCore
     [Unicode(false)]
 #endif
-    public string Ipaddress { get; set; }
+    public string IpAddress { get; set; }
 
     public bool IsPrimary { get; set; }
 

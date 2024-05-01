@@ -42,39 +42,39 @@ public partial class Server
 
     [Column("ADRootDomain")]
     [StringLength(200)]
-    public string AdrootDomain { get; set; }
+    public string ADRootDomain { get; set; }
 
     [Column("ADUsername")]
     [StringLength(100)]
-    public string Adusername { get; set; }
+    public string ADUsername { get; set; }
 
     [Column("ADPassword")]
     [StringLength(100)]
-    public string Adpassword { get; set; }
+    public string ADPassword { get; set; }
 
     [Column("ADAuthenticationType")]
     [StringLength(50)]
 #if NetCore
     [Unicode(false)]
 #endif
-    public string AdauthenticationType { get; set; }
+    public string ADAuthenticationType { get; set; }
 
     [Column("ADEnabled")]
-    public bool? Adenabled { get; set; }
+    public bool? ADEnabled { get; set; }
 
     [StringLength(200)]
-    public string AdParentDomain { get; set; }
+    public string ADParentDomain { get; set; }
 
     [StringLength(200)]
-    public string AdParentDomainController { get; set; }
+    public string ADParentDomainController { get; set; }
 
     [Column("OSPlatform")]
-    public int Osplatform { get; set; }
+    public Providers.OS.OSPlatform OSPlatform { get; set; }
 
     public bool? IsCore { get; set; }
 
     [Column("PasswordIsSHA256")]
-    public bool PasswordIsSha256 { get; set; }
+    public bool PasswordIsSHA256 { get; set; }
 
     [InverseProperty("Server")]
     public virtual ICollection<GlobalDnsRecord> GlobalDnsRecords { get; set; } = new List<GlobalDnsRecord>();

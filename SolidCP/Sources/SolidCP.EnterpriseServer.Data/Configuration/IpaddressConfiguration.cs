@@ -17,6 +17,11 @@ public partial class IpAddressConfiguration: EntityTypeConfiguration<IpAddress>
 #if NetCore || NetFX
     public override void Configure() {
 
+        Property(e => e.ExternalIp).IsUnicode(false);
+        Property(e => e.InternalIp).IsUnicode(false);
+        Property(e => e.SubnetMask).IsUnicode(false);
+        Property(e => e.DefaultGateway).IsUnicode(false);
+
 #if NetCore
         HasOne(d => d.Server).WithMany(p => p.Ipaddresses)
                 .OnDelete(DeleteBehavior.Cascade)

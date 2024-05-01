@@ -20,6 +20,8 @@ public partial class GlobalDnsRecordConfiguration : EntityTypeConfiguration<Glob
 	public override void Configure()
 	{
 
+        Property(e => e.RecordType).IsUnicode(false);
+
 #if NetCore
         HasOne(d => d.Ipaddress).WithMany(p => p.GlobalDnsRecords).HasConstraintName("FK_GlobalDnsRecords_IPAddresses");
 

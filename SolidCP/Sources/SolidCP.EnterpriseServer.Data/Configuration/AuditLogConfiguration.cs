@@ -17,6 +17,9 @@ public partial class AuditLogConfiguration: EntityTypeConfiguration<AuditLog>
 #if NetCore || NetFX
 	public override void Configure() {
         HasKey(e => e.RecordId).HasName("PK_Log");
+        Property(e => e.RecordId).IsUnicode(false);
+        Property(e => e.SourceName).IsUnicode(false);
+        Property(e => e.TaskName).IsUnicode(false);
     }
 #endif
 }

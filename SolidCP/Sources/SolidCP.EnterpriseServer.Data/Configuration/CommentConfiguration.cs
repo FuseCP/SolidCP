@@ -16,6 +16,9 @@ public partial class CommentConfiguration: EntityTypeConfiguration<Comment>
 {
 #if NetCore || NetFX
     public override void Configure() {
+
+        Property(e => e.ItemTypeId).IsUnicode(false);
+
 #if NetCore
         if (IsMsSql) Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");
 

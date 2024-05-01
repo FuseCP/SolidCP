@@ -16,8 +16,10 @@ public partial class AuditLogTaskConfiguration: EntityTypeConfiguration<AuditLog
 {
 #if NetCore || NetFX
     public override void Configure() {
-		HasKey(e => new { e.SourceName, e.TaskName }); //.HasName("PK_LogActions");
+		HasKey(e => new { e.SourceName, e.TaskName }).HasName("PK_LogActions");
 
+		Property(e => e.SourceName).IsUnicode(false);
+		Property(e => e.TaskName).IsUnicode(false);
 
 		#region Seed Data
 		HasData(() => new AuditLogTask[] {
