@@ -51,7 +51,7 @@ namespace SolidCP.EnterpriseServer.Data
 		public virtual DbSet<Comment> Comments => comments ?? (comments = new DbSet<Comment>(BaseContext));
 
 		DbSet<CrmUser> crmusers = null;
-		public virtual DbSet<CrmUser> Crmusers => crmusers ?? (crmusers = new DbSet<CrmUser>(BaseContext));
+		public virtual DbSet<CrmUser> CrmUsers => crmusers ?? (crmusers = new DbSet<CrmUser>(BaseContext));
 
 		DbSet<Domain> domains = null;
 		public virtual DbSet<Domain> Domains => domains ?? (domains = new DbSet<Domain>(BaseContext));
@@ -111,7 +111,7 @@ namespace SolidCP.EnterpriseServer.Data
 		public virtual DbSet<HostingPlanResource> HostingPlanResources => hostingPlanResources ?? (hostingPlanResources = new DbSet<HostingPlanResource>(BaseContext));
 
 		DbSet<IpAddress> ipaddresses = null;
-		public virtual DbSet<IpAddress> Ipaddresses => ipaddresses ?? (ipaddresses = new DbSet<IpAddress>(BaseContext));
+		public virtual DbSet<IpAddress> IpAddresses => ipaddresses ?? (ipaddresses = new DbSet<IpAddress>(BaseContext));
 
 		DbSet<LyncUser> lyncUsers = null;
 		public virtual DbSet<LyncUser> LyncUsers => lyncUsers ?? (lyncUsers = new DbSet<LyncUser>(BaseContext));
@@ -120,7 +120,7 @@ namespace SolidCP.EnterpriseServer.Data
 		public virtual DbSet<LyncUserPlan> LyncUserPlans => lyncUserPlans ?? (lyncUserPlans = new DbSet<LyncUserPlan>(BaseContext));
 
 		DbSet<OcsUser> ocsusers = null;
-		public virtual DbSet<OcsUser> Ocsusers => ocsusers ?? (ocsusers = new DbSet<OcsUser>(BaseContext));
+		public virtual DbSet<OcsUser> OcsUsers => ocsusers ?? (ocsusers = new DbSet<OcsUser>(BaseContext));
 
 		DbSet<Package> packages = null;
 		public virtual DbSet<Package> Packages => packages ?? (packages = new DbSet<Package>(BaseContext));
@@ -128,8 +128,8 @@ namespace SolidCP.EnterpriseServer.Data
 		DbSet<PackageAddon> packageAddons = null;
 		public virtual DbSet<PackageAddon> PackageAddons => packageAddons ?? (packageAddons = new DbSet<PackageAddon>(BaseContext));
 
-		DbSet<PackageIpAddress> packageIpaddresses = null;
-		public virtual DbSet<PackageIpAddress> PackageIpaddresses => packageIpaddresses ?? (packageIpaddresses = new DbSet<PackageIpAddress>(BaseContext));
+		DbSet<PackageIpAddress> packageIpAddresses = null;
+		public virtual DbSet<PackageIpAddress> PackageIpAddresses => packageIpAddresses ?? (packageIpAddresses = new DbSet<PackageIpAddress>(BaseContext));
 
 		DbSet<PackageQuota> packageQuotas = null;
 		public virtual DbSet<PackageQuota> PackageQuotas => packageQuotas ?? (packageQuotas = new DbSet<PackageQuota>(BaseContext));
@@ -152,8 +152,8 @@ namespace SolidCP.EnterpriseServer.Data
 		DbSet<PackagesTreeCache> packagesTreeCaches = null;
 		public virtual DbSet<PackagesTreeCache> PackagesTreeCaches => packagesTreeCaches ?? (packagesTreeCaches = new DbSet<PackagesTreeCache>(BaseContext));
 
-		DbSet<PrivateIpAddress> privateIpaddresses = null;
-		public virtual DbSet<PrivateIpAddress> PrivateIpaddresses => privateIpaddresses ?? (privateIpaddresses = new DbSet<PrivateIpAddress>(BaseContext));
+		DbSet<PrivateIpAddress> privateIpAddresses = null;
+		public virtual DbSet<PrivateIpAddress> PrivateIpAddresses => privateIpAddresses ?? (privateIpAddresses = new DbSet<PrivateIpAddress>(BaseContext));
 
 		DbSet<PrivateNetworkVlan> privateNetworkVlans = null;
 		public virtual DbSet<PrivateNetworkVlan> PrivateNetworkVlans => privateNetworkVlans ?? (privateNetworkVlans = new DbSet<PrivateNetworkVlan>(BaseContext));
@@ -164,26 +164,26 @@ namespace SolidCP.EnterpriseServer.Data
 		DbSet<Quota> quotas = null;
 		public virtual DbSet<Quota> Quotas => quotas ?? (quotas = new DbSet<Quota>(BaseContext));
 
-		DbSet<RdsCertificate> rdscertificates = null;
-		public virtual DbSet<RdsCertificate> Rdscertificates => rdscertificates ?? (rdscertificates = new DbSet<RdsCertificate>(BaseContext));
+		DbSet<RdsCertificate> rdsCertificates = null;
+		public virtual DbSet<RdsCertificate> RdsCertificates => rdsCertificates ?? (rdsCertificates = new DbSet<RdsCertificate>(BaseContext));
 
-		DbSet<RdsCollection> rdscollections = null;
-		public virtual DbSet<RdsCollection> Rdscollections => rdscollections ?? (rdscollections = new DbSet<RdsCollection>(BaseContext));
+		DbSet<RdsCollection> rdsCollections = null;
+		public virtual DbSet<RdsCollection> RdsCollections => rdsCollections ?? (rdsCollections = new DbSet<RdsCollection>(BaseContext));
 
-		DbSet<RdsCollectionSetting> rdscollectionSettings = null;
-		public virtual DbSet<RdsCollectionSetting> RdscollectionSettings => rdscollectionSettings ?? (rdscollectionSettings = new DbSet<RdsCollectionSetting>(BaseContext));
+		DbSet<RdsCollectionSetting> rdsCollectionSettings = null;
+		public virtual DbSet<RdsCollectionSetting> RdsCollectionSettings => rdsCollectionSettings ?? (rdsCollectionSettings = new DbSet<RdsCollectionSetting>(BaseContext));
 
-		DbSet<RdsCollectionUser> rdscollectionUsers = null;
-		public virtual DbSet<RdsCollectionUser> RdscollectionUsers => rdscollectionUsers ?? (rdscollectionUsers = new DbSet<RdsCollectionUser>(BaseContext));
+		DbSet<RdsCollectionUser> rdsCollectionUsers = null;
+		public virtual DbSet<RdsCollectionUser> RdsCollectionUsers => rdsCollectionUsers ?? (rdsCollectionUsers = new DbSet<RdsCollectionUser>(BaseContext));
 
-		DbSet<RdsMessage> rdsmessages = null;
-		public virtual DbSet<RdsMessage> Rdsmessages => rdsmessages ?? (rdsmessages = new DbSet<RdsMessage>(BaseContext));
+		DbSet<RdsMessage> rdsMessages = null;
+		public virtual DbSet<RdsMessage> RdsMessages => rdsMessages ?? (rdsMessages = new DbSet<RdsMessage>(BaseContext));
 
-		DbSet<RdsServer> rdsservers = null;
-		public virtual DbSet<RdsServer> Rdsservers => rdsservers ?? (rdsservers = new DbSet<RdsServer>(BaseContext));
+		DbSet<RdsServer> rdsServers = null;
+		public virtual DbSet<RdsServer> RdsServers => rdsServers ?? (rdsServers = new DbSet<RdsServer>(BaseContext));
 
-		DbSet<RdsServerSetting> rdsserverSettings = null;
-		public virtual DbSet<RdsServerSetting> RdsserverSettings => rdsserverSettings ?? (rdsserverSettings = new DbSet<RdsServerSetting>(BaseContext));
+		DbSet<RdsServerSetting> rdsServerSettings = null;
+		public virtual DbSet<RdsServerSetting> RdsServerSettings => rdsServerSettings ?? (rdsServerSettings = new DbSet<RdsServerSetting>(BaseContext));
 
 		DbSet<ResourceGroup> resourceGroups = null;
 		public virtual DbSet<ResourceGroup> ResourceGroups => resourceGroups ?? (resourceGroups = new DbSet<ResourceGroup>(BaseContext));
@@ -233,8 +233,8 @@ namespace SolidCP.EnterpriseServer.Data
 		DbSet<SfBuserPlan> sfBuserPlans = null;
 		public virtual DbSet<SfBuserPlan> SfBuserPlans => sfBuserPlans ?? (sfBuserPlans = new DbSet<SfBuserPlan>(BaseContext));
 
-		DbSet<SslCertificate> sslcertificates = null;
-		public virtual DbSet<SslCertificate> Sslcertificates => sslcertificates ?? (sslcertificates = new DbSet<SslCertificate>(BaseContext));
+		DbSet<SslCertificate> sslCertificates = null;
+		public virtual DbSet<SslCertificate> SslCertificates => sslCertificates ?? (sslCertificates = new DbSet<SslCertificate>(BaseContext));
 
 		DbSet<StorageSpace> storageSpaces = null;
 		public virtual DbSet<StorageSpace> StorageSpaces => storageSpaces ?? (storageSpaces = new DbSet<StorageSpace>(BaseContext));

@@ -40,11 +40,11 @@ namespace SolidCP.EnterpriseServer
 		private int providerId;
 		private int groupId;
 		private string providerName;
-        private string editorControl;
+		private string editorControl;
 		private string displayName;
-        private string providerType;
+		private string providerType;
 		private bool installed;
-        
+
 
 		public ProviderInfo()
 		{
@@ -74,16 +74,16 @@ namespace SolidCP.EnterpriseServer
 			set { this.providerName = value; }
 		}
 
-        public string EditorControl
-        {
-            get { return this.editorControl; }
-            set { this.editorControl = value; }
-        }
-
-        public string ProviderType
+		public string EditorControl
 		{
-            get { return this.providerType; }
-            set { this.providerType = value; }
+			get { return this.editorControl; }
+			set { this.editorControl = value; }
+		}
+
+		public string ProviderType
+		{
+			get { return this.providerType; }
+			set { this.providerType = value; }
 		}
 
 		public bool Installed
@@ -91,7 +91,7 @@ namespace SolidCP.EnterpriseServer
 			get { return this.installed; }
 			set { this.installed = value; }
 		}
-
+		public string ProviderGroupedName { get; set; }
         public bool DisableAutoDiscovery
         {
             get;

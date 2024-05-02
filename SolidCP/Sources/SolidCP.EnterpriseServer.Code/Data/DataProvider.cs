@@ -43,6 +43,12 @@ using Microsoft.Data.SqlClient;
 #else
 using System.Data.SqlClient;
 #endif
+
+#if !NETFRAMEWORK && !NETSTANDARD
+using Microsoft.EntityFrameworkCore;
+#elif NETFRAMEWORK
+using System.Data.Entity;
+#endif
 using System.Text.RegularExpressions;
 using SolidCP.EnterpriseServer.Base.HostedSolution;
 using SolidCP.Providers.HostedSolution;
@@ -190,7 +196,9 @@ namespace SolidCP.EnterpriseServer
 
 
 			// check if the user requests his owner
-			var actor = Users.FirstOrDefault(u => u.UserId == actorId);
+			var actor = Users
+				.Select(u => new { u.UserId, u.OwnerId, u.IsPeer })
+				.FirstOrDefault(u => u.UserId == actorId);
 
 			if (actor != null && actor.IsPeer) actorId = actor.OwnerId ?? -1;
 
@@ -199,7 +207,9 @@ namespace SolidCP.EnterpriseServer
 			var id = userId;
 			do // check owners chain
 			{
-				var user = Users.FirstOrDefault(u => u.UserId == id);
+				var user = Users
+					.Select(u => new { u.UserId, u.OwnerId, u.IsPeer })
+					.FirstOrDefault(u => u.UserId == id);
 				if (user == null || user.OwnerId == null) return false;
 				else
 				{
@@ -325,14 +335,18 @@ namespace SolidCP.EnterpriseServer
 		List<int> UserParents(int actorId, int userId)
 		{
 			var list = new List<int>();
-			var user = Users.FirstOrDefault(u => u.UserId == userId);
+			var user = Users
+				.Select(u => new { u.UserId, u.OwnerId })
+				.FirstOrDefault(u => u.UserId == userId);
 			while (user != null)
 			{
 				list.Add(userId);
 				if (user.OwnerId.HasValue)
 				{
 					userId = user.OwnerId.Value;
-					user = Users.FirstOrDefault(u => u.UserId == userId);
+					user = Users
+						.Select(u => new { u.UserId, u.OwnerId })
+						.FirstOrDefault(u => u.UserId == userId);
 				}
 				else break;
 			}
@@ -343,17 +357,23 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (ownerId == userId) return true;
 
-			var owner = Users.FirstOrDefault(u => u.UserId == ownerId);
+			var owner = Users
+				.Select(u => new { u.UserId, u.OwnerId, u.IsPeer })
+				.FirstOrDefault(u => u.UserId == ownerId);
 			if (owner != null && owner.IsPeer && owner.OwnerId.HasValue) ownerId = owner.OwnerId.Value;
 
 			if (ownerId == userId) return true;
 
 			var id = userId;
-			var user = Users.FirstOrDefault(u => u.UserId == id);
+			var user = Users
+				.Select(u => new { u.UserId, u.OwnerId })
+				.FirstOrDefault(u => u.UserId == id);
 			while (user != null && user.OwnerId.HasValue && user.OwnerId.Value != ownerId)
 			{
 				id = user.OwnerId.Value;
-				user = Users.FirstOrDefault(u => u.UserId == id);
+				user = Users
+					.Select(u => new { u.UserId, u.OwnerId })
+					.FirstOrDefault(u => u.UserId == id);
 			}
 
 			return user != null && user.OwnerId.HasValue && user.OwnerId.Value == ownerId;
@@ -581,12 +601,16 @@ namespace SolidCP.EnterpriseServer
 				var list = new HashSet<int>();
 				list.Add(ownerId);
 
-				var newDescendants = Users.Where(u => list.Contains(u.OwnerId ?? -1) && !list.Contains(u.UserId))
+				var newDescendants = Users
+					.Select(u => new { u.UserId, u.OwnerId })
+					.Where(u => list.Contains(u.OwnerId ?? -1) && !list.Contains(u.UserId))
 					.ToArray();
 				while (newDescendants.Any())
 				{
 					foreach (var d in newDescendants) list.Add(d.UserId);
-					newDescendants = Users.Where(u => list.Contains(u.OwnerId ?? -1) && !list.Contains(u.UserId))
+					newDescendants = Users
+						.Select(u => new { u.UserId, u.OwnerId })
+						.Where(u => list.Contains(u.OwnerId ?? -1) && !list.Contains(u.UserId))
 						.ToArray();
 				}
 				return list.ToArray();
@@ -654,21 +678,29 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (actorId == -1 || actorId == userId) return true;
 
-			var actor = Users.FirstOrDefault(u => u.UserId == actorId);
+			var actor = Users
+				.Select(u => new { u.UserId, u.OwnerId, u.IsPeer })
+				.FirstOrDefault(u => u.UserId == actorId);
 			if (actor != null && actor.IsPeer && actor.OwnerId.HasValue)
 			{
 				actorId = actor.OwnerId.Value;
-				actor = Users.FirstOrDefault(u => u.UserId == actorId);
+				actor = Users
+					.Select(u => new { u.UserId, u.OwnerId, u.IsPeer })
+					.FirstOrDefault(u => u.UserId == actorId);
 			}
 
 			if (actor != null && actor.OwnerId.HasValue && userId == actor.OwnerId.Value) return true;
 
 			var id = userId;
-			var user = Users.FirstOrDefault(u => u.UserId == id);
+			var user = Users
+				.Select(u => new { u.UserId, u.OwnerId, u.IsPeer })
+				.FirstOrDefault(u => u.UserId == id);
 			while (user != null && user.OwnerId.HasValue && user.OwnerId != actorId)
 			{
 				id = user.OwnerId.Value;
-				user = Users.FirstOrDefault(u => u.UserId == id);
+				user = Users
+					.Select(u => new { u.UserId, u.OwnerId, u.IsPeer })
+					.FirstOrDefault(u => u.UserId == id);
 			}
 
 			return user != null && user.OwnerId.HasValue && user.OwnerId == actorId;
@@ -795,7 +827,9 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (actorId == -1 || actorId == userId) return true;
 
-			var actor = Users.FirstOrDefault(u => u.UserId == actorId);
+			var actor = Users
+				.Select(u => new { u.UserId, u.OwnerId, u.IsPeer })
+				.FirstOrDefault(u => u.UserId == actorId);
 			if (actor != null && actor.IsPeer)
 			{
 				// peer can't get the password of his peers and his owner
@@ -807,15 +841,21 @@ namespace SolidCP.EnterpriseServer
 			}
 
 			// get users owner
-			actor = Users.FirstOrDefault(u => u.UserId == actorId);
-			if (actor != null && actor.OwnerId == userId) return false; // user can't get the password of his owner
+			var owner = Users
+				.Select(u => new { u.UserId, u.OwnerId })
+				.FirstOrDefault(u => u.UserId == actorId);
+			if (owner != null && owner.OwnerId == userId) return false; // user can't get the password of his owner
 
 			var id = userId;
-			var user = Users.FirstOrDefault(u => u.UserId == id);
+			var user = Users
+				.Select(u => new { u.UserId, u.OwnerId })
+				.FirstOrDefault(u => u.UserId == id);
 			while (user != null && user.OwnerId.HasValue && user.OwnerId != actorId)
 			{
 				id = user.OwnerId.Value;
-				user = Users.FirstOrDefault(u => u.UserId == id);
+				user = Users
+					.Select(u => new { u.UserId, u.OwnerId })
+					.FirstOrDefault(u => u.UserId == id);
 			}
 			return user != null && user.OwnerId == actorId; // actor is owner of user
 		}
@@ -933,16 +973,22 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (actorId == -1 || actorId == ownerId) return true;
 
-			var actor = Users.FirstOrDefault(u => u.UserId == actorId);
+			var actor = Users
+				.Select(u => new { u.UserId, u.OwnerId, u.IsPeer })
+				.FirstOrDefault(u => u.UserId == actorId);
 			if (actor != null && actor.IsPeer && actor.OwnerId.HasValue) actorId = actor.OwnerId.Value;
 			if (actorId == ownerId) return true;
 
 			var id = ownerId;
-			var user = Users.FirstOrDefault(u => u.UserId == id);
+			var user = Users
+				.Select(u => new { u.UserId, u.OwnerId })
+				.FirstOrDefault(u => u.UserId == id);
 			while (user != null && user.OwnerId.HasValue && user.OwnerId != actorId)
 			{
 				id = user.OwnerId.Value;
-				user = Users.FirstOrDefault(u => u.UserId == id);
+				user = Users
+					.Select(u => new { u.UserId, u.OwnerId })
+					.FirstOrDefault(u => u.UserId == id);
 			}
 			return user != null && user.OwnerId == actorId;
 		}
@@ -1037,7 +1083,9 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (actorId == -1 || actorId == userId) return true;
 
-			var actor = Users.FirstOrDefault(u => u.UserId == actorId);
+			var actor = Users
+				.Select(u => new { u.UserId, u.OwnerId, u.IsPeer })
+				.FirstOrDefault(u => u.UserId == actorId);
 			if (actor != null && actor.IsPeer && actor.OwnerId.HasValue)
 			{
 				// check if the peer is trying to update his owner
@@ -1050,11 +1098,15 @@ namespace SolidCP.EnterpriseServer
 			}
 
 			var id = userId;
-			var user = Users.FirstOrDefault(u => u.UserId == id);
+			var user = Users
+				.Select(u => new { u.UserId, u.OwnerId })
+				.FirstOrDefault(u => u.UserId == id);
 			while (user != null && user.OwnerId.HasValue && user.OwnerId != actorId)
 			{
 				id = user.OwnerId.Value;
-				user = Users.FirstOrDefault(u => u.UserId == id);
+				user = Users
+					.Select(u => new { u.UserId, u.OwnerId })
+					.FirstOrDefault(u => u.UserId == id);
 			}
 			return user != null && user.OwnerId == actorId;
 		}
@@ -1215,8 +1267,10 @@ namespace SolidCP.EnterpriseServer
 			{
 				var user = Users.FirstOrDefault(u => u.UserId == userId);
 				if (user == null) return;
+		
 				user.Password = password;
 				user.OneTimePasswordState = auths;
+				
 				SaveChanges();
 			}
 			else
@@ -1260,7 +1314,6 @@ namespace SolidCP.EnterpriseServer
 				if (!CanUpdateUserDetails(actorId, userId)) return;
 
 				var user = Users.FirstOrDefault(u => u.UserId == userId);
-				
 				if (user == null) return;
 				
 				user.MfaMode = mfaMode;
@@ -1281,7 +1334,9 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
-				var user = Users.FirstOrDefault(u => u.UserId == callerId);
+				var user = Users
+					.Select(u => new { u.UserId, u.OwnerId, u.IsPeer })
+					.FirstOrDefault(u => u.UserId == callerId);
 				if (user == null) return false;
 
 				if (user.OwnerId == null) return true; // serveradmin user
@@ -1369,7 +1424,20 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				if (!CheckActorUserRights(actorId, userId)) throw new AccessViolationException("Not authorized");
 
+				var id = userId;
+				var setting = UserSettings.FirstOrDefault(s => s.UserId == id);
+				while (setting == null)
+				{
+					var user = Users
+						.Select(u => new { u.UserId, u.OwnerId })
+						.FirstOrDefault(u => u.UserId == id);
+					if (user != null && user.OwnerId.HasValue) id = user.OwnerId.Value;
+					setting = UserSettings.FirstOrDefault(s => s.UserId == id);
+				}
+
+				return new EntityDataReader<Data.Entities.UserSetting>(new Data.Entities.UserSetting[] { setting });
 			}
 			else
 			{
@@ -1382,58 +1450,293 @@ namespace SolidCP.EnterpriseServer
 		}
 		public void UpdateUserSettings(int actorId, int userId, string settingsName, string xml)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "UpdateUserSettings",
-				 new SqlParameter("@UserID", userId),
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@SettingsName", settingsName),
-				 new SqlParameter("@Xml", xml));
+			if (UseEntityFramework)
+			{
+				if (!CheckActorUserRights(actorId, userId)) throw new AccessViolationException("Not authorized");
+
+				UserSettings.RemoveRange(UserSettings
+					.Where(s => s.UserId == userId && s.SettingsName == settingsName));
+				
+				var properties = XElement.Parse(xml);
+				foreach (var property in properties.Descendants())
+				{
+					var setting = new Data.Entities.UserSetting()
+					{
+						UserId = userId,
+						SettingsName = settingsName,
+						PropertyName = (string)property.Attribute("name"),
+						PropertyValue = (string)property.Attribute("value")
+					};
+					UserSettings.Add(setting);
+				}
+
+				SaveChanges();
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "UpdateUserSettings",
+					 new SqlParameter("@UserID", userId),
+					 new SqlParameter("@ActorId", actorId),
+					 new SqlParameter("@SettingsName", settingsName),
+					 new SqlParameter("@Xml", xml));
+			}
 		}
 		#endregion
 
 		#region Servers
+		bool CheckIsUserAdmin(int userId)
+		{
+			return userId == -1 || Users.Any(u => u.UserId == userId && u.RoleId == 1);
+		}
 		public DataSet GetAllServers(int actorId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetAllServers",
-				 new SqlParameter("@actorId", actorId));
+			if (UseEntityFramework)
+			{
+				var isAdmin = CheckIsUserAdmin(actorId);
+
+				var servers = Servers
+					.Where(s => isAdmin)
+					.OrderBy(s => s.VirtualServer)
+					.ThenBy(s => s.ServerName)
+					.Select(s => new
+					{
+						s.ServerId,
+						s.ServerName,
+						s.ServerUrl,
+						ServicesNumber = VirtualServices.Count(v => v.ServerId == s.ServerId),
+						s.Comments
+					});
+
+				var serversTable = ObjectUtils.DataTableFromEntitySet(servers);
+
+				var services = Services
+					.Join(Providers, s => s.ProviderId, p => p.ProviderId, (srvc, p) => new { Service = srvc, ProviderGroupId = p.GroupId })
+					.Join(ResourceGroups, s => s.ProviderGroupId, rg => rg.GroupId, (srvc, rg) => new
+					{
+						Service = srvc.Service,
+						GroupOrder = rg.GroupOrder
+					})
+					.Where(s => isAdmin)
+					.OrderBy(s => s.GroupOrder)
+					.Select(s => new {
+						s.Service.ServiceId,
+						s.Service.ServerId,
+						s.Service.ProviderId,
+						s.Service.ServiceName,
+						s.Service.Comments
+					});
+
+				var servicesTable = ObjectUtils.DataTableFromEntitySet(services);
+
+				var dataSet = new DataSet();
+				dataSet.Tables.Add(serversTable);
+				dataSet.Tables.Add(servicesTable);
+
+				return dataSet;
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetAllServers",
+					 new SqlParameter("@actorId", actorId));
+			}
 		}
 		public DataSet GetServers(int actorId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetServers",
-				 new SqlParameter("@actorId", actorId));
+			if (UseEntityFramework)
+			{
+				var isAdmin = CheckIsUserAdmin(actorId);
+
+				var servers = Servers
+					.Where(s => isAdmin && !s.VirtualServer)
+					.OrderBy(s => s.ServerName)
+					.Select(s => new
+					{
+						s.ServerId, s.ServerName, s.ServerUrl, 
+						ServicesNumber = Services.Where(sc => sc.ServerId == s.ServerId).Count(),
+						s.Comments, s.PrimaryGroupId, s.ADEnabled
+					});
+
+				var services = Services
+					.Where(s => isAdmin)
+					.Join(Providers, srvc => srvc.ProviderId, p => p.ProviderId, (srvc, prov) => new
+					{
+						Service = srvc,
+						prov.GroupId
+					})
+					.Join(ResourceGroups, srvc => srvc.GroupId, rg => rg.GroupId, (srvc, rg) => new
+					{
+						srvc.Service,
+						rg.GroupOrder
+					})
+					.OrderBy(s => s.GroupOrder)
+					.Select(s => new
+					{
+						s.Service.ServiceId,
+						s.Service.ServerId,
+						s.Service.ProviderId,
+						s.Service.ServiceName,
+						s.Service.Comments
+					});
+
+				var set = new DataSet();
+				set.Tables.Add(ObjectUtils.DataTableFromEntitySet(servers));
+				set.Tables.Add(ObjectUtils.DataTableFromEntitySet(services));
+
+				return set;
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetServers",
+					 new SqlParameter("@actorId", actorId));
+			}
 		}
 
 		public IDataReader GetServer(int actorId, int serverId, bool forAutodiscover)
 		{
-			return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetServer",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@ServerID", serverId),
-				 new SqlParameter("@forAutodiscover", forAutodiscover));
+			if (UseEntityFramework)
+			{
+				var isAdmin = CheckIsUserAdmin(actorId);
+
+				var server = Servers
+					.Where(s => s.ServerId == serverId && (isAdmin || forAutodiscover))
+					.Select(s => new
+					{
+						s.ServerId,
+						s.ServerName,
+						s.ServerUrl,
+						s.Password,
+						s.Comments,
+						s.VirtualServer,
+						s.InstantDomainAlias,
+						s.PrimaryGroupId,
+						s.ADEnabled,
+						s.ADRootDomain,
+						s.ADUsername,
+						s.ADPassword,
+						s.ADAuthenticationType,
+						s.ADParentDomain,
+						s.ADParentDomainController,
+						s.OSPlatform,
+						s.IsCore,
+						s.PasswordIsSHA256
+					});
+
+				return new EntityDataReader<object>(server);
+			}
+			else
+			{
+				return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetServer",
+					 new SqlParameter("@actorId", actorId),
+					 new SqlParameter("@ServerID", serverId),
+					 new SqlParameter("@forAutodiscover", forAutodiscover));
+			}
 		}
 
 		public IDataReader GetServerShortDetails(int serverId)
 		{
-			return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetServerShortDetails",
-				 new SqlParameter("@ServerID", serverId));
+			if (UseEntityFramework)
+			{
+				var server = Servers
+					.Where(s => s.ServerId == serverId)
+					.Select(s => new
+					{
+						s.ServerId,
+						s.ServerName,
+						s.Comments,
+						s.VirtualServer,
+						s.InstantDomainAlias
+					});
+
+				return new EntityDataReader<object>(server);
+			}
+			else
+			{
+				return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetServerShortDetails",
+					 new SqlParameter("@ServerID", serverId));
+			}
 		}
 
 		public IDataReader GetServerByName(int actorId, string serverName)
 		{
-			return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetServerByName",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@ServerName", serverName));
+			if (UseEntityFramework)
+			{
+				var isAdmin = CheckIsUserAdmin(actorId);
+
+				var server = Servers
+					.Where(s => isAdmin && s.ServerName == serverName)
+					.Select(s => new
+					{
+						s.ServerId,
+						s.ServerName,
+						s.ServerUrl,
+						s.Password,
+						s.Comments,
+						s.VirtualServer,
+						s.InstantDomainAlias,
+						s.PrimaryGroupId,
+						s.ADRootDomain,
+						s.ADUsername,
+						s.ADPassword,
+						s.ADAuthenticationType,
+						s.ADParentDomain,
+						s.ADParentDomainController,
+						s.OSPlatform,
+						s.IsCore,
+						s.PasswordIsSHA256
+					});
+
+				return new EntityDataReader<object>(server);
+			}
+			else
+			{
+				return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetServerByName",
+					 new SqlParameter("@actorId", actorId),
+					 new SqlParameter("@ServerName", serverName));
+			}
 		}
 
 		public IDataReader GetServerInternal(int serverId)
 		{
-			return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetServerInternal",
-				 new SqlParameter("@ServerID", serverId));
+			if (UseEntityFramework)
+			{
+				var server = Servers
+					.Where(s => s.ServerId == serverId)
+					.Select(s => new
+					{
+						s.ServerId,
+						s.ServerName,
+						s.ServerUrl,
+						s.Password,
+						s.Comments,
+						s.VirtualServer,
+						s.InstantDomainAlias,
+						s.PrimaryGroupId,
+						s.ADEnabled,
+						s.ADRootDomain,
+						s.ADUsername,
+						s.ADPassword,
+						s.ADAuthenticationType,
+						s.ADParentDomain,
+						s.ADParentDomainController,
+						s.OSPlatform,
+						s.IsCore,
+						s.PasswordIsSHA256
+					});
+
+				return new EntityDataReader<object>(server);
+			}
+			else
+			{
+				return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetServerInternal",
+					 new SqlParameter("@ServerID", serverId));
+			}
 		}
 
 		public int AddServer(string serverName, string serverUrl,
@@ -1441,29 +1744,47 @@ namespace SolidCP.EnterpriseServer
 			 int primaryGroupId, bool adEnabled, string adRootDomain, string adUsername, string adPassword,
 			 string adAuthenticationType, OSPlatform osPlatform, bool? isCore, bool PasswordIsSHA256)
 		{
-			SqlParameter prmServerId = new SqlParameter("@ServerID", SqlDbType.Int);
-			prmServerId.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
+				var server = new Data.Entities.Server()
+				{
+					ServerName = serverName, ServerUrl = serverUrl, Password = password, Comments = comments,
+					VirtualServer = virtualServer, InstantDomainAlias = instantDomainAlias,
+					PrimaryGroupId = primaryGroupId != 0 ? primaryGroupId : null, ADEnabled = adEnabled, ADRootDomain = adRootDomain,
+					ADUsername = adUsername, ADPassword = adPassword, ADAuthenticationType = adAuthenticationType,
+					OSPlatform = osPlatform, IsCore = isCore, PasswordIsSHA256 = PasswordIsSHA256
+				};
+				Servers.Add(server);
+				SaveChanges();
 
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "AddServer",
-				 prmServerId,
-				 new SqlParameter("@ServerName", serverName),
-				 new SqlParameter("@ServerUrl", serverUrl),
-				 new SqlParameter("@Password", password),
-				 new SqlParameter("@Comments", comments),
-				 new SqlParameter("@VirtualServer", virtualServer),
-				 new SqlParameter("@InstantDomainAlias", instantDomainAlias),
-				 new SqlParameter("@PrimaryGroupId", primaryGroupId),
-				 new SqlParameter("@AdEnabled", adEnabled),
-				 new SqlParameter("@AdRootDomain", adRootDomain),
-				 new SqlParameter("@AdUsername", adUsername),
-				 new SqlParameter("@AdPassword", adPassword),
-				 new SqlParameter("@AdAuthenticationType", adAuthenticationType),
-				 new SqlParameter("@OSPlatform", osPlatform),
-				 new SqlParameter("@IsCore", isCore),
-				 new SqlParameter("@PasswordIsSHA256", PasswordIsSHA256));
+				return server.ServerId;
+			}
+			else
+			{
+				SqlParameter prmServerId = new SqlParameter("@ServerID", SqlDbType.Int);
+				prmServerId.Direction = ParameterDirection.Output;
 
-			return Convert.ToInt32(prmServerId.Value);
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "AddServer",
+					 prmServerId,
+					 new SqlParameter("@ServerName", serverName),
+					 new SqlParameter("@ServerUrl", serverUrl),
+					 new SqlParameter("@Password", password),
+					 new SqlParameter("@Comments", comments),
+					 new SqlParameter("@VirtualServer", virtualServer),
+					 new SqlParameter("@InstantDomainAlias", instantDomainAlias),
+					 new SqlParameter("@PrimaryGroupId", primaryGroupId),
+					 new SqlParameter("@AdEnabled", adEnabled),
+					 new SqlParameter("@AdRootDomain", adRootDomain),
+					 new SqlParameter("@AdUsername", adUsername),
+					 new SqlParameter("@AdPassword", adPassword),
+					 new SqlParameter("@AdAuthenticationType", adAuthenticationType),
+					 new SqlParameter("@OSPlatform", osPlatform),
+					 new SqlParameter("@IsCore", isCore),
+					 new SqlParameter("@PasswordIsSHA256", PasswordIsSHA256));
+
+				return Convert.ToInt32(prmServerId.Value);
+			}
 		}
 
 		public void UpdateServer(int serverId, string serverName, string serverUrl,
@@ -1472,89 +1793,344 @@ namespace SolidCP.EnterpriseServer
 			 string adAuthenticationType, string adParentDomain, String adParentDomainController,
 			 OSPlatform osPlatform, bool? isCore, bool PasswordIsSHA256)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "UpdateServer",
-				 new SqlParameter("@ServerID", serverId),
-				 new SqlParameter("@ServerName", serverName),
-				 new SqlParameter("@ServerUrl", serverUrl),
-				 new SqlParameter("@Password", password),
-				 new SqlParameter("@Comments", comments),
-				 new SqlParameter("@InstantDomainAlias", instantDomainAlias),
-				 new SqlParameter("@PrimaryGroupId", primaryGroupId),
-				 new SqlParameter("@AdEnabled", adEnabled),
-				 new SqlParameter("@AdRootDomain", adRootDomain),
-				 new SqlParameter("@AdUsername", adUsername),
-				 new SqlParameter("@AdPassword", adPassword),
-				 new SqlParameter("@AdAuthenticationType", adAuthenticationType),
-				 new SqlParameter("@AdParentDomain", adParentDomain),
-				 new SqlParameter("@AdParentDomainController", adParentDomainController),
-				 new SqlParameter("@OSPlatform", osPlatform),
-				 new SqlParameter("@IsCore", isCore),
-				 new SqlParameter("@PasswordIsSHA256", PasswordIsSHA256));
+			if (UseEntityFramework)
+			{
+				var server = Servers.FirstOrDefault(s => s.ServerId == serverId);
+				if (server == null) return;
+				
+				server.ServerName = serverName;
+				server.ServerUrl = serverUrl;
+				server.Password = password;
+				server.Comments = comments;
+				server.InstantDomainAlias = instantDomainAlias;
+				server.PrimaryGroupId = primaryGroupId != 0 ? primaryGroupId : null;
+				server.ADEnabled = adEnabled;
+				server.ADRootDomain = adRootDomain;
+				server.ADUsername = adUsername;
+				server.ADPassword = adPassword;
+				server.ADAuthenticationType = adAuthenticationType;
+				server.ADParentDomain = adParentDomain;
+				server.ADParentDomainController = adParentDomainController;
+				server.OSPlatform = osPlatform;
+				server.IsCore = isCore;
+				server.PasswordIsSHA256 = PasswordIsSHA256;
 
+				SaveChanges();
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "UpdateServer",
+					 new SqlParameter("@ServerID", serverId),
+					 new SqlParameter("@ServerName", serverName),
+					 new SqlParameter("@ServerUrl", serverUrl),
+					 new SqlParameter("@Password", password),
+					 new SqlParameter("@Comments", comments),
+					 new SqlParameter("@InstantDomainAlias", instantDomainAlias),
+					 new SqlParameter("@PrimaryGroupId", primaryGroupId),
+					 new SqlParameter("@AdEnabled", adEnabled),
+					 new SqlParameter("@AdRootDomain", adRootDomain),
+					 new SqlParameter("@AdUsername", adUsername),
+					 new SqlParameter("@AdPassword", adPassword),
+					 new SqlParameter("@AdAuthenticationType", adAuthenticationType),
+					 new SqlParameter("@AdParentDomain", adParentDomain),
+					 new SqlParameter("@AdParentDomainController", adParentDomainController),
+					 new SqlParameter("@OSPlatform", osPlatform),
+					 new SqlParameter("@IsCore", isCore),
+					 new SqlParameter("@PasswordIsSHA256", PasswordIsSHA256));
+			}
 		}
 
 		public int DeleteServer(int serverId)
 		{
-			SqlParameter prmResult = new SqlParameter("@Result", SqlDbType.Int);
-			prmResult.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
+				// check related services
+				if (Services.Any(svc => svc.ServerId == serverId)) return -1;
 
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "DeleteServer",
-				 prmResult,
-				 new SqlParameter("@ServerID", serverId));
+				// check related packages
+				if (Packages.Any(p => p.ServerId == serverId)) return -2;
 
-			return Convert.ToInt32(prmResult.Value);
+				// check related hosting plans
+				if (HostingPlans.Any(p => p.ServerId == serverId)) return -3;
+
+				// delete IP addresses
+				IpAddresses.RemoveRange(IpAddresses.Where(ip => ip.ServerId == serverId));
+
+				// delete global DNS records
+				GlobalDnsRecords.RemoveRange(GlobalDnsRecords.Where(r => r.ServerId == serverId));
+
+				// delete server
+				Servers.RemoveRange(Servers.Where(s => s.ServerId == serverId));
+
+				// delete virtual services if any
+				VirtualServices.RemoveRange(VirtualServices.Where(vs => vs.ServerId == serverId));
+
+				SaveChanges();
+
+				return 0;
+			}
+			else
+			{
+				SqlParameter prmResult = new SqlParameter("@Result", SqlDbType.Int);
+				prmResult.Direction = ParameterDirection.Output;
+
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "DeleteServer",
+					 prmResult,
+					 new SqlParameter("@ServerID", serverId));
+
+				return Convert.ToInt32(prmResult.Value);
+			}
 		}
 		#endregion
 
 		#region Virtual Servers
 		public DataSet GetVirtualServers(int actorId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetVirtualServers",
-				 new SqlParameter("@actorId", actorId));
+			if (UseEntityFramework)
+			{
+				var isAdmin = CheckIsUserAdmin(actorId);
+
+				var server = Servers
+					.Where(s => isAdmin && s.VirtualServer)
+					.OrderBy(s => s.ServerName)
+					.Select(s => new
+					{
+						s.ServerId,
+						s.ServerName,
+						s.ServerUrl,
+						ServicesNumber = VirtualServices.Where(v => v.ServerId == s.ServerId).Count(),
+						s.Comments,
+						s.PrimaryGroupId
+					});
+
+				return ObjectUtils.DataSetFromEntitySet(server);
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetVirtualServers",
+					 new SqlParameter("@actorId", actorId));
+			}
 		}
 
 		public DataSet GetAvailableVirtualServices(int actorId, int serverId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetAvailableVirtualServices",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@ServerID", serverId));
+			if (UseEntityFramework)
+			{
+				var isAdmin = CheckIsUserAdmin(actorId);
+
+				var servers = Servers
+					.Where(s => isAdmin && !s.VirtualServer) // get only physical servers
+					.Select(s => new
+					{
+						s.ServerId,
+						s.ServerName,
+						s.Comments
+					});
+
+				var virtualServiceIds = VirtualServices
+					.Where(v => v.ServerId == serverId)
+					.Select(v => v.ServiceId)
+					.ToArray();
+				var services = Services
+					.Where(s => isAdmin && !virtualServiceIds.Any(id => id == s.ServiceId))
+					.Select(s => new
+					{
+						s.ServiceId,
+						s.ServerId,
+						s.ProviderId,
+						s.ServiceName,
+						s.Comments
+					});
+
+				var set = new DataSet();
+				set.Tables.Add(ObjectUtils.DataTableFromEntitySet(servers));
+				set.Tables.Add(ObjectUtils.DataTableFromEntitySet(services));
+
+				return set;
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetAvailableVirtualServices",
+					 new SqlParameter("@actorId", actorId),
+					 new SqlParameter("@ServerID", serverId));
+			}
 		}
 
 		public DataSet GetVirtualServices(int actorId, int serverId, bool forAutodiscover)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetVirtualServices",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@ServerID", serverId),
-				 new SqlParameter("@forAutodiscover", forAutodiscover));
+			if (UseEntityFramework)
+			{
+				var isAdmin = CheckIsUserAdmin(actorId);
+
+				// virtual groups
+				// TODO is this correct LEFT OUTER JOIN?
+				var virtGroups = ResourceGroups
+					.GroupJoin(VirtualGroups, rg => rg.GroupId, vg => vg.GroupId, (rg, vgs) => new
+					{
+						ResourceGroup = rg,
+						VirtualGroup = vgs
+							.Where(vg => vg.ServerId == serverId)
+							.SingleOrDefault()
+					})
+					.Where(g => (isAdmin || forAutodiscover) && g.ResourceGroup.ShowGroup == true)
+					.OrderBy(g => g.ResourceGroup.GroupOrder)
+					.Select(g => new
+					{
+						VirtualGroupId = (int?)(g.VirtualGroup != null ? g.VirtualGroup.VirtualGroupId : null),
+						g.ResourceGroup.GroupId,
+						g.ResourceGroup.GroupName,
+						DistributionType = (g.VirtualGroup != null ? g.VirtualGroup.DistributionType : null) ?? 1,
+						BindDistributionToPrimary = (g.VirtualGroup != null ? g.VirtualGroup.BindDistributionToPrimary : null) ?? true
+					});
+
+				var services = VirtualServices
+					.Where(vs => vs.ServerId == serverId && (isAdmin || forAutodiscover))
+					.Join(Services, vs => vs.ServiceId, s => s.ServiceId, (vs, s) => new
+					{
+						VirtualService = vs,
+						Service = s
+					})
+					.Join(Servers, j => j.Service.ServerId, s => s.ServerId, (j, s) => new
+					{
+						j.VirtualService,
+						j.Service,
+						Server = s
+					})
+					.Join(Providers, j => j.Service.ProviderId, p => p.ProviderId, (j, p) => new
+					{
+						j.VirtualService.ServerId,
+						j.Service.ServiceName,
+						j.Service.Comments,
+						p.GroupId,
+						p.DisplayName,
+						j.Server.ServerName
+					});
+
+				var set = new DataSet();
+				set.Tables.Add(ObjectUtils.DataTableFromEntitySet(virtGroups));
+				set.Tables.Add(ObjectUtils.DataTableFromEntitySet(services));
+
+				return set;
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetVirtualServices",
+					 new SqlParameter("@actorId", actorId),
+					 new SqlParameter("@ServerID", serverId),
+					 new SqlParameter("@forAutodiscover", forAutodiscover));
+			}
 		}
 
 		public void AddVirtualServices(int serverId, string xml)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "AddVirtualServices",
-				 new SqlParameter("@ServerID", serverId),
-				 new SqlParameter("@xml", xml));
+			if (UseEntityFramework)
+			{
+				/* XML Format:
+				<services>
+					<service id=""16"" />
+				</services> */
+
+				var services = XElement.Parse(xml);
+
+				var existingServices = VirtualServices
+					.Where(v => v.ServerId == serverId)
+					.Select(v => v.ServiceId)
+					.ToHashSet();
+
+				bool addedAny = false;
+				foreach (var service in services.Descendants())
+				{
+					var serviceId = (int)service.Attribute("id");
+					if (!existingServices.Contains(serviceId))
+					{
+						var virtualService = new Data.Entities.VirtualService()
+						{
+							ServerId = serverId,
+							ServiceId = serviceId
+						};
+						VirtualServices.Add(virtualService);
+						addedAny = true;
+					}
+				}
+
+				if (addedAny) SaveChanges();
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "AddVirtualServices",
+					 new SqlParameter("@ServerID", serverId),
+					 new SqlParameter("@xml", xml));
+			}
 		}
 
 		public void DeleteVirtualServices(int serverId, string xml)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "DeleteVirtualServices",
-				 new SqlParameter("@ServerID", serverId),
-				 new SqlParameter("@xml", xml));
+			if (UseEntityFramework)
+			{
+				/* XML Format:
+				<services>
+					<service id=""16"" />
+				</services> */
+
+				var services = XElement.Parse(xml);
+				var serviceIds = services.Descendants()
+					.Select(service => (int)service.Attribute("id"))
+					.ToArray();
+				var toDelete = VirtualServices
+					.Where(vs => vs.ServerId == serverId)
+					.Join(serviceIds, vs => vs.ServiceId, sid => sid, (vs, sid) => vs);
+				VirtualServices.RemoveRange(toDelete);
+
+				SaveChanges();
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "DeleteVirtualServices",
+					 new SqlParameter("@ServerID", serverId),
+					 new SqlParameter("@xml", xml));
+			}
 		}
 
 		public void UpdateVirtualGroups(int serverId, string xml)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "UpdateVirtualGroups",
-				 new SqlParameter("@ServerID", serverId),
-				 new SqlParameter("@xml", xml));
+			if (UseEntityFramework)
+			{
+				/* XML Format:
+				<groups>
+					<group id=""16"" distributionType=""1"" bindDistributionToPrimary=""1""/>
+				</groups> */
+
+				var groupsXml = XElement.Parse(xml);
+				var groups = groupsXml.Descendants()
+					.Select(group => new Data.Entities.VirtualGroup()
+					{
+						ServerId = serverId,
+						GroupId = (int)group.Attribute("id"),
+						DistributionType = (int?)group.Attribute("distributionType"),
+						BindDistributionToPrimary = ((int?)group.Attribute("bindDistributionToPrimary") ?? 1) == 1
+					});
+
+				// delete existing groups
+				VirtualGroups.RemoveRange(VirtualGroups.Where(vg => vg.ServerId == serverId));
+
+				VirtualGroups.AddRange(groups);
+
+				SaveChanges();
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "UpdateVirtualGroups",
+					 new SqlParameter("@ServerID", serverId),
+					 new SqlParameter("@xml", xml));
+			}
 		}
 		#endregion
 
@@ -1564,29 +2140,123 @@ namespace SolidCP.EnterpriseServer
 
 		public DataSet GetProviders()
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetProviders");
+			if (UseEntityFramework)
+			{
+				// TODO ProviderName was duplicate in the Stored Procedure. Resolve correctly. I've changed
+				// the duplicate ProviderName to ProviderGroupedName
+				var providers = Providers
+					.Join(ResourceGroups, p => p.GroupId, rg => rg.GroupId, (p, rg) => new
+					{
+						Provider = p,
+						ResourceGroup = rg
+					})
+					.OrderBy(j => j.ResourceGroup.GroupOrder)
+					.ThenBy(j => j.Provider.DisplayName)
+					.Select(j => new
+					{
+						j.Provider.ProviderId,
+						j.Provider.GroupId,
+						j.Provider.ProviderName,
+						j.Provider.EditorControl,
+						j.Provider.DisplayName,
+						j.Provider.ProviderType,
+						ProviderGroupedName = j.ResourceGroup.GroupName + " - " + j.Provider.DisplayName,
+						j.Provider.DisableAutoDiscovery
+					});
+
+				return ObjectUtils.DataSetFromEntitySet(providers);
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetProviders");
+			}
 		}
 
 		public DataSet GetGroupProviders(int groupId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetGroupProviders",
-				 new SqlParameter("@groupId", groupId));
+			if (UseEntityFramework)
+			{
+				// TODO ProviderName was duplicate in the Stored Procedure. Resolve correctly. I've changed
+				// the duplicate ProviderName to ProviderGroupedName
+				var providers = Providers
+					.Where(p => p.GroupId == groupId)
+					.Join(ResourceGroups, p => p.GroupId, rg => rg.GroupId, (p, rg) => new
+					{
+						Provider = p,
+						ResourceGroup = rg
+					})
+					.OrderBy(j => j.ResourceGroup.GroupOrder)
+					.ThenBy(j => j.Provider.DisplayName)
+					.Select(j => new
+					{
+						j.Provider.ProviderId,
+						j.Provider.GroupId,
+						j.Provider.ProviderName,
+						j.Provider.DisplayName,
+						j.Provider.ProviderType,
+						ProviderGroupedName = j.ResourceGroup.GroupName + " - " + j.Provider.DisplayName,
+					});
+
+				return ObjectUtils.DataSetFromEntitySet(providers);
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetGroupProviders",
+					 new SqlParameter("@groupId", groupId));
+			}
 		}
 
 		public IDataReader GetProvider(int providerId)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetProvider",
-				 new SqlParameter("@ProviderID", providerId));
+			if (UseEntityFramework)
+			{
+				var provider = Providers
+					.Where(p => p.ProviderId == providerId)
+					.Select(p => new
+					{
+						p.ProviderId,
+						p.GroupId,
+						p.ProviderName,
+						p.EditorControl,
+						p.DisplayName,
+						p.ProviderType
+					});
+
+				return new EntityDataReader<object>(provider);
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetProvider",
+					 new SqlParameter("@ProviderID", providerId));
+			}
 		}
 
 		public IDataReader GetProviderByServiceID(int serviceId)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetProviderByServiceID",
-				 new SqlParameter("@ServiceID", serviceId));
+			if (UseEntityFramework)
+			{
+				var provider = Services
+					.Where(s => s.ServiceId == serviceId)
+					.Join(Providers, s => s.ProviderId, p => p.ProviderId, (s, p) => new
+					{
+						p.ProviderId,
+						p.GroupId,
+						p.DisplayName,
+						p.EditorControl,
+						p.ProviderType
+					});
+
+				return new EntityDataReader<object>(provider);
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetProviderByServiceID",
+					 new SqlParameter("@ServiceID", serviceId));
+			}
 		}
 
 		#endregion
@@ -1594,80 +2264,268 @@ namespace SolidCP.EnterpriseServer
 		#region Private Network VLANs
 		public int AddPrivateNetworkVLAN(int serverId, int vlan, string comments)
 		{
-			SqlParameter prmAddresId = new SqlParameter("@VlanID", SqlDbType.Int);
-			prmAddresId.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
+				var vlanEntity = new Data.Entities.PrivateNetworkVlan()
+				{
+					ServerId = serverId != 0 ? serverId : null,
+					Vlan = vlan,
+					Comments = comments
+				};
+				PrivateNetworkVlans.Add(vlanEntity);
+				
+				SaveChanges();
 
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "AddPrivateNetworkVlan",
-				 prmAddresId,
-				 new SqlParameter("@Vlan", vlan),
-				 new SqlParameter("@ServerID", serverId),
-				 new SqlParameter("@Comments", comments));
+				return vlanEntity.VlanId;
+			}
+			else
+			{
+				SqlParameter prmAddresId = new SqlParameter("@VlanID", SqlDbType.Int);
+				prmAddresId.Direction = ParameterDirection.Output;
 
-			return Convert.ToInt32(prmAddresId.Value);
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "AddPrivateNetworkVlan",
+					 prmAddresId,
+					 new SqlParameter("@Vlan", vlan),
+					 new SqlParameter("@ServerID", serverId),
+					 new SqlParameter("@Comments", comments));
+
+				return Convert.ToInt32(prmAddresId.Value);
+			}
 		}
 
 		public int DeletePrivateNetworkVLAN(int vlanId)
 		{
-			SqlParameter prmResult = new SqlParameter("@Result", SqlDbType.Int);
-			prmResult.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
+				if (PackageVlans.Any(vlan => vlan.VlanId == vlanId)) return -2;
 
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "DeletePrivateNetworkVLAN",
-				 prmResult,
-				 new SqlParameter("@VlanID", vlanId));
+				PrivateNetworkVlans.RemoveRange(PrivateNetworkVlans.Where(vlan => vlan.VlanId == vlanId));
 
-			return Convert.ToInt32(prmResult.Value);
+				SaveChanges();
+
+				return 0;
+			}
+			else
+			{
+				SqlParameter prmResult = new SqlParameter("@Result", SqlDbType.Int);
+				prmResult.Direction = ParameterDirection.Output;
+
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "DeletePrivateNetworkVLAN",
+					 prmResult,
+					 new SqlParameter("@VlanID", vlanId));
+
+				return Convert.ToInt32(prmResult.Value);
+			}
 		}
 
 		public IDataReader GetPrivateNetworVLANsPaged(int actorId, int serverId,
 			 string filterColumn, string filterValue,
 			 string sortColumn, int startRow, int maximumRows)
 		{
-			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-											 "GetPrivateNetworVLANsPaged",
-												 new SqlParameter("@ActorId", actorId),
-												 new SqlParameter("@ServerId", serverId),
-												 new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
-												 new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
-												 new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
-												 new SqlParameter("@startRow", startRow),
-												 new SqlParameter("@maximumRows", maximumRows));
-			return reader;
+			if (UseEntityFramework)
+			{
+				var isAdmin = CheckIsUserAdmin(actorId);
+
+				var vlans = PrivateNetworkVlans
+					.Where(vlan => isAdmin && (serverId == 0 || serverId != 0 && serverId == vlan.ServerId))
+					.Join(Servers, v => v.ServerId, s => s.ServerId, (v, s) => new
+					{
+						Vlan = v,
+						Server = s
+					})
+					.Join(PackageVlans, j => j.Vlan.VlanId, pv => pv.VlanId, (j, pv) => new
+					{
+						j.Vlan,
+						j.Server,
+						PackageVlan = pv
+					})
+					.Join(Packages, j => j.PackageVlan.PackageId, p => p.PackageId, (j, p) => new
+					{
+						j.Vlan,
+						j.Server,
+						j.PackageVlan,
+						Package = p
+					})
+					.Join(Users, j => j.Package.UserId, u => u.UserId, (j, u) => new
+					{
+						j.Vlan.VlanId,
+						j.Vlan.Vlan,
+						j.Vlan.Comments,
+						j.Vlan.ServerId,
+						j.Server.ServerName,
+						j.PackageVlan.PackageId,
+						j.Package.PackageName,
+						j.Package.UserId,
+						u.Username
+					});
+
+				if (!string.IsNullOrEmpty(filterValue))
+				{
+					if (!string.IsNullOrEmpty(filterColumn))
+					{
+						vlans = vlans.Where($"{filterColumn} == @0", filterValue);
+					} else
+					{
+						vlans = vlans.Where(v => v.Vlan.ToString() == filterValue || v.ServerName == filterValue ||
+							v.Username == filterValue);
+					}
+				}
+
+				if (string.IsNullOrEmpty(sortColumn)) sortColumn = "Vlan";
+
+				vlans = vlans.OrderBy(sortColumn);
+
+				vlans = vlans.Skip(startRow).Take(maximumRows);
+
+				return new EntityDataReader<object>(vlans);
+			}
+			else
+			{
+				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+												 "GetPrivateNetworVLANsPaged",
+													 new SqlParameter("@ActorId", actorId),
+													 new SqlParameter("@ServerId", serverId),
+													 new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
+													 new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
+													 new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
+													 new SqlParameter("@startRow", startRow),
+													 new SqlParameter("@maximumRows", maximumRows));
+				return reader;
+			}
 		}
 
 		public IDataReader GetPrivateNetworVLAN(int vlanId)
 		{
-			return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetPrivateNetworVLAN",
-				 new SqlParameter("@VlanID", vlanId));
+			if (UseEntityFramework)
+			{
+				var vlan = PrivateNetworkVlans
+					.Where(v => v.VlanId == vlanId);
+
+				return new EntityDataReader<Data.Entities.PrivateNetworkVlan>(vlan);
+			}
+			else
+			{
+				return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetPrivateNetworVLAN",
+					 new SqlParameter("@VlanID", vlanId));
+			}
 		}
 
 		public void UpdatePrivateNetworVLAN(int vlanId, int serverId, int vlan, string comments)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "UpdatePrivateNetworVLAN",
-				 new SqlParameter("@VlanID", vlanId),
-				 new SqlParameter("@ServerID", serverId),
-				 new SqlParameter("@Vlan", vlan),
-				 new SqlParameter("@Comments", comments));
+			if (UseEntityFramework)
+			{
+				var vl = PrivateNetworkVlans.FirstOrDefault(v => v.VlanId == vlanId);
+				if (vl == null) return;
+
+				vl.ServerId = serverId != 0 ? serverId : null;
+				vl.Vlan = vlan;
+				vl.Comments = comments;
+
+				SaveChanges();
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "UpdatePrivateNetworVLAN",
+					 new SqlParameter("@VlanID", vlanId),
+					 new SqlParameter("@ServerID", serverId),
+					 new SqlParameter("@Vlan", vlan),
+					 new SqlParameter("@Comments", comments));
+			}
+		}
+
+		bool CheckPackageParent(int parentPackageId, int packageId)
+		{
+			// check if the user requests hiself
+			if (parentPackageId == packageId) return true;
+
+			var id = packageId;
+			var package = Packages
+				.Select(p => new { p.PackageId, p.ParentPackageId })
+				.FirstOrDefault(p => p.PackageId == id);
+			while (package != null && package.ParentPackageId.HasValue && package.ParentPackageId != parentPackageId)
+			{
+				id = package.ParentPackageId.Value;
+				package = Packages
+					.Select(p => new { p.PackageId, p.ParentPackageId })
+					.FirstOrDefault(p => p.PackageId == id);
+			}
+			return package != null && package.ParentPackageId == parentPackageId;
 		}
 
 		public IDataReader GetPackagePrivateNetworkVLANs(int packageId, string sortColumn, int startRow, int maximumRows)
 		{
-			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-											 "GetPackagePrivateNetworkVLANs",
-												 new SqlParameter("@PackageID", packageId),
-												 new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
-												 new SqlParameter("@startRow", startRow),
-												 new SqlParameter("@maximumRows", maximumRows));
-			return reader;
+			if (UseEntityFramework)
+			{
+				var vlans = PackageVlans
+					.Where(pv => CheckPackageParent(packageId, pv.PackageId))
+					.Join(PrivateNetworkVlans, p => p.VlanId, v => v.VlanId, (pv, vl) => new
+					{
+						PackageVlan = pv,
+						Vlan = vl
+					})
+					.Join(Packages, j => j.PackageVlan.PackageId, p => p.PackageId, (j, p) => new
+					{
+						j.PackageVlan, j.Vlan, Package = p
+					})
+					.Join(Users, j => j.Package.UserId, u => u.UserId, (j, u) => new
+					{
+						j.PackageVlan.PackageVlanId,
+						j.PackageVlan.VlanId,
+						j.Vlan.Vlan,
+						j.PackageVlan.PackageId,
+						j.Package.PackageName,
+						j.Package.UserId,
+						u.Username
+					});
+
+				if (!string.IsNullOrEmpty(sortColumn)) vlans = vlans.OrderBy(sortColumn);
+				else vlans = vlans.OrderBy(v => v.Vlan);
+
+				vlans = vlans.Skip(startRow).Take(maximumRows);
+
+				return new EntityDataReader<object>(vlans);
+			}
+			else
+			{
+				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+												 "GetPackagePrivateNetworkVLANs",
+													 new SqlParameter("@PackageID", packageId),
+													 new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
+													 new SqlParameter("@startRow", startRow),
+													 new SqlParameter("@maximumRows", maximumRows));
+				return reader;
+			}
 		}
 
 		public void DeallocatePackageVLAN(int id)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure, "DeallocatePackageVLAN",
-											  new SqlParameter("@PackageVlanID", id));
+			if (UseEntityFramework)
+			{
+				var packageVlan = PackageVlans
+					.Where(pv => pv.PackageVlanId == id)
+					.Include(pv => pv.Package)
+					.Single();
+
+				if (packageVlan.Package.ParentPackageId == 1) // System space
+				{
+					PackageVlans.RemoveRange(PackageVlans.Where(pv => pv.PackageVlanId == id));
+				}
+				else // 2nd level space and below
+				{
+					packageVlan.PackageId = id;			
+				}
+
+				SaveChanges();
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure, "DeallocatePackageVLAN",
+												  new SqlParameter("@PackageVlanID", id));
+			}
 		}
 
 		public IDataReader GetUnallottedVLANs(int packageId, int serviceId)

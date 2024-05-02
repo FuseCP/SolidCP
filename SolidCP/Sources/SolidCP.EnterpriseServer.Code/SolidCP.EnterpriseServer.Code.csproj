@@ -8,7 +8,8 @@
         <UseSkia>true</UseSkia>
 		<UseEntityFramework>true</UseEntityFramework>
 		<IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
-    </PropertyGroup>
+		<LangVersion>11</LangVersion>
+	</PropertyGroup>
 
     <PropertyGroup Condition="'$(TargetFramework)' == 'net48'">
         <OutputPath>..\SolidCP.EnterpriseServer\bin\Code</OutputPath>
