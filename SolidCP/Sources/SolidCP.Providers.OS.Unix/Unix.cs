@@ -730,11 +730,11 @@ namespace SolidCP.Providers.OS
 			}
 			return new Memory();
 		}
-		public string ExecuteSystemCommand(string path, string args)
+		public string ExecuteSystemCommand(string user, string password, string path, string args)
 		{
 			try
 			{
-				string result = FileUtils.ExecuteSystemCommand(path, args);
+				string result = FileUtils.ExecuteSystemCommand(string user, string password, path, args);
 				return result;
 			}
 			catch (Exception ex)

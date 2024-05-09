@@ -5,7 +5,7 @@
 		<LangVersion>11</LangVersion>
 		<DefineConstants>$(DefineConstants);Client</DefineConstants>
 		<ImplicitUsings>disable</ImplicitUsings>
-		<OutputPath>..\..\..\Bin</OutputPath>
+		<OutputPath>..\..\..\..\Bin</OutputPath>
 		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>

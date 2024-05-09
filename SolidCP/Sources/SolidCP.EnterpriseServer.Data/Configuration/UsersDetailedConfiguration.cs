@@ -18,13 +18,16 @@ public partial class UsersDetailedConfiguration: EntityTypeConfiguration<UsersDe
 #if NetCore || NetFX
     public override void Configure() {
 
+        if (IsMsSql)
+        {
 #if NetCore
-        Core.ToView("UsersDetailed");
+            Core.ToView("UsersDetailed");
 #else
-        // TODO is this correct ? (The db will be cretaed with EF Core 8, not with EF6, so the view will be in
-        // the database)
-        ToTable("UsersDetailed");
+            // TODO is this correct ? (The db will be cretaed with EF Core 8, not with EF6, so the view will be in
+            // the database)
+            ToTable("UsersDetailed");
 #endif
+        }
     }
 #endif
 }

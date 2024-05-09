@@ -60,6 +60,7 @@ using SolidCP.Providers.RemoteDesktopServices;
 using SolidCP.Providers.DNS;
 using SolidCP.Providers.DomainLookup;
 using SolidCP.Providers.StorageSpaces;
+using Twilio.Base;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -111,7 +112,7 @@ namespace SolidCP.EnterpriseServer
 			if (UseEntityFramework)
 			{
 				var properties = XElement.Parse(xml);
-				foreach (var property in properties.Descendants())
+				foreach (var property in properties.Elements())
 				{
 					var setting = new Data.Entities.SystemSetting()
 					{
@@ -382,14 +383,14 @@ namespace SolidCP.EnterpriseServer
 		string GetItemComments(int itemId, string itemTypeId, int actorId)
 		{
 			var comments = Comments.Join(Users, c => c.UserId, u => u.UserId, (com, user) => new
-				{
-					com.UserId,
-					com.ItemId,
-					com.ItemTypeId,
-					com.CreatedDate,
-					com.CommentText,
-					user.Username
-				})
+			{
+				com.UserId,
+				com.ItemId,
+				com.ItemTypeId,
+				com.CreatedDate,
+				com.CommentText,
+				user.Username
+			})
 				.Where(c => c.ItemId == itemId && c.ItemTypeId == itemTypeId &&
 					CheckUserParent(actorId, c.UserId));
 
@@ -418,7 +419,7 @@ namespace SolidCP.EnterpriseServer
 						(statusId == 0 || statusId > 0 && statusId == u.StatusId) &&
 						(roleId == 0 || roleId > 0 && roleId == u.RoleId)) :
 					UsersDetailed.Where(u => false);
-				
+
 				if (!string.IsNullOrEmpty(filterValue))
 				{
 					if (!string.IsNullOrEmpty(filterColumn))
@@ -468,7 +469,7 @@ namespace SolidCP.EnterpriseServer
 					CompanyName = u.CompanyName,
 					EcommerceEnabled = u.EcommerceEnabled
 				}));
-				
+
 			}
 			else
 			{
@@ -576,12 +577,12 @@ namespace SolidCP.EnterpriseServer
 					.GroupBy(u => u.RoleId)
 					.Select(g => new { RoleId = g.Key, UsersNumber = g.Count() })
 					.OrderByDescending(g => g.RoleId);
-				
+
 				var set = new DataSet();
 				set.Tables.Add(ObjectUtils.DataTableFromEntitySet(new object[] { nofUsers }));
 				set.Tables.Add(ObjectUtils.DataTableFromEntitySet(usersByStatus));
 				set.Tables.Add(ObjectUtils.DataTableFromEntitySet(usersByRole));
-				
+
 				return set;
 			}
 			else
@@ -1198,7 +1199,7 @@ namespace SolidCP.EnterpriseServer
 				if (reset) user.FailedLogins = 0;
 				else if (lockOut <= (user.FailedLogins ?? 0)) user.LoginStatusId = 2;
 				else user.FailedLogins = (user.FailedLogins ?? 0) + 1;
-				
+
 				SaveChanges();
 			}
 			else
@@ -1267,10 +1268,10 @@ namespace SolidCP.EnterpriseServer
 			{
 				var user = Users.FirstOrDefault(u => u.UserId == userId);
 				if (user == null) return;
-		
+
 				user.Password = password;
 				user.OneTimePasswordState = auths;
-				
+
 				SaveChanges();
 			}
 			else
@@ -1291,9 +1292,9 @@ namespace SolidCP.EnterpriseServer
 
 				var user = Users.FirstOrDefault(u => u.UserId == userId);
 				if (user == null) return;
-				
+
 				user.PinSecret = pinSecret;
-				
+
 				SaveChanges();
 			}
 			else
@@ -1315,9 +1316,9 @@ namespace SolidCP.EnterpriseServer
 
 				var user = Users.FirstOrDefault(u => u.UserId == userId);
 				if (user == null) return;
-				
+
 				user.MfaMode = mfaMode;
-				
+
 				SaveChanges();
 			}
 			else
@@ -1456,9 +1457,9 @@ namespace SolidCP.EnterpriseServer
 
 				UserSettings.RemoveRange(UserSettings
 					.Where(s => s.UserId == userId && s.SettingsName == settingsName));
-				
+
 				var properties = XElement.Parse(xml);
-				foreach (var property in properties.Descendants())
+				foreach (var property in properties.Elements())
 				{
 					var setting = new Data.Entities.UserSetting()
 					{
@@ -1553,7 +1554,7 @@ namespace SolidCP.EnterpriseServer
 					.OrderBy(s => s.ServerName)
 					.Select(s => new
 					{
-						s.ServerId, s.ServerName, s.ServerUrl, 
+						s.ServerId, s.ServerName, s.ServerUrl,
 						ServicesNumber = Services.Where(sc => sc.ServerId == s.ServerId).Count(),
 						s.Comments, s.PrimaryGroupId, s.ADEnabled
 					});
@@ -1797,7 +1798,7 @@ namespace SolidCP.EnterpriseServer
 			{
 				var server = Servers.FirstOrDefault(s => s.ServerId == serverId);
 				if (server == null) return;
-				
+
 				server.ServerName = serverName;
 				server.ServerUrl = serverUrl;
 				server.Password = password;
@@ -2043,7 +2044,7 @@ namespace SolidCP.EnterpriseServer
 					.ToHashSet();
 
 				bool addedAny = false;
-				foreach (var service in services.Descendants())
+				foreach (var service in services.Elements())
 				{
 					var serviceId = (int)service.Attribute("id");
 					if (!existingServices.Contains(serviceId))
@@ -2079,7 +2080,7 @@ namespace SolidCP.EnterpriseServer
 				</services> */
 
 				var services = XElement.Parse(xml);
-				var serviceIds = services.Descendants()
+				var serviceIds = services.Elements()
 					.Select(service => (int)service.Attribute("id"))
 					.ToArray();
 				var toDelete = VirtualServices
@@ -2108,7 +2109,7 @@ namespace SolidCP.EnterpriseServer
 				</groups> */
 
 				var groupsXml = XElement.Parse(xml);
-				var groups = groupsXml.Descendants()
+				var groups = groupsXml.Elements()
 					.Select(group => new Data.Entities.VirtualGroup()
 					{
 						ServerId = serverId,
@@ -2273,7 +2274,7 @@ namespace SolidCP.EnterpriseServer
 					Comments = comments
 				};
 				PrivateNetworkVlans.Add(vlanEntity);
-				
+
 				SaveChanges();
 
 				return vlanEntity.VlanId;
@@ -2516,7 +2517,7 @@ namespace SolidCP.EnterpriseServer
 				}
 				else // 2nd level space and below
 				{
-					packageVlan.PackageId = id;			
+					packageVlan.PackageId = id;
 				}
 
 				SaveChanges();
@@ -2530,47 +2531,199 @@ namespace SolidCP.EnterpriseServer
 
 		public IDataReader GetUnallottedVLANs(int packageId, int serviceId)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-											 "GetUnallottedVLANs",
-												 new SqlParameter("@PackageId", packageId),
-												 new SqlParameter("@ServiceId", serviceId));
+			if (UseEntityFramework)
+			{
+				int parentPackageId = -1;
+				int serverId = -1;
+
+				if (packageId == -1)
+				{ // No PackageID defined, use ServerID from ServiceID (VPS Import)
+					serverId = Services
+						.Where(service => service.ServiceId == serviceId)
+						.Select(service => service.ServerId)
+						.SingleOrDefault();
+					parentPackageId = 1;
+				} else
+				{
+					var package = Packages
+						.Where(p => p.PackageId == packageId)
+						.Select(p => new { p.ServerId, p.ParentPackageId })
+						.SingleOrDefault();
+					if (package != null)
+					{
+						parentPackageId = package.ParentPackageId ?? 1;
+						serverId = package.ServerId ?? -1;
+					}
+				}
+
+				if (parentPackageId == 1) // "System" space
+				{
+					// check if server is physical
+					if (Servers.Any(s => s.ServerId == serverId && !s.VirtualServer))
+					{
+						// physical server
+						var vlans = PrivateNetworkVlans
+							.GroupJoin(PackageVlans, v => v.VlanId, p => p.VlanId, (v, ps) => new
+							{
+								Vlan = v,
+								HasPackage = ps.Any(),
+							})
+							.Where(g => !g.HasPackage && (g.Vlan.ServerId == serverId || g.Vlan.ServerId == null))
+							.Select(g => new
+							{
+								g.Vlan.VlanId,
+								g.Vlan.Vlan,
+								g.Vlan.ServerId
+							});
+						return new EntityDataReader<object>(vlans);
+					} else
+					{ // virtual server, get resource group by service
+						var groupId = Services
+							.Where(s => s.ServiceId == serviceId)
+							.Join(Providers, s => s.ProviderId, p => p.ProviderId, (s, p) => p.GroupId)
+							.Single();
+						var vlans = PrivateNetworkVlans
+							.Join(Services, v => v.ServerId, s => s.ServerId, (v, s) => new
+							{
+								Vlan = v,
+								Service = s
+							})
+							.Join(Providers, g => g.Service.ProviderId, p => p.ProviderId, (g, p) => new
+							{
+								g.Vlan,
+								g.Service,
+								Provider = p
+							})
+							.Where(g => (g.Service.ServiceId == serviceId && g.Provider.GroupId == groupId) ||
+								g.Vlan.ServerId == null)
+							.GroupJoin(PackageVlans, g => g.Vlan.VlanId, p => p.VlanId, (g, ps) => new
+							{
+								Vlan = g.Vlan,
+								HasPackages = ps.Any()
+							})
+							.Where(g => !g.HasPackages)
+							.Select(g => new
+							{
+								g.Vlan.VlanId,
+								g.Vlan.Vlan,
+								g.Vlan.ServerId,
+							})
+							.OrderByDescending(g => g.ServerId)
+							.ThenBy(g => g.Vlan);
+						return new EntityDataReader<object>(vlans);
+					}
+				} else
+				{ // 2nd level space and below, get service location
+					serverId = Services
+						.Where(s => s.ServiceId == serviceId)
+						.Select(s => s.ServerId)
+						.Single();
+					var vlans = PrivateNetworkVlans
+						.Join(PackageVlans, v => v.VlanId, p => p.VlanId, (v, p) => new
+						{
+							Vlan = v,
+							Package = p
+						})
+						.Where(g => g.Package.PackageId == packageId &&
+							(g.Vlan.ServerId == serverId || g.Vlan.ServerId == null))
+						.Select(g => new
+						{
+							g.Vlan.ServerId,
+							g.Vlan.Vlan,
+							g.Vlan.VlanId
+						})
+						.OrderByDescending(g => g.ServerId)
+						.ThenBy(g => g.Vlan);
+					return new EntityDataReader<object>(vlans);
+				}
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+												 "GetUnallottedVLANs",
+													 new SqlParameter("@PackageId", packageId),
+													 new SqlParameter("@ServiceId", serviceId));
+			}
 		}
 
 		public void AllocatePackageVLANs(int packageId, string xml)
 		{
-			SqlParameter[] param = new[]
-												{
-														 new SqlParameter("@PackageID", packageId),
-														 new SqlParameter("@xml", xml)
-													};
+			if (UseEntityFramework)
+			{
+				var items = XElement.Parse(xml);
+				var ids = items
+					.Elements()
+					.Select(e => (int)e.Attribute("id"))
+					.ToArray();
+				// delete
+				var toDelete = PackageVlans
+					.Join(ids, p => p.VlanId, id => id, (p, id) => p);
+				PackageVlans.RemoveRange(toDelete);
 
-			ExecuteLongNonQuery("AllocatePackageVLANs", param);
+				// insert
+				PackageVlans.AddRange(
+					ids.Select(id => new Data.Entities.PackageVlan() {
+						PackageId = packageId,
+						VlanId = id
+					}));
+
+				SaveChanges();
+			}
+			else
+			{
+				SqlParameter[] param = new[] {
+					new SqlParameter("@PackageID", packageId),
+					new SqlParameter("@xml", xml)
+				};
+
+				ExecuteLongNonQuery("AllocatePackageVLANs", param);
+			}
 		}
 		#endregion
 
 		#region IPAddresses
 		public IDataReader GetIPAddress(int ipAddressId)
 		{
-			return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetIPAddress",
-				 new SqlParameter("@AddressID", ipAddressId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "GetIPAddress",
+					 new SqlParameter("@AddressID", ipAddressId));
+			}
 		}
 
 		public IDataReader GetIPAddresses(int actorId, int poolId, int serverId)
 		{
-			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 											 "GetIPAddresses",
 												 new SqlParameter("@ActorId", actorId),
 												 new SqlParameter("@PoolId", poolId),
 												 new SqlParameter("@ServerId", serverId));
-			return reader;
+				return reader;
+			}
 		}
 
 		public IDataReader GetIPAddressesPaged(int actorId, int poolId, int serverId,
 			 string filterColumn, string filterValue,
 			 string sortColumn, int startRow, int maximumRows)
 		{
-			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 											 "GetIPAddressesPaged",
 												 new SqlParameter("@ActorId", actorId),
 												 new SqlParameter("@PoolId", poolId),
@@ -2580,34 +2733,48 @@ namespace SolidCP.EnterpriseServer
 												 new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
 												 new SqlParameter("@startRow", startRow),
 												 new SqlParameter("@maximumRows", maximumRows));
-			return reader;
+				return reader;
+			}
 		}
 
 		public int AddIPAddress(int poolId, int serverId, string externalIP, string internalIP,
 			 string subnetMask, string defaultGateway, string comments, int VLAN)
 		{
-			SqlParameter prmAddresId = new SqlParameter("@AddressID", SqlDbType.Int);
-			prmAddresId.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "AddIPAddress",
-				 prmAddresId,
-				 new SqlParameter("@ServerID", serverId),
-				 new SqlParameter("@externalIP", externalIP),
-				 new SqlParameter("@internalIP", internalIP),
-				 new SqlParameter("@PoolId", poolId),
-				 new SqlParameter("@SubnetMask", subnetMask),
-				 new SqlParameter("@DefaultGateway", defaultGateway),
-				 new SqlParameter("@Comments", comments),
-				 new SqlParameter("@VLAN", VLAN));
+			}
+			else
+			{
+				SqlParameter prmAddresId = new SqlParameter("@AddressID", SqlDbType.Int);
+				prmAddresId.Direction = ParameterDirection.Output;
 
-			return Convert.ToInt32(prmAddresId.Value);
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "AddIPAddress",
+					 prmAddresId,
+					 new SqlParameter("@ServerID", serverId),
+					 new SqlParameter("@externalIP", externalIP),
+					 new SqlParameter("@internalIP", internalIP),
+					 new SqlParameter("@PoolId", poolId),
+					 new SqlParameter("@SubnetMask", subnetMask),
+					 new SqlParameter("@DefaultGateway", defaultGateway),
+					 new SqlParameter("@Comments", comments),
+					 new SqlParameter("@VLAN", VLAN));
+
+				return Convert.ToInt32(prmAddresId.Value);
+			}
 		}
 
 		public void UpdateIPAddress(int addressId, int poolId, int serverId,
 			 string externalIP, string internalIP, string subnetMask, string defaultGateway, string comments, int VLAN)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "UpdateIPAddress",
 				 new SqlParameter("@AddressID", addressId),
 				 new SqlParameter("@externalIP", externalIP),
@@ -2618,12 +2785,19 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@DefaultGateway", defaultGateway),
 				 new SqlParameter("@Comments", comments),
 				 new SqlParameter("@VLAN", VLAN));
+			}
 		}
 
 		public void UpdateIPAddresses(string xmlIds, int poolId, int serverId,
 			 string subnetMask, string defaultGateway, string comments, int VLAN)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "UpdateIPAddresses",
 				 new SqlParameter("@Xml", xmlIds),
 				 new SqlParameter("@ServerID", serverId),
@@ -2632,19 +2806,27 @@ namespace SolidCP.EnterpriseServer
 				 new SqlParameter("@DefaultGateway", defaultGateway),
 				 new SqlParameter("@Comments", comments),
 				 new SqlParameter("@VLAN", VLAN));
+			}
 		}
 
 		public int DeleteIPAddress(int ipAddressId)
 		{
-			SqlParameter prmResult = new SqlParameter("@Result", SqlDbType.Int);
-			prmResult.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "DeleteIPAddress",
-				 prmResult,
-				 new SqlParameter("@AddressID", ipAddressId));
+			}
+			else
+			{
+				SqlParameter prmResult = new SqlParameter("@Result", SqlDbType.Int);
+				prmResult.Direction = ParameterDirection.Output;
 
-			return Convert.ToInt32(prmResult.Value);
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "DeleteIPAddress",
+					 prmResult,
+					 new SqlParameter("@AddressID", ipAddressId));
+
+				return Convert.ToInt32(prmResult.Value);
+			}
 		}
 
 
@@ -2654,29 +2836,50 @@ namespace SolidCP.EnterpriseServer
 		#region Clusters
 		public IDataReader GetClusters(int actorId)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetClusters",
 				 new SqlParameter("@actorId", actorId));
+			}
 		}
 
 		public int AddCluster(string clusterName)
 		{
-			SqlParameter prmId = new SqlParameter("@ClusterID", SqlDbType.Int);
-			prmId.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "AddCluster",
-				 prmId,
-				 new SqlParameter("@ClusterName", clusterName));
+			}
+			else
+			{
+				SqlParameter prmId = new SqlParameter("@ClusterID", SqlDbType.Int);
+				prmId.Direction = ParameterDirection.Output;
 
-			return Convert.ToInt32(prmId.Value);
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					 ObjectQualifier + "AddCluster",
+					 prmId,
+					 new SqlParameter("@ClusterName", clusterName));
+
+				return Convert.ToInt32(prmId.Value);
+			}
 		}
 
 		public void DeleteCluster(int clusterId)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "DeleteCluster",
 				 new SqlParameter("@ClusterId", clusterId));
+			}
 		}
 
 		#endregion
@@ -2684,393 +2887,644 @@ namespace SolidCP.EnterpriseServer
 		#region Global DNS records
 		public DataSet GetDnsRecordsByService(int actorId, int serviceId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetDnsRecordsByService",
 				 new SqlParameter("@actorId", actorId),
 				 new SqlParameter("@ServiceId", serviceId));
+			}
 		}
 
 		public DataSet GetDnsRecordsByServer(int actorId, int serverId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetDnsRecordsByServer",
 				 new SqlParameter("@actorId", actorId),
 				 new SqlParameter("@ServerId", serverId));
+			}
 		}
 
 		public DataSet GetDnsRecordsByPackage(int actorId, int packageId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetDnsRecordsByPackage",
 				 new SqlParameter("@actorId", actorId),
 				 new SqlParameter("@PackageId", packageId));
+			}
 		}
 
 		public DataSet GetDnsRecordsByGroup(int groupId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetDnsRecordsByGroup",
 				 new SqlParameter("@GroupId", groupId));
+			}
 		}
-
 		public DataSet GetDnsRecordsTotal(int actorId, int packageId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetDnsRecordsTotal",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@packageId", packageId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetDnsRecordsTotal",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@packageId", packageId));
+			}
 		}
 
 		public IDataReader GetDnsRecord(int actorId, int recordId)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetDnsRecord",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@RecordId", recordId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetDnsRecord",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@RecordId", recordId));
+			}
 		}
 
 		public void AddDnsRecord(int actorId, int serviceId, int serverId, int packageId, string recordType,
 			 string recordName, string recordData, int mxPriority, int SrvPriority, int SrvWeight, int SrvPort, int ipAddressId)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "AddDnsRecord",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@ServiceId", serviceId),
-				 new SqlParameter("@ServerId", serverId),
-				 new SqlParameter("@PackageId", packageId),
-				 new SqlParameter("@RecordType", recordType),
-				 new SqlParameter("@RecordName", recordName),
-				 new SqlParameter("@RecordData", recordData),
-				 new SqlParameter("@MXPriority", mxPriority),
-				 new SqlParameter("@SrvPriority", SrvPriority),
-				 new SqlParameter("@SrvWeight", SrvWeight),
-				 new SqlParameter("@SrvPort", SrvPort),
-				 new SqlParameter("@IpAddressId", ipAddressId));
-		}
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "AddDnsRecord",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@ServiceId", serviceId),
+					new SqlParameter("@ServerId", serverId),
+					new SqlParameter("@PackageId", packageId),
+					new SqlParameter("@RecordType", recordType),
+					new SqlParameter("@RecordName", recordName),
+					new SqlParameter("@RecordData", recordData),
+					new SqlParameter("@MXPriority", mxPriority),
+					new SqlParameter("@SrvPriority", SrvPriority),
+					new SqlParameter("@SrvWeight", SrvWeight),
+					new SqlParameter("@SrvPort", SrvPort),
+					new SqlParameter("@IpAddressId", ipAddressId));
+			}
+		}
 		public void UpdateDnsRecord(int actorId, int recordId, string recordType,
 			 string recordName, string recordData, int mxPriority, int SrvPriority, int SrvWeight, int SrvPort, int ipAddressId)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "UpdateDnsRecord",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@RecordId", recordId),
-				 new SqlParameter("@RecordType", recordType),
-				 new SqlParameter("@RecordName", recordName),
-				 new SqlParameter("@RecordData", recordData),
-				 new SqlParameter("@MXPriority", mxPriority),
-				 new SqlParameter("@SrvPriority", SrvPriority),
-				 new SqlParameter("@SrvWeight", SrvWeight),
-				 new SqlParameter("@SrvPort", SrvPort),
-				 new SqlParameter("@IpAddressId", ipAddressId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "UpdateDnsRecord",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@RecordId", recordId),
+					new SqlParameter("@RecordType", recordType),
+					new SqlParameter("@RecordName", recordName),
+					new SqlParameter("@RecordData", recordData),
+					new SqlParameter("@MXPriority", mxPriority),
+					new SqlParameter("@SrvPriority", SrvPriority),
+					new SqlParameter("@SrvWeight", SrvWeight),
+					new SqlParameter("@SrvPort", SrvPort),
+					new SqlParameter("@IpAddressId", ipAddressId));
+			}
 		}
 
 
 		public void DeleteDnsRecord(int actorId, int recordId)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "DeleteDnsRecord",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@RecordId", recordId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "DeleteDnsRecord",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@RecordId", recordId));
+			}
 		}
 		#endregion
 
 		#region Domains
 		public DataSet GetDomains(int actorId, int packageId, bool recursive)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetDomains",
 				 new SqlParameter("@ActorId", actorId),
 				 new SqlParameter("@PackageId", packageId),
 				 new SqlParameter("@Recursive", recursive));
+			}
 		}
 
 		public DataSet GetResellerDomains(int actorId, int packageId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetResellerDomains",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@PackageId", packageId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetResellerDomains",
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@PackageId", packageId));
+			}
 		}
 
 		public DataSet GetDomainsPaged(int actorId, int packageId, int serverId, bool recursive, string filterColumn, string filterValue,
 			 string sortColumn, int startRow, int maximumRows)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetDomainsPaged",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@PackageId", packageId),
-				 new SqlParameter("@serverId", serverId),
-				 new SqlParameter("@recursive", recursive),
-				 new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
-				 new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
-				 new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
-				 new SqlParameter("@StartRow", startRow),
-				 new SqlParameter("@MaximumRows", maximumRows));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetDomainsPaged",
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@PackageId", packageId),
+					new SqlParameter("@serverId", serverId),
+					new SqlParameter("@recursive", recursive),
+					new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
+					new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
+					new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
+					new SqlParameter("@StartRow", startRow),
+					new SqlParameter("@MaximumRows", maximumRows));
+			}
 		}
 
 		public IDataReader GetDomain(int actorId, int domainId)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetDomain",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@domainId", domainId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetDomain",
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@domainId", domainId));
+			}
 		}
 
 		public IDataReader GetDomainByName(int actorId, string domainName, bool searchOnDomainPointer, bool isDomainPointer)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetDomainByName",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@domainName", domainName),
-				 new SqlParameter("@SearchOnDomainPointer", searchOnDomainPointer),
-				 new SqlParameter("@IsDomainPointer", isDomainPointer));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetDomainByName",
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@domainName", domainName),
+					new SqlParameter("@SearchOnDomainPointer", searchOnDomainPointer),
+					new SqlParameter("@IsDomainPointer", isDomainPointer));
+			}
 		}
 
 
 		public DataSet GetDomainsByZoneId(int actorId, int zoneId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetDomainsByZoneID",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@ZoneID", zoneId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetDomainsByZoneID",
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@ZoneID", zoneId));
+			}
 		}
 
 		public DataSet GetDomainsByDomainItemId(int actorId, int domainId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetDomainsByDomainItemId",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@DomainID", domainId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetDomainsByDomainItemId",
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@DomainID", domainId));
+			}
 		}
 
 
 
 		public int CheckDomain(int packageId, string domainName, bool isDomainPointer)
 		{
-			SqlParameter prmId = new SqlParameter("@Result", SqlDbType.Int);
-			prmId.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "CheckDomain",
-				 prmId,
-				 new SqlParameter("@packageId", packageId),
-				 new SqlParameter("@domainName", domainName),
-				 new SqlParameter("@isDomainPointer", isDomainPointer));
+			}
+			else
+			{
+				SqlParameter prmId = new SqlParameter("@Result", SqlDbType.Int);
+				prmId.Direction = ParameterDirection.Output;
 
-			return Convert.ToInt32(prmId.Value);
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "CheckDomain",
+					prmId,
+					new SqlParameter("@packageId", packageId),
+					new SqlParameter("@domainName", domainName),
+					new SqlParameter("@isDomainPointer", isDomainPointer));
+
+				return Convert.ToInt32(prmId.Value);
+			}
 		}
 
 
 
 		public int CheckDomainUsedByHostedOrganization(string domainName)
 		{
-			SqlParameter prmId = new SqlParameter("@Result", SqlDbType.Int);
-			prmId.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "CheckDomainUsedByHostedOrganization",
-				 prmId,
-				 new SqlParameter("@domainName", domainName));
+			}
+			else
+			{
+				SqlParameter prmId = new SqlParameter("@Result", SqlDbType.Int);
+				prmId.Direction = ParameterDirection.Output;
 
-			return Convert.ToInt32(prmId.Value);
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "CheckDomainUsedByHostedOrganization",
+					prmId,
+					new SqlParameter("@domainName", domainName));
+
+				return Convert.ToInt32(prmId.Value);
+			}
 		}
 
 
 		public int AddDomain(int actorId, int packageId, int zoneItemId, string domainName,
 			 bool hostingAllowed, int webSiteId, int mailDomainId, bool isSubDomain, bool isPreviewDomain, bool isDomainPointer)
 		{
-			SqlParameter prmId = new SqlParameter("@DomainID", SqlDbType.Int);
-			prmId.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "AddDomain",
-				 prmId,
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@PackageId", packageId),
-				 new SqlParameter("@ZoneItemId", zoneItemId),
-				 new SqlParameter("@DomainName", domainName),
-				 new SqlParameter("@HostingAllowed", hostingAllowed),
-				 new SqlParameter("@WebSiteId", webSiteId),
-				 new SqlParameter("@MailDomainId", mailDomainId),
-				 new SqlParameter("@IsSubDomain", isSubDomain),
-				 new SqlParameter("@IsPreviewDomain", isPreviewDomain),
-				 new SqlParameter("@IsDomainPointer", isDomainPointer));
+			}
+			else
+			{
+				SqlParameter prmId = new SqlParameter("@DomainID", SqlDbType.Int);
+				prmId.Direction = ParameterDirection.Output;
 
-			return Convert.ToInt32(prmId.Value);
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "AddDomain",
+					prmId,
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@PackageId", packageId),
+					new SqlParameter("@ZoneItemId", zoneItemId),
+					new SqlParameter("@DomainName", domainName),
+					new SqlParameter("@HostingAllowed", hostingAllowed),
+					new SqlParameter("@WebSiteId", webSiteId),
+					new SqlParameter("@MailDomainId", mailDomainId),
+					new SqlParameter("@IsSubDomain", isSubDomain),
+					new SqlParameter("@IsPreviewDomain", isPreviewDomain),
+					new SqlParameter("@IsDomainPointer", isDomainPointer));
+
+				return Convert.ToInt32(prmId.Value);
+			}
 		}
 
 		public void UpdateDomain(int actorId, int domainId, int zoneItemId,
 			 bool hostingAllowed, int webSiteId, int mailDomainId, int domainItemId)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "UpdateDomain",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@DomainId", domainId),
-				 new SqlParameter("@ZoneItemId", zoneItemId),
-				 new SqlParameter("@HostingAllowed", hostingAllowed),
-				 new SqlParameter("@WebSiteId", webSiteId),
-				 new SqlParameter("@MailDomainId", mailDomainId),
-				 new SqlParameter("@DomainItemId", domainItemId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "UpdateDomain",
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@DomainId", domainId),
+					new SqlParameter("@ZoneItemId", zoneItemId),
+					new SqlParameter("@HostingAllowed", hostingAllowed),
+					new SqlParameter("@WebSiteId", webSiteId),
+					new SqlParameter("@MailDomainId", mailDomainId),
+					new SqlParameter("@DomainItemId", domainItemId));
+			}
 		}
 
 		public void DeleteDomain(int actorId, int domainId)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "DeleteDomain",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@DomainId", domainId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "DeleteDomain",
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@DomainId", domainId));
+			}
 		}
 		#endregion
 
 		#region Services
 		public IDataReader GetServicesByServerId(int actorId, int serverId)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetServicesByServerID",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@ServerID", serverId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetServicesByServerID",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@ServerID", serverId));
+			}
 		}
 
 		public IDataReader GetServicesByServerIdGroupName(int actorId, int serverId, string groupName)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetServicesByServerIdGroupName",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@ServerID", serverId),
-				 new SqlParameter("@GroupName", groupName));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetServicesByServerIdGroupName",
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@ServerID", serverId),
+					new SqlParameter("@GroupName", groupName));
+			}
 		}
 
 		public DataSet GetRawServicesByServerId(int actorId, int serverId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetRawServicesByServerID",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@ServerID", serverId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetRawServicesByServerID",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@ServerID", serverId));
+			}
 		}
 
 		public DataSet GetServicesByGroupId(int actorId, int groupId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetServicesByGroupID",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@groupId", groupId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetServicesByGroupID",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@groupId", groupId));
+			}
 		}
 
 		public DataSet GetServicesByGroupName(int actorId, string groupName, bool forAutodiscover)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetServicesByGroupName",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@GroupName", groupName),
-				 new SqlParameter("@forAutodiscover", forAutodiscover));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetServicesByGroupName",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@GroupName", groupName),
+					new SqlParameter("@forAutodiscover", forAutodiscover));
+			}
 		}
 
 		public IDataReader GetService(int actorId, int serviceId)
 		{
-			return (IDataReader)SqlHelper.ExecuteReader(ConnectionString,
-				 CommandType.StoredProcedure,
-				 ObjectQualifier + "GetService",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@ServiceID", serviceId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return (IDataReader)SqlHelper.ExecuteReader(ConnectionString,
+					CommandType.StoredProcedure,
+					ObjectQualifier + "GetService",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@ServiceID", serviceId));
+			}
 		}
 
 		public int AddService(int serverId, int providerId, string serviceName, int serviceQuotaValue,
 			 int clusterId, string comments)
 		{
-			SqlParameter prmServiceId = new SqlParameter("@ServiceID", SqlDbType.Int);
-			prmServiceId.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "AddService",
-				 prmServiceId,
-				 new SqlParameter("@ServerID", serverId),
-				 new SqlParameter("@ProviderID", providerId),
-				 new SqlParameter("@ServiceName", serviceName),
-				 new SqlParameter("@ServiceQuotaValue", serviceQuotaValue),
-				 new SqlParameter("@ClusterId", clusterId),
-				 new SqlParameter("@comments", comments));
+			}
+			else
+			{
+				SqlParameter prmServiceId = new SqlParameter("@ServiceID", SqlDbType.Int);
+				prmServiceId.Direction = ParameterDirection.Output;
 
-			UpdateServerPackageServices(serverId);
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "AddService",
+					prmServiceId,
+					new SqlParameter("@ServerID", serverId),
+					new SqlParameter("@ProviderID", providerId),
+					new SqlParameter("@ServiceName", serviceName),
+					new SqlParameter("@ServiceQuotaValue", serviceQuotaValue),
+					new SqlParameter("@ClusterId", clusterId),
+					new SqlParameter("@comments", comments));
 
-			return Convert.ToInt32(prmServiceId.Value);
+				UpdateServerPackageServices(serverId);
+
+				return Convert.ToInt32(prmServiceId.Value);
+			}
 		}
+
 		public void UpdateServiceFully(int serviceId, int providerId, string serviceName, int serviceQuotaValue,
 			 int clusterId, string comments)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "UpdateServiceFully",
-				 new SqlParameter("@ProviderID", providerId),
-				 new SqlParameter("@ServiceName", serviceName),
-				 new SqlParameter("@ServiceID", serviceId),
-				 new SqlParameter("@ServiceQuotaValue", serviceQuotaValue),
-				 new SqlParameter("@ClusterId", clusterId),
-				 new SqlParameter("@Comments", comments));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "UpdateServiceFully",
+					new SqlParameter("@ProviderID", providerId),
+					new SqlParameter("@ServiceName", serviceName),
+					new SqlParameter("@ServiceID", serviceId),
+					new SqlParameter("@ServiceQuotaValue", serviceQuotaValue),
+					new SqlParameter("@ClusterId", clusterId),
+					new SqlParameter("@Comments", comments));
+			}
 		}
 
 		public void UpdateService(int serviceId, string serviceName, int serviceQuotaValue,
 			 int clusterId, string comments)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "UpdateService",
-				 new SqlParameter("@ServiceName", serviceName),
-				 new SqlParameter("@ServiceID", serviceId),
-				 new SqlParameter("@ServiceQuotaValue", serviceQuotaValue),
-				 new SqlParameter("@ClusterId", clusterId),
-				 new SqlParameter("@Comments", comments));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "UpdateService",
+					new SqlParameter("@ServiceName", serviceName),
+					new SqlParameter("@ServiceID", serviceId),
+					new SqlParameter("@ServiceQuotaValue", serviceQuotaValue),
+					new SqlParameter("@ClusterId", clusterId),
+					new SqlParameter("@Comments", comments));
+			}
 		}
 
 		public int DeleteService(int serviceId)
 		{
-			SqlParameter prmResult = new SqlParameter("@Result", SqlDbType.Int);
-			prmResult.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "DeleteService",
-				 prmResult,
-				 new SqlParameter("@ServiceID", serviceId));
+			}
+			else
+			{
+				SqlParameter prmResult = new SqlParameter("@Result", SqlDbType.Int);
+				prmResult.Direction = ParameterDirection.Output;
 
-			return Convert.ToInt32(prmResult.Value);
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "DeleteService",
+					prmResult,
+					new SqlParameter("@ServiceID", serviceId));
+
+				return Convert.ToInt32(prmResult.Value);
+			}
 		}
 
 		public IDataReader GetServiceProperties(int actorId, int serviceId)
 		{
-			return (IDataReader)SqlHelper.ExecuteReader(ConnectionString,
-				 CommandType.StoredProcedure,
-				 ObjectQualifier + "GetServiceProperties",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@ServiceID", serviceId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return (IDataReader)SqlHelper.ExecuteReader(ConnectionString,
+					CommandType.StoredProcedure,
+					ObjectQualifier + "GetServiceProperties",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@ServiceID", serviceId));
+			}
 		}
 
 		public void UpdateServiceProperties(int serviceId, string xml)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "UpdateServiceProperties",
-				 new SqlParameter("@ServiceId", serviceId),
-				 new SqlParameter("@Xml", xml));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "UpdateServiceProperties",
+					new SqlParameter("@ServiceId", serviceId),
+					new SqlParameter("@Xml", xml));
+			}
 		}
 
 		public IDataReader GetResourceGroup(int groupId)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString,
-				 CommandType.StoredProcedure,
-				 ObjectQualifier + "GetResourceGroup",
-				 new SqlParameter("@groupId", groupId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString,
+					CommandType.StoredProcedure,
+					ObjectQualifier + "GetResourceGroup",
+					new SqlParameter("@groupId", groupId));
+			}
 		}
 
 		public DataSet GetResourceGroups()
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString,
-				 CommandType.StoredProcedure,
-				 ObjectQualifier + "GetResourceGroups");
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString,
+					CommandType.StoredProcedure,
+					ObjectQualifier + "GetResourceGroups");
+			}
 		}
 
 		public IDataReader GetResourceGroupByName(string groupName)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString,
-				 CommandType.StoredProcedure,
-				 ObjectQualifier + "GetResourceGroupByName",
-				 new SqlParameter("@groupName", groupName));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString,
+					CommandType.StoredProcedure,
+					ObjectQualifier + "GetResourceGroupByName",
+					new SqlParameter("@groupName", groupName));
+			}
 		}
 
 		#endregion
@@ -3078,314 +3532,493 @@ namespace SolidCP.EnterpriseServer
 		#region Service Items
 		public DataSet GetServiceItems(int actorId, int packageId, string groupName, string itemTypeName, bool recursive)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetServiceItems",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@PackageID", packageId),
-				 new SqlParameter("@GroupName", groupName),
-				 new SqlParameter("@ItemTypeName", itemTypeName),
-				 new SqlParameter("@Recursive", recursive));
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetServiceItems",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@PackageID", packageId),
+					new SqlParameter("@GroupName", groupName),
+					new SqlParameter("@ItemTypeName", itemTypeName),
+					new SqlParameter("@Recursive", recursive));
+			}
 		}
 
 		public DataSet GetServiceItemsPaged(int actorId, int packageId, string groupName, string itemTypeName,
-			 int serverId, bool recursive, string filterColumn, string filterValue,
-			 string sortColumn, int startRow, int maximumRows)
+			int serverId, bool recursive, string filterColumn, string filterValue,
+			string sortColumn, int startRow, int maximumRows)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetServiceItemsPaged",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@packageId", packageId),
-				 new SqlParameter("@groupName", groupName),
-				 new SqlParameter("@serverId", serverId),
-				 new SqlParameter("@itemTypeName", itemTypeName),
-				 new SqlParameter("@recursive", recursive),
-				 new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
-				 new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
-				 new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
-				 new SqlParameter("@startRow", startRow),
-				 new SqlParameter("@maximumRows", maximumRows));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetServiceItemsPaged",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@packageId", packageId),
+					new SqlParameter("@groupName", groupName),
+					new SqlParameter("@serverId", serverId),
+					new SqlParameter("@itemTypeName", itemTypeName),
+					new SqlParameter("@recursive", recursive),
+					new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
+					new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
+					new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
+					new SqlParameter("@startRow", startRow),
+					new SqlParameter("@maximumRows", maximumRows));
+			}
 		}
 
 		public DataSet GetSearchableServiceItemTypes()
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetSearchableServiceItemTypes");
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetSearchableServiceItemTypes");
+			}
 		}
 
 		public DataSet GetServiceItemsByService(int actorId, int serviceId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetServiceItemsByService",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@ServiceID", serviceId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetServiceItemsByService",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@ServiceID", serviceId));
+			}
 		}
 
 		public int GetServiceItemsCount(string typeName, string groupName, int serviceId)
 		{
-			SqlParameter prmTotalNumber = new SqlParameter("@TotalNumber", SqlDbType.Int);
-			prmTotalNumber.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			DataSet ds = SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetServiceItemsCount",
-				 prmTotalNumber,
-				 new SqlParameter("@itemTypeName", typeName),
-				 new SqlParameter("@groupName", groupName),
-				 new SqlParameter("@serviceId", serviceId));
+			}
+			else
+			{
+				SqlParameter prmTotalNumber = new SqlParameter("@TotalNumber", SqlDbType.Int);
+				prmTotalNumber.Direction = ParameterDirection.Output;
 
-			// read identity
-			return Convert.ToInt32(prmTotalNumber.Value);
+				DataSet ds = SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetServiceItemsCount",
+					prmTotalNumber,
+					new SqlParameter("@itemTypeName", typeName),
+					new SqlParameter("@groupName", groupName),
+					new SqlParameter("@serviceId", serviceId));
+
+				// read identity
+				return Convert.ToInt32(prmTotalNumber.Value);
+			}
 		}
 
 		public DataSet GetServiceItemsForStatistics(int actorId, int serviceId, int packageId,
-			 bool calculateDiskspace, bool calculateBandwidth, bool suspendable, bool disposable)
+			bool calculateDiskspace, bool calculateBandwidth, bool suspendable, bool disposable)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetServiceItemsForStatistics",
-				 new SqlParameter("@ActorID", actorId),
-				 new SqlParameter("@ServiceID", serviceId),
-				 new SqlParameter("@packageId", packageId),
-				 new SqlParameter("@calculateDiskspace", calculateDiskspace),
-				 new SqlParameter("@calculateBandwidth", calculateBandwidth),
-				 new SqlParameter("@suspendable", suspendable),
-				 new SqlParameter("@disposable", disposable));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetServiceItemsForStatistics",
+					new SqlParameter("@ActorID", actorId),
+					new SqlParameter("@ServiceID", serviceId),
+					new SqlParameter("@packageId", packageId),
+					new SqlParameter("@calculateDiskspace", calculateDiskspace),
+					new SqlParameter("@calculateBandwidth", calculateBandwidth),
+					new SqlParameter("@suspendable", suspendable),
+					new SqlParameter("@disposable", disposable));
+			}
 		}
 
 		public DataSet GetServiceItemsByPackage(int actorId, int packageId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetServiceItemsByPackage",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@PackageID", packageId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetServiceItemsByPackage",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@PackageID", packageId));
+			}
 		}
 
 		public DataSet GetServiceItem(int actorId, int itemId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetServiceItem",
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@actorId", actorId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetServiceItem",
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@actorId", actorId));
+			}
 		}
 
 		public bool CheckServiceItemExists(int serviceId, string itemName, string itemTypeName)
 		{
-			SqlParameter prmExists = new SqlParameter("@Exists", SqlDbType.Bit);
-			prmExists.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "CheckServiceItemExistsInService",
-				 prmExists,
-				 new SqlParameter("@serviceId", serviceId),
-				 new SqlParameter("@itemName", itemName),
-				 new SqlParameter("@itemTypeName", itemTypeName));
+			}
+			else
+			{
+				SqlParameter prmExists = new SqlParameter("@Exists", SqlDbType.Bit);
+				prmExists.Direction = ParameterDirection.Output;
 
-			return Convert.ToBoolean(prmExists.Value);
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "CheckServiceItemExistsInService",
+					prmExists,
+					new SqlParameter("@serviceId", serviceId),
+					new SqlParameter("@itemName", itemName),
+					new SqlParameter("@itemTypeName", itemTypeName));
+
+				return Convert.ToBoolean(prmExists.Value);
+			}
 		}
 
 		public bool CheckServiceItemExists(string itemName, string groupName, string itemTypeName)
 		{
-			SqlParameter prmExists = new SqlParameter("@Exists", SqlDbType.Bit);
-			prmExists.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "CheckServiceItemExists",
-				 prmExists,
-				 new SqlParameter("@itemName", itemName),
-				 new SqlParameter("@groupName", groupName),
-				 new SqlParameter("@itemTypeName", itemTypeName));
+			}
+			else
+			{
+				SqlParameter prmExists = new SqlParameter("@Exists", SqlDbType.Bit);
+				prmExists.Direction = ParameterDirection.Output;
 
-			return Convert.ToBoolean(prmExists.Value);
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "CheckServiceItemExists",
+					prmExists,
+					new SqlParameter("@itemName", itemName),
+					new SqlParameter("@groupName", groupName),
+					new SqlParameter("@itemTypeName", itemTypeName));
+
+				return Convert.ToBoolean(prmExists.Value);
+			}
 		}
 
 		public DataSet GetServiceItemByName(int actorId, int packageId, string groupName,
-			 string itemName, string itemTypeName)
+			string itemName, string itemTypeName)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetServiceItemByName",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@packageId", packageId),
-				 new SqlParameter("@itemName", itemName),
-				 new SqlParameter("@itemTypeName", itemTypeName),
-				 new SqlParameter("@groupName", groupName));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetServiceItemByName",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@packageId", packageId),
+					new SqlParameter("@itemName", itemName),
+					new SqlParameter("@itemTypeName", itemTypeName),
+					new SqlParameter("@groupName", groupName));
+			}
 		}
 
 		public DataSet GetServiceItemsByName(int actorId, int packageId, string itemName)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetServiceItemsByName",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@packageId", packageId),
-				 new SqlParameter("@itemName", itemName));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetServiceItemsByName",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@packageId", packageId),
+					new SqlParameter("@itemName", itemName));
+			}
 		}
 
 		public int GetServiceItemsCountByNameAndServiceId(int actorId, int serviceId, string groupName,
-			 string itemName, string itemTypeName)
+			string itemName, string itemTypeName)
 		{
-			int res = 0;
+			if (UseEntityFramework)
+			{
 
-			object obj = SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetServiceItemsCountByNameAndServiceId",
-				new SqlParameter("@ActorID", actorId),
-				 new SqlParameter("@ServiceId", serviceId),
-				 new SqlParameter("@ItemName", itemName),
-				 new SqlParameter("@GroupName", groupName),
-				 new SqlParameter("@ItemTypeName", itemTypeName));
+			}
+			else
+			{
+				int res = 0;
 
-			if (!int.TryParse(obj.ToString(), out res)) return -1;
+				object obj = SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetServiceItemsCountByNameAndServiceId",
+					new SqlParameter("@ActorID", actorId),
+					new SqlParameter("@ServiceId", serviceId),
+					new SqlParameter("@ItemName", itemName),
+					new SqlParameter("@GroupName", groupName),
+					new SqlParameter("@ItemTypeName", itemTypeName));
 
-			return res;
+				if (!int.TryParse(obj.ToString(), out res)) return -1;
+
+				return res;
+			}
 		}
 
 		public int AddServiceItem(int actorId, int serviceId, int packageId, string itemName,
-			 string itemTypeName, string xmlProperties)
+			string itemTypeName, string xmlProperties)
 		{
-			// add item
-			SqlParameter prmItemId = new SqlParameter("@ItemID", SqlDbType.Int);
-			prmItemId.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "AddServiceItem",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@PackageID", packageId),
-				 new SqlParameter("@ServiceID", serviceId),
-				 new SqlParameter("@ItemName", itemName),
-				 new SqlParameter("@ItemTypeName", itemTypeName),
-				 new SqlParameter("@xmlProperties", xmlProperties),
-				 new SqlParameter("@CreatedDate", DateTime.Now),
-				 prmItemId);
+			}
+			else
+			{
+				// add item
+				SqlParameter prmItemId = new SqlParameter("@ItemID", SqlDbType.Int);
+				prmItemId.Direction = ParameterDirection.Output;
 
-			return Convert.ToInt32(prmItemId.Value);
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "AddServiceItem",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@PackageID", packageId),
+					new SqlParameter("@ServiceID", serviceId),
+					new SqlParameter("@ItemName", itemName),
+					new SqlParameter("@ItemTypeName", itemTypeName),
+					new SqlParameter("@xmlProperties", xmlProperties),
+					new SqlParameter("@CreatedDate", DateTime.Now),
+					prmItemId);
+
+				return Convert.ToInt32(prmItemId.Value);
+			}
 		}
 
 		public void UpdateServiceItem(int actorId, int itemId, string itemName, string xmlProperties)
 		{
-			// update item
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "UpdateServiceItem",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@ItemName", itemName),
-				 new SqlParameter("@ItemId", itemId),
-				 new SqlParameter("@XmlProperties", xmlProperties));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				// update item
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "UpdateServiceItem",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@ItemName", itemName),
+					new SqlParameter("@ItemId", itemId),
+					new SqlParameter("@XmlProperties", xmlProperties));
+			}
 		}
 
 		public void DeleteServiceItem(int actorId, int itemId)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "DeleteServiceItem",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@ItemID", itemId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "DeleteServiceItem",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@ItemID", itemId));
+			}
 		}
 
 		public void MoveServiceItem(int actorId, int itemId, int destinationServiceId, bool forAutodiscover)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "MoveServiceItem",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@DestinationServiceID", destinationServiceId),
-				 new SqlParameter("@forAutodiscover", forAutodiscover));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "MoveServiceItem",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@DestinationServiceID", destinationServiceId),
+					new SqlParameter("@forAutodiscover", forAutodiscover));
+			}
 		}
 
 		public int GetPackageServiceId(int actorId, int packageId, string groupName)
 		{
-			SqlParameter prmServiceId = new SqlParameter("@ServiceID", SqlDbType.Int);
-			prmServiceId.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetPackageServiceID",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@PackageID", packageId),
-				 new SqlParameter("@groupName", groupName),
-				 prmServiceId);
+			}
+			else
+			{
+				SqlParameter prmServiceId = new SqlParameter("@ServiceID", SqlDbType.Int);
+				prmServiceId.Direction = ParameterDirection.Output;
 
-			return Convert.ToInt32(prmServiceId.Value);
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetPackageServiceID",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@PackageID", packageId),
+					new SqlParameter("@groupName", groupName),
+					prmServiceId);
+
+				return Convert.ToInt32(prmServiceId.Value);
+			}
 		}
 
 		public string GetMailFilterURL(int actorId, int packageId, string groupName)
 		{
-			SqlParameter prmFilterUrl = new SqlParameter("@FilterUrl", SqlDbType.NVarChar, 200);
-			prmFilterUrl.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetFilterURL",
-				 new SqlParameter("@ActorID", actorId),
-				 new SqlParameter("@PackageID", packageId),
-				 new SqlParameter("@GroupName", groupName),
-				 prmFilterUrl);
+			}
+			else
+			{
+				SqlParameter prmFilterUrl = new SqlParameter("@FilterUrl", SqlDbType.NVarChar, 200);
+				prmFilterUrl.Direction = ParameterDirection.Output;
 
-			return Convert.ToString(prmFilterUrl.Value);
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetFilterURL",
+					new SqlParameter("@ActorID", actorId),
+					new SqlParameter("@PackageID", packageId),
+					new SqlParameter("@GroupName", groupName),
+					prmFilterUrl);
+
+				return Convert.ToString(prmFilterUrl.Value);
+			}
 		}
 
 		public string GetMailFilterUrlByHostingPlan(int actorId, int PlanID, string groupName)
 		{
-			SqlParameter prmFilterUrl = new SqlParameter("@FilterUrl", SqlDbType.NVarChar, 200);
-			prmFilterUrl.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetFilterURLByHostingPlan",
-				 new SqlParameter("@ActorID", actorId),
-				 new SqlParameter("@PlanID", PlanID),
-				 new SqlParameter("@GroupName", groupName),
-				 prmFilterUrl);
+			}
+			else
+			{
+				SqlParameter prmFilterUrl = new SqlParameter("@FilterUrl", SqlDbType.NVarChar, 200);
+				prmFilterUrl.Direction = ParameterDirection.Output;
 
-			return Convert.ToString(prmFilterUrl.Value);
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetFilterURLByHostingPlan",
+					new SqlParameter("@ActorID", actorId),
+					new SqlParameter("@PlanID", PlanID),
+					new SqlParameter("@GroupName", groupName),
+					prmFilterUrl);
+
+				return Convert.ToString(prmFilterUrl.Value);
+			}
 		}
 
 
 		public void UpdatePackageDiskSpace(int packageId, string xml)
 		{
-			ExecuteLongNonQuery(
-				 ObjectQualifier + "UpdatePackageDiskSpace",
-				 new SqlParameter("@packageId", packageId),
-				 new SqlParameter("@xml", xml));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				ExecuteLongNonQuery(
+					ObjectQualifier + "UpdatePackageDiskSpace",
+					new SqlParameter("@packageId", packageId),
+					new SqlParameter("@xml", xml));
+			}
 		}
 
 		public void UpdatePackageBandwidth(int packageId, string xml)
 		{
-			ExecuteLongNonQuery(
-				 ObjectQualifier + "UpdatePackageBandwidth",
-				 new SqlParameter("@packageId", packageId),
-				 new SqlParameter("@xml", xml));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				ExecuteLongNonQuery(
+					ObjectQualifier + "UpdatePackageBandwidth",
+					new SqlParameter("@packageId", packageId),
+					new SqlParameter("@xml", xml));
+			}
 		}
 
 		public DateTime GetPackageBandwidthUpdate(int packageId)
 		{
-			SqlParameter prmUpdateDate = new SqlParameter("@UpdateDate", SqlDbType.DateTime);
-			prmUpdateDate.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetPackageBandwidthUpdate",
-				 prmUpdateDate,
-				 new SqlParameter("@packageId", packageId));
+			}
+			else
+			{
+				SqlParameter prmUpdateDate = new SqlParameter("@UpdateDate", SqlDbType.DateTime);
+				prmUpdateDate.Direction = ParameterDirection.Output;
 
-			return (prmUpdateDate.Value != DBNull.Value) ? Convert.ToDateTime(prmUpdateDate.Value) : DateTime.MinValue;
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetPackageBandwidthUpdate",
+					prmUpdateDate,
+					new SqlParameter("@packageId", packageId));
+
+				return (prmUpdateDate.Value != DBNull.Value) ? Convert.ToDateTime(prmUpdateDate.Value) : DateTime.MinValue;
+			}
 		}
 
 		public void UpdatePackageBandwidthUpdate(int packageId, DateTime updateDate)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "UpdatePackageBandwidthUpdate",
-				 new SqlParameter("@packageId", packageId),
-				 new SqlParameter("@updateDate", updateDate));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "UpdatePackageBandwidthUpdate",
+					new SqlParameter("@packageId", packageId),
+					new SqlParameter("@updateDate", updateDate));
+			}
 		}
 
 		public IDataReader GetServiceItemType(int itemTypeId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetServiceItemType",
-				 new SqlParameter("@ItemTypeID", itemTypeId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetServiceItemType",
+					new SqlParameter("@ItemTypeID", itemTypeId));
+			}
 		}
 
 		public IDataReader GetServiceItemTypes()
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetServiceItemTypes"
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetServiceItemTypes");
+			}
 		}
 		#endregion
 
@@ -3393,129 +4026,199 @@ namespace SolidCP.EnterpriseServer
 		// Plans methods
 		public DataSet GetHostingPlans(int actorId, int userId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetHostingPlans",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@userId", userId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				ObjectQualifier + "GetHostingPlans",
+				new SqlParameter("@actorId", actorId),
+				new SqlParameter("@userId", userId));
+			}
 		}
 
 		public DataSet GetHostingAddons(int actorId, int userId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetHostingAddons",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@userId", userId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetHostingAddons",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@userId", userId));
+			}
 		}
 
 		public DataSet GetUserAvailableHostingPlans(int actorId, int userId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetUserAvailableHostingPlans",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@userId", userId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetUserAvailableHostingPlans",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@userId", userId));
+			}
 		}
 
 		public DataSet GetUserAvailableHostingAddons(int actorId, int userId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetUserAvailableHostingAddons",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@userId", userId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetUserAvailableHostingAddons",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@userId", userId));
+			}
 		}
 
 		public IDataReader GetHostingPlan(int actorId, int planId)
 		{
-			return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetHostingPlan",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@PlanId", planId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetHostingPlan",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@PlanId", planId));
+			}
 		}
 
 		public DataSet GetHostingPlanQuotas(int actorId, int packageId, int planId, int serverId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetHostingPlanQuotas",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@packageId", packageId),
-				 new SqlParameter("@planId", planId),
-				 new SqlParameter("@serverId", serverId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetHostingPlanQuotas",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@packageId", packageId),
+					new SqlParameter("@planId", planId),
+					new SqlParameter("@serverId", serverId));
+			}
 		}
 
 		public int AddHostingPlan(int actorId, int userId, int packageId, string planName,
-			 string planDescription, bool available, int serverId, decimal setupPrice, decimal recurringPrice,
-			 int recurrenceUnit, int recurrenceLength, bool isAddon, string quotasXml)
+			string planDescription, bool available, int serverId, decimal setupPrice, decimal recurringPrice,
+			int recurrenceUnit, int recurrenceLength, bool isAddon, string quotasXml)
 		{
-			SqlParameter prmPlanId = new SqlParameter("@PlanID", SqlDbType.Int);
-			prmPlanId.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "AddHostingPlan",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@userId", userId),
-				 new SqlParameter("@packageId", packageId),
-				 new SqlParameter("@planName", planName),
-				 new SqlParameter("@planDescription", planDescription),
-				 new SqlParameter("@available", available),
-				 new SqlParameter("@serverId", serverId),
-				 new SqlParameter("@setupPrice", setupPrice),
-				 new SqlParameter("@recurringPrice", recurringPrice),
-				 new SqlParameter("@recurrenceUnit", recurrenceUnit),
-				 new SqlParameter("@recurrenceLength", recurrenceLength),
-				 new SqlParameter("@isAddon", isAddon),
-				 new SqlParameter("@quotasXml", quotasXml),
-				 prmPlanId);
+			}
+			else
+			{
+				SqlParameter prmPlanId = new SqlParameter("@PlanID", SqlDbType.Int);
+				prmPlanId.Direction = ParameterDirection.Output;
 
-			// read identity
-			return Convert.ToInt32(prmPlanId.Value);
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "AddHostingPlan",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@userId", userId),
+					new SqlParameter("@packageId", packageId),
+					new SqlParameter("@planName", planName),
+					new SqlParameter("@planDescription", planDescription),
+					new SqlParameter("@available", available),
+					new SqlParameter("@serverId", serverId),
+					new SqlParameter("@setupPrice", setupPrice),
+					new SqlParameter("@recurringPrice", recurringPrice),
+					new SqlParameter("@recurrenceUnit", recurrenceUnit),
+					new SqlParameter("@recurrenceLength", recurrenceLength),
+					new SqlParameter("@isAddon", isAddon),
+					new SqlParameter("@quotasXml", quotasXml),
+					prmPlanId);
+
+				// read identity
+				return Convert.ToInt32(prmPlanId.Value);
+			}
 		}
 
 		public DataSet UpdateHostingPlan(int actorId, int planId, int packageId, int serverId, string planName,
-			 string planDescription, bool available, decimal setupPrice, decimal recurringPrice,
-			 int recurrenceUnit, int recurrenceLength, string quotasXml)
+			string planDescription, bool available, decimal setupPrice, decimal recurringPrice,
+			int recurrenceUnit, int recurrenceLength, string quotasXml)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "UpdateHostingPlan",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@planId", planId),
-				 new SqlParameter("@packageId", packageId),
-				 new SqlParameter("@serverId", serverId),
-				 new SqlParameter("@planName", planName),
-				 new SqlParameter("@planDescription", planDescription),
-				 new SqlParameter("@available", available),
-				 new SqlParameter("@setupPrice", setupPrice),
-				 new SqlParameter("@recurringPrice", recurringPrice),
-				 new SqlParameter("@recurrenceUnit", recurrenceUnit),
-				 new SqlParameter("@recurrenceLength", recurrenceLength),
-				 new SqlParameter("@quotasXml", quotasXml));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "UpdateHostingPlan",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@planId", planId),
+					new SqlParameter("@packageId", packageId),
+					new SqlParameter("@serverId", serverId),
+					new SqlParameter("@planName", planName),
+					new SqlParameter("@planDescription", planDescription),
+					new SqlParameter("@available", available),
+					new SqlParameter("@setupPrice", setupPrice),
+					new SqlParameter("@recurringPrice", recurringPrice),
+					new SqlParameter("@recurrenceUnit", recurrenceUnit),
+					new SqlParameter("@recurrenceLength", recurrenceLength),
+					new SqlParameter("@quotasXml", quotasXml));
+			}
 		}
 
 		public int CopyHostingPlan(int planId, int userId, int packageId)
 		{
-			SqlParameter prmPlanId = new SqlParameter("@DestinationPlanID", SqlDbType.Int);
-			prmPlanId.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "CopyHostingPlan",
-				 new SqlParameter("@SourcePlanID", planId),
-				 new SqlParameter("@UserID", userId),
-				 new SqlParameter("@PackageID", packageId),
-				 prmPlanId);
+			}
+			else
+			{
+				SqlParameter prmPlanId = new SqlParameter("@DestinationPlanID", SqlDbType.Int);
+				prmPlanId.Direction = ParameterDirection.Output;
 
-			return Convert.ToInt32(prmPlanId.Value);
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "CopyHostingPlan",
+					new SqlParameter("@SourcePlanID", planId),
+					new SqlParameter("@UserID", userId),
+					new SqlParameter("@PackageID", packageId),
+					prmPlanId);
+
+				return Convert.ToInt32(prmPlanId.Value);
+			}
 		}
 
 		public int DeleteHostingPlan(int actorId, int planId)
 		{
-			SqlParameter prmResult = new SqlParameter("@Result", SqlDbType.Int);
-			prmResult.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "DeleteHostingPlan",
-				 prmResult,
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@PlanId", planId));
+			}
+			else
+			{
+				SqlParameter prmResult = new SqlParameter("@Result", SqlDbType.Int);
+				prmResult.Direction = ParameterDirection.Output;
 
-			return Convert.ToInt32(prmResult.Value);
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "DeleteHostingPlan",
+					prmResult,
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@PlanId", planId));
+
+				return Convert.ToInt32(prmResult.Value);
+			}
 		}
 		#endregion
 
@@ -3524,271 +4227,431 @@ namespace SolidCP.EnterpriseServer
 		// Packages
 		public DataSet GetMyPackages(int actorId, int userId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetMyPackages",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@UserID", userId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetMyPackages",
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@UserID", userId));
+			}
 		}
 
 		public DataSet GetPackages(int actorId, int userId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetPackages",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@UserID", userId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetPackages",
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@UserID", userId));
+			}
 		}
 
 		public DataSet GetNestedPackagesSummary(int actorId, int packageId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetNestedPackagesSummary",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@PackageID", packageId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetNestedPackagesSummary",
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@PackageID", packageId));
+			}
 		}
 
 		public DataSet SearchServiceItemsPaged(int actorId, int userId, int itemTypeId, string filterValue,
-			 string sortColumn, int startRow, int maximumRows)
+			string sortColumn, int startRow, int maximumRows)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "SearchServiceItemsPaged",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@UserID", userId),
-				 new SqlParameter("@itemTypeId", itemTypeId),
-				 new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
-				 new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
-				 new SqlParameter("@startRow", startRow),
-				 new SqlParameter("@maximumRows", maximumRows));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "SearchServiceItemsPaged",
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@UserID", userId),
+					new SqlParameter("@itemTypeId", itemTypeId),
+					new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
+					new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
+					new SqlParameter("@startRow", startRow),
+					new SqlParameter("@maximumRows", maximumRows));
+			}
 		}
 
 		public DataSet GetPackagesPaged(int actorId, int userId, string filterColumn, string filterValue,
-			 string sortColumn, int startRow, int maximumRows)
+			string sortColumn, int startRow, int maximumRows)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetPackagesPaged",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@UserID", userId),
-				 new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
-				 new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
-				 new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
-				 new SqlParameter("@startRow", startRow),
-				 new SqlParameter("@maximumRows", maximumRows));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetPackagesPaged",
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@UserID", userId),
+					new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
+					new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
+					new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
+					new SqlParameter("@startRow", startRow),
+					new SqlParameter("@maximumRows", maximumRows));
+			}
 		}
 
 		public DataSet GetNestedPackagesPaged(int actorId, int packageId, string filterColumn, string filterValue,
-			 int statusId, int planId, int serverId, string sortColumn, int startRow, int maximumRows)
+			int statusId, int planId, int serverId, string sortColumn, int startRow, int maximumRows)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetNestedPackagesPaged",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@packageId", packageId),
-				 new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
-				 new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
-				 new SqlParameter("@statusId", statusId),
-				 new SqlParameter("@planId", planId),
-				 new SqlParameter("@serverId", serverId),
-				 new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
-				 new SqlParameter("@startRow", startRow),
-				 new SqlParameter("@maximumRows", maximumRows));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetNestedPackagesPaged",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@packageId", packageId),
+					new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
+					new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
+					new SqlParameter("@statusId", statusId),
+					new SqlParameter("@planId", planId),
+					new SqlParameter("@serverId", serverId),
+					new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
+					new SqlParameter("@startRow", startRow),
+					new SqlParameter("@maximumRows", maximumRows));
+			}
 		}
 
 		public DataSet GetPackagePackages(int actorId, int packageId, bool recursive)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetPackagePackages",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@packageId", packageId),
-				 new SqlParameter("@recursive", recursive));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetPackagePackages",
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@packageId", packageId),
+					new SqlParameter("@recursive", recursive));
+			}
 		}
 
 		public IDataReader GetPackage(int actorId, int packageId)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetPackage",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@PackageID", packageId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetPackage",
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@PackageID", packageId));
+			}
 		}
 
 		public DataSet GetPackageQuotas(int actorId, int packageId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetPackageQuotas",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@PackageID", packageId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetPackageQuotas",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@PackageID", packageId));
+			}
 		}
 
 		public DataSet GetParentPackageQuotas(int actorId, int packageId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetParentPackageQuotas",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@PackageID", packageId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetParentPackageQuotas",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@PackageID", packageId));
+			}
 		}
 
 		public DataSet GetPackageQuotasForEdit(int actorId, int packageId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetPackageQuotasForEdit",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@PackageID", packageId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetPackageQuotasForEdit",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@PackageID", packageId));
+			}
 		}
 
 		public DataSet AddPackage(int actorId, out int packageId, int userId, int planId, string packageName,
-			 string packageComments, int statusId, DateTime purchaseDate)
+			string packageComments, int statusId, DateTime purchaseDate)
 		{
-			SqlParameter prmPackageId = new SqlParameter("@PackageID", SqlDbType.Int);
-			prmPackageId.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			DataSet ds = SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "AddPackage",
-				 prmPackageId,
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@userId", userId),
-				 new SqlParameter("@packageName", packageName),
-				 new SqlParameter("@packageComments", packageComments),
-				 new SqlParameter("@statusId", statusId),
-				 new SqlParameter("@planId", planId),
-				 new SqlParameter("@purchaseDate", purchaseDate));
+			}
+			else
+			{
+				SqlParameter prmPackageId = new SqlParameter("@PackageID", SqlDbType.Int);
+				prmPackageId.Direction = ParameterDirection.Output;
 
-			// read identity
-			packageId = Convert.ToInt32(prmPackageId.Value);
+				DataSet ds = SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "AddPackage",
+					prmPackageId,
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@userId", userId),
+					new SqlParameter("@packageName", packageName),
+					new SqlParameter("@packageComments", packageComments),
+					new SqlParameter("@statusId", statusId),
+					new SqlParameter("@planId", planId),
+					new SqlParameter("@purchaseDate", purchaseDate));
 
-			DistributePackageServices(actorId, packageId);
+				// read identity
+				packageId = Convert.ToInt32(prmPackageId.Value);
 
-			return ds;
+				DistributePackageServices(actorId, packageId);
+
+				return ds;
+			}
 		}
 
 		public DataSet UpdatePackage(int actorId, int packageId, int planId, string packageName,
-			 string packageComments, int statusId, DateTime purchaseDate,
-			 bool overrideQuotas, string quotasXml, bool defaultTopPackage)
+			string packageComments, int statusId, DateTime purchaseDate,
+			bool overrideQuotas, string quotasXml, bool defaultTopPackage)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "UpdatePackage",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@packageId", packageId),
-				 new SqlParameter("@packageName", packageName),
-				 new SqlParameter("@packageComments", packageComments),
-				 new SqlParameter("@statusId", statusId),
-				 new SqlParameter("@planId", planId),
-				 new SqlParameter("@purchaseDate", purchaseDate),
-				 new SqlParameter("@overrideQuotas", overrideQuotas),
-				 new SqlParameter("@quotasXml", quotasXml),
-				 new SqlParameter("@defaultTopPackage", defaultTopPackage));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "UpdatePackage",
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@packageId", packageId),
+					new SqlParameter("@packageName", packageName),
+					new SqlParameter("@packageComments", packageComments),
+					new SqlParameter("@statusId", statusId),
+					new SqlParameter("@planId", planId),
+					new SqlParameter("@purchaseDate", purchaseDate),
+					new SqlParameter("@overrideQuotas", overrideQuotas),
+					new SqlParameter("@quotasXml", quotasXml),
+					new SqlParameter("@defaultTopPackage", defaultTopPackage));
+			}
 		}
 		public void ChangePackageUser(int actorId, int packageId, int userId)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "ChangePackageUser",
-				 new SqlParameter("@PackageId", packageId),
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@UserId", userId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "ChangePackageUser",
+					new SqlParameter("@PackageId", packageId),
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@UserId", userId));
+			}
 		}
 
 		public void UpdatePackageName(int actorId, int packageId, string packageName,
-			 string packageComments)
+			string packageComments)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "UpdatePackageName",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@packageId", packageId),
-				 new SqlParameter("@packageName", packageName),
-				 new SqlParameter("@packageComments", packageComments));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "UpdatePackageName",
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@packageId", packageId),
+					new SqlParameter("@packageName", packageName),
+					new SqlParameter("@packageComments", packageComments));
+			}
 		}
 
 		public void DeletePackage(int actorId, int packageId)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "DeletePackage",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@PackageID", packageId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "DeletePackage",
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@PackageID", packageId));
+			}
 		}
 
 		// Package Add-ons
 		public DataSet GetPackageAddons(int actorId, int packageId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetPackageAddons",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@PackageID", packageId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetPackageAddons",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@PackageID", packageId));
+			}
 		}
 
 		public IDataReader GetPackageAddon(int actorId, int packageAddonId)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetPackageAddon",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@PackageAddonID", packageAddonId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetPackageAddon",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@PackageAddonID", packageAddonId));
+			}
 		}
 
 		public DataSet AddPackageAddon(int actorId, out int addonId, int packageId, int planId, int quantity,
-			 int statusId, DateTime purchaseDate, string comments)
+			int statusId, DateTime purchaseDate, string comments)
 		{
-			SqlParameter prmPackageAddonId = new SqlParameter("@PackageAddonID", SqlDbType.Int);
-			prmPackageAddonId.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			DataSet ds = SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "AddPackageAddon",
-				 prmPackageAddonId,
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@PackageID", packageId),
-				 new SqlParameter("@planId", planId),
-				 new SqlParameter("@Quantity", quantity),
-				 new SqlParameter("@statusId", statusId),
-				 new SqlParameter("@PurchaseDate", purchaseDate),
-				 new SqlParameter("@Comments", comments));
+			}
+			else
+			{
+				SqlParameter prmPackageAddonId = new SqlParameter("@PackageAddonID", SqlDbType.Int);
+				prmPackageAddonId.Direction = ParameterDirection.Output;
 
-			// read identity
-			addonId = Convert.ToInt32(prmPackageAddonId.Value);
+				DataSet ds = SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "AddPackageAddon",
+					prmPackageAddonId,
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@PackageID", packageId),
+					new SqlParameter("@planId", planId),
+					new SqlParameter("@Quantity", quantity),
+					new SqlParameter("@statusId", statusId),
+					new SqlParameter("@PurchaseDate", purchaseDate),
+					new SqlParameter("@Comments", comments));
 
-			return ds;
+				// read identity
+				addonId = Convert.ToInt32(prmPackageAddonId.Value);
+
+				return ds;
+			}
 		}
 
 		public DataSet UpdatePackageAddon(int actorId, int packageAddonId, int planId, int quantity,
-			 int statusId, DateTime purchaseDate, string comments)
+			int statusId, DateTime purchaseDate, string comments)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "UpdatePackageAddon",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@PackageAddonID", packageAddonId),
-				 new SqlParameter("@planId", planId),
-				 new SqlParameter("@Quantity", quantity),
-				 new SqlParameter("@statusId", statusId),
-				 new SqlParameter("@PurchaseDate", purchaseDate),
-				 new SqlParameter("@Comments", comments));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "UpdatePackageAddon",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@PackageAddonID", packageAddonId),
+					new SqlParameter("@planId", planId),
+					new SqlParameter("@Quantity", quantity),
+					new SqlParameter("@statusId", statusId),
+					new SqlParameter("@PurchaseDate", purchaseDate),
+					new SqlParameter("@Comments", comments));
+			}
 		}
 
 		public void DeletePackageAddon(int actorId, int packageAddonId)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "DeletePackageAddon",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@PackageAddonID", packageAddonId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "DeletePackageAddon",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@PackageAddonID", packageAddonId));
+			}
 		}
 
 		public void UpdateServerPackageServices(int serverId)
 		{
-			// FIXME
-			int defaultActorID = 1;
-
-			// get server packages
-			IDataReader packagesReader = SqlHelper.ExecuteReader(ConnectionString, CommandType.Text,
-				 @"SELECT PackageID FROM Packages WHERE ServerID = @ServerID",
-				 new SqlParameter("@ServerID", serverId)
-			);
-
-			// call DistributePackageServices for all packages on this server
-			while (packagesReader.Read())
+			if (UseEntityFramework)
 			{
-				int packageId = (int)packagesReader["PackageID"];
-				DistributePackageServices(defaultActorID, packageId);
+
+			}
+			else
+			{
+				// FIXME
+				int defaultActorID = 1;
+
+				// get server packages
+				IDataReader packagesReader = SqlHelper.ExecuteReader(ConnectionString, CommandType.Text,
+					 @"SELECT PackageID FROM Packages WHERE ServerID = @ServerID",
+					 new SqlParameter("@ServerID", serverId));
+
+				// call DistributePackageServices for all packages on this server
+				while (packagesReader.Read())
+				{
+					int packageId = (int)packagesReader["PackageID"];
+					DistributePackageServices(defaultActorID, packageId);
+				}
 			}
 		}
 
 		public void DistributePackageServices(int actorId, int packageId)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "DistributePackageServices",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@PackageID", packageId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "DistributePackageServices",
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@PackageID", packageId));
+			}
 		}
 
 		#endregion
@@ -3796,172 +4659,277 @@ namespace SolidCP.EnterpriseServer
 		#region Packages Settings
 		public IDataReader GetPackageSettings(int actorId, int packageId, string settingsName)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetPackageSettings",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@PackageId", packageId),
-				 new SqlParameter("@SettingsName", settingsName));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetPackageSettings",
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@PackageId", packageId),
+					new SqlParameter("@SettingsName", settingsName));
+			}
 		}
 		public void UpdatePackageSettings(int actorId, int packageId, string settingsName, string xml)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "UpdatePackageSettings",
-				 new SqlParameter("@PackageId", packageId),
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@SettingsName", settingsName),
-				 new SqlParameter("@Xml", xml));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "UpdatePackageSettings",
+					new SqlParameter("@PackageId", packageId),
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@SettingsName", settingsName),
+					new SqlParameter("@Xml", xml));
+			}
 		}
 		#endregion
 
 		#region Quotas
 		public IDataReader GetProviderServiceQuota(int providerId)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetProviderServiceQuota",
-				 new SqlParameter("@providerId", providerId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetProviderServiceQuota",
+					new SqlParameter("@providerId", providerId));
+			}
 		}
 
 		public IDataReader GetPackageQuota(int actorId, int packageId, string quotaName)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetPackageQuota",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@PackageID", packageId),
-				 new SqlParameter("@QuotaName", quotaName));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetPackageQuota",
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@PackageID", packageId),
+					new SqlParameter("@QuotaName", quotaName));
+			}
 		}
 		#endregion
 
 		#region Log
 		public void AddAuditLogRecord(string recordId, int severityId,
-			 int userId, string username, int packageId, int itemId, string itemName, DateTime startDate, DateTime finishDate, string sourceName,
-			 string taskName, string executionLog)
+			int userId, string username, int packageId, int itemId, string itemName, DateTime startDate, DateTime finishDate, string sourceName,
+			string taskName, string executionLog)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "AddAuditLogRecord",
-				 new SqlParameter("@recordId", recordId),
-				 new SqlParameter("@severityId", severityId),
-				 new SqlParameter("@UserID", userId),
-				 new SqlParameter("@username", username),
-				 new SqlParameter("@PackageID", packageId),
-				 new SqlParameter("@ItemId", itemId),
-				 new SqlParameter("@itemName", itemName),
-				 new SqlParameter("@startDate", startDate),
-				 new SqlParameter("@finishDate", finishDate),
-				 new SqlParameter("@sourceName", sourceName),
-				 new SqlParameter("@taskName", taskName),
-				 new SqlParameter("@executionLog", executionLog));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "AddAuditLogRecord",
+					new SqlParameter("@recordId", recordId),
+					new SqlParameter("@severityId", severityId),
+					new SqlParameter("@UserID", userId),
+					new SqlParameter("@username", username),
+					new SqlParameter("@PackageID", packageId),
+					new SqlParameter("@ItemId", itemId),
+					new SqlParameter("@itemName", itemName),
+					new SqlParameter("@startDate", startDate),
+					new SqlParameter("@finishDate", finishDate),
+					new SqlParameter("@sourceName", sourceName),
+					new SqlParameter("@taskName", taskName),
+					new SqlParameter("@executionLog", executionLog));
+			}
 		}
 
 		public DataSet GetAuditLogRecordsPaged(int actorId, int userId, int packageId, int itemId, string itemName, DateTime startDate, DateTime endDate,
-			 int severityId, string sourceName, string taskName, string sortColumn, int startRow, int maximumRows)
+			int severityId, string sourceName, string taskName, string sortColumn, int startRow, int maximumRows)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetAuditLogRecordsPaged",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@UserID", userId),
-				 new SqlParameter("@PackageID", packageId),
-				 new SqlParameter("@itemId", itemId),
-				 new SqlParameter("@itemName", itemName),
-				 new SqlParameter("@StartDate", startDate),
-				 new SqlParameter("@EndDate", endDate),
-				 new SqlParameter("@severityId", severityId),
-				 new SqlParameter("@sourceName", sourceName),
-				 new SqlParameter("@taskName", taskName),
-				 new SqlParameter("@sortColumn", VerifyColumnName(sortColumn)),
-				 new SqlParameter("@startRow", startRow),
-				 new SqlParameter("@maximumRows", maximumRows));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetAuditLogRecordsPaged",
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@UserID", userId),
+					new SqlParameter("@PackageID", packageId),
+					new SqlParameter("@itemId", itemId),
+					new SqlParameter("@itemName", itemName),
+					new SqlParameter("@StartDate", startDate),
+					new SqlParameter("@EndDate", endDate),
+					new SqlParameter("@severityId", severityId),
+					new SqlParameter("@sourceName", sourceName),
+					new SqlParameter("@taskName", taskName),
+					new SqlParameter("@sortColumn", VerifyColumnName(sortColumn)),
+					new SqlParameter("@startRow", startRow),
+					new SqlParameter("@maximumRows", maximumRows));
+			}
 		}
 
 		public DataSet GetAuditLogSources()
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetAuditLogSources");
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetAuditLogSources");
+			}
 		}
 
 		public DataSet GetAuditLogTasks(string sourceName)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetAuditLogTasks",
-				 new SqlParameter("@sourceName", sourceName));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetAuditLogTasks",
+					new SqlParameter("@sourceName", sourceName));
+			}
 		}
 
 		public IDataReader GetAuditLogRecord(string recordId)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetAuditLogRecord",
-				 new SqlParameter("@recordId", recordId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetAuditLogRecord",
+					new SqlParameter("@recordId", recordId));
+			}
 		}
 
 		public void DeleteAuditLogRecords(int actorId, int userId, int itemId, string itemName, DateTime startDate, DateTime endDate,
-			 int severityId, string sourceName, string taskName)
+			int severityId, string sourceName, string taskName)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "DeleteAuditLogRecords",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@userId", userId),
-				 new SqlParameter("@itemId", itemId),
-				 new SqlParameter("@itemName", itemName),
-				 new SqlParameter("@startDate", startDate),
-				 new SqlParameter("@endDate", endDate),
-				 new SqlParameter("@severityId", severityId),
-				 new SqlParameter("@sourceName", sourceName),
-				 new SqlParameter("@taskName", taskName));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "DeleteAuditLogRecords",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@userId", userId),
+					new SqlParameter("@itemId", itemId),
+					new SqlParameter("@itemName", itemName),
+					new SqlParameter("@startDate", startDate),
+					new SqlParameter("@endDate", endDate),
+					new SqlParameter("@severityId", severityId),
+					new SqlParameter("@sourceName", sourceName),
+					new SqlParameter("@taskName", taskName));
+			}
 		}
 
 		public void DeleteAuditLogRecordsComplete()
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "DeleteAuditLogRecordsComplete");
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "DeleteAuditLogRecordsComplete");
+			}
 		}
 
 		#endregion
 
 		#region Reports
 		public DataSet GetPackagesBandwidthPaged(int actorId, int userId, int packageId,
-			 DateTime startDate, DateTime endDate, string sortColumn,
-			 int startRow, int maximumRows)
+			DateTime startDate, DateTime endDate, string sortColumn,
+			int startRow, int maximumRows)
 		{
-			return ExecuteLongDataSet(
-				 ObjectQualifier + "GetPackagesBandwidthPaged",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@userId", userId),
-				 new SqlParameter("@packageId", packageId),
-				 new SqlParameter("@StartDate", startDate),
-				 new SqlParameter("@EndDate", endDate),
-				 new SqlParameter("@sortColumn", VerifyColumnName(sortColumn)),
-				 new SqlParameter("@startRow", startRow),
-				 new SqlParameter("@maximumRows", maximumRows));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return ExecuteLongDataSet(
+					ObjectQualifier + "GetPackagesBandwidthPaged",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@userId", userId),
+					new SqlParameter("@packageId", packageId),
+					new SqlParameter("@StartDate", startDate),
+					new SqlParameter("@EndDate", endDate),
+					new SqlParameter("@sortColumn", VerifyColumnName(sortColumn)),
+					new SqlParameter("@startRow", startRow),
+					new SqlParameter("@maximumRows", maximumRows));
+			}
 		}
 
 		public DataSet GetPackagesDiskspacePaged(int actorId, int userId, int packageId, string sortColumn,
-			 int startRow, int maximumRows)
+			int startRow, int maximumRows)
 		{
-			return ExecuteLongDataSet(
-				 ObjectQualifier + "GetPackagesDiskspacePaged",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@userId", userId),
-				 new SqlParameter("@packageId", packageId),
-				 new SqlParameter("@sortColumn", VerifyColumnName(sortColumn)),
-				 new SqlParameter("@startRow", startRow),
-				 new SqlParameter("@maximumRows", maximumRows));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return ExecuteLongDataSet(
+					ObjectQualifier + "GetPackagesDiskspacePaged",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@userId", userId),
+					new SqlParameter("@packageId", packageId),
+					new SqlParameter("@sortColumn", VerifyColumnName(sortColumn)),
+					new SqlParameter("@startRow", startRow),
+					new SqlParameter("@maximumRows", maximumRows));
+			}
 		}
 
 		public DataSet GetPackageBandwidth(int actorId, int packageId, DateTime startDate, DateTime endDate)
 		{
-			return ExecuteLongDataSet(
-				 ObjectQualifier + "GetPackageBandwidth",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@PackageId", packageId),
-				 new SqlParameter("@StartDate", startDate),
-				 new SqlParameter("@EndDate", endDate));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return ExecuteLongDataSet(
+					ObjectQualifier + "GetPackageBandwidth",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@PackageId", packageId),
+					new SqlParameter("@StartDate", startDate),
+					new SqlParameter("@EndDate", endDate));
+			}
 		}
 
 		public DataSet GetPackageDiskspace(int actorId, int packageId)
 		{
-			return ExecuteLongDataSet(
-				 ObjectQualifier + "GetPackageDiskspace",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@PackageId", packageId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return ExecuteLongDataSet(
+					ObjectQualifier + "GetPackageDiskspace",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@PackageId", packageId));
+			}
 		}
 
 		#endregion
@@ -3970,240 +4938,405 @@ namespace SolidCP.EnterpriseServer
 
 		public IDataReader GetBackgroundTask(string taskId)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-													 ObjectQualifier + "GetBackgroundTask",
-													 new SqlParameter("@taskId", taskId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetBackgroundTask",
+					new SqlParameter("@taskId", taskId));
+			}
 		}
 
 		public IDataReader GetScheduleBackgroundTasks(int scheduleId)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-													 ObjectQualifier + "GetScheduleBackgroundTasks",
-													 new SqlParameter("@scheduleId", scheduleId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetScheduleBackgroundTasks",
+					new SqlParameter("@scheduleId", scheduleId));
+			}
 		}
 
 		public IDataReader GetBackgroundTasks(int actorId)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-													 ObjectQualifier + "GetBackgroundTasks",
-													 new SqlParameter("@actorId", actorId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetBackgroundTasks",
+					new SqlParameter("@actorId", actorId));
+			}
 		}
 
 		public IDataReader GetBackgroundTasks(Guid guid)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-													 ObjectQualifier + "GetThreadBackgroundTasks",
-													 new SqlParameter("@guid", guid));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetThreadBackgroundTasks",
+					new SqlParameter("@guid", guid));
+			}
 		}
 
 		public IDataReader GetProcessBackgroundTasks(BackgroundTaskStatus status)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-													 ObjectQualifier + "GetProcessBackgroundTasks",
-													 new SqlParameter("@status", (int)status));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetProcessBackgroundTasks",
+					new SqlParameter("@status", (int)status));
+			}
 		}
 
 		public IDataReader GetBackgroundTopTask(Guid guid)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-													 ObjectQualifier + "GetBackgroundTopTask",
-													 new SqlParameter("@guid", guid));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetBackgroundTopTask",
+					new SqlParameter("@guid", guid));
+			}
 		}
 
 		public int AddBackgroundTask(Guid guid, string taskId, int scheduleId, int packageId, int userId,
-			 int effectiveUserId, string taskName, int itemId, string itemName, DateTime startDate,
-			 int indicatorCurrent, int indicatorMaximum, int maximumExecutionTime, string source,
-			 int severity, bool completed, bool notifyOnComplete, BackgroundTaskStatus status)
+			int effectiveUserId, string taskName, int itemId, string itemName, DateTime startDate,
+			int indicatorCurrent, int indicatorMaximum, int maximumExecutionTime, string source,
+			int severity, bool completed, bool notifyOnComplete, BackgroundTaskStatus status)
 		{
-			SqlParameter prmId = new SqlParameter("@BackgroundTaskID", SqlDbType.Int);
-			prmId.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-											  ObjectQualifier + "AddBackgroundTask",
-											  prmId,
-											  new SqlParameter("@guid", guid),
-											  new SqlParameter("@taskId", taskId),
-											  new SqlParameter("@scheduleId", scheduleId),
-											  new SqlParameter("@packageId", packageId),
-											  new SqlParameter("@userId", userId),
-											  new SqlParameter("@effectiveUserId", effectiveUserId),
-											  new SqlParameter("@taskName", taskName),
-											  new SqlParameter("@itemId", itemId),
-											  new SqlParameter("@itemName", itemName),
-											  new SqlParameter("@startDate", startDate),
-											  new SqlParameter("@indicatorCurrent", indicatorCurrent),
-											  new SqlParameter("@indicatorMaximum", indicatorMaximum),
-											  new SqlParameter("@maximumExecutionTime", maximumExecutionTime),
-											  new SqlParameter("@source", source),
-											  new SqlParameter("@severity", severity),
-											  new SqlParameter("@completed", completed),
-											  new SqlParameter("@notifyOnComplete", notifyOnComplete),
-											  new SqlParameter("@status", status));
+			}
+			else
+			{
+				SqlParameter prmId = new SqlParameter("@BackgroundTaskID", SqlDbType.Int);
+				prmId.Direction = ParameterDirection.Output;
 
-			// read identity
-			return Convert.ToInt32(prmId.Value);
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "AddBackgroundTask",
+					prmId,
+					new SqlParameter("@guid", guid),
+					new SqlParameter("@taskId", taskId),
+					new SqlParameter("@scheduleId", scheduleId),
+					new SqlParameter("@packageId", packageId),
+					new SqlParameter("@userId", userId),
+					new SqlParameter("@effectiveUserId", effectiveUserId),
+					new SqlParameter("@taskName", taskName),
+					new SqlParameter("@itemId", itemId),
+					new SqlParameter("@itemName", itemName),
+					new SqlParameter("@startDate", startDate),
+					new SqlParameter("@indicatorCurrent", indicatorCurrent),
+					new SqlParameter("@indicatorMaximum", indicatorMaximum),
+					new SqlParameter("@maximumExecutionTime", maximumExecutionTime),
+					new SqlParameter("@source", source),
+					new SqlParameter("@severity", severity),
+					new SqlParameter("@completed", completed),
+					new SqlParameter("@notifyOnComplete", notifyOnComplete),
+					new SqlParameter("@status", status));
+
+				// read identity
+				return Convert.ToInt32(prmId.Value);
+			}
 		}
 
 		public void AddBackgroundTaskLog(int taskId, DateTime date, string exceptionStackTrace,
-			 bool innerTaskStart, int severity, string text, int textIdent, string xmlParameters)
+			bool innerTaskStart, int severity, string text, int textIdent, string xmlParameters)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-											  ObjectQualifier + "AddBackgroundTaskLog",
-											  new SqlParameter("@taskId", taskId),
-											  new SqlParameter("@date", date),
-											  new SqlParameter("@exceptionStackTrace", exceptionStackTrace),
-											  new SqlParameter("@innerTaskStart", innerTaskStart),
-											  new SqlParameter("@severity", severity),
-											  new SqlParameter("@text", text),
-											  new SqlParameter("@textIdent", textIdent),
-											  new SqlParameter("@xmlParameters", xmlParameters));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "AddBackgroundTaskLog",
+					new SqlParameter("@taskId", taskId),
+					new SqlParameter("@date", date),
+					new SqlParameter("@exceptionStackTrace", exceptionStackTrace),
+					new SqlParameter("@innerTaskStart", innerTaskStart),
+					new SqlParameter("@severity", severity),
+					new SqlParameter("@text", text),
+					new SqlParameter("@textIdent", textIdent),
+					new SqlParameter("@xmlParameters", xmlParameters));
+			}
 		}
 
 		public IDataReader GetBackgroundTaskLogs(int taskId, DateTime startLogTime)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-													 ObjectQualifier + "GetBackgroundTaskLogs",
-													 new SqlParameter("@taskId", taskId),
-													 new SqlParameter("@startLogTime", startLogTime));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetBackgroundTaskLogs",
+					new SqlParameter("@taskId", taskId),
+					new SqlParameter("@startLogTime", startLogTime));
+			}
 		}
 
 		public void UpdateBackgroundTask(Guid guid, int taskId, int scheduleId, int packageId, string taskName, int itemId,
-			 string itemName, DateTime finishDate, int indicatorCurrent, int indicatorMaximum, int maximumExecutionTime,
-			 string source, int severity, bool completed, bool notifyOnComplete, BackgroundTaskStatus status)
+			string itemName, DateTime finishDate, int indicatorCurrent, int indicatorMaximum, int maximumExecutionTime,
+			string source, int severity, bool completed, bool notifyOnComplete, BackgroundTaskStatus status)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-											  ObjectQualifier + "UpdateBackgroundTask",
-											  new SqlParameter("@Guid", guid),
-											  new SqlParameter("@taskId", taskId),
-											  new SqlParameter("@scheduleId", scheduleId),
-											  new SqlParameter("@packageId", packageId),
-											  new SqlParameter("@taskName", taskName),
-											  new SqlParameter("@itemId", itemId),
-											  new SqlParameter("@itemName", itemName),
-											  new SqlParameter("@finishDate",
-																	 finishDate == DateTime.MinValue
-																		  ? DBNull.Value
-																		  : (object)finishDate),
-											  new SqlParameter("@indicatorCurrent", indicatorCurrent),
-											  new SqlParameter("@indicatorMaximum", indicatorMaximum),
-											  new SqlParameter("@maximumExecutionTime", maximumExecutionTime),
-											  new SqlParameter("@source", source),
-											  new SqlParameter("@severity", severity),
-											  new SqlParameter("@completed", completed),
-											  new SqlParameter("@notifyOnComplete", notifyOnComplete),
-											  new SqlParameter("@status", (int)status));
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "UpdateBackgroundTask",
+					new SqlParameter("@Guid", guid),
+					new SqlParameter("@taskId", taskId),
+					new SqlParameter("@scheduleId", scheduleId),
+					new SqlParameter("@packageId", packageId),
+					new SqlParameter("@taskName", taskName),
+					new SqlParameter("@itemId", itemId),
+					new SqlParameter("@itemName", itemName),
+					new SqlParameter("@finishDate", finishDate == DateTime.MinValue ? DBNull.Value : (object)finishDate),
+					new SqlParameter("@indicatorCurrent", indicatorCurrent),
+					new SqlParameter("@indicatorMaximum", indicatorMaximum),
+					new SqlParameter("@maximumExecutionTime", maximumExecutionTime),
+					new SqlParameter("@source", source),
+					new SqlParameter("@severity", severity),
+					new SqlParameter("@completed", completed),
+					new SqlParameter("@notifyOnComplete", notifyOnComplete),
+					new SqlParameter("@status", (int)status));
+
+			}
 		}
 
 		public IDataReader GetBackgroundTaskParams(int taskId)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-													 ObjectQualifier + "GetBackgroundTaskParams",
-													 new SqlParameter("@taskId", taskId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetBackgroundTaskParams",
+					new SqlParameter("@taskId", taskId));
+			}
 		}
 
 		public void AddBackgroundTaskParam(int taskId, string name, string value, string typeName)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-											  ObjectQualifier + "AddBackgroundTaskParam",
-											  new SqlParameter("@taskId", taskId),
-											  new SqlParameter("@name", name),
-											  new SqlParameter("@value", value),
-											  new SqlParameter("@typeName", typeName));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "AddBackgroundTaskParam",
+					new SqlParameter("@taskId", taskId),
+					new SqlParameter("@name", name),
+					new SqlParameter("@value", value),
+					new SqlParameter("@typeName", typeName));
+			}
 		}
 
 		public void DeleteBackgroundTaskParams(int taskId)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-											  ObjectQualifier + "DeleteBackgroundTaskParams",
-											  new SqlParameter("@taskId", taskId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "DeleteBackgroundTaskParams",
+					new SqlParameter("@taskId", taskId));
+			}
 		}
 
 		public void AddBackgroundTaskStack(int taskId)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-											  ObjectQualifier + "AddBackgroundTaskStack",
-											  new SqlParameter("@taskId", taskId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "AddBackgroundTaskStack",
+					new SqlParameter("@taskId", taskId));
+			}
 		}
 
 		public void DeleteBackgroundTasks(Guid guid)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-											  ObjectQualifier + "DeleteBackgroundTasks",
-											  new SqlParameter("@guid", guid));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "DeleteBackgroundTasks",
+					new SqlParameter("@guid", guid));
+			}
 		}
 
 		public void DeleteBackgroundTask(int taskId)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-											  ObjectQualifier + "DeleteBackgroundTask",
-											  new SqlParameter("@id", taskId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "DeleteBackgroundTask",
+					new SqlParameter("@id", taskId));
+			}
 		}
 
 		public IDataReader GetScheduleTasks(int actorId)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetScheduleTasks",
-				 new SqlParameter("@actorId", actorId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetScheduleTasks",
+					new SqlParameter("@actorId", actorId));
+			}
 		}
 
 		public IDataReader GetScheduleTask(int actorId, string taskId)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetScheduleTask",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@taskId", taskId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetScheduleTask",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@taskId", taskId));
+			}
 		}
 
 		public DataSet GetSchedules(int actorId, int packageId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetSchedules",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@packageId", packageId),
-				 new SqlParameter("@recursive", true));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetSchedules",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@packageId", packageId),
+					new SqlParameter("@recursive", true));
+			}
 		}
 
 		public DataSet GetSchedulesPaged(int actorId, int packageId, bool recursive,
-			 string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
+			string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetSchedulesPaged",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@packageId", packageId),
-				 new SqlParameter("@recursive", recursive),
-				 new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
-				 new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
-				 new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
-				 new SqlParameter("@startRow", startRow),
-				 new SqlParameter("@maximumRows", maximumRows));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetSchedulesPaged",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@packageId", packageId),
+					new SqlParameter("@recursive", recursive),
+					new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
+					new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
+					new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
+					new SqlParameter("@startRow", startRow),
+					new SqlParameter("@maximumRows", maximumRows));
+			}
 		}
 
 		public DataSet GetSchedule(int actorId, int scheduleId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetSchedule",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@scheduleId", scheduleId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetSchedule",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@scheduleId", scheduleId));
+			}
 		}
 		public IDataReader GetScheduleInternal(int scheduleId)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetScheduleInternal",
-				 new SqlParameter("@scheduleId", scheduleId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetScheduleInternal",
+					new SqlParameter("@scheduleId", scheduleId));
+			}
 		}
 		public DataSet GetNextSchedule()
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetNextSchedule");
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetNextSchedule");
+			}
 		}
 		public IDataReader GetScheduleParameters(int actorId, string taskId, int scheduleId)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetScheduleParameters",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@taskId", taskId),
-				 new SqlParameter("@scheduleId", scheduleId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetScheduleParameters",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@taskId", taskId),
+					new SqlParameter("@scheduleId", scheduleId));
+			}
 		}
 
 		/// <summary>
@@ -4213,162 +5346,246 @@ namespace SolidCP.EnterpriseServer
 		/// <returns>View configuration for the task with supplied id.</returns>
 		public IDataReader GetScheduleTaskViewConfigurations(string taskId)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-													 ObjectQualifier + "GetScheduleTaskViewConfigurations",
-													 new SqlParameter("@taskId", taskId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetScheduleTaskViewConfigurations",
+					new SqlParameter("@taskId", taskId));
+			}
 		}
 
 		public int AddSchedule(int actorId, string taskId, int packageId,
-			 string scheduleName, string scheduleTypeId, int interval,
-			 DateTime fromTime, DateTime toTime, DateTime startTime,
-			 DateTime nextRun, bool enabled, string priorityId, int historiesNumber,
-			 int maxExecutionTime, int weekMonthDay, string xmlParameters)
+			string scheduleName, string scheduleTypeId, int interval,
+			DateTime fromTime, DateTime toTime, DateTime startTime,
+			DateTime nextRun, bool enabled, string priorityId, int historiesNumber,
+			int maxExecutionTime, int weekMonthDay, string xmlParameters)
 		{
-			SqlParameter prmId = new SqlParameter("@ScheduleID", SqlDbType.Int);
-			prmId.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "AddSchedule",
-				 prmId,
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@taskId", taskId),
-				 new SqlParameter("@packageId", packageId),
-				 new SqlParameter("@scheduleName", scheduleName),
-				 new SqlParameter("@scheduleTypeId", scheduleTypeId),
-				 new SqlParameter("@interval", interval),
-				 new SqlParameter("@fromTime", fromTime),
-				 new SqlParameter("@toTime", toTime),
-				 new SqlParameter("@startTime", startTime),
-				 new SqlParameter("@nextRun", nextRun),
-				 new SqlParameter("@enabled", enabled),
-				 new SqlParameter("@priorityId", priorityId),
-				 new SqlParameter("@historiesNumber", historiesNumber),
-				 new SqlParameter("@maxExecutionTime", maxExecutionTime),
-				 new SqlParameter("@weekMonthDay", weekMonthDay),
-				 new SqlParameter("@xmlParameters", xmlParameters));
+			}
+			else
+			{
+				SqlParameter prmId = new SqlParameter("@ScheduleID", SqlDbType.Int);
+				prmId.Direction = ParameterDirection.Output;
 
-			// read identity
-			return Convert.ToInt32(prmId.Value);
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "AddSchedule",
+					prmId,
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@taskId", taskId),
+					new SqlParameter("@packageId", packageId),
+					new SqlParameter("@scheduleName", scheduleName),
+					new SqlParameter("@scheduleTypeId", scheduleTypeId),
+					new SqlParameter("@interval", interval),
+					new SqlParameter("@fromTime", fromTime),
+					new SqlParameter("@toTime", toTime),
+					new SqlParameter("@startTime", startTime),
+					new SqlParameter("@nextRun", nextRun),
+					new SqlParameter("@enabled", enabled),
+					new SqlParameter("@priorityId", priorityId),
+					new SqlParameter("@historiesNumber", historiesNumber),
+					new SqlParameter("@maxExecutionTime", maxExecutionTime),
+					new SqlParameter("@weekMonthDay", weekMonthDay),
+					new SqlParameter("@xmlParameters", xmlParameters));
+
+				// read identity
+				return Convert.ToInt32(prmId.Value);
+			}
 		}
 
 		public void UpdateSchedule(int actorId, int scheduleId, string taskId,
-			 string scheduleName, string scheduleTypeId, int interval,
-			 DateTime fromTime, DateTime toTime, DateTime startTime,
-			 DateTime lastRun, DateTime nextRun, bool enabled, string priorityId,
-			 int historiesNumber, int maxExecutionTime, int weekMonthDay, string xmlParameters)
+			string scheduleName, string scheduleTypeId, int interval,
+			DateTime fromTime, DateTime toTime, DateTime startTime,
+			DateTime lastRun, DateTime nextRun, bool enabled, string priorityId,
+			int historiesNumber, int maxExecutionTime, int weekMonthDay, string xmlParameters)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "UpdateSchedule",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@scheduleId", scheduleId),
-				 new SqlParameter("@taskId", taskId),
-				 new SqlParameter("@scheduleName", scheduleName),
-				 new SqlParameter("@scheduleTypeId", scheduleTypeId),
-				 new SqlParameter("@interval", interval),
-				 new SqlParameter("@fromTime", fromTime),
-				 new SqlParameter("@toTime", toTime),
-				 new SqlParameter("@startTime", startTime),
-				 new SqlParameter("@lastRun", (lastRun == DateTime.MinValue) ? DBNull.Value : (object)lastRun),
-				 new SqlParameter("@nextRun", nextRun),
-				 new SqlParameter("@enabled", enabled),
-				 new SqlParameter("@priorityId", priorityId),
-				 new SqlParameter("@historiesNumber", historiesNumber),
-				 new SqlParameter("@maxExecutionTime", maxExecutionTime),
-				 new SqlParameter("@weekMonthDay", weekMonthDay),
-				 new SqlParameter("@xmlParameters", xmlParameters));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "UpdateSchedule",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@scheduleId", scheduleId),
+					new SqlParameter("@taskId", taskId),
+					new SqlParameter("@scheduleName", scheduleName),
+					new SqlParameter("@scheduleTypeId", scheduleTypeId),
+					new SqlParameter("@interval", interval),
+					new SqlParameter("@fromTime", fromTime),
+					new SqlParameter("@toTime", toTime),
+					new SqlParameter("@startTime", startTime),
+					new SqlParameter("@lastRun", (lastRun == DateTime.MinValue) ? DBNull.Value : (object)lastRun),
+					new SqlParameter("@nextRun", nextRun),
+					new SqlParameter("@enabled", enabled),
+					new SqlParameter("@priorityId", priorityId),
+					new SqlParameter("@historiesNumber", historiesNumber),
+					new SqlParameter("@maxExecutionTime", maxExecutionTime),
+					new SqlParameter("@weekMonthDay", weekMonthDay),
+					new SqlParameter("@xmlParameters", xmlParameters));
+			}
 		}
 
 		public void DeleteSchedule(int actorId, int scheduleId)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "DeleteSchedule",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@scheduleId", scheduleId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "DeleteSchedule",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@scheduleId", scheduleId));
+			}
 		}
 
 		public DataSet GetScheduleHistories(int actorId, int scheduleId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetScheduleHistories",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@scheduleId", scheduleId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetScheduleHistories",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@scheduleId", scheduleId));
+			}
 		}
 		public IDataReader GetScheduleHistory(int actorId, int scheduleHistoryId)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetScheduleHistory",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@scheduleHistoryId", scheduleHistoryId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetScheduleHistory",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@scheduleHistoryId", scheduleHistoryId));
+			}
 		}
 		public int AddScheduleHistory(int actorId, int scheduleId,
-			 DateTime startTime, DateTime finishTime, string statusId, string executionLog)
+			DateTime startTime, DateTime finishTime, string statusId, string executionLog)
 		{
-			SqlParameter prmId = new SqlParameter("@ScheduleHistoryID", SqlDbType.Int);
-			prmId.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "AddScheduleHistory",
-				 prmId,
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@scheduleId", scheduleId),
-				 new SqlParameter("@startTime", (startTime == DateTime.MinValue) ? DBNull.Value : (object)startTime),
-				 new SqlParameter("@finishTime", (finishTime == DateTime.MinValue) ? DBNull.Value : (object)finishTime),
-				 new SqlParameter("@statusId", statusId),
-				 new SqlParameter("@executionLog", executionLog));
+			}
+			else
+			{
+				SqlParameter prmId = new SqlParameter("@ScheduleHistoryID", SqlDbType.Int);
+				prmId.Direction = ParameterDirection.Output;
 
-			// read identity
-			return Convert.ToInt32(prmId.Value);
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "AddScheduleHistory",
+					prmId,
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@scheduleId", scheduleId),
+					new SqlParameter("@startTime", (startTime == DateTime.MinValue) ? DBNull.Value : (object)startTime),
+					new SqlParameter("@finishTime", (finishTime == DateTime.MinValue) ? DBNull.Value : (object)finishTime),
+					new SqlParameter("@statusId", statusId),
+					new SqlParameter("@executionLog", executionLog));
+
+				// read identity
+				return Convert.ToInt32(prmId.Value);
+			}
 		}
 		public void UpdateScheduleHistory(int actorId, int scheduleHistoryId,
-			 DateTime startTime, DateTime finishTime, string statusId, string executionLog)
+			DateTime startTime, DateTime finishTime, string statusId, string executionLog)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "UpdateScheduleHistory",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@scheduleHistoryId", scheduleHistoryId),
-				 new SqlParameter("@startTime", (startTime == DateTime.MinValue) ? DBNull.Value : (object)startTime),
-				 new SqlParameter("@finishTime", (finishTime == DateTime.MinValue) ? DBNull.Value : (object)finishTime),
-				 new SqlParameter("@statusId", statusId),
-				 new SqlParameter("@executionLog", executionLog));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "UpdateScheduleHistory",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@scheduleHistoryId", scheduleHistoryId),
+					new SqlParameter("@startTime", (startTime == DateTime.MinValue) ? DBNull.Value : (object)startTime),
+					new SqlParameter("@finishTime", (finishTime == DateTime.MinValue) ? DBNull.Value : (object)finishTime),
+					new SqlParameter("@statusId", statusId),
+					new SqlParameter("@executionLog", executionLog));
+			}
 		}
 		public void DeleteScheduleHistories(int actorId, int scheduleId)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "DeleteScheduleHistories",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@scheduleId", scheduleId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "DeleteScheduleHistories",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@scheduleId", scheduleId));
+			}
 		}
 		#endregion
 
 		#region Comments
 		public DataSet GetComments(int actorId, int userId, string itemTypeId, int itemId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetComments",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@userId", userId),
-				 new SqlParameter("@itemTypeId", itemTypeId),
-				 new SqlParameter("@itemId", itemId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetComments",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@userId", userId),
+					new SqlParameter("@itemTypeId", itemTypeId),
+					new SqlParameter("@itemId", itemId));
+			}
 		}
 
 		public void AddComment(int actorId, string itemTypeId, int itemId,
 			 string commentText, int severityId)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "AddComment",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@itemTypeId", itemTypeId),
-				 new SqlParameter("@itemId", itemId),
-				 new SqlParameter("@commentText", commentText),
-				 new SqlParameter("@severityId", severityId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "AddComment",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@itemTypeId", itemTypeId),
+					new SqlParameter("@itemId", itemId),
+					new SqlParameter("@commentText", commentText),
+					new SqlParameter("@severityId", severityId));
+			}
 		}
 
 		public void DeleteComment(int actorId, int commentId)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "DeleteComment",
-				 new SqlParameter("@actorId", actorId),
-				 new SqlParameter("@commentId", commentId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "DeleteComment",
+					new SqlParameter("@actorId", actorId),
+					new SqlParameter("@commentId", commentId));
+			}
 		}
 		#endregion
 
@@ -4456,346 +5673,491 @@ namespace SolidCP.EnterpriseServer
 		#region Exchange Server
 
 		public int AddExchangeAccount(int itemId, int accountType, string accountName,
-			 string displayName, string primaryEmailAddress, bool mailEnabledPublicFolder,
-			 string mailboxManagerActions, string samAccountName, int mailboxPlanId, string subscriberNumber)
+			string displayName, string primaryEmailAddress, bool mailEnabledPublicFolder,
+			string mailboxManagerActions, string samAccountName, int mailboxPlanId, string subscriberNumber)
 		{
-			SqlParameter outParam = new SqlParameter("@AccountID", SqlDbType.Int);
-			outParam.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "AddExchangeAccount",
-				 outParam,
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@AccountType", accountType),
-				 new SqlParameter("@AccountName", accountName),
-				 new SqlParameter("@DisplayName", displayName),
-				 new SqlParameter("@PrimaryEmailAddress", primaryEmailAddress),
-				 new SqlParameter("@MailEnabledPublicFolder", mailEnabledPublicFolder),
-				 new SqlParameter("@MailboxManagerActions", mailboxManagerActions),
-				 new SqlParameter("@SamAccountName", samAccountName),
-				 new SqlParameter("@MailboxPlanId", (mailboxPlanId == 0) ? (object)DBNull.Value : (object)mailboxPlanId),
-				 new SqlParameter("@SubscriberNumber", (string.IsNullOrEmpty(subscriberNumber) ? (object)DBNull.Value : (object)subscriberNumber))
-			);
+			}
+			else
+			{
+				SqlParameter outParam = new SqlParameter("@AccountID", SqlDbType.Int);
+				outParam.Direction = ParameterDirection.Output;
 
-			return Convert.ToInt32(outParam.Value);
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"AddExchangeAccount",
+					outParam,
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@AccountType", accountType),
+					new SqlParameter("@AccountName", accountName),
+					new SqlParameter("@DisplayName", displayName),
+					new SqlParameter("@PrimaryEmailAddress", primaryEmailAddress),
+					new SqlParameter("@MailEnabledPublicFolder", mailEnabledPublicFolder),
+					new SqlParameter("@MailboxManagerActions", mailboxManagerActions),
+					new SqlParameter("@SamAccountName", samAccountName),
+					new SqlParameter("@MailboxPlanId", (mailboxPlanId == 0) ? (object)DBNull.Value : (object)mailboxPlanId),
+					new SqlParameter("@SubscriberNumber", (string.IsNullOrEmpty(subscriberNumber) ? (object)DBNull.Value : (object)subscriberNumber)));
+
+				return Convert.ToInt32(outParam.Value);
+			}
 		}
 
 		public void AddExchangeAccountEmailAddress(int accountId, string emailAddress)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "AddExchangeAccountEmailAddress",
-				 new SqlParameter("@AccountID", accountId),
-				 new SqlParameter("@EmailAddress", emailAddress)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"AddExchangeAccountEmailAddress",
+					new SqlParameter("@AccountID", accountId),
+					new SqlParameter("@EmailAddress", emailAddress));
+			}
 		}
 
 		public void AddExchangeOrganization(int itemId, string organizationId)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "AddExchangeOrganization",
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@OrganizationID", organizationId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"AddExchangeOrganization",
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@OrganizationID", organizationId));
+			}
 		}
 
 		public void AddExchangeOrganizationDomain(int itemId, int domainId, bool isHost)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "AddExchangeOrganizationDomain",
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@DomainID", domainId),
-				 new SqlParameter("@IsHost", isHost)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"AddExchangeOrganizationDomain",
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@DomainID", domainId),
+					new SqlParameter("@IsHost", isHost));
+			}
 		}
 
 		public void ChangeExchangeAcceptedDomainType(int itemId, int domainId, int domainTypeId)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "ChangeExchangeAcceptedDomainType",
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@DomainID", domainId),
-				 new SqlParameter("@DomainTypeID", domainTypeId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"ChangeExchangeAcceptedDomainType",
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@DomainID", domainId),
+					new SqlParameter("@DomainTypeID", domainTypeId));
+			}
 		}
 
 		public IDataReader GetExchangeOrganizationStatistics(int itemId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetExchangeOrganizationStatistics",
-				 new SqlParameter("@ItemID", itemId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetExchangeOrganizationStatistics",
+					new SqlParameter("@ItemID", itemId));
+			}
 		}
 
 		public void DeleteUserEmailAddresses(int accountId, string primaryAddress)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "DeleteUserEmailAddresses",
-				 new SqlParameter("@AccountID", accountId),
-				 new SqlParameter("@PrimaryEmailAddress", primaryAddress)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"DeleteUserEmailAddresses",
+					new SqlParameter("@AccountID", accountId),
+					new SqlParameter("@PrimaryEmailAddress", primaryAddress));
+			}
 		}
 
 		public void DeleteExchangeAccount(int itemId, int accountId)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "DeleteExchangeAccount",
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@AccountID", accountId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"DeleteExchangeAccount",
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@AccountID", accountId));
+			}
 		}
 
 
 		public void DeleteExchangeAccountEmailAddress(int accountId, string emailAddress)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "DeleteExchangeAccountEmailAddress",
-				 new SqlParameter("@AccountID", accountId),
-				 new SqlParameter("@EmailAddress", emailAddress)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"DeleteExchangeAccountEmailAddress",
+					new SqlParameter("@AccountID", accountId),
+					new SqlParameter("@EmailAddress", emailAddress));
+			}
 		}
 
 		public void DeleteExchangeOrganization(int itemId)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "DeleteExchangeOrganization",
-				 new SqlParameter("@ItemID", itemId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"DeleteExchangeOrganization",
+					new SqlParameter("@ItemID", itemId));
+			}
 		}
 
 		public void DeleteExchangeOrganizationDomain(int itemId, int domainId)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "DeleteExchangeOrganizationDomain",
-				 new SqlParameter("@ItemId", itemId),
-				 new SqlParameter("@DomainID", domainId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"DeleteExchangeOrganizationDomain",
+					new SqlParameter("@ItemId", itemId),
+					new SqlParameter("@DomainID", domainId));
+			}
 		}
 
 		public bool ExchangeAccountEmailAddressExists(string emailAddress, bool checkContacts)
 		{
-			SqlParameter outParam = new SqlParameter("@Exists", SqlDbType.Bit);
-			outParam.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "ExchangeAccountEmailAddressExists",
-				 new SqlParameter("@EmailAddress", emailAddress),
-				 new SqlParameter("@checkContacts", checkContacts),
-				 outParam
-			);
+			}
+			else
+			{
+				SqlParameter outParam = new SqlParameter("@Exists", SqlDbType.Bit);
+				outParam.Direction = ParameterDirection.Output;
 
-			return Convert.ToBoolean(outParam.Value);
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"ExchangeAccountEmailAddressExists",
+					new SqlParameter("@EmailAddress", emailAddress),
+					new SqlParameter("@checkContacts", checkContacts),
+					outParam);
+
+				return Convert.ToBoolean(outParam.Value);
+			}
 		}
 
 		public bool ExchangeOrganizationDomainExists(int domainId)
 		{
-			SqlParameter outParam = new SqlParameter("@Exists", SqlDbType.Bit);
-			outParam.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "ExchangeOrganizationDomainExists",
-				 new SqlParameter("@DomainID", domainId),
-				 outParam
-			);
+			}
+			else
+			{
+				SqlParameter outParam = new SqlParameter("@Exists", SqlDbType.Bit);
+				outParam.Direction = ParameterDirection.Output;
 
-			return Convert.ToBoolean(outParam.Value);
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"ExchangeOrganizationDomainExists",
+					new SqlParameter("@DomainID", domainId),
+					outParam);
+
+				return Convert.ToBoolean(outParam.Value);
+			}
 		}
-
 		public bool ExchangeOrganizationExists(string organizationId)
 		{
-			SqlParameter outParam = new SqlParameter("@Exists", SqlDbType.Bit);
-			outParam.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "ExchangeOrganizationExists",
-				 new SqlParameter("@OrganizationID", organizationId),
-				 outParam
-			);
+			}
+			else
+			{
+				SqlParameter outParam = new SqlParameter("@Exists", SqlDbType.Bit);
+				outParam.Direction = ParameterDirection.Output;
 
-			return Convert.ToBoolean(outParam.Value);
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"ExchangeOrganizationExists",
+					new SqlParameter("@OrganizationID", organizationId),
+					outParam);
+
+				return Convert.ToBoolean(outParam.Value);
+			}
 		}
-
 		public bool ExchangeAccountExists(string accountName)
 		{
-			SqlParameter outParam = new SqlParameter("@Exists", SqlDbType.Bit);
-			outParam.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "ExchangeAccountExists",
-				 new SqlParameter("@AccountName", accountName),
-				 outParam
-			);
+			}
+			else
+			{
+				SqlParameter outParam = new SqlParameter("@Exists", SqlDbType.Bit);
+				outParam.Direction = ParameterDirection.Output;
 
-			return Convert.ToBoolean(outParam.Value);
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"ExchangeAccountExists",
+					new SqlParameter("@AccountName", accountName),
+					outParam);
+
+				return Convert.ToBoolean(outParam.Value);
+			}
 		}
-
 		public void UpdateExchangeAccount(int accountId, string accountName, ExchangeAccountType accountType,
-			 string displayName, string primaryEmailAddress, bool mailEnabledPublicFolder,
-			 string mailboxManagerActions, string samAccountName, int mailboxPlanId, int archivePlanId, string subscriberNumber,
-			 bool EnableArchiving)
+			string displayName, string primaryEmailAddress, bool mailEnabledPublicFolder,
+			string mailboxManagerActions, string samAccountName, int mailboxPlanId, int archivePlanId, string subscriberNumber,
+			bool EnableArchiving)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "UpdateExchangeAccount",
-				 new SqlParameter("@AccountID", accountId),
-				 new SqlParameter("@AccountName", accountName),
-				 new SqlParameter("@DisplayName", displayName),
-				 new SqlParameter("@AccountType", (int)accountType),
-				 new SqlParameter("@PrimaryEmailAddress", primaryEmailAddress),
-				 new SqlParameter("@MailEnabledPublicFolder", mailEnabledPublicFolder),
-				 new SqlParameter("@MailboxManagerActions", mailboxManagerActions),
-				 new SqlParameter("@SamAccountName", samAccountName),
-				 new SqlParameter("@MailboxPlanId", (mailboxPlanId == 0) ? (object)DBNull.Value : (object)mailboxPlanId),
-				 new SqlParameter("@ArchivingMailboxPlanId", (archivePlanId < 1) ? (object)DBNull.Value : (object)archivePlanId),
-				 new SqlParameter("@SubscriberNumber", (string.IsNullOrEmpty(subscriberNumber) ? (object)DBNull.Value : (object)subscriberNumber)),
-				 new SqlParameter("@EnableArchiving", EnableArchiving)
-			);
-		}
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"UpdateExchangeAccount",
+					new SqlParameter("@AccountID", accountId),
+					new SqlParameter("@AccountName", accountName),
+					new SqlParameter("@DisplayName", displayName),
+					new SqlParameter("@AccountType", (int)accountType),
+					new SqlParameter("@PrimaryEmailAddress", primaryEmailAddress),
+					new SqlParameter("@MailEnabledPublicFolder", mailEnabledPublicFolder),
+					new SqlParameter("@MailboxManagerActions", mailboxManagerActions),
+					new SqlParameter("@SamAccountName", samAccountName),
+					new SqlParameter("@MailboxPlanId", (mailboxPlanId == 0) ? (object)DBNull.Value : (object)mailboxPlanId),
+					new SqlParameter("@ArchivingMailboxPlanId", (archivePlanId < 1) ? (object)DBNull.Value : (object)archivePlanId),
+					new SqlParameter("@SubscriberNumber", (string.IsNullOrEmpty(subscriberNumber) ? (object)DBNull.Value : (object)subscriberNumber)),
+					new SqlParameter("@EnableArchiving", EnableArchiving));
+			}
+		}
 		public void UpdateExchangeAccountServiceLevelSettings(int accountId, int levelId, bool isVIP)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "UpdateExchangeAccountSLSettings",
-				 new SqlParameter("@AccountID", accountId),
-				 new SqlParameter("@LevelID", (levelId == 0) ? (object)DBNull.Value : (object)levelId),
-				 new SqlParameter("@IsVIP", isVIP)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"UpdateExchangeAccountSLSettings",
+					new SqlParameter("@AccountID", accountId),
+					new SqlParameter("@LevelID", (levelId == 0) ? (object)DBNull.Value : (object)levelId),
+					new SqlParameter("@IsVIP", isVIP));
+			}
 		}
 
 		public void UpdateExchangeAccountUserPrincipalName(int accountId, string userPrincipalName)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "UpdateExchangeAccountUserPrincipalName",
-				 new SqlParameter("@AccountID", accountId),
-				 new SqlParameter("@UserPrincipalName", userPrincipalName));
-		}
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"UpdateExchangeAccountUserPrincipalName",
+					new SqlParameter("@AccountID", accountId),
+					new SqlParameter("@UserPrincipalName", userPrincipalName));
+			}
+		}
 		public IDataReader GetExchangeAccount(int itemId, int accountId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetExchangeAccount",
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@AccountID", accountId)
-			);
-		}
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetExchangeAccount",
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@AccountID", accountId));
+			}
+		}
 		public IDataReader GetExchangeAccountByAccountName(int itemId, string accountName)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetExchangeAccountByAccountName",
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@AccountName", accountName)
-			);
-		}
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetExchangeAccountByAccountName",
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@AccountName", accountName));
+			}
+		}
 		public IDataReader GetExchangeAccountByMailboxPlanId(int itemId, int MailboxPlanId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetExchangeAccountByMailboxPlanId",
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@MailboxPlanId", MailboxPlanId)
-			);
-		}
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetExchangeAccountByMailboxPlanId",
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@MailboxPlanId", MailboxPlanId));
+			}
+		}
 
 		public IDataReader GetExchangeAccountEmailAddresses(int accountId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetExchangeAccountEmailAddresses",
-				 new SqlParameter("@AccountID", accountId)
-			);
-		}
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetExchangeAccountEmailAddresses",
+					new SqlParameter("@AccountID", accountId));
+			}
+		}
 		public IDataReader GetExchangeOrganizationDomains(int itemId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetExchangeOrganizationDomains",
-				 new SqlParameter("@ItemID", itemId)
-			);
-		}
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetExchangeOrganizationDomains",
+					new SqlParameter("@ItemID", itemId));
+			}
+		}
 
 		public IDataReader GetExchangeAccounts(int itemId, int accountType)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetExchangeAccounts",
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@AccountType", accountType)
-			);
-		}
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetExchangeAccounts",
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@AccountType", accountType));
+			}
+		}
 		public IDataReader GetExchangeAccountByAccountNameWithoutItemId(string userPrincipalName)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetExchangeAccountByAccountNameWithoutItemId",
-				 new SqlParameter("@UserPrincipalName", userPrincipalName)
-			);
-		}
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetExchangeAccountByAccountNameWithoutItemId",
+					new SqlParameter("@UserPrincipalName", userPrincipalName));
+			}
+		}
 
 		public IDataReader GetExchangeMailboxes(int itemId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetExchangeMailboxes",
-				 new SqlParameter("@ItemID", itemId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetExchangeMailboxes",
+					new SqlParameter("@ItemID", itemId));
+			}
 		}
 
 		public IDataReader SearchExchangeAccountsByTypes(int actorId, int itemId, string accountTypes,
-			 string filterColumn, string filterValue, string sortColumn)
+			string filterColumn, string filterValue, string sortColumn)
 		{
 			// check input parameters
-			string[] types = accountTypes.Split(',');
+			/*string[] types = accountTypes.Split(',');
 			for (int i = 0; i < types.Length; i++)
 			{
 				try
@@ -4806,28 +6168,39 @@ namespace SolidCP.EnterpriseServer
 				{
 					throw new ArgumentException("Wrong patameter", "accountTypes");
 				}
+			}*/
+
+			if (!Regex.IsMatch(accountTypes, @"^\s*[0-9]+(\s*,\s*[0-9]+)*\s*$", RegexOptions.Singleline))
+			{
+				throw new ArgumentException("Wrong patameter", "accountTypes");
 			}
 
-			string searchTypes = String.Join(",", types);
+			accountTypes = Regex.Replace(accountTypes, @"[ \t]", ""); // remove whitespace
 
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "SearchExchangeAccountsByTypes",
-				 new SqlParameter("@ActorID", actorId),
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@AccountTypes", searchTypes),
-				 new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
-				 new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
-				 new SqlParameter("@SortColumn", VerifyColumnName(sortColumn))
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"SearchExchangeAccountsByTypes",
+					new SqlParameter("@ActorID", actorId),
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@AccountTypes", accountTypes),
+					new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
+					new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
+					new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)));
+			}
 		}
 
 		public DataSet GetExchangeAccountsPaged(int actorId, int itemId, string accountTypes,
-				  string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, bool archiving)
+			string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, bool archiving)
 		{
 			// check input parameters
-			string[] types = accountTypes.Split(',');
+			/* string[] types = accountTypes.Split(',');
 			for (int i = 0; i < types.Length; i++)
 			{
 				try
@@ -4840,424 +6213,571 @@ namespace SolidCP.EnterpriseServer
 				}
 			}
 
-			string searchTypes = String.Join(",", types);
+			string searchTypes = String.Join(",", types); */
 
-			return SqlHelper.ExecuteDataset(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetExchangeAccountsPaged",
-				 new SqlParameter("@ActorID", actorId),
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@AccountTypes", searchTypes),
-				 new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
-				 new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
-				 new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
-				 new SqlParameter("@StartRow", startRow),
-				 new SqlParameter("@MaximumRows", maximumRows),
-				 new SqlParameter("@Archiving", archiving)
-			);
+			if (!Regex.IsMatch(accountTypes, @"^\s*[0-9]+(\s*,\s*[0-9]+)*\s*$", RegexOptions.Singleline))
+			{
+				throw new ArgumentException("Wrong patameter", "accountTypes");
+			}
+
+			accountTypes = Regex.Replace(accountTypes, @"[ \t]", ""); // remove whitespace
+
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetExchangeAccountsPaged",
+					new SqlParameter("@ActorID", actorId),
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@AccountTypes", accountTypes),
+					new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
+					new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
+					new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
+					new SqlParameter("@StartRow", startRow),
+					new SqlParameter("@MaximumRows", maximumRows),
+					new SqlParameter("@Archiving", archiving));
+			}
 		}
-
 		public IDataReader SearchExchangeAccounts(int actorId, int itemId, bool includeMailboxes,
-				  bool includeContacts, bool includeDistributionLists, bool includeRooms, bool includeEquipment, bool IncludeSharedMailbox,
-				  bool includeSecurityGroups, string filterColumn, string filterValue, string sortColumn)
+			bool includeContacts, bool includeDistributionLists, bool includeRooms, bool includeEquipment, bool IncludeSharedMailbox,
+			bool includeSecurityGroups, string filterColumn, string filterValue, string sortColumn)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "SearchExchangeAccounts",
-				 new SqlParameter("@ActorID", actorId),
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@IncludeMailboxes", includeMailboxes),
-				 new SqlParameter("@IncludeContacts", includeContacts),
-				 new SqlParameter("@IncludeDistributionLists", includeDistributionLists),
-				 new SqlParameter("@IncludeRooms", includeRooms),
-				 new SqlParameter("@IncludeEquipment", includeEquipment),
-				 new SqlParameter("@IncludeSharedMailbox", IncludeSharedMailbox),
-				 new SqlParameter("@IncludeSecurityGroups", includeSecurityGroups),
-				 new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
-				 new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
-				 new SqlParameter("@SortColumn", VerifyColumnName(sortColumn))
-			);
-		}
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"SearchExchangeAccounts",
+					new SqlParameter("@ActorID", actorId),
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@IncludeMailboxes", includeMailboxes),
+					new SqlParameter("@IncludeContacts", includeContacts),
+					new SqlParameter("@IncludeDistributionLists", includeDistributionLists),
+					new SqlParameter("@IncludeRooms", includeRooms),
+					new SqlParameter("@IncludeEquipment", includeEquipment),
+					new SqlParameter("@IncludeSharedMailbox", IncludeSharedMailbox),
+					new SqlParameter("@IncludeSecurityGroups", includeSecurityGroups),
+					new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
+					new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
+					new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)));
+			}
+		}
 		public IDataReader SearchExchangeAccount(int actorId, int accountType, string primaryEmailAddress)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "SearchExchangeAccount",
-				 new SqlParameter("@ActorID", actorId),
-				 new SqlParameter("@AccountType", accountType),
-				 new SqlParameter("@PrimaryEmailAddress", primaryEmailAddress)
-			);
-		}
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"SearchExchangeAccount",
+					new SqlParameter("@ActorID", actorId),
+					new SqlParameter("@AccountType", accountType),
+					new SqlParameter("@PrimaryEmailAddress", primaryEmailAddress));
+			}
+		}
 		#endregion
 
 		#region Exchange Mailbox Plans
 		public int AddExchangeMailboxPlan(int itemID, string mailboxPlan, bool enableActiveSync, bool enableIMAP, bool enableMAPI, bool enableOWA, bool enablePOP, bool enableAutoReply,
-																  bool isDefault, int issueWarningPct, int keepDeletedItemsDays, int mailboxSizeMB, int maxReceiveMessageSizeKB, int maxRecipients,
-																  int maxSendMessageSizeKB, int prohibitSendPct, int prohibitSendReceivePct, bool hideFromAddressBook, int mailboxPlanType,
-																  bool enabledLitigationHold, int recoverabelItemsSpace, int recoverabelItemsWarning, string litigationHoldUrl, string litigationHoldMsg,
-																  bool archiving, bool EnableArchiving, int ArchiveSizeMB, int ArchiveWarningPct, bool enableForceArchiveDeletion, bool isForJournaling)
+			bool isDefault, int issueWarningPct, int keepDeletedItemsDays, int mailboxSizeMB, int maxReceiveMessageSizeKB, int maxRecipients,
+			int maxSendMessageSizeKB, int prohibitSendPct, int prohibitSendReceivePct, bool hideFromAddressBook, int mailboxPlanType,
+			bool enabledLitigationHold, int recoverabelItemsSpace, int recoverabelItemsWarning, string litigationHoldUrl, string litigationHoldMsg,
+			bool archiving, bool EnableArchiving, int ArchiveSizeMB, int ArchiveWarningPct, bool enableForceArchiveDeletion, bool isForJournaling)
 		{
-			SqlParameter outParam = new SqlParameter("@MailboxPlanId", SqlDbType.Int);
-			outParam.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "AddExchangeMailboxPlan",
-				 outParam,
-				 new SqlParameter("@ItemID", itemID),
-				 new SqlParameter("@MailboxPlan", mailboxPlan),
-				 new SqlParameter("@EnableActiveSync", enableActiveSync),
-				 new SqlParameter("@EnableIMAP", enableIMAP),
-				 new SqlParameter("@EnableMAPI", enableMAPI),
-				 new SqlParameter("@EnableOWA", enableOWA),
-				 new SqlParameter("@EnablePOP", enablePOP),
-				 new SqlParameter("@EnableAutoReply", enableAutoReply),
-				 new SqlParameter("@IsDefault", isDefault),
-				 new SqlParameter("@IssueWarningPct", issueWarningPct),
-				 new SqlParameter("@KeepDeletedItemsDays", keepDeletedItemsDays),
-				 new SqlParameter("@MailboxSizeMB", mailboxSizeMB),
-				 new SqlParameter("@MaxReceiveMessageSizeKB", maxReceiveMessageSizeKB),
-				 new SqlParameter("@MaxRecipients", maxRecipients),
-				 new SqlParameter("@MaxSendMessageSizeKB", maxSendMessageSizeKB),
-				 new SqlParameter("@ProhibitSendPct", prohibitSendPct),
-				 new SqlParameter("@ProhibitSendReceivePct", prohibitSendReceivePct),
-				 new SqlParameter("@HideFromAddressBook", hideFromAddressBook),
-				 new SqlParameter("@MailboxPlanType", mailboxPlanType),
-				 new SqlParameter("@AllowLitigationHold", enabledLitigationHold),
-				 new SqlParameter("@RecoverableItemsWarningPct", recoverabelItemsWarning),
-				 new SqlParameter("@RecoverableItemsSpace", recoverabelItemsSpace),
-				 new SqlParameter("@LitigationHoldUrl", litigationHoldUrl),
-				 new SqlParameter("@LitigationHoldMsg", litigationHoldMsg),
-				 new SqlParameter("@Archiving", archiving),
-				 new SqlParameter("@EnableArchiving", EnableArchiving),
-				 new SqlParameter("@ArchiveSizeMB", ArchiveSizeMB),
-				 new SqlParameter("@ArchiveWarningPct", ArchiveWarningPct),
-				 new SqlParameter("@EnableForceArchiveDeletion", enableForceArchiveDeletion),
-				 new SqlParameter("@IsForJournaling", isForJournaling)
-			);
+			}
+			else
+			{
+				SqlParameter outParam = new SqlParameter("@MailboxPlanId", SqlDbType.Int);
+				outParam.Direction = ParameterDirection.Output;
 
-			return Convert.ToInt32(outParam.Value);
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"AddExchangeMailboxPlan",
+					outParam,
+					new SqlParameter("@ItemID", itemID),
+					new SqlParameter("@MailboxPlan", mailboxPlan),
+					new SqlParameter("@EnableActiveSync", enableActiveSync),
+					new SqlParameter("@EnableIMAP", enableIMAP),
+					new SqlParameter("@EnableMAPI", enableMAPI),
+					new SqlParameter("@EnableOWA", enableOWA),
+					new SqlParameter("@EnablePOP", enablePOP),
+					new SqlParameter("@EnableAutoReply", enableAutoReply),
+					new SqlParameter("@IsDefault", isDefault),
+					new SqlParameter("@IssueWarningPct", issueWarningPct),
+					new SqlParameter("@KeepDeletedItemsDays", keepDeletedItemsDays),
+					new SqlParameter("@MailboxSizeMB", mailboxSizeMB),
+					new SqlParameter("@MaxReceiveMessageSizeKB", maxReceiveMessageSizeKB),
+					new SqlParameter("@MaxRecipients", maxRecipients),
+					new SqlParameter("@MaxSendMessageSizeKB", maxSendMessageSizeKB),
+					new SqlParameter("@ProhibitSendPct", prohibitSendPct),
+					new SqlParameter("@ProhibitSendReceivePct", prohibitSendReceivePct),
+					new SqlParameter("@HideFromAddressBook", hideFromAddressBook),
+					new SqlParameter("@MailboxPlanType", mailboxPlanType),
+					new SqlParameter("@AllowLitigationHold", enabledLitigationHold),
+					new SqlParameter("@RecoverableItemsWarningPct", recoverabelItemsWarning),
+					new SqlParameter("@RecoverableItemsSpace", recoverabelItemsSpace),
+					new SqlParameter("@LitigationHoldUrl", litigationHoldUrl),
+					new SqlParameter("@LitigationHoldMsg", litigationHoldMsg),
+					new SqlParameter("@Archiving", archiving),
+					new SqlParameter("@EnableArchiving", EnableArchiving),
+					new SqlParameter("@ArchiveSizeMB", ArchiveSizeMB),
+					new SqlParameter("@ArchiveWarningPct", ArchiveWarningPct),
+					new SqlParameter("@EnableForceArchiveDeletion", enableForceArchiveDeletion),
+					new SqlParameter("@IsForJournaling", isForJournaling));
+
+				return Convert.ToInt32(outParam.Value);
+			}
 		}
-
-
 
 		public void UpdateExchangeMailboxPlan(int mailboxPlanID, string mailboxPlan, bool enableActiveSync, bool enableIMAP, bool enableMAPI, bool enableOWA, bool enablePOP, bool enableAutoReply,
-														bool isDefault, int issueWarningPct, int keepDeletedItemsDays, int mailboxSizeMB, int maxReceiveMessageSizeKB, int maxRecipients,
-														int maxSendMessageSizeKB, int prohibitSendPct, int prohibitSendReceivePct, bool hideFromAddressBook, int mailboxPlanType,
-														bool enabledLitigationHold, long recoverabelItemsSpace, long recoverabelItemsWarning, string litigationHoldUrl, string litigationHoldMsg,
-														bool Archiving, bool EnableArchiving, int ArchiveSizeMB, int ArchiveWarningPct, bool enableForceArchiveDeletion, bool isForJournaling)
+			bool isDefault, int issueWarningPct, int keepDeletedItemsDays, int mailboxSizeMB, int maxReceiveMessageSizeKB, int maxRecipients,
+			int maxSendMessageSizeKB, int prohibitSendPct, int prohibitSendReceivePct, bool hideFromAddressBook, int mailboxPlanType,
+			bool enabledLitigationHold, long recoverabelItemsSpace, long recoverabelItemsWarning, string litigationHoldUrl, string litigationHoldMsg,
+			bool Archiving, bool EnableArchiving, int ArchiveSizeMB, int ArchiveWarningPct, bool enableForceArchiveDeletion, bool isForJournaling)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "UpdateExchangeMailboxPlan",
-				 new SqlParameter("@MailboxPlanID", mailboxPlanID),
-				 new SqlParameter("@MailboxPlan", mailboxPlan),
-				 new SqlParameter("@EnableActiveSync", enableActiveSync),
-				 new SqlParameter("@EnableIMAP", enableIMAP),
-				 new SqlParameter("@EnableMAPI", enableMAPI),
-				 new SqlParameter("@EnableOWA", enableOWA),
-				 new SqlParameter("@EnablePOP", enablePOP),
-				 new SqlParameter("@EnableAutoReply", enableAutoReply),
-				 new SqlParameter("@IsDefault", isDefault),
-				 new SqlParameter("@IssueWarningPct", issueWarningPct),
-				 new SqlParameter("@KeepDeletedItemsDays", keepDeletedItemsDays),
-				 new SqlParameter("@MailboxSizeMB", mailboxSizeMB),
-				 new SqlParameter("@MaxReceiveMessageSizeKB", maxReceiveMessageSizeKB),
-				 new SqlParameter("@MaxRecipients", maxRecipients),
-				 new SqlParameter("@MaxSendMessageSizeKB", maxSendMessageSizeKB),
-				 new SqlParameter("@ProhibitSendPct", prohibitSendPct),
-				 new SqlParameter("@ProhibitSendReceivePct", prohibitSendReceivePct),
-				 new SqlParameter("@HideFromAddressBook", hideFromAddressBook),
-				 new SqlParameter("@MailboxPlanType", mailboxPlanType),
-				 new SqlParameter("@AllowLitigationHold", enabledLitigationHold),
-				 new SqlParameter("@RecoverableItemsWarningPct", recoverabelItemsWarning),
-				 new SqlParameter("@RecoverableItemsSpace", recoverabelItemsSpace),
-				 new SqlParameter("@LitigationHoldUrl", litigationHoldUrl),
-				 new SqlParameter("@LitigationHoldMsg", litigationHoldMsg),
-				 new SqlParameter("@Archiving", Archiving),
-				new SqlParameter("@EnableArchiving", EnableArchiving),
-				 new SqlParameter("@ArchiveSizeMB", ArchiveSizeMB),
-				 new SqlParameter("@ArchiveWarningPct", ArchiveWarningPct),
-				 new SqlParameter("@EnableForceArchiveDeletion", enableForceArchiveDeletion),
-				 new SqlParameter("@IsForJournaling", isForJournaling)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"UpdateExchangeMailboxPlan",
+					new SqlParameter("@MailboxPlanID", mailboxPlanID),
+					new SqlParameter("@MailboxPlan", mailboxPlan),
+					new SqlParameter("@EnableActiveSync", enableActiveSync),
+					new SqlParameter("@EnableIMAP", enableIMAP),
+					new SqlParameter("@EnableMAPI", enableMAPI),
+					new SqlParameter("@EnableOWA", enableOWA),
+					new SqlParameter("@EnablePOP", enablePOP),
+					new SqlParameter("@EnableAutoReply", enableAutoReply),
+					new SqlParameter("@IsDefault", isDefault),
+					new SqlParameter("@IssueWarningPct", issueWarningPct),
+					new SqlParameter("@KeepDeletedItemsDays", keepDeletedItemsDays),
+					new SqlParameter("@MailboxSizeMB", mailboxSizeMB),
+					new SqlParameter("@MaxReceiveMessageSizeKB", maxReceiveMessageSizeKB),
+					new SqlParameter("@MaxRecipients", maxRecipients),
+					new SqlParameter("@MaxSendMessageSizeKB", maxSendMessageSizeKB),
+					new SqlParameter("@ProhibitSendPct", prohibitSendPct),
+					new SqlParameter("@ProhibitSendReceivePct", prohibitSendReceivePct),
+					new SqlParameter("@HideFromAddressBook", hideFromAddressBook),
+					new SqlParameter("@MailboxPlanType", mailboxPlanType),
+					new SqlParameter("@AllowLitigationHold", enabledLitigationHold),
+					new SqlParameter("@RecoverableItemsWarningPct", recoverabelItemsWarning),
+					new SqlParameter("@RecoverableItemsSpace", recoverabelItemsSpace),
+					new SqlParameter("@LitigationHoldUrl", litigationHoldUrl),
+					new SqlParameter("@LitigationHoldMsg", litigationHoldMsg),
+					new SqlParameter("@Archiving", Archiving),
+					new SqlParameter("@EnableArchiving", EnableArchiving),
+					new SqlParameter("@ArchiveSizeMB", ArchiveSizeMB),
+					new SqlParameter("@ArchiveWarningPct", ArchiveWarningPct),
+					new SqlParameter("@EnableForceArchiveDeletion", enableForceArchiveDeletion),
+					new SqlParameter("@IsForJournaling", isForJournaling));
+			}
 		}
-
-
 
 		public void DeleteExchangeMailboxPlan(int mailboxPlanId)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "DeleteExchangeMailboxPlan",
-				 new SqlParameter("@MailboxPlanId", mailboxPlanId)
-			);
-		}
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"DeleteExchangeMailboxPlan",
+					new SqlParameter("@MailboxPlanId", mailboxPlanId));
+			}
+		}
 
 		public IDataReader GetExchangeMailboxPlan(int mailboxPlanId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetExchangeMailboxPlan",
-				 new SqlParameter("@MailboxPlanId", mailboxPlanId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetExchangeMailboxPlan",
+					new SqlParameter("@MailboxPlanId", mailboxPlanId));
+			}
 		}
 
 		public IDataReader GetExchangeMailboxPlans(int itemId, bool archiving)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetExchangeMailboxPlans",
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@Archiving", archiving)
-			);
-		}
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetExchangeMailboxPlans",
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@Archiving", archiving));
+			}
+		}
 
 		public IDataReader GetExchangeOrganization(int itemId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetExchangeOrganization",
-				 new SqlParameter("@ItemID", itemId)
-			);
-		}
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetExchangeOrganization",
+					new SqlParameter("@ItemID", itemId));
+			}
+		}
 
 		public void SetOrganizationDefaultExchangeMailboxPlan(int itemId, int mailboxPlanId)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "SetOrganizationDefaultExchangeMailboxPlan",
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@MailboxPlanId", mailboxPlanId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"SetOrganizationDefaultExchangeMailboxPlan",
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@MailboxPlanId", mailboxPlanId));
+			}
 		}
 
 		public void SetExchangeAccountMailboxPlan(int accountId, int mailboxPlanId, int archivePlanId, bool EnableArchiving)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "SetExchangeAccountMailboxplan",
-				 new SqlParameter("@AccountID", accountId),
-				 new SqlParameter("@MailboxPlanId", (mailboxPlanId == 0) ? (object)DBNull.Value : (object)mailboxPlanId),
-				 new SqlParameter("@ArchivingMailboxPlanId", (archivePlanId < 1) ? (object)DBNull.Value : (object)archivePlanId),
-				 new SqlParameter("@EnableArchiving", EnableArchiving)
-			);
-		}
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"SetExchangeAccountMailboxplan",
+					new SqlParameter("@AccountID", accountId),
+					new SqlParameter("@MailboxPlanId", (mailboxPlanId == 0) ? (object)DBNull.Value : (object)mailboxPlanId),
+					new SqlParameter("@ArchivingMailboxPlanId", (archivePlanId < 1) ? (object)DBNull.Value : (object)archivePlanId),
+					new SqlParameter("@EnableArchiving", EnableArchiving));
+			}
+		}
 		#endregion
 
 		#region Exchange Retention Policy Tags
 		public int AddExchangeRetentionPolicyTag(int ItemID, string TagName, int TagType, int AgeLimitForRetention, int RetentionAction)
 		{
-			SqlParameter outParam = new SqlParameter("@TagID", SqlDbType.Int);
-			outParam.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "AddExchangeRetentionPolicyTag",
-				 outParam,
-				 new SqlParameter("@ItemID", ItemID),
-				 new SqlParameter("@TagName", TagName),
-				 new SqlParameter("@TagType", TagType),
-				 new SqlParameter("@AgeLimitForRetention", AgeLimitForRetention),
-				 new SqlParameter("@RetentionAction", RetentionAction)
-			);
+			}
+			else
+			{
+				SqlParameter outParam = new SqlParameter("@TagID", SqlDbType.Int);
+				outParam.Direction = ParameterDirection.Output;
 
-			return Convert.ToInt32(outParam.Value);
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"AddExchangeRetentionPolicyTag",
+					outParam,
+					new SqlParameter("@ItemID", ItemID),
+					new SqlParameter("@TagName", TagName),
+					new SqlParameter("@TagType", TagType),
+					new SqlParameter("@AgeLimitForRetention", AgeLimitForRetention),
+					new SqlParameter("@RetentionAction", RetentionAction));
+
+				return Convert.ToInt32(outParam.Value);
+			}
 		}
 
 		public void UpdateExchangeRetentionPolicyTag(int TagID, int ItemID, string TagName, int TagType, int AgeLimitForRetention, int RetentionAction)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "UpdateExchangeRetentionPolicyTag",
-				 new SqlParameter("@TagID", TagID),
-				 new SqlParameter("@ItemID", ItemID),
-				 new SqlParameter("@TagName", TagName),
-				 new SqlParameter("@TagType", TagType),
-				 new SqlParameter("@AgeLimitForRetention", AgeLimitForRetention),
-				 new SqlParameter("@RetentionAction", RetentionAction)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"UpdateExchangeRetentionPolicyTag",
+					new SqlParameter("@TagID", TagID),
+					new SqlParameter("@ItemID", ItemID),
+					new SqlParameter("@TagName", TagName),
+					new SqlParameter("@TagType", TagType),
+					new SqlParameter("@AgeLimitForRetention", AgeLimitForRetention),
+					new SqlParameter("@RetentionAction", RetentionAction));
+			}
 		}
 
 		public void DeleteExchangeRetentionPolicyTag(int TagID)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "DeleteExchangeRetentionPolicyTag",
-				 new SqlParameter("@TagID", TagID)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"DeleteExchangeRetentionPolicyTag",
+					new SqlParameter("@TagID", TagID));
+			}
 		}
 
 		public IDataReader GetExchangeRetentionPolicyTag(int TagID)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetExchangeRetentionPolicyTag",
-				 new SqlParameter("@TagID", TagID)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetExchangeRetentionPolicyTag",
+					new SqlParameter("@TagID", TagID));
+			}
 		}
 
 		public IDataReader GetExchangeRetentionPolicyTags(int itemId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetExchangeRetentionPolicyTags",
-				 new SqlParameter("@ItemID", itemId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetExchangeRetentionPolicyTags",
+					new SqlParameter("@ItemID", itemId));
+			}
 		}
 
 		public int AddExchangeMailboxPlanRetentionPolicyTag(int TagID, int MailboxPlanId)
 		{
-			SqlParameter outParam = new SqlParameter("@PlanTagID", SqlDbType.Int);
-			outParam.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "AddExchangeMailboxPlanRetentionPolicyTag",
-				 outParam,
-				 new SqlParameter("@TagID", TagID),
-				 new SqlParameter("@MailboxPlanId", MailboxPlanId)
-			);
+			}
+			else
+			{
+				SqlParameter outParam = new SqlParameter("@PlanTagID", SqlDbType.Int);
+				outParam.Direction = ParameterDirection.Output;
 
-			return Convert.ToInt32(outParam.Value);
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"AddExchangeMailboxPlanRetentionPolicyTag",
+					outParam,
+					new SqlParameter("@TagID", TagID),
+					new SqlParameter("@MailboxPlanId", MailboxPlanId));
+
+				return Convert.ToInt32(outParam.Value);
+			}
 		}
-
 		public void DeleteExchangeMailboxPlanRetentionPolicyTag(int PlanTagID)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "DeleteExchangeMailboxPlanRetentionPolicyTag",
-				 new SqlParameter("@PlanTagID", PlanTagID)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"DeleteExchangeMailboxPlanRetentionPolicyTag",
+					new SqlParameter("@PlanTagID", PlanTagID));
+			}
 		}
 
 		public IDataReader GetExchangeMailboxPlanRetentionPolicyTags(int MailboxPlanId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetExchangeMailboxPlanRetentionPolicyTags",
-				 new SqlParameter("@MailboxPlanId", MailboxPlanId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetExchangeMailboxPlanRetentionPolicyTags",
+					new SqlParameter("@MailboxPlanId", MailboxPlanId));
+			}
 		}
-
-
 		#endregion
 
 		#region Exchange Disclaimers
 		public int AddExchangeDisclaimer(int itemID, ExchangeDisclaimer disclaimer)
 		{
-			SqlParameter outParam = new SqlParameter("@ExchangeDisclaimerId", SqlDbType.Int);
-			outParam.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "AddExchangeDisclaimer",
-				 outParam,
+			}
+			else
+			{
+				SqlParameter outParam = new SqlParameter("@ExchangeDisclaimerId", SqlDbType.Int);
+				outParam.Direction = ParameterDirection.Output;
 
-				 new SqlParameter("@ItemID", itemID),
-				 new SqlParameter("@DisclaimerName", disclaimer.DisclaimerName),
-				 new SqlParameter("@DisclaimerText", disclaimer.DisclaimerText)
-			);
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"AddExchangeDisclaimer",
+					outParam,
+					new SqlParameter("@ItemID", itemID),
+					new SqlParameter("@DisclaimerName", disclaimer.DisclaimerName),
+					new SqlParameter("@DisclaimerText", disclaimer.DisclaimerText));
 
-			return Convert.ToInt32(outParam.Value);
+				return Convert.ToInt32(outParam.Value);
+			}
 		}
 
 		public void UpdateExchangeDisclaimer(int itemID, ExchangeDisclaimer disclaimer)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "UpdateExchangeDisclaimer",
-				 new SqlParameter("@ExchangeDisclaimerId", disclaimer.ExchangeDisclaimerId),
-				 new SqlParameter("@DisclaimerName", disclaimer.DisclaimerName),
-				 new SqlParameter("@DisclaimerText", disclaimer.DisclaimerText)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"UpdateExchangeDisclaimer",
+					new SqlParameter("@ExchangeDisclaimerId", disclaimer.ExchangeDisclaimerId),
+					new SqlParameter("@DisclaimerName", disclaimer.DisclaimerName),
+					new SqlParameter("@DisclaimerText", disclaimer.DisclaimerText));
+			}
 		}
 
 		public void DeleteExchangeDisclaimer(int exchangeDisclaimerId)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "DeleteExchangeDisclaimer",
-				 new SqlParameter("@ExchangeDisclaimerId", exchangeDisclaimerId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"DeleteExchangeDisclaimer",
+					new SqlParameter("@ExchangeDisclaimerId", exchangeDisclaimerId));
+			}
 		}
 
 		public IDataReader GetExchangeDisclaimer(int exchangeDisclaimerId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetExchangeDisclaimer",
-				 new SqlParameter("@ExchangeDisclaimerId", exchangeDisclaimerId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetExchangeDisclaimer",
+					new SqlParameter("@ExchangeDisclaimerId", exchangeDisclaimerId));
+			}
 		}
 
 		public IDataReader GetExchangeDisclaimers(int itemId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetExchangeDisclaimers",
-				 new SqlParameter("@ItemID", itemId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetExchangeDisclaimers",
+					new SqlParameter("@ItemID", itemId));
+			}
 		}
 
 		public void SetExchangeAccountDisclaimerId(int AccountID, int ExchangeDisclaimerId)
 		{
-			object id = null;
-			if (ExchangeDisclaimerId != -1) id = ExchangeDisclaimerId;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(
-								 ConnectionString,
-								 CommandType.StoredProcedure,
-								 "SetExchangeAccountDisclaimerId",
-								 new SqlParameter("@AccountID", AccountID),
-								 new SqlParameter("@ExchangeDisclaimerId", id)
-							);
+			}
+			else
+			{
+				object id = null;
+				if (ExchangeDisclaimerId != -1) id = ExchangeDisclaimerId;
+
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"SetExchangeAccountDisclaimerId",
+					new SqlParameter("@AccountID", AccountID),
+					new SqlParameter("@ExchangeDisclaimerId", id));
+			}
 		}
 
 		public int GetExchangeAccountDisclaimerId(int AccountID)
 		{
-			object objReturn = SqlHelper.ExecuteScalar(
-								 ConnectionString,
-								 CommandType.StoredProcedure,
-								 "GetExchangeAccountDisclaimerId",
-								 new SqlParameter("@AccountID", AccountID)
-							);
+			if (UseEntityFramework)
+			{
 
-			int ret;
-			if (!int.TryParse(objReturn.ToString(), out ret)) return -1;
-			return ret;
+			}
+			else
+			{
+				object objReturn = SqlHelper.ExecuteScalar(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetExchangeAccountDisclaimerId",
+					new SqlParameter("@AccountID", AccountID));
+
+				int ret;
+				if (!int.TryParse(objReturn.ToString(), out ret)) return -1;
+				return ret;
+			}
 		}
-
 		#endregion
 
 		#region Organizations
@@ -5269,249 +6789,378 @@ namespace SolidCP.EnterpriseServer
 
 		public int AddAccessToken(Guid accessToken, int accountId, int itemId, DateTime expirationDate, AccessTokenTypes type)
 		{
-			SqlParameter prmId = new SqlParameter("@TokenID", SqlDbType.Int);
-			prmId.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "AddAccessToken",
-				 prmId,
-				 new SqlParameter("@AccessToken", accessToken),
-				 new SqlParameter("@ExpirationDate", expirationDate),
-				 new SqlParameter("@AccountID", accountId),
-				 new SqlParameter("@ItemId", itemId),
-				 new SqlParameter("@TokenType", (int)type)
-			);
+			}
+			else
+			{
+				SqlParameter prmId = new SqlParameter("@TokenID", SqlDbType.Int);
+				prmId.Direction = ParameterDirection.Output;
 
-			// read identity
-			return Convert.ToInt32(prmId.Value);
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"AddAccessToken",
+					prmId,
+					new SqlParameter("@AccessToken", accessToken),
+					new SqlParameter("@ExpirationDate", expirationDate),
+					new SqlParameter("@AccountID", accountId),
+					new SqlParameter("@ItemId", itemId),
+					new SqlParameter("@TokenType", (int)type));
+
+				// read identity
+				return Convert.ToInt32(prmId.Value);
+			}
 		}
 
 		public void SetAccessTokenResponseMessage(Guid accessToken, string response)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "SetAccessTokenSmsResponse",
-				 new SqlParameter("@AccessToken", accessToken),
-				 new SqlParameter("@SmsResponse", response)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"SetAccessTokenSmsResponse",
+					new SqlParameter("@AccessToken", accessToken),
+					new SqlParameter("@SmsResponse", response));
+			}
 		}
 
 		public void DeleteExpiredAccessTokens()
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "DeleteExpiredAccessTokenTokens"
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"DeleteExpiredAccessTokenTokens");
+			}
 		}
 
 		public IDataReader GetAccessTokenByAccessToken(Guid accessToken, AccessTokenTypes type)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetAccessTokenByAccessToken",
-				 new SqlParameter("@AccessToken", accessToken),
-				 new SqlParameter("@TokenType", type)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetAccessTokenByAccessToken",
+					new SqlParameter("@AccessToken", accessToken),
+					new SqlParameter("@TokenType", type));
+			}
 		}
 
 		public void DeleteAccessToken(Guid accessToken, AccessTokenTypes type)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "DeleteAccessToken",
-				 new SqlParameter("@AccessToken", accessToken),
-				 new SqlParameter("@TokenType", type)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"DeleteAccessToken",
+					new SqlParameter("@AccessToken", accessToken),
+					new SqlParameter("@TokenType", type));
+			}
 		}
 
 		public void UpdateOrganizationSettings(int itemId, string settingsName, string xml)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "UpdateExchangeOrganizationSettings",
-				 new SqlParameter("@ItemId", itemId),
-				 new SqlParameter("@SettingsName", settingsName),
-				 new SqlParameter("@Xml", xml));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "UpdateExchangeOrganizationSettings",
+					new SqlParameter("@ItemId", itemId),
+					new SqlParameter("@SettingsName", settingsName),
+					new SqlParameter("@Xml", xml));
+			}
 		}
 
 		public IDataReader GetOrganizationSettings(int itemId, string settingsName)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetExchangeOrganizationSettings",
-				 new SqlParameter("@ItemId", itemId),
-				 new SqlParameter("@SettingsName", settingsName));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetExchangeOrganizationSettings",
+					new SqlParameter("@ItemId", itemId),
+					new SqlParameter("@SettingsName", settingsName));
+			}
 		}
 
 		public int AddOrganizationDeletedUser(int accountId, int originAT, string storagePath, string folderName, string fileName, DateTime expirationDate)
 		{
-			SqlParameter outParam = new SqlParameter("@ID", SqlDbType.Int);
-			outParam.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "AddOrganizationDeletedUser",
-				 outParam,
-				 new SqlParameter("@AccountID", accountId),
-				 new SqlParameter("@OriginAT", originAT),
-				 new SqlParameter("@StoragePath", storagePath),
-				 new SqlParameter("@FolderName", folderName),
-				 new SqlParameter("@FileName", fileName),
-				 new SqlParameter("@ExpirationDate", expirationDate)
-			);
+			}
+			else
+			{
+				SqlParameter outParam = new SqlParameter("@ID", SqlDbType.Int);
+				outParam.Direction = ParameterDirection.Output;
 
-			return Convert.ToInt32(outParam.Value);
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"AddOrganizationDeletedUser",
+					outParam,
+					new SqlParameter("@AccountID", accountId),
+					new SqlParameter("@OriginAT", originAT),
+					new SqlParameter("@StoragePath", storagePath),
+					new SqlParameter("@FolderName", folderName),
+					new SqlParameter("@FileName", fileName),
+					new SqlParameter("@ExpirationDate", expirationDate));
+
+				return Convert.ToInt32(outParam.Value);
+			}
 		}
 
 		public void DeleteOrganizationDeletedUser(int id)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString,
-				 CommandType.StoredProcedure,
-				 "DeleteOrganizationDeletedUser",
-				 new SqlParameter("@ID", id));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString,
+					CommandType.StoredProcedure,
+					"DeleteOrganizationDeletedUser",
+					new SqlParameter("@ID", id));
+			}
 		}
 
 		public IDataReader GetOrganizationDeletedUser(int accountId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetOrganizationDeletedUser",
-				 new SqlParameter("@AccountID", accountId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetOrganizationDeletedUser",
+					new SqlParameter("@AccountID", accountId));
+			}
 		}
 
 		public IDataReader GetAdditionalGroups(int userId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetAdditionalGroups",
-				 new SqlParameter("@UserID", userId)
-			);
-		}
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetAdditionalGroups",
+					new SqlParameter("@UserID", userId));
+			}
+		}
 
 		public int AddAdditionalGroup(int userId, string groupName)
 		{
-			SqlParameter prmId = new SqlParameter("@GroupID", SqlDbType.Int);
-			prmId.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "AddAdditionalGroup",
-				 prmId,
-				 new SqlParameter("@UserID", userId),
-				 new SqlParameter("@GroupName", groupName));
+			}
+			else
+			{
+				SqlParameter prmId = new SqlParameter("@GroupID", SqlDbType.Int);
+				prmId.Direction = ParameterDirection.Output;
 
-			// read identity
-			return Convert.ToInt32(prmId.Value);
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"AddAdditionalGroup",
+					prmId,
+					new SqlParameter("@UserID", userId),
+					new SqlParameter("@GroupName", groupName));
+
+				// read identity
+				return Convert.ToInt32(prmId.Value);
+			}
 		}
 
 		public void DeleteAdditionalGroup(int groupId)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString,
-				 CommandType.StoredProcedure,
-				 "DeleteAdditionalGroup",
-				 new SqlParameter("@GroupID", groupId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString,
+					CommandType.StoredProcedure,
+					"DeleteAdditionalGroup",
+					new SqlParameter("@GroupID", groupId));
+			}
 		}
 
 		public void UpdateAdditionalGroup(int groupId, string groupName)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "UpdateAdditionalGroup",
-				 new SqlParameter("@GroupID", groupId),
-				 new SqlParameter("@GroupName", groupName)
-			);
-		}
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"UpdateAdditionalGroup",
+					new SqlParameter("@GroupID", groupId),
+					new SqlParameter("@GroupName", groupName));
+			}
+		}
 		public void DeleteOrganizationUser(int itemId)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure, "DeleteOrganizationUsers", new SqlParameter("@ItemID", itemId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure, "DeleteOrganizationUsers",
+					new SqlParameter("@ItemID", itemId));
+			}
 		}
 
 		public int GetItemIdByOrganizationId(string id)
 		{
-			object obj = SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "GetItemIdByOrganizationId",
-											new SqlParameter("@OrganizationId", id));
+			if (UseEntityFramework)
+			{
 
-			return (obj == null || DBNull.Value == obj) ? 0 : (int)obj;
+			}
+			else
+			{
+				object obj = SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "GetItemIdByOrganizationId",
+					new SqlParameter("@OrganizationId", id));
 
+				return (obj == null || DBNull.Value == obj) ? 0 : (int)obj;
+			}
 		}
 
 		public IDataReader GetOrganizationStatistics(int itemId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetOrganizationStatistics",
-				 new SqlParameter("@ItemID", itemId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetOrganizationStatistics",
+					new SqlParameter("@ItemID", itemId));
+			}
 		}
 
 		public IDataReader GetOrganizationGroupsByDisplayName(int itemId, string displayName)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetOrganizationGroupsByDisplayName",
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@DisplayName", displayName)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetOrganizationGroupsByDisplayName",
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@DisplayName", displayName));
+			}
 		}
 
 		public IDataReader SearchOrganizationAccounts(int actorId, int itemId,
-				  string filterColumn, string filterValue, string sortColumn, bool includeMailboxes)
+			string filterColumn, string filterValue, string sortColumn, bool includeMailboxes)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "SearchOrganizationAccounts",
-				 new SqlParameter("@ActorID", actorId),
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
-				 new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
-				 new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
-				 new SqlParameter("@IncludeMailboxes", includeMailboxes)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"SearchOrganizationAccounts",
+					new SqlParameter("@ActorID", actorId),
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
+					new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
+					new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
+					new SqlParameter("@IncludeMailboxes", includeMailboxes));
+			}
 		}
 
 		public DataSet GetOrganizationObjectsByDomain(int itemId, string domainName)
 		{
-			return SqlHelper.ExecuteDataset(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetOrganizationObjectsByDomain",
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@DomainName", domainName)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetOrganizationObjectsByDomain",
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@DomainName", domainName));
+			}
 		}
-
-
 		#endregion
 
 		#region CRM
 
 		public int GetCRMUsersCount(int itemId, string name, string email, int CALType)
 		{
-			SqlParameter[] sqlParams = new SqlParameter[]
-				 {
-						  new SqlParameter("@ItemID", itemId),
-						  GetFilterSqlParam("@Name", name),
-						  GetFilterSqlParam("@Email", email),
-						  new SqlParameter("@CALType", CALType)
-				 };
+			if (UseEntityFramework)
+			{
 
-			return (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "GetCRMUsersCount", sqlParams);
+			}
+			else
+			{
+				SqlParameter[] sqlParams = new SqlParameter[]
+				{
+					new SqlParameter("@ItemID", itemId),
+					GetFilterSqlParam("@Name", name),
+					GetFilterSqlParam("@Email", email),
+					new SqlParameter("@CALType", CALType)
+				};
 
+				return (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "GetCRMUsersCount", sqlParams);
+			}
 		}
 
 		private SqlParameter GetFilterSqlParam(string paramName, string value)
@@ -5524,337 +7173,535 @@ namespace SolidCP.EnterpriseServer
 
 		public IDataReader GetCrmUsers(int itemId, string sortColumn, string sortDirection, string name, string email, int startRow, int count)
 		{
-			SqlParameter[] sqlParams = new SqlParameter[]
-				 {
-						  new SqlParameter("@ItemID", itemId),
-						  new SqlParameter("@SortColumn", sortColumn),
-						  new SqlParameter("@SortDirection", sortDirection),
-						  GetFilterSqlParam("@Name", name),
-						  GetFilterSqlParam("@Email", email),
-						  new SqlParameter("@StartRow", startRow),
-						  new SqlParameter("Count", count)
-				 };
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				SqlParameter[] sqlParams = new SqlParameter[] {
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@SortColumn", sortColumn),
+					new SqlParameter("@SortDirection", sortDirection),
+					GetFilterSqlParam("@Name", name),
+					GetFilterSqlParam("@Email", email),
+					new SqlParameter("@StartRow", startRow),
+					new SqlParameter("Count", count)
+				};
 
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetCRMUsers", sqlParams);
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetCRMUsers", sqlParams);
+			}
 		}
 
 		public IDataReader GetCRMOrganizationUsers(int itemId)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure, "GetCRMOrganizationUsers",
-													 new SqlParameter[] { new SqlParameter("@ItemID", itemId) });
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure, "GetCRMOrganizationUsers",
+					new SqlParameter[] { new SqlParameter("@ItemID", itemId) });
+			}
 		}
 
 		public void CreateCRMUser(int itemId, Guid crmId, Guid businessUnitId, int CALType)
 		{
-			SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure, "InsertCRMUser",
-											new SqlParameter[]
-												 {
-														  new SqlParameter("@ItemID", itemId),
-														  new SqlParameter("@CrmUserID", crmId),
-														  new SqlParameter("@BusinessUnitId", businessUnitId),
-														  new SqlParameter("@CALType", CALType)
-												 });
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure, "InsertCRMUser",
+					new SqlParameter[] {
+						new SqlParameter("@ItemID", itemId),
+						new SqlParameter("@CrmUserID", crmId),
+						new SqlParameter("@BusinessUnitId", businessUnitId),
+						new SqlParameter("@CALType", CALType)
+					});
+
+			}
 		}
 
 		public void UpdateCRMUser(int itemId, int CALType)
 		{
-			SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure, "UpdateCRMUser",
-											new SqlParameter[]
-												 {
-														  new SqlParameter("@ItemID", itemId),
-														  new SqlParameter("@CALType", CALType)
-												 });
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure, "UpdateCRMUser",
+					new SqlParameter[] {
+						new SqlParameter("@ItemID", itemId),
+						new SqlParameter("@CALType", CALType)
+					});
+
+			}
 		}
 
 		public IDataReader GetCrmUser(int itemId)
 		{
-			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure, "GetCRMUser",
-											new SqlParameter[]
-												 {
-														  new SqlParameter("@AccountID", itemId)
-												 });
-			return reader;
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure, "GetCRMUser",
+					new SqlParameter[] { new SqlParameter("@AccountID", itemId) });
+				return reader;
+			}
 		}
 
 		public int GetCrmUserCount(int itemId)
 		{
-			return (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "GetOrganizationCRMUserCount",
-				 new SqlParameter[] { new SqlParameter("@ItemID", itemId) });
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "GetOrganizationCRMUserCount",
+					new SqlParameter[] { new SqlParameter("@ItemID", itemId) });
+			}
 		}
 
 		public void DeleteCrmOrganization(int organizationId)
 		{
-			SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "DeleteCRMOrganization",
-											new SqlParameter[] { new SqlParameter("@ItemID", organizationId) });
-		}
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "DeleteCRMOrganization",
+					new SqlParameter[] { new SqlParameter("@ItemID", organizationId) });
+			}
+		}
 		#endregion
 
 		#region VPS - Virtual Private Servers
 
 		public IDataReader GetVirtualMachinesPaged(int actorId, int packageId, string filterColumn, string filterValue,
-			 string sortColumn, int startRow, int maximumRows, bool recursive)
+			string sortColumn, int startRow, int maximumRows, bool recursive)
 		{
-			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-											 "GetVirtualMachinesPaged",
-												 new SqlParameter("@ActorID", actorId),
-												 new SqlParameter("@PackageID", packageId),
-												 new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
-												 new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
-												 new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
-												 new SqlParameter("@StartRow", startRow),
-												 new SqlParameter("@MaximumRows", maximumRows),
-												 new SqlParameter("@Recursive", recursive));
-			return reader;
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					"GetVirtualMachinesPaged",
+					new SqlParameter("@ActorID", actorId),
+					new SqlParameter("@PackageID", packageId),
+					new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
+					new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
+					new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
+					new SqlParameter("@StartRow", startRow),
+					new SqlParameter("@MaximumRows", maximumRows),
+					new SqlParameter("@Recursive", recursive));
+				return reader;
+			}
 		}
+
 		public IDataReader GetVirtualMachinesPaged2012(int actorId, int packageId, string filterColumn, string filterValue,
-			 string sortColumn, int startRow, int maximumRows, bool recursive)
+			string sortColumn, int startRow, int maximumRows, bool recursive)
 		{
-			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-											 "GetVirtualMachinesPaged2012",
-												 new SqlParameter("@ActorID", actorId),
-												 new SqlParameter("@PackageID", packageId),
-												 new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
-												 new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
-												 new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
-												 new SqlParameter("@StartRow", startRow),
-												 new SqlParameter("@MaximumRows", maximumRows),
-												 new SqlParameter("@Recursive", recursive));
-			return reader;
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					"GetVirtualMachinesPaged2012",
+					new SqlParameter("@ActorID", actorId),
+					new SqlParameter("@PackageID", packageId),
+					new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
+					new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
+					new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
+					new SqlParameter("@StartRow", startRow),
+					new SqlParameter("@MaximumRows", maximumRows),
+					new SqlParameter("@Recursive", recursive));
+				return reader;
+			}
 		}
 
 		public IDataReader GetVirtualMachinesPagedProxmox(int actorId, int packageId, string filterColumn, string filterValue,
 			 string sortColumn, int startRow, int maximumRows, bool recursive)
 		{
-			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-											 "GetVirtualMachinesPagedProxmox",
-												 new SqlParameter("@ActorID", actorId),
-												 new SqlParameter("@PackageID", packageId),
-												 new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
-												 new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
-												 new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
-												 new SqlParameter("@StartRow", startRow),
-												 new SqlParameter("@MaximumRows", maximumRows),
-												 new SqlParameter("@Recursive", recursive));
-			return reader;
-		}
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					"GetVirtualMachinesPagedProxmox",
+					new SqlParameter("@ActorID", actorId),
+					new SqlParameter("@PackageID", packageId),
+					new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
+					new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
+					new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
+					new SqlParameter("@StartRow", startRow),
+					new SqlParameter("@MaximumRows", maximumRows),
+					new SqlParameter("@Recursive", recursive));
+				return reader;
+			}
+		}
 		#endregion
 
 		public IDataReader GetVirtualMachinesForPCPaged(int actorId, int packageId, string filterColumn, string filterValue,
 			 string sortColumn, int startRow, int maximumRows, bool recursive)
 		{
-			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-											 "GetVirtualMachinesPagedForPC",
-												 new SqlParameter("@ActorID", actorId),
-												 new SqlParameter("@PackageID", packageId),
-												 new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
-												 new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
-												 new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
-												 new SqlParameter("@StartRow", startRow),
-												 new SqlParameter("@MaximumRows", maximumRows),
-												 new SqlParameter("@Recursive", recursive));
-			return reader;
-		}
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					"GetVirtualMachinesPagedForPC",
+					new SqlParameter("@ActorID", actorId),
+					new SqlParameter("@PackageID", packageId),
+					new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
+					new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
+					new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
+					new SqlParameter("@StartRow", startRow),
+					new SqlParameter("@MaximumRows", maximumRows),
+					new SqlParameter("@Recursive", recursive));
+				return reader;
+			}
+		}
 
 		#region VPS - External Network
 
 		public IDataReader GetUnallottedIPAddresses(int packageId, int serviceId, int poolId)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-											 "GetUnallottedIPAddresses",
-												 new SqlParameter("@PackageId", packageId),
-												 new SqlParameter("@ServiceId", serviceId),
-												 new SqlParameter("@PoolId", poolId));
-		}
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					"GetUnallottedIPAddresses",
+					new SqlParameter("@PackageId", packageId),
+					new SqlParameter("@ServiceId", serviceId),
+					new SqlParameter("@PoolId", poolId));
+			}
+		}
 
 		public void AllocatePackageIPAddresses(int packageId, int orgId, string xml)
 		{
-			SqlParameter[] param = new[]
-												{
-														 new SqlParameter("@PackageID", packageId),
-														 new SqlParameter("@OrgID", orgId),
-														 new SqlParameter("@xml", xml)
-													};
+			if (UseEntityFramework)
+			{
 
-			ExecuteLongNonQuery("AllocatePackageIPAddresses", param);
+			}
+			else
+			{
+				SqlParameter[] param = new[] {
+					new SqlParameter("@PackageID", packageId),
+					new SqlParameter("@OrgID", orgId),
+					new SqlParameter("@xml", xml)
+				};
+
+				ExecuteLongNonQuery("AllocatePackageIPAddresses", param);
+			}
 		}
 
 		public IDataReader GetPackageIPAddresses(int packageId, int orgId, int poolId, string filterColumn, string filterValue,
 			 string sortColumn, int startRow, int maximumRows, bool recursive)
 		{
-			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-											 "GetPackageIPAddresses",
-												 new SqlParameter("@PackageID", packageId),
-												 new SqlParameter("@OrgID", orgId),
-												 new SqlParameter("@PoolId", poolId),
-												 new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
-												 new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
-												 new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
-												 new SqlParameter("@startRow", startRow),
-												 new SqlParameter("@maximumRows", maximumRows),
-												 new SqlParameter("@Recursive", recursive));
-			return reader;
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					"GetPackageIPAddresses",
+					new SqlParameter("@PackageID", packageId),
+					new SqlParameter("@OrgID", orgId),
+					new SqlParameter("@PoolId", poolId),
+					new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
+					new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
+					new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
+					new SqlParameter("@startRow", startRow),
+					new SqlParameter("@maximumRows", maximumRows),
+					new SqlParameter("@Recursive", recursive));
+				return reader;
+			}
 		}
 
 		public int GetPackageIPAddressesCount(int packageId, int orgId, int poolId)
 		{
-			object obj = SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure,
-											 "GetPackageIPAddressesCount",
-												 new SqlParameter("@PackageID", packageId),
-												 new SqlParameter("@OrgID", orgId),
-												 new SqlParameter("@PoolId", poolId));
-			int res = 0;
-			int.TryParse(obj.ToString(), out res);
-			return res;
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				object obj = SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure,
+					"GetPackageIPAddressesCount",
+					new SqlParameter("@PackageID", packageId),
+					new SqlParameter("@OrgID", orgId),
+					new SqlParameter("@PoolId", poolId));
+				int res = 0;
+				int.TryParse(obj.ToString(), out res);
+				return res;
+			}
 		}
 
 		public void DeallocatePackageIPAddress(int id)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure, "DeallocatePackageIPAddress",
-											  new SqlParameter("@PackageAddressID", id));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure, "DeallocatePackageIPAddress",
+					new SqlParameter("@PackageAddressID", id));
+			}
 		}
 		#endregion
 
 		#region VPS - Private Network
 
 		public IDataReader GetPackagePrivateIPAddressesPaged(int packageId, string filterColumn, string filterValue,
-			 string sortColumn, int startRow, int maximumRows)
+			string sortColumn, int startRow, int maximumRows)
 		{
-			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-											 "GetPackagePrivateIPAddressesPaged",
-												 new SqlParameter("@PackageID", packageId),
-												 new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
-												 new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
-												 new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
-												 new SqlParameter("@startRow", startRow),
-												 new SqlParameter("@maximumRows", maximumRows));
-			return reader;
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					"GetPackagePrivateIPAddressesPaged",
+					new SqlParameter("@PackageID", packageId),
+					new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
+					new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
+					new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
+					new SqlParameter("@startRow", startRow),
+					new SqlParameter("@maximumRows", maximumRows));
+				return reader;
+			}
 		}
 
 		public IDataReader GetPackagePrivateIPAddresses(int packageId)
 		{
-			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-											 "GetPackagePrivateIPAddresses",
-												 new SqlParameter("@PackageID", packageId));
-			return reader;
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					"GetPackagePrivateIPAddresses",
+					new SqlParameter("@PackageID", packageId));
+				return reader;
+			}
 		}
 		#endregion
 
 		#region VPS - External Network Adapter
 		public IDataReader GetPackageUnassignedIPAddresses(int actorId, int packageId, int orgId, int poolId)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-									  "GetPackageUnassignedIPAddresses",
-									  new SqlParameter("@ActorID", actorId),
-									  new SqlParameter("@PackageID", packageId),
-									  new SqlParameter("@OrgID", orgId),
-									  new SqlParameter("@PoolId", poolId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					"GetPackageUnassignedIPAddresses",
+					new SqlParameter("@ActorID", actorId),
+					new SqlParameter("@PackageID", packageId),
+					new SqlParameter("@OrgID", orgId),
+					new SqlParameter("@PoolId", poolId));
+			}
 		}
 
 		public IDataReader GetPackageIPAddress(int packageAddressId)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-									  "GetPackageIPAddress",
-									  new SqlParameter("@PackageAddressId", packageAddressId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					"GetPackageIPAddress",
+					new SqlParameter("@PackageAddressId", packageAddressId));
+			}
 		}
 
 		public IDataReader GetItemIPAddresses(int actorId, int itemId, int poolId)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-									  "GetItemIPAddresses",
-									  new SqlParameter("@ActorID", actorId),
-									  new SqlParameter("@ItemID", itemId),
-									  new SqlParameter("@PoolID", poolId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					"GetItemIPAddresses",
+					new SqlParameter("@ActorID", actorId),
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@PoolID", poolId));
+			}
 		}
 
 		public int AddItemIPAddress(int actorId, int itemId, int packageAddressId)
 		{
-			return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-									  "AddItemIPAddress",
-									  new SqlParameter("@ActorID", actorId),
-									  new SqlParameter("@ItemID", itemId),
-									  new SqlParameter("@PackageAddressID", packageAddressId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					"AddItemIPAddress",
+					new SqlParameter("@ActorID", actorId),
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@PackageAddressID", packageAddressId));
+			}
 		}
 
 		public int SetItemPrimaryIPAddress(int actorId, int itemId, int packageAddressId)
 		{
-			return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-									  "SetItemPrimaryIPAddress",
-									  new SqlParameter("@ActorID", actorId),
-									  new SqlParameter("@ItemID", itemId),
-									  new SqlParameter("@PackageAddressID", packageAddressId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					"SetItemPrimaryIPAddress",
+					new SqlParameter("@ActorID", actorId),
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@PackageAddressID", packageAddressId));
+			}
 		}
 
 		public int DeleteItemIPAddress(int actorId, int itemId, int packageAddressId)
 		{
-			return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-									  "DeleteItemIPAddress",
-									  new SqlParameter("@ActorID", actorId),
-									  new SqlParameter("@ItemID", itemId),
-									  new SqlParameter("@PackageAddressID", packageAddressId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					"DeleteItemIPAddress",
+					new SqlParameter("@ActorID", actorId),
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@PackageAddressID", packageAddressId));
+			}
 		}
 
 		public int DeleteItemIPAddresses(int actorId, int itemId)
 		{
-			return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-									  "DeleteItemIPAddresses",
-									  new SqlParameter("@ActorID", actorId),
-									  new SqlParameter("@ItemID", itemId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					"DeleteItemIPAddresses",
+					new SqlParameter("@ActorID", actorId),
+					new SqlParameter("@ItemID", itemId));
+			}
 		}
 		#endregion
 
 		#region VPS - Private Network Adapter
 		public IDataReader GetItemPrivateIPAddresses(int actorId, int itemId)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-									  "GetItemPrivateIPAddresses",
-									  new SqlParameter("@ActorID", actorId),
-									  new SqlParameter("@ItemID", itemId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					"GetItemPrivateIPAddresses",
+					new SqlParameter("@ActorID", actorId),
+					new SqlParameter("@ItemID", itemId));
+			}
 		}
 
 		public int AddItemPrivateIPAddress(int actorId, int itemId, string ipAddress)
 		{
-			return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-									  "AddItemPrivateIPAddress",
-									  new SqlParameter("@ActorID", actorId),
-									  new SqlParameter("@ItemID", itemId),
-									  new SqlParameter("@IPAddress", ipAddress));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					"AddItemPrivateIPAddress",
+					new SqlParameter("@ActorID", actorId),
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@IPAddress", ipAddress));
+			}
 		}
 
 		public int SetItemPrivatePrimaryIPAddress(int actorId, int itemId, int privateAddressId)
 		{
-			return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-									  "SetItemPrivatePrimaryIPAddress",
-									  new SqlParameter("@ActorID", actorId),
-									  new SqlParameter("@ItemID", itemId),
-									  new SqlParameter("@PrivateAddressID", privateAddressId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					"SetItemPrivatePrimaryIPAddress",
+					new SqlParameter("@ActorID", actorId),
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@PrivateAddressID", privateAddressId));
+			}
 		}
 
 		public int DeleteItemPrivateIPAddress(int actorId, int itemId, int privateAddressId)
 		{
-			return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-									  "DeleteItemPrivateIPAddress",
-									  new SqlParameter("@ActorID", actorId),
-									  new SqlParameter("@ItemID", itemId),
-									  new SqlParameter("@PrivateAddressID", privateAddressId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					"DeleteItemPrivateIPAddress",
+					new SqlParameter("@ActorID", actorId),
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@PrivateAddressID", privateAddressId));
+			}
 		}
 
 		public int DeleteItemPrivateIPAddresses(int actorId, int itemId)
 		{
-			return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-									  "DeleteItemPrivateIPAddresses",
-									  new SqlParameter("@ActorID", actorId),
-									  new SqlParameter("@ItemID", itemId));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					"DeleteItemPrivateIPAddresses",
+					new SqlParameter("@ActorID", actorId),
+					new SqlParameter("@ItemID", itemId));
+			}
 		}
 		#endregion
 
@@ -5862,150 +7709,201 @@ namespace SolidCP.EnterpriseServer
 
 		public void AddBlackBerryUser(int accountId)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString,
-											  CommandType.StoredProcedure,
-											  "AddBlackBerryUser",
-											  new[]
-													{
-															 new SqlParameter("@AccountID", accountId)
-													});
-		}
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString,
+					CommandType.StoredProcedure,
+					"AddBlackBerryUser",
+					new[] { new SqlParameter("@AccountID", accountId) });
+			}
+		}
 
 		public bool CheckBlackBerryUserExists(int accountId)
 		{
-			int res = (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "CheckBlackBerryUserExists",
-											new SqlParameter("@AccountID", accountId));
-			return res > 0;
-		}
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				int res = (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "CheckBlackBerryUserExists",
+					new SqlParameter("@AccountID", accountId));
+				return res > 0;
+			}
+		}
 
 		public IDataReader GetBlackBerryUsers(int itemId, string sortColumn, string sortDirection, string name, string email, int startRow, int count)
 		{
-			SqlParameter[] sqlParams = new SqlParameter[]
-				 {
-						  new SqlParameter("@ItemID", itemId),
-						  new SqlParameter("@SortColumn", sortColumn),
-						  new SqlParameter("@SortDirection", sortDirection),
-						  GetFilterSqlParam("@Name", name),
-						  GetFilterSqlParam("@Email", email),
-						  new SqlParameter("@StartRow", startRow),
-						  new SqlParameter("Count", count)
-				 };
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlParameter[] sqlParams = new SqlParameter[]
+				{
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@SortColumn", sortColumn),
+					new SqlParameter("@SortDirection", sortDirection),
+					GetFilterSqlParam("@Name", name),
+					GetFilterSqlParam("@Email", email),
+					new SqlParameter("@StartRow", startRow),
+					new SqlParameter("Count", count)
+				};
 
 
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetBlackBerryUsers", sqlParams);
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetBlackBerryUsers", sqlParams);
+			}
 		}
 
 		public int GetBlackBerryUsersCount(int itemId, string name, string email)
 		{
-			SqlParameter[] sqlParams = new SqlParameter[]
-													 {
-															  new SqlParameter("@ItemID", itemId),
-															  GetFilterSqlParam("@Name", name),
-															  GetFilterSqlParam("@Email", email),
-													 };
+			if (UseEntityFramework)
+			{
 
-			return
-				 (int)
-				 SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "GetBlackBerryUsersCount", sqlParams);
+			}
+			else
+			{
+				SqlParameter[] sqlParams = new SqlParameter[]
+				{
+					new SqlParameter("@ItemID", itemId),
+					GetFilterSqlParam("@Name", name),
+					GetFilterSqlParam("@Email", email),
+				};
+
+				return (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "GetBlackBerryUsersCount", sqlParams);
+			}
 		}
-
 		public void DeleteBlackBerryUser(int accountId)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString,
-											  CommandType.StoredProcedure,
-											  "DeleteBlackBerryUser",
-											  new[]
-													{
-															 new SqlParameter("@AccountID", accountId)
-													});
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString,
+					CommandType.StoredProcedure,
+					"DeleteBlackBerryUser",
+					new[] { new SqlParameter("@AccountID", accountId) });
+			}
 		}
-
 		#endregion
 
 		#region OCS
 
 		public void AddOCSUser(int accountId, string instanceId)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString,
-											  CommandType.StoredProcedure,
-											  "AddOCSUser",
-											  new[]
-													{
-															 new SqlParameter("@AccountID", accountId),
-															 new SqlParameter("@InstanceID", instanceId)
-													});
-		}
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString,
+					CommandType.StoredProcedure,
+					"AddOCSUser",
+					new[] {
+						new SqlParameter("@AccountID", accountId),
+						new SqlParameter("@InstanceID", instanceId)
+					});
+			}
+		}
 
 		public bool CheckOCSUserExists(int accountId)
 		{
-			int res = (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "CheckOCSUserExists",
-											new SqlParameter("@AccountID", accountId));
-			return res > 0;
-		}
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				int res = (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "CheckOCSUserExists",
+					new SqlParameter("@AccountID", accountId));
+				return res > 0;
+			}
+		}
 
 		public IDataReader GetOCSUsers(int itemId, string sortColumn, string sortDirection, string name, string email, int startRow, int count)
 		{
-			SqlParameter[] sqlParams = new SqlParameter[]
-				 {
-						  new SqlParameter("@ItemID", itemId),
-						  new SqlParameter("@SortColumn", sortColumn),
-						  new SqlParameter("@SortDirection", sortDirection),
-						  GetFilterSqlParam("@Name", name),
-						  GetFilterSqlParam("@Email", email),
-						  new SqlParameter("@StartRow", startRow),
-						  new SqlParameter("Count", count)
-				 };
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				SqlParameter[] sqlParams = new SqlParameter[]
+				{
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@SortColumn", sortColumn),
+					new SqlParameter("@SortDirection", sortDirection),
+					GetFilterSqlParam("@Name", name),
+					GetFilterSqlParam("@Email", email),
+					new SqlParameter("@StartRow", startRow),
+					new SqlParameter("Count", count)
+				};
 
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetOCSUsers", sqlParams);
+				return SqlHelper.ExecuteReader(
+					 ConnectionString,
+					 CommandType.StoredProcedure,
+					 "GetOCSUsers", sqlParams);
+			}
 		}
-
 		public int GetOCSUsersCount(int itemId, string name, string email)
 		{
-			SqlParameter[] sqlParams = new SqlParameter[]
-													 {
-															  new SqlParameter("@ItemID", itemId),
-															  GetFilterSqlParam("@Name", name),
-															  GetFilterSqlParam("@Email", email),
-													 };
+			if (UseEntityFramework)
+			{
 
-			return
-				 (int)
-				 SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "GetOCSUsersCount", sqlParams);
+			}
+			else
+			{
+				SqlParameter[] sqlParams = new SqlParameter[]
+				{
+					new SqlParameter("@ItemID", itemId),
+					GetFilterSqlParam("@Name", name),
+					GetFilterSqlParam("@Email", email),
+				};
+
+				return (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "GetOCSUsersCount", sqlParams);
+			}
 		}
 
 		public void DeleteOCSUser(string instanceId)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString,
-											  CommandType.StoredProcedure,
-											  "DeleteOCSUser",
-											  new[]
-													{
-															 new SqlParameter("@InstanceId", instanceId)
-													});
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString,
+					CommandType.StoredProcedure,
+					"DeleteOCSUser",
+					new[] { new SqlParameter("@InstanceId", instanceId) });
+
+			}
 		}
 
 		public string GetOCSUserInstanceID(int accountId)
 		{
-			return (string)SqlHelper.ExecuteScalar(ConnectionString,
-											  CommandType.StoredProcedure,
-											  "GetInstanceID",
-											  new[]
-													{
-															 new SqlParameter("@AccountID", accountId)
-													});
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return (string)SqlHelper.ExecuteScalar(ConnectionString,
+					CommandType.StoredProcedure,
+					"GetInstanceID",
+					new[] { new SqlParameter("@AccountID", accountId) });
+			}
 		}
 
 		#endregion
@@ -6013,137 +7911,208 @@ namespace SolidCP.EnterpriseServer
 		#region SSL
 		public int AddSSLRequest(int actorId, int packageId, int siteID, int userID, string friendlyname, string hostname, string csr, int csrLength, string distinguishedName, bool isRenewal, int previousID)
 		{
-			SqlParameter prmId = new SqlParameter("@SSLID", SqlDbType.Int);
-			prmId.Direction = ParameterDirection.Output;
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "AddSSLRequest", prmId,
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@PackageId", packageId),
-				 new SqlParameter("@UserID", userID),
-				 new SqlParameter("@WebSiteID", siteID),
-				 new SqlParameter("@FriendlyName", friendlyname),
-				 new SqlParameter("@HostName", hostname),
-				 new SqlParameter("@CSR", csr),
-				 new SqlParameter("@CSRLength", csrLength),
-				 new SqlParameter("@DistinguishedName", distinguishedName),
-				 new SqlParameter("@IsRenewal", isRenewal),
-				 new SqlParameter("@PreviousId", previousID)
-				 );
-			return Convert.ToInt32(prmId.Value);
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				SqlParameter prmId = new SqlParameter("@SSLID", SqlDbType.Int);
+				prmId.Direction = ParameterDirection.Output;
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "AddSSLRequest", prmId,
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@PackageId", packageId),
+					new SqlParameter("@UserID", userID),
+					new SqlParameter("@WebSiteID", siteID),
+					new SqlParameter("@FriendlyName", friendlyname),
+					new SqlParameter("@HostName", hostname),
+					new SqlParameter("@CSR", csr),
+					new SqlParameter("@CSRLength", csrLength),
+					new SqlParameter("@DistinguishedName", distinguishedName),
+					new SqlParameter("@IsRenewal", isRenewal),
+					new SqlParameter("@PreviousId", previousID));
+
+				return Convert.ToInt32(prmId.Value);
+			}
 		}
 
 		public void CompleteSSLRequest(int actorId, int packageId, int id, string certificate, string distinguishedName, string serialNumber, byte[] hash, DateTime validFrom, DateTime expiryDate)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "CompleteSSLRequest",
-				 new SqlParameter("@ActorID", actorId),
-				 new SqlParameter("@PackageID", packageId),
-				 new SqlParameter("@ID", id),
-				 new SqlParameter("@DistinguishedName", distinguishedName),
-				 new SqlParameter("@Certificate", certificate),
-				 new SqlParameter("@SerialNumber", serialNumber),
-				 new SqlParameter("@Hash", Convert.ToBase64String(hash)),
-				 new SqlParameter("@ValidFrom", validFrom),
-				 new SqlParameter("@ExpiryDate", expiryDate));
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "CompleteSSLRequest",
+					new SqlParameter("@ActorID", actorId),
+					new SqlParameter("@PackageID", packageId),
+					new SqlParameter("@ID", id),
+					new SqlParameter("@DistinguishedName", distinguishedName),
+					new SqlParameter("@Certificate", certificate),
+					new SqlParameter("@SerialNumber", serialNumber),
+					new SqlParameter("@Hash", Convert.ToBase64String(hash)),
+					new SqlParameter("@ValidFrom", validFrom),
+					new SqlParameter("@ExpiryDate", expiryDate));
+			}
 		}
 
 		public void AddPFX(int actorId, int packageId, int siteID, int userID, string hostname, string friendlyName, string distinguishedName, int csrLength, string serialNumber, DateTime validFrom, DateTime expiryDate)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "AddPFX",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@PackageId", packageId),
-				 new SqlParameter("@UserID", userID),
-				 new SqlParameter("@WebSiteID", siteID),
-				 new SqlParameter("@FriendlyName", friendlyName),
-				 new SqlParameter("@HostName", hostname),
-				 new SqlParameter("@CSRLength", csrLength),
-				 new SqlParameter("@DistinguishedName", distinguishedName),
-				 new SqlParameter("@SerialNumber", serialNumber),
-				 new SqlParameter("@ValidFrom", validFrom),
-				 new SqlParameter("@ExpiryDate", expiryDate));
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "AddPFX",
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@PackageId", packageId),
+					new SqlParameter("@UserID", userID),
+					new SqlParameter("@WebSiteID", siteID),
+					new SqlParameter("@FriendlyName", friendlyName),
+					new SqlParameter("@HostName", hostname),
+					new SqlParameter("@CSRLength", csrLength),
+					new SqlParameter("@DistinguishedName", distinguishedName),
+					new SqlParameter("@SerialNumber", serialNumber),
+					new SqlParameter("@ValidFrom", validFrom),
+					new SqlParameter("@ExpiryDate", expiryDate));
+			}
 		}
 
 		public DataSet GetSSL(int actorId, int packageId, int id)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetSSL",
-				 new SqlParameter("@SSLID", id));
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetSSL",
+					new SqlParameter("@SSLID", id));
+			}
 		}
 
 		public DataSet GetCertificatesForSite(int actorId, int packageId, int siteId)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetCertificatesForSite",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@PackageId", packageId),
-				 new SqlParameter("@websiteid", siteId));
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetCertificatesForSite",
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@PackageId", packageId),
+					new SqlParameter("@websiteid", siteId));
+			}
 		}
 
 		public DataSet GetPendingCertificates(int actorId, int packageId, int id, bool recursive)
 		{
-			return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetPendingSSLForWebsite",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@PackageId", packageId),
-				 new SqlParameter("@websiteid", id),
-				 new SqlParameter("@Recursive", recursive));
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetPendingSSLForWebsite",
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@PackageId", packageId),
+					new SqlParameter("@websiteid", id),
+					new SqlParameter("@Recursive", recursive));
+			}
 		}
 
 		public IDataReader GetSSLCertificateByID(int actorId, int id)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetSSLCertificateByID",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@ID", id));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetSSLCertificateByID",
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@ID", id));
+			}
 		}
 
 		public int CheckSSL(int siteID, bool renewal)
 		{
-			SqlParameter prmId = new SqlParameter("@Result", SqlDbType.Int);
-			prmId.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "CheckSSL",
-				 prmId,
-				 new SqlParameter("@siteID", siteID),
-				 new SqlParameter("@Renewal", renewal));
+			}
+			else
+			{
+				SqlParameter prmId = new SqlParameter("@Result", SqlDbType.Int);
+				prmId.Direction = ParameterDirection.Output;
 
-			return Convert.ToInt32(prmId.Value);
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "CheckSSL",
+					prmId,
+					new SqlParameter("@siteID", siteID),
+					new SqlParameter("@Renewal", renewal));
+
+				return Convert.ToInt32(prmId.Value);
+			}
 		}
 
 		public IDataReader GetSiteCert(int actorId, int siteID)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetSSLCertificateByID",
-				 new SqlParameter("@ActorId", actorId),
-				 new SqlParameter("@ID", siteID));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetSSLCertificateByID",
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@ID", siteID));
+			}
 		}
 
 		public void DeleteCertificate(int actorId, int packageId, int id)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "DeleteCertificate",
-				 new SqlParameter("@ActorID", actorId),
-				 new SqlParameter("@PackageID", packageId),
-				 new SqlParameter("@id", id));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "DeleteCertificate",
+					new SqlParameter("@ActorID", actorId),
+					new SqlParameter("@PackageID", packageId),
+					new SqlParameter("@id", id));
+			}
 		}
 
 		public bool CheckSSLExistsForWebsite(int siteId)
 		{
-			SqlParameter prmId = new SqlParameter("@Result", SqlDbType.Bit);
-			prmId.Direction = ParameterDirection.Output;
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "CheckSSLExistsForWebsite", prmId,
-				 new SqlParameter("@siteID", siteId),
-				 new SqlParameter("@SerialNumber", ""));
-			return Convert.ToBoolean(prmId.Value);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlParameter prmId = new SqlParameter("@Result", SqlDbType.Bit);
+				prmId.Direction = ParameterDirection.Output;
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "CheckSSLExistsForWebsite", prmId,
+					new SqlParameter("@siteID", siteId),
+					new SqlParameter("@SerialNumber", ""));
+				return Convert.ToBoolean(prmId.Value);
+			}
 		}
 		#endregion
 
@@ -6151,993 +8120,1347 @@ namespace SolidCP.EnterpriseServer
 
 		public void AddLyncUser(int accountId, int lyncUserPlanId, string sipAddress)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString,
-											  CommandType.StoredProcedure,
-											  "AddLyncUser",
-											  new[]
-													{
-															 new SqlParameter("@AccountID", accountId),
-															 new SqlParameter("@LyncUserPlanID", lyncUserPlanId),
-															 new SqlParameter("@SipAddress", sipAddress)
-													});
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString,
+					CommandType.StoredProcedure,
+					"AddLyncUser",
+					new[] {
+						new SqlParameter("@AccountID", accountId),
+						new SqlParameter("@LyncUserPlanID", lyncUserPlanId),
+						new SqlParameter("@SipAddress", sipAddress)
+					});
+			}
 		}
 
 		public void UpdateLyncUser(int accountId, string sipAddress)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString,
-											  CommandType.StoredProcedure,
-											  "UpdateLyncUser",
-											  new[]
-													{
-															 new SqlParameter("@AccountID", accountId),
-															 new SqlParameter("@SipAddress", sipAddress)
-													});
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString,
+					CommandType.StoredProcedure,
+					"UpdateLyncUser",
+					new[] {
+						new SqlParameter("@AccountID", accountId),
+						new SqlParameter("@SipAddress", sipAddress)
+					});
+			}
 		}
 
 
 		public bool CheckLyncUserExists(int accountId)
 		{
-			int res = (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "CheckLyncUserExists",
-											new SqlParameter("@AccountID", accountId));
-			return res > 0;
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				int res = (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "CheckLyncUserExists",
+					new SqlParameter("@AccountID", accountId));
+				return res > 0;
+			}
 		}
 
 		public bool LyncUserExists(int accountId, string sipAddress)
 		{
-			SqlParameter outParam = new SqlParameter("@Exists", SqlDbType.Bit);
-			outParam.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "LyncUserExists",
-				 new SqlParameter("@AccountID", accountId),
-				 new SqlParameter("@SipAddress", sipAddress),
-				 outParam
-			);
+			}
+			else
+			{
+				SqlParameter outParam = new SqlParameter("@Exists", SqlDbType.Bit);
+				outParam.Direction = ParameterDirection.Output;
 
-			return Convert.ToBoolean(outParam.Value);
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"LyncUserExists",
+					new SqlParameter("@AccountID", accountId),
+					new SqlParameter("@SipAddress", sipAddress),
+					outParam);
+
+				return Convert.ToBoolean(outParam.Value);
+			}
 		}
 
 
 
 		public IDataReader GetLyncUsers(int itemId, string sortColumn, string sortDirection, int startRow, int count)
 		{
-			SqlParameter[] sqlParams = new SqlParameter[]
-				 {
-						  new SqlParameter("@ItemID", itemId),
-						  new SqlParameter("@SortColumn", sortColumn),
-						  new SqlParameter("@SortDirection", sortDirection),
-						  new SqlParameter("@StartRow", startRow),
-						  new SqlParameter("Count", count)
-				 };
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlParameter[] sqlParams = new SqlParameter[] {
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@SortColumn", sortColumn),
+					new SqlParameter("@SortDirection", sortDirection),
+					new SqlParameter("@StartRow", startRow),
+					new SqlParameter("Count", count)
+				};
 
 
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetLyncUsers", sqlParams);
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetLyncUsers", sqlParams);
+			}
 		}
 
 
 		public IDataReader GetLyncUsersByPlanId(int itemId, int planId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetLyncUsersByPlanId",
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@PlanId", planId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetLyncUsersByPlanId",
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@PlanId", planId));
+			}
 		}
 
 		public int GetLyncUsersCount(int itemId)
 		{
-			SqlParameter[] sqlParams = new SqlParameter[]
-													 {
-															  new SqlParameter("@ItemID", itemId)
-													 };
+			if (UseEntityFramework)
+			{
 
-			return
-				 (int)
-				 SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "GetLyncUsersCount", sqlParams);
+			}
+			else
+			{
+				SqlParameter[] sqlParams = new [] { new SqlParameter("@ItemID", itemId) };
+
+				return (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "GetLyncUsersCount", sqlParams);
+			}
 		}
 
 		public void DeleteLyncUser(int accountId)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString,
-											  CommandType.StoredProcedure,
-											  "DeleteLyncUser",
-											  new[]
-													{
-															 new SqlParameter("@AccountId", accountId)
-													});
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString,
+					CommandType.StoredProcedure,
+					"DeleteLyncUser",
+					new[] { new SqlParameter("@AccountId", accountId) });
+
+			}
 		}
 
 		public int AddLyncUserPlan(int itemID, LyncUserPlan lyncUserPlan)
 		{
-			SqlParameter outParam = new SqlParameter("@LyncUserPlanId", SqlDbType.Int);
-			outParam.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "AddLyncUserPlan",
-				 outParam,
+			}
+			else
+			{
+				SqlParameter outParam = new SqlParameter("@LyncUserPlanId", SqlDbType.Int);
+				outParam.Direction = ParameterDirection.Output;
 
-				 new SqlParameter("@ItemID", itemID),
-				 new SqlParameter("@LyncUserPlanName", lyncUserPlan.LyncUserPlanName),
-				 new SqlParameter("@LyncUserPlanType", lyncUserPlan.LyncUserPlanType),
-				 new SqlParameter("@IM", lyncUserPlan.IM),
-				 new SqlParameter("@Mobility", lyncUserPlan.Mobility),
-				 new SqlParameter("@MobilityEnableOutsideVoice", lyncUserPlan.MobilityEnableOutsideVoice),
-				 new SqlParameter("@Federation", lyncUserPlan.Federation),
-				 new SqlParameter("@Conferencing", lyncUserPlan.Conferencing),
-				 new SqlParameter("@EnterpriseVoice", lyncUserPlan.EnterpriseVoice),
-				 new SqlParameter("@VoicePolicy", lyncUserPlan.VoicePolicy),
-				 new SqlParameter("@IsDefault", lyncUserPlan.IsDefault),
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"AddLyncUserPlan",
+					outParam,
+					new SqlParameter("@ItemID", itemID),
+					new SqlParameter("@LyncUserPlanName", lyncUserPlan.LyncUserPlanName),
+					new SqlParameter("@LyncUserPlanType", lyncUserPlan.LyncUserPlanType),
+					new SqlParameter("@IM", lyncUserPlan.IM),
+					new SqlParameter("@Mobility", lyncUserPlan.Mobility),
+					new SqlParameter("@MobilityEnableOutsideVoice", lyncUserPlan.MobilityEnableOutsideVoice),
+					new SqlParameter("@Federation", lyncUserPlan.Federation),
+					new SqlParameter("@Conferencing", lyncUserPlan.Conferencing),
+					new SqlParameter("@EnterpriseVoice", lyncUserPlan.EnterpriseVoice),
+					new SqlParameter("@VoicePolicy", lyncUserPlan.VoicePolicy),
+					new SqlParameter("@IsDefault", lyncUserPlan.IsDefault),
+					new SqlParameter("@RemoteUserAccess", lyncUserPlan.RemoteUserAccess),
+					new SqlParameter("@PublicIMConnectivity", lyncUserPlan.PublicIMConnectivity),
+					new SqlParameter("@AllowOrganizeMeetingsWithExternalAnonymous", lyncUserPlan.AllowOrganizeMeetingsWithExternalAnonymous),
+					new SqlParameter("@Telephony", lyncUserPlan.Telephony),
+					new SqlParameter("@ServerURI", lyncUserPlan.ServerURI),
+					new SqlParameter("@ArchivePolicy", lyncUserPlan.ArchivePolicy),
+					new SqlParameter("@TelephonyDialPlanPolicy", lyncUserPlan.TelephonyDialPlanPolicy),
+					new SqlParameter("@TelephonyVoicePolicy", lyncUserPlan.TelephonyVoicePolicy));
 
-				 new SqlParameter("@RemoteUserAccess", lyncUserPlan.RemoteUserAccess),
-				 new SqlParameter("@PublicIMConnectivity", lyncUserPlan.PublicIMConnectivity),
-
-				 new SqlParameter("@AllowOrganizeMeetingsWithExternalAnonymous", lyncUserPlan.AllowOrganizeMeetingsWithExternalAnonymous),
-
-				 new SqlParameter("@Telephony", lyncUserPlan.Telephony),
-
-				 new SqlParameter("@ServerURI", lyncUserPlan.ServerURI),
-
-				 new SqlParameter("@ArchivePolicy", lyncUserPlan.ArchivePolicy),
-				 new SqlParameter("@TelephonyDialPlanPolicy", lyncUserPlan.TelephonyDialPlanPolicy),
-				 new SqlParameter("@TelephonyVoicePolicy", lyncUserPlan.TelephonyVoicePolicy)
-			);
-
-			return Convert.ToInt32(outParam.Value);
+				return Convert.ToInt32(outParam.Value);
+			}
 		}
 
 
 		public void UpdateLyncUserPlan(int itemID, LyncUserPlan lyncUserPlan)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "UpdateLyncUserPlan",
-				 new SqlParameter("@LyncUserPlanId", lyncUserPlan.LyncUserPlanId),
-				 new SqlParameter("@LyncUserPlanName", lyncUserPlan.LyncUserPlanName),
-				 new SqlParameter("@LyncUserPlanType", lyncUserPlan.LyncUserPlanType),
-				 new SqlParameter("@IM", lyncUserPlan.IM),
-				 new SqlParameter("@Mobility", lyncUserPlan.Mobility),
-				 new SqlParameter("@MobilityEnableOutsideVoice", lyncUserPlan.MobilityEnableOutsideVoice),
-				 new SqlParameter("@Federation", lyncUserPlan.Federation),
-				 new SqlParameter("@Conferencing", lyncUserPlan.Conferencing),
-				 new SqlParameter("@EnterpriseVoice", lyncUserPlan.EnterpriseVoice),
-				 new SqlParameter("@VoicePolicy", lyncUserPlan.VoicePolicy),
-				 new SqlParameter("@IsDefault", lyncUserPlan.IsDefault),
+			if (UseEntityFramework)
+			{
 
-				 new SqlParameter("@RemoteUserAccess", lyncUserPlan.RemoteUserAccess),
-				 new SqlParameter("@PublicIMConnectivity", lyncUserPlan.PublicIMConnectivity),
-
-				 new SqlParameter("@AllowOrganizeMeetingsWithExternalAnonymous", lyncUserPlan.AllowOrganizeMeetingsWithExternalAnonymous),
-
-				 new SqlParameter("@Telephony", lyncUserPlan.Telephony),
-
-				 new SqlParameter("@ServerURI", lyncUserPlan.ServerURI),
-
-				 new SqlParameter("@ArchivePolicy", lyncUserPlan.ArchivePolicy),
-				 new SqlParameter("@TelephonyDialPlanPolicy", lyncUserPlan.TelephonyDialPlanPolicy),
-				 new SqlParameter("@TelephonyVoicePolicy", lyncUserPlan.TelephonyVoicePolicy)
-			);
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"UpdateLyncUserPlan",
+					new SqlParameter("@LyncUserPlanId", lyncUserPlan.LyncUserPlanId),
+					new SqlParameter("@LyncUserPlanName", lyncUserPlan.LyncUserPlanName),
+					new SqlParameter("@LyncUserPlanType", lyncUserPlan.LyncUserPlanType),
+					new SqlParameter("@IM", lyncUserPlan.IM),
+					new SqlParameter("@Mobility", lyncUserPlan.Mobility),
+					new SqlParameter("@MobilityEnableOutsideVoice", lyncUserPlan.MobilityEnableOutsideVoice),
+					new SqlParameter("@Federation", lyncUserPlan.Federation),
+					new SqlParameter("@Conferencing", lyncUserPlan.Conferencing),
+					new SqlParameter("@EnterpriseVoice", lyncUserPlan.EnterpriseVoice),
+					new SqlParameter("@VoicePolicy", lyncUserPlan.VoicePolicy),
+					new SqlParameter("@IsDefault", lyncUserPlan.IsDefault),
+					new SqlParameter("@RemoteUserAccess", lyncUserPlan.RemoteUserAccess),
+					new SqlParameter("@PublicIMConnectivity", lyncUserPlan.PublicIMConnectivity),
+					new SqlParameter("@AllowOrganizeMeetingsWithExternalAnonymous", lyncUserPlan.AllowOrganizeMeetingsWithExternalAnonymous),
+					new SqlParameter("@Telephony", lyncUserPlan.Telephony),
+					new SqlParameter("@ServerURI", lyncUserPlan.ServerURI),
+					new SqlParameter("@ArchivePolicy", lyncUserPlan.ArchivePolicy),
+					new SqlParameter("@TelephonyDialPlanPolicy", lyncUserPlan.TelephonyDialPlanPolicy),
+					new SqlParameter("@TelephonyVoicePolicy", lyncUserPlan.TelephonyVoicePolicy));
+			}
 		}
 
 		public void DeleteLyncUserPlan(int lyncUserPlanId)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "DeleteLyncUserPlan",
-				 new SqlParameter("@LyncUserPlanId", lyncUserPlanId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"DeleteLyncUserPlan",
+					new SqlParameter("@LyncUserPlanId", lyncUserPlanId));
+			}
 		}
 
 		public IDataReader GetLyncUserPlan(int lyncUserPlanId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetLyncUserPlan",
-				 new SqlParameter("@LyncUserPlanId", lyncUserPlanId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetLyncUserPlan",
+					new SqlParameter("@LyncUserPlanId", lyncUserPlanId));
+			}
 		}
 
 
 		public IDataReader GetLyncUserPlans(int itemId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetLyncUserPlans",
-				 new SqlParameter("@ItemID", itemId)
-			);
-		}
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetLyncUserPlans",
+					new SqlParameter("@ItemID", itemId));
+			}
+		}
 
 		public void SetOrganizationDefaultLyncUserPlan(int itemId, int lyncUserPlanId)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "SetOrganizationDefaultLyncUserPlan",
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@LyncUserPlanId", lyncUserPlanId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"SetOrganizationDefaultLyncUserPlan",
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@LyncUserPlanId", lyncUserPlanId));
+			}
 		}
 
 		public IDataReader GetLyncUserPlanByAccountId(int AccountId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetLyncUserPlanByAccountId",
-				 new SqlParameter("@AccountID", AccountId)
-			);
-		}
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetLyncUserPlanByAccountId",
+					new SqlParameter("@AccountID", AccountId));
+			}
+		}
 
 		public void SetLyncUserLyncUserplan(int accountId, int lyncUserPlanId)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "SetLyncUserLyncUserplan",
-				 new SqlParameter("@AccountID", accountId),
-				 new SqlParameter("@LyncUserPlanId", (lyncUserPlanId == 0) ? (object)DBNull.Value : (object)lyncUserPlanId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"SetLyncUserLyncUserplan",
+					new SqlParameter("@AccountID", accountId),
+					new SqlParameter("@LyncUserPlanId", (lyncUserPlanId == 0) ? (object)DBNull.Value : (object)lyncUserPlanId));
+			}
 		}
-
-
 		#endregion
 
 		#region SfB
 
 		public void AddSfBUser(int accountId, int sfbUserPlanId, string sipAddress)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString,
-											  CommandType.StoredProcedure,
-											  "AddSfBUser",
-											  new[]
-													{
-															 new SqlParameter("@AccountID", accountId),
-															 new SqlParameter("@SfBUserPlanID", sfbUserPlanId),
-															 new SqlParameter("@SipAddress", sipAddress)
-													});
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString,
+					CommandType.StoredProcedure,
+					"AddSfBUser",
+					new[] {
+						new SqlParameter("@AccountID", accountId),
+						new SqlParameter("@SfBUserPlanID", sfbUserPlanId),
+						new SqlParameter("@SipAddress", sipAddress)
+					});
+			}
 		}
 
 		public void UpdateSfBUser(int accountId, string sipAddress)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString,
-											  CommandType.StoredProcedure,
-											  "UpdateSfBUser",
-											  new[]
-													{
-															 new SqlParameter("@AccountID", accountId),
-															 new SqlParameter("@SipAddress", sipAddress)
-													});
-		}
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString,
+					CommandType.StoredProcedure,
+					"UpdateSfBUser",
+					new[] {
+						new SqlParameter("@AccountID", accountId),
+						new SqlParameter("@SipAddress", sipAddress)
+					});
+			}
+		}
 
 		public bool CheckSfBUserExists(int accountId)
 		{
 			int res = (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "CheckSfBUserExists",
-											new SqlParameter("@AccountID", accountId));
+				new SqlParameter("@AccountID", accountId));
 			return res > 0;
 		}
 
 		public bool SfBUserExists(int accountId, string sipAddress)
 		{
-			SqlParameter outParam = new SqlParameter("@Exists", SqlDbType.Bit);
-			outParam.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "SfBUserExists",
-				 new SqlParameter("@AccountID", accountId),
-				 new SqlParameter("@SipAddress", sipAddress),
-				 outParam
-			);
+			}
+			else
+			{
+				SqlParameter outParam = new SqlParameter("@Exists", SqlDbType.Bit);
+				outParam.Direction = ParameterDirection.Output;
 
-			return Convert.ToBoolean(outParam.Value);
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"SfBUserExists",
+					new SqlParameter("@AccountID", accountId),
+					new SqlParameter("@SipAddress", sipAddress),
+					outParam);
+
+				return Convert.ToBoolean(outParam.Value);
+			}
 		}
-
-
 
 		public IDataReader GetSfBUsers(int itemId, string sortColumn, string sortDirection, int startRow, int count)
 		{
-			SqlParameter[] sqlParams = new SqlParameter[]
-				 {
-						  new SqlParameter("@ItemID", itemId),
-						  new SqlParameter("@SortColumn", sortColumn),
-						  new SqlParameter("@SortDirection", sortDirection),
-						  new SqlParameter("@StartRow", startRow),
-						  new SqlParameter("Count", count)
-				 };
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				SqlParameter[] sqlParams = new []
+				{
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@SortColumn", sortColumn),
+					new SqlParameter("@SortDirection", sortDirection),
+					new SqlParameter("@StartRow", startRow),
+					new SqlParameter("Count", count)
+				};
 
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetSfBUsers", sqlParams);
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetSfBUsers", sqlParams);
+			}
 		}
-
 
 		public IDataReader GetSfBUsersByPlanId(int itemId, int planId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetSfBUsersByPlanId",
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@PlanId", planId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetSfBUsersByPlanId",
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@PlanId", planId));
+			}
 		}
 
 		public int GetSfBUsersCount(int itemId)
 		{
-			SqlParameter[] sqlParams = new SqlParameter[]
-													 {
-															  new SqlParameter("@ItemID", itemId)
-													 };
+			if (UseEntityFramework)
+			{
 
-			return
-				 (int)
-				 SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "GetSfBUsersCount", sqlParams);
+			}
+			else
+			{
+				SqlParameter[] sqlParams = new [] { new SqlParameter("@ItemID", itemId) };
+
+				return (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "GetSfBUsersCount", sqlParams);
+			}
 		}
 
 		public void DeleteSfBUser(int accountId)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString,
-											  CommandType.StoredProcedure,
-											  "DeleteSfBUser",
-											  new[]
-													{
-															 new SqlParameter("@AccountId", accountId)
-													});
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString,
+					CommandType.StoredProcedure,
+					"DeleteSfBUser",
+					new[] { new SqlParameter("@AccountId", accountId) });
+			}
 		}
 
 		public int AddSfBUserPlan(int itemID, SfBUserPlan sfbUserPlan)
 		{
-			SqlParameter outParam = new SqlParameter("@SfBUserPlanId", SqlDbType.Int);
-			outParam.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "AddSfBUserPlan",
-				 outParam,
+			}
+			else
+			{
+				SqlParameter outParam = new SqlParameter("@SfBUserPlanId", SqlDbType.Int);
+				outParam.Direction = ParameterDirection.Output;
 
-				 new SqlParameter("@ItemID", itemID),
-				 new SqlParameter("@SfBUserPlanName", sfbUserPlan.SfBUserPlanName),
-				 new SqlParameter("@SfBUserPlanType", sfbUserPlan.SfBUserPlanType),
-				 new SqlParameter("@IM", sfbUserPlan.IM),
-				 new SqlParameter("@Mobility", sfbUserPlan.Mobility),
-				 new SqlParameter("@MobilityEnableOutsideVoice", sfbUserPlan.MobilityEnableOutsideVoice),
-				 new SqlParameter("@Federation", sfbUserPlan.Federation),
-				 new SqlParameter("@Conferencing", sfbUserPlan.Conferencing),
-				 new SqlParameter("@EnterpriseVoice", sfbUserPlan.EnterpriseVoice),
-				 new SqlParameter("@VoicePolicy", sfbUserPlan.VoicePolicy),
-				 new SqlParameter("@IsDefault", sfbUserPlan.IsDefault),
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"AddSfBUserPlan",
+					outParam,
+					new SqlParameter("@ItemID", itemID),
+					new SqlParameter("@SfBUserPlanName", sfbUserPlan.SfBUserPlanName),
+					new SqlParameter("@SfBUserPlanType", sfbUserPlan.SfBUserPlanType),
+					new SqlParameter("@IM", sfbUserPlan.IM),
+					new SqlParameter("@Mobility", sfbUserPlan.Mobility),
+					new SqlParameter("@MobilityEnableOutsideVoice", sfbUserPlan.MobilityEnableOutsideVoice),
+					new SqlParameter("@Federation", sfbUserPlan.Federation),
+					new SqlParameter("@Conferencing", sfbUserPlan.Conferencing),
+					new SqlParameter("@EnterpriseVoice", sfbUserPlan.EnterpriseVoice),
+					new SqlParameter("@VoicePolicy", sfbUserPlan.VoicePolicy),
+					new SqlParameter("@IsDefault", sfbUserPlan.IsDefault),
+					new SqlParameter("@RemoteUserAccess", sfbUserPlan.RemoteUserAccess),
+					new SqlParameter("@PublicIMConnectivity", sfbUserPlan.PublicIMConnectivity),
+					new SqlParameter("@AllowOrganizeMeetingsWithExternalAnonymous", sfbUserPlan.AllowOrganizeMeetingsWithExternalAnonymous),
+					new SqlParameter("@Telephony", sfbUserPlan.Telephony),
+					new SqlParameter("@ServerURI", sfbUserPlan.ServerURI),
+					new SqlParameter("@ArchivePolicy", sfbUserPlan.ArchivePolicy),
+					new SqlParameter("@TelephonyDialPlanPolicy", sfbUserPlan.TelephonyDialPlanPolicy),
+					new SqlParameter("@TelephonyVoicePolicy", sfbUserPlan.TelephonyVoicePolicy));
 
-				 new SqlParameter("@RemoteUserAccess", sfbUserPlan.RemoteUserAccess),
-				 new SqlParameter("@PublicIMConnectivity", sfbUserPlan.PublicIMConnectivity),
-
-				 new SqlParameter("@AllowOrganizeMeetingsWithExternalAnonymous", sfbUserPlan.AllowOrganizeMeetingsWithExternalAnonymous),
-
-				 new SqlParameter("@Telephony", sfbUserPlan.Telephony),
-
-				 new SqlParameter("@ServerURI", sfbUserPlan.ServerURI),
-
-				 new SqlParameter("@ArchivePolicy", sfbUserPlan.ArchivePolicy),
-				 new SqlParameter("@TelephonyDialPlanPolicy", sfbUserPlan.TelephonyDialPlanPolicy),
-				 new SqlParameter("@TelephonyVoicePolicy", sfbUserPlan.TelephonyVoicePolicy)
-			);
-
-			return Convert.ToInt32(outParam.Value);
+				return Convert.ToInt32(outParam.Value);
+			}
 		}
 
 
 		public void UpdateSfBUserPlan(int itemID, SfBUserPlan sfbUserPlan)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "UpdateSfBUserPlan",
-				 new SqlParameter("@SfBUserPlanId", sfbUserPlan.SfBUserPlanId),
-				 new SqlParameter("@SfBUserPlanName", sfbUserPlan.SfBUserPlanName),
-				 new SqlParameter("@SfBUserPlanType", sfbUserPlan.SfBUserPlanType),
-				 new SqlParameter("@IM", sfbUserPlan.IM),
-				 new SqlParameter("@Mobility", sfbUserPlan.Mobility),
-				 new SqlParameter("@MobilityEnableOutsideVoice", sfbUserPlan.MobilityEnableOutsideVoice),
-				 new SqlParameter("@Federation", sfbUserPlan.Federation),
-				 new SqlParameter("@Conferencing", sfbUserPlan.Conferencing),
-				 new SqlParameter("@EnterpriseVoice", sfbUserPlan.EnterpriseVoice),
-				 new SqlParameter("@VoicePolicy", sfbUserPlan.VoicePolicy),
-				 new SqlParameter("@IsDefault", sfbUserPlan.IsDefault),
+			if (UseEntityFramework)
+			{
 
-				 new SqlParameter("@RemoteUserAccess", sfbUserPlan.RemoteUserAccess),
-				 new SqlParameter("@PublicIMConnectivity", sfbUserPlan.PublicIMConnectivity),
-
-				 new SqlParameter("@AllowOrganizeMeetingsWithExternalAnonymous", sfbUserPlan.AllowOrganizeMeetingsWithExternalAnonymous),
-
-				 new SqlParameter("@Telephony", sfbUserPlan.Telephony),
-
-				 new SqlParameter("@ServerURI", sfbUserPlan.ServerURI),
-
-				 new SqlParameter("@ArchivePolicy", sfbUserPlan.ArchivePolicy),
-				 new SqlParameter("@TelephonyDialPlanPolicy", sfbUserPlan.TelephonyDialPlanPolicy),
-				 new SqlParameter("@TelephonyVoicePolicy", sfbUserPlan.TelephonyVoicePolicy)
-			);
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"UpdateSfBUserPlan",
+					new SqlParameter("@SfBUserPlanId", sfbUserPlan.SfBUserPlanId),
+					new SqlParameter("@SfBUserPlanName", sfbUserPlan.SfBUserPlanName),
+					new SqlParameter("@SfBUserPlanType", sfbUserPlan.SfBUserPlanType),
+					new SqlParameter("@IM", sfbUserPlan.IM),
+					new SqlParameter("@Mobility", sfbUserPlan.Mobility),
+					new SqlParameter("@MobilityEnableOutsideVoice", sfbUserPlan.MobilityEnableOutsideVoice),
+					new SqlParameter("@Federation", sfbUserPlan.Federation),
+					new SqlParameter("@Conferencing", sfbUserPlan.Conferencing),
+					new SqlParameter("@EnterpriseVoice", sfbUserPlan.EnterpriseVoice),
+					new SqlParameter("@VoicePolicy", sfbUserPlan.VoicePolicy),
+					new SqlParameter("@IsDefault", sfbUserPlan.IsDefault),
+					new SqlParameter("@RemoteUserAccess", sfbUserPlan.RemoteUserAccess),
+					new SqlParameter("@PublicIMConnectivity", sfbUserPlan.PublicIMConnectivity),
+					new SqlParameter("@AllowOrganizeMeetingsWithExternalAnonymous", sfbUserPlan.AllowOrganizeMeetingsWithExternalAnonymous),
+					new SqlParameter("@Telephony", sfbUserPlan.Telephony),
+					new SqlParameter("@ServerURI", sfbUserPlan.ServerURI),
+					new SqlParameter("@ArchivePolicy", sfbUserPlan.ArchivePolicy),
+					new SqlParameter("@TelephonyDialPlanPolicy", sfbUserPlan.TelephonyDialPlanPolicy),
+					new SqlParameter("@TelephonyVoicePolicy", sfbUserPlan.TelephonyVoicePolicy));
+			}
 		}
 
 		public void DeleteSfBUserPlan(int sfbUserPlanId)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "DeleteSfBUserPlan",
-				 new SqlParameter("@SfBUserPlanId", sfbUserPlanId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"DeleteSfBUserPlan",
+					new SqlParameter("@SfBUserPlanId", sfbUserPlanId));
+			}
 		}
 
 		public IDataReader GetSfBUserPlan(int sfbUserPlanId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetSfBUserPlan",
-				 new SqlParameter("@SfBUserPlanId", sfbUserPlanId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetSfBUserPlan",
+					new SqlParameter("@SfBUserPlanId", sfbUserPlanId));
+			}
 		}
 
 
 		public IDataReader GetSfBUserPlans(int itemId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetSfBUserPlans",
-				 new SqlParameter("@ItemID", itemId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetSfBUserPlans",
+					new SqlParameter("@ItemID", itemId));
+			}
 		}
 
 
 		public void SetOrganizationDefaultSfBUserPlan(int itemId, int sfbUserPlanId)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "SetOrganizationDefaultSfBUserPlan",
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@SfBUserPlanId", sfbUserPlanId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"SetOrganizationDefaultSfBUserPlan",
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@SfBUserPlanId", sfbUserPlanId));
+			}
 		}
 
 		public IDataReader GetSfBUserPlanByAccountId(int AccountId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetSfBUserPlanByAccountId",
-				 new SqlParameter("@AccountID", AccountId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetSfBUserPlanByAccountId",
+					new SqlParameter("@AccountID", AccountId));
+			}
 		}
 
 
 		public void SetSfBUserSfBUserplan(int accountId, int sfbUserPlanId)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "SetSfBUserSfBUserplan",
-				 new SqlParameter("@AccountID", accountId),
-				 new SqlParameter("@SfBUserPlanId", (sfbUserPlanId == 0) ? (object)DBNull.Value : (object)sfbUserPlanId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"SetSfBUserSfBUserplan",
+					new SqlParameter("@AccountID", accountId),
+					new SqlParameter("@SfBUserPlanId", (sfbUserPlanId == 0) ? (object)DBNull.Value : (object)sfbUserPlanId));
+			}
 		}
-
-
 		#endregion
 
 		public int GetPackageIdByName(string Name)
 		{
+			const bool UseEntityFrameworkForGetPackageIdByName = true;
+			
 			int packageId = -1;
-			List<ProviderInfo> providers = ServerController.GetProviders();
-			foreach (ProviderInfo providerInfo in providers)
+
+			if (UseEntityFrameworkForGetPackageIdByName || UseEntityFramework)
 			{
-				if (string.Equals(Name, providerInfo.ProviderName, StringComparison.OrdinalIgnoreCase))
-				{
-					packageId = providerInfo.ProviderId;
-					break;
-				}
+				packageId = Packages
+					.Where(p => string.Equals(Name, p.PackageName, StringComparison.OrdinalIgnoreCase))
+					.Select(p => (int?)p.PackageId)
+					.SingleOrDefault() ?? -1;
+				return packageId;
 			}
+			else
+			{	// TODO is this a bug? Querying Providers instead of Packages? But this routine has no
+				// references, so the bug does not show up
+				List<ProviderInfo> providers = ServerController.GetProviders();
+				foreach (ProviderInfo providerInfo in providers)
+				{
+					if (string.Equals(Name, providerInfo.ProviderName, StringComparison.OrdinalIgnoreCase))
+					{
+						packageId = providerInfo.ProviderId;
+						break;
+					}
+				}
 
-			//if (-1 == packageId)
-			//{
-			//    throw new Exception("Provider not found");
-			//}
+				//if (-1 == packageId)
+				//{
+				//    throw new Exception("Provider not found");
+				//}
 
-			return packageId;
+				return packageId;
+			}
 		}
 
 		public int GetServiceIdByProviderForServer(int providerId, int packageId)
 		{
-			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.Text,
-				 @"SELECT TOP 1 
-                    PackageServices.ServiceID
-                  FROM PackageServices
-                  LEFT JOIN Services ON Services.ServiceID = PackageServices.ServiceID
-                  WHERE PackageServices.PackageID = @PackageID AND Services.ProviderID = @ProviderID",
-				 new SqlParameter("@ProviderID", providerId),
-				 new SqlParameter("@PackageID", packageId));
-
-			if (reader.Read())
+			if (UseEntityFramework)
 			{
-				return (int)reader["ServiceID"];
-			}
 
-			return -1;
+			}
+			else
+			{
+				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.Text,
+@"SELECT TOP 1
+	PackageServices.ServiceID
+FROM PackageServices
+LEFT JOIN Services ON Services.ServiceID = PackageServices.ServiceID
+WHERE PackageServices.PackageID = @PackageID AND Services.ProviderID = @ProviderID",
+					new SqlParameter("@ProviderID", providerId),
+					new SqlParameter("@PackageID", packageId));
+
+				if (reader.Read())
+				{
+					return (int)reader["ServiceID"];
+				}
+
+				return -1;
+			}
 		}
 
 		#region Helicon Zoo
 
 		public void GetHeliconZooProviderAndGroup(string providerName, out int providerId, out int groupId)
 		{
-			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.Text,
-				 @"SELECT TOP 1 
-                    ProviderID, GroupID
-                  FROM Providers
-                  WHERE ProviderName = @ProviderName",
-				 new SqlParameter("@ProviderName", providerName));
+			if (UseEntityFramework)
+			{
 
-			reader.Read();
+			}
+			else
+			{
+				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.Text,
+@"SELECT TOP 1 
+	ProviderID, GroupID
+FROM Providers
+WHERE ProviderName = @ProviderName",
+					new SqlParameter("@ProviderName", providerName));
 
-			providerId = (int)reader["ProviderID"];
-			groupId = (int)reader["GroupID"];
+				reader.Read();
 
+				providerId = (int)reader["ProviderID"];
+				groupId = (int)reader["GroupID"];
+			}
 		}
 
 		public IDataReader GetHeliconZooQuotas(int providerId)
 		{
-			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.Text,
-				 @"SELECT
-	                Q.QuotaID,
-	                Q.GroupID,
-	                Q.QuotaName,
-	                Q.QuotaDescription,
-	                Q.QuotaTypeID,
-	                Q.ServiceQuota
-                FROM Providers AS P
-                INNER JOIN Quotas AS Q ON P.GroupID = Q.GroupID
-                WHERE P.ProviderID = @ProviderID",
-				 new SqlParameter("@ProviderID", providerId));
+			if (UseEntityFramework)
+			{
 
-			return reader;
+			}
+			else
+			{
+				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.Text,
+@"SELECT
+	Q.QuotaID,
+	Q.GroupID,
+	Q.QuotaName,
+	Q.QuotaDescription,
+	Q.QuotaTypeID,
+	Q.ServiceQuota
+FROM Providers AS P
+INNER JOIN Quotas AS Q ON P.GroupID = Q.GroupID
+WHERE P.ProviderID = @ProviderID",
+					new SqlParameter("@ProviderID", providerId));
+
+				return reader;
+			}
 		}
 
 		public void RemoveHeliconZooQuota(int groupId, string engineName)
 		{
-			int quotaId;
+			if (UseEntityFramework)
+			{
 
-			// find quota id
-			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.Text,
-				 @"SELECT TOP 1 
-                    QuotaID
-                  FROM Quotas
-                  WHERE QuotaName = @QuotaName AND GroupID = @GroupID",
-				 new SqlParameter("@QuotaName", engineName),
-				 new SqlParameter("@GroupID", groupId));
+			}
+			else
+			{
+				int quotaId;
 
-			reader.Read();
-			quotaId = (int)reader["QuotaID"];
+				// find quota id
+				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.Text,
+@"SELECT TOP 1 QuotaID
+FROM Quotas
+WHERE QuotaName = @QuotaName AND GroupID = @GroupID",
+					new SqlParameter("@QuotaName", engineName),
+					new SqlParameter("@GroupID", groupId));
 
-			// delete references from HostingPlanQuotas
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.Text,
-				 "DELETE FROM HostingPlanQuotas WHERE QuotaID = @QuotaID",
-				 new SqlParameter("@QuotaID", quotaId)
-			);
+				reader.Read();
+				quotaId = (int)reader["QuotaID"];
 
-			// delete from Quotas
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.Text,
-				 "DELETE FROM Quotas WHERE QuotaID = @QuotaID",
-				 new SqlParameter("@QuotaID", quotaId)
-			);
+				// delete references from HostingPlanQuotas
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.Text,
+					"DELETE FROM HostingPlanQuotas WHERE QuotaID = @QuotaID",
+					new SqlParameter("@QuotaID", quotaId));
 
+				// delete from Quotas
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.Text,
+					"DELETE FROM Quotas WHERE QuotaID = @QuotaID",
+					new SqlParameter("@QuotaID", quotaId));
+			}
 		}
 
 		public void AddHeliconZooQuota(int groupId, int quotaId, string engineName, string engineDescription, int quotaOrder)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.Text,
-					  @"INSERT INTO Quotas (QuotaID, GroupID, QuotaOrder, QuotaName, QuotaDescription, QuotaTypeID, ServiceQuota)
-                    VALUES (@QuotaID, @GroupID, @QuotaOrder, @QuotaName, @QuotaDescription, 1, 0)",
-					  new SqlParameter("@QuotaID", quotaId),
-					  new SqlParameter("@GroupID", groupId),
-					  new SqlParameter("@QuotaOrder", quotaOrder),
-					  new SqlParameter("@QuotaName", engineName),
-					  new SqlParameter("@QuotaDescription", engineDescription)
-				 );
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.Text,
+@"INSERT INTO Quotas (QuotaID, GroupID, QuotaOrder, QuotaName, QuotaDescription, QuotaTypeID, ServiceQuota)
+VALUES (@QuotaID, @GroupID, @QuotaOrder, @QuotaName, @QuotaDescription, 1, 0)",
+					new SqlParameter("@QuotaID", quotaId),
+					new SqlParameter("@GroupID", groupId),
+					new SqlParameter("@QuotaOrder", quotaOrder),
+					new SqlParameter("@QuotaName", engineName),
+					new SqlParameter("@QuotaDescription", engineDescription));
+			}
 		}
 
 		public IDataReader GetEnabledHeliconZooQuotasForPackage(int packageId)
 		{
-			int providerId, groupId;
+			if (UseEntityFramework)
+			{
 
-			GetHeliconZooProviderAndGroup("HeliconZoo", out providerId, out groupId);
+			}
+			else
+			{
+				int providerId, groupId;
 
-			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.Text,
-				 @"SELECT     HostingPlanQuotas.QuotaID, Quotas.QuotaName, Quotas.QuotaDescription
-                FROM         HostingPlanQuotas 
-                    INNER JOIN Packages ON HostingPlanQuotas.PlanID = Packages.PlanID 
-                        INNER JOIN Quotas ON HostingPlanQuotas.QuotaID = Quotas.QuotaID
-                WHERE     
-                    (Packages.PackageID = @PackageID) AND (Quotas.GroupID = @GroupID) AND (HostingPlanQuotas.QuotaValue = 1)",
-				 new SqlParameter("@PackageID", packageId),
-				 new SqlParameter("@GroupID", groupId)
-			);
+				GetHeliconZooProviderAndGroup("HeliconZoo", out providerId, out groupId);
 
-			return reader;
+				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.Text,
+@"SELECT HostingPlanQuotas.QuotaID, Quotas.QuotaName, Quotas.QuotaDescription
+FROM HostingPlanQuotas 
+INNER JOIN Packages ON HostingPlanQuotas.PlanID = Packages.PlanID 
+INNER JOIN Quotas ON HostingPlanQuotas.QuotaID = Quotas.QuotaID
+WHERE (Packages.PackageID = @PackageID) AND (Quotas.GroupID = @GroupID) AND (HostingPlanQuotas.QuotaValue = 1)",
+					new SqlParameter("@PackageID", packageId),
+					new SqlParameter("@GroupID", groupId));
+
+				return reader;
+			}
 		}
 
 		public int GetServiceIdForProviderIdAndPackageId(int providerId, int packageId)
 		{
-			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.Text,
-				 @"SELECT PackageServices.ServiceID 
-                FROM PackageServices
-                INNER JOIN Services ON PackageServices.ServiceID = Services.ServiceID
-                WHERE Services.ProviderID = @ProviderID and PackageID = @PackageID",
-				 new SqlParameter("@ProviderID", providerId),
-				 new SqlParameter("@PackageID", packageId)
-			);
-
-			if (reader.Read())
+			if (UseEntityFramework)
 			{
-				return (int)reader["ServiceID"];
+
 			}
+			else
+			{
+				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.Text,
+@"SELECT PackageServices.ServiceID 
+FROM PackageServices
+INNER JOIN Services ON PackageServices.ServiceID = Services.ServiceID
+WHERE Services.ProviderID = @ProviderID and PackageID = @PackageID",
+					new SqlParameter("@ProviderID", providerId),
+					new SqlParameter("@PackageID", packageId));
 
-			return -1;
+				if (reader.Read())
+				{
+					return (int)reader["ServiceID"];
+				}
 
+				return -1;
+			}
 		}
 
 		public int GetServerIdForPackage(int packageId)
 		{
-			IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.Text,
-				 @"SELECT TOP 1 
-                    ServerID
-                  FROM Packages
-                  WHERE PackageID = @PackageID",
-				 new SqlParameter("@PackageID", packageId)
-			);
-
-			if (reader.Read())
+			if (UseEntityFramework)
 			{
-				return (int)reader["ServerID"];
+
 			}
+			else
+			{
+				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.Text,
+@"SELECT TOP 1 
+ServerID
+FROM Packages
+WHERE PackageID = @PackageID",
+					new SqlParameter("@PackageID", packageId));
 
-			return -1;
+				if (reader.Read())
+				{
+					return (int)reader["ServerID"];
+				}
+
+				return -1;
+			}
 		}
-
 		#endregion
 
 		#region Enterprise Storage
 
 		public int AddWebDavAccessToken(Base.HostedSolution.WebDavAccessToken accessToken)
 		{
-			SqlParameter prmId = new SqlParameter("@TokenID", SqlDbType.Int);
-			prmId.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "AddWebDavAccessToken",
-				 prmId,
-				 new SqlParameter("@AccessToken", accessToken.AccessToken),
-				 new SqlParameter("@FilePath", accessToken.FilePath),
-				 new SqlParameter("@AuthData", accessToken.AuthData),
-				 new SqlParameter("@ExpirationDate", accessToken.ExpirationDate),
-				 new SqlParameter("@AccountID", accessToken.AccountId),
-				 new SqlParameter("@ItemId", accessToken.ItemId)
-			);
+			}
+			else
+			{
+				SqlParameter prmId = new SqlParameter("@TokenID", SqlDbType.Int);
+				prmId.Direction = ParameterDirection.Output;
 
-			// read identity
-			return Convert.ToInt32(prmId.Value);
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"AddWebDavAccessToken",
+					prmId,
+					new SqlParameter("@AccessToken", accessToken.AccessToken),
+					new SqlParameter("@FilePath", accessToken.FilePath),
+					new SqlParameter("@AuthData", accessToken.AuthData),
+					new SqlParameter("@ExpirationDate", accessToken.ExpirationDate),
+					new SqlParameter("@AccountID", accessToken.AccountId),
+					new SqlParameter("@ItemId", accessToken.ItemId));
+
+				// read identity
+				return Convert.ToInt32(prmId.Value);
+			}
 		}
 
 		public void DeleteExpiredWebDavAccessTokens()
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "DeleteExpiredWebDavAccessTokens"
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"DeleteExpiredWebDavAccessTokens");
+			}
 		}
 
 		public IDataReader GetWebDavAccessTokenById(int id)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetWebDavAccessTokenById",
-				 new SqlParameter("@Id", id)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetWebDavAccessTokenById",
+					new SqlParameter("@Id", id));
+			}
 		}
 
 		public IDataReader GetWebDavAccessTokenByAccessToken(Guid accessToken)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetWebDavAccessTokenByAccessToken",
-				 new SqlParameter("@AccessToken", accessToken)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetWebDavAccessTokenByAccessToken",
+					new SqlParameter("@AccessToken", accessToken));
+			}
 		}
 
 		public int AddEntepriseFolder(int itemId, string folderName, int folderQuota, string locationDrive, string homeFolder, string domain, int? storageSpaceFolderId)
 		{
-			SqlParameter prmId = new SqlParameter("@FolderID", SqlDbType.Int);
-			prmId.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "AddEnterpriseFolder",
-				 prmId,
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@FolderName", folderName),
-				 new SqlParameter("@FolderQuota", folderQuota),
-				 new SqlParameter("@LocationDrive", locationDrive),
-				 new SqlParameter("@HomeFolder", homeFolder),
-				 new SqlParameter("@Domain", domain),
-				 new SqlParameter("@StorageSpaceFolderId", storageSpaceFolderId)
-			);
+			}
+			else
+			{
+				SqlParameter prmId = new SqlParameter("@FolderID", SqlDbType.Int);
+				prmId.Direction = ParameterDirection.Output;
 
-			// read identity
-			return Convert.ToInt32(prmId.Value);
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"AddEnterpriseFolder",
+					prmId,
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@FolderName", folderName),
+					new SqlParameter("@FolderQuota", folderQuota),
+					new SqlParameter("@LocationDrive", locationDrive),
+					new SqlParameter("@HomeFolder", homeFolder),
+					new SqlParameter("@Domain", domain),
+					new SqlParameter("@StorageSpaceFolderId", storageSpaceFolderId));
+
+				// read identity
+				return Convert.ToInt32(prmId.Value);
+			}
 		}
 
 		public void UpdateEntepriseFolderStorageSpaceFolder(int itemId, string folderName, int? storageSpaceFolderId)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "UpdateEntepriseFolderStorageSpaceFolder",
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@FolderName", folderName),
-				 new SqlParameter("@StorageSpaceFolderId", storageSpaceFolderId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"UpdateEntepriseFolderStorageSpaceFolder",
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@FolderName", folderName),
+					new SqlParameter("@StorageSpaceFolderId", storageSpaceFolderId));
+			}
 		}
 
 		public void DeleteEnterpriseFolder(int itemId, string folderName)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "DeleteEnterpriseFolder",
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@FolderName", folderName));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"DeleteEnterpriseFolder",
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@FolderName", folderName));
+			}
 		}
 
 		public void UpdateEnterpriseFolder(int itemId, string folderID, string folderName, int folderQuota)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "UpdateEnterpriseFolder",
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@FolderID", folderID),
-				 new SqlParameter("@FolderName", folderName),
-				 new SqlParameter("@FolderQuota", folderQuota));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"UpdateEnterpriseFolder",
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@FolderID", folderID),
+					new SqlParameter("@FolderName", folderName),
+					new SqlParameter("@FolderQuota", folderQuota));
+			}
 		}
 
 		public IDataReader GetEnterpriseFolders(int itemId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetEnterpriseFolders",
-				 new SqlParameter("@ItemID", itemId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetEnterpriseFolders",
+					new SqlParameter("@ItemID", itemId));
+			}
 		}
 
 		public DataSet GetEnterpriseFoldersPaged(int itemId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
 		{
-			return SqlHelper.ExecuteDataset(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetEnterpriseFoldersPaged",
-				 new SqlParameter("@ItemId", itemId),
-				 new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
-				 new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
-				 new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
-				 new SqlParameter("@startRow", startRow),
-				 new SqlParameter("@maximumRows", maximumRows)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetEnterpriseFoldersPaged",
+					new SqlParameter("@ItemId", itemId),
+					new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
+					new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
+					new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
+					new SqlParameter("@startRow", startRow),
+					new SqlParameter("@maximumRows", maximumRows));
+			}
 		}
 
 		public IDataReader GetEnterpriseFolder(int itemId, string folderName)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetEnterpriseFolder",
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@FolderName", folderName)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetEnterpriseFolder",
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@FolderName", folderName));
+			}
 		}
 
 		public IDataReader GetWebDavPortalUserSettingsByAccountId(int accountId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetWebDavPortalUsersSettingsByAccountId",
-				 new SqlParameter("@AccountId", accountId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetWebDavPortalUsersSettingsByAccountId",
+					new SqlParameter("@AccountId", accountId));
+			}
 		}
 
 		public int AddWebDavPortalUsersSettings(int accountId, string settings)
 		{
-			SqlParameter settingsId = new SqlParameter("@WebDavPortalUsersSettingsId", SqlDbType.Int);
-			settingsId.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "AddWebDavPortalUsersSettings",
-				 settingsId,
-				 new SqlParameter("@AccountId", accountId),
-				 new SqlParameter("@Settings", settings)
-			);
+			}
+			else
+			{
+				SqlParameter settingsId = new SqlParameter("@WebDavPortalUsersSettingsId", SqlDbType.Int);
+				settingsId.Direction = ParameterDirection.Output;
 
-			// read identity
-			return Convert.ToInt32(settingsId.Value);
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"AddWebDavPortalUsersSettings",
+					settingsId,
+					new SqlParameter("@AccountId", accountId),
+					new SqlParameter("@Settings", settings));
+
+				// read identity
+				return Convert.ToInt32(settingsId.Value);
+			}
 		}
 
 		public void UpdateWebDavPortalUsersSettings(int accountId, string settings)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "UpdateWebDavPortalUsersSettings",
-				 new SqlParameter("@AccountId", accountId),
-				 new SqlParameter("@Settings", settings)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"UpdateWebDavPortalUsersSettings",
+					new SqlParameter("@AccountId", accountId),
+					new SqlParameter("@Settings", settings));
+			}
 		}
 
 		public void DeleteAllEnterpriseFolderOwaUsers(int itemId, int folderId)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "DeleteAllEnterpriseFolderOwaUsers",
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@FolderID", folderId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"DeleteAllEnterpriseFolderOwaUsers",
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@FolderID", folderId));
+			}
 		}
 
 		public int AddEnterpriseFolderOwaUser(int itemId, int folderId, int accountId)
 		{
-			SqlParameter id = new SqlParameter("@ESOwsaUserId", SqlDbType.Int);
-			id.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "AddEnterpriseFolderOwaUser",
-				 id,
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@FolderID", folderId),
-				 new SqlParameter("@AccountId", accountId)
-			);
+			}
+			else
+			{
+				SqlParameter id = new SqlParameter("@ESOwsaUserId", SqlDbType.Int);
+				id.Direction = ParameterDirection.Output;
 
-			// read identity
-			return Convert.ToInt32(id.Value);
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"AddEnterpriseFolderOwaUser",
+					id,
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@FolderID", folderId),
+					new SqlParameter("@AccountId", accountId));
+
+				// read identity
+				return Convert.ToInt32(id.Value);
+			}
 		}
 
 		public IDataReader GetEnterpriseFolderOwaUsers(int itemId, int folderId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetEnterpriseFolderOwaUsers",
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@FolderID", folderId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetEnterpriseFolderOwaUsers",
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@FolderID", folderId));
+			}
 		}
 
 		public IDataReader GetEnterpriseFolderId(int itemId, string folderName)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetEnterpriseFolderId",
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@FolderName", folderName)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetEnterpriseFolderId",
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@FolderName", folderName));
+			}
 		}
 
 		public IDataReader GetUserEnterpriseFolderWithOwaEditPermission(int itemId, int accountId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetUserEnterpriseFolderWithOwaEditPermission",
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@AccountID", accountId)
-			);
-		}
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetUserEnterpriseFolderWithOwaEditPermission",
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@AccountID", accountId));
+			}
+		}
 		#endregion
 
 		#region Support Service Levels
 
 		public IDataReader GetSupportServiceLevels()
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetSupportServiceLevels");
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					OjectQualifier + "GetSupportServiceLevels");
+			}
 		}
 
 		public int AddSupportServiceLevel(string levelName, string levelDescription)
 		{
-			SqlParameter outParam = new SqlParameter("@LevelID", SqlDbType.Int);
-			outParam.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "AddSupportServiceLevel",
-				 outParam,
-				 new SqlParameter("@LevelName", levelName),
-				 new SqlParameter("@LevelDescription", levelDescription)
-			);
+			}
+			else
+			{
+				SqlParameter outParam = new SqlParameter("@LevelID", SqlDbType.Int);
+				outParam.Direction = ParameterDirection.Output;
 
-			return Convert.ToInt32(outParam.Value);
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"AddSupportServiceLevel",
+					outParam,
+					new SqlParameter("@LevelName", levelName),
+					new SqlParameter("@LevelDescription", levelDescription));
+
+				return Convert.ToInt32(outParam.Value);
+			}
 		}
 
 		public void UpdateSupportServiceLevel(int levelID, string levelName, string levelDescription)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "UpdateSupportServiceLevel",
-				 new SqlParameter("@LevelID", levelID),
-				 new SqlParameter("@LevelName", levelName),
-				 new SqlParameter("@LevelDescription", levelDescription)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"UpdateSupportServiceLevel",
+					new SqlParameter("@LevelID", levelID),
+					new SqlParameter("@LevelName", levelName),
+					new SqlParameter("@LevelDescription", levelDescription));
+			}
 		}
 
 		public void DeleteSupportServiceLevel(int levelID)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "DeleteSupportServiceLevel",
-				 new SqlParameter("@LevelID", levelID)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"DeleteSupportServiceLevel",
+					new SqlParameter("@LevelID", levelID));
+			}
 		}
 
 		public IDataReader GetSupportServiceLevel(int levelID)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetSupportServiceLevel",
-				 new SqlParameter("@LevelID", levelID)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetSupportServiceLevel",
+					new SqlParameter("@LevelID", levelID));
+			}
 		}
 
 		public bool CheckServiceLevelUsage(int levelID)
 		{
-			int res = (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "CheckServiceLevelUsage",
-											new SqlParameter("@LevelID", levelID));
-			return res > 0;
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				int res = (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "CheckServiceLevelUsage",
+					new SqlParameter("@LevelID", levelID));
+				return res > 0;
+			}
 		}
 
 		#endregion
@@ -7146,578 +9469,823 @@ namespace SolidCP.EnterpriseServer
 
 		public DataSet GetStorageSpaceLevelsPaged(string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
 		{
-			return SqlHelper.ExecuteDataset(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetStorageSpaceLevelsPaged",
-				 new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
-				 new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
-				 new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
-				 new SqlParameter("@startRow", startRow),
-				 new SqlParameter("@maximumRows", maximumRows)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetStorageSpaceLevelsPaged",
+					new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
+					new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
+					new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
+					new SqlParameter("@startRow", startRow),
+					new SqlParameter("@maximumRows", maximumRows));
+			}
 		}
 
 		public IDataReader GetStorageSpaceLevelById(int id)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetStorageSpaceLevelById",
-				 new SqlParameter("@ID", id)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetStorageSpaceLevelById",
+					new SqlParameter("@ID", id));
+			}
 		}
 
 		public int UpdateStorageSpaceLevel(StorageSpaceLevel level)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "UpdateStorageSpaceLevel",
-				 new SqlParameter("@ID", level.Id),
-				 new SqlParameter("@Name", level.Name),
-				 new SqlParameter("@Description", level.Description)
-			);
+			if (UseEntityFramework)
+			{
 
-			return level.Id;
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"UpdateStorageSpaceLevel",
+					new SqlParameter("@ID", level.Id),
+					new SqlParameter("@Name", level.Name),
+					new SqlParameter("@Description", level.Description));
+
+				return level.Id;
+			}
 		}
 
 		public int InsertStorageSpaceLevel(StorageSpaceLevel level)
 		{
-			SqlParameter id = new SqlParameter("@ID", SqlDbType.Int);
-			id.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "InsertStorageSpaceLevel",
-				 id,
-				 new SqlParameter("@Name", level.Name),
-				 new SqlParameter("@Description", level.Description)
-			);
+			}
+			else
+			{
+				SqlParameter id = new SqlParameter("@ID", SqlDbType.Int);
+				id.Direction = ParameterDirection.Output;
 
-			// read identity
-			return Convert.ToInt32(id.Value);
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"InsertStorageSpaceLevel",
+					id,
+					new SqlParameter("@Name", level.Name),
+					new SqlParameter("@Description", level.Description));
+
+				// read identity
+				return Convert.ToInt32(id.Value);
+			}
 		}
 
 		public void RemoveStorageSpaceLevel(int id)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "RemoveStorageSpaceLevel",
-				 new SqlParameter("@ID", id)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"RemoveStorageSpaceLevel",
+					new SqlParameter("@ID", id));
+			}
 		}
 
 		public IDataReader GetStorageSpaceLevelResourceGroups(int levelId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetLevelResourceGroups",
-				 new SqlParameter("@LevelId", levelId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetLevelResourceGroups",
+					new SqlParameter("@LevelId", levelId));
+			}
 		}
 
 		public void RemoveStorageSpaceLevelResourceGroups(int levelId)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "DeleteLevelResourceGroups",
-				 new SqlParameter("@LevelId", levelId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"DeleteLevelResourceGroups",
+					new SqlParameter("@LevelId", levelId));
+			}
 		}
 
 		public void AddStorageSpaceLevelResourceGroup(int levelId, int groupId)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "AddLevelResourceGroups",
-				 new SqlParameter("@LevelId", levelId),
-				 new SqlParameter("@GroupId", groupId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"AddLevelResourceGroups",
+					new SqlParameter("@LevelId", levelId),
+					new SqlParameter("@GroupId", groupId));
+			}
 		}
 
 		public DataSet GetStorageSpacesPaged(string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
 		{
-			return SqlHelper.ExecuteDataset(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetStorageSpacesPaged",
-				 new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
-				 new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
-				 new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
-				 new SqlParameter("@startRow", startRow),
-				 new SqlParameter("@maximumRows", maximumRows)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetStorageSpacesPaged",
+					new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
+					new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
+					new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
+					new SqlParameter("@startRow", startRow),
+					new SqlParameter("@maximumRows", maximumRows));
+			}
 		}
 
 		public IDataReader GetStorageSpaceById(int id)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetStorageSpaceById",
-				 new SqlParameter("@ID", id)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetStorageSpaceById",
+					new SqlParameter("@ID", id));
+			}
 		}
 
 		public IDataReader GetStorageSpaceByServiceAndPath(int serverId, string path)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetStorageSpaceByServiceAndPath",
-				 new SqlParameter("@ServerId", serverId),
-				 new SqlParameter("@Path", path)
+			if (UseEntityFramework)
+			{
 
-			);
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetStorageSpaceByServiceAndPath",
+					new SqlParameter("@ServerId", serverId),
+					new SqlParameter("@Path", path));
+			}
 		}
 
 		public int UpdateStorageSpace(StorageSpace space)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "UpdateStorageSpace",
-				 new SqlParameter("@ID", space.Id),
-				 new SqlParameter("@Name", space.Name),
-				 new SqlParameter("@ServiceId", space.ServiceId),
-				 new SqlParameter("@ServerId", space.ServerId),
-				 new SqlParameter("@LevelId", space.LevelId),
-				 new SqlParameter("@Path", space.Path),
-				 new SqlParameter("@FsrmQuotaType", space.FsrmQuotaType),
-				 new SqlParameter("@FsrmQuotaSizeBytes", space.FsrmQuotaSizeBytes),
-				 new SqlParameter("@IsShared", space.IsShared),
-				 new SqlParameter("@IsDisabled", space.IsDisabled),
-				 new SqlParameter("@UncPath", space.UncPath)
-			);
+			if (UseEntityFramework)
+			{
 
-			return space.Id;
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"UpdateStorageSpace",
+					new SqlParameter("@ID", space.Id),
+					new SqlParameter("@Name", space.Name),
+					new SqlParameter("@ServiceId", space.ServiceId),
+					new SqlParameter("@ServerId", space.ServerId),
+					new SqlParameter("@LevelId", space.LevelId),
+					new SqlParameter("@Path", space.Path),
+					new SqlParameter("@FsrmQuotaType", space.FsrmQuotaType),
+					new SqlParameter("@FsrmQuotaSizeBytes", space.FsrmQuotaSizeBytes),
+					new SqlParameter("@IsShared", space.IsShared),
+					new SqlParameter("@IsDisabled", space.IsDisabled),
+					new SqlParameter("@UncPath", space.UncPath));
+
+				return space.Id;
+			}
 		}
 
 		public int InsertStorageSpace(StorageSpace space)
 		{
-			SqlParameter id = new SqlParameter("@ID", SqlDbType.Int);
-			id.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "InsertStorageSpace",
-				 id,
-				 new SqlParameter("@Name", space.Name),
-				 new SqlParameter("@ServiceId", space.ServiceId),
-				 new SqlParameter("@ServerId", space.ServerId),
-				 new SqlParameter("@LevelId", space.LevelId),
-				 new SqlParameter("@Path", space.Path),
-				 new SqlParameter("@FsrmQuotaType", space.FsrmQuotaType),
-				 new SqlParameter("@FsrmQuotaSizeBytes", space.FsrmQuotaSizeBytes),
-				 new SqlParameter("@IsShared", space.IsShared),
-				 new SqlParameter("@IsDisabled", space.IsDisabled),
-				 new SqlParameter("@UncPath", space.UncPath)
-			);
+			}
+			else
+			{
+				SqlParameter id = new SqlParameter("@ID", SqlDbType.Int);
+				id.Direction = ParameterDirection.Output;
 
-			// read identity
-			return Convert.ToInt32(id.Value);
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"InsertStorageSpace",
+					id,
+					new SqlParameter("@Name", space.Name),
+					new SqlParameter("@ServiceId", space.ServiceId),
+					new SqlParameter("@ServerId", space.ServerId),
+					new SqlParameter("@LevelId", space.LevelId),
+					new SqlParameter("@Path", space.Path),
+					new SqlParameter("@FsrmQuotaType", space.FsrmQuotaType),
+					new SqlParameter("@FsrmQuotaSizeBytes", space.FsrmQuotaSizeBytes),
+					new SqlParameter("@IsShared", space.IsShared),
+					new SqlParameter("@IsDisabled", space.IsDisabled),
+					new SqlParameter("@UncPath", space.UncPath));
+
+				// read identity
+				return Convert.ToInt32(id.Value);
+			}
 		}
 
 		public void RemoveStorageSpace(int id)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "RemoveStorageSpace",
-				 new SqlParameter("@ID", id)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"RemoveStorageSpace",
+					new SqlParameter("@ID", id));
+			}
 		}
 
 		public DataSet GetStorageSpacesByLevelId(int levelId)
 		{
-			return SqlHelper.ExecuteDataset(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetStorageSpacesByLevelId",
-				 new SqlParameter("@LevelId", levelId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetStorageSpacesByLevelId",
+					new SqlParameter("@LevelId", levelId));
+			}
 		}
 
 		public IDataReader GetStorageSpacesByResourceGroupName(string groupName)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetStorageSpacesByResourceGroupName",
-				 new SqlParameter("@ResourceGroupName", groupName)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetStorageSpacesByResourceGroupName",
+					new SqlParameter("@ResourceGroupName", groupName));
+			}
 		}
 
 		public int CreateStorageSpaceFolder(StorageSpaceFolder folder)
 		{
-			folder.Id = CreateStorageSpaceFolder(folder.Name, folder.StorageSpaceId, folder.Path, folder.UncPath, folder.IsShared, folder.FsrmQuotaType, folder.FsrmQuotaSizeBytes);
+			if (UseEntityFramework)
+			{
 
-			return folder.Id;
+			}
+			else
+			{
+				folder.Id = CreateStorageSpaceFolder(folder.Name, folder.StorageSpaceId, folder.Path, folder.UncPath, folder.IsShared, folder.FsrmQuotaType, folder.FsrmQuotaSizeBytes);
+
+				return folder.Id;
+			}
 		}
 
 		public int CreateStorageSpaceFolder(string name, int storageSpaceId, string path, string uncPath, bool isShared, QuotaType quotaType, long fsrmQuotaSizeBytes)
 		{
-			SqlParameter id = new SqlParameter("@ID", SqlDbType.Int);
-			id.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "CreateStorageSpaceFolder",
-				 id,
-				 new SqlParameter("@Name", name),
-				 new SqlParameter("@StorageSpaceId", storageSpaceId),
-				 new SqlParameter("@Path", path),
-				 new SqlParameter("@UncPath", uncPath),
-				 new SqlParameter("@IsShared", isShared),
-				 new SqlParameter("@FsrmQuotaType", quotaType),
-				 new SqlParameter("@FsrmQuotaSizeBytes", fsrmQuotaSizeBytes)
-			);
+			}
+			else
+			{
+				SqlParameter id = new SqlParameter("@ID", SqlDbType.Int);
+				id.Direction = ParameterDirection.Output;
 
-			// read identity
-			return Convert.ToInt32(id.Value);
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"CreateStorageSpaceFolder",
+					id,
+					new SqlParameter("@Name", name),
+					new SqlParameter("@StorageSpaceId", storageSpaceId),
+					new SqlParameter("@Path", path),
+					new SqlParameter("@UncPath", uncPath),
+					new SqlParameter("@IsShared", isShared),
+					new SqlParameter("@FsrmQuotaType", quotaType),
+					new SqlParameter("@FsrmQuotaSizeBytes", fsrmQuotaSizeBytes));
+
+				// read identity
+				return Convert.ToInt32(id.Value);
+			}
 		}
 
 		public int UpdateStorageSpaceFolder(StorageSpaceFolder folder)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "UpdateStorageSpaceFolder",
-				 new SqlParameter("@ID", folder.Id),
-				 new SqlParameter("@Name", folder.Name),
-				 new SqlParameter("@StorageSpaceId", folder.StorageSpaceId),
-				 new SqlParameter("@Path", folder.Path),
-				 new SqlParameter("@UncPath", folder.UncPath),
-				 new SqlParameter("@IsShared", folder.IsShared),
-				 new SqlParameter("@FsrmQuotaType", folder.FsrmQuotaType),
-				 new SqlParameter("@FsrmQuotaSizeBytes", folder.FsrmQuotaSizeBytes)
-			);
+			if (UseEntityFramework)
+			{
 
-			return folder.Id;
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"UpdateStorageSpaceFolder",
+					new SqlParameter("@ID", folder.Id),
+					new SqlParameter("@Name", folder.Name),
+					new SqlParameter("@StorageSpaceId", folder.StorageSpaceId),
+					new SqlParameter("@Path", folder.Path),
+					new SqlParameter("@UncPath", folder.UncPath),
+					new SqlParameter("@IsShared", folder.IsShared),
+					new SqlParameter("@FsrmQuotaType", folder.FsrmQuotaType),
+					new SqlParameter("@FsrmQuotaSizeBytes", folder.FsrmQuotaSizeBytes));
+
+				return folder.Id;
+			}
 		}
 
 		public int UpdateStorageSpaceFolder(int id, string folderName, int storageSpaceId, string path, string uncPath, bool isShared, QuotaType type, long fsrmQuotaSizeBytes)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "UpdateStorageSpaceFolder",
-				 new SqlParameter("@ID", id),
-				 new SqlParameter("@Name", folderName),
-				 new SqlParameter("@StorageSpaceId", storageSpaceId),
-				 new SqlParameter("@Path", path),
-				 new SqlParameter("@UncPath", uncPath),
-				 new SqlParameter("@IsShared", isShared),
-				 new SqlParameter("@FsrmQuotaType", type),
-				 new SqlParameter("@FsrmQuotaSizeBytes", fsrmQuotaSizeBytes)
-			);
+			if (UseEntityFramework)
+			{
 
-			return id;
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"UpdateStorageSpaceFolder",
+					new SqlParameter("@ID", id),
+					new SqlParameter("@Name", folderName),
+					new SqlParameter("@StorageSpaceId", storageSpaceId),
+					new SqlParameter("@Path", path),
+					new SqlParameter("@UncPath", uncPath),
+					new SqlParameter("@IsShared", isShared),
+					new SqlParameter("@FsrmQuotaType", type),
+					new SqlParameter("@FsrmQuotaSizeBytes", fsrmQuotaSizeBytes));
+
+				return id;
+			}
 		}
 
 		public IDataReader GetStorageSpaceFoldersByStorageSpaceId(int id)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetStorageSpaceFoldersByStorageSpaceId",
-				 new SqlParameter("@StorageSpaceId", id)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetStorageSpaceFoldersByStorageSpaceId",
+					new SqlParameter("@StorageSpaceId", id));
+			}
 		}
 
 		public IDataReader GetStorageSpaceFolderById(int id)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetStorageSpaceFolderById",
-				 new SqlParameter("@ID", id)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetStorageSpaceFolderById",
+					new SqlParameter("@ID", id));
+			}
 		}
 
 		public void RemoveStorageSpaceFolder(int id)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "RemoveStorageSpaceFolder",
-				 new SqlParameter("@ID", id)
-			);
-		}
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"RemoveStorageSpaceFolder",
+					new SqlParameter("@ID", id));
+			}
+		}
 		#endregion
 
 		#region RDS
 
 		public int CheckRDSServer(string ServerFQDN)
 		{
-			SqlParameter prmId = new SqlParameter("@Result", SqlDbType.Int);
-			prmId.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "CheckRDSServer",
-				 prmId,
-				 new SqlParameter("@ServerFQDN", ServerFQDN));
+			}
+			else
+			{
+				SqlParameter prmId = new SqlParameter("@Result", SqlDbType.Int);
+				prmId.Direction = ParameterDirection.Output;
 
-			return Convert.ToInt32(prmId.Value);
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "CheckRDSServer",
+					prmId,
+					new SqlParameter("@ServerFQDN", ServerFQDN));
+
+				return Convert.ToInt32(prmId.Value);
+			}
 		}
 
 		public IDataReader GetRdsServerSettings(int serverId, string settingsName)
 		{
-			return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetRDSServerSettings",
-				 new SqlParameter("@ServerId", serverId),
-				 new SqlParameter("@SettingsName", settingsName));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetRDSServerSettings",
+					new SqlParameter("@ServerId", serverId),
+					new SqlParameter("@SettingsName", settingsName));
+			}
 		}
 
 		public void UpdateRdsServerSettings(int serverId, string settingsName, string xml)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "UpdateRDSServerSettings",
-				 new SqlParameter("@ServerId", serverId),
-				 new SqlParameter("@SettingsName", settingsName),
-				 new SqlParameter("@Xml", xml));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "UpdateRDSServerSettings",
+					new SqlParameter("@ServerId", serverId),
+					new SqlParameter("@SettingsName", settingsName),
+					new SqlParameter("@Xml", xml));
+			}
 		}
 
 		public int AddRdsCertificate(int serviceId, string content, byte[] hash, string fileName, DateTime? validFrom, DateTime? expiryDate)
 		{
-			SqlParameter rdsCertificateId = new SqlParameter("@RDSCertificateID", SqlDbType.Int);
-			rdsCertificateId.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "AddRDSCertificate",
-				 rdsCertificateId,
-				 new SqlParameter("@ServiceId", serviceId),
-				 new SqlParameter("@Content", content),
-				 new SqlParameter("@Hash", Convert.ToBase64String(hash)),
-				 new SqlParameter("@FileName", fileName),
-				 new SqlParameter("@ValidFrom", validFrom),
-				 new SqlParameter("@ExpiryDate", expiryDate)
-			);
+			}
+			else
+			{
+				SqlParameter rdsCertificateId = new SqlParameter("@RDSCertificateID", SqlDbType.Int);
+				rdsCertificateId.Direction = ParameterDirection.Output;
 
-			return Convert.ToInt32(rdsCertificateId.Value);
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"AddRDSCertificate",
+					rdsCertificateId,
+					new SqlParameter("@ServiceId", serviceId),
+					new SqlParameter("@Content", content),
+					new SqlParameter("@Hash", Convert.ToBase64String(hash)),
+					new SqlParameter("@FileName", fileName),
+					new SqlParameter("@ValidFrom", validFrom),
+					new SqlParameter("@ExpiryDate", expiryDate));
+
+				return Convert.ToInt32(rdsCertificateId.Value);
+			}
 		}
 
 		public IDataReader GetRdsCertificateByServiceId(int serviceId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetRDSCertificateByServiceId",
-				 new SqlParameter("@ServiceId", serviceId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetRDSCertificateByServiceId",
+					new SqlParameter("@ServiceId", serviceId));
+			}
 		}
 
 		public IDataReader GetRdsCollectionSettingsByCollectionId(int collectionId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetRDSCollectionSettingsByCollectionId",
-				 new SqlParameter("@RDSCollectionID", collectionId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetRDSCollectionSettingsByCollectionId",
+					new SqlParameter("@RDSCollectionID", collectionId));
+			}
 		}
 
 		public int AddRdsCollectionSettings(RdsCollectionSettings settings)
 		{
 			return AddRdsCollectionSettings(settings.RdsCollectionId, settings.DisconnectedSessionLimitMin, settings.ActiveSessionLimitMin, settings.IdleSessionLimitMin, settings.BrokenConnectionAction,
-				 settings.AutomaticReconnectionEnabled, settings.TemporaryFoldersDeletedOnExit, settings.TemporaryFoldersPerSession, settings.ClientDeviceRedirectionOptions, settings.ClientPrinterRedirected,
-				 settings.ClientPrinterAsDefault, settings.RDEasyPrintDriverEnabled, settings.MaxRedirectedMonitors, settings.SecurityLayer, settings.EncryptionLevel, settings.AuthenticateUsingNLA);
+				settings.AutomaticReconnectionEnabled, settings.TemporaryFoldersDeletedOnExit, settings.TemporaryFoldersPerSession, settings.ClientDeviceRedirectionOptions, settings.ClientPrinterRedirected,
+				settings.ClientPrinterAsDefault, settings.RDEasyPrintDriverEnabled, settings.MaxRedirectedMonitors, settings.SecurityLayer, settings.EncryptionLevel, settings.AuthenticateUsingNLA);
 		}
 
 		private int AddRdsCollectionSettings(int rdsCollectionId, int disconnectedSessionLimitMin, int activeSessionLimitMin, int idleSessionLimitMin, string brokenConnectionAction,
 			 bool automaticReconnectionEnabled, bool temporaryFoldersDeletedOnExit, bool temporaryFoldersPerSession, string clientDeviceRedirectionOptions, bool ClientPrinterRedirected,
 			 bool clientPrinterAsDefault, bool rdEasyPrintDriverEnabled, int maxRedirectedMonitors, string SecurityLayer, string EncryptionLevel, bool AuthenticateUsingNLA)
 		{
-			SqlParameter rdsCollectionSettingsId = new SqlParameter("@RDSCollectionSettingsID", SqlDbType.Int);
-			rdsCollectionSettingsId.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "AddRDSCollectionSettings",
-				 rdsCollectionSettingsId,
-				 new SqlParameter("@RdsCollectionId", rdsCollectionId),
-				 new SqlParameter("@DisconnectedSessionLimitMin", disconnectedSessionLimitMin),
-				 new SqlParameter("@ActiveSessionLimitMin", activeSessionLimitMin),
-				 new SqlParameter("@IdleSessionLimitMin", idleSessionLimitMin),
-				 new SqlParameter("@BrokenConnectionAction", brokenConnectionAction),
-				 new SqlParameter("@AutomaticReconnectionEnabled", automaticReconnectionEnabled),
-				 new SqlParameter("@TemporaryFoldersDeletedOnExit", temporaryFoldersDeletedOnExit),
-				 new SqlParameter("@TemporaryFoldersPerSession", temporaryFoldersPerSession),
-				 new SqlParameter("@ClientDeviceRedirectionOptions", clientDeviceRedirectionOptions),
-				 new SqlParameter("@ClientPrinterRedirected", ClientPrinterRedirected),
-				 new SqlParameter("@ClientPrinterAsDefault", clientPrinterAsDefault),
-				 new SqlParameter("@RDEasyPrintDriverEnabled", rdEasyPrintDriverEnabled),
-				 new SqlParameter("@MaxRedirectedMonitors", maxRedirectedMonitors),
-				 new SqlParameter("@SecurityLayer", SecurityLayer),
-				 new SqlParameter("@EncryptionLevel", EncryptionLevel),
-				 new SqlParameter("@AuthenticateUsingNLA", AuthenticateUsingNLA)
-			);
+			}
+			else
+			{
+				SqlParameter rdsCollectionSettingsId = new SqlParameter("@RDSCollectionSettingsID", SqlDbType.Int);
+				rdsCollectionSettingsId.Direction = ParameterDirection.Output;
 
-			return Convert.ToInt32(rdsCollectionSettingsId.Value);
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"AddRDSCollectionSettings",
+					rdsCollectionSettingsId,
+					new SqlParameter("@RdsCollectionId", rdsCollectionId),
+					new SqlParameter("@DisconnectedSessionLimitMin", disconnectedSessionLimitMin),
+					new SqlParameter("@ActiveSessionLimitMin", activeSessionLimitMin),
+					new SqlParameter("@IdleSessionLimitMin", idleSessionLimitMin),
+					new SqlParameter("@BrokenConnectionAction", brokenConnectionAction),
+					new SqlParameter("@AutomaticReconnectionEnabled", automaticReconnectionEnabled),
+					new SqlParameter("@TemporaryFoldersDeletedOnExit", temporaryFoldersDeletedOnExit),
+					new SqlParameter("@TemporaryFoldersPerSession", temporaryFoldersPerSession),
+					new SqlParameter("@ClientDeviceRedirectionOptions", clientDeviceRedirectionOptions),
+					new SqlParameter("@ClientPrinterRedirected", ClientPrinterRedirected),
+					new SqlParameter("@ClientPrinterAsDefault", clientPrinterAsDefault),
+					new SqlParameter("@RDEasyPrintDriverEnabled", rdEasyPrintDriverEnabled),
+					new SqlParameter("@MaxRedirectedMonitors", maxRedirectedMonitors),
+					new SqlParameter("@SecurityLayer", SecurityLayer),
+					new SqlParameter("@EncryptionLevel", EncryptionLevel),
+					new SqlParameter("@AuthenticateUsingNLA", AuthenticateUsingNLA));
+
+				return Convert.ToInt32(rdsCollectionSettingsId.Value);
+			}
 		}
 
 		public void UpdateRDSCollectionSettings(RdsCollectionSettings settings)
 		{
 			UpdateRDSCollectionSettings(settings.Id, settings.RdsCollectionId, settings.DisconnectedSessionLimitMin, settings.ActiveSessionLimitMin, settings.IdleSessionLimitMin, settings.BrokenConnectionAction,
-				 settings.AutomaticReconnectionEnabled, settings.TemporaryFoldersDeletedOnExit, settings.TemporaryFoldersPerSession, settings.ClientDeviceRedirectionOptions, settings.ClientPrinterRedirected,
-				 settings.ClientPrinterAsDefault, settings.RDEasyPrintDriverEnabled, settings.MaxRedirectedMonitors, settings.SecurityLayer, settings.EncryptionLevel, settings.AuthenticateUsingNLA);
+				settings.AutomaticReconnectionEnabled, settings.TemporaryFoldersDeletedOnExit, settings.TemporaryFoldersPerSession, settings.ClientDeviceRedirectionOptions, settings.ClientPrinterRedirected,
+				settings.ClientPrinterAsDefault, settings.RDEasyPrintDriverEnabled, settings.MaxRedirectedMonitors, settings.SecurityLayer, settings.EncryptionLevel, settings.AuthenticateUsingNLA);
 		}
 
 		public void UpdateRDSCollectionSettings(int id, int rdsCollectionId, int disconnectedSessionLimitMin, int activeSessionLimitMin, int idleSessionLimitMin, string brokenConnectionAction,
-			 bool automaticReconnectionEnabled, bool temporaryFoldersDeletedOnExit, bool temporaryFoldersPerSession, string clientDeviceRedirectionOptions, bool ClientPrinterRedirected,
-			 bool clientPrinterAsDefault, bool rdEasyPrintDriverEnabled, int maxRedirectedMonitors, string SecurityLayer, string EncryptionLevel, bool AuthenticateUsingNLA)
+			bool automaticReconnectionEnabled, bool temporaryFoldersDeletedOnExit, bool temporaryFoldersPerSession, string clientDeviceRedirectionOptions, bool ClientPrinterRedirected,
+			bool clientPrinterAsDefault, bool rdEasyPrintDriverEnabled, int maxRedirectedMonitors, string SecurityLayer, string EncryptionLevel, bool AuthenticateUsingNLA)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "UpdateRDSCollectionSettings",
-				 new SqlParameter("@Id", id),
-				 new SqlParameter("@RdsCollectionId", rdsCollectionId),
-				 new SqlParameter("@DisconnectedSessionLimitMin", disconnectedSessionLimitMin),
-				 new SqlParameter("@ActiveSessionLimitMin", activeSessionLimitMin),
-				 new SqlParameter("@IdleSessionLimitMin", idleSessionLimitMin),
-				 new SqlParameter("@BrokenConnectionAction", brokenConnectionAction),
-				 new SqlParameter("@AutomaticReconnectionEnabled", automaticReconnectionEnabled),
-				 new SqlParameter("@TemporaryFoldersDeletedOnExit", temporaryFoldersDeletedOnExit),
-				 new SqlParameter("@TemporaryFoldersPerSession", temporaryFoldersPerSession),
-				 new SqlParameter("@ClientDeviceRedirectionOptions", clientDeviceRedirectionOptions),
-				 new SqlParameter("@ClientPrinterRedirected", ClientPrinterRedirected),
-				 new SqlParameter("@ClientPrinterAsDefault", clientPrinterAsDefault),
-				 new SqlParameter("@RDEasyPrintDriverEnabled", rdEasyPrintDriverEnabled),
-				 new SqlParameter("@MaxRedirectedMonitors", maxRedirectedMonitors),
-				 new SqlParameter("@SecurityLayer", SecurityLayer),
-				 new SqlParameter("@EncryptionLevel", EncryptionLevel),
-				 new SqlParameter("@AuthenticateUsingNLA", AuthenticateUsingNLA)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"UpdateRDSCollectionSettings",
+					new SqlParameter("@Id", id),
+					new SqlParameter("@RdsCollectionId", rdsCollectionId),
+					new SqlParameter("@DisconnectedSessionLimitMin", disconnectedSessionLimitMin),
+					new SqlParameter("@ActiveSessionLimitMin", activeSessionLimitMin),
+					new SqlParameter("@IdleSessionLimitMin", idleSessionLimitMin),
+					new SqlParameter("@BrokenConnectionAction", brokenConnectionAction),
+					new SqlParameter("@AutomaticReconnectionEnabled", automaticReconnectionEnabled),
+					new SqlParameter("@TemporaryFoldersDeletedOnExit", temporaryFoldersDeletedOnExit),
+					new SqlParameter("@TemporaryFoldersPerSession", temporaryFoldersPerSession),
+					new SqlParameter("@ClientDeviceRedirectionOptions", clientDeviceRedirectionOptions),
+					new SqlParameter("@ClientPrinterRedirected", ClientPrinterRedirected),
+					new SqlParameter("@ClientPrinterAsDefault", clientPrinterAsDefault),
+					new SqlParameter("@RDEasyPrintDriverEnabled", rdEasyPrintDriverEnabled),
+					new SqlParameter("@MaxRedirectedMonitors", maxRedirectedMonitors),
+					new SqlParameter("@SecurityLayer", SecurityLayer),
+					new SqlParameter("@EncryptionLevel", EncryptionLevel),
+					new SqlParameter("@AuthenticateUsingNLA", AuthenticateUsingNLA));
+			}
 		}
 
 		public void DeleteRDSCollectionSettings(int id)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "DeleteRDSCollectionSettings",
-				 new SqlParameter("@Id", id)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"DeleteRDSCollectionSettings",
+					new SqlParameter("@Id", id));
+			}
 		}
 
 		public IDataReader GetRDSCollectionsByItemId(int itemId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetRDSCollectionsByItemId",
-				 new SqlParameter("@ItemID", itemId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetRDSCollectionsByItemId",
+					new SqlParameter("@ItemID", itemId));
+			}
 		}
 
 		public IDataReader GetRDSCollectionByName(string name)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetRDSCollectionByName",
-				 new SqlParameter("@Name", name)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetRDSCollectionByName",
+					new SqlParameter("@Name", name));
+			}
 		}
 
 		public IDataReader GetRDSCollectionById(int id)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetRDSCollectionById",
-				 new SqlParameter("@ID", id)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetRDSCollectionById",
+					new SqlParameter("@ID", id));
+			}
 		}
 
 		public DataSet GetRDSCollectionsPaged(int itemId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
 		{
-			return SqlHelper.ExecuteDataset(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetRDSCollectionsPaged",
-				 new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
-				 new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
-				 new SqlParameter("@itemId", itemId),
-				 new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
-				 new SqlParameter("@startRow", startRow),
-				 new SqlParameter("@maximumRows", maximumRows)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetRDSCollectionsPaged",
+					new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
+					new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
+					new SqlParameter("@itemId", itemId),
+					new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
+					new SqlParameter("@startRow", startRow),
+					new SqlParameter("@maximumRows", maximumRows));
+			}
 		}
 
 		public int AddRDSCollection(int itemId, string name, string description, string displayName)
 		{
-			SqlParameter rdsCollectionId = new SqlParameter("@RDSCollectionID", SqlDbType.Int);
-			rdsCollectionId.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "AddRDSCollection",
-				 rdsCollectionId,
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@Name", name),
-				 new SqlParameter("@Description", description),
-				 new SqlParameter("@DisplayName", displayName)
-			);
+			}
+			else
+			{
+				SqlParameter rdsCollectionId = new SqlParameter("@RDSCollectionID", SqlDbType.Int);
+				rdsCollectionId.Direction = ParameterDirection.Output;
 
-			// read identity
-			return Convert.ToInt32(rdsCollectionId.Value);
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"AddRDSCollection",
+					rdsCollectionId,
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@Name", name),
+					new SqlParameter("@Description", description),
+					new SqlParameter("@DisplayName", displayName));
+
+				// read identity
+				return Convert.ToInt32(rdsCollectionId.Value);
+			}
 		}
 
 		public int GetOrganizationRdsUsersCount(int itemId)
 		{
-			SqlParameter count = new SqlParameter("@TotalNumber", SqlDbType.Int);
-			count.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			DataSet ds = SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetOrganizationRdsUsersCount",
-				 count,
-				 new SqlParameter("@ItemId", itemId));
+			}
+			else
+			{
+				SqlParameter count = new SqlParameter("@TotalNumber", SqlDbType.Int);
+				count.Direction = ParameterDirection.Output;
 
-			// read identity
-			return Convert.ToInt32(count.Value);
+				DataSet ds = SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetOrganizationRdsUsersCount",
+					count,
+					new SqlParameter("@ItemId", itemId));
+
+				// read identity
+				return Convert.ToInt32(count.Value);
+			}
 		}
 
 		public int GetOrganizationRdsCollectionsCount(int itemId)
 		{
-			SqlParameter count = new SqlParameter("@TotalNumber", SqlDbType.Int);
-			count.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			DataSet ds = SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetOrganizationRdsCollectionsCount",
-				 count,
-				 new SqlParameter("@ItemId", itemId));
+			}
+			else
+			{
+				SqlParameter count = new SqlParameter("@TotalNumber", SqlDbType.Int);
+				count.Direction = ParameterDirection.Output;
 
-			// read identity
-			return Convert.ToInt32(count.Value);
+				DataSet ds = SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetOrganizationRdsCollectionsCount",
+					count,
+					new SqlParameter("@ItemId", itemId));
+
+				// read identity
+				return Convert.ToInt32(count.Value);
+			}
 		}
 
 		public int GetOrganizationRdsServersCount(int itemId)
 		{
-			SqlParameter count = new SqlParameter("@TotalNumber", SqlDbType.Int);
-			count.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			DataSet ds = SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetOrganizationRdsServersCount",
-				 count,
-				 new SqlParameter("@ItemId", itemId));
+			}
+			else
+			{
+				SqlParameter count = new SqlParameter("@TotalNumber", SqlDbType.Int);
+				count.Direction = ParameterDirection.Output;
 
-			// read identity
-			return Convert.ToInt32(count.Value);
+				DataSet ds = SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetOrganizationRdsServersCount",
+					count,
+					new SqlParameter("@ItemId", itemId));
+
+				// read identity
+				return Convert.ToInt32(count.Value);
+			}
 		}
 
 		public void UpdateRDSCollection(RdsCollection collection)
@@ -7727,115 +10295,169 @@ namespace SolidCP.EnterpriseServer
 
 		public void UpdateRDSCollection(int id, int itemId, string name, string description, string displayName)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "UpdateRDSCollection",
-				 new SqlParameter("@Id", id),
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@Name", name),
-				 new SqlParameter("@Description", description),
-				 new SqlParameter("@DisplayName", displayName)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"UpdateRDSCollection",
+					new SqlParameter("@Id", id),
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@Name", name),
+					new SqlParameter("@Description", description),
+					new SqlParameter("@DisplayName", displayName));
+			}
 		}
 
 		public void DeleteRDSServerSettings(int serverId)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "DeleteRDSServerSettings",
-				 new SqlParameter("@ServerId", serverId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"DeleteRDSServerSettings",
+					new SqlParameter("@ServerId", serverId));
+			}
 		}
 
 		public void DeleteRDSCollection(int id)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "DeleteRDSCollection",
-				 new SqlParameter("@Id", id)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"DeleteRDSCollection",
+					new SqlParameter("@Id", id));
+			}
 		}
 
 		public int AddRDSServer(string name, string fqdName, string description, string controller)
 		{
-			SqlParameter rdsServerId = new SqlParameter("@RDSServerID", SqlDbType.Int);
-			rdsServerId.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "AddRDSServer",
-				 rdsServerId,
-				 new SqlParameter("@FqdName", fqdName),
-				 new SqlParameter("@Name", name),
-				 new SqlParameter("@Description", description),
-				 new SqlParameter("@Controller", controller)
-			);
+			}
+			else
+			{
+				SqlParameter rdsServerId = new SqlParameter("@RDSServerID", SqlDbType.Int);
+				rdsServerId.Direction = ParameterDirection.Output;
 
-			// read identity
-			return Convert.ToInt32(rdsServerId.Value);
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"AddRDSServer",
+					rdsServerId,
+					new SqlParameter("@FqdName", fqdName),
+					new SqlParameter("@Name", name),
+					new SqlParameter("@Description", description),
+					new SqlParameter("@Controller", controller));
+
+				// read identity
+				return Convert.ToInt32(rdsServerId.Value);
+			}
 		}
 
 		public IDataReader GetRDSServersByItemId(int itemId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetRDSServersByItemId",
-				 new SqlParameter("@ItemID", itemId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetRDSServersByItemId",
+					new SqlParameter("@ItemID", itemId));
+			}
 		}
 
 		public DataSet GetRDSServersPaged(int? itemId, int? collectionId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string controller, bool ignoreItemId = false, bool ignoreRdsCollectionId = false)
 		{
-			return SqlHelper.ExecuteDataset(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetRDSServersPaged",
-				 new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
-				 new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
-				 new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
-				 new SqlParameter("@startRow", startRow),
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@RdsCollectionId", collectionId),
-				 new SqlParameter("@IgnoreItemId", ignoreItemId),
-				 new SqlParameter("@IgnoreRdsCollectionId", ignoreRdsCollectionId),
-				 new SqlParameter("@maximumRows", maximumRows),
-				 new SqlParameter("@Controller", controller)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetRDSServersPaged",
+					new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
+					new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
+					new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
+					new SqlParameter("@startRow", startRow),
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@RdsCollectionId", collectionId),
+					new SqlParameter("@IgnoreItemId", ignoreItemId),
+					new SqlParameter("@IgnoreRdsCollectionId", ignoreRdsCollectionId),
+					new SqlParameter("@maximumRows", maximumRows),
+					new SqlParameter("@Controller", controller));
+			}
 		}
 
 		public IDataReader GetRDSServerById(int id)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetRDSServerById",
-				 new SqlParameter("@ID", id)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetRDSServerById",
+					new SqlParameter("@ID", id));
+			}
 		}
 
 		public IDataReader GetRDSServersByCollectionId(int collectionId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetRDSServersByCollectionId",
-				 new SqlParameter("@RdsCollectionId", collectionId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetRDSServersByCollectionId",
+					new SqlParameter("@RdsCollectionId", collectionId));
+			}
 		}
 
 		public void DeleteRDSServer(int id)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "DeleteRDSServer",
-				 new SqlParameter("@Id", id)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"DeleteRDSServer",
+					new SqlParameter("@Id", id));
+			}
 		}
 
 		public void UpdateRDSServer(RdsServer server)
@@ -7851,105 +10473,162 @@ namespace SolidCP.EnterpriseServer
 			{
 				if (connectionEnabled.Equals("false") || connectionEnabled.Equals("no") || connectionEnabled.Equals("0")) connEnabled = 0;
 			}
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "UpdateRDSServer",
-				 new SqlParameter("@Id", id),
-				 new SqlParameter("@ItemID", itemId),
-				 new SqlParameter("@Name", name),
-				 new SqlParameter("@FqdName", fqdName),
-				 new SqlParameter("@Description", description),
-				 new SqlParameter("@RDSCollectionId", rdsCollectionId),
-				 new SqlParameter("@ConnectionEnabled", connEnabled)
-			);
+
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"UpdateRDSServer",
+					new SqlParameter("@Id", id),
+					new SqlParameter("@ItemID", itemId),
+					new SqlParameter("@Name", name),
+					new SqlParameter("@FqdName", fqdName),
+					new SqlParameter("@Description", description),
+					new SqlParameter("@RDSCollectionId", rdsCollectionId),
+					new SqlParameter("@ConnectionEnabled", connEnabled));
+			}
 		}
 
 		public void AddRDSServerToCollection(int serverId, int rdsCollectionId)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "AddRDSServerToCollection",
-				 new SqlParameter("@Id", serverId),
-				 new SqlParameter("@RDSCollectionId", rdsCollectionId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"AddRDSServerToCollection",
+					new SqlParameter("@Id", serverId),
+					new SqlParameter("@RDSCollectionId", rdsCollectionId));
+			}
 		}
 
 		public void AddRDSServerToOrganization(int itemId, int serverId)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "AddRDSServerToOrganization",
-				 new SqlParameter("@Id", serverId),
-				 new SqlParameter("@ItemID", itemId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"AddRDSServerToOrganization",
+					new SqlParameter("@Id", serverId),
+					new SqlParameter("@ItemID", itemId));
+			}
 		}
 
 		public void RemoveRDSServerFromOrganization(int serverId)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "RemoveRDSServerFromOrganization",
-				 new SqlParameter("@Id", serverId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"RemoveRDSServerFromOrganization",
+					new SqlParameter("@Id", serverId));
+			}
 		}
 
 		public void RemoveRDSServerFromCollection(int serverId)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "RemoveRDSServerFromCollection",
-				 new SqlParameter("@Id", serverId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"RemoveRDSServerFromCollection",
+					new SqlParameter("@Id", serverId));
+			}
 		}
 
 		public IDataReader GetRDSCollectionUsersByRDSCollectionId(int id)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetRDSCollectionUsersByRDSCollectionId",
-				 new SqlParameter("@id", id)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetRDSCollectionUsersByRDSCollectionId",
+					new SqlParameter("@id", id));
+			}
 		}
 
 		public void AddRDSUserToRDSCollection(int rdsCollectionId, int accountId)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "AddUserToRDSCollection",
-				 new SqlParameter("@RDSCollectionId", rdsCollectionId),
-				 new SqlParameter("@AccountID", accountId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"AddUserToRDSCollection",
+					new SqlParameter("@RDSCollectionId", rdsCollectionId),
+					new SqlParameter("@AccountID", accountId));
+			}
 		}
 
 		public void RemoveRDSUserFromRDSCollection(int rdsCollectionId, int accountId)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "RemoveRDSUserFromRDSCollection",
-				 new SqlParameter("@RDSCollectionId", rdsCollectionId),
-				 new SqlParameter("@AccountID", accountId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"RemoveRDSUserFromRDSCollection",
+					new SqlParameter("@RDSCollectionId", rdsCollectionId),
+					new SqlParameter("@AccountID", accountId));
+			}
 		}
 
 		public int GetRDSControllerServiceIDbyFQDN(string fqdnName)
 		{
-			SqlParameter prmController = new SqlParameter("@Controller", SqlDbType.Int);
-			prmController.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-				 ObjectQualifier + "GetRDSControllerServiceIDbyFQDN",
-				 new SqlParameter("@RdsfqdnName", fqdnName),
-				 prmController);
+			}
+			else
+			{
+				SqlParameter prmController = new SqlParameter("@Controller", SqlDbType.Int);
+				prmController.Direction = ParameterDirection.Output;
 
-			return Convert.ToInt32(prmController.Value);
+				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetRDSControllerServiceIDbyFQDN",
+					new SqlParameter("@RdsfqdnName", fqdnName),
+					prmController);
+
+				return Convert.ToInt32(prmController.Value);
+			}
 		}
 
 		#endregion
@@ -7958,180 +10637,278 @@ namespace SolidCP.EnterpriseServer
 
 		public IDataReader GetAllPackages()
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetAllPackages"
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetAllPackages");
+			}
 		}
 
 		public IDataReader GetDomainDnsRecords(int domainId, DnsRecordType recordType)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetDomainDnsRecords",
-				 new SqlParameter("@DomainId", domainId),
-				 new SqlParameter("@RecordType", recordType)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetDomainDnsRecords",
+					new SqlParameter("@DomainId", domainId),
+					new SqlParameter("@RecordType", recordType));
+			}
 		}
 
 		public IDataReader GetDomainAllDnsRecords(int domainId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetDomainAllDnsRecords",
-				 new SqlParameter("@DomainId", domainId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetDomainAllDnsRecords",
+					new SqlParameter("@DomainId", domainId));
+			}
 		}
 
 		public void AddDomainDnsRecord(DnsRecordInfo domainDnsRecord)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "AddDomainDnsRecord",
-				 new SqlParameter("@DomainId", domainDnsRecord.DomainId),
-				 new SqlParameter("@RecordType", domainDnsRecord.RecordType),
-				 new SqlParameter("@DnsServer", domainDnsRecord.DnsServer),
-				 new SqlParameter("@Value", domainDnsRecord.Value),
-				 new SqlParameter("@Date", domainDnsRecord.Date)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"AddDomainDnsRecord",
+					new SqlParameter("@DomainId", domainDnsRecord.DomainId),
+					new SqlParameter("@RecordType", domainDnsRecord.RecordType),
+					new SqlParameter("@DnsServer", domainDnsRecord.DnsServer),
+					new SqlParameter("@Value", domainDnsRecord.Value),
+					new SqlParameter("@Date", domainDnsRecord.Date));
+			}
 		}
 
 		public IDataReader GetScheduleTaskEmailTemplate(string taskId)
 		{
-			return SqlHelper.ExecuteReader(
-					  ConnectionString,
-					  CommandType.StoredProcedure,
-					  "GetScheduleTaskEmailTemplate",
-					  new SqlParameter("@taskId", taskId)
-				 );
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetScheduleTaskEmailTemplate",
+					new SqlParameter("@taskId", taskId));
+			}
 		}
 
 		public void DeleteDomainDnsRecord(int id)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "DeleteDomainDnsRecord",
-				 new SqlParameter("@Id", id)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"DeleteDomainDnsRecord",
+					new SqlParameter("@Id", id));
+			}
 		}
 
 		public void UpdateDomainCreationDate(int domainId, DateTime date)
 		{
-			UpdateDomainDate(domainId, "UpdateDomainCreationDate", date);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				UpdateDomainDate(domainId, "UpdateDomainCreationDate", date);
+			}
 		}
 
 		public void UpdateDomainExpirationDate(int domainId, DateTime date)
 		{
-			UpdateDomainDate(domainId, "UpdateDomainExpirationDate", date);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				UpdateDomainDate(domainId, "UpdateDomainExpirationDate", date);
+			}
 		}
 
 		public void UpdateDomainLastUpdateDate(int domainId, DateTime date)
 		{
-			UpdateDomainDate(domainId, "UpdateDomainLastUpdateDate", date);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				UpdateDomainDate(domainId, "UpdateDomainLastUpdateDate", date);
+			}
 		}
 
 		private void UpdateDomainDate(int domainId, string stroredProcedure, DateTime date)
 		{
 			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 stroredProcedure,
-				 new SqlParameter("@DomainId", domainId),
-				 new SqlParameter("@Date", date)
-			);
+				ConnectionString,
+				CommandType.StoredProcedure,
+				stroredProcedure,
+				new SqlParameter("@DomainId", domainId),
+				new SqlParameter("@Date", date));
 		}
 
 		public void UpdateDomainDates(int domainId, DateTime? domainCreationDate, DateTime? domainExpirationDate, DateTime? domainLastUpdateDate)
-		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "UpdateDomainDates",
-				 new SqlParameter("@DomainId", domainId),
-				 new SqlParameter("@DomainCreationDate", domainCreationDate),
-				 new SqlParameter("@DomainExpirationDate", domainExpirationDate),
-				 new SqlParameter("@DomainLastUpdateDate", domainLastUpdateDate)
-			);
-		}
+			{
+				if (UseEntityFramework)
+				{
+
+				}
+				else
+				{
+					SqlHelper.ExecuteNonQuery(
+						ConnectionString,
+						CommandType.StoredProcedure,
+						"UpdateDomainDates",
+						new SqlParameter("@DomainId", domainId),
+						new SqlParameter("@DomainCreationDate", domainCreationDate),
+						new SqlParameter("@DomainExpirationDate", domainExpirationDate),
+						new SqlParameter("@DomainLastUpdateDate", domainLastUpdateDate));
+				}
+			}
 
 		public void UpdateWhoisDomainInfo(int domainId, DateTime? domainCreationDate, DateTime? domainExpirationDate, DateTime? domainLastUpdateDate, string registrarName)
 		{
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "UpdateWhoisDomainInfo",
-				 new SqlParameter("@DomainId", domainId),
-				 new SqlParameter("@DomainCreationDate", domainCreationDate),
-				 new SqlParameter("@DomainExpirationDate", domainExpirationDate),
-				 new SqlParameter("@DomainLastUpdateDate", domainLastUpdateDate),
-				 new SqlParameter("@DomainRegistrarName", registrarName)
-			);
-		}
+			if (UseEntityFramework)
+			{
 
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"UpdateWhoisDomainInfo",
+					new SqlParameter("@DomainId", domainId),
+					new SqlParameter("@DomainCreationDate", domainCreationDate),
+					new SqlParameter("@DomainExpirationDate", domainExpirationDate),
+					new SqlParameter("@DomainLastUpdateDate", domainLastUpdateDate),
+					new SqlParameter("@DomainRegistrarName", registrarName));
+			}
+		}
 		#endregion
 
 		#region Organization Storage Space Folders
 		public IDataReader GetOrganizationStoragSpaceFolders(int itemId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetOrganizationStoragSpaceFolders",
-				 new SqlParameter("@ItemId", itemId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetOrganizationStoragSpaceFolders",
+					new SqlParameter("@ItemId", itemId));
+			}
 		}
 
 		public IDataReader GetOrganizationStoragSpacesFolderByType(int itemId, string type)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetOrganizationStoragSpacesFolderByType",
-				 new SqlParameter("@ItemId", itemId),
-				 new SqlParameter("@Type", type)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetOrganizationStoragSpacesFolderByType",
+					new SqlParameter("@ItemId", itemId),
+					new SqlParameter("@Type", type));
+			}
 		}
 
 		public void DeleteOrganizationStoragSpacesFolder(int id)
 		{
-			SqlHelper.ExecuteNonQuery(ConnectionString,
-				 CommandType.StoredProcedure,
-				 "DeleteOrganizationStoragSpacesFolder",
-				 new SqlParameter("@ID", id));
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(ConnectionString,
+					CommandType.StoredProcedure,
+					"DeleteOrganizationStoragSpacesFolder",
+					new SqlParameter("@ID", id));
+			}
 		}
 
 		public int AddOrganizationStoragSpacesFolder(int itemId, string type, int storageSpaceFolderId)
 		{
-			SqlParameter outParam = new SqlParameter("@ID", SqlDbType.Int);
-			outParam.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "AddOrganizationStoragSpacesFolder",
-				 outParam,
-				 new SqlParameter("@ItemId", itemId),
-				 new SqlParameter("@Type", type),
-				 new SqlParameter("@StorageSpaceFolderId", storageSpaceFolderId)
-			);
+			}
+			else
+			{
+				SqlParameter outParam = new SqlParameter("@ID", SqlDbType.Int);
+				outParam.Direction = ParameterDirection.Output;
 
-			return Convert.ToInt32(outParam.Value);
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"AddOrganizationStoragSpacesFolder",
+					outParam,
+					new SqlParameter("@ItemId", itemId),
+					new SqlParameter("@Type", type),
+					new SqlParameter("@StorageSpaceFolderId", storageSpaceFolderId));
+
+				return Convert.ToInt32(outParam.Value);
+			}
 		}
 
 		public IDataReader GetOrganizationStorageSpacesFolderById(int itemId, int folderId)
 		{
-			return SqlHelper.ExecuteReader(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetOrganizationStorageSpacesFolderById",
-				 new SqlParameter("@ItemId", itemId),
-				 new SqlParameter("@ID", folderId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteReader(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetOrganizationStorageSpacesFolderById",
+					new SqlParameter("@ItemId", itemId),
+					new SqlParameter("@ID", folderId));
+			}
 		}
 		#endregion
 
@@ -8139,31 +10916,43 @@ namespace SolidCP.EnterpriseServer
 
 		public DataSet GetRDSMessagesByCollectionId(int rdsCollectionId)
 		{
-			return SqlHelper.ExecuteDataset(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "GetRDSMessages",
-				 new SqlParameter("@RDSCollectionId", rdsCollectionId)
-			);
+			if (UseEntityFramework)
+			{
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteDataset(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"GetRDSMessages",
+					new SqlParameter("@RDSCollectionId", rdsCollectionId));
+			}
 		}
 
 		public int AddRDSMessage(int rdsCollectionId, string messageText, string userName)
 		{
-			SqlParameter rdsMessageId = new SqlParameter("@RDSMessageID", SqlDbType.Int);
-			rdsMessageId.Direction = ParameterDirection.Output;
+			if (UseEntityFramework)
+			{
 
-			SqlHelper.ExecuteNonQuery(
-				 ConnectionString,
-				 CommandType.StoredProcedure,
-				 "AddRDSMessage",
-				 rdsMessageId,
-				 new SqlParameter("@RDSCollectionId", rdsCollectionId),
-				 new SqlParameter("@MessageText", messageText),
-				 new SqlParameter("@UserName", userName),
-				 new SqlParameter("@Date", DateTime.Now)
-			);
+			}
+			else
+			{
+				SqlParameter rdsMessageId = new SqlParameter("@RDSMessageID", SqlDbType.Int);
+				rdsMessageId.Direction = ParameterDirection.Output;
 
-			return Convert.ToInt32(rdsMessageId.Value);
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"AddRDSMessage",
+					rdsMessageId,
+					new SqlParameter("@RDSCollectionId", rdsCollectionId),
+					new SqlParameter("@MessageText", messageText),
+					new SqlParameter("@UserName", userName),
+					new SqlParameter("@Date", DateTime.Now));
+
+				return Convert.ToInt32(rdsMessageId.Value);
+			}
 		}
 
 		#endregion

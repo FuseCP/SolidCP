@@ -828,7 +828,7 @@ namespace SolidCP.EnterpriseServer
 			return hash;
 		}
 
-		private static PropertyInfo[] GetTypeProperties(Type type)
+		public static PropertyInfo[] GetTypeProperties(Type type)
 		{
 			string typeName = type.AssemblyQualifiedName;
 			if (typeProperties[typeName] != null)

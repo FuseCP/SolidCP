@@ -33,6 +33,7 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Text.RegularExpressions;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
@@ -839,9 +840,9 @@ namespace SolidCP.Providers.Utils
             }
         }
 
-        public static string ExecuteSystemCommand(string cmd, string args)
+        public static string ExecuteSystemCommand(string user, string password, string cmd, string args)
         {
-            return ExecuteSystemCommand(cmd, args, null);
+            return ExecuteSystemCommand(user, password, cmd, args, null);
         }
 
         /// <summary>
@@ -851,8 +852,9 @@ namespace SolidCP.Providers.Utils
         /// <param name="args">Arguments to pass to the executable file</param>
         /// <param name="outputFile">Path to the output file if you want the output to be written somewhere.</param>
         /// <returns>Output of the command being executed.</returns>
-        public static string ExecuteSystemCommand(string cmd, string args, string outputFile)
+        public static string ExecuteSystemCommand(string user, string password, string cmd, string args, string outputFile)
         {
+            ((WindowsIdentity)Thread.CurrentPrincipal.Identity).
             // launch system process
             return CliProvider.Execute(cmd, args, outputFile);
         }

@@ -4,6 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SolidCP.EnterpriseServer.Data.Entities;
+#if NETFRAMEWORK
+using System.Data.Entity;
+#else
+using Microsoft.EntityFrameworkCore;
+#endif
 
 namespace SolidCP.EnterpriseServer.Data
 {
@@ -266,8 +271,60 @@ namespace SolidCP.EnterpriseServer.Data
 		DbSet<UserSetting> userSettings = null;
 		public virtual DbSet<UserSetting> UserSettings => userSettings ?? (userSettings = new DbSet<UserSetting>(BaseContext));
 
-		DbSet<UsersDetailed> usersDetaileds = null;
-		public virtual DbSet<UsersDetailed> UsersDetailed => usersDetaileds ?? (usersDetaileds = new DbSet<UsersDetailed>(BaseContext));
+		DbSet<UsersDetailed> usersDetailedView = null;
+		public virtual DbSet<UsersDetailed> UsersDetailedView => usersDetailedView ?? (usersDetailedView = new DbSet<UsersDetailed>(BaseContext));
+
+		// UsersDetailed view implemented with Linq
+		public virtual IQueryable<UsersDetailed> UsersDetailed
+		{
+			get {
+				if (IsMsSql) return UsersDetailedView;
+				else
+				{
+					return Users
+						.GroupJoin(Users, u => u.OwnerId, o => o.UserId, (u, o) => new
+						{
+							User = u,
+							Owner = o.SingleOrDefault()
+						})
+						.GroupJoin(Packages, u => u.User.UserId, p => p.UserId, (u, p) => new
+						{
+							User = u.User,
+							Owner = u.Owner,
+							PackagesNumber = p.Count()
+						})
+						.Select(g => new UsersDetailed()
+						{
+							UserId = g.User.UserId,
+							RoleId = g.User.RoleId,
+							StatusId = g.User.StatusId,
+							LoginStatusId = g.User.LoginStatusId,
+							SubscriberNumber = g.User.SubscriberNumber,
+							FailedLogins = g.User.FailedLogins,
+							OwnerId = g.Owner != null ? g.Owner.UserId : null,
+							Created = g.User.Created,
+							Changed = g.User.Changed,
+							IsDemo = g.User.IsDemo,
+							Comments = g.User.Comments,
+							IsPeer = g.User.IsPeer,
+							Username = g.User.Username,
+							FirstName = g.User.FirstName,
+							LastName = g.User.LastName,
+							Email = g.User.Email,
+							CompanyName = g.User.CompanyName,
+							FullName = g.User.FirstName + " " + g.User.LastName,
+							OwnerUsername = g.Owner != null ? g.Owner.Username : null,
+							OwnerFirstName = g.Owner != null ? g.Owner.FirstName : null,
+							OwnerLastName = g.Owner != null ? g.Owner.LastName : null,
+							OwnerEmail = g.Owner != null ? g.Owner.Email : null,
+							OwnerRoleId = g.Owner != null ? g.Owner.RoleId : null,
+							OwnerFullName = g.Owner != null ? g.Owner.FirstName + " " + g.Owner.LastName : null,
+							EcommerceEnabled = g.User.EcommerceEnabled,
+							PackagesNumber = g.PackagesNumber
+						});
+				}
+			}
+		}
 
 		DbSet<Version> versions = null;
 		public virtual DbSet<Version> Versions => versions ?? (versions = new DbSet<Version>(BaseContext));
