@@ -20,7 +20,7 @@ public partial class GlobalDnsRecordConfiguration: EntityTypeConfiguration<Globa
 
 #if NetCore || NetFX
     public override void Configure() {
-        HasOne(d => d.Ipaddress).WithMany(p => p.GlobalDnsRecords).HasConstraintName("FK_GlobalDnsRecords_IPAddresses");
+        HasOne(d => d.IpAddress).WithMany(p => p.GlobalDnsRecords).HasConstraintName("FK_GlobalDnsRecords_IPAddresses");
 
         HasOne(d => d.Package).WithMany(p => p.GlobalDnsRecords)
                 .OnDelete(DeleteBehavior.Cascade)

@@ -33,7 +33,7 @@ public partial class PrivateIpAddress
     public bool IsPrimary { get; set; }
 
     [ForeignKey("ItemId")]
-    [InverseProperty("PrivateIpaddresses")]
+    [InverseProperty("PrivateIpAddresses")]
     public virtual ServiceItem Item { get; set; }
 }
 #endif

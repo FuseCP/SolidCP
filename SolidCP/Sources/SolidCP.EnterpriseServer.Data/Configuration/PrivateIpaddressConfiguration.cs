@@ -20,9 +20,9 @@ public partial class PrivateIpAddressConfiguration: EntityTypeConfiguration<Priv
         Property(e => e.IpAddress).IsUnicode(false);
 
 #if NetCore
-        HasOne(d => d.Item).WithMany(p => p.PrivateIpaddresses).HasConstraintName("FK_PrivateIPAddresses_ServiceItems");
+        HasOne(d => d.Item).WithMany(p => p.PrivateIpAddresses).HasConstraintName("FK_PrivateIPAddresses_ServiceItems");
 #else
-        HasRequired(d => d.Item).WithMany(p => p.PrivateIpaddresses);
+        HasRequired(d => d.Item).WithMany(p => p.PrivateIpAddresses);
 #endif
     }
 #endif

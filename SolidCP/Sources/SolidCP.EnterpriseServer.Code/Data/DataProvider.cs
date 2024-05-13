@@ -60,7 +60,9 @@ using SolidCP.Providers.RemoteDesktopServices;
 using SolidCP.Providers.DNS;
 using SolidCP.Providers.DomainLookup;
 using SolidCP.Providers.StorageSpaces;
+using SolidCP.EnterpriseServer.Data;
 using Twilio.Base;
+using System.Net;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -2686,13 +2688,27 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
-
+				var address = IpAddresses
+					.Where(ip => ip.AddressId == ipAddressId)
+					.Select(ip => new
+					{
+						ip.AddressId,
+						ip.ServerId,
+						ip.ExternalIp,
+						ip.InternalIp,
+						ip.PoolId,
+						ip.SubnetMask,
+						ip.DefaultGateway,
+						ip.Comments,
+						ip.Vlan
+					});
+				return new EntityDataReader<object>(address);
 			}
 			else
 			{
 				return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-					 ObjectQualifier + "GetIPAddress",
-					 new SqlParameter("@AddressID", ipAddressId));
+					ObjectQualifier + "GetIPAddress",
+					new SqlParameter("@AddressID", ipAddressId));
 			}
 		}
 
@@ -2700,39 +2716,154 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				var isAdmin = CheckIsUserAdmin(actorId);
 
+				var addresses = IpAddresses
+					.Where(ip => isAdmin &&
+						(poolId == 0 || (poolId != 0 && poolId == ip.PoolId)) &&
+						(serverId == 0 || (serverId != 0 && serverId == ip.ServerId)))
+					.Join(Servers, ip => ip.ServerId, s => s.ServerId, (ip, s) => new { Ip = ip, Server = s })
+					.Join(PackageIpAddresses, g => g.Ip.AddressId, p => p.AddressId, (g, p) => new
+					{
+						g.Ip,
+						g.Server,
+						PackageIp = p
+					})
+					.Join(ServiceItems, g => g.PackageIp.ItemId, s => s.ItemId, (g, s) => new
+					{
+						g.Ip,
+						g.Server,
+						g.PackageIp,
+						Item = s
+					})
+					.Join(Packages, g => g.PackageIp.PackageId, p => p.PackageId, (g, p) => new
+					{
+						g.Ip,
+						g.Server,
+						g.PackageIp,
+						g.Item,
+						Package = p
+					})
+					.Join(Users, g => g.Package.UserId, u => u.UserId, (g, u) => new
+					{
+						g.Ip.AddressId,
+						g.Ip.PoolId,
+						g.Ip.ExternalIp,
+						g.Ip.InternalIp,
+						g.Ip.SubnetMask,
+						g.Ip.DefaultGateway,
+						g.Ip.Comments,
+						g.Ip.Vlan,
+						g.Ip.ServerId,
+						g.Server.ServerName,
+						g.PackageIp.ItemId,
+						g.Item.ItemName,
+						g.PackageIp.PackageId,
+						g.Package.PackageName,
+						g.Package.UserId,
+						u.Username
+					});
+
+				return new EntityDataReader<object>(addresses);
 			}
 			else
 			{
 				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-											 "GetIPAddresses",
-												 new SqlParameter("@ActorId", actorId),
-												 new SqlParameter("@PoolId", poolId),
-												 new SqlParameter("@ServerId", serverId));
+					"GetIPAddresses",
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@PoolId", poolId),
+					new SqlParameter("@ServerId", serverId));
 				return reader;
 			}
 		}
 
 		public IDataReader GetIPAddressesPaged(int actorId, int poolId, int serverId,
-			 string filterColumn, string filterValue,
-			 string sortColumn, int startRow, int maximumRows)
+			string filterColumn, string filterValue,
+			string sortColumn, int startRow, int maximumRows)
 		{
 			if (UseEntityFramework)
 			{
+				var isAdmin = CheckIsUserAdmin(actorId);
 
+				var addresses = IpAddresses
+					.Where(ip => isAdmin &&
+						(poolId == 0 || (poolId != 0 && poolId == ip.PoolId)) &&
+						(serverId == 0 || (serverId != 0 && serverId == ip.ServerId)))
+					.Join(Servers, ip => ip.ServerId, s => s.ServerId, (ip, s) => new { Ip = ip, Server = s })
+					.Join(PackageIpAddresses, g => g.Ip.AddressId, p => p.AddressId, (g, p) => new
+					{
+						g.Ip,
+						g.Server,
+						PackageIp = p
+					})
+					.Join(ServiceItems, g => g.PackageIp.ItemId, s => s.ItemId, (g, s) => new
+					{
+						g.Ip,
+						g.Server,
+						g.PackageIp,
+						Item = s
+					})
+					.Join(Packages, g => g.PackageIp.PackageId, p => p.PackageId, (g, p) => new
+					{
+						g.Ip,
+						g.Server,
+						g.PackageIp,
+						g.Item,
+						Package = p
+					})
+					.Join(Users, g => g.Package.UserId, u => u.UserId, (g, u) => new
+					{
+						g.Ip.AddressId,
+						g.Ip.PoolId,
+						g.Ip.ExternalIp,
+						g.Ip.InternalIp,
+						g.Ip.SubnetMask,
+						g.Ip.DefaultGateway,
+						g.Ip.Comments,
+						g.Ip.Vlan,
+						g.Ip.ServerId,
+						g.Server.ServerName,
+						g.PackageIp.ItemId,
+						g.Item.ItemName,
+						g.PackageIp.PackageId,
+						g.Package.PackageName,
+						g.Package.UserId,
+						u.Username
+					});
+
+				if (!string.IsNullOrEmpty(filterValue))
+				{
+					if (!string.IsNullOrEmpty(filterColumn))
+					{
+						addresses = addresses.Where($"{filterColumn}=@0", filterValue);
+					}
+					else
+					{
+						addresses = addresses.Where(a => a.ExternalIp == filterValue ||
+							a.InternalIp == filterValue || a.DefaultGateway == filterValue ||
+							a.ServerName == filterValue || a.ItemName == filterValue || a.Username == filterValue);
+					}
+				}
+
+				if (string.IsNullOrEmpty(sortColumn)) addresses = addresses.OrderBy(a => a.ExternalIp);
+				else addresses = addresses.OrderBy(sortColumn);
+
+				addresses = addresses.Skip(startRow).Take(maximumRows);
+
+				return new EntityDataReader<object>(addresses);
 			}
 			else
 			{
 				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-											 "GetIPAddressesPaged",
-												 new SqlParameter("@ActorId", actorId),
-												 new SqlParameter("@PoolId", poolId),
-												 new SqlParameter("@ServerId", serverId),
-												 new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
-												 new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
-												 new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
-												 new SqlParameter("@startRow", startRow),
-												 new SqlParameter("@maximumRows", maximumRows));
+					"GetIPAddressesPaged",
+					new SqlParameter("@ActorId", actorId),
+					new SqlParameter("@PoolId", poolId),
+					new SqlParameter("@ServerId", serverId),
+					new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
+					new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
+					new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
+					new SqlParameter("@startRow", startRow),
+					new SqlParameter("@maximumRows", maximumRows));
 				return reader;
 			}
 		}
@@ -2742,7 +2873,23 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				var address = new Data.Entities.IpAddress()
+				{
+					PoolId = poolId,
+					ServerId = serverId != 0 ? serverId : null,
+					ExternalIp = externalIP,
+					InternalIp = internalIP,
+					SubnetMask = subnetMask,
+					DefaultGateway = defaultGateway,
+					Comments = comments,
+					Vlan = VLAN
+				};
 
+				IpAddresses.Add(address);
+
+				SaveChanges();
+
+				return address.AddressId;
 			}
 			else
 			{
@@ -2770,7 +2917,21 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				var address = IpAddresses.FirstOrDefault(ip => ip.AddressId == addressId);
 
+				if (address != null)
+				{
+					address.PoolId = poolId;
+					address.ServerId = serverId != null ? serverId : null;
+					address.ExternalIp = externalIP;
+					address.InternalIp = internalIP;
+					address.SubnetMask = subnetMask;
+					address.DefaultGateway = defaultGateway;
+					address.Comments = comments;
+					address.Vlan = VLAN;
+
+					SaveChanges();
+				}
 			}
 			else
 			{
@@ -2793,7 +2954,27 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				var items = XElement.Parse(xmlIds);
+				var addressIds = items
+					.Elements()
+					.Select(e => (int)e.Attribute("id"))
+					.ToArray();
 
+				var addresses = IpAddresses
+					.Join(addressIds, ip => ip.AddressId, id => id, (ip, id) => ip)
+					.ToArray();
+
+				foreach (var ip in addresses)
+				{
+					ip.PoolId = poolId;
+					ip.ServerId = serverId;
+					ip.SubnetMask = subnetMask;
+					ip.DefaultGateway = defaultGateway;
+					ip.Comments = comments;
+					ip.Vlan = VLAN;
+				}
+
+				if (addresses.Any()) SaveChanges();
 			}
 			else
 			{
@@ -2813,7 +2994,20 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				if (GlobalDnsRecords.Any(r => r.IpAddressId == ipAddressId)) return -1;
+				if (PackageIpAddresses.Any(p => p.AddressId == ipAddressId && p.ItemId != null)) return -2;
 
+				// delete package-IP relation
+				var packages = PackageIpAddresses.Where(p => p.AddressId == ipAddressId);
+				PackageIpAddresses.RemoveRange(packages);
+
+				// delete IP address
+				var ips = IpAddresses.Where(a => a.AddressId == ipAddressId);
+				IpAddresses.RemoveRange(ips);
+
+				SaveChanges();
+			
+				return 0;
 			}
 			else
 			{
@@ -2838,7 +3032,11 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				var isAdmin = CheckIsUserAdmin(actorId);
 
+				var clusters = Clusters.Where(c => isAdmin);
+
+				return new EntityDataReader<Data.Entities.Cluster>(clusters);
 			}
 			else
 			{
@@ -2852,7 +3050,12 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				var cluster = new Data.Entities.Cluster() { ClusterName = clusterName };
 
+				Clusters.Add(cluster);
+				SaveChanges();
+
+				return cluster.ClusterId;
 			}
 			else
 			{
@@ -2872,7 +3075,18 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
-
+				// reset cluster in services
+#if NETFRAMEWORK
+				var services = Services
+					.Where(s => s.ClusterId == clusterId);
+				foreach (var service in services) service.ClusterId = null;
+#else
+				Services.Where(s => s.ClusterId == clusterId).ExecuteUpdate(set => set.SetProperty(p => p.ClusterId, null as int?));
+#endif
+				// delete cluster
+				Clusters
+					.Where(c => c.ClusterId == clusterId)
+					.ExecuteDelete(Clusters);
 			}
 			else
 			{
@@ -2882,13 +3096,66 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		#endregion
+#endregion
 
 		#region Global DNS records
+
+		public string GetFullIPAddress(string externalIp, string internalIp)
+		{
+			var ip = string.Empty;
+
+			if (!string.IsNullOrEmpty(externalIp)) ip = externalIp;
+
+			if (!string.IsNullOrEmpty(internalIp))
+			{
+				if (ip == string.Empty) ip = internalIp;
+				else ip = $"{ip} ({internalIp})";
+			}
+
+			return ip;
+		}
+
 		public DataSet GetDnsRecordsByService(int actorId, int serviceId)
 		{
 			if (UseEntityFramework)
 			{
+				var records = GlobalDnsRecords
+					.Where(r => r.ServiceId == serviceId)
+					.GroupJoin(IpAddresses, r => r.IpAddressId, ip => ip.AddressId, (r, ips) => new
+					{
+						Record = r,
+						IpAddress = ips.SingleOrDefault()
+					})
+					.Select(g => new
+					{
+						g.Record.RecordId,
+						g.Record.ServiceId,
+						g.Record.ServerId,
+						g.Record.PackageId,
+						g.Record.RecordType,
+						g.Record.RecordName,
+						FullRecordData = g.Record.RecordType == "A" && string.IsNullOrEmpty(g.Record.RecordData) ?
+							(g.IpAddress != null ? GetFullIPAddress(g.IpAddress.ExternalIp, g.IpAddress.InternalIp) : "") :
+							(g.Record.RecordType == "MX" ? 
+								$"{g.Record.MXPriority}, {g.Record.RecordData}" :
+								(g.Record.RecordType == "SRV" ? $"{g.Record.SrvPort}, {g.Record.RecordData}" : 
+									g.Record.RecordData)),
+						g.Record.RecordData,
+						g.Record.MXPriority,
+						g.Record.SrvPriority,
+						g.Record.SrvWeight,
+						g.Record.SrvPort,
+						g.Record.IpAddressId,
+						IPAddress = g.IpAddress != null ? GetFullIPAddress(g.IpAddress.ExternalIp, g.IpAddress.InternalIp) : "",
+						ExternalIp = g.IpAddress != null ? g.IpAddress.ExternalIp : null,
+						InternalIp = g.IpAddress != null ? g.IpAddress.InternalIp : null
+					});
+
+				var dataSet = new DataSet();
+				var dataTable = ObjectUtils.DataTableFromEntitySet<object>(records);
+				dataSet.Tables.Add(dataTable);
+
+				return dataSet;
 
 			}
 			else
@@ -2904,7 +3171,43 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				var records = GlobalDnsRecords
+					.Where(r => r.ServerId == serverId)
+					.GroupJoin(IpAddresses, r => r.IpAddressId, ip => ip.AddressId, (r, ips) => new
+					{
+						Record = r,
+						IpAddress = ips.SingleOrDefault()
+					})
+					.Select(g => new
+					{
+						g.Record.RecordId,
+						g.Record.ServiceId,
+						g.Record.ServerId,
+						g.Record.PackageId,
+						g.Record.RecordType,
+						g.Record.RecordName,
+						FullRecordData = g.Record.RecordType == "A" && string.IsNullOrEmpty(g.Record.RecordData) ?
+							(g.IpAddress != null ? GetFullIPAddress(g.IpAddress.ExternalIp, g.IpAddress.InternalIp) : "") :
+							(g.Record.RecordType == "MX" ?
+								$"{g.Record.MXPriority}, {g.Record.RecordData}" :
+								(g.Record.RecordType == "SRV" ? $"{g.Record.SrvPort}, {g.Record.RecordData}" :
+									g.Record.RecordData)),
+						g.Record.RecordData,
+						g.Record.MXPriority,
+						g.Record.SrvPriority,
+						g.Record.SrvWeight,
+						g.Record.SrvPort,
+						g.Record.IpAddressId,
+						IPAddress = g.IpAddress != null ? GetFullIPAddress(g.IpAddress.ExternalIp, g.IpAddress.InternalIp) : "",
+						ExternalIp = g.IpAddress != null ? g.IpAddress.ExternalIp : null,
+						InternalIp = g.IpAddress != null ? g.IpAddress.InternalIp : null
+					});
 
+				var dataSet = new DataSet();
+				var dataTable = ObjectUtils.DataTableFromEntitySet<object>(records);
+				dataSet.Tables.Add(dataTable);
+
+				return dataSet;
 			}
 			else
 			{
@@ -2915,11 +3218,67 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
+		public bool CheckActorPackageRights(int actorId, int? packageId)
+		{
+			if (actorId == -1 || packageId == null) return true;
+
+			// check if this is a 'system' package
+			if (packageId >= 0 && packageId <= 1 && !CheckIsUserAdmin(actorId)) return false;
+
+			// get package owner
+			var ownerId = Packages
+				.Where(p => p.PackageId == packageId)
+				.Select(p => (int?)p.UserId)
+				.SingleOrDefault();
+
+			if (ownerId == null) return true; // unexisting package
+
+			return CheckActorUserRights(actorId, ownerId.Value);
+		}
+
 		public DataSet GetDnsRecordsByPackage(int actorId, int packageId)
 		{
 			if (UseEntityFramework)
 			{
+				if (!CheckActorPackageRights(actorId, packageId)) throw new AccessViolationException("You are not allowed to access this package");
 
+				var records = GlobalDnsRecords
+					.Where(r => r.PackageId == packageId)
+					.GroupJoin(IpAddresses, r => r.IpAddressId, ip => ip.AddressId, (r, ips) => new
+					{
+						 Record = r,
+						 IpAddress = ips.SingleOrDefault()
+					 })
+					.Select(g => new
+					{
+						g.Record.RecordId,
+						g.Record.ServiceId,
+						g.Record.ServerId,
+						g.Record.PackageId,
+						g.Record.RecordType,
+						g.Record.RecordName,
+						FullRecordData = g.Record.RecordType == "A" && string.IsNullOrEmpty(g.Record.RecordData) ?
+							(g.IpAddress != null ? GetFullIPAddress(g.IpAddress.ExternalIp, g.IpAddress.InternalIp) : "") :
+							(g.Record.RecordType == "MX" ?
+								$"{g.Record.MXPriority}, {g.Record.RecordData}" :
+								(g.Record.RecordType == "SRV" ? $"{g.Record.SrvPort}, {g.Record.RecordData}" :
+									g.Record.RecordData)),
+						g.Record.RecordData,
+						g.Record.MXPriority,
+						g.Record.SrvPriority,
+						g.Record.SrvWeight,
+						g.Record.SrvPort,
+						g.Record.IpAddressId,
+						IPAddress = g.IpAddress != null ? GetFullIPAddress(g.IpAddress.ExternalIp, g.IpAddress.InternalIp) : "",
+						ExternalIp = g.IpAddress != null ? g.IpAddress.ExternalIp : null,
+						InternalIp = g.IpAddress != null ? g.IpAddress.InternalIp : null
+					});
+
+				var dataSet = new DataSet();
+				var dataTable = ObjectUtils.DataTableFromEntitySet<object>(records);
+				dataSet.Tables.Add(dataTable);
+
+				return dataSet;
 			}
 			else
 			{
@@ -2934,7 +3293,25 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				var records = ResourceGroupDnsRecords
+					.Where(r => r.GroupId == groupId)
+					.OrderBy(r => r.RecordOrder)
+					.Select(r => new
+					{
+						r.RecordId,
+						r.RecordOrder,
+						r.GroupId,
+						r.RecordType,
+						r.RecordName,
+						r.RecordData,
+						r.MXPriority
+					});
 
+				var dataSet = new DataSet();
+				var dataTable = ObjectUtils.DataTableFromEntitySet<object>(records);
+				dataSet.Tables.Add(dataTable);
+
+				return dataSet;
 			}
 			else
 			{
@@ -2947,7 +3324,110 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				if (!CheckActorPackageRights(actorId, packageId)) throw new AccessViolationException("You are not allowed to access this package");
 
+				// select PACKAGES DNS records
+				var pid = (int?)packageId;
+
+				IQueryable<Data.Entities.GlobalDnsRecord> records = GlobalDnsRecords
+					.Where(r => r.PackageId == pid);
+				pid = Packages
+					.Where(p => p.PackageId == pid)
+					.Select(p => p.ParentPackageId)
+					.SingleOrDefault();
+
+				while (pid != null)
+				{
+					records = records
+						.Union(GlobalDnsRecords
+							.Where(r => r.PackageId == pid));
+					pid = Packages
+						.Where(p => p.PackageId == pid)
+						.Select(p => p.ParentPackageId)
+						.SingleOrDefault();
+				}
+
+				// select VIRTUAL SERVER DNS records
+				var serverId = Packages
+					.Where(p => p.PackageId == packageId)
+					.Select(p => p.ServerId)
+					.SingleOrDefault();
+			
+				records = records
+					.Union(GlobalDnsRecords
+						.Where(r => r.ServerId == serverId));
+
+				// select SERVER DNS records
+				records = records
+					.Union(GlobalDnsRecords
+						.Join(Servers, r => r.ServerId, s => s.ServerId, (r, s) => new
+						{
+							Record = r,
+							s.ServerId
+						})
+						.Join(Services, g => g.ServerId, s => s.ServerId, (g, s) => new
+						{
+							g.Record,
+							s.ServiceId
+						})
+						.Join(VirtualServices, g => g.ServiceId, v => v.ServiceId, (g, v) => new
+						{
+							g.Record,
+							v.ServerId
+						})
+						.Where(g => g.ServerId == serverId)
+						.Select(g => g.Record));
+
+				// select SERVICES DNS records
+
+				// re-distribute package services
+				DistributePackageServices(actorId, packageId);
+
+				/* TODO uncomment this?
+				records = records
+					.Union(GlobalDnsRecords
+						.Where(r => Packages
+							.Include(p => p.Services)
+							.Any(p => p.PackageId == packageId && p.Services.Any(s => s.ServiceId == r.ServiceId))));
+				*/
+
+				records = records.DistinctBy(r => r.RecordType + r.RecordName);
+
+				var recordsSelected = records
+					.GroupJoin(IpAddresses, r => r.IpAddressId, ip => ip.AddressId, (r, ip) => new
+					{
+						Record = r,
+						Ip = ip.SingleOrDefault()
+					})
+					.Select(r => new
+					{
+						r.Record.RecordId,
+						r.Record.ServiceId,
+						r.Record.ServerId,
+						r.Record.PackageId,
+						r.Record.RecordType,
+						r.Record.RecordName,
+						r.Record.RecordData,
+						r.Record.MXPriority,
+						r.Record.SrvPriority,
+						r.Record.SrvWeight,
+						r.Record.SrvPort,
+						r.Record.IpAddressId,
+						ExternalIp = r.Ip != null && r.Ip.ExternalIp != null ? r.Ip.ExternalIp : "",
+						InternalIp = r.Ip != null && r.Ip.InternalIp != null ? r.Ip.InternalIp : "",
+						FullRecordData = r.Record.RecordType == "A" && string.IsNullOrEmpty(r.Record.RecordData) ?
+							(r.Ip != null ? GetFullIPAddress(r.Ip.ExternalIp, r.Ip.InternalIp) : "") :
+							(r.Record.RecordType == "MX" ?
+								$"{r.Record.MXPriority}, {r.Record.RecordData}" :
+								(r.Record.RecordType == "SRV" ? $"{r.Record.SrvPort}, {r.Record.RecordData}" :
+									r.Record.RecordData)),
+						IPAddress = r.Ip != null ? GetFullIPAddress(r.Ip.ExternalIp, r.Ip.InternalIp) : ""
+					});
+
+				var dataSet = new DataSet();
+				var dataTable = ObjectUtils.DataTableFromEntitySet<object>(recordsSelected);
+				dataSet.Tables.Add(dataTable);
+				return dataSet;
 			}
 			else
 			{
@@ -2962,7 +3442,35 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				// check rights
+				var records = GlobalDnsRecords
+					.Where(r => r.RecordId == recordId)
+					.Select(r => new
+					{
+						r.RecordId,
+						r.ServiceId,
+						r.ServerId,
+						r.PackageId,
+						r.RecordType,
+						r.RecordName,
+						r.RecordData,
+						r.MXPriority,
+						r.SrvPriority,
+						r.SrvWeight,
+						r.SrvPort,
+						r.IpAddressId
+					})
+					.ToArray();
+				var record = records
+					.SingleOrDefault();
 
+				if (record != null && (record.ServiceId > 0 || record.ServerId > 0) && !CheckIsUserAdmin(actorId))
+					throw new AccessViolationException("You are not allowed to perform this operation");
+
+				if (record != null && record.PackageId > 0 && !CheckActorPackageRights(actorId, record.PackageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				return new EntityDataReader<object>(records);
 			}
 			else
 			{

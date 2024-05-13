@@ -106,8 +106,6 @@
 	</ItemGroup>
 	
     <ItemGroup>
-      <Folder Include="Configuration\Sources\" />
-      <Folder Include="Entities\Sources\" />
       <Folder Include="Migrations\PostgreSql\" />
     </ItemGroup>
 

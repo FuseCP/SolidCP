@@ -23,12 +23,12 @@ public partial class IpAddressConfiguration: EntityTypeConfiguration<IpAddress>
         Property(e => e.DefaultGateway).IsUnicode(false);
 
 #if NetCore
-        HasOne(d => d.Server).WithMany(p => p.Ipaddresses)
+        HasOne(d => d.Server).WithMany(p => p.IpAddresses)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_IPAddresses_Servers");
 #else
         // TODO optional or required and cascade delete?
-        HasOptional(d => d.Server).WithMany(p => p.Ipaddresses).WillCascadeOnDelete();
+        HasOptional(d => d.Server).WithMany(p => p.IpAddresses).WillCascadeOnDelete();
 #endif
     }
 #endif

@@ -58,14 +58,14 @@ public partial class IpAddress
     [Column("VLAN")]
     public int? Vlan { get; set; }
 
-    [InverseProperty("Ipaddress")]
+    [InverseProperty("IpAddress")]
     public virtual ICollection<GlobalDnsRecord> GlobalDnsRecords { get; set; } = new List<GlobalDnsRecord>();
 
     [InverseProperty("Address")]
-    public virtual ICollection<PackageIpAddress> PackageIpaddresses { get; set; } = new List<PackageIpAddress>();
+    public virtual ICollection<PackageIpAddress> PackageIpAddresses { get; set; } = new List<PackageIpAddress>();
 
     [ForeignKey("ServerId")]
-    [InverseProperty("Ipaddresses")]
+    [InverseProperty("IpAddresses")]
     public virtual Server Server { get; set; }
 }
 #endif

@@ -14,7 +14,7 @@ namespace SolidCP.EnterpriseServer.Data.Entities.Sources;
 #if NetCore
 [Index("ItemId", Name = "PrivateIPAddressesIdx_ItemID")]
 #endif
-public partial class PrivateIpaddress
+public partial class PrivateIpAddress
 {
     [Key]
     [Column("PrivateAddressID")]
@@ -29,12 +29,12 @@ public partial class PrivateIpaddress
 #if NetCore
     [Unicode(false)]
 #endif
-    public string Ipaddress { get; set; }
+    public string IpAddress { get; set; }
 
     public bool IsPrimary { get; set; }
 
     [ForeignKey("ItemId")]
-    [InverseProperty("PrivateIpaddresses")]
+    [InverseProperty("PrivateIpAddresses")]
     public virtual ServiceItem Item { get; set; }
 }
 #endif

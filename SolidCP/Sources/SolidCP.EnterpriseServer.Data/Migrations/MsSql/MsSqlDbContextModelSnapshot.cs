@@ -3217,7 +3217,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecordId"));
 
-                    b.Property<int?>("IpaddressId")
+                    b.Property<int?>("IpAddressId")
                         .HasColumnType("int")
                         .HasColumnName("IPAddressID");
 
@@ -3264,7 +3264,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
 
                     b.HasKey("RecordId");
 
-                    b.HasIndex(new[] { "IpaddressId" }, "GlobalDnsRecordsIdx_IPAddressID");
+                    b.HasIndex(new[] { "IpAddressId" }, "GlobalDnsRecordsIdx_IPAddressID");
 
                     b.HasIndex(new[] { "PackageId" }, "GlobalDnsRecordsIdx_PackageID");
 
@@ -3381,7 +3381,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                     b.ToTable("HostingPlanResources");
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Ipaddress", b =>
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.IpAddress", b =>
                 {
                     b.Property<int>("AddressId")
                         .ValueGeneratedOnAdd()
@@ -3716,7 +3716,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                     b.ToTable("PackageAddons");
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageIpaddress", b =>
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageIpAddress", b =>
                 {
                     b.Property<int>("PackageAddressId")
                         .ValueGeneratedOnAdd()
@@ -3936,7 +3936,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         });
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PrivateIpaddress", b =>
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PrivateIpAddress", b =>
                 {
                     b.Property<int>("PrivateAddressId")
                         .ValueGeneratedOnAdd()
@@ -3945,7 +3945,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PrivateAddressId"));
 
-                    b.Property<string>("Ipaddress")
+                    b.Property<string>("IpAddress")
                         .IsRequired()
                         .HasMaxLength(15)
                         .IsUnicode(false)
@@ -16133,9 +16133,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.GlobalDnsRecord", b =>
                 {
-                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.Ipaddress", "Ipaddress")
+                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.IpAddress", "IpAddress")
                         .WithMany("GlobalDnsRecords")
-                        .HasForeignKey("IpaddressId")
+                        .HasForeignKey("IpAddressId")
                         .HasConstraintName("FK_GlobalDnsRecords_IPAddresses");
 
                     b.HasOne("SolidCP.EnterpriseServer.Data.Entities.Package", "Package")
@@ -16155,7 +16155,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_GlobalDnsRecords_Services");
 
-                    b.Navigation("Ipaddress");
+                    b.Navigation("IpAddress");
 
                     b.Navigation("Package");
 
@@ -16229,10 +16229,10 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                     b.Navigation("Plan");
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Ipaddress", b =>
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.IpAddress", b =>
                 {
                     b.HasOne("SolidCP.EnterpriseServer.Data.Entities.Server", "Server")
-                        .WithMany("Ipaddresses")
+                        .WithMany("IpAddresses")
                         .HasForeignKey("ServerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_IPAddresses_Servers");
@@ -16313,21 +16313,21 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                     b.Navigation("Plan");
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageIpaddress", b =>
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageIpAddress", b =>
                 {
-                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.Ipaddress", "Address")
-                        .WithMany("PackageIpaddresses")
+                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.IpAddress", "Address")
+                        .WithMany("PackageIpAddresses")
                         .HasForeignKey("AddressId")
                         .IsRequired()
                         .HasConstraintName("FK_PackageIPAddresses_IPAddresses");
 
                     b.HasOne("SolidCP.EnterpriseServer.Data.Entities.ServiceItem", "Item")
-                        .WithMany("PackageIpaddresses")
+                        .WithMany("PackageIpAddresses")
                         .HasForeignKey("ItemId")
                         .HasConstraintName("FK_PackageIPAddresses_ServiceItems");
 
                     b.HasOne("SolidCP.EnterpriseServer.Data.Entities.Package", "Package")
-                        .WithMany("PackageIpaddresses")
+                        .WithMany("PackageIpAddresses")
                         .HasForeignKey("PackageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -16456,10 +16456,10 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                     b.Navigation("ParentPackage");
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PrivateIpaddress", b =>
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PrivateIpAddress", b =>
                 {
                     b.HasOne("SolidCP.EnterpriseServer.Data.Entities.ServiceItem", "Item")
-                        .WithMany("PrivateIpaddresses")
+                        .WithMany("PrivateIpAddresses")
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -16942,11 +16942,11 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                     b.Navigation("Packages");
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Ipaddress", b =>
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.IpAddress", b =>
                 {
                     b.Navigation("GlobalDnsRecords");
 
-                    b.Navigation("PackageIpaddresses");
+                    b.Navigation("PackageIpAddresses");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.LyncUserPlan", b =>
@@ -16966,7 +16966,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
 
                     b.Navigation("PackageAddons");
 
-                    b.Navigation("PackageIpaddresses");
+                    b.Navigation("PackageIpAddresses");
 
                     b.Navigation("PackageQuota");
 
@@ -17058,7 +17058,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
 
                     b.Navigation("HostingPlans");
 
-                    b.Navigation("Ipaddresses");
+                    b.Navigation("IpAddresses");
 
                     b.Navigation("Packages");
 
@@ -17100,9 +17100,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
 
                     b.Navigation("ExchangeOrganizationDomains");
 
-                    b.Navigation("PackageIpaddresses");
+                    b.Navigation("PackageIpAddresses");
 
-                    b.Navigation("PrivateIpaddresses");
+                    b.Navigation("PrivateIpAddresses");
 
                     b.Navigation("ServiceItemProperties");
                 });

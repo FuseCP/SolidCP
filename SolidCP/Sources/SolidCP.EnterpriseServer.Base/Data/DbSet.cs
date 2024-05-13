@@ -17,7 +17,7 @@ namespace SolidCP.EnterpriseServer.Data
     {
         const int EntityStateModified = 0x10;
 
-        IGenericDbContext BaseContext;
+        public IGenericDbContext BaseContext { get; set; }
 
         IQueryable<TEntity> set = null;
 #if !NETSTANDARD

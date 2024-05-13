@@ -13,12 +13,12 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class PrivateIpaddressConfiguration: EntityTypeConfiguration<PrivateIpaddress>
+public partial class PrivateIpAddressConfiguration: EntityTypeConfiguration<PrivateIpAddress>
 {
 
 #if NetCore || NetFX
     public override void Configure() {
-        HasOne(d => d.Item).WithMany(p => p.PrivateIpaddresses).HasConstraintName("FK_PrivateIPAddresses_ServiceItems");
+        HasOne(d => d.Item).WithMany(p => p.PrivateIpAddresses).HasConstraintName("FK_PrivateIPAddresses_ServiceItems");
     }
 #endif
 }

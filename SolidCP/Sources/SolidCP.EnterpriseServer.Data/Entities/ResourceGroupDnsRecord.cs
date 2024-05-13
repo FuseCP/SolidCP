@@ -39,7 +39,7 @@ public partial class ResourceGroupDnsRecord
     public string RecordData { get; set; }
 
     [Column("MXPriority")]
-    public int? Mxpriority { get; set; }
+    public int? MXPriority { get; set; }
 
     [ForeignKey("GroupId")]
     [InverseProperty("ResourceGroupDnsRecords")]

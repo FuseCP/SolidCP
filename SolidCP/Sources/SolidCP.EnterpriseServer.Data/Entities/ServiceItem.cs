@@ -63,10 +63,10 @@ public partial class ServiceItem
     public virtual Package Package { get; set; }
 
     [InverseProperty("Item")]
-    public virtual ICollection<PackageIpAddress> PackageIpaddresses { get; set; } = new List<PackageIpAddress>();
+    public virtual ICollection<PackageIpAddress> PackageIpAddresses { get; set; } = new List<PackageIpAddress>();
 
     [InverseProperty("Item")]
-    public virtual ICollection<PrivateIpAddress> PrivateIpaddresses { get; set; } = new List<PrivateIpAddress>();
+    public virtual ICollection<PrivateIpAddress> PrivateIpAddresses { get; set; } = new List<PrivateIpAddress>();
 
     [ForeignKey("ServiceId")]
     [InverseProperty("ServiceItems")]

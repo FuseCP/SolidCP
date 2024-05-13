@@ -36,15 +36,15 @@ public partial class PackageIpAddress
     public int? OrgId { get; set; }
 
     [ForeignKey("AddressId")]
-    [InverseProperty("PackageIpaddresses")]
+    [InverseProperty("PackageIpAddresses")]
     public virtual IpAddress Address { get; set; }
 
     [ForeignKey("ItemId")]
-    [InverseProperty("PackageIpaddresses")]
+    [InverseProperty("PackageIpAddresses")]
     public virtual ServiceItem Item { get; set; }
 
     [ForeignKey("PackageId")]
-    [InverseProperty("PackageIpaddresses")]
+    [InverseProperty("PackageIpAddresses")]
     public virtual Package Package { get; set; }
 }
 #endif

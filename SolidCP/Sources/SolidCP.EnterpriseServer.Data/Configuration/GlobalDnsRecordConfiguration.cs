@@ -23,7 +23,7 @@ public partial class GlobalDnsRecordConfiguration : EntityTypeConfiguration<Glob
         Property(e => e.RecordType).IsUnicode(false);
 
 #if NetCore
-        HasOne(d => d.Ipaddress).WithMany(p => p.GlobalDnsRecords).HasConstraintName("FK_GlobalDnsRecords_IPAddresses");
+        HasOne(d => d.IpAddress).WithMany(p => p.GlobalDnsRecords).HasConstraintName("FK_GlobalDnsRecords_IPAddresses");
 
         HasOne(d => d.Package).WithMany(p => p.GlobalDnsRecords)
                 .OnDelete(DeleteBehavior.Cascade)
@@ -35,7 +35,7 @@ public partial class GlobalDnsRecordConfiguration : EntityTypeConfiguration<Glob
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_GlobalDnsRecords_Services");
 #else
-		HasRequired(d => d.Ipaddress).WithMany(p => p.GlobalDnsRecords);
+		HasRequired(d => d.IpAddress).WithMany(p => p.GlobalDnsRecords);
 		HasRequired(d => d.Package).WithMany(p => p.GlobalDnsRecords);
 		HasRequired(d => d.Server).WithMany(p => p.GlobalDnsRecords);
 		HasRequired(d => d.Service).WithMany(p => p.GlobalDnsRecords);

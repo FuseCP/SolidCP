@@ -1131,7 +1131,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("RecordId"));
 
-                    b.Property<int?>("IpaddressId")
+                    b.Property<int?>("IpAddressId")
                         .HasColumnType("integer")
                         .HasColumnName("IPAddressID");
 
@@ -1178,7 +1178,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasKey("RecordId");
 
-                    b.HasIndex(new[] { "IpaddressId" }, "GlobalDnsRecordsIdx_IPAddressID");
+                    b.HasIndex(new[] { "IpAddressId" }, "GlobalDnsRecordsIdx_IPAddressID");
 
                     b.HasIndex(new[] { "PackageId" }, "GlobalDnsRecordsIdx_PackageID");
 
@@ -1294,7 +1294,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.ToTable("HostingPlanResources");
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Ipaddress", b =>
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.IpAddress", b =>
                 {
                     b.Property<int>("AddressId")
                         .ValueGeneratedOnAdd()
@@ -1601,7 +1601,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.ToTable("PackageAddons");
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageIpaddress", b =>
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageIpAddress", b =>
                 {
                     b.Property<int>("PackageAddressId")
                         .ValueGeneratedOnAdd()
@@ -1806,7 +1806,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.ToTable("PackagesTreeCache");
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PrivateIpaddress", b =>
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PrivateIpAddress", b =>
                 {
                     b.Property<int>("PrivateAddressId")
                         .ValueGeneratedOnAdd()
@@ -1815,7 +1815,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PrivateAddressId"));
 
-                    b.Property<string>("Ipaddress")
+                    b.Property<string>("IpAddress")
                         .IsRequired()
                         .HasMaxLength(15)
                         .IsUnicode(false)
@@ -3824,9 +3824,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.GlobalDnsRecord", b =>
                 {
-                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.Ipaddress", "Ipaddress")
+                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.IpAddress", "IpAddress")
                         .WithMany("GlobalDnsRecords")
-                        .HasForeignKey("IpaddressId");
+                        .HasForeignKey("IpAddressId");
 
                     b.HasOne("SolidCP.EnterpriseServer.Data.Entities.Package", "Package")
                         .WithMany("GlobalDnsRecords")
@@ -3840,7 +3840,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         .WithMany("GlobalDnsRecords")
                         .HasForeignKey("ServiceId");
 
-                    b.Navigation("Ipaddress");
+                    b.Navigation("IpAddress");
 
                     b.Navigation("Package");
 
@@ -3908,10 +3908,10 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.Navigation("Plan");
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Ipaddress", b =>
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.IpAddress", b =>
                 {
                     b.HasOne("SolidCP.EnterpriseServer.Data.Entities.Server", "Server")
-                        .WithMany("Ipaddresses")
+                        .WithMany("IpAddresses")
                         .HasForeignKey("ServerId");
 
                     b.Navigation("Server");
@@ -3983,20 +3983,20 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.Navigation("Plan");
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageIpaddress", b =>
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageIpAddress", b =>
                 {
-                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.Ipaddress", "Address")
-                        .WithMany("PackageIpaddresses")
+                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.IpAddress", "Address")
+                        .WithMany("PackageIpAddresses")
                         .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SolidCP.EnterpriseServer.Data.Entities.ServiceItem", "Item")
-                        .WithMany("PackageIpaddresses")
+                        .WithMany("PackageIpAddresses")
                         .HasForeignKey("ItemId");
 
                     b.HasOne("SolidCP.EnterpriseServer.Data.Entities.Package", "Package")
-                        .WithMany("PackageIpaddresses")
+                        .WithMany("PackageIpAddresses")
                         .HasForeignKey("PackageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -4122,10 +4122,10 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.Navigation("ParentPackage");
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PrivateIpaddress", b =>
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PrivateIpAddress", b =>
                 {
                     b.HasOne("SolidCP.EnterpriseServer.Data.Entities.ServiceItem", "Item")
-                        .WithMany("PrivateIpaddresses")
+                        .WithMany("PrivateIpAddresses")
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -4575,11 +4575,11 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.Navigation("Packages");
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Ipaddress", b =>
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.IpAddress", b =>
                 {
                     b.Navigation("GlobalDnsRecords");
 
-                    b.Navigation("PackageIpaddresses");
+                    b.Navigation("PackageIpAddresses");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.LyncUserPlan", b =>
@@ -4599,7 +4599,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.Navigation("PackageAddons");
 
-                    b.Navigation("PackageIpaddresses");
+                    b.Navigation("PackageIpAddresses");
 
                     b.Navigation("PackageQuota");
 
@@ -4691,7 +4691,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.Navigation("HostingPlans");
 
-                    b.Navigation("Ipaddresses");
+                    b.Navigation("IpAddresses");
 
                     b.Navigation("Packages");
 
@@ -4733,9 +4733,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.Navigation("ExchangeOrganizationDomains");
 
-                    b.Navigation("PackageIpaddresses");
+                    b.Navigation("PackageIpAddresses");
 
-                    b.Navigation("PrivateIpaddresses");
+                    b.Navigation("PrivateIpAddresses");
 
                     b.Navigation("ServiceItemProperties");
                 });

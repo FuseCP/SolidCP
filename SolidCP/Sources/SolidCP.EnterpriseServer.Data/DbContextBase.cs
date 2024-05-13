@@ -115,7 +115,7 @@ namespace SolidCP.EnterpriseServer.Context
 
 		public virtual DbSet<HostingPlanResource> HostingPlanResources { get; set; }
 
-		public virtual DbSet<IpAddress> Ipaddresses { get; set; }
+		public virtual DbSet<IpAddress> IpAddresses { get; set; }
 
 		public virtual DbSet<LyncUser> LyncUsers { get; set; }
 
@@ -127,7 +127,7 @@ namespace SolidCP.EnterpriseServer.Context
 
 		public virtual DbSet<PackageAddon> PackageAddons { get; set; }
 
-		public virtual DbSet<PackageIpAddress> PackageIpaddresses { get; set; }
+		public virtual DbSet<PackageIpAddress> PackageIpAddresses { get; set; }
 
 		public virtual DbSet<PackageQuota> PackageQuotas { get; set; }
 
@@ -143,7 +143,7 @@ namespace SolidCP.EnterpriseServer.Context
 
 		public virtual DbSet<PackagesTreeCache> PackagesTreeCaches { get; set; }
 
-		public virtual DbSet<PrivateIpAddress> PrivateIpaddresses { get; set; }
+		public virtual DbSet<PrivateIpAddress> PrivateIpAddresses { get; set; }
 
 		public virtual DbSet<PrivateNetworkVlan> PrivateNetworkVlans { get; set; }
 
@@ -492,8 +492,8 @@ namespace SolidCP.EnterpriseServer.Data
         DbSet<HostingPlanResource> hostingPlanResources = null;
         public virtual DbSet<HostingPlanResource> HostingPlanResources => hostingPlanResources ?? (hostingPlanResources = new DbSet<HostingPlanResource>(BaseContext));
 
-        DbSet<Ipaddress> ipaddresses = null;
-        public virtual DbSet<Ipaddress> Ipaddresses => ipaddresses ?? (ipaddresses = new DbSet<Ipaddress>(BaseContext));
+        DbSet<IpAddress> ipaddresses = null;
+        public virtual DbSet<IpAddress> IpAddresses => ipaddresses ?? (ipaddresses = new DbSet<IpAddress>(BaseContext));
 
         DbSet<LyncUser> lyncUsers = null;
         public virtual DbSet<LyncUser> LyncUsers => lyncUsers ?? (lyncUsers = new DbSet<LyncUser>(BaseContext));
@@ -510,8 +510,8 @@ namespace SolidCP.EnterpriseServer.Data
         DbSet<PackageAddon> packageAddons = null;
         public virtual DbSet<PackageAddon> PackageAddons => packageAddons ?? (packageAddons = new DbSet<PackageAddon>(BaseContext));
 
-        DbSet<PackageIpaddress> packageIpaddresses = null;
-        public virtual DbSet<PackageIpaddress> PackageIpaddresses => packageIpaddresses ?? (packageIpaddresses = new DbSet<PackageIpaddress>(BaseContext));
+        DbSet<PackageIpAddress> packageIpAddresses = null;
+        public virtual DbSet<PackageIpAddress> PackageIpAddresses => packageIpAddresses ?? (packageIpAddresses = new DbSet<PackageIpAddress>(BaseContext));
 
         DbSet<PackageQuota> packageQuotas = null;
         public virtual DbSet<PackageQuota> PackageQuotas => packageQuotas ?? (packageQuotas = new DbSet<PackageQuota>(BaseContext));
@@ -534,8 +534,8 @@ namespace SolidCP.EnterpriseServer.Data
         DbSet<PackagesTreeCache> packagesTreeCaches = null;
         public virtual DbSet<PackagesTreeCache> PackagesTreeCaches => packagesTreeCaches ?? (packagesTreeCaches = new DbSet<PackagesTreeCache>(BaseContext));
 
-        DbSet<PrivateIpaddress> privateIpaddresses = null;
-        public virtual DbSet<PrivateIpaddress> PrivateIpaddresses => privateIpaddresses ?? (privateIpaddresses = new DbSet<PrivateIpaddress>(BaseContext));
+        DbSet<PrivateIpAddress> privateIpAddresses = null;
+        public virtual DbSet<PrivateIpAddress> PrivateIpAddresses => privateIpAddresses ?? (privateIpAddresses = new DbSet<PrivateIpAddress>(BaseContext));
 
         DbSet<PrivateNetworkVlan> privateNetworkVlans = null;
         public virtual DbSet<PrivateNetworkVlan> PrivateNetworkVlans => privateNetworkVlans ?? (privateNetworkVlans = new DbSet<PrivateNetworkVlan>(BaseContext));

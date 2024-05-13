@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 namespace SolidCP.EnterpriseServer.Data.Entities.Sources;
 
 #if NetCore
-[Index("IpaddressId", Name = "GlobalDnsRecordsIdx_IPAddressID")]
+[Index("IpAddressId", Name = "GlobalDnsRecordsIdx_IPAddressID")]
 [Index("PackageId", Name = "GlobalDnsRecordsIdx_PackageID")]
 [Index("ServerId", Name = "GlobalDnsRecordsIdx_ServerID")]
 [Index("ServiceId", Name = "GlobalDnsRecordsIdx_ServiceID")]
@@ -50,7 +50,7 @@ public partial class GlobalDnsRecord
     public int? PackageId { get; set; }
 
     [Column("IPAddressID")]
-    public int? IpaddressId { get; set; }
+    public int? IpAddressId { get; set; }
 
     public int? SrvPriority { get; set; }
 
@@ -58,9 +58,9 @@ public partial class GlobalDnsRecord
 
     public int? SrvPort { get; set; }
 
-    [ForeignKey("IpaddressId")]
+    [ForeignKey("IpAddressId")]
     [InverseProperty("GlobalDnsRecords")]
-    public virtual Ipaddress Ipaddress { get; set; }
+    public virtual IpAddress IpAddress { get; set; }
 
     [ForeignKey("PackageId")]
     [InverseProperty("GlobalDnsRecords")]

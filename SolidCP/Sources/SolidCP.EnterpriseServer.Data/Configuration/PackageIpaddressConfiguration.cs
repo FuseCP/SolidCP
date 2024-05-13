@@ -18,17 +18,17 @@ public partial class PackageIpAddressConfiguration: EntityTypeConfiguration<Pack
     public override void Configure() {
 
 #if NetCore
-        HasOne(d => d.Address).WithMany(p => p.PackageIpaddresses)
+        HasOne(d => d.Address).WithMany(p => p.PackageIpAddresses)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_PackageIPAddresses_IPAddresses");
 
-        HasOne(d => d.Item).WithMany(p => p.PackageIpaddresses).HasConstraintName("FK_PackageIPAddresses_ServiceItems");
+        HasOne(d => d.Item).WithMany(p => p.PackageIpAddresses).HasConstraintName("FK_PackageIPAddresses_ServiceItems");
 
-        HasOne(d => d.Package).WithMany(p => p.PackageIpaddresses).HasConstraintName("FK_PackageIPAddresses_Packages");
+        HasOne(d => d.Package).WithMany(p => p.PackageIpAddresses).HasConstraintName("FK_PackageIPAddresses_Packages");
 #else
-        HasRequired(d => d.Address).WithMany(p => p.PackageIpaddresses);
-        HasRequired(d => d.Item).WithMany(p => p.PackageIpaddresses);
-        HasRequired(d => d.Package).WithMany(p => p.PackageIpaddresses);
+        HasRequired(d => d.Address).WithMany(p => p.PackageIpAddresses);
+        HasRequired(d => d.Item).WithMany(p => p.PackageIpAddresses);
+        HasRequired(d => d.Package).WithMany(p => p.PackageIpAddresses);
 #endif
     }
 #endif
