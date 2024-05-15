@@ -72,9 +72,9 @@ namespace SolidCP.EnterpriseServer
 	public class DataProvider : Data.DbContext
 	{
 #if UseEntityFramework
-		public readonly bool UseEntityFramework = true;
+		public bool UseEntityFramework => !IsMsSql || !HasProcedures;
 #else
-		public const bool UseEntityFramework = false; // !IsMsSql || !HasProcedures;
+		public const bool UseEntityFramework = false;
 #endif
 		ControllerBase Provider;
 		ServerController serverController;
@@ -3395,7 +3395,7 @@ namespace SolidCP.EnterpriseServer
 				records = records.DistinctBy(r => r.RecordType + r.RecordName);
 #else
 				records = records.GroupBy(r => new { r.RecordType, r.RecordName })
-					.Select(g => g.FirstOrDefault());
+					.Select(g => g.First());
 #endif
 				var recordsSelected = records
 					.GroupJoin(IpAddresses, r => r.IpAddressId, ip => ip.AddressId, (r, ip) => new
@@ -3490,7 +3490,39 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				if ((serviceId > 0 || serverId > 0) && !CheckIsUserAdmin(actorId))
+					throw new AccessViolationException("You should have administrator role to perform such operation");
 
+				if (packageId > 0 && !CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				int? serverIdOrNull = serverId != 0 ? serverId : null;
+				int? serviceIdOrNull = serviceId != 0 ? serviceId : null;
+				int? packageIdOrNull = packageId != 0 ? packageId : null;
+				int? ipAddressIdOrNull = ipAddressId != 0 ? ipAddressId : null;
+
+				var record = GlobalDnsRecords.FirstOrDefault(r => r.ServiceId == serviceIdOrNull && r.ServerId == serverIdOrNull &&
+					r.PackageId == packageIdOrNull && r.RecordName == recordName && r.RecordType == recordType);
+
+				if (record == null) {
+					record = new Data.Entities.GlobalDnsRecord() {
+						RecordType = recordType,
+						RecordName = recordName,
+						ServiceId = serviceIdOrNull,
+						ServerId = serverIdOrNull,
+						PackageId = packageIdOrNull
+					};
+					GlobalDnsRecords.Add(record);
+				}
+
+				record.RecordData = recordData;
+				record.MXPriority = mxPriority;
+				record.SrvPriority = SrvPriority;
+				record.SrvWeight = SrvWeight;
+				record.SrvPort = SrvPort;
+				record.IpAddressId = ipAddressIdOrNull;
+
+				SaveChanges();
 			}
 			else
 			{
@@ -3515,7 +3547,31 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				int? ipAddressIdOrNull = ipAddressId != 0 ? ipAddressId : null;
 
+				var record = GlobalDnsRecords
+					.FirstOrDefault(r => r.RecordId == recordId);
+
+				if (record != null)
+				{
+					// check rights
+					if ((record.ServiceId > 0 || record.ServerId > 0) && !CheckIsUserAdmin(actorId))
+						throw new AccessViolationException("You are not allowed to perform this operation");
+
+					if (record.PackageId > 0 && !CheckActorPackageRights(actorId, record.PackageId))
+						throw new AccessViolationException("You are not allowed to access this package");
+
+					record.RecordType = recordType;
+					record.RecordName = recordName;
+					record.RecordData = recordData;
+					record.MXPriority = mxPriority;
+					record.SrvPriority = SrvPriority;
+					record.SrvWeight = SrvWeight;
+					record.SrvPort = SrvPort;
+					record.IpAddressId = ipAddressIdOrNull;
+
+					SaveChanges();
+				}
 			}
 			else
 			{
@@ -3539,7 +3595,20 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				var record = GlobalDnsRecords
+					.FirstOrDefault(r => r.RecordId == recordId);
 
+				if (record != null)
+				{
+					// check rights
+					if ((record.ServerId > 0 || record.ServiceId > 0) && !CheckIsUserAdmin(actorId) ||
+						record.PackageId > 0 && !CheckActorPackageRights(actorId, record.PackageId))
+						return;
+
+					GlobalDnsRecords.Remove(record);
+
+					SaveChanges();
+				}
 			}
 			else
 			{
@@ -3552,11 +3621,78 @@ namespace SolidCP.EnterpriseServer
 #endregion
 
 		#region Domains
-		public DataSet GetDomains(int actorId, int packageId, bool recursive)
+
+		public IEnumerable<int> PackagesTree(int packageId, bool recursive = false)
+		{
+			IEnumerable<int> packages = new int[] { packageId };
+
+			if (recursive)
+			{
+				var children = packages;
+				children = children
+					.Join(Packages, child => child, pkg => pkg.ParentPackageId, (ch, pkg) => pkg.PackageId);
+
+				while (children.Any())
+				{
+					packages = packages.Union(children);
+					children = children
+						.Join(Packages, child => child, pkg => pkg.ParentPackageId, (ch, pkg) => pkg.PackageId);
+				}
+			}
+
+			return packages;
+		}
+		public DataSet GetDomains(int actorId, int packageId, bool recursive = true)
 		{
 			if (UseEntityFramework)
 			{
+				// check rights
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
 
+				var domains = Domains
+					.Join(PackagesTree(actorId, recursive), d => d.PackageId, t => t, (d, t) => d)
+					.GroupJoin(ServiceItems, d => d.WebSiteId, it => it.ItemId, (d, s) => new
+					{
+						Domain = d,
+						WebSite = s.SingleOrDefault()
+					})
+					.GroupJoin(ServiceItems, d => d.Domain.MailDomainId, it => it.ItemId, (d, s) => new
+					{
+						d.Domain,
+						d.WebSite,
+						MailDomain = s.SingleOrDefault()
+					})
+					.GroupJoin(ServiceItems, d => d.Domain.ZoneItemId, it => it.ItemId, (d, s) => new
+					{
+						d.Domain,
+						d.WebSite,
+						d.MailDomain,
+						Zone = s.SingleOrDefault()
+					})
+					.Select(d => new
+					{
+						d.Domain.DomainId,
+						d.Domain.PackageId,
+						d.Domain.ZoneItemId,
+						d.Domain.DomainItemId,
+						d.Domain.DomainName,
+						d.Domain.HostingAllowed,
+						WebSiteId = d.WebSite != null ? d.WebSite.ItemId : 0,
+						WebSiteName = d.WebSite != null ? d.WebSite.ItemName : null,
+						MailDomainId = d.MailDomain != null ? d.MailDomain.ItemId : 0,
+						MailDomainName = d.MailDomain != null ? d.MailDomain.ItemName : null,
+						ZoneName = d.Zone != null ? d.Zone.ItemName : null,
+						d.Domain.IsSubDomain,
+						d.Domain.IsPreviewDomain,
+						d.Domain.IsDomainPointer
+					});
+
+				var dataSet = new DataSet();
+				var dataTable = ObjectUtils.DataTableFromEntitySet<object>(domains);
+				dataSet.Tables.Add(dataTable);
+
+				return dataSet;
 			}
 			else
 			{

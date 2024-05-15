@@ -6,7 +6,7 @@
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <UseSkia>true</UseSkia>
-		<UseEntityFramework>false</UseEntityFramework>
+		<UseEntityFramework>true</UseEntityFramework>
 		<IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
 		<LangVersion>11</LangVersion>
 	</PropertyGroup>
