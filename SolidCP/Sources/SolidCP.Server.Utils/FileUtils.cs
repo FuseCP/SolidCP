@@ -854,7 +854,7 @@ namespace SolidCP.Providers.Utils
         /// <returns>Output of the command being executed.</returns>
         public static string ExecuteSystemCommand(string user, string password, string cmd, string args, string outputFile)
         {
-            ((WindowsIdentity)Thread.CurrentPrincipal.Identity).
+            // TODO impersonate user with password
             // launch system process
             return CliProvider.Execute(cmd, args, outputFile);
         }

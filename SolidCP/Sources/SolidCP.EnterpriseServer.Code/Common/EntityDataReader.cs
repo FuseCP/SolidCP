@@ -44,6 +44,7 @@ namespace SolidCP.EnterpriseServer
                 }
                 return properties;
             }
+			private set { properties = value; }
         }
 
         public EntityDataReader(IEnumerable<TEntity> set, bool setRecordsAffected = false) {
@@ -142,7 +143,7 @@ namespace SolidCP.EnterpriseServer
 		{
 			var reader = new EntityDataReader<TEntity>(Set, RecordsAffected != -1);
 			var props = new PropertyCollection() { Properties[i] };
-			reader.Props = props;
+			reader.Properties = props;
 			return reader;
 		}
 		public bool IsDBNull(int i) => this[i] == null;

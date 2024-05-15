@@ -74,7 +74,7 @@ namespace SolidCP.EnterpriseServer
 #if UseEntityFramework
 		public readonly bool UseEntityFramework = true;
 #else
-		public bool UseEntityFramework => !IsMsSql || !HasProcedures;
+		public const bool UseEntityFramework = false; // !IsMsSql || !HasProcedures;
 #endif
 		ControllerBase Provider;
 		ServerController serverController;
@@ -3391,8 +3391,12 @@ namespace SolidCP.EnterpriseServer
 							.Any(p => p.PackageId == packageId && p.Services.Any(s => s.ServiceId == r.ServiceId))));
 				*/
 
+#if NETCOREAPP
 				records = records.DistinctBy(r => r.RecordType + r.RecordName);
-
+#else
+				records = records.GroupBy(r => new { r.RecordType, r.RecordName })
+					.Select(g => g.FirstOrDefault());
+#endif
 				var recordsSelected = records
 					.GroupJoin(IpAddresses, r => r.IpAddressId, ip => ip.AddressId, (r, ip) => new
 					{
@@ -3545,7 +3549,7 @@ namespace SolidCP.EnterpriseServer
 					new SqlParameter("@RecordId", recordId));
 			}
 		}
-		#endregion
+#endregion
 
 		#region Domains
 		public DataSet GetDomains(int actorId, int packageId, bool recursive)
@@ -4925,7 +4929,7 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
-
+				packageId = 0;
 			}
 			else
 			{
@@ -5061,7 +5065,7 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
-
+				addonId = 0;
 			}
 			else
 			{
@@ -9334,7 +9338,7 @@ WHERE PackageServices.PackageID = @PackageID AND Services.ProviderID = @Provider
 		{
 			if (UseEntityFramework)
 			{
-
+				providerId = 0; groupId = 0;
 			}
 			else
 			{
@@ -9880,7 +9884,7 @@ WHERE PackageID = @PackageID",
 			else
 			{
 				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-					OjectQualifier + "GetSupportServiceLevels");
+					ObjectQualifier + "GetSupportServiceLevels");
 			}
 		}
 

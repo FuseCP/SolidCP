@@ -734,7 +734,7 @@ namespace SolidCP.Providers.OS
 		{
 			try
 			{
-				string result = FileUtils.ExecuteSystemCommand(string user, string password, path, args);
+				string result = FileUtils.ExecuteSystemCommand(user, password, path, args);
 				return result;
 			}
 			catch (Exception ex)

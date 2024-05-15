@@ -14,7 +14,7 @@
 @(HasPolicyAttribute?.ToString() ?? "")
 @(HasSoapHeader ? "[SolidCP.Providers.SoapHeader]" : "")
 [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
-[ServiceKnownTypes("GetKnownTypes", typeof(SolidCP.Providers.GlobalKnownTypes))]
+[ServiceKnownType("GetKnownTypes", typeof(SolidCP.Providers.GlobalKnownTypes))]
 [ServiceContract(ConfigurationName="I@(Class.Identifier)", Namespace="@(WebServiceNamespace)")]
 public interface I@(Class.Identifier) {
 

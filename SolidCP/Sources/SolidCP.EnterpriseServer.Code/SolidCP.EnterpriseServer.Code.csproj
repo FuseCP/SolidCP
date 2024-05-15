@@ -6,7 +6,7 @@
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <UseSkia>true</UseSkia>
-		<UseEntityFramework>true</UseEntityFramework>
+		<UseEntityFramework>false</UseEntityFramework>
 		<IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
 		<LangVersion>11</LangVersion>
 	</PropertyGroup>
@@ -63,11 +63,11 @@
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
-        <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+        <!--<PackageReference Include="System.Data.SqlClient" Version="4.8.6" />-->
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
-        <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
+        <!-- <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />-->
         <PackageReference Include="Microsoft.EntityFrameworkCore.DynamicLinq" Version="8.3.13" />
     </ItemGroup>
 
