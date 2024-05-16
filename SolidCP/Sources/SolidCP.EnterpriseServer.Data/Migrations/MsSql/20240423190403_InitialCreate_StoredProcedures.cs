@@ -14827,40 +14827,40 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-	CREATE PROCEDURE [dbo].[GetServerByName]
-	(
-		@ActorID int,
-		@ServerName nvarchar(100)
-	)
-	AS
+CREATE PROCEDURE [dbo].[GetServerByName]
+(
+	@ActorID int,
+	@ServerName nvarchar(100)
+)
+AS
 -- check rights
-	DECLARE @IsAdmin bit
-	SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+DECLARE @IsAdmin bit
+SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
 
-	SELECT
-		ServerID,
-		ServerName,
-		ServerUrl,
-		Password,
-		Comments,
-		VirtualServer,
-		InstantDomainAlias,
-		PrimaryGroupID,
-		ADRootDomain,
-		ADUsername,
-		ADPassword,
-		ADAuthenticationType,
-		ADParentDomain,
-		ADParentDomainController,
-		OSPlatform,
-		IsCore,
-		PasswordIsSHA256
-	FROM Servers
-	WHERE
-		ServerName = @ServerName
-		AND @IsAdmin = 1
+SELECT
+	ServerID,
+	ServerName,
+	ServerUrl,
+	Password,
+	Comments,
+	VirtualServer,
+	InstantDomainAlias,
+	PrimaryGroupID,
+	ADRootDomain,
+	ADUsername,
+	ADPassword,
+	ADAuthenticationType,
+	ADParentDomain,
+	ADParentDomainController,
+	OSPlatform,
+	IsCore,
+	PasswordIsSHA256
+FROM Servers
+WHERE
+	ServerName = @ServerName
+	AND @IsAdmin = 1
 
-	RETURN
+RETURN
 
 GO
 SET ANSI_NULLS ON
@@ -14868,35 +14868,35 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-	CREATE PROCEDURE [dbo].[GetServerInternal]
-	(
-		@ServerID int
-	)
-	AS
-	SELECT
-		ServerID,
-		ServerName,
-		ServerUrl,
-		Password,
-		Comments,
-		VirtualServer,
-		InstantDomainAlias,
-		PrimaryGroupID,
-		ADEnabled,
-		ADRootDomain,
-		ADUsername,
-		ADPassword,
-		ADAuthenticationType,
-		ADParentDomain,
-		ADParentDomainController,
-		OSPlatform,
-		IsCore,
-		PasswordIsSHA256
-	FROM Servers
-	WHERE
-		ServerID = @ServerID
+CREATE PROCEDURE [dbo].[GetServerInternal]
+(
+	@ServerID int
+)
+AS
+SELECT
+	ServerID,
+	ServerName,
+	ServerUrl,
+	Password,
+	Comments,
+	VirtualServer,
+	InstantDomainAlias,
+	PrimaryGroupID,
+	ADEnabled,
+	ADRootDomain,
+	ADUsername,
+	ADPassword,
+	ADAuthenticationType,
+	ADParentDomain,
+	ADParentDomainController,
+	OSPlatform,
+	IsCore,
+	PasswordIsSHA256
+FROM Servers
+WHERE
+	ServerID = @ServerID
 
-	RETURN
+RETURN
 
 GO
 SET ANSI_NULLS ON

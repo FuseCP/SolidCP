@@ -63,6 +63,7 @@ using SolidCP.Providers.StorageSpaces;
 using SolidCP.EnterpriseServer.Data;
 using Twilio.Base;
 using System.Net;
+using static Mysqlx.Notice.Warning.Types;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -96,6 +97,31 @@ namespace SolidCP.EnterpriseServer
 
 		public IDataReader GetSystemSettings(string settingsName)
 		{
+			if (UseEntityFramework)
+			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetSystemSettings]
+	@SettingsName nvarchar(50)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+    SELECT
+		[PropertyName],
+		[PropertyValue]
+	FROM
+		[dbo].[SystemSettings]
+	WHERE
+		[SettingsName] = @SettingsName;
+
+END
+			*/
+				#endregion
+
+				return new EntityDataReader<Data.Entities.SystemSetting>(SystemSettings.Where(s => s.SettingsName == settingsName));
+			}
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
 				 CommandType.StoredProcedure,
@@ -104,16 +130,59 @@ namespace SolidCP.EnterpriseServer
 			);
 		}
 
-		public IQueryable<Data.Entities.SystemSetting> GetSystemSettingsEF(string settingsName)
-		{
-			return SystemSettings.Where(s => s.SettingsName == settingsName);
-		}
-
 		public void SetSystemSettings(string settingsName, string xml)
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[SetSystemSettings]
+	@SettingsName nvarchar(50),
+	@Xml ntext
+AS
+BEGIN
+/*
+XML Format:
+<properties>
+	<property name="" value=""/>
+</properties>
+*//*
+				SET NOCOUNT ON;
+
+				BEGIN TRAN
+		DECLARE @idoc int;
+				--Create an internal representation of the XML document.
+				EXEC sp_xml_preparedocument @idoc OUTPUT, @xml;
+
+		DELETE FROM[dbo].[SystemSettings] WHERE[SettingsName] = @SettingsName;
+
+		INSERT INTO[dbo].[SystemSettings]
+		(
+			[SettingsName],
+			[PropertyName],
+			[PropertyValue]
+		)
+		SELECT
+			@SettingsName,
+			[XML].[PropertyName],
+			[XML].[PropertyValue]
+		FROM OPENXML(@idoc, '/properties/property',1) WITH
+		(
+			[PropertyName] nvarchar(50) '@name',
+			[PropertyValue] ntext '@value'
+		) AS XML;
+
+		-- remove document
+		EXEC sp_xml_removedocument @idoc;
+
+	COMMIT TRAN;
+
+		END
+						*/
+				#endregion
+
 				var properties = XElement.Parse(xml);
+				bool hasChanges = false;
 				foreach (var property in properties.Elements())
 				{
 					var setting = new Data.Entities.SystemSetting()
@@ -123,7 +192,9 @@ namespace SolidCP.EnterpriseServer
 						PropertyValue = (string)property.Attribute("value")
 					};
 					SystemSettings.Add(setting);
+					hasChanges = true;
 				}
+				if (hasChanges) SaveChanges();
 			}
 			else
 			{
@@ -145,7 +216,29 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
-				return ObjectUtils.DataSetFromEntitySet(
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetThemes]
+AS
+BEGIN
+	SET NOCOUNT ON;
+    SELECT
+		ThemeID,
+		DisplayName,
+		LTRName,
+		RTLName,
+		DisplayOrder
+	FROM
+		Themes
+	WHERE
+		Enabled = '1'
+	ORDER BY 
+		DisplayOrder;
+END
+				*/
+				#endregion
+
+				return EntityDataSet(
 					Themes
 						.Where(t => t.Enabled == 1)
 						.OrderBy(t => t.DisplayOrder));
@@ -161,7 +254,29 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
-				return ObjectUtils.DataSetFromEntitySet(
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetThemeSettings]
+(
+	@ThemeID int
+)
+AS
+BEGIN
+	SET NOCOUNT ON;
+    SELECT
+		ThemeID,
+		SettingsName,
+		PropertyName,
+		PropertyValue
+	FROM
+		ThemeSettings
+	WHERE
+		ThemeID = @ThemeID;
+END
+				*/
+				#endregion
+				
+				return EntityDataSet(
 					ThemeSettings
 						.Where(ts => ts.ThemeId == ThemeID));
 			}
@@ -177,7 +292,31 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
-				return ObjectUtils.DataSetFromEntitySet(
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetThemeSetting]
+(
+	@ThemeID int,
+	@SettingsName NVARCHAR(255)
+)
+AS
+BEGIN
+	SET NOCOUNT ON;
+    SELECT
+		ThemeID,
+		SettingsName,
+		PropertyName,
+		PropertyValue
+	FROM
+		ThemeSettings
+	WHERE
+		ThemeID = @ThemeID
+		AND SettingsName = @SettingsName;
+END
+				*/
+				#endregion
+
+				return EntityDataSet(
 					ThemeSettings
 						.Where(ts => ts.ThemeId == ThemeID && ts.SettingsName == SettingsName));
 			}
@@ -192,6 +331,75 @@ namespace SolidCP.EnterpriseServer
 
 		public bool CheckActorUserRights(int actorId, int userId)
 		{
+			#region Stored Procedure
+			/*
+CREATE FUNCTION [dbo].[CheckActorUserRights]
+(
+	@ActorID int,
+	@UserID int
+)
+RETURNS bit
+AS
+BEGIN
+
+IF @ActorID = -1 OR @UserID IS NULL
+RETURN 1
+
+-- check if the user requests himself
+IF @ActorID = @UserID
+BEGIN
+	RETURN 1
+END
+
+DECLARE @IsPeer bit
+DECLARE @OwnerID int
+
+SELECT @IsPeer = IsPeer, @OwnerID = OwnerID FROM Users
+WHERE UserID = @ActorID
+
+IF @IsPeer = 1
+SET @ActorID = @OwnerID
+
+-- check if the user requests his owner
+/*
+IF @ActorID = @UserID
+BEGIN
+	RETURN 0
+END
+*//*
+			IF @ActorID = @UserID
+BEGIN
+	RETURN 1
+END
+
+DECLARE @ParentUserID int, @TmpUserID int
+SET @TmpUserID = @UserID
+
+WHILE 10 = 10
+BEGIN
+
+	SET @ParentUserID = NULL--reset var
+
+	--get owner
+	SELECT
+		@ParentUserID = OwnerID
+	FROM Users
+	WHERE UserID = @TmpUserID
+
+	IF @ParentUserID IS NULL --the last parent
+		BREAK
+
+	IF @ParentUserID = @ActorID
+	RETURN 1
+
+	SET @TmpUserID = @ParentUserID
+END
+
+RETURN 0
+END
+			*/
+			#endregion
+
 			if (actorId == -1 || userId == 0 ||
 				// check if the user requests himself
 				actorId == userId)
@@ -226,8 +434,67 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetUserSettings]
+(
+	@ActorID int,
+	@UserID int,
+	@SettingsName nvarchar(50)
+)
+AS
+
+-- check rights
+IF dbo.CheckActorUserRights(@ActorID, @UserID) = 0
+RAISERROR('You are not allowed to access this account', 16, 1)
+
+-- find which parent package has overriden NS
+DECLARE @ParentUserID int, @TmpUserID int
+SET @TmpUserID = @UserID
+
+WHILE 10 = 10
+BEGIN
+
+	IF EXISTS
+	(
+		SELECT PropertyName FROM UserSettings
+		WHERE SettingsName = @SettingsName AND UserID = @TmpUserID
+	)
+	BEGIN
+		SELECT
+			UserID,
+			PropertyName,
+			PropertyValue
+		FROM
+			UserSettings
+		WHERE
+			UserID = @TmpUserID AND
+			SettingsName = @SettingsName
+
+		BREAK
+	END
+
+	SET @ParentUserID = NULL --reset var
+
+	-- get owner
+	SELECT
+		@ParentUserID = OwnerID
+	FROM Users
+	WHERE UserID = @TmpUserID
+
+	IF @ParentUserID IS NULL -- the last parent
+	BREAK
+
+	SET @TmpUserID = @ParentUserID
+END
+
+RETURN
+				*/
+				#endregion
+
 				const string SettingsName = "Theme";
-				if (!CheckActorUserRights(actorId, userId)) throw new AccessViolationException("Not authorized");
+				if (!CheckActorUserRights(actorId, userId))
+					throw new AccessViolationException("You are not allowed to access this account");
 
 				var id = userId;
 				var setting = UserSettings.Where(s => s.UserId == id && s.SettingsName == SettingsName);
@@ -241,7 +508,7 @@ namespace SolidCP.EnterpriseServer
 					}
 					else break;
 				}
-				return ObjectUtils.DataSetFromEntitySet(setting);
+				return EntityDataSet(setting);
 			}
 			else
 			{
@@ -257,9 +524,46 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[UpdateUserThemeSetting]
+(
+	@ActorID int,
+	@UserID int,
+	@PropertyName NVARCHAR(255),
+	@PropertyValue NVARCHAR(255)
+)
+AS
+
+-- check rights
+IF dbo.CheckActorUserRights(@ActorID, @UserID) = 0
+RAISERROR('You are not allowed to access this account', 16, 1)
+
+BEGIN
+-- Update if present
+IF EXISTS ( SELECT * FROM UserSettings 
+						WHERE UserID = @UserID
+						AND SettingsName = N'Theme'
+						AND PropertyName = @PropertyName)
+		BEGIN
+			UPDATE UserSettings SET	PropertyValue = @PropertyValue
+				WHERE UserID = @UserID
+				AND SettingsName = N'Theme'
+				AND PropertyName = @PropertyName
+			Return
+		END
+	ELSE
+		BEGIN
+			INSERT UserSettings (UserID, SettingsName, PropertyName, PropertyValue) VALUES (@UserID, N'Theme', @PropertyName, @PropertyValue)
+		END
+END
+				*/
+				#endregion
+
 				const string SettingsName = "Theme";
 
-				if (!CheckActorUserRights(actorId, userId)) throw new AccessViolationException("Not authorized");
+				if (!CheckActorUserRights(actorId, userId))
+					throw new AccessViolationException("You are not allowed to access this account");
 
 				var setting = UserSettings.FirstOrDefault(s => s.UserId == userId &&
 					s.SettingsName == SettingsName &&
@@ -295,7 +599,31 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
-				if (!CheckActorUserRights(actorId, userId)) throw new AccessViolationException("Not authorized");
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[DeleteUserThemeSetting]
+(
+	@ActorID int,
+	@UserID int,
+	@PropertyName NVARCHAR(255)
+)
+AS
+
+-- check rights
+IF dbo.CheckActorUserRights(@ActorID, @UserID) = 0
+RAISERROR('You are not allowed to access this account', 16, 1)
+
+DELETE FROM UserSettings
+WHERE UserID = @UserID
+AND SettingsName = N'Theme'
+AND PropertyName = @PropertyName
+
+RETURN
+				*/
+				#endregion
+
+				if (!CheckActorUserRights(actorId, userId))
+					throw new AccessViolationException("You are not allowed to access this account");
 
 				UserSettings.RemoveRange(UserSettings.Where(s => s.UserId == userId &&
 					s.SettingsName == "Theme" && s.PropertyName == PropertyName));
@@ -319,6 +647,25 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[CheckUserExists]
+(
+	@Exists bit OUTPUT,
+	@Username nvarchar(100)
+)
+AS
+
+SET @Exists = 0
+
+IF EXISTS (SELECT UserID FROM Users
+WHERE Username = @Username)
+SET @Exists = 1
+
+RETURN
+				*/
+				#endregion
+
 				return Users.Any(u => u.Username == username);
 			}
 			else
@@ -335,8 +682,57 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		List<int> UserParents(int actorId, int userId)
+		public List<int> UserParents(int actorId, int userId)
 		{
+			#region Stored Procedure
+			/*
+CREATE FUNCTION [dbo].[UserParents]
+(
+	@ActorID int,
+	@UserID int
+)
+RETURNS @T TABLE (UserOrder int IDENTITY(1,1), UserID int)
+AS
+BEGIN
+	-- insert current user
+	INSERT @T VALUES (@UserID)
+
+	DECLARE @TopUserID int
+	IF @ActorID = -1
+	BEGIN
+		SELECT @TopUserID = UserID FROM Users WHERE OwnerID IS NULL
+	END
+	ELSE
+	BEGIN
+		SET @TopUserID = @ActorID
+
+		IF EXISTS (SELECT UserID FROM Users WHERE UserID = @ActorID AND IsPeer = 1)
+		SELECT @TopUserID = OwnerID FROM Users WHERE UserID = @ActorID AND IsPeer = 1
+	END
+
+	-- owner
+	DECLARE @OwnerID int, @TmpUserID int
+
+	SET @TmpUserID = @UserID
+
+	WHILE (@TmpUserID <> @TopUserID)
+	BEGIN
+
+		SET @OwnerID = NULL
+		SELECT @OwnerID = OwnerID FROM Users WHERE UserID = @TmpUserID
+
+		IF @OwnerID IS NOT NULL
+		BEGIN
+			INSERT @T VALUES (@OwnerID)
+			SET @TmpUserID = @OwnerID
+		END
+	END
+
+RETURN
+END
+			*/
+			#endregion
+
 			var list = new List<int>();
 			var user = Users
 				.Select(u => new { u.UserId, u.OwnerId })
@@ -356,8 +752,67 @@ namespace SolidCP.EnterpriseServer
 			return list;
 		}
 
-		bool CheckUserParent(int ownerId, int userId)
+		public bool CheckUserParent(int ownerId, int userId)
 		{
+			#region Stored Procedure
+			/*
+CREATE FUNCTION [dbo].[CheckUserParent]
+(
+	@OwnerID int,
+	@UserID int
+)
+RETURNS bit
+AS
+BEGIN
+
+-- check if the user requests himself
+IF @OwnerID = @UserID
+BEGIN
+	RETURN 1
+END
+
+-- check if the owner is peer
+DECLARE @IsPeer int, @TmpOwnerID int
+SELECT @IsPeer = IsPeer, @TmpOwnerID = OwnerID FROM Users
+WHERE UserID = @OwnerID
+
+IF @IsPeer = 1
+SET @OwnerID = @TmpOwnerID
+
+-- check if the user requests himself
+IF @OwnerID = @UserID
+BEGIN
+	RETURN 1
+END
+
+DECLARE @ParentUserID int, @TmpUserID int
+SET @TmpUserID = @UserID
+
+WHILE 10 = 10
+BEGIN
+
+	SET @ParentUserID = NULL --reset var
+
+	-- get owner
+	SELECT
+		@ParentUserID = OwnerID
+	FROM Users
+	WHERE UserID = @TmpUserID
+
+	IF @ParentUserID IS NULL -- the last parent
+		BREAK
+
+	IF @ParentUserID = @OwnerID
+	RETURN 1
+
+	SET @TmpUserID = @ParentUserID
+END
+
+RETURN 0
+END
+			*/
+			#endregion
+
 			if (ownerId == userId) return true;
 
 			var owner = Users
@@ -382,8 +837,38 @@ namespace SolidCP.EnterpriseServer
 			return user != null && user.OwnerId.HasValue && user.OwnerId.Value == ownerId;
 		}
 
-		string GetItemComments(int itemId, string itemTypeId, int actorId)
+		public string GetItemComments(int itemId, string itemTypeId, int actorId)
 		{
+			#region Stored Procedure
+			/*
+CREATE FUNCTION [dbo].[GetItemComments]
+(
+	@ItemID int,
+	@ItemTypeID varchar(50),
+	@ActorID int
+)
+RETURNS nvarchar(3000)
+AS
+BEGIN
+DECLARE @text nvarchar(3000)
+SET @text = ''
+
+SELECT @text = @text + U.Username + ' - ' + CONVERT(nvarchar(50), C.CreatedDate) + '
+' + CommentText + '
+--------------------------------------
+' FROM Comments AS C
+INNER JOIN UsersDetailed AS U ON C.UserID = U.UserID
+WHERE
+	ItemID = @ItemID
+	AND ItemTypeID = @ItemTypeID
+	AND dbo.CheckUserParent(@ActorID, C.UserID) = 1
+ORDER BY C.CreatedDate DESC
+
+RETURN @text
+END
+			*/
+			#endregion
+
 			var comments = Comments.Join(Users, c => c.UserId, u => u.UserId, (com, user) => new
 			{
 				com.UserId,
@@ -413,6 +898,104 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetUsersPaged]
+(
+	@ActorID int,
+	@UserID int,
+	@FilterColumn nvarchar(50) = '',
+	@FilterValue nvarchar(50) = '',
+	@StatusID int,
+	@RoleID int,
+	@SortColumn nvarchar(50),
+	@StartRow int,
+	@MaximumRows int,
+	@Recursive bit
+)
+AS
+-- build query and run it to the temporary table
+DECLARE @sql nvarchar(2000)
+
+SET @sql = '
+
+DECLARE @HasUserRights bit
+SET @HasUserRights = dbo.CheckActorUserRights(@ActorID, @UserID)
+
+DECLARE @EndRow int
+SET @EndRow = @StartRow + @MaximumRows
+DECLARE @Users TABLE
+(
+	ItemPosition int IDENTITY(0,1),
+	UserID int
+)
+INSERT INTO @Users (UserID)
+SELECT
+	U.UserID
+FROM UsersDetailed AS U
+WHERE 
+	U.UserID <> @UserID AND U.IsPeer = 0 AND
+	(
+		(@Recursive = 0 AND OwnerID = @UserID) OR
+		(@Recursive = 1 AND dbo.CheckUserParent(@UserID, U.UserID) = 1)
+	)
+	AND ((@StatusID = 0) OR (@StatusID > 0 AND U.StatusID = @StatusID))
+	AND ((@RoleID = 0) OR (@RoleID > 0 AND U.RoleID = @RoleID))
+	AND @HasUserRights = 1 '
+
+IF @FilterValue <> ''
+BEGIN
+	IF @FilterColumn <> ''
+		SET @sql = @sql + ' AND ' + @FilterColumn + ' LIKE @FilterValue '
+	ELSE
+		SET @sql = @sql + '
+			AND (Username LIKE @FilterValue
+			OR FullName LIKE @FilterValue
+			OR Email LIKE @FilterValue) '
+END
+
+IF @SortColumn <> '' AND @SortColumn IS NOT NULL
+SET @sql = @sql + ' ORDER BY ' + @SortColumn + ' '
+
+SET @sql = @sql + ' SELECT COUNT(UserID) FROM @Users;
+SELECT
+	U.UserID,
+	U.RoleID,
+	U.StatusID,
+	U.SubscriberNumber,
+	U.LoginStatusId,
+	U.FailedLogins,
+	U.OwnerID,
+	U.Created,
+	U.Changed,
+	U.IsDemo,
+	dbo.GetItemComments(U.UserID, ''USER'', @ActorID) AS Comments,
+	U.IsPeer,
+	U.Username,
+	U.FirstName,
+	U.LastName,
+	U.Email,
+	U.FullName,
+	U.OwnerUsername,
+	U.OwnerFirstName,
+	U.OwnerLastName,
+	U.OwnerRoleID,
+	U.OwnerFullName,
+	U.OwnerEmail,
+	U.PackagesNumber,
+	U.CompanyName,
+	U.EcommerceEnabled
+FROM @Users AS TU
+INNER JOIN UsersDetailed AS U ON TU.UserID = U.UserID
+WHERE TU.ItemPosition BETWEEN @StartRow AND @EndRow'
+
+exec sp_executesql @sql, N'@StartRow int, @MaximumRows int, @UserID int, @FilterValue nvarchar(50), @ActorID int, @Recursive bit, @StatusID int, @RoleID int',
+@StartRow, @MaximumRows, @UserID, @FilterValue, @ActorID, @Recursive, @StatusID, @RoleID
+
+RETURN
+				*/
+				#endregion
+
 				var hasRights = CheckActorUserRights(actorId, userId);
 				var users = hasRights ?
 					UsersDetailed
@@ -442,34 +1025,34 @@ namespace SolidCP.EnterpriseServer
 
 				users = users.Skip(startRow).Take(maximumRows);
 
-				return ObjectUtils.DataSetFromEntitySet(users.Select(u => new
+				return EntityDataSet(users.Select(u => new
 				{
-					UserID = u.UserId,
-					RoleID = u.RoleId,
-					StatusID = u.StatusId,
-					SubscriberNumber = u.SubscriberNumber,
-					LoginStatusId = u.LoginStatusId,
-					FailedLogins = u.FailedLogins,
-					OwnerID = u.OwnerId,
-					Created = u.Created,
-					Changed = u.Changed,
-					IsDemo = u.IsDemo,
+					u.UserId,
+					u.RoleId,
+					u.StatusId,
+					u.SubscriberNumber,
+					u.LoginStatusId,
+					u.FailedLogins,
+					u.OwnerId,
+					u.Created,
+					u.Changed,
+					u.IsDemo,
 					Comments = GetItemComments(u.UserId, "USER", actorId),
-					IsPeer = u.IsPeer,
-					Username = u.Username,
-					FirstName = u.FirstName,
-					LastName = u.LastName,
-					Email = u.Email,
-					FullName = u.FullName,
-					OwnerUsername = u.OwnerUsername,
-					OwnerFirstName = u.OwnerFirstName,
-					OwnerLastName = u.OwnerLastName,
-					OwnerRoleID = u.OwnerRoleId,
-					OwnerFullName = u.OwnerFullName,
-					OwnerEmail = u.OwnerEmail,
-					PackagesNumber = u.PackagesNumber,
-					CompanyName = u.CompanyName,
-					EcommerceEnabled = u.EcommerceEnabled
+					u.IsPeer,
+					u.Username,
+					u.FirstName,
+					u.LastName,
+					u.Email,
+					u.FullName,
+					u.OwnerUsername,
+					u.OwnerFirstName,
+					u.OwnerLastName,
+					u.OwnerRoleId,
+					u.OwnerFullName,
+					u.OwnerEmail,
+					u.PackagesNumber,
+					u.CompanyName,
+					u.EcommerceEnabled
 				}));
 
 			}
@@ -497,7 +1080,869 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
-				if (!CheckActorUserRights(actorId, userId)) throw new AccessViolationException("Not authorized");
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetSearchObject]
+(
+	@ActorID int,
+	@UserID int,
+	@FilterColumn nvarchar(50) = '',
+	@FilterValue nvarchar(50) = '',
+	@StatusID int,
+	@RoleID int,
+	@SortColumn nvarchar(50),
+	@StartRow int,
+	@MaximumRows int = 0,
+	@Recursive bit,
+	@ColType nvarchar(500) = '',
+	@FullType nvarchar(50) = '',
+	@OnlyFind bit
+)
+AS
+
+IF @ColType IS NULL
+	SET @ColType = ''
+
+DECLARE @HasUserRights bit
+SET @HasUserRights = dbo.CheckActorUserRights(@ActorID, @UserID)
+
+IF @HasUserRights = 0
+RAISERROR('You are not allowed to access this account', 16, 1)
+
+DECLARE @curAll CURSOR
+DECLARE @curUsers CURSOR
+DECLARE @ItemID int
+DECLARE @TextSearch nvarchar(500)
+DECLARE @ColumnType nvarchar(50)
+DECLARE @FullTypeAll nvarchar(50)
+DECLARE @PackageID int
+DECLARE @AccountID int
+DECLARE @Username nvarchar(50)
+DECLARE @Fullname nvarchar(50)
+DECLARE @ItemsAll TABLE
+ (
+  ItemID int,
+  TextSearch nvarchar(500),
+  ColumnType nvarchar(50),
+  FullType nvarchar(50),
+  PackageID int,
+  AccountID int,
+  Username nvarchar(100),
+  Fullname nvarchar(100)
+ )
+DECLARE @sql nvarchar(max)
+
+/*------------------------------------------------Users---------------------------------------------------------------*//*
+DECLARE @columnUsername nvarchar(20)
+SET @columnUsername = 'Username'
+
+DECLARE @columnEmail nvarchar(20)
+SET @columnEmail = 'Email'
+
+DECLARE @columnCompanyName nvarchar(20)
+SET @columnCompanyName = 'CompanyName'
+
+DECLARE @columnFullName nvarchar(20)
+SET @columnFullName = 'FullName'
+
+IF @FilterColumn = '' AND @FilterValue<> ''
+SET @FilterColumn = 'TextSearch'
+
+SET @sql = '
+DECLARE @Users TABLE
+(
+ ItemPosition int IDENTITY(0, 1),
+ UserID int,
+ Username nvarchar(100),
+ Fullname nvarchar(100)
+)
+INSERT INTO @Users(UserID, Username, Fullname)
+SELECT
+ U.UserID,
+ U.Username,
+ U.FirstName + '' '' + U.LastName as Fullname
+FROM UsersDetailed AS U
+WHERE
+ U.UserID<> @UserID AND U.IsPeer = 0 AND
+ (
+  (@Recursive = 0 AND OwnerID = @UserID) OR
+  (@Recursive = 1 AND dbo.CheckUserParent(@UserID, U.UserID) = 1)
+ )
+ AND((@StatusID = 0) OR(@StatusID > 0 AND U.StatusID = @StatusID))
+ AND((@RoleID = 0) OR(@RoleID > 0 AND U.RoleID = @RoleID))
+ AND ' + CAST((@HasUserRights) AS varchar(12)) + ' = 1
+ SET @curValue = cursor local for
+SELECT '
+
+IF @OnlyFind = 1
+	SET @sql = @sql + 'TOP ' + CAST(@MaximumRows AS varchar(12)) + ' '
+
+SET @sql = @sql + 'U.ItemID,
+ U.TextSearch,
+ U.ColumnType,
+ ''AccountHome'' as FullType,
+ 0 as PackageID,
+ 0 as AccountID,
+ TU.Username,
+ TU.Fullname
+FROM @Users AS TU
+INNER JOIN
+(
+SELECT ItemID, TextSearch, ColumnType
+FROM(
+SELECT U0.UserID as ItemID, U0.Username as TextSearch, @columnUsername as ColumnType
+FROM dbo.Users AS U0
+UNION
+SELECT U1.UserID as ItemID, U1.Email as TextSearch, @columnEmail as ColumnType
+FROM dbo.Users AS U1
+UNION
+SELECT U2.UserID as ItemID, U2.CompanyName as TextSearch, @columnCompanyName as ColumnType
+FROM dbo.Users AS U2
+UNION
+SELECT U3.UserID as ItemID, U3.FirstName + '' '' + U3.LastName as TextSearch, @columnFullName as ColumnType
+FROM dbo.Users AS U3) as U
+WHERE TextSearch<>'' '' OR ISNULL(TextSearch, 0) > 0
+)
+ AS U ON TU.UserID = U.ItemID'
+IF @FilterValue<> ''
+ SET @sql = @sql + ' WHERE TextSearch LIKE ''' + @FilterValue + ''''
+SET @sql = @sql + ' ORDER BY TextSearch'
+
+SET @sql = @sql + ';open @curValue'
+
+exec sp_executesql @sql, N'@UserID int, @FilterValue nvarchar(50), @Recursive bit, @StatusID int, @RoleID int, @columnUsername nvarchar(20), @columnEmail nvarchar(20), @columnCompanyName nvarchar(20), @columnFullName nvarchar(20), @curValue cursor output',
+@UserID, @FilterValue, @Recursive, @StatusID, @RoleID, @columnUsername, @columnEmail, @columnCompanyName, @columnFullName, @curUsers output
+
+/*--------------------------------------------Space----------------------------------------------------------*//*
+DECLARE @sqlNameAccountType nvarchar(4000)
+SET @sqlNameAccountType = '
+WHEN 1 THEN ''Mailbox''
+WHEN 2 THEN ''Contact''
+WHEN 3 THEN ''DistributionList''
+WHEN 4 THEN ''PublicFolder''
+WHEN 5 THEN ''Room''
+WHEN 6 THEN ''Equipment''
+WHEN 7 THEN ''User''
+WHEN 8 THEN ''SecurityGroup''
+WHEN 9 THEN ''DefaultSecurityGroup''
+WHEN 10 THEN ''SharedMailbox''
+WHEN 11 THEN ''DeletedUser''
+WHEN 12 THEN ''JournalingMailbox''
+'
+
+SET @sql = '
+ DECLARE @ItemsService TABLE
+ (
+  ItemID int,
+  ItemTypeID int,
+  Username nvarchar(100),
+  Fullname nvarchar(100)
+ )
+ INSERT INTO @ItemsService(ItemID, ItemTypeID, Username, Fullname)
+ SELECT
+  SI.ItemID,
+  SI.ItemTypeID,
+  U.Username,
+  U.FirstName + '' '' + U.LastName as Fullname
+ FROM ServiceItems AS SI
+ INNER JOIN Packages AS P ON P.PackageID = SI.PackageID
+ INNER JOIN UsersDetailed AS U ON P.UserID = U.UserID
+ WHERE
+  dbo.CheckUserParent(@UserID, P.UserID) = 1
+ DECLARE @ItemsDomain TABLE
+ (
+  ItemID int,
+  Username nvarchar(100),
+  Fullname nvarchar(100)
+ )
+ INSERT INTO @ItemsDomain(ItemID, Username, Fullname)
+ SELECT
+  D.DomainID,
+  U.Username,
+  U.FirstName + '' '' + U.LastName as Fullname
+ FROM Domains AS D
+ INNER JOIN Packages AS P ON P.PackageID = D.PackageID
+ INNER JOIN UsersDetailed AS U ON P.UserID = U.UserID
+ WHERE
+  dbo.CheckUserParent(@UserID, P.UserID) = 1
+
+ SET @curValue = cursor local for
+ SELECT '
+
+IF @OnlyFind = 1
+SET @sql = @sql + 'TOP ' + CAST(@MaximumRows AS varchar(12)) + ' '
+
+SET @sql = @sql + '
+  SI.ItemID as ItemID,
+  SI.ItemName as TextSearch,
+  STYPE.DisplayName as ColumnType,
+  STYPE.DisplayName as FullType,
+  SI.PackageID as PackageID,
+  0 as AccountID,
+  I.Username,
+  I.Fullname
+ FROM @ItemsService AS I
+ INNER JOIN ServiceItems AS SI ON I.ItemID = SI.ItemID
+ INNER JOIN ServiceItemTypes AS STYPE ON SI.ItemTypeID = STYPE.ItemTypeID
+ WHERE(STYPE.Searchable = 1
+ AND STYPE.ItemTypeID<> 200 AND STYPE.ItemTypeID<> 201)'
+IF @FilterValue<> ''
+ SET @sql = @sql + ' AND (SI.ItemName LIKE ''' + @FilterValue + ''')'
+SET @sql = @sql + '
+ UNION(
+ SELECT '
+
+IF @OnlyFind = 1
+SET @sql = @sql + 'TOP ' + CAST(@MaximumRows AS varchar(12)) + ' '
+
+SET @sql = @sql + '
+  D.DomainID AS ItemID,
+  D.DomainName as TextSearch,
+  ''Domain'' as ColumnType,
+  ''Domains'' as FullType,
+  D.PackageID as PackageID,
+  0 as AccountID,
+  I.Username,
+  I.Fullname
+ FROM @ItemsDomain AS I
+ INNER JOIN Domains AS D ON I.ItemID = D.DomainID
+ WHERE(D.IsDomainPointer = 0)'
+IF @FilterValue<> ''
+ SET @sql = @sql + ' AND (D.DomainName LIKE ''' + @FilterValue + ''')'
+SET @sql = @sql + '
+ UNION
+ SELECT '
+
+IF @OnlyFind = 1
+SET @sql = @sql + 'TOP ' + CAST(@MaximumRows AS varchar(12)) + ' '
+
+SET @sql = @sql + '
+  EA.ItemID AS ItemID,
+  EA.DisplayName as TextSearch,
+  ''ExchangeAccount'' as ColumnType,
+  FullType = CASE EA.AccountType ' + @sqlNameAccountType + ' ELSE CAST(EA.AccountType AS varchar(12)) END,
+  SI2.PackageID as PackageID,
+  EA.AccountID as AccountID,
+  I2.Username,
+  I2.Fullname
+ FROM @ItemsService AS I2
+ INNER JOIN ServiceItems AS SI2 ON I2.ItemID = SI2.ItemID
+ INNER JOIN ExchangeAccounts AS EA ON I2.ItemID = EA.ItemID'
+IF @FilterValue<> ''
+ SET @sql = @sql + ' WHERE (EA.DisplayName LIKE ''' + @FilterValue + ''')'
+SET @sql = @sql + '
+ UNION
+ SELECT '
+
+IF @OnlyFind = 1
+SET @sql = @sql + 'TOP ' + CAST(@MaximumRows AS varchar(12)) + ' '
+
+SET @sql = @sql + '
+  EA4.ItemID AS ItemID,
+  EA4.PrimaryEmailAddress as TextSearch,
+  ''ExchangeAccount'' as ColumnType,
+  FullType = CASE EA4.AccountType ' + @sqlNameAccountType + ' ELSE CAST(EA4.AccountType AS varchar(12)) END,
+  SI4.PackageID as PackageID,
+  EA4.AccountID as AccountID,
+  I4.Username,
+  I4.Fullname
+ FROM @ItemsService AS I4
+ INNER JOIN ServiceItems AS SI4 ON I4.ItemID = SI4.ItemID
+ INNER JOIN ExchangeAccounts AS EA4 ON I4.ItemID = EA4.ItemID'
+IF @FilterValue<> ''
+ SET @sql = @sql + ' WHERE (EA4.PrimaryEmailAddress LIKE ''' + @FilterValue + ''')'
+SET @sql = @sql + '
+ UNION
+ SELECT '
+
+IF @OnlyFind = 1
+SET @sql = @sql + 'TOP ' + CAST(@MaximumRows AS varchar(12)) + ' '
+
+SET @sql = @sql + '
+  I3.ItemID AS ItemID,
+  EAEA.EmailAddress as TextSearch,
+  ''ExchangeAccount'' as ColumnType,
+  FullType = CASE EA.AccountType ' + @sqlNameAccountType + ' ELSE CAST(EA.AccountType AS varchar(12)) END,
+  SI3.PackageID as PackageID,
+  EAEA.AccountID as AccountID,
+  I3.Username,
+  I3.Fullname
+ FROM @ItemsService AS I3
+ INNER JOIN ServiceItems AS SI3 ON I3.ItemID = SI3.ItemID
+ INNER JOIN ExchangeAccounts AS EA ON I3.ItemID = EA.ItemID
+ INNER JOIN ExchangeAccountEmailAddresses AS EAEA ON EA.AccountID = EAEA.AccountID
+ WHERE I3.ItemTypeID = 29'
+IF @FilterValue<> ''
+ SET @sql = @sql + ' AND (EAEA.EmailAddress LIKE ''' + @FilterValue + ''')'
+ SET @sql = @sql + ')'
+IF @OnlyFind = 1
+	SET @sql = @sql + ' ORDER BY TextSearch';
+
+SET @sql = @sql + ';open @curValue'
+
+exec sp_executesql @sql, N'@UserID int, @FilterValue nvarchar(50), @curValue cursor output',
+@UserID, @FilterValue, @curAll output
+
+FETCH NEXT FROM @curAll INTO @ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname
+WHILE @@FETCH_STATUS = 0
+BEGIN
+INSERT INTO @ItemsAll(ItemID, TextSearch, ColumnType, FullType, PackageID, AccountID, Username, Fullname)
+VALUES(@ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname)
+FETCH NEXT FROM @curAll INTO @ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname
+END
+
+/*-------------------------------------------Lync-----------------------------------------------------*//*
+DECLARE @IsAdmin bit
+SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+
+SET @sql = '
+SET @curValue = cursor local for
+ SELECT '
+
+IF @OnlyFind = 1
+SET @sql = @sql + 'TOP ' + CAST(@MaximumRows AS varchar(12)) + ' '
+
+SET @sql = @sql + '
+  SI.ItemID as ItemID,
+  ea.AccountName as TextSearch,
+  ''LyncAccount'' as ColumnType,
+  ''LyncUsers'' as FullType,
+  SI.PackageID as PackageID,
+  ea.AccountID as AccountID,
+  U.Username,
+  U.FirstName + '' '' + U.LastName as Fullname
+ FROM
+  ExchangeAccounts as ea
+ INNER JOIN
+  LyncUsers as LU
+ INNER JOIN
+  LyncUserPlans as lp
+  ON
+  LU.LyncUserPlanId = lp.LyncUserPlanId
+ ON
+  ea.AccountID = LU.AccountID
+ INNER JOIN
+  ServiceItems AS SI ON ea.ItemID = SI.ItemID
+ INNER JOIN
+  Packages AS P ON SI.PackageID = P.PackageID
+ INNER JOIN
+  Users AS U ON U.UserID = P.UserID
+WHERE ' + CAST((@HasUserRights) AS varchar(12)) + ' = 1
+  AND(' + CAST((@IsAdmin) AS varchar(12)) + ' = 1 OR P.UserID = @UserID)'
+IF @FilterValue<> ''
+ SET @sql = @sql + ' AND ea.AccountName LIKE ''' + @FilterValue + ''''
+IF @OnlyFind = 1
+	SET @sql = @sql + ' ORDER BY TextSearch'
+SET @sql = @sql + ' ;open @curValue'
+
+CLOSE @curAll
+DEALLOCATE @curAll
+exec sp_executesql @sql, N'@UserID int, @curValue cursor output', @UserID, @curAll output
+
+FETCH NEXT FROM @curAll INTO @ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname
+WHILE @@FETCH_STATUS = 0
+BEGIN
+INSERT INTO @ItemsAll(ItemID, TextSearch, ColumnType, FullType, PackageID, AccountID, Username, Fullname)
+VALUES(@ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname)
+FETCH NEXT FROM @curAll INTO @ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname
+END
+
+/*-------------------------------------------SfB-----------------------------------------------------*//*
+
+SET @sql = '
+SET @curValue = cursor local for
+ SELECT '
+
+IF @OnlyFind = 1
+SET @sql = @sql + 'TOP ' + CAST(@MaximumRows AS varchar(12)) + ' '
+
+SET @sql = @sql + '
+  SI.ItemID as ItemID,
+  ea.AccountName as TextSearch,
+  ''SfBAccount'' as ColumnType,
+  ''SfBUsers'' as FullType,
+  SI.PackageID as PackageID,
+  ea.AccountID as AccountID,
+  U.Username,
+  U.FirstName + '' '' + U.LastName as Fullname
+ FROM
+  ExchangeAccounts as ea
+ INNER JOIN
+  SfBUsers as LU
+ INNER JOIN
+  SfBUserPlans as lp
+  ON
+  LU.SfBUserPlanId = lp.SfBUserPlanId
+ ON
+  ea.AccountID = LU.AccountID
+ INNER JOIN
+  ServiceItems AS SI ON ea.ItemID = SI.ItemID
+ INNER JOIN
+  Packages AS P ON SI.PackageID = P.PackageID
+ INNER JOIN
+  Users AS U ON U.UserID = P.UserID
+WHERE ' + CAST((@HasUserRights) AS varchar(12)) + ' = 1
+  AND(' + CAST((@IsAdmin) AS varchar(12)) + ' = 1 OR P.UserID = @UserID)'
+IF @FilterValue<> ''
+ SET @sql = @sql + ' AND ea.AccountName LIKE ''' + @FilterValue + ''''
+IF @OnlyFind = 1
+	SET @sql = @sql + ' ORDER BY TextSearch'
+SET @sql = @sql + ' ;open @curValue'
+
+CLOSE @curAll
+DEALLOCATE @curAll
+exec sp_executesql @sql, N'@UserID int, @curValue cursor output', @UserID, @curAll output
+
+FETCH NEXT FROM @curAll INTO @ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname
+WHILE @@FETCH_STATUS = 0
+BEGIN
+INSERT INTO @ItemsAll(ItemID, TextSearch, ColumnType, FullType, PackageID, AccountID, Username, Fullname)
+VALUES(@ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname)
+FETCH NEXT FROM @curAll INTO @ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname
+END
+
+/*------------------------------------RDS------------------------------------------------*//*
+IF @IsAdmin = 1
+BEGIN
+	SET @sql = '
+	SET @curValue = cursor local for
+	 SELECT '
+
+	IF @OnlyFind = 1
+	SET @sql = @sql + 'TOP ' + CAST(@MaximumRows AS varchar(12)) + ' '
+
+	SET @sql = @sql + '
+	  RDSCol.ItemID as ItemID,
+	  RDSCol.Name as TextSearch,
+	  ''RDSCollection'' as ColumnType,
+	  ''RDSCollections'' as FullType,
+	  P.PackageID as PackageID,
+	  RDSCol.ID as AccountID,
+	  U.Username,
+	  U.FirstName + '' '' + U.LastName as Fullname
+	 FROM
+	  RDSCollections AS RDSCol
+	 INNER JOIN
+	  ServiceItems AS SI ON RDSCol.ItemID = SI.ItemID
+	 INNER JOIN
+	  Packages AS P ON SI.PackageID = P.PackageID
+	 INNER JOIN
+	  Users AS U ON U.UserID = P.UserID
+	 WHERE ' + CAST((@HasUserRights) AS varchar(12)) + ' = 1
+	 AND(' + CAST((@IsAdmin) AS varchar(12)) + ' = 1 OR P.UserID = @UserID)'
+	IF @FilterValue<> ''
+		SET @sql = @sql + ' AND RDSCol.Name LIKE ''' + @FilterValue + ''''
+	IF @OnlyFind = 1
+		SET @sql = @sql + ' ORDER BY TextSearch'
+	SET @sql = @sql + ' ;open @curValue'
+
+	CLOSE @curAll
+	DEALLOCATE @curAll
+	exec sp_executesql @sql, N'@UserID int, @curValue cursor output', @UserID, @curAll output
+
+	FETCH NEXT FROM @curAll INTO @ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+	INSERT INTO @ItemsAll(ItemID, TextSearch, ColumnType, FullType, PackageID, AccountID, Username, Fullname)
+	VALUES(@ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname)
+	FETCH NEXT FROM @curAll INTO @ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname
+	END
+END
+
+/*------------------------------------CRM------------------------------------------------*//*
+SET @sql = '
+SET @curValue = cursor local for
+ SELECT '
+
+IF @OnlyFind = 1
+SET @sql = @sql + 'TOP ' + CAST(@MaximumRows AS varchar(12)) + ' '
+
+SET @sql = @sql + '
+  @UserID as ItemID,
+  ea.AccountName as TextSearch,
+  ''CRMSite'' as ColumnType,
+  ''CRMSites'' as FullType,
+  SI.PackageID as PackageID,
+  ea.AccountID as AccountID,
+  U.Username,
+  U.FirstName + '' '' + U.LastName as Fullname
+ FROM
+  ExchangeAccounts as ea
+ INNER JOIN
+  CRMUsers AS CRMU ON ea.AccountID = CRMU.AccountID
+ INNER JOIN
+  ServiceItems AS SI ON ea.ItemID = SI.ItemID
+ INNER JOIN
+  Packages AS P ON SI.PackageID = P.PackageID
+ INNER JOIN
+  Users AS U ON U.UserID = P.UserID
+ WHERE ' + CAST((@HasUserRights) AS varchar(12)) + ' = 1
+  AND(' + CAST((@IsAdmin) AS varchar(12)) + ' = 1 OR P.UserID = @UserID)'
+IF @FilterValue<> ''
+	SET @sql = @sql + ' AND ea.AccountName LIKE ''' + @FilterValue + ''''
+IF @OnlyFind = 1
+	SET @sql = @sql + ' ORDER BY TextSearch'
+SET @sql = @sql + ' ;open @curValue'
+
+CLOSE @curAll
+DEALLOCATE @curAll
+exec sp_executesql @sql, N'@UserID int, @curValue cursor output', @UserID, @curAll output
+
+FETCH NEXT FROM @curAll INTO @ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname
+WHILE @@FETCH_STATUS = 0
+BEGIN
+INSERT INTO @ItemsAll(ItemID, TextSearch, ColumnType, FullType, PackageID, AccountID, Username, Fullname)
+VALUES(@ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname)
+FETCH NEXT FROM @curAll INTO @ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname
+END
+
+/*------------------------------------VirtualServer------------------------------------------------*//*
+IF @IsAdmin = 1
+BEGIN
+	SET @sql = '
+	SET @curValue = cursor local for
+	 SELECT '
+
+	IF @OnlyFind = 1
+	SET @sql = @sql + 'TOP ' + CAST(@MaximumRows AS varchar(12)) + ' '
+
+	SET @sql = @sql + '
+	  @UserID as ItemID,
+	  S.ServerName as TextSearch,
+	  ''VirtualServer'' as ColumnType,
+	  ''VirtualServers'' as FullType,
+	  (SELECT MIN(PackageID) FROM Packages WHERE UserID = @UserID) as PackageID,
+	  0 as AccountID,
+	  U.Username,
+	  U.FirstName + '' '' + U.LastName as Fullname
+	 FROM
+	  Servers AS S
+	 INNER JOIN
+
+	  Packages AS P ON P.ServerID = S.ServerID
+
+	 INNER JOIN
+
+	  Users AS U ON U.UserID = P.UserID
+	 WHERE
+	  VirtualServer = 1'
+	IF @FilterValue<> ''
+		SET @sql = @sql + ' AND S.ServerName LIKE ''' + @FilterValue + ''''
+	IF @OnlyFind = 1
+		SET @sql = @sql + ' ORDER BY TextSearch'
+	SET @sql = @sql + ' ;open @curValue'
+
+	CLOSE @curAll
+	DEALLOCATE @curAll
+	exec sp_executesql @sql, N'@UserID int, @curValue cursor output', @UserID, @curAll output
+
+	FETCH NEXT FROM @curAll INTO @ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+	INSERT INTO @ItemsAll(ItemID, TextSearch, ColumnType, FullType, PackageID, AccountID, Username, Fullname)
+	VALUES(@ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname)
+	FETCH NEXT FROM @curAll INTO @ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname
+	END
+END
+
+/*------------------------------------WebDAVFolder------------------------------------------------*//*
+SET @sql = '
+SET @curValue = cursor local for
+ SELECT '
+
+IF @OnlyFind = 1
+SET @sql = @sql + 'TOP ' + CAST(@MaximumRows AS varchar(12)) + ' '
+
+SET @sql = @sql + '
+  EF.ItemID as ItemID,
+  EF.FolderName as TextSearch,
+  ''WebDAVFolder'' as ColumnType,
+  ''Folders'' as FullType,
+  P.PackageID as PackageID,
+  EF.EnterpriseFolderID as AccountID,
+  U.Username,
+  U.FirstName + '' '' + U.LastName as Fullname
+ FROM
+  EnterpriseFolders as EF
+ INNER JOIN
+  ServiceItems AS SI ON EF.ItemID = SI.ItemID
+ INNER JOIN
+  Packages AS P ON SI.PackageID = P.PackageID
+ INNER JOIN
+  Users AS U ON U.UserID = P.UserID
+ WHERE ' + CAST((@HasUserRights) AS varchar(12)) + ' = 1
+  AND(' + CAST((@IsAdmin) AS varchar(12)) + ' = 1 OR P.UserID = @UserID)'
+IF @FilterValue<> ''
+	SET @sql = @sql + ' AND EF.FolderName LIKE ''' + @FilterValue + ''''
+IF @OnlyFind = 1
+	SET @sql = @sql + ' ORDER BY TextSearch'
+SET @sql = @sql + ';open @curValue'
+
+CLOSE @curAll
+DEALLOCATE @curAll
+exec sp_executesql @sql, N'@UserID int, @curValue cursor output', @UserID, @curAll output
+
+FETCH NEXT FROM @curAll INTO @ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname
+WHILE @@FETCH_STATUS = 0
+BEGIN
+INSERT INTO @ItemsAll(ItemID, TextSearch, ColumnType, FullType, PackageID, AccountID, Username, Fullname)
+VALUES(@ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname)
+FETCH NEXT FROM @curAll INTO @ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname
+END
+
+/*------------------------------------VPS-IP------------------------------------------------*//*
+SET @sql = '
+SET @curValue = cursor local for
+ SELECT '
+
+IF @OnlyFind = 1
+SET @sql = @sql + 'TOP ' + CAST(@MaximumRows AS varchar(12)) + ' '
+
+SET @sql = @sql + '
+  SI.ItemID as ItemID,
+  SI.ItemName as TextSearch,
+  SIT.DisplayName as ColumnType,
+  SIT.DisplayName as FullType,
+  P.PackageID as PackageID,
+  0 as AccountID,
+  U.Username,
+  U.FirstName + '' '' + U.LastName as Fullname
+ FROM ServiceItems AS SI
+ INNER JOIN ServiceItemTypes AS SIT ON SI.ItemTypeID = SIT.ItemTypeID
+ INNER JOIN Packages AS P ON SI.PackageID = P.PackageID
+ INNER JOIN Users AS U ON U.UserID = P.UserID
+ LEFT JOIN PrivateIPAddresses AS PIP ON PIP.ItemID = SI.ItemID
+ LEFT JOIN PackageIPAddresses AS PACIP ON PACIP.ItemID = SI.ItemID
+ LEFT JOIN IPAddresses AS IPS ON IPS.AddressID = PACIP.AddressID
+ WHERE SIT.DisplayName = ''VirtualMachine''
+  AND ' + CAST((@HasUserRights) AS varchar(12)) + ' = 1
+  AND dbo.CheckUserParent(@UserID, P.UserID) = 1
+  AND(''' + @FilterValue + ''' LIKE '' %.% '' OR ''' + @FilterValue + ''' LIKE '' %:% '')
+  AND(PIP.IPAddress LIKE ''' + @FilterValue + ''' OR IPS.ExternalIP LIKE ''' + @FilterValue + ''')'
+IF @OnlyFind = 1
+	SET @sql = @sql + ' ORDER BY TextSearch'
+SET @sql = @sql + ';open @curValue'
+
+CLOSE @curAll
+DEALLOCATE @curAll
+exec sp_executesql @sql, N'@UserID int, @curValue cursor output', @UserID, @curAll output
+
+FETCH NEXT FROM @curAll INTO @ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname
+WHILE @@FETCH_STATUS = 0
+BEGIN
+INSERT INTO @ItemsAll(ItemID, TextSearch, ColumnType, FullType, PackageID, AccountID, Username, Fullname)
+VALUES(@ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname)
+FETCH NEXT FROM @curAll INTO @ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname
+END
+
+/*------------------------------------SharePoint------------------------------------------------*//*
+SET @sql = '
+SET @curValue = cursor local for
+ SELECT '
+
+IF @OnlyFind = 1
+SET @sql = @sql + 'TOP ' + CAST(@MaximumRows AS varchar(12)) + ' '
+
+SET @sql = @sql + '
+  SIP.PropertyValue as ItemID,
+  T.PropertyValue as TextSearch,
+  SIT.DisplayName as ColumnType,
+  ''SharePointSiteCollections'' as FullType,
+  P.PackageID as PackageID,
+  SI.ItemID as AccountID,
+  U.Username,
+  U.FirstName + '' '' + U.LastName as Fullname
+FROM ServiceItems AS SI
+INNER JOIN ServiceItemTypes AS SIT ON SI.ItemTypeID = SIT.ItemTypeID
+INNER JOIN Packages AS P ON SI.PackageID = P.PackageID
+INNER JOIN Users AS U ON U.UserID = P.UserID
+INNER JOIN ServiceItemProperties AS SIP ON SIP.ItemID = SI.ItemID
+RIGHT JOIN ServiceItemProperties AS T ON T.ItemID = SIP.ItemID
+WHERE ' + CAST((@HasUserRights) AS varchar(12)) + ' = 1
+AND(' + CAST((@IsAdmin) AS varchar(12)) + ' = 1 OR P.UserID = @UserID)
+AND(SIT.DisplayName = ''SharePointFoundationSiteCollection''
+	OR SIT.DisplayName = ''SharePointEnterpriseSiteCollection'')
+AND SIP.PropertyName = ''OrganizationId''
+AND T.PropertyName = ''PhysicalAddress'''
+IF @FilterValue<> ''
+	SET @sql = @sql + ' AND T.PropertyValue LIKE ''' + @FilterValue + ''''
+IF @OnlyFind = 1
+	SET @sql = @sql + ' ORDER BY TextSearch'
+SET @sql = @sql + ';open @curValue'
+
+CLOSE @curAll
+DEALLOCATE @curAll
+exec sp_executesql @sql, N'@UserID int, @curValue cursor output', @UserID, @curAll output
+
+FETCH NEXT FROM @curAll INTO @ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname
+WHILE @@FETCH_STATUS = 0
+BEGIN
+INSERT INTO @ItemsAll(ItemID, TextSearch, ColumnType, FullType, PackageID, AccountID, Username, Fullname)
+VALUES(@ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname)
+FETCH NEXT FROM @curAll INTO @ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname
+END
+
+/*-------------------------------------------@curAll-------------------------------------------------------*//*
+CLOSE @curAll
+DEALLOCATE @curAll
+SET @curAll = CURSOR LOCAL FOR
+ SELECT
+	ItemID,
+	TextSearch,
+	ColumnType,
+	FullType,
+	PackageID,
+	AccountID,
+	Username,
+	Fullname
+ FROM @ItemsAll
+OPEN @curAll
+
+/*-------------------------------------------Return-------------------------------------------------------*//*
+IF @SortColumn = ''
+	SET @SortColumn = 'TextSearch'
+
+SET @sql = '
+DECLARE @ItemID int
+DECLARE @TextSearch nvarchar(500)
+DECLARE @ColumnType nvarchar(50)
+DECLARE @FullType nvarchar(50)
+DECLARE @PackageID int
+DECLARE @AccountID int
+DECLARE @EndRow int
+DECLARE @Username nvarchar(100)
+DECLARE @Fullname nvarchar(100)
+SET @EndRow = @StartRow + @MaximumRows'
+
+IF(@ColType = '' OR @ColType IN('AccountHome'))
+BEGIN
+	SET @sql = @sql + '
+	DECLARE @ItemsUser TABLE
+	(
+		ItemID int,
+		TextSearch nvarchar(500),
+		ColumnType nvarchar(50),
+		FullType nvarchar(50),
+		PackageID int,
+		AccountID int,
+		Username nvarchar(100),
+		Fullname nvarchar(100)
+	)
+
+	FETCH NEXT FROM @curUsersValue INTO @ItemID, @TextSearch, @ColumnType, @FullType, @PackageID, @AccountID, @Username, @Fullname
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		IF(1 = 1)'
+
+	IF @FullType<> ''
+		SET @sql = @sql + ' AND @FullType = ''' + @FullType + '''';
+
+	SET @sql = @sql + '
+		BEGIN
+			INSERT INTO @ItemsUser(ItemID, TextSearch, ColumnType, FullType, PackageID, AccountID, Username, Fullname)
+			VALUES(@ItemID, @TextSearch, @ColumnType, @FullType, @PackageID, @AccountID, @Username, @Fullname)
+		END
+		FETCH NEXT FROM @curUsersValue INTO @ItemID, @TextSearch, @ColumnType, @FullType, @PackageID, @AccountID, @Username, @Fullname
+	END'
+END
+
+SET @sql = @sql + '
+DECLARE @ItemsFilter TABLE
+ (
+  ItemID int,
+  TextSearch nvarchar(500),
+  ColumnType nvarchar(50),
+  FullType nvarchar(50),
+  PackageID int,
+  AccountID int,
+  Username nvarchar(100),
+  Fullname nvarchar(100)
+ )
+
+FETCH NEXT FROM @curAllValue INTO @ItemID, @TextSearch, @ColumnType, @FullType, @PackageID, @AccountID, @Username, @Fullname
+WHILE @@FETCH_STATUS = 0
+BEGIN
+	IF(1 = 1)'
+
+IF @ColType<> ''
+SET @sql = @sql + ' AND @ColumnType in ( ' + @ColType + ' ) ';
+
+				IF @FullType<> ''
+SET @sql = @sql + ' AND @FullType = ''' + @FullType + '''';
+
+				SET @sql = @sql + '
+	BEGIN
+		INSERT INTO @ItemsFilter(ItemID, TextSearch, ColumnType, FullType, PackageID, AccountID, Username, Fullname)
+		VALUES(@ItemID, @TextSearch, @ColumnType, @FullType, @PackageID, @AccountID, @Username, @Fullname)
+	END
+	FETCH NEXT FROM @curAllValue INTO @ItemID, @TextSearch, @ColumnType, @FullType, @PackageID, @AccountID, @Username, @Fullname
+END
+
+DECLARE @ItemsReturn TABLE
+ (
+  ItemPosition int IDENTITY(1, 1),
+  ItemID int,
+  TextSearch nvarchar(500),
+  ColumnType nvarchar(50),
+  FullType nvarchar(50),
+  PackageID int,
+  AccountID int,
+  Username nvarchar(100),
+  Fullname nvarchar(100)
+ )'
+
+IF(@ColType = '' OR @ColType IN('AccountHome'))
+BEGIN
+	SET @sql = @sql + '
+		INSERT INTO '
+	IF @SortColumn = 'TextSearch'
+		SET @sql = @sql + '@ItemsReturn'
+	ELSE
+		SET @sql = @sql + '@ItemsFilter'
+	SET @sql = @sql + ' (ItemID, TextSearch, ColumnType, FullType, PackageID, AccountID, Username, Fullname)
+		SELECT ItemID, TextSearch, ColumnType, FullType, PackageID, AccountID, Username, Fullname
+		FROM @ItemsUser'
+END
+
+SET @sql = @sql + '
+INSERT INTO @ItemsReturn(ItemID, TextSearch, ColumnType, FullType, PackageID, AccountID, Username, Fullname)
+SELECT
+	ItemID,
+	TextSearch,
+	ColumnType,
+	FullType,
+	PackageID,
+	AccountID,
+	Username,
+	Fullname
+FROM @ItemsFilter'
+SET @sql = @sql + ' ORDER BY ' + @SortColumn
+
+SET @sql = @sql + ';
+SELECT COUNT(ItemID) FROM @ItemsReturn;
+				SELECT DISTINCT(ColumnType) FROM @ItemsReturn';
+IF @FullType<> ''
+	SET @sql = @sql + ' WHERE FullType = ''' + @FullType + '''';
+
+				SET @sql = @sql + ';
+SELECT ItemPosition, ItemID, TextSearch, ColumnType, FullType, PackageID, AccountID, Username, Fullname
+FROM @ItemsReturn AS IR'
+
+IF @MaximumRows > 0
+	SET @sql = @sql + ' WHERE IR.ItemPosition BETWEEN @StartRow AND @EndRow';
+
+				exec sp_executesql @sql, N'@StartRow int, @MaximumRows int, @FilterValue nvarchar(50), @curUsersValue cursor, @curAllValue cursor',
+	@StartRow, @MaximumRows, @FilterValue, @curUsers, @curAll
+
+CLOSE @curAll
+DEALLOCATE @curAll
+
+RETURN
+				*/
+				#endregion
+
+				if (!CheckActorUserRights(actorId, userId))
+					throw new AccessViolationException("You are not allowed to access this account");
 
 				if (colType == null) colType = "";
 
@@ -535,6 +1980,435 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetSearchTableByColumns]
+(
+	@PagedStored nvarchar(50) = '',
+	@FilterValue nvarchar(50) = '',
+	@MaximumRows int,
+
+	@Recursive bit,
+	@PoolID int,
+	@ServerID int,
+	@ActorID int,
+	@StatusID int,
+	@PlanID int,
+	@OrgID int,
+	@ItemTypeName nvarchar(200),
+	@GroupName nvarchar(100) = NULL,
+	@PackageID int,
+	@VPSType nvarchar(100) = NULL,
+	@UserID int,
+	@RoleID int,
+	@FilterColumns nvarchar(200)
+)
+AS
+
+DECLARE @VPSTypeID int
+IF @VPSType <> '' AND @VPSType IS NOT NULL
+BEGIN
+	SET @VPSTypeID = CASE @VPSType
+		WHEN 'VPS' THEN 33
+		WHEN 'VPS2012' THEN 41
+		WHEN 'Proxmox' THEN 143
+		WHEN 'VPSForPC' THEN 35
+		ELSE 33
+		END
+END
+
+DECLARE @sql nvarchar(3000)
+SET @sql = CASE @PagedStored
+WHEN 'Domains' THEN '
+	DECLARE @Domains TABLE
+	(
+		DomainID int,
+		DomainName nvarchar(100),
+		Username nvarchar(100),
+		FullName nvarchar(100),
+		Email nvarchar(100)
+	)
+	INSERT INTO @Domains (DomainID, DomainName, Username, FullName, Email)
+	SELECT
+		D.DomainID,
+		D.DomainName,
+		U.Username,
+		U.FullName,
+		U.Email
+	FROM Domains AS D
+	INNER JOIN Packages AS P ON D.PackageID = P.PackageID
+	INNER JOIN UsersDetailed AS U ON P.UserID = U.UserID
+	LEFT OUTER JOIN ServiceItems AS Z ON D.ZoneItemID = Z.ItemID
+	LEFT OUTER JOIN Services AS S ON Z.ServiceID = S.ServiceID
+	LEFT OUTER JOIN Servers AS SRV ON S.ServerID = SRV.ServerID
+	WHERE
+		(D.IsPreviewDomain = 0 AND D.IsDomainPointer = 0)
+		AND ((@Recursive = 0 AND D.PackageID = @PackageID)
+		OR (@Recursive = 1 AND dbo.CheckPackageParent(@PackageID, D.PackageID) = 1))
+		AND (@ServerID = 0 OR (@ServerID > 0 AND S.ServerID = @ServerID))
+	'
+WHEN 'IPAddresses' THEN '
+	DECLARE @IPAddresses TABLE
+	(
+		AddressesID int,
+		ExternalIP nvarchar(100),
+		InternalIP nvarchar(100),
+		DefaultGateway nvarchar(100),
+		ServerName nvarchar(100),
+		UserName nvarchar(100),
+		ItemName nvarchar(100)
+	)
+	DECLARE @IsAdmin bit
+	SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+	INSERT INTO @IPAddresses (AddressesID, ExternalIP, InternalIP, DefaultGateway, ServerName, UserName, ItemName)
+	SELECT
+		IP.AddressID,
+		IP.ExternalIP,
+		IP.InternalIP,
+		IP.DefaultGateway,
+		S.ServerName,
+		U.UserName,
+		SI.ItemName
+	FROM dbo.IPAddresses AS IP
+	LEFT JOIN Servers AS S ON IP.ServerID = S.ServerID
+	LEFT JOIN PackageIPAddresses AS PA ON IP.AddressID = PA.AddressID
+	LEFT JOIN ServiceItems SI ON PA.ItemId = SI.ItemID
+	LEFT JOIN dbo.Packages P ON PA.PackageID = P.PackageID
+	LEFT JOIN dbo.Users U ON P.UserID = U.UserID
+	WHERE
+		@IsAdmin = 1
+		AND (@PoolID = 0 OR @PoolID <> 0 AND IP.PoolID = @PoolID)
+		AND (@ServerID = 0 OR @ServerID <> 0 AND IP.ServerID = @ServerID)
+	'
+WHEN 'Schedules' THEN '
+	DECLARE @Schedules TABLE
+	(
+		ScheduleID int,
+		ScheduleName nvarchar(100),
+		Username nvarchar(100),
+		FullName nvarchar(100),
+		Email nvarchar(100)
+	)
+	INSERT INTO @Schedules (ScheduleID, ScheduleName, Username, FullName, Email)
+	SELECT
+		S.ScheduleID,
+		S.ScheduleName,
+		U.Username,
+		U.FullName,
+		U.Email
+	FROM Schedule AS S
+	INNER JOIN Packages AS P ON S.PackageID = P.PackageID
+	INNER JOIN PackagesTree(@PackageID, @Recursive) AS PT ON S.PackageID = PT.PackageID
+	INNER JOIN UsersDetailed AS U ON P.UserID = U.UserID
+	'
+WHEN 'NestedPackages' THEN '
+	DECLARE @NestedPackages TABLE
+	(
+		PackageID int,
+		PackageName nvarchar(100),
+		Username nvarchar(100),
+		FullName nvarchar(100),
+		Email nvarchar(100)
+	)
+	INSERT INTO @NestedPackages (PackageID, PackageName, Username, FullName, Email)
+	SELECT
+		P.PackageID,
+		P.PackageName,
+		U.Username,
+		U.FullName,
+		U.Email
+	FROM Packages AS P
+	INNER JOIN UsersDetailed AS U ON P.UserID = U.UserID
+	INNER JOIN Servers AS S ON P.ServerID = S.ServerID
+	INNER JOIN HostingPlans AS HP ON P.PlanID = HP.PlanID
+	WHERE
+		P.ParentPackageID = @PackageID
+		AND ((@StatusID = 0) OR (@StatusID > 0 AND P.StatusID = @StatusID))
+		AND ((@PlanID = 0) OR (@PlanID > 0 AND P.PlanID = @PlanID))
+		AND ((@ServerID = 0) OR (@ServerID > 0 AND P.ServerID = @ServerID))
+	'
+WHEN 'PackageIPAddresses' THEN '
+	DECLARE @PackageIPAddresses TABLE
+	(
+		PackageAddressID int,
+		ExternalIP nvarchar(100),
+		InternalIP nvarchar(100),
+		DefaultGateway nvarchar(100),
+		ItemName nvarchar(100),
+		UserName nvarchar(100)
+	)
+	INSERT INTO @PackageIPAddresses (PackageAddressID, ExternalIP, InternalIP, DefaultGateway, ItemName, UserName)
+	SELECT
+		PA.PackageAddressID,
+		IP.ExternalIP,
+		IP.InternalIP,
+		IP.DefaultGateway,
+		SI.ItemName,
+		U.UserName
+	FROM dbo.PackageIPAddresses PA
+	INNER JOIN dbo.IPAddresses AS IP ON PA.AddressID = IP.AddressID
+	INNER JOIN dbo.Packages P ON PA.PackageID = P.PackageID
+	INNER JOIN dbo.Users U ON U.UserID = P.UserID
+	LEFT JOIN ServiceItems SI ON PA.ItemId = SI.ItemID
+	WHERE
+		((@Recursive = 0 AND PA.PackageID = @PackageID)
+		OR (@Recursive = 1 AND dbo.CheckPackageParent(@PackageID, PA.PackageID) = 1))
+		AND (@PoolID = 0 OR @PoolID <> 0 AND IP.PoolID = @PoolID)
+		AND (@OrgID = 0 OR @OrgID <> 0 AND PA.OrgID = @OrgID)
+	'
+WHEN 'ServiceItems' THEN '
+	IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+	RAISERROR(''You are not allowed to access this package'', 16, 1)
+	DECLARE @ServiceItems TABLE
+	(
+		ItemID int,
+		ItemName nvarchar(100),
+		Username nvarchar(100),
+		FullName nvarchar(100),
+		Email nvarchar(100)
+	)
+	DECLARE @GroupID int
+	SELECT @GroupID = GroupID FROM ResourceGroups
+	WHERE GroupName = @GroupName
+	DECLARE @ItemTypeID int
+	SELECT @ItemTypeID = ItemTypeID FROM ServiceItemTypes
+	WHERE TypeName = @ItemTypeName
+	AND ((@GroupID IS NULL) OR (@GroupID IS NOT NULL AND GroupID = @GroupID))
+	INSERT INTO @ServiceItems (ItemID, ItemName, Username, FullName, Email)
+	SELECT
+		SI.ItemID,
+		SI.ItemName,
+		U.Username,
+		U.FirstName,
+		U.Email
+	FROM Packages AS P
+	INNER JOIN ServiceItems AS SI ON P.PackageID = SI.PackageID
+	INNER JOIN UsersDetailed AS U ON P.UserID = U.UserID
+	INNER JOIN ServiceItemTypes AS IT ON SI.ItemTypeID = IT.ItemTypeID
+	INNER JOIN Services AS S ON SI.ServiceID = S.ServiceID
+	INNER JOIN Servers AS SRV ON S.ServerID = SRV.ServerID
+	WHERE
+		SI.ItemTypeID = @ItemTypeID
+		AND ((@Recursive = 0 AND P.PackageID = @PackageID)
+			OR (@Recursive = 1 AND dbo.CheckPackageParent(@PackageID, P.PackageID) = 1))
+		AND ((@GroupID IS NULL) OR (@GroupID IS NOT NULL AND IT.GroupID = @GroupID))
+		AND (@ServerID = 0 OR (@ServerID > 0 AND S.ServerID = @ServerID))
+	'
+WHEN 'Users' THEN '
+	DECLARE @Users TABLE
+	(
+		UserID int,
+		Username nvarchar(100),
+		FullName nvarchar(100),
+		Email nvarchar(100),
+		CompanyName nvarchar(100)
+	)
+	DECLARE @HasUserRights bit
+	SET @HasUserRights = dbo.CheckActorUserRights(@ActorID, @UserID)
+	INSERT INTO @Users (UserID, Username, FullName, Email, CompanyName)
+	SELECT
+		U.UserID,
+		U.Username,
+		U.FullName,
+		U.Email,
+		U.CompanyName
+	FROM UsersDetailed AS U
+	WHERE 
+		U.UserID <> @UserID AND U.IsPeer = 0 AND
+		(
+			(@Recursive = 0 AND OwnerID = @UserID) OR
+			(@Recursive = 1 AND dbo.CheckUserParent(@UserID, U.UserID) = 1)
+		)
+		AND ((@StatusID = 0) OR (@StatusID > 0 AND U.StatusID = @StatusID))
+		AND ((@RoleID = 0) OR (@RoleID > 0 AND U.RoleID = @RoleID))
+		AND @HasUserRights = 1 
+	'
+WHEN 'VirtualMachines' THEN '
+	IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+	RAISERROR(''You are not allowed to access this package'', 16, 1)
+	DECLARE @VirtualMachines TABLE
+	(
+		ItemID int,
+		ItemName nvarchar(100),
+		Username nvarchar(100),
+		ExternalIP nvarchar(100),
+		IPAddress nvarchar(100)
+	)
+	INSERT INTO @VirtualMachines (ItemID, ItemName, Username, ExternalIP, IPAddress)
+	SELECT
+		SI.ItemID,
+		SI.ItemName,
+		U.Username,
+		EIP.ExternalIP,
+		PIP.IPAddress
+	FROM Packages AS P
+	INNER JOIN ServiceItems AS SI ON P.PackageID = SI.PackageID
+	INNER JOIN Users AS U ON P.UserID = U.UserID
+	LEFT OUTER JOIN (
+		SELECT PIP.ItemID, IP.ExternalIP FROM PackageIPAddresses AS PIP
+		INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
+		WHERE PIP.IsPrimary = 1 AND IP.PoolID = 3 -- external IP addresses
+	) AS EIP ON SI.ItemID = EIP.ItemID
+	LEFT OUTER JOIN PrivateIPAddresses AS PIP ON PIP.ItemID = SI.ItemID AND PIP.IsPrimary = 1
+	WHERE
+		SI.ItemTypeID = ' + CAST(@VPSTypeID AS nvarchar(12)) + '
+		AND ((@Recursive = 0 AND P.PackageID = @PackageID)
+		OR (@Recursive = 1 AND dbo.CheckPackageParent(@PackageID, P.PackageID) = 1))
+	'
+WHEN 'PackagePrivateIPAddresses' THEN '
+	DECLARE @PackagePrivateIPAddresses TABLE
+	(
+		PrivateAddressID int,
+		IPAddress nvarchar(100),
+		ItemName nvarchar(100)
+	)
+	INSERT INTO @PackagePrivateIPAddresses (PrivateAddressID, IPAddress, ItemName)
+	SELECT
+		PA.PrivateAddressID,
+		PA.IPAddress,
+		SI.ItemName
+	FROM dbo.PrivateIPAddresses AS PA
+	INNER JOIN dbo.ServiceItems AS SI ON PA.ItemID = SI.ItemID
+	WHERE SI.PackageID = @PackageID
+	'
+ELSE ''
+END + 'SELECT TOP ' + CAST(@MaximumRows AS nvarchar(12)) + ' MIN(ItemID) as [ItemID], TextSearch, ColumnType, COUNT(*) AS [Count]' + CASE @PagedStored
+WHEN 'Domains' THEN '
+	FROM(
+	SELECT D0.DomainID AS ItemID, D0.DomainName AS TextSearch, ''DomainName'' AS ColumnType
+	FROM @Domains AS D0
+	UNION
+	SELECT D1.DomainID AS ItemID, D1.Username AS TextSearch, ''Username'' AS ColumnType
+	FROM @Domains AS D1
+	UNION
+	SELECT D2.DomainID as ItemID, D2.FullName AS TextSearch, ''FullName'' AS ColumnType
+	FROM @Domains AS D2
+	UNION
+	SELECT D3.DomainID as ItemID, D3.Email AS TextSearch, ''Email'' AS ColumnType
+	FROM @Domains AS D3) AS D'
+WHEN 'IPAddresses' THEN '
+	FROM(
+	SELECT D0.AddressesID AS ItemID, D0.ExternalIP AS TextSearch, ''ExternalIP'' AS ColumnType
+	FROM @IPAddresses AS D0
+	UNION
+	SELECT D1.AddressesID AS ItemID, D1.InternalIP AS TextSearch, ''InternalIP'' AS ColumnType
+	FROM @IPAddresses AS D1
+	UNION
+	SELECT D2.AddressesID AS ItemID, D2.DefaultGateway AS TextSearch, ''DefaultGateway'' AS ColumnType
+	FROM @IPAddresses AS D2
+	UNION
+	SELECT D3.AddressesID AS ItemID, D3.ServerName AS TextSearch, ''ServerName'' AS ColumnType
+	FROM @IPAddresses AS D3
+	UNION
+	SELECT D4.AddressesID AS ItemID, D4.UserName AS TextSearch, ''UserName'' AS ColumnType
+	FROM @IPAddresses AS D4
+	UNION
+	SELECT D6.AddressesID AS ItemID, D6.ItemName AS TextSearch, ''ItemName'' AS ColumnType
+	FROM @IPAddresses AS D6) AS D'
+WHEN 'Schedules' THEN '
+	FROM(
+	SELECT D0.ScheduleID AS ItemID, D0.ScheduleName AS TextSearch, ''ScheduleName'' AS ColumnType
+	FROM @Schedules AS D0
+	UNION
+	SELECT D1.ScheduleID AS ItemID, D1.Username AS TextSearch, ''Username'' AS ColumnType
+	FROM @Schedules AS D1
+	UNION
+	SELECT D2.ScheduleID AS ItemID, D2.FullName AS TextSearch, ''FullName'' AS ColumnType
+	FROM @Schedules AS D2
+	UNION
+	SELECT D3.ScheduleID AS ItemID, D3.Email AS TextSearch, ''Email'' AS ColumnType
+	FROM @Schedules AS D3) AS D'
+WHEN 'NestedPackages' THEN '
+	FROM(
+	SELECT D0.PackageID AS ItemID, D0.PackageName AS TextSearch, ''PackageName'' AS ColumnType
+	FROM @NestedPackages AS D0
+	UNION
+	SELECT D1.PackageID AS ItemID, D1.Username AS TextSearch, ''Username'' AS ColumnType
+	FROM @NestedPackages AS D1
+	UNION
+	SELECT D2.PackageID as ItemID, D2.FullName AS TextSearch, ''FullName'' AS ColumnType
+	FROM @NestedPackages AS D2
+	UNION
+	SELECT D3.PackageID as ItemID, D3.Email AS TextSearch, ''Email'' AS ColumnType
+	FROM @NestedPackages AS D3) AS D'
+WHEN 'PackageIPAddresses' THEN '
+	FROM(
+	SELECT D0.PackageAddressID AS ItemID, D0.ExternalIP AS TextSearch, ''ExternalIP'' AS ColumnType
+	FROM @PackageIPAddresses AS D0
+	UNION
+	SELECT D1.PackageAddressID AS ItemID, D1.InternalIP AS TextSearch, ''InternalIP'' AS ColumnType
+	FROM @PackageIPAddresses AS D1
+	UNION
+	SELECT D2.PackageAddressID as ItemID, D2.DefaultGateway AS TextSearch, ''DefaultGateway'' AS ColumnType
+	FROM @PackageIPAddresses AS D2
+	UNION
+	SELECT D3.PackageAddressID as ItemID, D3.ItemName AS TextSearch, ''ItemName'' AS ColumnType
+	FROM @PackageIPAddresses AS D3
+	UNION
+	SELECT D5.PackageAddressID as ItemID, D5.UserName AS TextSearch, ''UserName'' AS ColumnType
+	FROM @PackageIPAddresses AS D5) AS D'
+WHEN 'ServiceItems' THEN '
+	FROM(
+	SELECT D0.ItemID AS ItemID, D0.ItemName AS TextSearch, ''ItemName'' AS ColumnType
+	FROM @ServiceItems AS D0
+	UNION
+	SELECT D1.ItemID AS ItemID, D1.Username AS TextSearch, ''Username'' AS ColumnType
+	FROM @ServiceItems AS D1
+	UNION
+	SELECT D2.ItemID as ItemID, D2.FullName AS TextSearch, ''FullName'' AS ColumnType
+	FROM @ServiceItems AS D2
+	UNION
+	SELECT D3.ItemID as ItemID, D3.Email AS TextSearch, ''Email'' AS ColumnType
+	FROM @ServiceItems AS D3) AS D'
+WHEN 'Users' THEN '
+	FROM(
+	SELECT D0.UserID AS ItemID, D0.Username AS TextSearch, ''Username'' AS ColumnType
+	FROM @Users AS D0
+	UNION
+	SELECT D1.UserID AS ItemID, D1.FullName AS TextSearch, ''FullName'' AS ColumnType
+	FROM @Users AS D1
+	UNION
+	SELECT D2.UserID as ItemID, D2.Email AS TextSearch, ''Email'' AS ColumnType
+	FROM @Users AS D2
+	UNION
+	SELECT D3.UserID as ItemID, D3.CompanyName AS TextSearch, ''CompanyName'' AS ColumnType
+	FROM @Users AS D3) AS D'
+WHEN 'VirtualMachines' THEN '
+	FROM(
+	SELECT D0.ItemID AS ItemID, D0.ItemName AS TextSearch, ''ItemName'' AS ColumnType
+	FROM @VirtualMachines AS D0
+	UNION
+	SELECT D1.ItemID AS ItemID, D1.ExternalIP AS TextSearch, ''ExternalIP'' AS ColumnType
+	FROM @VirtualMachines AS D1
+	UNION
+	SELECT D2.ItemID as ItemID, D2.Username AS TextSearch, ''Username'' AS ColumnType
+	FROM @VirtualMachines AS D2
+	UNION
+	SELECT D3.ItemID as ItemID, D3.IPAddress AS TextSearch, ''IPAddress'' AS ColumnType
+	FROM @VirtualMachines AS D3) AS D'
+WHEN 'PackagePrivateIPAddresses' THEN '
+	FROM(
+	SELECT D0.PrivateAddressID AS ItemID, D0.IPAddress AS TextSearch, ''IPAddress'' AS ColumnType
+	FROM @PackagePrivateIPAddresses AS D0
+	UNION
+	SELECT D1.PrivateAddressID AS ItemID, D1.ItemName AS TextSearch, ''ItemName'' AS ColumnType
+	FROM @PackagePrivateIPAddresses AS D1) AS D'
+END + '
+	WHERE (TextSearch LIKE @FilterValue)'
+IF @FilterColumns <> '' AND @FilterColumns IS NOT NULL
+	SET @sql = @sql + '
+		AND (ColumnType IN (' + @FilterColumns + '))'
+SET @sql = @sql + '
+	GROUP BY TextSearch, ColumnType
+	ORDER BY TextSearch'
+
+exec sp_executesql @sql, N'@FilterValue nvarchar(50), @Recursive bit, @PoolID int, @ServerID int, @ActorID int, @StatusID int, @PlanID int, @OrgID int, @ItemTypeName nvarchar(200), @GroupName nvarchar(100), @PackageID int, @VPSTypeID int, @UserID int, @RoleID int', 
+@FilterValue, @Recursive, @PoolID, @ServerID, @ActorID, @StatusID, @PlanID, @OrgID, @ItemTypeName, @GroupName, @PackageID, @VPSTypeID, @UserID, @RoleID
+
+RETURN
+				*/
+				#endregion
+
 				throw new NotImplementedException();
 			}
 			else
@@ -567,7 +2441,40 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
-				if (!CheckActorUserRights(actorId, userId)) throw new AccessViolationException("Not authorized");
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetUsersSummary]
+(
+	@ActorID int,
+	@UserID int
+)
+AS
+-- check rights
+IF dbo.CheckActorUserRights(@ActorID, @UserID) = 0
+RAISERROR('You are not allowed to access this account', 16, 1)
+
+-- ALL users
+SELECT COUNT(UserID) AS UsersNumber FROM Users
+WHERE OwnerID = @UserID AND IsPeer = 0
+
+-- BY STATUS users
+SELECT StatusID, COUNT(UserID) AS UsersNumber FROM Users
+WHERE OwnerID = @UserID AND IsPeer = 0
+GROUP BY StatusID
+ORDER BY StatusID
+
+-- BY ROLE users
+SELECT RoleID, COUNT(UserID) AS UsersNumber FROM Users
+WHERE OwnerID = @UserID AND IsPeer = 0
+GROUP BY RoleID
+ORDER BY RoleID DESC
+
+RETURN
+				*/
+				#endregion
+
+				if (!CheckActorUserRights(actorId, userId))
+					throw new AccessViolationException("You are not allowed to access this account");
 
 				var users = Users.Where(u => u.OwnerId == userId && !u.IsPeer);
 				var nofUsers = new { UsersNumber = users.Count() };
@@ -581,9 +2488,9 @@ namespace SolidCP.EnterpriseServer
 					.OrderByDescending(g => g.RoleId);
 
 				var set = new DataSet();
-				set.Tables.Add(ObjectUtils.DataTableFromEntitySet(new object[] { nofUsers }));
-				set.Tables.Add(ObjectUtils.DataTableFromEntitySet(usersByStatus));
-				set.Tables.Add(ObjectUtils.DataTableFromEntitySet(usersByRole));
+				set.Tables.Add(EntityDataTable(new object[] { nofUsers }));
+				set.Tables.Add(EntityDataTable(usersByStatus));
+				set.Tables.Add(EntityDataTable(usersByRole));
 
 				return set;
 			}
@@ -596,8 +2503,42 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		int[] UsersTree(int ownerId, bool recursive)
+		public int[] UsersTree(int ownerId, bool recursive)
 		{
+			#region Stored Procedure
+			/*
+CREATE FUNCTION [dbo].[UsersTree]
+(
+	@OwnerID int,
+	@Recursive bit = 0
+)
+RETURNS @T TABLE (UserID int)
+AS
+BEGIN
+
+	IF @Recursive = 1
+	BEGIN
+		-- insert ""root"" user
+		INSERT @T VALUES(@OwnerID)
+
+		-- get all children recursively
+		WHILE @@ROWCOUNT > 0
+		BEGIN
+			INSERT @T SELECT UserID
+			FROM Users
+			WHERE OwnerID IN(SELECT UserID from @T) AND UserID NOT IN(SELECT UserID FROM @T)
+		END
+	END
+	ELSE
+	BEGIN
+		INSERT @T VALUES(@OwnerID)
+	END
+
+RETURN
+END
+			*/
+			#endregion
+
 			if (!recursive) return new int[] { ownerId };
 			else
 			{
@@ -624,6 +2565,83 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetUserDomainsPaged]
+(
+	@ActorID int,
+	@UserID int,
+	@FilterColumn nvarchar(50) = '',
+	@FilterValue nvarchar(50) = '',
+	@SortColumn nvarchar(50),
+	@StartRow int,
+	@MaximumRows int
+)
+AS
+-- build query and run it to the temporary table
+DECLARE @sql nvarchar(2000)
+
+SET @sql = '
+DECLARE @HasUserRights bit
+SET @HasUserRights = dbo.CheckActorUserRights(@ActorID, @UserID)
+
+DECLARE @EndRow int
+SET @EndRow = @StartRow + @MaximumRows
+DECLARE @Users TABLE
+(
+	ItemPosition int IDENTITY(1,1),
+	UserID int,
+	DomainID int
+)
+INSERT INTO @Users (UserID, DomainID)
+SELECT
+	U.UserID,
+	D.DomainID
+FROM Users AS U
+INNER JOIN UsersTree(@UserID, 1) AS UT ON U.UserID = UT.UserID
+LEFT OUTER JOIN Packages AS P ON U.UserID = P.UserID
+LEFT OUTER JOIN Domains AS D ON P.PackageID = D.PackageID
+WHERE
+	U.UserID <> @UserID AND U.IsPeer = 0
+	AND @HasUserRights = 1 '
+
+IF @FilterColumn <> '' AND @FilterValue <> ''
+SET @sql = @sql + ' AND ' + @FilterColumn + ' LIKE @FilterValue '
+
+IF @SortColumn <> '' AND @SortColumn IS NOT NULL
+SET @sql = @sql + ' ORDER BY ' + @SortColumn + ' '
+
+SET @sql = @sql + ' SELECT COUNT(UserID) FROM @Users;
+SELECT
+	U.UserID,
+	U.RoleID,
+	U.StatusID,
+	U.SubscriberNumber,
+	U.LoginStatusId,
+	U.FailedLogins,
+	U.OwnerID,
+	U.Created,
+	U.Changed,
+	U.IsDemo,
+	U.Comments,
+	U.IsPeer,
+	U.Username,
+	U.FirstName,
+	U.LastName,
+	U.Email,
+	D.DomainName
+FROM @Users AS TU
+INNER JOIN Users AS U ON TU.UserID = U.UserID
+LEFT OUTER JOIN Domains AS D ON TU.DomainID = D.DomainID
+WHERE TU.ItemPosition BETWEEN @StartRow AND @EndRow'
+
+exec sp_executesql @sql, N'@StartRow int, @MaximumRows int, @UserID int, @FilterValue nvarchar(50), @ActorID int',
+@StartRow, @MaximumRows, @UserID, @FilterValue, @ActorID
+
+RETURN
+				*/
+				#endregion
+
 				var hasRights = CheckActorUserRights(actorId, userId);
 
 				var users = Users
@@ -661,7 +2679,7 @@ namespace SolidCP.EnterpriseServer
 					users = users.OrderBy(sortColumn);
 				}
 
-				return ObjectUtils.DataSetFromEntitySet(users);
+				return EntityDataSet(users);
 			}
 			else
 			{
@@ -677,8 +2695,78 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		bool CanGetUserDetails(int actorId, int userId)
+		public bool CanGetUserDetails(int actorId, int userId)
 		{
+			#region Stored Procedure
+			/*
+CREATE FUNCTION [dbo].[CanGetUserDetails]
+(
+	@ActorID int,
+	@UserID int
+)
+RETURNS bit
+AS
+BEGIN
+
+IF @ActorID = -1
+RETURN 1
+
+-- check if the user requests himself
+IF @ActorID = @UserID
+BEGIN
+	RETURN 1
+END
+
+DECLARE @IsPeer bit
+DECLARE @OwnerID int
+
+SELECT @IsPeer = IsPeer, @OwnerID = OwnerID FROM Users
+WHERE UserID = @ActorID
+
+IF @IsPeer = 1
+SET @ActorID = @OwnerID
+
+-- get user's owner
+SELECT @OwnerID = OwnerID FROM Users
+WHERE UserID = @ActorID
+
+IF @UserID = @OwnerID
+RETURN 1 -- user can get the details of his owner
+
+-- check if the user requests himself
+IF @ActorID = @UserID
+BEGIN
+	RETURN 1
+END
+
+DECLARE @ParentUserID int, @TmpUserID int
+SET @TmpUserID = @UserID
+
+WHILE 10 = 10
+BEGIN
+
+	SET @ParentUserID = NULL --reset var
+
+	-- get owner
+	SELECT
+		@ParentUserID = OwnerID
+	FROM Users
+	WHERE UserID = @TmpUserID
+
+	IF @ParentUserID IS NULL -- the last parent
+		BREAK
+
+	IF @ParentUserID = @ActorID
+	RETURN 1
+
+	SET @TmpUserID = @ParentUserID
+END
+
+RETURN 0
+END
+			*/
+			#endregion
+
 			if (actorId == -1 || actorId == userId) return true;
 
 			var actor = Users
@@ -712,13 +2800,63 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetUsers]
+(
+	@ActorID int,
+	@OwnerID int,
+	@Recursive bit = 0
+)
+AS
+
+DECLARE @CanGetDetails bit
+SET @CanGetDetails = dbo.CanGetUserDetails(@ActorID, @OwnerID)
+
+SELECT
+	U.UserID,
+	U.RoleID,
+	U.StatusID,
+	U.SubscriberNumber,
+	U.LoginStatusId,
+	U.FailedLogins,
+	U.OwnerID,
+	U.Created,
+	U.Changed,
+	U.IsDemo,
+	U.Comments,
+	U.IsPeer,
+	U.Username,
+	U.FirstName,
+	U.LastName,
+	U.Email,
+	U.FullName,
+	U.OwnerUsername,
+	U.OwnerFirstName,
+	U.OwnerLastName,
+	U.OwnerRoleID,
+	U.OwnerFullName,
+	U.PackagesNumber,
+	U.CompanyName,
+	U.EcommerceEnabled
+FROM UsersDetailed AS U
+WHERE U.UserID <> @OwnerID AND
+((@Recursive = 1 AND dbo.CheckUserParent(@OwnerID, U.UserID) = 1) OR
+(@Recursive = 0 AND U.OwnerID = @OwnerID))
+AND U.IsPeer = 0
+AND @CanGetDetails = 1 -- actor user rights
+
+RETURN
+				*/
+				#endregion
+
 				var canGetDetails = CanGetUserDetails(actorId, ownerId);
 
 				var users = UsersDetailed
 					.Where(u => canGetDetails && u.UserId != ownerId && !u.IsPeer &&
 						(recursive ? CheckUserParent(ownerId, u.UserId) : u.OwnerId == ownerId));
 
-				return ObjectUtils.DataSetFromEntitySet(users);
+				return EntityDataSet(users);
 			}
 			else
 			{
@@ -734,7 +2872,46 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
-				if (!CheckActorUserRights(actorId, userId)) throw new AccessViolationException("Not authorized");
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetUserParents]
+(
+	@ActorID int,
+	@UserID int
+)
+AS
+
+-- check rights
+IF dbo.CheckActorUserRights(@ActorID, @UserID) = 0
+RAISERROR('You are not allowed to access this account', 16, 1)
+
+SELECT
+	U.UserID,
+	U.RoleID,
+	U.StatusID,
+	U.SubscriberNumber,
+	U.LoginStatusId,
+	U.FailedLogins,
+	U.OwnerID,
+	U.Created,
+	U.Changed,
+	U.IsDemo,
+	U.Comments,
+	U.IsPeer,
+	U.Username,
+	U.FirstName,
+	U.LastName,
+	U.Email,
+	U.CompanyName,
+	U.EcommerceEnabled
+FROM UserParents(@ActorID, @UserID) AS UP
+INNER JOIN Users AS U ON UP.UserID = U.UserID
+ORDER BY UP.UserOrder DESC
+RETURN
+				*/
+				#endregion
+
+				if (!CheckActorUserRights(actorId, userId)) throw new AccessViolationException("You are not allowed to access this account");
 
 				int n = 0;
 				var parents = UserParents(actorId, userId)
@@ -745,7 +2922,7 @@ namespace SolidCP.EnterpriseServer
 					.OrderByDescending(u => u.Order)
 					.Select(u => u.User);
 
-				return ObjectUtils.DataSetFromEntitySet(users);
+				return EntityDataSet(users);
 			}
 			else
 			{
@@ -760,12 +2937,52 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetUserPeers]
+(
+	@ActorID int,
+	@UserID int
+)
+AS
+
+DECLARE @CanGetDetails bit
+SET @CanGetDetails = dbo.CanGetUserDetails(@ActorID, @UserID)
+
+SELECT
+	U.UserID,
+	U.RoleID,
+	U.StatusID,
+	U.LoginStatusId,
+	U.FailedLogins,
+	U.OwnerID,
+	U.Created,
+	U.Changed,
+	U.IsDemo,
+	U.Comments,
+	U.IsPeer,
+	U.Username,
+	U.FirstName,
+	U.LastName,
+	U.Email,
+	U.FullName,
+	(U.FirstName + ' ' + U.LastName) AS FullName,
+	U.CompanyName,
+	U.EcommerceEnabled
+FROM UsersDetailed AS U
+WHERE U.OwnerID = @UserID AND IsPeer = 1
+AND @CanGetDetails = 1 -- actor rights
+
+RETURN
+				*/
+				#endregion
+
 				var canGetDetails = CanGetUserDetails(actorId, userId);
 
 				var userPeers = UsersDetailed
 					.Where(u => canGetDetails && u.OwnerId == userId && u.IsPeer);
 
-				return ObjectUtils.DataSetFromEntitySet(userPeers);
+				return EntityDataSet(userPeers);
 			}
 			else
 			{
@@ -780,6 +2997,53 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetUserByExchangeOrganizationIdInternally]
+(
+	@ItemID int
+)
+AS
+	SELECT
+		U.UserID,
+		U.RoleID,
+		U.StatusID,
+		U.SubscriberNumber,
+		U.LoginStatusId,
+		U.FailedLogins,
+		U.OwnerID,
+		U.Created,
+		U.Changed,
+		U.IsDemo,
+		U.Comments,
+		U.IsPeer,
+		U.Username,
+		U.Password,
+		U.FirstName,
+		U.LastName,
+		U.Email,
+		U.SecondaryEmail,
+		U.Address,
+		U.City,
+		U.State,
+		U.Country,
+		U.Zip,
+		U.PrimaryPhone,
+		U.SecondaryPhone,
+		U.Fax,
+		U.InstantMessenger,
+		U.HtmlMail,
+		U.CompanyName,
+		U.EcommerceEnabled,
+		U.[AdditionalParams]
+	FROM Users AS U
+	WHERE U.UserID IN (SELECT UserID FROM Packages WHERE PackageID IN (
+	SELECT PackageID FROM ServiceItems WHERE ItemID = @ItemID))
+
+RETURN
+				*/
+				#endregion
+
 				var users = Users
 					.Join(Packages, u => u.UserId, p => p.UserId, (user, package) => new { User = user, package.PackageId })
 					.Join(ServiceItems, u => u.PackageId, s => s.PackageId, (user, serviceItem) => new { user.User, serviceItem.ItemId })
@@ -802,6 +3066,55 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetUserByIdInternally]
+(
+	@UserID int
+)
+AS
+	SELECT
+		U.UserID,
+		U.RoleID,
+		U.StatusID,
+		U.SubscriberNumber,
+		U.LoginStatusId,
+		U.FailedLogins,
+		U.OwnerID,
+		U.Created,
+		U.Changed,
+		U.IsDemo,
+		U.Comments,
+		U.IsPeer,
+		U.Username,
+		U.Password,
+		U.FirstName,
+		U.LastName,
+		U.Email,
+		U.SecondaryEmail,
+		U.Address,
+		U.City,
+		U.State,
+		U.Country,
+		U.Zip,
+		U.PrimaryPhone,
+		U.SecondaryPhone,
+		U.Fax,
+		U.InstantMessenger,
+		U.HtmlMail,
+		U.CompanyName,
+		U.EcommerceEnabled,
+		U.[AdditionalParams],
+		U.OneTimePasswordState,
+		U.MfaMode,
+		U.PinSecret
+	FROM Users AS U
+	WHERE U.UserID = @UserID
+
+	RETURN
+				*/
+				#endregion
+
 				return new EntityDataReader<Data.Entities.User>(Users.Where(u => u.UserId == userId));
 			}
 			else
@@ -816,6 +3129,56 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetUserByUsernameInternally]
+(
+	@Username nvarchar(50)
+)
+AS
+	SELECT
+		U.UserID,
+		U.RoleID,
+		U.StatusID,
+		U.SubscriberNumber,
+		U.LoginStatusId,
+		U.FailedLogins,
+		U.OwnerID,
+		U.Created,
+		U.Changed,
+		U.IsDemo,
+		U.Comments,
+		U.IsPeer,
+		U.Username,
+		U.Password,
+		U.FirstName,
+		U.LastName,
+		U.Email,
+		U.SecondaryEmail,
+		U.Address,
+		U.City,
+		U.State,
+		U.Country,
+		U.Zip,
+		U.PrimaryPhone,
+		U.SecondaryPhone,
+		U.Fax,
+		U.InstantMessenger,
+		U.HtmlMail,
+		U.CompanyName,
+		U.EcommerceEnabled,
+		U.[AdditionalParams],
+		U.OneTimePasswordState,
+		U.MfaMode,
+		U.PinSecret
+
+	FROM Users AS U
+	WHERE U.Username = @Username
+
+	RETURN
+				*/
+				#endregion
+
 				return new EntityDataReader<Data.Entities.User>(Users.Where(u => u.Username == username));
 			}
 			else
@@ -826,8 +3189,85 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		bool CanGetUserPassword(int actorId, int userId)
+		public bool CanGetUserPassword(int actorId, int userId)
 		{
+			#region Stored Procedure
+			/*
+CREATE FUNCTION [dbo].[CanGetUserPassword]
+(
+	@ActorID int,
+	@UserID int
+)
+RETURNS bit
+AS
+BEGIN
+
+IF @ActorID = -1
+RETURN 1 -- unauthenticated mode
+
+-- check if the user requests himself
+IF @ActorID = @UserID
+BEGIN
+	RETURN 1
+END
+
+DECLARE @IsPeer bit
+DECLARE @OwnerID int
+
+SELECT @IsPeer = IsPeer, @OwnerID = OwnerID FROM Users
+WHERE UserID = @ActorID
+
+IF @IsPeer = 1
+BEGIN
+	-- peer can't get the password of his peers
+	-- and his owner
+	IF @UserID = @OwnerID
+	RETURN 0
+
+	IF EXISTS (
+		SELECT UserID FROM Users
+		WHERE IsPeer = 1 AND OwnerID = @OwnerID AND UserID = @UserID
+	) RETURN 0
+
+	-- set actor to his owner
+	SET @ActorID = @OwnerID
+END
+
+-- get user's owner
+SELECT @OwnerID = OwnerID FROM Users
+WHERE UserID = @ActorID
+
+IF @UserID = @OwnerID
+RETURN 0 -- user can't get the password of his owner
+
+DECLARE @ParentUserID int, @TmpUserID int
+SET @TmpUserID = @UserID
+
+WHILE 10 = 10
+BEGIN
+
+	SET @ParentUserID = NULL --reset var
+
+	-- get owner
+	SELECT
+		@ParentUserID = OwnerID
+	FROM Users
+	WHERE UserID = @TmpUserID
+
+	IF @ParentUserID IS NULL -- the last parent
+		BREAK
+
+	IF @ParentUserID = @ActorID
+	RETURN 1
+
+	SET @TmpUserID = @ParentUserID
+END
+
+RETURN 0
+END
+			*/
+			#endregion
+
 			if (actorId == -1 || actorId == userId) return true;
 
 			var actor = Users
@@ -866,6 +3306,60 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetUserById]
+(
+	@ActorID int,
+	@UserID int
+)
+AS
+	-- user can retrieve his own account, his users accounts
+	-- and his reseller account (without password)
+	SELECT
+		U.UserID,
+		U.RoleID,
+		U.StatusID,
+		U.SubscriberNumber,
+		U.LoginStatusId,
+		U.FailedLogins,
+		U.OwnerID,
+		U.Created,
+		U.Changed,
+		U.IsDemo,
+		U.Comments,
+		U.IsPeer,
+		U.Username,
+		CASE WHEN dbo.CanGetUserPassword(@ActorID, @UserID) = 1 THEN U.Password
+		ELSE '' END AS Password,
+		U.FirstName,
+		U.LastName,
+		U.Email,
+		U.SecondaryEmail,
+		U.Address,
+		U.City,
+		U.State,
+		U.Country,
+		U.Zip,
+		U.PrimaryPhone,
+		U.SecondaryPhone,
+		U.Fax,
+		U.InstantMessenger,
+		U.HtmlMail,
+		U.CompanyName,
+		U.EcommerceEnabled,
+		U.[AdditionalParams],
+		U.MfaMode,
+		CASE WHEN dbo.CanGetUserPassword(@ActorID, @UserID) = 1 THEN U.PinSecret
+		ELSE '' END AS PinSecret
+	FROM Users AS U
+	WHERE U.UserID = @UserID
+	AND dbo.CanGetUserDetails(@ActorID, @UserID) = 1 -- actor user rights
+
+	RETURN
+				*/
+				#endregion
+
 				var canGetUserDetails = CanGetUserDetails(actorId, userId);
 				var canGetUserPassword = CanGetUserPassword(actorId, userId);
 				var user = Users
@@ -921,6 +3415,59 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetUserByUsername]
+(
+	@ActorID int,
+	@Username nvarchar(50)
+)
+AS
+
+	SELECT
+		U.UserID,
+		U.RoleID,
+		U.StatusID,
+		U.SubscriberNumber,
+		U.LoginStatusId,
+		U.FailedLogins,
+		U.OwnerID,
+		U.Created,
+		U.Changed,
+		U.IsDemo,
+		U.Comments,
+		U.IsPeer,
+		U.Username,
+		CASE WHEN dbo.CanGetUserPassword(@ActorID, UserID) = 1 THEN U.Password
+		ELSE '' END AS Password,
+		U.FirstName,
+		U.LastName,
+		U.Email,
+		U.SecondaryEmail,
+		U.Address,
+		U.City,
+		U.State,
+		U.Country,
+		U.Zip,
+		U.PrimaryPhone,
+		U.SecondaryPhone,
+		U.Fax,
+		U.InstantMessenger,
+		U.HtmlMail,
+		U.CompanyName,
+		U.EcommerceEnabled,
+		U.[AdditionalParams],
+		U.MfaMode,
+		CASE WHEN dbo.CanGetUserPassword(@ActorID, UserID) = 1 THEN U.PinSecret
+		ELSE '' END AS PinSecret
+	FROM Users AS U
+	WHERE U.Username = @Username
+	AND dbo.CanGetUserDetails(@ActorID, UserID) = 1 -- actor user rights
+
+	RETURN
+				*/
+				#endregion
+
 				var user = Users
 					.Where(u => u.Username == username)
 					.Select(u => new Data.Entities.User()
@@ -972,8 +3519,68 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		bool CanCreateUser(int actorId, int ownerId)
+		public bool CanCreateUser(int actorId, int ownerId)
 		{
+			#region Stored Procedure
+			/*
+CREATE FUNCTION [dbo].[CanCreateUser]
+(
+	@ActorID int,
+	@UserID int
+)
+RETURNS bit
+AS
+BEGIN
+
+IF @ActorID = -1
+RETURN 1
+
+-- check if the user requests himself
+IF @ActorID = @UserID
+RETURN 1
+
+DECLARE @IsPeer bit
+DECLARE @OwnerID int
+
+SELECT @IsPeer = IsPeer, @OwnerID = OwnerID FROM Users
+WHERE UserID = @ActorID
+
+IF @IsPeer = 1
+BEGIN
+	SET @ActorID = @OwnerID
+END
+
+IF @ActorID = @UserID
+RETURN 1
+
+DECLARE @ParentUserID int, @TmpUserID int
+SET @TmpUserID = @UserID
+
+WHILE 10 = 10
+BEGIN
+
+	SET @ParentUserID = NULL --reset var
+
+	-- get owner
+	SELECT
+		@ParentUserID = OwnerID
+	FROM Users
+	WHERE UserID = @TmpUserID
+
+	IF @ParentUserID IS NULL -- the last parent
+		BREAK
+
+	IF @ParentUserID = @ActorID
+	RETURN 1
+
+	SET @TmpUserID = @ParentUserID
+END
+
+RETURN 0
+END
+			*/
+			#endregion
+
 			if (actorId == -1 || actorId == ownerId) return true;
 
 			var actor = Users
@@ -1005,6 +3612,124 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[AddUser]
+(
+	@ActorID int,
+	@UserID int OUTPUT,
+	@OwnerID int,
+	@RoleID int,
+	@StatusID int,
+	@SubscriberNumber nvarchar(32),
+	@LoginStatusID int,
+	@IsDemo bit,
+	@IsPeer bit,
+	@Comments ntext,
+	@Username nvarchar(50),
+	@Password nvarchar(200),
+	@FirstName nvarchar(50),
+	@LastName nvarchar(50),
+	@Email nvarchar(255),
+	@SecondaryEmail nvarchar(255),
+	@Address nvarchar(200),
+	@City nvarchar(50),
+	@State nvarchar(50),
+	@Country nvarchar(50),
+	@Zip varchar(20),
+	@PrimaryPhone varchar(30),
+	@SecondaryPhone varchar(30),
+	@Fax varchar(30),
+	@InstantMessenger nvarchar(200),
+	@HtmlMail bit,
+	@CompanyName nvarchar(100),
+	@EcommerceEnabled bit
+)
+AS
+
+-- check if the user already exists
+IF EXISTS(SELECT UserID FROM Users WHERE Username = @Username)
+BEGIN
+	SET @UserID = -1
+	RETURN
+END
+
+-- check actor rights
+IF dbo.CanCreateUser(@ActorID, @OwnerID) = 0
+BEGIN
+	SET @UserID = -2
+	RETURN
+END
+
+INSERT INTO Users
+(
+	OwnerID,
+	RoleID,
+	StatusID,
+	SubscriberNumber,
+	LoginStatusID,
+	Created,
+	Changed,
+	IsDemo,
+	IsPeer,
+	Comments,
+	Username,
+	Password,
+	FirstName,
+	LastName,
+	Email,
+	SecondaryEmail,
+	Address,
+	City,
+	State,
+	Country,
+	Zip,
+	PrimaryPhone,
+	SecondaryPhone,
+	Fax,
+	InstantMessenger,
+	HtmlMail,
+	CompanyName,
+	EcommerceEnabled
+)
+VALUES
+(
+	@OwnerID,
+	@RoleID,
+	@StatusID,
+	@SubscriberNumber,
+	@LoginStatusID,
+	GetDate(),
+	GetDate(),
+	@IsDemo,
+	@IsPeer,
+	@Comments,
+	@Username,
+	@Password,
+	@FirstName,
+	@LastName,
+	@Email,
+	@SecondaryEmail,
+	@Address,
+	@City,
+	@State,
+	@Country,
+	@Zip,
+	@PrimaryPhone,
+	@SecondaryPhone,
+	@Fax,
+	@InstantMessenger,
+	@HtmlMail,
+	@CompanyName,
+	@EcommerceEnabled
+)
+
+SET @UserID = SCOPE_IDENTITY()
+
+RETURN
+				*/
+				#endregion
+
 				if (Users.Any(u => u.Username == username)) return -1;
 				if (!CanCreateUser(actorId, ownerId)) return -2;
 				var user = new Data.Entities.User()
@@ -1014,6 +3739,8 @@ namespace SolidCP.EnterpriseServer
 					StatusId = statusId,
 					SubscriberNumber = subscriberNumber,
 					LoginStatusId = loginStatusId,
+					Created = DateTime.Now,
+					Changed = DateTime.Now,
 					IsDemo = isDemo,
 					IsPeer = isPeer,
 					Comments = comments,
@@ -1082,8 +3809,76 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		bool CanUpdateUserDetails(int actorId, int userId)
+		public bool CanUpdateUserDetails(int actorId, int userId)
 		{
+			#region Stored Procedure
+			/*
+CREATE FUNCTION [dbo].[CanUpdateUserDetails]
+(
+	@ActorID int,
+	@UserID int
+)
+RETURNS bit
+AS
+BEGIN
+
+IF @ActorID = -1
+RETURN 1
+
+-- check if the user requests himself
+IF @ActorID = @UserID
+BEGIN
+	RETURN 1
+END
+
+DECLARE @IsPeer bit
+DECLARE @OwnerID int
+
+SELECT @IsPeer = IsPeer, @OwnerID = OwnerID FROM Users
+WHERE UserID = @ActorID
+
+IF @IsPeer = 1
+BEGIN
+	-- check if the peer is trying to update his owner
+	IF @UserID = @OwnerID
+	RETURN 0
+
+	-- check if the peer is trying to update his peers
+	IF EXISTS (SELECT UserID FROM Users
+	WHERE IsPeer = 1 AND OwnerID = @OwnerID AND UserID = @UserID)
+	RETURN 0
+
+	SET @ActorID = @OwnerID
+END
+
+DECLARE @ParentUserID int, @TmpUserID int
+SET @TmpUserID = @UserID
+
+WHILE 10 = 10
+BEGIN
+
+	SET @ParentUserID = NULL --reset var
+
+	-- get owner
+	SELECT
+		@ParentUserID = OwnerID
+	FROM Users
+	WHERE UserID = @TmpUserID
+
+	IF @ParentUserID IS NULL -- the last parent
+		BREAK
+
+	IF @ParentUserID = @ActorID
+	RETURN 1
+
+	SET @TmpUserID = @ParentUserID
+END
+
+RETURN 0
+END
+			*/
+			#endregion
+
 			if (actorId == -1 || actorId == userId) return true;
 
 			var actor = Users
@@ -1122,6 +3917,84 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[UpdateUser]
+(
+	@ActorID int,
+	@UserID int,
+	@RoleID int,
+	@StatusID int,
+	@SubscriberNumber nvarchar(32),
+	@LoginStatusId int,
+	@IsDemo bit,
+	@IsPeer bit,
+	@Comments ntext,
+	@FirstName nvarchar(50),
+	@LastName nvarchar(50),
+	@Email nvarchar(255),
+	@SecondaryEmail nvarchar(255),
+	@Address nvarchar(200),
+	@City nvarchar(50),
+	@State nvarchar(50),
+	@Country nvarchar(50),
+	@Zip varchar(20),
+	@PrimaryPhone varchar(30),
+	@SecondaryPhone varchar(30),
+	@Fax varchar(30),
+	@InstantMessenger nvarchar(200),
+	@HtmlMail bit,
+	@CompanyName nvarchar(100),
+	@EcommerceEnabled BIT,
+	@AdditionalParams NVARCHAR(max)
+)
+AS
+
+	-- check actor rights
+	IF dbo.CanUpdateUserDetails(@ActorID, @UserID) = 0
+	BEGIN
+		RETURN
+	END
+
+	IF @LoginStatusId = 0
+	BEGIN
+		UPDATE Users SET
+			FailedLogins = 0
+		WHERE UserID = @UserID
+	END
+
+	UPDATE Users SET
+		RoleID = @RoleID,
+		StatusID = @StatusID,
+		SubscriberNumber = @SubscriberNumber,
+		LoginStatusId = @LoginStatusId,
+		Changed = GetDate(),
+		IsDemo = @IsDemo,
+		IsPeer = @IsPeer,
+		Comments = @Comments,
+		FirstName = @FirstName,
+		LastName = @LastName,
+		Email = @Email,
+		SecondaryEmail = @SecondaryEmail,
+		Address = @Address,
+		City = @City,
+		State = @State,
+		Country = @Country,
+		Zip = @Zip,
+		PrimaryPhone = @PrimaryPhone,
+		SecondaryPhone = @SecondaryPhone,
+		Fax = @Fax,
+		InstantMessenger = @InstantMessenger,
+		HtmlMail = @HtmlMail,
+		CompanyName = @CompanyName,
+		EcommerceEnabled = @EcommerceEnabled,
+		[AdditionalParams] = @AdditionalParams
+	WHERE UserID = @UserID
+
+	RETURN
+				*/
+				#endregion
+
 				if (CanUpdateUserDetails(actorId, userId))
 				{
 					var user = Users.FirstOrDefault(u => u.UserId == userId);
@@ -1195,6 +4068,39 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[UpdateUserFailedLoginAttempt]
+(
+	@UserID int,
+	@LockOut int,
+	@Reset int
+)
+AS
+
+IF (@Reset = 1)
+BEGIN
+	UPDATE Users SET FailedLogins = 0 WHERE UserID = @UserID
+END
+ELSE
+BEGIN
+	IF (@LockOut <= (SELECT FailedLogins FROM USERS WHERE UserID = @UserID))
+	BEGIN
+		UPDATE Users SET LoginStatusId = 2 WHERE UserID = @UserID
+	END
+	ELSE
+	BEGIN
+		IF ((SELECT FailedLogins FROM Users WHERE UserID = @UserID) IS NULL)
+		BEGIN
+			UPDATE Users SET FailedLogins = 1 WHERE UserID = @UserID
+		END
+		ELSE
+			UPDATE Users SET FailedLogins = FailedLogins + 1 WHERE UserID = @UserID
+	END
+END
+				*/
+				#endregion
+
 				var user = Users.FirstOrDefault(u => u.UserId == userId);
 				if (user == null) return;
 
@@ -1218,18 +4124,75 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[DeleteUser]
+(
+	@ActorID int,
+	@UserID int
+)
+AS
+
+-- check actor rights
+IF dbo.CanUpdateUserDetails(@ActorID, @UserID) = 0
+RETURN
+
+BEGIN TRAN
+-- delete user comments
+DELETE FROM Comments
+WHERE ItemID = @UserID AND ItemTypeID = 'USER'
+
+IF (@@ERROR <> 0 )
+      BEGIN
+            ROLLBACK TRANSACTION
+            RETURN -1
+      END
+
+--delete reseller addon
+DELETE FROM HostingPlans WHERE UserID = @UserID AND IsAddon = 'True'
+
+IF (@@ERROR <> 0 )
+      BEGIN
+            ROLLBACK TRANSACTION
+            RETURN -1
+      END
+
+-- delete user peers
+DELETE FROM Users
+WHERE IsPeer = 1 AND OwnerID = @UserID
+
+IF (@@ERROR <> 0 )
+      BEGIN
+            ROLLBACK TRANSACTION
+            RETURN -1
+      END
+
+-- delete user
+DELETE FROM Users
+WHERE UserID = @UserID
+
+IF (@@ERROR <> 0 )
+      BEGIN
+            ROLLBACK TRANSACTION
+            RETURN -1
+      END
+
+COMMIT TRAN
+
+RETURN
+				*/
+				#endregion
+
 				if (!CanUpdateUserDetails(actorId, userId)) return;
 
 				// delete user comments
-				Comments.RemoveRange(Comments.Where(c => c.ItemId == userId && c.ItemTypeId == "USER"));
+				Comments.Where(c => c.ItemId == userId && c.ItemTypeId == "USER").ExecuteDelete(Comments);
 				// delete reseller addon
-				HostingPlans.RemoveRange(HostingPlans.Where(h => h.UserId == userId && h.IsAddon == true));
+				HostingPlans.Where(h => h.UserId == userId && h.IsAddon == true).ExecuteDelete(HostingPlans);
 				// delete user peers
-				Users.RemoveRange(Users.Where(u => u.IsPeer && u.OwnerId == userId));
+				Users.Where(u => u.IsPeer && u.OwnerId == userId).ExecuteDelete(Users);
 				// delete user
-				Users.RemoveRange(Users.Where(u => u.UserId == userId));
-
-				SaveChanges();
+				Users.Where(u => u.UserId == userId).ExecuteDelete(Users);
 			}
 			else
 			{
@@ -1244,6 +4207,28 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[ChangeUserPassword]
+(
+	@ActorID int,
+	@UserID int,
+	@Password nvarchar(200)
+)
+AS
+
+-- check actor rights
+IF dbo.CanUpdateUserDetails(@ActorID, @UserID) = 0
+RETURN
+
+UPDATE Users
+SET Password = @Password, OneTimePasswordState = 0
+WHERE UserID = @UserID
+
+RETURN 
+				*/
+				#endregion
+
 				if (!CanUpdateUserDetails(actorId, userId)) return;
 
 				var user = Users.FirstOrDefault(u => u.UserId == userId);
@@ -1268,6 +4253,22 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[SetUserOneTimePassword]
+(
+	@UserID int,
+	@Password nvarchar(200),
+	@OneTimePasswordState int
+)
+AS
+UPDATE Users
+SET Password = @Password, OneTimePasswordState = @OneTimePasswordState
+WHERE UserID = @UserID
+RETURN 
+				*/
+				#endregion
+
 				var user = Users.FirstOrDefault(u => u.UserId == userId);
 				if (user == null) return;
 
@@ -1290,6 +4291,27 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[UpdateUserPinSecret]
+(
+	@ActorID int,
+	@UserID int,
+	@PinSecret NVARCHAR(255)
+)
+AS
+	-- check actor rights
+	IF dbo.CanUpdateUserDetails(@ActorID, @UserID) = 0
+	BEGIN
+		RETURN
+	END
+	UPDATE Users SET
+		PinSecret = @PinSecret 
+	WHERE UserID = @UserID
+
+	RETURN
+				*/
+				#endregion
 				if (!CanUpdateUserDetails(actorId, userId)) return;
 
 				var user = Users.FirstOrDefault(u => u.UserId == userId);
@@ -1314,6 +4336,28 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[UpdateUserMfaMode]
+(
+	@ActorID int,
+	@UserID int,
+	@MfaMode int
+)
+AS
+	-- check actor rights
+	IF dbo.CanUpdateUserDetails(@ActorID, @UserID) = 0
+	BEGIN
+		RETURN
+	END
+	UPDATE Users SET
+		MfaMode = @MfaMode 
+	WHERE UserID = @UserID
+
+	RETURN
+				*/
+				#endregion
+
 				if (!CanUpdateUserDetails(actorId, userId)) return;
 
 				var user = Users.FirstOrDefault(u => u.UserId == userId);
@@ -1337,6 +4381,104 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE FUNCTION [dbo].[CanChangeMfaFunc]
+(
+	@CallerID int,
+	@ChangeUserID int,
+	@CanPeerChangeMfa bit
+)
+RETURNS bit
+AS
+BEGIN
+
+DECLARE @IsPeer int, @OwnerID int, @Result int,  @UserId int, @GenerationNumber int
+SET @Result = 0;
+SET @GenerationNumber = 0;
+-- get data for user
+SELECT @IsPeer = IsPeer, @OwnerID = OwnerID, @UserId = UserID FROM Users
+WHERE UserID = @CallerID;
+
+-- userif not found
+IF(@UserId IS NULL)
+BEGIN
+	RETURN 0
+END
+
+-- is rootuser serveradmin
+IF (@OwnerID IS NULL)
+BEGIN
+	RETURN 1
+END
+
+-- check if the user requests himself
+IF (@CallerID = @ChangeUserID AND @IsPeer > 0 AND @CanPeerChangeMfa <> 0)
+BEGIN
+	RETURN 1
+END
+
+IF (@CallerID = @ChangeUserID AND @IsPeer = 0)
+BEGIN
+	RETURN 1
+END
+
+IF (@IsPeer = 1)
+BEGIN
+	SET @UserID = @OwnerID
+	SET @GenerationNumber = 1;
+END;
+
+WITH generation AS (
+    SELECT UserID,
+           Username,
+		   OwnerID,
+		   IsPeer,
+           0 AS generation_number
+    FROM Users
+	where UserID = @UserID
+UNION ALL
+    SELECT child.UserID,
+         child.Username,
+         child.OwnerId,
+		 child.IsPeer,
+		 generation_number + 1 AS generation_number
+    FROM Users child
+    JOIN generation g
+      ON g.UserID = child.OwnerId
+)
+
+Select @Result = count(*)
+FROM generation g
+JOIN Users parent
+ON g.OwnerID = parent.UserID
+where (g.generation_number > @GenerationNumber or g.IsPeer <> 1) and g.UserID = @ChangeUserID;
+
+if(@Result > 0)
+BEGIN
+	RETURN 1
+END
+ELSE
+BEGIN
+	RETURN 0
+END
+
+RETURN 0
+END
+			
+CREATE PROCEDURE [dbo].[CanChangeMfa]
+(
+	@CallerID int,
+	@ChangeUserID int,
+	@CanPeerChangeMfa bit,
+	@Result bit OUTPUT
+)
+AS
+	SET @Result = dbo.CanChangeMfaFunc(@CallerID, @ChangeUserID, @CanPeerChangeMfa)
+	RETURN
+				 */
+				#endregion
+
 				var user = Users
 					.Select(u => new { u.UserId, u.OwnerId, u.IsPeer })
 					.FirstOrDefault(u => u.UserId == callerId);
@@ -1402,6 +4544,22 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetUserPackagesServerUrls]
+(
+	@UserId INT
+)
+AS
+	SELECT DISTINCT Servers.ServerUrl
+	FROM Servers
+	INNER JOIN Packages
+	ON Servers.ServerId = Packages.ServerId
+	WHERE Packages.UserID = @UserId
+	RETURN
+				*/
+				#endregion
+
 				var serverUrls = Servers.Join(Packages, s => s.ServerId, p => p.ServerId, (server, package) => new
 				{
 					server.ServerUrl,
@@ -1427,7 +4585,66 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
-				if (!CheckActorUserRights(actorId, userId)) throw new AccessViolationException("Not authorized");
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetUserSettings]
+(
+	@ActorID int,
+	@UserID int,
+	@SettingsName nvarchar(50)
+)
+AS
+
+-- check rights
+IF dbo.CheckActorUserRights(@ActorID, @UserID) = 0
+RAISERROR('You are not allowed to access this account', 16, 1)
+
+-- find which parent package has overriden NS
+DECLARE @ParentUserID int, @TmpUserID int
+SET @TmpUserID = @UserID
+
+WHILE 10 = 10
+BEGIN
+
+	IF EXISTS
+	(
+		SELECT PropertyName FROM UserSettings
+		WHERE SettingsName = @SettingsName AND UserID = @TmpUserID
+	)
+	BEGIN
+		SELECT
+			UserID,
+			PropertyName,
+			PropertyValue
+		FROM
+			UserSettings
+		WHERE
+			UserID = @TmpUserID AND
+			SettingsName = @SettingsName
+
+		BREAK
+	END
+
+	SET @ParentUserID = NULL --reset var
+
+	-- get owner
+	SELECT
+		@ParentUserID = OwnerID
+	FROM Users
+	WHERE UserID = @TmpUserID
+
+	IF @ParentUserID IS NULL -- the last parent
+	BREAK
+
+	SET @TmpUserID = @ParentUserID
+END
+
+RETURN
+				*/
+				#endregion
+
+				if (!CheckActorUserRights(actorId, userId))
+					throw new AccessViolationException("You are not allowed to access this account");
 
 				var id = userId;
 				var setting = UserSettings.FirstOrDefault(s => s.UserId == id);
@@ -1455,7 +4672,60 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
-				if (!CheckActorUserRights(actorId, userId)) throw new AccessViolationException("Not authorized");
+				#region Stored Procedure
+				/*
+	CREATE PROCEDURE [dbo].[UpdateUserSettings]
+(
+	@ActorID int,
+	@UserID int,
+	@SettingsName nvarchar(50),
+	@Xml ntext
+)
+AS
+
+-- check rights
+IF dbo.CheckActorUserRights(@ActorID, @UserID) = 0
+RAISERROR('You are not allowed to access this account', 16, 1)
+
+-- delete old properties
+BEGIN TRAN
+DECLARE @idoc int
+--Create an internal representation of the XML document.
+EXEC sp_xml_preparedocument @idoc OUTPUT, @xml
+
+-- Execute a SELECT statement that uses the OPENXML rowset provider.
+DELETE FROM UserSettings
+WHERE UserID = @UserID AND SettingsName = @SettingsName
+
+INSERT INTO UserSettings
+(
+	UserID,
+	SettingsName,
+	PropertyName,
+	PropertyValue
+)
+SELECT
+	@UserID,
+	@SettingsName,
+	PropertyName,
+	PropertyValue
+FROM OPENXML(@idoc, '/properties/property',1) WITH
+(
+	PropertyName nvarchar(50) '@name',
+	PropertyValue ntext '@value'
+) as PV
+
+-- remove document
+exec sp_xml_removedocument @idoc
+
+COMMIT TRAN
+
+RETURN
+				*/
+				#endregion
+
+				if (!CheckActorUserRights(actorId, userId))
+					throw new AccessViolationException("You are not allowed to access this account");
 
 				UserSettings.RemoveRange(UserSettings
 					.Where(s => s.UserId == userId && s.SettingsName == settingsName));
@@ -1488,14 +4758,60 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region Servers
-		bool CheckIsUserAdmin(int userId)
+		public bool CheckIsUserAdmin(int userId)
 		{
+			#region Stored Procedure
+			/*
+CREATE FUNCTION [dbo].[CheckIsUserAdmin]
+(
+	@UserID int
+)
+RETURNS bit
+AS
+BEGIN
+
+IF @UserID = -1
+RETURN 1
+
+IF EXISTS (SELECT UserID FROM Users
+WHERE UserID = @UserID AND RoleID = 1) -- administrator
+RETURN 1
+
+RETURN 0
+END
+			*/
+			#endregion
+
 			return userId == -1 || Users.Any(u => u.UserId == userId && u.RoleId == 1);
 		}
 		public DataSet GetAllServers(int actorId)
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetAllServers]
+(
+	@ActorID int
+)
+AS
+
+-- check rights
+DECLARE @IsAdmin bit
+SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+
+SELECT
+	S.ServerID,
+	S.ServerName,
+	S.ServerUrl,
+	(SELECT COUNT(SRV.ServiceID) FROM VirtualServices AS SRV WHERE S.ServerID = SRV.ServerID) AS ServicesNumber,
+	S.Comments
+FROM Servers AS S
+WHERE @IsAdmin = 1
+ORDER BY S.VirtualServer, S.ServerName
+				*/
+				#endregion
+
 				var isAdmin = CheckIsUserAdmin(actorId);
 
 				var servers = Servers
@@ -1511,7 +4827,7 @@ namespace SolidCP.EnterpriseServer
 						s.Comments
 					});
 
-				var serversTable = ObjectUtils.DataTableFromEntitySet(servers);
+				var serversTable = EntityDataTable(servers);
 
 				var services = Services
 					.Join(Providers, s => s.ProviderId, p => p.ProviderId, (srvc, p) => new { Service = srvc, ProviderGroupId = p.GroupId })
@@ -1530,7 +4846,7 @@ namespace SolidCP.EnterpriseServer
 						s.Service.Comments
 					});
 
-				var servicesTable = ObjectUtils.DataTableFromEntitySet(services);
+				var servicesTable = EntityDataTable(services);
 
 				var dataSet = new DataSet();
 				dataSet.Tables.Add(serversTable);
@@ -1549,6 +4865,47 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetServers]
+(
+	@ActorID int
+)
+AS
+-- check rights
+DECLARE @IsAdmin bit
+SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+
+SELECT
+	S.ServerID,
+	S.ServerName,
+	S.ServerUrl,
+	(SELECT COUNT(SRV.ServiceID) FROM Services AS SRV WHERE S.ServerID = SRV.ServerID) AS ServicesNumber,
+	S.Comments,
+	PrimaryGroupID,
+	S.ADEnabled
+FROM Servers AS S
+WHERE VirtualServer = 0
+AND @IsAdmin = 1
+ORDER BY S.ServerName
+
+-- services
+SELECT
+	S.ServiceID,
+	S.ServerID,
+	S.ProviderID,
+	S.ServiceName,
+	S.Comments
+FROM Services AS S
+INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
+INNER JOIN ResourceGroups AS RG ON P.GroupID = RG.GroupID
+WHERE @IsAdmin = 1
+ORDER BY RG.GroupOrder
+
+RETURN
+				*/
+				#endregion
+
 				var isAdmin = CheckIsUserAdmin(actorId);
 
 				var servers = Servers
@@ -1584,8 +4941,8 @@ namespace SolidCP.EnterpriseServer
 					});
 
 				var set = new DataSet();
-				set.Tables.Add(ObjectUtils.DataTableFromEntitySet(servers));
-				set.Tables.Add(ObjectUtils.DataTableFromEntitySet(services));
+				set.Tables.Add(EntityDataTable(servers));
+				set.Tables.Add(EntityDataTable(services));
 
 				return set;
 			}
@@ -1601,6 +4958,48 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetServer]
+(
+	@ActorID int,
+	@ServerID int,
+	@forAutodiscover bit
+)
+AS
+-- check rights
+DECLARE @IsAdmin bit
+SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+
+SELECT
+	ServerID,
+	ServerName,
+	ServerUrl,
+	Password,
+	Comments,
+	VirtualServer,
+	InstantDomainAlias,
+	PrimaryGroupID,
+	ADEnabled,
+	ADRootDomain,
+	ADUsername,
+	ADPassword,
+	ADAuthenticationType,
+	ADParentDomain,
+	ADParentDomainController,
+	OSPlatform,
+	IsCore,
+	PasswordIsSHA256
+
+FROM Servers
+WHERE
+	ServerID = @ServerID
+	AND (@IsAdmin = 1 OR @forAutodiscover = 1)
+
+RETURN
+				*/
+				#endregion
+
 				var isAdmin = CheckIsUserAdmin(actorId);
 
 				var server = Servers
@@ -1643,6 +5042,28 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetServerShortDetails]
+(
+	@ServerID int
+)
+AS
+
+SELECT
+	ServerID,
+	ServerName,
+	Comments,
+	VirtualServer,
+	InstantDomainAlias
+FROM Servers
+WHERE
+	ServerID = @ServerID
+
+RETURN
+				*/
+				#endregion
+
 				var server = Servers
 					.Where(s => s.ServerId == serverId)
 					.Select(s => new
@@ -1668,6 +5089,45 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetServerByName]
+(
+	@ActorID int,
+	@ServerName nvarchar(100)
+)
+AS
+-- check rights
+DECLARE @IsAdmin bit
+SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+
+SELECT
+	ServerID,
+	ServerName,
+	ServerUrl,
+	Password,
+	Comments,
+	VirtualServer,
+	InstantDomainAlias,
+	PrimaryGroupID,
+	ADRootDomain,
+	ADUsername,
+	ADPassword,
+	ADAuthenticationType,
+	ADParentDomain,
+	ADParentDomainController,
+	OSPlatform,
+	IsCore,
+	PasswordIsSHA256
+FROM Servers
+WHERE
+	ServerName = @ServerName
+	AND @IsAdmin = 1
+
+RETURN
+				*/
+				#endregion
+
 				var isAdmin = CheckIsUserAdmin(actorId);
 
 				var server = Servers
@@ -1708,6 +5168,40 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetServerInternal]
+(
+	@ServerID int
+)
+AS
+SELECT
+	ServerID,
+	ServerName,
+	ServerUrl,
+	Password,
+	Comments,
+	VirtualServer,
+	InstantDomainAlias,
+	PrimaryGroupID,
+	ADEnabled,
+	ADRootDomain,
+	ADUsername,
+	ADPassword,
+	ADAuthenticationType,
+	ADParentDomain,
+	ADParentDomainController,
+	OSPlatform,
+	IsCore,
+	PasswordIsSHA256
+FROM Servers
+WHERE
+	ServerID = @ServerID
+
+RETURN
+				*/
+				#endregion
+
 				var server = Servers
 					.Where(s => s.ServerId == serverId)
 					.Select(s => new
@@ -1749,6 +5243,76 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[AddServer]
+(
+	@ServerID int OUTPUT,
+	@ServerName nvarchar(100),
+	@ServerUrl nvarchar(255),
+	@Password nvarchar(100),
+	@Comments ntext,
+	@VirtualServer bit,
+	@InstantDomainAlias nvarchar(200),
+	@PrimaryGroupID int,
+	@ADEnabled bit,
+	@ADRootDomain nvarchar(200),
+	@ADUsername nvarchar(100),
+	@ADPassword nvarchar(100),
+	@ADAuthenticationType varchar(50),
+	@OSPlatform int,
+	@IsCore bit,
+	@PasswordIsSHA256 bit
+)
+AS
+
+IF @PrimaryGroupID = 0
+
+SET @PrimaryGroupID = NULL
+
+INSERT INTO Servers
+(
+	ServerName,
+	ServerUrl,
+	Password,
+	Comments,
+	VirtualServer,
+	InstantDomainAlias,
+	PrimaryGroupID,
+	ADEnabled,
+	ADRootDomain,
+	ADUsername,
+	ADPassword,
+	ADAuthenticationType,
+	OSPlatform,
+	IsCore,
+	PasswordIsSHA256
+)
+VALUES
+(
+	@ServerName,
+	@ServerUrl,
+	@Password,
+	@Comments,
+	@VirtualServer,
+	@InstantDomainAlias,
+	@PrimaryGroupID,
+	@ADEnabled,
+	@ADRootDomain,
+	@ADUsername,
+	@ADPassword,
+	@ADAuthenticationType,
+	@OSPlatform,
+	@IsCore,
+	@PasswordIsSHA256
+)
+
+SET @ServerID = SCOPE_IDENTITY()
+
+RETURN
+				*/
+				#endregion
+
 				var server = new Data.Entities.Server()
 				{
 					ServerName = serverName, ServerUrl = serverUrl, Password = password, Comments = comments,
@@ -1758,6 +5322,7 @@ namespace SolidCP.EnterpriseServer
 					OSPlatform = osPlatform, IsCore = isCore, PasswordIsSHA256 = PasswordIsSHA256
 				};
 				Servers.Add(server);
+				
 				SaveChanges();
 
 				return server.ServerId;
@@ -1798,6 +5363,55 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[UpdateServer]
+(
+	@ServerID int,
+	@ServerName nvarchar(100),
+	@ServerUrl nvarchar(255),
+	@Password nvarchar(100),
+	@Comments ntext,
+	@InstantDomainAlias nvarchar(200),
+	@PrimaryGroupID int,
+	@ADEnabled bit,
+	@ADRootDomain nvarchar(200),
+	@ADUsername nvarchar(100),
+	@ADPassword nvarchar(100),
+	@ADAuthenticationType varchar(50),
+	@ADParentDomain nvarchar(200),
+	@ADParentDomainController nvarchar(200),
+	@OSPlatform int,
+	@IsCore bit,
+	@PasswordIsSHA256 bit
+)
+AS
+
+IF @PrimaryGroupID = 0
+SET @PrimaryGroupID = NULL
+
+UPDATE Servers SET
+	ServerName = @ServerName,
+	ServerUrl = @ServerUrl,
+	Password = @Password,
+	Comments = @Comments,
+	InstantDomainAlias = @InstantDomainAlias,
+	PrimaryGroupID = @PrimaryGroupID,
+	ADEnabled = @ADEnabled,
+	ADRootDomain = @ADRootDomain,
+	ADUsername = @ADUsername,
+	ADPassword = @ADPassword,
+	ADAuthenticationType = @ADAuthenticationType,
+	ADParentDomain = @ADParentDomain,
+	ADParentDomainController = @ADParentDomainController,
+	OSPlatform = @OSPlatform,
+	IsCore = @IsCore,
+	PasswordIsSHA256 = @PasswordIsSHA256
+WHERE ServerID = @ServerID
+RETURN
+				*/
+				#endregion
+
 				var server = Servers.FirstOrDefault(s => s.ServerId == serverId);
 				if (server == null) return;
 
@@ -1848,6 +5462,59 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[DeleteServer]
+(
+	@ServerID int,
+	@Result int OUTPUT
+)
+AS
+SET @Result = 0
+
+-- check related services
+IF EXISTS (SELECT ServiceID FROM Services WHERE ServerID = @ServerID)
+BEGIN
+	SET @Result = -1
+	RETURN
+END
+
+-- check related packages
+IF EXISTS (SELECT PackageID FROM Packages WHERE ServerID = @ServerID)
+BEGIN
+	SET @Result = -2
+	RETURN
+END
+
+-- check related hosting plans
+IF EXISTS (SELECT PlanID FROM HostingPlans WHERE ServerID = @ServerID)
+BEGIN
+	SET @Result = -3
+	RETURN
+END
+
+BEGIN TRAN
+
+-- delete IP addresses
+DELETE FROM IPAddresses
+WHERE ServerID = @ServerID
+
+-- delete global DNS records
+DELETE FROM GlobalDnsRecords
+WHERE ServerID = @ServerID
+
+-- delete server
+DELETE FROM Servers
+WHERE ServerID = @ServerID
+
+-- delete virtual services if any
+DELETE FROM VirtualServices
+WHERE ServerID = @ServerID
+COMMIT TRAN
+
+RETURN
+				*/
+				#endregion
 				// check related services
 				if (Services.Any(svc => svc.ServerId == serverId)) return -1;
 
@@ -1858,18 +5525,16 @@ namespace SolidCP.EnterpriseServer
 				if (HostingPlans.Any(p => p.ServerId == serverId)) return -3;
 
 				// delete IP addresses
-				IpAddresses.RemoveRange(IpAddresses.Where(ip => ip.ServerId == serverId));
+				IpAddresses.Where(ip => ip.ServerId == serverId).ExecuteDelete(IpAddresses);
 
 				// delete global DNS records
-				GlobalDnsRecords.RemoveRange(GlobalDnsRecords.Where(r => r.ServerId == serverId));
+				GlobalDnsRecords.Where(r => r.ServerId == serverId).ExecuteDelete(GlobalDnsRecords);
 
 				// delete server
-				Servers.RemoveRange(Servers.Where(s => s.ServerId == serverId));
+				Servers.Where(s => s.ServerId == serverId).ExecuteDelete(Servers);
 
 				// delete virtual services if any
-				VirtualServices.RemoveRange(VirtualServices.Where(vs => vs.ServerId == serverId));
-
-				SaveChanges();
+				VirtualServices.Where(vs => vs.ServerId == serverId).ExecuteDelete(VirtualServices);
 
 				return 0;
 			}
@@ -1893,9 +5558,38 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetVirtualServers]
+(
+	@ActorID int
+)
+AS
+
+-- check rights
+DECLARE @IsAdmin bit
+SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+
+SELECT
+	S.ServerID,
+	S.ServerName,
+	S.ServerUrl,
+	(SELECT COUNT(SRV.ServiceID) FROM VirtualServices AS SRV WHERE S.ServerID = SRV.ServerID) AS ServicesNumber,
+	S.Comments,
+	PrimaryGroupID
+FROM Servers AS S
+WHERE
+	VirtualServer = 1
+	AND @IsAdmin = 1
+ORDER BY S.ServerName
+
+RETURN
+				*/
+				#endregion
+
 				var isAdmin = CheckIsUserAdmin(actorId);
 
-				var server = Servers
+				var servers = Servers
 					.Where(s => isAdmin && s.VirtualServer)
 					.OrderBy(s => s.ServerName)
 					.Select(s => new
@@ -1908,7 +5602,7 @@ namespace SolidCP.EnterpriseServer
 						s.PrimaryGroupId
 					});
 
-				return ObjectUtils.DataSetFromEntitySet(server);
+				return EntityDataSet(servers);
 			}
 			else
 			{
@@ -1922,6 +5616,44 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetAvailableVirtualServices]
+(
+	@ActorID int,
+	@ServerID int
+)
+AS
+
+-- check rights
+DECLARE @IsAdmin bit
+SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+
+SELECT
+	S.ServerID,
+	S.ServerName,
+	S.Comments
+FROM Servers AS S
+WHERE
+	VirtualServer = 0 -- get only physical servers
+	AND @IsAdmin = 1
+
+-- services
+SELECT
+	ServiceID,
+	ServerID,
+	ProviderID,
+	ServiceName,
+	Comments
+FROM Services
+WHERE
+	ServiceID NOT IN (SELECT ServiceID FROM VirtualServices WHERE ServerID = @ServerID)
+	AND @IsAdmin = 1
+
+RETURN
+				*/
+				#endregion
+
 				var isAdmin = CheckIsUserAdmin(actorId);
 
 				var servers = Servers
@@ -1949,8 +5681,8 @@ namespace SolidCP.EnterpriseServer
 					});
 
 				var set = new DataSet();
-				set.Tables.Add(ObjectUtils.DataTableFromEntitySet(servers));
-				set.Tables.Add(ObjectUtils.DataTableFromEntitySet(services));
+				set.Tables.Add(EntityDataTable(servers));
+				set.Tables.Add(EntityDataTable(services));
 
 				return set;
 			}
@@ -1967,6 +5699,53 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetVirtualServices]
+(
+	@ActorID int,
+	@ServerID int,
+	@forAutodiscover bit
+)
+AS
+
+-- check rights
+DECLARE @IsAdmin bit
+SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+
+-- virtual groups
+SELECT
+	VRG.VirtualGroupID,
+	RG.GroupID,
+	RG.GroupName,
+	ISNULL(VRG.DistributionType, 1) AS DistributionType,
+	ISNULL(VRG.BindDistributionToPrimary, 1) AS BindDistributionToPrimary
+FROM ResourceGroups AS RG
+LEFT OUTER JOIN VirtualGroups AS VRG ON RG.GroupID = VRG.GroupID AND VRG.ServerID = @ServerID
+WHERE
+	(@IsAdmin = 1 OR @forAutodiscover = 1) AND (ShowGroup = 1)
+ORDER BY RG.GroupOrder
+
+-- services
+SELECT
+	VS.ServiceID,
+	S.ServiceName,
+	S.Comments,
+	P.GroupID,
+	P.DisplayName,
+	SRV.ServerName
+FROM VirtualServices AS VS
+INNER JOIN Services AS S ON VS.ServiceID = S.ServiceID
+INNER JOIN Servers AS SRV ON S.ServerID = SRV.ServerID
+INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
+WHERE
+	VS.ServerID = @ServerID
+	AND (@IsAdmin = 1 OR @forAutodiscover = 1)
+
+RETURN
+				*/
+				#endregion
+
 				var isAdmin = CheckIsUserAdmin(actorId);
 
 				// virtual groups
@@ -2014,8 +5793,8 @@ namespace SolidCP.EnterpriseServer
 					});
 
 				var set = new DataSet();
-				set.Tables.Add(ObjectUtils.DataTableFromEntitySet(virtGroups));
-				set.Tables.Add(ObjectUtils.DataTableFromEntitySet(services));
+				set.Tables.Add(EntityDataTable(virtGroups));
+				set.Tables.Add(EntityDataTable(services));
 
 				return set;
 			}
@@ -2033,9 +5812,55 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[AddVirtualServices]
+(
+	@ServerID int,
+	@Xml ntext
+)
+AS
+
+/*
+XML Format:
+
+<services>
+	<service id=""16"" />
+</services>
+
+*//*
+
+				BEGIN TRAN
+DECLARE @idoc int
+--Create an internal representation of the XML document.
+EXEC sp_xml_preparedocument @idoc OUTPUT, @xml
+
+-- update HP resources
+INSERT INTO VirtualServices
+(
+	ServerID,
+	ServiceID
+)
+SELECT
+	@ServerID,
+	ServiceID
+FROM OPENXML(@idoc, '/services/service',1) WITH
+(
+	ServiceID int '@id'
+) as XS
+WHERE XS.ServiceID NOT IN(SELECT ServiceID FROM VirtualServices WHERE ServerID = @ServerID)
+
+-- remove document
+exec sp_xml_removedocument @idoc
+
+COMMIT TRAN
+RETURN
+				*/
+				#endregion
+
 				/* XML Format:
 				<services>
-					<service id=""16"" />
+					<service id="16" />
 				</services> */
 
 				var services = XElement.Parse(xml);
@@ -2076,6 +5901,47 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[DeleteVirtualServices]
+(
+	@ServerID int,
+	@Xml ntext
+)
+AS
+
+/*
+XML Format:
+
+<services>
+	<service id=""16"" />
+</services>
+*//*
+
+				BEGIN TRAN
+DECLARE @idoc int
+--Create an internal representation of the XML document.
+EXEC sp_xml_preparedocument @idoc OUTPUT, @xml
+
+-- update HP resources
+DELETE FROM VirtualServices
+WHERE ServiceID IN(
+SELECT
+	ServiceID
+FROM OPENXML(@idoc, '/services/service',1) WITH
+(
+	ServiceID int '@id'
+) as XS)
+AND ServerID = @ServerID
+
+-- remove document
+EXEC sp_xml_removedocument @idoc
+
+COMMIT TRAN
+RETURN
+				*/
+				#endregion
+
 				/* XML Format:
 				<services>
 					<service id=""16"" />
@@ -2105,9 +5971,62 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[UpdateVirtualGroups]
+(
+	@ServerID int,
+	@Xml ntext
+)
+AS
+
+/*
+XML Format:
+<groups>
+	<group id="16" distributionType="1" bindDistributionToPrimary="1"/>
+</groups>
+*//*
+
+				BEGIN TRAN
+DECLARE @idoc int
+--Create an internal representation of the XML document.
+EXEC sp_xml_preparedocument @idoc OUTPUT, @xml
+
+-- delete old virtual groups
+DELETE FROM VirtualGroups
+WHERE ServerID = @ServerID
+
+-- update HP resources
+INSERT INTO VirtualGroups
+(
+	ServerID,
+	GroupID,
+	DistributionType,
+	BindDistributionToPrimary
+)
+SELECT
+	@ServerID,
+	GroupID,
+	DistributionType,
+	BindDistributionToPrimary
+FROM OPENXML(@idoc, '/groups/group',1) WITH
+(
+	GroupID int '@id',
+	DistributionType int '@distributionType',
+	BindDistributionToPrimary bit '@bindDistributionToPrimary'
+) as XRG
+
+-- remove document
+exec sp_xml_removedocument @idoc
+
+COMMIT TRAN
+RETURN
+				*/
+				#endregion
+
 				/* XML Format:
 				<groups>
-					<group id=""16"" distributionType=""1"" bindDistributionToPrimary=""1""/>
+					<group id="16" distributionType="1" bindDistributionToPrimary="1"/>
 				</groups> */
 
 				var groupsXml = XElement.Parse(xml);
@@ -2145,6 +6064,26 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetProviders]
+AS
+SELECT
+	PROV.ProviderID,
+	PROV.GroupID,
+	PROV.ProviderName,
+	PROV.EditorControl,
+	PROV.DisplayName,
+	PROV.ProviderType,
+	RG.GroupName + ' - ' + PROV.DisplayName AS ProviderName,
+	PROV.DisableAutoDiscovery
+FROM Providers AS PROV
+INNER JOIN ResourceGroups AS RG ON PROV.GroupID = RG.GroupID
+ORDER BY RG.GroupOrder, PROV.DisplayName
+RETURN
+				*/
+				#endregion
+
 				// TODO ProviderName was duplicate in the Stored Procedure. Resolve correctly. I've changed
 				// the duplicate ProviderName to ProviderGroupedName
 				var providers = Providers
@@ -2167,7 +6106,7 @@ namespace SolidCP.EnterpriseServer
 						j.Provider.DisableAutoDiscovery
 					});
 
-				return ObjectUtils.DataSetFromEntitySet(providers);
+				return EntityDataSet(providers);
 			}
 			else
 			{
@@ -2180,6 +6119,28 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetGroupProviders]
+(
+	@GroupID int
+)
+AS
+SELECT
+	PROV.ProviderID,
+	PROV.GroupID,
+	PROV.ProviderName,
+	PROV.DisplayName,
+	PROV.ProviderType,
+	RG.GroupName + ' - ' + PROV.DisplayName AS ProviderName
+FROM Providers AS PROV
+INNER JOIN ResourceGroups AS RG ON PROV.GroupID = RG.GroupID
+WHERE RG.GroupID = @GroupId
+ORDER BY RG.GroupOrder, PROV.DisplayName
+RETURN
+				*/
+				#endregion
+
 				// TODO ProviderName was duplicate in the Stored Procedure. Resolve correctly. I've changed
 				// the duplicate ProviderName to ProviderGroupedName
 				var providers = Providers
@@ -2215,6 +6176,28 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetProvider]
+(
+	@ProviderID int
+)
+AS
+SELECT
+	ProviderID,
+	GroupID,
+	ProviderName,
+	EditorControl,
+	DisplayName,
+	ProviderType
+FROM Providers
+WHERE
+	ProviderID = @ProviderID
+
+RETURN
+				*/
+				#endregion
+
 				var provider = Providers
 					.Where(p => p.ProviderId == providerId)
 					.Select(p => new
@@ -2241,6 +6224,28 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetProviderByServiceID]
+(
+	@ServiceID int
+)
+AS
+SELECT
+	P.ProviderID,
+	P.GroupID,
+	P.DisplayName,
+	P.EditorControl,
+	P.ProviderType
+FROM Services AS S
+INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
+WHERE
+	S.ServiceID = @ServiceID
+
+RETURN
+				*/
+				#endregion
+
 				var provider = Services
 					.Where(s => s.ServiceId == serviceId)
 					.Join(Providers, s => s.ProviderId, p => p.ProviderId, (s, p) => new
@@ -2269,6 +6274,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 				var vlanEntity = new Data.Entities.PrivateNetworkVlan()
 				{
 					ServerId = serverId != 0 ? serverId : null,
@@ -2301,6 +6310,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 				if (PackageVlans.Any(vlan => vlan.VlanId == vlanId)) return -2;
 
 				PrivateNetworkVlans.RemoveRange(PrivateNetworkVlans.Where(vlan => vlan.VlanId == vlanId));
@@ -2329,6 +6342,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 				var isAdmin = CheckIsUserAdmin(actorId);
 
 				var vlans = PrivateNetworkVlans
@@ -2403,6 +6420,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 				var vlan = PrivateNetworkVlans
 					.Where(v => v.VlanId == vlanId);
 
@@ -2420,6 +6441,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 				var vl = PrivateNetworkVlans.FirstOrDefault(v => v.VlanId == vlanId);
 				if (vl == null) return;
 
@@ -2440,7 +6465,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		bool CheckPackageParent(int parentPackageId, int packageId)
+		public bool CheckPackageParent(int parentPackageId, int packageId)
 		{
 			// check if the user requests hiself
 			if (parentPackageId == packageId) return true;
@@ -2463,6 +6488,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 				var vlans = PackageVlans
 					.Where(pv => CheckPackageParent(packageId, pv.PackageId))
 					.Join(PrivateNetworkVlans, p => p.VlanId, v => v.VlanId, (pv, vl) => new
@@ -2508,6 +6537,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 				var packageVlan = PackageVlans
 					.Where(pv => pv.PackageVlanId == id)
 					.Include(pv => pv.Package)
@@ -2535,6 +6568,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 				int parentPackageId = -1;
 				int serverId = -1;
 
@@ -2652,6 +6689,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 				var items = XElement.Parse(xml);
 				var ids = items
 					.Elements()
@@ -2688,6 +6729,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 				var address = IpAddresses
 					.Where(ip => ip.AddressId == ipAddressId)
 					.Select(ip => new
@@ -2716,6 +6761,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 				var isAdmin = CheckIsUserAdmin(actorId);
 
 				var addresses = IpAddresses
@@ -2783,6 +6832,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 				var isAdmin = CheckIsUserAdmin(actorId);
 
 				var addresses = IpAddresses
@@ -2873,6 +6926,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 				var address = new Data.Entities.IpAddress()
 				{
 					PoolId = poolId,
@@ -2917,6 +6974,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 				var address = IpAddresses.FirstOrDefault(ip => ip.AddressId == addressId);
 
 				if (address != null)
@@ -2954,6 +7015,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 				var items = XElement.Parse(xmlIds);
 				var addressIds = items
 					.Elements()
@@ -2994,6 +7059,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 				if (GlobalDnsRecords.Any(r => r.IpAddressId == ipAddressId)) return -1;
 				if (PackageIpAddresses.Any(p => p.AddressId == ipAddressId && p.ItemId != null)) return -2;
 
@@ -3032,6 +7101,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 				var isAdmin = CheckIsUserAdmin(actorId);
 
 				var clusters = Clusters.Where(c => isAdmin);
@@ -3050,6 +7123,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 				var cluster = new Data.Entities.Cluster() { ClusterName = clusterName };
 
 				Clusters.Add(cluster);
@@ -3075,6 +7152,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 				// reset cluster in services
 #if NETFRAMEWORK
 				var services = Services
@@ -3119,6 +7200,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 				var records = GlobalDnsRecords
 					.Where(r => r.ServiceId == serviceId)
 					.GroupJoin(IpAddresses, r => r.IpAddressId, ip => ip.AddressId, (r, ips) => new
@@ -3152,7 +7237,7 @@ namespace SolidCP.EnterpriseServer
 					});
 
 				var dataSet = new DataSet();
-				var dataTable = ObjectUtils.DataTableFromEntitySet<object>(records);
+				var dataTable = EntityDataTable<object>(records);
 				dataSet.Tables.Add(dataTable);
 
 				return dataSet;
@@ -3171,6 +7256,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 				var records = GlobalDnsRecords
 					.Where(r => r.ServerId == serverId)
 					.GroupJoin(IpAddresses, r => r.IpAddressId, ip => ip.AddressId, (r, ips) => new
@@ -3204,7 +7293,7 @@ namespace SolidCP.EnterpriseServer
 					});
 
 				var dataSet = new DataSet();
-				var dataTable = ObjectUtils.DataTableFromEntitySet<object>(records);
+				var dataTable = EntityDataTable<object>(records);
 				dataSet.Tables.Add(dataTable);
 
 				return dataSet;
@@ -3240,6 +7329,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 				if (!CheckActorPackageRights(actorId, packageId)) throw new AccessViolationException("You are not allowed to access this package");
 
 				var records = GlobalDnsRecords
@@ -3275,7 +7368,7 @@ namespace SolidCP.EnterpriseServer
 					});
 
 				var dataSet = new DataSet();
-				var dataTable = ObjectUtils.DataTableFromEntitySet<object>(records);
+				var dataTable = EntityDataTable<object>(records);
 				dataSet.Tables.Add(dataTable);
 
 				return dataSet;
@@ -3293,6 +7386,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 				var records = ResourceGroupDnsRecords
 					.Where(r => r.GroupId == groupId)
 					.OrderBy(r => r.RecordOrder)
@@ -3308,7 +7405,7 @@ namespace SolidCP.EnterpriseServer
 					});
 
 				var dataSet = new DataSet();
-				var dataTable = ObjectUtils.DataTableFromEntitySet<object>(records);
+				var dataTable = EntityDataTable<object>(records);
 				dataSet.Tables.Add(dataTable);
 
 				return dataSet;
@@ -3324,6 +7421,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 				if (!CheckActorPackageRights(actorId, packageId)) throw new AccessViolationException("You are not allowed to access this package");
 
 				// select PACKAGES DNS records
@@ -3429,7 +7530,7 @@ namespace SolidCP.EnterpriseServer
 					});
 
 				var dataSet = new DataSet();
-				var dataTable = ObjectUtils.DataTableFromEntitySet<object>(recordsSelected);
+				var dataTable = EntityDataTable<object>(recordsSelected);
 				dataSet.Tables.Add(dataTable);
 				return dataSet;
 			}
@@ -3446,6 +7547,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 				// check rights
 				var records = GlobalDnsRecords
 					.Where(r => r.RecordId == recordId)
@@ -3490,6 +7595,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 				if ((serviceId > 0 || serverId > 0) && !CheckIsUserAdmin(actorId))
 					throw new AccessViolationException("You should have administrator role to perform such operation");
 
@@ -3547,6 +7656,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 				int? ipAddressIdOrNull = ipAddressId != 0 ? ipAddressId : null;
 
 				var record = GlobalDnsRecords
@@ -3595,6 +7708,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 				var record = GlobalDnsRecords
 					.FirstOrDefault(r => r.RecordId == recordId);
 
@@ -3646,6 +7763,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 				// check rights
 				if (!CheckActorPackageRights(actorId, packageId))
 					throw new AccessViolationException("You are not allowed to access this package");
@@ -3689,7 +7810,7 @@ namespace SolidCP.EnterpriseServer
 					});
 
 				var dataSet = new DataSet();
-				var dataTable = ObjectUtils.DataTableFromEntitySet<object>(domains);
+				var dataTable = EntityDataTable<object>(domains);
 				dataSet.Tables.Add(dataTable);
 
 				return dataSet;
@@ -3708,7 +7829,51 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
 
+				// load parent package
+				var parentPackageId = Packages
+					.Where(p => p.PackageId == packageId)
+					.Select(p => p.ParentPackageId)
+					.FirstOrDefault();
+
+				var domains = Domains
+					.Where(d => d.HostingAllowed)
+					.Join(PackagesTree(parentPackageId ?? -1, false), d => d.PackageId, t => t, (d, t) => d)
+					.GroupJoin(ServiceItems, d => d.WebSiteId, it => it.ItemId, (d, s) => new
+					{
+						Domain = d,
+						WebSite = s.SingleOrDefault()
+					})
+					.GroupJoin(ServiceItems, d => d.Domain.MailDomainId, it => it.ItemId, (d, s) => new
+					{
+						d.Domain,
+						d.WebSite,
+						MailDomain = s.SingleOrDefault()
+					})
+					.Select(d => new
+					{
+						d.Domain.DomainId,
+						d.Domain.PackageId,
+						d.Domain.ZoneItemId,
+						d.Domain.DomainName,
+						d.Domain.HostingAllowed,
+						d.Domain.WebSiteId,
+						WebSiteName = d.WebSite != null ? d.WebSite.ItemName : null,
+						d.Domain.MailDomainId,
+						MailDomainName = d.MailDomain != null ? d.MailDomain.ItemName : null
+					});
+
+				var dataSet = new DataSet();
+				var dataTable = EntityDataTable<object>(domains);
+				dataSet.Tables.Add(dataTable);
+
+				return dataSet;
 			}
 			else
 			{
@@ -3724,7 +7889,206 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored procedure
+				/*
+				CREATE PROCEDURE [dbo].[GetDomainsPaged]
+				(
+					@ActorID int,
+					@PackageID int,
+					@ServerID int,
+					@Recursive bit,
+					@FilterColumn nvarchar(50) = '',
+					@FilterValue nvarchar(50) = '',
+					@SortColumn nvarchar(50),
+					@StartRow int,
+					@MaximumRows int
+				)
+				AS
+				SET NOCOUNT ON
 
+				-- check rights
+				IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+				RAISERROR('You are not allowed to access this package', 16, 1)
+
+				-- build query and run it to the temporary table
+				DECLARE @sql nvarchar(2500)
+
+				IF @SortColumn = '' OR @SortColumn IS NULL
+				SET @SortColumn = 'DomainName'
+
+				SET @sql = '
+				DECLARE @Domains TABLE
+				(
+					ItemPosition int IDENTITY(1,1),
+					DomainID int
+				)
+				INSERT INTO @Domains (DomainID)
+				SELECT
+					D.DomainID
+				FROM Domains AS D
+				INNER JOIN Packages AS P ON D.PackageID = P.PackageID
+				INNER JOIN UsersDetailed AS U ON P.UserID = U.UserID
+				LEFT OUTER JOIN ServiceItems AS Z ON D.ZoneItemID = Z.ItemID
+				LEFT OUTER JOIN Services AS S ON Z.ServiceID = S.ServiceID
+				LEFT OUTER JOIN Servers AS SRV ON S.ServerID = SRV.ServerID
+				WHERE (D.IsPreviewDomain = 0 AND D.IsDomainPointer = 0) AND
+						((@Recursive = 0 AND D.PackageID = @PackageID)
+						OR (@Recursive = 1 AND dbo.CheckPackageParent(@PackageID, D.PackageID) = 1))
+				AND (@ServerID = 0 OR (@ServerID > 0 AND S.ServerID = @ServerID))
+				'
+
+				IF @FilterValue <> ''
+				BEGIN
+					IF @FilterColumn <> ''
+					BEGIN
+						SET @sql = @sql + ' AND ' + @FilterColumn + ' LIKE @FilterValue '
+					END
+					ELSE
+						SET @sql = @sql + '
+						AND (DomainName LIKE @FilterValue 
+						OR Username LIKE @FilterValue
+						OR ServerName LIKE @FilterValue
+						OR PackageName LIKE @FilterValue) '
+				END
+
+				IF @SortColumn <> '' AND @SortColumn IS NOT NULL
+				SET @sql = @sql + ' ORDER BY ' + @SortColumn + ' '
+
+				SET @sql = @sql + ' SELECT COUNT(DomainID) FROM @Domains;SELECT
+					D.DomainID,
+					D.PackageID,
+					D.ZoneItemID,
+					D.DomainItemID,
+					D.DomainName,
+					D.HostingAllowed,
+					ISNULL(WS.ItemID, 0) AS WebSiteID,
+					WS.ItemName AS WebSiteName,
+					ISNULL(MD.ItemID, 0) AS MailDomainID,
+					MD.ItemName AS MailDomainName,
+					D.IsSubDomain,
+					D.IsPreviewDomain,
+					D.IsDomainPointer,
+					D.ExpirationDate,
+					D.LastUpdateDate,
+					D.RegistrarName,
+					P.PackageName,
+					ISNULL(SRV.ServerID, 0) AS ServerID,
+					ISNULL(SRV.ServerName, '''') AS ServerName,
+					ISNULL(SRV.Comments, '''') AS ServerComments,
+					ISNULL(SRV.VirtualServer, 0) AS VirtualServer,
+					P.UserID,
+					U.Username,
+					U.FirstName,
+					U.LastName,
+					U.FullName,
+					U.RoleID,
+					U.Email
+				FROM @Domains AS SD
+				INNER JOIN Domains AS D ON SD.DomainID = D.DomainID
+				INNER JOIN Packages AS P ON D.PackageID = P.PackageID
+				INNER JOIN UsersDetailed AS U ON P.UserID = U.UserID
+				LEFT OUTER JOIN ServiceItems AS WS ON D.WebSiteID = WS.ItemID
+				LEFT OUTER JOIN ServiceItems AS MD ON D.MailDomainID = MD.ItemID
+				LEFT OUTER JOIN ServiceItems AS Z ON D.ZoneItemID = Z.ItemID
+				LEFT OUTER JOIN Services AS S ON Z.ServiceID = S.ServiceID
+				LEFT OUTER JOIN Servers AS SRV ON S.ServerID = SRV.ServerID
+				WHERE SD.ItemPosition BETWEEN @StartRow + 1 AND @StartRow + @MaximumRows'
+
+				exec sp_executesql @sql, N'@StartRow int, @MaximumRows int, @PackageID int, @FilterValue nvarchar(50), @ServerID int, @Recursive bit', 
+				@StartRow, @MaximumRows, @PackageID, @FilterValue, @ServerID, @Recursive
+
+				RETURN
+				*/
+				#endregion
+
+				// check rights
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				var domains = Domains
+					.Where(d => !recursive && d.PackageId == packageId ||
+						recursive && CheckPackageParent(packageId, d.PackageId))
+					.Join(Packages, d => d.PackageId, p => p.PackageId, (d, p) => new
+					{
+						Domain = d,
+						Package = p
+					})
+					.Join(UsersDetailed, d => d.Package.UserId, u => u.UserId, (d, u) => new
+					{
+						d.Domain, d.Package, User = u
+					})
+					.GroupJoin(ServiceItems, d => d.Domain.WebSiteId, s => s.ItemId, (d, s) => new
+					{
+						d.Domain, d.Package, d.User, WebSite = s.SingleOrDefault()
+					})
+					.GroupJoin(ServiceItems, d => d.Domain.MailDomainId, s => s.ItemId, (d, s) => new
+					{
+						d.Domain, d.Package, d.User, d.WebSite, MailDomain = s.SingleOrDefault()
+					})
+					.GroupJoin(ServiceItems, d => d.Domain.ZoneItemId, s => s.ItemId, (d, s) => new
+					{
+						d.Domain, d.Package, d.User, d.WebSite, d.MailDomain, Zone = s.SingleOrDefault()
+					})
+					.GroupJoin(Services, d => d.Zone != null ? d.Zone.ServiceId : null, s => s.ServiceId, (d, s) => new
+					{
+						d.Domain, d.Package, d.User, d.WebSite, d.MailDomain, d.Zone, Service = s.SingleOrDefault()
+					})
+					.GroupJoin(Servers, d => d.Service != null ? (int?)d.Service.ServerId : null, s => (int?)s.ServerId, (d, s) => new
+					{
+						d.Domain, d.Package, d.User, d.WebSite, d.MailDomain, d.Zone, d.Service, Server = s.SingleOrDefault()
+					})
+					.Select(d => new {
+						d.Domain.DomainId,
+						d.Domain.PackageId,
+						d.Domain.ZoneItemId,
+						d.Domain.DomainItemId,
+						d.Domain.DomainName,
+						d.Domain.HostingAllowed,
+						WebSiteId = d.WebSite != null ? d.WebSite.ItemId : 0,
+						WebSiteName = d.WebSite != null ? d.WebSite.ItemName : null,
+						MailDomainId = d.MailDomain != null ? d.MailDomain.ItemId : 0,
+						MailDomainName = d.MailDomain != null ? d.MailDomain.ItemName : null,
+						d.Domain.IsSubDomain,
+						d.Domain.IsPreviewDomain,
+						d.Domain.IsDomainPointer,
+						d.Domain.ExpirationDate,
+						d.Domain.LastUpdateDate,
+						d.Domain.RegistrarName,
+						d.Package.PackageName,
+						ServerId = d.Server != null ? d.Server.ServerId : 0,
+						ServerName = d.Server != null ? d.Server.ServerName : "",
+						ServerComments = d.Server != null ? d.Server.Comments : "",
+						VirtualServer = d.Server != null ? d.Server.VirtualServer : false,
+						d.Package.UserId,
+						d.User.Username,
+						d.User.FirstName,
+						d.User.LastName,
+						d.User.FullName,
+						d.User.RoleId,
+						d.User.Email
+					});
+				
+				if (!string.IsNullOrEmpty(filterValue)) {
+					if (!string.IsNullOrEmpty(filterColumn))
+					{
+						domains = domains.Where($"{filterColumn}=@0", filterValue);
+					} else
+					{
+						domains = domains.Where(d => d.DomainName == filterValue || d.Username == filterValue ||
+							d.ServerName == filterValue || d.PackageName == filterValue);
+					}
+				}
+
+				if (!string.IsNullOrEmpty(sortColumn)) domains = domains.OrderBy(sortColumn);
+				else domains = domains.OrderBy(d => d.DomainName);
+
+				domains = domains.Skip(startRow).Take(maximumRows);
+
+				var dataSet = new DataSet();
+				var dataTable = EntityDataTable<object>(domains);
+				dataSet.Tables.Add(dataTable);
+
+				return dataSet;
 			}
 			else
 			{
@@ -3746,7 +8110,89 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetDomain]
+(
+	@ActorID int,
+	@DomainID int
+)
+AS
 
+SELECT
+	D.DomainID,
+	D.PackageID,
+	D.ZoneItemID,
+	D.DomainItemID,
+	D.DomainName,
+	D.HostingAllowed,
+	ISNULL(WS.ItemID, 0) AS WebSiteID,
+	WS.ItemName AS WebSiteName,
+	ISNULL(MD.ItemID, 0) AS MailDomainID,
+	MD.ItemName AS MailDomainName,
+	Z.ItemName AS ZoneName,
+	D.IsSubDomain,
+	D.IsPreviewDomain,
+	D.IsDomainPointer
+FROM Domains AS D
+INNER JOIN Packages AS P ON D.PackageID = P.PackageID
+LEFT OUTER JOIN ServiceItems AS WS ON D.WebSiteID = WS.ItemID
+LEFT OUTER JOIN ServiceItems AS MD ON D.MailDomainID = MD.ItemID
+LEFT OUTER JOIN ServiceItems AS Z ON D.ZoneItemID = Z.ItemID
+WHERE
+	D.DomainID = @DomainID
+	AND dbo.CheckActorPackageRights(@ActorID, P.PackageID) = 1
+RETURN
+				*/
+				#endregion
+
+				var domains = Domains
+					.Where(d => d.DomainId == domainId && CheckActorPackageRights(actorId, d.PackageId))
+					.Join(Packages, d => d.PackageId, p => p.PackageId, (d, p) => new
+					{
+						Domain = d,
+						Package = p
+					})
+					.GroupJoin(ServiceItems, d => d.Domain.WebSiteId, s => s.ItemId, (d, s) => new
+					{
+						d.Domain,
+						d.Package,
+						WebSite = s.SingleOrDefault()
+					})
+					.GroupJoin(ServiceItems, d => d.Domain.MailDomainId, s => s.ItemId, (d, s) => new
+					{
+						d.Domain,
+						d.Package,
+						d.WebSite,
+						MailDomain = s.SingleOrDefault()
+					})
+					.GroupJoin(ServiceItems, d => d.Domain.ZoneItemId, s => s.ItemId, (d, s) => new
+					{
+						d.Domain,
+						d.Package,
+						d.WebSite,
+						d.MailDomain,
+						Zone = s.SingleOrDefault()
+					})
+					.Select(d => new
+					{
+						d.Domain.DomainId,
+						d.Domain.PackageId,
+						d.Domain.ZoneItemId,
+						d.Domain.DomainItemId,
+						d.Domain.DomainName,
+						d.Domain.HostingAllowed,
+						WebSiteId = d.WebSite != null ? d.WebSite.ItemId : 0,
+						WebSiteName = d.WebSite != null ? d.WebSite.ItemName : null,
+						MailDomainId = d.MailDomain != null ? d.MailDomain.ItemId : 0,
+						MailDomainName = d.MailDomain != null ? d.MailDomain.ItemName : null,
+						ZoneName = d.Zone != null ? d.Zone.ItemName : null,
+						d.Domain.IsSubDomain,
+						d.Domain.IsPreviewDomain,
+						d.Domain.IsDomainPointer
+					});
+
+				return new EntityDataReader<object>(domains);
 			}
 			else
 			{
@@ -3761,7 +8207,126 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetDomainByName]
+(
+	@ActorID int,
+	@DomainName nvarchar(100),
+	@SearchOnDomainPointer bit,
+	@IsDomainPointer bit
+)
+AS
 
+IF (@SearchOnDomainPointer = 1)
+BEGIN
+	SELECT
+		D.DomainID,
+		D.PackageID,
+		D.ZoneItemID,
+		D.DomainItemID,
+		D.DomainName,
+		D.HostingAllowed,
+		ISNULL(D.WebSiteID, 0) AS WebSiteID,
+		WS.ItemName AS WebSiteName,
+		ISNULL(D.MailDomainID, 0) AS MailDomainID,
+		MD.ItemName AS MailDomainName,
+		Z.ItemName AS ZoneName,
+		D.IsSubDomain,
+		D.IsPreviewDomain,
+		D.IsDomainPointer
+	FROM Domains AS D
+	INNER JOIN Packages AS P ON D.PackageID = P.PackageID
+	LEFT OUTER JOIN ServiceItems AS WS ON D.WebSiteID = WS.ItemID
+	LEFT OUTER JOIN ServiceItems AS MD ON D.MailDomainID = MD.ItemID
+	LEFT OUTER JOIN ServiceItems AS Z ON D.ZoneItemID = Z.ItemID
+	WHERE
+		D.DomainName = @DomainName
+		AND D.IsDomainPointer = @IsDomainPointer
+		AND dbo.CheckActorPackageRights(@ActorID, P.PackageID) = 1
+	RETURN
+END
+ELSE
+BEGIN
+	SELECT
+		D.DomainID,
+		D.PackageID,
+		D.ZoneItemID,
+		D.DomainItemID,
+		D.DomainName,
+		D.HostingAllowed,
+		ISNULL(D.WebSiteID, 0) AS WebSiteID,
+		WS.ItemName AS WebSiteName,
+		ISNULL(D.MailDomainID, 0) AS MailDomainID,
+		MD.ItemName AS MailDomainName,
+		Z.ItemName AS ZoneName,
+		D.IsSubDomain,
+		D.IsPreviewDomain,
+		D.IsDomainPointer
+	FROM Domains AS D
+	INNER JOIN Packages AS P ON D.PackageID = P.PackageID
+	LEFT OUTER JOIN ServiceItems AS WS ON D.WebSiteID = WS.ItemID
+	LEFT OUTER JOIN ServiceItems AS MD ON D.MailDomainID = MD.ItemID
+	LEFT OUTER JOIN ServiceItems AS Z ON D.ZoneItemID = Z.ItemID
+	WHERE
+		D.DomainName = @DomainName
+		AND dbo.CheckActorPackageRights(@ActorID, P.PackageID) = 1
+	RETURN
+END
+				*/
+				#endregion
+
+				var domainsRaw = Domains
+					.Where(d => d.DomainName == domainName && CheckActorPackageRights(actorId, d.PackageId));
+
+				if (searchOnDomainPointer) domainsRaw = domainsRaw.Where(d => d.IsDomainPointer == isDomainPointer);
+
+				var domains = domainsRaw
+					.Join(Packages, d => d.PackageId, p => p.PackageId, (d, p) => new
+					{
+						Domain = d,
+						Package = p
+					})
+					.GroupJoin(ServiceItems, d => d.Domain.WebSiteId, s => s.ItemId, (d, s) => new
+					{
+						d.Domain,
+						d.Package,
+						WebSite = s.SingleOrDefault()
+					})
+					.GroupJoin(ServiceItems, d => d.Domain.MailDomainId, s => s.ItemId, (d, s) => new
+					{
+						d.Domain,
+						d.Package,
+						d.WebSite,
+						MailDomain = s.SingleOrDefault()
+					})
+					.GroupJoin(ServiceItems, d => d.Domain.ZoneItemId, s => s.ItemId, (d, s) => new
+					{
+						d.Domain,
+						d.Package,
+						d.WebSite,
+						d.MailDomain,
+						Zone = s.SingleOrDefault()
+					})
+					.Select(d => new
+					{
+						d.Domain.DomainId,
+						d.Domain.PackageId,
+						d.Domain.ZoneItemId,
+						d.Domain.DomainItemId,
+						d.Domain.DomainName,
+						d.Domain.HostingAllowed,
+						WebSiteId = d.WebSite != null ? d.WebSite.ItemId : 0,
+						WebSiteName = d.WebSite != null ? d.WebSite.ItemName : null,
+						MailDomainId = d.MailDomain != null ? d.MailDomain.ItemId : 0,
+						MailDomainName = d.MailDomain != null ? d.MailDomain.ItemName : null,
+						ZoneName = d.Zone != null ? d.Zone.ItemName : null,
+						d.Domain.IsSubDomain,
+						d.Domain.IsPreviewDomain,
+						d.Domain.IsDomainPointer
+					});
+
+				return new EntityDataReader<object>(domains);
 			}
 			else
 			{
@@ -3779,7 +8344,93 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetDomainsByZoneID]
+(
+	@ActorID int,
+	@ZoneID int
+)
+AS
 
+SELECT
+	D.DomainID,
+	D.PackageID,
+	D.ZoneItemID,
+	D.DomainItemID,
+	D.DomainName,
+	D.HostingAllowed,
+	ISNULL(D.WebSiteID, 0) AS WebSiteID,
+	WS.ItemName AS WebSiteName,
+	ISNULL(D.MailDomainID, 0) AS MailDomainID,
+	MD.ItemName AS MailDomainName,
+	Z.ItemName AS ZoneName,
+	D.IsSubDomain,
+	D.IsPreviewDomain,
+	D.IsDomainPointer
+FROM Domains AS D
+INNER JOIN Packages AS P ON D.PackageID = P.PackageID
+LEFT OUTER JOIN ServiceItems AS WS ON D.WebSiteID = WS.ItemID
+LEFT OUTER JOIN ServiceItems AS MD ON D.MailDomainID = MD.ItemID
+LEFT OUTER JOIN ServiceItems AS Z ON D.ZoneItemID = Z.ItemID
+WHERE
+	D.ZoneItemID = @ZoneID
+	AND dbo.CheckActorPackageRights(@ActorID, P.PackageID) = 1
+RETURN
+				*/
+				#endregion
+
+				var domains = Domains
+					.Where(d => d.ZoneItemId == zoneId && CheckActorPackageRights(actorId, d.PackageId))
+					.Join(Packages, d => d.PackageId, p => p.PackageId, (d, p) => new
+					{
+						Domain = d,
+						Package = p
+					})
+					.GroupJoin(ServiceItems, d => d.Domain.WebSiteId, s => s.ItemId, (d, s) => new
+					{
+						d.Domain,
+						d.Package,
+						WebSite = s.SingleOrDefault()
+					})
+					.GroupJoin(ServiceItems, d => d.Domain.MailDomainId, s => s.ItemId, (d, s) => new
+					{
+						d.Domain,
+						d.Package,
+						d.WebSite,
+						MailDomain = s.SingleOrDefault()
+					})
+					.GroupJoin(ServiceItems, d => d.Domain.ZoneItemId, s => s.ItemId, (d, s) => new
+					{
+						d.Domain,
+						d.Package,
+						d.WebSite,
+						d.MailDomain,
+						Zone = s.SingleOrDefault()
+					})
+					.Select(d => new
+					{
+						d.Domain.DomainId,
+						d.Domain.PackageId,
+						d.Domain.ZoneItemId,
+						d.Domain.DomainItemId,
+						d.Domain.DomainName,
+						d.Domain.HostingAllowed,
+						WebSiteId = d.WebSite != null ? d.WebSite.ItemId : 0,
+						WebSiteName = d.WebSite != null ? d.WebSite.ItemName : null,
+						MailDomainId = d.MailDomain != null ? d.MailDomain.ItemId : 0,
+						MailDomainName = d.MailDomain != null ? d.MailDomain.ItemName : null,
+						ZoneName = d.Zone != null ? d.Zone.ItemName : null,
+						d.Domain.IsSubDomain,
+						d.Domain.IsPreviewDomain,
+						d.Domain.IsDomainPointer
+					});
+
+				var dataSet = new DataSet();
+				var dataTable = EntityDataTable<object>(domains);
+				dataSet.Tables.Add(dataTable);
+
+				return dataSet;
 			}
 			else
 			{
@@ -3794,12 +8445,98 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetDomainsByDomainItemID]
+(
+	@ActorID int,
+	@DomainID int
+)
+AS
 
+SELECT
+	D.DomainID,
+	D.PackageID,
+	D.ZoneItemID,
+	D.DomainItemID,
+	D.DomainName,
+	D.HostingAllowed,
+	ISNULL(D.WebSiteID, 0) AS WebSiteID,
+	WS.ItemName AS WebSiteName,
+	ISNULL(D.MailDomainID, 0) AS MailDomainID,
+	MD.ItemName AS MailDomainName,
+	Z.ItemName AS ZoneName,
+	D.IsSubDomain,
+	D.IsPreviewDomain,
+	D.IsDomainPointer
+FROM Domains AS D
+INNER JOIN Packages AS P ON D.PackageID = P.PackageID
+LEFT OUTER JOIN ServiceItems AS WS ON D.WebSiteID = WS.ItemID
+LEFT OUTER JOIN ServiceItems AS MD ON D.MailDomainID = MD.ItemID
+LEFT OUTER JOIN ServiceItems AS Z ON D.ZoneItemID = Z.ItemID
+WHERE
+	D.DomainItemID = @DomainID
+	AND dbo.CheckActorPackageRights(@ActorID, P.PackageID) = 1
+RETURN
+				*/
+				#endregion
+
+				var domains = Domains
+					.Where(d => d.DomainItemId == domainId && CheckActorPackageRights(actorId, d.PackageId))
+					.Join(Packages, d => d.PackageId, p => p.PackageId, (d, p) => new
+					{
+						Domain = d,
+						Package = p
+					})
+					.GroupJoin(ServiceItems, d => d.Domain.WebSiteId, s => s.ItemId, (d, s) => new
+					{
+						d.Domain,
+						d.Package,
+						WebSite = s.SingleOrDefault()
+					})
+					.GroupJoin(ServiceItems, d => d.Domain.MailDomainId, s => s.ItemId, (d, s) => new
+					{
+						d.Domain,
+						d.Package,
+						d.WebSite,
+						MailDomain = s.SingleOrDefault()
+					})
+					.GroupJoin(ServiceItems, d => d.Domain.ZoneItemId, s => s.ItemId, (d, s) => new
+					{
+						d.Domain,
+						d.Package,
+						d.WebSite,
+						d.MailDomain,
+						Zone = s.SingleOrDefault()
+					})
+					.Select(d => new
+					{
+						d.Domain.DomainId,
+						d.Domain.PackageId,
+						d.Domain.ZoneItemId,
+						d.Domain.DomainItemId,
+						d.Domain.DomainName,
+						d.Domain.HostingAllowed,
+						WebSiteId = d.WebSite != null ? d.WebSite.ItemId : 0,
+						WebSiteName = d.WebSite != null ? d.WebSite.ItemName : null,
+						MailDomainId = d.MailDomain != null ? d.MailDomain.ItemId : 0,
+						MailDomainName = d.MailDomain != null ? d.MailDomain.ItemName : null,
+						ZoneName = d.Zone != null ? d.Zone.ItemName : null,
+						d.Domain.IsSubDomain,
+						d.Domain.IsPreviewDomain,
+						d.Domain.IsDomainPointer
+					});
+
+				var dataSet = new DataSet();
+				var dataTable = EntityDataTable<object>(domains);
+				dataSet.Tables.Add(dataTable);
+
+				return dataSet;
 			}
 			else
 			{
 				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
-					ObjectQualifier + "GetDomainsByDomainItemId",
+					ObjectQualifier + "GetDomainsByDomainItemID",
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@DomainID", domainId));
 			}
@@ -3811,7 +8548,89 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[CheckDomain]
+(
+	@PackageID int,
+	@DomainName nvarchar(100),
+	@IsDomainPointer bit,
+	@Result int OUTPUT
+)
+AS
 
+/*
+@Result values:
+	0 - OK
+	-1 - already exists
+	-2 - sub-domain of prohibited domain
+*/ /*
+
+SET @Result = 0 -- OK
+
+-- check if the domain already exists
+IF EXISTS(
+	SELECT DomainID FROM Domains
+	WHERE DomainName = @DomainName AND IsDomainPointer = @IsDomainPointer
+)
+BEGIN
+	SET @Result = -1
+	RETURN
+END
+
+--check if this is a sub - domain of other domain
+-- that is not allowed for 3rd level hosting
+
+DECLARE @UserID int
+SELECT @UserID = UserID FROM Packages
+WHERE PackageID = @PackageID
+
+-- find sub - domains
+DECLARE @DomainUserID int, @HostingAllowed bit
+SELECT
+	@DomainUserID = P.UserID,
+	@HostingAllowed = D.HostingAllowed
+FROM Domains AS D
+INNER JOIN Packages AS P ON D.PackageID = P.PackageID
+WHERE CHARINDEX('.' + DomainName, @DomainName) > 0
+AND(CHARINDEX('.' + DomainName, @DomainName) + LEN('.' + DomainName)) = LEN(@DomainName) + 1
+AND IsDomainPointer = 0
+
+-- this is a domain of other user
+IF @UserID<> @DomainUserID AND @HostingAllowed = 0
+BEGIN
+	SET @Result = -2
+	RETURN
+END
+
+RETURN
+
+				*/
+				#endregion
+
+				// check if the domain already exists
+				if (Domains.Any(d => d.DomainName == domainName && d.IsDomainPointer == isDomainPointer)) return -1;
+
+				// check if this is a sub-domain of other domain that is not allowed for 3rd level hosting
+				var userId = Packages
+					.Where(p => p.PackageId == packageId)
+					.Select(p => p.UserId)
+					.FirstOrDefault();
+
+				// find sub-domains
+				var subdomains = Domains
+					.Where(d => domainName.IndexOf("." + d.DomainName) >= 0 &&
+						domainName.IndexOf("." + d.DomainName) + d.DomainName.Length + 1 == domainName.Length + 1 &&
+						!d.IsDomainPointer)
+					.Join(Packages, d => d.PackageId, p => p.PackageId, (d, p) => new
+					{
+						p.UserId,
+						d.HostingAllowed
+					});
+
+				if (subdomains.Any(d => d.UserId != userId && !d.HostingAllowed)) return -2;
+
+				return 0;
 			}
 			else
 			{
@@ -3835,6 +8654,44 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[CheckDomainUsedByHostedOrganization] 
+	@DomainName nvarchar(100),
+	@Result int OUTPUT
+AS
+	SET @Result = 0
+	IF EXISTS(SELECT 1 FROM ExchangeAccounts WHERE UserPrincipalName LIKE '%@'+ @DomainName AND AccountType!=2)
+	BEGIN
+		SET @Result = 1
+	END
+	ELSE
+	IF EXISTS(SELECT 1 FROM ExchangeAccountEmailAddresses WHERE EmailAddress LIKE '%@'+ @DomainName)
+	BEGIN
+		SET @Result = 1
+	END
+	ELSE
+	IF EXISTS(SELECT 1 FROM LyncUsers WHERE SipAddress LIKE '%@'+ @DomainName)
+	BEGIN
+		SET @Result = 1
+	END
+	ELSE
+	IF EXISTS(SELECT 1 FROM SfBUsers WHERE SipAddress LIKE '%@'+ @DomainName)
+	BEGIN
+		SET @Result = 1
+	END
+
+	RETURN @Result
+				*/
+				#endregion
+
+				var mailDomain = $"@{domainName}";
+
+				if (ExchangeAccounts.Any(a => a.UserPrincipalName.EndsWith(mailDomain)) ||
+					ExchangeAccountEmailAddresses.Any(e => e.EmailAddress.EndsWith(mailDomain)) ||
+					LyncUsers.Any(u => u.SipAddress.EndsWith(mailDomain)) ||
+					SfBusers.Any(u => u.SipAddress.EndsWith(mailDomain))) return 1;
+				else return 0;
 
 			}
 			else
@@ -3857,7 +8714,84 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[AddDomain]
+(
+	@DomainID int OUTPUT,
+	@ActorID int,
+	@PackageID int,
+	@ZoneItemID int,
+	@DomainName nvarchar(200),
+	@HostingAllowed bit,
+	@WebSiteID int,
+	@MailDomainID int,
+	@IsSubDomain bit,
+	@IsPreviewDomain bit,
+	@IsDomainPointer bit
+)
+AS
 
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+IF @ZoneItemID = 0 SET @ZoneItemID = NULL
+IF @WebSiteID = 0 SET @WebSiteID = NULL
+IF @MailDomainID = 0 SET @MailDomainID = NULL
+
+-- insert record
+INSERT INTO Domains
+(
+	PackageID,
+	ZoneItemID,
+	DomainName,
+	HostingAllowed,
+	WebSiteID,
+	MailDomainID,
+	IsSubDomain,
+	IsPreviewDomain,
+	IsDomainPointer
+)
+VALUES
+(
+	@PackageID,
+	@ZoneItemID,
+	@DomainName,
+	@HostingAllowed,
+	@WebSiteID,
+	@MailDomainID,
+	@IsSubDomain,
+	@IsPreviewDomain,
+	@IsDomainPointer
+)
+
+SET @DomainID = SCOPE_IDENTITY()
+RETURN
+				*/
+				#endregion
+
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				var domain = new Data.Entities.Domain()
+				{
+					PackageId = packageId,
+					ZoneItemId = zoneItemId != 0 ? zoneItemId : null,
+					DomainName = domainName,
+					HostingAllowed = hostingAllowed,
+					WebSiteId = webSiteId != 0 ? webSiteId : null,
+					MailDomainId = mailDomainId != 0 ? mailDomainId : null,
+					IsSubDomain = isSubDomain,
+					IsPreviewDomain = isPreviewDomain,
+					IsDomainPointer = isDomainPointer
+				};
+
+				Domains.Add(domain);
+
+				SaveChanges();
+
+				return domain.DomainId;
 			}
 			else
 			{
@@ -3887,6 +8821,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -3907,6 +8845,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -3924,6 +8866,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -3939,6 +8885,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -3955,6 +8905,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -3970,6 +8924,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -3985,6 +8943,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4001,6 +8963,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4018,6 +8984,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4046,6 +9016,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4066,6 +9040,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4084,6 +9062,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4104,6 +9086,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4120,6 +9106,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4135,6 +9125,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4150,6 +9144,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4164,6 +9162,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4182,6 +9184,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4202,6 +9208,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4226,6 +9236,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4239,6 +9253,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4254,6 +9272,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4278,6 +9300,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4298,6 +9324,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4313,6 +9343,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4328,6 +9362,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4350,6 +9388,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4373,6 +9415,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4391,6 +9437,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4408,6 +9458,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4433,6 +9487,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4460,6 +9518,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4478,6 +9540,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4493,6 +9559,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4510,6 +9580,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4532,6 +9606,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4554,6 +9632,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4577,6 +9659,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4592,6 +9678,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4607,6 +9697,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4627,6 +9721,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4642,6 +9740,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4658,6 +9760,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4676,6 +9782,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4691,6 +9801,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4706,6 +9820,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4721,6 +9839,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4736,6 +9858,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4751,6 +9877,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4770,6 +9900,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4805,6 +9939,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4830,6 +9968,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4852,6 +9994,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4877,6 +10023,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4892,6 +10042,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4907,6 +10061,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4923,6 +10081,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4944,6 +10106,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4965,6 +10131,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -4988,6 +10158,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5004,6 +10178,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5019,6 +10197,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5034,6 +10216,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5049,6 +10235,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5065,6 +10255,11 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
+
 				packageId = 0;
 			}
 			else
@@ -5098,6 +10293,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5120,6 +10319,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5137,6 +10340,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5154,6 +10361,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5170,6 +10381,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5185,6 +10400,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5201,6 +10420,11 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
+
 				addonId = 0;
 			}
 			else
@@ -5231,6 +10455,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5251,6 +10479,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5266,6 +10498,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5291,6 +10527,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5309,6 +10549,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5324,6 +10568,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5343,6 +10591,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5357,6 +10609,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5377,6 +10633,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5403,6 +10663,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5429,6 +10693,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5442,6 +10710,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5456,6 +10728,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5471,6 +10747,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5493,6 +10773,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5511,6 +10795,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5533,6 +10821,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5552,6 +10844,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5569,6 +10865,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5588,6 +10888,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5602,6 +10906,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5616,6 +10924,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5630,6 +10942,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5644,6 +10960,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5658,6 +10978,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5675,6 +10999,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5714,6 +11042,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5735,6 +11067,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5752,6 +11088,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5782,6 +11122,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5796,6 +11140,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5813,6 +11161,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5827,6 +11179,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5841,6 +11197,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5855,6 +11215,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5869,6 +11233,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5883,6 +11251,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5898,6 +11270,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5915,6 +11291,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5936,6 +11316,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5950,6 +11334,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5963,6 +11351,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5975,6 +11367,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -5996,6 +11392,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6014,6 +11414,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6054,6 +11458,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6084,6 +11492,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6099,6 +11511,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6113,6 +11529,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6128,6 +11548,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6154,6 +11578,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6172,6 +11600,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6189,6 +11621,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6207,6 +11643,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6225,6 +11665,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6316,6 +11760,9 @@ namespace SolidCP.EnterpriseServer
 					conn.Close();
 			}
 		}
+
+		public DataTable EntityDataTable<TEntity>(IEnumerable<TEntity> set) => ObjectUtils.DataTableFromEntitySet<TEntity>(set);
+		public DataSet EntityDataSet<TEntity>(IEnumerable<TEntity> set) => ObjectUtils.DataSetFromEntitySet<TEntity>(set);
 		#endregion
 
 		#region Exchange Server
@@ -6326,6 +11773,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6357,6 +11808,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6374,6 +11829,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6391,6 +11850,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6409,6 +11872,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6427,6 +11894,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6443,6 +11914,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6460,6 +11935,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6478,6 +11957,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6495,6 +11978,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6511,6 +11998,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6528,6 +12019,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6551,6 +12046,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6572,6 +12071,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6593,6 +12096,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6617,6 +12124,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6643,6 +12154,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6661,6 +12176,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6677,6 +12196,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6693,6 +12216,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6709,6 +12236,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6726,6 +12257,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6741,6 +12276,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6757,6 +12296,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6773,6 +12316,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6789,6 +12336,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6827,6 +12378,10 @@ namespace SolidCP.EnterpriseServer
 
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6872,6 +12427,10 @@ namespace SolidCP.EnterpriseServer
 
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6897,6 +12456,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6923,6 +12486,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -6947,6 +12514,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7002,6 +12573,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7047,6 +12622,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7063,6 +12642,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7079,6 +12662,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7096,6 +12683,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7112,6 +12703,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7129,6 +12724,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7150,6 +12749,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7176,6 +12779,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7197,6 +12804,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7213,6 +12824,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7229,6 +12844,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7245,6 +12864,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7267,6 +12890,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7283,6 +12910,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7301,6 +12932,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7325,6 +12960,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7343,6 +12982,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7359,6 +13002,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7375,6 +13022,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7391,6 +13042,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7411,6 +13066,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7439,6 +13098,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7466,6 +13129,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7483,6 +13150,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7498,6 +13169,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7515,6 +13190,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7532,6 +13211,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7548,6 +13231,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7563,6 +13250,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7590,6 +13281,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7605,6 +13300,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7621,6 +13320,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7637,6 +13340,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7661,6 +13368,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7676,6 +13387,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7692,6 +13407,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7705,6 +13424,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7720,6 +13443,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7736,6 +13463,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7754,6 +13485,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7775,6 +13510,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7795,6 +13534,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7823,6 +13566,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7848,6 +13595,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7861,6 +13612,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7880,6 +13635,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7897,6 +13656,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7911,6 +13674,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7924,6 +13691,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7941,6 +13712,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7964,6 +13739,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -7987,6 +13766,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8011,6 +13794,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8035,6 +13822,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8051,6 +13842,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8070,6 +13865,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8093,6 +13892,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8112,6 +13915,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8129,6 +13936,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8149,6 +13960,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8166,6 +13981,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8183,6 +14002,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8197,6 +14020,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8213,6 +14040,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8229,6 +14060,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8245,6 +14080,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8261,6 +14100,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8278,6 +14121,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8293,6 +14140,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8309,6 +14160,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8325,6 +14180,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8341,6 +14200,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8359,6 +14222,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8374,6 +14241,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8388,6 +14259,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8415,6 +14290,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8433,6 +14312,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8451,6 +14334,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8469,6 +14356,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8483,6 +14374,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8508,6 +14403,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8527,6 +14426,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8543,6 +14446,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8561,6 +14468,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8589,6 +14500,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8611,6 +14526,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8635,6 +14554,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8649,6 +14572,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8665,6 +14592,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8682,6 +14613,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8697,6 +14632,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8718,6 +14657,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8733,6 +14676,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8749,6 +14696,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8770,6 +14721,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8789,6 +14744,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8808,6 +14767,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8822,6 +14785,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8847,6 +14814,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8872,6 +14843,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8889,6 +14864,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8903,6 +14882,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8919,6 +14902,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8960,6 +14947,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -8994,6 +14985,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9010,6 +15005,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9027,6 +15026,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9043,6 +15046,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9060,6 +15067,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9076,6 +15087,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9096,6 +15111,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9115,6 +15134,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9140,6 +15163,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9163,6 +15190,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9187,6 +15218,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9204,6 +15239,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9218,6 +15257,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9233,6 +15276,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9274,6 +15321,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9308,6 +15359,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9324,6 +15379,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9341,6 +15400,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9358,6 +15421,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9375,6 +15442,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9392,6 +15463,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9446,6 +15521,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9496,6 +15575,10 @@ WHERE ProviderName = @ProviderName",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9521,6 +15604,10 @@ WHERE P.ProviderID = @ProviderID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9554,6 +15641,10 @@ WHERE QuotaName = @QuotaName AND GroupID = @GroupID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9573,6 +15664,10 @@ VALUES (@QuotaID, @GroupID, @QuotaOrder, @QuotaName, @QuotaDescription, 1, 0)",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9598,6 +15693,10 @@ WHERE (Packages.PackageID = @PackageID) AND (Quotas.GroupID = @GroupID) AND (Hos
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9623,6 +15722,10 @@ WHERE Services.ProviderID = @ProviderID and PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9650,6 +15753,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9678,6 +15785,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9693,6 +15804,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9709,6 +15824,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9725,6 +15844,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9754,6 +15877,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9772,6 +15899,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9789,6 +15920,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9808,6 +15943,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9824,6 +15963,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9845,6 +15988,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9862,6 +16009,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9878,6 +16029,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9902,6 +16057,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9919,6 +16078,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9936,6 +16099,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9961,6 +16128,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9978,6 +16149,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -9995,6 +16170,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10015,6 +16194,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10028,6 +16211,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10051,6 +16238,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10069,6 +16260,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10085,6 +16280,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10101,6 +16300,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10119,6 +16322,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10139,6 +16346,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10155,6 +16366,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10175,6 +16390,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10199,6 +16418,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10215,6 +16438,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10231,6 +16458,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10247,6 +16478,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10264,6 +16499,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10284,6 +16523,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10300,6 +16543,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10317,6 +16564,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10345,6 +16596,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10377,6 +16632,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10393,6 +16652,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10409,6 +16672,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10425,6 +16692,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10439,6 +16710,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10468,6 +16743,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10493,6 +16772,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10518,6 +16801,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10534,6 +16821,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10550,6 +16841,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10569,6 +16864,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10589,6 +16888,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10604,6 +16907,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10620,6 +16927,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10647,6 +16958,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10663,6 +16978,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10688,6 +17007,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10734,6 +17057,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10766,6 +17093,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10782,6 +17113,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10798,6 +17133,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10814,6 +17153,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10830,6 +17173,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10851,6 +17198,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10877,6 +17228,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10898,6 +17253,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10919,6 +17278,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10945,6 +17308,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10965,6 +17332,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10981,6 +17352,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -10997,6 +17372,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -11023,6 +17402,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -11039,6 +17422,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -11064,6 +17451,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -11080,6 +17471,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -11096,6 +17491,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -11124,6 +17523,10 @@ WHERE PackageID = @PackageID",
 
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -11147,6 +17550,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -11164,6 +17571,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -11181,6 +17592,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -11197,6 +17612,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -11213,6 +17632,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -11229,6 +17652,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -11246,6 +17673,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -11263,6 +17694,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -11287,6 +17722,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -11302,6 +17741,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -11319,6 +17762,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -11335,6 +17782,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -11355,6 +17806,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -11371,6 +17826,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -11387,6 +17846,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -11399,6 +17862,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -11411,6 +17878,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -11452,6 +17923,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -11474,6 +17949,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -11490,6 +17969,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -11507,6 +17990,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -11522,6 +18009,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -11546,6 +18037,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -11566,6 +18061,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
@@ -11582,6 +18081,10 @@ WHERE PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+				*/
+				#endregion
 
 			}
 			else
