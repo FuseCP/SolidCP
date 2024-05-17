@@ -120,7 +120,7 @@ END
 			*/
 				#endregion
 
-				return new EntityDataReader<Data.Entities.SystemSetting>(SystemSettings.Where(s => s.SettingsName == settingsName));
+				return EntityDataReader(SystemSettings.Where(s => s.SettingsName == settingsName));
 			}
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -3050,7 +3050,7 @@ RETURN
 					.Where(u => u.ItemId == itemId)
 					.Select(u => u.User);
 
-				return new EntityDataReader<Data.Entities.User>(users);
+				return EntityDataReader(users);
 			}
 			else
 			{
@@ -3115,7 +3115,7 @@ AS
 				*/
 				#endregion
 
-				return new EntityDataReader<Data.Entities.User>(Users.Where(u => u.UserId == userId));
+				return EntityDataReader(Users.Where(u => u.UserId == userId));
 			}
 			else
 			{
@@ -3179,7 +3179,7 @@ AS
 				*/
 				#endregion
 
-				return new EntityDataReader<Data.Entities.User>(Users.Where(u => u.Username == username));
+				return EntityDataReader(Users.Where(u => u.Username == username));
 			}
 			else
 			{
@@ -3400,7 +3400,7 @@ AS
 						PinSecret = canGetUserPassword ? u.PinSecret : ""
 					});
 
-				return new EntityDataReader<Data.Entities.User>(user);
+				return EntityDataReader(user);
 			}
 			else
 			{
@@ -3508,7 +3508,7 @@ AS
 					})
 					.Where(u => CanGetUserDetails(actorId, u.UserId));
 
-				return new EntityDataReader<Data.Entities.User>(user);
+				return EntityDataReader(user);
 			}
 			else
 			{
@@ -4185,14 +4185,19 @@ RETURN
 
 				if (!CanUpdateUserDetails(actorId, userId)) return;
 
-				// delete user comments
-				Comments.Where(c => c.ItemId == userId && c.ItemTypeId == "USER").ExecuteDelete(Comments);
-				// delete reseller addon
-				HostingPlans.Where(h => h.UserId == userId && h.IsAddon == true).ExecuteDelete(HostingPlans);
-				// delete user peers
-				Users.Where(u => u.IsPeer && u.OwnerId == userId).ExecuteDelete(Users);
-				// delete user
-				Users.Where(u => u.UserId == userId).ExecuteDelete(Users);
+				using (var transaction = Database.BeginTransaction())
+				{
+					// delete user comments
+					Comments.Where(c => c.ItemId == userId && c.ItemTypeId == "USER").ExecuteDelete(Comments);
+					// delete reseller addon
+					HostingPlans.Where(h => h.UserId == userId && h.IsAddon == true).ExecuteDelete(HostingPlans);
+					// delete user peers
+					Users.Where(u => u.IsPeer && u.OwnerId == userId).ExecuteDelete(Users);
+					// delete user
+					Users.Where(u => u.UserId == userId).ExecuteDelete(Users);
+
+					transaction.Commit();
+				}
 			}
 			else
 			{
@@ -4568,7 +4573,7 @@ AS
 				.Where(s => s.UserId == userId)
 				.Select(s => new { s.ServerUrl });
 
-				return new EntityDataReader<object>(serverUrls);
+				return EntityDataReader(serverUrls);
 			}
 			else
 			{
@@ -4657,7 +4662,7 @@ RETURN
 					setting = UserSettings.FirstOrDefault(s => s.UserId == id);
 				}
 
-				return new EntityDataReader<Data.Entities.UserSetting>(new Data.Entities.UserSetting[] { setting });
+				return EntityDataReader(new Data.Entities.UserSetting[] { setting });
 			}
 			else
 			{
@@ -5026,7 +5031,7 @@ RETURN
 						s.PasswordIsSHA256
 					});
 
-				return new EntityDataReader<object>(server);
+				return EntityDataReader(server);
 			}
 			else
 			{
@@ -5075,7 +5080,7 @@ RETURN
 						s.InstantDomainAlias
 					});
 
-				return new EntityDataReader<object>(server);
+				return EntityDataReader(server);
 			}
 			else
 			{
@@ -5153,7 +5158,7 @@ RETURN
 						s.PasswordIsSHA256
 					});
 
-				return new EntityDataReader<object>(server);
+				return EntityDataReader(server);
 			}
 			else
 			{
@@ -5226,7 +5231,7 @@ RETURN
 						s.PasswordIsSHA256
 					});
 
-				return new EntityDataReader<object>(server);
+				return EntityDataReader(server);
 			}
 			else
 			{
@@ -5524,18 +5529,22 @@ RETURN
 				// check related hosting plans
 				if (HostingPlans.Any(p => p.ServerId == serverId)) return -3;
 
-				// delete IP addresses
-				IpAddresses.Where(ip => ip.ServerId == serverId).ExecuteDelete(IpAddresses);
+				using (var transaction = Database.BeginTransaction())
+				{
+					// delete IP addresses
+					IpAddresses.Where(ip => ip.ServerId == serverId).ExecuteDelete(IpAddresses);
 
-				// delete global DNS records
-				GlobalDnsRecords.Where(r => r.ServerId == serverId).ExecuteDelete(GlobalDnsRecords);
+					// delete global DNS records
+					GlobalDnsRecords.Where(r => r.ServerId == serverId).ExecuteDelete(GlobalDnsRecords);
 
-				// delete server
-				Servers.Where(s => s.ServerId == serverId).ExecuteDelete(Servers);
+					// delete server
+					Servers.Where(s => s.ServerId == serverId).ExecuteDelete(Servers);
 
-				// delete virtual services if any
-				VirtualServices.Where(vs => vs.ServerId == serverId).ExecuteDelete(VirtualServices);
+					// delete virtual services if any
+					VirtualServices.Where(vs => vs.ServerId == serverId).ExecuteDelete(VirtualServices);
 
+					transaction.Commit();
+				}
 				return 0;
 			}
 			else
@@ -6210,7 +6219,7 @@ RETURN
 						p.ProviderType
 					});
 
-				return new EntityDataReader<object>(provider);
+				return EntityDataReader(provider);
 			}
 			else
 			{
@@ -6257,7 +6266,7 @@ RETURN
 						p.ProviderType
 					});
 
-				return new EntityDataReader<object>(provider);
+				return EntityDataReader(provider);
 			}
 			else
 			{
@@ -6276,8 +6285,66 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddPrivateNetworkVlan]
+(
+ @VlanID int OUTPUT,
+ @Vlan int,
+ @ServerID int,
+ @Comments ntext
+)
+AS
+BEGIN
+ IF @ServerID = 0
+ SET @ServerID = NULL
+
+ INSERT INTO PrivateNetworkVLANs(Vlan, ServerID, Comments)
+ VALUES (@Vlan, @ServerID, @Comments)
+
+ SET @VlanID = SCOPE_IDENTITY()
+
+ RETURN
+END
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[AddRDSCertificate]
+(
+	@RDSCertificateId INT OUTPUT,
+	@ServiceId INT,
+	@Content NTEXT,
+	@Hash NVARCHAR(255),
+	@FileName NVARCHAR(255),
+	@ValidFrom DATETIME,
+	@ExpiryDate DATETIME
+)
+AS
+INSERT INTO RDSCertificates
+(
+	ServiceId,
+	Content,
+	Hash,
+	FileName,
+	ValidFrom,
+	ExpiryDate	
+)
+VALUES
+(
+	@ServiceId,
+	@Content,
+	@Hash,
+	@FileName,
+	@ValidFrom,
+	@ExpiryDate
+)
+
+SET @RDSCertificateId = SCOPE_IDENTITY()
+
+RETURN
 				*/
 				#endregion
+
 				var vlanEntity = new Data.Entities.PrivateNetworkVlan()
 				{
 					ServerId = serverId != 0 ? serverId : null,
@@ -6312,13 +6379,29 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeletePrivateNetworkVLAN]
+(
+	@VlanID int,
+	@Result int OUTPUT
+)
+AS
+
+SET @Result = 0
+IF EXISTS(SELECT VlanID FROM PackageVLANs WHERE VlanID = @VlanID)
+BEGIN
+	SET @Result = -2
+	RETURN
+END
+
+DELETE FROM PrivateNetworkVLANs
+WHERE VlanID = @VlanID
+RETURN
 				*/
 				#endregion
+
 				if (PackageVlans.Any(vlan => vlan.VlanId == vlanId)) return -2;
 
-				PrivateNetworkVlans.RemoveRange(PrivateNetworkVlans.Where(vlan => vlan.VlanId == vlanId));
-
-				SaveChanges();
+				PrivateNetworkVlans.Where(vlan => vlan.VlanId == vlanId).ExecuteDelete(PrivateNetworkVlans);
 
 				return 0;
 			}
@@ -6344,8 +6427,100 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetPrivateNetworVLANsPaged]
+(
+ @ActorID int,
+ @ServerID int,
+ @FilterColumn nvarchar(50) = '',
+ @FilterValue nvarchar(50) = '',
+ @SortColumn nvarchar(50),
+ @StartRow int,
+ @MaximumRows int
+)
+AS
+BEGIN
+
+-- check rights
+DECLARE @IsAdmin bit
+SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+
+-- start
+DECLARE @condition nvarchar(700)
+SET @condition = '
+@IsAdmin = 1
+AND (@ServerID = 0 OR @ServerID <> 0 AND V.ServerID = @ServerID)
+'
+
+IF @FilterValue <> '' AND @FilterValue IS NOT NULL
+BEGIN
+ IF @FilterColumn <> '' AND @FilterColumn IS NOT NULL
+  SET @condition = @condition + ' AND ' + @FilterColumn + ' LIKE ''' + @FilterValue + ''''
+ ELSE
+  SET @condition = @condition + '
+   AND (Vlan LIKE ''' + @FilterValue + '''
+   OR ServerName LIKE ''' + @FilterValue + '''
+   OR Username LIKE ''' + @FilterValue + ''')'
+END
+
+IF @SortColumn IS NULL OR @SortColumn = ''
+SET @SortColumn = 'V.Vlan ASC'
+
+DECLARE @sql nvarchar(3500)
+
+set @sql = '
+SELECT COUNT(V.VlanID)
+FROM dbo.PrivateNetworkVLANs AS V
+LEFT JOIN Servers AS S ON V.ServerID = S.ServerID
+LEFT JOIN PackageVLANs AS PA ON V.VlanID = PA.VlanID
+LEFT JOIN dbo.Packages P ON PA.PackageID = P.PackageID
+LEFT JOIN dbo.Users U ON P.UserID = U.UserID
+WHERE ' + @condition + '
+
+DECLARE @VLANs AS TABLE
+(
+ VlanID int
+);
+
+WITH TempItems AS (
+ SELECT ROW_NUMBER() OVER (ORDER BY ' + @SortColumn + ') as Row,
+  V.VlanID
+ FROM dbo.PrivateNetworkVLANs AS V
+ LEFT JOIN Servers AS S ON V.ServerID = S.ServerID
+ LEFT JOIN PackageVLANs AS PA ON V.VlanID = PA.VlanID
+ LEFT JOIN dbo.Packages P ON PA.PackageID = P.PackageID
+ LEFT JOIN dbo.Users U ON U.UserID = P.UserID
+ WHERE ' + @condition + '
+)
+
+INSERT INTO @VLANs
+SELECT VlanID FROM TempItems
+WHERE TempItems.Row BETWEEN @StartRow + 1 and @StartRow + @MaximumRows
+
+SELECT
+ V.VlanID,
+ V.Vlan,
+ V.Comments,
+ V.ServerID,
+ S.ServerName,
+ PA.PackageID,
+ P.PackageName,
+ P.UserID,
+ U.UserName
+FROM @VLANs AS TA
+INNER JOIN dbo.PrivateNetworkVLANs AS V ON TA.VlanID = V.VlanID
+LEFT JOIN Servers AS S ON V.ServerID = S.ServerID
+LEFT JOIN PackageVLANs AS PA ON V.VlanID = PA.VlanID
+LEFT JOIN dbo.Packages P ON PA.PackageID = P.PackageID
+LEFT JOIN dbo.Users U ON U.UserID = P.UserID
+'
+
+exec sp_executesql @sql, N'@IsAdmin bit, @ServerID int, @StartRow int, @MaximumRows int',
+@IsAdmin, @ServerID, @StartRow, @MaximumRows
+
+END
 				*/
 				#endregion
+
 				var isAdmin = CheckIsUserAdmin(actorId);
 
 				var vlans = PrivateNetworkVlans
@@ -6399,7 +6574,7 @@ RETURN
 
 				vlans = vlans.Skip(startRow).Take(maximumRows);
 
-				return new EntityDataReader<object>(vlans);
+				return EntityDataReader(vlans);
 			}
 			else
 			{
@@ -6422,12 +6597,30 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetPrivateNetworVLAN]
+(
+ @VlanID int
+)
+AS
+BEGIN
+ -- select
+ SELECT
+  VlanID,
+  Vlan,
+  ServerID,
+  Comments
+ FROM PrivateNetworkVLANs
+ WHERE
+  VlanID = @VlanID
+ RETURN
+END
 				*/
 				#endregion
+
 				var vlan = PrivateNetworkVlans
 					.Where(v => v.VlanId == vlanId);
 
-				return new EntityDataReader<Data.Entities.PrivateNetworkVlan>(vlan);
+				return EntityDataReader(vlan);
 			}
 			else
 			{
@@ -6443,8 +6636,28 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdatePrivateNetworVLAN]
+(
+ @VlanID int,
+ @ServerID int,
+ @Vlan int,
+ @Comments ntext
+)
+AS
+BEGIN
+ IF @ServerID = 0
+ SET @ServerID = NULL
+
+ UPDATE PrivateNetworkVLANs SET
+  Vlan = @Vlan,
+  ServerID = @ServerID,
+  Comments = @Comments
+ WHERE VlanID = @VlanID
+ RETURN
+END
 				*/
 				#endregion
+
 				var vl = PrivateNetworkVlans.FirstOrDefault(v => v.VlanId == vlanId);
 				if (vl == null) return;
 
@@ -6467,6 +6680,51 @@ RETURN
 
 		public bool CheckPackageParent(int parentPackageId, int packageId)
 		{
+			#region Stored Procedure
+			/*
+CREATE FUNCTION [dbo].[CheckPackageParent]
+(
+	@ParentPackageID int,
+	@PackageID int
+)
+RETURNS bit
+AS
+BEGIN
+
+-- check if the user requests hiself
+IF @ParentPackageID = @PackageID
+BEGIN
+	RETURN 1
+END
+
+DECLARE @TmpParentPackageID int, @TmpPackageID int
+SET @TmpPackageID = @PackageID
+
+WHILE 10 = 10
+BEGIN
+
+	SET @TmpParentPackageID = NULL --reset var
+
+	-- get owner
+	SELECT
+		@TmpParentPackageID = ParentPackageID
+	FROM Packages
+	WHERE PackageID = @TmpPackageID
+
+	IF @TmpParentPackageID IS NULL -- the last parent package
+		BREAK
+
+	IF @TmpParentPackageID = @ParentPackageID
+	RETURN 1
+
+	SET @TmpPackageID = @TmpParentPackageID
+END
+
+RETURN 0
+END
+			*/
+			#endregion
+
 			// check if the user requests hiself
 			if (parentPackageId == packageId) return true;
 
@@ -6490,8 +6748,77 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetPackagePrivateNetworkVLANs]
+(
+ @PackageID int,
+ @SortColumn nvarchar(50),
+ @StartRow int,
+ @MaximumRows int
+)
+AS
+BEGIN
+-- start
+DECLARE @condition nvarchar(700)
+SET @condition = '
+dbo.CheckPackageParent(@PackageID, PA.PackageID) = 1
+'
+
+IF @SortColumn IS NULL OR @SortColumn = ''
+SET @SortColumn = 'V.Vlan ASC'
+
+DECLARE @sql nvarchar(3500)
+
+set @sql = '
+SELECT COUNT(PA.PackageVlanID)
+FROM dbo.PackageVLANs PA
+INNER JOIN dbo.PrivateNetworkVLANs AS V ON PA.VlanID = V.VlanID
+INNER JOIN dbo.Packages P ON PA.PackageID = P.PackageID
+INNER JOIN dbo.Users U ON U.UserID = P.UserID
+WHERE ' + @condition + '
+
+DECLARE @VLANs AS TABLE
+(
+ PackageVlanID int
+);
+
+WITH TempItems AS (
+ SELECT ROW_NUMBER() OVER (ORDER BY ' + @SortColumn + ') as Row,
+  PA.PackageVlanID
+ FROM dbo.PackageVLANs PA
+ INNER JOIN dbo.PrivateNetworkVLANs AS V ON PA.VlanID = V.VlanID
+ INNER JOIN dbo.Packages P ON PA.PackageID = P.PackageID
+ INNER JOIN dbo.Users U ON U.UserID = P.UserID
+ WHERE ' + @condition + '
+)
+
+INSERT INTO @VLANs
+SELECT PackageVlanID FROM TempItems
+WHERE TempItems.Row BETWEEN @StartRow + 1 and @StartRow + @MaximumRows
+
+SELECT
+ PA.PackageVlanID,
+ PA.VlanID,
+ V.Vlan,
+ PA.PackageID,
+ P.PackageName,
+ P.UserID,
+ U.UserName
+FROM @VLANs AS TA
+INNER JOIN dbo.PackageVLANs AS PA ON TA.PackageVlanID = PA.PackageVlanID
+INNER JOIN dbo.PrivateNetworkVLANs AS V ON PA.VlanID = V.VlanID
+INNER JOIN dbo.Packages P ON PA.PackageID = P.PackageID
+INNER JOIN dbo.Users U ON U.UserID = P.UserID
+'
+
+print @sql
+
+exec sp_executesql @sql, N'@PackageID int, @StartRow int, @MaximumRows int',
+@PackageID, @StartRow, @MaximumRows
+
+END
 				*/
 				#endregion
+
 				var vlans = PackageVlans
 					.Where(pv => CheckPackageParent(packageId, pv.PackageId))
 					.Join(PrivateNetworkVlans, p => p.VlanId, v => v.VlanId, (pv, vl) => new
@@ -6519,7 +6846,7 @@ RETURN
 
 				vlans = vlans.Skip(startRow).Take(maximumRows);
 
-				return new EntityDataReader<object>(vlans);
+				return EntityDataReader(vlans);
 			}
 			else
 			{
@@ -6539,8 +6866,37 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeallocatePackageVLAN]
+	@PackageVlanID int
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	-- check parent package
+	DECLARE @ParentPackageID int
+
+	SELECT @ParentPackageID = P.ParentPackageID
+	FROM PackageVLANs AS PV
+	INNER JOIN Packages AS P ON PV.PackageID = P.PackageId
+	WHERE PV.PackageVlanID = @PackageVlanID
+
+	IF (@ParentPackageID = 1) -- ""System"" space
+	BEGIN
+		DELETE FROM dbo.PackageVLANs
+		WHERE PackageVlanID = @PackageVlanID
+	END
+	ELSE -- 2rd level space and below
+	BEGIN
+		UPDATE PackageVLANs
+		SET PackageID = @ParentPackageID
+		WHERE PackageVlanID = @PackageVlanID
+	END
+
+END
 				*/
 				#endregion
+
 				var packageVlan = PackageVlans
 					.Where(pv => pv.PackageVlanId == id)
 					.Include(pv => pv.Package)
@@ -6548,14 +6904,14 @@ RETURN
 
 				if (packageVlan.Package.ParentPackageId == 1) // System space
 				{
-					PackageVlans.RemoveRange(PackageVlans.Where(pv => pv.PackageVlanId == id));
+					PackageVlans.Where(pv => pv.PackageVlanId == id).ExecuteDelete(PackageVlans);
 				}
 				else // 2nd level space and below
 				{
 					packageVlan.PackageId = id;
-				}
 
-				SaveChanges();
+					SaveChanges();
+				}
 			}
 			else
 			{
@@ -6570,8 +6926,89 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetUnallottedVLANs]
+ @PackageID int,
+ @ServiceID int
+AS
+BEGIN
+ DECLARE @ParentPackageID int
+ DECLARE @ServerID int
+IF (@PackageID = -1) -- NO PackageID defined, use ServerID from ServiceID (VPS Import)
+BEGIN
+ SELECT
+  @ServerID = ServerID,
+  @ParentPackageID = 1
+ FROM Services
+ WHERE ServiceID = @ServiceID
+END
+ELSE
+BEGIN
+ SELECT
+  @ParentPackageID = ParentPackageID,
+  @ServerID = ServerID
+ FROM Packages
+ WHERE PackageID = @PackageId
+END
+
+IF @ParentPackageID = 1 -- ""System"" space
+BEGIN
+  -- check if server is physical
+  IF EXISTS(SELECT * FROM Servers WHERE ServerID = @ServerID AND VirtualServer = 0)
+  BEGIN
+   -- physical server
+   SELECT
+    V.VlanID,
+    V.Vlan,
+    V.ServerID
+   FROM dbo.PrivateNetworkVLANs AS V
+   WHERE
+    (V.ServerID = @ServerID OR V.ServerID IS NULL)
+    AND V.VlanID NOT IN (SELECT PV.VlanID FROM dbo.PackageVLANs AS PV)
+   ORDER BY V.ServerID DESC, V.Vlan
+  END
+  ELSE
+  BEGIN
+   -- virtual server
+   -- get resource group by service
+   DECLARE @GroupID int
+   SELECT @GroupID = P.GroupID FROM Services AS S
+   INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
+   WHERE S.ServiceID = @ServiceID
+   SELECT
+    V.VlanID,
+    V.Vlan,
+    V.ServerID
+   FROM dbo.PrivateNetworkVLANs AS V
+   WHERE
+    (V.ServerID IN (
+     SELECT SVC.ServerID FROM [dbo].[Services] AS SVC
+     INNER JOIN [dbo].[Providers] AS P ON SVC.ProviderID = P.ProviderID
+     WHERE [SVC].[ServiceID] = @ServiceId AND P.GroupID = @GroupID
+    ) OR V.ServerID IS NULL)
+    AND V.VlanID NOT IN (SELECT PV.VlanID FROM dbo.PackageVLANs AS PV)
+   ORDER BY V.ServerID DESC, V.Vlan
+  END
+ END
+ ELSE -- 2rd level space and below
+ BEGIN
+  -- get service location
+  SELECT @ServerID = S.ServerID FROM Services AS S
+  WHERE S.ServiceID = @ServiceID
+  SELECT
+   V.VlanID,
+   V.Vlan,
+   V.ServerID
+  FROM dbo.PackageVLANs AS PV
+  INNER JOIN PrivateNetworkVLANs AS V ON PV.VlanID = V.VlanID
+  WHERE
+   PV.PackageID = @ParentPackageID
+   AND (V.ServerID = @ServerID OR V.ServerID IS NULL)
+  ORDER BY V.ServerID DESC, V.Vlan
+ END
+END
 				*/
 				#endregion
+
 				int parentPackageId = -1;
 				int serverId = -1;
 
@@ -6614,7 +7051,7 @@ RETURN
 								g.Vlan.Vlan,
 								g.Vlan.ServerId
 							});
-						return new EntityDataReader<object>(vlans);
+						return EntityDataReader(vlans);
 					} else
 					{ // virtual server, get resource group by service
 						var groupId = Services
@@ -6649,7 +7086,7 @@ RETURN
 							})
 							.OrderByDescending(g => g.ServerId)
 							.ThenBy(g => g.Vlan);
-						return new EntityDataReader<object>(vlans);
+						return EntityDataReader(vlans);
 					}
 				} else
 				{ // 2nd level space and below, get service location
@@ -6673,7 +7110,7 @@ RETURN
 						})
 						.OrderByDescending(g => g.ServerId)
 						.ThenBy(g => g.Vlan);
-					return new EntityDataReader<object>(vlans);
+					return EntityDataReader(vlans);
 				}
 			}
 			else
@@ -6691,8 +7128,50 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AllocatePackageVLANs]
+(
+	@PackageID int,
+	@xml ntext
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	DECLARE @idoc int
+	--Create an internal representation of the XML document.
+	EXEC sp_xml_preparedocument @idoc OUTPUT, @xml
+
+	-- delete
+	DELETE FROM PackageVLANs
+	FROM PackageVLANs AS PV
+	INNER JOIN OPENXML(@idoc, '/items/item', 1) WITH 
+	(
+		VlanID int '@id'
+	) as PX ON PV.VlanID = PX.VlanID
+
+	-- insert
+	INSERT INTO dbo.PackageVLANs
+	(		
+		PackageID,
+		VlanID	
+	)
+	SELECT		
+		@PackageID,
+		VlanID
+
+	FROM OPENXML(@idoc, '/items/item', 1) WITH 
+	(
+		VlanID int '@id'
+	) as PX
+
+	-- remove document
+	exec sp_xml_removedocument @idoc
+
+END
 				*/
 				#endregion
+
 				var items = XElement.Parse(xml);
 				var ids = items
 					.Elements()
@@ -6731,8 +7210,31 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetIPAddress]
+(
+ @AddressID int
+)
+AS
+BEGIN
+ -- select
+ SELECT
+  AddressID,
+  ServerID,
+  ExternalIP,
+  InternalIP,
+  PoolID,
+  SubnetMask,
+  DefaultGateway,
+  Comments,
+  VLAN
+ FROM IPAddresses
+ WHERE
+  AddressID = @AddressID
+ RETURN
+END
 				*/
 				#endregion
+
 				var address = IpAddresses
 					.Where(ip => ip.AddressId == ipAddressId)
 					.Select(ip => new
@@ -6747,7 +7249,7 @@ RETURN
 						ip.Comments,
 						ip.Vlan
 					});
-				return new EntityDataReader<object>(address);
+				return EntityDataReader(address);
 			}
 			else
 			{
@@ -6763,8 +7265,49 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetIPAddresses]
+(
+ @ActorID int,
+ @PoolID int,
+ @ServerID int
+)
+AS
+BEGIN
+
+-- check rights
+DECLARE @IsAdmin bit
+SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+
+SELECT
+ IP.AddressID,
+ IP.PoolID,
+ IP.ExternalIP,
+ IP.InternalIP,
+ IP.SubnetMask,
+ IP.DefaultGateway,
+ IP.Comments,
+ IP.VLAN,
+ IP.ServerID,
+ S.ServerName,
+ PA.ItemID,
+ SI.ItemName,
+ PA.PackageID,
+ P.PackageName,
+ P.UserID,
+ U.UserName
+FROM dbo.IPAddresses AS IP
+LEFT JOIN Servers AS S ON IP.ServerID = S.ServerID
+LEFT JOIN PackageIPAddresses AS PA ON IP.AddressID = PA.AddressID
+LEFT JOIN ServiceItems SI ON PA.ItemId = SI.ItemID
+LEFT JOIN dbo.Packages P ON PA.PackageID = P.PackageID
+LEFT JOIN dbo.Users U ON U.UserID = P.UserID
+WHERE @IsAdmin = 1
+AND (@PoolID = 0 OR @PoolID <> 0 AND IP.PoolID = @PoolID)
+AND (@ServerID = 0 OR @ServerID <> 0 AND IP.ServerID = @ServerID)
+END
 				*/
 				#endregion
+
 				var isAdmin = CheckIsUserAdmin(actorId);
 
 				var addresses = IpAddresses
@@ -6813,7 +7356,7 @@ RETURN
 						u.Username
 					});
 
-				return new EntityDataReader<object>(addresses);
+				return EntityDataReader(addresses);
 			}
 			else
 			{
@@ -6834,8 +7377,115 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetIPAddressesPaged]
+(
+ @ActorID int,
+ @PoolID int,
+ @ServerID int,
+ @FilterColumn nvarchar(50) = '',
+ @FilterValue nvarchar(50) = '',
+ @SortColumn nvarchar(50),
+ @StartRow int,
+ @MaximumRows int
+)
+AS
+BEGIN
+
+-- check rights
+DECLARE @IsAdmin bit
+SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+
+-- start
+DECLARE @condition nvarchar(700)
+SET @condition = '
+@IsAdmin = 1
+AND (@PoolID = 0 OR @PoolID <> 0 AND IP.PoolID = @PoolID)
+AND (@ServerID = 0 OR @ServerID <> 0 AND IP.ServerID = @ServerID)
+'
+
+IF @FilterValue <> '' AND @FilterValue IS NOT NULL
+BEGIN
+ IF @FilterColumn <> '' AND @FilterColumn IS NOT NULL
+  SET @condition = @condition + ' AND ' + @FilterColumn + ' LIKE ''' + @FilterValue + ''''
+ ELSE
+  SET @condition = @condition + '
+   AND (ExternalIP LIKE ''' + @FilterValue + '''
+   OR InternalIP LIKE ''' + @FilterValue + '''
+   OR DefaultGateway LIKE ''' + @FilterValue + '''
+   OR ServerName LIKE ''' + @FilterValue + '''
+   OR ItemName LIKE ''' + @FilterValue + '''
+   OR Username LIKE ''' + @FilterValue + ''')'
+END
+
+IF @SortColumn IS NULL OR @SortColumn = ''
+SET @SortColumn = 'IP.ExternalIP ASC'
+
+DECLARE @sql nvarchar(3500)
+
+set @sql = '
+SELECT COUNT(IP.AddressID)
+FROM dbo.IPAddresses AS IP
+LEFT JOIN Servers AS S ON IP.ServerID = S.ServerID
+LEFT JOIN PackageIPAddresses AS PA ON IP.AddressID = PA.AddressID
+LEFT JOIN ServiceItems SI ON PA.ItemId = SI.ItemID
+LEFT JOIN dbo.Packages P ON PA.PackageID = P.PackageID
+LEFT JOIN dbo.Users U ON P.UserID = U.UserID
+WHERE ' + @condition + '
+
+DECLARE @Addresses AS TABLE
+(
+ AddressID int
+);
+
+WITH TempItems AS (
+ SELECT ROW_NUMBER() OVER (ORDER BY ' + @SortColumn + ') as Row,
+  IP.AddressID
+ FROM dbo.IPAddresses AS IP
+ LEFT JOIN Servers AS S ON IP.ServerID = S.ServerID
+ LEFT JOIN PackageIPAddresses AS PA ON IP.AddressID = PA.AddressID
+ LEFT JOIN ServiceItems SI ON PA.ItemId = SI.ItemID
+ LEFT JOIN dbo.Packages P ON PA.PackageID = P.PackageID
+ LEFT JOIN dbo.Users U ON U.UserID = P.UserID
+ WHERE ' + @condition + '
+)
+
+INSERT INTO @Addresses
+SELECT AddressID FROM TempItems
+WHERE TempItems.Row BETWEEN @StartRow + 1 and @StartRow + @MaximumRows
+
+SELECT
+ IP.AddressID,
+ IP.PoolID,
+ IP.ExternalIP,
+ IP.InternalIP,
+ IP.SubnetMask,
+ IP.DefaultGateway,
+ IP.Comments,
+ IP.VLAN,
+ IP.ServerID,
+ S.ServerName,
+ PA.ItemID,
+ SI.ItemName,
+ PA.PackageID,
+ P.PackageName,
+ P.UserID,
+ U.UserName
+FROM @Addresses AS TA
+INNER JOIN dbo.IPAddresses AS IP ON TA.AddressID = IP.AddressID
+LEFT JOIN Servers AS S ON IP.ServerID = S.ServerID
+LEFT JOIN PackageIPAddresses AS PA ON IP.AddressID = PA.AddressID
+LEFT JOIN ServiceItems SI ON PA.ItemId = SI.ItemID
+LEFT JOIN dbo.Packages P ON PA.PackageID = P.PackageID
+LEFT JOIN dbo.Users U ON U.UserID = P.UserID
+'
+
+exec sp_executesql @sql, N'@IsAdmin bit, @PoolID int, @ServerID int, @StartRow int, @MaximumRows int',
+@IsAdmin, @PoolID, @ServerID, @StartRow, @MaximumRows
+
+END
 				*/
 				#endregion
+
 				var isAdmin = CheckIsUserAdmin(actorId);
 
 				var addresses = IpAddresses
@@ -6903,7 +7553,7 @@ RETURN
 
 				addresses = addresses.Skip(startRow).Take(maximumRows);
 
-				return new EntityDataReader<object>(addresses);
+				return EntityDataReader(addresses);
 			}
 			else
 			{
@@ -6928,8 +7578,33 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddIPAddress]
+(
+ @AddressID int OUTPUT,
+ @ServerID int,
+ @ExternalIP varchar(24),
+ @InternalIP varchar(24),
+ @PoolID int,
+ @SubnetMask varchar(15),
+ @DefaultGateway varchar(15),
+ @Comments ntext,
+ @VLAN int
+)
+AS
+BEGIN
+ IF @ServerID = 0
+ SET @ServerID = NULL
+
+ INSERT INTO IPAddresses (ServerID, ExternalIP, InternalIP, PoolID, SubnetMask, DefaultGateway, Comments, VLAN)
+ VALUES (@ServerID, @ExternalIP, @InternalIP, @PoolID, @SubnetMask, @DefaultGateway, @Comments, @VLAN)
+
+ SET @AddressID = SCOPE_IDENTITY()
+
+ RETURN
+END
 				*/
 				#endregion
+
 				var address = new Data.Entities.IpAddress()
 				{
 					PoolId = poolId,
@@ -6976,8 +7651,38 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdateIPAddress]
+(
+ @AddressID int,
+ @ServerID int,
+ @ExternalIP varchar(24),
+ @InternalIP varchar(24),
+ @PoolID int,
+ @SubnetMask varchar(15),
+ @DefaultGateway varchar(15),
+ @Comments ntext,
+ @VLAN int
+)
+AS
+BEGIN
+ IF @ServerID = 0
+ SET @ServerID = NULL
+
+ UPDATE IPAddresses SET
+  ExternalIP = @ExternalIP,
+  InternalIP = @InternalIP,
+  ServerID = @ServerID,
+  PoolID = @PoolID,
+  SubnetMask = @SubnetMask,
+  DefaultGateway = @DefaultGateway,
+  Comments = @Comments,
+  VLAN = @VLAN
+ WHERE AddressID = @AddressID
+ RETURN
+END
 				*/
 				#endregion
+
 				var address = IpAddresses.FirstOrDefault(ip => ip.AddressId == addressId);
 
 				if (address != null)
@@ -7017,8 +7722,43 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdateIPAddresses]
+(
+ @xml ntext,
+ @PoolID int,
+ @ServerID int,
+ @SubnetMask varchar(15),
+ @DefaultGateway varchar(15),
+ @Comments ntext,
+ @VLAN int
+)
+AS
+BEGIN
+ SET NOCOUNT ON;
+ IF @ServerID = 0
+ SET @ServerID = NULL
+ DECLARE @idoc int
+ --Create an internal representation of the XML document.
+ EXEC sp_xml_preparedocument @idoc OUTPUT, @xml
+ -- update
+ UPDATE IPAddresses SET
+  ServerID = @ServerID,
+  PoolID = @PoolID,
+  SubnetMask = @SubnetMask,
+  DefaultGateway = @DefaultGateway,
+  Comments = @Comments,
+  VLAN = @VLAN
+ FROM IPAddresses AS IP
+ INNER JOIN OPENXML(@idoc, '/items/item', 1) WITH
+ (
+  AddressID int '@id'
+ ) as PV ON IP.AddressID = PV.AddressID
+ -- remove document
+ exec sp_xml_removedocument @idoc
+END
 				*/
 				#endregion
+
 				var items = XElement.Parse(xmlIds);
 				var addressIds = items
 					.Elements()
@@ -7061,21 +7801,54 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteIPAddress]
+(
+	@AddressID int,
+	@Result int OUTPUT
+)
+AS
+
+SET @Result = 0
+
+IF EXISTS(SELECT RecordID FROM GlobalDnsRecords WHERE IPAddressID = @AddressID)
+BEGIN
+	SET @Result = -1
+	RETURN
+END
+
+IF EXISTS(SELECT AddressID FROM PackageIPAddresses WHERE AddressID = @AddressID AND ItemID IS NOT NULL)
+BEGIN
+	SET @Result = -2
+
+	RETURN
+END
+
+-- delete package-IP relation
+DELETE FROM PackageIPAddresses
+WHERE AddressID = @AddressID
+
+-- delete IP address
+DELETE FROM IPAddresses
+WHERE AddressID = @AddressID
+
+RETURN
 				*/
 				#endregion
+
 				if (GlobalDnsRecords.Any(r => r.IpAddressId == ipAddressId)) return -1;
 				if (PackageIpAddresses.Any(p => p.AddressId == ipAddressId && p.ItemId != null)) return -2;
 
-				// delete package-IP relation
-				var packages = PackageIpAddresses.Where(p => p.AddressId == ipAddressId);
-				PackageIpAddresses.RemoveRange(packages);
+				using (var transaction = Database.BeginTransaction())
+				{
+					// delete package-IP relation
+					PackageIpAddresses.Where(p => p.AddressId == ipAddressId).ExecuteDelete(PackageIpAddresses);
 
-				// delete IP address
-				var ips = IpAddresses.Where(a => a.AddressId == ipAddressId);
-				IpAddresses.RemoveRange(ips);
+					// delete IP address
+					IpAddresses.Where(a => a.AddressId == ipAddressId).ExecuteDelete(IpAddresses);
 
-				SaveChanges();
-			
+					transaction.Commit();
+				}
+							
 				return 0;
 			}
 			else
@@ -7091,9 +7864,6 @@ RETURN
 				return Convert.ToInt32(prmResult.Value);
 			}
 		}
-
-
-
 		#endregion
 
 		#region Clusters
@@ -7103,13 +7873,32 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetClusters]
+(
+	@ActorID int
+)
+AS
+
+-- check rights
+DECLARE @IsAdmin bit
+SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+
+-- get the list
+SELECT
+	ClusterID,
+	ClusterName
+FROM Clusters
+WHERE @IsAdmin = 1
+
+RETURN
 				*/
 				#endregion
+
 				var isAdmin = CheckIsUserAdmin(actorId);
 
 				var clusters = Clusters.Where(c => isAdmin);
 
-				return new EntityDataReader<Data.Entities.Cluster>(clusters);
+				return EntityDataReader(clusters);
 			}
 			else
 			{
@@ -7125,8 +7914,26 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddCluster]
+(
+	@ClusterID int OUTPUT,
+	@ClusterName nvarchar(100)
+)
+AS
+INSERT INTO Clusters
+(
+	ClusterName
+)
+VALUES
+(
+	@ClusterName
+)
+
+SET @ClusterID = SCOPE_IDENTITY()
+RETURN
 				*/
 				#endregion
+
 				var cluster = new Data.Entities.Cluster() { ClusterName = clusterName };
 
 				Clusters.Add(cluster);
@@ -7154,20 +7961,41 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteCluster]
+(
+	@ClusterID int
+)
+AS
+
+-- reset cluster in services
+UPDATE Services
+SET ClusterID = NULL
+WHERE ClusterID = @ClusterID
+
+-- delete cluster
+DELETE FROM Clusters
+WHERE ClusterID = @ClusterID
+RETURN
 				*/
 				#endregion
-				// reset cluster in services
+
+				using (var transaction = Database.BeginTransaction())
+				{
+					// reset cluster in services
 #if NETFRAMEWORK
-				var services = Services
-					.Where(s => s.ClusterId == clusterId);
-				foreach (var service in services) service.ClusterId = null;
+					var services = Services
+						.Where(s => s.ClusterId == clusterId);
+					foreach (var service in services) service.ClusterId = null;
 #else
-				Services.Where(s => s.ClusterId == clusterId).ExecuteUpdate(set => set.SetProperty(p => p.ClusterId, null as int?));
+					Services.Where(s => s.ClusterId == clusterId).ExecuteUpdate(set => set.SetProperty(p => p.ClusterId, null as int?));
 #endif
-				// delete cluster
-				Clusters
-					.Where(c => c.ClusterId == clusterId)
-					.ExecuteDelete(Clusters);
+					// delete cluster
+					Clusters
+						.Where(c => c.ClusterId == clusterId)
+						.ExecuteDelete(Clusters);
+
+					transaction.Commit();
+				}
 			}
 			else
 			{
@@ -7202,8 +8030,44 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetDnsRecordsByService]
+(
+	@ActorID int,
+	@ServiceID int
+)
+AS
+
+SELECT
+	NR.RecordID,
+	NR.ServiceID,
+	NR.ServerID,
+	NR.PackageID,
+	NR.RecordType,
+	NR.RecordName,
+	CASE
+		WHEN NR.RecordType = 'A' AND NR.RecordData = '' THEN dbo.GetFullIPAddress(IP.ExternalIP, IP.InternalIP)
+		WHEN NR.RecordType = 'MX' THEN CONVERT(varchar(3), NR.MXPriority) + ', ' + NR.RecordData
+		WHEN NR.RecordType = 'SRV' THEN CONVERT(varchar(3), NR.SrvPort) + ', ' + NR.RecordData
+		ELSE NR.RecordData
+	END AS FullRecordData,
+	NR.RecordData,
+	NR.MXPriority,
+	NR.SrvPriority,
+	NR.SrvWeight,
+	NR.SrvPort,
+	NR.IPAddressID,
+	dbo.GetFullIPAddress(IP.ExternalIP, IP.InternalIP) AS IPAddress,
+	IP.ExternalIP,
+	IP.InternalIP
+FROM
+	GlobalDnsRecords AS NR
+LEFT OUTER JOIN IPAddresses AS IP ON NR.IPAddressID = IP.AddressID
+WHERE
+	NR.ServiceID = @ServiceID
+RETURN
 				*/
 				#endregion
+
 				var records = GlobalDnsRecords
 					.Where(r => r.ServiceId == serviceId)
 					.GroupJoin(IpAddresses, r => r.IpAddressId, ip => ip.AddressId, (r, ips) => new
@@ -7236,11 +8100,7 @@ RETURN
 						InternalIp = g.IpAddress != null ? g.IpAddress.InternalIp : null
 					});
 
-				var dataSet = new DataSet();
-				var dataTable = EntityDataTable<object>(records);
-				dataSet.Tables.Add(dataTable);
-
-				return dataSet;
+				return EntityDataSet(records);
 
 			}
 			else
@@ -7258,8 +8118,44 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetDnsRecordsByServer]
+(
+	@ActorID int,
+	@ServerID int
+)
+AS
+
+SELECT
+	NR.RecordID,
+	NR.ServiceID,
+	NR.ServerID,
+	NR.PackageID,
+	NR.RecordType,
+	NR.RecordName,
+	NR.RecordData,
+	CASE
+		WHEN NR.RecordType = 'A' AND NR.RecordData = '' THEN dbo.GetFullIPAddress(IP.ExternalIP, IP.InternalIP)
+		WHEN NR.RecordType = 'MX' THEN CONVERT(varchar(3), NR.MXPriority) + ', ' + NR.RecordData
+		WHEN NR.RecordType = 'SRV' THEN CONVERT(varchar(3), NR.SrvPort) + ', ' + NR.RecordData
+		ELSE NR.RecordData
+	END AS FullRecordData,
+	NR.MXPriority,
+	NR.SrvPriority,
+	NR.SrvWeight,
+	NR.SrvPort,
+	NR.IPAddressID,
+	dbo.GetFullIPAddress(IP.ExternalIP, IP.InternalIP) AS IPAddress,
+	IP.ExternalIP,
+	IP.InternalIP
+FROM
+	GlobalDnsRecords AS NR
+LEFT OUTER JOIN IPAddresses AS IP ON NR.IPAddressID = IP.AddressID
+WHERE
+	NR.ServerID = @ServerID
+RETURN
 				*/
 				#endregion
+
 				var records = GlobalDnsRecords
 					.Where(r => r.ServerId == serverId)
 					.GroupJoin(IpAddresses, r => r.IpAddressId, ip => ip.AddressId, (r, ips) => new
@@ -7292,11 +8188,7 @@ RETURN
 						InternalIp = g.IpAddress != null ? g.IpAddress.InternalIp : null
 					});
 
-				var dataSet = new DataSet();
-				var dataTable = EntityDataTable<object>(records);
-				dataSet.Tables.Add(dataTable);
-
-				return dataSet;
+				return EntityDataSet(records);
 			}
 			else
 			{
@@ -7309,6 +8201,40 @@ RETURN
 
 		public bool CheckActorPackageRights(int actorId, int? packageId)
 		{
+			#region Stored Procedure
+			/*
+CREATE FUNCTION [dbo].[CheckActorPackageRights]
+(
+	@ActorID int,
+	@PackageID int
+)
+RETURNS bit
+AS
+BEGIN
+
+IF @ActorID = -1 OR @PackageID IS NULL
+RETURN 1
+
+-- check if this is a 'system' package
+IF @PackageID < 2 AND @PackageID > -1 AND dbo.CheckIsUserAdmin(@ActorID) = 0
+RETURN 0
+
+-- get package owner
+DECLARE @UserID int
+SELECT @UserID = UserID FROM Packages
+WHERE PackageID = @PackageID
+
+IF @UserID IS NULL
+RETURN 1 -- unexisting package
+
+-- check user
+RETURN dbo.CheckActorUserRights(@ActorID, @UserID)
+
+RETURN 0
+END
+			*/
+			#endregion
+
 			if (actorId == -1 || packageId == null) return true;
 
 			// check if this is a 'system' package
@@ -7331,8 +8257,47 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetDnsRecordsByPackage]
+(
+	@ActorID int,
+	@PackageID int
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+SELECT
+	NR.RecordID,
+	NR.ServiceID,
+	NR.ServerID,
+	NR.PackageID,
+	NR.RecordType,
+	NR.RecordName,
+	NR.RecordData,
+	NR.MXPriority,
+	NR.SrvPriority,
+	NR.SrvWeight,
+	NR.SrvPort,
+	NR.IPAddressID,
+	CASE
+		WHEN NR.RecordType = 'A' AND NR.RecordData = '' THEN dbo.GetFullIPAddress(IP.ExternalIP, IP.InternalIP)
+		WHEN NR.RecordType = 'MX' THEN CONVERT(varchar(3), NR.MXPriority) + ', ' + NR.RecordData
+		WHEN NR.RecordType = 'SRV' THEN CONVERT(varchar(3), NR.SrvPort) + ', ' + NR.RecordData
+		ELSE NR.RecordData
+	END AS FullRecordData,
+	dbo.GetFullIPAddress(IP.ExternalIP, IP.InternalIP) AS IPAddress,
+	IP.ExternalIP,
+	IP.InternalIP
+FROM
+	GlobalDnsRecords AS NR
+LEFT OUTER JOIN IPAddresses AS IP ON NR.IPAddressID = IP.AddressID
+WHERE NR.PackageID = @PackageID
+RETURN
 				*/
 				#endregion
+
 				if (!CheckActorPackageRights(actorId, packageId)) throw new AccessViolationException("You are not allowed to access this package");
 
 				var records = GlobalDnsRecords
@@ -7367,11 +8332,7 @@ RETURN
 						InternalIp = g.IpAddress != null ? g.IpAddress.InternalIp : null
 					});
 
-				var dataSet = new DataSet();
-				var dataTable = EntityDataTable<object>(records);
-				dataSet.Tables.Add(dataTable);
-
-				return dataSet;
+				return EntityDataSet(records);
 			}
 			else
 			{
@@ -7388,8 +8349,27 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetDnsRecordsByGroup]
+(
+	@GroupID int
+)
+AS
+SELECT
+	RGR.RecordID,
+	RGR.RecordOrder,
+	RGR.GroupID,
+	RGR.RecordType,
+	RGR.RecordName,
+	RGR.RecordData,
+	RGR.MXPriority
+FROM
+	ResourceGroupDnsRecords AS RGR
+WHERE RGR.GroupID = @GroupID
+ORDER BY RGR.RecordOrder
+RETURN
 				*/
 				#endregion
+
 				var records = ResourceGroupDnsRecords
 					.Where(r => r.GroupId == groupId)
 					.OrderBy(r => r.RecordOrder)
@@ -7404,11 +8384,7 @@ RETURN
 						r.MXPriority
 					});
 
-				var dataSet = new DataSet();
-				var dataTable = EntityDataTable<object>(records);
-				dataSet.Tables.Add(dataTable);
-
-				return dataSet;
+				return EntityDataSet(records);
 			}
 			else
 			{
@@ -7423,8 +8399,128 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetDnsRecordsTotal]
+(
+	@ActorID int,
+	@PackageID int
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+-- create temp table for DNS records
+DECLARE @Records TABLE
+(
+	RecordID int,
+	RecordType nvarchar(10),
+	RecordName nvarchar(50)
+)
+
+-- select PACKAGES DNS records
+DECLARE @ParentPackageID int, @TmpPackageID int
+SET @TmpPackageID = @PackageID
+
+WHILE 10 = 10
+BEGIN
+
+	-- get DNS records for the current package
+	INSERT INTO @Records (RecordID, RecordType, RecordName)
+	SELECT
+		GR.RecordID,
+		GR.RecordType,
+		GR.RecordName
+	FROM GlobalDNSRecords AS GR
+	WHERE GR.PackageID = @TmpPackageID
+	AND GR.RecordType + GR.RecordName NOT IN (SELECT RecordType + RecordName FROM @Records)
+
+	SET @ParentPackageID = NULL
+
+	-- get parent package
+	SELECT
+		@ParentPackageID = ParentPackageID
+	FROM Packages
+	WHERE PackageID = @TmpPackageID
+
+	IF @ParentPackageID IS NULL -- the last parent
+	BREAK
+
+	SET @TmpPackageID = @ParentPackageID
+END
+
+-- select VIRTUAL SERVER DNS records
+DECLARE @ServerID int
+SELECT @ServerID = ServerID FROM Packages
+WHERE PackageID = @PackageID
+
+INSERT INTO @Records (RecordID, RecordType, RecordName)
+SELECT
+	GR.RecordID,
+	GR.RecordType,
+	GR.RecordName
+FROM GlobalDNSRecords AS GR
+WHERE GR.ServerID = @ServerID
+AND GR.RecordType + GR.RecordName NOT IN (SELECT RecordType + RecordName FROM @Records)
+
+-- select SERVER DNS records
+INSERT INTO @Records (RecordID, RecordType, RecordName)
+SELECT
+	GR.RecordID,
+	GR.RecordType,
+	GR.RecordName
+FROM GlobalDNSRecords AS GR
+WHERE GR.ServerID IN (SELECT
+	SRV.ServerID
+FROM VirtualServices AS VS
+INNER JOIN Services AS S ON VS.ServiceID = S.ServiceID
+INNER JOIN Servers AS SRV ON S.ServerID = SRV.ServerID
+WHERE VS.ServerID = @ServerID)
+AND GR.RecordType + GR.RecordName NOT IN (SELECT RecordType + RecordName FROM @Records)
+
+-- select SERVICES DNS records
+-- re-distribute package services
+EXEC DistributePackageServices @ActorID, @PackageID
+
+--INSERT INTO @Records (RecordID, RecordType, RecordName)
+--SELECT
+--	GR.RecordID,
+--	GR.RecordType,
+	-- GR.RecordName
+-- FROM GlobalDNSRecords AS GR
+-- WHERE GR.ServiceID IN (SELECT ServiceID FROM PackageServices WHERE PackageID = @PackageID)
+-- AND GR.RecordType + GR.RecordName NOT IN (SELECT RecordType + RecordName FROM @Records)
+
+SELECT
+	NR.RecordID,
+	NR.ServiceID,
+	NR.ServerID,
+	NR.PackageID,
+	NR.RecordType,
+	NR.RecordName,
+	NR.RecordData,
+	NR.MXPriority,
+	NR.SrvPriority,
+	NR.SrvWeight,
+	NR.SrvPort,
+	NR.IPAddressID,
+	ISNULL(IP.ExternalIP, '') AS ExternalIP,
+	ISNULL(IP.InternalIP, '') AS InternalIP,
+	CASE
+		WHEN NR.RecordType = 'A' AND NR.RecordData = '' THEN dbo.GetFullIPAddress(IP.ExternalIP, IP.InternalIP)
+		WHEN NR.RecordType = 'MX' THEN CONVERT(varchar(3), NR.MXPriority) + ', ' + NR.RecordData
+		WHEN NR.RecordType = 'SRV' THEN CONVERT(varchar(3), NR.SrvPort) + ', ' + NR.RecordData
+		ELSE NR.RecordData
+	END AS FullRecordData,
+	dbo.GetFullIPAddress(IP.ExternalIP, IP.InternalIP) AS IPAddress
+FROM @Records AS TR
+INNER JOIN GlobalDnsRecords AS NR ON TR.RecordID = NR.RecordID
+LEFT OUTER JOIN IPAddresses AS IP ON NR.IPAddressID = IP.AddressID
+
+RETURN
 				*/
 				#endregion
+
 				if (!CheckActorPackageRights(actorId, packageId)) throw new AccessViolationException("You are not allowed to access this package");
 
 				// select PACKAGES DNS records
@@ -7529,10 +8625,7 @@ RETURN
 						IPAddress = r.Ip != null ? GetFullIPAddress(r.Ip.ExternalIp, r.Ip.InternalIp) : ""
 					});
 
-				var dataSet = new DataSet();
-				var dataTable = EntityDataTable<object>(recordsSelected);
-				dataSet.Tables.Add(dataTable);
-				return dataSet;
+				return EntityDataSet(recordsSelected);
 			}
 			else
 			{
@@ -7549,8 +8642,49 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetDnsRecord]
+(
+	@ActorID int,
+	@RecordID int
+)
+AS
+
+-- check rights
+DECLARE @ServiceID int, @ServerID int, @PackageID int
+SELECT
+	@ServiceID = ServiceID,
+	@ServerID = ServerID,
+	@PackageID = PackageID
+FROM GlobalDnsRecords
+WHERE
+	RecordID = @RecordID
+
+IF (@ServiceID > 0 OR @ServerID > 0) AND dbo.CheckIsUserAdmin(@ActorID) = 0
+RAISERROR('You are not allowed to perform this operation', 16, 1)
+
+IF (@PackageID > 0) AND dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+SELECT
+	NR.RecordID,
+	NR.ServiceID,
+	NR.ServerID,
+	NR.PackageID,
+	NR.RecordType,
+	NR.RecordName,
+	NR.RecordData,
+	NR.MXPriority,
+	NR.SrvPriority,
+	NR.SrvWeight,
+	NR.SrvPort,
+	NR.IPAddressID
+FROM
+	GlobalDnsRecords AS NR
+WHERE NR.RecordID = @RecordID
+RETURN
 				*/
 				#endregion
+
 				// check rights
 				var records = GlobalDnsRecords
 					.Where(r => r.RecordId == recordId)
@@ -7579,7 +8713,7 @@ RETURN
 				if (record != null && record.PackageId > 0 && !CheckActorPackageRights(actorId, record.PackageId))
 					throw new AccessViolationException("You are not allowed to access this package");
 
-				return new EntityDataReader<object>(records);
+				return EntityDataReader(records);
 			}
 			else
 			{
@@ -7597,8 +8731,86 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddDnsRecord]
+(
+	@ActorID int,
+	@ServiceID int,
+	@ServerID int,
+	@PackageID int,
+	@RecordType nvarchar(10),
+	@RecordName nvarchar(50),
+	@RecordData nvarchar(500),
+	@MXPriority int,
+	@SrvPriority int,
+	@SrvWeight int,
+	@SrvPort int,
+	@IPAddressID int
+)
+AS
+
+IF (@ServiceID > 0 OR @ServerID > 0) AND dbo.CheckIsUserAdmin(@ActorID) = 0
+RAISERROR('You should have administrator role to perform such operation', 16, 1)
+
+IF (@PackageID > 0) AND dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+IF @ServiceID = 0 SET @ServiceID = NULL
+IF @ServerID = 0 SET @ServerID = NULL
+IF @PackageID = 0 SET @PackageID = NULL
+IF @IPAddressID = 0 SET @IPAddressID = NULL
+
+IF EXISTS
+(
+	SELECT RecordID FROM GlobalDnsRecords WHERE
+	ServiceID = @ServiceID AND ServerID = @ServerID AND PackageID = @PackageID
+	AND RecordName = @RecordName AND RecordType = @RecordType
+)
+
+	UPDATE GlobalDnsRecords
+	SET
+		RecordData = RecordData,
+		MXPriority = MXPriority,
+		SrvPriority = SrvPriority,
+		SrvWeight = SrvWeight,
+		SrvPort = SrvPort,
+
+		IPAddressID = @IPAddressID
+	WHERE
+		ServiceID = @ServiceID AND ServerID = @ServerID AND PackageID = @PackageID
+ELSE
+	INSERT INTO GlobalDnsRecords
+	(
+		ServiceID,
+		ServerID,
+		PackageID,
+		RecordType,
+		RecordName,
+		RecordData,
+		MXPriority,
+		SrvPriority,
+		SrvWeight,
+		SrvPort,
+		IPAddressID
+	)
+	VALUES
+	(
+		@ServiceID,
+		@ServerID,
+		@PackageID,
+		@RecordType,
+		@RecordName,
+		@RecordData,
+		@MXPriority,
+		@SrvPriority,
+		@SrvWeight,
+		@SrvPort,
+		@IPAddressID
+	)
+
+RETURN
 				*/
 				#endregion
+
 				if ((serviceId > 0 || serverId > 0) && !CheckIsUserAdmin(actorId))
 					throw new AccessViolationException("You should have administrator role to perform such operation");
 
@@ -7658,8 +8870,56 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdateDnsRecord]
+(
+	@ActorID int,
+	@RecordID int,
+	@RecordType nvarchar(10),
+	@RecordName nvarchar(50),
+	@RecordData nvarchar(500),
+	@MXPriority int,
+	@SrvPriority int,
+	@SrvWeight int,
+	@SrvPort int,
+	@IPAddressID int
+)
+AS
+
+IF @IPAddressID = 0 SET @IPAddressID = NULL
+
+-- check rights
+DECLARE @ServiceID int, @ServerID int, @PackageID int
+SELECT
+	@ServiceID = ServiceID,
+	@ServerID = ServerID,
+	@PackageID = PackageID
+FROM GlobalDnsRecords
+WHERE
+	RecordID = @RecordID
+
+IF (@ServiceID > 0 OR @ServerID > 0) AND dbo.CheckIsUserAdmin(@ActorID) = 0
+RAISERROR('You are not allowed to perform this operation', 16, 1)
+
+IF (@PackageID > 0) AND dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+-- update record
+UPDATE GlobalDnsRecords
+SET
+	RecordType = @RecordType,
+	RecordName = @RecordName,
+	RecordData = @RecordData,
+	MXPriority = @MXPriority,
+	SrvPriority = @SrvPriority,
+	SrvWeight = @SrvWeight,
+	SrvPort = @SrvPort,
+	IPAddressID = @IPAddressID
+WHERE
+	RecordID = @RecordID
+RETURN
 				*/
 				#endregion
+
 				int? ipAddressIdOrNull = ipAddressId != 0 ? ipAddressId : null;
 
 				var record = GlobalDnsRecords
@@ -7710,8 +8970,37 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteDnsRecord]
+(
+	@ActorID int,
+	@RecordID int
+)
+AS
+
+-- check rights
+DECLARE @ServiceID int, @ServerID int, @PackageID int
+SELECT
+	@ServiceID = ServiceID,
+	@ServerID = ServerID,
+	@PackageID = PackageID
+FROM GlobalDnsRecords
+WHERE
+	RecordID = @RecordID
+
+IF (@ServiceID > 0 OR @ServerID > 0) AND dbo.CheckIsUserAdmin(@ActorID) = 0
+RETURN
+
+IF (@PackageID > 0) AND dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RETURN
+
+-- delete record
+DELETE FROM GlobalDnsRecords
+WHERE RecordID = @RecordID
+
+RETURN
 				*/
 				#endregion
+
 				var record = GlobalDnsRecords
 					.FirstOrDefault(r => r.RecordId == recordId);
 
@@ -7741,6 +9030,43 @@ RETURN
 
 		public IEnumerable<int> PackagesTree(int packageId, bool recursive = false)
 		{
+			#region Stored Procedure
+			/*
+CREATE FUNCTION [dbo].[PackagesTree]
+(
+	@PackageID int,
+	@Recursive bit = 0
+)
+RETURNS @T TABLE (PackageID int)
+AS
+BEGIN
+
+INSERT INTO @T VALUES (@PackageID)
+
+IF @Recursive = 1
+BEGIN
+	WITH RecursivePackages(ParentPackageID, PackageID, PackageLevel) AS
+	(
+		SELECT ParentPackageID, PackageID, 0 AS PackageLevel
+		FROM Packages
+		WHERE ParentPackageID = @PackageID
+		UNION ALL
+		SELECT p.ParentPackageID, p.PackageID, PackageLevel + 1
+		FROM Packages p
+			INNER JOIN RecursivePackages d
+			ON p.ParentPackageID = d.PackageID
+		WHERE @Recursive = 1
+	)
+	INSERT INTO @T
+	SELECT PackageID
+	FROM RecursivePackages
+END
+
+RETURN
+END
+			*/
+			#endregion
+
 			IEnumerable<int> packages = new int[] { packageId };
 
 			if (recursive)
@@ -7765,8 +9091,46 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetDomains]
+(
+	@ActorID int,
+	@PackageID int,
+	@Recursive bit = 1
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+SELECT
+	D.DomainID,
+	D.PackageID,
+	D.ZoneItemID,
+	D.DomainItemID,
+	D.DomainName,
+	D.HostingAllowed,
+	ISNULL(WS.ItemID, 0) AS WebSiteID,
+	WS.ItemName AS WebSiteName,
+	ISNULL(MD.ItemID, 0) AS MailDomainID,
+	MD.ItemName AS MailDomainName,
+	Z.ItemName AS ZoneName,
+	D.IsSubDomain,
+	D.IsPreviewDomain,
+	D.CreationDate,
+	D.ExpirationDate,
+	D.LastUpdateDate,
+	D.IsDomainPointer,
+	D.RegistrarName
+FROM Domains AS D
+INNER JOIN PackagesTree(@PackageID, @Recursive) AS PT ON D.PackageID = PT.PackageID
+LEFT OUTER JOIN ServiceItems AS WS ON D.WebSiteID = WS.ItemID
+LEFT OUTER JOIN ServiceItems AS MD ON D.MailDomainID = MD.ItemID
+LEFT OUTER JOIN ServiceItems AS Z ON D.ZoneItemID = Z.ItemID
+RETURN
 				*/
 				#endregion
+
 				// check rights
 				if (!CheckActorPackageRights(actorId, packageId))
 					throw new AccessViolationException("You are not allowed to access this package");
@@ -7809,11 +9173,7 @@ RETURN
 						d.Domain.IsDomainPointer
 					});
 
-				var dataSet = new DataSet();
-				var dataTable = EntityDataTable<object>(domains);
-				dataSet.Tables.Add(dataTable);
-
-				return dataSet;
+				return EntityDataSet(domains);
 			}
 			else
 			{
@@ -7831,8 +9191,41 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetResellerDomains]
+(
+	@ActorID int,
+	@PackageID int
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+-- load parent package
+DECLARE @ParentPackageID int
+SELECT @ParentPackageID = ParentPackageID FROM Packages
+WHERE PackageID = @PackageID
+
+SELECT
+	D.DomainID,
+	D.PackageID,
+	D.ZoneItemID,
+	D.DomainName,
+	D.HostingAllowed,
+	D.WebSiteID,
+	WS.ItemName,
+	D.MailDomainID,
+	MD.ItemName
+FROM Domains AS D
+INNER JOIN PackagesTree(@ParentPackageID, 0) AS PT ON D.PackageID = PT.PackageID
+LEFT OUTER JOIN ServiceItems AS WS ON D.WebSiteID = WS.ItemID
+LEFT OUTER JOIN ServiceItems AS MD ON D.MailDomainID = MD.ItemID
+WHERE HostingAllowed = 1
+RETURN
 				*/
 				#endregion
+
 				if (!CheckActorPackageRights(actorId, packageId))
 					throw new AccessViolationException("You are not allowed to access this package");
 
@@ -7869,11 +9262,7 @@ RETURN
 						MailDomainName = d.MailDomain != null ? d.MailDomain.ItemName : null
 					});
 
-				var dataSet = new DataSet();
-				var dataTable = EntityDataTable<object>(domains);
-				dataSet.Tables.Add(dataTable);
-
-				return dataSet;
+				return EntityDataSet(domains);
 			}
 			else
 			{
@@ -8084,11 +9473,7 @@ RETURN
 
 				domains = domains.Skip(startRow).Take(maximumRows);
 
-				var dataSet = new DataSet();
-				var dataTable = EntityDataTable<object>(domains);
-				dataSet.Tables.Add(dataTable);
-
-				return dataSet;
+				return EntityDataSet(domains);
 			}
 			else
 			{
@@ -8192,7 +9577,7 @@ RETURN
 						d.Domain.IsDomainPointer
 					});
 
-				return new EntityDataReader<object>(domains);
+				return EntityDataReader(domains);
 			}
 			else
 			{
@@ -8326,7 +9711,7 @@ END
 						d.Domain.IsDomainPointer
 					});
 
-				return new EntityDataReader<object>(domains);
+				return EntityDataReader(domains);
 			}
 			else
 			{
@@ -8426,11 +9811,7 @@ RETURN
 						d.Domain.IsDomainPointer
 					});
 
-				var dataSet = new DataSet();
-				var dataTable = EntityDataTable<object>(domains);
-				dataSet.Tables.Add(dataTable);
-
-				return dataSet;
+				return EntityDataSet(domains);
 			}
 			else
 			{
@@ -8527,11 +9908,7 @@ RETURN
 						d.Domain.IsDomainPointer
 					});
 
-				var dataSet = new DataSet();
-				var dataTable = EntityDataTable<object>(domains);
-				dataSet.Tables.Add(dataTable);
-
-				return dataSet;
+				return EntityDataSet(domains);
 			}
 			else
 			{
@@ -8823,9 +10200,57 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdateDomain]
+(
+	@DomainID int,
+	@ActorID int,
+	@ZoneItemID int,
+	@HostingAllowed bit,
+	@WebSiteID int,
+	@MailDomainID int,
+	@DomainItemID int
+)
+AS
+
+-- check rights
+DECLARE @PackageID int
+SELECT @PackageID = PackageID FROM Domains
+WHERE DomainID = @DomainID
+
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+IF @ZoneItemID = 0 SET @ZoneItemID = NULL
+IF @WebSiteID = 0 SET @WebSiteID = NULL
+IF @MailDomainID = 0 SET @MailDomainID = NULL
+
+-- update record
+UPDATE Domains
+SET
+	ZoneItemID = @ZoneItemID,
+	HostingAllowed = @HostingAllowed,
+	WebSiteID = @WebSiteID,
+	MailDomainID = @MailDomainID,
+	DomainItemID = @DomainItemID
+WHERE
+	DomainID = @DomainID
+	RETURN
 				*/
 				#endregion
 
+				var domain = Domains.FirstOrDefault(d => d.DomainId == domainId);
+				if (domain == null) return;
+
+				if (!CheckActorPackageRights(actorId, domain.PackageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				domain.ZoneItemId = zoneItemId != 0 ? zoneItemId : null;
+				domain.HostingAllowed = hostingAllowed;
+				domain.WebSiteId = webSiteId != 0 ? webSiteId : null;
+				domain.MailDomainId = mailDomainId != 0 ? mailDomainId : null;
+				domain.DomainItemId = domainItemId;
+
+				SaveChanges();
 			}
 			else
 			{
@@ -8847,9 +10272,36 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteDomain]
+(
+	@DomainID int,
+	@ActorID int
+)
+AS
+
+-- check rights
+DECLARE @PackageID int
+SELECT @PackageID = PackageID FROM Domains
+WHERE DomainID = @DomainID
+
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+DELETE FROM Domains
+WHERE DomainID = @DomainID
+
+RETURN
 				*/
 				#endregion
 
+				var domain = Domains.FirstOrDefault(d => d.DomainId == domainId);
+				if (domain == null) return;
+
+				if (!CheckActorPackageRights(actorId, domain.PackageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				Domains.Remove(domain);
+
+				SaveChanges();
 			}
 			else
 			{
@@ -8868,9 +10320,67 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetServicesByServerID]
+(
+	@ActorID int,
+	@ServerID int
+)
+AS
+
+-- check rights
+DECLARE @IsAdmin bit
+SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+
+SELECT
+	S.ServiceID,
+	S.ServerID,
+	S.ServiceName,
+	S.Comments,
+	S.ServiceQuotaValue,
+	RG.GroupName,
+	S.ProviderID,
+	PROV.DisplayName AS ProviderName
+FROM Services AS S
+INNER JOIN Providers AS PROV ON S.ProviderID = PROV.ProviderID
+INNER JOIN ResourceGroups AS RG ON PROV.GroupID = RG.GroupID
+WHERE
+	S.ServerID = @ServerID
+	AND @IsAdmin = 1
+ORDER BY RG.GroupOrder
+
+RETURN
 				*/
 				#endregion
 
+				var isAdmin = CheckIsUserAdmin(actorId);
+
+				var services = Services
+					.Where(s => isAdmin && s.ServerId == serverId)
+					.Join(Providers, s => s.ProviderId, p => p.ProviderId, (s, p) => new
+					{
+						Service = s,
+						Provider = p
+					})
+					.Join(ResourceGroups, s => s.Provider.GroupId, r => r.GroupId, (s, r) => new
+					{
+						s.Service,
+						s.Provider,
+						ResourceGroup = r
+					})
+					.OrderBy(s => s.ResourceGroup.GroupOrder)
+					.Select(s => new
+					{
+						s.Service.ServiceId,
+						s.Service.ServerId,
+						s.Service.ServiceName,
+						s.Service.Comments,
+						s.Service.ServiceQuotaValue,
+						s.ResourceGroup.GroupName,
+						s.Service.ProviderId,
+						ProviderName = s.Provider.DisplayName
+					});
+
+				return EntityDataReader(services);
 			}
 			else
 			{
@@ -8887,14 +10397,65 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetServicesByServerIDGroupName]
+(
+	@ActorID int,
+	@ServerID int,
+	@GroupName nvarchar(50)
+)
+AS
+
+-- check rights
+DECLARE @IsAdmin bit
+SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+
+SELECT
+	S.ServiceID,
+	S.ServerID,
+	S.ServiceName,
+	S.Comments,
+	S.ServiceQuotaValue,
+	RG.GroupName,
+	PROV.DisplayName AS ProviderName
+FROM Services AS S
+INNER JOIN Providers AS PROV ON S.ProviderID = PROV.ProviderID
+INNER JOIN ResourceGroups AS RG ON PROV.GroupID = RG.GroupID
+WHERE
+	S.ServerID = @ServerID AND RG.GroupName = @GroupName
+	AND @IsAdmin = 1
+ORDER BY RG.GroupOrder
+
+RETURN
 				*/
 				#endregion
 
+				var isAdmin = CheckIsUserAdmin(actorId);
+
+				var services = Services
+					.Where(s => isAdmin && s.ServerId == serverId)
+					.Join(Providers, s => s.ProviderId, p => p.ProviderId, (s, p) => new
+					{
+						Service = s,
+						Provider = p
+					})
+					.Join(ResourceGroups, s => s.Provider.GroupId, r => r.GroupId, (s, r) => new
+					{
+						s.Service.ServiceId,
+						s.Service.ServerId,
+						s.Service.ServiceName,
+						s.Service.Comments,
+						s.Service.ServiceQuotaValue,
+						r.GroupName,
+						ProviderName = s.Provider.DisplayName
+					})
+					.Where(s => s.GroupName == groupName);
+
+				return EntityDataReader(services);
 			}
 			else
 			{
 				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-					ObjectQualifier + "GetServicesByServerIdGroupName",
+					ObjectQualifier + "GetServicesByServerIDGroupName",
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@ServerID", serverId),
 					new SqlParameter("@GroupName", groupName));
@@ -8907,9 +10468,74 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetRawServicesByServerID]
+(
+	@ActorID int,
+	@ServerID int
+)
+AS
+
+-- check rights
+DECLARE @IsAdmin bit
+SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+
+-- resource groups
+SELECT
+	GroupID,
+	GroupName
+FROM ResourceGroups
+WHERE @IsAdmin = 1 AND (ShowGroup = 1)
+ORDER BY GroupOrder
+
+-- services
+SELECT
+	S.ServiceID,
+	S.ServerID,
+	S.ServiceName,
+	S.Comments,
+	RG.GroupID,
+	PROV.DisplayName AS ProviderName
+FROM Services AS S
+INNER JOIN Providers AS PROV ON S.ProviderID = PROV.ProviderID
+INNER JOIN ResourceGroups AS RG ON PROV.GroupID = RG.GroupID
+WHERE
+	S.ServerID = @ServerID
+	AND @IsAdmin = 1
+ORDER BY RG.GroupOrder
+
+RETURN
 				*/
 				#endregion
 
+				var isAdmin = CheckIsUserAdmin(actorId);
+
+				var groups = ResourceGroups
+					.Where(g => isAdmin && g.ShowGroup == true)
+					.OrderBy(g => g.GroupOrder)
+					.Select(g => new { g.GroupId, g.GroupName });
+
+				var services = Services
+					.Where(s => isAdmin && s.ServerId == serverId)
+					.Join(Providers, s => s.ProviderId, p => p.ProviderId, (s, p) => new
+					{
+						Service = s,
+						Provider = p
+					})
+					.Join(ResourceGroups, s => s.Provider.GroupId, r => r.GroupId, (s, r) => new
+					{
+						s.Service.ServiceId,
+						s.Service.ServerId,
+						s.Service.ServiceName,
+						s.Service.Comments,
+						r.GroupId,
+						ProviderName = s.Provider.DisplayName
+					});
+
+				var dataSet = new DataSet();
+				dataSet.Tables.Add(EntityDataTable(groups));
+				dataSet.Tables.Add(EntityDataTable(services));
+
+				return dataSet;
 			}
 			else
 			{
@@ -8926,9 +10552,56 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetServicesByGroupID]
+(
+	@ActorID int,
+	@GroupID int
+)
+AS
+-- check rights
+DECLARE @IsAdmin bit
+SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+
+SELECT
+	S.ServiceID,
+	S.ServiceName,
+	S.ServerID,
+	S.ServiceQuotaValue,
+	SRV.ServerName,
+	S.ProviderID,
+	S.ServiceName+' on '+SRV.ServerName AS FullServiceName
+FROM Services AS S
+INNER JOIN Providers AS PROV ON S.ProviderID = PROV.ProviderID
+INNER JOIN Servers AS SRV ON S.ServerID = SRV.ServerID
+WHERE
+	PROV.GroupID = @GroupID
+	AND @IsAdmin = 1
+RETURN
 				*/
 				#endregion
 
+				var isAdmin = CheckIsUserAdmin(actorId);
+
+				var services = Services
+					.Where(s => isAdmin)
+					.Join(Providers, s => s.ProviderId, p => p.ProviderId, (s, p) => new
+					{
+						Service = s,
+						Provider = p
+					})
+					.Where(s => s.Provider.GroupId == groupId)
+					.Join(Servers, s.Service.ServerId, s => s.ServerId, (s, t) => new
+					{
+						s.Service.ServiceId,
+						s.Service.ServiceName,
+						s.Service.ServerId,
+						s.Service.ServiceQuotaValue,
+						t.ServerName,
+						s.Service.ProviderId,
+						FullServiceName = s.Service.ServiceName + " on " + t.ServerName
+					});
+
+				return EntityDataSet(services);
 			}
 			else
 			{
@@ -11763,6 +13436,8 @@ RETURN
 
 		public DataTable EntityDataTable<TEntity>(IEnumerable<TEntity> set) => ObjectUtils.DataTableFromEntitySet<TEntity>(set);
 		public DataSet EntityDataSet<TEntity>(IEnumerable<TEntity> set) => ObjectUtils.DataSetFromEntitySet<TEntity>(set);
+		public EntityDataReader<TEntity> EntityDataReader<TEntity>(IEnumerable<TEntity> set) where TEntity: class => new EntityDataReader<TEntity>(set);
+
 		#endregion
 
 		#region Exchange Server

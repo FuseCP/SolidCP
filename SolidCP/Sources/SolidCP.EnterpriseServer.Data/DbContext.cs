@@ -6,6 +6,8 @@ using SolidCP.Providers.OS;
 using SolidCP.EnterpriseServer;
 #if NetFX
 using System.Data.Entity;
+#else
+using Microsoft.EntityFrameworkCore.Infrastructure;
 #endif
 
 namespace SolidCP.EnterpriseServer.Data
@@ -97,6 +99,11 @@ namespace SolidCP.EnterpriseServer.Data
         public bool IsMariaDb => DbType == DbType.MariaDb;
         public bool HasProcedures => IsMsSql && UseStoredProcedures;
 
+#if NETFRAMEWORK
+        public Database Database => BaseContext.Database;
+#else
+        public DatabaseFacade Database => BaseContext.Database;
+#endif
         public int SaveChanges() => BaseContext.SaveChanges();
         public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken)) => BaseContext.SaveChangesAsync(cancellationToken);
         public void Dispose() => BaseContext.Dispose();

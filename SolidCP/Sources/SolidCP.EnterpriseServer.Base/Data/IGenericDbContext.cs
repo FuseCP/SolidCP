@@ -10,6 +10,7 @@ using System.Data.Entity;
 #endif
 #if !NETFRAMEWORK && !NETSTANDARD
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 #endif
 
 
@@ -25,5 +26,11 @@ namespace SolidCP.EnterpriseServer.Data
 #endif
         int SaveChanges();
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+
+#if NETFRAMEWORK
+        Database Database { get; }
+#else
+         DatabaseFacade Database { get; }
+#endif
     }
 }
