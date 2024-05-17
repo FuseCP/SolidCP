@@ -6286,7 +6286,7 @@ AS
 
 -- check rights
 DECLARE @PackageID int
-SELECT PackageID = @PackageID FROM ServiceItems
+SELECT @PackageID = PackageID FROM ServiceItems
 WHERE ItemID = @ItemID
 
 IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
@@ -10880,7 +10880,7 @@ AS
 
 -- check rights
 DECLARE @PackageID int
-SELECT @PackageID = @PackageID FROM PackageAddons
+SELECT @PackageID = PackageID FROM PackageAddons
 WHERE PackageAddonID = @PackageAddonID
 
 IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
@@ -18656,7 +18656,7 @@ AS
 
 -- check rights
 DECLARE @PackageID int
-SELECT PackageID = @PackageID FROM ServiceItems
+SELECT @PackageID = PackageID FROM ServiceItems
 WHERE ItemID = @ItemID
 
 IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0 AND @forAutodiscover = 0
@@ -21134,7 +21134,7 @@ GO
 CREATE PROCEDURE [dbo].[UpdateServiceFully]
 (
 	@ServiceID int,
-  @ProviderID int,
+	@ProviderID int,
 	@ServiceName nvarchar(50),
 	@Comments ntext,
 	@ServiceQuotaValue int,
@@ -21146,7 +21146,7 @@ IF @ClusterID = 0 SET @ClusterID = NULL
 
 UPDATE Services
 SET
-  ProviderID = @ProviderID,
+	ProviderID = @ProviderID,
 	ServiceName = @ServiceName,
 	ServiceQuotaValue = @ServiceQuotaValue,
 	Comments = @Comments,
@@ -21172,7 +21172,7 @@ BEGIN TRAN
 
 -- check rights
 DECLARE @PackageID int
-SELECT PackageID = @PackageID FROM ServiceItems
+SELECT @PackageID = PackageID FROM ServiceItems
 WHERE ItemID = @ItemID
 
 IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0

@@ -275,7 +275,7 @@ BEGIN
 END
 				*/
 				#endregion
-				
+
 				return EntityDataSet(
 					ThemeSettings
 						.Where(ts => ts.ThemeId == ThemeID));
@@ -571,7 +571,8 @@ END
 				if (setting != null)
 				{
 					setting.PropertyValue = PropertyValue;
-				} else
+				}
+				else
 				{
 					setting = new Data.Entities.UserSetting()
 					{
@@ -1010,7 +1011,8 @@ RETURN
 					if (!string.IsNullOrEmpty(filterColumn))
 					{
 						users = users.Where($"{filterColumn} == @1", filterValue);
-					} else
+					}
+					else
 					{
 						users = users.Where(u => u.Username == filterValue ||
 							u.FullName == filterValue ||
@@ -3364,7 +3366,8 @@ AS
 				var canGetUserPassword = CanGetUserPassword(actorId, userId);
 				var user = Users
 					.Where(u => u.UserId == userId && canGetUserDetails)
-					.Select(u => new Data.Entities.User() {
+					.Select(u => new Data.Entities.User()
+					{
 						UserId = u.UserId,
 						RoleId = u.RoleId,
 						StatusId = u.StatusId,
@@ -4513,7 +4516,8 @@ AS
 						u.IsPeer,
 						GenerationNumber = 0
 					});
-				var nextGeneration = Users.Join(generation, u => u.OwnerId, g => g.UserId, (usr, gen) => new {
+				var nextGeneration = Users.Join(generation, u => u.OwnerId, g => g.UserId, (usr, gen) => new
+				{
 					usr.UserId,
 					usr.Username,
 					usr.OwnerId,
@@ -4843,7 +4847,8 @@ ORDER BY S.VirtualServer, S.ServerName
 					})
 					.Where(s => isAdmin)
 					.OrderBy(s => s.GroupOrder)
-					.Select(s => new {
+					.Select(s => new
+					{
 						s.Service.ServiceId,
 						s.Service.ServerId,
 						s.Service.ProviderId,
@@ -4918,9 +4923,13 @@ RETURN
 					.OrderBy(s => s.ServerName)
 					.Select(s => new
 					{
-						s.ServerId, s.ServerName, s.ServerUrl,
+						s.ServerId,
+						s.ServerName,
+						s.ServerUrl,
 						ServicesNumber = Services.Where(sc => sc.ServerId == s.ServerId).Count(),
-						s.Comments, s.PrimaryGroupId, s.ADEnabled
+						s.Comments,
+						s.PrimaryGroupId,
+						s.ADEnabled
 					});
 
 				var services = Services
@@ -5320,14 +5329,24 @@ RETURN
 
 				var server = new Data.Entities.Server()
 				{
-					ServerName = serverName, ServerUrl = serverUrl, Password = password, Comments = comments,
-					VirtualServer = virtualServer, InstantDomainAlias = instantDomainAlias,
-					PrimaryGroupId = primaryGroupId != 0 ? primaryGroupId : null, ADEnabled = adEnabled, ADRootDomain = adRootDomain,
-					ADUsername = adUsername, ADPassword = adPassword, ADAuthenticationType = adAuthenticationType,
-					OSPlatform = osPlatform, IsCore = isCore, PasswordIsSHA256 = PasswordIsSHA256
+					ServerName = serverName,
+					ServerUrl = serverUrl,
+					Password = password,
+					Comments = comments,
+					VirtualServer = virtualServer,
+					InstantDomainAlias = instantDomainAlias,
+					PrimaryGroupId = primaryGroupId != 0 ? primaryGroupId : null,
+					ADEnabled = adEnabled,
+					ADRootDomain = adRootDomain,
+					ADUsername = adUsername,
+					ADPassword = adPassword,
+					ADAuthenticationType = adAuthenticationType,
+					OSPlatform = osPlatform,
+					IsCore = isCore,
+					PasswordIsSHA256 = PasswordIsSHA256
 				};
 				Servers.Add(server);
-				
+
 				SaveChanges();
 
 				return server.ServerId;
@@ -6561,7 +6580,8 @@ END
 					if (!string.IsNullOrEmpty(filterColumn))
 					{
 						vlans = vlans.Where($"{filterColumn} == @0", filterValue);
-					} else
+					}
+					else
 					{
 						vlans = vlans.Where(v => v.Vlan.ToString() == filterValue || v.ServerName == filterValue ||
 							v.Username == filterValue);
@@ -6828,7 +6848,9 @@ END
 					})
 					.Join(Packages, j => j.PackageVlan.PackageId, p => p.PackageId, (j, p) => new
 					{
-						j.PackageVlan, j.Vlan, Package = p
+						j.PackageVlan,
+						j.Vlan,
+						Package = p
 					})
 					.Join(Users, j => j.Package.UserId, u => u.UserId, (j, u) => new
 					{
@@ -7019,7 +7041,8 @@ END
 						.Select(service => service.ServerId)
 						.SingleOrDefault();
 					parentPackageId = 1;
-				} else
+				}
+				else
 				{
 					var package = Packages
 						.Where(p => p.PackageId == packageId)
@@ -7052,7 +7075,8 @@ END
 								g.Vlan.ServerId
 							});
 						return EntityDataReader(vlans);
-					} else
+					}
+					else
 					{ // virtual server, get resource group by service
 						var groupId = Services
 							.Where(s => s.ServiceId == serviceId)
@@ -7088,7 +7112,8 @@ END
 							.ThenBy(g => g.Vlan);
 						return EntityDataReader(vlans);
 					}
-				} else
+				}
+				else
 				{ // 2nd level space and below, get service location
 					serverId = Services
 						.Where(s => s.ServiceId == serviceId)
@@ -7184,7 +7209,8 @@ END
 
 				// insert
 				PackageVlans.AddRange(
-					ids.Select(id => new Data.Entities.PackageVlan() {
+					ids.Select(id => new Data.Entities.PackageVlan()
+					{
 						PackageId = packageId,
 						VlanId = id
 					}));
@@ -7848,7 +7874,7 @@ RETURN
 
 					transaction.Commit();
 				}
-							
+
 				return 0;
 			}
 			else
@@ -8005,7 +8031,7 @@ RETURN
 			}
 		}
 
-#endregion
+		#endregion
 
 		#region Global DNS records
 
@@ -8085,9 +8111,9 @@ RETURN
 						g.Record.RecordName,
 						FullRecordData = g.Record.RecordType == "A" && string.IsNullOrEmpty(g.Record.RecordData) ?
 							(g.IpAddress != null ? GetFullIPAddress(g.IpAddress.ExternalIp, g.IpAddress.InternalIp) : "") :
-							(g.Record.RecordType == "MX" ? 
+							(g.Record.RecordType == "MX" ?
 								$"{g.Record.MXPriority}, {g.Record.RecordData}" :
-								(g.Record.RecordType == "SRV" ? $"{g.Record.SrvPort}, {g.Record.RecordData}" : 
+								(g.Record.RecordType == "SRV" ? $"{g.Record.SrvPort}, {g.Record.RecordData}" :
 									g.Record.RecordData)),
 						g.Record.RecordData,
 						g.Record.MXPriority,
@@ -8304,9 +8330,9 @@ RETURN
 					.Where(r => r.PackageId == packageId)
 					.GroupJoin(IpAddresses, r => r.IpAddressId, ip => ip.AddressId, (r, ips) => new
 					{
-						 Record = r,
-						 IpAddress = ips.SingleOrDefault()
-					 })
+						Record = r,
+						IpAddress = ips.SingleOrDefault()
+					})
 					.Select(g => new
 					{
 						g.Record.RecordId,
@@ -8549,7 +8575,7 @@ RETURN
 					.Where(p => p.PackageId == packageId)
 					.Select(p => p.ServerId)
 					.SingleOrDefault();
-			
+
 				records = records
 					.Union(GlobalDnsRecords
 						.Where(r => r.ServerId == serverId));
@@ -8825,8 +8851,10 @@ RETURN
 				var record = GlobalDnsRecords.FirstOrDefault(r => r.ServiceId == serviceIdOrNull && r.ServerId == serverIdOrNull &&
 					r.PackageId == packageIdOrNull && r.RecordName == recordName && r.RecordType == recordType);
 
-				if (record == null) {
-					record = new Data.Entities.GlobalDnsRecord() {
+				if (record == null)
+				{
+					record = new Data.Entities.GlobalDnsRecord()
+					{
 						RecordType = recordType,
 						RecordName = recordName,
 						ServiceId = serviceIdOrNull,
@@ -9024,7 +9052,7 @@ RETURN
 					new SqlParameter("@RecordId", recordId));
 			}
 		}
-#endregion
+		#endregion
 
 		#region Domains
 
@@ -9404,29 +9432,57 @@ RETURN
 					})
 					.Join(UsersDetailed, d => d.Package.UserId, u => u.UserId, (d, u) => new
 					{
-						d.Domain, d.Package, User = u
+						d.Domain,
+						d.Package,
+						User = u
 					})
 					.GroupJoin(ServiceItems, d => d.Domain.WebSiteId, s => s.ItemId, (d, s) => new
 					{
-						d.Domain, d.Package, d.User, WebSite = s.SingleOrDefault()
+						d.Domain,
+						d.Package,
+						d.User,
+						WebSite = s.SingleOrDefault()
 					})
 					.GroupJoin(ServiceItems, d => d.Domain.MailDomainId, s => s.ItemId, (d, s) => new
 					{
-						d.Domain, d.Package, d.User, d.WebSite, MailDomain = s.SingleOrDefault()
+						d.Domain,
+						d.Package,
+						d.User,
+						d.WebSite,
+						MailDomain = s.SingleOrDefault()
 					})
 					.GroupJoin(ServiceItems, d => d.Domain.ZoneItemId, s => s.ItemId, (d, s) => new
 					{
-						d.Domain, d.Package, d.User, d.WebSite, d.MailDomain, Zone = s.SingleOrDefault()
+						d.Domain,
+						d.Package,
+						d.User,
+						d.WebSite,
+						d.MailDomain,
+						Zone = s.SingleOrDefault()
 					})
 					.GroupJoin(Services, d => d.Zone != null ? d.Zone.ServiceId : null, s => s.ServiceId, (d, s) => new
 					{
-						d.Domain, d.Package, d.User, d.WebSite, d.MailDomain, d.Zone, Service = s.SingleOrDefault()
+						d.Domain,
+						d.Package,
+						d.User,
+						d.WebSite,
+						d.MailDomain,
+						d.Zone,
+						Service = s.SingleOrDefault()
 					})
 					.GroupJoin(Servers, d => d.Service != null ? (int?)d.Service.ServerId : null, s => (int?)s.ServerId, (d, s) => new
 					{
-						d.Domain, d.Package, d.User, d.WebSite, d.MailDomain, d.Zone, d.Service, Server = s.SingleOrDefault()
+						d.Domain,
+						d.Package,
+						d.User,
+						d.WebSite,
+						d.MailDomain,
+						d.Zone,
+						d.Service,
+						Server = s.SingleOrDefault()
 					})
-					.Select(d => new {
+					.Select(d => new
+					{
 						d.Domain.DomainId,
 						d.Domain.PackageId,
 						d.Domain.ZoneItemId,
@@ -9456,12 +9512,14 @@ RETURN
 						d.User.RoleId,
 						d.User.Email
 					});
-				
-				if (!string.IsNullOrEmpty(filterValue)) {
+
+				if (!string.IsNullOrEmpty(filterValue))
+				{
 					if (!string.IsNullOrEmpty(filterColumn))
 					{
 						domains = domains.Where($"{filterColumn}=@0", filterValue);
-					} else
+					}
+					else
 					{
 						domains = domains.Where(d => d.DomainName == filterValue || d.Username == filterValue ||
 							d.ServerName == filterValue || d.PackageName == filterValue);
@@ -10618,9 +10676,73 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetServicesByGroupName]
+(
+	@ActorID int,
+	@GroupName nvarchar(100),
+	@forAutodiscover bit
+)
+AS
+-- check rights
+DECLARE @IsAdmin bit
+SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+
+SELECT
+	S.ServiceID,
+	S.ServiceName,
+	S.ServerID,
+	S.ServiceQuotaValue,
+	SRV.ServerName,
+	S.ProviderID,
+    PROV.ProviderName,
+	S.ServiceName + ' on ' + SRV.ServerName AS FullServiceName
+FROM Services AS S
+INNER JOIN Providers AS PROV ON S.ProviderID = PROV.ProviderID
+INNER JOIN Servers AS SRV ON S.ServerID = SRV.ServerID
+INNER JOIN ResourceGroups AS RG ON PROV.GroupID = RG.GroupID
+WHERE
+	RG.GroupName = @GroupName
+	AND (@IsAdmin = 1 OR @forAutodiscover = 1)
+RETURN
 				*/
 				#endregion
 
+				var isAdmin = CheckIsUserAdmin(actorId);
+
+				var services = Services
+					.Where(s => isAdmin)
+					.Join(Providers, s => s.ProviderId, p => p.ProviderId, (s, p) => new
+					{
+						Service = s,
+						Provider = p
+					})
+					.Join(Servers, s => s.Service.ServerId, t => t.ServerId, (s, t) => new
+					{
+						s.Service,
+						s.Provider,
+						Server = t
+					})
+					.Join(ResourceGroups, s => s.Provider.GroupId, r => r.GroupId, (s, r) => new
+					{
+						s.Service,
+						s.Provider,
+						s.Server,
+						ResourceGroup = r
+					})
+					.Where(s => s.ResourceGroup.GroupName == groupName)
+					.Select(s => new
+					{
+						s.Service.ServiceId,
+						s.Service.ServiceName,
+						s.Service.ServerId,
+						s.Service.ServiceQuotaValue,
+						s.Server.ServerName,
+						s.Service.ProviderId,
+						s.Provider.ProviderName,
+						FullServiceName = s.Service.ServiceName + " on " + t.ServerName
+					});
+
+				return EntityDataSet(services);
 			}
 			else
 			{
@@ -10638,9 +10760,45 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetService]
+(
+	@ActorID int,
+	@ServiceID int
+)
+AS
+
+SELECT
+	ServiceID,
+	Services.ServerID,
+	ProviderID,
+	ServiceName,
+	ServiceQuotaValue,
+	ClusterID,
+	Services.Comments,
+	Servers.ServerName
+FROM Services INNER JOIN Servers ON Services.ServerID = Servers.ServerID
+WHERE
+	ServiceID = @ServiceID
+
+RETURN
 				*/
 				#endregion
 
+				var services = Services
+					.Where(s => s.ServiceId == serviceId)
+					.Join(Servers, s => s.ServerId, t => t.ServerId, (s, t) => new
+					{
+						s.ServiceId,
+						s.ServerId,
+						s.ProviderId,
+						s.ServiceName,
+						s.ServiceQuotaValue,
+						s.ClusterId,
+						s.Comments,
+						t.ServerName
+					});
+
+				return EntityDataReader(services);
 			}
 			else
 			{
@@ -10659,9 +10817,154 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddService]
+(
+	@ServiceID int OUTPUT,
+	@ServerID int,
+	@ProviderID int,
+	@ServiceQuotaValue int,
+	@ServiceName nvarchar(50),
+	@ClusterID int,
+	@Comments ntext
+)
+AS
+BEGIN
+
+BEGIN TRAN
+IF @ClusterID = 0 SET @ClusterID = NULL
+
+INSERT INTO Services
+(
+	ServerID,
+	ProviderID,
+	ServiceName,
+	ServiceQuotaValue,
+	ClusterID,
+	Comments
+)
+VALUES
+(
+	@ServerID,
+	@ProviderID,
+	@ServiceName,
+	@ServiceQuotaValue,
+	@ClusterID,
+	@Comments
+)
+
+SET @ServiceID = SCOPE_IDENTITY()
+
+-- copy default service settings
+INSERT INTO ServiceProperties (ServiceID, PropertyName, PropertyValue)
+SELECT @ServiceID, PropertyName, PropertyValue
+FROM ServiceDefaultProperties
+WHERE ProviderID = @ProviderID
+
+-- copy all default DNS records for the given service
+DECLARE @GroupID int
+SELECT @GroupID = GroupID FROM Providers
+WHERE ProviderID = @ProviderID
+
+-- default IP address for added records
+DECLARE @AddressID int
+SELECT TOP 1 @AddressID = AddressID FROM IPAddresses
+WHERE ServerID = @ServerID
+
+INSERT INTO GlobalDnsRecords
+(
+	RecordType,
+	RecordName,
+	RecordData,
+	MXPriority,
+	IPAddressID,
+	ServiceID,
+	ServerID,
+	PackageID
+)
+SELECT
+	RecordType,
+	RecordName,
+	CASE WHEN RecordData = '[ip]' THEN ''
+	ELSE RecordData END,
+	MXPriority,
+	CASE WHEN RecordData = '[ip]' THEN @AddressID
+	ELSE NULL END,
+	@ServiceID,
+	NULL, -- server
+	NULL -- package
+FROM
+	ResourceGroupDnsRecords
+WHERE GroupID = @GroupID
+ORDER BY RecordOrder
+COMMIT TRAN
+
+END
+RETURN
 				*/
 				#endregion
 
+				int serviceId = 0;
+
+				using (var transaction = Database.BeginTransaction())
+				{
+					var service = new Data.Entities.Service()
+					{
+						ServerId = serverId,
+						ProviderId = providerId,
+						ServiceName = serviceName,
+						ServiceQuotaValue = serviceQuotaValue,
+						ClusterId = clusterId != 0 ? clusterId : null,
+						Comments = comments
+					};
+					Services.Add(service);
+					SaveChanges();
+
+					serviceId = service.ServiceId;
+
+					// copy default service settings
+					var properties = ServiceDefaultProperties
+						.Where(p => p.ProviderId == providerId)
+						.Select(p => new Data.Entities.ServiceProperty()
+						{
+							ServiceId = serviceId,
+							PropertyName = p.PropertyName,
+							PropertyValue = p.PropertyValue
+						});
+					ServiceProperties.AddRange(properties);
+
+					// copy all default DNS records for the given service
+					var groupId = Providers
+						.Where(p => p.ProviderId == providerId)
+						.Select(p => p.GroupId)
+						.FirstOrDefault();
+
+					// default IP address for added records
+					var addressId = IpAddresses
+						.Where(ip => ip.ServerId == serverId)
+						.Select(ip => ip.AddressId)
+						.FirstOrDefault();
+
+					var dnsRecords = ResourceGroupDnsRecords
+						.Where(r => r.GroupId == groupId)
+						.OrderBy(r => r.RecordOrder)
+						.Select(r => new Data.Entities.GlobalDnsRecord()
+						{
+							RecordType = r.RecordType,
+							RecordName = r.RecordName,
+							RecordData = r.RecordData == "[ip]" ? "" : r.RecordData,
+							MXPriority = r.MXPriority ?? 0,
+							IpAddressId = r.RecordData == "[ip]" ? addressId : null,
+							ServiceId = serviceId,
+							ServerId = null,
+							PackageId = null
+						});
+					GlobalDnsRecords.AddRange(dnsRecords);
+					SaveChanges();
+
+					transaction.Commit();
+				}
+
+				return serviceId;
 			}
 			else
 			{
@@ -10691,9 +10994,45 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdateServiceFully]
+(
+	@ServiceID int,
+	@ProviderID int,
+	@ServiceName nvarchar(50),
+	@Comments ntext,
+	@ServiceQuotaValue int,
+	@ClusterID int
+)
+AS
+
+IF @ClusterID = 0 SET @ClusterID = NULL
+
+UPDATE Services
+SET
+	ProviderID = @ProviderID,
+	ServiceName = @ServiceName,
+	ServiceQuotaValue = @ServiceQuotaValue,
+	Comments = @Comments,
+	ClusterID = @ClusterID
+WHERE ServiceID = @ServiceID
+
+RETURN
 				*/
 				#endregion
 
+				var service = Services
+					.FirstOrDefault(s => s.ServiceId == serviceId);
+
+				if (service != null)
+				{
+					service.ProviderId = providerId;
+					service.ServiceName = serviceName;
+					service.ServiceQuotaValue = serviceQuotaValue;
+					service.Comments = comments;
+					service.ClusterId = clusterId != 0 ? clusterId : null;
+
+					SaveChanges();
+				}
 			}
 			else
 			{
@@ -10715,9 +11054,42 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdateService]
+(
+	@ServiceID int,
+	@ServiceName nvarchar(50),
+	@Comments ntext,
+	@ServiceQuotaValue int,
+	@ClusterID int
+)
+AS
+
+IF @ClusterID = 0 SET @ClusterID = NULL
+
+UPDATE Services
+SET
+	ServiceName = @ServiceName,
+	ServiceQuotaValue = @ServiceQuotaValue,
+	Comments = @Comments,
+	ClusterID = @ClusterID
+WHERE ServiceID = @ServiceID
+
+RETURN
 				*/
 				#endregion
 
+				var service = Services
+					.FirstOrDefault(s => s.ServiceId == serviceId);
+
+				if (service != null)
+				{
+					service.ServiceName = serviceName;
+					service.ServiceQuotaValue = serviceQuotaValue;
+					service.Comments = comments;
+					service.ClusterId = clusterId != 0 ? clusterId : null;
+
+					SaveChanges();
+				}
 			}
 			else
 			{
@@ -10737,9 +11109,55 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteService]
+(
+	@ServiceID int,
+	@Result int OUTPUT
+)
+AS
+
+SET @Result = 0
+
+-- check related service items
+IF EXISTS (SELECT ItemID FROM ServiceItems WHERE ServiceID = @ServiceID)
+BEGIN
+	SET @Result = -1
+	RETURN
+END
+
+IF EXISTS (SELECT ServiceID FROM VirtualServices WHERE ServiceID = @ServiceID)
+BEGIN
+	SET @Result = -2
+	RETURN
+END
+
+BEGIN TRAN
+-- delete global DNS records
+DELETE FROM GlobalDnsRecords
+WHERE ServiceID = @ServiceID
+
+-- delete service
+DELETE FROM Services
+WHERE ServiceID = @ServiceID
+
+COMMIT TRAN
+
+RETURN
 				*/
 				#endregion
 
+				// check related service items
+				if (ServiceItems.Any(s => s.ServiceId == serviceId)) return -1;
+				if (VirtualServices.Any(s => s.ServiceId == serviceId)) return -2;
+
+				using (var transaction = Database.BeginTransaction())
+				{
+					GlobalDnsRecords.Where(r => r.ServiceId == serviceId).ExecuteDelete(GlobalDnsRecords);
+					Services.Where(s => s.ServiceId == serviceId).ExecuteDelete(Services);
+
+					transaction.Commit();
+					return 0;
+				}
 			}
 			else
 			{
@@ -10761,9 +11179,26 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetServiceProperties]
+(
+	@ActorID int,
+	@ServiceID int
+)
+AS
+
+SELECT ServiceID, PropertyName, PropertyValue
+FROM ServiceProperties
+WHERE
+	ServiceID = @ServiceID
+
+RETURN
 				*/
 				#endregion
 
+				var properties = ServiceProperties
+					.Where(s => s.ServiceId == serviceId);
+
+				return EntityDataReader(properties);
 			}
 			else
 			{
@@ -10781,9 +11216,76 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdateServiceProperties]
+(
+	@ServiceID int,
+	@Xml ntext
+)
+AS
+
+-- delete old properties
+BEGIN TRAN
+DECLARE @idoc int
+--Create an internal representation of the XML document.
+EXEC sp_xml_preparedocument @idoc OUTPUT, @xml
+
+-- Execute a SELECT statement that uses the OPENXML rowset provider.
+DELETE FROM ServiceProperties
+WHERE ServiceID = @ServiceID 
+AND PropertyName IN
+(
+	SELECT PropertyName
+	FROM OPENXML(@idoc, '/properties/property', 1)
+	WITH (PropertyName nvarchar(50) '@name')
+)
+
+INSERT INTO ServiceProperties
+(
+	ServiceID,
+	PropertyName,
+	PropertyValue
+)
+SELECT
+	@ServiceID,
+	PropertyName,
+	PropertyValue
+FROM OPENXML(@idoc, '/properties/property',1) WITH 
+(
+	PropertyName nvarchar(50) '@name',
+	PropertyValue nvarchar(MAX) '@value'
+) as PV
+
+-- remove document
+exec sp_xml_removedocument @idoc
+
+COMMIT TRAN
+RETURN 
 				*/
 				#endregion
 
+				var properties = XElement.Parse(xml)
+					.Elements()
+					.Select(e => new
+					{
+						Name = (string)e.Attribute("name"),
+						Value = (string)e.Attribute("value")
+					})
+					.ToArray();
+
+				// delete old properties
+				var serviceProperties = ServiceProperties
+					.Where(s => s.ServiceId == serviceId && properties.Any(p => p.Name == s.PropertyName));
+				ServiceProperties.RemoveRange(serviceProperties);
+
+				ServiceProperties.AddRange(properties
+					.Select(p => new Data.Entities.ServiceProperty()
+					{
+						ServiceId = serviceId,
+						PropertyName = p.Name,
+						PropertyValue = p.Value
+					}));
+
+				SaveChanges();
 			}
 			else
 			{
@@ -10800,9 +11302,34 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetResourceGroup]
+(
+	@GroupID int
+)
+AS
+SELECT
+	RG.GroupID,
+	RG.GroupOrder,
+	RG.GroupName,
+	RG.GroupController
+FROM ResourceGroups AS RG
+WHERE RG.GroupID = @GroupID
+
+RETURN
 				*/
 				#endregion
 
+				var groups = ResourceGroups
+					.Where(g => g.GroupId == groupId)
+					.Select(g => new
+					{
+						g.GroupId,
+						g.GroupOrder,
+						g.GroupName,
+						g.GroupController
+					});
+
+				return EntityDataReader(groups);
 			}
 			else
 			{
@@ -10819,9 +11346,28 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetResourceGroups]
+AS
+SELECT
+	GroupID,
+	GroupName,
+	GroupController
+FROM ResourceGroups
+ORDER BY GroupOrder
+RETURN
 				*/
 				#endregion
 
+				var groups = ResourceGroups
+					.OrderBy(g => g.GroupOrder)
+					.Select(g => new
+					{
+						g.GroupId,
+						g.GroupName,
+						g.GroupController
+					});
+
+				return EntityDataSet(groups);
 			}
 			else
 			{
@@ -10837,9 +11383,31 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetResourceGroupByName]
+(
+	@GroupName nvarchar(100)
+)
+AS
+SELECT
+	RG.GroupID,
+	RG.GroupOrder,
+	RG.GroupName,
+	RG.GroupController
+FROM ResourceGroups AS RG
+WHERE RG.GroupName = @GroupName
 				*/
 				#endregion
 
+				var group = ResourceGroups
+					.Where(g => g.GroupName == groupName)
+					.Select(g => new
+					{
+						g.GroupId,
+						g.GroupOrder,
+						g.GroupName,
+						g.GroupController
+					});
+				return EntityDataReader(group);
 			}
 			else
 			{
@@ -10859,9 +11427,169 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetServiceItems]
+(
+	@ActorID int,
+	@PackageID int,
+	@ItemTypeName nvarchar(200),
+	@GroupName nvarchar(100) = NULL,
+	@Recursive bit
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+DECLARE @Items TABLE
+(
+	ItemID int
+)
+
+-- find service items
+INSERT INTO @Items
+SELECT
+	SI.ItemID
+FROM ServiceItems AS SI
+INNER JOIN PackagesTree(@PackageID, @Recursive) AS PT ON SI.PackageID = PT.PackageID
+INNER JOIN ServiceItemTypes AS IT ON SI.ItemTypeID = IT.ItemTypeID
+INNER JOIN ResourceGroups AS RG ON IT.GroupID = RG.GroupID
+WHERE IT.TypeName = @ItemTypeName
+AND ((@GroupName IS NULL) OR (@GroupName IS NOT NULL AND RG.GroupName = @GroupName))
+
+-- select service items
+SELECT
+	SI.ItemID,
+	SI.ItemName,
+	SI.ItemTypeID,
+	SIT.TypeName,
+	SI.ServiceID,
+	SI.PackageID,
+	P.PackageName,
+	S.ServiceID,
+	S.ServiceName,
+	SRV.ServerID,
+	SRV.ServerName,
+	RG.GroupName,
+	U.UserID,
+	U.Username,
+	(U.FirstName + U.LastName) AS UserFullName,
+	SI.CreatedDate
+FROM @Items AS FI
+INNER JOIN ServiceItems AS SI ON FI.ItemID = SI.ItemID
+INNER JOIN ServiceItemTypes AS SIT ON SI.ItemTypeID = SIT.ItemTypeID
+INNER JOIN Packages AS P ON SI.PackageID = P.PackageID
+INNER JOIN Services AS S ON SI.ServiceID = S.ServiceID
+INNER JOIN Servers AS SRV ON S.ServerID = SRV.ServerID
+INNER JOIN ResourceGroups AS RG ON SIT.GroupID = RG.GroupID
+INNER JOIN Users AS U ON P.UserID = U.UserID
+
+-- select item properties
+-- get corresponding item properties
+SELECT
+	IP.ItemID,
+	IP.PropertyName,
+	IP.PropertyValue
+FROM ServiceItemProperties AS IP
+INNER JOIN @Items AS FI ON IP.ItemID = FI.ItemID
+
+RETURN
 				*/
 				#endregion
 
+				// check rights
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				var items = ServiceItems
+					.Join(PackagesTree(packageId, recursive), s => s.PackageId, p => p, (s, p) => s)
+					.Join(ServiceItemTypes, s => s.ItemTypeId, t => t.ItemTypeId, (s, t) => new
+					{
+						Item = s,
+						Type = t
+					})
+					.Join(ResourceGroups, s => s.Type.GroupId, r => r.GroupId, (s, r) => new
+					{
+						s.Item,
+						s.Type,
+						ResourceGroup = r
+					})
+					.Where(s => s.Type.TypeName == itemTypeName &&
+						(groupName == null || groupName != null && groupName == s.ResourceGroup.GroupName))
+					.Select(s => s.Item.ItemId)
+					.ToArray();
+
+				// select service items
+				var serviceItems = items
+					.Join(ServiceItems, i => i, s => s.ItemId, (i, s) => s)
+					.Join(ServiceItemTypes, s => s.ItemTypeId, t => t.ItemTypeId, (s, t) => new
+					{
+						Item = s,
+						Type = t
+					})
+					.Join(Packages, s => s.Item.PackageId, p => p.PackageId, (s, p) => new
+					{
+						s.Item,
+						s.Type,
+						Package = p
+					})
+					.Join(Services, s => s.Item.ServiceId, s => s.ServiceId, (s, t) => new
+					{
+						s.Item,
+						s.Type,
+						s.Package,
+						Service = t
+					})
+					.Join(Servers, s => s.Service.ServerId, t => t.ServerId, (s, t) => new
+					{
+						s.Item,
+						s.Type,
+						s.Package,
+						s.Service,
+						Server = t
+					})
+					.Join(ResourceGroups, s => s.Type.GroupId, r => r.GroupId, (s, r) => new
+					{
+						s.Item,
+						s.Type,
+						s.Package,
+						s.Service,
+						s.Server,
+						ResourceGroup = r
+					})
+					.Join(Users, s => s.Package.UserId, u => u.UserId, (s, u) => new
+					{
+						s.Item.ItemId,
+						s.Item.ItemName,
+						s.Item.ItemTypeId,
+						s.Type.TypeName,
+						s.Item.ServiceId,
+						s.Item.PackageId,
+						s.Package.PackageName,
+						s.Service.ServiceName,
+						s.Server.ServerId,
+						s.Server.ServerName,
+						s.ResourceGroup.GroupName,
+						u.UserId,
+						u.Username,
+						UserFullName = u.FirstName + " " + u.LastName,
+						s.Item.CreatedDate
+					});
+
+				// select item properties
+				// get corresponding item properties
+				var itemProperties = ServiceItemProperties
+					.Join(items, p => p.ItemId, i => i, (p, i) => new
+					{
+						p.ItemId,
+						p.PropertyName,
+						p.PropertyValue
+					});
+
+				var dataSet = new DataSet();
+				dataSet.Tables.Add(EntityDataTable(serviceItems));
+				dataSet.Tables.Add(EntityDataTable(itemProperties));
+				return dataSet;
 			}
 			else
 			{
@@ -10883,9 +11611,255 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetServiceItemsPaged]
+(
+	@ActorID int,
+	@PackageID int,
+	@ItemTypeName nvarchar(200),
+	@GroupName nvarchar(100) = NULL,
+	@ServerID int,
+	@Recursive bit,
+	@FilterColumn nvarchar(50) = '',
+	@FilterValue nvarchar(50) = '',
+	@SortColumn nvarchar(50),
+	@StartRow int,
+	@MaximumRows int
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+-- start
+DECLARE @GroupID int
+SELECT @GroupID = GroupID FROM ResourceGroups
+WHERE GroupName = @GroupName
+
+DECLARE @ItemTypeID int
+SELECT @ItemTypeID = ItemTypeID FROM ServiceItemTypes
+WHERE TypeName = @ItemTypeName
+AND ((@GroupID IS NULL) OR (@GroupID IS NOT NULL AND GroupID = @GroupID))
+
+DECLARE @condition nvarchar(700)
+SET @condition = 'SI.ItemTypeID = @ItemTypeID
+AND ((@Recursive = 0 AND P.PackageID = @PackageID)
+		OR (@Recursive = 1 AND dbo.CheckPackageParent(@PackageID, P.PackageID) = 1))
+AND ((@GroupID IS NULL) OR (@GroupID IS NOT NULL AND IT.GroupID = @GroupID))
+AND (@ServerID = 0 OR (@ServerID > 0 AND S.ServerID = @ServerID))
+'
+
+IF @FilterValue <> '' AND @FilterValue IS NOT NULL
+BEGIN
+	IF @FilterColumn <> '' AND @FilterColumn IS NOT NULL
+		SET @condition = @condition + ' AND ' + @FilterColumn + ' LIKE ''' + @FilterValue + ''''
+	ELSE
+		SET @condition = @condition + '
+			AND (ItemName LIKE ''' + @FilterValue + '''
+			OR Username ''' + @FilterValue + '''
+			OR FullName ''' + @FilterValue + '''
+			OR Email ''' + @FilterValue + ''')'
+END
+
+IF @SortColumn IS NULL OR @SortColumn = ''
+SET @SortColumn = 'SI.ItemName ASC'
+
+DECLARE @sql nvarchar(3500)
+
+set @sql = '
+SELECT COUNT(SI.ItemID) FROM Packages AS P
+INNER JOIN ServiceItems AS SI ON P.PackageID = SI.PackageID
+INNER JOIN UsersDetailed AS U ON P.UserID = U.UserID
+INNER JOIN ServiceItemTypes AS IT ON SI.ItemTypeID = IT.ItemTypeID
+INNER JOIN Services AS S ON SI.ServiceID = S.ServiceID
+WHERE ' + @condition + '
+
+DECLARE @Items AS TABLE
+(
+	ItemID int
+);
+
+WITH TempItems AS (
+	SELECT ROW_NUMBER() OVER (ORDER BY ' + @SortColumn + ') as Row,
+		SI.ItemID
+	FROM Packages AS P
+	INNER JOIN ServiceItems AS SI ON P.PackageID = SI.PackageID
+	INNER JOIN UsersDetailed AS U ON P.UserID = U.UserID
+	INNER JOIN ServiceItemTypes AS IT ON SI.ItemTypeID = IT.ItemTypeID
+	INNER JOIN Services AS S ON SI.ServiceID = S.ServiceID
+	INNER JOIN Servers AS SRV ON S.ServerID = SRV.ServerID
+	WHERE ' + @condition + '
+)
+
+INSERT INTO @Items
+SELECT ItemID FROM TempItems
+WHERE TempItems.Row BETWEEN @StartRow + 1 and @StartRow + @MaximumRows
+
+SELECT
+	SI.ItemID,
+	SI.ItemName,
+	SI.ItemTypeID,
+	IT.TypeName,
+	SI.ServiceID,
+	SI.PackageID,
+	SI.CreatedDate,
+	RG.GroupName,
+
+	-- packages
+	P.PackageName,
+
+	-- server
+	ISNULL(SRV.ServerID, 0) AS ServerID,
+	ISNULL(SRV.ServerName, '''') AS ServerName,
+	ISNULL(SRV.Comments, '''') AS ServerComments,
+	ISNULL(SRV.VirtualServer, 0) AS VirtualServer,
+
+	-- user
+	P.UserID,
+	U.Username,
+	U.FirstName,
+	U.LastName,
+	U.FullName,
+	U.RoleID,
+	U.Email
+FROM @Items AS TSI
+INNER JOIN ServiceItems AS SI ON TSI.ItemID = SI.ItemID
+INNER JOIN ServiceItemTypes AS IT ON SI.ItemTypeID = IT.ItemTypeID
+INNER JOIN Packages AS P ON SI.PackageID = P.PackageID
+INNER JOIN UsersDetailed AS U ON P.UserID = U.UserID
+INNER JOIN Services AS S ON SI.ServiceID = S.ServiceID
+INNER JOIN Servers AS SRV ON S.ServerID = SRV.ServerID
+INNER JOIN ResourceGroups AS RG ON IT.GroupID = RG.GroupID
+
+SELECT
+	IP.ItemID,
+	IP.PropertyName,
+	IP.PropertyValue
+FROM ServiceItemProperties AS IP
+INNER JOIN @Items AS TSI ON IP.ItemID = TSI.ItemID'
+
+--print @sql
+
+exec sp_executesql @sql, N'@ItemTypeID int, @PackageID int, @GroupID int, @StartRow int, @MaximumRows int, @Recursive bit, @ServerID int',
+@ItemTypeID, @PackageID, @GroupID, @StartRow, @MaximumRows, @Recursive, @ServerID
+
+RETURN
 				*/
 				#endregion
 
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				var groupId = ResourceGroups
+					.Where(r => r.GroupName == groupName)
+					.Select(r => (int?)r.GroupId)
+					.FirstOrDefault();
+
+				var itemTypeId = ServiceItemTypes
+					.Where(t => t.TypeName == itemTypeName &&
+						(groupId == null || groupId != null && t.GroupId == groupId))
+					.Select(t => t.ItemTypeId)
+					.FirstOrDefault();
+
+				var items = ServiceItems
+					.Where(s => s.ItemTypeId == itemTypeId &&
+						(!recursive && s.PackageId == packageId ||
+						recursive && CheckPackageParent(packageId, s.PackageId ?? 0)))
+					.Join(Packages, i => i.PackageId, p => p.PackageId, (si, p) => new
+					{
+						Item = si,
+						Package = p
+					})
+					.Join(ServiceItemTypes, i => i.Item.ItemTypeId, t => t.ItemTypeId, (i, t) => new
+					{
+						i.Item,
+						i.Package,
+						Type = t
+					})
+					.Where(i => groupId == null || groupId != null && i.Type.GroupId == groupId)
+					.Join(UsersDetailed, i => i.Package.UserId, u => u.UserId, (i, u) => new
+					{
+						i.Item,
+						i.Package,
+						i.Type,
+						User = u
+					})
+					.Join(Services, i => i.Item.ServiceId, s => s.ServiceId, (i, s) => new
+					{
+						i.Item,
+						i.Package,
+						i.Type,
+						i.User,
+						Service = s
+					})
+					.Where(i => serverId == 0 || serverId > 0 && i.Service.ServerId == serverId)
+					.Join(Servers, i => i.Service.ServerId, s => s.ServerId, (i, s) => new
+					{
+						i.Item,
+						i.Package,
+						i.Type,
+						i.User,
+						i.Service,
+						Server = s
+					})
+					.Join(ResourceGroups, i => t.Type.GroupId, r => r.GroupId, (i, r) => new
+					{
+						i.Item.ItemId,
+						i.Item.ItemName,
+						i.Item.ItemTypeId,
+						i.Type.TypeName,
+						i.Item.ServiceId,
+						i.Item.PackageId,
+						i.Item.CreatedDate,
+						r.GroupName,
+						i.Package.PackageName,
+						i.Server.ServerId,
+						i.Server.ServerName,
+						ServerComments = i.Server.Comments,
+						i.Server.VirtualServer,
+						i.Package.UserId,
+						i.User.Username,
+						i.User.FirstName,
+						i.User.LastName,
+						i.User.FullName,
+						i.User.RoleId,
+						i.User.Email
+					});
+
+				if (!string.IsNullOrEmpty(filterValue))
+				{
+					if (!string.IsNullOrEmpty(filterColumn))
+					{
+						items = items.Where($"{filterColumn}=@0", filterValue);
+					}
+					else
+					{
+						items = items
+							.Where(i => i.Item.ItemName == filterValue ||
+								i.User.Username == filterValue ||
+								i.User.FullName == filterValue ||
+								i.User.Email == filterValue);
+					}
+				}
+
+				if (!string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
+				else items = items.OrderBy(i => i.Item.ItemName);
+
+				items = items.Skip(startRow).Take(maximumRows);
+
+				var properties = ServiceItemProperties
+					.Join(items, s => s.ItemId, i => i.ItemId, (s, i) => new
+					{
+						s.ItemId,
+						s.PropertyName,
+						s.PropertyValue
+					});
+
+				// TODO return also count of items?
+				var dataSet = new DataSet();
+				dataSet.Tables.Add(EntityDataTable(items));
+				dataSet.Tables.Add(EntityDataTable(properties));
+				return dataSet;
 			}
 			else
 			{
@@ -10911,9 +11885,30 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetSearchableServiceItemTypes]
+
+AS
+SELECT
+	ItemTypeID,
+	DisplayName
+FROM
+	ServiceItemTypes
+WHERE Searchable = 1
+ORDER BY TypeOrder
+RETURN
 				*/
 				#endregion
 
+				var types = ServiceItemTypes
+					.Where(t => t.Searchable == true)
+					.OrderBy(t => t.TypeOrder)
+					.Select(t => new
+					{
+						t.ItemTypeId,
+						t.DisplayName
+					});
+
+				return EntityDataSet(types);
 			}
 			else
 			{
@@ -10928,9 +11923,143 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetServiceItemsByService]
+(
+	@ActorID int,
+	@ServiceID int
+)
+AS
+
+-- check rights
+DECLARE @IsAdmin bit
+SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+
+DECLARE @Items TABLE
+(
+	ItemID int
+)
+
+-- find service items
+INSERT INTO @Items
+SELECT
+	SI.ItemID
+FROM ServiceItems AS SI
+WHERE SI.ServiceID = @ServiceID
+
+-- select service items
+SELECT
+	SI.ItemID,
+	SI.ItemName,
+	SI.ItemTypeID,
+	SIT.TypeName,
+	SI.ServiceID,
+	SI.PackageID,
+	P.PackageName,
+	S.ServiceID,
+	S.ServiceName,
+	SRV.ServerID,
+	SRV.ServerName,
+	RG.GroupName,
+	U.UserID,
+	U.Username,
+	(U.FirstName + U.LastName) AS UserFullName,
+	SI.CreatedDate
+FROM @Items AS FI
+INNER JOIN ServiceItems AS SI ON FI.ItemID = SI.ItemID
+INNER JOIN ServiceItemTypes AS SIT ON SI.ItemTypeID = SIT.ItemTypeID
+INNER JOIN Packages AS P ON SI.PackageID = P.PackageID
+INNER JOIN Services AS S ON SI.ServiceID = S.ServiceID
+INNER JOIN Servers AS SRV ON S.ServerID = SRV.ServerID
+INNER JOIN ResourceGroups AS RG ON SIT.GroupID = RG.GroupID
+INNER JOIN Users AS U ON P.UserID = U.UserID
+WHERE @IsAdmin = 1
+
+-- select item properties
+-- get corresponding item properties
+SELECT
+	IP.ItemID,
+	IP.PropertyName,
+	IP.PropertyValue
+FROM ServiceItemProperties AS IP
+INNER JOIN @Items AS FI ON IP.ItemID = FI.ItemID
+WHERE @IsAdmin = 1
+
+RETURN
 				*/
 				#endregion
 
+				var isAdmin = CheckIsUserAdmin(actorId);
+
+				// select service items
+				var items = ServiceItems
+					.Where(s => isAdmin && s.ServiceId == serviceId)
+					.Join(Packages, i => i.PackageId, p => p.PackageId, (si, p) => new
+					{
+						Item = si,
+						Package = p
+					})
+					.Join(ServiceItemTypes, i => i.Item.ItemTypeId, t => t.ItemTypeId, (i, t) => new
+					{
+						i.Item,
+						i.Package,
+						Type = t
+					})
+					.Join(UsersDetailed, i => i.Package.UserId, u => u.UserId, (i, u) => new
+					{
+						i.Item,
+						i.Package,
+						i.Type,
+						User = u
+					})
+					.Join(Services, i => i.Item.ServiceId, s => s.ServiceId, (i, s) => new
+					{
+						i.Item,
+						i.Package,
+						i.Type,
+						i.User,
+						Service = s
+					})
+					.Join(Servers, i => i.Service.ServerId, s => s.ServerId, (i, s) => new
+					{
+						i.Item,
+						i.Package,
+						i.Type,
+						i.User,
+						i.Service,
+						Server = s
+					})
+					.Join(ResourceGroups, i => t.Type.GroupId, r => r.GroupId, (i, r) => new
+					{
+						i.Item.ItemId,
+						i.Item.ItemName,
+						i.Item.ItemTypeId,
+						i.Type.TypeName,
+						i.Item.ServiceId,
+						i.Item.PackageId,
+						i.Package.PackageName,
+						i.Service.ServiceName,
+						i.Server.ServerId,
+						i.Server.ServerName,
+						r.GroupName,
+						i.User.UserId,
+						i.User.Username,
+						UserFullName = i.User.FirstName + " " + i.User.LastName,
+						i.Item.CreatedDate
+					});
+
+				// select item properties, get corresponding item properties
+				var properties = ServiceItemProperties
+					.Join(items, p => p.ItemId, i => i.ItemId, (p, i) => new
+					{
+						p.ItemId,
+						p.PropertyName,
+						p.PropertyValue
+					});
+
+				var dataSet = new DataSet();
+				dataSet.Tables.Add(EntityDataTable(items));
+				dataSet.Tables.Add(EntityDataTable(properties));
+				return dataSet;
 			}
 			else
 			{
@@ -10947,9 +12076,42 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetServiceItemsCount]
+(
+	@ItemTypeName nvarchar(200),
+	@GroupName nvarchar(100) = NULL,
+	@ServiceID int = 0,
+	@TotalNumber int OUTPUT
+)
+AS
+
+SET @TotalNumber = 0
+
+-- find service items
+SELECT
+	@TotalNumber = COUNT(SI.ItemID)
+FROM ServiceItems AS SI
+INNER JOIN ServiceItemTypes AS IT ON SI.ItemTypeID = IT.ItemTypeID
+INNER JOIN ResourceGroups AS RG ON IT.GroupID = RG.GroupID
+WHERE IT.TypeName = @ItemTypeName
+AND ((@GroupName IS NULL) OR (@GroupName IS NOT NULL AND RG.GroupName = @GroupName))
+AND ((@ServiceID = 0) OR (@ServiceID > 0 AND SI.ServiceID = @ServiceID))
+
+RETURN
 				*/
 				#endregion
 
+				return ServiceItems
+					.Where(s => serviceId == 0 || serviceId > 0 && s.ServiceId == serviceId)
+					.Join(ServiceItemTypes, s => s.ItemTypeId, t => t.ItemTypeId, (s, t) => new
+					{
+						Item = s,
+						Type = t
+					})
+					.Where(s => s.Type.TypeName == typeName)
+					.Join(ResourceGroups, s => s.Type.GroupId, r => r.GroupId, (s, r) => r)
+					.Where(r => groupName == null || groupName != null && r.GroupName == groupName)
+					.Count();
 			}
 			else
 			{
@@ -10975,9 +12137,111 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetServiceItemsForStatistics]
+(
+	@ActorID int,
+	@ServiceID int,
+	@PackageID int,
+	@CalculateDiskspace bit,
+	@CalculateBandwidth bit,
+	@Suspendable bit,
+	@Disposable bit
+)
+AS
+DECLARE @Items TABLE
+(
+	ItemID int
+)
+
+-- find service items
+INSERT INTO @Items
+SELECT
+	SI.ItemID
+FROM ServiceItems AS SI
+INNER JOIN ServiceItemTypes AS SIT ON SI.ItemTypeID = SIT.ItemTypeID
+WHERE
+	((@ServiceID = 0) OR (@ServiceID > 0 AND SI.ServiceID = @ServiceID))
+	AND ((@PackageID = 0) OR (@PackageID > 0 AND SI.PackageID = @PackageID))
+	AND ((@CalculateDiskspace = 0) OR (@CalculateDiskspace = 1 AND SIT.CalculateDiskspace = @CalculateDiskspace))
+	AND ((@CalculateBandwidth = 0) OR (@CalculateBandwidth = 1 AND SIT.CalculateBandwidth = @CalculateBandwidth))
+	AND ((@Suspendable = 0) OR (@Suspendable = 1 AND SIT.Suspendable = @Suspendable))
+	AND ((@Disposable = 0) OR (@Disposable = 1 AND SIT.Disposable = @Disposable))
+
+-- select service items
+SELECT
+	SI.ItemID,
+	SI.ItemName,
+	SI.ItemTypeID,
+	RG.GroupName,
+	SIT.TypeName,
+	SI.ServiceID,
+	SI.PackageID,
+	SI.CreatedDate
+FROM @Items AS FI
+INNER JOIN ServiceItems AS SI ON FI.ItemID = SI.ItemID
+INNER JOIN ServiceItemTypes AS SIT ON SI.ItemTypeID = SIT.ItemTypeID
+INNER JOIN ResourceGroups AS RG ON SIT.GroupID = RG.GroupID
+ORDER BY RG.GroupOrder DESC, SI.ItemName
+
+-- select item properties
+-- get corresponding item properties
+SELECT
+	IP.ItemID,
+	IP.PropertyName,
+	IP.PropertyValue
+FROM ServiceItemProperties AS IP
+INNER JOIN @Items AS FI ON IP.ItemID = FI.ItemID
+
+RETURN
 				*/
 				#endregion
 
+				var items = ServiceItems
+					.Where(s => (serviceId == 0 || serviceId > 0 && s.ServiceId == serviceId) &&
+						(packageId == 0 || packageId != 0 && s.PackageId == packageId))
+					.Join(ServiceItemTypes, s => s.ItemTypeId, t => t.ItemTypeId, (s, t) => new
+					{
+						Item = s,
+						Type = t
+					})
+					// TODO is this correct?
+					.Where(s => (!calculateDiskspace || s.Type.CalculateDiskspace == true) &&
+						(!calculateBandwidth || s.Type.CalculateBandwidth == true) &&
+						(!suspendable || s.Type.Suspendable == true) &&
+						(!disposable || s.Type.Disposable == true));
+
+				var serviceItems = items
+					.Join(ResourceGroups, s => s.Type.GroupId, r => r.GroupId, (s, r) => new
+					{
+						s.Item,
+						s.Type,
+						ResourceGroup = r
+					})
+					.OrderBy(s => s.ResourceGroup.GroupOrder)
+					.Select(s => new
+					{
+						s.Item.ItemId,
+						s.Item.ItemName,
+						s.Item.ItemTypeId,
+						s.ResourceGroup.GroupName,
+						s.Type.TypeName,
+						s.Item.ServiceId,
+						s.Item.PackageId,
+						s.Item.CreatedDate
+					});
+
+				var properties = ServiceItemProperties
+					.Join(items, p => p.ItemId, i => i.Item.ItemId, (p, i) => new
+					{
+						p.ItemId,
+						p.PropertyName,
+						p.PropertyValue
+					});
+
+				var dataSet = new DataSet();
+				dataSet.Tables.Add(EntityDataTable(serviceItems));
+				dataSet.Tables.Add(EntityDataTable(properties));
+				return dataSet;
 			}
 			else
 			{
@@ -10999,9 +12263,143 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetServiceItemsByPackage]
+(
+	@ActorID int,
+	@PackageID int
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+DECLARE @Items TABLE
+(
+	ItemID int
+)
+
+-- find service items
+INSERT INTO @Items
+SELECT
+	SI.ItemID
+FROM ServiceItems AS SI
+WHERE SI.PackageID = @PackageID
+
+-- select service items
+SELECT
+	SI.ItemID,
+	SI.ItemName,
+	SI.ItemTypeID,
+	SIT.TypeName,
+	SIT.DisplayName,
+	SI.ServiceID,
+	SI.PackageID,
+	P.PackageName,
+	S.ServiceID,
+	S.ServiceName,
+	SRV.ServerID,
+	SRV.ServerName,
+	RG.GroupName,
+	U.UserID,
+	U.Username,
+	(U.FirstName + U.LastName) AS UserFullName,
+	SI.CreatedDate
+FROM @Items AS FI
+INNER JOIN ServiceItems AS SI ON FI.ItemID = SI.ItemID
+INNER JOIN ServiceItemTypes AS SIT ON SI.ItemTypeID = SIT.ItemTypeID
+INNER JOIN Packages AS P ON SI.PackageID = P.PackageID
+INNER JOIN Services AS S ON SI.ServiceID = S.ServiceID
+INNER JOIN Servers AS SRV ON S.ServerID = SRV.ServerID
+INNER JOIN ResourceGroups AS RG ON SIT.GroupID = RG.GroupID
+INNER JOIN Users AS U ON P.UserID = U.UserID
+
+-- select item properties
+-- get corresponding item properties
+SELECT
+	IP.ItemID,
+	IP.PropertyName,
+	IP.PropertyValue
+FROM ServiceItemProperties AS IP
+INNER JOIN @Items AS FI ON IP.ItemID = FI.ItemID
+
+RETURN
 				*/
 				#endregion
 
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				// select service items
+				var items = ServiceItems
+					.Where(s => s.PackageId == packageId)
+					.Join(Packages, i => i.PackageId, p => p.PackageId, (si, p) => new
+					{
+						Item = si,
+						Package = p
+					})
+					.Join(ServiceItemTypes, i => i.Item.ItemTypeId, t => t.ItemTypeId, (i, t) => new
+					{
+						i.Item,
+						i.Package,
+						Type = t
+					})
+					.Join(Users, i => i.Package.UserId, u => u.UserId, (i, u) => new
+					{
+						i.Item,
+						i.Package,
+						i.Type,
+						User = u
+					})
+					.Join(Services, i => i.Item.ServiceId, s => s.ServiceId, (i, s) => new
+					{
+						i.Item,
+						i.Package,
+						i.Type,
+						i.User,
+						Service = s
+					})
+					.Join(Servers, i => i.Service.ServerId, s => s.ServerId, (i, s) => new
+					{
+						i.Item,
+						i.Package,
+						i.Type,
+						i.User,
+						i.Service,
+						Server = s
+					})
+					.Join(ResourceGroups, i => t.Type.GroupId, r => r.GroupId, (i, r) => new
+					{
+						i.Item.ItemId,
+						i.Item.ItemName,
+						i.Item.ItemTypeId,
+						i.Type.DisplayName,
+						i.Item.ServiceId,
+						i.Item.PackageId,
+						i.Package.PackageName,
+						i.Service.ServiceName,
+						i.Server.ServerId,
+						i.Server.ServerName,
+						r.GroupName,
+						i.User.UserId,
+						i.User.Username,
+						UserFullName = i.User.FirstName + " " + i.User.LastName,
+						i.Item.CreatedDate
+					});
+
+				// select item properties, get corresponding item properties
+				var properties = ServiceItemProperties
+					.Join(items, p => p.ItemId, i => i.ItemId, (p, i) => new
+					{
+						p.ItemId,
+						p.PropertyName,
+						p.PropertyValue
+					});
+
+				var dataSet = new DataSet();
+				dataSet.Tables.Add(EntityDataTable(items));
+				dataSet.Tables.Add(EntityDataTable(properties));
+				return dataSet;
 			}
 			else
 			{
@@ -11018,9 +12416,139 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetServiceItem]
+(
+	@ActorID int,
+	@ItemID int
+)
+AS
+
+DECLARE @Items TABLE
+(
+	ItemID int
+)
+
+-- find service items
+INSERT INTO @Items
+SELECT
+	SI.ItemID
+FROM ServiceItems AS SI
+INNER JOIN Packages AS P ON SI.PackageID = P.PackageID
+WHERE
+	SI.ItemID = @ItemID
+	AND dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1
+
+-- select service items
+SELECT
+	SI.ItemID,
+	SI.ItemName,
+	SI.ItemTypeID,
+	SIT.TypeName,
+	SI.ServiceID,
+	SI.PackageID,
+	P.PackageName,
+	S.ServiceID,
+	S.ServiceName,
+	SRV.ServerID,
+	SRV.ServerName,
+	RG.GroupName,
+	U.UserID,
+	U.Username,
+	U.FullName AS UserFullName,
+	SI.CreatedDate
+FROM @Items AS FI
+INNER JOIN ServiceItems AS SI ON FI.ItemID = SI.ItemID
+INNER JOIN ServiceItemTypes AS SIT ON SI.ItemTypeID = SIT.ItemTypeID
+INNER JOIN Packages AS P ON SI.PackageID = P.PackageID
+INNER JOIN Services AS S ON SI.ServiceID = S.ServiceID
+INNER JOIN Servers AS SRV ON S.ServerID = SRV.ServerID
+INNER JOIN Providers AS PROV ON S.ProviderID = PROV.ProviderID
+INNER JOIN ResourceGroups AS RG ON PROV.GroupID = RG.GroupID
+INNER JOIN UsersDetailed AS U ON P.UserID = U.UserID
+
+-- select item properties
+-- get corresponding item properties
+SELECT
+	IP.ItemID,
+	IP.PropertyName,
+	IP.PropertyValue
+FROM ServiceItemProperties AS IP
+INNER JOIN @Items AS FI ON IP.ItemID = FI.ItemID
+
+RETURN
 				*/
 				#endregion
 
+				// select service items
+				var items = ServiceItems
+					.Where(s => s.ItemId == itemId && CheckActorPackageRights(actorId, s.PackageId))
+					.Join(Packages, i => i.PackageId, p => p.PackageId, (si, p) => new
+					{
+						Item = si,
+						Package = p
+					})
+					.Join(ServiceItemTypes, i => i.Item.ItemTypeId, t => t.ItemTypeId, (i, t) => new
+					{
+						i.Item,
+						i.Package,
+						Type = t
+					})
+					.Join(Users, i => i.Package.UserId, u => u.UserId, (i, u) => new
+					{
+						i.Item,
+						i.Package,
+						i.Type,
+						User = u
+					})
+					.Join(Services, i => i.Item.ServiceId, s => s.ServiceId, (i, s) => new
+					{
+						i.Item,
+						i.Package,
+						i.Type,
+						i.User,
+						Service = s
+					})
+					.Join(Servers, i => i.Service.ServerId, s => s.ServerId, (i, s) => new
+					{
+						i.Item,
+						i.Package,
+						i.Type,
+						i.User,
+						i.Service,
+						Server = s
+					})
+					.Join(ResourceGroups, i => t.Type.GroupId, r => r.GroupId, (i, r) => new
+					{
+						i.Item.ItemId,
+						i.Item.ItemName,
+						i.Item.ItemTypeId,
+						i.Type.TypeName,
+						i.Item.ServiceId,
+						i.Item.PackageId,
+						i.Package.PackageName,
+						i.Service.ServiceName,
+						i.Server.ServerId,
+						i.Server.ServerName,
+						r.GroupName,
+						i.User.UserId,
+						i.User.Username,
+						UserFullName = i.User.FirstName + " " + i.User.LastName,
+						i.Item.CreatedDate
+					});
+
+				// select item properties, get corresponding item properties
+				var properties = ServiceItemProperties
+					.Join(items, p => p.ItemId, i => i.ItemId, (p, i) => new
+					{
+						p.ItemId,
+						p.PropertyName,
+						p.PropertyValue
+					});
+
+				var dataSet = new DataSet();
+				dataSet.Tables.Add(EntityDataTable(items));
+				dataSet.Tables.Add(EntityDataTable(properties));
+				return dataSet;
 			}
 			else
 			{
@@ -11037,9 +12565,36 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[CheckServiceItemExistsInService]
+(
+	@Exists bit OUTPUT,
+	@ServiceID int,
+	@ItemName nvarchar(500),
+	@ItemTypeName nvarchar(200)
+)
+AS
+
+SET @Exists = 0
+
+DECLARE @ItemTypeID int
+SELECT @ItemTypeID = ItemTypeID FROM ServiceItemTypes
+WHERE TypeName = @ItemTypeName
+
+IF EXISTS (SELECT ItemID FROM ServiceItems
+WHERE ItemName = @ItemName AND ItemTypeID = @ItemTypeID AND ServiceID = @ServiceID)
+SET @Exists = 1
+
+RETURN
 				*/
 				#endregion
 
+				var itemTypeId = ServiceItemTypes
+					.Where(t => t.TypeName == itemTypeName)
+					.Select(t => t.ItemTypeId)
+					.FirstOrDefault();
+
+				return ServiceItems.Any(s => s.ServiceId == serviceId && s.ItemName == itemName &&
+					s.ItemTypeId == itemTypeId);
 			}
 			else
 			{
@@ -11063,9 +12618,62 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[CheckServiceItemExists]
+(
+	@Exists bit OUTPUT,
+	@ItemName nvarchar(500),
+	@ItemTypeName nvarchar(200),
+	@GroupName nvarchar(100) = NULL
+)
+AS
+
+SET @Exists = 0
+
+DECLARE @ItemTypeID int
+SELECT @ItemTypeID = ItemTypeID FROM ServiceItemTypes
+WHERE TypeName = @ItemTypeName
+
+IF EXISTS (
+SELECT ItemID FROM ServiceItems AS SI
+INNER JOIN Services AS S ON SI.ServiceID = S.ServiceID
+INNER JOIN Providers AS PROV ON S.ProviderID = PROV.ProviderID
+INNER JOIN ResourceGroups AS RG ON PROV.GroupID = RG.GroupID
+WHERE SI.ItemName = @ItemName AND SI.ItemTypeID = @ItemTypeID
+AND ((@GroupName IS NULL) OR (@GroupName IS NOT NULL AND RG.GroupName = @GroupName))
+)
+SET @Exists = 1
+
+RETURN
 				*/
 				#endregion
 
+				var itemTypeId = ServiceItemTypes
+					.Where(t => t.TypeName == itemTypeName)
+					.Select(t => t.ItemTypeId)
+					.FirstOrDefault();
+
+				return ServiceItems
+					.Where(s => s.ItemName == itemName && s.ItemTypeId == itemTypeId)
+					.Join(Services, i => i.ServiceId, s => s.ServiceId, (i, s) => new
+					{
+						Item = i,
+						Service = s,
+					})
+					.Join(Providers, i => i.Service.ProviderId, p => p.ProviderId, (i, p) => new
+					{
+						i.Item,
+						i.Service,
+						Provider = p
+					})
+					.Join(ResourceGroups, i => i.Provider.GroupId, r => r.GroupId, (i, r) => new
+					{
+						i.Item,
+						i.Service,
+						i.Provider,
+						ResourceGroup = r
+					})
+					.Where(s => groupName == null || groupName != null && s.ResourceGroup.GroupName == groupName)
+					.Any();
 			}
 			else
 			{
@@ -11090,9 +12698,152 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetServiceItemByName]
+(
+	@ActorID int,
+	@PackageID int,
+	@ItemName nvarchar(500),
+	@GroupName nvarchar(100) = NULL,
+	@ItemTypeName nvarchar(200)
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+DECLARE @Items TABLE
+(
+	ItemID int
+)
+
+-- find service items
+INSERT INTO @Items
+SELECT
+	SI.ItemID
+FROM ServiceItems AS SI
+INNER JOIN ServiceItemTypes AS SIT ON SI.ItemTypeID = SIT.ItemTypeID
+INNER JOIN ResourceGroups AS RG ON SIT.GroupID = RG.GroupID
+WHERE SI.PackageID = @PackageID AND SIT.TypeName = @ItemTypeName
+AND SI.ItemName = @ItemName
+AND ((@GroupName IS NULL) OR (@GroupName IS NOT NULL AND RG.GroupName = @GroupName))
+
+-- select service items
+SELECT
+	SI.ItemID,
+	SI.ItemName,
+	SI.ItemTypeID,
+	SIT.TypeName,
+	SI.ServiceID,
+	SI.PackageID,
+	P.PackageName,
+	S.ServiceID,
+	S.ServiceName,
+	SRV.ServerID,
+	SRV.ServerName,
+	RG.GroupName,
+	U.UserID,
+	U.Username,
+	U.FullName AS UserFullName,
+	SI.CreatedDate
+FROM @Items AS FI
+INNER JOIN ServiceItems AS SI ON FI.ItemID = SI.ItemID
+INNER JOIN ServiceItemTypes AS SIT ON SI.ItemTypeID = SIT.ItemTypeID
+INNER JOIN Packages AS P ON SI.PackageID = P.PackageID
+INNER JOIN Services AS S ON SI.ServiceID = S.ServiceID
+INNER JOIN Servers AS SRV ON S.ServerID = SRV.ServerID
+INNER JOIN Providers AS PROV ON S.ProviderID = PROV.ProviderID
+INNER JOIN ResourceGroups AS RG ON PROV.GroupID = RG.GroupID
+INNER JOIN UsersDetailed AS U ON P.UserID = U.UserID
+
+-- select item properties
+-- get corresponding item properties
+SELECT
+	IP.ItemID,
+	IP.PropertyName,
+	IP.PropertyValue
+FROM ServiceItemProperties AS IP
+INNER JOIN @Items AS FI ON IP.ItemID = FI.ItemID
+
+RETURN
 				*/
 				#endregion
 
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				// select service items
+				var items = ServiceItems
+					.Where(s => s.PackageId == packageId && s.ItemName == itemName)
+					.Join(Packages, i => i.PackageId, p => p.PackageId, (si, p) => new
+					{
+						Item = si,
+						Package = p
+					})
+					.Join(ServiceItemTypes, i => i.Item.ItemTypeId, t => t.ItemTypeId, (i, t) => new
+					{
+						i.Item,
+						i.Package,
+						Type = t
+					})
+					.Where(s => s.Type.TypeName == itemTypeName)
+					.Join(Users, i => i.Package.UserId, u => u.UserId, (i, u) => new
+					{
+						i.Item,
+						i.Package,
+						i.Type,
+						User = u
+					})
+					.Join(Services, i => i.Item.ServiceId, s => s.ServiceId, (i, s) => new
+					{
+						i.Item,
+						i.Package,
+						i.Type,
+						i.User,
+						Service = s
+					})
+					.Join(Servers, i => i.Service.ServerId, s => s.ServerId, (i, s) => new
+					{
+						i.Item,
+						i.Package,
+						i.Type,
+						i.User,
+						i.Service,
+						Server = s
+					})
+					.Join(ResourceGroups, i => i.Type.GroupId, r => r.GroupId, (i, r) => new
+					{
+						i.Item.ItemId,
+						i.Item.ItemName,
+						i.Item.ItemTypeId,
+						i.Type.DisplayName,
+						i.Item.ServiceId,
+						i.Item.PackageId,
+						i.Package.PackageName,
+						i.Service.ServiceName,
+						i.Server.ServerId,
+						i.Server.ServerName,
+						r.GroupName,
+						i.User.UserId,
+						i.User.Username,
+						UserFullName = i.User.FirstName + " " + i.User.LastName,
+						i.Item.CreatedDate
+					})
+					.Where(i => groupName == null || groupName != null && i.GroupName == groupName);
+
+				// select item properties, get corresponding item properties
+				var properties = ServiceItemProperties
+					.Join(items, p => p.ItemId, i => i.ItemId, (p, i) => new
+					{
+						p.ItemId,
+						p.PropertyName,
+						p.PropertyValue
+					});
+
+				var dataSet = new DataSet();
+				dataSet.Tables.Add(EntityDataTable(items));
+				dataSet.Tables.Add(EntityDataTable(properties));
+				return dataSet;
 			}
 			else
 			{
@@ -11112,8 +12863,145 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetServiceItemsByName]
+(
+	@ActorID int,
+	@PackageID int,
+	@ItemName nvarchar(500)
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+DECLARE @Items TABLE
+(
+	ItemID int
+)
+
+-- find service items
+INSERT INTO @Items
+SELECT
+	SI.ItemID
+FROM ServiceItems AS SI
+INNER JOIN ServiceItemTypes AS SIT ON SI.ItemTypeID = SIT.ItemTypeID
+WHERE SI.PackageID = @PackageID
+AND SI.ItemName LIKE @ItemName
+
+-- select service items
+SELECT
+	SI.ItemID,
+	SI.ItemName,
+	SI.ItemTypeID,
+	SIT.TypeName,
+	SI.ServiceID,
+	SI.PackageID,
+	P.PackageName,
+	S.ServiceID,
+	S.ServiceName,
+	SRV.ServerID,
+	SRV.ServerName,
+	RG.GroupName,
+	U.UserID,
+	U.Username,
+	U.FullName AS UserFullName,
+	SI.CreatedDate
+FROM @Items AS FI
+INNER JOIN ServiceItems AS SI ON FI.ItemID = SI.ItemID
+INNER JOIN ServiceItemTypes AS SIT ON SI.ItemTypeID = SIT.ItemTypeID
+INNER JOIN Packages AS P ON SI.PackageID = P.PackageID
+INNER JOIN Services AS S ON SI.ServiceID = S.ServiceID
+INNER JOIN Servers AS SRV ON S.ServerID = SRV.ServerID
+INNER JOIN ResourceGroups AS RG ON SIT.GroupID = RG.GroupID
+INNER JOIN UsersDetailed AS U ON P.UserID = U.UserID
+
+-- select item properties
+-- get corresponding item properties
+SELECT
+	IP.ItemID,
+	IP.PropertyName,
+	IP.PropertyValue
+FROM ServiceItemProperties AS IP
+INNER JOIN @Items AS FI ON IP.ItemID = FI.ItemID
+
+RETURN
 				*/
 				#endregion
+
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				// select service items
+				var items = ServiceItems
+					.Where(s => s.PackageId == packageId && s.ItemName == itemName)
+					.Join(Packages, i => i.PackageId, p => p.PackageId, (si, p) => new
+					{
+						Item = si,
+						Package = p
+					})
+					.Join(ServiceItemTypes, i => i.Item.ItemTypeId, t => t.ItemTypeId, (i, t) => new
+					{
+						i.Item,
+						i.Package,
+						Type = t
+					})
+					.Join(Users, i => i.Package.UserId, u => u.UserId, (i, u) => new
+					{
+						i.Item,
+						i.Package,
+						i.Type,
+						User = u
+					})
+					.Join(Services, i => i.Item.ServiceId, s => s.ServiceId, (i, s) => new
+					{
+						i.Item,
+						i.Package,
+						i.Type,
+						i.User,
+						Service = s
+					})
+					.Join(Servers, i => i.Service.ServerId, s => s.ServerId, (i, s) => new
+					{
+						i.Item,
+						i.Package,
+						i.Type,
+						i.User,
+						i.Service,
+						Server = s
+					})
+					.Join(ResourceGroups, i => i.Type.GroupId, r => r.GroupId, (i, r) => new
+					{
+						i.Item.ItemId,
+						i.Item.ItemName,
+						i.Item.ItemTypeId,
+						i.Type.DisplayName,
+						i.Item.ServiceId,
+						i.Item.PackageId,
+						i.Package.PackageName,
+						i.Service.ServiceName,
+						i.Server.ServerId,
+						i.Server.ServerName,
+						r.GroupName,
+						i.User.UserId,
+						i.User.Username,
+						UserFullName = i.User.FirstName + " " + i.User.LastName,
+						i.Item.CreatedDate
+					});
+
+				// select item properties, get corresponding item properties
+				var properties = ServiceItemProperties
+					.Join(items, p => p.ItemId, i => i.ItemId, (p, i) => new
+					{
+						p.ItemId,
+						p.PropertyName,
+						p.PropertyValue
+					});
+
+				var dataSet = new DataSet();
+				dataSet.Tables.Add(EntityDataTable(items));
+				dataSet.Tables.Add(EntityDataTable(properties));
+				return dataSet;
 
 			}
 			else
@@ -11133,9 +13021,40 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetServiceItemsCountByNameAndServiceId]
+(
+	@ActorID int,
+	@ServiceId int,
+	@ItemName nvarchar(500),
+	@GroupName nvarchar(100) = NULL,
+	@ItemTypeName nvarchar(200)
+)
+AS
+SELECT Count(*)
+FROM ServiceItems AS SI
+INNER JOIN ServiceItemTypes AS SIT ON SI.ItemTypeID = SIT.ItemTypeID
+INNER JOIN ResourceGroups AS RG ON SIT.GroupID = RG.GroupID
+INNER JOIN Services AS S ON SI.ServiceID = S.ServiceID
+WHERE S.ServiceID = @ServiceId 
+AND SIT.TypeName = @ItemTypeName
+AND SI.ItemName = @ItemName
+AND ((@GroupName IS NULL) OR (@GroupName IS NOT NULL AND RG.GroupName = @GroupName))
+RETURN 
 				*/
 				#endregion
 
+				// select service items
+				return ServiceItems
+					.Where(s => s.ServiceId == serviceId && s.ItemName == itemName)
+					.Join(ServiceItemTypes, i => i.ItemTypeId, t => t.ItemTypeId, (i, t) => new
+					{
+						Item = i,
+						Type = t
+					})
+					.Where(s => s.Type.TypeName == itemTypeName)
+					.Join(ResourceGroups, i => i.Type.GroupId, r => r.GroupId, (i, r) => r)
+					.Where(r => groupName == null || groupName != null && r.GroupName == groupName)
+					.Count();
 			}
 			else
 			{
@@ -11162,9 +13081,190 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddServiceItem]
+(
+	@ActorID int,
+	@PackageID int,
+	@ServiceID int,
+	@ItemName nvarchar(500),
+	@ItemTypeName nvarchar(200),
+	@ItemID int OUTPUT,
+	@XmlProperties ntext,
+	@CreatedDate datetime
+)
+AS
+BEGIN TRAN
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+-- get GroupID
+DECLARE @GroupID int
+SELECT
+	@GroupID = PROV.GroupID
+FROM Services AS S
+INNER JOIN Providers AS PROV ON S.ProviderID = PROV.ProviderID
+WHERE S.ServiceID = @ServiceID
+
+DECLARE @ItemTypeID int
+SELECT @ItemTypeID = ItemTypeID FROM ServiceItemTypes
+WHERE TypeName = @ItemTypeName
+AND ((@GroupID IS NULL) OR (@GroupID IS NOT NULL AND GroupID = @GroupID))
+
+-- Fix to allow plans assigned to serveradmin
+IF (@ItemTypeName = 'SolidCP.Providers.HostedSolution.Organization, SolidCP.Providers.Base')
+BEGIN
+	IF NOT EXISTS (SELECT * FROM ServiceItems WHERE PackageID = 1)
+	BEGIN
+		INSERT INTO ServiceItems (PackageID, ItemTypeID,ServiceID,ItemName,CreatedDate)
+		VALUES(1, @ItemTypeID, @ServiceID, 'System',  @CreatedDate)
+
+		DECLARE @TempItemID int
+
+		SET @TempItemID = SCOPE_IDENTITY()
+		INSERT INTO ExchangeOrganizations (ItemID, OrganizationID)
+		VALUES(@TempItemID, 'System')
+	END
+END
+
+-- add item
+INSERT INTO ServiceItems
+(
+	PackageID,
+	ServiceID,
+	ItemName,
+	ItemTypeID,
+	CreatedDate
+)
+VALUES
+(
+	@PackageID,
+	@ServiceID,
+	@ItemName,
+	@ItemTypeID,
+	@CreatedDate
+)
+
+SET @ItemID = SCOPE_IDENTITY()
+
+DECLARE @idoc int
+--Create an internal representation of the XML document.
+EXEC sp_xml_preparedocument @idoc OUTPUT, @XmlProperties
+
+-- Execute a SELECT statement that uses the OPENXML rowset provider.
+DELETE FROM ServiceItemProperties
+WHERE ItemID = @ItemID
+
+CREATE TABLE #TempTable(
+	ItemID int,
+	PropertyName nvarchar(50),
+	PropertyValue  nvarchar(max))
+
+INSERT INTO #TempTable (ItemID, PropertyName, PropertyValue)
+SELECT
+	@ItemID,
+	PropertyName,
+	PropertyValue
+FROM OPENXML(@idoc, '/properties/property',1) WITH 
+(
+	PropertyName nvarchar(50) '@name',
+	PropertyValue nvarchar(max) '@value'
+) as PV
+
+-- Move data from temp table to real table
+INSERT INTO ServiceItemProperties
+(
+	ItemID,
+	PropertyName,
+	PropertyValue
+)
+SELECT 
+	ItemID, 
+	PropertyName, 
+	PropertyValue
+FROM #TempTable
+
+DROP TABLE #TempTable
+
+-- remove document
+exec sp_xml_removedocument @idoc
+
+COMMIT TRAN
+RETURN 
 				*/
 				#endregion
 
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				var groupId = Services
+					.Where(s => s.ServiceId == serviceId)
+					.Join(Providers, s => s.ProviderId, p => p.ProviderId, (s, p) => (int?)p.GroupId)
+					.FirstOrDefault();
+
+				var itemTypeId = ServiceItemTypes
+					.Where(t => t.TypeName == itemTypeName &&
+						(groupId == null || groupId != null && t.GroupId == groupId))
+					.Select(t => (int?)t.ItemTypeId)
+					.FirstOrDefault();
+
+				using (var transaction = Database.BeginTransaction())
+				{
+					// Fix to allow plans assigned to serveradmin
+					if (itemTypeName == "SolidCP.Providers.HostedSolution.Organization, SolidCP.Providers.Base")
+					{
+						if (!ServiceItems.Any(s => s.PackageId == 1))
+						{
+							var serviceItem = new Data.Entities.ServiceItem()
+							{
+								PackageId = 1,
+								ItemTypeId = itemTypeId,
+								ServiceId = serviceId,
+								ItemName = "System",
+								CreatedDate = DateTime.Now
+							};
+							ServiceItems.Add(serviceItem);
+							ExchangeOrganizations.Add(new Data.Entities.ExchangeOrganization()
+							{
+								Item = serviceItem,
+								OrganizationId = "System"
+							});
+						}
+					}
+
+					// add item
+					var item = new Data.Entities.ServiceItem()
+					{
+						PackageId = packageId,
+						ItemTypeId = itemTypeId,
+						ServiceId = serviceId,
+						ItemName = itemName,
+						CreatedDate = DateTime.Now
+					};
+					ServiceItems.Add(item);
+
+					SaveChanges();
+
+					ServiceItemProperties.Where(p => p.ItemId == item.ItemId).ExecuteDelete(ServiceItemProperties);
+
+					var properties = XElement.Parse(xmlProperties)
+						.Elements()
+						.Select(e => new Data.Entities.ServiceItemProperty()
+						{
+							ItemId = item.ItemId,
+							PropertyName = (string)e.Attribute("name"),
+							PropertyValue = (string)e.Attribute("value")
+						});
+
+					ServiceItemProperties.AddRange(properties);
+
+					SaveChanges();
+
+					transaction.Commit();
+
+					return item.ItemId;
+				}
 			}
 			else
 			{
@@ -11193,9 +13293,107 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
-				*/
+CREATE PROCEDURE [dbo].[UpdateServiceItem]
+(
+	@ActorID int,
+	@ItemID int,
+	@ItemName nvarchar(500),
+	@XmlProperties ntext
+)
+AS
+BEGIN TRAN
+
+-- check rights
+DECLARE @PackageID int
+SELECT @PackageID = PackageID FROM ServiceItems
+WHERE ItemID = @ItemID
+
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+-- update item
+UPDATE ServiceItems SET ItemName = @ItemName
+WHERE ItemID=@ItemID
+
+DECLARE @idoc int
+--Create an internal representation of the XML document.
+EXEC sp_xml_preparedocument @idoc OUTPUT, @XmlProperties
+
+-- Execute a SELECT statement that uses the OPENXML rowset provider.
+DELETE FROM ServiceItemProperties
+WHERE ItemID = @ItemID
+
+-- Add the xml data into a temp table for the capability and robust
+IF OBJECT_ID('tempdb..#TempTable') IS NOT NULL DROP TABLE #TempTable
+
+CREATE TABLE #TempTable(
+	ItemID int,
+	PropertyName nvarchar(50),
+	PropertyValue  nvarchar(max))
+
+INSERT INTO #TempTable (ItemID, PropertyName, PropertyValue)
+SELECT
+	@ItemID,
+	PropertyName,
+	PropertyValue
+FROM OPENXML(@idoc, '/properties/property',1) WITH 
+(
+	PropertyName nvarchar(50) '@name',
+	PropertyValue nvarchar(max) '@value'
+) as PV
+
+-- Move data from temp table to real table
+INSERT INTO ServiceItemProperties
+(
+	ItemID,
+	PropertyName,
+	PropertyValue
+)
+SELECT 
+	ItemID, 
+	PropertyName, 
+	PropertyValue
+FROM #TempTable
+
+DROP TABLE #TempTable
+
+-- remove document
+exec sp_xml_removedocument @idoc
+
+COMMIT TRAN
+
+RETURN
+				 */
 				#endregion
 
+				var item = ServiceItems
+					.FirstOrDefault(s => s.ItemId == itemId);
+				var packageId = item?.PackageId;
+
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				using (var transaction = Database.BeginTransaction())
+				{
+					// update item
+					item.ItemName = itemName;
+
+					ServiceItemProperties.Where(p => p.ItemId == itemId).ExecuteDelete(ServiceItemProperties);
+
+					var properties = XElement.Parse(xmlProperties)
+						.Elements()
+						.Select(e => new Data.Entities.ServiceItemProperty()
+						{
+							ItemId = itemId,
+							PropertyName = (string)e.Attribute("name"),
+							PropertyValue = (string)e.Attribute("value")
+						});
+					ServiceItemProperties.AddRange(properties);
+
+					SaveChanges();
+
+					transaction.Commit();
+				}
 			}
 			else
 			{
@@ -11215,9 +13413,95 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteServiceItem]
+(
+	@ActorID int,
+	@ItemID int
+)
+AS
+
+-- check rights
+DECLARE @PackageID int
+SELECT @PackageID = PackageID FROM ServiceItems
+WHERE ItemID = @ItemID
+
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+BEGIN TRAN
+
+UPDATE Domains
+SET ZoneItemID = NULL
+WHERE ZoneItemID = @ItemID
+
+DELETE FROM Domains
+WHERE WebSiteID = @ItemID AND IsDomainPointer = 1
+
+UPDATE Domains
+SET WebSiteID = NULL
+WHERE WebSiteID = @ItemID
+
+UPDATE Domains
+SET MailDomainID = NULL
+WHERE MailDomainID = @ItemID
+
+-- delete item comments
+DELETE FROM Comments
+WHERE ItemID = @ItemID AND ItemTypeID = 'SERVICE_ITEM'
+
+-- delete item properties
+DELETE FROM ServiceItemProperties
+WHERE ItemID = @ItemID
+
+-- delete external IP addresses
+EXEC dbo.DeleteItemIPAddresses @ActorID, @ItemID
+
+-- delete item
+DELETE FROM ServiceItems
+WHERE ItemID = @ItemID
+
+COMMIT TRAN
+
+RETURN
 				*/
 				#endregion
 
+				var packageId = ServiceItems
+					.Where(s => s.ItemId == itemId)
+					.Select(s => s.PackageId)
+					.FirstOrDefault();
+
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				using (var transaction = Database.BeginTransaction())
+				{
+					Domains.Where(d => d.WebSiteId == itemId && d.IsDomainPointer).ExecuteDelete(Domains);
+#if NETCOREAPP
+					Domains.Where(d => d.ZoneItemId == itemId).ExecuteUpdate(s => s.SetPropery(p => p.ZoneItemId, null));
+					Domains.Where(d => d.WebSiteId == itemId).ExecuteUpdate(s => s.SetProperty(p => p.WebSiteId, null));
+					Domains.Where(d => d.MailDomainId == itemId).ExecuteUpdate(s => s.SetProperty(p => p.MailDomainId, null));
+#else
+					foreach (var domain in Domains.Where(d => d.ZoneItemId == itemId)) domain.ZoneItemId = null;
+					foreach (var domain in Domains.Where(d => d.WebSiteId == itemId)) domain.WebSiteId = null;
+					foreach (var domain in Domains.Where(d => d.MailDomainId == itemId)) domain.MailDomainId = null;
+#endif
+					// delete item comments
+					Comments.Where(c => c.ItemId == itemId && c.ItemTypeId == "SERVICE_ITEM").ExecuteDelete(Comments);
+
+					// delete item properties
+					ServiceItemProperties.Where(p => p.ItemId == itemId).ExecuteDelete(ServiceItemProperties);
+
+					// delete external IP addresses
+					DeleteItemIPAddresses(actorId, itemId);
+
+					// delete item
+					ServiceItems.Where(s => s.ItemId == itemId).ExecuteDelete(ServiceItems);
+
+					SaveChanges();
+
+					transaction.Commit();
+				}
 			}
 			else
 			{
@@ -11234,9 +13518,53 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[MoveServiceItem]
+(
+	@ActorID int,
+	@ItemID int,
+	@DestinationServiceID int,
+	@forAutodiscover bit
+)
+AS
+
+-- check rights
+DECLARE @PackageID int
+SELECT @PackageID = PackageID FROM ServiceItems
+WHERE ItemID = @ItemID
+
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0 AND @forAutodiscover = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+BEGIN TRAN
+
+UPDATE ServiceItems
+SET ServiceID = @DestinationServiceID
+WHERE ItemID = @ItemID
+
+COMMIT TRAN
+
+RETURN
 				*/
 				#endregion
 
+				var packageId = ServiceItems
+					.Where(s => s.ItemId == itemId)
+					.Select(s => s.PackageId)
+					.FirstOrDefault();
+
+				if (!forAutodiscover && !CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				using (var transaction = Database.BeginTransaction())
+				{
+#if NETCOREAPP
+					ServiceItems.Where(s => s.ItemId == itemId).ExecuteUpdate(s => s.SetProperty(p => p.ServiceId, destinationServiceId));
+#else
+					foreach (var item in ServiceItems.Where(s => s.ItemId == itemId)) item.ServiceId = destinationServiceId;
+					SaveChanges();
+#endif
+					transaction.Commit();
+				}
 			}
 			else
 			{
@@ -11249,15 +13577,336 @@ RETURN
 			}
 		}
 
+		public bool GetPackageAllocatedResource(int? packageId, int groupId, int? serverId)
+		{
+			#region Stored Procedure
+			/*
+CREATE FUNCTION [dbo].[GetPackageAllocatedResource]
+(
+	@PackageID int,
+	@GroupID int,
+	@ServerID int
+)
+RETURNS bit
+AS
+BEGIN
+
+IF @PackageID IS NULL
+RETURN 1
+
+DECLARE @Result bit
+SET @Result = 1 -- enabled
+
+DECLARE @PID int, @ParentPackageID int
+SET @PID = @PackageID
+
+DECLARE @OverrideQuotas bit
+
+IF @ServerID IS NULL OR @ServerID = 0
+SELECT @ServerID = ServerID FROM Packages
+WHERE PackageID = @PackageID
+
+WHILE 1 = 1
+BEGIN
+
+	DECLARE @GroupEnabled int
+
+	-- get package info
+	SELECT
+		@ParentPackageID = ParentPackageID,
+		@OverrideQuotas = OverrideQuotas
+	FROM Packages WHERE PackageID = @PID
+
+	-- check if this is a root 'System' package
+	SET @GroupEnabled = 1 -- enabled
+	IF @ParentPackageID IS NULL
+	BEGIN
+
+		IF @ServerID = -1 OR @ServerID IS NULL
+		RETURN 1
+
+		IF EXISTS (SELECT VirtualServer FROM Servers WHERE ServerID = @ServerID AND VirtualServer = 1)
+		BEGIN
+			IF NOT EXISTS(
+				SELECT
+					DISTINCT(PROV.GroupID)
+				FROM VirtualServices AS VS
+				INNER JOIN Services AS S ON VS.ServiceID = S.ServiceID
+				INNER JOIN Providers AS PROV ON S.ProviderID = PROV.ProviderID
+				WHERE PROV.GroupID = @GroupID AND VS.ServerID = @ServerID
+			)
+			SET @GroupEnabled = 0
+		END
+		ELSE
+		BEGIN
+			IF NOT EXISTS(
+				SELECT
+					DISTINCT(PROV.GroupID)
+				FROM Services AS S
+				INNER JOIN Providers AS PROV ON S.ProviderID = PROV.ProviderID
+				WHERE PROV.GroupID = @GroupID AND  S.ServerID = @ServerID
+			)
+			SET @GroupEnabled = 0
+		END
+
+		RETURN @GroupEnabled -- exit from the loop
+	END
+	ELSE -- parentpackage is not null
+	BEGIN
+		-- check the current package
+		IF @OverrideQuotas = 1
+		BEGIN
+			IF NOT EXISTS(
+				SELECT GroupID FROM PackageResources WHERE GroupID = @GroupID AND PackageID = @PID
+			)
+			SET @GroupEnabled = 0
+		END
+		ELSE
+		BEGIN
+			IF NOT EXISTS(
+				SELECT HPR.GroupID FROM Packages AS P
+				INNER JOIN HostingPlanResources AS HPR ON P.PlanID = HPR.PlanID
+				WHERE HPR.GroupID = @GroupID AND P.PackageID = @PID
+			)
+			SET @GroupEnabled = 0
+		END
+
+		-- check addons
+		IF EXISTS(
+			SELECT HPR.GroupID FROM PackageAddons AS PA
+			INNER JOIN HostingPlanResources AS HPR ON PA.PlanID = HPR.PlanID
+			WHERE HPR.GroupID = @GroupID AND PA.PackageID = @PID
+			AND PA.StatusID = 1 -- active add-on
+		)
+		SET @GroupEnabled = 1
+	END
+
+	IF @GroupEnabled = 0
+		RETURN 0
+
+	SET @PID = @ParentPackageID
+
+END -- end while
+
+RETURN @Result
+END
+			*/
+			#endregion
+
+			if (packageId == null) return true;
+
+			if (serverId == null || serverId == 0)
+			{
+				serverId = Packages
+					.Where(p => p.PackageId == packageId)
+					.Select(p => p.ServerId)
+					.FirstOrDefault();
+			}
+
+			var id = packageId;
+			bool groupEnabled = true;
+
+			while (groupEnabled)
+			{
+				var package = Packages
+					.Where(p => p.PackageId == id)
+					.Select(p => new { p.ParentPackageId, p.OverrideQuotas })
+					.FirstOrDefault();
+
+				// check if this is a root 'System' package
+				if (package.ParentPackageId == null)
+				{
+					if (serverId == -1 || serverId == null) return true;
+
+					if (Servers.Any(s => s.ServerId == serverId && s.VirtualServer))
+					{
+						if (!VirtualServices
+							.Where(v => v.ServerId == serverId)
+							.Join(Services, v => v.ServerId, s => s.ServiceId, (v, s) => s)
+							.Join(Providers, s => s.ProviderId, p => p.ProviderId, (s, p) => p)
+							.Any(p => p.GroupId == groupId))
+						{
+							groupEnabled = false;
+						}
+					}
+					else
+					{
+						if (!Services
+							.Where(s => s.ServerId == serverId)
+							.Join(Providers, s => s.ProviderId, p => p.ProviderId, (s, p) => p)
+							.Any(p => p.GroupId == groupId))
+						{
+							groupEnabled = false;
+						}
+					}
+
+					return groupEnabled;
+				}
+				else // parentPackageId != null
+				{
+					// check the current package
+					if (package.OverrideQuotas)
+					{
+						if (!PackageResources.Any(r => r.GroupId == groupId && r.PackageId == id))
+						{
+							groupEnabled = false;
+						}
+					}
+					else
+					{
+						if (!Packages
+							.Where(p => p.PackageId == id)
+							.Join(HostingPlanResources, p => p.PlanId, r => r.PlanId, (p, r) => r)
+							.Any(r => r.GroupId == groupId))
+						{
+							groupEnabled = false;
+						}
+					}
+
+					// check addons
+					if (PackageAddons
+						.Where(p => p.PackageId == id && p.StatusId == 1)
+						.Join(HostingPlanResources, p => p.PlanId, r => r.PlanId, (p, r) => r)
+						.Any(r => r.GroupId == groupId))
+					{
+						groupEnabled = true;
+					}
+				}
+
+				id = package.ParentPackageId;
+			}
+
+			return false;
+		}
+
 		public int GetPackageServiceId(int actorId, int packageId, string groupName)
 		{
 			if (UseEntityFramework)
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetPackageServiceID]
+(
+	@ActorID int,
+	@PackageID int,
+	@GroupName nvarchar(100),
+	@ServiceID int OUTPUT
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+SET @ServiceID = 0
+
+-- load group info
+DECLARE @GroupID int
+SELECT @GroupID = GroupID FROM ResourceGroups
+WHERE GroupName = @GroupName
+
+-- check if user has this resource enabled
+IF dbo.GetPackageAllocatedResource(@PackageID, @GroupID, NULL) = 0
+BEGIN
+	-- remove all resource services from the space
+	DELETE FROM PackageServices FROM PackageServices AS PS
+	INNER JOIN Services AS S ON PS.ServiceID = S.ServiceID
+	INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
+	WHERE P.GroupID = @GroupID AND PS.PackageID = @PackageID
+	RETURN
+END
+
+-- check if the service is already distributed
+SELECT
+	@ServiceID = PS.ServiceID
+FROM PackageServices AS PS
+INNER JOIN Services AS S ON PS.ServiceID = S.ServiceID
+INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
+WHERE PS.PackageID = @PackageID AND P.GroupID = @GroupID
+
+IF @ServiceID <> 0
+RETURN
+
+-- distribute services
+EXEC DistributePackageServices @ActorID, @PackageID
+
+-- get distributed service again
+SELECT
+	@ServiceID = PS.ServiceID
+FROM PackageServices AS PS
+INNER JOIN Services AS S ON PS.ServiceID = S.ServiceID
+INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
+WHERE PS.PackageID = @PackageID AND P.GroupID = @GroupID
+
+RETURN
 				*/
 				#endregion
 
+				// check rights
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				var groupId = ResourceGroups
+					.Where(g => g.GroupName == groupName)
+					.Select(g => g.GroupId)
+					.FirstOrDefault();
+
+				var package = Packages
+					.Where(p => p.PackageId == packageId)
+					.Include(p => p.Services)
+					.FirstOrDefault();
+
+				// check if user has this resource enabled
+				if (!GetPackageAllocatedResource(packageId, groupId, null))
+				{
+					// remove all resource services from the space
+					var servicesToRemove = package.Services
+						.Join(Providers, s => s.ProviderId, p => p.ProviderId, (s, p) => new
+						{
+							Service = s,
+							Provider = p
+						})
+						.Where(g => g.Provider.GroupId == groupId)
+						.Select(g => g.Service);
+
+					foreach (var service in servicesToRemove) package.Services.Remove(service);
+					
+					SaveChanges();
+				}
+
+				// check if the service is already distributed
+				var serviceId = package.Services
+					.Join(Providers, s => s.ProviderId, p => p.ProviderId, (s, p) => new
+					{
+						Service = s,
+						Provider = p
+					})
+					.Where(g => g.Provider.GroupId == groupId)
+					.Select(g => g.Service.ServiceId)
+					.FirstOrDefault();
+
+				if (serviceId != 0) return serviceId;
+
+				// distribute services
+				DistributePackageServices(actorId, packageId);
+
+				// get distributed service again
+				package = Packages
+					.Where(p => p.PackageId == packageId)
+					.Include(p => p.Services)
+					.FirstOrDefault();
+				
+				serviceId = package.Services
+					.Join(Providers, s => s.ProviderId, p => p.ProviderId, (s, p) => new
+					{
+						Service = s,
+						Provider = p
+					})
+					.Where(g => g.Provider.GroupId == groupId)
+					.Select(g => g.Service.ServiceId)
+					.FirstOrDefault();
+
+				return serviceId;
 			}
 			else
 			{
@@ -11281,9 +13930,65 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetFilterURL]
+(
+ @ActorID int,
+ @PackageID int,
+ @GroupName nvarchar(100),
+ @FilterUrl nvarchar(200) OUTPUT
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+-- load group info
+DECLARE @GroupID int
+SELECT @GroupID = GroupID FROM ResourceGroups
+WHERE GroupName = @GroupName
+
+--print @GroupID 
+
+Declare @ServiceID int
+SELECT @ServiceID = PS.ServiceID FROM PackageServices AS PS
+INNER JOIN Services AS S ON PS.ServiceID = S.ServiceID
+INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
+WHERE PS.PackageID = @PackageID AND P.GroupID = @GroupID
+
+SELECT
+ @FilterUrl = PropertyValue
+ FROM ServiceProperties AS SP
+ WHERE @ServiceID = SP.ServiceID AND PropertyName = 'apiurl'
+-- print  @FilterUrl
+RETURN
 				*/
 				#endregion
 
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				var groupId = ResourceGroups
+					.Where(g => g.GroupName == groupName)
+					.Select(g => g.GroupId)
+					.FirstOrDefault();
+				var package = Packages
+					.Include(p => p.Services)
+					.FirstOrDefault(p => p.PackageId == packageId);
+				var serviceId = package.Services
+					.Join(Providers, s => s.ProviderId, p => p.ProviderId, (s, p) => new
+					{
+						s.ServiceId,
+						p.GroupId
+					})
+					.Where(s => s.GroupId == groupId)
+					.Select(s => s.ServiceId)
+					.FirstOrDefault();
+				var filterUrl = ServiceProperties
+					.Where(p => p.ServiceId == serviceId && p.PropertyName == "apiurl")
+					.Select(p => p.PropertyValue)
+					.FirstOrDefault();
+				return filterUrl;
 			}
 			else
 			{
@@ -11307,9 +14012,94 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetFilterURLByHostingPlan]
+(
+ @ActorID int,
+ @PlanID int,
+ @GroupName nvarchar(100),
+ @FilterUrl nvarchar(200) OUTPUT
+)
+AS 
+
+-- load ServerID info
+DECLARE @ServerID int
+select @ServerID = HostingPlans.ServerID from HostingPlans where PlanID = @PlanID
+--print @ServerID 
+
+--Check Server Type
+DECLARE @IsVirtualServer int
+select @IsVirtualServer = VirtualServer from Servers where ServerID = @ServerID
+
+-- load group info
+DECLARE @GroupID int
+SELECT @GroupID = GroupID FROM ResourceGroups
+WHERE GroupName = @GroupName
+--print @GroupID 
+
+-- load ProviderID info
+DECLARE @ProviderID int
+select @ProviderID = providerid from Providers 
+where GroupID = @GroupID  and ProviderName = 'MailCleaner'
+
+Declare @ServiceID int
+if  (@IsVirtualServer = 1)
+	select @ServiceID = Services.ServiceID from Services   
+	Join VirtualServices vs on vs.ServerID = @ServerID and vs.ServiceID = Services.ServiceID
+	where ProviderID = @ProviderID
+ELSE
+ BEGIN
+	select  @ServiceID = Services.ServiceID from Services  
+	Where Services.ProviderID = @ProviderID and Services.ServerID = @ServerID
+END; 
+
+SELECT
+ @FilterUrl = PropertyValue
+ FROM ServiceProperties AS SP
+ WHERE @ServiceID = SP.ServiceID AND PropertyName = 'apiurl'
+ --print @FilterUrl
+RETURN
 				*/
 				#endregion
 
+				// load ServerID info
+				var serverId = HostingPlans
+					.Where(p => p.PlanId == PlanID)
+					.Select(p => p.ServerId)
+					.FirstOrDefault();
+				var isVirtualServer = Servers
+					.Where(s => s.ServerId == serverId)
+					.Select(s => s.VirtualServer)
+					.FirstOrDefault();
+				var providerId = ResourceGroups
+					.Where(g => g.GroupName == groupName)
+					.Join(Providers, r => r.GroupId, p => p.GroupId, (r, p) => p)
+					.Where(p => p.ProviderName == "MailCleaner")
+					.Select(p => p.ProviderId)
+					.FirstOrDefault();
+				int serviceId;
+				if (isVirtualServer)
+				{
+					serviceId = Services
+						.Join(VirtualServices, s => s.ServiceId, v => v.ServiceId, (s, v) => new
+						{
+							Service = s,
+							VirtualService = v
+						})
+						.Where(s => s.VirtualService.ServerId == serverId && s.Service.ProviderId == providerId)
+						.Select(s => s.Service.ServiceId)
+						.FirstOrDefault();
+				} else
+				{
+					serviceId = Services
+						.Where(s => s.ServerId == serverId && s.ProviderId == providerId)
+						.Select(s => s.ServiceId)
+						.FirstOrDefault();
+				}
+				var filterUrl = ServiceProperties
+					.Where(p => p.ServiceId == serviceId && p.PropertyName == "apiurl")
+					.Select(p => p.PropertyValue)
+					.FirstOrDefault();
+				return filterUrl;
 			}
 			else
 			{
@@ -11334,9 +14124,83 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdatePackageDiskSpace]
+(
+	@PackageID int,
+	@xml ntext
+)
+AS
+DECLARE @idoc int
+--Create an internal representation of the XML document.
+EXEC sp_xml_preparedocument @idoc OUTPUT, @xml
+-- Execute a SELECT statement that uses the OPENXML rowset provider.
+
+DECLARE @Items TABLE
+(
+	ItemID int,
+	Bytes bigint
+)
+
+INSERT INTO @Items (ItemID, Bytes)
+SELECT ItemID, DiskSpace FROM OPENXML (@idoc, '/items/item',1)
+WITH
+(
+	ItemID int '@id',
+	DiskSpace bigint '@bytes'
+) as XSI
+
+-- remove current diskspace
+DELETE FROM PackagesDiskspace
+WHERE PackageID = @PackageID
+
+-- update package diskspace
+INSERT INTO PackagesDiskspace (PackageID, GroupID, Diskspace)
+SELECT
+	@PackageID,
+	SIT.GroupID,
+	SUM(I.Bytes)
+FROM @Items AS I
+INNER JOIN ServiceItems AS SI ON I.ItemID = SI.ItemID
+INNER JOIN ServiceItemTypes AS SIT ON SI.ItemTypeID = SIT.ItemTypeID
+GROUP BY SIT.GroupID
+
+-- remove document
+exec sp_xml_removedocument @idoc
+
+RETURN
 				*/
 				#endregion
 
+				// remove current diskspace
+				PackagesDiskspaces.Where(d => d.PackageId == packageId).ExecuteDelete(PackagesDiskspaces);
+
+				var items = XElement.Parse(xml)
+					.Elements()
+					.Select(e => new
+					{
+						ItemId = (int)e.Attribute("id"),
+						Bytes = (long)e.Attribute("bytes")
+					});
+				var diskspace = items
+					.Join(ServiceItems, it => it.ItemId, s => s.ItemId, (it, s) => new
+					{
+						Item = it,
+						Service = s
+					})
+					.Join(ServiceItemTypes, s => s.Service.ItemTypeId, t => t.ItemTypeId, (s, t) => new
+					{
+						t.GroupId,
+						s.Item.Bytes
+					})
+					.GroupBy(s => s.GroupId)
+					.Select(g => new Data.Entities.PackagesDiskspace()
+					{
+						PackageId = packageId,
+						GroupId = g.Key,
+						DiskSpace = g.Sum(s => s.Bytes)
+					});
+				PackagesDiskspaces.AddRange(diskspace);
+				SaveChanges();
 			}
 			else
 			{
@@ -11353,6 +14217,75 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdatePackageBandwidth]
+(
+	@PackageID int,
+	@xml ntext
+)
+AS
+DECLARE @idoc int
+--Create an internal representation of the XML document.
+EXEC sp_xml_preparedocument @idoc OUTPUT, @xml
+
+DECLARE @Items TABLE
+(
+	ItemID int,
+	LogDate datetime,
+	BytesSent bigint,
+	BytesReceived bigint
+)
+
+INSERT INTO @Items
+(
+	ItemID,
+	LogDate,
+	BytesSent,
+	BytesReceived
+)
+SELECT
+	ItemID,
+	CONVERT(datetime, LogDate, 101),
+	BytesSent,
+	BytesReceived
+FROM OPENXML(@idoc, '/items/item',1) WITH
+(
+	ItemID int '@id',
+	LogDate nvarchar(10) '@date',
+    BytesSent bigint '@sent',
+    BytesReceived bigint '@received'
+)
+
+-- delete current statistics
+DELETE FROM PackagesBandwidth
+FROM PackagesBandwidth AS PB
+INNER JOIN (
+	SELECT
+		SIT.GroupID,
+		I.LogDate
+	FROM @Items AS I
+	INNER JOIN ServiceItems AS SI ON I.ItemID = SI.ItemID
+	INNER JOIN ServiceItemTypes AS SIT ON SI.ItemTypeID = SIT.ItemTypeID
+	GROUP BY I.LogDate, SIT.GroupID
+) AS STAT ON PB.LogDate = STAT.LogDate AND PB.GroupID = STAT.GroupID
+WHERE PB.PackageID = @PackageID
+
+-- insert new statistics
+INSERT INTO PackagesBandwidth (PackageID, GroupID, LogDate, BytesSent, BytesReceived)
+SELECT
+	@PackageID,
+	SIT.GroupID,
+	I.LogDate,
+	SUM(I.BytesSent),
+	SUM(I.BytesReceived)
+FROM @Items AS I
+INNER JOIN ServiceItems AS SI ON I.ItemID = SI.ItemID
+INNER JOIN ServiceItemTypes AS SIT ON SI.ItemTypeID = SIT.ItemTypeID
+GROUP BY I.LogDate, SIT.GroupID
+
+-- remove document
+exec sp_xml_removedocument @idoc
+
+RETURN
 				*/
 				#endregion
 
@@ -13436,7 +16369,7 @@ RETURN
 
 		public DataTable EntityDataTable<TEntity>(IEnumerable<TEntity> set) => ObjectUtils.DataTableFromEntitySet<TEntity>(set);
 		public DataSet EntityDataSet<TEntity>(IEnumerable<TEntity> set) => ObjectUtils.DataSetFromEntitySet<TEntity>(set);
-		public EntityDataReader<TEntity> EntityDataReader<TEntity>(IEnumerable<TEntity> set) where TEntity: class => new EntityDataReader<TEntity>(set);
+		public EntityDataReader<TEntity> EntityDataReader<TEntity>(IEnumerable<TEntity> set) where TEntity : class => new EntityDataReader<TEntity>(set);
 
 		#endregion
 
@@ -16547,7 +19480,7 @@ RETURN
 			}
 			else
 			{
-				SqlParameter[] sqlParams = new [] { new SqlParameter("@ItemID", itemId) };
+				SqlParameter[] sqlParams = new[] { new SqlParameter("@ItemID", itemId) };
 
 				return (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "GetLyncUsersCount", sqlParams);
 			}
@@ -16873,7 +19806,7 @@ RETURN
 			}
 			else
 			{
-				SqlParameter[] sqlParams = new []
+				SqlParameter[] sqlParams = new[]
 				{
 					new SqlParameter("@ItemID", itemId),
 					new SqlParameter("@SortColumn", sortColumn),
@@ -16922,7 +19855,7 @@ RETURN
 			}
 			else
 			{
-				SqlParameter[] sqlParams = new [] { new SqlParameter("@ItemID", itemId) };
+				SqlParameter[] sqlParams = new[] { new SqlParameter("@ItemID", itemId) };
 
 				return (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "GetSfBUsersCount", sqlParams);
 			}
@@ -17159,7 +20092,7 @@ RETURN
 		public int GetPackageIdByName(string Name)
 		{
 			const bool UseEntityFrameworkForGetPackageIdByName = true;
-			
+
 			int packageId = -1;
 
 			if (UseEntityFrameworkForGetPackageIdByName || UseEntityFramework)
@@ -17171,7 +20104,7 @@ RETURN
 				return packageId;
 			}
 			else
-			{	// TODO is this a bug? Querying Providers instead of Packages? But this routine has no
+			{   // TODO is this a bug? Querying Providers instead of Packages? But this routine has no
 				// references, so the bug does not show up
 				List<ProviderInfo> providers = ServerController.GetProviders();
 				foreach (ProviderInfo providerInfo in providers)
@@ -19576,23 +22509,23 @@ WHERE PackageID = @PackageID",
 		}
 
 		public void UpdateDomainDates(int domainId, DateTime? domainCreationDate, DateTime? domainExpirationDate, DateTime? domainLastUpdateDate)
+		{
+			if (UseEntityFramework)
 			{
-				if (UseEntityFramework)
-				{
 
-				}
-				else
-				{
-					SqlHelper.ExecuteNonQuery(
-						ConnectionString,
-						CommandType.StoredProcedure,
-						"UpdateDomainDates",
-						new SqlParameter("@DomainId", domainId),
-						new SqlParameter("@DomainCreationDate", domainCreationDate),
-						new SqlParameter("@DomainExpirationDate", domainExpirationDate),
-						new SqlParameter("@DomainLastUpdateDate", domainLastUpdateDate));
-				}
 			}
+			else
+			{
+				SqlHelper.ExecuteNonQuery(
+					ConnectionString,
+					CommandType.StoredProcedure,
+					"UpdateDomainDates",
+					new SqlParameter("@DomainId", domainId),
+					new SqlParameter("@DomainCreationDate", domainCreationDate),
+					new SqlParameter("@DomainExpirationDate", domainExpirationDate),
+					new SqlParameter("@DomainLastUpdateDate", domainLastUpdateDate));
+			}
+		}
 
 		public void UpdateWhoisDomainInfo(int domainId, DateTime? domainCreationDate, DateTime? domainExpirationDate, DateTime? domainLastUpdateDate, string registrarName)
 		{

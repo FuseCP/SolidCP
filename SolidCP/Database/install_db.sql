@@ -5647,7 +5647,7 @@ AS
 
 -- check rights
 DECLARE @PackageID int
-SELECT PackageID = @PackageID FROM ServiceItems
+SELECT @PackageID = PackageID FROM ServiceItems
 WHERE ItemID = @ItemID
 
 IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
@@ -11585,7 +11585,7 @@ AS
 
 -- check rights
 DECLARE @PackageID int
-SELECT @PackageID = @PackageID FROM PackageAddons
+SELECT @PackageID = PackageID FROM PackageAddons
 WHERE PackageAddonID = @PackageAddonID
 
 IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
@@ -19930,7 +19930,7 @@ AS
 
 -- check rights
 DECLARE @PackageID int
-SELECT PackageID = @PackageID FROM ServiceItems
+SELECT @PackageID = PackageID FROM ServiceItems
 WHERE ItemID = @ItemID
 
 IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
@@ -23106,7 +23106,7 @@ BEGIN TRAN
 
 -- check rights
 DECLARE @PackageID int
-SELECT PackageID = @PackageID FROM ServiceItems
+SELECT @PackageID = PackageID FROM ServiceItems
 WHERE ItemID = @ItemID
 
 IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
