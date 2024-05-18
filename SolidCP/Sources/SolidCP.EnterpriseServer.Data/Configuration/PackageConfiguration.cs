@@ -20,7 +20,7 @@ public partial class PackageConfiguration: EntityTypeConfiguration<Package>
 #if NetCore
         Core.ToTable(tb => tb.HasTrigger("Update_StatusIDchangeDate"));
 
-        Property(e => e.StatusIdchangeDate).HasDefaultValueSql("(getdate())");
+        Property(e => e.StatusIdChangeDate).HasDefaultValueSql("(getdate())");
 
         HasOne(d => d.ParentPackage).WithMany(p => p.InverseParentPackage).HasConstraintName("FK_Packages_Packages");
 
@@ -62,7 +62,7 @@ public partial class PackageConfiguration: EntityTypeConfiguration<Package>
 
 		#region Seed Data
 		HasData(() => new Package[] {
-			new Package() { PackageId = 1, PackageComments = "", PackageName = "System", StatusId = 1, StatusIdchangeDate = DateTime.Parse("2024-04-20T11:02:58.5600000"), UserId = 1 }
+			new Package() { PackageId = 1, PackageComments = "", PackageName = "System", StatusId = 1, StatusIdChangeDate = DateTime.Parse("2024-04-20T11:02:58.5600000"), UserId = 1 }
 		});
 		#endregion
 	}

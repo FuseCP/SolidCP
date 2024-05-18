@@ -53,7 +53,7 @@ public partial class Package
     public bool DefaultTopPackage { get; set; }
 
     [Column("StatusIDchangeDate", TypeName = "datetime")]
-    public DateTime StatusIdchangeDate { get; set; }
+    public DateTime StatusIdChangeDate { get; set; }
 
     [InverseProperty("Package")]
     public virtual ICollection<Domain> Domains { get; set; } = new List<Domain>();

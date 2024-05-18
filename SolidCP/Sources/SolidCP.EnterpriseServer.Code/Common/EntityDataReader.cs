@@ -26,12 +26,12 @@ namespace SolidCP.EnterpriseServer
 
 	public class EntityDataReader<TEntity>: IDataReader, IEntityDataSet, IEnumerable<TEntity> where TEntity : class
 	{
-		public TEntity[] Set { get; private set; }
+		public virtual TEntity[] Set { get; private set; }
 		IEnumerable IEntityDataSet.Set => Set;
-        public Type Type { get; private set; }
+        public virtual Type Type { get; private set; }
 
         PropertyCollection properties = null;
-        public PropertyCollection Properties
+        public virtual PropertyCollection Properties
         {
             get
             {
@@ -67,43 +67,43 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public int Depth => 1;
+		public virtual int Depth => 1;
 
-		public bool IsClosed { get; private set; } = false;
+		public virtual bool IsClosed { get; private set; } = false;
 
-		public int RecordsAffected { get; private set; }
+		public virtual int RecordsAffected { get; private set; }
 
-		public int FieldCount => Properties.Count;
+		public virtual int FieldCount => Properties.Count;
 
-		public object this[string name] => Properties[name].GetValue(Enumerator.Current);
+		public virtual object this[string name] => Properties[name].GetValue(Enumerator.Current);
 
-		public object this[int i] => Properties[i].GetValue(Enumerator.Current);
+		public virtual object this[int i] => Properties[i].GetValue(Enumerator.Current);
 
-		public IEnumerator<TEntity> GetEnumerator() => ((IEnumerable<TEntity>)Set).GetEnumerator();
+		public virtual IEnumerator<TEntity> GetEnumerator() => ((IEnumerable<TEntity>)Set).GetEnumerator();
 
-		IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)Set).GetEnumerator();
+		virtual IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)Set).GetEnumerator();
 
-		public void Close() => Dispose();
+		public virtual void Close() => Dispose();
 
-		public DataTable GetSchemaTable()
+		public virtual DataTable GetSchemaTable()
 		{
 			var table = new DataTable();
 			foreach (var prop in Properties) table.Columns.Add(prop.Name, prop.PropertyType);
 			return table;
 		}
 
-		public bool NextResult() => false;
-		public bool Read() => !(IsClosed = !Enumerator.MoveNext());
+		public virtual bool NextResult() => false;
+		public virtual bool Read() => !(IsClosed = !Enumerator.MoveNext());
 		public void Dispose() {
 			IsClosed = true;
 			Set = null;
 			enumerator = null;
 		}
-		public string GetName(int i) => Properties[i].Name;
-		public string GetDataTypeName(int i) => Properties[i].PropertyType.FullName;
-		public Type GetFieldType(int i) => Properties[i].PropertyType;
-		public object GetValue(int i) => Properties[i].GetValue(Enumerator.Current);
-		public int GetValues(object[] values) {
+		public virtual string GetName(int i) => Properties[i].Name;
+		public virtual string GetDataTypeName(int i) => Properties[i].PropertyType.FullName;
+		public virtual Type GetFieldType(int i) => Properties[i].PropertyType;
+		public virtual object GetValue(int i) => Properties[i].GetValue(Enumerator.Current);
+		public virtual int GetValues(object[] values) {
 			int n = 0;
 			foreach (var prop in Properties)
 			{
@@ -112,7 +112,7 @@ namespace SolidCP.EnterpriseServer
 			}
 			return n;
 		}
-		public int GetOrdinal(string name) => Properties.IndexOf(Properties[name]);
+		public virtual int GetOrdinal(string name) => Properties.IndexOf(Properties[name]);
 		public bool GetBoolean(int i) => (bool)this[i];
 		public byte GetByte(int i) => (byte)this[i];
 		public long GetBytes(int i, long fieldOffset, byte[] buffer, int bufferoffset, int length)
@@ -139,7 +139,7 @@ namespace SolidCP.EnterpriseServer
 		public string GetString(int i) => (string)this[i];
 		public decimal GetDecimal(int i) => (decimal)this[i];
 		public DateTime GetDateTime(int i) => (DateTime)this[i];
-		public IDataReader GetData(int i)
+		public virtual IDataReader GetData(int i)
 		{
 			var reader = new EntityDataReader<TEntity>(Set, RecordsAffected != -1);
 			var props = new PropertyCollection() { Properties[i] };

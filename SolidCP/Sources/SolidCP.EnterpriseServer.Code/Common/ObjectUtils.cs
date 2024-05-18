@@ -463,6 +463,7 @@ namespace SolidCP.EnterpriseServer
 		public static DataTable DataTableFromEntitySet<TEntity>(IEnumerable<TEntity> set)
 		{
 			var type = typeof(TEntity);
+			if (type == typeof(object)) type = set.FirstOrDefault(e => e != null)?.GetType() ?? typeof(object);
 			var table = new DataTable(type.Name);
 			var eprops = GetTypeProperties(type);
 			var props = eprops.Select(p => new { Property = p, Column = table.Columns.Add(p.Name, p.PropertyType) })
