@@ -130,6 +130,9 @@ namespace SolidCP.EnterpriseServer.Data
 		DbSet<Package> packages = null;
 		public virtual DbSet<Package> Packages => packages ?? (packages = new DbSet<Package>(BaseContext));
 
+		DbSet<PackageService> packageServices = null;
+		public virtual DbSet<PackageService> PackageServices => packageServices ?? (packageServices = new DbSet<PackageService>(BaseContext));
+
 		DbSet<PackageAddon> packageAddons = null;
 		public virtual DbSet<PackageAddon> PackageAddons => packageAddons ?? (packageAddons = new DbSet<PackageAddon>(BaseContext));
 

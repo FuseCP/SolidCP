@@ -65,6 +65,8 @@ using SolidCP.EnterpriseServer.Data;
 using Twilio.Base;
 using System.Net;
 using static Mysqlx.Notice.Warning.Types;
+using Humanizer.Localisation;
+using Mysqlx.Crud;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -754,7 +756,7 @@ END
 			return list;
 		}
 
-		public bool CheckUserParent(int ownerId, int userId)
+		public bool CheckUserParent(int ownerId, int? userId)
 		{
 			#region Stored Procedure
 			/*
@@ -13851,7 +13853,7 @@ RETURN
 						.Select(g => g.Service);
 
 					foreach (var service in servicesToRemove) package.Services.Remove(service);
-					
+
 					SaveChanges();
 				}
 
@@ -13876,7 +13878,7 @@ RETURN
 					.Where(p => p.PackageId == packageId)
 					.Include(p => p.Services)
 					.FirstOrDefault();
-				
+
 				serviceId = package.Services
 					.Join(Providers, s => s.ProviderId, p => p.ProviderId, (s, p) => new
 					{
@@ -14069,7 +14071,8 @@ RETURN
 						.Where(s => s.VirtualService.ServerId == serverId && s.Service.ProviderId == providerId)
 						.Select(s => s.Service.ServiceId)
 						.FirstOrDefault();
-				} else
+				}
+				else
 				{
 					serviceId = Services
 						.Where(s => s.ServerId == serverId && s.ProviderId == providerId)
@@ -14488,7 +14491,7 @@ ORDER BY TypeOrder
 					"GetServiceItemTypes");
 			}
 		}
-#endregion
+		#endregion
 
 		#region Plans
 		// Plans methods
@@ -14637,7 +14640,8 @@ RETURN
 				var plans = HostingPlans
 					.Where(pl => pl.UserId == userId && pl.IsAddon == true)
 					.OrderBy(pl => pl.PlanName)
-					.Select(pl => new {
+					.Select(pl => new
+					{
 						pl.PlanId,
 						pl.UserId,
 						pl.PackageId,
@@ -14724,7 +14728,8 @@ RETURN
 				var plans = HostingPlans
 					.Where(pl => pl.UserId == ownerId && pl.IsAddon == false)
 					.OrderBy(pl => pl.PlanName)
-					.Select(pl => new {
+					.Select(pl => new
+					{
 						pl.PlanId,
 						pl.PackageId,
 						pl.PlanName,
@@ -14810,7 +14815,8 @@ RETURN
 				var plans = HostingPlans
 					.Where(pl => pl.UserId == ownerId && pl.IsAddon == true)
 					.OrderBy(pl => pl.PlanName)
-					.Select(pl => new {
+					.Select(pl => new
+					{
 						pl.PlanId,
 						pl.PackageId,
 						pl.PlanName,
@@ -15227,9 +15233,7 @@ END
 			*/
 			#endregion
 
-			if (packageId == null) return 0;
-
-			int result = 0;
+			int result;
 
 			var quotaTypeId = Quotas
 				.Where(q => q.QuotaId == quotaId)
@@ -15401,7 +15405,8 @@ RETURN
 				if (!CheckActorParentPackageRights(actorId, packageId))
 					throw new AccessViolationException("You are not allowed to access this package");
 
-				if (serverId == 0) {
+				if (serverId == 0)
+				{
 					serverId = Packages
 						.Where(p => p.PackageId == packageId)
 						.Select(p => p.ServerId)
@@ -15571,8 +15576,8 @@ RETURN
 				{
 					PlanId = planId,
 					GroupId = (int)e.Attribute("id"),
-					CalculateDiskSpace = (bool)e.Attribute("calculateDiskSpace"),
-					CalculateBandwidth = (bool)e.Attribute("calculateBandwith")
+					CalculateDiskSpace = (int)e.Attribute("calculateDiskSpace") == 1,
+					CalculateBandwidth = (int)e.Attribute("calculateBandwith") == 1
 				});
 			var quotas = xml.Element("quotas")
 				.Elements()
@@ -15741,7 +15746,7 @@ RETURN
 			}
 		}
 
-		public int CheckExceedingQuota(int packageId, int quotaId, int quotaTypeId)
+		public int CheckExceedingQuota(int? packageId, int quotaId, int quotaTypeId)
 		{
 			#region Stored Procedure
 			/*
@@ -15809,6 +15814,8 @@ END
 			*/
 			#endregion
 
+			if (packageId == null) return 0;
+
 			var packageQuotaValue = GetPackageAllocatedQuota(packageId, quotaId);
 
 			// check boolean quota
@@ -15870,7 +15877,7 @@ END
 			public int QuotaValue { get; set; }
 		}
 
-		public ExceedingQuota[] GetPackageExceedingQuotas(int packageId)
+		public IEnumerable<ExceedingQuota> GetPackageExceedingQuotas(int? packageId)
 		{
 			#region Stored Procedure
 			/*
@@ -15939,8 +15946,7 @@ END
 							QuotaId = q.QuotaId,
 							QuotaName = q.QuotaName,
 							QuotaValue = CheckExceedingQuota(packageId, q.QuotaId, q.QuotaTypeId)
-						})
-						.ToArray();
+						});
 				}
 				else // overriden quotas
 				{
@@ -15951,8 +15957,7 @@ END
 							QuotaId = q.QuotaId,
 							QuotaName = q.QuotaName,
 							QuotaValue = CheckExceedingQuota(packageId, q.QuotaId, q.QuotaTypeId)
-						})
-						.ToArray();
+						});
 				}
 			}
 			return new ExceedingQuota[0];
@@ -16040,7 +16045,7 @@ RETURN
 					.Where(p => p.PlanId == planId)
 					.Select(p => p.UserId)
 					.FirstOrDefault();
-				
+
 				if (!CheckActorUserRights(actorId, userId))
 					throw new AccessViolationException("You are not allowed to access this account");
 
@@ -16071,7 +16076,9 @@ RETURN
 					// update quotas
 					UpdateHostingPlanQuotas(actorId, planId, quotasXml);
 
-					var exceedingQuotas = GetPackageExceedingQuotas(packageId);
+					var exceedingQuotas = GetPackageExceedingQuotas(packageId)
+						.Where(q => q.QuotaValue > 0)
+						.ToArray();
 
 					if (exceedingQuotas.Any()) transaction.Rollback();
 					else transaction.Commit();
@@ -16274,15 +16281,21 @@ RETURN
 					.Where(p => p.UserId == userId)
 					.Join(UsersDetailed, p => p.UserId, u => u.UserId, (p, u) => new
 					{
-						Package = p, User = u
+						Package = p,
+						User = u
 					})
 					.GroupJoin(Servers, p => p.Package.ServerId, s => s.ServerId, (p, s) => new
 					{
-						p.Package, p.User, Server = s.SingleOrDefault()
+						p.Package,
+						p.User,
+						Server = s.SingleOrDefault()
 					})
 					.GroupJoin(HostingPlans, p => p.Package.PlanId, hp => hp.PlanId, (p, hp) => new
 					{
-						p.Package, p.User, p.Server, HostingPlan = hp.SingleOrDefault()
+						p.Package,
+						p.User,
+						p.Server,
+						HostingPlan = hp.SingleOrDefault()
 					})
 					.Select(p => new
 					{
@@ -16680,7 +16693,8 @@ RETURN
 					items = items.Skip(startRow).Take(maximumRows);
 
 					return EntityDataSet(count, items);
-				} else
+				}
+				else
 				{
 					//sortColumn = sortColumn.Replace("ItemName", "DomainName");
 
@@ -16887,7 +16901,7 @@ RETURN
 
 				packages = packages.Skip(startRow).Take(maximumRows);
 
-				return EntityDataSet(count, packages); 
+				return EntityDataSet(count, packages);
 			}
 			else
 			{
@@ -17251,7 +17265,7 @@ RETURN
 						p.StatusId,
 						p.PlanId,
 						p.PurchaseDate,
-						p.StatusIDchangeDate,
+						p.StatusIdChangeDate,
 						p.OverrideQuotas,
 						p.DefaultTopPackage
 					});
@@ -17264,6 +17278,116 @@ RETURN
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@PackageID", packageId));
 			}
+		}
+
+		public int CalculatePackageDiskspace(int packageId)
+		{
+			#region Stored Procedure
+			/*
+CREATE FUNCTION [dbo].[CalculatePackageDiskspace]
+(
+	@PackageID int
+)
+RETURNS int
+AS
+BEGIN
+
+DECLARE @Diskspace int
+
+SELECT
+	@Diskspace = ROUND(CONVERT(float, SUM(ISNULL(PD.DiskSpace, 0))) / 1024 / 1024, 0) -- in megabytes
+FROM PackagesTreeCache AS PT
+INNER JOIN Packages AS P ON PT.PackageID = P.PackageID
+INNER JOIN PackagesDiskspace AS PD ON P.PackageID = PD.PackageID
+INNER JOIN HostingPlanResources AS HPR ON PD.GroupID = HPR.GroupID
+	AND HPR.PlanID = P.PlanID AND HPR.CalculateDiskspace = 1
+WHERE PT.ParentPackageID = @PackageID
+
+RETURN @Diskspace
+END
+			*/
+			#endregion
+
+			const long MB = 1024 * 1024;
+
+			int diskspace = ((PackagesTreeCaches
+				.Where(t => t.ParentPackageId == packageId)
+				.Join(Packages, t => t.PackageId, p => p.PackageId, (t, p) => p)
+				.Join(PackagesDiskspaces, p => p.PackageId, pd => pd.PackageId, (p, pd) => new
+				{
+					Package = p,
+					Diskspace = pd
+				})
+				.Join(HostingPlanResources.Where(hr => hr.CalculateDiskSpace == true),
+					p => new { p.Diskspace.GroupId, p.Package.PlanId }, hr => new { hr.GroupId, hr.PlanId },
+					(p, hr) => p.Diskspace.DiskSpace)
+				.Sum(space => (long?)space) ?? 0) + MB / 2) / MB;
+			return diskspace;
+		}
+
+		public int CalculatePackageBandwidth(int packageId)
+		{
+			#region Stored Procedure
+			/*
+CREATE FUNCTION [dbo].[CalculatePackageBandwidth]
+(
+	@PackageID int
+)
+RETURNS int
+AS
+BEGIN
+
+DECLARE @d datetime, @StartDate datetime, @EndDate datetime
+SET @d = GETDATE()
+SET @StartDate = DATEADD(Day, -DAY(@d) + 1, @d)
+SET @EndDate = DATEADD(Day, -1, DATEADD(Month, 1, @StartDate))
+--SET @EndDate =  GETDATE()
+--SET @StartDate = DATEADD(month, -1, @EndDate)
+
+-- remove hours and minutes
+SET @StartDate = CONVERT(datetime, CONVERT(nvarchar, @StartDate, 112))
+SET @EndDate = CONVERT(datetime, CONVERT(nvarchar, @EndDate, 112))
+
+DECLARE @Bandwidth int
+SELECT
+	@Bandwidth = ROUND(CONVERT(float, SUM(ISNULL(PB.BytesSent + PB.BytesReceived, 0))) / 1024 / 1024, 0) -- in megabytes
+FROM PackagesTreeCache AS PT
+INNER JOIN Packages AS P ON PT.PackageID = P.PackageID
+INNER JOIN PackagesBandwidth AS PB ON PT.PackageID = PB.PackageID
+INNER JOIN HostingPlanResources AS HPR ON PB.GroupID = HPR.GroupID
+	AND HPR.PlanID = P.PlanID AND HPR.CalculateBandwidth = 1
+WHERE
+	PT.ParentPackageID = @PackageID
+	AND PB.LogDate BETWEEN @StartDate AND @EndDate
+
+IF @Bandwidth IS NULL
+SET @Bandwidth = 0
+
+RETURN @Bandwidth
+END
+			*/
+			#endregion
+
+			const long MB = 1024 * 1024;
+
+			var today = DateTime.Now.Date;
+			var startDate = today.AddDays(-today.Day + 1);
+			var endDate = startDate.AddMonths(1);
+
+			int bandwidth = ((PackagesTreeCaches
+				.Where(t => t.ParentPackageId == packageId)
+				.Join(Packages, t => t.PackageId, p => p.PackageId, (t, p) => p)
+				.Join(PackagesBandwidths, p => p.PackageId, pb => pb.PackageId, (p, pb) => new
+				{
+					Package = p,
+					Bandwidth = pb
+				})
+				.Where(p => startDate <= p.Bandwidth.LogDate && p.Bandwidth.LogDate < endDate)
+				.Join(HostingPlanResources.Where(hr => hr.CalculateBandwidth == true),
+					p => new { p.Bandwidth.GroupId, p.Package.PlanId }, hr => new { hr.GroupId, hr.PlanId },
+					(p, hr) => p.Bandwidth.BytesSent + p.Bandwidth.BytesReceived)
+				.Sum(space => (long?)space) ?? 0) + MB / 2) / MB;
+			return bandwidth;
 		}
 
 		public int CalculateQuotaUsage(int packageId, int quotaId)
@@ -17527,13 +17651,10 @@ AS
 
 			if (quota?.QuotaTypeId != 2) return 0;
 
-			int result;
-			List<int> vhd;
+			int result = 0;
 
-//		DECLARE @Result int
-//		DECLARE @vhd TABLE(Size int)
-
-			switch (quotaId) {
+			switch (quotaId)
+			{
 				case 52: // diskspace
 					result = CalculatePackageDiskspace(packageId);
 					break;
@@ -17586,20 +17707,20 @@ AS
 				case 302: // CpuNumber of VPS
 				case 555: // CpuNumber of VPS2012
 				case 347: // CpuNumber of VPSforPc 
-						result = ServiceItemProperties
-						.Join(ServiceItems, p => p.ItemId, s => s.ItemId, (p, s) => new
-						{
-							Property = p,
-							Item = s
-						})
-						.Join(PackagesTreeCaches, p => p.Item.PackageId, t => t.PackageId, (p, t) => new
-						{
-							p.Property.PropertyName,
-							t.ParentPackageId,
-							p.Property.PropertyValue
-						})
-						.Where(p => p.PropertyName == "CpuCores" && p.ParentPackageId == packageId)
-						.Sum(p => (int?)int.Parse(p.PropertyValue)) ?? 0;
+					result = ServiceItemProperties
+					.Join(ServiceItems, p => p.ItemId, s => s.ItemId, (p, s) => new
+					{
+						Property = p,
+						Item = s
+					})
+					.Join(PackagesTreeCaches, p => p.Item.PackageId, t => t.PackageId, (p, t) => new
+					{
+						p.Property.PropertyName,
+						t.ParentPackageId,
+						p.Property.PropertyValue
+					})
+					.Where(p => p.PropertyName == "CpuCores" && p.ParentPackageId == packageId)
+					.Sum(p => (int?)int.Parse(p.PropertyValue)) ?? 0;
 					break;
 				case 306: // HDD of VPS
 				case 559: // HDD of VPS2012
@@ -17716,119 +17837,292 @@ AS
 						.Where(t => t.ParentPackageId == packageId)
 						.Count();
 					break;
-
-					/*
-		ELSE IF @QuotaID = 320 -- OCS Users
-			SET @Result = (SELECT COUNT(ea.AccountID) FROM ExchangeAccounts ea 
-							INNER JOIN OCSUsers ocs ON ea.AccountID = ocs.AccountID
-							INNER JOIN ServiceItems  si ON ea.ItemID = si.ItemID
-							INNER JOIN PackagesTreeCache pt ON si.PackageID = pt.PackageID
-							WHERE pt.ParentPackageID = @PackageID)
-		ELSE IF @QuotaID = 206 -- HostedSolution.Users
-			SET @Result = (SELECT COUNT(ea.AccountID) FROM ExchangeAccounts AS ea
-				INNER JOIN ServiceItems  si ON ea.ItemID = si.ItemID
-				INNER JOIN PackagesTreeCache pt ON si.PackageID = pt.PackageID
-				WHERE pt.ParentPackageID = @PackageID AND ea.AccountType IN (1,5,6,7))
-		ELSE IF @QuotaID = 78 -- Exchange2007.Mailboxes
-			SET @Result = (SELECT COUNT(ea.AccountID) FROM ExchangeAccounts AS ea
-				INNER JOIN ServiceItems  si ON ea.ItemID = si.ItemID
-				INNER JOIN PackagesTreeCache pt ON si.PackageID = pt.PackageID
-				WHERE pt.ParentPackageID = @PackageID 
-				AND ea.AccountType IN (1)
-				AND ea.MailboxPlanId IS NOT NULL)
-		ELSE IF @QuotaID = 731 -- Exchange2013.JournalingMailboxes
-			SET @Result = (SELECT COUNT(ea.AccountID) FROM ExchangeAccounts AS ea
-				INNER JOIN ServiceItems  si ON ea.ItemID = si.ItemID
-				INNER JOIN PackagesTreeCache pt ON si.PackageID = pt.PackageID
-				WHERE pt.ParentPackageID = @PackageID 
-				AND ea.AccountType IN (12)
-				AND ea.MailboxPlanId IS NOT NULL)
-		ELSE IF @QuotaID = 77 -- Exchange2007.DiskSpace
-			SET @Result = (SELECT SUM(B.MailboxSizeMB) FROM ExchangeAccounts AS ea 
-			INNER JOIN ExchangeMailboxPlans AS B ON ea.MailboxPlanId = B.MailboxPlanId 
-			INNER JOIN ServiceItems  si ON ea.ItemID = si.ItemID
-			INNER JOIN PackagesTreeCache pt ON si.PackageID = pt.PackageID
-			WHERE pt.ParentPackageID = @PackageID AND ea.AccountType in (1, 5, 6, 10, 12))
-		ELSE IF @QuotaID = 370 -- Lync.Users
-			SET @Result = (SELECT COUNT(ea.AccountID) FROM ExchangeAccounts AS ea
-				INNER JOIN LyncUsers lu ON ea.AccountID = lu.AccountID
-				INNER JOIN ServiceItems  si ON ea.ItemID = si.ItemID
-				INNER JOIN PackagesTreeCache pt ON si.PackageID = pt.PackageID
-				WHERE pt.ParentPackageID = @PackageID)
-		ELSE IF @QuotaID = 376 -- Lync.EVUsers
-			SET @Result = (SELECT COUNT(ea.AccountID) FROM ExchangeAccounts AS ea
-				INNER JOIN LyncUsers lu ON ea.AccountID = lu.AccountID
-				INNER JOIN LyncUserPlans lp ON lu.LyncUserPlanId = lp.LyncUserPlanId
-				INNER JOIN ServiceItems  si ON ea.ItemID = si.ItemID
-				INNER JOIN PackagesTreeCache pt ON si.PackageID = pt.PackageID
-				WHERE pt.ParentPackageID = @PackageID AND lp.EnterpriseVoice = 1)
-		ELSE IF @QuotaID = 381 -- Dedicated Lync Phone Numbers
-			SET @Result = (SELECT COUNT(PIP.PackageAddressID) FROM PackageIPAddresses AS PIP
-							INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
-							INNER JOIN PackagesTreeCache AS PT ON PIP.PackageID = PT.PackageID
-							WHERE PT.ParentPackageID = @PackageID AND IP.PoolID = 5)
-		ELSE IF @QuotaID = 430 -- Enterprise Storage
-			SET @Result = (SELECT SUM(ESF.FolderQuota) FROM EnterpriseFolders AS ESF
-							INNER JOIN ServiceItems  SI ON ESF.ItemID = SI.ItemID
-							INNER JOIN PackagesTreeCache PT ON SI.PackageID = PT.PackageID
-							WHERE PT.ParentPackageID = @PackageID)
-		ELSE IF @QuotaID = 431 -- Enterprise Storage Folders
-			SET @Result = (SELECT COUNT(ESF.EnterpriseFolderID) FROM EnterpriseFolders AS ESF
-							INNER JOIN ServiceItems  SI ON ESF.ItemID = SI.ItemID
-							INNER JOIN PackagesTreeCache PT ON SI.PackageID = PT.PackageID
-							WHERE PT.ParentPackageID = @PackageID)
-		ELSE IF @QuotaID = 423 -- HostedSolution.SecurityGroups
-			SET @Result = (SELECT COUNT(ea.AccountID) FROM ExchangeAccounts AS ea
-				INNER JOIN ServiceItems  si ON ea.ItemID = si.ItemID
-				INNER JOIN PackagesTreeCache pt ON si.PackageID = pt.PackageID
-				WHERE pt.ParentPackageID = @PackageID AND ea.AccountType IN (8,9))
-		ELSE IF @QuotaID = 495 -- HostedSolution.DeletedUsers
-			SET @Result = (SELECT COUNT(ea.AccountID) FROM ExchangeAccounts AS ea
-				INNER JOIN ServiceItems  si ON ea.ItemID = si.ItemID
-				INNER JOIN PackagesTreeCache pt ON si.PackageID = pt.PackageID
-				WHERE pt.ParentPackageID = @PackageID AND ea.AccountType = 11)
-		ELSE IF @QuotaID = 450
-			SET @Result = (SELECT COUNT(DISTINCT(RCU.[AccountId])) FROM [dbo].[RDSCollectionUsers] RCU
-				INNER JOIN ExchangeAccounts EA ON EA.AccountId = RCU.AccountId
-				INNER JOIN ServiceItems  si ON ea.ItemID = si.ItemID
-				INNER JOIN PackagesTreeCache pt ON si.PackageID = pt.PackageID
-				WHERE PT.ParentPackageID = @PackageID)
-		ELSE IF @QuotaID = 451
-			SET @Result = (SELECT COUNT(RS.[ID]) FROM [dbo].[RDSServers] RS				
-				INNER JOIN ServiceItems  si ON RS.ItemID = si.ItemID
-				INNER JOIN PackagesTreeCache pt ON si.PackageID = pt.PackageID
-				WHERE PT.ParentPackageID = @PackageID)
-		ELSE IF @QuotaID = 491
-			SET @Result = (SELECT COUNT(RC.[ID]) FROM [dbo].[RDSCollections] RC
-				INNER JOIN ServiceItems  si ON RC.ItemID = si.ItemID
-				INNER JOIN PackagesTreeCache pt ON si.PackageID = pt.PackageID
-				WHERE PT.ParentPackageID = @PackageID)
-		ELSE IF @QuotaName like 'ServiceLevel.%' -- Support Service Level Quota
-		BEGIN
-			DECLARE @LevelID int
-
-			SELECT @LevelID = LevelID FROM SupportServiceLevels
-			WHERE LevelName = REPLACE(@QuotaName,'ServiceLevel.','')
-
-			IF (@LevelID IS NOT NULL)
-			SET @Result = (SELECT COUNT(EA.AccountID)
-				FROM SupportServiceLevels AS SL
-				INNER JOIN ExchangeAccounts AS EA ON SL.LevelID = EA.LevelID
-				INNER JOIN ServiceItems  SI ON EA.ItemID = SI.ItemID
-				INNER JOIN PackagesTreeCache PT ON SI.PackageID = PT.PackageID
-				WHERE EA.LevelID = @LevelID AND PT.ParentPackageID = @PackageID)
-			ELSE SET @Result = 0
-		END
-		ELSE
-			SET @Result = (SELECT COUNT(SI.ItemID) FROM Quotas AS Q
-			INNER JOIN ServiceItems AS SI ON SI.ItemTypeID = Q.ItemTypeID
-			INNER JOIN PackagesTreeCache AS PT ON SI.PackageID = PT.PackageID AND PT.ParentPackageID = @PackageID
-			WHERE Q.QuotaID = @QuotaID)
-
-		RETURN @Result
-*/
+				case 320: // OCS Users
+					result = ExchangeAccounts
+						.Join(OcsUsers, ea => ea.AccountId, ocs => ocs.AccountId, (ea, ocs) => ea)
+						.Join(ServiceItems, ea => ea.ItemId, si => si.ItemId, (ea, si) => si)
+						.Join(PackagesTreeCaches, si => si.PackageId, t => t.PackageId, (si, t) => t)
+						.Where(t => t.ParentPackageId == packageId)
+						.Count();
+					break;
+				case 206: // HostedSolution.Users
+					var accountTypes = new int[] { 1, 5, 6, 7 };
+					result = ExchangeAccounts
+						.Join(ServiceItems, ea => ea.ItemId, si => si.ItemId, (ea, si) => new
+						{
+							Exchange = ea,
+							Item = si
+						})
+						.Join(PackagesTreeCaches, ea => ea.Item.PackageId, t => t.PackageId, (ea, t) => new
+						{
+							ea.Exchange,
+							ea.Item,
+							Tree = t
+						})
+						.Where(t => t.Tree.ParentPackageId == packageId && accountTypes.Any(type => t.Exchange.AccountType == type))
+						.Count();
+					break;
+				case 78: // Exchange2007.Mailboxes
+					result = ExchangeAccounts
+						.Join(ServiceItems, ea => ea.ItemId, si => si.ItemId, (ea, si) => new
+						{
+							Exchange = ea,
+							Item = si
+						})
+						.Join(PackagesTreeCaches, ea => ea.Item.PackageId, t => t.PackageId, (ea, t) => new
+						{
+							ea.Exchange,
+							ea.Item,
+							Tree = t
+						})
+						.Where(t => t.Tree.ParentPackageId == packageId && t.Exchange.MailboxPlanId != null &&
+							t.Exchange.AccountType == 1)
+						.Count();
+					break;
+				case 731: // Exchange2013.JournalingMailboxes
+					result = ExchangeAccounts
+						.Join(ServiceItems, ea => ea.ItemId, si => si.ItemId, (ea, si) => new
+						{
+							Exchange = ea,
+							Item = si
+						})
+						.Join(PackagesTreeCaches, ea => ea.Item.PackageId, t => t.PackageId, (ea, t) => new
+						{
+							ea.Exchange,
+							ea.Item,
+							Tree = t
+						})
+						.Where(t => t.Tree.ParentPackageId == packageId && t.Exchange.MailboxPlanId != null &&
+							t.Exchange.AccountType == 12)
+						.Count();
+					break;
+				case 77: // Exchange2007.DiskSpace
+					accountTypes = new int[] { 1, 5, 6, 10, 12 };
+					result = ExchangeAccounts
+						.Join(ExchangeMailboxPlans, ea => ea.MailboxPlanId, ep => ep.MailboxPlanId, (ea, ep) => new
+						{
+							Exchange = ea,
+							MailboxPlan = ep
+						})
+						.Join(ServiceItems, ea => ea.Exchange.ItemId, si => si.ItemId, (ea, si) => new
+						{
+							ea.Exchange,
+							ea.MailboxPlan,
+							Item = si
+						})
+						.Join(PackagesTreeCaches, ea => ea.Item.PackageId, t => t.PackageId, (ea, t) => new
+						{
+							ea.Exchange,
+							ea.MailboxPlan,
+							ea.Item,
+							Tree = t
+						})
+						.Where(t => t.Tree.ParentPackageId == packageId &&
+							accountTypes.Any(type => t.Exchange.AccountType == type))
+						.Sum(t => (int?)t.MailboxPlan.MailboxSizeMb) ?? 0;
+					break;
+				case 370: // Lync.Users
+					result = ExchangeAccounts
+						.Join(LyncUsers, ea => ea.AccountId, lu => lu.AccountId, (ea, lu) => ea)
+						.Join(ServiceItems, ea => ea.ItemId, si => si.ItemId, (ea, si) => new
+						{
+							Exchange = ea,
+							Item = si
+						})
+						.Join(PackagesTreeCaches, ea => ea.Item.PackageId, t => t.PackageId, (ea, t) => new
+						{
+							ea.Exchange,
+							ea.Item,
+							Tree = t
+						})
+						.Where(t => t.Tree.ParentPackageId == packageId)
+						.Count();
+					break;
+				case 376: // Lync.EVUsers
+					result = ExchangeAccounts
+						.Join(LyncUsers, ea => ea.AccountId, lu => lu.AccountId, (ea, lu) => new
+						{
+							Exchange = ea,
+							LyncUser = lu,
+						})
+						.Join(LyncUserPlans, ea => ea.LyncUser.LyncUserPlanId, lp => lp.LyncUserPlanId, (ea, lp) => new
+						{
+							ea.Exchange,
+							ea.LyncUser,
+							LyncUserPlan = lp,
+						})
+						.Join(ServiceItems, ea => ea.Exchange.ItemId, si => si.ItemId, (ea, si) => new
+						{
+							ea.Exchange,
+							ea.LyncUser,
+							ea.LyncUserPlan,
+							Item = si
+						})
+						.Join(PackagesTreeCaches, ea => ea.Item.PackageId, t => t.PackageId, (ea, t) => new
+						{
+							ea.Exchange,
+							ea.LyncUser,
+							ea.LyncUserPlan,
+							ea.Item,
+							Tree = t
+						})
+						.Where(t => t.Tree.ParentPackageId == packageId && t.LyncUserPlan.EnterpriseVoice)
+						.Count();
+					break;
+				case 381: // Dedicated Lync Phone Numbers
+					result = PackageIpAddresses
+						.Join(IpAddresses, p => p.AddressId, ip => ip.AddressId, (p, ip) => new
+						{
+							Package = p,
+							Ip = ip
+						})
+						.Join(PackagesTreeCaches, p => p.Package.PackageId, t => t.PackageId, (p, t) => new
+						{
+							t.ParentPackageId,
+							p.Ip.PoolId
+						})
+						.Where(p => p.ParentPackageId == packageId && p.PoolId == 5)
+						.Count();
+					break;
+				case 430: // Enterprise Storage
+					result = EnterpriseFolders
+						.Join(ServiceItems, ef => ef.ItemId, si => si.ItemId, (ef, si) => new
+						{
+							Folder = ef,
+							Item = si
+						})
+						.Join(PackagesTreeCaches, ef => ef.Item.PackageId, t => t.PackageId, (ef, t) => new
+						{
+							ef.Folder,
+							ef.Item,
+							Tree = t
+						})
+						.Where(ef => ef.Tree.ParentPackageId == packageId)
+						.Sum(ef => (int?)ef.Folder.FolderQuota) ?? 0;
+					break;
+				case 431: // Enterprise Storage Folders
+					result = EnterpriseFolders
+						.Join(ServiceItems, ef => ef.ItemId, si => si.ItemId, (ef, si) => new
+						{
+							Folder = ef,
+							Item = si
+						})
+						.Join(PackagesTreeCaches, ef => ef.Item.PackageId, t => t.PackageId, (ef, t) => new
+						{
+							ef.Folder,
+							ef.Item,
+							Tree = t
+						})
+						.Where(ef => ef.Tree.ParentPackageId == packageId)
+						.Count();
+					break;
+				case 423: // HostedSolution.SecurityGroups
+					accountTypes = new int[] { 8, 9 };
+					result = ExchangeAccounts
+						.Join(ServiceItems, ea => ea.ItemId, si => si.ItemId, (ea, si) => new
+						{
+							Exchange = ea,
+							Item = si
+						})
+						.Join(PackagesTreeCaches, ea => ea.Item.PackageId, t => t.PackageId, (ea, t) => new
+						{
+							ea.Exchange,
+							ea.Item,
+							Tree = t
+						})
+						.Where(t => t.Tree.ParentPackageId == packageId &&
+							accountTypes.Any(type => t.Exchange.AccountType == type))
+						.Count();
+					break;
+				case 495: // HostedSolution.DeletedUsers
+					result = ExchangeAccounts
+						.Join(ServiceItems, ea => ea.ItemId, si => si.ItemId, (ea, si) => new
+						{
+							Exchange = ea,
+							Item = si
+						})
+						.Join(PackagesTreeCaches, ea => ea.Item.PackageId, t => t.PackageId, (ea, t) => new
+						{
+							ea.Exchange,
+							ea.Item,
+							Tree = t
+						})
+						.Where(t => t.Tree.ParentPackageId == packageId && t.Exchange.AccountType == 11)
+						.Count();
+					break;
+				case 450: // RDSCollectionUsers
+					result = RdsCollectionUsers
+						.Join(ExchangeAccounts, rds => rds.AccountId, ea => ea.AccountId, (rds, ea) => ea)
+						.Join(ServiceItems, ea => ea.ItemId, si => si.ItemId, (ea, si) => new
+						{
+							Exchange = ea,
+							Item = si
+						})
+						.Join(PackagesTreeCaches, ea => ea.Item.PackageId, t => t.PackageId, (ea, t) => new
+						{
+							ea.Exchange,
+							Tree = t
+						})
+						.Where(t => t.Tree.ParentPackageId == packageId && t.Exchange.AccountType == 11)
+						.GroupBy(ea => ea.Exchange.AccountId)
+						.Count();
+					break;
+				case 451: // RDSServers
+					result = RdsServers
+						.Join(ServiceItems, s => s.ItemId, si => si.ItemId, (s, si) => si)
+						.Join(PackagesTreeCaches, si => si.PackageId, t => t.PackageId, (s, t) => t)
+						.Where(t => t.ParentPackageId == packageId)
+						.Count();
+					break;
+				case 491: // RDSCollections
+					result = RdsCollections
+						.Join(ServiceItems, rc => rc.ItemId, si => si.ItemId, (s, si) => si)
+						.Join(PackagesTreeCaches, si => si.PackageId, t => t.PackageId, (s, t) => t)
+						.Where(t => t.ParentPackageId == packageId)
+						.Count();
+					break;
+				default:
+					if (quota.QuotaName.StartsWith("ServiceLevel.")) // Support Service Level Quota
+					{
+						var levelName = quota.QuotaName.Substring("ServiceLevel.".Length);
+						var levelId = SupportServiceLevels
+							.Where(l => l.LevelName == levelName)
+							.Select(l => (int?)l.LevelId)
+							.FirstOrDefault();
+						if (levelId != null)
+						{
+							result = ExchangeAccounts
+								.Join(ServiceItems, ea => ea.ItemId, si => si.ItemId, (ea, si) => new
+								{
+									Exchange = ea,
+									Item = si
+								})
+								.Join(PackagesTreeCaches, ea => ea.Item.PackageId, t => t.PackageId, (ea, t) => new
+								{
+									ea.Exchange,
+									ea.Item,
+									Tree = t
+								})
+								.Where(t => t.Tree.ParentPackageId == packageId && t.Exchange.LevelId == levelId)
+								.Count();
+						}
+						else result = 0;
+					}
+					else
+					{
+						result = Quotas
+							.Where(q => q.QuotaId == quotaId)
+							.Join(ServiceItems, q => q.ItemTypeId, si => si.ItemTypeId, (q, si) => si)
+							.Join(PackagesTreeCaches, si => si.PackageId, t => t.PackageId, (si, t) => t)
+							.Where(t => t.ParentPackageId == packageId)
+							.Count();
+					}
+					break;
 			}
-			public DataSet GetPackageQuotas(int actorId, int packageId)
+			return result;
+		}
+
+		public DataSet GetPackageQuotas(int actorId, int packageId)
 		{
 			if (UseEntityFramework)
 			{
@@ -17935,7 +18229,8 @@ RETURN
 						Quota = q,
 						AllocatedQuota = GetPackageAllocatedQuota(packageId, q.QuotaId)
 					})
-					.Select(q => new {
+					.Select(q => new
+					{
 						q.Quota.QuotaId,
 						q.Quota.GroupId,
 						q.Quota.QuotaName,
@@ -17949,7 +18244,7 @@ RETURN
 						QuotaUsedValue = CalculateQuotaUsage(packageId, q.Quota.QuotaId),
 						q.Quota.PerOrganization
 					});
-				return EntityDataSet(groups, quotas)
+				return EntityDataSet(groups, quotas);
 			}
 			else
 			{
@@ -17966,9 +18261,124 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetParentPackageQuotas]
+(
+	@ActorID int,
+	@PackageID int
+)
+AS
+
+-- check rights
+IF dbo.CheckActorParentPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+DECLARE @PlanID int, @ParentPackageID int
+SELECT @PlanID = PlanID, @ParentPackageID = ParentPackageID FROM Packages
+WHERE PackageID = @PackageID
+
+-- get resource groups
+SELECT
+	RG.GroupID,
+	RG.GroupName,
+	ISNULL(HPR.CalculateDiskSpace, 0) AS CalculateDiskSpace,
+	ISNULL(HPR.CalculateBandwidth, 0) AS CalculateBandwidth,
+	--dbo.GetPackageAllocatedResource(@ParentPackageID, RG.GroupID, 0) AS ParentEnabled
+	CASE
+		WHEN RG.GroupName = 'Service Levels' THEN dbo.GetPackageServiceLevelResource(@ParentPackageID, RG.GroupID, 0)
+		ELSE dbo.GetPackageAllocatedResource(@ParentPackageID, RG.GroupID, 0)
+	END AS ParentEnabled
+FROM ResourceGroups AS RG
+LEFT OUTER JOIN HostingPlanResources AS HPR ON RG.GroupID = HPR.GroupID AND HPR.PlanID = @PlanID
+--WHERE dbo.GetPackageAllocatedResource(@PackageID, RG.GroupID, 0) = 1
+WHERE (dbo.GetPackageAllocatedResource(@PackageID, RG.GroupID, 0) = 1 AND RG.GroupName <> 'Service Levels') OR
+	  (dbo.GetPackageServiceLevelResource(@PackageID, RG.GroupID, 0) = 1 AND RG.GroupName = 'Service Levels')
+ORDER BY RG.GroupOrder
+
+-- return quotas
+DECLARE @OrgsCount INT
+SET @OrgsCount = dbo.GetPackageAllocatedQuota(@PackageID, 205) -- 205 - HostedSolution.Organizations
+SET @OrgsCount = CASE WHEN ISNULL(@OrgsCount, 0) < 1 THEN 1 ELSE @OrgsCount END
+
+SELECT
+	Q.QuotaID,
+	Q.GroupID,
+	Q.QuotaName,
+	Q.QuotaDescription,
+	Q.QuotaTypeID,
+	QuotaValue = CASE WHEN Q.PerOrganization = 1 AND dbo.GetPackageAllocatedQuota(@PackageID, Q.QuotaID) <> -1 THEN 
+					dbo.GetPackageAllocatedQuota(@PackageID, Q.QuotaID) * @OrgsCount 
+				 ELSE 
+					dbo.GetPackageAllocatedQuota(@PackageID, Q.QuotaID) 
+				 END,
+	QuotaValuePerOrganization = dbo.GetPackageAllocatedQuota(@PackageID, Q.QuotaID),
+	dbo.GetPackageAllocatedQuota(@ParentPackageID, Q.QuotaID) AS ParentQuotaValue,
+	ISNULL(dbo.CalculateQuotaUsage(@PackageID, Q.QuotaID), 0) AS QuotaUsedValue,
+	Q.PerOrganization
+FROM Quotas AS Q
+WHERE Q.HideQuota IS NULL OR Q.HideQuota = 0
+ORDER BY Q.QuotaOrder
+
+RETURN
 				*/
 				#endregion
 
+				// check rights
+				if (!CheckActorParentPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				// TODO is this implementation really just the same as GetPackageQuotas?
+				var package = Packages
+					.Where(p => p.PackageId == packageId)
+					.Select(p => new { p.PlanId, p.ParentPackageId })
+					.FirstOrDefault();
+				// get resource groups
+				var groups = ResourceGroups
+					.Where(r => r.GroupName != "Service Levels" && GetPackageAllocatedResource(packageId, r.GroupId, 0) ||
+						r.GroupName == "Service Levels" && GetPackageServiceLevelResource(packageId, r.GroupId, 0))
+					.OrderBy(r => r.GroupOrder)
+					.GroupJoin(HostingPlanResources.Where(r => r.PlanId == package.PlanId), r => r.GroupId, hr => hr.GroupId, (r, hr) => new
+					{
+						Group = r,
+						HostingPlan = hr.SingleOrDefault()
+					})
+					.Select(g => new
+					{
+						g.Group.GroupId,
+						g.Group.GroupName,
+						CalculateDiskSpace = g.HostingPlan != null ? g.HostingPlan.CalculateDiskSpace : false,
+						CalculateBandwidth = g.HostingPlan != null ? g.HostingPlan.CalculateBandwidth : false,
+						ParentEnabled = g.Group.GroupName == "Service Levels" ?
+							GetPackageServiceLevelResource(package.ParentPackageId, g.Group.GroupId, 0) :
+							GetPackageAllocatedResource(package.ParentPackageId, g.Group.GroupId, 0)
+					});
+				// return quotas
+				var nofOrgs = GetPackageAllocatedQuota(packageId, 205); // 205 - HostedSolution.Organizations
+				if (nofOrgs < 1) nofOrgs = 1;
+
+				var quotas = Quotas
+					.Where(q => q.HideQuota != true)
+					.OrderBy(q => q.QuotaOrder)
+					.Select(q => new
+					{
+						Quota = q,
+						AllocatedQuota = GetPackageAllocatedQuota(packageId, q.QuotaId)
+					})
+					.Select(q => new
+					{
+						q.Quota.QuotaId,
+						q.Quota.GroupId,
+						q.Quota.QuotaName,
+						q.Quota.QuotaDescription,
+						q.Quota.QuotaTypeId,
+						QuotaValue = q.Quota.PerOrganization == 1 && q.AllocatedQuota != -1 ?
+							q.AllocatedQuota * nofOrgs :
+							q.AllocatedQuota,
+						QuotaValuePerOrganization = q.AllocatedQuota,
+						ParentQuotaValue = GetPackageAllocatedQuota(package.ParentPackageId, q.Quota.QuotaId),
+						QuotaUsedValue = CalculateQuotaUsage(packageId, q.Quota.QuotaId),
+						q.Quota.PerOrganization
+					});
+				return EntityDataSet(groups, quotas);
 			}
 			else
 			{
@@ -17985,9 +18395,119 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetPackageQuotasForEdit]
+(
+	@ActorID int,
+	@PackageID int
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+DECLARE @ServerID int, @ParentPackageID int, @PlanID int
+SELECT @ServerID = ServerID, @ParentPackageID = ParentPackageID, @PlanID = PlanID FROM Packages
+WHERE PackageID = @PackageID
+
+-- get resource groups
+SELECT
+	RG.GroupID,
+	RG.GroupName,
+	ISNULL(PR.CalculateDiskSpace, ISNULL(HPR.CalculateDiskSpace, 0)) AS CalculateDiskSpace,
+	ISNULL(PR.CalculateBandwidth, ISNULL(HPR.CalculateBandwidth, 0)) AS CalculateBandwidth,
+		--dbo.GetPackageAllocatedResource(@PackageID, RG.GroupID, @ServerID) AS Enabled,
+	CASE
+		WHEN RG.GroupName = 'Service Levels' THEN dbo.GetPackageServiceLevelResource(PackageID, RG.GroupID, @ServerID)
+		ELSE dbo.GetPackageAllocatedResource(PackageID, RG.GroupID, @ServerID)
+	END AS Enabled,
+	--dbo.GetPackageAllocatedResource(@ParentPackageID, RG.GroupID, @ServerID) AS ParentEnabled
+	CASE
+		WHEN RG.GroupName = 'Service Levels' THEN dbo.GetPackageServiceLevelResource(@ParentPackageID, RG.GroupID, @ServerID)
+		ELSE dbo.GetPackageAllocatedResource(@ParentPackageID, RG.GroupID, @ServerID)
+	END AS ParentEnabled
+FROM ResourceGroups AS RG
+LEFT OUTER JOIN PackageResources AS PR ON RG.GroupID = PR.GroupID AND PR.PackageID = @PackageID
+LEFT OUTER JOIN HostingPlanResources AS HPR ON RG.GroupID = HPR.GroupID AND HPR.PlanID = @PlanID
+ORDER BY RG.GroupOrder
+
+-- return quotas
+SELECT
+	Q.QuotaID,
+	Q.GroupID,
+	Q.QuotaName,
+	Q.QuotaDescription,
+	Q.QuotaTypeID,
+	CASE
+		WHEN PQ.QuotaValue IS NULL THEN dbo.GetPackageAllocatedQuota(@PackageID, Q.QuotaID)
+		ELSE PQ.QuotaValue
+	END QuotaValue,
+	dbo.GetPackageAllocatedQuota(@ParentPackageID, Q.QuotaID) AS ParentQuotaValue
+FROM Quotas AS Q
+LEFT OUTER JOIN PackageQuotas AS PQ ON PQ.QuotaID = Q.QuotaID AND PQ.PackageID = @PackageID
+ORDER BY Q.QuotaOrder
+
+RETURN
 				*/
 				#endregion
 
+				// check rights
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				var package = Packages
+					.Where(p => p.PackageId == packageId)
+					.Select(p => new { p.ServerId, p.PlanId, p.ParentPackageId })
+					.FirstOrDefault();
+				// get resource groups
+				var groups = ResourceGroups
+					.OrderBy(r => r.GroupOrder)
+					.GroupJoin(HostingPlanResources.Where(r => r.PlanId == package.PlanId), r => r.GroupId, hr => hr.GroupId, (r, hr) => new
+					{
+						Group = r,
+						HostingPlan = hr.SingleOrDefault()
+					})
+					.Select(g => new
+					{
+						g.Group.GroupId,
+						g.Group.GroupName,
+						CalculateDiskSpace = g.HostingPlan != null ? g.HostingPlan.CalculateDiskSpace : false,
+						CalculateBandwidth = g.HostingPlan != null ? g.HostingPlan.CalculateBandwidth : false,
+						Enabled = g.Group.GroupName == "Service Levels" ?
+							GetPackageServiceLevelResource(packageId, g.Group.GroupId, package.ServerId) :
+							GetPackageAllocatedResource(packageId, g.Group.GroupId, package.ServerId),
+						ParentEnabled = g.Group.GroupName == "Service Levels" ?
+							GetPackageServiceLevelResource(package.ParentPackageId, g.Group.GroupId, package.ServerId) :
+							GetPackageAllocatedResource(package.ParentPackageId, g.Group.GroupId, package.ServerId)
+					});
+				// return quotas
+				var nofOrgs = GetPackageAllocatedQuota(packageId, 205); // 205 - HostedSolution.Organizations
+				if (nofOrgs < 1) nofOrgs = 1;
+
+				var quotas = Quotas
+					.Where(q => q.HideQuota != true)
+					.OrderBy(q => q.QuotaOrder)
+					.Select(q => new
+					{
+						Quota = q,
+						AllocatedQuota = GetPackageAllocatedQuota(packageId, q.QuotaId)
+					})
+					.Select(q => new
+					{
+						q.Quota.QuotaId,
+						q.Quota.GroupId,
+						q.Quota.QuotaName,
+						q.Quota.QuotaDescription,
+						q.Quota.QuotaTypeId,
+						QuotaValue = q.Quota.PerOrganization == 1 && q.AllocatedQuota != -1 ?
+							q.AllocatedQuota * nofOrgs :
+							q.AllocatedQuota,
+						QuotaValuePerOrganization = q.AllocatedQuota,
+						ParentQuotaValue = GetPackageAllocatedQuota(package.ParentPackageId, q.Quota.QuotaId),
+						QuotaUsedValue = CalculateQuotaUsage(packageId, q.Quota.QuotaId),
+						q.Quota.PerOrganization
+					});
+				return EntityDataSet(groups, quotas);
 			}
 			else
 			{
@@ -17998,6 +18518,55 @@ RETURN
 			}
 		}
 
+		public IEnumerable<int> PackageParents(int packageId)
+		{
+			#region Stored Procedure
+			/*
+CREATE FUNCTION [dbo].[PackageParents]
+(
+	@PackageID int
+)
+RETURNS @T TABLE (PackageOrder int IDENTITY(1,1), PackageID int)
+AS
+BEGIN
+	-- insert current user
+	INSERT @T VALUES (@PackageID)
+
+	-- owner
+	DECLARE @ParentPackageID int, @TmpPackageID int
+	SET @TmpPackageID = @PackageID
+
+	WHILE 10 = 10
+	BEGIN
+
+		SET @ParentPackageID = NULL --reset var
+		SELECT @ParentPackageID = ParentPackageID FROM Packages
+		WHERE PackageID = @TmpPackageID
+
+		IF @ParentPackageID IS NULL -- parent not found
+		BREAK
+
+		INSERT @T VALUES (@ParentPackageID)
+
+		SET @TmpPackageID = @ParentPackageID
+	END
+
+RETURN
+END
+			*/
+			#endregion
+
+			int? pid = packageId;
+			while (pid != null)
+			{
+				yield return pid.Value;
+				pid = Packages
+					.Where(p => p.PackageId == pid)
+					.Select(p => p.ParentPackageId)
+					.FirstOrDefault();
+			}
+		}
+
 		public DataSet AddPackage(int actorId, out int packageId, int userId, int planId, string packageName,
 			string packageComments, int statusId, DateTime purchaseDate)
 		{
@@ -18005,10 +18574,146 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddPackage]
+(
+	@ActorID int,
+	@PackageID int OUTPUT,
+	@UserID int,
+	@PackageName nvarchar(300),
+	@PackageComments ntext,
+	@StatusID int,
+	@PlanID int,
+	@PurchaseDate datetime
+)
+AS
+
+DECLARE @ParentPackageID int, @PlanServerID int
+SELECT @ParentPackageID = PackageID, @PlanServerID = ServerID FROM HostingPlans
+WHERE PlanID = @PlanID
+
+IF @ParentPackageID = 0 OR @ParentPackageID IS NULL
+SELECT @ParentPackageID = PackageID FROM Packages
+WHERE ParentPackageID IS NULL -- root space
+
+DECLARE @datelastyear datetime = DATEADD(year,-1,GETDATE())
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @ParentPackageID) = 0
+BEGIN
+	RAISERROR('You are not allowed to access this package', 16, 1);
+	RETURN;
+END
+
+BEGIN TRAN
+-- insert package
+INSERT INTO Packages
+(
+	ParentPackageID,
+	UserID,
+	PackageName,
+	PackageComments,
+	ServerID,
+	StatusID,
+	PlanID,
+	PurchaseDate,
+	BandwidthUpdated
+)
+VALUES
+(
+	@ParentPackageID,
+	@UserID,
+	@PackageName,
+	@PackageComments,
+	@PlanServerID,
+	@StatusID,
+	@PlanID,
+	@PurchaseDate,
+	@datelastyear
+)
+
+SET @PackageID = SCOPE_IDENTITY()
+
+-- add package to packages cache
+INSERT INTO PackagesTreeCache (ParentPackageID, PackageID)
+SELECT PackageID, @PackageID FROM dbo.PackageParents(@PackageID)
+
+DECLARE @ExceedingQuotas AS TABLE (QuotaID int, QuotaName nvarchar(50), QuotaValue int)
+INSERT INTO @ExceedingQuotas
+SELECT * FROM dbo.GetPackageExceedingQuotas(@ParentPackageID) WHERE QuotaValue > 0
+
+SELECT * FROM @ExceedingQuotas
+
+IF EXISTS(SELECT * FROM @ExceedingQuotas)
+BEGIN
+	ROLLBACK TRAN
+	RETURN
+END
+
+COMMIT TRAN
+
+RETURN
 				*/
 				#endregion
 
-				packageId = 0;
+				var plan = HostingPlans
+					.Where(hp => hp.PlanId == planId)
+					.Select(hp => new { hp.PackageId, hp.ServerId })
+					.FirstOrDefault();
+
+				var parentPackageId = plan?.PackageId;
+
+				if (parentPackageId == null || parentPackageId == 0)
+				{
+					parentPackageId = Packages
+						.Where(p => p.ParentPackageId == null)
+						.Select(p => p.PackageId)
+						.FirstOrDefault();
+				}
+
+				// check rights
+				if (!CheckActorPackageRights(actorId, parentPackageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				var today = DateTime.Now.Date;
+				var dateLastYear = today.AddYears(-1);
+
+				using (var transaction = Database.BeginTransaction())
+				{
+					var package = new Data.Entities.Package()
+					{
+						ParentPackageId = parentPackageId,
+						UserId = userId,
+						PackageName = packageName,
+						PackageComments = packageComments,
+						ServerId = plan?.ServerId,
+						StatusId = statusId,
+						PlanId = planId,
+						PurchaseDate = purchaseDate,
+						BandwidthUpdated = dateLastYear
+					};
+					Packages.Add(package);
+					SaveChanges();
+
+					var pid = packageId = package.PackageId;
+
+					// add package to packages cache
+					var parents = PackageParents(packageId)
+						.Select(parentId => new Data.Entities.PackagesTreeCache()
+						{
+							PackageId = pid,
+							ParentPackageId = parentId
+						});
+					PackagesTreeCaches.AddRange(parents);
+
+					var exceedingQuotas = GetPackageExceedingQuotas(packageId)
+						.Where(q => q.QuotaValue > 0)
+						.ToArray();
+
+					if (exceedingQuotas.Any()) transaction.Rollback();
+					else transaction.Commit();
+
+					return EntityDataSet(exceedingQuotas);
+				}
 			}
 			else
 			{
@@ -18035,6 +18740,154 @@ RETURN
 			}
 		}
 
+		public void UpdatePackageQuotas(int actorId, int packageId, string xml)
+		{
+			#region Stored Procedure
+			/*
+CREATE PROCEDURE [dbo].[UpdatePackageQuotas]
+(
+	@ActorID int,
+	@PackageID int,
+	@Xml ntext
+)
+AS
+
+/*
+XML Format:
+
+<plan>
+	<groups>
+		<group id=""16"" enabled=""1"" calculateDiskSpace=""1"" calculateBandwidth=""1""/>
+	</groups>
+	<quotas>
+		<quota id=""2"" value=""2""/>
+	</quotas>
+</plan>
+
+*//*
+
+--check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+DECLARE @OverrideQuotas bit
+SELECT @OverrideQuotas = OverrideQuotas FROM Packages
+WHERE PackageID = @PackageID
+
+IF @OverrideQuotas = 0
+BEGIN
+	-- delete old Package resources
+	DELETE FROM PackageResources
+	WHERE PackageID = @PackageID
+
+	-- delete old Package quotas
+	DELETE FROM PackageQuotas
+	WHERE PackageID = @PackageID
+END
+
+IF @OverrideQuotas = 1 AND @Xml IS NOT NULL
+BEGIN
+	--delete old Package resources
+	DELETE FROM PackageResources
+	WHERE PackageID = @PackageID
+
+	-- delete old Package quotas
+	DELETE FROM PackageQuotas
+	WHERE PackageID = @PackageID
+
+	DECLARE @idoc int
+	--Create an internal representation of the XML document.
+	EXEC sp_xml_preparedocument @idoc OUTPUT, @xml
+
+	-- update Package resources
+	INSERT INTO PackageResources
+	(
+		PackageID,
+		GroupID,
+		CalculateDiskSpace,
+		CalculateBandwidth
+	)
+	SELECT
+		@PackageID,
+		GroupID,
+		CalculateDiskSpace,
+		CalculateBandwidth
+	FROM OPENXML(@idoc, '/plan/groups/group',1) WITH
+	(
+		GroupID int '@id',
+		CalculateDiskSpace bit '@calculateDiskSpace',
+		CalculateBandwidth bit '@calculateBandwidth'
+	) as XRG
+
+	-- update Package quotas
+	INSERT INTO PackageQuotas
+	(
+		PackageID,
+		QuotaID,
+		QuotaValue
+	)
+	SELECT
+		@PackageID,
+		QuotaID,
+		QuotaValue
+	FROM OPENXML(@idoc, '/plan/quotas/quota',1) WITH
+	(
+		QuotaID int '@id',
+		QuotaValue int '@value'
+	) as PV
+
+	-- remove document
+	exec sp_xml_removedocument @idoc
+END
+RETURN
+			*/
+			#endregion
+
+			// check rights
+			if (!CheckActorPackageRights(actorId, packageId))
+				throw new AccessViolationException("You are not allowed to access this package");
+
+			// delete old Package resources
+			PackageResources.Where(r => r.PackageId == packageId).ExecuteDelete(PackageResources);
+
+			// delete old Package quotas
+			PackageQuotas.Where(q => q.PackageId == packageId).ExecuteDelete(PackageQuotas);
+
+			var overrideQuotas = Packages
+				.Where(p => p.PackageId == packageId)
+				.Select(p => p.OverrideQuotas)
+				.FirstOrDefault();
+			if (overrideQuotas)
+			{
+				var plan = XElement.Parse(xml);
+
+				var resources = plan
+					.Element("groups")
+					.Elements()
+					.Select(e => new Data.Entities.PackageResource()
+					{
+						PackageId = packageId,
+						GroupId = (int)e.Attribute("id"),
+						CalculateDiskspace = (int)e.Attribute("calculateDiskSpace") == 1,
+						CalculateBandwidth = (int)e.Attribute("calculateBandwidth") == 1
+					});
+				PackageResources.AddRange(resources);
+
+				var quotas = plan
+					.Element("quotas")
+					.Elements()
+					.Select(e => new Data.Entities.PackageQuota()
+					{
+						PackageId = packageId,
+						QuotaId = (int)e.Attribute("id"),
+						QuotaValue = (int)e.Attribute("value")
+					});
+				PackageQuotas.AddRange(quotas);
+			}
+
+			SaveChanges();
+		}
+
 		public DataSet UpdatePackage(int actorId, int packageId, int planId, string packageName,
 			string packageComments, int statusId, DateTime purchaseDate,
 			bool overrideQuotas, string quotasXml, bool defaultTopPackage)
@@ -18043,9 +18896,114 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdatePackage]
+(
+	@ActorID int,
+	@PackageID int,
+	@PackageName nvarchar(300),
+	@PackageComments ntext,
+	@StatusID int,
+	@PlanID int,
+	@PurchaseDate datetime,
+	@OverrideQuotas bit,
+	@QuotasXml ntext,
+	@DefaultTopPackage bit
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+BEGIN TRAN
+
+DECLARE @ParentPackageID int
+DECLARE @OldPlanID int
+
+SELECT @ParentPackageID = ParentPackageID, @OldPlanID = PlanID FROM Packages
+WHERE PackageID = @PackageID
+
+-- update package
+UPDATE Packages SET
+	PackageName = @PackageName,
+	PackageComments = @PackageComments,
+	StatusID = @StatusID,
+	PlanID = @PlanID,
+	PurchaseDate = @PurchaseDate,
+	OverrideQuotas = @OverrideQuotas,
+	DefaultTopPackage = @DefaultTopPackage
+WHERE
+	PackageID = @PackageID
+
+-- update quotas (if required)
+EXEC UpdatePackageQuotas @ActorID, @PackageID, @QuotasXml
+
+-- check resulting quotas
+DECLARE @ExceedingQuotas AS TABLE (QuotaID int, QuotaName nvarchar(50), QuotaValue int)
+
+-- check exceeding quotas if plan has been changed
+IF (@OldPlanID <> @PlanID) OR (@OverrideQuotas = 1)
+BEGIN
+	INSERT INTO @ExceedingQuotas
+	SELECT * FROM dbo.GetPackageExceedingQuotas(@ParentPackageID) WHERE QuotaValue > 0
+END
+
+SELECT * FROM @ExceedingQuotas
+
+IF EXISTS(SELECT * FROM @ExceedingQuotas)
+BEGIN
+	ROLLBACK TRAN
+	RETURN
+END
+
+COMMIT TRAN
+RETURN
 				*/
 				#endregion
 
+				// check rights
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				var package = Packages
+					.Where(p => p.PackageId == packageId)
+					.FirstOrDefault();
+				if (package != null)
+				{
+
+					using (var transaction = Database.BeginTransaction())
+					{
+						var oldPlanId = package.PlanId;
+						package.PackageName = packageName;
+						package.PackageComments = packageComments;
+						package.StatusId = statusId;
+						package.PlanId = planId;
+						package.PurchaseDate = purchaseDate;
+						package.OverrideQuotas = overrideQuotas;
+						package.DefaultTopPackage = defaultTopPackage;
+						SaveChanges();
+
+						// update quotas (if required)
+						UpdatePackageQuotas(actorId, packageId, quotasXml);
+
+						// check exceeding quotas if plan has been changed
+						ExceedingQuota[] exceedingQuotas;
+
+						if (oldPlanId != planId || overrideQuotas)
+						{
+							exceedingQuotas = GetPackageExceedingQuotas(packageId)
+								.Where(q => q.QuotaValue > 0)
+								.ToArray();
+						}
+						else exceedingQuotas = new ExceedingQuota[0];
+
+						if (exceedingQuotas.Any()) transaction.Rollback();
+						else transaction.Commit();
+
+						return EntityDataSet(exceedingQuotas);
+					}
+				}
+				else return EntityDataSet(new ExceedingQuota[0]);
 			}
 			else
 			{
@@ -18069,9 +19027,40 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[ChangePackageUser]
+(
+	@PackageID int,
+	@ActorID int,
+	@UserID int
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+BEGIN TRAN
+
+UPDATE Packages
+SET UserID = @UserID
+WHERE PackageID = @PackageID
+
+COMMIT TRAN
+
+RETURN
 				*/
 				#endregion
 
+				// check rights
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+#if NETCOREAPP
+				Packages.Where(p => p.PackageId == packageId).ExecuteUpdate(set => set.SetProperty(p => p.UserId, userId));
+#else
+				foreach (var package in Packages.Where(p => p.PackageId == packageId)) package.UserId = userId;
+				SaveChanges();
+#endif
 			}
 			else
 			{
@@ -18090,9 +19079,58 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdatePackageName]
+(
+	@ActorID int,
+	@PackageID int,
+	@PackageName nvarchar(300),
+	@PackageComments ntext
+)
+AS
+
+-- check rights
+DECLARE @UserID int
+SELECT @UserID = UserID FROM Packages
+WHERE PackageID = @PackageID
+
+IF NOT(dbo.CheckActorPackageRights(@ActorID, @PackageID) = 1
+	OR @UserID = @ActorID
+	OR EXISTS(SELECT UserID FROM Users WHERE UserID = @ActorID AND OwnerID = @UserID AND IsPeer = 1))
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+-- update package
+UPDATE Packages SET
+	PackageName = @PackageName,
+	PackageComments = @PackageComments
+WHERE
+	PackageID = @PackageID
+
+RETURN
 				*/
 				#endregion
 
+				var userId = Packages
+					.Where(p => p.PackageId == packageId)
+					.Select(p => p.UserId)
+					.FirstOrDefault();
+
+				if (!CheckActorPackageRights(actorId, packageId) || userId == actorId ||
+					Users.Any(u => u.OwnerId == userId && u.IsPeer))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				// update package
+#if NETCOREAPP
+				Packages.Where(p => p.PackageId == packageId)
+					.ExecuteUpdate(set => set
+						.SetProperty(p => p.PackageName, packageName)
+						.SetProperty(p => p.PackageComments, packageComments));
+#else
+				foreach (var package in Packages.Where(p => p.PackageId == packageId)) {
+					package.PackageName = packageName;
+					package.PackageComments = packageComments;
+				}
+				SaveChanges();
+#endif
 			}
 			else
 			{
@@ -18111,9 +19149,126 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeletePackage]
+(
+	@ActorID int,
+	@PackageID int
+)
+AS
+BEGIN
+	-- check rights
+	IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+	RAISERROR('You are not allowed to access this package', 16, 1)
+
+	BEGIN TRAN
+
+	-- remove package from cache
+	DELETE FROM PackagesTreeCache
+	WHERE
+		ParentPackageID = @PackageID OR
+		PackageID = @PackageID
+
+	-- delete package comments
+	DELETE FROM Comments
+	WHERE ItemID = @PackageID AND ItemTypeID = 'PACKAGE'
+
+	-- delete diskspace
+	DELETE FROM PackagesDiskspace
+	WHERE PackageID = @PackageID
+
+	-- delete bandwidth
+	DELETE FROM PackagesBandwidth
+	WHERE PackageID = @PackageID
+
+	-- delete settings
+	DELETE FROM PackageSettings
+	WHERE PackageID = @PackageID
+
+	-- delete domains
+	DELETE FROM Domains
+	WHERE PackageID = @PackageID
+
+	-- delete package IP addresses
+	DELETE FROM PackageIPAddresses
+	WHERE PackageID = @PackageID
+
+	-- delete service items
+	DELETE FROM ServiceItems
+	WHERE PackageID = @PackageID
+
+	-- delete global DNS records
+	DELETE FROM GlobalDnsRecords
+	WHERE PackageID = @PackageID
+
+	-- delete package services
+	DELETE FROM PackageServices
+	WHERE PackageID = @PackageID
+
+	-- delete package quotas
+	DELETE FROM PackageQuotas
+	WHERE PackageID = @PackageID
+
+	-- delete package resources
+	DELETE FROM PackageResources
+	WHERE PackageID = @PackageID
+
+	-- delete package
+	DELETE FROM Packages
+	WHERE PackageID = @PackageID
+
+	COMMIT TRAN
+END
 				*/
 				#endregion
 
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				using (var transaction = Database.BeginTransaction())
+				{
+					// remove package from cache
+					PackagesTreeCaches.Where(p => p.ParentPackageId == packageId || p.PackageId == packageId)
+						.ExecuteDelete(PackagesTreeCaches);
+
+					// delete package comments
+					Comments.Where(c => c.ItemId == packageId && c.ItemTypeId == "PACKAGE")
+						.ExecuteDelete(Comments);
+
+					// delete diskspace
+					PackagesDiskspaces.Where(d => d.PackageId == packageId).ExecuteDelete(PackagesDiskspaces);
+
+					// delete bandwidth
+					PackagesBandwidths.Where(b => b.PackageId == packageId).ExecuteDelete(PackagesBandwidths);
+
+					// delete settings
+					PackageSettings.Where(s => s.PackageId == packageId).ExecuteDelete(PackageSettings);
+
+					// delete domains
+					Domains.Where(d => d.PackageId == packageId).ExecuteDelete(Domains);
+
+					// delete package IP addresses
+					PackageIpAddresses.Where(ip => ip.PackageId == packageId).ExecuteDelete(PackageIpAddresses);
+
+					// delete service items
+					ServiceItems.Where(s => s.PackageId == packageId).ExecuteDelete(ServiceItems);
+
+					// delete global DNS records
+					GlobalDnsRecords.Where(r => r.PackageId == packageId).ExecuteDelete(GlobalDnsRecords);
+
+					// delete package services
+					PackageServices.Where(s => s.PackageId == packageId).ExecuteDelete(PackageServices);
+
+					// delete package quotas
+					PackageQuotas.Where(q => q.PackageId == packageId).ExecuteDelete(PackageQuotas);
+
+					// delete package resources
+					PackageResources.Where(r => r.PackageId == packageId).ExecuteDelete(PackageResources);
+
+					// delete package
+					Packages.Where(p => p.PackageId == packageId).ExecuteDelete(Packages);
+
+					transaction.Commit();
+				}
 			}
 			else
 			{
@@ -18131,9 +19286,52 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetPackageAddons]
+(
+	@ActorID int,
+	@PackageID int
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+SELECT
+	PA.PackageAddonID,
+	PA.PackageID,
+	PA.PlanID,
+	PA.Quantity,
+	PA.PurchaseDate,
+	PA.StatusID,
+	PA.Comments,
+	HP.PlanName,
+	HP.PlanDescription
+FROM PackageAddons AS PA
+INNER JOIN HostingPlans AS HP ON PA.PlanID = HP.PlanID
+WHERE PA.PackageID = @PackageID
+RETURN
 				*/
 				#endregion
 
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				var addons = PackageAddons
+					.Where(a => a.PackageId == packageId)
+					.Join(HostingPlans, a => a.PlanId, hp => hp.PlanId, (a, hp) => new
+					{
+						a.PackageAddonId,
+						a.PackageId,
+						a.PlanId,
+						a.Quantity,
+						a.PurchaseDate,
+						a.StatusId,
+						a.Comments,
+						hp.PlanName,
+						hp.PlanDescription
+					});
+				return EntityDataSet(addons);
 			}
 			else
 			{
@@ -18150,9 +19348,55 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetPackageAddon]
+(
+	@ActorID int,
+	@PackageAddonID int
+)
+AS
+
+-- check rights
+DECLARE @PackageID int
+SELECT @PackageID = PackageID FROM PackageAddons
+WHERE PackageAddonID = @PackageAddonID
+
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+SELECT
+	PackageAddonID,
+	PackageID,
+	PlanID,
+	PurchaseDate,
+	Quantity,
+	StatusID,
+	Comments
+FROM PackageAddons AS PA
+WHERE PA.PackageAddonID = @PackageAddonID
+RETURN
 				*/
 				#endregion
 
+				var packageId = PackageAddons
+					.Where(p => p.PackageAddonId == packageAddonId)
+					.Select(p => p.PackageId)
+					.FirstOrDefault();
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				var addon = PackageAddons
+					.Where(a => a.PackageAddonId == packageAddonId)
+					.Select(a => new
+					{
+						a.PackageAddonId,
+						a.PackageId,
+						a.PlanId,
+						a.PurchaseDate,
+						a.Quantity,
+						a.StatusId,
+						a.Comments
+					});
+				return EntityDataReader(addon);
 			}
 			else
 			{
@@ -18170,10 +19414,100 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddPackageAddon]
+(
+	@ActorID int,
+	@PackageAddonID int OUTPUT,
+	@PackageID int,
+	@PlanID int,
+	@Quantity int,
+	@StatusID int,
+	@PurchaseDate datetime,
+	@Comments ntext
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+BEGIN TRAN
+
+DECLARE @ParentPackageID int
+SELECT @ParentPackageID = ParentPackageID FROM Packages
+WHERE PackageID = @PackageID
+
+-- insert record
+INSERT INTO PackageAddons
+(
+	PackageID,
+	PlanID,
+	PurchaseDate,
+	Quantity,
+	StatusID,
+	Comments
+)
+VALUES
+(
+	@PackageID,
+	@PlanID,
+	@PurchaseDate,
+	@Quantity,
+	@StatusID,
+	@Comments
+)
+
+SET @PackageAddonID = SCOPE_IDENTITY()
+
+DECLARE @ExceedingQuotas AS TABLE (QuotaID int, QuotaName nvarchar(50), QuotaValue int)
+INSERT INTO @ExceedingQuotas
+SELECT * FROM dbo.GetPackageExceedingQuotas(@ParentPackageID) WHERE QuotaValue > 0
+
+SELECT * FROM @ExceedingQuotas
+
+IF EXISTS(SELECT * FROM @ExceedingQuotas)
+BEGIN
+	ROLLBACK TRAN
+	RETURN
+END
+
+COMMIT TRAN
+RETURN
 				*/
 				#endregion
 
-				addonId = 0;
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				var parentPackageId = Packages
+					.Where(p => p.PackageId == packageId)
+					.Select(p => p.ParentPackageId)
+					.FirstOrDefault();
+				using (var transaction = Database.BeginTransaction())
+				{
+					var addon = new Data.Entities.PackageAddon()
+					{
+						PackageId = packageId,
+						PlanId = planId,
+						PurchaseDate = purchaseDate,
+						Quantity = quantity,
+						StatusId = statusId,
+						Comments = comments
+					};
+					PackageAddons.Add(addon);
+					SaveChanges();
+
+					addonId = addon.PackageAddonId;
+
+					var exceedingQuotas = GetPackageExceedingQuotas(packageId)
+						.Where(q => q.QuotaValue > 0)
+						.ToArray();
+
+					if (exceedingQuotas.Any()) transaction.Rollback();
+					else transaction.Commit();
+
+					return EntityDataSet(exceedingQuotas);
+				}
 			}
 			else
 			{
@@ -18205,9 +19539,91 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdatePackageAddon]
+(
+	@ActorID int,
+	@PackageAddonID int,
+	@PlanID int,
+	@Quantity int,
+	@PurchaseDate datetime,
+	@StatusID int,
+	@Comments ntext
+)
+AS
+
+DECLARE @PackageID int
+SELECT @PackageID = PackageID FROM PackageAddons
+WHERE PackageAddonID = @PackageAddonID
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+BEGIN TRAN
+
+DECLARE @ParentPackageID int
+SELECT @ParentPackageID = ParentPackageID FROM Packages
+WHERE PackageID = @PackageID
+
+-- update record
+UPDATE PackageAddons SET
+	PlanID = @PlanID,
+	Quantity = @Quantity,
+	PurchaseDate = @PurchaseDate,
+	StatusID = @StatusID,
+	Comments = @Comments
+WHERE PackageAddonID = @PackageAddonID
+
+DECLARE @ExceedingQuotas AS TABLE (QuotaID int, QuotaName nvarchar(50), QuotaValue int)
+INSERT INTO @ExceedingQuotas
+SELECT * FROM dbo.GetPackageExceedingQuotas(@ParentPackageID) WHERE QuotaValue > 0
+
+SELECT * FROM @ExceedingQuotas
+
+IF EXISTS(SELECT * FROM @ExceedingQuotas)
+BEGIN
+	ROLLBACK TRAN
+	RETURN
+END
+
+COMMIT TRAN
+
+RETURN
 				*/
 				#endregion
 
+				var package = PackageAddons
+					.FirstOrDefault(a => a.PackageAddonId == packageAddonId);
+				if (package != null)
+				{
+					if (!CheckActorPackageRights(actorId, package.PackageId))
+						throw new AccessViolationException("You are not allowed to access this package");
+
+					using (var transaction = Database.BeginTransaction())
+					{
+						var parentPackageId = Packages
+							.Where(p => p.PackageId == package.PackageId)
+							.Select(p => p.ParentPackageId)
+							.FirstOrDefault();
+
+						package.PlanId = planId;
+						package.Quantity = quantity;
+						package.PurchaseDate = purchaseDate;
+						package.StatusId = statusId;
+						package.Comments = comments;
+						SaveChanges();
+
+						var exceedingQuotas = GetPackageExceedingQuotas(package.PackageId)
+							.Where(q => q.QuotaValue > 0)
+							.ToArray();
+
+						if (exceedingQuotas.Any()) transaction.Rollback();
+						else transaction.Commit();
+
+						return EntityDataSet(exceedingQuotas);
+					}
+				}
+				else return EntityDataSet(new ExceedingQuota[0]);
 			}
 			else
 			{
@@ -18229,9 +19645,41 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeletePackageAddon]
+(
+	@ActorID int,
+	@PackageAddonID int
+)
+AS
+
+DECLARE @PackageID int
+SELECT @PackageID = PackageID FROM PackageAddons
+WHERE PackageAddonID = @PackageAddonID
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+-- delete record
+DELETE FROM PackageAddons
+WHERE PackageAddonID = @PackageAddonID
+
+RETURN
 				*/
 				#endregion
 
+				var package = PackageAddons
+					.FirstOrDefault(a => a.PackageAddonId == packageAddonId);
+
+				if (package != null)
+				{
+					if (!CheckActorPackageRights(actorId, package.PackageId))
+						throw new AccessViolationException("You are not allowed to access this package");
+
+					PackageAddons.Remove(package);
+
+					SaveChanges();
+				}
 			}
 			else
 			{
@@ -18244,19 +19692,20 @@ RETURN
 
 		public void UpdateServerPackageServices(int serverId)
 		{
+			// FIXME
+			const int defaultActorID = 1; // serveradmin
+
 			if (UseEntityFramework)
 			{
-				#region Stored Procedure
-				/*
-				*/
-				#endregion
-
+				// get server packages
+				var packages = Packages
+					.Where(p => p.ServerId == serverId);
+				// call DistributePackageServices for all packages on this server
+				foreach (var package in packages)
+					DistributePackageServices(defaultActorID, package.PackageId);
 			}
 			else
 			{
-				// FIXME
-				int defaultActorID = 1;
-
 				// get server packages
 				IDataReader packagesReader = SqlHelper.ExecuteReader(ConnectionString, CommandType.Text,
 					 @"SELECT PackageID FROM Packages WHERE ServerID = @ServerID",
@@ -18277,9 +19726,295 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DistributePackageServices]
+(
+	@ActorID int,
+	@PackageID int
+)
+AS
+
+-- get primary distribution group
+DECLARE @PrimaryGroupID int
+DECLARE @VirtualServer bit
+DECLARE @PlanID int
+DECLARE @ServerID int
+SELECT
+	@PrimaryGroupID = ISNULL(S.PrimaryGroupID, 0),
+	@VirtualServer = S.VirtualServer,
+	@PlanID = P.PlanID,
+	@ServerID = P.ServerID
+FROM Packages AS P
+INNER JOIN Servers AS S ON P.ServerID = S.ServerID
+WHERE P.PackageID = @PackageID
+
+-- get the list of available groups from hosting plan
+DECLARE @Groups TABLE
+(
+	GroupID int,
+	PrimaryGroup bit
+)
+
+INSERT INTO @Groups (GroupID, PrimaryGroup)
+SELECT
+	RG.GroupID,
+	CASE WHEN RG.GroupID = @PrimaryGroupID THEN 1 -- mark primary group
+	ELSE 0
+	END
+FROM ResourceGroups AS RG
+WHERE dbo.GetPackageAllocatedResource(@PackageID, RG.GroupID, NULL) = 1
+AND RG.GroupID NOT IN
+(
+	SELECT P.GroupID
+	FROM PackageServices AS PS
+	INNER JOIN Services AS S ON PS.ServiceID = S.ServiceID
+	INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
+	WHERE PS.PackageID = @PackageID
+)
+
+IF @VirtualServer <> 1
+BEGIN
+	-- PHYSICAL SERVER
+	-- just return the list of services based on the plan
+	INSERT INTO PackageServices (PackageID, ServiceID)
+	SELECT
+		@PackageID,
+		S.ServiceID
+	FROM Services AS S
+	INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
+	INNER JOIN @Groups AS G ON P.GroupID = G.GroupID
+	WHERE S.ServerID = @ServerID
+		AND S.ServiceID NOT IN (SELECT ServiceID FROM PackageServices WHERE PackageID = @PackageID)
+END
+ELSE
+BEGIN
+	-- VIRTUAL SERVER
+
+	DECLARE @GroupID int, @PrimaryGroup int
+	DECLARE GroupsCursor CURSOR FOR
+	SELECT GroupID, PrimaryGroup FROM @Groups
+	ORDER BY PrimaryGroup DESC
+
+	OPEN GroupsCursor
+
+	WHILE (10 = 10)
+	BEGIN    --LOOP 10: thru groups
+		FETCH NEXT FROM GroupsCursor
+		INTO @GroupID, @PrimaryGroup
+
+		IF (@@fetch_status <> 0)
+		BEGIN
+			DEALLOCATE GroupsCursor
+			BREAK
+		END
+
+		-- read group information
+		DECLARE @DistributionType int, @BindDistributionToPrimary int
+		SELECT
+			@DistributionType = DistributionType,
+			@BindDistributionToPrimary = BindDistributionToPrimary
+		FROM VirtualGroups AS VG
+		WHERE ServerID = @ServerID AND GroupID = @GroupID
+
+		-- bind distribution to primary
+		IF @BindDistributionToPrimary = 1 AND @PrimaryGroup = 0 AND @PrimaryGroupID <> 0
+		BEGIN
+			-- if only one service found just use it and do not distribute
+			IF (SELECT COUNT(*) FROM VirtualServices AS VS
+				INNER JOIN Services AS S ON VS.ServiceID = S.ServiceID
+				INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
+				WHERE VS.ServerID = @ServerID AND P.GroupID = @GroupID) = 1
+				BEGIN
+					INSERT INTO PackageServices (PackageID, ServiceID)
+					SELECT
+						@PackageID,
+						VS.ServiceID
+					FROM VirtualServices AS VS
+					INNER JOIN Services AS S ON VS.ServiceID = S.ServiceID
+					INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
+					WHERE VS.ServerID = @ServerID AND P.GroupID = @GroupID
+				END
+			ELSE
+				BEGIN
+					DECLARE @PrimaryServerID int
+					-- try to get primary distribution server
+					SELECT
+						@PrimaryServerID = S.ServerID
+					FROM PackageServices AS PS
+					INNER JOIN Services AS S ON PS.ServiceID = S.ServiceID
+					INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
+					WHERE PS.PackageID = @PackageID AND P.GroupID = @PrimaryGroupID
+
+					INSERT INTO PackageServices (PackageID, ServiceID)
+					SELECT
+						@PackageID,
+						VS.ServiceID
+					FROM VirtualServices AS VS
+					INNER JOIN Services AS S ON VS.ServiceID = S.ServiceID
+					INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
+					WHERE VS.ServerID = @ServerID AND P.GroupID = @GroupID AND S.ServerID = @PrimaryServerID
+				END
+		END
+		ELSE
+		BEGIN
+
+			-- DISTRIBUTION
+			DECLARE @Services TABLE
+			(
+				ServiceID int,
+				ItemsNumber int,
+				RandomNumber int
+			)
+
+			DELETE FROM @Services
+
+			INSERT INTO @Services (ServiceID, ItemsNumber, RandomNumber)
+			SELECT
+				VS.ServiceID,
+				(SELECT COUNT(ItemID) FROM ServiceItems WHERE ServiceID = VS.ServiceID),
+				RAND()
+			FROM VirtualServices AS VS
+			INNER JOIN Services AS S ON VS.ServiceID = S.ServiceID
+			INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
+			WHERE VS.ServerID = @ServerID AND P.GroupID = @GroupID
+
+			-- BALANCED DISTRIBUTION
+			IF @DistributionType = 1
+			BEGIN
+				-- get the less allocated service
+				INSERT INTO PackageServices (PackageID, ServiceID)
+				SELECT TOP 1
+					@PackageID,
+					ServiceID
+				FROM @Services
+				ORDER BY ItemsNumber
+			END
+			ELSE
+			-- RANDOMIZED DISTRIBUTION
+			BEGIN
+				-- get the less allocated service
+				INSERT INTO PackageServices (PackageID, ServiceID)
+				SELECT TOP 1
+					@PackageID,
+					ServiceID
+				FROM @Services
+				ORDER BY RandomNumber
+			END
+		END
+
+		IF @PrimaryGroup = 1
+		SET @PrimaryGroupID = @GroupID
+
+	END -- while groups
+
+END -- end virtual server
+
+RETURN
 				*/
 				#endregion
 
+				var random = new Random();
+
+				var package = Packages
+					.Include(p => p.Server)
+					.Include(p => p.Services)
+#if NetCore
+					.ThenInclude(s => s.Provider)
+#else
+					.Include(p => p.Services.Select(s => s.Provider))
+#endif
+					.Where(p => p.PackageId == packageId)
+					.SingleOrDefault();
+
+				// get the list of available groups from hosting plan
+				var packageGroups = Packages
+					.Where(p => p.PackageId == packageId)
+					.SelectMany(p => p.Services)
+					.Select(s => s.Provider.GroupId);
+				var groups = ResourceGroups
+					.Where(r => GetPackageAllocatedResource(packageId, r.GroupId, null) &&
+						!packageGroups.Any(group => r.GroupId == group))
+					.Select(r => new { r.GroupId, PrimaryGroup = r.GroupId == package.Server.PrimaryGroupId });
+
+				if (!package.Server.VirtualServer)
+				{   // Physical Server
+					// just return the list of services based on the plan
+					var services = package.Services.ToHashSet();
+					foreach (var service in package.Services
+						.Where(s => s.ServerId == package.ServerId)
+						.Join(groups, s => s.Provider.GroupId, g => g.GroupId, (s, g) => s))
+					{
+						if (!services.Contains(service)) package.Services.Add(service);
+					}
+				} else
+				{   // Virtual Server
+					var primaryGroupId = package.Server.PrimaryGroupId;
+
+					foreach (var group in groups.OrderByDescending(g => g.PrimaryGroup))
+					{
+						// read group information
+						var virtualGroup = VirtualGroups
+							.Where(v => v.ServerId == package.ServerId && v.GroupId == group.GroupId)
+							.Select(v => new { v.DistributionType, v.BindDistributionToPrimary })
+							.FirstOrDefault();
+						var virtualServices = VirtualServices
+							.Include(v => v.Service)
+							.Where(v => v.ServerId == package.ServerId &&
+								v.Service.Provider.GroupId == group.GroupId);
+
+						// bind distribution to primary
+						if (virtualGroup.BindDistributionToPrimary == true && group.PrimaryGroup &&
+							primaryGroupId != 0)
+						{
+							// if only one service found just use it and do not distribute
+							if (virtualServices.Count() == 1)
+							{
+								package.Services.Add(virtualServices
+									.Select(v => v.Service)
+									.Single());
+							}
+							else
+							{
+								// try to get primary distribution server
+								var primaryServerId = package.Services
+									.Where(s => s.Provider.GroupId == package.Server.PrimaryGroupId)
+									.Select(s => s.ServerId)
+									.FirstOrDefault();
+								foreach (var virtualService in virtualServices
+									.Where(v => v.Service.ServerId == primaryServerId))
+								{
+									package.Services.Add(virtualService.Service);
+								}
+							}
+						} else // Distribution
+						{
+							var services = virtualServices
+								.Select(v => new
+								{
+									v.ServiceId,
+									ItemsNumber = v.Service.ServiceItems.Count(),
+									RandomNumber = random.Next(),
+									v.Service
+								});
+
+							if (virtualGroup.DistributionType == 1) // Balanced distribution
+							{
+								// get the less allocated service
+								var service = services
+									.OrderBy(s => s.ItemsNumber)
+									.FirstOrDefault();
+								if (service != null) package.Services.Add(service.Service);
+							} else // Randomized distribution
+							{
+								var service = services
+									.OrderBy(s => s.RandomNumber)
+									.FirstOrDefault();
+								if (service != null) package.Services.Add(service.Service);
+							}
+						}
+
+						if (group.PrimaryGroup) primaryGroupId = group.GroupId;
+					}
+				}
 			}
 			else
 			{
@@ -18290,7 +20025,7 @@ RETURN
 			}
 		}
 
-		#endregion
+#endregion
 
 		#region Packages Settings
 		public IDataReader GetPackageSettings(int actorId, int packageId, string settingsName)
@@ -18299,9 +20034,106 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetPackageSettings]
+(
+	@ActorID int,
+	@PackageID int,
+	@SettingsName nvarchar(50)
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+DECLARE @ParentPackageID int, @TmpPackageID int
+SET @TmpPackageID = @PackageID
+
+WHILE 10 = 10
+BEGIN
+	IF @TmpPackageID < 2 -- system package
+	BEGIN
+		SELECT
+			@TmpPackageID AS PackageID,
+			'Dump' AS PropertyName,
+			'' AS PropertyValue
+	END
+	ELSE
+	BEGIN
+		-- user package
+		IF EXISTS
+		(
+			SELECT PropertyName FROM PackageSettings
+			WHERE SettingsName = @SettingsName AND PackageID = @TmpPackageID
+		)
+		BEGIN
+			SELECT
+				PackageID,
+				PropertyName,
+				PropertyValue
+			FROM
+				PackageSettings
+			WHERE
+				PackageID = @TmpPackageID AND
+				SettingsName = @SettingsName
+
+			BREAK
+		END
+	END
+
+	SET @ParentPackageID = NULL --reset var
+
+	-- get owner
+	SELECT
+		@ParentPackageID = ParentPackageID
+	FROM Packages
+	WHERE PackageID = @TmpPackageID
+
+	IF @ParentPackageID IS NULL -- the last parent
+	BREAK
+
+	SET @TmpPackageID = @ParentPackageID
+END
+
+RETURN
 				*/
 				#endregion
 
+				// check rights
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				if (packageId <= 1) // system package
+				{
+					return EntityDataReader(new Data.Entities.PackageSetting[]
+					{
+						new Data.Entities.PackageSetting() { PackageId = packageId, PropertyName = "Dump", PropertyValue = "" }
+					});
+				}
+				else // user package
+				{
+					int? pid = packageId;
+					Data.Entities.PackageSetting settings = null;
+					while (pid != null)
+					{
+						settings = PackageSettings
+							.FirstOrDefault(s => s.SettingsName == settingsName && s.PackageId == pid);
+						if (settings != null) break;
+						
+						// get owner
+						pid = Packages
+							.Where(p => p.PackageId == pid)
+							.Select(p => p.ParentPackageId)
+							.FirstOrDefault();
+					}
+
+					if (settings != null)
+					{
+						return EntityDataReader(new Data.Entities.PackageSetting[] { settings });
+					} else {
+						return EntityDataReader(new Data.Entities.PackageSetting[0]);
+					}
+				}
 			}
 			else
 			{
@@ -18318,9 +20150,80 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdatePackageSettings]
+(
+	@ActorID int,
+	@PackageID int,
+	@SettingsName nvarchar(50),
+	@Xml ntext
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+-- delete old properties
+BEGIN TRAN
+DECLARE @idoc int
+--Create an internal representation of the XML document.
+EXEC sp_xml_preparedocument @idoc OUTPUT, @xml
+
+-- Execute a SELECT statement that uses the OPENXML rowset provider.
+DELETE FROM PackageSettings
+WHERE PackageID = @PackageID AND SettingsName = @SettingsName
+
+INSERT INTO PackageSettings
+(
+	PackageID,
+	SettingsName,
+	PropertyName,
+	PropertyValue
+)
+SELECT
+	@PackageID,
+	@SettingsName,
+	PropertyName,
+	PropertyValue
+FROM OPENXML(@idoc, '/properties/property',1) WITH
+(
+	PropertyName nvarchar(50) '@name',
+	PropertyValue ntext '@value'
+) as PV
+
+-- remove document
+exec sp_xml_removedocument @idoc
+
+COMMIT TRAN
+
+RETURN
 				*/
 				#endregion
 
+				// check rights
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+	
+				using (var transaction = Database.BeginTransaction())
+				{
+					// delete old properties
+					PackageSettings.Where(s => s.PackageId == packageId && s.SettingsName == settingsName)
+						.ExecuteDelete(PackageSettings);
+
+					var settings = XElement.Parse(xml)
+						.Elements()
+						.Select(e => new Data.Entities.PackageSetting()
+						{
+							PackageId = packageId,
+							SettingsName = settingsName,
+							PropertyName = (string)e.Attribute("name"),
+							PropertyValue = (string)e.Attribute("value")
+						});
+					Packages.AddRange(settings);
+					SaveChanges();
+
+					transaction.Commit();
+				}
 			}
 			else
 			{
@@ -18341,9 +20244,33 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetProviderServiceQuota]
+(
+	@ProviderID int
+)
+AS
+
+SELECT TOP 1
+	Q.QuotaID,
+	Q.GroupID,
+	Q.QuotaName,
+	Q.QuotaDescription,
+	Q.QuotaTypeID,
+	Q.ServiceQuota
+FROM Providers AS P
+INNER JOIN Quotas AS Q ON P.GroupID = Q.GroupID
+WHERE P.ProviderID = @ProviderID AND Q.ServiceQuota = 1
+
+RETURN
 				*/
 				#endregion
 
+				var quota = Providers
+					.Where(p => p.ProviderId == providerId)
+					.Join(Quotas, p => p.GroupId, q => q.GroupId, (p, q) => q)
+					.Where(q => q.ServiceQuota == true)
+					.Take(1);
+				return EntityDataReader(quota);
 			}
 			else
 			{
@@ -18359,9 +20286,67 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetPackageQuota]
+(
+	@ActorID int,
+	@PackageID int,
+	@QuotaName nvarchar(50)
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+-- return quota
+DECLARE @OrgsCount INT
+SET @OrgsCount = dbo.GetPackageAllocatedQuota(@PackageID, 205) -- 205 - HostedSolution.Organizations
+SET @OrgsCount = CASE WHEN ISNULL(@OrgsCount, 0) < 1 THEN 1 ELSE @OrgsCount END
+
+SELECT
+	Q.QuotaID,
+	Q.QuotaName,
+	Q.QuotaDescription,
+	Q.QuotaTypeID,
+	QuotaAllocatedValue = CASE WHEN Q.PerOrganization = 1 AND ISNULL(dbo.GetPackageAllocatedQuota(@PackageId, Q.QuotaID), 0) <> -1 THEN 
+					ISNULL(dbo.GetPackageAllocatedQuota(@PackageId, Q.QuotaID), 0) * @OrgsCount 
+				 ELSE 
+					ISNULL(dbo.GetPackageAllocatedQuota(@PackageId, Q.QuotaID), 0)
+				 END,
+	QuotaAllocatedValuePerOrganization = ISNULL(dbo.GetPackageAllocatedQuota(@PackageId, Q.QuotaID), 0),
+	ISNULL(dbo.CalculateQuotaUsage(@PackageId, Q.QuotaID), 0) AS QuotaUsedValue
+FROM Quotas AS Q
+WHERE Q.QuotaName = @QuotaName
+
+RETURN
 				*/
 				#endregion
 
+				// check rights
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				var orgsCount = GetPackageAllocatedQuota(packageId, 205); // 205 - HostedSolution.Organizations
+				if (orgsCount < 1) orgsCount = 1;
+
+				var quotas = Quotas
+					.Where(q => q.QuotaName == quotaName)
+					.Select(q => new
+					{
+						Quota = q,
+						AllocatedQuota = GetPackageAllocatedQuota(packageId, q.QuotaId)
+					})
+					.Select(q => new {
+						q.Quota.QuotaId,
+						q.Quota.QuotaName,
+						q.Quota.QuotaDescription,
+						q.Quota.QuotaTypeId,
+						QuotaAllocatedValue = q.Quota.PerOrganization == 1 && q.AllocatedQuota != -1 ?
+							q.AllocatedQuota * orgsCount : q.AllocatedQuota,
+						QuotaAllocatedValuePerOrganization = q.AllocatedQuota,
+						QuotaUsedValue = CalculateQuotaUsage(packageId, q.Quota.QuotaId)
+					});
+				return EntityDataReader(quotas);
 			}
 			else
 			{
@@ -18383,9 +20368,77 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddAuditLogRecord]
+(
+	@RecordID varchar(32),
+	@SeverityID int,
+	@UserID int,
+	@PackageID int,
+	@Username nvarchar(50),
+	@ItemID int,
+	@StartDate datetime,
+	@FinishDate datetime,
+	@SourceName varchar(50),
+	@TaskName varchar(50),
+	@ItemName nvarchar(50),
+	@ExecutionLog ntext
+)
+AS
+
+IF @ItemID = 0 SET @ItemID = NULL
+IF @UserID = 0 OR @UserID = -1 SET @UserID = NULL
+
+INSERT INTO AuditLog
+(
+	RecordID,
+	SeverityID,
+	UserID,
+	PackageID,
+	Username,
+	ItemID,
+	SourceName,
+	StartDate,
+	FinishDate,
+	TaskName,
+	ItemName,
+	ExecutionLog
+)
+VALUES
+(
+	@RecordID,
+	@SeverityID,
+	@UserID,
+	@PackageID,
+	@Username,
+	@ItemID,
+	@SourceName,
+	@StartDate,
+	@FinishDate,
+	@TaskName,
+	@ItemName,
+	@ExecutionLog
+)
+RETURN
 				*/
 				#endregion
 
+				var log = new Data.Entities.AuditLog()
+				{
+					RecordId = recordId,
+					SeverityId = severityId,
+					UserId = userId != 0 && userId != -1 ? userId : null,
+					PackageId = packageId,
+					Username = username,
+					ItemId = itemId != 0 ? itemId : null,
+					SourceName = sourceName,
+					StartDate = startDate,
+					FinishDate = finishDate,
+					TaskName = taskName,
+					ItemName = itemName,
+					ExecutionLog = executionLog
+				};
+				AuditLogs.Add(log);
+				SaveChanges();
 			}
 			else
 			{
@@ -18413,9 +20466,170 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetAuditLogRecordsPaged]
+(
+	@ActorID int,
+	@UserID int,
+	@PackageID int,
+	@ItemID int,
+	@ItemName nvarchar(100),
+	@StartDate datetime,
+	@EndDate datetime,
+	@SeverityID int,
+	@SourceName varchar(100),
+	@TaskName varchar(100),
+	@SortColumn nvarchar(50),
+	@StartRow int,
+	@MaximumRows int
+)
+AS
+
+-- check rights
+IF dbo.CheckActorUserRights(@ActorID, @UserID) = 0
+RAISERROR('You are not allowed to access this account', 16, 1)
+
+IF @SourceName IS NULL SET @SourceName = ''
+IF @TaskName IS NULL SET @TaskName = ''
+IF @ItemName IS NULL SET @ItemName = ''
+
+IF @SortColumn IS NULL OR @SortColumn = ''
+SET @SortColumn = 'L.StartDate DESC'
+
+-- build query and run it to the temporary table
+DECLARE @sql nvarchar(2000)
+
+SET @sql = '
+DECLARE @IsAdmin bit
+SET @IsAdmin = 0
+IF EXISTS(SELECT UserID FROM Users WHERE UserID = @ActorID AND RoleID = 1)
+SET @IsAdmin = 1
+
+DECLARE @EndRow int
+SET @EndRow = @StartRow + @MaximumRows
+DECLARE @Records TABLE
+(
+	ItemPosition int IDENTITY(1,1),
+	RecordID varchar(32)
+)
+INSERT INTO @Records (RecordID)
+SELECT
+	L.RecordID
+FROM AuditLog AS L
+WHERE
+((@PackageID = 0 AND dbo.CheckUserParent(@UserID, L.UserID) = 1 OR (L.UserID IS NULL AND @IsAdmin = 1))
+	OR (@PackageID > 0 AND L.PackageID = @PackageID))
+AND L.StartDate BETWEEN @StartDate AND @EndDate
+AND ((@SourceName = '''') OR (@SourceName <> '''' AND L.SourceName = @SourceName))
+AND ((@TaskName = '''') OR (@TaskName <> '''' AND L.TaskName = @TaskName))
+AND ((@ItemID = 0) OR (@ItemID > 0 AND L.ItemID = @ItemID))
+AND ((@ItemName = '''') OR (@ItemName <> '''' AND L.ItemName LIKE @ItemName))
+AND ((@SeverityID = -1) OR (@SeverityID > -1 AND L.SeverityID = @SeverityID)) '
+
+IF @SortColumn <> '' AND @SortColumn IS NOT NULL
+SET @sql = @sql + ' ORDER BY ' + @SortColumn + ' '
+
+SET @sql = @sql + ' SELECT COUNT(RecordID) FROM @Records;
+SELECT
+	TL.RecordID,
+    L.SeverityID,
+    L.StartDate,
+    L.FinishDate,
+    L.ItemID,
+    L.SourceName,
+    L.TaskName,
+    L.ItemName,
+    L.ExecutionLog,
+
+    ISNULL(L.UserID, 0) AS UserID,
+	L.Username,
+	U.FirstName,
+	U.LastName,
+	U.FullName,
+	ISNULL(U.RoleID, 0) AS RoleID,
+	U.Email,
+	CASE U.IsPeer
+		WHEN 1 THEN U.OwnerID
+		ELSE U.UserID
+	END EffectiveUserID
+FROM @Records AS TL
+INNER JOIN AuditLog AS L ON TL.RecordID = L.RecordID
+LEFT OUTER JOIN UsersDetailed AS U ON L.UserID = U.UserID
+WHERE TL.ItemPosition BETWEEN @StartRow + 1 AND @EndRow'
+
+exec sp_executesql @sql, N'@TaskName varchar(100), @SourceName varchar(100), @PackageID int, @ItemID int, @ItemName nvarchar(100), @StartDate datetime,
+@EndDate datetime, @StartRow int, @MaximumRows int, @UserID int, @ActorID int, @SeverityID int',
+@TaskName, @SourceName, @PackageID, @ItemID, @ItemName, @StartDate, @EndDate, @StartRow, @MaximumRows, @UserID, @ActorID,
+@SeverityID
+
+RETURN
 				*/
 				#endregion
 
+				// check rights
+				if (!CheckActorUserRights(actorId, userId))
+					throw new AccessViolationException("You are not allowed to access this account");
+
+				if (sourceName == null) sourceName = "";
+				if (taskName == null) taskName = "";
+				if (itemName == null) itemName = "";
+
+				var isAdmin = Users.Any(u => u.UserId == actorId && u.RoleId == 1);
+
+				var logs = AuditLogs
+					.Where(l => (packageId == 0 && CheckUserParent(userId, l.UserId) ||
+						l.UserId == null && isAdmin || packageId > 0 && l.PackageId == packageId) &&
+						startDate <= l.StartDate && l.StartDate < endDate &&
+						(sourceName == "" || l.SourceName == sourceName) &&
+						(taskName == "" || l.TaskName == taskName) &&
+						(itemId == 0 || l.ItemId == itemId) &&
+						(itemName == "" || EF.Functions.Like(l.ItemName, itemName)) &&
+						(severityId == -1 || severityId > -1 && L.SeverityId == severityId))
+
+				var count = logs.Count();
+
+				if (!string.IsNullOrEmpty(sortColumn)) logs = logs.OrderBy(sortColumn);
+				else logs = logs.OrderByDescending(l => l.StartDate);
+
+				logs = logs.Skip(startRow).Take(maximumRows);
+
+				var logsWithUser = logs
+					.GroupJoin(UsersDetailed, l => l.UserId, u => u.UserId, (l, u) => new
+					 {
+						 l.RecordId,
+						 l.SeverityId,
+						 l.StartDate,
+						 l.FinishDate,
+						 l.ItemId,
+						 l.SourceName,
+						 l.TaskName,
+						 l.ItemName,
+						 l.ExecutionLog,
+						 UserId = l.UserId ?? 0,
+						 l.Username,
+						 User = u.SingleOrDefault()
+					 })
+					.Select(l => new
+					{
+						l.RecordId,
+						l.SeverityId,
+						l.StartDate,
+						l.FinishDate,
+						l.ItemId,
+						l.SourceName,
+						l.TaskName,
+						l.ItemName,
+						l.ExecutionLog,
+						l.UserId,
+						l.Username,
+						FirstName = l.User != null ? l.User.FirstName : null,
+						LastName = l.User != null ? l.User.LastName : null,
+						FullName = l.User != null ? l.User.FullName : null,
+						RoleId = l.User != null ? l.User.RoleId : 0,
+						Email = l.User != null ? l.User.Email : null,
+						EffectiveUserId = l.User != null ?
+							(l.User.IsPeer ? l.User.OwnerId : l.User.UserId) : null
+					});
+				return EntityDataSet(logsWithUser);
 			}
 			else
 			{
@@ -18443,9 +20657,17 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetAuditLogSources]
+AS
+
+SELECT SourceName FROM AuditLogSources
+
+RETURN
 				*/
 				#endregion
 
+				var sources = AuditLogSources.Select(l => l.SourceName);
+				return EntityDataSet(sources);
 			}
 			else
 			{
@@ -18460,9 +20682,26 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetAuditLogTasks]
+(
+	@SourceName varchar(100)
+)
+AS
+
+IF @SourceName = '' SET @SourceName = NULL
+
+SELECT SourceName, TaskName FROM AuditLogTasks
+WHERE (@SourceName = NULL OR @SourceName IS NOT NULL AND SourceName = @SourceName)
+
+RETURN
 				*/
 				#endregion
 
+				if (sourceName == "") sourceName = null;
+				var tasks = AuditLogTasks
+					.Where(t => sourceName == null || t.SourceName == sourceName)
+					.Select(t => new { t.SourceName, t.TaskName });
+				return EntityDataSet(tasks);
 			}
 			else
 			{
@@ -18478,8 +20717,74 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetAuditLogRecord]
+(
+	@RecordID varchar(32)
+)
+AS
+
+SELECT
+	L.RecordID,
+    L.SeverityID,
+    L.StartDate,
+    L.FinishDate,
+    L.ItemID,
+    L.SourceName,
+    L.TaskName,
+    L.ItemName,
+    L.ExecutionLog,
+
+    ISNULL(L.UserID, 0) AS UserID,
+	L.Username,
+	U.FirstName,
+	U.LastName,
+	U.FullName,
+	ISNULL(U.RoleID, 0) AS RoleID,
+	U.Email
+FROM AuditLog AS L
+LEFT OUTER JOIN UsersDetailed AS U ON L.UserID = U.UserID
+WHERE RecordID = @RecordID
+RETURN
 				*/
 				#endregion
+
+				var logsWithUser = AuditLogs
+					.Where(l => l.RecordId == recordId)
+					.GroupJoin(UsersDetailed, l => l.UserId, u => u.UserId, (l, u) => new
+					 {
+						 l.RecordId,
+						 l.SeverityId,
+						 l.StartDate,
+						 l.FinishDate,
+						 l.ItemId,
+						 l.SourceName,
+						 l.TaskName,
+						 l.ItemName,
+						 l.ExecutionLog,
+						 UserId = l.UserId ?? 0,
+						 l.Username,
+						 User = u.SingleOrDefault()
+					 })
+					.Select(l => new
+					{
+						l.RecordId,
+						l.SeverityId,
+						l.StartDate,
+						l.FinishDate,
+						l.ItemId,
+						l.SourceName,
+						l.TaskName,
+						l.ItemName,
+						l.ExecutionLog,
+						l.UserId,
+						l.Username,
+						FirstName = l.User != null ? l.User.FirstName : null,
+						LastName = l.User != null ? l.User.LastName : null,
+						FullName = l.User != null ? l.User.FullName : null,
+						RoleId = l.User != null ? l.User.RoleId : 0,
+						Email = l.User != null ? l.User.Email : null,
+					});
+				return EntityDataReader(logsWithUser);
 
 			}
 			else
@@ -18497,6 +20802,38 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteAuditLogRecords]
+(
+	@ActorID int,
+	@UserID int,
+	@ItemID int,
+	@ItemName nvarchar(100),
+	@StartDate datetime,
+	@EndDate datetime,
+	@SeverityID int,
+	@SourceName varchar(100),
+	@TaskName varchar(100)
+)
+AS
+
+-- check rights
+IF dbo.CheckActorUserRights(@ActorID, @UserID) = 0
+RAISERROR('You are not allowed to access this account', 16, 1)
+
+DECLARE @IsAdmin bit
+SET @IsAdmin = 0
+IF EXISTS(SELECT UserID FROM Users WHERE UserID = @ActorID AND RoleID = 1)
+SET @IsAdmin = 1
+
+DELETE FROM AuditLog
+WHERE (dbo.CheckUserParent(@UserID, UserID) = 1 OR (UserID IS NULL AND @IsAdmin = 1))
+AND StartDate BETWEEN @StartDate AND @EndDate
+AND ((@SourceName = '') OR (@SourceName <> '' AND SourceName = @SourceName))
+AND ((@TaskName = '') OR (@TaskName <> '' AND TaskName = @TaskName))
+AND ((@ItemID = 0) OR (@ItemID > 0 AND ItemID = @ItemID))
+AND ((@ItemName = '') OR (@ItemName <> '' AND ItemName LIKE @ItemName))
+
+RETURN
 				*/
 				#endregion
 
@@ -18523,9 +20860,30 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteAuditLogRecordsComplete]
+AS
+
+TRUNCATE TABLE AuditLog
+
+RETURN
 				*/
 				#endregion
 
+				if (!IsSqlite)
+				{
+#if NETCOREAPP
+					Database.ExecuteSqlRaw("TRUNCATE TABLE AuditLog");
+#else
+					Database.ExecuteSqlCommand("TRUNCATE TABLE AuditLog");
+#endif
+				} else
+				{
+#if NETCOREAPP
+					Database.ExecuteSqlRaw("DELETE FROM AuditLog");
+#else
+					Database.ExecuteSqlCommand("DELETE FROM AuditLog");
+#endif
+				}
 			}
 			else
 			{
@@ -18534,7 +20892,7 @@ RETURN
 			}
 		}
 
-		#endregion
+#endregion
 
 		#region Reports
 		public DataSet GetPackagesBandwidthPaged(int actorId, int userId, int packageId,
@@ -18545,6 +20903,108 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetPackagesBandwidthPaged]
+(
+	@ActorID int,
+	@UserID int,
+	@PackageID int,
+	@StartDate datetime,
+	@EndDate datetime,
+	@SortColumn nvarchar(50),
+	@StartRow int,
+	@MaximumRows int
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+DECLARE @sql nvarchar(4000)
+
+SET @sql = '
+DECLARE @EndRow int
+SET @EndRow = @StartRow + @MaximumRows
+
+DECLARE @Report TABLE
+(
+	ItemPosition int IDENTITY(0,1),
+	PackageID int,
+	QuotaValue int,
+	Bandwidth int,
+	UsagePercentage int,
+	PackagesNumber int
+)
+
+INSERT INTO @Report (PackageID, QuotaValue, Bandwidth, UsagePercentage, PackagesNumber)
+SELECT
+	P.PackageID,
+	PB.QuotaValue,
+	PB.Bandwidth,
+	UsagePercentage = 	CASE
+							WHEN PB.QuotaValue = -1 THEN 0
+							WHEN PB.QuotaValue <> 0 THEN PB.Bandwidth * 100 / PB.QuotaValue
+							ELSE 0
+						END,
+	(SELECT COUNT(NP.PackageID) FROM Packages AS NP WHERE NP.ParentPackageID = P.PackageID) AS PackagesNumber
+FROM Packages AS P
+LEFT OUTER JOIN
+(
+	SELECT
+		P.PackageID,
+		dbo.GetPackageAllocatedQuota(P.PackageID, 51) AS QuotaValue, -- bandwidth
+		ROUND(CONVERT(float, SUM(ISNULL(PB.BytesSent + PB.BytesReceived, 0))) / 1024 / 1024, 0) AS Bandwidth -- in megabytes
+	FROM Packages AS P
+	INNER JOIN PackagesTreeCache AS PT ON P.PackageID = PT.ParentPackageID
+	INNER JOIN Packages AS PC ON PT.PackageID = PC.PackageID
+	INNER JOIN PackagesBandwidth AS PB ON PT.PackageID = PB.PackageID
+	INNER JOIN HostingPlanResources AS HPR ON PB.GroupID = HPR.GroupID
+		AND HPR.PlanID = PC.PlanID
+	WHERE PB.LogDate BETWEEN @StartDate AND @EndDate
+		AND HPR.CalculateBandwidth = 1
+	GROUP BY P.PackageID
+) AS PB ON P.PackageID = PB.PackageID
+WHERE (@PackageID = -1 AND P.UserID = @UserID) OR
+	(@PackageID <> -1 AND P.ParentPackageID = @PackageID) '
+
+IF @SortColumn = '' OR @SortColumn IS NULL
+SET @SortColumn = 'UsagePercentage DESC'
+
+SET @sql = @sql + ' ORDER BY ' + @SortColumn + ' '
+
+SET @sql = @sql + '
+SELECT COUNT(PackageID) FROM @Report
+
+SELECT
+	R.PackageID,
+	ISNULL(R.QuotaValue, 0) AS QuotaValue,
+	ISNULL(R.Bandwidth, 0) AS Bandwidth,
+	ISNULL(R.UsagePercentage, 0) AS UsagePercentage,
+
+	-- package
+	P.PackageName,
+	ISNULL(R.PackagesNumber, 0) AS PackagesNumber,
+	P.StatusID,
+
+	-- user
+	P.UserID,
+	U.Username,
+	U.FirstName,
+	U.LastName,
+	U.FullName,
+	U.RoleID,
+	U.Email,
+	dbo.GetItemComments(U.UserID, ''USER'', @ActorID) AS UserComments
+FROM @Report AS R
+INNER JOIN Packages AS P ON R.PackageID = P.PackageID
+INNER JOIN UsersDetailed AS U ON P.UserID = U.UserID
+WHERE R.ItemPosition BETWEEN @StartRow AND @EndRow
+'
+
+exec sp_executesql @sql, N'@ActorID int, @UserID int, @PackageID int, @StartDate datetime, @EndDate datetime, @StartRow int, @MaximumRows int',
+@ActorID, @UserID, @PackageID, @StartDate, @EndDate, @StartRow, @MaximumRows
+
+RETURN
 				*/
 				#endregion
 
@@ -18571,6 +21031,105 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetPackagesDiskspacePaged]
+(
+	@ActorID int,
+	@UserID int,
+	@PackageID int,
+	@SortColumn nvarchar(50),
+	@StartRow int,
+	@MaximumRows int
+)
+AS
+
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+DECLARE @sql nvarchar(4000)
+
+SET @sql = '
+DECLARE @EndRow int
+SET @EndRow = @StartRow + @MaximumRows
+
+DECLARE @Report TABLE
+(
+	ItemPosition int IDENTITY(0,1),
+	PackageID int,
+	QuotaValue int,
+	Diskspace int,
+	UsagePercentage int,
+	PackagesNumber int
+)
+
+INSERT INTO @Report (PackageID, QuotaValue, Diskspace, UsagePercentage, PackagesNumber)
+SELECT
+	P.PackageID,
+	PD.QuotaValue,
+	PD.Diskspace,
+	UsagePercentage = 	CASE
+							WHEN PD.QuotaValue = -1 THEN 0
+							WHEN PD.QuotaValue <> 0 THEN PD.Diskspace * 100 / PD.QuotaValue
+							ELSE 0
+						END,
+	(SELECT COUNT(NP.PackageID) FROM Packages AS NP WHERE NP.ParentPackageID = P.PackageID) AS PackagesNumber
+FROM Packages AS P
+LEFT OUTER JOIN
+(
+	SELECT
+		P.PackageID,
+		dbo.GetPackageAllocatedQuota(P.PackageID, 52) AS QuotaValue, -- diskspace
+		ROUND(CONVERT(float, SUM(ISNULL(PD.DiskSpace, 0))) / 1024 / 1024, 0) AS Diskspace -- in megabytes
+	FROM Packages AS P
+	INNER JOIN PackagesTreeCache AS PT ON P.PackageID = PT.ParentPackageID
+	INNER JOIN Packages AS PC ON PT.PackageID = PC.PackageID
+	INNER JOIN PackagesDiskspace AS PD ON PT.PackageID = PD.PackageID
+	INNER JOIN HostingPlanResources AS HPR ON PD.GroupID = HPR.GroupID
+		AND HPR.PlanID = PC.PlanID
+	WHERE HPR.CalculateDiskspace = 1
+	GROUP BY P.PackageID
+) AS PD ON P.PackageID = PD.PackageID
+WHERE (@PackageID = -1 AND P.UserID = @UserID) OR
+	(@PackageID <> -1 AND P.ParentPackageID = @PackageID)
+'
+
+IF @SortColumn = '' OR @SortColumn IS NULL
+SET @SortColumn = 'UsagePercentage DESC'
+
+SET @sql = @sql + ' ORDER BY ' + @SortColumn + ' '
+
+SET @sql = @sql + '
+SELECT COUNT(PackageID) FROM @Report
+
+SELECT
+	R.PackageID,
+	ISNULL(R.QuotaValue, 0) AS QuotaValue,
+	ISNULL(R.Diskspace, 0) AS Diskspace,
+	ISNULL(R.UsagePercentage, 0) AS UsagePercentage,
+
+	-- package
+	P.PackageName,
+	ISNULL(R.PackagesNumber, 0) AS PackagesNumber,
+	P.StatusID,
+
+	-- user
+	P.UserID,
+	U.Username,
+	U.FirstName,
+	U.LastName,
+	U.FullName,
+	U.RoleID,
+	U.Email,
+	dbo.GetItemComments(U.UserID, ''USER'', @ActorID) AS UserComments
+FROM @Report AS R
+INNER JOIN Packages AS P ON R.PackageID = P.PackageID
+INNER JOIN UsersDetailed AS U ON P.UserID = U.UserID
+WHERE R.ItemPosition BETWEEN @StartRow AND @EndRow
+'
+
+exec sp_executesql @sql, N'@ActorID int, @UserID int, @PackageID int, @StartRow int, @MaximumRows int',
+@ActorID, @UserID, @PackageID, @StartRow, @MaximumRows
+
+RETURN
 				*/
 				#endregion
 
@@ -18594,6 +21153,50 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetPackageBandwidth]
+(
+	@ActorID int,
+	@PackageID int,
+	@StartDate datetime,
+	@EndDate datetime
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+SELECT
+	RG.GroupID,
+	RG.GroupName,
+	ROUND(CONVERT(float, ISNULL(GB.BytesSent, 0)) / 1024 / 1024, 0) AS MegaBytesSent,
+	ROUND(CONVERT(float, ISNULL(GB.BytesReceived, 0)) / 1024 / 1024, 0) AS MegaBytesReceived,
+	ROUND(CONVERT(float, ISNULL(GB.BytesTotal, 0)) / 1024 / 1024, 0) AS MegaBytesTotal,
+	ISNULL(GB.BytesSent, 0) AS BytesSent,
+	ISNULL(GB.BytesReceived, 0) AS BytesReceived,
+	ISNULL(GB.BytesTotal, 0) AS BytesTotal
+FROM ResourceGroups AS RG
+LEFT OUTER JOIN
+(
+	SELECT
+		PB.GroupID,
+		SUM(ISNULL(PB.BytesSent, 0)) AS BytesSent,
+		SUM(ISNULL(PB.BytesReceived, 0)) AS BytesReceived,
+		SUM(ISNULL(PB.BytesSent, 0)) + SUM(ISNULL(PB.BytesReceived, 0)) AS BytesTotal
+	FROM PackagesTreeCache AS PT
+	INNER JOIN PackagesBandwidth AS PB ON PT.PackageID = PB.PackageID
+	INNER JOIN Packages AS P ON PB.PackageID = P.PackageID
+	INNER JOIN HostingPlanResources AS HPR ON PB.GroupID = HPR.GroupID AND HPR.PlanID = P.PlanID
+		AND HPR.CalculateBandwidth = 1
+	WHERE
+		PT.ParentPackageID = @PackageID
+		AND PB.LogDate BETWEEN @StartDate AND @EndDate
+	GROUP BY PB.GroupID
+) AS GB ON RG.GroupID = GB.GroupID
+WHERE GB.BytesTotal > 0
+ORDER BY RG.GroupOrder
+
+RETURN
 				*/
 				#endregion
 
@@ -18615,6 +21218,40 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetPackageDiskspace]
+(
+	@ActorID int,
+	@PackageID int
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+SELECT
+	RG.GroupID,
+	RG.GroupName,
+	ROUND(CONVERT(float, ISNULL(GD.Diskspace, 0)) / 1024 / 1024, 0) AS Diskspace,
+	ISNULL(GD.Diskspace, 0) AS DiskspaceBytes
+FROM ResourceGroups AS RG
+LEFT OUTER JOIN
+(
+	SELECT
+		PD.GroupID,
+		SUM(ISNULL(PD.DiskSpace, 0)) AS Diskspace -- in megabytes
+	FROM PackagesTreeCache AS PT
+	INNER JOIN PackagesDiskspace AS PD ON PT.PackageID = PD.PackageID
+	INNER JOIN Packages AS P ON PT.PackageID = P.PackageID
+	INNER JOIN HostingPlanResources AS HPR ON PD.GroupID = HPR.GroupID
+		AND HPR.PlanID = P.PlanID AND HPR.CalculateDiskspace = 1
+	WHERE PT.ParentPackageID = @PackageID
+	GROUP BY PD.GroupID
+) AS GD ON RG.GroupID = GD.GroupID
+WHERE GD.Diskspace <> 0
+ORDER BY RG.GroupOrder
+
+RETURN
 				*/
 				#endregion
 
@@ -18638,6 +21275,37 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetBackgroundTask]
+(
+	@TaskID NVARCHAR(255)
+)
+AS
+
+SELECT TOP 1
+	T.ID,
+	T.Guid,
+	T.TaskID,
+	T.ScheduleID,
+	T.PackageID,
+	T.UserID,
+	T.EffectiveUserID,
+	T.TaskName,
+	T.ItemID,
+	T.ItemName,
+	T.StartDate,
+	T.FinishDate,
+	T.IndicatorCurrent,
+	T.IndicatorMaximum,
+	T.MaximumExecutionTime,
+	T.Source,
+	T.Severity,
+	T.Completed,
+	T.NotifyOnComplete,
+	T.Status
+FROM BackgroundTasks AS T
+INNER JOIN BackgroundTaskStack AS TS
+	ON TS.TaskId = T.ID
+WHERE T.TaskID = @TaskID 
 				*/
 				#endregion
 
@@ -18656,6 +21324,38 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetScheduleBackgroundTasks]
+(
+	@ScheduleID INT
+)
+AS
+
+SELECT
+	T.ID,
+	T.Guid,
+	T.TaskID,
+	T.ScheduleId,
+	T.PackageId,
+	T.UserId,
+	T.EffectiveUserId,
+	T.TaskName,
+	T.ItemId,
+	T.ItemName,
+	T.StartDate,
+	T.FinishDate,
+	T.IndicatorCurrent,
+	T.IndicatorMaximum,
+	T.MaximumExecutionTime,
+	T.Source,
+	T.Severity,
+	T.Completed,
+	T.NotifyOnComplete,
+	T.Status
+FROM BackgroundTasks AS T
+WHERE T.Guid = (
+	SELECT Guid FROM BackgroundTasks
+	WHERE ScheduleID = @ScheduleID
+		AND Completed = 0 AND Status IN (1, 3))
 				*/
 				#endregion
 
@@ -18674,6 +21374,50 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetBackgroundTasks]
+(
+	@ActorID INT
+)
+AS
+
+ with GetChildUsersId(id) as (
+    select UserID
+    from Users
+    where UserID = @ActorID
+    union all
+    select C.UserId
+    from GetChildUsersId P
+    inner join Users C on P.id = C.OwnerID
+)
+
+SELECT 
+	T.ID,
+	T.Guid,
+	T.TaskID,
+	T.ScheduleId,
+	T.PackageId,
+	T.UserId,
+	T.EffectiveUserId,
+	T.TaskName,
+	T.ItemId,
+	T.ItemName,
+	T.StartDate,
+	T.FinishDate,
+	T.IndicatorCurrent,
+	T.IndicatorMaximum,
+	T.MaximumExecutionTime,
+	T.Source,
+	T.Severity,
+	T.Completed,
+	T.NotifyOnComplete,
+	T.Status
+FROM BackgroundTasks AS T
+INNER JOIN (SELECT T.Guid, MIN(T.StartDate) AS Date
+			FROM BackgroundTasks AS T
+			INNER JOIN BackgroundTaskStack AS TS
+				ON TS.TaskId = T.ID
+			WHERE T.UserID in (select id from GetChildUsersId)
+			GROUP BY T.Guid) AS TT ON TT.Guid = T.Guid AND TT.Date = T.StartDate
 				*/
 				#endregion
 
@@ -18692,6 +21436,37 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetThreadBackgroundTasks]
+(
+	@Guid UNIQUEIDENTIFIER
+)
+AS
+
+SELECT
+	T.ID,
+	T.Guid,
+	T.TaskID,
+	T.ScheduleId,
+	T.PackageId,
+	T.UserId,
+	T.EffectiveUserId,
+	T.TaskName,
+	T.ItemId,
+	T.ItemName,
+	T.StartDate,
+	T.FinishDate,
+	T.IndicatorCurrent,
+	T.IndicatorMaximum,
+	T.MaximumExecutionTime,
+	T.Source,
+	T.Severity,
+	T.Completed,
+	T.NotifyOnComplete,
+	T.Status
+FROM BackgroundTasks AS T
+INNER JOIN BackgroundTaskStack AS TS
+	ON TS.TaskId = T.ID
+WHERE T.Guid = @Guid
 				*/
 				#endregion
 
@@ -18710,6 +21485,34 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetProcessBackgroundTasks]
+(	
+	@Status INT
+)
+AS
+
+SELECT
+	T.ID,
+	T.TaskID,
+	T.ScheduleId,
+	T.PackageId,
+	T.UserId,
+	T.EffectiveUserId,
+	T.TaskName,
+	T.ItemId,
+	T.ItemName,
+	T.StartDate,
+	T.FinishDate,
+	T.IndicatorCurrent,
+	T.IndicatorMaximum,
+	T.MaximumExecutionTime,
+	T.Source,
+	T.Severity,
+	T.Completed,
+	T.NotifyOnComplete,
+	T.Status
+FROM BackgroundTasks AS T
+WHERE T.Completed = 0 AND T.Status = @Status
 				*/
 				#endregion
 
@@ -18728,6 +21531,38 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetBackgroundTopTask]
+(
+	@Guid UNIQUEIDENTIFIER
+)
+AS
+
+SELECT TOP 1
+	T.ID,
+	T.Guid,
+	T.TaskID,
+	T.ScheduleId,
+	T.PackageId,
+	T.UserId,
+	T.EffectiveUserId,
+	T.TaskName,
+	T.ItemId,
+	T.ItemName,
+	T.StartDate,
+	T.FinishDate,
+	T.IndicatorCurrent,
+	T.IndicatorMaximum,
+	T.MaximumExecutionTime,
+	T.Source,
+	T.Severity,
+	T.Completed,
+	T.NotifyOnComplete,
+	T.Status
+FROM BackgroundTasks AS T
+INNER JOIN BackgroundTaskStack AS TS
+	ON TS.TaskId = T.ID
+WHERE T.Guid = @Guid
+ORDER BY T.StartDate ASC
 				*/
 				#endregion
 
@@ -18749,6 +21584,76 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddBackgroundTask]
+(
+	@BackgroundTaskID INT OUTPUT,
+	@Guid UNIQUEIDENTIFIER,
+	@TaskID NVARCHAR(255),
+	@ScheduleID INT,
+	@PackageID INT,
+	@UserID INT,
+	@EffectiveUserID INT,
+	@TaskName NVARCHAR(255),
+	@ItemID INT,
+	@ItemName NVARCHAR(255),
+	@StartDate DATETIME,
+	@IndicatorCurrent INT,
+	@IndicatorMaximum INT,
+	@MaximumExecutionTime INT,
+	@Source NVARCHAR(MAX),
+	@Severity INT,
+	@Completed BIT,
+	@NotifyOnComplete BIT,
+	@Status INT
+)
+AS
+
+INSERT INTO BackgroundTasks
+(
+	Guid,
+	TaskID,
+	ScheduleID,
+	PackageID,
+	UserID,
+	EffectiveUserID,
+	TaskName,
+	ItemID,
+	ItemName,
+	StartDate,
+	IndicatorCurrent,
+	IndicatorMaximum,
+	MaximumExecutionTime,
+	Source,
+	Severity,
+	Completed,
+	NotifyOnComplete,
+	Status
+)
+VALUES
+(
+	@Guid,
+	@TaskID,
+	@ScheduleID,
+	@PackageID,
+	@UserID,
+	@EffectiveUserID,
+	@TaskName,
+	@ItemID,
+	@ItemName,
+	@StartDate,
+	@IndicatorCurrent,
+	@IndicatorMaximum,
+	@MaximumExecutionTime,
+	@Source,
+	@Severity,
+	@Completed,
+	@NotifyOnComplete,
+	@Status
+)
+
+SET @BackgroundTaskID = SCOPE_IDENTITY()
+
+RETURN
 				*/
 				#endregion
 
@@ -18792,9 +21697,57 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddBackgroundTaskLog]
+(
+	@TaskID INT,
+	@Date DATETIME,
+	@ExceptionStackTrace NTEXT,
+	@InnerTaskStart INT,
+	@Severity INT,
+	@Text NTEXT,
+	@TextIdent INT,
+	@XmlParameters NTEXT
+)
+AS
+
+INSERT INTO BackgroundTaskLogs
+(
+	TaskID,
+	Date,
+	ExceptionStackTrace,
+	InnerTaskStart,
+	Severity,
+	Text,
+	TextIdent,
+	XmlParameters
+)
+VALUES
+(
+	@TaskID,
+	@Date,
+	@ExceptionStackTrace,
+	@InnerTaskStart,
+	@Severity,
+	@Text,
+	@TextIdent,
+	@XmlParameters
+)
 				*/
 				#endregion
 
+				var log = new Data.Entities.BackgroundTaskLog()
+				{
+					TaskId = taskId,
+					Date = date,
+					ExceptionStackTrace = exceptionStackTrace,
+					InnerTaskStart = innerTaskStart,
+					Severity = severity,
+					Text = text,
+					TextIdent = textIdent,
+					XmlParameters = xmlParameters
+				};
+				BackgroundTaskLogs.Add(log);
+				SaveChanges();
 			}
 			else
 			{
@@ -18817,6 +21770,25 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetBackgroundTaskLogs]
+(
+	@TaskID INT,
+	@StartLogTime DATETIME
+)
+AS
+
+SELECT
+	L.LogID,
+	L.TaskID,
+	L.Date,
+	L.ExceptionStackTrace,
+	L.InnerTaskStart,
+	L.Severity,
+	L.Text,
+	L.XmlParameters
+FROM BackgroundTaskLogs AS L
+WHERE L.TaskID = @TaskID AND L.Date >= @StartLogTime
+ORDER BY L.Date
 				*/
 				#endregion
 
@@ -18838,6 +21810,45 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdateBackgroundTask]
+(
+	@Guid UNIQUEIDENTIFIER,
+	@TaskID INT,
+	@ScheduleID INT,
+	@PackageID INT,
+	@TaskName NVARCHAR(255),
+	@ItemID INT,
+	@ItemName NVARCHAR(255),
+	@FinishDate DATETIME,
+	@IndicatorCurrent INT,
+	@IndicatorMaximum INT,
+	@MaximumExecutionTime INT,
+	@Source NVARCHAR(MAX),
+	@Severity INT,
+	@Completed BIT,
+	@NotifyOnComplete BIT,
+	@Status INT
+)
+AS
+
+UPDATE BackgroundTasks
+SET
+	Guid = @Guid,
+	ScheduleID = @ScheduleID,
+	PackageID = @PackageID,
+	TaskName = @TaskName,
+	ItemID = @ItemID,
+	ItemName = @ItemName,
+	FinishDate = @FinishDate,
+	IndicatorCurrent = @IndicatorCurrent,
+	IndicatorMaximum = @IndicatorMaximum,
+	MaximumExecutionTime = @MaximumExecutionTime,
+	Source = @Source,
+	Severity = @Severity,
+	Completed = @Completed,
+	NotifyOnComplete = @NotifyOnComplete,
+	Status = @Status
+WHERE ID = @TaskID
 				*/
 				#endregion
 
@@ -18872,9 +21883,27 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetBackgroundTaskParams]
+(
+	@TaskID INT
+)
+AS
+
+SELECT
+	P.ParameterID,
+	P.TaskID,
+	P.Name,
+	P.SerializerValue,
+	P.TypeName
+FROM BackgroundTaskParameters AS P
+WHERE P.TaskID = @TaskID
 				*/
 				#endregion
 
+				var parameters = BackgroundTaskParameters
+					.Where(p => p.TaskId == taskId)
+					.Select(p => new { p.ParameterId, p.TaskId, p.Name, p.SerializerValue, p.TypeName });
+				return EntityDataReader(parameters);
 			}
 			else
 			{
@@ -18890,9 +21919,41 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddBackgroundTaskParam]
+(
+	@TaskID INT,
+	@Name NVARCHAR(255),
+	@Value NTEXT,
+	@TypeName NVARCHAR(255)
+)
+AS
+
+INSERT INTO BackgroundTaskParameters
+(
+	TaskID,
+	Name,
+	SerializerValue,
+	TypeName
+)
+VALUES
+(
+	@TaskID,
+	@Name,
+	@Value,
+	@TypeName
+)
 				*/
 				#endregion
 
+				var parameter = new Data.Entities.BackgroundTaskParameter()
+				{
+					TaskId = taskId,
+					Name = name,
+					SerializerValue = value,
+					TypeName = typeName
+				};
+				BackgroundTaskParameters.Add(parameter);
+				SaveChanges();
 			}
 			else
 			{
@@ -18911,9 +21972,19 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteBackgroundTaskParams]
+(
+	@TaskID INT
+)
+AS
+
+DELETE FROM BackgroundTaskParameters
+WHERE TaskID = @TaskID
 				*/
 				#endregion
 
+				BackgroundTaskParameters.Where(p => p.TaskId == taskId).ExecuteDelete(BackgroundTaskParameters);
+				SaveChanges();
 			}
 			else
 			{
@@ -18929,9 +22000,29 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddBackgroundTaskStack]
+(
+	@TaskID INT
+)
+AS
+
+INSERT INTO BackgroundTaskStack
+(
+	TaskID
+)
+VALUES
+(
+	@TaskID
+)
 				*/
 				#endregion
 
+				var stack = new Data.Entities.BackgroundTaskStack()
+				{
+					TaskId = taskId
+				};
+				BackgroundTaskStacks.Add(stack);
+				SaveChanges();
 			}
 			else
 			{
@@ -18947,6 +22038,23 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteBackgroundTasks]
+(
+	@Guid UNIQUEIDENTIFIER
+)
+AS
+
+DELETE FROM BackgroundTaskStack
+WHERE TaskID IN (SELECT ID FROM BackgroundTasks WHERE Guid = @Guid)
+
+DELETE FROM BackgroundTaskLogs
+WHERE TaskID IN (SELECT ID FROM BackgroundTasks WHERE Guid = @Guid)
+
+DELETE FROM BackgroundTaskParameters
+WHERE TaskID IN (SELECT ID FROM BackgroundTasks WHERE Guid = @Guid)
+
+DELETE FROM BackgroundTasks
+WHERE ID IN (SELECT ID FROM BackgroundTasks WHERE Guid = @Guid)
 				*/
 				#endregion
 
@@ -18965,6 +22073,23 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteBackgroundTask]
+(
+	@ID INT
+)
+AS
+
+DELETE FROM BackgroundTaskStack
+WHERE TaskID = @ID
+
+DELETE FROM BackgroundTaskLogs
+WHERE TaskID = @ID
+
+DELETE FROM BackgroundTaskParameters
+WHERE TaskID = @ID
+
+DELETE FROM BackgroundTasks
+WHERE ID = @ID
 				*/
 				#endregion
 
@@ -18983,6 +22108,24 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetScheduleTasks]
+(
+	@ActorID int
+)
+AS
+
+-- get user role
+DECLARE @RoleID int
+SELECT @RoleID = RoleID FROM Users
+WHERE UserID = @ActorID
+
+SELECT
+	TaskID,
+	TaskType,
+	RoleID
+FROM ScheduleTasks
+WHERE @RoleID <= RoleID
+RETURN
 				*/
 				#endregion
 
@@ -19001,6 +22144,27 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetScheduleTask]
+(
+	@ActorID int,
+	@TaskID nvarchar(100)
+)
+AS
+
+-- get user role
+DECLARE @RoleID int
+SELECT @RoleID = RoleID FROM Users
+WHERE UserID = @ActorID
+
+SELECT
+	TaskID,
+	TaskType,
+	RoleID
+FROM ScheduleTasks
+WHERE
+	TaskID = @TaskID
+	AND @RoleID >= RoleID
+RETURN
 				*/
 				#endregion
 
@@ -19020,6 +22184,75 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetSchedules]
+(
+	@ActorID int,
+	@PackageID int,
+	@Recursive bit
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+DECLARE @Schedules TABLE
+(
+	ScheduleID int
+)
+
+INSERT INTO @Schedules (ScheduleID)
+SELECT
+	S.ScheduleID
+FROM Schedule AS S
+INNER JOIN PackagesTree(@PackageID, @Recursive) AS PT ON S.PackageID = PT.PackageID
+ORDER BY S.Enabled DESC, S.NextRun
+
+-- select schedules
+SELECT
+	S.ScheduleID,
+	S.TaskID,
+	ST.TaskType,
+	ST.RoleID,
+	S.PackageID,
+	S.ScheduleName,
+	S.ScheduleTypeID,
+	S.Interval,
+	S.FromTime,
+	S.ToTime,
+	S.StartTime,
+	S.LastRun,
+	S.NextRun,
+	S.Enabled,
+	1 AS StatusID,
+	S.PriorityID,
+	S.MaxExecutionTime,
+	S.WeekMonthDay,
+	ISNULL(0, (SELECT TOP 1 SeverityID FROM AuditLog WHERE ItemID = S.ScheduleID AND SourceName = 'SCHEDULER' ORDER BY StartDate DESC)) AS LastResult,
+
+	U.Username,
+	U.FirstName,
+	U.LastName,
+	U.FullName,
+	U.RoleID,
+	U.Email
+FROM @Schedules AS STEMP
+INNER JOIN Schedule AS S ON STEMP.ScheduleID = S.ScheduleID
+INNER JOIN Packages AS P ON S.PackageID = P.PackageID
+INNER JOIN ScheduleTasks AS ST ON S.TaskID = ST.TaskID
+INNER JOIN UsersDetailed AS U ON P.UserID = U.UserID
+
+-- select schedule parameters
+SELECT
+	S.ScheduleID,
+	STP.ParameterID,
+	STP.DataTypeID,
+	ISNULL(SP.ParameterValue, STP.DefaultValue) AS ParameterValue
+FROM @Schedules AS STEMP
+INNER JOIN Schedule AS S ON STEMP.ScheduleID = S.ScheduleID
+INNER JOIN ScheduleTaskParameters AS STP ON S.TaskID = STP.TaskID
+LEFT OUTER JOIN ScheduleParameters AS SP ON STP.ParameterID = SP.ParameterID AND SP.ScheduleID = S.ScheduleID
+RETURN
 				*/
 				#endregion
 
@@ -19041,6 +22274,112 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetSchedulesPaged]
+(
+	@ActorID int,
+	@PackageID int,
+	@Recursive bit,
+	@FilterColumn nvarchar(50) = '',
+	@FilterValue nvarchar(50) = '',
+	@SortColumn nvarchar(50),
+	@StartRow int,
+	@MaximumRows int
+)
+AS
+BEGIN
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+DECLARE @condition nvarchar(400)
+SET @condition = ' 1 = 1 '
+
+IF @FilterValue <> '' AND @FilterValue IS NOT NULL
+BEGIN
+	IF @FilterColumn <> '' AND @FilterColumn IS NOT NULL
+		SET @condition = @condition + ' AND ' + @FilterColumn + ' LIKE ''' + @FilterValue + ''''
+	ELSE
+		SET @condition = @condition + '
+			AND (ScheduleName LIKE ''' + @FilterValue + '''
+			OR Username LIKE ''' + @FilterValue + '''
+			OR FullName LIKE ''' + @FilterValue + '''
+			OR Email LIKE ''' + @FilterValue + ''')'
+END
+
+IF @SortColumn IS NULL OR @SortColumn = ''
+SET @SortColumn = 'S.ScheduleName ASC'
+
+DECLARE @sql nvarchar(3500)
+
+set @sql = '
+SELECT COUNT(S.ScheduleID) FROM Schedule AS S
+INNER JOIN PackagesTree(@PackageID, @Recursive) AS PT ON S.PackageID = PT.PackageID
+INNER JOIN Packages AS P ON S.PackageID = P.PackageID
+INNER JOIN UsersDetailed AS U ON P.UserID = U.UserID
+WHERE ' + @condition + '
+
+DECLARE @Schedules AS TABLE
+(
+	ScheduleID int
+);
+
+WITH TempSchedules AS (
+	SELECT ROW_NUMBER() OVER (ORDER BY ' + @SortColumn + ') as Row,
+		S.ScheduleID
+	FROM Schedule AS S
+	INNER JOIN Packages AS P ON S.PackageID = P.PackageID
+	INNER JOIN PackagesTree(@PackageID, @Recursive) AS PT ON S.PackageID = PT.PackageID
+	INNER JOIN UsersDetailed AS U ON P.UserID = U.UserID
+	WHERE ' + @condition + '
+)
+
+INSERT INTO @Schedules
+SELECT ScheduleID FROM TempSchedules
+WHERE TempSchedules.Row BETWEEN @StartRow + 1 and @StartRow + @MaximumRows
+
+SELECT
+	S.ScheduleID,
+	S.TaskID,
+	ST.TaskType,
+	ST.RoleID,
+	S.ScheduleName,
+	S.ScheduleTypeID,
+	S.Interval,
+	S.FromTime,
+	S.ToTime,
+	S.StartTime,
+	S.LastRun,
+	S.NextRun,
+	S.Enabled,
+	1 AS StatusID,
+	S.PriorityID,
+	S.MaxExecutionTime,
+	S.WeekMonthDay,
+	ISNULL(0, (SELECT TOP 1 SeverityID FROM AuditLog WHERE ItemID = S.ScheduleID AND SourceName = ''SCHEDULER'' ORDER BY StartDate DESC)) AS LastResult,
+
+	-- packages
+	P.PackageID,
+	P.PackageName,
+
+	-- user
+	P.UserID,
+	U.Username,
+	U.FirstName,
+	U.LastName,
+	U.FullName,
+	U.RoleID,
+	U.Email
+FROM @Schedules AS STEMP
+INNER JOIN Schedule AS S ON STEMP.ScheduleID = S.ScheduleID
+INNER JOIN ScheduleTasks AS ST ON S.TaskID = ST.TaskID
+INNER JOIN Packages AS P ON S.PackageID = P.PackageID
+INNER JOIN UsersDetailed AS U ON P.UserID = U.UserID'
+
+exec sp_executesql @sql, N'@PackageID int, @StartRow int, @MaximumRows int, @Recursive bit',
+@PackageID, @StartRow, @MaximumRows, @Recursive
+
+END
 				*/
 				#endregion
 
@@ -19066,6 +22405,62 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetSchedule]
+(
+	@ActorID int,
+	@ScheduleID int
+)
+AS
+
+-- select schedule
+SELECT TOP 1
+	S.ScheduleID,
+	S.TaskID,
+	S.PackageID,
+	S.ScheduleName,
+	S.ScheduleTypeID,
+	S.Interval,
+	S.FromTime,
+	S.ToTime,
+	S.StartTime,
+	S.LastRun,
+	S.NextRun,
+	S.Enabled,
+	S.HistoriesNumber,
+	S.PriorityID,
+	S.MaxExecutionTime,
+	S.WeekMonthDay,
+	1 AS StatusID
+FROM Schedule AS S
+WHERE
+	S.ScheduleID = @ScheduleID
+	AND dbo.CheckActorPackageRights(@ActorID, S.PackageID) = 1
+
+-- select task
+SELECT
+	ST.TaskID,
+	ST.TaskType,
+	ST.RoleID
+FROM Schedule AS S
+INNER JOIN ScheduleTasks AS ST ON S.TaskID = ST.TaskID
+WHERE
+	S.ScheduleID = @ScheduleID
+	AND dbo.CheckActorPackageRights(@ActorID, S.PackageID) = 1
+
+-- select schedule parameters
+SELECT
+	S.ScheduleID,
+	STP.ParameterID,
+	STP.DataTypeID,
+	ISNULL(SP.ParameterValue, STP.DefaultValue) AS ParameterValue
+FROM Schedule AS S
+INNER JOIN ScheduleTaskParameters AS STP ON S.TaskID = STP.TaskID
+LEFT OUTER JOIN ScheduleParameters AS SP ON STP.ParameterID = SP.ParameterID AND SP.ScheduleID = S.ScheduleID
+WHERE
+	S.ScheduleID = @ScheduleID
+	AND dbo.CheckActorPackageRights(@ActorID, S.PackageID) = 1
+
+RETURN
 				*/
 				#endregion
 
@@ -19084,6 +22479,37 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetScheduleInternal]
+(
+	@ScheduleID int
+)
+AS
+
+-- select schedule
+SELECT
+	S.ScheduleID,
+	S.TaskID,
+	ST.TaskType,
+	ST.RoleID,
+	S.PackageID,
+	S.ScheduleName,
+	S.ScheduleTypeID,
+	S.Interval,
+	S.FromTime,
+	S.ToTime,
+	S.StartTime,
+	S.LastRun,
+	S.NextRun,
+	S.Enabled,
+	1 AS StatusID,
+	S.PriorityID,
+	S.HistoriesNumber,
+	S.MaxExecutionTime,
+	S.WeekMonthDay
+FROM Schedule AS S
+INNER JOIN ScheduleTasks AS ST ON S.TaskID = ST.TaskID
+WHERE ScheduleID = @ScheduleID
+RETURN
 				*/
 				#endregion
 
@@ -19101,6 +22527,61 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetNextSchedule]
+AS
+
+-- find next schedule
+DECLARE @ScheduleID int
+DECLARE @TaskID nvarchar(100)
+SELECT TOP 1
+	@ScheduleID = ScheduleID,
+	@TaskID = TaskID
+FROM Schedule AS S
+WHERE Enabled = 1
+ORDER BY NextRun ASC
+
+-- select schedule
+SELECT TOP 1
+	S.ScheduleID,
+	S.TaskID,
+	S.PackageID,
+	S.ScheduleName,
+	S.ScheduleTypeID,
+	S.Interval,
+	S.FromTime,
+	S.ToTime,
+	S.StartTime,
+	S.LastRun,
+	S.NextRun,
+	S.Enabled,
+	S.HistoriesNumber,
+	S.PriorityID,
+	S.MaxExecutionTime,
+	S.WeekMonthDay,
+	1 AS StatusID
+FROM Schedule AS S
+WHERE S.ScheduleID = @ScheduleID
+ORDER BY NextRun ASC
+
+-- select task
+SELECT
+	TaskID,
+	TaskType,
+	RoleID
+FROM ScheduleTasks
+WHERE TaskID = @TaskID
+
+-- select schedule parameters
+SELECT
+	S.ScheduleID,
+	STP.ParameterID,
+	STP.DataTypeID,
+	ISNULL(SP.ParameterValue, STP.DefaultValue) AS ParameterValue
+FROM Schedule AS S
+INNER JOIN ScheduleTaskParameters AS STP ON S.TaskID = STP.TaskID
+LEFT OUTER JOIN ScheduleParameters AS SP ON STP.ParameterID = SP.ParameterID AND SP.ScheduleID = S.ScheduleID
+WHERE S.ScheduleID = @ScheduleID
+RETURN
 				*/
 				#endregion
 
@@ -19117,6 +22598,34 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetScheduleParameters]
+(
+	@ActorID int,
+	@TaskID nvarchar(100),
+	@ScheduleID int
+)
+AS
+
+-- check rights
+DECLARE @PackageID int
+SELECT @PackageID = PackageID FROM Schedule
+WHERE ScheduleID = @ScheduleID
+
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+SELECT
+	@ScheduleID AS ScheduleID,
+	STP.ParameterID,
+	STP.DataTypeID,
+	SP.ParameterValue,
+	STP.DefaultValue
+FROM ScheduleTaskParameters AS STP
+LEFT OUTER JOIN ScheduleParameters AS SP ON STP.ParameterID = SP.ParameterID AND SP.ScheduleID = @ScheduleID
+WHERE STP.TaskID = @TaskID
+ORDER BY STP.ParameterOrder
+
+RETURN
 				*/
 				#endregion
 
@@ -19142,6 +22651,21 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetScheduleTaskViewConfigurations]
+(
+	@TaskID nvarchar(100)
+)
+AS
+
+SELECT
+	@TaskID AS TaskID,
+	STVC.ConfigurationID,
+	STVC.Environment,
+	STVC.Description
+FROM ScheduleTaskViewConfiguration AS STVC
+WHERE STVC.TaskID = @TaskID
+
+RETURN
 				*/
 				#endregion
 
@@ -19164,6 +22688,101 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddSchedule]
+(
+	@ActorID int,
+	@ScheduleID int OUTPUT,
+	@TaskID nvarchar(100),
+	@PackageID int,
+	@ScheduleName nvarchar(100),
+	@ScheduleTypeID nvarchar(50),
+	@Interval int,
+	@FromTime datetime,
+	@ToTime datetime,
+	@StartTime datetime,
+	@NextRun datetime,
+	@Enabled bit,
+	@PriorityID nvarchar(50),
+	@HistoriesNumber int,
+	@MaxExecutionTime int,
+	@WeekMonthDay int,
+	@XmlParameters ntext
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+-- insert record
+BEGIN TRAN
+INSERT INTO Schedule
+(
+	TaskID,
+	PackageID,
+	ScheduleName,
+	ScheduleTypeID,
+	Interval,
+	FromTime,
+	ToTime,
+	StartTime,
+	NextRun,
+	Enabled,
+	PriorityID,
+	HistoriesNumber,
+	MaxExecutionTime,
+	WeekMonthDay
+)
+VALUES
+(
+	@TaskID,
+	@PackageID,
+	@ScheduleName,
+	@ScheduleTypeID,
+	@Interval,
+	@FromTime,
+	@ToTime,
+	@StartTime,
+	@NextRun,
+	@Enabled,
+	@PriorityID,
+	@HistoriesNumber,
+	@MaxExecutionTime,
+	@WeekMonthDay
+)
+
+SET @ScheduleID = SCOPE_IDENTITY()
+
+DECLARE @idoc int
+--Create an internal representation of the XML document.
+EXEC sp_xml_preparedocument @idoc OUTPUT, @XmlParameters
+
+-- Execute a SELECT statement that uses the OPENXML rowset provider.
+DELETE FROM ScheduleParameters
+WHERE ScheduleID = @ScheduleID
+
+INSERT INTO ScheduleParameters
+(
+	ScheduleID,
+	ParameterID,
+	ParameterValue
+)
+SELECT
+	@ScheduleID,
+	ParameterID,
+	ParameterValue
+FROM OPENXML(@idoc, '/parameters/parameter',1) WITH
+(
+	ParameterID nvarchar(50) '@id',
+	ParameterValue nvarchar(3000) '@value'
+) as PV
+
+-- remove document
+exec sp_xml_removedocument @idoc
+
+COMMIT TRAN
+
+RETURN
 				*/
 				#endregion
 
@@ -19208,6 +22827,86 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdateSchedule]
+(
+	@ActorID int,
+	@ScheduleID int,
+	@TaskID nvarchar(100),
+	@ScheduleName nvarchar(100),
+	@ScheduleTypeID nvarchar(50),
+	@Interval int,
+	@FromTime datetime,
+	@ToTime datetime,
+	@StartTime datetime,
+	@LastRun datetime,
+	@NextRun datetime,
+	@Enabled bit,
+	@PriorityID nvarchar(50),
+	@HistoriesNumber int,
+	@MaxExecutionTime int,
+	@WeekMonthDay int,
+	@XmlParameters ntext
+)
+AS
+
+-- check rights
+DECLARE @PackageID int
+SELECT @PackageID = PackageID FROM Schedule
+WHERE ScheduleID = @ScheduleID
+
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+BEGIN TRAN
+
+UPDATE Schedule
+SET
+	TaskID = @TaskID,
+	ScheduleName = @ScheduleName,
+	ScheduleTypeID = @ScheduleTypeID,
+	Interval = @Interval,
+	FromTime = @FromTime,
+	ToTime = @ToTime,
+	StartTime = @StartTime,
+	LastRun = @LastRun,
+	NextRun = @NextRun,
+	Enabled = @Enabled,
+	PriorityID = @PriorityID,
+	HistoriesNumber = @HistoriesNumber,
+	MaxExecutionTime = @MaxExecutionTime,
+	WeekMonthDay = @WeekMonthDay
+WHERE
+	ScheduleID = @ScheduleID
+
+DECLARE @idoc int
+--Create an internal representation of the XML document.
+EXEC sp_xml_preparedocument @idoc OUTPUT, @XmlParameters
+
+-- Execute a SELECT statement that uses the OPENXML rowset provider.
+DELETE FROM ScheduleParameters
+WHERE ScheduleID = @ScheduleID
+
+INSERT INTO ScheduleParameters
+(
+	ScheduleID,
+	ParameterID,
+	ParameterValue
+)
+SELECT
+	@ScheduleID,
+	ParameterID,
+	ParameterValue
+FROM OPENXML(@idoc, '/parameters/parameter',1) WITH 
+(
+	ParameterID nvarchar(50) '@id',
+	ParameterValue nvarchar(3000) '@value'
+) as PV
+
+-- remove document
+exec sp_xml_removedocument @idoc
+
+COMMIT TRAN
+RETURN
 				*/
 				#endregion
 
@@ -19242,6 +22941,33 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteSchedule]
+(
+	@ActorID int,
+	@ScheduleID int
+)
+AS
+
+-- check rights
+DECLARE @PackageID int
+SELECT @PackageID = PackageID FROM Schedule
+WHERE ScheduleID = @ScheduleID
+
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+BEGIN TRAN
+-- delete schedule parameters
+DELETE FROM ScheduleParameters
+WHERE ScheduleID = @ScheduleID
+
+-- delete schedule
+DELETE FROM Schedule
+WHERE ScheduleID = @ScheduleID
+
+COMMIT TRAN
+
+RETURN
 				*/
 				#endregion
 
@@ -19255,8 +22981,11 @@ RETURN
 			}
 		}
 
+		// TODO This rotuine is not present in the Stored Procedures
 		public DataSet GetScheduleHistories(int actorId, int scheduleId)
 		{
+			throw new NotImplementedException();
+
 			if (UseEntityFramework)
 			{
 				#region Stored Procedure
@@ -19275,6 +23004,8 @@ RETURN
 		}
 		public IDataReader GetScheduleHistory(int actorId, int scheduleHistoryId)
 		{
+			throw new NotImplementedException();
+
 			if (UseEntityFramework)
 			{
 				#region Stored Procedure
@@ -19371,6 +23102,43 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetComments]
+(
+	@ActorID int,
+	@UserID int,
+	@ItemTypeID varchar(50),
+	@ItemID int
+)
+AS
+
+-- check rights
+IF dbo.CheckActorUserRights(@ActorID, @UserID) = 0
+RAISERROR('You are not allowed to access this account', 16, 1)
+
+SELECT
+	C.CommentID,
+	C.ItemTypeID,
+	C.ItemID,
+	C.UserID,
+	C.CreatedDate,
+	C.CommentText,
+	C.SeverityID,
+
+	-- user
+	U.Username,
+	U.FirstName,
+	U.LastName,
+	U.FullName,
+	U.RoleID,
+	U.Email
+FROM Comments AS C
+INNER JOIN UsersDetailed AS U ON C.UserID = U.UserID
+WHERE
+	ItemTypeID = @ItemTypeID
+	AND ItemID = @ItemID
+	AND dbo.CheckUserParent(@UserID, C.UserID) = 1
+ORDER BY C.CreatedDate ASC
+RETURN
 				*/
 				#endregion
 
@@ -19393,7 +23161,34 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
-				*/
+CREATE PROCEDURE [dbo].[AddComment]
+(
+	@ActorID int,
+	@ItemTypeID varchar(50),
+	@ItemID int,
+	@CommentText nvarchar(1000),
+	@SeverityID int
+)
+AS
+INSERT INTO Comments
+(
+	ItemTypeID,
+	ItemID,
+	UserID,
+	CreatedDate,
+	CommentText,
+	SeverityID
+)
+VALUES
+(
+	@ItemTypeID,
+	@ItemID,
+	@ActorID,
+	GETDATE(),
+	@CommentText,
+	@SeverityID
+)
+RETURN				*/
 				#endregion
 
 			}
@@ -19415,6 +23210,27 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteComment]
+(
+	@ActorID int,
+	@CommentID int
+)
+AS
+
+-- check rights
+DECLARE @UserID int
+SELECT @UserID = UserID FROM Comments
+WHERE CommentID = @CommentID
+
+-- check rights
+IF dbo.CheckActorUserRights(@ActorID, @UserID) = 0
+RAISERROR('You are not allowed to perform this operation', 16, 1)
+
+-- delete comment
+DELETE FROM Comments
+WHERE CommentID = @CommentID
+
+RETURN
 				*/
 				#endregion
 
@@ -19511,7 +23327,7 @@ RETURN
 
 		public DataTable EntityDataTable<TEntity>(IEnumerable<TEntity> set) => ObjectUtils.DataTableFromEntitySet<TEntity>(set);
 		public DataSet EntityDataSet<TEntity>(IEnumerable<TEntity> set) => ObjectUtils.DataSetFromEntitySet<TEntity>(set);
-		public DataSet EntityDataSet(params object[] sets)
+		/* public DataSet EntityDataSet(params object[] sets)
 		{
 			var dataSet = new DataSet();
 			foreach (var set in sets)
@@ -19522,8 +23338,10 @@ RETURN
 					dataSet.Tables.Add(EntityDataTable(((IEnumerable)set).OfType<object>()));
 				}
 			}
-		}
-		public DataSet EntityDataSet(params DataTable[] tables) {
+		} */
+
+		public DataSet EntityDataSet(params DataTable[] tables)
+		{
 			var dataSet = new DataSet();
 			foreach (var table in tables) dataSet.Tables.Add(table);
 			return dataSet;
@@ -19553,6 +23371,54 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddExchangeAccount] 
+(
+	@AccountID int OUTPUT,
+	@ItemID int,
+	@AccountType int,
+	@AccountName nvarchar(300),
+	@DisplayName nvarchar(300),
+	@PrimaryEmailAddress nvarchar(300),
+	@MailEnabledPublicFolder bit,
+	@MailboxManagerActions varchar(200),
+	@SamAccountName nvarchar(100),
+	@MailboxPlanId int,
+	@SubscriberNumber nvarchar(32)
+)
+AS
+
+INSERT INTO ExchangeAccounts
+(
+	ItemID,
+	AccountType,
+	AccountName,
+	DisplayName,
+	PrimaryEmailAddress,
+	MailEnabledPublicFolder,
+	MailboxManagerActions,
+	SamAccountName,
+	MailboxPlanId,
+	SubscriberNumber,
+	UserPrincipalName
+)
+VALUES
+(
+	@ItemID,
+	@AccountType,
+	@AccountName,
+	@DisplayName,
+	@PrimaryEmailAddress,
+	@MailEnabledPublicFolder,
+	@MailboxManagerActions,
+	@SamAccountName,
+	@MailboxPlanId,
+	@SubscriberNumber,
+	@PrimaryEmailAddress
+)
+
+SET @AccountID = SCOPE_IDENTITY()
+
+RETURN
 				*/
 				#endregion
 
@@ -19588,6 +23454,23 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddExchangeAccountEmailAddress]
+(
+	@AccountID int,
+	@EmailAddress nvarchar(300)
+)
+AS
+INSERT INTO ExchangeAccountEmailAddresses
+(
+	AccountID,
+	EmailAddress
+)
+VALUES
+(
+	@AccountID,
+	@EmailAddress
+)
+RETURN
 				*/
 				#endregion
 
@@ -19609,6 +23492,22 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddExchangeOrganization]
+(
+	@ItemID int,
+	@OrganizationID nvarchar(128)
+)
+AS
+
+IF NOT EXISTS(SELECT * FROM ExchangeOrganizations WHERE OrganizationID = @OrganizationID)
+BEGIN
+	INSERT INTO ExchangeOrganizations
+	(ItemID, OrganizationID)
+	VALUES
+	(@ItemID, @OrganizationID)
+END
+
+RETURN
 				*/
 				#endregion
 
@@ -19630,6 +23529,18 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddExchangeOrganizationDomain]
+(
+	@ItemID int,
+	@DomainID int,
+	@IsHost bit
+)
+AS
+INSERT INTO ExchangeOrganizationDomains
+(ItemID, DomainID, IsHost)
+VALUES
+(@ItemID, @DomainID, @IsHost)
+RETURN
 				*/
 				#endregion
 
@@ -19652,6 +23563,17 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[ChangeExchangeAcceptedDomainType]
+(
+	@ItemID int,
+	@DomainID int,
+	@DomainTypeID int
+)
+AS
+UPDATE ExchangeOrganizationDomains
+SET DomainTypeID=@DomainTypeID
+WHERE ItemID=ItemID AND DomainID=@DomainID
+RETURN
 				*/
 				#endregion
 
@@ -19674,6 +23596,54 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetExchangeOrganizationStatistics] 
+(
+	@ItemID int
+)
+AS
+
+DECLARE @ARCHIVESIZE INT
+IF -1 in (SELECT B.ArchiveSizeMB FROM ExchangeAccounts AS A INNER JOIN ExchangeMailboxPlans AS B ON A.MailboxPlanId = B.MailboxPlanId WHERE A.ItemID=@ItemID)
+BEGIN
+	SET @ARCHIVESIZE = -1
+END
+ELSE
+BEGIN
+	SET @ARCHIVESIZE = (SELECT SUM(B.ArchiveSizeMB) FROM ExchangeAccounts AS A INNER JOIN ExchangeMailboxPlans AS B ON A.MailboxPlanId = B.MailboxPlanId WHERE A.ItemID=@ItemID AND A.AccountType in (1, 5, 6, 10, 12) AND B.EnableArchiving = 1)
+END
+
+IF -1 IN (SELECT B.MailboxSizeMB FROM ExchangeAccounts AS A INNER JOIN ExchangeMailboxPlans AS B ON A.MailboxPlanId = B.MailboxPlanId WHERE A.ItemID=@ItemID)
+BEGIN
+SELECT
+	(SELECT COUNT(*) FROM ExchangeAccounts WHERE (AccountType = 1) AND ItemID = @ItemID) AS CreatedMailboxes,
+	(SELECT COUNT(*) FROM ExchangeAccounts WHERE (AccountType = 10) AND ItemID = @ItemID) AS CreatedSharedMailboxes,
+	(SELECT COUNT(*) FROM ExchangeAccounts WHERE (AccountType = 5 OR AccountType = 6) AND ItemID = @ItemID) AS CreatedResourceMailboxes,
+	(SELECT COUNT(*) FROM ExchangeAccounts WHERE AccountType = 2 AND ItemID = @ItemID) AS CreatedContacts,
+	(SELECT COUNT(*) FROM ExchangeAccounts WHERE AccountType = 3 AND ItemID = @ItemID) AS CreatedDistributionLists,
+	(SELECT COUNT(*) FROM ExchangeAccounts WHERE AccountType = 4 AND ItemID = @ItemID) AS CreatedPublicFolders,
+	(SELECT COUNT(*) FROM ExchangeAccounts WHERE AccountType = 12 AND ItemID = @ItemID) AS CreatedJournalingMailboxes,
+	(SELECT COUNT(*) FROM ExchangeOrganizationDomains WHERE ItemID = @ItemID) AS CreatedDomains,
+	(SELECT MIN(B.MailboxSizeMB) FROM ExchangeAccounts AS A INNER JOIN ExchangeMailboxPlans AS B ON A.MailboxPlanId = B.MailboxPlanId WHERE A.ItemID=@ItemID AND A.AccountType in (1, 5, 6, 10, 12)) AS UsedDiskSpace,
+	(SELECT MIN(B.RecoverableItemsSpace) FROM ExchangeAccounts AS A INNER JOIN ExchangeMailboxPlans AS B ON A.MailboxPlanId = B.MailboxPlanId WHERE A.ItemID=@ItemID AND A.AccountType in (1, 5, 6, 10, 12) AND B.AllowLitigationHold = 1) AS UsedLitigationHoldSpace,
+	@ARCHIVESIZE AS UsedArchingStorage
+END
+ELSE
+BEGIN
+SELECT
+	(SELECT COUNT(*) FROM ExchangeAccounts WHERE (AccountType = 1) AND ItemID = @ItemID) AS CreatedMailboxes,
+	(SELECT COUNT(*) FROM ExchangeAccounts WHERE (AccountType = 10) AND ItemID = @ItemID) AS CreatedSharedMailboxes,
+	(SELECT COUNT(*) FROM ExchangeAccounts WHERE (AccountType = 5 OR AccountType = 6) AND ItemID = @ItemID) AS CreatedResourceMailboxes,
+	(SELECT COUNT(*) FROM ExchangeAccounts WHERE AccountType = 2 AND ItemID = @ItemID) AS CreatedContacts,
+	(SELECT COUNT(*) FROM ExchangeAccounts WHERE AccountType = 3 AND ItemID = @ItemID) AS CreatedDistributionLists,
+	(SELECT COUNT(*) FROM ExchangeAccounts WHERE AccountType = 4 AND ItemID = @ItemID) AS CreatedPublicFolders,
+	(SELECT COUNT(*) FROM ExchangeAccounts WHERE AccountType = 12 AND ItemID = @ItemID) AS CreatedJournalingMailboxes,
+	(SELECT COUNT(*) FROM ExchangeOrganizationDomains WHERE ItemID = @ItemID) AS CreatedDomains,
+	(SELECT SUM(B.MailboxSizeMB) FROM ExchangeAccounts AS A INNER JOIN ExchangeMailboxPlans AS B ON A.MailboxPlanId = B.MailboxPlanId WHERE A.ItemID=@ItemID AND A.AccountType in (1, 5, 6, 10, 12)) AS UsedDiskSpace,
+	(SELECT SUM(B.RecoverableItemsSpace) FROM ExchangeAccounts AS A INNER JOIN ExchangeMailboxPlans AS B ON A.MailboxPlanId = B.MailboxPlanId WHERE A.ItemID=@ItemID AND A.AccountType in (1, 5, 6, 10, 12) AND B.AllowLitigationHold = 1) AS UsedLitigationHoldSpace,
+	@ARCHIVESIZE AS UsedArchingStorage
+END
+
+RETURN
 				*/
 				#endregion
 
@@ -19694,6 +23664,20 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+-- =============================================
+-- Description:	Delete user email addresses except primary email
+-- =============================================
+CREATE PROCEDURE [dbo].[DeleteUserEmailAddresses]
+	@AccountId int,
+	@PrimaryEmailAddress nvarchar(300)
+AS
+BEGIN
+
+DELETE FROM
+	ExchangeAccountEmailAddresses
+WHERE
+	AccountID = @AccountID AND LOWER(EmailAddress) <> LOWER(@PrimaryEmailAddress)
+END
 				*/
 				#endregion
 
@@ -19715,6 +23699,22 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteExchangeAccount]
+(
+	@ItemID int,
+	@AccountID int
+)
+AS
+
+-- delete e-mail addresses
+DELETE FROM ExchangeAccountEmailAddresses
+WHERE AccountID = @AccountID
+
+-- delete account
+DELETE FROM ExchangeAccounts
+WHERE ItemID = @ItemID AND AccountID = @AccountID
+
+RETURN
 				*/
 				#endregion
 
@@ -19737,6 +23737,15 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteExchangeAccountEmailAddress]
+(
+	@AccountID int,
+	@EmailAddress nvarchar(300)
+)
+AS
+DELETE FROM ExchangeAccountEmailAddresses
+WHERE AccountID = @AccountID AND EmailAddress = @EmailAddress
+RETURN
 				*/
 				#endregion
 
@@ -19758,6 +23767,16 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteExchangeOrganization]
+(
+	@ItemID int
+)
+AS
+BEGIN TRAN
+	DELETE FROM ExchangeMailboxPlans WHERE ItemID = @ItemID
+	DELETE FROM ExchangeOrganizations WHERE ItemID = @ItemID
+COMMIT TRAN
+RETURN
 				*/
 				#endregion
 
@@ -19778,6 +23797,15 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteExchangeOrganizationDomain]
+(
+	@ItemID int,
+	@DomainID int
+)
+AS
+DELETE FROM ExchangeOrganizationDomains
+WHERE DomainID = @DomainID AND ItemID = @ItemID
+RETURN
 				*/
 				#endregion
 
@@ -19799,9 +23827,29 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[ExchangeAccountEmailAddressExists]
+(
+	@EmailAddress nvarchar(300),
+	@checkContacts bit,
+	@Exists bit OUTPUT
+)
+AS
+	SET @Exists = 0
+	IF EXISTS(SELECT * FROM [dbo].[ExchangeAccountEmailAddresses] WHERE [EmailAddress] = @EmailAddress)
+		BEGIN
+			SET @Exists = 1
+		END
+	ELSE IF EXISTS(SELECT * FROM [dbo].[ExchangeAccounts] WHERE [PrimaryEmailAddress] = @EmailAddress AND ([AccountType] <> 2 OR @checkContacts = 1))
+		BEGIN
+			SET @Exists = 1
+		END
+
+	RETURN
 				*/
 				#endregion
 
+				return ExchangeAccountEmailAddresses.Any(a => a.EmailAddress == emailAddress) ||
+					ExchangeAccounts.Any(a => a.PrimaryEmailAddress == emailAddress && (checkContacts || a.AccountType != 2));
 			}
 			else
 			{
@@ -19826,9 +23874,22 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[ExchangeOrganizationDomainExists]
+(
+	@DomainID int,
+	@Exists bit OUTPUT
+)
+AS
+SET @Exists = 0
+IF EXISTS(SELECT * FROM ExchangeOrganizationDomains WHERE DomainID = @DomainID)
+BEGIN
+	SET @Exists = 1
+END
+RETURN
 				*/
 				#endregion
 
+				return ExchangeOrganizationDomains.Any(d => d.DomainId == domainId);
 			}
 			else
 			{
@@ -19851,9 +23912,23 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[ExchangeOrganizationExists]
+(
+	@OrganizationID nvarchar(10),
+	@Exists bit OUTPUT
+)
+AS
+SET @Exists = 0
+IF EXISTS(SELECT * FROM ExchangeOrganizations WHERE OrganizationID = @OrganizationID)
+BEGIN
+	SET @Exists = 1
+END
+
+RETURN
 				*/
 				#endregion
 
+				return ExchangeOrganizations.Any(o => o.OrganizationId == organizationId);
 			}
 			else
 			{
@@ -19876,9 +23951,23 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[ExchangeAccountExists]
+(
+	@AccountName nvarchar(20),
+	@Exists bit OUTPUT
+)
+AS
+SET @Exists = 0
+IF EXISTS(SELECT * FROM ExchangeAccounts WHERE sAMAccountName LIKE '%\'+@AccountName)
+BEGIN
+	SET @Exists = 1
+END
+
+RETURN
 				*/
 				#endregion
 
+				return ExchangeAccounts.Any(a => a.SamAccountName.EndsWith($"\{accountName}"));
 			}
 			else
 			{
@@ -19904,6 +23993,55 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+-- Password column removed
+CREATE PROCEDURE [dbo].[UpdateExchangeAccount] 
+(
+	@AccountID int,
+	@AccountName nvarchar(300),
+	@DisplayName nvarchar(300),
+	@PrimaryEmailAddress nvarchar(300),
+	@AccountType int,
+	@SamAccountName nvarchar(100),
+	@MailEnabledPublicFolder bit,
+	@MailboxManagerActions varchar(200),
+	@MailboxPlanId int,
+	@ArchivingMailboxPlanId int,
+	@SubscriberNumber varchar(32),
+	@EnableArchiving bit
+)
+AS
+
+BEGIN TRAN	
+
+IF (@MailboxPlanId = -1) 
+BEGIN
+	SET @MailboxPlanId = NULL
+END
+
+UPDATE ExchangeAccounts SET
+	AccountName = @AccountName,
+	DisplayName = @DisplayName,
+	PrimaryEmailAddress = @PrimaryEmailAddress,
+	MailEnabledPublicFolder = @MailEnabledPublicFolder,
+	MailboxManagerActions = @MailboxManagerActions,	
+	AccountType =@AccountType,
+	SamAccountName = @SamAccountName,
+	MailboxPlanId = @MailboxPlanId,
+	SubscriberNumber = @SubscriberNumber,
+	ArchivingMailboxPlanId = @ArchivingMailboxPlanId,
+	EnableArchiving = @EnableArchiving
+
+WHERE
+	AccountID = @AccountID
+
+IF (@@ERROR <> 0 )
+	BEGIN
+		ROLLBACK TRANSACTION
+		RETURN -1
+	END
+
+COMMIT TRAN
+RETURN
 				*/
 				#endregion
 
@@ -19934,6 +24072,34 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdateExchangeAccountSLSettings]
+(
+	@AccountID int,
+	@LevelID int,
+	@IsVIP bit
+)
+AS
+
+BEGIN TRAN	
+
+	IF (@LevelID = -1) 
+	BEGIN
+		SET @LevelID = NULL
+	END
+
+	UPDATE ExchangeAccounts SET
+		LevelID = @LevelID,
+		IsVIP = @IsVIP
+	WHERE
+		AccountID = @AccountID
+
+	IF (@@ERROR <> 0 )
+		BEGIN
+			ROLLBACK TRANSACTION
+			RETURN -1
+		END
+COMMIT TRAN
+RETURN 
 				*/
 				#endregion
 
@@ -19956,9 +24122,29 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+ CREATE PROCEDURE [dbo].[UpdateExchangeAccountUserPrincipalName]
+(
+	@AccountID int,
+	@UserPrincipalName nvarchar(300)
+)
+AS
+
+UPDATE ExchangeAccounts SET
+	UserPrincipalName = @UserPrincipalName
+WHERE
+	AccountID = @AccountID
+
+RETURN
 				*/
 				#endregion
 
+				var account = ExchangeAccounts
+					.FirstOrDefault(a => a.AccountId == accountId);
+				if (account != null)
+				{
+					account.UserPrincipalName = userPrincipalName;
+					SaveChanges();
+				}
 			}
 			else
 			{
@@ -19976,6 +24162,40 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+-- Password column removed
+CREATE PROCEDURE [dbo].[GetExchangeAccount] 
+(
+	@ItemID int,
+	@AccountID int
+)
+AS
+SELECT
+	E.AccountID,
+	E.ItemID,
+	E.AccountType,
+	E.AccountName,
+	E.DisplayName,
+	E.PrimaryEmailAddress,
+	E.MailEnabledPublicFolder,
+	E.MailboxManagerActions,
+	E.SamAccountName,
+	E.MailboxPlanId,
+	P.MailboxPlan,
+	E.SubscriberNumber,
+	E.UserPrincipalName,
+	E.ArchivingMailboxPlanId, 
+	AP.MailboxPlan as 'ArchivingMailboxPlan',
+	E.EnableArchiving,
+	E.LevelID,
+	E.IsVIP
+FROM
+	ExchangeAccounts AS E
+LEFT OUTER JOIN ExchangeMailboxPlans AS P ON E.MailboxPlanId = P.MailboxPlanId	
+LEFT OUTER JOIN ExchangeMailboxPlans AS AP ON E.ArchivingMailboxPlanId = AP.MailboxPlanId
+WHERE
+	E.ItemID = @ItemID AND
+	E.AccountID = @AccountID
+RETURN
 				*/
 				#endregion
 
@@ -19996,6 +24216,38 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+-- Password column removed
+CREATE PROCEDURE [dbo].[GetExchangeAccountByAccountName] 
+(
+	@ItemID int,
+	@AccountName nvarchar(300)
+)
+AS
+SELECT
+	E.AccountID,
+	E.ItemID,
+	E.AccountType,
+	E.AccountName,
+	E.DisplayName,
+	E.PrimaryEmailAddress,
+	E.MailEnabledPublicFolder,
+	E.MailboxManagerActions,
+	E.SamAccountName,
+	E.MailboxPlanId,
+	P.MailboxPlan,
+	E.SubscriberNumber,
+	E.UserPrincipalName,
+	E.ArchivingMailboxPlanId, 
+	AP.MailboxPlan as 'ArchivingMailboxPlan',
+	E.EnableArchiving
+FROM
+	ExchangeAccounts AS E
+LEFT OUTER JOIN ExchangeMailboxPlans AS P ON E.MailboxPlanId = P.MailboxPlanId	
+LEFT OUTER JOIN ExchangeMailboxPlans AS AP ON E.ArchivingMailboxPlanId = AP.MailboxPlanId
+WHERE
+	E.ItemID = @ItemID AND
+	E.AccountName = @AccountName
+RETURN
 				*/
 				#endregion
 
@@ -20016,6 +24268,41 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetExchangeAccountByMailboxPlanId] 
+(
+	@ItemID int,
+	@MailboxPlanId int
+)
+AS
+
+IF (@MailboxPlanId < 0)
+BEGIN
+SELECT
+	E.AccountID,
+	E.ItemID,
+	E.AccountType,
+	E.AccountName,
+	E.DisplayName,
+	E.PrimaryEmailAddress,
+	E.MailEnabledPublicFolder,
+	E.MailboxManagerActions,
+	E.SamAccountName,
+	E.MailboxPlanId,
+	P.MailboxPlan,
+	E.SubscriberNumber,
+	E.UserPrincipalName,
+	E.ArchivingMailboxPlanId, 
+	AP.MailboxPlan as 'ArchivingMailboxPlan',
+	E.EnableArchiving
+FROM
+	ExchangeAccounts AS E
+LEFT OUTER JOIN ExchangeMailboxPlans AS P ON E.MailboxPlanId = P.MailboxPlanId	
+LEFT OUTER JOIN ExchangeMailboxPlans AS AP ON E.ArchivingMailboxPlanId = AP.MailboxPlanId
+WHERE
+	E.ItemID = @ItemID AND
+	E.MailboxPlanId IS NULL AND
+	E.AccountType IN (1,5,6,10,12) 
+RETURN
 				*/
 				#endregion
 
@@ -20037,9 +24324,27 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetExchangeAccountEmailAddresses]
+(
+	@AccountID int
+)
+AS
+SELECT
+	AddressID,
+	AccountID,
+	EmailAddress
+FROM
+	ExchangeAccountEmailAddresses
+WHERE
+	AccountID = @AccountID
+RETURN
 				*/
 				#endregion
 
+				var addresses = ExchangeAccountEmailAddresses
+					.Where(a => a.AccountId == accountId)
+					.Select(a => new { a.AddressId, a.AccountId, a.EmailAddress });
+				return EntityDataReader(addresses);
 			}
 			else
 			{
@@ -20056,6 +24361,21 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetExchangeOrganizationDomains]
+(
+	@ItemID int
+)
+AS
+SELECT
+	ED.DomainID,
+	D.DomainName,
+	ED.IsHost,
+	ED.DomainTypeID
+FROM
+	ExchangeOrganizationDomains AS ED
+INNER JOIN Domains AS D ON ED.DomainID = D.DomainID
+WHERE ED.ItemID = @ItemID
+RETURN
 				*/
 				#endregion
 
@@ -20076,6 +24396,32 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetExchangeAccounts]
+(
+	@ItemID int,
+	@AccountType int
+)
+AS
+SELECT
+	E.AccountID,
+	E.ItemID,
+	E.AccountType,
+	E.AccountName,
+	E.DisplayName,
+	E.PrimaryEmailAddress,
+	E.MailEnabledPublicFolder,
+	E.MailboxPlanId,
+	P.MailboxPlan,
+	E.SubscriberNumber,
+	E.UserPrincipalName
+FROM
+	ExchangeAccounts  AS E
+LEFT OUTER JOIN ExchangeMailboxPlans AS P ON E.MailboxPlanId = P.MailboxPlanId
+WHERE
+	E.ItemID = @ItemID AND
+	(E.AccountType = @AccountType OR @AccountType IS NULL)
+ORDER BY DisplayName
+RETURN
 				*/
 				#endregion
 
@@ -20096,6 +24442,35 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetExchangeAccountByAccountNameWithoutItemId] 
+(
+	@UserPrincipalName nvarchar(300)
+)
+AS
+SELECT
+	E.AccountID,
+	E.ItemID,
+	E.AccountType,
+	E.AccountName,
+	E.DisplayName,
+	E.PrimaryEmailAddress,
+	E.MailEnabledPublicFolder,
+	E.MailboxManagerActions,
+	E.SamAccountName,
+	E.MailboxPlanId,
+	P.MailboxPlan,
+	E.SubscriberNumber,
+	E.UserPrincipalName,
+	E.ArchivingMailboxPlanId, 
+	AP.MailboxPlan as 'ArchivingMailboxPlan',
+	E.EnableArchiving
+FROM
+	ExchangeAccounts AS E
+LEFT OUTER JOIN ExchangeMailboxPlans AS P ON E.MailboxPlanId = P.MailboxPlanId	
+LEFT OUTER JOIN ExchangeMailboxPlans AS AP ON E.ArchivingMailboxPlanId = AP.MailboxPlanId
+WHERE
+	E.UserPrincipalName = @UserPrincipalName
+RETURN
 				*/
 				#endregion
 
@@ -20116,6 +24491,28 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetExchangeMailboxes]
+	@ItemID int
+AS
+BEGIN
+SELECT
+	AccountID,
+	ItemID,
+	AccountType,
+	AccountName,
+	DisplayName,
+	PrimaryEmailAddress,
+	MailEnabledPublicFolder,
+	SubscriberNumber,
+	UserPrincipalName
+FROM
+	ExchangeAccounts
+WHERE
+	ItemID = @ItemID AND
+	(AccountType =1  OR AccountType=5 OR AccountType=6)
+ORDER BY 1
+
+END
 				*/
 				#endregion
 
@@ -20158,6 +24555,67 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[SearchExchangeAccountsByTypes]
+(
+	@ActorID int,
+	@ItemID int,
+	@AccountTypes nvarchar(30),
+	@FilterColumn nvarchar(50) = '',
+	@FilterValue nvarchar(50) = '',
+	@SortColumn nvarchar(50)
+)
+AS
+
+DECLARE @PackageID int
+SELECT @PackageID = PackageID FROM ServiceItems
+WHERE ItemID = @ItemID
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+DECLARE @condition nvarchar(700)
+SET @condition = 'EA.ItemID = @ItemID AND EA.AccountType IN (' + @AccountTypes + ')'
+
+IF @FilterColumn <> '' AND @FilterColumn IS NOT NULL
+AND @FilterValue <> '' AND @FilterValue IS NOT NULL
+BEGIN
+	IF @FilterColumn = 'PrimaryEmailAddress' AND @AccountTypes <> '2'
+	BEGIN		
+		SET @condition = @condition + ' AND EA.AccountID IN (SELECT EAEA.AccountID FROM ExchangeAccountEmailAddresses EAEA WHERE EAEA.EmailAddress LIKE ''' + @FilterValue + ''')'
+	END
+	ELSE
+	BEGIN		
+		SET @condition = @condition + ' AND ' + @FilterColumn + ' LIKE ''' + @FilterValue + ''''
+	END
+END
+
+IF @SortColumn IS NULL OR @SortColumn = ''
+SET @SortColumn = 'EA.DisplayName ASC'
+
+DECLARE @sql nvarchar(3500)
+SET @sql = '
+SELECT
+	EA.AccountID,
+	EA.ItemID,
+	EA.AccountType,
+	EA.AccountName,
+	EA.DisplayName,
+	EA.PrimaryEmailAddress,
+	EA.MailEnabledPublicFolder,
+	EA.MailboxPlanId,
+	P.MailboxPlan, 
+	EA.SubscriberNumber,
+	EA.UserPrincipalName
+FROM
+	ExchangeAccounts  AS EA
+LEFT OUTER JOIN ExchangeMailboxPlans AS P ON EA.MailboxPlanId = P.MailboxPlanId
+	WHERE ' + @condition
+	+ ' ORDER BY ' + @SortColumn
+
+EXEC sp_executesql @sql, N'@ItemID int', @ItemID
+
+RETURN
 				*/
 				#endregion
 
@@ -20207,6 +24665,93 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetExchangeAccountsPaged]
+(
+	@ActorID int,
+	@ItemID int,
+	@AccountTypes nvarchar(30),
+	@FilterColumn nvarchar(50) = '',
+	@FilterValue nvarchar(50) = '',
+	@SortColumn nvarchar(50),
+	@StartRow int,
+	@MaximumRows int,
+	@Archiving bit
+)
+AS
+
+DECLARE @PackageID int
+SELECT @PackageID = PackageID FROM ServiceItems
+WHERE ItemID = @ItemID
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+-- start
+DECLARE @condition nvarchar(700)
+SET @condition = '
+EA.AccountType IN (' + @AccountTypes + ')
+AND EA.ItemID = @ItemID
+'
+
+IF @FilterColumn <> '' AND @FilterColumn IS NOT NULL
+AND @FilterValue <> '' AND @FilterValue IS NOT NULL
+BEGIN
+	IF @FilterColumn = 'PrimaryEmailAddress' AND @AccountTypes <> '2'
+	BEGIN		
+		SET @condition = @condition + ' AND EA.AccountID IN (SELECT EAEA.AccountID FROM ExchangeAccountEmailAddresses EAEA WHERE EAEA.EmailAddress LIKE ''%' + @FilterValue + '%'')'
+	END
+	ELSE
+	BEGIN		
+		SET @condition = @condition + ' AND ' + @FilterColumn + ' LIKE ''%' + @FilterValue + '%'''
+	END
+END
+
+if @Archiving = 1
+BEGIN
+	SET @condition = @condition + ' AND (EA.ArchivingMailboxPlanId > 0) ' 
+END
+
+IF @SortColumn IS NULL OR @SortColumn = ''
+SET @SortColumn = 'EA.DisplayName ASC'
+
+DECLARE @joincondition nvarchar(700)
+	SET @joincondition = ',P.MailboxPlan FROM ExchangeAccounts AS EA
+	LEFT OUTER JOIN ExchangeMailboxPlans AS P ON EA.MailboxPlanId = P.MailboxPlanId'
+
+DECLARE @sql nvarchar(3500)
+
+set @sql = '
+SELECT COUNT(EA.AccountID) FROM ExchangeAccounts AS EA
+WHERE ' + @condition + ';
+
+WITH Accounts AS (
+	SELECT ROW_NUMBER() OVER (ORDER BY ' + @SortColumn + ') as Row,
+		EA.AccountID,
+		EA.ItemID,
+		EA.AccountType,
+		EA.AccountName,
+		EA.DisplayName,
+		EA.PrimaryEmailAddress,
+		EA.MailEnabledPublicFolder,
+		EA.MailboxPlanId,
+		EA.SubscriberNumber,
+		EA.UserPrincipalName,
+		EA.LevelID,
+		EA.IsVIP ' + @joincondition +
+	' WHERE ' + @condition + '
+)
+
+SELECT * FROM Accounts
+WHERE Row BETWEEN @StartRow + 1 and @StartRow + @MaximumRows
+'
+
+print @sql
+
+exec sp_executesql @sql, N'@ItemID int, @StartRow int, @MaximumRows int',
+@ItemID, @StartRow, @MaximumRows
+
+RETURN
 				*/
 				#endregion
 
@@ -20236,6 +24781,73 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[SearchExchangeAccounts]
+(
+	@ActorID int,
+	@ItemID int,
+	@IncludeMailboxes bit,
+	@IncludeContacts bit,
+	@IncludeDistributionLists bit,
+	@IncludeRooms bit,
+	@IncludeEquipment bit,
+	@IncludeSharedMailbox bit,
+	@IncludeSecurityGroups bit,
+	@FilterColumn nvarchar(50) = '',
+	@FilterValue nvarchar(50) = '',
+	@SortColumn nvarchar(50)
+)
+AS
+DECLARE @PackageID int
+SELECT @PackageID = PackageID FROM ServiceItems
+WHERE ItemID = @ItemID
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+-- start
+DECLARE @condition nvarchar(700)
+SET @condition = '
+((@IncludeMailboxes = 1 AND EA.AccountType = 1)
+OR (@IncludeContacts = 1 AND EA.AccountType = 2)
+OR (@IncludeDistributionLists = 1 AND EA.AccountType = 3)
+OR (@IncludeRooms = 1 AND EA.AccountType = 5)
+OR (@IncludeEquipment = 1 AND EA.AccountType = 6)
+OR (@IncludeSharedMailbox = 1 AND EA.AccountType = 10)
+OR (@IncludeSecurityGroups = 1 AND EA.AccountType = 8))
+AND EA.ItemID = @ItemID
+'
+
+IF @FilterColumn <> '' AND @FilterColumn IS NOT NULL
+AND @FilterValue <> '' AND @FilterValue IS NOT NULL
+SET @condition = @condition + ' AND ' + @FilterColumn + ' LIKE ''' + @FilterValue + ''''
+
+IF @SortColumn IS NULL OR @SortColumn = ''
+SET @SortColumn = 'EA.DisplayName ASC'
+
+DECLARE @sql nvarchar(3500)
+
+set @sql = '
+SELECT
+	EA.AccountID,
+	EA.ItemID,
+	EA.AccountType,
+	EA.AccountName,
+	EA.DisplayName,
+	EA.PrimaryEmailAddress,
+	EA.MailEnabledPublicFolder,
+	EA.SubscriberNumber,
+	EA.UserPrincipalName
+FROM ExchangeAccounts AS EA
+WHERE ' + @condition
+
+print @sql
+
+exec sp_executesql @sql, N'@ItemID int, @IncludeMailboxes int, @IncludeContacts int,
+    @IncludeDistributionLists int, @IncludeRooms bit, @IncludeEquipment bit, @IncludeSharedMailbox bit, @IncludeSecurityGroups bit',
+@ItemID, @IncludeMailboxes, @IncludeContacts, @IncludeDistributionLists, @IncludeRooms, @IncludeEquipment, @IncludeSharedMailbox, @IncludeSecurityGroups
+
+RETURN
 				*/
 				#endregion
 
@@ -20266,6 +24878,49 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[SearchExchangeAccount]
+(
+      @ActorID int,
+      @AccountType int,
+      @PrimaryEmailAddress nvarchar(300)
+)
+AS
+
+DECLARE @PackageID int
+DECLARE @ItemID int
+DECLARE @AccountID int
+
+SELECT
+      @AccountID = AccountID,
+      @ItemID = ItemID
+FROM ExchangeAccounts
+WHERE PrimaryEmailAddress = @PrimaryEmailAddress
+AND AccountType = @AccountType
+
+-- check space rights
+SELECT @PackageID = PackageID FROM ServiceItems
+WHERE ItemID = @ItemID
+
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+SELECT
+	AccountID,
+	ItemID,
+	@PackageID AS PackageID,
+	AccountType,
+	AccountName,
+	DisplayName,
+	PrimaryEmailAddress,
+	MailEnabledPublicFolder,
+	MailboxManagerActions,
+	SamAccountName,
+	SubscriberNumber,
+	UserPrincipalName
+FROM ExchangeAccounts
+WHERE AccountID = @AccountID
+
+RETURN 
 				*/
 				#endregion
 
@@ -20294,6 +24949,124 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddExchangeMailboxPlan] 
+(
+	@MailboxPlanId int OUTPUT,
+	@ItemID int,
+	@MailboxPlan	nvarchar(300),
+	@EnableActiveSync bit,
+	@EnableIMAP bit,
+	@EnableMAPI bit,
+	@EnableOWA bit,
+	@EnablePOP bit,
+	@EnableAutoReply bit,
+	@IsDefault bit,
+	@IssueWarningPct int,
+	@KeepDeletedItemsDays int,
+	@MailboxSizeMB int,
+	@MaxReceiveMessageSizeKB int,
+	@MaxRecipients int,
+	@MaxSendMessageSizeKB int,
+	@ProhibitSendPct int,
+	@ProhibitSendReceivePct int	,
+	@HideFromAddressBook bit,
+	@MailboxPlanType int,
+	@AllowLitigationHold bit,
+	@RecoverableItemsWarningPct int,
+	@RecoverableItemsSpace int,
+	@LitigationHoldUrl nvarchar(256),
+	@LitigationHoldMsg nvarchar(512),
+	@Archiving bit,
+	@EnableArchiving bit,
+	@ArchiveSizeMB int,
+	@ArchiveWarningPct int,
+	@EnableForceArchiveDeletion bit,
+	@IsForJournaling bit
+)
+AS
+
+IF (((SELECT Count(*) FROM ExchangeMailboxPlans WHERE ItemId = @ItemID) = 0) AND (@MailboxPlanType=0))
+BEGIN
+	SET @IsDefault = 1
+END
+ELSE
+BEGIN
+	IF ((@IsDefault = 1) AND (@MailboxPlanType=0))
+	BEGIN
+		UPDATE ExchangeMailboxPlans SET IsDefault = 0 WHERE ItemID = @ItemID
+	END
+END
+
+INSERT INTO ExchangeMailboxPlans
+(
+	ItemID,
+	MailboxPlan,
+	EnableActiveSync,
+	EnableIMAP,
+	EnableMAPI,
+	EnableOWA,
+	EnablePOP,
+	EnableAutoReply,
+	IsDefault,
+	IssueWarningPct,
+	KeepDeletedItemsDays,
+	MailboxSizeMB,
+	MaxReceiveMessageSizeKB,
+	MaxRecipients,
+	MaxSendMessageSizeKB,
+	ProhibitSendPct,
+	ProhibitSendReceivePct,
+	HideFromAddressBook,
+	MailboxPlanType,
+	AllowLitigationHold,
+	RecoverableItemsWarningPct,
+	RecoverableItemsSpace,
+	LitigationHoldUrl,
+	LitigationHoldMsg,
+	Archiving,
+	EnableArchiving,
+	ArchiveSizeMB,
+	ArchiveWarningPct,
+	EnableForceArchiveDeletion,
+	IsForJournaling
+)
+VALUES
+(
+	@ItemID,
+	@MailboxPlan,
+	@EnableActiveSync,
+	@EnableIMAP,
+	@EnableMAPI,
+	@EnableOWA,
+	@EnablePOP,
+	@EnableAutoReply,
+	@IsDefault,
+	@IssueWarningPct,
+	@KeepDeletedItemsDays,
+	@MailboxSizeMB,
+	@MaxReceiveMessageSizeKB,
+	@MaxRecipients,
+	@MaxSendMessageSizeKB,
+	@ProhibitSendPct,
+	@ProhibitSendReceivePct,
+	@HideFromAddressBook,
+	@MailboxPlanType,
+	@AllowLitigationHold,
+	@RecoverableItemsWarningPct,
+	@RecoverableItemsSpace,
+	@LitigationHoldUrl,
+	@LitigationHoldMsg,
+	@Archiving,
+	@EnableArchiving,
+	@ArchiveSizeMB,
+	@ArchiveWarningPct,
+	@EnableForceArchiveDeletion,
+	@IsForJournaling
+)
+
+SET @MailboxPlanId = SCOPE_IDENTITY()
+
+RETURN
 				*/
 				#endregion
 
@@ -20353,6 +25126,74 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdateExchangeMailboxPlan] 
+(
+	@MailboxPlanId int,
+	@MailboxPlan	nvarchar(300),
+	@EnableActiveSync bit,
+	@EnableIMAP bit,
+	@EnableMAPI bit,
+	@EnableOWA bit,
+	@EnablePOP bit,
+	@EnableAutoReply bit,
+	@IsDefault bit,
+	@IssueWarningPct int,
+	@KeepDeletedItemsDays int,
+	@MailboxSizeMB int,
+	@MaxReceiveMessageSizeKB int,
+	@MaxRecipients int,
+	@MaxSendMessageSizeKB int,
+	@ProhibitSendPct int,
+	@ProhibitSendReceivePct int	,
+	@HideFromAddressBook bit,
+	@MailboxPlanType int,
+	@AllowLitigationHold bit,
+	@RecoverableItemsWarningPct int,
+	@RecoverableItemsSpace int,
+	@LitigationHoldUrl nvarchar(256),
+	@LitigationHoldMsg nvarchar(512),
+	@Archiving bit,
+	@EnableArchiving bit,
+	@ArchiveSizeMB int,
+	@ArchiveWarningPct int,
+	@EnableForceArchiveDeletion bit,
+	@IsForJournaling bit
+)
+AS
+
+UPDATE ExchangeMailboxPlans SET
+	MailboxPlan = @MailboxPlan,
+	EnableActiveSync = @EnableActiveSync,
+	EnableIMAP = @EnableIMAP,
+	EnableMAPI = @EnableMAPI,
+	EnableOWA = @EnableOWA,
+	EnablePOP = @EnablePOP,
+	EnableAutoReply = @EnableAutoReply,
+	IsDefault = @IsDefault,
+	IssueWarningPct= @IssueWarningPct,
+	KeepDeletedItemsDays = @KeepDeletedItemsDays,
+	MailboxSizeMB= @MailboxSizeMB,
+	MaxReceiveMessageSizeKB= @MaxReceiveMessageSizeKB,
+	MaxRecipients= @MaxRecipients,
+	MaxSendMessageSizeKB= @MaxSendMessageSizeKB,
+	ProhibitSendPct= @ProhibitSendPct,
+	ProhibitSendReceivePct = @ProhibitSendReceivePct,
+	HideFromAddressBook = @HideFromAddressBook,
+	MailboxPlanType = @MailboxPlanType,
+	AllowLitigationHold = @AllowLitigationHold,
+	RecoverableItemsWarningPct = @RecoverableItemsWarningPct,
+	RecoverableItemsSpace = @RecoverableItemsSpace, 
+	LitigationHoldUrl = @LitigationHoldUrl,
+	LitigationHoldMsg = @LitigationHoldMsg,
+	Archiving = @Archiving,
+	EnableArchiving = @EnableArchiving,
+	ArchiveSizeMB = @ArchiveSizeMB,
+	ArchiveWarningPct = @ArchiveWarningPct,
+	EnableForceArchiveDeletion = @EnableForceArchiveDeletion,
+	IsForJournaling = @IsForJournaling
+WHERE MailboxPlanId = @MailboxPlanId
+
+RETURN
 				*/
 				#endregion
 
@@ -20402,9 +25243,21 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteExchangeMailboxPlan]
+(
+	@MailboxPlanId int
+)
+AS
+
+-- delete mailboxplan
+DELETE FROM ExchangeMailboxPlans
+WHERE MailboxPlanId = @MailboxPlanId
+
+RETURN
 				*/
 				#endregion
 
+				ExchangeMailboxPlans.Where(p => p.MailboxPlanId == mailboxPlanId).ExecuteDelete(ExchangeMailboxPlans);
 			}
 			else
 			{
@@ -20422,6 +25275,48 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetExchangeMailboxPlan] 
+(
+	@MailboxPlanId int
+)
+AS
+SELECT
+	MailboxPlanId,
+	ItemID,
+	MailboxPlan,
+	EnableActiveSync,
+	EnableIMAP,
+	EnableMAPI,
+	EnableOWA,
+	EnablePOP,
+	EnableAutoReply,
+	IsDefault,
+	IssueWarningPct,
+	KeepDeletedItemsDays,
+	MailboxSizeMB,
+	MaxReceiveMessageSizeKB,
+	MaxRecipients,
+	MaxSendMessageSizeKB,
+	ProhibitSendPct,
+	ProhibitSendReceivePct,
+	HideFromAddressBook,
+	MailboxPlanType,
+	AllowLitigationHold,
+	RecoverableItemsWarningPct,
+	RecoverableItemsSpace,
+	LitigationHoldUrl,
+	LitigationHoldMsg,
+	Archiving,
+	EnableArchiving,
+	ArchiveSizeMB,
+	ArchiveWarningPct,
+	EnableForceArchiveDeletion,
+	IsForJournaling
+FROM
+	ExchangeMailboxPlans
+WHERE
+	MailboxPlanId = @MailboxPlanId
+RETURN
 				*/
 				#endregion
 
@@ -20442,6 +25337,46 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetExchangeMailboxPlans]
+(
+	@ItemID int,
+	@Archiving bit
+)
+AS
+SELECT
+	MailboxPlanId,
+	ItemID,
+	MailboxPlan,
+	EnableActiveSync,
+	EnableIMAP,
+	EnableMAPI,
+	EnableOWA,
+	EnablePOP,
+	EnableAutoReply,
+	IsDefault,
+	IssueWarningPct,
+	KeepDeletedItemsDays,
+	MailboxSizeMB,
+	MaxReceiveMessageSizeKB,
+	MaxRecipients,
+	MaxSendMessageSizeKB,
+	ProhibitSendPct,
+	ProhibitSendReceivePct,
+	HideFromAddressBook,
+	MailboxPlanType,
+	Archiving,
+	EnableArchiving,
+	ArchiveSizeMB,
+	ArchiveWarningPct,
+	EnableForceArchiveDeletion,
+	IsForJournaling
+FROM
+	ExchangeMailboxPlans
+WHERE
+	ItemID = @ItemID 
+AND ((Archiving=@Archiving) OR ((@Archiving=0) AND (Archiving IS NULL)))
+ORDER BY MailboxPlan
+RETURN
 				*/
 				#endregion
 
@@ -20463,6 +25398,21 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetExchangeOrganization]
+(
+	@ItemID int
+)
+AS
+SELECT
+	ItemID,
+	ExchangeMailboxPlanID,
+	LyncUserPlanID,
+	SfBUserPlanID
+FROM
+	ExchangeOrganizations
+WHERE
+	ItemID = @ItemID
+RETURN
 				*/
 				#endregion
 
@@ -20483,6 +25433,19 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[SetOrganizationDefaultExchangeMailboxPlan]
+(
+	@ItemID int,
+	@MailboxPlanId int
+)
+AS
+
+UPDATE ExchangeOrganizations SET
+	ExchangeMailboxPlanID = @MailboxPlanId
+WHERE
+	ItemID = @ItemID
+
+RETURN
 				*/
 				#endregion
 
@@ -20504,6 +25467,23 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[SetExchangeAccountMailboxplan] 
+(
+	@AccountID int,
+	@MailboxPlanId int,
+	@ArchivingMailboxPlanId int,
+	@EnableArchiving bit
+)
+AS
+
+UPDATE ExchangeAccounts SET
+	MailboxPlanId = @MailboxPlanId,
+	ArchivingMailboxPlanId = @ArchivingMailboxPlanId,
+	EnableArchiving = @EnableArchiving
+WHERE
+	AccountID = @AccountID
+
+RETURN
 				*/
 				#endregion
 
@@ -20529,6 +25509,38 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddExchangeRetentionPolicyTag] 
+(
+	@TagID int OUTPUT,
+	@ItemID int,
+	@TagName nvarchar(255),
+	@TagType int,
+	@AgeLimitForRetention int,
+	@RetentionAction int
+)
+AS
+BEGIN
+
+INSERT INTO ExchangeRetentionPolicyTags
+(
+	ItemID,
+	TagName,
+	TagType,
+	AgeLimitForRetention,
+	RetentionAction
+)
+VALUES
+(
+	@ItemID,
+	@TagName,
+	@TagType,
+	@AgeLimitForRetention,
+	@RetentionAction
+)
+
+SET @TagID = SCOPE_IDENTITY()
+
+RETURN
 				*/
 				#endregion
 
@@ -20559,6 +25571,26 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdateExchangeRetentionPolicyTag] 
+(
+	@TagID int,
+	@ItemID int,
+	@TagName nvarchar(255),
+	@TagType int,
+	@AgeLimitForRetention int,
+	@RetentionAction int
+)
+AS
+
+UPDATE ExchangeRetentionPolicyTags SET
+	ItemID = @ItemID,
+	TagName = @TagName,
+	TagType = @TagType,
+	AgeLimitForRetention = @AgeLimitForRetention,
+	RetentionAction = @RetentionAction
+WHERE TagID = @TagID
+
+RETURN
 				*/
 				#endregion
 
@@ -20584,9 +25616,19 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteExchangeRetentionPolicyTag]
+(
+        @TagID int
+)
+AS
+DELETE FROM ExchangeRetentionPolicyTags
+WHERE
+	TagID = @TagID
+RETURN
 				*/
 				#endregion
 
+				ExchangeRetentionPolicyTags.Where(t => t.TagId == TagID).ExecuteDelete();
 			}
 			else
 			{
@@ -20604,6 +25646,23 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetExchangeRetentionPolicyTag] 
+(
+	@TagID int
+)
+AS
+SELECT
+	TagID,
+	ItemID,
+	TagName,
+	TagType,
+	AgeLimitForRetention,
+	RetentionAction
+FROM
+	ExchangeRetentionPolicyTags
+WHERE
+	TagID = @TagID
+RETURN
 				*/
 				#endregion
 
@@ -20624,7 +25683,24 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
-				*/
+CREATE PROCEDURE [dbo].[GetExchangeRetentionPolicyTags]
+(
+	@ItemID int
+)
+AS
+SELECT
+	TagID,
+	ItemID,
+	TagName,
+	TagType,
+	AgeLimitForRetention,
+	RetentionAction
+FROM
+	ExchangeRetentionPolicyTags
+WHERE
+	ItemID = @ItemID 
+ORDER BY TagName
+RETURN				*/
 				#endregion
 
 			}
@@ -20644,6 +25720,29 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddExchangeMailboxPlanRetentionPolicyTag] 
+(
+	@PlanTagID int OUTPUT,
+	@TagID int,
+	@MailboxPlanId int
+)
+AS
+BEGIN
+
+INSERT INTO ExchangeMailboxPlanRetentionPolicyTags
+(
+	TagID,
+	MailboxPlanId
+)
+VALUES
+(
+	@TagID,
+	@MailboxPlanId
+)
+
+SET @PlanTagID = SCOPE_IDENTITY()
+
+RETURN
 				*/
 				#endregion
 
@@ -20670,9 +25769,20 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteExchangeMailboxPlanRetentionPolicyTag]
+(
+        @PlanTagID int
+)
+AS
+DELETE FROM ExchangeMailboxPlanRetentionPolicyTags
+WHERE
+	PlanTagID = @PlanTagID
+RETURN
 				*/
 				#endregion
 
+				ExchangeMailboxPlanRetentionPolicyTags.Where(t => t.PlanTagId == PlanTagID)
+					.ExecuteDelete(ExchangeMailboxPlanRetentionPolicyTags);
 			}
 			else
 			{
@@ -20690,7 +25800,25 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
-				*/
+CREATE PROCEDURE [dbo].[GetExchangeMailboxPlanRetentionPolicyTags]
+(
+	@MailboxPlanId int
+)
+AS
+SELECT
+	D.PlanTagID,
+	D.TagID,
+	D.MailboxPlanId,
+	P.MailboxPlan,
+	T.TagName
+FROM
+	ExchangeMailboxPlanRetentionPolicyTags AS D
+LEFT OUTER JOIN ExchangeMailboxPlans AS P ON P.MailboxPlanId = D.MailboxPlanId	
+LEFT OUTER JOIN ExchangeRetentionPolicyTags AS T ON T.TagID = D.TagID	
+WHERE
+	D.MailboxPlanId = @MailboxPlanId 
+RETURN
+			*/
 				#endregion
 
 			}
@@ -20712,9 +25840,42 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddExchangeDisclaimer] 
+(
+	@ExchangeDisclaimerId int OUTPUT,
+	@ItemID int,
+	@DisclaimerName	nvarchar(300),
+	@DisclaimerText	nvarchar(MAX)
+)
+AS
+
+INSERT INTO ExchangeDisclaimers
+(
+	ItemID,
+	DisclaimerName,
+	DisclaimerText
+)
+VALUES
+(
+	@ItemID,
+	@DisclaimerName,
+	@DisclaimerText
+)
+
+SET @ExchangeDisclaimerId = SCOPE_IDENTITY()
+
+RETURN
 				*/
 				#endregion
 
+				var d = new Data.Entities.ExchangeDisclaimer()
+				{
+					ItemId = itemID,
+					DisclaimerName = disclaimer.DisclaimerName,
+					DisclaimerText = disclaimer.DisclaimerText
+				};
+				ExchangeDisclaimers.Add(d);
+				SaveChanges();
 			}
 			else
 			{
@@ -20740,6 +25901,21 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+ CREATE PROCEDURE [dbo].[UpdateExchangeDisclaimer] 
+(
+	@ExchangeDisclaimerId int,
+	@DisclaimerName nvarchar(300),
+	@DisclaimerText nvarchar(MAX)
+)
+AS
+
+UPDATE ExchangeDisclaimers SET
+	DisclaimerName = @DisclaimerName,
+	DisclaimerText = @DisclaimerText
+
+WHERE ExchangeDisclaimerId = @ExchangeDisclaimerId
+
+RETURN
 				*/
 				#endregion
 
@@ -20762,9 +25938,20 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteExchangeDisclaimer]
+(
+	@ExchangeDisclaimerId int
+)
+AS
+
+DELETE FROM ExchangeDisclaimers
+WHERE ExchangeDisclaimerId = @ExchangeDisclaimerId
+
+RETURN
 				*/
 				#endregion
 
+				ExchangeDisclaimers.Where(d => d.ExchangeDisclaimerId == exchangeDisclaimerId).ExecuteDelete(ExchangeDisclaimers);
 			}
 			else
 			{
@@ -20782,9 +25969,31 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetExchangeDisclaimer] 
+(
+	@ExchangeDisclaimerId int
+)
+AS
+SELECT
+	ExchangeDisclaimerId,
+	ItemID,
+	DisclaimerName,
+	DisclaimerText
+FROM
+	ExchangeDisclaimers
+WHERE
+	ExchangeDisclaimerId = @ExchangeDisclaimerId
+RETURN
 				*/
 				#endregion
 
+				var disclaimers = ExchangeDisclaimers
+					.Where(d => d.ExchangeDisclaimerId == exchangeDisclaimerId)
+					.Select(d => new
+					{
+						d.ExchangeDisclaimerId, d.ItemId, d.DisclaimerName, d.DisclaimerText
+					});
+				return EntityDataReader(disclaimers);
 			}
 			else
 			{
@@ -20802,8 +26011,36 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetExchangeDisclaimers]
+(
+	@ItemID int
+)
+AS
+SELECT
+	ExchangeDisclaimerId,
+	ItemID,
+	DisclaimerName,
+	DisclaimerText
+FROM
+	ExchangeDisclaimers
+WHERE
+	ItemID = @ItemID 
+ORDER BY DisclaimerName
+RETURN
 				*/
 				#endregion
+
+				var disclaimers = ExchangeDisclaimers
+					.Where(d => d.ItemId == itemId)
+					.Select(d => new
+					{
+						d.ExchangeDisclaimerId,
+						d.ItemId,
+						d.DisclaimerName,
+						d.DisclaimerText
+					})
+					.OrderBy(d => d.DisclaimerName);
+				return EntityDataReader(disclaimers);
 
 			}
 			else
@@ -20822,9 +26059,28 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+ CREATE PROCEDURE [dbo].[SetExchangeAccountDisclaimerId] 
+(
+	@AccountID int,
+	@ExchangeDisclaimerId int
+)
+AS
+UPDATE ExchangeAccounts SET
+	ExchangeDisclaimerId = @ExchangeDisclaimerId
+WHERE AccountID = @AccountID
+
+RETURN
 				*/
 				#endregion
 
+#if NETCOREAPP
+				ExchangeAccounts.Where(a => a.AccountId == AccountID).ExecuteUpdate(e => e.SetProperty(p => p.ExchangeDisclaimerId, ExchangeDisclaimerId));
+#else
+				var account = ExchangeAccounts
+					.FirstOrDefault(a => a.AccountId == AccountID);
+				account.ExchangeDisclaimerId = ExchangeDisclaimerId;
+				SaveChanges();
+#endif
 			}
 			else
 			{
@@ -20846,9 +26102,25 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetExchangeAccountDisclaimerId] 
+(
+	@AccountID int
+)
+AS
+SELECT
+	ExchangeDisclaimerId
+FROM
+	ExchangeAccounts
+WHERE
+	AccountID= @AccountID
+RETURN
 				*/
 				#endregion
 
+				return ExchangeAccounts
+					.Where(a => a.AccountId == AccountID)
+					.Select(a => a.ExchangeDisclaimerId)
+					.FirstOrDefault() ?? -1;
 			}
 			else
 			{
@@ -20863,7 +26135,7 @@ RETURN
 				return ret;
 			}
 		}
-		#endregion
+#endregion
 
 		#region Organizations
 
@@ -20878,6 +26150,36 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddAccessToken]
+(
+	@TokenID INT OUTPUT,
+	@AccessToken UNIQUEIDENTIFIER,
+	@ExpirationDate DATETIME,
+	@AccountID INT,
+	@ItemId INT,
+	@TokenType INT
+)
+AS
+INSERT INTO AccessTokens
+(
+	AccessTokenGuid,
+	ExpirationDate,
+	AccountID  ,
+	ItemId,
+	TokenType
+)
+VALUES
+(
+	@AccessToken  ,
+	@ExpirationDate ,
+	@AccountID,
+	@ItemId,
+	@TokenType
+)
+
+SET @TokenID = SCOPE_IDENTITY()
+
+RETURN
 				*/
 				#endregion
 
@@ -20909,6 +26211,14 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[SetAccessTokenSmsResponse]
+(
+	@AccessToken UNIQUEIDENTIFIER,
+	@SmsResponse varchar(100)
+)
+AS
+UPDATE [dbo].[AccessTokens] SET [SmsResponse] = @SmsResponse WHERE [AccessTokenGuid] = @AccessToken
+RETURN
 				*/
 				#endregion
 
@@ -20930,9 +26240,15 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteExpiredAccessTokenTokens]
+AS
+DELETE FROM AccessTokens
+WHERE ExpirationDate < getdate()
 				*/
 				#endregion
 
+				var now = DateTime.Now;
+				AccessTokens.Where(t => t.ExpirationDate < now).ExecuteDelete(AccessTokens);
 			}
 			else
 			{
@@ -20949,6 +26265,22 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetAccessTokenByAccessToken]
+(
+	@AccessToken UNIQUEIDENTIFIER,
+	@TokenType INT
+)
+AS
+SELECT 
+	ID ,
+	AccessTokenGuid,
+	ExpirationDate,
+	AccountID,
+	ItemId,
+	TokenType,
+	SmsResponse
+FROM AccessTokens 
+Where AccessTokenGuid = @AccessToken AND ExpirationDate > getdate() AND TokenType = @TokenType
 				*/
 				#endregion
 
@@ -20970,9 +26302,18 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteAccessToken]
+(
+	@AccessToken UNIQUEIDENTIFIER,
+	@TokenType INT
+)
+AS
+DELETE FROM AccessTokens
+WHERE AccessTokenGuid = @AccessToken AND TokenType = @TokenType
 				*/
 				#endregion
 
+				AccessTokens.Where(a => a.AccessTokenGuid == accessToken && a.TokenType == type).ExecuteDelete(AccessTokens);
 			}
 			else
 			{
@@ -20991,6 +26332,19 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdateExchangeOrganizationSettings]
+(
+	@ItemId INT ,
+	@SettingsName nvarchar(100) ,
+	@Xml nvarchar(max)
+)
+AS
+IF NOT EXISTS (SELECT * FROM [dbo].[ExchangeOrganizationSettings] WHERE [ItemId] = @ItemId AND [SettingsName]= @SettingsName )
+BEGIN
+INSERT [dbo].[ExchangeOrganizationSettings] ([ItemId], [SettingsName], [Xml]) VALUES (@ItemId, @SettingsName, @Xml)
+END
+ELSE
+UPDATE [dbo].[ExchangeOrganizationSettings] SET [Xml] = @Xml WHERE [ItemId] = @ItemId AND [SettingsName]= @SettingsName
 				*/
 				#endregion
 
@@ -21011,6 +26365,19 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetExchangeOrganizationSettings]
+(
+	@ItemId INT ,
+	@SettingsName nvarchar(100)
+)
+AS
+SELECT 
+	ItemId,
+	SettingsName,
+	Xml
+
+FROM ExchangeOrganizationSettings 
+Where ItemId = @ItemId AND SettingsName = @SettingsName
 				*/
 				#endregion
 
@@ -21030,6 +26397,40 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddOrganizationDeletedUser] 
+(
+	@ID int OUTPUT,
+	@AccountID int,
+	@OriginAT int,
+	@StoragePath nvarchar(255),
+	@FolderName nvarchar(128),
+	@FileName nvarchar(128),
+	@ExpirationDate datetime
+)
+AS
+
+INSERT INTO ExchangeDeletedAccounts
+(
+	AccountID,
+	OriginAT,
+	StoragePath,
+	FolderName,
+	FileName,
+	ExpirationDate
+)
+VALUES
+(
+	@AccountID,
+	@OriginAT,
+	@StoragePath,
+	@FolderName,
+	@FileName,
+	@ExpirationDate
+)
+
+SET @ID = SCOPE_IDENTITY()
+
+RETURN
 				*/
 				#endregion
 
@@ -21061,9 +26462,17 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteOrganizationDeletedUser]
+(
+	@ID int
+)
+AS
+DELETE FROM	ExchangeDeletedAccounts WHERE AccountID = @ID
+RETURN
 				*/
 				#endregion
 
+				ExchangeDeletedAccounts.Where(a => a.AccountId == id).ExecuteDelete(ExchangeDeletedAccounts);
 			}
 			else
 			{
@@ -21080,6 +26489,23 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetOrganizationDeletedUser]
+(
+	@AccountID int
+)
+AS
+SELECT
+	EDA.AccountID,
+	EDA.OriginAT,
+	EDA.StoragePath,
+	EDA.FolderName,
+	EDA.FileName,
+	EDA.ExpirationDate
+FROM
+	ExchangeDeletedAccounts AS EDA
+WHERE
+	EDA.AccountID = @AccountID
+RETURN
 				*/
 				#endregion
 
@@ -21100,9 +26526,24 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetAdditionalGroups]
+(
+	@UserID INT
+)
+AS
+
+SELECT
+	AG.ID,
+	AG.UserID,
+	AG.GroupName
+FROM AdditionalGroups AS AG
+WHERE AG.UserID = @UserID
 				*/
 				#endregion
 
+				var groups = AdditionalGroups
+					.Where(g => g.UserId == userId);
+				return EntityDataReader(groups);
 			}
 			else
 			{
@@ -21120,9 +26561,38 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddAdditionalGroup]
+(
+	@GroupID INT OUTPUT,
+	@UserID INT,
+	@GroupName NVARCHAR(255)
+)
+AS
+
+INSERT INTO AdditionalGroups
+(
+	UserID,
+	GroupName
+)
+VALUES
+(
+	@UserID,
+	@GroupName
+)
+
+SET @GroupID = SCOPE_IDENTITY()
+
+RETURN
 				*/
 				#endregion
 
+				var group = new Data.Entities.AdditionalGroup() {
+					UserId = userId,
+					GroupName = groupName
+				};
+				AdditionalGroups.Add(group);
+				SaveChanges();
+				return group.Id;
 			}
 			else
 			{
@@ -21148,9 +26618,18 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteAdditionalGroup]
+(
+	@GroupID INT
+)
+AS
+
+DELETE FROM AdditionalGroups
+WHERE ID = @GroupID
 				*/
 				#endregion
 
+				AdditionalGroups.Where(a => a.Id == groupId).ExecuteDelete(AdditionalGroups);
 			}
 			else
 			{
@@ -21167,9 +26646,27 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdateAdditionalGroup]
+(
+	@GroupID INT,
+	@GroupName NVARCHAR(255)
+)
+AS
+
+UPDATE AdditionalGroups SET
+	GroupName = @GroupName
+WHERE ID = @GroupID
 				*/
 				#endregion
-
+#if NETCOREAPP
+				AdditionalGroups.Where(a => a.Id == groupId).ExecuteUpdate(e => e.SetProperty(p => p.GroupName, groupName));
+#else
+				var group = AdditionalGroups.FirstOrDefault(a => a.Id == groupId);
+				if (group != null) {
+					group.GroupName = groupName;
+					SaveChanges();
+				}
+#endif
 			}
 			else
 			{
@@ -21187,9 +26684,18 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteOrganizationUsers]
+	@ItemID int
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+    DELETE FROM ExchangeAccounts WHERE ItemID = @ItemID
+END
 				*/
 				#endregion
 
+				ExchangeAccounts.Where(a => a.ItemId == itemId).ExecuteDelete(ExchangeAccounts);
 			}
 			else
 			{
@@ -21204,9 +26710,25 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
-				*/
+CREATE PROCEDURE [dbo].[GetItemIdByOrganizationId]
+	@OrganizationId nvarchar(128)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	SELECT
+		ItemID
+	FROM
+		dbo.ExchangeOrganizations
+	WHERE
+		OrganizationId = @OrganizationId
+END				*/
 				#endregion
 
+				return ExchangeOrganizations
+					.Where(a => a.OrganizationId == id)
+					.Select(a => a.ItemId)
+					.FirstOrDefault() ?? 0;
 			}
 			else
 			{
@@ -21223,6 +26745,17 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetOrganizationStatistics]
+(
+	@ItemID int
+)
+AS
+SELECT
+	(SELECT COUNT(*) FROM ExchangeAccounts WHERE (AccountType = 7 OR AccountType = 1 OR AccountType = 6 OR AccountType = 5)  AND ItemID = @ItemID) AS CreatedUsers,
+	(SELECT COUNT(*) FROM ExchangeOrganizationDomains WHERE ItemID = @ItemID) AS CreatedDomains,
+	(SELECT COUNT(*) FROM ExchangeAccounts WHERE (AccountType = 8 OR AccountType = 9)  AND ItemID = @ItemID) AS CreatedGroups,
+	(SELECT COUNT(*) FROM ExchangeAccounts WHERE AccountType = 11  AND ItemID = @ItemID) AS DeletedUsers
+RETURN
 				*/
 				#endregion
 
@@ -21243,6 +26776,24 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetOrganizationGroupsByDisplayName]
+(
+	@ItemID int,
+	@DisplayName NVARCHAR(255)
+)
+AS
+SELECT
+	AccountID,
+	ItemID,
+	AccountType,
+	AccountName,
+	DisplayName,
+	UserPrincipalName
+FROM
+	ExchangeAccounts
+WHERE
+	ItemID = @ItemID AND DisplayName = @DisplayName AND (AccountType IN (8, 9))
+RETURN
 				*/
 				#endregion
 
@@ -21265,6 +26816,67 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[SearchOrganizationAccounts]
+(
+	@ActorID int,
+	@ItemID int,
+	@FilterColumn nvarchar(50) = '',
+	@FilterValue nvarchar(50) = '',
+	@SortColumn nvarchar(50),
+	@IncludeMailboxes bit
+)
+AS
+DECLARE @PackageID int
+SELECT @PackageID = PackageID FROM ServiceItems
+WHERE ItemID = @ItemID
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+-- start
+DECLARE @condition nvarchar(700)
+SET @condition = '
+(EA.AccountType = 7 OR (EA.AccountType = 1 AND @IncludeMailboxes = 1)  )
+AND EA.ItemID = @ItemID
+'
+
+IF @FilterColumn <> '' AND @FilterColumn IS NOT NULL
+AND @FilterValue <> '' AND @FilterValue IS NOT NULL
+SET @condition = @condition + ' AND ' + @FilterColumn + ' LIKE ''' + @FilterValue + ''''
+
+IF @SortColumn IS NULL OR @SortColumn = ''
+SET @SortColumn = 'EA.DisplayName ASC'
+
+DECLARE @sql nvarchar(3500)
+
+set @sql = '
+SELECT
+ EA.AccountID,
+ EA.ItemID,
+ EA.AccountType,
+ EA.AccountName,
+ EA.DisplayName,
+ EA.PrimaryEmailAddress,
+ EA.SubscriberNumber,
+ EA.UserPrincipalName,
+ EA.LevelID,
+ EA.IsVIP,
+ (CASE WHEN LU.AccountID IS NULL THEN ''false'' ELSE ''true'' END) as IsLyncUser,
+ (CASE WHEN SfB.AccountID IS NULL THEN ''false'' ELSE ''true'' END) as IsSfBUser
+FROM ExchangeAccounts AS EA
+LEFT JOIN LyncUsers AS LU
+ON LU.AccountID = EA.AccountID
+LEFT JOIN SfBUsers AS SfB  
+ON SfB.AccountID = EA.AccountID
+WHERE ' + @condition
+
+print @sql
+
+exec sp_executesql @sql, N'@ItemID int, @IncludeMailboxes bit', 
+@ItemID, @IncludeMailboxes
+
+RETURN 
 				*/
 				#endregion
 
@@ -21290,6 +26902,72 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetOrganizationObjectsByDomain]
+(
+        @ItemID int,
+        @DomainName nvarchar(100)
+)
+AS
+SELECT
+	'ExchangeAccounts' as ObjectName,
+        AccountID as ObjectID,
+	AccountType as ObjectType,
+        DisplayName as DisplayName,
+	0 as OwnerID
+FROM
+        ExchangeAccounts
+WHERE
+	UserPrincipalName LIKE '%@'+ @DomainName AND AccountType!=2
+UNION
+SELECT
+	'ExchangeAccountEmailAddresses' as ObjectName,
+	eam.AddressID as ObjectID,
+	ea.AccountType as ObjectType,
+	eam.EmailAddress as DisplayName,
+	eam.AccountID as OwnerID
+FROM
+	ExchangeAccountEmailAddresses as eam
+INNER JOIN 
+	ExchangeAccounts ea
+ON 
+	ea.AccountID = eam.AccountID
+WHERE
+	(ea.PrimaryEmailAddress != eam.EmailAddress)
+	AND (ea.UserPrincipalName != eam.EmailAddress)
+	AND (eam.EmailAddress LIKE '%@'+ @DomainName)
+UNION
+SELECT 
+	'SfBUsers' as ObjectName,
+	ea.AccountID as ObjectID,
+	ea.AccountType as ObjectType,
+	ea.DisplayName as DisplayName,
+	0 as OwnerID
+FROM 
+	ExchangeAccounts ea 
+INNER JOIN 
+	SfBUsers ou
+ON 
+	ea.AccountID = ou.AccountID
+WHERE 
+	ou.SipAddress LIKE '%@'+ @DomainName
+UNION
+SELECT 
+	'LyncUsers' as ObjectName,
+	ea.AccountID as ObjectID,
+	ea.AccountType as ObjectType,
+	ea.DisplayName as DisplayName,
+	0 as OwnerID
+FROM 
+	ExchangeAccounts ea 
+INNER JOIN 
+	LyncUsers ou
+ON 
+	ea.AccountID = ou.AccountID
+WHERE 
+	ou.SipAddress LIKE '%@'+ @DomainName
+ORDER BY 
+	DisplayName
+RETURN
 				*/
 				#endregion
 
@@ -21304,7 +26982,7 @@ RETURN
 					new SqlParameter("@DomainName", domainName));
 			}
 		}
-		#endregion
+#endregion
 
 		#region CRM
 
@@ -21314,6 +26992,38 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetCRMUsersCount] 
+(
+	@ItemID int,
+	@Name nvarchar(400),
+	@Email nvarchar(400),
+	@CALType int
+)
+AS
+BEGIN
+
+IF (@Name IS NULL)
+BEGIN
+	SET @Name = '%'
+END
+
+IF (@Email IS NULL)
+BEGIN
+	SET @Email = '%'
+END
+
+SELECT 
+	COUNT(ea.AccountID)		
+FROM 
+	ExchangeAccounts ea 
+INNER JOIN 
+	CRMUsers cu 
+ON 
+	ea.AccountID = cu.AccountID
+WHERE 
+	ea.ItemID = @ItemID AND ea.DisplayName LIKE @Name AND ea.PrimaryEmailAddress LIKE @Email
+	AND ((cu.CALType = @CALType) OR (@CALType = -1))
+END
 				*/
 				#endregion
 
@@ -21346,6 +27056,108 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetCRMUsers]
+(
+	@ItemID int,
+	@SortColumn nvarchar(40),
+	@SortDirection nvarchar(20),
+	@Name nvarchar(400),
+	@Email nvarchar(400),
+	@StartRow int,
+	@Count int
+)
+AS
+
+IF (@Name IS NULL)
+BEGIN
+	SET @Name = '%'
+END
+
+IF (@Email IS NULL)
+BEGIN
+	SET @Email = '%'
+END
+
+CREATE TABLE #TempCRMUsers
+(
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[AccountID] [int],
+	[ItemID] [int] NOT NULL,
+	[AccountName] [nvarchar](300) NOT NULL,
+	[DisplayName] [nvarchar](300) NOT NULL,
+	[PrimaryEmailAddress] [nvarchar](300) NULL,
+	[SamAccountName] [nvarchar](100) NULL
+)
+
+IF (@SortColumn = 'DisplayName')
+BEGIN
+	INSERT INTO
+		#TempCRMUsers
+	SELECT
+		ea.AccountID,
+		ea.ItemID,
+		ea.AccountName,
+		ea.DisplayName,
+		ea.PrimaryEmailAddress,
+		ea.SamAccountName
+	FROM
+		ExchangeAccounts ea
+	INNER JOIN
+		CRMUsers cu
+	ON
+		ea.AccountID = cu.AccountID
+	WHERE
+		ea.ItemID = @ItemID AND ea.DisplayName LIKE @Name AND ea.PrimaryEmailAddress LIKE @Email
+	ORDER BY
+		ea.DisplayName
+END
+ELSE
+BEGIN
+	INSERT INTO
+		#TempCRMUsers
+	SELECT
+		ea.AccountID,
+		ea.ItemID,
+		ea.AccountName,
+		ea.DisplayName,
+		ea.PrimaryEmailAddress,
+		ea.SamAccountName
+	FROM
+		ExchangeAccounts ea
+	INNER JOIN
+		CRMUsers cu
+	ON
+		ea.AccountID = cu.AccountID
+	WHERE
+		ea.ItemID = @ItemID AND ea.DisplayName LIKE @Name AND ea.PrimaryEmailAddress LIKE @Email
+	ORDER BY
+		ea.PrimaryEmailAddress
+END
+
+DECLARE @RetCount int
+SELECT @RetCount = COUNT(ID) FROM #TempCRMUsers
+
+IF (@SortDirection = 'ASC')
+BEGIN
+	SELECT * FROM #TempCRMUsers
+	WHERE ID > @StartRow AND ID <= (@StartRow + @Count)
+END
+ELSE
+BEGIN
+	IF (@SortColumn = 'DisplayName')
+	BEGIN
+		SELECT * FROM #TempCRMUsers
+			WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY DisplayName DESC
+	END
+	ELSE
+	BEGIN
+		SELECT * FROM #TempCRMUsers
+			WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY PrimaryEmailAddress DESC
+	END
+
+END
+
+DROP TABLE #TempCRMUsers
 				*/
 				#endregion
 
@@ -21375,6 +27187,26 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetCRMOrganizationUsers]
+	@ItemID int
+AS
+BEGIN
+	SELECT
+		ea.AccountID,
+		ea.ItemID,
+		ea.AccountName,
+		ea.DisplayName,
+		ea.PrimaryEmailAddress,
+		ea.SamAccountName
+	FROM
+		ExchangeAccounts ea
+	INNER JOIN
+		CRMUsers cu
+	ON
+		ea.AccountID = cu.AccountID
+	WHERE
+		ea.ItemID = @ItemID
+END
 				*/
 				#endregion
 
@@ -21392,6 +27224,34 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[InsertCRMUser] 
+(
+	@ItemID int,
+	@CrmUserID uniqueidentifier,
+	@BusinessUnitID uniqueidentifier,
+	@CALType int
+)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+INSERT INTO
+	CRMUsers
+(
+	AccountID,
+	CRMUserGuid,
+	BusinessUnitID,
+	CALType
+)
+VALUES 
+(
+	@ItemID, 
+	@CrmUserID,
+	@BusinessUnitID,
+	@CALType
+)
+
+END
 				*/
 				#endregion
 
@@ -21415,6 +27275,21 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdateCRMUser]
+(
+	@ItemID int,
+	@CALType int
+)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+UPDATE [dbo].[CRMUsers]
+   SET 
+      CALType = @CALType
+ WHERE AccountID = @ItemID
+
+END
 				*/
 				#endregion
 
@@ -21436,6 +27311,19 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetCRMUser]
+	@AccountID int
+AS
+BEGIN
+	SET NOCOUNT ON;
+SELECT
+	CRMUserGUID as CRMUserID,
+	BusinessUnitID
+FROM
+	CRMUsers
+WHERE
+	AccountID = @AccountID
+END
 				*/
 				#endregion
 
@@ -21454,7 +27342,21 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
-				*/
+CREATE PROCEDURE [dbo].[GetOrganizationCRMUserCount]
+	@ItemID int
+AS
+BEGIN
+SELECT
+ COUNT(CRMUserID)
+FROM
+	CrmUsers CU
+INNER JOIN
+	ExchangeAccounts EA
+ON
+	CU.AccountID = EA.AccountID
+WHERE EA.ItemID = @ItemID
+END
+		*/
 				#endregion
 
 			}
@@ -21471,9 +27373,17 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteCRMOrganization]
+	@ItemID int
+AS
+BEGIN
+	SET NOCOUNT ON
+DELETE FROM dbo.CRMUsers WHERE AccountID IN (SELECT AccountID FROM dbo.ExchangeAccounts WHERE ItemID = @ItemID)
+END
 				*/
 				#endregion
 
+				CrmUsers.Where(u => u.Account.ItemId == organizationId).ExecuteDelete(CrmUsers);
 			}
 			else
 			{

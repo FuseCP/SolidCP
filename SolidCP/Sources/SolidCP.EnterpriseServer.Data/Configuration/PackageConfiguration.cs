@@ -18,7 +18,7 @@ public partial class PackageConfiguration: EntityTypeConfiguration<Package>
     public override void Configure() {
 
 #if NetCore
-        Core.ToTable(tb => tb.HasTrigger("Update_StatusIDchangeDate"));
+        if (IsMsSql) Core.ToTable(tb => tb.HasTrigger("Update_StatusIDchangeDate"));
 
         Property(e => e.StatusIdChangeDate).HasDefaultValueSql("(getdate())");
 
@@ -33,9 +33,8 @@ public partial class PackageConfiguration: EntityTypeConfiguration<Package>
                 .HasConstraintName("FK_Packages_Users");
 
         HasMany(d => d.Services).WithMany(p => p.Packages)
-            .UsingEntity<Dictionary<string, object>>(
-                "PackageService",
-                r => r.HasOne<Service>().WithMany()
+            .UsingEntity<PackageService>();
+            /*  r => r.HasOne<Service>().WithMany()
                         .HasForeignKey("ServiceId")
                         .HasConstraintName("FK_PackageServices_Services"),
                 l => l.HasOne<Package>().WithMany()
@@ -46,7 +45,7 @@ public partial class PackageConfiguration: EntityTypeConfiguration<Package>
                     j.ToTable("PackageServices");
                     j.IndexerProperty<int>("PackageId").HasColumnName("PackageID");
                     j.IndexerProperty<int>("ServiceId").HasColumnName("ServiceID");
-                });
+                }); */
 #else
         HasOptional(p => p.ParentPackage).WithMany(p => p.InverseParentPackage);
         HasRequired(p => p.Plan).WithMany(p => p.Packages);
@@ -56,8 +55,8 @@ public partial class PackageConfiguration: EntityTypeConfiguration<Package>
         // TODO EF is this correct?
         HasMany(p => p.Services).WithMany(p => p.Packages)
             .Map(c => c.ToTable("PackageService")
-                .MapRightKey("ServiceId")
-                .MapLeftKey("PackageId"));
+                .MapRightKey("ServiceID")
+                .MapLeftKey("PackageID"));
 #endif
 
 		#region Seed Data

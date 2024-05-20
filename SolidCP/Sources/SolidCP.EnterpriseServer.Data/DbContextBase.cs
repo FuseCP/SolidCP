@@ -125,6 +125,8 @@ namespace SolidCP.EnterpriseServer.Context
 
 		public virtual DbSet<Package> Packages { get; set; }
 
+		public virtual DbSet<PackageService> PackageServices { get; set; }
+
 		public virtual DbSet<PackageAddon> PackageAddons { get; set; }
 
 		public virtual DbSet<PackageIpAddress> PackageIpAddresses { get; set; }
@@ -318,6 +320,7 @@ namespace SolidCP.EnterpriseServer.Context
 			ApplyConfiguration(model, new LyncUserConfiguration());
 			ApplyConfiguration(model, new LyncUserPlanConfiguration());
 			ApplyConfiguration(model, new OcsUserConfiguration());
+			ApplyConfiguration(model, new PackageServiceConfiguration());
 			ApplyConfiguration(model, new PackageConfiguration());
 			ApplyConfiguration(model, new PackageAddonConfiguration());
 			ApplyConfiguration(model, new PackageIpAddressConfiguration());
