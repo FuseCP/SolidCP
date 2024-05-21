@@ -195,9 +195,9 @@ namespace SolidCP.EnterpriseServer.Context
 
 		public virtual DbSet<ServiceProperty> ServiceProperties { get; set; }
 
-		public virtual DbSet<SfBuser> SfBusers { get; set; }
+		public virtual DbSet<SfBUser> SfBusers { get; set; }
 
-		public virtual DbSet<SfBuserPlan> SfBuserPlans { get; set; }
+		public virtual DbSet<SfBUserPlan> SfBuserPlans { get; set; }
 
 		public virtual DbSet<SslCertificate> Sslcertificates { get; set; }
 
@@ -356,8 +356,8 @@ namespace SolidCP.EnterpriseServer.Context
 			ApplyConfiguration(model, new ServiceItemPropertyConfiguration());
 			ApplyConfiguration(model, new ServiceItemTypeConfiguration());
 			ApplyConfiguration(model, new ServicePropertyConfiguration());
-			ApplyConfiguration(model, new SfBuserConfiguration());
-			ApplyConfiguration(model, new SfBuserPlanConfiguration());
+			ApplyConfiguration(model, new SfBUserConfiguration());
+			ApplyConfiguration(model, new SfBUserPlanConfiguration());
 			ApplyConfiguration(model, new SslCertificateConfiguration());
 			ApplyConfiguration(model, new StorageSpaceConfiguration());
 			ApplyConfiguration(model, new StorageSpaceFolderConfiguration());

@@ -527,7 +527,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
                 try
                 {
-                    Database.SetSfBUserSfBUserplan(accountId, sfbUserPlanId);
+                    Database.SetSfBUserSfBUserPlan(accountId, sfbUserPlanId);
                 }
                 catch (Exception ex)
                 {

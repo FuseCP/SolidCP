@@ -12,7 +12,7 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class SfBuserConfiguration: EntityTypeConfiguration<SfBuser>
+public partial class SfBUserConfiguration: EntityTypeConfiguration<SfBUser>
 {
 #if NetCore || NetFX
     public override void Configure() {

@@ -10135,7 +10135,7 @@ AS
 				if (ExchangeAccounts.Any(a => a.UserPrincipalName.EndsWith(mailDomain)) ||
 					ExchangeAccountEmailAddresses.Any(e => e.EmailAddress.EndsWith(mailDomain)) ||
 					LyncUsers.Any(u => u.SipAddress.EndsWith(mailDomain)) ||
-					SfBusers.Any(u => u.SipAddress.EndsWith(mailDomain))) return 1;
+					SfBUsers.Any(u => u.SipAddress.EndsWith(mailDomain))) return 1;
 				else return 0;
 
 			}
@@ -27402,6 +27402,112 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetVirtualMachinesPaged]
+(
+	@ActorID int,
+	@PackageID int,
+	@FilterColumn nvarchar(50) = '',
+	@FilterValue nvarchar(50) = '',
+	@SortColumn nvarchar(50),
+	@StartRow int,
+	@MaximumRows int,
+	@Recursive bit
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+-- start
+DECLARE @condition nvarchar(700)
+SET @condition = '
+SI.ItemTypeID = 33 -- VPS
+AND ((@Recursive = 0 AND P.PackageID = @PackageID)
+OR (@Recursive = 1 AND dbo.CheckPackageParent(@PackageID, P.PackageID) = 1))
+'
+
+IF @FilterValue <> '' AND @FilterValue IS NOT NULL
+BEGIN
+	IF @FilterColumn <> '' AND @FilterColumn IS NOT NULL
+		SET @condition = @condition + ' AND ' + @FilterColumn + ' LIKE ''' + @FilterValue + ''''
+	ELSE
+		SET @condition = @condition + '
+			AND (ItemName LIKE ''' + @FilterValue + '''
+			OR Username LIKE ''' + @FilterValue + '''
+			OR ExternalIP LIKE ''' + @FilterValue + '''
+			OR IPAddress LIKE ''' + @FilterValue + ''')'
+END
+
+IF @SortColumn IS NULL OR @SortColumn = ''
+SET @SortColumn = 'SI.ItemName ASC'
+
+DECLARE @sql nvarchar(3500)
+
+set @sql = '
+SELECT COUNT(SI.ItemID) FROM Packages AS P
+INNER JOIN ServiceItems AS SI ON P.PackageID = SI.PackageID
+INNER JOIN Users AS U ON P.UserID = U.UserID
+LEFT OUTER JOIN (
+	SELECT PIP.ItemID, IP.ExternalIP FROM PackageIPAddresses AS PIP
+	INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
+	WHERE PIP.IsPrimary = 1 AND IP.PoolID = 3 -- external IP addresses
+) AS EIP ON SI.ItemID = EIP.ItemID
+LEFT OUTER JOIN PrivateIPAddresses AS PIP ON PIP.ItemID = SI.ItemID AND PIP.IsPrimary = 1
+WHERE ' + @condition + '
+
+DECLARE @Items AS TABLE
+(
+	ItemID int
+);
+
+WITH TempItems AS (
+	SELECT ROW_NUMBER() OVER (ORDER BY ' + @SortColumn + ') as Row,
+		SI.ItemID
+	FROM Packages AS P
+	INNER JOIN ServiceItems AS SI ON P.PackageID = SI.PackageID
+	INNER JOIN Users AS U ON P.UserID = U.UserID
+	LEFT OUTER JOIN (
+		SELECT PIP.ItemID, IP.ExternalIP FROM PackageIPAddresses AS PIP
+		INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
+		WHERE PIP.IsPrimary = 1 AND IP.PoolID = 3 -- external IP addresses
+	) AS EIP ON SI.ItemID = EIP.ItemID
+	LEFT OUTER JOIN PrivateIPAddresses AS PIP ON PIP.ItemID = SI.ItemID AND PIP.IsPrimary = 1
+	WHERE ' + @condition + '
+)
+
+INSERT INTO @Items
+SELECT ItemID FROM TempItems
+WHERE TempItems.Row BETWEEN @StartRow + 1 and @StartRow + @MaximumRows
+
+SELECT
+	SI.ItemID,
+	SI.ItemName,
+	SI.PackageID,
+	P.PackageName,
+	P.UserID,
+	U.Username,
+
+	EIP.ExternalIP,
+	PIP.IPAddress
+FROM @Items AS TSI
+INNER JOIN ServiceItems AS SI ON TSI.ItemID = SI.ItemID
+INNER JOIN Packages AS P ON SI.PackageID = P.PackageID
+INNER JOIN Users AS U ON P.UserID = U.UserID
+LEFT OUTER JOIN (
+	SELECT PIP.ItemID, IP.ExternalIP FROM PackageIPAddresses AS PIP
+	INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
+	WHERE PIP.IsPrimary = 1 AND IP.PoolID = 3 -- external IP addresses
+) AS EIP ON SI.ItemID = EIP.ItemID
+LEFT OUTER JOIN PrivateIPAddresses AS PIP ON PIP.ItemID = SI.ItemID AND PIP.IsPrimary = 1
+'
+
+--print @sql
+
+exec sp_executesql @sql, N'@PackageID int, @StartRow int, @MaximumRows int, @Recursive bit',
+@PackageID, @StartRow, @MaximumRows, @Recursive
+
+RETURN
 				*/
 				#endregion
 
@@ -27429,6 +27535,111 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetVirtualMachinesPaged2012]
+(
+	@ActorID int,
+	@PackageID int,
+	@FilterColumn nvarchar(50) = '',
+	@FilterValue nvarchar(50) = '',
+	@SortColumn nvarchar(50),
+	@StartRow int,
+	@MaximumRows int,
+	@Recursive bit
+)
+AS
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+-- start
+DECLARE @condition nvarchar(700)
+SET @condition = '
+SI.ItemTypeID = 41 -- VPS2012
+AND ((@Recursive = 0 AND P.PackageID = @PackageID)
+OR (@Recursive = 1 AND dbo.CheckPackageParent(@PackageID, P.PackageID) = 1))
+'
+
+IF @FilterValue <> '' AND @FilterValue IS NOT NULL
+BEGIN
+	IF @FilterColumn <> '' AND @FilterColumn IS NOT NULL
+		SET @condition = @condition + ' AND ' + @FilterColumn + ' LIKE ''' + @FilterValue + ''''
+	ELSE
+		SET @condition = @condition + '
+			AND (ItemName LIKE ''' + @FilterValue + '''
+			OR Username LIKE ''' + @FilterValue + '''
+			OR ExternalIP LIKE ''' + @FilterValue + '''
+			OR IPAddress LIKE ''' + @FilterValue + ''')'
+END
+
+IF @SortColumn IS NULL OR @SortColumn = ''
+SET @SortColumn = 'SI.ItemName ASC'
+
+DECLARE @sql nvarchar(3500)
+
+set @sql = '
+SELECT COUNT(SI.ItemID) FROM Packages AS P
+INNER JOIN ServiceItems AS SI ON P.PackageID = SI.PackageID
+INNER JOIN Users AS U ON P.UserID = U.UserID
+LEFT OUTER JOIN (
+	SELECT PIP.ItemID, IP.ExternalIP FROM PackageIPAddresses AS PIP
+	INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
+	WHERE PIP.IsPrimary = 1 AND IP.PoolID = 3 -- external IP addresses
+) AS EIP ON SI.ItemID = EIP.ItemID
+LEFT OUTER JOIN PrivateIPAddresses AS PIP ON PIP.ItemID = SI.ItemID AND PIP.IsPrimary = 1
+WHERE ' + @condition + '
+
+DECLARE @Items AS TABLE
+(
+	ItemID int
+);
+
+WITH TempItems AS (
+	SELECT ROW_NUMBER() OVER (ORDER BY ' + @SortColumn + ') as Row,
+		SI.ItemID
+	FROM Packages AS P
+	INNER JOIN ServiceItems AS SI ON P.PackageID = SI.PackageID
+	INNER JOIN Users AS U ON P.UserID = U.UserID
+	LEFT OUTER JOIN (
+		SELECT PIP.ItemID, IP.ExternalIP FROM PackageIPAddresses AS PIP
+		INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
+		WHERE PIP.IsPrimary = 1 AND IP.PoolID = 3 -- external IP addresses
+	) AS EIP ON SI.ItemID = EIP.ItemID
+	LEFT OUTER JOIN PrivateIPAddresses AS PIP ON PIP.ItemID = SI.ItemID AND PIP.IsPrimary = 1
+	WHERE ' + @condition + '
+)
+
+INSERT INTO @Items
+SELECT ItemID FROM TempItems
+WHERE TempItems.Row BETWEEN @StartRow + 1 and @StartRow + @MaximumRows
+
+SELECT
+	SI.ItemID,
+	SI.ItemName,
+	SI.PackageID,
+	P.PackageName,
+	P.UserID,
+	U.Username,
+
+	EIP.ExternalIP,
+	PIP.IPAddress
+FROM @Items AS TSI
+INNER JOIN ServiceItems AS SI ON TSI.ItemID = SI.ItemID
+INNER JOIN Packages AS P ON SI.PackageID = P.PackageID
+INNER JOIN Users AS U ON P.UserID = U.UserID
+LEFT OUTER JOIN (
+	SELECT PIP.ItemID, IP.ExternalIP FROM PackageIPAddresses AS PIP
+	INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
+	WHERE PIP.IsPrimary = 1 AND IP.PoolID = 3 -- external IP addresses
+) AS EIP ON SI.ItemID = EIP.ItemID
+LEFT OUTER JOIN PrivateIPAddresses AS PIP ON PIP.ItemID = SI.ItemID AND PIP.IsPrimary = 1
+'
+
+--print @sql
+
+exec sp_executesql @sql, N'@PackageID int, @StartRow int, @MaximumRows int, @Recursive bit',
+@PackageID, @StartRow, @MaximumRows, @Recursive
+
+RETURN 
 				*/
 				#endregion
 
@@ -27456,6 +27667,111 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetVirtualMachinesPagedProxmox]
+(
+	@ActorID int,
+	@PackageID int,
+	@FilterColumn nvarchar(50) = '',
+	@FilterValue nvarchar(50) = '',
+	@SortColumn nvarchar(50),
+	@StartRow int,
+	@MaximumRows int,
+	@Recursive bit
+)
+AS
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+-- start
+DECLARE @condition nvarchar(700)
+SET @condition = '
+SI.ItemTypeID = 143 -- Proxmox
+AND ((@Recursive = 0 AND P.PackageID = @PackageID)
+OR (@Recursive = 1 AND dbo.CheckPackageParent(@PackageID, P.PackageID) = 1))
+'
+
+IF @FilterValue <> '' AND @FilterValue IS NOT NULL
+BEGIN
+	IF @FilterColumn <> '' AND @FilterColumn IS NOT NULL
+		SET @condition = @condition + ' AND ' + @FilterColumn + ' LIKE ''' + @FilterValue + ''''
+	ELSE
+		SET @condition = @condition + '
+			AND (ItemName LIKE ''' + @FilterValue + '''
+			OR Username LIKE ''' + @FilterValue + '''
+			OR ExternalIP LIKE ''' + @FilterValue + '''
+			OR IPAddress LIKE ''' + @FilterValue + ''')'
+END
+
+IF @SortColumn IS NULL OR @SortColumn = ''
+SET @SortColumn = 'SI.ItemName ASC'
+
+DECLARE @sql nvarchar(3500)
+
+set @sql = '
+SELECT COUNT(SI.ItemID) FROM Packages AS P
+INNER JOIN ServiceItems AS SI ON P.PackageID = SI.PackageID
+INNER JOIN Users AS U ON P.UserID = U.UserID
+LEFT OUTER JOIN (
+	SELECT PIP.ItemID, IP.ExternalIP FROM PackageIPAddresses AS PIP
+	INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
+	WHERE PIP.IsPrimary = 1 AND IP.PoolID = 3 -- external IP addresses
+) AS EIP ON SI.ItemID = EIP.ItemID
+LEFT OUTER JOIN PrivateIPAddresses AS PIP ON PIP.ItemID = SI.ItemID AND PIP.IsPrimary = 1
+WHERE ' + @condition + '
+
+DECLARE @Items AS TABLE
+(
+	ItemID int
+);
+
+WITH TempItems AS (
+	SELECT ROW_NUMBER() OVER (ORDER BY ' + @SortColumn + ') as Row,
+		SI.ItemID
+	FROM Packages AS P
+	INNER JOIN ServiceItems AS SI ON P.PackageID = SI.PackageID
+	INNER JOIN Users AS U ON P.UserID = U.UserID
+	LEFT OUTER JOIN (
+		SELECT PIP.ItemID, IP.ExternalIP FROM PackageIPAddresses AS PIP
+		INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
+		WHERE PIP.IsPrimary = 1 AND IP.PoolID = 3 -- external IP addresses
+	) AS EIP ON SI.ItemID = EIP.ItemID
+	LEFT OUTER JOIN PrivateIPAddresses AS PIP ON PIP.ItemID = SI.ItemID AND PIP.IsPrimary = 1
+	WHERE ' + @condition + '
+)
+
+INSERT INTO @Items
+SELECT ItemID FROM TempItems
+WHERE TempItems.Row BETWEEN @StartRow + 1 and @StartRow + @MaximumRows
+
+SELECT
+	SI.ItemID,
+	SI.ItemName,
+	SI.PackageID,
+	P.PackageName,
+	P.UserID,
+	U.Username,
+
+	EIP.ExternalIP,
+	PIP.IPAddress
+FROM @Items AS TSI
+INNER JOIN ServiceItems AS SI ON TSI.ItemID = SI.ItemID
+INNER JOIN Packages AS P ON SI.PackageID = P.PackageID
+INNER JOIN Users AS U ON P.UserID = U.UserID
+LEFT OUTER JOIN (
+	SELECT PIP.ItemID, IP.ExternalIP FROM PackageIPAddresses AS PIP
+	INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
+	WHERE PIP.IsPrimary = 1 AND IP.PoolID = 3 -- external IP addresses
+) AS EIP ON SI.ItemID = EIP.ItemID
+LEFT OUTER JOIN PrivateIPAddresses AS PIP ON PIP.ItemID = SI.ItemID AND PIP.IsPrimary = 1
+'
+
+--print @sql
+
+exec sp_executesql @sql, N'@PackageID int, @StartRow int, @MaximumRows int, @Recursive bit',
+@PackageID, @StartRow, @MaximumRows, @Recursive
+
+RETURN 
 				*/
 				#endregion
 
@@ -27475,7 +27791,6 @@ END
 				return reader;
 			}
 		}
-		#endregion
 
 		public IDataReader GetVirtualMachinesForPCPaged(int actorId, int packageId, string filterColumn, string filterValue,
 			 string sortColumn, int startRow, int maximumRows, bool recursive)
@@ -27484,6 +27799,115 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetVirtualMachinesPagedForPC]
+(
+	@ActorID int,
+	@PackageID int,
+	@FilterColumn nvarchar(50) = '',
+	@FilterValue nvarchar(50) = '',
+	@SortColumn nvarchar(50),
+	@StartRow int,
+	@MaximumRows int,
+	@Recursive bit
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+BEGIN
+	RAISERROR('You are not allowed to access this package', 16, 1)
+	RETURN
+END
+
+-- start
+DECLARE @condition nvarchar(700)
+SET @condition = '
+SI.ItemTypeID = 35 -- VPS
+AND ((@Recursive = 0 AND P.PackageID = @PackageID)
+OR (@Recursive = 1 AND dbo.CheckPackageParent(@PackageID, P.PackageID) = 1))
+'
+
+IF @FilterValue <> '' AND @FilterValue IS NOT NULL
+BEGIN
+	IF @FilterColumn <> '' AND @FilterColumn IS NOT NULL
+		SET @condition = @condition + ' AND ' + @FilterColumn + ' LIKE ''' + @FilterValue + ''''
+	ELSE
+		SET @condition = @condition + '
+			AND (ItemName LIKE ''' + @FilterValue + '''
+			OR Username LIKE ''' + @FilterValue + '''
+			OR ExternalIP LIKE ''' + @FilterValue + '''
+			OR IPAddress LIKE ''' + @FilterValue + ''')'
+END
+
+IF @SortColumn IS NULL OR @SortColumn = ''
+SET @SortColumn = 'SI.ItemName ASC'
+
+DECLARE @sql nvarchar(3500)
+
+set @sql = '
+SELECT COUNT(SI.ItemID) FROM Packages AS P
+INNER JOIN ServiceItems AS SI ON P.PackageID = SI.PackageID
+INNER JOIN Users AS U ON P.UserID = U.UserID
+LEFT OUTER JOIN (
+	SELECT PIP.ItemID, IP.ExternalIP FROM PackageIPAddresses AS PIP
+	INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
+	WHERE PIP.IsPrimary = 1 AND IP.PoolID = 3 -- external IP addresses
+) AS EIP ON SI.ItemID = EIP.ItemID
+LEFT OUTER JOIN PrivateIPAddresses AS PIP ON PIP.ItemID = SI.ItemID AND PIP.IsPrimary = 1
+WHERE ' + @condition + '
+
+DECLARE @Items AS TABLE
+(
+	ItemID int
+);
+
+WITH TempItems AS (
+	SELECT ROW_NUMBER() OVER (ORDER BY ' + @SortColumn + ') as Row,
+		SI.ItemID
+	FROM Packages AS P
+	INNER JOIN ServiceItems AS SI ON P.PackageID = SI.PackageID
+	INNER JOIN Users AS U ON P.UserID = U.UserID
+	LEFT OUTER JOIN (
+		SELECT PIP.ItemID, IP.ExternalIP FROM PackageIPAddresses AS PIP
+		INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
+		WHERE PIP.IsPrimary = 1 AND IP.PoolID = 3 -- external IP addresses
+	) AS EIP ON SI.ItemID = EIP.ItemID
+	LEFT OUTER JOIN PrivateIPAddresses AS PIP ON PIP.ItemID = SI.ItemID AND PIP.IsPrimary = 1
+	WHERE ' + @condition + '
+)
+
+INSERT INTO @Items
+SELECT ItemID FROM TempItems
+WHERE TempItems.Row BETWEEN @StartRow + 1 and @StartRow + @MaximumRows
+
+SELECT
+	SI.ItemID,
+	SI.ItemName,
+	SI.PackageID,
+	P.PackageName,
+	P.UserID,
+	U.Username,
+
+	EIP.ExternalIP,
+	PIP.IPAddress
+FROM @Items AS TSI
+INNER JOIN ServiceItems AS SI ON TSI.ItemID = SI.ItemID
+INNER JOIN Packages AS P ON SI.PackageID = P.PackageID
+INNER JOIN Users AS U ON P.UserID = U.UserID
+LEFT OUTER JOIN (
+	SELECT PIP.ItemID, IP.ExternalIP FROM PackageIPAddresses AS PIP
+	INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
+	WHERE PIP.IsPrimary = 1 AND IP.PoolID = 3 -- external IP addresses
+) AS EIP ON SI.ItemID = EIP.ItemID
+LEFT OUTER JOIN PrivateIPAddresses AS PIP ON PIP.ItemID = SI.ItemID AND PIP.IsPrimary = 1
+'
+
+--print @sql
+
+exec sp_executesql @sql, N'@PackageID int, @StartRow int, @MaximumRows int, @Recursive bit',
+@PackageID, @StartRow, @MaximumRows, @Recursive
+
+RETURN
 				*/
 				#endregion
 
@@ -27503,6 +27927,7 @@ END
 				return reader;
 			}
 		}
+		#endregion
 
 		#region VPS - External Network
 
@@ -27512,6 +27937,114 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetUnallottedIPAddresses]
+ @PackageID int,
+ @ServiceID int,
+ @PoolID int = 0
+AS
+BEGIN
+ DECLARE @ParentPackageID int
+ DECLARE @ServerID int
+IF (@PackageID = -1) -- NO PackageID defined, use ServerID from ServiceID (VPS Import)
+BEGIN
+ SELECT
+  @ServerID = ServerID,
+  @ParentPackageID = 1
+ FROM Services
+ WHERE ServiceID = @ServiceID
+END
+ELSE
+BEGIN
+ SELECT
+  @ParentPackageID = ParentPackageID,
+  @ServerID = ServerID
+ FROM Packages
+ WHERE PackageID = @PackageId
+END
+
+IF (@ParentPackageID = 1 OR @PoolID = 4 /* management network *//*) --"System" space
+BEGIN
+  --check if server is physical
+  IF EXISTS(SELECT * FROM Servers WHERE ServerID = @ServerID AND VirtualServer = 0)
+  BEGIN
+   -- physical server
+   SELECT
+
+	IP.AddressID,
+    IP.ExternalIP,
+    IP.InternalIP,
+    IP.ServerID,
+    IP.PoolID,
+    IP.SubnetMask,
+    IP.DefaultGateway,
+    IP.VLAN
+   FROM dbo.IPAddresses AS IP
+   WHERE
+	(IP.ServerID = @ServerID OR IP.ServerID IS NULL)
+
+	AND IP.AddressID NOT IN(SELECT PIP.AddressID FROM dbo.PackageIPAddresses AS PIP)
+
+	AND(@PoolID = 0 OR @PoolID<> 0 AND IP.PoolID = @PoolID)
+   ORDER BY IP.ServerID DESC, IP.DefaultGateway, IP.ExternalIP
+  END
+  ELSE
+  BEGIN
+   -- virtual server
+   -- get resource group by service
+   DECLARE @GroupID int
+   SELECT @GroupID = P.GroupID FROM Services AS S
+   INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
+   WHERE S.ServiceID = @ServiceID
+   SELECT
+	IP.AddressID,
+	IP.ExternalIP,
+	IP.InternalIP,
+	IP.ServerID,
+	IP.PoolID,
+	IP.SubnetMask,
+	IP.DefaultGateway,
+	IP.VLAN
+   FROM dbo.IPAddresses AS IP
+   WHERE
+
+	(IP.ServerID IN (
+	 SELECT SVC.ServerID FROM [dbo].[Services] AS SVC
+
+	 INNER JOIN [dbo].[Providers] AS P ON SVC.ProviderID = P.ProviderID
+
+	 WHERE[SVC].[ServiceID] = @ServiceId AND P.GroupID = @GroupID
+	) OR IP.ServerID IS NULL)
+
+	AND IP.AddressID NOT IN (SELECT PIP.AddressID FROM dbo.PackageIPAddresses AS PIP)
+
+	AND(@PoolID = 0 OR @PoolID <> 0 AND IP.PoolID = @PoolID)
+   ORDER BY IP.ServerID DESC, IP.DefaultGateway, IP.ExternalIP
+  END
+ END
+ ELSE -- 2rd level space and below
+ BEGIN
+  -- get service location
+  SELECT @ServerID = S.ServerID FROM Services AS S
+  WHERE S.ServiceID = @ServiceID
+  SELECT
+   IP.AddressID,
+   IP.ExternalIP,
+   IP.InternalIP,
+   IP.ServerID,
+   IP.PoolID,
+   IP.SubnetMask,
+   IP.DefaultGateway,
+   IP.VLAN
+  FROM dbo.PackageIPAddresses AS PIP
+  INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
+  WHERE
+   PIP.PackageID = @ParentPackageID
+   AND PIP.ItemID IS NULL
+   AND (@PoolID = 0 OR @PoolID <> 0 AND IP.PoolID = @PoolID)
+   AND(IP.ServerID = @ServerID OR IP.ServerID IS NULL)
+  ORDER BY IP.ServerID DESC, IP.DefaultGateway, IP.ExternalIP
+ END
+END
 				*/
 				#endregion
 
@@ -27532,6 +28065,50 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AllocatePackageIPAddresses]
+(
+	@PackageID int,
+	@OrgID int,
+	@xml ntext
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	DECLARE @idoc int
+	--Create an internal representation of the XML document.
+	EXEC sp_xml_preparedocument @idoc OUTPUT, @xml
+
+	-- delete
+	DELETE FROM PackageIPAddresses
+	FROM PackageIPAddresses AS PIP
+	INNER JOIN OPENXML(@idoc, '/items/item', 1) WITH 
+	(
+		AddressID int '@id'
+	) as PV ON PIP.AddressID = PV.AddressID
+
+	-- insert
+	INSERT INTO dbo.PackageIPAddresses
+	(		
+		PackageID,
+		OrgID,
+		AddressID	
+	)
+	SELECT		
+		@PackageID,
+		@OrgID,
+		AddressID
+
+	FROM OPENXML(@idoc, '/items/item', 1) WITH 
+	(
+		AddressID int '@id'
+	) as PV
+
+	-- remove document
+	exec sp_xml_removedocument @idoc
+
+END
 				*/
 				#endregion
 
@@ -27555,6 +28132,105 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetPackageIPAddresses]
+(
+ @PackageID int,
+ @OrgID int,
+ @FilterColumn nvarchar(50) = '',
+ @FilterValue nvarchar(50) = '',
+ @SortColumn nvarchar(50),
+ @StartRow int,
+ @MaximumRows int,
+ @PoolID int = 0,
+ @Recursive bit = 0
+)
+AS
+BEGIN
+-- start
+DECLARE @condition nvarchar(700)
+SET @condition = '
+((@Recursive = 0 AND PA.PackageID = @PackageID)
+OR (@Recursive = 1 AND dbo.CheckPackageParent(@PackageID, PA.PackageID) = 1))
+AND (@PoolID = 0 OR @PoolID <> 0 AND IP.PoolID = @PoolID)
+AND (@OrgID = 0 OR @OrgID <> 0 AND PA.OrgID = @OrgID)
+'
+
+IF @FilterValue <> '' AND @FilterValue IS NOT NULL
+BEGIN
+ IF @FilterColumn <> '' AND @FilterColumn IS NOT NULL
+  SET @condition = @condition + ' AND ' + @FilterColumn + ' LIKE ''' + @FilterValue + ''''
+ ELSE
+  SET @condition = @condition + '
+   AND (ExternalIP LIKE ''' + @FilterValue + '''
+   OR InternalIP LIKE ''' + @FilterValue + '''
+   OR DefaultGateway LIKE ''' + @FilterValue + '''
+   OR ItemName LIKE ''' + @FilterValue + '''
+   OR Username LIKE ''' + @FilterValue + ''')'
+END
+
+IF @SortColumn IS NULL OR @SortColumn = ''
+SET @SortColumn = 'IP.ExternalIP ASC'
+
+DECLARE @sql nvarchar(3500)
+
+set @sql = '
+SELECT COUNT(PA.PackageAddressID)
+FROM dbo.PackageIPAddresses PA
+INNER JOIN dbo.IPAddresses AS IP ON PA.AddressID = IP.AddressID
+INNER JOIN dbo.Packages P ON PA.PackageID = P.PackageID
+INNER JOIN dbo.Users U ON U.UserID = P.UserID
+LEFT JOIN ServiceItems SI ON PA.ItemId = SI.ItemID
+WHERE ' + @condition + '
+
+DECLARE @Addresses AS TABLE
+(
+ PackageAddressID int
+);
+
+WITH TempItems AS (
+ SELECT ROW_NUMBER() OVER (ORDER BY ' + @SortColumn + ') as Row,
+  PA.PackageAddressID
+ FROM dbo.PackageIPAddresses PA
+ INNER JOIN dbo.IPAddresses AS IP ON PA.AddressID = IP.AddressID
+ INNER JOIN dbo.Packages P ON PA.PackageID = P.PackageID
+ INNER JOIN dbo.Users U ON U.UserID = P.UserID
+ LEFT JOIN ServiceItems SI ON PA.ItemId = SI.ItemID
+ WHERE ' + @condition + '
+)
+
+INSERT INTO @Addresses
+SELECT PackageAddressID FROM TempItems
+WHERE TempItems.Row BETWEEN @StartRow + 1 and @StartRow + @MaximumRows
+
+SELECT
+ PA.PackageAddressID,
+ PA.AddressID,
+ IP.ExternalIP,
+ IP.InternalIP,
+ IP.SubnetMask,
+ IP.DefaultGateway,
+ IP.VLAN,
+ PA.ItemID,
+ SI.ItemName,
+ PA.PackageID,
+ P.PackageName,
+ P.UserID,
+ U.UserName,
+ PA.IsPrimary
+FROM @Addresses AS TA
+INNER JOIN dbo.PackageIPAddresses AS PA ON TA.PackageAddressID = PA.PackageAddressID
+INNER JOIN dbo.IPAddresses AS IP ON PA.AddressID = IP.AddressID
+INNER JOIN dbo.Packages P ON PA.PackageID = P.PackageID
+INNER JOIN dbo.Users U ON U.UserID = P.UserID
+LEFT JOIN ServiceItems SI ON PA.ItemId = SI.ItemID
+'
+
+print @sql
+
+exec sp_executesql @sql, N'@PackageID int, @OrgID int, @StartRow int, @MaximumRows int, @Recursive bit, @PoolID int',
+@PackageID, @OrgID, @StartRow, @MaximumRows, @Recursive, @PoolID
+
+END
 				*/
 				#endregion
 
@@ -27582,6 +28258,32 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetPackageIPAddressesCount]
+(
+	@PackageID int,
+	@OrgID int,
+	@PoolID int = 0
+)
+AS
+BEGIN
+
+SELECT 
+	COUNT(PA.PackageAddressID)
+FROM 
+	dbo.PackageIPAddresses PA
+INNER JOIN 
+	dbo.IPAddresses AS IP ON PA.AddressID = IP.AddressID
+INNER JOIN 
+	dbo.Packages P ON PA.PackageID = P.PackageID
+INNER JOIN 
+	dbo.Users U ON U.UserID = P.UserID
+LEFT JOIN 
+	ServiceItems SI ON PA.ItemId = SI.ItemID
+WHERE
+	(@PoolID = 0 OR @PoolID <> 0 AND IP.PoolID = @PoolID)
+AND (@OrgID = 0 OR @OrgID <> 0 AND PA.OrgID = @OrgID)
+
+END
 				*/
 				#endregion
 
@@ -27605,6 +28307,34 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeallocatePackageIPAddress]
+	@PackageAddressID int
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	-- check parent package
+	DECLARE @ParentPackageID int
+
+	SELECT @ParentPackageID = P.ParentPackageID
+	FROM PackageIPAddresses AS PIP
+	INNER JOIN Packages AS P ON PIP.PackageID = P.PackageId
+	WHERE PIP.PackageAddressID = @PackageAddressID
+
+	IF (@ParentPackageID = 1) -- ""System"" space
+	BEGIN
+		DELETE FROM dbo.PackageIPAddresses
+		WHERE PackageAddressID = @PackageAddressID
+	END
+	ELSE -- 2rd level space and below
+	BEGIN
+		UPDATE PackageIPAddresses
+		SET PackageID = @ParentPackageID
+		WHERE PackageAddressID = @PackageAddressID
+	END
+
+END
 				*/
 				#endregion
 
@@ -27626,6 +28356,77 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetPackagePrivateIPAddressesPaged]
+	@PackageID int,
+	@FilterColumn nvarchar(50) = '',
+	@FilterValue nvarchar(50) = '',
+	@SortColumn nvarchar(50),
+	@StartRow int,
+	@MaximumRows int
+AS
+BEGIN
+
+-- start
+DECLARE @condition nvarchar(700)
+SET @condition = '
+SI.PackageID = @PackageID
+'
+
+IF @FilterValue <> '' AND @FilterValue IS NOT NULL
+BEGIN
+	IF @FilterColumn <> '' AND @FilterColumn IS NOT NULL
+		SET @condition = @condition + ' AND ' + @FilterColumn + ' LIKE ''' + @FilterValue + ''''
+	ELSE
+		SET @condition = @condition + '
+			AND (IPAddress LIKE ''' + @FilterValue + '''
+			OR ItemName LIKE ''' + @FilterValue + ''')'
+END
+
+IF @SortColumn IS NULL OR @SortColumn = ''
+SET @SortColumn = 'PA.IPAddress ASC'
+
+DECLARE @sql nvarchar(3500)
+
+set @sql = '
+SELECT COUNT(PA.PrivateAddressID)
+FROM dbo.PrivateIPAddresses AS PA
+INNER JOIN dbo.ServiceItems AS SI ON PA.ItemID = SI.ItemID
+WHERE ' + @condition + '
+
+DECLARE @Addresses AS TABLE
+(
+	PrivateAddressID int
+);
+
+WITH TempItems AS (
+	SELECT ROW_NUMBER() OVER (ORDER BY ' + @SortColumn + ') as Row,
+		PA.PrivateAddressID
+	FROM dbo.PrivateIPAddresses AS PA
+	INNER JOIN dbo.ServiceItems AS SI ON PA.ItemID = SI.ItemID
+	WHERE ' + @condition + '
+)
+
+INSERT INTO @Addresses
+SELECT PrivateAddressID FROM TempItems
+WHERE TempItems.Row BETWEEN @StartRow + 1 and @StartRow + @MaximumRows
+
+SELECT
+	PA.PrivateAddressID,
+	PA.IPAddress,
+	PA.ItemID,
+	SI.ItemName,
+	PA.IsPrimary
+FROM @Addresses AS TA
+INNER JOIN dbo.PrivateIPAddresses AS PA ON TA.PrivateAddressID = PA.PrivateAddressID
+INNER JOIN dbo.ServiceItems AS SI ON PA.ItemID = SI.ItemID
+'
+
+print @sql
+
+exec sp_executesql @sql, N'@PackageID int, @StartRow int, @MaximumRows int',
+@PackageID, @StartRow, @MaximumRows
+
+END
 				*/
 				#endregion
 
@@ -27650,6 +28451,22 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetPackagePrivateIPAddresses]
+	@PackageID int
+AS
+BEGIN
+
+	SELECT
+		PA.PrivateAddressID,
+		PA.IPAddress,
+		PA.ItemID,
+		SI.ItemName,
+		PA.IsPrimary
+	FROM PrivateIPAddresses AS PA
+	INNER JOIN ServiceItems AS SI ON PA.ItemID = SI.ItemID
+	WHERE SI.PackageID = @PackageID
+
+END
 				*/
 				#endregion
 
@@ -27671,6 +28488,36 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetPackageUnassignedIPAddresses]
+(
+ @ActorID int,
+ @PackageID int,
+ @OrgID int,
+ @PoolID int = 0
+)
+AS
+BEGIN
+ SELECT
+  PIP.PackageAddressID,
+  IP.AddressID,
+  IP.ExternalIP,
+  IP.InternalIP,
+  IP.ServerID,
+  IP.PoolID,
+  PIP.IsPrimary,
+  IP.SubnetMask,
+  IP.DefaultGateway,
+  IP.VLAN
+ FROM PackageIPAddresses AS PIP
+ INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
+ WHERE
+  PIP.ItemID IS NULL
+  AND PIP.PackageID = @PackageID
+  AND (@PoolID = 0 OR @PoolID <> 0 AND IP.PoolID = @PoolID)
+  AND (@OrgID = 0 OR @OrgID <> 0 AND PIP.OrgID = @OrgID)
+  AND dbo.CheckActorPackageRights(@ActorID, PIP.PackageID) = 1
+ ORDER BY IP.DefaultGateway, IP.ExternalIP
+END
 				*/
 				#endregion
 
@@ -27692,6 +28539,32 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetPackageIPAddress]
+ @PackageAddressID int
+AS
+BEGIN
+SELECT
+ PA.PackageAddressID,
+ PA.AddressID,
+ IP.ExternalIP,
+ IP.InternalIP,
+ IP.SubnetMask,
+ IP.DefaultGateway,
+ IP.VLAN,
+ PA.ItemID,
+ SI.ItemName,
+ PA.PackageID,
+ P.PackageName,
+ P.UserID,
+ U.UserName,
+ PA.IsPrimary
+FROM dbo.PackageIPAddresses AS PA
+INNER JOIN dbo.IPAddresses AS IP ON PA.AddressID = IP.AddressID
+INNER JOIN dbo.Packages P ON PA.PackageID = P.PackageID
+INNER JOIN dbo.Users U ON U.UserID = P.UserID
+LEFT JOIN ServiceItems SI ON PA.ItemId = SI.ItemID
+WHERE PA.PackageAddressID = @PackageAddressID
+END
 				*/
 				#endregion
 
@@ -27710,6 +28583,30 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetItemIPAddresses]
+(
+	@ActorID int,
+	@ItemID int,
+	@PoolID int
+)
+AS
+
+SELECT
+	PIP.PackageAddressID AS AddressID,
+	IP.ExternalIP AS IPAddress,
+	IP.InternalIP AS NATAddress,
+	IP.SubnetMask,
+	IP.DefaultGateway,
+	PIP.IsPrimary
+FROM PackageIPAddresses AS PIP
+INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
+INNER JOIN ServiceItems AS SI ON PIP.ItemID = SI.ItemID
+WHERE PIP.ItemID = @ItemID
+AND dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1
+AND (@PoolID = 0 OR @PoolID <> 0 AND IP.PoolID = @PoolID)
+ORDER BY PIP.IsPrimary DESC
+
+RETURN
 				*/
 				#endregion
 
@@ -27730,6 +28627,23 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddItemIPAddress]
+(
+	@ActorID int,
+	@ItemID int,
+	@PackageAddressID int
+)
+AS
+BEGIN
+	UPDATE PackageIPAddresses
+	SET
+		ItemID = @ItemID,
+		IsPrimary = 0
+	FROM PackageIPAddresses AS PIP
+	WHERE
+		PIP.PackageAddressID = @PackageAddressID
+		AND dbo.CheckActorPackageRights(@ActorID, PIP.PackageID) = 1
+END
 				*/
 				#endregion
 
@@ -27750,6 +28664,30 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[SetItemPrimaryIPAddress]
+(
+	@ActorID int,
+	@ItemID int,
+	@PackageAddressID int
+)
+AS
+BEGIN
+
+	-- read item pool
+	DECLARE @PoolID int
+	SELECT @PoolID = IP.PoolID FROM PackageIPAddresses AS PIP
+	INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
+	WHERE PIP.PackageAddressID = @PackageAddressID
+
+	-- update all IP addresses of the specified pool
+	UPDATE PackageIPAddresses
+	SET IsPrimary = CASE PIP.PackageAddressID WHEN @PackageAddressID THEN 1 ELSE 0 END
+	FROM PackageIPAddresses AS PIP
+	INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
+	WHERE PIP.ItemID = @ItemID
+	AND IP.PoolID = @PoolID
+	AND dbo.CheckActorPackageRights(@ActorID, PIP.PackageID) = 1
+END
 				*/
 				#endregion
 
@@ -27770,6 +28708,23 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteItemIPAddress]
+(
+	@ActorID int,
+	@ItemID int,
+	@PackageAddressID int
+)
+AS
+BEGIN
+	UPDATE PackageIPAddresses
+	SET
+		ItemID = NULL,
+		IsPrimary = 0
+	FROM PackageIPAddresses AS PIP
+	WHERE
+		PIP.PackageAddressID = @PackageAddressID
+		AND dbo.CheckActorPackageRights(@ActorID, PIP.PackageID) = 1
+END
 				*/
 				#endregion
 
@@ -27790,6 +28745,22 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteItemIPAddresses]
+(
+	@ActorID int,
+	@ItemID int
+)
+AS
+BEGIN
+	UPDATE PackageIPAddresses
+	SET
+		ItemID = NULL,
+		IsPrimary = 0
+	FROM PackageIPAddresses AS PIP
+	WHERE
+		PIP.ItemID = @ItemID
+		AND dbo.CheckActorPackageRights(@ActorID, PIP.PackageID) = 1
+END
 				*/
 				#endregion
 
@@ -27811,6 +28782,24 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetItemPrivateIPAddresses]
+(
+	@ActorID int,
+	@ItemID int
+)
+AS
+
+SELECT
+	PIP.PrivateAddressID AS AddressID,
+	PIP.IPAddress,
+	PIP.IsPrimary
+FROM PrivateIPAddresses AS PIP
+INNER JOIN ServiceItems AS SI ON PIP.ItemID = SI.ItemID
+WHERE PIP.ItemID = @ItemID
+AND dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1
+ORDER BY PIP.IsPrimary DESC
+
+RETURN
 				*/
 				#endregion
 
@@ -27830,6 +28819,33 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddItemPrivateIPAddress]
+(
+	@ActorID int,
+	@ItemID int,
+	@IPAddress varchar(15)
+)
+AS
+
+IF EXISTS (SELECT ItemID FROM ServiceItems AS SI WHERE dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1)
+BEGIN
+
+	INSERT INTO PrivateIPAddresses
+	(
+		ItemID,
+		IPAddress,
+		IsPrimary
+	)
+	VALUES
+	(
+		@ItemID,
+		@IPAddress,
+		0 -- not primary
+	)
+
+END
+
+RETURN
 				*/
 				#endregion
 
@@ -27850,6 +28866,21 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[SetItemPrivatePrimaryIPAddress]
+(
+	@ActorID int,
+	@ItemID int,
+	@PrivateAddressID int
+)
+AS
+BEGIN
+	UPDATE PrivateIPAddresses
+	SET IsPrimary = CASE PIP.PrivateAddressID WHEN @PrivateAddressID THEN 1 ELSE 0 END
+	FROM PrivateIPAddresses AS PIP
+	INNER JOIN ServiceItems AS SI ON PIP.ItemID = SI.ItemID
+	WHERE PIP.ItemID = @ItemID
+	AND dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1
+END
 				*/
 				#endregion
 
@@ -27870,6 +28901,20 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteItemPrivateIPAddress]
+(
+	@ActorID int,
+	@ItemID int,
+	@PrivateAddressID int
+)
+AS
+BEGIN
+	DELETE FROM PrivateIPAddresses
+	FROM PrivateIPAddresses AS PIP
+	INNER JOIN ServiceItems AS SI ON PIP.ItemID = SI.ItemID
+	WHERE PIP.PrivateAddressID = @PrivateAddressID
+	AND dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1
+END
 				*/
 				#endregion
 
@@ -27890,6 +28935,19 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteItemPrivateIPAddresses]
+(
+	@ActorID int,
+	@ItemID int
+)
+AS
+BEGIN
+	DELETE FROM PrivateIPAddresses
+	FROM PrivateIPAddresses AS PIP
+	INNER JOIN ServiceItems AS SI ON PIP.ItemID = SI.ItemID
+	WHERE PIP.ItemID = @ItemID
+	AND dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1
+END
 				*/
 				#endregion
 
@@ -27912,6 +28970,26 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddBlackBerryUser]
+	@AccountID int
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+INSERT INTO
+	dbo.BlackBerryUsers
+	(
+
+	 AccountID,
+	 CreatedDate,
+	 ModifiedDate)
+VALUES
+(
+	@AccountID,
+	getdate(),
+	getdate()
+)
+END
 				*/
 				#endregion
 
@@ -27931,9 +29009,20 @@ END
 			{
 				#region Stored Procedure
 				/*
-				*/
+CREATE PROCEDURE [dbo].[CheckBlackBerryUserExists]
+	@AccountID int
+AS
+BEGIN
+	SELECT
+		COUNT(AccountID)
+	FROM
+		dbo.BlackBerryUsers
+	WHERE AccountID = @AccountID
+END
+		*/
 				#endregion
 
+				return BlackBerryUsers.Any(u => u.AccountId == accountId);
 			}
 			else
 			{
@@ -27949,6 +29038,108 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetBlackBerryUsers]
+(
+	@ItemID int,
+	@SortColumn nvarchar(40),
+	@SortDirection nvarchar(20),
+	@Name nvarchar(400),
+	@Email nvarchar(400),
+	@StartRow int,
+	@Count int
+)
+AS
+
+IF (@Name IS NULL)
+BEGIN
+	SET @Name = '%'
+END
+
+IF (@Email IS NULL)
+BEGIN
+	SET @Email = '%'
+END
+
+CREATE TABLE #TempBlackBerryUsers
+(
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[AccountID] [int],
+	[ItemID] [int] NOT NULL,
+	[AccountName] [nvarchar](300) NOT NULL,
+	[DisplayName] [nvarchar](300) NOT NULL,
+	[PrimaryEmailAddress] [nvarchar](300) NULL,
+	[SamAccountName] [nvarchar](100) NULL
+)
+
+IF (@SortColumn = 'DisplayName')
+BEGIN
+	INSERT INTO
+		#TempBlackBerryUsers
+	SELECT
+		ea.AccountID,
+		ea.ItemID,
+		ea.AccountName,
+		ea.DisplayName,
+		ea.PrimaryEmailAddress,
+		ea.SamAccountName
+	FROM
+		ExchangeAccounts ea
+	INNER JOIN
+		BlackBerryUsers bu
+	ON
+		ea.AccountID = bu.AccountID
+	WHERE
+		ea.ItemID = @ItemID AND ea.DisplayName LIKE @Name AND ea.PrimaryEmailAddress LIKE @Email
+	ORDER BY
+		ea.DisplayName
+END
+ELSE
+BEGIN
+	INSERT INTO
+		#TempBlackBerryUsers
+	SELECT
+		ea.AccountID,
+		ea.ItemID,
+		ea.AccountName,
+		ea.DisplayName,
+		ea.PrimaryEmailAddress,
+		ea.SamAccountName
+	FROM
+		ExchangeAccounts ea
+	INNER JOIN
+		BlackBerryUsers bu
+	ON
+		ea.AccountID = bu.AccountID
+	WHERE
+		ea.ItemID = @ItemID AND ea.DisplayName LIKE @Name AND ea.PrimaryEmailAddress LIKE @Email
+	ORDER BY
+		ea.PrimaryEmailAddress
+END
+
+DECLARE @RetCount int
+SELECT @RetCount = COUNT(ID) FROM #TempBlackBerryUsers
+
+IF (@SortDirection = 'ASC')
+BEGIN
+	SELECT * FROM #TempBlackBerryUsers
+	WHERE ID > @StartRow AND ID <= (@StartRow + @Count)
+END
+ELSE
+BEGIN
+	IF (@SortColumn = 'DisplayName')
+	BEGIN
+		SELECT * FROM #TempBlackBerryUsers
+			WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY DisplayName DESC
+	END
+	ELSE
+	BEGIN
+		SELECT * FROM #TempBlackBerryUsers
+			WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY PrimaryEmailAddress DESC
+	END
+
+END
+
+DROP TABLE #TempBlackBerryUsers
 				*/
 				#endregion
 
@@ -27980,6 +29171,35 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetBlackBerryUsersCount]
+(
+	@ItemID int,
+	@Name nvarchar(400),
+	@Email nvarchar(400)
+
+)
+AS
+
+IF (@Name IS NULL)
+BEGIN
+	SET @Name = '%'
+END
+
+IF (@Email IS NULL)
+BEGIN
+	SET @Email = '%'
+END
+
+SELECT
+	COUNT(ea.AccountID)
+FROM
+	ExchangeAccounts ea
+INNER JOIN
+	BlackBerryUsers bu
+ON
+	ea.AccountID = bu.AccountID
+WHERE
+	ea.ItemID = @ItemID AND ea.DisplayName LIKE @Name AND ea.PrimaryEmailAddress LIKE @Email
 				*/
 				#endregion
 
@@ -28002,9 +29222,22 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteBlackBerryUser]
+(
+	@AccountID int
+)
+AS
+
+DELETE FROM
+	BlackBerryUsers
+WHERE
+	AccountID = @AccountID
+
+RETURN
 				*/
 				#endregion
 
+				BlackBerryUsers.Where(u => u.AccountId == accountId).ExecuteDelete(BlackBerryUsers);
 			}
 			else
 			{
@@ -28024,7 +29257,29 @@ END
 			{
 				#region Stored Procedure
 				/*
-				*/
+CREATE PROCEDURE [dbo].[AddOCSUser]
+	@AccountID int,
+	@InstanceID nvarchar(50)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+INSERT INTO
+	dbo.OCSUsers
+	(
+
+	 AccountID,
+     InstanceID,
+	 CreatedDate,
+	 ModifiedDate)
+VALUES
+(
+	@AccountID,
+	@InstanceID,
+	getdate(),
+	getdate()
+)
+END				*/
 				#endregion
 
 			}
@@ -28046,9 +29301,20 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[CheckOCSUserExists]
+	@AccountID int
+AS
+BEGIN
+	SELECT
+		COUNT(AccountID)
+	FROM
+		dbo.OCSUsers
+	WHERE AccountID = @AccountID
+END
 				*/
 				#endregion
 
+				return OcsUsers.Any(u => u.AccountId == accountId);
 			}
 			else
 			{
@@ -28064,6 +29330,111 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetOCSUsers]
+(
+	@ItemID int,
+	@SortColumn nvarchar(40),
+	@SortDirection nvarchar(20),
+	@Name nvarchar(400),
+	@Email nvarchar(400),
+	@StartRow int,
+	@Count int
+)
+AS
+
+IF (@Name IS NULL)
+BEGIN
+	SET @Name = '%'
+END
+
+IF (@Email IS NULL)
+BEGIN
+	SET @Email = '%'
+END
+
+CREATE TABLE #TempOCSUsers
+(
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[AccountID] [int],
+	[ItemID] [int] NOT NULL,
+	[AccountName] [nvarchar](300)  NOT NULL,
+	[DisplayName] [nvarchar](300)  NOT NULL,
+	[InstanceID] [nvarchar](50)  NOT NULL,
+	[PrimaryEmailAddress] [nvarchar](300) NULL,
+	[SamAccountName] [nvarchar](100) NULL
+)
+
+IF (@SortColumn = 'DisplayName')
+BEGIN
+	INSERT INTO
+		#TempOCSUsers
+	SELECT
+		ea.AccountID,
+		ea.ItemID,
+		ea.AccountName,
+		ea.DisplayName,
+		ou.InstanceID,
+		ea.PrimaryEmailAddress,
+		ea.SamAccountName
+	FROM
+		ExchangeAccounts ea
+	INNER JOIN
+		OCSUsers ou
+	ON
+		ea.AccountID = ou.AccountID
+	WHERE
+		ea.ItemID = @ItemID AND ea.DisplayName LIKE @Name AND ea.PrimaryEmailAddress LIKE @Email
+	ORDER BY
+		ea.DisplayName
+END
+ELSE
+BEGIN
+	INSERT INTO
+		#TempOCSUsers
+	SELECT
+		ea.AccountID,
+		ea.ItemID,
+		ea.AccountName,
+		ea.DisplayName,
+		ou.InstanceID,
+		ea.PrimaryEmailAddress,
+		ea.SamAccountName
+	FROM
+		ExchangeAccounts ea
+	INNER JOIN
+		OCSUsers ou
+	ON
+		ea.AccountID = ou.AccountID
+	WHERE
+		ea.ItemID = @ItemID AND ea.DisplayName LIKE @Name AND ea.PrimaryEmailAddress LIKE @Email
+	ORDER BY
+		ea.PrimaryEmailAddress
+END
+
+DECLARE @RetCount int
+SELECT @RetCount = COUNT(ID) FROM #TempOCSUsers
+
+IF (@SortDirection = 'ASC')
+BEGIN
+	SELECT * FROM #TempOCSUsers
+	WHERE ID > @StartRow AND ID <= (@StartRow + @Count)
+END
+ELSE
+BEGIN
+	IF (@SortColumn = 'DisplayName')
+	BEGIN
+		SELECT * FROM #TempOCSUsers
+			WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY DisplayName DESC
+	END
+	ELSE
+	BEGIN
+		SELECT * FROM #TempOCSUsers
+			WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY PrimaryEmailAddress DESC
+	END
+
+END
+
+DROP TABLE #TempOCSUsers
 				*/
 				#endregion
 
@@ -28093,6 +29464,35 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetOCSUsersCount]
+(
+	@ItemID int,
+	@Name nvarchar(400),
+	@Email nvarchar(400)
+
+)
+AS
+
+IF (@Name IS NULL)
+BEGIN
+	SET @Name = '%'
+END
+
+IF (@Email IS NULL)
+BEGIN
+	SET @Email = '%'
+END
+
+SELECT
+	COUNT(ea.AccountID)
+FROM
+	ExchangeAccounts ea
+INNER JOIN
+	OCSUsers ou
+ON
+	ea.AccountID = ou.AccountID
+WHERE
+	ea.ItemID = @ItemID AND ea.DisplayName LIKE @Name AND ea.PrimaryEmailAddress LIKE @Email
 				*/
 				#endregion
 
@@ -28116,9 +29516,22 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteOCSUser]
+(
+	@InstanceId nvarchar(50)
+)
+AS
+
+DELETE FROM
+	OCSUsers
+WHERE
+	InstanceId = @InstanceId
+
+RETURN
 				*/
 				#endregion
 
+				OcsUsers.Where(u => u.InstanceId == instanceId).ExecuteDelete(OcsUsers);
 			}
 			else
 			{
@@ -28136,9 +29549,22 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetInstanceID]
+	 @AccountID int
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	SELECT InstanceID FROM OCSUsers WHERE AccountID = @AccountID
+END
 				*/
 				#endregion
 
+				var instanceId = OcsUsers
+					.Where(u => u.AccountId == accountId)
+					.Select(u => u.InstanceId)
+					.FirstOrDefault();
+				return instanceId;
 			}
 			else
 			{
@@ -28158,6 +29584,39 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddSSLRequest]
+(
+	@SSLID int OUTPUT,
+	@ActorID int,
+	@PackageID int,
+	@UserID int,
+	@WebSiteID int,
+	@FriendlyName nvarchar(255),
+	@HostName nvarchar(255),
+	@CSR ntext,
+	@CSRLength int,
+	@DistinguishedName nvarchar(500),
+	@IsRenewal bit = 0,
+	@PreviousId int = NULL
+
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+BEGIN
+	RAISERROR('You are not allowed to access this package', 16, 1)
+	RETURN
+END
+
+-- insert record
+INSERT INTO [dbo].[SSLCertificates]
+	([UserID], [SiteID], [FriendlyName], [Hostname], [DistinguishedName], [CSR], [CSRLength], [IsRenewal], [PreviousId])
+VALUES
+	(@UserID, @WebSiteID, @FriendlyName, @HostName, @DistinguishedName, @CSR, @CSRLength, @IsRenewal, @PreviousId)
+
+SET @SSLID = SCOPE_IDENTITY()
+RETURN
 				*/
 				#endregion
 
@@ -28190,6 +29649,41 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[CompleteSSLRequest]
+(
+	@ActorID int,
+	@PackageID int,
+	@ID int,
+	@Certificate ntext,
+	@SerialNumber nvarchar(250),
+	@Hash ntext,
+	@DistinguishedName nvarchar(500),
+	@ValidFrom datetime,
+	@ExpiryDate datetime
+
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+BEGIN
+	RAISERROR('You are not allowed to access this package', 16, 1)
+	RETURN
+END
+
+-- insert record
+UPDATE
+	[dbo].[SSLCertificates]
+SET
+	[Certificate] = @Certificate,
+	[Installed] = 1,
+	[SerialNumber] = @SerialNumber,
+	[DistinguishedName] = @DistinguishedName,
+	[Hash] = @Hash,
+	[ValidFrom] = @ValidFrom,
+	[ExpiryDate] = @ExpiryDate
+WHERE
+	[ID] = @ID;
 				*/
 				#endregion
 
@@ -28216,6 +29710,37 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddPFX]
+(
+	@ActorID int,
+	@PackageID int,
+	@UserID int,
+	@WebSiteID int,
+	@FriendlyName nvarchar(255),
+	@HostName nvarchar(255),
+	@CSRLength int,
+	@DistinguishedName nvarchar(500),
+	@SerialNumber nvarchar(250),
+	@ValidFrom datetime,
+	@ExpiryDate datetime
+
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+BEGIN
+	RAISERROR('You are not allowed to access this package', 16, 1)
+	RETURN
+END
+
+-- insert record
+INSERT INTO [dbo].[SSLCertificates]
+	([UserID], [SiteID], [FriendlyName], [Hostname], [DistinguishedName], [CSRLength], [SerialNumber], [ValidFrom], [ExpiryDate], [Installed])
+VALUES
+	(@UserID, @WebSiteID, @FriendlyName, @HostName, @DistinguishedName, @CSRLength, @SerialNumber, @ValidFrom, @ExpiryDate, 1)
+
+RETURN
 				*/
 				#endregion
 
@@ -28238,6 +29763,7 @@ END
 			}
 		}
 
+		// Does not exist in stored procedures
 		public DataSet GetSSL(int actorId, int packageId, int id)
 		{
 			if (UseEntityFramework)
@@ -28262,6 +29788,30 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetCertificatesForSite]
+(
+	@ActorID int,
+	@PackageID int,
+	@websiteid int
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+BEGIN
+	RAISERROR('You are not allowed to access this package', 16, 1)
+	RETURN
+END
+
+SELECT
+	[ID], [UserID], [SiteID], [FriendlyName], [Hostname], [DistinguishedName],
+	[CSR], [CSRLength], [ValidFrom], [ExpiryDate], [Installed], [IsRenewal],
+	[PreviousId], [SerialNumber]
+FROM
+	[dbo].[SSLCertificates]
+WHERE
+	[SiteID] = @websiteid
+RETURN
 				*/
 				#endregion
 
@@ -28282,6 +29832,30 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetPendingSSLForWebsite]
+(
+	@ActorID int,
+	@PackageID int,
+	@websiteid int,
+	@Recursive bit = 1
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+BEGIN
+	RAISERROR('You are not allowed to access this package', 16, 1)
+	RETURN
+END
+
+SELECT
+	[ID], [UserID], [SiteID], [Hostname], [CSR], [Certificate], [Hash], [Installed]
+FROM
+	[dbo].[SSLCertificates]
+WHERE
+	@websiteid = 2 AND [Installed] = 0 AND [IsRenewal] = 0
+
+RETURN
 				*/
 				#endregion
 
@@ -28303,6 +29877,23 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetSSLCertificateByID]
+(
+	@ActorID int,
+	@ID int
+)
+AS
+
+SELECT
+	[ID], [UserID], [SiteID], [Hostname], [FriendlyName], [CSR], [Certificate], [Hash], [Installed], [IsRenewal], [PreviousId]
+FROM
+	[dbo].[SSLCertificates]
+INNER JOIN
+	[dbo].[ServiceItems] AS [SI] ON [SSLCertificates].[SiteID] = [SI].[ItemID]
+WHERE
+	[ID] = @ID AND [dbo].CheckActorPackageRights(@ActorID, [SI].[PackageID]) = 1
+
+RETURN
 				*/
 				#endregion
 
@@ -28322,6 +29913,32 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[CheckSSL]
+(
+	@siteID int,
+	@Renewal bit = 0,
+	@Result int OUTPUT
+)
+AS
+
+/*
+@Result values:
+	0 - OK
+	-1 - already exists
+*//*
+
+SET @Result = 0 -- OK
+
+-- check if a SSL Certificate is installed for domain
+IF EXISTS(SELECT [ID] FROM [dbo].[SSLCertificates] WHERE [SiteID] = @siteID)
+BEGIN
+	SET @Result = -1
+	RETURN
+END
+
+--To Do add renewal stuff
+
+RETURN
 				*/
 				#endregion
 
@@ -28341,6 +29958,7 @@ END
 			}
 		}
 
+		// TODO this is a duplicate of GetSSLCertificateByID
 		public IDataReader GetSiteCert(int actorId, int siteID)
 		{
 			if (UseEntityFramework)
@@ -28366,6 +29984,29 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteCertificate]
+(
+	@ActorID int,
+	@PackageID int,
+	@id int
+
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+BEGIN
+	RAISERROR('You are not allowed to access this package', 16, 1)
+	RETURN
+END
+
+-- insert record
+DELETE FROM
+	[dbo].[SSLCertificates]
+WHERE
+	[ID] = @id
+
+RETURN
 				*/
 				#endregion
 
@@ -28386,6 +30027,32 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[CheckSSLExistsForWebsite]
+(
+	@siteID int,
+	@SerialNumber nvarchar(250),
+	@Result bit OUTPUT
+)
+AS
+
+/*
+@Result values:
+	0 - OK
+	-1 - already exists
+*//*
+
+SET @Result = 0 -- OK
+
+-- check if a SSL Certificate is installed for domain
+IF EXISTS(SELECT [ID] FROM [dbo].[SSLCertificates] WHERE [SiteID] = @siteID
+--AND SerialNumber=@SerialNumber
+)
+BEGIN
+	SET @Result = 1
+	RETURN
+END
+
+RETURN
 				*/
 				#endregion
 
@@ -28411,9 +30078,40 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddLyncUser]
+	@AccountID int,
+	@LyncUserPlanID int,
+	@SipAddress nvarchar(300)
+AS
+INSERT INTO
+	dbo.LyncUsers
+	(AccountID,
+	 LyncUserPlanID,
+	 CreatedDate,
+	 ModifiedDate,
+	 SipAddress)
+VALUES
+(
+	@AccountID,
+	@LyncUserPlanID,
+	getdate(),
+	getdate(),
+	@SipAddress
+)
 				*/
 				#endregion
 
+				var now = DateTime.Now;
+				var user = new Data.Entities.LyncUser()
+				{
+					AccountId = accountId,
+					LyncUserPlanId = lyncUserPlanId,
+					CreatedDate = now,
+					ModifiedDate = now,
+					SipAddress = sipAddress
+				};
+				LyncUsers.Add(user);
+				SaveChanges();
 			}
 			else
 			{
@@ -28434,6 +30132,19 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdateLyncUser]
+(
+	@AccountID int,
+	@SipAddress nvarchar(300)
+)
+AS
+
+UPDATE LyncUsers SET
+	SipAddress = @SipAddress
+WHERE
+	AccountID = @AccountID
+
+RETURN
 				*/
 				#endregion
 
@@ -28457,9 +30168,20 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[CheckLyncUserExists]
+	@AccountID int
+AS
+BEGIN
+	SELECT
+		COUNT(AccountID)
+	FROM
+		dbo.LyncUsers
+	WHERE AccountID = @AccountID
+END
 				*/
 				#endregion
 
+				return LyncUsers.Any(u => u.AccountId == accountId);
 			}
 			else
 			{
@@ -28475,9 +30197,46 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[LyncUserExists]
+(
+	@AccountID int,
+	@SipAddress nvarchar(300),
+	@Exists bit OUTPUT
+)
+AS
+
+	SET @Exists = 0
+	IF EXISTS(SELECT * FROM [dbo].[ExchangeAccountEmailAddresses] WHERE [EmailAddress] = @SipAddress AND [AccountID] <> @AccountID)
+		BEGIN
+			SET @Exists = 1
+		END
+	ELSE IF EXISTS(SELECT * FROM [dbo].[ExchangeAccounts] WHERE [PrimaryEmailAddress] = @SipAddress AND [AccountID] <> @AccountID)
+		BEGIN
+			SET @Exists = 1
+		END
+	ELSE IF EXISTS(SELECT * FROM [dbo].[ExchangeAccounts] WHERE [UserPrincipalName] = @SipAddress AND [AccountID] <> @AccountID)
+		BEGIN
+			SET @Exists = 1
+		END
+	ELSE IF EXISTS(SELECT * FROM [dbo].[ExchangeAccounts] WHERE [AccountName] = @SipAddress AND [AccountID] <> @AccountID)
+		BEGIN
+			SET @Exists = 1
+		END
+	ELSE IF EXISTS(SELECT * FROM [dbo].[LyncUsers] WHERE [SipAddress] = @SipAddress)
+		BEGIN
+			SET @Exists = 1
+		END
+
+	RETURN
 				*/
 				#endregion
 
+				return ExchangeAccountEmailAddresses.Any(a => a.EmailAddress == sipAddress && a.AccountId != accountId) ||
+					ExchangeAccounts.Any(a => a.AccountId != accountId &&
+						(a.PrimaryEmailAddress == sipAddress ||
+						a.UserPrincipalName == sipAddress ||
+						a.AccountName == sipAddress)) ||
+					LyncUsers.Any((u => u.SipAddress == sipAddress));
 			}
 			else
 			{
@@ -28504,6 +30263,126 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetLyncUsers]
+(
+	@ItemID int,
+	@SortColumn nvarchar(40),
+	@SortDirection nvarchar(20),
+	@StartRow int,
+	@Count int	
+)
+AS
+
+CREATE TABLE #TempLyncUsers 
+(	
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[AccountID] [int],	
+	[ItemID] [int] NOT NULL,
+	[AccountName] [nvarchar](300)  NOT NULL,
+	[DisplayName] [nvarchar](300)  NOT NULL,
+	[UserPrincipalName] [nvarchar](300) NULL,
+	[SipAddress] [nvarchar](300) NULL,
+	[SamAccountName] [nvarchar](100) NULL,
+	[LyncUserPlanId] [int] NOT NULL,		
+	[LyncUserPlanName] [nvarchar] (300) NOT NULL,		
+)
+
+DECLARE @condition nvarchar(700)
+SET @condition = ''
+
+IF (@SortColumn = 'DisplayName')
+BEGIN
+	SET @condition = 'ORDER BY ea.DisplayName'
+END
+
+IF (@SortColumn = 'UserPrincipalName')
+BEGIN
+	SET @condition = 'ORDER BY ea.UserPrincipalName'
+END
+
+IF (@SortColumn = 'SipAddress')
+BEGIN
+	SET @condition = 'ORDER BY ou.SipAddress'
+END
+
+IF (@SortColumn = 'LyncUserPlanName')
+BEGIN
+	SET @condition = 'ORDER BY lp.LyncUserPlanName'
+END
+
+DECLARE @sql nvarchar(3500)
+
+set @sql = '
+	INSERT INTO 
+		#TempLyncUsers 
+	SELECT 
+		ea.AccountID,
+		ea.ItemID,
+		ea.AccountName,
+		ea.DisplayName,
+		ea.UserPrincipalName,
+		ou.SipAddress,
+		ea.SamAccountName,
+		ou.LyncUserPlanId,
+		lp.LyncUserPlanName				
+	FROM 
+		ExchangeAccounts ea 
+	INNER JOIN 
+		LyncUsers ou
+	INNER JOIN
+		LyncUserPlans lp 
+	ON
+		ou.LyncUserPlanId = lp.LyncUserPlanId				
+	ON 
+		ea.AccountID = ou.AccountID
+	WHERE 
+		ea.ItemID = @ItemID ' + @condition
+
+exec sp_executesql @sql, N'@ItemID int',@ItemID
+
+DECLARE @RetCount int
+SELECT @RetCount = COUNT(ID) FROM #TempLyncUsers 
+
+IF (@SortDirection = 'ASC')
+BEGIN
+	SELECT * FROM #TempLyncUsers 
+	WHERE ID > @StartRow AND ID <= (@StartRow + @Count) 
+END
+ELSE
+BEGIN
+	IF @SortColumn <> '' AND @SortColumn IS NOT NULL
+	BEGIN
+		IF (@SortColumn = 'DisplayName')
+		BEGIN
+			SELECT * FROM #TempLyncUsers 
+				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY DisplayName DESC
+		END
+		IF (@SortColumn = 'UserPrincipalName')
+		BEGIN
+			SELECT * FROM #TempLyncUsers 
+				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
+		END
+
+		IF (@SortColumn = 'SipAddress')
+		BEGIN
+			SELECT * FROM #TempLyncUsers 
+				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY SipAddress DESC
+		END
+
+		IF (@SortColumn = 'LyncUserPlanName')
+		BEGIN
+			SELECT * FROM #TempLyncUsers 
+				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY LyncUserPlanName DESC
+		END
+	END
+	ELSE
+	BEGIN
+        SELECT * FROM #TempLyncUsers 
+			WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
+	END	
+END
+
+DROP TABLE #TempLyncUsers
 				*/
 				#endregion
 
@@ -28533,6 +30412,35 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetLyncUsersByPlanId]
+(
+	@ItemID int,
+	@PlanId int
+)
+AS
+
+	SELECT
+		ea.AccountID,
+		ea.ItemID,
+		ea.AccountName,
+		ea.DisplayName,
+		ea.UserPrincipalName,
+		ea.SamAccountName,
+		ou.LyncUserPlanId,
+		lp.LyncUserPlanName
+	FROM
+		ExchangeAccounts ea
+	INNER JOIN
+		LyncUsers ou
+	INNER JOIN
+		LyncUserPlans lp
+	ON
+		ou.LyncUserPlanId = lp.LyncUserPlanId
+	ON
+		ea.AccountID = ou.AccountID
+	WHERE
+		ea.ItemID = @ItemID AND
+		ou.LyncUserPlanId = @PlanId
 				*/
 				#endregion
 
@@ -28554,9 +30462,29 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetLyncUsersCount]
+(
+	@ItemID int
+)
+AS
+
+SELECT
+	COUNT(ea.AccountID)
+FROM
+	ExchangeAccounts ea
+INNER JOIN
+	LyncUsers ou
+ON
+	ea.AccountID = ou.AccountID
+WHERE
+	ea.ItemID = @ItemID
 				*/
 				#endregion
 
+				return ExchangeAccounts
+					.Where(ea => ea.ItemId == itemId)
+					.Join(LyncUsers, ea => ea.AccountId, l => l.AccountId, (ea, l) => null)
+					.Count();
 			}
 			else
 			{
@@ -28572,6 +30500,18 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteLyncUser]
+(
+	@AccountId int
+)
+AS
+
+DELETE FROM
+	LyncUsers
+WHERE
+	AccountId = @AccountId
+
+RETURN
 				*/
 				#endregion
 
@@ -28592,6 +30532,109 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddLyncUserPlan] 
+(
+	@LyncUserPlanId int OUTPUT,
+	@ItemID int,
+	@LyncUserPlanName	nvarchar(300),
+	@LyncUserPlanType int,
+	@IM bit,
+	@Mobility bit,
+	@MobilityEnableOutsideVoice bit,
+	@Federation bit,
+	@Conferencing bit,
+	@EnterpriseVoice bit,
+	@VoicePolicy int,
+	@IsDefault bit,
+
+	@RemoteUserAccess bit,
+	@PublicIMConnectivity bit,
+
+	@AllowOrganizeMeetingsWithExternalAnonymous bit,
+
+	@Telephony int,
+
+	@ServerURI nvarchar(300),
+
+	@ArchivePolicy  nvarchar(300),
+	@TelephonyDialPlanPolicy nvarchar(300),
+	@TelephonyVoicePolicy nvarchar(300)
+
+)
+AS
+
+IF (((SELECT Count(*) FROM LyncUserPlans WHERE ItemId = @ItemID) = 0) AND (@LyncUserPlanType=0))
+BEGIN
+	SET @IsDefault = 1
+END
+ELSE
+BEGIN
+	IF ((@IsDefault = 1) AND (@LyncUserPlanType=0))
+	BEGIN
+		UPDATE LyncUserPlans SET IsDefault = 0 WHERE ItemID = @ItemID
+	END
+END
+
+INSERT INTO LyncUserPlans
+(
+	ItemID,
+	LyncUserPlanName,
+	LyncUserPlanType,
+	IM,
+	Mobility,
+	MobilityEnableOutsideVoice,
+	Federation,
+	Conferencing,
+	EnterpriseVoice,
+	VoicePolicy,
+	IsDefault,
+
+	RemoteUserAccess,
+	PublicIMConnectivity,
+
+	AllowOrganizeMeetingsWithExternalAnonymous,
+
+	Telephony,
+
+	ServerURI,
+
+	ArchivePolicy,
+	TelephonyDialPlanPolicy,
+	TelephonyVoicePolicy
+
+)
+VALUES
+(
+	@ItemID,
+	@LyncUserPlanName,
+	@LyncUserPlanType,
+	@IM,
+	@Mobility,
+	@MobilityEnableOutsideVoice,
+	@Federation,
+	@Conferencing,
+	@EnterpriseVoice,
+	@VoicePolicy,
+	@IsDefault,
+
+	@RemoteUserAccess,
+	@PublicIMConnectivity,
+
+	@AllowOrganizeMeetingsWithExternalAnonymous,
+
+	@Telephony,
+
+	@ServerURI,
+
+	@ArchivePolicy,
+	@TelephonyDialPlanPolicy,
+	@TelephonyVoicePolicy
+
+)
+
+SET @LyncUserPlanId = SCOPE_IDENTITY()
+
+RETURN
 				*/
 				#endregion
 
@@ -28637,6 +30680,64 @@ END
 			{
 				#region Stored Procedure
 				/*
+ CREATE PROCEDURE [dbo].[UpdateLyncUserPlan] 
+(
+	@LyncUserPlanId int,
+	@LyncUserPlanName	nvarchar(300),
+	@LyncUserPlanType int,
+	@IM bit,
+	@Mobility bit,
+	@MobilityEnableOutsideVoice bit,
+	@Federation bit,
+	@Conferencing bit,
+	@EnterpriseVoice bit,
+	@VoicePolicy int,
+	@IsDefault bit,
+
+	@RemoteUserAccess bit,
+	@PublicIMConnectivity bit,
+
+	@AllowOrganizeMeetingsWithExternalAnonymous bit,
+
+	@Telephony int,
+
+	@ServerURI nvarchar(300),
+
+	@ArchivePolicy nvarchar(300),
+
+	@TelephonyDialPlanPolicy nvarchar(300),
+	@TelephonyVoicePolicy nvarchar(300)
+)
+AS
+
+UPDATE LyncUserPlans SET
+	LyncUserPlanName = @LyncUserPlanName,
+	LyncUserPlanType = @LyncUserPlanType,
+	IM = @IM,
+	Mobility = @Mobility,
+	MobilityEnableOutsideVoice = @MobilityEnableOutsideVoice,
+	Federation = @Federation,
+	Conferencing =@Conferencing,
+	EnterpriseVoice = @EnterpriseVoice,
+	VoicePolicy = @VoicePolicy,
+	IsDefault = @IsDefault,
+
+	RemoteUserAccess = @RemoteUserAccess,
+	PublicIMConnectivity = @PublicIMConnectivity,
+
+	AllowOrganizeMeetingsWithExternalAnonymous = @AllowOrganizeMeetingsWithExternalAnonymous,
+
+	Telephony = @Telephony,
+
+	ServerURI = @ServerURI,
+
+	ArchivePolicy = @ArchivePolicy,
+	TelephonyDialPlanPolicy = @TelephonyDialPlanPolicy,
+	TelephonyVoicePolicy = @TelephonyVoicePolicy
+
+WHERE LyncUserPlanId = @LyncUserPlanId
+
+RETURN
 				*/
 				#endregion
 
@@ -28675,9 +30776,21 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteLyncUserPlan]
+(
+	@LyncUserPlanId int
+)
+AS
+
+-- delete lyncuserplan
+DELETE FROM LyncUserPlans
+WHERE LyncUserPlanId = @LyncUserPlanId
+
+RETURN
 				*/
 				#endregion
 
+				LyncUserPlans.Where(p => p.LyncUserPlanId == lyncUserPlanId).ExecuteDelete(LyncUserPlans);
 			}
 			else
 			{
@@ -28695,6 +30808,43 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetLyncUserPlan] 
+(
+	@LyncUserPlanId int
+)
+AS
+SELECT
+	LyncUserPlanId,
+	ItemID,
+	LyncUserPlanName,
+	LyncUserPlanType,
+	IM,
+	Mobility,
+	MobilityEnableOutsideVoice,
+	Federation,
+	Conferencing,
+	EnterpriseVoice,
+	VoicePolicy,
+	IsDefault,
+
+	RemoteUserAccess,
+	PublicIMConnectivity,
+
+	AllowOrganizeMeetingsWithExternalAnonymous,
+
+	Telephony,
+
+	ServerURI,
+
+	ArchivePolicy,
+	TelephonyDialPlanPolicy,
+	TelephonyVoicePolicy
+
+FROM
+	LyncUserPlans
+WHERE
+	LyncUserPlanId = @LyncUserPlanId
+RETURN
 				*/
 				#endregion
 
@@ -28716,6 +30866,30 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetLyncUserPlans]
+(
+	@ItemID int
+)
+AS
+SELECT
+	LyncUserPlanId,
+	ItemID,
+	LyncUserPlanName,
+	LyncUserPlanType,
+	IM,
+	Mobility,
+	MobilityEnableOutsideVoice,
+	Federation,
+	Conferencing,
+	EnterpriseVoice,
+	VoicePolicy,
+	IsDefault
+FROM
+	LyncUserPlans
+WHERE
+	ItemID = @ItemID
+ORDER BY LyncUserPlanName
+RETURN
 				*/
 				#endregion
 
@@ -28736,6 +30910,19 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[SetOrganizationDefaultLyncUserPlan]
+(
+	@ItemID int,
+	@LyncUserPlanId int
+)
+AS
+
+UPDATE ExchangeOrganizations SET
+	LyncUserPlanID = @LyncUserPlanId
+WHERE
+	ItemID = @ItemID
+
+RETURN
 				*/
 				#endregion
 
@@ -28757,6 +30944,29 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetLyncUserPlanByAccountId]
+(
+	@AccountID int
+)
+AS
+SELECT
+	LyncUserPlanId,
+	ItemID,
+	LyncUserPlanName,
+	LyncUserPlanType,
+	IM,
+	Mobility,
+	MobilityEnableOutsideVoice,
+	Federation,
+	Conferencing,
+	EnterpriseVoice,
+	VoicePolicy,
+	IsDefault
+FROM
+	LyncUserPlans
+WHERE
+	LyncUserPlanId IN (SELECT LyncUserPlanId FROM LyncUsers WHERE AccountID = @AccountID)
+RETURN
 				*/
 				#endregion
 
@@ -28777,6 +30987,19 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[SetLyncUserLyncUserPlan]
+(
+	@AccountID int,
+	@LyncUserPlanId int
+)
+AS
+
+UPDATE LyncUsers SET
+	LyncUserPlanId = @LyncUserPlanId
+WHERE
+	AccountID = @AccountID
+
+RETURN
 				*/
 				#endregion
 
@@ -28801,9 +31024,40 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddSfBUser]
+	@AccountID int,
+	@SfBUserPlanID int,
+	@SipAddress nvarchar(300)
+AS
+INSERT INTO
+	dbo.SfBUsers
+	(AccountID,
+	 SfBUserPlanID,
+	 CreatedDate,
+	 ModifiedDate,
+	 SipAddress)
+VALUES
+(
+	@AccountID,
+	@SfBUserPlanID,
+	getdate(),
+	getdate(),
+	@SipAddress
+)
 				*/
 				#endregion
 
+				var now = DateTime.Now;
+				var user = new Data.Entities.SfBUser()
+				{
+					AccountId = accountId,
+					SfBuserPlanId = sfbUserPlanId,
+					SipAddress = sipAddress,
+					CreatedDate = now,
+					ModifiedDate = now
+				};
+				SfBUsers.Add(user);
+				SaveChanges();
 			}
 			else
 			{
@@ -28824,6 +31078,19 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdateSfBUser]
+(
+	@AccountID int,
+	@SipAddress nvarchar(300)
+)
+AS
+
+UPDATE SfBUsers SET
+	SipAddress = @SipAddress
+WHERE
+	AccountID = @AccountID
+
+RETURN
 				*/
 				#endregion
 
@@ -28842,9 +31109,31 @@ END
 
 		public bool CheckSfBUserExists(int accountId)
 		{
-			int res = (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "CheckSfBUserExists",
+			if (UseEntityFramework)
+			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[CheckSfBUserExists]
+	@AccountID int
+AS
+BEGIN
+	SELECT
+		COUNT(AccountID)
+	FROM
+		dbo.SfBUsers
+	WHERE AccountID = @AccountID
+END
+				*/
+				#endregion
+
+				return SfBUsers.Any(u => u.AccountId == accountId);
+			}
+			else
+			{
+				int res = (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "CheckSfBUserExists",
 				new SqlParameter("@AccountID", accountId));
-			return res > 0;
+				return res > 0;
+			}
 		}
 
 		public bool SfBUserExists(int accountId, string sipAddress)
@@ -28853,6 +31142,37 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[SfBUserExists]
+(
+	@AccountID int,
+	@SipAddress nvarchar(300),
+	@Exists bit OUTPUT
+)
+AS
+
+	SET @Exists = 0
+	IF EXISTS(SELECT * FROM [dbo].[ExchangeAccountEmailAddresses] WHERE [EmailAddress] = @SipAddress AND [AccountID] <> @AccountID)
+		BEGIN
+			SET @Exists = 1
+		END
+	ELSE IF EXISTS(SELECT * FROM [dbo].[ExchangeAccounts] WHERE [PrimaryEmailAddress] = @SipAddress AND [AccountID] <> @AccountID)
+		BEGIN
+			SET @Exists = 1
+		END
+	ELSE IF EXISTS(SELECT * FROM [dbo].[ExchangeAccounts] WHERE [UserPrincipalName] = @SipAddress AND [AccountID] <> @AccountID)
+		BEGIN
+			SET @Exists = 1
+		END
+	ELSE IF EXISTS(SELECT * FROM [dbo].[ExchangeAccounts] WHERE [AccountName] = @SipAddress AND [AccountID] <> @AccountID)
+		BEGIN
+			SET @Exists = 1
+		END
+	ELSE IF EXISTS(SELECT * FROM [dbo].[SfBUsers] WHERE [SipAddress] = @SipAddress)
+		BEGIN
+			SET @Exists = 1
+		END
+
+	RETURN
 				*/
 				#endregion
 
@@ -28880,6 +31200,158 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetSfBUsers]
+(
+	@ItemID int,
+	@SortColumn nvarchar(40),
+	@SortDirection nvarchar(20),
+	@StartRow int,
+	@Count int	
+)
+AS
+
+CREATE TABLE #TempSfBUsers 
+(	
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[AccountID] [int],	
+	[ItemID] [int] NOT NULL,
+	[AccountName] [nvarchar](300)  NOT NULL,
+	[DisplayName] [nvarchar](300)  NOT NULL,
+	[UserPrincipalName] [nvarchar](300) NULL,
+	[SipAddress] [nvarchar](300) NULL,
+	[SamAccountName] [nvarchar](100) NULL,
+	[SfBUserPlanId] [int] NOT NULL,		
+	[SfBUserPlanName] [nvarchar] (300) NOT NULL,		
+)
+
+DECLARE @condition nvarchar(700)
+SET @condition = ''
+
+IF (@SortColumn = 'DisplayName')
+BEGIN
+	SET @condition = 'ORDER BY ea.DisplayName'
+END
+
+IF (@SortColumn = 'UserPrincipalName')
+BEGIN
+	SET @condition = 'ORDER BY ea.UserPrincipalName'
+END
+
+IF (@SortColumn = 'SipAddress')
+BEGIN
+	SET @condition = 'ORDER BY ou.SipAddress'
+END
+
+IF (@SortColumn = 'SfBUserPlanName')
+BEGIN
+	SET @condition = 'ORDER BY lp.SfBUserPlanName'
+END
+
+DECLARE @sql nvarchar(3500)
+
+set @sql = '
+	INSERT INTO 
+		#TempSfBUsers 
+	SELECT 
+		ea.AccountID,
+		ea.ItemID,
+		ea.AccountName,
+		ea.DisplayName,
+		ea.UserPrincipalName,
+		ou.SipAddress,
+		ea.SamAccountName,
+		ou.SfBUserPlanId,
+		lp.SfBUserPlanName				
+	FROM 
+		ExchangeAccounts ea 
+	INNER JOIN 
+		SfBUsers ou
+	INNER JOIN
+		SfBUserPlans lp 
+	ON
+		ou.SfBUserPlanId = lp.SfBUserPlanId				
+	ON 
+		ea.AccountID = ou.AccountID
+	WHERE 
+		ea.ItemID = @ItemID ' + @condition
+
+exec sp_executesql @sql, N'@ItemID int',@ItemID
+
+DECLARE @RetCount int
+SELECT @RetCount = COUNT(ID) FROM #TempSfBUsers 
+
+IF (@SortDirection = 'ASC')
+BEGIN
+	SELECT * FROM #TempSfBUsers 
+	WHERE ID > @StartRow AND ID <= (@StartRow + @Count) 
+END
+ELSE
+BEGIN
+	IF @SortColumn <> '' AND @SortColumn IS NOT NULL
+	BEGIN
+		IF (@SortColumn = 'DisplayName')
+		BEGIN
+			SELECT * FROM #TempSfBUsers 
+				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY DisplayName DESC
+		END
+		IF (@SortColumn = 'UserPrincipalName')
+		BEGIN
+			SELECT * FROM #TempSfBUsers 
+				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
+		END
+
+		IF (@SortColumn = 'SipAddress')
+		BEGIN
+			SELECT * FROM #TempSfBUsers 
+				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY SipAddress DESC
+		END
+
+		IF (@SortColumn = 'SfBUserPlanName')
+		BEGIN
+			SELECT * FROM #TempSfBUsers 
+				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY SfBUserPlanName DESC
+		END
+	END
+	ELSE
+	BEGIN
+        SELECT * FROM #TempSfBUsers 
+			WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
+	END	
+END
+DROP TABLE #TempSfBUsers
+
+IF  NOT EXISTS (SELECT * FROM sys.objects WHERE type_desc = N'SQL_STORED_PROCEDURE' AND name = N'GetSfBUsersByPlanId')
+BEGIN
+EXEC sp_executesql N'CREATE PROCEDURE [dbo].[GetSfBUsersByPlanId]
+(
+	@ItemID int,
+	@PlanId int
+)
+AS
+
+	SELECT
+		ea.AccountID,
+		ea.ItemID,
+		ea.AccountName,
+		ea.DisplayName,
+		ea.UserPrincipalName,
+		ea.SamAccountName,
+		ou.SfBUserPlanId,
+		lp.SfBUserPlanName
+	FROM
+		ExchangeAccounts ea
+	INNER JOIN
+		SfBUsers ou
+	INNER JOIN
+		SfBUserPlans lp
+	ON
+		ou.SfBUserPlanId = lp.SfBUserPlanId
+	ON
+		ea.AccountID = ou.AccountID
+	WHERE
+		ea.ItemID = @ItemID AND
+		ou.SfBUserPlanId = @PlanId'
+END
 				*/
 				#endregion
 
@@ -28908,6 +31380,35 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetSfBUsersByPlanId]
+(
+	@ItemID int,
+	@PlanId int
+)
+AS
+
+	SELECT
+		ea.AccountID,
+		ea.ItemID,
+		ea.AccountName,
+		ea.DisplayName,
+		ea.UserPrincipalName,
+		ea.SamAccountName,
+		ou.SfBUserPlanId,
+		lp.SfBUserPlanName
+	FROM
+		ExchangeAccounts ea
+	INNER JOIN
+		SfBUsers ou
+	INNER JOIN
+		SfBUserPlans lp
+	ON
+		ou.SfBUserPlanId = lp.SfBUserPlanId
+	ON
+		ea.AccountID = ou.AccountID
+	WHERE
+		ea.ItemID = @ItemID AND
+		ou.SfBUserPlanId = @PlanId
 				*/
 				#endregion
 
@@ -28929,6 +31430,22 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetSfBUsersCount]
+(
+	@ItemID int
+)
+AS
+
+SELECT
+	COUNT(ea.AccountID)
+FROM
+	ExchangeAccounts ea
+INNER JOIN
+	SfBUsers ou
+ON
+	ea.AccountID = ou.AccountID
+WHERE
+	ea.ItemID = @ItemID
 				*/
 				#endregion
 
@@ -28947,6 +31464,18 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteSfBUser]
+(
+	@AccountId int
+)
+AS
+
+DELETE FROM
+	LyncUsers
+WHERE
+	AccountId = @AccountId
+
+RETURN
 				*/
 				#endregion
 
@@ -28966,6 +31495,92 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddSfBUserPlan]
+(
+	@SfBUserPlanId int OUTPUT,
+	@ItemID int,
+	@SfBUserPlanName	nvarchar(300),
+	@SfBUserPlanType int,
+	@IM bit,
+	@Mobility bit,
+	@MobilityEnableOutsideVoice bit,
+	@Federation bit,
+	@Conferencing bit,
+	@EnterpriseVoice bit,
+	@VoicePolicy int,
+	@IsDefault bit,
+	@RemoteUserAccess bit,
+	@PublicIMConnectivity bit,
+	@AllowOrganizeMeetingsWithExternalAnonymous bit,
+	@Telephony int,
+	@ServerURI nvarchar(300),
+	@ArchivePolicy  nvarchar(300),
+	@TelephonyDialPlanPolicy nvarchar(300),
+	@TelephonyVoicePolicy nvarchar(300)
+
+)
+AS
+
+IF (((SELECT Count(*) FROM SfBUserPlans WHERE ItemId = @ItemID) = 0) AND (@SfBUserPlanType=0))
+BEGIN
+	SET @IsDefault = 1
+END
+ELSE
+BEGIN
+	IF ((@IsDefault = 1) AND (@SfBUserPlanType=0))
+	BEGIN
+		UPDATE SfBUserPlans SET IsDefault = 0 WHERE ItemID = @ItemID
+	END
+END
+
+INSERT INTO SfBUserPlans
+(
+	ItemID,
+	SfBUserPlanName,
+	SfBUserPlanType,
+	IM,
+	Mobility,
+	MobilityEnableOutsideVoice,
+	Federation,
+	Conferencing,
+	EnterpriseVoice,
+	VoicePolicy,
+	IsDefault,
+	RemoteUserAccess,
+	PublicIMConnectivity,
+	AllowOrganizeMeetingsWithExternalAnonymous,
+	Telephony,
+	ServerURI,
+	ArchivePolicy,
+	TelephonyDialPlanPolicy,
+	TelephonyVoicePolicy
+
+)
+VALUES
+(
+	@ItemID,
+	@SfBUserPlanName,
+	@SfBUserPlanType,
+	@IM,
+	@Mobility,
+	@MobilityEnableOutsideVoice,
+	@Federation,
+	@Conferencing,
+	@EnterpriseVoice,
+	@VoicePolicy,
+	@IsDefault,
+	@RemoteUserAccess,
+	@PublicIMConnectivity,
+	@AllowOrganizeMeetingsWithExternalAnonymous,
+	@Telephony,
+	@ServerURI,
+	@ArchivePolicy,
+	@TelephonyDialPlanPolicy,
+	@TelephonyVoicePolicy
+)
+
+SET @SfBUserPlanId = SCOPE_IDENTITY()
+RETURN
 				*/
 				#endregion
 
@@ -29011,6 +31626,36 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdateSfBUserPlan]
+(
+	@SfBUserPlanId int,
+	@SfBUserPlanName	nvarchar(300),
+	@SfBUserPlanType int,
+	@IM bit,
+	@Mobility bit,
+	@MobilityEnableOutsideVoice bit,
+	@Federation bit,
+	@Conferencing bit,
+	@EnterpriseVoice bit,
+	@VoicePolicy int,
+	@IsDefault bit
+)
+AS
+
+UPDATE SfBUserPlans SET
+	SfBUserPlanName = @SfBUserPlanName,
+	SfBUserPlanType = @SfBUserPlanType,
+	IM = @IM,
+	Mobility = @Mobility,
+	MobilityEnableOutsideVoice = @MobilityEnableOutsideVoice,
+	Federation = @Federation,
+	Conferencing =@Conferencing,
+	EnterpriseVoice = @EnterpriseVoice,
+	VoicePolicy = @VoicePolicy,
+	IsDefault = @IsDefault
+WHERE SfBUserPlanId = @SfBUserPlanId
+
+RETURN
 				*/
 				#endregion
 
@@ -29049,6 +31694,17 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteSfBUserPlan]
+(
+	@SfBUserPlanId int
+)
+AS
+
+-- delete sfbuserplan
+DELETE FROM SfBUserPlans
+WHERE SfBUserPlanId = @SfBUserPlanId
+
+RETURN
 				*/
 				#endregion
 
@@ -29069,6 +31725,38 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetSfBUserPlan] 
+(
+	@SfBUserPlanId int
+)
+AS
+SELECT
+	SfBUserPlanId,
+	ItemID,
+	SfBUserPlanName,
+	SfBUserPlanType,
+	IM,
+	Mobility,
+	MobilityEnableOutsideVoice,
+	Federation,
+	Conferencing,
+	EnterpriseVoice,
+	VoicePolicy,
+	IsDefault,
+	RemoteUserAccess,
+	PublicIMConnectivity,
+	AllowOrganizeMeetingsWithExternalAnonymous,
+	Telephony,
+	ServerURI,
+	ArchivePolicy,
+	TelephonyDialPlanPolicy,
+	TelephonyVoicePolicy
+
+FROM
+	SfBUserPlans
+WHERE
+	SfBUserPlanId = @SfBUserPlanId
+RETURN
 				*/
 				#endregion
 
@@ -29090,6 +31778,30 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetSfBUserPlans]
+(
+	@ItemID int
+)
+AS
+SELECT
+	SfBUserPlanId,
+	ItemID,
+	SfBUserPlanName,
+	SfBUserPlanType,
+	IM,
+	Mobility,
+	MobilityEnableOutsideVoice,
+	Federation,
+	Conferencing,
+	EnterpriseVoice,
+	VoicePolicy,
+	IsDefault
+FROM
+	SfBUserPlans
+WHERE
+	ItemID = @ItemID
+ORDER BY SfBUserPlanName
+RETURN
 				*/
 				#endregion
 
@@ -29111,6 +31823,19 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[SetOrganizationDefaultSfBUserPlan]
+(
+	@ItemID int,
+	@SfBUserPlanId int
+)
+AS
+
+UPDATE ExchangeOrganizations SET
+	SfBUserPlanID = @SfBUserPlanId
+WHERE
+	ItemID = @ItemID
+
+RETURN
 				*/
 				#endregion
 
@@ -29132,6 +31857,29 @@ END
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetSfBUserPlanByAccountId]
+(
+	@AccountID int
+)
+AS
+SELECT
+	SfBUserPlanId,
+	ItemID,
+	SfBUserPlanName,
+	SfBUserPlanType,
+	IM,
+	Mobility,
+	MobilityEnableOutsideVoice,
+	Federation,
+	Conferencing,
+	EnterpriseVoice,
+	VoicePolicy,
+	IsDefault
+FROM
+	SfBUserPlans
+WHERE
+	SfBUserPlanId IN (SELECT SfBUserPlanId FROM SfBUsers WHERE AccountID = @AccountID)
+RETURN
 				*/
 				#endregion
 
@@ -29147,12 +31895,25 @@ END
 		}
 
 
-		public void SetSfBUserSfBUserplan(int accountId, int sfbUserPlanId)
+		public void SetSfBUserSfBUserPlan(int accountId, int sfbUserPlanId)
 		{
 			if (UseEntityFramework)
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[SetSfBUserSfBUserPlan]
+(
+	@AccountID int,
+	@SfBUserPlanId int
+)
+AS
+
+UPDATE SfBUsers SET
+	SfBUserPlanId = @SfBUserPlanId
+WHERE
+	AccountID = @AccountID
+
+RETURN
 				*/
 				#endregion
 
@@ -29162,13 +31923,14 @@ END
 				SqlHelper.ExecuteNonQuery(
 					ConnectionString,
 					CommandType.StoredProcedure,
-					"SetSfBUserSfBUserplan",
+					"SetSfBUserSfBUserPlan",
 					new SqlParameter("@AccountID", accountId),
 					new SqlParameter("@SfBUserPlanId", (sfbUserPlanId == 0) ? (object)DBNull.Value : (object)sfbUserPlanId));
 			}
 		}
 		#endregion
 
+		/*
 		public int GetPackageIdByName(string Name)
 		{
 			const bool UseEntityFrameworkForGetPackageIdByName = true;
@@ -29203,17 +31965,17 @@ END
 
 				return packageId;
 			}
-		}
+		}*/
 
 		public int GetServiceIdByProviderForServer(int providerId, int packageId)
 		{
 			if (UseEntityFramework)
 			{
-				#region Stored Procedure
-				/*
-				*/
-				#endregion
-
+				return PackageServices
+					.Where(p => p.PackageId == packageId)
+					.Join(Services.Where(s => s.ProviderId == providerId),
+						p => p.ServiceId, s => s.ServiceId, (p, s) => (int?)p.ServiceId)
+					.FirstOrDefault() ?? -1;
 			}
 			else
 			{
@@ -29241,7 +32003,12 @@ WHERE PackageServices.PackageID = @PackageID AND Services.ProviderID = @Provider
 		{
 			if (UseEntityFramework)
 			{
-				providerId = 0; groupId = 0;
+				var provider = Providers
+					.Where(p => p.ProviderName == providerName)
+					.Select(p => new { p.ProviderId, p.GroupId })
+					.FirstOrDefault();
+				providerId = provider?.ProviderId ?? 0;
+				groupId = provider?.GroupId ?? 0;
 			}
 			else
 			{
@@ -29263,11 +32030,18 @@ WHERE ProviderName = @ProviderName",
 		{
 			if (UseEntityFramework)
 			{
-				#region Stored Procedure
-				/*
-				*/
-				#endregion
-
+				var quota = Providers
+					.Where(p => p.ProviderId == providerId)
+					.Join(Quotas, p => p.GroupId, q => q.GroupId, (p, q) => new
+					{
+						q.QuotaId,
+						q.GroupId,
+						q.QuotaName,
+						q.QuotaDescription,
+						q.QuotaTypeId,
+						q.ServiceQuota
+					});
+				return EntityDataReader(quota);
 			}
 			else
 			{
@@ -29292,11 +32066,12 @@ WHERE P.ProviderID = @ProviderID",
 		{
 			if (UseEntityFramework)
 			{
-				#region Stored Procedure
-				/*
-				*/
-				#endregion
-
+				var quotaId = Quotas
+					.Where(q => q.QuotaName == engineName)
+					.Select(q => q.QuotaId)
+					.FirstOrDefault();
+				HostingPlanQuotas.Where(q => q.QuotaId == quotaId).ExecuteDelete(HostingPlanQuotas);
+				Quotas.Where(q => q.QuotaId == quotaId).ExecuteDelete(Quotas);
 			}
 			else
 			{
@@ -29329,11 +32104,18 @@ WHERE QuotaName = @QuotaName AND GroupID = @GroupID",
 		{
 			if (UseEntityFramework)
 			{
-				#region Stored Procedure
-				/*
-				*/
-				#endregion
-
+				var quota = new Data.Entities.Quota()
+				{
+					QuotaId = quotaId,
+					GroupId = groupId,
+					QuotaOrder = quotaOrder,
+					QuotaName = engineName,
+					QuotaDescription = engineDescription,
+					QuotaTypeId = 1,
+					ServiceQuota = 0
+				};
+				Quotas.Add(quota);
+				SaveChanges();
 			}
 			else
 			{
@@ -29350,20 +32132,19 @@ VALUES (@QuotaID, @GroupID, @QuotaOrder, @QuotaName, @QuotaDescription, 1, 0)",
 
 		public IDataReader GetEnabledHeliconZooQuotasForPackage(int packageId)
 		{
+			int providerId, groupId;
+
+			GetHeliconZooProviderAndGroup("HeliconZoo", out providerId, out groupId);
+
 			if (UseEntityFramework)
 			{
-				#region Stored Procedure
-				/*
-				*/
-				#endregion
-
+				var quotas = HostingPlanQuotas
+					.Where(q => q.Plan.Package.PackageId == packageId && q.Quota.GroupId == groupId && q.QuotaValue == 1)
+					.Select(q => new { q.QuotaId, q.Quota.QuotaName, q.Quota.QuotaDescription });
+				return EntityDataReader(quotas);
 			}
 			else
 			{
-				int providerId, groupId;
-
-				GetHeliconZooProviderAndGroup("HeliconZoo", out providerId, out groupId);
-
 				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.Text,
 @"SELECT HostingPlanQuotas.QuotaID, Quotas.QuotaName, Quotas.QuotaDescription
 FROM HostingPlanQuotas 
@@ -29381,11 +32162,11 @@ WHERE (Packages.PackageID = @PackageID) AND (Quotas.GroupID = @GroupID) AND (Hos
 		{
 			if (UseEntityFramework)
 			{
-				#region Stored Procedure
-				/*
-				*/
-				#endregion
-
+				var serviceId = Packages.Where(p => p.PackageId == packageId)
+					.SelectMany(p => p.Services.Where(s => s.ProviderId == providerId))
+					.Select(s => (int?)s.ServiceId)
+					.FirstOrDefault() ?? -1;
+				return serviceId;
 			}
 			else
 			{
@@ -29410,11 +32191,10 @@ WHERE Services.ProviderID = @ProviderID and PackageID = @PackageID",
 		{
 			if (UseEntityFramework)
 			{
-				#region Stored Procedure
-				/*
-				*/
-				#endregion
-
+				return Packages
+					.Where(p => p.PackageId == packageId)
+					.Select(p => p.ServerId)
+					.FirstOrDefault() ?? -1;
 			}
 			else
 			{
@@ -29443,6 +32223,39 @@ WHERE PackageID = @PackageID",
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddWebDavAccessToken]
+(
+	@TokenID INT OUTPUT,
+	@FilePath NVARCHAR(MAX),
+	@AccessToken UNIQUEIDENTIFIER,
+	@AuthData NVARCHAR(MAX),
+	@ExpirationDate DATETIME,
+	@AccountID INT,
+	@ItemId INT
+)
+AS
+INSERT INTO WebDavAccessTokens
+(
+	FilePath,
+	AccessToken,
+	AuthData,
+	ExpirationDate,
+	AccountID  ,
+	ItemId
+)
+VALUES
+(
+	@FilePath ,
+	@AccessToken  ,
+	@AuthData,
+	@ExpirationDate ,
+	@AccountID,
+	@ItemId
+)
+
+SET @TokenID = SCOPE_IDENTITY()
+
+RETURN
 				*/
 				#endregion
 
@@ -29475,9 +32288,15 @@ WHERE PackageID = @PackageID",
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteExpiredWebDavAccessTokens]
+AS
+DELETE FROM WebDavAccessTokens
+WHERE ExpirationDate < getdate()
 				*/
 				#endregion
 
+				var now = DateTime.Now;
+				WebDavAccessTokens.Where(p => p.ExpirationDate < now).ExecuteDelete(WebDavAccessTokens);
 			}
 			else
 			{
@@ -29494,9 +32313,28 @@ WHERE PackageID = @PackageID",
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetWebDavAccessTokenById]
+(
+	@Id int
+)
+AS
+SELECT 
+	ID ,
+	FilePath ,
+	AuthData ,
+	AccessToken,
+	ExpirationDate,
+	AccountID,
+	ItemId
+FROM WebDavAccessTokens 
+WHERE ID = @Id AND ExpirationDate > getdate()
 				*/
 				#endregion
 
+				var now = DateTime.Now;
+				var tokens = WebDavAccessTokens
+					.Where(t => t.Id == id && t.ExpirationDate > now);
+				return EntityDataReader(tokens);
 			}
 			else
 			{

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace SolidCP.EnterpriseServer.Data.Entities;
 
 [Table("SfBUsers")]
-public partial class SfBuser
+public partial class SfBUser
 {
     [Key]
     [Column("SfBUserID")]

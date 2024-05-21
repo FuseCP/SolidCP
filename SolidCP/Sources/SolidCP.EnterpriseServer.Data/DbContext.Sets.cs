@@ -235,11 +235,11 @@ namespace SolidCP.EnterpriseServer.Data
 		DbSet<ServiceProperty> serviceProperties = null;
 		public virtual DbSet<ServiceProperty> ServiceProperties => serviceProperties ?? (serviceProperties = new DbSet<ServiceProperty>(BaseContext));
 
-		DbSet<SfBuser> sfBusers = null;
-		public virtual DbSet<SfBuser> SfBusers => sfBusers ?? (sfBusers = new DbSet<SfBuser>(BaseContext));
+		DbSet<SfBUser> sfBUsers = null;
+		public virtual DbSet<SfBUser> SfBUsers => sfBUsers ?? (sfBUsers = new DbSet<SfBUser>(BaseContext));
 
-		DbSet<SfBuserPlan> sfBuserPlans = null;
-		public virtual DbSet<SfBuserPlan> SfBuserPlans => sfBuserPlans ?? (sfBuserPlans = new DbSet<SfBuserPlan>(BaseContext));
+		DbSet<SfBUserPlan> sfBUserPlans = null;
+		public virtual DbSet<SfBUserPlan> SfBUserPlans => sfBUserPlans ?? (sfBUserPlans = new DbSet<SfBUserPlan>(BaseContext));
 
 		DbSet<SslCertificate> sslCertificates = null;
 		public virtual DbSet<SslCertificate> SslCertificates => sslCertificates ?? (sslCertificates = new DbSet<SslCertificate>(BaseContext));

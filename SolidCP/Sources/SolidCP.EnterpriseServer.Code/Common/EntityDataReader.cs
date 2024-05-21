@@ -26,7 +26,7 @@ namespace SolidCP.EnterpriseServer
 
 	public class EntityDataReader<TEntity>: IDataReader, IEntityDataSet, IEnumerable<TEntity> where TEntity : class
 	{
-		public virtual TEntity[] Set { get; private set; }
+		public virtual IEnumerable<TEntity> Set { get; private set; }
 		IEnumerable IEntityDataSet.Set => Set;
         public virtual Type Type { get; private set; }
 
@@ -48,8 +48,8 @@ namespace SolidCP.EnterpriseServer
         }
 
         public EntityDataReader(IEnumerable<TEntity> set, bool setRecordsAffected = false) {
-			Set = set.ToArray();
-			if (setRecordsAffected) RecordsAffected = Set.Length;
+			Set = set;
+			if (setRecordsAffected) RecordsAffected = Set.Count();
 			else RecordsAffected = -1;
 			Type = typeof(TEntity);
 			if (Type == typeof(object)) Type = Set.FirstOrDefault(e => e != null)?.GetType() ?? typeof(object);
