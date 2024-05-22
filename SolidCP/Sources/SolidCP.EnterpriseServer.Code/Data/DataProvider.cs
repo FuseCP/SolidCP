@@ -32352,9 +32352,28 @@ WHERE ID = @Id AND ExpirationDate > getdate()
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetWebDavAccessTokenByAccessToken]
+(
+	@AccessToken UNIQUEIDENTIFIER
+)
+AS
+SELECT 
+	ID ,
+	FilePath ,
+	AuthData ,
+	AccessToken,
+	ExpirationDate,
+	AccountID,
+	ItemId
+FROM WebDavAccessTokens 
+WHERE AccessToken = @AccessToken AND ExpirationDate > getdate()
 				*/
 				#endregion
 
+				var now = DateTime.Now;
+				var tokens = WebDavAccessTokens
+					.Where(t => t.AccessToken == accessToken && t.ExpirationDate > now);
+				return EntityDataReader(tokens);
 			}
 			else
 			{
@@ -32372,9 +32391,59 @@ WHERE ID = @Id AND ExpirationDate > getdate()
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddEnterpriseFolder]
+(
+	@FolderID INT OUTPUT,
+	@ItemID INT,
+	@FolderName NVARCHAR(255),
+	@FolderQuota INT,
+	@LocationDrive NVARCHAR(255),
+	@HomeFolder NVARCHAR(255),
+	@Domain NVARCHAR(255),
+	@StorageSpaceFolderId INT
+)
+AS
+
+INSERT INTO EnterpriseFolders
+(
+	ItemID,
+	FolderName,
+	FolderQuota,
+	LocationDrive,
+	HomeFolder,
+	Domain,
+	StorageSpaceFolderId
+)
+VALUES
+(
+	@ItemID,
+	@FolderName,
+	@FolderQuota,
+	@LocationDrive,
+	@HomeFolder,
+	@Domain,
+	@StorageSpaceFolderId
+)
+
+SET @FolderID = SCOPE_IDENTITY()
+
+RETURN
 				*/
 				#endregion
 
+				var folder = new Data.Entities.EnterpriseFolder()
+				{
+					ItemId = itemId,
+					FolderName = folderName,
+					FolderQuota = folderQuota,
+					LocationDrive = locationDrive,
+					HomeFolder = homeFolder,
+					Domain = domain,
+					StorageSpaceFolderId = storageSpaceFolderId
+				};
+				EnterpriseFolders.Add(folder);
+				SaveChanges();
+				return folder.EnterpriseFolderId;
 			}
 			else
 			{
@@ -32405,9 +32474,32 @@ WHERE ID = @Id AND ExpirationDate > getdate()
 			{
 				#region Stored Procedure
 				/*
+				CREATE PROCEDURE [dbo].[UpdateEntepriseFolderStorageSpaceFolder]
+				(
+				@ItemID INT,
+				@FolderName NVARCHAR(255),
+				@StorageSpaceFolderId INT
+				)
+				AS
+
+				UPDATE EnterpriseFolders
+				SET StorageSpaceFolderId = @StorageSpaceFolderId
+				WHERE ItemID = @ItemID AND FolderName = @FolderName
 				*/
 				#endregion
 
+#if NETCOREAPP
+				EnterpriseFolders.Where(f => f.ItemId == itemId && f.FolderName == folderName)
+					.ExecuteUpdate(e => e.SetProperty(p => p.StorageSpaceFolderId, storageSpaceFolderId));
+#else
+				var folder = EnterpriseFolders
+					.FirstOrDefault(f => f.ItemId == itemId && f.FolderName == folderName);
+				if (folder != null)
+				{
+					folder.StorageSpaceFolderId = storageSpaceFolderId;
+					SaveChanges();
+				}
+#endif
 			}
 			else
 			{
@@ -32427,9 +32519,20 @@ WHERE ID = @Id AND ExpirationDate > getdate()
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteEnterpriseFolder]
+(
+	@ItemID INT,
+	@FolderName NVARCHAR(255)
+)
+AS
+
+DELETE FROM EnterpriseFolders
+WHERE ItemID = @ItemID AND FolderName = @FolderName
 				*/
 				#endregion
 
+				EnterpriseFolders.Where(f => f.ItemId == itemId && f.FolderName == folderName)
+					.ExecuteDelete(EnterpriseFolders);
 			}
 			else
 			{
@@ -32448,9 +32551,38 @@ WHERE ID = @Id AND ExpirationDate > getdate()
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdateEnterpriseFolder]
+(
+	@ItemID INT,
+	@FolderID NVARCHAR(255),
+	@FolderName NVARCHAR(255),
+	@FolderQuota INT
+)
+AS
+
+UPDATE EnterpriseFolders SET
+	FolderName = @FolderName,
+	FolderQuota = @FolderQuota
+WHERE ItemID = @ItemID AND FolderName = @FolderID
 				*/
 				#endregion
 
+#if NETCOREAPP
+				EnterpriseFolders
+					.Where(f => f.ItemId == itemId && f.FolderName == folderID)
+					.ExecuteUpdate(e => e
+						.SetProperty(p => p.FolderName, folderName)
+						.SetProperty(p => p.FolderQuota, folderQuota));
+#else
+				var folder = EnterpriseFolders
+					.FirstOrDefault(f => f.ItemId == itemId && f.FolderName == folderID);
+				if (folder != null)
+				{
+					folder.FolderName = folderName;
+					folder.FolderQuota = folderQuota;
+					SaveChanges();
+				}
+#endif
 			}
 			else
 			{
@@ -32471,9 +32603,22 @@ WHERE ID = @Id AND ExpirationDate > getdate()
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetEnterpriseFolders]
+(
+	@ItemID INT
+)
+AS
+
+SELECT DISTINCT LocationDrive, HomeFolder, Domain FROM EnterpriseFolders
+WHERE ItemID = @ItemID
 				*/
 				#endregion
 
+				var folders = EnterpriseFolders
+					.Where(f => f.ItemId == itemId)
+					.Select(f => new { f.LocationDrive, f.HomeFolder, f.Domain })
+					.Distinct();
+				return EntityDataReader(folders);
 			}
 			else
 			{
@@ -32491,6 +32636,66 @@ WHERE ID = @Id AND ExpirationDate > getdate()
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetEnterpriseFoldersPaged]
+(
+	@FilterColumn nvarchar(50) = '',
+	@FilterValue nvarchar(50) = '',
+	@ItemID int,
+	@SortColumn nvarchar(50),
+	@StartRow int,
+	@MaximumRows int
+)
+AS
+-- build query and run it to the temporary table
+DECLARE @sql nvarchar(2000)
+
+SET @sql = '
+DECLARE @EndRow int
+SET @EndRow = @StartRow + @MaximumRows
+
+DECLARE @Folders TABLE
+(
+	ItemPosition int IDENTITY(1,1),
+	Id int
+)
+INSERT INTO @Folders (Id)
+SELECT
+	S.EnterpriseFolderID
+FROM EnterpriseFolders AS S
+WHERE @ItemID = S.ItemID'
+
+IF @FilterColumn <> '' AND @FilterValue <> ''
+SET @sql = @sql + ' AND ' + @FilterColumn + ' LIKE @FilterValue '
+
+IF @SortColumn <> '' AND @SortColumn IS NOT NULL
+SET @sql = @sql + ' ORDER BY ' + @SortColumn + ' '
+
+SET @sql = @sql + ' SELECT COUNT(Id) FROM @Folders;
+SELECT
+	ST.EnterpriseFolderID,
+	ST.ItemID,
+	ST.FolderName,
+	ST.FolderQuota,
+	ST.LocationDrive,
+	ST.HomeFolder,
+	ST.Domain,
+	ST.StorageSpaceFolderId,
+	ssf.Name,
+	ssf.StorageSpaceId,
+	ssf.Path,
+	ssf.UncPath,
+	ssf.IsShared,
+	ssf.FsrmQuotaType,
+	ssf.FsrmQuotaSizeBytes
+FROM @Folders AS S
+INNER JOIN EnterpriseFolders AS ST ON S.Id = ST.EnterpriseFolderID
+LEFT OUTER JOIN StorageSpaceFolders as ssf on ssf.Id = ST.StorageSpaceFolderId
+WHERE S.ItemPosition BETWEEN @StartRow AND @EndRow'
+
+exec sp_executesql @sql, N'@StartRow int, @MaximumRows int,  @FilterValue nvarchar(50),  @ItemID int',
+@StartRow, @MaximumRows,  @FilterValue,  @ItemID
+
+RETURN
 				*/
 				#endregion
 
@@ -32516,6 +32721,32 @@ WHERE ID = @Id AND ExpirationDate > getdate()
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetEnterpriseFolder]
+(
+	@ItemID INT,
+	@FolderName NVARCHAR(255)
+)
+AS
+
+SELECT TOP 1
+	ST.EnterpriseFolderID,
+	ST.ItemID,
+	ST.FolderName,
+	ST.FolderQuota,
+	ST.LocationDrive,
+	ST.HomeFolder,
+	ST.Domain,
+	ST.StorageSpaceFolderId,
+	ssf.Name,
+	ssf.StorageSpaceId,
+	ssf.Path,
+	ssf.UncPath,
+	ssf.IsShared,
+	ssf.FsrmQuotaType,
+	ssf.FsrmQuotaSizeBytes
+FROM EnterpriseFolders AS ST
+LEFT OUTER JOIN StorageSpaceFolders as ssf on ssf.Id = ST.StorageSpaceFolderId
+WHERE ItemID = @ItemID AND FolderName = @FolderName
 				*/
 				#endregion
 
@@ -32537,9 +32768,24 @@ WHERE ID = @Id AND ExpirationDate > getdate()
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetWebDavPortalUsersSettingsByAccountId]
+(
+	@AccountId INT
+)
+AS
+SELECT TOP 1
+	US.Id,
+	US.AccountId,
+	US.Settings
+FROM WebDavPortalUsersSettings AS US
+WHERE AccountId = @AccountId
 				*/
 				#endregion
 
+				var setting = WebDavPortalUsersSettings
+					.Where(s => s.AccountId == accountId)
+					.Take(1);
+				return EntityDataReader(setting);
 			}
 			else
 			{
@@ -32557,9 +32803,39 @@ WHERE ID = @Id AND ExpirationDate > getdate()
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddWebDavPortalUsersSettings]
+(
+	@WebDavPortalUsersSettingsId INT OUTPUT,
+	@AccountId INT,
+	@Settings NVARCHAR(max)
+)
+AS
+
+INSERT INTO WebDavPortalUsersSettings
+(
+	AccountId,
+	Settings
+)
+VALUES
+(
+	@AccountId,
+	@Settings
+)
+
+SET @WebDavPortalUsersSettingsId = SCOPE_IDENTITY()
+
+RETURN
 				*/
 				#endregion
 
+				var setting = new Data.Entities.WebDavPortalUsersSetting()
+				{
+					AccountId = accountId,
+					Settings = settings
+				};
+				WebDavPortalUsersSettings.Add(setting);
+				SaveChanges();
+				return setting.Id;
 			}
 			else
 			{
@@ -32585,9 +32861,33 @@ WHERE ID = @Id AND ExpirationDate > getdate()
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdateWebDavPortalUsersSettings]
+(
+	@AccountId INT,
+	@Settings NVARCHAR(max)
+)
+AS
+
+UPDATE WebDavPortalUsersSettings
+SET
+	Settings = @Settings
+WHERE AccountId = @AccountId
 				*/
 				#endregion
 
+#if NETCOREAPP
+				WebDavPortalUsersSettings.Where(s => s.AccountId == accountId)
+					.ExecuteUpdate(e => e.SetProperty(p => p.Settings, settings));
+#else
+				var setting = WebDavPortalUsersSettings
+					.Where(s => s.AccountId == accountId)
+					.FirstOrDefault();
+				if (setting != null)
+				{
+					setting.Settings = settings;
+					SaveChanges();
+				}
+#endif
 			}
 			else
 			{
@@ -32606,9 +32906,19 @@ WHERE ID = @Id AND ExpirationDate > getdate()
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteAllEnterpriseFolderOwaUsers]
+(
+	@ItemID  int,
+	@FolderID int
+)
+AS
+DELETE FROM EnterpriseFoldersOwaPermissions
+WHERE ItemId = @ItemID AND FolderID = @FolderID
 				*/
 				#endregion
 
+				EnterpriseFoldersOwaPermissions.Where(p => p.ItemId == itemId && p.FolderId == folderId)
+					.ExecuteDelete(EnterpriseFoldersOwaPermissions);
 			}
 			else
 			{
@@ -32627,9 +32937,42 @@ WHERE ID = @Id AND ExpirationDate > getdate()
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddEnterpriseFolderOwaUser]
+(
+	@ESOwsaUserId INT OUTPUT,
+	@ItemID INT,
+	@FolderID INT, 
+	@AccountID INT 
+)
+AS
+INSERT INTO EnterpriseFoldersOwaPermissions
+(
+	ItemID ,
+	FolderID, 
+	AccountID
+)
+VALUES
+(
+	@ItemID,
+	@FolderID, 
+	@AccountID 
+)
+
+SET @ESOwsaUserId = SCOPE_IDENTITY()
+
+RETURN
 				*/
 				#endregion
 
+				var permission = new Data.Entities.EnterpriseFoldersOwaPermission()
+				{
+					ItemId = itemId,
+					FolderId = folderId,
+					AccountId = accountId
+				};
+				EnterpriseFoldersOwaPermissions.Add(permission);
+				SaveChanges();
+				return permission.Id;
 			}
 			else
 			{
@@ -32656,6 +32999,26 @@ WHERE ID = @Id AND ExpirationDate > getdate()
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetEnterpriseFolderOwaUsers]
+(
+	@ItemID INT,
+	@FolderID INT
+)
+AS
+SELECT 
+	EA.AccountID,
+	EA.ItemID,
+	EA.AccountType,
+	EA.AccountName,
+	EA.DisplayName,
+	EA.PrimaryEmailAddress,
+	EA.MailEnabledPublicFolder,
+	EA.MailboxPlanId,
+	EA.SubscriberNumber,
+	EA.UserPrincipalName 
+FROM EnterpriseFoldersOwaPermissions AS EFOP
+LEFT JOIN  ExchangeAccounts AS EA ON EA.AccountID = EFOP.AccountID
+WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 				*/
 				#endregion
 
@@ -32712,7 +33075,7 @@ WHERE ID = @Id AND ExpirationDate > getdate()
 					new SqlParameter("@AccountID", accountId));
 			}
 		}
-		#endregion
+#endregion
 
 		#region Support Service Levels
 
