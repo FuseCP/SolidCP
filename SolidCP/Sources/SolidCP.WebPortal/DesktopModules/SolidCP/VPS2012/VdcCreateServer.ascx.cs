@@ -259,8 +259,10 @@ namespace SolidCP.Portal.VPS2012
                 {
                     if (!String.IsNullOrEmpty(item.ExternalIP) && !String.IsNullOrEmpty(item.IPAddress))
                     {
+                        if (!item.IPAddress.Equals(txtGateway.Text)) chkCustomGateway.Checked = true;
                         txtGateway.Text = item.IPAddress;
                         txtDNS1.Text = item.IPAddress;
+                        litPrivateNetworkFormat.Text = item.IPAddress;
                         VirtualMachine vm = ES.Services.VPS2012.GetVirtualMachineItem(item.ItemID);
                         if (vm != null && !String.IsNullOrEmpty(vm.CustomPrivateMask)) txtMask.Text = vm.CustomPrivateMask;
                         break;
@@ -304,6 +306,23 @@ namespace SolidCP.Portal.VPS2012
                 txtDmzDNS1.Text = nic.PreferredNameServer;
                 txtDmzDNS2.Text = nic.AlternateNameServer;
                 txtDmzMask.Text = nic.SubnetMask;
+
+                //firewall find
+                VirtualMachines2012Helper vmh = new VirtualMachines2012Helper();
+                VirtualMachineMetaItem[] machines = vmh.GetVirtualMachines(PanelSecurity.PackageId, "", "", "SI.ItemID", 20, 0);
+                foreach (var item in machines)
+                {
+                    if (!String.IsNullOrEmpty(item.ExternalIP) && !String.IsNullOrEmpty(item.DmzIP))
+                    {
+                        if (!item.DmzIP.Equals(txtDmzGateway.Text)) chkDmzCustomGateway.Checked = true;
+                        txtDmzGateway.Text = item.DmzIP;
+                        txtDmzDNS1.Text = item.DmzIP;
+                        litDmzNetworkFormat.Text = item.DmzIP;
+                        VirtualMachine vm = ES.Services.VPS2012.GetVirtualMachineItem(item.ItemID);
+                        if (vm != null && !String.IsNullOrEmpty(vm.CustomDmzMask)) txtDmzMask.Text = vm.CustomDmzMask;
+                        break;
+                    }
+                }
 
                 // set max number
                 QuotaValueInfo dmzQuota = cntx.Quotas[Quotas.VPS2012_DMZ_IP_ADDRESSES_NUMBER];

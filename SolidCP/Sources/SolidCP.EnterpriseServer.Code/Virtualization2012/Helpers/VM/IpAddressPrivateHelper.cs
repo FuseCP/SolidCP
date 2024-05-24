@@ -408,6 +408,10 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
 
         private static string GenerateNextAvailableIP(SortedList<IPAddress, string> ips, string subnetMask, string startIPAddress)
         {
+            if (ips.Count > 0)
+            {
+                startIPAddress = ips.Values[0];
+            }
             Trace.TraceInformation("Entering GenerateNextAvailablePrivateIP()");
             Trace.TraceInformation("Param - number of sorted IPs in the list: {0}", ips.Count);
             Trace.TraceInformation("Param - startIPAddress: {0}", startIPAddress);
