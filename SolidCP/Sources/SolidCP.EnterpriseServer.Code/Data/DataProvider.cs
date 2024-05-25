@@ -33040,6 +33040,16 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetEnterpriseFolderId]
+(
+	@ItemID INT,
+	@FolderName varchar(max)
+)
+AS
+SELECT TOP 1
+	EnterpriseFolderID
+	FROM EnterpriseFolders
+	WHERE ItemId = @ItemID AND FolderName = @FolderName
 				*/
 				#endregion
 
@@ -33061,6 +33071,17 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetUserEnterpriseFolderWithOwaEditPermission]
+(
+	@ItemID INT,
+	@AccountID INT
+)
+AS
+SELECT 
+	EF.FolderName
+	FROM EnterpriseFoldersOwaPermissions AS EFOP
+	LEFT JOIN  [dbo].[EnterpriseFolders] AS EF ON EF.EnterpriseFolderID = EFOP.FolderID
+	WHERE EFOP.ItemID = @ItemID AND EFOP.AccountID = @AccountID
 				*/
 				#endregion
 
@@ -33085,9 +33106,15 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetSupportServiceLevels]
+AS
+SELECT *
+FROM SupportServiceLevels
+RETURN
 				*/
 				#endregion
 
+				return EntityDataReader(SupportServiceLevels);
 			}
 			else
 			{
@@ -33102,6 +33129,79 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddSupportServiceLevel]
+(
+	@LevelID int OUTPUT,
+	@LevelName nvarchar(100),
+	@LevelDescription nvarchar(1000)
+)
+AS
+BEGIN
+
+	IF EXISTS (SELECT * FROM SupportServiceLevels WHERE LevelName = @LevelName)
+	BEGIN
+		SET @LevelID = -1
+
+		RETURN
+	END
+
+	INSERT INTO SupportServiceLevels
+	(
+		LevelName,
+		LevelDescription
+	)
+	VALUES
+	(
+		@LevelName,
+		@LevelDescription
+	)
+
+	SET @LevelID = SCOPE_IDENTITY()
+
+	DECLARE @ResourseGroupID int
+
+	IF EXISTS (SELECT * FROM ResourceGroups WHERE GroupName = 'Service Levels')
+	BEGIN
+		DECLARE @QuotaLastID int, @CurQuotaName nvarchar(100), 
+			@CurQuotaDescription nvarchar(1000), @QuotaOrderInGroup int
+
+		SET @CurQuotaName = N'ServiceLevel.' + @LevelName
+		SET @CurQuotaDescription = @LevelName + N', users'
+
+		SELECT @ResourseGroupID = GroupID FROM ResourceGroups WHERE GroupName = 'Service Levels'
+
+		SELECT @QuotaLastID = MAX(QuotaID) FROM Quotas
+
+		SELECT @QuotaOrderInGroup = MAX(QuotaOrder) FROM Quotas WHERE GroupID = @ResourseGroupID
+
+		IF @QuotaOrderInGroup IS NULL SET @QuotaOrderInGroup = 0
+
+		IF NOT EXISTS (SELECT * FROM Quotas WHERE QuotaName = @CurQuotaName)
+		BEGIN
+			INSERT Quotas 
+				(QuotaID, 
+				GroupID, 
+				QuotaOrder, 
+				QuotaName, 
+				QuotaDescription, 
+				QuotaTypeID, 
+				ServiceQuota, 
+				ItemTypeID) 
+			VALUES 
+				(@QuotaLastID + 1, 
+				@ResourseGroupID, 
+				@QuotaOrderInGroup + 1, 
+				@CurQuotaName, 
+				@CurQuotaDescription,
+				2, 
+				0, 
+				NULL)
+		END
+	END
+
+END
+
+RETURN
 				*/
 				#endregion
 
@@ -33129,6 +33229,41 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdateSupportServiceLevel]
+(
+	@LevelID int,
+	@LevelName nvarchar(100),
+	@LevelDescription nvarchar(1000)
+)
+AS
+BEGIN
+
+	DECLARE @PrevQuotaName nvarchar(100), @PrevLevelName nvarchar(100)
+
+	SELECT @PrevLevelName = LevelName FROM SupportServiceLevels WHERE LevelID = @LevelID
+
+	SET @PrevQuotaName = N'ServiceLevel.' + @PrevLevelName
+
+	UPDATE SupportServiceLevels
+	SET LevelName = @LevelName,
+		LevelDescription = @LevelDescription
+	WHERE LevelID = @LevelID
+
+	IF EXISTS (SELECT * FROM Quotas WHERE QuotaName = @PrevQuotaName)
+	BEGIN
+		DECLARE @QuotaID INT
+
+		SELECT @QuotaID = QuotaID FROM Quotas WHERE QuotaName = @PrevQuotaName
+
+		UPDATE Quotas
+		SET QuotaName = N'ServiceLevel.' + @LevelName,
+			QuotaDescription = @LevelName + ', users'
+		WHERE QuotaID = @QuotaID
+	END
+
+END
+
+RETURN 
 				*/
 				#endregion
 
@@ -33151,6 +33286,38 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteSupportServiceLevel]
+(
+	@LevelID int
+)
+AS
+BEGIN
+
+	DECLARE @LevelName nvarchar(100), @QuotaName nvarchar(100), @QuotaID int
+
+	SELECT @LevelName = LevelName FROM SupportServiceLevels WHERE LevelID = @LevelID
+
+	SET @QuotaName = N'ServiceLevel.' + @LevelName
+
+	SELECT @QuotaID = QuotaID FROM Quotas WHERE QuotaName = @QuotaName
+
+	IF @QuotaID IS NOT NULL
+	BEGIN
+		DELETE FROM HostingPlanQuotas WHERE QuotaID = @QuotaID
+		DELETE FROM PackageQuotas WHERE QuotaID = @QuotaID
+		DELETE FROM Quotas WHERE QuotaID = @QuotaID
+	END
+
+	IF EXISTS (SELECT * FROM ExchangeAccounts WHERE LevelID = @LevelID)
+	UPDATE ExchangeAccounts
+	   SET LevelID = NULL
+	 WHERE LevelID = @LevelID
+
+	DELETE FROM SupportServiceLevels WHERE LevelID = @LevelID
+
+END
+
+RETURN 
 				*/
 				#endregion
 
@@ -33171,9 +33338,19 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetSupportServiceLevel]
+(
+	@LevelID int
+)
+AS
+SELECT *
+FROM SupportServiceLevels
+WHERE LevelID = @LevelID
+RETURN 
 				*/
 				#endregion
 
+				return EntityDataReader(SupportServiceLevels.Where(l => l.LevelId == levelID));
 			}
 			else
 			{
@@ -33191,9 +33368,22 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
-				*/
+CREATE PROCEDURE [dbo].[CheckServiceLevelUsage]
+(
+	@LevelID int
+)
+AS
+SELECT COUNT(EA.AccountID)
+FROM SupportServiceLevels AS SL
+INNER JOIN ExchangeAccounts AS EA ON SL.LevelID = EA.LevelID
+WHERE EA.LevelID = @LevelID
+RETURN 
+			*/
 				#endregion
 
+				return SupportServiceLevels
+					.Join(ExchangeAccounts, l => l.LevelId, ea => ea.LevelId, (l, ea) => ea)
+					.Any(ea => ea.LevelId == levelID);
 			}
 			else
 			{
@@ -33213,6 +33403,51 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetStorageSpaceLevelsPaged]
+(
+	@FilterColumn nvarchar(50) = '',
+	@FilterValue nvarchar(50) = '',
+	@SortColumn nvarchar(50),
+	@StartRow int,
+	@MaximumRows int
+)
+AS
+-- build query and run it to the temporary table
+DECLARE @sql nvarchar(2000)
+
+SET @sql = '
+
+DECLARE @EndRow int
+SET @EndRow = @StartRow + @MaximumRows
+DECLARE @SSLevels TABLE
+(
+	ItemPosition int IDENTITY(0,1),
+	SSLevelId int
+)
+INSERT INTO @SSLevels (SSLevelId)
+SELECT
+	S.ID
+FROM StorageSpaceLevels AS S'
+
+IF @FilterColumn <> '' AND @FilterValue <> ''
+SET @sql = @sql + ' WHERE ' + @FilterColumn + ' LIKE @FilterValue '
+
+IF @SortColumn <> '' AND @SortColumn IS NOT NULL
+SET @sql = @sql + ' ORDER BY ' + @SortColumn + ' '
+
+SET @sql = @sql + ' SELECT COUNT(SSLevelId) FROM @SSLevels;
+SELECT
+	CR.ID,
+	CR.Name,
+	CR.Description
+FROM @SSLevels AS C
+INNER JOIN StorageSpaceLevels AS CR ON C.SSLevelId = CR.ID
+WHERE C.ItemPosition BETWEEN @StartRow AND @EndRow'
+
+exec sp_executesql @sql, N'@StartRow int, @MaximumRows int,  @FilterValue nvarchar(50)',
+@StartRow, @MaximumRows,  @FilterValue
+
+RETURN
 				*/
 				#endregion
 
@@ -33237,9 +33472,25 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetStorageSpaceLevelById] 
+(
+@ID INT
+)
+AS
+SELECT TOP 1
+	SL.Id,
+	Sl.Name,
+	SL.Description
+FROM StorageSpaceLevels AS SL
+WHERE SL.Id = @ID
+
 				*/
 				#endregion
 
+				var levels = StorageSpaceLevels
+					.Where(sl => sl.Id == id)
+					.Select(sl => new { sl.Id, sl.Name, sl.Description });
+				return EntityDataReader(levels);
 			}
 			else
 			{
@@ -33257,6 +33508,16 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdateStorageSpaceLevel]
+(
+	@ID INT,
+	@Name nvarchar(300),
+	@Description nvarchar(max)
+)
+AS
+	UPDATE StorageSpaceLevels
+	SET Name = @Name, Description = @Description
+	WHERE ID = @ID
 				*/
 				#endregion
 
@@ -33281,6 +33542,28 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[InsertStorageSpaceLevel]
+(
+	@ID INT OUTPUT,
+	@Name nvarchar(300),
+	@Description nvarchar(max)
+)
+AS
+
+INSERT INTO StorageSpaceLevels 
+(
+	Name, 
+	Description
+)
+VALUES 
+(
+	@Name,
+	@Description
+)
+
+SET @ID = SCOPE_IDENTITY()
+
+RETURN
 				*/
 				#endregion
 
@@ -33309,9 +33592,16 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[RemoveStorageSpaceLevel]
+(
+	@ID INT
+)
+AS
+	DELETE FROM StorageSpaceLevels WHERE ID = @ID
 				*/
 				#endregion
 
+				StorageSpaceLevels.Where(sl => sl.Id == id).ExecuteDelete(StorageSpaceLevels);
 			}
 			else
 			{
@@ -33329,6 +33619,21 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetLevelResourceGroups]
+(
+	@LevelId INT
+)
+AS
+	SELECT 
+	G.[GroupID],
+	G.[GroupName],
+	G.[GroupOrder],
+	G.[GroupController],
+	G.[ShowGroup]
+	FROM [dbo].[StorageSpaceLevelResourceGroups] AS SG
+	INNER JOIN [dbo].[ResourceGroups] AS G
+	ON SG.GroupId = G.GroupId
+	WHERE SG.LevelId = @LevelId
 				*/
 				#endregion
 
@@ -33349,9 +33654,18 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteLevelResourceGroups]
+(
+	@LevelId INT
+)
+AS
+	DELETE 
+	FROM [dbo].[StorageSpaceLevelResourceGroups]
+	WHERE LevelId = @LevelId
 				*/
 				#endregion
 
+				StorageSpaceLevelResourceGroups.Where(g => g.LevelId == levelId).ExecuteDelete(StorageSpaceLevelResourceGroups);
 			}
 			else
 			{
@@ -33369,9 +33683,24 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
-				*/
+		CREATE PROCEDURE [dbo].[AddLevelResourceGroups]
+(
+	@LevelId INT,
+	@GroupId INT
+)
+AS
+	INSERT INTO [dbo].[StorageSpaceLevelResourceGroups] (LevelId, GroupId)
+	VALUES (@LevelId, @GroupId)
+		*/
 				#endregion
 
+				var group = new Data.Entities.StorageSpaceLevelResourceGroup()
+				{
+					LevelId = levelId,
+					GroupId = groupId
+				};
+				StorageSpaceLevelResourceGroups.Add(group);
+				SaveChanges();
 			}
 			else
 			{
@@ -33390,6 +33719,60 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetStorageSpacesPaged]
+(
+	@FilterColumn nvarchar(50) = '',
+	@FilterValue nvarchar(50) = '',
+	@SortColumn nvarchar(50),
+	@StartRow int,
+	@MaximumRows int
+)
+AS
+-- build query and run it to the temporary table
+DECLARE @sql nvarchar(2500)
+
+SET @sql = '
+
+DECLARE @EndRow int
+SET @EndRow = @StartRow + @MaximumRows
+DECLARE @Spaces TABLE
+(
+	ItemPosition int IDENTITY(0,1),
+	SpaceId int
+)
+INSERT INTO @Spaces (SpaceId)
+SELECT
+	S.Id
+FROM StorageSpaces AS S'
+
+IF @FilterColumn <> '' AND @FilterValue <> ''
+SET @sql = @sql + ' WHERE ' + @FilterColumn + ' LIKE @FilterValue '
+
+IF @SortColumn <> '' AND @SortColumn IS NOT NULL
+SET @sql = @sql + ' ORDER BY ' + @SortColumn + ' '
+
+SET @sql = @sql + ' SELECT COUNT(SpaceId) FROM @Spaces;
+SELECT
+		CR.Id,
+		CR.Name ,
+		CR.ServiceId ,
+		CR.ServerId ,
+		CR.LevelId,
+		CR.Path,
+		CR.FsrmQuotaType,
+		CR.FsrmQuotaSizeBytes,
+		CR.IsShared,
+		CR.IsDisabled,
+		CR.UncPath,
+		ISNULL((SELECT SUM(SSF.FsrmQuotaSizeBytes) FROM StorageSpaceFolders AS SSF WHERE SSF.StorageSpaceId = CR.Id), 0) UsedSizeBytes
+FROM @Spaces AS C
+INNER JOIN StorageSpaces AS CR ON C.SpaceId = CR.Id
+WHERE C.ItemPosition BETWEEN @StartRow AND @EndRow'
+
+exec sp_executesql @sql, N'@StartRow int, @MaximumRows int,  @FilterValue nvarchar(50)',
+@StartRow, @MaximumRows,  @FilterValue
+
+RETURN
 				*/
 				#endregion
 
@@ -33414,6 +33797,26 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetStorageSpaceById]
+(
+	@Id INT
+)
+AS
+	SELECT TOP 1
+		SS.Id,
+		SS.Name ,
+		SS.ServiceId ,
+		SS.ServerId ,
+		SS.LevelId,
+		SS.Path,
+		SS.FsrmQuotaType,
+		SS.FsrmQuotaSizeBytes,
+		SS.IsShared,
+		SS.UncPath,
+		SS.IsDisabled,
+		ISNULL((SELECT SUM(SSF.FsrmQuotaSizeBytes) FROM StorageSpaceFolders AS SSF WHERE SSF.StorageSpaceId = SS.Id), 0) UsedSizeBytes
+	FROM [dbo].[StorageSpaces] AS SS
+	WHERE SS.Id = @Id
 				*/
 				#endregion
 
@@ -33434,6 +33837,27 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetStorageSpaceByServiceAndPath] 
+(
+	@ServerId INT,
+	@Path varchar(max)
+)
+AS
+SELECT TOP 1
+		SS.Id,
+		SS.Name ,
+		SS.ServiceId ,
+		SS.ServerId ,
+		SS.LevelId,
+		SS.Path,
+		SS.FsrmQuotaType,
+		SS.FsrmQuotaSizeBytes,
+		SS.IsShared,
+		SS.UncPath,
+		SS.IsDisabled,
+		ISNULL((SELECT SUM(SSF.FsrmQuotaSizeBytes) FROM StorageSpaceFolders AS SSF WHERE SSF.StorageSpaceId = SS.Id), 0) UsedSizeBytes
+FROM StorageSpaces AS SS
+WHERE SS.ServerId = @ServerId AND SS.Path = @Path
 				*/
 				#endregion
 
@@ -33455,6 +33879,24 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdateStorageSpace]
+(
+	@ID INT,
+	@Name nvarchar(300),
+	@ServiceId INT ,
+	@ServerId INT,
+	@LevelId INT,
+	@Path varchar(max),
+	@FsrmQuotaType INT,
+	@FsrmQuotaSizeBytes BIGINT,
+	@IsShared BIT,
+	@IsDisabled BIT,
+	@UncPath varchar(max)
+)
+AS
+	UPDATE StorageSpaces
+	SET Name = @Name, ServiceId = @ServiceId,ServerId=@ServerId,LevelId=@LevelId, Path=@Path,FsrmQuotaType=@FsrmQuotaType,FsrmQuotaSizeBytes=@FsrmQuotaSizeBytes,IsShared=@IsShared,UncPath=@UncPath,IsDisabled=@IsDisabled
+	WHERE ID = @ID
 				*/
 				#endregion
 
@@ -33487,6 +33929,52 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[InsertStorageSpace]
+(
+	@ID INT OUTPUT,
+	@Name nvarchar(300),
+	@ServiceId INT ,
+	@ServerId INT,
+	@LevelId INT,
+	@Path varchar(max),
+	@FsrmQuotaType INT,
+	@FsrmQuotaSizeBytes BIGINT,
+	@IsShared BIT,
+	@IsDisabled BIT,
+	@UncPath varchar(max)
+)
+AS
+
+INSERT INTO StorageSpaces 
+(
+	Name,
+	ServiceId,
+	ServerId,
+	LevelId,
+	Path,
+	FsrmQuotaType,
+	FsrmQuotaSizeBytes,
+	IsShared,
+	UncPath,
+	IsDisabled
+)
+VALUES 
+(
+	@Name,
+	@ServiceId,
+	@ServerId,
+	@LevelId,
+	@Path,
+	@FsrmQuotaType,
+	@FsrmQuotaSizeBytes,
+	@IsShared,
+	@UncPath,
+	@IsDisabled
+)
+
+SET @ID = SCOPE_IDENTITY()
+
+RETURN
 				*/
 				#endregion
 
@@ -33523,9 +34011,16 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[RemoveStorageSpace]
+(
+	@ID INT
+)
+AS
+	DELETE FROM StorageSpaces WHERE ID = @ID
 				*/
 				#endregion
 
+				StorageSpaces.Where(s => s.Id == id).ExecuteDelete(StorageSpaces);
 			}
 			else
 			{
@@ -33543,6 +34038,28 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetStorageSpacesByLevelId] 
+(
+	@LevelId INT
+)
+AS
+SELECT
+		SS.Id,
+		SS.Name ,
+		SS.ServiceId ,
+		SS.ServerId ,
+		SS.LevelId,
+		SS.Path,
+		SS.FsrmQuotaType,
+		SS.FsrmQuotaSizeBytes,
+		SS.IsShared,
+		SS.UncPath,
+		SS.IsDisabled,
+		ISNULL((SELECT SUM(SSF.FsrmQuotaSizeBytes) FROM StorageSpaceFolders AS SSF WHERE SSF.StorageSpaceId = SS.Id), 0) UsedSizeBytes
+FROM StorageSpaces AS SS
+INNER JOIN StorageSpaceLevels AS SSL
+ON SSL.Id = SS.LevelId
+WHERE SS.LevelId = @LevelId
 				*/
 				#endregion
 
@@ -33563,6 +34080,28 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetStorageSpacesByResourceGroupName] 
+(
+	@ResourceGroupName varchar(max)
+)
+AS
+SELECT
+		SS.Id,
+		SS.Name ,
+		SS.ServiceId ,
+		SS.ServerId ,
+		SS.LevelId,
+		SS.Path,
+		SS.FsrmQuotaType,
+		SS.FsrmQuotaSizeBytes,
+		SS.IsShared,
+		SS.UncPath,
+		SS.IsDisabled,
+		ISNULL((SELECT SUM(SSF.FsrmQuotaSizeBytes) FROM StorageSpaceFolders AS SSF WHERE SSF.StorageSpaceId = SS.Id), 0) UsedSizeBytes
+FROM StorageSpaces AS SS
+INNER JOIN StorageSpaceLevelResourceGroups AS SSLRG ON SSLRG.LevelId = SS.LevelId
+INNER JOIN ResourceGroups AS RG ON SSLRG.GroupID = RG.GroupID
+WHERE RG.GroupName = @ResourceGroupName
 				*/
 				#endregion
 
@@ -33579,20 +34118,9 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 
 		public int CreateStorageSpaceFolder(StorageSpaceFolder folder)
 		{
-			if (UseEntityFramework)
-			{
-				#region Stored Procedure
-				/*
-				*/
-				#endregion
+			folder.Id = CreateStorageSpaceFolder(folder.Name, folder.StorageSpaceId, folder.Path, folder.UncPath, folder.IsShared, folder.FsrmQuotaType, folder.FsrmQuotaSizeBytes);
 
-			}
-			else
-			{
-				folder.Id = CreateStorageSpaceFolder(folder.Name, folder.StorageSpaceId, folder.Path, folder.UncPath, folder.IsShared, folder.FsrmQuotaType, folder.FsrmQuotaSizeBytes);
-
-				return folder.Id;
-			}
+			return folder.Id;
 		}
 
 		public int CreateStorageSpaceFolder(string name, int storageSpaceId, string path, string uncPath, bool isShared, QuotaType quotaType, long fsrmQuotaSizeBytes)
@@ -33601,6 +34129,38 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[CreateStorageSpaceFolder]
+(
+	@ID INT OUTPUT,
+	@Name varchar(300),
+	@StorageSpaceId INT,
+	@Path varchar(max),
+	@UncPath varchar(max),
+	@IsShared BIT,
+	@FsrmQuotaType INT,
+	@FsrmQuotaSizeBytes BIGINT 
+)
+AS
+INSERT INTO StorageSpaceFolders (	
+	Name,
+	StorageSpaceId,
+	Path,
+	UncPath,
+	IsShared,
+	FsrmQuotaType,
+	FsrmQuotaSizeBytes)
+VALUES (
+	@Name,
+	@StorageSpaceId,
+	@Path,
+	@UncPath,
+	@IsShared,
+	@FsrmQuotaType,
+	@FsrmQuotaSizeBytes)
+
+SET @ID = SCOPE_IDENTITY()
+
+RETURN
 				*/
 				#endregion
 
@@ -33630,31 +34190,8 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 
 		public int UpdateStorageSpaceFolder(StorageSpaceFolder folder)
 		{
-			if (UseEntityFramework)
-			{
-				#region Stored Procedure
-				/*
-				*/
-				#endregion
-
-			}
-			else
-			{
-				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
-					CommandType.StoredProcedure,
-					"UpdateStorageSpaceFolder",
-					new SqlParameter("@ID", folder.Id),
-					new SqlParameter("@Name", folder.Name),
-					new SqlParameter("@StorageSpaceId", folder.StorageSpaceId),
-					new SqlParameter("@Path", folder.Path),
-					new SqlParameter("@UncPath", folder.UncPath),
-					new SqlParameter("@IsShared", folder.IsShared),
-					new SqlParameter("@FsrmQuotaType", folder.FsrmQuotaType),
-					new SqlParameter("@FsrmQuotaSizeBytes", folder.FsrmQuotaSizeBytes));
-
-				return folder.Id;
-			}
+			return UpdateStorageSpaceFolder(folder.Id, folder.Name, folder.StorageSpaceId, folder.Path, folder.UncPath,
+				folder.IsShared, folder.FsrmQuotaType, folder.FsrmQuotaSizeBytes);
 		}
 
 		public int UpdateStorageSpaceFolder(int id, string folderName, int storageSpaceId, string path, string uncPath, bool isShared, QuotaType type, long fsrmQuotaSizeBytes)
@@ -33663,6 +34200,28 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdateStorageSpaceFolder]
+(
+	@ID INT,
+	@Name varchar(300),
+	@StorageSpaceId INT,
+	@Path varchar(max),
+	@UncPath varchar(max),
+	@IsShared BIT,
+	@FsrmQuotaType INT,
+	@FsrmQuotaSizeBytes BIGINT 
+)
+AS
+UPDATE StorageSpaceFolders
+SET
+	Name=@Name,
+	StorageSpaceId=@StorageSpaceId,
+	Path=@Path,
+	UncPath=@UncPath,
+	IsShared=@IsShared,
+	FsrmQuotaType=@FsrmQuotaType,
+	FsrmQuotaSizeBytes=@FsrmQuotaSizeBytes
+WHERE ID = @ID
 				*/
 				#endregion
 
@@ -33692,6 +34251,22 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetStorageSpaceFoldersByStorageSpaceId]
+(
+	@StorageSpaceId INT
+)
+AS
+SELECT 
+	Id,
+	Name,
+	StorageSpaceId,
+	Path,
+	UncPath,
+	IsShared,
+	FsrmQuotaType,
+	FsrmQuotaSizeBytes
+FROM StorageSpaceFolders
+WHERE StorageSpaceId = @StorageSpaceId
 				*/
 				#endregion
 
@@ -33712,6 +34287,22 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetStorageSpaceFolderById]
+(
+	@ID INT
+)
+AS
+SELECT TOP 1
+	Id,
+	Name,
+	StorageSpaceId,
+	Path,
+	UncPath,
+	IsShared,
+	FsrmQuotaType,
+	FsrmQuotaSizeBytes
+FROM StorageSpaceFolders
+WHERE Id = @ID
 				*/
 				#endregion
 
@@ -33732,9 +34323,18 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[RemoveStorageSpaceFolder]
+(
+	@ID INT
+)
+AS
+DELETE
+FROM StorageSpaceFolders
+WHERE ID=@ID
 				*/
 				#endregion
 
+				StorageSpaceFolders.Where(f => f.Id == id).ExecuteDelete(StorageSpaceFolders);
 			}
 			else
 			{
@@ -33749,15 +34349,42 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 
 		#region RDS
 
-		public int CheckRDSServer(string ServerFQDN)
+		public bool CheckRDSServerExists(string ServerFQDN)
 		{
 			if (UseEntityFramework)
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[CheckRDSServer]
+(
+	@ServerFQDN nvarchar(100),
+	@Result int OUTPUT
+)
+AS
+
+/*
+@Result values:
+	0 - OK
+	-1 - already exists
+*//*
+
+SET @Result = 0 -- OK
+
+-- check if the domain already exists
+IF EXISTS(
+SELECT FqdName FROM RDSServers
+WHERE FqdName = @ServerFQDN
+)
+BEGIN
+	SET @Result = -1
+	RETURN
+END
+
+RETURN
 				*/
 				#endregion
 
+				return RdsServers.Any(s => s.FqdName == ServerFQDN);
 			}
 			else
 			{
@@ -33769,7 +34396,7 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 					prmId,
 					new SqlParameter("@ServerFQDN", ServerFQDN));
 
-				return Convert.ToInt32(prmId.Value);
+				return Convert.ToInt32(prmId.Value) != 0;
 			}
 		}
 
@@ -33779,6 +34406,15 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetRDSServerSettings]
+(
+	@ServerId int,
+	@SettingsName nvarchar(50)
+)
+AS
+	SELECT RDSServerId, PropertyName, PropertyValue, ApplyUsers, ApplyAdministrators
+	FROM RDSServerSettings
+	WHERE RDSServerId = @ServerId AND SettingsName = @SettingsName			
 				*/
 				#endregion
 
@@ -33798,6 +34434,50 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdateRDSServerSettings]
+(
+	@ServerId int,
+	@SettingsName nvarchar(50),
+	@Xml ntext
+)
+AS
+
+BEGIN TRAN
+DECLARE @idoc int
+EXEC sp_xml_preparedocument @idoc OUTPUT, @xml
+
+DELETE FROM RDSServerSettings
+WHERE RDSServerId = @ServerId AND SettingsName = @SettingsName
+
+INSERT INTO RDSServerSettings
+(
+	RDSServerId,
+	SettingsName,
+	ApplyUsers,
+	ApplyAdministrators,
+	PropertyName,
+	PropertyValue	
+)
+SELECT
+	@ServerId,
+	@SettingsName,
+	ApplyUsers,
+	ApplyAdministrators,
+	PropertyName,
+	PropertyValue
+FROM OPENXML(@idoc, '/properties/property',1) WITH 
+(
+	PropertyName nvarchar(50) '@name',
+	PropertyValue ntext '@value',
+	ApplyUsers BIT '@applyUsers',
+	ApplyAdministrators BIT '@applyAdministrators'
+) as PV
+
+exec sp_xml_removedocument @idoc
+
+COMMIT TRAN
+
+RETURN 
 				*/
 				#endregion
 
@@ -33818,6 +34498,39 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddRDSCertificate]
+(
+	@RDSCertificateId INT OUTPUT,
+	@ServiceId INT,
+	@Content NTEXT,
+	@Hash NVARCHAR(255),
+	@FileName NVARCHAR(255),
+	@ValidFrom DATETIME,
+	@ExpiryDate DATETIME
+)
+AS
+INSERT INTO RDSCertificates
+(
+	ServiceId,
+	Content,
+	Hash,
+	FileName,
+	ValidFrom,
+	ExpiryDate	
+)
+VALUES
+(
+	@ServiceId,
+	@Content,
+	@Hash,
+	@FileName,
+	@ValidFrom,
+	@ExpiryDate
+)
+
+SET @RDSCertificateId = SCOPE_IDENTITY()
+
+RETURN
 				*/
 				#endregion
 
@@ -33849,6 +34562,22 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetRDSCertificateByServiceId]
+(
+	@ServiceId INT
+)
+AS
+SELECT TOP 1
+	Id,
+	ServiceId,
+	Content, 
+	Hash,
+	FileName,
+	ValidFrom,
+	ExpiryDate
+	FROM RDSCertificates
+	WHERE ServiceId = @ServiceId
+	ORDER BY Id DESC
 				*/
 				#endregion
 
@@ -33869,6 +34598,33 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetRDSCollectionSettingsByCollectionId]
+(
+	@RDSCollectionID INT
+)
+AS
+
+SELECT TOP 1
+	Id,
+	RDSCollectionId,
+	DisconnectedSessionLimitMin, 
+	ActiveSessionLimitMin,
+	IdleSessionLimitMin,
+	BrokenConnectionAction,
+	AutomaticReconnectionEnabled,
+	TemporaryFoldersDeletedOnExit,
+	TemporaryFoldersPerSession,
+	ClientDeviceRedirectionOptions,
+	ClientPrinterRedirected,
+	ClientPrinterAsDefault,
+	RDEasyPrintDriverEnabled,
+	MaxRedirectedMonitors,
+	SecurityLayer,
+	EncryptionLevel,
+	AuthenticateUsingNLA
+
+	FROM RDSCollectionSettings
+	WHERE RDSCollectionID = @RDSCollectionID
 				*/
 				#endregion
 
@@ -33898,6 +34654,70 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddRDSCollectionSettings]
+(
+	@RDSCollectionSettingsID INT OUTPUT,
+	@RDSCollectionId INT,
+	@DisconnectedSessionLimitMin INT, 
+	@ActiveSessionLimitMin INT,
+	@IdleSessionLimitMin INT,
+	@BrokenConnectionAction NVARCHAR(20),
+	@AutomaticReconnectionEnabled BIT,
+	@TemporaryFoldersDeletedOnExit BIT,
+	@TemporaryFoldersPerSession BIT,
+	@ClientDeviceRedirectionOptions NVARCHAR(250),
+	@ClientPrinterRedirected BIT,
+	@ClientPrinterAsDefault BIT,
+	@RDEasyPrintDriverEnabled BIT,
+	@MaxRedirectedMonitors INT,
+	@SecurityLayer NVARCHAR(20),
+	@EncryptionLevel NVARCHAR(20),
+	@AuthenticateUsingNLA BIT
+)
+AS
+
+INSERT INTO RDSCollectionSettings
+(
+	RDSCollectionId,
+	DisconnectedSessionLimitMin, 
+	ActiveSessionLimitMin,
+	IdleSessionLimitMin,
+	BrokenConnectionAction,
+	AutomaticReconnectionEnabled,
+	TemporaryFoldersDeletedOnExit,
+	TemporaryFoldersPerSession,
+	ClientDeviceRedirectionOptions,
+	ClientPrinterRedirected,
+	ClientPrinterAsDefault,
+	RDEasyPrintDriverEnabled,
+	MaxRedirectedMonitors,
+	SecurityLayer,
+	EncryptionLevel,
+	AuthenticateUsingNLA
+)
+VALUES
+(
+	@RDSCollectionId,
+	@DisconnectedSessionLimitMin, 
+	@ActiveSessionLimitMin,
+	@IdleSessionLimitMin,
+	@BrokenConnectionAction,
+	@AutomaticReconnectionEnabled,
+	@TemporaryFoldersDeletedOnExit,
+	@TemporaryFoldersPerSession,
+	@ClientDeviceRedirectionOptions,
+	@ClientPrinterRedirected,
+	@ClientPrinterAsDefault,
+	@RDEasyPrintDriverEnabled,
+	@MaxRedirectedMonitors,
+	@SecurityLayer,
+	@EncryptionLevel,
+	@AuthenticateUsingNLA
+)
+
+SET @RDSCollectionSettingsID = SCOPE_IDENTITY()
+
+RETURN
 				*/
 				#endregion
 
@@ -33948,6 +34768,47 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdateRDSCollectionSettings]
+(
+	@ID INT,
+	@RDSCollectionId INT,
+	@DisconnectedSessionLimitMin INT, 
+	@ActiveSessionLimitMin INT,
+	@IdleSessionLimitMin INT,
+	@BrokenConnectionAction NVARCHAR(20),
+	@AutomaticReconnectionEnabled BIT,
+	@TemporaryFoldersDeletedOnExit BIT,
+	@TemporaryFoldersPerSession BIT,
+	@ClientDeviceRedirectionOptions NVARCHAR(250),
+	@ClientPrinterRedirected BIT,
+	@ClientPrinterAsDefault BIT,
+	@RDEasyPrintDriverEnabled BIT,
+	@MaxRedirectedMonitors INT,
+	@SecurityLayer NVARCHAR(20),
+	@EncryptionLevel NVARCHAR(20),
+	@AuthenticateUsingNLA BIT
+)
+AS
+
+UPDATE RDSCollectionSettings
+SET
+	RDSCollectionId = @RDSCollectionId,
+	DisconnectedSessionLimitMin = @DisconnectedSessionLimitMin,
+	ActiveSessionLimitMin = @ActiveSessionLimitMin,
+	IdleSessionLimitMin = @IdleSessionLimitMin,
+	BrokenConnectionAction = @BrokenConnectionAction,
+	AutomaticReconnectionEnabled = @AutomaticReconnectionEnabled,
+	TemporaryFoldersDeletedOnExit = @TemporaryFoldersDeletedOnExit,
+	TemporaryFoldersPerSession = @TemporaryFoldersPerSession,
+	ClientDeviceRedirectionOptions = @ClientDeviceRedirectionOptions,
+	ClientPrinterRedirected = @ClientPrinterRedirected,
+	ClientPrinterAsDefault = @ClientPrinterAsDefault,
+	RDEasyPrintDriverEnabled = @RDEasyPrintDriverEnabled,
+	MaxRedirectedMonitors = @MaxRedirectedMonitors,
+	SecurityLayer = @SecurityLayer,
+	EncryptionLevel = @EncryptionLevel,
+	AuthenticateUsingNLA = @AuthenticateUsingNLA
+WHERE ID = @Id
 				*/
 				#endregion
 
@@ -33984,9 +34845,18 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteRDSCollectionSettings]
+(
+	@Id  int
+)
+AS
+
+DELETE FROM DeleteRDSCollectionSettings
+WHERE Id = @Id
 				*/
 				#endregion
 
+				RdsCollectionSettings.Where(s => s.Id == id).ExecuteDelete(RdsCollectionSettings);
 			}
 			else
 			{
@@ -34004,9 +34874,25 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetRDSCollectionsByItemId]
+(
+	@ItemID INT
+)
+AS
+SELECT 
+	Id,
+	ItemId,
+	Name, 
+	Description,
+	DisplayName
+	FROM RDSCollections
+	WHERE ItemID = @ItemID
 				*/
 				#endregion
 
+				var items = RdsCollections
+					.Where(c => c.ItemId == itemId);
+				return EntityDataReader(items);
 			}
 			else
 			{
@@ -34024,9 +34910,27 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetRDSCollectionByName]
+(
+	@Name NVARCHAR(255)
+)
+AS
+
+SELECT TOP 1
+	Id,
+	Name, 
+	ItemId,
+	Description,
+	DisplayName
+	FROM RDSCollections
+	WHERE DisplayName = @Name
 				*/
 				#endregion
 
+				var items = RdsCollections
+					.Where(c => c.DisplayName == name)
+					.Take(1);
+				return EntityDataReader(items);
 			}
 			else
 			{
@@ -34044,6 +34948,20 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetRDSCollectionById]
+(
+	@ID INT
+)
+AS
+
+SELECT TOP 1
+	Id,
+	ItemId,
+	Name, 
+	Description,
+	DisplayName 
+	FROM RDSCollections
+	WHERE ID = @ID
 				*/
 				#endregion
 
@@ -34064,6 +34982,57 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetRDSCollectionsPaged]
+(
+	@FilterColumn nvarchar(50) = '',
+	@FilterValue nvarchar(50) = '',
+	@ItemID int,
+	@SortColumn nvarchar(50),
+	@StartRow int,
+	@MaximumRows int
+)
+AS
+-- build query and run it to the temporary table
+DECLARE @sql nvarchar(2000)
+
+SET @sql = '
+
+DECLARE @EndRow int
+SET @EndRow = @StartRow + @MaximumRows
+DECLARE @RDSCollections TABLE
+(
+	ItemPosition int IDENTITY(0,1),
+	RDSCollectionId int
+)
+INSERT INTO @RDSCollections (RDSCollectionId)
+SELECT
+	S.ID
+FROM RDSCollections AS S
+WHERE 
+	((@ItemID is Null AND S.ItemID is null)
+		or (@ItemID is not Null AND S.ItemID = @ItemID))'
+
+IF @FilterColumn <> '' AND @FilterValue <> ''
+SET @sql = @sql + ' AND ' + @FilterColumn + ' LIKE ''%' + @FilterValue + '%'' '
+
+IF @SortColumn <> '' AND @SortColumn IS NOT NULL
+SET @sql = @sql + ' ORDER BY ' + @SortColumn + ' '
+
+SET @sql = @sql + ' SELECT COUNT(RDSCollectionId) FROM @RDSCollections;
+SELECT
+	CR.ID,
+	CR.ItemID,
+	CR.Name,
+	CR.Description,
+	CR.DisplayName
+FROM @RDSCollections AS C
+INNER JOIN RDSCollections AS CR ON C.RDSCollectionId = CR.ID
+WHERE C.ItemPosition BETWEEN @StartRow AND @EndRow'
+
+exec sp_executesql @sql, N'@StartRow int, @MaximumRows int,  @FilterValue nvarchar(50),  @ItemID int',
+@StartRow, @MaximumRows,  @FilterValue,  @ItemID
+
+RETURN
 				*/
 				#endregion
 
@@ -34089,6 +35058,34 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddRDSCollection]
+(
+	@RDSCollectionID INT OUTPUT,
+	@ItemID INT,
+	@Name NVARCHAR(255),
+	@Description NVARCHAR(255),
+	@DisplayName NVARCHAR(255)
+)
+AS
+
+INSERT INTO RDSCollections
+(
+	ItemID,
+	Name,
+	Description,
+	DisplayName
+)
+VALUES
+(
+	@ItemID,
+	@Name,
+	@Description,
+	@DisplayName
+)
+
+SET @RDSCollectionID = SCOPE_IDENTITY()
+
+RETURN
 				*/
 				#endregion
 
@@ -34119,6 +35116,17 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetOrganizationRdsUsersCount]
+(
+	@ItemID INT,
+	@TotalNumber int OUTPUT
+)
+AS
+SELECT
+  @TotalNumber = Count(DISTINCT([AccountId]))
+  FROM [dbo].[RDSCollectionUsers]
+  WHERE [RDSCollectionId] in (SELECT [ID] FROM [RDSCollections] where [ItemId]  = @ItemId )
+RETURN
 				*/
 				#endregion
 
@@ -34144,9 +35152,20 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetOrganizationRdsCollectionsCount]
+(
+	@ItemID INT,
+	@TotalNumber int OUTPUT
+)
+AS
+SELECT
+  @TotalNumber = Count([Id])
+  FROM [dbo].[RDSCollections] WHERE [ItemId]  = @ItemId
+RETURN
 				*/
 				#endregion
 
+				return RdsCollections.Count(c => c.ItemId == itemId);
 			}
 			else
 			{
@@ -34169,9 +35188,20 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetOrganizationRdsServersCount]
+(
+	@ItemID INT,
+	@TotalNumber int OUTPUT
+)
+AS
+SELECT
+  @TotalNumber = Count([Id])
+  FROM [dbo].[RDSServers] WHERE [ItemId]  = @ItemId
+RETURN
 				*/
 				#endregion
 
+				return RdsServers.Count(s => s.ItemId == itemId);
 			}
 			else
 			{
@@ -34199,6 +35229,23 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdateRDSCollection]
+(
+	@ID INT,
+	@ItemID INT,
+	@Name NVARCHAR(255),
+	@Description NVARCHAR(255),
+	@DisplayName NVARCHAR(255)
+)
+AS
+
+UPDATE RDSCollections
+SET
+	ItemID = @ItemID,
+	Name = @Name,
+	Description = @Description,
+	DisplayName = @DisplayName
+WHERE ID = @Id
 				*/
 				#endregion
 
@@ -34223,9 +35270,16 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteRDSServerSettings]
+(
+	@ServerId int
+)
+AS
+	DELETE FROM RDSServerSettings WHERE RDSServerId = @ServerId
 				*/
 				#endregion
 
+				RdsServerSettings.Where(s => s.RdsServerId == serverId).ExecuteDelete(RdsServerSettings);
 			}
 			else
 			{
@@ -34243,6 +35297,19 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteRDSCollection]
+(
+	@Id  int
+)
+AS
+
+UPDATE RDSServers
+SET
+	RDSCollectionId = Null
+WHERE RDSCollectionId = @Id
+
+DELETE FROM RDSCollections
+WHERE Id = @Id
 				*/
 				#endregion
 
@@ -34263,6 +35330,33 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddRDSServer]
+(
+	@RDSServerID INT OUTPUT,
+	@Name NVARCHAR(255),
+	@FqdName NVARCHAR(255),
+	@Description NVARCHAR(255),
+	@Controller INT
+)
+AS
+INSERT INTO RDSServers
+(
+	Name,
+	FqdName,
+	Description,
+	Controller
+)
+VALUES
+(
+	@Name,
+	@FqdName,
+	@Description,
+	@Controller
+)
+
+SET @RDSServerID = SCOPE_IDENTITY()
+
+RETURN
 				*/
 				#endregion
 
@@ -34293,6 +35387,22 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetRDSServersByItemId]
+(
+	@ItemID INT
+)
+AS
+SELECT 
+	RS.Id,
+	RS.ItemID,
+	RS.Name, 
+	RS.FqdName,
+	RS.Description,
+	RS.RdsCollectionId,
+	SI.ItemName
+	FROM RDSServers AS RS
+	LEFT OUTER JOIN  ServiceItems AS SI ON SI.ItemId = RS.ItemId
+	WHERE RS.ItemID = @ItemID
 				*/
 				#endregion
 
@@ -34313,6 +35423,81 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetRDSServersPaged]
+(
+	@FilterColumn nvarchar(50) = '',
+	@FilterValue nvarchar(50) = '',
+	@ItemID int,
+	@IgnoreItemId bit,
+	@RdsCollectionId int,
+	@IgnoreRdsCollectionId bit,
+	@SortColumn nvarchar(50),
+	@StartRow int,
+	@MaximumRows int,
+	@Controller int,
+	@ControllerName nvarchar(50) = ''
+)
+AS
+-- build query and run it to the temporary table
+DECLARE @sql nvarchar(2000)
+
+SET @sql = '
+
+DECLARE @EndRow int
+SET @EndRow = @StartRow + @MaximumRows
+
+DECLARE @RDSServer TABLE
+(
+	ItemPosition int IDENTITY(0,1),
+	RDSServerId int
+)
+INSERT INTO @RDSServer (RDSServerId)
+SELECT
+	S.ID
+FROM RDSServers AS S
+LEFT OUTER JOIN  ServiceItems AS SI ON SI.ItemId = S.ItemId
+LEFT OUTER JOIN  Services AS SE ON SE.ServiceID = S.Controller
+LEFT OUTER JOIN  RDSCollections AS RC ON RC.ID = S.RdsCollectionId
+WHERE 
+	((((@ItemID is Null AND S.ItemID is null ) or (@IgnoreItemId = 1 ))
+		or (@ItemID is not Null AND S.ItemID = @ItemID ))
+	and
+	(((@RdsCollectionId is Null AND S.RDSCollectionId is null) or @IgnoreRdsCollectionId = 1)
+		or (@RdsCollectionId is not Null AND S.RDSCollectionId = @RdsCollectionId)))'
+
+IF @FilterColumn <> '' AND @FilterValue <> ''
+SET @sql = @sql + ' AND ' + @FilterColumn + ' LIKE ''%' + @FilterValue + '%'''
+
+IF @Controller <> ''
+SET @sql = @sql + ' AND Controller = @Controller '
+
+IF @SortColumn <> '' AND @SortColumn IS NOT NULL
+SET @sql = @sql + ' ORDER BY ' + @SortColumn + ' '
+
+SET @sql = @sql + ' SELECT COUNT(RDSServerId) FROM @RDSServer;
+SELECT
+	ST.ID,
+	ST.ItemID,
+	ST.Name, 
+	ST.FqdName,
+	ST.Description,
+	ST.RdsCollectionId,
+	SI.ItemName,
+	ST.ConnectionEnabled,
+	ST.Controller,
+	SE.ServiceName as ControllerName,
+	RC.Name as CollectionName
+FROM @RDSServer AS S
+INNER JOIN RDSServers AS ST ON S.RDSServerId = ST.ID
+LEFT OUTER JOIN  ServiceItems AS SI ON SI.ItemId = ST.ItemId
+LEFT OUTER JOIN  Services AS SE ON SE.ServiceID = ST.Controller
+LEFT OUTER JOIN  RDSCollections AS RC ON RC.ID = ST.RdsCollectionId
+WHERE S.ItemPosition BETWEEN @StartRow AND @EndRow'
+
+exec sp_executesql @sql, N'@StartRow int, @MaximumRows int,  @FilterValue nvarchar(50),  @ItemID int, @RdsCollectionId int, @IgnoreItemId bit, @IgnoreRdsCollectionId bit, @Controller int, @ControllerName nvarchar(50)',
+@StartRow, @MaximumRows,  @FilterValue,  @ItemID, @RdsCollectionId, @IgnoreItemId , @IgnoreRdsCollectionId, @Controller, @ControllerName
+
+RETURN
 				*/
 				#endregion
 
@@ -34342,6 +35527,25 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetRDSServerById]
+(
+	@ID INT
+)
+AS
+SELECT TOP 1
+	RS.Id,
+	RS.ItemID,
+	RS.Name, 
+	RS.FqdName,
+	RS.Description,
+	RS.RdsCollectionId,
+	RS.ConnectionEnabled,
+	SI.ItemName,
+	RC.Name AS ""CollectionName""
+FROM RDSServers AS RS
+LEFT OUTER JOIN  ServiceItems AS SI ON SI.ItemId = RS.ItemId
+LEFT OUTER JOIN  RDSCollections AS RC ON RC.ID = RdsCollectionId
+WHERE RS.Id = @Id
 				*/
 				#endregion
 
@@ -34362,6 +35566,22 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetRDSServersByCollectionId]
+(
+	@RdsCollectionId INT
+)
+AS
+SELECT 
+	RS.Id,
+	RS.ItemID,
+	RS.Name, 
+	RS.FqdName,
+	RS.Description,
+	RS.RdsCollectionId,
+	SI.ItemName
+FROM RDSServers AS RS
+LEFT OUTER JOIN  ServiceItems AS SI ON SI.ItemId = RS.ItemId
+WHERE RdsCollectionId = @RdsCollectionId
 				*/
 				#endregion
 
@@ -34382,9 +35602,17 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteRDSServer]
+(
+	@Id  int
+)
+AS
+DELETE FROM RDSServers
+WHERE Id = @Id
 				*/
 				#endregion
 
+				RdsServers.Where(s => s.Id == id).ExecuteDelete(RdsServers);
 			}
 			else
 			{
@@ -34414,6 +35642,27 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdateRDSServer]
+(
+	@Id  INT,
+	@ItemID INT,
+	@Name NVARCHAR(255),
+	@FqdName NVARCHAR(255),
+	@Description NVARCHAR(255),
+	@RDSCollectionId INT,
+	@ConnectionEnabled BIT
+)
+AS
+
+UPDATE RDSServers
+SET
+	ItemID = @ItemID,
+	Name = @Name,
+	FqdName = @FqdName,
+	Description = @Description,
+	RDSCollectionId = @RDSCollectionId,
+	ConnectionEnabled = @ConnectionEnabled
+WHERE ID = @Id
 				*/
 				#endregion
 
@@ -34441,6 +35690,17 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddRDSServerToCollection]
+(
+	@Id  INT,
+	@RDSCollectionId INT
+)
+AS
+
+UPDATE RDSServers
+SET
+	RDSCollectionId = @RDSCollectionId
+WHERE ID = @Id
 				*/
 				#endregion
 
@@ -34462,6 +35722,17 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddRDSServerToOrganization]
+(
+	@Id  INT,
+	@ItemID INT
+)
+AS
+
+UPDATE RDSServers
+SET
+	ItemID = @ItemID
+WHERE ID = @Id
 				*/
 				#endregion
 
@@ -34483,6 +35754,16 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[RemoveRDSServerFromOrganization]
+(
+	@Id  INT
+)
+AS
+
+UPDATE RDSServers
+SET
+	ItemID = NULL
+WHERE ID = @Id
 				*/
 				#endregion
 
@@ -34503,9 +35784,25 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[RemoveRDSServerFromCollection]
+(
+	@Id  INT
+)
+AS
+
+UPDATE RDSServers
+SET
+	RDSCollectionId = NULL
+WHERE ID = @Id
 				*/
 				#endregion
 
+#if NETCOREAPP
+				RdsServers.Where(s => s.Id == serverId).ExecuteUpdate(s => s.SetProperty(p => p.RdscollectionId, null as int?));
+#else
+				foreach (var server in RdsServers.Where(s => s.Id == serverId)) server.RdscollectionId = null;
+				SaveChanges();
+#endif
 			}
 			else
 			{
@@ -34523,7 +35820,33 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
-				*/
+	CREATE PROCEDURE [dbo].[GetRDSCollectionUsersByRDSCollectionId]
+(
+	@ID INT
+)
+AS
+SELECT 
+	[AccountID],
+	[ItemID],
+	[AccountType],
+	[AccountName],
+	[DisplayName],
+	[PrimaryEmailAddress],
+	[MailEnabledPublicFolder],
+	[MailboxManagerActions],
+	[SamAccountName],
+	[CreatedDate],
+	[MailboxPlanId],
+	[SubscriberNumber],
+	[UserPrincipalName],
+	[ExchangeDisclaimerId],
+	[ArchivingMailboxPlanId],
+	[EnableArchiving],
+	[LevelID],
+	[IsVIP]
+FROM ExchangeAccounts
+WHERE AccountID IN (Select AccountId from RDSCollectionUsers where RDSCollectionId = @Id)
+			*/
 				#endregion
 
 			}
@@ -34543,6 +35866,23 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddUserToRDSCollection]
+(
+	@RDSCollectionID INT,
+	@AccountId INT
+)
+AS
+
+INSERT INTO RDSCollectionUsers
+(
+	RDSCollectionId, 
+	AccountID
+)
+VALUES
+(
+	@RDSCollectionID,
+	@AccountId
+)
 				*/
 				#endregion
 
@@ -34564,9 +35904,20 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[RemoveRDSUserFromRDSCollection]
+(
+	@AccountId  INT,
+	@RDSCollectionId INT
+)
+AS
+
+DELETE FROM RDSCollectionUsers
+WHERE AccountId = @AccountId AND RDSCollectionId = @RDSCollectionId
 				*/
 				#endregion
 
+				RdsCollectionUsers.Where(u => u.AccountId == accountId && u.RdscollectionId == rdsCollectionId)
+					.ExecuteDelete(RdsCollectionUsers);
 			}
 			else
 			{
@@ -34603,7 +35954,7 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			}
 		}
 
-		#endregion
+#endregion
 
 		#region MX|NX Services
 
