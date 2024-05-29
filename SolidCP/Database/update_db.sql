@@ -6206,7 +6206,7 @@ SELECT
 FROM ScheduleTasks
 WHERE
 	TaskID = @TaskID
-	AND @RoleID <= RoleID -- was >= but this seems like a bug, since lower RoleID is more privileged
+	AND @RoleID <= RoleID -- was >= but this seems like a bug, since lower RoleID is more privileged, and in GetScheduleTasks it is also <=.
 RETURN
 
 
