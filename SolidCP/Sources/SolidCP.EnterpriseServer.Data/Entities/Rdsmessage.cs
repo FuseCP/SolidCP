@@ -19,7 +19,7 @@ public partial class RdsMessage
     public int Id { get; set; }
 
     [Column("RDSCollectionId")]
-    public int RdscollectionId { get; set; }
+    public int RdsCollectionId { get; set; }
 
     [Required]
     [Column(TypeName = "ntext")]

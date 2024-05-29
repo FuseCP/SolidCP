@@ -3489,7 +3489,7 @@ CREATE PROCEDURE [dbo].[AddRDSMessage]
 	@Date DATETIME
 )
 AS
-INSERT INTO RDSMEssages
+INSERT INTO RDSMessages
 (
 	RDSCollectionId,
 	[MessageText],
@@ -13403,7 +13403,7 @@ SELECT
 FROM ScheduleTasks
 WHERE
 	TaskID = @TaskID
-	AND @RoleID >= RoleID
+	AND @RoleID <= RoleID -- was >= but this seems like a bug, since lower RoleID is more privileged, and in GetScheduleTasks it is also <=.
 RETURN
 
 GO

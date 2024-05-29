@@ -6184,6 +6184,32 @@ SELECT
   FROM [dbo].[ScheduleTasksEmailTemplates] where [TaskID] = @TaskID 
 GO
 
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetScheduleTask')
+DROP PROCEDURE GetScheduleTask
+GO
+CREATE PROCEDURE GetScheduleTask
+(
+	@ActorID int,
+	@TaskID nvarchar(100)
+)
+AS
+
+-- get user role
+DECLARE @RoleID int
+SELECT @RoleID = RoleID FROM Users
+WHERE UserID = @ActorID
+
+SELECT
+	TaskID,
+	TaskType,
+	RoleID
+FROM ScheduleTasks
+WHERE
+	TaskID = @TaskID
+	AND @RoleID <= RoleID -- was >= but this seems like a bug, since lower RoleID is more privileged
+RETURN
+
+
 IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetDomainDnsRecords')
 DROP PROCEDURE GetDomainDnsRecords
 GO

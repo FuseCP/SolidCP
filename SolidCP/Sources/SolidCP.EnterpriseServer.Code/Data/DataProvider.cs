@@ -65,8 +65,9 @@ using SolidCP.EnterpriseServer.Data;
 using Twilio.Base;
 using System.Net;
 using static Mysqlx.Notice.Warning.Types;
-using Humanizer.Localisation;
+//using Humanizer.Localisation;
 using Mysqlx.Crud;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -75,6 +76,9 @@ namespace SolidCP.EnterpriseServer
 	/// </summary>
 	public class DataProvider : Data.DbContext
 	{
+
+		public long MB = 1024 * 1024;
+
 #if UseEntityFramework
 		public bool UseEntityFramework => !IsMsSql || !HasProcedures;
 #else
@@ -10654,7 +10658,7 @@ RETURN
 						Provider = p
 					})
 					.Where(s => s.Provider.GroupId == groupId)
-					.Join(Servers, s.Service.ServerId, s => s.ServerId, (s, t) => new
+					.Join(Servers, s => s.Service.ServerId, s => s.ServerId, (s, t) => new
 					{
 						s.Service.ServiceId,
 						s.Service.ServiceName,
@@ -10745,7 +10749,7 @@ RETURN
 						s.Server.ServerName,
 						s.Service.ProviderId,
 						s.Provider.ProviderName,
-						FullServiceName = s.Service.ServiceName + " on " + t.ServerName
+						FullServiceName = s.Service.ServiceName + " on " + s.Server.ServerName
 					});
 
 				return EntityDataSet(services);
@@ -11805,7 +11809,7 @@ RETURN
 						i.Service,
 						Server = s
 					})
-					.Join(ResourceGroups, i => t.Type.GroupId, r => r.GroupId, (i, r) => new
+					.Join(ResourceGroups, i => i.Type.GroupId, r => r.GroupId, (i, r) => new
 					{
 						i.Item.ItemId,
 						i.Item.ItemName,
@@ -11838,17 +11842,17 @@ RETURN
 					else
 					{
 						items = items
-							.Where(i => i.Item.ItemName == filterValue ||
-								i.User.Username == filterValue ||
-								i.User.FullName == filterValue ||
-								i.User.Email == filterValue);
+							.Where(i => EF.Functions.Like(i.ItemName, filterValue) ||
+								i.Username == filterValue ||
+								i.FullName == filterValue ||
+								i.Email == filterValue);
 					}
 				}
 
 				var count = items.Count();
 
 				if (!string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
-				else items = items.OrderBy(i => i.Item.ItemName);
+				else items = items.OrderBy(i => i.ItemName);
 
 				items = items.Skip(startRow).Take(maximumRows);
 
@@ -12029,7 +12033,7 @@ RETURN
 						i.Service,
 						Server = s
 					})
-					.Join(ResourceGroups, i => t.Type.GroupId, r => r.GroupId, (i, r) => new
+					.Join(ResourceGroups, i => i.Type.GroupId, r => r.GroupId, (i, r) => new
 					{
 						i.Item.ItemId,
 						i.Item.ItemName,
@@ -12363,7 +12367,7 @@ RETURN
 						i.Service,
 						Server = s
 					})
-					.Join(ResourceGroups, i => t.Type.GroupId, r => r.GroupId, (i, r) => new
+					.Join(ResourceGroups, i => i.Type.GroupId, r => r.GroupId, (i, r) => new
 					{
 						i.Item.ItemId,
 						i.Item.ItemName,
@@ -12509,7 +12513,7 @@ RETURN
 						i.Service,
 						Server = s
 					})
-					.Join(ResourceGroups, i => t.Type.GroupId, r => r.GroupId, (i, r) => new
+					.Join(ResourceGroups, i => i.Type.GroupId, r => r.GroupId, (i, r) => new
 					{
 						i.Item.ItemId,
 						i.Item.ItemName,
@@ -14177,10 +14181,11 @@ RETURN
 						s.Item.Bytes
 					})
 					.GroupBy(s => s.GroupId)
+					.Where(s => s.Key != null)
 					.Select(g => new Data.Entities.PackagesDiskspace()
 					{
 						PackageId = packageId,
-						GroupId = g.Key,
+						GroupId = g.Key ?? 0,
 						DiskSpace = g.Sum(s => s.Bytes)
 					});
 				PackagesDiskspaces.AddRange(diskspace);
@@ -15712,7 +15717,7 @@ RETURN
 					SaveChanges();
 
 					// save quotas
-					UpdateHostingPlanQuotas(actorId, planId, quotasXml);
+					UpdateHostingPlanQuotas(actorId, plan.PlanId, quotasXml);
 
 					transaction.Commit();
 
@@ -16105,16 +16110,16 @@ RETURN
 			}
 		}
 
+		/*
 		// TODO: This method is missing from the stored procedures
 		public int CopyHostingPlan(int planId, int userId, int packageId)
 		{
-			throw new NotImplementedException();
 
 			if (UseEntityFramework)
 			{
 				#region Stored Procedure
 				/*
-				*/
+				
 				#endregion
 
 			}
@@ -16132,7 +16137,7 @@ RETURN
 
 				return Convert.ToInt32(prmPlanId.Value);
 			}
-		}
+		} */
 
 		public int DeleteHostingPlan(int actorId, int planId)
 		{
@@ -20219,7 +20224,7 @@ RETURN
 							PropertyName = (string)e.Attribute("name"),
 							PropertyValue = (string)e.Attribute("value")
 						});
-					Packages.AddRange(settings);
+					PackageSettings.AddRange(settings);
 					SaveChanges();
 
 					transaction.Commit();
@@ -20583,7 +20588,7 @@ RETURN
 						(taskName == "" || l.TaskName == taskName) &&
 						(itemId == 0 || l.ItemId == itemId) &&
 						(itemName == "" || EF.Functions.Like(l.ItemName, itemName)) &&
-						(severityId == -1 || severityId > -1 && L.SeverityId == severityId))
+						(severityId == -1 || severityId > -1 && l.SeverityId == severityId));
 
 				var count = logs.Count();
 
@@ -20837,6 +20842,19 @@ RETURN
 				*/
 				#endregion
 
+				if (!CheckActorUserRights(actorId, userId))
+					throw new AccessViolationException("You are not allowed to access this account");
+
+				var isAdmin = Users.Any(u => u.UserId == actorId && u.RoleId == 1);
+
+				AuditLogs
+					.Where(l => (userId <= 0 && isAdmin || CheckUserParent(userId, l.UserId)) &&
+						startDate <= l.StartDate && l.StartDate < endDate &&
+						(string.IsNullOrEmpty(sourceName) || l.SourceName == sourceName) &&
+						(string.IsNullOrEmpty(taskName) || l.TaskName == taskName) &&
+						(itemId <= 0 || itemId == l.ItemId) &&
+						(string.IsNullOrEmpty(itemName) || EF.Functions.Like(l.ItemName, itemName)))
+					.ExecuteDelete(AuditLogs);
 			}
 			else
 			{
@@ -21008,6 +21026,62 @@ RETURN
 				*/
 				#endregion
 
+				// check rights
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				var packagesGrouped = Packages
+					.Join(PackagesTreeCaches, p => p.PackageId, t => t.ParentPackageId, (p, t) => new { P = p, T = t })
+					.Join(Packages, pp => pp.T.PackageId, pc => pc.PackageId, (pp, pc) => new { pp.P, pp.T, PC = pc })
+					.Join(PackagesBandwidths, pp => pp.PC.PackageId, pb => pb.PackageId, (pp, pb) => new { pp.P, pp.PC, PB = pb })
+					.Join(HostingPlanResources, pp => new { pp.PC.PlanId, pp.PB.GroupId }, hpr => new { hpr.PlanId, hpr.GroupId },
+						(pp, hpr) => new { pp.P, pp.PC, pp.PB, HPR = hpr })
+					.Where(p => startDate <= p.PB.LogDate && p.PB.LogDate < endDate && p.HPR.CalculateBandwith)
+					.GroupBy(p => p.P.PackageId)
+					.Select(p => new
+					{
+						PackageId = p.Key,
+						QuotaValue = GetPackageAllocatedQuota(p.Key, 51),
+						Bandwidth = p.Sum(s => s.PB.BytesSent + s.PB.BytesReceived)
+					});
+				var packages = Packages
+					.Where(p => packageId == -1 && p.UserId == userId ||
+						packageId != -1 && p.ParentPackageId == packageId)
+					.GroupJoin(packagesGrouped, p => p.PackageId, pg => pg.PackageId, (p, pg) => new
+					{
+						p.PackageId,
+						p.PackageName,
+						p.StatusId,
+						p.UserId,
+						PG = pg.SingleOrDefault()
+					})
+					.Join(UsersDetailed, p => p.UserId, u => u.UserId, (p, u) => new
+					{
+						p.PackageId,
+						QuotaValue = p.PG != null ? p.PG.QuotaValue : 0,
+						Bandwith = p.PG != null ? p.PG.Bandwith : 0,
+						UsagePercentage = p.PG != null ? (p.PG.QuotaValue > 0 ? p.PG.Bandwith * 100 / p.PG.QuotaValue : 0) : 0,
+						PackagesNumber = Packages.Count(np => np.ParentPackageId == p.PackageId),
+						p.PackageName,
+						p.StatusId,
+						p.UserId,
+						u.Username,
+						u.FirstName,
+						u.LastName,
+						u.FullName,
+						u.RoleID,
+						u.Email,
+						UserComments = GetItemComments(u.UserId, "USER", actorId)
+					});
+
+				var count = packages.Count();
+
+				if (string.IsNullOrEmpty(sortColumn)) packages = packages.OrderByDescending(p => p.UsagePercentage);
+				else packages = packages.OrderBy(sortColumn);
+
+				packages = packages.Skip(startRow).Take(maximumRows);
+
+				return EntityDataSet(count, packages);
 			}
 			else
 			{
@@ -21133,6 +21207,62 @@ RETURN
 				*/
 				#endregion
 
+				// check rights
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				var packagesGrouped = Packages
+					.Join(PackagesTreeCaches, p => p.PackageId, t => t.ParentPackageId, (p, t) => new { P = p, T = t })
+					.Join(Packages, pp => pp.T.PackageId, pc => pc.PackageId, (pp, pc) => new { pp.P, pp.T, PC = pc })
+					.Join(PackagesDiskspaces, pp => pp.PC.PackageId, pd => pd.PackageId, (pp, pd) => new { pp.P, pp.PC, PD = pd })
+					.Join(HostingPlanResources, pp => new { pp.PC.PlanId, pp.PD.GroupId }, hpr => new { hpr.PlanId, hpr.GroupId },
+						(pp, hpr) => new { pp.P, pp.PC, pp.PD, HPR = hpr })
+					.Where(p => p.HPR.CalculateDiskspace)
+					.GroupBy(p => p.P.PackageId)
+					.Select(p => new
+					{
+						PackageId = p.Key,
+						QuotaValue = GetPackageAllocatedQuota(p.Key, 51),
+						Diskspace = ((float)p.Sum(s => s.PD.DiskSpace) ?? 0) / 1024 / 1024
+					});
+				var packages = Packages
+					.Where(p => packageId == -1 && p.UserId == userId ||
+						packageId != -1 && p.ParentPackageId == packageId)
+					.GroupJoin(packagesGrouped, p => p.PackageId, pg => pg.PackageId, (p, pg) => new
+					{
+						p.PackageId,
+						p.PackageName,
+						p.StatusId,
+						p.UserId,
+						PG = pg.SingleOrDefault()
+					})
+					.Join(UsersDetailed, p => p.UserId, u => u.UserId, (p, u) => new
+					{
+						p.PackageId,
+						QuotaValue = p.PG != null ? p.PG.QuotaValue : 0,
+						Diskspace = p.PG != null ? p.PG.Diskspace : 0,
+						UsagePercentage = p.PG != null ? (p.PG.QuotaValue > 0 ? p.PG.Diskspace * 100 / p.PG.QuotaValue : 0) : 0,
+						PackagesNumber = Packages.Count(np => np.ParentPackageId == p.PackageId),
+						p.PackageName,
+						p.StatusId,
+						p.UserId,
+						u.Username,
+						u.FirstName,
+						u.LastName,
+						u.FullName,
+						u.RoleID,
+						u.Email,
+						UserComments = GetItemComments(u.UserId, "USER", actorId)
+					});
+
+				var count = packages.Count();
+
+				if (string.IsNullOrEmpty(sortColumn)) packages = packages.OrderByDescending(p => p.UsagePercentage);
+				else packages = packages.OrderBy(sortColumn);
+
+				packages = packages.Skip(startRow).Take(maximumRows);
+
+				return EntityDataSet(count, packages);
 			}
 			else
 			{
@@ -21200,6 +21330,46 @@ RETURN
 				*/
 				#endregion
 
+				// check rights
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				var packagesGrouped = PackagesTreeCaches
+					.Where(p => p.ParentPackageId == packageId)
+					.Join(PackagesBandwidths.Where(pb => startDate <= pb.LogDate && pb.LogDate < endDate),
+						pt => pt.PackageId, pb => pb.PackageId, (pt, pb) => new { PT = pt, PB = pb })
+					.Join(Packages, pb => pb.PB.PackageId, p => p.PackageId, (pb, p) => new { pb.PT, pb.PB, P = p })
+					.Join(HostingPlanResources.Where(hp => hp.CalculateBandwidth == true), p => new { p.PB.GroupId, p.P.PlanId },
+						hpr => new { hpr.GroupId, hpr.PlanId }, (p, hpr) => new { p.P, p.PB, p.PT, HPR = hpr })
+					.GroupBy(p => p.PB.GroupId)
+					.Select(p => new
+					{
+						p.Key.GroupId,
+						BytesSent = p.Sum(pb => (long?)pb.PB.BytesSent) ?? 0,
+						BytesReceived = p.Sum(pb => (long?)pb.PB.BytesReceived) ?? 0
+					});
+				var packages = ResourceGroups
+					.OrderBy(rg => rg.GroupOrder)
+					.GroupJoin(packagesGrouped, r => r.GroupId, g => g.GroupId, (rg, pg) => new
+					{
+						rg.GroupId,
+						rg.GroupName,
+						PG = pg.SingleOrDefault()
+					})
+					.Select(g => new
+					{
+						g.GroupId,
+						g.GroupName,
+						MegaBytesSent = g.PG != null ? (g.PG.BytesSent + MB / 2) / MB : 0,
+						MegaBytesReceived = g.PG != null ? (g.PG.BytesReceived + MB / 2) / MB : 0,
+						MegaBytesTotal = g.PG != null ? (g.PG.BytesSent + g.PG.BytesReceived + MB / 2) / MB : 0,
+						BytesSent = g.PG != null ? g.PG.BytesSent : 0,
+						BytesReceived = g.PG != null ? g.PG.BytesReceived : 0,
+						BytesTotal = g.PG != null ? g.PG.BytesSent + g.PG.BytesReceived : 0
+					})
+					.Where(g => g.BytesTotal > 0);
+
+				return EntityDataSet(packages);
 			}
 			else
 			{
@@ -21255,6 +21425,40 @@ RETURN
 				*/
 				#endregion
 
+				// check rights
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				var packagesGrouped = PackagesTreeCaches
+				.Where(p => p.ParentPackageId == packageId)
+					.Join(PackagesDiskspaces, pt => pt.PackageId, pd => pd.PackageId, (pt, pd) => new { PT = pt, PD = pd })
+					.Join(Packages, pb => pb.PD.PackageId, p => p.PackageId, (pb, p) => new { pb.PT, pb.PD, P = p })
+					.Join(HostingPlanResources.Where(hp => hp.CalculateDiskSpace == true), p => new { p.PD.GroupId, p.P.PlanId },
+						hpr => new { hpr.GroupId, hpr.PlanId }, (p, hpr) => new { p.P, p.PD, p.PT, HPR = hpr })
+					.GroupBy(p => p.PD.GroupId)
+					.Select(p => new
+					{
+						p.Key.GroupId,
+						Diskspace = p.Sum(pb => (long?)pb.PD.Diskspace) ?? 0
+					});
+				var packages = ResourceGroups
+					.OrderBy(rg => rg.GroupOrder)
+					.GroupJoin(packagesGrouped, r => r.GroupId, g => g.GroupId, (rg, pg) => new
+					{
+						rg.GroupId,
+						rg.GroupName,
+						PG = pg.SingleOrDefault()
+					})
+					.Select(g => new
+					{
+						g.GroupId,
+						g.GroupName,
+						Diskspace = g.PG != null ? (g.PG.Diskspace + MB/2) / MB : 0,
+						DiskspaceBytes = g.PG != null ? g.PG.Diskspace : 0
+					})
+					.Where(g => g.DiskspaceBytes > 0);
+
+				return EntityDataSet(packages);
 			}
 			else
 			{
@@ -21309,6 +21513,34 @@ WHERE T.TaskID = @TaskID
 				*/
 				#endregion
 
+				var tasks = BackgroundTasks
+					.Where(t => t.TaskId == taskId)
+					.Join(BackgroundTaskStacks, t => t.Id, ts => ts.TaskId, (t, ts) => new
+					{
+						t.Id,
+						t.Guid,
+						t.TaskId,
+						t.ScheduleId,
+						t.PackageId,
+						t.UserId,
+						t.EffectiveUserId,
+						t.TaskName,
+						t.ItemId,
+						t.ItemName,
+						t.StartDate,
+						t.FinishDate,
+						t.IndicatorCurrent,
+						t.IndicatorMaximum,
+						t.MaximumExecutionTime,
+						t.Source,
+						t.Severity,
+						t.Completed,
+						t.NotifyOnComplete,
+						t.Status
+					})
+					.Take(1);
+
+				return EntityDataReader(tasks);
 			}
 			else
 			{
@@ -21359,12 +21591,59 @@ WHERE T.Guid = (
 				*/
 				#endregion
 
+				var tasksGuids = BackgroundTasks
+					.Where(t => t.ScheduleId == scheduleId && t.Completed == false &&
+						(t.Status == BackgroundTaskStatus.Run || t.Status == BackgroundTaskStatus.Starting))
+					.Select(t => t.Guid);
+				var tasks = BackgroundTasks
+					.Join(tasksGuids, t => t.Guid, tg => tg, (t, tg) => new
+					{
+						t.Id,
+						t.Guid,
+						t.TaskId,
+						t.ScheduleId,
+						t.PackageId,
+						t.UserId,
+						t.EffectiveUserId,
+						t.TaskName,
+						t.ItemId,
+						t.ItemName,
+						t.StartDate,
+						t.FinishDate,
+						t.IndicatorCurrent,
+						t.IndicatorMaximum,
+						t.MaximumExecutionTime,
+						t.Source,
+						t.Severity,
+						t.Completed,
+						t.NotifyOnComplete,
+						t.Status
+					});
+				return EntityDataReader(tasks);
 			}
 			else
 			{
 				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetScheduleBackgroundTasks",
 					new SqlParameter("@scheduleId", scheduleId));
+			}
+		}
+
+		public IEnumerable<int> GetChildUsersId(int userId)
+		{
+			if (Users.Any(u => u.UserId == userId) yield return userId;
+
+			var descendants = Users
+				.Where(u => u.OwnerId == userId)
+				.Select(u => u.UserId)
+				.ToArray();
+			while (descendants.Any())
+			{
+				foreach (var child in descendants) yield return child;
+
+				descendants = Users
+					.Join(descendants, u => u.OwnerId, d => d, (u, d) => u.UserId)
+					.ToArray();
 			}
 		}
 
@@ -21421,6 +21700,39 @@ INNER JOIN (SELECT T.Guid, MIN(T.StartDate) AS Date
 				*/
 				#endregion
 
+				var children = GetChildUsersId(actorId)
+					.ToArray();
+				var tasksGrouped = BackgroundTasks
+					.Join(children, t => t.UserId, uid => uid, (t, uid) => t)
+					.Join(BackgroundTaskStacks, t => t.Id, ts => ts.TaskId, (t, ts) => t)
+					.GroupBy(t => t.Guid)
+					.Select(ts => new { Guid = ts.Key, Date = ts.Min(t => t.StartDate) });
+
+				var tasks = BackgroundTasks
+					.Join(tasksGrouped, t => new { t.Guid, t.StartDate }, tg => new { tg.Guid, tg.Date }, (t, tg) => new
+					{
+						t.Id,
+						t.Guid,
+						t.TaskId,
+						t.ScheduleId,
+						t.PackageId,
+						t.UserId,
+						t.EffectiveUserId,
+						t.TaskName,
+						t.ItemId,
+						t.ItemName,
+						t.StartDate,
+						t.FinishDate,
+						t.IndicatorCurrent,
+						t.IndicatorMaximum,
+						t.MaximumExecutionTime,
+						t.Source,
+						t.Severity,
+						t.Completed,
+						t.NotifyOnComplete,
+						t.Status
+					});
+				return EntityDataReader(tasks);
 			}
 			else
 			{
@@ -21470,6 +21782,32 @@ WHERE T.Guid = @Guid
 				*/
 				#endregion
 
+				var tasks = BackgroundTasks
+					.Where(t => t.Guid == guid)
+					.Join(BackgroundTaskStacks, t => t.Id, ts => ts.TaskId, (t, ts) => new
+					{
+						t.Id,
+						t.Guid,
+						t.TaskId,
+						t.ScheduleId,
+						t.PackageId,
+						t.UserId,
+						t.EffectiveUserId,
+						t.TaskName,
+						t.ItemId,
+						t.ItemName,
+						t.StartDate,
+						t.FinishDate,
+						t.IndicatorCurrent,
+						t.IndicatorMaximum,
+						t.MaximumExecutionTime,
+						t.Source,
+						t.Severity,
+						t.Completed,
+						t.NotifyOnComplete,
+						t.Status
+					});
+				return EntityDataReader(tasks);
 			}
 			else
 			{
@@ -21516,6 +21854,31 @@ WHERE T.Completed = 0 AND T.Status = @Status
 				*/
 				#endregion
 
+				var tasks = BackgroundTasks
+					.Where(t => t.Completed == false && t.Status == status)
+					.Select(t => new
+					{
+						t.Id,
+						t.TaskId,
+						t.ScheduleId,
+						t.PackageId,
+						t.UserId,
+						t.EffectiveUserId,
+						t.TaskName,
+						t.ItemId,
+						t.ItemName,
+						t.StartDate,
+						t.FinishDate,
+						t.IndicatorCurrent,
+						t.IndicatorMaximum,
+						t.MaximumExecutionTime,
+						t.Source,
+						t.Severity,
+						t.Completed,
+						t.NotifyOnComplete,
+						t.Status
+					});
+				return EntityDataReader(tasks);
 			}
 			else
 			{
@@ -21566,6 +21929,35 @@ ORDER BY T.StartDate ASC
 				*/
 				#endregion
 
+				var tasks = BackgroundTasks
+					.Where(t => t.Guid == guid)
+					.Join(BackgroundTaskStacks, t => t.Id, ts => ts.TaskId, (t, ts) => t)
+					.OrderBy(t => t.StartDate)
+					.Take(1)
+					.Select(t => new
+					{
+						t.Id,
+						t.Guid,
+						t.TaskId,
+						t.ScheduleId,
+						t.PackageId,
+						t.UserId,
+						t.EffectiveUserId,
+						t.TaskName,
+						t.ItemId,
+						t.ItemName,
+						t.StartDate,
+						t.FinishDate,
+						t.IndicatorCurrent,
+						t.IndicatorMaximum,
+						t.MaximumExecutionTime,
+						t.Source,
+						t.Severity,
+						t.Completed,
+						t.NotifyOnComplete,
+						t.Status
+					});
+				return EntityDataReader(tasks);
 			}
 			else
 			{
@@ -21657,6 +22049,30 @@ RETURN
 				*/
 				#endregion
 
+				var task = new Data.Entities.BackgroundTask()
+				{
+					Guid = guid,
+					TaskId = taskId,
+					ScheduleId = scheduleId,
+					PackageId = packageId,
+					UserId = userId,
+					EffectiveUserId = effectiveUserId,
+					TaskName = taskName,
+					ItemId = itemId,
+					ItemName = itemName,
+					StartDate = startDate,
+					IndicatorCurrent = indicatorCurrent,
+					IndicatorMaximum = indicatorMaximum,
+					MaximumExecutionTime = maximumExecutionTime,
+					Source = source,
+					Severity = severity,
+					Completed = completed,
+					NotifyOnComplete = notifyOnComplete,
+					Status = status
+				};
+				BackgroundTasks.Add(task);
+				SaveChanges();
+				return task.Id;
 			}
 			else
 			{
@@ -21740,7 +22156,7 @@ VALUES
 					TaskId = taskId,
 					Date = date,
 					ExceptionStackTrace = exceptionStackTrace,
-					InnerTaskStart = innerTaskStart,
+					InnerTaskStart = innerTaskStart ? 1 : 0,
 					Severity = severity,
 					Text = text,
 					TextIdent = textIdent,
@@ -21792,6 +22208,21 @@ ORDER BY L.Date
 				*/
 				#endregion
 
+				var logs = BackgroundTaskLogs
+					.Where(l => l.TaskId == taskId && l.Date >= startLogTime)
+					.OrderBy(l => l.Date)
+					.Select(l => new
+					{
+						l.LogId,
+						l.TaskId,
+						l.Date,
+						l.ExceptionStackTrace,
+						InnerTaskStart = l.InnerTaskStart != null && l.InnerTaskStart != 0,
+						l.Severity,
+						l.Text,
+						l.XmlParameters
+					});
+				return EntityDataReader(logs);
 			}
 			else
 			{
@@ -21852,6 +22283,27 @@ WHERE ID = @TaskID
 				*/
 				#endregion
 
+				var task = BackgroundTasks
+					.FirstOrDefault(t => t.Id == taskId);
+				if (task != null)
+				{
+					task.Guid = guid;
+					task.ScheduleId = scheduleId;
+					task.PackageId = packageId;
+					task.TaskName = taskName;
+					task.ItemId = itemId;
+					task.ItemName = itemName;
+					task.FinishDate = finishDate == DateTime.MinValue ? null : finishDate;
+					task.IndicatorCurrent = indicatorCurrent;
+					task.IndicatorMaximum = indicatorMaximum;
+					task.MaximumExecutionTime = maximumExecutionTime;
+					task.Source = source;
+					task.Severity = severity;
+					task.Completed = completed;
+					task.NotifyOnComplete = notifyOnComplete;
+					task.Status = status;
+					SaveChanges();
+				}
 			}
 			else
 			{
@@ -21984,7 +22436,6 @@ WHERE TaskID = @TaskID
 				#endregion
 
 				BackgroundTaskParameters.Where(p => p.TaskId == taskId).ExecuteDelete(BackgroundTaskParameters);
-				SaveChanges();
 			}
 			else
 			{
@@ -22058,6 +22509,22 @@ WHERE ID IN (SELECT ID FROM BackgroundTasks WHERE Guid = @Guid)
 				*/
 				#endregion
 
+				var tasks = BackgroundTasks
+					.Where(t => t.Guid == guid);
+
+				BackgroundTaskStacks
+					.Join(tasks, ts => ts.TaskId, t => t.Id, (ts, t) => ts)
+					.ExecuteDelete(BackgroundTaskStacks);
+
+				BackgroundTaskLogs
+					.Join(tasks, tl => tl.TaskId, t => t.Id, (tl, t) => tl)
+					.ExecuteDelete(BackgroundTaskLogs);
+
+				BackgroundTaskParameters
+					.Join(tasks, tp => tp.TaskId, t => t.Id, (tp, t) => tp)
+					.ExecuteDelete(BackgroundTaskParameters);
+
+				tasks.ExecuteDelete(BackgroundTasks);
 			}
 			else
 			{
@@ -22093,6 +22560,13 @@ WHERE ID = @ID
 				*/
 				#endregion
 
+				BackgroundTaskStacks.Where(ts => ts.TaskId == taskId).ExecuteDelete(BackgroundTaskStacks);
+
+				BackgroundTaskLogs.Where(tl => tl.TaskId == taskId).ExecuteDelete(BackgroundTaskLogs);
+
+				BackgroundTaskParameters.Where(tp => tp.TaskId == taskId).ExecuteDelete(BackgroundTaskParameters);
+
+				BackgroundTasks.Where(t => t.Id == taskId).ExecuteDelete(BackgroundTasks);
 			}
 			else
 			{
@@ -22102,6 +22576,10 @@ WHERE ID = @ID
 			}
 		}
 
+		// TODO bug, in GetScheuldeTask(int actorId) the WHERE clause is roleId <= t.RoleId and in
+		// GetScheduleTask(int actorId, string taskId) the WHERE clause is roleId >= t.RoleId. Looks like a
+		// bug, but I don't know if >= or <= is correct. I think roleId <= t.RoleID is correct, since a
+		// lower roleId is more privileged.
 		public IDataReader GetScheduleTasks(int actorId)
 		{
 			if (UseEntityFramework)
@@ -22129,6 +22607,14 @@ RETURN
 				*/
 				#endregion
 
+				var roleId = Users
+					.Where(u => u.UserId == actorId)
+					.Select(u => u.RoleId)
+					.FirstOrDefault();
+				var tasks = ScheduleTasks
+					.Where(t => roleId <= t.RoleId)
+					.Select(t => new { t.TaskId, t.TaskType, t.RoleId });
+				return EntityDataReader(tasks);
 			}
 			else
 			{
@@ -22138,6 +22624,10 @@ RETURN
 			}
 		}
 
+		// TODO bug, in GetScheuldeTask(int actorId) the WHERE clause is roleId <= t.RoleId and in
+		// GetScheduleTask(int actorId, string taskId) the WHERE clause is roleId >= t.RoleId. Looks like a
+		// bug, but I don't know if >= or <= is correct. I think roleId <= t.RoleID is correct, since a
+		// lower roleId is more privileged. So I corrected the WHERE clause to roleId <= r.RoleId.
 		public IDataReader GetScheduleTask(int actorId, string taskId)
 		{
 			if (UseEntityFramework)
@@ -22168,6 +22658,14 @@ RETURN
 				*/
 				#endregion
 
+				var roleId = Users
+					.Where(u => u.UserId == actorId)
+					.Select(u => u.RoleId)
+					.FirstOrDefault();
+				var tasks = ScheduleTasks
+					.Where(t => t.TaskId == taskId && roleId <= /* was >= */  t.RoleId)
+					.Select(t => new { t.TaskId, t.TaskType, t.RoleId });
+				return EntityDataReader(tasks);
 			}
 			else
 			{
@@ -22255,6 +22753,10 @@ LEFT OUTER JOIN ScheduleParameters AS SP ON STP.ParameterID = SP.ParameterID AND
 RETURN
 				*/
 				#endregion
+
+				// check rights
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
 
 			}
 			else
@@ -35936,9 +36438,25 @@ WHERE AccountId = @AccountId AND RDSCollectionId = @RDSCollectionId
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetRDSControllerServiceIDbyFQDN]
+(
+	@RdsfqdnName NVARCHAR(255),
+	@Controller int OUTPUT
+)
+AS
+
+SELECT @Controller = Controller
+	FROM RDSServers
+	WHERE FqdName = @RdsfqdnName
+
+RETURN
 				*/
 				#endregion
 
+				return RdsServers
+					.Where(s => s.FqdName == fqdnName)
+					.Select(s => s.Controller)
+					.FirstOrDefault() ?? 0;
 			}
 			else
 			{
@@ -35964,9 +36482,40 @@ WHERE AccountId = @AccountId AND RDSCollectionId = @RDSCollectionId
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetAllPackages]
+AS
+SELECT
+	   [PackageID]
+      ,[ParentPackageID]
+      ,[UserID]
+      ,[PackageName]
+      ,[PackageComments]
+      ,[ServerID]
+      ,[StatusID]
+      ,[PlanID]
+      ,[PurchaseDate]
+      ,[OverrideQuotas]
+      ,[BandwidthUpdated]
+  FROM [dbo].[Packages]
 				*/
 				#endregion
 
+				var packages = Packages
+					.Select(p => new
+					{
+						p.PackageId,
+						p.ParentPackageId,
+						p.UserId,
+						p.PackageName,
+						p.PackageComments,
+						p.ServerId,
+						p.StatusId,
+						p.PlanId,
+						p.PurchaseDate,
+						p.OverrideQuotas,
+						p.BandwidthUpdated
+					});
+				return EntityDataReader(packages);
 			}
 			else
 			{
@@ -35983,6 +36532,21 @@ WHERE AccountId = @AccountId AND RDSCollectionId = @RDSCollectionId
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetDomainDnsRecords]
+(
+	@DomainId INT,
+	@RecordType INT
+)
+AS
+SELECT
+	ID,
+	DomainId,
+	DnsServer,
+	RecordType,
+	Value,
+	Date
+  FROM [dbo].[DomainDnsRecords]
+  WHERE [DomainId]  = @DomainId AND [RecordType] = @RecordType
 				*/
 				#endregion
 
@@ -36004,6 +36568,20 @@ WHERE AccountId = @AccountId AND RDSCollectionId = @RDSCollectionId
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetDomainAllDnsRecords]
+(
+	@DomainId INT
+)
+AS
+SELECT
+	ID,
+	DomainId,
+	DnsServer,
+	RecordType,
+	Value,
+	Date
+  FROM [dbo].[DomainDnsRecords]
+  WHERE [DomainId]  = @DomainId 
 				*/
 				#endregion
 
@@ -36024,6 +36602,32 @@ WHERE AccountId = @AccountId AND RDSCollectionId = @RDSCollectionId
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddDomainDnsRecord]
+(
+	@DomainId INT,
+	@RecordType INT,
+	@DnsServer NVARCHAR(255),
+	@Value NVARCHAR(255),
+	@Date DATETIME
+)
+AS
+
+INSERT INTO DomainDnsRecords
+(
+	DomainId,
+	DnsServer,
+	RecordType,
+	Value,
+	Date
+)
+VALUES
+(
+	@DomainId,
+	@DnsServer,
+	@RecordType,
+	@Value,
+	@Date
+)
 				*/
 				#endregion
 
@@ -36042,15 +36646,28 @@ WHERE AccountId = @AccountId AND RDSCollectionId = @RDSCollectionId
 			}
 		}
 
+		/* Table ScheduleTasksEmailTemplates does not exist.
 		public IDataReader GetScheduleTaskEmailTemplate(string taskId)
 		{
 			if (UseEntityFramework)
 			{
 				#region Stored Procedure
 				/*
-				*/
+CREATE PROCEDURE [dbo].[GetScheduleTaskEmailTemplate]
+(
+	@TaskID [nvarchar](100) 
+)
+AS
+SELECT
+	[TaskID],
+	[From] ,
+	[Subject] ,
+	[Template]
+  FROM [dbo].[ScheduleTasksEmailTemplates] where [TaskID] = @TaskID 
+				/*
 				#endregion
 
+				var templates = ScheduleTasksEmailTemplates.
 			}
 			else
 			{
@@ -36060,7 +36677,7 @@ WHERE AccountId = @AccountId AND RDSCollectionId = @RDSCollectionId
 					"GetScheduleTaskEmailTemplate",
 					new SqlParameter("@taskId", taskId));
 			}
-		}
+		} */
 
 		public void DeleteDomainDnsRecord(int id)
 		{
@@ -36068,9 +36685,17 @@ WHERE AccountId = @AccountId AND RDSCollectionId = @RDSCollectionId
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteDomainDnsRecord]
+(
+	@Id  INT
+)
+AS
+DELETE FROM DomainDnsRecords
+WHERE Id = @Id
 				*/
 				#endregion
 
+				DomainDnsRecords.Where(r => r.Id == id).ExecuteDelete(DomainDnsRecords);
 			}
 			else
 			{
@@ -36088,9 +36713,23 @@ WHERE AccountId = @AccountId AND RDSCollectionId = @RDSCollectionId
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdateDomainCreationDate]
+(
+	@DomainId INT,
+	@Date DateTime
+)
+AS
+UPDATE [dbo].[Domains] SET [CreationDate] = @Date
+WHERE [DomainID] = @DomainId
 				*/
 				#endregion
 
+#if NETCOREAPP
+				Domains.Where(d => d.DomainId == domainId).ExecuteUpdate(s => s.SetProperty(p => p.CreationDate, date));
+#else
+				foreach (var domain in Domains.Where(d => d.DomainId == domainId)) domain.CreationDate = date;
+				SaveChanges();
+#endif
 			}
 			else
 			{
@@ -36104,9 +36743,22 @@ WHERE AccountId = @AccountId AND RDSCollectionId = @RDSCollectionId
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdateDomainExpirationDate]
+(
+	@DomainId INT,
+	@Date DateTime
+)
+AS
+UPDATE [dbo].[Domains] SET [ExpirationDate] = @Date WHERE [DomainID] = @DomainId
 				*/
 				#endregion
 
+#if NETCOREAPP
+				Domains.Where(d => d.DomainId == domainId).ExecuteUpdate(s => s.SetProperty(p => p.ExpirationDate, date));
+#else
+				foreach (var domain in Domains.Where(d => d.DomainId == domainId)) domain.ExpirationDate = date;
+				SaveChanges();
+#endif
 			}
 			else
 			{
@@ -36120,9 +36772,22 @@ WHERE AccountId = @AccountId AND RDSCollectionId = @RDSCollectionId
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdateDomainLastUpdateDate]
+(
+	@DomainId INT,
+	@Date DateTime
+)
+AS
+UPDATE [dbo].[Domains] SET [LastUpdateDate] = @Date WHERE [DomainID] = @DomainId
 				*/
 				#endregion
 
+#if NETCOREAPP
+				Domains.Where(d => d.DomainId == domainId).ExecuteUpdate(s => s.SetProperty(p => p.LastUpdateDate, date));
+#else
+				foreach (var domain in Domains.Where(d => d.DomainId == domainId)) domain.LastUpdateDate = date;
+				SaveChanges();
+#endif
 			}
 			else
 			{
@@ -36130,21 +36795,64 @@ WHERE AccountId = @AccountId AND RDSCollectionId = @RDSCollectionId
 			}
 		}
 
-		private void UpdateDomainDate(int domainId, string stroredProcedure, DateTime date)
+		private void UpdateDomainDate(int domainId, string storedProcedure, DateTime date)
 		{
-			SqlHelper.ExecuteNonQuery(
+			if (UseEntityFramework)
+			{
+				switch (storedProcedure) {
+				case "UpdateDomainCreationDate":
+					UpdateDomainCreationDate(domainId, date);
+					break;
+				case "UpdateDomainExpirationDate":
+					UpdateDomainExpirationDate(domainId, date);
+					break;
+				case "UpdateDomainLastUpdateDate":
+					UpdateDomainLastUpdateDate(domainId, date);
+					break;
+				}
+			} else {
+				SqlHelper.ExecuteNonQuery(
 				ConnectionString,
 				CommandType.StoredProcedure,
-				stroredProcedure,
+				storedProcedure,
 				new SqlParameter("@DomainId", domainId),
 				new SqlParameter("@Date", date));
+			}
 		}
 
 		public void UpdateDomainDates(int domainId, DateTime? domainCreationDate, DateTime? domainExpirationDate, DateTime? domainLastUpdateDate)
 		{
 			if (UseEntityFramework)
 			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[UpdateDomainDates]
+(
+	@DomainId INT,
+	@DomainCreationDate DateTime,
+	@DomainExpirationDate DateTime,
+	@DomainLastUpdateDate DateTime 
+)
+AS
+UPDATE [dbo].[Domains] SET [CreationDate] = @DomainCreationDate, [ExpirationDate] = @DomainExpirationDate, [LastUpdateDate] = @DomainLastUpdateDate WHERE [DomainID] = @DomainId
+				*/
+				#endregion
 
+#if NETCOREAPP
+				Domains.Where(d => d.DomainId == domainId)
+					.ExecuteUpdate(d => d
+						.SetProperty(p => p.CreationDate, domainCreationDate)
+						.SetProperty(p => p.ExpirationDate, domainExpirationDate)
+						.SetProperty(p => p.LastUpdateDate, domainLastUpdateDate));
+#else
+				foreach (var domain in Domains.Where(d => d.DomainId == domainId))
+				{
+					domain.CreationDate = domainCreationDate;
+					domain.ExpirationDate = domainExpirationDate;
+					domain.LastUpdateDate = domainLastUpdateDate;
+				}
+				SaveChanges();
+#endif
 			}
 			else
 			{
@@ -36165,9 +36873,36 @@ WHERE AccountId = @AccountId AND RDSCollectionId = @RDSCollectionId
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[UpdateWhoisDomainInfo]
+(
+	@DomainId INT,
+	@DomainCreationDate DateTime,
+	@DomainExpirationDate DateTime,
+	@DomainLastUpdateDate DateTime,
+	@DomainRegistrarName nvarchar(max)
+)
+AS
+UPDATE [dbo].[Domains] SET [CreationDate] = @DomainCreationDate, [ExpirationDate] = @DomainExpirationDate, [LastUpdateDate] = @DomainLastUpdateDate, [RegistrarName] = @DomainRegistrarName WHERE [DomainID] = @DomainId
 				*/
 				#endregion
 
+#if NETCOREAPP
+				Domains.Where(d => d.DomainId == domainId)
+					.ExecuteUpdate(d => d
+						.SetProperty(p => p.CreationDate, domainCreationDate)
+						.SetProperty(p => p.ExpirationDate, domainExpirationDate)
+						.SetProperty(p => p.LastUpdateDate, domainLastUpdateDate)
+						.SetProperty(p => p.RegistrarName, registrarName));
+#else
+				foreach (var domain in Domains.Where(d => d.DomainId == domainId))
+				{
+					domain.CreationDate = domainCreationDate;
+					domain.ExpirationDate = domainExpirationDate;
+					domain.LastUpdateDate = domainLastUpdateDate;
+					domain.RegistrarName = registrarName;
+				}
+				SaveChanges();
+#endif
 			}
 			else
 			{
@@ -36182,7 +36917,7 @@ WHERE AccountId = @AccountId AND RDSCollectionId = @RDSCollectionId
 					new SqlParameter("@DomainRegistrarName", registrarName));
 			}
 		}
-		#endregion
+#endregion
 
 		#region Organization Storage Space Folders
 		public IDataReader GetOrganizationStoragSpaceFolders(int itemId)
@@ -36191,6 +36926,23 @@ WHERE AccountId = @AccountId AND RDSCollectionId = @RDSCollectionId
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetOrganizationStoragSpaceFolders]
+(
+	@ItemId INT
+)
+AS
+	SELECT
+		SSF.Id,
+		SSF.Name,
+		SSF.StorageSpaceId,
+		SSF.Path,
+		SSF.UncPath,
+		SSF.IsShared,
+		SSF.FsrmQuotaType,
+		SSF.FsrmQuotaSizeBytes
+	FROM [ExchangeOrganizationSsFolders] AS OSSF
+	INNER JOIN [StorageSpaceFolders] AS SSF ON SSF.Id = OSSF.StorageSpaceFolderId
+	WHERE ItemId = @ItemId
 				*/
 				#endregion
 
@@ -36211,6 +36963,24 @@ WHERE AccountId = @AccountId AND RDSCollectionId = @RDSCollectionId
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetOrganizationStoragSpacesFolderByType]
+(
+	@ItemId INT,
+	@Type varchar(100)
+)
+AS
+	SELECT
+		SSF.Id,
+		SSF.Name,
+		SSF.StorageSpaceId,
+		SSF.Path,
+		SSF.UncPath,
+		SSF.IsShared,
+		SSF.FsrmQuotaType,
+		SSF.FsrmQuotaSizeBytes
+	FROM [ExchangeOrganizationSsFolders] AS OSSF
+	INNER JOIN [StorageSpaceFolders] AS SSF ON SSF.Id = OSSF.StorageSpaceFolderId
+	WHERE ItemId = @ItemId AND Type = @Type
 				*/
 				#endregion
 
@@ -36232,9 +37002,18 @@ WHERE AccountId = @AccountId AND RDSCollectionId = @RDSCollectionId
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[DeleteOrganizationStoragSpacesFolder]
+(
+	@Id INT
+)
+AS
+	DELETE
+	FROM [ExchangeOrganizationSsFolders]
+	WHERE StorageSpaceFolderId = @Id
 				*/
 				#endregion
 
+				ExchangeOrganizationSsFolders.Where(f => f.StorageSpaceFolderId == id).ExecuteDelete(ExchangeOrganizationSsFolders);
 			}
 			else
 			{
@@ -36251,9 +37030,40 @@ WHERE AccountId = @AccountId AND RDSCollectionId = @RDSCollectionId
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[AddOrganizationStoragSpacesFolder]
+(
+	@Id INT OUTPUT,
+	@ItemId INT,
+	@Type varchar(100),
+	@StorageSpaceFolderId INT
+)
+AS
+	INSERT INTO [ExchangeOrganizationSsFolders]
+	(
+		ItemId,
+		Type,
+		StorageSpaceFolderId
+	)
+	VALUES 
+	(
+		@ItemId,
+		@Type,
+		@StorageSpaceFolderId
+	)
+
+	SET @Id = @StorageSpaceFolderId
 				*/
 				#endregion
 
+				var folder = new Data.Entities.ExchangeOrganizationSsFolder()
+				{
+					ItemId = itemId,
+					Type = type,
+					StorageSpaceFolderId = storageSpaceFolderId
+				};
+				ExchangeOrganizationSsFolders.Add(folder);
+				SaveChanges();
+				return storageSpaceFolderId;
 			}
 			else
 			{
@@ -36273,13 +37083,14 @@ WHERE AccountId = @AccountId AND RDSCollectionId = @RDSCollectionId
 			}
 		}
 
+		/* Stored procedure is not in Database
 		public IDataReader GetOrganizationStorageSpacesFolderById(int itemId, int folderId)
 		{
 			if (UseEntityFramework)
 			{
 				#region Stored Procedure
 				/*
-				*/
+				
 				#endregion
 
 			}
@@ -36292,7 +37103,7 @@ WHERE AccountId = @AccountId AND RDSCollectionId = @RDSCollectionId
 					new SqlParameter("@ItemId", itemId),
 					new SqlParameter("@ID", folderId));
 			}
-		}
+		}*/
 		#endregion
 
 		#region RDS Messages        
@@ -36303,9 +37114,20 @@ WHERE AccountId = @AccountId AND RDSCollectionId = @RDSCollectionId
 			{
 				#region Stored Procedure
 				/*
+CREATE PROCEDURE [dbo].[GetRDSMessages]
+(
+	@RDSCollectionId INT
+)
+AS
+SELECT Id, RDSCollectionId, MessageText, UserName, [Date] FROM [dbo].[RDSMessages] WHERE RDSCollectionId = @RDSCollectionId
+RETURN
 				*/
 				#endregion
 
+				var messages = RdsMessages
+					.Where(m => m.RdsCollectionId == rdsCollectionId)
+					.Select(m => new { m.Id, m.RdsCollectionId, m.MessageText, m.UserName, m.Date });
+				return EntityDataSet(messages);
 			}
 			else
 			{
@@ -36323,9 +37145,45 @@ WHERE AccountId = @AccountId AND RDSCollectionId = @RDSCollectionId
 			{
 				#region Stored Procedure
 				/*
-				*/
+CREATE PROCEDURE [dbo].[AddRDSMessage]
+(
+	@RDSMessageId INT OUTPUT,
+	@RDSCollectionId INT,
+	@MessageText NTEXT,
+	@UserName NVARCHAR(255),
+	@Date DATETIME
+)
+AS
+INSERT INTO RDSMessages
+(
+	RDSCollectionId,
+	[MessageText],
+	UserName,
+	[Date]
+)
+VALUES
+(
+	@RDSCollectionId,
+	@MessageText,
+	@UserName,
+	@Date
+)
+
+SET @RDSMessageId = SCOPE_IDENTITY()
+
+RETURN				*/
 				#endregion
 
+				var message = new Data.Entities.RdsMessage()
+				{
+					RdsCollectionId = rdsCollectionId,
+					MessageText = messageText,
+					UserName = userName,
+					Date = DateTime.Now
+				};
+				RdsMessages.Add(message);
+				SaveChanges();
+				return message.Id;
 			}
 			else
 			{

@@ -62,7 +62,7 @@ public partial class BackgroundTask
 
     public bool? NotifyOnComplete { get; set; }
 
-    public int Status { get; set; }
+    public BackgroundTaskStatus Status { get; set; }
 
     [InverseProperty("Task")]
     public virtual ICollection<BackgroundTaskLog> BackgroundTaskLogs { get; set; } = new List<BackgroundTaskLog>();
