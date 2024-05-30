@@ -13242,7 +13242,9 @@ SELECT
 	S.PriorityID,
 	S.MaxExecutionTime,
 	S.WeekMonthDay,
-	ISNULL(0, (SELECT TOP 1 SeverityID FROM AuditLog WHERE ItemID = S.ScheduleID AND SourceName = 'SCHEDULER' ORDER BY StartDate DESC)) AS LastResult,
+	-- bug ISNULL(0, ...) always is not NULL
+	-- ISNULL(0, (SELECT TOP 1 SeverityID FROM AuditLog WHERE ItemID = S.ScheduleID AND SourceName = ''SCHEDULER'' ORDER BY StartDate DESC)) AS LastResult,
+	ISNULL((SELECT TOP 1 SeverityID FROM AuditLog WHERE ItemID = S.ScheduleID AND SourceName = 'SCHEDULER' ORDER BY StartDate DESC), 0) AS LastResult,
 
 	U.Username,
 	U.FirstName,
@@ -13354,7 +13356,9 @@ SELECT
 	S.PriorityID,
 	S.MaxExecutionTime,
 	S.WeekMonthDay,
-	ISNULL(0, (SELECT TOP 1 SeverityID FROM AuditLog WHERE ItemID = S.ScheduleID AND SourceName = ''SCHEDULER'' ORDER BY StartDate DESC)) AS LastResult,
+	-- bug ISNULL(0, ...) always is not NULL
+	-- ISNULL(0, (SELECT TOP 1 SeverityID FROM AuditLog WHERE ItemID = S.ScheduleID AND SourceName = ''SCHEDULER'' ORDER BY StartDate DESC)) AS LastResult,
+	ISNULL((SELECT TOP 1 SeverityID FROM AuditLog WHERE ItemID = S.ScheduleID AND SourceName = ''SCHEDULER'' ORDER BY StartDate DESC), 0) AS LastResult,
 
 	-- packages
 	P.PackageID,

@@ -20,10 +20,10 @@ public partial class RdsCollectionUserConfiguration: EntityTypeConfiguration<Rds
 
 #if NetCore
         HasOne(d => d.Account).WithMany(p => p.RdscollectionUsers).HasConstraintName("FK_RDSCollectionUsers_UserId");
-        HasOne(d => d.Rdscollection).WithMany(p => p.RdscollectionUsers).HasConstraintName("FK_RDSCollectionUsers_RDSCollectionId");
+        HasOne(d => d.RdsCollection).WithMany(p => p.RdsCollectionUsers).HasConstraintName("FK_RDSCollectionUsers_RDSCollectionId");
 #else
         HasRequired(d => d.Account).WithMany(p => p.RdscollectionUsers);
-        HasRequired(d => d.Rdscollection).WithMany(p => p.RdscollectionUsers);
+        HasRequired(d => d.RdsCollection).WithMany(p => p.RdsCollectionUsers);
 #endif
     }
 #endif

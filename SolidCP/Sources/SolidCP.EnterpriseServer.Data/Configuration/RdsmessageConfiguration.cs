@@ -19,10 +19,10 @@ public partial class RdsMessageConfiguration: EntityTypeConfiguration<RdsMessage
         Property(e => e.UserName).IsFixedLength();
 
 #if NetCore
-        HasOne(d => d.Rdscollection).WithMany(p => p.Rdsmessages).HasConstraintName("FK_RDSMessages_RDSCollections");
+        HasOne(d => d.RdsCollection).WithMany(p => p.RdsMessages).HasConstraintName("FK_RDSMessages_RDSCollections");
 #else
         // TODO required or optional?
-        HasRequired(d => d.Rdscollection).WithMany(p => p.Rdsmessages);
+        HasRequired(d => d.RdsCollection).WithMany(p => p.RdsMessages);
 #endif
     }
 #endif

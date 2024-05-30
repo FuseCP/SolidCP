@@ -22726,7 +22726,9 @@ SELECT
 	S.PriorityID,
 	S.MaxExecutionTime,
 	S.WeekMonthDay,
-	ISNULL(0, (SELECT TOP 1 SeverityID FROM AuditLog WHERE ItemID = S.ScheduleID AND SourceName = 'SCHEDULER' ORDER BY StartDate DESC)) AS LastResult,
+	-- bug ISNULL(0, ...) always is not NULL
+	-- ISNULL(0, (SELECT TOP 1 SeverityID FROM AuditLog WHERE ItemID = S.ScheduleID AND SourceName = ''SCHEDULER'' ORDER BY StartDate DESC)) AS LastResult,
+	ISNULL((SELECT TOP 1 SeverityID FROM AuditLog WHERE ItemID = S.ScheduleID AND SourceName = 'SCHEDULER' ORDER BY StartDate DESC), 0) AS LastResult,
 
 	U.Username,
 	U.FirstName,
@@ -22758,6 +22760,65 @@ RETURN
 				if (!CheckActorPackageRights(actorId, packageId))
 					throw new AccessViolationException("You are not allowed to access this package");
 
+				var scheduleIds = Schedules
+					.Join(PackagesTree(packageId, true), s => s.PackageId, pt => pt, (s, pt) => new { s.ScheduleId, s.Enabled, s.NextRun })
+					.OrderByDescending(s => s.Enabled)
+					.ThenBy(s => s.NextRun)
+					.Select(s => s.ScheduleId)
+					.ToArray();
+				var schedules = scheduleIds
+					.Join(Schedules, sid => sid, s => s.ScheduleId, (sid, s) => s)
+					.Select(s => new
+					{
+						s.ScheduleId,
+						s.TaskId,
+						s.Task.TaskType,
+						s.Task.RoleId,
+						s.PackageId,
+						s.ScheduleName,
+						s.ScheduleTypeId,
+						s.Interval,
+						s.FromTime,
+						s.ToTime,
+						s.StartTime,
+						s.LastRun,
+						s.NextRun,
+						s.Enabled,
+						StatusId = ScheduleStatus.Idle,
+						s.PriorityId,
+						s.MaxExecutionTime,
+						s.WeekMonthDay,
+						LastResult = AuditLogs
+							.Where(l => l.ItemId == s.ScheduleId && l.SourceName == "SCHEDULER")
+							.OrderByDescending(l => l.StartDate)
+							.Select(l => l.SeverityId)
+							.FirstOrDefault(),
+						s.Package.User.Username,
+						s.Package.User.FirstName,
+						s.Package.User.LastName,
+						FullName = s.Package.User.FirstName + " " + s.Package.User.LastName,
+						UserRoleId = s.Package.User.RoleId,
+						s.Package.User.Email
+					});
+				var parameters = scheduleIds
+					.Join(Schedules, sid => sid, s => s.ScheduleId, (sid, s) => s)
+					.Join(ScheduleTaskParameters, s => s.TaskId, sp => sp.TaskId, (s, sp) => new { Schedule = s, TaskParameter = sp })
+					.GroupJoin(ScheduleParameters, s => new { s.TaskParameter.ParameterId, s.Schedule.ScheduleId }, sp => new { sp.ParameterId, sp.ScheduleId }, (s, sp) => new
+					{
+						s.Schedule.ScheduleId,
+						s.TaskParameter.ParameterId,
+						s.TaskParameter.DataTypeId,
+						s.TaskParameter.DefaultValue,
+						SP = sp.SingleOrDefault()
+					})
+					.Select(s => new
+					{
+						s.ScheduleId,
+						s.ParameterId,
+						s.DataTypeId,
+						ParameterValue = s.SP != null ? s.SP.ParameterValue : s.DefaultValue
+					});
+				return EntityDataSet(schedules, parameters);
 			}
 			else
 			{
@@ -22858,7 +22919,9 @@ SELECT
 	S.PriorityID,
 	S.MaxExecutionTime,
 	S.WeekMonthDay,
-	ISNULL(0, (SELECT TOP 1 SeverityID FROM AuditLog WHERE ItemID = S.ScheduleID AND SourceName = ''SCHEDULER'' ORDER BY StartDate DESC)) AS LastResult,
+	-- bug ISNULL(0, ...) always is not NULL
+	-- ISNULL(0, (SELECT TOP 1 SeverityID FROM AuditLog WHERE ItemID = S.ScheduleID AND SourceName = ''SCHEDULER'' ORDER BY StartDate DESC)) AS LastResult,
+	ISNULL((SELECT TOP 1 SeverityID FROM AuditLog WHERE ItemID = S.ScheduleID AND SourceName = 'SCHEDULER' ORDER BY StartDate DESC), 0) AS LastResult,
 
 	-- packages
 	P.PackageID,
@@ -36300,9 +36363,9 @@ WHERE ID = @Id
 				#endregion
 
 #if NETCOREAPP
-				RdsServers.Where(s => s.Id == serverId).ExecuteUpdate(s => s.SetProperty(p => p.RdscollectionId, null as int?));
+				RdsServers.Where(s => s.Id == serverId).ExecuteUpdate(s => s.SetProperty(p => p.RdsCollectionId, null as int?));
 #else
-				foreach (var server in RdsServers.Where(s => s.Id == serverId)) server.RdscollectionId = null;
+				foreach (var server in RdsServers.Where(s => s.Id == serverId)) server.RdsCollectionId = null;
 				SaveChanges();
 #endif
 			}
@@ -36418,7 +36481,7 @@ WHERE AccountId = @AccountId AND RDSCollectionId = @RDSCollectionId
 				*/
 				#endregion
 
-				RdsCollectionUsers.Where(u => u.AccountId == accountId && u.RdscollectionId == rdsCollectionId)
+				RdsCollectionUsers.Where(u => u.AccountId == accountId && u.RdsCollectionId == rdsCollectionId)
 					.ExecuteDelete(RdsCollectionUsers);
 			}
 			else

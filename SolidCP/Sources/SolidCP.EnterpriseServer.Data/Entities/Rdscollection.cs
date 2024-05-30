@@ -28,16 +28,16 @@ public partial class RdsCollection
     [StringLength(255)]
     public string DisplayName { get; set; }
 
-    [InverseProperty("Rdscollection")]
-    public virtual ICollection<RdsCollectionSetting> RdscollectionSettings { get; set; } = new List<RdsCollectionSetting>();
+    [InverseProperty("RdsCollection")]
+    public virtual ICollection<RdsCollectionSetting> RdsCollectionSettings { get; set; } = new List<RdsCollectionSetting>();
 
-    [InverseProperty("Rdscollection")]
-    public virtual ICollection<RdsCollectionUser> RdscollectionUsers { get; set; } = new List<RdsCollectionUser>();
+    [InverseProperty("RdsCollection")]
+    public virtual ICollection<RdsCollectionUser> RdsCollectionUsers { get; set; } = new List<RdsCollectionUser>();
 
-    [InverseProperty("Rdscollection")]
-    public virtual ICollection<RdsMessage> Rdsmessages { get; set; } = new List<RdsMessage>();
+    [InverseProperty("RdsCollection")]
+    public virtual ICollection<RdsMessage> RdsMessages { get; set; } = new List<RdsMessage>();
 
-    [InverseProperty("Rdscollection")]
-    public virtual ICollection<RdsServer> Rdsservers { get; set; } = new List<RdsServer>();
+    [InverseProperty("RdsCollection")]
+    public virtual ICollection<RdsServer> RdsServers { get; set; } = new List<RdsServer>();
 }
 #endif

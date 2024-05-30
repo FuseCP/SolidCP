@@ -21,7 +21,7 @@ public partial class RdsCollectionUser
     public int Id { get; set; }
 
     [Column("RDSCollectionId")]
-    public int RdscollectionId { get; set; }
+    public int RdsCollectionId { get; set; }
 
     [Column("AccountID")]
     public int AccountId { get; set; }
@@ -30,8 +30,8 @@ public partial class RdsCollectionUser
     [InverseProperty("RdscollectionUsers")]
     public virtual ExchangeAccount Account { get; set; }
 
-    [ForeignKey("RdscollectionId")]
-    [InverseProperty("RdscollectionUsers")]
-    public virtual RdsCollection Rdscollection { get; set; }
+    [ForeignKey("RdsCollectionId")]
+    [InverseProperty("RdsCollectionUsers")]
+    public virtual RdsCollection RdsCollection { get; set; }
 }
 #endif

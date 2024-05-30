@@ -18,9 +18,9 @@ public partial class RdsCollectionSettingConfiguration: EntityTypeConfiguration<
     public override void Configure() {
 
 #if NetCore
-        HasOne(d => d.Rdscollection).WithMany(p => p.RdscollectionSettings).HasConstraintName("FK_RDSCollectionSettings_RDSCollections");
+        HasOne(d => d.RdsCollection).WithMany(p => p.RdsCollectionSettings).HasConstraintName("FK_RDSCollectionSettings_RDSCollections");
 #else
-        HasRequired(d => d.Rdscollection).WithMany(p => p.RdscollectionSettings);
+        HasRequired(d => d.RdsCollection).WithMany(p => p.RdsCollectionSettings);
 #endif
     }
 #endif

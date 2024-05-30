@@ -32,8 +32,8 @@ public partial class RdsMessage
     [Column(TypeName = "datetime")]
     public DateTime Date { get; set; }
 
-    [ForeignKey("RdscollectionId")]
-    [InverseProperty("Rdsmessages")]
-    public virtual RdsCollection Rdscollection { get; set; }
+    [ForeignKey("RdsCollectionId")]
+    [InverseProperty("RdsMessages")]
+    public virtual RdsCollection RdsCollection { get; set; }
 }
 #endif

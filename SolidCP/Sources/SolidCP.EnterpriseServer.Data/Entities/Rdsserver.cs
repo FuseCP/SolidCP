@@ -32,14 +32,14 @@ public partial class RdsServer
     public string Description { get; set; }
 
     [Column("RDSCollectionId")]
-    public int? RdscollectionId { get; set; }
+    public int? RdsCollectionId { get; set; }
 
     public bool ConnectionEnabled { get; set; }
 
     public int? Controller { get; set; }
 
-    [ForeignKey("RdscollectionId")]
-    [InverseProperty("Rdsservers")]
-    public virtual RdsCollection Rdscollection { get; set; }
+    [ForeignKey("RdsCollectionId")]
+    [InverseProperty("RdsServers")]
+    public virtual RdsCollection RdsCollection { get; set; }
 }
 #endif

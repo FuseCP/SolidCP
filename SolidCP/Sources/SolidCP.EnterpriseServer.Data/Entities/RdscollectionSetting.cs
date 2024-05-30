@@ -20,7 +20,7 @@ public partial class RdsCollectionSetting
     public int Id { get; set; }
 
     [Column("RDSCollectionId")]
-    public int RdscollectionId { get; set; }
+    public int RdsCollectionId { get; set; }
 
     public int? DisconnectedSessionLimitMin { get; set; }
 
@@ -45,7 +45,7 @@ public partial class RdsCollectionSetting
     public bool? ClientPrinterAsDefault { get; set; }
 
     [Column("RDEasyPrintDriverEnabled")]
-    public bool? RdeasyPrintDriverEnabled { get; set; }
+    public bool? RdEasyPrintDriverEnabled { get; set; }
 
     public int? MaxRedirectedMonitors { get; set; }
 
@@ -58,8 +58,8 @@ public partial class RdsCollectionSetting
     [Column("AuthenticateUsingNLA")]
     public bool? AuthenticateUsingNla { get; set; }
 
-    [ForeignKey("RdscollectionId")]
-    [InverseProperty("RdscollectionSettings")]
-    public virtual RdsCollection Rdscollection { get; set; }
+    [ForeignKey("RdsCollectionId")]
+    [InverseProperty("RdsCollectionSettings")]
+    public virtual RdsCollection RdsCollection { get; set; }
 }
 #endif

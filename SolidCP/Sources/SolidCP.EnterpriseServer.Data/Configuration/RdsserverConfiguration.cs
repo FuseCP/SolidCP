@@ -21,9 +21,9 @@ public partial class RdsServerConfiguration: EntityTypeConfiguration<RdsServer>
 #if NetCore
         Property(e => e.ConnectionEnabled).HasDefaultValue(true);
 
-        HasOne(d => d.Rdscollection).WithMany(p => p.Rdsservers).HasConstraintName("FK_RDSServers_RDSCollectionId");
+        HasOne(d => d.RdsCollection).WithMany(p => p.RdsServers).HasConstraintName("FK_RDSServers_RDSCollectionId");
 #else
-        HasRequired(d => d.Rdscollection).WithMany(p => p.Rdsservers);
+        HasRequired(d => d.RdsCollection).WithMany(p => p.RdsServers);
 #endif
     }
 #endif
