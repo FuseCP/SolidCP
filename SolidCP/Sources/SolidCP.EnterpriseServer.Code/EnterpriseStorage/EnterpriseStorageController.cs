@@ -1234,18 +1234,18 @@ namespace SolidCP.EnterpriseServer
             if (org == null)
                 return null;
 
-            string accountTypes = string.Format("{0}, {1}, {2}", ((int)ExchangeAccountType.SecurityGroup),
-                (int)ExchangeAccountType.DefaultSecurityGroup, ((int)ExchangeAccountType.User));
+            var accountTypes = new[] { ExchangeAccountType.SecurityGroup,
+                ExchangeAccountType.DefaultSecurityGroup, ExchangeAccountType.User };
 
             if (PackageController.GetPackageServiceId(org.PackageId, ResourceGroups.Exchange) != 0)
             {
-                accountTypes = string.Format("{0}, {1}, {2}, {3}", accountTypes, ((int)ExchangeAccountType.Mailbox),
-                ((int)ExchangeAccountType.Room), ((int)ExchangeAccountType.Equipment));
+                accountTypes = new[] { ExchangeAccountType.Mailbox,
+                    ExchangeAccountType.Room, ExchangeAccountType.Equipment };
             }
 
             List<ExchangeAccount> tmpAccounts = ObjectUtils.CreateListFromDataReader<ExchangeAccount>(
-                                                  Database.SearchExchangeAccountsByTypes(SecurityContext.User.UserId, itemId,
-                                                  accountTypes, filterColumn, filterValue, sortColumn));
+                Database.SearchExchangeAccountsByTypes(SecurityContext.User.UserId, itemId,
+                    accountTypes, filterColumn, filterValue, sortColumn));
 
             return tmpAccounts;
 

@@ -4584,6 +4584,38 @@ exec sp_executesql @sql, N'@ItemID int, @StartRow int, @MaximumRows int',
 RETURN
 GO
 
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetExchangeAccounts')
+DROP PROCEDURE GetExchangeAccounts
+GO
+
+CREATE PROCEDURE [dbo].[GetExchangeAccounts]
+(
+	@ItemID int,
+	@AccountType int
+)
+AS
+SELECT
+	E.AccountID,
+	E.ItemID,
+	E.AccountType,
+	E.AccountName,
+	E.DisplayName,
+	E.PrimaryEmailAddress,
+	E.MailEnabledPublicFolder,
+	E.MailboxPlanId,
+	P.MailboxPlan,
+	E.SubscriberNumber,
+	E.UserPrincipalName
+FROM
+	ExchangeAccounts  AS E
+LEFT OUTER JOIN ExchangeMailboxPlans AS P ON E.MailboxPlanId = P.MailboxPlanId
+WHERE
+	E.ItemID = @ItemID AND
+	(E.AccountType = @AccountType OR @AccountType = 0)
+ORDER BY DisplayName
+RETURN
+GO
+
 IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'UpdateExchangeAccountSLSettings')
 DROP PROCEDURE UpdateExchangeAccountSLSettings
 GO
@@ -10143,9 +10175,9 @@ BEGIN
 	ELSE
 		SET @condition = @condition + '
 			AND (ItemName LIKE ''' + @FilterValue + '''
-			OR Username ''' + @FilterValue + '''
-			OR FullName ''' + @FilterValue + '''
-			OR Email ''' + @FilterValue + ''')'
+			OR Username LIKE ''' + @FilterValue + '''
+			OR FullName LIKE ''' + @FilterValue + '''
+			OR Email LIKE ''' + @FilterValue + ''')'
 END
 
 IF @SortColumn IS NULL OR @SortColumn = ''

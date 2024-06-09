@@ -1,42 +1,46 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>disable</Nullable>
-    <LangVersion>11</LangVersion>
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net48</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+        <LangVersion>11</LangVersion>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="app.config" />
-  </ItemGroup>
+    <ItemGroup>
+        <None Remove="app.config" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="app.config">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+    <ItemGroup>
+        <Content Include="app.config">
+            <SubType>Designer</SubType>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="3.2.2" />
-    <PackageReference Include="MSTest.TestFramework" Version="3.2.2" />
-    <PackageReference Include="coverlet.collector" Version="6.0.2">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="EntityFramework" Version="6.4.4" />
+        <PackageReference Include="System.Linq.Dynamic.Core" Version="1.4.0" />
+        <PackageReference Include="EntityFramework.DynamicLinq" Version="1.4.0" Condition="'$(TargetFramework)' == 'net48'" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.DynamicLinq" Version="8.3.0" Condition="'$(TargetFramework)' != 'net48'" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
+        <PackageReference Include="MSTest.TestAdapter" Version="3.2.2" />
+        <PackageReference Include="MSTest.TestFramework" Version="3.2.2" />
+        <PackageReference Include="coverlet.collector" Version="6.0.2">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj" />
-    <ProjectReference Include="..\SolidCP.EnterpriseServer.Code\SolidCP.EnterpriseServer.Code.csproj" />
-    <ProjectReference Include="..\SolidCP.EnterpriseServer\WebServices\SolidCP.Build\SolidCP.EnterpriseServer.Client.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj" />
+        <ProjectReference Include="..\SolidCP.EnterpriseServer.Data\SolidCP.EnterpriseServer.Data.csproj" />
+        <ProjectReference Include="..\SolidCP.EnterpriseServer\WebServices\SolidCP.Build\SolidCP.EnterpriseServer.Client.csproj" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="System.Net.Http" />
-  </ItemGroup>
+    <ItemGroup>
+        <Reference Include="System.Net.Http" />
+    </ItemGroup>
 
 </Project>

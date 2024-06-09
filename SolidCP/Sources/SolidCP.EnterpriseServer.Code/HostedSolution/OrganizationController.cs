@@ -1612,7 +1612,7 @@ namespace SolidCP.EnterpriseServer
             var result = new List<OrganizationDeletedUser>();
 
             var orgDeletedUsers = ObjectUtils.CreateListFromDataReader<OrganizationUser>(
-                Database.GetExchangeAccounts(itemId, (int)ExchangeAccountType.DeletedUser));
+                Database.GetExchangeAccounts(itemId, ExchangeAccountType.DeletedUser));
 
             foreach (var orgDeletedUser in orgDeletedUsers)
             {
@@ -4508,24 +4508,25 @@ namespace SolidCP.EnterpriseServer
             if (org == null)
                 return null;
 
-            string accountTypes = string.Format("{0}", ((int)ExchangeAccountType.SecurityGroup));
+            var accountTypes = new[] { ExchangeAccountType.SecurityGroup };
 
             if (!includeOnlySecurityGroups)
             {
-                accountTypes = string.Format("{0}, {1}", accountTypes, ((int)ExchangeAccountType.User));
+                accountTypes = new[] { ExchangeAccountType.SecurityGroup, ExchangeAccountType.User };
 
                 int exchangeServiceId = PackageController.GetPackageServiceId(org.PackageId, ResourceGroups.Exchange);
 
                 if (exchangeServiceId != 0)
                 {
-                    accountTypes = string.Format("{0}, {1}, {2}, {3}, {4}", accountTypes, ((int)ExchangeAccountType.Mailbox),
-                    ((int)ExchangeAccountType.Room), ((int)ExchangeAccountType.Equipment), ((int)ExchangeAccountType.DistributionList));
+                    accountTypes = new[] { ExchangeAccountType.SecurityGroup, ExchangeAccountType.User,
+                        ExchangeAccountType.Mailbox, ExchangeAccountType.Room, ExchangeAccountType.Equipment,
+                        ExchangeAccountType.DistributionList };
                 }
             }
 
             List<ExchangeAccount> tmpAccounts = ObjectUtils.CreateListFromDataReader<ExchangeAccount>(
-                                                  Database.SearchExchangeAccountsByTypes(SecurityContext.User.UserId, itemId,
-                                                  accountTypes, filterColumn, filterValue, sortColumn));
+                Database.SearchExchangeAccountsByTypes(SecurityContext.User.UserId, itemId,
+                    accountTypes, filterColumn, filterValue, sortColumn));
 
             return tmpAccounts;
 

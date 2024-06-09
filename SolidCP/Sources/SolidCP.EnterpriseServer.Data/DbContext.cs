@@ -21,7 +21,7 @@ namespace SolidCP.EnterpriseServer.Data
         public string ConnectionString
         {
             get => connectionString ?? (connectionString = DbSettings.NativeConnectionString);
-            set => connectionString = value;
+            set => connectionString = DbSettings.GetNativeConnectionString(value);
         }
         DbType dbType = DbType.Unknown;
         public DbType DbType
@@ -82,7 +82,8 @@ namespace SolidCP.EnterpriseServer.Data
 
         public DbContext(string connectionString, DbType dbType = DbType.Unknown, bool initSeedData = false)
         {
-            DbType = dbType;
+            if (dbType == DbType.Unknown) DbType = DbSettings.GetDbType(connectionString);
+            else DbType = dbType;
             ConnectionString = connectionString;
             InitSeedData = initSeedData;
 #if NETSTANDARD

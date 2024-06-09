@@ -1209,7 +1209,7 @@ namespace SolidCP.EnterpriseServer
             #endregion
 
             return ObjectUtils.CreateListFromDataReader<ExchangeAccount>(
-                Database.GetExchangeAccounts(itemId, (int)accountType));
+                Database.GetExchangeAccounts(itemId, accountType));
         }
 
 
@@ -1362,16 +1362,9 @@ namespace SolidCP.EnterpriseServer
             }
             #endregion
 
-            string accountTypes = "";
-            foreach (ExchangeAccountType type in types)
-            {
-                if (!string.IsNullOrEmpty(accountTypes)) accountTypes += ", ";
-                accountTypes += (int)type;
-            }
-
             return ObjectUtils.CreateListFromDataReader<ExchangeAccount>(
-                                                              Database.SearchExchangeAccountsByTypes(SecurityContext.User.UserId, itemId,
-                                                              accountTypes, filterColumn, filterValue, sortColumn));
+                Database.SearchExchangeAccountsByTypes(SecurityContext.User.UserId, itemId,
+                    types, filterColumn, filterValue, sortColumn));
         }
 
 

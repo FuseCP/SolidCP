@@ -1,5 +1,6 @@
 ﻿// This file is auto generated, do not edit.
 #if ScaffoldedEntities
+using SolidCP.Providers.HostedSolution;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -24,7 +25,7 @@ public partial class ExchangeAccount
     [Column("ItemID")]
     public int ItemId { get; set; }
 
-    public int AccountType { get; set; }
+    public ExchangeAccountType AccountType { get; set; }
 
     [Required]
     [StringLength(300)]

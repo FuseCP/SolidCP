@@ -8860,7 +8860,7 @@ FROM
 LEFT OUTER JOIN ExchangeMailboxPlans AS P ON E.MailboxPlanId = P.MailboxPlanId
 WHERE
 	E.ItemID = @ItemID AND
-	(E.AccountType = @AccountType OR @AccountType IS NULL)
+	(E.AccountType = @AccountType OR @AccountType = 0)
 ORDER BY DisplayName
 RETURN
 
@@ -15587,9 +15587,9 @@ BEGIN
 	ELSE
 		SET @condition = @condition + '
 			AND (ItemName LIKE ''' + @FilterValue + '''
-			OR Username ''' + @FilterValue + '''
-			OR FullName ''' + @FilterValue + '''
-			OR Email ''' + @FilterValue + ''')'
+			OR Username LIKE ''' + @FilterValue + '''
+			OR FullName LIKE ''' + @FilterValue + '''
+			OR Email LIKE ''' + @FilterValue + ''')'
 END
 
 IF @SortColumn IS NULL OR @SortColumn = ''

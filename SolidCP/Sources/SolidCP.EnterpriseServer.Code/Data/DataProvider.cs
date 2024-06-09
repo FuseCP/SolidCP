@@ -11663,9 +11663,9 @@ BEGIN
 	ELSE
 		SET @condition = @condition + '
 			AND (ItemName LIKE ''' + @FilterValue + '''
-			OR Username ''' + @FilterValue + '''
-			OR FullName ''' + @FilterValue + '''
-			OR Email ''' + @FilterValue + ''')'
+			OR Username LIKE ''' + @FilterValue + '''
+			OR FullName LIKE ''' + @FilterValue + '''
+			OR Email LIKE ''' + @FilterValue + ''')'
 END
 
 IF @SortColumn IS NULL OR @SortColumn = ''
@@ -11837,15 +11837,22 @@ RETURN
 				{
 					if (!string.IsNullOrEmpty(filterColumn))
 					{
-						items = items.Where($"{filterColumn}=@0", filterValue);
+						items = items.Where(DynamicFunctions.ColumnLike(items, filterColumn, filterValue));
 					}
 					else
 					{
 						items = items
+#if NETFRAMEWORK
+							.Where(i => DbFunctions.Like(i.ItemName, filterValue) ||
+								DbFunctions.Like(i.Username, filterValue) ||
+								DbFunctions.Like(i.FullName, filterValue) ||
+								DbFunctions.Like(i.Email, filterValue));
+#else
 							.Where(i => EF.Functions.Like(i.ItemName, filterValue) ||
-								i.Username == filterValue ||
-								i.FullName == filterValue ||
-								i.Email == filterValue);
+								EF.Functions.Like(i.Username, filterValue) ||
+								EF.Functions.Like(i.FullName, filterValue) ||
+								EF.Functions.Like(i.Email, filterValue));
+#endif
 					}
 				}
 
@@ -14496,7 +14503,7 @@ ORDER BY TypeOrder
 					"GetServiceItemTypes");
 			}
 		}
-		#endregion
+#endregion
 
 		#region Plans
 		// Plans methods
@@ -20587,7 +20594,11 @@ RETURN
 						(sourceName == "" || l.SourceName == sourceName) &&
 						(taskName == "" || l.TaskName == taskName) &&
 						(itemId == 0 || l.ItemId == itemId) &&
+#if NETFRAMEWORK
+						(itemName == "" || DbFunctions.Like(l.ItemName, itemName)) &&
+#else
 						(itemName == "" || EF.Functions.Like(l.ItemName, itemName)) &&
+#endif
 						(severityId == -1 || severityId > -1 && l.SeverityId == severityId));
 
 				var count = logs.Count();
@@ -20853,7 +20864,11 @@ RETURN
 						(string.IsNullOrEmpty(sourceName) || l.SourceName == sourceName) &&
 						(string.IsNullOrEmpty(taskName) || l.TaskName == taskName) &&
 						(itemId <= 0 || itemId == l.ItemId) &&
+#if NETFRAMEWORK
+						(string.IsNullOrEmpty(itemName) || DbFunctions.Like(l.ItemName, itemName)))
+#else
 						(string.IsNullOrEmpty(itemName) || EF.Functions.Like(l.ItemName, itemName)))
+#endif
 					.ExecuteDelete(AuditLogs);
 			}
 			else
@@ -22948,6 +22963,80 @@ END
 				*/
 				#endregion
 
+				// check rights
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				var schedules = Schedules
+					.Join(Packages, s => s.PackageId, p => p.PackageId, (s, p) => new { S = s, P = p })
+					.Join(PackagesTree(packageId, true), s => s.S.PackageId, pt => pt, (s, pt) => s)
+					.Join(UsersDetailed, s => s.P.UserId, u => u.UserId, (s, u) => new {
+						s.S.ScheduleId,
+						s.S.TaskId,
+						s.S.Task.TaskType,
+						//s.S.Task.RoleId,
+						s.S.ScheduleName,
+						s.S.ScheduleTypeId,
+						s.S.Interval,
+						s.S.FromTime,
+						s.S.ToTime,
+						s.S.StartTime,
+						s.S.LastRun,
+						s.S.NextRun,
+						s.S.Enabled,
+						StatusId = ScheduleStatus.Idle,
+						s.S.PriorityId,
+						s.S.MaxExecutionTime,
+						s.S.WeekMonthDay,
+						LastResult = AuditLogs
+							.Where(l => l.ItemId == s.S.ScheduleId && l.SourceName == "SCHEDULER")
+							.OrderByDescending(l => l.StartDate)
+							.Select(l => l.SeverityId)
+							.FirstOrDefault(),
+						s.P.PackageId,
+						s.P.PackageName,
+						s.P.UserId,
+						u.Username,
+						u.FirstName,
+						u.LastName,
+						u.FullName,
+						u.RoleId,
+						u.Email
+					});
+					
+				if (!string.IsNullOrEmpty(filterValue))
+				{
+					if (!string.IsNullOrEmpty(filterColumn))
+					{
+						schedules = schedules.Where(DynamicFunctions.ColumnLike(schedules, filterColumn, filterValue));
+					} else
+					{
+#if NETFRAMEWORK
+						schedules = schedules.Where(s => DbFunctions.Like(s.ScheduleName, filterValue) ||
+							DbFunctions.Like(s.Username, filterValue) ||
+							DbFunctions.Like(s.FullName, filterValue) ||
+							DbFunctions.Like(s.Email, filterValue));
+#else
+						schedules = schedules.Where(s => EF.Functions.Like(s.ScheduleName, filterValue) ||
+							EF.Functions.Like(s.Username, filterValue) ||
+							EF.Functions.Like(s.FullName, filterValue) ||
+							EF.Functions.Like(s.Email, filterValue));
+#endif
+					}
+				}
+
+				if (!string.IsNullOrEmpty(sortColumn))
+				{
+					schedules = schedules.OrderBy(sortColumn);
+				} else
+				{
+					schedules = schedules.OrderBy(s => s.ScheduleName);
+				}
+
+				schedules = schedules.Skip(startRow).Take(maximumRows);
+
+				return EntityDataSet(schedules);
+
 			}
 			else
 			{
@@ -23029,6 +23118,54 @@ RETURN
 				*/
 				#endregion
 
+				var schedule = Schedules
+					.Where(s => s.ScheduleId == scheduleId)
+					.AsEnumerable()
+					.Where(s => CheckActorPackageRights(actorId, s.PackageId))
+					.Take(1)
+					.Select(s => new
+					{
+						s.ScheduleId,
+						s.TaskId,
+						s.PackageId,
+						s.ScheduleName,
+						s.ScheduleTypeId,
+						s.Interval,
+						s.FromTime,
+						s.ToTime,
+						s.StartTime,
+						s.LastRun,
+						s.NextRun,
+						s.Enabled,
+						s.HistoriesNumber,
+						s.PriorityId,
+						s.MaxExecutionTime,
+						s.WeekMonthDay,
+						StatusId = 1
+					});
+
+				var task = schedule
+					.Join(ScheduleTasks, s => s.TaskId, st => st.TaskId, (s, st) => new
+					{
+						st.TaskId, st.TaskType, st.RoleId
+					});
+
+				var parameter = schedule
+					.Join(ScheduleTaskParameters, s => s.TaskId, stp => stp.TaskId, (s, stp) => new
+					{
+						Schedule = s,
+						TaskParameter = stp
+					})
+					.GroupJoin(ScheduleParameters, s => new { s.TaskParameter.ParameterId, s.Schedule.ScheduleId },
+						sp => new { sp.ParameterId, sp.ScheduleId }, (s, sp) => new
+					{
+						s.Schedule.ScheduleId,
+						s.TaskParameter.ParameterId,
+						s.TaskParameter.DataTypeId,
+						ParameterValue = sp.Any() ? sp.Single().ParameterValue : s.TaskParameter.DefaultValue
+					});
+
+				return EntityDataSet(schedule, task, parameter);
 			}
 			else
 			{
@@ -23078,6 +23215,32 @@ RETURN
 				*/
 				#endregion
 
+				var schedule = Schedules
+					.Where(s => s.ScheduleId == scheduleId)
+					.Select(s => new
+					{
+						s.ScheduleId,
+						s.TaskId,
+						s.Task.TaskType,
+						s.Task.RoleId,
+						s.PackageId,
+						s.ScheduleName,
+						s.ScheduleTypeId,
+						s.Interval,
+						s.FromTime,
+						s.ToTime,
+						s.StartTime,
+						s.LastRun,
+						s.NextRun,
+						s.Enabled,
+						StatusId = 1,
+						s.PriorityId,
+						s.HistoriesNumber,
+						s.MaxExecutionTime,
+						s.WeekMonthDay
+					});
+
+				return EntityDataReader(schedule);
 			}
 			else
 			{
@@ -23150,6 +23313,62 @@ RETURN
 				*/
 				#endregion
 
+				var next = Schedules
+					.Where(s => s.Enabled)
+					.OrderBy(s => s.NextRun)
+					.Select(s => new
+					{
+						s.ScheduleId,
+						s.TaskId
+					})
+					.FirstOrDefault();
+
+				var schedule = Schedules
+					.Where(s => s.ScheduleId == next.ScheduleId)
+					.Take(1)
+					.Select(s => new
+					{
+						s.ScheduleId,
+						s.TaskId,
+						s.PackageId,
+						s.ScheduleName,
+						s.ScheduleTypeId,
+						s.Interval,
+						s.FromTime,
+						s.ToTime,
+						s.StartTime,
+						s.LastRun,
+						s.NextRun,
+						s.Enabled,
+						s.HistoriesNumber,
+						s.PriorityId,
+						s.MaxExecutionTime,
+						s.WeekMonthDay,
+						StatusId = 1
+					});
+
+				var task = ScheduleTasks
+					.Where(st => st.TaskId == next.TaskId)
+					.Select(st => new
+					{
+						st.TaskId,
+						st.TaskType,
+						st.RoleId
+					});
+
+				var parameter = ScheduleTaskParameters
+					.Where(stp => stp.TaskId == next.TaskId)
+					.GroupJoin(ScheduleParameters, stp => new { stp.ParameterId, next.ScheduleId },
+						sp => new { sp.ParameterId, sp.ScheduleId }, (stp, sp) => new
+					{
+						next.ScheduleId,
+						stp.ParameterId,
+						stp.DataTypeId,
+						ParameterValue = sp.Any() ? sp.Single().ParameterValue : stp.DefaultValue
+					});
+
+				return EntityDataSet(schedule, task, parameter);
+
 			}
 			else
 			{
@@ -23194,6 +23413,28 @@ RETURN
 				*/
 				#endregion
 
+				// check rights
+				var packageId = Schedules
+					.Where(s => s.ScheduleId == scheduleId)
+					.Select(s => s.PackageId)
+					.FirstOrDefault();
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				var parameters = ScheduleTaskParameters
+					.Where(stp => stp.TaskId == taskId)
+					.OrderBy(stp => stp.ParameterOrder)
+					.GroupJoin(ScheduleParameters, stp => new { stp.ParameterId, scheduleId },
+						sp => new { sp.ParameterId, sp.ScheduleId }, (stp, sp) => new
+					{
+						scheduleId,
+						stp.ParameterId,
+						stp.DataTypeId,
+						ParameterValue = sp.Any() ? sp.Single().ParameterValue : null,
+						stp.DefaultValue
+					});
+
+				return EntityDataReader(parameters);
 			}
 			else
 			{
@@ -23234,6 +23475,17 @@ RETURN
 				*/
 				#endregion
 
+				var conf = ScheduleTaskViewConfigurations
+					.Where(c => c.TaskId == taskId)
+					.Select(c => new
+					{
+						TaskId = taskId,
+						c.ConfigurationId,
+						c.Environment,
+						c.Description
+					});
+
+				return EntityDataReader(conf);
 			}
 			else
 			{
@@ -23351,6 +23603,48 @@ RETURN
 				*/
 				#endregion
 
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				using (var transaction = Database.BeginTransaction())
+				{
+					var schedule = new Data.Entities.Schedule()
+					{
+						TaskId = taskId,
+						PackageId = packageId,
+						ScheduleName = scheduleName,
+						ScheduleTypeId = scheduleTypeId,
+						Interval = interval,
+						FromTime = fromTime,
+						ToTime = toTime,
+						StartTime = startTime,
+						NextRun = nextRun,
+						Enabled = enabled,
+						PriorityId = priorityId,
+						HistoriesNumber = historiesNumber,
+						MaxExecutionTime = maxExecutionTime,
+						WeekMonthDay = weekMonthDay
+					};
+					Schedules.Add(schedule);
+					SaveChanges();
+
+					ScheduleParameters.Where(p => p.ScheduleId == schedule.ScheduleId).ExecuteDelete(ScheduleParameters);
+
+					var parameters = XElement.Parse(xmlParameters)
+						.Elements()
+						.Select(e => new Data.Entities.ScheduleParameter()
+						{
+							ScheduleId = schedule.ScheduleId,
+							ParameterId = (string)e.Attribute("id"),
+							ParameterValue = (string)e.Attribute("value")
+						});
+					ScheduleParameters.AddRange(parameters);
+					SaveChanges();
+
+					transaction.Commit();
+
+					return schedule.ScheduleId;
+				}
 			}
 			else
 			{
@@ -23475,6 +23769,51 @@ RETURN
 				*/
 				#endregion
 
+				// check rights
+				var packageId = Schedules
+					.Where(s => s.ScheduleId == scheduleId)
+					.Select(s => s.PackageId)
+					.FirstOrDefault();
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				using (var transaction = Database.BeginTransaction())
+				{
+					var schedule = Schedules.FirstOrDefault(s => s.ScheduleId == scheduleId);
+					if (schedule != null)
+					{
+						schedule.TaskId = taskId;
+						schedule.ScheduleName = scheduleName;
+						schedule.ScheduleTypeId = scheduleTypeId;
+						schedule.Interval = interval;
+						schedule.FromTime = fromTime;
+						schedule.ToTime = toTime;
+						schedule.StartTime = startTime;
+						schedule.LastRun = lastRun;
+						schedule.NextRun = nextRun;
+						schedule.Enabled = enabled;
+						schedule.PriorityId = priorityId;
+						schedule.HistoriesNumber = historiesNumber;
+						schedule.MaxExecutionTime = maxExecutionTime;
+						schedule.WeekMonthDay = weekMonthDay;
+						SaveChanges();
+
+						ScheduleParameters.Where(p => p.ScheduleId == schedule.ScheduleId).ExecuteDelete(ScheduleParameters);
+
+						var parameters = XElement.Parse(xmlParameters)
+							.Elements()
+							.Select(e => new Data.Entities.ScheduleParameter()
+							{
+								ScheduleId = schedule.ScheduleId,
+								ParameterId = (string)e.Attribute("id"),
+								ParameterValue = (string)e.Attribute("value")
+							});
+						ScheduleParameters.AddRange(parameters);
+						SaveChanges();
+
+						transaction.Commit();
+					}
+				}
 			}
 			else
 			{
@@ -23536,6 +23875,22 @@ RETURN
 				*/
 				#endregion
 
+				// check rights
+				var packageId = Schedules
+					.Where(s => s.ScheduleId == scheduleId)
+					.Select(s => s.PackageId)
+					.FirstOrDefault();
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				using (var transaction = Database.BeginTransaction())
+				{
+					ScheduleParameters.Where(sp => sp.ScheduleId == scheduleId).ExecuteDelete(ScheduleParameters);
+					Schedules.Where(s => s.ScheduleId == scheduleId).ExecuteDelete(Schedules);
+
+					transaction.Commit();
+				}
+
 			}
 			else
 			{
@@ -23567,6 +23922,8 @@ RETURN
 					new SqlParameter("@scheduleId", scheduleId));
 			}
 		}
+
+		// TODO This rotuine is not present in the Stored Procedures
 		public IDataReader GetScheduleHistory(int actorId, int scheduleHistoryId)
 		{
 			throw new NotImplementedException();
@@ -23587,9 +23944,13 @@ RETURN
 					new SqlParameter("@scheduleHistoryId", scheduleHistoryId));
 			}
 		}
+
+		// TODO This rotuine is not present in the Stored Procedures
 		public int AddScheduleHistory(int actorId, int scheduleId,
 			DateTime startTime, DateTime finishTime, string statusId, string executionLog)
 		{
+			throw new NotImplementedException();
+
 			if (UseEntityFramework)
 			{
 				#region Stored Procedure
@@ -23617,9 +23978,13 @@ RETURN
 				return Convert.ToInt32(prmId.Value);
 			}
 		}
+
+		// TODO This rotuine is not present in the Stored Procedures
 		public void UpdateScheduleHistory(int actorId, int scheduleHistoryId,
 			DateTime startTime, DateTime finishTime, string statusId, string executionLog)
 		{
+			throw new NotImplementedException();
+
 			if (UseEntityFramework)
 			{
 				#region Stored Procedure
@@ -23640,8 +24005,12 @@ RETURN
 					new SqlParameter("@executionLog", executionLog));
 			}
 		}
+
+		// TODO This rotuine is not present in the Stored Procedures
 		public void DeleteScheduleHistories(int actorId, int scheduleId)
 		{
+			throw new NotImplementedException();
+
 			if (UseEntityFramework)
 			{
 				#region Stored Procedure
@@ -23658,7 +24027,7 @@ RETURN
 					new SqlParameter("@scheduleId", scheduleId));
 			}
 		}
-		#endregion
+#endregion
 
 		#region Comments
 		public DataSet GetComments(int actorId, int userId, string itemTypeId, int itemId)
@@ -23707,6 +24076,34 @@ RETURN
 				*/
 				#endregion
 
+				//check rights
+				if (!CheckActorUserRights(actorId, userId))
+					throw new AccessViolationException("You are not allowed to access this account");
+
+				var comments = Comments
+					.Where(c => c.ItemTypeId == itemTypeId && c.ItemId == itemId)
+					.AsEnumerable()
+					.Where(c => CheckUserParent(userId, c.UserId))
+					.OrderBy(c => c.CreatedDate)
+					.Select(c => new
+					{
+						c.CommentId,
+						c.ItemTypeId,
+						c.ItemId,
+						c.UserId,
+						c.CreatedDate,
+						c.CommentText,
+						c.SeverityId,
+						//user
+						c.User.Username,
+						c.User.FirstName,
+						c.User.LastName,
+						FullName = c.User.FirstName + " " + c.User.LastName,
+						c.User.RoleId,
+						c.User.Email
+					});
+
+				return EntityDataSet(comments);
 			}
 			else
 			{
@@ -23756,6 +24153,17 @@ VALUES
 RETURN				*/
 				#endregion
 
+				var comment = new Data.Entities.Comment()
+				{
+					ItemTypeId = itemTypeId,
+					ItemId = itemId,
+					UserId = actorId,
+					CreatedDate = DateTime.Now,
+					CommentText = commentText,
+					SeverityId = severityId
+				};
+				Comments.Add(comment);
+				SaveChanges();
 			}
 			else
 			{
@@ -23799,6 +24207,15 @@ RETURN
 				*/
 				#endregion
 
+				// check rights
+				var userId = Comments
+					.Where(c => c.CommentId == commentId)
+					.Select(c => (int?)c.UserId)
+					.FirstOrDefault();
+				if (!CheckActorUserRights(actorId, userId))
+					throw new AccessViolationException("You are not allowed to perform this operation");
+
+				Comments.Where(c => c.CommentId == commentId).ExecuteDelete(Comments);
 			}
 			else
 			{
@@ -23914,6 +24331,7 @@ RETURN
 		public DataSet EntityDataSet<TEntity>(int count, IEnumerable<TEntity> set) => EntityDataSet(CountDataTable(count), EntityDataTable(set));
 		public DataSet EntityDataSet<TEntity1, TEntity2>(int count, IEnumerable<TEntity1> set1, IEnumerable<TEntity2> set2) => EntityDataSet(CountDataTable(count), EntityDataTable(set1), EntityDataTable(set2));
 		public DataSet EntityDataSet<TEntity1, TEntity2>(IEnumerable<TEntity1> set1, IEnumerable<TEntity2> set2) => EntityDataSet(EntityDataTable(set1), EntityDataTable(set2));
+		public DataSet EntityDataSet<TEntity1, TEntity2>(IEnumerable<TEntity1> set1, IEnumerable<TEntity2> set2, IEnumerable<TEntity3> set3) => EntityDataSet(EntityDataTable(set1), EntityDataTable(set2), EntityDataTable(set3));
 		public DataTable CountDataTable(int count)
 		{
 			var table = new DataTable();
@@ -23987,6 +24405,23 @@ RETURN
 				*/
 				#endregion
 
+				var account = new Data.Entities.ExchangeAccount()
+				{
+					ItemId = itemId,
+					AccountType = accountType,
+					AccountName = accountName,
+					DisplayName = displayName,
+					PrimaryEmailAddress = primaryEmailAddress,
+					MailEnabledPublicFolder = mailEnabledPublicFolder,
+					MailboxManagerActions = mailboxManagerActions,
+					SamAccountName = samAccountName,
+					MailboxPlanId = mailboxPlanId,
+					SubscriberNumber = subscriberNumber,
+					UserPrincipalName = primaryEmailAddress
+				};
+				ExchangeAccounts.Add(account);
+				SaveChanges();
+				return account.AccountId;
 			}
 			else
 			{
@@ -24039,6 +24474,13 @@ RETURN
 				*/
 				#endregion
 
+				var address = new Data.Entities.ExchangeAccountEmailAddress()
+				{
+					AccountId = accountId,
+					EmailAddress = emailAddress
+				};
+				ExchangeAccountEmailAddresses.Add(address);
+				SaveChanges();
 			}
 			else
 			{
@@ -24076,6 +24518,16 @@ RETURN
 				*/
 				#endregion
 
+				if (!ExchangeOrganizations.Any(eo => eo.OrganizationId == organizationId))
+				{
+					var organization = new Data.Entities.ExchangeOrganization()
+					{
+						ItemId = itemId,
+						OrganizationId = organizationId
+					};
+					ExchangeOrganizations.Add(organization);
+					SaveChanges();
+				}
 			}
 			else
 			{
@@ -24109,6 +24561,14 @@ RETURN
 				*/
 				#endregion
 
+				var domain = new Data.Entities.ExchangeOrganizationDomain()
+				{
+					ItemId = itemId,
+					DomainId = domainId,
+					IsHost = isHost
+				};
+				ExchangeOrganizationDomains.Add(domain);
+				SaveChanges();
 			}
 			else
 			{
@@ -24142,6 +24602,17 @@ RETURN
 				*/
 				#endregion
 
+#if NETFRAMEWORK
+				foreach (var domain in ExchangeOrganizationDomains.Where(d => d.ItemId == itemId && d.DomainId == domainId))
+				{
+					domain.DomainTypeId = domainTypeId;
+				}
+				SaveChanges();
+#else
+				ExchangeOrganizationDomains
+					.Where(d => d.ItemId == itemId && d.DomainId == domainId)
+					.ExecuteUpdate(set => set.SetProperty(d => d.DomainTypeId, domainTypeId));
+#endif
 			}
 			else
 			{
@@ -24212,6 +24683,73 @@ RETURN
 				*/
 				#endregion
 
+				var accounts = ExchangeAccounts
+					.Where(a => a.ItemId == itemId);
+				var archiveSizeUnlimited = accounts
+					.Any(a => a.MailboxPlan.ArchiveSizeMb == -1);
+				var mailboxSizeUnlimited = accounts
+					.Any(a => a.MailboxPlan.MailboxSizeMb == -1);
+				var accountTypes = new ExchangeAccountType[] { ExchangeAccountType.Mailbox, ExchangeAccountType.Room,
+					ExchangeAccountType.Equipment, ExchangeAccountType.SharedMailbox, ExchangeAccountType.JournalingMailbox };
+				var specialAccounts = accounts
+					.Where(a => accountTypes.Any(t => t == a.AccountType));
+				var archiveSize = archiveSizeUnlimited ? -1 : specialAccounts
+					.Where(a => a.MailboxPlan.EnableArchiving == true)
+					.Sum(a => a.MailboxPlan.ArchiveSizeMb);
+				var tmp = new
+				{
+					CreatedMailboxes = accounts.Count(a => a.AccountType == ExchangeAccountType.Mailbox),
+					CreatedSharedMailboxes = accounts.Count(a => a.AccountType == ExchangeAccountType.SharedMailbox),
+					CreatedResourceMailboxes = accounts.Count(a => 
+						a.AccountType == ExchangeAccountType.Room ||
+						a.AccountType == ExchangeAccountType.Equipment),
+					CreatedContacts = accounts.Count(a => a.AccountType == ExchangeAccountType.Contact),
+					CreatedDistributionLists = accounts.Count(a => a.AccountType == ExchangeAccountType.DistributionList),
+					CreatedPublicFolders = accounts.Count(a => a.AccountType == ExchangeAccountType.PublicFolder),
+					CreatedJournalingMailboxes = accounts.Count(a => a.AccountType == ExchangeAccountType.JournalingMailbox),
+					CreatedDomains = ExchangeOrganizationDomains.Count(d => d.ItemId == itemId),
+					UsedDiskSpaces = specialAccounts
+							.Select(a => a.MailboxPlan.MailboxSizeMb),
+					UsedLitigationHoldSpaces = specialAccounts
+							.Where(a => a.MailboxPlan.AllowLitigationHold == true)
+							.Select(a => a.MailboxPlan.RecoverableItemsSpace),
+					UsedArchingStorage = archiveSize
+				};
+				if (mailboxSizeUnlimited)
+				{
+					var sizes = new
+					{
+						tmp.CreatedMailboxes,
+						tmp.CreatedSharedMailboxes,
+						tmp.CreatedResourceMailboxes,
+						tmp.CreatedContacts,
+						tmp.CreatedDistributionLists,
+						tmp.CreatedPublicFolders,
+						tmp.CreatedJournalingMailboxes,
+						tmp.CreatedDomains,
+						UsedDiskSpace = tmp.UsedDiskSpaces.Min(),
+						UsedLitigationHoldSpace = tmp.UsedLitigationHoldSpaces.Min(),
+						UsedArchingStorage = archiveSize
+					};
+					return EntityDataReader(new[] { sizes });
+				} else
+				{
+					var sizes = new
+					{
+						tmp.CreatedMailboxes,
+						tmp.CreatedSharedMailboxes,
+						tmp.CreatedResourceMailboxes,
+						tmp.CreatedContacts,
+						tmp.CreatedDistributionLists,
+						tmp.CreatedPublicFolders,
+						tmp.CreatedJournalingMailboxes,
+						tmp.CreatedDomains,
+						UsedDiskSpace = tmp.UsedDiskSpaces.Sum(),
+						UsedLitigationHoldSpace = tmp.UsedLitigationHoldSpaces.Sum(),
+						UsedArchingStorage = archiveSize
+					};
+					return EntityDataReader(new[] { sizes });
+				}
 			}
 			else
 			{
@@ -24246,6 +24784,9 @@ END
 				*/
 				#endregion
 
+				ExchangeAccountEmailAddresses
+					.Where(a => a.AccountId == accountId && a.EmailAddress.ToLower() != primaryAddress.ToLower())
+					.ExecuteDelete(ExchangeAccountEmailAddresses);
 			}
 			else
 			{
@@ -24283,6 +24824,9 @@ RETURN
 				*/
 				#endregion
 
+				ExchangeAccountEmailAddresses.Where(a => a.AccountId == accountId).ExecuteDelete(ExchangeAccountEmailAddresses);
+
+				ExchangeAccounts.Where(a => a.ItemId == itemId && a.AccountId == accountId).ExecuteDelete(ExchangeAccounts);
 			}
 			else
 			{
@@ -24294,7 +24838,6 @@ RETURN
 					new SqlParameter("@AccountID", accountId));
 			}
 		}
-
 
 		public void DeleteExchangeAccountEmailAddress(int accountId, string emailAddress)
 		{
@@ -24314,6 +24857,8 @@ RETURN
 				*/
 				#endregion
 
+				ExchangeAccountEmailAddresses.Where(a => a.AccountId == accountId && a.EmailAddress == emailAddress)
+					.ExecuteDelete(ExchangeAccountEmailAddresses);
 			}
 			else
 			{
@@ -24345,6 +24890,12 @@ RETURN
 				*/
 				#endregion
 
+				using (var transaction = Database.BeginTransaction())
+				{
+					ExchangeMailboxPlans.Where(p => p.ItemId == itemId).ExecuteDelete(ExchangeMailboxPlans);
+					ExchangeOrganizations.Where(o => o.ItemId == itemId).ExecuteDelete(ExchangeOrganizations);
+					transaction.Commit();
+				}
 			}
 			else
 			{
@@ -24374,6 +24925,8 @@ RETURN
 				*/
 				#endregion
 
+				ExchangeOrganizationDomains.Where(d => d.DomainId == domainId && d.ItemId == itemId)
+					.ExecuteDelete(ExchangeOrganizationDomains);
 			}
 			else
 			{
@@ -24414,7 +24967,7 @@ AS
 				#endregion
 
 				return ExchangeAccountEmailAddresses.Any(a => a.EmailAddress == emailAddress) ||
-					ExchangeAccounts.Any(a => a.PrimaryEmailAddress == emailAddress && (checkContacts || a.AccountType != 2));
+					ExchangeAccounts.Any(a => a.PrimaryEmailAddress == emailAddress && (checkContacts || a.AccountType != ExchangeAccountType.Contact));
 			}
 			else
 			{
@@ -24532,7 +25085,7 @@ RETURN
 				*/
 				#endregion
 
-				return ExchangeAccounts.Any(a => a.SamAccountName.EndsWith($"\{accountName}"));
+				return ExchangeAccounts.Any(a => a.SamAccountName.EndsWith($"\\{accountName}"));
 			}
 			else
 			{
@@ -24610,6 +25163,22 @@ RETURN
 				*/
 				#endregion
 
+				var account = ExchangeAccounts.FirstOrDefault(a => a.AccountId == accountId);
+				if (account != null)
+				{
+					account.AccountName = accountName;
+					account.DisplayName = displayName;
+					account.PrimaryEmailAddress = primaryEmailAddress;
+					account.MailEnabledPublicFolder = mailEnabledPublicFolder;
+					account.MailboxManagerActions = mailboxManagerActions;
+					account.AccountType = accountType;
+					account.SamAccountName = samAccountName;
+					account.MailboxPlanId = mailboxPlanId == -1 ? null : mailboxPlanId;
+					account.SubscriberNumber = subscriberNumber;
+					account.ArchivingMailboxPlanId = archivePlanId;
+					account.EnableArchiving = EnableArchiving;
+					SaveChanges();
+				}
 			}
 			else
 			{
@@ -24668,6 +25237,13 @@ RETURN
 				*/
 				#endregion
 
+				var account = ExchangeAccounts.FirstOrDefault(a => a.AccountId == accountId);
+				if (account != null)
+				{
+					account.LevelId = levelId != -1 ? levelId : null;
+					account.IsVip = isVIP;
+					SaveChanges();
+				}
 			}
 			else
 			{
@@ -24703,8 +25279,7 @@ RETURN
 				*/
 				#endregion
 
-				var account = ExchangeAccounts
-					.FirstOrDefault(a => a.AccountId == accountId);
+				var account = ExchangeAccounts.FirstOrDefault(a => a.AccountId == accountId);
 				if (account != null)
 				{
 					account.UserPrincipalName = userPrincipalName;
@@ -24764,6 +25339,36 @@ RETURN
 				*/
 				#endregion
 
+				var account = ExchangeAccounts
+					.Where(a => a.ItemId == itemId && a.AccountId == accountId)
+					.GroupJoin(ExchangeMailboxPlans, a => a.ArchivingMailboxPlanId, p => p.MailboxPlanId, (a, p) => new
+					{
+						Account = a,
+						ArchivingMailboxPlan = p.Any() ? (int?)p.Single().MailboxPlanId : null
+					})
+					.Select(a => new
+					{
+						a.Account.AccountId,
+						a.Account.ItemId,
+						a.Account.AccountType,
+						a.Account.AccountName,
+						a.Account.DisplayName,
+						a.Account.PrimaryEmailAddress,
+						a.Account.MailEnabledPublicFolder,
+						a.Account.MailboxManagerActions,
+						a.Account.SamAccountName,
+						a.Account.MailboxPlanId,
+						a.Account.MailboxPlan.MailboxPlan,
+						a.Account.SubscriberNumber,
+						a.Account.UserPrincipalName,
+						a.Account.ArchivingMailboxPlanId,
+						a.ArchivingMailboxPlan,
+						a.Account.EnableArchiving,
+						a.Account.LevelId,
+						a.Account.IsVip
+					});
+
+				return EntityDataReader(account);
 			}
 			else
 			{
@@ -24816,6 +25421,34 @@ RETURN
 				*/
 				#endregion
 
+				var account = ExchangeAccounts
+					.Where(a => a.ItemId == itemId && a.AccountName == accountName)
+					.GroupJoin(ExchangeMailboxPlans, a => a.ArchivingMailboxPlanId, p => p.MailboxPlanId, (a, p) => new
+					{
+						Account = a,
+						ArchivingMailboxPlan = p.Any() ? (int?)p.Single().MailboxPlanId : null
+					})
+					.Select(a => new
+					{
+						a.Account.AccountId,
+						a.Account.ItemId,
+						a.Account.AccountType,
+						a.Account.AccountName,
+						a.Account.DisplayName,
+						a.Account.PrimaryEmailAddress,
+						a.Account.MailEnabledPublicFolder,
+						a.Account.MailboxManagerActions,
+						a.Account.SamAccountName,
+						a.Account.MailboxPlanId,
+						a.Account.MailboxPlan.MailboxPlan,
+						a.Account.SubscriberNumber,
+						a.Account.UserPrincipalName,
+						a.Account.ArchivingMailboxPlanId,
+						a.ArchivingMailboxPlan,
+						a.Account.EnableArchiving
+					});
+
+				return EntityDataReader(account);
 			}
 			else
 			{
@@ -24868,9 +25501,113 @@ WHERE
 	E.MailboxPlanId IS NULL AND
 	E.AccountType IN (1,5,6,10,12) 
 RETURN
+				
+END
+ELSE
+IF (@ItemId = 0)
+BEGIN
+SELECT
+	E.AccountID,
+	E.ItemID,
+	E.AccountType,
+	E.AccountName,
+	E.DisplayName,
+	E.PrimaryEmailAddress,
+	E.MailEnabledPublicFolder,
+	E.MailboxManagerActions,
+	E.SamAccountName,
+	E.MailboxPlanId,
+	P.MailboxPlan,
+	E.SubscriberNumber,
+	E.UserPrincipalName,
+	E.ArchivingMailboxPlanId, 
+	AP.MailboxPlan as 'ArchivingMailboxPlan',
+	E.EnableArchiving
+FROM
+	ExchangeAccounts AS E
+LEFT OUTER JOIN ExchangeMailboxPlans AS P ON E.MailboxPlanId = P.MailboxPlanId	
+LEFT OUTER JOIN ExchangeMailboxPlans AS AP ON E.ArchivingMailboxPlanId = AP.MailboxPlanId
+WHERE
+	E.MailboxPlanId = @MailboxPlanId AND
+	E.AccountType IN (1,5,6,10,12) 
+END
+ELSE
+BEGIN
+SELECT
+	E.AccountID,
+	E.ItemID,
+	E.AccountType,
+	E.AccountName,
+	E.DisplayName,
+	E.PrimaryEmailAddress,
+	E.MailEnabledPublicFolder,
+	E.MailboxManagerActions,
+	E.SamAccountName,
+	E.MailboxPlanId,
+	P.MailboxPlan,
+	E.SubscriberNumber,
+	E.UserPrincipalName,
+	E.ArchivingMailboxPlanId, 
+	AP.MailboxPlan as 'ArchivingMailboxPlan',
+	E.EnableArchiving
+FROM
+	ExchangeAccounts AS E
+LEFT OUTER JOIN ExchangeMailboxPlans AS P ON E.MailboxPlanId = P.MailboxPlanId	
+LEFT OUTER JOIN ExchangeMailboxPlans AS AP ON E.ArchivingMailboxPlanId = AP.MailboxPlanId
+WHERE
+	E.ItemID = @ItemID AND
+	E.MailboxPlanId = @MailboxPlanId AND
+	E.AccountType IN (1,5,6,10,12) 
+RETURN
+END
 				*/
 				#endregion
 
+				var accountTypes = new ExchangeAccountType[] { ExchangeAccountType.Mailbox, ExchangeAccountType.Room,
+					ExchangeAccountType.Equipment, ExchangeAccountType.SharedMailbox, ExchangeAccountType.JournalingMailbox };
+
+				IQueryable<Data.Entities.ExchangeAccount> accounts = ExchangeAccounts;
+
+				if (MailboxPlanId < 0) {
+					accounts = accounts
+						.Where(a => a.ItemId == itemId && a.MailboxPlanId == null && accountTypes.Any(t => t == a.AccountType));
+				} else if (itemId == 0) {
+					accounts = accounts
+						.Where(a => a.MailboxPlanId == MailboxPlanId && accountTypes.Any(t => t == a.AccountType));
+				} else
+				{
+					accounts = accounts
+						.Where(a => a.ItemId == itemId && a.MailboxPlanId == MailboxPlanId &&
+							accountTypes.Any(t => t == a.AccountType));
+				}
+
+				var account = accounts
+					.GroupJoin(ExchangeMailboxPlans, a => a.ArchivingMailboxPlanId, p => p.MailboxPlanId, (a, p) => new
+					{
+						Account = a,
+						ArchivingMailboxPlan = p.Any() ? (int?)p.Single().MailboxPlanId : null
+					})
+					.Select(a => new
+					{
+						a.Account.AccountId,
+						a.Account.ItemId,
+						a.Account.AccountType,
+						a.Account.AccountName,
+						a.Account.DisplayName,
+						a.Account.PrimaryEmailAddress,
+						a.Account.MailEnabledPublicFolder,
+						a.Account.MailboxManagerActions,
+						a.Account.SamAccountName,
+						a.Account.MailboxPlanId,
+						a.Account.MailboxPlan.MailboxPlan,
+						a.Account.SubscriberNumber,
+						a.Account.UserPrincipalName,
+						a.Account.ArchivingMailboxPlanId,
+						a.ArchivingMailboxPlan,
+						a.Account.EnableArchiving
+					});
+
+				return EntityDataReader(account);
 			}
 			else
 			{
@@ -24944,6 +25681,16 @@ RETURN
 				*/
 				#endregion
 
+				var domains = ExchangeOrganizationDomains
+					.Where(d => d.ItemId == itemId)
+					.Join(Domains, ed => ed.DomainId, d => d.DomainId, (ed, d) => new
+					{
+						ed.DomainId,
+						d.DomainName,
+						ed.IsHost,
+						ed.DomainTypeId
+					});
+				return EntityDataReader(domains);
 			}
 			else
 			{
@@ -24955,7 +25702,7 @@ RETURN
 			}
 		}
 
-		public IDataReader GetExchangeAccounts(int itemId, int accountType)
+		public IDataReader GetExchangeAccounts(int itemId, ExchangeAccountType accountType)
 		{
 			if (UseEntityFramework)
 			{
@@ -24984,12 +25731,31 @@ FROM
 LEFT OUTER JOIN ExchangeMailboxPlans AS P ON E.MailboxPlanId = P.MailboxPlanId
 WHERE
 	E.ItemID = @ItemID AND
-	(E.AccountType = @AccountType OR @AccountType IS NULL)
+	(E.AccountType = @AccountType OR @AccountType = 0)
 ORDER BY DisplayName
 RETURN
 				*/
 				#endregion
 
+				var accounts = ExchangeAccounts
+					.Where(a => a.ItemId == itemId && (accountType == ExchangeAccountType.Undefined || a.AccountType == accountType))
+					.OrderBy(a => a.DisplayName)
+					.Select(a => new
+					{
+						a.AccountId,
+						a.ItemId,
+						a.AccountType,
+						a.AccountName,
+						a.DisplayName,
+						a.PrimaryEmailAddress,
+						a.MailEnabledPublicFolder,
+						a.MailboxPlanId,
+						a.MailboxPlan.MailboxPlan,
+						a.SubscriberNumber,
+						a.UserPrincipalName
+					});
+
+				return EntityDataReader(accounts);
 			}
 			else
 			{
@@ -25039,6 +25805,35 @@ RETURN
 				*/
 				#endregion
 
+				var account = ExchangeAccounts
+					.Where(a => a.UserPrincipalName == userPrincipalName)
+					.GroupJoin(ExchangeMailboxPlans, a => a.ArchivingMailboxPlanId, p => p.MailboxPlanId, (a, p) => new
+					{
+						Account = a,
+						ArchivingMailboxPlan = p.Any() ? (int?)p.Single().MailboxPlanId : null
+					})
+					.Select(a => new
+					{
+						a.Account.AccountId,
+						a.Account.ItemId,
+						a.Account.AccountType,
+						a.Account.AccountName,
+						a.Account.DisplayName,
+						a.Account.PrimaryEmailAddress,
+						a.Account.MailEnabledPublicFolder,
+						a.Account.MailboxManagerActions,
+						a.Account.SamAccountName,
+						a.Account.MailboxPlanId,
+						a.Account.MailboxPlan.MailboxPlan,
+						a.Account.SubscriberNumber,
+						a.Account.UserPrincipalName,
+						a.Account.ArchivingMailboxPlanId,
+						a.ArchivingMailboxPlan,
+						a.Account.EnableArchiving
+					});
+
+				return EntityDataReader(account);
+
 			}
 			else
 			{
@@ -25081,6 +25876,24 @@ END
 				*/
 				#endregion
 
+				var accounts = ExchangeAccounts
+					.Where(a => a.ItemId == itemId && (a.AccountType == ExchangeAccountType.Mailbox ||
+						a.AccountType == ExchangeAccountType.Room || a.AccountType == ExchangeAccountType.Equipment))
+					.OrderBy(a => a.AccountId)
+					.Select(a => new
+					{
+						a.AccountId,
+						a.ItemId,
+						a.AccountType,
+						a.AccountName,
+						a.DisplayName,
+						a.PrimaryEmailAddress,
+						a.MailEnabledPublicFolder,
+						a.SubscriberNumber,
+						a.UserPrincipalName
+					});
+
+				return EntityDataReader(accounts);
 			}
 			else
 			{
@@ -25092,30 +25905,9 @@ END
 			}
 		}
 
-		public IDataReader SearchExchangeAccountsByTypes(int actorId, int itemId, string accountTypes,
+		public IDataReader SearchExchangeAccountsByTypes(int actorId, int itemId, ExchangeAccountType[] accountTypes,
 			string filterColumn, string filterValue, string sortColumn)
 		{
-			// check input parameters
-			/*string[] types = accountTypes.Split(',');
-			for (int i = 0; i < types.Length; i++)
-			{
-				try
-				{
-					int type = Int32.Parse(types[i]);
-				}
-				catch
-				{
-					throw new ArgumentException("Wrong patameter", "accountTypes");
-				}
-			}*/
-
-			if (!Regex.IsMatch(accountTypes, @"^\s*[0-9]+(\s*,\s*[0-9]+)*\s*$", RegexOptions.Singleline))
-			{
-				throw new ArgumentException("Wrong patameter", "accountTypes");
-			}
-
-			accountTypes = Regex.Replace(accountTypes, @"[ \t]", ""); // remove whitespace
-
 			if (UseEntityFramework)
 			{
 				#region Stored Procedure
@@ -25184,47 +25976,91 @@ RETURN
 				*/
 				#endregion
 
+				var packageId = ServiceItems
+					.Where(i => i.ItemId == itemId)
+					.Select(i => i.PackageId)
+					.FirstOrDefault();
+				// check rights
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				var accounts = ExchangeAccounts
+					.Where(a => a.ItemId == itemId && accountTypes.Any(t => t == a.AccountType));
+
+				if (!string.IsNullOrEmpty(filterColumn) && !string.IsNullOrEmpty(filterValue))
+				{
+					if (filterColumn == "PrimaryEmailAddress" &&
+						(accountTypes.Length != 1 || accountTypes[0] != ExchangeAccountType.Contact))
+					{
+#if NETFRAMEWORK
+						accounts = accounts.Where(a => a.ExchangeAccountEmailAddresses.Any(e => DbFunctions.Like(e.EmailAddress, filterValue)));
+#else
+						accounts = accounts.Where(a => a.ExchangeAccountEmailAddresses.Any(e => EF.Functions.Like(e.EmailAddress, filterValue)));
+#endif
+					} else
+					{
+						accounts = accounts.Where(DynamicFunctions.ColumnLike(accounts, filterColumn, filterValue));
+					}
+				}
+
+				if (!string.IsNullOrEmpty(sortColumn)) accounts = accounts.OrderBy(sortColumn);
+				else accounts = accounts.OrderBy(a => a.DisplayName);
+
+				var accountsProjected = accounts
+					.Select(a => new
+					 {
+						 a.AccountId,
+						 a.ItemId,
+						 a.AccountType,
+						 a.AccountName,
+						 a.DisplayName,
+						 a.PrimaryEmailAddress,
+						 a.MailEnabledPublicFolder,
+						 a.MailboxPlanId,
+						 a.MailboxPlan.MailboxPlan,
+						 a.SubscriberNumber,
+						 a.UserPrincipalName
+					 });
+
 			}
 			else
 			{
+				var accountTypesAsString = string.Join(",", accountTypes.Select(t => (int)t));
+
 				return SqlHelper.ExecuteReader(
 					ConnectionString,
 					CommandType.StoredProcedure,
 					"SearchExchangeAccountsByTypes",
 					new SqlParameter("@ActorID", actorId),
 					new SqlParameter("@ItemID", itemId),
-					new SqlParameter("@AccountTypes", accountTypes),
+					new SqlParameter("@AccountTypes", accountTypesAsString),
 					new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
 					new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
 					new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)));
 			}
 		}
 
-		public DataSet GetExchangeAccountsPaged(int actorId, int itemId, string accountTypes,
+		public DataSet GetExchangeAccountsPaged(int actorId, int itemId, string accountTypesAsString,
 			string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, bool archiving)
 		{
 			// check input parameters
-			/* string[] types = accountTypes.Split(',');
-			for (int i = 0; i < types.Length; i++)
+			if (!Regex.IsMatch(accountTypesAsString, @"^\s*([0-9]+|[a-zA-Z_][a-zA-Z0-9_]*)(\s*,\s*([0-9]+|[a-zA-Z_][a-zA-Z0-9_]*))*\s*$", RegexOptions.Singleline))
 			{
-				try
-				{
-					int type = Int32.Parse(types[i]);
-				}
-				catch
-				{
-					throw new ArgumentException("Wrong patameter", "accountTypes");
-				}
+				throw new ArgumentException("Wrong patameter", "accountTypesAsString");
 			}
 
-			string searchTypes = String.Join(",", types); */
+			accountTypesAsString = Regex.Replace(accountTypesAsString, @"[ \t]", ""); // remove whitespace
 
-			if (!Regex.IsMatch(accountTypes, @"^\s*[0-9]+(\s*,\s*[0-9]+)*\s*$", RegexOptions.Singleline))
-			{
-				throw new ArgumentException("Wrong patameter", "accountTypes");
-			}
-
-			accountTypes = Regex.Replace(accountTypes, @"[ \t]", ""); // remove whitespace
+			var accountTypes = accountTypesAsString.Split(',')
+				.Select(t =>
+				{
+					int type;
+					ExchangeAccountType etype;
+					if (int.TryParse(t, out type)) return (ExchangeAccountType)type;
+					else if (Enum.TryParse<ExchangeAccountType>(t, out etype)) return etype;
+					else throw new NotSupportedException($"Value {t} is not a valid ExchangeAccountType.");
+				})
+				.ToArray();
 
 			if (UseEntityFramework)
 			{
@@ -25320,16 +26156,66 @@ RETURN
 				*/
 				#endregion
 
+				var packageId = ServiceItems
+	.Where(i => i.ItemId == itemId)
+	.Select(i => i.PackageId)
+	.FirstOrDefault();
+				// check rights
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				var accounts = ExchangeAccounts
+					.Where(a => a.ItemId == itemId && accountTypes.Any(t => t == a.AccountType));
+
+				if (!string.IsNullOrEmpty(filterColumn) && !string.IsNullOrEmpty(filterValue))
+				{
+					if (filterColumn == "PrimaryEmailAddress" &&
+						(accountTypes.Length != 1 || accountTypes[0] != ExchangeAccountType.Contact))
+					{
+#if NETFRAMEWORK
+						accounts = accounts.Where(a => a.ExchangeAccountEmailAddresses.Any(e => DbFunctions.Like(e.EmailAddress, filterValue)));
+#else
+						accounts = accounts.Where(a => a.ExchangeAccountEmailAddresses.Any(e => EF.Functions.Like(e.EmailAddress, filterValue)));
+#endif
+					}
+					else
+					{
+						accounts = accounts.Where(DynamicFunctions.ColumnLike(accounts, filterColumn, filterValue));
+					}
+				}
+
+				if (!string.IsNullOrEmpty(sortColumn)) accounts = accounts.OrderBy(sortColumn);
+				else accounts = accounts.OrderBy(a => a.DisplayName);
+
+				var accountsProjected = accounts
+					.Select(a => new
+					{
+						a.AccountId,
+						a.ItemId,
+						a.AccountType,
+						a.AccountName,
+						a.DisplayName,
+						a.PrimaryEmailAddress,
+						a.MailEnabledPublicFolder,
+						a.MailboxPlanId,
+						a.MailboxPlan.MailboxPlan,
+						a.SubscriberNumber,
+						a.UserPrincipalName
+					});
+
+
 			}
 			else
 			{
+				accountTypesAsString = string.Join(",", accountTypes.Select(t => ((int)t).ToString()));
+
 				return SqlHelper.ExecuteDataset(
 					ConnectionString,
 					CommandType.StoredProcedure,
 					"GetExchangeAccountsPaged",
 					new SqlParameter("@ActorID", actorId),
 					new SqlParameter("@ItemID", itemId),
-					new SqlParameter("@AccountTypes", accountTypes),
+					new SqlParameter("@AccountTypes", accountTypesAsString),
 					new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
 					new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
 					new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
@@ -25501,7 +26387,7 @@ RETURN
 					new SqlParameter("@PrimaryEmailAddress", primaryEmailAddress));
 			}
 		}
-		#endregion
+#endregion
 
 		#region Exchange Mailbox Plans
 		public int AddExchangeMailboxPlan(int itemID, string mailboxPlan, bool enableActiveSync, bool enableIMAP, bool enableMAPI, bool enableOWA, bool enablePOP, bool enableAutoReply,
@@ -27657,7 +28543,7 @@ CREATE TABLE #TempCRMUsers
 IF (@SortColumn = 'DisplayName')
 BEGIN
 	INSERT INTO
-		#TempCRMUsers
+# TempCRMUsers
 	SELECT
 		ea.AccountID,
 		ea.ItemID,
@@ -27679,7 +28565,7 @@ END
 ELSE
 BEGIN
 	INSERT INTO
-		#TempCRMUsers
+# TempCRMUsers
 	SELECT
 		ea.AccountID,
 		ea.ItemID,
@@ -29639,7 +30525,7 @@ CREATE TABLE #TempBlackBerryUsers
 IF (@SortColumn = 'DisplayName')
 BEGIN
 	INSERT INTO
-		#TempBlackBerryUsers
+# TempBlackBerryUsers
 	SELECT
 		ea.AccountID,
 		ea.ItemID,
@@ -29661,7 +30547,7 @@ END
 ELSE
 BEGIN
 	INSERT INTO
-		#TempBlackBerryUsers
+# TempBlackBerryUsers
 	SELECT
 		ea.AccountID,
 		ea.ItemID,
@@ -29932,7 +30818,7 @@ CREATE TABLE #TempOCSUsers
 IF (@SortColumn = 'DisplayName')
 BEGIN
 	INSERT INTO
-		#TempOCSUsers
+# TempOCSUsers
 	SELECT
 		ea.AccountID,
 		ea.ItemID,
@@ -29955,7 +30841,7 @@ END
 ELSE
 BEGIN
 	INSERT INTO
-		#TempOCSUsers
+# TempOCSUsers
 	SELECT
 		ea.AccountID,
 		ea.ItemID,
@@ -30879,7 +31765,7 @@ DECLARE @sql nvarchar(3500)
 
 set @sql = '
 	INSERT INTO 
-		#TempLyncUsers 
+# TempLyncUsers
 	SELECT 
 		ea.AccountID,
 		ea.ItemID,
@@ -31816,7 +32702,7 @@ DECLARE @sql nvarchar(3500)
 
 set @sql = '
 	INSERT INTO 
-		#TempSfBUsers 
+# TempSfBUsers
 	SELECT 
 		ea.AccountID,
 		ea.ItemID,

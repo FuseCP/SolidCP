@@ -14,9 +14,9 @@ namespace SolidCP.EnterpriseServer.Data.Entities
 	[Table("PackageServices")]
 	public class PackageService
 	{
-		[Key, Column("PackageID")]
+		[Key, Column("PackageID", Order = 1)]
 		public int PackageId { get; set; }
-		[Key, Column("ServiceID")]
+		[Key, Column("ServiceID", Order = 2)]
 		public int ServiceId { get; set; }
 	}
 }
