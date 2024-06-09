@@ -26157,9 +26157,9 @@ RETURN
 				#endregion
 
 				var packageId = ServiceItems
-	.Where(i => i.ItemId == itemId)
-	.Select(i => i.PackageId)
-	.FirstOrDefault();
+					.Where(i => i.ItemId == itemId)
+					.Select(i => i.PackageId)
+					.FirstOrDefault();
 				// check rights
 				if (!CheckActorPackageRights(actorId, packageId))
 					throw new AccessViolationException("You are not allowed to access this package");
@@ -26184,8 +26184,17 @@ RETURN
 					}
 				}
 
+				if (archiving)
+				{
+					accounts = accounts.Where(a => a.ArchivingMailboxPlanId > 0);
+				}
+
+				var count = accounts.Count();
+
 				if (!string.IsNullOrEmpty(sortColumn)) accounts = accounts.OrderBy(sortColumn);
 				else accounts = accounts.OrderBy(a => a.DisplayName);
+
+				accounts = accounts.Skip(startRow).Take(maximumRows);
 
 				var accountsProjected = accounts
 					.Select(a => new
@@ -26200,10 +26209,12 @@ RETURN
 						a.MailboxPlanId,
 						a.MailboxPlan.MailboxPlan,
 						a.SubscriberNumber,
-						a.UserPrincipalName
+						a.UserPrincipalName,
+						a.LevelId,
+						a.IsVip
 					});
 
-
+				return EntityDataSet(count, accountsProjected);
 			}
 			else
 			{
@@ -26225,7 +26236,7 @@ RETURN
 			}
 		}
 		public IDataReader SearchExchangeAccounts(int actorId, int itemId, bool includeMailboxes,
-			bool includeContacts, bool includeDistributionLists, bool includeRooms, bool includeEquipment, bool IncludeSharedMailbox,
+			bool includeContacts, bool includeDistributionLists, bool includeRooms, bool includeEquipment, bool includeSharedMailbox,
 			bool includeSecurityGroups, string filterColumn, string filterValue, string sortColumn)
 		{
 			if (UseEntityFramework)
@@ -26302,6 +26313,47 @@ RETURN
 				*/
 				#endregion
 
+				var packageId = ServiceItems
+					.Where(i => i.ItemId == itemId)
+					.Select(i => i.PackageId)
+					.FirstOrDefault();
+				// check rights
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				var accounts = ExchangeAccounts
+					.Where(a => a.ItemId == itemId && (
+						(includeMailboxes && a.AccountType == ExchangeAccountType.Mailbox) ||
+						(includeContacts && a.AccountType == ExchangeAccountType.Contact) ||
+						(includeDistributionLists && a.AccountType == ExchangeAccountType.DistributionList) ||
+						(includeRooms && a.AccountType == ExchangeAccountType.Room) ||
+						(includeEquipment && a.AccountType == ExchangeAccountType.Equipment) ||
+						(includeSecurityGroups && a.AccountType == ExchangeAccountType.SecurityGroup) ||
+						(includeSharedMailbox && a.AccountType == ExchangeAccountType.SharedMailbox)));
+
+				if (!string.IsNullOrEmpty(filterColumn) && !string.IsNullOrEmpty(filterValue))
+				{
+					accounts = accounts.Where(DynamicFunctions.ColumnLike(accounts, filterColumn, filterValue));
+				}
+
+				if (!string.IsNullOrEmpty(sortColumn)) accounts = accounts.OrderBy(sortColumn);
+				else accounts = accounts.OrderBy(a => a.DisplayName);
+
+				var accountsProjected = accounts
+					.Select(a => new
+					{
+						a.AccountId,
+						a.ItemId,
+						a.AccountType,
+						a.AccountName,
+						a.DisplayName,
+						a.PrimaryEmailAddress,
+						a.MailEnabledPublicFolder,
+						a.SubscriberNumber,
+						a.UserPrincipalName
+					});
+
+				return EntityDataReader(accountsProjected);
 			}
 			else
 			{
@@ -26316,14 +26368,15 @@ RETURN
 					new SqlParameter("@IncludeDistributionLists", includeDistributionLists),
 					new SqlParameter("@IncludeRooms", includeRooms),
 					new SqlParameter("@IncludeEquipment", includeEquipment),
-					new SqlParameter("@IncludeSharedMailbox", IncludeSharedMailbox),
+					new SqlParameter("@IncludeSharedMailbox", includeSharedMailbox),
 					new SqlParameter("@IncludeSecurityGroups", includeSecurityGroups),
 					new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
 					new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
 					new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)));
 			}
 		}
-		public IDataReader SearchExchangeAccount(int actorId, int accountType, string primaryEmailAddress)
+
+		public IDataReader SearchExchangeAccount(int actorId, ExchangeAccountType accountType, string primaryEmailAddress)
 		{
 			if (UseEntityFramework)
 			{
@@ -26375,6 +26428,33 @@ RETURN
 				*/
 				#endregion
 
+				var account = ExchangeAccounts
+					.Where(a => a.PrimaryEmailAddress == primaryEmailAddress && a.AccountType == accountType)
+					.Select(a => new { a.AccountId, a.ItemId, a.Item.PackageId })
+					.FirstOrDefault();
+
+				// check rights
+				if (!CheckActorPackageRights(actorId, account.PackageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				var accounts = ExchangeAccounts
+					.Where(a => a.AccountId == account.AccountId)
+					.Select(a => new
+					{
+						a.AccountId,
+						a.ItemId,
+						PackageId = account.PackageId,
+						a.AccountType,
+						a.AccountName,
+						a.DisplayName,
+						a.PrimaryEmailAddress,
+						a.MailEnabledPublicFolder,
+						a.MailboxManagerActions,
+						a.SamAccountName,
+						a.SubscriberNumber,
+					});
+
+				return EntityDataReader(accounts);
 			}
 			else
 			{
@@ -26383,17 +26463,17 @@ RETURN
 					CommandType.StoredProcedure,
 					"SearchExchangeAccount",
 					new SqlParameter("@ActorID", actorId),
-					new SqlParameter("@AccountType", accountType),
+					new SqlParameter("@AccountType", (int)accountType),
 					new SqlParameter("@PrimaryEmailAddress", primaryEmailAddress));
 			}
 		}
 #endregion
 
 		#region Exchange Mailbox Plans
-		public int AddExchangeMailboxPlan(int itemID, string mailboxPlan, bool enableActiveSync, bool enableIMAP, bool enableMAPI, bool enableOWA, bool enablePOP, bool enableAutoReply,
+		public int AddExchangeMailboxPlan(int itemId, string mailboxPlan, bool enableActiveSync, bool enableIMAP, bool enableMAPI, bool enableOWA, bool enablePOP, bool enableAutoReply,
 			bool isDefault, int issueWarningPct, int keepDeletedItemsDays, int mailboxSizeMB, int maxReceiveMessageSizeKB, int maxRecipients,
 			int maxSendMessageSizeKB, int prohibitSendPct, int prohibitSendReceivePct, bool hideFromAddressBook, int mailboxPlanType,
-			bool enabledLitigationHold, int recoverabelItemsSpace, int recoverabelItemsWarning, string litigationHoldUrl, string litigationHoldMsg,
+			bool enabledLitigationHold, int recoverableItemsSpace, int recoverableItemsWarning, string litigationHoldUrl, string litigationHoldMsg,
 			bool archiving, bool EnableArchiving, int ArchiveSizeMB, int ArchiveWarningPct, bool enableForceArchiveDeletion, bool isForJournaling)
 		{
 			if (UseEntityFramework)
@@ -26521,6 +26601,56 @@ RETURN
 				*/
 				#endregion
 
+				if (!ExchangeMailboxPlans.Any(p => p.ItemId == itemId) && mailboxPlanType == 0)
+				{
+					isDefault = true;
+				} else if (isDefault && mailboxPlanType == 0)
+				{
+#if NETFRAMEWORK
+					foreach (var plan0 in ExchangeMailboxPlans.Where(p => p.ItemId == itemId)) plan0.IsDefault = false;
+					SaveChanges();
+#else
+					ExchangeMailboxPlans.Where(p => p.ItemId == itemId)
+						.ExecuteUpdate(set => set.SetProperty(p => p.IsDefault, false));
+#endif
+				}
+
+				var plan = new Data.Entities.ExchangeMailboxPlan() {
+					ItemId = itemId,
+					MailboxPlan = mailboxPlan,
+					EnableActiveSync = enableActiveSync,
+					EnableImap = enableIMAP,
+					EnableMapi = enableMAPI,
+					EnableOwa = enableOWA,
+					EnablePop = enablePOP,
+					EnableAutoReply = enableAutoReply,
+					IsDefault = isDefault,
+					IssueWarningPct = issueWarningPct,
+					KeepDeletedItemsDays = keepDeletedItemsDays,
+					MailboxSizeMb = mailboxSizeMB,
+					MaxReceiveMessageSizeKb = maxReceiveMessageSizeKB,
+					MaxRecipients = maxRecipients,
+					MaxSendMessageSizeKb = maxSendMessageSizeKB,
+					ProhibitSendPct = prohibitSendPct,
+					ProhibitSendReceivePct = prohibitSendReceivePct,
+					HideFromAddressBook = hideFromAddressBook,
+					MailboxPlanType = mailboxPlanType,
+					AllowLitigationHold = enabledLitigationHold,
+					RecoverableItemsWarningPct = recoverableItemsWarning,
+					RecoverableItemsSpace = recoverableItemsSpace,
+					LitigationHoldUrl = litigationHoldUrl,
+					LitigationHoldMsg = litigationHoldMsg,
+					Archiving = archiving,
+					EnableArchiving = EnableArchiving,
+					ArchiveSizeMb = ArchiveSizeMB,
+					ArchiveWarningPct = ArchiveWarningPct,
+					EnableForceArchiveDeletion = enableForceArchiveDeletion,
+					IsForJournaling = isForJournaling
+				};
+				ExchangeMailboxPlans.Add(plan);
+				SaveChanges();
+
+				return plan.MailboxPlanId;
 			}
 			else
 			{
@@ -26532,7 +26662,7 @@ RETURN
 					CommandType.StoredProcedure,
 					"AddExchangeMailboxPlan",
 					outParam,
-					new SqlParameter("@ItemID", itemID),
+					new SqlParameter("@ItemID", itemId),
 					new SqlParameter("@MailboxPlan", mailboxPlan),
 					new SqlParameter("@EnableActiveSync", enableActiveSync),
 					new SqlParameter("@EnableIMAP", enableIMAP),
@@ -26552,8 +26682,8 @@ RETURN
 					new SqlParameter("@HideFromAddressBook", hideFromAddressBook),
 					new SqlParameter("@MailboxPlanType", mailboxPlanType),
 					new SqlParameter("@AllowLitigationHold", enabledLitigationHold),
-					new SqlParameter("@RecoverableItemsWarningPct", recoverabelItemsWarning),
-					new SqlParameter("@RecoverableItemsSpace", recoverabelItemsSpace),
+					new SqlParameter("@RecoverableItemsWarningPct", recoverableItemsWarning),
+					new SqlParameter("@RecoverableItemsSpace", recoverableItemsSpace),
 					new SqlParameter("@LitigationHoldUrl", litigationHoldUrl),
 					new SqlParameter("@LitigationHoldMsg", litigationHoldMsg),
 					new SqlParameter("@Archiving", archiving),
@@ -26570,7 +26700,7 @@ RETURN
 		public void UpdateExchangeMailboxPlan(int mailboxPlanID, string mailboxPlan, bool enableActiveSync, bool enableIMAP, bool enableMAPI, bool enableOWA, bool enablePOP, bool enableAutoReply,
 			bool isDefault, int issueWarningPct, int keepDeletedItemsDays, int mailboxSizeMB, int maxReceiveMessageSizeKB, int maxRecipients,
 			int maxSendMessageSizeKB, int prohibitSendPct, int prohibitSendReceivePct, bool hideFromAddressBook, int mailboxPlanType,
-			bool enabledLitigationHold, long recoverabelItemsSpace, long recoverabelItemsWarning, string litigationHoldUrl, string litigationHoldMsg,
+			bool enabledLitigationHold, int recoverableItemsSpace, int recoverableItemsWarning, string litigationHoldUrl, string litigationHoldMsg,
 			bool Archiving, bool EnableArchiving, int ArchiveSizeMB, int ArchiveWarningPct, bool enableForceArchiveDeletion, bool isForJournaling)
 		{
 			if (UseEntityFramework)
@@ -26648,6 +26778,41 @@ RETURN
 				*/
 				#endregion
 
+				var plan = ExchangeMailboxPlans
+					.FirstOrDefault(p => p.MailboxPlanId == mailboxPlanID);
+				if (plan != null)
+				{
+					plan.MailboxPlan = mailboxPlan;
+					plan.EnableActiveSync = enableActiveSync;
+					plan.EnableImap = enableIMAP;
+					plan.EnableMapi = enableMAPI;
+					plan.EnableOwa = enableOWA;
+					plan.EnablePop = enablePOP;
+					plan.EnableAutoReply = enableAutoReply;
+					plan.IsDefault = isDefault;
+					plan.IssueWarningPct = issueWarningPct;
+					plan.KeepDeletedItemsDays = keepDeletedItemsDays;
+					plan.MailboxSizeMb = mailboxSizeMB;
+					plan.MaxReceiveMessageSizeKb = maxReceiveMessageSizeKB;
+					plan.MaxRecipients = maxRecipients;
+					plan.MaxSendMessageSizeKb = maxSendMessageSizeKB;
+					plan.ProhibitSendPct = prohibitSendPct;
+					plan.ProhibitSendReceivePct = prohibitSendReceivePct;
+					plan.HideFromAddressBook = hideFromAddressBook;
+					plan.MailboxPlanType = mailboxPlanType;
+					plan.AllowLitigationHold = enabledLitigationHold;
+					plan.RecoverableItemsWarningPct = recoverableItemsWarning;
+					plan.RecoverableItemsSpace = recoverableItemsSpace;
+					plan.LitigationHoldUrl = litigationHoldUrl;
+					plan.LitigationHoldMsg = litigationHoldMsg;
+					plan.Archiving = Archiving;
+					plan.EnableArchiving = EnableArchiving;
+					plan.ArchiveSizeMb = ArchiveSizeMB;
+					plan.ArchiveWarningPct = ArchiveWarningPct;
+					plan.EnableForceArchiveDeletion = enableForceArchiveDeletion;
+					plan.IsForJournaling = isForJournaling;
+					SaveChanges();
+				}
 			}
 			else
 			{
@@ -26675,8 +26840,8 @@ RETURN
 					new SqlParameter("@HideFromAddressBook", hideFromAddressBook),
 					new SqlParameter("@MailboxPlanType", mailboxPlanType),
 					new SqlParameter("@AllowLitigationHold", enabledLitigationHold),
-					new SqlParameter("@RecoverableItemsWarningPct", recoverabelItemsWarning),
-					new SqlParameter("@RecoverableItemsSpace", recoverabelItemsSpace),
+					new SqlParameter("@RecoverableItemsWarningPct", recoverableItemsWarning),
+					new SqlParameter("@RecoverableItemsSpace", recoverableItemsSpace),
 					new SqlParameter("@LitigationHoldUrl", litigationHoldUrl),
 					new SqlParameter("@LitigationHoldMsg", litigationHoldMsg),
 					new SqlParameter("@Archiving", Archiving),
@@ -26770,7 +26935,7 @@ WHERE
 RETURN
 				*/
 				#endregion
-
+				
 			}
 			else
 			{
@@ -26951,7 +27116,7 @@ RETURN
 					new SqlParameter("@EnableArchiving", EnableArchiving));
 			}
 		}
-		#endregion
+#endregion
 
 		#region Exchange Retention Policy Tags
 		public int AddExchangeRetentionPolicyTag(int ItemID, string TagName, int TagType, int AgeLimitForRetention, int RetentionAction)

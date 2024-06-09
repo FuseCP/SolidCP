@@ -1,4 +1,5 @@
 ﻿#if ScaffoldedEntities
+using SolidCP.Providers.HostedSolution;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
