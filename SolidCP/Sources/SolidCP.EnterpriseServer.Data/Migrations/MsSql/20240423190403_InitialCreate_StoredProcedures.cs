@@ -19043,7 +19043,8 @@ LEFT JOIN LyncUsers AS LU
 ON LU.AccountID = EA.AccountID
 LEFT JOIN SfBUsers AS SfB  
 ON SfB.AccountID = EA.AccountID
-WHERE ' + @condition
+WHERE ' + @condition + '
+ORDER BY ' + @sortColumn
 
 print @sql
 

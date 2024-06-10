@@ -25,11 +25,11 @@ public partial class CrmUserConfiguration : EntityTypeConfiguration<CrmUser>
 			Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");
 		}
 
-		HasOne(d => d.Account).WithMany(p => p.Crmusers)
+		HasOne(d => d.Account).WithMany(p => p.CrmUsers)
 				.OnDelete(DeleteBehavior.ClientSetNull)
 				.HasConstraintName("FK_CRMUsers_ExchangeAccounts");
 #else
-        HasRequired(d => d.Account).WithMany(p => p.Crmusers);
+        HasRequired(d => d.Account).WithMany(p => p.CrmUsers);
 #endif
 	}
 #endif

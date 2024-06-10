@@ -79,7 +79,7 @@ public partial class ExchangeAccount
     public virtual ICollection<BlackBerryUser> BlackBerryUsers { get; set; } = new List<BlackBerryUser>();
 
     [InverseProperty("Account")]
-    public virtual ICollection<CrmUser> Crmusers { get; set; } = new List<CrmUser>();
+    public virtual ICollection<CrmUser> CrmUsers { get; set; } = new List<CrmUser>();
 
     [InverseProperty("Account")]
     public virtual ICollection<EnterpriseFoldersOwaPermission> EnterpriseFoldersOwaPermissions { get; set; } = new List<EnterpriseFoldersOwaPermission>();
@@ -96,7 +96,7 @@ public partial class ExchangeAccount
     public virtual ExchangeMailboxPlan MailboxPlan { get; set; }
 
     [InverseProperty("Account")]
-    public virtual ICollection<RdsCollectionUser> RdscollectionUsers { get; set; } = new List<RdsCollectionUser>();
+    public virtual ICollection<RdsCollectionUser> RdsCollectionUsers { get; set; } = new List<RdsCollectionUser>();
 
     [InverseProperty("Account")]
     public virtual ICollection<WebDavAccessToken> WebDavAccessTokens { get; set; } = new List<WebDavAccessToken>();

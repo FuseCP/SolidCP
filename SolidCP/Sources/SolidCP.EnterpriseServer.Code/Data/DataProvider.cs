@@ -26935,7 +26935,44 @@ WHERE
 RETURN
 				*/
 				#endregion
-				
+
+				var plan = ExchangeMailboxPlans
+					.Where(p => p.MailboxPlanId == mailboxPlanId)
+					.Select(p => new
+					{
+						p.MailboxPlanId,
+						p.ItemId,
+						p.MailboxPlan,
+						p.EnableActiveSync,
+						p.EnableImap,
+						p.EnableMapi,
+						p.EnableOwa,
+						p.EnablePop,
+						p.EnableAutoReply,
+						p.IsDefault,
+						p.IssueWarningPct,
+						p.KeepDeletedItemsDays,
+						p.MailboxSizeMb,
+						p.MaxReceiveMessageSizeKb,
+						p.MaxRecipients,
+						p.MaxSendMessageSizeKb,
+						p.ProhibitSendPct,
+						p.ProhibitSendReceivePct,
+						p.HideFromAddressBook,
+						p.MailboxPlanType,
+						p.AllowLitigationHold,
+						p.RecoverableItemsWarningPct,
+						p.RecoverableItemsSpace,
+						p.LitigationHoldUrl,
+						p.LitigationHoldMsg,
+						p.Archiving,
+						p.EnableArchiving,
+						p.ArchiveSizeMb,
+						p.ArchiveWarningPct,
+						p.EnableForceArchiveDeletion,
+						p.IsForJournaling
+					});
+				return EntityDataReader(plan);
 			}
 			else
 			{
@@ -26996,6 +27033,40 @@ RETURN
 				*/
 				#endregion
 
+				var plans = ExchangeMailboxPlans
+					.Where(p => p.ItemId == itemId &&
+						(p.Archiving == archiving || (archiving == false && p.Archiving == null)))
+					.OrderBy(p => p.MailboxPlan)
+					.Select(p => new
+					{
+						p.MailboxPlanId,
+						p.ItemId,
+						p.MailboxPlan,
+						p.EnableActiveSync,
+						p.EnableImap,
+						p.EnableMapi,
+						p.EnableOwa,
+						p.EnablePop,
+						p.EnableAutoReply,
+						p.IsDefault,
+						p.IssueWarningPct,
+						p.KeepDeletedItemsDays,
+						p.MailboxSizeMb,
+						p.MaxReceiveMessageSizeKb,
+						p.MaxRecipients,
+						p.MaxSendMessageSizeKb,
+						p.ProhibitSendPct,
+						p.ProhibitSendReceivePct,
+						p.HideFromAddressBook,
+						p.MailboxPlanType,
+						p.Archiving,
+						p.EnableArchiving,
+						p.ArchiveSizeMb,
+						p.ArchiveWarningPct,
+						p.EnableForceArchiveDeletion,
+						p.IsForJournaling
+					});
+				return EntityDataReader(plans);
 			}
 			else
 			{
@@ -27032,6 +27103,13 @@ RETURN
 				*/
 				#endregion
 
+				var orgs = ExchangeOrganizations
+					.Where(o => o.ItemId == itemId)
+					.Select(o => new
+					{
+						o.ItemId, o.ExchangeMailboxPlanId, o.LyncUserPlanId, o.SfBuserPlanId
+					});
+				return EntityDataReader(orgs);
 			}
 			else
 			{
@@ -27065,6 +27143,14 @@ RETURN
 				*/
 				#endregion
 
+#if NETFRAMEWORK
+				foreach (var org in ExchangeOrganizations.Where(o => o.ItemId == itemId))
+					org.ExchangeMailboxPlanId = mailboxPlanId;
+				SaveChanges();
+#else
+				ExchangeOrganizations.Where(o => o.ItemId == itemId)
+					.ExecuteUpdate(set => set.SetProperty(o => o.ExchangeMailboxPlanId, mailboxPlanId));
+#endif
 			}
 			else
 			{
@@ -27103,6 +27189,20 @@ RETURN
 				*/
 				#endregion
 
+#if NETFRAMEWORK
+				foreach (var account in ExchangeAccounts.Where(a => a.AccountId == accountId)) {
+					account.MailboxPlanId = mailboxPlanId;
+					account.ArchivingMailboxPlanId = archivePlanId;
+					account.EnableArchiving = EnableArchiving;
+				}
+				SaveChanges();
+#else
+				ExchangeAccounts.Where(a => a.AccountId == accountId)
+					.ExecuteUpdate(set => set
+						.SetProperty(a => a.MailboxPlanId, mailboxPlanId)
+						.SetProperty(a => a.ArchivingMailboxPlanId, archivePlanId)
+						.SetProperty(a => a.EnableArchiving, EnableArchiving));
+#endif
 			}
 			else
 			{
@@ -27160,6 +27260,17 @@ RETURN
 				*/
 				#endregion
 
+				var tag = new Data.Entities.ExchangeRetentionPolicyTag()
+				{
+					ItemId = ItemID,
+					TagName = TagName,
+					TagType = TagType,
+					AgeLimitForRetention = AgeLimitForRetention,
+					RetentionAction = RetentionAction
+				};
+				ExchangeRetentionPolicyTags.Add(tag);
+				SaveChanges();
+				return tag.TagId;
 			}
 			else
 			{
@@ -27210,6 +27321,17 @@ RETURN
 				*/
 				#endregion
 
+				var tag = ExchangeRetentionPolicyTags
+					.FirstOrDefault(t => t.TagId == TagID);
+				if (tag != null)
+				{
+					tag.ItemId = ItemID;
+					tag.TagName = TagName;
+					tag.TagType = TagType;
+					tag.AgeLimitForRetention = AgeLimitForRetention;
+					tag.RetentionAction = RetentionAction;
+					SaveChanges();
+				}
 			}
 			else
 			{
@@ -27282,6 +27404,18 @@ RETURN
 				*/
 				#endregion
 
+				var tag = ExchangeRetentionPolicyTags
+					.Where(t => t.TagId == TagID)
+					.Select(t => new
+					{
+						t.TagId,
+						t.ItemId,
+						t.TagName,
+						t.TagType,
+						t.AgeLimitForRetention,
+						t.RetentionAction
+					});
+				return EntityDataReader(tag);
 			}
 			else
 			{
@@ -27319,6 +27453,19 @@ ORDER BY TagName
 RETURN				*/
 				#endregion
 
+				var tags = ExchangeRetentionPolicyTags
+					.Where(t => t.ItemId == itemId)
+					.OrderBy(t => t.TagName)
+					.Select(t => new
+					{
+						t.TagId,
+						t.ItemId,
+						t.TagName,
+						t.TagType,
+						t.AgeLimitForRetention,
+						t.RetentionAction
+					});
+				return EntityDataReader(tags);
 			}
 			else
 			{
@@ -27362,6 +27509,14 @@ RETURN
 				*/
 				#endregion
 
+				var tag = new Data.Entities.ExchangeMailboxPlanRetentionPolicyTag()
+				{
+					TagId = TagID,
+					MailboxPlanId = MailboxPlanId
+				};
+				ExchangeMailboxPlanRetentionPolicyTags.Add(tag);
+				SaveChanges();
+				return tag.PlanTagId;
 			}
 			else
 			{
@@ -27437,6 +27592,24 @@ RETURN
 			*/
 				#endregion
 
+				var tags = ExchangeMailboxPlanRetentionPolicyTags
+					.Where(t => t.MailboxPlanId == MailboxPlanId)
+					.GroupJoin(ExchangeMailboxPlans, t => t.MailboxPlanId, p => p.MailboxPlanId, (t, p) => new
+					{
+						t.PlanTagId,
+						t.TagId,
+						t.MailboxPlanId,
+						MailboxPlan = p.Any() ? p.Single().MailboxPlan : null
+					})
+					.GroupJoin(ExchangeRetentionPolicyTags, d => d.TagId, t => t.TagId, (d, t) => new
+					{
+						d.PlanTagId,
+						d.TagId,
+						d.MailboxPlanId,
+						d.MailboxPlan,
+						TagName = t.Any() ? t.Single().TagName : null
+					});
+				return EntityDataReader(tags);
 			}
 			else
 			{
@@ -27492,6 +27665,7 @@ RETURN
 				};
 				ExchangeDisclaimers.Add(d);
 				SaveChanges();
+				return d.ExchangeDisclaimerId;
 			}
 			else
 			{
@@ -27535,6 +27709,21 @@ RETURN
 				*/
 				#endregion
 
+#if NETFRAMEWORK
+				var d = ExchangeDisclaimers
+					.FirstOrDefault(e => e.ExchangeDisclaimerId == disclaimer.ExchangeDisclaimerId);
+				if (d != null) {
+					d.DisclaimerName = disclaimer.DisclaimerName;
+					d.DisclaimerText = disclaimer.DisclaimerText;
+					SaveChanges();
+				}
+#else
+				ExchangeDisclaimers
+					.Where(e => e.ExchangeDisclaimerId == disclaimer.ExchangeDisclaimerId)
+					.ExecuteUpdate(set => set
+						.SetProperty(d => d.DisclaimerName, disclaimer.DisclaimerName)
+						.SetProperty(d => d.DisclaimerText, disclaimer.DisclaimerText));
+#endif
 			}
 			else
 			{
@@ -27690,7 +27879,10 @@ RETURN
 				#endregion
 
 #if NETCOREAPP
-				ExchangeAccounts.Where(a => a.AccountId == AccountID).ExecuteUpdate(e => e.SetProperty(p => p.ExchangeDisclaimerId, ExchangeDisclaimerId));
+				ExchangeAccounts
+					.Where(a => a.AccountId == AccountID)
+					.ExecuteUpdate(e => e
+						.SetProperty(p => p.ExchangeDisclaimerId, ExchangeDisclaimerId));
 #else
 				var account = ExchangeAccounts
 					.FirstOrDefault(a => a.AccountId == AccountID);
@@ -27799,6 +27991,17 @@ RETURN
 				*/
 				#endregion
 
+				var token = new Data.Entities.AccessToken()
+				{
+					AccessTokenGuid = accessToken,
+					ExpirationDate = expirationDate,
+					AccountId = accountId,
+					ItemId = itemId,
+					TokenType = type
+				};
+				AccessTokens.Add(token);
+				SaveChanges();
+				return token.Id;
 			}
 			else
 			{
@@ -27833,11 +28036,25 @@ CREATE PROCEDURE [dbo].[SetAccessTokenSmsResponse]
 	@SmsResponse varchar(100)
 )
 AS
-UPDATE [dbo].[AccessTokens] SET [SmsResponse] = @SmsResponse WHERE [AccessTokenGuid] = @AccessToken
+UPDATE [dbo].[AccessTokens] SET [SmsResponse] = @SmsResponse
+WHERE [AccessTokenGuid] = @AccessToken
 RETURN
 				*/
 				#endregion
 
+#if NETFRAMEWORK
+				var token = AccessTokens
+					.FirstOrDefault(t => t.AccessTokenGuid == accessToken);
+				if (token != null) {
+					token.SmsResponse = response;
+					SaveChanges();
+				}
+#else
+				AccessTokens
+					.Where(t => t.AccessTokenGuid == accessToken)
+					.ExecuteUpdate(set => set
+						.SetProperty(t => t.SmsResponse, response));
+#endif
 			}
 			else
 			{
@@ -27900,6 +28117,20 @@ Where AccessTokenGuid = @AccessToken AND ExpirationDate > getdate() AND TokenTyp
 				*/
 				#endregion
 
+				var now = DateTime.Now;
+				var token = AccessTokens
+					.Where(t => t.AccessTokenGuid == accessToken && t.ExpirationDate > now && t.TokenType == type)
+					.Select(t => new
+					{
+						t.Id,
+						t.AccessTokenGuid,
+						t.ExpirationDate,
+						t.AccountId,
+						t.ItemId,
+						t.TokenType,
+						t.SmsResponse
+					});
+				return EntityDataReader(token);
 			}
 			else
 			{
@@ -27929,7 +28160,9 @@ WHERE AccessTokenGuid = @AccessToken AND TokenType = @TokenType
 				*/
 				#endregion
 
-				AccessTokens.Where(a => a.AccessTokenGuid == accessToken && a.TokenType == type).ExecuteDelete(AccessTokens);
+				AccessTokens
+					.Where(a => a.AccessTokenGuid == accessToken && a.TokenType == type)
+					.ExecuteDelete(AccessTokens);
 			}
 			else
 			{
@@ -27964,6 +28197,22 @@ UPDATE [dbo].[ExchangeOrganizationSettings] SET [Xml] = @Xml WHERE [ItemId] = @I
 				*/
 				#endregion
 
+				var setting = ExchangeOrganizationSettings
+					.FirstOrDefault(s => s.ItemId == itemId && s.SettingsName == settingsName);
+				if (setting != null)
+				{
+					setting.Xml = xml;
+				} else
+				{
+					setting = new Data.Entities.ExchangeOrganizationSetting()
+					{
+						ItemId = itemId,
+						SettingsName = settingsName,
+						Xml = xml
+					};
+					ExchangeOrganizationSettings.Add(setting);
+				}
+				SaveChanges();
 			}
 			else
 			{
@@ -27997,6 +28246,15 @@ Where ItemId = @ItemId AND SettingsName = @SettingsName
 				*/
 				#endregion
 
+				var settings = ExchangeOrganizationSettings
+					.Where(s => s.ItemId == itemId && s.SettingsName == settingName)
+					.Select(s => new
+					{
+						s.ItemId,
+						s.SettingsName,
+						s.Xml
+					});
+				return EntityDataReader(settings);
 			}
 			else
 			{
@@ -28050,6 +28308,18 @@ RETURN
 				*/
 				#endregion
 
+				var account = new Data.Entities.ExchangeDeletedAccount()
+				{
+					AccountId = accountId,
+					OriginAt = originAT,
+					StoragePath = storagePath,
+					FolderName = folderName,
+					FileName = fileName,
+					ExpirationDate = expirationDate
+				};
+				ExchangeDeletedAccounts.Add(account);
+				SaveChanges();
+				return account.Id;
 			}
 			else
 			{
@@ -28088,7 +28358,9 @@ RETURN
 				*/
 				#endregion
 
-				ExchangeDeletedAccounts.Where(a => a.AccountId == id).ExecuteDelete(ExchangeDeletedAccounts);
+				ExchangeDeletedAccounts
+					.Where(a => a.AccountId == id)
+					.ExecuteDelete(ExchangeDeletedAccounts);
 			}
 			else
 			{
@@ -28125,6 +28397,18 @@ RETURN
 				*/
 				#endregion
 
+				var account = ExchangeDeletedAccounts
+					.Where(a => a.AccountId == accountId)
+					.Select(a => new
+					{
+						a.AccountId,
+						a.OriginAt,
+						a.StoragePath,
+						a.FolderName,
+						a.FileName,
+						a.ExpirationDate
+					});
+				return EntityDataReader(account);
 			}
 			else
 			{
@@ -28245,7 +28529,9 @@ WHERE ID = @GroupID
 				*/
 				#endregion
 
-				AdditionalGroups.Where(a => a.Id == groupId).ExecuteDelete(AdditionalGroups);
+				AdditionalGroups
+					.Where(a => a.Id == groupId)
+					.ExecuteDelete(AdditionalGroups);
 			}
 			else
 			{
@@ -28274,8 +28560,12 @@ UPDATE AdditionalGroups SET
 WHERE ID = @GroupID
 				*/
 				#endregion
+
 #if NETCOREAPP
-				AdditionalGroups.Where(a => a.Id == groupId).ExecuteUpdate(e => e.SetProperty(p => p.GroupName, groupName));
+				AdditionalGroups
+					.Where(a => a.Id == groupId)
+					.ExecuteUpdate(e => e
+						.SetProperty(p => p.GroupName, groupName));
 #else
 				var group = AdditionalGroups.FirstOrDefault(a => a.Id == groupId);
 				if (group != null) {
@@ -28311,7 +28601,9 @@ END
 				*/
 				#endregion
 
-				ExchangeAccounts.Where(a => a.ItemId == itemId).ExecuteDelete(ExchangeAccounts);
+				ExchangeAccounts
+					.Where(a => a.ItemId == itemId)
+					.ExecuteDelete(ExchangeAccounts);
 			}
 			else
 			{
@@ -28344,7 +28636,7 @@ END				*/
 				return ExchangeOrganizations
 					.Where(a => a.OrganizationId == id)
 					.Select(a => a.ItemId)
-					.FirstOrDefault() ?? 0;
+					.FirstOrDefault();
 			}
 			else
 			{
@@ -28375,6 +28667,27 @@ RETURN
 				*/
 				#endregion
 
+				var accounts = ExchangeAccounts.Where(a => a.ItemId == itemId);
+				var stats = new
+				{
+					CreatedUsers = accounts
+						.Where(a => a.AccountType == ExchangeAccountType.User ||
+							a.AccountType == ExchangeAccountType.Mailbox ||
+							a.AccountType == ExchangeAccountType.Equipment ||
+							a.AccountType == ExchangeAccountType.Room)
+						.Count(),
+					CreatedDomains = ExchangeOrganizationDomains
+						.Where(d => d.ItemId == itemId)
+						.Count(),
+					CreatedGroups = accounts
+						.Where(a => a.AccountType == ExchangeAccountType.SecurityGroup ||
+							a.AccountType == ExchangeAccountType.DefaultSecurityGroup)
+						.Count(),
+					DeletedUsers = accounts
+						.Where(a => a.AccountType == ExchangeAccountType.DeletedUser)
+						.Count()
+				};
+				return EntityDataReader(new[] { stats });
 			}
 			else
 			{
@@ -28413,6 +28726,20 @@ RETURN
 				*/
 				#endregion
 
+				var accounts = ExchangeAccounts
+					.Where(a => a.ItemId == itemId && a.DisplayName == displayName &&
+						(a.AccountType == ExchangeAccountType.SecurityGroup ||
+						a.AccountType == ExchangeAccountType.DefaultSecurityGroup))
+					.Select(a => new
+					{
+						a.AccountId,
+						a.ItemId,
+						a.AccountType,
+						a.AccountName,
+						a.DisplayName,
+						a.UserPrincipalName
+					});
+				return EntityDataReader(accounts);
 			}
 			else
 			{
@@ -28485,7 +28812,8 @@ LEFT JOIN LyncUsers AS LU
 ON LU.AccountID = EA.AccountID
 LEFT JOIN SfBUsers AS SfB  
 ON SfB.AccountID = EA.AccountID
-WHERE ' + @condition
+WHERE ' + @condition + '
+ORDER BY ' + @sortColumn
 
 print @sql
 
@@ -28496,6 +28824,49 @@ RETURN
 				*/
 				#endregion
 
+				var packageId = ServiceItems
+					.Where(i => i.ItemId == itemId)
+					.Select(i => i.PackageId)
+					.FirstOrDefault();
+				// check rights
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				var accounts = ExchangeAccounts
+					.Where(a => a.ItemId == itemId &&
+						(a.AccountType == ExchangeAccountType.User ||
+						a.AccountType == ExchangeAccountType.Mailbox && includeMailboxes))
+					.GroupJoin(LyncUsers, a => a.AccountId, lu => lu.AccountId, (a, lu) => new { A = a, IsLyncUser = lu.Any() })
+					.GroupJoin(SfBUsers, a => a.A.AccountId, su => su.AccountId, (a, su) => new
+					{
+						a.A.AccountId,
+						a.A.ItemId,
+						a.A.AccountType,
+						a.A.AccountName,
+						a.A.DisplayName,
+						a.A.PrimaryEmailAddress,
+						a.A.SubscriberNumber,
+						a.A.UserPrincipalName,
+						a.A.LevelId,
+						a.A.IsVip,
+						a.IsLyncUser,
+						IsSfBUser = su.Any()
+					});
+
+				if (!string.IsNullOrEmpty(filterValue) && !string.IsNullOrEmpty(filterColumn))
+				{
+					accounts = accounts.Where(DynamicFunctions.ColumnLike(accounts, filterColumn, filterValue));
+				}
+
+				if (!string.IsNullOrEmpty(sortColumn))
+				{
+					accounts = accounts.OrderBy(sortColumn);
+				} else
+				{
+					accounts = accounts.OrderBy(a => a.DisplayName);
+				}
+
+				return 
 			}
 			else
 			{
