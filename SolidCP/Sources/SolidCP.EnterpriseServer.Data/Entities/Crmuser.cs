@@ -17,7 +17,7 @@ public partial class CrmUser
 {
     [Key]
     [Column("CRMUserID")]
-    public int CrmuserId { get; set; }
+    public int CrmUserId { get; set; }
 
     [Column("AccountID")]
     public int AccountId { get; set; }
@@ -29,16 +29,16 @@ public partial class CrmUser
     public DateTime ChangedDate { get; set; }
 
     [Column("CRMUserGuid")]
-    public Guid? CrmuserGuid { get; set; }
+    public Guid? CrmUserGuid { get; set; }
 
     [Column("BusinessUnitID")]
     public Guid? BusinessUnitId { get; set; }
 
     [Column("CALType")]
-    public int? Caltype { get; set; }
+    public int? CalType { get; set; }
 
     [ForeignKey("AccountId")]
-    [InverseProperty("Crmusers")]
+    [InverseProperty("CrmUsers")]
     public virtual ExchangeAccount Account { get; set; }
 }
 #endif

@@ -28866,7 +28866,7 @@ RETURN
 					accounts = accounts.OrderBy(a => a.DisplayName);
 				}
 
-				return 
+				return EntityDataReader(accounts);
 			}
 			else
 			{
@@ -28883,6 +28883,15 @@ RETURN
 			}
 		}
 
+		class OrganizationObject
+		{
+			public string ObjectName { get; set; }
+			public int ObjectId { get; set; }
+			public ExchangeAccountType	ObjectType { get; set; }
+			public string DisplayName { get; set; }
+			public int OwnerId { get; set; }
+		}
+
 		public DataSet GetOrganizationObjectsByDomain(int itemId, string domainName)
 		{
 			if (UseEntityFramework)
@@ -28897,9 +28906,9 @@ CREATE PROCEDURE [dbo].[GetOrganizationObjectsByDomain]
 AS
 SELECT
 	'ExchangeAccounts' as ObjectName,
-        AccountID as ObjectID,
+    AccountID as ObjectID,
 	AccountType as ObjectType,
-        DisplayName as DisplayName,
+    DisplayName as DisplayName,
 	0 as OwnerID
 FROM
         ExchangeAccounts
@@ -28958,6 +28967,72 @@ RETURN
 				*/
 				#endregion
 
+				var objects = ExchangeAccounts
+					.Where(a => a.AccountType != ExchangeAccountType.Contact &&
+#if NETFRAMEWORK
+						DbFunctions.Like(a.UserPrincipalName, "%@" + domainName))
+#else
+						EF.Functions.Like(a.UserPrincipalName, "%@" + domainName))
+#endif
+					.Select(a => new OrganizationObject()
+					{
+						ObjectName = "ExchangeAccounts",
+						ObjectId = a.AccountId,
+						ObjectType = a.AccountType,
+						DisplayName = a.DisplayName,
+						OwnerId = 0
+					})
+					.Union(ExchangeAccountEmailAddresses
+						.Where(a =>
+#if NETFRAMEWORK
+							DbFunctions.Like(a.EmailAddress, "%@" + domainName) &&
+#else
+							EF.Functions.Like(a.EmailAddress, "%@" + domainName) &&
+#endif
+							a.EmailAddress != a.Account.PrimaryEmailAddress &&
+							a.EmailAddress != a.Account.UserPrincipalName)
+						.Select(a => new OrganizationObject()
+						{
+							ObjectName = "ExchangeAccountEmailAddresses",
+							ObjectId = a.AddressId,
+							ObjectType = a.Account.AccountType,
+							DisplayName = a.EmailAddress,
+							OwnerId = a.AccountId
+						}))
+					.Union(ExchangeAccounts
+						.Join(SfBUsers, a => a.AccountId, u => u.AccountId, (a, u) => new { Account = a, User = u })
+						.Where(a =>
+#if NETFRAMEWORK
+							DbFunctions.Like(a.User.SipAddress, "%@" + domainName))
+#else
+							EF.Functions.Like(a.User.SipAddress, "%@" + domainName))
+#endif
+						.Select(a => new OrganizationObject()
+						{
+							ObjectName = "SfBUsers",
+							ObjectId = a.Account.AccountId,
+							ObjectType = a.Account.AccountType,
+							DisplayName = a.Account.DisplayName,
+							OwnerId = 0
+						}))
+					.Union(ExchangeAccounts
+						.Join(LyncUsers, a => a.AccountId, u => u.AccountId, (a, u) => new { Account = a, User = u })
+						.Where(a =>
+#if NETFRAMEWORK
+							DbFunctions.Like(a.User.SipAddress, "%@" + domainName))
+#else
+							EF.Functions.Like(a.User.SipAddress, "%@" + domainName))
+#endif
+						.Select(a => new OrganizationObject()
+						{
+							ObjectName = "LyncUsers",
+							ObjectId = a.Account.AccountId,
+							ObjectType = a.Account.AccountType,
+							DisplayName = a.Account.DisplayName,
+							OwnerId = 0
+						}))
+					.OrderBy(o => o.DisplayName);
+				return EntityDataSet(objects);
 			}
 			else
 			{
@@ -29014,6 +29089,18 @@ END
 				*/
 				#endregion
 
+				if (string.IsNullOrEmpty(name)) name = "%";
+				if (string.IsNullOrEmpty(email)) email = "%";
+
+				return ExchangeAccounts
+					.Where(a => a.ItemId == itemId &&
+#if NETFRAMEWORK
+						DbFunctions.Like(a.DisplayName, name) && DbFunctions.Like(a.PrimaryEmailAddress, email))
+#else
+						EF.Functions.Like(a.DisplayName, name) && EF.Functions.Like(a.PrimaryEmailAddress, email))
+#endif
+					.Join(CrmUsers, a => a.AccountId, u => u.AccountId, (a, u) => u.CalType)
+					.Count(cal => cal == CALType || CALType == -1);
 			}
 			else
 			{
@@ -29148,6 +29235,37 @@ DROP TABLE #TempCRMUsers
 				*/
 				#endregion
 
+				if (string.IsNullOrEmpty(name)) name = "%";
+				if (string.IsNullOrEmpty(email)) email = "%";
+
+				var accounts = ExchangeAccounts
+					.Where(a => a.ItemId == itemId &&
+#if NETFRAMEWORK
+						DbFunctions.Like(a.DisplayName, name) && DbFunctions.Like(a.PrimaryEmailAddress, email))
+#else
+						EF.Functions.Like(a.DisplayName, name) && EF.Functions.Like(a.PrimaryEmailAddress, email))
+#endif
+					.Join(CrmUsers, a => a.AccountId, u => u.AccountId, (a, u) => a)
+					.Select(a => new
+					{
+						a.AccountId,
+						a.ItemId,
+						a.AccountName,
+						a.DisplayName,
+						a.PrimaryEmailAddress,
+						a.SamAccountName
+					});
+
+				if (sortDirection == "ASC") {
+					if (sortColumn == "DisplayName") accounts = accounts.OrderBy(a => a.DisplayName);
+					else accounts = accounts.OrderBy(a => a.PrimaryEmailAddress);
+				} else
+				{
+					if (sortColumn == "DisplayName") accounts = accounts.OrderByDescending(a => a.DisplayName);
+					else accounts = accounts.OrderByDescending(a => a.PrimaryEmailAddress);
+				}
+				accounts = accounts.Skip(startRow).Take(count);
+				return EntityDataReader(accounts);
 			}
 			else
 			{
@@ -29197,6 +29315,19 @@ END
 				*/
 				#endregion
 
+				var accounts = ExchangeAccounts
+					.Where(a => a.ItemId == itemId)
+					.Join(CrmUsers, a => a.AccountId, u => u.AccountId, (a, u) => a)
+					.Select(a => new
+					{
+						a.AccountId,
+						a.ItemId,
+						a.AccountName,
+						a.DisplayName,
+						a.PrimaryEmailAddress,
+						a.SamAccountName
+					});
+				return EntityDataReader(accounts);
 			}
 			else
 			{
@@ -29242,6 +29373,15 @@ END
 				*/
 				#endregion
 
+				var user = new Data.Entities.CrmUser()
+				{
+					ItemId = itemId,
+					CrmUserGuid = crmId,
+					BusinessUnitId = businessUnitId,
+					CalType = CALType
+				};
+				CrmUsers.Add(user);
+				SaveChanges();
 			}
 			else
 			{
@@ -29280,6 +29420,15 @@ END
 				*/
 				#endregion
 
+#if NETFRAMEWORK
+				var user = CrmUsers.FirstOrDefault(u => u.AccountId == itemId);
+				user.CalType = CALType;
+				SaveChanges();
+#else
+				CrmUsers.Where(u => u.AccountId == itemId)
+					.ExecuteUpdate(set => set
+						.SetProperty(u => u.CalType, CALType));
+#endif
 			}
 			else
 			{
@@ -29288,7 +29437,6 @@ END
 						new SqlParameter("@ItemID", itemId),
 						new SqlParameter("@CALType", CALType)
 					});
-
 			}
 		}
 
@@ -29378,7 +29526,7 @@ END
 					new SqlParameter[] { new SqlParameter("@ItemID", organizationId) });
 			}
 		}
-		#endregion
+#endregion
 
 		#region VPS - Virtual Private Servers
 
