@@ -6604,7 +6604,7 @@ END
 
 				vlans = vlans.Skip(startRow).Take(maximumRows);
 
-				return CountDataReader(vlans, count);
+				return EntityDataReader(count, vlans);
 			}
 			else
 			{
@@ -6772,6 +6772,25 @@ END
 			return package != null && package.ParentPackageId == parentPackageId;
 		}
 
+		public IEnumerbale<int> GetChildPackages(int parentPackageId)
+		{
+			var parents = new[] { parentPackageId };
+			yield return parentPackageId;
+			var children = Packages
+				.Where(p => parents.Any(q => p.ParentPackageId == q))
+				.Select(p => p.PackageId)
+				.ToArray();
+			while (children.Any())
+			{
+				foreach (var child in children) yield return child;
+				parents = children;
+				children = Packages
+					.Where(p => parents.Any(q => p.ParentPackageId == q))
+					.Select(p => p.PackageId)
+					.ToArray();
+			}
+		}
+
 		public IDataReader GetPackagePrivateNetworkVLANs(int packageId, string sortColumn, int startRow, int maximumRows)
 		{
 			if (UseEntityFramework)
@@ -6849,8 +6868,11 @@ END
 				*/
 				#endregion
 
+				var packages GetChildPackages(packageId)
+					.ToArray();
 				var vlans = PackageVlans
-					.Where(pv => CheckPackageParent(packageId, pv.PackageId))
+					//.Where(pv => CheckPackageParent(packageId, pv.PackageId))
+					.Join(packages, pv => pv.PackageId, p => p, (pv, p) => pv)
 					.Join(PrivateNetworkVlans, p => p.VlanId, v => v.VlanId, (pv, vl) => new
 					{
 						PackageVlan = pv,
@@ -7591,7 +7613,7 @@ END
 
 				addresses = addresses.Skip(startRow).Take(maximumRows);
 
-				return CountDataReader(addresses, count);
+				return EntityDataReader(count, addresses);
 			}
 			else
 			{
@@ -9434,9 +9456,14 @@ RETURN
 				if (!CheckActorPackageRights(actorId, packageId))
 					throw new AccessViolationException("You are not allowed to access this package");
 
-				var domains = Domains
-					.Where(d => !recursive && d.PackageId == packageId ||
-						recursive && CheckPackageParent(packageId, d.PackageId))
+				IQueryable<Data.Entities.Domain> domainsFiltered;
+				if (!recursive) domainsFiltered = Domains.Where(d => d.PackageId == packageId);
+				else domainsFiltered = Domains.Join(GetChildPackages(packageId).ToArray(), d => d.PackageId, ch => ch, (d, ch) => d);
+
+				var domains = domainsFiltered
+					.Where(d => !d.IsPreviewDomain && !d.IsDomainPointer)
+						// && (!recursive && d.PackageId == packageId ||
+						// recursive && CheckPackageParent(packageId, d.PackageId))
 					.Join(Packages, d => d.PackageId, p => p.PackageId, (d, p) => new
 					{
 						Domain = d,
@@ -9482,6 +9509,7 @@ RETURN
 						d.Zone,
 						Service = s.SingleOrDefault()
 					})
+					.Where(d => serverId == 0 || d.Service != null && d.Service.ServerId == serverId)
 					.GroupJoin(Servers, d => d.Service != null ? (int?)d.Service.ServerId : null, s => (int?)s.ServerId, (d, s) => new
 					{
 						d.Domain,
@@ -11768,10 +11796,15 @@ RETURN
 					.Select(t => t.ItemTypeId)
 					.FirstOrDefault();
 
-				var items = ServiceItems
-					.Where(s => s.ItemTypeId == itemTypeId &&
-						(!recursive && s.PackageId == packageId ||
-						recursive && CheckPackageParent(packageId, s.PackageId ?? 0)))
+				IQueryable<Data.Entities.ServiceItem> serviceItems;
+				if (!recursive) serviceItems = ServiceItems.Where(si => si.PackageId == packageId);
+				else serviceItems = ServiceItems.Join(GetChildPackages(packageId).ToArray(), si => si.PackageId, ch => ch, (p, ch) => p);
+
+				var items = serviceItems
+					.Where(s => s.ItemTypeId == itemTypeId)
+						// &&
+						// (!recursive && s.PackageId == packageId ||
+						// recursive && CheckPackageParent(packageId, s.PackageId ?? 0)))
 					.Join(Packages, i => i.PackageId, p => p.PackageId, (si, p) => new
 					{
 						Item = si,
@@ -17176,10 +17209,15 @@ RETURN
 				if (!CheckActorPackageRights(actorId, packageId))
 					throw new AccessViolationException("You are not allowed to access this package");
 
-				var packages = Packages
-					.Where(p => p.PackageId != packageId &&
-						(recursive && CheckPackageParent(packageId, p.PackageId) ||
-						!recursive && p.ParentPackageId == packageId))
+				IQueryable<Data.Entities.Package> packagesFiltered;
+				if (!recursive) packagesFiltered = Packages.Where(p => p.ParentPackageId == packageId);
+				else packagesFiltered = Packages.Join(GetChildPackages(packageId).ToArray(), p => p.PackageId, ch => ch, (p, ch) => p);
+
+				var packages = packagesFiltered
+					.Where(p => p.PackageId != packageId)
+						// &&
+						// (recursive && CheckPackageParent(packageId, p.PackageId) ||
+						// !recursive && p.ParentPackageId == packageId))
 					.Join(Users, p => p.UserId, u => u.UserId, (p, u) => new
 					{
 						Package = p,
@@ -24339,9 +24377,8 @@ RETURN
 			table.Rows.Add(count);
 			return table;
 		}
-		public CountDataReader<TEntity> CountDataReader<TEntity>(IEnumerable<TEntity> set, int count = -1) where TEntity : class => new CountDataReader<TEntity>(set, count);
+		public CountDataReader<TEntity> EntityDataReader<TEntity>(int count, IEnumerable<TEntity> set) where TEntity : class => new CountDataReader<TEntity>(set, count);
 		public EntityDataReader<TEntity> EntityDataReader<TEntity>(IEnumerable<TEntity> set) where TEntity : class => new EntityDataReader<TEntity>(set);
-
 		#endregion
 
 		#region Exchange Server
@@ -29375,7 +29412,7 @@ END
 
 				var user = new Data.Entities.CrmUser()
 				{
-					ItemId = itemId,
+					AccountId = itemId,
 					CrmUserGuid = crmId,
 					BusinessUnitId = businessUnitId,
 					CalType = CALType
@@ -29440,7 +29477,7 @@ END
 			}
 		}
 
-		public IDataReader GetCrmUser(int itemId)
+		public IDataReader GetCrmUser(int accountId)
 		{
 			if (UseEntityFramework)
 			{
@@ -29462,11 +29499,19 @@ END
 				*/
 				#endregion
 
+				var user = CrmUsers
+					.Where(u => u.AccountId == accountId)
+					.Select(u => new
+					{
+						CrmUserId = u.CrmUserGuid,
+						u.BusinessUnitId
+					});
+				return EntityDataReader(user);
 			}
 			else
 			{
 				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure, "GetCRMUser",
-					new SqlParameter[] { new SqlParameter("@AccountID", itemId) });
+					new SqlParameter[] { new SqlParameter("@AccountID", accountId) });
 				return reader;
 			}
 		}
@@ -29494,6 +29539,10 @@ END
 		*/
 				#endregion
 
+				return ExchangeAccounts
+					.Where(a => a.ItemId == itemId)
+					.SelectMany(a => a.CrmUsers)
+					.Count();
 			}
 			else
 			{
@@ -29646,6 +29695,69 @@ RETURN
 				*/
 				#endregion
 
+				// check rights
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				var externalIpAddresses = PackageIpAddresses
+					.Where(pip => pip.IsPrimary == true)
+					.Join(IpAddresses.Where(ip => ip.PoolId == 3), pip => pip.AddressId, ip => ip.AddressId, (pip, ip) => new
+					{
+						pip.ItemId,
+						ip.ExternalIp
+					});
+				IQueryable<Data.Entities.Package> packages;
+				if (!recursive) packages = Packages.Where(p => p.PackageId == packageId);
+				else packages = Packages.Join(GetChildPackages(packageId).ToArray(), p => p.PackageId, ch => ch, (p, ch) => p);
+
+				var items = packages
+					.Join(ServiceItems.Where(si => si.ItemTypeId == 33 /* VPS */),
+						p => p.PackageId, i => i.PackageId, (p, i) => new { Package = p, Item = i })
+					.Join(Users, p => p.Package.UserId, u => u.UserId, (p, u) => new { p.Package, p.Item, u.Username })
+					.GroupJoin(PrivateIpAddresses.Where(ip => ip.IsPrimary), p => p.Item.ItemId, pip => pip.ItemId, (p, pip) => new
+					{
+						p.Package,
+						p.Item,
+						p.Username,
+						IpAddress = pip.Any() ? pip.Single().IpAddress : null
+					})
+					.GroupJoin(externalIpAddresses, p => p.Item.ItemId, eip => eip.ItemId, (p, eip) => new
+					{
+						p.Item.ItemId,
+						p.Item.ItemName,
+						p.Item.PackageId,
+						p.Package.PackageName,
+						p.Package.UserId,
+						p.Username,
+						ExternalIp = eip.Any() ? eip.Single().ExternalIp : null,
+						p.IpAddress
+					});
+
+				if (!string.IsNullOrEmpty(filterValue))
+				{
+					if (!string.IsNullOrEmpty(filterColumn)) items = items.Where(DynamicFunctions.ColumnLike(filterColumn, filterValue));
+					else
+					{
+#if NETFRAMEWORK
+						items = items.Where(i => DbFunctions.Like(i.ItemName, filterValue) ||
+							DbFunctions.Like(i.Username, filterValue) || DbFunctions.Like(i.ExternalIp, filterValue) ||
+							DbFunctions.Like(i.IpAddress, filterValue));
+#else
+						items = items.Where(i => EF.Functions.Like(i.ItemName, filterValue) ||
+							EF.Functions.Like(i.Username, filterValue) || EF.Functions.Like(i.ExternalIp, filterValue) ||
+							EF.Functions.Like(i.IpAddress, filterValue));
+#endif
+					}
+				}
+
+				var count = items.Count();
+
+				if (string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
+				else items = items.OrderBy(i => i.ItemName);
+
+				items = items.Skip(startRow).Take(maximumRows);
+
+				return EntityDataReader(count, items);
 			}
 			else
 			{
@@ -29778,6 +29890,69 @@ RETURN
 				*/
 				#endregion
 
+				// check rights
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				var externalIpAddresses = PackageIpAddresses
+					.Where(pip => pip.IsPrimary == true)
+					.Join(IpAddresses.Where(ip => ip.PoolId == 3), pip => pip.AddressId, ip => ip.AddressId, (pip, ip) => new
+					{
+						pip.ItemId,
+						ip.ExternalIp
+					});
+				IQueryable<Data.Entities.Package> packages;
+				if (!recursive) packages = Packages.Where(p => p.PackageId == packageId);
+				else packages = Packages.Join(GetChildPackages(packageId).ToArray(), p => p.PackageId, ch => ch, (p, ch) => p);
+
+				var items = packages
+					.Join(ServiceItems.Where(si => si.ItemTypeId == 41 /* VPS2012 */),
+						p => p.PackageId, i => i.PackageId, (p, i) => new { Package = p, Item = i })
+					.Join(Users, p => p.Package.UserId, u => u.UserId, (p, u) => new { p.Package, p.Item, u.Username })
+					.GroupJoin(PrivateIpAddresses.Where(ip => ip.IsPrimary), p => p.Item.ItemId, pip => pip.ItemId, (p, pip) => new
+					{
+						p.Package,
+						p.Item,
+						p.Username,
+						IpAddress = pip.Any() ? pip.Single().IpAddress : null
+					})
+					.GroupJoin(externalIpAddresses, p => p.Item.ItemId, eip => eip.ItemId, (p, eip) => new
+					{
+						p.Item.ItemId,
+						p.Item.ItemName,
+						p.Item.PackageId,
+						p.Package.PackageName,
+						p.Package.UserId,
+						p.Username,
+						ExternalIp = eip.Any() ? eip.Single().ExternalIp : null,
+						p.IpAddress
+					});
+
+				if (!string.IsNullOrEmpty(filterValue))
+				{
+					if (!string.IsNullOrEmpty(filterColumn)) items = items.Where(DynamicFunctions.ColumnLike(filterColumn, filterValue));
+					else
+					{
+#if NETFRAMEWORK
+						items = items.Where(i => DbFunctions.Like(i.ItemName, filterValue) ||
+							DbFunctions.Like(i.Username, filterValue) || DbFunctions.Like(i.ExternalIp, filterValue) ||
+							DbFunctions.Like(i.IpAddress, filterValue));
+#else
+						items = items.Where(i => EF.Functions.Like(i.ItemName, filterValue) ||
+							EF.Functions.Like(i.Username, filterValue) || EF.Functions.Like(i.ExternalIp, filterValue) ||
+							EF.Functions.Like(i.IpAddress, filterValue));
+#endif
+					}
+				}
+
+				var count = items.Count();
+
+				if (string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
+				else items = items.OrderBy(i => i.ItemName);
+
+				items = items.Skip(startRow).Take(maximumRows);
+
+				return EntityDataReader(count, items);
 			}
 			else
 			{
@@ -29910,6 +30085,69 @@ RETURN
 				*/
 				#endregion
 
+				// check rights
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				var externalIpAddresses = PackageIpAddresses
+					.Where(pip => pip.IsPrimary == true)
+					.Join(IpAddresses.Where(ip => ip.PoolId == 3), pip => pip.AddressId, ip => ip.AddressId, (pip, ip) => new
+					{
+						pip.ItemId,
+						ip.ExternalIp
+					});
+				IQueryable<Data.Entities.Package> packages;
+				if (!recursive) packages = Packages.Where(p => p.PackageId == packageId);
+				else packages = Packages.Join(GetChildPackages(packageId).ToArray(), p => p.PackageId, ch => ch, (p, ch) => p);
+
+				var items = packages
+					.Join(ServiceItems.Where(si => si.ItemTypeId == 143 /* Proxmox */),
+						p => p.PackageId, i => i.PackageId, (p, i) => new { Package = p, Item = i })
+					.Join(Users, p => p.Package.UserId, u => u.UserId, (p, u) => new { p.Package, p.Item, u.Username })
+					.GroupJoin(PrivateIpAddresses.Where(ip => ip.IsPrimary), p => p.Item.ItemId, pip => pip.ItemId, (p, pip) => new
+					{
+						p.Package,
+						p.Item,
+						p.Username,
+						IpAddress = pip.Any() ? pip.Single().IpAddress : null
+					})
+					.GroupJoin(externalIpAddresses, p => p.Item.ItemId, eip => eip.ItemId, (p, eip) => new
+					{
+						p.Item.ItemId,
+						p.Item.ItemName,
+						p.Item.PackageId,
+						p.Package.PackageName,
+						p.Package.UserId,
+						p.Username,
+						ExternalIp = eip.Any() ? eip.Single().ExternalIp : null,
+						p.IpAddress
+					});
+
+				if (!string.IsNullOrEmpty(filterValue))
+				{
+					if (!string.IsNullOrEmpty(filterColumn)) items = items.Where(DynamicFunctions.ColumnLike(filterColumn, filterValue));
+					else
+					{
+#if NETFRAMEWORK
+						items = items.Where(i => DbFunctions.Like(i.ItemName, filterValue) ||
+							DbFunctions.Like(i.Username, filterValue) || DbFunctions.Like(i.ExternalIp, filterValue) ||
+							DbFunctions.Like(i.IpAddress, filterValue));
+#else
+						items = items.Where(i => EF.Functions.Like(i.ItemName, filterValue) ||
+							EF.Functions.Like(i.Username, filterValue) || EF.Functions.Like(i.ExternalIp, filterValue) ||
+							EF.Functions.Like(i.IpAddress, filterValue));
+#endif
+					}
+				}
+
+				var count = items.Count();
+
+				if (string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
+				else items = items.OrderBy(i => i.ItemName);
+
+				items = items.Skip(startRow).Take(maximumRows);
+
+				return EntityDataReader(count, items);
 			}
 			else
 			{
@@ -30046,6 +30284,69 @@ RETURN
 				*/
 				#endregion
 
+				// check rights
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				var externalIpAddresses = PackageIpAddresses
+					.Where(pip => pip.IsPrimary == true)
+					.Join(IpAddresses.Where(ip => ip.PoolId == 3), pip => pip.AddressId, ip => ip.AddressId, (pip, ip) => new
+					{
+						pip.ItemId,
+						ip.ExternalIp
+					});
+				IQueryable<Data.Entities.Package> packages;
+				if (!recursive) packages = Packages.Where(p => p.PackageId == packageId);
+				else packages = Packages.Join(GetChildPackages(packageId).ToArray(), p => p.PackageId, ch => ch, (p, ch) => p);
+
+				var items = packages
+					.Join(ServiceItems.Where(si => si.ItemTypeId == 35 /* VPS for PC */),
+						p => p.PackageId, i => i.PackageId, (p, i) => new { Package = p, Item = i })
+					.Join(Users, p => p.Package.UserId, u => u.UserId, (p, u) => new { p.Package, p.Item, u.Username })
+					.GroupJoin(PrivateIpAddresses.Where(ip => ip.IsPrimary), p => p.Item.ItemId, pip => pip.ItemId, (p, pip) => new
+					{
+						p.Package,
+						p.Item,
+						p.Username,
+						IpAddress = pip.Any() ? pip.Single().IpAddress : null
+					})
+					.GroupJoin(externalIpAddresses, p => p.Item.ItemId, eip => eip.ItemId, (p, eip) => new
+					{
+						p.Item.ItemId,
+						p.Item.ItemName,
+						p.Item.PackageId,
+						p.Package.PackageName,
+						p.Package.UserId,
+						p.Username,
+						ExternalIp = eip.Any() ? eip.Single().ExternalIp : null,
+						p.IpAddress
+					});
+
+				if (!string.IsNullOrEmpty(filterValue))
+				{
+					if (!string.IsNullOrEmpty(filterColumn)) items = items.Where(DynamicFunctions.ColumnLike(filterColumn, filterValue));
+					else
+					{
+#if NETFRAMEWORK
+						items = items.Where(i => DbFunctions.Like(i.ItemName, filterValue) ||
+							DbFunctions.Like(i.Username, filterValue) || DbFunctions.Like(i.ExternalIp, filterValue) ||
+							DbFunctions.Like(i.IpAddress, filterValue));
+#else
+						items = items.Where(i => EF.Functions.Like(i.ItemName, filterValue) ||
+							EF.Functions.Like(i.Username, filterValue) || EF.Functions.Like(i.ExternalIp, filterValue) ||
+							EF.Functions.Like(i.IpAddress, filterValue));
+#endif
+					}
+				}
+
+				var count = items.Count();
+
+				if (string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
+				else items = items.OrderBy(i => i.ItemName);
+
+				items = items.Skip(startRow).Take(maximumRows);
+
+				return EntityDataReader(count, items);
 			}
 			else
 			{
@@ -30062,7 +30363,7 @@ RETURN
 				return reader;
 			}
 		}
-		#endregion
+#endregion
 
 		#region VPS - External Network
 
@@ -30183,6 +30484,114 @@ END
 				*/
 				#endregion
 
+				int? serverId, parentPackageId;
+
+				if (packageId == -1) // NO PackageID defined, use ServerID from ServiceID (VPS Import)
+				{
+					serverId = Services
+						.Where(s => s.ServiceId == serviceId)
+						.Select(s => s.ServerId)
+						.FirstOrDefault();
+					parentPackageId = 1;
+				} else
+				{
+					var package = Packages
+						.Where(p => p.PackageId == packageId)
+						.Select(p => new { p.ParentPackageId, p.ServerId })
+						.FirstOrDefault();
+					serverId = package.ServerId;
+					parentPackageId = package.ParentPackageId;
+				}
+
+				if (parentPackageId == 1 || poolId == 4 /* management network */) // "System" space
+				{
+					// check if server is physical
+					if (Servers.Any(s => s.ServerId == serverId && !s.VirtualServer))
+					{
+						// physical server
+						var packageIps = PackageIpAddresses
+							.Select(pip => pip.AddressId)
+							.ToArray();
+						var addresses = IpAddresses
+							.Where(ip => (ip.ServerId == serverId || ip.ServerId == null) &&
+								(poolId == 0 || ip.PoolId == poolId) &&
+								!packageIps.Any(pip => pip == ip.AddressId))
+							.OrderByDescending(ip => ip.ServerId)
+							.ThenBy(ip => ip.DefaultGateway)
+							.ThenBy(ip => ip.ExternalIp)
+							.Select(ip => new
+							{
+								ip.AddressId,
+								ip.ExternalIp,
+								ip.InternalIp,
+								ip.ServerId,
+								ip.PoolId,
+								ip.SubnetMask,
+								ip.DefaultGateway,
+								ip.Vlan
+							});
+						return EntityDataReader(addresses);
+					}
+					else
+					{
+						// virtual server
+						// get resource group by service
+						serverId = Services
+							.Where(s => s.ServiceId == serviceId)
+							.Select(s => s.ServerId)
+							.FirstOrDefault();
+						var packageIps = PackageIpAddresses
+							.Select(pip => pip.AddressId)
+							.ToArray();
+						var addresses = IpAddresses
+							.Where(ip => (ip.ServerId == null || ip.ServerId == serverId) &&
+								(poolId == 0 || ip.PoolId == poolId) &&
+								!packageIps.Any(pip => pip == ip.AddressId))
+							.OrderByDescending(ip => ip.ServerId)
+							.ThenBy(ip => ip.DefaultGateway)
+							.ThenBy(ip => ip.ExternalIp)
+							.Select(ip => new
+							{
+								ip.AddressId,
+								ip.ExternalIp,
+								ip.InternalIp,
+								ip.ServerId,
+								ip.PoolId,
+								ip.SubnetMask,
+								ip.DefaultGateway,
+								ip.Vlan
+							});
+						return EntityDataReader(addresses);
+					}
+				} else
+				{
+					// 2rd level space and below
+					// get service location
+					serverId = Services
+						.Where(s => s.ServiceId == serviceId)
+						.Select(s => s.ServerId)
+						.FirstOrDefault();
+					var addresses = PackageIpAddresses
+						.Where(pip => pip.PackageId == parentPackageId && pip.ItemId == null)
+						.Join(IpAddresses, pip => pip.AddressId, ip => ip.AddressId, (pip, ip) => ip)
+						.Where(ip => (poolId == 0 || ip.PoolId == poolId) &&
+							(ip.ServerId == serverId || ip.ServerId == null))
+						.OrderByDescending(ip => ip.ServerId)
+						.ThenBy(ip => ip.DefaultGateway)
+						.ThenBy(ip => ip.ExternalIp)
+						.Select(ip => new
+							{
+								ip.AddressId,
+								ip.ExternalIp,
+								ip.InternalIp,
+								ip.ServerId,
+								ip.PoolId,
+								ip.SubnetMask,
+								ip.DefaultGateway,
+								ip.Vlan
+							});
+					return EntityDataReader(addresses);
+				}
 			}
 			else
 			{
