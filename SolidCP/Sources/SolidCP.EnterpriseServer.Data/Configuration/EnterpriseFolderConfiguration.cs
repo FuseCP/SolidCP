@@ -22,8 +22,7 @@ public partial class EnterpriseFolderConfiguration: EntityTypeConfiguration<Ente
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_EnterpriseFolders_StorageSpaceFolderId");
 #else
-        // TODO required or optional?
-        HasRequired(d => d.StorageSpaceFolder).WithMany(p => p.EnterpriseFolders);
+        HasOptional(d => d.StorageSpaceFolder).WithMany(p => p.EnterpriseFolders);
 #endif
     }
 #endif

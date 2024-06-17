@@ -1022,7 +1022,7 @@ namespace SolidCP.EnterpriseServer
 
                         folder = StorageSpacesController.GetStorageSpaceFolderById(storageSpaceFolderResult.Value);
 
-                        Database.AddEntepriseFolder(itemId, folderName, quota, null, null, esSesstings["UsersDomain"], storageSpaceFolderResult.Value);
+                        Database.AddEnterpriseFolder(itemId, folderName, quota, null, null, esSesstings["UsersDomain"], storageSpaceFolderResult.Value);
 
                         CreateEnterpriseStorageVirtualFolderInternal(org.PackageId, itemId, folderName, CheckIfSsAndEsOnSameServer(esId, folder.StorageSpaceId) ? folder.Path : folder.UncPath);
 
@@ -1032,7 +1032,7 @@ namespace SolidCP.EnterpriseServer
                     {
                         es.CreateFolder(org.OrganizationId, folderName, webDavSetting);
 
-                        Database.AddEntepriseFolder(itemId, folderName, quota, webDavSetting.LocationDrive, webDavSetting.HomeFolder, webDavSetting.Domain, null);
+                        Database.AddEnterpriseFolder(itemId, folderName, quota, webDavSetting.LocationDrive, webDavSetting.HomeFolder, webDavSetting.Domain, null);
 
                         SetFolderQuota(org.PackageId, org.OrganizationId, folderName, quota, quotaType, webDavSetting);
 
@@ -1420,7 +1420,7 @@ namespace SolidCP.EnterpriseServer
 
                 //es.MoveFolder(systemFile.FullName, storageFolder.UncPath);
 
-                Database.UpdateEntepriseFolderStorageSpaceFolder(itemId, folderName, storageFolderResult.Value);
+                Database.UpdateEnterpriseFolderStorageSpaceFolder(itemId, folderName, storageFolderResult.Value);
 
                 UpdateFolderDriveMapPath(itemId, systemFile, folderName);
             }

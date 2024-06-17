@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using SolidCP.Providers.OS;
 #if NetCore
 using Microsoft.EntityFrameworkCore;
 #endif
@@ -39,7 +40,7 @@ public partial class StorageSpaceFolder
 
     public bool IsShared { get; set; }
 
-    public int FsrmQuotaType { get; set; }
+    public QuotaType FsrmQuotaType { get; set; }
 
     public long FsrmQuotaSizeBytes { get; set; }
 

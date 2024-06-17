@@ -34656,7 +34656,7 @@ WHERE QuotaName = @QuotaName AND GroupID = @GroupID",
 					QuotaName = engineName,
 					QuotaDescription = engineDescription,
 					QuotaTypeId = 1,
-					ServiceQuota = 0
+					ServiceQuota = false
 				};
 				Quotas.Add(quota);
 				SaveChanges();
@@ -34803,6 +34803,18 @@ RETURN
 				*/
 				#endregion
 
+				var token = new Data.Entities.WebDavAccessToken()
+				{
+					FilePath = accessToken.FilePath,
+					AccessToken = accessToken.AccessToken,
+					AuthData = accessToken.AuthData,
+					ExpirationDate = accessToken.ExpirationDate,
+					AccountId = accessToken.AccountId,
+					ItemId = accessToken.ItemId
+				};
+				WebDavAccessTokens.Add(token);
+				SaveChanges();
+				return token.Id;
 			}
 			else
 			{
@@ -34929,7 +34941,7 @@ WHERE AccessToken = @AccessToken AND ExpirationDate > getdate()
 			}
 		}
 
-		public int AddEntepriseFolder(int itemId, string folderName, int folderQuota, string locationDrive, string homeFolder, string domain, int? storageSpaceFolderId)
+		public int AddEnterpriseFolder(int itemId, string folderName, int folderQuota, string locationDrive, string homeFolder, string domain, int? storageSpaceFolderId)
 		{
 			if (UseEntityFramework)
 			{
@@ -35012,7 +35024,7 @@ RETURN
 			}
 		}
 
-		public void UpdateEntepriseFolderStorageSpaceFolder(int itemId, string folderName, int? storageSpaceFolderId)
+		public void UpdateEnterpriseFolderStorageSpaceFolder(int itemId, string folderName, int? storageSpaceFolderId)
 		{
 			if (UseEntityFramework)
 			{
@@ -35243,6 +35255,42 @@ RETURN
 				*/
 				#endregion
 
+				var folders = EnterpriseFolders
+					.Where(f => f.ItemId == itemId)
+					.Select(f => new
+					{
+						f.EnterpriseFolderId,
+						f.ItemId,
+						f.FolderName,
+						f.FolderQuota,
+						f.LocationDrive,
+						f.HomeFolder,
+						f.Domain,
+						f.StorageSpaceFolderId,
+						Name = f.StorageSpaceFolder != null ? f.StorageSpaceFolder.Name : null,
+						StorageSpaceId = f.StorageSpaceFolder != null ? (int?)f.StorageSpaceFolder.StorageSpaceId : null,
+						Path = f.StorageSpaceFolder != null ? f.StorageSpaceFolder.Path : null,
+						UncPath = f.StorageSpaceFolder != null ? f.StorageSpaceFolder.UncPath : null,
+						IsShared = f.StorageSpaceFolder != null ? (bool?)f.StorageSpaceFolder.IsShared : null,
+						FsrmQuotaType = f.StorageSpaceFolder != null ? (QuotaType?)f.StorageSpaceFolder.FsrmQuotaType : null,
+						FsrmQuotaSizeBytes = f.StorageSpaceFolder != null ? (long?)f.StorageSpaceFolder.FsrmQuotaSizeBytes : null
+					});
+
+				if (!string.IsNullOrEmpty(filterColumn) && !string.IsNullOrEmpty(filterValue))
+				{
+					folders = folders.Where(DynamicFunctions.ColumnLike(filterColumn, filterValue));
+				}
+
+				var count = folders.Count();
+
+				if (!string.IsNullOrEmpty(sortColumn))
+				{
+					folders = folders.OrderBy(sortColumn);
+				}
+
+				folders = folders.Skip(startRow).Take(maximumRows);
+
+				return EntityDataSet(count, folders);
 			}
 			else
 			{
@@ -35294,6 +35342,29 @@ WHERE ItemID = @ItemID AND FolderName = @FolderName
 				*/
 				#endregion
 
+				var folder = EnterpriseFolders
+					.Where(f => f.ItemId == itemId && f.FolderName == folderName)
+					.Select(f => new
+					{
+						f.EnterpriseFolderId,
+						f.ItemId,
+						f.FolderName,
+						f.FolderQuota,
+						f.LocationDrive,
+						f.HomeFolder,
+						f.Domain,
+						f.StorageSpaceFolderId,
+						Name = f.StorageSpaceFolder != null ? f.StorageSpaceFolder.Name : null,
+						StorageSpaceId = f.StorageSpaceFolder != null ? (int?)f.StorageSpaceFolder.StorageSpaceId : null,
+						Path = f.StorageSpaceFolder != null ? f.StorageSpaceFolder.Path : null,
+						UncPath = f.StorageSpaceFolder != null ? f.StorageSpaceFolder.UncPath : null,
+						IsShared = f.StorageSpaceFolder != null ? (bool?)f.StorageSpaceFolder.IsShared : null,
+						FsrmQuotaType = f.StorageSpaceFolder != null ? (QuotaType?)f.StorageSpaceFolder.FsrmQuotaType : null,
+						FsrmQuotaSizeBytes = f.StorageSpaceFolder != null ? (long?)f.StorageSpaceFolder.FsrmQuotaSizeBytes : null
+					})
+					.Take(1);
+
+				return EntityDataReader(folder);
 			}
 			else
 			{
@@ -35566,6 +35637,22 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 				*/
 				#endregion
 
+				var users = EnterpriseFoldersOwaPermissions
+					.Where(p => p.ItemId == itemId && p.FolderId == folderId)
+					.Select(p => new
+					{
+						p.Account.AccountId,
+						p.Account.ItemId,
+						p.Account.AccountType,
+						p.Account.AccountName,
+						p.Account.DisplayName,
+						p.Account.PrimaryEmailAddress,
+						p.Account.MailEnabledPublicFolder,
+						p.Account.MailboxPlanId,
+						p.Account.SubscriberNumber,
+						p.Account.UserPrincipalName
+					});
+				return EntityDataReader(users);
 			}
 			else
 			{
@@ -35597,6 +35684,11 @@ SELECT TOP 1
 				*/
 				#endregion
 
+				var folders = EnterpriseFolders
+					.Where(f => f.ItemId == itemId && f.FolderName == folderName)
+					.Select(f => new { f.EnterpriseFolderId })
+					.Take(1);
+				return EntityDataReader(folders);
 			}
 			else
 			{
@@ -35629,6 +35721,10 @@ SELECT
 				*/
 				#endregion
 
+				var folder = EnterpriseFoldersOwaPermissions
+					.Where(p => p.ItemId == itemId && p.AccountId == accountId)
+					.Select(p => new { p.Folder.FolderName });
+				return EntityDataReader(folder);
 			}
 			else
 			{
@@ -35749,6 +35845,50 @@ RETURN
 				*/
 				#endregion
 
+				if (SupportServiceLevels.Any(l => l.LevelName == levelName)) return -1;
+
+				var level = new Data.Entities.SupportServiceLevel()
+				{
+					LevelName = levelName,
+					LevelDescription = levelDescription
+				};
+				SupportServiceLevels.Add(level);
+				SaveChanges();
+				var levelId = level.LevelId;
+
+				var resourceGroupId = ResourceGroups
+					.Where(g => g.GroupName == "Service Levels")
+					.Select(g => (int?)g.GroupId)
+					.FirstOrDefault();
+				if (resourceGroupId != null)
+				{
+					var quotaLastId = Quotas
+						.Max(q => q.QuotaId);
+					var quotaOrderInGroup = Quotas
+						.Where(q => q.GroupId == resourceGroupId)
+						.Max(q => (int?)q.QuotaOrder) ?? 0;
+					var curQuotaName = $"ServiceLevel.{levelName}";
+					var curQuotaDescription = $"{levelName}, users";
+
+					if (!Quotas.Any(q => q.QuotaName == curQuotaName))
+					{
+						var quota = new Data.Entities.Quota()
+						{
+							QuotaId = quotaLastId + 1,
+							GroupId = resourceGroupId.Value,
+							QuotaOrder = quotaOrderInGroup + 1,
+							QuotaName = curQuotaName,
+							QuotaDescription = curQuotaDescription,
+							QuotaTypeId = 2,
+							ServiceQuota = 0,
+							ItemTypeId = null
+						};
+						Quotas.Add(quota);
+						SaveChanges();
+					}
+				}
+
+				return levelId;
 			}
 			else
 			{
@@ -35767,7 +35907,7 @@ RETURN
 			}
 		}
 
-		public void UpdateSupportServiceLevel(int levelID, string levelName, string levelDescription)
+		public void UpdateSupportServiceLevel(int levelId, string levelName, string levelDescription)
 		{
 			if (UseEntityFramework)
 			{
@@ -35811,6 +35951,27 @@ RETURN
 				*/
 				#endregion
 
+				var level = SupportServiceLevels
+					.Where(l => l.LevelId == levelId)
+					.FirstOrDefault();
+				if (level != null)
+				{
+					var prevLevelName = level.LevelName;
+					var prevQuotaName = $"ServiceLevel.{prevLevelName}";
+					level.LevelName = levelName;
+					level.LevelDescription = levelDescription;
+					SaveChanges();
+
+					var quota = Quotas
+						.Where(q => q.QuotaName == prevQuotaName)
+						.FirstOrDefault();
+					if (quota != null)
+					{
+						quota.QuotaName = $"ServiceLevel.{levelName}";
+						quota.QuotaDescription = $"{levelName}, users";
+						SaveChanges();
+					}
+				}
 			}
 			else
 			{
@@ -35818,13 +35979,13 @@ RETURN
 					ConnectionString,
 					CommandType.StoredProcedure,
 					"UpdateSupportServiceLevel",
-					new SqlParameter("@LevelID", levelID),
+					new SqlParameter("@LevelID", levelId),
 					new SqlParameter("@LevelName", levelName),
 					new SqlParameter("@LevelDescription", levelDescription));
 			}
 		}
 
-		public void DeleteSupportServiceLevel(int levelID)
+		public void DeleteSupportServiceLevel(int levelId)
 		{
 			if (UseEntityFramework)
 			{
@@ -35865,6 +36026,38 @@ RETURN
 				*/
 				#endregion
 
+				var levelName = SupportServiceLevels
+					.Where(l => l.LevelId == levelId)
+					.Select(l => l.LevelName)
+					.FirstOrDefault();
+				if (levelName != null)
+				{
+					var quotaName = $"ServiceLevel.{levelName}";
+
+					var quotaId = Quotas
+						.Where(q => q.QuotaName == quotaName)
+						.Select(q => (int?)q.QuotaId)
+						.FirstOrDefault();
+					if (quotaId != null)
+					{
+						HostingPlanQuotas.Where(q => q.QuotaId == quotaId).ExecuteDelete(HostingPlanQuotas);
+						PackageQuotas.Where(q => q.QuotaId == quotaId).ExecuteDelete(PackageQuotas);
+						Quotas.Where(q => q.QuotaId == quotaId).ExecuteDelete(Quotas);
+					}
+
+					var accounts = ExchangeAccounts
+						.Where(a => a.LevelId == levelId);
+					if (accounts.Any())
+					{
+						foreach (var account in accounts)
+						{
+							account.LevelId = null;
+						}
+						SaveChanges();
+					}
+
+					SupportServiceLevels.Where(l => l.LevelId == levelId).ExecuteDelete(SupportServiceLevels);
+				}
 			}
 			else
 			{
@@ -35872,7 +36065,7 @@ RETURN
 					ConnectionString,
 					CommandType.StoredProcedure,
 					"DeleteSupportServiceLevel",
-					new SqlParameter("@LevelID", levelID));
+					new SqlParameter("@LevelID", levelId));
 			}
 		}
 
