@@ -35,7 +35,7 @@
                     <asp:Button ID="btnRestorePrivateAddress" runat="server" meta:resourcekey="btnRestorePrivateAddress"
                         Text="Restore Private IPs" CssClass="btn btn-primary" OnClick="btnRestorePrivateByInject_Click" />
                     <asp:Button ID="btnRestoreDmzAddress" runat="server" meta:resourcekey="btnRestoreDmzAddress"
-                        Text="Restore DMZ IPs" CssClass="btn btn-primary" OnClick="btnRestorePrivateByInject_Click" />
+                        Text="Restore DMZ IPs" CssClass="btn btn-primary" OnClick="btnRestoreDmzByInject_Click" />
                 </div>
                 <asp:Repeater ID="repVMNetwork" runat="server">
                     <ItemTemplate>
