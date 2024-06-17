@@ -121,10 +121,14 @@ namespace SolidCP.EnterpriseServer
                     ipsIdList.Add(ip.AddressID);
 
                 //Get VPS Package VLANs
-                PackageVLAN[] vlans = ServerController.GetPackagePrivateNetworkVLANs(package.PackageId, "", 0, maxItems).Items;
-                List<int> vlansIdList = new List<int>();
-                foreach (PackageVLAN vlan in vlans)
-                    vlansIdList.Add(vlan.VlanID);
+                PackageVLAN[] privateVlans = ServerController.GetPackagePrivateNetworkVLANs(package.PackageId, "", 0, maxItems).Items;
+                PackageVLAN[] dmzVlans = ServerController.GetPackageDmzNetworkVLANs(package.PackageId, "", 0, maxItems).Items;
+                List<int> privateVlansIdList = new List<int>();
+                foreach (PackageVLAN vlan in privateVlans)
+                    privateVlansIdList.Add(vlan.VlanID);
+                List<int> dmzVlansIdList = new List<int>();
+                foreach (PackageVLAN vlan in dmzVlans)
+                    dmzVlansIdList.Add(vlan.VlanID);
 
                 // delete service items by service sets
                 foreach (int serviceId in orderedItems.Keys)
@@ -194,7 +198,8 @@ namespace SolidCP.EnterpriseServer
                 if (package.ParentPackageId != 1) // 1 is System (serveradmin), we don't want assign IP to the serveradmin.
                 {
                     ServerController.AllocatePackageIPAddresses(package.ParentPackageId, ipsIdList.ToArray());
-                    ServerController.AllocatePackageVLANs(package.ParentPackageId, vlansIdList.ToArray());
+                    ServerController.AllocatePackageVLANs(package.ParentPackageId, privateVlansIdList.ToArray(), false);
+                    ServerController.AllocatePackageVLANs(package.ParentPackageId, dmzVlansIdList.ToArray(), true);
                 }
                 #endregion
             }

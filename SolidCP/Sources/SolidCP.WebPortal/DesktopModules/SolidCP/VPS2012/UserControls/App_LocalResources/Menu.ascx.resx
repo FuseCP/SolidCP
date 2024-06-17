@@ -129,6 +129,9 @@
   <data name="Text.PrivateNetwork" xml:space="preserve">
     <value>Private Network</value>
   </data>
+  <data name="Text.DmzNetwork" xml:space="preserve">
+    <value>DMZ Network</value>
+  </data>
   <data name="Text.UserPermissions" xml:space="preserve">
     <value>User Permissions</value>
   </data>

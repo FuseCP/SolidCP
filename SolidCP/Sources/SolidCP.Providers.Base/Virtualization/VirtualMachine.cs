@@ -141,6 +141,15 @@ namespace SolidCP.Providers.Virtualization
         [Persistent]
         public string ManagementSwitchId { get; set; }
 
+        [Persistent]
+        public bool DmzNetworkEnabled { get; set; }
+        [Persistent]
+        public string DmzNicMacAddress { get; set; }
+        [Persistent]
+        public string DmzSwitchId { get; set; }
+        [Persistent]
+        public int DmzNetworkVlan { get; set; }
+
         // for GetVirtualMachineEx used in import method
         public VirtualMachineNetworkAdapter[] Adapters { get; set; }
 
@@ -176,6 +185,14 @@ namespace SolidCP.Providers.Virtualization
         public string CustomPrivateDNS2 { get; set; }
         [Persistent]
         public string CustomPrivateMask { get; set; }
+        [Persistent]
+        public string CustomDmzGateway { get; set; }
+        [Persistent]
+        public string CustomDmzDNS1 { get; set; }
+        [Persistent]
+        public string CustomDmzDNS2 { get; set; }
+        [Persistent]
+        public string CustomDmzMask { get; set; }
         [Persistent]
         public string ClusterName { get; set; }
         public bool IsClustered { get; set; }

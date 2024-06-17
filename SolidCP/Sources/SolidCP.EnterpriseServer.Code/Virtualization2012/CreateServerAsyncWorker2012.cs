@@ -57,6 +57,10 @@ namespace SolidCP.EnterpriseServer
         public bool RandomPrivateAddresses { get; set; }
         public string[] PrivateAddresses { get; set; }
 
+        public int DmzAddressesNumber { get; set; }
+        public bool RandomDmzAddresses { get; set; }
+        public string[] DmzAddresses { get; set; }
+
         public string SummaryLetterEmail { get; set; }
         #endregion
 
@@ -83,6 +87,7 @@ namespace SolidCP.EnterpriseServer
             CreateVirtualMachineTask.CreateVirtualMachineNewTask(TaskId, Item, OsTemplate,
                 ExternalAddressesNumber, RandomExternalAddresses, ExternalAddresses,
                 PrivateAddressesNumber, RandomPrivateAddresses, PrivateAddresses,
+                DmzAddressesNumber, RandomDmzAddresses, DmzAddresses,
                 SummaryLetterEmail);
         }
         #endregion

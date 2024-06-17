@@ -230,6 +230,11 @@
                                         Text="Private network enabled" meta:resourcekey="optionPrivateNetwork" Value="True" />
                                 </td>
                             </tr>
+                            <tr>
+                                <td><scp:CheckBoxOption id="optionDmzNetwork" runat="server"
+                                        Text="DMZ network enabled" meta:resourcekey="optionDmzNetwork" Value="True" />
+                                </td>
+                            </tr>
                         </table>
                     </asp:Panel>
                     

@@ -216,4 +216,43 @@
   <data name="locPrivGateway.Text" xml:space="preserve">
     <value>Default gateway:</value>
   </data>
+  <data name="btnAddDmzAddress.Text" xml:space="preserve">
+    <value>Add IP...</value>
+  </data>
+  <data name="btnDeleteDmz.Text" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="btnDeleteDmzByInject.Text" xml:space="preserve">
+    <value>Delete By Injection (BETA)</value>
+  </data>
+  <data name="btnRestoreDmzAddress.Text" xml:space="preserve">
+    <value>Restore DMZ IPs</value>
+  </data>
+  <data name="btnRestoreExternalAddress.Text" xml:space="preserve">
+    <value>Restore External IPs</value>
+  </data>
+  <data name="btnRestorePrivateAddress.Text" xml:space="preserve">
+    <value>Restore Private IPs</value>
+  </data>
+  <data name="btnSetPrimaryDmz.Text" xml:space="preserve">
+    <value>Set As Primary</value>
+  </data>
+  <data name="gvDmzAddresses.Empty" xml:space="preserve">
+    <value>No IP addresses are assigned to DMZ network adapter.</value>
+  </data>
+  <data name="locDmzAddress.Text" xml:space="preserve">
+    <value>Server address:</value>
+  </data>
+  <data name="locDmzGateway.Text" xml:space="preserve">
+    <value>Default gateway:</value>
+  </data>
+  <data name="locDmzSubnet.Text" xml:space="preserve">
+    <value>Subnet mask:</value>
+  </data>
+  <data name="locTotalDmz.Text" xml:space="preserve">
+    <value>IP addresses:</value>
+  </data>
+  <data name="secDmzNetwork.Text" xml:space="preserve">
+    <value>DMZ Network</value>
+  </data>
 </root>

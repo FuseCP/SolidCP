@@ -141,6 +141,9 @@
   <data name="stepPrivateNetwork.Title" xml:space="preserve">
     <value>Privates Netzwerk</value>
   </data>
+  <data name="stepDmzNetwork.Title" xml:space="preserve">
+    <value>DMZ-Netzwerk</value>
+  </data>
   <data name="stepSummary.Title" xml:space="preserve">
     <value>Zusammenfassung</value>
   </data>
@@ -155,6 +158,9 @@
   </data>
   <data name="PrivateAddressesValidator.ErrorMessage" xml:space="preserve">
     <value>Geben Sie die Anzahl der privaten IP-Adressen ein</value>
+  </data>
+  <data name="DmzAddressesValidator.ErrorMessage" xml:space="preserve">
+    <value>Geben Sie die Anzahl der DMZ IP-Adressen ein</value>
   </data>
   <data name="RequireHddValidator.ErrorMessage" xml:space="preserve">
     <value>Geben Sie die Größe des Festplattenlaufwerks ein</value>
@@ -185,6 +191,9 @@
   </data>
   <data name="chkPrivateNetworkEnabled.Text" xml:space="preserve">
     <value>Privates Netzwerk aktiviert</value>
+  </data>
+  <data name="chkDmzNetworkEnabled.Text" xml:space="preserve">
+    <value>DMZ-Netzwerk aktiviert</value>
   </data>
   <data name="chkReboot.Text" xml:space="preserve">
     <value>Neustarten</value>
@@ -279,7 +288,13 @@
   <data name="locPrivateAddressesList.Text" xml:space="preserve">
     <value>IP-Adressliste:</value>
   </data>
+  <data name="locDmzAddressesList.Text" xml:space="preserve">
+    <value>IP-Adressliste:</value>
+  </data>
   <data name="locPrivateAddressesNumber.Text" xml:space="preserve">
+    <value>Anzahl an IP-Adressen:</value>
+  </data>
+  <data name="locDmzAddressesNumber.Text" xml:space="preserve">
     <value>Anzahl an IP-Adressen:</value>
   </data>
   <data name="locPrivateNetwork.Text" xml:space="preserve">
@@ -291,7 +306,19 @@
   <data name="locPrivateNetworkFormat.Text" xml:space="preserve">
     <value>Netzwerkadressen-Format:</value>
   </data>
+  <data name="locDmzNetwork.Text" xml:space="preserve">
+    <value>DMZ-Netzwerk</value>
+  </data>
+  <data name="locDmzNetworkEnabled.Text" xml:space="preserve">
+    <value>DMZ-Netzwerk aktiviert:</value>
+  </data>
+  <data name="locDmzNetworkFormat.Text" xml:space="preserve">
+    <value>Netzwerkadressen-Format:</value>
+  </data>
   <data name="locPrivateSubnetMask.Text" xml:space="preserve">
+    <value>Subnetzmaske:</value>
+  </data>
+  <data name="locDmzSubnetMask.Text" xml:space="preserve">
     <value>Subnetzmaske:</value>
   </data>
   <data name="locRam.Text" xml:space="preserve">
@@ -358,6 +385,9 @@
     <value>({0} max)</value>
   </data>
   <data name="litMaxPrivateAddresses.Text" xml:space="preserve">
+    <value>({0} max)</value>
+  </data>
+  <data name="litMaxDmzAddresses.Text" xml:space="preserve">
     <value>({0} max)</value>
   </data>
   <data name="locNotEnoughExternalAddresses.Text" xml:space="preserve">

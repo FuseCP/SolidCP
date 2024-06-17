@@ -161,6 +161,8 @@
     <Compile Include="Servers\ServiceInfo.cs" />
     <Compile Include="Servers\VirtualGroupInfo.cs" />
     <Compile Include="Virtualization\AvailableVLANList.cs" />
+    <Compile Include="Virtualization\DmzIPAddress.cs" />
+    <Compile Include="Virtualization\DmzIPAddressesPaged.cs" />
     <Compile Include="Virtualization\NetworkAdapterDetails.cs">
       <SubType>Code</SubType>
     </Compile>

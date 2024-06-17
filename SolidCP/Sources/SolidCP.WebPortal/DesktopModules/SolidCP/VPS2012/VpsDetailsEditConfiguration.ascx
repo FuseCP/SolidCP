@@ -212,6 +212,10 @@
                                 <asp:CheckBox ID="chkPrivateNetworkEnabled" runat="server"
                                                     meta:resourcekey="chkPrivateNetworkEnabled" Text="Private network enabled" />
                             </div>
+                            <div class="col-sm-12 form-inline">
+                                <asp:CheckBox ID="chkDmzNetworkEnabled" runat="server"
+                                                    meta:resourcekey="chkDmzNetworkEnabled" Text="DMZ network enabled" />
+                            </div>
                         </div>
                     </asp:Panel>
                     

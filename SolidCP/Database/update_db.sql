@@ -7737,6 +7737,7 @@ WITH TempItems AS (
 		WHERE PIP.IsPrimary = 1 AND IP.PoolID = 3 -- external IP addresses
 	) AS EIP ON SI.ItemID = EIP.ItemID
 	LEFT OUTER JOIN PrivateIPAddresses AS PIP ON PIP.ItemID = SI.ItemID AND PIP.IsPrimary = 1
+	LEFT OUTER JOIN PrivateIPAddresses AS DIP ON DIP.ItemID = SI.ItemID AND DIP.IsPrimary = 1
 	WHERE ' + @condition + '
 )
 
@@ -7753,7 +7754,8 @@ SELECT
 	U.Username,
 
 	EIP.ExternalIP,
-	PIP.IPAddress
+	PIP.IPAddress,
+	DIP.IPAddress AS DmzIP
 FROM @Items AS TSI
 INNER JOIN ServiceItems AS SI ON TSI.ItemID = SI.ItemID
 INNER JOIN Packages AS P ON SI.PackageID = P.PackageID
@@ -7764,6 +7766,7 @@ LEFT OUTER JOIN (
 	WHERE PIP.IsPrimary = 1 AND IP.PoolID = 3 -- external IP addresses
 ) AS EIP ON SI.ItemID = EIP.ItemID
 LEFT OUTER JOIN PrivateIPAddresses AS PIP ON PIP.ItemID = SI.ItemID AND PIP.IsPrimary = 1
+LEFT OUTER JOIN DmzIPAddresses AS DIP ON DIP.ItemID = SI.ItemID AND DIP.IsPrimary = 1
 '
 
 --print @sql
@@ -12626,6 +12629,12 @@ CREATE TABLE [dbo].[PackageVLANs]
 END
 GO
 
+IF COLUMNPROPERTY(OBJECT_ID('dbo.PackageVLANs'), 'IsDmz', 'ColumnId') IS NULL
+BEGIN
+    ALTER TABLE PackageVLANs 
+    ADD IsDmz [bit] NOT NULL DEFAULT 0
+END
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER OFF
@@ -12854,6 +12863,7 @@ BEGIN
 DECLARE @condition nvarchar(700)
 SET @condition = '
 dbo.CheckPackageParent(@PackageID, PA.PackageID) = 1
+AND PA.IsDmz = 0
 '
 
 IF @SortColumn IS NULL OR @SortColumn = ''
@@ -13044,6 +13054,7 @@ GO
 CREATE PROCEDURE [dbo].[AllocatePackageVLANs]
 (
 	@PackageID int,
+	@IsDmz bit,
 	@xml ntext
 )
 AS
@@ -13068,11 +13079,13 @@ BEGIN
 	INSERT INTO dbo.PackageVLANs
 	(		
 		PackageID,
-		VlanID	
+		VlanID,
+		IsDmz
 	)
 	SELECT		
 		@PackageID,
-		VlanID
+		VlanID,
+		@IsDmz
 
 	FROM OPENXML(@idoc, '/items/item', 1) WITH 
 	(
@@ -16952,7 +16965,12 @@ AS
 			SET @Result = (SELECT COUNT(PV.PackageVlanID) FROM PackageVLANs AS PV
 							INNER JOIN PrivateNetworkVLANs AS V ON PV.VlanID = V.VlanID
 							INNER JOIN PackagesTreeCache AS PT ON PV.PackageID = PT.PackageID
-							WHERE PT.ParentPackageID = @PackageID)
+							WHERE PT.ParentPackageID = @PackageID AND PV.IsDmz = 0)
+		ELSE IF @QuotaID = 752 -- DMZ Network VLANs of VPS2012
+			SET @Result = (SELECT COUNT(PV.PackageVlanID) FROM PackageVLANs AS PV
+							INNER JOIN PrivateNetworkVLANs AS V ON PV.VlanID = V.VlanID
+							INNER JOIN PackagesTreeCache AS PT ON PV.PackageID = PT.PackageID
+							WHERE PT.ParentPackageID = @PackageID AND PV.IsDmz = 1)
 		ELSE IF @QuotaID = 100 -- Dedicated Web IP addresses
 			SET @Result = (SELECT COUNT(PIP.PackageAddressID) FROM PackageIPAddresses AS PIP
 							INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
@@ -19848,4 +19866,406 @@ AS
 		END
 
 	RETURN
+GO
+
+-- DMZ Network
+IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaName] = 'VPS2012.DMZNetworkEnabled')
+BEGIN
+	INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota], [PerOrganization]) VALUES (750, 33, 22, N'VPS2012.DMZNetworkEnabled', N'DMZ Network', 1, 0, NULL, NULL, NULL)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaName] = 'VPS2012.DMZIPAddressesNumber')
+BEGIN
+	INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota], [PerOrganization]) VALUES (751, 33, 23, N'VPS2012.DMZIPAddressesNumber', N'Number of DMZ IP addresses per VPS', 3, 0, NULL, NULL, NULL)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaName] = 'VPS2012.DMZVLANsNumber')
+BEGIN
+	INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota], [PerOrganization]) VALUES (752, 33, 24, N'VPS2012.DMZVLANsNumber', N'Number of DMZ Network VLANs', 2, 0, NULL, NULL, NULL)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM SYS.TABLES WHERE name = 'DmzIPAddresses')
+BEGIN
+CREATE TABLE [dbo].[DmzIPAddresses](
+	[DmzAddressID] [int] IDENTITY(1,1) NOT NULL,
+	[ItemID] [int] NOT NULL,
+	[IPAddress] [varchar](15) NOT NULL,
+	[IsPrimary] [bit] NOT NULL,
+	CONSTRAINT [FK_DmzIPAddresses_ServiceItems]
+		FOREIGN KEY ([ItemID]) REFERENCES [dbo].[ServiceItems] ([ItemID])
+		ON DELETE CASCADE,
+ CONSTRAINT [PK_DmzIPAddresses] PRIMARY KEY CLUSTERED
+(
+	[DmzAddressID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
+)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'DmzIPAddressesIdx_ItemID' AND [object_id] = OBJECT_ID('[dbo].[DmzIPAddresses]'))
+BEGIN
+	CREATE INDEX DmzIPAddressesIdx_ItemID ON [dbo].[DmzIPAddresses] ([ItemID]);
+END
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetPackageDmzIPAddresses')
+DROP PROCEDURE GetPackageDmzIPAddresses
+GO
+CREATE PROCEDURE [dbo].[GetPackageDmzIPAddresses]
+	@PackageID int
+AS
+BEGIN
+
+	SELECT
+		DA.DmzAddressID,
+		DA.IPAddress,
+		DA.ItemID,
+		SI.ItemName,
+		DA.IsPrimary
+	FROM DmzIPAddresses AS DA
+	INNER JOIN ServiceItems AS SI ON DA.ItemID = SI.ItemID
+	WHERE SI.PackageID = @PackageID
+
+END
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetPackageDmzIPAddressesPaged')
+DROP PROCEDURE GetPackageDmzIPAddressesPaged
+GO
+CREATE PROCEDURE [dbo].[GetPackageDmzIPAddressesPaged]
+	@PackageID int,
+	@FilterColumn nvarchar(50) = '',
+	@FilterValue nvarchar(50) = '',
+	@SortColumn nvarchar(50),
+	@StartRow int,
+	@MaximumRows int
+AS
+BEGIN
+
+
+-- start
+DECLARE @condition nvarchar(700)
+SET @condition = '
+SI.PackageID = @PackageID
+'
+
+IF @FilterValue <> '' AND @FilterValue IS NOT NULL
+BEGIN
+	IF @FilterColumn <> '' AND @FilterColumn IS NOT NULL
+		SET @condition = @condition + ' AND ' + @FilterColumn + ' LIKE ''' + @FilterValue + ''''
+	ELSE
+		SET @condition = @condition + '
+			AND (IPAddress LIKE ''' + @FilterValue + '''
+			OR ItemName LIKE ''' + @FilterValue + ''')'
+END
+
+IF @SortColumn IS NULL OR @SortColumn = ''
+SET @SortColumn = 'DA.IPAddress ASC'
+
+DECLARE @sql nvarchar(3500)
+
+set @sql = '
+SELECT COUNT(DA.DmzAddressID)
+FROM dbo.DmzIPAddresses AS DA
+INNER JOIN dbo.ServiceItems AS SI ON DA.ItemID = SI.ItemID
+WHERE ' + @condition + '
+
+DECLARE @Addresses AS TABLE
+(
+	DmzAddressID int
+);
+
+WITH TempItems AS (
+	SELECT ROW_NUMBER() OVER (ORDER BY ' + @SortColumn + ') as Row,
+		DA.DmzAddressID
+	FROM dbo.DmzIPAddresses AS DA
+	INNER JOIN dbo.ServiceItems AS SI ON DA.ItemID = SI.ItemID
+	WHERE ' + @condition + '
+)
+
+INSERT INTO @Addresses
+SELECT DmzAddressID FROM TempItems
+WHERE TempItems.Row BETWEEN @StartRow + 1 and @StartRow + @MaximumRows
+
+SELECT
+	DA.DmzAddressID,
+	DA.IPAddress,
+	DA.ItemID,
+	SI.ItemName,
+	DA.IsPrimary
+FROM @Addresses AS TA
+INNER JOIN dbo.DmzIPAddresses AS DA ON TA.DmzAddressID = DA.DmzAddressID
+INNER JOIN dbo.ServiceItems AS SI ON DA.ItemID = SI.ItemID
+'
+
+print @sql
+
+exec sp_executesql @sql, N'@PackageID int, @StartRow int, @MaximumRows int',
+@PackageID, @StartRow, @MaximumRows
+
+END
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'AddItemDmzIPAddress')
+DROP PROCEDURE AddItemDmzIPAddress
+GO
+CREATE PROCEDURE [dbo].[AddItemDmzIPAddress]
+(
+	@ActorID int,
+	@ItemID int,
+	@IPAddress varchar(15)
+)
+AS
+BEGIN
+IF EXISTS (SELECT ItemID FROM ServiceItems AS SI WHERE dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1)
+BEGIN
+
+	INSERT INTO DmzIPAddresses
+	(
+		ItemID,
+		IPAddress,
+		IsPrimary
+	)
+	VALUES
+	(
+		@ItemID,
+		@IPAddress,
+		0 -- not primary
+	)
+
+END
+END
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'SetItemDmzPrimaryIPAddress')
+DROP PROCEDURE SetItemDmzPrimaryIPAddress
+GO
+CREATE PROCEDURE [dbo].[SetItemDmzPrimaryIPAddress]
+(
+	@ActorID int,
+	@ItemID int,
+	@DmzAddressID int
+)
+AS
+BEGIN
+	UPDATE DmzIPAddresses
+	SET IsPrimary = CASE DIP.DmzAddressID WHEN @DmzAddressID THEN 1 ELSE 0 END
+	FROM DmzIPAddresses AS DIP
+	INNER JOIN ServiceItems AS SI ON DIP.ItemID = SI.ItemID
+	WHERE DIP.ItemID = @ItemID
+	AND dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1
+END
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'DeleteItemDmzIPAddress')
+DROP PROCEDURE DeleteItemDmzIPAddress
+GO
+CREATE PROCEDURE DeleteItemDmzIPAddress
+(
+	@ActorID int,
+	@ItemID int,
+	@DmzAddressID int
+)
+AS
+BEGIN
+	DELETE FROM DmzIPAddresses
+	FROM DmzIPAddresses AS DIP
+	INNER JOIN ServiceItems AS SI ON DIP.ItemID = SI.ItemID
+	WHERE DIP.DmzAddressID = @DmzAddressID
+	AND dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1
+END
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetItemDmzIPAddresses')
+DROP PROCEDURE GetItemDmzIPAddresses
+GO
+CREATE PROCEDURE [dbo].[GetItemDmzIPAddresses]
+(
+	@ActorID int,
+	@ItemID int
+)
+AS
+BEGIN
+SELECT
+	DIP.DmzAddressID AS AddressID,
+	DIP.IPAddress,
+	DIP.IsPrimary
+FROM DmzIPAddresses AS DIP
+INNER JOIN ServiceItems AS SI ON DIP.ItemID = SI.ItemID
+WHERE DIP.ItemID = @ItemID
+AND dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1
+ORDER BY DIP.IsPrimary DESC
+END
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'DeleteItemDmzIPAddresses')
+DROP PROCEDURE DeleteItemDmzIPAddresses
+GO
+CREATE PROCEDURE DeleteItemDmzIPAddresses
+(
+	@ActorID int,
+	@ItemID int
+)
+AS
+BEGIN
+	DELETE FROM DmzIPAddresses
+	FROM DmzIPAddresses AS DIP
+	INNER JOIN ServiceItems AS SI ON DIP.ItemID = SI.ItemID
+	WHERE DIP.ItemID = @ItemID
+	AND dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1
+END
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetPackageDmzNetworkVLANs')
+BEGIN
+DROP PROCEDURE GetPackageDmzNetworkVLANs
+END
+GO
+
+CREATE PROCEDURE [dbo].[GetPackageDmzNetworkVLANs]
+(
+ @PackageID int,
+ @SortColumn nvarchar(50),
+ @StartRow int,
+ @MaximumRows int
+)
+AS
+BEGIN
+-- start
+DECLARE @condition nvarchar(700)
+SET @condition = '
+dbo.CheckPackageParent(@PackageID, PA.PackageID) = 1
+AND PA.IsDmz = 1
+'
+
+IF @SortColumn IS NULL OR @SortColumn = ''
+SET @SortColumn = 'V.Vlan ASC'
+
+DECLARE @sql nvarchar(3500)
+
+set @sql = '
+SELECT COUNT(PA.PackageVlanID)
+FROM dbo.PackageVLANs PA
+INNER JOIN dbo.PrivateNetworkVLANs AS V ON PA.VlanID = V.VlanID
+INNER JOIN dbo.Packages P ON PA.PackageID = P.PackageID
+INNER JOIN dbo.Users U ON U.UserID = P.UserID
+WHERE ' + @condition + '
+
+DECLARE @VLANs AS TABLE
+(
+ PackageVlanID int
+);
+
+WITH TempItems AS (
+ SELECT ROW_NUMBER() OVER (ORDER BY ' + @SortColumn + ') as Row,
+  PA.PackageVlanID
+ FROM dbo.PackageVLANs PA
+ INNER JOIN dbo.PrivateNetworkVLANs AS V ON PA.VlanID = V.VlanID
+ INNER JOIN dbo.Packages P ON PA.PackageID = P.PackageID
+ INNER JOIN dbo.Users U ON U.UserID = P.UserID
+ WHERE ' + @condition + '
+)
+
+INSERT INTO @VLANs
+SELECT PackageVlanID FROM TempItems
+WHERE TempItems.Row BETWEEN @StartRow + 1 and @StartRow + @MaximumRows
+
+SELECT
+ PA.PackageVlanID,
+ PA.VlanID,
+ V.Vlan,
+ PA.PackageID,
+ P.PackageName,
+ P.UserID,
+ U.UserName
+FROM @VLANs AS TA
+INNER JOIN dbo.PackageVLANs AS PA ON TA.PackageVlanID = PA.PackageVlanID
+INNER JOIN dbo.PrivateNetworkVLANs AS V ON PA.VlanID = V.VlanID
+INNER JOIN dbo.Packages P ON PA.PackageID = P.PackageID
+INNER JOIN dbo.Users U ON U.UserID = P.UserID
+'
+
+print @sql
+
+exec sp_executesql @sql, N'@PackageID int, @StartRow int, @MaximumRows int',
+@PackageID, @StartRow, @MaximumRows
+
+END
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetPackageServiceID')
+DROP PROCEDURE GetPackageServiceID
+GO
+CREATE PROCEDURE GetPackageServiceID
+(
+	@ActorID int,
+	@PackageID int,
+	@GroupName nvarchar(100),
+	@UpdatePackage bit,
+	@ServiceID int OUTPUT
+)
+AS
+BEGIN
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+SET @ServiceID = 0
+
+-- optimized run when we don't need any changes
+IF @UpdatePackage = 0
+BEGIN
+SELECT
+	@ServiceID = PS.ServiceID
+FROM PackageServices AS PS
+INNER JOIN Services AS S ON PS.ServiceID = S.ServiceID
+INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
+INNER JOIN ResourceGroups AS RG ON RG.GroupID = P.GroupID
+WHERE PS.PackageID = @PackageID AND RG.GroupName = @GroupName
+RETURN
+END
+
+-- load group info
+DECLARE @GroupID int
+SELECT @GroupID = GroupID FROM ResourceGroups
+WHERE GroupName = @GroupName
+
+-- check if user has this resource enabled
+IF dbo.GetPackageAllocatedResource(@PackageID, @GroupID, NULL) = 0
+BEGIN
+	-- remove all resource services from the space
+	DELETE FROM PackageServices FROM PackageServices AS PS
+	INNER JOIN Services AS S ON PS.ServiceID = S.ServiceID
+	INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
+	WHERE P.GroupID = @GroupID AND PS.PackageID = @PackageID
+	RETURN
+END
+
+-- check if the service is already distributed
+SELECT
+	@ServiceID = PS.ServiceID
+FROM PackageServices AS PS
+INNER JOIN Services AS S ON PS.ServiceID = S.ServiceID
+INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
+WHERE PS.PackageID = @PackageID AND P.GroupID = @GroupID
+
+IF @ServiceID <> 0
+RETURN
+
+-- distribute services
+EXEC DistributePackageServices @ActorID, @PackageID
+
+-- get distributed service again
+SELECT
+	@ServiceID = PS.ServiceID
+FROM PackageServices AS PS
+INNER JOIN Services AS S ON PS.ServiceID = S.ServiceID
+INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
+WHERE PS.PackageID = @PackageID AND P.GroupID = @GroupID
+
+END
 GO

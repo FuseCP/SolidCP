@@ -53,8 +53,6 @@ namespace SolidCP.Portal.VPS2012
             {
                 BindRealAssignedAddresses();
                 BindVirtualMachine();
-                BindExternalAddresses();
-                BindPrivateAddresses();
                 ToggleButtons();
             }
         }
@@ -64,7 +62,11 @@ namespace SolidCP.Portal.VPS2012
             vm = ES.Services.VPS2012.GetVirtualMachineItem(PanelRequest.ItemID);
 
             // external network
-            if (!vm.ExternalNetworkEnabled)
+            if (vm.ExternalNetworkEnabled)
+            {
+                BindExternalAddresses();
+            }
+            else
             {
                 secExternalNetwork.Visible = false;
                 ExternalNetworkPanel.Visible = false;
@@ -72,11 +74,27 @@ namespace SolidCP.Portal.VPS2012
             }
 
             // private network
-            if (!vm.PrivateNetworkEnabled)
+            if (vm.PrivateNetworkEnabled)
+            {
+                BindPrivateAddresses();
+            }
+            else
             {
                 secPrivateNetwork.Visible = false;
                 PrivateNetworkPanel.Visible = false;
                 btnRestorePrivateAddress.Visible = false;
+            }
+
+            // dmz network
+            if (vm.DmzNetworkEnabled)
+            {
+                BindDmzAddresses();
+            }
+            else
+            {
+                secDmzNetwork.Visible = false;
+                DmzNetworkPanel.Visible = false;
+                btnRestoreDmzAddress.Visible = false;
             }
         }
 
@@ -111,17 +129,21 @@ namespace SolidCP.Portal.VPS2012
         private void CheckIfPossibleToDoIpInjection(VirtualMachineNetworkAdapter[] Adapters)
         {
             btnDeletePrivateByInject.Visible = 
-                btnDeleteExternalByInject.Visible = 
+                btnDeleteExternalByInject.Visible =
+                btnDeleteDmzByInject.Visible =
                 btnRestoreExternalAddress.Visible = 
-                btnRestorePrivateAddress.Visible = false;
+                btnRestorePrivateAddress.Visible =
+                btnRestoreDmzAddress.Visible = false;
             foreach (VirtualMachineNetworkAdapter adapter in Adapters)
             {
                 if (adapter.IPAddresses != null && adapter.IPAddresses.Length > 0) //if we can get IP information at least from 1 adapter it means that VM support IP Injection.
                 {
                     btnDeletePrivateByInject.Visible =
                         btnDeleteExternalByInject.Visible =
+                        btnDeleteDmzByInject.Visible =
                         btnRestoreExternalAddress.Visible =
-                        btnRestorePrivateAddress.Visible = true;
+                        btnRestorePrivateAddress.Visible =
+                        btnRestoreDmzAddress.Visible = true;
                     break;
                 }
             }
@@ -213,6 +235,38 @@ namespace SolidCP.Portal.VPS2012
             }
         }
 
+        private void BindDmzAddresses()
+        {
+            // load details
+            NetworkAdapterDetails nic = ES.Services.VPS2012.GetDmzNetworkAdapterDetails(PanelRequest.ItemID);
+
+            // bind details
+            foreach (NetworkAdapterIPAddress ip in nic.IPAddresses)
+            {
+                if (ip.IsPrimary)
+                {
+                    litDmzAddress.Text = ip.IPAddress;
+                    break;
+                }
+            }
+            litDmzSubnet.Text = nic.SubnetMask;
+            litDmzGateway.Text = nic.DefaultGateway;
+            litDmzVLAN.Text = nic.VLAN.ToString();
+            locDmzVLAN.Visible = nic.VLAN > 0;
+            litDmzVLAN.Visible = locDmzVLAN.Visible;
+            lblTotalDmz.Text = nic.IPAddresses.Length.ToString();
+
+            // bind IP addresses
+            gvDmzAddresses.DataSource = nic.IPAddresses;
+            gvDmzAddresses.DataBind();
+
+            if (nic.IsDHCP)
+            {
+                DmzAddressesPanel.Visible = false;
+                litDmzAddress.Text = GetLocalizedString("Automatic.Text");
+            }
+        }
+
         private void ToggleButtons()
         {
             bool manageAllowed = VirtualMachines2012Helper.IsVirtualMachineManagementAllowed(PanelSecurity.PackageId);
@@ -226,6 +280,11 @@ namespace SolidCP.Portal.VPS2012
             btnSetPrimaryPrivate.Visible = manageAllowed;
             btnDeletePrivate.Visible = manageAllowed;
             gvPrivateAddresses.Columns[0].Visible = manageAllowed;
+
+            btnAddDmzAddress.Visible = manageAllowed;
+            btnSetPrimaryDmz.Visible = manageAllowed;
+            btnDeleteDmz.Visible = manageAllowed;
+            gvDmzAddresses.Columns[0].Visible = manageAllowed;
         }
 
         protected void btnRestoreExternalAddress_Click(object sender, EventArgs e)
@@ -274,6 +333,29 @@ namespace SolidCP.Portal.VPS2012
             }
         }
 
+        protected void btnRestoreDmzByInject_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ResultObject res = ES.Services.VPS2012.RestoreVirtualMachineDmzIPAddressesByInjection(PanelRequest.ItemID);
+                if (res.IsSuccess)
+                {
+                    BindRealAssignedAddresses();
+                    BindVirtualMachine();
+                    return;
+                }
+                else
+                {
+                    messageBox.ShowMessage(res, "VPS_ERROR_RESTORE_DMZ_IP", "VPS");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                messageBox.ShowErrorMessage("VPS_ERROR_RESTORE_DMZ_IP", ex);
+            }
+        }
+
         protected void btnAddExternalAddress_Click(object sender, EventArgs e)
         {
             Response.Redirect(EditUrl("ItemID", PanelRequest.ItemID.ToString(), "vps_add_external_ip",
@@ -283,6 +365,12 @@ namespace SolidCP.Portal.VPS2012
         protected void btnAddPrivateAddress_Click(object sender, EventArgs e)
         {
             Response.Redirect(EditUrl("ItemID", PanelRequest.ItemID.ToString(), "vps_add_private_ip",
+                "SpaceID=" + PanelSecurity.PackageId.ToString()));
+        }
+
+        protected void btnAddDmzAddress_Click(object sender, EventArgs e)
+        {
+            Response.Redirect(EditUrl("ItemID", PanelRequest.ItemID.ToString(), "vps_add_dmz_ip",
                 "SpaceID=" + PanelSecurity.PackageId.ToString()));
         }
 
@@ -317,6 +405,39 @@ namespace SolidCP.Portal.VPS2012
                 messageBox.ShowErrorMessage("VPS_ERROR_SETTING_PRIMARY_IP", ex);
             }
         }
+
+        protected void btnSetPrimaryDmz_Click(object sender, EventArgs e)
+        {
+            int[] addressIds = GetSelectedItems(gvDmzAddresses);
+
+            // check if at least one is selected
+            if (addressIds.Length == 0)
+            {
+                messageBox.ShowWarningMessage("IP_ADDRESS_NOT_SELECTED");
+                return;
+            }
+
+            try
+            {
+                ResultObject res = ES.Services.VPS2012.SetVirtualMachinePrimaryDmzIPAddress(PanelRequest.ItemID, addressIds[0]);
+
+                if (res.IsSuccess)
+                {
+                    BindDmzAddresses();
+                    return;
+                }
+                else
+                {
+                    messageBox.ShowMessage(res, "VPS_ERROR_SETTING_PRIMARY_IP", "VPS");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                messageBox.ShowErrorMessage("VPS_ERROR_SETTING_PRIMARY_IP", ex);
+            }
+        }
+
         protected void btnDeletePrivateByInject_Click(object sender, EventArgs e)
         {
             DeletePrivate(sender, e, true);
@@ -349,6 +470,52 @@ namespace SolidCP.Portal.VPS2012
                 if (res.IsSuccess)
                 {
                     BindPrivateAddresses();
+                    return;
+                }
+                else
+                {
+                    messageBox.ShowMessage(res, "VPS_ERROR_DELETING_IP_ADDRESS", "VPS");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                messageBox.ShowErrorMessage("VPS_ERROR_DELETING_IP_ADDRESS", ex);
+            }
+        }
+
+        protected void btnDeleteDmzByInject_Click(object sender, EventArgs e)
+        {
+            DeleteDmz(sender, e, true);
+        }
+
+        protected void btnDeleteDmz_Click(object sender, EventArgs e)
+        {
+            DeleteDmz(sender, e, false);
+        }
+
+        protected void DeleteDmz(object sender, EventArgs e, bool byNewMethod)
+        {
+            int[] addressIds = GetSelectedItems(gvDmzAddresses);
+
+            // check if at least one is selected
+            if (addressIds.Length == 0)
+            {
+                messageBox.ShowWarningMessage("IP_ADDRESS_NOT_SELECTED");
+                return;
+            }
+
+            try
+            {
+                ResultObject res = null;
+                if (byNewMethod)
+                    res = ES.Services.VPS2012.DeleteVirtualMachineDmzIPAddressesByInject(PanelRequest.ItemID, addressIds);
+                else
+                    res = ES.Services.VPS2012.DeleteVirtualMachineDmzIPAddresses(PanelRequest.ItemID, addressIds);
+
+                if (res.IsSuccess)
+                {
+                    BindDmzAddresses();
                     return;
                 }
                 else

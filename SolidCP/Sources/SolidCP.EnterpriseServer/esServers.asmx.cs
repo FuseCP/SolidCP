@@ -374,7 +374,7 @@ namespace SolidCP.EnterpriseServer
         }
         #endregion
 
-        #region Private Network VLANs
+        #region Private / DMZ Network VLANs
         [WebMethod]
         public VLANsPaged GetPrivateNetworVLANsPaged(int serverId, string filterColumn, 
             string filterValue, string sortColumn, int startRow, int maximumRows)
@@ -419,6 +419,12 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
+        public PackageVLANsPaged GetPackageDmzNetworkVLANs(int packageId, string sortColumn, int startRow, int maximumRows)
+        {
+            return ServerController.GetPackageDmzNetworkVLANs(packageId, sortColumn, startRow, maximumRows);
+        }
+
+        [WebMethod]
         public ResultObject DeallocatePackageVLANs(int packageId, int[] vlanId)
         {
             return ServerController.DeallocatePackageVLANs(packageId, vlanId);
@@ -431,9 +437,9 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
-        public ResultObject AllocatePackageVLANs(int packageId, string groupName, bool allocateRandom, int vlansNumber, int[] vlanId)
+        public ResultObject AllocatePackageVLANs(int packageId, string groupName, bool allocateRandom, int vlansNumber, int[] vlanId, bool isDmz)
         {
-            return ServerController.AllocatePackageVLANs(packageId, groupName, allocateRandom, vlansNumber, vlanId);
+            return ServerController.AllocatePackageVLANs(packageId, groupName, allocateRandom, vlansNumber, vlanId, isDmz);
         }
         #endregion
 
