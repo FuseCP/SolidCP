@@ -23,7 +23,7 @@ public partial class RdsServerConfiguration: EntityTypeConfiguration<RdsServer>
 
         HasOne(d => d.RdsCollection).WithMany(p => p.RdsServers).HasConstraintName("FK_RDSServers_RDSCollectionId");
 #else
-        HasRequired(d => d.RdsCollection).WithMany(p => p.RdsServers);
+        HasOptional(d => d.RdsCollection).WithMany(p => p.RdsServers);
 #endif
     }
 #endif

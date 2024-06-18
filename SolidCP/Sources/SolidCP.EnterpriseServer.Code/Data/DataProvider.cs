@@ -38423,6 +38423,16 @@ WHERE ID = @Id
 				*/
 				#endregion
 
+				var collection = RdsCollections
+					.FirstOrDefault(c => c.Id == id);
+				if (collection != null)
+				{
+					collection.ItemId = itemId;
+					collection.Name = name;
+					collection.Description = description;
+					collection.DisplayName = displayName;
+					SaveChanges();
+				}
 			}
 			else
 			{
@@ -38487,6 +38497,19 @@ WHERE Id = @Id
 				*/
 				#endregion
 
+#if NETFRAMEWORK
+				foreach (var server in RdsServers.Where(s => s.RdsCollectionId == id)) {
+					server.RdsCollectionId = null;
+				}
+				SaveChanges();
+#else
+				RdsServers
+					.Where(s => s.RdsCollectionId == id)
+					.ExecuteUpdate(set => set
+						.SetProperty(s => s.RdsCollectionId, null as int?));
+#endif
+
+				RdsCollections.Where(c => c.Id == id).ExecuteDelete(RdsCollections);
 			}
 			else
 			{
@@ -38534,6 +38557,16 @@ RETURN
 				*/
 				#endregion
 
+				var server = new Data.Entities.RdsServer()
+				{
+					Name = name,
+					FqdName = fqdName,
+					Description = description,
+					Controller = int.Parse(controller)
+				};
+				RdsServers.Add(server);
+				SaveChanges();
+				return server.Id;
 			}
 			else
 			{
@@ -38580,6 +38613,19 @@ SELECT
 				*/
 				#endregion
 
+				var servers = RdsServers
+					.Where(s => s.ItemId == itemId)
+					.GroupJoin(ServiceItems, s => s.ItemId, i => i.ItemId, (s, i) => new
+					{
+						s.Id,
+						s.ItemId,
+						s.Name,
+						s.FqdName,
+						s.Description,
+						s.RdsCollectionId,
+						ItemName = i.Any() ? i.Single().ItemName : null
+					});
+				return EntityDataReader(servers);
 			}
 			else
 			{
@@ -38675,6 +38721,41 @@ RETURN
 				*/
 				#endregion
 
+				var servers = RdsServers
+					.Where(s => (ignoreItemId || s.ItemId == itemId) &&
+						(ignoreRdsCollectionId || s.RdsCollectionId == collectionId))
+					.GroupJoin(ServiceItems, s => s.ItemId, si => si.ItemId, (s, si) => new
+					{
+						Server = s,
+						ItemName = si.Any() ? si.Single().ItemName : null
+					})
+					.GroupJoin(Services, s => s.Server.Controller, svc => svc.ServiceId, (s, svc) => new
+					{
+						s.Server.Id,
+						s.Server.ItemId,
+						s.Server.Name,
+						s.Server.FqdName,
+						s.Server.Description,
+						s.Server.RdsCollectionId,
+						s.Server.ConnectionEnabled,
+						s.Server.Controller,
+						s.ItemName,
+						ControllerName = svc.Any() ? svc.Single().ServiceName : null,
+						CollectionName = s.Server.RdsCollection != null ? s.Server.RdsCollection.Name : null
+					});
+
+				if (!string.IsNullOrEmpty(filterColumn) && !string.IsNullOrEmpty(filterValue))
+				{
+					servers = servers.Where(DynamicFunctions.ColumnLike(servers, filterColumn, filterValue));
+				}
+
+				var count = servers.Count();
+
+				if (!string.IsNullOrEmpty(sortColumn)) servers = servers.OrderBy(sortColumn);
+
+				servers = servers.Skip(startRow).Take(maximumRows);
+
+				return EntityDataSet(count, servers);
 			}
 			else
 			{
@@ -38723,6 +38804,22 @@ WHERE RS.Id = @Id
 				*/
 				#endregion
 
+				var server = RdsServers
+					.Where(s => s.Id == id)
+					.GroupJoin(ServiceItems, s => s.ItemId, si => si.ItemId, (s, si) => new
+					{
+						s.Id,
+						s.ItemId,
+						s.Name,
+						s.FqdName,
+						s.Description,
+						s.RdsCollectionId,
+						s.ConnectionEnabled,
+						ItemName = si.Any() ? si.Single().ItemName : null,
+						CollectionName = s.RdsCollection != null ? s.RdsCollection.Name : null
+					})
+					.Take(1);
+				return EntityDataReader(server);
 			}
 			else
 			{
@@ -38759,6 +38856,19 @@ WHERE RdsCollectionId = @RdsCollectionId
 				*/
 				#endregion
 
+				var servers = RdsServers
+					.Where(s => s.RdsCollectionId == collectionId)
+					.GroupJoin(ServiceItems, s => s.ItemId, si => si.ItemId, (s, si) => new
+					{
+						s.Id,
+						s.ItemId,
+						s.Name,
+						s.FqdName,
+						s.Description,
+						s.RdsCollectionId,
+						ItemName = si.Any() ? si.Single().ItemName : null,
+					});
+				return EntityDataReader(servers);
 			}
 			else
 			{
@@ -38840,6 +38950,18 @@ WHERE ID = @Id
 				*/
 				#endregion
 
+				var server = RdsServers
+					.FirstOrDefault(s => s.Id == id);
+				if (server != null) 
+				{
+					server.ItemId = itemId;
+					server.Name = name;
+					server.FqdName = fqdName;
+					server.Description = description;
+					server.RdsCollectionId = rdsCollectionId;
+					server.ConnectionEnabled = connEnabled == 1;
+					SaveChanges();
+				}
 			}
 			else
 			{
@@ -38878,6 +39000,18 @@ WHERE ID = @Id
 				*/
 				#endregion
 
+#if NETFRAMEWORK
+				var server = RdsServers
+					.FirstOrDefault(s => s.Id == serverId);
+				if (server != null) {
+					server.RdsCollectionId = rdsCollectionId;
+					SaveChanges();
+				}
+#else
+				RdsServers
+					.Where(s => s.Id == serverId)
+					.ExecuteUpdate(set => set.SetProperty(s => s.RdsCollectionId, rdsCollectionId));
+#endif
 			}
 			else
 			{
@@ -38910,6 +39044,18 @@ WHERE ID = @Id
 				*/
 				#endregion
 
+#if NETFRAMEWORK
+				var server = RdsServers
+					.FirstOrDefault(s => s.Id == serverId);
+				if (server != null) {
+					server.ItemId = itemId;
+					SaveChanges();
+				}
+#else
+				RdsServers
+					.Where(s => s.Id == serverId)
+					.ExecuteUpdate(set => set.SetProperty(s => s.ItemId, itemId));
+#endif
 			}
 			else
 			{
@@ -38940,6 +39086,19 @@ SET
 WHERE ID = @Id
 				*/
 				#endregion
+
+#if NETFRAMEWORK
+				var server = RdsServers
+					.FirstOrDefault(s => s.Id == serverId);
+				if (server != null) {
+					server.ItemId = null;
+					SaveChanges();
+				}
+#else
+				RdsServers
+					.Where(s => s.Id == serverId)
+					.ExecuteUpdate(set => set.SetProperty(s => s.ItemId, null as int?));
+#endif
 
 			}
 			else
@@ -38972,10 +39131,16 @@ WHERE ID = @Id
 				#endregion
 
 #if NETCOREAPP
-				RdsServers.Where(s => s.Id == serverId).ExecuteUpdate(s => s.SetProperty(p => p.RdsCollectionId, null as int?));
+				RdsServers
+					.Where(s => s.Id == serverId)
+					.ExecuteUpdate(s => s.SetProperty(p => p.RdsCollectionId, null as int?));
 #else
-				foreach (var server in RdsServers.Where(s => s.Id == serverId)) server.RdsCollectionId = null;
-				SaveChanges();
+				var server = RdsServers
+					.FirstOrDefault(s => s.Id == serverId);
+				if (server != null) {
+					server.RdsCollectionId = null;
+					SaveChanges();
+				}
 #endif
 			}
 			else
@@ -39023,6 +39188,30 @@ WHERE AccountID IN (Select AccountId from RDSCollectionUsers where RDSCollection
 			*/
 				#endregion
 
+				var users = ExchangeAccounts
+					.Where(a => a.RdsCollectionUsers.Any(u => u.RdsCollectionId == id))
+					.Select(a => new
+					{
+						a.AccountId,
+						a.ItemId,
+						a.AccountType,
+						a.AccountName,
+						a.DisplayName,
+						a.PrimaryEmailAddress,
+						a.MailEnabledPublicFolder,
+						a.MailboxManagerActions,
+						a.SamAccountName,
+						a.CreatedDate,
+						a.MailboxPlanId,
+						a.SubscriberNumber,
+						a.UserPrincipalName,
+						a.ExchangeDisclaimerId,
+						a.ArchivingMailboxPlanId,
+						a.EnableArchiving,
+						a.LevelId,
+						a.IsVip
+					});
+				return EntityDataReader(users);
 			}
 			else
 			{
@@ -39060,6 +39249,13 @@ VALUES
 				*/
 				#endregion
 
+				var user = new Data.Entities.RdsCollectionUser()
+				{
+					RdsCollectionId = rdsCollectionId,
+					AccountId = accountId
+				};
+				RdsCollectionUsers.Add(user);
+				SaveChanges();
 			}
 			else
 			{
@@ -39090,7 +39286,8 @@ WHERE AccountId = @AccountId AND RDSCollectionId = @RDSCollectionId
 				*/
 				#endregion
 
-				RdsCollectionUsers.Where(u => u.AccountId == accountId && u.RdsCollectionId == rdsCollectionId)
+				RdsCollectionUsers
+					.Where(u => u.AccountId == accountId && u.RdsCollectionId == rdsCollectionId)
 					.ExecuteDelete(RdsCollectionUsers);
 			}
 			else
@@ -39222,6 +39419,18 @@ SELECT
 				*/
 				#endregion
 
+				var records = DomainDnsRecords
+					.Where(r => r.DomainId == domainId && r.RecordType == recordType)
+					.Select(r => new
+					{
+						r.Id,
+						r.DomainId,
+						r.DnsServer,
+						r.RecordType,
+						r.Value,
+						r.Date
+					});
+				return EntityDataReader(records);
 			}
 			else
 			{
@@ -39257,6 +39466,18 @@ SELECT
 				*/
 				#endregion
 
+				var records = DomainDnsRecords
+					.Where(r => r.DomainId == domainId)
+					.Select(r => new
+					{
+						r.Id,
+						r.DomainId,
+						r.DnsServer,
+						r.RecordType,
+						r.Value,
+						r.Date
+					});
+				return EntityDataReader(records);
 			}
 			else
 			{
@@ -39303,6 +39524,16 @@ VALUES
 				*/
 				#endregion
 
+				var record = new Data.Entities.DomainDnsRecord()
+				{
+					DomainId = domainDnsRecord.Id,
+					DnsServer = domainDnsRecord.DnsServer,
+					RecordType = domainDnsRecord.RecordType,
+					Value = domainDnsRecord.Value,
+					Date = domainDnsRecord.Date
+				};
+				DomainDnsRecords.Add(record);
+				SaveChanges();
 			}
 			else
 			{
@@ -39367,7 +39598,9 @@ WHERE Id = @Id
 				*/
 				#endregion
 
-				DomainDnsRecords.Where(r => r.Id == id).ExecuteDelete(DomainDnsRecords);
+				DomainDnsRecords
+					.Where(r => r.Id == id)
+					.ExecuteDelete(DomainDnsRecords);
 			}
 			else
 			{
@@ -39397,7 +39630,10 @@ WHERE [DomainID] = @DomainId
 				#endregion
 
 #if NETCOREAPP
-				Domains.Where(d => d.DomainId == domainId).ExecuteUpdate(s => s.SetProperty(p => p.CreationDate, date));
+				Domains
+					.Where(d => d.DomainId == domainId)
+					.ExecuteUpdate(s => s
+						.SetProperty(p => p.CreationDate, date));
 #else
 				foreach (var domain in Domains.Where(d => d.DomainId == domainId)) domain.CreationDate = date;
 				SaveChanges();
@@ -39618,6 +39854,20 @@ AS
 				*/
 				#endregion
 
+				var folders = ExchangeOrganizationSsFolders
+					.Where(e => e.ItemId == itemId)
+					.Select(e => new
+					{
+						e.StorageSpaceFolder.Id,
+						e.StorageSpaceFolder.Name,
+						e.StorageSpaceFolder.StorageSpaceId,
+						e.StorageSpaceFolder.Path,
+						e.StorageSpaceFolder.UncPath,
+						e.StorageSpaceFolder.IsShared,
+						e.StorageSpaceFolder.FsrmQuotaType,
+						e.StorageSpaceFolder.FsrmQuotaSizeBytes
+					});
+				return EntityDataReader(folders);
 			}
 			else
 			{
@@ -39656,6 +39906,21 @@ AS
 				*/
 				#endregion
 
+				var folders = ExchangeOrganizationSsFolders
+					.Where(e => e.ItemId == itemId && e.Type == type)
+					.Select(e => new
+					{
+						e.StorageSpaceFolder.Id,
+						e.StorageSpaceFolder.Name,
+						e.StorageSpaceFolder.StorageSpaceId,
+						e.StorageSpaceFolder.Path,
+						e.StorageSpaceFolder.UncPath,
+						e.StorageSpaceFolder.IsShared,
+						e.StorageSpaceFolder.FsrmQuotaType,
+						e.StorageSpaceFolder.FsrmQuotaSizeBytes
+					});
+				return EntityDataReader(folders);
+
 			}
 			else
 			{
@@ -39685,7 +39950,9 @@ AS
 				*/
 				#endregion
 
-				ExchangeOrganizationSsFolders.Where(f => f.StorageSpaceFolderId == id).ExecuteDelete(ExchangeOrganizationSsFolders);
+				ExchangeOrganizationSsFolders
+					.Where(f => f.StorageSpaceFolderId == id)
+					.ExecuteDelete(ExchangeOrganizationSsFolders);
 			}
 			else
 			{

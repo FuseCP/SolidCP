@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using SolidCP.Providers.DNS;
 #if NetCore
 using Microsoft.EntityFrameworkCore;
 #endif
@@ -20,7 +21,7 @@ public partial class DomainDnsRecord
 
     public int DomainId { get; set; }
 
-    public int RecordType { get; set; }
+    public DnsRecordType RecordType { get; set; }
 
     [StringLength(255)]
     public string DnsServer { get; set; }
