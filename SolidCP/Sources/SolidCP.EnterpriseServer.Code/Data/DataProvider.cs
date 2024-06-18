@@ -36188,6 +36188,29 @@ RETURN
 				*/
 				#endregion
 
+				var levels = StorageSpaceLevels
+					.Select(l => new
+					{
+						l.Id,
+						l.Name,
+						l.Description
+					});
+
+				if (!string.IsNullOrEmpty(filterValue) && !string.IsNullOrEmpty(filterColumn))
+				{
+					levels = levels.Where(DynamicFunctions.ColumnLike(levels, filterColumn, filterValue));
+				}
+
+				var count = levels.Count();
+
+				if (!string.IsNullOrEmpty(sortColumn))
+				{
+					levels = levels.OrderBy(sortColumn);
+				}
+
+				levels = levels.Skip(startRow).Take(maximumRows);
+
+				return EntityDataSet(count, levels);
 			}
 			else
 			{
@@ -36258,6 +36281,22 @@ AS
 				*/
 				#endregion
 
+#if NETFRAMEWORK
+				var lev = StorageSpaceLevels
+					.FirstOrDefault(l => l.Id == level.Id);
+				if (lev != null)
+				{
+					lev.Name = level.Name;
+					lev.Description = level.Description;
+					SaveChanges();
+				}
+#else
+				StorageSpaceLevels
+					.Where(l => l.Id == level.Id)
+					.ExecuteUpdate(set => set
+						.SetProperty(l => l.Name, level.Name)
+						.SetProperty(l => l.Description, level.Description));
+#endif
 			}
 			else
 			{
@@ -36304,6 +36343,14 @@ RETURN
 				*/
 				#endregion
 
+				var level = new Data.Entities.StorageSpaceLevel()
+				{
+					Name = level.Name,
+					Description = level.Description
+				};
+				StorageSpaceLevels.Add(level);
+				SaveChanges();
+				return level.Id;
 			}
 			else
 			{
@@ -36374,6 +36421,17 @@ AS
 				*/
 				#endregion
 
+				var groups = StorageSpaceLevelResourceGroups
+					.Where(g => g.LevelId == levelId)
+					.Select(g => new
+					{
+						g.Group.GroupId,
+						g.Group.GroupName,
+						g.Group.GroupOrder,
+						g.Group.GroupController,
+						g.Group.ShowGroup
+					});
+				return EntityDataReader(groups);
 			}
 			else
 			{
@@ -36513,6 +36571,40 @@ RETURN
 				*/
 				#endregion
 
+				var spaces = StorageSpaces
+					.Select(s => new
+					{
+						s.Id,
+						s.Name,
+						s.ServiceId,
+						s.ServerId,
+						s.LevelId,
+						s.Path,
+						s.FsrmQuotaType,
+						s.FsrmQuotaSizeBytes,
+						s.IsShared,
+						s.IsDisabled,
+						s.UncPath,
+						UsedSizeBytes = StorageSpaceFolders
+							.Where(f => f.StorageSpaceId == s.Id)
+							.Sum(f => (long?)f.FsrmQuotaSizeBytes) ?? 0
+					});
+
+				if (!string.IsNullOrEmpty(filterValue) && !string.IsNullOrEmpty(filterColumn))
+				{
+					spaces = spaces.Where(DynamicFunctions.ColumnLike(spaces, filterColumn, filterValue));
+				}
+
+				var count = spaces.Count();
+
+				if (!string.IsNullOrEmpty(sortColumn))
+				{
+					spaces = spaces.OrderBy(sortColumn);
+				}
+
+				spaces = spaces.Skip(startRow).Take(maximumRows);
+
+				return EntityDataSet(count, spaces);
 			}
 			else
 			{
@@ -36557,6 +36649,26 @@ AS
 				*/
 				#endregion
 
+				var spaces = StorageSpaces
+					.Where(s => s.Id == id)
+					.Select(s => new
+					{
+						s.Id,
+						s.Name,
+						s.ServiceId,
+						s.ServerId,
+						s.LevelId,
+						s.Path,
+						s.FsrmQuotaType,
+						s.FsrmQuotaSizeBytes,
+						s.IsShared,
+						s.IsDisabled,
+						s.UncPath,
+						UsedSizeBytes = StorageSpaceFolders
+							.Where(f => f.StorageSpaceId == s.Id)
+							.Sum(f => (long?)f.FsrmQuotaSizeBytes) ?? 0
+					});
+				return EntityDataReader(spaces);
 			}
 			else
 			{
@@ -36598,6 +36710,26 @@ WHERE SS.ServerId = @ServerId AND SS.Path = @Path
 				*/
 				#endregion
 
+				var spaces = StorageSpaces
+					.Where(s => s.ServerId == serverId && s.Path == path)
+					.Select(s => new
+					{
+						s.Id,
+						s.Name,
+						s.ServiceId,
+						s.ServerId,
+						s.LevelId,
+						s.Path,
+						s.FsrmQuotaType,
+						s.FsrmQuotaSizeBytes,
+						s.IsShared,
+						s.IsDisabled,
+						s.UncPath,
+						UsedSizeBytes = StorageSpaceFolders
+							.Where(f => f.StorageSpaceId == s.Id)
+							.Sum(f => (long?)f.FsrmQuotaSizeBytes) ?? 0
+					});
+				return EntityDataReader(spaces);
 			}
 			else
 			{
@@ -36637,6 +36769,23 @@ AS
 				*/
 				#endregion
 
+				var sp = StorageSpaces
+					.FirstOrDefault(s => s.Id == space.Id);
+				if (sp != null)
+				{
+					sp.Name = space.Name;
+					sp.ServiceId = space.ServiceId;
+					sp.ServerId = space.ServerId;
+					sp.LevelId = space.LevelId;
+					sp.Path = space.Path;
+					sp.FsrmQuotaType = space.FsrmQuotaType;
+					sp.FsrmQuotaSizeBytes = space.FsrmQuotaSizeBytes;
+					sp.IsShared = space.IsShared;
+					sp.UncPath = space.UncPath;
+					sp.IsDisabled = space.IsDisabled;
+					SaveChanges();
+				}
+				return space.Id;
 			}
 			else
 			{
@@ -36715,6 +36864,22 @@ RETURN
 				*/
 				#endregion
 
+				var sp = new Data.Entities.StorageSpace()
+				{
+					Name = space.Name,
+					ServiceId = space.ServiceId,
+					ServerId = space.ServerId,
+					LevelId = space.LevelId,
+					Path = space.Path,
+					FsrmQuotaType = space.FsrmQuotaType,
+					FsrmQuotaSizeBytes = space.FsrmQuotaSizeBytes,
+					IsShared = space.IsShared,
+					UncPath = space.UncPath,
+					IsDisabled = space.IsDisabled
+				};
+				StorageSpaces.Add(sp);
+				SaveChanges();
+				return sp.Id;
 			}
 			else
 			{
@@ -36800,6 +36965,27 @@ WHERE SS.LevelId = @LevelId
 				*/
 				#endregion
 
+				var spaces = StorageSpaces
+					.Where(s => s.LevelId == levelId)
+					.Join(StorageSpaceLevels, s => s.LevelId, l => l.Id, (s, l) => s)
+					.Select(s => new
+					{
+						s.Id,
+						s.Name,
+						s.ServiceId,
+						s.ServerId,
+						s.LevelId,
+						s.Path,
+						s.FsrmQuotaType,
+						s.FsrmQuotaSizeBytes,
+						s.IsShared,
+						s.IsDisabled,
+						s.UncPath,
+						UsedSizeBytes = StorageSpaceFolders
+							.Where(f => f.StorageSpaceId == s.Id)
+							.Sum(f => (long?)f.FsrmQuotaSizeBytes) ?? 0
+					});
+				return EntityDataSet(spaces);
 			}
 			else
 			{
@@ -36842,6 +37028,27 @@ WHERE RG.GroupName = @ResourceGroupName
 				*/
 				#endregion
 
+				var spaces = StorageSpaces
+					.Join(StorageSpaceLevelResourceGroups
+						.Where(g => g.Group.GroupName == groupName), s => s.LevelId, g => g.LevelId, (s, g) => s)
+					.Select(s => new
+					{
+						s.Id,
+						s.Name,
+						s.ServiceId,
+						s.ServerId,
+						s.LevelId,
+						s.Path,
+						s.FsrmQuotaType,
+						s.FsrmQuotaSizeBytes,
+						s.IsShared,
+						s.IsDisabled,
+						s.UncPath,
+						UsedSizeBytes = StorageSpaceFolders
+							.Where(f => f.StorageSpaceId == s.Id)
+							.Sum(f => (long?)f.FsrmQuotaSizeBytes) ?? 0
+					});
+				return EntityDataReader(spaces);
 			}
 			else
 			{
@@ -36901,6 +37108,19 @@ RETURN
 				*/
 				#endregion
 
+				var folder = new Data.Entities.StorageSpaceFolder()
+				{
+					Name = name,
+					StoraSpaceId = storageSpaceId,
+					Path = path,
+					UncPath = uncPath,
+					IsShared = isShared,
+					FsrmQuotaType = quotaType,
+					FsrmQuotaSizeBytes = fsrmQuotaSizeBytes
+				};
+				StorageSpaceFolders.Add(folder);
+				SaveChanges();
+				return folder.Id;
 			}
 			else
 			{
@@ -36962,6 +37182,19 @@ WHERE ID = @ID
 				*/
 				#endregion
 
+				var folder = StorageSpaceFolders
+					.FirstOrDefault(f => f.Id == id);
+				if (folder != null) {
+					folder.Name = folderName;
+					folder.StorageSpaceId = storageSpaceId;
+					folder.Path = path;
+					folder.UncPath = uncPath;
+					folder.IsShared = isShared;
+					folder.FsrmQuotaType = type;
+					folder.FsrmQuotaSizeBytes = fsrmQuotaSizeBytes;
+					SaveChanges();
+				}
+				return id;
 			}
 			else
 			{
@@ -37007,6 +37240,20 @@ WHERE StorageSpaceId = @StorageSpaceId
 				*/
 				#endregion
 
+				var folders = StorageSpaceFolders
+					.Where(f => f.StorageSpaceId == id)
+					.Select(f => new
+					{
+						f.Id,
+						f.Name,
+						f.StorageSpaceId,
+						f.Path,
+						f.UncPath,
+						f.IsShared,
+						f.FsrmQuotaType,
+						f.FsrmQuotaSizeBytes
+					});
+				return EntityDataReader(folders);
 			}
 			else
 			{
@@ -37043,6 +37290,21 @@ WHERE Id = @ID
 				*/
 				#endregion
 
+				var folder = StorageSpaceFolders
+					.Where(f => f.Id == id)
+					.Take(1)
+					.Select(f => new
+					{
+						f.Id,
+						f.Name,
+						f.StorageSpaceId,
+						f.Path,
+						f.UncPath,
+						f.IsShared,
+						f.FsrmQuotaType,
+						f.FsrmQuotaSizeBytes
+					});
+				return EntityDataReader(folder);
 			}
 			else
 			{
@@ -37082,7 +37344,7 @@ WHERE ID=@ID
 					new SqlParameter("@ID", id));
 			}
 		}
-		#endregion
+#endregion
 
 		#region RDS
 
@@ -37155,6 +37417,17 @@ AS
 				*/
 				#endregion
 
+				var settings = RdsServerSettings
+					.Where(s => s.RdsServerId == serverId && s.SettingsName == settingsName)
+					.Select(s => new
+					{
+						s.RdsServerId,
+						s.PropertyName,
+						s.PropertyValue,
+						s.ApplyUsers,
+						s.ApplyAdministrators
+					});
+				return EntityDataReader(settings);
 			}
 			else
 			{
@@ -37218,6 +37491,27 @@ RETURN
 				*/
 				#endregion
 
+				using (var transaction = Database.BeginTransaction())
+				{
+					RdsServerSettings
+						.Where(s => s.RdsServerId == serverId && s.SettingsName == settingsName)
+						.ExecuteDelete(RdsServerSettings);
+
+					var settings = XElement.Parse(xml)
+						.Elements()
+						.Select(e => new Data.Entities.RdsServerSetting()
+						{
+							RdsServerId = serverId,
+							SettingsName = settingsName,
+							ApplyUsers = (int)e.Attribute("applyUsers") != 0,
+							ApplyAdministrators = (int)e.Attribute("applyAdministrators") != 0,
+							PropertyName = (string)e.Attribute("name"),
+							PropertyValue = (string)e.Attribute("value")
+						});
+					RdsServerSettings.AddRange(settings);
+					SaveChanges();
+					transaction.Commit();
+				}
 			}
 			else
 			{
@@ -37271,6 +37565,18 @@ RETURN
 				*/
 				#endregion
 
+				var cert = new Data.Entities.RdsCertificate()
+				{
+					ServiceId = serviceId,
+					Content = content,
+					Hash = hash,
+					FileName = fileName,
+					ValidFrom = validFrom,
+					ExpiryDate = expiryDate
+				};
+				RdsCertificates.Add(cert);
+				SaveChanges();
+				return cert.Id;
 			}
 			else
 			{
@@ -37318,6 +37624,21 @@ SELECT TOP 1
 				*/
 				#endregion
 
+				var cert = RdsCertificates
+					.Where(c => c.ServiceId == serviceId)
+					.OrderByDescending(c => c.Id)
+					.Take(1)
+					.Select(c => new
+					{
+						c.Id,
+						c.ServiceId,
+						c.Content,
+						c.Hash,
+						c.FileName,
+						c.ValidFrom,
+						c.ExpiryDate
+					});
+				return EntityDataReader(cert);
 			}
 			else
 			{
@@ -37365,6 +37686,30 @@ SELECT TOP 1
 				*/
 				#endregion
 
+				var setting = RdsCollectionSettings
+					.Where(s => s.RdsCollectionId == collectionId)
+					.Take(1)
+					.Select(s => new
+					{
+						s.Id,
+						s.RdsCollectionId,
+						s.DisconnectedSessionLimitMin,
+						s.ActiveSessionLimitMin,
+						s.IdleSessionLimitMin,
+						s.BrokenConnectionAction,
+						s.AutomaticReconnectionEnabled,
+						s.TemporaryFoldersDeletedOnExit,
+						s.TemporaryFoldersPerSession,
+						s.ClientDeviceRedirectionOptions,
+						s.ClientPrinterRedirected,
+						s.ClientPrinterAsDefault,
+						s.RdEasyPrintDriverEnabled,
+						s.MaxRedirectedMonitors,
+						s.SecurityLayer,
+						s.EncryptionLevel,
+						s.AuthenticateUsingNla
+					});
+				return EntityDataReader(setting);
 			}
 			else
 			{
@@ -37458,6 +37803,28 @@ RETURN
 				*/
 				#endregion
 
+				var setting = new Data.Entities.RdsCollectionSetting()
+				{
+					RdsCollectionId = rdsCollectionId,
+					DisconnectedSessionLimitMin = disconnectedSessionLimitMin,
+					ActiveSessionLimitMin = activeSessionLimitMin,
+					IdleSessionLimitMin = idleSessionLimitMin,
+					BrokenConnectionAction = brokenConnectionAction,
+					AutomaticReconnectionEnabled = automaticReconnectionEnabled,
+					TemporaryFoldersDeletedOnExit = temporaryFoldersDeletedOnExit,
+					TemporaryFoldersPerSession = temporaryFoldersPerSession,
+					ClientDeviceRedirectionOptions = clientDeviceRedirectionOptions,
+					ClientPrinterRedirected = ClientPrinterRedirected,
+					ClientPrinterAsDefault = clientPrinterAsDefault,
+					RdEasyPrintDriverEnabled = rdEasyPrintDriverEnabled,
+					MaxRedirectedMonitors = maxRedirectedMonitors,
+					SecurityLayer = SecurityLayer,
+					EncryptionLevel = EncryptionLevel,
+					AuthenticateUsingNla = AuthenticateUsingNLA
+				};
+				RdsCollectionSettings.Add(setting);
+				SaveChanges();
+				return setting.Id;
 			}
 			else
 			{
@@ -37549,6 +37916,28 @@ WHERE ID = @Id
 				*/
 				#endregion
 
+				var setting = RdsCollectionSettings
+					.FirstOrDefault(s => s.Id == id);
+				if (setting != null)
+				{
+					setting.RdsCollectionId = rdsCollectionId;
+					setting.DisconnectedSessionLimitMin = disconnectedSessionLimitMin;
+					setting.ActiveSessionLimitMin = activeSessionLimitMin;
+					setting.IdleSessionLimitMin = idleSessionLimitMin;
+					setting.BrokenConnectionAction = brokenConnectionAction;
+					setting.AutomaticReconnectionEnabled = automaticReconnectionEnabled;
+					setting.TemporaryFoldersDeletedOnExit = temporaryFoldersDeletedOnExit;
+					setting.TemporaryFoldersPerSession = temporaryFoldersPerSession;
+					setting.ClientDeviceRedirectionOptions = clientDeviceRedirectionOptions;
+					setting.ClientPrinterRedirected = ClientPrinterRedirected;
+					setting.ClientPrinterAsDefault = clientPrinterAsDefault;
+					setting.RdEasyPrintDriverEnabled = rdEasyPrintDriverEnabled;
+					setting.MaxRedirectedMonitors = maxRedirectedMonitors;
+					setting.SecurityLayer = SecurityLayer;
+					setting.EncryptionLevel = EncryptionLevel;
+					setting.AuthenticateUsingNla = AuthenticateUsingNLA;
+					SaveChanges();
+				}
 			}
 			else
 			{
@@ -37702,6 +38091,18 @@ SELECT TOP 1
 				*/
 				#endregion
 
+				var collection = RdsCollections
+					.Where(c => c.Id == id)
+					.Take(1)
+					.Select(c => new
+					{
+						c.Id,
+						c.ItemId,
+						c.Name,
+						c.Description,
+						c.DisplayName
+					});
+				return EntityDataReader(collection);
 			}
 			else
 			{
@@ -37773,6 +38174,29 @@ RETURN
 				*/
 				#endregion
 
+				var collections = RdsCollections
+					.Where(c => c.ItemId == itemId)
+					.Select(c => new
+					{
+						c.Id,
+						c.ItemId,
+						c.Name,
+						c.Description,
+						c.DisplayName
+					});
+
+				if (!string.IsNullOrEmpty(filterValue) && !string.IsNullOrEmpty(filterColumn))
+				{
+					collections = collections.Where(DynamicFunctions.ColumnLike(collections, filterColumn, filterValue));
+				}
+
+				var count = collections.Count();
+
+				if (!string.IsNullOrEmpty(sortColumn)) collections = collections.OrderBy(sortColumn);
+
+				collections = collections.Skip(startRow).Take(maximumRows);
+
+				return EntityDataSet(collections);
 			}
 			else
 			{
@@ -37826,6 +38250,16 @@ RETURN
 				*/
 				#endregion
 
+				var collection = new Data.Entities.RdsCollection()
+				{
+					ItemId = itemId,
+					Name = name,
+					Description = description,
+					DisplayName = displayName
+				};
+				RdsCollections.Add(collection);
+				SaveChanges();
+				return collection.Id;
 			}
 			else
 			{
@@ -37867,6 +38301,9 @@ RETURN
 				*/
 				#endregion
 
+				return RdsCollectionUsers
+					.Where(u => u.RdsCollection.ItemId == itemId)
+					.Count();
 			}
 			else
 			{
