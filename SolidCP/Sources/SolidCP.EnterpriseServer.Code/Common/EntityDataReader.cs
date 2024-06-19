@@ -81,7 +81,7 @@ namespace SolidCP.EnterpriseServer
 
 		public virtual IEnumerator<TEntity> GetEnumerator() => ((IEnumerable<TEntity>)Set).GetEnumerator();
 
-		virtual IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)Set).GetEnumerator();
+		IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)Set).GetEnumerator();
 
 		public virtual void Close() => Dispose();
 

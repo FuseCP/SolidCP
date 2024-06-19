@@ -127,7 +127,14 @@ END
 			*/
 				#endregion
 
-				return EntityDataReader(SystemSettings.Where(s => s.SettingsName == settingsName));
+				var settings = SystemSettings
+					.Where(s => s.SettingsName == settingsName)
+					.Select(s => new
+					{
+						s.PropertyName,
+						s.PropertyValue
+					});
+				return EntityDataReader(settings);
 			}
 			return SqlHelper.ExecuteReader(
 				 ConnectionString,
@@ -188,20 +195,25 @@ XML Format:
 						*/
 				#endregion
 
-				var properties = XElement.Parse(xml);
-				bool hasChanges = false;
-				foreach (var property in properties.Elements())
+				using (var transaction = Database.BeginTransaction())
 				{
-					var setting = new Data.Entities.SystemSetting()
-					{
-						SettingsName = settingsName,
-						PropertyName = (string)property.Attribute("name"),
-						PropertyValue = (string)property.Attribute("value")
-					};
-					SystemSettings.Add(setting);
-					hasChanges = true;
+					SystemSettings
+						.Where(s => s.SettingsName == settingsName)
+						.ExecuteDelete(SystemSettings);
+
+					var settings = XElement.Parse(xml)
+						.Elements()
+						.Select(e => new Data.Entities.SystemSetting()
+						{
+							SettingsName = settingsName,
+							PropertyName = (string)e.Attribute("name"),
+							PropertyValue = (string)e.Attribute("value")
+						});
+					SystemSettings.AddRange(settings);
+					SaveChanges();
+
+					transaction.Commit();
 				}
-				if (hasChanges) SaveChanges();
 			}
 			else
 			{
@@ -245,10 +257,18 @@ END
 				*/
 				#endregion
 
-				return EntityDataSet(
-					Themes
-						.Where(t => t.Enabled == 1)
-						.OrderBy(t => t.DisplayOrder));
+				var themes = Themes
+					.Where(t => t.Enabled == 1)
+					.OrderBy(t => t.DisplayOrder)
+					.Select(t => new
+					{
+						t.ThemeId,
+						t.DisplayName,
+						t.LTRName,
+						t.RTLName,
+						t.DisplayOrder
+					});
+				return EntityDataSet(themes);
 			}
 			else
 			{
@@ -283,9 +303,16 @@ END
 				*/
 				#endregion
 
-				return EntityDataSet(
-					ThemeSettings
-						.Where(ts => ts.ThemeId == ThemeID));
+				var settings = ThemeSettings
+					.Where(ts => ts.ThemeId == ThemeID)
+					.Select(ts => new
+					{
+						ts.ThemeId,
+						ts.SettingsName,
+						ts.PropertyName,
+						ts.PropertyValue
+					});
+				return EntityDataSet(settings);
 			}
 			else
 			{
@@ -323,9 +350,16 @@ END
 				*/
 				#endregion
 
-				return EntityDataSet(
-					ThemeSettings
-						.Where(ts => ts.ThemeId == ThemeID && ts.SettingsName == SettingsName));
+				var setting = ThemeSettings
+					.Where(ts => ts.ThemeId == ThemeID && ts.SettingsName == SettingsName)
+					.Select(ts => new
+					{
+						ts.ThemeId,
+						ts.SettingsName,
+						ts.PropertyName,
+						ts.PropertyValue
+					});
+				return EntityDataSet(setting);
 			}
 			else
 			{
@@ -374,7 +408,7 @@ BEGIN
 	RETURN 0
 END
 *//*
-			IF @ActorID = @UserID
+IF @ActorID = @UserID
 BEGIN
 	RETURN 1
 END
@@ -504,18 +538,34 @@ RETURN
 					throw new AccessViolationException("You are not allowed to access this account");
 
 				var id = userId;
-				var setting = UserSettings.Where(s => s.UserId == id && s.SettingsName == SettingsName);
-				while (!setting.Any())
+				var settings = UserSettings
+					.Where(s => s.UserId == id && s.SettingsName == SettingsName)
+					.Select(ts => new
+					{
+						ts.UserId,
+						ts.PropertyName,
+						ts.PropertyValue
+					});
+				while (!settings.Any())
 				{
-					var user = Users.FirstOrDefault(u => u.UserId == id);
+					var user = Users
+						.Select(u => new { u.UserId, u.OwnerId })
+						.FirstOrDefault(u => u.UserId == id);
 					if (user != null && user.OwnerId != null)
 					{
 						id = user.OwnerId.Value;
-						setting = UserSettings.Where(s => s.UserId == id && s.SettingsName == SettingsName);
+						settings = UserSettings
+							.Where(s => s.UserId == id && s.SettingsName == SettingsName)
+							.Select(ts => new
+							{
+								ts.UserId,
+								ts.PropertyName,
+								ts.PropertyValue
+							});
 					}
 					else break;
 				}
-				return EntityDataSet(setting);
+				return EntityDataSet(settings);
 			}
 			else
 			{
@@ -572,9 +622,10 @@ END
 				if (!CheckActorUserRights(actorId, userId))
 					throw new AccessViolationException("You are not allowed to access this account");
 
-				var setting = UserSettings.FirstOrDefault(s => s.UserId == userId &&
-					s.SettingsName == SettingsName &&
-					s.PropertyName == PropertyName);
+				var setting = UserSettings
+					.FirstOrDefault(s => s.UserId == userId &&
+						s.SettingsName == SettingsName &&
+						s.PropertyName == PropertyName);
 				if (setting != null)
 				{
 					setting.PropertyValue = PropertyValue;
@@ -633,10 +684,10 @@ RETURN
 				if (!CheckActorUserRights(actorId, userId))
 					throw new AccessViolationException("You are not allowed to access this account");
 
-				UserSettings.RemoveRange(UserSettings.Where(s => s.UserId == userId &&
-					s.SettingsName == "Theme" && s.PropertyName == PropertyName));
-
-				SaveChanges();
+				UserSettings
+					.Where(s => s.UserId == userId &&
+						s.SettingsName == "Theme" && s.PropertyName == PropertyName)
+					.ExecuteDelete(UserSettings);
 			}
 			else
 			{
@@ -2934,8 +2985,27 @@ RETURN
 				var users = Users
 					.Join(parents, u => u.UserId, p => p.UserId, (user, parent) => new { User = user, Order = parent.Order })
 					.OrderByDescending(u => u.Order)
-					.Select(u => u.User);
-
+					.Select(u => new
+					{
+						u.User.UserId,
+						u.User.RoleId,
+						u.User.StatusId,
+						u.User.SubscriberNumber,
+						u.User.LoginStatusId,
+						u.User.FailedLogins,
+						u.User.OwnerId,
+						u.User.Created,
+						u.User.Changed,
+						u.User.IsDemo,
+						u.User.Comments,
+						u.User.IsPeer,
+						u.User.Username,
+						u.User.FirstName,
+						u.User.LastName,
+						u.User.Email,
+						u.User.CompanyName,
+						u.User.EcommerceEnabled
+					});
 				return EntityDataSet(users);
 			}
 			else
@@ -2993,9 +3063,29 @@ RETURN
 
 				var canGetDetails = CanGetUserDetails(actorId, userId);
 
-				var userPeers = UsersDetailed
-					.Where(u => canGetDetails && u.OwnerId == userId && u.IsPeer);
-
+				var userPeers = Users
+					.Where(u => canGetDetails && u.OwnerId == userId && u.IsPeer)
+					.Select(u => new
+					{
+						u.UserId,
+						u.RoleId,
+						u.StatusId,
+						u.LoginStatusId,
+						u.FailedLogins,
+						u.OwnerId,
+						u.Created,
+						u.Changed,
+						u.IsDemo,
+						u.Comments,
+						u.IsPeer,
+						u.Username,
+						u.FirstName,
+						u.LastName,
+						u.Email,
+						FullName = u.FirstName + " " + u.LastName,
+						u.CompanyName,
+						u.EcommerceEnabled
+					});
 				return EntityDataSet(userPeers);
 			}
 			else
@@ -3062,8 +3152,39 @@ RETURN
 					.Join(Packages, u => u.UserId, p => p.UserId, (user, package) => new { User = user, package.PackageId })
 					.Join(ServiceItems, u => u.PackageId, s => s.PackageId, (user, serviceItem) => new { user.User, serviceItem.ItemId })
 					.Where(u => u.ItemId == itemId)
-					.Select(u => u.User);
-
+					.Select(u => new
+					{
+						u.User.RoleId,
+						u.User.StatusId,
+						u.User.SubscriberNumber,
+						u.User.LoginStatusId,
+						u.User.FailedLogins,
+						u.User.OwnerId,
+						u.User.Created,
+						u.User.Changed,
+						u.User.IsDemo,
+						u.User.Comments,
+						u.User.IsPeer,
+						u.User.Username,
+						u.User.Password,
+						u.User.FirstName,
+						u.User.LastName,
+						u.User.Email,
+						u.User.SecondaryEmail,
+						u.User.Address,
+						u.User.City,
+						u.User.State,
+						u.User.Country,
+						u.User.Zip,
+						u.User.PrimaryPhone,
+						u.User.SecondaryPhone,
+						u.User.Fax,
+						u.User.InstantMessenger,
+						u.User.HtmlMail,
+						u.User.CompanyName,
+						u.User.EcommerceEnabled,
+						u.User.AdditionalParams
+					});
 				return EntityDataReader(users);
 			}
 			else
@@ -3129,7 +3250,46 @@ AS
 				*/
 				#endregion
 
-				return EntityDataReader(Users.Where(u => u.UserId == userId));
+				var users = Users
+					.Where(u => u.UserId == userId)
+					.Select(u => new
+					{
+						u.UserId,
+						u.RoleId,
+						u.StatusId,
+						u.SubscriberNumber,
+						u.LoginStatusId,
+						u.FailedLogins,
+						u.OwnerId,
+						u.Created,
+						u.Changed,
+						u.IsDemo,
+						u.Comments,
+						u.IsPeer,
+						u.Username,
+						u.Password,
+						u.FirstName,
+						u.LastName,
+						u.Email,
+						u.SecondaryEmail,
+						u.Address,
+						u.City,
+						u.State,
+						u.Country,
+						u.Zip,
+						u.PrimaryPhone,
+						u.SecondaryPhone,
+						u.Fax,
+						u.InstantMessenger,
+						u.HtmlMail,
+						u.CompanyName,
+						u.EcommerceEnabled,
+						u.AdditionalParams,
+						u.OneTimePasswordState,
+						u.MfaMode,
+						u.PinSecret
+					});
+				return EntityDataReader(users);
 			}
 			else
 			{
@@ -3185,7 +3345,6 @@ AS
 		U.OneTimePasswordState,
 		U.MfaMode,
 		U.PinSecret
-
 	FROM Users AS U
 	WHERE U.Username = @Username
 
@@ -3193,7 +3352,46 @@ AS
 				*/
 				#endregion
 
-				return EntityDataReader(Users.Where(u => u.Username == username));
+				var users = Users
+					.Where(u => u.Username == username)
+					.Select(u => new
+					{
+						u.UserId,
+						u.RoleId,
+						u.StatusId,
+						u.SubscriberNumber,
+						u.LoginStatusId,
+						u.FailedLogins,
+						u.OwnerId,
+						u.Created,
+						u.Changed,
+						u.IsDemo,
+						u.Comments,
+						u.IsPeer,
+						u.Username,
+						u.Password,
+						u.FirstName,
+						u.LastName,
+						u.Email,
+						u.SecondaryEmail,
+						u.Address,
+						u.City,
+						u.State,
+						u.Country,
+						u.Zip,
+						u.PrimaryPhone,
+						u.SecondaryPhone,
+						u.Fax,
+						u.InstantMessenger,
+						u.HtmlMail,
+						u.CompanyName,
+						u.EcommerceEnabled,
+						u.AdditionalParams,
+						u.OneTimePasswordState,
+						u.MfaMode,
+						u.PinSecret
+					});
+				return EntityDataReader(users);
 			}
 			else
 			{
@@ -6772,7 +6970,7 @@ END
 			return package != null && package.ParentPackageId == parentPackageId;
 		}
 
-		public IEnumerbale<int> GetChildPackages(int parentPackageId)
+		public IEnumerable<int> GetChildPackages(int parentPackageId)
 		{
 			var parents = new[] { parentPackageId };
 			yield return parentPackageId;
@@ -6868,7 +7066,7 @@ END
 				*/
 				#endregion
 
-				var packages GetChildPackages(packageId)
+				var packages = GetChildPackages(packageId)
 					.ToArray();
 				var vlans = PackageVlans
 					//.Where(pv => CheckPackageParent(packageId, pv.PackageId))
@@ -13505,9 +13703,9 @@ RETURN
 				{
 					Domains.Where(d => d.WebSiteId == itemId && d.IsDomainPointer).ExecuteDelete(Domains);
 #if NETCOREAPP
-					Domains.Where(d => d.ZoneItemId == itemId).ExecuteUpdate(s => s.SetPropery(p => p.ZoneItemId, null));
-					Domains.Where(d => d.WebSiteId == itemId).ExecuteUpdate(s => s.SetProperty(p => p.WebSiteId, null));
-					Domains.Where(d => d.MailDomainId == itemId).ExecuteUpdate(s => s.SetProperty(p => p.MailDomainId, null));
+					Domains.Where(d => d.ZoneItemId == itemId).ExecuteUpdate(s => s.SetPropery(p => p.ZoneItemId, null as int?));
+					Domains.Where(d => d.WebSiteId == itemId).ExecuteUpdate(s => s.SetProperty(p => p.WebSiteId, null as int?));
+					Domains.Where(d => d.MailDomainId == itemId).ExecuteUpdate(s => s.SetProperty(p => p.MailDomainId, null as int?));
 #else
 					foreach (var domain in Domains.Where(d => d.ZoneItemId == itemId)) domain.ZoneItemId = null;
 					foreach (var domain in Domains.Where(d => d.WebSiteId == itemId)) domain.WebSiteId = null;
@@ -17896,7 +18094,8 @@ AS
 						.Count();
 					break;
 				case 206: // HostedSolution.Users
-					var accountTypes = new int[] { 1, 5, 6, 7 };
+					var accountTypes = new [] { ExchangeAccountType.Mailbox, ExchangeAccountType.Room, 
+						ExchangeAccountType.Equipment, ExchangeAccountType.User };
 					result = ExchangeAccounts
 						.Join(ServiceItems, ea => ea.ItemId, si => si.ItemId, (ea, si) => new
 						{
@@ -17926,7 +18125,7 @@ AS
 							Tree = t
 						})
 						.Where(t => t.Tree.ParentPackageId == packageId && t.Exchange.MailboxPlanId != null &&
-							t.Exchange.AccountType == 1)
+							t.Exchange.AccountType == ExchangeAccountType.Mailbox)
 						.Count();
 					break;
 				case 731: // Exchange2013.JournalingMailboxes
@@ -17943,11 +18142,13 @@ AS
 							Tree = t
 						})
 						.Where(t => t.Tree.ParentPackageId == packageId && t.Exchange.MailboxPlanId != null &&
-							t.Exchange.AccountType == 12)
+							t.Exchange.AccountType == ExchangeAccountType.JournalingMailbox)
 						.Count();
 					break;
 				case 77: // Exchange2007.DiskSpace
-					accountTypes = new int[] { 1, 5, 6, 10, 12 };
+					accountTypes = new [] { ExchangeAccountType.Mailbox, ExchangeAccountType.Room,
+						ExchangeAccountType.Equipment, ExchangeAccountType.SharedMailbox,
+						ExchangeAccountType.JournalingMailbox };
 					result = ExchangeAccounts
 						.Join(ExchangeMailboxPlans, ea => ea.MailboxPlanId, ep => ep.MailboxPlanId, (ea, ep) => new
 						{
@@ -18067,7 +18268,8 @@ AS
 						.Count();
 					break;
 				case 423: // HostedSolution.SecurityGroups
-					accountTypes = new int[] { 8, 9 };
+					accountTypes = new [] { ExchangeAccountType.SecurityGroup,
+						ExchangeAccountType.DefaultSecurityGroup };
 					result = ExchangeAccounts
 						.Join(ServiceItems, ea => ea.ItemId, si => si.ItemId, (ea, si) => new
 						{
@@ -18097,7 +18299,8 @@ AS
 							ea.Item,
 							Tree = t
 						})
-						.Where(t => t.Tree.ParentPackageId == packageId && t.Exchange.AccountType == 11)
+						.Where(t => t.Tree.ParentPackageId == packageId &&
+							t.Exchange.AccountType == ExchangeAccountType.DeletedUser)
 						.Count();
 					break;
 				case 450: // RDSCollectionUsers
@@ -18113,7 +18316,8 @@ AS
 							ea.Exchange,
 							Tree = t
 						})
-						.Where(t => t.Tree.ParentPackageId == packageId && t.Exchange.AccountType == 11)
+						.Where(t => t.Tree.ParentPackageId == packageId &&
+							t.Exchange.AccountType == ExchangeAccountType.DeletedUser)
 						.GroupBy(ea => ea.Exchange.AccountId)
 						.Count();
 					break;
@@ -21684,7 +21888,7 @@ WHERE T.Guid = (
 
 		public IEnumerable<int> GetChildUsersId(int userId)
 		{
-			if (Users.Any(u => u.UserId == userId) yield return userId;
+			if (Users.Any(u => u.UserId == userId)) yield return userId;
 
 			var descendants = Users
 				.Where(u => u.OwnerId == userId)
@@ -24369,7 +24573,7 @@ RETURN
 		public DataSet EntityDataSet<TEntity>(int count, IEnumerable<TEntity> set) => EntityDataSet(CountDataTable(count), EntityDataTable(set));
 		public DataSet EntityDataSet<TEntity1, TEntity2>(int count, IEnumerable<TEntity1> set1, IEnumerable<TEntity2> set2) => EntityDataSet(CountDataTable(count), EntityDataTable(set1), EntityDataTable(set2));
 		public DataSet EntityDataSet<TEntity1, TEntity2>(IEnumerable<TEntity1> set1, IEnumerable<TEntity2> set2) => EntityDataSet(EntityDataTable(set1), EntityDataTable(set2));
-		public DataSet EntityDataSet<TEntity1, TEntity2>(IEnumerable<TEntity1> set1, IEnumerable<TEntity2> set2, IEnumerable<TEntity3> set3) => EntityDataSet(EntityDataTable(set1), EntityDataTable(set2), EntityDataTable(set3));
+		public DataSet EntityDataSet<TEntity1, TEntity2, TEntity3>(IEnumerable<TEntity1> set1, IEnumerable<TEntity2> set2, IEnumerable<TEntity3> set3) => EntityDataSet(EntityDataTable(set1), EntityDataTable(set2), EntityDataTable(set3));
 		public DataTable CountDataTable(int count)
 		{
 			var table = new DataTable();
@@ -27403,7 +27607,9 @@ RETURN
 				*/
 				#endregion
 
-				ExchangeRetentionPolicyTags.Where(t => t.TagId == TagID).ExecuteDelete();
+				ExchangeRetentionPolicyTags
+					.Where(t => t.TagId == TagID)
+					.ExecuteDelete(ExchangeRetentionPolicyTags);
 			}
 			else
 			{
@@ -28284,7 +28490,7 @@ Where ItemId = @ItemId AND SettingsName = @SettingsName
 				#endregion
 
 				var settings = ExchangeOrganizationSettings
-					.Where(s => s.ItemId == itemId && s.SettingsName == settingName)
+					.Where(s => s.ItemId == itemId && s.SettingsName == settingsName)
 					.Select(s => new
 					{
 						s.ItemId,
@@ -29735,7 +29941,7 @@ RETURN
 
 				if (!string.IsNullOrEmpty(filterValue))
 				{
-					if (!string.IsNullOrEmpty(filterColumn)) items = items.Where(DynamicFunctions.ColumnLike(filterColumn, filterValue));
+					if (!string.IsNullOrEmpty(filterColumn)) items = items.Where(DynamicFunctions.ColumnLike(items, filterColumn, filterValue));
 					else
 					{
 #if NETFRAMEWORK
@@ -29930,7 +30136,7 @@ RETURN
 
 				if (!string.IsNullOrEmpty(filterValue))
 				{
-					if (!string.IsNullOrEmpty(filterColumn)) items = items.Where(DynamicFunctions.ColumnLike(filterColumn, filterValue));
+					if (!string.IsNullOrEmpty(filterColumn)) items = items.Where(DynamicFunctions.ColumnLike(items, filterColumn, filterValue));
 					else
 					{
 #if NETFRAMEWORK
@@ -30125,7 +30331,7 @@ RETURN
 
 				if (!string.IsNullOrEmpty(filterValue))
 				{
-					if (!string.IsNullOrEmpty(filterColumn)) items = items.Where(DynamicFunctions.ColumnLike(filterColumn, filterValue));
+					if (!string.IsNullOrEmpty(filterColumn)) items = items.Where(DynamicFunctions.ColumnLike(items, filterColumn, filterValue));
 					else
 					{
 #if NETFRAMEWORK
@@ -30324,7 +30530,7 @@ RETURN
 
 				if (!string.IsNullOrEmpty(filterValue))
 				{
-					if (!string.IsNullOrEmpty(filterColumn)) items = items.Where(DynamicFunctions.ColumnLike(filterColumn, filterValue));
+					if (!string.IsNullOrEmpty(filterColumn)) items = items.Where(DynamicFunctions.ColumnLike(items, filterColumn, filterValue));
 					else
 					{
 #if NETFRAMEWORK
@@ -35278,7 +35484,7 @@ RETURN
 
 				if (!string.IsNullOrEmpty(filterColumn) && !string.IsNullOrEmpty(filterValue))
 				{
-					folders = folders.Where(DynamicFunctions.ColumnLike(filterColumn, filterValue));
+					folders = folders.Where(DynamicFunctions.ColumnLike(folders, filterColumn, filterValue));
 				}
 
 				var count = folders.Count();
@@ -36343,14 +36549,14 @@ RETURN
 				*/
 				#endregion
 
-				var level = new Data.Entities.StorageSpaceLevel()
+				var lev = new Data.Entities.StorageSpaceLevel()
 				{
 					Name = level.Name,
 					Description = level.Description
 				};
-				StorageSpaceLevels.Add(level);
+				StorageSpaceLevels.Add(lev);
 				SaveChanges();
-				return level.Id;
+				return lev.Id;
 			}
 			else
 			{
