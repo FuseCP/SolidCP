@@ -2482,7 +2482,7 @@ namespace SolidCP.EnterpriseServer
 
         private int AddOrganizationUser(int itemId, string accountName, string displayName, string email, string sAMAccountName, string accountPassword, string subscriberNumber)
         {
-            return Database.AddExchangeAccount(itemId, (int)ExchangeAccountType.User, accountName, displayName, email, false, string.Empty,
+            return Database.AddExchangeAccount(itemId, ExchangeAccountType.User, accountName, displayName, email, false, string.Empty,
                                             sAMAccountName, 0, subscriberNumber.Trim());
 
         }
@@ -3909,7 +3909,7 @@ namespace SolidCP.EnterpriseServer
             string accountName, string displayName, string primaryEmailAddress, bool mailEnabledPublicFolder,
             MailboxManagerActions mailboxManagerActions, string samAccountName, string accountPassword, int mailboxPlanId, string subscriberNumber)
         {
-            return Database.AddExchangeAccount(itemId, (int)accountType,
+            return Database.AddExchangeAccount(itemId, accountType,
                 accountName, displayName, primaryEmailAddress, mailEnabledPublicFolder,
                 mailboxManagerActions.ToString(), samAccountName, mailboxPlanId, (string.IsNullOrEmpty(subscriberNumber) ? null : subscriberNumber.Trim()));
         }

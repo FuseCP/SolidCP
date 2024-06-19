@@ -24587,7 +24587,7 @@ RETURN
 
 		#region Exchange Server
 
-		public int AddExchangeAccount(int itemId, int accountType, string accountName,
+		public int AddExchangeAccount(int itemId, ExchangeAccountType accountType, string accountName,
 			string displayName, string primaryEmailAddress, bool mailEnabledPublicFolder,
 			string mailboxManagerActions, string samAccountName, int mailboxPlanId, string subscriberNumber)
 		{
