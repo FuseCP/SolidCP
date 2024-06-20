@@ -1444,7 +1444,7 @@ namespace SolidCP.EnterpriseServer
         {
             ExchangeAccount account = ObjectUtils.FillObjectFromDataReader<ExchangeAccount>(
                 Database.SearchExchangeAccount(SecurityContext.User.UserId,
-                (int)accountType, primaryEmailAddress));
+                accountType, primaryEmailAddress));
 
             if (account == null)
                 return null;

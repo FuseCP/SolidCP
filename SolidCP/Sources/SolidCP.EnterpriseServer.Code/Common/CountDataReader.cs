@@ -21,7 +21,7 @@ namespace SolidCP.EnterpriseServer
 		bool isReadingCount = true;
 
 		int count = -1;
-		int Count => count != -1 ? count : Set.Length;
+		int Count => count != -1 ? count : Set.Count();
 		public override int FieldCount => isReadingCount ? 1 : base.FieldCount;
 		public override IDataReader GetData(int i)
 		{

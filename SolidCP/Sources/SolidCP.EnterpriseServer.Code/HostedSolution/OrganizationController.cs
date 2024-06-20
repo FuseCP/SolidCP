@@ -3901,7 +3901,6 @@ namespace SolidCP.EnterpriseServer
             OCSServer ocs = new OCSServer();
             ServiceProviderProxy.Init(ocs, serviceId);
 
-
             return ocs;
         }
 

@@ -13703,7 +13703,7 @@ RETURN
 				{
 					Domains.Where(d => d.WebSiteId == itemId && d.IsDomainPointer).ExecuteDelete(Domains);
 #if NETCOREAPP
-					Domains.Where(d => d.ZoneItemId == itemId).ExecuteUpdate(s => s.SetPropery(p => p.ZoneItemId, null as int?));
+					Domains.Where(d => d.ZoneItemId == itemId).ExecuteUpdate(s => s.SetProperty(p => p.ZoneItemId, null as int?));
 					Domains.Where(d => d.WebSiteId == itemId).ExecuteUpdate(s => s.SetProperty(p => p.WebSiteId, null as int?));
 					Domains.Where(d => d.MailDomainId == itemId).ExecuteUpdate(s => s.SetProperty(p => p.MailDomainId, null as int?));
 #else
@@ -14543,8 +14543,8 @@ RETURN
 
 				var bandwidthsToDelete = PackagesBandwidths
 					.Where(pb => pb.PackageId == packageId)
-					.Join(groupedItems.Select(g => g.Key), pb => new { pb.LogDate, pb.GroupId },
-						k => k, (pb, k) => pb);
+					.Join(groupedItems.Select(g => g.Key), 
+						pb => new { pb.LogDate, GroupId = (int?)pb.GroupId }, k => k, (pb, k) => pb);
 
 				using (var transaction = Database.BeginTransaction())
 				{
@@ -17558,7 +17558,7 @@ END
 
 			const long MB = 1024 * 1024;
 
-			int diskspace = ((PackagesTreeCaches
+			int diskspace = (int)(((PackagesTreeCaches
 				.Where(t => t.ParentPackageId == packageId)
 				.Join(Packages, t => t.PackageId, p => p.PackageId, (t, p) => p)
 				.Join(PackagesDiskspaces, p => p.PackageId, pd => pd.PackageId, (p, pd) => new
@@ -17567,9 +17567,9 @@ END
 					Diskspace = pd
 				})
 				.Join(HostingPlanResources.Where(hr => hr.CalculateDiskSpace == true),
-					p => new { p.Diskspace.GroupId, p.Package.PlanId }, hr => new { hr.GroupId, hr.PlanId },
+					p => new { p.Diskspace.GroupId, p.Package.PlanId }, hr => new { hr.GroupId, PlanId = (int?)hr.PlanId },
 					(p, hr) => p.Diskspace.DiskSpace)
-				.Sum(space => (long?)space) ?? 0) + MB / 2) / MB;
+				.Sum(space => (long?)space) ?? 0) + MB / 2) / MB);
 			return diskspace;
 		}
 
@@ -17622,7 +17622,7 @@ END
 			var startDate = today.AddDays(-today.Day + 1);
 			var endDate = startDate.AddMonths(1);
 
-			int bandwidth = ((PackagesTreeCaches
+			int bandwidth = (int)(((PackagesTreeCaches
 				.Where(t => t.ParentPackageId == packageId)
 				.Join(Packages, t => t.PackageId, p => p.PackageId, (t, p) => p)
 				.Join(PackagesBandwidths, p => p.PackageId, pb => pb.PackageId, (p, pb) => new
@@ -17632,9 +17632,9 @@ END
 				})
 				.Where(p => startDate <= p.Bandwidth.LogDate && p.Bandwidth.LogDate < endDate)
 				.Join(HostingPlanResources.Where(hr => hr.CalculateBandwidth == true),
-					p => new { p.Bandwidth.GroupId, p.Package.PlanId }, hr => new { hr.GroupId, hr.PlanId },
+					p => new { p.Bandwidth.GroupId, p.Package.PlanId }, hr => new { hr.GroupId, PlanId = (int?)hr.PlanId },
 					(p, hr) => p.Bandwidth.BytesSent + p.Bandwidth.BytesReceived)
-				.Sum(space => (long?)space) ?? 0) + MB / 2) / MB;
+				.Sum(space => (long?)space) ?? 0) + MB / 2) / MB);
 			return bandwidth;
 		}
 
@@ -17986,7 +17986,8 @@ AS
 							p.Property.PropertyValue
 						})
 						.Where(p => p.PropertyName == "HddSize" && p.ParentPackageId == packageId)
-						.SelectMany(p => p.PropertyValue.Split(';', StringSplitOptions.None))
+						.AsEnumerable()
+						.SelectMany(p => p.PropertyValue.Split(';'))
 						.Sum(p => (int?)int.Parse(p)) ?? 0;
 					break;
 				case 309: // External IP addresses of VPS
@@ -21291,9 +21292,9 @@ RETURN
 					.Join(PackagesTreeCaches, p => p.PackageId, t => t.ParentPackageId, (p, t) => new { P = p, T = t })
 					.Join(Packages, pp => pp.T.PackageId, pc => pc.PackageId, (pp, pc) => new { pp.P, pp.T, PC = pc })
 					.Join(PackagesBandwidths, pp => pp.PC.PackageId, pb => pb.PackageId, (pp, pb) => new { pp.P, pp.PC, PB = pb })
-					.Join(HostingPlanResources, pp => new { pp.PC.PlanId, pp.PB.GroupId }, hpr => new { hpr.PlanId, hpr.GroupId },
+					.Join(HostingPlanResources, pp => new { pp.PC.PlanId, pp.PB.GroupId }, hpr => new { PlanId = (int?)hpr.PlanId, hpr.GroupId },
 						(pp, hpr) => new { pp.P, pp.PC, pp.PB, HPR = hpr })
-					.Where(p => startDate <= p.PB.LogDate && p.PB.LogDate < endDate && p.HPR.CalculateBandwith)
+					.Where(p => startDate <= p.PB.LogDate && p.PB.LogDate < endDate && p.HPR.CalculateBandwidth == true)
 					.GroupBy(p => p.P.PackageId)
 					.Select(p => new
 					{
@@ -21316,8 +21317,8 @@ RETURN
 					{
 						p.PackageId,
 						QuotaValue = p.PG != null ? p.PG.QuotaValue : 0,
-						Bandwith = p.PG != null ? p.PG.Bandwith : 0,
-						UsagePercentage = p.PG != null ? (p.PG.QuotaValue > 0 ? p.PG.Bandwith * 100 / p.PG.QuotaValue : 0) : 0,
+						Bandwith = p.PG != null ? p.PG.Bandwidth : 0,
+						UsagePercentage = p.PG != null ? (p.PG.QuotaValue > 0 ? p.PG.Bandwidth * 100 / p.PG.QuotaValue : 0) : 0,
 						PackagesNumber = Packages.Count(np => np.ParentPackageId == p.PackageId),
 						p.PackageName,
 						p.StatusId,
@@ -21326,7 +21327,7 @@ RETURN
 						u.FirstName,
 						u.LastName,
 						u.FullName,
-						u.RoleID,
+						u.RoleId,
 						u.Email,
 						UserComments = GetItemComments(u.UserId, "USER", actorId)
 					});
@@ -21472,15 +21473,15 @@ RETURN
 					.Join(PackagesTreeCaches, p => p.PackageId, t => t.ParentPackageId, (p, t) => new { P = p, T = t })
 					.Join(Packages, pp => pp.T.PackageId, pc => pc.PackageId, (pp, pc) => new { pp.P, pp.T, PC = pc })
 					.Join(PackagesDiskspaces, pp => pp.PC.PackageId, pd => pd.PackageId, (pp, pd) => new { pp.P, pp.PC, PD = pd })
-					.Join(HostingPlanResources, pp => new { pp.PC.PlanId, pp.PD.GroupId }, hpr => new { hpr.PlanId, hpr.GroupId },
+					.Join(HostingPlanResources, pp => new { pp.PC.PlanId, pp.PD.GroupId }, hpr => new { PlanId = (int?)hpr.PlanId, hpr.GroupId },
 						(pp, hpr) => new { pp.P, pp.PC, pp.PD, HPR = hpr })
-					.Where(p => p.HPR.CalculateDiskspace)
+					.Where(p => p.HPR.CalculateDiskSpace == true)
 					.GroupBy(p => p.P.PackageId)
 					.Select(p => new
 					{
 						PackageId = p.Key,
 						QuotaValue = GetPackageAllocatedQuota(p.Key, 51),
-						Diskspace = ((float)p.Sum(s => s.PD.DiskSpace) ?? 0) / 1024 / 1024
+						Diskspace = (float)(p.Sum(s => (long?)s.PD.DiskSpace) ?? 0) / 1024 / 1024
 					});
 				var packages = Packages
 					.Where(p => packageId == -1 && p.UserId == userId ||
@@ -21507,7 +21508,7 @@ RETURN
 						u.FirstName,
 						u.LastName,
 						u.FullName,
-						u.RoleID,
+						u.RoleId,
 						u.Email,
 						UserComments = GetItemComments(u.UserId, "USER", actorId)
 					});
@@ -21597,11 +21598,11 @@ RETURN
 						pt => pt.PackageId, pb => pb.PackageId, (pt, pb) => new { PT = pt, PB = pb })
 					.Join(Packages, pb => pb.PB.PackageId, p => p.PackageId, (pb, p) => new { pb.PT, pb.PB, P = p })
 					.Join(HostingPlanResources.Where(hp => hp.CalculateBandwidth == true), p => new { p.PB.GroupId, p.P.PlanId },
-						hpr => new { hpr.GroupId, hpr.PlanId }, (p, hpr) => new { p.P, p.PB, p.PT, HPR = hpr })
+						hpr => new { hpr.GroupId, PlanId = (int?)hpr.PlanId }, (p, hpr) => new { p.P, p.PB, p.PT, HPR = hpr })
 					.GroupBy(p => p.PB.GroupId)
 					.Select(p => new
 					{
-						p.Key.GroupId,
+						GroupId = p.Key,
 						BytesSent = p.Sum(pb => (long?)pb.PB.BytesSent) ?? 0,
 						BytesReceived = p.Sum(pb => (long?)pb.PB.BytesReceived) ?? 0
 					});
@@ -21691,12 +21692,12 @@ RETURN
 					.Join(PackagesDiskspaces, pt => pt.PackageId, pd => pd.PackageId, (pt, pd) => new { PT = pt, PD = pd })
 					.Join(Packages, pb => pb.PD.PackageId, p => p.PackageId, (pb, p) => new { pb.PT, pb.PD, P = p })
 					.Join(HostingPlanResources.Where(hp => hp.CalculateDiskSpace == true), p => new { p.PD.GroupId, p.P.PlanId },
-						hpr => new { hpr.GroupId, hpr.PlanId }, (p, hpr) => new { p.P, p.PD, p.PT, HPR = hpr })
+						hpr => new { hpr.GroupId, PlanId = (int?)hpr.PlanId }, (p, hpr) => new { p.P, p.PD, p.PT, HPR = hpr })
 					.GroupBy(p => p.PD.GroupId)
 					.Select(p => new
 					{
-						p.Key.GroupId,
-						Diskspace = p.Sum(pb => (long?)pb.PD.Diskspace) ?? 0
+						GroupId = p.Key,
+						Diskspace = p.Sum(pb => (long?)pb.PD.DiskSpace) ?? 0
 					});
 				var packages = ResourceGroups
 					.OrderBy(rg => rg.GroupOrder)
@@ -21966,7 +21967,7 @@ INNER JOIN (SELECT T.Guid, MIN(T.StartDate) AS Date
 					.Select(ts => new { Guid = ts.Key, Date = ts.Min(t => t.StartDate) });
 
 				var tasks = BackgroundTasks
-					.Join(tasksGrouped, t => new { t.Guid, t.StartDate }, tg => new { tg.Guid, tg.Date }, (t, tg) => new
+					.Join(tasksGrouped, t => new { t.Guid, t.StartDate }, tg => new { tg.Guid, StartDate = tg.Date }, (t, tg) => new
 					{
 						t.Id,
 						t.Guid,
@@ -23666,7 +23667,7 @@ RETURN
 				var parameters = ScheduleTaskParameters
 					.Where(stp => stp.TaskId == taskId)
 					.OrderBy(stp => stp.ParameterOrder)
-					.GroupJoin(ScheduleParameters, stp => new { stp.ParameterId, scheduleId },
+					.GroupJoin(ScheduleParameters, stp => new { stp.ParameterId, ScheduleId = scheduleId },
 						sp => new { sp.ParameterId, sp.ScheduleId }, (stp, sp) => new
 					{
 						scheduleId,
@@ -26249,20 +26250,20 @@ RETURN
 
 				var accountsProjected = accounts
 					.Select(a => new
-					 {
-						 a.AccountId,
-						 a.ItemId,
-						 a.AccountType,
-						 a.AccountName,
-						 a.DisplayName,
-						 a.PrimaryEmailAddress,
-						 a.MailEnabledPublicFolder,
-						 a.MailboxPlanId,
-						 a.MailboxPlan.MailboxPlan,
-						 a.SubscriberNumber,
-						 a.UserPrincipalName
-					 });
-
+					{
+						a.AccountId,
+						a.ItemId,
+						a.AccountType,
+						a.AccountName,
+						a.DisplayName,
+						a.PrimaryEmailAddress,
+						a.MailEnabledPublicFolder,
+						a.MailboxPlanId,
+						a.MailboxPlan.MailboxPlan,
+						a.SubscriberNumber,
+						a.UserPrincipalName
+					});
+				return EntityDataReader(accountsProjected);
 			}
 			else
 			{
@@ -30933,8 +30934,8 @@ LEFT JOIN ServiceItems SI ON PA.ItemId = SI.ItemID
 WHERE ' + @condition + '
 
 DECLARE @Addresses AS TABLE
-(
- PackageAddressID int
+(	
+	PackageAddressID int
 );
 
 WITH TempItems AS (
@@ -31023,7 +31024,7 @@ FROM
 	dbo.PackageIPAddresses PA
 INNER JOIN 
 	dbo.IPAddresses AS IP ON PA.AddressID = IP.AddressID
-INNER JOIN 
+INNER JOIN
 	dbo.Packages P ON PA.PackageID = P.PackageID
 INNER JOIN 
 	dbo.Users U ON U.UserID = P.UserID
@@ -31037,6 +31038,14 @@ END
 				*/
 				#endregion
 
+				return PackageIpAddresses
+					.Join(IpAddresses, pip => pip.AddressId, ip => ip.AddressId, (pip, ip) => new
+					{
+						pip.OrgId,
+						ip.PoolId
+					})
+					.Count(ip => (poolId == 0 || poolId == ip.PoolId) &&
+						(orgId == 0 || orgId == ip.OrgId));
 			}
 			else
 			{
@@ -33233,7 +33242,7 @@ WHERE
 
 				return ExchangeAccounts
 					.Where(ea => ea.ItemId == itemId)
-					.Join(LyncUsers, ea => ea.AccountId, l => l.AccountId, (ea, l) => null)
+					.Join(LyncUsers, ea => ea.AccountId, l => l.AccountId, (ea, l) => null as object)
 					.Count();
 			}
 			else
@@ -36086,7 +36095,7 @@ RETURN
 							QuotaName = curQuotaName,
 							QuotaDescription = curQuotaDescription,
 							QuotaTypeId = 2,
-							ServiceQuota = 0,
+							ServiceQuota = false,
 							ItemTypeId = null
 						};
 						Quotas.Add(quota);
@@ -36591,7 +36600,9 @@ AS
 				*/
 				#endregion
 
-				StorageSpaceLevels.Where(sl => sl.Id == id).ExecuteDelete(StorageSpaceLevels);
+				StorageSpaceLevels
+					.Where(sl => sl.Id == id)
+					.ExecuteDelete(StorageSpaceLevels);
 			}
 			else
 			{
@@ -37317,7 +37328,7 @@ RETURN
 				var folder = new Data.Entities.StorageSpaceFolder()
 				{
 					Name = name,
-					StoraSpaceId = storageSpaceId,
+					StorageSpaceId = storageSpaceId,
 					Path = path,
 					UncPath = uncPath,
 					IsShared = isShared,
@@ -37775,7 +37786,7 @@ RETURN
 				{
 					ServiceId = serviceId,
 					Content = content,
-					Hash = hash,
+					Hash = Convert.ToBase64String(hash),
 					FileName = fileName,
 					ValidFrom = validFrom,
 					ExpiryDate = expiryDate
