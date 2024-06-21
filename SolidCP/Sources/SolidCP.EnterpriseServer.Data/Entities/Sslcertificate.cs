@@ -10,11 +10,9 @@ using Microsoft.EntityFrameworkCore;
 namespace SolidCP.EnterpriseServer.Data.Entities;
 
 [Table("SSLCertificates")]
-#if NetCore
-[Keyless]
-#endif
 public partial class SslCertificate
 {
+    [Key]
     [Column("ID")]
     public int Id { get; set; }
 
@@ -37,7 +35,7 @@ public partial class SslCertificate
     public string Csr { get; set; }
 
     [Column("CSRLength")]
-    public int? Csrlength { get; set; }
+    public int? CsrLength { get; set; }
 
     [Column(TypeName = "ntext")]
     public string Certificate { get; set; }

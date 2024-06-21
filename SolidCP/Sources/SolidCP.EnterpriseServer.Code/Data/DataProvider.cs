@@ -68,6 +68,7 @@ using static Mysqlx.Notice.Warning.Types;
 //using Humanizer.Localisation;
 using Mysqlx.Crud;
 using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.ConstrainedExecution;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -30863,6 +30864,21 @@ END
 				*/
 				#endregion
 
+				var addressIds = XElement.Parse(xml)
+					.Elements()
+					.Select(e => (int)e.Attribute("id"));
+				PackageIpAddresses
+					.Join(addressIds, ip => ip.AddressId, id => id, (ip, id) => ip)
+					.ExecuteDelete(PackageIpAddresses);
+				var newIps = addressIds
+					.Select(id => new Data.Entities.PackageIpAddress()
+					{
+						PackageId = packageId,
+						OrgId = orgId,
+						AddressId = id
+					});
+				PackageIpAddresses.AddRange(newIps);
+				SaveChanges();
 			}
 			else
 			{
@@ -30985,6 +31001,59 @@ END
 				*/
 				#endregion
 
+				IEnumerable<int> packageChildren = recursive ? GetChildPackages(packageId) :
+					new[] { packageId };
+				var addresses = PackageIpAddresses
+					.Where(pa => (orgId == 0 || pa.OrgId == orgId) &&
+						(poolId == 0 || pa.Address.PoolId == poolId))
+					.Join(packageChildren, pa => pa.PackageId, p => p, (pa, p) => new
+					{
+						pa.PackageAddressId,
+						pa.AddressId,
+						pa.Address.ExternalIp,
+						pa.Address.InternalIp,
+						pa.Address.SubnetMask,
+						pa.Address.DefaultGateway,
+						pa.Address.Vlan,
+						pa.ItemId,
+						pa.Item.ItemName,
+						pa.PackageId,
+						pa.Package.PackageName,
+						pa.Package.UserId,
+						pa.Package.User.Username,
+						pa.IsPrimary
+					});
+				if (!string.IsNullOrEmpty(filterValue))
+				{
+					if (!string.IsNullOrEmpty(filterColumn))
+					{
+						addresses = addresses.Where(DynamicFunctions.ColumnLike(addresses, filterColumn, filterValue));
+					} else
+					{
+						addresses = addresses
+#if NETFRAMEWORK
+							.Where(a => DbFunctions.Like(a.ExternalIp, filterValue) ||
+								DbFunctions.Like(a.InternalIp, filterValue) ||
+								DbFunctions.Like(a.DefaultGateway, filterValue) ||
+								DbFunctions.Like(a.ItemName, filterValue) ||
+								DbFunctions.Like(a.Username, filterValue));
+#else
+							.Where(a => EF.Functions.Like(a.ExternalIp, filterValue) ||
+								EF.Functions.Like(a.InternalIp, filterValue) ||
+								EF.Functions.Like(a.DefaultGateway, filterValue) ||
+								EF.Functions.Like(a.ItemName, filterValue) ||
+								EF.Functions.Like(a.Username, filterValue));
+#endif
+					}
+				}
+
+				var count = addresses.Count();
+
+				if (string.IsNullOrEmpty(sortColumn)) addresses = addresses.OrderBy(a => a.ExternalIp);
+				else addresses = addresses.OrderBy(sortColumn);
+
+				addresses = addresses.Skip(startRow).Take(maximumRows);
+				return EntityDataReader(count, addresses);
 			}
 			else
 			{
@@ -31097,6 +31166,33 @@ END
 				*/
 				#endregion
 
+				var parentPackageId = PackageIpAddresses
+					.Where(pa => pa.PackageAddressId == id)
+					.Select(pa => pa.Package.ParentPackageId)
+					.FirstOrDefault();
+				if (parentPackageId == 1) // System space
+				{
+					PackageIpAddresses
+						.Where(pa => pa.PackageAddressId == id)
+						.ExecuteDelete(PackageIpAddresses);
+				}
+				else // 2rd level space and below
+				{
+#if NETFRAMEWORK
+					var packageIp = PackageIpAddresses
+						.FirstOrDefault(pa => pa.PackageAddressId == id);
+					if (packageIp != null)
+					{
+						packageIp.PackageId = parentPackageId.Value;
+						SaveChanges();
+					}
+#else
+					PackageIpAddresses
+						.Where(pa => pa.PackageAddressId == id)
+						.ExecuteUpdate(set => set
+							.SetProperty(pa => pa.PackageId, parentPackageId.Value));
+#endif
+				}
 			}
 			else
 			{
@@ -31104,7 +31200,7 @@ END
 					new SqlParameter("@PackageAddressID", id));
 			}
 		}
-		#endregion
+#endregion
 
 		#region VPS - Private Network
 
@@ -31189,6 +31285,42 @@ END
 				*/
 				#endregion
 
+				var addresses = PrivateIpAddresses
+					.Where(a => a.Item.PackageId == packageId)
+					.Select(a => new
+					{
+						a.PrivateAddressId,
+						a.IpAddress,
+						a.ItemId,
+						a.Item.ItemName,
+						a.IsPrimary
+					});
+				
+				if (!string.IsNullOrEmpty(filterValue))
+				{
+					if (!string.IsNullOrEmpty(filterColumn))
+					{
+						addresses = addresses.Where(DynamicFunctions.ColumnLike(addresses, filterColumn, filterValue));
+					} else
+					{
+						addresses = addresses
+#if NETFRAMEWORK
+							.Where(a => DbFunctions.Like(a.IpAddress, filterValue) ||
+								DbFunctions.Like(a.ItemName, filterValue));
+#else
+							.Where(a => EF.Functions.Like(a.IpAddress, filterValue) ||
+								EF.Functions.Like(a.ItemName, filterValue));
+#endif
+					}
+				}
+
+				var count = addresses.Count();
+
+				if (string.IsNullOrEmpty(sortColumn)) addresses = addresses.OrderBy(pa => pa.IpAddress);
+				else addresses = addresses.OrderBy(sortColumn);
+
+				addresses = addresses.Skip(startRow).Take(maximumRows);
+				return EntityDataReader(count, addresses);
 			}
 			else
 			{
@@ -31229,6 +31361,17 @@ END
 				*/
 				#endregion
 
+				var addresses = PrivateIpAddresses
+					.Where(a => a.Item.PackageId == packageId)
+					.Select(a => new
+					{
+						a.PrivateAddressId,
+						a.IpAddress,
+						a.ItemId,
+						a.Item.ItemName,
+						a.IsPrimary
+					});
+				return EntityDataReader(addresses);
 			}
 			else
 			{
@@ -31238,7 +31381,7 @@ END
 				return reader;
 			}
 		}
-		#endregion
+#endregion
 
 		#region VPS - External Network Adapter
 		public IDataReader GetPackageUnassignedIPAddresses(int actorId, int packageId, int orgId, int poolId)
@@ -31280,6 +31423,29 @@ END
 				*/
 				#endregion
 
+				var addresses = PackageIpAddresses
+					.Include(a => a.Address)
+					.Where(a => a.ItemId == null && a.PackageId == packageId &&
+						(orgId == 0 || a.OrgId == orgId) &&
+						(poolId == 0 || a.Address.PoolId == poolId))
+					.OrderBy(a => a.Address.DefaultGateway)
+					.ThenBy(a => a.Address.ExternalIp)
+					.AsEnumerable()
+					.Where(a => CheckActorPackageRights(actorId, a.PackageId))
+					.Select(a => new
+					{
+						a.PackageAddressId,
+						a.Address.AddressId,
+						a.Address.ExternalIp,
+						a.Address.InternalIp,
+						a.Address.ServerId,
+						a.Address.PoolId,
+						a.IsPrimary,
+						a.Address.SubnetMask,
+						a.Address.DefaultGateway,
+						a.Address.Vlan
+					});
+				return EntityDataReader(addresses);
 			}
 			else
 			{
@@ -31327,6 +31493,26 @@ END
 				*/
 				#endregion
 
+				var address = PackageIpAddresses
+					.Where(a => a.PackageAddressId == packageAddressId)
+					.Select(a => new
+					{
+						a.PackageAddressId,
+						a.AddressId,
+						a.Address.ExternalIp,
+						a.Address.InternalIp,
+						a.Address.SubnetMask,
+						a.Address.DefaultGateway,
+						a.Address.Vlan,
+						a.ItemId,
+						a.Item.ItemName,
+						a.PackageId,
+						a.Package.PackageName,
+						a.Package.UserId,
+						a.Package.User.Username,
+						a.IsPrimary
+					});
+				return EntityDataReader(address);
 			}
 			else
 			{
@@ -31369,6 +31555,22 @@ RETURN
 				*/
 				#endregion
 
+				var addresses = PackageIpAddresses
+					.Where(a => a.ItemId == itemId && (poolId == 0 || a.Address.PoolId == poolId))
+					.Select(a => new
+					{
+						AddressId = a.PackageAddressId,
+						IpAddress = a.Address.ExternalIp,
+						NatAddress = a.Address.InternalIp,
+						a.Address.SubnetMask,
+						a.Address.DefaultGateway,
+						a.IsPrimary,
+						a.Item.PackageId
+					})
+					.OrderByDescending(a => a.IsPrimary)
+					.AsEnumerable()
+					.Where(a => CheckActorPackageRights(actorId, a.PackageId));
+				return EntityDataReader(addresses);
 			}
 			else
 			{
@@ -31406,6 +31608,18 @@ END
 				*/
 				#endregion
 
+				var address = PackageIpAddresses
+					.Where(a => a.PackageAddressId == packageAddressId)
+					.AsEnumerable()
+					.Where(a => CheckActorPackageRights(actorId, a.PackageId))
+					.FirstOrDefault();
+				if (address != null)
+				{
+					address.ItemId = itemId;
+					address.IsPrimary = false;
+					return SaveChanges();
+				}
+				return 0;
 			}
 			else
 			{
@@ -31450,6 +31664,21 @@ END
 				*/
 				#endregion
 
+				// read item pool
+				var poolId = PackageIpAddresses
+					.Where(a => a.PackageAddressId == packageAddressId)
+					.Select(a => a.Address.PoolId)
+					.FirstOrDefault();
+				// update all IP addresses of the specified pool
+				foreach (var ip in PackageIpAddresses
+					.Where(a => a.ItemId == itemId && a.Address.PoolId == poolId))
+				{
+					if (CheckActorPackageRights(actorId, ip.PackageId))
+					{
+						ip.IsPrimary = ip.PackageAddressId == packageAddressId;
+					}
+				}
+				return SaveChanges();
 			}
 			else
 			{
@@ -31487,6 +31716,16 @@ END
 				*/
 				#endregion
 
+				foreach (var ip in PackageIpAddresses
+					.Where(a => a.PackageAddressId == packageAddressId))
+				{
+					if (CheckActorPackageRights(actorId, ip.PackageId))
+					{
+						ip.ItemId = null;
+						ip.IsPrimary = false;
+					}
+				}
+				return SaveChanges();
 			}
 			else
 			{
@@ -31523,6 +31762,16 @@ END
 				*/
 				#endregion
 
+				foreach (var ip in PackageIpAddresses
+					.Where(a => a.ItemId == itemId))
+				{
+					if (CheckActorPackageRights(actorId, ip.PackageId))
+					{
+						ip.ItemId = null;
+						ip.IsPrimary = false;
+					}
+				}
+				return SaveChanges();
 			}
 			else
 			{
@@ -31562,6 +31811,19 @@ RETURN
 				*/
 				#endregion
 
+				var addresses = PrivateIpAddresses
+					.Include(a => a.Item)
+					.Where(a => a.ItemId == itemId)
+					.OrderByDescending(a => a.IsPrimary)
+					.AsEnumerable()
+					.Where(a => CheckActorPackageRights(actorId, a.Item.PackageId))
+					.Select(a => new
+					{
+						AddressId = a.PrivateAddressId,
+						a.IpAddress,
+						a.IsPrimary
+					});
+				return EntityDataReader(addresses);
 			}
 			else
 			{
@@ -31608,6 +31870,23 @@ RETURN
 				*/
 				#endregion
 
+				//TODO Check whole ServiceItems, is this a bug?
+				if (ServiceItems
+					//TODO .Where(i => i.ItemId == itemId) ??
+					.Select(i => i.PackageId)
+					.AsEnumerable()
+					.Any(packageId => CheckActorPackageRights(actorId, packageId)))
+				{
+					var ip = new Data.Entities.PrivateIpAddress()
+					{
+						ItemId = itemId,
+						IpAddress = ipAddress,
+						IsPrimary = false
+					};
+					PrivateIpAddresses.Add(ip);
+					return SaveChanges();
+				}
+				return 0;
 			}
 			else
 			{
@@ -31643,6 +31922,17 @@ END
 				*/
 				#endregion
 
+				foreach (var ip in PrivateIpAddresses
+					.Include(a => a.Item)
+					.Where(a => a.ItemId == itemId))
+				{
+					if (CheckActorPackageRights(actorId, ip.Item.PackageId))
+					{
+						ip.IsPrimary = ip.PrivateAddressId == privateAddressId;
+					}
+				}
+				return SaveChanges();
+
 			}
 			else
 			{
@@ -31677,6 +31967,13 @@ END
 				*/
 				#endregion
 
+				PrivateIpAddresses
+					.RemoveRange(PrivateIpAddresses
+						.Include(a => a.Item)
+						.Where(pa => pa.PrivateAddressId == privateAddressId)
+						.AsEnumerable()
+						.Where(pa => CheckActorPackageRights(actorId, pa.Item.PackageId)));
+				return SaveChanges();
 			}
 			else
 			{
@@ -31710,6 +32007,13 @@ END
 				*/
 				#endregion
 
+				PrivateIpAddresses
+					.RemoveRange(PrivateIpAddresses
+						.Include(a => a.Item)
+						.Where(pa => pa.ItemId == itemId)
+						.AsEnumerable()
+						.Where(pa => CheckActorPackageRights(actorId, pa.Item.PackageId)));
+				return SaveChanges();
 			}
 			else
 			{
@@ -31752,6 +32056,15 @@ END
 				*/
 				#endregion
 
+				var now = DateTime.Now;
+				var user = new Data.Entities.BlackBerryUser()
+				{
+					AccountId = accountId,
+					CreatedDate = now,
+					ModifiedDate = now
+				};
+				BlackBerryUsers.Add(user);
+				SaveChanges();
 			}
 			else
 			{
@@ -31902,6 +32215,47 @@ DROP TABLE #TempBlackBerryUsers
 				*/
 				#endregion
 
+				if (string.IsNullOrEmpty(name)) name = "%";
+				if (string.IsNullOrEmpty(email)) email = "%";
+				var users = ExchangeAccounts
+					.Where(ea => ea.ItemId == itemId &&
+#if NETFRAMEWORK
+						DbFunctions.Like(ea.DisplayName, name) &&
+						DbFunctions.Like(ea.PrimaryEmailAddress, email))
+#else
+						EF.Functions.Like(ea.DisplayName, name) &&
+						EF.Functions.Like(ea.PrimaryEmailAddress, email))
+#endif
+					.Join(BlackBerryUsers, ea => ea.AccountId, bb => bb.AccountId, (ea, bb) => new
+					{
+						ea.AccountId,
+						ea.ItemId,
+						ea.AccountName,
+						ea.DisplayName,
+						ea.PrimaryEmailAddress,
+						ea.SamAccountName
+					});
+
+				var usersCount = users.Count();
+
+				if (sortColumn == "DisplayName")
+				{
+					if (string.Equals(sortDirection, "ASC", StringComparison.OrdinalIgnoreCase))
+					{
+						users = users.OrderBy(ea => ea.DisplayName);
+					} else users = users.OrderByDescending(ea => ea.DisplayName);
+				} else
+				{
+					if (string.Equals(sortDirection, "ASC", StringComparison.OrdinalIgnoreCase))
+					{
+						users = users.OrderBy(ea => ea.PrimaryEmailAddress);
+					}
+					else users = users.OrderByDescending(ea => ea.PrimaryEmailAddress);
+				}
+
+				users = users.Skip(startRow).Take(count);
+
+				return EntityDataReader(usersCount, users);
 			}
 			else
 			{
@@ -31962,6 +32316,20 @@ WHERE
 				*/
 				#endregion
 
+				if (string.IsNullOrEmpty(name)) name = "%";
+				if (string.IsNullOrEmpty(email)) email = "%";
+				var users = ExchangeAccounts
+					.Where(ea => ea.ItemId == itemId &&
+#if NETFRAMEWORK
+						DbFunctions.Like(ea.DisplayName, name) &&
+						DbFunctions.Like(ea.PrimaryEmailAddress, email))
+#else
+						EF.Functions.Like(ea.DisplayName, name) &&
+						EF.Functions.Like(ea.PrimaryEmailAddress, email))
+#endif
+					.Join(BlackBerryUsers, ea => ea.AccountId, bb => bb.AccountId, (ea, bb) => ea);
+
+				return users.Count();
 			}
 			else
 			{
@@ -32006,7 +32374,7 @@ RETURN
 					new[] { new SqlParameter("@AccountID", accountId) });
 			}
 		}
-		#endregion
+#endregion
 
 		#region OCS
 
@@ -32041,6 +32409,16 @@ VALUES
 END				*/
 				#endregion
 
+				var now = DateTime.Now;
+				var user = new Data.Entities.OcsUser()
+				{
+					AccountId = accountId,
+					InstanceId = instanceId,
+					CreatedDate = now,
+					ModifiedDate = now
+				};
+				OcsUsers.Add(user);
+				SaveChanges();
 			}
 			else
 			{
@@ -32197,6 +32575,50 @@ DROP TABLE #TempOCSUsers
 				*/
 				#endregion
 
+				if (string.IsNullOrEmpty(name)) name = "%";
+				if (string.IsNullOrEmpty(email)) email = "%";
+				var users = ExchangeAccounts
+					.Where(ea => ea.ItemId == itemId &&
+#if NETFRAMEWORK
+						DbFunctions.Like(ea.DisplayName, name) &&
+						DbFunctions.Like(ea.PrimaryEmailAddress, email))
+#else
+						EF.Functions.Like(ea.DisplayName, name) &&
+						EF.Functions.Like(ea.PrimaryEmailAddress, email))
+#endif
+					.Join(OcsUsers, ea => ea.AccountId, ou => ou.AccountId, (ea, ou) => new
+					{
+						ea.AccountId,
+						ea.ItemId,
+						ea.AccountName,
+						ea.DisplayName,
+						ou.InstanceId,
+						ea.PrimaryEmailAddress,
+						ea.SamAccountName
+					});
+
+				var usersCount = users.Count();
+
+				if (sortColumn == "DisplayName")
+				{
+					if (string.Equals(sortDirection, "ASC", StringComparison.OrdinalIgnoreCase))
+					{
+						users = users.OrderBy(ea => ea.DisplayName);
+					}
+					else users = users.OrderByDescending(ea => ea.DisplayName);
+				}
+				else
+				{
+					if (string.Equals(sortDirection, "ASC", StringComparison.OrdinalIgnoreCase))
+					{
+						users = users.OrderBy(ea => ea.PrimaryEmailAddress);
+					}
+					else users = users.OrderByDescending(ea => ea.PrimaryEmailAddress);
+				}
+
+				users = users.Skip(startRow).Take(count);
+
+				return EntityDataReader(usersCount, users);
 			}
 			else
 			{
@@ -32255,6 +32677,20 @@ WHERE
 				*/
 				#endregion
 
+				if (string.IsNullOrEmpty(name)) name = "%";
+				if (string.IsNullOrEmpty(email)) email = "%";
+				var users = ExchangeAccounts
+					.Where(ea => ea.ItemId == itemId &&
+#if NETFRAMEWORK
+						DbFunctions.Like(ea.DisplayName, name) &&
+						DbFunctions.Like(ea.PrimaryEmailAddress, email))
+#else
+						EF.Functions.Like(ea.DisplayName, name) &&
+						EF.Functions.Like(ea.PrimaryEmailAddress, email))
+#endif
+					.Join(OcsUsers, ea => ea.AccountId, bb => bb.AccountId, (ea, bb) => ea);
+
+				return users.Count();
 			}
 			else
 			{
@@ -32379,6 +32815,23 @@ RETURN
 				*/
 				#endregion
 
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+				var cert = new Data.Entities.SslCertificate()
+				{
+					UserId = userID,
+					SiteId = siteID,
+					FriendlyName = friendlyname,
+					Hostname = hostname,
+					DistinguishedName = distinguishedName,
+					Csr = csr,
+					CsrLength = csrLength,
+					IsRenewal = isRenewal,
+					PreviousId = previousID
+				};
+				SslCertificates.Add(cert);
+				SaveChanges();
+				return cert.Id;
 			}
 			else
 			{
@@ -32446,6 +32899,22 @@ WHERE
 				*/
 				#endregion
 
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+
+				var cert = SslCertificates
+					.FirstOrDefault(c => c.Id == id);
+				if (cert != null)
+				{
+					cert.Certificate = certificate;
+					cert.Installed = true;
+					cert.SerialNumber = serialNumber;
+					cert.DistinguishedName = distinguishedName;
+					cert.Hash = Convert.ToBase64String(hash);
+					cert.ValidFrom = validFrom;
+					cert.ExpiryDate = expiryDate;
+					SaveChanges();
+				}
 			}
 			else
 			{
@@ -32503,6 +32972,23 @@ RETURN
 				*/
 				#endregion
 
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+				var cert = new Data.Entities.SslCertificate()
+				{
+					UserId = userID,
+					SiteId = siteID,
+					FriendlyName = friendlyName,
+					Hostname = hostname,
+					DistinguishedName = distinguishedName,
+					CsrLength = csrLength,
+					SerialNumber = serialNumber,
+					ValidFrom = validFrom,
+					ExpiryDate = expiryDate,
+					Installed = true
+				};
+				SslCertificates.Add(cert);
+				SaveChanges();
 			}
 			else
 			{
@@ -32523,13 +33009,13 @@ RETURN
 		}
 
 		// Does not exist in stored procedures
-		public DataSet GetSSL(int actorId, int packageId, int id)
+		/*public DataSet GetSSL(int actorId, int packageId, int id)
 		{
 			if (UseEntityFramework)
 			{
 				#region Stored Procedure
 				/*
-				*/
+				*//*
 				#endregion
 
 			}
@@ -32539,8 +33025,8 @@ RETURN
 					ObjectQualifier + "GetSSL",
 					new SqlParameter("@SSLID", id));
 			}
-		}
-
+		}*/
+		
 		public DataSet GetCertificatesForSite(int actorId, int packageId, int siteId)
 		{
 			if (UseEntityFramework)
@@ -32574,6 +33060,28 @@ RETURN
 				*/
 				#endregion
 
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+				var cert = SslCertificates
+					.Where(c => c.SiteId == siteId)
+					.Select(c => new
+					{
+						c.Id,
+						c.UserId,
+						c.SiteId,
+						c.FriendlyName,
+						c.Hostname,
+						c.DistinguishedName,
+						c.Csr,
+						c.CsrLength,
+						c.ValidFrom,
+						c.ExpiryDate,
+						c.Installed,
+						c.IsRenewal,
+						c.PreviousId,
+						c.SerialNumber
+					});
+				return EntityDataSet(cert);
 			}
 			else
 			{
@@ -32589,6 +33097,7 @@ RETURN
 		{
 			if (UseEntityFramework)
 			{
+				//TODO @websiteid = 2 below seems like a bug
 				#region Stored Procedure
 				/*
 CREATE PROCEDURE [dbo].[GetPendingSSLForWebsite]
@@ -32618,6 +33127,23 @@ RETURN
 				*/
 				#endregion
 
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+				var certs = SslCertificates
+					//TODO websiteid == 2 is a bug
+					.Where(c => websiteid == 2 && c.Installed == false && c.IsRenewal == false)
+					.Select(c => new
+					{
+						c.Id,
+						c.UserId,
+						c.SiteId,
+						c.Hostname,
+						c.Csr,
+						c.Certificate,
+						c.Hash,
+						c.Installed
+					});
+				return EntityDataSet(certs);
 			}
 			else
 			{
@@ -32656,6 +33182,26 @@ RETURN
 				*/
 				#endregion
 
+				var cert = SslCertificates
+					.Where(c => c.Id == id)
+					.Join(ServiceItems, c => c.SiteId, i => i.ItemId, (c, i) => new
+					{
+						c.Id,
+						c.UserId,
+						c.SiteId,
+						c.Hostname,
+						c.FriendlyName,
+						c.Csr,
+						c.Certificate,
+						c.Hash,
+						c.Installed,
+						c.IsRenewal,
+						c.PreviousId,
+						i.PackageId
+					})
+					.AsEnumerable()
+					.Where(c => CheckActorPackageRights(actorId, c.PackageId));
+				return EntityDataReader(certs);
 			}
 			else
 			{
@@ -32701,6 +33247,8 @@ RETURN
 				*/
 				#endregion
 
+				//TODO add renewal stuff
+				return SslCertificates.Any(c => c.SiteId == siteID) ? -1 : 0;
 			}
 			else
 			{
@@ -32727,6 +33275,7 @@ RETURN
 				*/
 				#endregion
 
+				return GetSSLCertificateByID(actorId, siteID);
 			}
 			else
 			{
@@ -32769,6 +33318,9 @@ RETURN
 				*/
 				#endregion
 
+				if (!CheckActorPackageRights(actorId, packageId))
+					throw new AccessViolationException("You are not allowed to access this package");
+				SslCertificates.Where(c => c.Id == id).ExecuteDelete(SslCertificates);
 			}
 			else
 			{
@@ -32815,6 +33367,7 @@ RETURN
 				*/
 				#endregion
 
+				return SslCertificates.Any(c => c.SiteId == siteId);
 			}
 			else
 			{
@@ -32906,7 +33459,20 @@ WHERE
 RETURN
 				*/
 				#endregion
-
+#if NETFRAMEWORK
+				var user = LyncUsers
+					.FirstOrDefault(u => u.AccountId == accountId);
+				if (user != null)
+				{
+					user.SipAddress = sipAddress;
+					SaveChanges();
+				}
+#else
+				LyncUsers
+					.Where(u => u.AccountId == accountId)
+					.ExecuteUpdate(set => set
+						.SetProperty(u => u.SipAddress, sipAddress));
+#endif
 			}
 			else
 			{
@@ -33013,8 +33579,6 @@ AS
 				return Convert.ToBoolean(outParam.Value);
 			}
 		}
-
-
 
 		public IDataReader GetLyncUsers(int itemId, string sortColumn, string sortDirection, int startRow, int count)
 		{
@@ -33773,7 +34337,7 @@ RETURN
 					new SqlParameter("@LyncUserPlanId", (lyncUserPlanId == 0) ? (object)DBNull.Value : (object)lyncUserPlanId));
 			}
 		}
-		#endregion
+#endregion
 
 		#region SfB
 
