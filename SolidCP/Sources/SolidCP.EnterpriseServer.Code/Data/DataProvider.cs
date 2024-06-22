@@ -81,10 +81,11 @@ namespace SolidCP.EnterpriseServer
 		public long MB = 1024 * 1024;
 
 #if UseEntityFramework
-		public bool UseEntityFramework => !IsMsSql || !HasProcedures;
+		public bool UseEntityFramework => !IsMsSql || !HasProcedures || AlwaysUseEntityFramework;
 #else
 		public const bool UseEntityFramework = false;
 #endif
+		public bool AlwaysUseEntityFramework = false;
 		ControllerBase Provider;
 		ServerController serverController;
 		protected ServerController ServerController => serverController ?? (serverController = new ServerController(Provider));
@@ -812,6 +813,34 @@ END
 			return list;
 		}
 
+		public IEnumerable<int> UserChildren(int ownerId, bool recursive = true)
+		{
+			yield return ownerId;
+
+			if (recursive)
+			{
+				var owner = Users
+					.Select(u => new { u.UserId, u.OwnerId, u.IsPeer })
+					.FirstOrDefault(u => u.UserId == ownerId);
+				if (owner != null && owner.IsPeer && owner.OwnerId.HasValue)
+				{
+					ownerId = owner.OwnerId.Value;
+					yield return ownerId;
+				}
+
+				// load Users table into memory
+				var childOf = Users
+					.ToLookup(u => u.OwnerId, u => u.UserId);
+				var children = childOf[ownerId];
+				while (children.Any())
+				{
+					foreach (var child in children) yield return child;
+					children = children
+						.SelectMany(child => childOf[child]);
+				}
+			}			
+		}
+
 		public bool CheckUserParent(int ownerId, int? userId)
 		{
 			#region Stored Procedure
@@ -929,17 +958,21 @@ END
 			*/
 			#endregion
 
-			var comments = Comments.Join(Users, c => c.UserId, u => u.UserId, (com, user) => new
-			{
-				com.UserId,
-				com.ItemId,
-				com.ItemTypeId,
-				com.CreatedDate,
-				com.CommentText,
-				user.Username
-			})
-				.Where(c => c.ItemId == itemId && c.ItemTypeId == itemTypeId &&
-					CheckUserParent(actorId, c.UserId));
+			var comments = Comments
+				.Join(Users, c => c.UserId, u => u.UserId, (com, user) => new
+				{
+					com.UserId,
+					com.ItemId,
+					com.ItemTypeId,
+					com.CreatedDate,
+					com.CommentText,
+					user.Username
+				})
+				//.Where(c => c.ItemId == itemId && c.ItemTypeId == itemTypeId &&
+				//	CheckUserParent(actorId, c.UserId));
+				.Where(c => c.ItemId == itemId && c.ItemTypeId == itemTypeId)
+				.AsEnumerable()
+				.Where(c => CheckUserParent(actorId, c.UserId));
 
 			var sb = new StringBuilder();
 			foreach (var comment in comments)
@@ -1060,9 +1093,9 @@ RETURN
 				var users = hasRights ?
 					UsersDetailed
 						.Where(u => u.UserId != userId && !u.IsPeer &&
-						(recursive ? CheckUserParent(userId, u.UserId) : u.OwnerId == userId) &&
+						// (recursive ? CheckUserParent(userId, u.UserId) : u.OwnerId == userId) &&
 						(statusId == 0 || statusId > 0 && statusId == u.StatusId) &&
-						(roleId == 0 || roleId > 0 && roleId == u.RoleId)) :
+						(roleId == 0 || roleId > 0 && roleId == u.RoleId))
 					UsersDetailed.Where(u => false);
 
 				if (!string.IsNullOrEmpty(filterValue))
@@ -1079,6 +1112,11 @@ RETURN
 					}
 				}
 
+				var childUsers = UserChildren(userId, recursive);
+				users = users
+					.AsEnumerable()
+					.Join(childUsers, u => u.UserId, ch => ch, (u, ch) => u);
+
 				if (!string.IsNullOrEmpty(sortColumn))
 				{
 					users = users.OrderBy(sortColumn);
@@ -1089,8 +1127,8 @@ RETURN
 				users = users.Skip(startRow).Take(maximumRows);
 
 				return EntityDataSet(
-					CountDataTable(count),
-					EntityDataTable(users.Select(u => new
+					count,
+					users.Select(u => new
 					{
 						u.UserId,
 						u.RoleId,
@@ -6973,20 +7011,15 @@ END
 
 		public IEnumerable<int> GetChildPackages(int parentPackageId)
 		{
-			var parents = new[] { parentPackageId };
+			var childOf = Packages
+				.ToLookup(p => p.ParentPackageId, p => p.PackageId);
 			yield return parentPackageId;
-			var children = Packages
-				.Where(p => parents.Any(q => p.ParentPackageId == q))
-				.Select(p => p.PackageId)
-				.ToArray();
+			var children = childOf[parentPackageId];
 			while (children.Any())
 			{
 				foreach (var child in children) yield return child;
-				parents = children;
-				children = Packages
-					.Where(p => parents.Any(q => p.ParentPackageId == q))
-					.Select(p => p.PackageId)
-					.ToArray();
+				children = children
+					.SelectMany(child => childOf[child]);
 			}
 		}
 
@@ -16358,7 +16391,7 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
-				
+				*//*
 				#endregion
 
 			}
@@ -21131,6 +21164,7 @@ RETURN
 			}
 		}
 
+		public void TruncateTable<TEntity>(IQueryable<TEntity>)
 		public void DeleteAuditLogRecordsComplete()
 		{
 			if (UseEntityFramework)
@@ -24145,6 +24179,7 @@ RETURN
 			}
 		}
 
+		/*
 		// TODO This rotuine is not present in the Stored Procedures
 		public DataSet GetScheduleHistories(int actorId, int scheduleId)
 		{
@@ -24154,7 +24189,7 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
-				*/
+				*//*
 				#endregion
 
 			}
@@ -24176,7 +24211,7 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
-				*/
+				*//*
 				#endregion
 
 			}
@@ -24199,7 +24234,7 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
-				*/
+				*//*
 				#endregion
 
 			}
@@ -24233,7 +24268,7 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
-				*/
+				*//*
 				#endregion
 
 			}
@@ -24259,7 +24294,7 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
-				*/
+				*//*
 				#endregion
 
 			}
@@ -24270,7 +24305,7 @@ RETURN
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@scheduleId", scheduleId));
 			}
-		}
+		}*/
 #endregion
 
 		#region Comments
@@ -33097,7 +33132,6 @@ RETURN
 		{
 			if (UseEntityFramework)
 			{
-				//TODO @websiteid = 2 below seems like a bug
 				#region Stored Procedure
 				/*
 CREATE PROCEDURE [dbo].[GetPendingSSLForWebsite]
@@ -33121,7 +33155,7 @@ SELECT
 FROM
 	[dbo].[SSLCertificates]
 WHERE
-	@websiteid = 2 AND [Installed] = 0 AND [IsRenewal] = 0
+	@websiteid = [SiteID] AND [Installed] = 0 AND [IsRenewal] = 0
 
 RETURN
 				*/
@@ -33130,8 +33164,7 @@ RETURN
 				if (!CheckActorPackageRights(actorId, packageId))
 					throw new AccessViolationException("You are not allowed to access this package");
 				var certs = SslCertificates
-					//TODO websiteid == 2 is a bug
-					.Where(c => websiteid == 2 && c.Installed == false && c.IsRenewal == false)
+					.Where(c => id == c.SiteId && c.Installed == false && c.IsRenewal == false)
 					.Select(c => new
 					{
 						c.Id,
@@ -33201,7 +33234,7 @@ RETURN
 					})
 					.AsEnumerable()
 					.Where(c => CheckActorPackageRights(actorId, c.PackageId));
-				return EntityDataReader(certs);
+				return EntityDataReader(cert);
 			}
 			else
 			{
@@ -33595,120 +33628,149 @@ CREATE PROCEDURE [dbo].[GetLyncUsers]
 	@Count int	
 )
 AS
-
-CREATE TABLE #TempLyncUsers 
-(	
-	[ID] [int] IDENTITY(1,1) NOT NULL,
-	[AccountID] [int],	
-	[ItemID] [int] NOT NULL,
-	[AccountName] [nvarchar](300)  NOT NULL,
-	[DisplayName] [nvarchar](300)  NOT NULL,
-	[UserPrincipalName] [nvarchar](300) NULL,
-	[SipAddress] [nvarchar](300) NULL,
-	[SamAccountName] [nvarchar](100) NULL,
-	[LyncUserPlanId] [int] NOT NULL,		
-	[LyncUserPlanName] [nvarchar] (300) NOT NULL,		
-)
-
-DECLARE @condition nvarchar(700)
-SET @condition = ''
-
-IF (@SortColumn = 'DisplayName')
 BEGIN
-	SET @condition = 'ORDER BY ea.DisplayName'
-END
+	CREATE TABLE #TempLyncUsers 
+	(	
+		[ID] [int] IDENTITY(1,1) NOT NULL,
+		[AccountID] [int],	
+		[ItemID] [int] NOT NULL,
+		[AccountName] [nvarchar](300)  NOT NULL,
+		[DisplayName] [nvarchar](300)  NOT NULL,
+		[UserPrincipalName] [nvarchar](300) NULL,
+		[SipAddress] [nvarchar](300) NULL,
+		[SamAccountName] [nvarchar](100) NULL,
+		[LyncUserPlanId] [int] NOT NULL,		
+		[LyncUserPlanName] [nvarchar] (300) NOT NULL,		
+	)
 
-IF (@SortColumn = 'UserPrincipalName')
-BEGIN
-	SET @condition = 'ORDER BY ea.UserPrincipalName'
-END
+	DECLARE @condition nvarchar(700)
+	SET @condition = ''
 
-IF (@SortColumn = 'SipAddress')
-BEGIN
-	SET @condition = 'ORDER BY ou.SipAddress'
-END
-
-IF (@SortColumn = 'LyncUserPlanName')
-BEGIN
-	SET @condition = 'ORDER BY lp.LyncUserPlanName'
-END
-
-DECLARE @sql nvarchar(3500)
-
-set @sql = '
-	INSERT INTO 
-# TempLyncUsers
-	SELECT 
-		ea.AccountID,
-		ea.ItemID,
-		ea.AccountName,
-		ea.DisplayName,
-		ea.UserPrincipalName,
-		ou.SipAddress,
-		ea.SamAccountName,
-		ou.LyncUserPlanId,
-		lp.LyncUserPlanName				
-	FROM 
-		ExchangeAccounts ea 
-	INNER JOIN 
-		LyncUsers ou
-	INNER JOIN
-		LyncUserPlans lp 
-	ON
-		ou.LyncUserPlanId = lp.LyncUserPlanId				
-	ON 
-		ea.AccountID = ou.AccountID
-	WHERE 
-		ea.ItemID = @ItemID ' + @condition
-
-exec sp_executesql @sql, N'@ItemID int',@ItemID
-
-DECLARE @RetCount int
-SELECT @RetCount = COUNT(ID) FROM #TempLyncUsers 
-
-IF (@SortDirection = 'ASC')
-BEGIN
-	SELECT * FROM #TempLyncUsers 
-	WHERE ID > @StartRow AND ID <= (@StartRow + @Count) 
-END
-ELSE
-BEGIN
-	IF @SortColumn <> '' AND @SortColumn IS NOT NULL
+	IF (@SortColumn = 'DisplayName')
 	BEGIN
-		IF (@SortColumn = 'DisplayName')
-		BEGIN
-			SELECT * FROM #TempLyncUsers 
-				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY DisplayName DESC
-		END
-		IF (@SortColumn = 'UserPrincipalName')
-		BEGIN
-			SELECT * FROM #TempLyncUsers 
-				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
-		END
+		SET @condition = 'ORDER BY ea.DisplayName'
+	END
 
-		IF (@SortColumn = 'SipAddress')
-		BEGIN
-			SELECT * FROM #TempLyncUsers 
-				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY SipAddress DESC
-		END
+	IF (@SortColumn = 'UserPrincipalName')
+	BEGIN
+		SET @condition = 'ORDER BY ea.UserPrincipalName'
+	END
 
-		IF (@SortColumn = 'LyncUserPlanName')
-		BEGIN
-			SELECT * FROM #TempLyncUsers 
-				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY LyncUserPlanName DESC
-		END
+	IF (@SortColumn = 'SipAddress')
+	BEGIN
+		SET @condition = 'ORDER BY ou.SipAddress'
+	END
+
+	IF (@SortColumn = 'LyncUserPlanName')
+	BEGIN
+		SET @condition = 'ORDER BY lp.LyncUserPlanName'
+	END
+
+	DECLARE @sql nvarchar(3500)
+
+	set @sql = '
+		INSERT INTO 
+	# TempLyncUsers
+		SELECT 
+			ea.AccountID,
+			ea.ItemID,
+			ea.AccountName,
+			ea.DisplayName,
+			ea.UserPrincipalName,
+			ou.SipAddress,
+			ea.SamAccountName,
+			ou.LyncUserPlanId,
+			lp.LyncUserPlanName				
+		FROM 
+			ExchangeAccounts ea 
+		INNER JOIN 
+			LyncUsers ou
+		INNER JOIN
+			LyncUserPlans lp 
+		ON
+			ou.LyncUserPlanId = lp.LyncUserPlanId				
+		ON 
+			ea.AccountID = ou.AccountID
+		WHERE 
+			ea.ItemID = @ItemID ' + @condition
+
+	exec sp_executesql @sql, N'@ItemID int',@ItemID
+
+	DECLARE @RetCount int
+	SELECT @RetCount = COUNT(ID) FROM #TempLyncUsers 
+
+	IF (@SortDirection = 'ASC')
+	BEGIN
+		SELECT * FROM #TempLyncUsers 
+		WHERE ID > @StartRow AND ID <= (@StartRow + @Count) 
 	END
 	ELSE
 	BEGIN
-        SELECT * FROM #TempLyncUsers 
-			WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
-	END	
-END
+		IF @SortColumn <> '' AND @SortColumn IS NOT NULL
+		BEGIN
+			IF (@SortColumn = 'DisplayName')
+			BEGIN
+				SELECT * FROM #TempLyncUsers 
+					WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY DisplayName DESC
+			END
+			IF (@SortColumn = 'UserPrincipalName')
+			BEGIN
+				SELECT * FROM #TempLyncUsers 
+					WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
+			END
 
-DROP TABLE #TempLyncUsers
+			IF (@SortColumn = 'SipAddress')
+			BEGIN
+				SELECT * FROM #TempLyncUsers 
+					WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY SipAddress DESC
+			END
+
+			IF (@SortColumn = 'LyncUserPlanName')
+			BEGIN
+				SELECT * FROM #TempLyncUsers 
+					WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY LyncUserPlanName DESC
+			END
+		END
+		ELSE
+		BEGIN
+			SELECT * FROM #TempLyncUsers 
+				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
+		END	
+	END
+
+	DROP TABLE #TempLyncUsers
+END
 				*/
 				#endregion
 
+				var users = ExchangeAccounts
+					.Where(ea => ea.ItemId == itemId)
+					.Join(LyncUsers, ea => ea.AccountId, lu => lu.AccountId, (ea, lu) => new
+					{
+						ea.AccountId,
+						ea.ItemId,
+						ea.AccountName,
+						ea.DisplayName,
+						ea.UserPrincipalName,
+						lu.SipAddress,
+						ea.SamAccountName,
+						lu.LyncUserPlanId,
+						lu.LyncUserPlan.LyncUserPlanName
+					});
+
+				var countUsers = users.Count();
+
+				if (string.Equals(sortDirection, "ASC", StringComparison.OrdinalIgnoreCase))
+				{
+					users = users.OrderBy(sortColumn);
+				} else
+				{
+					users = users.OrderBy($"{sortColumn} desc");
+				}
+
+				users = users.Skip(startRow).Take(count);
+
+				return EntityDataReader(countUsers, users);
 			}
 			else
 			{
@@ -33767,6 +33829,21 @@ AS
 				*/
 				#endregion
 
+				var users = ExchangeAccounts
+					.Where(ea => ea.ItemId == itemId)
+					.Join(LyncUsers, ea => ea.AccountId, lu => lu.AccountId, (ea, lu) => new
+					{
+						ea.AccountId,
+						ea.ItemId,
+						ea.AccountName,
+						ea.DisplayName,
+						ea.UserPrincipalName,
+						ea.SamAccountName,
+						lu.LyncUserPlanId,
+						lu.LyncUserPlan.LyncUserPlanName
+					})
+					.Where(u => u.LyncUserPlanId == planId);
+				return EntityDataReader(users);
 			}
 			else
 			{
@@ -33838,6 +33915,7 @@ RETURN
 				*/
 				#endregion
 
+				LyncUsers.Where(u => u.AccountId == accountId).ExecuteDelete(LyncUsers);
 			}
 			else
 			{
@@ -33961,6 +34039,44 @@ RETURN
 				*/
 				#endregion
 
+				var isDefault = lyncUserPlan.IsDefault;
+				var plans = LyncUserPlans.Where(p => p.ItemId == itemID);
+				if (!plans.Any() && lyncUserPlan.LyncUserPlanType == 0)
+				{
+					isDefault = true;
+				} else
+				{
+					if (isDefault && lyncUserPlan.LyncUserPlanType == 0)
+					{
+						foreach (var pl in plans) pl.IsDefault = false;
+					}
+				}
+
+				var plan = new Data.Entities.LyncUserPlan()
+				{
+					ItemId = itemID,
+					LyncUserPlanName = lyncUserPlan.LyncUserPlanName,
+					LyncUserPlanType = lyncUserPlan.LyncUserPlanType,
+					IM = lyncUserPlan.IM,
+					Mobility = lyncUserPlan.Mobility,
+					MobilityEnableOutsideVoice = lyncUserPlan.MobilityEnableOutsideVoice,
+					Federation = lyncUserPlan.Federation,
+					Conferencing = lyncUserPlan.Conferencing,
+					EnterpriseVoice = lyncUserPlan.EnterpriseVoice,
+					VoicePolicy = lyncUserPlan.VoicePolicy,
+					IsDefault = lyncUserPlan.IsDefault,
+					RemoteUserAccess = lyncUserPlan.RemoteUserAccess,
+					PublicIMConnectivity = lyncUserPlan.PublicIMConnectivity,
+					AllowOrganizeMeetingsWithExternalAnonymous = lyncUserPlan.AllowOrganizeMeetingsWithExternalAnonymous,
+					Telephony = lyncUserPlan.Telephony,
+					ServerUri = lyncUserPlan.ServerURI,
+					ArchivePolicy = lyncUserPlan.ArchivePolicy,
+					TelephonyDialPlanPolicy = lyncUserPlan.TelephonyDialPlanPolicy,
+					TelephonyVoicePolicy = lyncUserPlan.TelephonyVoicePolicy
+				};
+				LyncUserPlans.Add(plan);
+				SaveChanges();
+				return plan.LyncUserPlanId;
 			}
 			else
 			{
@@ -34064,6 +34180,30 @@ RETURN
 				*/
 				#endregion
 
+				var plan = LyncUserPlans
+					.FirstOrDefault(p => p.LyncUserPlanId == lyncUserPlan.LyncUserPlanId);
+				if (plan != null)
+				{
+					plan.LyncUserPlanName = lyncUserPlan.LyncUserPlanName;
+					plan.LyncUserPlanType = lyncUserPlan.LyncUserPlanType;
+					plan.IM = lyncUserPlan.IM;
+					plan.Mobility = lyncUserPlan.Mobility;
+					plan.MobilityEnableOutsideVoice = lyncUserPlan.MobilityEnableOutsideVoice;
+					plan.Federation = lyncUserPlan.Federation;
+					plan.Conferencing = lyncUserPlan.Conferencing;
+					plan.EnterpriseVoice = lyncUserPlan.EnterpriseVoice;
+					plan.VoicePolicy = lyncUserPlan.VoicePolicy;
+					plan.IsDefault = lyncUserPlan.IsDefault;
+					plan.RemoteUserAccess = lyncUserPlan.RemoteUserAccess;
+					plan.PublicIMConnectivity = lyncUserPlan.PublicIMConnectivity;
+					plan.AllowOrganizeMeetingsWithExternalAnonymous = lyncUserPlan.AllowOrganizeMeetingsWithExternalAnonymous;
+					plan.Telephony = lyncUserPlan.Telephony;
+					plan.ServerUri= lyncUserPlan.ServerURI;
+					plan.ArchivePolicy = lyncUserPlan.ArchivePolicy;
+					plan.TelephonyDialPlanPolicy = lyncUserPlan.TelephonyDialPlanPolicy;
+					plan.TelephonyVoicePolicy = lyncUserPlan.TelephonyVoicePolicy;
+					SaveChanges();
+				}
 			}
 			else
 			{
@@ -34171,6 +34311,32 @@ RETURN
 				*/
 				#endregion
 
+				var plan = LyncUserPlans
+					.Where(p => p.LyncUserPlanId == lyncUserPlanId)
+					.Select(p => new
+					{
+						p.LyncUserPlanId,
+						p.ItemId,
+						p.LyncUserPlanName,
+						p.LyncUserPlanType,
+						p.IM,
+						p.Mobility,
+						p.MobilityEnableOutsideVoice,
+						p.Federation,
+						p.Conferencing,
+						p.EnterpriseVoice,
+						p.VoicePolicy,
+						p.IsDefault,
+						p.RemoteUserAccess,
+						p.PublicIMConnectivity,
+						p.AllowOrganizeMeetingsWithExternalAnonymous,
+						p.Telephony,
+						p.ServerUri,
+						p.ArchivePolicy,
+						p.TelephonyDialPlanPolicy,
+						p.TelephonyVoicePolicy
+					});
+				return EntityDataReader(plan);
 			}
 			else
 			{
@@ -34216,6 +34382,25 @@ RETURN
 				*/
 				#endregion
 
+				var plans = LyncUserPlans
+					.Where(p => p.ItemId == itemId)
+					.OrderBy(p => p.LyncUserPlanName)
+					.Select(p => new
+					{
+						p.LyncUserPlanId,
+						p.ItemId,
+						p.LyncUserPlanName,
+						p.LyncUserPlanType,
+						p.IM,
+						p.Mobility,
+						p.MobilityEnableOutsideVoice,
+						p.Federation,
+						p.Conferencing,
+						p.EnterpriseVoice,
+						p.VoicePolicy,
+						p.IsDefault
+					});
+				return EntityDataReader(plans);
 			}
 			else
 			{
@@ -34249,6 +34434,19 @@ RETURN
 				*/
 				#endregion
 
+#if NETFRAMEWORK
+				var plan = ExchangeOrganizations
+					.FirstOrDefault(o => o.ItemId == itemId);
+				if (plan != null) {
+					plan.LyncUserPlanId = lyncUserPlanId;
+					SaveChanges();
+				}
+#else
+				ExchangeOrganizations
+					.Where(o => o.ItemId == itemId)
+					.ExecuteUpdate(set => set
+						.SetProperty(p => p.LyncUserPlanId, lyncUserPlanId));
+#endif
 			}
 			else
 			{
@@ -34293,6 +34491,25 @@ RETURN
 				*/
 				#endregion
 
+				var plan = LyncUserPlans
+					.Join(LyncUsers
+						.Where(u => u.AccountId == AccountId),
+						p => p.LyncUserPlanId, u => u.LyncUserPlanId, (p, u) => new
+					{
+						p.LyncUserPlanId,
+						p.ItemId,
+						p.LyncUserPlanName,
+						p.LyncUserPlanType,
+						p.IM,
+						p.Mobility,
+						p.MobilityEnableOutsideVoice,
+						p.Federation,
+						p.Conferencing,
+						p.EnterpriseVoice,
+						p.VoicePolicy,
+						p.IsDefault
+					});
+				return EntityDataReader(plan);
 			}
 			else
 			{
@@ -34326,6 +34543,19 @@ RETURN
 				*/
 				#endregion
 
+#if NETFRAMEWORK
+				var user = LyncUsers.FirstOrDefault(u => u.AccountId == accountId);
+				if (user != null)
+				{
+					user.LyncUserPlanId = lyncUserPlanId;
+					SaveChanges();
+				}
+#else
+				LyncUsers
+					.Where(u => u.AccountId == accountId)
+					.ExecuteUpdate(set => set
+						.SetProperty(u => u.LyncUserPlanId, lyncUserPlanId));
+#endif
 			}
 			else
 			{
@@ -34374,7 +34604,7 @@ VALUES
 				var user = new Data.Entities.SfBUser()
 				{
 					AccountId = accountId,
-					SfBuserPlanId = sfbUserPlanId,
+					SfBUserPlanId = sfbUserPlanId,
 					SipAddress = sipAddress,
 					CreatedDate = now,
 					ModifiedDate = now
@@ -34417,6 +34647,19 @@ RETURN
 				*/
 				#endregion
 
+#if NETFRAMEWORK
+				var user = SfBUsers.FirstOrDefault(u => u.AccountId == accountId);
+				if (user != null)
+				{
+					user.SipAddress = sipAddress;
+					SaveChanges();
+				}
+#else
+				SfBUsers
+					.Where(u => u.AccountId == accountId)
+					.ExecuteUpdate(set => set
+						.SetProperty(u => u.SipAddress, sipAddress));
+#endif
 			}
 			else
 			{
@@ -34499,6 +34742,10 @@ AS
 				*/
 				#endregion
 
+				return ExchangeAccountEmailAddresses.Any(a => a.EmailAddress == sipAddress && a.AccountId != accountId) ||
+					ExchangeAccounts.Any(a => (a.PrimaryEmailAddress == sipAddress ||
+						a.UserPrincipalName == sipAddress || a.AccountName == sipAddress) && a.AccountId != accountId) ||
+					SfBUsers.Any(u => u.SipAddress == sipAddress);
 			}
 			else
 			{
@@ -34532,152 +34779,154 @@ CREATE PROCEDURE [dbo].[GetSfBUsers]
 	@Count int	
 )
 AS
-
-CREATE TABLE #TempSfBUsers 
-(	
-	[ID] [int] IDENTITY(1,1) NOT NULL,
-	[AccountID] [int],	
-	[ItemID] [int] NOT NULL,
-	[AccountName] [nvarchar](300)  NOT NULL,
-	[DisplayName] [nvarchar](300)  NOT NULL,
-	[UserPrincipalName] [nvarchar](300) NULL,
-	[SipAddress] [nvarchar](300) NULL,
-	[SamAccountName] [nvarchar](100) NULL,
-	[SfBUserPlanId] [int] NOT NULL,		
-	[SfBUserPlanName] [nvarchar] (300) NOT NULL,		
-)
-
-DECLARE @condition nvarchar(700)
-SET @condition = ''
-
-IF (@SortColumn = 'DisplayName')
 BEGIN
-	SET @condition = 'ORDER BY ea.DisplayName'
-END
+	CREATE TABLE #TempSfBUsers 
+	(	
+		[ID] [int] IDENTITY(1,1) NOT NULL,
+		[AccountID] [int],	
+		[ItemID] [int] NOT NULL,
+		[AccountName] [nvarchar](300)  NOT NULL,
+		[DisplayName] [nvarchar](300)  NOT NULL,
+		[UserPrincipalName] [nvarchar](300) NULL,
+		[SipAddress] [nvarchar](300) NULL,
+		[SamAccountName] [nvarchar](100) NULL,
+		[SfBUserPlanId] [int] NOT NULL,		
+		[SfBUserPlanName] [nvarchar] (300) NOT NULL,		
+	)
 
-IF (@SortColumn = 'UserPrincipalName')
-BEGIN
-	SET @condition = 'ORDER BY ea.UserPrincipalName'
-END
+	DECLARE @condition nvarchar(700)
+	SET @condition = ''
 
-IF (@SortColumn = 'SipAddress')
-BEGIN
-	SET @condition = 'ORDER BY ou.SipAddress'
-END
-
-IF (@SortColumn = 'SfBUserPlanName')
-BEGIN
-	SET @condition = 'ORDER BY lp.SfBUserPlanName'
-END
-
-DECLARE @sql nvarchar(3500)
-
-set @sql = '
-	INSERT INTO 
-# TempSfBUsers
-	SELECT 
-		ea.AccountID,
-		ea.ItemID,
-		ea.AccountName,
-		ea.DisplayName,
-		ea.UserPrincipalName,
-		ou.SipAddress,
-		ea.SamAccountName,
-		ou.SfBUserPlanId,
-		lp.SfBUserPlanName				
-	FROM 
-		ExchangeAccounts ea 
-	INNER JOIN 
-		SfBUsers ou
-	INNER JOIN
-		SfBUserPlans lp 
-	ON
-		ou.SfBUserPlanId = lp.SfBUserPlanId				
-	ON 
-		ea.AccountID = ou.AccountID
-	WHERE 
-		ea.ItemID = @ItemID ' + @condition
-
-exec sp_executesql @sql, N'@ItemID int',@ItemID
-
-DECLARE @RetCount int
-SELECT @RetCount = COUNT(ID) FROM #TempSfBUsers 
-
-IF (@SortDirection = 'ASC')
-BEGIN
-	SELECT * FROM #TempSfBUsers 
-	WHERE ID > @StartRow AND ID <= (@StartRow + @Count) 
-END
-ELSE
-BEGIN
-	IF @SortColumn <> '' AND @SortColumn IS NOT NULL
+	IF (@SortColumn = 'DisplayName')
 	BEGIN
-		IF (@SortColumn = 'DisplayName')
-		BEGIN
-			SELECT * FROM #TempSfBUsers 
-				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY DisplayName DESC
-		END
-		IF (@SortColumn = 'UserPrincipalName')
-		BEGIN
-			SELECT * FROM #TempSfBUsers 
-				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
-		END
+		SET @condition = 'ORDER BY ea.DisplayName'
+	END
 
-		IF (@SortColumn = 'SipAddress')
-		BEGIN
-			SELECT * FROM #TempSfBUsers 
-				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY SipAddress DESC
-		END
+	IF (@SortColumn = 'UserPrincipalName')
+	BEGIN
+		SET @condition = 'ORDER BY ea.UserPrincipalName'
+	END
 
-		IF (@SortColumn = 'SfBUserPlanName')
-		BEGIN
-			SELECT * FROM #TempSfBUsers 
-				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY SfBUserPlanName DESC
-		END
+	IF (@SortColumn = 'SipAddress')
+	BEGIN
+		SET @condition = 'ORDER B*Y ou.SipAddress'
+	END
+
+	IF (@SortColumn = 'SfBUserPlanName')
+	BEGIN
+		SET @condition = 'ORDER BY lp.SfBUserPlanName'
+	END
+
+	DECLARE @sql nvarchar(3500)
+
+	set @sql = '
+		INSERT INTO 
+	# TempSfBUsers
+		SELECT 
+			ea.AccountID,
+			ea.ItemID,
+			ea.AccountName,
+			ea.DisplayName,
+			ea.UserPrincipalName,
+			ou.SipAddress,
+			ea.SamAccountName,
+			ou.SfBUserPlanId,
+			lp.SfBUserPlanName				
+		FROM 
+			ExchangeAccounts ea 
+		INNER JOIN 
+			SfBUsers ou
+		INNER JOIN
+			SfBUserPlans lp 
+		ON
+			ou.SfBUserPlanId = lp.SfBUserPlanId				
+		ON 
+			ea.AccountID = ou.AccountID
+		WHERE 
+			ea.ItemID = @ItemID ' + @condition
+
+	exec sp_executesql @sql, N'@ItemID int',@ItemID
+
+	DECLARE @RetCount int
+	SELECT @RetCount = COUNT(ID) FROM #TempSfBUsers 
+
+	IF (@SortDirection = 'ASC')
+	BEGIN
+		SELECT * FROM #TempSfBUsers 
+		WHERE ID > @StartRow AND ID <= (@StartRow + @Count) 
 	END
 	ELSE
 	BEGIN
-        SELECT * FROM #TempSfBUsers 
-			WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
-	END	
-END
-DROP TABLE #TempSfBUsers
+		IF @SortColumn <> '' AND @SortColumn IS NOT NULL
+		BEGIN
+			IF (@SortColumn = 'DisplayName')
+			BEGIN
+				SELECT * FROM #TempSfBUsers 
+					WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY DisplayName DESC
+			END
+			IF (@SortColumn = 'UserPrincipalName')
+			BEGIN
+				SELECT * FROM #TempSfBUsers 
+					WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
+			END
 
-IF  NOT EXISTS (SELECT * FROM sys.objects WHERE type_desc = N'SQL_STORED_PROCEDURE' AND name = N'GetSfBUsersByPlanId')
-BEGIN
-EXEC sp_executesql N'CREATE PROCEDURE [dbo].[GetSfBUsersByPlanId]
-(
-	@ItemID int,
-	@PlanId int
-)
-AS
+			IF (@SortColumn = 'SipAddress')
+			BEGIN
+				SELECT * FROM #TempSfBUsers 
+					WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY SipAddress DESC
+			END
 
-	SELECT
-		ea.AccountID,
-		ea.ItemID,
-		ea.AccountName,
-		ea.DisplayName,
-		ea.UserPrincipalName,
-		ea.SamAccountName,
-		ou.SfBUserPlanId,
-		lp.SfBUserPlanName
-	FROM
-		ExchangeAccounts ea
-	INNER JOIN
-		SfBUsers ou
-	INNER JOIN
-		SfBUserPlans lp
-	ON
-		ou.SfBUserPlanId = lp.SfBUserPlanId
-	ON
-		ea.AccountID = ou.AccountID
-	WHERE
-		ea.ItemID = @ItemID AND
-		ou.SfBUserPlanId = @PlanId'
+			IF (@SortColumn = 'SfBUserPlanName')
+			BEGIN
+				SELECT * FROM #TempSfBUsers 
+					WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY SfBUserPlanName DESC
+			END
+		END
+		ELSE
+		BEGIN
+			SELECT * FROM #TempSfBUsers 
+				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
+		END	
+	END
+	DROP TABLE #TempSfBUsers
 END
 				*/
 				#endregion
 
+				var users = ExchangeAccounts
+					.Where(ea => ea.ItemId == itemId)
+					.Join(SfBUsers, ea => ea.AccountId, u => u.AccountId, (ea, u) => new
+					{
+						Account = ea,
+						User = u
+					})
+					.Join(SfBUserPlans, u => u.User.SfBUserPlanId, p => p.SfBUserPlanId, (u, p) => new
+					{
+						u.Account.AccountId,
+						u.Account.ItemId,
+						u.Account.AccountName,
+						u.Account.DisplayName,
+						u.Account.UserPrincipalName,
+						u.User.SipAddress,
+						u.Account.SamAccountName,
+						u.User.SfBUserPlanId,
+						p.SfBUserPlanName
+					});
+				
+				var countUsers = users.Count();
+
+				if (string.Equals(sortDirection, "ASC", StringComparison.OrdinalIgnoreCase))
+				{
+					users = users.OrderBy(sortColumn);
+				}
+				else
+				{
+					users = users.OrderBy($"{sortColumn} desc");
+				}
+
+				users = users.Skip(startRow).Take(count);
+
+				return EntityDataReader(countUsers, users);
 			}
 			else
 			{
@@ -34735,6 +34984,27 @@ AS
 				*/
 				#endregion
 
+				var users = ExchangeAccounts
+					.Where(ea => ea.ItemId == itemId)
+					.Join(SfBUsers, ea => ea.AccountId, u => u.AccountId, (ea, u) => new
+					{
+						Account = ea,
+						User = u
+					})
+					.Where(u => u.User.SfBUserPlanId == planId)
+					.Join(SfBUserPlans, u => u.User.SfBUserPlanId, p => p.SfBUserPlanId, (u, p) => new
+					{
+						u.Account.AccountId,
+						u.Account.ItemId,
+						u.Account.AccountName,
+						u.Account.DisplayName,
+						u.Account.UserPrincipalName,
+						u.User.SipAddress,
+						u.Account.SamAccountName,
+						u.User.SfBUserPlanId,
+						p.SfBUserPlanName
+					});
+				return EntityDataReader(users);
 			}
 			else
 			{
@@ -34772,6 +35042,10 @@ WHERE
 				*/
 				#endregion
 
+				return ExchangeAccounts
+					.Where(ea => ea.ItemId == itemId)
+					.Join(SfBUsers, ea => ea.AccountId, u => u.AccountId, (ea, u) => ea)
+					.Count();
 			}
 			else
 			{
@@ -34802,6 +35076,7 @@ RETURN
 				*/
 				#endregion
 
+				LyncUsers.Where(u => u.AccountId == accountId).ExecuteDelete(LyncUsers);
 			}
 			else
 			{
@@ -34907,6 +35182,45 @@ RETURN
 				*/
 				#endregion
 
+				var isDefault = sfbUserPlan.IsDefault;
+				var plans = SfBUserPlans.Where(p => p.ItemId == itemID);
+				if (!plans.Any() && sfbUserPlan.SfBUserPlanType == 0)
+				{
+					isDefault = true;
+				}
+				else
+				{
+					if (isDefault && sfbUserPlan.SfBUserPlanType == 0)
+					{
+						foreach (var pl in plans) pl.IsDefault = false;
+					}
+				}
+
+				var plan = new Data.Entities.SfBUserPlan()
+				{
+					ItemId = itemID,
+					SfBUserPlanName = sfbUserPlan.SfBUserPlanName,
+					SfBUserPlanType = sfbUserPlan.SfBUserPlanType,
+					IM = sfbUserPlan.IM,
+					Mobility = sfbUserPlan.Mobility,
+					MobilityEnableOutsideVoice = sfbUserPlan.MobilityEnableOutsideVoice,
+					Federation = sfbUserPlan.Federation,
+					Conferencing = sfbUserPlan.Conferencing,
+					EnterpriseVoice = sfbUserPlan.EnterpriseVoice,
+					VoicePolicy = sfbUserPlan.VoicePolicy,
+					IsDefault = sfbUserPlan.IsDefault,
+					RemoteUserAccess = sfbUserPlan.RemoteUserAccess,
+					PublicIMConnectivity = sfbUserPlan.PublicIMConnectivity,
+					AllowOrganizeMeetingsWithExternalAnonymous = sfbUserPlan.AllowOrganizeMeetingsWithExternalAnonymous,
+					Telephony = sfbUserPlan.Telephony,
+					ServerUri = sfbUserPlan.ServerURI,
+					ArchivePolicy = sfbUserPlan.ArchivePolicy,
+					TelephonyDialPlanPolicy = sfbUserPlan.TelephonyDialPlanPolicy,
+					TelephonyVoicePolicy = sfbUserPlan.TelephonyVoicePolicy
+				};
+				SfBUserPlans.Add(plan);
+				SaveChanges();
+				return plan.SfBUserPlanId;
 			}
 			else
 			{
@@ -34982,6 +35296,21 @@ RETURN
 				*/
 				#endregion
 
+				var plan = SfBUserPlans.FirstOrDefault(u => u.SfBUserPlanId == sfbUserPlan.SfBUserPlanId);
+				if (plan != null)
+				{
+					plan.SfBUserPlanName = sfbUserPlan.SfBUserPlanName;
+					plan.SfBUserPlanType = sfbUserPlan.SfBUserPlanType;
+					plan.IM = sfbUserPlan.IM;
+					plan.Mobility = sfbUserPlan.Mobility;
+					plan.MobilityEnableOutsideVoice = sfbUserPlan.MobilityEnableOutsideVoice;
+					plan.Federation = sfbUserPlan.Federation;
+					plan.Conferencing = sfbUserPlan.Conferencing;
+					plan.EnterpriseVoice = sfbUserPlan.EnterpriseVoice;
+					plan.VoicePolicy = sfbUserPlan.VoicePolicy;
+					plan.IsDefault = sfbUserPlan.IsDefault;
+					SaveChanges();
+				}
 			}
 			else
 			{
@@ -35031,6 +35360,7 @@ RETURN
 				*/
 				#endregion
 
+				SfBUserPlans.Where(p => p.SfBUserPlanId == sfbUserPlanId).ExecuteDelete(SfBUserPlans);
 			}
 			else
 			{
@@ -35083,6 +35413,32 @@ RETURN
 				*/
 				#endregion
 
+				var plan = SfBUserPlans
+					.Where(p => p.SfBUserPlanId == sfbUserPlanId)
+					.Select(p => new
+					{
+						p.SfBUserPlanId,
+						p.ItemId,
+						p.SfBUserPlanName,
+						p.SfBUserPlanType,
+						p.IM,
+						p.Mobility,
+						p.MobilityEnableOutsideVoice,
+						p.Federation,
+						p.Conferencing,
+						p.EnterpriseVoice,
+						p.VoicePolicy,
+						p.IsDefault,
+						p.RemoteUserAccess,
+						p.PublicIMConnectivity,
+						p.AllowOrganizeMeetingsWithExternalAnonymous,
+						p.Telephony,
+						p.ServerUri,
+						p.ArchivePolicy,
+						p.TelephonyDialPlanPolicy,
+						p.TelephonyVoicePolicy
+					});
+				return EntityDataReader(plan);
 			}
 			else
 			{
@@ -35128,6 +35484,25 @@ RETURN
 				*/
 				#endregion
 
+				var plans = SfBUserPlans
+					.Where(p => p.ItemId == itemId)
+					.OrderBy(p => p.SfBUserPlanName)
+					.Select(p => new
+					{
+						p.SfBUserPlanId,
+						p.ItemId,
+						p.SfBUserPlanName,
+						p.SfBUserPlanType,
+						p.IM,
+						p.Mobility,
+						p.MobilityEnableOutsideVoice,
+						p.Federation,
+						p.Conferencing,
+						p.EnterpriseVoice,
+						p.VoicePolicy,
+						p.IsDefault
+					});
+				return EntityDataReader(plans);
 			}
 			else
 			{
@@ -35162,6 +35537,19 @@ RETURN
 				*/
 				#endregion
 
+#if NETFRAMEWORK
+				var org = ExchangeOrganizations.FirstOrDefault(o => o.ItemId == itemId);
+				if (org != null)
+				{
+					org.SfBuserPlanId = sfbUserPlanId;
+					SaveChanges();
+				}
+#else
+				ExchangeOrganizations
+					.Where(o => o.ItemId == itemId)
+					.ExecuteUpdate(set => set
+						.SetProperty(o => o.SfBuserPlanId, sfbUserPlanId));
+#endif
 			}
 			else
 			{
@@ -35206,6 +35594,27 @@ RETURN
 				*/
 				#endregion
 
+				var plans = SfBUserPlans
+					.Join(SfBUsers
+						.Where(u => u.AccountId == AccountId),
+						p => p.SfBUserPlanId, u => u.SfBUserPlanId, (p, u) => p)
+					.OrderBy(p => p.SfBUserPlanName)
+					.Select(p => new
+					{
+						p.SfBUserPlanId,
+						p.ItemId,
+						p.SfBUserPlanName,
+						p.SfBUserPlanType,
+						p.IM,
+						p.Mobility,
+						p.MobilityEnableOutsideVoice,
+						p.Federation,
+						p.Conferencing,
+						p.EnterpriseVoice,
+						p.VoicePolicy,
+						p.IsDefault
+					});
+				return EntityDataReader(plans);
 			}
 			else
 			{
@@ -35240,6 +35649,19 @@ RETURN
 				*/
 				#endregion
 
+#if NETFRAMEWORK
+				var user = SfBUsers.FirstOrDefault(u => u.AccountId == accountId);
+				if (user != null)
+				{
+					user.SfBUserPlanId = sfbUserPlanId;
+					SaveChanges();
+				}
+#else
+				SfBUsers
+					.Where(u => u.AccountId == accountId)
+					.ExecuteUpdate(set => set
+						.SetProperty(u => u.SfBUserPlanId, sfbUserPlanId));
+#endif
 			}
 			else
 			{
@@ -35251,7 +35673,7 @@ RETURN
 					new SqlParameter("@SfBUserPlanId", (sfbUserPlanId == 0) ? (object)DBNull.Value : (object)sfbUserPlanId));
 			}
 		}
-		#endregion
+#endregion
 
 		/*
 		public int GetPackageIdByName(string Name)
@@ -37067,10 +37489,11 @@ AS
 				{
 					lev.Name = level.Name;
 					lev.Description = level.Description;
-					SaveChanges();
+					return SaveChanges();
 				}
+				return 0;
 #else
-				StorageSpaceLevels
+				return StorageSpaceLevels
 					.Where(l => l.Id == level.Id)
 					.ExecuteUpdate(set => set
 						.SetProperty(l => l.Name, level.Name)
@@ -40810,7 +41233,7 @@ AS
 			{
 				#region Stored Procedure
 				/*
-				
+				*//*
 				#endregion
 
 			}

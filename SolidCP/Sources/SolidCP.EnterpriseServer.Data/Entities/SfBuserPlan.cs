@@ -1,8 +1,7 @@
 ﻿#if ScaffoldedEntities
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using SolidCP.Providers.HostedSolution;
 #if NetCore
 using Microsoft.EntityFrameworkCore;
 #endif
@@ -14,7 +13,7 @@ public partial class SfBUserPlan
 {
     [Key]
     [Column("SfBUserPlanId")]
-    public int SfBuserPlanId { get; set; }
+    public int SfBUserPlanId { get; set; }
 
     [Column("ItemID")]
     public int ItemId { get; set; }
@@ -22,13 +21,13 @@ public partial class SfBUserPlan
     [Required]
     [Column("SfBUserPlanName")]
     [StringLength(300)]
-    public string SfBuserPlanName { get; set; }
+    public string SfBUserPlanName { get; set; }
 
     [Column("SfBUserPlanType")]
-    public int? SfBuserPlanType { get; set; }
+    public int? SfBUserPlanType { get; set; }
 
     [Column("IM")]
-    public bool Im { get; set; }
+    public bool IM { get; set; }
 
     public bool Mobility { get; set; }
 
@@ -40,14 +39,14 @@ public partial class SfBUserPlan
 
     public bool EnterpriseVoice { get; set; }
 
-    public int VoicePolicy { get; set; }
+    public SfBVoicePolicyType VoicePolicy { get; set; }
 
     public bool IsDefault { get; set; }
 
     public bool RemoteUserAccess { get; set; }
 
     [Column("PublicIMConnectivity")]
-    public bool PublicImconnectivity { get; set; }
+    public bool PublicIMConnectivity { get; set; }
 
     public bool AllowOrganizeMeetingsWithExternalAnonymous { get; set; }
 

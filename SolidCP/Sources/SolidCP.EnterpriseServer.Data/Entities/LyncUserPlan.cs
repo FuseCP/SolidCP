@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using SolidCP.Providers.HostedSolution;
 #if NetCore
 using Microsoft.EntityFrameworkCore;
 #endif
@@ -28,7 +29,7 @@ public partial class LyncUserPlan
     public int? LyncUserPlanType { get; set; }
 
     [Column("IM")]
-    public bool Im { get; set; }
+    public bool IM { get; set; }
 
     public bool Mobility { get; set; }
 
@@ -40,14 +41,14 @@ public partial class LyncUserPlan
 
     public bool EnterpriseVoice { get; set; }
 
-    public int VoicePolicy { get; set; }
+    public LyncVoicePolicyType VoicePolicy { get; set; }
 
     public bool IsDefault { get; set; }
 
     public bool RemoteUserAccess { get; set; }
 
     [Column("PublicIMConnectivity")]
-    public bool PublicImconnectivity { get; set; }
+    public bool PublicIMConnectivity { get; set; }
 
     public bool AllowOrganizeMeetingsWithExternalAnonymous { get; set; }
 

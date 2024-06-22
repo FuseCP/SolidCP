@@ -171,8 +171,6 @@ namespace SolidCP.EnterpriseServer.Data
 #endif
 	}
 
-
-
 	public class GenericDbContext<TProvider>: Context.DbContextBase where TProvider: IDbProvider
 	{
 #if NetCore

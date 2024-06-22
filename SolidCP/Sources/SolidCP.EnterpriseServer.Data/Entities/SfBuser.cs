@@ -14,13 +14,13 @@ public partial class SfBUser
 {
     [Key]
     [Column("SfBUserID")]
-    public int SfBuserId { get; set; }
+    public int SfBUserId { get; set; }
 
     [Column("AccountID")]
     public int AccountId { get; set; }
 
     [Column("SfBUserPlanID")]
-    public int SfBuserPlanId { get; set; }
+    public int SfBUserPlanId { get; set; }
 
     [Column(TypeName = "datetime")]
     public DateTime CreatedDate { get; set; }

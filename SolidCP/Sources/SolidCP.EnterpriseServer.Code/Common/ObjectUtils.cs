@@ -466,15 +466,27 @@ namespace SolidCP.EnterpriseServer
 			if (type == typeof(object)) type = set.FirstOrDefault(e => e != null)?.GetType() ?? typeof(object);
 			var table = new DataTable(type.Name);
 			var eprops = GetTypeProperties(type);
-			var props = eprops.Select(p => new { Property = p, Column = table.Columns.Add(p.Name, p.PropertyType) })
+			var props = eprops.Select(p => new { Property = p, Column = new DataColumn(p.Name) })
 				.ToArray();
+
+			foreach (var p in props)
+			{
+				var ptype = p.Property.PropertyType;
+				var isNullable = ptype.IsGenericType && ptype.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+						!ptype.IsGenericTypeDefinition;
+				p.Column.AllowDBNull = isNullable;
+				p.Column.DataType = isNullable ? Nullable.GetUnderlyingType(ptype) : ptype;
+				table.Columns.Add(p.Column);
+			}
 
 			foreach (var entity in set)
 			{
 				var row = table.NewRow();
 				foreach (var prop in props)
 				{
-					row[prop.Column] = prop.Property.GetValue(entity);
+					var val = prop.Property.GetValue(entity);
+					if (val == null && prop.Column.AllowDBNull) row[prop.Column] = DBNull.Value;
+					else row[prop.Column] = val;
 				}
 			}
 			return table;

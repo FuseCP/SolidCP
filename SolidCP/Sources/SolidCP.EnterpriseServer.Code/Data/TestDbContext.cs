@@ -4,10 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SolidCP.EnterpriseServer.Data.Extensions
+namespace SolidCP.EnterpriseServer.Code
 {
-	internal class TestDbContext: MsSqlDbContext
+	// For use with LINQPad
+	public class TestDbContext: Data.MsSqlDbContext
 	{
-		public TestDbContext() : base(new DbContext()) { }
+		public TestDbContext() : base(new Data.DbContext()) { }
+
+		public DataProvider Db = new DataProvider();
 	}
 }

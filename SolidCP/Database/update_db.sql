@@ -2246,116 +2246,119 @@ CREATE PROCEDURE [dbo].[GetSfBUsers]
 	@Count int	
 )
 AS
-
-CREATE TABLE #TempSfBUsers 
-(	
-	[ID] [int] IDENTITY(1,1) NOT NULL,
-	[AccountID] [int],	
-	[ItemID] [int] NOT NULL,
-	[AccountName] [nvarchar](300)  NOT NULL,
-	[DisplayName] [nvarchar](300)  NOT NULL,
-	[UserPrincipalName] [nvarchar](300) NULL,
-	[SipAddress] [nvarchar](300) NULL,
-	[SamAccountName] [nvarchar](100) NULL,
-	[SfBUserPlanId] [int] NOT NULL,		
-	[SfBUserPlanName] [nvarchar] (300) NOT NULL,		
-)
-
-DECLARE @condition nvarchar(700)
-SET @condition = ''
-
-IF (@SortColumn = 'DisplayName')
 BEGIN
-	SET @condition = 'ORDER BY ea.DisplayName'
-END
+	CREATE TABLE #TempSfBUsers 
+	(	
+		[ID] [int] IDENTITY(1,1) NOT NULL,
+		[AccountID] [int],	
+		[ItemID] [int] NOT NULL,
+		[AccountName] [nvarchar](300)  NOT NULL,
+		[DisplayName] [nvarchar](300)  NOT NULL,
+		[UserPrincipalName] [nvarchar](300) NULL,
+		[SipAddress] [nvarchar](300) NULL,
+		[SamAccountName] [nvarchar](100) NULL,
+		[SfBUserPlanId] [int] NOT NULL,		
+		[SfBUserPlanName] [nvarchar] (300) NOT NULL,		
+	)
 
-IF (@SortColumn = 'UserPrincipalName')
-BEGIN
-	SET @condition = 'ORDER BY ea.UserPrincipalName'
-END
+	DECLARE @condition nvarchar(700)
+	SET @condition = ''
 
-IF (@SortColumn = 'SipAddress')
-BEGIN
-	SET @condition = 'ORDER BY ou.SipAddress'
-END
-
-IF (@SortColumn = 'SfBUserPlanName')
-BEGIN
-	SET @condition = 'ORDER BY lp.SfBUserPlanName'
-END
-
-DECLARE @sql nvarchar(3500)
-
-set @sql = '
-	INSERT INTO 
-		#TempSfBUsers 
-	SELECT 
-		ea.AccountID,
-		ea.ItemID,
-		ea.AccountName,
-		ea.DisplayName,
-		ea.UserPrincipalName,
-		ou.SipAddress,
-		ea.SamAccountName,
-		ou.SfBUserPlanId,
-		lp.SfBUserPlanName				
-	FROM 
-		ExchangeAccounts ea 
-	INNER JOIN 
-		SfBUsers ou
-	INNER JOIN
-		SfBUserPlans lp 
-	ON
-		ou.SfBUserPlanId = lp.SfBUserPlanId				
-	ON 
-		ea.AccountID = ou.AccountID
-	WHERE 
-		ea.ItemID = @ItemID ' + @condition
-
-exec sp_executesql @sql, N'@ItemID int',@ItemID
-
-DECLARE @RetCount int
-SELECT @RetCount = COUNT(ID) FROM #TempSfBUsers 
-
-IF (@SortDirection = 'ASC')
-BEGIN
-	SELECT * FROM #TempSfBUsers 
-	WHERE ID > @StartRow AND ID <= (@StartRow + @Count) 
-END
-ELSE
-BEGIN
-	IF @SortColumn <> '' AND @SortColumn IS NOT NULL
+	IF (@SortColumn = 'DisplayName')
 	BEGIN
-		IF (@SortColumn = 'DisplayName')
-		BEGIN
-			SELECT * FROM #TempSfBUsers 
-				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY DisplayName DESC
-		END
-		IF (@SortColumn = 'UserPrincipalName')
-		BEGIN
-			SELECT * FROM #TempSfBUsers 
-				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
-		END
+		SET @condition = 'ORDER BY ea.DisplayName'
+	END
 
-		IF (@SortColumn = 'SipAddress')
-		BEGIN
-			SELECT * FROM #TempSfBUsers 
-				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY SipAddress DESC
-		END
+	IF (@SortColumn = 'UserPrincipalName')
+	BEGIN
+		SET @condition = 'ORDER BY ea.UserPrincipalName'
+	END
 
-		IF (@SortColumn = 'SfBUserPlanName')
-		BEGIN
-			SELECT * FROM #TempSfBUsers 
-				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY SfBUserPlanName DESC
-		END
+	IF (@SortColumn = 'SipAddress')
+	BEGIN
+		SET @condition = 'ORDER BY ou.SipAddress'
+	END
+
+	IF (@SortColumn = 'SfBUserPlanName')
+	BEGIN
+		SET @condition = 'ORDER BY lp.SfBUserPlanName'
+	END
+
+	DECLARE @sql nvarchar(3500)
+
+	set @sql = '
+		INSERT INTO 
+			#TempSfBUsers 
+		SELECT 
+			ea.AccountID,
+			ea.ItemID,
+			ea.AccountName,
+			ea.DisplayName,
+			ea.UserPrincipalName,
+			ou.SipAddress,
+			ea.SamAccountName,
+			ou.SfBUserPlanId,
+			lp.SfBUserPlanName				
+		FROM 
+			ExchangeAccounts ea 
+		INNER JOIN 
+			SfBUsers ou
+		INNER JOIN
+			SfBUserPlans lp 
+		ON
+			ou.SfBUserPlanId = lp.SfBUserPlanId				
+		ON 
+			ea.AccountID = ou.AccountID
+		WHERE 
+			ea.ItemID = @ItemID ' + @condition
+
+	exec sp_executesql @sql, N'@ItemID int',@ItemID
+
+	DECLARE @RetCount int
+	SELECT @RetCount = COUNT(ID) FROM #TempSfBUsers 
+
+	IF (@SortDirection = 'ASC')
+	BEGIN
+		SELECT * FROM #TempSfBUsers 
+		WHERE ID > @StartRow AND ID <= (@StartRow + @Count) 
 	END
 	ELSE
 	BEGIN
-        SELECT * FROM #TempSfBUsers 
-			WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
-	END	
+		IF @SortColumn <> '' AND @SortColumn IS NOT NULL
+		BEGIN
+			IF (@SortColumn = 'DisplayName')
+			BEGIN
+				SELECT * FROM #TempSfBUsers 
+					WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY DisplayName DESC
+			END
+			IF (@SortColumn = 'UserPrincipalName')
+			BEGIN
+				SELECT * FROM #TempSfBUsers 
+					WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
+			END
+
+			IF (@SortColumn = 'SipAddress')
+			BEGIN
+				SELECT * FROM #TempSfBUsers 
+					WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY SipAddress DESC
+			END
+
+			IF (@SortColumn = 'SfBUserPlanName')
+			BEGIN
+				SELECT * FROM #TempSfBUsers 
+					WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY SfBUserPlanName DESC
+			END
+		END
+		ELSE
+		BEGIN
+			SELECT * FROM #TempSfBUsers 
+				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
+		END	
+	END
+	DROP TABLE #TempSfBUsers
 END
-DROP TABLE #TempSfBUsers
+GO
+
 
 IF  NOT EXISTS (SELECT * FROM sys.objects WHERE type_desc = N'SQL_STORED_PROCEDURE' AND name = N'GetSfBUsersByPlanId')
 BEGIN
@@ -3162,6 +3165,41 @@ SET
 WHERE ServiceID = @ServiceID
 
 RETURN
+GO
+
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetPendingSSLForWebsite')
+DROP PROCEDURE GetPendingSSLForWebsite
+GO
+
+CREATE PROCEDURE [dbo].[GetPendingSSLForWebsite]
+(
+	@ActorID int,
+	@PackageID int,
+	@websiteid int,
+	@Recursive bit = 1
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+BEGIN
+	RAISERROR('You are not allowed to access this package', 16, 1)
+	RETURN
+END
+
+SELECT
+	[ID], [UserID], [SiteID], [Hostname], [CSR], [Certificate], [Hash], [Installed]
+FROM
+	[dbo].[SSLCertificates]
+WHERE
+	@websiteid = [SiteID] AND [Installed] = 0 AND [IsRenewal] = 0
+
+RETURN
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
 GO
 
 -- Lync
@@ -8223,118 +8261,123 @@ CREATE PROCEDURE [dbo].[GetLyncUsers]
 	@Count int	
 )
 AS
-
-CREATE TABLE #TempLyncUsers 
-(	
-	[ID] [int] IDENTITY(1,1) NOT NULL,
-	[AccountID] [int],	
-	[ItemID] [int] NOT NULL,
-	[AccountName] [nvarchar](300)  NOT NULL,
-	[DisplayName] [nvarchar](300)  NOT NULL,
-	[UserPrincipalName] [nvarchar](300) NULL,
-	[SipAddress] [nvarchar](300) NULL,
-	[SamAccountName] [nvarchar](100) NULL,
-	[LyncUserPlanId] [int] NOT NULL,		
-	[LyncUserPlanName] [nvarchar] (300) NOT NULL,		
-)
-
-DECLARE @condition nvarchar(700)
-SET @condition = ''
-
-IF (@SortColumn = 'DisplayName')
 BEGIN
-	SET @condition = 'ORDER BY ea.DisplayName'
-END
 
-IF (@SortColumn = 'UserPrincipalName')
-BEGIN
-	SET @condition = 'ORDER BY ea.UserPrincipalName'
-END
+	CREATE TABLE #TempLyncUsers 
+	(	
+		[ID] [int] IDENTITY(1,1) NOT NULL,
+		[AccountID] [int],	
+		[ItemID] [int] NOT NULL,
+		[AccountName] [nvarchar](300)  NOT NULL,
+		[DisplayName] [nvarchar](300)  NOT NULL,
+		[UserPrincipalName] [nvarchar](300) NULL,
+		[SipAddress] [nvarchar](300) NULL,
+		[SamAccountName] [nvarchar](100) NULL,
+		[LyncUserPlanId] [int] NOT NULL,		
+		[LyncUserPlanName] [nvarchar] (300) NOT NULL,		
+	)
 
-IF (@SortColumn = 'SipAddress')
-BEGIN
-	SET @condition = 'ORDER BY ou.SipAddress'
-END
+	DECLARE @condition nvarchar(700)
+	SET @condition = ''
 
-IF (@SortColumn = 'LyncUserPlanName')
-BEGIN
-	SET @condition = 'ORDER BY lp.LyncUserPlanName'
-END
-
-DECLARE @sql nvarchar(3500)
-
-set @sql = '
-	INSERT INTO 
-		#TempLyncUsers 
-	SELECT 
-		ea.AccountID,
-		ea.ItemID,
-		ea.AccountName,
-		ea.DisplayName,
-		ea.UserPrincipalName,
-		ou.SipAddress,
-		ea.SamAccountName,
-		ou.LyncUserPlanId,
-		lp.LyncUserPlanName				
-	FROM 
-		ExchangeAccounts ea 
-	INNER JOIN 
-		LyncUsers ou
-	INNER JOIN
-		LyncUserPlans lp 
-	ON
-		ou.LyncUserPlanId = lp.LyncUserPlanId				
-	ON 
-		ea.AccountID = ou.AccountID
-	WHERE 
-		ea.ItemID = @ItemID ' + @condition
-
-exec sp_executesql @sql, N'@ItemID int',@ItemID
-
-DECLARE @RetCount int
-SELECT @RetCount = COUNT(ID) FROM #TempLyncUsers 
-
-IF (@SortDirection = 'ASC')
-BEGIN
-	SELECT * FROM #TempLyncUsers 
-	WHERE ID > @StartRow AND ID <= (@StartRow + @Count) 
-END
-ELSE
-BEGIN
-	IF @SortColumn <> '' AND @SortColumn IS NOT NULL
+	IF (@SortColumn = 'DisplayName')
 	BEGIN
-		IF (@SortColumn = 'DisplayName')
-		BEGIN
-			SELECT * FROM #TempLyncUsers 
-				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY DisplayName DESC
-		END
-		IF (@SortColumn = 'UserPrincipalName')
-		BEGIN
-			SELECT * FROM #TempLyncUsers 
-				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
-		END
+		SET @condition = 'ORDER BY ea.DisplayName'
+	END
 
-		IF (@SortColumn = 'SipAddress')
-		BEGIN
-			SELECT * FROM #TempLyncUsers 
-				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY SipAddress DESC
-		END
+	IF (@SortColumn = 'UserPrincipalName')
+	BEGIN
+		SET @condition = 'ORDER BY ea.UserPrincipalName'
+	END
 
-		IF (@SortColumn = 'LyncUserPlanName')
-		BEGIN
-			SELECT * FROM #TempLyncUsers 
-				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY LyncUserPlanName DESC
-		END
+	IF (@SortColumn = 'SipAddress')
+	BEGIN
+		SET @condition = 'ORDER BY ou.SipAddress'
+	END
+
+	IF (@SortColumn = 'LyncUserPlanName')
+	BEGIN
+		SET @condition = 'ORDER BY lp.LyncUserPlanName'
+	END
+
+	DECLARE @sql nvarchar(3500)
+
+	set @sql = '
+		INSERT INTO 
+			#TempLyncUsers 
+		SELECT 
+			ea.AccountID,
+			ea.ItemID,
+			ea.AccountName,
+			ea.DisplayName,
+			ea.UserPrincipalName,
+			ou.SipAddress,
+			ea.SamAccountName,
+			ou.LyncUserPlanId,
+			lp.LyncUserPlanName				
+		FROM 
+			ExchangeAccounts ea 
+		INNER JOIN 
+			LyncUsers ou
+		INNER JOIN
+			LyncUserPlans lp 
+		ON
+			ou.LyncUserPlanId = lp.LyncUserPlanId				
+		ON 
+			ea.AccountID = ou.AccountID
+		WHERE 
+			ea.ItemID = @ItemID ' + @condition
+
+	exec sp_executesql @sql, N'@ItemID int',@ItemID
+
+	DECLARE @RetCount int
+	SELECT @RetCount = COUNT(ID) FROM #TempLyncUsers 
+
+	IF (@SortDirection = 'ASC')
+	BEGIN
+		SELECT * FROM #TempLyncUsers 
+		WHERE ID > @StartRow AND ID <= (@StartRow + @Count) 
 	END
 	ELSE
 	BEGIN
-        SELECT * FROM #TempLyncUsers 
-			WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
-	END	
+		IF @SortColumn <> '' AND @SortColumn IS NOT NULL
+		BEGIN
+			IF (@SortColumn = 'DisplayName')
+			BEGIN
+				SELECT * FROM #TempLyncUsers 
+					WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY DisplayName DESC
+			END
+			IF (@SortColumn = 'UserPrincipalName')
+			BEGIN
+				SELECT * FROM #TempLyncUsers 
+					WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
+			END
+
+			IF (@SortColumn = 'SipAddress')
+			BEGIN
+				SELECT * FROM #TempLyncUsers 
+					WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY SipAddress DESC
+			END
+
+			IF (@SortColumn = 'LyncUserPlanName')
+			BEGIN
+				SELECT * FROM #TempLyncUsers 
+					WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY LyncUserPlanName DESC
+			END
+		END
+		ELSE
+		BEGIN
+			SELECT * FROM #TempLyncUsers 
+				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
+		END	
+	END
+
+	DROP TABLE #TempLyncUsers
 END
-
-DROP TABLE #TempLyncUsers
-
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER OFF
 GO
 
 
