@@ -44,6 +44,8 @@ using System.Xml;
 using System.Xml.Serialization;
 using SolidCP.Providers;
 using SolidCP.Providers.HostedSolution;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.CompilerServices;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -459,25 +461,44 @@ namespace SolidCP.EnterpriseServer
 
 			return obj;
 		}
+		public static bool IsAnonymous(Type type)
+		{
+			return Attribute.IsDefined(type, typeof(CompilerGeneratedAttribute), false) &&
+				type.IsGenericType &&
+				(type.Name.Contains("AnonymousType") || type.Name.Contains("AnonType")) &&
+				(type.Name.StartsWith("<>") || type.Name.StartsWith("VB$")) &&
+				type.Attributes.HasFlag(TypeAttributes.NotPublic);
+		}
 
 		public static DataTable DataTableFromEntitySet<TEntity>(IEnumerable<TEntity> set)
 		{
 			var type = typeof(TEntity);
 			if (type == typeof(object)) type = set.FirstOrDefault(e => e != null)?.GetType() ?? typeof(object);
 			var table = new DataTable(type.Name);
-			var eprops = GetTypeProperties(type);
-			var props = eprops.Select(p => new { Property = p, Column = new DataColumn(p.Name) })
-				.ToArray();
-
-			foreach (var p in props)
+			var eprops = GetTypeProperties(type)
+				// Filter out navigation & hidden properties
+				.Where(p => (!p.PropertyType.IsClass || p.PropertyType == typeof(string) ||
+					p.PropertyType == typeof(Guid) || p.PropertyType == typeof(byte[])) &&
+					!p.PropertyType.IsInterface &&
+					(p.CanWrite || IsAnonymous(type)) && p.CanRead &&
+					p.GetCustomAttribute<NotMappedAttribute>() == null);
+			var props = eprops.Select(p =>
 			{
-				var ptype = p.Property.PropertyType;
+				var ptype = p.PropertyType;
+				var isString = ptype == typeof(string);
 				var isNullable = ptype.IsGenericType && ptype.GetGenericTypeDefinition() == typeof(Nullable<>) &&
 						!ptype.IsGenericTypeDefinition;
-				p.Column.AllowDBNull = isNullable;
-				p.Column.DataType = isNullable ? Nullable.GetUnderlyingType(ptype) : ptype;
-				table.Columns.Add(p.Column);
-			}
+				var column = new DataColumn(p.Name);
+				column.AllowDBNull = isNullable || isString;
+				var ctype = isNullable ? Nullable.GetUnderlyingType(ptype) : ptype;
+				column.DataType = ctype;
+
+				return new { Property = p, Column = column, Type = ctype, IsNullable = isNullable,
+					IsString = isString };
+			})
+			.ToArray();
+
+			foreach (var p in props) table.Columns.Add(p.Column);
 
 			foreach (var entity in set)
 			{
@@ -485,9 +506,19 @@ namespace SolidCP.EnterpriseServer
 				foreach (var prop in props)
 				{
 					var val = prop.Property.GetValue(entity);
-					if (val == null && prop.Column.AllowDBNull) row[prop.Column] = DBNull.Value;
-					else row[prop.Column] = val;
+					if (prop.IsNullable || prop.IsString)
+					{
+						if (val == null) val = DBNull.Value;
+						else if (prop.IsNullable)
+						{
+							// get val.Value property value
+							var valueProperty = prop.Property.PropertyType.GetProperty("Value");
+							val = valueProperty.GetValue(val);
+						}
+					}
+					row[prop.Column] = val;
 				}
+				table.Rows.Add(row);
 			}
 			return table;
 		}

@@ -80,8 +80,6 @@ public partial class UsersDetailed
     [StringLength(255)]
     public string OwnerEmail { get; set; }
 
-    public int? Expr1 { get; set; }
-
     public int? PackagesNumber { get; set; }
 
     public bool? EcommerceEnabled { get; set; }

@@ -131,10 +131,10 @@ public partial class User
     public virtual ICollection<HostingPlan> HostingPlans { get; set; } = new List<HostingPlan>();
 
     [InverseProperty("Owner")]
-    public virtual ICollection<User> InverseOwner { get; set; } = new List<User>();
+    public virtual ICollection<User> ChildUsers { get; set; } = new List<User>();
 
     [ForeignKey("OwnerId")]
-    [InverseProperty("InverseOwner")]
+    [InverseProperty("ChildUsers")]
     public virtual User Owner { get; set; }
 
     [InverseProperty("User")]

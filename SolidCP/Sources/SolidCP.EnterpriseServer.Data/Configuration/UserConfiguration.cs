@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using SolidCP.EnterpriseServer.Data.Configuration;
 using SolidCP.EnterpriseServer.Data.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
 #if NetCore
 using Microsoft.EntityFrameworkCore;
 #endif
@@ -26,9 +27,9 @@ public partial class UserConfiguration: EntityTypeConfiguration<User>
 #if NetCore
         Property(e => e.HtmlMail).HasDefaultValue(true);
 
-        HasOne(d => d.Owner).WithMany(p => p.InverseOwner).HasConstraintName("FK_Users_Users");
+        HasOne(d => d.Owner).WithMany(p => p.ChildUsers).HasConstraintName("FK_Users_Users");
 #else
-        HasOptional(d => d.Owner).WithMany(p => p.InverseOwner);
+        HasOptional(d => d.Owner).WithMany(p => p.ChildUsers);
 #endif
 
 		#region Seed Data

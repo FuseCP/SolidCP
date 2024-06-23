@@ -22,7 +22,7 @@ public partial class PackageConfiguration: EntityTypeConfiguration<Package>
 
         Property(e => e.StatusIdChangeDate).HasDefaultValueSql("(getdate())");
 
-        HasOne(d => d.ParentPackage).WithMany(p => p.InverseParentPackage).HasConstraintName("FK_Packages_Packages");
+        HasOne(d => d.ParentPackage).WithMany(p => p.ChildPackages).HasConstraintName("FK_Packages_Packages");
 
         HasOne(d => d.Plan).WithMany(p => p.Packages).HasConstraintName("FK_Packages_HostingPlans");
 
@@ -47,7 +47,7 @@ public partial class PackageConfiguration: EntityTypeConfiguration<Package>
                     j.IndexerProperty<int>("ServiceId").HasColumnName("ServiceID");
                 }); */
 #else
-        HasOptional(p => p.ParentPackage).WithMany(p => p.InverseParentPackage);
+        HasOptional(p => p.ParentPackage).WithMany(p => p.ChildPackages);
         HasRequired(p => p.Plan).WithMany(p => p.Packages);
         HasRequired(p => p.Server).WithMany(p => p.Packages);
         HasRequired(p => p.User).WithMany(p => p.Packages);

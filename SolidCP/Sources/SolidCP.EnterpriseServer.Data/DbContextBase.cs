@@ -42,12 +42,17 @@ namespace SolidCP.EnterpriseServer.Context
                 InitSeedData = opts.InitSeedData;
             }
 		}
+
 #elif NetFX
-        public DbContextBase(Data.DbContext context): base(context.ConnectionString) { 
+		public DbContextBase(Data.DbContext context): base(context.ConnectionString) { 
             DbType = context.DbType;
+			Database.Log += WriteToLog;
+			Database.SetInitializer<DbContextBase>(null);
         }
 #endif
 
+		private void WriteToLog(string msg) => Log?.Invoke(msg);
+		public Action<string> Log { get; set; }
 		public Data.DbType DbType { get; set; } = Data.DbType.Unknown;
         public bool InitSeedData { get; set; } = false;
 
@@ -221,7 +226,7 @@ namespace SolidCP.EnterpriseServer.Context
 
 		public virtual DbSet<UserSetting> UserSettings { get; set; }
 
-		public virtual DbSet<UsersDetailed> UsersDetaileds { get; set; }
+		public virtual DbSet<UsersDetailed> UsersDetailed { get; set; }
 
 		public virtual DbSet<Version> Versions { get; set; }
 
@@ -259,6 +264,8 @@ namespace SolidCP.EnterpriseServer.Context
 					break;
 				default: throw new NotSupportedException("This DB flavor is not supported");
 			}
+
+			builder.LogTo(WriteToLog);
 		}
 #endif
 
@@ -272,6 +279,9 @@ namespace SolidCP.EnterpriseServer.Context
 		{
 			configuration.DbType = DbType;
 			configuration.InitSeedData = InitSeedData;
+#if NetFX
+			configuration.Configure();
+#endif
 			model.ApplyConfiguration(configuration);
 		}
 

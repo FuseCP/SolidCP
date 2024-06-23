@@ -65,7 +65,7 @@ public partial class Package
     public virtual ICollection<HostingPlan> HostingPlans { get; set; } = new List<HostingPlan>();
 
     [InverseProperty("ParentPackage")]
-    public virtual ICollection<Package> InverseParentPackage { get; set; } = new List<Package>();
+    public virtual ICollection<Package> ChildPackages { get; set; } = new List<Package>();
 
     [InverseProperty("Package")]
     public virtual ICollection<PackageAddon> PackageAddons { get; set; } = new List<PackageAddon>();
@@ -89,7 +89,7 @@ public partial class Package
     public virtual ICollection<PackagesDiskspace> PackagesDiskspaces { get; set; } = new List<PackagesDiskspace>();
 
     [ForeignKey("ParentPackageId")]
-    [InverseProperty("InverseParentPackage")]
+    [InverseProperty("ChildPackages")]
     public virtual Package ParentPackage { get; set; }
 
     [ForeignKey("PlanId")]

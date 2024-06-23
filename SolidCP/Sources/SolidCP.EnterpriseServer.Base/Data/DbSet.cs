@@ -40,7 +40,10 @@ namespace SolidCP.EnterpriseServer.Data
         T Invoke<T, U>(object obj, string method, Type[] types, params object[] args) => (T)Invoke<T>(obj, GetMethod(obj, method, types).MakeGenericMethod(typeof(U)), args);
         #endregion
 
-        public DbSet(IGenericDbContext context) { BaseContext = context; }
+        public DbSet(IGenericDbContext context) {
+            BaseContext = context;
+            set = Set;
+        }
 
         static Type[] TypesOfTEntity = new Type[] { typeof(TEntity) };
         public TEntity Add(TEntity entity) => Invoke<TEntity>(Set, nameof(Add), TypesOfTEntity, entity);

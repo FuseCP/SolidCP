@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace SolidCP.EnterpriseServer.Data
 {
-    public partial class DbContext: IDisposable
-	{
+    public partial class DbContext : IDisposable
+    {
 
         public const bool UseStoredProcedures = true;
 
@@ -55,7 +55,7 @@ namespace SolidCP.EnterpriseServer.Data
                         contextType = Type.GetType($"SolidCP.EnterpriseServer.Context.{dbType}DbContext, SolidCP.EnterpriseServer.Data.Core");
                     }
 #else
-					switch (DbType)
+                    switch (DbType)
                     {
                         default:
                         case DbType.MsSql: contextType = typeof(MsSqlDbContext); break;
@@ -78,9 +78,10 @@ namespace SolidCP.EnterpriseServer.Data
 #else
             BaseContext = new Context.DbContextBase(this);
 #endif
-        }
+			BaseContext.Log += WriteToLog;
+		}
 
-        public DbContext(string connectionString, DbType dbType = DbType.Unknown, bool initSeedData = false)
+		public DbContext(string connectionString, DbType dbType = DbType.Unknown, bool initSeedData = false)
         {
             if (dbType == DbType.Unknown) DbType = DbSettings.GetDbType(connectionString);
             else DbType = dbType;
@@ -89,9 +90,10 @@ namespace SolidCP.EnterpriseServer.Data
 #if NETSTANDARD
             BaseContext = (IGenericDbContext)Activator.CreateInstance(ContextType, this);
 #else
-			BaseContext = new Context.DbContextBase(this);
+            BaseContext = new Context.DbContextBase(this);
 #endif
-		}
+            BaseContext.Log += WriteToLog;
+        }
 
         public bool IsMsSql => DbType == DbType.MsSql;
         public bool IsMySql => DbType == DbType.MySql;
@@ -108,7 +110,8 @@ namespace SolidCP.EnterpriseServer.Data
         public int SaveChanges() => BaseContext.SaveChanges();
         public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken)) => BaseContext.SaveChangesAsync(cancellationToken);
         public void Dispose() => BaseContext.Dispose();
-
+        public Action<string> Log { get; set; }
+        private void WriteToLog(string msg) => Log?.Invoke(msg);
         public static void Init()
         {
 #if NetFX

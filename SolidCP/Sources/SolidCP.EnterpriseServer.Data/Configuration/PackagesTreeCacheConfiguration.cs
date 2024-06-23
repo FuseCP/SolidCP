@@ -28,7 +28,7 @@ public partial class PackagesTreeCacheConfiguration: EntityTypeConfiguration<Pac
                 .HasConstraintName("FK_PackagesTreeCache_Packages");
 #else
         HasRequired(d => d.Package).WithMany();
-        HasOptional(d => d.ParentPackage).WithMany();
+        HasRequired(d => d.ParentPackage).WithMany();
 #endif
 
 		#region Seed Data

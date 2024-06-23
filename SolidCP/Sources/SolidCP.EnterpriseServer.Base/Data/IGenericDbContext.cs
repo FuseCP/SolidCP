@@ -16,21 +16,22 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace SolidCP.EnterpriseServer.Data
 {
-    public interface IGenericDbContext: IDisposable
-    {
+	public interface IGenericDbContext : IDisposable
+	{
 #if NETFRAMEWORK
-        System.Data.Entity.DbSet<TEntity> Set<TEntity>() where TEntity: class;
+		System.Data.Entity.DbSet<TEntity> Set<TEntity>() where TEntity : class;
 #endif
 #if !NETFRAMEWORK && !NETSTANDARD
         Microsoft.EntityFrameworkCore.DbSet<TEntity> Set<TEntity>() where TEntity : class;
 #endif
-        int SaveChanges();
-        Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+		int SaveChanges();
+		Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+		Action<string> Log { get; set; }
 
 #if NETFRAMEWORK
-        Database Database { get; }
+		Database Database { get; }
 #else
-         DatabaseFacade Database { get; }
+        DatabaseFacade Database { get; }
 #endif
-    }
+	}
 }

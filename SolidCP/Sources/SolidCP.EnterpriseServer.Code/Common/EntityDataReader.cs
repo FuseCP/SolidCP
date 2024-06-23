@@ -8,13 +8,22 @@ using System.Data;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Threading.Tasks;
 using System.Collections;
+using SolidCP.Providers.HostedSolution;
 
 namespace SolidCP.EnterpriseServer
 {
-
-	public class PropertyCollection: KeyedCollection<string, PropertyInfo>
+	public class PropertyDescription
 	{
-		protected override string GetKeyForItem(PropertyInfo item) => item.Name;
+		public PropertyInfo Info;
+		public bool IsNullable;
+		public bool IsString;
+		public DataColumn Column;
+		public Type Type;
+	}
+
+	public class PropertyCollection: KeyedCollection<string, PropertyDescription>
+	{
+		protected override string GetKeyForItem(PropertyDescription item) => item.Info.Name;
 	}
 
 	public interface IEntityDataSet
@@ -38,19 +47,44 @@ namespace SolidCP.EnterpriseServer
                 if (properties == null)
                 {
 					var props = ObjectUtils.GetTypeProperties(Type)
-						.Where(p => p.CanWrite && p.CanRead && p.GetCustomAttribute<NotMappedAttribute>() == null);
+						// Filter out navigation & hidden properties
+						.Where(p => (!p.PropertyType.IsClass || p.PropertyType == typeof(string) ||
+						p.PropertyType == typeof(Guid) || p.PropertyType == typeof(byte[])) &&
+						!p.PropertyType.IsInterface &&
+						(p.CanWrite || ObjectUtils.IsAnonymous(Type)) && p.CanRead &&
+						p.GetCustomAttribute<NotMappedAttribute>() == null);
+					var propDescs = props
+						.Select(p =>
+						{
+							var ptype = p.PropertyType;
+							var isString = ptype == typeof(string);
+							var isNullable = ptype.IsGenericType && ptype.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+									!ptype.IsGenericTypeDefinition;
+							var column = new DataColumn(p.Name);
+							column.AllowDBNull = isNullable || isString;
+							var ctype = isNullable ? Nullable.GetUnderlyingType(ptype) : ptype;
+							column.DataType = ctype;
+
+							return new PropertyDescription()
+							{
+								Info = p,
+								Column = column,
+								Type = ctype,
+								IsNullable = isNullable,
+								IsString = isString
+							};
+						});
 					properties = new PropertyCollection();
-                    foreach (var prop in props) properties.Add(prop);
+                    foreach (var prop in propDescs) properties.Add(prop);
                 }
                 return properties;
             }
 			private set { properties = value; }
         }
 
-        public EntityDataReader(IEnumerable<TEntity> set, bool setRecordsAffected = false) {
+        public EntityDataReader(IEnumerable<TEntity> set) {
 			Set = set;
-			if (setRecordsAffected) RecordsAffected = Set.Count();
-			else RecordsAffected = -1;
+			RecordsAffected = -1;
 			Type = typeof(TEntity);
 			if (Type == typeof(object)) Type = Set.FirstOrDefault(e => e != null)?.GetType() ?? typeof(object);
 		}
@@ -75,9 +109,37 @@ namespace SolidCP.EnterpriseServer
 
 		public virtual int FieldCount => Properties.Count;
 
-		public virtual object this[string name] => Properties[name].GetValue(Enumerator.Current);
+		public virtual object this[string name] => Properties[name].Info.GetValue(Enumerator.Current);
 
-		public virtual object this[int i] => Properties[i].GetValue(Enumerator.Current);
+		private object GetValueFromProperty(PropertyDescription p)
+		{
+			try {
+				var val = p.Info.GetValue(Enumerator.Current);
+				if (p.IsNullable || p.IsString)
+				{
+					if (val == null) return DBNull.Value;
+					else if (p.IsNullable)
+					{
+						// get val.Value property value
+						var valueProperty = p.Info.PropertyType.GetProperty("Value");
+						return valueProperty.GetValue(val);
+					}
+				}
+				return val;
+			} catch (Exception ex)
+			{
+				throw;
+			}
+		}
+
+		public virtual object this[int i]
+		{
+			get
+			{
+				var p = Properties[i];
+				return GetValueFromProperty(p);
+			}
+		}
 
 		public virtual IEnumerator<TEntity> GetEnumerator() => ((IEnumerable<TEntity>)Set).GetEnumerator();
 
@@ -88,7 +150,61 @@ namespace SolidCP.EnterpriseServer
 		public virtual DataTable GetSchemaTable()
 		{
 			var table = new DataTable();
-			foreach (var prop in Properties) table.Columns.Add(prop.Name, prop.PropertyType);
+			table.Columns.Add("AllowDBNull", typeof(bool));
+			var baseCatalogName = new DataColumn("BaseCatalogName", typeof(string)) { AllowDBNull = true };
+			table.Columns.Add(baseCatalogName);
+			var baseColumnName = new DataColumn("BaseColumnName", typeof(string)) { AllowDBNull = true };
+			table.Columns.Add(baseColumnName);
+			var baseSchemaName = new DataColumn("BaseSchemaName", typeof(string)) { AllowDBNull = true };
+			table.Columns.Add(baseSchemaName);
+			var baseServerName = new DataColumn("BaseServerName", typeof(string)) { AllowDBNull = true };
+			table.Columns.Add(baseServerName);
+			var baseTableName = new DataColumn("BaseTableName", typeof(string)) { AllowDBNull = true };
+			table.Columns.Add(baseTableName);
+			table.Columns.Add("ColumnName", typeof(string));
+			table.Columns.Add("ColumnOrdinal", typeof(int));
+			table.Columns.Add("ColumnSize", typeof(int));
+			table.Columns.Add("DataType", typeof(Type));
+			table.Columns.Add("DataTypeName", typeof(string));
+			table.Columns.Add("IsAliased", typeof(bool));
+			table.Columns.Add("IsAutoIncrement", typeof(bool));
+			table.Columns.Add("IsColumnSet", typeof(bool));
+			table.Columns.Add("IsExpression", typeof(bool));
+			table.Columns.Add("IsHidden", typeof(bool));
+			table.Columns.Add("IsIdentity", typeof(bool));
+			table.Columns.Add("IsKey", typeof(bool));
+			table.Columns.Add("IsLong", typeof(bool));
+			table.Columns.Add("IsReadOnly", typeof(bool));
+			table.Columns.Add("IsRowVersion", typeof(bool));
+			table.Columns.Add("IsUnique", typeof(bool));
+			int i = 0;
+			foreach (var prop in Properties)
+			{
+				var row = table.NewRow();
+				row["AllowDBNull"] = prop.IsNullable;
+				row["BaseCatalogName"] = DBNull.Value;
+				row["BaseColumnName"] = DBNull.Value;
+				row["BaseSchemaName"] = DBNull.Value;
+				row["BaseServerName"] = "";
+				row["BaseTableName"] = Type.Name;
+				row["ColumnName"] = prop.Info.Name;
+				row["ColumnOrdinal"] = i++;
+				row["ColumnSize"] = int.MaxValue;
+				row["DataType"] = prop.Type;
+				row["DataTypeName"] = prop.Type.FullName;
+				row["IsAliased"] = false;
+				row["IsAutoIncrement"] = false;
+				row["IsColumnSet"] = false;
+				row["IsExpression"] = false;
+				row["IsHidden"] = false;
+				row["IsIdentity"] = false;
+				row["IsKey"] = false;
+				row["IsLong"] = false;
+				row["IsReadOnly"] = false;
+				row["IsRowVersion"] = false;
+				row["IsUnique"] = false;
+				table.Rows.Add(row);
+			}
 			return table;
 		}
 
@@ -99,16 +215,16 @@ namespace SolidCP.EnterpriseServer
 			Set = null;
 			enumerator = null;
 		}
-		public virtual string GetName(int i) => Properties[i].Name;
-		public virtual string GetDataTypeName(int i) => Properties[i].PropertyType.FullName;
-		public virtual Type GetFieldType(int i) => Properties[i].PropertyType;
-		public virtual object GetValue(int i) => Properties[i].GetValue(Enumerator.Current);
+		public virtual string GetName(int i) => Properties[i].Info.Name;
+		public virtual string GetDataTypeName(int i) => Properties[i].Type.FullName;
+		public virtual Type GetFieldType(int i) => Properties[i].Type;
+		public virtual object GetValue(int i) => this[i];
 		public virtual int GetValues(object[] values) {
 			int n = 0;
 			foreach (var prop in Properties)
 			{
 				if (n >= values.Length) break;
-				values[n++] = prop.GetValue(Enumerator.Current);
+				values[n++] = GetValueFromProperty(prop);
 			}
 			return n;
 		}
@@ -141,11 +257,11 @@ namespace SolidCP.EnterpriseServer
 		public DateTime GetDateTime(int i) => (DateTime)this[i];
 		public virtual IDataReader GetData(int i)
 		{
-			var reader = new EntityDataReader<TEntity>(Set, RecordsAffected != -1);
+			var reader = new EntityDataReader<TEntity>(Set);
 			var props = new PropertyCollection() { Properties[i] };
 			reader.Properties = props;
 			return reader;
 		}
-		public bool IsDBNull(int i) => this[i] == null;
+		public bool IsDBNull(int i) => Properties[i].Info.GetValue(Enumerator.Current) == null;
 	}
 }

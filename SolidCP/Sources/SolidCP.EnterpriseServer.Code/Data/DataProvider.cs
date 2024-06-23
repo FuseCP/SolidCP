@@ -62,6 +62,7 @@ using SolidCP.Providers.DNS;
 using SolidCP.Providers.DomainLookup;
 using SolidCP.Providers.StorageSpaces;
 using SolidCP.EnterpriseServer.Data;
+using SolidCP.EnterpriseServer.Code;
 using Twilio.Base;
 using System.Net;
 using static Mysqlx.Notice.Warning.Types;
@@ -1095,7 +1096,7 @@ RETURN
 						.Where(u => u.UserId != userId && !u.IsPeer &&
 						// (recursive ? CheckUserParent(userId, u.UserId) : u.OwnerId == userId) &&
 						(statusId == 0 || statusId > 0 && statusId == u.StatusId) &&
-						(roleId == 0 || roleId > 0 && roleId == u.RoleId))
+						(roleId == 0 || roleId > 0 && roleId == u.RoleId)) :
 					UsersDetailed.Where(u => false);
 
 				if (!string.IsNullOrEmpty(filterValue))
@@ -1115,7 +1116,8 @@ RETURN
 				var childUsers = UserChildren(userId, recursive);
 				users = users
 					.AsEnumerable()
-					.Join(childUsers, u => u.UserId, ch => ch, (u, ch) => u);
+					.Join(childUsers, u => u.UserId, ch => ch, (u, ch) => u)
+					.AsQueryable();
 
 				if (!string.IsNullOrEmpty(sortColumn))
 				{
@@ -1156,7 +1158,7 @@ RETURN
 						u.PackagesNumber,
 						u.CompanyName,
 						u.EcommerceEnabled
-					})));
+					}));
 			}
 			else
 			{
@@ -2956,9 +2958,39 @@ RETURN
 
 				var canGetDetails = CanGetUserDetails(actorId, ownerId);
 
+				var childUsers = UserChildren(ownerId, recursive);
 				var users = UsersDetailed
-					.Where(u => canGetDetails && u.UserId != ownerId && !u.IsPeer &&
-						(recursive ? CheckUserParent(ownerId, u.UserId) : u.OwnerId == ownerId));
+					.Where(u => canGetDetails && u.UserId != ownerId && !u.IsPeer)
+					.AsEnumerable()
+					.Join(childUsers, u => u.UserId, ch => ch, (u, ch) => new
+					{
+						u.UserId,
+						u.RoleId,
+						u.StatusId,
+						u.SubscriberNumber,
+						u.LoginStatusId,
+						u.FailedLogins,
+						u.OwnerId,
+						u.Created,
+						u.Changed,
+						u.IsDemo,
+						u.Comments,
+						u.IsPeer,
+						u.Username,
+						u.FirstName,
+						u.LastName,
+						u.Email,
+						u.FullName,
+						u.OwnerUsername,
+						u.OwnerFirstName,
+						u.OwnerLastName,
+						u.OwnerRoleId,
+						u.OwnerFullName,
+						u.PackagesNumber,
+						u.CompanyName,
+						u.EcommerceEnabled
+					});
+						//(recursive ? CheckUserParent(ownerId, u.UserId) : u.OwnerId == ownerId));
 
 				return EntityDataSet(users);
 			}
@@ -18986,7 +19018,7 @@ RETURN
 					var pid = packageId = package.PackageId;
 
 					// add package to packages cache
-					var parents = PackageParents(packageId)
+					var parents = PackageParents(pid)
 						.Select(parentId => new Data.Entities.PackagesTreeCache()
 						{
 							PackageId = pid,
@@ -21164,7 +21196,6 @@ RETURN
 			}
 		}
 
-		public void TruncateTable<TEntity>(IQueryable<TEntity>)
 		public void DeleteAuditLogRecordsComplete()
 		{
 			if (UseEntityFramework)
@@ -24586,31 +24617,26 @@ RETURN
 			}
 		}
 
-		public DataTable EntityDataTable<TEntity>(IEnumerable<TEntity> set) => ObjectUtils.DataTableFromEntitySet<TEntity>(set);
-		public DataSet EntityDataSet<TEntity>(IEnumerable<TEntity> set) => ObjectUtils.DataSetFromEntitySet<TEntity>(set);
-		/* public DataSet EntityDataSet(params object[] sets)
-		{
-			var dataSet = new DataSet();
-			foreach (var set in sets)
-			{
-				if (set.GetType() == typeof(int)) dataSet.Tables.Add(CountDataTable((int)set));
-				else if (set.GetType().IsAssignableTo(typeof(IEnumerable)))
-				{
-					dataSet.Tables.Add(EntityDataTable(((IEnumerable)set).OfType<object>()));
-				}
-			}
-		} */
-
+		public DataTable EntityDataTable<TEntity>(IEnumerable<TEntity> set) where TEntity: class => new EntityDataTable<TEntity>(set);
 		public DataSet EntityDataSet(params DataTable[] tables)
 		{
 			var dataSet = new DataSet();
 			foreach (var table in tables) dataSet.Tables.Add(table);
 			return dataSet;
 		}
-		public DataSet EntityDataSet<TEntity>(int count, IEnumerable<TEntity> set) => EntityDataSet(CountDataTable(count), EntityDataTable(set));
-		public DataSet EntityDataSet<TEntity1, TEntity2>(int count, IEnumerable<TEntity1> set1, IEnumerable<TEntity2> set2) => EntityDataSet(CountDataTable(count), EntityDataTable(set1), EntityDataTable(set2));
-		public DataSet EntityDataSet<TEntity1, TEntity2>(IEnumerable<TEntity1> set1, IEnumerable<TEntity2> set2) => EntityDataSet(EntityDataTable(set1), EntityDataTable(set2));
-		public DataSet EntityDataSet<TEntity1, TEntity2, TEntity3>(IEnumerable<TEntity1> set1, IEnumerable<TEntity2> set2, IEnumerable<TEntity3> set3) => EntityDataSet(EntityDataTable(set1), EntityDataTable(set2), EntityDataTable(set3));
+		public DataSet EntityDataSet<TEntity>(IEnumerable<TEntity> set) where TEntity : class
+			=> EntityDataSet(EntityDataTable(set));
+		public DataSet EntityDataSet<TEntity>(int count, IEnumerable<TEntity> set) where TEntity : class
+			=> EntityDataSet(CountDataTable(count), EntityDataTable(set));
+		public DataSet EntityDataSet<TEntity1, TEntity2>(int count, IEnumerable<TEntity1> set1, IEnumerable<TEntity2> set2)
+			where TEntity1 : class where TEntity2 : class
+			=> EntityDataSet(CountDataTable(count), EntityDataTable(set1), EntityDataTable(set2));
+		public DataSet EntityDataSet<TEntity1, TEntity2>(IEnumerable<TEntity1> set1, IEnumerable<TEntity2> set2)
+			where TEntity1 : class where TEntity2 : class
+			=> EntityDataSet(EntityDataTable(set1), EntityDataTable(set2));
+		public DataSet EntityDataSet<TEntity1, TEntity2, TEntity3>(IEnumerable<TEntity1> set1, IEnumerable<TEntity2> set2, IEnumerable<TEntity3> set3)
+			where TEntity1 : class where TEntity2 : class where TEntity3 : class
+			=> EntityDataSet(EntityDataTable(set1), EntityDataTable(set2), EntityDataTable(set3));
 		public DataTable CountDataTable(int count)
 		{
 			var table = new DataTable();
