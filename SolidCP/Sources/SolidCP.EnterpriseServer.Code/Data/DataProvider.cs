@@ -2964,6 +2964,7 @@ RETURN
 					.AsEnumerable()
 					.Join(childUsers, u => u.UserId, ch => ch, (u, ch) => new
 					{
+						EF.Functions.
 						u.UserId,
 						u.RoleId,
 						u.StatusId,
