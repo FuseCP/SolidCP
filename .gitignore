@@ -83,3 +83,4 @@ packages/
 **/www/debian/pool/main/
 **/www/fedora/pool/main/
 SolidCP.Installer/Sources/VersionInfo.cs
+/SolidCP/Sources/SolidCP.EnterpriseServer/App_Data/SolidCP.sqlite
