@@ -202,7 +202,7 @@ XML Format:
 				{
 					SystemSettings
 						.Where(s => s.SettingsName == settingsName)
-						.ExecuteDelete(SystemSettings);
+						.ExecuteDelete();
 
 					var settings = XElement.Parse(xml)
 						.Elements()
@@ -690,7 +690,7 @@ RETURN
 				UserSettings
 					.Where(s => s.UserId == userId &&
 						s.SettingsName == "Theme" && s.PropertyName == PropertyName)
-					.ExecuteDelete(UserSettings);
+					.ExecuteDelete();
 			}
 			else
 			{
@@ -744,7 +744,7 @@ RETURN
 			}
 		}
 
-		public List<int> UserParents(int actorId, int userId)
+		public IEnumerable<int> UserParents(int actorId, int userId)
 		{
 			#region Stored Procedure
 			/*
@@ -795,13 +795,12 @@ END
 			*/
 			#endregion
 
-			var list = new List<int>();
 			var user = Users
 				.Select(u => new { u.UserId, u.OwnerId })
 				.FirstOrDefault(u => u.UserId == userId);
 			while (user != null)
 			{
-				list.Add(userId);
+				yield return userId;
 				if (user.OwnerId.HasValue)
 				{
 					userId = user.OwnerId.Value;
@@ -811,12 +810,13 @@ END
 				}
 				else break;
 			}
-			return list;
 		}
 
-		public IEnumerable<int> UserChildren(int ownerId, bool recursive = true)
+		public TempIdSet UserChildren(int ownerId, bool recursive = true)
 		{
-			yield return ownerId;
+
+			var set = new TempIdSet(this);
+			set.Add(ownerId);
 
 			if (recursive)
 			{
@@ -826,20 +826,25 @@ END
 				if (owner != null && owner.IsPeer && owner.OwnerId.HasValue)
 				{
 					ownerId = owner.OwnerId.Value;
-					yield return ownerId;
+					set.Add(ownerId);
 				}
 
-				// load Users table into memory
-				var childOf = Users
-					.ToLookup(u => u.OwnerId, u => u.UserId);
-				var children = childOf[ownerId];
-				while (children.Any())
+				SaveChanges();
+
+				int level = 1;
+				var children = Users
+					.Where(u => u.OwnerId == ownerId)
+					.Select(u => u.UserId);
+				while (set.AddRange(children, level) > 0)
 				{
-					foreach (var child in children) yield return child;
-					children = children
-						.SelectMany(child => childOf[child]);
+					children = Users
+						.Join(set.OfLevel(level), u => u.OwnerId, child => child, (u, child) => u.UserId);
+					level++;
 				}
-			}			
+			}
+			else SaveChanges();
+
+			return set;
 		}
 
 		public bool CheckUserParent(int ownerId, int? userId)
@@ -1091,74 +1096,71 @@ RETURN
 				#endregion
 
 				var hasRights = CheckActorUserRights(actorId, userId);
-				var users = hasRights ?
-					UsersDetailed
-						.Where(u => u.UserId != userId && !u.IsPeer &&
-						// (recursive ? CheckUserParent(userId, u.UserId) : u.OwnerId == userId) &&
-						(statusId == 0 || statusId > 0 && statusId == u.StatusId) &&
-						(roleId == 0 || roleId > 0 && roleId == u.RoleId)) :
-					UsersDetailed.Where(u => false);
-
-				if (!string.IsNullOrEmpty(filterValue))
+				using (var childUsers = UserChildren(userId, recursive))
 				{
-					if (!string.IsNullOrEmpty(filterColumn))
+					var users = hasRights ?
+						UsersDetailed
+							.Where(u => u.UserId != userId && !u.IsPeer &&
+								(statusId == 0 || statusId > 0 && statusId == u.StatusId) &&
+								(roleId == 0 || roleId > 0 && roleId == u.RoleId))
+							.Join(childUsers, u => u.UserId, ch => ch, (u, ch) => u) :
+						UsersDetailed.Where(u => false);
+
+					if (!string.IsNullOrEmpty(filterValue))
 					{
-						users = users.Where($"{filterColumn} == @1", filterValue);
+						if (!string.IsNullOrEmpty(filterColumn))
+						{
+							users = users.Where($"{filterColumn} == @1", filterValue);
+						}
+						else
+						{
+							users = users.Where(u => u.Username == filterValue ||
+								u.FullName == filterValue ||
+								u.Email == filterValue);
+						}
 					}
-					else
+
+					if (!string.IsNullOrEmpty(sortColumn))
 					{
-						users = users.Where(u => u.Username == filterValue ||
-							u.FullName == filterValue ||
-							u.Email == filterValue);
+						users = users.OrderBy(sortColumn);
 					}
+
+					var count = users.Count();
+
+					users = users.Skip(startRow).Take(maximumRows);
+
+					return EntityDataSet(
+						count,
+						users.Select(u => new
+						{
+							u.UserId,
+							u.RoleId,
+							u.StatusId,
+							u.SubscriberNumber,
+							u.LoginStatusId,
+							u.FailedLogins,
+							u.OwnerId,
+							u.Created,
+							u.Changed,
+							u.IsDemo,
+							Comments = GetItemComments(u.UserId, "USER", actorId),
+							u.IsPeer,
+							u.Username,
+							u.FirstName,
+							u.LastName,
+							u.Email,
+							u.FullName,
+							u.OwnerUsername,
+							u.OwnerFirstName,
+							u.OwnerLastName,
+							u.OwnerRoleId,
+							u.OwnerFullName,
+							u.OwnerEmail,
+							u.PackagesNumber,
+							u.CompanyName,
+							u.EcommerceEnabled
+						}));
 				}
-
-				var childUsers = UserChildren(userId, recursive);
-				users = users
-					.AsEnumerable()
-					.Join(childUsers, u => u.UserId, ch => ch, (u, ch) => u)
-					.AsQueryable();
-
-				if (!string.IsNullOrEmpty(sortColumn))
-				{
-					users = users.OrderBy(sortColumn);
-				}
-
-				var count = users.Count();
-
-				users = users.Skip(startRow).Take(maximumRows);
-
-				return EntityDataSet(
-					count,
-					users.Select(u => new
-					{
-						u.UserId,
-						u.RoleId,
-						u.StatusId,
-						u.SubscriberNumber,
-						u.LoginStatusId,
-						u.FailedLogins,
-						u.OwnerId,
-						u.Created,
-						u.Changed,
-						u.IsDemo,
-						Comments = GetItemComments(u.UserId, "USER", actorId),
-						u.IsPeer,
-						u.Username,
-						u.FirstName,
-						u.LastName,
-						u.Email,
-						u.FullName,
-						u.OwnerUsername,
-						u.OwnerFirstName,
-						u.OwnerLastName,
-						u.OwnerRoleId,
-						u.OwnerFullName,
-						u.OwnerEmail,
-						u.PackagesNumber,
-						u.CompanyName,
-						u.EcommerceEnabled
-					}));
 			}
 			else
 			{
@@ -2607,7 +2609,7 @@ RETURN
 			}
 		}
 
-		public int[] UsersTree(int ownerId, bool recursive)
+		public TempIdSet UsersTree(int ownerId, bool recursive)
 		{
 			#region Stored Procedure
 			/*
@@ -2643,26 +2645,24 @@ END
 			*/
 			#endregion
 
-			if (!recursive) return new int[] { ownerId };
-			else
-			{
-				var list = new HashSet<int>();
-				list.Add(ownerId);
+			var tree = new TempIdSet(this);
+			tree.Add(ownerId);
+			SaveChanges();
 
-				var newDescendants = Users
-					.Select(u => new { u.UserId, u.OwnerId })
-					.Where(u => list.Contains(u.OwnerId ?? -1) && !list.Contains(u.UserId))
-					.ToArray();
-				while (newDescendants.Any())
+			if (recursive)
+			{
+				int level = 0;
+				var children = Users
+					.Where(u => u.OwnerId == ownerId)
+					.Select(u => u.UserId);
+				while (tree.AddRange(children, ++level) > 0)
 				{
-					foreach (var d in newDescendants) list.Add(d.UserId);
-					newDescendants = Users
-						.Select(u => new { u.UserId, u.OwnerId })
-						.Where(u => list.Contains(u.OwnerId ?? -1) && !list.Contains(u.UserId))
-						.ToArray();
+					children = Users
+						.Join(tree.OfLevel(level), u => u.OwnerId, ch => ch, (u, ch) => u.UserId);
 				}
-				return list.ToArray();
 			}
+
+			return tree;
 		}
 		public DataSet GetUserDomainsPaged(int actorId, int userId, string filterColumn, string filterValue,
 			 string sortColumn, int startRow, int maximumRows)
@@ -2748,44 +2748,47 @@ RETURN
 
 				var hasRights = CheckActorUserRights(actorId, userId);
 
-				var users = Users
-					.Join(UsersTree(userId, true), u => u.UserId, ut => ut, (user, ut) => user)
-					.Join(Packages, u => u.UserId, p => p.UserId, (user, package) => new { User = user, PackageId = package.PackageId })
-					.Join(Domains, up => up.PackageId, d => d.PackageId, (user, domain) => new
+				using (var tree = UsersTree(userId, true))
+				{
+					var users = Users
+						.Join(tree, u => u.UserId, ut => ut, (user, ut) => user)
+						.Join(Packages, u => u.UserId, p => p.UserId, (user, package) => new { User = user, PackageId = package.PackageId })
+						.Join(Domains, up => up.PackageId, d => d.PackageId, (user, domain) => new
+						{
+							UserID = user.User.UserId,
+							RoleID = user.User.RoleId,
+							StatusID = user.User.StatusId,
+							user.User.SubscriberNumber,
+							user.User.LoginStatusId,
+							user.User.FailedLogins,
+							OwnerID = user.User.OwnerId,
+							user.User.Created,
+							user.User.Changed,
+							user.User.IsDemo,
+							user.User.Comments,
+							user.User.IsPeer,
+							user.User.Username,
+							user.User.FirstName,
+							user.User.LastName,
+							user.User.Email,
+							domain.DomainName
+						})
+						.Where(u => u.UserID != userId && !u.IsPeer && hasRights);
+
+					if (!string.IsNullOrEmpty(filterColumn) && !string.IsNullOrEmpty(filterValue))
 					{
-						UserID = user.User.UserId,
-						RoleID = user.User.RoleId,
-						StatusID = user.User.StatusId,
-						user.User.SubscriberNumber,
-						user.User.LoginStatusId,
-						user.User.FailedLogins,
-						OwnerID = user.User.OwnerId,
-						user.User.Created,
-						user.User.Changed,
-						user.User.IsDemo,
-						user.User.Comments,
-						user.User.IsPeer,
-						user.User.Username,
-						user.User.FirstName,
-						user.User.LastName,
-						user.User.Email,
-						domain.DomainName
-					})
-					.Where(u => u.UserID != userId && !u.IsPeer && hasRights);
+						users = users.Where($"{filterColumn} == @0", filterValue);
+					}
 
-				if (!string.IsNullOrEmpty(filterColumn) && !string.IsNullOrEmpty(filterValue))
-				{
-					users = users.Where($"{filterColumn} == @0", filterValue);
+					var count = users.Count();
+
+					if (!string.IsNullOrEmpty(sortColumn))
+					{
+						users = users.OrderBy(sortColumn);
+					}
+
+					return EntityDataSet(count, users);
 				}
-
-				var count = users.Count();
-
-				if (!string.IsNullOrEmpty(sortColumn))
-				{
-					users = users.OrderBy(sortColumn);
-				}
-
-				return EntityDataSet(CountDataTable(count), EntityDataTable(users));
 			}
 			else
 			{
@@ -2958,42 +2961,41 @@ RETURN
 
 				var canGetDetails = CanGetUserDetails(actorId, ownerId);
 
-				var childUsers = UserChildren(ownerId, recursive);
-				var users = UsersDetailed
-					.Where(u => canGetDetails && u.UserId != ownerId && !u.IsPeer)
-					.AsEnumerable()
-					.Join(childUsers, u => u.UserId, ch => ch, (u, ch) => new
-					{
-						EF.Functions.
-						u.UserId,
-						u.RoleId,
-						u.StatusId,
-						u.SubscriberNumber,
-						u.LoginStatusId,
-						u.FailedLogins,
-						u.OwnerId,
-						u.Created,
-						u.Changed,
-						u.IsDemo,
-						u.Comments,
-						u.IsPeer,
-						u.Username,
-						u.FirstName,
-						u.LastName,
-						u.Email,
-						u.FullName,
-						u.OwnerUsername,
-						u.OwnerFirstName,
-						u.OwnerLastName,
-						u.OwnerRoleId,
-						u.OwnerFullName,
-						u.PackagesNumber,
-						u.CompanyName,
-						u.EcommerceEnabled
-					});
-						//(recursive ? CheckUserParent(ownerId, u.UserId) : u.OwnerId == ownerId));
+				using (var childUsers = UserChildren(ownerId, recursive))
+				{
+					var users = UsersDetailed
+						.Where(u => canGetDetails && u.UserId != ownerId && !u.IsPeer)
+						.Join(childUsers, u => u.UserId, ch => ch, (u, ch) => new
+						{
+							u.UserId,
+							u.RoleId,
+							u.StatusId,
+							u.SubscriberNumber,
+							u.LoginStatusId,
+							u.FailedLogins,
+							u.OwnerId,
+							u.Created,
+							u.Changed,
+							u.IsDemo,
+							u.Comments,
+							u.IsPeer,
+							u.Username,
+							u.FirstName,
+							u.LastName,
+							u.Email,
+							u.FullName,
+							u.OwnerUsername,
+							u.OwnerFirstName,
+							u.OwnerLastName,
+							u.OwnerRoleId,
+							u.OwnerFullName,
+							u.PackagesNumber,
+							u.CompanyName,
+							u.EcommerceEnabled
+						});
 
-				return EntityDataSet(users);
+					return EntityDataSet(users);
+				}
 			}
 			else
 			{
@@ -4473,13 +4475,13 @@ RETURN
 				using (var transaction = Database.BeginTransaction())
 				{
 					// delete user comments
-					Comments.Where(c => c.ItemId == userId && c.ItemTypeId == "USER").ExecuteDelete(Comments);
+					Comments.Where(c => c.ItemId == userId && c.ItemTypeId == "USER").ExecuteDelete();
 					// delete reseller addon
-					HostingPlans.Where(h => h.UserId == userId && h.IsAddon == true).ExecuteDelete(HostingPlans);
+					HostingPlans.Where(h => h.UserId == userId && h.IsAddon == true).ExecuteDelete();
 					// delete user peers
-					Users.Where(u => u.IsPeer && u.OwnerId == userId).ExecuteDelete(Users);
+					Users.Where(u => u.IsPeer && u.OwnerId == userId).ExecuteDelete();
 					// delete user
-					Users.Where(u => u.UserId == userId).ExecuteDelete(Users);
+					Users.Where(u => u.UserId == userId).ExecuteDelete();
 
 					transaction.Commit();
 				}
@@ -5829,16 +5831,16 @@ RETURN
 				using (var transaction = Database.BeginTransaction())
 				{
 					// delete IP addresses
-					IpAddresses.Where(ip => ip.ServerId == serverId).ExecuteDelete(IpAddresses);
+					IpAddresses.Where(ip => ip.ServerId == serverId).ExecuteDelete();
 
 					// delete global DNS records
-					GlobalDnsRecords.Where(r => r.ServerId == serverId).ExecuteDelete(GlobalDnsRecords);
+					GlobalDnsRecords.Where(r => r.ServerId == serverId).ExecuteDelete();
 
 					// delete server
-					Servers.Where(s => s.ServerId == serverId).ExecuteDelete(Servers);
+					Servers.Where(s => s.ServerId == serverId).ExecuteDelete();
 
 					// delete virtual services if any
-					VirtualServices.Where(vs => vs.ServerId == serverId).ExecuteDelete(VirtualServices);
+					VirtualServices.Where(vs => vs.ServerId == serverId).ExecuteDelete();
 
 					transaction.Commit();
 				}
@@ -6698,7 +6700,7 @@ RETURN
 
 				if (PackageVlans.Any(vlan => vlan.VlanId == vlanId)) return -2;
 
-				PrivateNetworkVlans.Where(vlan => vlan.VlanId == vlanId).ExecuteDelete(PrivateNetworkVlans);
+				PrivateNetworkVlans.Where(vlan => vlan.VlanId == vlanId).ExecuteDelete();
 
 				return 0;
 			}
@@ -7042,20 +7044,6 @@ END
 			return package != null && package.ParentPackageId == parentPackageId;
 		}
 
-		public IEnumerable<int> GetChildPackages(int parentPackageId)
-		{
-			var childOf = Packages
-				.ToLookup(p => p.ParentPackageId, p => p.PackageId);
-			yield return parentPackageId;
-			var children = childOf[parentPackageId];
-			while (children.Any())
-			{
-				foreach (var child in children) yield return child;
-				children = children
-					.SelectMany(child => childOf[child]);
-			}
-		}
-
 		public IDataReader GetPackagePrivateNetworkVLANs(int packageId, string sortColumn, int startRow, int maximumRows)
 		{
 			if (UseEntityFramework)
@@ -7133,39 +7121,40 @@ END
 				*/
 				#endregion
 
-				var packages = GetChildPackages(packageId)
-					.ToArray();
-				var vlans = PackageVlans
-					//.Where(pv => CheckPackageParent(packageId, pv.PackageId))
-					.Join(packages, pv => pv.PackageId, p => p, (pv, p) => pv)
-					.Join(PrivateNetworkVlans, p => p.VlanId, v => v.VlanId, (pv, vl) => new
-					{
-						PackageVlan = pv,
-						Vlan = vl
-					})
-					.Join(Packages, j => j.PackageVlan.PackageId, p => p.PackageId, (j, p) => new
-					{
-						j.PackageVlan,
-						j.Vlan,
-						Package = p
-					})
-					.Join(Users, j => j.Package.UserId, u => u.UserId, (j, u) => new
-					{
-						j.PackageVlan.PackageVlanId,
-						j.PackageVlan.VlanId,
-						j.Vlan.Vlan,
-						j.PackageVlan.PackageId,
-						j.Package.PackageName,
-						j.Package.UserId,
-						u.Username
-					});
+				using (var packages = PackagesTree(packageId, true))
+				{
+					var vlans = PackageVlans
+						//.Where(pv => CheckPackageParent(packageId, pv.PackageId))
+						.Join(packages, pv => pv.PackageId, p => p, (pv, p) => pv)
+						.Join(PrivateNetworkVlans, p => p.VlanId, v => v.VlanId, (pv, vl) => new
+						{
+							PackageVlan = pv,
+							Vlan = vl
+						})
+						.Join(Packages, j => j.PackageVlan.PackageId, p => p.PackageId, (j, p) => new
+						{
+							j.PackageVlan,
+							j.Vlan,
+							Package = p
+						})
+						.Join(Users, j => j.Package.UserId, u => u.UserId, (j, u) => new
+						{
+							j.PackageVlan.PackageVlanId,
+							j.PackageVlan.VlanId,
+							j.Vlan.Vlan,
+							j.PackageVlan.PackageId,
+							j.Package.PackageName,
+							j.Package.UserId,
+							u.Username
+						});
 
-				if (!string.IsNullOrEmpty(sortColumn)) vlans = vlans.OrderBy(sortColumn);
-				else vlans = vlans.OrderBy(v => v.Vlan);
+					if (!string.IsNullOrEmpty(sortColumn)) vlans = vlans.OrderBy(sortColumn);
+					else vlans = vlans.OrderBy(v => v.Vlan);
 
-				vlans = vlans.Skip(startRow).Take(maximumRows);
+					vlans = vlans.Skip(startRow).Take(maximumRows);
 
-				return EntityDataReader(vlans);
+					return EntityDataReader(vlans);
+				}
 			}
 			else
 			{
@@ -7223,7 +7212,7 @@ END
 
 				if (packageVlan.Package.ParentPackageId == 1) // System space
 				{
-					PackageVlans.Where(pv => pv.PackageVlanId == id).ExecuteDelete(PackageVlans);
+					PackageVlans.Where(pv => pv.PackageVlanId == id).ExecuteDelete();
 				}
 				else // 2nd level space and below
 				{
@@ -8166,10 +8155,10 @@ RETURN
 				using (var transaction = Database.BeginTransaction())
 				{
 					// delete package-IP relation
-					PackageIpAddresses.Where(p => p.AddressId == ipAddressId).ExecuteDelete(PackageIpAddresses);
+					PackageIpAddresses.Where(p => p.AddressId == ipAddressId).ExecuteDelete();
 
 					// delete IP address
-					IpAddresses.Where(a => a.AddressId == ipAddressId).ExecuteDelete(IpAddresses);
+					IpAddresses.Where(a => a.AddressId == ipAddressId).ExecuteDelete();
 
 					transaction.Commit();
 				}
@@ -8307,17 +8296,13 @@ RETURN
 				using (var transaction = Database.BeginTransaction())
 				{
 					// reset cluster in services
-#if NETFRAMEWORK
-					var services = Services
-						.Where(s => s.ClusterId == clusterId);
-					foreach (var service in services) service.ClusterId = null;
-#else
-					Services.Where(s => s.ClusterId == clusterId).ExecuteUpdate(set => set.SetProperty(p => p.ClusterId, null as int?));
-#endif
+					Services
+						.Where(s => s.ClusterId == clusterId)
+						.ExecuteUpdate(s => new Data.Entities.Service() { ClusterId = null });
 					// delete cluster
 					Clusters
 						.Where(c => c.ClusterId == clusterId)
-						.ExecuteDelete(Clusters);
+						.ExecuteDelete();
 
 					transaction.Commit();
 				}
@@ -9355,7 +9340,7 @@ RETURN
 
 		#region Domains
 
-		public IEnumerable<int> PackagesTree(int packageId, bool recursive = false)
+		public TempIdSet PackagesTree(int packageId, bool recursive = false)
 		{
 			#region Stored Procedure
 			/*
@@ -9394,23 +9379,24 @@ END
 			*/
 			#endregion
 
-			IEnumerable<int> packages = new int[] { packageId };
+			var tree = new TempIdSet(this);
+			tree.Add(packageId);
+			SaveChanges();
 
 			if (recursive)
 			{
-				var children = packages;
-				children = children
-					.Join(Packages, child => child, pkg => pkg.ParentPackageId, (ch, pkg) => pkg.PackageId);
-
-				while (children.Any())
+				int level = 0;
+				var children = Packages
+					.Where(p => p.ParentPackageId == packageId)
+					.Select(p => p.PackageId);
+				while (tree.AddRange(children, ++level) > 0)
 				{
-					packages = packages.Union(children);
-					children = children
-						.Join(Packages, child => child, pkg => pkg.ParentPackageId, (ch, pkg) => pkg.PackageId);
+					children = Packages
+						.Join(tree.OfLevel(level), pkg => pkg.ParentPackageId, t => t, (pkg, t) => pkg.PackageId);
 				}
 			}
 
-			return packages;
+			return tree;
 		}
 		public DataSet GetDomains(int actorId, int packageId, bool recursive = true)
 		{
@@ -9462,45 +9448,48 @@ RETURN
 				if (!CheckActorPackageRights(actorId, packageId))
 					throw new AccessViolationException("You are not allowed to access this package");
 
-				var domains = Domains
-					.Join(PackagesTree(actorId, recursive), d => d.PackageId, t => t, (d, t) => d)
-					.GroupJoin(ServiceItems, d => d.WebSiteId, it => it.ItemId, (d, s) => new
-					{
-						Domain = d,
-						WebSite = s.SingleOrDefault()
-					})
-					.GroupJoin(ServiceItems, d => d.Domain.MailDomainId, it => it.ItemId, (d, s) => new
-					{
-						d.Domain,
-						d.WebSite,
-						MailDomain = s.SingleOrDefault()
-					})
-					.GroupJoin(ServiceItems, d => d.Domain.ZoneItemId, it => it.ItemId, (d, s) => new
-					{
-						d.Domain,
-						d.WebSite,
-						d.MailDomain,
-						Zone = s.SingleOrDefault()
-					})
-					.Select(d => new
-					{
-						d.Domain.DomainId,
-						d.Domain.PackageId,
-						d.Domain.ZoneItemId,
-						d.Domain.DomainItemId,
-						d.Domain.DomainName,
-						d.Domain.HostingAllowed,
-						WebSiteId = d.WebSite != null ? d.WebSite.ItemId : 0,
-						WebSiteName = d.WebSite != null ? d.WebSite.ItemName : null,
-						MailDomainId = d.MailDomain != null ? d.MailDomain.ItemId : 0,
-						MailDomainName = d.MailDomain != null ? d.MailDomain.ItemName : null,
-						ZoneName = d.Zone != null ? d.Zone.ItemName : null,
-						d.Domain.IsSubDomain,
-						d.Domain.IsPreviewDomain,
-						d.Domain.IsDomainPointer
-					});
+				using (var tree = PackagesTree(packageId, recursive))
+				{
+					var domains = Domains
+						.Join(tree, d => d.PackageId, t => t, (d, t) => d)
+						.GroupJoin(ServiceItems, d => d.WebSiteId, it => it.ItemId, (d, s) => new
+						{
+							Domain = d,
+							WebSite = s.SingleOrDefault()
+						})
+						.GroupJoin(ServiceItems, d => d.Domain.MailDomainId, it => it.ItemId, (d, s) => new
+						{
+							d.Domain,
+							d.WebSite,
+							MailDomain = s.SingleOrDefault()
+						})
+						.GroupJoin(ServiceItems, d => d.Domain.ZoneItemId, it => it.ItemId, (d, s) => new
+						{
+							d.Domain,
+							d.WebSite,
+							d.MailDomain,
+							Zone = s.SingleOrDefault()
+						})
+						.Select(d => new
+						{
+							d.Domain.DomainId,
+							d.Domain.PackageId,
+							d.Domain.ZoneItemId,
+							d.Domain.DomainItemId,
+							d.Domain.DomainName,
+							d.Domain.HostingAllowed,
+							WebSiteId = d.WebSite != null ? d.WebSite.ItemId : 0,
+							WebSiteName = d.WebSite != null ? d.WebSite.ItemName : null,
+							MailDomainId = d.MailDomain != null ? d.MailDomain.ItemId : 0,
+							MailDomainName = d.MailDomain != null ? d.MailDomain.ItemName : null,
+							ZoneName = d.Zone != null ? d.Zone.ItemName : null,
+							d.Domain.IsSubDomain,
+							d.Domain.IsPreviewDomain,
+							d.Domain.IsDomainPointer
+						});
 
-				return EntityDataSet(domains);
+					return EntityDataSet(domains);
+				}
 			}
 			else
 			{
@@ -9561,10 +9550,9 @@ RETURN
 					.Where(p => p.PackageId == packageId)
 					.Select(p => p.ParentPackageId)
 					.FirstOrDefault();
-
 				var domains = Domains
-					.Where(d => d.HostingAllowed)
-					.Join(PackagesTree(parentPackageId ?? -1, false), d => d.PackageId, t => t, (d, t) => d)
+					.Where(d => d.HostingAllowed && d.PackageId == parentPackageId)
+					//.Join(PackagesTree(parentPackageId ?? -1, false), d => d.PackageId, t => t, (d, t) => d)
 					.GroupJoin(ServiceItems, d => d.WebSiteId, it => it.ItemId, (d, s) => new
 					{
 						Domain = d,
@@ -9721,124 +9709,135 @@ RETURN
 				if (!CheckActorPackageRights(actorId, packageId))
 					throw new AccessViolationException("You are not allowed to access this package");
 
-				IQueryable<Data.Entities.Domain> domainsFiltered;
-				if (!recursive) domainsFiltered = Domains.Where(d => d.PackageId == packageId);
-				else domainsFiltered = Domains.Join(GetChildPackages(packageId).ToArray(), d => d.PackageId, ch => ch, (d, ch) => d);
-
-				var domains = domainsFiltered
-					.Where(d => !d.IsPreviewDomain && !d.IsDomainPointer)
-						// && (!recursive && d.PackageId == packageId ||
-						// recursive && CheckPackageParent(packageId, d.PackageId))
-					.Join(Packages, d => d.PackageId, p => p.PackageId, (d, p) => new
-					{
-						Domain = d,
-						Package = p
-					})
-					.Join(UsersDetailed, d => d.Package.UserId, u => u.UserId, (d, u) => new
-					{
-						d.Domain,
-						d.Package,
-						User = u
-					})
-					.GroupJoin(ServiceItems, d => d.Domain.WebSiteId, s => s.ItemId, (d, s) => new
-					{
-						d.Domain,
-						d.Package,
-						d.User,
-						WebSite = s.SingleOrDefault()
-					})
-					.GroupJoin(ServiceItems, d => d.Domain.MailDomainId, s => s.ItemId, (d, s) => new
-					{
-						d.Domain,
-						d.Package,
-						d.User,
-						d.WebSite,
-						MailDomain = s.SingleOrDefault()
-					})
-					.GroupJoin(ServiceItems, d => d.Domain.ZoneItemId, s => s.ItemId, (d, s) => new
-					{
-						d.Domain,
-						d.Package,
-						d.User,
-						d.WebSite,
-						d.MailDomain,
-						Zone = s.SingleOrDefault()
-					})
-					.GroupJoin(Services, d => d.Zone != null ? d.Zone.ServiceId : null, s => s.ServiceId, (d, s) => new
-					{
-						d.Domain,
-						d.Package,
-						d.User,
-						d.WebSite,
-						d.MailDomain,
-						d.Zone,
-						Service = s.SingleOrDefault()
-					})
-					.Where(d => serverId == 0 || d.Service != null && d.Service.ServerId == serverId)
-					.GroupJoin(Servers, d => d.Service != null ? (int?)d.Service.ServerId : null, s => (int?)s.ServerId, (d, s) => new
-					{
-						d.Domain,
-						d.Package,
-						d.User,
-						d.WebSite,
-						d.MailDomain,
-						d.Zone,
-						d.Service,
-						Server = s.SingleOrDefault()
-					})
-					.Select(d => new
-					{
-						d.Domain.DomainId,
-						d.Domain.PackageId,
-						d.Domain.ZoneItemId,
-						d.Domain.DomainItemId,
-						d.Domain.DomainName,
-						d.Domain.HostingAllowed,
-						WebSiteId = d.WebSite != null ? d.WebSite.ItemId : 0,
-						WebSiteName = d.WebSite != null ? d.WebSite.ItemName : null,
-						MailDomainId = d.MailDomain != null ? d.MailDomain.ItemId : 0,
-						MailDomainName = d.MailDomain != null ? d.MailDomain.ItemName : null,
-						d.Domain.IsSubDomain,
-						d.Domain.IsPreviewDomain,
-						d.Domain.IsDomainPointer,
-						d.Domain.ExpirationDate,
-						d.Domain.LastUpdateDate,
-						d.Domain.RegistrarName,
-						d.Package.PackageName,
-						ServerId = d.Server != null ? d.Server.ServerId : 0,
-						ServerName = d.Server != null ? d.Server.ServerName : "",
-						ServerComments = d.Server != null ? d.Server.Comments : "",
-						VirtualServer = d.Server != null ? d.Server.VirtualServer : false,
-						d.Package.UserId,
-						d.User.Username,
-						d.User.FirstName,
-						d.User.LastName,
-						d.User.FullName,
-						d.User.RoleId,
-						d.User.Email
-					});
-
-				if (!string.IsNullOrEmpty(filterValue))
+				TempIdSet childPackages = null;
+				try
 				{
-					if (!string.IsNullOrEmpty(filterColumn))
-					{
-						domains = domains.Where($"{filterColumn}=@0", filterValue);
-					}
+					IQueryable<Data.Entities.Domain> domainsFiltered;
+					if (!recursive) domainsFiltered = Domains.Where(d => d.PackageId == packageId);
 					else
 					{
-						domains = domains.Where(d => d.DomainName == filterValue || d.Username == filterValue ||
-							d.ServerName == filterValue || d.PackageName == filterValue);
+						childPackages = PackagesTree(packageId, true);
+						domainsFiltered = Domains.Join(childPackages, d => d.PackageId, ch => ch, (d, ch) => d);
 					}
+
+					var domains = domainsFiltered
+						.Where(d => !d.IsPreviewDomain && !d.IsDomainPointer)
+						// && (!recursive && d.PackageId == packageId ||
+						// recursive && CheckPackageParent(packageId, d.PackageId))
+						.Join(Packages, d => d.PackageId, p => p.PackageId, (d, p) => new
+						{
+							Domain = d,
+							Package = p
+						})
+						.Join(UsersDetailed, d => d.Package.UserId, u => u.UserId, (d, u) => new
+						{
+							d.Domain,
+							d.Package,
+							User = u
+						})
+						.GroupJoin(ServiceItems, d => d.Domain.WebSiteId, s => s.ItemId, (d, s) => new
+						{
+							d.Domain,
+							d.Package,
+							d.User,
+							WebSite = s.SingleOrDefault()
+						})
+						.GroupJoin(ServiceItems, d => d.Domain.MailDomainId, s => s.ItemId, (d, s) => new
+						{
+							d.Domain,
+							d.Package,
+							d.User,
+							d.WebSite,
+							MailDomain = s.SingleOrDefault()
+						})
+						.GroupJoin(ServiceItems, d => d.Domain.ZoneItemId, s => s.ItemId, (d, s) => new
+						{
+							d.Domain,
+							d.Package,
+							d.User,
+							d.WebSite,
+							d.MailDomain,
+							Zone = s.SingleOrDefault()
+						})
+						.GroupJoin(Services, d => d.Zone != null ? d.Zone.ServiceId : null, s => s.ServiceId, (d, s) => new
+						{
+							d.Domain,
+							d.Package,
+							d.User,
+							d.WebSite,
+							d.MailDomain,
+							d.Zone,
+							Service = s.SingleOrDefault()
+						})
+						.Where(d => serverId == 0 || d.Service != null && d.Service.ServerId == serverId)
+						.GroupJoin(Servers, d => d.Service != null ? (int?)d.Service.ServerId : null, s => (int?)s.ServerId, (d, s) => new
+						{
+							d.Domain,
+							d.Package,
+							d.User,
+							d.WebSite,
+							d.MailDomain,
+							d.Zone,
+							d.Service,
+							Server = s.SingleOrDefault()
+						})
+						.Select(d => new
+						{
+							d.Domain.DomainId,
+							d.Domain.PackageId,
+							d.Domain.ZoneItemId,
+							d.Domain.DomainItemId,
+							d.Domain.DomainName,
+							d.Domain.HostingAllowed,
+							WebSiteId = d.WebSite != null ? d.WebSite.ItemId : 0,
+							WebSiteName = d.WebSite != null ? d.WebSite.ItemName : null,
+							MailDomainId = d.MailDomain != null ? d.MailDomain.ItemId : 0,
+							MailDomainName = d.MailDomain != null ? d.MailDomain.ItemName : null,
+							d.Domain.IsSubDomain,
+							d.Domain.IsPreviewDomain,
+							d.Domain.IsDomainPointer,
+							d.Domain.ExpirationDate,
+							d.Domain.LastUpdateDate,
+							d.Domain.RegistrarName,
+							d.Package.PackageName,
+							ServerId = d.Server != null ? d.Server.ServerId : 0,
+							ServerName = d.Server != null ? d.Server.ServerName : "",
+							ServerComments = d.Server != null ? d.Server.Comments : "",
+							VirtualServer = d.Server != null ? d.Server.VirtualServer : false,
+							d.Package.UserId,
+							d.User.Username,
+							d.User.FirstName,
+							d.User.LastName,
+							d.User.FullName,
+							d.User.RoleId,
+							d.User.Email
+						});
+
+					if (!string.IsNullOrEmpty(filterValue))
+					{
+						if (!string.IsNullOrEmpty(filterColumn))
+						{
+							domains = domains.Where($"{filterColumn}=@0", filterValue);
+						}
+						else
+						{
+							domains = domains.Where(d => d.DomainName == filterValue || d.Username == filterValue ||
+								d.ServerName == filterValue || d.PackageName == filterValue);
+						}
+					}
+
+					var count = domains.Count();
+
+					if (!string.IsNullOrEmpty(sortColumn)) domains = domains.OrderBy(sortColumn);
+					else domains = domains.OrderBy(d => d.DomainName);
+
+					domains = domains.Skip(startRow).Take(maximumRows);
+
+					return EntityDataSet(count, domains);
+				} finally
+				{
+					childPackages?.Dispose();
 				}
-
-				var count = domains.Count();
-
-				if (!string.IsNullOrEmpty(sortColumn)) domains = domains.OrderBy(sortColumn);
-				else domains = domains.OrderBy(d => d.DomainName);
-
-				domains = domains.Skip(startRow).Take(maximumRows);
-
-				return EntityDataSet(count, domains);
 			}
 			else
 			{
@@ -11455,8 +11454,8 @@ RETURN
 
 				using (var transaction = Database.BeginTransaction())
 				{
-					GlobalDnsRecords.Where(r => r.ServiceId == serviceId).ExecuteDelete(GlobalDnsRecords);
-					Services.Where(s => s.ServiceId == serviceId).ExecuteDelete(Services);
+					GlobalDnsRecords.Where(r => r.ServiceId == serviceId).ExecuteDelete();
+					Services.Where(s => s.ServiceId == serviceId).ExecuteDelete();
 
 					transaction.Commit();
 					return 0;
@@ -11804,92 +11803,95 @@ RETURN
 				if (!CheckActorPackageRights(actorId, packageId))
 					throw new AccessViolationException("You are not allowed to access this package");
 
-				var items = ServiceItems
-					.Join(PackagesTree(packageId, recursive), s => s.PackageId, p => p, (s, p) => s)
-					.Join(ServiceItemTypes, s => s.ItemTypeId, t => t.ItemTypeId, (s, t) => new
-					{
-						Item = s,
-						Type = t
-					})
-					.Join(ResourceGroups, s => s.Type.GroupId, r => r.GroupId, (s, r) => new
-					{
-						s.Item,
-						s.Type,
-						ResourceGroup = r
-					})
-					.Where(s => s.Type.TypeName == itemTypeName &&
-						(groupName == null || groupName != null && groupName == s.ResourceGroup.GroupName))
-					.Select(s => s.Item.ItemId)
-					.ToArray();
+				using (var tree = PackagesTree(packageId, recursive))
+				{
+					var items = ServiceItems
+						.Join(tree, s => s.PackageId, p => p, (s, p) => s)
+						.Join(ServiceItemTypes, s => s.ItemTypeId, t => t.ItemTypeId, (s, t) => new
+						{
+							Item = s,
+							Type = t
+						})
+						.Join(ResourceGroups, s => s.Type.GroupId, r => r.GroupId, (s, r) => new
+						{
+							s.Item,
+							s.Type,
+							ResourceGroup = r
+						})
+						.Where(s => s.Type.TypeName == itemTypeName &&
+							(groupName == null || groupName != null && groupName == s.ResourceGroup.GroupName))
+						.Select(s => s.Item.ItemId)
+						.ToArray();
 
-				// select service items
-				var serviceItems = items
-					.Join(ServiceItems, i => i, s => s.ItemId, (i, s) => s)
-					.Join(ServiceItemTypes, s => s.ItemTypeId, t => t.ItemTypeId, (s, t) => new
-					{
-						Item = s,
-						Type = t
-					})
-					.Join(Packages, s => s.Item.PackageId, p => p.PackageId, (s, p) => new
-					{
-						s.Item,
-						s.Type,
-						Package = p
-					})
-					.Join(Services, s => s.Item.ServiceId, s => s.ServiceId, (s, t) => new
-					{
-						s.Item,
-						s.Type,
-						s.Package,
-						Service = t
-					})
-					.Join(Servers, s => s.Service.ServerId, t => t.ServerId, (s, t) => new
-					{
-						s.Item,
-						s.Type,
-						s.Package,
-						s.Service,
-						Server = t
-					})
-					.Join(ResourceGroups, s => s.Type.GroupId, r => r.GroupId, (s, r) => new
-					{
-						s.Item,
-						s.Type,
-						s.Package,
-						s.Service,
-						s.Server,
-						ResourceGroup = r
-					})
-					.Join(Users, s => s.Package.UserId, u => u.UserId, (s, u) => new
-					{
-						s.Item.ItemId,
-						s.Item.ItemName,
-						s.Item.ItemTypeId,
-						s.Type.TypeName,
-						s.Item.ServiceId,
-						s.Item.PackageId,
-						s.Package.PackageName,
-						s.Service.ServiceName,
-						s.Server.ServerId,
-						s.Server.ServerName,
-						s.ResourceGroup.GroupName,
-						u.UserId,
-						u.Username,
-						UserFullName = u.FirstName + " " + u.LastName,
-						s.Item.CreatedDate
-					});
+					// select service items
+					var serviceItems = items
+						.Join(ServiceItems, i => i, s => s.ItemId, (i, s) => s)
+						.Join(ServiceItemTypes, s => s.ItemTypeId, t => t.ItemTypeId, (s, t) => new
+						{
+							Item = s,
+							Type = t
+						})
+						.Join(Packages, s => s.Item.PackageId, p => p.PackageId, (s, p) => new
+						{
+							s.Item,
+							s.Type,
+							Package = p
+						})
+						.Join(Services, s => s.Item.ServiceId, s => s.ServiceId, (s, t) => new
+						{
+							s.Item,
+							s.Type,
+							s.Package,
+							Service = t
+						})
+						.Join(Servers, s => s.Service.ServerId, t => t.ServerId, (s, t) => new
+						{
+							s.Item,
+							s.Type,
+							s.Package,
+							s.Service,
+							Server = t
+						})
+						.Join(ResourceGroups, s => s.Type.GroupId, r => r.GroupId, (s, r) => new
+						{
+							s.Item,
+							s.Type,
+							s.Package,
+							s.Service,
+							s.Server,
+							ResourceGroup = r
+						})
+						.Join(Users, s => s.Package.UserId, u => u.UserId, (s, u) => new
+						{
+							s.Item.ItemId,
+							s.Item.ItemName,
+							s.Item.ItemTypeId,
+							s.Type.TypeName,
+							s.Item.ServiceId,
+							s.Item.PackageId,
+							s.Package.PackageName,
+							s.Service.ServiceName,
+							s.Server.ServerId,
+							s.Server.ServerName,
+							s.ResourceGroup.GroupName,
+							u.UserId,
+							u.Username,
+							UserFullName = u.FirstName + " " + u.LastName,
+							s.Item.CreatedDate
+						});
 
-				// select item properties
-				// get corresponding item properties
-				var itemProperties = ServiceItemProperties
-					.Join(items, p => p.ItemId, i => i, (p, i) => new
-					{
-						p.ItemId,
-						p.PropertyName,
-						p.PropertyValue
-					});
+					// select item properties
+					// get corresponding item properties
+					var itemProperties = ServiceItemProperties
+						.Join(items, p => p.ItemId, i => i, (p, i) => new
+						{
+							p.ItemId,
+							p.PropertyName,
+							p.PropertyValue
+						});
 
-				return EntityDataSet(serviceItems, itemProperties);
+					return EntityDataSet(serviceItems, itemProperties);
+				}
 			}
 			else
 			{
@@ -12062,114 +12064,124 @@ RETURN
 					.FirstOrDefault();
 
 				IQueryable<Data.Entities.ServiceItem> serviceItems;
-				if (!recursive) serviceItems = ServiceItems.Where(si => si.PackageId == packageId);
-				else serviceItems = ServiceItems.Join(GetChildPackages(packageId).ToArray(), si => si.PackageId, ch => ch, (p, ch) => p);
-
-				var items = serviceItems
-					.Where(s => s.ItemTypeId == itemTypeId)
+				TempIdSet childPackages = null;
+				try
+				{
+					if (!recursive) serviceItems = ServiceItems.Where(si => si.PackageId == packageId);
+					else
+					{
+						childPackages = PackagesTree(packageId, true);
+						serviceItems = ServiceItems.Join(childPackages, si => si.PackageId, ch => ch, (p, ch) => p);
+					}
+					var items = serviceItems
+						.Where(s => s.ItemTypeId == itemTypeId)
 						// &&
 						// (!recursive && s.PackageId == packageId ||
 						// recursive && CheckPackageParent(packageId, s.PackageId ?? 0)))
-					.Join(Packages, i => i.PackageId, p => p.PackageId, (si, p) => new
-					{
-						Item = si,
-						Package = p
-					})
-					.Join(ServiceItemTypes, i => i.Item.ItemTypeId, t => t.ItemTypeId, (i, t) => new
-					{
-						i.Item,
-						i.Package,
-						Type = t
-					})
-					.Where(i => groupId == null || groupId != null && i.Type.GroupId == groupId)
-					.Join(UsersDetailed, i => i.Package.UserId, u => u.UserId, (i, u) => new
-					{
-						i.Item,
-						i.Package,
-						i.Type,
-						User = u
-					})
-					.Join(Services, i => i.Item.ServiceId, s => s.ServiceId, (i, s) => new
-					{
-						i.Item,
-						i.Package,
-						i.Type,
-						i.User,
-						Service = s
-					})
-					.Where(i => serverId == 0 || serverId > 0 && i.Service.ServerId == serverId)
-					.Join(Servers, i => i.Service.ServerId, s => s.ServerId, (i, s) => new
-					{
-						i.Item,
-						i.Package,
-						i.Type,
-						i.User,
-						i.Service,
-						Server = s
-					})
-					.Join(ResourceGroups, i => i.Type.GroupId, r => r.GroupId, (i, r) => new
-					{
-						i.Item.ItemId,
-						i.Item.ItemName,
-						i.Item.ItemTypeId,
-						i.Type.TypeName,
-						i.Item.ServiceId,
-						i.Item.PackageId,
-						i.Item.CreatedDate,
-						r.GroupName,
-						i.Package.PackageName,
-						i.Server.ServerId,
-						i.Server.ServerName,
-						ServerComments = i.Server.Comments,
-						i.Server.VirtualServer,
-						i.Package.UserId,
-						i.User.Username,
-						i.User.FirstName,
-						i.User.LastName,
-						i.User.FullName,
-						i.User.RoleId,
-						i.User.Email
-					});
+						.Join(Packages, i => i.PackageId, p => p.PackageId, (si, p) => new
+						{
+							Item = si,
+							Package = p
+						})
+						.Join(ServiceItemTypes, i => i.Item.ItemTypeId, t => t.ItemTypeId, (i, t) => new
+						{
+							i.Item,
+							i.Package,
+							Type = t
+						})
+						.Where(i => groupId == null || groupId != null && i.Type.GroupId == groupId)
+						.Join(UsersDetailed, i => i.Package.UserId, u => u.UserId, (i, u) => new
+						{
+							i.Item,
+							i.Package,
+							i.Type,
+							User = u
+						})
+						.Join(Services, i => i.Item.ServiceId, s => s.ServiceId, (i, s) => new
+						{
+							i.Item,
+							i.Package,
+							i.Type,
+							i.User,
+							Service = s
+						})
+						.Where(i => serverId == 0 || serverId > 0 && i.Service.ServerId == serverId)
+						.Join(Servers, i => i.Service.ServerId, s => s.ServerId, (i, s) => new
+						{
+							i.Item,
+							i.Package,
+							i.Type,
+							i.User,
+							i.Service,
+							Server = s
+						})
+						.Join(ResourceGroups, i => i.Type.GroupId, r => r.GroupId, (i, r) => new
+						{
+							i.Item.ItemId,
+							i.Item.ItemName,
+							i.Item.ItemTypeId,
+							i.Type.TypeName,
+							i.Item.ServiceId,
+							i.Item.PackageId,
+							i.Item.CreatedDate,
+							r.GroupName,
+							i.Package.PackageName,
+							i.Server.ServerId,
+							i.Server.ServerName,
+							ServerComments = i.Server.Comments,
+							i.Server.VirtualServer,
+							i.Package.UserId,
+							i.User.Username,
+							i.User.FirstName,
+							i.User.LastName,
+							i.User.FullName,
+							i.User.RoleId,
+							i.User.Email
+						});
 
-				if (!string.IsNullOrEmpty(filterValue))
-				{
-					if (!string.IsNullOrEmpty(filterColumn))
+					if (!string.IsNullOrEmpty(filterValue))
 					{
-						items = items.Where(DynamicFunctions.ColumnLike(items, filterColumn, filterValue));
-					}
-					else
-					{
-						items = items
+						if (!string.IsNullOrEmpty(filterColumn))
+						{
+							items = items.Where(DynamicFunctions.ColumnLike(items, filterColumn, filterValue));
+						}
+						else
+						{
+							items = items
 #if NETFRAMEWORK
-							.Where(i => DbFunctions.Like(i.ItemName, filterValue) ||
-								DbFunctions.Like(i.Username, filterValue) ||
-								DbFunctions.Like(i.FullName, filterValue) ||
-								DbFunctions.Like(i.Email, filterValue));
+								.Where(i => DbFunctions.Like(i.ItemName, filterValue) ||
+									DbFunctions.Like(i.Username, filterValue) ||
+									DbFunctions.Like(i.FullName, filterValue) ||
+									DbFunctions.Like(i.Email, filterValue));
 #else
 							.Where(i => EF.Functions.Like(i.ItemName, filterValue) ||
 								EF.Functions.Like(i.Username, filterValue) ||
 								EF.Functions.Like(i.FullName, filterValue) ||
 								EF.Functions.Like(i.Email, filterValue));
 #endif
+						}
 					}
+
+					var count = items.Count();
+
+					if (!string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
+					else items = items.OrderBy(i => i.ItemName);
+
+					items = items.Skip(startRow).Take(maximumRows);
+
+					var properties = ServiceItemProperties
+						.Join(items, s => s.ItemId, i => i.ItemId, (s, i) => new
+						{
+							s.ItemId,
+							s.PropertyName,
+							s.PropertyValue
+						});
+
+					return EntityDataSet(count, items, properties);
+				} finally
+				{
+					childPackages?.Dispose();
 				}
-
-				var count = items.Count();
-
-				if (!string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
-				else items = items.OrderBy(i => i.ItemName);
-
-				items = items.Skip(startRow).Take(maximumRows);
-
-				var properties = ServiceItemProperties
-					.Join(items, s => s.ItemId, i => i.ItemId, (s, i) => new
-					{
-						s.ItemId,
-						s.PropertyName,
-						s.PropertyValue
-					});
-
-				return EntityDataSet(count, items, properties);
 			}
 			else
 			{
@@ -13538,7 +13550,7 @@ RETURN
 
 					SaveChanges();
 
-					ServiceItemProperties.Where(p => p.ItemId == item.ItemId).ExecuteDelete(ServiceItemProperties);
+					ServiceItemProperties.Where(p => p.ItemId == item.ItemId).ExecuteDelete();
 
 					var properties = XElement.Parse(xmlProperties)
 						.Elements()
@@ -13670,7 +13682,9 @@ RETURN
 					// update item
 					item.ItemName = itemName;
 
-					ServiceItemProperties.Where(p => p.ItemId == itemId).ExecuteDelete(ServiceItemProperties);
+					ServiceItemProperties
+						.Where(p => p.ItemId == itemId)
+						.ExecuteDelete();
 
 					var properties = XElement.Parse(xmlProperties)
 						.Elements()
@@ -13768,27 +13782,36 @@ RETURN
 
 				using (var transaction = Database.BeginTransaction())
 				{
-					Domains.Where(d => d.WebSiteId == itemId && d.IsDomainPointer).ExecuteDelete(Domains);
-#if NETCOREAPP
-					Domains.Where(d => d.ZoneItemId == itemId).ExecuteUpdate(s => s.SetProperty(p => p.ZoneItemId, null as int?));
-					Domains.Where(d => d.WebSiteId == itemId).ExecuteUpdate(s => s.SetProperty(p => p.WebSiteId, null as int?));
-					Domains.Where(d => d.MailDomainId == itemId).ExecuteUpdate(s => s.SetProperty(p => p.MailDomainId, null as int?));
-#else
-					foreach (var domain in Domains.Where(d => d.ZoneItemId == itemId)) domain.ZoneItemId = null;
-					foreach (var domain in Domains.Where(d => d.WebSiteId == itemId)) domain.WebSiteId = null;
-					foreach (var domain in Domains.Where(d => d.MailDomainId == itemId)) domain.MailDomainId = null;
-#endif
+					Domains
+						.Where(d => d.WebSiteId == itemId && d.IsDomainPointer)
+						.ExecuteDelete();
+					Domains
+						.Where(d => d.ZoneItemId == itemId)
+						.ExecuteUpdate(d => new Data.Entities.Domain() { ZoneItemId = null });
+					Domains
+						.Where(d => d.WebSiteId == itemId)
+						.ExecuteUpdate(d => new Data.Entities.Domain() { WebSiteId = null }); 
+					Domains
+						.Where(d => d.MailDomainId == itemId)
+						.ExecuteUpdate(d => new Data.Entities.Domain() { MailDomainId = null });
+
 					// delete item comments
-					Comments.Where(c => c.ItemId == itemId && c.ItemTypeId == "SERVICE_ITEM").ExecuteDelete(Comments);
+					Comments
+						.Where(c => c.ItemId == itemId && c.ItemTypeId == "SERVICE_ITEM")
+						.ExecuteDelete();
 
 					// delete item properties
-					ServiceItemProperties.Where(p => p.ItemId == itemId).ExecuteDelete(ServiceItemProperties);
+					ServiceItemProperties
+						.Where(p => p.ItemId == itemId)
+						.ExecuteDelete();
 
 					// delete external IP addresses
 					DeleteItemIPAddresses(actorId, itemId);
 
 					// delete item
-					ServiceItems.Where(s => s.ItemId == itemId).ExecuteDelete(ServiceItems);
+					ServiceItems
+						.Where(s => s.ItemId == itemId)
+						.ExecuteDelete();
 
 					SaveChanges();
 
@@ -14465,7 +14488,7 @@ RETURN
 				#endregion
 
 				// remove current diskspace
-				PackagesDiskspaces.Where(d => d.PackageId == packageId).ExecuteDelete(PackagesDiskspaces);
+				PackagesDiskspaces.Where(d => d.PackageId == packageId).ExecuteDelete();
 
 				var items = XElement.Parse(xml)
 					.Elements()
@@ -14615,7 +14638,7 @@ RETURN
 
 				using (var transaction = Database.BeginTransaction())
 				{
-					bandwidthsToDelete.ExecuteDelete(PackagesBandwidths);
+					bandwidthsToDelete.ExecuteDelete();
 
 					// insert new statistics
 					var newBandwiths = groupedItems
@@ -15899,10 +15922,10 @@ RETURN
 				});
 
 			// delete old HP resources
-			HostingPlanResources.Where(r => r.PlanId == planId).ExecuteDelete(HostingPlanResources);
+			HostingPlanResources.Where(r => r.PlanId == planId).ExecuteDelete();
 
 			// delete old HP quotas
-			HostingPlanQuotas.Where(q => q.PlanId == planId).ExecuteDelete(HostingPlanQuotas);
+			HostingPlanQuotas.Where(q => q.PlanId == planId).ExecuteDelete();
 
 			HostingPlanResources.AddRange(groups);
 			HostingPlanQuotas.AddRange(quotas);
@@ -16504,7 +16527,7 @@ RETURN
 				if (PackageAddons.Any(a => a.PlanId == planId)) return -2;
 
 				// delete hosting plan
-				HostingPlans.Where(p => p.PlanId == planId).ExecuteDelete(HostingPlans);
+				HostingPlans.Where(p => p.PlanId == planId).ExecuteDelete();
 
 				return 0;
 			}
@@ -16961,94 +16984,101 @@ RETURN
 
 				if (itemTypeId != 13)
 				{
-					var items = ServiceItems
-						.Where(s => s.ItemTypeId == itemTypeId)
-						.Join(Packages, s => s.PackageId, p => p.PackageId, (s, p) => new
-						{
-							Item = s,
-							Package = p
-						})
-						.Join(UsersDetailed, s => s.Package.UserId, u => u.UserId, (s, u) => new
-						{
-							s.Item,
-							s.Package,
-							User = u
-						})
-						.Where(s => CheckUserParent(userId, s.User.UserId))
-						.Select(s => new
-						{
-							s.Item.ItemId,
-							s.Item.ItemName,
-							s.Package.PackageId,
-							s.Package.PackageName,
-							s.Package.StatusId,
-							s.Package.PurchaseDate,
-							// user
-							s.Package.UserId,
-							s.User.Username,
-							s.User.FirstName,
-							s.User.LastName,
-							s.User.FullName,
-							s.User.RoleId,
-							s.User.Email
-						});
+					using (var childUsers = UserChildren(userId))
+					{
+						var items = ServiceItems
+							.Where(s => s.ItemTypeId == itemTypeId)
+							.Join(Packages, s => s.PackageId, p => p.PackageId, (s, p) => new
+							{
+								Item = s,
+								Package = p
+							})
+							.Join(UsersDetailed, s => s.Package.UserId, u => u.UserId, (s, u) => new
+							{
+								s.Item,
+								s.Package,
+								User = u
+							})
+							.Join(childUsers, s => s.User.UserId, u => u, (s, u) => s)
+							//.Where(s => CheckUserParent(userId, s.User.UserId))
+							.Select(s => new
+							{
+								s.Item.ItemId,
+								s.Item.ItemName,
+								s.Package.PackageId,
+								s.Package.PackageName,
+								s.Package.StatusId,
+								s.Package.PurchaseDate,
+								// user
+								s.Package.UserId,
+								s.User.Username,
+								s.User.FirstName,
+								s.User.LastName,
+								s.User.FullName,
+								s.User.RoleId,
+								s.User.Email
+							});
 
-					if (!string.IsNullOrEmpty(filterValue)) items = items.Where(it => it.ItemName == filterValue);
+						if (!string.IsNullOrEmpty(filterValue)) items = items.Where(it => it.ItemName == filterValue);
 
-					var count = items.Count();
+						var count = items.Count();
 
-					if (string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(it => it.ItemName);
-					else items = items.OrderBy(sortColumn);
+						if (string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(it => it.ItemName);
+						else items = items.OrderBy(sortColumn);
 
-					items = items.Skip(startRow).Take(maximumRows);
+						items = items.Skip(startRow).Take(maximumRows);
 
-					return EntityDataSet(count, items);
+						return EntityDataSet(count, items);
+					}
 				}
 				else
 				{
 					//sortColumn = sortColumn.Replace("ItemName", "DomainName");
 
-					var domains = Domains
-						.Join(Packages, d => d.PackageId, p => p.PackageId, (d, p) => new
-						{
-							Domain = d,
-							Package = p
-						})
-						.Join(UsersDetailed, d => d.Package.UserId, u => u.UserId, (d, u) => new
-						{
-							d.Domain,
-							d.Package,
-							User = u
-						})
-						.Where(d => CheckUserParent(userId, d.User.UserId))
-						.Select(d => new
-						{
-							ItemId = d.Domain.DomainId,
-							ItemName = d.Domain.DomainName,
-							d.Package.PackageId,
-							d.Package.PackageName,
-							d.Package.StatusId,
-							d.Package.PurchaseDate,
-							// user
-							d.Package.UserId,
-							d.User.Username,
-							d.User.FirstName,
-							d.User.LastName,
-							d.User.FullName,
-							d.User.RoleId,
-							d.User.Email
-						});
+					using (var childUsers = UserChildren(userId)) {
+						var domains = Domains
+							.Join(Packages, d => d.PackageId, p => p.PackageId, (d, p) => new
+							{
+								Domain = d,
+								Package = p
+							})
+							.Join(UsersDetailed, d => d.Package.UserId, u => u.UserId, (d, u) => new
+							{
+								d.Domain,
+								d.Package,
+								User = u
+							})
+							.Join(childUsers, d => d.User.UserId, u => u, (d, u) => d)
+							//.Where(d => CheckUserParent(userId, d.User.UserId))
+							.Select(d => new
+							{
+								ItemId = d.Domain.DomainId,
+								ItemName = d.Domain.DomainName,
+								d.Package.PackageId,
+								d.Package.PackageName,
+								d.Package.StatusId,
+								d.Package.PurchaseDate,
+								// user
+								d.Package.UserId,
+								d.User.Username,
+								d.User.FirstName,
+								d.User.LastName,
+								d.User.FullName,
+								d.User.RoleId,
+								d.User.Email
+							});
 
-					if (!string.IsNullOrEmpty(filterValue)) domains = domains.Where(it => it.ItemName == filterValue);
+						if (!string.IsNullOrEmpty(filterValue)) domains = domains.Where(it => it.ItemName == filterValue);
 
-					var count = domains.Count();
+						var count = domains.Count();
 
-					if (string.IsNullOrEmpty(sortColumn)) domains = domains.OrderBy(it => it.ItemName);
-					else domains = domains.OrderBy(sortColumn);
+						if (string.IsNullOrEmpty(sortColumn)) domains = domains.OrderBy(it => it.ItemName);
+						else domains = domains.OrderBy(sortColumn);
 
-					domains = domains.Skip(startRow).Take(maximumRows);
+						domains = domains.Skip(startRow).Take(maximumRows);
 
-					return EntityDataSet(count, domains);
+						return EntityDataSet(count, domains);
+					}
 				}
 			}
 			else
@@ -17475,49 +17505,60 @@ RETURN
 					throw new AccessViolationException("You are not allowed to access this package");
 
 				IQueryable<Data.Entities.Package> packagesFiltered;
-				if (!recursive) packagesFiltered = Packages.Where(p => p.ParentPackageId == packageId);
-				else packagesFiltered = Packages.Join(GetChildPackages(packageId).ToArray(), p => p.PackageId, ch => ch, (p, ch) => p);
+				TempIdSet childPackages = null;
+				try
+				{
+					if (!recursive) packagesFiltered = Packages.Where(p => p.ParentPackageId == packageId);
+					else
+					{
+						childPackages = PackagesTree(packageId, true);
+						packagesFiltered = Packages.Join(childPackages, p => p.PackageId, ch => ch, (p, ch) => p);
+					}
 
-				var packages = packagesFiltered
-					.Where(p => p.PackageId != packageId)
+					var packages = packagesFiltered
+						.Where(p => p.PackageId != packageId)
 						// &&
 						// (recursive && CheckPackageParent(packageId, p.PackageId) ||
 						// !recursive && p.ParentPackageId == packageId))
-					.Join(Users, p => p.UserId, u => u.UserId, (p, u) => new
-					{
-						Package = p,
-						User = u
-					})
-					.Join(Servers, p => p.Package.ServerId, s => s.ServerId, (p, s) => new
-					{
-						p.Package,
-						p.User,
-						Server = s
-					})
-					.Join(HostingPlans, p => p.Package.PlanId, hp => hp.PlanId, (p, hp) => new
-					{
-						p.Package.PackageId,
-						p.Package.ParentPackageId,
-						p.Package.PackageName,
-						p.Package.StatusId,
-						p.Package.PurchaseDate,
-						// server
-						p.Package.ServerId,
-						ServerName = p.Server.ServerName != null ? p.Server.ServerName : "None",
-						ServerComments = p.Server.Comments != null ? p.Server.Comments : "",
-						p.Server.VirtualServer,
-						// hosting plan
-						p.Package.PlanId,
-						hp.PlanName,
-						// user
-						p.Package.UserId,
-						p.User.Username,
-						p.User.FirstName,
-						p.User.LastName,
-						p.User.RoleId,
-						p.User.Email
-					});
-				return EntityDataSet(packages);
+						.Join(Users, p => p.UserId, u => u.UserId, (p, u) => new
+						{
+							Package = p,
+							User = u
+						})
+						.Join(Servers, p => p.Package.ServerId, s => s.ServerId, (p, s) => new
+						{
+							p.Package,
+							p.User,
+							Server = s
+						})
+						.Join(HostingPlans, p => p.Package.PlanId, hp => hp.PlanId, (p, hp) => new
+						{
+							p.Package.PackageId,
+							p.Package.ParentPackageId,
+							p.Package.PackageName,
+							p.Package.StatusId,
+							p.Package.PurchaseDate,
+							// server
+							p.Package.ServerId,
+							ServerName = p.Server.ServerName != null ? p.Server.ServerName : "None",
+							ServerComments = p.Server.Comments != null ? p.Server.Comments : "",
+							p.Server.VirtualServer,
+							// hosting plan
+							p.Package.PlanId,
+							hp.PlanName,
+							// user
+							p.Package.UserId,
+							p.User.Username,
+							p.User.FirstName,
+							p.User.LastName,
+							p.User.RoleId,
+							p.User.Email
+						});
+					return EntityDataSet(packages);
+				} finally
+				{
+					childPackages?.Dispose();
+				}
 			}
 			else
 			{
@@ -19011,7 +19052,8 @@ RETURN
 						StatusId = statusId,
 						PlanId = planId,
 						PurchaseDate = purchaseDate,
-						BandwidthUpdated = dateLastYear
+						BandwidthUpdated = dateLastYear,
+						StatusIdChangeDate = DateTime.Now
 					};
 					Packages.Add(package);
 					SaveChanges();
@@ -19170,10 +19212,10 @@ RETURN
 				throw new AccessViolationException("You are not allowed to access this package");
 
 			// delete old Package resources
-			PackageResources.Where(r => r.PackageId == packageId).ExecuteDelete(PackageResources);
+			PackageResources.Where(r => r.PackageId == packageId).ExecuteDelete();
 
 			// delete old Package quotas
-			PackageQuotas.Where(q => q.PackageId == packageId).ExecuteDelete(PackageQuotas);
+			PackageQuotas.Where(q => q.PackageId == packageId).ExecuteDelete();
 
 			var overrideQuotas = Packages
 				.Where(p => p.PackageId == packageId)
@@ -19550,44 +19592,44 @@ END
 				{
 					// remove package from cache
 					PackagesTreeCaches.Where(p => p.ParentPackageId == packageId || p.PackageId == packageId)
-						.ExecuteDelete(PackagesTreeCaches);
+						.ExecuteDelete();
 
 					// delete package comments
 					Comments.Where(c => c.ItemId == packageId && c.ItemTypeId == "PACKAGE")
-						.ExecuteDelete(Comments);
+						.ExecuteDelete();
 
 					// delete diskspace
-					PackagesDiskspaces.Where(d => d.PackageId == packageId).ExecuteDelete(PackagesDiskspaces);
+					PackagesDiskspaces.Where(d => d.PackageId == packageId).ExecuteDelete();
 
 					// delete bandwidth
-					PackagesBandwidths.Where(b => b.PackageId == packageId).ExecuteDelete(PackagesBandwidths);
+					PackagesBandwidths.Where(b => b.PackageId == packageId).ExecuteDelete();
 
 					// delete settings
-					PackageSettings.Where(s => s.PackageId == packageId).ExecuteDelete(PackageSettings);
+					PackageSettings.Where(s => s.PackageId == packageId).ExecuteDelete();
 
 					// delete domains
-					Domains.Where(d => d.PackageId == packageId).ExecuteDelete(Domains);
+					Domains.Where(d => d.PackageId == packageId).ExecuteDelete();
 
 					// delete package IP addresses
-					PackageIpAddresses.Where(ip => ip.PackageId == packageId).ExecuteDelete(PackageIpAddresses);
+					PackageIpAddresses.Where(ip => ip.PackageId == packageId).ExecuteDelete();
 
 					// delete service items
-					ServiceItems.Where(s => s.PackageId == packageId).ExecuteDelete(ServiceItems);
+					ServiceItems.Where(s => s.PackageId == packageId).ExecuteDelete();
 
 					// delete global DNS records
-					GlobalDnsRecords.Where(r => r.PackageId == packageId).ExecuteDelete(GlobalDnsRecords);
+					GlobalDnsRecords.Where(r => r.PackageId == packageId).ExecuteDelete();
 
 					// delete package services
-					PackageServices.Where(s => s.PackageId == packageId).ExecuteDelete(PackageServices);
+					PackageServices.Where(s => s.PackageId == packageId).ExecuteDelete();
 
 					// delete package quotas
-					PackageQuotas.Where(q => q.PackageId == packageId).ExecuteDelete(PackageQuotas);
+					PackageQuotas.Where(q => q.PackageId == packageId).ExecuteDelete();
 
 					// delete package resources
-					PackageResources.Where(r => r.PackageId == packageId).ExecuteDelete(PackageResources);
+					PackageResources.Where(r => r.PackageId == packageId).ExecuteDelete();
 
 					// delete package
-					Packages.Where(p => p.PackageId == packageId).ExecuteDelete(Packages);
+					Packages.Where(p => p.PackageId == packageId).ExecuteDelete();
 
 					transaction.Commit();
 				}
@@ -20530,7 +20572,7 @@ RETURN
 				{
 					// delete old properties
 					PackageSettings.Where(s => s.PackageId == packageId && s.SettingsName == settingsName)
-						.ExecuteDelete(PackageSettings);
+						.ExecuteDelete();
 
 					var settings = XElement.Parse(xml)
 						.Elements()
@@ -20897,65 +20939,80 @@ RETURN
 
 				var isAdmin = Users.Any(u => u.UserId == actorId && u.RoleId == 1);
 
-				var logs = AuditLogs
-					.Where(l => (packageId == 0 && CheckUserParent(userId, l.UserId) ||
-						l.UserId == null && isAdmin || packageId > 0 && l.PackageId == packageId) &&
-						startDate <= l.StartDate && l.StartDate < endDate &&
-						(sourceName == "" || l.SourceName == sourceName) &&
-						(taskName == "" || l.TaskName == taskName) &&
-						(itemId == 0 || l.ItemId == itemId) &&
+				TempIdSet childUsers = null;
+				try {
+					var logs = AuditLogs
+						.Where(l => startDate <= l.StartDate && l.StartDate < endDate &&
+							(sourceName == "" || l.SourceName == sourceName) &&
+							(taskName == "" || l.TaskName == taskName) &&
+							(itemId == 0 || l.ItemId == itemId) &&
 #if NETFRAMEWORK
-						(itemName == "" || DbFunctions.Like(l.ItemName, itemName)) &&
+							(itemName == "" || DbFunctions.Like(l.ItemName, itemName)) &&
 #else
-						(itemName == "" || EF.Functions.Like(l.ItemName, itemName)) &&
+							(itemName == "" || EF.Functions.Like(l.ItemName, itemName)) &&
 #endif
-						(severityId == -1 || severityId > -1 && l.SeverityId == severityId));
+							(severityId == -1 || severityId > -1 && l.SeverityId == severityId));
 
-				var count = logs.Count();
-
-				if (!string.IsNullOrEmpty(sortColumn)) logs = logs.OrderBy(sortColumn);
-				else logs = logs.OrderByDescending(l => l.StartDate);
-
-				logs = logs.Skip(startRow).Take(maximumRows);
-
-				var logsWithUser = logs
-					.GroupJoin(UsersDetailed, l => l.UserId, u => u.UserId, (l, u) => new
-					 {
-						 l.RecordId,
-						 l.SeverityId,
-						 l.StartDate,
-						 l.FinishDate,
-						 l.ItemId,
-						 l.SourceName,
-						 l.TaskName,
-						 l.ItemName,
-						 l.ExecutionLog,
-						 UserId = l.UserId ?? 0,
-						 l.Username,
-						 User = u.SingleOrDefault()
-					 })
-					.Select(l => new
+					if (packageId == 0)
 					{
-						l.RecordId,
-						l.SeverityId,
-						l.StartDate,
-						l.FinishDate,
-						l.ItemId,
-						l.SourceName,
-						l.TaskName,
-						l.ItemName,
-						l.ExecutionLog,
-						l.UserId,
-						l.Username,
-						FirstName = l.User != null ? l.User.FirstName : null,
-						LastName = l.User != null ? l.User.LastName : null,
-						FullName = l.User != null ? l.User.FullName : null,
-						RoleId = l.User != null ? l.User.RoleId : 0,
-						Email = l.User != null ? l.User.Email : null,
-						EffectiveUserId = l.User != null ?
-							(l.User.IsPeer ? l.User.OwnerId : l.User.UserId) : null
-					});
-				return EntityDataSet(logsWithUser);
+						childUsers = UserChildren(userId);
+						logs = logs
+							.Join(childUsers, l => l.UserId, u => u, (l, u) => l);
+						if (isAdmin) logs = logs.Union(logs.Where(l => l.UserId == null));
+					}
+					else
+					{
+						logs = logs.Where(l => l.UserId == null && isAdmin || l.PackageId == packageId);
+					}
+
+					var count = logs.Count();
+
+					if (!string.IsNullOrEmpty(sortColumn)) logs = logs.OrderBy(sortColumn);
+					else logs = logs.OrderByDescending(l => l.StartDate);
+
+					logs = logs.Skip(startRow).Take(maximumRows);
+
+					var logsWithUser = logs
+						.GroupJoin(UsersDetailed, l => l.UserId, u => u.UserId, (l, u) => new
+						{
+							l.RecordId,
+							l.SeverityId,
+							l.StartDate,
+							l.FinishDate,
+							l.ItemId,
+							l.SourceName,
+							l.TaskName,
+							l.ItemName,
+							l.ExecutionLog,
+							UserId = l.UserId ?? 0,
+							l.Username,
+							User = u.SingleOrDefault()
+						})
+						.Select(l => new
+						{
+							l.RecordId,
+							l.SeverityId,
+							l.StartDate,
+							l.FinishDate,
+							l.ItemId,
+							l.SourceName,
+							l.TaskName,
+							l.ItemName,
+							l.ExecutionLog,
+							l.UserId,
+							l.Username,
+							FirstName = l.User != null ? l.User.FirstName : null,
+							LastName = l.User != null ? l.User.LastName : null,
+							FullName = l.User != null ? l.User.FullName : null,
+							RoleId = l.User != null ? l.User.RoleId : 0,
+							Email = l.User != null ? l.User.Email : null,
+							EffectiveUserId = l.User != null ?
+								(l.User.IsPeer ? l.User.OwnerId : l.User.UserId) : null
+						});
+					return EntityDataSet(logsWithUser);
+				} finally {
+					childUsers?.Dispose();
+				}
 			}
 			else
 			{
@@ -21168,18 +21225,22 @@ RETURN
 
 				var isAdmin = Users.Any(u => u.UserId == actorId && u.RoleId == 1);
 
-				AuditLogs
-					.Where(l => (userId <= 0 && isAdmin || CheckUserParent(userId, l.UserId)) &&
-						startDate <= l.StartDate && l.StartDate < endDate &&
-						(string.IsNullOrEmpty(sourceName) || l.SourceName == sourceName) &&
-						(string.IsNullOrEmpty(taskName) || l.TaskName == taskName) &&
-						(itemId <= 0 || itemId == l.ItemId) &&
+				using (var childUsers = UserChildren(userId)) {
+					var logs = AuditLogs
+						.Where(l => startDate <= l.StartDate && l.StartDate < endDate &&
+							(string.IsNullOrEmpty(sourceName) || l.SourceName == sourceName) &&
+							(string.IsNullOrEmpty(taskName) || l.TaskName == taskName) &&
+							(itemId <= 0 || itemId == l.ItemId) &&
 #if NETFRAMEWORK
-						(string.IsNullOrEmpty(itemName) || DbFunctions.Like(l.ItemName, itemName)))
+							(string.IsNullOrEmpty(itemName) || DbFunctions.Like(l.ItemName, itemName)));
 #else
-						(string.IsNullOrEmpty(itemName) || EF.Functions.Like(l.ItemName, itemName)))
+							(string.IsNullOrEmpty(itemName) || EF.Functions.Like(l.ItemName, itemName)));
 #endif
-					.ExecuteDelete(AuditLogs);
+					logs = logs.Where(l => l.UserId == null && isAdmin)
+						.Union(logs
+							.Join(childUsers, l => l.UserId, u => u, (l, u) => l));
+					logs.ExecuteDelete();
+				}
 			}
 			else
 			{
@@ -22760,7 +22821,7 @@ WHERE TaskID = @TaskID
 				*/
 				#endregion
 
-				BackgroundTaskParameters.Where(p => p.TaskId == taskId).ExecuteDelete(BackgroundTaskParameters);
+				BackgroundTaskParameters.Where(p => p.TaskId == taskId).ExecuteDelete();
 			}
 			else
 			{
@@ -22839,17 +22900,17 @@ WHERE ID IN (SELECT ID FROM BackgroundTasks WHERE Guid = @Guid)
 
 				BackgroundTaskStacks
 					.Join(tasks, ts => ts.TaskId, t => t.Id, (ts, t) => ts)
-					.ExecuteDelete(BackgroundTaskStacks);
+					.ExecuteDelete();
 
 				BackgroundTaskLogs
 					.Join(tasks, tl => tl.TaskId, t => t.Id, (tl, t) => tl)
-					.ExecuteDelete(BackgroundTaskLogs);
+					.ExecuteDelete();
 
 				BackgroundTaskParameters
 					.Join(tasks, tp => tp.TaskId, t => t.Id, (tp, t) => tp)
-					.ExecuteDelete(BackgroundTaskParameters);
+					.ExecuteDelete();
 
-				tasks.ExecuteDelete(BackgroundTasks);
+				tasks.ExecuteDelete();
 			}
 			else
 			{
@@ -22885,13 +22946,13 @@ WHERE ID = @ID
 				*/
 				#endregion
 
-				BackgroundTaskStacks.Where(ts => ts.TaskId == taskId).ExecuteDelete(BackgroundTaskStacks);
+				BackgroundTaskStacks.Where(ts => ts.TaskId == taskId).ExecuteDelete();
 
-				BackgroundTaskLogs.Where(tl => tl.TaskId == taskId).ExecuteDelete(BackgroundTaskLogs);
+				BackgroundTaskLogs.Where(tl => tl.TaskId == taskId).ExecuteDelete();
 
-				BackgroundTaskParameters.Where(tp => tp.TaskId == taskId).ExecuteDelete(BackgroundTaskParameters);
+				BackgroundTaskParameters.Where(tp => tp.TaskId == taskId).ExecuteDelete();
 
-				BackgroundTasks.Where(t => t.Id == taskId).ExecuteDelete(BackgroundTasks);
+				BackgroundTasks.Where(t => t.Id == taskId).ExecuteDelete();
 			}
 			else
 			{
@@ -23085,65 +23146,68 @@ RETURN
 				if (!CheckActorPackageRights(actorId, packageId))
 					throw new AccessViolationException("You are not allowed to access this package");
 
-				var scheduleIds = Schedules
-					.Join(PackagesTree(packageId, true), s => s.PackageId, pt => pt, (s, pt) => new { s.ScheduleId, s.Enabled, s.NextRun })
-					.OrderByDescending(s => s.Enabled)
-					.ThenBy(s => s.NextRun)
-					.Select(s => s.ScheduleId)
-					.ToArray();
-				var schedules = scheduleIds
-					.Join(Schedules, sid => sid, s => s.ScheduleId, (sid, s) => s)
-					.Select(s => new
-					{
-						s.ScheduleId,
-						s.TaskId,
-						s.Task.TaskType,
-						s.Task.RoleId,
-						s.PackageId,
-						s.ScheduleName,
-						s.ScheduleTypeId,
-						s.Interval,
-						s.FromTime,
-						s.ToTime,
-						s.StartTime,
-						s.LastRun,
-						s.NextRun,
-						s.Enabled,
-						StatusId = ScheduleStatus.Idle,
-						s.PriorityId,
-						s.MaxExecutionTime,
-						s.WeekMonthDay,
-						LastResult = AuditLogs
-							.Where(l => l.ItemId == s.ScheduleId && l.SourceName == "SCHEDULER")
-							.OrderByDescending(l => l.StartDate)
-							.Select(l => l.SeverityId)
-							.FirstOrDefault(),
-						s.Package.User.Username,
-						s.Package.User.FirstName,
-						s.Package.User.LastName,
-						FullName = s.Package.User.FirstName + " " + s.Package.User.LastName,
-						UserRoleId = s.Package.User.RoleId,
-						s.Package.User.Email
-					});
-				var parameters = scheduleIds
-					.Join(Schedules, sid => sid, s => s.ScheduleId, (sid, s) => s)
-					.Join(ScheduleTaskParameters, s => s.TaskId, sp => sp.TaskId, (s, sp) => new { Schedule = s, TaskParameter = sp })
-					.GroupJoin(ScheduleParameters, s => new { s.TaskParameter.ParameterId, s.Schedule.ScheduleId }, sp => new { sp.ParameterId, sp.ScheduleId }, (s, sp) => new
-					{
-						s.Schedule.ScheduleId,
-						s.TaskParameter.ParameterId,
-						s.TaskParameter.DataTypeId,
-						s.TaskParameter.DefaultValue,
-						SP = sp.SingleOrDefault()
-					})
-					.Select(s => new
-					{
-						s.ScheduleId,
-						s.ParameterId,
-						s.DataTypeId,
-						ParameterValue = s.SP != null ? s.SP.ParameterValue : s.DefaultValue
-					});
-				return EntityDataSet(schedules, parameters);
+				using (var tree = PackagesTree(actorId, true))
+				{
+					var scheduleIds = Schedules
+						.Join(tree, s => s.PackageId, pt => pt, (s, pt) => new { s.ScheduleId, s.Enabled, s.NextRun })
+						.OrderByDescending(s => s.Enabled)
+						.ThenBy(s => s.NextRun)
+						.Select(s => s.ScheduleId)
+						.ToArray();
+					var schedules = scheduleIds
+						.Join(Schedules, sid => sid, s => s.ScheduleId, (sid, s) => s)
+						.Select(s => new
+						{
+							s.ScheduleId,
+							s.TaskId,
+							s.Task.TaskType,
+							s.Task.RoleId,
+							s.PackageId,
+							s.ScheduleName,
+							s.ScheduleTypeId,
+							s.Interval,
+							s.FromTime,
+							s.ToTime,
+							s.StartTime,
+							s.LastRun,
+							s.NextRun,
+							s.Enabled,
+							StatusId = ScheduleStatus.Idle,
+							s.PriorityId,
+							s.MaxExecutionTime,
+							s.WeekMonthDay,
+							LastResult = AuditLogs
+								.Where(l => l.ItemId == s.ScheduleId && l.SourceName == "SCHEDULER")
+								.OrderByDescending(l => l.StartDate)
+								.Select(l => l.SeverityId)
+								.FirstOrDefault(),
+							s.Package.User.Username,
+							s.Package.User.FirstName,
+							s.Package.User.LastName,
+							FullName = s.Package.User.FirstName + " " + s.Package.User.LastName,
+							UserRoleId = s.Package.User.RoleId,
+							s.Package.User.Email
+						});
+					var parameters = scheduleIds
+						.Join(Schedules, sid => sid, s => s.ScheduleId, (sid, s) => s)
+						.Join(ScheduleTaskParameters, s => s.TaskId, sp => sp.TaskId, (s, sp) => new { Schedule = s, TaskParameter = sp })
+						.GroupJoin(ScheduleParameters, s => new { s.TaskParameter.ParameterId, s.Schedule.ScheduleId }, sp => new { sp.ParameterId, sp.ScheduleId }, (s, sp) => new
+						{
+							s.Schedule.ScheduleId,
+							s.TaskParameter.ParameterId,
+							s.TaskParameter.DataTypeId,
+							s.TaskParameter.DefaultValue,
+							SP = sp.SingleOrDefault()
+						})
+						.Select(s => new
+						{
+							s.ScheduleId,
+							s.ParameterId,
+							s.DataTypeId,
+							ParameterValue = s.SP != null ? s.SP.ParameterValue : s.DefaultValue
+						});
+					return EntityDataSet(schedules, parameters);
+				}
 			}
 			else
 			{
@@ -23277,76 +23341,81 @@ END
 				if (!CheckActorPackageRights(actorId, packageId))
 					throw new AccessViolationException("You are not allowed to access this package");
 
-				var schedules = Schedules
-					.Join(Packages, s => s.PackageId, p => p.PackageId, (s, p) => new { S = s, P = p })
-					.Join(PackagesTree(packageId, true), s => s.S.PackageId, pt => pt, (s, pt) => s)
-					.Join(UsersDetailed, s => s.P.UserId, u => u.UserId, (s, u) => new {
-						s.S.ScheduleId,
-						s.S.TaskId,
-						s.S.Task.TaskType,
-						//s.S.Task.RoleId,
-						s.S.ScheduleName,
-						s.S.ScheduleTypeId,
-						s.S.Interval,
-						s.S.FromTime,
-						s.S.ToTime,
-						s.S.StartTime,
-						s.S.LastRun,
-						s.S.NextRun,
-						s.S.Enabled,
-						StatusId = ScheduleStatus.Idle,
-						s.S.PriorityId,
-						s.S.MaxExecutionTime,
-						s.S.WeekMonthDay,
-						LastResult = AuditLogs
-							.Where(l => l.ItemId == s.S.ScheduleId && l.SourceName == "SCHEDULER")
-							.OrderByDescending(l => l.StartDate)
-							.Select(l => l.SeverityId)
-							.FirstOrDefault(),
-						s.P.PackageId,
-						s.P.PackageName,
-						s.P.UserId,
-						u.Username,
-						u.FirstName,
-						u.LastName,
-						u.FullName,
-						u.RoleId,
-						u.Email
-					});
-					
-				if (!string.IsNullOrEmpty(filterValue))
+				using (var tree = PackagesTree(packageId, recursive))
 				{
-					if (!string.IsNullOrEmpty(filterColumn))
+					var schedules = Schedules
+						.Join(Packages, s => s.PackageId, p => p.PackageId, (s, p) => new { S = s, P = p })
+						.Join(tree, s => s.S.PackageId, pt => pt, (s, pt) => s)
+						.Join(UsersDetailed, s => s.P.UserId, u => u.UserId, (s, u) => new
+						{
+							s.S.ScheduleId,
+							s.S.TaskId,
+							s.S.Task.TaskType,
+							//s.S.Task.RoleId,
+							s.S.ScheduleName,
+							s.S.ScheduleTypeId,
+							s.S.Interval,
+							s.S.FromTime,
+							s.S.ToTime,
+							s.S.StartTime,
+							s.S.LastRun,
+							s.S.NextRun,
+							s.S.Enabled,
+							StatusId = ScheduleStatus.Idle,
+							s.S.PriorityId,
+							s.S.MaxExecutionTime,
+							s.S.WeekMonthDay,
+							LastResult = AuditLogs
+								.Where(l => l.ItemId == s.S.ScheduleId && l.SourceName == "SCHEDULER")
+								.OrderByDescending(l => l.StartDate)
+								.Select(l => l.SeverityId)
+								.FirstOrDefault(),
+							s.P.PackageId,
+							s.P.PackageName,
+							s.P.UserId,
+							u.Username,
+							u.FirstName,
+							u.LastName,
+							u.FullName,
+							u.RoleId,
+							u.Email
+						});
+
+					if (!string.IsNullOrEmpty(filterValue))
 					{
-						schedules = schedules.Where(DynamicFunctions.ColumnLike(schedules, filterColumn, filterValue));
-					} else
-					{
+						if (!string.IsNullOrEmpty(filterColumn))
+						{
+							schedules = schedules.Where(DynamicFunctions.ColumnLike(schedules, filterColumn, filterValue));
+						}
+						else
+						{
 #if NETFRAMEWORK
 						schedules = schedules.Where(s => DbFunctions.Like(s.ScheduleName, filterValue) ||
 							DbFunctions.Like(s.Username, filterValue) ||
 							DbFunctions.Like(s.FullName, filterValue) ||
 							DbFunctions.Like(s.Email, filterValue));
 #else
-						schedules = schedules.Where(s => EF.Functions.Like(s.ScheduleName, filterValue) ||
-							EF.Functions.Like(s.Username, filterValue) ||
-							EF.Functions.Like(s.FullName, filterValue) ||
-							EF.Functions.Like(s.Email, filterValue));
+							schedules = schedules.Where(s => EF.Functions.Like(s.ScheduleName, filterValue) ||
+								EF.Functions.Like(s.Username, filterValue) ||
+								EF.Functions.Like(s.FullName, filterValue) ||
+								EF.Functions.Like(s.Email, filterValue));
 #endif
+						}
 					}
+
+					if (!string.IsNullOrEmpty(sortColumn))
+					{
+						schedules = schedules.OrderBy(sortColumn);
+					}
+					else
+					{
+						schedules = schedules.OrderBy(s => s.ScheduleName);
+					}
+
+					schedules = schedules.Skip(startRow).Take(maximumRows);
+
+					return EntityDataSet(schedules);
 				}
-
-				if (!string.IsNullOrEmpty(sortColumn))
-				{
-					schedules = schedules.OrderBy(sortColumn);
-				} else
-				{
-					schedules = schedules.OrderBy(s => s.ScheduleName);
-				}
-
-				schedules = schedules.Skip(startRow).Take(maximumRows);
-
-				return EntityDataSet(schedules);
-
 			}
 			else
 			{
@@ -23938,7 +24007,7 @@ RETURN
 					Schedules.Add(schedule);
 					SaveChanges();
 
-					ScheduleParameters.Where(p => p.ScheduleId == schedule.ScheduleId).ExecuteDelete(ScheduleParameters);
+					ScheduleParameters.Where(p => p.ScheduleId == schedule.ScheduleId).ExecuteDelete();
 
 					var parameters = XElement.Parse(xmlParameters)
 						.Elements()
@@ -24108,7 +24177,7 @@ RETURN
 						schedule.WeekMonthDay = weekMonthDay;
 						SaveChanges();
 
-						ScheduleParameters.Where(p => p.ScheduleId == schedule.ScheduleId).ExecuteDelete(ScheduleParameters);
+						ScheduleParameters.Where(p => p.ScheduleId == schedule.ScheduleId).ExecuteDelete();
 
 						var parameters = XElement.Parse(xmlParameters)
 							.Elements()
@@ -24195,8 +24264,8 @@ RETURN
 
 				using (var transaction = Database.BeginTransaction())
 				{
-					ScheduleParameters.Where(sp => sp.ScheduleId == scheduleId).ExecuteDelete(ScheduleParameters);
-					Schedules.Where(s => s.ScheduleId == scheduleId).ExecuteDelete(Schedules);
+					ScheduleParameters.Where(sp => sp.ScheduleId == scheduleId).ExecuteDelete();
+					Schedules.Where(s => s.ScheduleId == scheduleId).ExecuteDelete();
 
 					transaction.Commit();
 				}
@@ -24526,7 +24595,7 @@ RETURN
 				if (!CheckActorUserRights(actorId, userId))
 					throw new AccessViolationException("You are not allowed to perform this operation");
 
-				Comments.Where(c => c.CommentId == commentId).ExecuteDelete(Comments);
+				Comments.Where(c => c.CommentId == commentId).ExecuteDelete();
 			}
 			else
 			{
@@ -24722,7 +24791,8 @@ RETURN
 					SamAccountName = samAccountName,
 					MailboxPlanId = mailboxPlanId,
 					SubscriberNumber = subscriberNumber,
-					UserPrincipalName = primaryEmailAddress
+					UserPrincipalName = primaryEmailAddress,
+					CreatedDate = DateTime.Now
 				};
 				ExchangeAccounts.Add(account);
 				SaveChanges();
@@ -25091,7 +25161,7 @@ END
 
 				ExchangeAccountEmailAddresses
 					.Where(a => a.AccountId == accountId && a.EmailAddress.ToLower() != primaryAddress.ToLower())
-					.ExecuteDelete(ExchangeAccountEmailAddresses);
+					.ExecuteDelete();
 			}
 			else
 			{
@@ -25129,9 +25199,9 @@ RETURN
 				*/
 				#endregion
 
-				ExchangeAccountEmailAddresses.Where(a => a.AccountId == accountId).ExecuteDelete(ExchangeAccountEmailAddresses);
+				ExchangeAccountEmailAddresses.Where(a => a.AccountId == accountId).ExecuteDelete();
 
-				ExchangeAccounts.Where(a => a.ItemId == itemId && a.AccountId == accountId).ExecuteDelete(ExchangeAccounts);
+				ExchangeAccounts.Where(a => a.ItemId == itemId && a.AccountId == accountId).ExecuteDelete();
 			}
 			else
 			{
@@ -25163,7 +25233,7 @@ RETURN
 				#endregion
 
 				ExchangeAccountEmailAddresses.Where(a => a.AccountId == accountId && a.EmailAddress == emailAddress)
-					.ExecuteDelete(ExchangeAccountEmailAddresses);
+					.ExecuteDelete();
 			}
 			else
 			{
@@ -25197,8 +25267,8 @@ RETURN
 
 				using (var transaction = Database.BeginTransaction())
 				{
-					ExchangeMailboxPlans.Where(p => p.ItemId == itemId).ExecuteDelete(ExchangeMailboxPlans);
-					ExchangeOrganizations.Where(o => o.ItemId == itemId).ExecuteDelete(ExchangeOrganizations);
+					ExchangeMailboxPlans.Where(p => p.ItemId == itemId).ExecuteDelete();
+					ExchangeOrganizations.Where(o => o.ItemId == itemId).ExecuteDelete();
 					transaction.Commit();
 				}
 			}
@@ -25231,7 +25301,7 @@ RETURN
 				#endregion
 
 				ExchangeOrganizationDomains.Where(d => d.DomainId == domainId && d.ItemId == itemId)
-					.ExecuteDelete(ExchangeOrganizationDomains);
+					.ExecuteDelete();
 			}
 			else
 			{
@@ -27178,7 +27248,7 @@ RETURN
 				*/
 				#endregion
 
-				ExchangeMailboxPlans.Where(p => p.MailboxPlanId == mailboxPlanId).ExecuteDelete(ExchangeMailboxPlans);
+				ExchangeMailboxPlans.Where(p => p.MailboxPlanId == mailboxPlanId).ExecuteDelete();
 			}
 			else
 			{
@@ -27673,7 +27743,7 @@ RETURN
 
 				ExchangeRetentionPolicyTags
 					.Where(t => t.TagId == TagID)
-					.ExecuteDelete(ExchangeRetentionPolicyTags);
+					.ExecuteDelete();
 			}
 			else
 			{
@@ -27860,7 +27930,7 @@ RETURN
 				#endregion
 
 				ExchangeMailboxPlanRetentionPolicyTags.Where(t => t.PlanTagId == PlanTagID)
-					.ExecuteDelete(ExchangeMailboxPlanRetentionPolicyTags);
+					.ExecuteDelete();
 			}
 			else
 			{
@@ -28063,7 +28133,7 @@ RETURN
 				*/
 				#endregion
 
-				ExchangeDisclaimers.Where(d => d.ExchangeDisclaimerId == exchangeDisclaimerId).ExecuteDelete(ExchangeDisclaimers);
+				ExchangeDisclaimers.Where(d => d.ExchangeDisclaimerId == exchangeDisclaimerId).ExecuteDelete();
 			}
 			else
 			{
@@ -28388,7 +28458,7 @@ WHERE ExpirationDate < getdate()
 				#endregion
 
 				var now = DateTime.Now;
-				AccessTokens.Where(t => t.ExpirationDate < now).ExecuteDelete(AccessTokens);
+				AccessTokens.Where(t => t.ExpirationDate < now).ExecuteDelete();
 			}
 			else
 			{
@@ -28469,7 +28539,7 @@ WHERE AccessTokenGuid = @AccessToken AND TokenType = @TokenType
 
 				AccessTokens
 					.Where(a => a.AccessTokenGuid == accessToken && a.TokenType == type)
-					.ExecuteDelete(AccessTokens);
+					.ExecuteDelete();
 			}
 			else
 			{
@@ -28667,7 +28737,7 @@ RETURN
 
 				ExchangeDeletedAccounts
 					.Where(a => a.AccountId == id)
-					.ExecuteDelete(ExchangeDeletedAccounts);
+					.ExecuteDelete();
 			}
 			else
 			{
@@ -28838,7 +28908,7 @@ WHERE ID = @GroupID
 
 				AdditionalGroups
 					.Where(a => a.Id == groupId)
-					.ExecuteDelete(AdditionalGroups);
+					.ExecuteDelete();
 			}
 			else
 			{
@@ -28910,7 +28980,7 @@ END
 
 				ExchangeAccounts
 					.Where(a => a.ItemId == itemId)
-					.ExecuteDelete(ExchangeAccounts);
+					.ExecuteDelete();
 			}
 			else
 			{
@@ -29680,12 +29750,15 @@ END
 				*/
 				#endregion
 
+				var now = DateTime.Now;
 				var user = new Data.Entities.CrmUser()
 				{
 					AccountId = itemId,
 					CrmUserGuid = crmId,
 					BusinessUnitId = businessUnitId,
-					CalType = CALType
+					CalType = CALType,
+					ChangedDate = now,
+					CreatedDate = now
 				};
 				CrmUsers.Add(user);
 				SaveChanges();
@@ -29837,7 +29910,7 @@ END
 				*/
 				#endregion
 
-				CrmUsers.Where(u => u.Account.ItemId == organizationId).ExecuteDelete(CrmUsers);
+				CrmUsers.Where(u => u.Account.ItemId == organizationId).ExecuteDelete();
 			}
 			else
 			{
@@ -29977,57 +30050,68 @@ RETURN
 						ip.ExternalIp
 					});
 				IQueryable<Data.Entities.Package> packages;
-				if (!recursive) packages = Packages.Where(p => p.PackageId == packageId);
-				else packages = Packages.Join(GetChildPackages(packageId).ToArray(), p => p.PackageId, ch => ch, (p, ch) => p);
-
-				var items = packages
-					.Join(ServiceItems.Where(si => si.ItemTypeId == 33 /* VPS */),
-						p => p.PackageId, i => i.PackageId, (p, i) => new { Package = p, Item = i })
-					.Join(Users, p => p.Package.UserId, u => u.UserId, (p, u) => new { p.Package, p.Item, u.Username })
-					.GroupJoin(PrivateIpAddresses.Where(ip => ip.IsPrimary), p => p.Item.ItemId, pip => pip.ItemId, (p, pip) => new
-					{
-						p.Package,
-						p.Item,
-						p.Username,
-						IpAddress = pip.Any() ? pip.Single().IpAddress : null
-					})
-					.GroupJoin(externalIpAddresses, p => p.Item.ItemId, eip => eip.ItemId, (p, eip) => new
-					{
-						p.Item.ItemId,
-						p.Item.ItemName,
-						p.Item.PackageId,
-						p.Package.PackageName,
-						p.Package.UserId,
-						p.Username,
-						ExternalIp = eip.Any() ? eip.Single().ExternalIp : null,
-						p.IpAddress
-					});
-
-				if (!string.IsNullOrEmpty(filterValue))
+				TempIdSet childPackages = null;
+				try
 				{
-					if (!string.IsNullOrEmpty(filterColumn)) items = items.Where(DynamicFunctions.ColumnLike(items, filterColumn, filterValue));
+					if (!recursive) packages = Packages.Where(p => p.PackageId == packageId);
 					else
 					{
+						childPackages = PackagesTree(packageId, true);
+						packages = Packages.Join(childPackages, p => p.PackageId, ch => ch, (p, ch) => p);
+					}
+
+					var items = packages
+						.Join(ServiceItems.Where(si => si.ItemTypeId == 33 /* VPS */),
+							p => p.PackageId, i => i.PackageId, (p, i) => new { Package = p, Item = i })
+						.Join(Users, p => p.Package.UserId, u => u.UserId, (p, u) => new { p.Package, p.Item, u.Username })
+						.GroupJoin(PrivateIpAddresses.Where(ip => ip.IsPrimary), p => p.Item.ItemId, pip => pip.ItemId, (p, pip) => new
+						{
+							p.Package,
+							p.Item,
+							p.Username,
+							IpAddress = pip.Any() ? pip.Single().IpAddress : null
+						})
+						.GroupJoin(externalIpAddresses, p => p.Item.ItemId, eip => eip.ItemId, (p, eip) => new
+						{
+							p.Item.ItemId,
+							p.Item.ItemName,
+							p.Item.PackageId,
+							p.Package.PackageName,
+							p.Package.UserId,
+							p.Username,
+							ExternalIp = eip.Any() ? eip.Single().ExternalIp : null,
+							p.IpAddress
+						});
+
+					if (!string.IsNullOrEmpty(filterValue))
+					{
+						if (!string.IsNullOrEmpty(filterColumn)) items = items.Where(DynamicFunctions.ColumnLike(items, filterColumn, filterValue));
+						else
+						{
 #if NETFRAMEWORK
-						items = items.Where(i => DbFunctions.Like(i.ItemName, filterValue) ||
-							DbFunctions.Like(i.Username, filterValue) || DbFunctions.Like(i.ExternalIp, filterValue) ||
-							DbFunctions.Like(i.IpAddress, filterValue));
+							items = items.Where(i => DbFunctions.Like(i.ItemName, filterValue) ||
+								DbFunctions.Like(i.Username, filterValue) || DbFunctions.Like(i.ExternalIp, filterValue) ||
+								DbFunctions.Like(i.IpAddress, filterValue));
 #else
 						items = items.Where(i => EF.Functions.Like(i.ItemName, filterValue) ||
 							EF.Functions.Like(i.Username, filterValue) || EF.Functions.Like(i.ExternalIp, filterValue) ||
 							EF.Functions.Like(i.IpAddress, filterValue));
 #endif
+						}
 					}
+
+					var count = items.Count();
+
+					if (string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
+					else items = items.OrderBy(i => i.ItemName);
+
+					items = items.Skip(startRow).Take(maximumRows);
+
+					return EntityDataReader(count, items);
+				} finally
+				{
+					childPackages?.Dispose();
 				}
-
-				var count = items.Count();
-
-				if (string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
-				else items = items.OrderBy(i => i.ItemName);
-
-				items = items.Skip(startRow).Take(maximumRows);
-
-				return EntityDataReader(count, items);
 			}
 			else
 			{
@@ -30172,57 +30256,68 @@ RETURN
 						ip.ExternalIp
 					});
 				IQueryable<Data.Entities.Package> packages;
-				if (!recursive) packages = Packages.Where(p => p.PackageId == packageId);
-				else packages = Packages.Join(GetChildPackages(packageId).ToArray(), p => p.PackageId, ch => ch, (p, ch) => p);
-
-				var items = packages
-					.Join(ServiceItems.Where(si => si.ItemTypeId == 41 /* VPS2012 */),
-						p => p.PackageId, i => i.PackageId, (p, i) => new { Package = p, Item = i })
-					.Join(Users, p => p.Package.UserId, u => u.UserId, (p, u) => new { p.Package, p.Item, u.Username })
-					.GroupJoin(PrivateIpAddresses.Where(ip => ip.IsPrimary), p => p.Item.ItemId, pip => pip.ItemId, (p, pip) => new
-					{
-						p.Package,
-						p.Item,
-						p.Username,
-						IpAddress = pip.Any() ? pip.Single().IpAddress : null
-					})
-					.GroupJoin(externalIpAddresses, p => p.Item.ItemId, eip => eip.ItemId, (p, eip) => new
-					{
-						p.Item.ItemId,
-						p.Item.ItemName,
-						p.Item.PackageId,
-						p.Package.PackageName,
-						p.Package.UserId,
-						p.Username,
-						ExternalIp = eip.Any() ? eip.Single().ExternalIp : null,
-						p.IpAddress
-					});
-
-				if (!string.IsNullOrEmpty(filterValue))
+				TempIdSet childPackages = null;
+				try
 				{
-					if (!string.IsNullOrEmpty(filterColumn)) items = items.Where(DynamicFunctions.ColumnLike(items, filterColumn, filterValue));
+					if (!recursive) packages = Packages.Where(p => p.PackageId == packageId);
 					else
 					{
+						childPackages = PackagesTree(packageId, true);
+						packages = Packages.Join(childPackages, p => p.PackageId, ch => ch, (p, ch) => p);
+					}
+					var items = packages
+						.Join(ServiceItems.Where(si => si.ItemTypeId == 41 /* VPS2012 */),
+							p => p.PackageId, i => i.PackageId, (p, i) => new { Package = p, Item = i })
+						.Join(Users, p => p.Package.UserId, u => u.UserId, (p, u) => new { p.Package, p.Item, u.Username })
+						.GroupJoin(PrivateIpAddresses.Where(ip => ip.IsPrimary), p => p.Item.ItemId, pip => pip.ItemId, (p, pip) => new
+						{
+							p.Package,
+							p.Item,
+							p.Username,
+							IpAddress = pip.Any() ? pip.Single().IpAddress : null
+						})
+						.GroupJoin(externalIpAddresses, p => p.Item.ItemId, eip => eip.ItemId, (p, eip) => new
+						{
+							p.Item.ItemId,
+							p.Item.ItemName,
+							p.Item.PackageId,
+							p.Package.PackageName,
+							p.Package.UserId,
+							p.Username,
+							ExternalIp = eip.Any() ? eip.Single().ExternalIp : null,
+							p.IpAddress
+						});
+
+					if (!string.IsNullOrEmpty(filterValue))
+					{
+						if (!string.IsNullOrEmpty(filterColumn)) items = items.Where(DynamicFunctions.ColumnLike(items, filterColumn, filterValue));
+						else
+						{
 #if NETFRAMEWORK
-						items = items.Where(i => DbFunctions.Like(i.ItemName, filterValue) ||
-							DbFunctions.Like(i.Username, filterValue) || DbFunctions.Like(i.ExternalIp, filterValue) ||
-							DbFunctions.Like(i.IpAddress, filterValue));
+							items = items.Where(i => DbFunctions.Like(i.ItemName, filterValue) ||
+								DbFunctions.Like(i.Username, filterValue) || DbFunctions.Like(i.ExternalIp, filterValue) ||
+								DbFunctions.Like(i.IpAddress, filterValue));
 #else
 						items = items.Where(i => EF.Functions.Like(i.ItemName, filterValue) ||
 							EF.Functions.Like(i.Username, filterValue) || EF.Functions.Like(i.ExternalIp, filterValue) ||
 							EF.Functions.Like(i.IpAddress, filterValue));
 #endif
+						}
 					}
+
+					var count = items.Count();
+
+					if (string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
+					else items = items.OrderBy(i => i.ItemName);
+
+					items = items.Skip(startRow).Take(maximumRows);
+
+					return EntityDataReader(count, items);
 				}
-
-				var count = items.Count();
-
-				if (string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
-				else items = items.OrderBy(i => i.ItemName);
-
-				items = items.Skip(startRow).Take(maximumRows);
-
-				return EntityDataReader(count, items);
+				finally
+				{
+					childPackages?.Dispose();
+				}
 			}
 			else
 			{
@@ -30367,57 +30462,68 @@ RETURN
 						ip.ExternalIp
 					});
 				IQueryable<Data.Entities.Package> packages;
-				if (!recursive) packages = Packages.Where(p => p.PackageId == packageId);
-				else packages = Packages.Join(GetChildPackages(packageId).ToArray(), p => p.PackageId, ch => ch, (p, ch) => p);
-
-				var items = packages
-					.Join(ServiceItems.Where(si => si.ItemTypeId == 143 /* Proxmox */),
-						p => p.PackageId, i => i.PackageId, (p, i) => new { Package = p, Item = i })
-					.Join(Users, p => p.Package.UserId, u => u.UserId, (p, u) => new { p.Package, p.Item, u.Username })
-					.GroupJoin(PrivateIpAddresses.Where(ip => ip.IsPrimary), p => p.Item.ItemId, pip => pip.ItemId, (p, pip) => new
-					{
-						p.Package,
-						p.Item,
-						p.Username,
-						IpAddress = pip.Any() ? pip.Single().IpAddress : null
-					})
-					.GroupJoin(externalIpAddresses, p => p.Item.ItemId, eip => eip.ItemId, (p, eip) => new
-					{
-						p.Item.ItemId,
-						p.Item.ItemName,
-						p.Item.PackageId,
-						p.Package.PackageName,
-						p.Package.UserId,
-						p.Username,
-						ExternalIp = eip.Any() ? eip.Single().ExternalIp : null,
-						p.IpAddress
-					});
-
-				if (!string.IsNullOrEmpty(filterValue))
+				TempIdSet childPackages = null;
+				try
 				{
-					if (!string.IsNullOrEmpty(filterColumn)) items = items.Where(DynamicFunctions.ColumnLike(items, filterColumn, filterValue));
+					if (!recursive) packages = Packages.Where(p => p.PackageId == packageId);
 					else
 					{
+						childPackages = PackagesTree(packageId, true);
+						packages = Packages.Join(childPackages, p => p.PackageId, ch => ch, (p, ch) => p);
+					}
+					var items = packages
+						.Join(ServiceItems.Where(si => si.ItemTypeId == 143 /* Proxmox */),
+							p => p.PackageId, i => i.PackageId, (p, i) => new { Package = p, Item = i })
+						.Join(Users, p => p.Package.UserId, u => u.UserId, (p, u) => new { p.Package, p.Item, u.Username })
+						.GroupJoin(PrivateIpAddresses.Where(ip => ip.IsPrimary), p => p.Item.ItemId, pip => pip.ItemId, (p, pip) => new
+						{
+							p.Package,
+							p.Item,
+							p.Username,
+							IpAddress = pip.Any() ? pip.Single().IpAddress : null
+						})
+						.GroupJoin(externalIpAddresses, p => p.Item.ItemId, eip => eip.ItemId, (p, eip) => new
+						{
+							p.Item.ItemId,
+							p.Item.ItemName,
+							p.Item.PackageId,
+							p.Package.PackageName,
+							p.Package.UserId,
+							p.Username,
+							ExternalIp = eip.Any() ? eip.Single().ExternalIp : null,
+							p.IpAddress
+						});
+
+					if (!string.IsNullOrEmpty(filterValue))
+					{
+						if (!string.IsNullOrEmpty(filterColumn)) items = items.Where(DynamicFunctions.ColumnLike(items, filterColumn, filterValue));
+						else
+						{
 #if NETFRAMEWORK
-						items = items.Where(i => DbFunctions.Like(i.ItemName, filterValue) ||
-							DbFunctions.Like(i.Username, filterValue) || DbFunctions.Like(i.ExternalIp, filterValue) ||
-							DbFunctions.Like(i.IpAddress, filterValue));
+							items = items.Where(i => DbFunctions.Like(i.ItemName, filterValue) ||
+								DbFunctions.Like(i.Username, filterValue) || DbFunctions.Like(i.ExternalIp, filterValue) ||
+								DbFunctions.Like(i.IpAddress, filterValue));
 #else
 						items = items.Where(i => EF.Functions.Like(i.ItemName, filterValue) ||
 							EF.Functions.Like(i.Username, filterValue) || EF.Functions.Like(i.ExternalIp, filterValue) ||
 							EF.Functions.Like(i.IpAddress, filterValue));
 #endif
+						}
 					}
+
+					var count = items.Count();
+
+					if (string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
+					else items = items.OrderBy(i => i.ItemName);
+
+					items = items.Skip(startRow).Take(maximumRows);
+
+					return EntityDataReader(count, items);
 				}
-
-				var count = items.Count();
-
-				if (string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
-				else items = items.OrderBy(i => i.ItemName);
-
-				items = items.Skip(startRow).Take(maximumRows);
-
-				return EntityDataReader(count, items);
+				finally
+				{
+					childPackages?.Dispose();
+				}
 			}
 			else
 			{
@@ -30566,57 +30672,69 @@ RETURN
 						ip.ExternalIp
 					});
 				IQueryable<Data.Entities.Package> packages;
-				if (!recursive) packages = Packages.Where(p => p.PackageId == packageId);
-				else packages = Packages.Join(GetChildPackages(packageId).ToArray(), p => p.PackageId, ch => ch, (p, ch) => p);
-
-				var items = packages
-					.Join(ServiceItems.Where(si => si.ItemTypeId == 35 /* VPS for PC */),
-						p => p.PackageId, i => i.PackageId, (p, i) => new { Package = p, Item = i })
-					.Join(Users, p => p.Package.UserId, u => u.UserId, (p, u) => new { p.Package, p.Item, u.Username })
-					.GroupJoin(PrivateIpAddresses.Where(ip => ip.IsPrimary), p => p.Item.ItemId, pip => pip.ItemId, (p, pip) => new
-					{
-						p.Package,
-						p.Item,
-						p.Username,
-						IpAddress = pip.Any() ? pip.Single().IpAddress : null
-					})
-					.GroupJoin(externalIpAddresses, p => p.Item.ItemId, eip => eip.ItemId, (p, eip) => new
-					{
-						p.Item.ItemId,
-						p.Item.ItemName,
-						p.Item.PackageId,
-						p.Package.PackageName,
-						p.Package.UserId,
-						p.Username,
-						ExternalIp = eip.Any() ? eip.Single().ExternalIp : null,
-						p.IpAddress
-					});
-
-				if (!string.IsNullOrEmpty(filterValue))
+				TempIdSet childPackages = null;
+				try
 				{
-					if (!string.IsNullOrEmpty(filterColumn)) items = items.Where(DynamicFunctions.ColumnLike(items, filterColumn, filterValue));
+					if (!recursive) packages = Packages.Where(p => p.PackageId == packageId);
 					else
 					{
+						childPackages = PackagesTree(packageId, true);
+						packages = Packages.Join(childPackages, p => p.PackageId, ch => ch, (p, ch) => p);
+					}
+
+					var items = packages
+						.Join(ServiceItems.Where(si => si.ItemTypeId == 35 /* VPS for PC */),
+							p => p.PackageId, i => i.PackageId, (p, i) => new { Package = p, Item = i })
+						.Join(Users, p => p.Package.UserId, u => u.UserId, (p, u) => new { p.Package, p.Item, u.Username })
+						.GroupJoin(PrivateIpAddresses.Where(ip => ip.IsPrimary), p => p.Item.ItemId, pip => pip.ItemId, (p, pip) => new
+						{
+							p.Package,
+							p.Item,
+							p.Username,
+							IpAddress = pip.Any() ? pip.Single().IpAddress : null
+						})
+						.GroupJoin(externalIpAddresses, p => p.Item.ItemId, eip => eip.ItemId, (p, eip) => new
+						{
+							p.Item.ItemId,
+							p.Item.ItemName,
+							p.Item.PackageId,
+							p.Package.PackageName,
+							p.Package.UserId,
+							p.Username,
+							ExternalIp = eip.Any() ? eip.Single().ExternalIp : null,
+							p.IpAddress
+						});
+
+					if (!string.IsNullOrEmpty(filterValue))
+					{
+						if (!string.IsNullOrEmpty(filterColumn)) items = items.Where(DynamicFunctions.ColumnLike(items, filterColumn, filterValue));
+						else
+						{
 #if NETFRAMEWORK
-						items = items.Where(i => DbFunctions.Like(i.ItemName, filterValue) ||
-							DbFunctions.Like(i.Username, filterValue) || DbFunctions.Like(i.ExternalIp, filterValue) ||
-							DbFunctions.Like(i.IpAddress, filterValue));
+							items = items.Where(i => DbFunctions.Like(i.ItemName, filterValue) ||
+								DbFunctions.Like(i.Username, filterValue) || DbFunctions.Like(i.ExternalIp, filterValue) ||
+								DbFunctions.Like(i.IpAddress, filterValue));
 #else
 						items = items.Where(i => EF.Functions.Like(i.ItemName, filterValue) ||
 							EF.Functions.Like(i.Username, filterValue) || EF.Functions.Like(i.ExternalIp, filterValue) ||
 							EF.Functions.Like(i.IpAddress, filterValue));
 #endif
+						}
 					}
+
+					var count = items.Count();
+
+					if (string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
+					else items = items.OrderBy(i => i.ItemName);
+
+					items = items.Skip(startRow).Take(maximumRows);
+
+					return EntityDataReader(count, items);
 				}
-
-				var count = items.Count();
-
-				if (string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
-				else items = items.OrderBy(i => i.ItemName);
-
-				items = items.Skip(startRow).Take(maximumRows);
-
-				return EntityDataReader(count, items);
+				finally
+				{
+					childPackages?.Dispose();
+				}
 			}
 			else
 			{
@@ -30931,7 +31049,7 @@ END
 					.Select(e => (int)e.Attribute("id"));
 				PackageIpAddresses
 					.Join(addressIds, ip => ip.AddressId, id => id, (ip, id) => ip)
-					.ExecuteDelete(PackageIpAddresses);
+					.ExecuteDelete();
 				var newIps = addressIds
 					.Select(id => new Data.Entities.PackageIpAddress()
 					{
@@ -31063,59 +31181,73 @@ END
 				*/
 				#endregion
 
-				IEnumerable<int> packageChildren = recursive ? GetChildPackages(packageId) :
-					new[] { packageId };
-				var addresses = PackageIpAddresses
-					.Where(pa => (orgId == 0 || pa.OrgId == orgId) &&
-						(poolId == 0 || pa.Address.PoolId == poolId))
-					.Join(packageChildren, pa => pa.PackageId, p => p, (pa, p) => new
-					{
-						pa.PackageAddressId,
-						pa.AddressId,
-						pa.Address.ExternalIp,
-						pa.Address.InternalIp,
-						pa.Address.SubnetMask,
-						pa.Address.DefaultGateway,
-						pa.Address.Vlan,
-						pa.ItemId,
-						pa.Item.ItemName,
-						pa.PackageId,
-						pa.Package.PackageName,
-						pa.Package.UserId,
-						pa.Package.User.Username,
-						pa.IsPrimary
-					});
-				if (!string.IsNullOrEmpty(filterValue))
+				IQueryable<Data.Entities.PackageIpAddress> addressesFiltered;
+				TempIdSet childPackages = null;
+				try
 				{
-					if (!string.IsNullOrEmpty(filterColumn))
+					if (!recursive) addressesFiltered = PackageIpAddresses.Where(pa => pa.PackageId == packageId);
+					else
 					{
-						addresses = addresses.Where(DynamicFunctions.ColumnLike(addresses, filterColumn, filterValue));
-					} else
-					{
-						addresses = addresses
-#if NETFRAMEWORK
-							.Where(a => DbFunctions.Like(a.ExternalIp, filterValue) ||
-								DbFunctions.Like(a.InternalIp, filterValue) ||
-								DbFunctions.Like(a.DefaultGateway, filterValue) ||
-								DbFunctions.Like(a.ItemName, filterValue) ||
-								DbFunctions.Like(a.Username, filterValue));
-#else
-							.Where(a => EF.Functions.Like(a.ExternalIp, filterValue) ||
-								EF.Functions.Like(a.InternalIp, filterValue) ||
-								EF.Functions.Like(a.DefaultGateway, filterValue) ||
-								EF.Functions.Like(a.ItemName, filterValue) ||
-								EF.Functions.Like(a.Username, filterValue));
-#endif
+						childPackages = PackagesTree(packageId, true);
+						addressesFiltered = PackageIpAddresses.Join(childPackages, pa => pa.PackageId, ch => ch, (pa, ch) => pa);
 					}
+
+					var addresses = addressesFiltered
+						.Where(pa => (orgId == 0 || pa.OrgId == orgId) &&
+							(poolId == 0 || pa.Address.PoolId == poolId))
+						.Select(pa => new
+						{
+							pa.PackageAddressId,
+							pa.AddressId,
+							pa.Address.ExternalIp,
+							pa.Address.InternalIp,
+							pa.Address.SubnetMask,
+							pa.Address.DefaultGateway,
+							pa.Address.Vlan,
+							pa.ItemId,
+							pa.Item.ItemName,
+							pa.PackageId,
+							pa.Package.PackageName,
+							pa.Package.UserId,
+							pa.Package.User.Username,
+							pa.IsPrimary
+						});
+					if (!string.IsNullOrEmpty(filterValue))
+					{
+						if (!string.IsNullOrEmpty(filterColumn))
+						{
+							addresses = addresses.Where(DynamicFunctions.ColumnLike(addresses, filterColumn, filterValue));
+						}
+						else
+						{
+							addresses = addresses
+#if NETFRAMEWORK
+								.Where(a => DbFunctions.Like(a.ExternalIp, filterValue) ||
+									DbFunctions.Like(a.InternalIp, filterValue) ||
+									DbFunctions.Like(a.DefaultGateway, filterValue) ||
+									DbFunctions.Like(a.ItemName, filterValue) ||
+									DbFunctions.Like(a.Username, filterValue));
+#else
+								.Where(a => EF.Functions.Like(a.ExternalIp, filterValue) ||
+									EF.Functions.Like(a.InternalIp, filterValue) ||
+									EF.Functions.Like(a.DefaultGateway, filterValue) ||
+									EF.Functions.Like(a.ItemName, filterValue) ||
+									EF.Functions.Like(a.Username, filterValue));
+#endif
+						}
+					}
+
+					var count = addresses.Count();
+
+					if (string.IsNullOrEmpty(sortColumn)) addresses = addresses.OrderBy(a => a.ExternalIp);
+					else addresses = addresses.OrderBy(sortColumn);
+
+					addresses = addresses.Skip(startRow).Take(maximumRows);
+					return EntityDataReader(count, addresses);
+				} finally
+				{
+					childPackages?.Dispose();
 				}
-
-				var count = addresses.Count();
-
-				if (string.IsNullOrEmpty(sortColumn)) addresses = addresses.OrderBy(a => a.ExternalIp);
-				else addresses = addresses.OrderBy(sortColumn);
-
-				addresses = addresses.Skip(startRow).Take(maximumRows);
-				return EntityDataReader(count, addresses);
 			}
 			else
 			{
@@ -31236,7 +31368,7 @@ END
 				{
 					PackageIpAddresses
 						.Where(pa => pa.PackageAddressId == id)
-						.ExecuteDelete(PackageIpAddresses);
+						.ExecuteDelete();
 				}
 				else // 2rd level space and below
 				{
@@ -31910,7 +32042,9 @@ CREATE PROCEDURE [dbo].[AddItemPrivateIPAddress]
 )
 AS
 
-IF EXISTS (SELECT ItemID FROM ServiceItems AS SI WHERE dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1)
+IF EXISTS (SELECT ItemID FROM ServiceItems AS SI WHERE
+	ItemID = @ItemID AND -- bugfix added by Simon Egli, 27.6.2024
+	dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1)
 BEGIN
 
 	INSERT INTO PrivateIPAddresses
@@ -31932,9 +32066,9 @@ RETURN
 				*/
 				#endregion
 
-				//TODO Check whole ServiceItems, is this a bug?
 				if (ServiceItems
-					//TODO .Where(i => i.ItemId == itemId) ??
+					//TODO .Where(i => i.ItemId == itemId) or not?
+					.Where(i => i.ItemId == itemId) // bugfix added by Simon Egli, 27.6.2024 
 					.Select(i => i.PackageId)
 					.AsEnumerable()
 					.Any(packageId => CheckActorPackageRights(actorId, packageId)))
@@ -32426,7 +32560,7 @@ RETURN
 				*/
 				#endregion
 
-				BlackBerryUsers.Where(u => u.AccountId == accountId).ExecuteDelete(BlackBerryUsers);
+				BlackBerryUsers.Where(u => u.AccountId == accountId).ExecuteDelete();
 			}
 			else
 			{
@@ -32788,7 +32922,7 @@ RETURN
 				*/
 				#endregion
 
-				OcsUsers.Where(u => u.InstanceId == instanceId).ExecuteDelete(OcsUsers);
+				OcsUsers.Where(u => u.InstanceId == instanceId).ExecuteDelete();
 			}
 			else
 			{
@@ -33182,7 +33316,7 @@ SELECT
 FROM
 	[dbo].[SSLCertificates]
 WHERE
-	@websiteid = [SiteID] AND [Installed] = 0 AND [IsRenewal] = 0
+	@websiteid = [SiteID] AND [Installed] = 0 AND [IsRenewal] = 0 -- bugfix Simon Egli, 27.6.2024
 
 RETURN
 				*/
@@ -33380,7 +33514,7 @@ RETURN
 
 				if (!CheckActorPackageRights(actorId, packageId))
 					throw new AccessViolationException("You are not allowed to access this package");
-				SslCertificates.Where(c => c.Id == id).ExecuteDelete(SslCertificates);
+				SslCertificates.Where(c => c.Id == id).ExecuteDelete();
 			}
 			else
 			{
@@ -33942,7 +34076,7 @@ RETURN
 				*/
 				#endregion
 
-				LyncUsers.Where(u => u.AccountId == accountId).ExecuteDelete(LyncUsers);
+				LyncUsers.Where(u => u.AccountId == accountId).ExecuteDelete();
 			}
 			else
 			{
@@ -34280,7 +34414,7 @@ RETURN
 				*/
 				#endregion
 
-				LyncUserPlans.Where(p => p.LyncUserPlanId == lyncUserPlanId).ExecuteDelete(LyncUserPlans);
+				LyncUserPlans.Where(p => p.LyncUserPlanId == lyncUserPlanId).ExecuteDelete();
 			}
 			else
 			{
@@ -35103,7 +35237,7 @@ RETURN
 				*/
 				#endregion
 
-				LyncUsers.Where(u => u.AccountId == accountId).ExecuteDelete(LyncUsers);
+				LyncUsers.Where(u => u.AccountId == accountId).ExecuteDelete();
 			}
 			else
 			{
@@ -35387,7 +35521,7 @@ RETURN
 				*/
 				#endregion
 
-				SfBUserPlans.Where(p => p.SfBUserPlanId == sfbUserPlanId).ExecuteDelete(SfBUserPlans);
+				SfBUserPlans.Where(p => p.SfBUserPlanId == sfbUserPlanId).ExecuteDelete();
 			}
 			else
 			{
@@ -35842,8 +35976,8 @@ WHERE P.ProviderID = @ProviderID",
 					.Where(q => q.QuotaName == engineName)
 					.Select(q => q.QuotaId)
 					.FirstOrDefault();
-				HostingPlanQuotas.Where(q => q.QuotaId == quotaId).ExecuteDelete(HostingPlanQuotas);
-				Quotas.Where(q => q.QuotaId == quotaId).ExecuteDelete(Quotas);
+				HostingPlanQuotas.Where(q => q.QuotaId == quotaId).ExecuteDelete();
+				Quotas.Where(q => q.QuotaId == quotaId).ExecuteDelete();
 			}
 			else
 			{
@@ -36080,7 +36214,7 @@ WHERE ExpirationDate < getdate()
 				#endregion
 
 				var now = DateTime.Now;
-				WebDavAccessTokens.Where(p => p.ExpirationDate < now).ExecuteDelete(WebDavAccessTokens);
+				WebDavAccessTokens.Where(p => p.ExpirationDate < now).ExecuteDelete();
 			}
 			else
 			{
@@ -36272,18 +36406,12 @@ RETURN
 				*/
 				#endregion
 
-#if NETCOREAPP
-				EnterpriseFolders.Where(f => f.ItemId == itemId && f.FolderName == folderName)
-					.ExecuteUpdate(e => e.SetProperty(p => p.StorageSpaceFolderId, storageSpaceFolderId));
-#else
-				var folder = EnterpriseFolders
-					.FirstOrDefault(f => f.ItemId == itemId && f.FolderName == folderName);
-				if (folder != null)
-				{
-					folder.StorageSpaceFolderId = storageSpaceFolderId;
-					SaveChanges();
-				}
-#endif
+				EnterpriseFolders
+					.Where(f => f.ItemId == itemId && f.FolderName == folderName)
+					.ExecuteUpdate(e => new Data.Entities.EnterpriseFolder()
+					{
+						StorageSpaceFolderId = storageSpaceFolderId
+					});
 			}
 			else
 			{
@@ -36316,7 +36444,7 @@ WHERE ItemID = @ItemID AND FolderName = @FolderName
 				#endregion
 
 				EnterpriseFolders.Where(f => f.ItemId == itemId && f.FolderName == folderName)
-					.ExecuteDelete(EnterpriseFolders);
+					.ExecuteDelete();
 			}
 			else
 			{
@@ -36351,22 +36479,13 @@ WHERE ItemID = @ItemID AND FolderName = @FolderID
 				*/
 				#endregion
 
-#if NETCOREAPP
 				EnterpriseFolders
 					.Where(f => f.ItemId == itemId && f.FolderName == folderID)
-					.ExecuteUpdate(e => e
-						.SetProperty(p => p.FolderName, folderName)
-						.SetProperty(p => p.FolderQuota, folderQuota));
-#else
-				var folder = EnterpriseFolders
-					.FirstOrDefault(f => f.ItemId == itemId && f.FolderName == folderID);
-				if (folder != null)
-				{
-					folder.FolderName = folderName;
-					folder.FolderQuota = folderQuota;
-					SaveChanges();
-				}
-#endif
+					.ExecuteUpdate(e => new Data.Entities.EnterpriseFolder()
+					{
+						FolderName = folderName,
+						FolderQuota = folderQuota
+					});
 			}
 			else
 			{
@@ -36718,19 +36837,9 @@ WHERE AccountId = @AccountId
 				*/
 				#endregion
 
-#if NETCOREAPP
-				WebDavPortalUsersSettings.Where(s => s.AccountId == accountId)
-					.ExecuteUpdate(e => e.SetProperty(p => p.Settings, settings));
-#else
-				var setting = WebDavPortalUsersSettings
+				WebDavPortalUsersSettings
 					.Where(s => s.AccountId == accountId)
-					.FirstOrDefault();
-				if (setting != null)
-				{
-					setting.Settings = settings;
-					SaveChanges();
-				}
-#endif
+					.ExecuteUpdate(e => new Data.Entities.WebDavPortalUsersSetting() { Settings = settings });
 			}
 			else
 			{
@@ -36761,7 +36870,7 @@ WHERE ItemId = @ItemID AND FolderID = @FolderID
 				#endregion
 
 				EnterpriseFoldersOwaPermissions.Where(p => p.ItemId == itemId && p.FolderId == folderId)
-					.ExecuteDelete(EnterpriseFoldersOwaPermissions);
+					.ExecuteDelete();
 			}
 			else
 			{
@@ -37268,9 +37377,9 @@ RETURN
 						.FirstOrDefault();
 					if (quotaId != null)
 					{
-						HostingPlanQuotas.Where(q => q.QuotaId == quotaId).ExecuteDelete(HostingPlanQuotas);
-						PackageQuotas.Where(q => q.QuotaId == quotaId).ExecuteDelete(PackageQuotas);
-						Quotas.Where(q => q.QuotaId == quotaId).ExecuteDelete(Quotas);
+						HostingPlanQuotas.Where(q => q.QuotaId == quotaId).ExecuteDelete();
+						PackageQuotas.Where(q => q.QuotaId == quotaId).ExecuteDelete();
+						Quotas.Where(q => q.QuotaId == quotaId).ExecuteDelete();
 					}
 
 					var accounts = ExchangeAccounts
@@ -37284,7 +37393,7 @@ RETURN
 						SaveChanges();
 					}
 
-					SupportServiceLevels.Where(l => l.LevelId == levelId).ExecuteDelete(SupportServiceLevels);
+					SupportServiceLevels.Where(l => l.LevelId == levelId).ExecuteDelete();
 				}
 			}
 			else
@@ -37509,23 +37618,13 @@ AS
 				*/
 				#endregion
 
-#if NETFRAMEWORK
-				var lev = StorageSpaceLevels
-					.FirstOrDefault(l => l.Id == level.Id);
-				if (lev != null)
-				{
-					lev.Name = level.Name;
-					lev.Description = level.Description;
-					return SaveChanges();
-				}
-				return 0;
-#else
 				return StorageSpaceLevels
 					.Where(l => l.Id == level.Id)
-					.ExecuteUpdate(set => set
-						.SetProperty(l => l.Name, level.Name)
-						.SetProperty(l => l.Description, level.Description));
-#endif
+					.ExecuteUpdate(l => new Data.Entities.StorageSpaceLevel()
+					{
+						Name = level.Name,
+						Description = level.Description
+					});
 			}
 			else
 			{
@@ -37616,7 +37715,7 @@ AS
 
 				StorageSpaceLevels
 					.Where(sl => sl.Id == id)
-					.ExecuteDelete(StorageSpaceLevels);
+					.ExecuteDelete();
 			}
 			else
 			{
@@ -37691,7 +37790,7 @@ AS
 				*/
 				#endregion
 
-				StorageSpaceLevelResourceGroups.Where(g => g.LevelId == levelId).ExecuteDelete(StorageSpaceLevelResourceGroups);
+				StorageSpaceLevelResourceGroups.Where(g => g.LevelId == levelId).ExecuteDelete();
 			}
 			else
 			{
@@ -38153,7 +38252,7 @@ AS
 				*/
 				#endregion
 
-				StorageSpaces.Where(s => s.Id == id).ExecuteDelete(StorageSpaces);
+				StorageSpaces.Where(s => s.Id == id).ExecuteDelete();
 			}
 			else
 			{
@@ -38564,7 +38663,7 @@ WHERE ID=@ID
 				*/
 				#endregion
 
-				StorageSpaceFolders.Where(f => f.Id == id).ExecuteDelete(StorageSpaceFolders);
+				StorageSpaceFolders.Where(f => f.Id == id).ExecuteDelete();
 			}
 			else
 			{
@@ -38726,7 +38825,7 @@ RETURN
 				{
 					RdsServerSettings
 						.Where(s => s.RdsServerId == serverId && s.SettingsName == settingsName)
-						.ExecuteDelete(RdsServerSettings);
+						.ExecuteDelete();
 
 					var settings = XElement.Parse(xml)
 						.Elements()
@@ -39213,7 +39312,7 @@ WHERE Id = @Id
 				*/
 				#endregion
 
-				RdsCollectionSettings.Where(s => s.Id == id).ExecuteDelete(RdsCollectionSettings);
+				RdsCollectionSettings.Where(s => s.Id == id).ExecuteDelete();
 			}
 			else
 			{
@@ -39694,7 +39793,7 @@ AS
 				*/
 				#endregion
 
-				RdsServerSettings.Where(s => s.RdsServerId == serverId).ExecuteDelete(RdsServerSettings);
+				RdsServerSettings.Where(s => s.RdsServerId == serverId).ExecuteDelete();
 			}
 			else
 			{
@@ -39728,19 +39827,11 @@ WHERE Id = @Id
 				*/
 				#endregion
 
-#if NETFRAMEWORK
-				foreach (var server in RdsServers.Where(s => s.RdsCollectionId == id)) {
-					server.RdsCollectionId = null;
-				}
-				SaveChanges();
-#else
 				RdsServers
 					.Where(s => s.RdsCollectionId == id)
-					.ExecuteUpdate(set => set
-						.SetProperty(s => s.RdsCollectionId, null as int?));
-#endif
+					.ExecuteUpdate(rc => new Data.Entities.RdsServer() { RdsCollectionId = null });
 
-				RdsCollections.Where(c => c.Id == id).ExecuteDelete(RdsCollections);
+				RdsCollections.Where(c => c.Id == id).ExecuteDelete();
 			}
 			else
 			{
@@ -40127,7 +40218,7 @@ WHERE Id = @Id
 				*/
 				#endregion
 
-				RdsServers.Where(s => s.Id == id).ExecuteDelete(RdsServers);
+				RdsServers.Where(s => s.Id == id).ExecuteDelete();
 			}
 			else
 			{
@@ -40231,18 +40322,9 @@ WHERE ID = @Id
 				*/
 				#endregion
 
-#if NETFRAMEWORK
-				var server = RdsServers
-					.FirstOrDefault(s => s.Id == serverId);
-				if (server != null) {
-					server.RdsCollectionId = rdsCollectionId;
-					SaveChanges();
-				}
-#else
 				RdsServers
 					.Where(s => s.Id == serverId)
-					.ExecuteUpdate(set => set.SetProperty(s => s.RdsCollectionId, rdsCollectionId));
-#endif
+					.ExecuteUpdate(s => new Data.Entities.RdsServer() { RdsCollectionId = rdsCollectionId });
 			}
 			else
 			{
@@ -40275,18 +40357,9 @@ WHERE ID = @Id
 				*/
 				#endregion
 
-#if NETFRAMEWORK
-				var server = RdsServers
-					.FirstOrDefault(s => s.Id == serverId);
-				if (server != null) {
-					server.ItemId = itemId;
-					SaveChanges();
-				}
-#else
 				RdsServers
 					.Where(s => s.Id == serverId)
-					.ExecuteUpdate(set => set.SetProperty(s => s.ItemId, itemId));
-#endif
+					.ExecuteUpdate(s => new Data.Entities.RdsServer() { ItemId = itemId });
 			}
 			else
 			{
@@ -40318,19 +40391,9 @@ WHERE ID = @Id
 				*/
 				#endregion
 
-#if NETFRAMEWORK
-				var server = RdsServers
-					.FirstOrDefault(s => s.Id == serverId);
-				if (server != null) {
-					server.ItemId = null;
-					SaveChanges();
-				}
-#else
 				RdsServers
 					.Where(s => s.Id == serverId)
-					.ExecuteUpdate(set => set.SetProperty(s => s.ItemId, null as int?));
-#endif
-
+					.ExecuteUpdate(s => new Data.Entities.RdsServer() { ItemId = null });
 			}
 			else
 			{
@@ -40361,18 +40424,9 @@ WHERE ID = @Id
 				*/
 				#endregion
 
-#if NETCOREAPP
 				RdsServers
 					.Where(s => s.Id == serverId)
-					.ExecuteUpdate(s => s.SetProperty(p => p.RdsCollectionId, null as int?));
-#else
-				var server = RdsServers
-					.FirstOrDefault(s => s.Id == serverId);
-				if (server != null) {
-					server.RdsCollectionId = null;
-					SaveChanges();
-				}
-#endif
+					.ExecuteUpdate(s => new Data.Entities.RdsServer() { RdsCollectionId = null });
 			}
 			else
 			{
@@ -40519,7 +40573,7 @@ WHERE AccountId = @AccountId AND RDSCollectionId = @RDSCollectionId
 
 				RdsCollectionUsers
 					.Where(u => u.AccountId == accountId && u.RdsCollectionId == rdsCollectionId)
-					.ExecuteDelete(RdsCollectionUsers);
+					.ExecuteDelete();
 			}
 			else
 			{
@@ -40831,7 +40885,7 @@ WHERE Id = @Id
 
 				DomainDnsRecords
 					.Where(r => r.Id == id)
-					.ExecuteDelete(DomainDnsRecords);
+					.ExecuteDelete();
 			}
 			else
 			{
@@ -40860,15 +40914,9 @@ WHERE [DomainID] = @DomainId
 				*/
 				#endregion
 
-#if NETCOREAPP
 				Domains
 					.Where(d => d.DomainId == domainId)
-					.ExecuteUpdate(s => s
-						.SetProperty(p => p.CreationDate, date));
-#else
-				foreach (var domain in Domains.Where(d => d.DomainId == domainId)) domain.CreationDate = date;
-				SaveChanges();
-#endif
+					.ExecuteUpdate(d => new Data.Entities.Domain() { CreationDate = date });
 			}
 			else
 			{
@@ -40892,12 +40940,9 @@ UPDATE [dbo].[Domains] SET [ExpirationDate] = @Date WHERE [DomainID] = @DomainId
 				*/
 				#endregion
 
-#if NETCOREAPP
-				Domains.Where(d => d.DomainId == domainId).ExecuteUpdate(s => s.SetProperty(p => p.ExpirationDate, date));
-#else
-				foreach (var domain in Domains.Where(d => d.DomainId == domainId)) domain.ExpirationDate = date;
-				SaveChanges();
-#endif
+				Domains
+					.Where(d => d.DomainId == domainId)
+					.ExecuteUpdate(d => new Data.Entities.Domain() { ExpirationDate = date });
 			}
 			else
 			{
@@ -40921,12 +40966,9 @@ UPDATE [dbo].[Domains] SET [LastUpdateDate] = @Date WHERE [DomainID] = @DomainId
 				*/
 				#endregion
 
-#if NETCOREAPP
-				Domains.Where(d => d.DomainId == domainId).ExecuteUpdate(s => s.SetProperty(p => p.LastUpdateDate, date));
-#else
-				foreach (var domain in Domains.Where(d => d.DomainId == domainId)) domain.LastUpdateDate = date;
-				SaveChanges();
-#endif
+				Domains
+					.Where(d => d.DomainId == domainId)
+					.ExecuteUpdate(d => new Data.Entities.Domain() { LastUpdateDate = date });
 			}
 			else
 			{
@@ -40977,21 +41019,14 @@ UPDATE [dbo].[Domains] SET [CreationDate] = @DomainCreationDate, [ExpirationDate
 				*/
 				#endregion
 
-#if NETCOREAPP
-				Domains.Where(d => d.DomainId == domainId)
-					.ExecuteUpdate(d => d
-						.SetProperty(p => p.CreationDate, domainCreationDate)
-						.SetProperty(p => p.ExpirationDate, domainExpirationDate)
-						.SetProperty(p => p.LastUpdateDate, domainLastUpdateDate));
-#else
-				foreach (var domain in Domains.Where(d => d.DomainId == domainId))
-				{
-					domain.CreationDate = domainCreationDate;
-					domain.ExpirationDate = domainExpirationDate;
-					domain.LastUpdateDate = domainLastUpdateDate;
-				}
-				SaveChanges();
-#endif
+				Domains
+					.Where(d => d.DomainId == domainId)
+					.ExecuteUpdate(d => new Data.Entities.Domain()
+					{
+						CreationDate = domainCreationDate,
+						ExpirationDate = domainExpirationDate,
+						LastUpdateDate = domainLastUpdateDate
+					});
 			}
 			else
 			{
@@ -41025,23 +41060,15 @@ UPDATE [dbo].[Domains] SET [CreationDate] = @DomainCreationDate, [ExpirationDate
 				*/
 				#endregion
 
-#if NETCOREAPP
-				Domains.Where(d => d.DomainId == domainId)
-					.ExecuteUpdate(d => d
-						.SetProperty(p => p.CreationDate, domainCreationDate)
-						.SetProperty(p => p.ExpirationDate, domainExpirationDate)
-						.SetProperty(p => p.LastUpdateDate, domainLastUpdateDate)
-						.SetProperty(p => p.RegistrarName, registrarName));
-#else
-				foreach (var domain in Domains.Where(d => d.DomainId == domainId))
-				{
-					domain.CreationDate = domainCreationDate;
-					domain.ExpirationDate = domainExpirationDate;
-					domain.LastUpdateDate = domainLastUpdateDate;
-					domain.RegistrarName = registrarName;
-				}
-				SaveChanges();
-#endif
+				Domains
+					.Where(d => d.DomainId == domainId)
+					.ExecuteUpdate(d => new Data.Entities.Domain()
+					{
+						CreationDate = domainCreationDate,
+						ExpirationDate = domainExpirationDate,
+						LastUpdateDate = domainLastUpdateDate,
+						RegistrarName = registrarName
+					});
 			}
 			else
 			{
@@ -41183,7 +41210,7 @@ AS
 
 				ExchangeOrganizationSsFolders
 					.Where(f => f.StorageSpaceFolderId == id)
-					.ExecuteDelete(ExchangeOrganizationSsFolders);
+					.ExecuteDelete();
 			}
 			else
 			{

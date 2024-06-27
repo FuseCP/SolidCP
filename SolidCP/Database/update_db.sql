@@ -3193,7 +3193,7 @@ SELECT
 FROM
 	[dbo].[SSLCertificates]
 WHERE
-	@websiteid = [SiteID] AND [Installed] = 0 AND [IsRenewal] = 0
+	@websiteid = [SiteID] AND [Installed] = 0 AND [IsRenewal] = 0 -- bugfix Simon Egli, 27.6.2024
 
 RETURN
 GO
@@ -6265,22 +6265,22 @@ CREATE PROCEDURE GetScheduleTask
 	@TaskID nvarchar(100)
 )
 AS
+BEGIN
+	-- get user role
+	DECLARE @RoleID int
+	SELECT @RoleID = RoleID FROM Users
+	WHERE UserID = @ActorID
 
--- get user role
-DECLARE @RoleID int
-SELECT @RoleID = RoleID FROM Users
-WHERE UserID = @ActorID
-
-SELECT
-	TaskID,
-	TaskType,
-	RoleID
-FROM ScheduleTasks
-WHERE
-	TaskID = @TaskID
-	AND @RoleID <= RoleID -- was >= but this seems like a bug, since lower RoleID is more privileged, and in GetScheduleTasks it is also <=.
-RETURN
-
+	SELECT
+		TaskID,
+		TaskType,
+		RoleID
+	FROM ScheduleTasks
+	WHERE
+		TaskID = @TaskID
+		AND @RoleID <= RoleID -- was >= but this seems like a bug, since lower RoleID is more privileged, and in GetScheduleTasks it is also <=.
+END
+GO
 
 IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetDomainDnsRecords')
 DROP PROCEDURE GetDomainDnsRecords
@@ -20526,3 +20526,79 @@ AS
 	WHERE Packages.UserID = @UserId
 	RETURN
 GO
+
+-- AddItemPrivateIPAddress bugfix added by Simon Egli, 27.6.2024
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'AddItemPrivateIPAddress')
+DROP PROCEDURE AddItemPrivateIPAddress
+GO
+
+CREATE PROCEDURE [dbo].[AddItemPrivateIPAddress]
+(
+	@ActorID int,
+	@ItemID int,
+	@IPAddress varchar(15)
+)
+AS
+
+IF EXISTS (SELECT ItemID FROM ServiceItems AS SI WHERE
+	ItemID = @ItemID AND -- bugfix added by Simon Egli, 27.6.2024
+	dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1)
+BEGIN
+
+	INSERT INTO PrivateIPAddresses
+	(
+		ItemID,
+		IPAddress,
+		IsPrimary
+	)
+	VALUES
+	(
+		@ItemID,
+		@IPAddress,
+		0 -- not primary
+	)
+
+END
+
+RETURN
+GO
+
+-- Support for EntityFramework
+
+IF OBJECT_ID(N'[TempIds]') IS NULL
+BEGIN
+    CREATE TABLE [TempIds] (
+        [Key] int NOT NULL IDENTITY,
+        [Created] datetime2 NOT NULL,
+        [Scope] uniqueidentifier NOT NULL,
+        [Level] int NOT NULL,
+        [Id] int NOT NULL,
+        CONSTRAINT [PK_TempIds] PRIMARY KEY ([Key])
+    );
+
+	CREATE INDEX [IX_TempIds_Created_Scope_Level] ON [TempIds] ([Created], [Scope], [Level]);
+END;
+GO
+
+IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
+BEGIN
+    CREATE TABLE [__EFMigrationsHistory] (
+        [MigrationId] nvarchar(150) NOT NULL,
+        [ProductVersion] nvarchar(32) NOT NULL,
+        CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+    );
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240627111421_InitialCreate'
+)
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20240627111421_InitialCreate', N'8.0.6');
+END;
+GO
+
+

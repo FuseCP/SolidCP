@@ -15,6 +15,7 @@ namespace SolidCP.EnterpriseServer.Data.Entities;
 #endif
 public partial class RdsServerSetting
 {
+    [Key]
     [Column(Order = 1)]
     public int RdsServerId { get; set; }
 

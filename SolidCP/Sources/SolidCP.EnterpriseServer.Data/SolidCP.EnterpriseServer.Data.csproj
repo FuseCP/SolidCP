@@ -89,8 +89,6 @@
 
 		<None Include="DbContextBase.Source.cs" />
 		<Compile Remove="DbContextBase.Source.cs" />
-		<Compile Remove="Migrations\MsSql\20240423190403_InitialCreate_StoredProcedures.cs" />
-		<None Include="Migrations\MsSql\20240423190403_InitialCreate_StoredProcedures.cs" />
     </ItemGroup>
 
     <ItemGroup>
@@ -112,7 +110,9 @@
 	</ItemGroup>
 	
     <ItemGroup>
+      <Folder Include="Migrations\MySql\" />
       <Folder Include="Migrations\PostgreSql\" />
+      <Folder Include="Migrations\Sqlite\" />
     </ItemGroup>
 		
 </Project>

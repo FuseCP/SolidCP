@@ -12,7 +12,7 @@ using SolidCP.EnterpriseServer.Data;
 namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
 {
     [DbContext(typeof(MsSqlDbContext))]
-    [Migration("20240423190403_InitialCreate")]
+    [Migration("20240627111421_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.4")
+                .HasAnnotation("ProductVersion", "8.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -28,89 +28,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
             modelBuilder.Entity("PackageService", b =>
                 {
                     b.Property<int>("PackageId")
-                        .HasColumnType("int")
-                        .HasColumnName("PackageID");
+                        .HasColumnType("int");
 
                     b.Property<int>("ServiceId")
-                        .HasColumnType("int")
-                        .HasColumnName("ServiceID");
+                        .HasColumnType("int");
 
                     b.HasKey("PackageId", "ServiceId");
 
-                    b.HasIndex("ServiceId");
-
-                    b.ToTable("PackageServices", (string)null);
-                });
-
-            modelBuilder.Entity("SolidCP.EnterpriseServer.BackgroundTask", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("Completed")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("EffectiveUserId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("FinishDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("Guid")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("IndicatorCurrent")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IndicatorMaximum")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ItemId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ItemName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("MaximumExecutionTime")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("NotifyOnComplete")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("PackageId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ScheduleId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Severity")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Source")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TaskId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TaskName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id")
-                        .HasName("PK__Backgrou__3214EC271AFAB817");
-
-                    b.ToTable("BackgroundTask");
+                    b.ToTable("PackageService");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.AccessToken", b =>
@@ -245,10 +170,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                     b.ToTable("AuditLogSources");
 
                     b.HasData(
-                        new
-                        {
-                            SourceName = "Test"
-                        },
                         new
                         {
                             SourceName = "APP_INSTALLER"
@@ -421,7 +342,8 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.HasKey("SourceName", "TaskName");
+                    b.HasKey("SourceName", "TaskName")
+                        .HasName("PK_LogActions");
 
                     b.ToTable("AuditLogTasks");
 
@@ -2331,7 +2253,8 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         .HasColumnType("int")
                         .HasColumnName("UserID");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__Backgrou__3214EC271AFAB817");
 
                     b.ToTable("BackgroundTasks");
                 });
@@ -2520,14 +2443,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Crmuser", b =>
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.CrmUser", b =>
                 {
-                    b.Property<int>("CrmuserId")
+                    b.Property<int>("CrmUserId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("CRMUserID");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CrmuserId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CrmUserId"));
 
                     b.Property<int>("AccountId")
                         .HasColumnType("int")
@@ -2537,7 +2460,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("BusinessUnitID");
 
-                    b.Property<int?>("Caltype")
+                    b.Property<int?>("CalType")
                         .HasColumnType("int")
                         .HasColumnName("CALType");
 
@@ -2551,11 +2474,11 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         .HasColumnType("datetime")
                         .HasDefaultValueSql("(getdate())");
 
-                    b.Property<Guid?>("CrmuserGuid")
+                    b.Property<Guid?>("CrmUserGuid")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("CRMUserGuid");
 
-                    b.HasKey("CrmuserId");
+                    b.HasKey("CrmUserId");
 
                     b.HasIndex(new[] { "AccountId" }, "CRMUsersIdx_AccountID");
 
@@ -3133,16 +3056,19 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeOrganizationSetting", b =>
                 {
                     b.Property<int>("ItemId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnOrder(1);
 
                     b.Property<string>("SettingsName")
-                        .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnOrder(2);
 
                     b.Property<string>("Xml")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ItemId", "SettingsName");
 
                     b.HasIndex(new[] { "ItemId" }, "ExchangeOrganizationSettingsIdx_ItemId");
 
@@ -3224,7 +3150,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         .HasColumnType("int")
                         .HasColumnName("IPAddressID");
 
-                    b.Property<int>("Mxpriority")
+                    b.Property<int>("MXPriority")
                         .HasColumnType("int")
                         .HasColumnName("MXPriority");
 
@@ -3500,7 +3426,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                     b.Property<bool>("Federation")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("Im")
+                    b.Property<bool>("IM")
                         .HasColumnType("bit")
                         .HasColumnName("IM");
 
@@ -3525,7 +3451,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                     b.Property<bool>("MobilityEnableOutsideVoice")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("PublicImconnectivity")
+                    b.Property<bool>("PublicIMConnectivity")
                         .HasColumnType("bit")
                         .HasColumnName("PublicIMConnectivity");
 
@@ -3561,7 +3487,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                     b.ToTable("LyncUserPlans");
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Ocsuser", b =>
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.OcsUser", b =>
                 {
                     b.Property<int>("OcsuserId")
                         .ValueGeneratedOnAdd()
@@ -3639,7 +3565,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         .HasColumnType("int")
                         .HasColumnName("StatusID");
 
-                    b.Property<DateTime>("StatusIdchangeDate")
+                    b.Property<DateTime>("StatusIdChangeDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
                         .HasColumnName("StatusIDchangeDate")
@@ -3675,7 +3601,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                             PackageComments = "",
                             PackageName = "System",
                             StatusId = 1,
-                            StatusIdchangeDate = new DateTime(2024, 4, 20, 11, 2, 58, 560, DateTimeKind.Unspecified),
+                            StatusIdChangeDate = new DateTime(2024, 4, 20, 11, 2, 58, 560, DateTimeKind.Unspecified),
                             UserId = 1
                         });
                 });
@@ -3804,6 +3730,25 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                     b.HasIndex("GroupId");
 
                     b.ToTable("PackageResources");
+                });
+
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageService", b =>
+                {
+                    b.Property<int>("PackageId")
+                        .HasColumnType("int")
+                        .HasColumnName("PackageID")
+                        .HasColumnOrder(1);
+
+                    b.Property<int>("ServiceId")
+                        .HasColumnType("int")
+                        .HasColumnName("ServiceID")
+                        .HasColumnOrder(2);
+
+                    b.HasKey("PackageId", "ServiceId");
+
+                    b.HasIndex("ServiceId");
+
+                    b.ToTable("PackageServices");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageSetting", b =>
@@ -8493,7 +8438,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         });
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Rdscertificate", b =>
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsCertificate", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -8530,7 +8475,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                     b.ToTable("RDSCertificates");
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Rdscollection", b =>
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsCollection", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -8561,7 +8506,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                     b.ToTable("RDSCollections");
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdscollectionSetting", b =>
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsCollectionSetting", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -8607,11 +8552,11 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                     b.Property<int?>("MaxRedirectedMonitors")
                         .HasColumnType("int");
 
-                    b.Property<bool?>("RdeasyPrintDriverEnabled")
+                    b.Property<bool?>("RdEasyPrintDriverEnabled")
                         .HasColumnType("bit")
                         .HasColumnName("RDEasyPrintDriverEnabled");
 
-                    b.Property<int>("RdscollectionId")
+                    b.Property<int>("RdsCollectionId")
                         .HasColumnType("int")
                         .HasColumnName("RDSCollectionId");
 
@@ -8627,12 +8572,12 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
 
                     b.HasKey("Id");
 
-                    b.HasIndex(new[] { "RdscollectionId" }, "RDSCollectionSettingsIdx_RDSCollectionId");
+                    b.HasIndex(new[] { "RdsCollectionId" }, "RDSCollectionSettingsIdx_RDSCollectionId");
 
                     b.ToTable("RDSCollectionSettings");
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdscollectionUser", b =>
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsCollectionUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -8645,7 +8590,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         .HasColumnType("int")
                         .HasColumnName("AccountID");
 
-                    b.Property<int>("RdscollectionId")
+                    b.Property<int>("RdsCollectionId")
                         .HasColumnType("int")
                         .HasColumnName("RDSCollectionId");
 
@@ -8654,12 +8599,12 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
 
                     b.HasIndex(new[] { "AccountId" }, "RDSCollectionUsersIdx_AccountID");
 
-                    b.HasIndex(new[] { "RdscollectionId" }, "RDSCollectionUsersIdx_RDSCollectionId");
+                    b.HasIndex(new[] { "RdsCollectionId" }, "RDSCollectionUsersIdx_RDSCollectionId");
 
                     b.ToTable("RDSCollectionUsers");
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Rdsmessage", b =>
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsMessage", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -8674,7 +8619,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         .IsRequired()
                         .HasColumnType("ntext");
 
-                    b.Property<int>("RdscollectionId")
+                    b.Property<int>("RdsCollectionId")
                         .HasColumnType("int")
                         .HasColumnName("RDSCollectionId");
 
@@ -8686,12 +8631,12 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
 
                     b.HasKey("Id");
 
-                    b.HasIndex(new[] { "RdscollectionId" }, "RDSMessagesIdx_RDSCollectionId");
+                    b.HasIndex(new[] { "RdsCollectionId" }, "RDSMessagesIdx_RDSCollectionId");
 
                     b.ToTable("RDSMessages");
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Rdsserver", b =>
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsServer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -8724,19 +8669,19 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<int?>("RdscollectionId")
+                    b.Property<int?>("RdsCollectionId")
                         .HasColumnType("int")
                         .HasColumnName("RDSCollectionId");
 
                     b.HasKey("Id")
                         .HasName("PK__RDSServe__3214EC27DBEBD4B5");
 
-                    b.HasIndex(new[] { "RdscollectionId" }, "RDSServersIdx_RDSCollectionId");
+                    b.HasIndex(new[] { "RdsCollectionId" }, "RDSServersIdx_RDSCollectionId");
 
                     b.ToTable("RDSServers");
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsserverSetting", b =>
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsServerSetting", b =>
                 {
                     b.Property<int>("RdsServerId")
                         .HasColumnType("int")
@@ -9106,7 +9051,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         .HasColumnType("int")
                         .HasColumnName("GroupID");
 
-                    b.Property<int?>("Mxpriority")
+                    b.Property<int?>("MXPriority")
                         .HasColumnType("int")
                         .HasColumnName("MXPriority");
 
@@ -9142,7 +9087,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         {
                             RecordId = 1,
                             GroupId = 2,
-                            Mxpriority = 0,
+                            MXPriority = 0,
                             RecordData = "[IP]",
                             RecordName = "",
                             RecordOrder = 1,
@@ -9152,7 +9097,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         {
                             RecordId = 2,
                             GroupId = 2,
-                            Mxpriority = 0,
+                            MXPriority = 0,
                             RecordData = "[IP]",
                             RecordName = "*",
                             RecordOrder = 2,
@@ -9162,7 +9107,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         {
                             RecordId = 3,
                             GroupId = 2,
-                            Mxpriority = 0,
+                            MXPriority = 0,
                             RecordData = "[IP]",
                             RecordName = "www",
                             RecordOrder = 3,
@@ -9172,7 +9117,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         {
                             RecordId = 4,
                             GroupId = 3,
-                            Mxpriority = 0,
+                            MXPriority = 0,
                             RecordData = "[IP]",
                             RecordName = "ftp",
                             RecordOrder = 1,
@@ -9182,7 +9127,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         {
                             RecordId = 5,
                             GroupId = 4,
-                            Mxpriority = 0,
+                            MXPriority = 0,
                             RecordData = "[IP]",
                             RecordName = "mail",
                             RecordOrder = 1,
@@ -9192,7 +9137,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         {
                             RecordId = 6,
                             GroupId = 4,
-                            Mxpriority = 0,
+                            MXPriority = 0,
                             RecordData = "[IP]",
                             RecordName = "mail2",
                             RecordOrder = 2,
@@ -9202,7 +9147,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         {
                             RecordId = 7,
                             GroupId = 4,
-                            Mxpriority = 10,
+                            MXPriority = 10,
                             RecordData = "mail.[DOMAIN_NAME]",
                             RecordName = "",
                             RecordOrder = 3,
@@ -9212,7 +9157,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         {
                             RecordId = 9,
                             GroupId = 4,
-                            Mxpriority = 21,
+                            MXPriority = 21,
                             RecordData = "mail2.[DOMAIN_NAME]",
                             RecordName = "",
                             RecordOrder = 4,
@@ -9222,7 +9167,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         {
                             RecordId = 10,
                             GroupId = 5,
-                            Mxpriority = 0,
+                            MXPriority = 0,
                             RecordData = "[IP]",
                             RecordName = "mssql",
                             RecordOrder = 1,
@@ -9232,7 +9177,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         {
                             RecordId = 11,
                             GroupId = 6,
-                            Mxpriority = 0,
+                            MXPriority = 0,
                             RecordData = "[IP]",
                             RecordName = "mysql",
                             RecordOrder = 1,
@@ -9242,7 +9187,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         {
                             RecordId = 12,
                             GroupId = 8,
-                            Mxpriority = 0,
+                            MXPriority = 0,
                             RecordData = "[IP]",
                             RecordName = "stats",
                             RecordOrder = 1,
@@ -9252,7 +9197,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         {
                             RecordId = 13,
                             GroupId = 4,
-                            Mxpriority = 0,
+                            MXPriority = 0,
                             RecordData = "v=spf1 a mx -all",
                             RecordName = "",
                             RecordOrder = 5,
@@ -9262,7 +9207,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         {
                             RecordId = 14,
                             GroupId = 12,
-                            Mxpriority = 0,
+                            MXPriority = 0,
                             RecordData = "[IP]",
                             RecordName = "smtp",
                             RecordOrder = 1,
@@ -9272,7 +9217,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         {
                             RecordId = 15,
                             GroupId = 12,
-                            Mxpriority = 10,
+                            MXPriority = 10,
                             RecordData = "smtp.[DOMAIN_NAME]",
                             RecordName = "",
                             RecordOrder = 2,
@@ -9282,7 +9227,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         {
                             RecordId = 16,
                             GroupId = 12,
-                            Mxpriority = 0,
+                            MXPriority = 0,
                             RecordData = "",
                             RecordName = "autodiscover",
                             RecordOrder = 3,
@@ -9292,7 +9237,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         {
                             RecordId = 17,
                             GroupId = 12,
-                            Mxpriority = 0,
+                            MXPriority = 0,
                             RecordData = "",
                             RecordName = "owa",
                             RecordOrder = 4,
@@ -10520,37 +10465,37 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ServerId"));
 
-                    b.Property<string>("AdParentDomain")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("AdParentDomainController")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("AdauthenticationType")
+                    b.Property<string>("ADAuthenticationType")
                         .HasMaxLength(50)
                         .IsUnicode(false)
                         .HasColumnType("varchar(50)")
                         .HasColumnName("ADAuthenticationType");
 
-                    b.Property<bool?>("Adenabled")
+                    b.Property<bool?>("ADEnabled")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(false)
                         .HasColumnName("ADEnabled");
 
-                    b.Property<string>("Adpassword")
+                    b.Property<string>("ADParentDomain")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("ADParentDomainController")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("ADPassword")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("ADPassword");
 
-                    b.Property<string>("AdrootDomain")
+                    b.Property<string>("ADRootDomain")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)")
                         .HasColumnName("ADRootDomain");
 
-                    b.Property<string>("Adusername")
+                    b.Property<string>("ADUsername")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("ADUsername");
@@ -10565,7 +10510,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                     b.Property<bool?>("IsCore")
                         .HasColumnType("bit");
 
-                    b.Property<int>("Osplatform")
+                    b.Property<int>("OSPlatform")
                         .HasColumnType("int")
                         .HasColumnName("OSPlatform");
 
@@ -10573,7 +10518,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<bool>("PasswordIsSha256")
+                    b.Property<bool>("PasswordIsSHA256")
                         .HasColumnType("bit")
                         .HasColumnName("PasswordIsSHA256");
 
@@ -13789,14 +13734,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                     b.ToTable("ServiceProperties");
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.SfBuser", b =>
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.SfBUser", b =>
                 {
-                    b.Property<int>("SfBuserId")
+                    b.Property<int>("SfBUserId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("SfBUserID");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SfBuserId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SfBUserId"));
 
                     b.Property<int>("AccountId")
                         .HasColumnType("int")
@@ -13808,7 +13753,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime");
 
-                    b.Property<int>("SfBuserPlanId")
+                    b.Property<int>("SfBUserPlanId")
                         .HasColumnType("int")
                         .HasColumnName("SfBUserPlanID");
 
@@ -13816,19 +13761,19 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
-                    b.HasKey("SfBuserId");
+                    b.HasKey("SfBUserId");
 
                     b.ToTable("SfBUsers");
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.SfBuserPlan", b =>
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.SfBUserPlan", b =>
                 {
-                    b.Property<int>("SfBuserPlanId")
+                    b.Property<int>("SfBUserPlanId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("SfBUserPlanId");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SfBuserPlanId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SfBUserPlanId"));
 
                     b.Property<bool>("AllowOrganizeMeetingsWithExternalAnonymous")
                         .HasColumnType("bit");
@@ -13846,7 +13791,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                     b.Property<bool>("Federation")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("Im")
+                    b.Property<bool>("IM")
                         .HasColumnType("bit")
                         .HasColumnName("IM");
 
@@ -13863,7 +13808,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                     b.Property<bool>("MobilityEnableOutsideVoice")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("PublicImconnectivity")
+                    b.Property<bool>("PublicIMConnectivity")
                         .HasColumnType("bit")
                         .HasColumnName("PublicIMConnectivity");
 
@@ -13875,13 +13820,13 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         .HasColumnType("nvarchar(300)")
                         .HasColumnName("ServerURI");
 
-                    b.Property<string>("SfBuserPlanName")
+                    b.Property<string>("SfBUserPlanName")
                         .IsRequired()
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)")
                         .HasColumnName("SfBUserPlanName");
 
-                    b.Property<int?>("SfBuserPlanType")
+                    b.Property<int?>("SfBUserPlanType")
                         .HasColumnType("int")
                         .HasColumnName("SfBUserPlanType");
 
@@ -13899,13 +13844,20 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                     b.Property<int>("VoicePolicy")
                         .HasColumnType("int");
 
-                    b.HasKey("SfBuserPlanId");
+                    b.HasKey("SfBUserPlanId");
 
                     b.ToTable("SfBUserPlans");
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Sslcertificate", b =>
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.SslCertificate", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("ID");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
                     b.Property<string>("Certificate")
                         .HasColumnType("ntext");
 
@@ -13913,7 +13865,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         .HasColumnType("ntext")
                         .HasColumnName("CSR");
 
-                    b.Property<int?>("Csrlength")
+                    b.Property<int?>("CsrLength")
                         .HasColumnType("int")
                         .HasColumnName("CSRLength");
 
@@ -13934,13 +13886,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                     b.Property<string>("Hostname")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
-
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("ID");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool?>("Installed")
                         .HasColumnType("bit");
@@ -13968,6 +13913,8 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
 
                     b.Property<DateTime?>("ValidFrom")
                         .HasColumnType("datetime");
+
+                    b.HasKey("Id");
 
                     b.ToTable("SSLCertificates");
                 });
@@ -14210,6 +14157,33 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         });
                 });
 
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.TempId", b =>
+                {
+                    b.Property<int>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Key"));
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("Scope")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("Created", "Scope", "Level");
+
+                    b.ToTable("TempIds");
+                });
+
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Theme", b =>
                 {
                     b.Property<int>("ThemeId")
@@ -14229,12 +14203,12 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                     b.Property<int>("Enabled")
                         .HasColumnType("int");
 
-                    b.Property<string>("Ltrname")
+                    b.Property<string>("LTRName")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)")
                         .HasColumnName("LTRName");
 
-                    b.Property<string>("Rtlname")
+                    b.Property<string>("RTLName")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)")
                         .HasColumnName("RTLName");
@@ -14250,8 +14224,8 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                             DisplayName = "SolidCP v1",
                             DisplayOrder = 1,
                             Enabled = 1,
-                            Ltrname = "Default",
-                            Rtlname = "Default"
+                            LTRName = "Default",
+                            RTLName = "Default"
                         });
                 });
 
@@ -15600,9 +15574,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<int?>("Expr1")
-                        .HasColumnType("int");
-
                     b.Property<int?>("FailedLogins")
                         .HasColumnType("int");
 
@@ -15862,23 +15833,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                     b.ToTable("WebDavPortalUsersSettings");
                 });
 
-            modelBuilder.Entity("PackageService", b =>
-                {
-                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.Package", null)
-                        .WithMany()
-                        .HasForeignKey("PackageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_PackageServices_Packages");
-
-                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.Service", null)
-                        .WithMany()
-                        .HasForeignKey("ServiceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_PackageServices_Services");
-                });
-
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.AccessToken", b =>
                 {
                     b.HasOne("SolidCP.EnterpriseServer.Data.Entities.ExchangeAccount", "Account")
@@ -15947,10 +15901,10 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Crmuser", b =>
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.CrmUser", b =>
                 {
                     b.HasOne("SolidCP.EnterpriseServer.Data.Entities.ExchangeAccount", "Account")
-                        .WithMany("Crmusers")
+                        .WithMany("CrmUsers")
                         .HasForeignKey("AccountId")
                         .IsRequired()
                         .HasConstraintName("FK_CRMUsers_ExchangeAccounts");
@@ -16269,7 +16223,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Package", b =>
                 {
                     b.HasOne("SolidCP.EnterpriseServer.Data.Entities.Package", "ParentPackage")
-                        .WithMany("InverseParentPackage")
+                        .WithMany("ChildPackages")
                         .HasForeignKey("ParentPackageId")
                         .HasConstraintName("FK_Packages_Packages");
 
@@ -16379,6 +16333,23 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                     b.Navigation("Group");
 
                     b.Navigation("Package");
+                });
+
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageService", b =>
+                {
+                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.Package", null)
+                        .WithMany()
+                        .HasForeignKey("PackageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_PackageServices_Packages");
+
+                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.Service", null)
+                        .WithMany()
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_PackageServices_Services");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageVlan", b =>
@@ -16512,59 +16483,59 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                     b.Navigation("ItemType");
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdscollectionSetting", b =>
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsCollectionSetting", b =>
                 {
-                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.Rdscollection", "Rdscollection")
-                        .WithMany("RdscollectionSettings")
-                        .HasForeignKey("RdscollectionId")
+                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.RdsCollection", "RdsCollection")
+                        .WithMany("RdsCollectionSettings")
+                        .HasForeignKey("RdsCollectionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_RDSCollectionSettings_RDSCollections");
 
-                    b.Navigation("Rdscollection");
+                    b.Navigation("RdsCollection");
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdscollectionUser", b =>
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsCollectionUser", b =>
                 {
                     b.HasOne("SolidCP.EnterpriseServer.Data.Entities.ExchangeAccount", "Account")
-                        .WithMany("RdscollectionUsers")
+                        .WithMany("RdsCollectionUsers")
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_RDSCollectionUsers_UserId");
 
-                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.Rdscollection", "Rdscollection")
-                        .WithMany("RdscollectionUsers")
-                        .HasForeignKey("RdscollectionId")
+                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.RdsCollection", "RdsCollection")
+                        .WithMany("RdsCollectionUsers")
+                        .HasForeignKey("RdsCollectionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_RDSCollectionUsers_RDSCollectionId");
 
                     b.Navigation("Account");
 
-                    b.Navigation("Rdscollection");
+                    b.Navigation("RdsCollection");
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Rdsmessage", b =>
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsMessage", b =>
                 {
-                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.Rdscollection", "Rdscollection")
-                        .WithMany("Rdsmessages")
-                        .HasForeignKey("RdscollectionId")
+                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.RdsCollection", "RdsCollection")
+                        .WithMany("RdsMessages")
+                        .HasForeignKey("RdsCollectionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_RDSMessages_RDSCollections");
 
-                    b.Navigation("Rdscollection");
+                    b.Navigation("RdsCollection");
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Rdsserver", b =>
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsServer", b =>
                 {
-                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.Rdscollection", "Rdscollection")
-                        .WithMany("Rdsservers")
-                        .HasForeignKey("RdscollectionId")
+                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.RdsCollection", "RdsCollection")
+                        .WithMany("RdsServers")
+                        .HasForeignKey("RdsCollectionId")
                         .HasConstraintName("FK_RDSServers_RDSCollectionId");
 
-                    b.Navigation("Rdscollection");
+                    b.Navigation("RdsCollection");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ResourceGroupDnsRecord", b =>
@@ -16794,7 +16765,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.User", b =>
                 {
                     b.HasOne("SolidCP.EnterpriseServer.Data.Entities.User", "Owner")
-                        .WithMany("InverseOwner")
+                        .WithMany("ChildUsers")
                         .HasForeignKey("OwnerId")
                         .HasConstraintName("FK_Users_Users");
 
@@ -16907,13 +16878,13 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
 
                     b.Navigation("BlackBerryUsers");
 
-                    b.Navigation("Crmusers");
+                    b.Navigation("CrmUsers");
 
                     b.Navigation("EnterpriseFoldersOwaPermissions");
 
                     b.Navigation("ExchangeAccountEmailAddresses");
 
-                    b.Navigation("RdscollectionUsers");
+                    b.Navigation("RdsCollectionUsers");
 
                     b.Navigation("WebDavAccessTokens");
 
@@ -16959,13 +16930,13 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Package", b =>
                 {
+                    b.Navigation("ChildPackages");
+
                     b.Navigation("Domains");
 
                     b.Navigation("GlobalDnsRecords");
 
                     b.Navigation("HostingPlans");
-
-                    b.Navigation("InverseParentPackage");
 
                     b.Navigation("PackageAddons");
 
@@ -17005,15 +16976,15 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                     b.Navigation("PackageQuota");
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Rdscollection", b =>
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsCollection", b =>
                 {
-                    b.Navigation("RdscollectionSettings");
+                    b.Navigation("RdsCollectionSettings");
 
-                    b.Navigation("RdscollectionUsers");
+                    b.Navigation("RdsCollectionUsers");
 
-                    b.Navigation("Rdsmessages");
+                    b.Navigation("RdsMessages");
 
-                    b.Navigation("Rdsservers");
+                    b.Navigation("RdsServers");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ResourceGroup", b =>
@@ -17136,11 +17107,11 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.User", b =>
                 {
+                    b.Navigation("ChildUsers");
+
                     b.Navigation("CommentsNavigation");
 
                     b.Navigation("HostingPlans");
-
-                    b.Navigation("InverseOwner");
 
                     b.Navigation("Packages");
 

@@ -10,8 +10,11 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
     /// <inheritdoc />
     public partial class InitialCreate : Migration
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
+        partial void StoredProceduresUp(MigrationBuilder migrationBuilder);
+		partial void StoredProceduresDown(MigrationBuilder migrationBuilder);
+
+		/// <inheritdoc />
+		protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
                 name: "AdditionalGroups",
@@ -70,38 +73,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AuditLogTasks", x => new { x.SourceName, x.TaskName });
-                });
-
-            migrationBuilder.CreateTable(
-                name: "BackgroundTask",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TaskId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ScheduleId = table.Column<int>(type: "int", nullable: false),
-                    PackageId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    EffectiveUserId = table.Column<int>(type: "int", nullable: false),
-                    TaskName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ItemId = table.Column<int>(type: "int", nullable: false),
-                    ItemName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FinishDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IndicatorCurrent = table.Column<int>(type: "int", nullable: false),
-                    IndicatorMaximum = table.Column<int>(type: "int", nullable: false),
-                    MaximumExecutionTime = table.Column<int>(type: "int", nullable: false),
-                    Source = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Severity = table.Column<int>(type: "int", nullable: false),
-                    Completed = table.Column<bool>(type: "bit", nullable: false),
-                    NotifyOnComplete = table.Column<bool>(type: "bit", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__Backgrou__3214EC271AFAB817", x => x.Id);
+                    table.PrimaryKey("PK_LogActions", x => new { x.SourceName, x.TaskName });
                 });
 
             migrationBuilder.CreateTable(
@@ -132,7 +104,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BackgroundTasks", x => x.ID);
+                    table.PrimaryKey("PK__Backgrou__3214EC271AFAB817", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -226,6 +198,18 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OCSUsers", x => x.OCSUserID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PackageService",
+                columns: table => new
+                {
+                    PackageId = table.Column<int>(type: "int", nullable: false),
+                    ServiceId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PackageService", x => new { x.PackageId, x.ServiceId });
                 });
 
             migrationBuilder.CreateTable(
@@ -393,6 +377,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                 },
                 constraints: table =>
                 {
+                    table.PrimaryKey("PK_SSLCertificates", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -434,6 +419,22 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SystemSettings", x => new { x.SettingsName, x.PropertyName });
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TempIds",
+                columns: table => new
+                {
+                    Key = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Scope = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Level = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TempIds", x => x.Key);
                 });
 
             migrationBuilder.CreateTable(
@@ -516,19 +517,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         principalTable: "Users",
                         principalColumn: "UserID");
                 });
-
-            // Create UsersDetailed view
-            migrationBuilder.Sql(@"
-CREATE VIEW UsersDetailed
-AS
-SELECT U.UserID, U.RoleID, U.StatusID, U.LoginStatusId, U.SubscriberNumber, U.FailedLogins, U.OwnerID, U.Created, U.Changed, U.IsDemo, U.Comments, U.IsPeer, U.Username, U.FirstName, U.LastName, U.Email,
-    U.CompanyName, U.FirstName + ' ' + U.LastName AS FullName, UP.Username AS OwnerUsername, UP.FirstName AS OwnerFirstName,
-    UP.LastName AS OwnerLastName, UP.RoleID AS OwnerRoleID, UP.FirstName + ' ' + UP.LastName AS OwnerFullName, UP.Email AS OwnerEmail, UP.RoleID AS OwnerRoleID,
-        (SELECT COUNT(PackageID) AS Expr1
-             FROM Packages AS P
-             WHERE (UserID = U.UserID)) AS PackagesNumber, U.EcommerceEnabled
-FROM Users AS U
-LEFT OUTER JOIN Users AS UP ON U.OwnerID = UP.UserID");
 
             migrationBuilder.CreateTable(
                 name: "Versions",
@@ -750,8 +738,8 @@ LEFT OUTER JOIN Users AS UP ON U.OwnerID = UP.UserID");
                     ADPassword = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     ADAuthenticationType = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: true),
                     ADEnabled = table.Column<bool>(type: "bit", nullable: true, defaultValue: false),
-                    AdParentDomain = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    AdParentDomainController = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    ADParentDomain = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    ADParentDomainController = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     OSPlatform = table.Column<int>(type: "int", nullable: false),
                     IsCore = table.Column<bool>(type: "bit", nullable: true),
                     PasswordIsSHA256 = table.Column<bool>(type: "bit", nullable: false)
@@ -1497,6 +1485,7 @@ LEFT OUTER JOIN Users AS UP ON U.OwnerID = UP.UserID");
                 },
                 constraints: table =>
                 {
+                    table.PrimaryKey("PK_ExchangeOrganizationSettings", x => new { x.ItemId, x.SettingsName });
                     table.ForeignKey(
                         name: "FK_ExchangeOrganizationSettings_ExchangeOrganizations_ItemId",
                         column: x => x.ItemId,
@@ -2138,7 +2127,6 @@ LEFT OUTER JOIN Users AS UP ON U.OwnerID = UP.UserID");
                     "SQL_USER",
                     "STATS_SITE",
                     "STORAGE_SPACES",
-                    "Test",
                     "USER",
                     "VIRTUAL_SERVER",
                     "VLAN",
@@ -4353,6 +4341,11 @@ LEFT OUTER JOIN Users AS UP ON U.OwnerID = UP.UserID");
                 column: "ServiceId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_TempIds_Created_Scope_Level",
+                table: "TempIds",
+                columns: new[] { "Created", "Scope", "Level" });
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_Username",
                 table: "Users",
                 column: "Username",
@@ -4543,10 +4536,11 @@ LEFT OUTER JOIN Users AS UP ON U.OwnerID = UP.UserID");
             StoredProceduresUp(migrationBuilder);
         }
 
-        partial void StoredProceduresUp(MigrationBuilder migrationBuilder);
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            StoredProceduresDown(migrationBuilder);
+
             migrationBuilder.DropForeignKey(
                 name: "FK_HostingPlans_Users",
                 table: "HostingPlans");
@@ -4573,9 +4567,6 @@ LEFT OUTER JOIN Users AS UP ON U.OwnerID = UP.UserID");
 
             migrationBuilder.DropTable(
                 name: "AuditLogTasks");
-
-            migrationBuilder.DropTable(
-                name: "BackgroundTask");
 
             migrationBuilder.DropTable(
                 name: "BackgroundTaskLogs");
@@ -4659,6 +4650,9 @@ LEFT OUTER JOIN Users AS UP ON U.OwnerID = UP.UserID");
                 name: "PackagesDiskspace");
 
             migrationBuilder.DropTable(
+                name: "PackageService");
+
+            migrationBuilder.DropTable(
                 name: "PackageServices");
 
             migrationBuilder.DropTable(
@@ -4729,6 +4723,9 @@ LEFT OUTER JOIN Users AS UP ON U.OwnerID = UP.UserID");
 
             migrationBuilder.DropTable(
                 name: "SystemSettings");
+
+            migrationBuilder.DropTable(
+                name: "TempIds");
 
             migrationBuilder.DropTable(
                 name: "Themes");
@@ -4831,11 +4828,6 @@ LEFT OUTER JOIN Users AS UP ON U.OwnerID = UP.UserID");
 
             migrationBuilder.DropTable(
                 name: "ResourceGroups");
-
-            StoredProceduresDown(migrationBuilder);
         }
-
-		partial void StoredProceduresDown(MigrationBuilder migrationBuilder);
-
-	}
+    }
 }

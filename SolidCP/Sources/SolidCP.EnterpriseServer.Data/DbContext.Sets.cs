@@ -277,6 +277,9 @@ namespace SolidCP.EnterpriseServer.Data
 		DbSet<UsersDetailed> usersDetailedView = null;
 		public virtual DbSet<UsersDetailed> UsersDetailedView => usersDetailedView ?? (usersDetailedView = new DbSet<UsersDetailed>(BaseContext));
 
+		DbSet<TempId> tempIds = null;
+		public virtual DbSet<TempId> TempIds => tempIds ?? (tempIds = new DbSet<TempId>(BaseContext));
+
 		// UsersDetailed view implemented with Linq
 		public virtual IQueryable<UsersDetailed> UsersDetailed
 		{

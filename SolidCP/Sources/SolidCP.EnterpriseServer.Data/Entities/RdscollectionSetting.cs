@@ -11,7 +11,7 @@ namespace SolidCP.EnterpriseServer.Data.Entities;
 
 [Table("RDSCollectionSettings")]
 #if NetCore
-[Index("RdscollectionId", Name = "RDSCollectionSettingsIdx_RDSCollectionId")]
+[Index("RdsCollectionId", Name = "RDSCollectionSettingsIdx_RDSCollectionId")]
 #endif
 public partial class RdsCollectionSetting
 {

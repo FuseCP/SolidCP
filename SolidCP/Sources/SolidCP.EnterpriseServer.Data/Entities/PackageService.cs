@@ -12,6 +12,9 @@ using Microsoft.EntityFrameworkCore;
 namespace SolidCP.EnterpriseServer.Data.Entities
 {
 	[Table("PackageServices")]
+#if NetCore
+	[PrimaryKey("PackageId", "ServiceId")]
+#endif
 	public class PackageService
 	{
 		[Key, Column("PackageID", Order = 1)]

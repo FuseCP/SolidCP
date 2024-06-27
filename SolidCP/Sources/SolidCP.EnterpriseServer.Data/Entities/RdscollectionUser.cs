@@ -12,7 +12,7 @@ namespace SolidCP.EnterpriseServer.Data.Entities;
 [Table("RDSCollectionUsers")]
 #if NetCore
 [Index("AccountId", Name = "RDSCollectionUsersIdx_AccountID")]
-[Index("RdscollectionId", Name = "RDSCollectionUsersIdx_RDSCollectionId")]
+[Index("RdsCollectionId", Name = "RDSCollectionUsersIdx_RDSCollectionId")]
 #endif
 public partial class RdsCollectionUser
 {
@@ -27,7 +27,7 @@ public partial class RdsCollectionUser
     public int AccountId { get; set; }
 
     [ForeignKey("AccountId")]
-    [InverseProperty("RdscollectionUsers")]
+    [InverseProperty("RdsCollectionUsers")]
     public virtual ExchangeAccount Account { get; set; }
 
     [ForeignKey("RdsCollectionId")]

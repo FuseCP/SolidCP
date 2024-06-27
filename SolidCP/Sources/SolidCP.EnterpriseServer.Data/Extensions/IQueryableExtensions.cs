@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq.Expressions;
+using Z.EntityFramework.Plus;
 #if !NETFRAMEWORK
 using Microsoft.EntityFrameworkCore;
 #endif
@@ -11,14 +13,14 @@ namespace SolidCP.EnterpriseServer.Data
 {
 	public static class IQueryableExtensions
 	{
-		public static int ExecuteDelete<TEntity>(this IQueryable<TEntity> query, DbSet<TEntity> set) where TEntity: class
-		{
 #if NETFRAMEWORK
-			set.RemoveRange(query);
-			return set.BaseContext.SaveChanges();
-#else
-			return query.ExecuteDelete();
+		public static int ExecuteDelete<TEntity>(this IQueryable<TEntity> query) where TEntity: class
+		{
+			return query.Delete();
+		}
 #endif
+		public static int ExecuteUpdate<TEntity>(this IQueryable<TEntity> query, Expression<Func<TEntity, TEntity>> updateFactory) where TEntity: class {
+			return query.Update(updateFactory);
 		}
 	}
 }

@@ -238,6 +238,8 @@ namespace SolidCP.EnterpriseServer.Context
 
 		public virtual DbSet<WebDavPortalUsersSetting> WebDavPortalUsersSettings { get; set; }
 
+		public virtual DbSet<TempId> TempIds { get; set; }
+
 #if NetCore
 		static ConcurrentDictionary<string, ServerVersion> serverVersions = new ConcurrentDictionary<string, ServerVersion>();
 		protected override void OnConfiguring(DbContextOptionsBuilder builder)
