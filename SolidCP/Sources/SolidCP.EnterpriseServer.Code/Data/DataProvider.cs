@@ -38,7 +38,7 @@ using System.Xml.Linq;
 using System.Linq.Dynamic.Core;
 using System.Text;
 
-#if NET8_0
+#if !EF64
 using Microsoft.Data.SqlClient;
 #else
 using System.Data.SqlClient;
@@ -63,11 +63,8 @@ using SolidCP.Providers.DomainLookup;
 using SolidCP.Providers.StorageSpaces;
 using SolidCP.EnterpriseServer.Data;
 using SolidCP.EnterpriseServer.Code;
-using Twilio.Base;
 using System.Net;
-using static Mysqlx.Notice.Warning.Types;
 //using Humanizer.Localisation;
-using Mysqlx.Crud;
 using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.ConstrainedExecution;
 
@@ -82,11 +79,20 @@ namespace SolidCP.EnterpriseServer
 		public long MB = 1024 * 1024;
 
 #if UseEntityFramework
-		public bool UseEntityFramework => !IsMsSql || !HasProcedures || AlwaysUseEntityFramework;
+		public bool? useEntityFramework = null;
+		public bool UseEntityFramework
+		{
+			get
+			{
+				return !IsMsSql || !HasProcedures ||
+					(useEntityFramework ?? DbSettings.AlwaysUseEntityFramework);
+			}
+			set { useEntityFramework = value; }
+		}
 #else
 		public const bool UseEntityFramework = false;
 #endif
-		public bool AlwaysUseEntityFramework = false;
+
 		ControllerBase Provider;
 		ServerController serverController;
 		protected ServerController ServerController => serverController ?? (serverController = new ServerController(Provider));
@@ -206,7 +212,7 @@ XML Format:
 
 					var settings = XElement.Parse(xml)
 						.Elements()
-						.Select(e => new Data.Entities.SystemSetting()
+						.Select(e => new Data.Entities.SystemSetting
 						{
 							SettingsName = settingsName,
 							PropertyName = (string)e.Attribute("name"),
@@ -444,7 +450,7 @@ END
 			*/
 			#endregion
 
-			if (actorId == -1 || userId == null ||
+			if (actorId == -1 || userId == null || userId == 0 ||
 				// check if the user requests himself
 				actorId == userId)
 				return true;
@@ -3650,17 +3656,17 @@ AS
 				var canGetUserPassword = CanGetUserPassword(actorId, userId);
 				var user = Users
 					.Where(u => u.UserId == userId && canGetUserDetails)
-					.Select(u => new Data.Entities.User()
+					.Select(u => new UserInfoInternal()
 					{
 						UserId = u.UserId,
 						RoleId = u.RoleId,
 						StatusId = u.StatusId,
 						SubscriberNumber = u.SubscriberNumber,
-						LoginStatusId = u.LoginStatusId,
-						FailedLogins = u.FailedLogins,
-						OwnerId = u.OwnerId,
-						Created = u.Created,
-						Changed = u.Changed,
+						LoginStatusId = u.LoginStatusId ?? 0,
+						FailedLogins = u.FailedLogins ?? 0,
+						OwnerId = u.OwnerId ?? 0,
+						Created = u.Created ?? default(DateTime),
+						Changed = u.Changed ?? default(DateTime),
 						IsDemo = u.IsDemo,
 						Comments = u.Comments,
 						IsPeer = u.IsPeer,
@@ -3679,9 +3685,9 @@ AS
 						SecondaryPhone = u.SecondaryPhone,
 						Fax = u.Fax,
 						InstantMessenger = u.InstantMessenger,
-						HtmlMail = u.HtmlMail,
+						HtmlMail = u.HtmlMail ?? false,
 						CompanyName = u.CompanyName,
-						EcommerceEnabled = u.EcommerceEnabled,
+						EcommerceEnabled = u.EcommerceEnabled ?? false,
 						AdditionalParams = u.AdditionalParams,
 						MfaMode = u.MfaMode,
 						PinSecret = canGetUserPassword ? u.PinSecret : ""
@@ -3757,17 +3763,17 @@ AS
 
 				var user = Users
 					.Where(u => u.Username == username)
-					.Select(u => new Data.Entities.User()
+					.Select(u => new UserInfoInternal()
 					{
 						UserId = u.UserId,
 						RoleId = u.RoleId,
 						StatusId = u.StatusId,
 						SubscriberNumber = u.SubscriberNumber,
-						LoginStatusId = u.LoginStatusId,
-						FailedLogins = u.FailedLogins,
-						OwnerId = u.OwnerId,
-						Created = u.Created,
-						Changed = u.Changed,
+						LoginStatusId = u.LoginStatusId ?? 0,
+						FailedLogins = u.FailedLogins ?? 0,
+						OwnerId = u.OwnerId ?? 0,
+						Created = u.Created ?? default(DateTime),
+						Changed = u.Changed ?? default(DateTime),
 						IsDemo = u.IsDemo,
 						Comments = u.Comments,
 						IsPeer = u.IsPeer,
@@ -3786,9 +3792,9 @@ AS
 						SecondaryPhone = u.SecondaryPhone,
 						Fax = u.Fax,
 						InstantMessenger = u.InstantMessenger,
-						HtmlMail = u.HtmlMail,
+						HtmlMail = u.HtmlMail ?? false,
 						CompanyName = u.CompanyName,
-						EcommerceEnabled = u.EcommerceEnabled,
+						EcommerceEnabled = u.EcommerceEnabled ?? false,
 						AdditionalParams = u.AdditionalParams,
 						MfaMode = u.MfaMode,
 						PinSecret = CanGetUserPassword(actorId, u.UserId) ? u.PinSecret : ""
@@ -6339,7 +6345,7 @@ RETURN
 
 				var groupsXml = XElement.Parse(xml);
 				var groups = groupsXml.Elements()
-					.Select(group => new Data.Entities.VirtualGroup()
+					.Select(group => new Data.Entities.VirtualGroup
 					{
 						ServerId = serverId,
 						GroupId = (int)group.Attribute("id"),
@@ -6470,7 +6476,7 @@ RETURN
 						ProviderGroupedName = j.ResourceGroup.GroupName + " - " + j.Provider.DisplayName,
 					});
 
-				return ObjectUtils.DataSetFromEntitySet(providers);
+				return EntityDataSet(providers);
 			}
 			else
 			{
@@ -7495,7 +7501,7 @@ END
 
 				// insert
 				PackageVlans.AddRange(
-					ids.Select(id => new Data.Entities.PackageVlan()
+					ids.Select(id => new Data.Entities.PackageVlan
 					{
 						PackageId = packageId,
 						VlanId = id
@@ -8298,7 +8304,7 @@ RETURN
 					// reset cluster in services
 					Services
 						.Where(s => s.ClusterId == clusterId)
-						.ExecuteUpdate(s => new Data.Entities.Service() { ClusterId = null });
+						.ExecuteUpdate(s => new Data.Entities.Service { ClusterId = null });
 					// delete cluster
 					Clusters
 						.Where(c => c.ClusterId == clusterId)
@@ -11226,7 +11232,8 @@ RETURN
 					// copy default service settings
 					var properties = ServiceDefaultProperties
 						.Where(p => p.ProviderId == providerId)
-						.Select(p => new Data.Entities.ServiceProperty()
+						.AsEnumerable()
+						.Select(p => new Data.Entities.ServiceProperty
 						{
 							ServiceId = serviceId,
 							PropertyName = p.PropertyName,
@@ -11249,7 +11256,8 @@ RETURN
 					var dnsRecords = ResourceGroupDnsRecords
 						.Where(r => r.GroupId == groupId)
 						.OrderBy(r => r.RecordOrder)
-						.Select(r => new Data.Entities.GlobalDnsRecord()
+						.AsEnumerable()
+						.Select(r => new Data.Entities.GlobalDnsRecord
 						{
 							RecordType = r.RecordType,
 							RecordName = r.RecordName,
@@ -11567,25 +11575,23 @@ RETURN
 
 				var properties = XElement.Parse(xml)
 					.Elements()
-					.Select(e => new
+					.Select(e => new Data.Entities.ServiceProperty
 					{
-						Name = (string)e.Attribute("name"),
-						Value = (string)e.Attribute("value")
+						ServiceId = serviceId,
+						PropertyName = (string)e.Attribute("name"),
+						PropertyValue = (string)e.Attribute("value")
 					})
+					.ToArray();
+				var propertyNames = properties
+					.Select(p => p.PropertyName)
 					.ToArray();
 
 				// delete old properties
 				var serviceProperties = ServiceProperties
-					.Where(s => s.ServiceId == serviceId && properties.Any(p => p.Name == s.PropertyName));
+					.Where(s => s.ServiceId == serviceId && propertyNames.Contains(s.PropertyName));
 				ServiceProperties.RemoveRange(serviceProperties);
 
-				ServiceProperties.AddRange(properties
-					.Select(p => new Data.Entities.ServiceProperty()
-					{
-						ServiceId = serviceId,
-						PropertyName = p.Name,
-						PropertyValue = p.Value
-					}));
+				ServiceProperties.AddRange(properties);
 
 				SaveChanges();
 			}
@@ -13554,7 +13560,7 @@ RETURN
 
 					var properties = XElement.Parse(xmlProperties)
 						.Elements()
-						.Select(e => new Data.Entities.ServiceItemProperty()
+						.Select(e => new Data.Entities.ServiceItemProperty
 						{
 							ItemId = item.ItemId,
 							PropertyName = (string)e.Attribute("name"),
@@ -13688,7 +13694,7 @@ RETURN
 
 					var properties = XElement.Parse(xmlProperties)
 						.Elements()
-						.Select(e => new Data.Entities.ServiceItemProperty()
+						.Select(e => new Data.Entities.ServiceItemProperty
 						{
 							ItemId = itemId,
 							PropertyName = (string)e.Attribute("name"),
@@ -13787,13 +13793,13 @@ RETURN
 						.ExecuteDelete();
 					Domains
 						.Where(d => d.ZoneItemId == itemId)
-						.ExecuteUpdate(d => new Data.Entities.Domain() { ZoneItemId = null });
+						.ExecuteUpdate(d => new Data.Entities.Domain { ZoneItemId = null });
 					Domains
 						.Where(d => d.WebSiteId == itemId)
-						.ExecuteUpdate(d => new Data.Entities.Domain() { WebSiteId = null }); 
+						.ExecuteUpdate(d => new Data.Entities.Domain { WebSiteId = null }); 
 					Domains
 						.Where(d => d.MailDomainId == itemId)
-						.ExecuteUpdate(d => new Data.Entities.Domain() { MailDomainId = null });
+						.ExecuteUpdate(d => new Data.Entities.Domain { MailDomainId = null });
 
 					// delete item comments
 					Comments
@@ -14496,28 +14502,34 @@ RETURN
 					{
 						ItemId = (int)e.Attribute("id"),
 						Bytes = (long)e.Attribute("bytes")
-					});
-				var diskspace = items
-					.Join(ServiceItems, it => it.ItemId, s => s.ItemId, (it, s) => new
-					{
-						Item = it,
-						Service = s
 					})
-					.Join(ServiceItemTypes, s => s.Service.ItemTypeId, t => t.ItemTypeId, (s, t) => new
-					{
-						t.GroupId,
-						s.Item.Bytes
-					})
-					.GroupBy(s => s.GroupId)
-					.Where(s => s.Key != null)
-					.Select(g => new Data.Entities.PackagesDiskspace()
-					{
-						PackageId = packageId,
-						GroupId = g.Key ?? 0,
-						DiskSpace = g.Sum(s => s.Bytes)
-					});
-				PackagesDiskspaces.AddRange(diskspace);
-				SaveChanges();
+					.ToArray();
+				using (var tempIds = items.Select(item => item.ItemId).ToTempIdSet(this))
+				{
+					var diskspace = tempIds
+						.Join(ServiceItems, id => id, s => s.ItemId, (it, s) => s)
+						.Join(ServiceItemTypes, s => s.ItemTypeId, t => t.ItemTypeId, (s, t) => new
+						{
+							s.ItemId,
+							t.GroupId
+						})
+						.Where(s => s.GroupId != null)
+						.AsEnumerable()
+						.Join(items, s => s.ItemId, item => item.ItemId, (s, item) => new
+						{
+							GroupId = s.GroupId.Value,
+							item.Bytes
+						})
+						.GroupBy(s => s.GroupId)
+						.Select(g => new Data.Entities.PackagesDiskspace
+						{
+							PackageId = packageId,
+							GroupId = g.Key,
+							DiskSpace = g.Sum(s => s.Bytes)
+						});
+					PackagesDiskspaces.AddRange(diskspace);
+					SaveChanges();
+				}
 			}
 			else
 			{
@@ -14614,47 +14626,58 @@ RETURN
 						LogDate = DateTime.Parse((string)e.Attribute("date")),
 						BytesSent = (long)e.Attribute("sent"),
 						BytesReceived = (long)e.Attribute("received")
-					});
+					})
+					.ToArray();
 
-				// delete current statistics
-				var groupedItems = items
-						.Join(ServiceItems, i => i.ItemId, s => s.ItemId, (i, s) => new
-						{
-							Item = i,
-							ServiceItem = s
-						})
-						.Join(ServiceItemTypes, i => i.ServiceItem.ItemTypeId, t => t.ItemTypeId, (i, t) => new
-						{
-							i.Item,
-							i.ServiceItem,
-							Type = t
-						})
-						.GroupBy(i => new { i.Item.LogDate, i.Type.GroupId });
-
-				var bandwidthsToDelete = PackagesBandwidths
-					.Where(pb => pb.PackageId == packageId)
-					.Join(groupedItems.Select(g => g.Key), 
-						pb => new { pb.LogDate, GroupId = (int?)pb.GroupId }, k => k, (pb, k) => pb);
-
-				using (var transaction = Database.BeginTransaction())
+				using (var itemIds = items.Select(item => item.ItemId).ToTempIdSet(this))
 				{
-					bandwidthsToDelete.ExecuteDelete();
-
-					// insert new statistics
-					var newBandwiths = groupedItems
-						.Select(item => new Data.Entities.PackagesBandwidth()
+					// delete current statistics
+					var groupedItems = itemIds
+						.Join(ServiceItems, i => i, s => s.ItemId, (i, s) => s)
+						.Join(ServiceItemTypes, i => i.ItemTypeId, t => t.ItemTypeId, (i, t) => new
 						{
-							PackageId = packageId,
-							GroupId = item.Key.GroupId ?? 0,
-							LogDate = item.Key.LogDate,
-							BytesSent = item.Sum(x => x.Item.BytesSent),
-							BytesReceived = item.Sum(x => x.Item.BytesReceived)
-						});
-					PackagesBandwidths.AddRange(newBandwiths);
+							ItemId = i.ItemId,
+							GroupId = t.GroupId
+						})
+						.Where(s => s.GroupId != null)
+						.AsEnumerable()
+						.Join(items, s => s.ItemId, i => i.ItemId, (s, i) => new
+						{
+							GroupId = s.GroupId.Value,
+							i.LogDate,
+							i.BytesSent,
+							i.BytesReceived
+						})
+						.GroupBy(i => new DatedId { Date = i.LogDate, Id = i.GroupId });
 
-					SaveChanges();
+					using (var tempKeys = groupedItems.Select(g => g.Key).ToTempDatedIdSet(this))
+					{
+						var bandwidthsToDelete = PackagesBandwidths
+							.Where(pb => pb.PackageId == packageId)
+							.Join(tempKeys,
+								pb => new DatedId { Date = pb.LogDate, Id = pb.GroupId }, k => k, (pb, k) => pb);
 
-					transaction.Commit();
+						using (var transaction = Database.BeginTransaction())
+						{
+							bandwidthsToDelete.ExecuteDelete();
+
+							// insert new statistics
+							var newBandwiths = groupedItems
+								.Select(item => new Data.Entities.PackagesBandwidth
+								{
+									PackageId = packageId,
+									GroupId = item.Key.Id,
+									LogDate = item.Key.Date,
+									BytesSent = item.Sum(x => x.BytesSent),
+									BytesReceived = item.Sum(x => x.BytesReceived)
+								});
+							PackagesBandwidths.AddRange(newBandwiths);
+
+							SaveChanges();
+
+							transaction.Commit();
+						}
+					}
 				}
 			}
 			else
@@ -15905,7 +15928,7 @@ RETURN
 			var xml = XElement.Parse(quotasXml);
 			var groups = xml.Element("groups")
 				.Elements()
-				.Select(e => new Data.Entities.HostingPlanResource()
+				.Select(e => new Data.Entities.HostingPlanResource
 				{
 					PlanId = planId,
 					GroupId = (int)e.Attribute("id"),
@@ -15914,7 +15937,7 @@ RETURN
 				});
 			var quotas = xml.Element("quotas")
 				.Elements()
-				.Select(e => new Data.Entities.HostingPlanQuota()
+				.Select(e => new Data.Entities.HostingPlanQuota
 				{
 					PlanId = planId,
 					QuotaId = (int)e.Attribute("id"),
@@ -19062,12 +19085,13 @@ RETURN
 
 					// add package to packages cache
 					var parents = PackageParents(pid)
-						.Select(parentId => new Data.Entities.PackagesTreeCache()
+						.Select(parentId => new Data.Entities.PackagesTreeCache
 						{
 							PackageId = pid,
 							ParentPackageId = parentId
 						});
 					PackagesTreeCaches.AddRange(parents);
+					SaveChanges();
 
 					var exceedingQuotas = GetPackageExceedingQuotas(packageId)
 						.Where(q => q.QuotaValue > 0)
@@ -19228,7 +19252,7 @@ RETURN
 				var resources = plan
 					.Element("groups")
 					.Elements()
-					.Select(e => new Data.Entities.PackageResource()
+					.Select(e => new Data.Entities.PackageResource
 					{
 						PackageId = packageId,
 						GroupId = (int)e.Attribute("id"),
@@ -19240,7 +19264,7 @@ RETURN
 				var quotas = plan
 					.Element("quotas")
 					.Elements()
-					.Select(e => new Data.Entities.PackageQuota()
+					.Select(e => new Data.Entities.PackageQuota
 					{
 						PackageId = packageId,
 						QuotaId = (int)e.Attribute("id"),
@@ -20571,12 +20595,13 @@ RETURN
 				using (var transaction = Database.BeginTransaction())
 				{
 					// delete old properties
-					PackageSettings.Where(s => s.PackageId == packageId && s.SettingsName == settingsName)
+					PackageSettings
+						.Where(s => s.PackageId == packageId && s.SettingsName == settingsName)
 						.ExecuteDelete();
 
 					var settings = XElement.Parse(xml)
 						.Elements()
-						.Select(e => new Data.Entities.PackageSetting()
+						.Select(e => new Data.Entities.PackageSetting
 						{
 							PackageId = packageId,
 							SettingsName = settingsName,
@@ -24007,11 +24032,13 @@ RETURN
 					Schedules.Add(schedule);
 					SaveChanges();
 
-					ScheduleParameters.Where(p => p.ScheduleId == schedule.ScheduleId).ExecuteDelete();
+					ScheduleParameters
+						.Where(p => p.ScheduleId == schedule.ScheduleId)
+						.ExecuteDelete();
 
 					var parameters = XElement.Parse(xmlParameters)
 						.Elements()
-						.Select(e => new Data.Entities.ScheduleParameter()
+						.Select(e => new Data.Entities.ScheduleParameter
 						{
 							ScheduleId = schedule.ScheduleId,
 							ParameterId = (string)e.Attribute("id"),
@@ -24181,7 +24208,7 @@ RETURN
 
 						var parameters = XElement.Parse(xmlParameters)
 							.Elements()
-							.Select(e => new Data.Entities.ScheduleParameter()
+							.Select(e => new Data.Entities.ScheduleParameter
 							{
 								ScheduleId = schedule.ScheduleId,
 								ParameterId = (string)e.Attribute("id"),
@@ -31051,7 +31078,7 @@ END
 					.Join(addressIds, ip => ip.AddressId, id => id, (ip, id) => ip)
 					.ExecuteDelete();
 				var newIps = addressIds
-					.Select(id => new Data.Entities.PackageIpAddress()
+					.Select(id => new Data.Entities.PackageIpAddress
 					{
 						PackageId = packageId,
 						OrgId = orgId,
@@ -36408,7 +36435,7 @@ RETURN
 
 				EnterpriseFolders
 					.Where(f => f.ItemId == itemId && f.FolderName == folderName)
-					.ExecuteUpdate(e => new Data.Entities.EnterpriseFolder()
+					.ExecuteUpdate(e => new Data.Entities.EnterpriseFolder
 					{
 						StorageSpaceFolderId = storageSpaceFolderId
 					});
@@ -36481,7 +36508,7 @@ WHERE ItemID = @ItemID AND FolderName = @FolderID
 
 				EnterpriseFolders
 					.Where(f => f.ItemId == itemId && f.FolderName == folderID)
-					.ExecuteUpdate(e => new Data.Entities.EnterpriseFolder()
+					.ExecuteUpdate(e => new Data.Entities.EnterpriseFolder
 					{
 						FolderName = folderName,
 						FolderQuota = folderQuota
@@ -36839,7 +36866,9 @@ WHERE AccountId = @AccountId
 
 				WebDavPortalUsersSettings
 					.Where(s => s.AccountId == accountId)
-					.ExecuteUpdate(e => new Data.Entities.WebDavPortalUsersSetting() { Settings = settings });
+					.ExecuteUpdate(e => new Data.Entities.WebDavPortalUsersSetting {
+						Settings = settings
+					});
 			}
 			else
 			{
@@ -37620,7 +37649,7 @@ AS
 
 				return StorageSpaceLevels
 					.Where(l => l.Id == level.Id)
-					.ExecuteUpdate(l => new Data.Entities.StorageSpaceLevel()
+					.ExecuteUpdate(l => new Data.Entities.StorageSpaceLevel
 					{
 						Name = level.Name,
 						Description = level.Description
@@ -38829,7 +38858,7 @@ RETURN
 
 					var settings = XElement.Parse(xml)
 						.Elements()
-						.Select(e => new Data.Entities.RdsServerSetting()
+						.Select(e => new Data.Entities.RdsServerSetting
 						{
 							RdsServerId = serverId,
 							SettingsName = settingsName,
@@ -39829,9 +39858,13 @@ WHERE Id = @Id
 
 				RdsServers
 					.Where(s => s.RdsCollectionId == id)
-					.ExecuteUpdate(rc => new Data.Entities.RdsServer() { RdsCollectionId = null });
+					.ExecuteUpdate(rc => new Data.Entities.RdsServer {
+						RdsCollectionId = null
+					});
 
-				RdsCollections.Where(c => c.Id == id).ExecuteDelete();
+				RdsCollections
+					.Where(c => c.Id == id)
+					.ExecuteDelete();
 			}
 			else
 			{
@@ -40324,7 +40357,9 @@ WHERE ID = @Id
 
 				RdsServers
 					.Where(s => s.Id == serverId)
-					.ExecuteUpdate(s => new Data.Entities.RdsServer() { RdsCollectionId = rdsCollectionId });
+					.ExecuteUpdate(s => new Data.Entities.RdsServer {
+						RdsCollectionId = rdsCollectionId
+					});
 			}
 			else
 			{
@@ -40359,7 +40394,9 @@ WHERE ID = @Id
 
 				RdsServers
 					.Where(s => s.Id == serverId)
-					.ExecuteUpdate(s => new Data.Entities.RdsServer() { ItemId = itemId });
+					.ExecuteUpdate(s => new Data.Entities.RdsServer {
+						ItemId = itemId
+					});
 			}
 			else
 			{
@@ -40393,7 +40430,9 @@ WHERE ID = @Id
 
 				RdsServers
 					.Where(s => s.Id == serverId)
-					.ExecuteUpdate(s => new Data.Entities.RdsServer() { ItemId = null });
+					.ExecuteUpdate(s => new Data.Entities.RdsServer {
+						ItemId = null
+					});
 			}
 			else
 			{
@@ -40426,7 +40465,9 @@ WHERE ID = @Id
 
 				RdsServers
 					.Where(s => s.Id == serverId)
-					.ExecuteUpdate(s => new Data.Entities.RdsServer() { RdsCollectionId = null });
+					.ExecuteUpdate(s => new Data.Entities.RdsServer {
+						RdsCollectionId = null
+					});
 			}
 			else
 			{
@@ -40916,7 +40957,9 @@ WHERE [DomainID] = @DomainId
 
 				Domains
 					.Where(d => d.DomainId == domainId)
-					.ExecuteUpdate(d => new Data.Entities.Domain() { CreationDate = date });
+					.ExecuteUpdate(d => new Data.Entities.Domain {
+						CreationDate = date
+					});
 			}
 			else
 			{
@@ -40942,7 +40985,9 @@ UPDATE [dbo].[Domains] SET [ExpirationDate] = @Date WHERE [DomainID] = @DomainId
 
 				Domains
 					.Where(d => d.DomainId == domainId)
-					.ExecuteUpdate(d => new Data.Entities.Domain() { ExpirationDate = date });
+					.ExecuteUpdate(d => new Data.Entities.Domain {
+						ExpirationDate = date
+					});
 			}
 			else
 			{
@@ -40968,7 +41013,9 @@ UPDATE [dbo].[Domains] SET [LastUpdateDate] = @Date WHERE [DomainID] = @DomainId
 
 				Domains
 					.Where(d => d.DomainId == domainId)
-					.ExecuteUpdate(d => new Data.Entities.Domain() { LastUpdateDate = date });
+					.ExecuteUpdate(d => new Data.Entities.Domain {
+						LastUpdateDate = date
+					});
 			}
 			else
 			{
@@ -41021,7 +41068,7 @@ UPDATE [dbo].[Domains] SET [CreationDate] = @DomainCreationDate, [ExpirationDate
 
 				Domains
 					.Where(d => d.DomainId == domainId)
-					.ExecuteUpdate(d => new Data.Entities.Domain()
+					.ExecuteUpdate(d => new Data.Entities.Domain
 					{
 						CreationDate = domainCreationDate,
 						ExpirationDate = domainExpirationDate,
@@ -41062,7 +41109,7 @@ UPDATE [dbo].[Domains] SET [CreationDate] = @DomainCreationDate, [ExpirationDate
 
 				Domains
 					.Where(d => d.DomainId == domainId)
-					.ExecuteUpdate(d => new Data.Entities.Domain()
+					.ExecuteUpdate(d => new Data.Entities.Domain
 					{
 						CreationDate = domainCreationDate,
 						ExpirationDate = domainExpirationDate,

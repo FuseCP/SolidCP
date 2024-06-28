@@ -10,8 +10,8 @@ namespace SolidCP.EnterpriseServer
             //if (!Debugger.IsAttached) Debugger.Launch();
             UsernamePasswordValidator.Init();
             Web.Clients.CertificateValidator.Init();
-				//Web.Clients.AssemblyLoader.Init(null, null, false);
-				Web.Services.StartupCore.Init(args);
+			//Web.Clients.AssemblyLoader.Init(null, null, false);
+			Web.Services.StartupCore.Init(args);
         }
     }
 }

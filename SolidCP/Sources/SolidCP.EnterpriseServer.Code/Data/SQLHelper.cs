@@ -57,7 +57,7 @@
 using System;
 using System.Data;
 using System.Xml;
-#if NET8_0
+#if !EF64
 using Microsoft.Data.SqlClient;
 #else
 using System.Data.SqlClient;

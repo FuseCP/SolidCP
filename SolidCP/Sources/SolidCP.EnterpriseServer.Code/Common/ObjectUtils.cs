@@ -141,7 +141,13 @@ namespace SolidCP.EnterpriseServer
 			if (ds.Tables.Count == 0)
 				return;
 
-			FillCollectionFromDataView<T>(list, ds.Tables[0].DefaultView);
+			FillCollectionFromDataTable<T>(list, ds.Tables[0]);
+		}
+
+		public static void FillCollectionFromDataTable<T>(List<T> list, DataTable table)
+		{
+			if (table is IEntityDataSet entitySet) FillCollectionFromEntitySet(list, entitySet);
+			else FillCollectionFromDataView(list, table.DefaultView);
 		}
 
 		public static void FillCollectionFromDataView<T>(List<T> list, DataView dv)
@@ -164,7 +170,7 @@ namespace SolidCP.EnterpriseServer
 						continue;
 
 					object propVal = dr[propName];
-					if (propVal == DBNull.Value)
+					if (propVal == DBNull.Value || propVal == null)
 						props[i].SetValue(obj, GetNull(props[i].PropertyType), null);
 					else
 					{
@@ -190,59 +196,72 @@ namespace SolidCP.EnterpriseServer
 				} // for properties
 			} // for rows
 		}
-		public static void FillCollectionFromEntitySet<T, TEntity>(List<T> list, IEnumerable<TEntity> set)
+
+		public static void FillCollectionFromEntitySet<T>(List<T> list, IEntityDataSet set) =>
+			FillCollectionFromEntitySet(list, set.Set, set.Type);
+
+		public static void FillCollectionFromEntitySet<T, TEntity>(List<T> list, IEnumerable<TEntity> set) =>
+			FillCollectionFromEntitySet(list, set, typeof(TEntity));
+
+		public static void FillCollectionFromEntitySet<T>(List<T> list, IEnumerable set, Type tentity)
 		{
-			Type type = typeof(T);
-			Type etype = typeof(TEntity);
-
-			if (type == etype)
+			try
 			{
-				list.AddRange(set.OfType<T>());
-			}
-			else
-			{
+				Type type = typeof(T);
 
-				PropertyInfo[] props = GetTypeProperties(type);
-				PropertyInfo[] eprops = GetTypeProperties(etype);
-				var pairs = props.Join(eprops, p => p.Name, ep => ep.Name, (p, ep) => new { Property = p, EntityProperty = ep }, StringComparer.OrdinalIgnoreCase)
-					.ToArray();
-
-				foreach (TEntity entity in set)
+				if (type == tentity)
 				{
-					// create an instance
-					T obj = (T)Activator.CreateInstance(type);
-					list.Add(obj);
+					list.AddRange(set.OfType<T>());
+				}
+				else
+				{
 
-					// fill properties
-					foreach (var prop in pairs)
+					PropertyInfo[] props = GetTypeProperties(type);
+					PropertyInfo[] eprops = GetTypeProperties(tentity);
+					var pairs = props.Join(eprops, p => p.Name, ep => ep.Name, (p, ep) => new { Property = p, EntityProperty = ep }, StringComparer.OrdinalIgnoreCase)
+						.ToArray();
+
+					foreach (object entity in set)
 					{
+						// create an instance
+						T obj = (T)Activator.CreateInstance(type);
+						list.Add(obj);
 
-						object propVal = prop.EntityProperty.GetValue(entity, null);
-						if (propVal == DBNull.Value || propVal == null)
-							prop.Property.SetValue(obj, GetNull(prop.Property.PropertyType), null);
-						else
+						// fill properties
+						foreach (var prop in pairs)
 						{
-							try
+
+							object propVal = prop.EntityProperty.GetValue(entity, null);
+							if (propVal == DBNull.Value || propVal == null)
+								prop.Property.SetValue(obj, GetNull(prop.Property.PropertyType), null);
+							else
 							{
-								// try implicit type conversion
-								prop.Property.SetValue(obj, propVal, null);
-							}
-							catch
-							{
-								// convert to string and then set property value
 								try
 								{
-									string strVal = propVal.ToString();
-									prop.Property.SetValue(obj, Cast(strVal, prop.Property.PropertyType), null);
+									// try implicit type conversion
+									prop.Property.SetValue(obj, propVal, null);
 								}
 								catch
 								{
-									// skip property init
+									// convert to string and then set property value
+									try
+									{
+										string strVal = propVal.ToString();
+										prop.Property.SetValue(obj, Cast(strVal, prop.Property.PropertyType), null);
+									}
+									catch
+									{
+										// skip property init
+									}
 								}
 							}
-						}
-					} // for properties
-				} // for rows
+						} // for properties
+					} // for rows
+				}
+			}
+			finally
+			{
+				if (set is IDisposable disposable) disposable.Dispose();
 			}
 		}
 
@@ -269,72 +288,80 @@ namespace SolidCP.EnterpriseServer
 
 		public static void FillCollectionFromDataReader<T>(List<T> list, IDataReader reader)
 		{
-			Type type = typeof(T);
-
-			try
+			if (reader is IEntityDataSet entitySet)
 			{
-				// get type properties
-				PropertyInfo[] props = GetTypeProperties(type);
+				FillCollectionFromEntitySet(list, entitySet);
+			}
+			else
+			{
 
-				// leave only a property from the DataReader
-				DataTable readerSchema = reader.GetSchemaTable();
-				if (readerSchema != null)
+				Type type = typeof(T);
+
+				try
 				{
-					List<PropertyInfo> propslist = new List<PropertyInfo>();
-					foreach (DataRow field in readerSchema.Rows)
+					// get type properties
+					PropertyInfo[] props = GetTypeProperties(type);
+
+					// leave only a property from the DataReader
+					DataTable readerSchema = reader.GetSchemaTable();
+					if (readerSchema != null)
 					{
-						string columnName = System.Convert.ToString(field["ColumnName"]);
-
-						foreach (PropertyInfo prop in props)
-							if (columnName.ToLower() == prop.Name.ToLower())
-								propslist.Add(prop);
-					}
-					props = propslist.ToArray();
-				}
-
-				// iterate through reader
-				while (reader.Read())
-				{
-					T obj = (T)Activator.CreateInstance(type);
-					list.Add(obj);
-
-					// set properties
-					for (int i = 0; i < props.Length; i++)
-					{
-						string propName = props[i].Name;
-
-						try
+						List<PropertyInfo> propslist = new List<PropertyInfo>();
+						foreach (DataRow field in readerSchema.Rows)
 						{
+							string columnName = System.Convert.ToString(field["ColumnName"]);
 
-							object propVal = reader[propName];
-							if (propVal == DBNull.Value)
-								props[i].SetValue(obj, GetNull(props[i].PropertyType), null);
-							else
+							foreach (PropertyInfo prop in props)
+								if (columnName.ToLower() == prop.Name.ToLower())
+									propslist.Add(prop);
+						}
+						props = propslist.ToArray();
+					}
+
+					// iterate through reader
+					while (reader.Read())
+					{
+						T obj = (T)Activator.CreateInstance(type);
+						list.Add(obj);
+
+						// set properties
+						for (int i = 0; i < props.Length; i++)
+						{
+							string propName = props[i].Name;
+
+							try
 							{
-								try
+
+								object propVal = reader[propName];
+								if (propVal == DBNull.Value || propVal == null)
+									props[i].SetValue(obj, GetNull(props[i].PropertyType), null);
+								else
 								{
-									// try implicit type conversion
-									props[i].SetValue(obj, propVal, null);
-								}
-								catch
-								{
-									// convert to string and then set property value
 									try
 									{
-										string strVal = propVal.ToString();
-										props[i].SetValue(obj, Cast(strVal, props[i].PropertyType), null);
+										// try implicit type conversion
+										props[i].SetValue(obj, propVal, null);
 									}
-									catch { }
+									catch
+									{
+										// convert to string and then set property value
+										try
+										{
+											string strVal = propVal.ToString();
+											props[i].SetValue(obj, Cast(strVal, props[i].PropertyType), null);
+										}
+										catch { }
+									}
 								}
 							}
-						}
-						catch { } // just skip
-					} // for properties
+							catch { } // just skip
+						} // for properties
+					}
 				}
-			}
-			finally
-			{
-				reader.Close();
+				finally
+				{
+					reader.Close();
+				}
 			}
 		}
 
@@ -367,7 +394,7 @@ namespace SolidCP.EnterpriseServer
 						}
 
 						object propVal = dr[propName];
-						if (propVal == DBNull.Value)
+						if (propVal == DBNull.Value || propVal == null)
 							props[i].SetValue(obj, GetNull(props[i].PropertyType), null);
 						else
 						{
@@ -403,10 +430,11 @@ namespace SolidCP.EnterpriseServer
 			return obj;
 		}
 
-		public static T FillObjectFromEntity<T, TEntity>(TEntity entity) where T: class
+		public static T FillObjectFromEntity<T, TEntity>(TEntity entity) where T : class =>
+			FillObjectFromEntity<T>(entity, typeof(TEntity));
+		public static T FillObjectFromEntity<T>(object entity, Type etype) where T : class
 		{
 			Type type = typeof(T);
-			Type etype = typeof(TEntity);
 
 			if (type == etype) return entity as T;
 
@@ -531,10 +559,14 @@ namespace SolidCP.EnterpriseServer
 			return dataSet;
 		}
 
-		public static T FillObjectFromEntitySet<T, TEntity>(IEnumerable<TEntity> set) where T: class => FillObjectFromEntity<T, TEntity>(set.LastOrDefault());
+		public static T FillObjectFromEntitySet<T, TEntity>(IEnumerable<TEntity> set) where T : class => FillObjectFromEntity<T, TEntity>(set.LastOrDefault());
+		public static T FillObjectFromEntitySet<T>(IEnumerable set, Type etype) where T : class => FillObjectFromEntity<T>(set.OfType<object>().LastOrDefault(), etype);
+		public static T FillObjectFromEntitySet<T>(IEntityDataSet set) where T : class => FillObjectFromEntitySet<T>(set.Set, set.Type);
 
-		public static T FillObjectFromDataReader<T>(IDataReader reader)
+		public static T FillObjectFromDataReader<T>(IDataReader reader) where T: class
 		{
+			if (reader is IEntityDataSet entitySet) return FillObjectFromEntitySet<T>(entitySet);
+			
 			Type type = typeof(T);
 
 			T obj = default(T);
@@ -543,6 +575,12 @@ namespace SolidCP.EnterpriseServer
 			{
 				// get type properties
 				PropertyInfo[] props = GetTypeProperties(type);
+
+				var columns = reader.GetSchemaTable()
+					.Rows
+					.OfType<DataRow>()
+					.Select(row => (string)row[0])
+					.ToHashSet(StringComparer.OrdinalIgnoreCase);
 
 				// iterate through reader
 				while (reader.Read())
@@ -556,13 +594,13 @@ namespace SolidCP.EnterpriseServer
 
 						try
 						{
-							if (!IsColumnExists(propName, reader.GetSchemaTable()))
+							if (!columns.Contains(propName)) // !IsColumnExists(propName, reader.GetSchemaTable()))
 							{
 								continue;
 							}
 							object propVal = reader[propName];
 
-							if (propVal == DBNull.Value)
+							if (propVal == DBNull.Value || propVal == null)
 								props[i].SetValue(obj, GetNull(props[i].PropertyType), null);
 							else
 							{
@@ -608,7 +646,14 @@ namespace SolidCP.EnterpriseServer
 
 		private static Hashtable propertiesCache = new Hashtable();
 
-		public static object CreateObjectFromDataview(Type type, DataView dv,
+		public static object CreateObjectFromDataTable(Type type, DataTable table,
+			string nameColumn, string valueColumn, bool persistentOnly)
+		{
+			if (table is IEntityDataSet entitySet) return CreateObjectFromEntitySet(type, entitySet, nameColumn, valueColumn, persistentOnly);
+			else return CreateObjectFromDataView(type, table.DefaultView, nameColumn, valueColumn, persistentOnly);
+		}
+
+		public static object CreateObjectFromDataView(Type type, DataView dv,
 			string nameColumn, string valueColumn, bool persistentOnly)
 		{
 			// create hash of properties from datareader
@@ -625,15 +670,22 @@ namespace SolidCP.EnterpriseServer
 		public static object CreateObjectFromDataReader(Type type, IDataReader reader,
 			string nameColumn, string valueColumn, bool persistentOnly)
 		{
+			if (reader is IEntityDataSet entitySet) return CreateObjectFromEntitySet(type, entitySet, nameColumn, valueColumn, persistentOnly);
+
 			// create hash of properties from datareader
 			Hashtable propValues = new Hashtable();
-			while (reader.Read())
+			try
 			{
-				if (propValues[reader[nameColumn]] == null && !propValues.ContainsKey(reader[nameColumn]))
-					propValues.Add(reader[nameColumn], reader[valueColumn]);
+				while (reader.Read())
+				{
+					if (propValues[reader[nameColumn]] == null && !propValues.ContainsKey(reader[nameColumn]))
+						propValues.Add(reader[nameColumn], reader[valueColumn]);
+				}
 			}
-			reader.Close();
-
+			finally
+			{
+				reader.Close();
+			}
 			return CreateObjectFromHash(type, propValues, persistentOnly);
 		}
 
@@ -648,9 +700,16 @@ namespace SolidCP.EnterpriseServer
 		}
 
 		public static object CreateObjectFromEntitySet<TEntity>(Type type, IEnumerable<TEntity> set,
+			string nameColumn, string valueColumn, bool persistentOnly) =>
+			CreateObjectFromEntitySet(type, set, typeof(TEntity), nameColumn, valueColumn, persistentOnly);
+
+		public static object CreateObjectFromEntitySet(Type type, IEntityDataSet set,
+			string nameColumn, string valueColumn, bool persistentOnly) =>
+			CreateObjectFromEntitySet(type, set.Set, set.Type, nameColumn, valueColumn, persistentOnly);
+		
+		public static object CreateObjectFromEntitySet(Type type, IEnumerable set, Type etype,
 			string nameColumn, string valueColumn, bool persistentOnly)
 		{
-			var etype = typeof(TEntity);
 			var eprops = GetTypeProperties(etype);
 			var nameProp = eprops.FirstOrDefault(p => string.Equals(p.Name, nameColumn, StringComparison.OrdinalIgnoreCase));
 			var valueProp = eprops.FirstOrDefault(p => string.Equals(p.Name, valueColumn, StringComparison.OrdinalIgnoreCase));
@@ -895,6 +954,10 @@ namespace SolidCP.EnterpriseServer
 				return false;
 			if (type == typeof(Decimal))
 				return 0M;
+			if (type == typeof(DateTime))
+				return default(DateTime);
+			if (type == typeof(TimeSpan))
+				return TimeSpan.Zero;
 			else
 				return null;
 		}

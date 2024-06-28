@@ -37,7 +37,7 @@ using System.Collections;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Text;
-#if NET8_0
+#if !EF64
 using Microsoft.Data.SqlClient;
 #else
 using System.Data.SqlClient;

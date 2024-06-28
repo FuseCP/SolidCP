@@ -12,6 +12,7 @@
         <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
         <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
         <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+        <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
@@ -48,13 +49,25 @@
         <None Remove="**\*.asmx" />
     </ItemGroup>
 
-    <ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+        <ProjectReference Include="..\SolidCP.Build\SolidCP.Build.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj" Private="false" ExcludeAssets="all" />
+        <!--<ProjectReference Include="..\SolidCP.EnterpriseServer.Data\SolidCP.EnterpriseServer.Data.csproj" Private="false" ExcludeAssets="all" />-->
+        <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" Private="false" ExcludeAssets="all" />
+        <ProjectReference Include="..\SolidCP.EnterpriseServer.Code\SolidCP.EnterpriseServer.Code.csproj" Private="false" ExcludeAssets="all" />
+        <!--<ProjectReference Include="..\SolidCP.Providers.OS.Unix\SolidCP.Providers.OS.Unix.csproj" Private="false" ExcludeAssets="all" />-->
+        <ProjectReference Include="..\SolidCP.Server\WebServices\SolidCP.Build\SolidCP.Server.Client.csproj" Private="false" ExcludeAssets="all" />
+        <ProjectReference Include="..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj" Private="false" ExcludeAssets="all" />
+        <ProjectReference Include="..\SolidCP.Web.Services\SolidCP.Web.Services.csproj" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
         <ProjectReference Include="..\SolidCP.Build\SolidCP.Build.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
         <ProjectReference Include="..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj" />
-        <ProjectReference Include="..\SolidCP.EnterpriseServer.Data\SolidCP.EnterpriseServer.Data.csproj" />
+        <!--<ProjectReference Include="..\SolidCP.EnterpriseServer.Data\SolidCP.EnterpriseServer.Data.csproj" />-->
         <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
-        <ProjectReference Include="..\SolidCP.EnterpriseServer.Code\SolidCP.EnterpriseServer.Code.csproj" ExcludeAssets="buildTransitive" />
-        <ProjectReference Include="..\SolidCP.Providers.OS.Unix\SolidCP.Providers.OS.Unix.csproj" />
+        <ProjectReference Include="..\SolidCP.EnterpriseServer.Code\SolidCP.EnterpriseServer.Code.csproj" />
+        <!--<ProjectReference Include="..\SolidCP.Providers.OS.Unix\SolidCP.Providers.OS.Unix.csproj" />-->
         <ProjectReference Include="..\SolidCP.Server\WebServices\SolidCP.Build\SolidCP.Server.Client.csproj" />
         <ProjectReference Include="..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj" />
         <ProjectReference Include="..\SolidCP.Web.Services\SolidCP.Web.Services.csproj" />
@@ -73,8 +86,9 @@
         <Reference Include="SwaggerWcf">
             <HintPath>..\..\Lib\SwaggerWcf.dll</HintPath>
         </Reference>
+        <Content Remove="appsettings.json" />
     </ItemGroup>
-
+    
     <ItemGroup>
         <None Include="Web.config">
             <SubType>Designer</SubType>
@@ -105,7 +119,7 @@
         <Analyzer Include="..\SolidCP.Build\bin\$(Configuration)\netstandard2.0\RazorBlade.dll" />
     </ItemGroup>
 
-    <ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
       <Content Update="wwwroot\img\logo.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>

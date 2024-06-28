@@ -144,5 +144,11 @@ namespace SolidCP.EnterpriseServer.Data
 
         static DbType dbType = DbType.Unknown;
         public static DbType DbType => dbType != DbType.Unknown ? dbType : (dbType = GetDbType(ConnectionString));
+
+		public static bool AlwaysUseEntityFrameworkNetFX =>
+			string.Equals(ConfigurationManager.AppSettings["SolidCP.AlwaysUseEntityFramework"], "true", StringComparison.OrdinalIgnoreCase);
+		public static bool AlwaysUseEntityFrameworkNetCore => Web.Services.Configuration.AlwaysUseEntityFramework;
+
+		public static bool AlwaysUseEntityFramework => OSInfo.IsNetFX ? AlwaysUseEntityFrameworkNetFX : AlwaysUseEntityFrameworkNetCore;
 	}
 }

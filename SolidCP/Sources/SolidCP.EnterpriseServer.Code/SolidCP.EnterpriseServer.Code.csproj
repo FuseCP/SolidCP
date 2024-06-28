@@ -9,10 +9,15 @@
 		<UseEntityFramework>true</UseEntityFramework>
 		<IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
 		<LangVersion>11</LangVersion>
-	</PropertyGroup>
+        <EntityFramework6>6.5</EntityFramework6> <!-- Use EntityFramework 6.4 or 6.5 -->
+    </PropertyGroup>
 
     <PropertyGroup Condition="'$(TargetFramework)' == 'net48'">
         <OutputPath>..\SolidCP.EnterpriseServer\bin\Code</OutputPath>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net48' AND '$(EntityFramework6)' == '6.4'">
+        <DefineConstants>$(DefineConstants);EF64</DefineConstants>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
@@ -59,21 +64,20 @@
         <PackageReference Include="System.ValueTuple" Version="4.5.0" />
         <PackageReference Include="Twilio" Version="7.0.4" />
         <PackageReference Include="WhoisClient.NET" Version="5.0.0" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net48' AND '$(EntityFramework6)' == '6.5'">
         <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.1" />
         <PackageReference Include="Azure.Identity" Version="1.12.0" />
     </ItemGroup>
-
-    <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
-        <!--<PackageReference Include="System.Data.SqlClient" Version="4.8.6" />-->
+        
+    <ItemGroup Condition="'$(TargetFramework)' == 'net48' AND '$(EntityFramework6)' == '6.4'">
+        <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
-        <!-- <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.1" />-->
-        <!--<PackageReference Include="Microsoft.EntityFrameworkCore.DynamicLinq" Version="8.3.13" />-->
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-        <!--<PackageReference Include="System.Data.SqlClient" Version="4.8.6" />-->
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.1" />
+        <PackageReference Include="Azure.Identity" Version="1.12.0" />
     </ItemGroup>
   
     <!-- hack for SkiaSharp, so the native dlls go in the right place -->

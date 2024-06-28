@@ -60,9 +60,9 @@ namespace SolidCP.EnterpriseServer
         public TaskManager(): this(null) { }
 		public TaskManager(ControllerBase provider) : base(provider) {
 			purgeTimer = new Timer(new TimerCallback(PurgeCompletedTasks),
-												null,
-												60000, // start from 1 minute
-												60000);// invoke each minute
+				null,
+				60000, // start from 1 minute
+				60000);// invoke each minute
 		}
 
         public Guid Guid
@@ -427,7 +427,9 @@ namespace SolidCP.EnterpriseServer
 
         void PurgeCompletedTasks(object obj)
         {
-            List<BackgroundTask> tasks = TaskController.GetProcessTasks(BackgroundTaskStatus.Run);
+            var mgr = AsAsync<TaskManager>();
+
+            List<BackgroundTask> tasks = mgr.TaskController.GetProcessTasks(BackgroundTaskStatus.Run);
 
             foreach (BackgroundTask task in tasks)
             {
@@ -436,7 +438,7 @@ namespace SolidCP.EnterpriseServer
                 {
                     task.Status = BackgroundTaskStatus.Stopping;
 
-                    TaskController.UpdateTask(task);
+                    mgr.TaskController.UpdateTask(task);
                 }
             }
         }

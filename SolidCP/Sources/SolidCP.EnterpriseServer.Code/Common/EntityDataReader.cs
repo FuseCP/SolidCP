@@ -23,6 +23,7 @@ namespace SolidCP.EnterpriseServer
 
 	public class PropertyCollection: KeyedCollection<string, PropertyDescription>
 	{
+		public PropertyCollection(): base(StringComparer.OrdinalIgnoreCase) { }
 		protected override string GetKeyForItem(PropertyDescription item) => item.Info.Name;
 	}
 
@@ -35,7 +36,7 @@ namespace SolidCP.EnterpriseServer
 
 	public class EntityDataReader<TEntity>: IDataReader, IEntityDataSet, IEnumerable<TEntity> where TEntity : class
 	{
-		public virtual IEnumerable<TEntity> Set { get; private set; }
+		public virtual IEnumerable<TEntity> Set { get; set; }
 		IEnumerable IEntityDataSet.Set => Set;
         public virtual Type Type { get; private set; }
 
@@ -109,8 +110,6 @@ namespace SolidCP.EnterpriseServer
 
 		public virtual int FieldCount => Properties.Count;
 
-		public virtual object this[string name] => Properties[name].Info.GetValue(Enumerator.Current);
-
 		private object GetValueFromProperty(PropertyDescription p)
 		{
 			try {
@@ -132,88 +131,99 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public virtual object this[int i]
-		{
-			get
-			{
-				var p = Properties[i];
-				return GetValueFromProperty(p);
-			}
-		}
+		public virtual object this[int i] => GetValueFromProperty(Properties[i]);
 
+		public virtual object this[string name] => GetValueFromProperty(Properties[name]);
+		
 		public virtual IEnumerator<TEntity> GetEnumerator() => ((IEnumerable<TEntity>)Set).GetEnumerator();
 
 		IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)Set).GetEnumerator();
 
 		public virtual void Close() => Dispose();
 
+		private DataTable schemaTable = null;
 		public virtual DataTable GetSchemaTable()
 		{
-			var table = new DataTable();
-			table.Columns.Add("AllowDBNull", typeof(bool));
-			var baseCatalogName = new DataColumn("BaseCatalogName", typeof(string)) { AllowDBNull = true };
-			table.Columns.Add(baseCatalogName);
-			var baseColumnName = new DataColumn("BaseColumnName", typeof(string)) { AllowDBNull = true };
-			table.Columns.Add(baseColumnName);
-			var baseSchemaName = new DataColumn("BaseSchemaName", typeof(string)) { AllowDBNull = true };
-			table.Columns.Add(baseSchemaName);
-			var baseServerName = new DataColumn("BaseServerName", typeof(string)) { AllowDBNull = true };
-			table.Columns.Add(baseServerName);
-			var baseTableName = new DataColumn("BaseTableName", typeof(string)) { AllowDBNull = true };
-			table.Columns.Add(baseTableName);
-			table.Columns.Add("ColumnName", typeof(string));
-			table.Columns.Add("ColumnOrdinal", typeof(int));
-			table.Columns.Add("ColumnSize", typeof(int));
-			table.Columns.Add("DataType", typeof(Type));
-			table.Columns.Add("DataTypeName", typeof(string));
-			table.Columns.Add("IsAliased", typeof(bool));
-			table.Columns.Add("IsAutoIncrement", typeof(bool));
-			table.Columns.Add("IsColumnSet", typeof(bool));
-			table.Columns.Add("IsExpression", typeof(bool));
-			table.Columns.Add("IsHidden", typeof(bool));
-			table.Columns.Add("IsIdentity", typeof(bool));
-			table.Columns.Add("IsKey", typeof(bool));
-			table.Columns.Add("IsLong", typeof(bool));
-			table.Columns.Add("IsReadOnly", typeof(bool));
-			table.Columns.Add("IsRowVersion", typeof(bool));
-			table.Columns.Add("IsUnique", typeof(bool));
-			int i = 0;
-			foreach (var prop in Properties)
+			if (schemaTable == null)
 			{
-				var row = table.NewRow();
-				row["AllowDBNull"] = prop.IsNullable;
-				row["BaseCatalogName"] = DBNull.Value;
-				row["BaseColumnName"] = DBNull.Value;
-				row["BaseSchemaName"] = DBNull.Value;
-				row["BaseServerName"] = "";
-				row["BaseTableName"] = Type.Name;
-				row["ColumnName"] = prop.Info.Name;
-				row["ColumnOrdinal"] = i++;
-				row["ColumnSize"] = int.MaxValue;
-				row["DataType"] = prop.Type;
-				row["DataTypeName"] = prop.Type.FullName;
-				row["IsAliased"] = false;
-				row["IsAutoIncrement"] = false;
-				row["IsColumnSet"] = false;
-				row["IsExpression"] = false;
-				row["IsHidden"] = false;
-				row["IsIdentity"] = false;
-				row["IsKey"] = false;
-				row["IsLong"] = false;
-				row["IsReadOnly"] = false;
-				row["IsRowVersion"] = false;
-				row["IsUnique"] = false;
-				table.Rows.Add(row);
+				schemaTable = new DataTable();
+				schemaTable.Columns.Add("ColumnName", typeof(string));
+				schemaTable.Columns.Add("ColumnOrdinal", typeof(int));
+				schemaTable.Columns.Add("ColumnSize", typeof(int));
+				schemaTable.Columns.Add("NumericPrecision", typeof(int));
+				schemaTable.Columns.Add("NumericScale", typeof(int));
+				schemaTable.Columns.Add("DataType", typeof(Type));
+				schemaTable.Columns.Add("ProviderType", typeof(object));
+				schemaTable.Columns.Add("IsLong", typeof(bool));
+				schemaTable.Columns.Add("AllowDBNull", typeof(bool));
+				schemaTable.Columns.Add("IsReadOnly", typeof(bool));
+				schemaTable.Columns.Add("IsRowVersion", typeof(bool));
+				schemaTable.Columns.Add("IsUnique", typeof(bool));
+				schemaTable.Columns.Add("IsKey", typeof(bool));
+				schemaTable.Columns.Add("IsAutoIncrement", typeof(bool));
+				var baseCatalogName = new DataColumn("BaseCatalogName", typeof(string)) { AllowDBNull = true };
+				schemaTable.Columns.Add(baseCatalogName);
+				var baseSchemaName = new DataColumn("BaseSchemaName", typeof(string)) { AllowDBNull = true };
+				schemaTable.Columns.Add(baseSchemaName);
+				var baseTableName = new DataColumn("BaseTableName", typeof(string)) { AllowDBNull = true };
+				schemaTable.Columns.Add(baseTableName);
+				var baseColumnName = new DataColumn("BaseColumnName", typeof(string)) { AllowDBNull = true };
+				schemaTable.Columns.Add(baseColumnName);
+				schemaTable.Columns.Add("AutoIncrementSeed", typeof(int));
+				schemaTable.Columns.Add("AutoIncrementStep", typeof(int));
+				var defaultValue = new DataColumn("DefaultValue", typeof(string)) { AllowDBNull = true };
+				schemaTable.Columns.Add(defaultValue);
+				var expression = new DataColumn("Expression", typeof(string)) { AllowDBNull = true };
+				schemaTable.Columns.Add(expression);
+				schemaTable.Columns.Add("ColumnMapping", typeof(MappingType));
+				var baseTableNamespace = new DataColumn("BaseTableNamespace", typeof(string)) { AllowDBNull = true };
+				schemaTable.Columns.Add(baseTableNamespace);
+				var baseColumnNamespace = new DataColumn("BaseColumnNamespace", typeof(string)) { AllowDBNull = true };
+				schemaTable.Columns.Add(baseColumnNamespace);
+				int i = 0;
+				foreach (var prop in Properties)
+				{
+					var row = schemaTable.NewRow();
+					row["ColumnName"] = prop.Info.Name;
+					row["ColumnOrdinal"] = i++;
+					row["ColumnSize"] = int.MaxValue;
+					row["NumericPrecision"] = DBNull.Value;
+					row["NumericScale"] = DBNull.Value;
+					row["DataType"] = prop.Type;
+					row["ProviderType"] = prop.Type;
+					row["IsLong"] = false;
+					row["AllowDBNull"] = prop.IsNullable;
+					row["IsReadOnly"] = false;
+					row["IsRowVersion"] = false;
+					row["IsUnique"] = false;
+					row["IsKey"] = false;
+					row["IsAutoIncrement"] = false;
+					row["BaseCatalogName"] = DBNull.Value;
+					row["BaseSchemaName"] = DBNull.Value;
+					row["BaseTableName"] = Type.Name;
+					row["BaseColumnName"] = DBNull.Value;
+					row["AutoIncrementSeed"] = 1;
+					row["AutoIncrementStep"] = 1;
+					row["DefaultValue"] = DBNull.Value;
+					row["Expression"] = DBNull.Value;
+					row["ColumnMapping"] = MappingType.Element;
+					row["BaseTableNamespace"] = "";
+					row["BaseColumnNamespace"] = "";
+					schemaTable.Rows.Add(row);
+				}
 			}
-			return table;
+			return schemaTable;
 		}
 
 		public virtual bool NextResult() => false;
 		public virtual bool Read() => !(IsClosed = !Enumerator.MoveNext());
+
 		public void Dispose() {
 			IsClosed = true;
-			Set = null;
+			if (enumerator != null && enumerator is IDisposable disposableEnum) disposableEnum.Dispose();
 			enumerator = null;
+			if (Set != null && Set is IDisposable disposableSet) disposableSet.Dispose();
+			Set = null;
 		}
 		public virtual string GetName(int i) => Properties[i].Info.Name;
 		public virtual string GetDataTypeName(int i) => Properties[i].Type.FullName;

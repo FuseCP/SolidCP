@@ -1472,7 +1472,7 @@ namespace SolidCP.EnterpriseServer
             if (dvItem.Count == 0)
                 return null;
 
-            return CreateServiceItem(dvItem[0], dsItem.Tables[1].DefaultView);
+            return CreateServiceItem(dvItem[0], dsItem.Tables[1]);
         }
 
         public ServiceProviderItem GetPackageItemByName(int packageId, string itemName, Type itemType)
@@ -1489,7 +1489,7 @@ namespace SolidCP.EnterpriseServer
             if (dvItem.Count == 0)
                 return null;
 
-            return CreateServiceItem(dvItem[0], dsItem.Tables[1].DefaultView);
+            return CreateServiceItem(dvItem[0], dsItem.Tables[1]);
         }
 
         public int GetServiceItemsCountByNameAndServiceId(int serviceId, string groupName, string itemName, Type itemType)
@@ -1636,8 +1636,7 @@ namespace SolidCP.EnterpriseServer
             return items;
         }
 
-
-        private ServiceProviderItem CreateServiceItem(DataRowView drItem, DataView dvProps)
+		private ServiceProviderItem CreateServiceItem(DataRowView drItem, DataTable tProps)
         {
             // create item instance
             string itemTypeName = (string)drItem["TypeName"];
@@ -1647,8 +1646,8 @@ namespace SolidCP.EnterpriseServer
                 itemType = typeof(ServiceProviderItem); // create generic item
 
             // create item instance and fill other properties
-            ServiceProviderItem item = (ServiceProviderItem)ObjectUtils.CreateObjectFromDataview(
-                Type.GetType(itemTypeName), dvProps, "PropertyName", "PropertyValue", true);
+            ServiceProviderItem item = (ServiceProviderItem)ObjectUtils.CreateObjectFromDataTable(
+                Type.GetType(itemTypeName), tProps, "PropertyName", "PropertyValue", true);
 
             // fill item key properties
             item.Id = (int)drItem["ItemID"];
@@ -1662,7 +1661,31 @@ namespace SolidCP.EnterpriseServer
             return item;
         }
 
-        private void FlatternItemsTable(DataSet dsItems, int itemsTablePosition, Type itemType)
+		private ServiceProviderItem CreateServiceItem(DataRowView drItem, DataView dvProps)
+		{
+			// create item instance
+			string itemTypeName = (string)drItem["TypeName"];
+			Type itemType = Type.GetType(itemTypeName);
+
+			if (itemType == null)
+				itemType = typeof(ServiceProviderItem); // create generic item
+
+			// create item instance and fill other properties
+			ServiceProviderItem item = (ServiceProviderItem)ObjectUtils.CreateObjectFromDataView(
+				Type.GetType(itemTypeName), dvProps, "PropertyName", "PropertyValue", true);
+
+			// fill item key properties
+			item.Id = (int)drItem["ItemID"];
+			item.TypeId = (int)drItem["ItemTypeID"];
+			item.Name = (string)drItem["ItemName"];
+			item.PackageId = (int)drItem["PackageID"];
+			item.ServiceId = (int)drItem["ServiceID"];
+			item.GroupName = (string)drItem["GroupName"];
+			item.CreatedDate = Utils.ParseDate(drItem["CreatedDate"]);
+
+			return item;
+		}
+		private void FlatternItemsTable(DataSet dsItems, int itemsTablePosition, Type itemType)
         {
             DataTable dtItems = dsItems.Tables[itemsTablePosition];
             DataTable dtProps = dsItems.Tables[itemsTablePosition + 1];

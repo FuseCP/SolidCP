@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Data;
 using System.Text;
+using System.Xml.Serialization;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using System.Collections;
@@ -11,11 +12,11 @@ using System.Reflection;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.Identity.Client;
 
-namespace SolidCP.EnterpriseServer.Code
+namespace SolidCP.EnterpriseServer
 {
     public class EntityDataTable<TEntity>: DataTable, IEntityDataSet where TEntity: class
     {
-        [IgnoreDataMember]
+        [XmlIgnore, IgnoreDataMember]
         public TEntity[] Set { get; set; } = null;
         IEnumerable IEntityDataSet.Set => Set;
 
@@ -64,6 +65,7 @@ namespace SolidCP.EnterpriseServer.Code
         public EntityDataTable(IEnumerable<TEntity> set)
         {
             Set = set.ToArray();
+			if (set is IDisposable disposable) disposable.Dispose();
             Type = typeof(TEntity);
             if (Type == typeof(object)) Type = Set.FirstOrDefault(e => e != null)?.GetType() ?? typeof(object);
             Populate();

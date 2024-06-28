@@ -27,5 +27,7 @@ namespace SolidCP.EnterpriseServer.Data.Entities
 		public int Key { get; set; }
 
 		public int Id { get; set; }
+
+		public DateTime Date { get; set; }
 	}
 }

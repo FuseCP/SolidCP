@@ -14,6 +14,6 @@ namespace SolidCP.Providers
         {
             return ImmutableInterlocked.Update(ref KnownTypes, knownType => knownType.Add(type));
         }
-        public IEnumerable<Type> GetKnownTypes(ICustomAttributeProvider provider) => KnownTypes;
+        public static IEnumerable<Type> GetKnownTypes(ICustomAttributeProvider provider) => KnownTypes;
     }
 }
