@@ -20574,7 +20574,7 @@ BEGIN
         [Scope] uniqueidentifier NOT NULL,
         [Level] int NOT NULL,
         [Id] int NOT NULL,
-        [Date] datetime NOT NULL,
+        [Date] datetime2 NOT NULL,
         CONSTRAINT [PK_TempIds] PRIMARY KEY ([Key])
     );
 

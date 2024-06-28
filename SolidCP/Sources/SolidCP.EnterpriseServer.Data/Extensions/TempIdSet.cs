@@ -66,6 +66,19 @@ namespace SolidCP.EnterpriseServer.Data
 			}
 		}
 
+		public IQueryable<TempId> TempIds(int level = 0)
+		{
+			if (level == 0)
+			{
+				return Context.TempIds
+					.Where(id => id.Scope == Scope);
+			}
+			else
+			{
+				return Context.TempIds
+					.Where(id => id.Scope == Scope && id.Level == level);
+			}
+		}
 		public virtual void Add(int id, int level = 0)
 		{
 			var tempId = new TempId()
@@ -207,6 +220,19 @@ namespace SolidCP.EnterpriseServer.Data
 			}
 		}
 
+		public IQueryable<TempId> TempIds(int level = 0)
+		{
+			if (level == 0)
+			{
+				return Context.TempIds
+					.Where(id => id.Scope == Scope);
+			}
+			else
+			{
+				return Context.TempIds
+					.Where(id => id.Scope == Scope && id.Level == level);
+			}
+		}
 		public virtual void Add(DatedId id, int level = 0)
 		{
 			var tempId = new TempId()

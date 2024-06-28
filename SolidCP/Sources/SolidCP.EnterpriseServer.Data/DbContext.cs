@@ -109,7 +109,7 @@ namespace SolidCP.EnterpriseServer.Data
 #endif
         public int SaveChanges() => BaseContext.SaveChanges();
         public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken)) => BaseContext.SaveChangesAsync(cancellationToken);
-        public void Dispose() => BaseContext.Dispose();
+        public virtual void Dispose() => BaseContext.Dispose();
         public Action<string> Log { get; set; }
         private void WriteToLog(string msg) => Log?.Invoke(msg);
         public static void Init()

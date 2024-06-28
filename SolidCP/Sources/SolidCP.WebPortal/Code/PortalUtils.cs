@@ -388,7 +388,7 @@ namespace SolidCP.Portal
 			return DefaultPage.GetLocalizedPageName(pageId);
 		}
 
-		public static string SHA1(string plainText) => Providers.Cryptor.SHA1(plainText);
+		public static string SHA256(string plainText) => Providers.Cryptor.SHA256(plainText);
 
 		public static bool ValidatePin(string username, string pin)
 		{
@@ -438,7 +438,7 @@ namespace SolidCP.Portal
 			esAuthentication authService = new esAuthentication();
 			ConfigureEnterpriseServerProxy(authService, false);
 
-			UserInfo user = authService.GetUserByUsernamePassword(username, SHA1(password), ipAddress);
+			UserInfo user = authService.GetUserByUsernamePassword(username, SHA256(password), ipAddress);
 			FormsAuthenticationTicket ticket = CreateAuthTicket(user.Username, password, user.Role, rememberLogin);
 			return FormsAuthentication.Encrypt(ticket);
 		}
@@ -447,7 +447,7 @@ namespace SolidCP.Portal
 		{
 			esAuthentication authService = new esAuthentication();
 			ConfigureEnterpriseServerProxy(authService, false);
-			UserInfo user = authService.GetUserByUsernamePassword(username, SHA1(password), ipAddress);
+			UserInfo user = authService.GetUserByUsernamePassword(username, SHA256(password), ipAddress);
 
 			return user.MfaMode;
 		}
@@ -464,7 +464,7 @@ namespace SolidCP.Portal
 			esAuthentication authService = new esAuthentication();
 			ConfigureEnterpriseServerProxy(authService, false);
 
-			string passwordSH = SHA1(password);
+			string passwordSH = SHA256(password);
 
 			try
 			{

@@ -37,6 +37,7 @@ using System.Linq;
 using System.Xml.Linq;
 using System.Linq.Dynamic.Core;
 using System.Text;
+using System.Threading;
 
 #if !EF64
 using Microsoft.Data.SqlClient;
@@ -99,6 +100,14 @@ namespace SolidCP.EnterpriseServer
 
 		public DataProvider() : this(null) { }
 		public DataProvider(ControllerBase provider) { Provider = provider; }
+
+		private DataProvider local = null;
+		public DataProvider Local => local ??= new DataProvider();
+		public override void Dispose()
+		{
+			local?.Dispose();
+			base.Dispose();
+		}
 
 		//public string ConnectionString => ConfigSettings.ConnectionString;
 		private string ObjectQualifier
@@ -3058,35 +3067,34 @@ RETURN
 
 				if (!CheckActorUserRights(actorId, userId)) throw new AccessViolationException("You are not allowed to access this account");
 
-				int n = 0;
-				var parents = UserParents(actorId, userId)
-					.Select(u => new { UserId = u, Order = n++ })
-					.ToArray();
-				var users = Users
-					.Join(parents, u => u.UserId, p => p.UserId, (user, parent) => new { User = user, Order = parent.Order })
-					.OrderByDescending(u => u.Order)
-					.Select(u => new
-					{
-						u.User.UserId,
-						u.User.RoleId,
-						u.User.StatusId,
-						u.User.SubscriberNumber,
-						u.User.LoginStatusId,
-						u.User.FailedLogins,
-						u.User.OwnerId,
-						u.User.Created,
-						u.User.Changed,
-						u.User.IsDemo,
-						u.User.Comments,
-						u.User.IsPeer,
-						u.User.Username,
-						u.User.FirstName,
-						u.User.LastName,
-						u.User.Email,
-						u.User.CompanyName,
-						u.User.EcommerceEnabled
-					});
-				return EntityDataSet(users);
+				using (var parents = UserParents(actorId, userId).ToTempIdSet(this))
+				{
+					var users = Users
+						.Join(parents.TempIds(), u => u.UserId, p => p.Id, (user, parent) => new { User = user, Order = parent.Key })
+						.OrderByDescending(u => u.Order)
+						.Select(u => new
+						{
+							u.User.UserId,
+							u.User.RoleId,
+							u.User.StatusId,
+							u.User.SubscriberNumber,
+							u.User.LoginStatusId,
+							u.User.FailedLogins,
+							u.User.OwnerId,
+							u.User.Created,
+							u.User.Changed,
+							u.User.IsDemo,
+							u.User.Comments,
+							u.User.IsPeer,
+							u.User.Username,
+							u.User.FirstName,
+							u.User.LastName,
+							u.User.Email,
+							u.User.CompanyName,
+							u.User.EcommerceEnabled
+						});
+					return EntityDataSet(users);
+				}
 			}
 			else
 			{
@@ -3763,6 +3771,7 @@ AS
 
 				var user = Users
 					.Where(u => u.Username == username)
+					.AsEnumerable()
 					.Select(u => new UserInfoInternal()
 					{
 						UserId = u.UserId,
@@ -16297,22 +16306,26 @@ END
 				{
 					return HostingPlanQuotas
 						.Where(q => q.PlanId == package.PlanId)
-						.Join(Quotas.Where(q => q.QuotaTypeId != 3), hq => hq.QuotaId, q => q.QuotaId, (hq, q) => new ExceedingQuota()
+						.Join(Quotas.Where(q => q.QuotaTypeId != 3), hq => hq.QuotaId, q => q.QuotaId, (hq, q) => q)
+						.AsEnumerable()
+						.Select(q => new ExceedingQuota
 						{
 							QuotaId = q.QuotaId,
 							QuotaName = q.QuotaName,
-							QuotaValue = CheckExceedingQuota(packageId, q.QuotaId, q.QuotaTypeId)
+							QuotaValue = Local.CheckExceedingQuota(packageId, q.QuotaId, q.QuotaTypeId)
 						});
 				}
 				else // overriden quotas
 				{
 					return PackageQuotas
 						.Where(q => q.PackageId == packageId)
-						.Join(Quotas.Where(q => q.QuotaTypeId != 3), hq => hq.QuotaId, q => q.QuotaId, (hq, q) => new ExceedingQuota()
+						.Join(Quotas.Where(q => q.QuotaTypeId != 3), hq => hq.QuotaId, q => q.QuotaId, (hq, q) => q)
+						.AsEnumerable()
+						.Select(q => new ExceedingQuota
 						{
 							QuotaId = q.QuotaId,
 							QuotaName = q.QuotaName,
-							QuotaValue = CheckExceedingQuota(packageId, q.QuotaId, q.QuotaTypeId)
+							QuotaValue = Local.CheckExceedingQuota(packageId, q.QuotaId, q.QuotaTypeId)
 						});
 				}
 			}
@@ -16635,50 +16648,59 @@ RETURN
 
 				var packages = Packages
 					.Where(p => p.UserId == userId)
-					.Join(UsersDetailed, p => p.UserId, u => u.UserId, (p, u) => new
-					{
-						Package = p,
-						User = u
-					})
-					.GroupJoin(Servers, p => p.Package.ServerId, s => s.ServerId, (p, s) => new
-					{
-						p.Package,
-						p.User,
-						Server = s.SingleOrDefault()
-					})
-					.GroupJoin(HostingPlans, p => p.Package.PlanId, hp => hp.PlanId, (p, hp) => new
-					{
-						p.Package,
-						p.User,
-						p.Server,
-						HostingPlan = hp.SingleOrDefault()
-					})
 					.Select(p => new
 					{
-						p.Package.PackageId,
-						p.Package.ParentPackageId,
-						p.Package.PackageName,
-						p.Package.StatusId,
-						p.Package.PlanId,
-						p.Package.PurchaseDate,
-						p.Package.StatusIdChangeDate,
-						Comments = GetItemComments(p.Package.PackageId, "PACKAGE", actorId),
+						p.PackageId,
+						p.ParentPackageId,
+						p.PackageName,
+						p.StatusId,
+						p.PlanId,
+						p.PurchaseDate,
+						p.StatusIdChangeDate,
 						// server
-						ServerId = p.Package.ServerId != null ? p.Package.ServerId : 0,
+						ServerId = p.ServerId ?? 0,
 						ServerName = p.Server != null ? p.Server.ServerName : "None",
 						ServerComments = p.Server != null ? p.Server.Comments : "",
 						VirtualServer = p.Server != null ? p.Server.VirtualServer : true,
 						// hosting plan
-						p.HostingPlan.PlanName,
+						p.Plan.PlanName,
 						// user
-						p.Package.UserId,
+						p.UserId,
 						p.User.Username,
 						p.User.FirstName,
 						p.User.LastName,
-						p.User.FullName,
+						FullName = p.User.FirstName + " " + p.User.LastName,
 						p.User.RoleId,
 						p.User.Email,
-						p.Package.DefaultTopPackage
+						p.DefaultTopPackage
+					})
+					.AsEnumerable()
+					.Select(p => new
+					{
+						p.PackageId,
+						p.ParentPackageId,
+						p.PackageName,
+						p.StatusId,
+						p.PlanId,
+						p.PurchaseDate,
+						p.StatusIdChangeDate,
+						Comments = Local.GetItemComments(p.PackageId, "PACKAGE", actorId),
+						// server
+						p.ServerId,
+						p.ServerName,
+						p.ServerComments,
+						p.VirtualServer,
+						// hosting plan
+						p.PlanName,
+						// user
+						p.UserId,
+						p.Username,
+						p.FirstName,
+						p.LastName,
+						p.FullName,
+						p.RoleId,
+						p.Email,
+						p.DefaultTopPackage
 					});
 				return EntityDataSet(packages);
 			}
@@ -35861,9 +35883,9 @@ RETURN
 					new SqlParameter("@SfBUserPlanId", (sfbUserPlanId == 0) ? (object)DBNull.Value : (object)sfbUserPlanId));
 			}
 		}
-#endregion
+		#endregion
 
-		/*
+		#region Diverse Methods
 		public int GetPackageIdByName(string Name)
 		{
 			const bool UseEntityFrameworkForGetPackageIdByName = true;
@@ -35872,10 +35894,11 @@ RETURN
 
 			if (UseEntityFrameworkForGetPackageIdByName || UseEntityFramework)
 			{
+				Name = Name.ToUpper();
 				packageId = Packages
-					.Where(p => string.Equals(Name, p.PackageName, StringComparison.OrdinalIgnoreCase))
+					.Where(p => Name == p.PackageName.ToUpper())
 					.Select(p => (int?)p.PackageId)
-					.SingleOrDefault() ?? -1;
+					.FirstOrDefault() ?? -1;
 				return packageId;
 			}
 			else
@@ -35898,8 +35921,7 @@ RETURN
 
 				return packageId;
 			}
-		}*/
-
+		}
 		public int GetServiceIdByProviderForServer(int providerId, int packageId)
 		{
 			if (UseEntityFramework)
@@ -35929,6 +35951,7 @@ WHERE PackageServices.PackageID = @PackageID AND Services.ProviderID = @Provider
 				return -1;
 			}
 		}
+		#endregion
 
 		#region Helicon Zoo
 

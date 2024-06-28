@@ -14169,7 +14169,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
 						.HasColumnType("int");
 
 					b.Property<DateTime>("Date")
-						.HasColumnType("datetime");
+						.HasColumnType("datetime2");
 
 					b.Property<int>("Level")
                         .HasColumnType("int");

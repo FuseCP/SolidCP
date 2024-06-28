@@ -431,7 +431,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                     Scope = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Level = table.Column<int>(type: "int", nullable: false),
                     Id = table.Column<int>(type: "int", nullable: false),
-                    Date = table.Column<int>(type: "datetime", nullable: false)
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
