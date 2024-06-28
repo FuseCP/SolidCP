@@ -1143,10 +1143,10 @@ RETURN
 					var count = users.Count();
 
 					users = users.Skip(startRow).Take(maximumRows);
-
-					return EntityDataSet(
-						count,
-						users.Select(u => new
+					
+					var usersProjected = users
+						.AsEnumerable()
+						.Select(u => new
 						{
 							u.UserId,
 							u.RoleId,
@@ -1158,7 +1158,7 @@ RETURN
 							u.Created,
 							u.Changed,
 							u.IsDemo,
-							Comments = GetItemComments(u.UserId, "USER", actorId),
+							Comments = Local.GetItemComments(u.UserId, "USER", actorId),
 							u.IsPeer,
 							u.Username,
 							u.FirstName,
@@ -1174,7 +1174,9 @@ RETURN
 							u.PackagesNumber,
 							u.CompanyName,
 							u.EcommerceEnabled
-						}));
+						});
+
+					return EntityDataSet(count, usersProjected);
 				}
 			}
 			else
@@ -6074,22 +6076,22 @@ RETURN
 				// virtual groups
 				// TODO is this correct LEFT OUTER JOIN?
 				var virtGroups = ResourceGroups
-					.GroupJoin(VirtualGroups, rg => rg.GroupId, vg => vg.GroupId, (rg, vgs) => new
+					.Where(g => (isAdmin || forAutodiscover) && g.ShowGroup == true)
+					.GroupJoin(VirtualGroups,
+						rg => new { rg.GroupId, ServerId = serverId },
+						vg => new { vg.GroupId, vg.ServerId }, (rg, vgs) => new
 					{
 						ResourceGroup = rg,
 						VirtualGroup = vgs
-							.Where(vg => vg.ServerId == serverId)
-							.SingleOrDefault()
 					})
-					.Where(g => (isAdmin || forAutodiscover) && g.ResourceGroup.ShowGroup == true)
 					.OrderBy(g => g.ResourceGroup.GroupOrder)
-					.Select(g => new
+					.SelectMany(g => g.VirtualGroup.DefaultIfEmpty(), (g, vgs) => new
 					{
-						VirtualGroupId = (int?)(g.VirtualGroup != null ? g.VirtualGroup.VirtualGroupId : null),
+						VirtualGroupId = (int?)(vgs != null ? vgs.VirtualGroupId : null),
 						g.ResourceGroup.GroupId,
 						g.ResourceGroup.GroupName,
-						DistributionType = (g.VirtualGroup != null ? g.VirtualGroup.DistributionType : null) ?? 1,
-						BindDistributionToPrimary = (g.VirtualGroup != null ? g.VirtualGroup.BindDistributionToPrimary : null) ?? true
+						DistributionType = (vgs != null ? vgs.DistributionType : null) ?? 1,
+						BindDistributionToPrimary = (vgs != null ? vgs.BindDistributionToPrimary : null) ?? true
 					});
 
 				var services = VirtualServices
@@ -6115,11 +6117,7 @@ RETURN
 						j.Server.ServerName
 					});
 
-				var set = new DataSet();
-				set.Tables.Add(EntityDataTable(virtGroups));
-				set.Tables.Add(EntityDataTable(services));
-
-				return set;
+				return EntityDataSet(virtGroups, services);
 			}
 			else
 			{
@@ -7366,7 +7364,12 @@ END
 							.GroupJoin(PackageVlans, v => v.VlanId, p => p.VlanId, (v, ps) => new
 							{
 								Vlan = v,
-								HasPackage = ps.Any(),
+								PackageVlans = ps
+							})
+							.SelectMany(g => g.PackageVlans.DefaultIfEmpty(), (g, ps) => new
+							{
+								p.Vlan,
+								HasPackage = ps != null,
 							})
 							.Where(g => !g.HasPackage && (g.Vlan.ServerId == serverId || g.Vlan.ServerId == null))
 							.Select(g => new
@@ -7399,8 +7402,13 @@ END
 								g.Vlan.ServerId == null)
 							.GroupJoin(PackageVlans, g => g.Vlan.VlanId, p => p.VlanId, (g, ps) => new
 							{
-								Vlan = g.Vlan,
-								HasPackages = ps.Any()
+								g.Vlan,
+								PackageVlans = ps
+							})
+							.SelectMany(g => g.PackageVlans.DefaultIfEmpty(), (g, ps) => new
+							{
+								g.Vlan,
+								HasPackage = ps != null,
 							})
 							.Where(g => !g.HasPackages)
 							.Select(g => new
@@ -8398,9 +8406,9 @@ RETURN
 					.GroupJoin(IpAddresses, r => r.IpAddressId, ip => ip.AddressId, (r, ips) => new
 					{
 						Record = r,
-						IpAddress = ips.SingleOrDefault()
+						IpAddresses = ips
 					})
-					.Select(g => new
+					.SelectMany(g => g.IpAddresses.DefaultIfEmpty(), (g, ip) = new
 					{
 						g.Record.RecordId,
 						g.Record.ServiceId,
@@ -15782,46 +15790,65 @@ RETURN
 				var groups = ResourceGroups
 					.Where(r => r.ShowGroup == true)
 					.OrderBy(r => r.GroupOrder)
-					.GroupJoin(HostingPlanResources, g => g.GroupId, hr => hr.GroupId, (g, hr) => new
-					{
-						Group = g,
-						HostingPlan = hr.SingleOrDefault()
-					})
-					.Where(g => g.HostingPlan.PlanId == planId)
-					.Select(g => new
+					.GroupJoin(HostingPlanResources,
+						g => new { g.GroupId, PlanId = planId },
+						hr => new { hr.GroupId, hr.PlanId }, (g, hr) => new
+						{
+							Group = g,
+							HostingPlans = hr
+						})
+					.SelectMany(g => g.HostingPlans.DefaultIfEmpty(), (g, plan) => new
 					{
 						g.Group.GroupId,
 						g.Group.GroupName,
-						Enabled = g.HostingPlan != null,
-						// ParentEnabled = GetPackageAllocatedResource(packageID, g.Goup.GroupId, serverId),
-						ParentEnabled = g.Group.GroupName == "Service Levels" ?
-							GetPackageServiceLevelResource(packageId, g.Group.GroupId, serverId) :
-							GetPackageAllocatedResource(packageId, g.Group.GroupId, serverId),
-						CalculateDiskSpace = g.HostingPlan != null ? g.HostingPlan.CalculateDiskSpace : true,
-						CalculateBandwidth = g.HostingPlan != null ? g.HostingPlan.CalculateBandwidth : true
+						Enabled = plan != null,
+						CalculateDiskSpace = plan != null ? plan.CalculateDiskSpace : true,
+						CalculateBandwidth = plan != null ? plan.CalculateBandwidth : true
+					})
+					.AsEnumerable()
+					.Select(g => new
+					{
+						g.GroupId,
+						g.GroupName,
+						g.Enabled,
+						ParentEnabled = g.GroupName == "Service Levels" ?
+							Local.GetPackageServiceLevelResource(packageId, g.GroupId, serverId) :
+							Local.GetPackageAllocatedResource(packageId, g.GroupId, serverId),
+						g.CalculateDiskSpace,
+						g.CalculateBandwidth
 					});
 
 				// get quotas by groups
 				var quotas = Quotas
 					.Where(q => q.HideQuota != true)
 					.OrderBy(q => q.QuotaOrder)
-					.GroupJoin(HostingPlanQuotas, q => q.QuotaId, hq => hq.QuotaId, (q, hq) => new
-					{
-						Quota = q,
-						HostingPlanQuota = hq
-							.Where(q => q.PlanId == planId)
-							.SingleOrDefault()
-					})
-					.Select(q => new
+					.GroupJoin(HostingPlanQuotas,
+						q => new { q.QuotaId, PlanId = planId },
+						hq => new { hq.QuotaId, hq.PlanId }, (q, hq) => new
+						{
+							Quota = q,
+							HostingPlanQuotas = hq
+						})
+					.SelectMany(q => q.HostingPlanQuotas.DefaultIfEmpty(), (q, hq) => new
 					{
 						q.Quota.QuotaId,
 						q.Quota.GroupId,
 						q.Quota.QuotaName,
 						q.Quota.QuotaDescription,
 						q.Quota.QuotaTypeId,
-						QuotaValue = q.HostingPlanQuota != null ? q.HostingPlanQuota.QuotaValue : 0,
-						ParentQuotaValue = GetPackageAllocatedQuota(packageId, q.Quota.QuotaId),
-					});
+						QuotaValue = hq != null ? hq.QuotaValue : 0
+					})
+					.AsEnumerable()
+					.Select(q => new
+					{
+						q.QuotaId,
+						q.GroupId,
+						q.QuotaName,
+						q.QuotaDescription,
+						q.QuotaTypeId,
+						q.QuotaValue,
+						ParentQuotaValue = Local.GetPackageAllocatedQuota(packageId, q.QuotaId),
+					});	
 
 				return EntityDataSet(groups, quotas);
 			}
@@ -17234,59 +17261,75 @@ RETURN
 
 				var hasUserRights = CheckActorUserRights(actorId, userId);
 
-				var userChildren = UsersTree(userId, true);
-
-				var packages = Packages
-					.Where(p => hasUserRights && p.UserId != userId)
-					.Join(userChildren, p => p.UserId, u => u, (p, u) => p)
-					.Join(UsersDetailed, p => p.UserId, u => u.UserId, (p, u) => new
-					{
-						Package = p,
-						User = u
-					})
-					.Join(Servers, p => p.Package.ServerId, s => s.ServerId, (p, s) => new
-					{
-						p.Package,
-						p.User,
-						Server = s
-					})
-					.Join(HostingPlans, p => p.Package.PlanId, hp => hp.PlanId, (p, hp) => new
-					{
-						p.Package.PackageId,
-						p.Package.PackageName,
-						p.Package.StatusId,
-						p.Package.PurchaseDate,
-						Comments = GetItemComments(p.Package.PackageId, "PACKAGE", actorId),
-						// server
-						p.Package.ServerId,
-						ServerName = p.Server.ServerName != null ? p.Server.ServerName : "None",
-						ServerComments = p.Server.Comments != null ? p.Server.Comments : "",
-						p.Server.VirtualServer,
-						// hosting plan
-						p.Package.PlanId,
-						hp.PlanName,
-						// user
-						p.Package.UserId,
-						p.User.Username,
-						p.User.FirstName,
-						p.User.LastName,
-						p.User.FullName,
-						p.User.RoleId,
-						p.User.Email
-					});
-
-				if (!string.IsNullOrEmpty(filterValue) && !string.IsNullOrEmpty(filterColumn))
+				using (var userChildren = UsersTree(userId, true))
 				{
-					packages = packages.Where($"{filterColumn}=@0", filterValue);
+					var packages = Packages
+						.Where(p => hasUserRights && p.UserId != userId)
+						.Join(userChildren, p => p.UserId, u => u, (p, u) => p)
+						.Select(p => new
+						{
+							p.PackageId,
+							p.PackageName,
+							p.StatusId,
+							p.PurchaseDate,
+							// server
+							p.ServerId,
+							ServerName = p.Server.ServerName != null ? p.Server.ServerName : "None",
+							ServerComments = p.Server.Comments != null ? p.Server.Comments : "",
+							p.Server.VirtualServer,
+							// hosting plan
+							p.PlanId,
+							p.Plan.PlanName,
+							// user
+							p.UserId,
+							p.User.Username,
+							p.User.FirstName,
+							p.User.LastName,
+							FullName = p.User.FirstName + " " + p.User.LastName,
+							p.User.RoleId,
+							p.User.Email
+						});
+
+					if (!string.IsNullOrEmpty(filterValue) && !string.IsNullOrEmpty(filterColumn))
+					{
+						packages = packages.Where($"{filterColumn}=@0", filterValue);
+					}
+
+					var count = packages.Count();
+
+					if (!string.IsNullOrEmpty(sortColumn)) packages = packages.OrderBy(sortColumn);
+
+					packages = packages.Skip(startRow).Take(maximumRows);
+
+					var packagesProjected = packages
+						.AsEnumerable()
+						.Select(p => new
+						{
+							p.PackageId,
+							p.PackageName,
+							p.StatusId,
+							p.PurchaseDate,
+							Comments = Local.GetItemComments(p.PackageId, "PACKAGE", actorId),
+							// server
+							p.ServerId,
+							p.ServerName,
+							p.ServerComments,
+							p.VirtualServer,
+							// hosting plan
+							p.PlanId,
+							p.PlanName,
+							// user
+							p.UserId,
+							p.Username,
+							p.FirstName,
+							p.LastName,
+							p.FullName,
+							p.RoleId,
+							p.Email
+						});
+
+					return EntityDataSet(count, packagesProjected);
 				}
-
-				var count = packages.Count();
-
-				if (!string.IsNullOrEmpty(sortColumn)) packages = packages.OrderBy(sortColumn);
-
-				packages = packages.Skip(startRow).Take(maximumRows);
-
-				return EntityDataSet(count, packages);
 			}
 			else
 			{
@@ -17415,39 +17458,27 @@ RETURN
 						(statusId == 0 || statusId > 0 && p.StatusId == statusId) &&
 						(planId == 0 || planId > 0 && p.PlanId == planId) &&
 						(serverId == 0 || serverId > 0 && p.ServerId == serverId))
-					.Join(UsersDetailed, p => p.UserId, u => u.UserId, (p, u) => new
+					.Select(p => new
 					{
-						Package = p,
-						User = u
-					})
-					.Join(Servers, p => p.Package.ServerId, s => s.ServerId, (p, s) => new
-					{
-						p.Package,
-						p.User,
-						Server = s
-					})
-					.Join(HostingPlans, p => p.Package.PlanId, hp => hp.PlanId, (p, hp) => new
-					{
-						p.Package.PackageId,
-						p.Package.PackageName,
-						p.Package.StatusId,
-						p.Package.PurchaseDate,
-						p.Package.StatusIdChangeDate,
-						Comments = GetItemComments(p.Package.PackageId, "PACKAGE", actorId),
+						p.PackageId,
+						p.PackageName,
+						p.StatusId,
+						p.PurchaseDate,
+						p.StatusIdChangeDate,
 						// server
-						p.Package.ServerId,
+						p.ServerId,
 						ServerName = p.Server.ServerName != null ? p.Server.ServerName : "None",
 						ServerComments = p.Server.Comments != null ? p.Server.Comments : "",
 						p.Server.VirtualServer,
 						// hosting plan
-						p.Package.PlanId,
-						hp.PlanName,
+						p.PlanId,
+						p.Plan.PlanName,
 						// user
-						p.Package.UserId,
+						p.UserId,
 						p.User.Username,
 						p.User.FirstName,
 						p.User.LastName,
-						p.User.FullName,
+						FullName = p.User.FirstName + " " + p.User.LastName,
 						p.User.RoleId,
 						p.User.Email
 					});
@@ -17472,7 +17503,34 @@ RETURN
 
 				packages = packages.Skip(startRow).Take(maximumRows);
 
-				return EntityDataSet(count, packages);
+				var packagesProjected = packages
+					.AsEnumerable()
+					.Select(p => new {
+						p.PackageId,
+						p.PackageName,
+						p.StatusId,
+						p.PurchaseDate,
+						p.StatusIdChangeDate,
+						Comments = Local.GetItemComments(p.PackageId, "PACKAGE", actorId),
+						// server
+						p.ServerId,
+						p.ServerName,
+						p.ServerComments,
+						p.VirtualServer,
+						// hosting plan
+						p.PlanId,
+						p.PlanName,
+						// user
+						p.UserId,
+						p.Username,
+						p.FirstName,
+						p.LastName,
+						p.FullName,
+						p.RoleId,
+						p.Email
+					});
+
+				return EntityDataSet(count, packagesProjected);
 			}
 			else
 			{
@@ -18605,26 +18663,41 @@ RETURN
 					.Where(p => p.PackageId == packageId)
 					.Select(p => new { p.PlanId, p.ParentPackageId })
 					.FirstOrDefault();
+				var packagePlanId = package?.PlanId;
+				var parentPackageId = package?.ParentPackageId;
+				
 				// get resource groups
 				var groups = ResourceGroups
 					.Where(r => r.GroupName != "Service Levels" && GetPackageAllocatedResource(packageId, r.GroupId, 0) ||
 						r.GroupName == "Service Levels" && GetPackageServiceLevelResource(packageId, r.GroupId, 0))
 					.OrderBy(r => r.GroupOrder)
-					.GroupJoin(HostingPlanResources.Where(r => r.PlanId == package.PlanId), r => r.GroupId, hr => hr.GroupId, (r, hr) => new
-					{
-						Group = r,
-						HostingPlan = hr.SingleOrDefault()
-					})
-					.Select(g => new
+					.GroupJoin(HostingPlanResources,
+						r => new { r.GroupId, PlanId = packagePlanId },
+						hr => new { hr.GroupId, PlanId = (int?)hr.PlanId },
+						(r, hr) => new
+						{
+							Group = r,
+							HostingPlans = hr
+						})
+					.SelectMany(g => g.HostingPlans.DefaultIfEmpty(), (g, hr) => new
 					{
 						g.Group.GroupId,
 						g.Group.GroupName,
-						CalculateDiskSpace = g.HostingPlan != null ? g.HostingPlan.CalculateDiskSpace : false,
-						CalculateBandwidth = g.HostingPlan != null ? g.HostingPlan.CalculateBandwidth : false,
-						ParentEnabled = g.Group.GroupName == "Service Levels" ?
-							GetPackageServiceLevelResource(package.ParentPackageId, g.Group.GroupId, 0) :
-							GetPackageAllocatedResource(package.ParentPackageId, g.Group.GroupId, 0)
+						CalculateDiskSpace = hr != null ? hr.CalculateDiskSpace : false,
+						CalculateBandwidth = hr != null ? hr.CalculateBandwidth : false,
+					})
+					.AsEnumerable()
+					.Select(g => new
+					{
+						g.GroupId,
+						g.GroupName,
+						g.CalculateDiskSpace,
+						g.CalculateBandwidth,
+						ParentEnabled = g.GroupName == "Service Levels" ?
+							Local.GetPackageServiceLevelResource(package.ParentPackageId, g.GroupId, 0) :
+							Local.GetPackageAllocatedResource(package.ParentPackageId, g.GroupId, 0)
 					});
+
 				// return quotas
 				var nofOrgs = GetPackageAllocatedQuota(packageId, 205); // 205 - HostedSolution.Organizations
 				if (nofOrgs < 1) nofOrgs = 1;
@@ -18632,10 +18705,11 @@ RETURN
 				var quotas = Quotas
 					.Where(q => q.HideQuota != true)
 					.OrderBy(q => q.QuotaOrder)
+					.AsEnumerable()
 					.Select(q => new
 					{
 						Quota = q,
-						AllocatedQuota = GetPackageAllocatedQuota(packageId, q.QuotaId)
+						AllocatedQuota = Local.GetPackageAllocatedQuota(packageId, q.QuotaId)
 					})
 					.Select(q => new
 					{
@@ -18648,8 +18722,8 @@ RETURN
 							q.AllocatedQuota * nofOrgs :
 							q.AllocatedQuota,
 						QuotaValuePerOrganization = q.AllocatedQuota,
-						ParentQuotaValue = GetPackageAllocatedQuota(package.ParentPackageId, q.Quota.QuotaId),
-						QuotaUsedValue = CalculateQuotaUsage(packageId, q.Quota.QuotaId),
+						ParentQuotaValue = Local.GetPackageAllocatedQuota(package.ParentPackageId, q.Quota.QuotaId),
+						QuotaUsedValue = Local.CalculateQuotaUsage(packageId, q.Quota.QuotaId),
 						q.Quota.PerOrganization
 					});
 				return EntityDataSet(groups, quotas);
@@ -18766,10 +18840,11 @@ RETURN
 				var quotas = Quotas
 					.Where(q => q.HideQuota != true)
 					.OrderBy(q => q.QuotaOrder)
+					.AsEnumerable()
 					.Select(q => new
 					{
 						Quota = q,
-						AllocatedQuota = GetPackageAllocatedQuota(packageId, q.QuotaId)
+						AllocatedQuota = Local.GetPackageAllocatedQuota(packageId, q.QuotaId)
 					})
 					.Select(q => new
 					{
@@ -18782,8 +18857,8 @@ RETURN
 							q.AllocatedQuota * nofOrgs :
 							q.AllocatedQuota,
 						QuotaValuePerOrganization = q.AllocatedQuota,
-						ParentQuotaValue = GetPackageAllocatedQuota(package.ParentPackageId, q.Quota.QuotaId),
-						QuotaUsedValue = CalculateQuotaUsage(packageId, q.Quota.QuotaId),
+						ParentQuotaValue = Local.GetPackageAllocatedQuota(package.ParentPackageId, q.Quota.QuotaId),
+						QuotaUsedValue = Local.CalculateQuotaUsage(packageId, q.Quota.QuotaId),
 						q.Quota.PerOrganization
 					});
 				return EntityDataSet(groups, quotas);
@@ -18895,10 +18970,11 @@ RETURN
 				var quotas = Quotas
 					.Where(q => q.HideQuota != true)
 					.OrderBy(q => q.QuotaOrder)
+					.AsEnumerable()
 					.Select(q => new
 					{
 						Quota = q,
-						AllocatedQuota = GetPackageAllocatedQuota(packageId, q.QuotaId)
+						AllocatedQuota = Local.GetPackageAllocatedQuota(packageId, q.QuotaId)
 					})
 					.Select(q => new
 					{
@@ -18911,8 +18987,8 @@ RETURN
 							q.AllocatedQuota * nofOrgs :
 							q.AllocatedQuota,
 						QuotaValuePerOrganization = q.AllocatedQuota,
-						ParentQuotaValue = GetPackageAllocatedQuota(package.ParentPackageId, q.Quota.QuotaId),
-						QuotaUsedValue = CalculateQuotaUsage(packageId, q.Quota.QuotaId),
+						ParentQuotaValue = Local.GetPackageAllocatedQuota(package.ParentPackageId, q.Quota.QuotaId),
+						QuotaUsedValue = Local.CalculateQuotaUsage(packageId, q.Quota.QuotaId),
 						q.Quota.PerOrganization
 					});
 				return EntityDataSet(groups, quotas);
@@ -20742,10 +20818,11 @@ RETURN
 
 				var quotas = Quotas
 					.Where(q => q.QuotaName == quotaName)
+					.AsEnumerable()
 					.Select(q => new
 					{
 						Quota = q,
-						AllocatedQuota = GetPackageAllocatedQuota(packageId, q.QuotaId)
+						AllocatedQuota = Local.GetPackageAllocatedQuota(packageId, q.QuotaId)
 					})
 					.Select(q => new {
 						q.Quota.QuotaId,
@@ -20755,7 +20832,7 @@ RETURN
 						QuotaAllocatedValue = q.Quota.PerOrganization == 1 && q.AllocatedQuota != -1 ?
 							q.AllocatedQuota * orgsCount : q.AllocatedQuota,
 						QuotaAllocatedValuePerOrganization = q.AllocatedQuota,
-						QuotaUsedValue = CalculateQuotaUsage(packageId, q.Quota.QuotaId)
+						QuotaUsedValue = Local.CalculateQuotaUsage(packageId, q.Quota.QuotaId)
 					});
 				return EntityDataReader(quotas);
 			}
@@ -21474,7 +21551,7 @@ RETURN
 					.Select(p => new
 					{
 						PackageId = p.Key,
-						QuotaValue = GetPackageAllocatedQuota(p.Key, 51),
+						// QuotaValue = GetPackageAllocatedQuota(p.Key, 51),
 						Bandwidth = p.Sum(s => s.PB.BytesSent + s.PB.BytesReceived)
 					});
 				var packages = Packages
@@ -21482,19 +21559,25 @@ RETURN
 						packageId != -1 && p.ParentPackageId == packageId)
 					.GroupJoin(packagesGrouped, p => p.PackageId, pg => pg.PackageId, (p, pg) => new
 					{
-						p.PackageId,
-						p.PackageName,
-						p.StatusId,
-						p.UserId,
-						PG = pg.SingleOrDefault()
+						Package = p,
+						PackageGroup = pg
+					})
+					.SelectMany(p => p.PackageGroup.DefaultIfEmpty(), (p, pg) => new
+					{
+						p.Package.PackageId,
+						p.Package.PackageName,
+						p.Package.StatusId,
+						p.Package.UserId,
+						Bandwidth = pg != null ? pg.Bandwidth : 0,
+						GroupedPackageId = pg != null ? (int?)pg.PackageId : null
 					})
 					.Join(UsersDetailed, p => p.UserId, u => u.UserId, (p, u) => new
 					{
 						p.PackageId,
-						QuotaValue = p.PG != null ? p.PG.QuotaValue : 0,
-						Bandwith = p.PG != null ? p.PG.Bandwidth : 0,
-						UsagePercentage = p.PG != null ? (p.PG.QuotaValue > 0 ? p.PG.Bandwidth * 100 / p.PG.QuotaValue : 0) : 0,
-						PackagesNumber = Packages.Count(np => np.ParentPackageId == p.PackageId),
+						p.Bandwidth,
+						p.GroupedPackageId,
+						//UsagePercentage = p.PG != null ? (p.PG.QuotaValue > 0 ? p.PG.Bandwidth * 100 / p.PG.QuotaValue : 0) : 0,
+						//PackagesNumber = Packages.Count(np => np.ParentPackageId == p.PackageId),
 						p.PackageName,
 						p.StatusId,
 						p.UserId,
@@ -21504,17 +21587,78 @@ RETURN
 						u.FullName,
 						u.RoleId,
 						u.Email,
-						UserComments = GetItemComments(u.UserId, "USER", actorId)
+						//UserComments = GetItemComments(u.UserId, "USER", actorId)
 					});
 
 				var count = packages.Count();
 
-				if (string.IsNullOrEmpty(sortColumn)) packages = packages.OrderByDescending(p => p.UsagePercentage);
-				else packages = packages.OrderBy(sortColumn);
+				if (!string.IsNullOrEmpty(sortColumn) && !sortColumn.StartsWith("PackagesNumber") &&
+					!sortColumn.StartsWith("QuotaValue"))
+				{
+					packages = packages.OrderBy(sortColumn);
+					packages = packages.Skip(startRow).Take(maximumRows);
 
-				packages = packages.Skip(startRow).Take(maximumRows);
+				}
 
-				return EntityDataSet(count, packages);
+				var packagesProjected = packages
+					.AsEnumerable()
+					.Select(p => new
+					{
+						Package = p,
+						QuotaValue = p.GroupedPackageId != null ?
+							Local.GetPackageAllocatedQuota(p.GroupedPackageId, 51) : 0
+					})
+					.Select(p => new
+					{
+						p.Package.PackageId,
+						p.Package.Bandwidth,
+						p.Package.PackageName,
+						p.QuotaValue,
+						UsagePercentage = (int)(p.QuotaValue > 0 ? p.Package.Bandwidth * 100 / p.QuotaValue : 0),
+						PackagesNumber = Local.Packages.Count(np => np.ParentPackageId == p.Package.PackageId),
+						p.Package.StatusId,
+						p.Package.UserId,
+						p.Package.Username,
+						p.Package.FirstName,
+						p.Package.LastName,
+						p.Package.FullName,
+						p.Package.RoleId,
+						p.Package.Email,
+						UserComments = Local.GetItemComments(p.Package.UserId, "USER", actorId)
+					});
+
+				if (string.IsNullOrEmpty(sortColumn))
+				{
+					packagesProjected = packagesProjected
+						.OrderByDescending(p => p.UsagePercentage)
+						.Skip(startRow).Take(maximumRows);
+				}
+				else if (sortColumn.StartsWith("PackagesNumber"))
+				{
+					if (sortColumn.EndsWith(" desc", StringComparison.OrdinalIgnoreCase))
+					{
+						packagesProjected = packagesProjected.OrderByDescending(p => p.PackagesNumber);
+					}
+					else
+					{
+						packagesProjected = packagesProjected.OrderBy(p => p.PackagesNumber);
+					}
+					packagesProjected = packagesProjected.Skip(startRow).Take(maximumRows);
+				}
+				else if (sortColumn.StartsWith("QuotaValue"))
+				{
+					if (sortColumn.EndsWith(" desc", StringComparison.OrdinalIgnoreCase))
+					{
+						packagesProjected = packagesProjected.OrderByDescending(p => p.QuotaValue);
+					}
+					else
+					{
+						packagesProjected = packagesProjected.OrderBy(p => p.QuotaValue);
+					}
+					packagesProjected = packagesProjected.Skip(startRow).Take(maximumRows);
+				}
+
+				return EntityDataSet(count, packagesProjected);
 			}
 			else
 			{
@@ -21655,27 +21799,34 @@ RETURN
 					.Select(p => new
 					{
 						PackageId = p.Key,
-						QuotaValue = GetPackageAllocatedQuota(p.Key, 51),
-						Diskspace = (float)(p.Sum(s => (long?)s.PD.DiskSpace) ?? 0) / 1024 / 1024
+						// QuotaValue = GetPackageAllocatedQuota(p.Key, 51),
+						Diskspace = p.Sum(s => s.PD.DiskSpace) / 1024 / 1024
 					});
 				var packages = Packages
 					.Where(p => packageId == -1 && p.UserId == userId ||
 						packageId != -1 && p.ParentPackageId == packageId)
 					.GroupJoin(packagesGrouped, p => p.PackageId, pg => pg.PackageId, (p, pg) => new
 					{
-						p.PackageId,
-						p.PackageName,
-						p.StatusId,
-						p.UserId,
-						PG = pg.SingleOrDefault()
+						Package = p,
+						PackageGroup = pg
+					})
+					.SelectMany(p => p.PackageGroup.DefaultIfEmpty(), (p, pg) => new
+					{
+						p.Package.PackageId,
+						p.Package.PackageName,
+						p.Package.StatusId,
+						p.Package.UserId,
+						GroupedPackageId = pg != null ? (int?)pg.PackageId : null,
+						Diskspace = pg != null ? pg.Diskspace : 0
 					})
 					.Join(UsersDetailed, p => p.UserId, u => u.UserId, (p, u) => new
 					{
 						p.PackageId,
-						QuotaValue = p.PG != null ? p.PG.QuotaValue : 0,
-						Diskspace = p.PG != null ? p.PG.Diskspace : 0,
-						UsagePercentage = p.PG != null ? (p.PG.QuotaValue > 0 ? p.PG.Diskspace * 100 / p.PG.QuotaValue : 0) : 0,
-						PackagesNumber = Packages.Count(np => np.ParentPackageId == p.PackageId),
+						p.GroupedPackageId,
+						//QuotaValue = p.PG != null ? p.PG.QuotaValue : 0,
+						p.Diskspace,
+						//UsagePercentage = p.PG != null ? (p.PG.QuotaValue > 0 ? p.PG.Diskspace * 100 / p.PG.QuotaValue : 0) : 0,
+						//PackagesNumber = Packages.Count(np => np.ParentPackageId == p.PackageId),
 						p.PackageName,
 						p.StatusId,
 						p.UserId,
@@ -21685,17 +21836,80 @@ RETURN
 						u.FullName,
 						u.RoleId,
 						u.Email,
-						UserComments = GetItemComments(u.UserId, "USER", actorId)
+						//UserComments = GetItemComments(u.UserId, "USER", actorId)
 					});
 
 				var count = packages.Count();
 
-				if (string.IsNullOrEmpty(sortColumn)) packages = packages.OrderByDescending(p => p.UsagePercentage);
-				else packages = packages.OrderBy(sortColumn);
+				if (!string.IsNullOrEmpty(sortColumn) && !sortColumn.StartsWith("PackagesNumber") &&
+					!sortColumn.StartsWith("QuotaValue"))
+				{
+					packages = packages.OrderBy(sortColumn);
+					packages = packages.Skip(startRow).Take(maximumRows);
+				}
 
-				packages = packages.Skip(startRow).Take(maximumRows);
+				var packagesProjected = packages
+					.AsEnumerable()
+					.Select(p => new
+					{
+						Package = p,
+						QuotaValue = p.GroupedPackageId != null ?
+							Local.GetPackageAllocatedQuota(p.GroupedPackageId, 51) : 0,
+					})
+					.Select(p => new
+					{
+						p.Package.PackageId,
+						p.QuotaValue,
+						p.Package.Diskspace,
+						UsagePercentage = (int)(p.QuotaValue > 0 ? p.Package.Diskspace * 100 / p.QuotaValue : 0),
+						PackagesNumber = Local.Packages.Count(np => np.ParentPackageId == p.Package.PackageId),
+						p.Package.PackageName,
+						p.Package.StatusId,
+						p.Package.UserId,
+						p.Package.Username,
+						p.Package.FirstName,
+						p.Package.LastName,
+						p.Package.FullName,
+						p.Package.RoleId,
+						p.Package.Email,
+						UserComments = Local.GetItemComments(p.Package.UserId, "USER", actorId)
+					});
 
-				return EntityDataSet(count, packages);
+				if (string.IsNullOrEmpty(sortColumn))
+				{
+					packagesProjected = packagesProjected
+						.OrderByDescending(p => p.UsagePercentage);
+					packagesProjected = packagesProjected.Skip(startRow).Take(maximumRows);
+				} else if (sortColumn.StartsWith("PackagesNumber"))
+				{
+					if (sortColumn.EndsWith(" desc", StringComparison.OrdinalIgnoreCase))
+					{
+						packagesProjected = packagesProjected
+							.OrderByDescending(p => p.PackagesNumber);
+					}
+					else
+					{
+						packagesProjected = packagesProjected
+							.OrderBy(p => p.PackagesNumber);
+					}
+					packagesProjected = packagesProjected.Skip(startRow).Take(maximumRows);
+				}
+				else if (sortColumn.StartsWith("QuotaValue"))
+				{
+					if (sortColumn.EndsWith(" desc", StringComparison.OrdinalIgnoreCase))
+					{
+						packagesProjected = packagesProjected
+							.OrderByDescending(p => p.QuotaValue);
+					}
+					else
+					{
+						packagesProjected = packagesProjected
+							.OrderBy(p => p.QuotaValue);
+					}
+					packagesProjected = packagesProjected.Skip(startRow).Take(maximumRows);
+				}
+
+				return EntityDataSet(count, packagesProjected);
 			}
 			else
 			{
@@ -21787,18 +22001,18 @@ RETURN
 					{
 						rg.GroupId,
 						rg.GroupName,
-						PG = pg.SingleOrDefault()
+						PackageGroup = pg
 					})
-					.Select(g => new
+					.SelectMany(g => g.PackageGroup.DefaultIfEmpty(), (g, pg) => new
 					{
 						g.GroupId,
 						g.GroupName,
-						MegaBytesSent = g.PG != null ? (g.PG.BytesSent + MB / 2) / MB : 0,
-						MegaBytesReceived = g.PG != null ? (g.PG.BytesReceived + MB / 2) / MB : 0,
-						MegaBytesTotal = g.PG != null ? (g.PG.BytesSent + g.PG.BytesReceived + MB / 2) / MB : 0,
-						BytesSent = g.PG != null ? g.PG.BytesSent : 0,
-						BytesReceived = g.PG != null ? g.PG.BytesReceived : 0,
-						BytesTotal = g.PG != null ? g.PG.BytesSent + g.PG.BytesReceived : 0
+						MegaBytesSent = pg != null ? (pg.BytesSent + MB / 2) / MB : 0,
+						MegaBytesReceived = pg != null ? (pg.BytesReceived + MB / 2) / MB : 0,
+						MegaBytesTotal = pg != null ? (pg.BytesSent + pg.BytesReceived + MB / 2) / MB : 0,
+						BytesSent = pg != null ? pg.BytesSent : 0,
+						BytesReceived = pg != null ? pg.BytesReceived : 0,
+						BytesTotal = pg != null ? pg.BytesSent + pg.BytesReceived : 0
 					})
 					.Where(g => g.BytesTotal > 0);
 
@@ -21880,14 +22094,14 @@ RETURN
 					{
 						rg.GroupId,
 						rg.GroupName,
-						PG = pg.SingleOrDefault()
+						PackageGroup = pg
 					})
-					.Select(g => new
+					.SelectMany(g => g.PackageGroup.DefaultIfEmpty(), (g, pg) => new
 					{
 						g.GroupId,
 						g.GroupName,
-						Diskspace = g.PG != null ? (g.PG.Diskspace + MB/2) / MB : 0,
-						DiskspaceBytes = g.PG != null ? g.PG.Diskspace : 0
+						Diskspace = pg != null ? (g.PG.Diskspace + MB/2) / MB : 0,
+						DiskspaceBytes = pg != null ? g.PG.Diskspace : 0
 					})
 					.Where(g => g.DiskspaceBytes > 0);
 
@@ -23244,14 +23458,14 @@ RETURN
 							s.TaskParameter.ParameterId,
 							s.TaskParameter.DataTypeId,
 							s.TaskParameter.DefaultValue,
-							SP = sp.SingleOrDefault()
+							Parameters = sp
 						})
-						.Select(s => new
+						.SelectMany(s => s.Parameters.DefaultIfEmpty(), (s, sp) => new
 						{
 							s.ScheduleId,
 							s.ParameterId,
 							s.DataTypeId,
-							ParameterValue = s.SP != null ? s.SP.ParameterValue : s.DefaultValue
+							ParameterValue = sp != null ? sp.ParameterValue : s.DefaultValue
 						});
 					return EntityDataSet(schedules, parameters);
 				}
@@ -23588,7 +23802,14 @@ RETURN
 						s.Schedule.ScheduleId,
 						s.TaskParameter.ParameterId,
 						s.TaskParameter.DataTypeId,
-						ParameterValue = sp.Any() ? sp.Single().ParameterValue : s.TaskParameter.DefaultValue
+						s.TaskParameter.DefaultValue,
+						Parameters = sp
+					})
+					.SelectMany(s => s.Parameters.DefaultIfEmpty(), (s, sp) => new {
+						s.ScheduleId,
+						s.ParameterId,
+						s.DataTypeId,
+						ParameterValue = sp != null ? sp.ParameterValue : s.DefaultValue
 					});
 
 				return EntityDataSet(schedule, task, parameter);
@@ -23748,9 +23969,10 @@ RETURN
 						s.TaskId
 					})
 					.FirstOrDefault();
+				var nextScheduleId = next?.ScheduleId;
 
 				var schedule = Schedules
-					.Where(s => s.ScheduleId == next.ScheduleId)
+					.Where(s => s.ScheduleId == nextScheduleId)
 					.Take(1)
 					.Select(s => new
 					{
@@ -23784,13 +24006,21 @@ RETURN
 
 				var parameter = ScheduleTaskParameters
 					.Where(stp => stp.TaskId == next.TaskId)
-					.GroupJoin(ScheduleParameters, stp => new { stp.ParameterId, next.ScheduleId },
-						sp => new { sp.ParameterId, sp.ScheduleId }, (stp, sp) => new
+					.GroupJoin(ScheduleParameters, stp => new { stp.ParameterId, ScheduleId = nextScheduleId },
+						sp => new { sp.ParameterId, ScheduleId = (int?)sp.ScheduleId }, (stp, sp) => new
 					{
-						next.ScheduleId,
+						ScheduleId = nextScheduleId,
 						stp.ParameterId,
 						stp.DataTypeId,
-						ParameterValue = sp.Any() ? sp.Single().ParameterValue : stp.DefaultValue
+						stp.DefaultValue,
+						Parameters = sp
+					})
+					.SelectMany(p => p.Parameters.DefaultIfEmpty(), (p, sp) => new
+					{
+						p.ScheduleId,
+						p.ParameterId,
+						p.DataTypeId,
+						ParameterValue = sp != null ? sp.ParameterValue : p.DefaultValue
 					});
 
 				return EntityDataSet(schedule, task, parameter);
@@ -23853,11 +24083,19 @@ RETURN
 					.GroupJoin(ScheduleParameters, stp => new { stp.ParameterId, ScheduleId = scheduleId },
 						sp => new { sp.ParameterId, sp.ScheduleId }, (stp, sp) => new
 					{
-						scheduleId,
+						ScheduleId = scheduleId,
 						stp.ParameterId,
 						stp.DataTypeId,
-						ParameterValue = sp.Any() ? sp.Single().ParameterValue : null,
-						stp.DefaultValue
+						stp.DefaultValue,
+						Parameters = sp
+					})
+					.SelectMany(s => s.Parameters.DefaultIfEmpty(), (s, sp) => new
+					{
+						s.ScheduleId,
+						s.ParameterId,
+						s.DataTypeId,
+						s.DefaultValue,
+						ParameterValue = sp != null ? sp.ParameterValue : null,
 					});
 
 				return EntityDataReader(parameters);
@@ -25768,9 +26006,9 @@ RETURN
 					.GroupJoin(ExchangeMailboxPlans, a => a.ArchivingMailboxPlanId, p => p.MailboxPlanId, (a, p) => new
 					{
 						Account = a,
-						ArchivingMailboxPlan = p.Any() ? (int?)p.Single().MailboxPlanId : null
+						ArchivingMailboxPlans = p
 					})
-					.Select(a => new
+					.SelectMany(a => a.ArchivingMailboxPlans.DefaultIfEmpty(), (a, p) => new
 					{
 						a.Account.AccountId,
 						a.Account.ItemId,
@@ -25786,7 +26024,7 @@ RETURN
 						a.Account.SubscriberNumber,
 						a.Account.UserPrincipalName,
 						a.Account.ArchivingMailboxPlanId,
-						a.ArchivingMailboxPlan,
+						ArchivingMailboxPlan = p != null ? (int?)p.MailboxPlanId : null,
 						a.Account.EnableArchiving,
 						a.Account.LevelId,
 						a.Account.IsVip
@@ -25850,9 +26088,9 @@ RETURN
 					.GroupJoin(ExchangeMailboxPlans, a => a.ArchivingMailboxPlanId, p => p.MailboxPlanId, (a, p) => new
 					{
 						Account = a,
-						ArchivingMailboxPlan = p.Any() ? (int?)p.Single().MailboxPlanId : null
+						ArchvingMailboxPlans = p
 					})
-					.Select(a => new
+					.SelectMany(a => a.ArchvingMailboxPlans.DefaultIfEmpty(), (a, p) => new
 					{
 						a.Account.AccountId,
 						a.Account.ItemId,
@@ -25868,7 +26106,7 @@ RETURN
 						a.Account.SubscriberNumber,
 						a.Account.UserPrincipalName,
 						a.Account.ArchivingMailboxPlanId,
-						a.ArchivingMailboxPlan,
+						ArchivingMailboxPlan = p != null ? (int?)p.MailboxPlanId : null,
 						a.Account.EnableArchiving
 					});
 
@@ -26009,7 +26247,12 @@ END
 					.GroupJoin(ExchangeMailboxPlans, a => a.ArchivingMailboxPlanId, p => p.MailboxPlanId, (a, p) => new
 					{
 						Account = a,
-						ArchivingMailboxPlan = p.Any() ? (int?)p.Single().MailboxPlanId : null
+						ArchivingMailboxPlans = p
+					})
+					.SelectMany(a => a.ArchivingMailboxPlans.DefaultIfEmpty(), (a, p) => new
+					{
+						a.Account,
+						ArchivingMailboxPlan = p != null ? (int?)p.MailboxPlanId : null
 					})
 					.Select(a => new
 					{
