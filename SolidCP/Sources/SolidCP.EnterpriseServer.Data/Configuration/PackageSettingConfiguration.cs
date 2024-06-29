@@ -1,5 +1,4 @@
-﻿// This file is auto generated, do not edit.
-using System;
+﻿using System;
 using System.Collections.Generic;
 using SolidCP.EnterpriseServer.Data.Configuration;
 using SolidCP.EnterpriseServer.Data.Entities;
@@ -17,6 +16,13 @@ public partial class PackageSettingConfiguration: EntityTypeConfiguration<Packag
 {
 #if NetCore || NetFX
     public override void Configure() {
-    }
+
+		if (IsMsSql) Property(e => e.PropertyValue).HasColumnType("ntext");
+		else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)
+		{
+			Property(e => e.PropertyValue).HasColumnType("TEXT");
+		}
+
+	}
 #endif
 }

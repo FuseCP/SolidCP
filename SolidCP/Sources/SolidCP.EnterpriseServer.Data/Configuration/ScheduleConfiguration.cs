@@ -18,6 +18,15 @@ public partial class ScheduleConfiguration : EntityTypeConfiguration<Schedule>
 	public override void Configure()
 	{
 
+		if (IsMsSql)
+		{
+			Property(e => e.FromTime).HasColumnType("datetime");
+			Property(e => e.ToTime).HasColumnType("datetime");
+			Property(e => e.StartTime).HasColumnType("datetime");
+			Property(e => e.NextRun).HasColumnType("datetime");
+			Property(e => e.LastRun).HasColumnType("datetime");
+		}
+
 #if NetCore
         HasOne(d => d.Package).WithMany(p => p.Schedules)
                 .OnDelete(DeleteBehavior.Cascade)

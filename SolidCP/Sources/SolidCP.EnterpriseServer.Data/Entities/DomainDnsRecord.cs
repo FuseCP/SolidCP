@@ -29,7 +29,7 @@ public partial class DomainDnsRecord
     [StringLength(255)]
     public string Value { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime? Date { get; set; }
 
     [ForeignKey("DomainId")]

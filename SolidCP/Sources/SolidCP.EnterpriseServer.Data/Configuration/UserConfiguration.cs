@@ -24,12 +24,22 @@ public partial class UserConfiguration: EntityTypeConfiguration<User>
 		Property(e => e.Fax).IsUnicode(false);
 		Property(e => e.InstantMessenger).IsUnicode(false);
 
+		if (IsMsSql)
+		{
+			Property(e => e.Comments).HasColumnType("ntext");
+			Property(e => e.Changed).HasColumnType("datetime");
+			Property(e => e.Created).HasColumnType("datetime");
+		} else if (IsMsSql || IsMariaDb || IsSqlite || IsPostgreSql)
+		{
+			Property(e => e.Comments).HasColumnType("TEXT");
+		}
+
 #if NetCore
         Property(e => e.HtmlMail).HasDefaultValue(true);
 
         HasOne(d => d.Owner).WithMany(p => p.ChildUsers).HasConstraintName("FK_Users_Users");
 #else
-        HasOptional(d => d.Owner).WithMany(p => p.ChildUsers);
+		HasOptional(d => d.Owner).WithMany(p => p.ChildUsers);
 #endif
 
 		#region Seed Data

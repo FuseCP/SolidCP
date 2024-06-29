@@ -20,6 +20,7 @@ public partial class VersionConfiguration: EntityTypeConfiguration<Version>
     public override void Configure() {
 
         Property(e => e.DatabaseVersion).IsUnicode(false);
+        if (IsMsSql) Property(e => e.BuildDate).HasColumnType("datetime");
 
         #region Seed Data
         HasData(() => new Version[] {

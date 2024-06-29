@@ -18,6 +18,13 @@ public partial class OcsUserConfiguration : EntityTypeConfiguration<OcsUser>
 #if NetCore || NetFX
 	public override void Configure()
 	{
+
+		if (IsMsSql)
+		{
+			Property(e => e.CreatedDate).HasColumnType("datetime");
+			Property(e => e.ModifiedDate).HasColumnType("datetime");
+		}
+
 #if NetCore
 		if (IsMsSql) {
 			Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");

@@ -18,6 +18,11 @@ public partial class ServerConfiguration: EntityTypeConfiguration<Server>
     public override void Configure() {
 
         Property(e => e.ADAuthenticationType).IsUnicode(false);
+		if (IsMsSql) Property(e => e.Comments).HasColumnType("ntext");
+		else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)
+		{
+			Property(e => e.Comments).HasColumnType("TEXT");
+		}
 
 #if NetCore
         Property(e => e.ADEnabled).HasDefaultValue(false);
@@ -25,8 +30,8 @@ public partial class ServerConfiguration: EntityTypeConfiguration<Server>
 
         HasOne(d => d.PrimaryGroup).WithMany(p => p.Servers).HasConstraintName("FK_Servers_ResourceGroups");
 #else
-        // TODO optional or required?
-        HasOptional(d => d.PrimaryGroup).WithMany(p => p.Servers);
+		// TODO optional or required?
+		HasOptional(d => d.PrimaryGroup).WithMany(p => p.Servers);
 #endif
     }
 #endif

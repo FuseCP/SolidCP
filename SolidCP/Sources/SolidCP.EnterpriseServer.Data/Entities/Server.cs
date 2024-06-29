@@ -29,7 +29,7 @@ public partial class Server
     [StringLength(100)]
     public string Password { get; set; }
 
-    [Column(TypeName = "ntext")]
+    //[Column(TypeName = "ntext")]
     public string Comments { get; set; }
 
     public bool VirtualServer { get; set; }

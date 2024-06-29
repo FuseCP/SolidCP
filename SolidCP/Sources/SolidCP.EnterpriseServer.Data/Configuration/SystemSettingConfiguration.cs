@@ -17,6 +17,12 @@ public partial class SystemSettingConfiguration: EntityTypeConfiguration<SystemS
 #if NetCore || NetFX
     public override void Configure() {
 
+		if (IsMsSql) Property(e => e.PropertyValue).HasColumnType("ntext");
+		else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)
+		{
+			Property(e => e.PropertyValue).HasColumnType("TEXT");
+		}
+
 		#region Seed Data
 		HasData(() => new SystemSetting[] {
 			new SystemSetting() { SettingsName = "AccessIpsSettings", PropertyName = "AccessIps", PropertyValue = "" },

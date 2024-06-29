@@ -17,6 +17,12 @@ public partial class BlackBerryUserConfiguration: EntityTypeConfiguration<BlackB
 #if NetCore || NetFX
     public override void Configure() {
 
+		if (IsMsSql)
+		{
+			Property(e => e.CreatedDate).HasColumnType("datetime");
+			Property(e => e.ModifiedDate).HasColumnType("datetime");
+		}
+
 #if NetCore
         if (IsMsSql) Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");
 
@@ -24,7 +30,7 @@ public partial class BlackBerryUserConfiguration: EntityTypeConfiguration<BlackB
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_BlackBerryUsers_ExchangeAccounts");
 #else
-        HasRequired(d => d.Account).WithMany(p => p.BlackBerryUsers);
+		HasRequired(d => d.Account).WithMany(p => p.BlackBerryUsers);
 #endif
 	}
 #endif

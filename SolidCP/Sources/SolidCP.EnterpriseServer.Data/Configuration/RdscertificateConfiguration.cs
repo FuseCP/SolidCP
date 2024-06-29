@@ -17,6 +17,18 @@ public partial class RdsCertificateConfiguration: EntityTypeConfiguration<RdsCer
 {
 #if NetCore || NetFX
     public override void Configure() {
-    }
+
+		if (IsMsSql)
+		{
+			Property(e => e.Content).HasColumnType("ntext");
+			Property(e => e.ValidFrom).HasColumnType("datetime");
+			Property(e => e.ExpiryDate).HasColumnType("datetime");
+		}
+		else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)
+		{
+			Property(e => e.Content).HasColumnType("TEXT");
+		}
+
+	}
 #endif
 }

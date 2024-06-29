@@ -27,10 +27,10 @@ public partial class PackageAddon
 
     public int? Quantity { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime? PurchaseDate { get; set; }
 
-    [Column(TypeName = "ntext")]
+    //[Column(TypeName = "ntext")]
     public string Comments { get; set; }
 
     [Column("StatusID")]

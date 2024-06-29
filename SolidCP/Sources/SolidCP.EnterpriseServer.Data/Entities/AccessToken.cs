@@ -20,7 +20,7 @@ public partial class AccessToken
 
     public Guid AccessTokenGuid { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime ExpirationDate { get; set; }
 
     [Column("AccountID")]

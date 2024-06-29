@@ -17,6 +17,8 @@ public partial class PackagesBandwidthConfiguration: EntityTypeConfiguration<Pac
 #if NetCore || NetFX
     public override void Configure() {
 
+        if (IsMsSql) Property(e => e.LogDate).HasColumnType("datetime");
+
 #if NetCore
         HasOne(d => d.Group).WithMany(p => p.PackagesBandwidths)
                 .OnDelete(DeleteBehavior.ClientSetNull)

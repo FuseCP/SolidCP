@@ -216,7 +216,8 @@ namespace SolidCP.Portal
 
 			if (settings != null)
 			{
-				chkAlwaysUseEntityFramework.Checked = settings.GetValueOrDefault(SCP.SystemSettings.ALWAYS_USE_ENTITYFRAMEWORK, true);
+				chkAlwaysUseEntityFramework.Checked = settings
+                    .GetValueOrDefault(SCP.SystemSettings.ALWAYS_USE_ENTITYFRAMEWORK, false);
 			}
 
 		}

@@ -37,19 +37,19 @@ public partial class Schedule
 
     public int? Interval { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime? FromTime { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime? ToTime { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime? StartTime { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime? LastRun { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime? NextRun { get; set; }
 
     public bool Enabled { get; set; }

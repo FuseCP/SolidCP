@@ -33,15 +33,15 @@ public partial class HostingPlan
     [StringLength(200)]
     public string PlanName { get; set; }
 
-    [Column(TypeName = "ntext")]
+    //[Column(TypeName = "ntext")]
     public string PlanDescription { get; set; }
 
     public bool Available { get; set; }
 
-    [Column(TypeName = "money")]
+    //[Column(TypeName = "money")]
     public decimal? SetupPrice { get; set; }
 
-    [Column(TypeName = "money")]
+    //[Column(TypeName = "money")]
     public decimal? RecurringPrice { get; set; }
 
     public int? RecurrenceUnit { get; set; }

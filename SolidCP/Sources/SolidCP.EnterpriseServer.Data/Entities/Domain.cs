@@ -47,13 +47,13 @@ public partial class Domain
 
     public int? DomainItemId { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime? CreationDate { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime? ExpirationDate { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime? LastUpdateDate { get; set; }
 
     public string RegistrarName { get; set; }

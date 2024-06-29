@@ -16,6 +16,13 @@ public partial class RdsServerSettingConfiguration: EntityTypeConfiguration<RdsS
 {
 #if NetCore || NetFX
     public override void Configure() {
-    }
+
+		if (IsMsSql) Property(e => e.PropertyValue).HasColumnType("ntext");
+		else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)
+		{
+			Property(e => e.PropertyValue).HasColumnType("TEXT");
+		}
+
+	}
 #endif
 }

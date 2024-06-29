@@ -30,7 +30,7 @@ public partial class Package
     [StringLength(300)]
     public string PackageName { get; set; }
 
-    [Column(TypeName = "ntext")]
+    //[Column(TypeName = "ntext")]
     public string PackageComments { get; set; }
 
     [Column("ServerID")]
@@ -42,18 +42,19 @@ public partial class Package
     [Column("PlanID")]
     public int? PlanId { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime? PurchaseDate { get; set; }
 
     public bool OverrideQuotas { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime? BandwidthUpdated { get; set; }
 
     public bool DefaultTopPackage { get; set; }
 
-    [Column("StatusIDchangeDate", TypeName = "datetime")]
-    public DateTime StatusIdChangeDate { get; set; }
+	//[Column("StatusIDchangeDate", TypeName = "datetime")]
+	[Column("StatusIDchangeDate")]
+	public DateTime StatusIdChangeDate { get; set; }
 
     [InverseProperty("Package")]
     public virtual ICollection<Domain> Domains { get; set; } = new List<Domain>();

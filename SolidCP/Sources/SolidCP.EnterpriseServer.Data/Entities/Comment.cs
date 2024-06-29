@@ -32,7 +32,7 @@ public partial class Comment
     [Column("UserID")]
     public int UserId { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime CreatedDate { get; set; }
 
     [StringLength(1000)]

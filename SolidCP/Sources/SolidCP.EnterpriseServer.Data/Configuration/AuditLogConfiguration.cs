@@ -16,10 +16,18 @@ public partial class AuditLogConfiguration: EntityTypeConfiguration<AuditLog>
 {
 #if NetCore || NetFX
 	public override void Configure() {
-        HasKey(e => e.RecordId).HasName("PK_Log");
-        Property(e => e.RecordId).IsUnicode(false);
-        Property(e => e.SourceName).IsUnicode(false);
-        Property(e => e.TaskName).IsUnicode(false);
-    }
+		HasKey(e => e.RecordId).HasName("PK_Log");
+		Property(e => e.RecordId).IsUnicode(false);
+		Property(e => e.SourceName).IsUnicode(false);
+		Property(e => e.TaskName).IsUnicode(false);
+		if (IsMsSql)
+		{
+			Property(e => e.StartDate).HasColumnType("datetime");
+			Property(e => e.FinishDate).HasColumnType("datetime");
+			Property(e => e.ExecutionLog).HasColumnType("ntext");
+		} else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql) {
+			Property(e => e.ExecutionLog).HasColumnType("TEXT");
+		}
+	}
 #endif
 }

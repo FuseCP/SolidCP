@@ -1,6 +1,9 @@
 #Autosave files
 *~
 
+# EntityFramework Model Snapshots
+*DbContextModelSnapshot.cs
+
 #build
 [Oo]bj/
 [Bb]in/

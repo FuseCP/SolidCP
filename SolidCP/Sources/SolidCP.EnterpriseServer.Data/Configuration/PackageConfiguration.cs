@@ -17,6 +17,17 @@ public partial class PackageConfiguration: EntityTypeConfiguration<Package>
 #if NetCore || NetFX
     public override void Configure() {
 
+		if (IsMsSql)
+		{
+			Property(e => e.StatusIdChangeDate).HasColumnType("datetime");
+			Property(e => e.PurchaseDate).HasColumnType("datetime");
+			Property(e => e.BandwidthUpdated).HasColumnType("datetime");
+            Property(e => e.PackageComments).HasColumnType("ntext");
+        } else if (IsSqlite || IsMySql || IsMariaDb || IsPostgreSql)
+        {
+            Property(e => e.PackageComments).HasColumnType("TEXT");
+        }
+
 #if NetCore
         if (IsMsSql) Core.ToTable(tb => tb.HasTrigger("Update_StatusIDchangeDate"));
 
@@ -47,7 +58,7 @@ public partial class PackageConfiguration: EntityTypeConfiguration<Package>
                     j.IndexerProperty<int>("ServiceId").HasColumnName("ServiceID");
                 }); */
 #else
-        HasOptional(p => p.ParentPackage).WithMany(p => p.ChildPackages);
+		HasOptional(p => p.ParentPackage).WithMany(p => p.ChildPackages);
         HasRequired(p => p.Plan).WithMany(p => p.Packages);
         HasRequired(p => p.Server).WithMany(p => p.Packages);
         HasRequired(p => p.User).WithMany(p => p.Packages);

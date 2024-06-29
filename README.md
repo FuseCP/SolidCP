@@ -5,3 +5,7 @@ SolidCP is a complete management portal for Cloud Computing Companies and IT Pro
 To download the latest Binaries or find more information visit our website at: 
 
 https://solidcp.com/
+
+Here are some [tutorials about SolidCP](https://www.youtube.com/playlist?list=PLViYFEOr_vWBMyf_Co7RXs9rDQQK4y5pj).
+
+For the Linux port of SolidCP, here is an [introduction video on Youtube](https://youtu.be/RBxv2wvfMdw?si=M5PadczXhApOerfP).

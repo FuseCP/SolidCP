@@ -31,32 +31,33 @@ public partial class SslCertificate
     [StringLength(500)]
     public string DistinguishedName { get; set; }
 
-    [Column("CSR", TypeName = "ntext")]
-    public string Csr { get; set; }
+	//[Column("CSR", TypeName = "ntext")]
+	[Column("CSR")]
+	public string Csr { get; set; }
 
     [Column("CSRLength")]
     public int? CsrLength { get; set; }
 
-    [Column(TypeName = "ntext")]
+    //[Column(TypeName = "ntext")]
     public string Certificate { get; set; }
 
-    [Column(TypeName = "ntext")]
+    //[Column(TypeName = "ntext")]
     public string Hash { get; set; }
 
     public bool? Installed { get; set; }
 
     public bool? IsRenewal { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime? ValidFrom { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime? ExpiryDate { get; set; }
 
     [StringLength(250)]
     public string SerialNumber { get; set; }
 
-    [Column(TypeName = "ntext")]
+    //[Column(TypeName = "ntext")]
     public string Pfx { get; set; }
 
     public int? PreviousId { get; set; }

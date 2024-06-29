@@ -18,11 +18,21 @@ public partial class RdsMessageConfiguration: EntityTypeConfiguration<RdsMessage
     public override void Configure() {
         Property(e => e.UserName).IsFixedLength();
 
+		if (IsMsSql)
+		{
+			Property(e => e.MessageText).HasColumnType("ntext");
+			Property(e => e.Date).HasColumnType("datetime");
+		}
+		else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)
+		{
+			Property(e => e.MessageText).HasColumnType("TEXT");
+		}
+
 #if NetCore
         HasOne(d => d.RdsCollection).WithMany(p => p.RdsMessages).HasConstraintName("FK_RDSMessages_RDSCollections");
 #else
-        // TODO required or optional?
-        HasRequired(d => d.RdsCollection).WithMany(p => p.RdsMessages);
+		// TODO required or optional?
+		HasRequired(d => d.RdsCollection).WithMany(p => p.RdsMessages);
 #endif
     }
 #endif

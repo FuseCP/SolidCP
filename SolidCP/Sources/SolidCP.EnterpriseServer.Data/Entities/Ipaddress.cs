@@ -37,7 +37,7 @@ public partial class IpAddress
     [Column("ServerID")]
     public int? ServerId { get; set; }
 
-    [Column(TypeName = "ntext")]
+    //[Column(TypeName = "ntext")]
     public string Comments { get; set; }
 
     [StringLength(15)]

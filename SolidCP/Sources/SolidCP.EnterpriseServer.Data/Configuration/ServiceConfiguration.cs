@@ -17,6 +17,13 @@ public partial class ServiceConfiguration: EntityTypeConfiguration<Service>
 #if NetCore || NetFX
     public override void Configure() {
 
+		if (IsMsSql) Property(e => e.Comments).HasColumnType("ntext");
+		else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)
+		{
+			Property(e => e.Comments).HasColumnType("TEXT");
+		}
+
+
 #if NetCore
         HasOne(d => d.Cluster).WithMany(p => p.Services).HasConstraintName("FK_Services_Clusters");
 
@@ -28,8 +35,8 @@ public partial class ServiceConfiguration: EntityTypeConfiguration<Service>
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Services_Servers");
 #else
-        //TODO optional or required?
-        HasOptional(d => d.Cluster).WithMany(p => p.Services);
+		//TODO optional or required?
+		HasOptional(d => d.Cluster).WithMany(p => p.Services);
         HasRequired(d => d.Provider).WithMany(p => p.Services);
         HasRequired(d => d.Server).WithMany(p => p.Services);
 #endif

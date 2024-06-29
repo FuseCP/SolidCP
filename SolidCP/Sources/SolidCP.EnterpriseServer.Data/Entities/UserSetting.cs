@@ -28,7 +28,7 @@ public partial class UserSetting
     [StringLength(50)]
     public string PropertyName { get; set; }
 
-    [Column(TypeName = "ntext")]
+    //[Column(TypeName = "ntext")]
     public string PropertyValue { get; set; }
 
     [ForeignKey("UserId")]

@@ -17,6 +17,8 @@ public partial class ServiceItemConfiguration: EntityTypeConfiguration<ServiceIt
 #if NetCore || NetFX
     public override void Configure() {
 
+		if (IsMsSql) Property(e => e.CreatedDate).HasColumnType("datetime");
+
 #if NetCore
         HasOne(d => d.ItemType).WithMany(p => p.ServiceItems).HasConstraintName("FK_ServiceItems_ServiceItemTypes");
 
@@ -24,7 +26,7 @@ public partial class ServiceItemConfiguration: EntityTypeConfiguration<ServiceIt
 
         HasOne(d => d.Service).WithMany(p => p.ServiceItems).HasConstraintName("FK_ServiceItems_Services");
 #else
-        HasRequired(d => d.ItemType).WithMany(p => p.ServiceItems);
+		HasRequired(d => d.ItemType).WithMany(p => p.ServiceItems);
         HasRequired(d => d.Package).WithMany(p => p.ServiceItems);
         HasRequired(d => d.Service).WithMany(p => p.ServiceItems);
         //HasOptional(d => d.ExchangeOrganization).WithRequired(p => p.Item);

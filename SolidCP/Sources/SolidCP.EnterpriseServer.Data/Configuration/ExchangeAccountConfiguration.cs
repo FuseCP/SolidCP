@@ -19,6 +19,7 @@ public partial class ExchangeAccountConfiguration : EntityTypeConfiguration<Exch
 	{
 
 		Property(d => d.MailboxManagerActions).IsUnicode(false);
+		if (IsMsSql) Property(e => e.CreatedDate).HasColumnType("datetime");
 
 #if NetCore
         if (IsMsSql) Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");

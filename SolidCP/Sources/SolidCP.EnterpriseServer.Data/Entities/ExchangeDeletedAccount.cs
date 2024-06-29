@@ -30,7 +30,7 @@ public partial class ExchangeDeletedAccount
     [StringLength(128)]
     public string FileName { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime ExpirationDate { get; set; }
 }
 #endif

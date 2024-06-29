@@ -21,22 +21,22 @@ public partial class BackgroundTaskLog
     [Column("TaskID")]
     public int TaskId { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime? Date { get; set; }
 
-    [Column(TypeName = "ntext")]
+    //[Column(TypeName = "ntext")]
     public string ExceptionStackTrace { get; set; }
 
     public int? InnerTaskStart { get; set; }
 
     public int? Severity { get; set; }
 
-    [Column(TypeName = "ntext")]
+    //[Column(TypeName = "ntext")]
     public string Text { get; set; }
 
     public int? TextIdent { get; set; }
 
-    [Column(TypeName = "ntext")]
+    //[Column(TypeName = "ntext")]
     public string XmlParameters { get; set; }
 
     [ForeignKey("TaskId")]

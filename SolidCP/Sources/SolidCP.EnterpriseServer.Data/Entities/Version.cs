@@ -18,7 +18,7 @@ public partial class Version
 #endif
     public string DatabaseVersion { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime BuildDate { get; set; }
 }
 #endif

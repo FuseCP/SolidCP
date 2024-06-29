@@ -24,10 +24,10 @@ public partial class LyncUser
     [Column("LyncUserPlanID")]
     public int LyncUserPlanId { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime CreatedDate { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime ModifiedDate { get; set; }
 
     [StringLength(300)]

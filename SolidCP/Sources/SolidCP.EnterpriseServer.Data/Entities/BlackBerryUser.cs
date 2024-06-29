@@ -19,10 +19,10 @@ public partial class BlackBerryUser
 
     public int AccountId { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime CreatedDate { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime ModifiedDate { get; set; }
 
     [ForeignKey("AccountId")]

@@ -22,14 +22,14 @@ public partial class RdsMessage
     public int RdsCollectionId { get; set; }
 
     [Required]
-    [Column(TypeName = "ntext")]
+    //[Column(TypeName = "ntext")]
     public string MessageText { get; set; }
 
     [Required]
     [StringLength(250)]
     public string UserName { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime Date { get; set; }
 
     [ForeignKey("RdsCollectionId")]

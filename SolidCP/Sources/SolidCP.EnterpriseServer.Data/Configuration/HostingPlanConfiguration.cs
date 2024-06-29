@@ -18,6 +18,18 @@ public partial class HostingPlanConfiguration : EntityTypeConfiguration<HostingP
 	public override void Configure()
 	{
 
+		if (IsMsSql)
+		{
+			Property(e => e.PlanDescription).HasColumnType("ntext");
+			Property(e => e.SetupPrice).HasColumnType("money");
+			Property(e => e.RecurringPrice).HasColumnType("money");
+		}
+		else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)
+		{
+			Property(e => e.PlanDescription).HasColumnType("TEXT");
+		}
+
+
 #if NetCore
         HasOne(d => d.Package).WithMany(p => p.HostingPlans)
                 .OnDelete(DeleteBehavior.Cascade)

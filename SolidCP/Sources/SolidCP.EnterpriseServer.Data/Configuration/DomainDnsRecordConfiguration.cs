@@ -18,10 +18,12 @@ public partial class DomainDnsRecordConfiguration: EntityTypeConfiguration<Domai
     public override void Configure() {
         HasKey(e => e.Id).HasName("PK__DomainDn__3214EC2758B0A6F1");
 
+        if (IsMsSql) Property(e => e.Date).HasColumnType("datetime");
+
 #if NetCore
         HasOne(d => d.Domain).WithMany(p => p.DomainDnsRecords).HasConstraintName("FK_DomainDnsRecords_DomainId");
 #else
-        HasRequired(d => d.Domain).WithMany(p => p.DomainDnsRecords);
+		HasRequired(d => d.Domain).WithMany(p => p.DomainDnsRecords);
 #endif
     }
 #endif

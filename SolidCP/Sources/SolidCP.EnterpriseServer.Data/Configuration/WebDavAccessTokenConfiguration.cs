@@ -16,7 +16,9 @@ public partial class WebDavAccessTokenConfiguration: EntityTypeConfiguration<Web
 {
 #if NetCore || NetFX
     public override void Configure() {
+        
         HasKey(e => e.Id).HasName("PK__WebDavAc__3214EC27B27DC571");
+        if (IsMsSql) Property(e => e.ExpirationDate).HasColumnType("datetime");
 
 #if NetCore
         HasOne(d => d.Account).WithMany(p => p.WebDavAccessTokens).HasConstraintName("FK_WebDavAccessTokens_UserId");

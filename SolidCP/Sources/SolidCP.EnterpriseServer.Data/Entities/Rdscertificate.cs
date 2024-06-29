@@ -19,7 +19,7 @@ public partial class RdsCertificate
     public int ServiceId { get; set; }
 
     [Required]
-    [Column(TypeName = "ntext")]
+    //[Column(TypeName = "ntext")]
     public string Content { get; set; }
 
     [Required]
@@ -30,10 +30,10 @@ public partial class RdsCertificate
     [StringLength(255)]
     public string FileName { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime? ValidFrom { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime? ExpiryDate { get; set; }
 }
 #endif

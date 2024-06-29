@@ -24,7 +24,7 @@ public partial class PrivateNetworkVlan
     [Column("ServerID")]
     public int? ServerId { get; set; }
 
-    [Column(TypeName = "ntext")]
+    //[Column(TypeName = "ntext")]
     public string Comments { get; set; }
 
     [InverseProperty("Vlan")]

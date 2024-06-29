@@ -17,6 +17,12 @@ public partial class UserSettingConfiguration: EntityTypeConfiguration<UserSetti
 #if NetCore || NetFX
     public override void Configure() {
 
+        if (IsMsSql) Property(e => e.PropertyValue).HasColumnType("ntext");
+        else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)
+        {
+            Property(e => e.PropertyValue).HasColumnType("TEXT");
+        }
+
 #if NetCore
         HasOne(d => d.User).WithMany(p => p.UserSettings).HasConstraintName("FK_UserSettings_Users");
 #else

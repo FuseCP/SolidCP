@@ -26,7 +26,7 @@ public partial class WebDavAccessToken
 
     public Guid AccessToken { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime ExpirationDate { get; set; }
 
     [Column("AccountID")]

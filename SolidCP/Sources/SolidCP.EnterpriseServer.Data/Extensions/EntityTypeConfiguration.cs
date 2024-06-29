@@ -49,7 +49,7 @@ namespace SolidCP.EnterpriseServer.Data
 		public bool IsMsSql => DbType == DbType.MsSql;
 		public bool IsMySql => DbType == DbType.MySql;
 		public bool IsMariaDb => DbType == DbType.MariaDb;
-		public bool IsSqlLite => DbType == DbType.Sqlite;
+		public bool IsSqlite => DbType == DbType.Sqlite;
 		public bool IsPostgreSql => DbType == DbType.PostgreSql;
 
 		public EntityTypeConfiguration() : base() { }

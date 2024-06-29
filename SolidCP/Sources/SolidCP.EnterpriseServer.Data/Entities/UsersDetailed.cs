@@ -31,15 +31,15 @@ public partial class UsersDetailed
     [Column("OwnerID")]
     public int? OwnerId { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime? Created { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime? Changed { get; set; }
 
     public bool IsDemo { get; set; }
 
-    [Column(TypeName = "ntext")]
+    //[Column(TypeName = "ntext")]
     public string Comments { get; set; }
 
     public bool IsPeer { get; set; }

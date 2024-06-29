@@ -18,6 +18,12 @@ public partial class CrmUserConfiguration : EntityTypeConfiguration<CrmUser>
 	public override void Configure()
 	{
 
+		if (IsMsSql)
+		{
+			Property(e => e.ChangedDate).HasColumnType("datetime");
+			Property(e => e.CreatedDate).HasColumnType("datetime");
+		}
+
 #if NetCore
 		if (IsMsSql)
 		{
@@ -29,7 +35,7 @@ public partial class CrmUserConfiguration : EntityTypeConfiguration<CrmUser>
 				.OnDelete(DeleteBehavior.ClientSetNull)
 				.HasConstraintName("FK_CRMUsers_ExchangeAccounts");
 #else
-        HasRequired(d => d.Account).WithMany(p => p.CrmUsers);
+		HasRequired(d => d.Account).WithMany(p => p.CrmUsers);
 #endif
 	}
 #endif

@@ -22,10 +22,10 @@ public partial class CrmUser
     [Column("AccountID")]
     public int AccountId { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime CreatedDate { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime ChangedDate { get; set; }
 
     [Column("CRMUserGuid")]

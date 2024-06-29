@@ -19,6 +19,11 @@ public partial class BackgroundTaskConfiguration: EntityTypeConfiguration<Backgr
 #if NetCore || NetFX
     public override void Configure() {
         HasKey(e => e.Id).HasName("PK__Backgrou__3214EC271AFAB817");
+        if (IsMsSql)
+        {
+            Property(e => e.StartDate).HasColumnType("datetime");
+            Property(e => e.FinishDate).HasColumnType("datetime");
+        }
     }
 #endif
 }

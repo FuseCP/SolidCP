@@ -24,7 +24,7 @@ public partial class BackgroundTaskParameter
     [StringLength(255)]
     public string Name { get; set; }
 
-    [Column(TypeName = "ntext")]
+    //[Column(TypeName = "ntext")]
     public string SerializerValue { get; set; }
 
     [StringLength(255)]

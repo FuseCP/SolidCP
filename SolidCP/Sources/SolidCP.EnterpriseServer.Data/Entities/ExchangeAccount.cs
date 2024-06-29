@@ -49,7 +49,7 @@ public partial class ExchangeAccount
     [StringLength(100)]
     public string SamAccountName { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime CreatedDate { get; set; }
 
     public int? MailboxPlanId { get; set; }

@@ -32,7 +32,7 @@ public partial class ServiceItem
     [StringLength(500)]
     public string ItemName { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime? CreatedDate { get; set; }
 
     [InverseProperty("MailDomain")]

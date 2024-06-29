@@ -22,10 +22,10 @@ public partial class SfBUser
     [Column("SfBUserPlanID")]
     public int SfBUserPlanId { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime CreatedDate { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime ModifiedDate { get; set; }
 
     [StringLength(300)]

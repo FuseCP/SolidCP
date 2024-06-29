@@ -24,8 +24,9 @@ public partial class PackagesBandwidth
     public int GroupId { get; set; }
 
     [Key]
-    [Column(TypeName = "datetime", Order = 3)]
-    public DateTime LogDate { get; set; }
+	//[Column(TypeName = "datetime", Order = 3)]
+	[Column(Order = 3)]
+	public DateTime LogDate { get; set; }
 
     public long BytesSent { get; set; }
 

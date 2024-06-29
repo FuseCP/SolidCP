@@ -30,7 +30,7 @@ public partial class Service
     [StringLength(50)]
     public string ServiceName { get; set; }
 
-    [Column(TypeName = "ntext")]
+    //[Column(TypeName = "ntext")]
     public string Comments { get; set; }
 
     public int? ServiceQuotaValue { get; set; }

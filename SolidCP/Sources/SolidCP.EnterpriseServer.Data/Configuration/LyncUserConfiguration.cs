@@ -19,6 +19,12 @@ public partial class LyncUserConfiguration : EntityTypeConfiguration<LyncUser>
 	public override void Configure()
 	{
 
+		if (IsMsSql)
+		{
+			Property(e => e.CreatedDate).HasColumnType("datetime");
+			Property(e => e.ModifiedDate).HasColumnType("datetime");
+		}
+
 #if NetCore
 		if (IsMsSql)
 		{
@@ -30,7 +36,7 @@ public partial class LyncUserConfiguration : EntityTypeConfiguration<LyncUser>
 				.OnDelete(DeleteBehavior.ClientSetNull)
 				.HasConstraintName("FK_LyncUsers_LyncUserPlans");
 #else
-		HasRequired(d => d.LyncUserPlan).WithMany(p => p.LyncUsers);
+			HasRequired(d => d.LyncUserPlan).WithMany(p => p.LyncUsers);
 #endif
 	}
 #endif

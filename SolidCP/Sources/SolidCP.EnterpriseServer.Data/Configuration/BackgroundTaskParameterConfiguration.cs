@@ -19,9 +19,17 @@ public partial class BackgroundTaskParameterConfiguration: EntityTypeConfigurati
 #if NetCore || NetFX
     public override void Configure() {
         HasKey(e => e.ParameterId).HasName("PK__Backgrou__F80C6297E2E5AF88");
+		if (IsMsSql)
+		{
+			Property(e => e.SerializerValue).HasColumnType("ntext");
+		}
+		else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)
+		{
+			Property(e => e.SerializerValue).HasColumnType("TEXT");
+		}
 
 #if NetCore
-        HasOne(d => d.Task).WithMany(p => p.BackgroundTaskParameters)
+		HasOne(d => d.Task).WithMany(p => p.BackgroundTaskParameters)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Backgroun__TaskI__03D16812");
 #else

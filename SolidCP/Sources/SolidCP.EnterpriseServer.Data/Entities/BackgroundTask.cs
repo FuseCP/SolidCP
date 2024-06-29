@@ -42,10 +42,10 @@ public partial class BackgroundTask
     [StringLength(255)]
     public string ItemName { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime StartDate { get; set; }
 
-    [Column(TypeName = "datetime")]
+    //[Column(TypeName = "datetime")]
     public DateTime? FinishDate { get; set; }
 
     public int IndicatorCurrent { get; set; }
