@@ -55,6 +55,7 @@
         <!--<ProjectReference Include="..\SolidCP.EnterpriseServer.Data\SolidCP.EnterpriseServer.Data.csproj" Private="false" ExcludeAssets="all" />-->
         <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" Private="false" ExcludeAssets="all" />
         <ProjectReference Include="..\SolidCP.EnterpriseServer.Code\SolidCP.EnterpriseServer.Code.csproj" Private="false" ExcludeAssets="all" />
+        <ProjectReference Include="..\SolidCP.EnterpriseServer.Data\SolidCP.EnterpriseServer.Data.csproj" Private="false" ExcludeAssets="all" />
         <!--<ProjectReference Include="..\SolidCP.Providers.OS.Unix\SolidCP.Providers.OS.Unix.csproj" Private="false" ExcludeAssets="all" />-->
         <ProjectReference Include="..\SolidCP.Server\WebServices\SolidCP.Build\SolidCP.Server.Client.csproj" Private="false" ExcludeAssets="all" />
         <ProjectReference Include="..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj" Private="false" ExcludeAssets="all" />
@@ -111,6 +112,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Folder Include="App_Data\" />
         <Folder Include="Pages\" />
         <Folder Include="WebServices\SolidCP.Build\SolidCP.Build.WebServices\" />
     </ItemGroup>

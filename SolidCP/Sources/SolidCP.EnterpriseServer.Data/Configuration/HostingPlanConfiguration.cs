@@ -26,7 +26,9 @@ public partial class HostingPlanConfiguration : EntityTypeConfiguration<HostingP
 		}
 		else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)
 		{
+#if NetCore
 			Property(e => e.PlanDescription).HasColumnType("TEXT");
+#endif
 		}
 
 
@@ -46,4 +48,4 @@ public partial class HostingPlanConfiguration : EntityTypeConfiguration<HostingP
 #endif
 	}
 #endif
-}
+		}

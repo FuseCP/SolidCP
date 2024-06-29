@@ -30,13 +30,15 @@ public partial class SslCertificateConfiguration: EntityTypeConfiguration<SslCer
 		}
 		else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)
 		{
+#if NetCore
 			Property(e => e.Csr).HasColumnType("TEXT");
 			Property(e => e.Certificate).HasColumnType("TEXT");
 			Property(e => e.Hash).HasColumnType("TEXT");
 			Property(e => e.Pfx).HasColumnType("TEXT");
+#endif
 		}
 
 
 	}
 #endif
-}
+		}

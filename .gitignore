@@ -4,6 +4,12 @@
 # EntityFramework Model Snapshots
 *DbContextModelSnapshot.cs
 
+# EntityFramework Install Bundles
+install.*.exe
+
+# SQLite databases
+*.sqlite
+
 #build
 [Oo]bj/
 [Bb]in/
@@ -86,4 +92,3 @@ packages/
 **/www/debian/pool/main/
 **/www/fedora/pool/main/
 SolidCP.Installer/Sources/VersionInfo.cs
-/SolidCP/Sources/SolidCP.EnterpriseServer/App_Data/SolidCP.sqlite

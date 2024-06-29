@@ -20,7 +20,9 @@ public partial class UserSettingConfiguration: EntityTypeConfiguration<UserSetti
         if (IsMsSql) Property(e => e.PropertyValue).HasColumnType("ntext");
         else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)
         {
+#if NetCore
             Property(e => e.PropertyValue).HasColumnType("TEXT");
+#endif
         }
 
 #if NetCore
@@ -29,7 +31,7 @@ public partial class UserSettingConfiguration: EntityTypeConfiguration<UserSetti
         HasRequired(d => d.User).WithMany(p => p.UserSettings);
 #endif
 
-		#region Seed Data
+        #region Seed Data
 		HasData(() => new UserSetting[] {
 			new UserSetting() { UserId = 1, SettingsName = "AccountSummaryLetter", PropertyName = "CC", PropertyValue = "support@HostingCompany.com" },
 			new UserSetting() { UserId = 1, SettingsName = "AccountSummaryLetter", PropertyName = "EnableLetter", PropertyValue = "False" },
@@ -107,7 +109,7 @@ New user account has been created and below you can find its summary information
 		<tr>
 			<td class=""Label"">Purchase Date:</td>
 			<td>
-				#Space.PurchaseDate#
+# Space.PurchaseDate#
 			</td>
 		</tr>
 		<tr>
@@ -580,7 +582,7 @@ Please, find below details of MX and NS changes.
 
 <ad:foreach collection=""#Domains#"" var=""Domain"" index=""i"">
 
- #Domain.DomainName# - #DomainUsers[Domain.PackageId].FirstName# #DomainUsers[Domain.PackageId].LastName#
+# Domain.DomainName# - #DomainUsers[Domain.PackageId].FirstName# #DomainUsers[Domain.PackageId].LastName#
  Registrar:      #iif(isnull(Domain.Registrar), """", Domain.Registrar)#
  ExpirationDate: #iif(isnull(Domain.ExpirationDate), """", Domain.ExpirationDate)#
 
@@ -980,7 +982,7 @@ Best regards
 			new UserSetting() { UserId = 1, SettingsName = "OrganizationUserPasswordRequestLetter", PropertyName = "SMSBody", PropertyValue =
 @"
 User have been created. Password request url:
-#passwordResetLink#"
+# passwordResetLink#"
 				 },
 			new UserSetting() { UserId = 1, SettingsName = "OrganizationUserPasswordRequestLetter", PropertyName = "Subject", PropertyValue = "Password request notification" },
 			new UserSetting() { UserId = 1, SettingsName = "OrganizationUserPasswordRequestLetter", PropertyName = "TextBody", PropertyValue =
@@ -994,7 +996,7 @@ Hello #user.FirstName#,
 
 Your account have been created. In order to create a password for your account, please follow next link:
 
-#passwordResetLink#
+# passwordResetLink#
 
 If you have any questions regarding your hosting account, feel free to contact our support department at any time.
 
@@ -1224,7 +1226,7 @@ Hello #user.FirstName#,
 
 Your password expiration date is #user.PasswordExpirationDateTime#. You can reset your own password by visiting the following page:
 
-#passwordResetLink#
+# passwordResetLink#
 
 If you have any questions regarding your hosting account, feel free to contact our support department at any time.
 
@@ -1283,7 +1285,7 @@ Best regards
 			new UserSetting() { UserId = 1, SettingsName = "UserPasswordResetLetter", PropertyName = "LogoUrl", PropertyValue = "" },
 			new UserSetting() { UserId = 1, SettingsName = "UserPasswordResetLetter", PropertyName = "PasswordResetLinkSmsBody", PropertyValue =
 @"Password reset link:
-#passwordResetLink#
+# passwordResetLink#
 "
 				 },
 			new UserSetting() { UserId = 1, SettingsName = "UserPasswordResetLetter", PropertyName = "Priority", PropertyValue = "Normal" },
@@ -1299,7 +1301,7 @@ Hello #user.FirstName#,
 
 We received a request to reset the password for your account. If you made this request, click the link below. If you did not make this request, you can ignore this email.
 
-#passwordResetLink#
+# passwordResetLink#
 
 If you have any questions regarding your hosting account, feel free to contact our support department at any time.
 
@@ -1342,7 +1344,7 @@ Hello #user.FirstName#,
 We received a request to reset the password for your account. Your password reset pincode:
 </p>
 
-#passwordResetPincode#
+# passwordResetPincode#
 
 <p>
 If you have any questions regarding your hosting account, feel free to contact our support department at any time.
@@ -1358,7 +1360,7 @@ Best regards
 			new UserSetting() { UserId = 1, SettingsName = "UserPasswordResetPincodeLetter", PropertyName = "PasswordResetPincodeSmsBody", PropertyValue =
 @"
 Your password reset pincode:
-#passwordResetPincode#"
+# passwordResetPincode#"
 				 },
 			new UserSetting() { UserId = 1, SettingsName = "UserPasswordResetPincodeLetter", PropertyName = "Priority", PropertyValue = "Normal" },
 			new UserSetting() { UserId = 1, SettingsName = "UserPasswordResetPincodeLetter", PropertyName = "Subject", PropertyValue = "Password reset notification" },
@@ -1373,7 +1375,7 @@ Hello #user.FirstName#,
 
 We received a request to reset the password for your account. Your password reset pincode:
 
-#passwordResetPincode#
+# passwordResetPincode#
 
 If you have any questions regarding your hosting account, feel free to contact our support department at any time.
 
@@ -1451,7 +1453,7 @@ Hello #user.FirstName#,
 to complete the sign in, enter the verification code on the device.
 
 Verification code
-#verificationCode#
+# verificationCode#
 
 Best regards,
 "
@@ -1548,7 +1550,7 @@ support@solidcp.com
 			new UserSetting() { UserId = 1, SettingsName = "WebPolicy", PropertyName = "WebLogsFolder", PropertyValue = "\\[DOMAIN_NAME]\\logs" },
 			new UserSetting() { UserId = 1, SettingsName = "WebPolicy", PropertyName = "WebRootFolder", PropertyValue = "\\[DOMAIN_NAME]\\wwwroot" }
 		});
-		#endregion
+        #endregion
 	}
 #endif
-}
+        }

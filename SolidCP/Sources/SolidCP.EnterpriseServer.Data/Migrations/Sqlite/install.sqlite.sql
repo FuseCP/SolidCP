@@ -17,12 +17,12 @@ CREATE TABLE "AuditLog" (
     "Username" TEXT NULL,
     "ItemID" INTEGER NULL,
     "SeverityID" INTEGER NOT NULL,
-    "StartDate" datetime NOT NULL,
-    "FinishDate" datetime NOT NULL,
+    "StartDate" TEXT NOT NULL,
+    "FinishDate" TEXT NOT NULL,
     "SourceName" TEXT NOT NULL,
     "TaskName" TEXT NOT NULL,
     "ItemName" TEXT NULL,
-    "ExecutionLog" ntext NULL,
+    "ExecutionLog" TEXT NULL,
     "PackageID" INTEGER NULL
 );
 
@@ -48,8 +48,8 @@ CREATE TABLE "BackgroundTasks" (
     "TaskName" TEXT NULL,
     "ItemID" INTEGER NULL,
     "ItemName" TEXT NULL,
-    "StartDate" datetime NOT NULL,
-    "FinishDate" datetime NULL,
+    "StartDate" TEXT NOT NULL,
+    "FinishDate" TEXT NULL,
     "IndicatorCurrent" INTEGER NOT NULL,
     "IndicatorMaximum" INTEGER NOT NULL,
     "MaximumExecutionTime" INTEGER NOT NULL,
@@ -72,7 +72,7 @@ CREATE TABLE "ExchangeDeletedAccounts" (
     "StoragePath" TEXT NULL,
     "FolderName" TEXT NULL,
     "FileName" TEXT NULL,
-    "ExpirationDate" datetime NOT NULL
+    "ExpirationDate" TEXT NOT NULL
 );
 
 CREATE TABLE "ExchangeDisclaimers" (
@@ -101,8 +101,8 @@ CREATE TABLE "OCSUsers" (
     "OCSUserID" INTEGER NOT NULL CONSTRAINT "PK_OCSUsers" PRIMARY KEY AUTOINCREMENT,
     "AccountID" INTEGER NOT NULL,
     "InstanceID" TEXT NOT NULL,
-    "CreatedDate" datetime NOT NULL,
-    "ModifiedDate" datetime NOT NULL
+    "CreatedDate" TEXT NOT NULL,
+    "ModifiedDate" TEXT NOT NULL
 );
 
 CREATE TABLE "PackageService" (
@@ -115,18 +115,18 @@ CREATE TABLE "PackageSettings" (
     "PackageID" INTEGER NOT NULL,
     "SettingsName" TEXT NOT NULL,
     "PropertyName" TEXT NOT NULL,
-    "PropertyValue" ntext NULL,
+    "PropertyValue" TEXT NULL,
     CONSTRAINT "PK_PackageSettings" PRIMARY KEY ("PackageID", "SettingsName", "PropertyName")
 );
 
 CREATE TABLE "RDSCertificates" (
     "ID" INTEGER NOT NULL CONSTRAINT "PK_RDSCertificates" PRIMARY KEY AUTOINCREMENT,
     "ServiceId" INTEGER NOT NULL,
-    "Content" ntext NOT NULL,
+    "Content" TEXT NOT NULL,
     "Hash" TEXT NOT NULL,
     "FileName" TEXT NOT NULL,
-    "ValidFrom" datetime NULL,
-    "ExpiryDate" datetime NULL
+    "ValidFrom" TEXT NULL,
+    "ExpiryDate" TEXT NULL
 );
 
 CREATE TABLE "RDSCollections" (
@@ -141,7 +141,7 @@ CREATE TABLE "RDSServerSettings" (
     "RdsServerId" INTEGER NOT NULL,
     "SettingsName" TEXT NOT NULL,
     "PropertyName" TEXT NOT NULL,
-    "PropertyValue" ntext NULL,
+    "PropertyValue" TEXT NULL,
     "ApplyUsers" INTEGER NOT NULL,
     "ApplyAdministrators" INTEGER NOT NULL,
     CONSTRAINT "PK_RDSServerSettings" PRIMARY KEY ("RdsServerId", "SettingsName", "PropertyName")
@@ -188,8 +188,8 @@ CREATE TABLE "SfBUsers" (
     "SfBUserID" INTEGER NOT NULL CONSTRAINT "PK_SfBUsers" PRIMARY KEY AUTOINCREMENT,
     "AccountID" INTEGER NOT NULL,
     "SfBUserPlanID" INTEGER NOT NULL,
-    "CreatedDate" datetime NOT NULL,
-    "ModifiedDate" datetime NOT NULL,
+    "CreatedDate" TEXT NOT NULL,
+    "ModifiedDate" TEXT NOT NULL,
     "SipAddress" TEXT NULL
 );
 
@@ -200,16 +200,16 @@ CREATE TABLE "SSLCertificates" (
     "FriendlyName" TEXT NULL,
     "Hostname" TEXT NULL,
     "DistinguishedName" TEXT NULL,
-    "CSR" ntext NULL,
+    "CSR" TEXT NULL,
     "CSRLength" INTEGER NULL,
-    "Certificate" ntext NULL,
-    "Hash" ntext NULL,
+    "Certificate" TEXT NULL,
+    "Hash" TEXT NULL,
     "Installed" INTEGER NULL,
     "IsRenewal" INTEGER NULL,
-    "ValidFrom" datetime NULL,
-    "ExpiryDate" datetime NULL,
+    "ValidFrom" TEXT NULL,
+    "ExpiryDate" TEXT NULL,
     "SerialNumber" TEXT NULL,
-    "Pfx" ntext NULL,
+    "Pfx" TEXT NULL,
     "PreviousId" INTEGER NULL
 );
 
@@ -228,7 +228,7 @@ CREATE TABLE "SupportServiceLevels" (
 CREATE TABLE "SystemSettings" (
     "SettingsName" TEXT NOT NULL,
     "PropertyName" TEXT NOT NULL,
-    "PropertyValue" ntext NULL,
+    "PropertyValue" TEXT NULL,
     CONSTRAINT "PK_SystemSettings" PRIMARY KEY ("SettingsName", "PropertyName")
 );
 
@@ -270,9 +270,9 @@ CREATE TABLE "Users" (
     "FirstName" TEXT NULL,
     "LastName" TEXT NULL,
     "Email" TEXT NULL,
-    "Created" datetime NULL,
-    "Changed" datetime NULL,
-    "Comments" ntext NULL,
+    "Created" TEXT NULL,
+    "Changed" TEXT NULL,
+    "Comments" TEXT NULL,
     "SecondaryEmail" TEXT NULL,
     "Address" TEXT NULL,
     "City" TEXT NULL,
@@ -296,50 +296,21 @@ CREATE TABLE "Users" (
     CONSTRAINT "FK_Users_Users" FOREIGN KEY ("OwnerID") REFERENCES "Users" ("UserID")
 );
 
-CREATE TABLE "UsersDetailed" (
-    "UserID" INTEGER NOT NULL CONSTRAINT "PK_UsersDetailed" PRIMARY KEY AUTOINCREMENT,
-    "RoleID" INTEGER NOT NULL,
-    "StatusID" INTEGER NOT NULL,
-    "LoginStatusId" INTEGER NULL,
-    "SubscriberNumber" TEXT NULL,
-    "FailedLogins" INTEGER NULL,
-    "OwnerID" INTEGER NULL,
-    "Created" datetime NULL,
-    "Changed" datetime NULL,
-    "IsDemo" INTEGER NOT NULL,
-    "Comments" ntext NULL,
-    "IsPeer" INTEGER NOT NULL,
-    "Username" TEXT NULL,
-    "FirstName" TEXT NULL,
-    "LastName" TEXT NULL,
-    "Email" TEXT NULL,
-    "CompanyName" TEXT NULL,
-    "FullName" TEXT NULL,
-    "OwnerUsername" TEXT NULL,
-    "OwnerFirstName" TEXT NULL,
-    "OwnerLastName" TEXT NULL,
-    "OwnerRoleID" INTEGER NULL,
-    "OwnerFullName" TEXT NULL,
-    "OwnerEmail" TEXT NULL,
-    "PackagesNumber" INTEGER NULL,
-    "EcommerceEnabled" INTEGER NULL
-);
-
 CREATE TABLE "Versions" (
     "DatabaseVersion" TEXT NOT NULL CONSTRAINT "PK_Versions" PRIMARY KEY,
-    "BuildDate" datetime NOT NULL
+    "BuildDate" TEXT NOT NULL
 );
 
 CREATE TABLE "BackgroundTaskLogs" (
     "LogID" INTEGER NOT NULL CONSTRAINT "PK__Backgrou__5E5499A830A1D5BF" PRIMARY KEY AUTOINCREMENT,
     "TaskID" INTEGER NOT NULL,
-    "Date" datetime NULL,
-    "ExceptionStackTrace" ntext NULL,
+    "Date" TEXT NULL,
+    "ExceptionStackTrace" TEXT NULL,
     "InnerTaskStart" INTEGER NULL,
     "Severity" INTEGER NULL,
-    "Text" ntext NULL,
+    "Text" TEXT NULL,
     "TextIdent" INTEGER NULL,
-    "XmlParameters" ntext NULL,
+    "XmlParameters" TEXT NULL,
     CONSTRAINT "FK__Backgroun__TaskI__06ADD4BD" FOREIGN KEY ("TaskID") REFERENCES "BackgroundTasks" ("ID")
 );
 
@@ -347,7 +318,7 @@ CREATE TABLE "BackgroundTaskParameters" (
     "ParameterID" INTEGER NOT NULL CONSTRAINT "PK__Backgrou__F80C6297E2E5AF88" PRIMARY KEY AUTOINCREMENT,
     "TaskID" INTEGER NOT NULL,
     "Name" TEXT NULL,
-    "SerializerValue" ntext NULL,
+    "SerializerValue" TEXT NULL,
     "TypeName" TEXT NULL,
     CONSTRAINT "FK__Backgroun__TaskI__03D16812" FOREIGN KEY ("TaskID") REFERENCES "BackgroundTasks" ("ID")
 );
@@ -382,9 +353,9 @@ CREATE TABLE "RDSCollectionSettings" (
 CREATE TABLE "RDSMessages" (
     "Id" INTEGER NOT NULL CONSTRAINT "PK_RDSMessages" PRIMARY KEY AUTOINCREMENT,
     "RDSCollectionId" INTEGER NOT NULL,
-    "MessageText" ntext NOT NULL,
+    "MessageText" TEXT NOT NULL,
     "UserName" TEXT NOT NULL,
-    "Date" datetime NOT NULL,
+    "Date" TEXT NOT NULL,
     CONSTRAINT "FK_RDSMessages_RDSCollections" FOREIGN KEY ("RDSCollectionId") REFERENCES "RDSCollections" ("ID") ON DELETE CASCADE
 );
 
@@ -427,7 +398,7 @@ CREATE TABLE "Servers" (
     "ServerName" TEXT NOT NULL,
     "ServerUrl" TEXT NULL DEFAULT '',
     "Password" TEXT NULL,
-    "Comments" ntext NULL,
+    "Comments" TEXT NULL,
     "VirtualServer" INTEGER NOT NULL,
     "InstantDomainAlias" TEXT NULL,
     "PrimaryGroupID" INTEGER NULL,
@@ -492,7 +463,7 @@ CREATE TABLE "Comments" (
     "ItemTypeID" TEXT NOT NULL,
     "ItemID" INTEGER NOT NULL,
     "UserID" INTEGER NOT NULL,
-    "CreatedDate" datetime NOT NULL,
+    "CreatedDate" TEXT NOT NULL,
     "CommentText" TEXT NULL,
     "SeverityID" INTEGER NULL,
     CONSTRAINT "FK_Comments_Users" FOREIGN KEY ("UserID") REFERENCES "Users" ("UserID") ON DELETE CASCADE
@@ -502,7 +473,7 @@ CREATE TABLE "UserSettings" (
     "UserID" INTEGER NOT NULL,
     "SettingsName" TEXT NOT NULL,
     "PropertyName" TEXT NOT NULL,
-    "PropertyValue" ntext NULL,
+    "PropertyValue" TEXT NULL,
     CONSTRAINT "PK_UserSettings" PRIMARY KEY ("UserID", "SettingsName", "PropertyName"),
     CONSTRAINT "FK_UserSettings_Users" FOREIGN KEY ("UserID") REFERENCES "Users" ("UserID") ON DELETE CASCADE
 );
@@ -520,7 +491,7 @@ CREATE TABLE "IPAddresses" (
     "ExternalIP" TEXT NOT NULL,
     "InternalIP" TEXT NULL,
     "ServerID" INTEGER NULL,
-    "Comments" ntext NULL,
+    "Comments" TEXT NULL,
     "SubnetMask" TEXT NULL,
     "DefaultGateway" TEXT NULL,
     "PoolID" INTEGER NULL,
@@ -532,7 +503,7 @@ CREATE TABLE "PrivateNetworkVLANs" (
     "VlanID" INTEGER NOT NULL CONSTRAINT "PK__PrivateN__8348135581B53618" PRIMARY KEY AUTOINCREMENT,
     "Vlan" INTEGER NOT NULL,
     "ServerID" INTEGER NULL,
-    "Comments" ntext NULL,
+    "Comments" TEXT NULL,
     CONSTRAINT "FK_ServerID" FOREIGN KEY ("ServerID") REFERENCES "Servers" ("ServerID") ON DELETE CASCADE
 );
 
@@ -541,7 +512,7 @@ CREATE TABLE "Services" (
     "ServerID" INTEGER NOT NULL,
     "ProviderID" INTEGER NOT NULL,
     "ServiceName" TEXT NOT NULL,
-    "Comments" ntext NULL,
+    "Comments" TEXT NULL,
     "ServiceQuotaValue" INTEGER NULL,
     "ClusterID" INTEGER NULL,
     CONSTRAINT "FK_Services_Clusters" FOREIGN KEY ("ClusterID") REFERENCES "Clusters" ("ClusterID"),
@@ -633,7 +604,7 @@ CREATE TABLE "EnterpriseFolders" (
 CREATE TABLE "AccessTokens" (
     "ID" INTEGER NOT NULL CONSTRAINT "PK__AccessTo__3214EC27A32557FE" PRIMARY KEY AUTOINCREMENT,
     "AccessTokenGuid" TEXT NOT NULL,
-    "ExpirationDate" datetime NOT NULL,
+    "ExpirationDate" TEXT NOT NULL,
     "AccountID" INTEGER NOT NULL,
     "ItemId" INTEGER NOT NULL,
     "TokenType" INTEGER NOT NULL,
@@ -644,16 +615,16 @@ CREATE TABLE "AccessTokens" (
 CREATE TABLE "BlackBerryUsers" (
     "BlackBerryUserId" INTEGER NOT NULL CONSTRAINT "PK_BlackBerryUsers" PRIMARY KEY AUTOINCREMENT,
     "AccountId" INTEGER NOT NULL,
-    "CreatedDate" datetime NOT NULL,
-    "ModifiedDate" datetime NOT NULL,
+    "CreatedDate" TEXT NOT NULL,
+    "ModifiedDate" TEXT NOT NULL,
     CONSTRAINT "FK_BlackBerryUsers_ExchangeAccounts" FOREIGN KEY ("AccountId") REFERENCES "ExchangeAccounts" ("AccountID")
 );
 
 CREATE TABLE "CRMUsers" (
     "CRMUserID" INTEGER NOT NULL CONSTRAINT "PK_CRMUsers" PRIMARY KEY AUTOINCREMENT,
     "AccountID" INTEGER NOT NULL,
-    "CreatedDate" datetime NOT NULL,
-    "ChangedDate" datetime NOT NULL,
+    "CreatedDate" TEXT NOT NULL,
+    "ChangedDate" TEXT NOT NULL,
     "CRMUserGuid" TEXT NULL,
     "BusinessUnitID" TEXT NULL,
     "CALType" INTEGER NULL,
@@ -666,7 +637,7 @@ CREATE TABLE "DomainDnsRecords" (
     "RecordType" INTEGER NOT NULL,
     "DnsServer" TEXT NULL,
     "Value" TEXT NULL,
-    "Date" datetime NULL,
+    "Date" TEXT NULL,
     CONSTRAINT "FK_DomainDnsRecords_DomainId" FOREIGN KEY ("DomainId") REFERENCES "Domains" ("DomainID") ON DELETE CASCADE
 );
 
@@ -682,9 +653,9 @@ CREATE TABLE "Domains" (
     "IsPreviewDomain" INTEGER NOT NULL,
     "IsDomainPointer" INTEGER NOT NULL,
     "DomainItemId" INTEGER NULL,
-    "CreationDate" datetime NULL,
-    "ExpirationDate" datetime NULL,
-    "LastUpdateDate" datetime NULL,
+    "CreationDate" TEXT NULL,
+    "ExpirationDate" TEXT NULL,
+    "LastUpdateDate" TEXT NULL,
     "RegistrarName" TEXT NULL,
     CONSTRAINT "FK_Domains_Packages" FOREIGN KEY ("PackageID") REFERENCES "Packages" ("PackageID") ON DELETE CASCADE,
     CONSTRAINT "FK_Domains_ServiceItems_MailDomain" FOREIGN KEY ("MailDomainID") REFERENCES "ServiceItems" ("ItemID"),
@@ -718,7 +689,7 @@ CREATE TABLE "ExchangeAccounts" (
     "MailEnabledPublicFolder" INTEGER NULL,
     "MailboxManagerActions" TEXT NULL,
     "SamAccountName" TEXT NULL,
-    "CreatedDate" datetime NOT NULL,
+    "CreatedDate" TEXT NOT NULL,
     "MailboxPlanId" INTEGER NULL,
     "SubscriberNumber" TEXT NULL,
     "UserPrincipalName" TEXT NULL,
@@ -744,7 +715,7 @@ CREATE TABLE "WebDavAccessTokens" (
     "FilePath" TEXT NOT NULL,
     "AuthData" TEXT NOT NULL,
     "AccessToken" TEXT NOT NULL,
-    "ExpirationDate" datetime NOT NULL,
+    "ExpirationDate" TEXT NOT NULL,
     "AccountID" INTEGER NOT NULL,
     "ItemId" INTEGER NOT NULL,
     CONSTRAINT "FK_WebDavAccessTokens_UserId" FOREIGN KEY ("AccountID") REFERENCES "ExchangeAccounts" ("AccountID") ON DELETE CASCADE
@@ -855,8 +826,8 @@ CREATE TABLE "LyncUsers" (
     "LyncUserID" INTEGER NOT NULL CONSTRAINT "PK_LyncUsers" PRIMARY KEY AUTOINCREMENT,
     "AccountID" INTEGER NOT NULL,
     "LyncUserPlanID" INTEGER NOT NULL,
-    "CreatedDate" datetime NOT NULL,
-    "ModifiedDate" datetime NOT NULL,
+    "CreatedDate" TEXT NOT NULL,
+    "ModifiedDate" TEXT NOT NULL,
     "SipAddress" TEXT NULL,
     CONSTRAINT "FK_LyncUsers_LyncUserPlans" FOREIGN KEY ("LyncUserPlanID") REFERENCES "LyncUserPlans" ("LyncUserPlanId")
 );
@@ -905,10 +876,10 @@ CREATE TABLE "HostingPlans" (
     "PackageID" INTEGER NULL,
     "ServerID" INTEGER NULL,
     "PlanName" TEXT NOT NULL,
-    "PlanDescription" ntext NULL,
+    "PlanDescription" TEXT NULL,
     "Available" INTEGER NOT NULL,
-    "SetupPrice" money NULL,
-    "RecurringPrice" money NULL,
+    "SetupPrice" TEXT NULL,
+    "RecurringPrice" TEXT NULL,
     "RecurrenceUnit" INTEGER NULL,
     "RecurrenceLength" INTEGER NULL,
     "IsAddon" INTEGER NULL,
@@ -922,15 +893,15 @@ CREATE TABLE "Packages" (
     "ParentPackageID" INTEGER NULL,
     "UserID" INTEGER NOT NULL,
     "PackageName" TEXT NULL,
-    "PackageComments" ntext NULL,
+    "PackageComments" TEXT NULL,
     "ServerID" INTEGER NULL,
     "StatusID" INTEGER NOT NULL,
     "PlanID" INTEGER NULL,
-    "PurchaseDate" datetime NULL,
+    "PurchaseDate" TEXT NULL,
     "OverrideQuotas" INTEGER NOT NULL,
-    "BandwidthUpdated" datetime NULL,
+    "BandwidthUpdated" TEXT NULL,
     "DefaultTopPackage" INTEGER NOT NULL,
-    "StatusIDchangeDate" datetime NOT NULL DEFAULT ((getdate())),
+    "StatusIDchangeDate" TEXT NOT NULL DEFAULT ((getdate())),
     CONSTRAINT "FK_Packages_HostingPlans" FOREIGN KEY ("PlanID") REFERENCES "HostingPlans" ("PlanID"),
     CONSTRAINT "FK_Packages_Packages" FOREIGN KEY ("ParentPackageID") REFERENCES "Packages" ("PackageID"),
     CONSTRAINT "FK_Packages_Servers" FOREIGN KEY ("ServerID") REFERENCES "Servers" ("ServerID"),
@@ -942,8 +913,8 @@ CREATE TABLE "PackageAddons" (
     "PackageID" INTEGER NULL,
     "PlanID" INTEGER NULL,
     "Quantity" INTEGER NULL,
-    "PurchaseDate" datetime NULL,
-    "Comments" ntext NULL,
+    "PurchaseDate" TEXT NULL,
+    "Comments" TEXT NULL,
     "StatusID" INTEGER NULL,
     CONSTRAINT "FK_PackageAddons_HostingPlans" FOREIGN KEY ("PlanID") REFERENCES "HostingPlans" ("PlanID"),
     CONSTRAINT "FK_PackageAddons_Packages" FOREIGN KEY ("PackageID") REFERENCES "Packages" ("PackageID") ON DELETE CASCADE
@@ -971,7 +942,7 @@ CREATE TABLE "PackageResources" (
 CREATE TABLE "PackagesBandwidth" (
     "PackageID" INTEGER NOT NULL,
     "GroupID" INTEGER NOT NULL,
-    "LogDate" datetime NOT NULL,
+    "LogDate" TEXT NOT NULL,
     "BytesSent" INTEGER NOT NULL,
     "BytesReceived" INTEGER NOT NULL,
     CONSTRAINT "PK_PackagesBandwidth" PRIMARY KEY ("PackageID", "GroupID", "LogDate"),
@@ -1019,11 +990,11 @@ CREATE TABLE "Schedule" (
     "ScheduleName" TEXT NULL,
     "ScheduleTypeID" TEXT NULL,
     "Interval" INTEGER NULL,
-    "FromTime" datetime NULL,
-    "ToTime" datetime NULL,
-    "StartTime" datetime NULL,
-    "LastRun" datetime NULL,
-    "NextRun" datetime NULL,
+    "FromTime" TEXT NULL,
+    "ToTime" TEXT NULL,
+    "StartTime" TEXT NULL,
+    "LastRun" TEXT NULL,
+    "NextRun" TEXT NULL,
     "Enabled" INTEGER NOT NULL,
     "PriorityID" TEXT NULL,
     "HistoriesNumber" INTEGER NULL,
@@ -1039,7 +1010,7 @@ CREATE TABLE "ServiceItems" (
     "ItemTypeID" INTEGER NULL,
     "ServiceID" INTEGER NULL,
     "ItemName" TEXT NULL,
-    "CreatedDate" datetime NULL,
+    "CreatedDate" TEXT NULL,
     CONSTRAINT "FK_ServiceItems_Packages" FOREIGN KEY ("PackageID") REFERENCES "Packages" ("PackageID"),
     CONSTRAINT "FK_ServiceItems_ServiceItemTypes" FOREIGN KEY ("ItemTypeID") REFERENCES "ServiceItemTypes" ("ItemTypeID"),
     CONSTRAINT "FK_ServiceItems_Services" FOREIGN KEY ("ServiceID") REFERENCES "Services" ("ServiceID")
@@ -7610,7 +7581,7 @@ CREATE INDEX "WebDavAccessTokensIdx_AccountID" ON "WebDavAccessTokens" ("Account
 CREATE INDEX "WebDavPortalUsersSettingsIdx_AccountId" ON "WebDavPortalUsersSettings" ("AccountId");
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20240627170338_InitialCreate', '8.0.6');
+VALUES ('20240629131829_InitalCreate', '8.0.6');
 
 COMMIT;
 

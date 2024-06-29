@@ -20,9 +20,11 @@ public partial class PackageSettingConfiguration: EntityTypeConfiguration<Packag
 		if (IsMsSql) Property(e => e.PropertyValue).HasColumnType("ntext");
 		else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)
 		{
+#if NetCore
 			Property(e => e.PropertyValue).HasColumnType("TEXT");
+#endif
 		}
 
 	}
 #endif
-}
+		}

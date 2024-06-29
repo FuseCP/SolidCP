@@ -2,7 +2,6 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SolidCP.EnterpriseServer.Data;
 
@@ -11,11 +10,9 @@ using SolidCP.EnterpriseServer.Data;
 namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 {
     [DbContext(typeof(SqliteDbContext))]
-    [Migration("20240627170338_InitialCreate")]
-    partial class InitialCreate
+    partial class SqliteDbContextModelSnapshot_v1_4_9 : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.6");
@@ -48,7 +45,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnName("AccountID");
 
                     b.Property<DateTime>("ExpirationDate")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("ItemId")
                         .HasColumnType("INTEGER");
@@ -99,10 +96,10 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnName("RecordID");
 
                     b.Property<string>("ExecutionLog")
-                        .HasColumnType("ntext");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("FinishDate")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<int?>("ItemId")
                         .HasColumnType("INTEGER")
@@ -127,7 +124,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("TaskName")
                         .IsRequired()
@@ -2184,7 +2181,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnName("EffectiveUserID");
 
                     b.Property<DateTime?>("FinishDate")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<Guid>("Guid")
                         .HasColumnType("TEXT");
@@ -2224,7 +2221,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("Status")
                         .HasColumnType("INTEGER");
@@ -2256,10 +2253,10 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnName("LogID");
 
                     b.Property<DateTime?>("Date")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ExceptionStackTrace")
-                        .HasColumnType("ntext");
+                        .HasColumnType("TEXT");
 
                     b.Property<int?>("InnerTaskStart")
                         .HasColumnType("INTEGER");
@@ -2272,13 +2269,13 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnName("TaskID");
 
                     b.Property<string>("Text")
-                        .HasColumnType("ntext");
+                        .HasColumnType("TEXT");
 
                     b.Property<int?>("TextIdent")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("XmlParameters")
-                        .HasColumnType("ntext");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("LogId")
                         .HasName("PK__Backgrou__5E5499A830A1D5BF");
@@ -2300,7 +2297,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SerializerValue")
-                        .HasColumnType("ntext");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("TaskId")
                         .HasColumnType("INTEGER")
@@ -2347,10 +2344,10 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("BlackBerryUserId");
 
@@ -2388,7 +2385,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("ItemId")
                         .HasColumnType("INTEGER")
@@ -2436,10 +2433,10 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnName("CALType");
 
                     b.Property<DateTime>("ChangedDate")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<Guid?>("CrmUserGuid")
                         .HasColumnType("TEXT")
@@ -2460,7 +2457,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnName("DomainID");
 
                     b.Property<DateTime?>("CreationDate")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<int?>("DomainItemId")
                         .HasColumnType("INTEGER");
@@ -2471,7 +2468,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("ExpirationDate")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("HostingAllowed")
                         .HasColumnType("INTEGER");
@@ -2486,7 +2483,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("LastUpdateDate")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<int?>("MailDomainId")
                         .HasColumnType("INTEGER")
@@ -2528,7 +2525,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnName("ID");
 
                     b.Property<DateTime?>("Date")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("DnsServer")
                         .HasMaxLength(255)
@@ -2641,7 +2638,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("DisplayName")
                         .IsRequired()
@@ -2743,7 +2740,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnName("AccountID");
 
                     b.Property<DateTime>("ExpirationDate")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("FileName")
                         .HasMaxLength(128)
@@ -3158,7 +3155,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnName("PackageID");
 
                     b.Property<string>("PlanDescription")
-                        .HasColumnType("ntext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("PlanName")
                         .IsRequired()
@@ -3172,14 +3169,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("INTEGER");
 
                     b.Property<decimal?>("RecurringPrice")
-                        .HasColumnType("money");
+                        .HasColumnType("TEXT");
 
                     b.Property<int?>("ServerId")
                         .HasColumnType("INTEGER")
                         .HasColumnName("ServerID");
 
                     b.Property<decimal?>("SetupPrice")
-                        .HasColumnType("money");
+                        .HasColumnType("TEXT");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("INTEGER")
@@ -3252,7 +3249,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnName("AddressID");
 
                     b.Property<string>("Comments")
-                        .HasColumnType("ntext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("DefaultGateway")
                         .HasMaxLength(15)
@@ -3308,14 +3305,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnName("AccountID");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("LyncUserPlanId")
                         .HasColumnType("INTEGER")
                         .HasColumnName("LyncUserPlanID");
 
                     b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("SipAddress")
                         .HasMaxLength(300)
@@ -3423,7 +3420,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnName("AccountID");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("InstanceId")
                         .IsRequired()
@@ -3432,7 +3429,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnName("InstanceID");
 
                     b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("OcsuserId");
 
@@ -3447,7 +3444,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnName("PackageID");
 
                     b.Property<DateTime?>("BandwidthUpdated")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("DefaultTopPackage")
                         .HasColumnType("INTEGER");
@@ -3456,7 +3453,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("PackageComments")
-                        .HasColumnType("ntext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("PackageName")
                         .HasMaxLength(300)
@@ -3471,7 +3468,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnName("PlanID");
 
                     b.Property<DateTime?>("PurchaseDate")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<int?>("ServerId")
                         .HasColumnType("INTEGER")
@@ -3483,7 +3480,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<DateTime>("StatusIdChangeDate")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
+                        .HasColumnType("TEXT")
                         .HasColumnName("StatusIDchangeDate")
                         .HasDefaultValueSql("(getdate())");
 
@@ -3525,7 +3522,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnName("PackageAddonID");
 
                     b.Property<string>("Comments")
-                        .HasColumnType("ntext");
+                        .HasColumnType("TEXT");
 
                     b.Property<int?>("PackageId")
                         .HasColumnType("INTEGER")
@@ -3536,7 +3533,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnName("PlanID");
 
                     b.Property<DateTime?>("PurchaseDate")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<int?>("Quantity")
                         .HasColumnType("INTEGER");
@@ -3676,7 +3673,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnOrder(3);
 
                     b.Property<string>("PropertyValue")
-                        .HasColumnType("ntext");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("PackageId", "SettingsName", "PropertyName");
 
@@ -3721,7 +3718,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnOrder(2);
 
                     b.Property<DateTime>("LogDate")
-                        .HasColumnType("datetime")
+                        .HasColumnType("TEXT")
                         .HasColumnOrder(3);
 
                     b.Property<long>("BytesReceived")
@@ -3824,7 +3821,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnName("VlanID");
 
                     b.Property<string>("Comments")
-                        .HasColumnType("ntext");
+                        .HasColumnType("TEXT");
 
                     b.Property<int?>("ServerId")
                         .HasColumnType("INTEGER")
@@ -8347,10 +8344,10 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasColumnType("ntext");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("ExpiryDate")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("FileName")
                         .IsRequired()
@@ -8366,7 +8363,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("ValidFrom")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -8503,11 +8500,11 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("Date")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("MessageText")
                         .IsRequired()
-                        .HasColumnType("ntext");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("RdsCollectionId")
                         .HasColumnType("INTEGER")
@@ -8592,7 +8589,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("PropertyValue")
-                        .HasColumnType("ntext");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("RdsServerId", "SettingsName", "PropertyName");
 
@@ -9142,7 +9139,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("FromTime")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<int?>("HistoriesNumber")
                         .HasColumnType("INTEGER");
@@ -9151,13 +9148,13 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("LastRun")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<int?>("MaxExecutionTime")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("NextRun")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<int?>("PackageId")
                         .HasColumnType("INTEGER")
@@ -9178,7 +9175,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnName("ScheduleTypeID");
 
                     b.Property<DateTime?>("StartTime")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("TaskId")
                         .IsRequired()
@@ -9187,7 +9184,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnName("TaskID");
 
                     b.Property<DateTime?>("ToTime")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<int?>("WeekMonthDay")
                         .HasColumnType("INTEGER");
@@ -10383,7 +10380,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnName("ADUsername");
 
                     b.Property<string>("Comments")
-                        .HasColumnType("ntext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("InstantDomainAlias")
                         .HasMaxLength(200)
@@ -10441,7 +10438,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnName("ClusterID");
 
                     b.Property<string>("Comments")
-                        .HasColumnType("ntext");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("ProviderId")
                         .HasColumnType("INTEGER")
@@ -12710,7 +12707,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnName("ItemID");
 
                     b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ItemName")
                         .HasMaxLength(500)
@@ -13624,10 +13621,10 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnName("AccountID");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("SfBUserPlanId")
                         .HasColumnType("INTEGER")
@@ -13731,10 +13728,10 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnName("ID");
 
                     b.Property<string>("Certificate")
-                        .HasColumnType("ntext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Csr")
-                        .HasColumnType("ntext")
+                        .HasColumnType("TEXT")
                         .HasColumnName("CSR");
 
                     b.Property<int?>("CsrLength")
@@ -13746,14 +13743,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("ExpiryDate")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("FriendlyName")
                         .HasMaxLength(255)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Hash")
-                        .HasColumnType("ntext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Hostname")
                         .HasMaxLength(255)
@@ -13766,7 +13763,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Pfx")
-                        .HasColumnType("ntext");
+                        .HasColumnType("TEXT");
 
                     b.Property<int?>("PreviousId")
                         .HasColumnType("INTEGER");
@@ -13784,7 +13781,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnName("UserID");
 
                     b.Property<DateTime?>("ValidFrom")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -13962,7 +13959,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnOrder(2);
 
                     b.Property<string>("PropertyValue")
-                        .HasColumnType("ntext");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("SettingsName", "PropertyName");
 
@@ -14026,6 +14023,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("Created")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Date")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Id")
@@ -14271,14 +14271,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("Changed")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("City")
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Comments")
-                        .HasColumnType("ntext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("CompanyName")
                         .HasMaxLength(100)
@@ -14289,7 +14289,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("Created")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<bool?>("EcommerceEnabled")
                         .HasColumnType("INTEGER");
@@ -14449,7 +14449,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnOrder(3);
 
                     b.Property<string>("PropertyValue")
-                        .HasColumnType("ntext");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("UserId", "SettingsName", "PropertyName");
 
@@ -15406,22 +15406,21 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.UsersDetailed", b =>
                 {
                     b.Property<int>("UserId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
                         .HasColumnName("UserID");
 
                     b.Property<DateTime?>("Changed")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Comments")
-                        .HasColumnType("ntext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("CompanyName")
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("Created")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<bool?>("EcommerceEnabled")
                         .HasColumnType("INTEGER");
@@ -15503,7 +15502,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.HasKey("UserId");
 
-                    b.ToTable("UsersDetailed");
+                    b.ToTable((string)null);
+
+                    b.ToView("UsersDetailed", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Version", b =>
@@ -15514,7 +15515,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("BuildDate")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("DatabaseVersion");
 
@@ -15641,7 +15642,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("ExpirationDate")
-                        .HasColumnType("datetime");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("FilePath")
                         .IsRequired()
@@ -15777,8 +15778,8 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasForeignKey("WebSiteId")
                         .HasConstraintName("FK_Domains_ServiceItems_WebSite");
 
-                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.ServiceItem", "ZoneItem")
-                        .WithMany("DomainZoneItems")
+                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.ServiceItem", "Zone")
+                        .WithMany("DomainZones")
                         .HasForeignKey("ZoneItemId")
                         .HasConstraintName("FK_Domains_ServiceItems_ZoneItem");
 
@@ -15788,7 +15789,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Navigation("WebSite");
 
-                    b.Navigation("ZoneItem");
+                    b.Navigation("Zone");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.DomainDnsRecord", b =>
@@ -16912,7 +16913,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Navigation("DomainWebSites");
 
-                    b.Navigation("DomainZoneItems");
+                    b.Navigation("DomainZones");
 
                     b.Navigation("ExchangeAccounts");
 

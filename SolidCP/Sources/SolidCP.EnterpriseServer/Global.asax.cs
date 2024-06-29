@@ -60,7 +60,9 @@ namespace SolidCP.EnterpriseServer
 			Web.Clients.CertificateValidator.Init();
 			Web.Services.StartupNetFX.Start();
 			Web.Clients.AssemblyLoader.Init(null, null, false);
+			InitDbContext();
 		}
+		void InitDbContext() => Data.DbContext.Init();
 
 		protected void Application_End(object sender, EventArgs e)
 		{

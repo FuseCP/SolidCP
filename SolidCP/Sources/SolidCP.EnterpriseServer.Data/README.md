@@ -42,15 +42,20 @@ public string ExecutionLog { get; set; }
 
 # Migrations
 Migrations are only managed with EF Core, not with EF 6. They are always executed with NET 8.0 by the intaller,
-not with NET Framework. When you create SolidCP release with deploy-release.bat, deploy-release.bat creates
-backups of the Model Snapshots ..DbContextModelSnapshot.cs files, so you can always create migrations based
-on the last SolidCP release. When creating a SolidCP release, one can combine all new migrations into one by
-reverting the Model Snapshot to that of the last release and creating a new migration. The model snapshots are
-ignored by Git an not checked into the source version control. So if you need to create a new migration for a
-change you've made to the model, if you do not have yet a Model Snapshot, because you've checked out a fresh Git
-repo, rename the Model Snapshot of the last release to the current snapshot and use this Model Snapshot to create
-your migration, so the migration gets created relative to the last SolidCP release. The Model Snapshots are not
-in source control, because they would create difficulties when merging branches in Git.
+not with NET Framework.
+
+To create a new migration, you can run AddMigration.bat, or if you just want a migration for the database flavor
+you're working with, copy the individual lines in AddMigration.bat to a command line shell.
+
+When you create SolidCP release with deploy-release.bat, deploy-release.bat creates backups of the Model Snapshots
+..DbContextModelSnapshot.cs files, so you can always create migrations based on the last SolidCP release. When
+creating a SolidCP release, one can combine all new migrations into one by reverting the Model Snapshot to that
+of the last release and creating a new migration. The model snapshots are ignored by Git an not checked into the
+source version control. So if you need to create a new migration for a change you've made to the model, if you do
+not have yet a Model Snapshot, because you've checked out a fresh Git repo, rename the Model Snapshot of the last
+SolidCP release to the current snapshot and use this Model Snapshot to create your migration, so the migration gets
+created relative to the last SolidCP release. The Model Snapshots are not in source control, because they would
+create difficulties when merging branches in Git.
 
 # Usage of SolidCP.EnterpriseServer.Data
 SolidCP.EnterpriseServer.Data provides a class DbContext, that can be used as EF DbContext to access the database,

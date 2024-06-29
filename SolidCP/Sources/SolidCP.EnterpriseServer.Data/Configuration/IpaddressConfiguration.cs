@@ -24,8 +24,10 @@ public partial class IpAddressConfiguration: EntityTypeConfiguration<IpAddress>
 		if (IsMsSql) Property(e => e.Comments).HasColumnType("ntext");
 		else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)
 		{
-			Property(e => e.Comments).HasColumnType("TEXT");
-		}
+#if NetCore
+            Property(e => e.Comments).HasColumnType("TEXT");
+#endif
+        }
 
 
 #if NetCore
@@ -38,4 +40,4 @@ public partial class IpAddressConfiguration: EntityTypeConfiguration<IpAddress>
 #endif
     }
 #endif
-}
+        }

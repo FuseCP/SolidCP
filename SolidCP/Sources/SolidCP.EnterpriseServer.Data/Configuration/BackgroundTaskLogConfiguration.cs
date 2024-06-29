@@ -26,10 +26,12 @@ public partial class BackgroundTaskLogConfiguration: EntityTypeConfiguration<Bac
 			Property(e => e.XmlParameters).HasColumnType("ntext");
 		} else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)
         {
+#if NetCore
 			Property(e => e.Text).HasColumnType("TEXT");
 			Property(e => e.ExceptionStackTrace).HasColumnType("TEXT");
 			Property(e => e.XmlParameters).HasColumnType("TEXT");
-		}
+#endif
+        }
 #if NetCore // EF Core
 		HasOne(d => d.Task).WithMany(p => p.BackgroundTaskLogs)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -39,4 +41,4 @@ public partial class BackgroundTaskLogConfiguration: EntityTypeConfiguration<Bac
 #endif
     }
 #endif
-    }
+        }

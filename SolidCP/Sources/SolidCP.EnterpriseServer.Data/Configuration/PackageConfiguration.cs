@@ -25,7 +25,9 @@ public partial class PackageConfiguration: EntityTypeConfiguration<Package>
             Property(e => e.PackageComments).HasColumnType("ntext");
         } else if (IsSqlite || IsMySql || IsMariaDb || IsPostgreSql)
         {
+#if NetCore
             Property(e => e.PackageComments).HasColumnType("TEXT");
+#endif
         }
 
 #if NetCore
@@ -70,11 +72,11 @@ public partial class PackageConfiguration: EntityTypeConfiguration<Package>
                 .MapLeftKey("PackageID"));
 #endif
 
-		#region Seed Data
+        #region Seed Data
 		HasData(() => new Package[] {
 			new Package() { PackageId = 1, PackageComments = "", PackageName = "System", StatusId = 1, StatusIdChangeDate = DateTime.Parse("2024-04-20T11:02:58.5600000"), UserId = 1 }
 		});
-		#endregion
+        #endregion
 	}
 #endif
-}
+        }

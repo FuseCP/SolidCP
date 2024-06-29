@@ -25,7 +25,9 @@ public partial class RdsMessageConfiguration: EntityTypeConfiguration<RdsMessage
 		}
 		else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)
 		{
+#if NetCore
 			Property(e => e.MessageText).HasColumnType("TEXT");
+#endif
 		}
 
 #if NetCore
@@ -36,4 +38,4 @@ public partial class RdsMessageConfiguration: EntityTypeConfiguration<RdsMessage
 #endif
     }
 #endif
-    }
+		}

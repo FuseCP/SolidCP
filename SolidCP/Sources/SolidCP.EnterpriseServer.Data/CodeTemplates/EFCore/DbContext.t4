@@ -85,11 +85,10 @@ namespace <#= NamespaceHint.Replace(".Data.Configuration.Sources", ".Context") #
             }
         }
 #elif NetFX
-        public <#= Options.ContextName #>(Data.DbContext context): base(context.ConnectionString) { 
+        public <#= Options.ContextName #>(Data.DbContext context): base(context.DbConnection, true) { 
             DbType = context.DbType;
             InitSeedData = context.InitSeedData;
 			Database.Log += WriteToLog;
-            Database.SetInitializer<DbContextBase>(null);
         }
 #endif
 

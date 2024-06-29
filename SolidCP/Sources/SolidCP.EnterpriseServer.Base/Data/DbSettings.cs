@@ -38,7 +38,7 @@ namespace SolidCP.EnterpriseServer.Data
 
         static string connectionString = null;
 
-        static string ConnectionStringNetCore
+		static string ConnectionStringNetCore
 		{
 			get
 			{
@@ -127,7 +127,98 @@ namespace SolidCP.EnterpriseServer.Data
 			}
 		}
 
+		static string providerName = null;
+		static string ProviderNameNetCore
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(providerName))
+				{
+
+					string providerKey = null;
+					if (OSInfo.IsNetFX)
+					{
+						//providerKey = ConfigurationManager.AppSettings["SolidCP.AltProviderName"];
+					}
+					else
+					{
+						providerKey = Web.Services.Configuration.AltProviderName;
+					}
+
+					string value = string.Empty;
+
+					if (!string.IsNullOrEmpty(providerKey) && OSInfo.IsWindows)
+					{
+						value = GetKeyFromRegistry(providerKey);
+					}
+
+					if (!string.IsNullOrEmpty(value))
+					{
+						providerName = value;
+					}
+					else
+					{
+						if (OSInfo.IsNetFX)
+						{
+							//providerName = ConfigurationManager.ConnectionStrings["EnterpriseServer"].ProviderName;
+						}
+						else
+						{
+							providerName = Web.Services.Configuration.ProviderName;
+
+						}
+					}
+				}
+				return providerName;
+			}
+		}
+		static string ProviderNameNetFX
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(providerName))
+				{
+
+					string providerKey = null;
+					if (OSInfo.IsNetFX)
+					{
+						providerKey = ConfigurationManager.AppSettings["SolidCP.AltProviderName"];
+					}
+					else
+					{
+						//providerKey = Web.Services.Configuration.AltProviderName;
+					}
+
+					string value = string.Empty;
+
+					if (!string.IsNullOrEmpty(providerKey) && OSInfo.IsWindows)
+					{
+						value = GetKeyFromRegistry(providerKey);
+					}
+
+					if (!string.IsNullOrEmpty(value))
+					{
+						providerName = value;
+					}
+					else
+					{
+						if (OSInfo.IsNetFX)
+						{
+							providerName = ConfigurationManager.ConnectionStrings["EnterpriseServer"].ProviderName;
+						}
+						else
+						{
+							//providerName = Web.Services.Configuration.ProviderName;
+
+						}
+					}
+				}
+				return connectionString;
+			}
+		}
+
 		public static string ConnectionString => OSInfo.IsNetFX ? ConnectionStringNetFX : ConnectionStringNetCore;
+		public static string ProviderName => OSInfo.IsNetFX ? ProviderNameNetFX : ProviderNameNetCore;
 		public static string NativeConnectionString => GetNativeConnectionString(ConnectionString);
 
         public static string GetNativeConnectionString(string connectionString)

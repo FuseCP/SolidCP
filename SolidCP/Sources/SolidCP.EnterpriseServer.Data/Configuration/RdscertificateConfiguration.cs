@@ -26,9 +26,11 @@ public partial class RdsCertificateConfiguration: EntityTypeConfiguration<RdsCer
 		}
 		else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)
 		{
+#if NetCore
 			Property(e => e.Content).HasColumnType("TEXT");
+#endif
 		}
 
 	}
 #endif
-}
+		}

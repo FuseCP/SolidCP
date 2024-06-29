@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitalCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -36,12 +36,12 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     Username = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
                     ItemID = table.Column<int>(type: "INTEGER", nullable: true),
                     SeverityID = table.Column<int>(type: "INTEGER", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    FinishDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    FinishDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     SourceName = table.Column<string>(type: "TEXT", unicode: false, maxLength: 50, nullable: false),
                     TaskName = table.Column<string>(type: "TEXT", unicode: false, maxLength: 50, nullable: false),
                     ItemName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
-                    ExecutionLog = table.Column<string>(type: "ntext", nullable: true),
+                    ExecutionLog = table.Column<string>(type: "TEXT", nullable: true),
                     PackageID = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
@@ -88,8 +88,8 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     TaskName = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
                     ItemID = table.Column<int>(type: "INTEGER", nullable: true),
                     ItemName = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
-                    StartDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    FinishDate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    StartDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    FinishDate = table.Column<DateTime>(type: "TEXT", nullable: true),
                     IndicatorCurrent = table.Column<int>(type: "INTEGER", nullable: false),
                     IndicatorMaximum = table.Column<int>(type: "INTEGER", nullable: false),
                     MaximumExecutionTime = table.Column<int>(type: "INTEGER", nullable: false),
@@ -128,7 +128,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     StoragePath = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
                     FolderName = table.Column<string>(type: "TEXT", maxLength: 128, nullable: true),
                     FileName = table.Column<string>(type: "TEXT", maxLength: 128, nullable: true),
-                    ExpirationDate = table.Column<DateTime>(type: "datetime", nullable: false)
+                    ExpirationDate = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -189,8 +189,8 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .Annotation("Sqlite:Autoincrement", true),
                     AccountID = table.Column<int>(type: "INTEGER", nullable: false),
                     InstanceID = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    ModifiedDate = table.Column<DateTime>(type: "datetime", nullable: false)
+                    CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -216,7 +216,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     PackageID = table.Column<int>(type: "INTEGER", nullable: false),
                     SettingsName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     PropertyName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    PropertyValue = table.Column<string>(type: "ntext", nullable: true)
+                    PropertyValue = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -230,11 +230,11 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     ServiceId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Content = table.Column<string>(type: "ntext", nullable: false),
+                    Content = table.Column<string>(type: "TEXT", nullable: false),
                     Hash = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
                     FileName = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
-                    ValidFrom = table.Column<DateTime>(type: "datetime", nullable: true),
-                    ExpiryDate = table.Column<DateTime>(type: "datetime", nullable: true)
+                    ValidFrom = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    ExpiryDate = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -264,7 +264,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     RdsServerId = table.Column<int>(type: "INTEGER", nullable: false),
                     SettingsName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     PropertyName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    PropertyValue = table.Column<string>(type: "ntext", nullable: true),
+                    PropertyValue = table.Column<string>(type: "TEXT", nullable: true),
                     ApplyUsers = table.Column<bool>(type: "INTEGER", nullable: false),
                     ApplyAdministrators = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
@@ -340,8 +340,8 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .Annotation("Sqlite:Autoincrement", true),
                     AccountID = table.Column<int>(type: "INTEGER", nullable: false),
                     SfBUserPlanID = table.Column<int>(type: "INTEGER", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    ModifiedDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     SipAddress = table.Column<string>(type: "TEXT", maxLength: 300, nullable: true)
                 },
                 constraints: table =>
@@ -360,16 +360,16 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     FriendlyName = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
                     Hostname = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
                     DistinguishedName = table.Column<string>(type: "TEXT", maxLength: 500, nullable: true),
-                    CSR = table.Column<string>(type: "ntext", nullable: true),
+                    CSR = table.Column<string>(type: "TEXT", nullable: true),
                     CSRLength = table.Column<int>(type: "INTEGER", nullable: true),
-                    Certificate = table.Column<string>(type: "ntext", nullable: true),
-                    Hash = table.Column<string>(type: "ntext", nullable: true),
+                    Certificate = table.Column<string>(type: "TEXT", nullable: true),
+                    Hash = table.Column<string>(type: "TEXT", nullable: true),
                     Installed = table.Column<bool>(type: "INTEGER", nullable: true),
                     IsRenewal = table.Column<bool>(type: "INTEGER", nullable: true),
-                    ValidFrom = table.Column<DateTime>(type: "datetime", nullable: true),
-                    ExpiryDate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    ValidFrom = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    ExpiryDate = table.Column<DateTime>(type: "TEXT", nullable: true),
                     SerialNumber = table.Column<string>(type: "TEXT", maxLength: 250, nullable: true),
-                    Pfx = table.Column<string>(type: "ntext", nullable: true),
+                    Pfx = table.Column<string>(type: "TEXT", nullable: true),
                     PreviousId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
@@ -411,7 +411,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                 {
                     SettingsName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     PropertyName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    PropertyValue = table.Column<string>(type: "ntext", nullable: true)
+                    PropertyValue = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -482,9 +482,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     FirstName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
                     LastName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
                     Email = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
-                    Created = table.Column<DateTime>(type: "datetime", nullable: true),
-                    Changed = table.Column<DateTime>(type: "datetime", nullable: true),
-                    Comments = table.Column<string>(type: "ntext", nullable: true),
+                    Created = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    Changed = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    Comments = table.Column<string>(type: "TEXT", nullable: true),
                     SecondaryEmail = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
                     Address = table.Column<string>(type: "TEXT", maxLength: 200, nullable: true),
                     City = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
@@ -517,48 +517,11 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                 });
 
             migrationBuilder.CreateTable(
-                name: "UsersDetailed",
-                columns: table => new
-                {
-                    UserID = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    RoleID = table.Column<int>(type: "INTEGER", nullable: false),
-                    StatusID = table.Column<int>(type: "INTEGER", nullable: false),
-                    LoginStatusId = table.Column<int>(type: "INTEGER", nullable: true),
-                    SubscriberNumber = table.Column<string>(type: "TEXT", maxLength: 32, nullable: true),
-                    FailedLogins = table.Column<int>(type: "INTEGER", nullable: true),
-                    OwnerID = table.Column<int>(type: "INTEGER", nullable: true),
-                    Created = table.Column<DateTime>(type: "datetime", nullable: true),
-                    Changed = table.Column<DateTime>(type: "datetime", nullable: true),
-                    IsDemo = table.Column<bool>(type: "INTEGER", nullable: false),
-                    Comments = table.Column<string>(type: "ntext", nullable: true),
-                    IsPeer = table.Column<bool>(type: "INTEGER", nullable: false),
-                    Username = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
-                    FirstName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
-                    LastName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
-                    Email = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
-                    CompanyName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
-                    FullName = table.Column<string>(type: "TEXT", maxLength: 101, nullable: true),
-                    OwnerUsername = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
-                    OwnerFirstName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
-                    OwnerLastName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
-                    OwnerRoleID = table.Column<int>(type: "INTEGER", nullable: true),
-                    OwnerFullName = table.Column<string>(type: "TEXT", maxLength: 101, nullable: true),
-                    OwnerEmail = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
-                    PackagesNumber = table.Column<int>(type: "INTEGER", nullable: true),
-                    EcommerceEnabled = table.Column<bool>(type: "INTEGER", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UsersDetailed", x => x.UserID);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Versions",
                 columns: table => new
                 {
                     DatabaseVersion = table.Column<string>(type: "TEXT", unicode: false, maxLength: 50, nullable: false),
-                    BuildDate = table.Column<DateTime>(type: "datetime", nullable: false)
+                    BuildDate = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -572,13 +535,13 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     LogID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     TaskID = table.Column<int>(type: "INTEGER", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime", nullable: true),
-                    ExceptionStackTrace = table.Column<string>(type: "ntext", nullable: true),
+                    Date = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    ExceptionStackTrace = table.Column<string>(type: "TEXT", nullable: true),
                     InnerTaskStart = table.Column<int>(type: "INTEGER", nullable: true),
                     Severity = table.Column<int>(type: "INTEGER", nullable: true),
-                    Text = table.Column<string>(type: "ntext", nullable: true),
+                    Text = table.Column<string>(type: "TEXT", nullable: true),
                     TextIdent = table.Column<int>(type: "INTEGER", nullable: true),
-                    XmlParameters = table.Column<string>(type: "ntext", nullable: true)
+                    XmlParameters = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -598,7 +561,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .Annotation("Sqlite:Autoincrement", true),
                     TaskID = table.Column<int>(type: "INTEGER", nullable: false),
                     Name = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
-                    SerializerValue = table.Column<string>(type: "ntext", nullable: true),
+                    SerializerValue = table.Column<string>(type: "TEXT", nullable: true),
                     TypeName = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true)
                 },
                 constraints: table =>
@@ -670,9 +633,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     RDSCollectionId = table.Column<int>(type: "INTEGER", nullable: false),
-                    MessageText = table.Column<string>(type: "ntext", nullable: false),
+                    MessageText = table.Column<string>(type: "TEXT", nullable: false),
                     UserName = table.Column<string>(type: "TEXT", fixedLength: true, maxLength: 250, nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime", nullable: false)
+                    Date = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -764,7 +727,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     ServerName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     ServerUrl = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true, defaultValue: ""),
                     Password = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
-                    Comments = table.Column<string>(type: "ntext", nullable: true),
+                    Comments = table.Column<string>(type: "TEXT", nullable: true),
                     VirtualServer = table.Column<bool>(type: "INTEGER", nullable: false),
                     InstantDomainAlias = table.Column<string>(type: "TEXT", maxLength: 200, nullable: true),
                     PrimaryGroupID = table.Column<int>(type: "INTEGER", nullable: true),
@@ -890,7 +853,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     ItemTypeID = table.Column<string>(type: "TEXT", unicode: false, maxLength: 50, nullable: false),
                     ItemID = table.Column<int>(type: "INTEGER", nullable: false),
                     UserID = table.Column<int>(type: "INTEGER", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CommentText = table.Column<string>(type: "TEXT", maxLength: 1000, nullable: true),
                     SeverityID = table.Column<int>(type: "INTEGER", nullable: true)
                 },
@@ -912,7 +875,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     UserID = table.Column<int>(type: "INTEGER", nullable: false),
                     SettingsName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     PropertyName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    PropertyValue = table.Column<string>(type: "ntext", nullable: true)
+                    PropertyValue = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -952,7 +915,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     ExternalIP = table.Column<string>(type: "TEXT", unicode: false, maxLength: 24, nullable: false),
                     InternalIP = table.Column<string>(type: "TEXT", unicode: false, maxLength: 24, nullable: true),
                     ServerID = table.Column<int>(type: "INTEGER", nullable: true),
-                    Comments = table.Column<string>(type: "ntext", nullable: true),
+                    Comments = table.Column<string>(type: "TEXT", nullable: true),
                     SubnetMask = table.Column<string>(type: "TEXT", unicode: false, maxLength: 15, nullable: true),
                     DefaultGateway = table.Column<string>(type: "TEXT", unicode: false, maxLength: 15, nullable: true),
                     PoolID = table.Column<int>(type: "INTEGER", nullable: true),
@@ -977,7 +940,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .Annotation("Sqlite:Autoincrement", true),
                     Vlan = table.Column<int>(type: "INTEGER", nullable: false),
                     ServerID = table.Column<int>(type: "INTEGER", nullable: true),
-                    Comments = table.Column<string>(type: "ntext", nullable: true)
+                    Comments = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -999,7 +962,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     ServerID = table.Column<int>(type: "INTEGER", nullable: false),
                     ProviderID = table.Column<int>(type: "INTEGER", nullable: false),
                     ServiceName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    Comments = table.Column<string>(type: "ntext", nullable: true),
+                    Comments = table.Column<string>(type: "TEXT", nullable: true),
                     ServiceQuotaValue = table.Column<int>(type: "INTEGER", nullable: true),
                     ClusterID = table.Column<int>(type: "INTEGER", nullable: true)
                 },
@@ -1216,7 +1179,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     AccessTokenGuid = table.Column<Guid>(type: "TEXT", nullable: false),
-                    ExpirationDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ExpirationDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     AccountID = table.Column<int>(type: "INTEGER", nullable: false),
                     ItemId = table.Column<int>(type: "INTEGER", nullable: false),
                     TokenType = table.Column<int>(type: "INTEGER", nullable: false),
@@ -1234,8 +1197,8 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     BlackBerryUserId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     AccountId = table.Column<int>(type: "INTEGER", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    ModifiedDate = table.Column<DateTime>(type: "datetime", nullable: false)
+                    CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1249,8 +1212,8 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     CRMUserID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     AccountID = table.Column<int>(type: "INTEGER", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    ChangedDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ChangedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CRMUserGuid = table.Column<Guid>(type: "TEXT", nullable: true),
                     BusinessUnitID = table.Column<Guid>(type: "TEXT", nullable: true),
                     CALType = table.Column<int>(type: "INTEGER", nullable: true)
@@ -1270,7 +1233,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     RecordType = table.Column<int>(type: "INTEGER", nullable: false),
                     DnsServer = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
                     Value = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
-                    Date = table.Column<DateTime>(type: "datetime", nullable: true)
+                    Date = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1293,9 +1256,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     IsPreviewDomain = table.Column<bool>(type: "INTEGER", nullable: false),
                     IsDomainPointer = table.Column<bool>(type: "INTEGER", nullable: false),
                     DomainItemId = table.Column<int>(type: "INTEGER", nullable: true),
-                    CreationDate = table.Column<DateTime>(type: "datetime", nullable: true),
-                    ExpirationDate = table.Column<DateTime>(type: "datetime", nullable: true),
-                    LastUpdateDate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    CreationDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    ExpirationDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    LastUpdateDate = table.Column<DateTime>(type: "TEXT", nullable: true),
                     RegistrarName = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
@@ -1352,7 +1315,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     MailEnabledPublicFolder = table.Column<bool>(type: "INTEGER", nullable: true),
                     MailboxManagerActions = table.Column<string>(type: "TEXT", unicode: false, maxLength: 200, nullable: true),
                     SamAccountName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     MailboxPlanId = table.Column<int>(type: "INTEGER", nullable: true),
                     SubscriberNumber = table.Column<string>(type: "TEXT", maxLength: 32, nullable: true),
                     UserPrincipalName = table.Column<string>(type: "TEXT", maxLength: 300, nullable: true),
@@ -1402,7 +1365,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     FilePath = table.Column<string>(type: "TEXT", nullable: false),
                     AuthData = table.Column<string>(type: "TEXT", nullable: false),
                     AccessToken = table.Column<Guid>(type: "TEXT", nullable: false),
-                    ExpirationDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ExpirationDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     AccountID = table.Column<int>(type: "INTEGER", nullable: false),
                     ItemId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
@@ -1601,8 +1564,8 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .Annotation("Sqlite:Autoincrement", true),
                     AccountID = table.Column<int>(type: "INTEGER", nullable: false),
                     LyncUserPlanID = table.Column<int>(type: "INTEGER", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    ModifiedDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     SipAddress = table.Column<string>(type: "TEXT", maxLength: 300, nullable: true)
                 },
                 constraints: table =>
@@ -1701,10 +1664,10 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     PackageID = table.Column<int>(type: "INTEGER", nullable: true),
                     ServerID = table.Column<int>(type: "INTEGER", nullable: true),
                     PlanName = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
-                    PlanDescription = table.Column<string>(type: "ntext", nullable: true),
+                    PlanDescription = table.Column<string>(type: "TEXT", nullable: true),
                     Available = table.Column<bool>(type: "INTEGER", nullable: false),
-                    SetupPrice = table.Column<decimal>(type: "money", nullable: true),
-                    RecurringPrice = table.Column<decimal>(type: "money", nullable: true),
+                    SetupPrice = table.Column<decimal>(type: "TEXT", nullable: true),
+                    RecurringPrice = table.Column<decimal>(type: "TEXT", nullable: true),
                     RecurrenceUnit = table.Column<int>(type: "INTEGER", nullable: true),
                     RecurrenceLength = table.Column<int>(type: "INTEGER", nullable: true),
                     IsAddon = table.Column<bool>(type: "INTEGER", nullable: true)
@@ -1733,15 +1696,15 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     ParentPackageID = table.Column<int>(type: "INTEGER", nullable: true),
                     UserID = table.Column<int>(type: "INTEGER", nullable: false),
                     PackageName = table.Column<string>(type: "TEXT", maxLength: 300, nullable: true),
-                    PackageComments = table.Column<string>(type: "ntext", nullable: true),
+                    PackageComments = table.Column<string>(type: "TEXT", nullable: true),
                     ServerID = table.Column<int>(type: "INTEGER", nullable: true),
                     StatusID = table.Column<int>(type: "INTEGER", nullable: false),
                     PlanID = table.Column<int>(type: "INTEGER", nullable: true),
-                    PurchaseDate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    PurchaseDate = table.Column<DateTime>(type: "TEXT", nullable: true),
                     OverrideQuotas = table.Column<bool>(type: "INTEGER", nullable: false),
-                    BandwidthUpdated = table.Column<DateTime>(type: "datetime", nullable: true),
+                    BandwidthUpdated = table.Column<DateTime>(type: "TEXT", nullable: true),
                     DefaultTopPackage = table.Column<bool>(type: "INTEGER", nullable: false),
-                    StatusIDchangeDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())")
+                    StatusIDchangeDate = table.Column<DateTime>(type: "TEXT", nullable: false, defaultValueSql: "(getdate())")
                 },
                 constraints: table =>
                 {
@@ -1777,8 +1740,8 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     PackageID = table.Column<int>(type: "INTEGER", nullable: true),
                     PlanID = table.Column<int>(type: "INTEGER", nullable: true),
                     Quantity = table.Column<int>(type: "INTEGER", nullable: true),
-                    PurchaseDate = table.Column<DateTime>(type: "datetime", nullable: true),
-                    Comments = table.Column<string>(type: "ntext", nullable: true),
+                    PurchaseDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    Comments = table.Column<string>(type: "TEXT", nullable: true),
                     StatusID = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
@@ -1850,7 +1813,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                 {
                     PackageID = table.Column<int>(type: "INTEGER", nullable: false),
                     GroupID = table.Column<int>(type: "INTEGER", nullable: false),
-                    LogDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    LogDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     BytesSent = table.Column<long>(type: "INTEGER", nullable: false),
                     BytesReceived = table.Column<long>(type: "INTEGER", nullable: false)
                 },
@@ -1975,11 +1938,11 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     ScheduleName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
                     ScheduleTypeID = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
                     Interval = table.Column<int>(type: "INTEGER", nullable: true),
-                    FromTime = table.Column<DateTime>(type: "datetime", nullable: true),
-                    ToTime = table.Column<DateTime>(type: "datetime", nullable: true),
-                    StartTime = table.Column<DateTime>(type: "datetime", nullable: true),
-                    LastRun = table.Column<DateTime>(type: "datetime", nullable: true),
-                    NextRun = table.Column<DateTime>(type: "datetime", nullable: true),
+                    FromTime = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    ToTime = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    StartTime = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    LastRun = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    NextRun = table.Column<DateTime>(type: "TEXT", nullable: true),
                     Enabled = table.Column<bool>(type: "INTEGER", nullable: false),
                     PriorityID = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
                     HistoriesNumber = table.Column<int>(type: "INTEGER", nullable: true),
@@ -2012,7 +1975,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     ItemTypeID = table.Column<int>(type: "INTEGER", nullable: true),
                     ServiceID = table.Column<int>(type: "INTEGER", nullable: true),
                     ItemName = table.Column<string>(type: "TEXT", maxLength: 500, nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true)
+                    CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -4760,9 +4723,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
             migrationBuilder.DropTable(
                 name: "ThemeSettings");
-
-            migrationBuilder.DropTable(
-                name: "UsersDetailed");
 
             migrationBuilder.DropTable(
                 name: "UserSettings");

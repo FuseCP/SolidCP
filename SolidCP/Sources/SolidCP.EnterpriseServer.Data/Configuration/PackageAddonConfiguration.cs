@@ -24,7 +24,9 @@ public partial class PackageAddonConfiguration: EntityTypeConfiguration<PackageA
 		}
 		else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)
 		{
+#if NetCore
 			Property(e => e.Comments).HasColumnType("TEXT");
+#endif
 		}
 
 #if NetCore
@@ -39,4 +41,4 @@ public partial class PackageAddonConfiguration: EntityTypeConfiguration<PackageA
 #endif
     }
 #endif
-    }
+		}

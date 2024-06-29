@@ -2,8 +2,13 @@
 using System.Threading;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using System.Data;
+using System.Data.Common;
 using SolidCP.Providers.OS;
 using SolidCP.EnterpriseServer;
+using System.Configuration;
+using System.Linq;
+using System.IO;
 #if NetFX
 using System.Data.Entity;
 #else
@@ -20,9 +25,112 @@ namespace SolidCP.EnterpriseServer.Data
         static string connectionString = null;
         public string ConnectionString
         {
-            get => connectionString ?? (connectionString = DbSettings.NativeConnectionString);
+            get => connectionString ??= DbSettings.NativeConnectionString;
             set => connectionString = DbSettings.GetNativeConnectionString(value);
         }
+        /*        static string providerName = null;
+                public string ProviderName
+                {
+                    get => providerName ??= DbSettings.ProviderName;
+                    set => providerName = value;
+                }
+        */
+        /*
+                DbProviderFactory DbProviderFactory
+                {
+                    get
+                    {
+                        Type factoryType = null;
+                        switch (DbType)
+                        {
+                            case DbType.MsSql:
+                                factoryType = Type.GetType("Microsoft.Data.SqlClient.SqlClientFactory, Microsoft.Data.SqlClient");
+                                break;
+                            case DbType.MySql:
+                            case DbType.MariaDb:
+                                factoryType = Type.GetType("MySql.Data.MySqlClient.MySqlClientFactory, MySql.Data.EntityFramework, Version=8.4.0.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d");
+                                break;
+                            case DbType.Sqlite:
+        #if NETFRAMEWORK
+                                factoryType = Type.GetType("System.Data.SQLite.EF6.SQLiteProviderFactory, System.Data.SQLite.EF6");
+        #else
+                                factoryType = Type.GetType("Microsoft.Data.SQLite.SQLiteProviderFactory, Microsoft.Data.SQLite");
+        #endif                        
+                                break;
+                            case DbType.PostgreSql:
+                                factoryType = Type.GetType("Npgsql.NpgsqlFactory, Npgsql, Version=8.0.3.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7");
+                                break;
+                        }
+
+                        return (DbProviderFactory)Activator.CreateInstance(factoryType);
+                    }
+                }
+                */
+
+        DbConnection MsSqlDbConnection => new Microsoft.Data.SqlClient.SqlConnection(ConnectionString);
+#if NETFRAMEWORK
+        DbConnection MySqlDbConnection => new MySql.Data.MySqlClient.MySqlConnection(ConnectionString);
+#else
+        DbConnection MySqlDbConnection => new MySqlConnector.MySqlConnection(ConnectionString);
+
+#endif
+		DbConnection PostgreSqlDbConnection => new Npgsql.NpgsqlConnection(ConnectionString);
+
+        static DbProviderFactory factory = null;
+        DbConnection SqliteDbConnection
+        {
+            get
+            {
+#if NETFRAMEWORK
+                Sqlite.LoadNativeDlls();
+                //factory ??= new System.Data.SQLite.EF6.SQLiteProviderFactory();
+                factory ??= DbProviderFactories.GetFactory("System.Data.SQLite.EF6");
+                var conn = factory.CreateConnection();
+                var csb = new DbConnectionStringBuilder();
+                csb.ConnectionString = ConnectionString;
+                var dbFile = (string)csb["Data Source"];
+                if (!Path.IsPathRooted(dbFile))
+                {
+                    dbFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dbFile);
+                    csb["Data Source"] = dbFile;
+                    ConnectionString = csb.ToString();
+                }
+                conn.ConnectionString = ConnectionString;
+                return conn;
+#else
+                return new Microsoft.Data.Sqlite.SqliteConnection(ConnectionString);
+#endif
+            }
+        }
+        
+        DbConnection dbConnection = null;
+        public DbConnection DbConnection
+        {
+            get
+            {
+                if (dbConnection == null)
+                {
+					switch (DbType)
+					{
+						case DbType.MsSql:
+                            dbConnection = MsSqlDbConnection;
+                            break;
+						case DbType.MySql:
+						case DbType.MariaDb:
+							dbConnection = MySqlDbConnection;
+							break;
+						case DbType.Sqlite:
+							dbConnection = SqliteDbConnection;
+							break;
+						case DbType.PostgreSql:
+							dbConnection = PostgreSqlDbConnection;
+							break;
+					}
+                }
+                return dbConnection;
+			}
+		}
+
         DbType dbType = DbType.Unknown;
         public DbType DbType
         {

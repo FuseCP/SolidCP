@@ -23,7 +23,7 @@ namespace SolidCP.EnterpriseServer.Data
 		{
 			if (options is DbOptions<Context.DbContextBase> opts)
 			{
-				DbType = opts.DbType;
+				DbType = DbType.MySql;
 				InitSeedData = opts.InitSeedData;
 			}
 		}
@@ -38,7 +38,7 @@ namespace SolidCP.EnterpriseServer.Data
 #elif NetFX
 		public MySqlDbContext(Data.DbContext context) : base(context)
 		{
-			DbType = context.DbType;
+			DbType = DbType.MySql;
 			InitSeedData = context.InitSeedData;
 		}
 #endif
@@ -54,7 +54,7 @@ namespace SolidCP.EnterpriseServer.Data
 		{
 			if (options is DbOptions<Context.DbContextBase> opts)
 			{
-				DbType = opts.DbType;
+				DbType = DbType.MsSql;
 				InitSeedData = opts.InitSeedData;
 			}
 		}
@@ -69,7 +69,7 @@ namespace SolidCP.EnterpriseServer.Data
 #elif NetFX
 		public MsSqlDbContext(Data.DbContext context) : base(context)
 		{
-			DbType = context.DbType;
+			DbType = DbType.MsSql;
 			InitSeedData = context.InitSeedData;
 		}
 #endif
@@ -85,7 +85,7 @@ namespace SolidCP.EnterpriseServer.Data
 		{
 			if (options is DbOptions<Context.DbContextBase> opts)
 			{
-				DbType = opts.DbType;
+				DbType = DbType.PostgreSql;
 				InitSeedData = opts.InitSeedData;
 			}
 		}
@@ -101,7 +101,7 @@ namespace SolidCP.EnterpriseServer.Data
 #elif NetFX
 		public PostgreSqlDbContext(Data.DbContext context) : base(context)
 		{
-			DbType = context.DbType;
+			DbType = DbType.PostgreSql;
 			InitSeedData = context.InitSeedData;
 		}
 #endif
@@ -117,7 +117,7 @@ namespace SolidCP.EnterpriseServer.Data
 		{
 			if (options is DbOptions<Context.DbContextBase> opts)
 			{
-				DbType = opts.DbType;
+				DbType = DbType.Sqlite;
 				InitSeedData = opts.InitSeedData;
 			}
 		}
@@ -133,7 +133,7 @@ namespace SolidCP.EnterpriseServer.Data
 #elif NetFX
 		public SqliteDbContext(Data.DbContext context) : base(context)
 		{
-			DbType = context.DbType;
+			DbType = DbType.Sqlite;
 			InitSeedData = context.InitSeedData;
 		}
 #endif
@@ -149,7 +149,7 @@ namespace SolidCP.EnterpriseServer.Data
 		{
 			if (options is DbOptions<Context.DbContextBase> opts)
 			{
-				DbType = opts.DbType;
+				DbType = DbType.MariaDb;
 				InitSeedData = opts.InitSeedData;
 			}
 		}
@@ -165,7 +165,7 @@ namespace SolidCP.EnterpriseServer.Data
 #elif NetFX
 		public MariaDbDbContext(Data.DbContext context) : base(context)
 		{
-			DbType = context.DbType;
+			DbType = DbType.MariaDb;
 			InitSeedData = context.InitSeedData;
 		}
 #endif

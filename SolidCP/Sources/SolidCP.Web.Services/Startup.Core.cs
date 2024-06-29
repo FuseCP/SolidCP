@@ -73,7 +73,9 @@ namespace SolidCP.Web.Services
 		static string WebApplicationsPath = null;
 		static int? ServerRequestTimeout = null;
 		static string ConnectionString = null;
+		static string ProviderName = null;
 		static string AltConnectionString = null;
+		static string AltProviderName = null;
 		static bool AlwaysUseEntityFramework = false;
 		static string CryptoKey = null;
 		static string AltCryptoKey = null;
@@ -121,7 +123,9 @@ namespace SolidCP.Web.Services
 			Configuration.WebApplicationsPath = WebApplicationsPath = builder.Configuration.GetValue<string>("EnterpriseServer:WebApplicationPath");
 			Configuration.ServerRequestTimeout = ServerRequestTimeout = builder.Configuration.GetValue<int?>("EnterpriseServer:ServerRequestTimeout") ?? -1;
 			Configuration.ConnectionString = ConnectionString = builder.Configuration.GetValue<string?>("EnterpriseServer:ConnectionString");
+			Configuration.ProviderName = ProviderName = builder.Configuration.GetValue<string?>("EnterpriseServer:ProviderName");
 			Configuration.AltConnectionString = AltConnectionString = builder.Configuration.GetValue<string?>("EnterpriseServer:AltConnectionString");
+			Configuration.AltProviderName = AltProviderName = builder.Configuration.GetValue<string?>("EnterpriseServer:AltProviderName");
 			Configuration.AlwaysUseEntityFramework = AlwaysUseEntityFramework = builder.Configuration.GetValue<bool?>("EnterpriseServer:AlwaysUseEntityFramework") ?? false;
 			Configuration.CryptoKey = CryptoKey = builder.Configuration.GetValue<string?>("EnterpriseServer:CryptoKey");
 			Configuration.AltCryptoKey = AltCryptoKey = builder.Configuration.GetValue<string?>("EnterpriseServer:AltCryptoKey");

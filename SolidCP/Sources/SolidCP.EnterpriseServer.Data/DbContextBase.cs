@@ -44,10 +44,9 @@ namespace SolidCP.EnterpriseServer.Context
 		}
 
 #elif NetFX
-		public DbContextBase(Data.DbContext context): base(context.ConnectionString) { 
+		public DbContextBase(Data.DbContext context): base(context.DbConnection, true) { 
             DbType = context.DbType;
 			Database.Log += WriteToLog;
-			Database.SetInitializer<DbContextBase>(null);
         }
 #endif
 

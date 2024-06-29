@@ -26,7 +26,9 @@ public partial class UsersDetailedConfiguration: EntityTypeConfiguration<UsersDe
 		}
 		else if (IsMsSql || IsMariaDb || IsSqlite || IsPostgreSql)
 		{
+#if NetCore
 			Property(e => e.Comments).HasColumnType("TEXT");
+#endif
 		}
 
 #if NetCore
@@ -38,4 +40,4 @@ public partial class UsersDetailedConfiguration: EntityTypeConfiguration<UsersDe
 #endif
     }
 #endif
-}
+		}

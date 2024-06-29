@@ -20,7 +20,9 @@ public partial class SystemSettingConfiguration: EntityTypeConfiguration<SystemS
 		if (IsMsSql) Property(e => e.PropertyValue).HasColumnType("ntext");
 		else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)
 		{
+#if NetCore
 			Property(e => e.PropertyValue).HasColumnType("TEXT");
+#endif
 		}
 
 		#region Seed Data
@@ -37,4 +39,4 @@ public partial class SystemSettingConfiguration: EntityTypeConfiguration<SystemS
 		#endregion
 	}
 #endif
-}
+		}

@@ -21,7 +21,9 @@ public partial class PrivateNetworkVlanConfiguration : EntityTypeConfiguration<P
 		if (IsMsSql) Property(e => e.Comments).HasColumnType("ntext");
 		else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)
 		{
+#if NetCore
 			Property(e => e.Comments).HasColumnType("TEXT");
+#endif
 		}
 
 
@@ -35,4 +37,4 @@ public partial class PrivateNetworkVlanConfiguration : EntityTypeConfiguration<P
 #endif
 	}
 #endif
-}
+		}

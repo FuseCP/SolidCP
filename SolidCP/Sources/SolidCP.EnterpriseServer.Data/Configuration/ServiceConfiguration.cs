@@ -20,7 +20,9 @@ public partial class ServiceConfiguration: EntityTypeConfiguration<Service>
 		if (IsMsSql) Property(e => e.Comments).HasColumnType("ntext");
 		else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)
 		{
-			Property(e => e.Comments).HasColumnType("TEXT");
+#if NetCore
+            Property(e => e.Comments).HasColumnType("TEXT");
+#endif
 		}
 
 
@@ -42,4 +44,4 @@ public partial class ServiceConfiguration: EntityTypeConfiguration<Service>
 #endif
     }
 #endif
-    }
+        }
