@@ -81,12 +81,30 @@ namespace SolidCP.EnterpriseServer
 
 #if UseEntityFramework
 		public bool? useEntityFramework = null;
+		public bool? alwaysUseEntityFramework = null;
+		public bool AlwaysUseEntityFramework
+		{
+			get
+			{
+				if (alwaysUseEntityFramework == null)
+				{
+					alwaysUseEntityFramework = false;
+					var system = new SystemController(new ControllerBase(this));
+					var settings = system.GetSystemSettings(EnterpriseServer.SystemSettings.DEBUG_SETTINGS);
+					alwaysUseEntityFramework = settings
+						.GetValueOrDefault(EnterpriseServer.SystemSettings.ALWAYS_USE_ENTITYFRAMEWORK, true);
+				}
+				return alwaysUseEntityFramework ?? false;
+			}
+		}
 		public bool UseEntityFramework
 		{
 			get
 			{
 				return !IsMsSql || !HasProcedures ||
-					(useEntityFramework ?? DbSettings.AlwaysUseEntityFramework);
+					(useEntityFramework ??= 
+						(DbSettings.AlwaysUseEntityFramework ||
+						AlwaysUseEntityFramework));
 			}
 			set { useEntityFramework = value; }
 		}
@@ -1144,7 +1162,7 @@ RETURN
 
 					users = users.Skip(startRow).Take(maximumRows);
 					
-					var usersProjected = users
+					var usersSelected = users
 						.AsEnumerable()
 						.Select(u => new
 						{
@@ -1176,7 +1194,7 @@ RETURN
 							u.EcommerceEnabled
 						});
 
-					return EntityDataSet(count, usersProjected);
+					return EntityDataSet(count, usersSelected);
 				}
 			}
 			else
@@ -6074,7 +6092,6 @@ RETURN
 				var isAdmin = CheckIsUserAdmin(actorId);
 
 				// virtual groups
-				// TODO is this correct LEFT OUTER JOIN?
 				var virtGroups = ResourceGroups
 					.Where(g => (isAdmin || forAutodiscover) && g.ShowGroup == true)
 					.GroupJoin(VirtualGroups,
@@ -6096,27 +6113,15 @@ RETURN
 
 				var services = VirtualServices
 					.Where(vs => vs.ServerId == serverId && (isAdmin || forAutodiscover))
-					.Join(Services, vs => vs.ServiceId, s => s.ServiceId, (vs, s) => new
+					.Select(s => new
 					{
-						VirtualService = vs,
-						Service = s
-					})
-					.Join(Servers, j => j.Service.ServerId, s => s.ServerId, (j, s) => new
-					{
-						j.VirtualService,
-						j.Service,
-						Server = s
-					})
-					.Join(Providers, j => j.Service.ProviderId, p => p.ProviderId, (j, p) => new
-					{
-						j.VirtualService.ServerId,
-						j.Service.ServiceName,
-						j.Service.Comments,
-						p.GroupId,
-						p.DisplayName,
-						j.Server.ServerName
+						s.ServerId,
+						s.Service.ServiceName,
+						s.Service.Comments,
+						s.Service.Provider.GroupId,
+						s.Service.Provider.DisplayName,
+						s.Server.ServerName
 					});
-
 				return EntityDataSet(virtGroups, services);
 			}
 			else
@@ -7338,7 +7343,7 @@ END
 					serverId = Services
 						.Where(service => service.ServiceId == serviceId)
 						.Select(service => service.ServerId)
-						.SingleOrDefault();
+						.FirstOrDefault();
 					parentPackageId = 1;
 				}
 				else
@@ -7346,7 +7351,7 @@ END
 					var package = Packages
 						.Where(p => p.PackageId == packageId)
 						.Select(p => new { p.ServerId, p.ParentPackageId })
-						.SingleOrDefault();
+						.FirstOrDefault();
 					if (package != null)
 					{
 						parentPackageId = package.ParentPackageId ?? 1;
@@ -7361,22 +7366,17 @@ END
 					{
 						// physical server
 						var vlans = PrivateNetworkVlans
-							.GroupJoin(PackageVlans, v => v.VlanId, p => p.VlanId, (v, ps) => new
+							.SelectMany(v => v.PackageVlans.DefaultIfEmpty(), (v, ps) => new
 							{
 								Vlan = v,
-								PackageVlans = ps
-							})
-							.SelectMany(g => g.PackageVlans.DefaultIfEmpty(), (g, ps) => new
-							{
-								p.Vlan,
 								HasPackage = ps != null,
 							})
-							.Where(g => !g.HasPackage && (g.Vlan.ServerId == serverId || g.Vlan.ServerId == null))
-							.Select(g => new
+							.Where(v => !v.HasPackage && (v.Vlan.ServerId == serverId || v.Vlan.ServerId == null))
+							.Select(v => new
 							{
-								g.Vlan.VlanId,
-								g.Vlan.Vlan,
-								g.Vlan.ServerId
+								v.Vlan.VlanId,
+								v.Vlan.Vlan,
+								v.Vlan.ServerId
 							});
 						return EntityDataReader(vlans);
 					}
@@ -7384,41 +7384,31 @@ END
 					{ // virtual server, get resource group by service
 						var groupId = Services
 							.Where(s => s.ServiceId == serviceId)
-							.Join(Providers, s => s.ProviderId, p => p.ProviderId, (s, p) => p.GroupId)
-							.Single();
+							.Select(s => s.Provider.GroupId)
+							.FirstOrDefault();
 						var vlans = PrivateNetworkVlans
-							.Join(Services, v => v.ServerId, s => s.ServerId, (v, s) => new
+							.SelectMany(v => v.Server.Services, (v, s) => new
 							{
 								Vlan = v,
-								Service = s
+								Service = s,
+								s.Provider
 							})
-							.Join(Providers, g => g.Service.ProviderId, p => p.ProviderId, (g, p) => new
+							.Where(v => (v.Service.ServiceId == serviceId && v.Provider.GroupId == groupId) ||
+								v.Vlan.ServerId == null)
+							.SelectMany(v => v.Vlan.PackageVlans.DefaultIfEmpty(), (v, ps) => new
 							{
-								g.Vlan,
-								g.Service,
-								Provider = p
+								v.Vlan,
+								HasPackages = ps != null,
 							})
-							.Where(g => (g.Service.ServiceId == serviceId && g.Provider.GroupId == groupId) ||
-								g.Vlan.ServerId == null)
-							.GroupJoin(PackageVlans, g => g.Vlan.VlanId, p => p.VlanId, (g, ps) => new
+							.Where(v => !v.HasPackages)
+							.Select(v => new
 							{
-								g.Vlan,
-								PackageVlans = ps
+								v.Vlan.VlanId,
+								v.Vlan.Vlan,
+								v.Vlan.ServerId,
 							})
-							.SelectMany(g => g.PackageVlans.DefaultIfEmpty(), (g, ps) => new
-							{
-								g.Vlan,
-								HasPackage = ps != null,
-							})
-							.Where(g => !g.HasPackages)
-							.Select(g => new
-							{
-								g.Vlan.VlanId,
-								g.Vlan.Vlan,
-								g.Vlan.ServerId,
-							})
-							.OrderByDescending(g => g.ServerId)
-							.ThenBy(g => g.Vlan);
+							.OrderByDescending(v => v.ServerId)
+							.ThenBy(v => v.Vlan);
 						return EntityDataReader(vlans);
 					}
 				}
@@ -7429,10 +7419,10 @@ END
 						.Select(s => s.ServerId)
 						.Single();
 					var vlans = PrivateNetworkVlans
-						.Join(PackageVlans, v => v.VlanId, p => p.VlanId, (v, p) => new
+						.SelectMany(v => v.PackageVlans, (v, pv) => new
 						{
 							Vlan = v,
-							Package = p
+							Package = pv,
 						})
 						.Where(g => g.Package.PackageId == packageId &&
 							(g.Vlan.ServerId == serverId || g.Vlan.ServerId == null))
@@ -7873,13 +7863,25 @@ END
 				{
 					if (!string.IsNullOrEmpty(filterColumn))
 					{
-						addresses = addresses.Where($"{filterColumn}=@0", filterValue);
+						addresses = addresses.Where(DynamicFunctions.ColumnLike(addresses, filterColumn, filterValue));
 					}
 					else
 					{
-						addresses = addresses.Where(a => a.ExternalIp == filterValue ||
-							a.InternalIp == filterValue || a.DefaultGateway == filterValue ||
-							a.ServerName == filterValue || a.ItemName == filterValue || a.Username == filterValue);
+#if NETFRAMEWORK
+						addresses = addresses.Where(a => DbFunctions.Like(a.ExternalIp, filterValue) ||
+							DbFunctions.Like(a.InternalIp, filterValue) ||
+							DbFunctions.Like(a.DefaultGateway, filterValue) ||
+							DbFunctions.Like(a.ServerName, filterValue) ||
+							DbFunctions.Like(a.ItemName, filterValue) ||
+							DbFunctions.Like(a.Username, filterValue));
+#else
+						addresses = addresses.Where(a => EF.Functions.Like(a.ExternalIp, filterValue) ||
+							EF.Functions.Like(a.InternalIp, filterValue) ||
+							EF.Functions.Like(a.DefaultGateway, filterValue) ||
+							EF.Functions.Like(a.ServerName, filterValue) ||
+							EF.Functions.Like(a.ItemName, filterValue) ||
+							EF.Functions.Like(a.Username, filterValue));
+#endif
 					}
 				}
 
@@ -8201,7 +8203,7 @@ RETURN
 				return Convert.ToInt32(prmResult.Value);
 			}
 		}
-		#endregion
+#endregion
 
 		#region Clusters
 		public IDataReader GetClusters(int actorId)
@@ -8403,38 +8405,49 @@ RETURN
 
 				var records = GlobalDnsRecords
 					.Where(r => r.ServiceId == serviceId)
-					.GroupJoin(IpAddresses, r => r.IpAddressId, ip => ip.AddressId, (r, ips) => new
+					.Select(r => new
 					{
-						Record = r,
-						IpAddresses = ips
+						r.RecordId,
+						r.ServiceId,
+						r.ServerId,
+						r.PackageId,
+						r.RecordType,
+						r.RecordName,
+						r.RecordData,
+						r.MXPriority,
+						r.SrvPriority,
+						r.SrvWeight,
+						r.SrvPort,
+						r.IpAddressId,
+						ExternalIp = r.IpAddress != null ? r.IpAddress.ExternalIp : null,
+						InternalIp = r.IpAddress != null ? r.IpAddress.InternalIp : null
 					})
-					.SelectMany(g => g.IpAddresses.DefaultIfEmpty(), (g, ip) = new
+					.AsEnumerable()
+					.Select(r => new
 					{
-						g.Record.RecordId,
-						g.Record.ServiceId,
-						g.Record.ServerId,
-						g.Record.PackageId,
-						g.Record.RecordType,
-						g.Record.RecordName,
-						FullRecordData = g.Record.RecordType == "A" && string.IsNullOrEmpty(g.Record.RecordData) ?
-							(g.IpAddress != null ? GetFullIPAddress(g.IpAddress.ExternalIp, g.IpAddress.InternalIp) : "") :
-							(g.Record.RecordType == "MX" ?
-								$"{g.Record.MXPriority}, {g.Record.RecordData}" :
-								(g.Record.RecordType == "SRV" ? $"{g.Record.SrvPort}, {g.Record.RecordData}" :
-									g.Record.RecordData)),
-						g.Record.RecordData,
-						g.Record.MXPriority,
-						g.Record.SrvPriority,
-						g.Record.SrvWeight,
-						g.Record.SrvPort,
-						g.Record.IpAddressId,
-						IPAddress = g.IpAddress != null ? GetFullIPAddress(g.IpAddress.ExternalIp, g.IpAddress.InternalIp) : "",
-						ExternalIp = g.IpAddress != null ? g.IpAddress.ExternalIp : null,
-						InternalIp = g.IpAddress != null ? g.IpAddress.InternalIp : null
+						r.RecordId,
+						r.ServiceId,
+						r.ServerId,
+						r.PackageId,
+						r.RecordType,
+						r.RecordName,
+						FullRecordData = r.RecordType == "A" && string.IsNullOrEmpty(r.RecordData) ?
+							GetFullIPAddress(r.ExternalIp, r.InternalIp) :
+							(r.RecordType == "MX" ?
+								$"{r.MXPriority}, {r.RecordData}" :
+								(r.RecordType == "SRV" ? $"{r.SrvPort}, {r.RecordData}" :
+									r.RecordData)),
+						r.RecordData,
+						r.MXPriority,
+						r.SrvPriority,
+						r.SrvWeight,
+						r.SrvPort,
+						r.IpAddressId,
+						IPAddress = GetFullIPAddress(r.ExternalIp, r.InternalIp),
+						r.ExternalIp,
+						r.InternalIp
 					});
-
 				return EntityDataSet(records);
-
 			}
 			else
 			{
@@ -8491,36 +8504,48 @@ RETURN
 
 				var records = GlobalDnsRecords
 					.Where(r => r.ServerId == serverId)
-					.GroupJoin(IpAddresses, r => r.IpAddressId, ip => ip.AddressId, (r, ips) => new
+					.Select(r => new
 					{
-						Record = r,
-						IpAddress = ips.SingleOrDefault()
+						r.RecordId,
+						r.ServiceId,
+						r.ServerId,
+						r.PackageId,
+						r.RecordType,
+						r.RecordName,
+						r.RecordData,
+						r.MXPriority,
+						r.SrvPriority,
+						r.SrvWeight,
+						r.SrvPort,
+						r.IpAddressId,
+						ExternalIp = r.IpAddress != null ? r.IpAddress.ExternalIp : null,
+						InternalIp = r.IpAddress != null ? r.IpAddress.InternalIp : null
 					})
-					.Select(g => new
+					.AsEnumerable()
+					.Select(r => new
 					{
-						g.Record.RecordId,
-						g.Record.ServiceId,
-						g.Record.ServerId,
-						g.Record.PackageId,
-						g.Record.RecordType,
-						g.Record.RecordName,
-						FullRecordData = g.Record.RecordType == "A" && string.IsNullOrEmpty(g.Record.RecordData) ?
-							(g.IpAddress != null ? GetFullIPAddress(g.IpAddress.ExternalIp, g.IpAddress.InternalIp) : "") :
-							(g.Record.RecordType == "MX" ?
-								$"{g.Record.MXPriority}, {g.Record.RecordData}" :
-								(g.Record.RecordType == "SRV" ? $"{g.Record.SrvPort}, {g.Record.RecordData}" :
-									g.Record.RecordData)),
-						g.Record.RecordData,
-						g.Record.MXPriority,
-						g.Record.SrvPriority,
-						g.Record.SrvWeight,
-						g.Record.SrvPort,
-						g.Record.IpAddressId,
-						IPAddress = g.IpAddress != null ? GetFullIPAddress(g.IpAddress.ExternalIp, g.IpAddress.InternalIp) : "",
-						ExternalIp = g.IpAddress != null ? g.IpAddress.ExternalIp : null,
-						InternalIp = g.IpAddress != null ? g.IpAddress.InternalIp : null
+						r.RecordId,
+						r.ServiceId,
+						r.ServerId,
+						r.PackageId,
+						r.RecordType,
+						r.RecordName,
+						FullRecordData = r.RecordType == "A" && string.IsNullOrEmpty(r.RecordData) ?
+							GetFullIPAddress(r.ExternalIp, r.InternalIp) :
+							(r.RecordType == "MX" ?
+								$"{r.MXPriority}, {r.RecordData}" :
+								(r.RecordType == "SRV" ? $"{r.SrvPort}, {r.RecordData}" :
+									r.RecordData)),
+						r.RecordData,
+						r.MXPriority,
+						r.SrvPriority,
+						r.SrvWeight,
+						r.SrvPort,
+						r.IpAddressId,
+						IPAddress = GetFullIPAddress(r.ExternalIp, r.InternalIp),
+						r.ExternalIp,
+						r.InternalIp
 					});
-
 				return EntityDataSet(records);
 			}
 			else
@@ -8577,7 +8602,7 @@ END
 			var ownerId = Packages
 				.Where(p => p.PackageId == packageId)
 				.Select(p => (int?)p.UserId)
-				.SingleOrDefault();
+				.FirstOrDefault();
 
 			if (ownerId == null) return true; // unexisting package
 
@@ -8635,36 +8660,48 @@ RETURN
 
 				var records = GlobalDnsRecords
 					.Where(r => r.PackageId == packageId)
-					.GroupJoin(IpAddresses, r => r.IpAddressId, ip => ip.AddressId, (r, ips) => new
+					.Select(r => new
 					{
-						Record = r,
-						IpAddress = ips.SingleOrDefault()
+						r.RecordId,
+						r.ServiceId,
+						r.ServerId,
+						r.PackageId,
+						r.RecordType,
+						r.RecordName,
+						r.RecordData,
+						r.MXPriority,
+						r.SrvPriority,
+						r.SrvWeight,
+						r.SrvPort,
+						r.IpAddressId,
+						ExternalIp = r.IpAddress != null ? r.IpAddress.ExternalIp : null,
+						InternalIp = r.IpAddress != null ? r.IpAddress.InternalIp : null
 					})
-					.Select(g => new
-					{
-						g.Record.RecordId,
-						g.Record.ServiceId,
-						g.Record.ServerId,
-						g.Record.PackageId,
-						g.Record.RecordType,
-						g.Record.RecordName,
-						FullRecordData = g.Record.RecordType == "A" && string.IsNullOrEmpty(g.Record.RecordData) ?
-							(g.IpAddress != null ? GetFullIPAddress(g.IpAddress.ExternalIp, g.IpAddress.InternalIp) : "") :
-							(g.Record.RecordType == "MX" ?
-								$"{g.Record.MXPriority}, {g.Record.RecordData}" :
-								(g.Record.RecordType == "SRV" ? $"{g.Record.SrvPort}, {g.Record.RecordData}" :
-									g.Record.RecordData)),
-						g.Record.RecordData,
-						g.Record.MXPriority,
-						g.Record.SrvPriority,
-						g.Record.SrvWeight,
-						g.Record.SrvPort,
-						g.Record.IpAddressId,
-						IPAddress = g.IpAddress != null ? GetFullIPAddress(g.IpAddress.ExternalIp, g.IpAddress.InternalIp) : "",
-						ExternalIp = g.IpAddress != null ? g.IpAddress.ExternalIp : null,
-						InternalIp = g.IpAddress != null ? g.IpAddress.InternalIp : null
-					});
-
+					.AsEnumerable()
+					.Select(r => new
+					 {
+						 r.RecordId,
+						 r.ServiceId,
+						 r.ServerId,
+						 r.PackageId,
+						 r.RecordType,
+						 r.RecordName,
+						 FullRecordData = r.RecordType == "A" && string.IsNullOrEmpty(r.RecordData) ?
+							GetFullIPAddress(r.ExternalIp, r.InternalIp) :
+							(r.RecordType == "MX" ?
+								$"{r.MXPriority}, {r.RecordData}" :
+								(r.RecordType == "SRV" ? $"{r.SrvPort}, {r.RecordData}" :
+									r.RecordData)),
+						 r.RecordData,
+						 r.MXPriority,
+						 r.SrvPriority,
+						 r.SrvWeight,
+						 r.SrvPort,
+						 r.IpAddressId,
+						 IPAddress = GetFullIPAddress(r.ExternalIp, r.InternalIp),
+						 r.ExternalIp,
+						 r.InternalIp
+					 });
 				return EntityDataSet(records);
 			}
 			else
@@ -8864,8 +8901,7 @@ RETURN
 				pid = Packages
 					.Where(p => p.PackageId == pid)
 					.Select(p => p.ParentPackageId)
-					.SingleOrDefault();
-
+					.FirstOrDefault();
 				while (pid != null)
 				{
 					records = records
@@ -8874,14 +8910,14 @@ RETURN
 					pid = Packages
 						.Where(p => p.PackageId == pid)
 						.Select(p => p.ParentPackageId)
-						.SingleOrDefault();
+						.FirstOrDefault();
 				}
 
 				// select VIRTUAL SERVER DNS records
 				var serverId = Packages
 					.Where(p => p.PackageId == packageId)
 					.Select(p => p.ServerId)
-					.SingleOrDefault();
+					.FirstOrDefault();
 
 				records = records
 					.Union(GlobalDnsRecords
@@ -8890,23 +8926,20 @@ RETURN
 				// select SERVER DNS records
 				records = records
 					.Union(GlobalDnsRecords
-						.Join(Servers, r => r.ServerId, s => s.ServerId, (r, s) => new
+						.Where(r => r.ServerId == serverId)
+						.SelectMany(r => r.Server.Services, (r, s) => new
 						{
 							Record = r,
-							s.ServerId
+							Service = s
 						})
-						.Join(Services, g => g.ServerId, s => s.ServerId, (g, s) => new
+						.SelectMany(r => r.Service.VirtualServices, (r, vs) => new
 						{
-							g.Record,
-							s.ServiceId
+							r.Record,
+							vs.ServerId
 						})
-						.Join(VirtualServices, g => g.ServiceId, v => v.ServiceId, (g, v) => new
-						{
-							g.Record,
-							v.ServerId
-						})
-						.Where(g => g.ServerId == serverId)
-						.Select(g => g.Record));
+						.Where(r => r.ServerId == serverId)
+						.Select(r => r.Record)
+						.Distinct());
 
 				// select SERVICES DNS records
 
@@ -8928,36 +8961,48 @@ RETURN
 					.Select(g => g.First());
 #endif
 				var recordsSelected = records
-					.GroupJoin(IpAddresses, r => r.IpAddressId, ip => ip.AddressId, (r, ip) => new
-					{
-						Record = r,
-						Ip = ip.SingleOrDefault()
-					})
 					.Select(r => new
 					{
-						r.Record.RecordId,
-						r.Record.ServiceId,
-						r.Record.ServerId,
-						r.Record.PackageId,
-						r.Record.RecordType,
-						r.Record.RecordName,
-						r.Record.RecordData,
-						r.Record.MXPriority,
-						r.Record.SrvPriority,
-						r.Record.SrvWeight,
-						r.Record.SrvPort,
-						r.Record.IpAddressId,
-						ExternalIp = r.Ip != null && r.Ip.ExternalIp != null ? r.Ip.ExternalIp : "",
-						InternalIp = r.Ip != null && r.Ip.InternalIp != null ? r.Ip.InternalIp : "",
-						FullRecordData = r.Record.RecordType == "A" && string.IsNullOrEmpty(r.Record.RecordData) ?
-							(r.Ip != null ? GetFullIPAddress(r.Ip.ExternalIp, r.Ip.InternalIp) : "") :
-							(r.Record.RecordType == "MX" ?
-								$"{r.Record.MXPriority}, {r.Record.RecordData}" :
-								(r.Record.RecordType == "SRV" ? $"{r.Record.SrvPort}, {r.Record.RecordData}" :
-									r.Record.RecordData)),
-						IPAddress = r.Ip != null ? GetFullIPAddress(r.Ip.ExternalIp, r.Ip.InternalIp) : ""
+						r.RecordId,
+						r.ServiceId,
+						r.ServerId,
+						r.PackageId,
+						r.RecordType,
+						r.RecordName,
+						r.RecordData,
+						r.MXPriority,
+						r.SrvPriority,
+						r.SrvWeight,
+						r.SrvPort,
+						r.IpAddressId,
+						ExternalIp = r.IpAddress != null ? r.IpAddress.ExternalIp : null,
+						InternalIp = r.IpAddress != null ? r.IpAddress.InternalIp : null
+					})
+					.AsEnumerable()
+					.Select(r => new
+					{
+						r.RecordId,
+						r.ServiceId,
+						r.ServerId,
+						r.PackageId,
+						r.RecordType,
+						r.RecordName,
+						r.RecordData,
+						r.MXPriority,
+						r.SrvPriority,
+						r.SrvWeight,
+						r.SrvPort,
+						r.IpAddressId,
+						ExternalIp = r.ExternalIp ?? "",
+						InternalIp = r.InternalIp ?? "",
+						FullRecordData = r.RecordType == "A" && string.IsNullOrEmpty(r.RecordData) ?
+							GetFullIPAddress(r.ExternalIp, r.InternalIp) :
+							(r.RecordType == "MX" ?
+								$"{r.MXPriority}, {r.RecordData}" :
+								(r.RecordType == "SRV" ? $"{r.SrvPort}, {r.RecordData}" :
+									r.RecordData)),
+						IPAddress = GetFullIPAddress(r.ExternalIp, r.InternalIp)
 					});
-
 				return EntityDataSet(recordsSelected);
 			}
 			else
@@ -9155,8 +9200,10 @@ RETURN
 				int? packageIdOrNull = packageId != 0 ? packageId : null;
 				int? ipAddressIdOrNull = ipAddressId != 0 ? ipAddressId : null;
 
-				var record = GlobalDnsRecords.FirstOrDefault(r => r.ServiceId == serviceIdOrNull && r.ServerId == serverIdOrNull &&
-					r.PackageId == packageIdOrNull && r.RecordName == recordName && r.RecordType == recordType);
+				var record = GlobalDnsRecords
+					.FirstOrDefault(r => r.ServiceId == serviceIdOrNull &&
+						r.ServerId == serverIdOrNull && r.PackageId == packageIdOrNull &&
+						r.RecordName == recordName && r.RecordType == recordType);
 
 				if (record == null)
 				{
@@ -9475,42 +9522,23 @@ RETURN
 				{
 					var domains = Domains
 						.Join(tree, d => d.PackageId, t => t, (d, t) => d)
-						.GroupJoin(ServiceItems, d => d.WebSiteId, it => it.ItemId, (d, s) => new
-						{
-							Domain = d,
-							WebSite = s.SingleOrDefault()
-						})
-						.GroupJoin(ServiceItems, d => d.Domain.MailDomainId, it => it.ItemId, (d, s) => new
-						{
-							d.Domain,
-							d.WebSite,
-							MailDomain = s.SingleOrDefault()
-						})
-						.GroupJoin(ServiceItems, d => d.Domain.ZoneItemId, it => it.ItemId, (d, s) => new
-						{
-							d.Domain,
-							d.WebSite,
-							d.MailDomain,
-							Zone = s.SingleOrDefault()
-						})
 						.Select(d => new
 						{
-							d.Domain.DomainId,
-							d.Domain.PackageId,
-							d.Domain.ZoneItemId,
-							d.Domain.DomainItemId,
-							d.Domain.DomainName,
-							d.Domain.HostingAllowed,
+							d.DomainId,
+							d.PackageId,
+							d.ZoneItemId,
+							d.DomainItemId,
+							d.DomainName,
+							d.HostingAllowed,
 							WebSiteId = d.WebSite != null ? d.WebSite.ItemId : 0,
 							WebSiteName = d.WebSite != null ? d.WebSite.ItemName : null,
 							MailDomainId = d.MailDomain != null ? d.MailDomain.ItemId : 0,
 							MailDomainName = d.MailDomain != null ? d.MailDomain.ItemName : null,
 							ZoneName = d.Zone != null ? d.Zone.ItemName : null,
-							d.Domain.IsSubDomain,
-							d.Domain.IsPreviewDomain,
-							d.Domain.IsDomainPointer
+							d.IsSubDomain,
+							d.IsPreviewDomain,
+							d.IsDomainPointer
 						});
-
 					return EntityDataSet(domains);
 				}
 			}
@@ -9575,31 +9603,18 @@ RETURN
 					.FirstOrDefault();
 				var domains = Domains
 					.Where(d => d.HostingAllowed && d.PackageId == parentPackageId)
-					//.Join(PackagesTree(parentPackageId ?? -1, false), d => d.PackageId, t => t, (d, t) => d)
-					.GroupJoin(ServiceItems, d => d.WebSiteId, it => it.ItemId, (d, s) => new
-					{
-						Domain = d,
-						WebSite = s.SingleOrDefault()
-					})
-					.GroupJoin(ServiceItems, d => d.Domain.MailDomainId, it => it.ItemId, (d, s) => new
-					{
-						d.Domain,
-						d.WebSite,
-						MailDomain = s.SingleOrDefault()
-					})
 					.Select(d => new
 					{
-						d.Domain.DomainId,
-						d.Domain.PackageId,
-						d.Domain.ZoneItemId,
-						d.Domain.DomainName,
-						d.Domain.HostingAllowed,
-						d.Domain.WebSiteId,
+						d.DomainId,
+						d.PackageId,
+						d.ZoneItemId,
+						d.DomainName,
+						d.HostingAllowed,
+						d.WebSiteId,
 						WebSiteName = d.WebSite != null ? d.WebSite.ItemName : null,
-						d.Domain.MailDomainId,
+						d.MailDomainId,
 						MailDomainName = d.MailDomain != null ? d.MailDomain.ItemName : null
 					});
-
 				return EntityDataSet(domains);
 			}
 			else
@@ -9740,112 +9755,66 @@ RETURN
 					else
 					{
 						childPackages = PackagesTree(packageId, true);
-						domainsFiltered = Domains.Join(childPackages, d => d.PackageId, ch => ch, (d, ch) => d);
+						domainsFiltered = Domains
+							.Join(childPackages, d => d.PackageId, ch => ch, (d, ch) => d);
 					}
 
 					var domains = domainsFiltered
-						.Where(d => !d.IsPreviewDomain && !d.IsDomainPointer)
-						// && (!recursive && d.PackageId == packageId ||
-						// recursive && CheckPackageParent(packageId, d.PackageId))
-						.Join(Packages, d => d.PackageId, p => p.PackageId, (d, p) => new
-						{
-							Domain = d,
-							Package = p
-						})
-						.Join(UsersDetailed, d => d.Package.UserId, u => u.UserId, (d, u) => new
-						{
-							d.Domain,
-							d.Package,
-							User = u
-						})
-						.GroupJoin(ServiceItems, d => d.Domain.WebSiteId, s => s.ItemId, (d, s) => new
-						{
-							d.Domain,
-							d.Package,
-							d.User,
-							WebSite = s.SingleOrDefault()
-						})
-						.GroupJoin(ServiceItems, d => d.Domain.MailDomainId, s => s.ItemId, (d, s) => new
-						{
-							d.Domain,
-							d.Package,
-							d.User,
-							d.WebSite,
-							MailDomain = s.SingleOrDefault()
-						})
-						.GroupJoin(ServiceItems, d => d.Domain.ZoneItemId, s => s.ItemId, (d, s) => new
-						{
-							d.Domain,
-							d.Package,
-							d.User,
-							d.WebSite,
-							d.MailDomain,
-							Zone = s.SingleOrDefault()
-						})
-						.GroupJoin(Services, d => d.Zone != null ? d.Zone.ServiceId : null, s => s.ServiceId, (d, s) => new
-						{
-							d.Domain,
-							d.Package,
-							d.User,
-							d.WebSite,
-							d.MailDomain,
-							d.Zone,
-							Service = s.SingleOrDefault()
-						})
-						.Where(d => serverId == 0 || d.Service != null && d.Service.ServerId == serverId)
-						.GroupJoin(Servers, d => d.Service != null ? (int?)d.Service.ServerId : null, s => (int?)s.ServerId, (d, s) => new
-						{
-							d.Domain,
-							d.Package,
-							d.User,
-							d.WebSite,
-							d.MailDomain,
-							d.Zone,
-							d.Service,
-							Server = s.SingleOrDefault()
-						})
+						.Where(d => !d.IsPreviewDomain && !d.IsDomainPointer &&
+							(serverId == 0 ||
+								d.Zone != null && d.Zone.Service != null &&
+								d.Zone.Service.ServerId == serverId))
 						.Select(d => new
 						{
-							d.Domain.DomainId,
-							d.Domain.PackageId,
-							d.Domain.ZoneItemId,
-							d.Domain.DomainItemId,
-							d.Domain.DomainName,
-							d.Domain.HostingAllowed,
+							d.DomainId,
+							d.PackageId,
+							d.ZoneItemId,
+							d.DomainItemId,
+							d.DomainName,
+							d.HostingAllowed,
 							WebSiteId = d.WebSite != null ? d.WebSite.ItemId : 0,
 							WebSiteName = d.WebSite != null ? d.WebSite.ItemName : null,
 							MailDomainId = d.MailDomain != null ? d.MailDomain.ItemId : 0,
 							MailDomainName = d.MailDomain != null ? d.MailDomain.ItemName : null,
-							d.Domain.IsSubDomain,
-							d.Domain.IsPreviewDomain,
-							d.Domain.IsDomainPointer,
-							d.Domain.ExpirationDate,
-							d.Domain.LastUpdateDate,
-							d.Domain.RegistrarName,
+							d.IsSubDomain,
+							d.IsPreviewDomain,
+							d.IsDomainPointer,
+							d.ExpirationDate,
+							d.LastUpdateDate,
+							d.RegistrarName,
 							d.Package.PackageName,
-							ServerId = d.Server != null ? d.Server.ServerId : 0,
-							ServerName = d.Server != null ? d.Server.ServerName : "",
-							ServerComments = d.Server != null ? d.Server.Comments : "",
-							VirtualServer = d.Server != null ? d.Server.VirtualServer : false,
+							ServerId = serverId != 0 ? d.Zone.Service.Server.ServerId : 0,
+							ServerName = serverId != 0 ? d.Zone.Service.Server.ServerName : "",
+							ServerComments = serverId != 0 ? d.Zone.Service.Server.Comments : "",
+							VirtualServer = serverId != 0 ?	d.Zone.Service.Server.VirtualServer : false,
 							d.Package.UserId,
-							d.User.Username,
-							d.User.FirstName,
-							d.User.LastName,
-							d.User.FullName,
-							d.User.RoleId,
-							d.User.Email
-						});
+							d.Package.User.Username,
+							d.Package.User.FirstName,
+							d.Package.User.LastName,
+							FullName = d.Package.User.FirstName + " " + d.Package.User.LastName,
+							d.Package.User.RoleId,
+							d.Package.User.Email
+						});		
 
 					if (!string.IsNullOrEmpty(filterValue))
 					{
 						if (!string.IsNullOrEmpty(filterColumn))
 						{
-							domains = domains.Where($"{filterColumn}=@0", filterValue);
+							domains = domains.Where(DynamicFunctions.ColumnLike(domains, filterColumn, filterValue));
 						}
 						else
 						{
-							domains = domains.Where(d => d.DomainName == filterValue || d.Username == filterValue ||
-								d.ServerName == filterValue || d.PackageName == filterValue);
+#if NETFRAMEWORK
+							domains = domains.Where(d => DbFunctions.Like(d.DomainName, filterValue) ||
+								DbFunctions.Like(d.Username, filterValue) ||
+								DbFunctions.Like(d.ServerName, filterValue) ||
+								DbFunctions.Like(d.PackageName, filterValue));
+#else
+							domains = domains.Where(d => EF.Functions.Like(d.DomainName, filterValue) ||
+								EF.Functions.Like(d.Username, filterValue) ||
+								EF.Functions.Like(d.ServerName, filterValue) ||
+								EF.Functions.Like(d.PackageName, filterValue));
+#endif
 						}
 					}
 
@@ -9919,51 +9888,26 @@ RETURN
 				#endregion
 
 				var domains = Domains
-					.Where(d => d.DomainId == domainId && CheckActorPackageRights(actorId, d.PackageId))
-					.Join(Packages, d => d.PackageId, p => p.PackageId, (d, p) => new
-					{
-						Domain = d,
-						Package = p
-					})
-					.GroupJoin(ServiceItems, d => d.Domain.WebSiteId, s => s.ItemId, (d, s) => new
-					{
-						d.Domain,
-						d.Package,
-						WebSite = s.SingleOrDefault()
-					})
-					.GroupJoin(ServiceItems, d => d.Domain.MailDomainId, s => s.ItemId, (d, s) => new
-					{
-						d.Domain,
-						d.Package,
-						d.WebSite,
-						MailDomain = s.SingleOrDefault()
-					})
-					.GroupJoin(ServiceItems, d => d.Domain.ZoneItemId, s => s.ItemId, (d, s) => new
-					{
-						d.Domain,
-						d.Package,
-						d.WebSite,
-						d.MailDomain,
-						Zone = s.SingleOrDefault()
-					})
+					.Where(d => d.DomainId == domainId)
 					.Select(d => new
 					{
-						d.Domain.DomainId,
-						d.Domain.PackageId,
-						d.Domain.ZoneItemId,
-						d.Domain.DomainItemId,
-						d.Domain.DomainName,
-						d.Domain.HostingAllowed,
+						d.DomainId,
+						d.PackageId,
+						d.ZoneItemId,
+						d.DomainItemId,
+						d.DomainName,
+						d.HostingAllowed,
 						WebSiteId = d.WebSite != null ? d.WebSite.ItemId : 0,
 						WebSiteName = d.WebSite != null ? d.WebSite.ItemName : null,
 						MailDomainId = d.MailDomain != null ? d.MailDomain.ItemId : 0,
 						MailDomainName = d.MailDomain != null ? d.MailDomain.ItemName : null,
 						ZoneName = d.Zone != null ? d.Zone.ItemName : null,
-						d.Domain.IsSubDomain,
-						d.Domain.IsPreviewDomain,
-						d.Domain.IsDomainPointer
-					});
-
+						d.IsSubDomain,
+						d.IsPreviewDomain,
+						d.IsDomainPointer
+					})
+					.ToArray()
+					.Where(d => CheckActorPackageRights(actorId, d.PackageId));
 				return EntityDataReader(domains);
 			}
 			else
@@ -10048,56 +9992,28 @@ END
 				*/
 				#endregion
 
-				var domainsRaw = Domains
-					.Where(d => d.DomainName == domainName && CheckActorPackageRights(actorId, d.PackageId));
-
-				if (searchOnDomainPointer) domainsRaw = domainsRaw.Where(d => d.IsDomainPointer == isDomainPointer);
-
-				var domains = domainsRaw
-					.Join(Packages, d => d.PackageId, p => p.PackageId, (d, p) => new
-					{
-						Domain = d,
-						Package = p
-					})
-					.GroupJoin(ServiceItems, d => d.Domain.WebSiteId, s => s.ItemId, (d, s) => new
-					{
-						d.Domain,
-						d.Package,
-						WebSite = s.SingleOrDefault()
-					})
-					.GroupJoin(ServiceItems, d => d.Domain.MailDomainId, s => s.ItemId, (d, s) => new
-					{
-						d.Domain,
-						d.Package,
-						d.WebSite,
-						MailDomain = s.SingleOrDefault()
-					})
-					.GroupJoin(ServiceItems, d => d.Domain.ZoneItemId, s => s.ItemId, (d, s) => new
-					{
-						d.Domain,
-						d.Package,
-						d.WebSite,
-						d.MailDomain,
-						Zone = s.SingleOrDefault()
-					})
+				var domains = Domains
+					.Where(d => d.DomainName == domainName &&
+						(!searchOnDomainPointer || d.IsDomainPointer == isDomainPointer))
 					.Select(d => new
 					{
-						d.Domain.DomainId,
-						d.Domain.PackageId,
-						d.Domain.ZoneItemId,
-						d.Domain.DomainItemId,
-						d.Domain.DomainName,
-						d.Domain.HostingAllowed,
+						d.DomainId,
+						d.PackageId,
+						d.ZoneItemId,
+						d.DomainItemId,
+						d.DomainName,
+						d.HostingAllowed,
 						WebSiteId = d.WebSite != null ? d.WebSite.ItemId : 0,
 						WebSiteName = d.WebSite != null ? d.WebSite.ItemName : null,
 						MailDomainId = d.MailDomain != null ? d.MailDomain.ItemId : 0,
 						MailDomainName = d.MailDomain != null ? d.MailDomain.ItemName : null,
 						ZoneName = d.Zone != null ? d.Zone.ItemName : null,
-						d.Domain.IsSubDomain,
-						d.Domain.IsPreviewDomain,
-						d.Domain.IsDomainPointer
-					});
-
+						d.IsSubDomain,
+						d.IsPreviewDomain,
+						d.IsDomainPointer
+					})
+					.AsEnumerable()
+					.Where(d => Local.CheckActorPackageRights(actorId, d.PackageId));
 				return EntityDataReader(domains);
 			}
 			else
@@ -10153,51 +10069,26 @@ RETURN
 				#endregion
 
 				var domains = Domains
-					.Where(d => d.ZoneItemId == zoneId && CheckActorPackageRights(actorId, d.PackageId))
-					.Join(Packages, d => d.PackageId, p => p.PackageId, (d, p) => new
-					{
-						Domain = d,
-						Package = p
-					})
-					.GroupJoin(ServiceItems, d => d.Domain.WebSiteId, s => s.ItemId, (d, s) => new
-					{
-						d.Domain,
-						d.Package,
-						WebSite = s.SingleOrDefault()
-					})
-					.GroupJoin(ServiceItems, d => d.Domain.MailDomainId, s => s.ItemId, (d, s) => new
-					{
-						d.Domain,
-						d.Package,
-						d.WebSite,
-						MailDomain = s.SingleOrDefault()
-					})
-					.GroupJoin(ServiceItems, d => d.Domain.ZoneItemId, s => s.ItemId, (d, s) => new
-					{
-						d.Domain,
-						d.Package,
-						d.WebSite,
-						d.MailDomain,
-						Zone = s.SingleOrDefault()
-					})
+					.Where(d => d.ZoneItemId == zoneId)
 					.Select(d => new
 					{
-						d.Domain.DomainId,
-						d.Domain.PackageId,
-						d.Domain.ZoneItemId,
-						d.Domain.DomainItemId,
-						d.Domain.DomainName,
-						d.Domain.HostingAllowed,
+						d.DomainId,
+						d.PackageId,
+						d.ZoneItemId,
+						d.DomainItemId,
+						d.DomainName,
+						d.HostingAllowed,
 						WebSiteId = d.WebSite != null ? d.WebSite.ItemId : 0,
 						WebSiteName = d.WebSite != null ? d.WebSite.ItemName : null,
 						MailDomainId = d.MailDomain != null ? d.MailDomain.ItemId : 0,
 						MailDomainName = d.MailDomain != null ? d.MailDomain.ItemName : null,
 						ZoneName = d.Zone != null ? d.Zone.ItemName : null,
-						d.Domain.IsSubDomain,
-						d.Domain.IsPreviewDomain,
-						d.Domain.IsDomainPointer
-					});
-
+						d.IsSubDomain,
+						d.IsPreviewDomain,
+						d.IsDomainPointer
+					})
+					.AsEnumerable()
+					.Where(d => Local.CheckActorPackageRights(actorId, d.PackageId));
 				return EntityDataSet(domains);
 			}
 			else
@@ -10250,51 +10141,26 @@ RETURN
 				#endregion
 
 				var domains = Domains
-					.Where(d => d.DomainItemId == domainId && CheckActorPackageRights(actorId, d.PackageId))
-					.Join(Packages, d => d.PackageId, p => p.PackageId, (d, p) => new
-					{
-						Domain = d,
-						Package = p
-					})
-					.GroupJoin(ServiceItems, d => d.Domain.WebSiteId, s => s.ItemId, (d, s) => new
-					{
-						d.Domain,
-						d.Package,
-						WebSite = s.SingleOrDefault()
-					})
-					.GroupJoin(ServiceItems, d => d.Domain.MailDomainId, s => s.ItemId, (d, s) => new
-					{
-						d.Domain,
-						d.Package,
-						d.WebSite,
-						MailDomain = s.SingleOrDefault()
-					})
-					.GroupJoin(ServiceItems, d => d.Domain.ZoneItemId, s => s.ItemId, (d, s) => new
-					{
-						d.Domain,
-						d.Package,
-						d.WebSite,
-						d.MailDomain,
-						Zone = s.SingleOrDefault()
-					})
+					.Where(d => d.DomainItemId == domainId)
 					.Select(d => new
 					{
-						d.Domain.DomainId,
-						d.Domain.PackageId,
-						d.Domain.ZoneItemId,
-						d.Domain.DomainItemId,
-						d.Domain.DomainName,
-						d.Domain.HostingAllowed,
+						d.DomainId,
+						d.PackageId,
+						d.ZoneItemId,
+						d.DomainItemId,
+						d.DomainName,
+						d.HostingAllowed,
 						WebSiteId = d.WebSite != null ? d.WebSite.ItemId : 0,
 						WebSiteName = d.WebSite != null ? d.WebSite.ItemName : null,
 						MailDomainId = d.MailDomain != null ? d.MailDomain.ItemId : 0,
 						MailDomainName = d.MailDomain != null ? d.MailDomain.ItemName : null,
 						ZoneName = d.Zone != null ? d.Zone.ItemName : null,
-						d.Domain.IsSubDomain,
-						d.Domain.IsPreviewDomain,
-						d.Domain.IsDomainPointer
-					});
-
+						d.IsSubDomain,
+						d.IsPreviewDomain,
+						d.IsDomainPointer
+					})
+					.AsEnumerable()
+					.Where(d => Local.CheckActorPackageRights(actorId, d.PackageId));
 				return EntityDataSet(domains);
 			}
 			else
@@ -10698,7 +10564,7 @@ RETURN
 					new SqlParameter("@DomainId", domainId));
 			}
 		}
-		#endregion
+#endregion
 
 		#region Services
 		public IDataReader GetServicesByServerId(int actorId, int serverId)
@@ -14928,32 +14794,28 @@ RETURN
 				var plans = HostingPlans
 					.Where(pl => pl.UserId == userId && pl.IsAddon == false)
 					.OrderBy(pl => pl.PlanName)
-					.GroupJoin(Servers, p => p.ServerId, s => s.ServerId, (p, s) => new
+					.Select(pl => new
 					{
-						Plan = p,
-						Server = s.SingleOrDefault()
-					})
-					.GroupJoin(Packages, pl => pl.Plan.PackageId, p => p.PackageId, (pl, p) => new
-					{
-						pl.Plan.PlanId,
-						pl.Plan.UserId,
-						pl.Plan.PackageId,
-						pl.Plan.PlanName,
-						pl.Plan.PlanDescription,
-						pl.Plan.Available,
-						pl.Plan.SetupPrice,
-						pl.Plan.RecurringPrice,
-						pl.Plan.RecurrenceLength,
-						pl.Plan.RecurrenceUnit,
-						pl.Plan.IsAddon,
-						PackagesNumber = Packages.Where(pa => pa.PlanId == pl.Plan.PlanId).Count(),
+						pl.PlanId,
+						pl.UserId,
+						pl.PackageId,
+						pl.PlanName,
+						pl.PlanDescription,
+						pl.Available,
+						pl.SetupPrice,
+						pl.RecurringPrice,
+						pl.RecurrenceLength,
+						pl.RecurrenceUnit,
+						pl.IsAddon,
+						PackagesNumber = Packages.Count(pa => pa.PlanId == pl.PlanId),
 						// server
-						ServerId = pl.Plan.ServerId != null ? pl.Plan.ServerId : 0,
+						ServerId = pl.ServerId != null ? pl.ServerId : 0,
 						ServerName = pl.Server != null ? pl.Server.ServerName : "None",
 						ServerComments = pl.Server != null ? pl.Server.Comments : "",
 						VirtualServer = pl.Server != null ? pl.Server.VirtualServer : true,
 						// package
-						PackageName = p.SingleOrDefault() != null ? p.SingleOrDefault().PackageName : "None"
+						PackageName = pl.Package != null ? pl.Package.PackageName : "None"
+
 					});
 				return EntityDataSet(plans);
 			}
@@ -17292,7 +17154,7 @@ RETURN
 
 					if (!string.IsNullOrEmpty(filterValue) && !string.IsNullOrEmpty(filterColumn))
 					{
-						packages = packages.Where($"{filterColumn}=@0", filterValue);
+						packages = packages.Where(DynamicFunctions.ColumnLike(packages, filterColumn, filterValue));
 					}
 
 					var count = packages.Count();
@@ -17301,7 +17163,7 @@ RETURN
 
 					packages = packages.Skip(startRow).Take(maximumRows);
 
-					var packagesProjected = packages
+					var packagesSelected = packages
 						.AsEnumerable()
 						.Select(p => new
 						{
@@ -17328,7 +17190,7 @@ RETURN
 							p.Email
 						});
 
-					return EntityDataSet(count, packagesProjected);
+					return EntityDataSet(count, packagesSelected);
 				}
 			}
 			else
@@ -17487,13 +17349,19 @@ RETURN
 				{
 					if (!string.IsNullOrEmpty(filterColumn))
 					{
-						packages = packages.Where($"{filterColumn}=@0", filterValue);
+						packages = packages.Where(DynamicFunctions.ColumnLike(packages, filterColumn, filterValue));
 					}
 					else
 					{
-						packages = packages.Where(p => p.Username == filterValue ||
-							p.FullName == filterValue ||
-							p.Email == filterValue);
+#if NETFRAMEWORK
+						packages = packages.Where(p => DbFunctions.Like(p.Username, filterValue) ||
+							DbFunctions.Like(p.FullName, filterValue) ||
+							DbFunctions.Like(p.Email, filterValue));
+#else
+						packages = packages.Where(p => EF.Functions.Like(p.Username, filterValue) ||
+							EF.Functions.Like(p.FullName, filterValue) ||
+							EF.Functions.Like(p.Email, filterValue));
+#endif
 					}
 				}
 
@@ -17503,7 +17371,7 @@ RETURN
 
 				packages = packages.Skip(startRow).Take(maximumRows);
 
-				var packagesProjected = packages
+				var packagesSelected = packages
 					.AsEnumerable()
 					.Select(p => new {
 						p.PackageId,
@@ -17530,7 +17398,7 @@ RETURN
 						p.Email
 					});
 
-				return EntityDataSet(count, packagesProjected);
+				return EntityDataSet(count, packagesSelected);
 			}
 			else
 			{
@@ -21600,7 +21468,7 @@ RETURN
 
 				}
 
-				var packagesProjected = packages
+				var packagesSelected = packages
 					.AsEnumerable()
 					.Select(p => new
 					{
@@ -21629,7 +21497,7 @@ RETURN
 
 				if (string.IsNullOrEmpty(sortColumn))
 				{
-					packagesProjected = packagesProjected
+					packagesSelected = packagesSelected
 						.OrderByDescending(p => p.UsagePercentage)
 						.Skip(startRow).Take(maximumRows);
 				}
@@ -21637,28 +21505,28 @@ RETURN
 				{
 					if (sortColumn.EndsWith(" desc", StringComparison.OrdinalIgnoreCase))
 					{
-						packagesProjected = packagesProjected.OrderByDescending(p => p.PackagesNumber);
+						packagesSelected = packagesSelected.OrderByDescending(p => p.PackagesNumber);
 					}
 					else
 					{
-						packagesProjected = packagesProjected.OrderBy(p => p.PackagesNumber);
+						packagesSelected = packagesSelected.OrderBy(p => p.PackagesNumber);
 					}
-					packagesProjected = packagesProjected.Skip(startRow).Take(maximumRows);
+					packagesSelected = packagesSelected.Skip(startRow).Take(maximumRows);
 				}
 				else if (sortColumn.StartsWith("QuotaValue"))
 				{
 					if (sortColumn.EndsWith(" desc", StringComparison.OrdinalIgnoreCase))
 					{
-						packagesProjected = packagesProjected.OrderByDescending(p => p.QuotaValue);
+						packagesSelected = packagesSelected.OrderByDescending(p => p.QuotaValue);
 					}
 					else
 					{
-						packagesProjected = packagesProjected.OrderBy(p => p.QuotaValue);
+						packagesSelected = packagesSelected.OrderBy(p => p.QuotaValue);
 					}
-					packagesProjected = packagesProjected.Skip(startRow).Take(maximumRows);
+					packagesSelected = packagesSelected.Skip(startRow).Take(maximumRows);
 				}
 
-				return EntityDataSet(count, packagesProjected);
+				return EntityDataSet(count, packagesSelected);
 			}
 			else
 			{
@@ -21848,7 +21716,7 @@ RETURN
 					packages = packages.Skip(startRow).Take(maximumRows);
 				}
 
-				var packagesProjected = packages
+				var packagesSelected = packages
 					.AsEnumerable()
 					.Select(p => new
 					{
@@ -21877,39 +21745,39 @@ RETURN
 
 				if (string.IsNullOrEmpty(sortColumn))
 				{
-					packagesProjected = packagesProjected
+					packagesSelected = packagesSelected
 						.OrderByDescending(p => p.UsagePercentage);
-					packagesProjected = packagesProjected.Skip(startRow).Take(maximumRows);
+					packagesSelected = packagesSelected.Skip(startRow).Take(maximumRows);
 				} else if (sortColumn.StartsWith("PackagesNumber"))
 				{
 					if (sortColumn.EndsWith(" desc", StringComparison.OrdinalIgnoreCase))
 					{
-						packagesProjected = packagesProjected
+						packagesSelected = packagesSelected
 							.OrderByDescending(p => p.PackagesNumber);
 					}
 					else
 					{
-						packagesProjected = packagesProjected
+						packagesSelected = packagesSelected
 							.OrderBy(p => p.PackagesNumber);
 					}
-					packagesProjected = packagesProjected.Skip(startRow).Take(maximumRows);
+					packagesSelected = packagesSelected.Skip(startRow).Take(maximumRows);
 				}
 				else if (sortColumn.StartsWith("QuotaValue"))
 				{
 					if (sortColumn.EndsWith(" desc", StringComparison.OrdinalIgnoreCase))
 					{
-						packagesProjected = packagesProjected
+						packagesSelected = packagesSelected
 							.OrderByDescending(p => p.QuotaValue);
 					}
 					else
 					{
-						packagesProjected = packagesProjected
+						packagesSelected = packagesSelected
 							.OrderBy(p => p.QuotaValue);
 					}
-					packagesProjected = packagesProjected.Skip(startRow).Take(maximumRows);
+					packagesSelected = packagesSelected.Skip(startRow).Take(maximumRows);
 				}
 
-				return EntityDataSet(count, packagesProjected);
+				return EntityDataSet(count, packagesSelected);
 			}
 			else
 			{
@@ -22100,8 +21968,8 @@ RETURN
 					{
 						g.GroupId,
 						g.GroupName,
-						Diskspace = pg != null ? (g.PG.Diskspace + MB/2) / MB : 0,
-						DiskspaceBytes = pg != null ? g.PG.Diskspace : 0
+						Diskspace = pg != null ? (pg.Diskspace + MB/2) / MB : 0,
+						DiskspaceBytes = pg != null ? pg.Diskspace : 0
 					})
 					.Where(g => g.DiskspaceBytes > 0);
 
@@ -26673,7 +26541,7 @@ RETURN
 				if (!string.IsNullOrEmpty(sortColumn)) accounts = accounts.OrderBy(sortColumn);
 				else accounts = accounts.OrderBy(a => a.DisplayName);
 
-				var accountsProjected = accounts
+				var accountsSelected = accounts
 					.Select(a => new
 					{
 						a.AccountId,
@@ -26688,7 +26556,7 @@ RETURN
 						a.SubscriberNumber,
 						a.UserPrincipalName
 					});
-				return EntityDataReader(accountsProjected);
+				return EntityDataReader(accountsSelected);
 			}
 			else
 			{
@@ -26863,7 +26731,7 @@ RETURN
 
 				accounts = accounts.Skip(startRow).Take(maximumRows);
 
-				var accountsProjected = accounts
+				var accountsSelected = accounts
 					.Select(a => new
 					{
 						a.AccountId,
@@ -26881,7 +26749,7 @@ RETURN
 						a.IsVip
 					});
 
-				return EntityDataSet(count, accountsProjected);
+				return EntityDataSet(count, accountsSelected);
 			}
 			else
 			{
@@ -27006,7 +26874,7 @@ RETURN
 				if (!string.IsNullOrEmpty(sortColumn)) accounts = accounts.OrderBy(sortColumn);
 				else accounts = accounts.OrderBy(a => a.DisplayName);
 
-				var accountsProjected = accounts
+				var accountsSelected = accounts
 					.Select(a => new
 					{
 						a.AccountId,
@@ -27020,7 +26888,7 @@ RETURN
 						a.UserPrincipalName
 					});
 
-				return EntityDataReader(accountsProjected);
+				return EntityDataReader(accountsSelected);
 			}
 			else
 			{
@@ -34123,7 +33991,7 @@ BEGIN
 
 	set @sql = '
 		INSERT INTO 
-	# TempLyncUsers
+# TempLyncUsers
 		SELECT 
 			ea.AccountID,
 			ea.ItemID,
@@ -35274,7 +35142,7 @@ BEGIN
 
 	set @sql = '
 		INSERT INTO 
-	# TempSfBUsers
+# TempSfBUsers
 		SELECT 
 			ea.AccountID,
 			ea.ItemID,

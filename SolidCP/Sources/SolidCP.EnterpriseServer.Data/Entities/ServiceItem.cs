@@ -41,8 +41,8 @@ public partial class ServiceItem
     [InverseProperty("WebSite")]
     public virtual ICollection<Domain> DomainWebSites { get; set; } = new List<Domain>();
 
-    [InverseProperty("ZoneItem")]
-    public virtual ICollection<Domain> DomainZoneItems { get; set; } = new List<Domain>();
+    [InverseProperty("Zone")]
+    public virtual ICollection<Domain> DomainZones { get; set; } = new List<Domain>();
 
     [InverseProperty("Item")]
     public virtual ICollection<ExchangeAccount> ExchangeAccounts { get; set; } = new List<ExchangeAccount>();

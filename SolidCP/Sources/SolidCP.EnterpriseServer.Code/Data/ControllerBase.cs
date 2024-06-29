@@ -20,6 +20,10 @@ namespace SolidCP.EnterpriseServer
 		ControllerBase Provider = null;
 		public ControllerBase() { }
 		public ControllerBase(ControllerBase provider) { Provider = provider; }
+		public ControllerBase(DataProvider database) {
+			Provider = null;
+			Database = database;
+		}
 
 		public ControllerBase Clone()
 		{

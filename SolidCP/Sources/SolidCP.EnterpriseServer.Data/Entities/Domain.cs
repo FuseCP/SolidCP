@@ -74,7 +74,7 @@ public partial class Domain
     public virtual ServiceItem WebSite { get; set; }
 
     [ForeignKey("ZoneItemId")]
-    [InverseProperty("DomainZoneItems")]
-    public virtual ServiceItem ZoneItem { get; set; }
+    [InverseProperty("DomainZones")]
+    public virtual ServiceItem Zone { get; set; }
 }
 #endif

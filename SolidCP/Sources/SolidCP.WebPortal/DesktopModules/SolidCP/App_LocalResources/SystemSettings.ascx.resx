@@ -336,4 +336,10 @@
   <data name="Settingsconfiguremailtemplates.Text" xml:space="preserve">
     <value>*** Please do not forget to configure your email templates (From name/  From Email address).  They can be configured at:</value>
   </data>
+  <data name="HeaderDebugSettings.Text" xml:space="preserve">
+    <value>DEBUG SETTINGS</value>
+  </data>
+  <data name="SettingchkAlwaysUseEntityFramework.Text" xml:space="preserve">
+    <value>Always use Entity Framework for database access</value>
+  </data>
 </root>

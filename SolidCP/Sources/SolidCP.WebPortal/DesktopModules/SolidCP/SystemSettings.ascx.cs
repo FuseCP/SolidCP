@@ -80,8 +80,14 @@ namespace SolidCP.Portal
                 {
                     ShowErrorMessage("SYSTEM_SETTINGS_LOAD", ex);
                 }
-            }
-        }
+
+				bool showDebugSettings = string.Equals(
+                    WebPortal.PortalConfiguration.SiteSettings["ShowDebugSettings"],
+                    "true",
+                    StringComparison.OrdinalIgnoreCase);
+                DebugSettingsPanel.Visible = showDebugSettings;
+			}
+		}
         private void LoadSettings()
         {
             // SMTP
@@ -204,8 +210,17 @@ namespace SolidCP.Portal
                 txtMfaTokenAppDisplayName.Text = settings.GetValueOrDefault(SCP.SystemSettings.MFA_TOKEN_APP_DISPLAY_NAME, string.Empty);
                 chkCanPeerChangeMFa.Checked = settings.GetValueOrDefault(SCP.SystemSettings.MFA_CAN_PEER_CHANGE_MFA, true);
             }
-        }
-        private void SaveSMTP()
+
+			// Debug settings
+			settings = ES.Services.System.GetSystemSettings(SCP.SystemSettings.DEBUG_SETTINGS);
+
+			if (settings != null)
+			{
+				chkAlwaysUseEntityFramework.Checked = settings.GetValueOrDefault(SCP.SystemSettings.ALWAYS_USE_ENTITYFRAMEWORK, true);
+			}
+
+		}
+		private void SaveSMTP()
         {
             try
             {
@@ -488,8 +503,34 @@ namespace SolidCP.Portal
             ShowSuccessMessage("SYSTEM_SETTINGS_SAVE");
         }
 
-        #region Button Calls
-        protected void btnSaveSMTP_Click(object sender, EventArgs e)
+		private void SaveDebug()
+		{
+			try
+			{
+				SCP.SystemSettings settings = new SCP.SystemSettings();
+
+				// authentication settings
+				settings = new SCP.SystemSettings();
+				settings[SCP.SystemSettings.ALWAYS_USE_ENTITYFRAMEWORK] = chkAlwaysUseEntityFramework.Checked ? "True" : "False"; 
+
+				int result = ES.Services.System.SetSystemSettings(SCP.SystemSettings.DEBUG_SETTINGS, settings);
+
+				if (result < 0)
+				{
+					ShowResultMessage(result);
+					return;
+				}
+			}
+			catch (Exception ex)
+			{
+				ShowErrorMessage("SYSTEM_SETTINGS_SAVE", ex);
+				return;
+			}
+
+			ShowSuccessMessage("SYSTEM_SETTINGS_SAVE");
+		}
+		#region Button Calls
+		protected void btnSaveSMTP_Click(object sender, EventArgs e)
         {
             SaveSMTP();
         }
@@ -530,10 +571,14 @@ namespace SolidCP.Portal
             SaveRESTRICT();
         }
 
-        protected void btnAuthenticationSettings_Click(object sender, EventArgs e)
-        {
-            SaveAuthentication();
-        }
-        #endregion
-    }
+		protected void btnAuthenticationSettings_Click(object sender, EventArgs e)
+		{
+			SaveAuthentication();
+		}
+		protected void btnDebugSettings_Click(object sender, EventArgs e)
+		{
+			SaveDebug();
+		}
+		#endregion
+	}
 }

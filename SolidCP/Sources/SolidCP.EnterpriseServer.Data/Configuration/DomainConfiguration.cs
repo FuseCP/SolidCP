@@ -27,12 +27,12 @@ public partial class DomainConfiguration: EntityTypeConfiguration<Domain>
 
         HasOne(d => d.WebSite).WithMany(p => p.DomainWebSites).HasConstraintName("FK_Domains_ServiceItems_WebSite");
 
-        HasOne(d => d.ZoneItem).WithMany(p => p.DomainZoneItems).HasConstraintName("FK_Domains_ServiceItems_ZoneItem");
+        HasOne(d => d.Zone).WithMany(p => p.DomainZones).HasConstraintName("FK_Domains_ServiceItems_ZoneItem");
 #else
         HasOptional(d => d.MailDomain).WithMany(p => p.DomainMailDomains);
         HasRequired(d => d.Package).WithMany(p => p.Domains);
         HasOptional(d => d.WebSite).WithMany(p => p.DomainWebSites);
-        HasOptional(d => d.ZoneItem).WithMany(p => p.DomainZoneItems);
+        HasOptional(d => d.Zone).WithMany(p => p.DomainZones);
 #endif
     }
 #endif
