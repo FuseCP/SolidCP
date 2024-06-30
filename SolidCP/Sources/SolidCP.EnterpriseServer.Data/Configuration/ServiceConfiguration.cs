@@ -18,13 +18,10 @@ public partial class ServiceConfiguration: EntityTypeConfiguration<Service>
     public override void Configure() {
 
 		if (IsMsSql) Property(e => e.Comments).HasColumnType("ntext");
-		else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)
+		else if (IsCore && (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql))
 		{
-#if NetCore
             Property(e => e.Comments).HasColumnType("TEXT");
-#endif
 		}
-
 
 #if NetCore
         HasOne(d => d.Cluster).WithMany(p => p.Services).HasConstraintName("FK_Services_Clusters");
@@ -44,4 +41,4 @@ public partial class ServiceConfiguration: EntityTypeConfiguration<Service>
 #endif
     }
 #endif
-        }
+}

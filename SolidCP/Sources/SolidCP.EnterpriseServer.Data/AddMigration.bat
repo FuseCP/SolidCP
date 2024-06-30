@@ -13,9 +13,9 @@ dotnet ef migrations add --framework net8.0 --no-build -o Migrations\MySql --con
 echo "Add migration for PostgreSQL"
 dotnet ef migrations add --framework net8.0 --no-build -o Migrations\PostgreSql --context PostgreSqlDbContext %migration% -- "DbType=PostgreSql;Host=localhost;User ID=root;Password=Password12;Port=5432;Database=SolidCP;"
 
-echo "Create install.sqlite.sql for Sqlite"
+echo "Create install.sqlite.sql for Sqlite""
 dotnet ef migrations script --framework net8.0 --no-build -o Migrations\Sqlite\install.sqlite.sql --context SqliteDbContext -- "DbType=Sqlite;Data Source=..\SolidCP.EnterpriseServer\App_Data\SolidCP.sqlite;"
-
+"
 echo "Create install.sqlite.exe bundle for Sqlite"
 dotnet ef migrations bundle --framework net8.0 --no-build -o Migrations\Sqlite\install.sqlite.exe --context SqliteDbContext -- "DbType=Sqlite;Data Source=..\SolidCP.EnterpriseServer\App_Data\SolidCP.sqlite;"
 

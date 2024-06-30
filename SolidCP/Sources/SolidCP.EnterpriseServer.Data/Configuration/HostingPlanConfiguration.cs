@@ -24,11 +24,9 @@ public partial class HostingPlanConfiguration : EntityTypeConfiguration<HostingP
 			Property(e => e.SetupPrice).HasColumnType("money");
 			Property(e => e.RecurringPrice).HasColumnType("money");
 		}
-		else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)
+		else if (IsCore && (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql))
 		{
-#if NetCore
 			Property(e => e.PlanDescription).HasColumnType("TEXT");
-#endif
 		}
 
 
@@ -48,4 +46,4 @@ public partial class HostingPlanConfiguration : EntityTypeConfiguration<HostingP
 #endif
 	}
 #endif
-		}
+}

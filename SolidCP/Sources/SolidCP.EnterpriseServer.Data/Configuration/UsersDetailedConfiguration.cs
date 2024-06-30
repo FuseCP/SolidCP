@@ -24,11 +24,9 @@ public partial class UsersDetailedConfiguration: EntityTypeConfiguration<UsersDe
 			Property(e => e.Changed).HasColumnType("datetime");
 			Property(e => e.Created).HasColumnType("datetime");
 		}
-		else if (IsMsSql || IsMariaDb || IsSqlite || IsPostgreSql)
+		else if (IsCore && (IsMsSql || IsMariaDb || IsSqlite || IsPostgreSql))
 		{
-#if NetCore
 			Property(e => e.Comments).HasColumnType("TEXT");
-#endif
 		}
 
 #if NetCore
@@ -40,4 +38,4 @@ public partial class UsersDetailedConfiguration: EntityTypeConfiguration<UsersDe
 #endif
     }
 #endif
-		}
+}

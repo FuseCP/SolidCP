@@ -25,11 +25,9 @@ public partial class AuditLogConfiguration: EntityTypeConfiguration<AuditLog>
 			Property(e => e.StartDate).HasColumnType("datetime");
 			Property(e => e.FinishDate).HasColumnType("datetime");
 			Property(e => e.ExecutionLog).HasColumnType("ntext");
-		} else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql) {
-#if NetCore
+		} else if (IsCore && (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)) {
 			Property(e => e.ExecutionLog).HasColumnType("TEXT");
-#endif
 		}
 	}
 #endif
-		}
+}

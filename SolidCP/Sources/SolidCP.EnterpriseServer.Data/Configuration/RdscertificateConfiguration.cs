@@ -24,13 +24,11 @@ public partial class RdsCertificateConfiguration: EntityTypeConfiguration<RdsCer
 			Property(e => e.ValidFrom).HasColumnType("datetime");
 			Property(e => e.ExpiryDate).HasColumnType("datetime");
 		}
-		else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)
+		else if (IsCore && (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql))
 		{
-#if NetCore
 			Property(e => e.Content).HasColumnType("TEXT");
-#endif
 		}
 
 	}
 #endif
-		}
+}

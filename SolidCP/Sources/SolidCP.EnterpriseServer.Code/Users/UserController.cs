@@ -63,15 +63,12 @@ namespace SolidCP.EnterpriseServer
 			// init users SSH tunnel server connections
 			ThreadPool.QueueUserWorkItem(arg =>
 			{
-				string[] servers = null;
-				using (var controller = this.AsAsync<UserController>())
+				using (var controller = AsAsync<UserController>())
 				{
-					servers = controller.GetUserPackagesServerUrls(userId)
-						.Where(url => CryptoUtils.DecryptServerUrl(url).StartsWith("ssh://"))
-						.ToArray();
+					var servers = controller.GetUserPackagesServerUrls(userId)
+						.Where(url => CryptoUtils.DecryptServerUrl(url).StartsWith("ssh://"));
+					Web.Clients.ClientBase.StartAllSshTunnels(servers);
 				}
-				
-				Web.Clients.ClientBase.StartAllSshTunnels(servers);
 			});
 		}
 		public int AuthenticateUser(string username, string password, string ip)

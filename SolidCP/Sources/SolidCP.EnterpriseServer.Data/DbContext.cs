@@ -28,44 +28,6 @@ namespace SolidCP.EnterpriseServer.Data
             get => connectionString ??= DbSettings.NativeConnectionString;
             set => connectionString = DbSettings.GetNativeConnectionString(value);
         }
-        /*        static string providerName = null;
-                public string ProviderName
-                {
-                    get => providerName ??= DbSettings.ProviderName;
-                    set => providerName = value;
-                }
-        */
-        /*
-                DbProviderFactory DbProviderFactory
-                {
-                    get
-                    {
-                        Type factoryType = null;
-                        switch (DbType)
-                        {
-                            case DbType.MsSql:
-                                factoryType = Type.GetType("Microsoft.Data.SqlClient.SqlClientFactory, Microsoft.Data.SqlClient");
-                                break;
-                            case DbType.MySql:
-                            case DbType.MariaDb:
-                                factoryType = Type.GetType("MySql.Data.MySqlClient.MySqlClientFactory, MySql.Data.EntityFramework, Version=8.4.0.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d");
-                                break;
-                            case DbType.Sqlite:
-        #if NETFRAMEWORK
-                                factoryType = Type.GetType("System.Data.SQLite.EF6.SQLiteProviderFactory, System.Data.SQLite.EF6");
-        #else
-                                factoryType = Type.GetType("Microsoft.Data.SQLite.SQLiteProviderFactory, Microsoft.Data.SQLite");
-        #endif                        
-                                break;
-                            case DbType.PostgreSql:
-                                factoryType = Type.GetType("Npgsql.NpgsqlFactory, Npgsql, Version=8.0.3.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7");
-                                break;
-                        }
-
-                        return (DbProviderFactory)Activator.CreateInstance(factoryType);
-                    }
-                }
-                */
 
         DbConnection MsSqlDbConnection => new Microsoft.Data.SqlClient.SqlConnection(ConnectionString);
 #if NETFRAMEWORK
@@ -84,8 +46,8 @@ namespace SolidCP.EnterpriseServer.Data
 #if NETFRAMEWORK
                 Sqlite.LoadNativeDlls();
                 //factory ??= new System.Data.SQLite.EF6.SQLiteProviderFactory();
-                factory ??= DbProviderFactories.GetFactory("System.Data.SQLite.EF6");
-                var conn = factory.CreateConnection();
+                /* factory ??= DbProviderFactories.GetFactory("System.Data.SQLite.EF6");
+                var conn = factory.CreateConnection();*/
                 var csb = new DbConnectionStringBuilder();
                 csb.ConnectionString = ConnectionString;
                 var dbFile = (string)csb["Data Source"];
@@ -95,8 +57,8 @@ namespace SolidCP.EnterpriseServer.Data
                     csb["Data Source"] = dbFile;
                     ConnectionString = csb.ToString();
                 }
-                conn.ConnectionString = ConnectionString;
-                return conn;
+				var conn = new System.Data.SQLite.SQLiteConnection(ConnectionString);
+				return conn;
 #else
                 return new Microsoft.Data.Sqlite.SqliteConnection(ConnectionString);
 #endif
@@ -178,14 +140,30 @@ namespace SolidCP.EnterpriseServer.Data
             }
         }
 
+        static bool dbConfigurationSet = false;
+        static void SetDbConfiguration()
+        {
+            if (!dbConfigurationSet)
+            {
+                dbConfigurationSet = true;
+#if NETFRAMEWORK
+                System.Data.Entity.DbConfiguration.SetConfiguration(new DbConfiguration());
+#endif
+			}
+		}
+
         public IGenericDbContext BaseContext = null;
         public DbContext()
         {
+            SetDbConfiguration();
+
 #if NETSTANDARD
             BaseContext = (IGenericDbContext)Activator.CreateInstance(ContextType, this);
 #else
-            BaseContext = new Context.DbContextBase(this);
+			var context = new Context.DbContextBase(this);
+			BaseContext = context;
 #endif
+
 			BaseContext.Log += WriteToLog;
 		}
 
@@ -210,8 +188,19 @@ namespace SolidCP.EnterpriseServer.Data
         public bool IsMariaDb => DbType == DbType.MariaDb;
         public bool HasProcedures => IsMsSql && UseStoredProcedures;
 
+#if NetCore
+        public const bool IsCore = true;
+        public const bool IsNetFX = false;
+#elif NetFX
+		public const bool IsCore = false;
+		public const bool IsNetFX = true;
+#else
+        public const bool IsCore = false;
+        public const bool IsNetFX = false;
+#endif
+
 #if NETFRAMEWORK
-        public Database Database => BaseContext.Database;
+		public Database Database => BaseContext.Database;
 #else
         public DatabaseFacade Database => BaseContext.Database;
 #endif
@@ -220,16 +209,5 @@ namespace SolidCP.EnterpriseServer.Data
         public virtual void Dispose() => BaseContext.Dispose();
         public Action<string> Log { get; set; }
         private void WriteToLog(string msg) => Log?.Invoke(msg);
-        public static void Init()
-        {
-#if NetFX
-			Database.SetInitializer<MsSqlDbContext>(null);
-			Database.SetInitializer<MySqlDbContext>(null);
-			Database.SetInitializer<MariaDbDbContext>(null);
-			Database.SetInitializer<SqliteDbContext>(null);
-			Database.SetInitializer<PostgreSqlDbContext>(null);
-			Database.SetInitializer<Context.DbContextBase>(null);
-#endif
-		}
 	}
 }

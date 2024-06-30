@@ -23,11 +23,9 @@ public partial class BackgroundTaskParameterConfiguration: EntityTypeConfigurati
 		{
 			Property(e => e.SerializerValue).HasColumnType("ntext");
 		}
-		else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)
+		else if (IsCore && (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql))
 		{
-#if NetCore
 			Property(e => e.SerializerValue).HasColumnType("TEXT");
-#endif
 		}
 
 #if NetCore
@@ -39,4 +37,4 @@ public partial class BackgroundTaskParameterConfiguration: EntityTypeConfigurati
 #endif
     }
 #endif
-		}
+}

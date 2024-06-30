@@ -22,11 +22,9 @@ public partial class PackageAddonConfiguration: EntityTypeConfiguration<PackageA
 			Property(e => e.Comments).HasColumnType("ntext");
 			Property(e => e.PurchaseDate).HasColumnType("datetime");
 		}
-		else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)
+		else if (IsCore && (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql))
 		{
-#if NetCore
 			Property(e => e.Comments).HasColumnType("TEXT");
-#endif
 		}
 
 #if NetCore
@@ -41,4 +39,4 @@ public partial class PackageAddonConfiguration: EntityTypeConfiguration<PackageA
 #endif
     }
 #endif
-		}
+}

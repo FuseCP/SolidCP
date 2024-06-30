@@ -181,15 +181,6 @@ namespace SolidCP.Web.Clients
                             var validatorType = eserver.GetType("SolidCP.EnterpriseServer.UsernamePasswordValidator");
                             var init = validatorType.GetMethod("Init", BindingFlags.Public | BindingFlags.Static);
                             init.Invoke(null, new object[0]);
-
-                            // init database initializers
-                            var eserverData = Assembly.Load("SolidCP.EnterpriseServer.Data");
-                            if (eserverData != null)
-                            {
-                                var dbContextType = eserverData.GetType("SolidCP.EnterpriseServer.Data.DbContext");
-                                var dbinit = dbContextType.GetMethod("Init", BindingFlags.Public | BindingFlags.Static);
-                                dbinit.Invoke(null, new object[0]);
-                            }
                         }
                     }
                 }

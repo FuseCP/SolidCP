@@ -31,6 +31,10 @@ namespace SolidCP.Providers.OS
 		}
 
 		static bool nativeSQLiteDllLoaded = false;
+
+        // TODO update Shadow Copying to also copy x64 and x86 folders with native dlls, instead of the using the
+        // hack here to load the native dlls. The native dlls also need to be shadow copied since they're also
+        // locked when loaded.
         public static void LoadNativeDlls()
         {
 #if NETFRAMEWORK
@@ -67,8 +71,6 @@ namespace SolidCP.Providers.OS
                 if (arch == Architecture.X64 || arch == Architecture.X86)
                 {
 					var dllPath1 = Path.Combine(assemblyPath, "x64");
-					var dllPath2 = Path.Combine(assemblyPath, "x64");
-
 					AddEnvironmentPaths(new[] { dllPath1 });
 				}
 				else if (arch == Architecture.Arm64)

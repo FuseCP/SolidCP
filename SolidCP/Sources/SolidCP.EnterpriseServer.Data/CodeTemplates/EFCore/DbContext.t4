@@ -165,6 +165,7 @@ namespace <#= NamespaceHint.Replace(".Data.Configuration.Sources", ".Context") #
 #else
         protected void OnModelCreating(DummyModel model) {
 #endif
+			base.OnModelCreating(model);
 
 #if ScaffoldDbContextEntities
 <#

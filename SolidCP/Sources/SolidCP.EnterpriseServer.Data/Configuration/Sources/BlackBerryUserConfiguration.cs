@@ -18,6 +18,7 @@ public partial class BlackBerryUserConfiguration: EntityTypeConfiguration<BlackB
 
 #if NetCore || NetFX
     public override void Configure() {
+
         Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");
 
         HasOne(d => d.Account).WithMany(p => p.BlackBerryUsers)

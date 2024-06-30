@@ -19,13 +19,10 @@ public partial class PrivateNetworkVlanConfiguration : EntityTypeConfiguration<P
 	{
 		HasKey(e => e.VlanId).HasName("PK__PrivateN__8348135581B53618");
 		if (IsMsSql) Property(e => e.Comments).HasColumnType("ntext");
-		else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)
+		else if (IsCore && (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql))
 		{
-#if NetCore
 			Property(e => e.Comments).HasColumnType("TEXT");
-#endif
 		}
-
 
 #if NetCore
         HasOne(d => d.Server).WithMany(p => p.PrivateNetworkVlans)
@@ -37,4 +34,4 @@ public partial class PrivateNetworkVlanConfiguration : EntityTypeConfiguration<P
 #endif
 	}
 #endif
-		}
+}

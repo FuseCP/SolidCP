@@ -295,6 +295,8 @@ namespace SolidCP.EnterpriseServer.Context
 #else
         protected void OnModelCreating(DummyModel model) {
 #endif
+			base.OnModelCreating(model);
+
 			ApplyConfiguration(model, new AccessTokenConfiguration());
 			ApplyConfiguration(model, new AdditionalGroupConfiguration());
 			ApplyConfiguration(model, new AuditLogConfiguration());

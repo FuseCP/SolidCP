@@ -23,17 +23,16 @@ public partial class PackageConfiguration: EntityTypeConfiguration<Package>
 			Property(e => e.PurchaseDate).HasColumnType("datetime");
 			Property(e => e.BandwidthUpdated).HasColumnType("datetime");
             Property(e => e.PackageComments).HasColumnType("ntext");
-        } else if (IsSqlite || IsMySql || IsMariaDb || IsPostgreSql)
+        } else if (IsCore && (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql))
         {
-#if NetCore
             Property(e => e.PackageComments).HasColumnType("TEXT");
-#endif
         }
 
 #if NetCore
-        if (IsMsSql) Core.ToTable(tb => tb.HasTrigger("Update_StatusIDchangeDate"));
-
-        Property(e => e.StatusIdChangeDate).HasDefaultValueSql("(getdate())");
+        if (IsMsSql) {
+            Core.ToTable(tb => tb.HasTrigger("Update_StatusIDchangeDate"));
+            Property(e => e.StatusIdChangeDate).HasDefaultValueSql("(getdate())");
+        }
 
         HasOne(d => d.ParentPackage).WithMany(p => p.ChildPackages).HasConstraintName("FK_Packages_Packages");
 
@@ -74,9 +73,9 @@ public partial class PackageConfiguration: EntityTypeConfiguration<Package>
 
         #region Seed Data
 		HasData(() => new Package[] {
-			new Package() { PackageId = 1, PackageComments = "", PackageName = "System", StatusId = 1, StatusIdChangeDate = DateTime.Parse("2024-04-20T11:02:58.5600000"), UserId = 1 }
+			new Package() { PackageId = 1, PackageComments = "", PackageName = "System", StatusId = 1, StatusIdChangeDate = DateTime.Parse("2024-04-20T11:02:58.560000Z"), UserId = 1 }
 		});
         #endregion
 	}
 #endif
-        }
+}

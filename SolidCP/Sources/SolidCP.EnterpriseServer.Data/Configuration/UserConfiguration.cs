@@ -29,11 +29,9 @@ public partial class UserConfiguration: EntityTypeConfiguration<User>
 			Property(e => e.Comments).HasColumnType("ntext");
 			Property(e => e.Changed).HasColumnType("datetime");
 			Property(e => e.Created).HasColumnType("datetime");
-		} else if (IsMsSql || IsMariaDb || IsSqlite || IsPostgreSql)
+		} else if (IsCore && (IsMsSql || IsMariaDb || IsSqlite || IsPostgreSql))
 		{
-#if NetCore
 			Property(e => e.Comments).HasColumnType("TEXT");
-#endif
 		}
 
 #if NetCore
@@ -46,12 +44,12 @@ public partial class UserConfiguration: EntityTypeConfiguration<User>
 
 		#region Seed Data
 		HasData(() => new User[] {
-			new User() { UserId = 1, Address = "", Changed = DateTime.Parse("2010-07-16T12:53:02.4530000"), City = "", Comments = "", Country = "",
-				Created = DateTime.Parse("2010-07-16T12:53:02.4530000"), EcommerceEnabled = true, Email = "serveradmin@myhosting.com", Fax = "", FirstName = "Enterprise", HtmlMail = true,
+			new User() { UserId = 1, Address = "", Changed = DateTime.Parse("2010-07-16T12:53:02.4530000Z"), City = "", Comments = "", Country = "",
+				Created = DateTime.Parse("2010-07-16T12:53:02.4530000Z"), EcommerceEnabled = true, Email = "serveradmin@myhosting.com", Fax = "", FirstName = "Enterprise", HtmlMail = true,
 				InstantMessenger = "", LastName = "Administrator", Password = "", PrimaryPhone = "", RoleId = 1, SecondaryEmail = "",
 				SecondaryPhone = "", State = "", StatusId = 1, Username = "serveradmin", Zip = "" }
 		});
 		#endregion
 	}
 #endif
-		}
+}

@@ -22,11 +22,9 @@ public partial class IpAddressConfiguration: EntityTypeConfiguration<IpAddress>
         Property(e => e.SubnetMask).IsUnicode(false);
         Property(e => e.DefaultGateway).IsUnicode(false);
 		if (IsMsSql) Property(e => e.Comments).HasColumnType("ntext");
-		else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)
+		else if (IsCore && (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql))
 		{
-#if NetCore
             Property(e => e.Comments).HasColumnType("TEXT");
-#endif
         }
 
 
@@ -40,4 +38,4 @@ public partial class IpAddressConfiguration: EntityTypeConfiguration<IpAddress>
 #endif
     }
 #endif
-        }
+}

@@ -18,11 +18,9 @@ public partial class UserSettingConfiguration: EntityTypeConfiguration<UserSetti
     public override void Configure() {
 
         if (IsMsSql) Property(e => e.PropertyValue).HasColumnType("ntext");
-        else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)
+        else if (IsCore && (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql))
         {
-#if NetCore
             Property(e => e.PropertyValue).HasColumnType("TEXT");
-#endif
         }
 
 #if NetCore

@@ -147,6 +147,7 @@
     <ItemGroup>
       <Folder Include="Migrations\MySql\" />
       <Folder Include="Migrations\PostgreSql\" />
+      <Folder Include="Migrations\Sqlite\" />
     </ItemGroup>
 		
 </Project>

@@ -2,7 +2,7 @@
 *~
 
 # EntityFramework Model Snapshots
-*DbContextModelSnapshot.cs
+# *DbContextModelSnapshot.cs
 
 # EntityFramework Install Bundles
 install.*.exe

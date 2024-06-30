@@ -191,7 +191,7 @@ namespace SolidCP.EnterpriseServer.Data.Scaffolding
 						else if (prop.ClrType == typeof(DateTime) || prop.ClrType == typeof(DateTime?))
 						{
 							writer.Append("DateTime.Parse(\"");
-							writer.Append(((DateTime)val).ToString("O"));
+							writer.Append(((DateTime)val).ToUniversalTime().ToString("O"));
 							writer.Append("\")");
 						}
 						else if (prop.ClrType == typeof(TimeSpan) || prop.ClrType == typeof(TimeSpan?))
