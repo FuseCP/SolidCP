@@ -8027,7 +8027,7 @@ END
 				if (address != null)
 				{
 					address.PoolId = poolId;
-					address.ServerId = serverId != null ? serverId : null;
+					address.ServerId = serverId > 0 ? serverId : null;
 					address.ExternalIp = externalIP;
 					address.InternalIp = internalIP;
 					address.SubnetMask = subnetMask;

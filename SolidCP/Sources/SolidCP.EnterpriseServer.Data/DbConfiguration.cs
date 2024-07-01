@@ -1,6 +1,7 @@
 ﻿#if NETFRAMEWORK
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Data.Common;
 using System.Linq;
 using System.Text;
@@ -16,8 +17,52 @@ namespace SolidCP.EnterpriseServer.Data
 {
 	public class DbConfiguration : System.Data.Entity.DbConfiguration
 	{
-		static MySqlProviderServices mySqlProviderServices = new MySqlProviderServices();
+		static System.Data.Entity.Core.Common.DbProviderServices mySqlProviderServices = null;
 
+		static ImmutableHashSet<DbType> LoadedDatabaseProviders = ImmutableHashSet<DbType>.Empty;
+
+		public static void InitDatabaseProvider(DbType dbType)
+		{
+			if (!LoadedDatabaseProviders.Contains(dbType))
+			{
+				var count = LoadedDatabaseProviders.Count;
+				if (ImmutableInterlocked.Update(ref LoadedDatabaseProviders, providers => providers.Add(dbType)) &&
+					count < LoadedDatabaseProviders.Count) {
+					if (dbType == DbType.Sqlite) Sqlite.LoadNativeDlls();
+					SetConfiguration(new DbConfiguration());
+				}
+			}
+		}
+
+		void SetProvidersMsSql()
+		{
+			SetProviderServices("Microsoft.Data.SqlClient", MicrosoftSqlProviderServices.Instance);
+			SetProviderFactory("Microsoft.Data.SqlClient", SqlClientFactory.Instance);
+		}
+		
+		void SetProvidersMySql()
+		{
+			mySqlProviderServices = mySqlProviderServices ??= new MySqlProviderServices();
+			SetProviderServices("MySql.Data.MySqlClient", mySqlProviderServices);
+			SetProviderFactory("MySql.Data.MySqlClient", MySqlClientFactory.Instance);
+		}
+
+		void SetProvidersSqlite()
+		{
+			var providerServicesType = Type.GetType("System.Data.SQLite.EF6.SQLiteProviderServices, System.Data.SQLite.EF6");
+			var instanceProperty = providerServicesType.GetField("Instance",
+				BindingFlags.NonPublic | BindingFlags.Static);
+			Activator.CreateInstance(providerServicesType);
+			SetProviderServices("System.Data.SQLite", (System.Data.Entity.Core.Common.DbProviderServices)instanceProperty.GetValue(null));
+			SetProviderFactory("System.Data.SQLite", SQLiteFactory.Instance);
+			SetProviderFactory("System.Data.SQLite.EF6", System.Data.SQLite.EF6.SQLiteProviderFactory.Instance);
+		}
+
+		void SetProvidersPostgreSql()
+		{
+			SetProviderServices("Npgsql", NpgsqlServices.Instance);
+			SetProviderFactory("Npgsql", NpgsqlFactory.Instance);
+		}
 		public DbConfiguration()
 		{
 			SetDatabaseInitializer<MsSqlDbContext>(null);
@@ -27,26 +72,17 @@ namespace SolidCP.EnterpriseServer.Data
 			SetDatabaseInitializer<PostgreSqlDbContext>(null);
 			SetDatabaseInitializer<Context.DbContextBase>(null);
 
-			// MS SQL
-			SetProviderServices("Microsoft.Data.SqlClient", MicrosoftSqlProviderServices.Instance);
-			SetProviderFactory("Microsoft.Data.SqlClient", SqlClientFactory.Instance);
-			
-			// MySQL & MariaDB
-			SetProviderServices("MySql.Data.MySqlClient", mySqlProviderServices);
-			SetProviderFactory("MySql.Data.MySqlClient", MySqlClientFactory.Instance);
-
-			// SQLite
-			var providerServicesType = Type.GetType("System.Data.SQLite.EF6.SQLiteProviderServices, System.Data.SQLite.EF6");
-			var instanceProperty = providerServicesType.GetField("Instance",
-				BindingFlags.NonPublic | BindingFlags.Static);
-			Activator.CreateInstance(providerServicesType);
-			SetProviderServices("System.Data.SQLite", (System.Data.Entity.Core.Common.DbProviderServices)instanceProperty.GetValue(null));
-			SetProviderFactory("System.Data.SQLite", SQLiteFactory.Instance);
-			SetProviderFactory("System.Data.SQLite.EF6", System.Data.SQLite.EF6.SQLiteProviderFactory.Instance);
-
-			// PostgreSQL
-			SetProviderServices("Npgsql", NpgsqlServices.Instance);
-			SetProviderFactory("Npgsql", NpgsqlFactory.Instance);
+			if (LoadedDatabaseProviders.Contains(DbType.MsSql)) SetProvidersMsSql();
+			if (LoadedDatabaseProviders.Contains(DbType.MySql) || LoadedDatabaseProviders.Contains(DbType.MariaDb))
+			{
+				SetProvidersMySql();
+			}
+			if (LoadedDatabaseProviders.Contains(DbType.Sqlite))
+			{
+				Sqlite.LoadNativeDlls();
+				SetProvidersSqlite();
+			}
+			if (LoadedDatabaseProviders.Contains(DbType.PostgreSql)) SetProvidersPostgreSql();
 		}
 	}
 }

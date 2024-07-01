@@ -95,5 +95,8 @@ namespace SolidCP.EnterpriseServer
 
 		[WebMethod]
 		public string GetCryptoKey() => new EnterpriseServerTunnelService().CryptoKey;
+
+		[WebMethod]
+		public Data.DbType GetDatabaseType() => SystemController.GetDatabaseType();
 	}
 }

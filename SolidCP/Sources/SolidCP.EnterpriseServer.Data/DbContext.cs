@@ -38,17 +38,15 @@ namespace SolidCP.EnterpriseServer.Data
 #endif
 		DbConnection PostgreSqlDbConnection => new Npgsql.NpgsqlConnection(ConnectionString);
 
-        static DbProviderFactory factory = null;
         DbConnection SqliteDbConnection
         {
             get
             {
 #if NETFRAMEWORK
-                Sqlite.LoadNativeDlls();
-                //factory ??= new System.Data.SQLite.EF6.SQLiteProviderFactory();
-                /* factory ??= DbProviderFactories.GetFactory("System.Data.SQLite.EF6");
+				//factory ??= new System.Data.SQLite.EF6.SQLiteProviderFactory();
+				/* factory ??= DbProviderFactories.GetFactory("System.Data.SQLite.EF6");
                 var conn = factory.CreateConnection();*/
-                var csb = new DbConnectionStringBuilder();
+				var csb = new DbConnectionStringBuilder();
                 csb.ConnectionString = ConnectionString;
                 var dbFile = (string)csb["Data Source"];
                 if (!Path.IsPathRooted(dbFile))
@@ -72,10 +70,15 @@ namespace SolidCP.EnterpriseServer.Data
             {
                 if (dbConnection == null)
                 {
-					switch (DbType)
+
+#if NETFRAMEWORK
+                    DbConfiguration.InitDatabaseProvider(DbType);
+#endif
+
+                    switch (DbType)
 					{
 						case DbType.MsSql:
-                            dbConnection = MsSqlDbConnection;
+						    dbConnection = MsSqlDbConnection;
                             break;
 						case DbType.MySql:
 						case DbType.MariaDb:
@@ -116,15 +119,6 @@ namespace SolidCP.EnterpriseServer.Data
             {
                 if (contextType == null)
                 {
-#if NETSTANDARD
-                    var dbType = DbType;
-                    if (dbType == DbType.MariaDb) dbType = DbType.MySql;
-                    if (OSInfo.IsCore) {    
-                        contextType = Type.GetType($"SolidCP.EnterpriseServer.Context.{dbType}DbContext, SolidCP.EnterpriseServer.Data.Core"); break;
-                    } else {
-                        contextType = Type.GetType($"SolidCP.EnterpriseServer.Context.{dbType}DbContext, SolidCP.EnterpriseServer.Data.Core");
-                    }
-#else
                     switch (DbType)
                     {
                         default:
@@ -134,7 +128,6 @@ namespace SolidCP.EnterpriseServer.Data
                         case DbType.PostgreSql: contextType = typeof(PostgreSqlDbContext); break;
                         case DbType.Sqlite: contextType = typeof(SqliteDbContext); break;
                     }
-#endif
                 }
                 return contextType;
             }
@@ -155,7 +148,7 @@ namespace SolidCP.EnterpriseServer.Data
         public IGenericDbContext BaseContext = null;
         public DbContext()
         {
-            SetDbConfiguration();
+            //SetDbConfiguration();
 
 #if NETSTANDARD
             BaseContext = (IGenericDbContext)Activator.CreateInstance(ContextType, this);

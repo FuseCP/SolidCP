@@ -3,12 +3,12 @@
         <ProjectGuid>{C09CE910-F16B-48A1-B2CC-C99B8C1CF775}</ProjectGuid>
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>
-        <TargetFrameworks>net48;net8.0</TargetFrameworks>
+        <TargetFrameworks>netstandard2.0</TargetFrameworks>
         <PublishUrl>publish\</PublishUrl>
         <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-        <OutputPath>..\..\Bin</OutputPath>
+        <OutputPath>..\SolidCP.EnterpriseServer\bin\netstandard</OutputPath>
         <Nullable>disable</Nullable>
-        <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
         <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
@@ -39,7 +39,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
         <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     </ItemGroup>
 
@@ -67,6 +66,5 @@
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
-        <ProjectReference Include="..\SolidCP.Web.Services\SolidCP.Web.Services.csproj" />
     </ItemGroup>
 </Project>

@@ -67,19 +67,20 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="SQLite" Version="3.13.0" PrivateAssets="true" />
+        <!--<PackageReference Include="SQLite" Version="3.13.0" PrivateAssets="true" />-->
         <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+        <ProjectReference Include="..\SolidCP.Web.Services\SolidCP.Web.Services.csproj" />
     </ItemGroup>
 
     <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
         <DefineConstants>$(DefineConstants);NetCore</DefineConstants>
-        <AssemblyName>$(MSBuildProjectName).Core</AssemblyName>
+        <!--<AssemblyName>$(MSBuildProjectName).Core</AssemblyName>-->
 		<PackageId>$(MSBuildProjectName)</PackageId>
 	</PropertyGroup>
 
     <PropertyGroup Condition="'$(TargetFramework)' == 'net48'">
         <DefineConstants>$(DefineConstants);NetFX</DefineConstants>
-        <AssemblyName>$(MSBuildProjectName).NetFX</AssemblyName>
+        <!--<AssemblyName>$(MSBuildProjectName).NetFX</AssemblyName>-->
 		<PackageId>$(MSBuildProjectName)</PackageId>
     </PropertyGroup>
 

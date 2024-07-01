@@ -427,18 +427,19 @@ namespace SolidCP.EnterpriseServer
 
         void PurgeCompletedTasks(object obj)
         {
-            var mgr = AsAsync<TaskManager>();
-
-            List<BackgroundTask> tasks = mgr.TaskController.GetProcessTasks(BackgroundTaskStatus.Run);
-
-            foreach (BackgroundTask task in tasks)
+            using (var mgr = AsAsync<TaskManager>())
             {
-                if (task.MaximumExecutionTime != -1
-                    && ((TimeSpan)(DateTime.Now - task.StartDate)).TotalSeconds > task.MaximumExecutionTime)
-                {
-                    task.Status = BackgroundTaskStatus.Stopping;
+                var tasks = mgr.TaskController.GetProcessTasks(BackgroundTaskStatus.Run);
 
-                    mgr.TaskController.UpdateTask(task);
+                foreach (BackgroundTask task in tasks)
+                {
+                    if (task.MaximumExecutionTime != -1
+                        && ((TimeSpan)(DateTime.Now - task.StartDate)).TotalSeconds > task.MaximumExecutionTime)
+                    {
+                        task.Status = BackgroundTaskStatus.Stopping;
+
+                        mgr.TaskController.UpdateTask(task);
+                    }
                 }
             }
         }

@@ -340,6 +340,6 @@
     <value>DEBUG SETTINGS</value>
   </data>
   <data name="SettingchkAlwaysUseEntityFramework.Text" xml:space="preserve">
-    <value>Always use Entity Framework for database access</value>
+    <value>Use Entity Framework for database access</value>
   </data>
 </root>

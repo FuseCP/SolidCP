@@ -277,6 +277,6 @@
     <value>Debugging-Einstellungen</value>
   </data>
   <data name="SettingchkAlwaysUseEntityFramework.Text" xml:space="preserve">
-    <value>Benutze immer Entity Framework für Datenbankzugriff</value>
+    <value>Benutze Entity Framework für Datenbank-Zugriff</value>
   </data>
 </root>

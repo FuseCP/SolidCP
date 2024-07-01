@@ -11,8 +11,6 @@ using System.Data;
 
 namespace SolidCP.EnterpriseServer.Data
 {
-	public enum DbType { Unknown, MsSql, MySql, MariaDb, Sqlite, PostgreSql, Other }
-
 	public class DbSettings
     {
 

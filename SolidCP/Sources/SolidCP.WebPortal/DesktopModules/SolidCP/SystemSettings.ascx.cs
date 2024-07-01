@@ -211,15 +211,21 @@ namespace SolidCP.Portal
                 chkCanPeerChangeMFa.Checked = settings.GetValueOrDefault(SCP.SystemSettings.MFA_CAN_PEER_CHANGE_MFA, true);
             }
 
-			// Debug settings
-			settings = ES.Services.System.GetSystemSettings(SCP.SystemSettings.DEBUG_SETTINGS);
+            var isMsSql = ES.Services.System.GetDatabaseType() == EnterpriseServer.Data.DbType.MsSql;
+            chkAlwaysUseEntityFramework.Enabled = isMsSql;
+            btnDebugSettings.Enabled = isMsSql;
+			if (!isMsSql) chkAlwaysUseEntityFramework.Checked = true;
+            else
+            {
+                // Debug settings
+                settings = ES.Services.System.GetSystemSettings(SCP.SystemSettings.DEBUG_SETTINGS);
 
-			if (settings != null)
-			{
-				chkAlwaysUseEntityFramework.Checked = settings
-                    .GetValueOrDefault(SCP.SystemSettings.ALWAYS_USE_ENTITYFRAMEWORK, false);
-			}
-
+                if (settings != null)
+                {
+                    chkAlwaysUseEntityFramework.Checked = settings
+                        .GetValueOrDefault(SCP.SystemSettings.ALWAYS_USE_ENTITYFRAMEWORK, false);
+                }
+            }
 		}
 		private void SaveSMTP()
         {
@@ -504,32 +510,36 @@ namespace SolidCP.Portal
             ShowSuccessMessage("SYSTEM_SETTINGS_SAVE");
         }
 
-		private void SaveDebug()
-		{
-			try
-			{
-				SCP.SystemSettings settings = new SCP.SystemSettings();
+        private void SaveDebug()
+        {
+            var isMsSql = ES.Services.System.GetDatabaseType() == EnterpriseServer.Data.DbType.MsSql;
+            if (isMsSql)
+            {
+                try
+                {
+                    SCP.SystemSettings settings = new SCP.SystemSettings();
 
-				// authentication settings
-				settings = new SCP.SystemSettings();
-				settings[SCP.SystemSettings.ALWAYS_USE_ENTITYFRAMEWORK] = chkAlwaysUseEntityFramework.Checked ? "True" : "False"; 
+                    // authentication settings
+                    settings = new SCP.SystemSettings();
+                    settings[SCP.SystemSettings.ALWAYS_USE_ENTITYFRAMEWORK] = chkAlwaysUseEntityFramework.Checked ? "True" : "False";
 
-				int result = ES.Services.System.SetSystemSettings(SCP.SystemSettings.DEBUG_SETTINGS, settings);
+                    int result = ES.Services.System.SetSystemSettings(SCP.SystemSettings.DEBUG_SETTINGS, settings);
 
-				if (result < 0)
-				{
-					ShowResultMessage(result);
-					return;
-				}
-			}
-			catch (Exception ex)
-			{
-				ShowErrorMessage("SYSTEM_SETTINGS_SAVE", ex);
-				return;
-			}
+                    if (result < 0)
+                    {
+                        ShowResultMessage(result);
+                        return;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ShowErrorMessage("SYSTEM_SETTINGS_SAVE", ex);
+                    return;
+                }
 
-			ShowSuccessMessage("SYSTEM_SETTINGS_SAVE");
-		}
+                ShowSuccessMessage("SYSTEM_SETTINGS_SAVE");
+            }
+        }
 		#region Button Calls
 		protected void btnSaveSMTP_Click(object sender, EventArgs e)
         {

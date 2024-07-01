@@ -7030,7 +7030,7 @@ namespace SolidCP.EnterpriseServer
 
             if (image != null) return image;
 
-            Providers.OS.Sqlite.LoadNativeDlls();
+            Providers.OS.SkiaSharp.LoadNativeDlls();
 
             return ResizeImageSkia(image, width, height); 
         }

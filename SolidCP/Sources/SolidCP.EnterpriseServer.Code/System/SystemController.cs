@@ -229,5 +229,7 @@ namespace SolidCP.EnterpriseServer
 		{
 			return Database.GetThemeSetting(ThemeID, SettingsName);
 		}
+
+		public Data.DbType GetDatabaseType() => Database.DbType;
 	}
 }
