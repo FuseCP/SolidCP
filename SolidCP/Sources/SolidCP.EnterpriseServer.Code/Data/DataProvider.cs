@@ -6094,21 +6094,17 @@ RETURN
 				// virtual groups
 				var virtGroups = ResourceGroups
 					.Where(g => (isAdmin || forAutodiscover) && g.ShowGroup == true)
-					.GroupJoin(VirtualGroups,
-						rg => new { rg.GroupId, ServerId = serverId },
-						vg => new { vg.GroupId, vg.ServerId }, (rg, vgs) => new
+					.OrderBy(g => g.GroupOrder)
+					.SelectMany(g => g.VirtualGroups
+						.Where(vg => vg.ServerId == serverId)
+						.DefaultIfEmpty(),
+						(g, vg) => new
 					{
-						ResourceGroup = rg,
-						VirtualGroup = vgs
-					})
-					.OrderBy(g => g.ResourceGroup.GroupOrder)
-					.SelectMany(g => g.VirtualGroup.DefaultIfEmpty(), (g, vgs) => new
-					{
-						VirtualGroupId = (int?)(vgs != null ? vgs.VirtualGroupId : null),
-						g.ResourceGroup.GroupId,
-						g.ResourceGroup.GroupName,
-						DistributionType = (vgs != null ? vgs.DistributionType : null) ?? 1,
-						BindDistributionToPrimary = (vgs != null ? vgs.BindDistributionToPrimary : null) ?? true
+						VirtualGroupId = (int?)(vg != null ? vg.VirtualGroupId : null),
+						g.GroupId,
+						g.GroupName,
+						DistributionType = (vg != null ? vg.DistributionType : null) ?? 1,
+						BindDistributionToPrimary = (vg != null ? vg.BindDistributionToPrimary : null) ?? true
 					});
 
 				var services = VirtualServices
@@ -20978,9 +20974,9 @@ RETURN
 							l.ExecutionLog,
 							UserId = l.UserId ?? 0,
 							l.Username,
-							User = u.SingleOrDefault()
+							Users = u
 						})
-						.Select(l => new
+						.SelectMany(l => l.Users.DefaultIfEmpty(), (l, u) => new
 						{
 							l.RecordId,
 							l.SeverityId,
@@ -20993,13 +20989,13 @@ RETURN
 							l.ExecutionLog,
 							l.UserId,
 							l.Username,
-							FirstName = l.User != null ? l.User.FirstName : null,
-							LastName = l.User != null ? l.User.LastName : null,
-							FullName = l.User != null ? l.User.FullName : null,
-							RoleId = l.User != null ? l.User.RoleId : 0,
-							Email = l.User != null ? l.User.Email : null,
-							EffectiveUserId = l.User != null ?
-								(l.User.IsPeer ? l.User.OwnerId : l.User.UserId) : null
+							FirstName = u != null ? u.FirstName : null,
+							LastName = u != null ? u.LastName : null,
+							FullName = u != null ? u.FullName : null,
+							RoleId = u != null ? u.RoleId : 0,
+							Email = u != null ? u.Email : null,
+							EffectiveUserId = u != null ?
+								(u.IsPeer ? u.OwnerId : u.UserId) : null
 						});
 					return EntityDataSet(logsWithUser);
 				} finally {
@@ -21138,9 +21134,9 @@ RETURN
 						 l.ExecutionLog,
 						 UserId = l.UserId ?? 0,
 						 l.Username,
-						 User = u.SingleOrDefault()
+						 Users = u
 					 })
-					.Select(l => new
+					.SelectMany(l => l.Users.DefaultIfEmpty(), (l, u) => new
 					{
 						l.RecordId,
 						l.SeverityId,
@@ -21153,11 +21149,11 @@ RETURN
 						l.ExecutionLog,
 						l.UserId,
 						l.Username,
-						FirstName = l.User != null ? l.User.FirstName : null,
-						LastName = l.User != null ? l.User.LastName : null,
-						FullName = l.User != null ? l.User.FullName : null,
-						RoleId = l.User != null ? l.User.RoleId : 0,
-						Email = l.User != null ? l.User.Email : null,
+						FirstName = u != null ? u.FirstName : null,
+						LastName = u != null ? u.LastName : null,
+						FullName = u != null ? u.FullName : null,
+						RoleId = u != null ? u.RoleId : 0,
+						Email = u != null ? u.Email : null,
 					});
 				return EntityDataReader(logsWithUser);
 
@@ -29373,8 +29369,15 @@ RETURN
 					.Where(a => a.ItemId == itemId &&
 						(a.AccountType == ExchangeAccountType.User ||
 						a.AccountType == ExchangeAccountType.Mailbox && includeMailboxes))
-					.GroupJoin(LyncUsers, a => a.AccountId, lu => lu.AccountId, (a, lu) => new { A = a, IsLyncUser = lu.Any() })
-					.GroupJoin(SfBUsers, a => a.A.AccountId, su => su.AccountId, (a, su) => new
+					.GroupJoin(LyncUsers, a => a.AccountId, lu => lu.AccountId, (a, lus) => new { A = a, LyncUsers = lus })
+					.SelectMany(a => a.LyncUsers.DefaultIfEmpty(), (a, lu) => new { A = a.A, IsLyncUser = lu != null })
+					.GroupJoin(SfBUsers, a => a.A.AccountId, su => su.AccountId, (a, sus) => new
+					{
+						a.A,
+						a.IsLyncUser,
+						SfBUsers = sus
+					})
+					.SelectMany(a => a.SfBUsers.DefaultIfEmpty(), (a, su) => new
 					{
 						a.A.AccountId,
 						a.A.ItemId,
@@ -29387,7 +29390,7 @@ RETURN
 						a.A.LevelId,
 						a.A.IsVip,
 						a.IsLyncUser,
-						IsSfBUser = su.Any()
+						IsSfBUser = su != null
 					});
 
 				if (!string.IsNullOrEmpty(filterValue) && !string.IsNullOrEmpty(filterColumn))

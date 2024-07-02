@@ -10,7 +10,6 @@ namespace SolidCP.EnterpriseServer.Code
 	public class TestDbContext: Data.MsSqlDbContext
 	{
 		public TestDbContext() : base(new Data.DbContext()) { }
-
-		public DataProvider Db = new DataProvider();
+		public TestDbContext(string connectionString) : base(new Data.DbContext(connectionString)) { }
 	}
 }

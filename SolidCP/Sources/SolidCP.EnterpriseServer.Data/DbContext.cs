@@ -162,6 +162,11 @@ namespace SolidCP.EnterpriseServer.Data
 
 		public DbContext(string connectionString, DbType dbType = DbType.Unknown, bool initSeedData = false)
         {
+            /*if (dbType == DbType.Unknown)
+            {
+                var csb = new DbConnectionStringBuilder() { ConnectionString = connectionString };
+                if (!Enum.TryParse<DbType>((string)(csb["DbType"] ?? "Unknown"), out dbType)) dbType = DbType.Other;
+            }*/
             if (dbType == DbType.Unknown) DbType = DbSettings.GetDbType(connectionString);
             else DbType = dbType;
             ConnectionString = connectionString;

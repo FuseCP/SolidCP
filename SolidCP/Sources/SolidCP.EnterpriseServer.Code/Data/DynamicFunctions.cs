@@ -21,6 +21,7 @@ namespace SolidCP.EnterpriseServer
 			var prop = Expression.Property(param, columnName);
 			var type = typeof(DbFunctions);
 			var likeMethod = type.GetMethod("Like", new Type[] { typeof(string), typeof(string) });
+			// TODO use variable, not constant.
 			var call = Expression.Call(null, likeMethod, prop, Expression.Constant(likeExpression));
 			return Expression.Lambda<Func<T, bool>>(call, param);
 		}
