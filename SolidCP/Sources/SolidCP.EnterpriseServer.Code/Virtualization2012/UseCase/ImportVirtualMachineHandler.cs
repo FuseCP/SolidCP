@@ -174,8 +174,8 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
                     QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_PRIVATE_NETWORK_ENABLED, item.PrivateNetworkEnabled, VirtualizationErrorCodes.QUOTA_EXCEEDED_PRIVATE_NETWORK_ENABLED);
 
                     // check acceptable values
-                    if (item.RamSize <= 0)
-                        quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_RAM);
+                    if (item.RamSize < 32)
+                        quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_RAM_HV);
                     foreach (var hddSize in item.HddSize)
                     {
                         if (hddSize <= 0)

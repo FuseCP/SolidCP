@@ -95,8 +95,8 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
             QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_DMZ_NETWORK_ENABLED, vmSettings.DmzNetworkEnabled, VirtualizationErrorCodes.QUOTA_EXCEEDED_DMZ_NETWORK_ENABLED);
 
             // check acceptable values
-            if (vmSettings.RamSize <= 0)
-                quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_RAM);
+            if (vmSettings.RamSize < 32)
+                quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_RAM_HV);
             foreach (var hddSize in vmSettings.HddSize)
             {
                 if (hddSize <= 0)

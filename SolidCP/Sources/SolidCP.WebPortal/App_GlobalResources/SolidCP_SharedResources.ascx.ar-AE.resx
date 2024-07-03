@@ -4830,6 +4830,9 @@
   <data name="VPS.VPS_QUOTA_WRONG_RAM" xml:space="preserve">
     <value>يجب أن يكون حجم ذاكرة الوصول العشوائي رقمًا موجبًا وأكبر من الصفر</value>
   </data>
+  <data name="VPS.VPS_QUOTA_WRONG_RAM_HV" xml:space="preserve">
+    <value>يجب أن يكون حجم ذاكرة الوصول العشوائي أكبر من 32 ميجابايت</value>
+  </data>
   <data name="VPS.VPS_QUOTA_NOT_IN_DYNAMIC_RAM" xml:space="preserve">
     <value>يجب أن يكون حجم ذاكرة الوصول العشوائي بين الحد الأدنى والحد الأقصى للذاكرة الديناميكية</value>
   </data>
