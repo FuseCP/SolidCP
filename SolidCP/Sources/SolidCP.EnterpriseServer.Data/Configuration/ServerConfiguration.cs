@@ -30,9 +30,8 @@ public partial class ServerConfiguration: EntityTypeConfiguration<Server>
 
         HasOne(d => d.PrimaryGroup).WithMany(p => p.Servers).HasConstraintName("FK_Servers_ResourceGroups");
 #else
-		// TODO optional or required?
 		HasOptional(d => d.PrimaryGroup).WithMany(p => p.Servers);
 #endif
     }
 #endif
-		}
+}

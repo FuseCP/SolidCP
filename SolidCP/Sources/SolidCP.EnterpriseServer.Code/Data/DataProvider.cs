@@ -40219,9 +40219,20 @@ RETURN
 					.GroupJoin(ServiceItems, s => s.ItemId, si => si.ItemId, (s, si) => new
 					{
 						Server = s,
-						ItemName = si.Any() ? si.Single().ItemName : null
+						ServiceItems = si
+					})
+					.SelectMany(s => s.ServiceItems.DefaultIfEmpty(), (s, si) => new
+					{
+						s.Server,
+						ItemName = si != null ? si.ItemName : null,
 					})
 					.GroupJoin(Services, s => s.Server.Controller, svc => svc.ServiceId, (s, svc) => new
+					{
+						s.Server,
+						s.ItemName,						
+						Services = svc
+					})
+					.SelectMany(s => s.Services.DefaultIfEmpty(), (s, svc) => new
 					{
 						s.Server.Id,
 						s.Server.ItemId,
@@ -40232,7 +40243,7 @@ RETURN
 						s.Server.ConnectionEnabled,
 						s.Server.Controller,
 						s.ItemName,
-						ControllerName = svc.Any() ? svc.Single().ServiceName : null,
+						ControllerName = svc != null ? svc.ServiceName : null,
 						CollectionName = s.Server.RdsCollection != null ? s.Server.RdsCollection.Name : null
 					});
 
