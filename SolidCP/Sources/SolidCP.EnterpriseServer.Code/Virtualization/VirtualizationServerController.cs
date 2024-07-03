@@ -417,8 +417,8 @@ namespace SolidCP.EnterpriseServer
                 }
 
                 // check acceptable values
-                if (ramMB <= 0)
-                    quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_RAM);
+                if (ramMB < 32)
+                    quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_RAM_HV);
                 if (hddGB <= 0)
                     quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_HDD);
                 if (snapshots < 0)

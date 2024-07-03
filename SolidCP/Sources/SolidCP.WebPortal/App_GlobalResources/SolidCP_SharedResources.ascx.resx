@@ -4906,6 +4906,9 @@
   <data name="VPS.VPS_QUOTA_WRONG_RAM" xml:space="preserve">
     <value>RAM size must be a positive number and greater than zero</value>
   </data>
+  <data name="VPS.VPS_QUOTA_WRONG_RAM_HV" xml:space="preserve">
+    <value>RAM size must be greater than 32 MB</value>
+  </data>
   <data name="VPS.VPS_QUOTA_NOT_IN_DYNAMIC_RAM" xml:space="preserve">
     <value>RAM size must be between the minimum and maximum of the dynamic memory</value>
   </data>
