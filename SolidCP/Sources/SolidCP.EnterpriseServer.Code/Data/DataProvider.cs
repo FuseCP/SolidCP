@@ -40109,13 +40109,18 @@ SELECT
 					.Where(s => s.ItemId == itemId)
 					.GroupJoin(ServiceItems, s => s.ItemId, i => i.ItemId, (s, i) => new
 					{
-						s.Id,
-						s.ItemId,
-						s.Name,
-						s.FqdName,
-						s.Description,
-						s.RdsCollectionId,
-						ItemName = i.Any() ? i.Single().ItemName : null
+						Server = s,
+						Items = i
+					})
+					.SelectMany(s => s.Items.DefaultIfEmpty(), (s, i) => new
+					{
+						s.Server.Id,
+						s.Server.ItemId,
+						s.Server.Name,
+						s.Server.FqdName,
+						s.Server.Description,
+						s.Server.RdsCollectionId,
+						ItemName = i != null ? i.ItemName : null
 					});
 				return EntityDataReader(servers);
 			}
@@ -40311,15 +40316,21 @@ WHERE RS.Id = @Id
 					.Where(s => s.Id == id)
 					.GroupJoin(ServiceItems, s => s.ItemId, si => si.ItemId, (s, si) => new
 					{
-						s.Id,
-						s.ItemId,
-						s.Name,
-						s.FqdName,
-						s.Description,
-						s.RdsCollectionId,
-						s.ConnectionEnabled,
-						ItemName = si.Any() ? si.Single().ItemName : null,
+						Server = s,
+						Items = si,
 						CollectionName = s.RdsCollection != null ? s.RdsCollection.Name : null
+					})
+					.SelectMany(s => s.Items.DefaultIfEmpty(), (s, si) => new
+					{
+						s.Server.Id,
+						s.Server.ItemId,
+						s.Server.Name,
+						s.Server.FqdName,
+						s.Server.Description,
+						s.Server.RdsCollectionId,
+						s.Server.ConnectionEnabled,
+						ItemName = si != null ? si.ItemName : null,
+						s.CollectionName
 					})
 					.Take(1);
 				return EntityDataReader(server);
@@ -40363,13 +40374,18 @@ WHERE RdsCollectionId = @RdsCollectionId
 					.Where(s => s.RdsCollectionId == collectionId)
 					.GroupJoin(ServiceItems, s => s.ItemId, si => si.ItemId, (s, si) => new
 					{
-						s.Id,
-						s.ItemId,
-						s.Name,
-						s.FqdName,
-						s.Description,
-						s.RdsCollectionId,
-						ItemName = si.Any() ? si.Single().ItemName : null,
+						Server = s,
+						Items = si
+					})
+					.SelectMany(s => s.Items.DefaultIfEmpty(), (s, si) => new
+					{
+						s.Server.Id,
+						s.Server.ItemId,
+						s.Server.Name,
+						s.Server.FqdName,
+						s.Server.Description,
+						s.Server.RdsCollectionId,
+						ItemName = si != null ? si.ItemName : null,
 					});
 				return EntityDataReader(servers);
 			}
