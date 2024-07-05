@@ -30,7 +30,7 @@ for example you would write in the Fluent API:
 ```
 if (IsMsSql) {
     Property(e => e.ExecutionLog).HasColumnType("ntext");
-} else if (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql) {
+} else if (IsCore && (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)) {
     Property(e => e.ExecutionLog).HasColumnType("TEXT");
 }
 ```

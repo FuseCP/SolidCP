@@ -62,8 +62,8 @@ public partial class Package
     [InverseProperty("Package")]
     public virtual ICollection<GlobalDnsRecord> GlobalDnsRecords { get; set; } = new List<GlobalDnsRecord>();
 
-    [InverseProperty("Package")]
-    public virtual ICollection<HostingPlan> HostingPlans { get; set; } = new List<HostingPlan>();
+    /*[InverseProperty("Package")]
+    public virtual ICollection<HostingPlan> HostingPlans { get; set; } = new List<HostingPlan>();*/
 
     [InverseProperty("ParentPackage")]
     public virtual ICollection<Package> ChildPackages { get; set; } = new List<Package>();
@@ -95,7 +95,7 @@ public partial class Package
 
     [ForeignKey("PlanId")]
     [InverseProperty("Packages")]
-    public virtual HostingPlan Plan { get; set; }
+    public virtual HostingPlan HostingPlan { get; set; }
 
     [InverseProperty("Package")]
     public virtual ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();

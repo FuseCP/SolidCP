@@ -31,7 +31,7 @@ public partial class HostingPlanConfiguration : EntityTypeConfiguration<HostingP
 
 
 #if NetCore
-        HasOne(d => d.Package).WithMany(p => p.HostingPlans)
+        HasMany(d => d.Packages).WithOne(p => p.HostingPlan)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_HostingPlans_Packages");
 
@@ -39,10 +39,9 @@ public partial class HostingPlanConfiguration : EntityTypeConfiguration<HostingP
 
         HasOne(d => d.User).WithMany(p => p.HostingPlans).HasConstraintName("FK_HostingPlans_Users");
 #else
-		// TODO EF cascade delete?
-		HasRequired(d => d.Package).WithMany(p => p.HostingPlans).WillCascadeOnDelete();
-		HasRequired(d => d.Server).WithMany(p => p.HostingPlans);
-		HasRequired(d => d.User).WithMany(p => p.HostingPlans);
+		HasMany(d => d.Packages).WithOptional(p => p.HostingPlan).WillCascadeOnDelete();
+		HasOptional(d => d.Server).WithMany(p => p.HostingPlans);
+		HasOptional(d => d.User).WithMany(p => p.HostingPlans);
 #endif
 	}
 #endif

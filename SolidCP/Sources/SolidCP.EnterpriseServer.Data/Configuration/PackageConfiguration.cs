@@ -36,7 +36,7 @@ public partial class PackageConfiguration: EntityTypeConfiguration<Package>
 
         HasOne(d => d.ParentPackage).WithMany(p => p.ChildPackages).HasConstraintName("FK_Packages_Packages");
 
-        HasOne(d => d.Plan).WithMany(p => p.Packages).HasConstraintName("FK_Packages_HostingPlans");
+        HasOne(d => d.HostingPlan).WithMany(p => p.Packages).HasConstraintName("FK_Packages_HostingPlans");
 
         HasOne(d => d.Server).WithMany(p => p.Packages).HasConstraintName("FK_Packages_Servers");
 
@@ -60,7 +60,7 @@ public partial class PackageConfiguration: EntityTypeConfiguration<Package>
                 }); */
 #else
 		HasOptional(p => p.ParentPackage).WithMany(p => p.ChildPackages);
-        HasRequired(p => p.Plan).WithMany(p => p.Packages);
+        HasRequired(p => p.HostingPlan).WithMany(p => p.Packages);
         HasRequired(p => p.Server).WithMany(p => p.Packages);
         HasRequired(p => p.User).WithMany(p => p.Packages);
 

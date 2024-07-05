@@ -14790,7 +14790,7 @@ RETURN
 				var plans = HostingPlans
 					.Where(pl => pl.UserId == userId && pl.IsAddon == false)
 					.OrderBy(pl => pl.PlanName)
-					.Select(pl => new
+					.SelectMany(pl => pl.Packages.DefaultIfEmpty(), (pl, p) => new
 					{
 						pl.PlanId,
 						pl.UserId,
@@ -14810,7 +14810,7 @@ RETURN
 						ServerComments = pl.Server != null ? pl.Server.Comments : "",
 						VirtualServer = pl.Server != null ? pl.Server.VirtualServer : true,
 						// package
-						PackageName = pl.Package != null ? pl.Package.PackageName : "None"
+						PackageName = p != null ? p.PackageName : "None"
 
 					});
 				return EntityDataSet(plans);
@@ -16548,7 +16548,7 @@ RETURN
 						ServerComments = p.Server != null ? p.Server.Comments : "",
 						VirtualServer = p.Server != null ? p.Server.VirtualServer : true,
 						// hosting plan
-						p.Plan.PlanName,
+						p.HostingPlan.PlanName,
 						// user
 						p.UserId,
 						p.User.Username,
@@ -16650,48 +16650,30 @@ RETURN
 
 				var packages = Packages
 					.Where(p => p.UserId == userId)
-					.Join(Users, p => p.UserId, u => u.UserId, (p, u) => new
-					{
-						Package = p,
-						User = u
-					})
-					.GroupJoin(Servers, p => p.Package.ServerId, s => s.ServerId, (p, s) => new
-					{
-						p.Package,
-						p.User,
-						Server = s.SingleOrDefault()
-					})
-					.GroupJoin(HostingPlans, p => p.Package.PlanId, hp => hp.PlanId, (p, hp) => new
-					{
-						p.Package,
-						p.User,
-						p.Server,
-						HostingPlan = hp.SingleOrDefault()
-					})
 					.Select(p => new
 					{
-						p.Package.PackageId,
-						p.Package.ParentPackageId,
-						p.Package.PackageName,
-						p.Package.StatusId,
-						p.Package.PurchaseDate,
-						p.Package.StatusIdChangeDate,
+						p.PackageId,
+						p.ParentPackageId,
+						p.PackageName,
+						p.StatusId,
+						p.PurchaseDate,
+						p.StatusIdChangeDate,
 						// server
-						ServerId = p.Package.ServerId != null ? p.Package.ServerId : 0,
+						ServerId = p.ServerId != null ? p.ServerId : 0,
 						ServerName = p.Server != null ? p.Server.ServerName : "None",
 						ServerComments = p.Server != null ? p.Server.Comments : "",
 						VirtualServer = p.Server != null ? p.Server.VirtualServer : true,
 						// hosting plan
-						p.Package.PlanId,
+						p.PlanId,
 						p.HostingPlan.PlanName,
 						// user
-						p.Package.UserId,
+						p.UserId,
 						p.User.Username,
 						p.User.FirstName,
 						p.User.LastName,
 						p.User.RoleId,
 						p.User.Email,
-						p.Package.DefaultTopPackage
+						p.DefaultTopPackage
 					});
 				return EntityDataSet(packages);
 			}
@@ -17137,7 +17119,7 @@ RETURN
 							p.Server.VirtualServer,
 							// hosting plan
 							p.PlanId,
-							p.Plan.PlanName,
+							p.HostingPlan.PlanName,
 							// user
 							p.UserId,
 							p.User.Username,
@@ -17330,7 +17312,7 @@ RETURN
 						p.Server.VirtualServer,
 						// hosting plan
 						p.PlanId,
-						p.Plan.PlanName,
+						p.HostingPlan.PlanName,
 						// user
 						p.UserId,
 						p.User.Username,
@@ -18682,20 +18664,27 @@ RETURN
 					.Where(r => r.GroupName != "Service Levels" && GetPackageAllocatedResource(packageId, r.GroupId, 0) ||
 						r.GroupName == "Service Levels" && GetPackageServiceLevelResource(packageId, r.GroupId, 0))
 					.OrderBy(r => r.GroupOrder)
-					.GroupJoin(HostingPlanResources.Where(r => r.PlanId == package.PlanId), r => r.GroupId, hr => hr.GroupId, (r, hr) => new
+					.GroupJoin(HostingPlanResources.Where(r => r.PlanId == package.PlanId),
+						r => r.GroupId, hr => hr.GroupId, (r, hr) => new
 					{
 						Group = r,
-						HostingPlan = hr.SingleOrDefault()
+						Resources = hr
 					})
-					.Select(g => new
+					.SelectMany(g => g.Resources.DefaultIfEmpty(), (g, hr) => new
 					{
 						g.Group.GroupId,
 						g.Group.GroupName,
-						CalculateDiskSpace = g.HostingPlan != null ? g.HostingPlan.CalculateDiskSpace : false,
-						CalculateBandwidth = g.HostingPlan != null ? g.HostingPlan.CalculateBandwidth : false,
-						ParentEnabled = g.Group.GroupName == "Service Levels" ?
-							GetPackageServiceLevelResource(package.ParentPackageId, g.Group.GroupId, 0) :
-							GetPackageAllocatedResource(package.ParentPackageId, g.Group.GroupId, 0)
+						CalculateDiskSpace = hr != null ? hr.CalculateDiskSpace : false,
+						CalculateBandwidth = hr != null ? hr.CalculateBandwidth : false,
+					})
+					.AsEnumerable()
+					.Select(g => new
+					{
+						g.GroupId,
+						g.GroupName,
+						ParentEnabled = g.GroupName == "Service Levels" ?
+							Local.GetPackageServiceLevelResource(package.ParentPackageId, g.GroupId, 0) :
+							Local.GetPackageAllocatedResource(package.ParentPackageId, g.GroupId, 0)
 					});
 				// return quotas
 				var nofOrgs = GetPackageAllocatedQuota(packageId, 205); // 205 - HostedSolution.Organizations
@@ -18812,20 +18801,25 @@ RETURN
 					.GroupJoin(HostingPlanResources.Where(r => r.PlanId == package.PlanId), r => r.GroupId, hr => hr.GroupId, (r, hr) => new
 					{
 						Group = r,
-						HostingPlan = hr.SingleOrDefault()
+						Resources = hr
+						//HostingPlan = hr.SingleOrDefault()
 					})
-					.Select(g => new
+					.SelectMany(g => g.Resources.DefaultIfEmpty(), (g, hr) => new
 					{
 						g.Group.GroupId,
 						g.Group.GroupName,
-						CalculateDiskSpace = g.HostingPlan != null ? g.HostingPlan.CalculateDiskSpace : false,
-						CalculateBandwidth = g.HostingPlan != null ? g.HostingPlan.CalculateBandwidth : false,
-						Enabled = g.Group.GroupName == "Service Levels" ?
-							GetPackageServiceLevelResource(packageId, g.Group.GroupId, package.ServerId) :
-							GetPackageAllocatedResource(packageId, g.Group.GroupId, package.ServerId),
-						ParentEnabled = g.Group.GroupName == "Service Levels" ?
-							GetPackageServiceLevelResource(package.ParentPackageId, g.Group.GroupId, package.ServerId) :
-							GetPackageAllocatedResource(package.ParentPackageId, g.Group.GroupId, package.ServerId)
+						CalculateDiskSpace = hr != null ? hr.CalculateDiskSpace : false,
+						CalculateBandwidth = hr != null ? hr.CalculateBandwidth : false,
+					})
+					.AsEnumerable()
+					.Select(g => new
+					{
+						Enabled = g.GroupName == "Service Levels" ?
+							Local.GetPackageServiceLevelResource(packageId, g.GroupId, package.ServerId) :
+							Local.GetPackageAllocatedResource(packageId, g.GroupId, package.ServerId),
+						ParentEnabled = g.GroupName == "Service Levels" ?
+							Local.GetPackageServiceLevelResource(package.ParentPackageId, g.GroupId, package.ServerId) :
+							Local.GetPackageAllocatedResource(package.ParentPackageId, g.GroupId, package.ServerId)
 					});
 				// return quotas
 				var nofOrgs = GetPackageAllocatedQuota(packageId, 205); // 205 - HostedSolution.Organizations
@@ -26341,9 +26335,10 @@ RETURN
 					.GroupJoin(ExchangeMailboxPlans, a => a.ArchivingMailboxPlanId, p => p.MailboxPlanId, (a, p) => new
 					{
 						Account = a,
-						ArchivingMailboxPlan = p.Any() ? (int?)p.Single().MailboxPlanId : null
+						ArchivingMailboxPlans = p
+						//ArchivingMailboxPlan = p.Any() ? (int?)p.Single().MailboxPlanId : null
 					})
-					.Select(a => new
+					.SelectMany(a => a.ArchivingMailboxPlans.DefaultIfEmpty(), (a, p) => new
 					{
 						a.Account.AccountId,
 						a.Account.ItemId,
@@ -26359,7 +26354,7 @@ RETURN
 						a.Account.SubscriberNumber,
 						a.Account.UserPrincipalName,
 						a.Account.ArchivingMailboxPlanId,
-						a.ArchivingMailboxPlan,
+						ArchivingMailboxPlan = p != null ? (int?)p.MailboxPlanId : null,
 						a.Account.EnableArchiving
 					});
 
@@ -28132,7 +28127,14 @@ RETURN
 						t.PlanTagId,
 						t.TagId,
 						t.MailboxPlanId,
-						MailboxPlan = p.Any() ? p.Single().MailboxPlan : null
+						MailboxPlans = p
+					})
+					.SelectMany(t => t.MailboxPlans.DefaultIfEmpty(), (t, p) => new
+					{
+						t.PlanTagId,
+						t.TagId,
+						t.MailboxPlanId,
+						MailboxPlan = p != null ? p.MailboxPlan : null
 					})
 					.GroupJoin(ExchangeRetentionPolicyTags, d => d.TagId, t => t.TagId, (d, t) => new
 					{
@@ -28140,7 +28142,15 @@ RETURN
 						d.TagId,
 						d.MailboxPlanId,
 						d.MailboxPlan,
-						TagName = t.Any() ? t.Single().TagName : null
+						Tags = t
+					})
+					.SelectMany(d => d.Tags.DefaultIfEmpty(), (d, t) => new
+					{
+						d.PlanTagId,
+						d.TagId,
+						d.MailboxPlanId,
+						d.MailboxPlan,
+						TagName = t != null ? t.TagName : null
 					});
 				return EntityDataReader(tags);
 			}
@@ -30226,24 +30236,35 @@ RETURN
 					var items = packages
 						.Join(ServiceItems.Where(si => si.ItemTypeId == 33 /* VPS */),
 							p => p.PackageId, i => i.PackageId, (p, i) => new { Package = p, Item = i })
-						.Join(Users, p => p.Package.UserId, u => u.UserId, (p, u) => new { p.Package, p.Item, u.Username })
 						.GroupJoin(PrivateIpAddresses.Where(ip => ip.IsPrimary), p => p.Item.ItemId, pip => pip.ItemId, (p, pip) => new
 						{
 							p.Package,
 							p.Item,
-							p.Username,
-							IpAddress = pip.Any() ? pip.Single().IpAddress : null
+							IpAddresses = pip
+							//pip.Any() ? pip.Single().IpAddress : null
+						})
+						.SelectMany(p => p.IpAddresses.DefaultIfEmpty(), (p, pip) => new
+						{
+							p.Package,
+							p.Item,
+							pip.IpAddress
 						})
 						.GroupJoin(externalIpAddresses, p => p.Item.ItemId, eip => eip.ItemId, (p, eip) => new
 						{
+							p.Package,
+							p.Item,
+							p.IpAddress,
+							ExternalIps = eip
+						})
+						.SelectMany(p => p.ExternalIps.DefaultIfEmpty(), (p, eip) => new {
 							p.Item.ItemId,
 							p.Item.ItemName,
 							p.Item.PackageId,
 							p.Package.PackageName,
 							p.Package.UserId,
-							p.Username,
-							ExternalIp = eip.Any() ? eip.Single().ExternalIp : null,
-							p.IpAddress
+							p.Package.User.Username,
+							p.IpAddress,
+							ExternalIp = eip != null ? eip.ExternalIp : null
 						});
 
 					if (!string.IsNullOrEmpty(filterValue))
@@ -30431,23 +30452,34 @@ RETURN
 					var items = packages
 						.Join(ServiceItems.Where(si => si.ItemTypeId == 41 /* VPS2012 */),
 							p => p.PackageId, i => i.PackageId, (p, i) => new { Package = p, Item = i })
-						.Join(Users, p => p.Package.UserId, u => u.UserId, (p, u) => new { p.Package, p.Item, u.Username })
 						.GroupJoin(PrivateIpAddresses.Where(ip => ip.IsPrimary), p => p.Item.ItemId, pip => pip.ItemId, (p, pip) => new
 						{
 							p.Package,
 							p.Item,
-							p.Username,
-							IpAddress = pip.Any() ? pip.Single().IpAddress : null
+							IpAddresses = pip
+						})
+						.SelectMany(p => p.IpAddresses.DefaultIfEmpty(), (p, pip) => new
+						{
+							p.Package,
+							p.Item,
+							IpAddress = pip.IpAddress
 						})
 						.GroupJoin(externalIpAddresses, p => p.Item.ItemId, eip => eip.ItemId, (p, eip) => new
+						{
+							p.Package,
+							p.Item,
+							p.IpAddress,
+							ExternalIps = eip
+						})
+						.SelectMany(p => p.ExternalIps.DefaultIfEmpty(), (p, eip) => new
 						{
 							p.Item.ItemId,
 							p.Item.ItemName,
 							p.Item.PackageId,
 							p.Package.PackageName,
 							p.Package.UserId,
-							p.Username,
-							ExternalIp = eip.Any() ? eip.Single().ExternalIp : null,
+							p.Package.User.Username,
+							ExternalIp = eip != null ? eip.ExternalIp : null,
 							p.IpAddress
 						});
 
@@ -30637,23 +30669,34 @@ RETURN
 					var items = packages
 						.Join(ServiceItems.Where(si => si.ItemTypeId == 143 /* Proxmox */),
 							p => p.PackageId, i => i.PackageId, (p, i) => new { Package = p, Item = i })
-						.Join(Users, p => p.Package.UserId, u => u.UserId, (p, u) => new { p.Package, p.Item, u.Username })
 						.GroupJoin(PrivateIpAddresses.Where(ip => ip.IsPrimary), p => p.Item.ItemId, pip => pip.ItemId, (p, pip) => new
 						{
 							p.Package,
 							p.Item,
-							p.Username,
-							IpAddress = pip.Any() ? pip.Single().IpAddress : null
+							IpAdresses = pip
+						})
+						.SelectMany(p => p.IpAdresses.DefaultIfEmpty(), (p, pip) => new
+						{
+							p.Package,
+							p.Item,
+							IpAddress = pip != null ? pip.IpAddress : null
 						})
 						.GroupJoin(externalIpAddresses, p => p.Item.ItemId, eip => eip.ItemId, (p, eip) => new
+						{
+							p.Package,
+							p.Item,
+							p.IpAddress,
+							ExternalIps = eip
+						})
+						.SelectMany(p => p.ExternalIps.DefaultIfEmpty(), (p, eip) => new
 						{
 							p.Item.ItemId,
 							p.Item.ItemName,
 							p.Item.PackageId,
 							p.Package.PackageName,
 							p.Package.UserId,
-							p.Username,
-							ExternalIp = eip.Any() ? eip.Single().ExternalIp : null,
+							p.Package.User.Username,
+							ExternalIp = eip != null ? eip.ExternalIp : null,
 							p.IpAddress
 						});
 
@@ -30848,23 +30891,35 @@ RETURN
 					var items = packages
 						.Join(ServiceItems.Where(si => si.ItemTypeId == 35 /* VPS for PC */),
 							p => p.PackageId, i => i.PackageId, (p, i) => new { Package = p, Item = i })
-						.Join(Users, p => p.Package.UserId, u => u.UserId, (p, u) => new { p.Package, p.Item, u.Username })
 						.GroupJoin(PrivateIpAddresses.Where(ip => ip.IsPrimary), p => p.Item.ItemId, pip => pip.ItemId, (p, pip) => new
 						{
 							p.Package,
 							p.Item,
-							p.Username,
-							IpAddress = pip.Any() ? pip.Single().IpAddress : null
+							IpAddresses = pip
+							//IpAddress = pip.Any() ? pip.Single().IpAddress : null
+						})
+						.SelectMany(p => p.IpAddresses.DefaultIfEmpty(), (p, pip) => new 
+						{
+							p.Package,
+							p.Item,
+							IpAddress = pip != null ? pip.IpAddress : null
 						})
 						.GroupJoin(externalIpAddresses, p => p.Item.ItemId, eip => eip.ItemId, (p, eip) => new
+						{
+							p.Package,
+							p.Item,
+							p.IpAddress,
+							ExternalIps = eip
+						})
+						.SelectMany(p => p.ExternalIps.DefaultIfEmpty(), (p, eip) => new
 						{
 							p.Item.ItemId,
 							p.Item.ItemName,
 							p.Item.PackageId,
 							p.Package.PackageName,
 							p.Package.UserId,
-							p.Username,
-							ExternalIp = eip.Any() ? eip.Single().ExternalIp : null,
+							p.Package.User.Username,
+							ExternalIp = eip != null ? eip.ExternalIp : null,
 							p.IpAddress
 						});
 
@@ -36209,8 +36264,17 @@ VALUES (@QuotaID, @GroupID, @QuotaOrder, @QuotaName, @QuotaDescription, 1, 0)",
 			if (UseEntityFramework)
 			{
 				var quotas = HostingPlanQuotas
-					.Where(q => q.Plan.Package.PackageId == packageId && q.Quota.GroupId == groupId && q.QuotaValue == 1)
-					.Select(q => new { q.QuotaId, q.Quota.QuotaName, q.Quota.QuotaDescription });
+					.SelectMany(q => q.Plan.Packages.DefaultIfEmpty(), (q, p) => new
+					{
+						q.QuotaId,
+						q.Quota.QuotaName,
+						q.Quota.QuotaDescription,
+						q.Quota.GroupId,
+						q.QuotaValue,
+						p.PackageId
+					})
+					.Where(q => q.PackageId == packageId && q.GroupId == groupId && q.QuotaValue == 1)
+					.Select(q => new { q.QuotaId, q.QuotaName, q.QuotaDescription });
 				return EntityDataReader(quotas);
 			}
 			else
