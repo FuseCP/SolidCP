@@ -231,5 +231,30 @@ namespace SolidCP.EnterpriseServer
 		}
 
 		public Data.DbType GetDatabaseType() => Database.DbType;
+
+		public bool GetUseEntityFramework()
+		{
+			return Database.UseEntityFramework;
+		}
+
+		public int SetUseEntityFramework(bool useEntityFramework)
+		{
+			if (Database.IsMsSql)
+			{
+				SystemSettings settings = new SystemSettings();
+
+				// authentication settings
+				settings = new SystemSettings();
+				settings[SystemSettings.ALWAYS_USE_ENTITYFRAMEWORK] = useEntityFramework ? "True" : "False";
+
+				int result = SetSystemSettings(SystemSettings.DEBUG_SETTINGS, settings);
+
+				Database.AlwaysUseEntityFramework = useEntityFramework;
+
+				return result;
+			}
+
+			return 0;
+		}
 	}
 }

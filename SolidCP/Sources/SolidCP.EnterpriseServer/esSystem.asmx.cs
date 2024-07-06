@@ -98,5 +98,12 @@ namespace SolidCP.EnterpriseServer
 
 		[WebMethod]
 		public Data.DbType GetDatabaseType() => SystemController.GetDatabaseType();
+
+		[WebMethod]
+		public bool GetUseEntityFramework() => SystemController.GetUseEntityFramework();
+
+		[WebMethod]
+		public int SetUseEntityFramework(bool useEntityFramework) => SystemController.SetUseEntityFramework(useEntityFramework);
+
 	}
 }

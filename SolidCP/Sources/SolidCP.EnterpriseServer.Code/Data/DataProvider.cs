@@ -92,10 +92,11 @@ namespace SolidCP.EnterpriseServer
 					var system = new SystemController(new ControllerBase(this));
 					var settings = system.GetSystemSettings(EnterpriseServer.SystemSettings.DEBUG_SETTINGS);
 					alwaysUseEntityFramework = settings
-						.GetValueOrDefault(EnterpriseServer.SystemSettings.ALWAYS_USE_ENTITYFRAMEWORK, true);
+						.GetValueOrDefault(EnterpriseServer.SystemSettings.ALWAYS_USE_ENTITYFRAMEWORK, false);
 				}
 				return alwaysUseEntityFramework ?? false;
 			}
+			set { alwaysUseEntityFramework = value; }
 		}
 		public bool UseEntityFramework
 		{

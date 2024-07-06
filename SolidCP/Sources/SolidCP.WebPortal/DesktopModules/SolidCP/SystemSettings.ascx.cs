@@ -517,6 +517,7 @@ namespace SolidCP.Portal
             {
                 try
                 {
+                    /*
                     SCP.SystemSettings settings = new SCP.SystemSettings();
 
                     // authentication settings
@@ -524,8 +525,9 @@ namespace SolidCP.Portal
                     settings[SCP.SystemSettings.ALWAYS_USE_ENTITYFRAMEWORK] = chkAlwaysUseEntityFramework.Checked ? "True" : "False";
 
                     int result = ES.Services.System.SetSystemSettings(SCP.SystemSettings.DEBUG_SETTINGS, settings);
-
-                    if (result < 0)
+                    */
+                    int result = ES.Services.System.SetUseEntityFramework(chkAlwaysUseEntityFramework.Checked);
+					if (result < 0)
                     {
                         ShowResultMessage(result);
                         return;
