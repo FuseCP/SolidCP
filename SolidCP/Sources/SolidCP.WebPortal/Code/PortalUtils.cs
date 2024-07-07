@@ -345,6 +345,7 @@ namespace SolidCP.Portal
 				authCookie.Expires = ticket.Expiration;
 
 			HttpContext.Current.Response.Cookies.Add(authCookie);
+			HttpContext.Current.Items[FormsAuthentication.FormsCookieName] = ticket;
 		}
 
 		public static string ApplicationPath

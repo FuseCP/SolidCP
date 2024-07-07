@@ -147,6 +147,7 @@ namespace SolidCP.EnterpriseServer
 			if (schemaTable == null)
 			{
 				schemaTable = new DataTable();
+				schemaTable.CaseSensitive = false;
 				schemaTable.Columns.Add("ColumnName", typeof(string));
 				schemaTable.Columns.Add("ColumnOrdinal", typeof(int));
 				schemaTable.Columns.Add("ColumnSize", typeof(int));

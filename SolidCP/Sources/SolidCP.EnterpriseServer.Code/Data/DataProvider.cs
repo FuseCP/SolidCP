@@ -1012,7 +1012,7 @@ END
 				//	CheckUserParent(actorId, c.UserId));
 				.Where(c => c.ItemId == itemId && c.ItemTypeId == itemTypeId)
 				.AsEnumerable()
-				.Where(c => CheckUserParent(actorId, c.UserId));
+				.Where(c => Local.CheckUserParent(actorId, c.UserId));
 
 			var sb = new StringBuilder();
 			foreach (var comment in comments)
@@ -1144,7 +1144,7 @@ RETURN
 					{
 						if (!string.IsNullOrEmpty(filterColumn))
 						{
-							users = users.Where($"{filterColumn} == @1", filterValue);
+							users = users.Where(DynamicFunctions.ColumnLike(users, filterColumn, filterValue));
 						}
 						else
 						{
@@ -2813,7 +2813,7 @@ RETURN
 
 					if (!string.IsNullOrEmpty(filterColumn) && !string.IsNullOrEmpty(filterValue))
 					{
-						users = users.Where($"{filterColumn} == @0", filterValue);
+						users = users.Where(DynamicFunctions.ColumnLike(users, filterColumn, filterValue));
 					}
 
 					var count = users.Count();
@@ -3829,7 +3829,7 @@ AS
 						MfaMode = u.MfaMode,
 						PinSecret = CanGetUserPassword(actorId, u.UserId) ? u.PinSecret : ""
 					})
-					.Where(u => CanGetUserDetails(actorId, u.UserId));
+					.Where(u => Local.CanGetUserDetails(actorId, u.UserId));
 
 				return EntityDataReader(user);
 			}
@@ -4846,7 +4846,7 @@ AS
 				});
 				while (nextGeneration.Any())
 				{
-					generation = generation.Union(nextGeneration);
+					generation = generation.Concat(nextGeneration);
 				}
 
 				return generation.Join(Users, g => g.OwnerId, u => u.UserId, (gen, usr) => gen)
@@ -6874,7 +6874,7 @@ END
 				{
 					if (!string.IsNullOrEmpty(filterColumn))
 					{
-						vlans = vlans.Where($"{filterColumn} == @0", filterValue);
+						vlans = vlans.Where(DynamicFunctions.ColumnLike(vlans, filterColumn, filterValue));
 					}
 					else
 					{
@@ -8902,7 +8902,7 @@ RETURN
 				while (pid != null)
 				{
 					records = records
-						.Union(GlobalDnsRecords
+						.Concat(GlobalDnsRecords
 							.Where(r => r.PackageId == pid));
 					pid = Packages
 						.Where(p => p.PackageId == pid)
@@ -8917,39 +8917,36 @@ RETURN
 					.FirstOrDefault();
 
 				records = records
-					.Union(GlobalDnsRecords
+					.Concat(GlobalDnsRecords
 						.Where(r => r.ServerId == serverId));
 
 				// select SERVER DNS records
 				records = records
-					.Union(GlobalDnsRecords
+					.Concat(GlobalDnsRecords
 						.Where(r => r.ServerId == serverId)
-						.SelectMany(r => r.Server.Services, (r, s) => new
+						.Join(Services, r => r.ServerId, s => s.ServerId, (r, s) => new
 						{
 							Record = r,
 							Service = s
 						})
-						.SelectMany(r => r.Service.VirtualServices, (r, vs) => new
+						.Join(VirtualServices, r => r.Service.ServiceId, vs => vs.ServiceId, (r, vs) => new
 						{
 							r.Record,
 							vs.ServerId
 						})
 						.Where(r => r.ServerId == serverId)
-						.Select(r => r.Record)
-						.Distinct());
+						.Select(r => r.Record));
 
 				// select SERVICES DNS records
 
 				// re-distribute package services
 				DistributePackageServices(actorId, packageId);
 
-				/* TODO uncomment this?
-				records = records
-					.Union(GlobalDnsRecords
-						.Where(r => Packages
-							.Include(p => p.Services)
-							.Any(p => p.PackageId == packageId && p.Services.Any(s => s.ServiceId == r.ServiceId))));
-				*/
+				// TODO uncomment this?
+				/* records = records
+					.Concat(GlobalDnsRecords
+					.Join(PackageServices.Where(p => p.PackageId == packageId),
+						r => r.ServiceId, p => p.ServiceId, (r, p) => r)); */
 
 #if NETCOREAPP
 				records = records.DistinctBy(r => r.RecordType + r.RecordName);
@@ -12680,7 +12677,7 @@ RETURN
 
 				// select service items
 				var items = ServiceItems
-					.Where(s => s.ItemId == itemId && CheckActorPackageRights(actorId, s.PackageId))
+					.Where(s => s.ItemId == itemId)
 					.Join(Packages, i => i.PackageId, p => p.PackageId, (si, p) => new
 					{
 						Item = si,
@@ -12733,7 +12730,9 @@ RETURN
 						i.User.Username,
 						UserFullName = i.User.FirstName + " " + i.User.LastName,
 						i.Item.CreatedDate
-					});
+					})
+					.AsEnumerable()
+					.Where(s => Local.CheckActorPackageRights(actorId, s.PackageId));
 
 				// select item properties, get corresponding item properties
 				var properties = ServiceItemProperties
@@ -14791,25 +14790,31 @@ RETURN
 				var plans = HostingPlans
 					.Where(pl => pl.UserId == userId && pl.IsAddon == false)
 					.OrderBy(pl => pl.PlanName)
+					// we have to do a GroupJoin here since hp.Packages is not related to hp.PackageId
+					.GroupJoin(Packages, hp => hp.PackageId, p => p.PackageId, (hp, ps) => new
+					{
+						Plan = hp,
+						Packages = ps
+					})
 					.SelectMany(pl => pl.Packages.DefaultIfEmpty(), (pl, p) => new
 					{
-						pl.PlanId,
-						pl.UserId,
-						pl.PackageId,
-						pl.PlanName,
-						pl.PlanDescription,
-						pl.Available,
-						pl.SetupPrice,
-						pl.RecurringPrice,
-						pl.RecurrenceLength,
-						pl.RecurrenceUnit,
-						pl.IsAddon,
-						PackagesNumber = Packages.Count(pa => pa.PlanId == pl.PlanId),
+						pl.Plan.PlanId,
+						pl.Plan.UserId,
+						pl.Plan.PackageId,
+						pl.Plan.PlanName,
+						pl.Plan.PlanDescription,
+						pl.Plan.Available,
+						pl.Plan.SetupPrice,
+						pl.Plan.RecurringPrice,
+						pl.Plan.RecurrenceLength,
+						pl.Plan.RecurrenceUnit,
+						pl.Plan.IsAddon,
+						PackagesNumber = pl.Plan.Packages.Count(),
 						// server
-						ServerId = pl.ServerId != null ? pl.ServerId : 0,
-						ServerName = pl.Server != null ? pl.Server.ServerName : "None",
-						ServerComments = pl.Server != null ? pl.Server.Comments : "",
-						VirtualServer = pl.Server != null ? pl.Server.VirtualServer : true,
+						ServerId = pl.Plan.ServerId != null ? pl.Plan.ServerId : 0,
+						ServerName = pl.Plan.Server != null ? pl.Plan.Server.ServerName : "None",
+						ServerComments = pl.Plan.Server != null ? pl.Plan.Server.Comments : "",
+						VirtualServer = pl.Plan.Server != null ? pl.Plan.Server.VirtualServer : true,
 						// package
 						PackageName = p != null ? p.PackageName : "None"
 
@@ -14885,7 +14890,7 @@ RETURN
 						pl.RecurrenceLength,
 						pl.RecurrenceUnit,
 						pl.IsAddon,
-						PackagesNumber = Packages.Where(pa => pa.PlanId == pl.PlanId).Count(),
+						PackagesNumber = pl.Packages.Count(),
 					});
 				return EntityDataSet(plans);
 			}
@@ -16721,9 +16726,9 @@ RETURN
 				if (!CheckActorPackageRights(actorId, packageId))
 					throw new AccessViolationException("You are not allowed to access this package");
 
-				var nofPackages = Packages
+				var nofPackages = new[] { new { PackagesNumber = Packages
 					.Where(p => p.ParentPackageId == packageId)
-					.Count();
+					.Count() } };
 
 				// by status spaces
 				var spaces = Packages
@@ -17995,7 +18000,7 @@ AS
 						.Count();
 					break;
 				case 305: // RAM of VPS
-					result = ServiceItemProperties
+					var ps = ServiceItemProperties
 						.Join(ServiceItems, p => p.ItemId, s => s.ItemId, (p, s) => new
 						{
 							Property = p,
@@ -18007,13 +18012,17 @@ AS
 							t.ParentPackageId,
 							p.Property.PropertyValue
 						})
-						.Where(p => p.PropertyName == "RamSize" && p.ParentPackageId == packageId)
-						.Sum(p => (int?)int.Parse(p.PropertyValue)) ?? 0;
+						.Where(p => p.PropertyName == "RamSize" && p.ParentPackageId == packageId);
+					if (IsCore) result = ps.Sum(p => (int?)Convert.ToInt32(p.PropertyValue)) ?? 0;
+					else result = ps
+							.Select(p => p.PropertyValue)
+							.Cast<int?>()
+							.Sum() ?? 0;
 					break;
 				case 302: // CpuNumber of VPS
 				case 555: // CpuNumber of VPS2012
 				case 347: // CpuNumber of VPSforPc 
-					result = ServiceItemProperties
+					ps = ServiceItemProperties
 					.Join(ServiceItems, p => p.ItemId, s => s.ItemId, (p, s) => new
 					{
 						Property = p,
@@ -18025,8 +18034,12 @@ AS
 						t.ParentPackageId,
 						p.Property.PropertyValue
 					})
-					.Where(p => p.PropertyName == "CpuCores" && p.ParentPackageId == packageId)
-					.Sum(p => (int?)int.Parse(p.PropertyValue)) ?? 0;
+					.Where(p => p.PropertyName == "CpuCores" && p.ParentPackageId == packageId);
+					if (IsCore) result = ps.Sum(p => (int?)Convert.ToInt32(p.PropertyValue)) ?? 0;
+					else result = ps
+							.Select(p => p.PropertyValue)
+							.Cast<int?>()
+							.Sum() ?? 0;
 					break;
 				case 306: // HDD of VPS
 				case 559: // HDD of VPS2012
@@ -18066,7 +18079,8 @@ AS
 						.Count();
 					break;
 				case 558: // RAM of VPS2012
-					var fixedMem = ServiceItemProperties
+					int fixedMem, dynamicMem;
+					ps = ServiceItemProperties
 						.Join(ServiceItems, p => p.ItemId, s => s.ItemId, (p, s) => new
 						{
 							Property = p,
@@ -18078,9 +18092,14 @@ AS
 							t.ParentPackageId,
 							p.Property.PropertyValue
 						})
-						.Where(p => p.PropertyName == "RamSize" && p.ParentPackageId == packageId)
-						.Sum(p => (int?)int.Parse(p.PropertyValue)) ?? 0;
-					var dynamicMem = ServiceItemProperties
+						.Where(p => p.PropertyName == "RamSize" && p.ParentPackageId == packageId);
+					if (IsCore) fixedMem = ps.Sum(p => (int?)Convert.ToInt32(p.PropertyValue)) ?? 0;
+					else fixedMem = ps
+							.Select(p => p.PropertyValue)
+							.Cast<int?>()
+							.Sum() ?? 0;
+
+					ps = ServiceItemProperties
 						.Join(ServiceItems, p => p.ItemId, s => s.ItemId, (p, s) => new
 						{
 							Property = p,
@@ -18094,8 +18113,13 @@ AS
 							t.ParentPackageId,
 							p.Property.PropertyValue
 						})
-						.Where(p => p.PropertyName == "DynamicMemory.Maximum" && p.ParentPackageId == packageId)
-						.Sum(p => (int?)int.Parse(p.PropertyValue)) ?? 0;
+						.Where(p => p.PropertyName == "DynamicMemory.Maximum" && p.ParentPackageId == packageId);
+					if (IsCore) dynamicMem = ps.Sum(p => (int?)Convert.ToInt32(p.PropertyValue)) ?? 0;
+					else dynamicMem = ps
+							.Select(p => p.PropertyValue)
+							.Cast<int?>()
+							.Sum() ?? 0;
+
 					result = Math.Max(fixedMem, dynamicMem);
 					break;
 				case 728: // Private Network VLANs of VPS2012
@@ -18121,7 +18145,7 @@ AS
 						.Count();
 					break;
 				case 350: // RAM of VPSforPc
-					result = ServiceItemProperties
+					ps = ServiceItemProperties
 						.Join(ServiceItems, p => p.ItemId, s => s.ItemId, (p, s) => new
 						{
 							Property = p,
@@ -18133,8 +18157,12 @@ AS
 							t.ParentPackageId,
 							p.Property.PropertyValue
 						})
-						.Where(p => p.PropertyName == "Memory" && p.ParentPackageId == packageId)
-						.Sum(p => (int?)int.Parse(p.PropertyValue)) ?? 0;
+						.Where(p => p.PropertyName == "Memory" && p.ParentPackageId == packageId);
+					if (IsCore) result = ps.Sum(p => (int?)Convert.ToInt32(p.PropertyValue)) ?? 0;
+					else result = ps
+							.Select(p => p.PropertyValue)
+							.Cast<int?>()
+							.Sum() ?? 0;
 					break;
 				case 319: // BB Users
 					result = ExchangeAccounts
@@ -18515,8 +18543,6 @@ RETURN
 				
 				// get resource groups
 				var groups = ResourceGroups
-					.Where(r => r.GroupName != "Service Levels" && GetPackageAllocatedResource(packageId, r.GroupId, 0) ||
-						r.GroupName == "Service Levels" && GetPackageServiceLevelResource(packageId, r.GroupId, 0))
 					.OrderBy(r => r.GroupOrder)
 					.GroupJoin(HostingPlanResources,
 						r => new { r.GroupId, PlanId = packagePlanId },
@@ -18534,6 +18560,8 @@ RETURN
 						CalculateBandwidth = hr != null ? hr.CalculateBandwidth : false,
 					})
 					.AsEnumerable()
+					.Where(r => r.GroupName != "Service Levels" && Local.GetPackageAllocatedResource(packageId, r.GroupId, 0) ||
+						r.GroupName == "Service Levels" && Local.GetPackageServiceLevelResource(packageId, r.GroupId, 0))
 					.Select(g => new
 					{
 						g.GroupId,
@@ -18662,8 +18690,6 @@ RETURN
 					.FirstOrDefault();
 				// get resource groups
 				var groups = ResourceGroups
-					.Where(r => r.GroupName != "Service Levels" && GetPackageAllocatedResource(packageId, r.GroupId, 0) ||
-						r.GroupName == "Service Levels" && GetPackageServiceLevelResource(packageId, r.GroupId, 0))
 					.OrderBy(r => r.GroupOrder)
 					.GroupJoin(HostingPlanResources.Where(r => r.PlanId == package.PlanId),
 						r => r.GroupId, hr => hr.GroupId, (r, hr) => new
@@ -18679,6 +18705,8 @@ RETURN
 						CalculateBandwidth = hr != null ? hr.CalculateBandwidth : false,
 					})
 					.AsEnumerable()
+					.Where(r => r.GroupName != "Service Levels" && Local.GetPackageAllocatedResource(packageId, r.GroupId, 0) ||
+						r.GroupName == "Service Levels" && Local.GetPackageServiceLevelResource(packageId, r.GroupId, 0))
 					.Select(g => new
 					{
 						g.GroupId,
@@ -20274,21 +20302,26 @@ RETURN
 				var packageGroups = Packages
 					.Where(p => p.PackageId == packageId)
 					.SelectMany(p => p.Services)
-					.Select(s => s.Provider.GroupId);
+					.Select(s => s.Provider.GroupId)
+					.ToArray();
 				var groups = ResourceGroups
-					.Where(r => GetPackageAllocatedResource(packageId, r.GroupId, null) &&
-						!packageGroups.Any(group => r.GroupId == group))
+					.AsEnumerable()
+					.Where(r => Local.GetPackageAllocatedResource(packageId, r.GroupId, null) &&
+						!packageGroups.Contains(r.GroupId))
 					.Select(r => new { r.GroupId, PrimaryGroup = r.GroupId == package.Server.PrimaryGroupId });
 
 				if (!package.Server.VirtualServer)
 				{   // Physical Server
 					// just return the list of services based on the plan
-					var services = package.Services.ToHashSet();
-					foreach (var service in package.Services
-						.Where(s => s.ServerId == package.ServerId)
-						.Join(groups, s => s.Provider.GroupId, g => g.GroupId, (s, g) => s))
+					using (var groupIds = new TempIdSet(this, groups.Select(g => g.GroupId)))
 					{
-						if (!services.Contains(service)) package.Services.Add(service);
+						var services = package.Services.ToHashSet();
+						foreach (var service in package.Services
+							.Where(s => s.ServerId == package.ServerId)
+							.Join(groupIds, s => s.Provider.GroupId, g => g, (s, g) => s))
+						{
+							if (!services.Contains(service)) package.Services.Add(service);
+						}
 					}
 				} else
 				{   // Virtual Server
@@ -20315,7 +20348,7 @@ RETURN
 							{
 								package.Services.Add(virtualServices
 									.Select(v => v.Service)
-									.Single());
+									.First());
 							}
 							else
 							{
@@ -20360,6 +20393,8 @@ RETURN
 						if (group.PrimaryGroup) primaryGroupId = group.GroupId;
 					}
 				}
+
+				SaveChanges();
 			}
 			else
 			{
@@ -20924,7 +20959,21 @@ RETURN
 
 				TempIdSet childUsers = null;
 				try {
-					var logs = AuditLogs
+					IQueryable<Data.Entities.AuditLog> logs = AuditLogs;
+
+					if (packageId == 0)
+					{
+						childUsers = UserChildren(userId);
+						logs = logs
+							.Join(childUsers, l => l.UserId, u => u, (l, u) => l);
+						if (isAdmin) logs = logs.Concat(AuditLogs.Where(l => l.UserId == null));
+					}
+					else
+					{
+						logs = logs.Where(l => l.UserId == null && isAdmin || l.PackageId == packageId);
+					}
+
+					logs = logs
 						.Where(l => startDate <= l.StartDate && l.StartDate < endDate &&
 							(sourceName == "" || l.SourceName == sourceName) &&
 							(taskName == "" || l.TaskName == taskName) &&
@@ -20935,18 +20984,6 @@ RETURN
 							(itemName == "" || EF.Functions.Like(l.ItemName, itemName)) &&
 #endif
 							(severityId == -1 || severityId > -1 && l.SeverityId == severityId));
-
-					if (packageId == 0)
-					{
-						childUsers = UserChildren(userId);
-						logs = logs
-							.Join(childUsers, l => l.UserId, u => u, (l, u) => l);
-						if (isAdmin) logs = logs.Union(logs.Where(l => l.UserId == null));
-					}
-					else
-					{
-						logs = logs.Where(l => l.UserId == null && isAdmin || l.PackageId == packageId);
-					}
 
 					var count = logs.Count();
 
@@ -20992,7 +21029,7 @@ RETURN
 							EffectiveUserId = u != null ?
 								(u.IsPeer ? u.OwnerId : u.UserId) : null
 						});
-					return EntityDataSet(logsWithUser);
+					return EntityDataSet(count, logsWithUser);
 				} finally {
 					childUsers?.Dispose();
 				}
@@ -21032,7 +21069,7 @@ RETURN
 				*/
 				#endregion
 
-				var sources = AuditLogSources.Select(l => l.SourceName);
+				var sources = AuditLogSources.Select(l => new { l.SourceName });
 				return EntityDataSet(sources);
 			}
 			else
@@ -21220,7 +21257,7 @@ RETURN
 							(string.IsNullOrEmpty(itemName) || EF.Functions.Like(l.ItemName, itemName)));
 #endif
 					logs = logs.Where(l => l.UserId == null && isAdmin)
-						.Union(logs
+						.Concat(logs
 							.Join(childUsers, l => l.UserId, u => u, (l, u) => l));
 					logs.ExecuteDelete();
 				}
@@ -21436,7 +21473,7 @@ RETURN
 						p.Bandwidth,
 						p.GroupedPackageId,
 						//UsagePercentage = p.PG != null ? (p.PG.QuotaValue > 0 ? p.PG.Bandwidth * 100 / p.PG.QuotaValue : 0) : 0,
-						//PackagesNumber = Packages.Count(np => np.ParentPackageId == p.PackageId),
+						PackagesNumber = Packages.Count(np => np.ParentPackageId == p.PackageId),
 						p.PackageName,
 						p.StatusId,
 						p.UserId,
@@ -21474,7 +21511,8 @@ RETURN
 						p.Package.PackageName,
 						p.QuotaValue,
 						UsagePercentage = (int)(p.QuotaValue > 0 ? p.Package.Bandwidth * 100 / p.QuotaValue : 0),
-						PackagesNumber = Local.Packages.Count(np => np.ParentPackageId == p.Package.PackageId),
+						//PackagesNumber = Local.Packages.Count(np => np.ParentPackageId == p.Package.PackageId),
+						p.Package.PackagesNumber,
 						p.Package.StatusId,
 						p.Package.UserId,
 						p.Package.Username,
@@ -21685,7 +21723,7 @@ RETURN
 						//QuotaValue = p.PG != null ? p.PG.QuotaValue : 0,
 						p.Diskspace,
 						//UsagePercentage = p.PG != null ? (p.PG.QuotaValue > 0 ? p.PG.Diskspace * 100 / p.PG.QuotaValue : 0) : 0,
-						//PackagesNumber = Packages.Count(np => np.ParentPackageId == p.PackageId),
+						PackagesNumber = Packages.Count(np => np.ParentPackageId == p.PackageId),
 						p.PackageName,
 						p.StatusId,
 						p.UserId,
@@ -21721,7 +21759,8 @@ RETURN
 						p.QuotaValue,
 						p.Package.Diskspace,
 						UsagePercentage = (int)(p.QuotaValue > 0 ? p.Package.Diskspace * 100 / p.QuotaValue : 0),
-						PackagesNumber = Local.Packages.Count(np => np.ParentPackageId == p.Package.PackageId),
+						//PackagesNumber = Local.Packages.Count(np => np.ParentPackageId == p.Package.PackageId),
+						p.Package.PackagesNumber,
 						p.Package.PackageName,
 						p.Package.StatusId,
 						p.Package.UserId,
@@ -23523,6 +23562,8 @@ END
 						}
 					}
 
+					var count = schedules.Count();
+
 					if (!string.IsNullOrEmpty(sortColumn))
 					{
 						schedules = schedules.OrderBy(sortColumn);
@@ -23534,7 +23575,7 @@ END
 
 					schedules = schedules.Skip(startRow).Take(maximumRows);
 
-					return EntityDataSet(schedules);
+					return EntityDataSet(count, schedules);
 				}
 			}
 			else
@@ -23620,7 +23661,7 @@ RETURN
 				var schedule = Schedules
 					.Where(s => s.ScheduleId == scheduleId)
 					.AsEnumerable()
-					.Where(s => CheckActorPackageRights(actorId, s.PackageId))
+					.Where(s => Local.CheckActorPackageRights(actorId, s.PackageId))
 					.Take(1)
 					.Select(s => new
 					{
@@ -24609,7 +24650,7 @@ RETURN
 				var comments = Comments
 					.Where(c => c.ItemTypeId == itemTypeId && c.ItemId == itemId)
 					.AsEnumerable()
-					.Where(c => CheckUserParent(userId, c.UserId))
+					.Where(c => Local.CheckUserParent(userId, c.UserId))
 					.OrderBy(c => c.CreatedDate)
 					.Select(c => new
 					{
@@ -24856,7 +24897,7 @@ RETURN
 		public DataTable CountDataTable(int count)
 		{
 			var table = new DataTable();
-			table.Columns.Add(new DataColumn("Count", typeof(int)));
+			table.Columns.Add(new DataColumn("Column1", typeof(int)));
 			table.Rows.Add(count);
 			return table;
 		}
@@ -31844,7 +31885,7 @@ END
 					.OrderBy(a => a.Address.DefaultGateway)
 					.ThenBy(a => a.Address.ExternalIp)
 					.AsEnumerable()
-					.Where(a => CheckActorPackageRights(actorId, a.PackageId))
+					.Where(a => Local.CheckActorPackageRights(actorId, a.PackageId))
 					.Select(a => new
 					{
 						a.PackageAddressId,
@@ -31982,7 +32023,7 @@ RETURN
 					})
 					.OrderByDescending(a => a.IsPrimary)
 					.AsEnumerable()
-					.Where(a => CheckActorPackageRights(actorId, a.PackageId));
+					.Where(a => Local.CheckActorPackageRights(actorId, a.PackageId));
 				return EntityDataReader(addresses);
 			}
 			else
@@ -32024,7 +32065,7 @@ END
 				var address = PackageIpAddresses
 					.Where(a => a.PackageAddressId == packageAddressId)
 					.AsEnumerable()
-					.Where(a => CheckActorPackageRights(actorId, a.PackageId))
+					.Where(a => Local.CheckActorPackageRights(actorId, a.PackageId))
 					.FirstOrDefault();
 				if (address != null)
 				{
@@ -32229,7 +32270,7 @@ RETURN
 					.Where(a => a.ItemId == itemId)
 					.OrderByDescending(a => a.IsPrimary)
 					.AsEnumerable()
-					.Where(a => CheckActorPackageRights(actorId, a.Item.PackageId))
+					.Where(a => Local.CheckActorPackageRights(actorId, a.Item.PackageId))
 					.Select(a => new
 					{
 						AddressId = a.PrivateAddressId,
@@ -32387,7 +32428,7 @@ END
 						.Include(a => a.Item)
 						.Where(pa => pa.PrivateAddressId == privateAddressId)
 						.AsEnumerable()
-						.Where(pa => CheckActorPackageRights(actorId, pa.Item.PackageId)));
+						.Where(pa => Local.CheckActorPackageRights(actorId, pa.Item.PackageId)));
 				return SaveChanges();
 			}
 			else
@@ -32427,7 +32468,7 @@ END
 						.Include(a => a.Item)
 						.Where(pa => pa.ItemId == itemId)
 						.AsEnumerable()
-						.Where(pa => CheckActorPackageRights(actorId, pa.Item.PackageId)));
+						.Where(pa => Local.CheckActorPackageRights(actorId, pa.Item.PackageId)));
 				return SaveChanges();
 			}
 			else
@@ -33613,7 +33654,7 @@ RETURN
 						i.PackageId
 					})
 					.AsEnumerable()
-					.Where(c => CheckActorPackageRights(actorId, c.PackageId));
+					.Where(c => Local.CheckActorPackageRights(actorId, c.PackageId));
 				return EntityDataReader(cert);
 			}
 			else
@@ -40324,7 +40365,11 @@ RETURN
 
 				var count = servers.Count();
 
-				if (!string.IsNullOrEmpty(sortColumn)) servers = servers.OrderBy(sortColumn);
+				if (!string.IsNullOrEmpty(sortColumn))
+				{
+					if (sortColumn.StartsWith("S.")) sortColumn = sortColumn.Substring(2);
+					servers = servers.OrderBy(sortColumn);
+				}
 
 				servers = servers.Skip(startRow).Take(maximumRows);
 

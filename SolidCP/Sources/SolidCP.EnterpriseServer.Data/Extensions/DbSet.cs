@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if CustomDbSet
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,11 @@ using System.Linq.Expressions;
 using System.Collections;
 using System.Threading;
 using SolidCP.Providers.OS;
+#if NETFRAMEWORK
+using System.Data.Entity;
+#else
+using Microsoft.EntityFrameworkCore;
+#endif
 
 namespace SolidCP.EnterpriseServer.Data
 {
@@ -105,3 +111,4 @@ namespace SolidCP.EnterpriseServer.Data
         #endregion
     }
 }
+#endif

@@ -52,17 +52,23 @@ namespace SolidCP.WebPortal
 
 	public class ES
 	{
-		public FormsAuthenticationTicket AuthTicket = null;
-		public ES() {
-			try
+		public FormsAuthenticationTicket AuthTicket
+		{
+			get
 			{
-				if (HttpContext.Current != null)
+				try
 				{
-					AuthTicket = PortalUtils.AuthTicket;
+					if (HttpContext.Current != null)
+					{
+						return PortalUtils.AuthTicket;
+					}
 				}
+				catch { }
+
+				return null;
 			}
-			catch { }
 		}
+		public ES() { }
 
 		static ES services = null;
 		static object Lock = new object();
@@ -75,7 +81,7 @@ namespace SolidCP.WebPortal
 					if (services == null)
 					{
 						services = new ES();
-						services.AuthTicket = null;
+						//services.AuthTicket = null;
 					}
 				}
 				return services;
@@ -308,12 +314,31 @@ namespace SolidCP.WebPortal
 			where T: Web.Clients.ClientBase
 		{
 			Type t = typeof(T);
-			var proxy = cache.GetOrAdd(t, type => Activator.CreateInstance<T>());
+			string key = t.FullName + ".ServiceProxy";
+
+			T proxy = null;
+			bool useHttpContext = false;
+
+			try
+			{
+				if (HttpContext.Current != null)
+				{
+					proxy = (T)HttpContext.Current.Items[key];
+					useHttpContext = true;
+				}
+			}
+			catch { }
+
+			if (proxy == null)
+			{
+				proxy = (T)Activator.CreateInstance(t);
+				if (useHttpContext) HttpContext.Current.Items[key] = proxy;
+			}
 
 			// configure proxy
 			PortalUtils.ConfigureEnterpriseServerProxy(proxy, secureCalls, AuthTicket);
 
-			return (T)proxy;
+			return proxy;
 		}
 	}
 }

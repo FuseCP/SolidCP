@@ -64,6 +64,7 @@ namespace SolidCP.EnterpriseServer
 
         public EntityDataTable(IEnumerable<TEntity> set)
         {
+			CaseSensitive = false;
             Set = set.ToArray();
 			if (set is IDisposable disposable) disposable.Dispose();
             Type = typeof(TEntity);
@@ -103,6 +104,5 @@ namespace SolidCP.EnterpriseServer
         {
 
         }
-
 	}
 }

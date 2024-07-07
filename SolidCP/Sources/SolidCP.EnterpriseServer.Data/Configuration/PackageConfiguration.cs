@@ -60,8 +60,8 @@ public partial class PackageConfiguration: EntityTypeConfiguration<Package>
                 }); */
 #else
 		HasOptional(p => p.ParentPackage).WithMany(p => p.ChildPackages);
-        HasRequired(p => p.HostingPlan).WithMany(p => p.Packages);
-        HasRequired(p => p.Server).WithMany(p => p.Packages);
+        HasOptional(p => p.HostingPlan).WithMany(p => p.Packages);
+        HasOptional(p => p.Server).WithMany(p => p.Packages);
         HasRequired(p => p.User).WithMany(p => p.Packages);
 
         // TODO EF is this correct?

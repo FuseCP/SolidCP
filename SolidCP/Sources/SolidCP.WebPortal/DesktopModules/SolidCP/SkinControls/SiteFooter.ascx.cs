@@ -45,9 +45,22 @@ namespace SolidCP.Portal.SkinControls
 {
     public partial class SiteFooter : System.Web.UI.UserControl
     {
+
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!IsPostBack)
+            {
+                var show = DbHelper.ShowUseEntityFrameworkCheckbox;
+                EntityFrameworkPanel.Visible = show;
+                if (show) chkUseEntityFramework.Checked = DbHelper.UseEntityFramework;
+                else Copyright.CssClass = "col-md-9 Copyright";
 
+			}
         }
-    }
+
+		protected void chkUseEntityFramework_CheckedChanged(object sender, EventArgs e)
+		{
+            DbHelper.UseEntityFramework = chkUseEntityFramework.Checked;
+		}
+	}
 }

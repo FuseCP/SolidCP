@@ -211,20 +211,21 @@ namespace SolidCP.Portal
                 chkCanPeerChangeMFa.Checked = settings.GetValueOrDefault(SCP.SystemSettings.MFA_CAN_PEER_CHANGE_MFA, true);
             }
 
-            var isMsSql = ES.Services.System.GetDatabaseType() == EnterpriseServer.Data.DbType.MsSql;
+            var isMsSql = DbHelper.DbType == EnterpriseServer.Data.DbType.MsSql;
             chkAlwaysUseEntityFramework.Enabled = isMsSql;
             btnDebugSettings.Enabled = isMsSql;
 			if (!isMsSql) chkAlwaysUseEntityFramework.Checked = true;
             else
             {
                 // Debug settings
-                settings = ES.Services.System.GetSystemSettings(SCP.SystemSettings.DEBUG_SETTINGS);
+                /*settings = ES.Services.System.GetSystemSettings(SCP.SystemSettings.DEBUG_SETTINGS);
 
                 if (settings != null)
                 {
                     chkAlwaysUseEntityFramework.Checked = settings
                         .GetValueOrDefault(SCP.SystemSettings.ALWAYS_USE_ENTITYFRAMEWORK, false);
-                }
+                }*/
+                chkAlwaysUseEntityFramework.Checked = DbHelper.UseEntityFramework;
             }
 		}
 		private void SaveSMTP()
@@ -526,7 +527,7 @@ namespace SolidCP.Portal
 
                     int result = ES.Services.System.SetSystemSettings(SCP.SystemSettings.DEBUG_SETTINGS, settings);
                     */
-                    int result = ES.Services.System.SetUseEntityFramework(chkAlwaysUseEntityFramework.Checked);
+                    int result = DbHelper.SetUseEntityFramework(chkAlwaysUseEntityFramework.Checked);
 					if (result < 0)
                     {
                         ShowResultMessage(result);

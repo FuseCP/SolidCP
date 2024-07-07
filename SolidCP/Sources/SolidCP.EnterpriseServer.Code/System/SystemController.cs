@@ -241,6 +241,11 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (Database.IsMsSql)
 			{
+				// check account
+				int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsAdmin
+					| DemandAccount.IsActive);
+				if (accountCheck < 0) return accountCheck;
+
 				SystemSettings settings = new SystemSettings();
 
 				// authentication settings

@@ -12,6 +12,7 @@ using System.IO;
 #if NetFX
 using System.Data.Entity;
 #else
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 #endif
 
@@ -146,6 +147,7 @@ namespace SolidCP.EnterpriseServer.Data
 		}
 
         public IGenericDbContext BaseContext = null;
+
         public DbContext()
         {
             //SetDbConfiguration();
@@ -199,10 +201,15 @@ namespace SolidCP.EnterpriseServer.Data
 
 #if NETFRAMEWORK
 		public Database Database => BaseContext.Database;
+        public DbSet<TEntity> Set<TEntity>() where TEntity: class => BaseContext.Set<TEntity>();
+        public Context.DbContextBase Context => (Context.DbContextBase)BaseContext;
 #else
-        public DatabaseFacade Database => BaseContext.Database;
+		public DatabaseFacade Database => BaseContext.Database;
+		public DbSet<TEntity> Set<TEntity>() where TEntity: class => BaseContext.Set<TEntity>();
+        public Context.DbContextBase Context => (Context.DbContextBase)BaseContext;
 #endif
-        public int SaveChanges() => BaseContext.SaveChanges();
+
+		public int SaveChanges() => BaseContext.SaveChanges();
         public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken)) => BaseContext.SaveChangesAsync(cancellationToken);
         public virtual void Dispose() => BaseContext.Dispose();
         public Action<string> Log { get; set; }

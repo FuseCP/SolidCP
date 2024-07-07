@@ -482,7 +482,7 @@ namespace SolidCP.EnterpriseServer.Data {
     else tmpVarName = $"_{ccTmpVarName}";
 #>
         DbSet<<#= entityType.Name #>> <#= tmpVarName #> = null;
-        public virtual DbSet<<#= entityType.Name #>> <#= entityType.GetDbSetName() #> => <#= tmpVarName #> ?? (<#= tmpVarName #> = new DbSet<<#= entityType.Name #>>(BaseContext));
+        public virtual DbSet<<#= entityType.Name #>> <#= entityType.GetDbSetName() #> => <#= tmpVarName #> ?? (<#= tmpVarName #> = Set<<#= entityType.Name #>>());
 
 <#
     }

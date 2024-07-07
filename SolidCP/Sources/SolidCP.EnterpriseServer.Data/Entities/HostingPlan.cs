@@ -56,7 +56,7 @@ public partial class HostingPlan
     [InverseProperty("Plan")]
     public virtual ICollection<HostingPlanResource> HostingPlanResources { get; set; } = new List<HostingPlanResource>();
 
-    [ForeignKey("PackageId")]
+    //[ForeignKey("PackageId")]
     [InverseProperty("HostingPlan")]
     public virtual ICollection<Package> Packages { get; set; } = new List<Package>();
 
