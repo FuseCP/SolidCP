@@ -5239,7 +5239,7 @@ RETURN
 					.OrderBy(s => s.ServerName)
 					.Select(s => new
 					{
-						s.ServerId,
+						ServerID = s.ServerId,
 						s.ServerName,
 						s.ServerUrl,
 						ServicesNumber = Services.Where(sc => sc.ServerId == s.ServerId).Count(),
@@ -21506,15 +21506,15 @@ RETURN
 					})
 					.Select(p => new
 					{
-						p.Package.PackageId,
+						PackageID = p.Package.PackageId,
 						p.Package.Bandwidth,
 						p.Package.PackageName,
 						p.QuotaValue,
 						UsagePercentage = (int)(p.QuotaValue > 0 ? p.Package.Bandwidth * 100 / p.QuotaValue : 0),
 						//PackagesNumber = Local.Packages.Count(np => np.ParentPackageId == p.Package.PackageId),
 						p.Package.PackagesNumber,
-						p.Package.StatusId,
-						p.Package.UserId,
+						StatusID = p.Package.StatusId,
+						UserID = p.Package.UserId,
 						p.Package.Username,
 						p.Package.FirstName,
 						p.Package.LastName,
@@ -21755,15 +21755,15 @@ RETURN
 					})
 					.Select(p => new
 					{
-						p.Package.PackageId,
+						PackageID = p.Package.PackageId,
 						p.QuotaValue,
 						p.Package.Diskspace,
 						UsagePercentage = (int)(p.QuotaValue > 0 ? p.Package.Diskspace * 100 / p.QuotaValue : 0),
 						//PackagesNumber = Local.Packages.Count(np => np.ParentPackageId == p.Package.PackageId),
 						p.Package.PackagesNumber,
 						p.Package.PackageName,
-						p.Package.StatusId,
-						p.Package.UserId,
+						StatusID = p.Package.StatusId,
+						UserID = p.Package.UserId,
 						p.Package.Username,
 						p.Package.FirstName,
 						p.Package.LastName,
