@@ -22,9 +22,14 @@ public partial class CrmUserConfiguration : EntityTypeConfiguration<CrmUser>
 			Property(e => e.ChangedDate).HasColumnType("datetime");
 			Property(e => e.CreatedDate).HasColumnType("datetime");
 		}
+		else if (IsCore && IsSqliteFX)
+		{
+			Property(e => e.CrmUserGuid).HasColumnType("BLOB");
+			Property(e => e.BusinessUnitId).HasColumnType("BLOB");
+		}
 
 #if NetCore
-		if (IsMsSql)
+			if (IsMsSql)
 		{
 			Property(e => e.ChangedDate).HasDefaultValueSql("(getdate())");
 			Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");

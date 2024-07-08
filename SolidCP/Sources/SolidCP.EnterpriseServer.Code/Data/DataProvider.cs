@@ -117,8 +117,9 @@ namespace SolidCP.EnterpriseServer
 		ServerController serverController;
 		protected ServerController ServerController => serverController ?? (serverController = new ServerController(Provider));
 
-		public DataProvider() : this(null) { }
-		public DataProvider(ControllerBase provider) { Provider = provider; }
+		public DataProvider() : base() { Provider = null; }
+		public DataProvider(ControllerBase provider): base() { Provider = provider; }
+		public DataProvider(string connectionString): base(connectionString) { Provider = null; }
 
 		private DataProvider local = null;
 		public DataProvider Local => local ??= new DataProvider();

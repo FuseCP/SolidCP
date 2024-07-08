@@ -291,13 +291,12 @@ namespace SolidCP.EnterpriseServer.Data
 						.GroupJoin(Users, u => u.OwnerId, o => o.UserId, (u, o) => new
 						{
 							User = u,
-							Owner = o.SingleOrDefault()
+							Owners = o
 						})
-						.GroupJoin(Packages, u => u.User.UserId, p => p.UserId, (u, p) => new
+						.SelectMany(u => u.Owners.DefaultIfEmpty(), (u, o) => new
 						{
-							User = u.User,
-							Owner = u.Owner,
-							PackagesNumber = p.Count()
+							u.User,
+							Owner = o
 						})
 						.Select(g => new UsersDetailed()
 						{
@@ -326,7 +325,7 @@ namespace SolidCP.EnterpriseServer.Data
 							OwnerRoleId = g.Owner != null ? g.Owner.RoleId : null,
 							OwnerFullName = g.Owner != null ? g.Owner.FirstName + " " + g.Owner.LastName : null,
 							EcommerceEnabled = g.User.EcommerceEnabled,
-							PackagesNumber = g.PackagesNumber
+							PackagesNumber = Packages.Count(p => p.UserId == g.User.UserId)
 						});
 				}
 			}

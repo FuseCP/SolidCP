@@ -23,5 +23,6 @@ public partial class BackgroundTaskConfiguration: EntityTypeConfiguration<Backgr
             Property(e => e.StartDate).HasColumnType("datetime");
             Property(e => e.FinishDate).HasColumnType("datetime");
         }
-    }
+        else if (IsCore && IsSqliteFX) Property(e => e.Guid).HasColumnType("BLOB");
+	}
 }

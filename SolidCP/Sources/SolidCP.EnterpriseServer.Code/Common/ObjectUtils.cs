@@ -434,6 +434,8 @@ namespace SolidCP.EnterpriseServer
 			FillObjectFromEntity<T>(entity, typeof(TEntity));
 		public static T FillObjectFromEntity<T>(object entity, Type etype) where T : class
 		{
+			if (entity == null) return null;
+
 			Type type = typeof(T);
 
 			if (type == etype) return entity as T;

@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="btnCancel.Text" xml:space="preserve">
     <value>Abbrechen</value>
@@ -123,7 +123,7 @@
   <data name="btnCreate.Text" xml:space="preserve">
     <value>Erstellen</value>
   </data>
-  <data name="chkAccountLetter.Text" xml:space="preserve">
+  <data name="lblAccountLetter.Text" xml:space="preserve">
     <value>Kontozusammenfassung versenden</value>
   </data>
   <data name="chkDemo.Text" xml:space="preserve">
@@ -200,5 +200,8 @@
   </data>
   <data name="lblSubscriberNumber" xml:space="preserve">
     <value>Kundennummer:</value>
+  </data>
+  <data name="chkAccountLetter.Text" xml:space="preserve">
+    <value>Ja</value>
   </data>
 </root>

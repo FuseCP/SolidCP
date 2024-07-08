@@ -86,6 +86,7 @@ namespace SolidCP.EnterpriseServer.Data
 							dbConnection = MySqlDbConnection;
 							break;
 						case DbType.Sqlite:
+                        case DbType.SqliteFX:
 							dbConnection = SqliteDbConnection;
 							break;
 						case DbType.PostgreSql:
@@ -127,7 +128,8 @@ namespace SolidCP.EnterpriseServer.Data
                         case DbType.MySql: contextType = typeof(MySqlDbContext); break;
                         case DbType.MariaDb: contextType = typeof(MySqlDbContext); break;
                         case DbType.PostgreSql: contextType = typeof(PostgreSqlDbContext); break;
-                        case DbType.Sqlite: contextType = typeof(SqliteDbContext); break;
+                        case DbType.Sqlite:
+                        case DbType.SqliteFX: contextType = typeof(SqliteDbContext); break;
                     }
                 }
                 return contextType;
@@ -183,8 +185,10 @@ namespace SolidCP.EnterpriseServer.Data
 
         public bool IsMsSql => DbType == DbType.MsSql;
         public bool IsMySql => DbType == DbType.MySql;
-        public bool IsSqlite => DbType == DbType.Sqlite;
-        public bool IsPostgreSql => DbType == DbType.PostgreSql;
+		public bool IsSqlite => IsSqliteCore || IsSqliteFX;
+        public bool IsSqliteFX => DbType == DbType.SqliteFX;
+        public bool IsSqliteCore => DbType == DbType.Sqlite;
+		public bool IsPostgreSql => DbType == DbType.PostgreSql;
         public bool IsMariaDb => DbType == DbType.MariaDb;
         public bool HasProcedures => IsMsSql && UseStoredProcedures;
 

@@ -120,7 +120,6 @@ namespace SolidCP.Portal
             user.Fax = contact.Fax;
             user.InstantMessenger = contact.MessengerId;
 
-
             // add a new user
             List<string> log = new List<string>();
             try

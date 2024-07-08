@@ -110,6 +110,8 @@
     <ItemGroup>
         <None Include="CodeTemplates\EFCore\Aliases.cs" />
         <Compile Remove="CodeTemplates\EFCore\Aliases.cs" />
+        <Compile Remove="Configuration\TempIdConfiguration.cs" />
+        <None Include="Configuration\TempIdConfiguration.cs" />
 		<!--<Compile Remove="Configuration\**\*.cs" />
 		<None Include="Configuration\**\*.cs" />-->
 
@@ -146,7 +148,6 @@
     <ItemGroup>
       <Folder Include="Migrations\MySql\" />
       <Folder Include="Migrations\PostgreSql\" />
-      <Folder Include="Migrations\Sqlite\" />
     </ItemGroup>
 		
 </Project>

@@ -54,6 +54,15 @@ namespace SolidCP.EnterpriseServer.Context
 		public Action<string> Log { get; set; }
 		public Data.DbType DbType { get; set; } = Data.DbType.Unknown;
         public bool InitSeedData { get; set; } = false;
+		public bool IsMsSql => DbType == Data.DbType.MsSql;
+		public bool IsMySql => DbType == Data.DbType.MySql;
+		public bool IsSqlite => IsSqliteCore || IsSqliteFX;
+		public bool IsSqliteFX => DbType == Data.DbType.SqliteFX;
+		public bool IsSqliteCore => DbType == Data.DbType.Sqlite;
+
+		public bool IsPostgreSql => DbType == Data.DbType.PostgreSql;
+		public bool IsMariaDb => DbType == Data.DbType.MariaDb;
+
 
 		public virtual DbSet<AccessToken> AccessTokens { get; set; }
 
@@ -225,7 +234,7 @@ namespace SolidCP.EnterpriseServer.Context
 
 		public virtual DbSet<UserSetting> UserSettings { get; set; }
 
-		public virtual DbSet<UsersDetailed> UsersDetailed { get; set; }
+		//public virtual DbSet<UsersDetailed> UsersDetailed { get; set; }
 
 		public virtual DbSet<Version> Versions { get; set; }
 
@@ -382,7 +391,7 @@ namespace SolidCP.EnterpriseServer.Context
 			ApplyConfiguration(model, new ThemeSettingConfiguration());
 			ApplyConfiguration(model, new UserConfiguration());
 			ApplyConfiguration(model, new UserSettingConfiguration());
-			ApplyConfiguration(model, new UsersDetailedConfiguration());
+			if (IsMsSql) ApplyConfiguration(model, new UsersDetailedConfiguration());
 			ApplyConfiguration(model, new VersionConfiguration());
 			ApplyConfiguration(model, new VirtualGroupConfiguration());
 			ApplyConfiguration(model, new VirtualServiceConfiguration());
