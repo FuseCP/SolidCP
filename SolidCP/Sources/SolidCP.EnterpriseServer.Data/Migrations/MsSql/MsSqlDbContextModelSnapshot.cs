@@ -3598,7 +3598,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                             PackageComments = "",
                             PackageName = "System",
                             StatusId = 1,
-                            StatusIdChangeDate = new DateTime(2024, 4, 20, 11, 2, 58, 560, DateTimeKind.Unspecified),
+                            StatusIdChangeDate = new DateTime(2024, 4, 20, 11, 2, 58, 560, DateTimeKind.Utc),
                             UserId = 1
                         });
                 });
@@ -9318,36 +9318,36 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         {
                             ScheduleId = 1,
                             Enabled = true,
-                            FromTime = new DateTime(2000, 1, 1, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            FromTime = new DateTime(2000, 1, 1, 12, 0, 0, 0, DateTimeKind.Utc),
                             HistoriesNumber = 7,
                             Interval = 0,
                             MaxExecutionTime = 3600,
-                            NextRun = new DateTime(2010, 7, 16, 14, 53, 2, 470, DateTimeKind.Unspecified),
+                            NextRun = new DateTime(2010, 7, 16, 14, 53, 2, 470, DateTimeKind.Utc),
                             PackageId = 1,
                             PriorityId = "Normal",
                             ScheduleName = "Calculate Disk Space",
                             ScheduleTypeId = "Daily",
-                            StartTime = new DateTime(2000, 1, 1, 12, 30, 0, 0, DateTimeKind.Unspecified),
+                            StartTime = new DateTime(2000, 1, 1, 12, 30, 0, 0, DateTimeKind.Utc),
                             TaskId = "SCHEDULE_TASK_CALCULATE_PACKAGES_DISKSPACE",
-                            ToTime = new DateTime(2000, 1, 1, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            ToTime = new DateTime(2000, 1, 1, 12, 0, 0, 0, DateTimeKind.Utc),
                             WeekMonthDay = 1
                         },
                         new
                         {
                             ScheduleId = 2,
                             Enabled = true,
-                            FromTime = new DateTime(2000, 1, 1, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            FromTime = new DateTime(2000, 1, 1, 12, 0, 0, 0, DateTimeKind.Utc),
                             HistoriesNumber = 7,
                             Interval = 0,
                             MaxExecutionTime = 3600,
-                            NextRun = new DateTime(2010, 7, 16, 14, 53, 2, 477, DateTimeKind.Unspecified),
+                            NextRun = new DateTime(2010, 7, 16, 14, 53, 2, 477, DateTimeKind.Utc),
                             PackageId = 1,
                             PriorityId = "Normal",
                             ScheduleName = "Calculate Bandwidth",
                             ScheduleTypeId = "Daily",
-                            StartTime = new DateTime(2000, 1, 1, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartTime = new DateTime(2000, 1, 1, 12, 0, 0, 0, DateTimeKind.Utc),
                             TaskId = "SCHEDULE_TASK_CALCULATE_PACKAGES_BANDWIDTH",
-                            ToTime = new DateTime(2000, 1, 1, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            ToTime = new DateTime(2000, 1, 1, 12, 0, 0, 0, DateTimeKind.Utc),
                             WeekMonthDay = 1
                         });
                 });
@@ -14549,11 +14549,11 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         {
                             UserId = 1,
                             Address = "",
-                            Changed = new DateTime(2010, 7, 16, 12, 53, 2, 453, DateTimeKind.Unspecified),
+                            Changed = new DateTime(2010, 7, 16, 12, 53, 2, 453, DateTimeKind.Utc),
                             City = "",
                             Comments = "",
                             Country = "",
-                            Created = new DateTime(2010, 7, 16, 12, 53, 2, 453, DateTimeKind.Unspecified),
+                            Created = new DateTime(2010, 7, 16, 12, 53, 2, 453, DateTimeKind.Utc),
                             EcommerceEnabled = true,
                             Email = "serveradmin@myhosting.com",
                             Fax = "",
@@ -15670,42 +15670,42 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         new
                         {
                             DatabaseVersion = "1.0",
-                            BuildDate = new DateTime(2010, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            BuildDate = new DateTime(2010, 4, 10, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             DatabaseVersion = "1.0.1.0",
-                            BuildDate = new DateTime(2010, 7, 16, 12, 53, 3, 563, DateTimeKind.Unspecified)
+                            BuildDate = new DateTime(2010, 7, 16, 12, 53, 3, 563, DateTimeKind.Utc)
                         },
                         new
                         {
                             DatabaseVersion = "1.0.2.0",
-                            BuildDate = new DateTime(2010, 9, 3, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            BuildDate = new DateTime(2010, 9, 3, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             DatabaseVersion = "1.1.0.9",
-                            BuildDate = new DateTime(2010, 11, 16, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            BuildDate = new DateTime(2010, 11, 16, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             DatabaseVersion = "1.1.2.13",
-                            BuildDate = new DateTime(2011, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            BuildDate = new DateTime(2011, 4, 15, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             DatabaseVersion = "1.2.0.38",
-                            BuildDate = new DateTime(2011, 7, 13, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            BuildDate = new DateTime(2011, 7, 13, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             DatabaseVersion = "1.2.1.6",
-                            BuildDate = new DateTime(2012, 3, 29, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            BuildDate = new DateTime(2012, 3, 29, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             DatabaseVersion = "1.4.9",
-                            BuildDate = new DateTime(2024, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            BuildDate = new DateTime(2024, 4, 20, 0, 0, 0, 0, DateTimeKind.Utc)
                         });
                 });
 

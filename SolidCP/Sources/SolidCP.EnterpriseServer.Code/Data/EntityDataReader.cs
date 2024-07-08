@@ -92,7 +92,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 		IEnumerator<TEntity> enumerator = null;
-		IEnumerator<TEntity> Enumerator => enumerator ?? (enumerator = ((IEnumerable<TEntity>)Set).GetEnumerator());
+		IEnumerator<TEntity> Enumerator => enumerator ??= ((IEnumerable<TEntity>)Set).GetEnumerator();
 
 		TEntity Current
 		{

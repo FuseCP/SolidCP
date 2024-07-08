@@ -22,8 +22,8 @@ public partial class UserConfiguration: EntityTypeConfiguration<User>
 
         #region Seed Data
         HasData(() => new User[] {
-            new User() { UserId = 1, Address = "", Changed = DateTime.Parse("2010-07-16T10:53:02.4530000Z"), City = "", Comments = "", Country = "",
-                Created = DateTime.Parse("2010-07-16T10:53:02.4530000Z"), EcommerceEnabled = true, Email = "serveradmin@myhosting.com", Fax = "", FirstName = "Enterprise", HtmlMail = true,
+            new User() { UserId = 1, Address = "", Changed = DateTime.Parse("2010-07-16T10:53:02.4530000Z").ToUniversalTime(), City = "", Comments = "", Country = "",
+                Created = DateTime.Parse("2010-07-16T10:53:02.4530000Z").ToUniversalTime(), EcommerceEnabled = true, Email = "serveradmin@myhosting.com", Fax = "", FirstName = "Enterprise", HtmlMail = true,
                 InstantMessenger = "", LastName = "Administrator", Password = "", PrimaryPhone = "", RoleId = 1, SecondaryEmail = "",
                 SecondaryPhone = "", State = "", StatusId = 1, Username = "serveradmin", Zip = "" }
         });

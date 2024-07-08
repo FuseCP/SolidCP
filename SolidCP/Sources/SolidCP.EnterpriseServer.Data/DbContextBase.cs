@@ -306,6 +306,8 @@ namespace SolidCP.EnterpriseServer.Context
 #endif
 			base.OnModelCreating(model);
 
+			if (IsPostgreSql) model.HasDefaultSchema("public");
+
 			ApplyConfiguration(model, new AccessTokenConfiguration());
 			ApplyConfiguration(model, new AdditionalGroupConfiguration());
 			ApplyConfiguration(model, new AuditLogConfiguration());

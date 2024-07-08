@@ -20,7 +20,7 @@ public partial class UsersDetailedConfiguration: EntityTypeConfiguration<UsersDe
 
         #region Seed Data
         HasData(() => new UsersDetailed[] {
-            new UsersDetailed() { UserId = 1, Changed = DateTime.Parse("2010-07-16T10:53:02.4530000Z"), Comments = "", Created = DateTime.Parse("2010-07-16T10:53:02.4530000Z"), EcommerceEnabled = true, Email = "serveradmin@myhosting.com",
+            new UsersDetailed() { UserId = 1, Changed = DateTime.Parse("2010-07-16T10:53:02.4530000Z").ToUniversalTime(), Comments = "", Created = DateTime.Parse("2010-07-16T10:53:02.4530000Z").ToUniversalTime(), EcommerceEnabled = true, Email = "serveradmin@myhosting.com",
                 FirstName = "Enterprise", FullName = "Enterprise Administrator", LastName = "Administrator", PackagesNumber = 1, RoleId = 1, StatusId = 1,
                 Username = "serveradmin" }
         });

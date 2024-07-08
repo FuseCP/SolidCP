@@ -9,7 +9,7 @@ namespace SolidCP.EnterpriseServer.MailTemplates
 	{
 		ControllerBase Provider;
 		UserController userController;
-		protected UserController UserController => userController ?? (userController = new UserController(Provider));
+		protected UserController UserController => userController ??= new UserController(Provider);
 		public TemplateHashtable(ControllerBase provider) { Provider = provider; }
 
 		public string LogoUrl

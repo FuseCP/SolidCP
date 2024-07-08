@@ -2575,28 +2575,28 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "UserID", "AdditionalParams", "Address", "Changed", "City", "Comments", "CompanyName", "Country", "Created", "EcommerceEnabled", "Email", "FailedLogins", "Fax", "FirstName", "HtmlMail", "InstantMessenger", "IsDemo", "IsPeer", "LastName", "LoginStatusId", "MfaMode", "OneTimePasswordState", "OwnerID", "Password", "PinSecret", "PrimaryPhone", "RoleID", "SecondaryEmail", "SecondaryPhone", "State", "StatusID", "SubscriberNumber", "Username", "Zip" },
-                values: new object[] { 1, null, "", new DateTime(2010, 7, 16, 12, 53, 2, 453, DateTimeKind.Unspecified), "", "", null, "", new DateTime(2010, 7, 16, 12, 53, 2, 453, DateTimeKind.Unspecified), true, "serveradmin@myhosting.com", null, "", "Enterprise", true, "", false, false, "Administrator", null, 0, null, null, "", null, "", 1, "", "", "", 1, null, "serveradmin", "" });
+                values: new object[] { 1, null, "", new DateTime(2010, 7, 16, 12, 53, 2, 453, DateTimeKind.Utc), "", "", null, "", new DateTime(2010, 7, 16, 12, 53, 2, 453, DateTimeKind.Utc), true, "serveradmin@myhosting.com", null, "", "Enterprise", true, "", false, false, "Administrator", null, 0, null, null, "", null, "", 1, "", "", "", 1, null, "serveradmin", "" });
 
             migrationBuilder.InsertData(
                 table: "Versions",
                 columns: new[] { "DatabaseVersion", "BuildDate" },
                 values: new object[,]
                 {
-                    { "1.0", new DateTime(2010, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { "1.0.1.0", new DateTime(2010, 7, 16, 12, 53, 3, 563, DateTimeKind.Unspecified) },
-                    { "1.0.2.0", new DateTime(2010, 9, 3, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { "1.1.0.9", new DateTime(2010, 11, 16, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { "1.1.2.13", new DateTime(2011, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { "1.2.0.38", new DateTime(2011, 7, 13, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { "1.2.1.6", new DateTime(2012, 3, 29, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { "1.4.9", new DateTime(2024, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { "2.0.0.228", new DateTime(2012, 12, 7, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                    { "1.0", new DateTime(2010, 4, 10, 0, 0, 0, 0, DateTimeKind.Utc) },
+                    { "1.0.1.0", new DateTime(2010, 7, 16, 12, 53, 3, 563, DateTimeKind.Utc) },
+                    { "1.0.2.0", new DateTime(2010, 9, 3, 0, 0, 0, 0, DateTimeKind.Utc) },
+                    { "1.1.0.9", new DateTime(2010, 11, 16, 0, 0, 0, 0, DateTimeKind.Utc) },
+                    { "1.1.2.13", new DateTime(2011, 4, 15, 0, 0, 0, 0, DateTimeKind.Utc) },
+                    { "1.2.0.38", new DateTime(2011, 7, 13, 0, 0, 0, 0, DateTimeKind.Utc) },
+                    { "1.2.1.6", new DateTime(2012, 3, 29, 0, 0, 0, 0, DateTimeKind.Utc) },
+                    { "1.4.9", new DateTime(2024, 4, 20, 0, 0, 0, 0, DateTimeKind.Utc) },
+                    { "2.0.0.228", new DateTime(2012, 12, 7, 0, 0, 0, 0, DateTimeKind.Utc) }
                 });
 
             migrationBuilder.InsertData(
                 table: "Packages",
                 columns: new[] { "PackageID", "BandwidthUpdated", "DefaultTopPackage", "OverrideQuotas", "PackageComments", "PackageName", "ParentPackageID", "PlanID", "PurchaseDate", "ServerID", "StatusID", "StatusIDchangeDate", "UserID" },
-                values: new object[] { 1, null, false, false, "", "System", null, null, null, null, 1, new DateTime(2024, 4, 20, 11, 2, 58, 560, DateTimeKind.Unspecified), 1 });
+                values: new object[] { 1, null, false, false, "", "System", null, null, null, null, 1, new DateTime(2024, 4, 20, 11, 2, 58, 560, DateTimeKind.Utc), 1 });
 
             migrationBuilder.InsertData(
                 table: "Providers",
@@ -3515,8 +3515,8 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                 columns: new[] { "ScheduleID", "Enabled", "FromTime", "HistoriesNumber", "Interval", "LastRun", "MaxExecutionTime", "NextRun", "PackageID", "PriorityID", "ScheduleName", "ScheduleTypeID", "StartTime", "TaskID", "ToTime", "WeekMonthDay" },
                 values: new object[,]
                 {
-                    { 1, true, new DateTime(2000, 1, 1, 12, 0, 0, 0, DateTimeKind.Unspecified), 7, 0, null, 3600, new DateTime(2010, 7, 16, 14, 53, 2, 470, DateTimeKind.Unspecified), 1, "Normal", "Calculate Disk Space", "Daily", new DateTime(2000, 1, 1, 12, 30, 0, 0, DateTimeKind.Unspecified), "SCHEDULE_TASK_CALCULATE_PACKAGES_DISKSPACE", new DateTime(2000, 1, 1, 12, 0, 0, 0, DateTimeKind.Unspecified), 1 },
-                    { 2, true, new DateTime(2000, 1, 1, 12, 0, 0, 0, DateTimeKind.Unspecified), 7, 0, null, 3600, new DateTime(2010, 7, 16, 14, 53, 2, 477, DateTimeKind.Unspecified), 1, "Normal", "Calculate Bandwidth", "Daily", new DateTime(2000, 1, 1, 12, 0, 0, 0, DateTimeKind.Unspecified), "SCHEDULE_TASK_CALCULATE_PACKAGES_BANDWIDTH", new DateTime(2000, 1, 1, 12, 0, 0, 0, DateTimeKind.Unspecified), 1 }
+                    { 1, true, new DateTime(2000, 1, 1, 12, 0, 0, 0, DateTimeKind.Utc), 7, 0, null, 3600, new DateTime(2010, 7, 16, 14, 53, 2, 470, DateTimeKind.Utc), 1, "Normal", "Calculate Disk Space", "Daily", new DateTime(2000, 1, 1, 12, 30, 0, 0, DateTimeKind.Utc), "SCHEDULE_TASK_CALCULATE_PACKAGES_DISKSPACE", new DateTime(2000, 1, 1, 12, 0, 0, 0, DateTimeKind.Utc), 1 },
+                    { 2, true, new DateTime(2000, 1, 1, 12, 0, 0, 0, DateTimeKind.Utc), 7, 0, null, 3600, new DateTime(2010, 7, 16, 14, 53, 2, 477, DateTimeKind.Utc), 1, "Normal", "Calculate Bandwidth", "Daily", new DateTime(2000, 1, 1, 12, 0, 0, 0, DateTimeKind.Utc), "SCHEDULE_TASK_CALCULATE_PACKAGES_BANDWIDTH", new DateTime(2000, 1, 1, 12, 0, 0, 0, DateTimeKind.Utc), 1 }
                 });
 
             migrationBuilder.InsertData(

@@ -9,13 +9,17 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 {
     /// <inheritdoc />
-    public partial class InitalCreate : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "public");
+
             migrationBuilder.CreateTable(
                 name: "AdditionalGroups",
+                schema: "public",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "integer", nullable: false)
@@ -30,6 +34,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "AuditLog",
+                schema: "public",
                 columns: table => new
                 {
                     RecordID = table.Column<string>(type: "character varying(32)", unicode: false, maxLength: 32, nullable: false),
@@ -52,6 +57,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "AuditLogSources",
+                schema: "public",
                 columns: table => new
                 {
                     SourceName = table.Column<string>(type: "character varying(100)", unicode: false, maxLength: 100, nullable: false)
@@ -63,6 +69,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "AuditLogTasks",
+                schema: "public",
                 columns: table => new
                 {
                     SourceName = table.Column<string>(type: "character varying(100)", unicode: false, maxLength: 100, nullable: false),
@@ -76,6 +83,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "BackgroundTasks",
+                schema: "public",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "integer", nullable: false)
@@ -107,6 +115,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "Clusters",
+                schema: "public",
                 columns: table => new
                 {
                     ClusterID = table.Column<int>(type: "integer", nullable: false)
@@ -120,6 +129,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "ExchangeDeletedAccounts",
+                schema: "public",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "integer", nullable: false)
@@ -138,6 +148,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "ExchangeDisclaimers",
+                schema: "public",
                 columns: table => new
                 {
                     ExchangeDisclaimerId = table.Column<int>(type: "integer", nullable: false)
@@ -153,6 +164,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "ExchangeMailboxPlanRetentionPolicyTags",
+                schema: "public",
                 columns: table => new
                 {
                     PlanTagID = table.Column<int>(type: "integer", nullable: false)
@@ -167,6 +179,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "ExchangeRetentionPolicyTags",
+                schema: "public",
                 columns: table => new
                 {
                     TagID = table.Column<int>(type: "integer", nullable: false)
@@ -184,6 +197,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "OCSUsers",
+                schema: "public",
                 columns: table => new
                 {
                     OCSUserID = table.Column<int>(type: "integer", nullable: false)
@@ -200,6 +214,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "PackageService",
+                schema: "public",
                 columns: table => new
                 {
                     PackageId = table.Column<int>(type: "integer", nullable: false),
@@ -212,6 +227,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "PackageSettings",
+                schema: "public",
                 columns: table => new
                 {
                     PackageID = table.Column<int>(type: "integer", nullable: false),
@@ -226,6 +242,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "RDSCertificates",
+                schema: "public",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "integer", nullable: false)
@@ -244,6 +261,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "RDSCollections",
+                schema: "public",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "integer", nullable: false)
@@ -260,6 +278,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "RDSServerSettings",
+                schema: "public",
                 columns: table => new
                 {
                     RdsServerId = table.Column<int>(type: "integer", nullable: false),
@@ -276,6 +295,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "ResourceGroups",
+                schema: "public",
                 columns: table => new
                 {
                     GroupID = table.Column<int>(type: "integer", nullable: false),
@@ -291,6 +311,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "ScheduleTasks",
+                schema: "public",
                 columns: table => new
                 {
                     TaskID = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
@@ -304,6 +325,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "SfBUserPlans",
+                schema: "public",
                 columns: table => new
                 {
                     SfBUserPlanId = table.Column<int>(type: "integer", nullable: false)
@@ -335,6 +357,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "SfBUsers",
+                schema: "public",
                 columns: table => new
                 {
                     SfBUserID = table.Column<int>(type: "integer", nullable: false)
@@ -352,6 +375,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "SSLCertificates",
+                schema: "public",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "integer", nullable: false)
@@ -380,6 +404,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "StorageSpaceLevels",
+                schema: "public",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -394,6 +419,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "SupportServiceLevels",
+                schema: "public",
                 columns: table => new
                 {
                     LevelID = table.Column<int>(type: "integer", nullable: false)
@@ -408,6 +434,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "SystemSettings",
+                schema: "public",
                 columns: table => new
                 {
                     SettingsName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
@@ -421,6 +448,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "TempIds",
+                schema: "public",
                 columns: table => new
                 {
                     Key = table.Column<int>(type: "integer", nullable: false)
@@ -438,6 +466,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "Themes",
+                schema: "public",
                 columns: table => new
                 {
                     ThemeID = table.Column<int>(type: "integer", nullable: false)
@@ -455,6 +484,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "ThemeSettings",
+                schema: "public",
                 columns: table => new
                 {
                     ThemeID = table.Column<int>(type: "integer", nullable: false),
@@ -469,6 +499,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "Users",
+                schema: "public",
                 columns: table => new
                 {
                     UserID = table.Column<int>(type: "integer", nullable: false)
@@ -513,12 +544,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     table.ForeignKey(
                         name: "FK_Users_Users",
                         column: x => x.OwnerID,
+                        principalSchema: "public",
                         principalTable: "Users",
                         principalColumn: "UserID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "Versions",
+                schema: "public",
                 columns: table => new
                 {
                     DatabaseVersion = table.Column<string>(type: "character varying(50)", unicode: false, maxLength: 50, nullable: false),
@@ -531,6 +564,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "BackgroundTaskLogs",
+                schema: "public",
                 columns: table => new
                 {
                     LogID = table.Column<int>(type: "integer", nullable: false)
@@ -550,12 +584,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     table.ForeignKey(
                         name: "FK__Backgroun__TaskI__06ADD4BD",
                         column: x => x.TaskID,
+                        principalSchema: "public",
                         principalTable: "BackgroundTasks",
                         principalColumn: "ID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "BackgroundTaskParameters",
+                schema: "public",
                 columns: table => new
                 {
                     ParameterID = table.Column<int>(type: "integer", nullable: false)
@@ -571,12 +607,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     table.ForeignKey(
                         name: "FK__Backgroun__TaskI__03D16812",
                         column: x => x.TaskID,
+                        principalSchema: "public",
                         principalTable: "BackgroundTasks",
                         principalColumn: "ID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "BackgroundTaskStack",
+                schema: "public",
                 columns: table => new
                 {
                     TaskStackID = table.Column<int>(type: "integer", nullable: false)
@@ -589,12 +627,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     table.ForeignKey(
                         name: "FK__Backgroun__TaskI__098A4168",
                         column: x => x.TaskID,
+                        principalSchema: "public",
                         principalTable: "BackgroundTasks",
                         principalColumn: "ID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "RDSCollectionSettings",
+                schema: "public",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "integer", nullable: false)
@@ -622,6 +662,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     table.ForeignKey(
                         name: "FK_RDSCollectionSettings_RDSCollections",
                         column: x => x.RDSCollectionId,
+                        principalSchema: "public",
                         principalTable: "RDSCollections",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
@@ -629,6 +670,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "RDSMessages",
+                schema: "public",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -644,6 +686,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     table.ForeignKey(
                         name: "FK_RDSMessages_RDSCollections",
                         column: x => x.RDSCollectionId,
+                        principalSchema: "public",
                         principalTable: "RDSCollections",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
@@ -651,6 +694,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "RDSServers",
+                schema: "public",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "integer", nullable: false)
@@ -669,12 +713,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     table.ForeignKey(
                         name: "FK_RDSServers_RDSCollectionId",
                         column: x => x.RDSCollectionId,
+                        principalSchema: "public",
                         principalTable: "RDSCollections",
                         principalColumn: "ID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "Providers",
+                schema: "public",
                 columns: table => new
                 {
                     ProviderID = table.Column<int>(type: "integer", nullable: false),
@@ -691,12 +737,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     table.ForeignKey(
                         name: "FK_Providers_ResourceGroups",
                         column: x => x.GroupID,
+                        principalSchema: "public",
                         principalTable: "ResourceGroups",
                         principalColumn: "GroupID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "ResourceGroupDnsRecords",
+                schema: "public",
                 columns: table => new
                 {
                     RecordID = table.Column<int>(type: "integer", nullable: false)
@@ -714,6 +762,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     table.ForeignKey(
                         name: "FK_ResourceGroupDnsRecords_ResourceGroups",
                         column: x => x.GroupID,
+                        principalSchema: "public",
                         principalTable: "ResourceGroups",
                         principalColumn: "GroupID",
                         onDelete: ReferentialAction.Cascade);
@@ -721,6 +770,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "Servers",
+                schema: "public",
                 columns: table => new
                 {
                     ServerID = table.Column<int>(type: "integer", nullable: false)
@@ -749,12 +799,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     table.ForeignKey(
                         name: "FK_Servers_ResourceGroups",
                         column: x => x.PrimaryGroupID,
+                        principalSchema: "public",
                         principalTable: "ResourceGroups",
                         principalColumn: "GroupID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "ServiceItemTypes",
+                schema: "public",
                 columns: table => new
                 {
                     ItemTypeID = table.Column<int>(type: "integer", nullable: false),
@@ -776,12 +828,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     table.ForeignKey(
                         name: "FK_ServiceItemTypes_ResourceGroups",
                         column: x => x.GroupID,
+                        principalSchema: "public",
                         principalTable: "ResourceGroups",
                         principalColumn: "GroupID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "ScheduleTaskParameters",
+                schema: "public",
                 columns: table => new
                 {
                     TaskID = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
@@ -796,12 +850,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     table.ForeignKey(
                         name: "FK_ScheduleTaskParameters_ScheduleTasks",
                         column: x => x.TaskID,
+                        principalSchema: "public",
                         principalTable: "ScheduleTasks",
                         principalColumn: "TaskID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "ScheduleTaskViewConfiguration",
+                schema: "public",
                 columns: table => new
                 {
                     TaskID = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
@@ -815,12 +871,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     table.ForeignKey(
                         name: "FK_ScheduleTaskViewConfiguration_ScheduleTaskViewConfiguration",
                         column: x => x.TaskID,
+                        principalSchema: "public",
                         principalTable: "ScheduleTasks",
                         principalColumn: "TaskID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "StorageSpaceLevelResourceGroups",
+                schema: "public",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -834,12 +892,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     table.ForeignKey(
                         name: "FK_StorageSpaceLevelResourceGroups_GroupId",
                         column: x => x.GroupId,
+                        principalSchema: "public",
                         principalTable: "ResourceGroups",
                         principalColumn: "GroupID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_StorageSpaceLevelResourceGroups_LevelId",
                         column: x => x.LevelId,
+                        principalSchema: "public",
                         principalTable: "StorageSpaceLevels",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -847,6 +907,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "Comments",
+                schema: "public",
                 columns: table => new
                 {
                     CommentID = table.Column<int>(type: "integer", nullable: false)
@@ -864,6 +925,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     table.ForeignKey(
                         name: "FK_Comments_Users",
                         column: x => x.UserID,
+                        principalSchema: "public",
                         principalTable: "Users",
                         principalColumn: "UserID",
                         onDelete: ReferentialAction.Cascade);
@@ -871,6 +933,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "UserSettings",
+                schema: "public",
                 columns: table => new
                 {
                     UserID = table.Column<int>(type: "integer", nullable: false),
@@ -884,6 +947,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     table.ForeignKey(
                         name: "FK_UserSettings_Users",
                         column: x => x.UserID,
+                        principalSchema: "public",
                         principalTable: "Users",
                         principalColumn: "UserID",
                         onDelete: ReferentialAction.Cascade);
@@ -891,6 +955,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "ServiceDefaultProperties",
+                schema: "public",
                 columns: table => new
                 {
                     ProviderID = table.Column<int>(type: "integer", nullable: false),
@@ -903,12 +968,50 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     table.ForeignKey(
                         name: "FK_ServiceDefaultProperties_Providers",
                         column: x => x.ProviderID,
+                        principalSchema: "public",
                         principalTable: "Providers",
                         principalColumn: "ProviderID");
                 });
 
             migrationBuilder.CreateTable(
+                name: "HostingPlans",
+                schema: "public",
+                columns: table => new
+                {
+                    PlanID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserID = table.Column<int>(type: "integer", nullable: true),
+                    PackageID = table.Column<int>(type: "integer", nullable: true),
+                    ServerID = table.Column<int>(type: "integer", nullable: true),
+                    PlanName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    PlanDescription = table.Column<string>(type: "TEXT", nullable: true),
+                    Available = table.Column<bool>(type: "boolean", nullable: false),
+                    SetupPrice = table.Column<decimal>(type: "numeric", nullable: true),
+                    RecurringPrice = table.Column<decimal>(type: "numeric", nullable: true),
+                    RecurrenceUnit = table.Column<int>(type: "integer", nullable: true),
+                    RecurrenceLength = table.Column<int>(type: "integer", nullable: true),
+                    IsAddon = table.Column<bool>(type: "boolean", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HostingPlans", x => x.PlanID);
+                    table.ForeignKey(
+                        name: "FK_HostingPlans_Servers",
+                        column: x => x.ServerID,
+                        principalSchema: "public",
+                        principalTable: "Servers",
+                        principalColumn: "ServerID");
+                    table.ForeignKey(
+                        name: "FK_HostingPlans_Users",
+                        column: x => x.UserID,
+                        principalSchema: "public",
+                        principalTable: "Users",
+                        principalColumn: "UserID");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "IPAddresses",
+                schema: "public",
                 columns: table => new
                 {
                     AddressID = table.Column<int>(type: "integer", nullable: false)
@@ -928,6 +1031,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     table.ForeignKey(
                         name: "FK_IPAddresses_Servers",
                         column: x => x.ServerID,
+                        principalSchema: "public",
                         principalTable: "Servers",
                         principalColumn: "ServerID",
                         onDelete: ReferentialAction.Cascade);
@@ -935,6 +1039,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "PrivateNetworkVLANs",
+                schema: "public",
                 columns: table => new
                 {
                     VlanID = table.Column<int>(type: "integer", nullable: false)
@@ -949,6 +1054,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     table.ForeignKey(
                         name: "FK_ServerID",
                         column: x => x.ServerID,
+                        principalSchema: "public",
                         principalTable: "Servers",
                         principalColumn: "ServerID",
                         onDelete: ReferentialAction.Cascade);
@@ -956,6 +1062,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "Services",
+                schema: "public",
                 columns: table => new
                 {
                     ServiceID = table.Column<int>(type: "integer", nullable: false)
@@ -973,22 +1080,26 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     table.ForeignKey(
                         name: "FK_Services_Clusters",
                         column: x => x.ClusterID,
+                        principalSchema: "public",
                         principalTable: "Clusters",
                         principalColumn: "ClusterID");
                     table.ForeignKey(
                         name: "FK_Services_Providers",
                         column: x => x.ProviderID,
+                        principalSchema: "public",
                         principalTable: "Providers",
                         principalColumn: "ProviderID");
                     table.ForeignKey(
                         name: "FK_Services_Servers",
                         column: x => x.ServerID,
+                        principalSchema: "public",
                         principalTable: "Servers",
                         principalColumn: "ServerID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "VirtualGroups",
+                schema: "public",
                 columns: table => new
                 {
                     VirtualGroupID = table.Column<int>(type: "integer", nullable: false)
@@ -1004,11 +1115,13 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     table.ForeignKey(
                         name: "FK_VirtualGroups_ResourceGroups",
                         column: x => x.GroupID,
+                        principalSchema: "public",
                         principalTable: "ResourceGroups",
                         principalColumn: "GroupID");
                     table.ForeignKey(
                         name: "FK_VirtualGroups_Servers",
                         column: x => x.ServerID,
+                        principalSchema: "public",
                         principalTable: "Servers",
                         principalColumn: "ServerID",
                         onDelete: ReferentialAction.Cascade);
@@ -1016,6 +1129,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "Quotas",
+                schema: "public",
                 columns: table => new
                 {
                     QuotaID = table.Column<int>(type: "integer", nullable: false),
@@ -1035,18 +1149,99 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     table.ForeignKey(
                         name: "FK_Quotas_ResourceGroups",
                         column: x => x.GroupID,
+                        principalSchema: "public",
                         principalTable: "ResourceGroups",
                         principalColumn: "GroupID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Quotas_ServiceItemTypes",
                         column: x => x.ItemTypeID,
+                        principalSchema: "public",
                         principalTable: "ServiceItemTypes",
                         principalColumn: "ItemTypeID");
                 });
 
             migrationBuilder.CreateTable(
+                name: "HostingPlanResources",
+                schema: "public",
+                columns: table => new
+                {
+                    PlanID = table.Column<int>(type: "integer", nullable: false),
+                    GroupID = table.Column<int>(type: "integer", nullable: false),
+                    CalculateDiskSpace = table.Column<bool>(type: "boolean", nullable: true),
+                    CalculateBandwidth = table.Column<bool>(type: "boolean", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HostingPlanResources", x => new { x.PlanID, x.GroupID });
+                    table.ForeignKey(
+                        name: "FK_HostingPlanResources_HostingPlans",
+                        column: x => x.PlanID,
+                        principalSchema: "public",
+                        principalTable: "HostingPlans",
+                        principalColumn: "PlanID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_HostingPlanResources_ResourceGroups",
+                        column: x => x.GroupID,
+                        principalSchema: "public",
+                        principalTable: "ResourceGroups",
+                        principalColumn: "GroupID");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Packages",
+                schema: "public",
+                columns: table => new
+                {
+                    PackageID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ParentPackageID = table.Column<int>(type: "integer", nullable: true),
+                    UserID = table.Column<int>(type: "integer", nullable: false),
+                    PackageName = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
+                    PackageComments = table.Column<string>(type: "TEXT", nullable: true),
+                    ServerID = table.Column<int>(type: "integer", nullable: true),
+                    StatusID = table.Column<int>(type: "integer", nullable: false),
+                    PlanID = table.Column<int>(type: "integer", nullable: true),
+                    PurchaseDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    OverrideQuotas = table.Column<bool>(type: "boolean", nullable: false),
+                    BandwidthUpdated = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DefaultTopPackage = table.Column<bool>(type: "boolean", nullable: false),
+                    StatusIDchangeDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Packages", x => x.PackageID);
+                    table.ForeignKey(
+                        name: "FK_Packages_HostingPlans",
+                        column: x => x.PlanID,
+                        principalSchema: "public",
+                        principalTable: "HostingPlans",
+                        principalColumn: "PlanID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Packages_Packages",
+                        column: x => x.ParentPackageID,
+                        principalSchema: "public",
+                        principalTable: "Packages",
+                        principalColumn: "PackageID");
+                    table.ForeignKey(
+                        name: "FK_Packages_Servers",
+                        column: x => x.ServerID,
+                        principalSchema: "public",
+                        principalTable: "Servers",
+                        principalColumn: "ServerID");
+                    table.ForeignKey(
+                        name: "FK_Packages_Users",
+                        column: x => x.UserID,
+                        principalSchema: "public",
+                        principalTable: "Users",
+                        principalColumn: "UserID");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ServiceProperties",
+                schema: "public",
                 columns: table => new
                 {
                     ServiceID = table.Column<int>(type: "integer", nullable: false),
@@ -1059,6 +1254,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     table.ForeignKey(
                         name: "FK_ServiceProperties_Services",
                         column: x => x.ServiceID,
+                        principalSchema: "public",
                         principalTable: "Services",
                         principalColumn: "ServiceID",
                         onDelete: ReferentialAction.Cascade);
@@ -1066,6 +1262,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "StorageSpaces",
+                schema: "public",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -1087,12 +1284,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     table.ForeignKey(
                         name: "FK_StorageSpaces_ServerId",
                         column: x => x.ServerId,
+                        principalSchema: "public",
                         principalTable: "Servers",
                         principalColumn: "ServerID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_StorageSpaces_ServiceId",
                         column: x => x.ServiceId,
+                        principalSchema: "public",
                         principalTable: "Services",
                         principalColumn: "ServiceID",
                         onDelete: ReferentialAction.Cascade);
@@ -1100,6 +1299,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "VirtualServices",
+                schema: "public",
                 columns: table => new
                 {
                     VirtualServiceID = table.Column<int>(type: "integer", nullable: false)
@@ -1113,18 +1313,395 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     table.ForeignKey(
                         name: "FK_VirtualServices_Servers",
                         column: x => x.ServerID,
+                        principalSchema: "public",
                         principalTable: "Servers",
                         principalColumn: "ServerID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_VirtualServices_Services",
                         column: x => x.ServiceID,
+                        principalSchema: "public",
+                        principalTable: "Services",
+                        principalColumn: "ServiceID");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "HostingPlanQuotas",
+                schema: "public",
+                columns: table => new
+                {
+                    PlanID = table.Column<int>(type: "integer", nullable: false),
+                    QuotaID = table.Column<int>(type: "integer", nullable: false),
+                    QuotaValue = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HostingPlanQuotas_1", x => new { x.PlanID, x.QuotaID });
+                    table.ForeignKey(
+                        name: "FK_HostingPlanQuotas_HostingPlans",
+                        column: x => x.PlanID,
+                        principalSchema: "public",
+                        principalTable: "HostingPlans",
+                        principalColumn: "PlanID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_HostingPlanQuotas_Quotas",
+                        column: x => x.QuotaID,
+                        principalSchema: "public",
+                        principalTable: "Quotas",
+                        principalColumn: "QuotaID");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GlobalDnsRecords",
+                schema: "public",
+                columns: table => new
+                {
+                    RecordID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    RecordType = table.Column<string>(type: "character varying(10)", unicode: false, maxLength: 10, nullable: false),
+                    RecordName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    RecordData = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    MXPriority = table.Column<int>(type: "integer", nullable: false),
+                    ServiceID = table.Column<int>(type: "integer", nullable: true),
+                    ServerID = table.Column<int>(type: "integer", nullable: true),
+                    PackageID = table.Column<int>(type: "integer", nullable: true),
+                    IPAddressID = table.Column<int>(type: "integer", nullable: true),
+                    SrvPriority = table.Column<int>(type: "integer", nullable: true),
+                    SrvWeight = table.Column<int>(type: "integer", nullable: true),
+                    SrvPort = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GlobalDnsRecords", x => x.RecordID);
+                    table.ForeignKey(
+                        name: "FK_GlobalDnsRecords_IPAddresses",
+                        column: x => x.IPAddressID,
+                        principalSchema: "public",
+                        principalTable: "IPAddresses",
+                        principalColumn: "AddressID");
+                    table.ForeignKey(
+                        name: "FK_GlobalDnsRecords_Packages",
+                        column: x => x.PackageID,
+                        principalSchema: "public",
+                        principalTable: "Packages",
+                        principalColumn: "PackageID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GlobalDnsRecords_Servers",
+                        column: x => x.ServerID,
+                        principalSchema: "public",
+                        principalTable: "Servers",
+                        principalColumn: "ServerID");
+                    table.ForeignKey(
+                        name: "FK_GlobalDnsRecords_Services",
+                        column: x => x.ServiceID,
+                        principalSchema: "public",
+                        principalTable: "Services",
+                        principalColumn: "ServiceID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PackageAddons",
+                schema: "public",
+                columns: table => new
+                {
+                    PackageAddonID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    PackageID = table.Column<int>(type: "integer", nullable: true),
+                    PlanID = table.Column<int>(type: "integer", nullable: true),
+                    Quantity = table.Column<int>(type: "integer", nullable: true),
+                    PurchaseDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    Comments = table.Column<string>(type: "TEXT", nullable: true),
+                    StatusID = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PackageAddons", x => x.PackageAddonID);
+                    table.ForeignKey(
+                        name: "FK_PackageAddons_HostingPlans",
+                        column: x => x.PlanID,
+                        principalSchema: "public",
+                        principalTable: "HostingPlans",
+                        principalColumn: "PlanID");
+                    table.ForeignKey(
+                        name: "FK_PackageAddons_Packages",
+                        column: x => x.PackageID,
+                        principalSchema: "public",
+                        principalTable: "Packages",
+                        principalColumn: "PackageID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PackageQuotas",
+                schema: "public",
+                columns: table => new
+                {
+                    PackageID = table.Column<int>(type: "integer", nullable: false),
+                    QuotaID = table.Column<int>(type: "integer", nullable: false),
+                    QuotaValue = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PackageQuotas", x => new { x.PackageID, x.QuotaID });
+                    table.ForeignKey(
+                        name: "FK_PackageQuotas_Packages",
+                        column: x => x.PackageID,
+                        principalSchema: "public",
+                        principalTable: "Packages",
+                        principalColumn: "PackageID");
+                    table.ForeignKey(
+                        name: "FK_PackageQuotas_Quotas",
+                        column: x => x.QuotaID,
+                        principalSchema: "public",
+                        principalTable: "Quotas",
+                        principalColumn: "QuotaID");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PackageResources",
+                schema: "public",
+                columns: table => new
+                {
+                    PackageID = table.Column<int>(type: "integer", nullable: false),
+                    GroupID = table.Column<int>(type: "integer", nullable: false),
+                    CalculateDiskspace = table.Column<bool>(type: "boolean", nullable: false),
+                    CalculateBandwidth = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PackageResources_1", x => new { x.PackageID, x.GroupID });
+                    table.ForeignKey(
+                        name: "FK_PackageResources_Packages",
+                        column: x => x.PackageID,
+                        principalSchema: "public",
+                        principalTable: "Packages",
+                        principalColumn: "PackageID");
+                    table.ForeignKey(
+                        name: "FK_PackageResources_ResourceGroups",
+                        column: x => x.GroupID,
+                        principalSchema: "public",
+                        principalTable: "ResourceGroups",
+                        principalColumn: "GroupID");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PackagesBandwidth",
+                schema: "public",
+                columns: table => new
+                {
+                    PackageID = table.Column<int>(type: "integer", nullable: false),
+                    GroupID = table.Column<int>(type: "integer", nullable: false),
+                    LogDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    BytesSent = table.Column<long>(type: "bigint", nullable: false),
+                    BytesReceived = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PackagesBandwidth", x => new { x.PackageID, x.GroupID, x.LogDate });
+                    table.ForeignKey(
+                        name: "FK_PackagesBandwidth_Packages",
+                        column: x => x.PackageID,
+                        principalSchema: "public",
+                        principalTable: "Packages",
+                        principalColumn: "PackageID");
+                    table.ForeignKey(
+                        name: "FK_PackagesBandwidth_ResourceGroups",
+                        column: x => x.GroupID,
+                        principalSchema: "public",
+                        principalTable: "ResourceGroups",
+                        principalColumn: "GroupID");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PackagesDiskspace",
+                schema: "public",
+                columns: table => new
+                {
+                    PackageID = table.Column<int>(type: "integer", nullable: false),
+                    GroupID = table.Column<int>(type: "integer", nullable: false),
+                    DiskSpace = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PackagesDiskspace", x => new { x.PackageID, x.GroupID });
+                    table.ForeignKey(
+                        name: "FK_PackagesDiskspace_Packages",
+                        column: x => x.PackageID,
+                        principalSchema: "public",
+                        principalTable: "Packages",
+                        principalColumn: "PackageID");
+                    table.ForeignKey(
+                        name: "FK_PackagesDiskspace_ResourceGroups",
+                        column: x => x.GroupID,
+                        principalSchema: "public",
+                        principalTable: "ResourceGroups",
+                        principalColumn: "GroupID");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PackageServices",
+                schema: "public",
+                columns: table => new
+                {
+                    PackageID = table.Column<int>(type: "integer", nullable: false),
+                    ServiceID = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PackageServices", x => new { x.PackageID, x.ServiceID });
+                    table.ForeignKey(
+                        name: "FK_PackageServices_Packages",
+                        column: x => x.PackageID,
+                        principalSchema: "public",
+                        principalTable: "Packages",
+                        principalColumn: "PackageID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PackageServices_Services",
+                        column: x => x.ServiceID,
+                        principalSchema: "public",
+                        principalTable: "Services",
+                        principalColumn: "ServiceID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PackagesTreeCache",
+                schema: "public",
+                columns: table => new
+                {
+                    ParentPackageID = table.Column<int>(type: "integer", nullable: false),
+                    PackageID = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PackagesTreeCache", x => new { x.ParentPackageID, x.PackageID });
+                    table.ForeignKey(
+                        name: "FK_PackagesTreeCache_Packages",
+                        column: x => x.ParentPackageID,
+                        principalSchema: "public",
+                        principalTable: "Packages",
+                        principalColumn: "PackageID");
+                    table.ForeignKey(
+                        name: "FK_PackagesTreeCache_Packages1",
+                        column: x => x.PackageID,
+                        principalSchema: "public",
+                        principalTable: "Packages",
+                        principalColumn: "PackageID");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PackageVLANs",
+                schema: "public",
+                columns: table => new
+                {
+                    PackageVlanID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    VlanID = table.Column<int>(type: "integer", nullable: false),
+                    PackageID = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__PackageV__A9AABBF9C0C25CB3", x => x.PackageVlanID);
+                    table.ForeignKey(
+                        name: "FK_PackageID",
+                        column: x => x.PackageID,
+                        principalSchema: "public",
+                        principalTable: "Packages",
+                        principalColumn: "PackageID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_VlanID",
+                        column: x => x.VlanID,
+                        principalSchema: "public",
+                        principalTable: "PrivateNetworkVLANs",
+                        principalColumn: "VlanID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Schedule",
+                schema: "public",
+                columns: table => new
+                {
+                    ScheduleID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    TaskID = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    PackageID = table.Column<int>(type: "integer", nullable: true),
+                    ScheduleName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    ScheduleTypeID = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    Interval = table.Column<int>(type: "integer", nullable: true),
+                    FromTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ToTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    StartTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastRun = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    NextRun = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    Enabled = table.Column<bool>(type: "boolean", nullable: false),
+                    PriorityID = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    HistoriesNumber = table.Column<int>(type: "integer", nullable: true),
+                    MaxExecutionTime = table.Column<int>(type: "integer", nullable: true),
+                    WeekMonthDay = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Schedule", x => x.ScheduleID);
+                    table.ForeignKey(
+                        name: "FK_Schedule_Packages",
+                        column: x => x.PackageID,
+                        principalSchema: "public",
+                        principalTable: "Packages",
+                        principalColumn: "PackageID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Schedule_ScheduleTasks",
+                        column: x => x.TaskID,
+                        principalSchema: "public",
+                        principalTable: "ScheduleTasks",
+                        principalColumn: "TaskID");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ServiceItems",
+                schema: "public",
+                columns: table => new
+                {
+                    ItemID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    PackageID = table.Column<int>(type: "integer", nullable: true),
+                    ItemTypeID = table.Column<int>(type: "integer", nullable: true),
+                    ServiceID = table.Column<int>(type: "integer", nullable: true),
+                    ItemName = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ServiceItems", x => x.ItemID);
+                    table.ForeignKey(
+                        name: "FK_ServiceItems_Packages",
+                        column: x => x.PackageID,
+                        principalSchema: "public",
+                        principalTable: "Packages",
+                        principalColumn: "PackageID");
+                    table.ForeignKey(
+                        name: "FK_ServiceItems_ServiceItemTypes",
+                        column: x => x.ItemTypeID,
+                        principalSchema: "public",
+                        principalTable: "ServiceItemTypes",
+                        principalColumn: "ItemTypeID");
+                    table.ForeignKey(
+                        name: "FK_ServiceItems_Services",
+                        column: x => x.ServiceID,
+                        principalSchema: "public",
                         principalTable: "Services",
                         principalColumn: "ServiceID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "StorageSpaceFolders",
+                schema: "public",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -1143,106 +1720,36 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     table.ForeignKey(
                         name: "FK_StorageSpaceFolders_StorageSpaceId",
                         column: x => x.StorageSpaceId,
+                        principalSchema: "public",
                         principalTable: "StorageSpaces",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "EnterpriseFolders",
+                name: "ScheduleParameters",
+                schema: "public",
                 columns: table => new
                 {
-                    EnterpriseFolderID = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ItemID = table.Column<int>(type: "integer", nullable: false),
-                    FolderName = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    FolderQuota = table.Column<int>(type: "integer", nullable: false),
-                    LocationDrive = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    HomeFolder = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    Domain = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    StorageSpaceFolderId = table.Column<int>(type: "integer", nullable: true)
+                    ScheduleID = table.Column<int>(type: "integer", nullable: false),
+                    ParameterID = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    ParameterValue = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EnterpriseFolders", x => x.EnterpriseFolderID);
+                    table.PrimaryKey("PK_ScheduleParameters", x => new { x.ScheduleID, x.ParameterID });
                     table.ForeignKey(
-                        name: "FK_EnterpriseFolders_StorageSpaceFolderId",
-                        column: x => x.StorageSpaceFolderId,
-                        principalTable: "StorageSpaceFolders",
-                        principalColumn: "Id",
+                        name: "FK_ScheduleParameters_Schedule",
+                        column: x => x.ScheduleID,
+                        principalSchema: "public",
+                        principalTable: "Schedule",
+                        principalColumn: "ScheduleID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AccessTokens",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    AccessTokenGuid = table.Column<Guid>(type: "uuid", nullable: false),
-                    ExpirationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    AccountID = table.Column<int>(type: "integer", nullable: false),
-                    ItemId = table.Column<int>(type: "integer", nullable: false),
-                    TokenType = table.Column<int>(type: "integer", nullable: false),
-                    SmsResponse = table.Column<string>(type: "character varying(100)", unicode: false, maxLength: 100, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__AccessTo__3214EC27A32557FE", x => x.ID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "BlackBerryUsers",
-                columns: table => new
-                {
-                    BlackBerryUserId = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    AccountId = table.Column<int>(type: "integer", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BlackBerryUsers", x => x.BlackBerryUserId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CRMUsers",
-                columns: table => new
-                {
-                    CRMUserID = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    AccountID = table.Column<int>(type: "integer", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ChangedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    CRMUserGuid = table.Column<Guid>(type: "uuid", nullable: true),
-                    BusinessUnitID = table.Column<Guid>(type: "uuid", nullable: true),
-                    CALType = table.Column<int>(type: "integer", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CRMUsers", x => x.CRMUserID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DomainDnsRecords",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    DomainId = table.Column<int>(type: "integer", nullable: false),
-                    RecordType = table.Column<int>(type: "integer", nullable: false),
-                    DnsServer = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    Value = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__DomainDn__3214EC2758B0A6F1", x => x.ID);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Domains",
+                schema: "public",
                 columns: table => new
                 {
                     DomainID = table.Column<int>(type: "integer", nullable: false)
@@ -1265,144 +1772,216 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Domains", x => x.DomainID);
+                    table.ForeignKey(
+                        name: "FK_Domains_Packages",
+                        column: x => x.PackageID,
+                        principalSchema: "public",
+                        principalTable: "Packages",
+                        principalColumn: "PackageID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Domains_ServiceItems_MailDomain",
+                        column: x => x.MailDomainID,
+                        principalSchema: "public",
+                        principalTable: "ServiceItems",
+                        principalColumn: "ItemID");
+                    table.ForeignKey(
+                        name: "FK_Domains_ServiceItems_WebSite",
+                        column: x => x.WebSiteID,
+                        principalSchema: "public",
+                        principalTable: "ServiceItems",
+                        principalColumn: "ItemID");
+                    table.ForeignKey(
+                        name: "FK_Domains_ServiceItems_ZoneItem",
+                        column: x => x.ZoneItemID,
+                        principalSchema: "public",
+                        principalTable: "ServiceItems",
+                        principalColumn: "ItemID");
                 });
 
             migrationBuilder.CreateTable(
-                name: "EnterpriseFoldersOwaPermissions",
+                name: "ExchangeOrganizationDomains",
+                schema: "public",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "integer", nullable: false)
+                    OrganizationDomainID = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ItemID = table.Column<int>(type: "integer", nullable: false),
-                    FolderID = table.Column<int>(type: "integer", nullable: false),
-                    AccountID = table.Column<int>(type: "integer", nullable: false)
+                    DomainID = table.Column<int>(type: "integer", nullable: true),
+                    IsHost = table.Column<bool>(type: "boolean", nullable: true, defaultValue: false),
+                    DomainTypeID = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__Enterpri__3214EC27D1B48691", x => x.ID);
+                    table.PrimaryKey("PK_ExchangeOrganizationDomains", x => x.OrganizationDomainID);
                     table.ForeignKey(
-                        name: "FK_EnterpriseFoldersOwaPermissions_FolderId",
-                        column: x => x.FolderID,
-                        principalTable: "EnterpriseFolders",
-                        principalColumn: "EnterpriseFolderID",
+                        name: "FK_ExchangeOrganizationDomains_ServiceItems",
+                        column: x => x.ItemID,
+                        principalSchema: "public",
+                        principalTable: "ServiceItems",
+                        principalColumn: "ItemID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ExchangeAccountEmailAddresses",
+                name: "ExchangeOrganizations",
+                schema: "public",
                 columns: table => new
                 {
-                    AddressID = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    AccountID = table.Column<int>(type: "integer", nullable: false),
-                    EmailAddress = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false)
+                    ItemID = table.Column<int>(type: "integer", nullable: false),
+                    OrganizationID = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    ExchangeMailboxPlanID = table.Column<int>(type: "integer", nullable: true),
+                    LyncUserPlanID = table.Column<int>(type: "integer", nullable: true),
+                    SfBUserPlanID = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ExchangeAccountEmailAddresses", x => x.AddressID);
+                    table.PrimaryKey("PK_ExchangeOrganizations", x => x.ItemID);
+                    table.ForeignKey(
+                        name: "FK_ExchangeOrganizations_ServiceItems",
+                        column: x => x.ItemID,
+                        principalSchema: "public",
+                        principalTable: "ServiceItems",
+                        principalColumn: "ItemID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ExchangeAccounts",
+                name: "PackageIPAddresses",
+                schema: "public",
                 columns: table => new
                 {
-                    AccountID = table.Column<int>(type: "integer", nullable: false)
+                    PackageAddressID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    PackageID = table.Column<int>(type: "integer", nullable: false),
+                    AddressID = table.Column<int>(type: "integer", nullable: false),
+                    ItemID = table.Column<int>(type: "integer", nullable: true),
+                    IsPrimary = table.Column<bool>(type: "boolean", nullable: true),
+                    OrgID = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PackageIPAddresses", x => x.PackageAddressID);
+                    table.ForeignKey(
+                        name: "FK_PackageIPAddresses_IPAddresses",
+                        column: x => x.AddressID,
+                        principalSchema: "public",
+                        principalTable: "IPAddresses",
+                        principalColumn: "AddressID");
+                    table.ForeignKey(
+                        name: "FK_PackageIPAddresses_Packages",
+                        column: x => x.PackageID,
+                        principalSchema: "public",
+                        principalTable: "Packages",
+                        principalColumn: "PackageID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PackageIPAddresses_ServiceItems",
+                        column: x => x.ItemID,
+                        principalSchema: "public",
+                        principalTable: "ServiceItems",
+                        principalColumn: "ItemID");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PrivateIPAddresses",
+                schema: "public",
+                columns: table => new
+                {
+                    PrivateAddressID = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ItemID = table.Column<int>(type: "integer", nullable: false),
-                    AccountType = table.Column<int>(type: "integer", nullable: false),
-                    AccountName = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
-                    DisplayName = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
-                    PrimaryEmailAddress = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
-                    MailEnabledPublicFolder = table.Column<bool>(type: "boolean", nullable: true),
-                    MailboxManagerActions = table.Column<string>(type: "character varying(200)", unicode: false, maxLength: 200, nullable: true),
-                    SamAccountName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    MailboxPlanId = table.Column<int>(type: "integer", nullable: true),
-                    SubscriberNumber = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true),
-                    UserPrincipalName = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
-                    ExchangeDisclaimerId = table.Column<int>(type: "integer", nullable: true),
-                    ArchivingMailboxPlanId = table.Column<int>(type: "integer", nullable: true),
-                    EnableArchiving = table.Column<bool>(type: "boolean", nullable: true),
-                    LevelID = table.Column<int>(type: "integer", nullable: true),
-                    IsVIP = table.Column<bool>(type: "boolean", nullable: false)
+                    IPAddress = table.Column<string>(type: "character varying(15)", unicode: false, maxLength: 15, nullable: false),
+                    IsPrimary = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ExchangeAccounts", x => x.AccountID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "RDSCollectionUsers",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    RDSCollectionId = table.Column<int>(type: "integer", nullable: false),
-                    AccountID = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__RDSColle__3214EC2780141EF7", x => x.ID);
+                    table.PrimaryKey("PK_PrivateIPAddresses", x => x.PrivateAddressID);
                     table.ForeignKey(
-                        name: "FK_RDSCollectionUsers_RDSCollectionId",
-                        column: x => x.RDSCollectionId,
-                        principalTable: "RDSCollections",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_RDSCollectionUsers_UserId",
-                        column: x => x.AccountID,
-                        principalTable: "ExchangeAccounts",
-                        principalColumn: "AccountID",
+                        name: "FK_PrivateIPAddresses_ServiceItems",
+                        column: x => x.ItemID,
+                        principalSchema: "public",
+                        principalTable: "ServiceItems",
+                        principalColumn: "ItemID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "WebDavAccessTokens",
+                name: "ServiceItemProperties",
+                schema: "public",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    FilePath = table.Column<string>(type: "text", nullable: false),
-                    AuthData = table.Column<string>(type: "text", nullable: false),
-                    AccessToken = table.Column<Guid>(type: "uuid", nullable: false),
-                    ExpirationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    AccountID = table.Column<int>(type: "integer", nullable: false),
-                    ItemId = table.Column<int>(type: "integer", nullable: false)
+                    ItemID = table.Column<int>(type: "integer", nullable: false),
+                    PropertyName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    PropertyValue = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__WebDavAc__3214EC27B27DC571", x => x.ID);
+                    table.PrimaryKey("PK_ServiceItemProperties", x => new { x.ItemID, x.PropertyName });
                     table.ForeignKey(
-                        name: "FK_WebDavAccessTokens_UserId",
-                        column: x => x.AccountID,
-                        principalTable: "ExchangeAccounts",
-                        principalColumn: "AccountID",
+                        name: "FK_ServiceItemProperties_ServiceItems",
+                        column: x => x.ItemID,
+                        principalSchema: "public",
+                        principalTable: "ServiceItems",
+                        principalColumn: "ItemID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "WebDavPortalUsersSettings",
+                name: "EnterpriseFolders",
+                schema: "public",
+                columns: table => new
+                {
+                    EnterpriseFolderID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ItemID = table.Column<int>(type: "integer", nullable: false),
+                    FolderName = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    FolderQuota = table.Column<int>(type: "integer", nullable: false),
+                    LocationDrive = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    HomeFolder = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    Domain = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    StorageSpaceFolderId = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EnterpriseFolders", x => x.EnterpriseFolderID);
+                    table.ForeignKey(
+                        name: "FK_EnterpriseFolders_StorageSpaceFolderId",
+                        column: x => x.StorageSpaceFolderId,
+                        principalSchema: "public",
+                        principalTable: "StorageSpaceFolders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DomainDnsRecords",
+                schema: "public",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    AccountId = table.Column<int>(type: "integer", nullable: false),
-                    Settings = table.Column<string>(type: "text", nullable: true)
+                    DomainId = table.Column<int>(type: "integer", nullable: false),
+                    RecordType = table.Column<int>(type: "integer", nullable: false),
+                    DnsServer = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    Value = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__WebDavPo__3214EC278AF5195E", x => x.ID);
+                    table.PrimaryKey("PK__DomainDn__3214EC2758B0A6F1", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_WebDavPortalUsersSettings_UserId",
-                        column: x => x.AccountId,
-                        principalTable: "ExchangeAccounts",
-                        principalColumn: "AccountID",
+                        name: "FK_DomainDnsRecords_DomainId",
+                        column: x => x.DomainId,
+                        principalSchema: "public",
+                        principalTable: "Domains",
+                        principalColumn: "DomainID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "ExchangeMailboxPlans",
+                schema: "public",
                 columns: table => new
                 {
                     MailboxPlanId = table.Column<int>(type: "integer", nullable: false)
@@ -1441,41 +2020,18 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ExchangeMailboxPlans", x => x.MailboxPlanId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ExchangeOrganizationDomains",
-                columns: table => new
-                {
-                    OrganizationDomainID = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ItemID = table.Column<int>(type: "integer", nullable: false),
-                    DomainID = table.Column<int>(type: "integer", nullable: true),
-                    IsHost = table.Column<bool>(type: "boolean", nullable: true, defaultValue: false),
-                    DomainTypeID = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ExchangeOrganizationDomains", x => x.OrganizationDomainID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ExchangeOrganizations",
-                columns: table => new
-                {
-                    ItemID = table.Column<int>(type: "integer", nullable: false),
-                    OrganizationID = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
-                    ExchangeMailboxPlanID = table.Column<int>(type: "integer", nullable: true),
-                    LyncUserPlanID = table.Column<int>(type: "integer", nullable: true),
-                    SfBUserPlanID = table.Column<int>(type: "integer", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ExchangeOrganizations", x => x.ItemID);
+                    table.ForeignKey(
+                        name: "FK_ExchangeMailboxPlans_ExchangeOrganizations",
+                        column: x => x.ItemID,
+                        principalSchema: "public",
+                        principalTable: "ExchangeOrganizations",
+                        principalColumn: "ItemID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "ExchangeOrganizationSettings",
+                schema: "public",
                 columns: table => new
                 {
                     ItemId = table.Column<int>(type: "integer", nullable: false),
@@ -1488,6 +2044,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     table.ForeignKey(
                         name: "FK_ExchangeOrganizationSettings_ExchangeOrganizations_ItemId",
                         column: x => x.ItemId,
+                        principalSchema: "public",
                         principalTable: "ExchangeOrganizations",
                         principalColumn: "ItemID",
                         onDelete: ReferentialAction.Cascade);
@@ -1495,6 +2052,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "ExchangeOrganizationSsFolders",
+                schema: "public",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -1509,12 +2067,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     table.ForeignKey(
                         name: "FK_ExchangeOrganizationSsFolders_ItemId",
                         column: x => x.ItemId,
+                        principalSchema: "public",
                         principalTable: "ExchangeOrganizations",
                         principalColumn: "ItemID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ExchangeOrganizationSsFolders_StorageSpaceFolderId",
                         column: x => x.StorageSpaceFolderId,
+                        principalSchema: "public",
                         principalTable: "StorageSpaceFolders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -1522,6 +2082,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateTable(
                 name: "LyncUserPlans",
+                schema: "public",
                 columns: table => new
                 {
                     LyncUserPlanId = table.Column<int>(type: "integer", nullable: false)
@@ -1552,13 +2113,58 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     table.ForeignKey(
                         name: "FK_LyncUserPlans_ExchangeOrganizations",
                         column: x => x.ItemID,
+                        principalSchema: "public",
                         principalTable: "ExchangeOrganizations",
                         principalColumn: "ItemID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
+                name: "ExchangeAccounts",
+                schema: "public",
+                columns: table => new
+                {
+                    AccountID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ItemID = table.Column<int>(type: "integer", nullable: false),
+                    AccountType = table.Column<int>(type: "integer", nullable: false),
+                    AccountName = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
+                    DisplayName = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
+                    PrimaryEmailAddress = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
+                    MailEnabledPublicFolder = table.Column<bool>(type: "boolean", nullable: true),
+                    MailboxManagerActions = table.Column<string>(type: "character varying(200)", unicode: false, maxLength: 200, nullable: true),
+                    SamAccountName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    MailboxPlanId = table.Column<int>(type: "integer", nullable: true),
+                    SubscriberNumber = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true),
+                    UserPrincipalName = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
+                    ExchangeDisclaimerId = table.Column<int>(type: "integer", nullable: true),
+                    ArchivingMailboxPlanId = table.Column<int>(type: "integer", nullable: true),
+                    EnableArchiving = table.Column<bool>(type: "boolean", nullable: true),
+                    LevelID = table.Column<int>(type: "integer", nullable: true),
+                    IsVIP = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ExchangeAccounts", x => x.AccountID);
+                    table.ForeignKey(
+                        name: "FK_ExchangeAccounts_ExchangeMailboxPlans",
+                        column: x => x.MailboxPlanId,
+                        principalSchema: "public",
+                        principalTable: "ExchangeMailboxPlans",
+                        principalColumn: "MailboxPlanId");
+                    table.ForeignKey(
+                        name: "FK_ExchangeAccounts_ServiceItems",
+                        column: x => x.ItemID,
+                        principalSchema: "public",
+                        principalTable: "ServiceItems",
+                        principalColumn: "ItemID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "LyncUsers",
+                schema: "public",
                 columns: table => new
                 {
                     LyncUserID = table.Column<int>(type: "integer", nullable: false)
@@ -1575,522 +2181,215 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     table.ForeignKey(
                         name: "FK_LyncUsers_LyncUserPlans",
                         column: x => x.LyncUserPlanID,
+                        principalSchema: "public",
                         principalTable: "LyncUserPlans",
                         principalColumn: "LyncUserPlanId");
                 });
 
             migrationBuilder.CreateTable(
-                name: "GlobalDnsRecords",
+                name: "AccessTokens",
+                schema: "public",
                 columns: table => new
                 {
-                    RecordID = table.Column<int>(type: "integer", nullable: false)
+                    ID = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    RecordType = table.Column<string>(type: "character varying(10)", unicode: false, maxLength: 10, nullable: false),
-                    RecordName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    RecordData = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    MXPriority = table.Column<int>(type: "integer", nullable: false),
-                    ServiceID = table.Column<int>(type: "integer", nullable: true),
-                    ServerID = table.Column<int>(type: "integer", nullable: true),
-                    PackageID = table.Column<int>(type: "integer", nullable: true),
-                    IPAddressID = table.Column<int>(type: "integer", nullable: true),
-                    SrvPriority = table.Column<int>(type: "integer", nullable: true),
-                    SrvWeight = table.Column<int>(type: "integer", nullable: true),
-                    SrvPort = table.Column<int>(type: "integer", nullable: true)
+                    AccessTokenGuid = table.Column<Guid>(type: "uuid", nullable: false),
+                    ExpirationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    AccountID = table.Column<int>(type: "integer", nullable: false),
+                    ItemId = table.Column<int>(type: "integer", nullable: false),
+                    TokenType = table.Column<int>(type: "integer", nullable: false),
+                    SmsResponse = table.Column<string>(type: "character varying(100)", unicode: false, maxLength: 100, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GlobalDnsRecords", x => x.RecordID);
+                    table.PrimaryKey("PK__AccessTo__3214EC27A32557FE", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_GlobalDnsRecords_IPAddresses",
-                        column: x => x.IPAddressID,
-                        principalTable: "IPAddresses",
-                        principalColumn: "AddressID");
-                    table.ForeignKey(
-                        name: "FK_GlobalDnsRecords_Servers",
-                        column: x => x.ServerID,
-                        principalTable: "Servers",
-                        principalColumn: "ServerID");
-                    table.ForeignKey(
-                        name: "FK_GlobalDnsRecords_Services",
-                        column: x => x.ServiceID,
-                        principalTable: "Services",
-                        principalColumn: "ServiceID",
+                        name: "FK_AccessTokens_UserId",
+                        column: x => x.AccountID,
+                        principalSchema: "public",
+                        principalTable: "ExchangeAccounts",
+                        principalColumn: "AccountID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "HostingPlanQuotas",
+                name: "BlackBerryUsers",
+                schema: "public",
                 columns: table => new
                 {
-                    PlanID = table.Column<int>(type: "integer", nullable: false),
-                    QuotaID = table.Column<int>(type: "integer", nullable: false),
-                    QuotaValue = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_HostingPlanQuotas_1", x => new { x.PlanID, x.QuotaID });
-                    table.ForeignKey(
-                        name: "FK_HostingPlanQuotas_Quotas",
-                        column: x => x.QuotaID,
-                        principalTable: "Quotas",
-                        principalColumn: "QuotaID");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "HostingPlanResources",
-                columns: table => new
-                {
-                    PlanID = table.Column<int>(type: "integer", nullable: false),
-                    GroupID = table.Column<int>(type: "integer", nullable: false),
-                    CalculateDiskSpace = table.Column<bool>(type: "boolean", nullable: true),
-                    CalculateBandwidth = table.Column<bool>(type: "boolean", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_HostingPlanResources", x => new { x.PlanID, x.GroupID });
-                    table.ForeignKey(
-                        name: "FK_HostingPlanResources_ResourceGroups",
-                        column: x => x.GroupID,
-                        principalTable: "ResourceGroups",
-                        principalColumn: "GroupID");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "HostingPlans",
-                columns: table => new
-                {
-                    PlanID = table.Column<int>(type: "integer", nullable: false)
+                    BlackBerryUserId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserID = table.Column<int>(type: "integer", nullable: true),
-                    PackageID = table.Column<int>(type: "integer", nullable: true),
-                    ServerID = table.Column<int>(type: "integer", nullable: true),
-                    PlanName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    PlanDescription = table.Column<string>(type: "TEXT", nullable: true),
-                    Available = table.Column<bool>(type: "boolean", nullable: false),
-                    SetupPrice = table.Column<decimal>(type: "numeric", nullable: true),
-                    RecurringPrice = table.Column<decimal>(type: "numeric", nullable: true),
-                    RecurrenceUnit = table.Column<int>(type: "integer", nullable: true),
-                    RecurrenceLength = table.Column<int>(type: "integer", nullable: true),
-                    IsAddon = table.Column<bool>(type: "boolean", nullable: true)
+                    AccountId = table.Column<int>(type: "integer", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_HostingPlans", x => x.PlanID);
+                    table.PrimaryKey("PK_BlackBerryUsers", x => x.BlackBerryUserId);
                     table.ForeignKey(
-                        name: "FK_HostingPlans_Servers",
-                        column: x => x.ServerID,
-                        principalTable: "Servers",
-                        principalColumn: "ServerID");
-                    table.ForeignKey(
-                        name: "FK_HostingPlans_Users",
-                        column: x => x.UserID,
-                        principalTable: "Users",
-                        principalColumn: "UserID");
+                        name: "FK_BlackBerryUsers_ExchangeAccounts",
+                        column: x => x.AccountId,
+                        principalSchema: "public",
+                        principalTable: "ExchangeAccounts",
+                        principalColumn: "AccountID");
                 });
 
             migrationBuilder.CreateTable(
-                name: "Packages",
+                name: "CRMUsers",
+                schema: "public",
                 columns: table => new
                 {
-                    PackageID = table.Column<int>(type: "integer", nullable: false)
+                    CRMUserID = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ParentPackageID = table.Column<int>(type: "integer", nullable: true),
-                    UserID = table.Column<int>(type: "integer", nullable: false),
-                    PackageName = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
-                    PackageComments = table.Column<string>(type: "TEXT", nullable: true),
-                    ServerID = table.Column<int>(type: "integer", nullable: true),
-                    StatusID = table.Column<int>(type: "integer", nullable: false),
-                    PlanID = table.Column<int>(type: "integer", nullable: true),
-                    PurchaseDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    OverrideQuotas = table.Column<bool>(type: "boolean", nullable: false),
-                    BandwidthUpdated = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    DefaultTopPackage = table.Column<bool>(type: "boolean", nullable: false),
-                    StatusIDchangeDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    AccountID = table.Column<int>(type: "integer", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ChangedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CRMUserGuid = table.Column<Guid>(type: "uuid", nullable: true),
+                    BusinessUnitID = table.Column<Guid>(type: "uuid", nullable: true),
+                    CALType = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Packages", x => x.PackageID);
+                    table.PrimaryKey("PK_CRMUsers", x => x.CRMUserID);
                     table.ForeignKey(
-                        name: "FK_Packages_HostingPlans",
-                        column: x => x.PlanID,
-                        principalTable: "HostingPlans",
-                        principalColumn: "PlanID");
-                    table.ForeignKey(
-                        name: "FK_Packages_Packages",
-                        column: x => x.ParentPackageID,
-                        principalTable: "Packages",
-                        principalColumn: "PackageID");
-                    table.ForeignKey(
-                        name: "FK_Packages_Servers",
-                        column: x => x.ServerID,
-                        principalTable: "Servers",
-                        principalColumn: "ServerID");
-                    table.ForeignKey(
-                        name: "FK_Packages_Users",
-                        column: x => x.UserID,
-                        principalTable: "Users",
-                        principalColumn: "UserID");
+                        name: "FK_CRMUsers_ExchangeAccounts",
+                        column: x => x.AccountID,
+                        principalSchema: "public",
+                        principalTable: "ExchangeAccounts",
+                        principalColumn: "AccountID");
                 });
 
             migrationBuilder.CreateTable(
-                name: "PackageAddons",
+                name: "EnterpriseFoldersOwaPermissions",
+                schema: "public",
                 columns: table => new
                 {
-                    PackageAddonID = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    PackageID = table.Column<int>(type: "integer", nullable: true),
-                    PlanID = table.Column<int>(type: "integer", nullable: true),
-                    Quantity = table.Column<int>(type: "integer", nullable: true),
-                    PurchaseDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    Comments = table.Column<string>(type: "TEXT", nullable: true),
-                    StatusID = table.Column<int>(type: "integer", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PackageAddons", x => x.PackageAddonID);
-                    table.ForeignKey(
-                        name: "FK_PackageAddons_HostingPlans",
-                        column: x => x.PlanID,
-                        principalTable: "HostingPlans",
-                        principalColumn: "PlanID");
-                    table.ForeignKey(
-                        name: "FK_PackageAddons_Packages",
-                        column: x => x.PackageID,
-                        principalTable: "Packages",
-                        principalColumn: "PackageID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PackageQuotas",
-                columns: table => new
-                {
-                    PackageID = table.Column<int>(type: "integer", nullable: false),
-                    QuotaID = table.Column<int>(type: "integer", nullable: false),
-                    QuotaValue = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PackageQuotas", x => new { x.PackageID, x.QuotaID });
-                    table.ForeignKey(
-                        name: "FK_PackageQuotas_Packages",
-                        column: x => x.PackageID,
-                        principalTable: "Packages",
-                        principalColumn: "PackageID");
-                    table.ForeignKey(
-                        name: "FK_PackageQuotas_Quotas",
-                        column: x => x.QuotaID,
-                        principalTable: "Quotas",
-                        principalColumn: "QuotaID");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PackageResources",
-                columns: table => new
-                {
-                    PackageID = table.Column<int>(type: "integer", nullable: false),
-                    GroupID = table.Column<int>(type: "integer", nullable: false),
-                    CalculateDiskspace = table.Column<bool>(type: "boolean", nullable: false),
-                    CalculateBandwidth = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PackageResources_1", x => new { x.PackageID, x.GroupID });
-                    table.ForeignKey(
-                        name: "FK_PackageResources_Packages",
-                        column: x => x.PackageID,
-                        principalTable: "Packages",
-                        principalColumn: "PackageID");
-                    table.ForeignKey(
-                        name: "FK_PackageResources_ResourceGroups",
-                        column: x => x.GroupID,
-                        principalTable: "ResourceGroups",
-                        principalColumn: "GroupID");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PackagesBandwidth",
-                columns: table => new
-                {
-                    PackageID = table.Column<int>(type: "integer", nullable: false),
-                    GroupID = table.Column<int>(type: "integer", nullable: false),
-                    LogDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    BytesSent = table.Column<long>(type: "bigint", nullable: false),
-                    BytesReceived = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PackagesBandwidth", x => new { x.PackageID, x.GroupID, x.LogDate });
-                    table.ForeignKey(
-                        name: "FK_PackagesBandwidth_Packages",
-                        column: x => x.PackageID,
-                        principalTable: "Packages",
-                        principalColumn: "PackageID");
-                    table.ForeignKey(
-                        name: "FK_PackagesBandwidth_ResourceGroups",
-                        column: x => x.GroupID,
-                        principalTable: "ResourceGroups",
-                        principalColumn: "GroupID");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PackagesDiskspace",
-                columns: table => new
-                {
-                    PackageID = table.Column<int>(type: "integer", nullable: false),
-                    GroupID = table.Column<int>(type: "integer", nullable: false),
-                    DiskSpace = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PackagesDiskspace", x => new { x.PackageID, x.GroupID });
-                    table.ForeignKey(
-                        name: "FK_PackagesDiskspace_Packages",
-                        column: x => x.PackageID,
-                        principalTable: "Packages",
-                        principalColumn: "PackageID");
-                    table.ForeignKey(
-                        name: "FK_PackagesDiskspace_ResourceGroups",
-                        column: x => x.GroupID,
-                        principalTable: "ResourceGroups",
-                        principalColumn: "GroupID");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PackageServices",
-                columns: table => new
-                {
-                    PackageID = table.Column<int>(type: "integer", nullable: false),
-                    ServiceID = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PackageServices", x => new { x.PackageID, x.ServiceID });
-                    table.ForeignKey(
-                        name: "FK_PackageServices_Packages",
-                        column: x => x.PackageID,
-                        principalTable: "Packages",
-                        principalColumn: "PackageID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PackageServices_Services",
-                        column: x => x.ServiceID,
-                        principalTable: "Services",
-                        principalColumn: "ServiceID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PackagesTreeCache",
-                columns: table => new
-                {
-                    ParentPackageID = table.Column<int>(type: "integer", nullable: false),
-                    PackageID = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PackagesTreeCache", x => new { x.ParentPackageID, x.PackageID });
-                    table.ForeignKey(
-                        name: "FK_PackagesTreeCache_Packages",
-                        column: x => x.ParentPackageID,
-                        principalTable: "Packages",
-                        principalColumn: "PackageID");
-                    table.ForeignKey(
-                        name: "FK_PackagesTreeCache_Packages1",
-                        column: x => x.PackageID,
-                        principalTable: "Packages",
-                        principalColumn: "PackageID");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PackageVLANs",
-                columns: table => new
-                {
-                    PackageVlanID = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    VlanID = table.Column<int>(type: "integer", nullable: false),
-                    PackageID = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__PackageV__A9AABBF9C0C25CB3", x => x.PackageVlanID);
-                    table.ForeignKey(
-                        name: "FK_PackageID",
-                        column: x => x.PackageID,
-                        principalTable: "Packages",
-                        principalColumn: "PackageID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_VlanID",
-                        column: x => x.VlanID,
-                        principalTable: "PrivateNetworkVLANs",
-                        principalColumn: "VlanID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Schedule",
-                columns: table => new
-                {
-                    ScheduleID = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    TaskID = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    PackageID = table.Column<int>(type: "integer", nullable: true),
-                    ScheduleName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    ScheduleTypeID = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    Interval = table.Column<int>(type: "integer", nullable: true),
-                    FromTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    ToTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    StartTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    LastRun = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    NextRun = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    Enabled = table.Column<bool>(type: "boolean", nullable: false),
-                    PriorityID = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    HistoriesNumber = table.Column<int>(type: "integer", nullable: true),
-                    MaxExecutionTime = table.Column<int>(type: "integer", nullable: true),
-                    WeekMonthDay = table.Column<int>(type: "integer", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Schedule", x => x.ScheduleID);
-                    table.ForeignKey(
-                        name: "FK_Schedule_Packages",
-                        column: x => x.PackageID,
-                        principalTable: "Packages",
-                        principalColumn: "PackageID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Schedule_ScheduleTasks",
-                        column: x => x.TaskID,
-                        principalTable: "ScheduleTasks",
-                        principalColumn: "TaskID");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ServiceItems",
-                columns: table => new
-                {
-                    ItemID = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    PackageID = table.Column<int>(type: "integer", nullable: true),
-                    ItemTypeID = table.Column<int>(type: "integer", nullable: true),
-                    ServiceID = table.Column<int>(type: "integer", nullable: true),
-                    ItemName = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ServiceItems", x => x.ItemID);
-                    table.ForeignKey(
-                        name: "FK_ServiceItems_Packages",
-                        column: x => x.PackageID,
-                        principalTable: "Packages",
-                        principalColumn: "PackageID");
-                    table.ForeignKey(
-                        name: "FK_ServiceItems_ServiceItemTypes",
-                        column: x => x.ItemTypeID,
-                        principalTable: "ServiceItemTypes",
-                        principalColumn: "ItemTypeID");
-                    table.ForeignKey(
-                        name: "FK_ServiceItems_Services",
-                        column: x => x.ServiceID,
-                        principalTable: "Services",
-                        principalColumn: "ServiceID");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ScheduleParameters",
-                columns: table => new
-                {
-                    ScheduleID = table.Column<int>(type: "integer", nullable: false),
-                    ParameterID = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    ParameterValue = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ScheduleParameters", x => new { x.ScheduleID, x.ParameterID });
-                    table.ForeignKey(
-                        name: "FK_ScheduleParameters_Schedule",
-                        column: x => x.ScheduleID,
-                        principalTable: "Schedule",
-                        principalColumn: "ScheduleID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PackageIPAddresses",
-                columns: table => new
-                {
-                    PackageAddressID = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    PackageID = table.Column<int>(type: "integer", nullable: false),
-                    AddressID = table.Column<int>(type: "integer", nullable: false),
-                    ItemID = table.Column<int>(type: "integer", nullable: true),
-                    IsPrimary = table.Column<bool>(type: "boolean", nullable: true),
-                    OrgID = table.Column<int>(type: "integer", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PackageIPAddresses", x => x.PackageAddressID);
-                    table.ForeignKey(
-                        name: "FK_PackageIPAddresses_IPAddresses",
-                        column: x => x.AddressID,
-                        principalTable: "IPAddresses",
-                        principalColumn: "AddressID");
-                    table.ForeignKey(
-                        name: "FK_PackageIPAddresses_Packages",
-                        column: x => x.PackageID,
-                        principalTable: "Packages",
-                        principalColumn: "PackageID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PackageIPAddresses_ServiceItems",
-                        column: x => x.ItemID,
-                        principalTable: "ServiceItems",
-                        principalColumn: "ItemID");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PrivateIPAddresses",
-                columns: table => new
-                {
-                    PrivateAddressID = table.Column<int>(type: "integer", nullable: false)
+                    ID = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ItemID = table.Column<int>(type: "integer", nullable: false),
-                    IPAddress = table.Column<string>(type: "character varying(15)", unicode: false, maxLength: 15, nullable: false),
-                    IsPrimary = table.Column<bool>(type: "boolean", nullable: false)
+                    FolderID = table.Column<int>(type: "integer", nullable: false),
+                    AccountID = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PrivateIPAddresses", x => x.PrivateAddressID);
+                    table.PrimaryKey("PK__Enterpri__3214EC27D1B48691", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_PrivateIPAddresses_ServiceItems",
-                        column: x => x.ItemID,
-                        principalTable: "ServiceItems",
-                        principalColumn: "ItemID",
+                        name: "FK_EnterpriseFoldersOwaPermissions_AccountId",
+                        column: x => x.AccountID,
+                        principalSchema: "public",
+                        principalTable: "ExchangeAccounts",
+                        principalColumn: "AccountID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EnterpriseFoldersOwaPermissions_FolderId",
+                        column: x => x.FolderID,
+                        principalSchema: "public",
+                        principalTable: "EnterpriseFolders",
+                        principalColumn: "EnterpriseFolderID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ServiceItemProperties",
+                name: "ExchangeAccountEmailAddresses",
+                schema: "public",
                 columns: table => new
                 {
-                    ItemID = table.Column<int>(type: "integer", nullable: false),
-                    PropertyName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    PropertyValue = table.Column<string>(type: "text", nullable: true)
+                    AddressID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    AccountID = table.Column<int>(type: "integer", nullable: false),
+                    EmailAddress = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ServiceItemProperties", x => new { x.ItemID, x.PropertyName });
+                    table.PrimaryKey("PK_ExchangeAccountEmailAddresses", x => x.AddressID);
                     table.ForeignKey(
-                        name: "FK_ServiceItemProperties_ServiceItems",
-                        column: x => x.ItemID,
-                        principalTable: "ServiceItems",
-                        principalColumn: "ItemID",
+                        name: "FK_ExchangeAccountEmailAddresses_ExchangeAccounts",
+                        column: x => x.AccountID,
+                        principalSchema: "public",
+                        principalTable: "ExchangeAccounts",
+                        principalColumn: "AccountID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RDSCollectionUsers",
+                schema: "public",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    RDSCollectionId = table.Column<int>(type: "integer", nullable: false),
+                    AccountID = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__RDSColle__3214EC2780141EF7", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_RDSCollectionUsers_RDSCollectionId",
+                        column: x => x.RDSCollectionId,
+                        principalSchema: "public",
+                        principalTable: "RDSCollections",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RDSCollectionUsers_UserId",
+                        column: x => x.AccountID,
+                        principalSchema: "public",
+                        principalTable: "ExchangeAccounts",
+                        principalColumn: "AccountID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "WebDavAccessTokens",
+                schema: "public",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    FilePath = table.Column<string>(type: "text", nullable: false),
+                    AuthData = table.Column<string>(type: "text", nullable: false),
+                    AccessToken = table.Column<Guid>(type: "uuid", nullable: false),
+                    ExpirationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    AccountID = table.Column<int>(type: "integer", nullable: false),
+                    ItemId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__WebDavAc__3214EC27B27DC571", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_WebDavAccessTokens_UserId",
+                        column: x => x.AccountID,
+                        principalSchema: "public",
+                        principalTable: "ExchangeAccounts",
+                        principalColumn: "AccountID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "WebDavPortalUsersSettings",
+                schema: "public",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    AccountId = table.Column<int>(type: "integer", nullable: false),
+                    Settings = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__WebDavPo__3214EC278AF5195E", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_WebDavPortalUsersSettings_UserId",
+                        column: x => x.AccountId,
+                        principalSchema: "public",
+                        principalTable: "ExchangeAccounts",
+                        principalColumn: "AccountID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "AuditLogSources",
                 column: "SourceName",
                 values: new object[]
@@ -2136,6 +2435,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "AuditLogTasks",
                 columns: new[] { "SourceName", "TaskName", "TaskDescription" },
                 values: new object[,]
@@ -2448,6 +2748,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ResourceGroups",
                 columns: new[] { "GroupID", "GroupController", "GroupName", "GroupOrder", "ShowGroup" },
                 values: new object[,]
@@ -2494,6 +2795,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ScheduleTasks",
                 columns: new[] { "TaskID", "RoleID", "TaskType" },
                 values: new object[,]
@@ -2524,6 +2826,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "SystemSettings",
                 columns: new[] { "PropertyName", "SettingsName", "PropertyValue" },
                 values: new object[,]
@@ -2539,6 +2842,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ThemeSettings",
                 columns: new[] { "PropertyName", "SettingsName", "ThemeID", "PropertyValue" },
                 values: new object[,]
@@ -2566,36 +2870,41 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "Themes",
                 columns: new[] { "ThemeID", "DisplayName", "DisplayOrder", "Enabled", "LTRName", "RTLName" },
                 values: new object[] { 1, "SolidCP v1", 1, 1, "Default", "Default" });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "Users",
                 columns: new[] { "UserID", "AdditionalParams", "Address", "Changed", "City", "Comments", "CompanyName", "Country", "Created", "EcommerceEnabled", "Email", "FailedLogins", "Fax", "FirstName", "HtmlMail", "InstantMessenger", "IsDemo", "IsPeer", "LastName", "LoginStatusId", "MfaMode", "OneTimePasswordState", "OwnerID", "Password", "PinSecret", "PrimaryPhone", "RoleID", "SecondaryEmail", "SecondaryPhone", "State", "StatusID", "SubscriberNumber", "Username", "Zip" },
-                values: new object[] { 1, null, "", new DateTime(2010, 7, 16, 14, 53, 2, 453, DateTimeKind.Local), "", "", null, "", new DateTime(2010, 7, 16, 14, 53, 2, 453, DateTimeKind.Local), true, "serveradmin@myhosting.com", null, "", "Enterprise", true, "", false, false, "Administrator", null, 0, null, null, "", null, "", 1, "", "", "", 1, null, "serveradmin", "" });
+                values: new object[] { 1, null, "", new DateTime(2010, 7, 16, 10, 53, 2, 453, DateTimeKind.Utc), "", "", null, "", new DateTime(2010, 7, 16, 12, 53, 2, 453, DateTimeKind.Utc), true, "serveradmin@myhosting.com", null, "", "Enterprise", true, "", false, false, "Administrator", null, 0, null, null, "", null, "", 1, "", "", "", 1, null, "serveradmin", "" });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "Versions",
                 columns: new[] { "DatabaseVersion", "BuildDate" },
                 values: new object[,]
                 {
-                    { "1.0", new DateTime(2010, 4, 10, 2, 0, 0, 0, DateTimeKind.Local) },
-                    { "1.0.1.0", new DateTime(2010, 7, 16, 14, 53, 3, 563, DateTimeKind.Local) },
-                    { "1.0.2.0", new DateTime(2010, 9, 3, 2, 0, 0, 0, DateTimeKind.Local) },
-                    { "1.1.0.9", new DateTime(2010, 11, 16, 1, 0, 0, 0, DateTimeKind.Local) },
-                    { "1.1.2.13", new DateTime(2011, 4, 15, 2, 0, 0, 0, DateTimeKind.Local) },
-                    { "1.2.0.38", new DateTime(2011, 7, 13, 2, 0, 0, 0, DateTimeKind.Local) },
-                    { "1.2.1.6", new DateTime(2012, 3, 29, 2, 0, 0, 0, DateTimeKind.Local) },
-                    { "1.4.9", new DateTime(2024, 4, 20, 2, 0, 0, 0, DateTimeKind.Local) }
+                    { "1.0", new DateTime(2010, 4, 10, 0, 0, 0, 0, DateTimeKind.Utc) },
+                    { "1.0.1.0", new DateTime(2010, 7, 16, 12, 53, 3, 563, DateTimeKind.Utc) },
+                    { "1.0.2.0", new DateTime(2010, 9, 3, 0, 0, 0, 0, DateTimeKind.Utc) },
+                    { "1.1.0.9", new DateTime(2010, 11, 16, 0, 0, 0, 0, DateTimeKind.Utc) },
+                    { "1.1.2.13", new DateTime(2011, 4, 15, 0, 0, 0, 0, DateTimeKind.Utc) },
+                    { "1.2.0.38", new DateTime(2011, 7, 13, 0, 0, 0, 0, DateTimeKind.Utc) },
+                    { "1.2.1.6", new DateTime(2012, 3, 29, 0, 0, 0, 0, DateTimeKind.Utc) },
+                    { "1.4.9", new DateTime(2024, 4, 20, 0, 0, 0, 0, DateTimeKind.Utc) }
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "Packages",
                 columns: new[] { "PackageID", "BandwidthUpdated", "DefaultTopPackage", "OverrideQuotas", "PackageComments", "PackageName", "ParentPackageID", "PlanID", "PurchaseDate", "ServerID", "StatusID", "StatusIDchangeDate", "UserID" },
-                values: new object[] { 1, null, false, false, "", "System", null, null, null, null, 1, new DateTime(2024, 4, 20, 13, 2, 58, 560, DateTimeKind.Local), 1 });
+                values: new object[] { 1, null, false, false, "", "System", null, null, null, null, 1, new DateTime(2024, 4, 20, 11, 2, 58, 560, DateTimeKind.Utc), 1 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "Providers",
                 columns: new[] { "ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType" },
                 values: new object[,]
@@ -2726,6 +3035,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "Quotas",
                 columns: new[] { "QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota" },
                 values: new object[,]
@@ -3010,6 +3320,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ResourceGroupDnsRecords",
                 columns: new[] { "RecordID", "GroupID", "MXPriority", "RecordData", "RecordName", "RecordOrder", "RecordType" },
                 values: new object[,]
@@ -3033,6 +3344,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ScheduleTaskParameters",
                 columns: new[] { "ParameterID", "TaskID", "DataTypeID", "DefaultValue", "ParameterOrder" },
                 values: new object[,]
@@ -3129,6 +3441,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ScheduleTaskViewConfiguration",
                 columns: new[] { "ConfigurationID", "TaskID", "Description", "Environment" },
                 values: new object[,]
@@ -3158,11 +3471,13 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Searchable", "Suspendable", "TypeName", "TypeOrder" },
                 values: new object[] { 2, true, false, true, "HomeFolder", true, 1, false, false, "SolidCP.Providers.OS.HomeFolder, SolidCP.Providers.Base", 15 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Importable", "Searchable", "Suspendable", "TypeName", "TypeOrder" },
                 values: new object[,]
@@ -3177,21 +3492,25 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Importable", "Searchable", "Suspendable", "TypeName" },
                 values: new object[] { 12, true, false, false, "DNSZone", true, 7, true, false, true, "SolidCP.Providers.DNS.DnsZone, SolidCP.Providers.Base" });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Searchable", "Suspendable", "TypeName", "TypeOrder" },
                 values: new object[] { 13, false, false, "Domain", false, 1, true, false, "SolidCP.Providers.OS.Domain, SolidCP.Providers.Base", 1 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Importable", "Searchable", "Suspendable", "TypeName", "TypeOrder" },
                 values: new object[] { 14, true, false, false, "StatisticsSite", true, 8, true, true, false, "SolidCP.Providers.Statistics.StatsSite, SolidCP.Providers.Base", 17 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Searchable", "Suspendable", "TypeName", "TypeOrder" },
                 values: new object[,]
@@ -3203,6 +3522,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Importable", "Searchable", "Suspendable", "TypeName", "TypeOrder" },
                 values: new object[,]
@@ -3215,16 +3535,19 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Searchable", "Suspendable", "TypeName", "TypeOrder" },
                 values: new object[] { 25, true, false, false, "SharedSSLFolder", true, 2, true, false, "SolidCP.Providers.Web.SharedSSLFolder, SolidCP.Providers.Base", 21 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Searchable", "Suspendable", "TypeName" },
                 values: new object[] { 28, true, false, false, "SecondaryDNSZone", true, 7, false, true, "SolidCP.Providers.DNS.SecondaryDnsZone, SolidCP.Providers.Base" });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Searchable", "Suspendable", "TypeName", "TypeOrder" },
                 values: new object[,]
@@ -3234,6 +3557,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Importable", "Searchable", "Suspendable", "TypeName", "TypeOrder" },
                 values: new object[,]
@@ -3243,6 +3567,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Searchable", "Suspendable", "TypeName", "TypeOrder" },
                 values: new object[,]
@@ -3254,6 +3579,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Importable", "Searchable", "Suspendable", "TypeName", "TypeOrder" },
                 values: new object[,]
@@ -3265,6 +3591,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Searchable", "Suspendable", "TypeName", "TypeOrder" },
                 values: new object[,]
@@ -3274,6 +3601,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Importable", "Searchable", "Suspendable", "TypeName", "TypeOrder" },
                 values: new object[,]
@@ -3291,6 +3619,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Searchable", "Suspendable", "TypeName", "TypeOrder" },
                 values: new object[,]
@@ -3300,6 +3629,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Importable", "Searchable", "Suspendable", "TypeName", "TypeOrder" },
                 values: new object[,]
@@ -3311,6 +3641,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "UserSettings",
                 columns: new[] { "PropertyName", "SettingsName", "UserID", "PropertyValue" },
                 values: new object[,]
@@ -3453,11 +3784,13 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "PackagesTreeCache",
                 columns: new[] { "PackageID", "ParentPackageID" },
                 values: new object[] { 1, 1 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "Quotas",
                 columns: new[] { "QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota" },
                 values: new object[,]
@@ -3508,15 +3841,17 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "Schedule",
                 columns: new[] { "ScheduleID", "Enabled", "FromTime", "HistoriesNumber", "Interval", "LastRun", "MaxExecutionTime", "NextRun", "PackageID", "PriorityID", "ScheduleName", "ScheduleTypeID", "StartTime", "TaskID", "ToTime", "WeekMonthDay" },
                 values: new object[,]
                 {
-                    { 1, true, new DateTime(2000, 1, 1, 13, 0, 0, 0, DateTimeKind.Local), 7, 0, null, 3600, new DateTime(2010, 7, 16, 16, 53, 2, 470, DateTimeKind.Local), 1, "Normal", "Calculate Disk Space", "Daily", new DateTime(2000, 1, 1, 13, 30, 0, 0, DateTimeKind.Local), "SCHEDULE_TASK_CALCULATE_PACKAGES_DISKSPACE", new DateTime(2000, 1, 1, 13, 0, 0, 0, DateTimeKind.Local), 1 },
-                    { 2, true, new DateTime(2000, 1, 1, 13, 0, 0, 0, DateTimeKind.Local), 7, 0, null, 3600, new DateTime(2010, 7, 16, 16, 53, 2, 477, DateTimeKind.Local), 1, "Normal", "Calculate Bandwidth", "Daily", new DateTime(2000, 1, 1, 13, 0, 0, 0, DateTimeKind.Local), "SCHEDULE_TASK_CALCULATE_PACKAGES_BANDWIDTH", new DateTime(2000, 1, 1, 13, 0, 0, 0, DateTimeKind.Local), 1 }
+                    { 1, true, new DateTime(2000, 1, 1, 12, 0, 0, 0, DateTimeKind.Utc), 7, 0, null, 3600, new DateTime(2010, 7, 16, 14, 53, 2, 470, DateTimeKind.Utc), 1, "Normal", "Calculate Disk Space", "Daily", new DateTime(2000, 1, 1, 12, 30, 0, 0, DateTimeKind.Utc), "SCHEDULE_TASK_CALCULATE_PACKAGES_DISKSPACE", new DateTime(2000, 1, 1, 12, 0, 0, 0, DateTimeKind.Utc), 1 },
+                    { 2, true, new DateTime(2000, 1, 1, 12, 0, 0, 0, DateTimeKind.Utc), 7, 0, null, 3600, new DateTime(2010, 7, 16, 14, 53, 2, 477, DateTimeKind.Utc), 1, "Normal", "Calculate Bandwidth", "Daily", new DateTime(2000, 1, 1, 12, 0, 0, 0, DateTimeKind.Utc), "SCHEDULE_TASK_CALCULATE_PACKAGES_BANDWIDTH", new DateTime(2000, 1, 1, 12, 0, 0, 0, DateTimeKind.Utc), 1 }
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceDefaultProperties",
                 columns: new[] { "PropertyName", "ProviderID", "PropertyValue" },
                 values: new object[,]
@@ -3892,6 +4227,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ScheduleParameters",
                 columns: new[] { "ParameterID", "ScheduleID", "ParameterValue" },
                 values: new object[,]
@@ -3902,923 +4238,952 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.CreateIndex(
                 name: "AccessTokensIdx_AccountID",
+                schema: "public",
                 table: "AccessTokens",
                 column: "AccountID");
 
             migrationBuilder.CreateIndex(
                 name: "BackgroundTaskLogsIdx_TaskID",
+                schema: "public",
                 table: "BackgroundTaskLogs",
                 column: "TaskID");
 
             migrationBuilder.CreateIndex(
                 name: "BackgroundTaskParametersIdx_TaskID",
+                schema: "public",
                 table: "BackgroundTaskParameters",
                 column: "TaskID");
 
             migrationBuilder.CreateIndex(
                 name: "BackgroundTaskStackIdx_TaskID",
+                schema: "public",
                 table: "BackgroundTaskStack",
                 column: "TaskID");
 
             migrationBuilder.CreateIndex(
                 name: "BlackBerryUsersIdx_AccountId",
+                schema: "public",
                 table: "BlackBerryUsers",
                 column: "AccountId");
 
             migrationBuilder.CreateIndex(
                 name: "CommentsIdx_UserID",
+                schema: "public",
                 table: "Comments",
                 column: "UserID");
 
             migrationBuilder.CreateIndex(
                 name: "CRMUsersIdx_AccountID",
+                schema: "public",
                 table: "CRMUsers",
                 column: "AccountID");
 
             migrationBuilder.CreateIndex(
                 name: "DomainDnsRecordsIdx_DomainId",
+                schema: "public",
                 table: "DomainDnsRecords",
                 column: "DomainId");
 
             migrationBuilder.CreateIndex(
                 name: "DomainsIdx_MailDomainID",
+                schema: "public",
                 table: "Domains",
                 column: "MailDomainID");
 
             migrationBuilder.CreateIndex(
                 name: "DomainsIdx_PackageID",
+                schema: "public",
                 table: "Domains",
                 column: "PackageID");
 
             migrationBuilder.CreateIndex(
                 name: "DomainsIdx_WebSiteID",
+                schema: "public",
                 table: "Domains",
                 column: "WebSiteID");
 
             migrationBuilder.CreateIndex(
                 name: "DomainsIdx_ZoneItemID",
+                schema: "public",
                 table: "Domains",
                 column: "ZoneItemID");
 
             migrationBuilder.CreateIndex(
                 name: "EnterpriseFoldersIdx_StorageSpaceFolderId",
+                schema: "public",
                 table: "EnterpriseFolders",
                 column: "StorageSpaceFolderId");
 
             migrationBuilder.CreateIndex(
                 name: "EnterpriseFoldersOwaPermissionsIdx_AccountID",
+                schema: "public",
                 table: "EnterpriseFoldersOwaPermissions",
                 column: "AccountID");
 
             migrationBuilder.CreateIndex(
                 name: "EnterpriseFoldersOwaPermissionsIdx_FolderID",
+                schema: "public",
                 table: "EnterpriseFoldersOwaPermissions",
                 column: "FolderID");
 
             migrationBuilder.CreateIndex(
                 name: "ExchangeAccountEmailAddressesIdx_AccountID",
+                schema: "public",
                 table: "ExchangeAccountEmailAddresses",
                 column: "AccountID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ExchangeAccountEmailAddresses_UniqueEmail",
+                schema: "public",
                 table: "ExchangeAccountEmailAddresses",
                 column: "EmailAddress",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ExchangeAccountsIdx_ItemID",
+                schema: "public",
                 table: "ExchangeAccounts",
                 column: "ItemID");
 
             migrationBuilder.CreateIndex(
                 name: "ExchangeAccountsIdx_MailboxPlanId",
+                schema: "public",
                 table: "ExchangeAccounts",
                 column: "MailboxPlanId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ExchangeAccounts_UniqueAccountName",
+                schema: "public",
                 table: "ExchangeAccounts",
                 column: "AccountName",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ExchangeMailboxPlansIdx_ItemID",
+                schema: "public",
                 table: "ExchangeMailboxPlans",
                 column: "ItemID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ExchangeMailboxPlans",
+                schema: "public",
                 table: "ExchangeMailboxPlans",
                 column: "MailboxPlanId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ExchangeOrganizationDomainsIdx_ItemID",
+                schema: "public",
                 table: "ExchangeOrganizationDomains",
                 column: "ItemID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ExchangeOrganizationDomains_UniqueDomain",
+                schema: "public",
                 table: "ExchangeOrganizationDomains",
                 column: "DomainID",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_ExchangeOrganizations_UniqueOrg",
+                schema: "public",
                 table: "ExchangeOrganizations",
                 column: "OrganizationID",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ExchangeOrganizationSettingsIdx_ItemId",
+                schema: "public",
                 table: "ExchangeOrganizationSettings",
                 column: "ItemId");
 
             migrationBuilder.CreateIndex(
                 name: "ExchangeOrganizationSsFoldersIdx_ItemId",
+                schema: "public",
                 table: "ExchangeOrganizationSsFolders",
                 column: "ItemId");
 
             migrationBuilder.CreateIndex(
                 name: "ExchangeOrganizationSsFoldersIdx_StorageSpaceFolderId",
+                schema: "public",
                 table: "ExchangeOrganizationSsFolders",
                 column: "StorageSpaceFolderId");
 
             migrationBuilder.CreateIndex(
                 name: "GlobalDnsRecordsIdx_IPAddressID",
+                schema: "public",
                 table: "GlobalDnsRecords",
                 column: "IPAddressID");
 
             migrationBuilder.CreateIndex(
                 name: "GlobalDnsRecordsIdx_PackageID",
+                schema: "public",
                 table: "GlobalDnsRecords",
                 column: "PackageID");
 
             migrationBuilder.CreateIndex(
                 name: "GlobalDnsRecordsIdx_ServerID",
+                schema: "public",
                 table: "GlobalDnsRecords",
                 column: "ServerID");
 
             migrationBuilder.CreateIndex(
                 name: "GlobalDnsRecordsIdx_ServiceID",
+                schema: "public",
                 table: "GlobalDnsRecords",
                 column: "ServiceID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_HostingPlanQuotas_QuotaID",
+                schema: "public",
                 table: "HostingPlanQuotas",
                 column: "QuotaID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_HostingPlanResources_GroupID",
+                schema: "public",
                 table: "HostingPlanResources",
                 column: "GroupID");
 
             migrationBuilder.CreateIndex(
                 name: "HostingPlansIdx_PackageID",
+                schema: "public",
                 table: "HostingPlans",
                 column: "PackageID");
 
             migrationBuilder.CreateIndex(
                 name: "HostingPlansIdx_ServerID",
+                schema: "public",
                 table: "HostingPlans",
                 column: "ServerID");
 
             migrationBuilder.CreateIndex(
                 name: "HostingPlansIdx_UserID",
+                schema: "public",
                 table: "HostingPlans",
                 column: "UserID");
 
             migrationBuilder.CreateIndex(
                 name: "IPAddressesIdx_ServerID",
+                schema: "public",
                 table: "IPAddresses",
                 column: "ServerID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LyncUserPlans",
+                schema: "public",
                 table: "LyncUserPlans",
                 column: "LyncUserPlanId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "LyncUserPlansIdx_ItemID",
+                schema: "public",
                 table: "LyncUserPlans",
                 column: "ItemID");
 
             migrationBuilder.CreateIndex(
                 name: "LyncUsersIdx_LyncUserPlanID",
+                schema: "public",
                 table: "LyncUsers",
                 column: "LyncUserPlanID");
 
             migrationBuilder.CreateIndex(
                 name: "PackageAddonsIdx_PackageID",
+                schema: "public",
                 table: "PackageAddons",
                 column: "PackageID");
 
             migrationBuilder.CreateIndex(
                 name: "PackageAddonsIdx_PlanID",
+                schema: "public",
                 table: "PackageAddons",
                 column: "PlanID");
 
             migrationBuilder.CreateIndex(
                 name: "PackageIPAddressesIdx_AddressID",
+                schema: "public",
                 table: "PackageIPAddresses",
                 column: "AddressID");
 
             migrationBuilder.CreateIndex(
                 name: "PackageIPAddressesIdx_ItemID",
+                schema: "public",
                 table: "PackageIPAddresses",
                 column: "ItemID");
 
             migrationBuilder.CreateIndex(
                 name: "PackageIPAddressesIdx_PackageID",
+                schema: "public",
                 table: "PackageIPAddresses",
                 column: "PackageID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PackageQuotas_QuotaID",
+                schema: "public",
                 table: "PackageQuotas",
                 column: "QuotaID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PackageResources_GroupID",
+                schema: "public",
                 table: "PackageResources",
                 column: "GroupID");
 
             migrationBuilder.CreateIndex(
                 name: "PackageIndex_ParentPackageID",
+                schema: "public",
                 table: "Packages",
                 column: "ParentPackageID");
 
             migrationBuilder.CreateIndex(
                 name: "PackageIndex_PlanID",
+                schema: "public",
                 table: "Packages",
                 column: "PlanID");
 
             migrationBuilder.CreateIndex(
                 name: "PackageIndex_ServerID",
+                schema: "public",
                 table: "Packages",
                 column: "ServerID");
 
             migrationBuilder.CreateIndex(
                 name: "PackageIndex_UserID",
+                schema: "public",
                 table: "Packages",
                 column: "UserID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PackagesBandwidth_GroupID",
+                schema: "public",
                 table: "PackagesBandwidth",
                 column: "GroupID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PackagesDiskspace_GroupID",
+                schema: "public",
                 table: "PackagesDiskspace",
                 column: "GroupID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PackageServices_ServiceID",
+                schema: "public",
                 table: "PackageServices",
                 column: "ServiceID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PackagesTreeCache_PackageID",
+                schema: "public",
                 table: "PackagesTreeCache",
                 column: "PackageID");
 
             migrationBuilder.CreateIndex(
                 name: "PackagesTreeCacheIndex",
+                schema: "public",
                 table: "PackagesTreeCache",
                 columns: new[] { "ParentPackageID", "PackageID" });
 
             migrationBuilder.CreateIndex(
                 name: "PackageVLANsIdx_PackageID",
+                schema: "public",
                 table: "PackageVLANs",
                 column: "PackageID");
 
             migrationBuilder.CreateIndex(
                 name: "PackageVLANsIdx_VlanID",
+                schema: "public",
                 table: "PackageVLANs",
                 column: "VlanID");
 
             migrationBuilder.CreateIndex(
                 name: "PrivateIPAddressesIdx_ItemID",
+                schema: "public",
                 table: "PrivateIPAddresses",
                 column: "ItemID");
 
             migrationBuilder.CreateIndex(
                 name: "PrivateNetworkVLANsIdx_ServerID",
+                schema: "public",
                 table: "PrivateNetworkVLANs",
                 column: "ServerID");
 
             migrationBuilder.CreateIndex(
                 name: "ProvidersIdx_GroupID",
+                schema: "public",
                 table: "Providers",
                 column: "GroupID");
 
             migrationBuilder.CreateIndex(
                 name: "QuotasIdx_GroupID",
+                schema: "public",
                 table: "Quotas",
                 column: "GroupID");
 
             migrationBuilder.CreateIndex(
                 name: "QuotasIdx_ItemTypeID",
+                schema: "public",
                 table: "Quotas",
                 column: "ItemTypeID");
 
             migrationBuilder.CreateIndex(
                 name: "RDSCollectionSettingsIdx_RDSCollectionId",
+                schema: "public",
                 table: "RDSCollectionSettings",
                 column: "RDSCollectionId");
 
             migrationBuilder.CreateIndex(
                 name: "RDSCollectionUsersIdx_AccountID",
+                schema: "public",
                 table: "RDSCollectionUsers",
                 column: "AccountID");
 
             migrationBuilder.CreateIndex(
                 name: "RDSCollectionUsersIdx_RDSCollectionId",
+                schema: "public",
                 table: "RDSCollectionUsers",
                 column: "RDSCollectionId");
 
             migrationBuilder.CreateIndex(
                 name: "RDSMessagesIdx_RDSCollectionId",
+                schema: "public",
                 table: "RDSMessages",
                 column: "RDSCollectionId");
 
             migrationBuilder.CreateIndex(
                 name: "RDSServersIdx_RDSCollectionId",
+                schema: "public",
                 table: "RDSServers",
                 column: "RDSCollectionId");
 
             migrationBuilder.CreateIndex(
                 name: "ResourceGroupDnsRecordsIdx_GroupID",
+                schema: "public",
                 table: "ResourceGroupDnsRecords",
                 column: "GroupID");
 
             migrationBuilder.CreateIndex(
                 name: "ScheduleIdx_PackageID",
+                schema: "public",
                 table: "Schedule",
                 column: "PackageID");
 
             migrationBuilder.CreateIndex(
                 name: "ScheduleIdx_TaskID",
+                schema: "public",
                 table: "Schedule",
                 column: "TaskID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ScheduleTaskViewConfiguration_TaskID",
+                schema: "public",
                 table: "ScheduleTaskViewConfiguration",
                 column: "TaskID");
 
             migrationBuilder.CreateIndex(
                 name: "ServersIdx_PrimaryGroupID",
+                schema: "public",
                 table: "Servers",
                 column: "PrimaryGroupID");
 
             migrationBuilder.CreateIndex(
                 name: "ServiceItemsIdx_ItemTypeID",
+                schema: "public",
                 table: "ServiceItems",
                 column: "ItemTypeID");
 
             migrationBuilder.CreateIndex(
                 name: "ServiceItemsIdx_PackageID",
+                schema: "public",
                 table: "ServiceItems",
                 column: "PackageID");
 
             migrationBuilder.CreateIndex(
                 name: "ServiceItemsIdx_ServiceID",
+                schema: "public",
                 table: "ServiceItems",
                 column: "ServiceID");
 
             migrationBuilder.CreateIndex(
                 name: "ServiceItemTypesIdx_GroupID",
+                schema: "public",
                 table: "ServiceItemTypes",
                 column: "GroupID");
 
             migrationBuilder.CreateIndex(
                 name: "ServicesIdx_ClusterID",
+                schema: "public",
                 table: "Services",
                 column: "ClusterID");
 
             migrationBuilder.CreateIndex(
                 name: "ServicesIdx_ProviderID",
+                schema: "public",
                 table: "Services",
                 column: "ProviderID");
 
             migrationBuilder.CreateIndex(
                 name: "ServicesIdx_ServerID",
+                schema: "public",
                 table: "Services",
                 column: "ServerID");
 
             migrationBuilder.CreateIndex(
                 name: "StorageSpaceFoldersIdx_StorageSpaceId",
+                schema: "public",
                 table: "StorageSpaceFolders",
                 column: "StorageSpaceId");
 
             migrationBuilder.CreateIndex(
                 name: "StorageSpaceLevelResourceGroupsIdx_GroupId",
+                schema: "public",
                 table: "StorageSpaceLevelResourceGroups",
                 column: "GroupId");
 
             migrationBuilder.CreateIndex(
                 name: "StorageSpaceLevelResourceGroupsIdx_LevelId",
+                schema: "public",
                 table: "StorageSpaceLevelResourceGroups",
                 column: "LevelId");
 
             migrationBuilder.CreateIndex(
                 name: "StorageSpacesIdx_ServerId",
+                schema: "public",
                 table: "StorageSpaces",
                 column: "ServerId");
 
             migrationBuilder.CreateIndex(
                 name: "StorageSpacesIdx_ServiceId",
+                schema: "public",
                 table: "StorageSpaces",
                 column: "ServiceId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TempIds_Created_Scope_Level",
+                schema: "public",
                 table: "TempIds",
                 columns: new[] { "Created", "Scope", "Level" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_Username",
+                schema: "public",
                 table: "Users",
                 column: "Username",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "UsersIdx_OwnerID",
+                schema: "public",
                 table: "Users",
                 column: "OwnerID");
 
             migrationBuilder.CreateIndex(
                 name: "VirtualGroupsIdx_GroupID",
+                schema: "public",
                 table: "VirtualGroups",
                 column: "GroupID");
 
             migrationBuilder.CreateIndex(
                 name: "VirtualGroupsIdx_ServerID",
+                schema: "public",
                 table: "VirtualGroups",
                 column: "ServerID");
 
             migrationBuilder.CreateIndex(
                 name: "VirtualServicesIdx_ServerID",
+                schema: "public",
                 table: "VirtualServices",
                 column: "ServerID");
 
             migrationBuilder.CreateIndex(
                 name: "VirtualServicesIdx_ServiceID",
+                schema: "public",
                 table: "VirtualServices",
                 column: "ServiceID");
 
             migrationBuilder.CreateIndex(
                 name: "WebDavAccessTokensIdx_AccountID",
+                schema: "public",
                 table: "WebDavAccessTokens",
                 column: "AccountID");
 
             migrationBuilder.CreateIndex(
                 name: "WebDavPortalUsersSettingsIdx_AccountId",
+                schema: "public",
                 table: "WebDavPortalUsersSettings",
                 column: "AccountId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_AccessTokens_UserId",
-                table: "AccessTokens",
-                column: "AccountID",
-                principalTable: "ExchangeAccounts",
-                principalColumn: "AccountID",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_BlackBerryUsers_ExchangeAccounts",
-                table: "BlackBerryUsers",
-                column: "AccountId",
-                principalTable: "ExchangeAccounts",
-                principalColumn: "AccountID");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_CRMUsers_ExchangeAccounts",
-                table: "CRMUsers",
-                column: "AccountID",
-                principalTable: "ExchangeAccounts",
-                principalColumn: "AccountID");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_DomainDnsRecords_DomainId",
-                table: "DomainDnsRecords",
-                column: "DomainId",
-                principalTable: "Domains",
-                principalColumn: "DomainID",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Domains_Packages",
-                table: "Domains",
-                column: "PackageID",
-                principalTable: "Packages",
-                principalColumn: "PackageID",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Domains_ServiceItems_MailDomain",
-                table: "Domains",
-                column: "MailDomainID",
-                principalTable: "ServiceItems",
-                principalColumn: "ItemID");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Domains_ServiceItems_WebSite",
-                table: "Domains",
-                column: "WebSiteID",
-                principalTable: "ServiceItems",
-                principalColumn: "ItemID");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Domains_ServiceItems_ZoneItem",
-                table: "Domains",
-                column: "ZoneItemID",
-                principalTable: "ServiceItems",
-                principalColumn: "ItemID");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_EnterpriseFoldersOwaPermissions_AccountId",
-                table: "EnterpriseFoldersOwaPermissions",
-                column: "AccountID",
-                principalTable: "ExchangeAccounts",
-                principalColumn: "AccountID",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_ExchangeAccountEmailAddresses_ExchangeAccounts",
-                table: "ExchangeAccountEmailAddresses",
-                column: "AccountID",
-                principalTable: "ExchangeAccounts",
-                principalColumn: "AccountID",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_ExchangeAccounts_ExchangeMailboxPlans",
-                table: "ExchangeAccounts",
-                column: "MailboxPlanId",
-                principalTable: "ExchangeMailboxPlans",
-                principalColumn: "MailboxPlanId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_ExchangeAccounts_ServiceItems",
-                table: "ExchangeAccounts",
-                column: "ItemID",
-                principalTable: "ServiceItems",
-                principalColumn: "ItemID",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_ExchangeMailboxPlans_ExchangeOrganizations",
-                table: "ExchangeMailboxPlans",
-                column: "ItemID",
-                principalTable: "ExchangeOrganizations",
-                principalColumn: "ItemID",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_ExchangeOrganizationDomains_ServiceItems",
-                table: "ExchangeOrganizationDomains",
-                column: "ItemID",
-                principalTable: "ServiceItems",
-                principalColumn: "ItemID",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_ExchangeOrganizations_ServiceItems",
-                table: "ExchangeOrganizations",
-                column: "ItemID",
-                principalTable: "ServiceItems",
-                principalColumn: "ItemID",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_GlobalDnsRecords_Packages",
-                table: "GlobalDnsRecords",
-                column: "PackageID",
-                principalTable: "Packages",
-                principalColumn: "PackageID",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_HostingPlanQuotas_HostingPlans",
-                table: "HostingPlanQuotas",
-                column: "PlanID",
-                principalTable: "HostingPlans",
-                principalColumn: "PlanID",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_HostingPlanResources_HostingPlans",
-                table: "HostingPlanResources",
-                column: "PlanID",
-                principalTable: "HostingPlans",
-                principalColumn: "PlanID",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_HostingPlans_Packages",
-                table: "HostingPlans",
-                column: "PackageID",
-                principalTable: "Packages",
-                principalColumn: "PackageID",
-                onDelete: ReferentialAction.Cascade);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_HostingPlans_Users",
-                table: "HostingPlans");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Packages_Users",
-                table: "Packages");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_HostingPlans_Packages",
-                table: "HostingPlans");
-
             migrationBuilder.DropTable(
-                name: "AccessTokens");
+                name: "AccessTokens",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "AdditionalGroups");
+                name: "AdditionalGroups",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "AuditLog");
+                name: "AuditLog",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "AuditLogSources");
+                name: "AuditLogSources",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "AuditLogTasks");
+                name: "AuditLogTasks",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "BackgroundTaskLogs");
+                name: "BackgroundTaskLogs",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "BackgroundTaskParameters");
+                name: "BackgroundTaskParameters",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "BackgroundTaskStack");
+                name: "BackgroundTaskStack",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "BlackBerryUsers");
+                name: "BlackBerryUsers",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "Comments");
+                name: "Comments",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "CRMUsers");
+                name: "CRMUsers",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "DomainDnsRecords");
+                name: "DomainDnsRecords",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "EnterpriseFoldersOwaPermissions");
+                name: "EnterpriseFoldersOwaPermissions",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ExchangeAccountEmailAddresses");
+                name: "ExchangeAccountEmailAddresses",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ExchangeDeletedAccounts");
+                name: "ExchangeDeletedAccounts",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ExchangeDisclaimers");
+                name: "ExchangeDisclaimers",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ExchangeMailboxPlanRetentionPolicyTags");
+                name: "ExchangeMailboxPlanRetentionPolicyTags",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ExchangeOrganizationDomains");
+                name: "ExchangeOrganizationDomains",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ExchangeOrganizationSettings");
+                name: "ExchangeOrganizationSettings",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ExchangeOrganizationSsFolders");
+                name: "ExchangeOrganizationSsFolders",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ExchangeRetentionPolicyTags");
+                name: "ExchangeRetentionPolicyTags",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "GlobalDnsRecords");
+                name: "GlobalDnsRecords",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "HostingPlanQuotas");
+                name: "HostingPlanQuotas",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "HostingPlanResources");
+                name: "HostingPlanResources",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "LyncUsers");
+                name: "LyncUsers",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "OCSUsers");
+                name: "OCSUsers",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "PackageAddons");
+                name: "PackageAddons",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "PackageIPAddresses");
+                name: "PackageIPAddresses",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "PackageQuotas");
+                name: "PackageQuotas",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "PackageResources");
+                name: "PackageResources",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "PackagesBandwidth");
+                name: "PackagesBandwidth",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "PackagesDiskspace");
+                name: "PackagesDiskspace",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "PackageService");
+                name: "PackageService",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "PackageServices");
+                name: "PackageServices",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "PackageSettings");
+                name: "PackageSettings",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "PackagesTreeCache");
+                name: "PackagesTreeCache",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "PackageVLANs");
+                name: "PackageVLANs",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "PrivateIPAddresses");
+                name: "PrivateIPAddresses",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "RDSCertificates");
+                name: "RDSCertificates",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "RDSCollectionSettings");
+                name: "RDSCollectionSettings",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "RDSCollectionUsers");
+                name: "RDSCollectionUsers",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "RDSMessages");
+                name: "RDSMessages",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "RDSServers");
+                name: "RDSServers",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "RDSServerSettings");
+                name: "RDSServerSettings",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ResourceGroupDnsRecords");
+                name: "ResourceGroupDnsRecords",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ScheduleParameters");
+                name: "ScheduleParameters",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ScheduleTaskParameters");
+                name: "ScheduleTaskParameters",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ScheduleTaskViewConfiguration");
+                name: "ScheduleTaskViewConfiguration",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ServiceDefaultProperties");
+                name: "ServiceDefaultProperties",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ServiceItemProperties");
+                name: "ServiceItemProperties",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ServiceProperties");
+                name: "ServiceProperties",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "SfBUserPlans");
+                name: "SfBUserPlans",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "SfBUsers");
+                name: "SfBUsers",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "SSLCertificates");
+                name: "SSLCertificates",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "StorageSpaceLevelResourceGroups");
+                name: "StorageSpaceLevelResourceGroups",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "SupportServiceLevels");
+                name: "SupportServiceLevels",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "SystemSettings");
+                name: "SystemSettings",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "TempIds");
+                name: "TempIds",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "Themes");
+                name: "Themes",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ThemeSettings");
+                name: "ThemeSettings",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "UserSettings");
+                name: "UserSettings",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "Versions");
+                name: "Versions",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "VirtualGroups");
+                name: "VirtualGroups",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "VirtualServices");
+                name: "VirtualServices",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "WebDavAccessTokens");
+                name: "WebDavAccessTokens",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "WebDavPortalUsersSettings");
+                name: "WebDavPortalUsersSettings",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "BackgroundTasks");
+                name: "BackgroundTasks",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "Domains");
+                name: "Domains",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "EnterpriseFolders");
+                name: "EnterpriseFolders",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "LyncUserPlans");
+                name: "LyncUserPlans",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "IPAddresses");
+                name: "IPAddresses",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "Quotas");
+                name: "Quotas",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "PrivateNetworkVLANs");
+                name: "PrivateNetworkVLANs",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "RDSCollections");
+                name: "RDSCollections",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "Schedule");
+                name: "Schedule",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "StorageSpaceLevels");
+                name: "StorageSpaceLevels",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ExchangeAccounts");
+                name: "ExchangeAccounts",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "StorageSpaceFolders");
+                name: "StorageSpaceFolders",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ScheduleTasks");
+                name: "ScheduleTasks",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ExchangeMailboxPlans");
+                name: "ExchangeMailboxPlans",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "StorageSpaces");
+                name: "StorageSpaces",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ExchangeOrganizations");
+                name: "ExchangeOrganizations",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ServiceItems");
+                name: "ServiceItems",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ServiceItemTypes");
+                name: "Packages",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "Services");
+                name: "ServiceItemTypes",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "Clusters");
+                name: "Services",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "Providers");
+                name: "HostingPlans",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Clusters",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "Packages");
+                name: "Providers",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "HostingPlans");
+                name: "Servers",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "Servers");
+                name: "Users",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ResourceGroups");
+                name: "ResourceGroups",
+                schema: "public");
         }
     }
 }

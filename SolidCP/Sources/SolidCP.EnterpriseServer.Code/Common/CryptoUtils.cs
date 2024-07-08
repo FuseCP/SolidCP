@@ -49,7 +49,7 @@ namespace SolidCP.EnterpriseServer
 		public static bool EncryptionEnabled => ConfigSettings.EncryptionEnabled;
 
 		static Cryptor cryptor = null;
-		public static Cryptor Cryptor => cryptor ?? (cryptor = new Cryptor(CryptoKey)); 
+		public static Cryptor Cryptor => cryptor ??= new Cryptor(CryptoKey); 
 
 		public static string EncryptServerPassword(string password) => Encrypt(password);
 

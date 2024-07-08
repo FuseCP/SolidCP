@@ -54,18 +54,49 @@ namespace SolidCP.EnterpriseServer
         //using id instead of guid
         private ConcurrentDictionary<int, Thread> _taskThreadsDictionary = new ConcurrentDictionary<int, Thread>();
 
-        // purge timer, used for killing old tasks from the hash
-        Timer purgeTimer = null;
-
+		static object Lock = new object();
+		// purge timer, used for killing old tasks from the hash
+		static Timer purgeTimer = null;
+        static int timers = 0;
         public TaskManager(): this(null) { }
 		public TaskManager(ControllerBase provider) : base(provider) {
-			purgeTimer = new Timer(new TimerCallback(PurgeCompletedTasks),
-				null,
-				60000, // start from 1 minute
-				60000);// invoke each minute
+            InitTimer();
+        }
+
+        public void InitTimer()
+        {
+			lock (Lock)
+			{
+                if (purgeTimer == null)
+                {
+                    purgeTimer = new Timer(new TimerCallback(PurgeCompletedTasks),
+                    null,
+                    60000, // start from 1 minute
+                    60000);// invoke each minute
+                }
+				timers++;
+			}
 		}
 
-        public Guid Guid
+        bool isDisposed = false;
+		public override void Dispose()
+		{
+			base.Dispose();
+            lock (Lock) {
+                if (!isDisposed)
+                {
+                    isDisposed = true;
+                    if (--timers == 0)
+                    {
+                        // do not dispose timer, as it creates it's own TaskManager with AsAsnyc()
+                        //purgeTimer?.Dispose();
+                        //purgeTimer = null;
+                    }
+                }
+            }
+		}
+
+		public Guid Guid
         {
             get
             {
@@ -425,22 +456,43 @@ namespace SolidCP.EnterpriseServer
             return sw.ToString();
         }
 
+        static bool IsPurging = false;
         void PurgeCompletedTasks(object obj)
         {
-            using (var mgr = AsAsync<TaskManager>())
+            try
             {
-                var tasks = mgr.TaskController.GetProcessTasks(BackgroundTaskStatus.Run);
-
-                foreach (BackgroundTask task in tasks)
+                // only run one task concurrently
+                bool hasToPurge = false;
+                lock (Lock)
                 {
-                    if (task.MaximumExecutionTime != -1
-                        && ((TimeSpan)(DateTime.Now - task.StartDate)).TotalSeconds > task.MaximumExecutionTime)
+                    if (!IsPurging)
                     {
-                        task.Status = BackgroundTaskStatus.Stopping;
-
-                        mgr.TaskController.UpdateTask(task);
+                        IsPurging = true;
+                        hasToPurge = true;
                     }
                 }
+
+                if (hasToPurge)
+                {
+                    using (var mgr = AsAsync<TaskManager>())
+                    {
+                        var tasks = mgr.TaskController.GetProcessTasks(BackgroundTaskStatus.Run);
+
+                        foreach (BackgroundTask task in tasks)
+                        {
+                            if (task.MaximumExecutionTime != -1
+                                && ((TimeSpan)(DateTime.Now - task.StartDate)).TotalSeconds > task.MaximumExecutionTime)
+                            {
+                                task.Status = BackgroundTaskStatus.Stopping;
+
+                                mgr.TaskController.UpdateTask(task);
+                            }
+                        }
+                    }
+                }
+            } finally
+            {
+                lock (Lock) IsPurging = false;
             }
         }
 

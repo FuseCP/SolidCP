@@ -192,7 +192,7 @@ namespace SolidCP.EnterpriseServer.Data.Scaffolding
 						{
 							writer.Append("DateTime.Parse(\"");
 							writer.Append(((DateTime)val).ToUniversalTime().ToString("O"));
-							writer.Append("\")");
+							writer.Append("\").ToUniversalTime()");
 						}
 						else if (prop.ClrType == typeof(TimeSpan) || prop.ClrType == typeof(TimeSpan?))
 						{

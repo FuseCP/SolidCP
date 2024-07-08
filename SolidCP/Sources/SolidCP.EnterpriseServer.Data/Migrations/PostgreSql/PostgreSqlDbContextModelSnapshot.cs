@@ -17,6 +17,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("public")
                 .HasAnnotation("ProductVersion", "8.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
@@ -32,7 +33,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasKey("PackageId", "ServiceId");
 
-                    b.ToTable("PackageService");
+                    b.ToTable("PackageService", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.AccessToken", b =>
@@ -70,7 +71,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "AccountId" }, "AccessTokensIdx_AccountID");
 
-                    b.ToTable("AccessTokens");
+                    b.ToTable("AccessTokens", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.AdditionalGroup", b =>
@@ -93,7 +94,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.HasKey("Id")
                         .HasName("PK__Addition__3214EC272F1861EB");
 
-                    b.ToTable("AdditionalGroups");
+                    b.ToTable("AdditionalGroups", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.AuditLog", b =>
@@ -152,7 +153,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.HasKey("RecordId")
                         .HasName("PK_Log");
 
-                    b.ToTable("AuditLog");
+                    b.ToTable("AuditLog", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.AuditLogSource", b =>
@@ -164,7 +165,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasKey("SourceName");
 
-                    b.ToTable("AuditLogSources");
+                    b.ToTable("AuditLogSources", "public");
 
                     b.HasData(
                         new
@@ -342,7 +343,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.HasKey("SourceName", "TaskName")
                         .HasName("PK_LogActions");
 
-                    b.ToTable("AuditLogTasks");
+                    b.ToTable("AuditLogTasks", "public");
 
                     b.HasData(
                         new
@@ -2253,7 +2254,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.HasKey("Id")
                         .HasName("PK__Backgrou__3214EC271AFAB817");
 
-                    b.ToTable("BackgroundTasks");
+                    b.ToTable("BackgroundTasks", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.BackgroundTaskLog", b =>
@@ -2295,7 +2296,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "TaskId" }, "BackgroundTaskLogsIdx_TaskID");
 
-                    b.ToTable("BackgroundTaskLogs");
+                    b.ToTable("BackgroundTaskLogs", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.BackgroundTaskParameter", b =>
@@ -2327,7 +2328,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "TaskId" }, "BackgroundTaskParametersIdx_TaskID");
 
-                    b.ToTable("BackgroundTaskParameters");
+                    b.ToTable("BackgroundTaskParameters", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.BackgroundTaskStack", b =>
@@ -2348,7 +2349,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "TaskId" }, "BackgroundTaskStackIdx_TaskID");
 
-                    b.ToTable("BackgroundTaskStack");
+                    b.ToTable("BackgroundTaskStack", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.BlackBerryUser", b =>
@@ -2372,7 +2373,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "AccountId" }, "BlackBerryUsersIdx_AccountId");
 
-                    b.ToTable("BlackBerryUsers");
+                    b.ToTable("BlackBerryUsers", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Cluster", b =>
@@ -2391,7 +2392,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasKey("ClusterId");
 
-                    b.ToTable("Clusters");
+                    b.ToTable("Clusters", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Comment", b =>
@@ -2433,7 +2434,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "UserId" }, "CommentsIdx_UserID");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.CrmUser", b =>
@@ -2471,7 +2472,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "AccountId" }, "CRMUsersIdx_AccountID");
 
-                    b.ToTable("CRMUsers");
+                    b.ToTable("CRMUsers", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Domain", b =>
@@ -2541,7 +2542,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "ZoneItemId" }, "DomainsIdx_ZoneItemID");
 
-                    b.ToTable("Domains");
+                    b.ToTable("Domains", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.DomainDnsRecord", b =>
@@ -2575,7 +2576,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "DomainId" }, "DomainDnsRecordsIdx_DomainId");
 
-                    b.ToTable("DomainDnsRecords");
+                    b.ToTable("DomainDnsRecords", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.EnterpriseFolder", b =>
@@ -2618,7 +2619,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "StorageSpaceFolderId" }, "EnterpriseFoldersIdx_StorageSpaceFolderId");
 
-                    b.ToTable("EnterpriseFolders");
+                    b.ToTable("EnterpriseFolders", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.EnterpriseFoldersOwaPermission", b =>
@@ -2649,7 +2650,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "FolderId" }, "EnterpriseFoldersOwaPermissionsIdx_FolderID");
 
-                    b.ToTable("EnterpriseFoldersOwaPermissions");
+                    b.ToTable("EnterpriseFoldersOwaPermissions", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeAccount", b =>
@@ -2734,7 +2735,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.HasIndex(new[] { "AccountName" }, "IX_ExchangeAccounts_UniqueAccountName")
                         .IsUnique();
 
-                    b.ToTable("ExchangeAccounts");
+                    b.ToTable("ExchangeAccounts", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeAccountEmailAddress", b =>
@@ -2762,7 +2763,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.HasIndex(new[] { "EmailAddress" }, "IX_ExchangeAccountEmailAddresses_UniqueEmail")
                         .IsUnique();
 
-                    b.ToTable("ExchangeAccountEmailAddresses");
+                    b.ToTable("ExchangeAccountEmailAddresses", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeDeletedAccount", b =>
@@ -2800,7 +2801,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.HasKey("Id")
                         .HasName("PK__Exchange__3214EC27EF1C22C1");
 
-                    b.ToTable("ExchangeDeletedAccounts");
+                    b.ToTable("ExchangeDeletedAccounts", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeDisclaimer", b =>
@@ -2825,7 +2826,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasKey("ExchangeDisclaimerId");
 
-                    b.ToTable("ExchangeDisclaimers");
+                    b.ToTable("ExchangeDisclaimers", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeMailboxPlan", b =>
@@ -2946,7 +2947,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.HasIndex(new[] { "MailboxPlanId" }, "IX_ExchangeMailboxPlans")
                         .IsUnique();
 
-                    b.ToTable("ExchangeMailboxPlans");
+                    b.ToTable("ExchangeMailboxPlans", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeMailboxPlanRetentionPolicyTag", b =>
@@ -2968,7 +2969,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.HasKey("PlanTagId")
                         .HasName("PK__Exchange__E467073C50CD805B");
 
-                    b.ToTable("ExchangeMailboxPlanRetentionPolicyTags");
+                    b.ToTable("ExchangeMailboxPlanRetentionPolicyTags", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeOrganization", b =>
@@ -3000,7 +3001,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.HasIndex(new[] { "OrganizationId" }, "IX_ExchangeOrganizations_UniqueOrg")
                         .IsUnique();
 
-                    b.ToTable("ExchangeOrganizations");
+                    b.ToTable("ExchangeOrganizations", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeOrganizationDomain", b =>
@@ -3036,7 +3037,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.HasIndex(new[] { "DomainId" }, "IX_ExchangeOrganizationDomains_UniqueDomain")
                         .IsUnique();
 
-                    b.ToTable("ExchangeOrganizationDomains");
+                    b.ToTable("ExchangeOrganizationDomains", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeOrganizationSetting", b =>
@@ -3058,7 +3059,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "ItemId" }, "ExchangeOrganizationSettingsIdx_ItemId");
 
-                    b.ToTable("ExchangeOrganizationSettings");
+                    b.ToTable("ExchangeOrganizationSettings", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeOrganizationSsFolder", b =>
@@ -3088,7 +3089,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "StorageSpaceFolderId" }, "ExchangeOrganizationSsFoldersIdx_StorageSpaceFolderId");
 
-                    b.ToTable("ExchangeOrganizationSsFolders");
+                    b.ToTable("ExchangeOrganizationSsFolders", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeRetentionPolicyTag", b =>
@@ -3120,7 +3121,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.HasKey("TagId")
                         .HasName("PK__Exchange__657CFA4C02667D37");
 
-                    b.ToTable("ExchangeRetentionPolicyTags");
+                    b.ToTable("ExchangeRetentionPolicyTags", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.GlobalDnsRecord", b =>
@@ -3187,7 +3188,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "ServiceId" }, "GlobalDnsRecordsIdx_ServiceID");
 
-                    b.ToTable("GlobalDnsRecords");
+                    b.ToTable("GlobalDnsRecords", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.HostingPlan", b =>
@@ -3245,7 +3246,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "UserId" }, "HostingPlansIdx_UserID");
 
-                    b.ToTable("HostingPlans");
+                    b.ToTable("HostingPlans", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.HostingPlanQuota", b =>
@@ -3268,7 +3269,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex("QuotaId");
 
-                    b.ToTable("HostingPlanQuotas");
+                    b.ToTable("HostingPlanQuotas", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.HostingPlanResource", b =>
@@ -3293,7 +3294,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("HostingPlanResources");
+                    b.ToTable("HostingPlanResources", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.IpAddress", b =>
@@ -3347,7 +3348,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "ServerId" }, "IPAddressesIdx_ServerID");
 
-                    b.ToTable("IPAddresses");
+                    b.ToTable("IPAddresses", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.LyncUser", b =>
@@ -3381,7 +3382,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "LyncUserPlanId" }, "LyncUsersIdx_LyncUserPlanID");
 
-                    b.ToTable("LyncUsers");
+                    b.ToTable("LyncUsers", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.LyncUserPlan", b =>
@@ -3466,7 +3467,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "ItemId" }, "LyncUserPlansIdx_ItemID");
 
-                    b.ToTable("LyncUserPlans");
+                    b.ToTable("LyncUserPlans", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.OcsUser", b =>
@@ -3496,7 +3497,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasKey("OcsuserId");
 
-                    b.ToTable("OCSUsers");
+                    b.ToTable("OCSUsers", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Package", b =>
@@ -3561,7 +3562,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "UserId" }, "PackageIndex_UserID");
 
-                    b.ToTable("Packages");
+                    b.ToTable("Packages", "public");
 
                     b.HasData(
                         new
@@ -3572,7 +3573,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                             PackageComments = "",
                             PackageName = "System",
                             StatusId = 1,
-                            StatusIdChangeDate = new DateTime(2024, 4, 20, 13, 2, 58, 560, DateTimeKind.Local),
+                            StatusIdChangeDate = new DateTime(2024, 4, 20, 11, 2, 58, 560, DateTimeKind.Utc),
                             UserId = 1
                         });
                 });
@@ -3613,7 +3614,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "PlanId" }, "PackageAddonsIdx_PlanID");
 
-                    b.ToTable("PackageAddons");
+                    b.ToTable("PackageAddons", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageIpAddress", b =>
@@ -3652,7 +3653,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "PackageId" }, "PackageIPAddressesIdx_PackageID");
 
-                    b.ToTable("PackageIPAddresses");
+                    b.ToTable("PackageIPAddresses", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageQuota", b =>
@@ -3674,7 +3675,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex("QuotaId");
 
-                    b.ToTable("PackageQuotas");
+                    b.ToTable("PackageQuotas", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageResource", b =>
@@ -3700,7 +3701,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("PackageResources");
+                    b.ToTable("PackageResources", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageService", b =>
@@ -3719,7 +3720,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("PackageServices");
+                    b.ToTable("PackageServices", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageSetting", b =>
@@ -3744,7 +3745,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasKey("PackageId", "SettingsName", "PropertyName");
 
-                    b.ToTable("PackageSettings");
+                    b.ToTable("PackageSettings", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageVlan", b =>
@@ -3771,7 +3772,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "VlanId" }, "PackageVLANsIdx_VlanID");
 
-                    b.ToTable("PackageVLANs");
+                    b.ToTable("PackageVLANs", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackagesBandwidth", b =>
@@ -3800,7 +3801,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("PackagesBandwidth");
+                    b.ToTable("PackagesBandwidth", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackagesDiskspace", b =>
@@ -3822,7 +3823,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("PackagesDiskspace");
+                    b.ToTable("PackagesDiskspace", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackagesTreeCache", b =>
@@ -3844,7 +3845,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.HasIndex(new[] { "ParentPackageId", "PackageId" }, "PackagesTreeCacheIndex")
                         .HasAnnotation("SqlServer:Clustered", true);
 
-                    b.ToTable("PackagesTreeCache");
+                    b.ToTable("PackagesTreeCache", "public");
 
                     b.HasData(
                         new
@@ -3881,7 +3882,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "ItemId" }, "PrivateIPAddressesIdx_ItemID");
 
-                    b.ToTable("PrivateIPAddresses");
+                    b.ToTable("PrivateIPAddresses", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PrivateNetworkVlan", b =>
@@ -3908,7 +3909,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "ServerId" }, "PrivateNetworkVLANsIdx_ServerID");
 
-                    b.ToTable("PrivateNetworkVLANs");
+                    b.ToTable("PrivateNetworkVLANs", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Provider", b =>
@@ -3946,7 +3947,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "GroupId" }, "ProvidersIdx_GroupID");
 
-                    b.ToTable("Providers");
+                    b.ToTable("Providers", "public");
 
                     b.HasData(
                         new
@@ -5138,7 +5139,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "ItemTypeId" }, "QuotasIdx_ItemTypeID");
 
-                    b.ToTable("Quotas");
+                    b.ToTable("Quotas", "public");
 
                     b.HasData(
                         new
@@ -8442,7 +8443,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasKey("Id");
 
-                    b.ToTable("RDSCertificates");
+                    b.ToTable("RDSCertificates", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsCollection", b =>
@@ -8473,7 +8474,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.HasKey("Id")
                         .HasName("PK__RDSColle__3214EC27346D361D");
 
-                    b.ToTable("RDSCollections");
+                    b.ToTable("RDSCollections", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsCollectionSetting", b =>
@@ -8544,7 +8545,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "RdsCollectionId" }, "RDSCollectionSettingsIdx_RDSCollectionId");
 
-                    b.ToTable("RDSCollectionSettings");
+                    b.ToTable("RDSCollectionSettings", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsCollectionUser", b =>
@@ -8571,7 +8572,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "RdsCollectionId" }, "RDSCollectionUsersIdx_RDSCollectionId");
 
-                    b.ToTable("RDSCollectionUsers");
+                    b.ToTable("RDSCollectionUsers", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsMessage", b =>
@@ -8603,7 +8604,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "RdsCollectionId" }, "RDSMessagesIdx_RDSCollectionId");
 
-                    b.ToTable("RDSMessages");
+                    b.ToTable("RDSMessages", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsServer", b =>
@@ -8648,7 +8649,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "RdsCollectionId" }, "RDSServersIdx_RDSCollectionId");
 
-                    b.ToTable("RDSServers");
+                    b.ToTable("RDSServers", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsServerSetting", b =>
@@ -8678,7 +8679,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasKey("RdsServerId", "SettingsName", "PropertyName");
 
-                    b.ToTable("RDSServerSettings");
+                    b.ToTable("RDSServerSettings", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ResourceGroup", b =>
@@ -8706,7 +8707,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasKey("GroupId");
 
-                    b.ToTable("ResourceGroups");
+                    b.ToTable("ResourceGroups", "public");
 
                     b.HasData(
                         new
@@ -9050,7 +9051,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "GroupId" }, "ResourceGroupDnsRecordsIdx_GroupID");
 
-                    b.ToTable("ResourceGroupDnsRecords");
+                    b.ToTable("ResourceGroupDnsRecords", "public");
 
                     b.HasData(
                         new
@@ -9284,43 +9285,43 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "TaskId" }, "ScheduleIdx_TaskID");
 
-                    b.ToTable("Schedule");
+                    b.ToTable("Schedule", "public");
 
                     b.HasData(
                         new
                         {
                             ScheduleId = 1,
                             Enabled = true,
-                            FromTime = new DateTime(2000, 1, 1, 13, 0, 0, 0, DateTimeKind.Local),
+                            FromTime = new DateTime(2000, 1, 1, 12, 0, 0, 0, DateTimeKind.Utc),
                             HistoriesNumber = 7,
                             Interval = 0,
                             MaxExecutionTime = 3600,
-                            NextRun = new DateTime(2010, 7, 16, 16, 53, 2, 470, DateTimeKind.Local),
+                            NextRun = new DateTime(2010, 7, 16, 14, 53, 2, 470, DateTimeKind.Utc),
                             PackageId = 1,
                             PriorityId = "Normal",
                             ScheduleName = "Calculate Disk Space",
                             ScheduleTypeId = "Daily",
-                            StartTime = new DateTime(2000, 1, 1, 13, 30, 0, 0, DateTimeKind.Local),
+                            StartTime = new DateTime(2000, 1, 1, 12, 30, 0, 0, DateTimeKind.Utc),
                             TaskId = "SCHEDULE_TASK_CALCULATE_PACKAGES_DISKSPACE",
-                            ToTime = new DateTime(2000, 1, 1, 13, 0, 0, 0, DateTimeKind.Local),
+                            ToTime = new DateTime(2000, 1, 1, 12, 0, 0, 0, DateTimeKind.Utc),
                             WeekMonthDay = 1
                         },
                         new
                         {
                             ScheduleId = 2,
                             Enabled = true,
-                            FromTime = new DateTime(2000, 1, 1, 13, 0, 0, 0, DateTimeKind.Local),
+                            FromTime = new DateTime(2000, 1, 1, 12, 0, 0, 0, DateTimeKind.Utc),
                             HistoriesNumber = 7,
                             Interval = 0,
                             MaxExecutionTime = 3600,
-                            NextRun = new DateTime(2010, 7, 16, 16, 53, 2, 477, DateTimeKind.Local),
+                            NextRun = new DateTime(2010, 7, 16, 14, 53, 2, 477, DateTimeKind.Utc),
                             PackageId = 1,
                             PriorityId = "Normal",
                             ScheduleName = "Calculate Bandwidth",
                             ScheduleTypeId = "Daily",
-                            StartTime = new DateTime(2000, 1, 1, 13, 0, 0, 0, DateTimeKind.Local),
+                            StartTime = new DateTime(2000, 1, 1, 12, 0, 0, 0, DateTimeKind.Utc),
                             TaskId = "SCHEDULE_TASK_CALCULATE_PACKAGES_BANDWIDTH",
-                            ToTime = new DateTime(2000, 1, 1, 13, 0, 0, 0, DateTimeKind.Local),
+                            ToTime = new DateTime(2000, 1, 1, 12, 0, 0, 0, DateTimeKind.Utc),
                             WeekMonthDay = 1
                         });
                 });
@@ -9344,7 +9345,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasKey("ScheduleId", "ParameterId");
 
-                    b.ToTable("ScheduleParameters");
+                    b.ToTable("ScheduleParameters", "public");
 
                     b.HasData(
                         new
@@ -9379,7 +9380,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasKey("TaskId");
 
-                    b.ToTable("ScheduleTasks");
+                    b.ToTable("ScheduleTasks", "public");
 
                     b.HasData(
                         new
@@ -9550,7 +9551,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasKey("TaskId", "ParameterId");
 
-                    b.ToTable("ScheduleTaskParameters");
+                    b.ToTable("ScheduleTaskParameters", "public");
 
                     b.HasData(
                         new
@@ -10267,7 +10268,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("ScheduleTaskViewConfiguration");
+                    b.ToTable("ScheduleTaskViewConfiguration", "public");
 
                     b.HasData(
                         new
@@ -10514,7 +10515,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "PrimaryGroupId" }, "ServersIdx_PrimaryGroupID");
 
-                    b.ToTable("Servers");
+                    b.ToTable("Servers", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Service", b =>
@@ -10557,7 +10558,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "ServerId" }, "ServicesIdx_ServerID");
 
-                    b.ToTable("Services");
+                    b.ToTable("Services", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ServiceDefaultProperty", b =>
@@ -10579,7 +10580,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.HasKey("ProviderId", "PropertyName")
                         .HasName("PK_ServiceDefaultProperties_1");
 
-                    b.ToTable("ServiceDefaultProperties");
+                    b.ToTable("ServiceDefaultProperties", "public");
 
                     b.HasData(
                         new
@@ -12828,7 +12829,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "ServiceId" }, "ServiceItemsIdx_ServiceID");
 
-                    b.ToTable("ServiceItems");
+                    b.ToTable("ServiceItems", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ServiceItemProperty", b =>
@@ -12848,7 +12849,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasKey("ItemId", "PropertyName");
 
-                    b.ToTable("ServiceItemProperties");
+                    b.ToTable("ServiceItemProperties", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ServiceItemType", b =>
@@ -12903,7 +12904,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "GroupId" }, "ServiceItemTypesIdx_GroupID");
 
-                    b.ToTable("ServiceItemTypes");
+                    b.ToTable("ServiceItemTypes", "public");
 
                     b.HasData(
                         new
@@ -13701,7 +13702,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.HasKey("ServiceId", "PropertyName")
                         .HasName("PK_ServiceProperties_1");
 
-                    b.ToTable("ServiceProperties");
+                    b.ToTable("ServiceProperties", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.SfBUser", b =>
@@ -13733,7 +13734,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasKey("SfBUserId");
 
-                    b.ToTable("SfBUsers");
+                    b.ToTable("SfBUsers", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.SfBUserPlan", b =>
@@ -13816,7 +13817,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasKey("SfBUserPlanId");
 
-                    b.ToTable("SfBUserPlans");
+                    b.ToTable("SfBUserPlans", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.SslCertificate", b =>
@@ -13886,7 +13887,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasKey("Id");
 
-                    b.ToTable("SSLCertificates");
+                    b.ToTable("SSLCertificates", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.StorageSpace", b =>
@@ -13940,7 +13941,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "ServiceId" }, "StorageSpacesIdx_ServiceId");
 
-                    b.ToTable("StorageSpaces");
+                    b.ToTable("StorageSpaces", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.StorageSpaceFolder", b =>
@@ -13983,7 +13984,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "StorageSpaceId" }, "StorageSpaceFoldersIdx_StorageSpaceId");
 
-                    b.ToTable("StorageSpaceFolders");
+                    b.ToTable("StorageSpaceFolders", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.StorageSpaceLevel", b =>
@@ -14006,7 +14007,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.HasKey("Id")
                         .HasName("PK__StorageS__3214EC07B8D82363");
 
-                    b.ToTable("StorageSpaceLevels");
+                    b.ToTable("StorageSpaceLevels", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.StorageSpaceLevelResourceGroup", b =>
@@ -14030,7 +14031,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "LevelId" }, "StorageSpaceLevelResourceGroupsIdx_LevelId");
 
-                    b.ToTable("StorageSpaceLevelResourceGroups");
+                    b.ToTable("StorageSpaceLevelResourceGroups", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.SupportServiceLevel", b =>
@@ -14054,7 +14055,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.HasKey("LevelId")
                         .HasName("PK__SupportS__09F03C065BA08AFB");
 
-                    b.ToTable("SupportServiceLevels");
+                    b.ToTable("SupportServiceLevels", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.SystemSetting", b =>
@@ -14074,7 +14075,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasKey("SettingsName", "PropertyName");
 
-                    b.ToTable("SystemSettings");
+                    b.ToTable("SystemSettings", "public");
 
                     b.HasData(
                         new
@@ -14154,7 +14155,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex("Created", "Scope", "Level");
 
-                    b.ToTable("TempIds");
+                    b.ToTable("TempIds", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Theme", b =>
@@ -14188,7 +14189,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasKey("ThemeId");
 
-                    b.ToTable("Themes");
+                    b.ToTable("Themes", "public");
 
                     b.HasData(
                         new
@@ -14226,7 +14227,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasKey("ThemeId", "SettingsName", "PropertyName");
 
-                    b.ToTable("ThemeSettings");
+                    b.ToTable("ThemeSettings", "public");
 
                     b.HasData(
                         new
@@ -14514,18 +14515,18 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "OwnerId" }, "UsersIdx_OwnerID");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", "public");
 
                     b.HasData(
                         new
                         {
                             UserId = 1,
                             Address = "",
-                            Changed = new DateTime(2010, 7, 16, 14, 53, 2, 453, DateTimeKind.Local),
+                            Changed = new DateTime(2010, 7, 16, 10, 53, 2, 453, DateTimeKind.Utc),
                             City = "",
                             Comments = "",
                             Country = "",
-                            Created = new DateTime(2010, 7, 16, 14, 53, 2, 453, DateTimeKind.Local),
+                            Created = new DateTime(2010, 7, 16, 12, 53, 2, 453, DateTimeKind.Utc),
                             EcommerceEnabled = true,
                             Email = "serveradmin@myhosting.com",
                             Fax = "",
@@ -14570,7 +14571,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasKey("UserId", "SettingsName", "PropertyName");
 
-                    b.ToTable("UserSettings");
+                    b.ToTable("UserSettings", "public");
 
                     b.HasData(
                         new
@@ -15520,110 +15521,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         });
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.UsersDetailed", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer")
-                        .HasColumnName("UserID");
-
-                    b.Property<DateTime?>("Changed")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Comments")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("CompanyName")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime?>("Created")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool?>("EcommerceEnabled")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
-                    b.Property<int?>("FailedLogins")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("FirstName")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("FullName")
-                        .HasMaxLength(101)
-                        .HasColumnType("character varying(101)");
-
-                    b.Property<bool>("IsDemo")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsPeer")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("LastName")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<int?>("LoginStatusId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("OwnerEmail")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
-                    b.Property<string>("OwnerFirstName")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("OwnerFullName")
-                        .HasMaxLength(101)
-                        .HasColumnType("character varying(101)");
-
-                    b.Property<int?>("OwnerId")
-                        .HasColumnType("integer")
-                        .HasColumnName("OwnerID");
-
-                    b.Property<string>("OwnerLastName")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<int?>("OwnerRoleId")
-                        .HasColumnType("integer")
-                        .HasColumnName("OwnerRoleID");
-
-                    b.Property<string>("OwnerUsername")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<int?>("PackagesNumber")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RoleId")
-                        .HasColumnType("integer")
-                        .HasColumnName("RoleID");
-
-                    b.Property<int>("StatusId")
-                        .HasColumnType("integer")
-                        .HasColumnName("StatusID");
-
-                    b.Property<string>("SubscriberNumber")
-                        .HasMaxLength(32)
-                        .HasColumnType("character varying(32)");
-
-                    b.Property<string>("Username")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.HasKey("UserId");
-
-                    b.ToTable((string)null);
-
-                    b.ToView("UsersDetailed", (string)null);
-                });
-
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Version", b =>
                 {
                     b.Property<string>("DatabaseVersion")
@@ -15636,48 +15533,48 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasKey("DatabaseVersion");
 
-                    b.ToTable("Versions");
+                    b.ToTable("Versions", "public");
 
                     b.HasData(
                         new
                         {
                             DatabaseVersion = "1.0",
-                            BuildDate = new DateTime(2010, 4, 10, 2, 0, 0, 0, DateTimeKind.Local)
+                            BuildDate = new DateTime(2010, 4, 10, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             DatabaseVersion = "1.0.1.0",
-                            BuildDate = new DateTime(2010, 7, 16, 14, 53, 3, 563, DateTimeKind.Local)
+                            BuildDate = new DateTime(2010, 7, 16, 12, 53, 3, 563, DateTimeKind.Utc)
                         },
                         new
                         {
                             DatabaseVersion = "1.0.2.0",
-                            BuildDate = new DateTime(2010, 9, 3, 2, 0, 0, 0, DateTimeKind.Local)
+                            BuildDate = new DateTime(2010, 9, 3, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             DatabaseVersion = "1.1.0.9",
-                            BuildDate = new DateTime(2010, 11, 16, 1, 0, 0, 0, DateTimeKind.Local)
+                            BuildDate = new DateTime(2010, 11, 16, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             DatabaseVersion = "1.1.2.13",
-                            BuildDate = new DateTime(2011, 4, 15, 2, 0, 0, 0, DateTimeKind.Local)
+                            BuildDate = new DateTime(2011, 4, 15, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             DatabaseVersion = "1.2.0.38",
-                            BuildDate = new DateTime(2011, 7, 13, 2, 0, 0, 0, DateTimeKind.Local)
+                            BuildDate = new DateTime(2011, 7, 13, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             DatabaseVersion = "1.2.1.6",
-                            BuildDate = new DateTime(2012, 3, 29, 2, 0, 0, 0, DateTimeKind.Local)
+                            BuildDate = new DateTime(2012, 3, 29, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             DatabaseVersion = "1.4.9",
-                            BuildDate = new DateTime(2024, 4, 20, 2, 0, 0, 0, DateTimeKind.Local)
+                            BuildDate = new DateTime(2024, 4, 20, 0, 0, 0, 0, DateTimeKind.Utc)
                         });
                 });
 
@@ -15710,7 +15607,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "ServerId" }, "VirtualGroupsIdx_ServerID");
 
-                    b.ToTable("VirtualGroups");
+                    b.ToTable("VirtualGroups", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.VirtualService", b =>
@@ -15736,7 +15633,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "ServiceId" }, "VirtualServicesIdx_ServiceID");
 
-                    b.ToTable("VirtualServices");
+                    b.ToTable("VirtualServices", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.WebDavAccessToken", b =>
@@ -15774,7 +15671,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "AccountId" }, "WebDavAccessTokensIdx_AccountID");
 
-                    b.ToTable("WebDavAccessTokens");
+                    b.ToTable("WebDavAccessTokens", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.WebDavPortalUsersSetting", b =>
@@ -15797,7 +15694,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "AccountId" }, "WebDavPortalUsersSettingsIdx_AccountId");
 
-                    b.ToTable("WebDavPortalUsersSettings");
+                    b.ToTable("WebDavPortalUsersSettings", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.AccessToken", b =>
@@ -16090,12 +15987,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.HostingPlan", b =>
                 {
-                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.Package", "Package")
-                        .WithMany("HostingPlans")
-                        .HasForeignKey("PackageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .HasConstraintName("FK_HostingPlans_Packages");
-
                     b.HasOne("SolidCP.EnterpriseServer.Data.Entities.Server", "Server")
                         .WithMany("HostingPlans")
                         .HasForeignKey("ServerId")
@@ -16105,8 +15996,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         .WithMany("HostingPlans")
                         .HasForeignKey("UserId")
                         .HasConstraintName("FK_HostingPlans_Users");
-
-                    b.Navigation("Package");
 
                     b.Navigation("Server");
 
@@ -16194,9 +16083,10 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         .HasForeignKey("ParentPackageId")
                         .HasConstraintName("FK_Packages_Packages");
 
-                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.HostingPlan", "Plan")
+                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.HostingPlan", "HostingPlan")
                         .WithMany("Packages")
                         .HasForeignKey("PlanId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_Packages_HostingPlans");
 
                     b.HasOne("SolidCP.EnterpriseServer.Data.Entities.Server", "Server")
@@ -16210,9 +16100,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         .IsRequired()
                         .HasConstraintName("FK_Packages_Users");
 
-                    b.Navigation("ParentPackage");
+                    b.Navigation("HostingPlan");
 
-                    b.Navigation("Plan");
+                    b.Navigation("ParentPackage");
 
                     b.Navigation("Server");
 
@@ -16902,8 +16792,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.Navigation("Domains");
 
                     b.Navigation("GlobalDnsRecords");
-
-                    b.Navigation("HostingPlans");
 
                     b.Navigation("PackageAddons");
 
