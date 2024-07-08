@@ -853,19 +853,19 @@ END
 			var set = new TempIdSet(this);
 			set.Add(ownerId);
 
+			var owner = Users
+				.Select(u => new { u.UserId, u.OwnerId, u.IsPeer })
+				.FirstOrDefault(u => u.UserId == ownerId);
+			if (owner != null && owner.IsPeer && owner.OwnerId.HasValue)
+			{
+				ownerId = owner.OwnerId.Value;
+				set.Add(ownerId);
+			}
+
+			SaveChanges();
+
 			if (recursive)
 			{
-				var owner = Users
-					.Select(u => new { u.UserId, u.OwnerId, u.IsPeer })
-					.FirstOrDefault(u => u.UserId == ownerId);
-				if (owner != null && owner.IsPeer && owner.OwnerId.HasValue)
-				{
-					ownerId = owner.OwnerId.Value;
-					set.Add(ownerId);
-				}
-
-				SaveChanges();
-
 				int level = 1;
 				var children = Users
 					.Where(u => u.OwnerId == ownerId)
@@ -1131,15 +1131,35 @@ RETURN
 				#endregion
 
 				var hasRights = CheckActorUserRights(actorId, userId);
-				using (var childUsers = UserChildren(userId, recursive))
+				TempIdSet childUsers = null;
+				if (recursive) childUsers = UserChildren(userId, recursive);
+				else
 				{
-					var users = hasRights ?
-						UsersDetailed
+					childUsers = new TempIdSet(this, new[] { userId });
+				}
+				using (childUsers)
+				{
+					var users = UsersDetailed;
+					if (hasRights)
+					{
+						users = users
 							.Where(u => u.UserId != userId && !u.IsPeer &&
 								(statusId == 0 || statusId > 0 && statusId == u.StatusId) &&
-								(roleId == 0 || roleId > 0 && roleId == u.RoleId))
-							.Join(childUsers, u => u.UserId, ch => ch, (u, ch) => u) :
-						UsersDetailed.Where(u => false);
+								(roleId == 0 || roleId > 0 && roleId == u.RoleId));
+						if (recursive)
+						{
+							users = users
+								.Join(childUsers, u => u.UserId, ch => ch, (u, ch) => u);
+						}
+						else
+						{
+							users = users
+								.Join(childUsers, u => u.OwnerId, ch => ch, (u, ch) => u);
+						}
+					} else
+					{
+						users = users.Where(u => false);
+					}
 
 					if (!string.IsNullOrEmpty(filterValue))
 					{
