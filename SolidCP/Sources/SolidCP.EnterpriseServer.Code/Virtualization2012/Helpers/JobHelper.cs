@@ -10,9 +10,11 @@ using System.Threading.Tasks;
 
 namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers
 {
-    public static class JobHelper
-    {        
-        public static bool TryJobCompleted(VirtualizationServer2012 vs, ConcreteJob job, bool resetProgressBarIndicatorAfterFinish = true)
+    public class JobHelper: ControllerBase
+    {
+        public JobHelper(ControllerBase provider) : base(provider) { }
+
+        public bool TryJobCompleted(VirtualizationServer2012 vs, ConcreteJob job, bool resetProgressBarIndicatorAfterFinish = true)
         {
             bool jobCompleted = false;
             short timeout = 5;
@@ -42,7 +44,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers
             return jobCompleted;
         }
 
-        public static bool JobCompleted(VirtualizationServer2012 vs, ConcreteJob job, bool resetProgressBarIndicatorAfterFinish = true)
+        public bool JobCompleted(VirtualizationServer2012 vs, ConcreteJob job, bool resetProgressBarIndicatorAfterFinish = true)
         {
             TaskManager.IndicatorMaximum = 100;
             bool jobCompleted = true;

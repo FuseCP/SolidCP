@@ -37,29 +37,35 @@ using System.Collections;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Text;
+#if !EF64
+using Microsoft.Data.SqlClient;
+#else
 using System.Data.SqlClient;
+#endif
 
 namespace SolidCP.EnterpriseServer
 {
     public delegate void ScheduleFinished(SchedulerJob schedule);
 
-    public sealed class Scheduler
+    public sealed class Scheduler: ControllerBase
     {
-        public static SchedulerJob nextSchedule = null;
+        public Scheduler(ControllerBase provider) : base(provider) { }
 
-        public static void Start()
+        public SchedulerJob nextSchedule = null;
+
+        public void Start()
         {
             ScheduleTasks();
         }
 
-        public static bool IsScheduleActive(int scheduleId)
+        public bool IsScheduleActive(int scheduleId)
         {
             Dictionary<int, BackgroundTask> scheduledTasks = TaskManager.GetScheduledTasks();
             
             return scheduledTasks.ContainsKey(scheduleId);
         }
 
-        public static void ScheduleTasks()
+        public void ScheduleTasks()
         {
             RunManualTasks();
 
@@ -74,7 +80,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        private static void RunManualTasks()
+        private void RunManualTasks()
         {
             var tasks = TaskController.GetProcessTasks(BackgroundTaskStatus.Stopping);
 
@@ -93,7 +99,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        private static void RunBackgroundTask(BackgroundTask backgroundTask)
+        private void RunBackgroundTask(BackgroundTask backgroundTask)
         {
             UserInfo user = PackageController.GetPackageOwner(backgroundTask.PackageId);
             
@@ -109,7 +115,7 @@ namespace SolidCP.EnterpriseServer
             
             try
             {
-                var objTask = (SchedulerTask)Activator.CreateInstance(Type.GetType(schedule.Task.TaskType));
+                var objTask = (ISchedulerTask)Activator.CreateInstance(Type.GetType(schedule.Task.TaskType));
 
                 objTask.DoWork();
             }
@@ -130,7 +136,7 @@ namespace SolidCP.EnterpriseServer
         }
 
         // call back for the timer function
-        static void RunNextSchedule(object obj) // obj ignored
+        void RunNextSchedule(object obj) // obj ignored
         {            
             if (nextSchedule == null)
                 return;
@@ -141,7 +147,7 @@ namespace SolidCP.EnterpriseServer
             ScheduleTasks();
         }
 
-        static void RunSchedule(SchedulerJob schedule, bool changeNextRun)
+        void RunSchedule(SchedulerJob schedule, bool changeNextRun)
         {
             try
             {
@@ -171,7 +177,7 @@ namespace SolidCP.EnterpriseServer
                         SchedulerController.UpdateSchedule(schedule.ScheduleInfo);
                         break;
                     }
-                    catch (SqlException)
+                    catch (System.Data.Common.DbException)
                     {
                         System.Threading.Thread.Sleep(1000);
                     }

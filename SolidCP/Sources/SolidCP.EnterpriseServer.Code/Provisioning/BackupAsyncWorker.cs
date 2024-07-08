@@ -37,7 +37,7 @@ using System.Text;
 
 namespace SolidCP.EnterpriseServer
 {
-	public class BackupAsyncWorker
+	public class BackupAsyncWorker: ControllerAsyncBase
 	{
 		public int threadUserId = -1;
 		public string taskId;
@@ -57,7 +57,7 @@ namespace SolidCP.EnterpriseServer
 		public void BackupAsync()
 		{
 			// start asynchronously
-			Thread t = new Thread(new ThreadStart(Backup));
+			Thread t = new Thread(Backup);
             t.Start();
 		}
 

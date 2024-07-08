@@ -10,11 +10,13 @@ using System.Threading.Tasks;
 
 namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
 {
-    public static class NetworkHelper
+    public class NetworkHelper: ControllerBase
     {
         private const string MS_MAC_PREFIX = "00155D"; // IEEE prefix of MS MAC addresses
 
-        public static JobResult InjectIPadresses(int itemId, string adapterName)
+        public NetworkHelper(ControllerBase provider) : base(provider) { }
+
+        public JobResult InjectIPadresses(int itemId, string adapterName)
         {
             // load item
             VirtualMachine vm = VirtualMachineHelper.GetVirtualMachineByItemId(itemId);
@@ -98,7 +100,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             return vs.InjectIPs(vm.VirtualMachineId, guestNetworkAdapterConfiguration);
         }
 
-        public static string GetSymbolDelimitedMacAddress(string mac, string delimiter)
+        public string GetSymbolDelimitedMacAddress(string mac, string delimiter)
         {
             if (String.IsNullOrEmpty(mac))
                 return mac;
@@ -112,7 +114,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             return sb.ToString();
         }
 
-        public static string GetSubnetMaskCidr(string subnetMask)
+        public string GetSubnetMaskCidr(string subnetMask)
         {
             if (String.IsNullOrEmpty(subnetMask))
                 return subnetMask;
@@ -134,7 +136,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             }
         }
 
-        public static string GetPrivateNetworkSubnetMask(string cidr, bool v6)
+        public string GetPrivateNetworkSubnetMask(string cidr, bool v6)
         {
             if (v6)
             {
@@ -145,7 +147,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
                 return IPAddress.Parse("/" + cidr).ToV4MaskString();
             }
         }
-        public static string GenerateMacAddress()
+        public string GenerateMacAddress()
         {
             return MS_MAC_PREFIX + Utils.GetRandomHexString(3);
         }

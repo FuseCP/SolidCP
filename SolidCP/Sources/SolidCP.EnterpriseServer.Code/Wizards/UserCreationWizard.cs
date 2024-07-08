@@ -43,20 +43,19 @@ using SolidCP.Providers.OS;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class UserCreationWizard
+    public class UserCreationWizard: ControllerBase
     {
-        public UserCreationWizard()
-        {
-        }
+        public UserCreationWizard(): this(null) { }
+        public UserCreationWizard(ControllerBase provider) : base(provider) { }
 
-        public static int CreateUserAccount(int parentPackageId, string username, string password,
+        public int CreateUserAccount(int parentPackageId, string username, string password,
             int roleId, string firstName, string lastName, string email, string secondaryEmail, bool htmlMail,
             bool sendAccountLetter,
             bool createPackage, int planId, bool sendPackageLetter,
             string domainName, bool tempDomain, bool createWebSite,
             bool createFtpAccount, string ftpAccountName, bool createMailAccount, string hostName, bool createZoneRecord)
         {
-            UserCreationWizard wizard = new UserCreationWizard();
+            UserCreationWizard wizard = new UserCreationWizard(this);
 
             return wizard.CreateUserAccountInternal(parentPackageId, username, password,
                 roleId, firstName, lastName, email, secondaryEmail, htmlMail,

@@ -150,6 +150,7 @@
       <DependentUpon>EditBlackBerryUser.ascx</DependentUpon>
     </Compile>
     <Compile Include="Code\AssemblyInfo.cs" />
+    <Compile Include="Code\DbHelper.cs" />
     <Compile Include="Code\Framework\ISchedulerTaskView.cs" />
     <Compile Include="Code\Framework\WebPortalPageTitleProvider.cs" />
     <Compile Include="Code\Framework\WebPortalThemeProvider.cs" />

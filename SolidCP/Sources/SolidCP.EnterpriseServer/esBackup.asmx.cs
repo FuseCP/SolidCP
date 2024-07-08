@@ -49,7 +49,7 @@ namespace SolidCP.EnterpriseServer
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [Policy("EnterpriseServerPolicy")]
     [ToolboxItem(false)]
-    public class esBackup
+    public class esBackup: WebService
     {
 		[WebMethod]
 		public KeyValueBunch GetBackupContentSummary(int userId, int packageId, 

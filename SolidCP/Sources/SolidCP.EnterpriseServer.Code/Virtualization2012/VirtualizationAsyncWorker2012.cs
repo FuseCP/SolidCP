@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SolidCP.EnterpriseServer.Code.Virtualization2012
 {
-    class VirtualizationAsyncWorker2012
+    class VirtualizationAsyncWorker2012: ControllerAsyncBase
     {
         #region Main Properties
         public int ThreadUserId { get; set; }

@@ -123,7 +123,7 @@
   <data name="btnCreate.Text" xml:space="preserve">
     <value>Create</value>
   </data>
-  <data name="chkAccountLetter.Text" xml:space="preserve">
+  <data name="lblAccountLetter.Text" xml:space="preserve">
     <value>Send Account Summary Letter</value>
   </data>
   <data name="chkDemo.Text" xml:space="preserve">
@@ -200,5 +200,8 @@
   </data>
   <data name="lblSubscriberNumber" xml:space="preserve">
     <value>Account Number:</value>
+  </data>
+  <data name="chkAccountLetter.Text" xml:space="preserve">
+    <value>Yes</value>
   </data>
 </root>

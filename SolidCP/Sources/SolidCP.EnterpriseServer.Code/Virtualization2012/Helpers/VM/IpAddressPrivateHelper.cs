@@ -9,15 +9,17 @@ using System.Threading.Tasks;
 
 namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
 {
-    public static class IpAddressPrivateHelper
+    public class IpAddressPrivateHelper: ControllerBase
     {
-        public static List<PrivateIPAddress> GetPackagePrivateIPAddresses(int packageId)
+        public IpAddressPrivateHelper(ControllerBase provider) : base(provider) { }
+
+        public List<PrivateIPAddress> GetPackagePrivateIPAddresses(int packageId)
         {
             return ObjectUtils.CreateListFromDataReader<PrivateIPAddress>(
-                DataProvider.GetPackagePrivateIPAddresses(packageId));
+                Database.GetPackagePrivateIPAddresses(packageId));
         }
 
-        public static ResultObject RestoreVirtualMachinePrivateIPAddressesByInjection(int itemId)
+        public ResultObject RestoreVirtualMachinePrivateIPAddressesByInjection(int itemId)
         {
             ResultObject res = new ResultObject();
 
@@ -56,12 +58,12 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             return res;
         }
 
-        public static ResultObject AddVirtualMachinePrivateIPAddressesByInject(int itemId, bool selectRandom, int addressesNumber, string[] addresses, bool customGatewayAndDns, string gateway, string dns1, string dns2, string subnetMask)
+        public ResultObject AddVirtualMachinePrivateIPAddressesByInject(int itemId, bool selectRandom, int addressesNumber, string[] addresses, bool customGatewayAndDns, string gateway, string dns1, string dns2, string subnetMask)
         {
             int provisionKvpType = 2;
             return AddVirtualMachinePrivateIPAddresses(itemId, selectRandom, addressesNumber, addresses, provisionKvpType, customGatewayAndDns, gateway, dns1, dns2, subnetMask);
         }
-        public static ResultObject AddVirtualMachinePrivateIPAddresses(int itemId, bool selectRandom, int addressesNumber, string[] addresses, bool provisionKvp, bool customGatewayAndDns, string gateway, string dns1, string dns2, string subnetMask)
+        public ResultObject AddVirtualMachinePrivateIPAddresses(int itemId, bool selectRandom, int addressesNumber, string[] addresses, bool provisionKvp, bool customGatewayAndDns, string gateway, string dns1, string dns2, string subnetMask)
         {
             int provisionKvpType = 0;
             if (provisionKvp)
@@ -70,7 +72,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             return AddVirtualMachinePrivateIPAddresses(itemId, selectRandom, addressesNumber, addresses, provisionKvpType, customGatewayAndDns, gateway, dns1, dns2, subnetMask);
         }
 
-        public static ResultObject AddVirtualMachinePrivateIPAddresses(int itemId, bool selectRandom, int addressesNumber, string[] addresses, int provisionKvpType, bool customGatewayAndDns, string gateway, string dns1, string dns2, string subnetMask)
+        public ResultObject AddVirtualMachinePrivateIPAddresses(int itemId, bool selectRandom, int addressesNumber, string[] addresses, int provisionKvpType, bool customGatewayAndDns, string gateway, string dns1, string dns2, string subnetMask)
         {
             // trace info
             Trace.TraceInformation("Entering AddVirtualMachinePrivateIPAddresses()");
@@ -156,7 +158,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
 
                 // add addresses to database
                 foreach (string address in addresses)
-                    DataProvider.AddItemPrivateIPAddress(SecurityContext.User.UserId, itemId, address);
+                    Database.AddItemPrivateIPAddress(SecurityContext.User.UserId, itemId, address);
 
                 // set primary IP address
                 if (wasEmptyList)
@@ -209,7 +211,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             return res;
         }
 
-        private static string GenerateNextAvailablePrivateIP(SortedList<IPAddress, string> ips, string subnetMask, string startIPAddress)
+        private string GenerateNextAvailablePrivateIP(SortedList<IPAddress, string> ips, string subnetMask, string startIPAddress)
         {
             Trace.TraceInformation("Entering GenerateNextAvailablePrivateIP()");
             Trace.TraceInformation("Param - number of sorted IPs in the list: {0}", ips.Count);
@@ -247,7 +249,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             return genIP;
         }
 
-        private static SortedList<IPAddress, string> GetSortedNormalizedIPAddresses(List<PrivateIPAddress> ips, string subnetMask)
+        private SortedList<IPAddress, string> GetSortedNormalizedIPAddresses(List<PrivateIPAddress> ips, string subnetMask)
         {
             Trace.TraceInformation("Entering GetSortedNormalizedIPAddresses()");
             Trace.TraceInformation("Param - subnetMask: {0}", subnetMask);
@@ -265,7 +267,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             return sortedIps;
         }
 
-        public static List<string> CheckPrivateIPAddresses(int packageId, string[] addresses)
+        public List<string> CheckPrivateIPAddresses(int packageId, string[] addresses)
         {
             List<string> codes = new List<string>();
 
@@ -285,7 +287,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             return codes;
         }
 
-        private static bool CheckPrivateIPAddress(string subnetMask, string ipAddress)
+        private bool CheckPrivateIPAddress(string subnetMask, string ipAddress)
         {
             var mask = IPAddress.Parse(subnetMask);
             var ip = IPAddress.Parse(ipAddress);
@@ -294,7 +296,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             return true;
         }
 
-        public static ResultObject SetVirtualMachinePrimaryPrivateIPAddress(int itemId, int addressId, bool provisionKvp)
+        public ResultObject SetVirtualMachinePrimaryPrivateIPAddress(int itemId, int addressId, bool provisionKvp)
         {
             ResultObject res = new ResultObject();
 
@@ -322,7 +324,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             try
             {
                 // call data access layer
-                DataProvider.SetItemPrivatePrimaryIPAddress(SecurityContext.User.UserId, itemId, addressId);
+                Database.SetItemPrivatePrimaryIPAddress(SecurityContext.User.UserId, itemId, addressId);
 
                 // send KVP config items
                 if (provisionKvp)
@@ -338,13 +340,13 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             return res;
         }
 
-        public static ResultObject DeleteVirtualMachinePrivateIPAddressesByInject(int itemId, int[] addressIds)
+        public ResultObject DeleteVirtualMachinePrivateIPAddressesByInject(int itemId, int[] addressIds)
         {
             int provisionKvpType = 2;
             return DeleteVirtualMachinePrivateIPAddresses(itemId, addressIds, provisionKvpType);
         }
 
-        public static ResultObject DeleteVirtualMachinePrivateIPAddresses(int itemId, int[] addressIds, bool provisionKvp)
+        public ResultObject DeleteVirtualMachinePrivateIPAddresses(int itemId, int[] addressIds, bool provisionKvp)
         {
             int provisionKvpType = 0;
             if (provisionKvp)
@@ -352,7 +354,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             return DeleteVirtualMachinePrivateIPAddresses(itemId, addressIds, provisionKvpType);
         }
 
-        public static ResultObject DeleteVirtualMachinePrivateIPAddresses(int itemId, int[] addressIds, int provisionKvpType)
+        public ResultObject DeleteVirtualMachinePrivateIPAddresses(int itemId, int[] addressIds, int provisionKvpType)
         {
             if (addressIds == null)
                 throw new ArgumentNullException("addressIds");
@@ -384,7 +386,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             {
                 // call data access layer
                 foreach (int addressId in addressIds)
-                    DataProvider.DeleteItemPrivateIPAddress(SecurityContext.User.UserId, itemId, addressId);
+                    Database.DeleteItemPrivateIPAddress(SecurityContext.User.UserId, itemId, addressId);
 
                 // send KVP config items
                 switch (provisionKvpType)

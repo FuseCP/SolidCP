@@ -52,7 +52,7 @@ namespace SolidCP.EnterpriseServer
             int showExecutionLog = Utils.ParseInt((string)topTask.GetParamValue("SHOW_EXECUTION_LOG"), 0);
 
             // check input parameters
-            if (String.IsNullOrEmpty(mailTo))
+            if (string.IsNullOrEmpty(mailTo))
             {
                 TaskManager.WriteWarning("Specify 'Mail To' task parameter");
                 return;

@@ -12,19 +12,21 @@ using SolidCP.EnterpriseServer;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class UserHelper
+    public class UserHelper: ControllerBase
     {
-        public static UserInfoInternal GetUser(string username)
+        public UserHelper(ControllerBase provider): base(provider) { }
+
+        public UserInfoInternal GetUser(string username)
         {
-            return GetUser(DataProvider.GetUserByUsernameInternally(username));
+            return GetUser(Database.GetUserByUsernameInternally(username));
         }
 
-        public static UserInfoInternal GetUser(int userId)
+        public UserInfoInternal GetUser(int userId)
         {
-            return GetUser(DataProvider.GetUserById(SecurityContext.User.UserId, userId));
+            return GetUser(Database.GetUserById(SecurityContext.User.UserId, userId));
         }
 
-        private static UserInfoInternal GetUser(IDataReader reader)
+        private UserInfoInternal GetUser(IDataReader reader)
         {
             // try to get user from database
             UserInfoInternal user = ObjectUtils.FillObjectFromDataReader<UserInfoInternal>(reader);

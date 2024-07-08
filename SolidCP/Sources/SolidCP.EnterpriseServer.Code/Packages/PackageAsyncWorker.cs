@@ -31,6 +31,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
+using System.Data;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Threading;
@@ -42,7 +43,7 @@ using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class PackageAsyncWorker
+    public class PackageAsyncWorker : ControllerAsyncBase
     {
         private int userId = -1;
         private List<PackageInfo> packages = new List<PackageInfo>();
@@ -168,12 +169,12 @@ namespace SolidCP.EnterpriseServer
                     try
                     {
                         // delete package from database
-                        DataProvider.DeletePackage(SecurityContext.User.UserId, package.PackageId);
+                        Database.DeletePackage(SecurityContext.User.UserId, package.PackageId);
 
                         success = true;
                         break;
                     }
-                    catch (System.Data.SqlClient.SqlException ex)
+                    catch (System.Data.Common.DbException ex)
                     {
                         exception = ex;
                         TaskManager.WriteError(ex);

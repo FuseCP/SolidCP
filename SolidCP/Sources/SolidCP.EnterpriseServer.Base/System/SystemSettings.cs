@@ -57,6 +57,7 @@ namespace SolidCP.EnterpriseServer
         public const string TWILIO_SETTINGS = "TwilioSettings";
         public const string ACCESS_IP_SETTINGS = "AccessIpsSettings";
 		public const string AUTHENTICATION_SETTINGS = "AuthenticationSettings";
+		public const string DEBUG_SETTINGS = "DebugSettings";
 
 		//Keys
 		public const string TWILIO_ACTIVE_KEY = "TwilioActive";
@@ -83,6 +84,9 @@ namespace SolidCP.EnterpriseServer
         // Constants for Reporting Transforms
         public const string BANDWIDTH_TRANSFORM = "BandwidthXLST";
         public const string DISKSPACE_TRANSFORM = "DiskspaceXLST";
+
+		// Always use EntityFramework
+		public const string ALWAYS_USE_ENTITYFRAMEWORK = "AlwaysUseEntityFramework";
 
         public static readonly SystemSettings Empty = new SystemSettings { SettingsArray = new string[][] {} };
 

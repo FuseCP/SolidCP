@@ -69,7 +69,14 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers
             var msDecrypt = new MemoryStream(sEncrypted);
             var csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read);
 
-            csDecrypt.Read(fromEncrypt, 0, fromEncrypt.Length);
+            int i = 0;
+            var nread = csDecrypt.Read(fromEncrypt, 0, fromEncrypt.Length);
+            // Fix: In Net Core, Read does not read the whole stream, we need to check for nread == 0
+            while (nread != 0)
+            {
+                i += nread;
+				nread = csDecrypt.Read(fromEncrypt, i, fromEncrypt.Length);
+			}
 
             return (Encoding.ASCII.GetString(fromEncrypt));
         }
@@ -89,6 +96,5 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers
             //key = Convert.ToBase64String(rj.Key);
             IV = Convert.ToBase64String(rj.IV);
         }
-
     }
 }

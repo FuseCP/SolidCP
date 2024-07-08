@@ -21,7 +21,7 @@ namespace SolidCP.EnterpriseServer.Tests
 
 			using (MemoryStream fs = new MemoryStream())
 			{
-				TestContext.WriteLine("Testing for type: {0}", typeof(T));
+				TestContext!.WriteLine("Testing for type: {0}", typeof(T));
 				var writer = XmlDictionaryWriter.CreateBinaryWriter(fs);
 				s.WriteObject(writer, obj);
 				writer.Flush();

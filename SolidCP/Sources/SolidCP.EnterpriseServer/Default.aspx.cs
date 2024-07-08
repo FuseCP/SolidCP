@@ -30,6 +30,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#if NETFRAMEWORK
 using System;
 using System.Data;
 using System.Configuration;
@@ -41,6 +42,10 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
+
+// embedded resources
+[assembly: WebResource("SolidCP.EnterpriseServer.Images.logo.png", "image/png")]
+
 
 namespace SolidCP.EnterpriseServer
 {
@@ -57,8 +62,9 @@ namespace SolidCP.EnterpriseServer
             if (attrs.Length > 0)
                 litVersion.Text = ((AssemblyFileVersionAttribute)attrs[0]).Version;
 
-			imgLogo.ImageUrl = Page.ClientScript.GetWebResourceUrl(
-				typeof(DefaultPage), "SolidCP.EnterpriseServer.Images.logo.png");
+			/* imgLogo.ImageUrl = Page.ClientScript.GetWebResourceUrl(
+				typeof(DefaultPage), "SolidCP.EnterpriseServer.Images.logo.png"); */
         }
     }
 }
+#endif

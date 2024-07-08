@@ -59,11 +59,11 @@ namespace SolidCP.EnterpriseServer
 	/// <summary>
 	/// Summary description for ServersController.
 	/// </summary>
-	public class ServerController
+	public class ServerController: ControllerBase
 	{
 		private const string LOG_SOURCE_SERVERS = "SERVERS";
 
-		private static List<string> _createdDatePatterns = new List<string> { @"Creation Date:(.+)", // base
+		private List<string> _createdDatePatterns = new List<string> { @"Creation Date:(.+)", // base
                                                                                 @"created:(.+)",
 																				@"Created On:(.+) UTC",
 																				@"Created On:(.+)",
@@ -71,7 +71,7 @@ namespace SolidCP.EnterpriseServer
 																				@"Domain Create Date:(.+)",
 																				@"Registered on:(.+)"};
 
-		private static List<string> _expiredDatePatterns = new List<string> {   @"Expiration Date:(.+) UTC", //base UTC
+		private List<string> _expiredDatePatterns = new List<string> {   @"Expiration Date:(.+) UTC", //base UTC
                                                                                 @"Expiration Date:(.+)", // base
                                                                                 @"Registry Expiry Date:(.+)", //.org
                                                                                 @"paid-till:(.+)", //.ru
@@ -83,56 +83,57 @@ namespace SolidCP.EnterpriseServer
                                                                                 @"expires:(.+)" //.fi 
                                                                               };
 
-		private static List<string> _registrarNamePatterns = new List<string>   {
+		private List<string> _registrarNamePatterns = new List<string>   {
 																				@"Created by Registrar:(.+)",
 																				@"Registrar:(.+)",
 																				@"Registrant Name:(.+)"
 																			};
 
-		private static List<string> _datePatterns = new List<string> {   @"ddd MMM dd HH:mm:ss G\MT yyyy",
+		private List<string> _datePatterns = new List<string> {   @"ddd MMM dd HH:mm:ss G\MT yyyy",
 																								 @"yyyymmdd"
 																										};
+		public ServerController(ControllerBase provider) : base(provider) { }
 
 		#region Servers
-		public static List<ServerInfo> GetAllServers()
+		public List<ServerInfo> GetAllServers()
 		{
 			// fill collection
 			var servers = ObjectUtils.CreateListFromDataSet<ServerInfo>(
-				DataProvider.GetAllServers(SecurityContext.User.UserId));
+				Database.GetAllServers(SecurityContext.User.UserId));
 			
 			foreach (var server in servers) DecryptServerUrl(server);
 
 			return servers;
 		}
 
-		public static DataSet GetRawAllServers()
+		public DataSet GetRawAllServers()
 		{
-			return DataProvider.GetAllServers(SecurityContext.User.UserId);
+			return Database.GetAllServers(SecurityContext.User.UserId);
 		}
 
-		public static List<ServerInfo> GetServers()
+		public List<ServerInfo> GetServers()
 		{
 			// create servers list
 			List<ServerInfo> servers = new List<ServerInfo>();
 
 			// fill collection
 			ObjectUtils.FillCollectionFromDataSet<ServerInfo>(
-				servers, DataProvider.GetServers(SecurityContext.User.UserId));
+				servers, Database.GetServers(SecurityContext.User.UserId));
 
 			foreach (var server in servers) DecryptServerUrl(server);
 
 			return servers;
 		}
 
-		public static DataSet GetRawServers()
+		public DataSet GetRawServers()
 		{
-			return DataProvider.GetServers(SecurityContext.User.UserId);
+			return Database.GetServers(SecurityContext.User.UserId);
 		}
 
-		internal static ServerInfo GetServerByIdInternal(int serverId)
+		internal ServerInfo GetServerByIdInternal(int serverId)
 		{
 			ServerInfo server = ObjectUtils.FillObjectFromDataReader<ServerInfo>(
-				DataProvider.GetServerInternal(serverId));
+				Database.GetServerInternal(serverId));
 
 			if (server == null)
 				return null;
@@ -146,7 +147,7 @@ namespace SolidCP.EnterpriseServer
 			return server;
 		}
 
-		public static void DecryptServerUrl(ServerInfo server)
+		public void DecryptServerUrl(ServerInfo server)
 		{
 			if (server != null)
 			{
@@ -154,36 +155,36 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static void EncryptServerUrl(ServerInfo server)
+		public void EncryptServerUrl(ServerInfo server)
 		{
 			server.ServerUrl = CryptoUtils.EncryptServerUrl(server.ServerUrl);
 		}
 
-		public static ServerInfo GetServerShortDetails(int serverId)
+		public ServerInfo GetServerShortDetails(int serverId)
 		{
 			var server = ObjectUtils.FillObjectFromDataReader<ServerInfo>(
-				DataProvider.GetServerShortDetails(serverId));
+				Database.GetServerShortDetails(serverId));
 			DecryptServerUrl(server);
 			return server;
 		}
 
-		public static ServerInfo GetServerById(int serverId, bool forAutodiscover = false)
+		public ServerInfo GetServerById(int serverId, bool forAutodiscover = false)
 		{
 			var server = ObjectUtils.FillObjectFromDataReader<ServerInfo>(
-				DataProvider.GetServer(SecurityContext.User.UserId, serverId, forAutodiscover));
+				Database.GetServer(SecurityContext.User.UserId, serverId, forAutodiscover));
 			DecryptServerUrl(server);
 			return server;
 		}
 
-		public static ServerInfo GetServerByName(string serverName)
+		public ServerInfo GetServerByName(string serverName)
 		{
 			var server = ObjectUtils.FillObjectFromDataReader<ServerInfo>(
-				DataProvider.GetServerByName(SecurityContext.User.UserId, serverName));
+				Database.GetServerByName(SecurityContext.User.UserId, serverName));
 			DecryptServerUrl(server);
 			return server;
 		}
 
-		public static int CheckServerAvailable(string serverUrl, string password)
+		public int CheckServerAvailable(string serverUrl, string password)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive
@@ -241,7 +242,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static bool? GetServerPasswordIsSHA256(string serverUrl)
+		public bool? GetServerPasswordIsSHA256(string serverUrl)
 		{
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive
                  | DemandAccount.IsAdmin);
@@ -295,7 +296,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static void GetServerPlatform(string serverUrl, string password, bool passwordIsSHA256, out OSPlatform platform, out bool? isCore)
+        public void GetServerPlatform(string serverUrl, string password, bool passwordIsSHA256, out OSPlatform platform, out bool? isCore)
 		{
 			platform = OSPlatform.Unknown;
 			isCore = null;
@@ -355,7 +356,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		private static void FindServices(ServerInfo server)
+		private void FindServices(ServerInfo server)
 		{
 			try
 			{
@@ -412,7 +413,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static int AddServer(ServerInfo server, bool autoDiscovery)
+		public int AddServer(ServerInfo server, bool autoDiscovery)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive
@@ -446,7 +447,7 @@ namespace SolidCP.EnterpriseServer
 
 			var serverUrl = CryptoUtils.EncryptServerUrl(server.ServerUrl);
 
-			int serverId = DataProvider.AddServer(server.ServerName, serverUrl,
+			int serverId = Database.AddServer(server.ServerName, serverUrl,
 				CryptoUtils.EncryptServerPassword(server.Password), server.Comments, server.VirtualServer, server.InstantDomainAlias,
 				server.PrimaryGroupId, server.ADEnabled, server.ADRootDomain, server.ADUsername, CryptoUtils.Encrypt(server.ADPassword),
 				server.ADAuthenticationType, server.OSPlatform, server.IsCore, server.PasswordIsSHA256);
@@ -471,7 +472,7 @@ namespace SolidCP.EnterpriseServer
 			return serverId;
 		}
 
-		public static int UpdateServer(ServerInfo server)
+		public int UpdateServer(ServerInfo server)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive
@@ -506,7 +507,7 @@ namespace SolidCP.EnterpriseServer
 
 			var serverUrl = CryptoUtils.EncryptServerUrl(server.ServerUrl);
 
-			DataProvider.UpdateServer(server.ServerId, server.ServerName, serverUrl,
+			Database.UpdateServer(server.ServerId, server.ServerName, serverUrl,
 				CryptoUtils.EncryptServerPassword(server.Password), server.Comments, server.InstantDomainAlias,
 				server.PrimaryGroupId, server.ADEnabled, server.ADRootDomain, server.ADUsername, CryptoUtils.Encrypt(server.ADPassword),
 				server.ADAuthenticationType, server.ADParentDomain, server.ADParentDomainController,
@@ -517,7 +518,7 @@ namespace SolidCP.EnterpriseServer
 			return 0;
 		}
 
-		public static int UpdateServerConnectionPassword(int serverId, string password)
+		public int UpdateServerConnectionPassword(int serverId, string password)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive
@@ -538,7 +539,7 @@ namespace SolidCP.EnterpriseServer
 			var serverUrl = CryptoUtils.EncryptServerUrl(server.ServerUrl);
 
 			// update server
-			DataProvider.UpdateServer(server.ServerId, server.ServerName, serverUrl,
+			Database.UpdateServer(server.ServerId, server.ServerName, serverUrl,
 				CryptoUtils.EncryptServerPassword(server.Password), server.Comments, server.InstantDomainAlias,
 				server.PrimaryGroupId, server.ADEnabled, server.ADRootDomain, server.ADUsername, CryptoUtils.Encrypt(server.ADPassword),
 				server.ADAuthenticationType, server.ADParentDomain, server.ADParentDomainController,
@@ -549,7 +550,7 @@ namespace SolidCP.EnterpriseServer
 			return 0;
 		}
 
-		public static int UpdateServerADPassword(int serverId, string adPassword)
+		public int UpdateServerADPassword(int serverId, string adPassword)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive
@@ -567,7 +568,7 @@ namespace SolidCP.EnterpriseServer
 			var serverUrl = CryptoUtils.EncryptServerUrl(server.ServerUrl);
 
 			// update server
-			DataProvider.UpdateServer(server.ServerId, server.ServerName, serverUrl,
+			Database.UpdateServer(server.ServerId, server.ServerName, serverUrl,
 				CryptoUtils.EncryptServerPassword(server.Password), server.Comments, server.InstantDomainAlias,
 				server.PrimaryGroupId, server.ADEnabled, server.ADRootDomain, server.ADUsername, CryptoUtils.Encrypt(server.ADPassword),
 				server.ADAuthenticationType, server.ADParentDomain, server.ADParentDomainController,
@@ -578,7 +579,7 @@ namespace SolidCP.EnterpriseServer
 			return 0;
 		}
 
-		public static int DeleteServer(int serverId)
+		public int DeleteServer(int serverId)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive
@@ -592,7 +593,7 @@ namespace SolidCP.EnterpriseServer
 
 			try
 			{
-				int result = DataProvider.DeleteServer(serverId);
+				int result = Database.DeleteServer(serverId);
 				if (result == -1)
 				{
 					TaskManager.WriteError("Server contains services");
@@ -617,7 +618,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static Dictionary<int, string> AutoUpdateServer(int serverId, int serviceId, byte[] zipFile, string zipFileName)
+		public Dictionary<int, string> AutoUpdateServer(int serverId, int serviceId, byte[] zipFile, string zipFileName)
 		{
 			OS.OperatingSystem os = new OS.OperatingSystem();
 			ServiceProviderProxy.Init(os, serviceId);
@@ -668,22 +669,22 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region Virtual Servers
-		public static DataSet GetVirtualServers()
+		public DataSet GetVirtualServers()
 		{
-			return DataProvider.GetVirtualServers(SecurityContext.User.UserId);
+			return Database.GetVirtualServers(SecurityContext.User.UserId);
 		}
 
-		public static DataSet GetAvailableVirtualServices(int serverId)
+		public DataSet GetAvailableVirtualServices(int serverId)
 		{
-			return DataProvider.GetAvailableVirtualServices(SecurityContext.User.UserId, serverId);
+			return Database.GetAvailableVirtualServices(SecurityContext.User.UserId, serverId);
 		}
 
-		public static DataSet GetVirtualServices(int serverId, bool forAutodiscover)
+		public DataSet GetVirtualServices(int serverId, bool forAutodiscover)
 		{
-			return DataProvider.GetVirtualServices(SecurityContext.User.UserId, serverId, forAutodiscover);
+			return Database.GetVirtualServices(SecurityContext.User.UserId, serverId, forAutodiscover);
 		}
 
-		public static int AddVirtualServices(int serverId, int[] ids)
+		public int AddVirtualServices(int serverId, int[] ids)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsAdmin
@@ -698,14 +699,14 @@ namespace SolidCP.EnterpriseServer
 			string xml = BuildXmlFromArray(ids, "services", "service");
 
 			// update server
-			DataProvider.AddVirtualServices(serverId, xml);
+			Database.AddVirtualServices(serverId, xml);
 
 			TaskManager.CompleteTask();
 
 			return 0;
 		}
 
-		public static int DeleteVirtualServices(int serverId, int[] ids)
+		public int DeleteVirtualServices(int serverId, int[] ids)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsAdmin
@@ -720,14 +721,14 @@ namespace SolidCP.EnterpriseServer
 			string xml = BuildXmlFromArray(ids, "services", "service");
 
 			// update server
-			DataProvider.DeleteVirtualServices(serverId, xml);
+			Database.DeleteVirtualServices(serverId, xml);
 
 			TaskManager.CompleteTask();
 
 			return 0;
 		}
 
-		public static int UpdateVirtualGroups(int serverId, VirtualGroupInfo[] groups)
+		public int UpdateVirtualGroups(int serverId, VirtualGroupInfo[] groups)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsAdmin
@@ -762,12 +763,12 @@ namespace SolidCP.EnterpriseServer
 			string xml = nodeGroups.OuterXml;
 
 			// update server
-			DataProvider.UpdateVirtualGroups(serverId, xml);
+			Database.UpdateVirtualGroups(serverId, xml);
 
 			return 0;
 		}
 
-		private static string BuildXmlFromArray(int[] ids, string rootName, string childName)
+		private string BuildXmlFromArray(int[] ids, string rootName, string childName)
 		{
 			XmlDocument doc = new XmlDocument();
 			XmlElement nodeRoot = doc.CreateElement(rootName);
@@ -783,52 +784,52 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region Services
-		public static DataSet GetRawServicesByServerId(int serverId)
+		public DataSet GetRawServicesByServerId(int serverId)
 		{
-			return DataProvider.GetRawServicesByServerId(SecurityContext.User.UserId, serverId);
+			return Database.GetRawServicesByServerId(SecurityContext.User.UserId, serverId);
 		}
-		public static String GetMailFilterURL(int PackageId, String ResorceGroupName)
+		public String GetMailFilterURL(int PackageId, String ResorceGroupName)
 		{
-			return DataProvider.GetMailFilterURL(SecurityContext.User.UserId, PackageId, ResorceGroupName);
+			return Database.GetMailFilterURL(SecurityContext.User.UserId, PackageId, ResorceGroupName);
 		}
-		public static String GetMailFilterURLByHostingPlan(int PlanID, String ResorceGroupName)
+		public String GetMailFilterURLByHostingPlan(int PlanID, String ResorceGroupName)
 		{
-			return DataProvider.GetMailFilterUrlByHostingPlan(SecurityContext.User.UserId, PlanID, ResorceGroupName);
+			return Database.GetMailFilterUrlByHostingPlan(SecurityContext.User.UserId, PlanID, ResorceGroupName);
 		}
-		public static List<ServiceInfo> GetServicesByServerId(int serverId)
+		public List<ServiceInfo> GetServicesByServerId(int serverId)
 		{
 			List<ServiceInfo> services = new List<ServiceInfo>();
 			ObjectUtils.FillCollectionFromDataReader<ServiceInfo>(services,
-				DataProvider.GetServicesByServerId(SecurityContext.User.UserId, serverId));
+				Database.GetServicesByServerId(SecurityContext.User.UserId, serverId));
 			return services;
 		}
 
-		public static List<ServiceInfo> GetServicesByServerIdGroupName(int serverId, string groupName)
+		public List<ServiceInfo> GetServicesByServerIdGroupName(int serverId, string groupName)
 		{
 			List<ServiceInfo> services = new List<ServiceInfo>();
 			ObjectUtils.FillCollectionFromDataReader<ServiceInfo>(services,
-				DataProvider.GetServicesByServerIdGroupName(SecurityContext.User.UserId,
+				Database.GetServicesByServerIdGroupName(SecurityContext.User.UserId,
 				serverId, groupName));
 			return services;
 		}
 
-		public static DataSet GetRawServicesByGroupId(int groupId)
+		public DataSet GetRawServicesByGroupId(int groupId)
 		{
-			return DataProvider.GetServicesByGroupId(SecurityContext.User.UserId, groupId);
+			return Database.GetServicesByGroupId(SecurityContext.User.UserId, groupId);
 		}
 
-		public static DataSet GetRawServicesByGroupName(string groupName, bool forAutodiscover)
+		public DataSet GetRawServicesByGroupName(string groupName, bool forAutodiscover)
 		{
-			return DataProvider.GetServicesByGroupName(SecurityContext.User.UserId, groupName, forAutodiscover);
+			return Database.GetServicesByGroupName(SecurityContext.User.UserId, groupName, forAutodiscover);
 		}
 
-		public static List<ServiceInfo> GetServicesByGroupName(string groupName)
+		public List<ServiceInfo> GetServicesByGroupName(string groupName)
 		{
 			return ObjectUtils.CreateListFromDataSet<ServiceInfo>(
-				DataProvider.GetServicesByGroupName(SecurityContext.User.UserId, groupName, false));
+				Database.GetServicesByGroupName(SecurityContext.User.UserId, groupName, false));
 		}
 
-		public static ServiceInfo GetServiceInfoAdmin(int serviceId)
+		public ServiceInfo GetServiceInfoAdmin(int serviceId)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.IsAdmin
@@ -837,16 +838,16 @@ namespace SolidCP.EnterpriseServer
 				return null;
 
 			return ObjectUtils.FillObjectFromDataReader<ServiceInfo>(
-				DataProvider.GetService(SecurityContext.User.UserId, serviceId));
+				Database.GetService(SecurityContext.User.UserId, serviceId));
 		}
 
-		public static ServiceInfo GetServiceInfo(int serviceId)
+		public ServiceInfo GetServiceInfo(int serviceId)
 		{
 			return ObjectUtils.FillObjectFromDataReader<ServiceInfo>(
-				DataProvider.GetService(SecurityContext.User.UserId, serviceId));
+				Database.GetService(SecurityContext.User.UserId, serviceId));
 		}
 
-		public static int AddService(ServiceInfo service)
+		public int AddService(ServiceInfo service)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsAdmin
@@ -858,7 +859,7 @@ namespace SolidCP.EnterpriseServer
 			TaskManager.WriteParameter("Service name", service.ServiceName);
 			TaskManager.WriteParameter("Provider", service.ProviderId);
 
-			int serviceId = DataProvider.AddService(service.ServerId, service.ProviderId, service.ServiceName,
+			int serviceId = Database.AddService(service.ServerId, service.ProviderId, service.ServiceName,
 				service.ServiceQuotaValue, service.ClusterId, service.Comments);
 
 			// read service default settings
@@ -898,7 +899,7 @@ namespace SolidCP.EnterpriseServer
 			return serviceId;
 		}
 
-		public static int UpdateService(ServiceInfo service)
+		public int UpdateService(ServiceInfo service)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsAdmin
@@ -918,13 +919,13 @@ namespace SolidCP.EnterpriseServer
 			{
 				if (origService.ProviderId != service.ProviderId)
 					TaskManager.WriteParameter("New Provider Id", service.ProviderId.ToString());
-				DataProvider.UpdateServiceFully(service.ServiceId, service.ProviderId, service.ServiceName,
+				Database.UpdateServiceFully(service.ServiceId, service.ProviderId, service.ServiceName,
 				service.ServiceQuotaValue, service.ClusterId, service.Comments);
 				TaskManager.Write("Updated Service Fully");
 			}
 			else
 			{
-				DataProvider.UpdateService(service.ServiceId, service.ServiceName,
+				Database.UpdateService(service.ServiceId, service.ServiceName,
 				service.ServiceQuotaValue, service.ClusterId, service.Comments);
 				TaskManager.Write("Updated Service");
 			}
@@ -934,7 +935,7 @@ namespace SolidCP.EnterpriseServer
 			return 0;
 		}
 
-		public static int DeleteService(int serviceId)
+		public int DeleteService(int serviceId)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsAdmin
@@ -949,7 +950,7 @@ namespace SolidCP.EnterpriseServer
 
 			try
 			{
-				int result = DataProvider.DeleteService(serviceId);
+				int result = Database.DeleteService(serviceId);
 				if (result == -1)
 				{
 					TaskManager.WriteError("Service contains service items");
@@ -970,7 +971,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static StringDictionary GetServiceSettings(int serviceId)
+		public StringDictionary GetServiceSettings(int serviceId)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.IsActive);
@@ -982,7 +983,7 @@ namespace SolidCP.EnterpriseServer
 			return GetServiceSettings(serviceId, !isDemoAccount);
 		}
 
-		public static StringDictionary GetServiceSettingsAdmin(int serviceId)
+		public StringDictionary GetServiceSettingsAdmin(int serviceId)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.IsAdmin | DemandAccount.IsActive);
@@ -994,10 +995,10 @@ namespace SolidCP.EnterpriseServer
 			return GetServiceSettings(serviceId, !isDemoAccount);
 		}
 
-		internal static StringDictionary GetServiceSettings(int serviceId, bool decryptPassword)
+		internal StringDictionary GetServiceSettings(int serviceId, bool decryptPassword)
 		{
 			// get service settings
-			IDataReader reader = DataProvider.GetServiceProperties(SecurityContext.User.UserId, serviceId);
+			IDataReader reader = Database.GetServiceProperties(SecurityContext.User.UserId, serviceId);
 
 			// create settings object
 			StringDictionary settings = new StringDictionary();
@@ -1016,7 +1017,7 @@ namespace SolidCP.EnterpriseServer
 			return settings;
 		}
 
-		public static int UpdateServiceSettings(int serviceId, string[] settings)
+		public int UpdateServiceSettings(int serviceId, string[] settings)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsAdmin
@@ -1046,26 +1047,26 @@ namespace SolidCP.EnterpriseServer
 				string xml = nodeProps.OuterXml;
 
 				// update settings
-				DataProvider.UpdateServiceProperties(serviceId, xml);
+				Database.UpdateServiceProperties(serviceId, xml);
 			}
 
 			return 0;
 		}
 
-		public static string[] InstallService(int serviceId)
+		public string[] InstallService(int serviceId)
 		{
 			ServiceProvider prov = new ServiceProvider();
 			ServiceProviderProxy.Init(prov, serviceId);
 			return prov.Install();
 		}
 
-		public static QuotaInfo GetProviderServiceQuota(int providerId)
+		public QuotaInfo GetProviderServiceQuota(int providerId)
 		{
 			return ObjectUtils.FillObjectFromDataReader<QuotaInfo>(
-				DataProvider.GetProviderServiceQuota(providerId));
+				Database.GetProviderServiceQuota(providerId));
 		}
 
-		public static StringDictionary GetMailServiceSettingsByPackage(int packageID)
+		public StringDictionary GetMailServiceSettingsByPackage(int packageID)
 		{
 			int serviceID = PackageController.GetPackageServiceId(packageID, ResourceGroups.Mail);
 
@@ -1082,60 +1083,60 @@ namespace SolidCP.EnterpriseServer
 
 		#region Providers
 
-		public static List<ProviderInfo> GetInstalledProviders(int groupId)
+		public List<ProviderInfo> GetInstalledProviders(int groupId)
 		{
 			List<ProviderInfo> provs = new List<ProviderInfo>();
 			ObjectUtils.FillCollectionFromDataSet<ProviderInfo>(provs,
-				DataProvider.GetGroupProviders(groupId));
+				Database.GetGroupProviders(groupId));
 			return provs;
 		}
 
-		public static List<ResourceGroupInfo> GetResourceGroups()
+		public List<ResourceGroupInfo> GetResourceGroups()
 		{
 			List<ResourceGroupInfo> groups = new List<ResourceGroupInfo>();
 			ObjectUtils.FillCollectionFromDataSet<ResourceGroupInfo>(groups,
-				DataProvider.GetResourceGroups());
+				Database.GetResourceGroups());
 			return groups;
 		}
 
-		public static ResourceGroupInfo GetResourceGroup(int groupId)
+		public ResourceGroupInfo GetResourceGroup(int groupId)
 		{
 			return ObjectUtils.FillObjectFromDataReader<ResourceGroupInfo>(
-				DataProvider.GetResourceGroup(groupId));
+				Database.GetResourceGroup(groupId));
 		}
 
-		public static ResourceGroupInfo GetResourceGroupByName(string name)
+		public ResourceGroupInfo GetResourceGroupByName(string name)
 		{
 			return ObjectUtils.FillObjectFromDataReader<ResourceGroupInfo>(
-				DataProvider.GetResourceGroupByName(name));
+				Database.GetResourceGroupByName(name));
 		}
 
-		public static ProviderInfo GetProvider(int providerId)
+		public ProviderInfo GetProvider(int providerId)
 		{
 			return ObjectUtils.FillObjectFromDataReader<ProviderInfo>(
-				DataProvider.GetProvider(providerId));
+				Database.GetProvider(providerId));
 		}
 
-		public static List<ProviderInfo> GetProviders()
+		public List<ProviderInfo> GetProviders()
 		{
 			List<ProviderInfo> provs = new List<ProviderInfo>();
 			ObjectUtils.FillCollectionFromDataSet<ProviderInfo>(
-				provs, DataProvider.GetProviders());
+				provs, Database.GetProviders());
 			return provs;
 		}
 
-		public static List<ProviderInfo> GetProvidersByGroupID(int groupId)
+		public List<ProviderInfo> GetProvidersByGroupID(int groupId)
 		{
 			List<ProviderInfo> provs = new List<ProviderInfo>();
 			ObjectUtils.FillCollectionFromDataSet<ProviderInfo>(
-				provs, DataProvider.GetGroupProviders(groupId));
+				provs, Database.GetGroupProviders(groupId));
 			return provs;
 		}
 
-		public static String GetMailFilterUrl(int packageId, string groupName)
+		public String GetMailFilterUrl(int packageId, string groupName)
 		{
 			// load service
-			String l_stURL = DataProvider.GetMailFilterURL(SecurityContext.User.UserId, packageId, groupName);
+			String l_stURL = Database.GetMailFilterURL(SecurityContext.User.UserId, packageId, groupName);
 
 			if (String.IsNullOrEmpty(l_stURL))
 				return string.Empty;
@@ -1143,17 +1144,17 @@ namespace SolidCP.EnterpriseServer
 			return l_stURL;
 		}
 
-		public static String GetMailFilterUrlByHostingPlan(int PlanId, string groupName)
+		public String GetMailFilterUrlByHostingPlan(int PlanId, string groupName)
 		{
 			// load service
-			String l_stURL = DataProvider.GetMailFilterUrlByHostingPlan(SecurityContext.User.UserId, PlanId, groupName);
+			String l_stURL = Database.GetMailFilterUrlByHostingPlan(SecurityContext.User.UserId, PlanId, groupName);
 
 			if (String.IsNullOrEmpty(l_stURL))
 				return string.Empty;
 
 			return l_stURL;
 		}
-		public static ProviderInfo GetPackageServiceProvider(int packageId, string groupName)
+		public ProviderInfo GetPackageServiceProvider(int packageId, string groupName)
 		{
 			// load service
 			int serviceId = PackageController.GetPackageServiceId(packageId, groupName);
@@ -1164,7 +1165,7 @@ namespace SolidCP.EnterpriseServer
 			ServiceInfo service = GetServiceInfo(serviceId);
 			return GetProvider(service.ProviderId);
 		}
-		public static BoolResult IsInstalled(int serverId, int providerId)
+		public BoolResult IsInstalled(int serverId, int providerId)
 		{
 			BoolResult res = TaskManager.StartResultTask<BoolResult>("AUTO_DISCOVERY", "IS_INSTALLED");
 
@@ -1192,7 +1193,7 @@ namespace SolidCP.EnterpriseServer
 			return res;
 		}
 
-		public static BoolResult IsInstalled(int serverId, ProviderInfo provider)
+		public BoolResult IsInstalled(int serverId, ProviderInfo provider)
 		{
 			BoolResult res = TaskManager.StartResultTask<BoolResult>("AUTO_DISCOVERY", "IS_INSTALLED");
 
@@ -1213,7 +1214,7 @@ namespace SolidCP.EnterpriseServer
 			return res;
 
 		}
-		public static BoolResult IsInstalled(ServerInfo server, ProviderInfo provider)
+		public BoolResult IsInstalled(ServerInfo server, ProviderInfo provider)
 		{
 			BoolResult res = TaskManager.StartResultTask<BoolResult>("AUTO_DISCOVERY", "IS_INSTALLED");
 
@@ -1234,7 +1235,7 @@ namespace SolidCP.EnterpriseServer
 			return res;
 		}
 
-		public static string GetServerVersion(int serverId)
+		public string GetServerVersion(int serverId)
 		{
 			AutoDiscovery ad = new AutoDiscovery();
 			ServiceProviderProxy.ServerInit(ad, serverId);
@@ -1242,7 +1243,7 @@ namespace SolidCP.EnterpriseServer
 			return ad.GetServerVersion();
 		}
 
-		public static string GetServerFilePath(int serverId)
+		public string GetServerFilePath(int serverId)
 		{
 			AutoDiscovery ad = new AutoDiscovery();
 			ServiceProviderProxy.ServerInit(ad, serverId);
@@ -1253,12 +1254,12 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region Private Network VLANs
-		public static VLANsPaged GetPrivateNetworVLANsPaged(int serverId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
+		public VLANsPaged GetPrivateNetworVLANsPaged(int serverId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
 		{
 			VLANsPaged result = new VLANsPaged();
 
 			// get reader
-			IDataReader reader = DataProvider.GetPrivateNetworVLANsPaged(SecurityContext.User.UserId, serverId, filterColumn, filterValue, sortColumn, startRow, maximumRows);
+			IDataReader reader = Database.GetPrivateNetworVLANsPaged(SecurityContext.User.UserId, serverId, filterColumn, filterValue, sortColumn, startRow, maximumRows);
 
 			// number of items = first data reader
 			reader.Read();
@@ -1271,7 +1272,7 @@ namespace SolidCP.EnterpriseServer
 			return result;
 		}
 
-		public static IntResult AddPrivateNetworkVLAN(int serverId, int vlan, string comments)
+		public IntResult AddPrivateNetworkVLAN(int serverId, int vlan, string comments)
 		{
 			IntResult res = new IntResult();
 
@@ -1288,7 +1289,7 @@ namespace SolidCP.EnterpriseServer
 
 			try
 			{
-				res.Value = DataProvider.AddPrivateNetworkVLAN(serverId, vlan, comments);
+				res.Value = Database.AddPrivateNetworkVLAN(serverId, vlan, comments);
 
 			}
 			catch (Exception ex)
@@ -1301,7 +1302,7 @@ namespace SolidCP.EnterpriseServer
 			return res;
 		}
 
-		public static ResultObject DeletePrivateNetworkVLANs(int[] vlans)
+		public ResultObject DeletePrivateNetworkVLANs(int[] vlans)
 		{
 			ResultObject res = new ResultObject();
 
@@ -1336,7 +1337,7 @@ namespace SolidCP.EnterpriseServer
 			return res;
 		}
 
-		private static ResultObject DeletePrivateNetworkVLAN(int vlanId)
+		private ResultObject DeletePrivateNetworkVLAN(int vlanId)
 		{
 			ResultObject res = new ResultObject();
 
@@ -1345,7 +1346,7 @@ namespace SolidCP.EnterpriseServer
 
 			try
 			{
-				int result = DataProvider.DeletePrivateNetworkVLAN(vlanId);
+				int result = Database.DeletePrivateNetworkVLAN(vlanId);
 				if (result == -2)
 				{
 					TaskManager.CompleteResultTask(res, "ERROR_VLAN_USED_BY_PACKAGE_ITEM");
@@ -1362,7 +1363,7 @@ namespace SolidCP.EnterpriseServer
 			return res;
 		}
 
-		public static ResultObject AddPrivateNetworkVLANsRange(int serverId, int startVLAN, int endVLAN, string comments)
+		public ResultObject AddPrivateNetworkVLANsRange(int serverId, int startVLAN, int endVLAN, string comments)
 		{
 			ResultObject res = new ResultObject();
 
@@ -1382,7 +1383,7 @@ namespace SolidCP.EnterpriseServer
 			{
 				for (int i = startVLAN; i <= endVLAN; i++)
 				{
-					DataProvider.AddPrivateNetworkVLAN(serverId, i, comments);
+					Database.AddPrivateNetworkVLAN(serverId, i, comments);
 				}
 			}
 			catch (Exception ex)
@@ -1395,13 +1396,13 @@ namespace SolidCP.EnterpriseServer
 			return res;
 		}
 
-		public static VLANInfo GetPrivateNetworVLAN(int vlanId)
+		public VLANInfo GetPrivateNetworVLAN(int vlanId)
 		{
 			return ObjectUtils.FillObjectFromDataReader<VLANInfo>(
-				 DataProvider.GetPrivateNetworVLAN(vlanId));
+				 Database.GetPrivateNetworVLAN(vlanId));
 		}
 
-		public static ResultObject UpdatePrivateNetworVLAN(int vlanId, int serverId, int vlan, string comments)
+		public ResultObject UpdatePrivateNetworVLAN(int vlanId, int serverId, int vlan, string comments)
 		{
 			ResultObject res = new ResultObject();
 
@@ -1416,7 +1417,7 @@ namespace SolidCP.EnterpriseServer
 
 			try
 			{
-				DataProvider.UpdatePrivateNetworVLAN(vlanId, serverId, vlan, comments);
+				Database.UpdatePrivateNetworVLAN(vlanId, serverId, vlan, comments);
 			}
 			catch (Exception ex)
 			{
@@ -1428,12 +1429,12 @@ namespace SolidCP.EnterpriseServer
 			return res;
 		}
 
-		public static PackageVLANsPaged GetPackagePrivateNetworkVLANs(int packageId, string sortColumn, int startRow, int maximumRows)
+		public PackageVLANsPaged GetPackagePrivateNetworkVLANs(int packageId, string sortColumn, int startRow, int maximumRows)
 		{
 			PackageVLANsPaged result = new PackageVLANsPaged();
 
 			// get reader
-			IDataReader reader = DataProvider.GetPackagePrivateNetworkVLANs(packageId, sortColumn, startRow, maximumRows);
+			IDataReader reader = Database.GetPackagePrivateNetworkVLANs(packageId, sortColumn, startRow, maximumRows);
 
 			// number of items = first data reader
 			reader.Read();
@@ -1446,7 +1447,7 @@ namespace SolidCP.EnterpriseServer
 			return result;
 		}
 
-		public static ResultObject DeallocatePackageVLANs(int packageId, int[] packageVlanId)
+		public ResultObject DeallocatePackageVLANs(int packageId, int[] packageVlanId)
 		{
 			#region Check account and space statuses
 			// create result object
@@ -1467,7 +1468,7 @@ namespace SolidCP.EnterpriseServer
 			{
 				foreach (int id in packageVlanId)
 				{
-					DataProvider.DeallocatePackageVLAN(id);
+					Database.DeallocatePackageVLAN(id);
 				}
 			}
 			catch (Exception ex)
@@ -1480,7 +1481,7 @@ namespace SolidCP.EnterpriseServer
 			return res;
 		}
 
-		public static List<VLANInfo> GetUnallottedVLANs(int packageId, string groupName)
+		public List<VLANInfo> GetUnallottedVLANs(int packageId, string groupName)
 		{
 
 			int serviceId = 0;
@@ -1491,20 +1492,20 @@ namespace SolidCP.EnterpriseServer
 
 			// get unallotted vlans
 			return ObjectUtils.CreateListFromDataReader<VLANInfo>(
-				 DataProvider.GetUnallottedVLANs(packageId, serviceId));
+				 Database.GetUnallottedVLANs(packageId, serviceId));
 		}
 
-		public static void AllocatePackageVLANs(int packageId, int[] vlanIds)
+		public void AllocatePackageVLANs(int packageId, int[] vlanIds)
 		{
 			if (vlanIds == null || vlanIds.Length == 0) return;
 			// prepare XML document
 			string xml = PrepareXML(vlanIds);
 
 			// save to database
-			DataProvider.AllocatePackageVLANs(packageId, xml);
+			Database.AllocatePackageVLANs(packageId, xml);
 		}
 
-		public static ResultObject AllocatePackageVLANs(int packageId, string groupName, bool allocateRandom, int vlansNumber, int[] vlanId)
+		public ResultObject AllocatePackageVLANs(int packageId, string groupName, bool allocateRandom, int vlansNumber, int[] vlanId)
 		{
 			#region Check account and space statuses
 			// create result object
@@ -1580,7 +1581,7 @@ namespace SolidCP.EnterpriseServer
 				// save to database
 				try
 				{
-					DataProvider.AllocatePackageVLANs(packageId, xml);
+					Database.AllocatePackageVLANs(packageId, xml);
 				}
 				catch (Exception ex)
 				{
@@ -1600,19 +1601,19 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region IP Addresses
-		public static List<IPAddressInfo> GetIPAddresses(IPAddressPool pool, int serverId)
+		public List<IPAddressInfo> GetIPAddresses(IPAddressPool pool, int serverId)
 		{
 			return ObjectUtils.CreateListFromDataReader<IPAddressInfo>(
-				DataProvider.GetIPAddresses(SecurityContext.User.UserId, (int)pool, serverId));
+				Database.GetIPAddresses(SecurityContext.User.UserId, (int)pool, serverId));
 		}
 
-		public static IPAddressesPaged GetIPAddressesPaged(IPAddressPool pool, int serverId,
+		public IPAddressesPaged GetIPAddressesPaged(IPAddressPool pool, int serverId,
 			string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
 		{
 			IPAddressesPaged result = new IPAddressesPaged();
 
 			// get reader
-			IDataReader reader = DataProvider.GetIPAddressesPaged(SecurityContext.User.UserId, (int)pool, serverId, filterColumn, filterValue, sortColumn, startRow, maximumRows);
+			IDataReader reader = Database.GetIPAddressesPaged(SecurityContext.User.UserId, (int)pool, serverId, filterColumn, filterValue, sortColumn, startRow, maximumRows);
 
 			// number of items = first data reader
 			reader.Read();
@@ -1625,19 +1626,19 @@ namespace SolidCP.EnterpriseServer
 			return result;
 		}
 
-		public static IPAddressInfo GetIPAddress(int addressId)
+		public IPAddressInfo GetIPAddress(int addressId)
 		{
 			return ObjectUtils.FillObjectFromDataReader<IPAddressInfo>(
-				DataProvider.GetIPAddress(addressId));
+				Database.GetIPAddress(addressId));
 		}
 
-		public static string GetExternalIPAddress(int addressId)
+		public string GetExternalIPAddress(int addressId)
 		{
 			IPAddressInfo ip = GetIPAddress(addressId);
 			return (ip != null ? ip.ExternalIP : null);
 		}
 
-		public static IntResult AddIPAddress(IPAddressPool pool, int serverId,
+		public IntResult AddIPAddress(IPAddressPool pool, int serverId,
 			string externalIP, string internalIP, string subnetMask, string defaultGateway, string comments, int VLAN)
 		{
 			IntResult res = new IntResult();
@@ -1656,7 +1657,7 @@ namespace SolidCP.EnterpriseServer
 
 			try
 			{
-				res.Value = DataProvider.AddIPAddress((int)pool, serverId, externalIP, internalIP,
+				res.Value = Database.AddIPAddress((int)pool, serverId, externalIP, internalIP,
 											subnetMask, defaultGateway, comments, VLAN);
 
 			}
@@ -1670,7 +1671,7 @@ namespace SolidCP.EnterpriseServer
 			return res;
 		}
 
-		public static ResultObject AddIPAddressesRange(IPAddressPool pool, int serverId,
+		public ResultObject AddIPAddressesRange(IPAddressPool pool, int serverId,
 			string externalIP, string endIP, string internalIP, string subnetMask, string defaultGateway, string comments, int VLAN)
 		{
 			const int MaxSubnet = 512; // TODO bigger max subnet?
@@ -1714,7 +1715,7 @@ namespace SolidCP.EnterpriseServer
 					end = Math.Min(end, start + maxPhones);
 
 					for (UInt64 number = start; number <= end; number++)
-						DataProvider.AddIPAddress((int)pool, serverId, number.ToString(phoneFormat), "", subnetMask, defaultGateway, comments, VLAN);
+						Database.AddIPAddress((int)pool, serverId, number.ToString(phoneFormat), "", subnetMask, defaultGateway, comments, VLAN);
 				}
 
 				else
@@ -1741,7 +1742,7 @@ namespace SolidCP.EnterpriseServer
 							break;
 
 						// add IP address
-						DataProvider.AddIPAddress((int)pool, serverId, startExternalIP.ToString(), startInternalIP.ToString(), subnetMask, defaultGateway, comments, VLAN);
+						Database.AddIPAddress((int)pool, serverId, startExternalIP.ToString(), startInternalIP.ToString(), subnetMask, defaultGateway, comments, VLAN);
 
 						if (startExternalIP == endExternalIP)
 							break;
@@ -1765,7 +1766,7 @@ namespace SolidCP.EnterpriseServer
 			return res;
 		}
 
-		public static ResultObject UpdateIPAddress(int addressId, IPAddressPool pool, int serverId,
+		public ResultObject UpdateIPAddress(int addressId, IPAddressPool pool, int serverId,
 			string externalIP, string internalIP, string subnetMask, string defaultGateway, string comments, int VLAN)
 		{
 			ResultObject res = new ResultObject();
@@ -1781,7 +1782,7 @@ namespace SolidCP.EnterpriseServer
 
 			try
 			{
-				DataProvider.UpdateIPAddress(addressId, (int)pool, serverId, externalIP, internalIP, subnetMask, defaultGateway, comments, VLAN);
+				Database.UpdateIPAddress(addressId, (int)pool, serverId, externalIP, internalIP, subnetMask, defaultGateway, comments, VLAN);
 			}
 			catch (Exception ex)
 			{
@@ -1793,7 +1794,7 @@ namespace SolidCP.EnterpriseServer
 			return res;
 		}
 
-		public static ResultObject UpdateIPAddresses(int[] addresses, IPAddressPool pool, int serverId,
+		public ResultObject UpdateIPAddresses(int[] addresses, IPAddressPool pool, int serverId,
 			string subnetMask, string defaultGateway, string comments, int VLAN)
 		{
 			ResultObject res = new ResultObject();
@@ -1810,7 +1811,7 @@ namespace SolidCP.EnterpriseServer
 			try
 			{
 				string xmlIds = PrepareXML(addresses);
-				DataProvider.UpdateIPAddresses(xmlIds, (int)pool, serverId, subnetMask, defaultGateway, comments, VLAN);
+				Database.UpdateIPAddresses(xmlIds, (int)pool, serverId, subnetMask, defaultGateway, comments, VLAN);
 			}
 			catch (Exception ex)
 			{
@@ -1822,7 +1823,7 @@ namespace SolidCP.EnterpriseServer
 			return res;
 		}
 
-		public static ResultObject DeleteIPAddresses(int[] addresses)
+		public ResultObject DeleteIPAddresses(int[] addresses)
 		{
 			ResultObject res = new ResultObject();
 
@@ -1857,7 +1858,7 @@ namespace SolidCP.EnterpriseServer
 			return res;
 		}
 
-		public static ResultObject DeleteIPAddress(int addressId)
+		public ResultObject DeleteIPAddress(int addressId)
 		{
 			ResultObject res = new ResultObject();
 
@@ -1872,7 +1873,7 @@ namespace SolidCP.EnterpriseServer
 
 			try
 			{
-				int result = DataProvider.DeleteIPAddress(addressId);
+				int result = Database.DeleteIPAddress(addressId);
 				if (result == -1)
 				{
 					TaskManager.CompleteResultTask(res, "ERROR_IP_USED_IN_NAME_SERVER");
@@ -1896,13 +1897,13 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region Package IP Addresses
-		public static PackageIPAddressesPaged GetPackageIPAddresses(int packageId, int orgId, IPAddressPool pool,
+		public PackageIPAddressesPaged GetPackageIPAddresses(int packageId, int orgId, IPAddressPool pool,
 			string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, bool recursive)
 		{
 			PackageIPAddressesPaged result = new PackageIPAddressesPaged();
 
 			// get reader
-			IDataReader reader = DataProvider.GetPackageIPAddresses(packageId, orgId, (int)pool, filterColumn, filterValue, sortColumn, startRow, maximumRows, recursive);
+			IDataReader reader = Database.GetPackageIPAddresses(packageId, orgId, (int)pool, filterColumn, filterValue, sortColumn, startRow, maximumRows, recursive);
 
 			// number of items = first data reader
 			reader.Read();
@@ -1915,12 +1916,12 @@ namespace SolidCP.EnterpriseServer
 			return result;
 		}
 
-		public static int GetPackageIPAddressesCount(int packageId, int orgId, IPAddressPool pool)
+		public int GetPackageIPAddressesCount(int packageId, int orgId, IPAddressPool pool)
 		{
-			return DataProvider.GetPackageIPAddressesCount(packageId, orgId, (int)pool);
+			return Database.GetPackageIPAddressesCount(packageId, orgId, (int)pool);
 		}
 
-		public static List<IPAddressInfo> GetUnallottedIPAddresses(int packageId, string groupName, IPAddressPool pool)
+		public List<IPAddressInfo> GetUnallottedIPAddresses(int packageId, string groupName, IPAddressPool pool)
 		{
 
 			int serviceId = 0;
@@ -1931,30 +1932,30 @@ namespace SolidCP.EnterpriseServer
 
 			// get unallotted addresses
 			return ObjectUtils.CreateListFromDataReader<IPAddressInfo>(
-				DataProvider.GetUnallottedIPAddresses(packageId, serviceId, (int)pool));
+				Database.GetUnallottedIPAddresses(packageId, serviceId, (int)pool));
 		}
 
-		public static List<PackageIPAddress> GetPackageUnassignedIPAddresses(int packageId, int orgId, IPAddressPool pool)
+		public List<PackageIPAddress> GetPackageUnassignedIPAddresses(int packageId, int orgId, IPAddressPool pool)
 		{
 			return ObjectUtils.CreateListFromDataReader<PackageIPAddress>(
-				DataProvider.GetPackageUnassignedIPAddresses(SecurityContext.User.UserId, packageId, orgId, (int)pool));
+				Database.GetPackageUnassignedIPAddresses(SecurityContext.User.UserId, packageId, orgId, (int)pool));
 		}
 
-		public static List<PackageIPAddress> GetPackageUnassignedIPAddresses(int packageId, IPAddressPool pool)
+		public List<PackageIPAddress> GetPackageUnassignedIPAddresses(int packageId, IPAddressPool pool)
 		{
 			return GetPackageUnassignedIPAddresses(packageId, 0, pool);
 		}
 
-		public static void AllocatePackageIPAddresses(int packageId, int[] addressId)
+		public void AllocatePackageIPAddresses(int packageId, int[] addressId)
 		{
 			// prepare XML document
 			string xml = PrepareXML(addressId);
 
 			// save to database
-			DataProvider.AllocatePackageIPAddresses(packageId, 0, xml);
+			Database.AllocatePackageIPAddresses(packageId, 0, xml);
 		}
 
-		public static ResultObject AllocatePackageIPAddresses(int packageId, int orgId, string groupName, IPAddressPool pool, bool allocateRandom, int addressesNumber, int[] addressId)
+		public ResultObject AllocatePackageIPAddresses(int packageId, int orgId, string groupName, IPAddressPool pool, bool allocateRandom, int addressesNumber, int[] addressId)
 		{
 			#region Check account and space statuses
 			// create result object
@@ -2039,7 +2040,7 @@ namespace SolidCP.EnterpriseServer
 				// save to database
 				try
 				{
-					DataProvider.AllocatePackageIPAddresses(packageId, orgId, xml);
+					Database.AllocatePackageIPAddresses(packageId, orgId, xml);
 				}
 				catch (Exception ex)
 				{
@@ -2057,7 +2058,7 @@ namespace SolidCP.EnterpriseServer
 			return res;
 		}
 
-		public static ResultObject AllocateMaximumPackageIPAddresses(int packageId, string groupName, IPAddressPool pool)
+		public ResultObject AllocateMaximumPackageIPAddresses(int packageId, string groupName, IPAddressPool pool)
 		{
 			// get maximum server IPs
 			int maxAvailableIPs = GetUnallottedIPAddresses(packageId, groupName, pool).Count;
@@ -2090,7 +2091,7 @@ namespace SolidCP.EnterpriseServer
 				true, number, new int[0]);
 		}
 
-		public static ResultObject AllocateMaximumPackageVLANs(int packageId, string groupName)
+		public ResultObject AllocateMaximumPackageVLANs(int packageId, string groupName)
 		{
 			// get maximum server VLANs
 			int maxAvailableVLANs = GetUnallottedVLANs(packageId, groupName).Count;
@@ -2123,7 +2124,7 @@ namespace SolidCP.EnterpriseServer
 			return AllocatePackageVLANs(packageId, groupName, true, number, new int[0]);
 		}
 
-		public static ResultObject DeallocatePackageIPAddresses(int packageId, int[] addressId)
+		public ResultObject DeallocatePackageIPAddresses(int packageId, int[] addressId)
 		{
 			#region Check account and space statuses
 			// create result object
@@ -2144,7 +2145,7 @@ namespace SolidCP.EnterpriseServer
 			{
 				foreach (int id in addressId)
 				{
-					DataProvider.DeallocatePackageIPAddress(id);
+					Database.DeallocatePackageIPAddress(id);
 				}
 			}
 			catch (Exception ex)
@@ -2158,41 +2159,41 @@ namespace SolidCP.EnterpriseServer
 		}
 
 		#region Item IP Addresses
-		public static List<PackageIPAddress> GetItemIPAddresses(int itemId, IPAddressPool pool)
+		public List<PackageIPAddress> GetItemIPAddresses(int itemId, IPAddressPool pool)
 		{
 			return ObjectUtils.CreateListFromDataReader<PackageIPAddress>(
-				DataProvider.GetItemIPAddresses(SecurityContext.User.UserId, itemId, (int)pool));
+				Database.GetItemIPAddresses(SecurityContext.User.UserId, itemId, (int)pool));
 		}
 
-		public static PackageIPAddress GetPackageIPAddress(int packageAddressId)
+		public PackageIPAddress GetPackageIPAddress(int packageAddressId)
 		{
 			return ObjectUtils.FillObjectFromDataReader<PackageIPAddress>(
-				DataProvider.GetPackageIPAddress(packageAddressId));
+				Database.GetPackageIPAddress(packageAddressId));
 		}
 
-		public static int AddItemIPAddress(int itemId, int packageAddressId)
+		public int AddItemIPAddress(int itemId, int packageAddressId)
 		{
-			return DataProvider.AddItemIPAddress(SecurityContext.User.UserId, itemId, packageAddressId);
+			return Database.AddItemIPAddress(SecurityContext.User.UserId, itemId, packageAddressId);
 		}
 
-		public static int SetItemPrimaryIPAddress(int itemId, int packageAddressId)
+		public int SetItemPrimaryIPAddress(int itemId, int packageAddressId)
 		{
-			return DataProvider.SetItemPrimaryIPAddress(SecurityContext.User.UserId, itemId, packageAddressId);
+			return Database.SetItemPrimaryIPAddress(SecurityContext.User.UserId, itemId, packageAddressId);
 		}
 
-		public static int DeleteItemIPAddress(int itemId, int packageAddressId)
+		public int DeleteItemIPAddress(int itemId, int packageAddressId)
 		{
-			return DataProvider.DeleteItemIPAddress(SecurityContext.User.UserId, itemId, packageAddressId);
+			return Database.DeleteItemIPAddress(SecurityContext.User.UserId, itemId, packageAddressId);
 		}
 
-		public static int DeleteItemIPAddresses(int itemId)
+		public int DeleteItemIPAddresses(int itemId)
 		{
-			return DataProvider.DeleteItemIPAddresses(SecurityContext.User.UserId, itemId);
+			return Database.DeleteItemIPAddresses(SecurityContext.User.UserId, itemId);
 		}
 
 		#endregion
 
-		private static string PrepareXML(int[] items)
+		private string PrepareXML(int[] items)
 		{
 			XmlDocument doc = new XmlDocument();
 			XmlNode root = doc.CreateElement("items");
@@ -2208,7 +2209,7 @@ namespace SolidCP.EnterpriseServer
 			return doc.InnerXml;
 		}
 
-		private static string GetIPAddressesQuotaByResourceGroup(string groupName, IPAddressPool pool)
+		private string GetIPAddressesQuotaByResourceGroup(string groupName, IPAddressPool pool)
 		{
 			if (pool == IPAddressPool.PhoneNumbers)
 			{
@@ -2246,100 +2247,100 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region Clusters
-		public static List<ClusterInfo> GetClusters()
+		public List<ClusterInfo> GetClusters()
 		{
 			List<ClusterInfo> list = new List<ClusterInfo>();
 			ObjectUtils.FillCollectionFromDataReader<ClusterInfo>(list,
-				DataProvider.GetClusters(SecurityContext.User.UserId));
+				Database.GetClusters(SecurityContext.User.UserId));
 			return list;
 		}
 
-		public static int AddCluster(ClusterInfo cluster)
+		public int AddCluster(ClusterInfo cluster)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsAdmin
 				| DemandAccount.IsActive);
 			if (accountCheck < 0) return accountCheck;
 
-			return DataProvider.AddCluster(cluster.ClusterName);
+			return Database.AddCluster(cluster.ClusterName);
 		}
 
-		public static int DeleteCluster(int clusterId)
+		public int DeleteCluster(int clusterId)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsAdmin
 				| DemandAccount.IsActive);
 			if (accountCheck < 0) return accountCheck;
 
-			DataProvider.DeleteCluster(clusterId);
+			Database.DeleteCluster(clusterId);
 
 			return 0;
 		}
 		#endregion
 
 		#region Global DNS records
-		public static DataSet GetRawDnsRecordsByService(int serviceId)
+		public DataSet GetRawDnsRecordsByService(int serviceId)
 		{
-			return DataProvider.GetDnsRecordsByService(SecurityContext.User.UserId, serviceId);
+			return Database.GetDnsRecordsByService(SecurityContext.User.UserId, serviceId);
 		}
 
-		public static DataSet GetRawDnsRecordsByServer(int serverId)
+		public DataSet GetRawDnsRecordsByServer(int serverId)
 		{
-			return DataProvider.GetDnsRecordsByServer(SecurityContext.User.UserId, serverId);
+			return Database.GetDnsRecordsByServer(SecurityContext.User.UserId, serverId);
 		}
 
-		public static DataSet GetRawDnsRecordsByPackage(int packageId)
+		public DataSet GetRawDnsRecordsByPackage(int packageId)
 		{
-			return DataProvider.GetDnsRecordsByPackage(SecurityContext.User.UserId, packageId);
+			return Database.GetDnsRecordsByPackage(SecurityContext.User.UserId, packageId);
 		}
 
-		public static DataSet GetRawDnsRecordsByGroup(int groupId)
+		public DataSet GetRawDnsRecordsByGroup(int groupId)
 		{
-			return DataProvider.GetDnsRecordsByGroup(groupId);
+			return Database.GetDnsRecordsByGroup(groupId);
 		}
 
-		public static DataSet GetRawDnsRecordsTotal(int packageId)
+		public DataSet GetRawDnsRecordsTotal(int packageId)
 		{
-			return DataProvider.GetDnsRecordsTotal(SecurityContext.User.UserId, packageId);
+			return Database.GetDnsRecordsTotal(SecurityContext.User.UserId, packageId);
 		}
 
-		public static List<GlobalDnsRecord> GetDnsRecordsByService(int serviceId)
-		{
-			return ObjectUtils.CreateListFromDataSet<GlobalDnsRecord>(
-				DataProvider.GetDnsRecordsByService(SecurityContext.User.UserId, serviceId));
-		}
-
-		public static List<GlobalDnsRecord> GetDnsRecordsByServer(int serverId)
+		public List<GlobalDnsRecord> GetDnsRecordsByService(int serviceId)
 		{
 			return ObjectUtils.CreateListFromDataSet<GlobalDnsRecord>(
-				DataProvider.GetDnsRecordsByServer(SecurityContext.User.UserId, serverId));
+				Database.GetDnsRecordsByService(SecurityContext.User.UserId, serviceId));
 		}
 
-		public static List<GlobalDnsRecord> GetDnsRecordsByPackage(int packageId)
+		public List<GlobalDnsRecord> GetDnsRecordsByServer(int serverId)
 		{
 			return ObjectUtils.CreateListFromDataSet<GlobalDnsRecord>(
-				DataProvider.GetDnsRecordsByPackage(SecurityContext.User.UserId, packageId));
+				Database.GetDnsRecordsByServer(SecurityContext.User.UserId, serverId));
 		}
 
-		public static List<GlobalDnsRecord> GetDnsRecordsByGroup(int groupId)
+		public List<GlobalDnsRecord> GetDnsRecordsByPackage(int packageId)
 		{
 			return ObjectUtils.CreateListFromDataSet<GlobalDnsRecord>(
-				DataProvider.GetDnsRecordsByGroup(groupId));
+				Database.GetDnsRecordsByPackage(SecurityContext.User.UserId, packageId));
 		}
 
-		public static List<GlobalDnsRecord> GetDnsRecordsTotal(int packageId)
+		public List<GlobalDnsRecord> GetDnsRecordsByGroup(int groupId)
+		{
+			return ObjectUtils.CreateListFromDataSet<GlobalDnsRecord>(
+				Database.GetDnsRecordsByGroup(groupId));
+		}
+
+		public List<GlobalDnsRecord> GetDnsRecordsTotal(int packageId)
 		{
 			return ObjectUtils.CreateListFromDataSet<GlobalDnsRecord>(
 				GetRawDnsRecordsTotal(packageId));
 		}
 
-		public static GlobalDnsRecord GetDnsRecord(int recordId)
+		public GlobalDnsRecord GetDnsRecord(int recordId)
 		{
 			return ObjectUtils.FillObjectFromDataReader<GlobalDnsRecord>(
-				DataProvider.GetDnsRecord(SecurityContext.User.UserId, recordId));
+				Database.GetDnsRecord(SecurityContext.User.UserId, recordId));
 		}
 
-		public static int AddDnsRecord(GlobalDnsRecord record)
+		public int AddDnsRecord(GlobalDnsRecord record)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsReseller
@@ -2350,7 +2351,7 @@ namespace SolidCP.EnterpriseServer
 			TaskManager.WriteParameter("Type", record.RecordType);
 			TaskManager.WriteParameter("Data", record.RecordData);
 
-			DataProvider.AddDnsRecord(SecurityContext.User.UserId, record.ServiceId, record.ServerId, record.PackageId,
+			Database.AddDnsRecord(SecurityContext.User.UserId, record.ServiceId, record.ServerId, record.PackageId,
 				record.RecordType, record.RecordName, record.RecordData, record.MxPriority,
 				record.SrvPriority, record.SrvWeight, record.SrvPort, record.IpAddressId);
 
@@ -2359,7 +2360,7 @@ namespace SolidCP.EnterpriseServer
 			return 0;
 		}
 
-		public static int UpdateDnsRecord(GlobalDnsRecord record)
+		public int UpdateDnsRecord(GlobalDnsRecord record)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsReseller
@@ -2370,7 +2371,7 @@ namespace SolidCP.EnterpriseServer
 			TaskManager.WriteParameter("Type", record.RecordType);
 			TaskManager.WriteParameter("Data", record.RecordData);
 
-			DataProvider.UpdateDnsRecord(SecurityContext.User.UserId, record.RecordId,
+			Database.UpdateDnsRecord(SecurityContext.User.UserId, record.RecordId,
 				record.RecordType, record.RecordName, record.RecordData, record.MxPriority,
 				record.SrvPriority, record.SrvWeight, record.SrvPort, record.IpAddressId);
 
@@ -2379,7 +2380,7 @@ namespace SolidCP.EnterpriseServer
 			return 0;
 		}
 
-		public static int DeleteDnsRecord(int recordId)
+		public int DeleteDnsRecord(int recordId)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsReseller
@@ -2392,7 +2393,7 @@ namespace SolidCP.EnterpriseServer
 			TaskManager.WriteParameter("Type", record.RecordType);
 			TaskManager.WriteParameter("Data", record.RecordData);
 
-			DataProvider.DeleteDnsRecord(SecurityContext.User.UserId, recordId);
+			Database.DeleteDnsRecord(SecurityContext.User.UserId, recordId);
 
 			TaskManager.CompleteTask();
 
@@ -2402,11 +2403,11 @@ namespace SolidCP.EnterpriseServer
 
 		#region Domains
 
-		public static List<DnsRecordInfo> GetDomainDnsRecords(int domainId)
+		public List<DnsRecordInfo> GetDomainDnsRecords(int domainId)
 		{
 			var result = new List<DnsRecordInfo>();
 
-			var records = ObjectUtils.CreateListFromDataReader<DnsRecordInfo>(DataProvider.GetDomainAllDnsRecords(domainId));
+			var records = ObjectUtils.CreateListFromDataReader<DnsRecordInfo>(Database.GetDomainAllDnsRecords(domainId));
 
 			var activeDomain = records.OrderByDescending(x => x.Date).FirstOrDefault();
 
@@ -2421,9 +2422,9 @@ namespace SolidCP.EnterpriseServer
 		}
 
 
-		public static int CheckDomain(string domainName)
+		public int CheckDomain(string domainName)
 		{
-			int checkDomainResult = DataProvider.CheckDomain(-10, domainName, false);
+			int checkDomainResult = Database.CheckDomain(-10, domainName, false);
 
 			if (checkDomainResult == -1)
 				return BusinessErrorCodes.ERROR_DOMAIN_ALREADY_EXISTS;
@@ -2433,55 +2434,55 @@ namespace SolidCP.EnterpriseServer
 				return checkDomainResult;
 		}
 
-		public static List<DomainInfo> GetDomains(int packageId, bool recursive)
+		public List<DomainInfo> GetDomains(int packageId, bool recursive)
 		{
 			return ObjectUtils.CreateListFromDataSet<DomainInfo>(
-				DataProvider.GetDomains(SecurityContext.User.UserId, packageId, recursive));
+				Database.GetDomains(SecurityContext.User.UserId, packageId, recursive));
 		}
 
-		public static List<DomainInfo> GetDomains(int packageId)
+		public List<DomainInfo> GetDomains(int packageId)
 		{
 			return ObjectUtils.CreateListFromDataSet<DomainInfo>(
-				DataProvider.GetDomains(SecurityContext.User.UserId, packageId, true));
-		}
-
-
-		public static List<DomainInfo> GetDomainsByZoneId(int zoneId)
-		{
-			return ObjectUtils.CreateListFromDataSet<DomainInfo>(
-				DataProvider.GetDomainsByZoneId(SecurityContext.User.UserId, zoneId));
-		}
-
-		public static List<DomainInfo> GetDomainsByDomainItemId(int zoneId)
-		{
-			return ObjectUtils.CreateListFromDataSet<DomainInfo>(
-				DataProvider.GetDomainsByDomainItemId(SecurityContext.User.UserId, zoneId));
+				Database.GetDomains(SecurityContext.User.UserId, packageId, true));
 		}
 
 
-		public static List<DomainInfo> GetMyDomains(int packageId)
+		public List<DomainInfo> GetDomainsByZoneId(int zoneId)
 		{
 			return ObjectUtils.CreateListFromDataSet<DomainInfo>(
-				DataProvider.GetDomains(SecurityContext.User.UserId, packageId, false));
+				Database.GetDomainsByZoneId(SecurityContext.User.UserId, zoneId));
 		}
 
-		public static List<DomainInfo> GetResellerDomains(int packageId)
+		public List<DomainInfo> GetDomainsByDomainItemId(int zoneId)
 		{
 			return ObjectUtils.CreateListFromDataSet<DomainInfo>(
-				DataProvider.GetResellerDomains(SecurityContext.User.UserId, packageId));
+				Database.GetDomainsByDomainItemId(SecurityContext.User.UserId, zoneId));
 		}
 
-		public static DataSet GetDomainsPaged(int packageId, int serverId, bool recursive, string filterColumn, string filterValue,
+
+		public List<DomainInfo> GetMyDomains(int packageId)
+		{
+			return ObjectUtils.CreateListFromDataSet<DomainInfo>(
+				Database.GetDomains(SecurityContext.User.UserId, packageId, false));
+		}
+
+		public List<DomainInfo> GetResellerDomains(int packageId)
+		{
+			return ObjectUtils.CreateListFromDataSet<DomainInfo>(
+				Database.GetResellerDomains(SecurityContext.User.UserId, packageId));
+		}
+
+		public DataSet GetDomainsPaged(int packageId, int serverId, bool recursive, string filterColumn, string filterValue,
 			string sortColumn, int startRow, int maximumRows)
 		{
-			DataSet ds = DataProvider.GetDomainsPaged(SecurityContext.User.UserId,
+			DataSet ds = Database.GetDomainsPaged(SecurityContext.User.UserId,
 				packageId, serverId, recursive, filterColumn, filterValue,
 				sortColumn, startRow, maximumRows);
 
 			return ds;
 		}
 
-		public static DomainInfo GetDomain(int domainId, bool withLog = true)
+		public DomainInfo GetDomain(int domainId, bool withLog = true)
 		{
 			// get domain by ID
 			DomainInfo domain = GetDomainItem(domainId);
@@ -2490,19 +2491,19 @@ namespace SolidCP.EnterpriseServer
 			return GetDomain(domain, withLog);
 		}
 
-		public static DomainInfo GetDomain(string domainName)
+		public DomainInfo GetDomain(string domainName)
 		{
 			return ObjectUtils.FillObjectFromDataReader<DomainInfo>(
-				DataProvider.GetDomainByName(SecurityContext.User.UserId, domainName, false, false));
+				Database.GetDomainByName(SecurityContext.User.UserId, domainName, false, false));
 		}
 
-		public static DomainInfo GetDomain(string domainName, bool searchOnDomainPointer, bool isDomainPointer)
+		public DomainInfo GetDomain(string domainName, bool searchOnDomainPointer, bool isDomainPointer)
 		{
 			return GetDomainItem(domainName, searchOnDomainPointer, isDomainPointer);
 		}
 
 
-		private static DomainInfo GetDomain(DomainInfo domain, bool withLog = true)
+		private DomainInfo GetDomain(DomainInfo domain, bool withLog = true)
 		{
 			// check domain
 			if (domain == null)
@@ -2521,25 +2522,25 @@ namespace SolidCP.EnterpriseServer
 			return domain;
 		}
 
-		public static DomainInfo GetDomainItem(int domainId)
+		public DomainInfo GetDomainItem(int domainId)
 		{
 			return ObjectUtils.FillObjectFromDataReader<DomainInfo>(
-				DataProvider.GetDomain(SecurityContext.User.UserId, domainId));
+				Database.GetDomain(SecurityContext.User.UserId, domainId));
 		}
 
-		public static DomainInfo GetDomainItem(string domainName)
+		public DomainInfo GetDomainItem(string domainName)
 		{
 			return GetDomainItem(domainName, false, false);
 		}
 
 
-		public static DomainInfo GetDomainItem(string domainName, bool searchOnDomainPointer, bool isDomainPointer)
+		public DomainInfo GetDomainItem(string domainName, bool searchOnDomainPointer, bool isDomainPointer)
 		{
 			return ObjectUtils.FillObjectFromDataReader<DomainInfo>(
-				DataProvider.GetDomainByName(SecurityContext.User.UserId, domainName, searchOnDomainPointer, isDomainPointer));
+				Database.GetDomainByName(SecurityContext.User.UserId, domainName, searchOnDomainPointer, isDomainPointer));
 		}
 
-		public static string GetDomainAlias(int packageId, string domainName)
+		public string GetDomainAlias(int packageId, string domainName)
 		{
 			// load package settings
 			PackageSettings packageSettings = PackageController.GetPackageSettings(packageId,
@@ -2555,7 +2556,7 @@ namespace SolidCP.EnterpriseServer
 			return previewDomain;
 		}
 
-		public static int AddDomainWithProvisioning(int packageId, string domainName, DomainType domainType,
+		public int AddDomainWithProvisioning(int packageId, string domainName, DomainType domainType,
 			bool createWebSite, int pointWebSiteId, int pointMailDomainId, bool createDnsZone, bool createPreviewDomain, bool allowSubDomains, string hostName)
 		{
 			// check account
@@ -2645,12 +2646,12 @@ namespace SolidCP.EnterpriseServer
 			return domainId;
 		}
 
-		public static int AddDomain(DomainInfo domain)
+		public int AddDomain(DomainInfo domain)
 		{
 			return AddDomain(domain, false, false);
 		}
 
-		public static int AddDomain(DomainInfo domain, bool createPreviewDomain, bool createZone)
+		public int AddDomain(DomainInfo domain, bool createPreviewDomain, bool createZone)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -2679,7 +2680,7 @@ namespace SolidCP.EnterpriseServer
 			return domainId;
 		}
 
-		private static int AddDomainInternal(int packageId, string domainName,
+		private int AddDomainInternal(int packageId, string domainName,
 			bool createDnsZone, bool isSubDomain, bool isPreviewDomain, bool isDomainPointer, bool allowSubDomains)
 		{
 			// check quota
@@ -2706,7 +2707,7 @@ namespace SolidCP.EnterpriseServer
 			}
 
 			// check if the domain already exists
-			int checkResult = DataProvider.CheckDomain(packageId, domainName, isDomainPointer);
+			int checkResult = Database.CheckDomain(packageId, domainName, isDomainPointer);
 
 			if (checkResult < 0)
 			{
@@ -2752,7 +2753,7 @@ namespace SolidCP.EnterpriseServer
 				}
 			}
 
-			int itemId = DataProvider.AddDomain(SecurityContext.User.UserId,
+			int itemId = Database.AddDomain(SecurityContext.User.UserId,
 				packageId, zoneItemId, domainName, allowSubDomains, 0, 0, isSubDomain, isPreviewDomain, isDomainPointer);
 
 			TaskManager.ItemId = itemId;
@@ -2762,19 +2763,19 @@ namespace SolidCP.EnterpriseServer
 			return itemId;
 		}
 
-		public static int AddDomainItem(DomainInfo domain)
+		public int AddDomainItem(DomainInfo domain)
 		{
-			return DataProvider.AddDomain(SecurityContext.User.UserId,
+			return Database.AddDomain(SecurityContext.User.UserId,
 				domain.PackageId, domain.ZoneItemId, domain.DomainName, domain.HostingAllowed,
 				domain.WebSiteId, domain.MailDomainId, domain.IsSubDomain, domain.IsPreviewDomain, domain.IsDomainPointer);
 		}
 
-		public static void AddServiceDNSRecords(int packageId, string groupName, DomainInfo domain, string serviceIP)
+		public void AddServiceDNSRecords(int packageId, string groupName, DomainInfo domain, string serviceIP)
 		{
 			AddServiceDNSRecords(packageId, groupName, domain, serviceIP, false);
 		}
 
-		public static void AddServiceDNSRecords(int packageId, string groupName, DomainInfo domain, string serviceIP, bool wildcardOnly)
+		public void AddServiceDNSRecords(int packageId, string groupName, DomainInfo domain, string serviceIP, bool wildcardOnly)
 		{
 			int serviceId = PackageController.GetPackageServiceId(packageId, groupName);
 			if (serviceId > 0)
@@ -2825,7 +2826,7 @@ namespace SolidCP.EnterpriseServer
 
 
 
-		public static void RemoveServiceDNSRecords(int packageId, string groupName, DomainInfo domain, string serviceIP, bool wildcardOnly)
+		public void RemoveServiceDNSRecords(int packageId, string groupName, DomainInfo domain, string serviceIP, bool wildcardOnly)
 		{
 			int serviceId = PackageController.GetPackageServiceId(packageId, groupName);
 			if (serviceId > 0)
@@ -2864,7 +2865,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 
-		private static bool RecordDoesExist(DnsRecord record, DnsRecord[] domainRecords)
+		private bool RecordDoesExist(DnsRecord record, DnsRecord[] domainRecords)
 		{
 			foreach (DnsRecord d in domainRecords)
 			{
@@ -2879,7 +2880,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 
-		public static int UpdateDomain(DomainInfo domain)
+		public int UpdateDomain(DomainInfo domain)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -2891,7 +2892,7 @@ namespace SolidCP.EnterpriseServer
 
 			try
 			{
-				DataProvider.UpdateDomain(SecurityContext.User.UserId,
+				Database.UpdateDomain(SecurityContext.User.UserId,
 					domain.DomainId, domain.ZoneItemId, domain.HostingAllowed, domain.WebSiteId,
 					domain.MailDomainId, domain.DomainItemId);
 
@@ -2907,7 +2908,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static int DetachDomain(int domainId)
+		public int DetachDomain(int domainId)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsAdmin);
@@ -2936,7 +2937,7 @@ namespace SolidCP.EnterpriseServer
 					return BusinessErrorCodes.ERROR_DOMAIN_POINTS_TO_MAIL_DOMAIN;
 				}
 
-				if (DataProvider.ExchangeOrganizationDomainExists(domain.DomainId))
+				if (Database.ExchangeOrganizationDomainExists(domain.DomainId))
 				{
 					TaskManager.WriteError("Domain points to the existing organization domain");
 					return BusinessErrorCodes.ERROR_ORGANIZATION_DOMAIN_IS_IN_USE;
@@ -2963,7 +2964,7 @@ namespace SolidCP.EnterpriseServer
 				}
 
 				// delete domain
-				DataProvider.DeleteDomain(SecurityContext.User.UserId, domainId);
+				Database.DeleteDomain(SecurityContext.User.UserId, domainId);
 
 				return 0;
 			}
@@ -2977,7 +2978,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static int DeleteDomain(int domainId)
+		public int DeleteDomain(int domainId)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -3016,7 +3017,7 @@ namespace SolidCP.EnterpriseServer
 					return BusinessErrorCodes.ERROR_DOMAIN_POINTS_TO_MAIL_DOMAIN;
 				}
 
-				if (DataProvider.ExchangeOrganizationDomainExists(domain.DomainId))
+				if (Database.ExchangeOrganizationDomainExists(domain.DomainId))
 				{
 					TaskManager.WriteError("Domain points to the existing organization domain");
 					return BusinessErrorCodes.ERROR_ORGANIZATION_DOMAIN_IS_IN_USE;
@@ -3050,7 +3051,7 @@ namespace SolidCP.EnterpriseServer
 					DnsServerController.DeleteZone(domain.ZoneItemId);
 
 				// delete domain
-				DataProvider.DeleteDomain(SecurityContext.User.UserId, domainId);
+				Database.DeleteDomain(SecurityContext.User.UserId, domainId);
 
 				return 0;
 			}
@@ -3064,7 +3065,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static int DisableDomainDns(int domainId)
+		public int DisableDomainDns(int domainId)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -3110,7 +3111,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static int EnableDomainDns(int domainId)
+		public int EnableDomainDns(int domainId)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -3168,7 +3169,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		private static void AddAllServiceDNS(DomainInfo domain)
+		private void AddAllServiceDNS(DomainInfo domain)
 		{
 			PackageContext cntx = PackageController.GetPackageContext(domain.PackageId);
 			if (cntx != null)
@@ -3331,7 +3332,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		private static int AddWebSiteZoneRecords(string hostName, int domainId)
+		private int AddWebSiteZoneRecords(string hostName, int domainId)
 		{
 			// load domain
 			DomainInfo domain = GetDomainItem(domainId);
@@ -3345,7 +3346,7 @@ namespace SolidCP.EnterpriseServer
 			return res;
 		}
 
-		public static int CreateDomainPreviewDomain(string hostName, int domainId)
+		public int CreateDomainPreviewDomain(string hostName, int domainId)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -3434,7 +3435,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static int DeleteDomainPreviewDomain(int domainId)
+		public int DeleteDomainPreviewDomain(int domainId)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -3498,7 +3499,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static DomainInfo UpdateDomainWhoisData(DomainInfo domain)
+		public DomainInfo UpdateDomainWhoisData(DomainInfo domain)
 		{
 			try
 			{
@@ -3513,7 +3514,7 @@ namespace SolidCP.EnterpriseServer
 				domain.RegistrarName = ParseWhoisDomainInfo(whoisResult.Raw, _registrarNamePatterns);
 				domain.LastUpdateDate = DateTime.Now;
 
-				DataProvider.UpdateWhoisDomainInfo(domain.DomainId, domain.CreationDate, domain.ExpirationDate, DateTime.Now, domain.RegistrarName);
+				Database.UpdateWhoisDomainInfo(domain.DomainId, domain.CreationDate, domain.ExpirationDate, DateTime.Now, domain.RegistrarName);
 			}
 			catch (Exception e)
 			{
@@ -3523,9 +3524,9 @@ namespace SolidCP.EnterpriseServer
 			return domain;
 		}
 
-		public static DomainInfo UpdateDomainWhoisData(DomainInfo domain, DateTime? creationDate, DateTime? expirationDate, string registrarName)
+		public DomainInfo UpdateDomainWhoisData(DomainInfo domain, DateTime? creationDate, DateTime? expirationDate, string registrarName)
 		{
-			DataProvider.UpdateWhoisDomainInfo(domain.DomainId, creationDate, expirationDate, DateTime.Now, registrarName);
+			Database.UpdateWhoisDomainInfo(domain.DomainId, creationDate, expirationDate, DateTime.Now, registrarName);
 
 			domain.CreationDate = creationDate;
 			domain.ExpirationDate = expirationDate;
@@ -3535,7 +3536,7 @@ namespace SolidCP.EnterpriseServer
 			return domain;
 		}
 
-		private static string ParseWhoisDomainInfo(string raw, IEnumerable<string> patterns)
+		private string ParseWhoisDomainInfo(string raw, IEnumerable<string> patterns)
 		{
 			foreach (var createdRegex in patterns)
 			{
@@ -3553,7 +3554,7 @@ namespace SolidCP.EnterpriseServer
 			return null;
 		}
 
-		private static DateTime? ParseDate(string dateString)
+		private DateTime? ParseDate(string dateString)
 		{
 			if (string.IsNullOrEmpty(dateString))
 			{
@@ -3576,7 +3577,7 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region DNS Zones
-		public static DnsRecord[] GetDnsZoneRecords(int domainId)
+		public DnsRecord[] GetDnsZoneRecords(int domainId)
 		{
 			// load domain info
 			DomainInfo domain = GetDomain(domainId);
@@ -3596,7 +3597,7 @@ namespace SolidCP.EnterpriseServer
 			return new DnsRecord[] { };
 		}
 
-		public static DataSet GetRawDnsZoneRecords(int domainId)
+		public DataSet GetRawDnsZoneRecords(int domainId)
 		{
 			DataSet ds = new DataSet();
 			DataTable dt = ds.Tables.Add();
@@ -3620,7 +3621,7 @@ namespace SolidCP.EnterpriseServer
 			return ds;
 		}
 
-		public static DnsRecord GetDnsZoneRecord(int domainId, string recordName, DnsRecordType recordType,
+		public DnsRecord GetDnsZoneRecord(int domainId, string recordName, DnsRecordType recordType,
 			string recordData)
 		{
 			// get all zone records
@@ -3635,7 +3636,7 @@ namespace SolidCP.EnterpriseServer
 			return null;
 		}
 
-		public static int AddDnsZoneRecord(int domainId, string recordName, DnsRecordType recordType,
+		public int AddDnsZoneRecord(int domainId, string recordName, DnsRecordType recordType,
 					string recordData, int mxPriority, int srvPriority, int srvWeight, int srvPort)
 		{
 			// check account
@@ -3690,7 +3691,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static int UpdateDnsZoneRecord(int domainId,
+		public int UpdateDnsZoneRecord(int domainId,
 			string originalRecordName, string originalRecordData,
 			string recordName, DnsRecordType recordType, string recordData, int mxPriority, int srvPriority, int srvWeight, int srvPortNumber)
 		{
@@ -3719,7 +3720,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static int DeleteDnsZoneRecord(int domainId, string recordName, DnsRecordType recordType,
+		public int DeleteDnsZoneRecord(int domainId, string recordName, DnsRecordType recordType,
 			string recordData)
 		{
 			// check account
@@ -3768,7 +3769,7 @@ namespace SolidCP.EnterpriseServer
 		/*
 		const int c = 256*256;
 		
-		public static BigInt ConvertIPToInt(string ip, out bool v6)
+		public BigInt ConvertIPToInt(string ip, out bool v6)
         {
 			v6 = false;
 
@@ -3794,7 +3795,7 @@ namespace SolidCP.EnterpriseServer
 			}
         }
 
-        public static string ConvertIntToIP(BigInt ip, bool v6)
+        public string ConvertIntToIP(BigInt ip, bool v6)
         {
             if (ip == BigInt.Zero)
                 return "";

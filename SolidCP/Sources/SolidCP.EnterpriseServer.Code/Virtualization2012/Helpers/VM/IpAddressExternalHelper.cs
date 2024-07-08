@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 
 namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
 {
-    public static class IpAddressExternalHelper
+    public class IpAddressExternalHelper: ControllerBase
     {
+        public IpAddressExternalHelper(ControllerBase provider) : base(provider) { }
 
-        public static ResultObject RestoreVirtualMachineExternalIPAddressesByInjection(int itemId)
+        public ResultObject RestoreVirtualMachineExternalIPAddressesByInjection(int itemId)
         {
             ResultObject res = new ResultObject();
 
@@ -50,13 +51,13 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             return res;
         }
 
-        public static ResultObject AddVirtualMachineExternalIPAddressesByInjection(int itemId, bool selectRandom, int addressesNumber, int[] addressIds)
+        public ResultObject AddVirtualMachineExternalIPAddressesByInjection(int itemId, bool selectRandom, int addressesNumber, int[] addressIds)
         {
             int provisionKvpType = 2;
             return AddVirtualMachineInternalIPAddresses(itemId, selectRandom, addressesNumber, addressIds, provisionKvpType, -1);
         }
 
-        public static ResultObject AddVirtualMachineExternalIPAddresses(int itemId, bool selectRandom, int addressesNumber, int[] addressIds, bool provisionKvp)
+        public ResultObject AddVirtualMachineExternalIPAddresses(int itemId, bool selectRandom, int addressesNumber, int[] addressIds, bool provisionKvp)
         {
             int provisionKvpType = 0;
             if (provisionKvp)
@@ -64,7 +65,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             return AddVirtualMachineInternalIPAddresses(itemId, selectRandom, addressesNumber, addressIds, provisionKvpType, -1);
         }
 
-        public static ResultObject AddVirtualMachineInternalIPAddresses(int itemId, bool selectRandom, int addressesNumber, int[] addressIds, int provisionKvpType, int vlan)
+        public ResultObject AddVirtualMachineInternalIPAddresses(int itemId, bool selectRandom, int addressesNumber, int[] addressIds, int provisionKvpType, int vlan)
         {
             if (addressIds == null)
                 throw new ArgumentNullException("addressIds");
@@ -158,7 +159,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             return res;
         }
 
-        public static ResultObject SetVirtualMachinePrimaryExternalIPAddress(int itemId, int packageAddressId, bool provisionKvp)
+        public ResultObject SetVirtualMachinePrimaryExternalIPAddress(int itemId, int packageAddressId, bool provisionKvp)
         {
             ResultObject res = new ResultObject();
 
@@ -203,13 +204,13 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
         }
 
 
-        public static ResultObject DeleteVirtualMachineExternalIPAddressesByInjection(int itemId, int[] packageAddressIds)
+        public ResultObject DeleteVirtualMachineExternalIPAddressesByInjection(int itemId, int[] packageAddressIds)
         {
             int provisionKvpType = 2;
             return DeleteVirtualMachineExternalIPAddresses(itemId, packageAddressIds, provisionKvpType);
         }
 
-        public static ResultObject DeleteVirtualMachineExternalIPAddresses(int itemId, int[] packageAddressIds, bool provisionKvp)
+        public ResultObject DeleteVirtualMachineExternalIPAddresses(int itemId, int[] packageAddressIds, bool provisionKvp)
         {
             int provisionKvpType = 0;
             if (provisionKvp)
@@ -217,7 +218,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             return DeleteVirtualMachineExternalIPAddresses(itemId, packageAddressIds, provisionKvpType);
         }
 
-        public static ResultObject DeleteVirtualMachineExternalIPAddresses(int itemId, int[] packageAddressIds, int provisionKvpType)
+        public ResultObject DeleteVirtualMachineExternalIPAddresses(int itemId, int[] packageAddressIds, int provisionKvpType)
         {
             if (packageAddressIds == null)
                 throw new ArgumentNullException("addressIds");

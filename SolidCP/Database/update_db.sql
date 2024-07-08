@@ -593,7 +593,9 @@ SELECT
 	S.PriorityID,
 	S.MaxExecutionTime,
 	S.WeekMonthDay,
-	ISNULL(0, (SELECT TOP 1 SeverityID FROM AuditLog WHERE ItemID = S.ScheduleID AND SourceName = 'SCHEDULER' ORDER BY StartDate DESC)) AS LastResult,
+	-- bug ISNULL(0, ...) always is not NULL
+	-- ISNULL(0, (SELECT TOP 1 SeverityID FROM AuditLog WHERE ItemID = S.ScheduleID AND SourceName = ''SCHEDULER'' ORDER BY StartDate DESC)) AS LastResult,
+	ISNULL((SELECT TOP 1 SeverityID FROM AuditLog WHERE ItemID = S.ScheduleID AND SourceName = 'SCHEDULER' ORDER BY StartDate DESC), 0) AS LastResult,
 
 	U.Username,
 	U.FirstName,
@@ -2244,116 +2246,119 @@ CREATE PROCEDURE [dbo].[GetSfBUsers]
 	@Count int	
 )
 AS
-
-CREATE TABLE #TempSfBUsers 
-(	
-	[ID] [int] IDENTITY(1,1) NOT NULL,
-	[AccountID] [int],	
-	[ItemID] [int] NOT NULL,
-	[AccountName] [nvarchar](300)  NOT NULL,
-	[DisplayName] [nvarchar](300)  NOT NULL,
-	[UserPrincipalName] [nvarchar](300) NULL,
-	[SipAddress] [nvarchar](300) NULL,
-	[SamAccountName] [nvarchar](100) NULL,
-	[SfBUserPlanId] [int] NOT NULL,		
-	[SfBUserPlanName] [nvarchar] (300) NOT NULL,		
-)
-
-DECLARE @condition nvarchar(700)
-SET @condition = ''
-
-IF (@SortColumn = 'DisplayName')
 BEGIN
-	SET @condition = 'ORDER BY ea.DisplayName'
-END
+	CREATE TABLE #TempSfBUsers 
+	(	
+		[ID] [int] IDENTITY(1,1) NOT NULL,
+		[AccountID] [int],	
+		[ItemID] [int] NOT NULL,
+		[AccountName] [nvarchar](300)  NOT NULL,
+		[DisplayName] [nvarchar](300)  NOT NULL,
+		[UserPrincipalName] [nvarchar](300) NULL,
+		[SipAddress] [nvarchar](300) NULL,
+		[SamAccountName] [nvarchar](100) NULL,
+		[SfBUserPlanId] [int] NOT NULL,		
+		[SfBUserPlanName] [nvarchar] (300) NOT NULL,		
+	)
 
-IF (@SortColumn = 'UserPrincipalName')
-BEGIN
-	SET @condition = 'ORDER BY ea.UserPrincipalName'
-END
+	DECLARE @condition nvarchar(700)
+	SET @condition = ''
 
-IF (@SortColumn = 'SipAddress')
-BEGIN
-	SET @condition = 'ORDER BY ou.SipAddress'
-END
-
-IF (@SortColumn = 'SfBUserPlanName')
-BEGIN
-	SET @condition = 'ORDER BY lp.SfBUserPlanName'
-END
-
-DECLARE @sql nvarchar(3500)
-
-set @sql = '
-	INSERT INTO 
-		#TempSfBUsers 
-	SELECT 
-		ea.AccountID,
-		ea.ItemID,
-		ea.AccountName,
-		ea.DisplayName,
-		ea.UserPrincipalName,
-		ou.SipAddress,
-		ea.SamAccountName,
-		ou.SfBUserPlanId,
-		lp.SfBUserPlanName				
-	FROM 
-		ExchangeAccounts ea 
-	INNER JOIN 
-		SfBUsers ou
-	INNER JOIN
-		SfBUserPlans lp 
-	ON
-		ou.SfBUserPlanId = lp.SfBUserPlanId				
-	ON 
-		ea.AccountID = ou.AccountID
-	WHERE 
-		ea.ItemID = @ItemID ' + @condition
-
-exec sp_executesql @sql, N'@ItemID int',@ItemID
-
-DECLARE @RetCount int
-SELECT @RetCount = COUNT(ID) FROM #TempSfBUsers 
-
-IF (@SortDirection = 'ASC')
-BEGIN
-	SELECT * FROM #TempSfBUsers 
-	WHERE ID > @StartRow AND ID <= (@StartRow + @Count) 
-END
-ELSE
-BEGIN
-	IF @SortColumn <> '' AND @SortColumn IS NOT NULL
+	IF (@SortColumn = 'DisplayName')
 	BEGIN
-		IF (@SortColumn = 'DisplayName')
-		BEGIN
-			SELECT * FROM #TempSfBUsers 
-				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY DisplayName DESC
-		END
-		IF (@SortColumn = 'UserPrincipalName')
-		BEGIN
-			SELECT * FROM #TempSfBUsers 
-				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
-		END
+		SET @condition = 'ORDER BY ea.DisplayName'
+	END
 
-		IF (@SortColumn = 'SipAddress')
-		BEGIN
-			SELECT * FROM #TempSfBUsers 
-				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY SipAddress DESC
-		END
+	IF (@SortColumn = 'UserPrincipalName')
+	BEGIN
+		SET @condition = 'ORDER BY ea.UserPrincipalName'
+	END
 
-		IF (@SortColumn = 'SfBUserPlanName')
-		BEGIN
-			SELECT * FROM #TempSfBUsers 
-				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY SfBUserPlanName DESC
-		END
+	IF (@SortColumn = 'SipAddress')
+	BEGIN
+		SET @condition = 'ORDER BY ou.SipAddress'
+	END
+
+	IF (@SortColumn = 'SfBUserPlanName')
+	BEGIN
+		SET @condition = 'ORDER BY lp.SfBUserPlanName'
+	END
+
+	DECLARE @sql nvarchar(3500)
+
+	set @sql = '
+		INSERT INTO 
+			#TempSfBUsers 
+		SELECT 
+			ea.AccountID,
+			ea.ItemID,
+			ea.AccountName,
+			ea.DisplayName,
+			ea.UserPrincipalName,
+			ou.SipAddress,
+			ea.SamAccountName,
+			ou.SfBUserPlanId,
+			lp.SfBUserPlanName				
+		FROM 
+			ExchangeAccounts ea 
+		INNER JOIN 
+			SfBUsers ou
+		INNER JOIN
+			SfBUserPlans lp 
+		ON
+			ou.SfBUserPlanId = lp.SfBUserPlanId				
+		ON 
+			ea.AccountID = ou.AccountID
+		WHERE 
+			ea.ItemID = @ItemID ' + @condition
+
+	exec sp_executesql @sql, N'@ItemID int',@ItemID
+
+	DECLARE @RetCount int
+	SELECT @RetCount = COUNT(ID) FROM #TempSfBUsers 
+
+	IF (@SortDirection = 'ASC')
+	BEGIN
+		SELECT * FROM #TempSfBUsers 
+		WHERE ID > @StartRow AND ID <= (@StartRow + @Count) 
 	END
 	ELSE
 	BEGIN
-        SELECT * FROM #TempSfBUsers 
-			WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
-	END	
+		IF @SortColumn <> '' AND @SortColumn IS NOT NULL
+		BEGIN
+			IF (@SortColumn = 'DisplayName')
+			BEGIN
+				SELECT * FROM #TempSfBUsers 
+					WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY DisplayName DESC
+			END
+			IF (@SortColumn = 'UserPrincipalName')
+			BEGIN
+				SELECT * FROM #TempSfBUsers 
+					WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
+			END
+
+			IF (@SortColumn = 'SipAddress')
+			BEGIN
+				SELECT * FROM #TempSfBUsers 
+					WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY SipAddress DESC
+			END
+
+			IF (@SortColumn = 'SfBUserPlanName')
+			BEGIN
+				SELECT * FROM #TempSfBUsers 
+					WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY SfBUserPlanName DESC
+			END
+		END
+		ELSE
+		BEGIN
+			SELECT * FROM #TempSfBUsers 
+				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
+		END	
+	END
+	DROP TABLE #TempSfBUsers
 END
-DROP TABLE #TempSfBUsers
+GO
+
 
 IF  NOT EXISTS (SELECT * FROM sys.objects WHERE type_desc = N'SQL_STORED_PROCEDURE' AND name = N'GetSfBUsersByPlanId')
 BEGIN
@@ -3160,6 +3165,41 @@ SET
 WHERE ServiceID = @ServiceID
 
 RETURN
+GO
+
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetPendingSSLForWebsite')
+DROP PROCEDURE GetPendingSSLForWebsite
+GO
+
+CREATE PROCEDURE [dbo].[GetPendingSSLForWebsite]
+(
+	@ActorID int,
+	@PackageID int,
+	@websiteid int,
+	@Recursive bit = 1
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+BEGIN
+	RAISERROR('You are not allowed to access this package', 16, 1)
+	RETURN
+END
+
+SELECT
+	[ID], [UserID], [SiteID], [Hostname], [CSR], [Certificate], [Hash], [Installed]
+FROM
+	[dbo].[SSLCertificates]
+WHERE
+	@websiteid = [SiteID] AND [Installed] = 0 AND [IsRenewal] = 0 -- bugfix Simon Egli, 27.6.2024
+
+RETURN
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
 GO
 
 -- Lync
@@ -4579,6 +4619,38 @@ print @sql
 exec sp_executesql @sql, N'@ItemID int, @StartRow int, @MaximumRows int',
 @ItemID, @StartRow, @MaximumRows
 
+RETURN
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetExchangeAccounts')
+DROP PROCEDURE GetExchangeAccounts
+GO
+
+CREATE PROCEDURE [dbo].[GetExchangeAccounts]
+(
+	@ItemID int,
+	@AccountType int
+)
+AS
+SELECT
+	E.AccountID,
+	E.ItemID,
+	E.AccountType,
+	E.AccountName,
+	E.DisplayName,
+	E.PrimaryEmailAddress,
+	E.MailEnabledPublicFolder,
+	E.MailboxPlanId,
+	P.MailboxPlan,
+	E.SubscriberNumber,
+	E.UserPrincipalName
+FROM
+	ExchangeAccounts  AS E
+LEFT OUTER JOIN ExchangeMailboxPlans AS P ON E.MailboxPlanId = P.MailboxPlanId
+WHERE
+	E.ItemID = @ItemID AND
+	(E.AccountType = @AccountType OR @AccountType = 0)
+ORDER BY DisplayName
 RETURN
 GO
 
@@ -6184,6 +6256,32 @@ SELECT
   FROM [dbo].[ScheduleTasksEmailTemplates] where [TaskID] = @TaskID 
 GO
 
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetScheduleTask')
+DROP PROCEDURE GetScheduleTask
+GO
+CREATE PROCEDURE GetScheduleTask
+(
+	@ActorID int,
+	@TaskID nvarchar(100)
+)
+AS
+BEGIN
+	-- get user role
+	DECLARE @RoleID int
+	SELECT @RoleID = RoleID FROM Users
+	WHERE UserID = @ActorID
+
+	SELECT
+		TaskID,
+		TaskType,
+		RoleID
+	FROM ScheduleTasks
+	WHERE
+		TaskID = @TaskID
+		AND @RoleID <= RoleID -- was >= but this seems like a bug, since lower RoleID is more privileged, and in GetScheduleTasks it is also <=.
+END
+GO
+
 IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetDomainDnsRecords')
 DROP PROCEDURE GetDomainDnsRecords
 GO
@@ -7251,7 +7349,7 @@ BEGIN TRAN
 
 -- check rights
 DECLARE @PackageID int
-SELECT PackageID = @PackageID FROM ServiceItems
+SELECT @PackageID = PackageID FROM ServiceItems
 WHERE ItemID = @ItemID
 
 IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
@@ -8163,118 +8261,123 @@ CREATE PROCEDURE [dbo].[GetLyncUsers]
 	@Count int	
 )
 AS
-
-CREATE TABLE #TempLyncUsers 
-(	
-	[ID] [int] IDENTITY(1,1) NOT NULL,
-	[AccountID] [int],	
-	[ItemID] [int] NOT NULL,
-	[AccountName] [nvarchar](300)  NOT NULL,
-	[DisplayName] [nvarchar](300)  NOT NULL,
-	[UserPrincipalName] [nvarchar](300) NULL,
-	[SipAddress] [nvarchar](300) NULL,
-	[SamAccountName] [nvarchar](100) NULL,
-	[LyncUserPlanId] [int] NOT NULL,		
-	[LyncUserPlanName] [nvarchar] (300) NOT NULL,		
-)
-
-DECLARE @condition nvarchar(700)
-SET @condition = ''
-
-IF (@SortColumn = 'DisplayName')
 BEGIN
-	SET @condition = 'ORDER BY ea.DisplayName'
-END
 
-IF (@SortColumn = 'UserPrincipalName')
-BEGIN
-	SET @condition = 'ORDER BY ea.UserPrincipalName'
-END
+	CREATE TABLE #TempLyncUsers 
+	(	
+		[ID] [int] IDENTITY(1,1) NOT NULL,
+		[AccountID] [int],	
+		[ItemID] [int] NOT NULL,
+		[AccountName] [nvarchar](300)  NOT NULL,
+		[DisplayName] [nvarchar](300)  NOT NULL,
+		[UserPrincipalName] [nvarchar](300) NULL,
+		[SipAddress] [nvarchar](300) NULL,
+		[SamAccountName] [nvarchar](100) NULL,
+		[LyncUserPlanId] [int] NOT NULL,		
+		[LyncUserPlanName] [nvarchar] (300) NOT NULL,		
+	)
 
-IF (@SortColumn = 'SipAddress')
-BEGIN
-	SET @condition = 'ORDER BY ou.SipAddress'
-END
+	DECLARE @condition nvarchar(700)
+	SET @condition = ''
 
-IF (@SortColumn = 'LyncUserPlanName')
-BEGIN
-	SET @condition = 'ORDER BY lp.LyncUserPlanName'
-END
-
-DECLARE @sql nvarchar(3500)
-
-set @sql = '
-	INSERT INTO 
-		#TempLyncUsers 
-	SELECT 
-		ea.AccountID,
-		ea.ItemID,
-		ea.AccountName,
-		ea.DisplayName,
-		ea.UserPrincipalName,
-		ou.SipAddress,
-		ea.SamAccountName,
-		ou.LyncUserPlanId,
-		lp.LyncUserPlanName				
-	FROM 
-		ExchangeAccounts ea 
-	INNER JOIN 
-		LyncUsers ou
-	INNER JOIN
-		LyncUserPlans lp 
-	ON
-		ou.LyncUserPlanId = lp.LyncUserPlanId				
-	ON 
-		ea.AccountID = ou.AccountID
-	WHERE 
-		ea.ItemID = @ItemID ' + @condition
-
-exec sp_executesql @sql, N'@ItemID int',@ItemID
-
-DECLARE @RetCount int
-SELECT @RetCount = COUNT(ID) FROM #TempLyncUsers 
-
-IF (@SortDirection = 'ASC')
-BEGIN
-	SELECT * FROM #TempLyncUsers 
-	WHERE ID > @StartRow AND ID <= (@StartRow + @Count) 
-END
-ELSE
-BEGIN
-	IF @SortColumn <> '' AND @SortColumn IS NOT NULL
+	IF (@SortColumn = 'DisplayName')
 	BEGIN
-		IF (@SortColumn = 'DisplayName')
-		BEGIN
-			SELECT * FROM #TempLyncUsers 
-				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY DisplayName DESC
-		END
-		IF (@SortColumn = 'UserPrincipalName')
-		BEGIN
-			SELECT * FROM #TempLyncUsers 
-				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
-		END
+		SET @condition = 'ORDER BY ea.DisplayName'
+	END
 
-		IF (@SortColumn = 'SipAddress')
-		BEGIN
-			SELECT * FROM #TempLyncUsers 
-				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY SipAddress DESC
-		END
+	IF (@SortColumn = 'UserPrincipalName')
+	BEGIN
+		SET @condition = 'ORDER BY ea.UserPrincipalName'
+	END
 
-		IF (@SortColumn = 'LyncUserPlanName')
-		BEGIN
-			SELECT * FROM #TempLyncUsers 
-				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY LyncUserPlanName DESC
-		END
+	IF (@SortColumn = 'SipAddress')
+	BEGIN
+		SET @condition = 'ORDER BY ou.SipAddress'
+	END
+
+	IF (@SortColumn = 'LyncUserPlanName')
+	BEGIN
+		SET @condition = 'ORDER BY lp.LyncUserPlanName'
+	END
+
+	DECLARE @sql nvarchar(3500)
+
+	set @sql = '
+		INSERT INTO 
+			#TempLyncUsers 
+		SELECT 
+			ea.AccountID,
+			ea.ItemID,
+			ea.AccountName,
+			ea.DisplayName,
+			ea.UserPrincipalName,
+			ou.SipAddress,
+			ea.SamAccountName,
+			ou.LyncUserPlanId,
+			lp.LyncUserPlanName				
+		FROM 
+			ExchangeAccounts ea 
+		INNER JOIN 
+			LyncUsers ou
+		INNER JOIN
+			LyncUserPlans lp 
+		ON
+			ou.LyncUserPlanId = lp.LyncUserPlanId				
+		ON 
+			ea.AccountID = ou.AccountID
+		WHERE 
+			ea.ItemID = @ItemID ' + @condition
+
+	exec sp_executesql @sql, N'@ItemID int',@ItemID
+
+	DECLARE @RetCount int
+	SELECT @RetCount = COUNT(ID) FROM #TempLyncUsers 
+
+	IF (@SortDirection = 'ASC')
+	BEGIN
+		SELECT * FROM #TempLyncUsers 
+		WHERE ID > @StartRow AND ID <= (@StartRow + @Count) 
 	END
 	ELSE
 	BEGIN
-        SELECT * FROM #TempLyncUsers 
-			WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
-	END	
+		IF @SortColumn <> '' AND @SortColumn IS NOT NULL
+		BEGIN
+			IF (@SortColumn = 'DisplayName')
+			BEGIN
+				SELECT * FROM #TempLyncUsers 
+					WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY DisplayName DESC
+			END
+			IF (@SortColumn = 'UserPrincipalName')
+			BEGIN
+				SELECT * FROM #TempLyncUsers 
+					WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
+			END
+
+			IF (@SortColumn = 'SipAddress')
+			BEGIN
+				SELECT * FROM #TempLyncUsers 
+					WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY SipAddress DESC
+			END
+
+			IF (@SortColumn = 'LyncUserPlanName')
+			BEGIN
+				SELECT * FROM #TempLyncUsers 
+					WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY LyncUserPlanName DESC
+			END
+		END
+		ELSE
+		BEGIN
+			SELECT * FROM #TempLyncUsers 
+				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
+		END	
+	END
+
+	DROP TABLE #TempLyncUsers
 END
-
-DROP TABLE #TempLyncUsers
-
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER OFF
 GO
 
 
@@ -8339,7 +8442,8 @@ LEFT JOIN LyncUsers AS LU
 ON LU.AccountID = EA.AccountID
 LEFT JOIN SfBUsers AS SfB  
 ON SfB.AccountID = EA.AccountID
-WHERE ' + @condition
+WHERE ' + @condition + '
+ORDER BY ' + @sortColumn
 
 print @sql
 
@@ -9883,6 +9987,7 @@ CREATE PROCEDURE [dbo].[GetNestedPackagesPaged]
 	@MaximumRows int
 )
 AS
+BEGIN
 
 -- build query and run it to the temporary table
 DECLARE @sql nvarchar(2000)
@@ -9924,6 +10029,8 @@ END
 
 IF @SortColumn <> '' AND @SortColumn IS NOT NULL
 SET @sql = @sql + ' ORDER BY ' + @SortColumn + ' '
+ELSE
+SET @sql = @sql + ' ORDER BY P.PackageName '
 
 SET @sql = @sql + ' SELECT COUNT(PackageID) FROM @Packages;
 SELECT
@@ -9963,8 +10070,8 @@ WHERE TP.ItemPosition BETWEEN @StartRow AND @EndRow'
 exec sp_executesql @sql, N'@StartRow int, @MaximumRows int, @PackageID int, @FilterValue nvarchar(50), @ActorID int, @StatusID int, @PlanID int, @ServerID int',
 @StartRow, @MaximumRows, @PackageID, @FilterValue, @ActorID, @StatusID, @PlanID, @ServerID
 
-
 RETURN
+END
 GO
 
 IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetUsersPaged')
@@ -10115,9 +10222,9 @@ BEGIN
 	ELSE
 		SET @condition = @condition + '
 			AND (ItemName LIKE ''' + @FilterValue + '''
-			OR Username ''' + @FilterValue + '''
-			OR FullName ''' + @FilterValue + '''
-			OR Email ''' + @FilterValue + ''')'
+			OR Username LIKE ''' + @FilterValue + '''
+			OR FullName LIKE ''' + @FilterValue + '''
+			OR Email LIKE ''' + @FilterValue + ''')'
 END
 
 IF @SortColumn IS NULL OR @SortColumn = ''
@@ -12482,7 +12589,7 @@ AS
 
 -- check rights
 DECLARE @PackageID int
-SELECT PackageID = @PackageID FROM ServiceItems
+SELECT @PackageID = PackageID FROM ServiceItems
 WHERE ItemID = @ItemID
 
 IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0 AND @forAutodiscover = 0
@@ -15458,6 +15565,8 @@ SELECT
 	S.PriorityID,
 	S.MaxExecutionTime,
 	S.WeekMonthDay,
+	-- bug ISNULL(0, ...) always is not NULL
+	-- ISNULL(0, (SELECT TOP 1 SeverityID FROM AuditLog WHERE ItemID = S.ScheduleID AND SourceName = ''SCHEDULER'' ORDER BY StartDate DESC)) AS LastResult,
 	ISNULL(0, (SELECT TOP 1 SeverityID FROM AuditLog WHERE ItemID = S.ScheduleID AND SourceName = ''SCHEDULER'' ORDER BY StartDate DESC)) AS LastResult,
 
 	-- packages
@@ -20420,3 +20529,80 @@ AS
 	WHERE Packages.UserID = @UserId
 	RETURN
 GO
+
+-- AddItemPrivateIPAddress bugfix added by Simon Egli, 27.6.2024
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'AddItemPrivateIPAddress')
+DROP PROCEDURE AddItemPrivateIPAddress
+GO
+
+CREATE PROCEDURE [dbo].[AddItemPrivateIPAddress]
+(
+	@ActorID int,
+	@ItemID int,
+	@IPAddress varchar(15)
+)
+AS
+
+IF EXISTS (SELECT ItemID FROM ServiceItems AS SI WHERE
+	ItemID = @ItemID AND -- bugfix added by Simon Egli, 27.6.2024
+	dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1)
+BEGIN
+
+	INSERT INTO PrivateIPAddresses
+	(
+		ItemID,
+		IPAddress,
+		IsPrimary
+	)
+	VALUES
+	(
+		@ItemID,
+		@IPAddress,
+		0 -- not primary
+	)
+
+END
+
+RETURN
+GO
+
+-- Support for EntityFramework
+
+IF OBJECT_ID(N'[TempIds]') IS NULL
+BEGIN
+    CREATE TABLE [TempIds] (
+        [Key] int NOT NULL IDENTITY,
+        [Created] datetime2 NOT NULL,
+        [Scope] uniqueidentifier NOT NULL,
+        [Level] int NOT NULL,
+        [Id] int NOT NULL,
+        [Date] datetime2 NOT NULL,
+        CONSTRAINT [PK_TempIds] PRIMARY KEY ([Key])
+    );
+
+	CREATE INDEX [IX_TempIds_Created_Scope_Level] ON [TempIds] ([Created], [Scope], [Level]);
+END;
+GO
+
+IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
+BEGIN
+    CREATE TABLE [__EFMigrationsHistory] (
+        [MigrationId] nvarchar(150) NOT NULL,
+        [ProductVersion] nvarchar(32) NOT NULL,
+        CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+    );
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240627111421_InitialCreate'
+)
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20240627111421_InitialCreate', N'8.0.6');
+END;
+GO
+
+

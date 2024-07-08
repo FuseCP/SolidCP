@@ -470,5 +470,33 @@
                 </div>
             </div>
         </div>
+        <asp:Panel id="DebugSettingsPanel" class="panel panel-default" runat="Server">
+            <div class="panel-heading panel-heading-link">
+                <span><i class="fa fa-wrench" aria-hidden="true">&nbsp;</i>&nbsp;&nbsp;</span>
+                <a data-toggle="collapse" data-parent="#accordion" href="#DebugSettings" aria-expanded="false" class="collapsed">
+                    <asp:Localize ID="Localize1" runat="server" meta:resourcekey="HeaderDebugSettings" /><span class='fa fa-plus pull-right' aria-hidden='true'> </span>
+                </a>
+            </div>
+            <div id="DebugSettings" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                <div class="panel-body">
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <CPCC:H5Label runat="server" for="chkAlwaysUseEntityFramework" class="col-sm-2 control-label">
+                                        <asp:Localize ID="SettingchkAlwaysUseEntityFramework" runat="server" meta:resourcekey="SettingchkAlwaysUseEntityFramework" />
+                                    </CPCC:H5Label>
+                                <div class="col-sm-6">
+                                    <asp:CheckBox ID="chkAlwaysUseEntityFramework" runat="server" CssClass="form-control" Text="Yes" meta:resourcekey="SettingchkAlwaysUseEntityFramework" />
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </fieldset>
+                    <hr />
+                    <CPCC:StyleButton ID="btnDebugSettings" CssClass="btn btn-success btn-block" runat="server" meta:resourcekey="SettingbtnSaveSettings" OnClick="btnDebugSettings_Click" />
+                </div>
+            </div>
+        </asp:Panel>
     </div>
 </div>

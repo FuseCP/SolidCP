@@ -1,0 +1,333 @@
+﻿<#@ template hostSpecific="true" #>
+<#@ assembly name="Microsoft.EntityFrameworkCore" #>
+<#@ assembly name="Microsoft.EntityFrameworkCore.Design" #>
+<#@ assembly name="Microsoft.EntityFrameworkCore.Relational" #>
+<#@ assembly name="Microsoft.Extensions.DependencyInjection.Abstractions" #>
+<#@ assembly name="System.Text.RegularExpressions" #>
+<#@ assembly name="System.Runtime" #>
+<#@ assembly name="SolidCP.EnterpriseServer.Data" #>
+<#@ parameter name="EntityType" type="Microsoft.EntityFrameworkCore.Metadata.IEntityType" #>
+<#@ parameter name="Options" type="Microsoft.EntityFrameworkCore.Scaffolding.ModelCodeGenerationOptions" #>
+<#@ parameter name="NamespaceHint" type="System.String" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.Reflection" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.ComponentModel.DataAnnotations" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
+<#@ import namespace="Microsoft.EntityFrameworkCore" #>
+<#@ import namespace="Microsoft.EntityFrameworkCore.Design" #>
+<#@ import namespace="Microsoft.EntityFrameworkCore.Metadata" #>
+<#@ import namespace="Microsoft.EntityFrameworkCore.Scaffolding" #>
+<#@ import namespace="Microsoft.Extensions.DependencyInjection" #>
+<#@ import namespace="SolidCP.EnterpriseServer.Data.Scaffolding" #>
+<#
+    Console.WriteLine($"Writing Configuration\\Sources\\{EntityType.Name}Configuration.cs");
+
+    if (EntityType.IsSimpleManyToManyJoinEntityType())
+    {
+        // Don't scaffold these
+        return "";
+    }
+
+    var services = (IServiceProvider)Host;
+    var annotationCodeGenerator = services.GetRequiredService<IAnnotationCodeGenerator>();
+    var code = services.GetRequiredService<ICSharpHelper>();
+
+    var usings = new List<string>
+    {
+        "System",
+        "System.Collections.Generic",
+        "SolidCP.EnterpriseServer.Data.Extensions",
+        "SolidCP.EnterpriseServer.Data.Entities",
+        "SolidCP.EnterpriseServer.Data.Configuration"
+    };
+    var usingscore = new List<string>()
+    {
+       "Microsoft.EntityFrameworkCore"
+    };
+    var usingsfx = new List<string>()
+    {
+      "System.Data.Entity"
+    };
+
+    var aliasesTemplate = Path.Combine(Path.GetDirectoryName(Host.TemplateFile), "Aliases.cs");
+    var aliases = File.ReadAllText(aliasesTemplate);
+    var match = Regex.Match(aliases, @$"^using\s+{Regex.Escape(EntityType.Name)}\s*=.*?$", RegexOptions.Multiline);
+    if (match.Success) aliases = match.Value.Trim();
+    else aliases = null;
+    
+    if (!string.IsNullOrEmpty(NamespaceHint))
+    {
+#>
+namespace <#= NamespaceHint.Replace(".Configuration.Sources", ".Configuration") #>;
+
+<#
+    }
+    if (aliases != null) { WriteLine(aliases); WriteLine(""); }
+#>
+public partial class <#= EntityType.Name #>Configuration: EntityTypeConfiguration<<#= EntityType.Name #>>
+{
+    public override void Configure() {
+<#
+    var anyEntityTypeConfiguration = false;
+
+    var key = EntityType.FindPrimaryKey();
+    if (key != null)
+    {
+        var keyFluentApiCalls = key.GetFluentApiCalls(annotationCodeGenerator);
+        if (keyFluentApiCalls != null
+            || (!key.IsHandledByConvention() && !Options.UseDataAnnotations))
+        {
+            if (keyFluentApiCalls != null)
+            {
+                usings.AddRange(keyFluentApiCalls.GetRequiredUsings());
+            }
+#>
+        HasKey(<#= code.Lambda(key.Properties, "e") #>)<#= code.Fragment(keyFluentApiCalls, indent: 4) #>;
+<#
+            anyEntityTypeConfiguration = true;
+        }
+    }
+
+    var EntityTypeFluentApiCalls = EntityType.GetFluentApiCalls(annotationCodeGenerator)
+        ?.FilterChain(c => !(Options.UseDataAnnotations && c.IsHandledByDataAnnotations));
+    if (EntityTypeFluentApiCalls != null)
+    {
+        usings.AddRange(EntityTypeFluentApiCalls.GetRequiredUsings());
+
+        if (anyEntityTypeConfiguration)
+        {
+            WriteLine("");
+        }
+#>
+        <#= Regex.Replace(code.Fragment(EntityTypeFluentApiCalls, indent: 4).ToString(), @"^[ \n\r\t]*\.|\r?\n[ \n\r\t]*(?=\.)", "", RegexOptions.Singleline) #>;
+<#
+        anyEntityTypeConfiguration = true;
+    }
+
+    foreach (var index in EntityType.GetIndexes()
+        .Where(i => !(Options.UseDataAnnotations && i.IsHandledByDataAnnotations(annotationCodeGenerator))))
+    {
+        if (anyEntityTypeConfiguration)
+        {
+            WriteLine("");
+        }
+
+        var indexFluentApiCalls = index.GetFluentApiCalls(annotationCodeGenerator);
+        if (indexFluentApiCalls != null)
+        {
+            usings.AddRange(indexFluentApiCalls.GetRequiredUsings());
+        }
+#>
+        HasIndex(<#= code.Lambda(index.Properties, "e") #>, <#= code.Literal(index.GetDatabaseName()) #>)<#= code.Fragment(indexFluentApiCalls, indent: 4) #>;
+<#
+        anyEntityTypeConfiguration = true;
+    }
+
+    var firstProperty = true;
+    foreach (var property in EntityType.GetProperties())
+    {
+        var propertyFluentApiCalls = property.GetFluentApiCalls(annotationCodeGenerator)
+            ?.FilterChain(c => !(Options.UseDataAnnotations && c.IsHandledByDataAnnotations)
+                && !(c.Method == "IsRequired" && Options.UseNullableReferenceTypes && !property.ClrType.IsValueType));
+        if (propertyFluentApiCalls == null)
+        {
+            continue;
+        }
+
+        usings.AddRange(propertyFluentApiCalls.GetRequiredUsings());
+
+        if (anyEntityTypeConfiguration && firstProperty)
+        {
+            WriteLine("");
+        }
+#>
+        Property(e => e.<#= property.Name #>)<#= code.Fragment(propertyFluentApiCalls, indent: 4) #>;
+<#
+        anyEntityTypeConfiguration = true;
+        firstProperty = false;
+    }
+
+    foreach (var foreignKey in EntityType.GetForeignKeys())
+    {
+        var foreignKeyFluentApiCalls = foreignKey.GetFluentApiCalls(annotationCodeGenerator)
+            ?.FilterChain(c => !(Options.UseDataAnnotations && c.IsHandledByDataAnnotations));
+        if (foreignKeyFluentApiCalls == null)
+        {
+            continue;
+        }
+
+        usings.AddRange(foreignKeyFluentApiCalls.GetRequiredUsings());
+
+        if (anyEntityTypeConfiguration)
+        {
+            WriteLine("");
+        }
+#>
+        HasOne(d => d.<#= foreignKey.DependentToPrincipal.Name #>).<#= foreignKey.IsUnique ? "WithOne" : "WithMany" #>(<#= foreignKey.PrincipalToDependent != null ? $"p => p.{foreignKey.PrincipalToDependent.Name}" : "" #>)<#= code.Fragment(foreignKeyFluentApiCalls, indent: 4) #>;
+<#
+        anyEntityTypeConfiguration = true;
+    }
+
+    foreach (var skipNavigation in EntityType.GetSkipNavigations().Where(n => n.IsLeftNavigation()))
+    {
+        if (anyEntityTypeConfiguration)
+        {
+            WriteLine("");
+        }
+
+        var left = skipNavigation.ForeignKey;
+        var leftFluentApiCalls = left.GetFluentApiCalls(annotationCodeGenerator, useStrings: true);
+        var right = skipNavigation.Inverse.ForeignKey;
+        var rightFluentApiCalls = right.GetFluentApiCalls(annotationCodeGenerator, useStrings: true);
+        var joinEntityType = skipNavigation.JoinEntityType;
+
+        if (leftFluentApiCalls != null)
+        {
+            usings.AddRange(leftFluentApiCalls.GetRequiredUsings());
+        }
+
+        if (rightFluentApiCalls != null)
+        {
+            usings.AddRange(rightFluentApiCalls.GetRequiredUsings());
+        }
+#>
+        HasMany(d => d.<#= skipNavigation.Name #>).WithMany(p => p.<#= skipNavigation.Inverse.Name #>)
+            .UsingEntity<Dictionary<string, object>>(
+                <#= code.Literal(joinEntityType.Name) #>,
+                r => r.HasOne<<#= right.PrincipalEntityType.Name #>>().WithMany()<#= code.Fragment(rightFluentApiCalls, indent: 6) #>,
+                l => l.HasOne<<#= left.PrincipalEntityType.Name #>>().WithMany()<#= code.Fragment(leftFluentApiCalls, indent: 6) #>,
+                j => {
+<#
+        var joinKey = joinEntityType.FindPrimaryKey();
+        var joinKeyFluentApiCalls = joinKey.GetFluentApiCalls(annotationCodeGenerator);
+
+        if (joinKeyFluentApiCalls != null)
+        {
+            usings.AddRange(joinKeyFluentApiCalls.GetRequiredUsings());
+        }
+#>
+                    j.HasKey(<#= code.Arguments(joinKey.Properties.Select(e => e.Name)) #>)<#= code.Fragment(joinKeyFluentApiCalls, indent: 7) #>;
+<#
+        var joinEntityTypeFluentApiCalls = joinEntityType.GetFluentApiCalls(annotationCodeGenerator);
+        if (joinEntityTypeFluentApiCalls != null)
+        {
+            usings.AddRange(joinEntityTypeFluentApiCalls.GetRequiredUsings());
+#>
+                    j<#= code.Fragment(joinEntityTypeFluentApiCalls, indent: 7) #>;
+<#
+        }
+
+        foreach (var index in joinEntityType.GetIndexes())
+        {
+            var indexFluentApiCalls = index.GetFluentApiCalls(annotationCodeGenerator);
+            if (indexFluentApiCalls != null)
+            {
+                usings.AddRange(indexFluentApiCalls.GetRequiredUsings());
+            }
+#>
+                    j.HasIndex(<#= code.Literal(index.Properties.Select(e => e.Name).ToArray()) #>, <#= code.Literal(index.GetDatabaseName()) #>)<#= code.Fragment(indexFluentApiCalls, indent: 7) #>;
+<#
+        }
+
+        foreach (var property in joinEntityType.GetProperties())
+        {
+            var propertyFluentApiCalls = property.GetFluentApiCalls(annotationCodeGenerator);
+            if (propertyFluentApiCalls == null)
+            {
+                continue;
+            }
+
+            usings.AddRange(propertyFluentApiCalls.GetRequiredUsings());
+#>
+                    j.IndexerProperty<<#= code.Reference(property.ClrType) #>>(<#= code.Literal(property.Name) #>)<#= code.Fragment(propertyFluentApiCalls, indent: 7) #>;
+<#
+        }
+#>
+                });
+<#
+        anyEntityTypeConfiguration = true;
+    }
+
+    var entityData = Scaffold.GetEntityDatasFromSeparateProcess(EntityType, Options, Host.TemplateFile, 12);
+
+    if (!string.IsNullOrEmpty(entityData))
+    {
+#>
+
+        #region Seed Data
+        HasData(() => new <#= EntityType.Name #>[] {
+<#= entityData #>
+        });
+        #endregion
+
+<#
+    }
+#>
+    }
+}
+<#    
+    var previousOutput = GenerationEnvironment;
+    GenerationEnvironment = new StringBuilder();
+
+    var fxusings = usings.Where(u => u.StartsWith("System.Data.Entity"));
+    var coreusings = usings.Where(u => u.StartsWith("Microsoft.EntityFrameworkCore"));
+    usings = usings.Except(fxusings.Concat(coreusings))
+        .Distinct()
+        .OrderBy(x => x, new NamespaceComparer())
+        .ToList();
+    usingsfx = usingsfx.Concat(fxusings)
+        .Distinct()
+        .OrderBy(x => x, new NamespaceComparer())
+        .ToList();
+    usingscore = usingscore.Concat(coreusings)
+        .Distinct()
+        .OrderBy(x => x, new NamespaceComparer())
+        .ToList();
+#>
+// This file is auto generated, do not edit.
+<#
+    foreach (var ns in usings.Distinct().OrderBy(x => x, new NamespaceComparer()))
+    {
+#>
+using <#= ns #>;
+<#
+    }
+
+    if (usingscore.Any()) {
+#>
+#if NetCore
+<#
+      foreach (var ns in usingscore.Distinct().OrderBy(x => x, new NamespaceComparer()))
+      {
+#>
+using <#= ns #>;
+<#
+      }
+#>
+#endif
+<#
+    }
+
+    if (usingsfx.Any()) {
+#>
+#if NetFX
+<#
+      foreach (var ns in usingsfx.Distinct().OrderBy(x => x, new NamespaceComparer()))
+      {
+#>
+using <#= ns #>;
+<#
+      }
+#>
+#endif
+<#    
+    }
+
+    WriteLine("");
+
+    GenerationEnvironment.Append(previousOutput);
+#>

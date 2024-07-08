@@ -5,9 +5,11 @@ using System.Text;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class OneTimePasswordHelper
+    public class OneTimePasswordHelper: ControllerBase
     {
-        public static string SetOneTimePassword(int userId)
+        public OneTimePasswordHelper(ControllerBase provider) : base(provider) { }
+
+        public string SetOneTimePassword(int userId)
         {
             int passwordLength = 12; // default length
 
@@ -28,14 +30,14 @@ namespace SolidCP.EnterpriseServer
             // generate password
             var password = Utils.GetRandomString(passwordLength);
 
-            DataProvider.SetUserOneTimePassword(userId, CryptoUtils.Encrypt(password), (int) OneTimePasswordStates.Active);
+            Database.SetUserOneTimePassword(userId, CryptoUtils.Encrypt(password), (int) OneTimePasswordStates.Active);
 
             return password;
         }
 
-        public static void FireSuccessAuth(UserInfoInternal user)
+        public void FireSuccessAuth(UserInfoInternal user)
         {
-            DataProvider.SetUserOneTimePassword(user.UserId, CryptoUtils.Encrypt(user.Password), (int) OneTimePasswordStates.Expired);
+            Database.SetUserOneTimePassword(user.UserId, CryptoUtils.Encrypt(user.Password), (int) OneTimePasswordStates.Expired);
         }
     }
 }

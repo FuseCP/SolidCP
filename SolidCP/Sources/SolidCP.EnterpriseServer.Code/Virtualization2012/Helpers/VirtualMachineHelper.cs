@@ -16,9 +16,11 @@ using System.Threading.Tasks;
 
 namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers
 {
-    public static class VirtualMachineHelper
+    public class VirtualMachineHelper: ControllerBase
     {
-        public static VirtualMachine GetVirtualMachineByItemId(int itemId)
+        public VirtualMachineHelper(ControllerBase provider) : base(provider) { }
+
+        public VirtualMachine GetVirtualMachineByItemId(int itemId)
         {
             VirtualMachine vm = (VirtualMachine)PackageController.GetPackageItem(itemId);
             if (vm == null)
@@ -67,7 +69,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers
             return vm;
         }
 
-        public static VirtualMachine GetVirtualMachineGeneralDetails(int itemId)
+        public VirtualMachine GetVirtualMachineGeneralDetails(int itemId)
         {
             // load meta item
             VirtualMachine machine = GetVirtualMachineByItemId(itemId);
@@ -92,7 +94,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers
             return vm;
         }
 
-        public static VirtualMachine GetVirtualMachineExtendedInfo(int serviceId, string vmId)
+        public VirtualMachine GetVirtualMachineExtendedInfo(int serviceId, string vmId)
         {
             // get proxy
             VirtualizationServer2012 vps = VirtualizationHelper.GetVirtualizationProxy(serviceId);
@@ -101,7 +103,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers
             return vps.GetVirtualMachineEx(vmId);
         }
 
-        public static List<ConcreteJob> GetVirtualMachineJobs(int itemId)
+        public List<ConcreteJob> GetVirtualMachineJobs(int itemId)
         {
             // load meta item
             VirtualMachine vm = VirtualMachineHelper.GetVirtualMachineByItemId(itemId);
@@ -127,7 +129,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers
             return retJobs;
         }
 
-        public static byte[] GetVirtualMachineThumbnail(int itemId, ThumbnailSize size)
+        public byte[] GetVirtualMachineThumbnail(int itemId, ThumbnailSize size)
         {
             // load meta item
             VirtualMachine vm = GetVirtualMachineByItemId(itemId);
@@ -142,7 +144,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers
             return vps.GetVirtualMachineThumbnailImage(vm.VirtualMachineId, size);
         }
 
-        public static string EvaluateVirtualMachineTemplate(int itemId, bool emailMode, bool creation, string template)
+        public string EvaluateVirtualMachineTemplate(int itemId, bool emailMode, bool creation, string template)
         {
             Hashtable items = new Hashtable();
 

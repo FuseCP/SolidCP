@@ -15,9 +15,11 @@ using System.Threading.Tasks;
 
 namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
 {
-    public static class CreateVirtualMachineHandler
+    public class CreateVirtualMachineHandler: ControllerBase
     {
-        public static IntResult CreateNewVirtualMachineInternal(VirtualMachine VMSettings, string osTemplateFile, string password, string summaryLetterEmail,
+        public CreateVirtualMachineHandler(ControllerBase provider) : base(provider) { }
+
+        public IntResult CreateNewVirtualMachineInternal(VirtualMachine VMSettings, string osTemplateFile, string password, string summaryLetterEmail,
             int externalAddressesNumber, bool randomExternalAddresses, int[] externalAddresses,
             int privateAddressesNumber, bool randomPrivateAddresses, string[] privateAddresses,
             bool createMetaItem)

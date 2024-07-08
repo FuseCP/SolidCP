@@ -37,7 +37,7 @@ using System.Threading;
 
 namespace SolidCP.EnterpriseServer
 {
-	public class ImportAsyncWorker
+	public class ImportAsyncWorker: ControllerAsyncBase
 	{
 		public int threadUserId = -1;
 		public string taskId;

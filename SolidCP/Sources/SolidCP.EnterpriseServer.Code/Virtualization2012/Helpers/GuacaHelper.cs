@@ -12,10 +12,11 @@ using SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.guacamole;
 
 namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers
 {
-    class GuacaHelper
+    public class GuacaHelper: ControllerBase
     {
+        public GuacaHelper(ControllerBase provider) : base(provider) { }
 
-        public static string GetUrl(VirtualMachine vm)
+        public string GetUrl(VirtualMachine vm)
         {
 
             //string iv = null;

@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="chkUseEntityFramework.Text" xml:space="preserve">
+    <value>Use EntityFramework for database access</value>
+  </data>
   <data name="locPoweredBy.Text" xml:space="preserve">
     <value>Powered by &lt;a href="https://solidcp.com" target="_blank"&gt;SolidCP&lt;/a&gt;.</value>
   </data>

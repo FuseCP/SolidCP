@@ -49,7 +49,7 @@ namespace SolidCP.EnterpriseServer
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [Policy("EnterpriseServerPolicy")]
     [ToolboxItem(false)]
-    public class esStatisticsServers
+    public class esStatisticsServers: WebService
     {
         [WebMethod]
         public DataSet GetRawStatisticsSitesPaged(int packageId,

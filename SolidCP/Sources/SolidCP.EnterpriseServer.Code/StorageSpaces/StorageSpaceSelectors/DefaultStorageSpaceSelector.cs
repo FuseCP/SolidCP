@@ -4,8 +4,10 @@ using SolidCP.Providers.StorageSpaces;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class DefaultStorageSpaceSelector : IStorageSpaceSelector
+    public class DefaultStorageSpaceSelector : ControllerBase, IStorageSpaceSelector
     {
+        public DefaultStorageSpaceSelector(ControllerBase provider) : base(provider) { }
+
         public StorageSpace FindBest(string groupName, long quotaSizeInBytes)
         {
             if (string.IsNullOrEmpty(groupName))
@@ -13,7 +15,7 @@ namespace SolidCP.EnterpriseServer
                 throw new ArgumentNullException("groupName");
             }
 
-            var storages = ObjectUtils.CreateListFromDataReader<StorageSpace>(DataProvider.GetStorageSpacesByResourceGroupName(groupName)).Where(x=> !x.IsDisabled).ToList();
+            var storages = ObjectUtils.CreateListFromDataReader<StorageSpace>(Database.GetStorageSpacesByResourceGroupName(groupName)).Where(x=> !x.IsDisabled).ToList();
 
             if (!storages.Any())
             {

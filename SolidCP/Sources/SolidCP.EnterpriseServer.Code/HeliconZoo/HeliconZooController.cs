@@ -41,18 +41,20 @@ using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class HeliconZooController
+    public class HeliconZooController: ControllerBase
     {
+        public HeliconZooController(ControllerBase provider) : base(provider) { }
+
         public const string HeliconZooQuotaPrefix = "HeliconZoo.";
 
-        public static HeliconZooEngine[] GetEngines(int serviceId)
+        public HeliconZooEngine[] GetEngines(int serviceId)
         {
             HeliconZoo zooServer = new HeliconZoo();
             ServiceProviderProxy.Init(zooServer, serviceId);
             return zooServer.GetEngines();
         }
 
-        public static void SetEngines(int serviceId, HeliconZooEngine[] userEngines)
+        public void SetEngines(int serviceId, HeliconZooEngine[] userEngines)
         {
             // update applicationHost.config
             HeliconZoo zooServer = new HeliconZoo();
@@ -63,30 +65,30 @@ namespace SolidCP.EnterpriseServer
             UpdateQuotas(serviceId, userEngines);
         }
 
-        public static bool IsEnginesEnabled(int serviceId)
+        public bool IsEnginesEnabled(int serviceId)
         {
             HeliconZoo zooServer = new HeliconZoo();
             ServiceProviderProxy.Init(zooServer, serviceId);
             return zooServer.IsEnginesEnabled();
         }
 
-        public static void SwithEnginesEnabled(int serviceId, bool enabled)
+        public void SwithEnginesEnabled(int serviceId, bool enabled)
         {
             HeliconZoo zooServer = new HeliconZoo();
             ServiceProviderProxy.Init(zooServer, serviceId);
             zooServer.SwithEnginesEnabled(enabled);
         }
 
-        public static ShortHeliconZooEngine[] GetAllowedHeliconZooQuotasForPackage(int packageId)
+        public ShortHeliconZooEngine[] GetAllowedHeliconZooQuotasForPackage(int packageId)
         {
             // first, check IsEnginesAllowed for this server
             
             // get helicon zoo provider serviceId
             int heliconZooProviderId, heliconZooGroupId;
-            DataProvider.GetHeliconZooProviderAndGroup("HeliconZoo", out heliconZooProviderId, out heliconZooGroupId);
+            Database.GetHeliconZooProviderAndGroup("HeliconZoo", out heliconZooProviderId, out heliconZooGroupId);
 
             // get helicon zoo service id for heliconZooProviderId and packageId
-            int serviceId = DataProvider.GetServiceIdForProviderIdAndPackageId(heliconZooProviderId, packageId);
+            int serviceId = Database.GetServiceIdForProviderIdAndPackageId(heliconZooProviderId, packageId);
 
             if (serviceId > 0)
             {
@@ -106,7 +108,7 @@ namespace SolidCP.EnterpriseServer
 
             List<ShortHeliconZooEngine> allowedEngines = new List<ShortHeliconZooEngine>();
 
-            IDataReader reader = DataProvider.GetEnabledHeliconZooQuotasForPackage(packageId);
+            IDataReader reader = Database.GetEnabledHeliconZooQuotasForPackage(packageId);
 
             while (reader.Read())
             {
@@ -121,7 +123,7 @@ namespace SolidCP.EnterpriseServer
             return allowedEngines.ToArray();
         }
 
-        public static string[] GetEnabledEnginesForSite(string siteId, int packageId)
+        public string[] GetEnabledEnginesForSite(string siteId, int packageId)
         {
             int serviceId = GetHeliconZooServiceIdByPackageId(packageId);
 
@@ -139,7 +141,7 @@ namespace SolidCP.EnterpriseServer
             return enabledEngines;
         }
 
-        public static void SetEnabledEnginesForSite(string siteId, int packageId, string[] engines)
+        public void SetEnabledEnginesForSite(string siteId, int packageId, string[] engines)
         {
             int serviceId = GetHeliconZooServiceIdByPackageId(packageId);
 
@@ -150,14 +152,14 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        public static bool IsWebCosoleEnabled(int serviceId)
+        public bool IsWebCosoleEnabled(int serviceId)
         {
             HeliconZoo zooServer = new HeliconZoo();
             ServiceProviderProxy.Init(zooServer, serviceId);
             return zooServer.IsWebCosoleEnabled();
         }
 
-        public static void SetWebCosoleEnabled(int serviceId, bool enabled)
+        public void SetWebCosoleEnabled(int serviceId, bool enabled)
         {
             HeliconZoo zooServer = new HeliconZoo();
             ServiceProviderProxy.Init(zooServer, serviceId);
@@ -166,17 +168,17 @@ namespace SolidCP.EnterpriseServer
 
 
         #region private helpers
-        private static void UpdateQuotas(int serviceId, HeliconZooEngine[] userEngines)
+        private void UpdateQuotas(int serviceId, HeliconZooEngine[] userEngines)
         {
             List<HeliconZooEngine> updatedEngines = new List<HeliconZooEngine>(userEngines);
 
             int providerId, groupId;
-            DataProvider.GetHeliconZooProviderAndGroup("HeliconZoo", out providerId, out groupId);
+            Database.GetHeliconZooProviderAndGroup("HeliconZoo", out providerId, out groupId);
 
 
             // get existing Helicon Zoo quotas
             List<string> existingQuotas = new List<string>();
-            IDataReader reader = DataProvider.GetHeliconZooQuotas(providerId);
+            IDataReader reader = Database.GetHeliconZooQuotas(providerId);
             while (reader.Read())
             {
                 string quota = (string) reader["QuotaName"];
@@ -217,7 +219,7 @@ namespace SolidCP.EnterpriseServer
             // remove engines
             foreach (string engineName in engineNamesToRemove)
             {
-                DataProvider.RemoveHeliconZooQuota(groupId, HeliconZooQuotaPrefix+engineName);
+                Database.RemoveHeliconZooQuota(groupId, HeliconZooQuotaPrefix+engineName);
             }
 
             // add engines
@@ -225,22 +227,22 @@ namespace SolidCP.EnterpriseServer
             foreach (HeliconZooEngine engine in enginesToAdd)
             {
                 int quotaId = GenerateIntId(engine);
-                DataProvider.AddHeliconZooQuota(groupId, quotaId, 
+                Database.AddHeliconZooQuota(groupId, quotaId, 
                     HeliconZooQuotaPrefix+engine.name, 
                     engine.displayName,
                     existingQuotas.Count + order++);
             }
         }
 
-        private static int GenerateIntId(HeliconZooEngine engine)
+        private int GenerateIntId(HeliconZooEngine engine)
         {
             return engine.name.GetHashCode();
         }
 
-        private static int GetHeliconZooServiceIdByPackageId(int packageId)
+        private int GetHeliconZooServiceIdByPackageId(int packageId)
         {
             // get server id
-            int serverId = DataProvider.GetServerIdForPackage(packageId);
+            int serverId = Database.GetServerIdForPackage(packageId);
             if (-1 == serverId)
             {
                 throw new Exception(string.Format("Server not found for package {0}", packageId));
@@ -264,7 +266,7 @@ namespace SolidCP.EnterpriseServer
             }
 
             // get Helicon Zoo service for site
-            int serviceId = DataProvider.GetServiceIdByProviderForServer(heliconZooProviderId, packageId);
+            int serviceId = Database.GetServiceIdByProviderForServer(heliconZooProviderId, packageId);
             return serviceId;
         }
 

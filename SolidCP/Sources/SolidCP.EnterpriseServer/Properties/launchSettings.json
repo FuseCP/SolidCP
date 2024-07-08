@@ -1,25 +1,37 @@
 {
-  "profiles": {
-    /* "net48": {
-      "commandName": "Executable",
-      "executablePath": "C:\\Program Files\\IIS Express\\iisexpress.exe",
-      "commandLineArgs": "/site:solidcp.enterpriseserver"
-    }, */
-    "net6": {
-      "commandName": "Project",
-      "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "applicationUrl": "http://localhost:9901"
-    }
-  },
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:9015",
-      "sslPort": 30000
-    }
-  }
+	"profiles": {
+		"WSL": {
+			"commandName": "WSL2",
+			"launchUrl": "https://localhost:9004/",
+			"environmentVariables": {
+				"ASPNETCORE_ENVIRONMENT": "Development",
+				"APPSETTING_EnterpriseServer_ConnectionString": "Server=172.26.0.1;Database=SolidCP;uid=sa;pwd=Password12;TrustServerCertificate=true",
+				"APPSETTING_appliationUrls": "http://localhost:9004"
+			},
+			"distributionName": ""
+		},
+		"net8": {
+			"commandName": "Project",
+			"launchUrl": "https://localhost:9004",
+			"environmentVariables": {
+				"ASPNETCORE_ENVIRONMENT": "Development",
+				"APPSETTING_ServerCertificate.File": "",
+				"APPSETTING_ServerCertificate.Password": "",
+				"APPSETTING_ServerCertificate.StoreLocation": "LocalMachine",
+				"APPSETTING_ServerCertificate.StoreName": "My",
+				"APPSETTING_ServerCertificate.FindType": "FindBySubjectName",
+				"APPSETTING_ServerCertificate.Name": "localhost"
+			},
+			"applicationUrl": "https://localhost:9004;"
+		}
+	},
+	"$schema": "https://json.schemastore.org/launchsettings.json",
+	"iisSettings": {
+		"windowsAuthentication": false,
+		"anonymousAuthentication": true,
+		"iisExpress": {
+			"applicationUrl": "http://localhost:9004",
+			"sslPort": 9004
+		}
+	}
 }

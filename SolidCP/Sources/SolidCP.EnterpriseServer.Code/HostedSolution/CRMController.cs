@@ -44,9 +44,11 @@ using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class CRMController
+    public class CRMController: ControllerBase
     {
-        private static CRM GetCRMProxy(int packageId)
+        public CRMController(ControllerBase provider) : base(provider) { }
+
+        private CRM GetCRMProxy(int packageId)
         {
             int crmServiceId = GetCRMServiceId(packageId);
             CRM ws = new CRM();
@@ -54,7 +56,7 @@ namespace SolidCP.EnterpriseServer
             return ws;
         }
 
-        private static int GetCRMServiceId(int packageId)
+        private int GetCRMServiceId(int packageId)
         {
             int serviceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.HostedCRM2013);
             if (serviceId == 0)
@@ -62,7 +64,7 @@ namespace SolidCP.EnterpriseServer
             return serviceId;
         }
 
-        private static int GetCRMServiceId(int packageId, ResultObject res)
+        private int GetCRMServiceId(int packageId, ResultObject res)
         {
             int serviceId = GetCRMServiceId(packageId);
             if (serviceId == 0)
@@ -72,7 +74,7 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-		private static ResultObject CreateDnsZoneRecord(int domainId, string recordName, string ip)
+		private ResultObject CreateDnsZoneRecord(int domainId, string recordName, string ip)
 		{
 			ResultObject ret = StartTask<ResultObject>("CRM", "CREATE_DNS_ZONE");
 
@@ -110,7 +112,7 @@ namespace SolidCP.EnterpriseServer
 			return ret;
 		}
         
-        private static ValueResultObject<DomainInfo> CreateOrganizationDomain(Organization org)
+        private ValueResultObject<DomainInfo> CreateOrganizationDomain(Organization org)
         {            
             ValueResultObject<DomainInfo> ret = StartTask<ValueResultObject<DomainInfo>>("CRM", "CREATE_ORGANIZATIO_DOMAIN");
             try
@@ -167,7 +169,7 @@ namespace SolidCP.EnterpriseServer
             return ret;
         }
 
-        private static void CompleteTask(ResultObject res, string errorCode, Exception ex, string errorMessage)
+        private void CompleteTask(ResultObject res, string errorCode, Exception ex, string errorMessage)
         {
             if (res != null)
             {
@@ -189,27 +191,27 @@ namespace SolidCP.EnterpriseServer
 
         }        
 
-        private static void CompleteTask(ResultObject res, string errorCode, Exception ex)
+        private void CompleteTask(ResultObject res, string errorCode, Exception ex)
         {
             CompleteTask(res, errorCode, ex, null);
         }
 
-        private static void CompleteTask(ResultObject res, string errorCode)
+        private void CompleteTask(ResultObject res, string errorCode)
         {
             CompleteTask(res, errorCode, null, null);
         }
 
-        private static void CompleteTask(ResultObject res)
+        private void CompleteTask(ResultObject res)
         {
             CompleteTask(res, null);
         }
 
-        private static void CompleteTask()
+        private void CompleteTask()
         {
             CompleteTask(null);
         }
 
-        private static T StartTask<T>(string source, string taskName) where T : ResultObject, new()
+        private T StartTask<T>(string source, string taskName) where T : ResultObject, new()
         {
             TaskManager.StartTask(source, taskName);
             T res = new T();
@@ -217,7 +219,7 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        private static string GetProviderProperty(int organizationServiceId, string property)
+        private string GetProviderProperty(int organizationServiceId, string property)
         {
 
             Organizations orgProxy = new Organizations();
@@ -243,13 +245,13 @@ namespace SolidCP.EnterpriseServer
             return value;
         }
 
-        public static string GetOrganizationCRMUniqueName(string orgName)
+        public string GetOrganizationCRMUniqueName(string orgName)
         {
             return Regex.Replace(orgName, @"[^\dA-Za-z]", "-", RegexOptions.Compiled);
         }
 
 
-        public static OrganizationResult CreateOrganization(int organizationId, string baseCurrencyCode, string baseCurrencyName, string baseCurrencySymbol, string regionName,  int userId, string collation, int baseLanguageCode)
+        public OrganizationResult CreateOrganization(int organizationId, string baseCurrencyCode, string baseCurrencyName, string baseCurrencySymbol, string regionName,  int userId, string collation, int baseLanguageCode)
         {
             OrganizationResult res = StartTask<OrganizationResult>("CRM", "CREATE_ORGANIZATION");
 
@@ -353,7 +355,7 @@ namespace SolidCP.EnterpriseServer
                 {
                     try
                     {
-                        DataProvider.CreateCRMUser(userId, crmUser.Value.CRMUserId, crmUser.Value.BusinessUnitId, 0);
+                        Database.CreateCRMUser(userId, crmUser.Value.CRMUserId, crmUser.Value.BusinessUnitId, 0);
                     }
                     catch (Exception ex)
                     {
@@ -373,7 +375,7 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        public static StringArrayResultObject GetCollationByServiceId(int serviceId)
+        public StringArrayResultObject GetCollationByServiceId(int serviceId)
         {
             StringArrayResultObject ret = StartTask<StringArrayResultObject>("CRM", "GET_COLLATION_NAMES");
             ret.IsSuccess = true;
@@ -392,7 +394,7 @@ namespace SolidCP.EnterpriseServer
             return ret;
         }
 
-        public static StringArrayResultObject GetCollation(int packageId)
+        public StringArrayResultObject GetCollation(int packageId)
         {                        
             StringArrayResultObject ret = StartTask<StringArrayResultObject>("CRM", "GET_COLLATION_NAMES");
             ret.IsSuccess = true;
@@ -418,7 +420,7 @@ namespace SolidCP.EnterpriseServer
             return ret;
         }
 
-        public static CurrencyArrayResultObject GetCurrencyByServiceId(int serviceId)
+        public CurrencyArrayResultObject GetCurrencyByServiceId(int serviceId)
         {
             CurrencyArrayResultObject ret = StartTask<CurrencyArrayResultObject>("CRM", "GET_CURRENCY");
             ret.IsSuccess = true;
@@ -438,7 +440,7 @@ namespace SolidCP.EnterpriseServer
             return ret;
         }
 
-        public static CurrencyArrayResultObject GetCurrency(int packageId)
+        public CurrencyArrayResultObject GetCurrency(int packageId)
         {            
             CurrencyArrayResultObject ret = StartTask<CurrencyArrayResultObject>("CRM", "GET_CURRENCY");
             ret.IsSuccess = true;
@@ -464,7 +466,7 @@ namespace SolidCP.EnterpriseServer
         }
         
       
-        private static ResultObject DeleteDnsRecord(int domainId, string recordName, string ip)
+        private ResultObject DeleteDnsRecord(int domainId, string recordName, string ip)
         {
             ResultObject ret = StartTask<ResultObject>("CRM", "DELETE_DNS_RECORD");
             
@@ -493,7 +495,7 @@ namespace SolidCP.EnterpriseServer
  
         }
 
-        private static ResultObject DeleteOrganizationDomain(Organization org)
+        private ResultObject DeleteOrganizationDomain(Organization org)
         {
             ResultObject ret = StartTask<ResultObject>("CRM", "DELETE_ORGANIZATION_DOMAIN");            
 
@@ -551,7 +553,7 @@ namespace SolidCP.EnterpriseServer
             return ret;
         }
 
-        public static ResultObject DeleteOrganization(int organizationId)
+        public ResultObject DeleteOrganization(int organizationId)
         {
             ResultObject res = StartTask<ResultObject>("CRM", "DELETE_ORGANIZATION");
             
@@ -562,7 +564,7 @@ namespace SolidCP.EnterpriseServer
                 
                 try
                 {
-                    DataProvider.DeleteCrmOrganization(organizationId);
+                    Database.DeleteCrmOrganization(organizationId);
                 }
                 catch(Exception ex)
                 {
@@ -601,7 +603,7 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        private static bool CheckQuota(int packageId)
+        private bool CheckQuota(int packageId)
         {
             TaskManager.StartTask("CRM", "CHECK_QUOTA");
             bool res = false;
@@ -635,12 +637,12 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        public static IntResult GetCRMUsersCount(int itemId, string name, string email, int CALType)
+        public IntResult GetCRMUsersCount(int itemId, string name, string email, int CALType)
         {
             IntResult res = StartTask<IntResult>("CRM", "GET_CRM_USERS_COUNT");
             try
             {
-                res.Value = DataProvider.GetCRMUsersCount(itemId, name, email, CALType);
+                res.Value = Database.GetCRMUsersCount(itemId, name, email, CALType);
             }
             catch(Exception ex)
             {
@@ -653,10 +655,10 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        public static List<OrganizationUser> GetCRMOrganizationUsers(int itemId)
+        public List<OrganizationUser> GetCRMOrganizationUsers(int itemId)
         {
             IDataReader reader =
-                DataProvider.GetCRMOrganizationUsers(itemId);
+                Database.GetCRMOrganizationUsers(itemId);
             List<OrganizationUser> accounts = new List<OrganizationUser>();
             ObjectUtils.FillCollectionFromDataReader(accounts, reader);
 
@@ -665,14 +667,14 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        public static OrganizationUsersPagedResult GetCRMUsers(int itemId, string sortColumn, string sortDirection, string name, string email, int startRow, int count)
+        public OrganizationUsersPagedResult GetCRMUsers(int itemId, string sortColumn, string sortDirection, string name, string email, int startRow, int count)
         {
             OrganizationUsersPagedResult res = StartTask<OrganizationUsersPagedResult>("CRM", "GET_CRM_USERS");
             
             try
             {
                 IDataReader reader =
-                    DataProvider.GetCrmUsers(itemId, sortColumn, sortDirection, name, email, startRow, count);
+                    Database.GetCrmUsers(itemId, sortColumn, sortDirection, name, email, startRow, count);
                 List<OrganizationUser> accounts = new List<OrganizationUser>();
                 ObjectUtils.FillCollectionFromDataReader(accounts, reader);
                 res.Value = new OrganizationUsersPaged();
@@ -699,7 +701,7 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        public static UserResult CreateCRMUser(OrganizationUser user, int packageId, int itemId, Guid businessUnitId, int CALType)
+        public UserResult CreateCRMUser(OrganizationUser user, int packageId, int itemId, Guid businessUnitId, int CALType)
         {
             UserResult ret = StartTask<UserResult>("CRM", "CREATE_CRM_USER");
 
@@ -782,7 +784,7 @@ namespace SolidCP.EnterpriseServer
 
                 try
                 {
-                    DataProvider.CreateCRMUser(user.AccountId, crmId, businessUnitId, CALType);
+                    Database.CreateCRMUser(user.AccountId, crmId, businessUnitId, CALType);
                 }
                 catch (Exception ex)
                 {
@@ -799,7 +801,7 @@ namespace SolidCP.EnterpriseServer
             return ret;
         }
 
-        public static CRMBusinessUnitsResult GetCRMBusinessUnits(int itemId, int packageId)
+        public CRMBusinessUnitsResult GetCRMBusinessUnits(int itemId, int packageId)
         {
             CRMBusinessUnitsResult res = StartTask<CRMBusinessUnitsResult>("CRM", "GET_CRM_BUSINESS_UNITS");
             try
@@ -844,7 +846,7 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        public static CrmRolesResult GetCRMRoles(int itemId, int accountId, int packageId)
+        public CrmRolesResult GetCRMRoles(int itemId, int accountId, int packageId)
         {
             CrmRolesResult res = StartTask<CrmRolesResult>("CRM", "GET_CRM_ROLES");
 
@@ -908,15 +910,15 @@ namespace SolidCP.EnterpriseServer
         }
 
         
-        public static Guid GetCrmUserId(int accountId)
+        public Guid GetCrmUserId(int accountId)
         {
-            IDataReader reader = DataProvider.GetCrmUser(accountId);
+            IDataReader reader = Database.GetCrmUser(accountId);
             CrmUser user = ObjectUtils.FillObjectFromDataReader<CrmUser>(reader);
             return user == null ? Guid.Empty :user.CRMUserId;
                   
         }
 
-        public static CrmUserResult GetCrmUser(int itemId, int accountId)
+        public CrmUserResult GetCrmUser(int itemId, int accountId)
         {
             CrmUserResult res = StartTask<CrmUserResult>("CRM", "GET_CRM_USER");
             
@@ -971,7 +973,7 @@ namespace SolidCP.EnterpriseServer
 
 
         
-        public static ResultObject SetUserRoles(int itemId, int accountId, int packageId, Guid[] roles)
+        public ResultObject SetUserRoles(int itemId, int accountId, int packageId, Guid[] roles)
         {
             CrmRolesResult res = StartTask<CrmRolesResult>("CRM", "GET_CRM_ROLES");
 
@@ -1019,7 +1021,7 @@ namespace SolidCP.EnterpriseServer
 
         }
 
-        public static ResultObject SetUserCALType(int itemId, int accountId, int packageId, int CALType)
+        public ResultObject SetUserCALType(int itemId, int accountId, int packageId, int CALType)
         {
             ResultObject res = StartTask<CrmRolesResult>("CRM", "SET_CRM_CALTYPE");
 
@@ -1077,7 +1079,7 @@ namespace SolidCP.EnterpriseServer
 
                 ResultObject rolesRes = crm.SetUserCALType(org.Name, crmUserId, CALType);
 
-                DataProvider.UpdateCRMUser(accountId, CALType);
+                Database.UpdateCRMUser(accountId, CALType);
 
                 res.ErrorCodes.AddRange(rolesRes.ErrorCodes);
                 if (!rolesRes.IsSuccess)
@@ -1096,7 +1098,7 @@ namespace SolidCP.EnterpriseServer
 
         }
         
-        public static ResultObject ChangeUserState(int itemId, int accountId, bool disable)
+        public ResultObject ChangeUserState(int itemId, int accountId, bool disable)
         {
             CrmRolesResult res = StartTask<CrmRolesResult>("CRM", "CHANGER_USER_STATE");
 
@@ -1143,7 +1145,7 @@ namespace SolidCP.EnterpriseServer
         }
 
         
-        private static BoolResult CheckQuota(int packageId, int itemId, int CALType)
+        private BoolResult CheckQuota(int packageId, int itemId, int CALType)
         {
             BoolResult res = StartTask<BoolResult>("CRM", "CHECK_QUOTA");
             try
@@ -1206,7 +1208,7 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        public static ResultObject SetMaxDBSize(int itemId, int packageId, long maxSize)
+        public ResultObject SetMaxDBSize(int itemId, int packageId, long maxSize)
         {
             ResultObject res = StartTask<ResultObject>("CRM", "SET_CRM_MAXDBSIZE");
 
@@ -1268,7 +1270,7 @@ namespace SolidCP.EnterpriseServer
 
         }
 
-        public static long GetDBSize(int itemId, int packageId)
+        public long GetDBSize(int itemId, int packageId)
         {
             ResultObject res = StartTask<ResultObject>("CRM", "GET_CRM_DBSIZE");
             long size = -1;
@@ -1309,7 +1311,7 @@ namespace SolidCP.EnterpriseServer
             return size;
         }
 
-        public static long GetMaxDBSize(int itemId, int packageId)
+        public long GetMaxDBSize(int itemId, int packageId)
         {
             ResultObject res = StartTask<ResultObject>("CRM", "GET_CRM_MAXDBSIZE");
             long size = -1;
@@ -1351,7 +1353,7 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        public static int[] GetInstalledLanguagePacks(int packageId)
+        public int[] GetInstalledLanguagePacks(int packageId)
         {
             ResultObject res = StartTask<ResultObject>("CRM", "GET_CRM_MAXDBSIZE");
             int[] ret = null;
@@ -1376,7 +1378,7 @@ namespace SolidCP.EnterpriseServer
             return ret;
         }
 
-        public static int[] GetInstalledLanguagePacksByServiceId(int serviceId)
+        public int[] GetInstalledLanguagePacksByServiceId(int serviceId)
         {
             ResultObject res = StartTask<ResultObject>("CRM", "GET_CRM_MAXDBSIZE");
             int[] ret = null;

@@ -38,7 +38,9 @@ using System.Collections.Specialized;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+#if NETFRAMEWORK
 using System.Web;
+#endif
 
 using SolidCP.Providers;
 using OS = SolidCP.Server.Client;
@@ -48,14 +50,16 @@ using SolidCP.Providers.Web;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class FilesController
+    public class FilesController: ControllerBase
     {
-        public static SystemSettings GetFileManagerSettings()
+        public FilesController(ControllerBase provider) : base(provider) { }
+
+        public SystemSettings GetFileManagerSettings()
         {
             return SystemController.GetSystemSettingsInternal(SystemSettings.FILEMANAGER_SETTINGS, false);
         }
 
-        public static OS.OperatingSystem GetOS(int packageId)
+        public OS.OperatingSystem GetOS(int packageId)
         {
             int sid = PackageController.GetPackageServiceId(packageId, ResourceGroups.Os);
             if (sid <= 0)
@@ -67,36 +71,41 @@ namespace SolidCP.EnterpriseServer
             return os;
         }
 
-        public static string GetHomeFolder(int packageId)
+
+        public string GetHomeFolder(int packageId)
         {
             // check context
             string key = "HomeFolder" + packageId.ToString();
+
+#if NETFRAMEWORK
             if (HttpContext.Current != null && HttpContext.Current.Items[key] != null)
                 return (string)HttpContext.Current.Items[key];
-
+#endif
             List<ServiceProviderItem> items = PackageController.GetPackageItemsByType(packageId, typeof(HomeFolder));
             string path = (items.Count > 0) ? items[0].Name : null;
-            
+
+#if NETFRAMEWORK
             // place to context
             if (HttpContext.Current != null)
                 HttpContext.Current.Items[key] = path;
+#endif
 
             return path;
         }
 
-        public static string GetFullPackagePath(int packageId, string path)
+        public string GetFullPackagePath(int packageId, string path)
         {
             string homeFolder = GetHomeFolder(packageId);
             string correctedPath = CorrectRelativePath(path);
             return Path.Combine(homeFolder, correctedPath);
         }
 
-		public static string GetFullUncPackagePath(int packageId, int serviceId, string path)
+		public string GetFullUncPackagePath(int packageId, int serviceId, string path)
 		{
 			return ConvertToUncPath(serviceId, GetFullPackagePath(packageId, path));
 		}
 
-        public static string GetVirtualPackagePath(int packageId, string fullPath)
+        public string GetVirtualPackagePath(int packageId, string fullPath)
         {
 			if (String.IsNullOrEmpty(fullPath))
 				return fullPath;
@@ -117,7 +126,7 @@ namespace SolidCP.EnterpriseServer
             return path;
         }
 
-        public static string CorrectRelativePath(string relativePath)
+        public string CorrectRelativePath(string relativePath)
         {
             // clean path
             string correctedPath = Regex.Replace(relativePath.Replace("/", "\\"),
@@ -127,7 +136,7 @@ namespace SolidCP.EnterpriseServer
             return correctedPath;
         }
 
-        public static List<SystemFile> GetFiles(int packageId, string path, bool includeFiles)
+        public List<SystemFile> GetFiles(int packageId, string path, bool includeFiles)
         {
             OS.OperatingSystem os = GetOS(packageId);
 
@@ -144,12 +153,12 @@ namespace SolidCP.EnterpriseServer
             return filteredFiles;
         }
 
-        public static List<SystemFile> GetFilesByMask(int packageId, string path, string filesMask)
+        public List<SystemFile> GetFilesByMask(int packageId, string path, string filesMask)
         {
             return null;
         }
 
-        public static byte[] GetFileBinaryContent(int packageId, string path)
+        public byte[] GetFileBinaryContent(int packageId, string path)
         {
             OS.OperatingSystem os = GetOS(packageId);
             string fullPath = GetFullPackagePath(packageId, path);
@@ -158,7 +167,7 @@ namespace SolidCP.EnterpriseServer
             return os.GetFileBinaryContent(fullPath);
         }
 
-		public static byte[] GetFileBinaryContentUsingEncoding(int packageId, string path, string encoding)
+		public byte[] GetFileBinaryContentUsingEncoding(int packageId, string path, string encoding)
 		{
 			OS.OperatingSystem os = GetOS(packageId);
 			string fullPath = GetFullPackagePath(packageId, path);
@@ -167,7 +176,7 @@ namespace SolidCP.EnterpriseServer
 			return os.GetFileBinaryContentUsingEncoding(fullPath, encoding);
 		}
 
-        public static int UpdateFileBinaryContent(int packageId, string path, byte[] content)
+        public int UpdateFileBinaryContent(int packageId, string path, byte[] content)
         {
 
             // check account
@@ -201,7 +210,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-		public static int UpdateFileBinaryContentUsingEncoding(int packageId, string path, byte[] content, string encoding)
+		public int UpdateFileBinaryContentUsingEncoding(int packageId, string path, byte[] content, string encoding)
 		{
 
 			// check account
@@ -235,7 +244,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-        public static byte[] GetFileBinaryChunk(int packageId, string path, int offset, int length)
+        public byte[] GetFileBinaryChunk(int packageId, string path, int offset, int length)
         {
             OS.OperatingSystem os = GetOS(packageId);
             string fullPath = GetFullPackagePath(packageId, path);
@@ -243,7 +252,7 @@ namespace SolidCP.EnterpriseServer
             return os.GetFileBinaryChunk(fullPath, offset, length);
         }
 
-        public static int AppendFileBinaryChunk(int packageId, string path, byte[] chunk)
+        public int AppendFileBinaryChunk(int packageId, string path, byte[] chunk)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -261,7 +270,7 @@ namespace SolidCP.EnterpriseServer
             return 0;
         }
 
-        public static int DeleteFiles(int packageId, string[] files)
+        public int DeleteFiles(int packageId, string[] files)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -299,7 +308,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int CreateFile(int packageId, string path)
+        public int CreateFile(int packageId, string path)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -338,21 +347,21 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static bool FileExists(int packageId, string path)
+        public bool FileExists(int packageId, string path)
         {
             OS.OperatingSystem os = GetOS(packageId);
             string fullPath = GetFullPackagePath(packageId, path);
             return os.FileExists(fullPath);
         }
 
-        public static bool DirectoryExists(int packageId, string path)
+        public bool DirectoryExists(int packageId, string path)
         {
             OS.OperatingSystem os = GetOS(packageId);
             string fullPath = GetFullPackagePath(packageId, path);
             return os.DirectoryExists(fullPath);
         }
 
-        public static int CreateFolder(int packageId, string path)
+        public int CreateFolder(int packageId, string path)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -388,7 +397,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int CopyFiles(int packageId, string[] files, string destFolder)
+        public int CopyFiles(int packageId, string[] files, string destFolder)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -450,7 +459,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int MoveFiles(int packageId, string[] files, string destFolder)
+        public int MoveFiles(int packageId, string[] files, string destFolder)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -512,7 +521,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int RenameFile(int packageId, string oldPath, string newPath)
+        public int RenameFile(int packageId, string oldPath, string newPath)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -545,7 +554,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static string[] UnzipFiles(int packageId, string[] files)
+        public string[] UnzipFiles(int packageId, string[] files)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -590,7 +599,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int ZipFiles(int packageId, string[] files, string archivePath)
+        public int ZipFiles(int packageId, string[] files, string archivePath)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -641,7 +650,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-		public static int ZipRemoteFiles(int packageId, string rootFolder, string[] files, string archivePath)
+		public int ZipRemoteFiles(int packageId, string rootFolder, string[] files, string archivePath)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -700,7 +709,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-        public static int CreateAccessDatabase(int packageId, string dbPath)
+        public int CreateAccessDatabase(int packageId, string dbPath)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -734,7 +743,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int CalculatePackageDiskspace(int packageId)
+        public int CalculatePackageDiskspace(int packageId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -750,7 +759,7 @@ namespace SolidCP.EnterpriseServer
                 prms.UserId = SecurityContext.User.UserId;
                 prms.Parameters = new object[] { packageId };
 
-                Thread t = new Thread(new ParameterizedThreadStart(CalculatePackageDiskspaceAsync));
+                Thread t = new Thread(new ParameterizedThreadStart(par => AsAsync<FilesController>().CalculatePackageDiskspaceAsync(par)));
                 t.Start(prms);
                 return 0;
 
@@ -765,7 +774,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        private static void CalculatePackageDiskspaceAsync(object objPrms)
+        private void CalculatePackageDiskspaceAsync(object objPrms)
         {
             ThreadStartParameters prms = (ThreadStartParameters)objPrms;
 
@@ -786,7 +795,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static UserPermission[] GetFilePermissions(int packageId, string path)
+        public UserPermission[] GetFilePermissions(int packageId, string path)
         {
             try
             {
@@ -809,7 +818,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int SetFilePermissions(int packageId, string path, UserPermission[] users, bool resetChildPermissions)
+        public int SetFilePermissions(int packageId, string path, UserPermission[] users, bool resetChildPermissions)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -841,7 +850,7 @@ namespace SolidCP.EnterpriseServer
         }
 
         // Synchronizing
-        public static FolderGraph GetFolderGraph(int packageId, string path)
+        public FolderGraph GetFolderGraph(int packageId, string path)
         {
             OS.OperatingSystem os = GetOS(packageId);
             string fullPath = GetFullPackagePath(packageId, path);
@@ -850,7 +859,7 @@ namespace SolidCP.EnterpriseServer
             return os.GetFolderGraph(fullPath);
         }
 
-        public static void ExecuteSyncActions(int packageId, FileSyncAction[] actions)
+        public void ExecuteSyncActions(int packageId, FileSyncAction[] actions)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -871,7 +880,7 @@ namespace SolidCP.EnterpriseServer
             os.ExecuteSyncActions(actions);
         }
 
-		public static string ConvertToUncPath(int serviceId, string path)
+		public string ConvertToUncPath(int serviceId, string path)
 		{
 			// load web service info
 			ServiceInfo svc = ServerController.GetServiceInfo(serviceId);
@@ -881,7 +890,7 @@ namespace SolidCP.EnterpriseServer
 			return "\\\\" + srv.ServerName + "\\" + path.Replace(":", "$");
 		}
 
-        private static UserPermission[] GetAvailableSecurityAccounts(int packageId)
+        private UserPermission[] GetAvailableSecurityAccounts(int packageId)
         {
             List<UserPermission> users = new List<UserPermission>();
 
@@ -915,7 +924,7 @@ namespace SolidCP.EnterpriseServer
             return users.ToArray();
         }
 
-        public static int SetFolderQuota(int packageId, string path, string driveName, string quotas)
+        public int SetFolderQuota(int packageId, string path, string driveName, string quotas)
         {
 
             // check account
@@ -971,7 +980,7 @@ namespace SolidCP.EnterpriseServer
 
         }
         
-        public static int ApplyEnableHardQuotaFeature(int packageId)
+        public int ApplyEnableHardQuotaFeature(int packageId)
         {
             if (SecurityContext.CheckAccount(DemandAccount.IsActive | DemandAccount.IsAdmin | DemandAccount.NotDemo) != 0)
                 throw new Exception("This method could be called by serveradmin only.");
@@ -1034,7 +1043,7 @@ namespace SolidCP.EnterpriseServer
             return 0;
         }
 
-        public static int DeleteDirectoryRecursive(int packageId, string rootPath)
+        public int DeleteDirectoryRecursive(int packageId, string rootPath)
         {
 
             // check account

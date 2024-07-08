@@ -13,9 +13,11 @@ using System.Threading.Tasks;
 
 namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
 {
-    public static class ImportVirtualMachineHandler
+    public class ImportVirtualMachineHandler: ControllerBase
     {
-        public static IntResult ImportVirtualMachine(int packageId,
+        public ImportVirtualMachineHandler(ControllerBase provider) : base(provider) { }
+
+        public IntResult ImportVirtualMachine(int packageId,
             int serviceId, string vmId,
             string osTemplateFile, string adminPassword,
             bool IsBootFromCd, bool IsDvdInstalled,

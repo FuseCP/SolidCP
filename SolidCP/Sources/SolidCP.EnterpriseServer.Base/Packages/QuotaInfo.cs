@@ -68,15 +68,15 @@ namespace SolidCP.EnterpriseServer
             get { return quotaName; }
             set { quotaName = value; }
         }
+        
         string quotaDescription;
-
         public string QuotaDescription
         {
             get { return quotaDescription; }
             set { quotaDescription = value; }
         }
-        int quotaTypeId;
 
+        int quotaTypeId;
         public int QuotaTypeId
         {
             get { return quotaTypeId; }

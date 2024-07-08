@@ -12,9 +12,11 @@ using System.Threading.Tasks;
 
 namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Tasks
 {
-    internal class DeleteVirtualMachineTask
+    public class DeleteVirtualMachineTask: ControllerBase
     {
-        internal static void DeleteVirtualMachineNewTask(int itemId, VirtualMachine vm, bool saveFiles, bool exportVps, string exportPath, bool keepPackageItem)
+        public DeleteVirtualMachineTask(ControllerBase provider) : base(provider) { }
+
+        internal void DeleteVirtualMachineNewTask(int itemId, VirtualMachine vm, bool saveFiles, bool exportVps, string exportPath, bool keepPackageItem)
         {
             string taskId = vm.CurrentTaskId;
             // start task
@@ -27,7 +29,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Tasks
             TaskManager.CompleteTask();
         }
 
-        internal static void DeleteVirtualMachineContinueTask(string taskId, int itemId, VirtualMachine vm, bool saveFiles, bool exportVps, string exportPath, bool keepPackageItem)
+        internal void DeleteVirtualMachineContinueTask(string taskId, int itemId, VirtualMachine vm, bool saveFiles, bool exportVps, string exportPath, bool keepPackageItem)
         {
             if(taskId != vm.CurrentTaskId) {
                 throw new ArgumentException("The task is not the same as the virtual machine :" + taskId + " and VM task" + vm.CurrentTaskId);
@@ -41,7 +43,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Tasks
         }
 
 
-        private static void DeleteVirtualMachineInternal(int itemId, VirtualMachine vm, bool saveFiles, bool exportVps, string exportPath, bool keepPackageItem)
+        private void DeleteVirtualMachineInternal(int itemId, VirtualMachine vm, bool saveFiles, bool exportVps, string exportPath, bool keepPackageItem)
         {
             //string taskId = vm.CurrentTaskId;
             //// start task

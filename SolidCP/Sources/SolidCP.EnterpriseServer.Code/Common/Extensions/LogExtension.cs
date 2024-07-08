@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading;
 using SolidCP.Providers;
 
 namespace SolidCP.EnterpriseServer.Extensions
@@ -10,6 +11,44 @@ namespace SolidCP.EnterpriseServer.Extensions
     {
         private const string OLD_PREFIX = "Old ";
         private const string NEW_PREFIX = "New ";
+
+        const int TaskManagerRefreshMinutes = 1;
+
+        static DateTime timeStamp = DateTime.MinValue;
+        static object Lock = new object();
+        static TaskManager taskManager = null;
+        static Timer disposeTimer = null;
+        static TaskManager TaskManager
+        {
+            get
+            {
+                lock (Lock)
+                {
+                    if (taskManager == null || timeStamp.AddMinutes(TaskManagerRefreshMinutes) < DateTime.Now)
+                    {   // if null or older than one minute create a new TaskManager
+                        taskManager?.Dispose();
+                        taskManager = new TaskManager();
+                        disposeTimer = new Timer(state =>
+                        {
+                            lock (Lock)
+                            {
+                                if (taskManager != null && timeStamp.AddMinutes(TaskManagerRefreshMinutes * 2) < DateTime.Now)
+                                {
+                                    taskManager.Dispose();
+                                    taskManager = null;
+                                    timeStamp = DateTime.MinValue;
+                                    disposeTimer.Dispose();
+                                    disposeTimer = null;
+                                }
+                            }
+                        }, null, TaskManagerRefreshMinutes*2*1000, TaskManagerRefreshMinutes*1000);
+                    }
+                }
+				timeStamp = DateTime.Now;
+				return taskManager;
+            }
+        }
+
 
         /// <summary>
         /// Log properties of the object which have [LogProperty] or [LogParentPropery] attributes
@@ -74,7 +113,6 @@ namespace SolidCP.EnterpriseServer.Extensions
                 var propertyValue = LogExtensionHelper.GetString(property.GetValue(obj, null));
 
                 TaskManager.Write(LogExtensionHelper.CombineString(propertyName, propertyValue));
-
             }
             catch (Exception ex)
             {

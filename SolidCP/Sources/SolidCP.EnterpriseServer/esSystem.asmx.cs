@@ -46,7 +46,7 @@ namespace SolidCP.EnterpriseServer
 	[WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
 	[Policy("EnterpriseServerPolicy")]
 	[ToolboxItem(false)]
-	public class esSystem
+	public class esSystem: WebService
 	{
 		[WebMethod]
 		public SystemSettings GetSystemSettings(string settingsName)
@@ -95,5 +95,15 @@ namespace SolidCP.EnterpriseServer
 
 		[WebMethod]
 		public string GetCryptoKey() => new EnterpriseServerTunnelService().CryptoKey;
+
+		[WebMethod]
+		public Data.DbType GetDatabaseType() => SystemController.GetDatabaseType();
+
+		[WebMethod]
+		public bool GetUseEntityFramework() => SystemController.GetUseEntityFramework();
+
+		[WebMethod]
+		public int SetUseEntityFramework(bool useEntityFramework) => SystemController.SetUseEntityFramework(useEntityFramework);
+
 	}
 }

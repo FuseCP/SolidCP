@@ -11,10 +11,11 @@ using System.Threading.Tasks;
 
 namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.PS
 {
-    public static class PowerShellScript
+    public class PowerShellScript: ControllerBase
     {
+        public PowerShellScript(ControllerBase provider): base(provider) { }
 
-        public static void CheckCustomPsScript(PsScriptPoint point, VirtualMachine vm)
+        public void CheckCustomPsScript(PsScriptPoint point, VirtualMachine vm)
         {
             try
             {
@@ -35,7 +36,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.PS
             catch (Exception) { }
         }
 
-        private static string PreparePsScript(string script, VirtualMachine vm)
+        private string PreparePsScript(string script, VirtualMachine vm)
         {
             string vars = "";
             try
@@ -53,7 +54,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.PS
             return vars + script;
         }
 
-        private static void PrepareNetworkVariables(string script, ref string vars, VirtualMachine vm, string networkPrefix)
+        private void PrepareNetworkVariables(string script, ref string vars, VirtualMachine vm, string networkPrefix)
         {
             try
             {

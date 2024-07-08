@@ -39,12 +39,14 @@ using System.Xml;
 using System.Xml.Serialization;
 namespace SolidCP.EnterpriseServer
 {
-    public class TaskController
+    public class TaskController: ControllerBase
     {
-        public static BackgroundTask GetTask(string taskId)
+        public TaskController(ControllerBase provider) : base(provider) { }
+
+        public BackgroundTask GetTask(string taskId)
         {
             BackgroundTask task = ObjectUtils.FillObjectFromDataReader<BackgroundTask>(
-                DataProvider.GetBackgroundTask(taskId));
+                Database.GetBackgroundTask(taskId));
 
             if (task == null)
             {
@@ -56,41 +58,41 @@ namespace SolidCP.EnterpriseServer
             return task;
         }
 
-        public static List<BackgroundTask> GetScheduleTasks(int scheduleId)
+        public List<BackgroundTask> GetScheduleTasks(int scheduleId)
         {
             return ObjectUtils.CreateListFromDataReader<BackgroundTask>(
-                DataProvider.GetScheduleBackgroundTasks(scheduleId));
+                Database.GetScheduleBackgroundTasks(scheduleId));
         }
 
-        public static List<BackgroundTask> GetTasks()
+        public List<BackgroundTask> GetTasks()
         {
             var user = SecurityContext.User;
 
             return GetTasks(user.IsPeer ? user.OwnerId : user.UserId);
         }
 
-        public static List<BackgroundTask> GetTasks(int actorId)
+        public List<BackgroundTask> GetTasks(int actorId)
         {
             return ObjectUtils.CreateListFromDataReader<BackgroundTask>(
-                DataProvider.GetBackgroundTasks(actorId));
+                Database.GetBackgroundTasks(actorId));
         }
 
-        public static List<BackgroundTask> GetTasks(Guid guid)
+        public List<BackgroundTask> GetTasks(Guid guid)
         {
             return ObjectUtils.CreateListFromDataReader<BackgroundTask>(
-                DataProvider.GetBackgroundTasks(guid));
+                Database.GetBackgroundTasks(guid));
         }
 
-        public static List<BackgroundTask> GetProcessTasks(BackgroundTaskStatus status)
+        public List<BackgroundTask> GetProcessTasks(BackgroundTaskStatus status)
         {
             return ObjectUtils.CreateListFromDataReader<BackgroundTask>(
-                DataProvider.GetProcessBackgroundTasks(status));
+                Database.GetProcessBackgroundTasks(status));
         }
 
-        public static BackgroundTask GetTopTask(Guid guid)
+        public BackgroundTask GetTopTask(Guid guid)
         {
             BackgroundTask task = ObjectUtils.FillObjectFromDataReader<BackgroundTask>(
-                DataProvider.GetBackgroundTopTask(guid));
+                Database.GetBackgroundTopTask(guid));
 
             if (task == null)
             {
@@ -102,9 +104,9 @@ namespace SolidCP.EnterpriseServer
             return task;
         }
 
-        public static int AddTask(BackgroundTask task)
+        public int AddTask(BackgroundTask task)
         {
-            int taskId = DataProvider.AddBackgroundTask(task.Guid, task.TaskId, task.ScheduleId, task.PackageId, task.UserId,
+            int taskId = Database.AddBackgroundTask(task.Guid, task.TaskId, task.ScheduleId, task.PackageId, task.UserId,
                                                         task.EffectiveUserId, task.TaskName, task.ItemId, task.ItemName,
                                                         task.StartDate, task.IndicatorCurrent, task.IndicatorMaximum,
                                                         task.MaximumExecutionTime, task.Source, task.Severity, task.Completed,
@@ -112,12 +114,12 @@ namespace SolidCP.EnterpriseServer
 
             AddTaskParams(taskId, task.Params);
 
-            DataProvider.AddBackgroundTaskStack(taskId);
+            Database.AddBackgroundTaskStack(taskId);
 
             return taskId;
         }
 
-        public static void UpdateTaskWithParams(BackgroundTask task)
+        public void UpdateTaskWithParams(BackgroundTask task)
         {
             if (UpdateTask(task))
             {
@@ -125,7 +127,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static bool UpdateTask(BackgroundTask task)
+        public bool UpdateTask(BackgroundTask task)
         {
             if (task.Status == BackgroundTaskStatus.Abort)
             {
@@ -141,7 +143,7 @@ namespace SolidCP.EnterpriseServer
                 return false;
             }
 
-            DataProvider.UpdateBackgroundTask(task.Guid, task.Id, task.ScheduleId, task.PackageId, task.TaskName, task.ItemId,
+            Database.UpdateBackgroundTask(task.Guid, task.Id, task.ScheduleId, task.PackageId, task.TaskName, task.ItemId,
                                               task.ItemName, task.FinishDate, task.IndicatorCurrent,
                                               task.IndicatorMaximum, task.MaximumExecutionTime, task.Source,
                                               task.Severity, task.Completed, task.NotifyOnComplete, task.Status);
@@ -149,46 +151,46 @@ namespace SolidCP.EnterpriseServer
             return true;
         }
 
-        public static void UpdateBackgroundTaskParams(BackgroundTask task)
+        public void UpdateBackgroundTaskParams(BackgroundTask task)
         {
-            DataProvider.DeleteBackgroundTaskParams(task.Id);
+            Database.DeleteBackgroundTaskParams(task.Id);
 
             AddTaskParams(task.Id, task.Params);
         }
 
-        public static void DeleteBackgroundTasks(Guid guid)
+        public void DeleteBackgroundTasks(Guid guid)
         {
-            DataProvider.DeleteBackgroundTasks(guid);
+            Database.DeleteBackgroundTasks(guid);
         }
 
-        public static void DeleteBackgroundTask(int id)
+        public void DeleteBackgroundTask(int id)
         {
-            DataProvider.DeleteBackgroundTask(id);
+            Database.DeleteBackgroundTask(id);
         }
 
-        public static void AddTaskParams(int taskId, List<BackgroundTaskParameter> parameters)
+        public void AddTaskParams(int taskId, List<BackgroundTaskParameter> parameters)
         {
             foreach (BackgroundTaskParameter param in SerializeParams(parameters))
             {
-                DataProvider.AddBackgroundTaskParam(taskId, param.Name, param.SerializerValue, param.TypeName);
+                Database.AddBackgroundTaskParam(taskId, param.Name, param.SerializerValue, param.TypeName);
             }
         }
 
-        public static List<BackgroundTaskParameter> GetTaskParams(int taskId)
+        public List<BackgroundTaskParameter> GetTaskParams(int taskId)
         {
             List<BackgroundTaskParameter> parameters = ObjectUtils.CreateListFromDataReader<BackgroundTaskParameter>(
-                DataProvider.GetBackgroundTaskParams(taskId));
+                Database.GetBackgroundTaskParams(taskId));
 
             return DeserializeParams(parameters);
         }
 
-        public static void AddLog(BackgroundTaskLogRecord log)
+        public void AddLog(BackgroundTaskLogRecord log)
         {
-            DataProvider.AddBackgroundTaskLog(log.TaskId, log.Date, log.ExceptionStackTrace, log.InnerTaskStart,
+            Database.AddBackgroundTaskLog(log.TaskId, log.Date, log.ExceptionStackTrace, log.InnerTaskStart,
                                               log.Severity, log.Text, log.TextIdent, BuildParametersXml(log.TextParameters));
         }
 
-        public static List<BackgroundTaskLogRecord> GetLogs(BackgroundTask task, DateTime startLogTime)
+        public List<BackgroundTaskLogRecord> GetLogs(BackgroundTask task, DateTime startLogTime)
         {
             if (startLogTime <= task.StartDate)
             {
@@ -196,7 +198,7 @@ namespace SolidCP.EnterpriseServer
             }
 
             List<BackgroundTaskLogRecord> logs = ObjectUtils.CreateListFromDataReader<BackgroundTaskLogRecord>(
-                DataProvider.GetBackgroundTaskLogs(task.Id, startLogTime));
+                Database.GetBackgroundTaskLogs(task.Id, startLogTime));
 
             foreach (BackgroundTaskLogRecord log in logs)
             {
@@ -206,7 +208,7 @@ namespace SolidCP.EnterpriseServer
             return logs;
         }
 
-        private static List<BackgroundTaskParameter> SerializeParams(List<BackgroundTaskParameter> parameters)
+        private List<BackgroundTaskParameter> SerializeParams(List<BackgroundTaskParameter> parameters)
         {
             foreach (BackgroundTaskParameter param in parameters)
             {
@@ -226,7 +228,7 @@ namespace SolidCP.EnterpriseServer
             return parameters;
         }
 
-        private static List<BackgroundTaskParameter> DeserializeParams(List<BackgroundTaskParameter> parameters)
+        private List<BackgroundTaskParameter> DeserializeParams(List<BackgroundTaskParameter> parameters)
         {
             foreach (BackgroundTaskParameter param in parameters)
             {
@@ -239,7 +241,7 @@ namespace SolidCP.EnterpriseServer
             return parameters;
         }
 
-        private static string BuildParametersXml(string[] parameters)
+        private string BuildParametersXml(string[] parameters)
         {
             XmlDocument xmlDoc = new XmlDocument();
             XmlElement nodeProps = xmlDoc.CreateElement("parameters");
@@ -256,7 +258,7 @@ namespace SolidCP.EnterpriseServer
             return nodeProps.OuterXml;
         }
 
-        private static string[] ReBuildParametersXml(string parameters)
+        private string[] ReBuildParametersXml(string parameters)
         {
             var textParameters = new List<string>();
 

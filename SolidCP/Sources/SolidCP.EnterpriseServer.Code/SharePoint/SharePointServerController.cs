@@ -50,11 +50,13 @@ using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class SharePointServerController : IImportController, IBackupController
+    public class SharePointServerController : ControllerBase, IImportController, IBackupController
     {
         private const int FILE_BUFFER_LENGTH = 5000000; // ~5MB
 
-        private static SharePointServer GetSharePoint(int serviceId)
+        public SharePointServerController(ControllerBase provider) : base(provider) { }
+
+        private SharePointServer GetSharePoint(int serviceId)
         {
             SharePointServer sps = new SharePointServer();
             ServiceProviderProxy.Init(sps, serviceId);
@@ -62,14 +64,14 @@ namespace SolidCP.EnterpriseServer
         }
 
         #region Sites
-        public static DataSet GetRawSharePointSitesPaged(int packageId,
+        public DataSet GetRawSharePointSitesPaged(int packageId,
             string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             return PackageController.GetRawPackageItemsPaged(packageId, typeof(SharePointSite),
                 true, filterColumn, filterValue, sortColumn, startRow, maximumRows);
         }
 
-        public static List<SharePointSite> GetSharePointSites(int packageId, bool recursive)
+        public List<SharePointSite> GetSharePointSites(int packageId, bool recursive)
         {
             List<ServiceProviderItem> items = PackageController.GetPackageItemsByType(
                 packageId, typeof(SharePointSite), recursive);
@@ -78,12 +80,12 @@ namespace SolidCP.EnterpriseServer
                 new Converter<ServiceProviderItem, SharePointSite>(ConvertItemToSharePointSiteItem));
         }
 
-        private static SharePointSite ConvertItemToSharePointSiteItem(ServiceProviderItem item)
+        private SharePointSite ConvertItemToSharePointSiteItem(ServiceProviderItem item)
         {
             return (SharePointSite)item;
         }
 
-        public static SharePointSite GetSite(int itemId)
+        public SharePointSite GetSite(int itemId)
         {
             // load meta item
             SharePointSite item = (SharePointSite)PackageController.GetPackageItem(itemId);
@@ -93,7 +95,7 @@ namespace SolidCP.EnterpriseServer
             return item;
         }
 
-        public static int AddSite(SharePointSite item)
+        public int AddSite(SharePointSite item)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -261,7 +263,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int DeleteSite(int itemId)
+        public int DeleteSite(int itemId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -331,7 +333,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Backup/Restore
-        public static string BackupVirtualServer(int itemId, string fileName,
+        public string BackupVirtualServer(int itemId, string fileName,
             bool zipBackup, bool download, string folderName)
         {
             // check account
@@ -397,7 +399,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static byte[] GetSharePointBackupBinaryChunk(int itemId, string path, int offset, int length)
+        public byte[] GetSharePointBackupBinaryChunk(int itemId, string path, int offset, int length)
         {
             // load original meta item
             SharePointSite item = (SharePointSite)PackageController.GetPackageItem(itemId);
@@ -408,7 +410,7 @@ namespace SolidCP.EnterpriseServer
             return sps.GetTempFileBinaryChunk(path, offset, length);
         }
 
-        public static string AppendSharePointBackupBinaryChunk(int itemId, string fileName, string path, byte[] chunk)
+        public string AppendSharePointBackupBinaryChunk(int itemId, string fileName, string path, byte[] chunk)
         {
             // load original meta item
             SharePointSite item = (SharePointSite)PackageController.GetPackageItem(itemId);
@@ -419,7 +421,7 @@ namespace SolidCP.EnterpriseServer
             return sps.AppendTempFileBinaryChunk(fileName, path, chunk);
         }
 
-        public static int RestoreVirtualServer(int itemId, string uploadedFile, string packageFile)
+        public int RestoreVirtualServer(int itemId, string uploadedFile, string packageFile)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -491,7 +493,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Web Parts
-        public static string[] GetInstalledWebParts(int itemId)
+        public string[] GetInstalledWebParts(int itemId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -506,7 +508,7 @@ namespace SolidCP.EnterpriseServer
             return sps.GetInstalledWebParts(item.Name);
         }
 
-        public static int InstallWebPartsPackage(int itemId, string uploadedFile, string packageFile)
+        public int InstallWebPartsPackage(int itemId, string uploadedFile, string packageFile)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -578,7 +580,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int DeleteWebPartsPackage(int itemId, string packageName)
+        public int DeleteWebPartsPackage(int itemId, string packageName)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -621,14 +623,14 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Users
-        public static DataSet GetRawSharePointUsersPaged(int packageId,
+        public DataSet GetRawSharePointUsersPaged(int packageId,
             string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             return PackageController.GetRawPackageItemsPaged(packageId, ResourceGroups.SharePoint, typeof(SystemUser),
                 true, filterColumn, filterValue, sortColumn, startRow, maximumRows);
         }
 
-        public static List<SystemUser> GetSharePointUsers(int packageId, bool recursive)
+        public List<SystemUser> GetSharePointUsers(int packageId, bool recursive)
         {
             List<ServiceProviderItem> items = PackageController.GetPackageItemsByType(
                 packageId, ResourceGroups.SharePoint, typeof(SystemUser), recursive);
@@ -637,12 +639,12 @@ namespace SolidCP.EnterpriseServer
                 new Converter<ServiceProviderItem, SystemUser>(ConvertItemToSharePointUser));
         }
 
-        private static SystemUser ConvertItemToSharePointUser(ServiceProviderItem item)
+        private SystemUser ConvertItemToSharePointUser(ServiceProviderItem item)
         {
             return (SystemUser)item;
         }
 
-        public static SystemUser GetSharePointUser(int itemId)
+        public SystemUser GetSharePointUser(int itemId)
         {
             // load meta item
             SystemUser item = (SystemUser)PackageController.GetPackageItem(itemId);
@@ -659,7 +661,7 @@ namespace SolidCP.EnterpriseServer
             return user;
         }
 
-        public static int AddSharePointUser(SystemUser item)
+        public int AddSharePointUser(SystemUser item)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -722,7 +724,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int UpdateSharePointUser(SystemUser item)
+        public int UpdateSharePointUser(SystemUser item)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -774,7 +776,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int DeleteSharePointUser(int itemId)
+        public int DeleteSharePointUser(int itemId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -814,14 +816,14 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Groups
-        public static DataSet GetRawSharePointGroupsPaged(int packageId,
+        public DataSet GetRawSharePointGroupsPaged(int packageId,
             string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             return PackageController.GetRawPackageItemsPaged(packageId, ResourceGroups.SharePoint, typeof(SystemGroup),
                 true, filterColumn, filterValue, sortColumn, startRow, maximumRows);
         }
 
-        public static List<SystemGroup> GetSharePointGroups(int packageId, bool recursive)
+        public List<SystemGroup> GetSharePointGroups(int packageId, bool recursive)
         {
             List<ServiceProviderItem> items = PackageController.GetPackageItemsByType(
                 packageId, ResourceGroups.SharePoint, typeof(SystemGroup), recursive);
@@ -830,12 +832,12 @@ namespace SolidCP.EnterpriseServer
                 new Converter<ServiceProviderItem, SystemGroup>(ConvertItemToSharePointGroup));
         }
 
-        private static SystemGroup ConvertItemToSharePointGroup(ServiceProviderItem item)
+        private SystemGroup ConvertItemToSharePointGroup(ServiceProviderItem item)
         {
             return (SystemGroup)item;
         }
 
-        public static SystemGroup GetSharePointGroup(int itemId)
+        public SystemGroup GetSharePointGroup(int itemId)
         {
             // load meta item
             SystemGroup item = (SystemGroup)PackageController.GetPackageItem(itemId);
@@ -852,7 +854,7 @@ namespace SolidCP.EnterpriseServer
             return group;
         }
 
-        public static int AddSharePointGroup(SystemGroup item)
+        public int AddSharePointGroup(SystemGroup item)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -909,7 +911,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int UpdateSharePointGroup(SystemGroup item)
+        public int UpdateSharePointGroup(SystemGroup item)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -949,7 +951,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int DeleteSharePointGroup(int itemId)
+        public int DeleteSharePointGroup(int itemId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);

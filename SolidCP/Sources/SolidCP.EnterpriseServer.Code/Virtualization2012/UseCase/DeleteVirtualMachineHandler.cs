@@ -13,10 +13,12 @@ using System.Threading.Tasks;
 
 namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
 {
-    public static class DeleteVirtualMachineHandler
+    public class DeleteVirtualMachineHandler: ControllerBase
     {
+        public DeleteVirtualMachineHandler(ControllerBase provider): base(provider) { }
+
         //TODO: Need to find how to rework it
-        public static ResultObject DeleteVirtualMachine(int itemId, bool saveFiles, bool exportVps, string exportPath) //TODO: Is possible to rework method (Duplicated in server)?
+        public ResultObject DeleteVirtualMachine(int itemId, bool saveFiles, bool exportVps, string exportPath) //TODO: Is possible to rework method (Duplicated in server)?
         {
             ResultObject res = new ResultObject();
 
@@ -167,7 +169,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
             return res;
         }
 
-        public static ResultObject DeleteVirtualMachineAsynchronous(int itemId, bool saveFiles, bool exportVps, string exportPath)
+        public ResultObject DeleteVirtualMachineAsynchronous(int itemId, bool saveFiles, bool exportVps, string exportPath)
         {
             bool keepPackageItem = false;
             ResultObject res = new ResultObject();

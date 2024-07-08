@@ -111,7 +111,7 @@ namespace SolidCP.EnterpriseServer
 
             var dnsServers = dnsServersString.Split(';');
 
-            var packages = ObjectUtils.CreateListFromDataReader<PackageInfo>(DataProvider.GetAllPackages());
+            var packages = ObjectUtils.CreateListFromDataReader<PackageInfo>(Database.GetAllPackages());
 
 
             foreach (var package in packages)
@@ -142,7 +142,7 @@ namespace SolidCP.EnterpriseServer
                     domainChanges.Registrar = domain.RegistrarName;
                     domainChanges.ExpirationDate = domain.ExpirationDate;
 
-                    var dbDnsRecords = ObjectUtils.CreateListFromDataReader<DnsRecordInfo>(DataProvider.GetDomainAllDnsRecords(domain.DomainId));
+                    var dbDnsRecords = ObjectUtils.CreateListFromDataReader<DnsRecordInfo>(Database.GetDomainAllDnsRecords(domain.DomainId));
 
                     //execute server
                     foreach (var dnsServer in dnsServers)
@@ -288,7 +288,7 @@ namespace SolidCP.EnterpriseServer
 
         private void RemoveRecord(DnsRecordInfo dnsRecord)
         {
-            DataProvider.DeleteDomainDnsRecord(dnsRecord.Id);
+            Database.DeleteDomainDnsRecord(dnsRecord.Id);
 
             Thread.Sleep(100);
         }
@@ -303,7 +303,7 @@ namespace SolidCP.EnterpriseServer
 
         private void AddRecord(DnsRecordInfo dnsRecord)
         {
-            DataProvider.AddDomainDnsRecord(dnsRecord);
+            Database.AddDomainDnsRecord(dnsRecord);
 
             Thread.Sleep(100);
         }

@@ -39,9 +39,10 @@ using SolidCP.Providers.Filters;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class APIMailCleanerHelper
+    public class APIMailCleanerHelper: ControllerBase
     {
-        private static StringDictionary ConvertArrayToDictionary(string[] settings)
+        public APIMailCleanerHelper(ControllerBase provider) : base(provider) { }
+        private StringDictionary ConvertArrayToDictionary(string[] settings)
         {
             StringDictionary r = new StringDictionary();
             foreach (string setting in settings)
@@ -52,7 +53,7 @@ namespace SolidCP.EnterpriseServer
             return r;
         }
 
-        private static String getServiceURL(int PlanID)
+        private string GetServiceURL(int PlanID)
         {
             var l_URL = ServerController.GetMailFilterUrlByHostingPlan(PlanID, ResourceGroups.Filters);
             if (!String.IsNullOrEmpty(l_URL))
@@ -63,7 +64,7 @@ namespace SolidCP.EnterpriseServer
             return l_URL;
         }
 
-        private static String getServiceURLFromPackageId(int packageId)
+        private string GetServiceURLFromPackageId(int packageId)
         {
             //String l_URL = string.Empty;
             //var fileter =  SolidCP.Portal.ES.Services.Servers.GetPackageServiceProvider(PanelSecurity.PackageId, ResourceGroups.Filters);
@@ -119,17 +120,17 @@ namespace SolidCP.EnterpriseServer
             return l_URL;
         }
 
-        private static void APICall(String f_stParam, int packageId, int f_iPlanID = 0)
+        private void APICall(string f_stParam, int packageId, int f_iPlanID = 0)
         {
-            int serviceId = DataProvider.GetPackageServiceId(SecurityContext.User.UserId, packageId, ResourceGroups.Filters);
+            int serviceId = Database.GetPackageServiceId(SecurityContext.User.UserId, packageId, ResourceGroups.Filters);
             StringDictionary settings = ServerController.GetServiceSettings(serviceId);
             String l_URL = string.Empty;
             try
             {
                 if (f_iPlanID == 0)
-                    l_URL = getServiceURLFromPackageId(packageId);
+                    l_URL = GetServiceURLFromPackageId(packageId);
                 else
-                    l_URL = getServiceURL(f_iPlanID);
+                    l_URL = GetServiceURL(f_iPlanID);
             }
             catch (Exception ex)
             {
@@ -185,7 +186,7 @@ namespace SolidCP.EnterpriseServer
 
         }
 
-        public static void DomainAdd(String f_stDomain, int packageId)
+        public void DomainAdd(String f_stDomain, int packageId)
         {
             TaskManager.StartTask("MAIL_CLEANER", "ADD_DOMAIN", f_stDomain);
             try
@@ -205,7 +206,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static void DomainRemove(String f_stDomain, int packageId)
+        public void DomainRemove(String f_stDomain, int packageId)
         {
             TaskManager.StartTask("MAIL_CLEANER", "DELETE_DOMAIN", f_stDomain);
             try

@@ -37,7 +37,7 @@ using System.Text;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class UserAsyncWorker
+    public class UserAsyncWorker: ControllerAsyncBase
     {
         private int threadUserId = -1;
         private int userId;
@@ -126,7 +126,7 @@ namespace SolidCP.EnterpriseServer
                 }
 
                 // delete user from database
-                DataProvider.DeleteUser(SecurityContext.User.UserId, userId);
+                Database.DeleteUser(SecurityContext.User.UserId, userId);
             }
             catch (Exception ex)
             {

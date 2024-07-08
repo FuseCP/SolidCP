@@ -29,7 +29,7 @@ namespace SolidCP.Providers.Virtualization
 		{
 			this.baseUrl = "https://" + provider.Server.Ip + ":" + provider.Server.Port + "/api2/json";
 			Provider = provider;
-			this.VerifyCertificate = provider.Server.ValidateCertificate;
+			this.ValidateCertificate = provider.Server.ValidateCertificate;
 			//this.node = node;
 			//HostedSolutionLog.DebugInfo("APIClient: {0}", this.baseUrl);
 		}
@@ -76,7 +76,7 @@ namespace SolidCP.Providers.Virtualization
 
 			try
 			{
-				if (!Login($"{user.Username}@{(string.IsNullOrEmpty(user.Realm) ? "pam" : user.Realm)}", user.Password).Result)
+				if (!LoginAsync($"{user.Username}@{(string.IsNullOrEmpty(user.Realm) ? "pam" : user.Realm)}", user.Password).Result)
 					throw new Exception($"Proxmox Server API Service at {baseUrl} unavaliable.\n{LastResult.ReasonPhrase}");
 			} catch (Exception ex)
 			{

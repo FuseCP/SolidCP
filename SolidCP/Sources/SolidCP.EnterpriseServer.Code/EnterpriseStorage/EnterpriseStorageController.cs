@@ -59,149 +59,151 @@ using System.Threading;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class EnterpriseStorageController
+    public class EnterpriseStorageController : ControllerBase
     {
         public const string UseStorageSpaces = "UseStorageSpaces";
 
+        public EnterpriseStorageController(ControllerBase provider) : base(provider) { }
+
         #region Public Methods
 
-        public static bool CheckEnterpriseStorageInitialization(int packageId, int itemId)
+        public bool CheckEnterpriseStorageInitialization(int packageId, int itemId)
         {
             return CheckEnterpriseStorageInitializationInternal(packageId, itemId);
         }
 
-        public static ResultObject CreateEnterpriseStorage(int packageId, int itemId)
+        public ResultObject CreateEnterpriseStorage(int packageId, int itemId)
         {
             return CreateEnterpriseStorageInternal(packageId, itemId);
         }
 
-        public static ResultObject DeleteEnterpriseStorage(int packageId, int itemId)
+        public ResultObject DeleteEnterpriseStorage(int packageId, int itemId)
         {
             return DeleteEnterpriseStorageInternal(packageId, itemId);
         }
 
-        public static SystemFile[] GetFolders(int itemId)
+        public SystemFile[] GetFolders(int itemId)
         {
             return GetFoldersInternal(itemId);
         }
 
-        public static SystemFile[] GetUserRootFolders(int itemId, int accountId, string userName, string displayName)
+        public SystemFile[] GetUserRootFolders(int itemId, int accountId, string userName, string displayName)
         {
             return GetUserRootFoldersInternal(itemId, accountId, userName, displayName);
         }
 
-        public static SystemFile GetFolder(int itemId, string folderName, bool loadMappedDriveInfo = false)
+        public SystemFile GetFolder(int itemId, string folderName, bool loadMappedDriveInfo = false)
         {
             return GetFolderInternal(itemId, folderName, loadMappedDriveInfo);
         }
 
-        public static SystemFile GetFolder(int itemId)
+        public SystemFile GetFolder(int itemId)
         {
             return GetFolder(itemId, string.Empty);
         }
 
-        public static ResultObject CreateFolder(int itemId, bool isRootFolder = false)
+        public ResultObject CreateFolder(int itemId, bool isRootFolder = false)
         {
             return CreateFolder(itemId, string.Empty, 0, QuotaType.Soft, false, isRootFolder);
         }
 
-        public static ResultObject CreateFolder(int itemId, string folderName, int quota, QuotaType quotaType, bool addDefaultGroup, bool isRootFolder = false)
+        public ResultObject CreateFolder(int itemId, string folderName, int quota, QuotaType quotaType, bool addDefaultGroup, bool isRootFolder = false)
         {
             return CreateFolderInternal(itemId, folderName, quota, quotaType, addDefaultGroup, isRootFolder);
         }
 
-        public static ResultObject DeleteFolder(int itemId)
+        public ResultObject DeleteFolder(int itemId)
         {
             return DeleteFolder(itemId, string.Empty);
         }
 
-        public static ResultObject DeleteFolder(int itemId, string folderName)
+        public ResultObject DeleteFolder(int itemId, string folderName)
         {
             return DeleteFolderInternal(itemId, folderName);
         }
 
-        public static List<ExchangeAccount> SearchESAccounts(int itemId, string filterColumn, string filterValue, string sortColumn)
+        public List<ExchangeAccount> SearchESAccounts(int itemId, string filterColumn, string filterValue, string sortColumn)
         {
             return SearchESAccountsInternal(itemId, filterColumn, filterValue, sortColumn);
         }
 
-        public static SystemFilesPaged GetEnterpriseFoldersPaged(int itemId, bool loadUsagesData, bool loadWebdavRules, bool loadMappedDrives, string filterValue, string sortColumn, int startRow, int maximumRows)
+        public SystemFilesPaged GetEnterpriseFoldersPaged(int itemId, bool loadUsagesData, bool loadWebdavRules, bool loadMappedDrives, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             return GetEnterpriseFoldersPagedInternal(itemId, loadUsagesData, loadWebdavRules, loadMappedDrives, filterValue, sortColumn, startRow, maximumRows);
         }
 
-        public static IEnumerable<SystemFile> GetEnterpriseFolders(int itemId, bool loadUsagesData = false, bool loadWebdavRules = false, bool loadMappedDrives = false)
+        public IEnumerable<SystemFile> GetEnterpriseFolders(int itemId, bool loadUsagesData = false, bool loadWebdavRules = false, bool loadMappedDrives = false)
         {
             return GetEnterpriseFoldersPaged(itemId, loadUsagesData, loadWebdavRules, loadMappedDrives, "", "", 0, int.MaxValue).PageItems;
         }
 
-        public static ResultObject SetFolderPermission(int itemId, string folder, ESPermission[] permission)
+        public ResultObject SetFolderPermission(int itemId, string folder, ESPermission[] permission)
         {
             return SetFolderWebDavRulesInternal(itemId, folder, permission);
         }
 
-        public static ESPermission[] GetFolderPermission(int itemId, string folder)
+        public ESPermission[] GetFolderPermission(int itemId, string folder)
         {
             return ConvertToESPermission(itemId, GetFolderWebDavRulesInternal(itemId, folder));
         }
 
-        public static bool CheckFileServicesInstallation(int serviceId)
+        public bool CheckFileServicesInstallation(int serviceId)
         {
             EnterpriseStorage es = GetEnterpriseStorage(serviceId);
             return es.CheckFileServicesInstallation();
         }
 
-        public static SystemFile RenameFolder(int itemId, string oldFolder, string newFolder)
+        public SystemFile RenameFolder(int itemId, string oldFolder, string newFolder)
         {
             return RenameFolderInternal(itemId, oldFolder, newFolder);
         }
 
-        public static bool CheckUsersDomainExists(int itemId)
+        public bool CheckUsersDomainExists(int itemId)
         {
             return CheckUsersDomainExistsInternal(itemId);
         }
 
-        public static void SetFRSMQuotaOnFolder(int itemId, string folderName, int quota, QuotaType quotaType)
+        public void SetFRSMQuotaOnFolder(int itemId, string folderName, int quota, QuotaType quotaType)
         {
             SetFRSMQuotaOnFolderInternal(itemId, folderName, quota, quotaType);
         }
 
-        public static void StartSetEnterpriseFolderSettingsBackgroundTask(int itemId, SystemFile folder, ESPermission[] permissions, bool directoyBrowsingEnabled, int quota, QuotaType quotaType)
+        public void StartSetEnterpriseFolderSettingsBackgroundTask(int itemId, SystemFile folder, ESPermission[] permissions, bool directoyBrowsingEnabled, int quota, QuotaType quotaType)
         {
             StartESBackgroundTaskInternal("SET_ENTERPRISE_FOLDER_SETTINGS", itemId, folder, permissions, directoyBrowsingEnabled, quota, quotaType);
         }
 
-        public static void SetESGeneralSettings(int itemId, SystemFile folder, bool directoyBrowsingEnabled, int quota, QuotaType quotaType)
+        public void SetESGeneralSettings(int itemId, SystemFile folder, bool directoyBrowsingEnabled, int quota, QuotaType quotaType)
         {
             SetESGeneralSettingsInternal("SET_ENTERPRISE_FOLDER_GENERAL_SETTINGS", itemId, folder, directoyBrowsingEnabled, quota, quotaType);
         }
 
-        public static void SetESFolderPermissionSettings(int itemId, SystemFile folder, ESPermission[] permissions)
+        public void SetESFolderPermissionSettings(int itemId, SystemFile folder, ESPermission[] permissions)
         {
             SetESFolderPermissionSettingsInternal("SET_ENTERPRISE_FOLDER_GENERAL_SETTINGS", itemId, folder, permissions);
         }
 
-        public static int AddWebDavAccessToken(WebDavAccessToken accessToken)
+        public int AddWebDavAccessToken(WebDavAccessToken accessToken)
         {
-            return DataProvider.AddWebDavAccessToken(accessToken);
+            return Database.AddWebDavAccessToken(accessToken);
         }
 
-        public static void DeleteExpiredWebDavAccessTokens()
+        public void DeleteExpiredWebDavAccessTokens()
         {
-            DataProvider.DeleteExpiredWebDavAccessTokens();
+            Database.DeleteExpiredWebDavAccessTokens();
         }
 
-        public static WebDavAccessToken GetWebDavAccessTokenById(int id)
+        public WebDavAccessToken GetWebDavAccessTokenById(int id)
         {
-            return ObjectUtils.FillObjectFromDataReader<WebDavAccessToken>(DataProvider.GetWebDavAccessTokenById(id));
+            return ObjectUtils.FillObjectFromDataReader<WebDavAccessToken>(Database.GetWebDavAccessTokenById(id));
         }
 
-        public static WebDavAccessToken GetWebDavAccessTokenByAccessToken(Guid accessToken)
+        public WebDavAccessToken GetWebDavAccessTokenByAccessToken(Guid accessToken)
         {
-            return ObjectUtils.FillObjectFromDataReader<WebDavAccessToken>(DataProvider.GetWebDavAccessTokenByAccessToken(accessToken));
+            return ObjectUtils.FillObjectFromDataReader<WebDavAccessToken>(Database.GetWebDavAccessTokenByAccessToken(accessToken));
         }
 
-        public static SystemFile[] SearchFiles(int itemId, string[] searchPaths, string searchText, string userPrincipalName, bool recursive)
+        public SystemFile[] SearchFiles(int itemId, string[] searchPaths, string searchText, string userPrincipalName, bool recursive)
         {
             try
             {
@@ -221,7 +223,7 @@ namespace SolidCP.EnterpriseServer
 
                 EnterpriseStorage es = GetEnterpriseStorage(GetEnterpriseStorageServiceID(org.PackageId));
 
-                DataSet ds = DataProvider.GetEnterpriseFoldersPaged(itemId, "FolderName", "", "", 0, int.MaxValue);
+                DataSet ds = Database.GetEnterpriseFoldersPaged(itemId, "FolderName", "", "", 0, int.MaxValue);
 
                 var esFolders = new List<EsFolder>();
 
@@ -279,12 +281,12 @@ namespace SolidCP.EnterpriseServer
 
         #region Directory Browsing
 
-        public static bool GetDirectoryBrowseEnabled(int itemId, string siteId)
+        public bool GetDirectoryBrowseEnabled(int itemId, string siteId)
         {
             return GetDirectoryBrowseEnabledInternal(itemId, siteId);
         }
 
-        public static void SetDirectoryBrowseEnabled(int itemId, string siteId, bool enabled)
+        public void SetDirectoryBrowseEnabled(int itemId, string siteId, bool enabled)
         {
             SetDirectoryBrowseEnabledInternal(itemId, siteId, enabled);
         }
@@ -293,12 +295,12 @@ namespace SolidCP.EnterpriseServer
 
         #region WebDav
 
-        public static int AddWebDavDirectory(int packageId, string site, string vdirName, string contentpath)
+        public int AddWebDavDirectory(int packageId, string site, string vdirName, string contentpath)
         {
             return AddWebDavDirectoryInternal(packageId, site, vdirName, contentpath);
         }
 
-        public static int DeleteWebDavDirectory(int packageId, string site, string vdirName)
+        public int DeleteWebDavDirectory(int packageId, string site, string vdirName)
         {
             return DeleteWebDavDirectoryInternal(packageId, site, vdirName);
         }
@@ -307,7 +309,7 @@ namespace SolidCP.EnterpriseServer
 
         #endregion
 
-        private static IEnumerable<SystemFile> GetRootFolders(string userPrincipalName)
+        private IEnumerable<SystemFile> GetRootFolders(string userPrincipalName)
         {
             var rootFolders = new List<SystemFile>();
 
@@ -334,7 +336,7 @@ namespace SolidCP.EnterpriseServer
             return rootFolders;
         }
 
-        protected static void SetESGeneralSettingsInternal(string taskName, int itemId, SystemFile folder, bool directoyBrowsingEnabled, int quota, QuotaType quotaType)
+        protected void SetESGeneralSettingsInternal(string taskName, int itemId, SystemFile folder, bool directoyBrowsingEnabled, int quota, QuotaType quotaType)
         {
             // load organization
             var org = OrganizationController.GetOrganization(itemId);
@@ -343,7 +345,7 @@ namespace SolidCP.EnterpriseServer
             {
                 TaskManager.StartTask("ENTERPRISE_STORAGE", taskName, org.PackageId);
 
-                var esFolder = ObjectUtils.FillObjectFromDataReader<EsFolder>(DataProvider.GetEnterpriseFolder(itemId, folder.Name));
+                var esFolder = ObjectUtils.FillObjectFromDataReader<EsFolder>(Database.GetEnterpriseFolder(itemId, folder.Name));
 
                 if (esFolder.StorageSpaceFolderId == null)
                 {
@@ -353,7 +355,7 @@ namespace SolidCP.EnterpriseServer
                 {
                     StorageSpacesController.SetStorageSpaceFolderQuota(esFolder.StorageSpaceId, esFolder.StorageSpaceFolderId.Value, (long)quota * 1024 * 1024, quotaType);
 
-                    DataProvider.UpdateEnterpriseFolder(itemId, folder.Name, folder.Name, quota);
+                    Database.UpdateEnterpriseFolder(itemId, folder.Name, folder.Name, quota);
                 }
             }
             catch (Exception ex)
@@ -374,7 +376,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        protected static void SetESFolderPermissionSettingsInternal(string taskName, int itemId, SystemFile folder, ESPermission[] permissions)
+        protected void SetESFolderPermissionSettingsInternal(string taskName, int itemId, SystemFile folder, ESPermission[] permissions)
         {
             // load organization
             var org = OrganizationController.GetOrganization(itemId);
@@ -388,7 +390,7 @@ namespace SolidCP.EnterpriseServer
                     EnterpriseStorageController.SetFolderPermission(itemId, folder.Name, permissions);
 
 
-                    var esFolder = ObjectUtils.FillObjectFromDataReader<EsFolder>(DataProvider.GetEnterpriseFolder(itemId, folder.Name));
+                    var esFolder = ObjectUtils.FillObjectFromDataReader<EsFolder>(Database.GetEnterpriseFolder(itemId, folder.Name));
 
                     if (esFolder.StorageSpaceFolderId != null)
                     {
@@ -415,7 +417,7 @@ namespace SolidCP.EnterpriseServer
             }).Start();
         }
 
-        protected static void StartESBackgroundTaskInternal(string taskName, int itemId, SystemFile folder, ESPermission[] permissions, bool directoyBrowsingEnabled, int quota, QuotaType quotaType)
+        protected void StartESBackgroundTaskInternal(string taskName, int itemId, SystemFile folder, ESPermission[] permissions, bool directoyBrowsingEnabled, int quota, QuotaType quotaType)
         {
             // load organization
             var org = OrganizationController.GetOrganization(itemId);
@@ -449,7 +451,7 @@ namespace SolidCP.EnterpriseServer
             }).Start();
         }
 
-        protected static bool CheckUsersDomainExistsInternal(int itemId)
+        protected bool CheckUsersDomainExistsInternal(int itemId)
         {
             Organization org = OrganizationController.GetOrganization(itemId);
 
@@ -461,7 +463,7 @@ namespace SolidCP.EnterpriseServer
             return CheckUsersDomainExistsInternal(itemId, org.PackageId);
         }
 
-        protected static bool CheckUsersDomainExistsInternal(int itemId, int packageId)
+        protected bool CheckUsersDomainExistsInternal(int itemId, int packageId)
         {
             var web = GetWebServer(packageId);
 
@@ -480,7 +482,7 @@ namespace SolidCP.EnterpriseServer
             return false;
         }
 
-        protected static bool CheckEnterpriseStorageInitializationInternal(int packageId, int itemId)
+        protected bool CheckEnterpriseStorageInitializationInternal(int packageId, int itemId)
         {
             bool checkResult = true;
 
@@ -516,7 +518,7 @@ namespace SolidCP.EnterpriseServer
             return checkResult;
         }
 
-        protected static ResultObject CreateEnterpriseStorageInternal(int packageId, int itemId)
+        protected ResultObject CreateEnterpriseStorageInternal(int packageId, int itemId)
         {
             ResultObject result = TaskManager.StartResultTask<ResultObject>("ORGANIZATION", "CREATE_ORGANIZATION_ENTERPRISE_STORAGE", itemId, packageId);
 
@@ -560,7 +562,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        protected static ResultObject CreateEnterpriseStorageVirtualFolderInternal(int packageId, int itemId, string folderName, string uncPath)
+        protected ResultObject CreateEnterpriseStorageVirtualFolderInternal(int packageId, int itemId, string folderName, string uncPath)
         {
             ResultObject result = TaskManager.StartResultTask<ResultObject>("ORGANIZATION", "CREATE_ORGANIZATION_ENTERPRISE_STORAGE_VIRTUAL_DIRECTORY", itemId, packageId);
 
@@ -598,7 +600,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        protected static ResultObject DeleteEnterpriseStorageInternal(int packageId, int itemId)
+        protected ResultObject DeleteEnterpriseStorageInternal(int packageId, int itemId)
         {
             ResultObject result = TaskManager.StartResultTask<ResultObject>("ORGANIZATION", "CLEANUP_ORGANIZATION_ENTERPRISE_STORAGE", itemId, packageId);
 
@@ -645,14 +647,14 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static EnterpriseStorage GetEnterpriseStorage(int serviceId)
+        private EnterpriseStorage GetEnterpriseStorage(int serviceId)
         {
             EnterpriseStorage es = new EnterpriseStorage();
             ServiceProviderProxy.Init(es, serviceId);
             return es;
         }
 
-        protected static SystemFile[] GetFoldersInternal(int itemId)
+        protected SystemFile[] GetFoldersInternal(int itemId)
         {
             try
             {
@@ -673,7 +675,7 @@ namespace SolidCP.EnterpriseServer
                 EnterpriseStorage es = GetEnterpriseStorage(serviceId);
 
                 var webDavSettings = ObjectUtils.CreateListFromDataReader<WebDavSetting>(
-                    DataProvider.GetEnterpriseFolders(itemId)).ToArray();
+                    Database.GetEnterpriseFolders(itemId)).ToArray();
 
                 return es.GetFolders(org.OrganizationId, webDavSettings);
             }
@@ -683,7 +685,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        protected static SystemFile[] GetUserRootFoldersInternal(int itemId, int accountId, string userName, string displayName)
+        protected SystemFile[] GetUserRootFoldersInternal(int itemId, int accountId, string userName, string displayName)
         {
             try
             {
@@ -706,7 +708,7 @@ namespace SolidCP.EnterpriseServer
                 EnterpriseStorage es = GetEnterpriseStorage(serviceId);
 
                 var webDavSettings = ObjectUtils.CreateListFromDataReader<WebDavSetting>(
-                    DataProvider.GetEnterpriseFolders(itemId)).ToArray();
+                    Database.GetEnterpriseFolders(itemId)).ToArray();
 
                 var userGroups = OrganizationController.GetSecurityGroupsByMember(itemId, accountId);
 
@@ -734,7 +736,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        protected static SystemFile GetFolderInternal(int itemId, string folderName, bool loadDriveMapInfo = false)
+        protected SystemFile GetFolderInternal(int itemId, string folderName, bool loadDriveMapInfo = false)
         {
             try
             {
@@ -747,7 +749,7 @@ namespace SolidCP.EnterpriseServer
 
                 EnterpriseStorage es = GetEnterpriseStorage(GetEnterpriseStorageServiceID(org.PackageId));
 
-                var esFolder = ObjectUtils.FillObjectFromDataReader<EsFolder>(DataProvider.GetEnterpriseFolder(itemId, folderName));
+                var esFolder = ObjectUtils.FillObjectFromDataReader<EsFolder>(Database.GetEnterpriseFolder(itemId, folderName));
 
                 if (esFolder == null)
                 {
@@ -830,7 +832,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        protected static SystemFile RenameFolderInternal(int itemId, string oldFolder, string newFolder)
+        protected SystemFile RenameFolderInternal(int itemId, string oldFolder, string newFolder)
         {
             try
             {
@@ -844,8 +846,8 @@ namespace SolidCP.EnterpriseServer
                 EnterpriseStorage es = GetEnterpriseStorage(GetEnterpriseStorageServiceID(org.PackageId));
                 int esId =  GetEnterpriseStorageServiceID(org.PackageId);
 
-                var esFolder = ObjectUtils.FillObjectFromDataReader<EsFolder>(DataProvider.GetEnterpriseFolder(itemId, oldFolder));
-                var targetFolder = ObjectUtils.FillObjectFromDataReader<EsFolder>(DataProvider.GetEnterpriseFolder(itemId, newFolder));
+                var esFolder = ObjectUtils.FillObjectFromDataReader<EsFolder>(Database.GetEnterpriseFolder(itemId, oldFolder));
+                var targetFolder = ObjectUtils.FillObjectFromDataReader<EsFolder>(Database.GetEnterpriseFolder(itemId, newFolder));
 
                 if (targetFolder == null)
                 {
@@ -862,7 +864,7 @@ namespace SolidCP.EnterpriseServer
                     {
                         es.RenameFolder(org.OrganizationId, oldFolder, newFolder, new WebDavSetting(esFolder.LocationDrive, esFolder.HomeFolder, esFolder.Domain));
                     
-                        DataProvider.UpdateEnterpriseFolder(itemId, oldFolder, newFolder, ConvertMegaBytesToGB(ConvertBytesToMB(esFolder.FsrmQuotaSizeBytes)));
+                        Database.UpdateEnterpriseFolder(itemId, oldFolder, newFolder, ConvertMegaBytesToGB(ConvertBytesToMB(esFolder.FsrmQuotaSizeBytes)));
                     }
                     else
                     {
@@ -873,13 +875,13 @@ namespace SolidCP.EnterpriseServer
                             throw new Exception(result.ErrorCodes.First());
                         }
 
-                        esFolder = ObjectUtils.FillObjectFromDataReader<EsFolder>(DataProvider.GetEnterpriseFolder(itemId, oldFolder));
+                        esFolder = ObjectUtils.FillObjectFromDataReader<EsFolder>(Database.GetEnterpriseFolder(itemId, oldFolder));
 
                         DeleteWebDavDirectory(org.PackageId, esFolder.Domain, string.Format("{0}/{1}", org.OrganizationId, esFolder.FolderName));
 
                         CreateEnterpriseStorageVirtualFolderInternal(org.PackageId, itemId, newFolder, CheckIfSsAndEsOnSameServer(esId,esFolder.StorageSpaceId) ? esFolder.Path : esFolder.UncPath);
 
-                        DataProvider.UpdateEnterpriseFolder(itemId, oldFolder, newFolder, ConvertBytesToMB(esFolder.FsrmQuotaSizeBytes));
+                        Database.UpdateEnterpriseFolder(itemId, oldFolder, newFolder, ConvertBytesToMB(esFolder.FsrmQuotaSizeBytes));
 
                         SetFolderWebDavRulesInternal(itemId, newFolder, ConvertToESPermission(itemId, rules));
 
@@ -899,7 +901,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        private static bool CheckIfSsAndEsOnSameServer(int esId, int ssId)
+        private bool CheckIfSsAndEsOnSameServer(int esId, int ssId)
         {
             var storage = StorageSpacesController.GetStorageSpaceById(ssId);
             var esService = ServerController.GetServiceInfo(esId);
@@ -907,7 +909,7 @@ namespace SolidCP.EnterpriseServer
             return storage.ServerId == esService.ServerId;
         }
 
-        public static ResultObject CreateSubFolder(int itemId, string folderPath)
+        public ResultObject CreateSubFolder(int itemId, string folderPath)
         {
             ResultObject result = TaskManager.StartResultTask<ResultObject>("ENTERPRISE_STORAGE", "CREATE_SUB_FOLDER");
             try
@@ -931,7 +933,7 @@ namespace SolidCP.EnterpriseServer
                 string folderName = folderPath.Substring(0, folderPath.IndexOf("/"));
 
                 var webDavSetting = ObjectUtils.FillObjectFromDataReader<WebDavSetting>(
-                    DataProvider.GetEnterpriseFolder(itemId, folderName));
+                    Database.GetEnterpriseFolder(itemId, folderName));
                 if (webDavSetting == null)
                 {
                     result.IsSuccess = false;
@@ -962,7 +964,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        protected static ResultObject CreateFolderInternal(int itemId, string folderName, int quota, QuotaType quotaType, bool addDefaultGroup, bool rootFolder = false)
+        protected ResultObject CreateFolderInternal(int itemId, string folderName, int quota, QuotaType quotaType, bool addDefaultGroup, bool rootFolder = false)
         {
             ResultObject result = TaskManager.StartResultTask<ResultObject>("ENTERPRISE_STORAGE", "CREATE_FOLDER");
 
@@ -982,7 +984,7 @@ namespace SolidCP.EnterpriseServer
                 EnterpriseStorage es = GetEnterpriseStorage(GetEnterpriseStorageServiceID(org.PackageId));
 
                 var webDavSetting = ObjectUtils.FillObjectFromDataReader<WebDavSetting>(
-                    DataProvider.GetEnterpriseFolder(itemId, folderName));
+                    Database.GetEnterpriseFolder(itemId, folderName));
 
                 if (webDavSetting == null)
                 {
@@ -996,7 +998,7 @@ namespace SolidCP.EnterpriseServer
 
                     if (UsingStorageSpaces(esId) && !rootFolder)
                     {
-                        var storageSpaceId = StorageSpacesController.FindBestStorageSpaceService(new EnterpriseStorageSpaceSelector(esId), 
+                        var storageSpaceId = StorageSpacesController.FindBestStorageSpaceService(new EnterpriseStorageSpaceSelector(this, esId), 
                             ResourceGroups.EnterpriseStorage, quotaInBytses);
 
                         if (!storageSpaceId.IsSuccess)
@@ -1020,7 +1022,7 @@ namespace SolidCP.EnterpriseServer
 
                         folder = StorageSpacesController.GetStorageSpaceFolderById(storageSpaceFolderResult.Value);
 
-                        DataProvider.AddEntepriseFolder(itemId, folderName, quota, null, null, esSesstings["UsersDomain"], storageSpaceFolderResult.Value);
+                        Database.AddEnterpriseFolder(itemId, folderName, quota, null, null, esSesstings["UsersDomain"], storageSpaceFolderResult.Value);
 
                         CreateEnterpriseStorageVirtualFolderInternal(org.PackageId, itemId, folderName, CheckIfSsAndEsOnSameServer(esId, folder.StorageSpaceId) ? folder.Path : folder.UncPath);
 
@@ -1030,11 +1032,11 @@ namespace SolidCP.EnterpriseServer
                     {
                         es.CreateFolder(org.OrganizationId, folderName, webDavSetting);
 
-                        DataProvider.AddEntepriseFolder(itemId, folderName, quota, webDavSetting.LocationDrive, webDavSetting.HomeFolder, webDavSetting.Domain, null);
+                        Database.AddEnterpriseFolder(itemId, folderName, quota, webDavSetting.LocationDrive, webDavSetting.HomeFolder, webDavSetting.Domain, null);
 
                         SetFolderQuota(org.PackageId, org.OrganizationId, folderName, quota, quotaType, webDavSetting);
 
-                        DataProvider.UpdateEnterpriseFolder(itemId, folderName, folderName, quota);
+                        Database.UpdateEnterpriseFolder(itemId, folderName, folderName, quota);
                     }
 
                     if (addDefaultGroup)
@@ -1042,7 +1044,7 @@ namespace SolidCP.EnterpriseServer
                         var groupName = string.Format("{0} Folder Users", folderName);
 
                         var account = ObjectUtils.CreateListFromDataReader<ExchangeAccount>(
-                            DataProvider.GetOrganizationGroupsByDisplayName(itemId, groupName)).FirstOrDefault();
+                            Database.GetOrganizationGroupsByDisplayName(itemId, groupName)).FirstOrDefault();
 
                         var accountId = account == null
                             ? OrganizationController.CreateSecurityGroup(itemId, groupName)
@@ -1096,7 +1098,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        protected static void ChangeDriveMapFolderPath(int itemId, string oldPath, string newPath )
+        protected void ChangeDriveMapFolderPath(int itemId, string oldPath, string newPath )
         {
             // load organization
             Organization org = OrganizationController.GetOrganization(itemId);
@@ -1110,7 +1112,7 @@ namespace SolidCP.EnterpriseServer
             orgProxy.ChangeDriveMapFolderPath(org.OrganizationId, oldPath, newPath);
         }
 
-        private static void UpdateFolderDriveMapPath(int itemId, SystemFile folder, string newFolder)
+        private void UpdateFolderDriveMapPath(int itemId, SystemFile folder, string newFolder)
         {
             // load organization
             Organization org = OrganizationController.GetOrganization(itemId);
@@ -1133,7 +1135,7 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        protected static void SetFRSMQuotaOnFolderInternal(int itemId, string folderName, int quota, QuotaType quotaType)
+        protected void SetFRSMQuotaOnFolderInternal(int itemId, string folderName, int quota, QuotaType quotaType)
         {
             ResultObject result = TaskManager.StartResultTask<ResultObject>("ENTERPRISE_STORAGE", "SET_FRSM_QUOTA");
 
@@ -1150,11 +1152,11 @@ namespace SolidCP.EnterpriseServer
                 if (!string.IsNullOrEmpty(folderName))
                 {
                     var webDavSetting = ObjectUtils.FillObjectFromDataReader<WebDavSetting>(
-                        DataProvider.GetEnterpriseFolder(itemId, folderName));
+                        Database.GetEnterpriseFolder(itemId, folderName));
 
                     SetFolderQuota(org.PackageId, org.OrganizationId, folderName, quota, quotaType, webDavSetting);
 
-                    DataProvider.UpdateEnterpriseFolder(itemId, folderName, folderName, quota);
+                    Database.UpdateEnterpriseFolder(itemId, folderName, folderName, quota);
                 }
             }
             catch (Exception ex)
@@ -1174,7 +1176,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        protected static ResultObject DeleteFolderInternal(int itemId, string folderName)
+        protected ResultObject DeleteFolderInternal(int itemId, string folderName)
         {
             ResultObject result = TaskManager.StartResultTask<ResultObject>("ENTERPRISE_STORAGE", "DELETE_FOLDER");
 
@@ -1189,7 +1191,7 @@ namespace SolidCP.EnterpriseServer
 
                 EnterpriseStorage es = GetEnterpriseStorage(GetEnterpriseStorageServiceID(org.PackageId));
 
-                var esFolder = ObjectUtils.FillObjectFromDataReader<EsFolder>(DataProvider.GetEnterpriseFolder(itemId, folderName));
+                var esFolder = ObjectUtils.FillObjectFromDataReader<EsFolder>(Database.GetEnterpriseFolder(itemId, folderName));
 
                 DeleteMappedDriveInternal(itemId, folderName);
 
@@ -1204,7 +1206,7 @@ namespace SolidCP.EnterpriseServer
                     StorageSpacesController.DeleteStorageSpaceFolder(esFolder.StorageSpaceId, esFolder.StorageSpaceFolderId.Value);
                 }
 
-                DataProvider.DeleteEnterpriseFolder(itemId, folderName);
+                Database.DeleteEnterpriseFolder(itemId, folderName);
             }
             catch (Exception ex)
             {
@@ -1225,25 +1227,25 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        protected static List<ExchangeAccount> SearchESAccountsInternal(int itemId, string filterColumn, string filterValue, string sortColumn)
+        protected List<ExchangeAccount> SearchESAccountsInternal(int itemId, string filterColumn, string filterValue, string sortColumn)
         {
             // load organization
             Organization org = (Organization)PackageController.GetPackageItem(itemId);
             if (org == null)
                 return null;
 
-            string accountTypes = string.Format("{0}, {1}, {2}", ((int)ExchangeAccountType.SecurityGroup),
-                (int)ExchangeAccountType.DefaultSecurityGroup, ((int)ExchangeAccountType.User));
+            var accountTypes = new[] { ExchangeAccountType.SecurityGroup,
+                ExchangeAccountType.DefaultSecurityGroup, ExchangeAccountType.User };
 
             if (PackageController.GetPackageServiceId(org.PackageId, ResourceGroups.Exchange) != 0)
             {
-                accountTypes = string.Format("{0}, {1}, {2}, {3}", accountTypes, ((int)ExchangeAccountType.Mailbox),
-                ((int)ExchangeAccountType.Room), ((int)ExchangeAccountType.Equipment));
+                accountTypes = new[] { ExchangeAccountType.Mailbox,
+                    ExchangeAccountType.Room, ExchangeAccountType.Equipment };
             }
 
             List<ExchangeAccount> tmpAccounts = ObjectUtils.CreateListFromDataReader<ExchangeAccount>(
-                                                  DataProvider.SearchExchangeAccountsByTypes(SecurityContext.User.UserId, itemId,
-                                                  accountTypes, filterColumn, filterValue, sortColumn));
+                Database.SearchExchangeAccountsByTypes(SecurityContext.User.UserId, itemId,
+                    accountTypes, filterColumn, filterValue, sortColumn));
 
             return tmpAccounts;
 
@@ -1264,7 +1266,7 @@ namespace SolidCP.EnterpriseServer
             //return exAccounts;
         }
 
-        protected static SystemFilesPaged GetEnterpriseFoldersPagedInternal(int itemId, bool loadUsagesData, bool loadWebdavRules, bool loadMappedDrives, string filterValue, string sortColumn, int startRow, int maximumRows)
+        protected SystemFilesPaged GetEnterpriseFoldersPagedInternal(int itemId, bool loadUsagesData, bool loadWebdavRules, bool loadMappedDrives, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             SystemFilesPaged result = new SystemFilesPaged();
 
@@ -1281,7 +1283,7 @@ namespace SolidCP.EnterpriseServer
                 {
                     EnterpriseStorage es = GetEnterpriseStorage(GetEnterpriseStorageServiceID(org.PackageId));
 
-                    DataSet ds = DataProvider.GetEnterpriseFoldersPaged(itemId, "FolderName", string.Format("%{0}%", filterValue), sortColumn, startRow, maximumRows);
+                    DataSet ds = Database.GetEnterpriseFoldersPaged(itemId, "FolderName", string.Format("%{0}%", filterValue), sortColumn, startRow, maximumRows);
 
                     var esFolders = new List<EsFolder>();
 
@@ -1316,12 +1318,12 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static ResultObject MoveToStorageSpace(int itemId, string folderName)
+        public ResultObject MoveToStorageSpace(int itemId, string folderName)
         {
             return MoveToStorageSpaceInternal(itemId, folderName);
         }
 
-        private static ResultObject MoveToStorageSpaceInternal(int itemId, string folderName)
+        private ResultObject MoveToStorageSpaceInternal(int itemId, string folderName)
         {
             var result = TaskManager.StartResultTask<ResultObject>("ENTERPRISE_STORAGE", "MOVE_TO_STORAGE_SPACE");
 
@@ -1345,7 +1347,7 @@ namespace SolidCP.EnterpriseServer
 
                 EnterpriseStorage es = GetEnterpriseStorage(esId);
 
-                esFolder = ObjectUtils.FillObjectFromDataReader<EsFolder>(DataProvider.GetEnterpriseFolder(itemId, folderName));
+                esFolder = ObjectUtils.FillObjectFromDataReader<EsFolder>(Database.GetEnterpriseFolder(itemId, folderName));
 
                 if (esFolder == null)
                 {
@@ -1361,7 +1363,7 @@ namespace SolidCP.EnterpriseServer
 
                 long quotaInBytses = ((long)systemFile.FRSMQuotaMB) * 1024 * 1024;
 
-                var storageSpaceId = StorageSpacesController.FindBestStorageSpaceService(new EnterpriseStorageSpaceSelector(esId),
+                var storageSpaceId = StorageSpacesController.FindBestStorageSpaceService(new EnterpriseStorageSpaceSelector(this, esId),
                            ResourceGroups.EnterpriseStorage, quotaInBytses);
 
                 if (!storageSpaceId.IsSuccess)
@@ -1418,7 +1420,7 @@ namespace SolidCP.EnterpriseServer
 
                 //es.MoveFolder(systemFile.FullName, storageFolder.UncPath);
 
-                DataProvider.UpdateEntepriseFolderStorageSpaceFolder(itemId, folderName, storageFolderResult.Value);
+                Database.UpdateEnterpriseFolderStorageSpaceFolder(itemId, folderName, storageFolderResult.Value);
 
                 UpdateFolderDriveMapPath(itemId, systemFile, folderName);
             }
@@ -1452,12 +1454,12 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static int GetEnterpriseStorageServiceId(int itemId)
+        public int GetEnterpriseStorageServiceId(int itemId)
         {
             return GetEnterpriseStorageServiceIdInternal(itemId);
         }
 
-        private static int GetEnterpriseStorageServiceIdInternal(int itemId)
+        private int GetEnterpriseStorageServiceIdInternal(int itemId)
         {
             // load organization
             Organization org = OrganizationController.GetOrganization(itemId);
@@ -1471,18 +1473,18 @@ namespace SolidCP.EnterpriseServer
             return esId;
         }
 
-        public static void SetEsFolderShareSettings(int itemId, string folderName, bool abeIsEnabled, bool edaIsEnabled)
+        public void SetEsFolderShareSettings(int itemId, string folderName, bool abeIsEnabled, bool edaIsEnabled)
         {
             SetEsFolderShareSettingsInternal(itemId, folderName, abeIsEnabled, edaIsEnabled);
         }
 
-        private static void SetEsFolderShareSettingsInternal(int itemId, string folderName, bool abeIsEnabled, bool edaIsEnabled)
+        private void SetEsFolderShareSettingsInternal(int itemId, string folderName, bool abeIsEnabled, bool edaIsEnabled)
         {
            TaskManager.StartTask("ENTERPRISE_STORAGE", "SET_ES_FOLDER_SHARE_SETTINGS");
 
             try
             {
-                var  esFolder = ObjectUtils.FillObjectFromDataReader<EsFolder>(DataProvider.GetEnterpriseFolder(itemId, folderName));
+                var  esFolder = ObjectUtils.FillObjectFromDataReader<EsFolder>(Database.GetEnterpriseFolder(itemId, folderName));
 
                 if (esFolder == null)
                 {
@@ -1509,7 +1511,7 @@ namespace SolidCP.EnterpriseServer
 
         #region WebDav
 
-        protected static int AddWebDavDirectoryInternal(int packageId, string site, string vdirName, string contentpath)
+        protected int AddWebDavDirectoryInternal(int packageId, string site, string vdirName, string contentpath)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -1559,7 +1561,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        protected static int DeleteWebDavDirectoryInternal(int packageId, string site, string vdirName)
+        protected int DeleteWebDavDirectoryInternal(int packageId, string site, string vdirName)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -1594,7 +1596,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        protected static ResultObject SetFolderWebDavRulesInternal(int itemId, string folder, ESPermission[] permission)
+        protected ResultObject SetFolderWebDavRulesInternal(int itemId, string folder, ESPermission[] permission)
         {
             ResultObject result = TaskManager.StartResultTask<ResultObject>("ENTERPRISE_STORAGE", "SET_WEBDAV_FOLDER_RULES");
 
@@ -1612,7 +1614,7 @@ namespace SolidCP.EnterpriseServer
                 EnterpriseStorage es = GetEnterpriseStorage(GetEnterpriseStorageServiceID(org.PackageId));
 
                 var webDavSetting = ObjectUtils.FillObjectFromDataReader<WebDavSetting>(
-                    DataProvider.GetEnterpriseFolder(itemId, folder));
+                    Database.GetEnterpriseFolder(itemId, folder));
 
                 es.SetFolderWebDavRules(org.OrganizationId, folder, webDavSetting, rules);
 
@@ -1639,7 +1641,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        protected static WebDavFolderRule[] GetFolderWebDavRulesInternal(int itemId, string folder)
+        protected WebDavFolderRule[] GetFolderWebDavRulesInternal(int itemId, string folder)
         {
             try
             {
@@ -1653,7 +1655,7 @@ namespace SolidCP.EnterpriseServer
                 EnterpriseStorage es = GetEnterpriseStorage(GetEnterpriseStorageServiceID(org.PackageId));
 
                 var webDavSetting = ObjectUtils.FillObjectFromDataReader<WebDavSetting>(
-                    DataProvider.GetEnterpriseFolder(itemId, folder));
+                    Database.GetEnterpriseFolder(itemId, folder));
 
                 return es.GetFolderWebDavRules(org.OrganizationId, folder, webDavSetting);
             }
@@ -1668,7 +1670,7 @@ namespace SolidCP.EnterpriseServer
 
         #region Directory Browsing
 
-        private static bool GetDirectoryBrowseEnabledInternal(int itemId, string siteId)
+        private bool GetDirectoryBrowseEnabledInternal(int itemId, string siteId)
         {
             // load organization
             var org = OrganizationController.GetOrganization(itemId);
@@ -1681,7 +1683,7 @@ namespace SolidCP.EnterpriseServer
             return webServer.GetDirectoryBrowseEnabled(siteId);
         }
 
-        private static void SetDirectoryBrowseEnabledInternal(int itemId, string siteId, bool enabled)
+        private void SetDirectoryBrowseEnabledInternal(int itemId, string siteId, bool enabled)
         {
             // load organization
             var org = OrganizationController.GetOrganization(itemId);
@@ -1697,7 +1699,7 @@ namespace SolidCP.EnterpriseServer
 
         #endregion
 
-        private static List<SystemFile> FillEsFolderEntity(IEnumerable<EsFolder> esFolders, string organizationId,
+        private List<SystemFile> FillEsFolderEntity(IEnumerable<EsFolder> esFolders, string organizationId,
             int packageId, bool loadUsedSpace = true, bool loadWebdavRules = true)
         {
             var result = new List<SystemFile>();
@@ -1730,7 +1732,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static SystemFile ConvertToSystemFile(EsFolder esfolder, string organizationId)
+        private SystemFile ConvertToSystemFile(EsFolder esfolder, string organizationId)
         {
             string fullName = esfolder.StorageSpaceFolderId == null
                    ? System.IO.Path.Combine(string.Format("{0}:\\{1}\\{2}", esfolder.LocationDrive, esfolder.HomeFolder, organizationId), esfolder.FolderName)
@@ -1750,19 +1752,19 @@ namespace SolidCP.EnterpriseServer
             return folder;
         }
 
-        private static int GetEnterpriseStorageServiceID(int packageId)
+        private int GetEnterpriseStorageServiceID(int packageId)
         {
             return PackageController.GetPackageServiceId(packageId, ResourceGroups.EnterpriseStorage);
         }
 
-        private static EnterpriseStorage GetEnterpriseStorageByPackageId(int packageId)
+        private EnterpriseStorage GetEnterpriseStorageByPackageId(int packageId)
         {
             var serviceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.EnterpriseStorage);
 
             return GetEnterpriseStorage(serviceId);
         }
 
-        private static WebDavFolderRule[] ConvertToWebDavRule(int itemId, ESPermission[] permissions)
+        private WebDavFolderRule[] ConvertToWebDavRule(int itemId, ESPermission[] permissions)
         {
             var rules = new List<WebDavFolderRule>();
 
@@ -1770,7 +1772,7 @@ namespace SolidCP.EnterpriseServer
             {
                 var rule = new WebDavFolderRule();
 
-                var account = ObjectUtils.FillObjectFromDataReader<ExchangeAccount>(DataProvider.GetExchangeAccountByAccountName(itemId, permission.Account));
+                var account = ObjectUtils.FillObjectFromDataReader<ExchangeAccount>(Database.GetExchangeAccountByAccountName(itemId, permission.Account));
 
                 if (account.AccountType == ExchangeAccountType.SecurityGroup
                     || account.AccountType == ExchangeAccountType.DefaultSecurityGroup)
@@ -1805,7 +1807,7 @@ namespace SolidCP.EnterpriseServer
             return rules.ToArray();
         }
 
-        private static ESPermission[] ConvertToESPermission(int itemId, WebDavFolderRule[] rules)
+        private ESPermission[] ConvertToESPermission(int itemId, WebDavFolderRule[] rules)
         {
             var permissions = new List<ESPermission>();
 
@@ -1859,7 +1861,7 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        private static UserPermission[] ConvertToUserPermissions(WebDavFolderRule[] rules)
+        private UserPermission[] ConvertToUserPermissions(WebDavFolderRule[] rules)
         {
             var users = new List<UserPermission>();
 
@@ -1889,14 +1891,14 @@ namespace SolidCP.EnterpriseServer
             return users.ToArray();
         }
 
-        private static UserPermission[] ConvertToUserPermissions(int itemId, ESPermission[] permissions)
+        private UserPermission[] ConvertToUserPermissions(int itemId, ESPermission[] permissions)
         {
             var rules = ConvertToWebDavRule(itemId, permissions);
 
             return ConvertToUserPermissions(rules);
         }
 
-        private static void SetFolderQuota(int packageId, string orgId, string folderName, int quotaSize, QuotaType quotaType, WebDavSetting setting)
+        private void SetFolderQuota(int packageId, string orgId, string folderName, int quotaSize, QuotaType quotaType, WebDavSetting setting)
         {
             if (quotaSize == 0)
                 return;
@@ -1966,7 +1968,7 @@ namespace SolidCP.EnterpriseServer
         /// </summary>
         /// <param name="packageId">packageId parametr</param>
         /// <returns>Configurated webserver or null</returns>
-        private static WebServer GetWebServer(int packageId)
+        private WebServer GetWebServer(int packageId)
         {
             try
             {
@@ -2008,7 +2010,7 @@ namespace SolidCP.EnterpriseServer
             return null;
         }
 
-        private static OS.OperatingSystem GetOS(int packageId)
+        private OS.OperatingSystem GetOS(int packageId)
         {
             var esServiceInfo = ServerController.GetServiceInfo(GetEnterpriseStorageServiceID(packageId));
             var esProviderInfo = ServerController.GetProvider(esServiceInfo.ProviderId);
@@ -2044,13 +2046,13 @@ namespace SolidCP.EnterpriseServer
             return null;
         }
 
-        public static OrganizationUser[] GetFolderOwaAccounts(int itemId, string folderName)
+        public OrganizationUser[] GetFolderOwaAccounts(int itemId, string folderName)
         {
             try
             {
                 var folderId = GetFolderId(itemId, folderName);
 
-                var users = ObjectUtils.CreateListFromDataReader<OrganizationUser>(DataProvider.GetEnterpriseFolderOwaUsers(itemId, folderId));
+                var users = ObjectUtils.CreateListFromDataReader<OrganizationUser>(Database.GetEnterpriseFolderOwaUsers(itemId, folderId));
 
                 return users.ToArray();
             }
@@ -2060,17 +2062,17 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static void SetFolderOwaAccounts(int itemId, string folderName, OrganizationUser[] users)
+        public void SetFolderOwaAccounts(int itemId, string folderName, OrganizationUser[] users)
         {
             try
             {
                 var folderId = GetFolderId(itemId, folderName);
 
-                DataProvider.DeleteAllEnterpriseFolderOwaUsers(itemId, folderId);
+                Database.DeleteAllEnterpriseFolderOwaUsers(itemId, folderId);
 
                 foreach (var user in users)
                 {
-                    DataProvider.AddEnterpriseFolderOwaUser(itemId, folderId, user.AccountId);
+                    Database.AddEnterpriseFolderOwaUser(itemId, folderId, user.AccountId);
                 }
             }
             catch (Exception ex)
@@ -2079,13 +2081,13 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        protected static int GetFolderId(int itemId, string folderName)
+        protected int GetFolderId(int itemId, string folderName)
         {
             try
             {
                 GetFolder(itemId, folderName);
 
-                var dataReader = DataProvider.GetEnterpriseFolderId(itemId, folderName);
+                var dataReader = Database.GetEnterpriseFolderId(itemId, folderName);
 
                 while (dataReader.Read())
                 {
@@ -2100,7 +2102,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static List<string> GetUserEnterpriseFolderWithOwaEditPermission(int itemId, List<int> accountIds)
+        public List<string> GetUserEnterpriseFolderWithOwaEditPermission(int itemId, List<int> accountIds)
         {
             try
             {
@@ -2109,7 +2111,7 @@ namespace SolidCP.EnterpriseServer
 
                 foreach (var accountId in accountIds)
                 {
-                    var reader = DataProvider.GetUserEnterpriseFolderWithOwaEditPermission(itemId, accountId);
+                    var reader = Database.GetUserEnterpriseFolderWithOwaEditPermission(itemId, accountId);
 
                     while (reader.Read())
                     {
@@ -2127,9 +2129,9 @@ namespace SolidCP.EnterpriseServer
 
         #region WebDav portal
 
-        public static string GetWebDavPortalUserSettingsByAccountId(int accountId)
+        public string GetWebDavPortalUserSettingsByAccountId(int accountId)
         {
-            var dataReader = DataProvider.GetWebDavPortalUserSettingsByAccountId(accountId);
+            var dataReader = Database.GetWebDavPortalUserSettingsByAccountId(accountId);
 
             while (dataReader.Read())
             {
@@ -2139,17 +2141,17 @@ namespace SolidCP.EnterpriseServer
             return null;
         }
 
-        public static void UpdateUserSettings(int accountId, string settings)
+        public void UpdateUserSettings(int accountId, string settings)
         {
             var oldSettings = GetWebDavPortalUserSettingsByAccountId(accountId);
 
             if (string.IsNullOrEmpty(oldSettings))
             {
-                DataProvider.AddWebDavPortalUsersSettings(accountId, settings);
+                Database.AddWebDavPortalUsersSettings(accountId, settings);
             }
             else
             {
-                DataProvider.UpdateWebDavPortalUsersSettings(accountId, settings);
+                Database.UpdateWebDavPortalUsersSettings(accountId, settings);
             }
         }
 
@@ -2158,17 +2160,17 @@ namespace SolidCP.EnterpriseServer
 
         #region Statistics
 
-        public static OrganizationStatistics GetStatistics(int itemId)
+        public OrganizationStatistics GetStatistics(int itemId)
         {
             return GetStatisticsInternal(itemId, false);
         }
 
-        public static OrganizationStatistics GetStatisticsByOrganization(int itemId)
+        public OrganizationStatistics GetStatisticsByOrganization(int itemId)
         {
             return GetStatisticsInternal(itemId, true);
         }
 
-        private static OrganizationStatistics GetStatisticsInternal(int itemId, bool byOrganization)
+        private OrganizationStatistics GetStatisticsInternal(int itemId, bool byOrganization)
         {
             // place log record
             TaskManager.StartTask("ENTERPRISE_STORAGE", "GET_ORG_STATS", itemId);
@@ -2191,7 +2193,7 @@ namespace SolidCP.EnterpriseServer
                 }
                 else
                 {
-                    UserInfo user = ObjectUtils.FillObjectFromDataReader<UserInfo>(DataProvider.GetUserByExchangeOrganizationIdInternally(org.Id));
+                    UserInfo user = ObjectUtils.FillObjectFromDataReader<UserInfo>(Database.GetUserByExchangeOrganizationIdInternally(org.Id));
                     List<PackageInfo> Packages = PackageController.GetPackages(user.UserId);
 
                     if ((Packages != null) & (Packages.Count > 0))
@@ -2238,12 +2240,12 @@ namespace SolidCP.EnterpriseServer
 
         #region Drive Mapping
 
-        public static ResultObject CreateMappedDrive(int packageId, int itemId, string driveLetter, string labelAs, string folderName)
+        public ResultObject CreateMappedDrive(int packageId, int itemId, string driveLetter, string labelAs, string folderName)
         {
             return CreateMappedDriveInternal(packageId, itemId, driveLetter, labelAs, folderName);
         }
 
-        protected static ResultObject CreateMappedDriveInternal(int packageId, int itemId, string driveLetter, string labelAs, string folderName)
+        protected ResultObject CreateMappedDriveInternal(int packageId, int itemId, string driveLetter, string labelAs, string folderName)
         {
             ResultObject result = TaskManager.StartResultTask<ResultObject>("ENTERPRISE_STORAGE", "CREATE_MAPPED_DRIVE", itemId);
 
@@ -2300,21 +2302,21 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static string GetDriveMapPath(int itemId, string organizatinoId, string folderName)
+        private string GetDriveMapPath(int itemId, string organizatinoId, string folderName)
         {
-            var esFolder = ObjectUtils.FillObjectFromDataReader<EsFolder>(DataProvider.GetEnterpriseFolder(itemId, folderName));
+            var esFolder = ObjectUtils.FillObjectFromDataReader<EsFolder>(Database.GetEnterpriseFolder(itemId, folderName));
 
             return esFolder.StorageSpaceFolderId == null
                 ? string.Format(@"\\{0}\{1}\{2}", esFolder.Domain.Split('.')[0], organizatinoId, folderName)
                 : esFolder.UncPath;
         }
 
-        public static ResultObject DeleteMappedDrive(int itemId, string folderName)
+        public ResultObject DeleteMappedDrive(int itemId, string folderName)
         {
             return DeleteMappedDriveInternal(itemId, folderName);
         }
 
-        protected static ResultObject DeleteMappedDriveInternal(int itemId, string folderName)
+        protected ResultObject DeleteMappedDriveInternal(int itemId, string folderName)
         {
             ResultObject result = TaskManager.StartResultTask<ResultObject>("ENTERPRISE_STORAGE", "DELETE_MAPPED_DRIVE", itemId);
 
@@ -2354,12 +2356,12 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static MappedDrivesPaged GetDriveMapsPaged(int itemId, string filterValue, string sortColumn, int startRow, int maximumRows)
+        public MappedDrivesPaged GetDriveMapsPaged(int itemId, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             return GetDriveMapsPagedInternal(itemId, filterValue, sortColumn, startRow, maximumRows);
         }
 
-        protected static MappedDrivesPaged GetDriveMapsPagedInternal(int itemId, string filterValue, string sortColumn, int startRow, int maximumRows)
+        protected MappedDrivesPaged GetDriveMapsPagedInternal(int itemId, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             MappedDrivesPaged result = new MappedDrivesPaged();
 
@@ -2412,7 +2414,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static MappedDrive GetFolderMappedDrive(IEnumerable<MappedDrive> drives, SystemFile folder)
+        private MappedDrive GetFolderMappedDrive(IEnumerable<MappedDrive> drives, SystemFile folder)
         {
             foreach (MappedDrive drive in drives)
             {
@@ -2429,12 +2431,12 @@ namespace SolidCP.EnterpriseServer
             return null;
         }
 
-        public static string[] GetUsedDriveLetters(int itemId)
+        public string[] GetUsedDriveLetters(int itemId)
         {
             return GetUsedDriveLettersInternal(itemId);
         }
 
-        protected static string[] GetUsedDriveLettersInternal(int itemId)
+        protected string[] GetUsedDriveLettersInternal(int itemId)
         {
             List<string> driveLetters = new List<string>();
 
@@ -2458,12 +2460,12 @@ namespace SolidCP.EnterpriseServer
 
         }
 
-        public static SystemFile[] GetNotMappedEnterpriseFolders(int itemId)
+        public SystemFile[] GetNotMappedEnterpriseFolders(int itemId)
         {
             return GetNotMappedEnterpriseFoldersInternal(itemId);
         }
 
-        protected static SystemFile[] GetNotMappedEnterpriseFoldersInternal(int itemId)
+        protected SystemFile[] GetNotMappedEnterpriseFoldersInternal(int itemId)
         {
             List<SystemFile> folders = new List<SystemFile>();
             try
@@ -2492,7 +2494,7 @@ namespace SolidCP.EnterpriseServer
             return folders.ToArray();
         }
 
-        private static ResultObject SetDriveMapsTargetingFilter(Organization org, ESPermission[] permissions, string folderName)
+        private ResultObject SetDriveMapsTargetingFilter(Organization org, ESPermission[] permissions, string folderName)
         {
             ResultObject result = TaskManager.StartResultTask<ResultObject>("ENTERPRISE_STORAGE", "SET_MAPPED_DRIVE_TARGETING_FILTER");
 
@@ -2504,7 +2506,7 @@ namespace SolidCP.EnterpriseServer
 
                 foreach (var permission in permissions)
                 {
-                    accounts.Add(ObjectUtils.FillObjectFromDataReader<ExchangeAccount>(DataProvider.GetExchangeAccountByAccountName(org.Id, permission.Account)));
+                    accounts.Add(ObjectUtils.FillObjectFromDataReader<ExchangeAccount>(Database.GetExchangeAccountByAccountName(org.Id, permission.Account)));
                 }
 
                 orgProxy.SetDriveMapsTargetingFilter(org.OrganizationId, accounts.ToArray(), folderName);
@@ -2528,7 +2530,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static ResultObject DeleteMappedDrivesGPO(int itemId)
+        private ResultObject DeleteMappedDrivesGPO(int itemId)
         {
             ResultObject result = TaskManager.StartResultTask<ResultObject>("ENTERPRISE_STORAGE", "DELETE_MAPPED_DRIVES_GPO", itemId);
 
@@ -2569,7 +2571,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
 
-        public static int ConvertMegaBytesToGB(int megabytes)
+        public int ConvertMegaBytesToGB(int megabytes)
         {
             int OneGb = 1024;
 
@@ -2579,7 +2581,7 @@ namespace SolidCP.EnterpriseServer
             return (int)(megabytes / OneGb);
         }
 
-        public static int ConvertBytesToMB(long bytes)
+        public int ConvertBytesToMB(long bytes)
         {
             int OneKb = 1024;
             int OneMb = OneKb * 1024;
@@ -2590,7 +2592,7 @@ namespace SolidCP.EnterpriseServer
             return (int)(bytes / OneMb);
         }
 
-        private static bool UsingStorageSpaces(int serviceId)
+        private bool UsingStorageSpaces(int serviceId)
         {
             var settings = ServerController.GetServiceSettings(serviceId);
 

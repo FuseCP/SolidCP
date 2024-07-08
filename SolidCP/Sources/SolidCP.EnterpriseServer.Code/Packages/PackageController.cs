@@ -56,32 +56,34 @@ namespace SolidCP.EnterpriseServer
     /// <summary>
     /// Summary description for Packages.
     /// </summary>
-    public class PackageController
+    public class PackageController: ControllerBase
     {
+        public PackageController(ControllerBase provider) : base(provider) { }
+
         #region Hosting Plans
-        public static DataSet GetHostingPlans(int userId)
+        public DataSet GetHostingPlans(int userId)
         {
-            return DataProvider.GetHostingPlans(SecurityContext.User.UserId, userId);
+            return Database.GetHostingPlans(SecurityContext.User.UserId, userId);
         }
 
-        public static DataSet GetHostingAddons(int userId)
+        public DataSet GetHostingAddons(int userId)
         {
-            return DataProvider.GetHostingAddons(SecurityContext.User.UserId, userId);
+            return Database.GetHostingAddons(SecurityContext.User.UserId, userId);
         }
 
-        public static HostingPlanInfo GetHostingPlan(int planId)
+        public HostingPlanInfo GetHostingPlan(int planId)
         {
             return ObjectUtils.FillObjectFromDataReader<HostingPlanInfo>(
-                DataProvider.GetHostingPlan(SecurityContext.User.UserId, planId));
+                Database.GetHostingPlan(SecurityContext.User.UserId, planId));
         }
 
-        public static DataSet GetHostingPlanQuotas(int packageId, int planId, int serverId)
+        public DataSet GetHostingPlanQuotas(int packageId, int planId, int serverId)
         {
-            return DataProvider.GetHostingPlanQuotas(SecurityContext.User.UserId, packageId,
+            return Database.GetHostingPlanQuotas(SecurityContext.User.UserId, packageId,
                 planId, serverId);
         }
 
-        public static HostingPlanContext GetHostingPlanContext(int planId)
+        public HostingPlanContext GetHostingPlanContext(int planId)
         {
             HostingPlanContext context = new HostingPlanContext();
 
@@ -131,7 +133,7 @@ namespace SolidCP.EnterpriseServer
             return context;
         }
 
-        private static string BuildPlanQuotasXml(HostingPlanGroupInfo[] groups, HostingPlanQuotaInfo[] quotas)
+        private string BuildPlanQuotasXml(HostingPlanGroupInfo[] groups, HostingPlanQuotaInfo[] quotas)
         {
             // build xml
             /*
@@ -188,19 +190,19 @@ namespace SolidCP.EnterpriseServer
             return nodePlan.OuterXml;
         }
 
-        public static List<HostingPlanInfo> GetUserAvailableHostingPlans(int userId)
+        public List<HostingPlanInfo> GetUserAvailableHostingPlans(int userId)
         {
             return ObjectUtils.CreateListFromDataSet<HostingPlanInfo>(
-                DataProvider.GetUserAvailableHostingPlans(SecurityContext.User.UserId, userId));
+                Database.GetUserAvailableHostingPlans(SecurityContext.User.UserId, userId));
         }
 
-        public static List<HostingPlanInfo> GetUserAvailableHostingAddons(int userId)
+        public List<HostingPlanInfo> GetUserAvailableHostingAddons(int userId)
         {
             return ObjectUtils.CreateListFromDataSet<HostingPlanInfo>(
-                DataProvider.GetUserAvailableHostingAddons(SecurityContext.User.UserId, userId));
+                Database.GetUserAvailableHostingAddons(SecurityContext.User.UserId, userId));
         }
 
-        public static int AddHostingPlan(HostingPlanInfo plan)
+        public int AddHostingPlan(HostingPlanInfo plan)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive
@@ -209,12 +211,12 @@ namespace SolidCP.EnterpriseServer
 
             string quotasXml = BuildPlanQuotasXml(plan.Groups, plan.Quotas);
 
-            return DataProvider.AddHostingPlan(SecurityContext.User.UserId, plan.UserId, plan.PackageId, plan.PlanName,
+            return Database.AddHostingPlan(SecurityContext.User.UserId, plan.UserId, plan.PackageId, plan.PlanName,
                 plan.PlanDescription, plan.Available, plan.ServerId, plan.SetupPrice, plan.RecurringPrice,
                 plan.RecurrenceUnit, plan.RecurrenceLength, plan.IsAddon, quotasXml);
         }
 
-        public static PackageResult UpdateHostingPlan(HostingPlanInfo plan)
+        public PackageResult UpdateHostingPlan(HostingPlanInfo plan)
         {
             PackageResult result = new PackageResult();
 
@@ -225,7 +227,7 @@ namespace SolidCP.EnterpriseServer
 
             string quotasXml = BuildPlanQuotasXml(plan.Groups, plan.Quotas);
 
-            result.ExceedingQuotas = DataProvider.UpdateHostingPlan(SecurityContext.User.UserId,
+            result.ExceedingQuotas = Database.UpdateHostingPlan(SecurityContext.User.UserId,
                 plan.PlanId, plan.PackageId, plan.ServerId, plan.PlanName,
                 plan.PlanDescription, plan.Available, plan.SetupPrice, plan.RecurringPrice,
                 plan.RecurrenceUnit, plan.RecurrenceLength, quotasXml);
@@ -233,18 +235,18 @@ namespace SolidCP.EnterpriseServer
             if (result.ExceedingQuotas.Tables[0].Rows.Count > 0)
                 result.Result = BusinessErrorCodes.ERROR_PACKAGE_QUOTA_EXCEED;
 
-            DataProvider.DistributePackageServices(SecurityContext.User.UserId, plan.PackageId);
+            Database.DistributePackageServices(SecurityContext.User.UserId, plan.PackageId);
 
             return result;
         }
 
-        public static int DeleteHostingPlan(int planId)
+        public int DeleteHostingPlan(int planId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsReseller);
             if (accountCheck < 0) return accountCheck;
 
-            int result = DataProvider.DeleteHostingPlan(SecurityContext.User.UserId, planId);
+            int result = Database.DeleteHostingPlan(SecurityContext.User.UserId, planId);
             if (result == -1)
                 return BusinessErrorCodes.ERROR_HOSTING_PLAN_USED_IN_PACKAGE;
             else if (result == -2)
@@ -256,7 +258,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Packages
-        public static List<PackageInfo> GetMyPackages(int userId)
+        public List<PackageInfo> GetMyPackages(int userId)
         {
             List<PackageInfo> packages = new List<PackageInfo>();
             ObjectUtils.FillCollectionFromDataSet<PackageInfo>(packages,
@@ -264,7 +266,7 @@ namespace SolidCP.EnterpriseServer
             return packages;
         }
 
-        public static List<PackageInfo> GetPackages(int userId)
+        public List<PackageInfo> GetPackages(int userId)
         {
             List<PackageInfo> packages = new List<PackageInfo>();
             ObjectUtils.FillCollectionFromDataSet<PackageInfo>(
@@ -272,12 +274,12 @@ namespace SolidCP.EnterpriseServer
             return packages;
         }
 
-        public static DataSet GetNestedPackagesSummary(int packageId)
+        public DataSet GetNestedPackagesSummary(int packageId)
         {
-            return DataProvider.GetNestedPackagesSummary(SecurityContext.User.UserId, packageId);
+            return Database.GetNestedPackagesSummary(SecurityContext.User.UserId, packageId);
         }
 
-        public static List<PackageInfo> GetPackagePackages(int packageId, bool recursive)
+        public List<PackageInfo> GetPackagePackages(int packageId, bool recursive)
         {
             List<PackageInfo> packages = new List<PackageInfo>();
             ObjectUtils.FillCollectionFromDataSet<PackageInfo>(
@@ -285,84 +287,84 @@ namespace SolidCP.EnterpriseServer
             return packages;
         }
 
-        public static DataSet GetRawMyPackages(int userId)
+        public DataSet GetRawMyPackages(int userId)
         {
-            return DataProvider.GetMyPackages(SecurityContext.User.UserId, userId);
+            return Database.GetMyPackages(SecurityContext.User.UserId, userId);
         }
 
-        public static DataSet GetRawPackages(int userId)
+        public DataSet GetRawPackages(int userId)
         {
-            return DataProvider.GetPackages(SecurityContext.User.UserId, userId);
+            return Database.GetPackages(SecurityContext.User.UserId, userId);
         }
 
-        public static DataSet GetRawPackagePackages(int packageId, bool recursive)
+        public DataSet GetRawPackagePackages(int packageId, bool recursive)
         {
-            return DataProvider.GetPackagePackages(SecurityContext.User.UserId, packageId, recursive);
+            return Database.GetPackagePackages(SecurityContext.User.UserId, packageId, recursive);
         }
 
-        public static DataSet GetPackagesPaged(int userId, string filterColumn, string filterValue,
+        public DataSet GetPackagesPaged(int userId, string filterColumn, string filterValue,
             string sortColumn, int startRow, int maximumRows)
         {
-            return DataProvider.GetPackagesPaged(SecurityContext.User.UserId, userId,
+            return Database.GetPackagesPaged(SecurityContext.User.UserId, userId,
                 filterColumn, filterValue, sortColumn, startRow, maximumRows);
         }
 
-        public static DataSet GetNestedPackagesPaged(int packageId, string filterColumn, string filterValue,
+        public DataSet GetNestedPackagesPaged(int packageId, string filterColumn, string filterValue,
             int statusId, int planId, int serverId, string sortColumn, int startRow, int maximumRows)
         {
-            return DataProvider.GetNestedPackagesPaged(SecurityContext.User.UserId, packageId,
+            return Database.GetNestedPackagesPaged(SecurityContext.User.UserId, packageId,
                 filterColumn, filterValue, statusId, planId, serverId, sortColumn, startRow, maximumRows);
         }
 
-        public static DataSet SearchServiceItemsPaged(int userId, int itemTypeId, string filterValue,
+        public DataSet SearchServiceItemsPaged(int userId, int itemTypeId, string filterValue,
             string sortColumn, int startRow, int maximumRows)
         {
-            return DataProvider.SearchServiceItemsPaged(SecurityContext.User.UserId, userId, itemTypeId, filterValue,
+            return Database.SearchServiceItemsPaged(SecurityContext.User.UserId, userId, itemTypeId, filterValue,
                 sortColumn, startRow, maximumRows);
         }
 
         //TODO START
-        public static DataSet GetSearchObject(int userId, string filterColumn, string filterValue,
+        public DataSet GetSearchObject(int userId, string filterColumn, string filterValue,
             int statusId, int roleId, string sortColumn, int startRow, int maximumRows, string colType, 
             string fullType, bool onlyFind)
         {
-            return DataProvider.GetSearchObject(SecurityContext.User.UserId, userId,
+            return Database.GetSearchObject(SecurityContext.User.UserId, userId,
                 filterColumn, filterValue, statusId, roleId, sortColumn, startRow, 
                 maximumRows, colType, fullType, false, onlyFind);
         }
-        public static DataSet GetSearchTableByColumns(string PagedStored, string FilterValue, int MaximumRows,
+        public DataSet GetSearchTableByColumns(string PagedStored, string FilterValue, int MaximumRows,
             bool Recursive, int PoolID, int ServerID, int StatusID, int PlanID, int OrgID,
             string ItemTypeName, string GroupName, int PackageID, string VPSType, int RoleID, int UserID,
             string FilterColumns)
         {
-            return DataProvider.GetSearchTableByColumns(PagedStored, FilterValue, MaximumRows,
+            return Database.GetSearchTableByColumns(PagedStored, FilterValue, MaximumRows,
                 Recursive, PoolID, ServerID, SecurityContext.User.UserId, StatusID, PlanID, OrgID, ItemTypeName, GroupName,
                 PackageID, VPSType, RoleID, UserID, FilterColumns);
         }
         //TODO END
 
-        public static DataSet GetPackageQuotas(int packageId)
+        public DataSet GetPackageQuotas(int packageId)
         {
-            return DataProvider.GetPackageQuotas(SecurityContext.User.UserId, packageId);
+            return Database.GetPackageQuotas(SecurityContext.User.UserId, packageId);
         }
 
-        public static DataSet GetParentPackageQuotas(int packageId)
+        public DataSet GetParentPackageQuotas(int packageId)
         {
-            return DataProvider.GetParentPackageQuotas(SecurityContext.User.UserId, packageId);
+            return Database.GetParentPackageQuotas(SecurityContext.User.UserId, packageId);
         }
 
-        public static DataSet GetPackageQuotasForEdit(int packageId)
+        public DataSet GetPackageQuotasForEdit(int packageId)
         {
-            return DataProvider.GetPackageQuotasForEdit(SecurityContext.User.UserId, packageId);
+            return Database.GetPackageQuotasForEdit(SecurityContext.User.UserId, packageId);
         }
 
-        public static PackageInfo GetPackage(int packageId)
+        public PackageInfo GetPackage(int packageId)
         {
             return ObjectUtils.FillObjectFromDataReader<PackageInfo>(
-                DataProvider.GetPackage(SecurityContext.User.UserId, packageId));
+                Database.GetPackage(SecurityContext.User.UserId, packageId));
         }
 
-        public static PackageContext GetPackageContext(int packageId)
+        public PackageContext GetPackageContext(int packageId)
         {
             PackageContext context = new PackageContext();
 
@@ -410,7 +412,7 @@ namespace SolidCP.EnterpriseServer
             return context;
         }
 
-        public static PackageContext GetParentPackageContext(int packageId)
+        public PackageContext GetParentPackageContext(int packageId)
         {
             PackageContext context = new PackageContext();
 
@@ -458,7 +460,7 @@ namespace SolidCP.EnterpriseServer
             return context;
         }
 
-        public static UserInfo GetPackageOwner(int packageId)
+        public UserInfo GetPackageOwner(int packageId)
         {
             PackageInfo package = GetPackage(packageId);
             if (package == null)
@@ -467,7 +469,7 @@ namespace SolidCP.EnterpriseServer
             return UserController.GetUser(package.UserId);
         }
 
-        public static PackageResult AddPackageWithResources(int userId, int planId, string spaceName,
+        public PackageResult AddPackageWithResources(int userId, int planId, string spaceName,
             int statusId, bool sendLetter,
             bool createResources, string domainName, bool createPreviewDomain, bool createWebSite,
             bool createFtpAccount, string ftpAccountName, bool createMailAccount, string hostName)
@@ -738,7 +740,7 @@ namespace SolidCP.EnterpriseServer
         /// <param name="purchaseDate">Date purchased</param>
         /// <param name="sendLetter">Inidicates whether to send e-mail notification or not</param>
         /// <returns>Hosting package(space) creation result</returns>
-        public static PackageResult AddPackage(int userId, int planId, string packageName,
+        public PackageResult AddPackage(int userId, int planId, string packageName,
             string packageComments, int statusId, DateTime purchaseDate, bool sendLetter)
         {
             return AddPackage(userId, planId, packageName, packageComments, statusId, purchaseDate,
@@ -758,7 +760,7 @@ namespace SolidCP.EnterpriseServer
         /// <param name="sendLetter">Inidicates whether to send e-mail notification or not</param>
         /// <param name="signup">Used for external clients to set #Signup# variable in e-mail notification template</param>
         /// <returns>Hosting package(space) creation result</returns>
-        public static PackageResult AddPackage(int userId, int planId, string packageName,
+        public PackageResult AddPackage(int userId, int planId, string packageName,
             string packageComments, int statusId, DateTime purchaseDate, bool sendLetter, bool signup)
         {
             TaskManager.StartTask("HOSTING_SPACE", "ADD", packageName);
@@ -774,7 +776,7 @@ namespace SolidCP.EnterpriseServer
 
                 int packageId = -1;
 
-                result.ExceedingQuotas = DataProvider.AddPackage(SecurityContext.User.UserId, out packageId,
+                result.ExceedingQuotas = Database.AddPackage(SecurityContext.User.UserId, out packageId,
                     userId, planId, packageName, packageComments, statusId, purchaseDate);
 
                 if (result.ExceedingQuotas.Tables[0].Rows.Count > 0)
@@ -836,7 +838,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static PackageResult UpdatePackage(PackageInfo package)
+        public PackageResult UpdatePackage(PackageInfo package)
         {
             TaskManager.StartTask("HOSTING_SPACE", "UPDATE", package.PackageName);
 
@@ -869,7 +871,7 @@ namespace SolidCP.EnterpriseServer
                 string quotasXml = BuildPlanQuotasXml(package.Groups, package.Quotas);
 
                 // update package
-                result.ExceedingQuotas = DataProvider.UpdatePackage(SecurityContext.User.UserId,
+                result.ExceedingQuotas = Database.UpdatePackage(SecurityContext.User.UserId,
                     package.PackageId, package.PlanId, package.PackageName, package.PackageComments, package.StatusId,
                     package.PurchaseDate, package.OverrideQuotas, quotasXml, package.DefaultTopPackage);
 
@@ -879,7 +881,7 @@ namespace SolidCP.EnterpriseServer
                 // Update the Hard quota on home folder in case it was enabled and in case there was a change in disk space
                 UpdatePackageHardQuota(package.PackageId);
 
-                DataProvider.DistributePackageServices(SecurityContext.User.UserId, package.PackageId);
+                Database.DistributePackageServices(SecurityContext.User.UserId, package.PackageId);
             }
             finally
             {
@@ -889,7 +891,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static int ChangePackageUser(int packageId, int UserId)
+        public int ChangePackageUser(int packageId, int UserId)
         {
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive
                 | DemandAccount.IsResellerCSR);
@@ -900,29 +902,29 @@ namespace SolidCP.EnterpriseServer
             int actorId = SecurityContext.User.UserId;
 
             TaskManager.StartTask(null, "HOSTING_SPACE", "CHANGE_USER", packageId, UserId);
-            DataProvider.ChangePackageUser(actorId, packageId, UserId);
+            Database.ChangePackageUser(actorId, packageId, UserId);
             TaskManager.CompleteTask();
 
             return 0;
         }
 
-        public static int UpdatePackageName(int packageId, string packageName,
+        public int UpdatePackageName(int packageId, string packageName,
             string packageComments)
         {
             int result = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
             if (result < 0) return result;
 
-            DataProvider.UpdatePackageName(SecurityContext.User.UserId, packageId, packageName, packageComments);
+            Database.UpdatePackageName(SecurityContext.User.UserId, packageId, packageName, packageComments);
 
             return 0;
         }
 
-        public static int DeletePackage(int packageId)
+        public int DeletePackage(int packageId)
         {
             return DeletePackage(null, packageId);
         }
 
-        public static int DeletePackage(string taskId, int packageId)
+        public int DeletePackage(string taskId, int packageId)
         {
             TaskManager.StartTask(taskId, "HOSTING_SPACE", "DELETE", packageId);
 
@@ -957,7 +959,7 @@ namespace SolidCP.EnterpriseServer
             return 0;
         }
 
-        public static int DeletePackages(List<PackageInfo> packages)
+        public int DeletePackages(List<PackageInfo> packages)
         {
             // delete packages asynchronously
             PackageAsyncWorker packageWorker = new PackageAsyncWorker();
@@ -970,12 +972,12 @@ namespace SolidCP.EnterpriseServer
             return 0;
         }
 
-        public static int ChangePackageStatus(int packageId, PackageStatus status, bool async)
+        public int ChangePackageStatus(int packageId, PackageStatus status, bool async)
         {
             return ChangePackageStatus(null, packageId, status, async);
         }
 
-        public static int ChangePackageStatus(string taskId, int packageId, PackageStatus status, bool async)
+        public int ChangePackageStatus(string taskId, int packageId, PackageStatus status, bool async)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive
@@ -1001,7 +1003,7 @@ namespace SolidCP.EnterpriseServer
             return 0;
         }
 
-        public static int ChangePackagesStatus(List<PackageInfo> packages, PackageStatus status, bool async)
+        public int ChangePackagesStatus(List<PackageInfo> packages, PackageStatus status, bool async)
         {
             int statusId = (int)status;
 
@@ -1042,7 +1044,7 @@ namespace SolidCP.EnterpriseServer
             return 0;
         }
 
-        private static int CreatePackageHome(int resellerPackageId, int packageId, int userId)
+        private int CreatePackageHome(int resellerPackageId, int packageId, int userId)
         {
             // request OS service
             int osId = GetPackageServiceId(packageId, ResourceGroups.Os);
@@ -1099,18 +1101,18 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        public static DateTime GetPackageBandwidthUpdate(int packageId)
+        public DateTime GetPackageBandwidthUpdate(int packageId)
         {
-            return DataProvider.GetPackageBandwidthUpdate(packageId);
+            return Database.GetPackageBandwidthUpdate(packageId);
         }
 
-        public static void UpdatePackageBandwidthUpdate(int packageId, DateTime updateDate)
+        public void UpdatePackageBandwidthUpdate(int packageId, DateTime updateDate)
         {
-            DataProvider.UpdatePackageBandwidthUpdate(packageId, updateDate);
+            Database.UpdatePackageBandwidthUpdate(packageId, updateDate);
         }
 
         // This gets the system quota and updates the home folder with the value
-        public static void UpdatePackageHardQuota(int packageId)
+        public void UpdatePackageHardQuota(int packageId)
         {
             // request OS service
             int osId = GetPackageServiceId(packageId, ResourceGroups.Os);
@@ -1133,7 +1135,7 @@ namespace SolidCP.EnterpriseServer
 
         }
 
-        //public static void UpdateESHardQuota(int packageId)
+        //public void UpdateESHardQuota(int packageId)
         //{
         //    int esServiceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.EnterpriseStorage);
 
@@ -1163,18 +1165,18 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Package Add-ons
-        public static DataSet GetPackageAddons(int packageId)
+        public DataSet GetPackageAddons(int packageId)
         {
-            return DataProvider.GetPackageAddons(SecurityContext.User.UserId, packageId);
+            return Database.GetPackageAddons(SecurityContext.User.UserId, packageId);
         }
 
-        public static PackageAddonInfo GetPackageAddon(int packageAddonId)
+        public PackageAddonInfo GetPackageAddon(int packageAddonId)
         {
             return ObjectUtils.FillObjectFromDataReader<PackageAddonInfo>(
-                DataProvider.GetPackageAddon(SecurityContext.User.UserId, packageAddonId));
+                Database.GetPackageAddon(SecurityContext.User.UserId, packageAddonId));
         }
 
-        public static PackageResult AddPackageAddonById(int packageId, int addonPlanId, int quantity)
+        public PackageResult AddPackageAddonById(int packageId, int addonPlanId, int quantity)
         {
             PackageAddonInfo addon = new PackageAddonInfo();
             addon.PackageId = packageId;
@@ -1187,7 +1189,7 @@ namespace SolidCP.EnterpriseServer
             return AddPackageAddon(addon);
         }
 
-        public static PackageResult AddPackageAddon(PackageAddonInfo addon)
+        public PackageResult AddPackageAddon(PackageAddonInfo addon)
         {
             PackageResult result = new PackageResult();
 
@@ -1207,7 +1209,7 @@ namespace SolidCP.EnterpriseServer
 
             int addonId = 0;
 
-            result.ExceedingQuotas = DataProvider.AddPackageAddon(SecurityContext.User.UserId, out addonId, addon.PackageId,
+            result.ExceedingQuotas = Database.AddPackageAddon(SecurityContext.User.UserId, out addonId, addon.PackageId,
                 addon.PlanId, addon.Quantity, addon.StatusId, addon.PurchaseDate, addon.Comments);
 
             if (result.ExceedingQuotas.Tables[0].Rows.Count > 0)
@@ -1223,7 +1225,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static PackageResult UpdatePackageAddon(PackageAddonInfo addon)
+        public PackageResult UpdatePackageAddon(PackageAddonInfo addon)
         {
             PackageResult result = new PackageResult();
 
@@ -1241,7 +1243,7 @@ namespace SolidCP.EnterpriseServer
 
             if (result.Result < 0) return result;
 
-            result.ExceedingQuotas = DataProvider.UpdatePackageAddon(SecurityContext.User.UserId, addon.PackageAddonId,
+            result.ExceedingQuotas = Database.UpdatePackageAddon(SecurityContext.User.UserId, addon.PackageAddonId,
                 addon.PlanId, addon.Quantity, addon.StatusId, addon.PurchaseDate, addon.Comments);
 
             if (result.ExceedingQuotas.Tables[0].Rows.Count > 0)
@@ -1252,7 +1254,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static int DeletePackageAddon(int packageAddonId)
+        public int DeletePackageAddon(int packageAddonId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive
@@ -1261,7 +1263,7 @@ namespace SolidCP.EnterpriseServer
 
             var packageId = GetPackageAddon(packageAddonId).PackageId;
 
-            DataProvider.DeletePackageAddon(SecurityContext.User.UserId, packageAddonId);
+            Database.DeletePackageAddon(SecurityContext.User.UserId, packageAddonId);
 
             // Update the Hard quota on home folder in case it was enabled and in case there was a change in disk space
             UpdatePackageHardQuota(packageId);
@@ -1272,65 +1274,65 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Package Items
-        public static DataSet GetSearchableServiceItemTypes()
+        public DataSet GetSearchableServiceItemTypes()
         {
-            return DataProvider.GetSearchableServiceItemTypes();
+            return Database.GetSearchableServiceItemTypes();
         }
 
-        public static int GetPackageServiceId(int packageId, string groupName)
+        public int GetPackageServiceId(int packageId, string groupName)
         {
-            return DataProvider.GetPackageServiceId(SecurityContext.User.UserId, packageId, groupName);
+            return Database.GetPackageServiceId(SecurityContext.User.UserId, packageId, groupName);
         }
 
-        public static List<ServiceProviderItem> GetPackageItemsByName(int packageId, string itemName)
+        public List<ServiceProviderItem> GetPackageItemsByName(int packageId, string itemName)
         {
-            DataSet dsItems = DataProvider.GetServiceItemsByName(
+            DataSet dsItems = Database.GetServiceItemsByName(
                 SecurityContext.User.UserId, packageId, itemName);
 
             return CreateServiceItemsList(dsItems, 0);
         }
 
-        public static List<ServiceProviderItem> GetPackageItemsByType(int packageId, string groupName, Type itemType)
+        public List<ServiceProviderItem> GetPackageItemsByType(int packageId, string groupName, Type itemType)
         {
             return GetPackageItemsByType(packageId, groupName, itemType, false);
         }
 
-        public static List<ServiceProviderItem> GetPackageItemsByType(int packageId, Type itemType)
+        public List<ServiceProviderItem> GetPackageItemsByType(int packageId, Type itemType)
         {
             return GetPackageItemsByType(packageId, null, itemType, false);
         }
 
-        public static List<ServiceProviderItem> GetPackageItemsByType(int packageId, Type itemType, bool recursive)
+        public List<ServiceProviderItem> GetPackageItemsByType(int packageId, Type itemType, bool recursive)
         {
             return GetPackageItemsByType(packageId, null, itemType, recursive);
         }
 
-        public static List<ServiceProviderItem> GetPackageItemsByType(int packageId, string groupName, Type itemType, bool recursive)
+        public List<ServiceProviderItem> GetPackageItemsByType(int packageId, string groupName, Type itemType, bool recursive)
         {
             string typeName = ObjectUtils.GetTypeFullName(itemType);
-            DataSet dsItems = DataProvider.GetServiceItems(SecurityContext.User.UserId,
+            DataSet dsItems = Database.GetServiceItems(SecurityContext.User.UserId,
                 packageId, groupName, typeName, recursive);
 
             return CreateServiceItemsList(dsItems, 0);
         }
 
-        public static List<ServiceProviderItem> GetPackageItemsByTypeInternal(int packageId, string groupName, Type itemType, bool recursive)
+        public List<ServiceProviderItem> GetPackageItemsByTypeInternal(int packageId, string groupName, Type itemType, bool recursive)
         {
             string typeName = ObjectUtils.GetTypeFullName(itemType);
-            DataSet dsItems = DataProvider.GetServiceItems(-1, packageId, groupName, typeName, recursive);
+            DataSet dsItems = Database.GetServiceItems(-1, packageId, groupName, typeName, recursive);
 
             return CreateServiceItemsList(dsItems, 0);
         }
 
-        public static DataSet GetRawPackageItemsByType(int packageId, Type itemType, bool recursive)
+        public DataSet GetRawPackageItemsByType(int packageId, Type itemType, bool recursive)
         {
             return GetRawPackageItemsByType(packageId, null, itemType, recursive);
         }
 
-        public static DataSet GetRawPackageItemsByType(int packageId, string groupName, Type itemType, bool recursive)
+        public DataSet GetRawPackageItemsByType(int packageId, string groupName, Type itemType, bool recursive)
         {
             string typeName = ObjectUtils.GetTypeFullName(itemType);
-            DataSet dsItems = DataProvider.GetServiceItems(SecurityContext.User.UserId,
+            DataSet dsItems = Database.GetServiceItems(SecurityContext.User.UserId,
                 packageId, groupName, typeName, recursive);
 
             FlatternItemsTable(dsItems, 0, itemType);
@@ -1338,39 +1340,39 @@ namespace SolidCP.EnterpriseServer
             return dsItems;
         }
 
-        public static ServiceItemsPaged GetPackageItemsPaged(int packageId, Type itemType,
+        public ServiceItemsPaged GetPackageItemsPaged(int packageId, Type itemType,
             string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             return GetPackageItemsPaged(packageId, null, itemType, false, filterColumn, filterValue,
                 sortColumn, startRow, maximumRows);
         }
 
-        public static ServiceItemsPaged GetPackageItemsPaged(int packageId, Type itemType, bool recursive,
+        public ServiceItemsPaged GetPackageItemsPaged(int packageId, Type itemType, bool recursive,
             string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             return GetPackageItemsPaged(packageId, null, itemType, recursive, filterColumn, filterValue,
                 sortColumn, startRow, maximumRows);
         }
 
-        public static DataSet GetRawPackageItemsPaged(int packageId, Type itemType, bool recursive,
+        public DataSet GetRawPackageItemsPaged(int packageId, Type itemType, bool recursive,
             string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             return GetRawPackageItemsPaged(packageId, null, itemType, recursive, filterColumn, filterValue,
                 sortColumn, startRow, maximumRows);
         }
 
-        public static ServiceItemsPaged GetPackageItemsPaged(int packageId, string groupName, Type itemType,
+        public ServiceItemsPaged GetPackageItemsPaged(int packageId, string groupName, Type itemType,
             string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             return GetPackageItemsPaged(packageId, groupName, itemType, false, filterColumn, filterValue,
                 sortColumn, startRow, maximumRows);
         }
 
-        public static ServiceItemsPaged GetPackageItemsPaged(int packageId, string groupName, Type itemType, bool recursive,
+        public ServiceItemsPaged GetPackageItemsPaged(int packageId, string groupName, Type itemType, bool recursive,
             string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             string typeName = ObjectUtils.GetTypeFullName(itemType);
-            DataSet dsItems = DataProvider.GetServiceItemsPaged(
+            DataSet dsItems = Database.GetServiceItemsPaged(
                 SecurityContext.User.UserId, packageId, groupName, typeName, 0, recursive, filterColumn, filterValue,
                 sortColumn, startRow, maximumRows);
 
@@ -1380,7 +1382,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static DataSet GetRawPackageItemsPaged(int packageId, string groupName, Type itemType,
+        public DataSet GetRawPackageItemsPaged(int packageId, string groupName, Type itemType,
             bool recursive, string filterColumn, string filterValue, string sortColumn,
             int startRow, int maximumRows)
         {
@@ -1388,12 +1390,12 @@ namespace SolidCP.EnterpriseServer
                 sortColumn, startRow, maximumRows);
         }
 
-        public static DataSet GetRawPackageItemsPaged(int packageId, string groupName, Type itemType,
+        public DataSet GetRawPackageItemsPaged(int packageId, string groupName, Type itemType,
             int serverId, bool recursive, string filterColumn, string filterValue, string sortColumn,
             int startRow, int maximumRows)
         {
             string typeName = ObjectUtils.GetTypeFullName(itemType);
-            DataSet dsItems = DataProvider.GetServiceItemsPaged(
+            DataSet dsItems = Database.GetServiceItemsPaged(
                 SecurityContext.User.UserId, packageId, groupName, typeName, serverId, recursive, filterColumn, filterValue,
                 sortColumn, startRow, maximumRows);
 
@@ -1402,120 +1404,120 @@ namespace SolidCP.EnterpriseServer
             return dsItems;
         }
 
-        public static int GetServiceItemsCount(Type itemType, string groupName)
+        public int GetServiceItemsCount(Type itemType, string groupName)
         {
             return GetServiceItemsCount(itemType, groupName, 0);
         }
 
-        public static int GetServiceItemsCount(Type itemType, string groupName, int serviceId)
+        public int GetServiceItemsCount(Type itemType, string groupName, int serviceId)
         {
             string typeName = ObjectUtils.GetTypeFullName(itemType);
-            return DataProvider.GetServiceItemsCount(typeName, groupName, serviceId);
+            return Database.GetServiceItemsCount(typeName, groupName, serviceId);
         }
 
-        public static DataSet GetPackageItemsDataSet(int packageId)
+        public DataSet GetPackageItemsDataSet(int packageId)
         {
-            return DataProvider.GetServiceItemsByPackage(SecurityContext.User.UserId,
+            return Database.GetServiceItemsByPackage(SecurityContext.User.UserId,
                 packageId);
         }
 
-        public static List<ServiceProviderItem> GetPackageItems(int packageId)
+        public List<ServiceProviderItem> GetPackageItems(int packageId)
         {
             DataSet dsItems = GetPackageItemsDataSet(packageId);
             return CreateServiceItemsList(dsItems, 0);
         }
 
-        public static DataSet GetRawPackageItems(int packageId)
+        public DataSet GetRawPackageItems(int packageId)
         {
-            return DataProvider.GetServiceItemsByPackage(SecurityContext.User.UserId,
+            return Database.GetServiceItemsByPackage(SecurityContext.User.UserId,
                 packageId);
         }
 
-        public static DataSet GetServiceItemsDataSet(int serviceId)
+        public DataSet GetServiceItemsDataSet(int serviceId)
         {
-            return DataProvider.GetServiceItemsByService(SecurityContext.User.UserId,
+            return Database.GetServiceItemsByService(SecurityContext.User.UserId,
                 serviceId);
         }
 
-        public static List<ServiceProviderItem> GetServiceItems(int serviceId)
+        public List<ServiceProviderItem> GetServiceItems(int serviceId)
         {
             DataSet dsItems = GetServiceItemsDataSet(serviceId);
             return CreateServiceItemsList(dsItems, 0);
         }
 
-        public static List<ServiceProviderItemType> GetServiceItemTypes()
+        public List<ServiceProviderItemType> GetServiceItemTypes()
         {
             return ObjectUtils.CreateListFromDataReader<ServiceProviderItemType>(
-                DataProvider.GetServiceItemTypes());
+                Database.GetServiceItemTypes());
         }
 
-        public static ServiceProviderItemType GetServiceItemType(int itemTypeId)
+        public ServiceProviderItemType GetServiceItemType(int itemTypeId)
         {
             return ObjectUtils.FillObjectFromDataReader<ServiceProviderItemType>(
-                DataProvider.GetServiceItemType(itemTypeId));
+                Database.GetServiceItemType(itemTypeId));
         }
 
-        public static List<ServiceProviderItem> GetServiceItemsForStatistics(int serviceId, int packageId,
+        public List<ServiceProviderItem> GetServiceItemsForStatistics(int serviceId, int packageId,
             bool calculateDiskspace, bool calculateBandwidth, bool suspendable, bool disposable)
         {
-            DataSet dsItems = DataProvider.GetServiceItemsForStatistics(SecurityContext.User.UserId,
+            DataSet dsItems = Database.GetServiceItemsForStatistics(SecurityContext.User.UserId,
                 serviceId, packageId, calculateDiskspace, calculateBandwidth, suspendable, disposable);
             return CreateServiceItemsList(dsItems, 0);
         }
 
-        public static ServiceProviderItem GetPackageItem(int itemId)
+        public ServiceProviderItem GetPackageItem(int itemId)
         {
-            DataSet dsItem = DataProvider.GetServiceItem(SecurityContext.User.UserId, itemId);
+            DataSet dsItem = Database.GetServiceItem(SecurityContext.User.UserId, itemId);
             DataView dvItem = dsItem.Tables[0].DefaultView;
             if (dvItem.Count == 0)
                 return null;
 
-            return CreateServiceItem(dvItem[0], dsItem.Tables[1].DefaultView);
+            return CreateServiceItem(dvItem[0], dsItem.Tables[1]);
         }
 
-        public static ServiceProviderItem GetPackageItemByName(int packageId, string itemName, Type itemType)
+        public ServiceProviderItem GetPackageItemByName(int packageId, string itemName, Type itemType)
         {
             return GetPackageItemByName(packageId, null, itemName, itemType);
         }
 
-        public static ServiceProviderItem GetPackageItemByName(int packageId, string groupName, string itemName, Type itemType)
+        public ServiceProviderItem GetPackageItemByName(int packageId, string groupName, string itemName, Type itemType)
         {
             string itemTypeName = ObjectUtils.GetTypeFullName(itemType);
-            DataSet dsItem = DataProvider.GetServiceItemByName(SecurityContext.User.UserId,
+            DataSet dsItem = Database.GetServiceItemByName(SecurityContext.User.UserId,
                 packageId, groupName, itemName, itemTypeName);
             DataView dvItem = dsItem.Tables[0].DefaultView;
             if (dvItem.Count == 0)
                 return null;
 
-            return CreateServiceItem(dvItem[0], dsItem.Tables[1].DefaultView);
+            return CreateServiceItem(dvItem[0], dsItem.Tables[1]);
         }
 
-        public static int GetServiceItemsCountByNameAndServiceId(int serviceId, string groupName, string itemName, Type itemType)
+        public int GetServiceItemsCountByNameAndServiceId(int serviceId, string groupName, string itemName, Type itemType)
         {
             string itemTypeName = ObjectUtils.GetTypeFullName(itemType);
 
-            return DataProvider.GetServiceItemsCountByNameAndServiceId(SecurityContext.User.UserId,
+            return Database.GetServiceItemsCountByNameAndServiceId(SecurityContext.User.UserId,
                 serviceId, groupName, itemName, itemTypeName);
         }
 
-        public static bool CheckServiceItemExists(string itemName, Type itemType)
+        public bool CheckServiceItemExists(string itemName, Type itemType)
         {
             return CheckServiceItemExists(itemName, null, itemType);
         }
 
-        public static bool CheckServiceItemExists(string itemName, string groupName, Type itemType)
+        public bool CheckServiceItemExists(string itemName, string groupName, Type itemType)
         {
             string itemTypeName = ObjectUtils.GetTypeFullName(itemType);
-            return DataProvider.CheckServiceItemExists(itemName, groupName, itemTypeName);
+            return Database.CheckServiceItemExists(itemName, groupName, itemTypeName);
         }
 
-        public static bool CheckServiceItemExists(int serviceId, string itemName, Type itemType)
+        public bool CheckServiceItemExists(int serviceId, string itemName, Type itemType)
         {
             string itemTypeName = ObjectUtils.GetTypeFullName(itemType);
-            return DataProvider.CheckServiceItemExists(serviceId, itemName, itemTypeName);
+            return Database.CheckServiceItemExists(serviceId, itemName, itemTypeName);
         }
 
-        public static int AddPackageItem(ServiceProviderItem item)
+        public int AddPackageItem(ServiceProviderItem item)
         {
             // check parameters
             if (item.PackageId < 0)
@@ -1530,25 +1532,25 @@ namespace SolidCP.EnterpriseServer
             string xml = BuildPropertiesXml(ObjectUtils.GetObjectProperties(item, true));
 
             // add item itself
-            int itemId = DataProvider.AddServiceItem(SecurityContext.User.UserId,
+            int itemId = Database.AddServiceItem(SecurityContext.User.UserId,
                 item.ServiceId, item.PackageId, item.Name,
                 itemTypeName, xml);
 
             return itemId;
         }
 
-        public static int UpdatePackageItem(ServiceProviderItem item)
+        public int UpdatePackageItem(ServiceProviderItem item)
         {
             // build properties xml
             string xml = BuildPropertiesXml(ObjectUtils.GetObjectProperties(item, true));
 
             // update item
-            DataProvider.UpdateServiceItem(SecurityContext.User.UserId, item.Id, item.Name, xml);
+            Database.UpdateServiceItem(SecurityContext.User.UserId, item.Id, item.Name, xml);
 
             return 0;
         }
 
-        private static string BuildPropertiesXml(Hashtable props)
+        private string BuildPropertiesXml(Hashtable props)
         {
             XmlDocument doc = new XmlDocument();
             XmlElement nodeProps = doc.CreateElement("properties");
@@ -1562,7 +1564,7 @@ namespace SolidCP.EnterpriseServer
             return nodeProps.OuterXml;
         }
 
-        public static int DetachPackageItem(int itemId)
+        public int DetachPackageItem(int itemId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive
@@ -1586,7 +1588,7 @@ namespace SolidCP.EnterpriseServer
             return 0;
         }
 
-        public static int MovePackageItem(int itemId, int destinationServiceId, bool forAutodiscover)
+        public int MovePackageItem(int itemId, int destinationServiceId, bool forAutodiscover)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive
@@ -1594,32 +1596,32 @@ namespace SolidCP.EnterpriseServer
             if (accountCheck < 0 && !forAutodiscover) return accountCheck;
 
             // move item
-            DataProvider.MoveServiceItem(SecurityContext.User.UserId, itemId, destinationServiceId, forAutodiscover);
+            Database.MoveServiceItem(SecurityContext.User.UserId, itemId, destinationServiceId, forAutodiscover);
 
             return 0;
         }
 
-        public static int DeletePackageItem(int itemId)
+        public int DeletePackageItem(int itemId)
         {
             // delete item
-            DataProvider.DeleteServiceItem(SecurityContext.User.UserId, itemId);
+            Database.DeleteServiceItem(SecurityContext.User.UserId, itemId);
 
             return 0;
         }
 
-        public static int UpdatePackageBandwidth(int packageId, string xml)
+        public int UpdatePackageBandwidth(int packageId, string xml)
         {
-            DataProvider.UpdatePackageBandwidth(packageId, xml);
+            Database.UpdatePackageBandwidth(packageId, xml);
             return 0;
         }
 
-        public static int UpdatePackageDiskSpace(int packageId, string xml)
+        public int UpdatePackageDiskSpace(int packageId, string xml)
         {
-            DataProvider.UpdatePackageDiskSpace(packageId, xml);
+            Database.UpdatePackageDiskSpace(packageId, xml);
             return 0;
         }
 
-        public static List<ServiceProviderItem> CreateServiceItemsList(DataSet dsItems, int itemsTablePosition)
+        public List<ServiceProviderItem> CreateServiceItemsList(DataSet dsItems, int itemsTablePosition)
         {
             List<ServiceProviderItem> items = new List<ServiceProviderItem>();
 
@@ -1634,8 +1636,7 @@ namespace SolidCP.EnterpriseServer
             return items;
         }
 
-
-        private static ServiceProviderItem CreateServiceItem(DataRowView drItem, DataView dvProps)
+		private ServiceProviderItem CreateServiceItem(DataRowView drItem, DataTable tProps)
         {
             // create item instance
             string itemTypeName = (string)drItem["TypeName"];
@@ -1645,8 +1646,8 @@ namespace SolidCP.EnterpriseServer
                 itemType = typeof(ServiceProviderItem); // create generic item
 
             // create item instance and fill other properties
-            ServiceProviderItem item = (ServiceProviderItem)ObjectUtils.CreateObjectFromDataview(
-                Type.GetType(itemTypeName), dvProps, "PropertyName", "PropertyValue", true);
+            ServiceProviderItem item = (ServiceProviderItem)ObjectUtils.CreateObjectFromDataTable(
+                Type.GetType(itemTypeName), tProps, "PropertyName", "PropertyValue", true);
 
             // fill item key properties
             item.Id = (int)drItem["ItemID"];
@@ -1660,7 +1661,31 @@ namespace SolidCP.EnterpriseServer
             return item;
         }
 
-        private static void FlatternItemsTable(DataSet dsItems, int itemsTablePosition, Type itemType)
+		private ServiceProviderItem CreateServiceItem(DataRowView drItem, DataView dvProps)
+		{
+			// create item instance
+			string itemTypeName = (string)drItem["TypeName"];
+			Type itemType = Type.GetType(itemTypeName);
+
+			if (itemType == null)
+				itemType = typeof(ServiceProviderItem); // create generic item
+
+			// create item instance and fill other properties
+			ServiceProviderItem item = (ServiceProviderItem)ObjectUtils.CreateObjectFromDataView(
+				Type.GetType(itemTypeName), dvProps, "PropertyName", "PropertyValue", true);
+
+			// fill item key properties
+			item.Id = (int)drItem["ItemID"];
+			item.TypeId = (int)drItem["ItemTypeID"];
+			item.Name = (string)drItem["ItemName"];
+			item.PackageId = (int)drItem["PackageID"];
+			item.ServiceId = (int)drItem["ServiceID"];
+			item.GroupName = (string)drItem["GroupName"];
+			item.CreatedDate = Utils.ParseDate(drItem["CreatedDate"]);
+
+			return item;
+		}
+		private void FlatternItemsTable(DataSet dsItems, int itemsTablePosition, Type itemType)
         {
             DataTable dtItems = dsItems.Tables[itemsTablePosition];
             DataTable dtProps = dsItems.Tables[itemsTablePosition + 1];
@@ -1706,9 +1731,9 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Package Settings
-        public static PackageSettings GetPackageSettings(int packageId, string settingsName)
+        public PackageSettings GetPackageSettings(int packageId, string settingsName)
         {
-            IDataReader reader = DataProvider.GetPackageSettings(
+            IDataReader reader = Database.GetPackageSettings(
                 SecurityContext.User.UserId, packageId, settingsName);
 
             PackageSettings settings = new PackageSettings();
@@ -1818,7 +1843,7 @@ namespace SolidCP.EnterpriseServer
             return settings;
         }
 
-        public static int UpdatePackageSettings(PackageSettings settings)
+        public int UpdatePackageSettings(PackageSettings settings)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -1855,7 +1880,7 @@ namespace SolidCP.EnterpriseServer
                 string xml = nodeProps.OuterXml;
 
                 // update settings
-                DataProvider.UpdatePackageSettings(SecurityContext.User.UserId,
+                Database.UpdatePackageSettings(SecurityContext.User.UserId,
                     settings.PackageId, settings.SettingsName, xml);
 
                 return 0;
@@ -1872,7 +1897,7 @@ namespace SolidCP.EnterpriseServer
             //}
         }
 
-        public static bool SetDefaultTopPackage(int userId, int packageId) {
+        public bool SetDefaultTopPackage(int userId, int packageId) {
             List<PackageInfo> lpi = GetPackages(userId);
             foreach(PackageInfo pi in lpi) {
                 if(pi.DefaultTopPackage) {
@@ -1890,10 +1915,10 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Quotas
-        public static QuotaValueInfo GetPackageQuota(int packageId, string quotaName)
+        public QuotaValueInfo GetPackageQuota(int packageId, string quotaName)
         {
             QuotaValueInfo quota = ObjectUtils.FillObjectFromDataReader<QuotaValueInfo>(
-                DataProvider.GetPackageQuota(SecurityContext.User.UserId,
+                Database.GetPackageQuota(SecurityContext.User.UserId,
                 packageId, quotaName));
 
             // set exhausted flag
@@ -1904,7 +1929,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Fix for item #1547 by Pavel Tsurbeleu
-        public static string BuildMessageBccField(params string[] bccAddresses)
+        public string BuildMessageBccField(params string[] bccAddresses)
         {
             List<string> mailAddresses = new List<string>();
             //
@@ -1926,7 +1951,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Templates
-        public static int SendAccountSummaryLetter(int userId, string to, string bcc, bool signup)
+        public int SendAccountSummaryLetter(int userId, string to, string bcc, bool signup)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -1967,7 +1992,7 @@ namespace SolidCP.EnterpriseServer
             return MailHelper.SendMessage(from, to, bcc, subject, body, priority, isHtml);
         }
 
-        public static int SendPackageSummaryLetter(int packageId, string to, string bcc, bool signup)
+        public int SendPackageSummaryLetter(int packageId, string to, string bcc, bool signup)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -2013,7 +2038,7 @@ namespace SolidCP.EnterpriseServer
             return MailHelper.SendMessage(from, to, bcc, subject, body, priority, isHtml);
         }
 
-        public static string GetEvaluatedPackageTemplateBody(int packageId, bool signup)
+        public string GetEvaluatedPackageTemplateBody(int packageId, bool signup)
         {
             // load user info
             UserInfo user = GetPackageOwner(packageId);
@@ -2029,7 +2054,7 @@ namespace SolidCP.EnterpriseServer
             return user.HtmlMail ? result : result.Replace("\n", "<br/>");
         }
 
-        public static string GetEvaluatedAccountTemplateBody(int userId, bool signup)
+        public string GetEvaluatedAccountTemplateBody(int userId, bool signup)
         {
             // load user info
             UserInfo user = UserController.GetUser(userId);
@@ -2045,7 +2070,7 @@ namespace SolidCP.EnterpriseServer
             return user.HtmlMail ? result : result.Replace("\n", "<br/>");
         }
 
-        public static string EvaluateUserPackageTempate(int userId, int packageId, string template)
+        public string EvaluateUserPackageTempate(int userId, int packageId, string template)
         {
             // package context
             if (packageId > -1)
@@ -2058,7 +2083,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static string EvaluatePackageTempate(int packageId, string template, bool signup, bool email)
+        public string EvaluatePackageTempate(int packageId, string template, bool signup, bool email)
         {
             Hashtable items = new Hashtable();
 
@@ -2195,7 +2220,7 @@ namespace SolidCP.EnterpriseServer
             return EvaluateTemplate(template, items);
         }
 
-        private static void SetSqlServerExternalAddress(int packageId, Hashtable items, string groupName)
+        private void SetSqlServerExternalAddress(int packageId, Hashtable items, string groupName)
         {
             int serviceId = GetPackageServiceId(packageId, groupName);
             if (serviceId > 0)
@@ -2207,7 +2232,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static string EvaluateAccountTempate(int userId, string template, bool signup, bool email)
+        public string EvaluateAccountTempate(int userId, string template, bool signup, bool email)
         {
             Hashtable items = new Hashtable();
 
@@ -2271,7 +2296,7 @@ namespace SolidCP.EnterpriseServer
             return EvaluateTemplate(template, items);
         }
 
-        public static string EvaluateTemplate(string template, Hashtable items)
+        public string EvaluateTemplate(string template, Hashtable items)
         {
             StringWriter writer = new StringWriter();
 
@@ -2310,39 +2335,39 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Reports
-        public static DataSet GetPackagesBandwidthPaged(int userId, int packageId,
+        public DataSet GetPackagesBandwidthPaged(int userId, int packageId,
             DateTime startDate, DateTime endDate, string sortColumn,
             int startRow, int maximumRows)
         {
-            return DataProvider.GetPackagesBandwidthPaged(
+            return Database.GetPackagesBandwidthPaged(
                 SecurityContext.User.UserId, userId, packageId, startDate, endDate, sortColumn,
                 startRow, maximumRows);
         }
 
-        public static DataSet GetPackagesDiskspacePaged(int userId, int packageId, string sortColumn,
+        public DataSet GetPackagesDiskspacePaged(int userId, int packageId, string sortColumn,
             int startRow, int maximumRows)
         {
-            return DataProvider.GetPackagesDiskspacePaged(
+            return Database.GetPackagesDiskspacePaged(
                 SecurityContext.User.UserId, userId, packageId, sortColumn,
                 startRow, maximumRows);
         }
 
-        public static DataSet GetPackageBandwidth(int packageId, DateTime startDate, DateTime endDate)
+        public DataSet GetPackageBandwidth(int packageId, DateTime startDate, DateTime endDate)
         {
-            return DataProvider.GetPackageBandwidth(
+            return Database.GetPackageBandwidth(
                 SecurityContext.User.UserId, packageId, startDate, endDate);
         }
 
-        public static DataSet GetPackageDiskspace(int packageId)
+        public DataSet GetPackageDiskspace(int packageId)
         {
-            return DataProvider.GetPackageDiskspace(
+            return Database.GetPackageDiskspace(
                 SecurityContext.User.UserId, packageId);
         }
 
         #endregion
 
         #region Overusage Report
-        public static Reports.OverusageReport GetOverusageSummaryReport(int userId, int packageId, DateTime startDate, DateTime endDate)
+        public Reports.OverusageReport GetOverusageSummaryReport(int userId, int packageId, DateTime startDate, DateTime endDate)
         {
             Reports.OverusageReport report = new Reports.OverusageReport();
 
@@ -2352,7 +2377,7 @@ namespace SolidCP.EnterpriseServer
             return report;
         }
 
-        public static Reports.OverusageReport GetDiskspaceOverusageDetailsReport(int userId, int packageId)
+        public Reports.OverusageReport GetDiskspaceOverusageDetailsReport(int userId, int packageId)
         {
             Reports.OverusageReport report = new Reports.OverusageReport();
 
@@ -2362,7 +2387,7 @@ namespace SolidCP.EnterpriseServer
             return report;
         }
 
-        public static Reports.OverusageReport GetBandwidthDetailsReport(int userId, int packageId, DateTime startDate, DateTime endDate)
+        public Reports.OverusageReport GetBandwidthDetailsReport(int userId, int packageId, DateTime startDate, DateTime endDate)
         {
             Reports.OverusageReport report = new Reports.OverusageReport();
 
@@ -2372,7 +2397,7 @@ namespace SolidCP.EnterpriseServer
             return report;
         }
 
-        private static Reports.OverusageReport GetDiskspaceInformationAboutPackage(Reports.OverusageReport report, int packageId)
+        private Reports.OverusageReport GetDiskspaceInformationAboutPackage(Reports.OverusageReport report, int packageId)
         {
             PackageInfo packageInfo = GetPackage(packageId);
             packageInfo.DiskSpaceQuota = GetPackageQuota(packageId, "OS.Diskspace").QuotaAllocatedValue;
@@ -2404,7 +2429,7 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        private static Reports.OverusageReport GetBandwidthInformationAboutPackage(Reports.OverusageReport report, int packageId, DateTime startDate, DateTime endDate)
+        private Reports.OverusageReport GetBandwidthInformationAboutPackage(Reports.OverusageReport report, int packageId, DateTime startDate, DateTime endDate)
         {
             PackageInfo packageInfo = GetPackage(packageId);
             packageInfo.BandWidthQuota = GetPackageQuota(packageId, "OS.Bandwidth").QuotaAllocatedValue;
@@ -2437,7 +2462,7 @@ namespace SolidCP.EnterpriseServer
         }
 
 
-        private static Reports.OverusageReport GetBandwidthDetails(Reports.OverusageReport report, DateTime startDate, DateTime endDate)
+        private Reports.OverusageReport GetBandwidthDetails(Reports.OverusageReport report, DateTime startDate, DateTime endDate)
         {
             foreach (Reports.OverusageReport.HostingSpaceRow hsRow in report.HostingSpace.Rows)
             {
@@ -2455,7 +2480,7 @@ namespace SolidCP.EnterpriseServer
             return report;
         }
 
-        private static Reports.OverusageReport GetDiskspaceDetails(Reports.OverusageReport report)
+        private Reports.OverusageReport GetDiskspaceDetails(Reports.OverusageReport report)
         {
             foreach (Reports.OverusageReport.HostingSpaceRow hsRow in report.HostingSpace.Rows)
             {
@@ -2473,7 +2498,7 @@ namespace SolidCP.EnterpriseServer
             return report;
         }
 
-        private static Reports.OverusageReport GetBandwidthReport(Reports.OverusageReport report, int userId, long packageId, string rootHostingSpacePath, DateTime startDate, DateTime endDate)
+        private Reports.OverusageReport GetBandwidthReport(Reports.OverusageReport report, int userId, long packageId, string rootHostingSpacePath, DateTime startDate, DateTime endDate)
         {
             DataTable bwTable = GetPackagesBandwidthPaged(userId, (int)packageId, startDate, endDate);
 
@@ -2540,7 +2565,7 @@ namespace SolidCP.EnterpriseServer
         /// <param name="packageId"></param>
         /// <param name="rootHostingSpacePath"></param>
         /// <returns></returns>
-        private static Reports.OverusageReport GetDiskspaceReport(Reports.OverusageReport report, int userId, long packageId, string rootHostingSpacePath)
+        private Reports.OverusageReport GetDiskspaceReport(Reports.OverusageReport report, int userId, long packageId, string rootHostingSpacePath)
         {
             DataTable dsTable = GetPackagesDiskspacePaged(userId, (int)packageId);
 
@@ -2603,7 +2628,7 @@ namespace SolidCP.EnterpriseServer
         /// </summary>
         /// <param name="packageId"></param>
         /// <returns></returns>
-        private static DataTable GetPackagesDiskspacePaged(int userId, int packageId)
+        private DataTable GetPackagesDiskspacePaged(int userId, int packageId)
         {
             return GetPackagesDiskspacePaged(
                       userId
@@ -2622,7 +2647,7 @@ namespace SolidCP.EnterpriseServer
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
         /// <returns></returns>
-        private static DataTable GetPackagesBandwidthPaged(int userId, int packageId, DateTime startDate, DateTime endDate)
+        private DataTable GetPackagesBandwidthPaged(int userId, int packageId, DateTime startDate, DateTime endDate)
         {
             return GetPackagesBandwidthPaged(
                       userId
@@ -2644,7 +2669,7 @@ namespace SolidCP.EnterpriseServer
         /// <param name="isBandwidthOverused">Shows whether bandwidth is overused.</param>
         /// <param name="packageFullTree">Hosting spaces tree.</param>
         /// <returns>HostingSpacesRow class instance.</returns>
-        private static Reports.OverusageReport.HostingSpaceRow CreateHostingSpacesRow(DataRow hsRow, Reports.OverusageReport currentOverusageReport, bool isDiskspaceOverused, bool isBandwidthOverused, string packageFullTree)
+        private Reports.OverusageReport.HostingSpaceRow CreateHostingSpacesRow(DataRow hsRow, Reports.OverusageReport currentOverusageReport, bool isDiskspaceOverused, bool isBandwidthOverused, string packageFullTree)
         {
             Reports.OverusageReport.HostingSpaceRow row = Reports.OverusageReport.HostingSpaceRow.CreateFromHostingSpacesRow(currentOverusageReport, hsRow, isDiskspaceOverused, isBandwidthOverused, packageFullTree);
 
@@ -2658,7 +2683,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Helper Methods
-        public static Dictionary<int, List<ServiceProviderItem>> OrderServiceItemsByServices(
+        public Dictionary<int, List<ServiceProviderItem>> OrderServiceItemsByServices(
             List<ServiceProviderItem> items)
         {
             // order items by service id

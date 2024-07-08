@@ -44,30 +44,32 @@ using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class FtpServerController : IImportController, IBackupController
+    public class FtpServerController : ControllerBase, IImportController, IBackupController
     {
-        public static FTPServer GetFTPServer(int serviceId)
+        public FtpServerController(ControllerBase provider): base(provider) { }
+
+        public FTPServer GetFTPServer(int serviceId)
         {
             FTPServer ftp = new FTPServer();
             ServiceProviderProxy.Init(ftp, serviceId);
             return ftp;
         }
 
-        public static FtpSite[] GetFtpSites(int serviceId)
+        public FtpSite[] GetFtpSites(int serviceId)
         {
             FTPServer ftp = new FTPServer();
             ServiceProviderProxy.Init(ftp, serviceId);
             return ftp.GetSites();
         }
 
-        public static DataSet GetRawFtpAccountsPaged(int packageId,
+        public DataSet GetRawFtpAccountsPaged(int packageId,
             string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             return PackageController.GetRawPackageItemsPaged(packageId, typeof(FtpAccount),
                 true, filterColumn, filterValue, sortColumn, startRow, maximumRows);
         }
 
-        public static List<FtpAccount> GetFtpAccounts(int packageId, bool recursive)
+        public List<FtpAccount> GetFtpAccounts(int packageId, bool recursive)
         {
             List<ServiceProviderItem> items = PackageController.GetPackageItemsByType(
                 packageId, typeof(FtpAccount), recursive);
@@ -76,7 +78,7 @@ namespace SolidCP.EnterpriseServer
                 new Converter<ServiceProviderItem, FtpAccount>(ConvertItemToFtpAccount));
         }
 
-        private static FtpAccount ConvertItemToFtpAccount(ServiceProviderItem item)
+        private FtpAccount ConvertItemToFtpAccount(ServiceProviderItem item)
         {
             FtpAccount account = (FtpAccount)item;
 
@@ -91,17 +93,17 @@ namespace SolidCP.EnterpriseServer
             return account;
         }
 
-        public static bool FtpAccountExists(string name)
+        public bool FtpAccountExists(string name)
         {
             return PackageController.CheckServiceItemExists(name, typeof(FtpAccount));
         }
 
-        public static bool FtpAccountExists(int serviceId, string name)
+        public bool FtpAccountExists(int serviceId, string name)
         {
             return PackageController.CheckServiceItemExists(serviceId, name, typeof(FtpAccount));
         }
 
-        public static FtpAccount GetFtpAccount(int itemId)
+        public FtpAccount GetFtpAccount(int itemId)
         {
             // load meta item
             FtpAccount item = (FtpAccount)PackageController.GetPackageItem(itemId);
@@ -122,7 +124,7 @@ namespace SolidCP.EnterpriseServer
             return account;
         }
 
-        public static int AddFtpAccount(FtpAccount item)
+        public int AddFtpAccount(FtpAccount item)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -204,7 +206,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int UpdateFtpAccount(FtpAccount item)
+        public int UpdateFtpAccount(FtpAccount item)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -272,7 +274,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int DeleteFtpAccount(int itemId)
+        public int DeleteFtpAccount(int itemId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);

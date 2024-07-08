@@ -10,16 +10,17 @@
 <asp:DataList ID="dlServers" Runat="server" RepeatLayout="Flow"  RepeatDirection="Horizontal">
 
 	<ItemTemplate>
-            <div class="col-md-4">
-        <div class=" panel panel-info server-panel matchHeight">
-            <div class="panel-heading"
-               <h3 class="panel-title">
-                    <i class="fa fa-server" aria-hidden="true">&nbsp;</i>&nbsp;
-        <asp:CheckBox ID="chkServer" AutoPostBack="true" runat="server" Checked="true" Value='<%# Eval("ServerID") %>' /> 
-        <%# PortalAntiXSS.EncodeOld((string)Eval("ServerName")) %>
-                   </h3>
-            </div>  </div>
-                </div>
+        <div class="col-md-4">
+            <div class=" panel panel-info server-panel matchHeight">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <i class="fa fa-server" aria-hidden="true">&nbsp;</i>&nbsp;
+                        <asp:CheckBox ID="chkServer" AutoPostBack="true" runat="server" Checked="true" Value='<%# Eval("ServerID") %>' /> 
+                        <%# PortalAntiXSS.EncodeOld((string)Eval("ServerName")) %>
+                    </h3>
+                </div> 
+            </div>
+        </div>
     </ItemTemplate>
 </asp:DataList>
 </div>

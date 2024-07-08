@@ -19,6 +19,9 @@ namespace SolidCP.Web.Clients
 {
     public class AssemblyLoader
     {
+
+        public const bool CreateShadowCopies = true;
+
         static string shadowCopyFolder = null;
         public static string ShadowCopyFolder
         {
@@ -146,7 +149,7 @@ namespace SolidCP.Web.Clients
                     }
                 }
             }
-            timer.Dispose();
+            timer?.Dispose();
             timer = null;
         }
 
@@ -174,6 +177,7 @@ namespace SolidCP.Web.Clients
                         var eserver = Assembly.Load("SolidCP.EnterpriseServer");
                         if (eserver != null)
                         {
+                            // init password validator
                             var validatorType = eserver.GetType("SolidCP.EnterpriseServer.UsernamePasswordValidator");
                             var init = validatorType.GetMethod("Init", BindingFlags.Public | BindingFlags.Static);
                             init.Invoke(null, new object[0]);
@@ -215,7 +219,7 @@ namespace SolidCP.Web.Clients
         }
 
         static string exepath = null;
-        static string Exepath
+        public static string ExePath
         {
             get
             {
@@ -232,7 +236,7 @@ namespace SolidCP.Web.Clients
 
         static string[] paths = null;
         static string ProbingPaths = null;
-        static string[] Paths => paths != null ? paths : paths =
+        public static string[] Paths => paths != null ? paths : paths =
             (string.IsNullOrEmpty(ProbingPaths) ? new string[0] :
                 ProbingPaths.Replace('\\', Path.DirectorySeparatorChar)
                 .Split(';'));
@@ -261,7 +265,7 @@ namespace SolidCP.Web.Clients
                 .Select(p =>
                 {
                     var relativename = Path.Combine(p, $"{name}.dll");
-                    var fullName = new DirectoryInfo(Path.Combine(Exepath, relativename)).FullName;
+                    var fullName = new DirectoryInfo(Path.Combine(ExePath, relativename)).FullName;
                     return new
                     {
                         FullName = fullName,
@@ -274,7 +278,7 @@ namespace SolidCP.Web.Clients
                 {
                     string file = null;
                     // Create shadow copy
-                    if (OSInfo.IsWindows)
+                    if (OSInfo.IsWindows && CreateShadowCopies)
                     {
 
                         var temp = TempFile(p.FullName);

@@ -12,19 +12,20 @@ using System.Threading.Tasks;
 
 namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
 {
-    public static class ChangeVirtualMachineAdministratorPasswordHandler
+    public class ChangeVirtualMachineAdministratorPasswordHandler: ControllerBase
     {
-        public static ResultObject ChangeAdministratorPassword(int itemId, string password)
+        public ChangeVirtualMachineAdministratorPasswordHandler(ControllerBase provider) : base(provider) { }
+        public ResultObject ChangeAdministratorPassword(int itemId, string password)
         {
             return ChangeAdministratorPasswordInternal(itemId, password, false);
         }
 
-        public static ResultObject ChangeAdministratorPasswordAndCleanResult(int itemId, string password)
+        public ResultObject ChangeAdministratorPasswordAndCleanResult(int itemId, string password)
         {
             return ChangeAdministratorPasswordInternal(itemId, password, true);
         }
 
-        private static ResultObject ChangeAdministratorPasswordInternal(int itemId, string password, bool cleanResult)
+        private ResultObject ChangeAdministratorPasswordInternal(int itemId, string password, bool cleanResult)
         {
             ResultObject res = new ResultObject();
 

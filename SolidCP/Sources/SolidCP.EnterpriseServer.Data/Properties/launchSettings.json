@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SolidCP.EnterpriseServer.Data": {
+        "commandName": "Project",
+        "commandLineArgs": "\"Server=(local);Database=SolidCPFresh;uid=sa;pwd=Password12;TrustServerCertificate=true;Connection Timeout=300;command timeout=300\" SolidCP.EnterpriseServer.Data.Entities.Provider 8"
+    }
+  }
+}

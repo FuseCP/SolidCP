@@ -14,9 +14,11 @@ using System.Threading.Tasks;
 
 namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
 {
-    public static class UpdateVirtualMachineHostNameHandler
+    public class UpdateVirtualMachineHostNameHandler: ControllerBase
     {
-        public static ResultObject UpdateVirtualMachineHostName(int itemId, string hostname, bool updateNetBIOS)
+        public UpdateVirtualMachineHostNameHandler(ControllerBase provider) : base(provider) { }
+        
+        public ResultObject UpdateVirtualMachineHostName(int itemId, string hostname, bool updateNetBIOS)
         {
             if (String.IsNullOrEmpty(hostname))
                 throw new ArgumentNullException("hostname");

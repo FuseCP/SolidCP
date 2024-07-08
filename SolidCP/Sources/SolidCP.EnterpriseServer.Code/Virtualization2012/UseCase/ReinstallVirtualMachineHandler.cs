@@ -11,9 +11,11 @@ using System.Threading.Tasks;
 
 namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
 {
-    public static class ReinstallVirtualMachineHandler
+    public class ReinstallVirtualMachineHandler: ControllerBase
     {
-        public static IntResult ReinstallVirtualMachine(int itemId, VirtualMachine VMSettings, string adminPassword, string[] privIps,
+        public ReinstallVirtualMachineHandler(ControllerBase provider): base(provider) { }
+
+        public IntResult ReinstallVirtualMachine(int itemId, VirtualMachine VMSettings, string adminPassword, string[] privIps,
             bool saveVirtualDisk, bool exportVps, string exportPath)
         {
             IntResult res = new IntResult();

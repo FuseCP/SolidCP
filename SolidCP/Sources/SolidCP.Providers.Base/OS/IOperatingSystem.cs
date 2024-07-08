@@ -106,7 +106,7 @@ namespace SolidCP.Providers.OS
 		Memory GetMemory();
 
 		// execute command
-		string ExecuteSystemCommand(string path, string args);
+		string ExecuteSystemCommand(string user, string password, string path, string args);
 
 		OSPlatformInfo GetOSPlatform();
 

@@ -47,7 +47,7 @@ namespace SolidCP.EnterpriseServer
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [Policy("CommonPolicy")]
     [ToolboxItem(false)]
-    public class esAuthentication
+    public class esAuthentication: WebService
     {
         [WebMethod]
         public int AuthenticateUser(string username, string password, string ip)

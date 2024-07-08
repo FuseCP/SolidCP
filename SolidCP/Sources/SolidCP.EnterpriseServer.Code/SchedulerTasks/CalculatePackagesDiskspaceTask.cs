@@ -119,7 +119,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        private static int GetExchangeServiceID(int packageId)
+        private int GetExchangeServiceID(int packageId)
         {
             return PackageController.GetPackageServiceId(packageId, ResourceGroups.Exchange);
         }

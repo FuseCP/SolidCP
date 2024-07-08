@@ -38,7 +38,7 @@ using System.Text;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class SchedulerJob
+    public class SchedulerJob: ControllerAsyncBase
     {
         private ScheduleInfo scheduleInfo;
         private ScheduleTaskInfo task;
@@ -58,11 +58,6 @@ namespace SolidCP.EnterpriseServer
             set { this.task = value; }
         }
         #endregion
-
-        // Constructor
-        public SchedulerJob()
-        {
-        }
 
         // Sets the next time this Schedule is kicked off and kicks off events on
         // a seperate thread, freeing the Scheduler to continue
@@ -106,7 +101,7 @@ namespace SolidCP.EnterpriseServer
             try
             {
                 // create scheduled task object
-                SchedulerTask objTask = (SchedulerTask)Activator.CreateInstance(Type.GetType(task.TaskType));
+                ISchedulerTask objTask = (ISchedulerTask)Activator.CreateInstance(Type.GetType(task.TaskType));
 
                 if (objTask != null)
                     objTask.DoWork();

@@ -7,36 +7,65 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SolidCP.Portal.SkinControls {
-    
-    
-    public partial class SiteFooter {
-        
-        /// <summary>
-        /// locPoweredBy control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locPoweredBy;
-        
-        /// <summary>
-        /// locVersion control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locVersion;
-        
-        /// <summary>
-        /// scpVersion control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::SolidCP.Portal.SkinControls.ProductVersion scpVersion;
-    }
+namespace SolidCP.Portal.SkinControls
+{
+
+
+	public partial class SiteFooter
+	{
+
+		/// <summary>
+		/// Copyright control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.Panel Copyright;
+
+		/// <summary>
+		/// locPoweredBy control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.Localize locPoweredBy;
+
+		/// <summary>
+		/// EntityFrameworkPanel control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.Panel EntityFrameworkPanel;
+
+		/// <summary>
+		/// chkUseEntityFramework control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.CheckBox chkUseEntityFramework;
+
+		/// <summary>
+		/// locVersion control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.Localize locVersion;
+
+		/// <summary>
+		/// scpVersion control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::SolidCP.Portal.SkinControls.ProductVersion scpVersion;
+	}
 }

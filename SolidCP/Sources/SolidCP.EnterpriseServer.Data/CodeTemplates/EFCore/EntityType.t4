@@ -1,0 +1,309 @@
+<#@ template hostSpecific="true" #>
+<#@ assembly name="Microsoft.EntityFrameworkCore" #>
+<#@ assembly name="Microsoft.EntityFrameworkCore.Design" #>
+<#@ assembly name="Microsoft.EntityFrameworkCore.Relational" #>
+<#@ assembly name="Microsoft.Extensions.DependencyInjection.Abstractions" #>
+<#@ parameter name="EntityType" type="Microsoft.EntityFrameworkCore.Metadata.IEntityType" #>
+<#@ parameter name="Options" type="Microsoft.EntityFrameworkCore.Scaffolding.ModelCodeGenerationOptions" #>
+<#@ parameter name="NamespaceHint" type="System.String" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.ComponentModel.DataAnnotations" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="Microsoft.EntityFrameworkCore" #>
+<#@ import namespace="Microsoft.EntityFrameworkCore.Design" #>
+<#@ import namespace="Microsoft.Extensions.DependencyInjection" #>
+<#
+
+    Console.WriteLine($"Writing Entities\\Sources\\{EntityType.Name}.cs");
+
+    const bool AddNetCoreAnnotations = true;
+
+    if (EntityType.IsSimpleManyToManyJoinEntityType())
+    {
+        // Don't scaffold these
+        return "";
+    }
+
+    var services = (IServiceProvider)Host;
+    var annotationCodeGenerator = services.GetRequiredService<IAnnotationCodeGenerator>();
+    var code = services.GetRequiredService<ICSharpHelper>();
+
+    var usings = new List<string>
+    {
+        "System",
+        "System.Collections.Generic"
+    };
+    var usingscore = new List<string>();
+    var usingsfx = new List<string>();
+
+    if (Options.UseDataAnnotations)
+    {
+        usings.Add("System.ComponentModel.DataAnnotations");
+        usings.Add("System.ComponentModel.DataAnnotations.Schema");
+        usingscore.Add("Microsoft.EntityFrameworkCore");
+    }
+
+    if (!string.IsNullOrEmpty(NamespaceHint))
+    {
+#>
+namespace <#= NamespaceHint #>;
+
+<#
+    }
+
+    if (!string.IsNullOrEmpty(EntityType.GetComment()))
+    {
+#>
+// Type for <#= EntityType.ClrType #>
+/// <summary>
+/// <#= code.XmlComment(EntityType.GetComment()) #>
+/// </summary>
+<#
+    }
+
+    if (Options.UseDataAnnotations)
+    {
+        var annotations = EntityType.GetDataAnnotations(annotationCodeGenerator);
+        var coreAnnotations = annotations.Where(a => a.Type.FullName.Contains("EntityFrameworkCore"));
+        var commonAnnotations = annotations.Where(a => !a.Type.FullName.Contains("EntityFrameworkCore"));
+
+        foreach (var commonAnnotation in commonAnnotations)
+        {
+#>
+<#= code.Fragment(commonAnnotation) #>
+<#
+        }
+
+        if (AddNetCoreAnnotations && coreAnnotations.Any())
+        {
+#>
+#if NetCore
+<#
+          foreach (var coreAnnotation in coreAnnotations)
+          {
+#>
+<#= code.Fragment(coreAnnotation) #>
+<#
+          }
+#>
+#endif
+<#
+        }
+    }
+#>
+public partial class <#= EntityType.Name #>
+{
+<#
+    var firstProperty = true;
+    foreach (var property in EntityType.GetProperties().OrderBy(p => p.GetColumnOrder() ?? -1))
+    {
+        if (!firstProperty)
+        {
+            WriteLine("");
+        }
+
+        if (!string.IsNullOrEmpty(property.GetComment()))
+        {
+#>
+    /// <summary>
+    /// <#= code.XmlComment(property.GetComment(), indent: 1) #>
+    /// </summary>
+<#
+        }
+
+        if (Options.UseDataAnnotations)
+        {
+            var annotations = property.GetDataAnnotations(annotationCodeGenerator)
+                .Where(a => !(a.Type == typeof(RequiredAttribute) && Options.UseNullableReferenceTypes && !property.ClrType.IsValueType));
+            var coreAnnotations = annotations.Where(a => a.Type.FullName.Contains("EntityFrameworkCore"));
+            var commonAnnotations = annotations.Where(a => !a.Type.FullName.Contains("EntityFrameworkCore"));
+
+            foreach (var commonAnnotation in commonAnnotations)
+            {
+#>
+    <#= code.Fragment(commonAnnotation) #>
+<#
+            }
+
+            if (AddNetCoreAnnotations && coreAnnotations.Any())
+            {
+#>
+#if NetCore
+<#
+              foreach (var coreAnnotation in coreAnnotations)
+              {
+#>
+    <#= code.Fragment(coreAnnotation) #>
+<#
+              }
+#>
+#endif
+<#
+            }
+        }
+
+        usings.AddRange(code.GetRequiredUsings(property.ClrType));
+
+        var needsNullable = Options.UseNullableReferenceTypes && property.IsNullable && !property.ClrType.IsValueType;
+        var needsInitializer = Options.UseNullableReferenceTypes && !property.IsNullable && !property.ClrType.IsValueType;
+#>
+    public <#= code.Reference(property.ClrType) #><#= needsNullable ? "?" : "" #> <#= property.Name #> { get; set; }<#= needsInitializer ? " = null!;" : "" #>
+<#
+        firstProperty = false;
+    }
+
+    foreach (var navigation in EntityType.GetNavigations())
+    {
+        WriteLine("");
+
+        if (Options.UseDataAnnotations)
+        {
+            var annotations = navigation.GetDataAnnotations(annotationCodeGenerator);
+            var coreAnnotations = annotations.Where(a => a.Type.FullName.Contains("EntityFrameworkCore"));
+            var commonAnnotations = annotations.Where(a => !a.Type.FullName.Contains("EntityFrameworkCore"));
+
+            foreach (var annotation in commonAnnotations)
+            {
+#>
+    <#= code.Fragment(annotation) #>
+<#
+            }
+
+            if (AddNetCoreAnnotations && coreAnnotations.Any()) 
+            {
+#>
+@if NetCore
+<#
+                foreach (var annotation in coreAnnotations)
+                {
+#>
+    <#= code.Fragment(annotation) #>
+<#
+                }            
+#>
+#endif
+<#
+            }
+        }
+
+        var targetType = navigation.TargetEntityType.Name;
+        if (navigation.IsCollection)
+        {
+#>
+    public virtual ICollection<<#= targetType #>> <#= navigation.Name #> { get; set; } = new List<<#= targetType #>>();
+<#
+        }
+        else
+        {
+            var needsNullable = Options.UseNullableReferenceTypes && !(navigation.ForeignKey.IsRequired && navigation.IsOnDependent);
+            var needsInitializer = Options.UseNullableReferenceTypes && navigation.ForeignKey.IsRequired && navigation.IsOnDependent;
+#>
+    public virtual <#= targetType #><#= needsNullable ? "?" : "" #> <#= navigation.Name #> { get; set; }<#= needsInitializer ? " = null!;" : "" #>
+<#
+        }
+    }
+
+    foreach (var skipNavigation in EntityType.GetSkipNavigations())
+    {
+        WriteLine("");
+
+        if (Options.UseDataAnnotations)
+        {
+            var annotations = skipNavigation.GetDataAnnotations(annotationCodeGenerator);
+            var coreAnnotations = annotations.Where(a => a.Type.FullName.Contains("EntityFrameworkCore"));
+            var commonAnnotations = annotations.Where(a => !a.Type.FullName.Contains("EntityFrameworkCore"));
+
+            foreach (var annotation in commonAnnotations)
+            {
+#>
+    <#= code.Fragment(annotation) #>
+<#
+            }
+
+            if (AddNetCoreAnnotations && coreAnnotations.Any())
+            {
+#>
+#if NetCore
+<#
+                foreach (var annotation in coreAnnotations)
+                {
+#>
+    <#= code.Fragment(annotation) #>
+<#
+                }
+#>
+#endif
+<#
+            }
+        }
+#>
+    public virtual ICollection<<#= skipNavigation.TargetEntityType.Name #>> <#= skipNavigation.Name #> { get; set; } = new List<<#= skipNavigation.TargetEntityType.Name #>>();
+<#
+    }
+#>
+}
+<#
+    var previousOutput = GenerationEnvironment;
+    GenerationEnvironment = new StringBuilder();
+    var fxusings = usings.Where(u => u.StartsWith("System.Data.Entity"));
+    var coreusings = usings.Where(u => u.StartsWith("Microsoft.EntityFrameworkCore"));
+    usings = usings.Except(fxusings.Concat(coreusings))
+        .Distinct()
+        .OrderBy(x => x, new NamespaceComparer())
+        .ToList();
+    usingsfx = usingsfx.Concat(fxusings)
+        .Distinct()
+        .OrderBy(x => x, new NamespaceComparer())
+        .ToList();
+    usingscore = usingscore.Concat(coreusings)
+        .Distinct()
+        .OrderBy(x => x, new NamespaceComparer())
+        .ToList();
+
+#>
+// This file is auto generated, do not edit.
+#if ScaffoldedEntities
+<#
+    foreach (var ns in usings)
+    {
+#>
+using <#= ns #>;
+<#
+    }
+
+    if (usingscore.Any()) {
+#>
+#if NetCore
+<#
+      foreach (var ns in usingscore)
+      {
+#>
+using <#= ns #>;
+<#
+      }
+#>
+#endif
+<#
+    }
+
+    if (usingsfx.Any()) {
+#>
+#if NetFX
+<#
+      foreach (var ns in usingsfx)
+      {
+#>
+using <#= ns #>;
+<#
+      }
+#>
+#endif
+<#    
+    }
+
+    WriteLine("");
+
+    GenerationEnvironment.Append(previousOutput);
+#>
+#endif

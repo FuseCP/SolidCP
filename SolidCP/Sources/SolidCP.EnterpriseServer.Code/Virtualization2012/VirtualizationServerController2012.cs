@@ -54,7 +54,7 @@ using SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class VirtualizationServerController2012
+    public class VirtualizationServerController2012: ControllerBase
     {
         //private const string MS_MAC_PREFIX = "00155D"; // IEEE prefix of MS MAC addresses
 
@@ -68,14 +68,16 @@ namespace SolidCP.EnterpriseServer
         private const int DEFAULT_MINIMUM_IOPS = 0;
         private const int DEFAULT_MAXIMUM_IOPS = 0;
 
+        public VirtualizationServerController2012(ControllerBase provider) : base(provider) { }
+
         #region Virtual Machines
-        public static VirtualMachineMetaItemsPaged GetVirtualMachines(int packageId,
+        public VirtualMachineMetaItemsPaged GetVirtualMachines(int packageId,
             string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, bool recursive)
         {
             VirtualMachineMetaItemsPaged result = new VirtualMachineMetaItemsPaged();
 
             // get reader
-            IDataReader reader = DataProvider.GetVirtualMachinesPaged2012(
+            IDataReader reader = Database.GetVirtualMachinesPaged2012(
                     SecurityContext.User.UserId,
                     packageId, filterColumn, filterValue, sortColumn, startRow, maximumRows, recursive);
 
@@ -90,7 +92,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static VirtualMachine[] GetVirtualMachinesByServiceId(int serviceId)
+        public VirtualMachine[] GetVirtualMachinesByServiceId(int serviceId)
         {
             // get proxy
             VirtualizationServer2012 vps = VirtualizationHelper.GetVirtualizationProxy(serviceId);
@@ -101,13 +103,13 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Private Network
-        public static PrivateIPAddressesPaged GetPackagePrivateIPAddressesPaged(int packageId,
+        public PrivateIPAddressesPaged GetPackagePrivateIPAddressesPaged(int packageId,
             string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             PrivateIPAddressesPaged result = new PrivateIPAddressesPaged();
 
             // get reader
-            IDataReader reader = DataProvider.GetPackagePrivateIPAddressesPaged(packageId, filterColumn, filterValue,
+            IDataReader reader = Database.GetPackagePrivateIPAddressesPaged(packageId, filterColumn, filterValue,
                 sortColumn, startRow, maximumRows);
 
             // number of items = first data reader
@@ -121,20 +123,20 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static List<PrivateIPAddress> GetPackagePrivateIPAddresses(int packageId)
+        public List<PrivateIPAddress> GetPackagePrivateIPAddresses(int packageId)
         {
             return IpAddressPrivateHelper.GetPackagePrivateIPAddresses(packageId);
         }
         #endregion
 
         #region User Permissions
-        public static List<VirtualMachinePermission> GetSpaceUserPermissions(int packageId)
+        public List<VirtualMachinePermission> GetSpaceUserPermissions(int packageId)
         {
             List<VirtualMachinePermission> result = new List<VirtualMachinePermission>();
             return result;
         }
 
-        public static int UpdateSpaceUserPermissions(int packageId, VirtualMachinePermission[] permissions)
+        public int UpdateSpaceUserPermissions(int packageId, VirtualMachinePermission[] permissions)
         {
             // VDC - UPDATE_PERMISSIONS
             return 0;
@@ -142,14 +144,14 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Audit Log
-        public static List<LogRecord> GetSpaceAuditLog(int packageId, DateTime startPeriod, DateTime endPeriod,
+        public List<LogRecord> GetSpaceAuditLog(int packageId, DateTime startPeriod, DateTime endPeriod,
             int severity, string sortColumn, int startRow, int maximumRows)
         {
             List<LogRecord> result = new List<LogRecord>();
             return result;
         }
 
-        public static List<LogRecord> GetVirtualMachineAuditLog(int itemId, DateTime startPeriod, DateTime endPeriod,
+        public List<LogRecord> GetVirtualMachineAuditLog(int itemId, DateTime startPeriod, DateTime endPeriod,
             int severity, string sortColumn, int startRow, int maximumRows)
         {
             List<LogRecord> result = new List<LogRecord>();
@@ -158,31 +160,31 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region VPS Create – Name & OS
-        public static LibraryItem[] GetOperatingSystemTemplates(int packageId)
+        public LibraryItem[] GetOperatingSystemTemplates(int packageId)
         {
             return VirtualizationHelper.GetOperatingSystemTemplates(packageId);
         }
 
-        public static LibraryItem[] GetOperatingSystemTemplatesByServiceId(int serviceId)
+        public LibraryItem[] GetOperatingSystemTemplatesByServiceId(int serviceId)
         {
             return VirtualizationHelper.GetOperatingSystemTemplatesByServiceId(serviceId);
         }
         #endregion
 
         #region VPS Create - Configuration
-        public static int GetMaximumCpuCoresNumber(int packageId)
+        public int GetMaximumCpuCoresNumber(int packageId)
         {
             return VirtualizationHelper.GetMaximumCpuCoresNumber(packageId);
         }
 
-        public static string GetDefaultExportPath(int itemId)
+        public string GetDefaultExportPath(int itemId)
         {
             return VirtualizationHelper.GetDefaultExportPath(itemId);
         }
         #endregion
 
         #region VPS Create
-        public static IntResult CreateDefaultVirtualMachine(int packageId,
+        public IntResult CreateDefaultVirtualMachine(int packageId,
             string hostname, string osTemplate, string password, string summaryLetterEmail)
         {
             #region VPS Create Default (is this useful?)
@@ -308,7 +310,7 @@ namespace SolidCP.EnterpriseServer
                 privateNetworkEnabled, privateAddressesNumber, randomPrivateAddresses, privateAddresses, vmSettings);
             #endregion
         }
-        public static IntResult CreateNewVirtualMachine(VirtualMachine VMSettings, string osTemplateFile, string password, string summaryLetterEmail,
+        public IntResult CreateNewVirtualMachine(VirtualMachine VMSettings, string osTemplateFile, string password, string summaryLetterEmail,
             int externalAddressesNumber, bool randomExternalAddresses, int[] externalAddresses,
             int privateAddressesNumber, bool randomPrivateAddresses, string[] privateAddresses)
         {
@@ -318,7 +320,7 @@ namespace SolidCP.EnterpriseServer
             true);
         }
 
-        private static IntResult CreateNewVirtualMachineInternal(VirtualMachine VMSettings, string osTemplateFile, string password, string summaryLetterEmail,
+        private IntResult CreateNewVirtualMachineInternal(VirtualMachine VMSettings, string osTemplateFile, string password, string summaryLetterEmail,
             int externalAddressesNumber, bool randomExternalAddresses, int[] externalAddresses,
             int privateAddressesNumber, bool randomPrivateAddresses, string[] privateAddresses,
             bool createMetaItem)
@@ -330,7 +332,7 @@ namespace SolidCP.EnterpriseServer
         }
 
         //[Obsolete("CreateVirtualMachine is deprecated, please use CreateNewVirtualMachine instead.")]
-        public static IntResult CreateVirtualMachine(int packageId,
+        public IntResult CreateVirtualMachine(int packageId,
                 string hostname, string osTemplateFile, string password, string summaryLetterEmail,
                 int cpuCores, int ramMB, int hddGB, int snapshots,
                 bool dvdInstalled, bool bootFromCD, bool numLock,
@@ -362,7 +364,7 @@ namespace SolidCP.EnterpriseServer
                 privateAddressesNumber, randomPrivateAddresses, privateAddresses);
         }
 
-        public static IntResult ImportVirtualMachine(int packageId,
+        public IntResult ImportVirtualMachine(int packageId,
             int serviceId, string vmId,
             string osTemplateFile, string adminPassword,
             bool IsBootFromCd, bool IsDvdInstalled,
@@ -380,27 +382,27 @@ namespace SolidCP.EnterpriseServer
 
         #region VPS – General
 
-        public static List<ConcreteJob> GetVirtualMachineJobs(int itemId)
+        public List<ConcreteJob> GetVirtualMachineJobs(int itemId)
         {
             return VirtualMachineHelper.GetVirtualMachineJobs(itemId);
         }
 
-        public static byte[] GetVirtualMachineThumbnail(int itemId, ThumbnailSize size)
+        public byte[] GetVirtualMachineThumbnail(int itemId, ThumbnailSize size)
         {
             return VirtualMachineHelper.GetVirtualMachineThumbnail(itemId, size);
         }
 
-        public static int DiscoverVirtualMachine(int itemId)
+        public int DiscoverVirtualMachine(int itemId)
         {
             return VirtualizationHelper.DiscoverVirtualMachine(itemId);
         }
 
-        public static VirtualMachine GetVirtualMachineGeneralDetails(int itemId)
+        public VirtualMachine GetVirtualMachineGeneralDetails(int itemId)
         {
             return VirtualMachineHelper.GetVirtualMachineGeneralDetails(itemId);
         }
 
-        public static VirtualMachine GetVirtualMachineExtendedInfo(int serviceId, string vmId)
+        public VirtualMachine GetVirtualMachineExtendedInfo(int serviceId, string vmId)
         {
             return VirtualMachineHelper.GetVirtualMachineExtendedInfo(serviceId, vmId);
             //// get proxy
@@ -410,18 +412,18 @@ namespace SolidCP.EnterpriseServer
             //return vps.GetVirtualMachineEx(vmId);
         }
 
-        public static int CancelVirtualMachineJob(string jobId)
+        public int CancelVirtualMachineJob(string jobId)
         {
             // VPS - CANCEL_JOB
             return 0;
         }
 
-        public static ResultObject UpdateVirtualMachineHostName(int itemId, string hostname, bool updateNetBIOS)
+        public ResultObject UpdateVirtualMachineHostName(int itemId, string hostname, bool updateNetBIOS)
         {
             return UpdateVirtualMachineHostNameHandler.UpdateVirtualMachineHostName(itemId, hostname, updateNetBIOS);
         }
 
-        public static ResultObject ChangeVirtualMachineStateExternal(int itemId, VirtualMachineRequestedState state)
+        public ResultObject ChangeVirtualMachineStateExternal(int itemId, VirtualMachineRequestedState state)
         {
             ResultObject res = new ResultObject();
 
@@ -481,7 +483,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region VPS - Configuration
-        public static VirtualMachineNetworkAdapter[] GetVirtualMachinesNetwordAdapterSettings(int itemId)
+        public VirtualMachineNetworkAdapter[] GetVirtualMachinesNetwordAdapterSettings(int itemId)
         {
             VirtualMachine vm = (VirtualMachine)PackageController.GetPackageItem(itemId);
             if (vm == null)
@@ -491,25 +493,25 @@ namespace SolidCP.EnterpriseServer
             return vs.GetVirtualMachinesNetwordAdapterSettings(vm.Name);
         }
 
-        public static ResultObject ChangeAdministratorPassword(int itemId, string password)
+        public ResultObject ChangeAdministratorPassword(int itemId, string password)
         {
             return ChangeVirtualMachineAdministratorPasswordHandler.ChangeAdministratorPassword(itemId, password);
         }
 
-        public static ResultObject ChangeAdministratorPasswordAndCleanResult(int itemId, string password)
+        public ResultObject ChangeAdministratorPasswordAndCleanResult(int itemId, string password)
         {
             return ChangeVirtualMachineAdministratorPasswordHandler.ChangeAdministratorPasswordAndCleanResult(itemId, password);
         }
         #endregion
 
         #region VPS – Edit Configuration
-        public static ResultObject UpdateVirtualMachineResource(int itemId, VirtualMachine vmSettings)
+        public ResultObject UpdateVirtualMachineResource(int itemId, VirtualMachine vmSettings)
         {
             return UpdateVirtualMachineResourceHandler.UpdateVirtualMachineResource(itemId, vmSettings);
         }
 
         //[Obsolete("UpdateVirtualMachineConfiguration is deprecated, please use UpdateVirtualMachineResource instead.")]
-        public static ResultObject UpdateVirtualMachineConfiguration(
+        public ResultObject UpdateVirtualMachineConfiguration(
             int itemId, int cpuCores, int ramMB, int[] hddGB, int snapshots,
             bool dvdInstalled, bool bootFromCD, bool numLock, bool startShutdownAllowed, bool pauseResumeAllowed,
             bool rebootAllowed, bool resetAllowed, bool reinstallAllowed, bool externalNetworkEnabled, bool privateNetworkEnabled, VirtualMachine otherSettings)
@@ -536,7 +538,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region VNC
-        public static string GetVirtualMachineGuacamoleURL(int itemId)
+        public string GetVirtualMachineGuacamoleURL(int itemId)
         {
             VirtualMachine vm = VirtualMachineHelper.GetVirtualMachineByItemId(itemId);
             string vncurl = GuacaHelper.GetUrl(vm);
@@ -546,7 +548,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region DVD
-        public static LibraryItem GetInsertedDvdDisk(int itemId)
+        public LibraryItem GetInsertedDvdDisk(int itemId)
         {
             // load item
             VirtualMachine vm = VirtualMachineHelper.GetVirtualMachineByItemId(itemId);
@@ -571,7 +573,7 @@ namespace SolidCP.EnterpriseServer
             return null;
         }
 
-        public static LibraryItem[] GetLibraryDisks(int itemId)
+        public LibraryItem[] GetLibraryDisks(int itemId)
         {
             // load item
             VirtualMachine vm = VirtualMachineHelper.GetVirtualMachineByItemId(itemId);
@@ -585,7 +587,7 @@ namespace SolidCP.EnterpriseServer
             return config.LibraryItems;
         }
 
-        public static ResultObject InsertDvdDisk(int itemId, string isoPath)
+        public ResultObject InsertDvdDisk(int itemId, string isoPath)
         {
             ResultObject res = new ResultObject();
 
@@ -641,7 +643,7 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        public static ResultObject EjectDvdDisk(int itemId)
+        public ResultObject EjectDvdDisk(int itemId)
         {
             ResultObject res = new ResultObject();
 
@@ -692,7 +694,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Snaphosts
-        public static VirtualMachineSnapshot[] GetVirtualMachineSnapshots(int itemId)
+        public VirtualMachineSnapshot[] GetVirtualMachineSnapshots(int itemId)
         {
             // load service item
             VirtualMachine vm = (VirtualMachine)PackageController.GetPackageItem(itemId);
@@ -704,7 +706,7 @@ namespace SolidCP.EnterpriseServer
             return vs.GetVirtualMachineSnapshots(vm.VirtualMachineId);
         }
 
-        public static VirtualMachineSnapshot GetSnapshot(int itemId, string snaphostId)
+        public VirtualMachineSnapshot GetSnapshot(int itemId, string snaphostId)
         {
             // load service item
             VirtualMachine vm = (VirtualMachine)PackageController.GetPackageItem(itemId);
@@ -716,7 +718,7 @@ namespace SolidCP.EnterpriseServer
             return vs.GetSnapshot(snaphostId);
         }
 
-        public static ResultObject CreateSnapshot(int itemId)
+        public ResultObject CreateSnapshot(int itemId)
         {
             ResultObject res = new ResultObject();
 
@@ -786,7 +788,7 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        public static ResultObject ApplySnapshot(int itemId, string snapshotId)
+        public ResultObject ApplySnapshot(int itemId, string snapshotId)
         {
             ResultObject res = new ResultObject();
 
@@ -852,7 +854,7 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        public static ResultObject RenameSnapshot(int itemId, string snapshotId, string newName)
+        public ResultObject RenameSnapshot(int itemId, string snapshotId, string newName)
         {
             ResultObject res = new ResultObject();
 
@@ -901,7 +903,7 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        public static ResultObject DeleteSnapshot(int itemId, string snapshotId)
+        public ResultObject DeleteSnapshot(int itemId, string snapshotId)
         {
             ResultObject res = new ResultObject();
 
@@ -957,7 +959,7 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        public static ResultObject DeleteSnapshotSubtree(int itemId, string snapshotId)
+        public ResultObject DeleteSnapshotSubtree(int itemId, string snapshotId)
         {
             ResultObject res = new ResultObject();
 
@@ -1013,7 +1015,7 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        public static byte[] GetSnapshotThumbnail(int itemId, string snapshotId, ThumbnailSize size)
+        public byte[] GetSnapshotThumbnail(int itemId, string snapshotId, ThumbnailSize size)
         {
             // load service item
             VirtualMachine vm = (VirtualMachine)PackageController.GetPackageItem(itemId);
@@ -1028,7 +1030,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Network - External
-        public static AvailableVLANList GetAvailableVLANs(int PackageId)
+        public AvailableVLANList GetAvailableVLANs(int PackageId)
         {
             throw new NotImplementedException();
             /*
@@ -1054,102 +1056,102 @@ namespace SolidCP.EnterpriseServer
             */
         }
 
-        public static int GetExternalNetworkVLAN(int itemId)
+        public int GetExternalNetworkVLAN(int itemId)
         {
             return NetworkVLANHelper.GetExternalNetworkVLAN(itemId);
         }
 
-        public static NetworkAdapterDetails GetExternalNetworkDetails(int packageId)
+        public NetworkAdapterDetails GetExternalNetworkDetails(int packageId)
         {
             return NetworkAdapterDetailsHelper.GetExternalNetworkDetails(packageId);
         }
 
-        public static NetworkAdapterDetails GetExternalNetworkAdapterDetails(int itemId)
+        public NetworkAdapterDetails GetExternalNetworkAdapterDetails(int itemId)
         {
             return NetworkAdapterDetailsHelper.GetExternalNetworkAdapterDetails(itemId);
         }
 
-        public static ResultObject RestoreVirtualMachineExternalIPAddressesByInjection(int itemId)
+        public ResultObject RestoreVirtualMachineExternalIPAddressesByInjection(int itemId)
         {
             return IpAddressExternalHelper.RestoreVirtualMachineExternalIPAddressesByInjection(itemId);
         }
 
-        public static ResultObject AddVirtualMachineExternalIPAddressesByInjection(int itemId, bool selectRandom, int addressesNumber, int[] addressIds)
+        public ResultObject AddVirtualMachineExternalIPAddressesByInjection(int itemId, bool selectRandom, int addressesNumber, int[] addressIds)
         {
             return IpAddressExternalHelper.AddVirtualMachineExternalIPAddressesByInjection(itemId, selectRandom, addressesNumber, addressIds);
         }
 
-        public static ResultObject AddVirtualMachineExternalIPAddresses(int itemId, bool selectRandom, int addressesNumber, int[] addressIds, bool provisionKvp)
+        public ResultObject AddVirtualMachineExternalIPAddresses(int itemId, bool selectRandom, int addressesNumber, int[] addressIds, bool provisionKvp)
         {
             return IpAddressExternalHelper.AddVirtualMachineExternalIPAddresses(itemId, selectRandom, addressesNumber, addressIds, provisionKvp);
         }
 
-        public static ResultObject SetVirtualMachinePrimaryExternalIPAddress(int itemId, int packageAddressId, bool provisionKvp)
+        public ResultObject SetVirtualMachinePrimaryExternalIPAddress(int itemId, int packageAddressId, bool provisionKvp)
         {
             return IpAddressExternalHelper.SetVirtualMachinePrimaryExternalIPAddress(itemId, packageAddressId, provisionKvp);
         }
 
-        public static ResultObject DeleteVirtualMachineExternalIPAddressesByInjection(int itemId, int[] packageAddressIds)
+        public ResultObject DeleteVirtualMachineExternalIPAddressesByInjection(int itemId, int[] packageAddressIds)
         {
             return IpAddressExternalHelper.DeleteVirtualMachineExternalIPAddressesByInjection(itemId, packageAddressIds);
         }
 
-        public static ResultObject DeleteVirtualMachineExternalIPAddresses(int itemId, int[] packageAddressIds, bool provisionKvp)
+        public ResultObject DeleteVirtualMachineExternalIPAddresses(int itemId, int[] packageAddressIds, bool provisionKvp)
         {
             return IpAddressExternalHelper.DeleteVirtualMachineExternalIPAddresses(itemId, packageAddressIds, provisionKvp);
         }
         #endregion
 
         #region Network – Private
-        public static NetworkAdapterDetails GetPrivateNetworkDetails(int packageId)
+        public NetworkAdapterDetails GetPrivateNetworkDetails(int packageId)
         {
             return NetworkAdapterDetailsHelper.GetPrivateNetworkDetails(packageId);
         }
 
-        public static NetworkAdapterDetails GetPrivateNetworkAdapterDetails(int itemId)
+        public NetworkAdapterDetails GetPrivateNetworkAdapterDetails(int itemId)
         {
             return NetworkAdapterDetailsHelper.GetPrivateNetworkAdapterDetails(itemId);
         }
 
-        public static ResultObject RestoreVirtualMachinePrivateIPAddressesByInjection(int itemId)
+        public ResultObject RestoreVirtualMachinePrivateIPAddressesByInjection(int itemId)
         {
             return IpAddressPrivateHelper.RestoreVirtualMachinePrivateIPAddressesByInjection(itemId);
         }
 
-        public static ResultObject AddVirtualMachinePrivateIPAddressesByInject(int itemId, bool selectRandom, int addressesNumber, string[] addresses, bool customGatewayAndDns, string gateway, string dns1, string dns2, string subnetMask)
+        public ResultObject AddVirtualMachinePrivateIPAddressesByInject(int itemId, bool selectRandom, int addressesNumber, string[] addresses, bool customGatewayAndDns, string gateway, string dns1, string dns2, string subnetMask)
         {
             return IpAddressPrivateHelper.AddVirtualMachinePrivateIPAddressesByInject(itemId, selectRandom, addressesNumber, addresses, customGatewayAndDns, gateway, dns1, dns2, subnetMask);
         }
 
-        public static ResultObject AddVirtualMachinePrivateIPAddresses(int itemId, bool selectRandom, int addressesNumber, string[] addresses, bool provisionKvp, bool customGatewayAndDns, string gateway, string dns1, string dns2, string subnetMask)
+        public ResultObject AddVirtualMachinePrivateIPAddresses(int itemId, bool selectRandom, int addressesNumber, string[] addresses, bool provisionKvp, bool customGatewayAndDns, string gateway, string dns1, string dns2, string subnetMask)
         {
             return IpAddressPrivateHelper.AddVirtualMachinePrivateIPAddresses(itemId, selectRandom, addressesNumber, addresses, provisionKvp, customGatewayAndDns, gateway, dns1, dns2, subnetMask);
         }
 
-        public static ResultObject SetVirtualMachinePrimaryPrivateIPAddress(int itemId, int addressId, bool provisionKvp)
+        public ResultObject SetVirtualMachinePrimaryPrivateIPAddress(int itemId, int addressId, bool provisionKvp)
         {
             return IpAddressPrivateHelper.SetVirtualMachinePrimaryPrivateIPAddress(itemId, addressId, provisionKvp);
         }
 
-        public static ResultObject DeleteVirtualMachinePrivateIPAddressesByInject(int itemId, int[] addressIds)
+        public ResultObject DeleteVirtualMachinePrivateIPAddressesByInject(int itemId, int[] addressIds)
         {
             return IpAddressPrivateHelper.DeleteVirtualMachinePrivateIPAddressesByInject(itemId, addressIds);
         }
 
-        public static ResultObject DeleteVirtualMachinePrivateIPAddresses(int itemId, int[] addressIds, bool provisionKvp)
+        public ResultObject DeleteVirtualMachinePrivateIPAddresses(int itemId, int[] addressIds, bool provisionKvp)
         {
             return IpAddressPrivateHelper.DeleteVirtualMachinePrivateIPAddresses(itemId, addressIds, provisionKvp);
         }
         #endregion
 
         #region Virtual Machine Permissions
-        public static List<VirtualMachinePermission> GetVirtualMachinePermissions(int itemId)
+        public List<VirtualMachinePermission> GetVirtualMachinePermissions(int itemId)
         {
             List<VirtualMachinePermission> result = new List<VirtualMachinePermission>();
             return result;
         }
 
-        public static int UpdateVirtualMachineUserPermissions(int itemId, VirtualMachinePermission[] permissions)
+        public int UpdateVirtualMachineUserPermissions(int itemId, VirtualMachinePermission[] permissions)
         {
             // VPS - UPDATE_PERMISSIONS
             return 0;
@@ -1157,7 +1159,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Secure Boot Templates
-        public static SecureBootTemplate[] GetSecureBootTemplates(int serviceId, string computerName)
+        public SecureBootTemplate[] GetSecureBootTemplates(int serviceId, string computerName)
         {
             VirtualizationServer2012 vs = new VirtualizationServer2012();
             ServiceProviderProxy.Init(vs, serviceId);
@@ -1166,7 +1168,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Virtual Machine Configuration versions 
-        public static VMConfigurationVersion[] GetVMConfigurationVersionSupportedList(int serviceId)
+        public VMConfigurationVersion[] GetVMConfigurationVersionSupportedList(int serviceId)
         {
             VirtualizationServer2012 vs = new VirtualizationServer2012();
             ServiceProviderProxy.Init(vs, serviceId);
@@ -1175,21 +1177,21 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Virtual Switches
-        public static VirtualSwitch[] GetExternalSwitches(int serviceId, string computerName)
+        public VirtualSwitch[] GetExternalSwitches(int serviceId, string computerName)
         {
             VirtualizationServer2012 vs = new VirtualizationServer2012();
             ServiceProviderProxy.Init(vs, serviceId);
             return vs.GetExternalSwitches(computerName);
         }
 
-        public static VirtualSwitch[] GetExternalSwitchesWMI(int serviceId, string computerName)
+        public VirtualSwitch[] GetExternalSwitchesWMI(int serviceId, string computerName)
         {
             VirtualizationServer2012 vs = new VirtualizationServer2012();
             ServiceProviderProxy.Init(vs, serviceId);
             return vs.GetExternalSwitchesWMI(computerName);
         }
 
-        public static VirtualSwitch[] GetInternalSwitches(int serviceId, string computerName)
+        public VirtualSwitch[] GetInternalSwitches(int serviceId, string computerName)
         {
             VirtualizationServer2012 vs = new VirtualizationServer2012();
             ServiceProviderProxy.Init(vs, serviceId);
@@ -1198,23 +1200,23 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Tools
-        public static ResultObject DeleteVirtualMachine(int itemId, bool saveFiles, bool exportVps, string exportPath) //TODO: Is possible to rework method (Duplicated in server)?
+        public ResultObject DeleteVirtualMachine(int itemId, bool saveFiles, bool exportVps, string exportPath) //TODO: Is possible to rework method (Duplicated in server)?
         {
             return DeleteVirtualMachineHandler.DeleteVirtualMachine(itemId, saveFiles, exportVps, exportPath);
         }
-        public static ResultObject DeleteVirtualMachineAsynchronous(int itemId, bool saveFiles, bool exportVps, string exportPath)
+        public ResultObject DeleteVirtualMachineAsynchronous(int itemId, bool saveFiles, bool exportVps, string exportPath)
         {
             return DeleteVirtualMachineHandler.DeleteVirtualMachineAsynchronous(itemId, saveFiles, exportVps, exportPath);
         }
 
-        public static IntResult ReinstallVirtualMachine(int itemId, VirtualMachine VMSettings, string adminPassword, string[] privIps,
+        public IntResult ReinstallVirtualMachine(int itemId, VirtualMachine VMSettings, string adminPassword, string[] privIps,
             bool saveVirtualDisk, bool exportVps, string exportPath)
         {
             return ReinstallVirtualMachineHandler.ReinstallVirtualMachine(itemId, VMSettings, adminPassword, privIps, saveVirtualDisk, exportVps, exportPath);
         }
 
         //TODO: Add another reinstall method.
-        //public static int ReinstallVirtualMachine(int itemId, string adminPassword, bool preserveVirtualDiskFiles,
+        //public int ReinstallVirtualMachine(int itemId, string adminPassword, bool preserveVirtualDiskFiles,
         //    bool saveVirtualDisk, bool exportVps, string exportPath)
         //{
 
@@ -1223,7 +1225,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Help
-        public static string GetVirtualMachineSummaryText(int itemId, bool emailMode, bool creation)
+        public string GetVirtualMachineSummaryText(int itemId, bool emailMode, bool creation)
         {
             // load item
             VirtualMachine vm = VirtualMachineHelper.GetVirtualMachineByItemId(itemId);
@@ -1243,7 +1245,7 @@ namespace SolidCP.EnterpriseServer
             return user.HtmlMail ? result : result.Replace("\n", "<br/>");
         }
 
-        public static ResultObject SendVirtualMachineSummaryLetter(int itemId, string to, string bcc, bool creation)
+        public ResultObject SendVirtualMachineSummaryLetter(int itemId, string to, string bcc, bool creation)
         {
             ResultObject res = new ResultObject();
 
@@ -1321,17 +1323,17 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        public static string EvaluateVirtualMachineTemplate(int itemId, bool emailMode, bool creation, string template)
+        public string EvaluateVirtualMachineTemplate(int itemId, bool emailMode, bool creation, string template)
         {
             return VirtualMachineHelper.EvaluateVirtualMachineTemplate(itemId, emailMode, creation, template);
         }
 
-        public static VirtualMachine GetVirtualMachineByItemId(int itemId)
+        public VirtualMachine GetVirtualMachineByItemId(int itemId)
         {
             return VirtualMachineHelper.GetVirtualMachineByItemId(itemId);
         }
 
-        public static string GenerateMacAddress()
+        public string GenerateMacAddress()
         {
             return NetworkHelper.GenerateMacAddress(); //MS_MAC_PREFIX + Utils.GetRandomHexString(3);
         }
@@ -1343,13 +1345,13 @@ namespace SolidCP.EnterpriseServer
 
         #region IsReplicaServer Part
 
-        public static CertificateInfo[] GetCertificates(int serviceId, string remoteServer)
+        public CertificateInfo[] GetCertificates(int serviceId, string remoteServer)
         {
             VirtualizationServer2012 vs = VirtualizationHelper.GetVirtualizationProxy(serviceId);
             return vs.GetCertificates(remoteServer);
         }
 
-        public static ResultObject SetReplicaServer(int serviceId, string remoteServer, string thumbprint, string storagePath)
+        public ResultObject SetReplicaServer(int serviceId, string remoteServer, string thumbprint, string storagePath)
         {
             ResultObject result = new ResultObject();
             try
@@ -1368,7 +1370,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static ResultObject UnsetReplicaServer(int serviceId, string remoteServer)
+        public ResultObject UnsetReplicaServer(int serviceId, string remoteServer)
         {
             ResultObject result = new ResultObject();
             try
@@ -1384,7 +1386,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static ReplicationServerInfo GetReplicaServer(int serviceId, string remoteServer)
+        public ReplicationServerInfo GetReplicaServer(int serviceId, string remoteServer)
         {
             VirtualizationServer2012 vs = VirtualizationHelper.GetVirtualizationProxy(serviceId);
             return vs.GetReplicaServer(remoteServer);
@@ -1392,21 +1394,21 @@ namespace SolidCP.EnterpriseServer
 
         #endregion
 
-        public static VmReplication GetReplication(int itemId)
+        public VmReplication GetReplication(int itemId)
         {
             VirtualMachine vm = VirtualMachineHelper.GetVirtualMachineByItemId(itemId);
             VirtualizationServer2012 vs = VirtualizationHelper.GetVirtualizationProxy(vm.ServiceId);
             return vs.GetReplication(vm.VirtualMachineId);
         }
 
-        public static ReplicationDetailInfo GetReplicationInfo(int itemId)
+        public ReplicationDetailInfo GetReplicationInfo(int itemId)
         {
             VirtualMachine vm = VirtualMachineHelper.GetVirtualMachineByItemId(itemId);
             VirtualizationServer2012 vs = VirtualizationHelper.GetVirtualizationProxy(vm.ServiceId);
             return vs.GetReplicationInfo(vm.VirtualMachineId);
         }
 
-        public static ResultObject SetVmReplication(int itemId, VmReplication replication)
+        public ResultObject SetVmReplication(int itemId, VmReplication replication)
         {
             TaskManager.StartTask("VPS2012", "SetVmReplication");
 
@@ -1453,7 +1455,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static ResultObject DisableVmReplication(int itemId)
+        public ResultObject DisableVmReplication(int itemId)
         {
             ResultObject result = new ResultObject();
             try
@@ -1478,7 +1480,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static ResultObject PauseReplication(int itemId)
+        public ResultObject PauseReplication(int itemId)
         {
             ResultObject result = new ResultObject();
             try
@@ -1501,7 +1503,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static ResultObject ResumeReplication(int itemId)
+        public ResultObject ResumeReplication(int itemId)
         {
             ResultObject result = new ResultObject();
             try
@@ -1539,7 +1541,7 @@ namespace SolidCP.EnterpriseServer
         //    management_network_configuration
         //}
 
-        //public static void CheckCustomPsScript(PsScriptPoint point, VirtualMachine vm)
+        //public void CheckCustomPsScript(PsScriptPoint point, VirtualMachine vm)
         //{
         //    PowerShellScript.CheckCustomPsScript(point, vm);
         //}

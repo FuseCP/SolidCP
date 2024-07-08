@@ -56,7 +56,7 @@ namespace SolidCP.EnterpriseServer
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [Policy("EnterpriseServerPolicy")]
     [ToolboxItem(false)]
-    public class esServers
+    public class esServers: WebService
     {
         /*
         public const string MAIN_WPI_FEED = "https://www.microsoft.com/web/webpi/5.0/WebProductList.xml";
