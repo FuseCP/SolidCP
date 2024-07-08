@@ -1,1 +1,1 @@
-﻿dotnet build -target:Scaffold
+dotnet build -target:Scaffold

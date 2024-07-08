@@ -10266,6 +10266,7 @@ CREATE PROCEDURE [dbo].[GetNestedPackagesPaged]
 	@MaximumRows int
 )
 AS
+BEGIN
 
 -- build query and run it to the temporary table
 DECLARE @sql nvarchar(2000)
@@ -10307,6 +10308,8 @@ END
 
 IF @SortColumn <> '' AND @SortColumn IS NOT NULL
 SET @sql = @sql + ' ORDER BY ' + @SortColumn + ' '
+ELSE
+SET @sql = @sql + ' ORDER BY P.PackageName '
 
 SET @sql = @sql + ' SELECT COUNT(PackageID) FROM @Packages;
 SELECT
@@ -10347,6 +10350,7 @@ exec sp_executesql @sql, N'@StartRow int, @MaximumRows int, @PackageID int, @Fil
 @StartRow, @MaximumRows, @PackageID, @FilterValue, @ActorID, @StatusID, @PlanID, @ServerID
 
 RETURN
+END
 GO
 SET ANSI_NULLS ON
 GO

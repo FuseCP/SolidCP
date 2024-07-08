@@ -9987,6 +9987,7 @@ CREATE PROCEDURE [dbo].[GetNestedPackagesPaged]
 	@MaximumRows int
 )
 AS
+BEGIN
 
 -- build query and run it to the temporary table
 DECLARE @sql nvarchar(2000)
@@ -10028,6 +10029,8 @@ END
 
 IF @SortColumn <> '' AND @SortColumn IS NOT NULL
 SET @sql = @sql + ' ORDER BY ' + @SortColumn + ' '
+ELSE
+SET @sql = @sql + ' ORDER BY P.PackageName '
 
 SET @sql = @sql + ' SELECT COUNT(PackageID) FROM @Packages;
 SELECT
@@ -10067,8 +10070,8 @@ WHERE TP.ItemPosition BETWEEN @StartRow AND @EndRow'
 exec sp_executesql @sql, N'@StartRow int, @MaximumRows int, @PackageID int, @FilterValue nvarchar(50), @ActorID int, @StatusID int, @PlanID int, @ServerID int',
 @StartRow, @MaximumRows, @PackageID, @FilterValue, @ActorID, @StatusID, @PlanID, @ServerID
 
-
 RETURN
+END
 GO
 
 IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetUsersPaged')

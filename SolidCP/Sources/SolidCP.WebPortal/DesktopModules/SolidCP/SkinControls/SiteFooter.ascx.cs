@@ -61,6 +61,7 @@ namespace SolidCP.Portal.SkinControls
 		protected void chkUseEntityFramework_CheckedChanged(object sender, EventArgs e)
 		{
             DbHelper.UseEntityFramework = chkUseEntityFramework.Checked;
+            Page.Response.Redirect(Page.Request.Url.ToString());
 		}
 	}
 }

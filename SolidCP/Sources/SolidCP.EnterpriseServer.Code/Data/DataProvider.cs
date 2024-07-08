@@ -2791,13 +2791,13 @@ RETURN
 						.Join(Packages, u => u.UserId, p => p.UserId, (user, package) => new { User = user, PackageId = package.PackageId })
 						.Join(Domains, up => up.PackageId, d => d.PackageId, (user, domain) => new
 						{
-							UserID = user.User.UserId,
-							RoleID = user.User.RoleId,
-							StatusID = user.User.StatusId,
+							user.User.UserId,
+							user.User.RoleId,
+							user.User.StatusId,
 							user.User.SubscriberNumber,
 							user.User.LoginStatusId,
 							user.User.FailedLogins,
-							OwnerID = user.User.OwnerId,
+							user.User.OwnerId,
 							user.User.Created,
 							user.User.Changed,
 							user.User.IsDemo,
@@ -2809,7 +2809,7 @@ RETURN
 							user.User.Email,
 							domain.DomainName
 						})
-						.Where(u => u.UserID != userId && !u.IsPeer && hasRights);
+						.Where(u => u.UserId != userId && !u.IsPeer && hasRights);
 
 					if (!string.IsNullOrEmpty(filterColumn) && !string.IsNullOrEmpty(filterValue))
 					{
@@ -5239,7 +5239,7 @@ RETURN
 					.OrderBy(s => s.ServerName)
 					.Select(s => new
 					{
-						ServerID = s.ServerId,
+						s.ServerId,
 						s.ServerName,
 						s.ServerUrl,
 						ServicesNumber = Services.Where(sc => sc.ServerId == s.ServerId).Count(),
@@ -16737,7 +16737,7 @@ RETURN
 					.OrderBy(p => p.Key)
 					.Select(p => new
 					{
-						p.Key,
+						StatusId = p.Key,
 						PackagesNumber = p.Count()
 					});
 
@@ -17251,8 +17251,11 @@ BEGIN
 			OR Email LIKE @FilterValue) '
 END
 
+-- TODO bug? No sorting if @SortColumn is empty?
 IF @SortColumn <> '' AND @SortColumn IS NOT NULL
 SET @sql = @sql + ' ORDER BY ' + @SortColumn + ' '
+ELSE
+SET @sql = @sql + ' ORDER BY P.PackageName '
 
 SET @sql = @sql + ' SELECT COUNT(PackageID) FROM @Packages;
 SELECT
@@ -17352,6 +17355,7 @@ RETURN
 				var count = packages.Count();
 
 				if (!string.IsNullOrEmpty(sortColumn)) packages = packages.OrderBy(sortColumn);
+				else packages = packages.OrderBy(p => p.PackageName);
 
 				packages = packages.Skip(startRow).Take(maximumRows);
 
@@ -21506,15 +21510,15 @@ RETURN
 					})
 					.Select(p => new
 					{
-						PackageID = p.Package.PackageId,
+						p.Package.PackageId,
 						p.Package.Bandwidth,
 						p.Package.PackageName,
 						p.QuotaValue,
 						UsagePercentage = (int)(p.QuotaValue > 0 ? p.Package.Bandwidth * 100 / p.QuotaValue : 0),
 						//PackagesNumber = Local.Packages.Count(np => np.ParentPackageId == p.Package.PackageId),
 						p.Package.PackagesNumber,
-						StatusID = p.Package.StatusId,
-						UserID = p.Package.UserId,
+						p.Package.StatusId,
+						p.Package.UserId,
 						p.Package.Username,
 						p.Package.FirstName,
 						p.Package.LastName,
@@ -21755,15 +21759,15 @@ RETURN
 					})
 					.Select(p => new
 					{
-						PackageID = p.Package.PackageId,
+						p.Package.PackageId,
 						p.QuotaValue,
 						p.Package.Diskspace,
 						UsagePercentage = (int)(p.QuotaValue > 0 ? p.Package.Diskspace * 100 / p.QuotaValue : 0),
 						//PackagesNumber = Local.Packages.Count(np => np.ParentPackageId == p.Package.PackageId),
 						p.Package.PackagesNumber,
 						p.Package.PackageName,
-						StatusID = p.Package.StatusId,
-						UserID = p.Package.UserId,
+						p.Package.StatusId,
+						p.Package.UserId,
 						p.Package.Username,
 						p.Package.FirstName,
 						p.Package.LastName,
@@ -32711,7 +32715,9 @@ DROP TABLE #TempBlackBerryUsers
 
 				users = users.Skip(startRow).Take(count);
 
-				return EntityDataReader(usersCount, users);
+				// TODO bug not returning usersCount?
+				//return EntityDataReader(usersCount, users);
+				return EntityDataReader(users);
 			}
 			else
 			{

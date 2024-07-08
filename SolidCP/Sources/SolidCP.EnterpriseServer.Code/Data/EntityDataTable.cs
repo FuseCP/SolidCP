@@ -20,6 +20,38 @@ namespace SolidCP.EnterpriseServer
         public TEntity[] Set { get; set; } = null;
         IEnumerable IEntityDataSet.Set => Set;
 
+		/*
+		static HashSet<string> lowerCaseColumns = new HashSet<string>(new[] { "LoginStatusId", "PreviousId",
+			"SfBUserPlanId", "LyncUserPlanId", "MailboxPlanId", "DomainItemId", "BlackBerryUserId",
+			"ArchivingMailboxPlanId" });
+		public static string ColumnName<TEntity1>(string propertyName)
+		{
+			//return propertyName;
+			if (propertyName == "IpAddressId") return "IPAddressID";
+			if (propertyName == "CrmUserId") return "CRMUserID";
+			if (propertyName.EndsWith("Id") && !lowerCaseColumns.Contains(propertyName))
+				return propertyName.Substring(0, propertyName.Length - 1) + "D";
+			if ((propertyName.StartsWith("Csr") || propertyName.StartsWith("Crm")) &&
+				!lowerCaseColumns.Contains(propertyName))
+				return propertyName.Substring(0,3).ToUpper() + propertyName.Substring(3);
+			if (propertyName.EndsWith("Ip") && !lowerCaseColumns.Contains(propertyName))
+				return propertyName.Substring(0, propertyName.Length - 1) + "P";
+			if (propertyName == "EnableImap" || propertyName == "EnableMapi" || propertyName == "EnableOwa" ||
+				propertyName == "EnablePop") return "Enable" + propertyName.Substring(6).ToUpper();
+			if (propertyName.EndsWith("Mb") && !lowerCaseColumns.Contains(propertyName))
+				return propertyName.Substring(0, propertyName.Length - 1) + "B";
+			if (propertyName.EndsWith("Kb") && !lowerCaseColumns.Contains(propertyName))
+				return propertyName.Substring(0, propertyName.Length - 1) + "B";
+			if (propertyName == "ServerUri") return "ServerURI";
+			if (propertyName == "AuthenticateUsingNla") return "AuthenticateUsingNLA";
+			if (propertyName == "StatusIdChangeDate") return "StatusIDchangeDate";
+			if (propertyName == "Vlan") return "VLAN";
+			if (propertyName == "IpAddress") return "IPAddress";
+			if (propertyName == "IsVip") return "IsVIP";
+			if (propertyName == "CalType") return "CALType";
+			return propertyName;
+		}*/
+
         PropertyCollection properties = null;
         public PropertyCollection Properties {
             get {
@@ -39,6 +71,7 @@ namespace SolidCP.EnterpriseServer
 							var isString = ptype == typeof(string);
 							var isNullable = ptype.IsGenericType && ptype.GetGenericTypeDefinition() == typeof(Nullable<>) &&
 									!ptype.IsGenericTypeDefinition;
+							//var column = new DataColumn(ColumnName<TEntity>(p.Name));
 							var column = new DataColumn(p.Name);
 							column.AllowDBNull = isNullable || isString;
 							var ctype = isNullable ? Nullable.GetUnderlyingType(ptype) : ptype;

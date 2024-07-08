@@ -149,7 +149,7 @@ namespace SolidCP.Web.Clients
                     }
                 }
             }
-            timer.Dispose();
+            timer?.Dispose();
             timer = null;
         }
 

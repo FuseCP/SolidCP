@@ -61,6 +61,7 @@ namespace SolidCP.EnterpriseServer
 							var isString = ptype == typeof(string);
 							var isNullable = ptype.IsGenericType && ptype.GetGenericTypeDefinition() == typeof(Nullable<>) &&
 									!ptype.IsGenericTypeDefinition;
+							//var column = new DataColumn(EntityDataTable<TEntity>.ColumnName<TEntity>(p.Name));
 							var column = new DataColumn(p.Name);
 							column.AllowDBNull = isNullable || isString;
 							var ctype = isNullable ? Nullable.GetUnderlyingType(ptype) : ptype;
