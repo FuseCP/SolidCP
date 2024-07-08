@@ -15,12 +15,9 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class DomainDnsRecordConfiguration: EntityTypeConfiguration<DomainDnsRecord>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
-        HasKey(e => e.Id).HasName("PK__DomainDn__3214EC2701612B5D");
+        HasKey(e => e.Id).HasName("PK__DomainDn__3214EC272FFD0020");
 
         HasOne(d => d.Domain).WithMany(p => p.DomainDnsRecords).HasConstraintName("FK_DomainDnsRecords_DomainId");
     }
-#endif
 }

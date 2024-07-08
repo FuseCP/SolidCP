@@ -15,8 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class ExchangeAccountConfiguration: EntityTypeConfiguration<ExchangeAccount>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
         Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");
 
@@ -24,5 +22,4 @@ public partial class ExchangeAccountConfiguration: EntityTypeConfiguration<Excha
 
         HasOne(d => d.MailboxPlan).WithMany(p => p.ExchangeAccounts).HasConstraintName("FK_ExchangeAccounts_ExchangeMailboxPlans");
     }
-#endif
 }

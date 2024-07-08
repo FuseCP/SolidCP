@@ -15,10 +15,7 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class ExchangeDeletedAccountConfiguration: EntityTypeConfiguration<ExchangeDeletedAccount>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
         HasKey(e => e.Id).HasName("PK__Exchange__3214EC27D6F18B32");
     }
-#endif
 }

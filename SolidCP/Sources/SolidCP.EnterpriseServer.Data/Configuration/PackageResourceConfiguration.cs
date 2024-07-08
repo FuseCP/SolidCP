@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class PackageResourceConfiguration: EntityTypeConfiguration<PackageResource>
 {
-#if NetCore || NetFX
     public override void Configure() {
         HasKey(e => new { e.PackageId, e.GroupId }).HasName("PK_PackageResources_1");
 
@@ -31,5 +30,4 @@ public partial class PackageResourceConfiguration: EntityTypeConfiguration<Packa
         HasRequired(d => d.Package).WithMany(p => p.PackageResources);
 #endif
     }
-#endif
-    }
+}

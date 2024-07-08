@@ -15,7 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class OcsUserConfiguration : EntityTypeConfiguration<OcsUser>
 {
-#if NetCore || NetFX
 	public override void Configure()
 	{
 
@@ -31,6 +30,5 @@ public partial class OcsUserConfiguration : EntityTypeConfiguration<OcsUser>
 			Property(e => e.ModifiedDate).HasDefaultValueSql("(getdate())");
 		}
 #endif
-	}
-#endif
+    }
 }

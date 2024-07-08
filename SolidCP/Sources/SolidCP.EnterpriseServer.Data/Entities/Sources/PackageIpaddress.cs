@@ -16,7 +16,7 @@ namespace SolidCP.EnterpriseServer.Data.Entities.Sources;
 [Index("ItemId", Name = "PackageIPAddressesIdx_ItemID")]
 [Index("PackageId", Name = "PackageIPAddressesIdx_PackageID")]
 #endif
-public partial class PackageIpAddress
+public partial class PackageIpaddress
 {
     [Key]
     [Column("PackageAddressID")]
@@ -37,15 +37,15 @@ public partial class PackageIpAddress
     public int? OrgId { get; set; }
 
     [ForeignKey("AddressId")]
-    [InverseProperty("PackageIpAddresses")]
-    public virtual IpAddress Address { get; set; }
+    [InverseProperty("PackageIpaddresses")]
+    public virtual Ipaddress Address { get; set; }
 
     [ForeignKey("ItemId")]
-    [InverseProperty("PackageIpAddresses")]
+    [InverseProperty("PackageIpaddresses")]
     public virtual ServiceItem Item { get; set; }
 
     [ForeignKey("PackageId")]
-    [InverseProperty("PackageIpAddresses")]
+    [InverseProperty("PackageIpaddresses")]
     public virtual Package Package { get; set; }
 }
 #endif

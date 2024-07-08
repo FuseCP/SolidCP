@@ -17,14 +17,11 @@ using BackgroundTaskParameter = SolidCP.EnterpriseServer.Data.Entities.Backgroun
 
 public partial class BackgroundTaskParameterConfiguration: EntityTypeConfiguration<BackgroundTaskParameter>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
-        HasKey(e => e.ParameterId).HasName("PK__Backgrou__F80C62971030BD7B");
+        HasKey(e => e.ParameterId).HasName("PK__Backgrou__F80C629780845227");
 
         HasOne(d => d.Task).WithMany(p => p.BackgroundTaskParameters)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Backgroun__TaskI__3F6663D5");
+                .HasConstraintName("FK__Backgroun__TaskI__02B25B50");
     }
-#endif
 }

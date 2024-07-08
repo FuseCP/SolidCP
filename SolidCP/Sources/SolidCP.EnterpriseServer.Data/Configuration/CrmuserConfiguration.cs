@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class CrmUserConfiguration : EntityTypeConfiguration<CrmUser>
 {
-#if NetCore || NetFX
 	public override void Configure()
 	{
 
@@ -37,6 +36,5 @@ public partial class CrmUserConfiguration : EntityTypeConfiguration<CrmUser>
 #else
 		HasRequired(d => d.Account).WithMany(p => p.CrmUsers);
 #endif
-	}
-#endif
+    }
 }

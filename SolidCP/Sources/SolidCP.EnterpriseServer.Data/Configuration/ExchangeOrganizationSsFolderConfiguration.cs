@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class ExchangeOrganizationSsFolderConfiguration : EntityTypeConfiguration<ExchangeOrganizationSsFolder>
 {
-#if NetCore || NetFX
 	public override void Configure()
 	{
 		HasKey(e => e.Id).HasName("PK__Exchange__3214EC072DDBA072");
@@ -30,6 +29,5 @@ public partial class ExchangeOrganizationSsFolderConfiguration : EntityTypeConfi
 		HasRequired(d => d.Item).WithMany(p => p.ExchangeOrganizationSsFolders);
 		HasRequired(d => d.StorageSpaceFolder).WithMany(p => p.ExchangeOrganizationSsFolders);
 #endif
-	}
-#endif
+    }
 }

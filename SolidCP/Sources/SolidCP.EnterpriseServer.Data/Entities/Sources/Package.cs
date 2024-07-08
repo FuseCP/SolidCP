@@ -72,7 +72,7 @@ public partial class Package
     public virtual ICollection<PackageAddon> PackageAddons { get; set; } = new List<PackageAddon>();
 
     [InverseProperty("Package")]
-    public virtual ICollection<PackageIpAddress> PackageIpAddresses { get; set; } = new List<PackageIpAddress>();
+    public virtual ICollection<PackageIpaddress> PackageIpaddresses { get; set; } = new List<PackageIpaddress>();
 
     [InverseProperty("Package")]
     public virtual ICollection<PackageQuota> PackageQuota { get; set; } = new List<PackageQuota>();

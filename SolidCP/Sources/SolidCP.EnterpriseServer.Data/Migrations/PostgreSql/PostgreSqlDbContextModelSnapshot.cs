@@ -15678,11 +15678,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         {
                             DatabaseVersion = "1.4.9",
                             BuildDate = new DateTime(2024, 4, 20, 2, 0, 0, 0, DateTimeKind.Local)
-                        },
-                        new
-                        {
-                            DatabaseVersion = "2.0.0.228",
-                            BuildDate = new DateTime(2012, 12, 7, 1, 0, 0, 0, DateTimeKind.Local)
                         });
                 });
 

@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class PrivateIpAddressConfiguration: EntityTypeConfiguration<PrivateIpAddress>
 {
-#if NetCore || NetFX
     public override void Configure() {
 
         Property(e => e.IpAddress).IsUnicode(false);
@@ -25,5 +24,4 @@ public partial class PrivateIpAddressConfiguration: EntityTypeConfiguration<Priv
         HasRequired(d => d.Item).WithMany(p => p.PrivateIpAddresses);
 #endif
     }
-#endif
 }

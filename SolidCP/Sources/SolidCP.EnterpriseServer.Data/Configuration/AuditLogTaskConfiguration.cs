@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class AuditLogTaskConfiguration: EntityTypeConfiguration<AuditLogTask>
 {
-#if NetCore || NetFX
     public override void Configure() {
 		HasKey(e => new { e.SourceName, e.TaskName }).HasName("PK_LogActions");
 
@@ -331,5 +330,4 @@ public partial class AuditLogTaskConfiguration: EntityTypeConfiguration<AuditLog
 		});
 		#endregion
 	}
-#endif
 }

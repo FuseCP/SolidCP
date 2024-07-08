@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class PackageQuotaConfiguration: EntityTypeConfiguration<PackageQuota>
 {
-#if NetCore || NetFX
     public override void Configure() {
 
 #if NetCore
@@ -30,5 +29,4 @@ public partial class PackageQuotaConfiguration: EntityTypeConfiguration<PackageQ
         HasRequired(d => d.Quota).WithMany(p => p.PackageQuota);
 #endif
     }
-#endif
-    }
+}

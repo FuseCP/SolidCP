@@ -15,10 +15,7 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class ServiceItemPropertyConfiguration: EntityTypeConfiguration<ServiceItemProperty>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
         HasOne(d => d.Item).WithMany(p => p.ServiceItemProperties).HasConstraintName("FK_ServiceItemProperties_ServiceItems");
     }
-#endif
 }

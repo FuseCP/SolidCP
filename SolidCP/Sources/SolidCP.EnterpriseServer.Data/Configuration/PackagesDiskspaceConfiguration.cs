@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class PackagesDiskspaceConfiguration: EntityTypeConfiguration<PackagesDiskspace>
 {
-#if NetCore || NetFX
     public override void Configure() {
 
 #if NetCore
@@ -30,5 +29,4 @@ public partial class PackagesDiskspaceConfiguration: EntityTypeConfiguration<Pac
         HasRequired(d => d.Package).WithMany(p => p.PackagesDiskspaces);
 #endif
     }
-#endif
 }

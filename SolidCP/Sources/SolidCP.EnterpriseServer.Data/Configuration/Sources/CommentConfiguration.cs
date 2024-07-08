@@ -15,12 +15,9 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class CommentConfiguration: EntityTypeConfiguration<Comment>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
         Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");
 
         HasOne(d => d.User).WithMany(p => p.CommentsNavigation).HasConstraintName("FK_Comments_Users");
     }
-#endif
 }

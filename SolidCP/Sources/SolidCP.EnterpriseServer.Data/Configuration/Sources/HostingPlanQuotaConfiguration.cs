@@ -15,8 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class HostingPlanQuotaConfiguration: EntityTypeConfiguration<HostingPlanQuota>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
         HasKey(e => new { e.PlanId, e.QuotaId }).HasName("PK_HostingPlanQuotas_1");
 
@@ -26,5 +24,4 @@ public partial class HostingPlanQuotaConfiguration: EntityTypeConfiguration<Host
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_HostingPlanQuotas_Quotas");
     }
-#endif
 }

@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class BackgroundTaskStackConfiguration: EntityTypeConfiguration<BackgroundTaskStack>
 {
-#if NetCore || NetFX
     public override void Configure() {
         HasKey(e => e.TaskStackId).HasName("PK__Backgrou__5E44466F62E48BE6");
 
@@ -27,5 +26,4 @@ public partial class BackgroundTaskStackConfiguration: EntityTypeConfiguration<B
 #endif
 
     }
-#endif
 }

@@ -10,7 +10,13 @@ using SolidCP.EnterpriseServer.Data;
 
 namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
 {
-    [DbContext(typeof(MsSqlDbContext))]
+    public class MsSqlDbContext_v1_4_9 : MsSqlDbContext {
+        public MsSqlDbContext_v1_4_9(DbContext context) : base(context) { }
+        public MsSqlDbContext_v1_4_9(DbContextOptions<Context.DbContextBase> options) : base(options) { }
+        public MsSqlDbContext_v1_4_9(string connectionString, bool initSeedData = false) : base(connectionString, initSeedData) { }
+    }
+
+    [DbContext(typeof(MsSqlDbContext_v1_4_9))]
     partial class MsSqlDbContextModelSnapshot_v1_4_9 : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -15706,11 +15712,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
                         {
                             DatabaseVersion = "1.4.9",
                             BuildDate = new DateTime(2024, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            DatabaseVersion = "2.0.0.228",
-                            BuildDate = new DateTime(2012, 12, 7, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 

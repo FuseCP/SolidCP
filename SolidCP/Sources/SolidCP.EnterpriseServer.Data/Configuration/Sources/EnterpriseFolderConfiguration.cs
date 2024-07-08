@@ -15,12 +15,9 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class EnterpriseFolderConfiguration: EntityTypeConfiguration<EnterpriseFolder>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
         HasOne(d => d.StorageSpaceFolder).WithMany(p => p.EnterpriseFolders)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_EnterpriseFolders_StorageSpaceFolderId");
     }
-#endif
 }

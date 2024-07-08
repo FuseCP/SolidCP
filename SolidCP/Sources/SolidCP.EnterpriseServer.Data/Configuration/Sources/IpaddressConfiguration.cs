@@ -13,14 +13,11 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class IpAddressConfiguration: EntityTypeConfiguration<IpAddress>
+public partial class IpaddressConfiguration: EntityTypeConfiguration<Ipaddress>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
-        HasOne(d => d.Server).WithMany(p => p.IpAddresses)
+        HasOne(d => d.Server).WithMany(p => p.Ipaddresses)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_IPAddresses_Servers");
     }
-#endif
 }

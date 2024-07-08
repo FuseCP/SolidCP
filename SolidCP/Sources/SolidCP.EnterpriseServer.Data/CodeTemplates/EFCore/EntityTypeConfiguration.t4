@@ -5,7 +5,7 @@
 <#@ assembly name="Microsoft.Extensions.DependencyInjection.Abstractions" #>
 <#@ assembly name="System.Text.RegularExpressions" #>
 <#@ assembly name="System.Runtime" #>
-<#@ assembly name="SolidCP.EnterpriseServer.Data.Core" #>
+<#@ assembly name="SolidCP.EnterpriseServer.Data" #>
 <#@ parameter name="EntityType" type="Microsoft.EntityFrameworkCore.Metadata.IEntityType" #>
 <#@ parameter name="Options" type="Microsoft.EntityFrameworkCore.Scaffolding.ModelCodeGenerationOptions" #>
 <#@ parameter name="NamespaceHint" type="System.String" #>
@@ -24,6 +24,8 @@
 <#@ import namespace="Microsoft.Extensions.DependencyInjection" #>
 <#@ import namespace="SolidCP.EnterpriseServer.Data.Scaffolding" #>
 <#
+    Console.WriteLine($"Writing Configuration\\Sources\\{EntityType.Name}Configuration.cs");
+
     if (EntityType.IsSimpleManyToManyJoinEntityType())
     {
         // Don't scaffold these
@@ -68,11 +70,8 @@ namespace <#= NamespaceHint.Replace(".Configuration.Sources", ".Configuration") 
 #>
 public partial class <#= EntityType.Name #>Configuration: EntityTypeConfiguration<<#= EntityType.Name #>>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
 <#
-
     var anyEntityTypeConfiguration = false;
 
     var key = EntityType.FindPrimaryKey();
@@ -269,7 +268,6 @@ public partial class <#= EntityType.Name #>Configuration: EntityTypeConfiguratio
     }
 #>
     }
-#endif
 }
 <#    
     var previousOutput = GenerationEnvironment;

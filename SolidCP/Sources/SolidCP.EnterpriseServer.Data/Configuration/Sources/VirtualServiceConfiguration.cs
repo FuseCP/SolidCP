@@ -15,8 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class VirtualServiceConfiguration: EntityTypeConfiguration<VirtualService>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
         HasOne(d => d.Server).WithMany(p => p.VirtualServices).HasConstraintName("FK_VirtualServices_Servers");
 
@@ -24,5 +22,4 @@ public partial class VirtualServiceConfiguration: EntityTypeConfiguration<Virtua
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_VirtualServices_Services");
     }
-#endif
 }

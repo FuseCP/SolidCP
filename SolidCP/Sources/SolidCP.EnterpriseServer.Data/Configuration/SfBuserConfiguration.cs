@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class SfBUserConfiguration: EntityTypeConfiguration<SfBUser>
 {
-#if NetCore || NetFX
     public override void Configure() {
 
 		if (IsMsSql)
@@ -22,6 +21,5 @@ public partial class SfBUserConfiguration: EntityTypeConfiguration<SfBUser>
 			Property(e => e.CreatedDate).HasColumnType("datetime");
 			Property(e => e.ModifiedDate).HasColumnType("datetime");
 		}
-	}
-#endif
+    }
 }

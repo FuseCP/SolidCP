@@ -15,9 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class ClusterConfiguration: EntityTypeConfiguration<Cluster>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
     }
-#endif
 }

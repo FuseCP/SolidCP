@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class ThemeConfiguration: EntityTypeConfiguration<Theme>
 {
-#if NetCore || NetFX
     public override void Configure() {
 
 		#region Seed Data
@@ -23,5 +22,4 @@ public partial class ThemeConfiguration: EntityTypeConfiguration<Theme>
 		});
 		#endregion
 	}
-#endif
 }

@@ -15,8 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class PackageAddonConfiguration: EntityTypeConfiguration<PackageAddon>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
         HasOne(d => d.Package).WithMany(p => p.PackageAddons)
                 .OnDelete(DeleteBehavior.Cascade)
@@ -24,5 +22,4 @@ public partial class PackageAddonConfiguration: EntityTypeConfiguration<PackageA
 
         HasOne(d => d.Plan).WithMany(p => p.PackageAddons).HasConstraintName("FK_PackageAddons_HostingPlans");
     }
-#endif
 }

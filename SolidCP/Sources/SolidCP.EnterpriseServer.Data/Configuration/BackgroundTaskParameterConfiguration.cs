@@ -16,7 +16,6 @@ using BackgroundTaskParameter = SolidCP.EnterpriseServer.Data.Entities.Backgroun
 
 public partial class BackgroundTaskParameterConfiguration: EntityTypeConfiguration<BackgroundTaskParameter>
 {
-#if NetCore || NetFX
     public override void Configure() {
         HasKey(e => e.ParameterId).HasName("PK__Backgrou__F80C6297E2E5AF88");
 		if (IsMsSql)
@@ -36,5 +35,4 @@ public partial class BackgroundTaskParameterConfiguration: EntityTypeConfigurati
         HasRequired(d => d.Task).WithMany(p => p.BackgroundTaskParameters);
 #endif
     }
-#endif
 }

@@ -15,15 +15,11 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class BlackBerryUserConfiguration: EntityTypeConfiguration<BlackBerryUser>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
-
         Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");
 
         HasOne(d => d.Account).WithMany(p => p.BlackBerryUsers)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_BlackBerryUsers_ExchangeAccounts");
     }
-#endif
 }

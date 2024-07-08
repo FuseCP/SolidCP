@@ -15,8 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class HostingPlanConfiguration: EntityTypeConfiguration<HostingPlan>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
         HasOne(d => d.Package).WithMany(p => p.HostingPlans)
                 .OnDelete(DeleteBehavior.Cascade)
@@ -26,5 +24,4 @@ public partial class HostingPlanConfiguration: EntityTypeConfiguration<HostingPl
 
         HasOne(d => d.User).WithMany(p => p.HostingPlans).HasConstraintName("FK_HostingPlans_Users");
     }
-#endif
 }

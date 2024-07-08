@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class EnterpriseFoldersOwaPermissionConfiguration: EntityTypeConfiguration<EnterpriseFoldersOwaPermission>
 {
-#if NetCore || NetFX
     public override void Configure() {
         HasKey(e => e.Id).HasName("PK__Enterpri__3214EC27D1B48691");
 
@@ -27,5 +26,4 @@ public partial class EnterpriseFoldersOwaPermissionConfiguration: EntityTypeConf
         HasRequired(d => d.Folder).WithMany(p => p.EnterpriseFoldersOwaPermissions);
 #endif
     }
-#endif
-    }
+}

@@ -15,12 +15,9 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class ExchangeOrganizationConfiguration: EntityTypeConfiguration<ExchangeOrganization>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
         Property(e => e.ItemId).ValueGeneratedNever();
 
         HasOne(d => d.Item).WithOne(p => p.ExchangeOrganization).HasConstraintName("FK_ExchangeOrganizations_ServiceItems");
     }
-#endif
 }

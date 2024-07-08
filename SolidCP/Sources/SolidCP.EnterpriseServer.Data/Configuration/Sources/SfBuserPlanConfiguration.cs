@@ -15,9 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class SfBuserPlanConfiguration: EntityTypeConfiguration<SfBuserPlan>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
     }
-#endif
 }

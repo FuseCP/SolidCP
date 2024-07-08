@@ -50,17 +50,11 @@ you're working with, copy the individual lines in AddMigration.bat to a command 
 When you create SolidCP release with deploy-release.bat, deploy-release.bat creates backups of the Model Snapshots
 ..DbContextModelSnapshot.cs files, so you can always create migrations based on the last SolidCP release. When
 creating a SolidCP release, one can combine all new migrations into one by reverting the Model Snapshot to that
-of the last release and creating a new migration. The model snapshots are ignored by Git an not checked into the
-source version control. So if you need to create a new migration for a change you've made to the model, if you do
-not have yet a Model Snapshot, because you've checked out a fresh Git repo, rename the Model Snapshot of the last
-SolidCP release to the current snapshot and use this Model Snapshot to create your migration, so the migration gets
-created relative to the last SolidCP release. The Model Snapshots are not in source control, because they would
-create difficulties when merging branches in Git.
+of the last release and creating a new migration.
 
 # Usage of SolidCP.EnterpriseServer.Data
 SolidCP.EnterpriseServer.Data provides a class DbContext, that can be used as EF DbContext to access the database,
-It has properties to access the DbSet's of the Entities, and the usual SaveChanges etc. commands. The DbSet's are
-of type SolidCP.EnterpriseServer.Data.DbSet. In order to consume SoldiCP.EnterpriseServer.Data, you don't have
-to import the assemblies for EF Core 8 or EF 6, just use the SolidCP.EnterpriseServer.Data.DbContext and
-SolidCP.EnterpriseServer.Data.DbSet classes. They will use either EF Core 8 or EF 6 for accessing the database
+It has properties to access the DbSet's of the Entities, and the usual SaveChanges etc. commands. In order to
+consume SoldiCP.EnterpriseServer.Data, you don't have to import the assemblies for EF Core 8 or EF 6, just use the
+SolidCP.EnterpriseServer.Data.DbContext class. It will use either EF Core 8 or EF 6 for accessing the database
 depending on wether you run on NET 8 or on NET Framework.

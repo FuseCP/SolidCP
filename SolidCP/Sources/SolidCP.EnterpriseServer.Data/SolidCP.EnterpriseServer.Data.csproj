@@ -94,10 +94,8 @@
     </ItemGroup>
 
     <Target Name="Scaffold">
-        <Move SourceFiles="Configuration\Sources\DbContextBase.cs" DestinationFiles="DbContextBase.Original.cs" ContinueOnError="true" />
         <Exec Command="dotnet ef dbcontext scaffold &quot;$(ScaffoldConnectionString)&quot; Microsoft.EntityFrameworkCore.SqlServer --data-annotations --output-dir Entities\Sources --context-dir Configuration\Sources --context DbContextBase --force" />
         <Move SourceFiles="Configuration\Sources\DbContextBase.cs" DestinationFiles="DbContextBase.Source.cs" ContinueOnError="true" />
-        <Move SourceFiles="Configuration\Sources\DbContextBase.Original.cs" DestinationFiles="DbContextBase.cs" ContinueOnError="true" />
     </Target>
 
     <ItemGroup>
@@ -120,7 +118,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Update="CodeTemplates\EFCore\EntityData.t4">
+        <None Update="CodeTemplates\EFCore\EntityData.t4.bak">
           <Generator></Generator>
         </None>
         <None Update="CodeTemplates\EFCore\EntityType.t4">

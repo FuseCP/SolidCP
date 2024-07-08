@@ -15,12 +15,9 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class AccessTokenConfiguration: EntityTypeConfiguration<AccessToken>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
-        HasKey(e => e.Id).HasName("PK__AccessTo__3214EC275DDD686A");
+        HasKey(e => e.Id).HasName("PK__AccessTo__3214EC27030FCDFE");
 
         HasOne(d => d.Account).WithMany(p => p.AccessTokens).HasConstraintName("FK_AccessTokens_UserId");
     }
-#endif
 }

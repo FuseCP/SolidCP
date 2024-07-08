@@ -15,9 +15,13 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class ThemeConfiguration: EntityTypeConfiguration<Theme>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
+
+        #region Seed Data
+        HasData(() => new Theme[] {
+            new Theme() { ThemeId = 1, DisplayName = "SolidCP v1", DisplayOrder = 1, Enabled = 1, LTRName = "Default", RTLName = "Default" }
+        });
+        #endregion
+
     }
-#endif
 }

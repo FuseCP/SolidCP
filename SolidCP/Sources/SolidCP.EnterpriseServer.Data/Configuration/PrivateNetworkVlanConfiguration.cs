@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class PrivateNetworkVlanConfiguration : EntityTypeConfiguration<PrivateNetworkVlan>
 {
-#if NetCore || NetFX
 	public override void Configure()
 	{
 		HasKey(e => e.VlanId).HasName("PK__PrivateN__8348135581B53618");
@@ -32,6 +31,5 @@ public partial class PrivateNetworkVlanConfiguration : EntityTypeConfiguration<P
 		// TODO optional or required?
 		HasOptional(d => d.Server).WithMany(p => p.PrivateNetworkVlans);
 #endif
-	}
-#endif
+    }
 }

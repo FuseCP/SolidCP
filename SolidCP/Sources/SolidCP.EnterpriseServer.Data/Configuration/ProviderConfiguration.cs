@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class ProviderConfiguration: EntityTypeConfiguration<Provider>
 {
-#if NetCore || NetFX
     public override void Configure() {
         HasKey(e => e.ProviderId).HasName("PK_ServiceTypes");
 
@@ -223,6 +222,5 @@ public partial class ProviderConfiguration: EntityTypeConfiguration<Provider>
 			new Provider() { ProviderId = 1911, DisplayName = "Apache Web Server 2.4 (Experimental)", EditorControl = "Apache", GroupId = 2, ProviderName = "Apache", ProviderType = "SolidCP.Providers.Web.Apache24, SolidCP.Providers.Web.Apache" }
 		});
 		#endregion
-	}
-#endif
+    }
 }

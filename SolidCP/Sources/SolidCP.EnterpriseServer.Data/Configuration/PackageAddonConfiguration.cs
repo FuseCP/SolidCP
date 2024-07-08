@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class PackageAddonConfiguration: EntityTypeConfiguration<PackageAddon>
 {
-#if NetCore || NetFX
     public override void Configure() {
 
 		if (IsMsSql)
@@ -38,5 +37,4 @@ public partial class PackageAddonConfiguration: EntityTypeConfiguration<PackageA
         HasRequired(d => d.Plan).WithMany(p => p.PackageAddons);
 #endif
     }
-#endif
 }

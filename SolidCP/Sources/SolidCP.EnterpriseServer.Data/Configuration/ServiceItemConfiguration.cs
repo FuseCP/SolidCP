@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class ServiceItemConfiguration: EntityTypeConfiguration<ServiceItem>
 {
-#if NetCore || NetFX
     public override void Configure() {
 
 		if (IsMsSql) Property(e => e.CreatedDate).HasColumnType("datetime");
@@ -31,5 +30,4 @@ public partial class ServiceItemConfiguration: EntityTypeConfiguration<ServiceIt
         HasRequired(d => d.Service).WithMany(p => p.ServiceItems);
 #endif
     }
-#endif
-    }
+}

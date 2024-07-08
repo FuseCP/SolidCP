@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class ScheduleParameterConfiguration : EntityTypeConfiguration<ScheduleParameter>
 {
-#if NetCore || NetFX
 	public override void Configure()
 	{
 
@@ -30,6 +29,5 @@ public partial class ScheduleParameterConfiguration : EntityTypeConfiguration<Sc
 			new ScheduleParameter() { ScheduleId = 2, ParameterId = "SUSPEND_OVERUSED", ParameterValue = "false" }
 		});
 		#endregion
-	}
-#endif
+    }
 }

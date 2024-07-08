@@ -10,7 +10,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class ServicePropertyConfiguration: EntityTypeConfiguration<ServiceProperty>
 {
-#if NetCore || NetFX
     public override void Configure() {
         HasKey(e => new { e.ServiceId, e.PropertyName }).HasName("PK_ServiceProperties_1");
 
@@ -20,5 +19,4 @@ public partial class ServicePropertyConfiguration: EntityTypeConfiguration<Servi
         HasRequired(d => d.Service).WithMany(p => p.ServiceProperties);
 #endif
     }
-#endif
-    }
+}

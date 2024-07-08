@@ -10,7 +10,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class ExchangeOrganizationConfiguration: EntityTypeConfiguration<ExchangeOrganization>
 {
-#if NetCore || NetFX
     public override void Configure() {
 
 #if NetCore
@@ -21,5 +20,4 @@ public partial class ExchangeOrganizationConfiguration: EntityTypeConfiguration<
         HasRequired(d => d.Item); //.WithOptional(p => p.ExchangeOrganization);
 #endif    
     }
-#endif
 }

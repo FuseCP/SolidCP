@@ -15,8 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class DomainConfiguration: EntityTypeConfiguration<Domain>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
         HasOne(d => d.MailDomain).WithMany(p => p.DomainMailDomains).HasConstraintName("FK_Domains_ServiceItems_MailDomain");
 
@@ -26,5 +24,4 @@ public partial class DomainConfiguration: EntityTypeConfiguration<Domain>
 
         HasOne(d => d.ZoneItem).WithMany(p => p.DomainZoneItems).HasConstraintName("FK_Domains_ServiceItems_ZoneItem");
     }
-#endif
 }

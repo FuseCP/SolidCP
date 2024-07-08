@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class EnterpriseFolderConfiguration: EntityTypeConfiguration<EnterpriseFolder>
 {
-#if NetCore || NetFX
     public override void Configure() {
 
 #if NetCore
@@ -25,5 +24,4 @@ public partial class EnterpriseFolderConfiguration: EntityTypeConfiguration<Ente
         HasOptional(d => d.StorageSpaceFolder).WithMany(p => p.EnterpriseFolders);
 #endif
     }
-#endif
 }

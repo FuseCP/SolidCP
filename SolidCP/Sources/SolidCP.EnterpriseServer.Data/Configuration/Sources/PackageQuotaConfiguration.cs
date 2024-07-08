@@ -15,8 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class PackageQuotaConfiguration: EntityTypeConfiguration<PackageQuota>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
         HasOne(d => d.Package).WithMany(p => p.PackageQuota)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -26,5 +24,4 @@ public partial class PackageQuotaConfiguration: EntityTypeConfiguration<PackageQ
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_PackageQuotas_Quotas");
     }
-#endif
 }

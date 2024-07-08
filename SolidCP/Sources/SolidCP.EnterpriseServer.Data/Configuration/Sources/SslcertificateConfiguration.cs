@@ -15,10 +15,7 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class SslcertificateConfiguration: EntityTypeConfiguration<Sslcertificate>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
         Property(e => e.Id).ValueGeneratedOnAdd();
     }
-#endif
 }

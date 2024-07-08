@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class RdsServerSettingConfiguration: EntityTypeConfiguration<RdsServerSetting>
 {
-#if NetCore || NetFX
     public override void Configure() {
 
 		if (IsMsSql) Property(e => e.PropertyValue).HasColumnType("ntext");
@@ -23,6 +22,5 @@ public partial class RdsServerSettingConfiguration: EntityTypeConfiguration<RdsS
 			Property(e => e.PropertyValue).HasColumnType("TEXT");
 		}
 
-	}
-#endif
+    }
 }

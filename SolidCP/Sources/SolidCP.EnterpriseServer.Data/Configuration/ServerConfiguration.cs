@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class ServerConfiguration: EntityTypeConfiguration<Server>
 {
-#if NetCore || NetFX
     public override void Configure() {
 
         Property(e => e.ADAuthenticationType).IsUnicode(false);
@@ -33,5 +32,4 @@ public partial class ServerConfiguration: EntityTypeConfiguration<Server>
 		HasOptional(d => d.PrimaryGroup).WithMany(p => p.Servers);
 #endif
     }
-#endif
 }

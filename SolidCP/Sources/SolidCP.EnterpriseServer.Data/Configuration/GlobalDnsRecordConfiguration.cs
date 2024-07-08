@@ -16,7 +16,6 @@ using GlobalDnsRecord = SolidCP.EnterpriseServer.Data.Entities.GlobalDnsRecord;
 
 public partial class GlobalDnsRecordConfiguration : EntityTypeConfiguration<GlobalDnsRecord>
 {
-#if NetCore || NetFX
 	public override void Configure()
 	{
 
@@ -41,6 +40,5 @@ public partial class GlobalDnsRecordConfiguration : EntityTypeConfiguration<Glob
 		HasRequired(d => d.Service).WithMany(p => p.GlobalDnsRecords);
 #endif
 
-	}
-#endif
+    }
 }

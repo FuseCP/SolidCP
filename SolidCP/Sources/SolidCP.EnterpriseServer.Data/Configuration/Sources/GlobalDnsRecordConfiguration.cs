@@ -17,10 +17,8 @@ using GlobalDnsRecord = SolidCP.EnterpriseServer.Data.Entities.GlobalDnsRecord;
 
 public partial class GlobalDnsRecordConfiguration: EntityTypeConfiguration<GlobalDnsRecord>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
-        HasOne(d => d.IpAddress).WithMany(p => p.GlobalDnsRecords).HasConstraintName("FK_GlobalDnsRecords_IPAddresses");
+        HasOne(d => d.Ipaddress).WithMany(p => p.GlobalDnsRecords).HasConstraintName("FK_GlobalDnsRecords_IPAddresses");
 
         HasOne(d => d.Package).WithMany(p => p.GlobalDnsRecords)
                 .OnDelete(DeleteBehavior.Cascade)
@@ -32,5 +30,4 @@ public partial class GlobalDnsRecordConfiguration: EntityTypeConfiguration<Globa
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_GlobalDnsRecords_Services");
     }
-#endif
 }

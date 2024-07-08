@@ -13,18 +13,15 @@ using System.Data.Entity;
 
 namespace SolidCP.EnterpriseServer.Data.Configuration;
 
-public partial class PackageIpAddressConfiguration: EntityTypeConfiguration<PackageIpAddress>
+public partial class PackageIpaddressConfiguration: EntityTypeConfiguration<PackageIpaddress>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
-        HasOne(d => d.Address).WithMany(p => p.PackageIpAddresses)
+        HasOne(d => d.Address).WithMany(p => p.PackageIpaddresses)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_PackageIPAddresses_IPAddresses");
 
-        HasOne(d => d.Item).WithMany(p => p.PackageIpAddresses).HasConstraintName("FK_PackageIPAddresses_ServiceItems");
+        HasOne(d => d.Item).WithMany(p => p.PackageIpaddresses).HasConstraintName("FK_PackageIPAddresses_ServiceItems");
 
-        HasOne(d => d.Package).WithMany(p => p.PackageIpAddresses).HasConstraintName("FK_PackageIPAddresses_Packages");
+        HasOne(d => d.Package).WithMany(p => p.PackageIpaddresses).HasConstraintName("FK_PackageIPAddresses_Packages");
     }
-#endif
 }

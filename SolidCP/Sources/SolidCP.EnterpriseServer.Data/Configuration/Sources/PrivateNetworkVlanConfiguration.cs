@@ -15,8 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class PrivateNetworkVlanConfiguration: EntityTypeConfiguration<PrivateNetworkVlan>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
         HasKey(e => e.VlanId).HasName("PK__PrivateN__83481355F80492B4");
 
@@ -24,5 +22,4 @@ public partial class PrivateNetworkVlanConfiguration: EntityTypeConfiguration<Pr
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_ServerID");
     }
-#endif
 }

@@ -15,9 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class ExchangeDisclaimerConfiguration: EntityTypeConfiguration<ExchangeDisclaimer>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
     }
-#endif
 }

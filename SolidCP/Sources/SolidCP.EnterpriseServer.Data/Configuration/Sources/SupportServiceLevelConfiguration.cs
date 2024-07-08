@@ -15,10 +15,7 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class SupportServiceLevelConfiguration: EntityTypeConfiguration<SupportServiceLevel>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
         HasKey(e => e.LevelId).HasName("PK__SupportS__09F03C061D1B6E9C");
     }
-#endif
 }

@@ -15,7 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class UsersDetailedConfiguration: EntityTypeConfiguration<UsersDetailed>
 {
-#if NetCore || NetFX
     public override void Configure() {
 
 		if (IsMsSql)
@@ -37,5 +36,4 @@ public partial class UsersDetailedConfiguration: EntityTypeConfiguration<UsersDe
 		ToTable("UsersDetailed");
 #endif
     }
-#endif
 }

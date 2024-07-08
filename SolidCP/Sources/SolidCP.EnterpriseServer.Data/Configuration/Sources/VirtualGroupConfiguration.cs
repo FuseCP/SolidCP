@@ -15,8 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class VirtualGroupConfiguration: EntityTypeConfiguration<VirtualGroup>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
         HasOne(d => d.Group).WithMany(p => p.VirtualGroups)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -24,5 +22,4 @@ public partial class VirtualGroupConfiguration: EntityTypeConfiguration<VirtualG
 
         HasOne(d => d.Server).WithMany(p => p.VirtualGroups).HasConstraintName("FK_VirtualGroups_Servers");
     }
-#endif
 }

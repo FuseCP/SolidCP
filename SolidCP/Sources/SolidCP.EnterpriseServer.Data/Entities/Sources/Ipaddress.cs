@@ -14,7 +14,7 @@ namespace SolidCP.EnterpriseServer.Data.Entities.Sources;
 #if NetCore
 [Index("ServerId", Name = "IPAddressesIdx_ServerID")]
 #endif
-public partial class IpAddress
+public partial class Ipaddress
 {
     [Key]
     [Column("AddressID")]
@@ -59,14 +59,14 @@ public partial class IpAddress
     [Column("VLAN")]
     public int? Vlan { get; set; }
 
-    [InverseProperty("IpAddress")]
+    [InverseProperty("Ipaddress")]
     public virtual ICollection<GlobalDnsRecord> GlobalDnsRecords { get; set; } = new List<GlobalDnsRecord>();
 
     [InverseProperty("Address")]
-    public virtual ICollection<PackageIpAddress> PackageIpAddresses { get; set; } = new List<PackageIpAddress>();
+    public virtual ICollection<PackageIpaddress> PackageIpaddresses { get; set; } = new List<PackageIpaddress>();
 
     [ForeignKey("ServerId")]
-    [InverseProperty("IpAddresses")]
+    [InverseProperty("Ipaddresses")]
     public virtual Server Server { get; set; }
 }
 #endif

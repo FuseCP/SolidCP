@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class ScheduleTaskParameterConfiguration: EntityTypeConfiguration<ScheduleTaskParameter>
 {
-#if NetCore || NetFX
     public override void Configure() {
 
 #if NetCore
@@ -122,5 +121,4 @@ public partial class ScheduleTaskParameterConfiguration: EntityTypeConfiguration
         #endregion
 
     }
-#endif
 }

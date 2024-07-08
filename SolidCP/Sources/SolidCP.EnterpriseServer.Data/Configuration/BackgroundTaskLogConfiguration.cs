@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class BackgroundTaskLogConfiguration: EntityTypeConfiguration<BackgroundTaskLog>
 {
-#if NetCore || NetFX
     public override void Configure() {
         HasKey(e => e.LogId).HasName("PK__Backgrou__5E5499A830A1D5BF");
 
@@ -38,5 +37,4 @@ public partial class BackgroundTaskLogConfiguration: EntityTypeConfiguration<Bac
         HasRequired(d => d.Task).WithMany(p => p.BackgroundTaskLogs);
 #endif
     }
-#endif
 }

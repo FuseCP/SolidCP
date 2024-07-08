@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class ResourceGroupDnsRecordConfiguration : EntityTypeConfiguration<ResourceGroupDnsRecord>
 {
-#if NetCore || NetFX
 	public override void Configure()
 	{
 
@@ -64,6 +63,5 @@ public partial class ResourceGroupDnsRecordConfiguration : EntityTypeConfigurati
                 RecordType = "CNAME" }
         });
         #endregion
-	}
-#endif
+    }
 }

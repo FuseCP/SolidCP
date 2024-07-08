@@ -24,8 +24,8 @@ namespace SolidCP.EnterpriseServer.Data
 
 		public static void Main(string[] args)
 		{
-			Console.ReadKey();
-			Console.WriteLine("SolidCP.EnterpriseServer.Data");
+			//Console.ReadKey();
+			//Console.WriteLine("SolidCP.EnterpriseServer.Data");
 
 			if (args.Length < 2) return;
 

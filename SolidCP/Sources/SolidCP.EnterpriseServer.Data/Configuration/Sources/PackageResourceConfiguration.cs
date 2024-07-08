@@ -15,8 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class PackageResourceConfiguration: EntityTypeConfiguration<PackageResource>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
         HasKey(e => new { e.PackageId, e.GroupId }).HasName("PK_PackageResources_1");
 
@@ -28,5 +26,4 @@ public partial class PackageResourceConfiguration: EntityTypeConfiguration<Packa
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_PackageResources_Packages");
     }
-#endif
 }

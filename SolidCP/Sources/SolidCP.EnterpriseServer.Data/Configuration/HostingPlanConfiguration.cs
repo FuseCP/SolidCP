@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class HostingPlanConfiguration : EntityTypeConfiguration<HostingPlan>
 {
-#if NetCore || NetFX
 	public override void Configure()
 	{
 
@@ -43,6 +42,5 @@ public partial class HostingPlanConfiguration : EntityTypeConfiguration<HostingP
 		HasOptional(d => d.Server).WithMany(p => p.HostingPlans);
 		HasOptional(d => d.User).WithMany(p => p.HostingPlans);
 #endif
-	}
-#endif
+    }
 }

@@ -2832,11 +2832,6 @@ INSERT INTO "Versions" ("DatabaseVersion", "BuildDate")
 VALUES ('1.4.9', '2024-04-20 00:00:00');
 SELECT changes();
 
-INSERT INTO "Versions" ("DatabaseVersion", "BuildDate")
-VALUES ('2.0.0.228', '2012-12-07 00:00:00');
-SELECT changes();
-
-
 INSERT INTO "Packages" ("PackageID", "BandwidthUpdated", "DefaultTopPackage", "OverrideQuotas", "PackageComments", "PackageName", "ParentPackageID", "PlanID", "PurchaseDate", "ServerID", "StatusID", "StatusIDchangeDate", "UserID")
 VALUES (1, NULL, 0, 0, '', 'System', NULL, NULL, NULL, NULL, 1, '2024-04-20 11:02:58.56', 1);
 SELECT changes();

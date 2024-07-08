@@ -15,8 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class ServiceItemConfiguration: EntityTypeConfiguration<ServiceItem>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
         HasOne(d => d.ItemType).WithMany(p => p.ServiceItems).HasConstraintName("FK_ServiceItems_ServiceItemTypes");
 
@@ -24,5 +22,4 @@ public partial class ServiceItemConfiguration: EntityTypeConfiguration<ServiceIt
 
         HasOne(d => d.Service).WithMany(p => p.ServiceItems).HasConstraintName("FK_ServiceItems_Services");
     }
-#endif
 }

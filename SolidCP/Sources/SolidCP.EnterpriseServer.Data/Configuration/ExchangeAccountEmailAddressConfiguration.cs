@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class ExchangeAccountEmailAddressConfiguration : EntityTypeConfiguration<ExchangeAccountEmailAddress>
 {
-#if NetCore || NetFX
 	public override void Configure()
 	{
 
@@ -23,6 +22,5 @@ public partial class ExchangeAccountEmailAddressConfiguration : EntityTypeConfig
 #else
 		HasRequired(d => d.Account).WithMany(p => p.ExchangeAccountEmailAddresses);
 #endif
-	}
-#endif
+    }
 }

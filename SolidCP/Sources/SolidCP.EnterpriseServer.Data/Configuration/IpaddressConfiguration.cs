@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class IpAddressConfiguration: EntityTypeConfiguration<IpAddress>
 {
-#if NetCore || NetFX
     public override void Configure() {
 
         Property(e => e.ExternalIp).IsUnicode(false);
@@ -37,5 +36,4 @@ public partial class IpAddressConfiguration: EntityTypeConfiguration<IpAddress>
 		HasOptional(d => d.Server).WithMany(p => p.IpAddresses).WillCascadeOnDelete();
 #endif
     }
-#endif
 }

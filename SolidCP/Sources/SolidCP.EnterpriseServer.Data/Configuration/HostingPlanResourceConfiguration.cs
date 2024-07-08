@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class HostingPlanResourceConfiguration: EntityTypeConfiguration<HostingPlanResource>
 {
-#if NetCore || NetFX
     public override void Configure() {
 
 #if NetCore
@@ -28,5 +27,4 @@ public partial class HostingPlanResourceConfiguration: EntityTypeConfiguration<H
         HasRequired(d => d.Plan).WithMany(p => p.HostingPlanResources);
 #endif
     }
-#endif
 }

@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class VirtualServiceConfiguration : EntityTypeConfiguration<VirtualService>
 {
-#if NetCore || NetFX
 	public override void Configure()
 	{
 
@@ -30,5 +29,4 @@ public partial class VirtualServiceConfiguration : EntityTypeConfiguration<Virtu
 #endif
 
 	}
-#endif
 }

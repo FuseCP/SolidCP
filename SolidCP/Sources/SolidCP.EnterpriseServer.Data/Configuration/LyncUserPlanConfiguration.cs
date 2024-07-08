@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class LyncUserPlanConfiguration: EntityTypeConfiguration<LyncUserPlan>
 {
-#if NetCore || NetFX
     public override void Configure() {
 
 #if NetCore
@@ -23,5 +22,4 @@ public partial class LyncUserPlanConfiguration: EntityTypeConfiguration<LyncUser
         HasRequired(d => d.Item).WithMany(p => p.LyncUserPlans);
 #endif
     }
-#endif
 }

@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class ExchangeMailboxPlanConfiguration: EntityTypeConfiguration<ExchangeMailboxPlan>
 {
-#if NetCore || NetFX
     public override void Configure() {
 
 #if NetCore
@@ -23,5 +22,4 @@ public partial class ExchangeMailboxPlanConfiguration: EntityTypeConfiguration<E
         HasRequired(d => d.Item).WithMany(p => p.ExchangeMailboxPlans);
 #endif
     }
-#endif
-    }
+}

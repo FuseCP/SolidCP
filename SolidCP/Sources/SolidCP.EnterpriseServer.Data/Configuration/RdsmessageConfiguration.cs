@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class RdsMessageConfiguration: EntityTypeConfiguration<RdsMessage>
 {
-#if NetCore || NetFX
     public override void Configure() {
         Property(e => e.UserName).IsFixedLength();
 
@@ -35,5 +34,4 @@ public partial class RdsMessageConfiguration: EntityTypeConfiguration<RdsMessage
 		HasRequired(d => d.RdsCollection).WithMany(p => p.RdsMessages);
 #endif
     }
-#endif
 }

@@ -14,10 +14,8 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class ExchangeMailboxPlanRetentionPolicyTagConfiguration : EntityTypeConfiguration<ExchangeMailboxPlanRetentionPolicyTag>
 {
-#if NetCore || NetFX
 	public override void Configure()
 	{
 		HasKey(e => e.PlanTagId).HasName("PK__Exchange__E467073C50CD805B");
-	}
-#endif
+    }
 }

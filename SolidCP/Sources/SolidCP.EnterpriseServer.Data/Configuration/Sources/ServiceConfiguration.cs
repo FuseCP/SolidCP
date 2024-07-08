@@ -15,8 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class ServiceConfiguration: EntityTypeConfiguration<Service>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
         HasOne(d => d.Cluster).WithMany(p => p.Services).HasConstraintName("FK_Services_Clusters");
 
@@ -28,5 +26,4 @@ public partial class ServiceConfiguration: EntityTypeConfiguration<Service>
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Services_Servers");
     }
-#endif
 }

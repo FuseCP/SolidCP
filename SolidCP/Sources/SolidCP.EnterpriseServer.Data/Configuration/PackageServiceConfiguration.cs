@@ -15,7 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class PackageServiceConfiguration: EntityTypeConfiguration<PackageService>
 {
-#if NetCore || NetFX
     public override void Configure() {
 #if NetCore
 		HasOne<Service>().WithMany()
@@ -26,5 +25,4 @@ public partial class PackageServiceConfiguration: EntityTypeConfiguration<Packag
 			.HasConstraintName("FK_PackageServices_Packages");
 #endif
 	}
-#endif
-	}
+}

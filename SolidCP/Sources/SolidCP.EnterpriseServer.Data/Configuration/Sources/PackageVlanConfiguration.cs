@@ -15,8 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class PackageVlanConfiguration: EntityTypeConfiguration<PackageVlan>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
         HasKey(e => e.PackageVlanId).HasName("PK__PackageV__A9AABBF954AA28C0");
 
@@ -24,5 +22,4 @@ public partial class PackageVlanConfiguration: EntityTypeConfiguration<PackageVl
 
         HasOne(d => d.Vlan).WithMany(p => p.PackageVlans).HasConstraintName("FK_VlanID");
     }
-#endif
 }

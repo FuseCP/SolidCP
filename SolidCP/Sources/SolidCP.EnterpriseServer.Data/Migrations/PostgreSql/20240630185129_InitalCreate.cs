@@ -2587,8 +2587,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     { "1.1.2.13", new DateTime(2011, 4, 15, 2, 0, 0, 0, DateTimeKind.Local) },
                     { "1.2.0.38", new DateTime(2011, 7, 13, 2, 0, 0, 0, DateTimeKind.Local) },
                     { "1.2.1.6", new DateTime(2012, 3, 29, 2, 0, 0, 0, DateTimeKind.Local) },
-                    { "1.4.9", new DateTime(2024, 4, 20, 2, 0, 0, 0, DateTimeKind.Local) },
-                    { "2.0.0.228", new DateTime(2012, 12, 7, 1, 0, 0, 0, DateTimeKind.Local) }
+                    { "1.4.9", new DateTime(2024, 4, 20, 2, 0, 0, 0, DateTimeKind.Local) }
                 });
 
             migrationBuilder.InsertData(

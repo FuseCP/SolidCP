@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class UserSettingConfiguration: EntityTypeConfiguration<UserSetting>
 {
-#if NetCore || NetFX
     public override void Configure() {
 
         if (IsMsSql) Property(e => e.PropertyValue).HasColumnType("ntext");
@@ -1550,5 +1549,4 @@ support@solidcp.com
 		});
         #endregion
 	}
-#endif
-        }
+}

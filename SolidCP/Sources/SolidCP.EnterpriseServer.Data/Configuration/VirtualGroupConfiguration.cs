@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class VirtualGroupConfiguration: EntityTypeConfiguration<VirtualGroup>
 {
-#if NetCore || NetFX
     public override void Configure() {
 
 #if NetCore
@@ -28,5 +27,4 @@ public partial class VirtualGroupConfiguration: EntityTypeConfiguration<VirtualG
         HasRequired(d => d.Server).WithMany(p => p.VirtualGroups);
 #endif
     }
-#endif
 }

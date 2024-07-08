@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class AuditLogSourceConfiguration: EntityTypeConfiguration<AuditLogSource>
 {
-#if NetCore || NetFX
 	public override void Configure() {
 
 		Property(e => e.SourceName).IsUnicode(false);
@@ -63,5 +62,4 @@ public partial class AuditLogSourceConfiguration: EntityTypeConfiguration<AuditL
 		#endregion
 
 	}
-#endif
 }

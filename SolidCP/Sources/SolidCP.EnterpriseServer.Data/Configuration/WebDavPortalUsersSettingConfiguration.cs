@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class WebDavPortalUsersSettingConfiguration: EntityTypeConfiguration<WebDavPortalUsersSetting>
 {
-#if NetCore || NetFX
     public override void Configure() {
         HasKey(e => e.Id).HasName("PK__WebDavPo__3214EC278AF5195E");
 
@@ -25,5 +24,4 @@ public partial class WebDavPortalUsersSettingConfiguration: EntityTypeConfigurat
 #endif
 
     }
-#endif
-    }
+}

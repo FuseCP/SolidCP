@@ -15,7 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class ResourceGroupConfiguration : EntityTypeConfiguration<ResourceGroup>
 {
-#if NetCore || NetFX
 	public override void Configure()
 	{
 
@@ -67,6 +66,5 @@ public partial class ResourceGroupConfiguration : EntityTypeConfiguration<Resour
             new ResourceGroup() { GroupId = 167, GroupName = "Proxmox", GroupOrder = 20, ShowGroup = true }
         });
         #endregion
-	}
-#endif
+    }
 }

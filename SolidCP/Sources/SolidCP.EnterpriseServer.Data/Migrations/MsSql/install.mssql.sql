@@ -2314,8 +2314,7 @@ BEGIN
     (''1.1.2.13'', ''2011-04-15T00:00:00.000''),
     (''1.2.0.38'', ''2011-07-13T00:00:00.000''),
     (''1.2.1.6'', ''2012-03-29T00:00:00.000''),
-    (''1.4.9'', ''2024-04-20T00:00:00.000''),
-    (''2.0.0.228'', ''2012-12-07T00:00:00.000'')');
+    (''1.4.9'', ''2024-04-20T00:00:00.000'')');
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'DatabaseVersion', N'BuildDate') AND [object_id] = OBJECT_ID(N'[Versions]'))
         SET IDENTITY_INSERT [Versions] OFF;
 END;

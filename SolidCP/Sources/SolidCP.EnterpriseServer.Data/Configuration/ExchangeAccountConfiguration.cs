@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class ExchangeAccountConfiguration : EntityTypeConfiguration<ExchangeAccount>
 {
-#if NetCore || NetFX
 	public override void Configure()
 	{
 
@@ -32,6 +31,5 @@ public partial class ExchangeAccountConfiguration : EntityTypeConfiguration<Exch
 		// TODO optional or required?
 		HasOptional(d => d.MailboxPlan).WithMany(p => p.ExchangeAccounts);
 #endif
-	}
-#endif
+    }
 }

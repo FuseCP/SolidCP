@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class DomainDnsRecordConfiguration: EntityTypeConfiguration<DomainDnsRecord>
 {
-#if NetCore || NetFX
     public override void Configure() {
         HasKey(e => e.Id).HasName("PK__DomainDn__3214EC2758B0A6F1");
 
@@ -26,5 +25,4 @@ public partial class DomainDnsRecordConfiguration: EntityTypeConfiguration<Domai
 		HasRequired(d => d.Domain).WithMany(p => p.DomainDnsRecords);
 #endif
     }
-#endif
 }

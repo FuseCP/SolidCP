@@ -15,8 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class PackagesBandwidthConfiguration: EntityTypeConfiguration<PackagesBandwidth>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
         HasOne(d => d.Group).WithMany(p => p.PackagesBandwidths)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -26,5 +24,4 @@ public partial class PackagesBandwidthConfiguration: EntityTypeConfiguration<Pac
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_PackagesBandwidth_Packages");
     }
-#endif
 }

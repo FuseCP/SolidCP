@@ -15,8 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class LyncUserConfiguration: EntityTypeConfiguration<LyncUser>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
         Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");
         Property(e => e.ModifiedDate).HasDefaultValueSql("(getdate())");
@@ -25,5 +23,4 @@ public partial class LyncUserConfiguration: EntityTypeConfiguration<LyncUser>
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_LyncUsers_LyncUserPlans");
     }
-#endif
 }

@@ -83,7 +83,7 @@ public partial class Server
     public virtual ICollection<HostingPlan> HostingPlans { get; set; } = new List<HostingPlan>();
 
     [InverseProperty("Server")]
-    public virtual ICollection<IpAddress> IpAddresses { get; set; } = new List<IpAddress>();
+    public virtual ICollection<Ipaddress> Ipaddresses { get; set; } = new List<Ipaddress>();
 
     [InverseProperty("Server")]
     public virtual ICollection<Package> Packages { get; set; } = new List<Package>();

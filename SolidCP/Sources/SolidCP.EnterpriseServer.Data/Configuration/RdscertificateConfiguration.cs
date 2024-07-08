@@ -15,7 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class RdsCertificateConfiguration: EntityTypeConfiguration<RdsCertificate>
 {
-#if NetCore || NetFX
     public override void Configure() {
 
 		if (IsMsSql)
@@ -29,6 +28,5 @@ public partial class RdsCertificateConfiguration: EntityTypeConfiguration<RdsCer
 			Property(e => e.Content).HasColumnType("TEXT");
 		}
 
-	}
-#endif
+    }
 }

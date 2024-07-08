@@ -15,8 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class PackagesTreeCacheConfiguration: EntityTypeConfiguration<PackagesTreeCache>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
         HasIndex(e => new { e.ParentPackageId, e.PackageId }, "PackagesTreeCacheIndex").IsClustered();
 
@@ -27,6 +25,12 @@ public partial class PackagesTreeCacheConfiguration: EntityTypeConfiguration<Pac
         HasOne(d => d.ParentPackage).WithMany()
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_PackagesTreeCache_Packages");
+
+        #region Seed Data
+        HasData(() => new PackagesTreeCache[] {
+            new PackagesTreeCache() { ParentPackageId = 1, PackageId = 1 }
+        });
+        #endregion
+
     }
-#endif
 }

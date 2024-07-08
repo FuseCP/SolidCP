@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class ScheduleConfiguration : EntityTypeConfiguration<Schedule>
 {
-#if NetCore || NetFX
 	public override void Configure()
 	{
 
@@ -50,6 +49,5 @@ public partial class ScheduleConfiguration : EntityTypeConfiguration<Schedule>
 				TaskId = "SCHEDULE_TASK_CALCULATE_PACKAGES_BANDWIDTH", ToTime = DateTime.Parse("2000-01-01T12:00:00.0000000Z"), WeekMonthDay = 1 }
 		});
 		#endregion
-	}
-#endif
+    }
 }

@@ -17,7 +17,6 @@ public partial class DomainConfiguration: EntityTypeConfiguration<Domain>
     public DomainConfiguration(): base() { }
     public DomainConfiguration(DbType dbType, bool initSeedData = false) : base(dbType, initSeedData) { }
 
-#if NetCore || NetFX
     public override void Configure() {
 
 		if (IsMsSql)
@@ -42,5 +41,4 @@ public partial class DomainConfiguration: EntityTypeConfiguration<Domain>
         HasOptional(d => d.Zone).WithMany(p => p.DomainZones);
 #endif
     }
-#endif
-    }
+}

@@ -15,8 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class PackageConfiguration: EntityTypeConfiguration<Package>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
         ToTable(tb => tb.HasTrigger("Update_StatusIDchangeDate"));
 
@@ -47,6 +45,12 @@ public partial class PackageConfiguration: EntityTypeConfiguration<Package>
                     j.IndexerProperty<int>("PackageId").HasColumnName("PackageID");
                     j.IndexerProperty<int>("ServiceId").HasColumnName("ServiceID");
                 });
+
+        #region Seed Data
+        HasData(() => new Package[] {
+            new Package() { PackageId = 1, PackageComments = "", PackageName = "System", StatusId = 1, StatusIdChangeDate = DateTime.Parse("2024-04-20T09:02:58.5600000Z"), UserId = 1 }
+        });
+        #endregion
+
     }
-#endif
 }

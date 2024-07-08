@@ -15,8 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class StorageSpaceConfiguration: EntityTypeConfiguration<StorageSpace>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
         HasKey(e => e.Id).HasName("PK__StorageS__3214EC0756F21A09");
 
@@ -24,5 +22,4 @@ public partial class StorageSpaceConfiguration: EntityTypeConfiguration<StorageS
 
         HasOne(d => d.Service).WithMany(p => p.StorageSpaces).HasConstraintName("FK_StorageSpaces_ServiceId");
     }
-#endif
 }

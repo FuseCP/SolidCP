@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class ServiceConfiguration: EntityTypeConfiguration<Service>
 {
-#if NetCore || NetFX
     public override void Configure() {
 
 		if (IsMsSql) Property(e => e.Comments).HasColumnType("ntext");
@@ -40,5 +39,4 @@ public partial class ServiceConfiguration: EntityTypeConfiguration<Service>
         HasRequired(d => d.Server).WithMany(p => p.Services);
 #endif
     }
-#endif
 }

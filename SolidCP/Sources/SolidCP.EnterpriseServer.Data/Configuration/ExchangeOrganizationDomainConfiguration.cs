@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class ExchangeOrganizationDomainConfiguration : EntityTypeConfiguration<ExchangeOrganizationDomain>
 {
-#if NetCore || NetFX
 	public override void Configure()
 	{
 
@@ -25,6 +24,5 @@ public partial class ExchangeOrganizationDomainConfiguration : EntityTypeConfigu
 #else
 		HasRequired(d => d.Item).WithMany(p => p.ExchangeOrganizationDomains);
 #endif
-	}
-#endif
+    }
 }

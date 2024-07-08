@@ -15,10 +15,7 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class ExchangeMailboxPlanConfiguration: EntityTypeConfiguration<ExchangeMailboxPlan>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
         HasOne(d => d.Item).WithMany(p => p.ExchangeMailboxPlans).HasConstraintName("FK_ExchangeMailboxPlans_ExchangeOrganizations");
     }
-#endif
 }

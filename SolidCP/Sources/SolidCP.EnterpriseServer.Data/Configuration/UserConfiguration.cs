@@ -15,7 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class UserConfiguration: EntityTypeConfiguration<User>
 {
-#if NetCore || NetFX
     public override void Configure() {
 
 		Property(e => e.Zip).IsUnicode(false);
@@ -50,6 +49,5 @@ public partial class UserConfiguration: EntityTypeConfiguration<User>
 				SecondaryPhone = "", State = "", StatusId = 1, Username = "serveradmin", Zip = "" }
 		});
 		#endregion
-	}
-#endif
+    }
 }

@@ -15,8 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class RdsserverConfiguration: EntityTypeConfiguration<Rdsserver>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
         HasKey(e => e.Id).HasName("PK__RDSServe__3214EC277AE01BBB");
 
@@ -24,5 +22,4 @@ public partial class RdsserverConfiguration: EntityTypeConfiguration<Rdsserver>
 
         HasOne(d => d.Rdscollection).WithMany(p => p.Rdsservers).HasConstraintName("FK_RDSServers_RDSCollectionId");
     }
-#endif
 }

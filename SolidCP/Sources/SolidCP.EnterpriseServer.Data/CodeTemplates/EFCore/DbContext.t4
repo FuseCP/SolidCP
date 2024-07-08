@@ -18,11 +18,12 @@
 <#@ import namespace="Microsoft.EntityFrameworkCore.Scaffolding" #>
 <#@ import namespace="Microsoft.Extensions.DependencyInjection" #>
 <#
-
     if (!ProductInfo.GetVersion().StartsWith("8.0"))
     {
         Warning("Your templates were created using an older version of Entity Framework. Additional features and bug fixes may be available. See https://aka.ms/efcore-docs-updating-templates for more information.");
     }
+
+    Console.WriteLine("Writing DbContextBase.Source.cs");
 
     var services = (IServiceProvider)Host;
     var providerCode = services.GetRequiredService<IProviderConfigurationCodeGenerator>();
@@ -105,7 +106,7 @@ namespace <#= NamespaceHint.Replace(".Data.Configuration.Sources", ".Context") #
 
 <#
     }
-
+    
     if (!Options.SuppressOnConfiguring)
     {
 #>
@@ -488,7 +489,6 @@ namespace SolidCP.EnterpriseServer.Data {
     }
 #>
     }
-#endif
 }
 <#
     mainEnvironment = GenerationEnvironment;
@@ -556,7 +556,7 @@ using <#= ns #>;
 #>
 #endif
 <#+
-    private string ToCamelCase(string name)
+    public string ToCamelCase(string name)
     {
         if (name != null && name.Length > 0 && char.IsUpper(name[0])) return char.ToLower(name[0]) + name.Substring(1);
         return name;

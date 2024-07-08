@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class RdsCollectionSettingConfiguration: EntityTypeConfiguration<RdsCollectionSetting>
 {
-#if NetCore || NetFX
     public override void Configure() {
 
 #if NetCore
@@ -23,5 +22,4 @@ public partial class RdsCollectionSettingConfiguration: EntityTypeConfiguration<
         HasRequired(d => d.RdsCollection).WithMany(p => p.RdsCollectionSettings);
 #endif
     }
-#endif
-    }
+}

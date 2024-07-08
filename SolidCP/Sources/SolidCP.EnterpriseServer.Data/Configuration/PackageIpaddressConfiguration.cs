@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class PackageIpAddressConfiguration: EntityTypeConfiguration<PackageIpAddress>
 {
-#if NetCore || NetFX
     public override void Configure() {
 
 #if NetCore
@@ -31,5 +30,4 @@ public partial class PackageIpAddressConfiguration: EntityTypeConfiguration<Pack
         HasRequired(d => d.Package).WithMany(p => p.PackageIpAddresses);
 #endif
     }
-#endif
-    }
+}

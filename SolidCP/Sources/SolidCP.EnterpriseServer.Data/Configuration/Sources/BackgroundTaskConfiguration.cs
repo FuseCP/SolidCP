@@ -17,10 +17,7 @@ using BackgroundTask = SolidCP.EnterpriseServer.Data.Entities.BackgroundTask;
 
 public partial class BackgroundTaskConfiguration: EntityTypeConfiguration<BackgroundTask>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
-        HasKey(e => e.Id).HasName("PK__Backgrou__3214EC27E22B574F");
+        HasKey(e => e.Id).HasName("PK__Backgrou__3214EC274C126B2D");
     }
-#endif
 }

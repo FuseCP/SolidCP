@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class SystemSettingConfiguration: EntityTypeConfiguration<SystemSetting>
 {
-#if NetCore || NetFX
     public override void Configure() {
 
 		if (IsMsSql) Property(e => e.PropertyValue).HasColumnType("ntext");
@@ -35,6 +34,5 @@ public partial class SystemSettingConfiguration: EntityTypeConfiguration<SystemS
 			new SystemSetting() { SettingsName = "SmtpSettings", PropertyName = "SmtpUsername", PropertyValue = "postmaster" }
 		});
 		#endregion
-	}
-#endif
+    }
 }

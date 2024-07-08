@@ -14,7 +14,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class PackageConfiguration: EntityTypeConfiguration<Package>
 {
-#if NetCore || NetFX
     public override void Configure() {
 
 		if (IsMsSql)
@@ -76,6 +75,5 @@ public partial class PackageConfiguration: EntityTypeConfiguration<Package>
 			new Package() { PackageId = 1, PackageComments = "", PackageName = "System", StatusId = 1, StatusIdChangeDate = DateTime.Parse("2024-04-20T11:02:58.560000Z"), UserId = 1 }
 		});
         #endregion
-	}
-#endif
+    }
 }

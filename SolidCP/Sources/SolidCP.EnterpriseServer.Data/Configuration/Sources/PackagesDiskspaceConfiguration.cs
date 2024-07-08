@@ -15,8 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class PackagesDiskspaceConfiguration: EntityTypeConfiguration<PackagesDiskspace>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
         HasOne(d => d.Group).WithMany(p => p.PackagesDiskspaces)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -26,5 +24,4 @@ public partial class PackagesDiskspaceConfiguration: EntityTypeConfiguration<Pac
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_PackagesDiskspace_Packages");
     }
-#endif
 }

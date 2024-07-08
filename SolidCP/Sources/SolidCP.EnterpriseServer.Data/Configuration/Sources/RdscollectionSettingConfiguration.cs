@@ -15,10 +15,7 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 
 public partial class RdscollectionSettingConfiguration: EntityTypeConfiguration<RdscollectionSetting>
 {
-
-#if NetCore || NetFX
     public override void Configure() {
         HasOne(d => d.Rdscollection).WithMany(p => p.RdscollectionSettings).HasConstraintName("FK_RDSCollectionSettings_RDSCollections");
     }
-#endif
 }
