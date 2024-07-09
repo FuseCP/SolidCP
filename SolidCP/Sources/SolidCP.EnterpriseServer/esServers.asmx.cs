@@ -374,10 +374,10 @@ namespace SolidCP.EnterpriseServer
 
         #region Private / DMZ Network VLANs
         [WebMethod]
-        public VLANsPaged GetPrivateNetworVLANsPaged(int serverId, string filterColumn, 
+        public VLANsPaged GetPrivateNetworkVLANsPaged(int serverId, string filterColumn, 
             string filterValue, string sortColumn, int startRow, int maximumRows)
         {
-            return ServerController.GetPrivateNetworVLANsPaged(serverId, filterColumn, filterValue, sortColumn, startRow, maximumRows);
+            return ServerController.GetPrivateNetworkVLANsPaged(serverId, filterColumn, filterValue, sortColumn, startRow, maximumRows);
         }
 
         [WebMethod]

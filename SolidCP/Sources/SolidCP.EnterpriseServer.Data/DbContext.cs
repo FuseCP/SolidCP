@@ -27,7 +27,29 @@ namespace SolidCP.EnterpriseServer.Data
         public string ConnectionString
         {
             get => connectionString ??= DbSettings.NativeConnectionString;
-            set => connectionString = DbSettings.GetNativeConnectionString(value);
+            set
+            {
+                var csb = new DbConnectionStringBuilder();
+                csb.ConnectionString = value;
+                var dbTypeStr = (string)csb["DbType"];
+                if (!string.IsNullOrEmpty(dbTypeStr))
+                {
+                    DbType dbType;
+                    if (Enum.TryParse<DbType>(dbTypeStr, out dbType)) DbType = dbType;
+                    csb["DbType"] = null;
+                }
+                if (IsSqlite)
+                {
+                    var dbFile = (string)csb["Data Source"];
+                    if (!Path.IsPathRooted(dbFile))
+                    {
+                        dbFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dbFile);
+                        csb["Data Source"] = dbFile;
+                    }
+                    csb["BinaryGUID"] = "false";
+                }
+                connectionString = csb.ToString();
+            }
         }
 
         DbConnection MsSqlDbConnection => new Microsoft.Data.SqlClient.SqlConnection(ConnectionString);
@@ -44,20 +66,7 @@ namespace SolidCP.EnterpriseServer.Data
             get
             {
 #if NETFRAMEWORK
-				//factory ??= new System.Data.SQLite.EF6.SQLiteProviderFactory();
-				/* factory ??= DbProviderFactories.GetFactory("System.Data.SQLite.EF6");
-                var conn = factory.CreateConnection();*/
-				var csb = new DbConnectionStringBuilder();
-                csb.ConnectionString = ConnectionString;
-                var dbFile = (string)csb["Data Source"];
-                if (!Path.IsPathRooted(dbFile))
-                {
-                    dbFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dbFile);
-                    csb["Data Source"] = dbFile;
-                    ConnectionString = csb.ToString();
-                }
-				var conn = new System.Data.SQLite.SQLiteConnection(ConnectionString);
-				return conn;
+                return new System.Data.SQLite.SQLiteConnection(ConnectionString);
 #else
                 return new Microsoft.Data.Sqlite.SqliteConnection(ConnectionString);
 #endif
@@ -173,8 +182,8 @@ namespace SolidCP.EnterpriseServer.Data
             }*/
             if (dbType == DbType.Unknown) DbType = DbSettings.GetDbType(connectionString);
             else DbType = dbType;
-            ConnectionString = connectionString;
-            InitSeedData = initSeedData;
+			ConnectionString = connectionString;
+			InitSeedData = initSeedData;
 #if NETSTANDARD
             BaseContext = (IGenericDbContext)Activator.CreateInstance(ContextType, this);
 #else

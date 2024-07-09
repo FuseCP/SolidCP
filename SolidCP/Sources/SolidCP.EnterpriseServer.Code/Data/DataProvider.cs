@@ -77,7 +77,7 @@ namespace SolidCP.EnterpriseServer
 	public class DataProvider : Data.DbContext
 	{
 
-		public long MB = 1024 * 1024;
+		public const long MB = 1024 * 1024;
 
 #if UseEntityFramework
 		public bool? useEntityFramework = null;

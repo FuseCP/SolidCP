@@ -28,7 +28,6 @@ namespace SolidCP.EnterpriseServer.Data
 				var count = LoadedDatabaseProviders.Count;
 				if (ImmutableInterlocked.Update(ref LoadedDatabaseProviders, providers => providers.Add(dbType)) &&
 					count < LoadedDatabaseProviders.Count) {
-					if (dbType == DbType.Sqlite) Sqlite.LoadNativeDlls();
 					SetConfiguration(new DbConfiguration());
 				}
 			}
@@ -79,7 +78,7 @@ namespace SolidCP.EnterpriseServer.Data
 			}
 			if (LoadedDatabaseProviders.Contains(DbType.Sqlite))
 			{
-				Sqlite.LoadNativeDlls();
+				Sqlite.Init();
 				SetProvidersSqlite();
 			}
 			if (LoadedDatabaseProviders.Contains(DbType.PostgreSql)) SetProvidersPostgreSql();

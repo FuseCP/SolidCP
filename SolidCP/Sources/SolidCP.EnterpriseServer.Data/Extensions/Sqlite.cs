@@ -51,7 +51,8 @@ namespace SolidCP.EnterpriseServer.Data
                 var assemblyLoaderType = Type.GetType("SolidCP.Web.Clients.AssemblyLoader, SolidCP.Web.Clients");
                 var pathsProperty = assemblyLoaderType.GetProperty("Paths", BindingFlags.Static | BindingFlags.Public);
                 var paths = pathsProperty.GetValue(null) as string[];
-                var binPaths = AppDomain.CurrentDomain.SetupInformation.PrivateBinPath.Split(Path.PathSeparator);
+
+                var binPaths = (AppDomain.CurrentDomain.SetupInformation.PrivateBinPath ?? "").Split(Path.PathSeparator);
                 var dll = binPaths
                     .Concat(paths)
                     .Select(p =>
@@ -97,5 +98,18 @@ namespace SolidCP.EnterpriseServer.Data
             }
 #endif
 		}
+
+        public static void SetBinaryGuid()
+        {
+#if NETFRAMEWORK
+            Environment.SetEnvironmentVariable("AppendManifestToken_SQLiteProviderManifest", ";BinaryGUID=false;");
+#endif
+        }
+    
+        public static void Init()
+        {
+            LoadNativeDlls();
+            //SetBinaryGuid(); // does not work
+        }
     }
 }
