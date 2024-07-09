@@ -7557,7 +7557,6 @@ GO
 			}
 		}
 
-		//TODO DMZ
         public IDataReader GetPackageDmzNetworkVLANs(int packageId, string sortColumn, int startRow, int maximumRows)
         {
 			if (UseEntityFramework)  {
@@ -7635,7 +7634,41 @@ END
 				*/
 				#endregion
 
-				throw new NotSupportedException();
+				using (var packages = PackagesTree(packageId, true))
+				{
+					var vlans = PackageVlans
+						//.Where(pv => CheckPackageParent(packageId, pv.PackageId) && pv.IsDmz)
+						.Where(pv => pv.IsDmz)
+						.Join(packages, pv => pv.PackageId, p => p, (pv, p) => pv)
+						.Join(PrivateNetworkVlans, p => p.VlanId, v => v.VlanId, (pv, vl) => new
+						{
+							PackageVlan = pv,
+							Vlan = vl
+						})
+						.Join(Packages, j => j.PackageVlan.PackageId, p => p.PackageId, (j, p) => new
+						{
+							j.PackageVlan,
+							j.Vlan,
+							Package = p
+						})
+						.Join(Users, j => j.Package.UserId, u => u.UserId, (j, u) => new
+						{
+							j.PackageVlan.PackageVlanId,
+							j.PackageVlan.VlanId,
+							j.Vlan.Vlan,
+							j.PackageVlan.PackageId,
+							j.Package.PackageName,
+							j.Package.UserId,
+							u.Username
+						});
+
+					if (!string.IsNullOrEmpty(sortColumn)) vlans = vlans.OrderBy(sortColumn);
+					else vlans = vlans.OrderBy(v => v.Vlan);
+
+					vlans = vlans.Skip(startRow).Take(maximumRows);
+
+					return EntityDataReader(vlans);
+				}
 			} else {
             	IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
                                 	     "GetPackageDmzNetworkVLANs",
@@ -14102,7 +14135,6 @@ END
 			return false;
 		}
 
-		// TODO DMZ
 		public int GetPackageServiceId(int actorId, int packageId, string groupName, bool updatePackage)
 		{
 			if (UseEntityFramework)
@@ -32032,15 +32064,16 @@ END
 		}
 		#endregion
 
-		//TODO DMZ
-        #region VPS - DMZ Network
+		#region VPS - DMZ Network
 
-        public IDataReader GetPackageDmzIPAddressesPaged(int packageId, string filterColumn, string filterValue,
-            string sortColumn, int startRow, int maximumRows)
-        {
-			#region Stored Procedure
-			/*
-			CREATE PROCEDURE [dbo].[GetPackageDmzIPAddressesPaged]
+		public IDataReader GetPackageDmzIPAddressesPaged(int packageId, string filterColumn, string filterValue,
+			string sortColumn, int startRow, int maximumRows)
+		{
+			if (UseEntityFramework)
+			{
+				#region Stored Procedure
+				/*
+CREATE PROCEDURE [dbo].[GetPackageDmzIPAddressesPaged]
 	@PackageID int,
 	@FilterColumn nvarchar(50) = '',
 	@FilterValue nvarchar(50) = '',
@@ -32049,7 +32082,6 @@ END
 	@MaximumRows int
 AS
 BEGIN
-
 
 -- start
 DECLARE @condition nvarchar(700)
@@ -32112,19 +32144,60 @@ exec sp_executesql @sql, N'@PackageID int, @StartRow int, @MaximumRows int',
 @PackageID, @StartRow, @MaximumRows
 
 END
-			*/
-			#endregion
+				*/
+				#endregion
 
-            IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
-                                     "GetPackageDmzIPAddressesPaged",
-                                        new SqlParameter("@PackageID", packageId),
-                                        new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
-                                        new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
-                                        new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
-                                        new SqlParameter("@startRow", startRow),
-                                        new SqlParameter("@maximumRows", maximumRows));
-            return reader;
-        }
+				var addresses = DmzIpAddresses
+					.Where(a => a.Item.PackageId == packageId)
+					.Select(a => new
+					{
+						a.DmzAddressId,
+						a.IpAddress,
+						a.ItemId,
+						a.Item.ItemName,
+						a.IsPrimary
+					});
+
+				if (!string.IsNullOrEmpty(filterValue))
+				{
+					if (!string.IsNullOrEmpty(filterColumn))
+					{
+						addresses = addresses.Where(DynamicFunctions.ColumnLike(addresses, filterColumn, filterValue));
+					}
+					else
+					{
+						addresses = addresses
+#if NETFRAMEWORK
+							.Where(a => DbFunctions.Like(a.IpAddress, filterValue) ||
+								DbFunctions.Like(a.ItemName, filterValue));
+#else
+							.Where(a => EF.Functions.Like(a.IpAddress, filterValue) ||
+								EF.Functions.Like(a.ItemName, filterValue));
+#endif
+					}
+				}
+
+				var count = addresses.Count();
+
+				if (string.IsNullOrEmpty(sortColumn)) addresses = addresses.OrderBy(pa => pa.IpAddress);
+				else addresses = addresses.OrderBy(sortColumn);
+
+				addresses = addresses.Skip(startRow).Take(maximumRows);
+				return EntityDataReader(count, addresses);
+			}
+			else
+			{
+				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+										 "GetPackageDmzIPAddressesPaged",
+											new SqlParameter("@PackageID", packageId),
+											new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
+											new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
+											new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
+											new SqlParameter("@startRow", startRow),
+											new SqlParameter("@maximumRows", maximumRows));
+				return reader;
+			}
+		}
 
 		public IDataReader GetPackageDmzIPAddresses(int packageId)
 		{
@@ -32151,7 +32224,17 @@ END
 				*/
 				#endregion
 
-				throw new NotSupportedException();
+				var addresses = DmzIpAddresses
+					.Where(a => a.Item.PackageId == packageId)
+					.Select(a => new
+					{
+						a.DmzAddressId,
+						a.IpAddress,
+						a.ItemId,
+						a.Item.ItemName,
+						a.IsPrimary
+					});
+				return EntityDataReader(addresses);
 			}
 			else
 			{
@@ -32162,47 +32245,76 @@ END
 			}
 		}
 
-        public int AddItemDmzIPAddress(int actorId, int itemId, string ipAddress)
-        {
-			/*
-CREATE PROCEDURE [dbo].[AddItemDmzIPAddress]
-(
-	@ActorID int,
-	@ItemID int,
-	@IPAddress varchar(15)
-)
-AS
-BEGIN
-
-	IF EXISTS (SELECT ItemID FROM ServiceItems AS SI WHERE ItemID = @ItemID AND dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1)
+		public int AddItemDmzIPAddress(int actorId, int itemId, string ipAddress)
+		{
+			if (UseEntityFramework)
+			{
+				#region Stored Procedure
+				/*
+	CREATE PROCEDURE [dbo].[AddItemDmzIPAddress]
+	(
+		@ActorID int,
+		@ItemID int,
+		@IPAddress varchar(15)
+	)
+	AS
 	BEGIN
 
-		INSERT INTO DmzIPAddresses
-		(
-			ItemID,
-			IPAddress,
-			IsPrimary
-		)
-		VALUES
-		(
-			@ItemID,
-			@IPAddress,
-			0 -- not primary
-		)
+		IF EXISTS (SELECT ItemID FROM ServiceItems AS SI WHERE ItemID = @ItemID AND dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1)
+		BEGIN
 
+			INSERT INTO DmzIPAddresses
+			(
+				ItemID,
+				IPAddress,
+				IsPrimary
+			)
+			VALUES
+			(
+				@ItemID,
+				@IPAddress,
+				0 -- not primary
+			)
+
+		END
 	END
-END
-			*/
-            return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-                                "AddItemDmzIPAddress",
-                                new SqlParameter("@ActorID", actorId),
-                                new SqlParameter("@ItemID", itemId),
-                                new SqlParameter("@IPAddress", ipAddress));
-        }
+				*/
+				#endregion
 
-        public int SetItemDmzPrimaryIPAddress(int actorId, int itemId, int dmzAddressId)
-        {
-			/*
+				if (ServiceItems
+					//TODO .Where(i => i.ItemId == itemId) or not?
+					.Where(i => i.ItemId == itemId) // bugfix added by Simon Egli, 27.6.2024 
+					.Select(i => i.PackageId)
+					.AsEnumerable()
+					.Any(packageId => CheckActorPackageRights(actorId, packageId)))
+				{
+					var ip = new Data.Entities.DmzIpAddress()
+					{
+						ItemId = itemId,
+						IpAddress = ipAddress,
+						IsPrimary = false
+					};
+					DmzIpAddresses.Add(ip);
+					return SaveChanges();
+				}
+				return 0;
+			}
+			else
+			{
+				return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+								"AddItemDmzIPAddress",
+								new SqlParameter("@ActorID", actorId),
+								new SqlParameter("@ItemID", itemId),
+								new SqlParameter("@IPAddress", ipAddress));
+			}
+		}
+
+		public int SetItemDmzPrimaryIPAddress(int actorId, int itemId, int dmzAddressId)
+		{
+			if (UseEntityFramework)
+			{
+				#region Stored Procedure
+				/*
 CREATE PROCEDURE [dbo].[SetItemDmzPrimaryIPAddress]
 (
 	@ActorID int,
@@ -32218,39 +32330,61 @@ BEGIN
 	WHERE DIP.ItemID = @ItemID
 	AND dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1
 END
-			*/
+				*/
+				#endregion
 
-			return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-                                "SetItemDmzPrimaryIPAddress",
-                                new SqlParameter("@ActorID", actorId),
-                                new SqlParameter("@ItemID", itemId),
-                                new SqlParameter("@DmzAddressID", dmzAddressId));
-        }
+				var addresses = DmzIpAddresses
+					.Where(ip => ip.ItemId == itemId)
+					.Include(ip => ip.Item)
+					.AsEnumerable()
+					.Where(ip => Local.CheckActorPackageRights(actorId, ip.Item.PackageId));
+
+				foreach (var ip in addresses) ip.IsPrimary = ip.DmzAddressId == dmzAddressId;
+
+				return SaveChanges();
+			}
+			else
+			{
+				return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+								"SetItemDmzPrimaryIPAddress",
+								new SqlParameter("@ActorID", actorId),
+								new SqlParameter("@ItemID", itemId),
+								new SqlParameter("@DmzAddressID", dmzAddressId));
+			}
+		}
 
         public int DeleteItemDmzIPAddress(int actorId, int itemId, int dmzAddressId)
         {
-			#region Stored Procedure
-			/*
-CREATE PROCEDURE DeleteItemDmzIPAddress
-(
-	@ActorID int,
-	@ItemID int,
-	@DmzAddressID int
-)
-AS
-BEGIN
-	DELETE FROM DmzIPAddresses
-	FROM DmzIPAddresses AS DIP
-	INNER JOIN ServiceItems AS SI ON DIP.ItemID = SI.ItemID
-	WHERE DIP.DmzAddressID = @DmzAddressID
-	AND dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1
-END
-			*/
-			#endregion
-
 			if (UseEntityFramework) {
-				
-				throw new NotSupportedException();
+
+				#region Stored Procedure
+				/*
+	CREATE PROCEDURE DeleteItemDmzIPAddress
+	(
+		@ActorID int,
+		@ItemID int,
+		@DmzAddressID int
+	)
+	AS
+	BEGIN
+		DELETE FROM DmzIPAddresses
+		FROM DmzIPAddresses AS DIP
+		INNER JOIN ServiceItems AS SI ON DIP.ItemID = SI.ItemID
+		WHERE DIP.DmzAddressID = @DmzAddressID
+		AND dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1
+	END
+				*/
+				#endregion
+
+				var addresses = DmzIpAddresses
+					.Where(ip => ip.DmzAddressId == dmzAddressId)
+					.Include(ip => ip.Item)
+					.AsEnumerable()
+					.Where(ip => Local.CheckActorPackageRights(actorId, ip.Item.PackageId));
+
+				DmzIpAddresses.RemoveRange(addresses);
+
+				return SaveChanges();
 
 			} else {
 				return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
@@ -32261,7 +32395,6 @@ END
         	}
 		}
 
-		// TODO DMZ
 		public IDataReader GetItemDmzIPAddresses(int actorId, int itemId)
 		{
 			if (UseEntityFramework)
@@ -32288,7 +32421,26 @@ END
 				*/
 				#endregion
 
-				throw new NotSupportedException();
+				var addresses = DmzIpAddresses
+					.Where(ip => ip.ItemId == itemId)
+					.Select(ip => new
+					{
+						AddressId = ip.DmzAddressId,
+						ip.IpAddress,
+						ip.IsPrimary,
+						ip.Item.PackageId
+					})
+					.OrderBy(ip => ip.IsPrimary)
+					.AsEnumerable()
+					.Where(ip => Local.CheckActorPackageRights(actorId, ip.PackageId))
+					.Select(ip => new
+					{
+						ip.AddressId,
+						ip.IpAddress,
+						ip.IsPrimary
+					});
+
+				return EntityDataReader(addresses);
 			}
 			else
 			{
@@ -32300,31 +32452,47 @@ END
 			}
 		}
 
-		//TODO DMZ
-        public int DeleteItemDmzIPAddresses(int actorId, int itemId)
-        {
+		public int DeleteItemDmzIPAddresses(int actorId, int itemId)
+		{
+			if (UseEntityFramework)
+			{
+				#region Stored Procedured
+				/*
+	CREATE PROCEDURE DeleteItemDmzIPAddresses
+	(
+		@ActorID int,
+		@ItemID int
+	)
+	AS
+	BEGIN
+		DELETE FROM DmzIPAddresses
+		FROM DmzIPAddresses AS DIP
+		INNER JOIN ServiceItems AS SI ON DIP.ItemID = SI.ItemID
+		WHERE DIP.ItemID = @ItemID
+		AND dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1
+	END
+				*/
+				#endregion
 
-			/*
-CREATE PROCEDURE DeleteItemDmzIPAddresses
-(
-	@ActorID int,
-	@ItemID int
-)
-AS
-BEGIN
-	DELETE FROM DmzIPAddresses
-	FROM DmzIPAddresses AS DIP
-	INNER JOIN ServiceItems AS SI ON DIP.ItemID = SI.ItemID
-	WHERE DIP.ItemID = @ItemID
-	AND dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1
-END
-			*/
+				var addresses = DmzIpAddresses
+					.Where(ip => ip.ItemId == itemId)
+					.Include(ip => ip.Item)
+					.AsEnumerable()
+					.Where(ip => Local.CheckActorPackageRights(actorId, ip.Item.PackageId));
 
-            return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
-                                "DeleteItemDmzIPAddresses",
-                                new SqlParameter("@ActorID", actorId),
-                                new SqlParameter("@ItemID", itemId));
-        }
+				DmzIpAddresses.RemoveRange(addresses);
+
+				return SaveChanges();
+
+			}
+			else
+			{
+				return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+								"DeleteItemDmzIPAddresses",
+								new SqlParameter("@ActorID", actorId),
+								new SqlParameter("@ItemID", itemId));
+			}
+		}
         #endregion
 
 		#region VPS - External Network Adapter
@@ -32868,15 +33036,14 @@ END
 				*/
 				#endregion
 
-				foreach (var ip in PrivateIpAddresses
-					.Include(a => a.Item)
-					.Where(a => a.ItemId == itemId))
-				{
-					if (CheckActorPackageRights(actorId, ip.Item.PackageId))
-					{
-						ip.IsPrimary = ip.PrivateAddressId == privateAddressId;
-					}
-				}
+				var addresses = PrivateIpAddresses
+					.Where(ip => ip.ItemId == itemId)
+					.Include(ip => ip.Item)
+					.AsEnumerable()
+					.Where(ip => CheckActorPackageRights(actorId, ip.Item.PackageId));
+
+				foreach (var ip in addresses) ip.IsPrimary = ip.PrivateAddressId == privateAddressId;
+			
 				return SaveChanges();
 
 			}

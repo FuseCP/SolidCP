@@ -20618,7 +20618,19 @@ IF NOT EXISTS (
 )
 BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20240627111421_InitialCreate', N'8.0.6');
+    VALUES
+		(N'20240627111421_InitialCreate', N'8.0.6');
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES
+		(N'20240709093225_AddedDMZ', N'8.0.6');
 END;
 GO
 
