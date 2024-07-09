@@ -7099,6 +7099,7 @@ BEGIN
 DECLARE @condition nvarchar(700)
 SET @condition = '
 dbo.CheckPackageParent(@PackageID, PA.PackageID) = 1
+AND PA.IsDmz = 0
 '
 
 IF @SortColumn IS NULL OR @SortColumn = ''
@@ -7154,13 +7155,15 @@ exec sp_executesql @sql, N'@PackageID int, @StartRow int, @MaximumRows int',
 @PackageID, @StartRow, @MaximumRows
 
 END
+GO
 				*/
 				#endregion
 
 				using (var packages = PackagesTree(packageId, true))
 				{
 					var vlans = PackageVlans
-						//.Where(pv => CheckPackageParent(packageId, pv.PackageId))
+						//.Where(pv => CheckPackageParent(packageId, pv.PackageId) && !pv.IsDmz)
+						.Where(pv => !pv.IsDmz)
 						.Join(packages, pv => pv.PackageId, p => p, (pv, p) => pv)
 						.Join(PrivateNetworkVlans, p => p.VlanId, v => v.VlanId, (pv, vl) => new
 						{
@@ -7515,6 +7518,7 @@ BEGIN
 	exec sp_xml_removedocument @idoc
 
 END
+GO
 				*/
 				#endregion
 
@@ -7535,8 +7539,7 @@ END
 						{
 							PackageId = packageId,
 							VlanId = id,
-							//TODO DMZ
-							//IsDmz = isDmz
+							IsDmz = isDmz
 						}));
 
 					SaveChanges();
@@ -14106,7 +14109,7 @@ END
 			{
 				#region Stored Procedure
 				/*
-CREATE PROCEDURE GetPackageServiceID
+CREATE PROCEDURE [dbo].[GetPackageServiceID]
 (
 	@ActorID int,
 	@PackageID int,
@@ -14182,43 +14185,64 @@ END
 				if (!CheckActorPackageRights(actorId, packageId))
 					throw new AccessViolationException("You are not allowed to access this package");
 
+				int serviceId = 0;
+				//optimized run when we don't need any changes
+				if (!updatePackage) {
+					serviceId = PackageServices
+						.Where(ps => ps.PackageId == packageId)
+						.Join(Services, ps => ps.ServiceId, s => s.ServiceId, (ps, s) => s)
+						.Join(ResourceGroups.Where(rg => rg.GroupName == groupName),
+							s => s.Provider.GroupId, rg => rg.GroupId, (s, rg) => s.ServiceId)
+						.FirstOrDefault();
+					return serviceId;
+				}
+
 				var groupId = ResourceGroups
 					.Where(g => g.GroupName == groupName)
 					.Select(g => g.GroupId)
-					.FirstOrDefault();
-
-				var package = Packages
-					.Where(p => p.PackageId == packageId)
-					.Include(p => p.Services)
 					.FirstOrDefault();
 
 				// check if user has this resource enabled
 				if (!GetPackageAllocatedResource(packageId, groupId, null))
 				{
 					// remove all resource services from the space
-					var servicesToRemove = package.Services
-						.Join(Providers, s => s.ProviderId, p => p.ProviderId, (s, p) => new
+					// var servicesToRemove =
+					PackageServices
+						.Where(ps => ps.PackageId == packageId)
+						.Join(Services, ps => ps.ServiceId, s => s.ServiceId, (ps, s) => new
 						{
-							Service = s,
+							PackageService = ps,
+							Service = s
+						})
+						.Join(Providers.Where(p => p.GroupId == groupId),
+							ps => ps.Service.ProviderId, p => p.ProviderId, (ps, p) => new
+						{
+							PackageService = ps,
 							Provider = p
 						})
-						.Where(g => g.Provider.GroupId == groupId)
-						.Select(g => g.Service);
+						.Select(g => g.PackageService)
+						.ExecuteDelete();
 
+					/*
 					foreach (var service in servicesToRemove) package.Services.Remove(service);
 
 					SaveChanges();
+					*/
 				}
 
 				// check if the service is already distributed
-				var serviceId = package.Services
+				var serviceIdQuery = PackageServices
+					.Where(ps => ps.PackageId == packageId)
+					.Join(Services, ps => ps.ServiceId, s => s.ServiceId, (ps, s) => s)
 					.Join(Providers, s => s.ProviderId, p => p.ProviderId, (s, p) => new
 					{
 						Service = s,
 						Provider = p
 					})
 					.Where(g => g.Provider.GroupId == groupId)
-					.Select(g => g.Service.ServiceId)
+					.Select(g => g.Service.ServiceId);
+
+				serviceId = serviceIdQuery
 					.FirstOrDefault();
 
 				if (serviceId != 0) return serviceId;
@@ -14227,19 +14251,7 @@ END
 				DistributePackageServices(actorId, packageId);
 
 				// get distributed service again
-				package = Packages
-					.Where(p => p.PackageId == packageId)
-					.Include(p => p.Services)
-					.FirstOrDefault();
-
-				serviceId = package.Services
-					.Join(Providers, s => s.ProviderId, p => p.ProviderId, (s, p) => new
-					{
-						Service = s,
-						Provider = p
-					})
-					.Where(g => g.Provider.GroupId == groupId)
-					.Select(g => g.Service.ServiceId)
+				serviceId = serviceIdQuery
 					.FirstOrDefault();
 
 				return serviceId;
@@ -17846,7 +17858,7 @@ END
 		{
 			#region Stored Procedure
 			/*
-CREATE FUNCTION [dbo].[CalculateQuotaUsage]
+ALTER FUNCTION [dbo].[CalculateQuotaUsage]
 (
 	@PackageID int,
 	@QuotaID int
@@ -17948,7 +17960,12 @@ AS
 			SET @Result = (SELECT COUNT(PV.PackageVlanID) FROM PackageVLANs AS PV
 							INNER JOIN PrivateNetworkVLANs AS V ON PV.VlanID = V.VlanID
 							INNER JOIN PackagesTreeCache AS PT ON PV.PackageID = PT.PackageID
-							WHERE PT.ParentPackageID = @PackageID)
+							WHERE PT.ParentPackageID = @PackageID AND PV.IsDmz = 0)
+		ELSE IF @QuotaID = 752 -- DMZ Network VLANs of VPS2012
+			SET @Result = (SELECT COUNT(PV.PackageVlanID) FROM PackageVLANs AS PV
+							INNER JOIN PrivateNetworkVLANs AS V ON PV.VlanID = V.VlanID
+							INNER JOIN PackagesTreeCache AS PT ON PV.PackageID = PT.PackageID
+							WHERE PT.ParentPackageID = @PackageID AND PV.IsDmz = 1)
 		ELSE IF @QuotaID = 100 -- Dedicated Web IP addresses
 			SET @Result = (SELECT COUNT(PIP.PackageAddressID) FROM PackageIPAddresses AS PIP
 							INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
@@ -18093,6 +18110,7 @@ AS
 
 		RETURN @Result
 	END
+GO
 			*/
 			#endregion
 
@@ -18266,8 +18284,23 @@ AS
 				case 728: // Private Network VLANs of VPS2012
 					result = PackageVlans
 						.Join(PrivateNetworkVlans, v => v.VlanId, pv => pv.VlanId, (v, pv) => v)
-						.Join(PackagesTreeCaches, v => v.PackageId, t => t.PackageId, (v, t) => t)
-						.Where(t => t.ParentPackageId == packageId)
+						.Join(PackagesTreeCaches, v => v.PackageId, t => t.PackageId, (v, t) => new
+						{
+							Vlan = v,
+							Tree = t
+						})
+						.Where(t => t.Tree.ParentPackageId == packageId && !t.Vlan.IsDmz)
+						.Count();
+					break;
+				case 752: // DMZ Network VLANs of VPS2012
+					result = PackageVlans
+						.Join(PrivateNetworkVlans, v => v.VlanId, pv => pv.VlanId, (v, pv) => v)
+						.Join(PackagesTreeCaches, v => v.PackageId, t => t.PackageId, (v, t) => new
+						{
+							Vlan = v,
+							Tree = t
+						})
+						.Where(t => t.Tree.ParentPackageId == packageId && t.Vlan.IsDmz)
 						.Count();
 					break;
 				case 100: // Dedicated Web IP addresses
@@ -30503,6 +30536,7 @@ RETURN
 			{
 				#region Stored Procedure
 				/*
+GO
 CREATE PROCEDURE [dbo].[GetVirtualMachinesPaged2012]
 (
 	@ActorID int,
@@ -30573,6 +30607,7 @@ WITH TempItems AS (
 		WHERE PIP.IsPrimary = 1 AND IP.PoolID = 3 -- external IP addresses
 	) AS EIP ON SI.ItemID = EIP.ItemID
 	LEFT OUTER JOIN PrivateIPAddresses AS PIP ON PIP.ItemID = SI.ItemID AND PIP.IsPrimary = 1
+	LEFT OUTER JOIN DmzIPAddresses AS DIP ON DIP.ItemID = SI.ItemID AND DIP.IsPrimary = 1
 	WHERE ' + @condition + '
 )
 
@@ -30589,7 +30624,8 @@ SELECT
 	U.Username,
 
 	EIP.ExternalIP,
-	PIP.IPAddress
+	PIP.IPAddress,
+	DIP.IPAddress AS DmzIP
 FROM @Items AS TSI
 INNER JOIN ServiceItems AS SI ON TSI.ItemID = SI.ItemID
 INNER JOIN Packages AS P ON SI.PackageID = P.PackageID
@@ -30600,6 +30636,7 @@ LEFT OUTER JOIN (
 	WHERE PIP.IsPrimary = 1 AND IP.PoolID = 3 -- external IP addresses
 ) AS EIP ON SI.ItemID = EIP.ItemID
 LEFT OUTER JOIN PrivateIPAddresses AS PIP ON PIP.ItemID = SI.ItemID AND PIP.IsPrimary = 1
+LEFT OUTER JOIN DmzIPAddresses AS DIP ON DIP.ItemID = SI.ItemID AND DIP.IsPrimary = 1
 '
 
 --print @sql
@@ -30608,6 +30645,7 @@ exec sp_executesql @sql, N'@PackageID int, @StartRow int, @MaximumRows int, @Rec
 @PackageID, @StartRow, @MaximumRows, @Recursive
 
 RETURN 
+GO
 				*/
 				#endregion
 
@@ -30647,11 +30685,26 @@ RETURN
 							p.Item,
 							IpAddress = pip.IpAddress
 						})
+						.GroupJoin(DmzIpAddresses.Where(ip => ip.IsPrimary), p => p.Item.ItemId, dip => dip.ItemId, (p, dip) => new
+						{
+							p.Package,
+							p.Item,
+							p.IpAddress,
+							DmzIps = dip
+						})
+						.SelectMany(p => p.DmzIps.DefaultIfEmpty(), (p, dip) => new
+						{
+							p.Package,
+							p.Item,
+							p.IpAddress,
+							DmzIp = dip
+						})
 						.GroupJoin(externalIpAddresses, p => p.Item.ItemId, eip => eip.ItemId, (p, eip) => new
 						{
 							p.Package,
 							p.Item,
 							p.IpAddress,
+							p.DmzIp,
 							ExternalIps = eip
 						})
 						.SelectMany(p => p.ExternalIps.DefaultIfEmpty(), (p, eip) => new
@@ -30663,7 +30716,8 @@ RETURN
 							p.Package.UserId,
 							p.Package.User.Username,
 							ExternalIp = eip != null ? eip.ExternalIp : null,
-							p.IpAddress
+							p.IpAddress,
+							p.DmzIp
 						});
 
 					if (!string.IsNullOrEmpty(filterValue))

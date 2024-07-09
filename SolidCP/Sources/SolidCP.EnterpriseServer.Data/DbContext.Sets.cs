@@ -58,8 +58,8 @@ namespace SolidCP.EnterpriseServer.Data
 		DbSet<CrmUser> crmusers = null;
 		public virtual DbSet<CrmUser> CrmUsers => crmusers ??= Set<CrmUser>();
 
-		DbSet<DmzIpAddress> dmzIpaddresses = null;
-		public virtual DbSet<DmzIpAddress> DmzIpaddresses => dmzIpaddresses ??= Set<DmzIpAddress>();
+		DbSet<DmzIpAddress> dmzIpAddresses = null;
+		public virtual DbSet<DmzIpAddress> DmzIpAddresses => dmzIpAddresses ??= Set<DmzIpAddress>();
 
 		DbSet<Domain> domains = null;
 		public virtual DbSet<Domain> Domains => domains ??= Set<Domain>();

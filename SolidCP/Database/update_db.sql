@@ -7834,7 +7834,7 @@ WITH TempItems AS (
 		WHERE PIP.IsPrimary = 1 AND IP.PoolID = 3 -- external IP addresses
 	) AS EIP ON SI.ItemID = EIP.ItemID
 	LEFT OUTER JOIN PrivateIPAddresses AS PIP ON PIP.ItemID = SI.ItemID AND PIP.IsPrimary = 1
-	LEFT OUTER JOIN PrivateIPAddresses AS DIP ON DIP.ItemID = SI.ItemID AND DIP.IsPrimary = 1
+	LEFT OUTER JOIN DmzIPAddresses AS DIP ON DIP.ItemID = SI.ItemID AND DIP.IsPrimary = 1
 	WHERE ' + @condition + '
 )
 
