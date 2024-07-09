@@ -203,7 +203,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
         #endregion
 
         #region DmzNetworkDetails
-        public static NetworkAdapterDetails GetDmzNetworkDetails(int packageId)
+        public NetworkAdapterDetails GetDmzNetworkDetails(int packageId)
         {
             // load service
             int serviceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.VPS2012);
@@ -211,7 +211,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             return GetDmzNetworkDetailsInternal(serviceId);
         }
 
-        public static NetworkAdapterDetails GetDmzNetworkAdapterDetails(int itemId)
+        public NetworkAdapterDetails GetDmzNetworkAdapterDetails(int itemId)
         {
             // load service item
             VirtualMachine vm = (VirtualMachine)PackageController.GetPackageItem(itemId);
@@ -235,7 +235,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
 
             // load IP addresses
             nic.IPAddresses = ObjectUtils.CreateListFromDataReader<NetworkAdapterIPAddress>(
-            DataProvider.GetItemDmzIPAddresses(SecurityContext.User.UserId, itemId)).ToArray();
+            Database.GetItemDmzIPAddresses(SecurityContext.User.UserId, itemId)).ToArray();
 
             foreach (NetworkAdapterIPAddress ip in nic.IPAddresses)
             {
@@ -247,7 +247,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             return nic;
         }
 
-        public static NetworkAdapterDetails GetDmzNetworkDetailsInternal(int serviceId)
+        public NetworkAdapterDetails GetDmzNetworkDetailsInternal(int serviceId)
         {
             // load service settings
             StringDictionary settings = ServerController.GetServiceSettings(serviceId);

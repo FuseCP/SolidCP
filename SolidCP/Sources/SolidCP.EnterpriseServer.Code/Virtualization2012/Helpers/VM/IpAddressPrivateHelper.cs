@@ -22,7 +22,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
         public List<DmzIPAddress> GetPackageDmzIPAddresses(int packageId)
         {
             return ObjectUtils.CreateListFromDataReader<DmzIPAddress>(
-                DataProvider.GetPackageDmzIPAddresses(packageId));
+                Database.GetPackageDmzIPAddresses(packageId));
         }
 
         public ResultObject RestoreVirtualMachinePrivateIPAddressesByInjection(int itemId)
@@ -358,7 +358,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
 
                 // add addresses to database
                 foreach (string address in addresses)
-                    DataProvider.AddItemDmzIPAddress(SecurityContext.User.UserId, itemId, address);
+                    Database.AddItemDmzIPAddress(SecurityContext.User.UserId, itemId, address);
 
                 // set primary IP address
                 if (wasEmptyList)
@@ -616,7 +616,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             try
             {
                 // call data access layer
-                DataProvider.SetItemDmzPrimaryIPAddress(SecurityContext.User.UserId, itemId, addressId);
+                Database.SetItemDmzPrimaryIPAddress(SecurityContext.User.UserId, itemId, addressId);
 
                 // send KVP config items
                 if (provisionKvp)
@@ -759,7 +759,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             {
                 // call data access layer
                 foreach (int addressId in addressIds)
-                    DataProvider.DeleteItemDmzIPAddress(SecurityContext.User.UserId, itemId, addressId);
+                    Database.DeleteItemDmzIPAddress(SecurityContext.User.UserId, itemId, addressId);
 
                 // send KVP config items
                 switch (provisionKvpType)

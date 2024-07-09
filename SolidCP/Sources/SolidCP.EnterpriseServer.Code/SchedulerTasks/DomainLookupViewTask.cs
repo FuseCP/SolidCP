@@ -70,8 +70,10 @@ namespace SolidCP.EnterpriseServer
             List<DomainDnsChanges> domainsChanges = new List<DomainDnsChanges>();
             var domainUsers = new Dictionary<int, UserInfo>();
 
-            // get input parameters
-            string dnsServersString = (string)topTask.GetParamValue(DnsServersParameter);
+			// get input parameters
+			string username = (string)topTask.GetParamValue("USERNAME");
+			string password = (string)topTask.GetParamValue("PASSWORD");
+			string dnsServersString = (string)topTask.GetParamValue(DnsServersParameter);
             string serverName = (string)topTask.GetParamValue(ServerNameParameter);
 
             int pause;
@@ -147,8 +149,8 @@ namespace SolidCP.EnterpriseServer
                     //execute server
                     foreach (var dnsServer in dnsServers)
                     {
-                        var dnsMxRecords = GetDomainDnsRecords(winServer, domain.DomainName, dnsServer, DnsRecordType.MX, pause) ?? dbDnsRecords.Where(x => x.RecordType == DnsRecordType.MX).ToList();
-                        var dnsNsRecords = GetDomainDnsRecords(winServer, domain.DomainName, dnsServer, DnsRecordType.NS, pause) ?? dbDnsRecords.Where(x => x.RecordType == DnsRecordType.NS).ToList();
+                        var dnsMxRecords = GetDomainDnsRecords(winServer, username, password, domain.DomainName, dnsServer, DnsRecordType.MX, pause) ?? dbDnsRecords.Where(x => x.RecordType == DnsRecordType.MX).ToList();
+                        var dnsNsRecords = GetDomainDnsRecords(winServer, username, password, domain.DomainName, dnsServer, DnsRecordType.NS, pause) ?? dbDnsRecords.Where(x => x.RecordType == DnsRecordType.NS).ToList();
 
                         FillRecordData(dnsMxRecords, domain, dnsServer);
                         FillRecordData(dnsNsRecords, domain, dnsServer);
@@ -351,7 +353,7 @@ namespace SolidCP.EnterpriseServer
             MailHelper.SendMessage(from, mailTo, bcc, subject, body, priority, isHtml);
         }
 
-        public List<DnsRecordInfo> GetDomainDnsRecords(Server.Client.OperatingSystem winServer, string domain, string dnsServer, DnsRecordType recordType, int pause)
+        public List<DnsRecordInfo> GetDomainDnsRecords(Server.Client.OperatingSystem winServer, string username, string password, string domain, string dnsServer, DnsRecordType recordType, int pause)
         {
             Thread.Sleep(pause);
 
@@ -365,7 +367,8 @@ namespace SolidCP.EnterpriseServer
 
             do
             {
-                raw = winServer.ExecuteSystemCommand(command, args);
+				//TODO implement this as a method of OperatingSystem
+				raw = winServer.ExecuteSystemCommand(username, password, command, args);
             } 
             while (raw.ToLowerInvariant().Contains(DnsTimeOutMessage) && ++triesCount < DnsTimeOutRetryCount);
 

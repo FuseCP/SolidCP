@@ -122,7 +122,7 @@ namespace SolidCP.EnterpriseServer
 
         private void APICall(string f_stParam, int packageId, int f_iPlanID = 0)
         {
-            int serviceId = DataProvider.GetPackageServiceId(SecurityContext.User.UserId, packageId, ResourceGroups.Filters, false);
+            int serviceId = Database.GetPackageServiceId(SecurityContext.User.UserId, packageId, ResourceGroups.Filters, false);
             StringDictionary settings = ServerController.GetServiceSettings(serviceId);
             String l_URL = string.Empty;
             try

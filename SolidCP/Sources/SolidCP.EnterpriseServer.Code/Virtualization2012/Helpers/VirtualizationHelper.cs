@@ -218,7 +218,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012
             }
         }
 
-        public static string EnsureDmzVirtualSwitch(ServiceProviderItem item)
+        public string EnsureDmzVirtualSwitch(ServiceProviderItem item)
         {
             // try locate switch in the package
             List<ServiceProviderItem> items = PackageController.GetPackageItemsByType(item.PackageId, typeof(VirtualSwitch));

@@ -401,9 +401,7 @@ namespace SolidCP.Providers.FTP
 
         private void ReloadFileZillaConfig()
         {
-            FileUtils.ExecuteSystemCommand(
-                Path.Combine(FileZillaFolder, "FileZilla Server.exe"),
-                "/reload-config");
+            OS.Shell.Default.Exec($"\"{Path.Combine(FileZillaFolder, "FileZilla Server.exe")}\" /reload-config");
         }
         #endregion
 

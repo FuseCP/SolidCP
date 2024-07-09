@@ -298,7 +298,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
                 //    SendNetworkAdapterKVP(itemId, "Private");
 
                 if (!vm.DmzNetworkEnabled)
-                    DataProvider.DeleteItemDmzIPAddresses(SecurityContext.User.UserId, itemId);
+                    Database.DeleteItemDmzIPAddresses(SecurityContext.User.UserId, itemId);
 
                 // start if required
                 if (wasStarted && !isSuccessChangedWihoutReboot)

@@ -1344,12 +1344,12 @@ namespace SolidCP.EnterpriseServer
 
         public int GetPackageServiceId(int packageId, string groupName)
         {
-            return DataProvider.GetPackageServiceId(SecurityContext.User.UserId, packageId, groupName, true);
+            return Database.GetPackageServiceId(SecurityContext.User.UserId, packageId, groupName, true);
         }
 
-        public static int GetPackageServiceId(int packageId, string groupName, bool updatePackage)
+        public int GetPackageServiceId(int packageId, string groupName, bool updatePackage)
         {
-            return DataProvider.GetPackageServiceId(SecurityContext.User.UserId, packageId, groupName, updatePackage);
+            return Database.GetPackageServiceId(SecurityContext.User.UserId, packageId, groupName, updatePackage);
         }
 
         public List<ServiceProviderItem> GetPackageItemsByName(int packageId, string itemName)

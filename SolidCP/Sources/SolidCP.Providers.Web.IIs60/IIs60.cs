@@ -2044,7 +2044,7 @@ namespace SolidCP.Providers.Web
 			if (cmdPath != null)
 			{
 				// launch system process
-				string result = FileUtils.ExecuteSystemCommand(cmdPath, cmdArgs);
+				OS.Shell.Default.Exec($"{cmdPath} {cmdArgs}");
 			}
 
 			// update web site
@@ -2097,7 +2097,7 @@ namespace SolidCP.Providers.Web
 			if (cmdPath != null)
 			{
 				// launch system process
-				string result = FileUtils.ExecuteSystemCommand(cmdPath, cmdArgs);
+				OS.Shell.Default.Exec($"{cmdPath} {cmdArgs}");
 			}
 
 			// delete user account

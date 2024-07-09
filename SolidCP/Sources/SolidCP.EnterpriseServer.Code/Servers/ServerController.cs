@@ -1452,7 +1452,7 @@ namespace SolidCP.EnterpriseServer
 			PackageVLANsPaged result = new PackageVLANsPaged();
 
 			// get reader
-			IDataReader reader = DataProvider.GetPackageDmzNetworkVLANs(packageId, sortColumn, startRow, maximumRows);
+			IDataReader reader = Database.GetPackageDmzNetworkVLANs(packageId, sortColumn, startRow, maximumRows);
 
 			// number of items = first data reader
 			reader.Read();
@@ -1520,7 +1520,7 @@ namespace SolidCP.EnterpriseServer
 			string xml = PrepareXML(vlanIds);
 
 			// save to database
-			DataProvider.AllocatePackageVLANs(packageId, isDmz, xml);
+			Database.AllocatePackageVLANs(packageId, isDmz, xml);
 		}
 
 		public ResultObject AllocatePackageVLANs(int packageId, string groupName, bool allocateRandom, int vlansNumber, int[] vlanId, bool isDmz)
@@ -1607,7 +1607,7 @@ namespace SolidCP.EnterpriseServer
                 // save to database
                 try
                 {
-                    DataProvider.AllocatePackageVLANs(packageId, isDmz, xml);
+                    Database.AllocatePackageVLANs(packageId, isDmz, xml);
                 }
                 catch (Exception ex)
                 {

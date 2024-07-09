@@ -20774,22 +20774,24 @@ CREATE PROCEDURE [dbo].[AddItemDmzIPAddress]
 )
 AS
 BEGIN
-IF EXISTS (SELECT ItemID FROM ServiceItems AS SI WHERE dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1)
-BEGIN
 
-	INSERT INTO DmzIPAddresses
-	(
-		ItemID,
-		IPAddress,
-		IsPrimary
-	)
-	VALUES
-	(
-		@ItemID,
-		@IPAddress,
-		0 -- not primary
-	)
+	IF EXISTS (SELECT ItemID FROM ServiceItems AS SI WHERE ItemID = @ItemID AND dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1)
+	BEGIN
 
+		INSERT INTO DmzIPAddresses
+		(
+			ItemID,
+			IPAddress,
+			IsPrimary
+		)
+		VALUES
+		(
+			@ItemID,
+			@IPAddress,
+			0 -- not primary
+		)
+
+	END
 END
 GO
 

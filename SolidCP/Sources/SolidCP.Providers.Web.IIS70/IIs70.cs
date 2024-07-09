@@ -3486,9 +3486,12 @@ namespace SolidCP.Providers.Web
 
 					cmdPath = Environment.ExpandEnvironmentVariables(FPSE2002_OWSADM_PATH);
 					cmdArgs = String.Format("-o install -p /LM/W3SVC/{0} -u {1}", m_webSiteId, username);
+
+					var output = OS.Shell.Default.Exec($"{cmdPath} {cmdArgs}").Output().Result;
+
 					Log.WriteInfo("Command path: " + cmdPath);
 					Log.WriteInfo("Command path: " + cmdArgs);
-					Log.WriteInfo("FPSE2002 Install Log: " + FileUtils.ExecuteSystemCommand(cmdPath, cmdArgs));
+					Log.WriteInfo("FPSE2002 Install Log: " + output);
 
 					#endregion
 				}
@@ -3534,7 +3537,9 @@ namespace SolidCP.Providers.Web
 					cmdArgs = String.Format("-o fulluninstall -p /LM/W3SVC/{0}", m_webSiteId);
 
 					// launch system process
-					Log.WriteInfo("FPSE2002 Uninstall Log: " + FileUtils.ExecuteSystemCommand(cmdPath, cmdArgs));
+					var output = OS.Shell.Default.Exec($"{cmdPath} {cmdArgs}").Output().Result;
+
+					Log.WriteInfo("FPSE2002 Uninstall Log: " + output);
 
 					#endregion
 

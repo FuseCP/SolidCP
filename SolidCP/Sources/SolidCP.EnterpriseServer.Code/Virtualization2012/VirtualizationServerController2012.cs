@@ -130,13 +130,13 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region DMZ Network
-        public static DmzIPAddressesPaged GetPackageDmzIPAddressesPaged(int packageId,
+        public DmzIPAddressesPaged GetPackageDmzIPAddressesPaged(int packageId,
             string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             DmzIPAddressesPaged result = new DmzIPAddressesPaged();
 
             // get reader
-            IDataReader reader = DataProvider.GetPackageDmzIPAddressesPaged(packageId, filterColumn, filterValue,
+            IDataReader reader = Database.GetPackageDmzIPAddressesPaged(packageId, filterColumn, filterValue,
                 sortColumn, startRow, maximumRows);
 
             // number of items = first data reader
@@ -150,7 +150,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static List<DmzIPAddress> GetPackageDmzIPAddresses(int packageId)
+        public List<DmzIPAddress> GetPackageDmzIPAddresses(int packageId)
         {
             return IpAddressPrivateHelper.GetPackageDmzIPAddresses(packageId);
         }
@@ -1185,42 +1185,42 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Network – DMZ
-        public static NetworkAdapterDetails GetDmzNetworkDetails(int packageId)
+        public NetworkAdapterDetails GetDmzNetworkDetails(int packageId)
         {
             return NetworkAdapterDetailsHelper.GetDmzNetworkDetails(packageId);
         }
 
-        public static NetworkAdapterDetails GetDmzNetworkAdapterDetails(int itemId)
+        public NetworkAdapterDetails GetDmzNetworkAdapterDetails(int itemId)
         {
             return NetworkAdapterDetailsHelper.GetDmzNetworkAdapterDetails(itemId);
         }
 
-        public static ResultObject AddVirtualMachineDmzIPAddresses(int itemId, bool selectRandom, int addressesNumber, string[] addresses, bool provisionKvp, bool customGatewayAndDns, string gateway, string dns1, string dns2, string subnetMask)
+        public ResultObject AddVirtualMachineDmzIPAddresses(int itemId, bool selectRandom, int addressesNumber, string[] addresses, bool provisionKvp, bool customGatewayAndDns, string gateway, string dns1, string dns2, string subnetMask)
         {
             return IpAddressPrivateHelper.AddVirtualMachineDmzIPAddresses(itemId, selectRandom, addressesNumber, addresses, provisionKvp, customGatewayAndDns, gateway, dns1, dns2, subnetMask);
         }
 
-        public static ResultObject AddVirtualMachineDmzIPAddressesByInject(int itemId, bool selectRandom, int addressesNumber, string[] addresses, bool customGatewayAndDns, string gateway, string dns1, string dns2, string subnetMask)
+        public ResultObject AddVirtualMachineDmzIPAddressesByInject(int itemId, bool selectRandom, int addressesNumber, string[] addresses, bool customGatewayAndDns, string gateway, string dns1, string dns2, string subnetMask)
         {
             return IpAddressPrivateHelper.AddVirtualMachineDmzIPAddressesByInject(itemId, selectRandom, addressesNumber, addresses, customGatewayAndDns, gateway, dns1, dns2, subnetMask);
         }
 
-        public static ResultObject DeleteVirtualMachineDmzIPAddressesByInject(int itemId, int[] addressIds)
+        public ResultObject DeleteVirtualMachineDmzIPAddressesByInject(int itemId, int[] addressIds)
         {
             return IpAddressPrivateHelper.DeleteVirtualMachineDmzIPAddressesByInject(itemId, addressIds);
         }
 
-        public static ResultObject DeleteVirtualMachineDmzIPAddresses(int itemId, int[] addressIds, bool provisionKvp)
+        public ResultObject DeleteVirtualMachineDmzIPAddresses(int itemId, int[] addressIds, bool provisionKvp)
         {
             return IpAddressPrivateHelper.DeleteVirtualMachineDmzIPAddresses(itemId, addressIds, provisionKvp);
         }
 
-        public static ResultObject RestoreVirtualMachineDmzIPAddressesByInjection(int itemId)
+        public ResultObject RestoreVirtualMachineDmzIPAddressesByInjection(int itemId)
         {
             return IpAddressPrivateHelper.RestoreVirtualMachineDmzIPAddressesByInjection(itemId);
         }
 
-        public static ResultObject SetVirtualMachinePrimaryDmzIPAddress(int itemId, int addressId, bool provisionKvp)
+        public ResultObject SetVirtualMachinePrimaryDmzIPAddress(int itemId, int addressId, bool provisionKvp)
         {
             return IpAddressPrivateHelper.SetVirtualMachinePrimaryDmzIPAddress(itemId, addressId, provisionKvp);
         }

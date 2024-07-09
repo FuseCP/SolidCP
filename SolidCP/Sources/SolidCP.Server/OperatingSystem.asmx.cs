@@ -1093,12 +1093,12 @@ namespace SolidCP.Server
 		}
 
 		[WebMethod, SoapHeader("settings")]
-		public string ExecuteSystemCommand(string path, string args)
+		public string ExecuteSystemCommand(string user, string password, string path, string args)
 		{
 			try
 			{
 				Log.WriteStart("'{0}' ExecuteSystemCommand", ProviderSettings.ProviderName);
-				var result = OSProvider.ExecuteSystemCommand(path, args);
+				var result = OSProvider.ExecuteSystemCommand(user, password, path, args);
 				Log.WriteEnd("'{0}' ExecuteSystemCommand", ProviderSettings.ProviderName);
 				return result;
 			}
