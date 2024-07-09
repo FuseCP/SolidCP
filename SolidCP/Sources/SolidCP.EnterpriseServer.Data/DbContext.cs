@@ -26,7 +26,7 @@ namespace SolidCP.EnterpriseServer.Data
         static string connectionString = null;
         public string ConnectionString
         {
-            get => connectionString ??= DbSettings.NativeConnectionString;
+            get => connectionString ?? (ConnectionString = DbSettings.ConnectionString);
             set
             {
                 var csb = new DbConnectionStringBuilder();
@@ -47,6 +47,7 @@ namespace SolidCP.EnterpriseServer.Data
                         csb["Data Source"] = dbFile;
                     }
                     csb["BinaryGUID"] = "false";
+                    csb["Foreign Keys"] = "true";
                 }
                 connectionString = csb.ToString();
             }

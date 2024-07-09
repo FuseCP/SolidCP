@@ -40,7 +40,7 @@ namespace SolidCP.Portal
         public VLANInfo[] GetVLANsPaged(int serverId, string filterColumn, string filterValue,
             string sortColumn, int maximumRows, int startRowIndex)
         {
-            vlans = ES.Services.Servers.GetPrivateNetworVLANsPaged(serverId, filterColumn, filterValue, sortColumn, startRowIndex, maximumRows);
+            vlans = ES.Services.Servers.GetPrivateNetworkVLANsPaged(serverId, filterColumn, filterValue, sortColumn, startRowIndex, maximumRows);
             return vlans.Items;
         }
 
