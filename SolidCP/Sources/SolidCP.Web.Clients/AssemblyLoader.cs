@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -9,6 +10,10 @@ using System.Diagnostics;
 using System.Collections.Concurrent;
 using System.Security.Cryptography;
 using System.Threading;
+using System.Runtime.InteropServices;
+using System.Configuration.Assemblies;
+
+
 #if NETFRAMEWORK
 using System.Configuration;
 #endif
@@ -165,6 +170,7 @@ namespace SolidCP.Web.Clients
 #else
             ProbingPaths = probingPaths;
 #endif
+            AppDomain.CurrentDomain.AssemblyLoad += (sender, args) => LoadNativeDlls(args.LoadedAssembly);
 
             if (!string.IsNullOrEmpty(ProbingPaths))
             {
@@ -216,6 +222,55 @@ namespace SolidCP.Web.Clients
 			method?.Invoke(null, new object[0]);
 #else
 #endif
+        }
+
+		static void AddEnvironmentPaths(IEnumerable<string> paths)
+		{
+			var path = new[] { Environment.GetEnvironmentVariable("PATH") ?? string.Empty };
+
+			paths = paths.Where(p => !string.IsNullOrEmpty(p));
+
+			string newPath = string.Join(Path.PathSeparator.ToString(), path.Concat(paths));
+
+			Environment.SetEnvironmentVariable("PATH", newPath);
+		}
+
+        static void LoadNativeDll(Assembly a, string assemblyPath, Architecture arch, string dllName)
+        {
+            string file;
+            if (arch == Architecture.X64)
+            {
+                file = Path.Combine(assemblyPath, "x64", dllName);
+            }
+            else if (arch == Architecture.X86)
+            {
+                file = Path.Combine(assemblyPath, "x86", dllName);
+            }
+            else throw new NotSupportedException($"Architecture {arch} not supported.");
+
+            // Create shadow copy
+            if (OSInfo.IsWindows && CreateShadowCopies)
+            {
+                var temp = TempFile(file);
+                File.Copy(file, temp, true);
+                file = temp;
+            }
+
+            AddEnvironmentPaths(new[] { Path.GetDirectoryName(file) });
+        }
+
+        static ConcurrentDictionary<string, string> OriginalFiles = new ConcurrentDictionary<string, string>();
+	    static void LoadNativeDlls(Assembly a)
+        {
+            var file = new Uri(a.CodeBase).LocalPath;
+            string originalFile = null;
+            if (!OriginalFiles.TryGetValue(file, out originalFile)) originalFile = file;
+
+            var arch = RuntimeInformation.ProcessArchitecture;
+            var assemblyPath = Path.GetDirectoryName(originalFile);
+
+            if (a.GetName().Name == "System.Data.SQLite") LoadNativeDll(a, assemblyPath, arch, "SQLite.Interop.dll");
+            if (a.GetName().Name == "SkiaSharp") LoadNativeDll(a, assemblyPath, arch, "libSkiaSharp.dll");
         }
 
         static string exepath = null;
@@ -277,11 +332,13 @@ namespace SolidCP.Web.Clients
                 foreach (var p in dlls)
                 {
                     string file = null;
+                    string originalFile = null;
                     // Create shadow copy
                     if (OSInfo.IsWindows && CreateShadowCopies)
                     {
 
-                        var temp = TempFile(p.FullName);
+                        originalFile = p.FullName;
+                        var temp = TempFile(originalFile);
                         try
                         {
                             File.Copy(p.FullName, temp, true);
@@ -294,7 +351,10 @@ namespace SolidCP.Web.Clients
                             throw new Exception($"Cannot load assembly {temp} because it's used by another process: {ex}");
                         }
                     }
-                    else file = p.FullName;
+                    else file = originalFile = p.FullName;
+
+                    OriginalFiles.AddOrUpdate(file, originalFile, (fileName, originalFileName) => originalFile);
+
                     // Load assembly
                     var a = Assembly.LoadFrom(file);
                     if (a != null)

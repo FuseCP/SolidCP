@@ -78,7 +78,6 @@ namespace SolidCP.EnterpriseServer.Data
 			}
 			if (LoadedDatabaseProviders.Contains(DbType.Sqlite))
 			{
-				Sqlite.Init();
 				SetProvidersSqlite();
 			}
 			if (LoadedDatabaseProviders.Contains(DbType.PostgreSql)) SetProvidersPostgreSql();
