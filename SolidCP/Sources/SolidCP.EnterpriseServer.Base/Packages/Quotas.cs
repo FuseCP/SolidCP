@@ -238,8 +238,11 @@ order by rg.groupOrder
         public const string VPS2012_REINSTALL_ALLOWED = "VPS2012.ReinstallAllowed";		// Allow user to Re-install VPS
         public const string VPS2012_BANDWIDTH = "VPS2012.Bandwidth";		// Monthly bandwidth, GB
         public const string VPS2012_REPLICATION_ENABLED = "VPS2012.ReplicationEnabled";
+        public const string VPS2012_DMZ_NETWORK_ENABLED = "VPS2012.DMZNetworkEnabled";		// DMZ Network
+        public const string VPS2012_DMZ_IP_ADDRESSES_NUMBER = "VPS2012.DMZIPAddressesNumber";       // Number of DMZ IP addresses per VPS
+        public const string VPS2012_DMZ_VLANS_NUMBER = "VPS2012.DMZVLANsNumber";		// Number of DMZ Network VLANs
 
-		public const string VPSForPC_SERVERS_NUMBER = "VPSForPC.ServersNumber";		// Number of VPS
+        public const string VPSForPC_SERVERS_NUMBER = "VPSForPC.ServersNumber";		// Number of VPS
 		public const string VPSForPC_MANAGING_ALLOWED = "VPSForPC.ManagingAllowed";		// Allow user to create VPS
 		public const string VPSForPC_CPU_NUMBER = "VPSForPC.CpuNumber";		// Number of CPU cores
 		public const string VPSForPC_BOOT_CD_ALLOWED = "VPSForPC.BootCdAllowed";		// Boot from CD allowed

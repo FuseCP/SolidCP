@@ -134,7 +134,7 @@ namespace SolidCP.Portal.VPS2012.UserControls
             if (vm.SnapshotsNumber > 0 && !createError)
                 tabsList.Add(CreateTab("vps_snapshots", "Tab.Snapshots"));
 
-            if ((vm.ExternalNetworkEnabled || vm.PrivateNetworkEnabled) && !createError)
+            if ((vm.ExternalNetworkEnabled || vm.PrivateNetworkEnabled || vm.DmzNetworkEnabled) && !createError)
                 tabsList.Add(CreateTab("vps_network", "Tab.Network"));
 
             if (PackagesHelper.IsQuotaEnabled(PanelSecurity.PackageId, Quotas.VPS2012_REPLICATION_ENABLED))

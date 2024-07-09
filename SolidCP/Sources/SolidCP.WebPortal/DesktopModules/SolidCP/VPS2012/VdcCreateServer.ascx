@@ -454,8 +454,115 @@
                                     <br />
                                     
                             </asp:WizardStep>
-                            
-                            
+
+                            <asp:WizardStep ID="stepDmzNetwork" runat="server" meta:resourcekey="stepDmzNetwork" Title="DMZ network">
+                                    <p>
+                                        <asp:CheckBox ID="chkDmzNetworkEnabled" runat="server" AutoPostBack="true" Checked="true"
+                                                    meta:resourcekey="chkDmzNetworkEnabled" Text="DMZ network enabled" />
+                                        <asp:DropDownList ID="listDmzNetworkVLAN" runat="server">
+                                        </asp:DropDownList>
+                                    </p>
+                                    
+                                   
+                                    <table id="tableDmzNetwork" runat="server" cellspacing="5" style="width: 100%;">
+                                        <tr>
+                                            <td>
+                                                <asp:RadioButton ID="radioDmzRandom" runat="server" AutoPostBack="true"
+                                                    meta:resourcekey="radioPrivateRandom" Text="Randomly select next available IP addresses to the addresses format" 
+                                                    Checked="True" GroupName="DmzAddress" />
+                                            </td>
+                                        </tr>
+                                        <tr id="DmzAddressesNumberRow" runat="server">
+                                            <td style="padding-left: 30px;">
+                                                <asp:Localize ID="locDmzAddresses" runat="server"
+                                                        meta:resourcekey="locPrivateAddresses" Text="Number of IP addresses:"></asp:Localize>
+
+                                                <asp:TextBox ID="txtDmzAddressesNumber" runat="server" CssClass="form-control form-control" Width="150" Text=""></asp:TextBox>
+                                                
+                                                <asp:RequiredFieldValidator ID="DmzAddressesValidator" runat="server" Text="*" Display="Dynamic"
+                                                        ControlToValidate="txtDmzAddressesNumber" meta:resourcekey="DmzAddressesValidator" SetFocusOnError="true"
+                                                        ValidationGroup="Vps">*</asp:RequiredFieldValidator>
+                                                        
+                                                <asp:Literal ID="litMaxDmzAddresses" runat="server"></asp:Literal>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <asp:RadioButton ID="radioDmzSelected" runat="server" AutoPostBack="true"
+                                                    meta:resourcekey="radioPrivateSelected" Text="Assign specified IP addresses" 
+                                                    GroupName="DmzAddress" />
+                                            </td>
+                                        </tr>
+                                        <tr id="DmzAddressesListRow" runat="server">
+                                            <td style="padding-left: 30px;">
+                                                <asp:TextBox ID="txtDmzAddressesList" runat="server" TextMode="MultiLine"
+                                                    CssClass="form-control form-control" Width="300" Rows="5"></asp:TextBox>
+                                                <br />
+                                                <asp:Localize ID="locDmzOnePerLine" runat="server"
+                                                        meta:resourcekey="locOnePerLine" Text="* Type one IP address per line"></asp:Localize>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <br />
+                                                <asp:CheckBox ID="chkDmzCustomGateway" runat="server" AutoPostBack="true" Checked="false"
+                                                    meta:resourcekey="chkCustomGateway" Text="Custom Gateway and DNS" />
+                                            </td>
+                                        </tr>
+                                        <tr id="trDmzCustomGateway" runat="server">
+                                            <td style="padding-left: 30px;">
+                                                <asp:RequiredFieldValidator ID="DmzGatewayValidator" runat="server" Text="*" Display="Dynamic"
+                                                        ControlToValidate="txtDmzGateway" meta:resourcekey="GatewayValidator" SetFocusOnError="true"
+                                                        ValidationGroup="Vps">*</asp:RequiredFieldValidator>
+                                                <asp:Localize ID="locDmzGateway" runat="server"
+                                                        meta:resourcekey="locGateway" Text="Gateway:"></asp:Localize>
+                                                <asp:TextBox ID="txtDmzGateway" runat="server" CssClass="form-control form-control" Width="150" Text=""></asp:TextBox>
+
+                                                <asp:RequiredFieldValidator ID="DmzDNSValidator" runat="server" Text="*" Display="Dynamic"
+                                                        ControlToValidate="txtDmzDNS1" meta:resourcekey="DNSValidator" SetFocusOnError="true"
+                                                        ValidationGroup="Vps">*</asp:RequiredFieldValidator>
+                                                <asp:Localize ID="locDmzDNS1" runat="server"
+                                                        meta:resourcekey="locDNS1" Text="Preferred DNS server:"></asp:Localize>
+                                                <asp:TextBox ID="txtDmzDNS1" runat="server" CssClass="form-control form-control" Width="150" Text=""></asp:TextBox>
+
+                                                <asp:Localize ID="locDmzDNS2" runat="server"
+                                                        meta:resourcekey="locDNS2" Text="Alternate DNS server:"></asp:Localize>
+                                                <asp:TextBox ID="txtDmzDNS2" runat="server" CssClass="form-control form-control" Width="150" Text=""></asp:TextBox>
+
+                                                <asp:RequiredFieldValidator ID="dmzMaskValidator" runat="server" Text="*" Display="Dynamic"
+                                                        ControlToValidate="txtDmzMask" meta:resourcekey="maskValidator" SetFocusOnError="true"
+                                                        ValidationGroup="Vps">*</asp:RequiredFieldValidator>
+                                                <asp:Localize ID="locDmzMask" runat="server"
+                                                        meta:resourcekey="locMask" Text="Subnet mask:"></asp:Localize>
+                                                <asp:TextBox ID="txtDmzMask" runat="server" CssClass="form-control form-control" Width="150" Text=""></asp:TextBox>
+                                            </td>
+                                            <td>
+                                                
+                                            </td>
+                                            <td>
+                                                
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <br />
+                                    
+                                    <table style="border-collapse: separate; border-spacing: 3px;">
+                                        <tr>
+                                            <td><asp:Localize ID="locDmzNetworkFormat" runat="server"
+                                            meta:resourcekey="locDmzNetworkFormat" Text="Network addresses format:"></asp:Localize></td>
+                                            <td><b><asp:Literal ID="litDmzNetworkFormat" runat="server" Text="[network format]"></asp:Literal></b></td>
+                                        </tr>
+                                        <tr>
+                                            <td><asp:Localize ID="locDmzSubnetMask" runat="server"
+                                            meta:resourcekey="locDmzSubnetMask" Text="Subnet mask:"></asp:Localize></td>
+                                            <td><b><asp:Literal ID="litDmzSubnetMask" runat="server" Text="[subnet mask]"></asp:Literal></b></td>
+                                        </tr>
+                                    </table>
+                                    
+                                    <br />
+                                    
+                            </asp:WizardStep>
+
                             
                             <asp:WizardStep ID="stepSummary" runat="server" meta:resourcekey="stepSummary" Title="Summary">
                                     <table style="border-collapse: separate; border-spacing: 6px 1px;">
@@ -634,6 +741,31 @@
                                             <td><asp:Localize ID="locPrivateAddressesList" runat="server"
                                                 meta:resourcekey="locPrivateAddressesList" Text="IP addresses list:" /></td>
                                             <td><asp:Literal ID="litPrivateAddressesList" runat="server"></asp:Literal></td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" class="NormalBold">
+                                                <asp:Localize ID="locDmzNetwork" runat="server"
+                                                    meta:resourcekey="locDmzNetwork" Text="DMZ Network" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><asp:Localize ID="locDmzNetworkEnabled" runat="server"
+                                                meta:resourcekey="locDmzNetworkEnabled" Text="DMZ network enabled:" /></td>
+                                            <td><scp:CheckBoxOption id="optionDmzNetwork" runat="server" Value="True" /></td>
+                                        </tr>
+                                        <tr id="SummDmzAddressesNumberRow" runat="server">
+                                            <td><asp:Localize ID="locDmzAddressesNumber" runat="server"
+                                                meta:resourcekey="locDmzAddressesNumber" Text="Number of IP addresses:" /></td>
+                                            <td><asp:Literal ID="litDmzAddressesNumber" runat="server"></asp:Literal></td>
+                                        </tr>
+                                        <tr id="SummDmzAddressesListRow" runat="server">
+                                            <td><asp:Localize ID="locDmzAddressesList" runat="server"
+                                                meta:resourcekey="locDmzAddressesList" Text="IP addresses list:" /></td>
+                                            <td><asp:Literal ID="litDmzAddressesList" runat="server"></asp:Literal></td>
                                         </tr>
                                     </table>
                                     <br />

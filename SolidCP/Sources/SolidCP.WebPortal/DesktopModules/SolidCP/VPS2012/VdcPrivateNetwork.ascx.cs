@@ -51,6 +51,7 @@ namespace SolidCP.Portal.VPS2012
                 searchBox.AddCriteria("IPAddress", GetLocalizedString("SearchField.IPAddress"));
                 searchBox.AddCriteria("ItemName", GetLocalizedString("SearchField.ItemName"));
                 packageVLANs.ManageAllowed = VirtualMachines2012Helper.IsVirtualMachineManagementAllowed(PanelSecurity.PackageId);
+                packageVLANs.IsDmz = false;
             }
             searchBox.AjaxData = this.GetSearchBoxAjaxData();
         }
@@ -65,7 +66,7 @@ namespace SolidCP.Portal.VPS2012
         {
             if (e.Exception != null)
             {
-                messageBox.ShowErrorMessage("EXCHANGE_GET_MAILBOXES", e.Exception);
+                messageBox.ShowErrorMessage("VPS_ERROR_GET_PRIVATE_NETWORK", e.Exception);
                 e.ExceptionHandled = true;
             }
         }

@@ -153,6 +153,13 @@
                                             <asp:HiddenField id="hiddenTxtPrivateAddressesNumber" runat="server" Value=""/>
                                         </td>                                    
                                     </tr>
+                                    <tr id="DmzAddressesRow" runat="server">
+                                        <td><asp:Localize ID="locDmzAddressesList" runat="server"
+                                                    meta:resourcekey="locDmzAddressesList" Text="DMZ IP addresses list:" /></td>
+                                        <td><asp:Literal ID="litDmzAddresses" runat="server"></asp:Literal>
+                                            <asp:HiddenField id="hiddenTxtDmzAddressesNumber" runat="server" Value=""/>
+                                        </td>                                    
+                                    </tr>
                                 </table>
                             </asp:Panel>                        
 

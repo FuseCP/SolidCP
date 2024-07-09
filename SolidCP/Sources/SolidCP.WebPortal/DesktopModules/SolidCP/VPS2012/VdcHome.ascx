@@ -49,7 +49,9 @@
 					        <asp:BoundField HeaderText="gvServersExternalIP" meta:resourcekey="gvServersExternalIP"
 					            DataField="ExternalIP" SortExpression="ExternalIP" />
 					        <asp:BoundField HeaderText="gvServersPrivateIP" meta:resourcekey="gvServersPrivateIP"
-					            DataField="IPAddress" SortExpression="IPAddress" />
+					            DataField="IPAddress" SortExpression="PIP.IPAddress" />
+							<asp:BoundField HeaderText="gvServersDmzIP" meta:resourcekey="gvServersDmzIP"
+					            DataField="DmzIP" SortExpression="DIP.IPAddress" />
 					        <asp:TemplateField HeaderText="gvServersSpace" meta:resourcekey="gvServersSpace" SortExpression="PackageName" >
 						        <ItemTemplate>
 							        <asp:hyperlink id="lnkSpace" runat="server" NavigateUrl='<%# GetSpaceHomeUrl(Eval("PackageID").ToString()) %>'>

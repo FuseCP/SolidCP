@@ -870,11 +870,17 @@
   <data name="ModuleTitle.VdcAddPrivateNetworkVLAN" xml:space="preserve">
     <value>Allocate VLANs</value>
   </data>
+  <data name="ModuleTitle.VdcAddDmzNetworkVLAN" xml:space="preserve">
+    <value>Allocate VLANs</value>
+  </data>
   <data name="ModuleTitle.VdcAddExternalAddress" xml:space="preserve">
     <value>Allocate IP Addresses</value>
   </data>
   <data name="ModuleTitle.VdcPrivateNetwork" xml:space="preserve">
     <value>Private Network</value>
+  </data>
+  <data name="ModuleTitle.VdcDmzNetwork" xml:space="preserve">
+    <value>DMZ Network</value>
   </data>
   <data name="ModuleTitle.VdcPermissions" xml:space="preserve">
     <value>User Permissions</value>

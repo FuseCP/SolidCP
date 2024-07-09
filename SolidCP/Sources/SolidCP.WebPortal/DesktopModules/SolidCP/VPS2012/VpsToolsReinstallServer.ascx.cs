@@ -170,6 +170,8 @@ namespace SolidCP.Portal.VPS2012
                 BindExternalAddresses();
             if (vm.PrivateNetworkEnabled)
                 BindPrivateAddresses();
+            if (vm.DmzNetworkEnabled)
+                BindDmzAddresses();
         }
 
 
@@ -224,6 +226,24 @@ namespace SolidCP.Portal.VPS2012
             }
         }
 
+        private void BindDmzAddresses()
+        {
+            DmzAddressesRow.Visible = true;
+            hiddenTxtDmzAddressesNumber.Value = "1";
+            NetworkAdapterDetails nic = ES.Services.VPS2012.GetDmzNetworkAdapterDetails(PanelRequest.ItemID);
+            if (nic.IsDHCP)
+            {
+                litDmzAddresses.Text = GetLocalizedString("Automatic.Text");
+            }
+            else if (nic.IPAddresses != null && nic.IPAddresses.GetLength(0) > 0)
+            {
+                List<string> ipDmzAddresses = new List<string>();
+                foreach (NetworkAdapterIPAddress ip in nic.IPAddresses)
+                    ipDmzAddresses.Add(ip.IPAddress);
+                litDmzAddresses.Text = PortalAntiXSS.Encode(String.Join(", ", ipDmzAddresses.ToArray()));
+            }
+        }
+
         private void TryToReinstall()
         {
             try
@@ -236,7 +256,8 @@ namespace SolidCP.Portal.VPS2012
                 //vm.PackageId = PanelSecurity.PackageId; //TODO: An idea to change HyperV logic of showing VMs (maybe in 2019?).
                 string adminPassword = password.Password;
                 string[] privIps = Utils.ParseDelimitedString(litPrivateAddresses.Text, '\n', '\r', ' ', '\t'); //possible doesn't work :)
-                IntResult reinstallResult = ES.Services.VPS2012.ReinstallVirtualMachine(PanelRequest.ItemID, vm, adminPassword, privIps, false, false, "");
+                string[] dmzIps = Utils.ParseDelimitedString(litDmzAddresses.Text, '\n', '\r', ' ', '\t');
+                IntResult reinstallResult = ES.Services.VPS2012.ReinstallVirtualMachine(PanelRequest.ItemID, vm, adminPassword, privIps, dmzIps, false, false, "");
                 
                 if (reinstallResult.IsSuccess)
                 {

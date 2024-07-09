@@ -147,6 +147,9 @@
   <data name="SearchField.IPAddress" xml:space="preserve">
     <value>Private IP</value>
   </data>
+  <data name="SearchField.DmzIP" xml:space="preserve">
+    <value>DMZ IP</value>
+  </data>
   <data name="SearchField.ItemName" xml:space="preserve">
     <value>VPS Name</value>
   </data>
@@ -212,5 +215,8 @@
   </data>
   <data name="locCPUQuota.Text" xml:space="preserve">
     <value>CPU's</value>
+  </data>
+  <data name="gvServersDmzIP.HeaderText" xml:space="preserve">
+    <value>DMZ IP</value>
   </data>
 </root>

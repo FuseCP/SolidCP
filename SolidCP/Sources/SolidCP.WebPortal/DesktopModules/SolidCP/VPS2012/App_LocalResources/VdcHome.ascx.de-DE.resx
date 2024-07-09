@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="btnCreate.Text" xml:space="preserve">
     <value>VM erstellen</value>
@@ -146,6 +146,9 @@
   </data>
   <data name="SearchField.IPAddress" xml:space="preserve">
     <value>Private IP</value>
+  </data>
+  <data name="SearchField.DmzIP" xml:space="preserve">
+    <value>DMZ IP</value>
   </data>
   <data name="SearchField.ItemName" xml:space="preserve">
     <value>VPS-Name</value>
@@ -209,5 +212,8 @@
   </data>
   <data name="cmdMoveText.Text" xml:space="preserve">
     <value>Verschieben</value>
+  </data>
+  <data name="gvServersDmzIP.HeaderText" xml:space="preserve">
+    <value>DMZ IP</value>
   </data>
 </root>

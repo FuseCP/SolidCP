@@ -22,6 +22,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
         public IntResult CreateNewVirtualMachineInternal(VirtualMachine VMSettings, string osTemplateFile, string password, string summaryLetterEmail,
             int externalAddressesNumber, bool randomExternalAddresses, int[] externalAddresses,
             int privateAddressesNumber, bool randomPrivateAddresses, string[] privateAddresses,
+            int dmzAddressesNumber, bool randomDmzAddresses, string[] dmzAddresses,
             bool createMetaItem)
         {
             // result object
@@ -93,6 +94,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
 
                 QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_EXTERNAL_NETWORK_ENABLED, VMSettings.ExternalNetworkEnabled, VirtualizationErrorCodes.QUOTA_EXCEEDED_EXTERNAL_NETWORK_ENABLED);
                 QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_PRIVATE_NETWORK_ENABLED, VMSettings.PrivateNetworkEnabled, VirtualizationErrorCodes.QUOTA_EXCEEDED_PRIVATE_NETWORK_ENABLED);
+                QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_DMZ_NETWORK_ENABLED, VMSettings.DmzNetworkEnabled, VirtualizationErrorCodes.QUOTA_EXCEEDED_DMZ_NETWORK_ENABLED);
 
 
                 // check external addresses number
@@ -116,6 +118,11 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
                     privateAddressesNumber = privateAddresses.Length;
                 QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_PRIVATE_IP_ADDRESSES_NUMBER, privateAddressesNumber, VirtualizationErrorCodes.QUOTA_EXCEEDED_PRIVATE_ADDRESSES_NUMBER);
 
+                // check dmz addresses number
+                if (!randomDmzAddresses && dmzAddresses != null)
+                    dmzAddressesNumber = dmzAddresses.Length;
+                QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_DMZ_IP_ADDRESSES_NUMBER, dmzAddressesNumber, VirtualizationErrorCodes.QUOTA_EXCEEDED_DMZ_ADDRESSES_NUMBER);
+
                 // check management network parameters
                 NetworkAdapterDetails manageNic = NetworkAdapterDetailsHelper.GetManagementNetworkDetails(packageId);
                 if (!String.IsNullOrEmpty(manageNic.NetworkId))
@@ -129,8 +136,8 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
                 }
 
                 // check acceptable values
-                if (VMSettings.RamSize <= 0)
-                    quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_RAM);
+                if (VMSettings.RamSize < 32)
+                    quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_RAM_HV);
 
                 if (VMSettings.HddSize.Length == 0) //if we pass the empty array of HddSize it broke everything.
                     quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_HDD);
@@ -153,6 +160,14 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
                 #region Check input parameters
                 // check private network IP addresses if they are specified
                 List<string> checkResults = IpAddressPrivateHelper.CheckPrivateIPAddresses(packageId, privateAddresses);
+                if (checkResults.Count > 0)
+                {
+                    res.ErrorCodes.AddRange(checkResults);
+                    return res;
+                }
+
+                // check dmz network IP addresses if they are specified
+                checkResults = IpAddressPrivateHelper.CheckDmzIPAddresses(packageId, dmzAddresses);
                 if (checkResults.Count > 0)
                 {
                     res.ErrorCodes.AddRange(checkResults);
@@ -398,6 +413,10 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
                     worker.PrivateAddressesNumber = privateAddressesNumber;
                     worker.RandomPrivateAddresses = randomPrivateAddresses;
                     worker.PrivateAddresses = privateAddresses;
+
+                    worker.DmzAddressesNumber = dmzAddressesNumber;
+                    worker.RandomDmzAddresses = randomDmzAddresses;
+                    worker.DmzAddresses = dmzAddresses;
 
                     worker.SummaryLetterEmail = summaryLetterEmail;
 

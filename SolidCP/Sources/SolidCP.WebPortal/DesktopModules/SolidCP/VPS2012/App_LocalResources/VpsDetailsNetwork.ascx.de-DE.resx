@@ -204,4 +204,40 @@
   <data name="locPrivGateway.Text" xml:space="preserve">
     <value>Standard-Gateway:</value>
   </data>
+  <data name="btnAddDmzAddress.Text" xml:space="preserve">
+    <value>IP hinzufügen...</value>
+  </data>
+  <data name="btnDeleteDmz.Text" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="btnRestoreDmzAddress.Text" xml:space="preserve">
+    <value>DMZ IPs wiederherstellen</value>
+  </data>
+  <data name="btnRestoreExternalAddress.Text" xml:space="preserve">
+    <value>Externe IPs wiederherstellen</value>
+  </data>
+  <data name="btnRestorePrivateAddress.Text" xml:space="preserve">
+    <value>Private IPs wiederherstellen</value>
+  </data>
+  <data name="btnSetPrimaryDmz.Text" xml:space="preserve">
+    <value>Als primär festlegen</value>
+  </data>
+  <data name="gvDmzAddresses.Empty" xml:space="preserve">
+    <value>Dem DMZ-Netzwerkadapter wurden keine IP-Adressen zugewiesen.</value>
+  </data>
+  <data name="locDmzAddress.Text" xml:space="preserve">
+    <value>Server-Adresse:</value>
+  </data>
+  <data name="locDmzGateway.Text" xml:space="preserve">
+    <value>Standard-Gateway:</value>
+  </data>
+  <data name="locDmzSubnet.Text" xml:space="preserve">
+    <value>Subnetzmaske:</value>
+  </data>
+  <data name="locTotalDmz.Text" xml:space="preserve">
+    <value>IP-Adressen:</value>
+  </data>
+  <data name="secDmzNetwork.Text" xml:space="preserve">
+    <value>DMZ Netzwerk</value>
+  </data>
 </root>

@@ -98,6 +98,16 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
                 if (!String.IsNullOrEmpty(vm.CustomPrivateMask)) nic.SubnetMask = vm.CustomPrivateMask;
                 PowerShellScript.CheckCustomPsScript(PsScriptPoint.private_network_configuration, vm);
             }
+            else if (String.Compare(adapterName, "dmz", true) == 0)
+            {
+                // dmz
+                nic = NetworkAdapterDetailsHelper.GetDmzNetworkAdapterDetails(itemId);
+                if (!String.IsNullOrEmpty(vm.CustomDmzGateway)) nic.DefaultGateway = vm.CustomDmzGateway;
+                if (!String.IsNullOrEmpty(vm.CustomDmzDNS1)) nic.PreferredNameServer = vm.CustomDmzDNS1;
+                if (!String.IsNullOrEmpty(vm.CustomDmzDNS2)) nic.AlternateNameServer = vm.CustomDmzDNS2;
+                if (!String.IsNullOrEmpty(vm.CustomDmzMask)) nic.SubnetMask = vm.CustomDmzMask;
+                PowerShellScript.CheckCustomPsScript(PsScriptPoint.dmz_network_configuration, vm);
+            }
             else
             {
                 // management
@@ -125,6 +135,10 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
                             if (String.Compare(adapterName, "private", true) == 0 && !String.IsNullOrEmpty(vm.CustomPrivateGateway))
                             {
                                 props["DefaultIPGateway"] = vm.CustomPrivateGateway;
+                            }
+                            else if (String.Compare(adapterName, "dmz", true) == 0 && !String.IsNullOrEmpty(vm.CustomDmzGateway))
+                            {
+                                props["DefaultIPGateway"] = vm.CustomDmzGateway;
                             }
                             else
                             {
@@ -228,6 +242,11 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
                 kvp[i].Name = taskNameArr[i];
                 kvp[i].Data = taskData;
             }
+            string taskDataLog = taskData;
+            if ("ChangeAdministratorPassword".Equals(taskName))
+            {
+                taskDataLog = "Password=******";
+            }
 
             try
             {
@@ -255,7 +274,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             catch (Exception ex)
             {
                 // log error
-                TaskManager.WriteWarning(String.Format("Error setting KVP items '{0}': {1}", kvp[0].Data, ex.Message));
+                TaskManager.WriteWarning(String.Format("Error setting KVP items '{0}': {1}", taskDataLog, ex.Message));
             }
 
             return null;

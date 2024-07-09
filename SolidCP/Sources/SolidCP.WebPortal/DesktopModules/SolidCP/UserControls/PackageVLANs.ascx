@@ -66,6 +66,7 @@
         </asp:TemplateField>
     </Columns>
 </asp:GridView>
+<asp:CheckBox ID="cbIsDmz" Visible="false" runat="server"/>
 <asp:ObjectDataSource ID="odsVLANsPaged" runat="server" EnablePaging="True"
 	    SelectCountMethod="GetPackageVLANsCount"
 	    SelectMethod="GetPackageVLANs"
@@ -73,7 +74,8 @@
 	    TypeName="SolidCP.Portal.VirtualMachines2012Helper"
 	    OnSelected="odsVLANsPaged_Selected">
     <SelectParameters>
-	    <asp:QueryStringParameter Name="packageId" QueryStringField="SpaceID" DefaultValue="0" />						    
+	    <asp:QueryStringParameter Name="packageId" QueryStringField="SpaceID" DefaultValue="0" />
+        <asp:ControlParameter Name="isDmz" ControlID="cbIsDmz" PropertyName="Checked" Type="Boolean" DefaultValue=false />
     </SelectParameters>
 </asp:ObjectDataSource>
 

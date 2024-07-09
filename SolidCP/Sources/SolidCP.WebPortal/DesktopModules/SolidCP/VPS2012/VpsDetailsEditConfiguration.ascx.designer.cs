@@ -7,11 +7,13 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SolidCP.Portal.VPS2012 {
-    
-    
-    public partial class VpsDetailsEditConfiguration {
-        
+namespace SolidCP.Portal.VPS2012
+{
+
+
+    public partial class VpsDetailsEditConfiguration
+    {
+
         /// <summary>
         /// asyncTasks control.
         /// </summary>
@@ -20,7 +22,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.EnableAsyncTasksSupport asyncTasks;
-        
+
         /// <summary>
         /// tabs control.
         /// </summary>
@@ -29,7 +31,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.VPS2012.UserControls.ServerTabs tabs;
-        
+
         /// <summary>
         /// messageBox control.
         /// </summary>
@@ -38,7 +40,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.UserControls.SimpleMessageBox messageBox;
-        
+
         /// <summary>
         /// locSubTitle control.
         /// </summary>
@@ -47,7 +49,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locSubTitle;
-        
+
         /// <summary>
         /// validatorsSummary control.
         /// </summary>
@@ -56,7 +58,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ValidationSummary validatorsSummary;
-        
+
         /// <summary>
         /// secResources control.
         /// </summary>
@@ -65,7 +67,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.CollapsiblePanel secResources;
-        
+
         /// <summary>
         /// ResourcesPanel control.
         /// </summary>
@@ -74,7 +76,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel ResourcesPanel;
-        
+
         /// <summary>
         /// lblCpu control.
         /// </summary>
@@ -83,7 +85,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblCpu;
-        
+
         /// <summary>
         /// ddlCpu control.
         /// </summary>
@@ -92,7 +94,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlCpu;
-        
+
         /// <summary>
         /// locCores control.
         /// </summary>
@@ -101,7 +103,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locCores;
-        
+
         /// <summary>
         /// lblRam control.
         /// </summary>
@@ -110,7 +112,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblRam;
-        
+
         /// <summary>
         /// txtRam control.
         /// </summary>
@@ -119,7 +121,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtRam;
-        
+
         /// <summary>
         /// RequireRamValidator control.
         /// </summary>
@@ -128,7 +130,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator RequireRamValidator;
-        
+
         /// <summary>
         /// locMB control.
         /// </summary>
@@ -137,7 +139,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locMB;
-        
+
         /// <summary>
         /// lblHdd control.
         /// </summary>
@@ -146,7 +148,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblHdd;
-        
+
         /// <summary>
         /// txtHdd control.
         /// </summary>
@@ -155,7 +157,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtHdd;
-        
+
         /// <summary>
         /// RequireHddValidator control.
         /// </summary>
@@ -164,7 +166,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator RequireHddValidator;
-        
+
         /// <summary>
         /// locGB control.
         /// </summary>
@@ -173,7 +175,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locGB;
-        
+
         /// <summary>
         /// hiddenTxtValHdd control.
         /// </summary>
@@ -182,7 +184,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hiddenTxtValHdd;
-        
+
         /// <summary>
         /// btnAddHdd control.
         /// </summary>
@@ -191,7 +193,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::CPCC.StyleButton btnAddHdd;
-        
+
         /// <summary>
         /// repHdd control.
         /// </summary>
@@ -200,7 +202,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Repeater repHdd;
-        
+
         /// <summary>
         /// chkIgnoreHddWarning control.
         /// </summary>
@@ -209,7 +211,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkIgnoreHddWarning;
-        
+
         /// <summary>
         /// secHddQOS control.
         /// </summary>
@@ -218,7 +220,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.CollapsiblePanel secHddQOS;
-        
+
         /// <summary>
         /// QOSManag control.
         /// </summary>
@@ -227,7 +229,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel QOSManag;
-        
+
         /// <summary>
         /// locHddIOPSTitle control.
         /// </summary>
@@ -236,7 +238,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locHddIOPSTitle;
-        
+
         /// <summary>
         /// lblHddMinIOPS control.
         /// </summary>
@@ -245,7 +247,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblHddMinIOPS;
-        
+
         /// <summary>
         /// txtHddMinIOPS control.
         /// </summary>
@@ -254,7 +256,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtHddMinIOPS;
-        
+
         /// <summary>
         /// RequireHddMinIOPSValidator control.
         /// </summary>
@@ -263,7 +265,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator RequireHddMinIOPSValidator;
-        
+
         /// <summary>
         /// locHddMinIOPS control.
         /// </summary>
@@ -272,7 +274,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locHddMinIOPS;
-        
+
         /// <summary>
         /// lblHddMaxIOPS control.
         /// </summary>
@@ -281,7 +283,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblHddMaxIOPS;
-        
+
         /// <summary>
         /// txtHddMaxIOPS control.
         /// </summary>
@@ -290,7 +292,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtHddMaxIOPS;
-        
+
         /// <summary>
         /// RequireHddMaxIOPSValidator control.
         /// </summary>
@@ -299,7 +301,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator RequireHddMaxIOPSValidator;
-        
+
         /// <summary>
         /// locHddMaxIOPS control.
         /// </summary>
@@ -308,7 +310,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locHddMaxIOPS;
-        
+
         /// <summary>
         /// DynamicMemorySetting control.
         /// </summary>
@@ -317,7 +319,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.VPS2012.UserControls.DynamicMemoryControl DynamicMemorySetting;
-        
+
         /// <summary>
         /// secSnapshots control.
         /// </summary>
@@ -326,7 +328,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.CollapsiblePanel secSnapshots;
-        
+
         /// <summary>
         /// SnapshotsPanel control.
         /// </summary>
@@ -335,7 +337,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel SnapshotsPanel;
-        
+
         /// <summary>
         /// locSnapshots control.
         /// </summary>
@@ -344,7 +346,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label locSnapshots;
-        
+
         /// <summary>
         /// txtSnapshots control.
         /// </summary>
@@ -353,7 +355,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtSnapshots;
-        
+
         /// <summary>
         /// SnapshotsValidator control.
         /// </summary>
@@ -362,7 +364,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator SnapshotsValidator;
-        
+
         /// <summary>
         /// secDvd control.
         /// </summary>
@@ -371,7 +373,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.CollapsiblePanel secDvd;
-        
+
         /// <summary>
         /// DvdPanel control.
         /// </summary>
@@ -380,7 +382,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel DvdPanel;
-        
+
         /// <summary>
         /// chkDvdInstalled control.
         /// </summary>
@@ -389,7 +391,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkDvdInstalled;
-        
+
         /// <summary>
         /// secBios control.
         /// </summary>
@@ -398,7 +400,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.CollapsiblePanel secBios;
-        
+
         /// <summary>
         /// BiosPanel control.
         /// </summary>
@@ -407,7 +409,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel BiosPanel;
-        
+
         /// <summary>
         /// chkBootFromCd control.
         /// </summary>
@@ -416,7 +418,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkBootFromCd;
-        
+
         /// <summary>
         /// chkNumLock control.
         /// </summary>
@@ -425,7 +427,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkNumLock;
-        
+
         /// <summary>
         /// chkSecureBoot control.
         /// </summary>
@@ -434,7 +436,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkSecureBoot;
-        
+
         /// <summary>
         /// secActions control.
         /// </summary>
@@ -443,7 +445,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.CollapsiblePanel secActions;
-        
+
         /// <summary>
         /// ActionsPanel control.
         /// </summary>
@@ -452,7 +454,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel ActionsPanel;
-        
+
         /// <summary>
         /// chkStartShutdown control.
         /// </summary>
@@ -461,7 +463,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkStartShutdown;
-        
+
         /// <summary>
         /// chkReset control.
         /// </summary>
@@ -470,7 +472,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkReset;
-        
+
         /// <summary>
         /// chkPauseResume control.
         /// </summary>
@@ -479,7 +481,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkPauseResume;
-        
+
         /// <summary>
         /// chkReinstall control.
         /// </summary>
@@ -488,7 +490,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkReinstall;
-        
+
         /// <summary>
         /// chkReboot control.
         /// </summary>
@@ -497,7 +499,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkReboot;
-        
+
         /// <summary>
         /// secNetwork control.
         /// </summary>
@@ -506,7 +508,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.CollapsiblePanel secNetwork;
-        
+
         /// <summary>
         /// NetworkPanel control.
         /// </summary>
@@ -515,7 +517,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel NetworkPanel;
-        
+
         /// <summary>
         /// EmptyExternalAddressesMessage control.
         /// </summary>
@@ -524,7 +526,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl EmptyExternalAddressesMessage;
-        
+
         /// <summary>
         /// locNotEnoughExternalAddresses control.
         /// </summary>
@@ -533,7 +535,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locNotEnoughExternalAddresses;
-        
+
         /// <summary>
         /// chkExternalNetworkEnabled control.
         /// </summary>
@@ -542,7 +544,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkExternalNetworkEnabled;
-        
+
         /// <summary>
         /// chkPrivateNetworkEnabled control.
         /// </summary>
@@ -551,7 +553,16 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkPrivateNetworkEnabled;
-        
+
+        /// <summary>
+        /// chkDmzNetworkEnabled control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkDmzNetworkEnabled;
+
         /// <summary>
         /// chkForceReboot control.
         /// </summary>
@@ -560,7 +571,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkForceReboot;
-        
+
         /// <summary>
         /// btnCancel control.
         /// </summary>
@@ -569,7 +580,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::CPCC.StyleButton btnCancel;
-        
+
         /// <summary>
         /// btnUpdate control.
         /// </summary>

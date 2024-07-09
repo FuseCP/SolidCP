@@ -63,11 +63,21 @@ namespace SolidCP.Portal.UserControls
             set { ViewState["ManageAllowed"] = value; }
         }
 
+        public bool IsDmz
+        {
+            get { return ViewState["IsDmz"] != null ? (bool)ViewState["IsDmz"] : false; }
+            set { ViewState["IsDmz"] = value; }
+        }
+
+        private PackageVLANsPaged packageVLANs;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             bool isUserSelected = PanelSecurity.SelectedUser.Role == SolidCP.EnterpriseServer.UserRole.User;
             bool isUserLogged = PanelSecurity.EffectiveUser.Role == SolidCP.EnterpriseServer.UserRole.User;
             spaceOwner = PanelSecurity.EffectiveUserId == PanelSecurity.SelectedUserId;
+
+            cbIsDmz.Checked = IsDmz;
 
             gvVLANs.Columns[2].Visible = !isUserSelected; // space
             gvVLANs.Columns[3].Visible = !isUserSelected; // user

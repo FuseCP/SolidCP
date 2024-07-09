@@ -101,6 +101,7 @@ namespace SolidCP.Portal.VPS2012
 
                 optionExternalNetwork.Value = vm.ExternalNetworkEnabled;
                 optionPrivateNetwork.Value = vm.PrivateNetworkEnabled;
+                optionDmzNetwork.Value = vm.DmzNetworkEnabled;
 
                 // toggle buttons
                 bool manageAllowed = VirtualMachines2012Helper.IsVirtualMachineManagementAllowed(PanelSecurity.PackageId);

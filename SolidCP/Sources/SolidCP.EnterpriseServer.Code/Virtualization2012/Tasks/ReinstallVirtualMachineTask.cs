@@ -12,9 +12,10 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Tasks
 {
     public class ReinstallVirtualMachineTask: ControllerBase
     {
+
         public ReinstallVirtualMachineTask(ControllerBase provider) : base(provider) { }
 
-        internal void ReinstallVirtualMachineNewTask(int itemId, VirtualMachine VMSettings, LibraryItem OsTemplate, string adminPassword, string[] privIps,
+        internal void ReinstallVirtualMachineNewTask(int itemId, VirtualMachine VMSettings, LibraryItem OsTemplate, string adminPassword, string[] privIps, string[] dmzIps,
             bool saveVirtualDisk, bool exportVps, string exportPath)
         {
             string taskId = VMSettings.CurrentTaskId;
@@ -22,12 +23,12 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Tasks
             int maximumExecutionSeconds = 60 * 60 * 2; //2 hours for this task. Anyway the Powershell cmd vhd convert has max 1 hour limit.
             TaskManager.StartTask(taskId, "VPS2012", "REINSTALL", VMSettings.Name, VMSettings.Id, VMSettings.PackageId, maximumExecutionSeconds);
 
-            ReinstallVirtualMachineInternal(taskId, itemId, VMSettings, OsTemplate, adminPassword, privIps, saveVirtualDisk, exportVps, exportPath);
+            ReinstallVirtualMachineInternal(taskId, itemId, VMSettings, OsTemplate, adminPassword, privIps, dmzIps, saveVirtualDisk, exportVps, exportPath);
 
             TaskManager.CompleteTask();
         }
 
-        private void ReinstallVirtualMachineInternal(string taskId, int itemId, VirtualMachine VMSettings, LibraryItem OsTemplate, string adminPassword, string[] privIps,
+        private void ReinstallVirtualMachineInternal(string taskId, int itemId, VirtualMachine VMSettings, LibraryItem OsTemplate, string adminPassword, string[] privIps, string[] dmzIps,
             bool saveVirtualDisk, bool exportVps, string exportPath)
         {
             //string taskId = VMSettings.CurrentTaskId;
@@ -72,19 +73,41 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Tasks
             if (VMSettings.PrivateNetworkEnabled && (privIps != null && privIps.Length > 0))
                 privateAddressesNumber = 1;
             List<int> ipLanAddressesID = new List<int>();
-            NetworkAdapterDetails nicLan = NetworkAdapterDetailsHelper.GetPrivateNetworkAdapterDetails(itemId);
-            if (nicLan.IPAddresses != null && nicLan.IPAddresses.GetLength(0) > 0)
+            if (privateAddressesNumber > 0)
             {
-                int i = 0;
-                foreach (NetworkAdapterIPAddress ip in nicLan.IPAddresses)
+                NetworkAdapterDetails nicLan = NetworkAdapterDetailsHelper.GetPrivateNetworkAdapterDetails(itemId);
+                if (nicLan.IPAddresses != null && nicLan.IPAddresses.GetLength(0) > 0)
                 {
-                    ipLanAddressesID.Add(ip.AddressId);
-                    privIps[i] = ip.IPAddress;
-                    i++;
+                    int i = 0;
+                    foreach (NetworkAdapterIPAddress ip in nicLan.IPAddresses)
+                    {
+                        ipLanAddressesID.Add(ip.AddressId);
+                        privIps[i] = ip.IPAddress;
+                        i++;
+                    }
+                }
+            }
+
+            byte dmzAddressesNumber = 0;
+            if (VMSettings.DmzNetworkEnabled && (dmzIps != null && dmzIps.Length > 0))
+                dmzAddressesNumber = 1;
+            List<int> ipDmzAddressesID = new List<int>();
+            if (dmzAddressesNumber > 0)
+            {
+                NetworkAdapterDetails nicDmz = NetworkAdapterDetailsHelper.GetDmzNetworkAdapterDetails(itemId);
+                if (nicDmz.IPAddresses != null && nicDmz.IPAddresses.GetLength(0) > 0)
+                {
+                    int i = 0;
+                    foreach (NetworkAdapterIPAddress ip in nicDmz.IPAddresses)
+                    {
+                        ipDmzAddressesID.Add(ip.AddressId);
+                        dmzIps[i] = ip.IPAddress;
+                        i++;
+                    }
                 }
             }
             #endregion
-            
+
             bool keepMetaItem = true;
             //ResultObject res = DeleteVirtualMachineAsynchronous(itemId, saveVirtualDisk, exportVps, exportPath, keepMetaItem);
             DeleteVirtualMachineTask.DeleteVirtualMachineContinueTask(taskId, itemId, VMSettings, saveVirtualDisk, exportVps, exportPath, keepMetaItem);
@@ -111,6 +134,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Tasks
                     {
                         IpAddressExternalHelper.DeleteVirtualMachineExternalIPAddresses(itemId, extIps.ToArray(), false);
                         IpAddressPrivateHelper.DeleteVirtualMachinePrivateIPAddresses(itemId, ipLanAddressesID.ToArray(), false);
+                        IpAddressPrivateHelper.DeleteVirtualMachineDmzIPAddresses(itemId, ipDmzAddressesID.ToArray(), false);
                     }
                     TaskManager.Write(String.Format("The old VPS was deleted."));
                     System.Threading.Thread.Sleep(1000); //give a little time to delete, just for sure.       
@@ -121,7 +145,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Tasks
                     //result = CreateNewVirtualMachineInternal(VMSettings, osTemplateFile, adminPassword, null,
                     //    externalAddressesNumber, false, extIps.ToArray(), privateAddressesNumber, false, privIps, false);
                     TaskManager.Write(String.Format("Begin to create a new VPS"));
-                    CreateVirtualMachineTask.CreateVirtualMachineContinueTask(taskId, VMSettings, OsTemplate, externalAddressesNumber, false, extIps.ToArray(), privateAddressesNumber, false, privIps, null);
+                    CreateVirtualMachineTask.CreateVirtualMachineContinueTask(taskId, VMSettings, OsTemplate, externalAddressesNumber, false, extIps.ToArray(), privateAddressesNumber, false, privIps, dmzAddressesNumber, false, dmzIps, null);
                 }
             }
             //TaskManager.CompleteTask();

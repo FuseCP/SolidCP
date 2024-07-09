@@ -15,6 +15,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.PS
         after_renaming,
         external_network_configuration,
         private_network_configuration,
-        management_network_configuration
+        management_network_configuration,
+        dmz_network_configuration
     }
 }

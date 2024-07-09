@@ -867,6 +867,96 @@
 </asp:UpdatePanel>
 <br />
 
+<asp:UpdatePanel ID="DmzUpdatePanel" runat="server" ChildrenAsTriggers="true">
+    <ContentTemplate>
+    
+<fieldset>
+    <legend>
+        <asp:Localize ID="locDmzNetwork" runat="server" meta:resourcekey="locDmzNetwork" Text="DMZ Network"></asp:Localize>
+    </legend>
+    <table style="border-collapse: separate; border-spacing: 5px 3px; margin: 10px; width: 100%;">
+	    <tr>
+		    <td class="SubHead" style="width:200px;">
+		        <asp:Localize ID="locIPFormatDmz" runat="server" meta:resourcekey="locIPFormat" Text="IP addresses format:"></asp:Localize>
+		    </td>
+		    <td>
+                <asp:DropDownList ID="ddlDmzNetworkFormat" runat="server" 
+                    AutoPostBack="true" onselectedindexchanged="ddlDmzNetworkFormat_SelectedIndexChanged">
+                    <asp:ListItem Value="" meta:resourcekey="ddlPrivateNetworkFormatCustom">Custom</asp:ListItem>
+                    <asp:ListItem Value="192.168.0.1/16" meta:resourcekey="ddlPrivateNetworkFormat192" Selected="True">192.168.0.1</asp:ListItem>
+                    <asp:ListItem Value="172.16.0.1/12" meta:resourcekey="ddlPrivateNetworkFormat172">172.16.0.1</asp:ListItem>
+                    <asp:ListItem Value="10.0.0.1/8" meta:resourcekey="ddlPrivateNetworkFormat10">10.0.0.1</asp:ListItem>
+                </asp:DropDownList>
+            </td>
+	    </tr>
+	    <tr id="DmzCustomFormatRow" runat="server">
+		    <td class="SubHead">
+		        <asp:Localize ID="locDmzCustomFormat" runat="server" meta:resourcekey="locPrivCustomFormat" Text="Start IP Address:"></asp:Localize>
+		    </td>
+		    <td>
+		        <scp:EditIPAddressControl id="dmzIPAddress" runat="server" Required="true" />
+		        /
+		        <asp:TextBox ID="dmzSubnetMask" runat="server" MaxLength="3" Width="40px" CssClass="form-control"></asp:TextBox>
+		        <asp:RequiredFieldValidator ID="dmzSubnetMaskValidator" runat="server" ControlToValidate="dmzSubnetMask"
+                    Text="*" meta:resourcekey="privateSubnetMaskValidator" Display="Dynamic" SetFocusOnError="true" />
+            </td>
+	    </tr>
+	    <tr>
+		    <td class="SubHead">
+		        <asp:Localize ID="locDmzDefaultGateway" runat="server" meta:resourcekey="locDefaultGateway" Text="Default Gateway:"></asp:Localize>
+		    </td>
+		    <td>
+		        <scp:EditIPAddressControl id="dmzDefaultGateway" runat="server" />
+            </td>
+	    </tr>
+	    <tr>
+		    <td class="SubHead">
+		        <asp:Localize ID="locDmzPreferredNameServer" runat="server" meta:resourcekey="locPreferredNameServer" Text="Preferred Name Server:"></asp:Localize>
+		    </td>
+		    <td>
+		        <scp:EditIPAddressControl id="dmzPreferredNameServer" runat="server" />
+            </td>
+	    </tr>
+	    <tr>
+		    <td class="SubHead">
+		        <asp:Localize ID="locDmzAlternateNameServer" runat="server" meta:resourcekey="locAlternateNameServer" Text="Alternate Name Server:"></asp:Localize>
+		    </td>
+		    <td>
+		        <scp:EditIPAddressControl id="dmzAlternateNameServer" runat="server" />
+            </td>
+	    </tr>
+        <tr>
+            <td class="SubHead" style="width:200px; vertical-align: top;">
+		        <asp:Localize ID="locDmzSwitchType" runat="server" meta:resourcekey="locSwitchType" Text="Switch Type:"></asp:Localize>
+		    </td>
+	        <td colspan="2">
+		        <asp:RadioButtonList ID="radioSwitchTypeDmzNetwork" runat="server" AutoPostBack="true" 
+			        onselectedindexchanged="radioSwitchTypeDmzNetwork_SelectedIndexChanged">
+                    <asp:ListItem Value="private" meta:resourcekey="radioSwitchTypePrivatePrivate" Selected="True">New private switch for each Hosting Space</asp:ListItem>
+			        <asp:ListItem Value="external" meta:resourcekey="radioSwitchTypePrivateExternal">Use external switch (VLAN separation)</asp:ListItem>
+		        </asp:RadioButtonList>
+	        </td>
+        </tr>
+        <tr>
+		    <td class="SubHead" style="width:200px;">
+		        <asp:Localize ID="locDmzExternalNetworkName" runat="server" meta:resourcekey="locExternalNetworkName" Text="Connect to Network:"></asp:Localize>
+		    </td>
+		    <td>
+                <asp:DropDownList ID="ddlExternalNetworksDmz" runat="server" CssClass="form-control" Width="450" Enabled="false"
+                    DataValueField="SwitchId" DataTextField="Name"></asp:DropDownList>
+            </td>
+	    </tr>
+        <tr>
+	        <td colspan="3">
+	            <asp:CheckBox ID="chkDmzAssignVLANAutomatically" runat="server" meta:resourcekey="chkAssignVLANAutomatically" Text="Assign VLAN to the space on creation" Enabled="false" />
+	        </td>
+	    </tr>
+	</table>
+</fieldset>
+    </ContentTemplate>
+</asp:UpdatePanel>
+<br />
+
 <fieldset>
     <legend>
         <asp:Localize ID="locHostname" runat="server" meta:resourcekey="locHostname" Text="Host name"></asp:Localize>

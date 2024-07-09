@@ -126,7 +126,7 @@ namespace SolidCP.Portal.UserControls
         {
             if (e.Exception != null)
             {
-                messageBox.ShowErrorMessage("EXCHANGE_GET_MAILBOXES", e.Exception);
+                messageBox.ShowErrorMessage("PACKAGE_IP_ADDRESS", e.Exception);
                 e.ExceptionHandled = true;
             }
         }

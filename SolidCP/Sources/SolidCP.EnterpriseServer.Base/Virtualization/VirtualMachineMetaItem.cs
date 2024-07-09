@@ -46,5 +46,6 @@ namespace SolidCP.EnterpriseServer
         public string Username { get; set; }
         public string ExternalIP { get; set; }
         public string IPAddress { get; set; }
+        public string DmzIP { get; set; }
     }
 }

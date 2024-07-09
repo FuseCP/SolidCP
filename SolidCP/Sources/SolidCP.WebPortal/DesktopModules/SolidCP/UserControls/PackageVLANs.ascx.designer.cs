@@ -7,11 +7,13 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SolidCP.Portal.UserControls {
-    
-    
-    public partial class PackageVLANs {
-        
+namespace SolidCP.Portal.UserControls
+{
+
+
+    public partial class PackageVLANs
+    {
+
         /// <summary>
         /// messageBox control.
         /// </summary>
@@ -20,7 +22,7 @@ namespace SolidCP.Portal.UserControls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.UserControls.SimpleMessageBox messageBox;
-        
+
         /// <summary>
         /// btnAllocateVLAN control.
         /// </summary>
@@ -29,7 +31,7 @@ namespace SolidCP.Portal.UserControls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::CPCC.StyleButton btnAllocateVLAN;
-        
+
         /// <summary>
         /// ddlPageSize control.
         /// </summary>
@@ -38,7 +40,7 @@ namespace SolidCP.Portal.UserControls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlPageSize;
-        
+
         /// <summary>
         /// gvVLANs control.
         /// </summary>
@@ -47,7 +49,16 @@ namespace SolidCP.Portal.UserControls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView gvVLANs;
-        
+
+        /// <summary>
+        /// cbIsDmz control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox cbIsDmz;
+
         /// <summary>
         /// odsVLANsPaged control.
         /// </summary>
@@ -56,7 +67,7 @@ namespace SolidCP.Portal.UserControls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ObjectDataSource odsVLANsPaged;
-        
+
         /// <summary>
         /// btnDeallocateVLANs control.
         /// </summary>

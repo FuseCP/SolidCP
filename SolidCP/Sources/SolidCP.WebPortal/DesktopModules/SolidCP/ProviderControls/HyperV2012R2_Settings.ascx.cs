@@ -144,6 +144,20 @@ namespace SolidCP.Portal.ProviderControls
             chkAssignVLANAutomatically.Checked = Utils.ParseBool(settings["AutoAssignVLAN"], true);
             chkAssignVLANAutomatically.Enabled = ddlExternalNetworksPrivate.Enabled;
 
+            // DMZ network
+            ddlDmzNetworkFormat.SelectedValue = settings["DmzNetworkFormat"];
+            dmzIPAddress.Text = settings["DmzIPAddress"];
+            dmzSubnetMask.Text = settings["DmzSubnetMask"];
+            dmzDefaultGateway.Text = settings["DmzDefaultGateway"];
+            dmzPreferredNameServer.Text = settings["DmzPreferredNameServer"];
+            dmzAlternateNameServer.Text = settings["DmzAlternateNameServer"];
+            radioSwitchTypeDmzNetwork.SelectedValue = string.IsNullOrEmpty(settings["DmzSwitchType"])
+                ? "private" : settings["DmzSwitchType"];
+            ddlExternalNetworksDmz.SelectedValue = settings["DmzNetworkId"];
+            ddlExternalNetworksDmz.Enabled = "external".Equals(radioSwitchTypeDmzNetwork.SelectedValue);
+            chkDmzAssignVLANAutomatically.Checked = Utils.ParseBool(settings["DmzAutoAssignVLAN"], true);
+            chkDmzAssignVLANAutomatically.Enabled = ddlExternalNetworksDmz.Enabled;
+
             // Management network
             ddlManagementNetworks.SelectedValue = settings["ManagementNetworkId"];
             ddlManageNicConfig.SelectedValue = settings["ManagementNicConfig"];
@@ -270,6 +284,25 @@ namespace SolidCP.Portal.ProviderControls
                 settings["AutoAssignVLAN"] = "false";
             }
 
+            // DMZ network
+            settings["DmzNetworkFormat"] = ddlDmzNetworkFormat.SelectedValue;
+            settings["DmzIPAddress"] = ddlDmzNetworkFormat.SelectedIndex == 0 ? dmzIPAddress.Text : "";
+            settings["DmzSubnetMask"] = ddlDmzNetworkFormat.SelectedIndex == 0 ? dmzSubnetMask.Text : "";
+            settings["DmzDefaultGateway"] = dmzDefaultGateway.Text;
+            settings["DmzPreferredNameServer"] = dmzPreferredNameServer.Text;
+            settings["DmzAlternateNameServer"] = dmzAlternateNameServer.Text;
+            settings["DmzSwitchType"] = radioSwitchTypeDmzNetwork.SelectedValue;
+            if ("external".Equals(radioSwitchTypeDmzNetwork.SelectedValue))
+            {
+                settings["DmzNetworkId"] = ddlExternalNetworksDmz.SelectedValue;
+                settings["DmzAutoAssignVLAN"] = chkDmzAssignVLANAutomatically.Checked.ToString();
+            }
+            else
+            {
+                settings["DmzNetworkId"] = "";
+                settings["DmzAutoAssignVLAN"] = "false";
+            }
+
             // Management network
             settings["ManagementNetworkId"] = ddlManagementNetworks.SelectedValue;
             settings["ManagementNicConfig"] = ddlManageNicConfig.SelectedValue;
@@ -325,8 +358,12 @@ namespace SolidCP.Portal.ProviderControls
                 ddlExternalNetworks.DataSource = switches;
                 ddlExternalNetworks.DataBind();
 
-                ddlExternalNetworksPrivate.DataSource = GetExternalSwitches();
+                List<VirtualSwitch> extSwitches = GetExternalSwitches();
+                ddlExternalNetworksPrivate.DataSource = extSwitches;
                 ddlExternalNetworksPrivate.DataBind();
+
+                ddlExternalNetworksDmz.DataSource = extSwitches;
+                ddlExternalNetworksDmz.DataBind();
 
                 ddlManagementNetworks.DataSource = switches;
                 ddlManagementNetworks.DataBind();
@@ -428,6 +465,9 @@ namespace SolidCP.Portal.ProviderControls
             // private network
             PrivCustomFormatRow.Visible = (ddlPrivateNetworkFormat.SelectedIndex == 0);
 
+            // dmz network
+            DmzCustomFormatRow.Visible = (ddlDmzNetworkFormat.SelectedIndex == 0);
+
             // management network
             ManageNicConfigRow.Visible = (ddlManagementNetworks.SelectedIndex > 0);
             ManageAlternateNameServerRow.Visible = ManageNicConfigRow.Visible && (ddlManageNicConfig.SelectedIndex == 0);
@@ -484,6 +524,13 @@ namespace SolidCP.Portal.ProviderControls
             if (ddlExternalNetworksPrivate.Enabled) BindNetworksList();
         }
 
+        protected void radioSwitchTypeDmzNetwork_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ddlExternalNetworksDmz.Enabled = "external".Equals(radioSwitchTypeDmzNetwork.SelectedValue);
+            chkDmzAssignVLANAutomatically.Enabled = ddlExternalNetworksDmz.Enabled;
+            if (ddlExternalNetworksDmz.Enabled) BindNetworksList();
+        }
+
         protected void btnConnect_Click(object sender, EventArgs e)
         {
             BindNetworksList();
@@ -496,6 +543,11 @@ namespace SolidCP.Portal.ProviderControls
         }
 
         protected void ddlPrivateNetworkFormat_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ToggleControls();
+        }
+
+        protected void ddlDmzNetworkFormat_SelectedIndexChanged(object sender, EventArgs e)
         {
             ToggleControls();
         }

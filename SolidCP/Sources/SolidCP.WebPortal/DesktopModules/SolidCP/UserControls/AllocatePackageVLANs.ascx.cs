@@ -54,6 +54,13 @@ namespace SolidCP.Portal.UserControls
             set { resourceGroup = value; }
         }
 
+        private bool isDmz;
+        public bool IsDmz
+        {
+            get { return isDmz; }
+            set { isDmz = value; }
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -73,7 +80,15 @@ namespace SolidCP.Portal.UserControls
             }
 
             int quotaAllowed = -1;
-            string quotaName = Quotas.VPS2012_PRIVATE_VLANS_NUMBER;
+            string quotaName;
+            if (isDmz)
+            {
+                quotaName = Quotas.VPS2012_DMZ_VLANS_NUMBER;
+            }
+            else
+            {
+                quotaName = Quotas.VPS2012_PRIVATE_VLANS_NUMBER;
+            }
 
             PackageContext cntx = PackagesHelper.GetCachedPackageContext(PanelSecurity.PackageId);
             if (cntx.Quotas.ContainsKey(quotaName))
@@ -113,12 +128,19 @@ namespace SolidCP.Portal.UserControls
                 }
 
                 ResultObject res = ES.Services.Servers.AllocatePackageVLANs(PanelSecurity.PackageId, ResourceGroup, 
-                    radioVLANRandom.Checked, Utils.ParseInt(txtVLANsNumber.Text), ids.ToArray());
+                    radioVLANRandom.Checked, Utils.ParseInt(txtVLANsNumber.Text), ids.ToArray(), isDmz);
 
                 if (res.IsSuccess)
                 {
                     // return back
-                    Response.Redirect(HostModule.EditUrl("SpaceID", PanelSecurity.PackageId.ToString(), ListVLANsControl));
+                    if (isDmz)
+                    {
+                        Response.Redirect(EditUrl(PortalUtils.SPACE_ID_PARAM, PanelSecurity.PackageId.ToString(), "vdc_dmz_network"));
+                    }
+                    else
+                    {
+                        Response.Redirect(EditUrl(PortalUtils.SPACE_ID_PARAM, PanelSecurity.PackageId.ToString(), "vdc_private_network"));
+                    }
                 }
                 else
                 {
@@ -134,7 +156,14 @@ namespace SolidCP.Portal.UserControls
 
         protected void btnCancel_Click(object sender, EventArgs e)
         {
-            Response.Redirect(HostModule.EditUrl("SpaceID", PanelSecurity.PackageId.ToString(), ListVLANsControl));
+            if (isDmz)
+            {
+                Response.Redirect(EditUrl(PortalUtils.SPACE_ID_PARAM, PanelSecurity.PackageId.ToString(), "vdc_dmz_network"));
+            }
+            else
+            {
+                Response.Redirect(EditUrl(PortalUtils.SPACE_ID_PARAM, PanelSecurity.PackageId.ToString(), "vdc_private_network"));
+            }
         }
 
         protected void radioVLANSelected_CheckedChanged(object sender, EventArgs e)
