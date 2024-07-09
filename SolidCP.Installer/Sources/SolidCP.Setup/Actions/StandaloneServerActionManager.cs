@@ -514,7 +514,7 @@ namespace SolidCP.Setup.Actions
 					if (SqlUtils.CheckSqlConnection(connectionString))
 					{
 						// check SQL server version
-						string sqlVersion = SqlUtils.GetSqlServerVersion(connectionString);
+						string sqlVersion = SqlUtils.GetMsSqlServerVersion(connectionString);
 						if (sqlVersion.StartsWith("9."))
 						{
 							serviceInfo.ProviderId = 16;

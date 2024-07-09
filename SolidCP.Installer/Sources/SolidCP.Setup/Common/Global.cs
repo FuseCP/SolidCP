@@ -76,6 +76,8 @@ namespace SolidCP.Setup
 			public const string Component = "Component";
 			public const string FullFilePath = "FullFilePath";
 			public const string DatabaseServer = "DatabaseServer";
+			public const string DatabasePort = "DatabasePort";
+			public const string DatabaseType = "DatabaseType";
 			public const string DbServerAdmin = "DbServerAdmin";
 			public const string DbServerAdminPassword = "DbServerAdminPassword";
 			public const string DatabaseName = "DatabaseName";

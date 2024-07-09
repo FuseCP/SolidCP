@@ -56,51 +56,52 @@ namespace SolidCP.Setup
 			string component = SetupVariables.ComponentFullName;
 			this.Description = string.Format("Enter the connection information for the {0} database.", component);
 			this.lblIntro.Text = "The connection information will be used by the Setup Wizard to install the database objects only. Click Next to continue.";
-			this.txtDatabase.Text = SetupVariables.Database;
-			this.txtSqlServer.Text = SetupVariables.DatabaseServer;
+			this.txtMsSqlDatabase.Text = SetupVariables.Database;
+			this.txtMsSqlServer.Text = SetupVariables.DatabaseServer;
 			this.AllowMoveBack = true;
 			this.AllowMoveNext = true;
 			this.AllowCancel = true;
-			cbAuthentication.SelectedIndex = 0;
+			cbMsSqlAuthentication.SelectedIndex = 0;
 			ParseConnectionString();
 		}
 
 		private void ParseConnectionString()
 		{
 			bool windowsAuthentication = false;
-			if ( !string.IsNullOrEmpty(SetupVariables.DbInstallConnectionString ))
+			if (!string.IsNullOrEmpty(SetupVariables.DbInstallConnectionString))
 			{
-				string[] pairs = SetupVariables.DbInstallConnectionString.Split(';');
-				foreach (string pair in pairs)
+				var csb = new System.Data.Common.DbConnectionStringBuilder();
+				csb.ConnectionString = SetupVariables.DbInstallConnectionString;
+				var dbType = (csb["dbtype"] as string)?.ToLower();
+
+				switch (dbType)
 				{
-					string[] keyValue = pair.Split('=');
-					if (keyValue.Length == 2)
-					{
-						string key = keyValue[0].Trim().ToLower();
-						string value = keyValue[1];
-						switch (key)
-						{
-							case "server":
-								this.txtSqlServer.Text = value;
-								break;
-							case "database":
-								this.txtDatabase.Text = value;
-								break;
-							case "integrated security":
-								if (value.Trim().ToLower() == "sspi")
-									windowsAuthentication = true;
-								break;
-							case "user":
-							case "user id":
-								txtLogin.Text = value;
-								break;
-							case "password":
-								txtPassword.Text = value;
-								break;
-						}
-					}
+					case "mssql":
+						txtMsSqlServer.Text = (string)(csb["server"] ?? "");
+						windowsAuthentication = (csb["integrated security"] as string)?.Trim().ToLower() == "sspi";
+						cbMsSqlAuthentication.SelectedIndex = windowsAuthentication ? 0 : 1;
+						txtMsSqlLogin.Text = (string)(csb["user"] ?? csb["user id"] ?? csb["uid"] ?? "");
+						txtMsSqlPassword.Text = (string)(csb["password"] ?? "");
+						txtMsSqlDatabase.Text = (string)(csb["database"] ?? "");
+						tabControl.SelectedIndex = 0;
+						break;
+					case "mysql":
+					case "mariadb":
+						txtMySqlServer.Text = (string)(csb["server"] ?? csb["host"] ?? csb["data source"] ??
+							csb["datasource"] ?? csb["address"] ?? csb["addr"] ?? csb["network address"] ?? "");
+						txtMySqlPort.Text = (string)(csb["port"] ?? "");
+						txtMySqlUser.Text = (string)(csb["uid"] ?? csb["user"] ?? csb["user id"] ?? csb["userid"] ??
+							csb["username"] ?? csb["user name"] ?? "");
+						txtMySqlPassword.Text = (string)(csb["pwd"] ?? csb["password"] ?? "");
+						txtMySqlDatabase.Text = (string)(csb["database"] ?? csb["inital catalog"] ?? "");
+						tabControl.SelectedIndex = 1;
+						break;
+					case "sqlite":
+					case "sqlitefx":
+						txtSqliteDatabase.Text = (string)(csb["data source"] ?? "");
+						tabControl.SelectedIndex = 2;
+						break;
 				}
-				cbAuthentication.SelectedIndex = windowsAuthentication ? 0 : 1;
 			}
 		}
 
@@ -121,36 +122,60 @@ namespace SolidCP.Setup
 					e.Cancel = true;
 					return;
 				}
-				string connectionString = CreateConnectionString();
+				string dbtype;
+				string server;
+				switch (tabControl.SelectedIndex)
+				{
+					case 0:
+						dbtype = "MsSql";
+						server = txtMsSqlServer.Text.Trim();
+						break;
+					case 1:
+						dbtype = "MySql";
+						server = txtMySqlServer.Text.Trim();
+						break;
+					case 2:
+						dbtype = "Sqlite";
+						server = "(local)";
+						break;
+					default:
+						dbtype = null;
+						server = "none";
+						break;
+				}
+				string connectionString = CreateConnectionString(dbtype);
 				string component = SetupVariables.ComponentFullName;
 
 				if (CheckConnection(connectionString))
 				{
-					// check SQL server version
-					string sqlVersion = GetSqlServerVersion(connectionString);
-                    if (!sqlVersion.StartsWith("9.") && !sqlVersion.StartsWith("10.") && !sqlVersion.StartsWith("11.") && !sqlVersion.StartsWith("12.") && !sqlVersion.StartsWith("13.") && !sqlVersion.StartsWith("14.") && !sqlVersion.StartsWith("15.") && !sqlVersion.StartsWith("16."))
+					if (dbtype == "MsSql")
 					{
-						// SQL Server 2005 engine required
-						e.Cancel = true;
-						ShowWarning("This program can be installed on SQL Server 2005/2008/2012/2014/2016/2017/2016/2017/2019/2022 only.");
-						return;
-					}
-					int securityMode = GetSqlServerSecurityMode(connectionString);
-					if (securityMode != 0)
-					{
-						// mixed mode required
-						e.Cancel = true;
-						ShowWarning("Please switch SQL Server authentication to mixed SQL Server and Windows Authentication mode.");
-						return;
+						// check SQL server version
+						string sqlVersion = GetMsSqlServerVersion(connectionString);
+						if (!sqlVersion.StartsWith("9.") && !sqlVersion.StartsWith("10.") && !sqlVersion.StartsWith("11.") && !sqlVersion.StartsWith("12.") && !sqlVersion.StartsWith("13.") && !sqlVersion.StartsWith("14.") && !sqlVersion.StartsWith("15.") && !sqlVersion.StartsWith("16."))
+						{
+							// SQL Server 2005 engine required
+							e.Cancel = true;
+							ShowWarning("This program can be installed on SQL Server 2005/2008/2012/2014/2016/2017/2016/2017/2019/2022 only.");
+							return;
+						}
+						int securityMode = GetMsSqlServerSecurityMode(connectionString);
+						if (securityMode != 0)
+						{
+							// mixed mode required
+							e.Cancel = true;
+							ShowWarning("Please switch SQL Server authentication to mixed SQL Server and Windows Authentication mode.");
+							return;
+						}
 					}
 				}
 				else
 				{
 					e.Cancel = true;
-					ShowWarning("SQL Server does not exist or access denied");
+					ShowWarning("Database Server does not exist or access denied");
 					return;
 				}
-				string database = this.txtDatabase.Text;
+				string database = this.txtMsSqlDatabase.Text;
 				if (SqlUtils.DatabaseExists(connectionString, database))
 				{
 					e.Cancel = true;
@@ -158,8 +183,7 @@ namespace SolidCP.Setup
 					return;
 				}
 
-				string server = this.txtSqlServer.Text;
-				Log.WriteInfo(string.Format("Sql server \"{0}\" selected for {1}", server, component));
+				Log.WriteInfo(string.Format("Server \"{0}\" selected for {1}", server, component));
 				SetupVariables.Database = database;
 				SetupVariables.DatabaseServer = server;
 				SetupVariables.DbInstallConnectionString = connectionString;
@@ -184,9 +208,9 @@ namespace SolidCP.Setup
 
 		private void UpdateFields()
 		{
-			bool winAuthentication = (cbAuthentication.SelectedIndex == 0);
-			txtLogin.Enabled = !winAuthentication;
-			txtPassword.Enabled = !winAuthentication;
+			bool winAuthentication = (cbMsSqlAuthentication.SelectedIndex == 0);
+			txtMsSqlLogin.Enabled = !winAuthentication;
+			txtMsSqlPassword.Enabled = !winAuthentication;
 			lblLogin.Enabled = !winAuthentication;
 			lblPassword.Enabled = !winAuthentication;
 			Update();
@@ -194,55 +218,99 @@ namespace SolidCP.Setup
 
 		private bool CheckFields()
 		{
-			if (txtSqlServer.Text.Trim().Length == 0)
+			switch (tabControl.SelectedIndex)
 			{
-				ShowWarning("Please enter valid SQL Server name.");
-				return false;
-			}
-			if (cbAuthentication.SelectedIndex == 1)
-			{
-				if (txtLogin.Text.Trim().Length == 0)
-				{
-					ShowWarning("Please enter valid Login name.");
-					return false;
-				}
-			}
-			string database = txtDatabase.Text;
-			if (database.Trim().Length == 0 || !SqlUtils.IsValidDatabaseName(database))
-			{
-				ShowWarning("Please enter valid database name.");
-				return false;
-			}
-			
-			return true;
-		}
+				case 0: // MS SQL
+					if (txtMsSqlServer.Text.Trim().Length == 0)
+					{
+						ShowWarning("Please enter valid SQL Server name.");
+						return false;
+					}
+					if (cbMsSqlAuthentication.SelectedIndex == 1)
+					{
+						if (txtMsSqlLogin.Text.Trim().Length == 0)
+						{
+							ShowWarning("Please enter valid Login name.");
+							return false;
+						}
+					}
+					string database = txtMsSqlDatabase.Text;
+					if (database.Trim().Length == 0 || !SqlUtils.IsValidDatabaseName(database))
+					{
+						ShowWarning("Please enter valid database name.");
+						return false;
+					}
 
+					return true;
+				case 1: // MySQL
+					if (txtMySqlServer.Text.Trim().Length == 0)
+					{
+						ShowWarning("Please enter valid server name.");
+						return false;
+					}
+					database = txtMySqlDatabase.Text;
+					if (database.Trim().Length == 0 || !SqlUtils.IsValidDatabaseName(database))
+					{
+						ShowWarning("Please enter valid database name.");
+						return false;
+					}
+					int port;
+					if (!int.TryParse(txtMySqlPort.Text.Trim(), out port))
+					{
+						ShowWarning("Please enter valid server port.");
+						return false;
+					}
+					return true;
+				case 2: // SQlite
+					database = txtMySqlDatabase.Text;
+					if (database.Trim().Length == 0 ||
+						!(Path.IsPathRooted(database) ||
+						database.Contains(Path.DirectorySeparatorChar.ToString()) ||
+						SqlUtils.IsValidDatabaseName(database)))
+					{
+						ShowWarning("Please enter valid database name.");
+						return false;
+					}
+					return true;
+				default: return false;
+
+			}
+		}
 		private bool CheckConnection(string connectionString)
 		{
 			return SqlUtils.CheckSqlConnection(connectionString);
 		}
 
-		private string GetSqlServerVersion(string connectionString)
+		private string GetMsSqlServerVersion(string connectionString)
 		{
-			return SqlUtils.GetSqlServerVersion(connectionString);
+			return SqlUtils.GetMsSqlServerVersion(connectionString);
 		}
 
-		private int GetSqlServerSecurityMode(string connectionString)
+		private int GetMsSqlServerSecurityMode(string connectionString)
 		{
-			return SqlUtils.GetSqlServerSecurityMode(connectionString);
+			return SqlUtils.GetMsSqlServerSecurityMode(connectionString);
 		}
 
-		private string CreateConnectionString()
+		private string CreateConnectionString(string dbtype)
 		{
-			if (cbAuthentication.SelectedIndex == 0)
+			switch (dbtype)
 			{
-				return SqlUtils.BuildDbServerMasterConnectionString(txtSqlServer.Text, null, null);
-			}
-			else
-			{
-				return SqlUtils.BuildDbServerMasterConnectionString(txtSqlServer.Text, txtLogin.Text, txtPassword.Text);
+				case "MsSql":
+					if (cbMsSqlAuthentication.SelectedIndex == 0)
+					{
+						return SqlUtils.BuildMsSqlServerMasterConnectionString(txtMsSqlServer.Text.Trim(), null, null);
+					}
+					else
+					{
+						return SqlUtils.BuildMsSqlServerMasterConnectionString(txtMsSqlServer.Text.Trim(), txtMsSqlLogin.Text.Trim(), txtMsSqlPassword.Text.Trim());
+					}
+				case "MySql":
+					return SqlUtils.BuildMySqlServerConnectionString(txtMySqlServer.Text.Trim(),
+					txtMySqlPort.Text.Trim(), txtMySqlUser.Text.Trim(), txtMySqlPassword.Text.Trim(),
+					txtMySqlDatabase.Text.Trim());
+				case "Sqlite": return SqlUtils.BuildSqliteConnectionString(txtSqliteDatabase.Text.Trim());
+				default: return "";
 			}
 		}
-
 	}
 }

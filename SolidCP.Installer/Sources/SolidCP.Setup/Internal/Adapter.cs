@@ -86,10 +86,10 @@ namespace SolidCP.Setup.Internal
 				var ConnStr = setupVariables.InstallConnectionString;
 				if (CheckConnectionInfo(ConnStr, out MsgStr))
 				{
-					string V = SqlUtils.GetSqlServerVersion(ConnStr);
+					string V = SqlUtils.GetMsSqlServerVersion(ConnStr);
 					var Valid = new string[] { "9.", "10.", "11.", "12.", "13.", "14.", "15.", "16." }.Any(x => V.StartsWith(x));
 					if (Valid)
-						if (SqlUtils.GetSqlServerSecurityMode(ConnStr) == 0)
+						if (SqlUtils.GetMsSqlServerSecurityMode(ConnStr) == 0)
 						{
 							MsgBuilder.AppendLine("Good connection.");
 							Result = CheckStatuses.Success;
@@ -240,13 +240,31 @@ namespace SolidCP.Setup.Internal
 			Dst.NewDatabaseUser = true;
 			Dst.ServerAdminPassword = Utils.GetStringSetupParameter(Hash, Global.Parameters.ServerAdminPassword);
 			Dst.UpdateServerAdminPassword = true;
+			Dst.DatabaseType = Utils.GetStringSetupParameter(Hash, Global.Parameters.DatabaseType);
+			Dst.DatabasePort = (int)(Utils.GetSetupParameter(Hash, Global.Parameters.DatabasePort) ?? 0);
 
-			// DB_LOGIN, DB_PASSWORD.
-			bool WinAuth = Utils.GetStringSetupParameter(Hash, "DbAuth").ToLowerInvariant().Equals("Windows Authentication".ToLowerInvariant());
-			Dst.DbInstallConnectionString = SqlUtils.BuildDbServerMasterConnectionString(
+			switch (Dst.DatabaseType.ToLowerInvariant())
+			{
+				case "mssql":
+					// DB_LOGIN, DB_PASSWORD.
+					bool WinAuth = Utils.GetStringSetupParameter(Hash, "DbAuth").ToLowerInvariant().Equals("Windows Authentication".ToLowerInvariant());
+					Dst.DbInstallConnectionString = SqlUtils.BuildMsSqlServerMasterConnectionString(
 												Dst.DatabaseServer,
 												WinAuth ? null : Utils.GetStringSetupParameter(Hash, Global.Parameters.DbServerAdmin),
 												WinAuth ? null : Utils.GetStringSetupParameter(Hash, Global.Parameters.DbServerAdminPassword));
+					break;
+				case "mysql":
+					Dst.DbInstallConnectionString = SqlUtils.BuildMySqlServerMasterConnectionString(
+												Dst.DatabaseServer,
+												Dst.DatabasePort.ToString(),
+												Utils.GetStringSetupParameter(Hash, Global.Parameters.DbServerAdmin),
+												Utils.GetStringSetupParameter(Hash, Global.Parameters.DbServerAdminPassword));
+					break;
+				case "sqlite":
+					Dst.DbInstallConnectionString = SqlUtils.BuildSqliteConnectionString(Dst.DatabaseServer);
+					break;
+				default: throw new NotSupportedException("This database type is not supported.");
+			}
 
 			Dst.BaseDirectory = Utils.GetStringSetupParameter(Hash, Global.Parameters.BaseDirectory);
 			Dst.ComponentId = Utils.GetStringSetupParameter(Hash, Global.Parameters.ComponentId);
@@ -1659,7 +1677,7 @@ namespace SolidCP.Setup.Internal
 					if (SqlUtils.CheckSqlConnection(connectionString))
 					{
 						// check SQL server version
-						string sqlVersion = SqlUtils.GetSqlServerVersion(connectionString);
+						string sqlVersion = SqlUtils.GetMsSqlServerVersion(connectionString);
 						if (sqlVersion.StartsWith("9."))
 						{
 							serviceInfo.ProviderId = 16;

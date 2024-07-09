@@ -178,7 +178,7 @@ namespace SolidCP.Setup.Actions
 
 	public class CreateDatabaseAction : Action, IInstallAction, IUninstallAction
 	{
-		public const string LogStartInstallMessage = "Creating SQL Server database...";
+		public const string LogStartInstallMessage = "Creating database...";
 		public const string LogStartUninstallMessage = "Deleting database";
 
 		void IInstallAction.Run(SetupVariables vars)
@@ -191,17 +191,17 @@ namespace SolidCP.Setup.Actions
 				var database = vars.Database;
 
 				Log.WriteStart(LogStartInstallMessage);
-				Log.WriteInfo(String.Format("SQL Server Database Name: \"{0}\"", database));
+				Log.WriteInfo(String.Format("Database Name: \"{0}\"", database));
 				//
 				if (SqlUtils.DatabaseExists(connectionString, database))
 				{
-					throw new Exception(String.Format("SQL Server database \"{0}\" already exists", database));
+					throw new Exception(String.Format("Database \"{0}\" already exists", database));
 				}
 				SqlUtils.CreateDatabase(connectionString, database);
 				//
-				Log.WriteEnd("Created SQL Server database");
+				Log.WriteEnd("Created database");
 				//
-				InstallLog.AppendLine(String.Format("- Created a new SQL Server database \"{0}\"", database));
+				InstallLog.AppendLine(String.Format("- Created a new database \"{0}\"", database));
 			}
 			catch (Exception ex)
 			{
@@ -293,7 +293,8 @@ namespace SolidCP.Setup.Actions
 
 	public class ExecuteInstallSqlAction : Action, IInstallAction
 	{
-		public const string SqlFilePath = @"Setup\install_db.sql";
+		public string dbType = "";
+		public string SqlFilePath => $@"Setup\install.{dbType}.sql";
 		public const string ExecuteProgressMessage = "Creating database objects...";
 
 		void IInstallAction.Run(SetupVariables vars)
@@ -302,6 +303,7 @@ namespace SolidCP.Setup.Actions
 			{
 				var component = vars.ComponentFullName;
 				var componentId = vars.ComponentId;
+				dbType = vars.DatabaseType.ToLower();
 
 				var path = Path.Combine(vars.InstallationFolder, SqlFilePath);
 
@@ -338,7 +340,9 @@ namespace SolidCP.Setup.Actions
 
 	public class UpdateServeradminPasswAction : Action, IInstallAction
 	{
-		public const string SqlStatement = @"USE [{0}]; UPDATE [dbo].[Users] SET [Password] = '{1}' WHERE [UserID] = 1;";
+		public const string MsSqlStatement = @"USE [{0}]; UPDATE [dbo].[Users] SET [Password] = '{1}' WHERE [UserID] = 1;";
+		public const string SqliteStatement = @"UPDATE Users SET Password = '{1}' WHERE UserID = 1;";
+		public const string MySqlStatement = @"USE {0}; UPDATE public.Users SET Password = '{1}' WHERE UserID = 1;";
 
 		void IInstallAction.Run(SetupVariables vars)
 		{
@@ -362,7 +366,15 @@ namespace SolidCP.Setup.Actions
 					password = Utils.Encrypt(vars.CryptoKey, password);
 				}
 				//
-				SqlUtils.ExecuteQuery(vars.DbInstallConnectionString, String.Format(SqlStatement, vars.Database, password));
+				string cmd;
+				switch (vars.DatabaseType.ToLower())
+				{
+					case "mssql": cmd = string.Format(MsSqlStatement, vars.Database, password); break;
+					case "mysql": cmd = string.Format(MySqlStatement, vars.Database, password); break;
+					case "sqlite": cmd = string.Format(SqliteStatement, password); break;
+					default: throw new NotSupportedException("This database type is not supported.");
+				}
+				SqlUtils.ExecuteQuery(vars.DbInstallConnectionString, cmd);
 				//
 				Log.WriteEnd("Updated serveradmin password");
 				//

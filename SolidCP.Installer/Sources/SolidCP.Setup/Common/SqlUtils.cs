@@ -34,6 +34,18 @@ using System;
 using System.Text.RegularExpressions;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
+using System.Reflection;
+using MySql.Data;
+using MySql.Data.MySqlClient;
+using System.Data.SQLite;
+using System.Xml.Linq;
+using Mysqlx.Expr;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
+using System.Data.Entity;
+using Google.Protobuf.WellKnownTypes;
+using Mysqlx.Crud;
+using static Org.BouncyCastle.Asn1.Cmp.Challenge;
 
 namespace SolidCP.Setup
 {
@@ -49,20 +61,50 @@ namespace SolidCP.Setup
 		{
 		}
 
-		public static string BuildDbServerMasterConnectionString(string dbServer, string dbLogin, string dbPassw)
+		public static string BuildMsSqlServerMasterConnectionString(string dbServer, string dbLogin, string dbPassw)
 		{
-			return BuildDbServerConnectionString(dbServer, "master", dbLogin, dbPassw);
+			return BuildMsSqlServerConnectionString(dbServer, "master", dbLogin, dbPassw);
 		}
 
-		public static string BuildDbServerConnectionString(string dbServer, string dbName, string dbLogin, string dbPassw)
+		public static string BuildMySqlServerMasterConnectionString(string dbServer, string port, string dbLogin, string dbPassw)
+		{
+			return BuildMySqlServerConnectionString(dbServer, port, dbLogin, dbPassw, "sys");
+		}
+
+		public static string BuildMsSqlServerConnectionString(string dbServer, string dbName, string dbLogin, string dbPassw)
 		{
 			if (String.IsNullOrEmpty(dbLogin) && String.IsNullOrEmpty(dbPassw))
 			{
-				return String.Format("Server={0};Database={1};Integrated Security=SSPI;", dbServer, dbName);
+				return String.Format("DbType=MsSql;Server={0};Database={1};Integrated Security=SSPI;", dbServer, dbName);
 			}
 			else
 			{
-				return String.Format("Server={0};Database={1};User id={2};Password={3};", dbServer, dbName, dbLogin, dbPassw);
+				return String.Format("DbType=MsSql;Server={0};Database={1};User id={2};Password={3};", dbServer, dbName, dbLogin, dbPassw);
+			}
+		}
+
+		public static string BuildMySqlServerConnectionString(string server, string port, string user, string password, string database)
+		{
+			return $"DbType=MySql;Server={server};Port={port};User={user};Password={password};Database={database}";
+		}
+
+		public static string BuildSqliteConnectionString(string database, bool integrated = false)
+		{
+			if (Path.IsPathRooted(database) || database.Contains(Path.DirectorySeparatorChar.ToString()))
+				return $"Data Source={database}";
+			else return $"Data Source={(integrated ? "..\\EnterpriseServer\\" : "")}App_Data\\{database}.sqlite";
+		}
+
+		internal static bool CheckSqlConnection(string connectionString)
+		{
+			string dbtype;
+			ParseConnectionString(connectionString, out dbtype, out connectionString);
+			switch (dbtype.ToLower())
+			{
+				case "mssql": return CheckMsSqlConnection(connectionString);
+				case "mysql": return CheckMySqlConnection(connectionString);
+				case "sqlite": return CheckSqliteConnection(connectionString);
+				default: return false;
 			}
 		}
 
@@ -71,7 +113,7 @@ namespace SolidCP.Setup
 		/// </summary>
 		/// <param name="connectionString">Connection string.</param>
 		/// <returns>True if connecion is valid, otherwise false.</returns>
-		internal static bool CheckSqlConnection(string connectionString)
+		internal static bool CheckMsSqlConnection(string connectionString)
 		{
 			SqlConnection conn = new SqlConnection(connectionString);
 			try
@@ -87,12 +129,38 @@ namespace SolidCP.Setup
 			return true;
 		}
 
+		internal static bool CheckMySqlConnection(string connectionString)
+		{
+			MySql.Data.MySqlClient.MySqlConnection conn = new MySql.Data.MySqlClient.MySqlConnection(connectionString);
+			try
+			{
+				conn.Open();
+			}
+			catch
+			{
+				return false;
+			}
+
+			conn.Close();
+			return true;
+		}
+
+		internal static bool CheckSqliteConnection(string connectionString)
+		{
+			/*var csb = new System.Data.Common.DbConnectionStringBuilder();
+			csb.ConnectionString = connectionString;
+			var dbFile = (string)(csb["data source"] ?? "");
+			var assemblyPath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
+			if (!Path.IsPathRooted(dbFile)) dbFile = Path.GetFullPath(Path.Combine(assemblyPath, "..", dbFile));
+			var dir = new DirectoryInfo(Path.GetDirectoryName(dbFile)).Exists;*/
+			return true;
+		}
         /// <summary>
         /// Gets the version of SQL Server instance.
         /// </summary>
 		/// <param name="connectionString">Connection string.</param>
         /// <returns>True if connecion is valid, otherwise false.</returns>
-        internal static string GetSqlServerVersion(string connectionString)
+        internal static string GetMsSqlServerVersion(string connectionString)
         {
             SqlConnection conn = new SqlConnection(connectionString);
             try
@@ -121,7 +189,7 @@ namespace SolidCP.Setup
 		/// </summary>
 		/// <param name="connectionString">Connection string.</param>
 		/// <returns>1 - Windows Authentication mode, 0 - Mixed mode.</returns>
-		internal static int GetSqlServerSecurityMode(string connectionString)
+		internal static int GetMsSqlServerSecurityMode(string connectionString)
 		{
 			SqlConnection conn = new SqlConnection(connectionString);
 			int mode = 0;
@@ -202,6 +270,18 @@ namespace SolidCP.Setup
 
 		private static int ExecuteNonQuery(string connectionString, string commandText)
 		{
+			string dbType, nativeConnectionString;
+			ParseConnectionString(connectionString, out dbType, out nativeConnectionString);
+			switch (dbType.ToLower())
+			{
+				case "mssql": return ExecuteNonQueryMsSql(nativeConnectionString, commandText);
+				case "mysql": return ExecuteNonQueryMySql(nativeConnectionString, commandText);
+				case "sqlite": return ExecuteNonQuerySqlite(nativeConnectionString, commandText);
+				default: return 0;
+			}
+		}
+		private static int ExecuteNonQueryMsSql(string connectionString, string commandText)
+		{
 			SqlConnection conn = null;
 			try
 			{
@@ -220,7 +300,67 @@ namespace SolidCP.Setup
 			}
 		}
 
+		private static int ExecuteNonQueryMySql(string connectionString, string commandText)
+		{
+			MySqlConnection conn = null;
+			try
+			{
+				conn = new MySqlConnection(connectionString);
+				MySqlCommand cmd = new MySqlCommand(commandText, conn);
+				cmd.CommandTimeout = 300;
+				conn.Open();
+				int ret = cmd.ExecuteNonQuery();
+				return ret;
+			}
+			finally
+			{
+				// close connection if required
+				if (conn != null && conn.State == ConnectionState.Open)
+					conn.Close();
+			}
+		}
+
+		private static int ExecuteNonQuerySqlite(string connectionString, string commandText)
+		{
+			SQLiteConnection conn = null;
+			try
+			{
+				conn = new SQLiteConnection(connectionString);
+				SQLiteCommand cmd = new SQLiteCommand(commandText, conn);
+				cmd.CommandTimeout = 300;
+				conn.Open();
+				int ret = cmd.ExecuteNonQuery();
+				return ret;
+			}
+			finally
+			{
+				// close connection if required
+				if (conn != null && conn.State == ConnectionState.Open)
+					conn.Close();
+			}
+		}
+
+		internal static void ParseConnectionString(string connectionString, out string dbType, out string nativeConnectionString)
+		{
+			var csb = new System.Data.Common.DbConnectionStringBuilder();
+			csb.ConnectionString = connectionString;
+			dbType = ((string)(csb["dbtype"] ?? "")).ToLowerInvariant();
+			csb.Remove("dbtype");
+			nativeConnectionString = csb.ToString();
+		}
 		internal static DataSet ExecuteQuery(string connectionString, string commandText)
+		{
+			string dbType, nativeConnectionString;
+			ParseConnectionString(connectionString, out dbType, out nativeConnectionString);
+			switch (dbType.ToLower())
+			{
+				case "mssql": return ExecuteQueryMsSql(nativeConnectionString, commandText);
+				case "mysql": return ExecuteQueryMySql(nativeConnectionString, commandText);
+				case "sqlite": return ExecuteQuerySqlite(nativeConnectionString, commandText);
+				default: return null;
+			}
+		}
+		internal static DataSet ExecuteQueryMsSql(string connectionString, string commandText)
 		{
 			SqlConnection conn = null;
 			try
@@ -239,7 +379,45 @@ namespace SolidCP.Setup
 			}
 		}
 
-        public static DataSet ExecuteSql(string Conn, string Query)
+		internal static DataSet ExecuteQueryMySql(string connectionString, string commandText)
+		{
+			MySqlConnection conn = null;
+			try
+			{
+				conn = new MySqlConnection(connectionString);
+				MySqlDataAdapter adapter = new MySqlDataAdapter(commandText, conn);
+				DataSet ds = new DataSet();
+				adapter.Fill(ds);
+				return ds;
+			}
+			finally
+			{
+				// close connection if required
+				if (conn != null && conn.State == ConnectionState.Open)
+					conn.Close();
+			}
+		}
+
+		internal static DataSet ExecuteQuerySqlite(string connectionString, string commandText)
+		{
+			SQLiteConnection conn = null;
+			try
+			{
+				conn = new SQLiteConnection(connectionString);
+				SQLiteDataAdapter adapter = new SQLiteDataAdapter(commandText, conn);
+				DataSet ds = new DataSet();
+				adapter.Fill(ds);
+				return ds;
+			}
+			finally
+			{
+				// close connection if required
+				if (conn != null && conn.State == ConnectionState.Open)
+					conn.Close();
+			}
+		}
+
+		public static DataSet ExecuteSql(string Conn, string Query)
         {
             return ExecuteQuery(Conn, Query);
         }
@@ -252,13 +430,51 @@ namespace SolidCP.Setup
 		/// <returns>Returns True if the database exists.</returns>
 		public static bool DatabaseExists(string connectionString, string databaseName)
 		{
-			return (ExecuteQuery(connectionString,
-				String.Format("select name from master..sysdatabases where name = '{0}'", databaseName)).Tables[0].Rows.Count > 0);
+			string dbType, nativeConnectionString;
+			ParseConnectionString(connectionString, out dbType, out nativeConnectionString);
+			switch (dbType.ToLower())
+			{
+				case "mssql":
+					return (ExecuteQuery(connectionString,
+						String.Format("select name from master..sysdatabases where name = '{0}'", databaseName)).Tables[0].Rows.Count > 0);
+				case "mysql":
+					return (ExecuteQuery(connectionString,
+						$"SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{databaseName}'").Tables[0].Rows.Count > 0);
+				case "sqlite":
+					var csb = new System.Data.Common.DbConnectionStringBuilder();
+					csb.ConnectionString = connectionString;
+					var dbFile = (string)(csb["data source"] ?? "");
+					var assemblyPath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
+					if (!Path.IsPathRooted(dbFile)) dbFile = Path.GetFullPath(Path.Combine(assemblyPath, "..", dbFile));
+					return File.Exists(dbFile);
+				default: return false;
+			}
 		}
         public static bool IsEmptyDatabase(string ConnStr, string DbName)
         {
-            var Tmp = (int)ExecuteSql(ConnStr, string.Format("use [{0}]; select case when exists(select * from information_schema.tables) then 1 else 0 end;", DbName)).Tables[0].Rows[0][0];
-            return Tmp == 0;
+			string dbType;
+			int Tmp;
+			ParseConnectionString(ConnStr, out dbType, out ConnStr);
+			switch (dbType.ToLower())
+			{
+				case "mssql":
+					Tmp = (int)ExecuteSql(ConnStr, string.Format("use [{0}]; select case when exists(select * from information_schema.tables) then 1 else 0 end;", DbName)).Tables[0].Rows[0][0];
+					return Tmp == 0;
+				case "mysql":
+					Tmp = (int)ExecuteSql(ConnStr, $"SELECT COUNT(DISTINCT `TABLE_NAME`) AS anyAliasName FROM `INFORMATION_SCHEMA`. `COLUMNS` WHERE `table_schema` = '{DbName}';").Tables[0].Rows[0][0];
+					return Tmp == 0;
+				case "sqlite":
+					var csb = new System.Data.Common.DbConnectionStringBuilder();
+					csb.ConnectionString = ConnStr;
+					var dbFile = (string)(csb["data source"] ?? "");
+					var assemblyPath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
+					if (!Path.IsPathRooted(dbFile)) dbFile = Path.GetFullPath(Path.Combine(assemblyPath, "..", dbFile));
+					csb["data source"] = dbFile;
+					ConnStr = csb.ToString();
+					Tmp = (int)ExecuteSql(ConnStr, $"SELECT COUNT(name) FROM sqlite_master").Tables[0].Rows[0][0];
+					return Tmp == 0;
+				default: return false;
+			}
         }
 
 		/// <summary>
@@ -268,13 +484,37 @@ namespace SolidCP.Setup
 		/// <param name="databaseName">Database name.</param>
 		internal static void CreateDatabase(string connectionString, string databaseName)
 		{
-				// create database in the default location
-			string commandText = string.Format("CREATE DATABASE [{0}] COLLATE Latin1_General_CI_AS;", databaseName);
-			// create database
-			ExecuteNonQuery(connectionString, commandText);
-			// grant users access
-			//UpdateDatabaseUsers(database.Name, database.Users);
+			string dbType, ConnStr, commandText;
+			ParseConnectionString(connectionString, out dbType, out ConnStr);
+			switch (dbType.ToLower())
+			{
+				case "mssql":
+					// create database in the default location
+					commandText = string.Format("CREATE DATABASE [{0}] COLLATE Latin1_General_CI_AS;", databaseName);
+					// create database
+					ExecuteNonQuery(ConnStr, commandText);
+					// grant users access
+					//UpdateDatabaseUsers(database.Name, database.Users);
+					break;
+				case "mysql":
+					// create database in the default location
+					commandText = $"CREATE DATABASE {databaseName};";
+					// create database
+					ExecuteNonQuery(ConnStr, commandText);
+					break;
+				case "sqlite":
+					var csb = new System.Data.Common.DbConnectionStringBuilder();
+					csb.ConnectionString = ConnStr;
+					var dbFile = (string)(csb["data source"] ?? "");
+					var assemblyPath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
+					if (!Path.IsPathRooted(dbFile)) dbFile = Path.GetFullPath(Path.Combine(assemblyPath, "..", dbFile));
+					CreateDatabaseSqlite(dbFile);
+					break;
+				default: break;
+			}
 		}
+
+		internal static void CreateDatabaseSqlite(string dbFile) => SQLiteConnection.CreateFile(dbFile);
 
 		/// <summary>
 		/// Creates database user.
@@ -285,47 +525,86 @@ namespace SolidCP.Setup
 		/// <param name="database">Default database.</param>
 		internal static bool CreateUser(string connectionString, string userName, string password, string database)
 		{
-            bool userCreated = false;
-			if (!UserExists(connectionString, userName))
+			string dbType, ConnStr, server;
+			var csb = new System.Data.Common.DbConnectionStringBuilder();
+			csb.ConnectionString = connectionString;
+			server = csb["server"] as string;
+			ParseConnectionString(connectionString, out dbType, out ConnStr);
+			bool userCreated = false;
+			switch (dbType.ToLower())
 			{
-				ExecuteNonQuery(connectionString,
-					String.Format("CREATE LOGIN {0} WITH PASSWORD='{1}', DEFAULT_DATABASE={2}, CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF",
-					userName, password, database));
-                userCreated = true;
-			}
-			AddUserToDatabase(connectionString, database, userName);
-            return userCreated;
+				case "mssql":
+					if (!UserExists(connectionString, userName))
+					{
+						ExecuteNonQuery(connectionString,
+							String.Format("CREATE LOGIN {0} WITH PASSWORD='{1}', DEFAULT_DATABASE={2}, CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF",
+							userName, password, database));
+						userCreated = true;
+					}
+					AddUserToDatabase(connectionString, database, userName);
+					return userCreated;
+				case "mysql":
+					if (!UserExists(connectionString, userName))
+					{
+						// create user
+						var host = server == "localhost" ? server : Environment.MachineName;
+						ExecuteNonQuery(ConnStr, $"CREATE USER '{userName}'@'{host}' IDENTIFIED BY '{password}';");
+						userCreated = true;
+					}
+					AddUserToDatabase(connectionString, database, userName);
+					return userCreated;
+				case "sqlite": return true;
+				default: return false;
+			}			
 		}
 
 		private static void AddUserToDatabase(string connectionString, string databaseName, string user)
 		{
-			if (user == "sa")
-				return;
-
-			// grant database access
-			try
+			string dbType, ConnStr, server;
+			var csb = new System.Data.Common.DbConnectionStringBuilder();
+			csb.ConnectionString = connectionString;
+			server = csb["server"] as string;
+			ParseConnectionString(connectionString, out dbType, out ConnStr);
+			switch (dbType.ToLower())
 			{
-				ExecuteNonQuery(connectionString, 
-					string.Format("USE {0};EXEC sp_grantdbaccess '{1}';", databaseName, user));
-			}
-			catch (SqlException ex)
-			{
-				if (ex.Number == 15023)
-				{
-					// the user already exists in the database
-					// so, try to auto fix his login in the database
-					ExecuteNonQuery(connectionString,
-						string.Format("USE {0};EXEC sp_change_users_login 'Auto_Fix', '{1}';", databaseName, user));
-				}
-				else
-				{
-					throw new Exception("Can't add user to database", ex);
-				}
-			}
+				case "mssql":
+					if (user == "sa")
+						return;
 
-			// add database owner
-			ExecuteNonQuery(connectionString,
-				string.Format("USE {0};EXEC sp_addrolemember 'db_owner', '{1}';", databaseName, user));
+					// grant database access
+					try
+					{
+						ExecuteNonQuery(ConnStr,
+							string.Format("USE {0};EXEC sp_grantdbaccess '{1}';", databaseName, user));
+					}
+					catch (SqlException ex)
+					{
+						if (ex.Number == 15023)
+						{
+							// the user already exists in the database
+							// so, try to auto fix his login in the database
+							ExecuteNonQuery(ConnStr,
+								string.Format("USE {0};EXEC sp_change_users_login 'Auto_Fix', '{1}';", databaseName, user));
+						}
+						else
+						{
+							throw new Exception("Can't add user to database", ex);
+						}
+					}
+
+					// add database owner
+					ExecuteNonQuery(ConnStr,
+						string.Format("USE {0};EXEC sp_addrolemember 'db_owner', '{1}';", databaseName, user));
+					break;
+				case "mysql":
+					var host = server == "localhost" ? server : Environment.MachineName;
+					ExecuteNonQuery(ConnStr, $"GRANT CREATE, ALTER, DROP, INSERT, UPDATE, DELETE, SELECT, REFERENCES, RELOAD on {databaseName}.* TO '{user}'@'{host}' WITH GRANT OPTION;");
+					ExecuteNonQuery(ConnStr, "FLUSH PRIVILEGES;");
+					break;
+				case "sqlite":
+					break;
+				default: break;
+			}
 		}
 
 		/// <summary>
@@ -336,8 +615,23 @@ namespace SolidCP.Setup
 		/// <returns>True if specified user exists, otherwise false.</returns>
 		internal static bool UserExists(string connectionString, string username)
 		{
-			return (ExecuteQuery(connectionString,
-				string.Format("select name from master..syslogins where name = '{0}'", username)).Tables[0].Rows.Count > 0);
+			string dbType, ConnStr, server;
+			var csb = new System.Data.Common.DbConnectionStringBuilder();
+			csb.ConnectionString = connectionString;
+			server = csb["server"] as string;
+			ParseConnectionString(connectionString, out dbType, out ConnStr);
+			switch (dbType.ToLower())
+			{
+				case "mssql":
+					return (ExecuteQuery(connectionString,
+						string.Format("select name from master..syslogins where name = '{0}'", username)).Tables[0].Rows.Count > 0);
+				case "mysql":
+					var host = server == "localhost" ? server : Environment.MachineName;
+					var Tmp = (int)ExecuteQuery(ConnStr, $"SELECT EXISTS(SELECT 1 FROM mysql.user WHERE user = '{username}' AND host = '{host}')").Tables[0].Rows[0][0];
+					return Tmp == 1;
+				case "sqlite": return true;
+				default: return false;
+			}
 		}
 
 		/// <summary>
@@ -348,8 +642,18 @@ namespace SolidCP.Setup
 		/// <returns>True if specified login exists, otherwise false.</returns>
 		internal static bool LoginExists(string connectionString, string loginName)
 		{
-			return (ExecuteQuery(connectionString,
-				string.Format("SELECT * FROM sys.server_principals WHERE name = N'{0}'", loginName)).Tables[0].Rows.Count > 0);
+			string dbType, ConnStr, server;
+			var csb = new System.Data.Common.DbConnectionStringBuilder();
+			csb.ConnectionString = connectionString;
+			server = csb["server"] as string;
+			ParseConnectionString(connectionString, out dbType, out ConnStr);
+			switch (dbType.ToLower())
+			{
+				case "mssql":
+					return (ExecuteQuery(connectionString,
+						string.Format("SELECT * FROM sys.server_principals WHERE name = N'{0}'", loginName)).Tables[0].Rows.Count > 0);
+				default: return UserExists(connectionString, loginName);
+			}
 		}
 
 		/// <summary>
@@ -359,9 +663,20 @@ namespace SolidCP.Setup
 		/// <param name="loginName">Login name</param>
 		internal static void DeleteLogin(string connectionString, string loginName)
 		{
-			// drop login
-			if (LoginExists(connectionString, loginName))
-				ExecuteNonQuery(connectionString, String.Format("DROP LOGIN [{0}]", loginName));
+			string dbType, ConnStr, server;
+			var csb = new System.Data.Common.DbConnectionStringBuilder();
+			csb.ConnectionString = connectionString;
+			server = csb["server"] as string;
+			ParseConnectionString(connectionString, out dbType, out ConnStr);
+			switch (dbType.ToLower())
+			{
+				case "mssql":
+					// drop login
+					if (LoginExists(connectionString, loginName))
+						ExecuteNonQuery(connectionString, String.Format("DROP LOGIN [{0}]", loginName));
+					break;
+				default: DeleteUser(connectionString, loginName); break;
+			}
 		}
 
         /// <summary>
@@ -371,16 +686,31 @@ namespace SolidCP.Setup
 		/// <param name="username">Username</param>
         internal static void DeleteUser(string connectionString, string username)
         {
-            // remove user from databases
-            string[] userDatabases = GetUserDatabases(connectionString, username);
-            foreach (string database in userDatabases)
-                RemoveUserFromDatabase(connectionString, database, username);
+			string dbType, ConnStr, server;
+			var csb = new System.Data.Common.DbConnectionStringBuilder();
+			csb.ConnectionString = connectionString;
+			server = csb["server"] as string;
+			ParseConnectionString(connectionString, out dbType, out ConnStr);
+			switch (dbType.ToLower())
+			{
+				case "mssql":
+					// remove user from databases
+					string[] userDatabases = GetUserDatabases(connectionString, username);
+					foreach (string database in userDatabases)
+						RemoveUserFromDatabase(ConnStr, database, username);
 
-            // close all user connection
-            CloseUserConnections(connectionString, username);
+					// close all user connection
+					CloseUserConnections(ConnStr, username);
 
-            // drop login
-            ExecuteNonQuery(connectionString, String.Format("EXEC sp_droplogin '{0}'", username));
+					// drop login
+					ExecuteNonQuery(connectionString, String.Format("EXEC sp_droplogin '{0}'", username));
+					break;
+				case "mysql":
+					var host = server == "localhost" ? server : Environment.MachineName;
+					ExecuteNonQuery(connectionString, $"DROP USER '{username}'@'{host}';");
+					break;
+				default: break;
+			}
         }
 
 		/// <summary>
@@ -390,55 +720,97 @@ namespace SolidCP.Setup
 		/// <param name="databaseName">Database name</param>
 		internal static void DeleteDatabase(string connectionString, string databaseName)
 		{
-			// remove all users from database
-			string[] users = GetDatabaseUsers(connectionString, databaseName);
-			foreach (string user in users)
+				string dbType, ConnStr, server;
+				var csb = new System.Data.Common.DbConnectionStringBuilder();
+				csb.ConnectionString = connectionString;
+				server = csb["server"] as string;
+				ParseConnectionString(connectionString, out dbType, out ConnStr);
+			switch (dbType.ToLower())
 			{
-				RemoveUserFromDatabase(connectionString, databaseName, user);
+				case "mssql":
+					// remove all users from database
+					string[] users = GetDatabaseUsers(connectionString, databaseName);
+					foreach (string user in users)
+					{
+						RemoveUserFromDatabase(connectionString, databaseName, user);
+					}
+
+					// close all connection
+					CloseDatabaseConnections(connectionString, databaseName);
+
+					// drop database
+					ExecuteNonQuery(connectionString,
+						String.Format("DROP DATABASE {0}", databaseName));
+					break;
+				case "mysql":
+					// drop database
+					ExecuteNonQuery(connectionString,
+						String.Format("DROP DATABASE {0}", databaseName));
+					break;
+				case "sqlite":
+					SQLiteConnection.ClearAllPools();
+					var dbFile = (string)(csb["data source"] ?? "");
+					var assemblyPath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
+					if (!Path.IsPathRooted(dbFile)) dbFile = Path.GetFullPath(Path.Combine(assemblyPath, "..", dbFile));
+					File.Delete(dbFile);
+					break;
+				default: break;
 			}
-
-			// close all connection
-			CloseDatabaseConnections(connectionString, databaseName);
-
-			// drop database
-			ExecuteNonQuery(connectionString,
-				String.Format("DROP DATABASE {0}", databaseName));
 		}
 
 		private static string[] GetDatabaseUsers(string connectionString, string databaseName)
 		{
-			string cmdText = String.Format(@"
+			string dbType, ConnStr;
+			ParseConnectionString(connectionString, out dbType, out ConnStr);
+
+			if (dbType == "mssql")
+			{
+				string cmdText = String.Format(@"
 				select su.name FROM {0}..sysusers as su
 				inner JOIN master..syslogins as sl on su.sid = sl.sid
 				where su.hasdbaccess = 1 AND su.islogin = 1 AND su.issqluser = 1 AND su.name <> 'dbo'",
-				databaseName);
-			DataView dvUsers = ExecuteQuery(connectionString, cmdText).Tables[0].DefaultView;
+					databaseName);
+				DataView dvUsers = ExecuteQuery(connectionString, cmdText).Tables[0].DefaultView;
 
-			string[] users = new string[dvUsers.Count];
-			for (int i = 0; i < dvUsers.Count; i++)
-			{
-				users[i] = (string)dvUsers[i]["Name"];
+				string[] users = new string[dvUsers.Count];
+				for (int i = 0; i < dvUsers.Count; i++)
+				{
+					users[i] = (string)dvUsers[i]["Name"];
+				}
+				return users;
 			}
-			return users;
+			return new string[0];
 		}
 
 		private static string[] GetUserDatabaseObjects(string connectionString, string databaseName, string user)
 		{
-			DataView dvObjects = ExecuteQuery(connectionString,
-				String.Format("select so.name from {0}..sysobjects as so" +
-				" inner join {1}..sysusers as su on so.uid = su.uid" + 
-				" where su.name = '{2}'", databaseName, databaseName, user)).Tables[0].DefaultView;
-			string[] objects = new string[dvObjects.Count];
-			for (int i = 0; i < dvObjects.Count; i++)
+			string dbType, ConnStr;
+			ParseConnectionString(connectionString, out dbType, out ConnStr);
+
+			if (dbType == "mssql")
 			{
-				objects[i] = (string)dvObjects[i]["Name"];
+				DataView dvObjects = ExecuteQuery(connectionString,
+				String.Format("select so.name from {0}..sysobjects as so" +
+				" inner join {1}..sysusers as su on so.uid = su.uid" +
+				" where su.name = '{2}'", databaseName, databaseName, user)).Tables[0].DefaultView;
+				string[] objects = new string[dvObjects.Count];
+				for (int i = 0; i < dvObjects.Count; i++)
+				{
+					objects[i] = (string)dvObjects[i]["Name"];
+				}
+				return objects;
 			}
-			return objects;
+			return new string[0];
 		}
 
-        private static string[] GetUserDatabases(string connectionString, string username)
+		private static string[] GetUserDatabases(string connectionString, string username)
         {
-            string cmdText = String.Format(@"
+			string dbType, ConnStr;
+			ParseConnectionString(connectionString, out dbType, out ConnStr);
+
+			if (dbType == "mssql")
+			{
+				string cmdText = String.Format(@"
 					DECLARE @Username varchar(100)
 					SET @Username = '{0}'
 
@@ -478,91 +850,117 @@ namespace SolidCP.Setup
 
 					DROP TABLE #UserDatabases
 					", username);
-            DataView dvDatabases = ExecuteQuery(connectionString, cmdText).Tables[0].DefaultView;
+			    DataView dvDatabases = ExecuteQuery(connectionString, cmdText).Tables[0].DefaultView;
 
-            string[] databases = new string[dvDatabases.Count];
-            for (int i = 0; i < dvDatabases.Count; i++)
-                databases[i] = (string)dvDatabases[i]["Name"];
-            return databases;
-        }
+				string[] databases = new string[dvDatabases.Count];
+				for (int i = 0; i < dvDatabases.Count; i++)
+					databases[i] = (string)dvDatabases[i]["Name"];
+				return databases;
+			}
+			return new string[0];
+		}
 
 		private static void CloseDatabaseConnections(string connectionString, string databaseName)
 		{
-			DataView dv = ExecuteQuery(connectionString,
-				String.Format(@"SELECT spid FROM master..sysprocesses WHERE dbid = DB_ID('{0}') AND spid > 50 AND spid <> @@spid", databaseName)).Tables[0].DefaultView;
+			string dbType, ConnStr;
+			ParseConnectionString(connectionString, out dbType, out ConnStr);
 
-			// kill processes
-			for (int i = 0; i < dv.Count; i++)
+			if (dbType == "mssql")
 			{
-				KillProcess(connectionString, (short)(dv[i]["spid"]));
+				DataView dv = ExecuteQuery(connectionString,
+					String.Format(@"SELECT spid FROM master..sysprocesses WHERE dbid = DB_ID('{0}') AND spid > 50 AND spid <> @@spid", databaseName)).Tables[0].DefaultView;
+
+				// kill processes
+				for (int i = 0; i < dv.Count; i++)
+				{
+					KillProcess(connectionString, (short)(dv[i]["spid"]));
+				}
 			}
 		}
 
         private static void CloseUserConnections(string connectionString, string userName)
         {
-            DataView dv = ExecuteQuery(connectionString,
-                String.Format(@"SELECT spid FROM master..sysprocesses WHERE loginame = '{0}'", userName)).Tables[0].DefaultView;
+			string dbType, ConnStr;
+			ParseConnectionString(connectionString, out dbType, out ConnStr);
 
-            // kill processes
-			for (int i = 0; i < dv.Count; i++)
+			if (dbType == "mssql")
 			{
-				KillProcess(connectionString, (short)(dv[i]["spid"]));
+				DataView dv = ExecuteQuery(connectionString,
+					String.Format(@"SELECT spid FROM master..sysprocesses WHERE loginame = '{0}'", userName)).Tables[0].DefaultView;
+
+				// kill processes
+				for (int i = 0; i < dv.Count; i++)
+				{
+					KillProcess(connectionString, (short)(dv[i]["spid"]));
+				}
 			}
         }
 
 		private static void KillProcess(string connectionString, short spid)
 		{
-			try
+			string dbType, ConnStr;
+			ParseConnectionString(connectionString, out dbType, out ConnStr);
+
+			if (dbType == "mssql")
 			{
-				ExecuteNonQuery(connectionString,
-					String.Format("KILL {0}", spid));
-			}
-			catch (SqlException)
-			{
+				try
+				{
+					ExecuteNonQuery(connectionString,
+						String.Format("KILL {0}", spid));
+				}
+				catch (SqlException)
+				{
+				}
 			}
 		}
 
 		private static void RemoveUserFromDatabase(string connectionString, string databaseName, string user)
 		{
-			// change ownership of user's objects
-			string[] userObjects = GetUserDatabaseObjects(connectionString, databaseName, user);
-			foreach (string userObject in userObjects)
+			string dbType, ConnStr;
+			ParseConnectionString(connectionString, out dbType, out ConnStr);
+
+			if (dbType == "mssql")
 			{
-				try
+				// change ownership of user's objects
+				string[] userObjects = GetUserDatabaseObjects(connectionString, databaseName, user);
+				foreach (string userObject in userObjects)
 				{
-					ExecuteNonQuery(connectionString,
-						String.Format("USE {0};EXEC sp_changeobjectowner '{1}.{2}', 'dbo'",
-						databaseName, user, userObject));
-				}
-				catch (SqlException ex)
-				{
-					if (ex.Number == 15505)
+					try
 					{
-						// Cannot change owner of object 'user.ObjectName' or one of its child objects because
-						// the new owner 'dbo' already has an object with the same name.
-
-						// try to rename object before changing owner
-						string renamedObject = user + DateTime.Now.Ticks + "_" + userObject;
-						ExecuteNonQuery(connectionString,
-							String.Format("USE {0};EXEC sp_rename '{1}.{2}', '{3}'",
-							databaseName, user, userObject, renamedObject));
-
-						// change owner
 						ExecuteNonQuery(connectionString,
 							String.Format("USE {0};EXEC sp_changeobjectowner '{1}.{2}', 'dbo'",
-							databaseName, user, renamedObject));
+							databaseName, user, userObject));
 					}
-					else
+					catch (SqlException ex)
 					{
-						throw new Exception("Can't change database object owner", ex);
+						if (ex.Number == 15505)
+						{
+							// Cannot change owner of object 'user.ObjectName' or one of its child objects because
+							// the new owner 'dbo' already has an object with the same name.
+
+							// try to rename object before changing owner
+							string renamedObject = user + DateTime.Now.Ticks + "_" + userObject;
+							ExecuteNonQuery(connectionString,
+								String.Format("USE {0};EXEC sp_rename '{1}.{2}', '{3}'",
+								databaseName, user, userObject, renamedObject));
+
+							// change owner
+							ExecuteNonQuery(connectionString,
+								String.Format("USE {0};EXEC sp_changeobjectowner '{1}.{2}', 'dbo'",
+								databaseName, user, renamedObject));
+						}
+						else
+						{
+							throw new Exception("Can't change database object owner", ex);
+						}
 					}
 				}
-			}
 
-			// revoke db access
-			ExecuteNonQuery(connectionString,
-				String.Format("USE {0};EXEC sp_revokedbaccess '{1}';",
-				databaseName, user));
+				// revoke db access
+				ExecuteNonQuery(connectionString,
+					String.Format("USE {0};EXEC sp_revokedbaccess '{1}';",
+					databaseName, user));
+			}
 		}
 
 		internal static bool IsValidDatabaseName(string name)
@@ -575,55 +973,74 @@ namespace SolidCP.Setup
 
 		internal static string BackupDatabase(string connectionString, string databaseName)
 		{
-			string bakFile = databaseName + ".bak";
-			// backup database
-			ExecuteNonQuery(connectionString,
-				String.Format(@"BACKUP DATABASE [{0}] TO DISK = N'{1}'", // WITH INIT, NAME = '{2}'
-				databaseName, bakFile));
-			return bakFile;
+			string dbType, ConnStr;
+			ParseConnectionString(connectionString, out dbType, out ConnStr);
+			if (dbType == "mssql")
+			{
+				string bakFile = databaseName + ".bak";
+				// backup database
+				ExecuteNonQuery(connectionString,
+					String.Format(@"BACKUP DATABASE [{0}] TO DISK = N'{1}'", // WITH INIT, NAME = '{2}'
+					databaseName, bakFile));
+				return bakFile;
+			}
+			return null;
 		}
 
 		internal static void BackupDatabase(string connectionString, string databaseName, out string bakFile, out string position)
 		{
+			string dbType, ConnStr;
+			ParseConnectionString(connectionString, out dbType, out ConnStr);
 			bakFile = databaseName + ".bak";
 			position = "1";
-			string backupName = "Backup " + DateTime.Now.ToString("yyyyMMddHHmmss");
-			// backup database
-			ExecuteNonQuery(connectionString,
-				String.Format(@"BACKUP DATABASE [{0}] TO DISK = N'{1}' WITH NAME = '{2}'", // WITH INIT, NAME = '{2}'
-				databaseName, bakFile, backupName));
+			if (dbType == "mssql")
+			{
+				string backupName = "Backup " + DateTime.Now.ToString("yyyyMMddHHmmss");
+				// backup database
+				ExecuteNonQuery(connectionString,
+					String.Format(@"BACKUP DATABASE [{0}] TO DISK = N'{1}' WITH NAME = '{2}'", // WITH INIT, NAME = '{2}'
+					databaseName, bakFile, backupName));
 
-			//define last position in backup set
-			string query = string.Format("RESTORE HEADERONLY FROM DISK = N'{0}'", bakFile);
-			DataSet ds = ExecuteQuery(connectionString, query);
-			query = string.Format("BackupName = '{0}'", backupName);
-			DataRow[] rows = ds.Tables[0].Select(query, "Position DESC");
-			if (rows != null && rows.Length > 0)
-				position = rows[0]["Position"].ToString();
+				//define last position in backup set
+				string query = string.Format("RESTORE HEADERONLY FROM DISK = N'{0}'", bakFile);
+				DataSet ds = ExecuteQuery(connectionString, query);
+				query = string.Format("BackupName = '{0}'", backupName);
+				DataRow[] rows = ds.Tables[0].Select(query, "Position DESC");
+				if (rows != null && rows.Length > 0)
+					position = rows[0]["Position"].ToString();
+			}
 		}
 
 		internal static void RestoreDatabase(string connectionString, string databaseName, string bakFile)
 		{
-			// close current database connections
-			CloseDatabaseConnections(connectionString, databaseName);
+			string dbType, ConnStr;
+			ParseConnectionString(connectionString, out dbType, out ConnStr);
+			if (dbType == "mssql")
+			{
+				// close current database connections
+				CloseDatabaseConnections(connectionString, databaseName);
 
-			// restore database
-			ExecuteNonQuery(connectionString,
-				String.Format(@"RESTORE DATABASE [{0}] FROM DISK = '{1}' WITH REPLACE",
-					databaseName, bakFile));
-
+				// restore database
+				ExecuteNonQuery(connectionString,
+					String.Format(@"RESTORE DATABASE [{0}] FROM DISK = '{1}' WITH REPLACE",
+						databaseName, bakFile));
+			}
 		}
 
 		internal static void RestoreDatabase(string connectionString, string databaseName, string bakFile, string position)
 		{
-			// close current database connections
-			CloseDatabaseConnections(connectionString, databaseName);
+			string dbType, ConnStr;
+			ParseConnectionString(connectionString, out dbType, out ConnStr);
+			if (dbType == "mssql")
+			{
+				// close current database connections
+				CloseDatabaseConnections(connectionString, databaseName);
 
-			// restore database
-			ExecuteNonQuery(connectionString,
-				String.Format(@"RESTORE DATABASE [{0}] FROM DISK = '{1}' WITH FILE = {2}, REPLACE",
-					databaseName, bakFile, position));
-
+				// restore database
+				ExecuteNonQuery(connectionString,
+					String.Format(@"RESTORE DATABASE [{0}] FROM DISK = '{1}' WITH FILE = {2}, REPLACE",
+						databaseName, bakFile, position));
+			}
 		}
 	}
 }

@@ -100,12 +100,31 @@ namespace SolidCP.Setup
 					setupVariables.ServerAdminPassword = Utils.GetStringSetupParameter(args, Global.Parameters.ServerAdminPassword);
 					setupVariables.Database = Utils.GetStringSetupParameter(args, Global.Parameters.DatabaseName);
 					setupVariables.DatabaseServer = Utils.GetStringSetupParameter(args, Global.Parameters.DatabaseServer);
+					setupVariables.DatabasePort = (int)Utils.GetSetupParameter(args, Global.Parameters.DatabasePort);
+					setupVariables.DatabaseType = Utils.GetStringSetupParameter(args, Global.Parameters.DatabaseType);
 					//
-					setupVariables.DbInstallConnectionString = SqlUtils.BuildDbServerMasterConnectionString(
-						setupVariables.DatabaseServer,
-						Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdmin),
-						Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdminPassword)
-					);
+					switch (setupVariables.DatabaseType.ToLower())
+					{
+						case "mssql":
+							setupVariables.DbInstallConnectionString = SqlUtils.BuildMsSqlServerMasterConnectionString(
+								setupVariables.DatabaseServer,
+								Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdmin),
+								Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdminPassword)
+							);
+							break;
+						case "mysql":
+							setupVariables.DbInstallConnectionString = SqlUtils.BuildMySqlServerMasterConnectionString(
+								setupVariables.DatabaseServer,
+								setupVariables.DatabasePort.ToString(),
+								Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdmin),
+								Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdminPassword)
+							);
+							break;
+						case "sqlite":
+							setupVariables.DbInstallConnectionString = SqlUtils.BuildSqliteConnectionString(setupVariables.Database);
+							break;
+						default: break;
+					}
 					//
 					eam.ActionError += new EventHandler<ActionErrorEventArgs>((object sender, ActionErrorEventArgs e) =>
 					{
