@@ -15,6 +15,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 public partial class AdditionalGroupConfiguration: EntityTypeConfiguration<AdditionalGroup>
 {
     public override void Configure() {
-        HasKey(e => e.Id).HasName("PK__Addition__3214EC272F1861EB");
-    }
+		HasKey(e => e.Id).HasName("PK__Addition__3214EC27E665DDE2");
+	}
 }

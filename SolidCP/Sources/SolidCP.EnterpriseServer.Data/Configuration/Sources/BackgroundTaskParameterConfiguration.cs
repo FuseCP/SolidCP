@@ -18,10 +18,10 @@ using BackgroundTaskParameter = SolidCP.EnterpriseServer.Data.Entities.Backgroun
 public partial class BackgroundTaskParameterConfiguration: EntityTypeConfiguration<BackgroundTaskParameter>
 {
     public override void Configure() {
-        HasKey(e => e.ParameterId).HasName("PK__Backgrou__F80C629780845227");
+        HasKey(e => e.ParameterId).HasName("PK__Backgrou__F80C629777BF580B");
 
         HasOne(d => d.Task).WithMany(p => p.BackgroundTaskParameters)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Backgroun__TaskI__02B25B50");
+                .HasConstraintName("FK__Backgroun__TaskI__7AA72534");
     }
 }

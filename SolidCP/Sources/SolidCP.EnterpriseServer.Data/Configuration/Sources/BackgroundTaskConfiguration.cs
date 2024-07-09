@@ -18,6 +18,6 @@ using BackgroundTask = SolidCP.EnterpriseServer.Data.Entities.BackgroundTask;
 public partial class BackgroundTaskConfiguration: EntityTypeConfiguration<BackgroundTask>
 {
     public override void Configure() {
-        HasKey(e => e.Id).HasName("PK__Backgrou__3214EC274C126B2D");
+        HasKey(e => e.Id).HasName("PK__Backgrou__3214EC273A1145AC");
     }
 }

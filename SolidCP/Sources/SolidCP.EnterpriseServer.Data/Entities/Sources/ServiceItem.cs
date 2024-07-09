@@ -36,6 +36,9 @@ public partial class ServiceItem
     [Column(TypeName = "datetime")]
     public DateTime? CreatedDate { get; set; }
 
+    [InverseProperty("Item")]
+    public virtual ICollection<DmzIpaddress> DmzIpaddresses { get; set; } = new List<DmzIpaddress>();
+
     [InverseProperty("MailDomain")]
     public virtual ICollection<Domain> DomainMailDomains { get; set; } = new List<Domain>();
 

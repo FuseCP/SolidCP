@@ -6998,3 +6998,225 @@ BEGIN
 END $EF$;
 COMMIT;
 
+START TRANSACTION;
+
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240709093134_AddedDMZ') THEN
+    ALTER TABLE public."BackgroundTaskLogs" DROP CONSTRAINT "FK__Backgroun__TaskI__06ADD4BD";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240709093134_AddedDMZ') THEN
+    ALTER TABLE public."BackgroundTaskParameters" DROP CONSTRAINT "FK__Backgroun__TaskI__03D16812";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240709093134_AddedDMZ') THEN
+    ALTER TABLE public."BackgroundTaskStack" DROP CONSTRAINT "FK__Backgroun__TaskI__098A4168";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240709093134_AddedDMZ') THEN
+    ALTER TABLE public."WebDavAccessTokens" DROP CONSTRAINT "PK__WebDavAc__3214EC27B27DC571";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240709093134_AddedDMZ') THEN
+    ALTER TABLE public."DomainDnsRecords" DROP CONSTRAINT "PK__DomainDn__3214EC2758B0A6F1";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240709093134_AddedDMZ') THEN
+    ALTER TABLE public."BackgroundTaskStack" DROP CONSTRAINT "PK__Backgrou__5E44466F62E48BE6";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240709093134_AddedDMZ') THEN
+    ALTER TABLE public."BackgroundTasks" DROP CONSTRAINT "PK__Backgrou__3214EC271AFAB817";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240709093134_AddedDMZ') THEN
+    ALTER TABLE public."BackgroundTaskParameters" DROP CONSTRAINT "PK__Backgrou__F80C6297E2E5AF88";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240709093134_AddedDMZ') THEN
+    ALTER TABLE public."BackgroundTaskLogs" DROP CONSTRAINT "PK__Backgrou__5E5499A830A1D5BF";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240709093134_AddedDMZ') THEN
+    ALTER TABLE public."AdditionalGroups" DROP CONSTRAINT "PK__Addition__3214EC272F1861EB";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240709093134_AddedDMZ') THEN
+    ALTER TABLE public."AccessTokens" DROP CONSTRAINT "PK__AccessTo__3214EC27A32557FE";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240709093134_AddedDMZ') THEN
+    ALTER TABLE public."PackageVLANs" ADD "IsDmz" boolean NOT NULL DEFAULT FALSE;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240709093134_AddedDMZ') THEN
+    ALTER TABLE public."WebDavAccessTokens" ADD CONSTRAINT "PK__WebDavAc__3214EC2708781F08" PRIMARY KEY ("ID");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240709093134_AddedDMZ') THEN
+    ALTER TABLE public."DomainDnsRecords" ADD CONSTRAINT "PK__DomainDn__3214EC27A6FC0498" PRIMARY KEY ("ID");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240709093134_AddedDMZ') THEN
+    ALTER TABLE public."BackgroundTaskStack" ADD CONSTRAINT "PK__Backgrou__5E44466FB8A5F217" PRIMARY KEY ("TaskStackID");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240709093134_AddedDMZ') THEN
+    ALTER TABLE public."BackgroundTasks" ADD CONSTRAINT "PK__Backgrou__3214EC273A1145AC" PRIMARY KEY ("ID");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240709093134_AddedDMZ') THEN
+    ALTER TABLE public."BackgroundTaskParameters" ADD CONSTRAINT "PK__Backgrou__F80C629777BF580B" PRIMARY KEY ("ParameterID");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240709093134_AddedDMZ') THEN
+    ALTER TABLE public."BackgroundTaskLogs" ADD CONSTRAINT "PK__Backgrou__5E5499A86067A6E5" PRIMARY KEY ("LogID");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240709093134_AddedDMZ') THEN
+    ALTER TABLE public."AdditionalGroups" ADD CONSTRAINT "PK__Addition__3214EC27E665DDE2" PRIMARY KEY ("ID");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240709093134_AddedDMZ') THEN
+    ALTER TABLE public."AccessTokens" ADD CONSTRAINT "PK__AccessTo__3214EC27DEAEF66E" PRIMARY KEY ("ID");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240709093134_AddedDMZ') THEN
+    CREATE TABLE public."DmzIPAddresses" (
+        "DmzAddressID" integer GENERATED BY DEFAULT AS IDENTITY,
+        "ItemID" integer NOT NULL,
+        "IPAddress" character varying(15) NOT NULL,
+        "IsPrimary" boolean NOT NULL,
+        CONSTRAINT "PK_DmzIPAddresses" PRIMARY KEY ("DmzAddressID"),
+        CONSTRAINT "FK_DmzIPAddresses_ServiceItems" FOREIGN KEY ("ItemID") REFERENCES public."ServiceItems" ("ItemID") ON DELETE CASCADE
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240709093134_AddedDMZ') THEN
+    UPDATE public."Quotas" SET "ItemTypeID" = 71
+    WHERE "QuotaID" = 701;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240709093134_AddedDMZ') THEN
+    UPDATE public."Quotas" SET "ItemTypeID" = 72
+    WHERE "QuotaID" = 702;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240709093134_AddedDMZ') THEN
+    INSERT INTO public."Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+    VALUES (750, 33, NULL, NULL, NULL, 'DMZ Network', 'VPS2012.DMZNetworkEnabled', 22, 1, FALSE);
+    INSERT INTO public."Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+    VALUES (751, 33, NULL, NULL, NULL, 'Number of DMZ IP addresses per VPS', 'VPS2012.DMZIPAddressesNumber', 23, 3, FALSE);
+    INSERT INTO public."Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+    VALUES (752, 33, NULL, NULL, NULL, 'Number of DMZ Network VLANs', 'VPS2012.DMZVLANsNumber', 24, 2, FALSE);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240709093134_AddedDMZ') THEN
+    CREATE INDEX "DmzIPAddressesIdx_ItemID" ON public."DmzIPAddresses" ("ItemID");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240709093134_AddedDMZ') THEN
+    ALTER TABLE public."BackgroundTaskLogs" ADD CONSTRAINT "FK__Backgroun__TaskI__7D8391DF" FOREIGN KEY ("TaskID") REFERENCES public."BackgroundTasks" ("ID");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240709093134_AddedDMZ') THEN
+    ALTER TABLE public."BackgroundTaskParameters" ADD CONSTRAINT "FK__Backgroun__TaskI__7AA72534" FOREIGN KEY ("TaskID") REFERENCES public."BackgroundTasks" ("ID");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240709093134_AddedDMZ') THEN
+    ALTER TABLE public."BackgroundTaskStack" ADD CONSTRAINT "FK__Backgroun__TaskI__005FFE8A" FOREIGN KEY ("TaskID") REFERENCES public."BackgroundTasks" ("ID");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240709093134_AddedDMZ') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20240709093134_AddedDMZ', '8.0.6');
+    END IF;
+END $EF$;
+COMMIT;
+

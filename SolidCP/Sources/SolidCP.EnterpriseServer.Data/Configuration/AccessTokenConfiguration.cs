@@ -15,9 +15,9 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 public partial class AccessTokenConfiguration: EntityTypeConfiguration<AccessToken>
 {
 	public override void Configure() {
-        HasKey(e => e.Id).HasName("PK__AccessTo__3214EC27A32557FE");
+		HasKey(e => e.Id).HasName("PK__AccessTo__3214EC27DEAEF66E");
 
-        Property(e => e.SmsResponse).IsUnicode(false);
+		Property(e => e.SmsResponse).IsUnicode(false);
         if (IsMsSql) Property(e => e.ExpirationDate).HasColumnType("datetime");
 		else if (IsCore && IsSqliteFX) Property(e => e.AccessTokenGuid).HasColumnType("BLOB");
 

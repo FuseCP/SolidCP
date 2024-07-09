@@ -77,6 +77,8 @@ namespace SolidCP.EnterpriseServer.Context
 
         public virtual DbSet<Crmuser> Crmusers { get; set; }
 
+        public virtual DbSet<DmzIpaddress> DmzIpaddresses { get; set; }
+
         public virtual DbSet<Domain> Domains { get; set; }
 
         public virtual DbSet<DomainDnsRecord> DomainDnsRecords { get; set; }
@@ -305,6 +307,7 @@ namespace SolidCP.EnterpriseServer.Context
             ApplyConfiguration(model, new ClusterConfiguration());
             ApplyConfiguration(model, new CommentConfiguration());
             ApplyConfiguration(model, new CrmuserConfiguration());
+            ApplyConfiguration(model, new DmzIpaddressConfiguration());
             ApplyConfiguration(model, new DomainConfiguration());
             ApplyConfiguration(model, new DomainDnsRecordConfiguration());
             ApplyConfiguration(model, new EnterpriseFolderConfiguration());
@@ -409,277 +412,280 @@ namespace SolidCP.EnterpriseServer.Data {
 #if ScaffoldDbContextEntities
     public partial class DbContext {
         DbSet<AccessToken> accessTokens = null;
-        public virtual DbSet<AccessToken> AccessTokens => accessTokens ?? (accessTokens = Set<AccessToken>());
+        public virtual DbSet<AccessToken> AccessTokens => accessTokens ??= Set<AccessToken>();
 
         DbSet<AdditionalGroup> additionalGroups = null;
-        public virtual DbSet<AdditionalGroup> AdditionalGroups => additionalGroups ?? (additionalGroups = Set<AdditionalGroup>());
+        public virtual DbSet<AdditionalGroup> AdditionalGroups => additionalGroups ??= Set<AdditionalGroup>();
 
         DbSet<AuditLog> auditLogs = null;
-        public virtual DbSet<AuditLog> AuditLogs => auditLogs ?? (auditLogs = Set<AuditLog>());
+        public virtual DbSet<AuditLog> AuditLogs => auditLogs ??= Set<AuditLog>();
 
         DbSet<AuditLogSource> auditLogSources = null;
-        public virtual DbSet<AuditLogSource> AuditLogSources => auditLogSources ?? (auditLogSources = Set<AuditLogSource>());
+        public virtual DbSet<AuditLogSource> AuditLogSources => auditLogSources ??= Set<AuditLogSource>();
 
         DbSet<AuditLogTask> auditLogTasks = null;
-        public virtual DbSet<AuditLogTask> AuditLogTasks => auditLogTasks ?? (auditLogTasks = Set<AuditLogTask>());
+        public virtual DbSet<AuditLogTask> AuditLogTasks => auditLogTasks ??= Set<AuditLogTask>();
 
         DbSet<BackgroundTask> backgroundTasks = null;
-        public virtual DbSet<BackgroundTask> BackgroundTasks => backgroundTasks ?? (backgroundTasks = Set<BackgroundTask>());
+        public virtual DbSet<BackgroundTask> BackgroundTasks => backgroundTasks ??= Set<BackgroundTask>();
 
         DbSet<BackgroundTaskLog> backgroundTaskLogs = null;
-        public virtual DbSet<BackgroundTaskLog> BackgroundTaskLogs => backgroundTaskLogs ?? (backgroundTaskLogs = Set<BackgroundTaskLog>());
+        public virtual DbSet<BackgroundTaskLog> BackgroundTaskLogs => backgroundTaskLogs ??= Set<BackgroundTaskLog>();
 
         DbSet<BackgroundTaskParameter> backgroundTaskParameters = null;
-        public virtual DbSet<BackgroundTaskParameter> BackgroundTaskParameters => backgroundTaskParameters ?? (backgroundTaskParameters = Set<BackgroundTaskParameter>());
+        public virtual DbSet<BackgroundTaskParameter> BackgroundTaskParameters => backgroundTaskParameters ??= Set<BackgroundTaskParameter>();
 
         DbSet<BackgroundTaskStack> backgroundTaskStacks = null;
-        public virtual DbSet<BackgroundTaskStack> BackgroundTaskStacks => backgroundTaskStacks ?? (backgroundTaskStacks = Set<BackgroundTaskStack>());
+        public virtual DbSet<BackgroundTaskStack> BackgroundTaskStacks => backgroundTaskStacks ??= Set<BackgroundTaskStack>();
 
         DbSet<BlackBerryUser> blackBerryUsers = null;
-        public virtual DbSet<BlackBerryUser> BlackBerryUsers => blackBerryUsers ?? (blackBerryUsers = Set<BlackBerryUser>());
+        public virtual DbSet<BlackBerryUser> BlackBerryUsers => blackBerryUsers ??= Set<BlackBerryUser>();
 
         DbSet<Cluster> clusters = null;
-        public virtual DbSet<Cluster> Clusters => clusters ?? (clusters = Set<Cluster>());
+        public virtual DbSet<Cluster> Clusters => clusters ??= Set<Cluster>();
 
         DbSet<Comment> comments = null;
-        public virtual DbSet<Comment> Comments => comments ?? (comments = Set<Comment>());
+        public virtual DbSet<Comment> Comments => comments ??= Set<Comment>();
 
         DbSet<Crmuser> crmusers = null;
-        public virtual DbSet<Crmuser> Crmusers => crmusers ?? (crmusers = Set<Crmuser>());
+        public virtual DbSet<Crmuser> Crmusers => crmusers ??= Set<Crmuser>();
+
+        DbSet<DmzIpaddress> dmzIpaddresses = null;
+        public virtual DbSet<DmzIpaddress> DmzIpaddresses => dmzIpaddresses ??= Set<DmzIpaddress>();
 
         DbSet<Domain> domains = null;
-        public virtual DbSet<Domain> Domains => domains ?? (domains = Set<Domain>());
+        public virtual DbSet<Domain> Domains => domains ??= Set<Domain>();
 
         DbSet<DomainDnsRecord> domainDnsRecords = null;
-        public virtual DbSet<DomainDnsRecord> DomainDnsRecords => domainDnsRecords ?? (domainDnsRecords = Set<DomainDnsRecord>());
+        public virtual DbSet<DomainDnsRecord> DomainDnsRecords => domainDnsRecords ??= Set<DomainDnsRecord>();
 
         DbSet<EnterpriseFolder> enterpriseFolders = null;
-        public virtual DbSet<EnterpriseFolder> EnterpriseFolders => enterpriseFolders ?? (enterpriseFolders = Set<EnterpriseFolder>());
+        public virtual DbSet<EnterpriseFolder> EnterpriseFolders => enterpriseFolders ??= Set<EnterpriseFolder>();
 
         DbSet<EnterpriseFoldersOwaPermission> enterpriseFoldersOwaPermissions = null;
-        public virtual DbSet<EnterpriseFoldersOwaPermission> EnterpriseFoldersOwaPermissions => enterpriseFoldersOwaPermissions ?? (enterpriseFoldersOwaPermissions = Set<EnterpriseFoldersOwaPermission>());
+        public virtual DbSet<EnterpriseFoldersOwaPermission> EnterpriseFoldersOwaPermissions => enterpriseFoldersOwaPermissions ??= Set<EnterpriseFoldersOwaPermission>();
 
         DbSet<ExchangeAccount> exchangeAccounts = null;
-        public virtual DbSet<ExchangeAccount> ExchangeAccounts => exchangeAccounts ?? (exchangeAccounts = Set<ExchangeAccount>());
+        public virtual DbSet<ExchangeAccount> ExchangeAccounts => exchangeAccounts ??= Set<ExchangeAccount>();
 
         DbSet<ExchangeAccountEmailAddress> exchangeAccountEmailAddresses = null;
-        public virtual DbSet<ExchangeAccountEmailAddress> ExchangeAccountEmailAddresses => exchangeAccountEmailAddresses ?? (exchangeAccountEmailAddresses = Set<ExchangeAccountEmailAddress>());
+        public virtual DbSet<ExchangeAccountEmailAddress> ExchangeAccountEmailAddresses => exchangeAccountEmailAddresses ??= Set<ExchangeAccountEmailAddress>();
 
         DbSet<ExchangeDeletedAccount> exchangeDeletedAccounts = null;
-        public virtual DbSet<ExchangeDeletedAccount> ExchangeDeletedAccounts => exchangeDeletedAccounts ?? (exchangeDeletedAccounts = Set<ExchangeDeletedAccount>());
+        public virtual DbSet<ExchangeDeletedAccount> ExchangeDeletedAccounts => exchangeDeletedAccounts ??= Set<ExchangeDeletedAccount>();
 
         DbSet<ExchangeDisclaimer> exchangeDisclaimers = null;
-        public virtual DbSet<ExchangeDisclaimer> ExchangeDisclaimers => exchangeDisclaimers ?? (exchangeDisclaimers = Set<ExchangeDisclaimer>());
+        public virtual DbSet<ExchangeDisclaimer> ExchangeDisclaimers => exchangeDisclaimers ??= Set<ExchangeDisclaimer>();
 
         DbSet<ExchangeMailboxPlan> exchangeMailboxPlans = null;
-        public virtual DbSet<ExchangeMailboxPlan> ExchangeMailboxPlans => exchangeMailboxPlans ?? (exchangeMailboxPlans = Set<ExchangeMailboxPlan>());
+        public virtual DbSet<ExchangeMailboxPlan> ExchangeMailboxPlans => exchangeMailboxPlans ??= Set<ExchangeMailboxPlan>();
 
         DbSet<ExchangeMailboxPlanRetentionPolicyTag> exchangeMailboxPlanRetentionPolicyTags = null;
-        public virtual DbSet<ExchangeMailboxPlanRetentionPolicyTag> ExchangeMailboxPlanRetentionPolicyTags => exchangeMailboxPlanRetentionPolicyTags ?? (exchangeMailboxPlanRetentionPolicyTags = Set<ExchangeMailboxPlanRetentionPolicyTag>());
+        public virtual DbSet<ExchangeMailboxPlanRetentionPolicyTag> ExchangeMailboxPlanRetentionPolicyTags => exchangeMailboxPlanRetentionPolicyTags ??= Set<ExchangeMailboxPlanRetentionPolicyTag>();
 
         DbSet<ExchangeOrganization> exchangeOrganizations = null;
-        public virtual DbSet<ExchangeOrganization> ExchangeOrganizations => exchangeOrganizations ?? (exchangeOrganizations = Set<ExchangeOrganization>());
+        public virtual DbSet<ExchangeOrganization> ExchangeOrganizations => exchangeOrganizations ??= Set<ExchangeOrganization>();
 
         DbSet<ExchangeOrganizationDomain> exchangeOrganizationDomains = null;
-        public virtual DbSet<ExchangeOrganizationDomain> ExchangeOrganizationDomains => exchangeOrganizationDomains ?? (exchangeOrganizationDomains = Set<ExchangeOrganizationDomain>());
+        public virtual DbSet<ExchangeOrganizationDomain> ExchangeOrganizationDomains => exchangeOrganizationDomains ??= Set<ExchangeOrganizationDomain>();
 
         DbSet<ExchangeOrganizationSetting> exchangeOrganizationSettings = null;
-        public virtual DbSet<ExchangeOrganizationSetting> ExchangeOrganizationSettings => exchangeOrganizationSettings ?? (exchangeOrganizationSettings = Set<ExchangeOrganizationSetting>());
+        public virtual DbSet<ExchangeOrganizationSetting> ExchangeOrganizationSettings => exchangeOrganizationSettings ??= Set<ExchangeOrganizationSetting>();
 
         DbSet<ExchangeOrganizationSsFolder> exchangeOrganizationSsFolders = null;
-        public virtual DbSet<ExchangeOrganizationSsFolder> ExchangeOrganizationSsFolders => exchangeOrganizationSsFolders ?? (exchangeOrganizationSsFolders = Set<ExchangeOrganizationSsFolder>());
+        public virtual DbSet<ExchangeOrganizationSsFolder> ExchangeOrganizationSsFolders => exchangeOrganizationSsFolders ??= Set<ExchangeOrganizationSsFolder>();
 
         DbSet<ExchangeRetentionPolicyTag> exchangeRetentionPolicyTags = null;
-        public virtual DbSet<ExchangeRetentionPolicyTag> ExchangeRetentionPolicyTags => exchangeRetentionPolicyTags ?? (exchangeRetentionPolicyTags = Set<ExchangeRetentionPolicyTag>());
+        public virtual DbSet<ExchangeRetentionPolicyTag> ExchangeRetentionPolicyTags => exchangeRetentionPolicyTags ??= Set<ExchangeRetentionPolicyTag>();
 
         DbSet<GlobalDnsRecord> globalDnsRecords = null;
-        public virtual DbSet<GlobalDnsRecord> GlobalDnsRecords => globalDnsRecords ?? (globalDnsRecords = Set<GlobalDnsRecord>());
+        public virtual DbSet<GlobalDnsRecord> GlobalDnsRecords => globalDnsRecords ??= Set<GlobalDnsRecord>();
 
         DbSet<HostingPlan> hostingPlans = null;
-        public virtual DbSet<HostingPlan> HostingPlans => hostingPlans ?? (hostingPlans = Set<HostingPlan>());
+        public virtual DbSet<HostingPlan> HostingPlans => hostingPlans ??= Set<HostingPlan>();
 
         DbSet<HostingPlanQuota> hostingPlanQuotas = null;
-        public virtual DbSet<HostingPlanQuota> HostingPlanQuotas => hostingPlanQuotas ?? (hostingPlanQuotas = Set<HostingPlanQuota>());
+        public virtual DbSet<HostingPlanQuota> HostingPlanQuotas => hostingPlanQuotas ??= Set<HostingPlanQuota>();
 
         DbSet<HostingPlanResource> hostingPlanResources = null;
-        public virtual DbSet<HostingPlanResource> HostingPlanResources => hostingPlanResources ?? (hostingPlanResources = Set<HostingPlanResource>());
+        public virtual DbSet<HostingPlanResource> HostingPlanResources => hostingPlanResources ??= Set<HostingPlanResource>();
 
         DbSet<Ipaddress> ipaddresses = null;
-        public virtual DbSet<Ipaddress> Ipaddresses => ipaddresses ?? (ipaddresses = Set<Ipaddress>());
+        public virtual DbSet<Ipaddress> Ipaddresses => ipaddresses ??= Set<Ipaddress>();
 
         DbSet<LyncUser> lyncUsers = null;
-        public virtual DbSet<LyncUser> LyncUsers => lyncUsers ?? (lyncUsers = Set<LyncUser>());
+        public virtual DbSet<LyncUser> LyncUsers => lyncUsers ??= Set<LyncUser>();
 
         DbSet<LyncUserPlan> lyncUserPlans = null;
-        public virtual DbSet<LyncUserPlan> LyncUserPlans => lyncUserPlans ?? (lyncUserPlans = Set<LyncUserPlan>());
+        public virtual DbSet<LyncUserPlan> LyncUserPlans => lyncUserPlans ??= Set<LyncUserPlan>();
 
         DbSet<Ocsuser> ocsusers = null;
-        public virtual DbSet<Ocsuser> Ocsusers => ocsusers ?? (ocsusers = Set<Ocsuser>());
+        public virtual DbSet<Ocsuser> Ocsusers => ocsusers ??= Set<Ocsuser>();
 
         DbSet<Package> packages = null;
-        public virtual DbSet<Package> Packages => packages ?? (packages = Set<Package>());
+        public virtual DbSet<Package> Packages => packages ??= Set<Package>();
 
         DbSet<PackageAddon> packageAddons = null;
-        public virtual DbSet<PackageAddon> PackageAddons => packageAddons ?? (packageAddons = Set<PackageAddon>());
+        public virtual DbSet<PackageAddon> PackageAddons => packageAddons ??= Set<PackageAddon>();
 
         DbSet<PackageIpaddress> packageIpaddresses = null;
-        public virtual DbSet<PackageIpaddress> PackageIpaddresses => packageIpaddresses ?? (packageIpaddresses = Set<PackageIpaddress>());
+        public virtual DbSet<PackageIpaddress> PackageIpaddresses => packageIpaddresses ??= Set<PackageIpaddress>();
 
         DbSet<PackageQuota> packageQuotas = null;
-        public virtual DbSet<PackageQuota> PackageQuotas => packageQuotas ?? (packageQuotas = Set<PackageQuota>());
+        public virtual DbSet<PackageQuota> PackageQuotas => packageQuotas ??= Set<PackageQuota>();
 
         DbSet<PackageResource> packageResources = null;
-        public virtual DbSet<PackageResource> PackageResources => packageResources ?? (packageResources = Set<PackageResource>());
+        public virtual DbSet<PackageResource> PackageResources => packageResources ??= Set<PackageResource>();
 
         DbSet<PackageSetting> packageSettings = null;
-        public virtual DbSet<PackageSetting> PackageSettings => packageSettings ?? (packageSettings = Set<PackageSetting>());
+        public virtual DbSet<PackageSetting> PackageSettings => packageSettings ??= Set<PackageSetting>();
 
         DbSet<PackageVlan> packageVlans = null;
-        public virtual DbSet<PackageVlan> PackageVlans => packageVlans ?? (packageVlans = Set<PackageVlan>());
+        public virtual DbSet<PackageVlan> PackageVlans => packageVlans ??= Set<PackageVlan>();
 
         DbSet<PackagesBandwidth> packagesBandwidths = null;
-        public virtual DbSet<PackagesBandwidth> PackagesBandwidths => packagesBandwidths ?? (packagesBandwidths = Set<PackagesBandwidth>());
+        public virtual DbSet<PackagesBandwidth> PackagesBandwidths => packagesBandwidths ??= Set<PackagesBandwidth>();
 
         DbSet<PackagesDiskspace> packagesDiskspaces = null;
-        public virtual DbSet<PackagesDiskspace> PackagesDiskspaces => packagesDiskspaces ?? (packagesDiskspaces = Set<PackagesDiskspace>());
+        public virtual DbSet<PackagesDiskspace> PackagesDiskspaces => packagesDiskspaces ??= Set<PackagesDiskspace>();
 
         DbSet<PackagesTreeCache> packagesTreeCaches = null;
-        public virtual DbSet<PackagesTreeCache> PackagesTreeCaches => packagesTreeCaches ?? (packagesTreeCaches = Set<PackagesTreeCache>());
+        public virtual DbSet<PackagesTreeCache> PackagesTreeCaches => packagesTreeCaches ??= Set<PackagesTreeCache>();
 
         DbSet<PrivateIpaddress> privateIpaddresses = null;
-        public virtual DbSet<PrivateIpaddress> PrivateIpaddresses => privateIpaddresses ?? (privateIpaddresses = Set<PrivateIpaddress>());
+        public virtual DbSet<PrivateIpaddress> PrivateIpaddresses => privateIpaddresses ??= Set<PrivateIpaddress>();
 
         DbSet<PrivateNetworkVlan> privateNetworkVlans = null;
-        public virtual DbSet<PrivateNetworkVlan> PrivateNetworkVlans => privateNetworkVlans ?? (privateNetworkVlans = Set<PrivateNetworkVlan>());
+        public virtual DbSet<PrivateNetworkVlan> PrivateNetworkVlans => privateNetworkVlans ??= Set<PrivateNetworkVlan>();
 
         DbSet<Provider> providers = null;
-        public virtual DbSet<Provider> Providers => providers ?? (providers = Set<Provider>());
+        public virtual DbSet<Provider> Providers => providers ??= Set<Provider>();
 
         DbSet<Quota> quotas = null;
-        public virtual DbSet<Quota> Quotas => quotas ?? (quotas = Set<Quota>());
+        public virtual DbSet<Quota> Quotas => quotas ??= Set<Quota>();
 
         DbSet<Rdscertificate> rdscertificates = null;
-        public virtual DbSet<Rdscertificate> Rdscertificates => rdscertificates ?? (rdscertificates = Set<Rdscertificate>());
+        public virtual DbSet<Rdscertificate> Rdscertificates => rdscertificates ??= Set<Rdscertificate>();
 
         DbSet<Rdscollection> rdscollections = null;
-        public virtual DbSet<Rdscollection> Rdscollections => rdscollections ?? (rdscollections = Set<Rdscollection>());
+        public virtual DbSet<Rdscollection> Rdscollections => rdscollections ??= Set<Rdscollection>();
 
         DbSet<RdscollectionSetting> rdscollectionSettings = null;
-        public virtual DbSet<RdscollectionSetting> RdscollectionSettings => rdscollectionSettings ?? (rdscollectionSettings = Set<RdscollectionSetting>());
+        public virtual DbSet<RdscollectionSetting> RdscollectionSettings => rdscollectionSettings ??= Set<RdscollectionSetting>();
 
         DbSet<RdscollectionUser> rdscollectionUsers = null;
-        public virtual DbSet<RdscollectionUser> RdscollectionUsers => rdscollectionUsers ?? (rdscollectionUsers = Set<RdscollectionUser>());
+        public virtual DbSet<RdscollectionUser> RdscollectionUsers => rdscollectionUsers ??= Set<RdscollectionUser>();
 
         DbSet<Rdsmessage> rdsmessages = null;
-        public virtual DbSet<Rdsmessage> Rdsmessages => rdsmessages ?? (rdsmessages = Set<Rdsmessage>());
+        public virtual DbSet<Rdsmessage> Rdsmessages => rdsmessages ??= Set<Rdsmessage>();
 
         DbSet<Rdsserver> rdsservers = null;
-        public virtual DbSet<Rdsserver> Rdsservers => rdsservers ?? (rdsservers = Set<Rdsserver>());
+        public virtual DbSet<Rdsserver> Rdsservers => rdsservers ??= Set<Rdsserver>();
 
         DbSet<RdsserverSetting> rdsserverSettings = null;
-        public virtual DbSet<RdsserverSetting> RdsserverSettings => rdsserverSettings ?? (rdsserverSettings = Set<RdsserverSetting>());
+        public virtual DbSet<RdsserverSetting> RdsserverSettings => rdsserverSettings ??= Set<RdsserverSetting>();
 
         DbSet<ResourceGroup> resourceGroups = null;
-        public virtual DbSet<ResourceGroup> ResourceGroups => resourceGroups ?? (resourceGroups = Set<ResourceGroup>());
+        public virtual DbSet<ResourceGroup> ResourceGroups => resourceGroups ??= Set<ResourceGroup>();
 
         DbSet<ResourceGroupDnsRecord> resourceGroupDnsRecords = null;
-        public virtual DbSet<ResourceGroupDnsRecord> ResourceGroupDnsRecords => resourceGroupDnsRecords ?? (resourceGroupDnsRecords = Set<ResourceGroupDnsRecord>());
+        public virtual DbSet<ResourceGroupDnsRecord> ResourceGroupDnsRecords => resourceGroupDnsRecords ??= Set<ResourceGroupDnsRecord>();
 
         DbSet<Schedule> schedules = null;
-        public virtual DbSet<Schedule> Schedules => schedules ?? (schedules = Set<Schedule>());
+        public virtual DbSet<Schedule> Schedules => schedules ??= Set<Schedule>();
 
         DbSet<ScheduleParameter> scheduleParameters = null;
-        public virtual DbSet<ScheduleParameter> ScheduleParameters => scheduleParameters ?? (scheduleParameters = Set<ScheduleParameter>());
+        public virtual DbSet<ScheduleParameter> ScheduleParameters => scheduleParameters ??= Set<ScheduleParameter>();
 
         DbSet<ScheduleTask> scheduleTasks = null;
-        public virtual DbSet<ScheduleTask> ScheduleTasks => scheduleTasks ?? (scheduleTasks = Set<ScheduleTask>());
+        public virtual DbSet<ScheduleTask> ScheduleTasks => scheduleTasks ??= Set<ScheduleTask>();
 
         DbSet<ScheduleTaskParameter> scheduleTaskParameters = null;
-        public virtual DbSet<ScheduleTaskParameter> ScheduleTaskParameters => scheduleTaskParameters ?? (scheduleTaskParameters = Set<ScheduleTaskParameter>());
+        public virtual DbSet<ScheduleTaskParameter> ScheduleTaskParameters => scheduleTaskParameters ??= Set<ScheduleTaskParameter>();
 
         DbSet<ScheduleTaskViewConfiguration> scheduleTaskViewConfigurations = null;
-        public virtual DbSet<ScheduleTaskViewConfiguration> ScheduleTaskViewConfigurations => scheduleTaskViewConfigurations ?? (scheduleTaskViewConfigurations = Set<ScheduleTaskViewConfiguration>());
+        public virtual DbSet<ScheduleTaskViewConfiguration> ScheduleTaskViewConfigurations => scheduleTaskViewConfigurations ??= Set<ScheduleTaskViewConfiguration>();
 
         DbSet<Server> servers = null;
-        public virtual DbSet<Server> Servers => servers ?? (servers = Set<Server>());
+        public virtual DbSet<Server> Servers => servers ??= Set<Server>();
 
         DbSet<Service> services = null;
-        public virtual DbSet<Service> Services => services ?? (services = Set<Service>());
+        public virtual DbSet<Service> Services => services ??= Set<Service>();
 
         DbSet<ServiceDefaultProperty> serviceDefaultProperties = null;
-        public virtual DbSet<ServiceDefaultProperty> ServiceDefaultProperties => serviceDefaultProperties ?? (serviceDefaultProperties = Set<ServiceDefaultProperty>());
+        public virtual DbSet<ServiceDefaultProperty> ServiceDefaultProperties => serviceDefaultProperties ??= Set<ServiceDefaultProperty>();
 
         DbSet<ServiceItem> serviceItems = null;
-        public virtual DbSet<ServiceItem> ServiceItems => serviceItems ?? (serviceItems = Set<ServiceItem>());
+        public virtual DbSet<ServiceItem> ServiceItems => serviceItems ??= Set<ServiceItem>();
 
         DbSet<ServiceItemProperty> serviceItemProperties = null;
-        public virtual DbSet<ServiceItemProperty> ServiceItemProperties => serviceItemProperties ?? (serviceItemProperties = Set<ServiceItemProperty>());
+        public virtual DbSet<ServiceItemProperty> ServiceItemProperties => serviceItemProperties ??= Set<ServiceItemProperty>();
 
         DbSet<ServiceItemType> serviceItemTypes = null;
-        public virtual DbSet<ServiceItemType> ServiceItemTypes => serviceItemTypes ?? (serviceItemTypes = Set<ServiceItemType>());
+        public virtual DbSet<ServiceItemType> ServiceItemTypes => serviceItemTypes ??= Set<ServiceItemType>();
 
         DbSet<ServiceProperty> serviceProperties = null;
-        public virtual DbSet<ServiceProperty> ServiceProperties => serviceProperties ?? (serviceProperties = Set<ServiceProperty>());
+        public virtual DbSet<ServiceProperty> ServiceProperties => serviceProperties ??= Set<ServiceProperty>();
 
         DbSet<SfBuser> sfBusers = null;
-        public virtual DbSet<SfBuser> SfBusers => sfBusers ?? (sfBusers = Set<SfBuser>());
+        public virtual DbSet<SfBuser> SfBusers => sfBusers ??= Set<SfBuser>();
 
         DbSet<SfBuserPlan> sfBuserPlans = null;
-        public virtual DbSet<SfBuserPlan> SfBuserPlans => sfBuserPlans ?? (sfBuserPlans = Set<SfBuserPlan>());
+        public virtual DbSet<SfBuserPlan> SfBuserPlans => sfBuserPlans ??= Set<SfBuserPlan>();
 
         DbSet<Sslcertificate> sslcertificates = null;
-        public virtual DbSet<Sslcertificate> Sslcertificates => sslcertificates ?? (sslcertificates = Set<Sslcertificate>());
+        public virtual DbSet<Sslcertificate> Sslcertificates => sslcertificates ??= Set<Sslcertificate>();
 
         DbSet<StorageSpace> storageSpaces = null;
-        public virtual DbSet<StorageSpace> StorageSpaces => storageSpaces ?? (storageSpaces = Set<StorageSpace>());
+        public virtual DbSet<StorageSpace> StorageSpaces => storageSpaces ??= Set<StorageSpace>();
 
         DbSet<StorageSpaceFolder> storageSpaceFolders = null;
-        public virtual DbSet<StorageSpaceFolder> StorageSpaceFolders => storageSpaceFolders ?? (storageSpaceFolders = Set<StorageSpaceFolder>());
+        public virtual DbSet<StorageSpaceFolder> StorageSpaceFolders => storageSpaceFolders ??= Set<StorageSpaceFolder>();
 
         DbSet<StorageSpaceLevel> storageSpaceLevels = null;
-        public virtual DbSet<StorageSpaceLevel> StorageSpaceLevels => storageSpaceLevels ?? (storageSpaceLevels = Set<StorageSpaceLevel>());
+        public virtual DbSet<StorageSpaceLevel> StorageSpaceLevels => storageSpaceLevels ??= Set<StorageSpaceLevel>();
 
         DbSet<StorageSpaceLevelResourceGroup> storageSpaceLevelResourceGroups = null;
-        public virtual DbSet<StorageSpaceLevelResourceGroup> StorageSpaceLevelResourceGroups => storageSpaceLevelResourceGroups ?? (storageSpaceLevelResourceGroups = Set<StorageSpaceLevelResourceGroup>());
+        public virtual DbSet<StorageSpaceLevelResourceGroup> StorageSpaceLevelResourceGroups => storageSpaceLevelResourceGroups ??= Set<StorageSpaceLevelResourceGroup>();
 
         DbSet<SupportServiceLevel> supportServiceLevels = null;
-        public virtual DbSet<SupportServiceLevel> SupportServiceLevels => supportServiceLevels ?? (supportServiceLevels = Set<SupportServiceLevel>());
+        public virtual DbSet<SupportServiceLevel> SupportServiceLevels => supportServiceLevels ??= Set<SupportServiceLevel>();
 
         DbSet<SystemSetting> systemSettings = null;
-        public virtual DbSet<SystemSetting> SystemSettings => systemSettings ?? (systemSettings = Set<SystemSetting>());
+        public virtual DbSet<SystemSetting> SystemSettings => systemSettings ??= Set<SystemSetting>();
 
         DbSet<TempId> tempIds = null;
-        public virtual DbSet<TempId> TempIds => tempIds ?? (tempIds = Set<TempId>());
+        public virtual DbSet<TempId> TempIds => tempIds ??= Set<TempId>();
 
         DbSet<Theme> themes = null;
-        public virtual DbSet<Theme> Themes => themes ?? (themes = Set<Theme>());
+        public virtual DbSet<Theme> Themes => themes ??= Set<Theme>();
 
         DbSet<ThemeSetting> themeSettings = null;
-        public virtual DbSet<ThemeSetting> ThemeSettings => themeSettings ?? (themeSettings = Set<ThemeSetting>());
+        public virtual DbSet<ThemeSetting> ThemeSettings => themeSettings ??= Set<ThemeSetting>();
 
         DbSet<User> users = null;
-        public virtual DbSet<User> Users => users ?? (users = Set<User>());
+        public virtual DbSet<User> Users => users ??= Set<User>();
 
         DbSet<UserSetting> userSettings = null;
-        public virtual DbSet<UserSetting> UserSettings => userSettings ?? (userSettings = Set<UserSetting>());
+        public virtual DbSet<UserSetting> UserSettings => userSettings ??= Set<UserSetting>();
 
         DbSet<UsersDetailed> usersDetaileds = null;
-        public virtual DbSet<UsersDetailed> UsersDetaileds => usersDetaileds ?? (usersDetaileds = Set<UsersDetailed>());
+        public virtual DbSet<UsersDetailed> UsersDetaileds => usersDetaileds ??= Set<UsersDetailed>();
 
         DbSet<Version> versions = null;
-        public virtual DbSet<Version> Versions => versions ?? (versions = Set<Version>());
+        public virtual DbSet<Version> Versions => versions ??= Set<Version>();
 
         DbSet<VirtualGroup> virtualGroups = null;
-        public virtual DbSet<VirtualGroup> VirtualGroups => virtualGroups ?? (virtualGroups = Set<VirtualGroup>());
+        public virtual DbSet<VirtualGroup> VirtualGroups => virtualGroups ??= Set<VirtualGroup>();
 
         DbSet<VirtualService> virtualServices = null;
-        public virtual DbSet<VirtualService> VirtualServices => virtualServices ?? (virtualServices = Set<VirtualService>());
+        public virtual DbSet<VirtualService> VirtualServices => virtualServices ??= Set<VirtualService>();
 
         DbSet<WebDavAccessToken> webDavAccessTokens = null;
-        public virtual DbSet<WebDavAccessToken> WebDavAccessTokens => webDavAccessTokens ?? (webDavAccessTokens = Set<WebDavAccessToken>());
+        public virtual DbSet<WebDavAccessToken> WebDavAccessTokens => webDavAccessTokens ??= Set<WebDavAccessToken>();
 
         DbSet<WebDavPortalUsersSetting> webDavPortalUsersSettings = null;
-        public virtual DbSet<WebDavPortalUsersSetting> WebDavPortalUsersSettings => webDavPortalUsersSettings ?? (webDavPortalUsersSettings = Set<WebDavPortalUsersSetting>());
+        public virtual DbSet<WebDavPortalUsersSetting> WebDavPortalUsersSettings => webDavPortalUsersSettings ??= Set<WebDavPortalUsersSetting>();
 
     }
 }

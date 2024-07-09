@@ -2832,6 +2832,7 @@ INSERT INTO "Versions" ("DatabaseVersion", "BuildDate")
 VALUES ('1.4.9', '2024-04-20 00:00:00');
 SELECT changes();
 
+
 INSERT INTO "Packages" ("PackageID", "BandwidthUpdated", "DefaultTopPackage", "OverrideQuotas", "PackageComments", "PackageName", "ParentPackageID", "PlanID", "PurchaseDate", "ServerID", "StatusID", "StatusIDchangeDate", "UserID")
 VALUES (1, NULL, 0, 0, '', 'System', NULL, NULL, NULL, NULL, 1, '2024-04-20 11:02:58.56', 1);
 SELECT changes();
@@ -7577,6 +7578,302 @@ CREATE INDEX "WebDavPortalUsersSettingsIdx_AccountId" ON "WebDavPortalUsersSetti
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
 VALUES ('20240630180133_InitalCreate', '8.0.6');
+
+COMMIT;
+
+BEGIN TRANSACTION;
+
+DELETE FROM "Versions"
+WHERE "DatabaseVersion" = '2.0.0.228';
+SELECT changes();
+
+
+ALTER TABLE "PackageVLANs" ADD "IsDmz" INTEGER NOT NULL DEFAULT 0;
+
+CREATE TABLE "DmzIPAddresses" (
+    "DmzAddressID" INTEGER NOT NULL CONSTRAINT "PK_DmzIPAddresses" PRIMARY KEY AUTOINCREMENT,
+    "ItemID" INTEGER NOT NULL,
+    "IPAddress" TEXT NOT NULL,
+    "IsPrimary" INTEGER NOT NULL,
+    CONSTRAINT "FK_DmzIPAddresses_ServiceItems" FOREIGN KEY ("ItemID") REFERENCES "ServiceItems" ("ItemID") ON DELETE CASCADE
+);
+
+UPDATE "Quotas" SET "ItemTypeID" = 71
+WHERE "QuotaID" = 701;
+SELECT changes();
+
+
+UPDATE "Quotas" SET "ItemTypeID" = 72
+WHERE "QuotaID" = 702;
+SELECT changes();
+
+
+INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+VALUES (750, 33, NULL, NULL, NULL, 'DMZ Network', 'VPS2012.DMZNetworkEnabled', 22, 1, 0);
+SELECT changes();
+
+INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+VALUES (751, 33, NULL, NULL, NULL, 'Number of DMZ IP addresses per VPS', 'VPS2012.DMZIPAddressesNumber', 23, 3, 0);
+SELECT changes();
+
+INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+VALUES (752, 33, NULL, NULL, NULL, 'Number of DMZ Network VLANs', 'VPS2012.DMZVLANsNumber', 24, 2, 0);
+SELECT changes();
+
+
+UPDATE "Users" SET "Changed" = '2010-07-16 10:53:02.453'
+WHERE "UserID" = 1;
+SELECT changes();
+
+
+CREATE INDEX "DmzIPAddressesIdx_ItemID" ON "DmzIPAddresses" ("ItemID");
+
+CREATE TABLE "ef_temp_BackgroundTaskLogs" (
+    "LogID" INTEGER NOT NULL CONSTRAINT "PK__Backgrou__5E5499A86067A6E5" PRIMARY KEY AUTOINCREMENT,
+    "Date" TEXT NULL,
+    "ExceptionStackTrace" TEXT NULL,
+    "InnerTaskStart" INTEGER NULL,
+    "Severity" INTEGER NULL,
+    "TaskID" INTEGER NOT NULL,
+    "Text" TEXT NULL,
+    "TextIdent" INTEGER NULL,
+    "XmlParameters" TEXT NULL,
+    CONSTRAINT "FK__Backgroun__TaskI__7D8391DF" FOREIGN KEY ("TaskID") REFERENCES "BackgroundTasks" ("ID")
+);
+
+INSERT INTO "ef_temp_BackgroundTaskLogs" ("LogID", "Date", "ExceptionStackTrace", "InnerTaskStart", "Severity", "TaskID", "Text", "TextIdent", "XmlParameters")
+SELECT "LogID", "Date", "ExceptionStackTrace", "InnerTaskStart", "Severity", "TaskID", "Text", "TextIdent", "XmlParameters"
+FROM "BackgroundTaskLogs";
+
+CREATE TABLE "ef_temp_BackgroundTaskParameters" (
+    "ParameterID" INTEGER NOT NULL CONSTRAINT "PK__Backgrou__F80C629777BF580B" PRIMARY KEY AUTOINCREMENT,
+    "Name" TEXT NULL,
+    "SerializerValue" TEXT NULL,
+    "TaskID" INTEGER NOT NULL,
+    "TypeName" TEXT NULL,
+    CONSTRAINT "FK__Backgroun__TaskI__7AA72534" FOREIGN KEY ("TaskID") REFERENCES "BackgroundTasks" ("ID")
+);
+
+INSERT INTO "ef_temp_BackgroundTaskParameters" ("ParameterID", "Name", "SerializerValue", "TaskID", "TypeName")
+SELECT "ParameterID", "Name", "SerializerValue", "TaskID", "TypeName"
+FROM "BackgroundTaskParameters";
+
+CREATE TABLE "ef_temp_BackgroundTaskStack" (
+    "TaskStackID" INTEGER NOT NULL CONSTRAINT "PK__Backgrou__5E44466FB8A5F217" PRIMARY KEY AUTOINCREMENT,
+    "TaskID" INTEGER NOT NULL,
+    CONSTRAINT "FK__Backgroun__TaskI__005FFE8A" FOREIGN KEY ("TaskID") REFERENCES "BackgroundTasks" ("ID")
+);
+
+INSERT INTO "ef_temp_BackgroundTaskStack" ("TaskStackID", "TaskID")
+SELECT "TaskStackID", "TaskID"
+FROM "BackgroundTaskStack";
+
+CREATE TABLE "ef_temp_HostingPlans" (
+    "PlanID" INTEGER NOT NULL CONSTRAINT "PK_HostingPlans" PRIMARY KEY AUTOINCREMENT,
+    "Available" INTEGER NOT NULL,
+    "IsAddon" INTEGER NULL,
+    "PackageID" INTEGER NULL,
+    "PlanDescription" TEXT NULL,
+    "PlanName" TEXT NOT NULL,
+    "RecurrenceLength" INTEGER NULL,
+    "RecurrenceUnit" INTEGER NULL,
+    "RecurringPrice" TEXT NULL,
+    "ServerID" INTEGER NULL,
+    "SetupPrice" TEXT NULL,
+    "UserID" INTEGER NULL,
+    CONSTRAINT "FK_HostingPlans_Servers" FOREIGN KEY ("ServerID") REFERENCES "Servers" ("ServerID"),
+    CONSTRAINT "FK_HostingPlans_Users" FOREIGN KEY ("UserID") REFERENCES "Users" ("UserID")
+);
+
+INSERT INTO "ef_temp_HostingPlans" ("PlanID", "Available", "IsAddon", "PackageID", "PlanDescription", "PlanName", "RecurrenceLength", "RecurrenceUnit", "RecurringPrice", "ServerID", "SetupPrice", "UserID")
+SELECT "PlanID", "Available", "IsAddon", "PackageID", "PlanDescription", "PlanName", "RecurrenceLength", "RecurrenceUnit", "RecurringPrice", "ServerID", "SetupPrice", "UserID"
+FROM "HostingPlans";
+
+CREATE TABLE "ef_temp_Packages" (
+    "PackageID" INTEGER NOT NULL CONSTRAINT "PK_Packages" PRIMARY KEY AUTOINCREMENT,
+    "BandwidthUpdated" TEXT NULL,
+    "DefaultTopPackage" INTEGER NOT NULL,
+    "OverrideQuotas" INTEGER NOT NULL,
+    "PackageComments" TEXT NULL,
+    "PackageName" TEXT NULL,
+    "ParentPackageID" INTEGER NULL,
+    "PlanID" INTEGER NULL,
+    "PurchaseDate" TEXT NULL,
+    "ServerID" INTEGER NULL,
+    "StatusID" INTEGER NOT NULL,
+    "StatusIDchangeDate" TEXT NOT NULL,
+    "UserID" INTEGER NOT NULL,
+    CONSTRAINT "FK_Packages_HostingPlans" FOREIGN KEY ("PlanID") REFERENCES "HostingPlans" ("PlanID") ON DELETE CASCADE,
+    CONSTRAINT "FK_Packages_Packages" FOREIGN KEY ("ParentPackageID") REFERENCES "Packages" ("PackageID"),
+    CONSTRAINT "FK_Packages_Servers" FOREIGN KEY ("ServerID") REFERENCES "Servers" ("ServerID"),
+    CONSTRAINT "FK_Packages_Users" FOREIGN KEY ("UserID") REFERENCES "Users" ("UserID")
+);
+
+INSERT INTO "ef_temp_Packages" ("PackageID", "BandwidthUpdated", "DefaultTopPackage", "OverrideQuotas", "PackageComments", "PackageName", "ParentPackageID", "PlanID", "PurchaseDate", "ServerID", "StatusID", "StatusIDchangeDate", "UserID")
+SELECT "PackageID", "BandwidthUpdated", "DefaultTopPackage", "OverrideQuotas", "PackageComments", "PackageName", "ParentPackageID", "PlanID", "PurchaseDate", "ServerID", "StatusID", "StatusIDchangeDate", "UserID"
+FROM "Packages";
+
+CREATE TABLE "ef_temp_WebDavAccessTokens" (
+    "ID" INTEGER NOT NULL CONSTRAINT "PK__WebDavAc__3214EC2708781F08" PRIMARY KEY AUTOINCREMENT,
+    "AccessToken" TEXT NOT NULL,
+    "AccountID" INTEGER NOT NULL,
+    "AuthData" TEXT NOT NULL,
+    "ExpirationDate" TEXT NOT NULL,
+    "FilePath" TEXT NOT NULL,
+    "ItemId" INTEGER NOT NULL,
+    CONSTRAINT "FK_WebDavAccessTokens_UserId" FOREIGN KEY ("AccountID") REFERENCES "ExchangeAccounts" ("AccountID") ON DELETE CASCADE
+);
+
+INSERT INTO "ef_temp_WebDavAccessTokens" ("ID", "AccessToken", "AccountID", "AuthData", "ExpirationDate", "FilePath", "ItemId")
+SELECT "ID", "AccessToken", "AccountID", "AuthData", "ExpirationDate", "FilePath", "ItemId"
+FROM "WebDavAccessTokens";
+
+CREATE TABLE "ef_temp_DomainDnsRecords" (
+    "ID" INTEGER NOT NULL CONSTRAINT "PK__DomainDn__3214EC27A6FC0498" PRIMARY KEY AUTOINCREMENT,
+    "Date" TEXT NULL,
+    "DnsServer" TEXT NULL,
+    "DomainId" INTEGER NOT NULL,
+    "RecordType" INTEGER NOT NULL,
+    "Value" TEXT NULL,
+    CONSTRAINT "FK_DomainDnsRecords_DomainId" FOREIGN KEY ("DomainId") REFERENCES "Domains" ("DomainID") ON DELETE CASCADE
+);
+
+INSERT INTO "ef_temp_DomainDnsRecords" ("ID", "Date", "DnsServer", "DomainId", "RecordType", "Value")
+SELECT "ID", "Date", "DnsServer", "DomainId", "RecordType", "Value"
+FROM "DomainDnsRecords";
+
+CREATE TABLE "ef_temp_BackgroundTasks" (
+    "ID" INTEGER NOT NULL CONSTRAINT "PK__Backgrou__3214EC273A1145AC" PRIMARY KEY AUTOINCREMENT,
+    "Completed" INTEGER NULL,
+    "EffectiveUserID" INTEGER NOT NULL,
+    "FinishDate" TEXT NULL,
+    "Guid" TEXT NOT NULL,
+    "IndicatorCurrent" INTEGER NOT NULL,
+    "IndicatorMaximum" INTEGER NOT NULL,
+    "ItemID" INTEGER NULL,
+    "ItemName" TEXT NULL,
+    "MaximumExecutionTime" INTEGER NOT NULL,
+    "NotifyOnComplete" INTEGER NULL,
+    "PackageID" INTEGER NOT NULL,
+    "ScheduleID" INTEGER NOT NULL,
+    "Severity" INTEGER NOT NULL,
+    "Source" TEXT NULL,
+    "StartDate" TEXT NOT NULL,
+    "Status" INTEGER NOT NULL,
+    "TaskID" TEXT NULL,
+    "TaskName" TEXT NULL,
+    "UserID" INTEGER NOT NULL
+);
+
+INSERT INTO "ef_temp_BackgroundTasks" ("ID", "Completed", "EffectiveUserID", "FinishDate", "Guid", "IndicatorCurrent", "IndicatorMaximum", "ItemID", "ItemName", "MaximumExecutionTime", "NotifyOnComplete", "PackageID", "ScheduleID", "Severity", "Source", "StartDate", "Status", "TaskID", "TaskName", "UserID")
+SELECT "ID", "Completed", "EffectiveUserID", "FinishDate", "Guid", "IndicatorCurrent", "IndicatorMaximum", "ItemID", "ItemName", "MaximumExecutionTime", "NotifyOnComplete", "PackageID", "ScheduleID", "Severity", "Source", "StartDate", "Status", "TaskID", "TaskName", "UserID"
+FROM "BackgroundTasks";
+
+CREATE TABLE "ef_temp_AdditionalGroups" (
+    "ID" INTEGER NOT NULL CONSTRAINT "PK__Addition__3214EC27E665DDE2" PRIMARY KEY AUTOINCREMENT,
+    "GroupName" TEXT NULL,
+    "UserID" INTEGER NOT NULL
+);
+
+INSERT INTO "ef_temp_AdditionalGroups" ("ID", "GroupName", "UserID")
+SELECT "ID", "GroupName", "UserID"
+FROM "AdditionalGroups";
+
+CREATE TABLE "ef_temp_AccessTokens" (
+    "ID" INTEGER NOT NULL CONSTRAINT "PK__AccessTo__3214EC27DEAEF66E" PRIMARY KEY AUTOINCREMENT,
+    "AccessTokenGuid" TEXT NOT NULL,
+    "AccountID" INTEGER NOT NULL,
+    "ExpirationDate" TEXT NOT NULL,
+    "ItemId" INTEGER NOT NULL,
+    "SmsResponse" TEXT NULL,
+    "TokenType" INTEGER NOT NULL,
+    CONSTRAINT "FK_AccessTokens_UserId" FOREIGN KEY ("AccountID") REFERENCES "ExchangeAccounts" ("AccountID") ON DELETE CASCADE
+);
+
+INSERT INTO "ef_temp_AccessTokens" ("ID", "AccessTokenGuid", "AccountID", "ExpirationDate", "ItemId", "SmsResponse", "TokenType")
+SELECT "ID", "AccessTokenGuid", "AccountID", "ExpirationDate", "ItemId", "SmsResponse", "TokenType"
+FROM "AccessTokens";
+
+COMMIT;
+
+PRAGMA foreign_keys = 0;
+
+BEGIN TRANSACTION;
+
+DROP TABLE "BackgroundTaskLogs";
+
+ALTER TABLE "ef_temp_BackgroundTaskLogs" RENAME TO "BackgroundTaskLogs";
+
+DROP TABLE "BackgroundTaskParameters";
+
+ALTER TABLE "ef_temp_BackgroundTaskParameters" RENAME TO "BackgroundTaskParameters";
+
+DROP TABLE "BackgroundTaskStack";
+
+ALTER TABLE "ef_temp_BackgroundTaskStack" RENAME TO "BackgroundTaskStack";
+
+DROP TABLE "HostingPlans";
+
+ALTER TABLE "ef_temp_HostingPlans" RENAME TO "HostingPlans";
+
+DROP TABLE "Packages";
+
+ALTER TABLE "ef_temp_Packages" RENAME TO "Packages";
+
+DROP TABLE "WebDavAccessTokens";
+
+ALTER TABLE "ef_temp_WebDavAccessTokens" RENAME TO "WebDavAccessTokens";
+
+DROP TABLE "DomainDnsRecords";
+
+ALTER TABLE "ef_temp_DomainDnsRecords" RENAME TO "DomainDnsRecords";
+
+DROP TABLE "BackgroundTasks";
+
+ALTER TABLE "ef_temp_BackgroundTasks" RENAME TO "BackgroundTasks";
+
+DROP TABLE "AdditionalGroups";
+
+ALTER TABLE "ef_temp_AdditionalGroups" RENAME TO "AdditionalGroups";
+
+DROP TABLE "AccessTokens";
+
+ALTER TABLE "ef_temp_AccessTokens" RENAME TO "AccessTokens";
+
+COMMIT;
+
+PRAGMA foreign_keys = 1;
+
+BEGIN TRANSACTION;
+
+CREATE INDEX "BackgroundTaskLogsIdx_TaskID" ON "BackgroundTaskLogs" ("TaskID");
+
+CREATE INDEX "BackgroundTaskParametersIdx_TaskID" ON "BackgroundTaskParameters" ("TaskID");
+
+CREATE INDEX "BackgroundTaskStackIdx_TaskID" ON "BackgroundTaskStack" ("TaskID");
+
+CREATE INDEX "HostingPlansIdx_PackageID" ON "HostingPlans" ("PackageID");
+
+CREATE INDEX "HostingPlansIdx_ServerID" ON "HostingPlans" ("ServerID");
+
+CREATE INDEX "HostingPlansIdx_UserID" ON "HostingPlans" ("UserID");
+
+CREATE INDEX "PackageIndex_ParentPackageID" ON "Packages" ("ParentPackageID");
+
+CREATE INDEX "PackageIndex_PlanID" ON "Packages" ("PlanID");
+
+CREATE INDEX "PackageIndex_ServerID" ON "Packages" ("ServerID");
+
+CREATE INDEX "PackageIndex_UserID" ON "Packages" ("UserID");
+
+CREATE INDEX "WebDavAccessTokensIdx_AccountID" ON "WebDavAccessTokens" ("AccountID");
+
+CREATE INDEX "DomainDnsRecordsIdx_DomainId" ON "DomainDnsRecords" ("DomainId");
+
+CREATE INDEX "AccessTokensIdx_AccountID" ON "AccessTokens" ("AccountID");
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20240709093108_AddedDMZ', '8.0.6');
 
 COMMIT;
 

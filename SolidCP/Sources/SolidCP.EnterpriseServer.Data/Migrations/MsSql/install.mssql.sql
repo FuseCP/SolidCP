@@ -2314,7 +2314,8 @@ BEGIN
     (''1.1.2.13'', ''2011-04-15T00:00:00.000''),
     (''1.2.0.38'', ''2011-07-13T00:00:00.000''),
     (''1.2.1.6'', ''2012-03-29T00:00:00.000''),
-    (''1.4.9'', ''2024-04-20T00:00:00.000'')');
+    (''1.4.9'', ''2024-04-20T00:00:00.000''),
+    (''2.0.0.228'', ''2012-12-07T00:00:00.000'')');
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'DatabaseVersion', N'BuildDate') AND [object_id] = OBJECT_ID(N'[Versions]'))
         SET IDENTITY_INSERT [Versions] OFF;
 END;
@@ -13370,7 +13371,9 @@ BEGIN
     )
     AS
 
-    IF EXISTS (SELECT ItemID FROM ServiceItems AS SI WHERE dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1)
+    IF EXISTS (SELECT ItemID FROM ServiceItems AS SI WHERE
+    	ItemID = @ItemID AND -- bugfix added by Simon Egli, 27.6.2024
+    	dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1)
     BEGIN
 
     	INSERT INTO PrivateIPAddresses
@@ -15690,6 +15693,7 @@ BEGIN
     CREATE PROCEDURE [dbo].[AllocatePackageVLANs]
     (
     	@PackageID int,
+    	@IsDmz bit,
     	@xml ntext
     )
     AS
@@ -15709,15 +15713,18 @@ BEGIN
     		VlanID int '@id'
     	) as PX ON PV.VlanID = PX.VlanID
 
+
     	-- insert
     	INSERT INTO dbo.PackageVLANs
     	(		
     		PackageID,
-    		VlanID	
+    		VlanID,
+    		IsDmz
     	)
     	SELECT		
     		@PackageID,
-    		VlanID
+    		VlanID,
+    		@IsDmz
 
     	FROM OPENXML(@idoc, '/items/item', 1) WITH 
     	(
@@ -25041,6 +25048,7 @@ BEGIN
     	@MaximumRows int
     )
     AS
+    BEGIN
 
     -- build query and run it to the temporary table
     DECLARE @sql nvarchar(2000)
@@ -25082,6 +25090,8 @@ BEGIN
 
     IF @SortColumn <> '' AND @SortColumn IS NOT NULL
     SET @sql = @sql + ' ORDER BY ' + @SortColumn + ' '
+    ELSE
+    SET @sql = @sql + ' ORDER BY P.PackageName '
 
     SET @sql = @sql + ' SELECT COUNT(PackageID) FROM @Packages;
     SELECT
@@ -25122,6 +25132,7 @@ BEGIN
     @StartRow, @MaximumRows, @PackageID, @FilterValue, @ActorID, @StatusID, @PlanID, @ServerID
 
     RETURN
+    END
 END;
 GO
 
@@ -27353,20 +27364,35 @@ IF NOT EXISTS (
 )
 BEGIN
 
-    CREATE PROCEDURE [dbo].[GetPackageServiceID]
+    CREATE PROCEDURE GetPackageServiceID
     (
     	@ActorID int,
     	@PackageID int,
     	@GroupName nvarchar(100),
+    	@UpdatePackage bit,
     	@ServiceID int OUTPUT
     )
     AS
+    BEGIN
 
     -- check rights
     IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
     RAISERROR('You are not allowed to access this package', 16, 1)
 
     SET @ServiceID = 0
+
+    -- optimized run when we don't need any changes
+    IF @UpdatePackage = 0
+    BEGIN
+    SELECT
+    	@ServiceID = PS.ServiceID
+    FROM PackageServices AS PS
+    INNER JOIN Services AS S ON PS.ServiceID = S.ServiceID
+    INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
+    INNER JOIN ResourceGroups AS RG ON RG.GroupID = P.GroupID
+    WHERE PS.PackageID = @PackageID AND RG.GroupName = @GroupName
+    RETURN
+    END
 
     -- load group info
     DECLARE @GroupID int
@@ -27406,8 +27432,7 @@ BEGIN
     INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
     WHERE PS.PackageID = @PackageID AND P.GroupID = @GroupID
 
-    RETURN
-
+    END
 END;
 GO
 
@@ -27751,14 +27776,7 @@ BEGIN
 
     RETURN
 
-END;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240627111421_InitialCreate'
-)
-BEGIN
+    GOSSL
     SET ANSI_NULLS ON
 END;
 GO
@@ -27799,7 +27817,7 @@ BEGIN
     FROM
     	[dbo].[SSLCertificates]
     WHERE
-    	@websiteid = [SiteID] AND [Installed] = 0 AND [IsRenewal] = 0
+    	@websiteid = [SiteID] AND [Installed] = 0 AND [IsRenewal] = 0 -- bugfix Simon Egli, 27.6.2024
 
     RETURN
 
@@ -41673,6 +41691,882 @@ IF NOT EXISTS (
 BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
     VALUES (N'20240627111421_InitialCreate', N'8.0.6');
+END;
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    ALTER TABLE [BackgroundTaskLogs] DROP CONSTRAINT [FK__Backgroun__TaskI__06ADD4BD];
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    ALTER TABLE [BackgroundTaskParameters] DROP CONSTRAINT [FK__Backgroun__TaskI__03D16812];
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    ALTER TABLE [BackgroundTaskStack] DROP CONSTRAINT [FK__Backgroun__TaskI__098A4168];
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    ALTER TABLE [HostingPlans] DROP CONSTRAINT [FK_HostingPlans_Packages];
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    ALTER TABLE [Packages] DROP CONSTRAINT [FK_Packages_HostingPlans];
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    ALTER TABLE [WebDavAccessTokens] DROP CONSTRAINT [PK__WebDavAc__3214EC27B27DC571];
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    ALTER TABLE [DomainDnsRecords] DROP CONSTRAINT [PK__DomainDn__3214EC2758B0A6F1];
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    ALTER TABLE [BackgroundTaskStack] DROP CONSTRAINT [PK__Backgrou__5E44466F62E48BE6];
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    ALTER TABLE [BackgroundTasks] DROP CONSTRAINT [PK__Backgrou__3214EC271AFAB817];
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    ALTER TABLE [BackgroundTaskParameters] DROP CONSTRAINT [PK__Backgrou__F80C6297E2E5AF88];
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    ALTER TABLE [BackgroundTaskLogs] DROP CONSTRAINT [PK__Backgrou__5E5499A830A1D5BF];
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    ALTER TABLE [AdditionalGroups] DROP CONSTRAINT [PK__Addition__3214EC272F1861EB];
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    ALTER TABLE [AccessTokens] DROP CONSTRAINT [PK__AccessTo__3214EC27A32557FE];
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    EXEC(N'DELETE FROM [Versions]
+    WHERE [DatabaseVersion] = ''2.0.0.228'';
+    SELECT @@ROWCOUNT');
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    ALTER TABLE [TempIds] ADD [Date] datetime2 NOT NULL DEFAULT '0001-01-01T00:00:00.0000000';
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    ALTER TABLE [PackageVLANs] ADD [IsDmz] bit NOT NULL DEFAULT CAST(0 AS bit);
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    ALTER TABLE [WebDavAccessTokens] ADD CONSTRAINT [PK__WebDavAc__3214EC2708781F08] PRIMARY KEY ([ID]);
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    ALTER TABLE [DomainDnsRecords] ADD CONSTRAINT [PK__DomainDn__3214EC27A6FC0498] PRIMARY KEY ([ID]);
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    ALTER TABLE [BackgroundTaskStack] ADD CONSTRAINT [PK__Backgrou__5E44466FB8A5F217] PRIMARY KEY ([TaskStackID]);
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    ALTER TABLE [BackgroundTasks] ADD CONSTRAINT [PK__Backgrou__3214EC273A1145AC] PRIMARY KEY ([ID]);
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    ALTER TABLE [BackgroundTaskParameters] ADD CONSTRAINT [PK__Backgrou__F80C629777BF580B] PRIMARY KEY ([ParameterID]);
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    ALTER TABLE [BackgroundTaskLogs] ADD CONSTRAINT [PK__Backgrou__5E5499A86067A6E5] PRIMARY KEY ([LogID]);
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    ALTER TABLE [AdditionalGroups] ADD CONSTRAINT [PK__Addition__3214EC27E665DDE2] PRIMARY KEY ([ID]);
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    ALTER TABLE [AccessTokens] ADD CONSTRAINT [PK__AccessTo__3214EC27DEAEF66E] PRIMARY KEY ([ID]);
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    CREATE TABLE [DmzIPAddresses] (
+        [DmzAddressID] int NOT NULL IDENTITY,
+        [ItemID] int NOT NULL,
+        [IPAddress] varchar(15) NOT NULL,
+        [IsPrimary] bit NOT NULL,
+        CONSTRAINT [PK_DmzIPAddresses] PRIMARY KEY ([DmzAddressID]),
+        CONSTRAINT [FK_DmzIPAddresses_ServiceItems] FOREIGN KEY ([ItemID]) REFERENCES [ServiceItems] ([ItemID]) ON DELETE CASCADE
+    );
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    EXEC(N'UPDATE [Quotas] SET [ItemTypeID] = 71
+    WHERE [QuotaID] = 701;
+    SELECT @@ROWCOUNT');
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    EXEC(N'UPDATE [Quotas] SET [ItemTypeID] = 72
+    WHERE [QuotaID] = 702;
+    SELECT @@ROWCOUNT');
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'QuotaID', N'GroupID', N'HideQuota', N'ItemTypeID', N'PerOrganization', N'QuotaDescription', N'QuotaName', N'QuotaOrder', N'QuotaTypeID', N'ServiceQuota') AND [object_id] = OBJECT_ID(N'[Quotas]'))
+        SET IDENTITY_INSERT [Quotas] ON;
+    EXEC(N'INSERT INTO [Quotas] ([QuotaID], [GroupID], [HideQuota], [ItemTypeID], [PerOrganization], [QuotaDescription], [QuotaName], [QuotaOrder], [QuotaTypeID], [ServiceQuota])
+    VALUES (750, 33, NULL, NULL, NULL, N''DMZ Network'', N''VPS2012.DMZNetworkEnabled'', 22, 1, CAST(0 AS bit)),
+    (751, 33, NULL, NULL, NULL, N''Number of DMZ IP addresses per VPS'', N''VPS2012.DMZIPAddressesNumber'', 23, 3, CAST(0 AS bit)),
+    (752, 33, NULL, NULL, NULL, N''Number of DMZ Network VLANs'', N''VPS2012.DMZVLANsNumber'', 24, 2, CAST(0 AS bit))');
+    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'QuotaID', N'GroupID', N'HideQuota', N'ItemTypeID', N'PerOrganization', N'QuotaDescription', N'QuotaName', N'QuotaOrder', N'QuotaTypeID', N'ServiceQuota') AND [object_id] = OBJECT_ID(N'[Quotas]'))
+        SET IDENTITY_INSERT [Quotas] OFF;
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    EXEC(N'UPDATE [UserSettings] SET [PropertyValue] = CONCAT(CAST(N''<html xmlns="http://www.w3.org/1999/xhtml">'' AS nvarchar(max)), nchar(13), nchar(10), N''<head>'', nchar(13), nchar(10), N''    <title>Account Summary Information</title>'', nchar(13), nchar(10), N''    <style type="text/css">'', nchar(13), nchar(10), N''		.Summary { background-color: ##ffffff; padding: 5px; }'', nchar(13), nchar(10), N''		.Summary .Header { padding: 10px 0px 10px 10px; font-size: 16pt; background-color: ##E5F2FF; color: ##1F4978; border-bottom: solid 2px ##86B9F7; }'', nchar(13), nchar(10), N''        .Summary A { color: ##0153A4; }'', nchar(13), nchar(10), N''        .Summary { font-family: Tahoma; font-size: 9pt; }'', nchar(13), nchar(10), N''        .Summary H1 { font-size: 1.7em; color: ##1F4978; border-bottom: dotted 3px ##efefef; }'', nchar(13), nchar(10), N''        .Summary H2 { font-size: 1.3em; color: ##1F4978; }'', nchar(13), nchar(10), N''        .Summary TABLE { border: solid 1px ##e5e5e5; }'', nchar(13), nchar(10), N''        .Summary TH,'', nchar(13), nchar(10), N''        .Summary TD.Label { padding: 5px; font-size: 8pt; font-weight: bold; background-color: ##f5f5f5; }'', nchar(13), nchar(10), N''        .Summary TD { padding: 8px; font-size: 9pt; }'', nchar(13), nchar(10), N''        .Summary UL LI { font-size: 1.1em; font-weight: bold; }'', nchar(13), nchar(10), N''        .Summary UL UL LI { font-size: 0.9em; font-weight: normal; }'', nchar(13), nchar(10), N''    </style>'', nchar(13), nchar(10), N''</head>'', nchar(13), nchar(10), N''<body>'', nchar(13), nchar(10), N''<div class="Summary">'', nchar(13), nchar(10), nchar(13), nchar(10), N''<a name="top"></a>'', nchar(13), nchar(10), N''<div class="Header">'', nchar(13), nchar(10), N''	Hosting Account Information'', nchar(13), nchar(10), N''</div>'', nchar(13), nchar(10), nchar(13), nchar(10), N''<ad:if test="#Signup#">'', nchar(13), nchar(10), N''<p>'', nchar(13), nchar(10), N''Hello #user.FirstName#,'', nchar(13), nchar(10), N''</p>'', nchar(13), nchar(10), nchar(13), nchar(10), N''<p>'', nchar(13), nchar(10), N''New user account has been created and below you can find its summary information.'', nchar(13), nchar(10), N''</p>'', nchar(13), nchar(10), nchar(13), nchar(10), N''<h1>Control Panel URL</h1>'', nchar(13), nchar(10), N''<table>'', nchar(13), nchar(10), N''    <thead>'', nchar(13), nchar(10), N''        <tr>'', nchar(13), nchar(10), N''            <th>Control Panel URL</th>'', nchar(13), nchar(10), N''            <th>Username</th>'', nchar(13), nchar(10), N''            <th>Password</th>'', nchar(13), nchar(10), N''        </tr>'', nchar(13), nchar(10), N''    </thead>'', nchar(13), nchar(10), N''    <tbody>'', nchar(13), nchar(10), N''        <tr>'', nchar(13), nchar(10), N''            <td><a href="http://panel.HostingCompany.com">http://panel.HostingCompany.com</a></td>'', nchar(13), nchar(10), N''            <td>#user.Username#</td>'', nchar(13), nchar(10), N''            <td>#user.Password#</td>'', nchar(13), nchar(10), N''        </tr>'', nchar(13), nchar(10), N''    </tbody>'', nchar(13), nchar(10), N''</table>'', nchar(13), nchar(10), N''</ad:if>'', nchar(13), nchar(10), nchar(13), nchar(10), N''<h1>Hosting Spaces</h1>'', nchar(13), nchar(10), N''<p>'', nchar(13), nchar(10), N''    The following hosting spaces have been created under your account:'', nchar(13), nchar(10), N''</p>'', nchar(13), nchar(10), N''<ad:foreach collection="#Spaces#" var="Space" index="i">'', nchar(13), nchar(10), N''<h2>#Space.PackageName#</h2>'', nchar(13), nchar(10), N''<table>'', nchar(13), nchar(10), N''	<tbody>'', nchar(13), nchar(10), N''		<tr>'', nchar(13), nchar(10), N''			<td class="Label">Hosting Plan:</td>'', nchar(13), nchar(10), N''			<td>'', nchar(13), nchar(10), N''				<ad:if test="#not(isnull(Plans[Space.PlanId]))#">#Plans[Space.PlanId].PlanName#<ad:else>System</ad:if>'', nchar(13), nchar(10), N''			</td>'', nchar(13), nchar(10), N''		</tr>'', nchar(13), nchar(10), N''		<ad:if test="#not(isnull(Plans[Space.PlanId]))#">'', nchar(13), nchar(10), N''		<tr>'', nchar(13), nchar(10), N''			<td class="Label">Purchase Date:</td>'', nchar(13), nchar(10), N''			<td>'', nchar(13), nchar(10), N''# Space.PurchaseDate#'', nchar(13), nchar(10), N''			</td>'', nchar(13), nchar(10), N''		</tr>'', nchar(13), nchar(10), N''		<tr>'', nchar(13), nchar(10), N''			<td class="Label">Disk Space, MB:</td>'', nchar(13), nchar(10), N''			<td><ad:NumericQuota space="#SpaceContexts[Space.PackageId]#" quota="OS.Diskspace" /></td>'', nchar(13), nchar(10), N''		</tr>'', nchar(13), nchar(10), N''		<tr>'', nchar(13), nchar(10), N''			<td class="Label">Bandwidth, MB/Month:</td>'', nchar(13), nchar(10), N''			<td><ad:NumericQuota space="#SpaceContexts[Space.PackageId]#" quota="OS.Bandwidth" /></td>'', nchar(13), nchar(10), N''		</tr>'', nchar(13), nchar(10), N''		<tr>'', nchar(13), nchar(10), N''			<td class="Label">Maximum Number of Domains:</td>'', nchar(13), nchar(10), N''			<td><ad:NumericQuota space="#SpaceContexts[Space.PackageId]#" quota="OS.Domains" /></td>'', nchar(13), nchar(10), CONCAT(CAST(N''		</tr>'' AS nvarchar(max)), nchar(13), nchar(10), N''		<tr>'', nchar(13), nchar(10), N''			<td class="Label">Maximum Number of Sub-Domains:</td>'', nchar(13), nchar(10), N''			<td><ad:NumericQuota space="#SpaceContexts[Space.PackageId]#" quota="OS.SubDomains" /></td>'', nchar(13), nchar(10), N''		</tr>'', nchar(13), nchar(10), N''		</ad:if>'', nchar(13), nchar(10), N''	</tbody>'', nchar(13), nchar(10), N''</table>'', nchar(13), nchar(10), N''</ad:foreach>'', nchar(13), nchar(10), nchar(13), nchar(10), N''<ad:if test="#Signup#">'', nchar(13), nchar(10), N''<p>'', nchar(13), nchar(10), N''If you have any questions regarding your hosting account, feel free to contact our support department at any time.'', nchar(13), nchar(10), N''</p>'', nchar(13), nchar(10), nchar(13), nchar(10), N''<p>'', nchar(13), nchar(10), N''Best regards,<br />'', nchar(13), nchar(10), N''SolidCP.<br />'', nchar(13), nchar(10), N''Web Site: <a href="https://solidcp.com">https://solidcp.com</a><br />'', nchar(13), nchar(10), N''E-Mail: <a href="mailto:support@solidcp.com">support@solidcp.com</a>'', nchar(13), nchar(10), N''</p>'', nchar(13), nchar(10), N''</ad:if>'', nchar(13), nchar(10), nchar(13), nchar(10), N''<ad:template name="NumericQuota">'', nchar(13), nchar(10), N''	<ad:if test="#space.Quotas.ContainsKey(quota)#">'', nchar(13), nchar(10), N''		<ad:if test="#space.Quotas[quota].QuotaAllocatedValue isnot -1#">#space.Quotas[quota].QuotaAllocatedValue#<ad:else>Unlimited</ad:if>'', nchar(13), nchar(10), N''	<ad:else>'', nchar(13), nchar(10), N''		0'', nchar(13), nchar(10), N''	</ad:if>'', nchar(13), nchar(10), N''</ad:template>'', nchar(13), nchar(10), nchar(13), nchar(10), N''</div>'', nchar(13), nchar(10), N''</body>'', nchar(13), nchar(10), N''</html>''))
+    WHERE [PropertyName] = N''HtmlBody'' AND [SettingsName] = N''AccountSummaryLetter'' AND [UserID] = 1;
+    SELECT @@ROWCOUNT');
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    EXEC(N'UPDATE [UserSettings] SET [PropertyValue] = CONCAT(CAST(N''================================='' AS nvarchar(max)), nchar(13), nchar(10), N''   MX and NS Changes Information'', nchar(13), nchar(10), N''================================='', nchar(13), nchar(10), N''<ad:if test="#user#">'', nchar(13), nchar(10), N''Hello #user.FirstName#,'', nchar(13), nchar(10), N''</ad:if>'', nchar(13), nchar(10), nchar(13), nchar(10), N''Please, find below details of MX and NS changes.'', nchar(13), nchar(10), nchar(13), nchar(10), nchar(13), nchar(10), N''<ad:foreach collection="#Domains#" var="Domain" index="i">'', nchar(13), nchar(10), nchar(13), nchar(10), N''# Domain.DomainName# - #DomainUsers[Domain.PackageId].FirstName# #DomainUsers[Domain.PackageId].LastName#'', nchar(13), nchar(10), N'' Registrar:      #iif(isnull(Domain.Registrar), "", Domain.Registrar)#'', nchar(13), nchar(10), N'' ExpirationDate: #iif(isnull(Domain.ExpirationDate), "", Domain.ExpirationDate)#'', nchar(13), nchar(10), nchar(13), nchar(10), N''        <ad:foreach collection="#Domain.DnsChanges#" var="DnsChange" index="j">'', nchar(13), nchar(10), N''            DNS:       #DnsChange.DnsServer#'', nchar(13), nchar(10), N''            Type:      #DnsChange.Type#'', nchar(13), nchar(10), N''	    Status:    #DnsChange.Status#'', nchar(13), nchar(10), N''            Old Value: #DnsChange.OldRecord.Value#'', nchar(13), nchar(10), N''            New Value: #DnsChange.NewRecord.Value#'', nchar(13), nchar(10), nchar(13), nchar(10), N''    	</ad:foreach>'', nchar(13), nchar(10), N''</ad:foreach>'', nchar(13), nchar(10), nchar(13), nchar(10), nchar(13), nchar(10), nchar(13), nchar(10), N''If you have any questions regarding your hosting account, feel free to contact our support department at any time.'', nchar(13), nchar(10), nchar(13), nchar(10), N''Best regards'', nchar(13), nchar(10))
+    WHERE [PropertyName] = N''TextBody'' AND [SettingsName] = N''DomainLookupLetter'' AND [UserID] = 1;
+    SELECT @@ROWCOUNT');
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    EXEC(N'UPDATE [UserSettings] SET [PropertyValue] = CONCAT(CAST(nchar(13) AS nvarchar(max)), nchar(10), N''User have been created. Password request url:'', nchar(13), nchar(10), N''# passwordResetLink#'')
+    WHERE [PropertyName] = N''SMSBody'' AND [SettingsName] = N''OrganizationUserPasswordRequestLetter'' AND [UserID] = 1;
+    SELECT @@ROWCOUNT');
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    EXEC(N'UPDATE [UserSettings] SET [PropertyValue] = CONCAT(CAST(N''========================================='' AS nvarchar(max)), nchar(13), nchar(10), N''   Password request notification'', nchar(13), nchar(10), N''========================================='', nchar(13), nchar(10), nchar(13), nchar(10), N''<ad:if test="#user#">'', nchar(13), nchar(10), N''Hello #user.FirstName#,'', nchar(13), nchar(10), N''</ad:if>'', nchar(13), nchar(10), nchar(13), nchar(10), N''Your account have been created. In order to create a password for your account, please follow next link:'', nchar(13), nchar(10), nchar(13), nchar(10), N''# passwordResetLink#'', nchar(13), nchar(10), nchar(13), nchar(10), N''If you have any questions regarding your hosting account, feel free to contact our support department at any time.'', nchar(13), nchar(10), nchar(13), nchar(10), N''Best regards'')
+    WHERE [PropertyName] = N''TextBody'' AND [SettingsName] = N''OrganizationUserPasswordRequestLetter'' AND [UserID] = 1;
+    SELECT @@ROWCOUNT');
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    EXEC(N'UPDATE [UserSettings] SET [PropertyValue] = CONCAT(CAST(N''========================================='' AS nvarchar(max)), nchar(13), nchar(10), N''   Password expiration notification'', nchar(13), nchar(10), N''========================================='', nchar(13), nchar(10), nchar(13), nchar(10), N''<ad:if test="#user#">'', nchar(13), nchar(10), N''Hello #user.FirstName#,'', nchar(13), nchar(10), N''</ad:if>'', nchar(13), nchar(10), nchar(13), nchar(10), N''Your password expiration date is #user.PasswordExpirationDateTime#. You can reset your own password by visiting the following page:'', nchar(13), nchar(10), nchar(13), nchar(10), N''# passwordResetLink#'', nchar(13), nchar(10), nchar(13), nchar(10), N''If you have any questions regarding your hosting account, feel free to contact our support department at any time.'', nchar(13), nchar(10), nchar(13), nchar(10), N''Best regards'')
+    WHERE [PropertyName] = N''TextBody'' AND [SettingsName] = N''UserPasswordExpirationLetter'' AND [UserID] = 1;
+    SELECT @@ROWCOUNT');
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    EXEC(N'UPDATE [UserSettings] SET [PropertyValue] = CONCAT(CAST(N''Password reset link:'' AS nvarchar(max)), nchar(13), nchar(10), N''# passwordResetLink#'', nchar(13), nchar(10))
+    WHERE [PropertyName] = N''PasswordResetLinkSmsBody'' AND [SettingsName] = N''UserPasswordResetLetter'' AND [UserID] = 1;
+    SELECT @@ROWCOUNT');
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    EXEC(N'UPDATE [UserSettings] SET [PropertyValue] = CONCAT(CAST(N''========================================='' AS nvarchar(max)), nchar(13), nchar(10), N''   Password reset notification'', nchar(13), nchar(10), N''========================================='', nchar(13), nchar(10), nchar(13), nchar(10), N''<ad:if test="#user#">'', nchar(13), nchar(10), N''Hello #user.FirstName#,'', nchar(13), nchar(10), N''</ad:if>'', nchar(13), nchar(10), nchar(13), nchar(10), N''We received a request to reset the password for your account. If you made this request, click the link below. If you did not make this request, you can ignore this email.'', nchar(13), nchar(10), nchar(13), nchar(10), N''# passwordResetLink#'', nchar(13), nchar(10), nchar(13), nchar(10), N''If you have any questions regarding your hosting account, feel free to contact our support department at any time.'', nchar(13), nchar(10), nchar(13), nchar(10), N''Best regards'')
+    WHERE [PropertyName] = N''TextBody'' AND [SettingsName] = N''UserPasswordResetLetter'' AND [UserID] = 1;
+    SELECT @@ROWCOUNT');
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    EXEC(N'UPDATE [UserSettings] SET [PropertyValue] = CONCAT(CAST(N''<html xmlns="http://www.w3.org/1999/xhtml">'' AS nvarchar(max)), nchar(13), nchar(10), N''<head>'', nchar(13), nchar(10), N''    <title>Password reset notification</title>'', nchar(13), nchar(10), N''    <style type="text/css">'', nchar(13), nchar(10), N''		.Summary { background-color: ##ffffff; padding: 5px; }'', nchar(13), nchar(10), N''		.Summary .Header { padding: 10px 0px 10px 10px; font-size: 16pt; background-color: ##E5F2FF; color: ##1F4978; border-bottom: solid 2px ##86B9F7; }'', nchar(13), nchar(10), N''        .Summary A { color: ##0153A4; }'', nchar(13), nchar(10), N''        .Summary { font-family: Tahoma; font-size: 9pt; }'', nchar(13), nchar(10), N''        .Summary H1 { font-size: 1.7em; color: ##1F4978; border-bottom: dotted 3px ##efefef; }'', nchar(13), nchar(10), N''        .Summary H2 { font-size: 1.3em; color: ##1F4978; } '', nchar(13), nchar(10), N''        .Summary TABLE { border: solid 1px ##e5e5e5; }'', nchar(13), nchar(10), N''        .Summary TH,'', nchar(13), nchar(10), N''        .Summary TD.Label { padding: 5px; font-size: 8pt; font-weight: bold; background-color: ##f5f5f5; }'', nchar(13), nchar(10), N''        .Summary TD { padding: 8px; font-size: 9pt; }'', nchar(13), nchar(10), N''        .Summary UL LI { font-size: 1.1em; font-weight: bold; }'', nchar(13), nchar(10), N''        .Summary UL UL LI { font-size: 0.9em; font-weight: normal; }'', nchar(13), nchar(10), N''    </style>'', nchar(13), nchar(10), N''</head>'', nchar(13), nchar(10), N''<body>'', nchar(13), nchar(10), N''<div class="Summary">'', nchar(13), nchar(10), N''<div class="Header">'', nchar(13), nchar(10), N''<img src="#logoUrl#">'', nchar(13), nchar(10), N''</div>'', nchar(13), nchar(10), N''<h1>Password reset notification</h1>'', nchar(13), nchar(10), nchar(13), nchar(10), N''<ad:if test="#user#">'', nchar(13), nchar(10), N''<p>'', nchar(13), nchar(10), N''Hello #user.FirstName#,'', nchar(13), nchar(10), N''</p>'', nchar(13), nchar(10), N''</ad:if>'', nchar(13), nchar(10), nchar(13), nchar(10), N''<p>'', nchar(13), nchar(10), N''We received a request to reset the password for your account. Your password reset pincode:'', nchar(13), nchar(10), N''</p>'', nchar(13), nchar(10), nchar(13), nchar(10), N''# passwordResetPincode#'', nchar(13), nchar(10), nchar(13), nchar(10), N''<p>'', nchar(13), nchar(10), N''If you have any questions regarding your hosting account, feel free to contact our support department at any time.'', nchar(13), nchar(10), N''</p>'', nchar(13), nchar(10), nchar(13), nchar(10), N''<p>'', nchar(13), nchar(10), N''Best regards'', nchar(13), nchar(10), N''</p>'', nchar(13), nchar(10), N''</div>'', nchar(13), nchar(10), N''</body>'')
+    WHERE [PropertyName] = N''HtmlBody'' AND [SettingsName] = N''UserPasswordResetPincodeLetter'' AND [UserID] = 1;
+    SELECT @@ROWCOUNT');
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    EXEC(N'UPDATE [UserSettings] SET [PropertyValue] = CONCAT(CAST(nchar(13) AS nvarchar(max)), nchar(10), N''Your password reset pincode:'', nchar(13), nchar(10), N''# passwordResetPincode#'')
+    WHERE [PropertyName] = N''PasswordResetPincodeSmsBody'' AND [SettingsName] = N''UserPasswordResetPincodeLetter'' AND [UserID] = 1;
+    SELECT @@ROWCOUNT');
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    EXEC(N'UPDATE [UserSettings] SET [PropertyValue] = CONCAT(CAST(N''========================================='' AS nvarchar(max)), nchar(13), nchar(10), N''   Password reset notification'', nchar(13), nchar(10), N''========================================='', nchar(13), nchar(10), nchar(13), nchar(10), N''<ad:if test="#user#">'', nchar(13), nchar(10), N''Hello #user.FirstName#,'', nchar(13), nchar(10), N''</ad:if>'', nchar(13), nchar(10), nchar(13), nchar(10), N''We received a request to reset the password for your account. Your password reset pincode:'', nchar(13), nchar(10), nchar(13), nchar(10), N''# passwordResetPincode#'', nchar(13), nchar(10), nchar(13), nchar(10), N''If you have any questions regarding your hosting account, feel free to contact our support department at any time.'', nchar(13), nchar(10), nchar(13), nchar(10), N''Best regards'')
+    WHERE [PropertyName] = N''TextBody'' AND [SettingsName] = N''UserPasswordResetPincodeLetter'' AND [UserID] = 1;
+    SELECT @@ROWCOUNT');
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    EXEC(N'UPDATE [UserSettings] SET [PropertyValue] = CONCAT(CAST(N''================================='' AS nvarchar(max)), nchar(13), nchar(10), N''   Verification code'', nchar(13), nchar(10), N''================================='', nchar(13), nchar(10), N''<ad:if test="#user#">'', nchar(13), nchar(10), N''Hello #user.FirstName#,'', nchar(13), nchar(10), N''</ad:if>'', nchar(13), nchar(10), nchar(13), nchar(10), N''to complete the sign in, enter the verification code on the device.'', nchar(13), nchar(10), nchar(13), nchar(10), N''Verification code'', nchar(13), nchar(10), N''# verificationCode#'', nchar(13), nchar(10), nchar(13), nchar(10), N''Best regards,'', nchar(13), nchar(10))
+    WHERE [PropertyName] = N''TextBody'' AND [SettingsName] = N''VerificationCodeLetter'' AND [UserID] = 1;
+    SELECT @@ROWCOUNT');
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    EXEC(N'UPDATE [Users] SET [Changed] = ''2010-07-16T10:53:02.453''
+    WHERE [UserID] = 1;
+    SELECT @@ROWCOUNT');
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    CREATE INDEX [DmzIPAddressesIdx_ItemID] ON [DmzIPAddresses] ([ItemID]);
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    ALTER TABLE [BackgroundTaskLogs] ADD CONSTRAINT [FK__Backgroun__TaskI__7D8391DF] FOREIGN KEY ([TaskID]) REFERENCES [BackgroundTasks] ([ID]);
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    ALTER TABLE [BackgroundTaskParameters] ADD CONSTRAINT [FK__Backgroun__TaskI__7AA72534] FOREIGN KEY ([TaskID]) REFERENCES [BackgroundTasks] ([ID]);
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    ALTER TABLE [BackgroundTaskStack] ADD CONSTRAINT [FK__Backgroun__TaskI__005FFE8A] FOREIGN KEY ([TaskID]) REFERENCES [BackgroundTasks] ([ID]);
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    ALTER TABLE [Packages] ADD CONSTRAINT [FK_Packages_HostingPlans] FOREIGN KEY ([PlanID]) REFERENCES [HostingPlans] ([PlanID]) ON DELETE CASCADE;
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+
+    CREATE PROCEDURE [dbo].[GetPackageDmzIPAddresses]
+    	@PackageID int
+    AS
+    BEGIN
+
+    	SELECT
+    		DA.DmzAddressID,
+    		DA.IPAddress,
+    		DA.ItemID,
+    		SI.ItemName,
+    		DA.IsPrimary
+    	FROM DmzIPAddresses AS DA
+    	INNER JOIN ServiceItems AS SI ON DA.ItemID = SI.ItemID
+    	WHERE SI.PackageID = @PackageID
+
+    END
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+
+    CREATE PROCEDURE [dbo].[GetPackageDmzIPAddressesPaged]
+    	@PackageID int,
+    	@FilterColumn nvarchar(50) = '',
+    	@FilterValue nvarchar(50) = '',
+    	@SortColumn nvarchar(50),
+    	@StartRow int,
+    	@MaximumRows int
+    AS
+    BEGIN
+
+
+    -- start
+    DECLARE @condition nvarchar(700)
+    SET @condition = '
+    SI.PackageID = @PackageID
+    '
+
+    IF @FilterValue <> '' AND @FilterValue IS NOT NULL
+    BEGIN
+    	IF @FilterColumn <> '' AND @FilterColumn IS NOT NULL
+    		SET @condition = @condition + ' AND ' + @FilterColumn + ' LIKE ''' + @FilterValue + ''''
+    	ELSE
+    		SET @condition = @condition + '
+    			AND (IPAddress LIKE ''' + @FilterValue + '''
+    			OR ItemName LIKE ''' + @FilterValue + ''')'
+    END
+
+    IF @SortColumn IS NULL OR @SortColumn = ''
+    SET @SortColumn = 'DA.IPAddress ASC'
+
+    DECLARE @sql nvarchar(3500)
+
+    set @sql = '
+    SELECT COUNT(DA.DmzAddressID)
+    FROM dbo.DmzIPAddresses AS DA
+    INNER JOIN dbo.ServiceItems AS SI ON DA.ItemID = SI.ItemID
+    WHERE ' + @condition + '
+
+    DECLARE @Addresses AS TABLE
+    (
+    	DmzAddressID int
+    );
+
+    WITH TempItems AS (
+    	SELECT ROW_NUMBER() OVER (ORDER BY ' + @SortColumn + ') as Row,
+    		DA.DmzAddressID
+    	FROM dbo.DmzIPAddresses AS DA
+    	INNER JOIN dbo.ServiceItems AS SI ON DA.ItemID = SI.ItemID
+    	WHERE ' + @condition + '
+    )
+
+    INSERT INTO @Addresses
+    SELECT DmzAddressID FROM TempItems
+    WHERE TempItems.Row BETWEEN @StartRow + 1 and @StartRow + @MaximumRows
+
+    SELECT
+    	DA.DmzAddressID,
+    	DA.IPAddress,
+    	DA.ItemID,
+    	SI.ItemName,
+    	DA.IsPrimary
+    FROM @Addresses AS TA
+    INNER JOIN dbo.DmzIPAddresses AS DA ON TA.DmzAddressID = DA.DmzAddressID
+    INNER JOIN dbo.ServiceItems AS SI ON DA.ItemID = SI.ItemID
+    '
+
+    print @sql
+
+    exec sp_executesql @sql, N'@PackageID int, @StartRow int, @MaximumRows int',
+    @PackageID, @StartRow, @MaximumRows
+
+    END
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+
+    CREATE PROCEDURE [dbo].[AddItemDmzIPAddress]
+    (
+    	@ActorID int,
+    	@ItemID int,
+    	@IPAddress varchar(15)
+    )
+    AS
+    BEGIN
+
+    	IF EXISTS (SELECT ItemID FROM ServiceItems AS SI WHERE ItemID = @ItemID AND dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1)
+    	BEGIN
+
+    		INSERT INTO DmzIPAddresses
+    		(
+    			ItemID,
+    			IPAddress,
+    			IsPrimary
+    		)
+    		VALUES
+    		(
+    			@ItemID,
+    			@IPAddress,
+    			0 -- not primary
+    		)
+
+    	END
+    END
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+
+    CREATE PROCEDURE [dbo].[SetItemDmzPrimaryIPAddress]
+    (
+    	@ActorID int,
+    	@ItemID int,
+    	@DmzAddressID int
+    )
+    AS
+    BEGIN
+    	UPDATE DmzIPAddresses
+    	SET IsPrimary = CASE DIP.DmzAddressID WHEN @DmzAddressID THEN 1 ELSE 0 END
+    	FROM DmzIPAddresses AS DIP
+    	INNER JOIN ServiceItems AS SI ON DIP.ItemID = SI.ItemID
+    	WHERE DIP.ItemID = @ItemID
+    	AND dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1
+    END
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+
+    CREATE PROCEDURE DeleteItemDmzIPAddress
+    (
+    	@ActorID int,
+    	@ItemID int,
+    	@DmzAddressID int
+    )
+    AS
+    BEGIN
+    	DELETE FROM DmzIPAddresses
+    	FROM DmzIPAddresses AS DIP
+    	INNER JOIN ServiceItems AS SI ON DIP.ItemID = SI.ItemID
+    	WHERE DIP.DmzAddressID = @DmzAddressID
+    	AND dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1
+    END
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+
+    CREATE PROCEDURE [dbo].[GetItemDmzIPAddresses]
+    (
+    	@ActorID int,
+    	@ItemID int
+    )
+    AS
+    BEGIN
+    SELECT
+    	DIP.DmzAddressID AS AddressID,
+    	DIP.IPAddress,
+    	DIP.IsPrimary
+    FROM DmzIPAddresses AS DIP
+    INNER JOIN ServiceItems AS SI ON DIP.ItemID = SI.ItemID
+    WHERE DIP.ItemID = @ItemID
+    AND dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1
+    ORDER BY DIP.IsPrimary DESC
+    END
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+
+    CREATE PROCEDURE DeleteItemDmzIPAddresses
+    (
+    	@ActorID int,
+    	@ItemID int
+    )
+    AS
+    BEGIN
+    	DELETE FROM DmzIPAddresses
+    	FROM DmzIPAddresses AS DIP
+    	INNER JOIN ServiceItems AS SI ON DIP.ItemID = SI.ItemID
+    	WHERE DIP.ItemID = @ItemID
+    	AND dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1
+    END
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+
+    CREATE PROCEDURE [dbo].[GetPackageDmzNetworkVLANs]
+    (
+     @PackageID int,
+     @SortColumn nvarchar(50),
+     @StartRow int,
+     @MaximumRows int
+    )
+    AS
+    BEGIN
+    -- start
+    DECLARE @condition nvarchar(700)
+    SET @condition = '
+    dbo.CheckPackageParent(@PackageID, PA.PackageID) = 1
+    AND PA.IsDmz = 1
+    '
+
+    IF @SortColumn IS NULL OR @SortColumn = ''
+    SET @SortColumn = 'V.Vlan ASC'
+
+    DECLARE @sql nvarchar(3500)
+
+    set @sql = '
+    SELECT COUNT(PA.PackageVlanID)
+    FROM dbo.PackageVLANs PA
+    INNER JOIN dbo.PrivateNetworkVLANs AS V ON PA.VlanID = V.VlanID
+    INNER JOIN dbo.Packages P ON PA.PackageID = P.PackageID
+    INNER JOIN dbo.Users U ON U.UserID = P.UserID
+    WHERE ' + @condition + '
+
+    DECLARE @VLANs AS TABLE
+    (
+     PackageVlanID int
+    );
+
+    WITH TempItems AS (
+     SELECT ROW_NUMBER() OVER (ORDER BY ' + @SortColumn + ') as Row,
+      PA.PackageVlanID
+     FROM dbo.PackageVLANs PA
+     INNER JOIN dbo.PrivateNetworkVLANs AS V ON PA.VlanID = V.VlanID
+     INNER JOIN dbo.Packages P ON PA.PackageID = P.PackageID
+     INNER JOIN dbo.Users U ON U.UserID = P.UserID
+     WHERE ' + @condition + '
+    )
+
+    INSERT INTO @VLANs
+    SELECT PackageVlanID FROM TempItems
+    WHERE TempItems.Row BETWEEN @StartRow + 1 and @StartRow + @MaximumRows
+
+    SELECT
+     PA.PackageVlanID,
+     PA.VlanID,
+     V.Vlan,
+     PA.PackageID,
+     P.PackageName,
+     P.UserID,
+     U.UserName
+    FROM @VLANs AS TA
+    INNER JOIN dbo.PackageVLANs AS PA ON TA.PackageVlanID = PA.PackageVlanID
+    INNER JOIN dbo.PrivateNetworkVLANs AS V ON PA.VlanID = V.VlanID
+    INNER JOIN dbo.Packages P ON PA.PackageID = P.PackageID
+    INNER JOIN dbo.Users U ON U.UserID = P.UserID
+    '
+
+    print @sql
+
+    exec sp_executesql @sql, N'@PackageID int, @StartRow int, @MaximumRows int',
+    @PackageID, @StartRow, @MaximumRows
+
+    END
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+
+    DROP PROCEDURE IF EXISTS [dbo].[GetPackageServiceID]
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    CREATE PROCEDURE [dbo].[GetPackageServiceID]
+    (
+    	@ActorID int,
+    	@PackageID int,
+    	@GroupName nvarchar(100),
+    	@UpdatePackage bit,
+    	@ServiceID int OUTPUT
+    )
+    AS
+    BEGIN
+
+    -- check rights
+    IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+    RAISERROR('You are not allowed to access this package', 16, 1)
+
+    SET @ServiceID = 0
+
+    -- optimized run when we don't need any changes
+    IF @UpdatePackage = 0
+    BEGIN
+    SELECT
+    	@ServiceID = PS.ServiceID
+    FROM PackageServices AS PS
+    INNER JOIN Services AS S ON PS.ServiceID = S.ServiceID
+    INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
+    INNER JOIN ResourceGroups AS RG ON RG.GroupID = P.GroupID
+    WHERE PS.PackageID = @PackageID AND RG.GroupName = @GroupName
+    RETURN
+    END
+
+    -- load group info
+    DECLARE @GroupID int
+    SELECT @GroupID = GroupID FROM ResourceGroups
+    WHERE GroupName = @GroupName
+
+    -- check if user has this resource enabled
+    IF dbo.GetPackageAllocatedResource(@PackageID, @GroupID, NULL) = 0
+    BEGIN
+    	-- remove all resource services from the space
+    	DELETE FROM PackageServices FROM PackageServices AS PS
+    	INNER JOIN Services AS S ON PS.ServiceID = S.ServiceID
+    	INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
+    	WHERE P.GroupID = @GroupID AND PS.PackageID = @PackageID
+    	RETURN
+    END
+
+    -- check if the service is already distributed
+    SELECT
+    	@ServiceID = PS.ServiceID
+    FROM PackageServices AS PS
+    INNER JOIN Services AS S ON PS.ServiceID = S.ServiceID
+    INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
+    WHERE PS.PackageID = @PackageID AND P.GroupID = @GroupID
+
+    IF @ServiceID <> 0
+    RETURN
+
+    -- distribute services
+    EXEC DistributePackageServices @ActorID, @PackageID
+
+    -- get distributed service again
+    SELECT
+    	@ServiceID = PS.ServiceID
+    FROM PackageServices AS PS
+    INNER JOIN Services AS S ON PS.ServiceID = S.ServiceID
+    INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
+    WHERE PS.PackageID = @PackageID AND P.GroupID = @GroupID
+
+    END
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+                
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20240709093225_AddedDMZ', N'8.0.6');
 END;
 GO
 
