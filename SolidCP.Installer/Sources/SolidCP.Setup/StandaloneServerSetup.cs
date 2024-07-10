@@ -232,7 +232,7 @@ namespace SolidCP.Setup
 														Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdminPassword));
 							break;
 						case "sqlite":
-							esServerSetup.DbInstallConnectionString = SqlUtils.BuildSqliteConnectionString(esServerSetup.DatabaseServer);
+							esServerSetup.DbInstallConnectionString = SqlUtils.BuildSqliteMasterConnectionString(esServerSetup.Database, esServerSetup);
 							break;
 						default: throw new NotSupportedException("This database type is not supported.");
 					}

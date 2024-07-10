@@ -79,9 +79,7 @@ packages/
 /SolidCP/Sources/Tools/SCPTransportAgent/SCPTransportAgent.dll
 /SolidCP.Installer/Sources/packages/
 /SolidCP.Installer/Sources/Setup.WIXBootstrapper/SolidCP.msi
-/SolidCP.Installer/Sources/Setup.WIXBootstrapper/SolidCP.msi
 /SolidCP.Installer/Sources/SolidCP.Installer/[Uu]pdater.exe
-/SolidCP.Installer/Sources/SolidCP.UniversalInstaller/Resources/
 /SolidCP/SolidCP-Auto-Upgrade.ps1
 /SolidCP/Dev_CleanRelease.ps1
 /SolidCP/CleanRelease_Marc_Dev.ps1

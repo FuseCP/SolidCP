@@ -326,7 +326,7 @@ namespace SolidCP.Setup.Actions
                     return;
                 }
 
-                var probingPaths = string.Join(";", new string[] { "bin", "bin\\Code" }
+                var probingPaths = string.Join(";", new string[] { "bin", "bin\\Code", "bin\\netstandard" }
                     .Select(path => Path.Combine(vars.EnterpriseServerPath, path)));
                 var doc = XElement.Load(configPath);
                 var appSettings = doc.Element("appSettings");

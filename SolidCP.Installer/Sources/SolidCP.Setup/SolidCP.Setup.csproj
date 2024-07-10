@@ -426,13 +426,21 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\BannerImage.GIF" />
+    <EmbeddedResource Include="Resources\System.Threading.Tasks.Extensions.dll" />
+    <EmbeddedResource Include="Resources\Google.Protobuf.dll" />
+    <EmbeddedResource Include="Resources\K4os.Compression.LZ4.Streams.dll" />
+    <EmbeddedResource Include="Resources\x64\SQLite.Interop.dll" />
+    <EmbeddedResource Include="Resources\x86\SQLite.Interop.dll" />
     <EmbeddedResource Include="Resources\wacs.exe" />
     <EmbeddedResource Include="Resources\System.Diagnostics.EventLog.dll" />
     <EmbeddedResource Include="Resources\System.IO.FileSystem.AccessControl.dll" />
     <!--<EmbeddedResource Include="Resources\SolidCP.Installer.Core.pdb" />-->
     <EmbeddedResource Include="Resources\Mono.Posix.NETStandard.dll" />
     <EmbeddedResource Include="Resources\logo.png" />
+    <EmbeddedResource Include="Resources\BouncyCastle.Cryptography.dll" />
     <Content Include="Resources\Icons.MenuFileOpenIcon.png" />
+    <EmbeddedResource Include="Resources\MySql.Data.dll" />
+    <EmbeddedResource Include="Resources\System.Data.SQLite.dll" />
     <Content Include="Resources\System.Runtime.CompilerServices.Unsafe.dll" />
     <EmbeddedResource Include="Resources\System.Security.AccessControl.dll" />
     <EmbeddedResource Include="Resources\System.Security.Principal.Windows.dll" />
@@ -558,6 +566,15 @@
       <FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.IO.FileSystem.AccessControl.dll" />
       <FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.Security.AccessControl.dll" />
       <FilesToCopy Include="..\..\..\SolidCP\Bin\net48\Renci.SshNet.dll" />
+      <FilesToCopy Include="..\..\Build\$(Configuration)\MySql.Data.dll" />
+      <FilesToCopy Include="..\..\Build\$(Configuration)\BouncyCastle.Cryptography.dll" />
+      <FilesToCopy Include="..\..\Build\$(Configuration)\Google.Protobuf.dll" />
+      <FilesToCopy Include="..\..\Build\$(Configuration)\K4os.Compression.LZ4.Streams.dll" />
+      <FilesToCopy Include="..\..\Build\$(Configuration)\ZstdSharp.dll" />
+      <FilesToCopy Include="..\..\Build\$(Configuration)\System.Threading.Tasks.Extensions.dll" />
+      <FilesToCopy Include="..\..\Build\$(Configuration)\System.Data.SQLite.dll" />
+      <FilesToCopyX64 Include="..\..\Build\$(Configuration)\x64\SQLite.Interop.dll" />
+      <FilesToCopyX86 Include="..\..\Build\$(Configuration)\x86\SQLite.Interop.dll" />
     </ItemGroup>
     <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
       <FilesToCopy Include="..\..\..\SolidCP\Bin\netstandard2.0\SolidCP.Providers.Base.pdb" />
@@ -579,6 +596,8 @@
       <FilesToCopy Include="..\..\..\SolidCP\Bin\net48\SolidCP.Web.Clients.pdb" />
     </ItemGroup>
     <Copy SourceFiles="@(FilesToCopy)" DestinationFolder="Resources" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(FilesToCopyX64)" DestinationFolder="Resources\x64" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(FilesToCopyX86)" DestinationFolder="Resources\x86" SkipUnchangedFiles="true" />
   </Target>
   <Target Name="DeleteDlls">
     <Message Text="Deleting unused files" Importance="high" />

@@ -39,6 +39,8 @@ using System.Text;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Xml;
+using System.Xml.Linq;
+using SolidCP.Providers.Common;
 
 namespace SolidCP.Setup.Actions
 {
@@ -341,8 +343,8 @@ namespace SolidCP.Setup.Actions
 	public class UpdateServeradminPasswAction : Action, IInstallAction
 	{
 		public const string MsSqlStatement = @"USE [{0}]; UPDATE [dbo].[Users] SET [Password] = '{1}' WHERE [UserID] = 1;";
-		public const string SqliteStatement = @"UPDATE Users SET Password = '{1}' WHERE UserID = 1;";
-		public const string MySqlStatement = @"USE {0}; UPDATE public.Users SET Password = '{1}' WHERE UserID = 1;";
+		public const string SqliteStatement = @"UPDATE Users SET Password = '{0}' WHERE UserID = 1;";
+		public const string MySqlStatement = @"USE {0}; UPDATE Users SET Password = '{1}' WHERE UserID = 1;";
 
 		void IInstallAction.Run(SetupVariables vars)
 		{
@@ -415,22 +417,32 @@ namespace SolidCP.Setup.Actions
 		{
 			Log.WriteStart("Updating web.config file (connection string)");
 			var file = Path.Combine(vars.InstallationFolder, vars.ConfigurationFile);
-			vars.ConnectionString = String.Format(vars.ConnectionString, vars.DatabaseServer, vars.Database, vars.Database, vars.DatabaseUserPassword);
-			var Xml = new XmlDocument();
-			Xml.Load(file);
-			var ConnNode = Xml.SelectSingleNode("configuration/connectionStrings/add[@name='EnterpriseServer']") as XmlElement;
-			if (ConnNode != null)
-				ConnNode.SetAttribute("connectionString", vars.ConnectionString);
+			SqlUtils.SetConnectionString(vars);
+			var Xml = XDocument.Load(file);
+			var connectionStrings = Xml
+				.Element("configuration")
+				?.Element("connectionStrings");
+			var ConnNode = connectionStrings
+				?.Elements("add")
+				.FirstOrDefault(e => (string)e.Attribute("name") == "EnterpriseServer");
+			if (ConnNode == null) connectionStrings.Add(ConnNode = new XElement("add", new XAttribute("name", "EnterpriseServer")));
+			ConnNode.Attribute("connectionString").SetValue(vars.ConnectionString);
+			ConnNode.Attribute("providerName")?.Remove();
 			Xml.Save(file);
 			Log.WriteEnd(String.Format("Updated {0} file", vars.ConfigurationFile));
 			// Schedular
 			var file1 = Path.Combine(vars.InstallationFolder, "Bin", "SolidCP.SchedulerService.exe.config");
-			var Xml1 = new XmlDocument();
-			Xml1.Load(file);
-			var ConnNode1 = Xml1.SelectSingleNode("configuration/connectionStrings/add[@name='EnterpriseServer']") as XmlElement;
-			if (ConnNode1 != null)
-				ConnNode1.SetAttribute("connectionString", vars.ConnectionString);
-			Xml.Save(file1);
+			var Xml1 = XDocument.Load(file1);
+			var connectionStrings1 = Xml1
+				.Element("configuration")
+				?.Element("connectionStrings");
+			var ConnNode1 = connectionStrings1
+				?.Elements("add")
+				.FirstOrDefault(e => (string)e.Attribute("name") == "EnterpriseServer");
+			if (ConnNode1 == null) connectionStrings1.Add(ConnNode1 = new XElement("add", new XAttribute("name", "EnterpriseServer")));
+			ConnNode1.Attribute("connectionString").SetValue(vars.ConnectionString);
+			ConnNode1.Attribute("providerName")?.Remove();
+			Xml1.Save(file1);
 			Log.WriteEnd(String.Format("Updated {0} file", vars.ConfigurationFile));
 		}
 	}
@@ -448,7 +460,7 @@ namespace SolidCP.Setup.Actions
 				content = reader.ReadToEnd();
 			}
 
-			vars.ConnectionString = String.Format(vars.ConnectionString, vars.DatabaseServer, vars.Database, vars.Database, vars.DatabaseUserPassword);
+			SqlUtils.SetConnectionString(vars);
 			content = Utils.ReplaceScriptVariable(content, "installer.connectionstring", vars.ConnectionString);
 
 			using (var writer = new StreamWriter(file))
@@ -530,7 +542,7 @@ namespace SolidCP.Setup.Actions
 			AppConfig.SetComponentSettingStringValue(vars.ComponentId, "Database", vars.Database);
 			AppConfig.SetComponentSettingBooleanValue(vars.ComponentId, "NewDatabase", vars.CreateDatabase);
 			//
-			AppConfig.SetComponentSettingStringValue(vars.ComponentId, "DatabaseUser", vars.Database);
+			AppConfig.SetComponentSettingStringValue(vars.ComponentId, "DatabaseUser", vars.DatabaseUser);
 			AppConfig.SetComponentSettingBooleanValue(vars.ComponentId, "NewDatabaseUser", vars.NewDatabaseUser);
 			//
 			AppConfig.SetComponentSettingStringValue(vars.ComponentId, Global.Parameters.ConnectionString, vars.ConnectionString);

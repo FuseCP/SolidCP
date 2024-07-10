@@ -8,7 +8,6 @@
 		<OutputType>Exe</OutputType>
 		<StartupObject>SolidCP.EnterpriseServer.Data.Program</StartupObject>
         <EntityFramework6>6.5</EntityFramework6> <!-- Use EntityFramework 6.4 or 6.5 -->
-        <OutputPath></OutputPath>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net48'">

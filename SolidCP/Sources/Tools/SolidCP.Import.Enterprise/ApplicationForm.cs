@@ -47,7 +47,7 @@ namespace SolidCP.Import.Enterprise
 	{
 		private string username;
 		private string password;
-		private OrganizationImporter importer;
+		//private OrganizationImporter importer;
 		internal bool ImportStarted = false;
 		
 
@@ -57,21 +57,21 @@ namespace SolidCP.Import.Enterprise
 			CheckForIllegalCrossThreadCalls = false;
 		}
 
+		Controller EnterpriseServer => new Controller();
+
 		public void InitializeForm(string username, string password)
 		{
 			this.username = username;
 			this.password = password;
-			UserInfo info = UserController.GetUser(username);
-			SecurityContext.SetThreadPrincipal(info);
-			
-			importer = new OrganizationImporter();
-
+			using (var ES = EnterpriseServer)
+			{
+				UserInfo info = ES.UserController.GetUser(username);
+				ES.SecurityContext.SetThreadPrincipal(info);
+			}
 			Assembly assembly = Assembly.GetExecutingAssembly();
 			this.Text += " v" + assembly.GetName().Version.ToString(3);
 			UpdateForm();
 		}
-
-
 
 		private void OnBrowseSpace(object sender, EventArgs e)
 		{
@@ -92,15 +92,18 @@ namespace SolidCP.Import.Enterprise
 
 		private void LoadSpaceData(PackageInfo packageInfo)
 		{
-			int serviceId = PackageController.GetPackageServiceId(packageInfo.PackageId, ResourceGroups.HostedOrganizations);
-			ServiceInfo serviceInfo = ServerController.GetServiceInfo(serviceId);
-			StringDictionary serviceSettings = ServerController.GetServiceSettingsAdmin(serviceId);
-			Global.RootOU = serviceSettings["RootOU"];
-			Global.PrimaryDomainController = serviceSettings["PrimaryDomainController"];
-			Global.TempDomain = serviceSettings["TempDomain"];
-			ServerInfo serverInfo = ServerController.GetServerById(serviceInfo.ServerId, false);
-			Global.ADRootDomain = serverInfo.ADRootDomain;
-            Global.NetBiosDomain = ActiveDirectoryUtils.GetNETBIOSDomainName(Global.ADRootDomain);
+			using (var ES = EnterpriseServer)
+			{
+				int serviceId = ES.PackageController.GetPackageServiceId(packageInfo.PackageId, ResourceGroups.HostedOrganizations);
+				ServiceInfo serviceInfo = ES.ServerController.GetServiceInfo(serviceId);
+				StringDictionary serviceSettings = ES.ServerController.GetServiceSettingsAdmin(serviceId);
+				Global.RootOU = serviceSettings["RootOU"];
+				Global.PrimaryDomainController = serviceSettings["PrimaryDomainController"];
+				Global.TempDomain = serviceSettings["TempDomain"];
+				ServerInfo serverInfo = ES.ServerController.GetServerById(serviceInfo.ServerId, false);
+				Global.ADRootDomain = serverInfo.ADRootDomain;
+				Global.NetBiosDomain = ActiveDirectoryUtils.GetNETBIOSDomainName(Global.ADRootDomain);
+			}
 		}
 
 		private void OnBrowseOU(object sender, EventArgs e)
@@ -135,30 +138,37 @@ namespace SolidCP.Import.Enterprise
             cbMailboxPlan.Items.Add("<not set>");
             cbMailboxPlan.SelectedIndex = 0;
 
-            Organization org = OrganizationController.GetOrganizationById(orgId);
+			using (var ES = EnterpriseServer)
+			{
+				Organization org = ES.OrganizationController.GetOrganizationById(orgId);
 
-            if (org == null)
-            {
-                List<Organization> orgs = ExchangeServerController.GetExchangeOrganizations(1, false);
-                if (orgs.Count > 0)
-                    org = orgs[0];
-            }
+				if (org == null)
+				{
+					List<Organization> orgs = ES.ExchangeServerController.GetExchangeOrganizations(1, false);
+					if (orgs.Count > 0)
+						org = orgs[0];
+				}
 
-            if (org != null)
-            {
-                int itemId = org.Id;
-                List<ExchangeMailboxPlan> plans = ExchangeServerController.GetExchangeMailboxPlans(itemId, false);
-                cbMailboxPlan.Items.AddRange(plans.ToArray());
-            }
-
+				if (org != null)
+				{
+					int itemId = org.Id;
+					List<ExchangeMailboxPlan> plans = ES.ExchangeServerController.GetExchangeMailboxPlans(itemId, false);
+					cbMailboxPlan.Items.AddRange(plans.ToArray());
+				}
+			}
         }
 
 		private void LoadOrganizationData(DirectoryEntry parent)
 		{
 			string orgId = (string)parent.Properties["name"].Value;
 			txtOrgId.Text = orgId;
-		
-			Organization org = OrganizationController.GetOrganizationById(orgId);
+
+			Organization org;
+			using (var ES = EnterpriseServer)
+			{
+				org = ES.OrganizationController.GetOrganizationById(orgId);
+			}
+			
 			if (org != null)
 			{
 				rbCreateAndImport.Checked = false;
@@ -375,8 +385,11 @@ namespace SolidCP.Import.Enterprise
 
             }
 
-			importer.Initialize(this.username, this);
-			importer.Start();
+			using (var ES = EnterpriseServer)
+			{
+				ES.OrganizationImporter.Initialize(this.username, this);
+				ES.OrganizationImporter.Start();
+			}
 			
 		}
 

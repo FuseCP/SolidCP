@@ -121,7 +121,7 @@ namespace SolidCP.Setup
 							);
 							break;
 						case "sqlite":
-							setupVariables.DbInstallConnectionString = SqlUtils.BuildSqliteConnectionString(setupVariables.Database);
+							setupVariables.DbInstallConnectionString = SqlUtils.BuildSqliteMasterConnectionString(setupVariables.Database, setupVariables);
 							break;
 						default: break;
 					}

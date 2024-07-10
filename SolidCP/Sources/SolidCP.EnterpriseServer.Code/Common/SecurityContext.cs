@@ -57,6 +57,7 @@ namespace SolidCP.EnterpriseServer
         public const string CONTEXT_USER_INFO = "CONTEXT_USER_INFO";
 
         public SecurityContext(ControllerBase provider) : base(provider) { }
+        public SecurityContext() : this(null) { }
 
         public void SetThreadPrincipal(int userId)
         {

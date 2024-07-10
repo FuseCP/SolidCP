@@ -261,7 +261,7 @@ namespace SolidCP.Setup.Internal
 												Utils.GetStringSetupParameter(Hash, Global.Parameters.DbServerAdminPassword));
 					break;
 				case "sqlite":
-					Dst.DbInstallConnectionString = SqlUtils.BuildSqliteConnectionString(Dst.DatabaseServer);
+					Dst.DbInstallConnectionString = SqlUtils.BuildSqliteMasterConnectionString(Dst.Database, Dst);
 					break;
 				default: throw new NotSupportedException("This database type is not supported.");
 			}
@@ -4931,7 +4931,8 @@ namespace SolidCP.Setup.Internal
 					}
 					else
 					{
-						Context.ConnectionString = string.Format(Context.ConnectionString, Context.DatabaseServer, Context.Database, Context.DatabaseUser, Context.DatabaseUserPassword);
+						SqlUtils.SetConnectionString(Context);
+						//Context.ConnectionString = string.Format(Context.ConnectionString, Context.DatabaseServer, Context.Database, Context.DatabaseUser, Context.DatabaseUserPassword);
 					}
 					if (string.IsNullOrWhiteSpace(Context.ServiceName) || string.IsNullOrWhiteSpace(Context.ServiceFile))
 					{

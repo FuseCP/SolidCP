@@ -39,13 +39,9 @@ using System.Reflection;
 using MySql.Data;
 using MySql.Data.MySqlClient;
 using System.Data.SQLite;
-using System.Xml.Linq;
-using Mysqlx.Expr;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
-using System.Data.Entity;
-using Google.Protobuf.WellKnownTypes;
-using Mysqlx.Crud;
-using static Org.BouncyCastle.Asn1.Cmp.Challenge;
+using SolidCP.Providers.Common;
+using System.Text;
+using Microsoft.Web.Management.Client;
 
 namespace SolidCP.Setup
 {
@@ -68,7 +64,7 @@ namespace SolidCP.Setup
 
 		public static string BuildMySqlServerMasterConnectionString(string dbServer, string port, string dbLogin, string dbPassw)
 		{
-			return BuildMySqlServerConnectionString(dbServer, port, dbLogin, dbPassw, "sys");
+			return BuildMySqlServerConnectionString(dbServer, port, dbLogin, dbPassw, "mysql");
 		}
 
 		public static string BuildMsSqlServerConnectionString(string dbServer, string dbName, string dbLogin, string dbPassw)
@@ -88,11 +84,51 @@ namespace SolidCP.Setup
 			return $"DbType=MySql;Server={server};Port={port};User={user};Password={password};Database={database}";
 		}
 
-		public static string BuildSqliteConnectionString(string database, bool integrated = false)
+		public static string BuildSqliteMasterConnectionString(string database, SetupVariables vars)
 		{
-			if (Path.IsPathRooted(database) || database.Contains(Path.DirectorySeparatorChar.ToString()))
-				return $"Data Source={database}";
-			else return $"Data Source={(integrated ? "..\\EnterpriseServer\\" : "")}App_Data\\{database}.sqlite";
+			var integrated = vars.EmbedEnterpriseServer;
+
+			if (!Path.IsPathRooted(database)) {
+				if (!database.Contains(Path.DirectorySeparatorChar.ToString()))
+				{
+					database = $"{database}.sqlite";
+					if (integrated) database = Path.Combine(vars.EnterpriseServerPath, "App_Data", database);
+					else database = Path.Combine("App_Data", database);
+				}
+				database = Path.GetFullPath(Path.Combine(vars.InstallationFolder, database));
+			}
+			return $"DbType=Sqlite;Data Source={database}";
+		}
+
+		public static string BuildSqliteConnectionString(string database, SetupVariables vars)
+		{
+			if (!Path.IsPathRooted(database) && !database.Contains(Path.DirectorySeparatorChar.ToString()))
+			{
+				database = $"{database}.sqlite";
+				var integrated = vars.EmbedEnterpriseServer;
+				if (integrated) database = Path.Combine(vars.EnterpriseServerPath, "App_Data", database);
+				else database = Path.Combine("App_Data", database);
+			}
+			return $"DbType=Sqlite;Data Source={database}";
+		}
+
+		public static void SetConnectionString(SetupVariables vars)
+		{
+			switch (vars.DatabaseType.ToLowerInvariant())
+			{
+				case "mssql":
+					vars.ConnectionString = SqlUtils.BuildMsSqlServerConnectionString(
+						vars.DatabaseServer, vars.Database, vars.Database, vars.DatabaseUserPassword);
+					break;
+				case "mysql":
+					vars.ConnectionString = SqlUtils.BuildMySqlServerConnectionString(
+						vars.DatabaseServer, vars.DatabasePort.ToString(), vars.Database,
+						vars.DatabaseUserPassword, vars.Database);
+					break;
+				case "sqlite":
+					vars.ConnectionString = SqlUtils.BuildSqliteConnectionString(vars.Database, vars);
+					break;
+			}
 		}
 
 		internal static bool CheckSqlConnection(string connectionString)
@@ -131,7 +167,10 @@ namespace SolidCP.Setup
 
 		internal static bool CheckMySqlConnection(string connectionString)
 		{
-			MySql.Data.MySqlClient.MySqlConnection conn = new MySql.Data.MySqlClient.MySqlConnection(connectionString);
+			var csb = new ConnectionStringBuilder(connectionString);
+			csb["database"] = "mysql";
+			connectionString = csb.ToString();
+			MySqlConnection conn = new MySqlConnection(connectionString);
 			try
 			{
 				conn.Open();
@@ -147,42 +186,41 @@ namespace SolidCP.Setup
 
 		internal static bool CheckSqliteConnection(string connectionString)
 		{
-			/*var csb = new System.Data.Common.DbConnectionStringBuilder();
-			csb.ConnectionString = connectionString;
+			/*var csb = new ConnectionStringBuilder(connectionString);
 			var dbFile = (string)(csb["data source"] ?? "");
 			var assemblyPath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
 			if (!Path.IsPathRooted(dbFile)) dbFile = Path.GetFullPath(Path.Combine(assemblyPath, "..", dbFile));
 			var dir = new DirectoryInfo(Path.GetDirectoryName(dbFile)).Exists;*/
 			return true;
 		}
-        /// <summary>
-        /// Gets the version of SQL Server instance.
-        /// </summary>
+		/// <summary>
+		/// Gets the version of SQL Server instance.
+		/// </summary>
 		/// <param name="connectionString">Connection string.</param>
-        /// <returns>True if connecion is valid, otherwise false.</returns>
-        internal static string GetMsSqlServerVersion(string connectionString)
-        {
-            SqlConnection conn = new SqlConnection(connectionString);
-            try
-            {
-                SqlCommand cmd = new SqlCommand("SELECT SERVERPROPERTY('productversion')", conn);
-                conn.Open();
-                SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
-                string version = "unknown";
-                if (reader.HasRows)
-                {
-                    reader.Read();
-                    version = reader[0].ToString();
-                    reader.Close();
-                }
-                return version;
-            }
-            finally
-            {
-                if (conn != null && conn.State == ConnectionState.Open)
-                    conn.Close();
-            }
-        }
+		/// <returns>True if connecion is valid, otherwise false.</returns>
+		internal static string GetMsSqlServerVersion(string connectionString)
+		{
+			SqlConnection conn = new SqlConnection(connectionString);
+			try
+			{
+				SqlCommand cmd = new SqlCommand("SELECT SERVERPROPERTY('productversion')", conn);
+				conn.Open();
+				SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+				string version = "unknown";
+				if (reader.HasRows)
+				{
+					reader.Read();
+					version = reader[0].ToString();
+					reader.Close();
+				}
+				return version;
+			}
+			finally
+			{
+				if (conn != null && conn.State == ConnectionState.Open)
+					conn.Close();
+			}
+		}
 
 		/// <summary>
 		/// Gets the security mode of SQL Server.
@@ -234,7 +272,7 @@ namespace SolidCP.Setup
 		}
 
 		internal static int ExecuteStoredProcedure(string connectionString, string name, params SqlParameter[] commandParameters)
-        {
+		{
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
 				connection.Open();
@@ -266,7 +304,7 @@ namespace SolidCP.Setup
 				connection.Close();
 				return ret;
 			}
-        }
+		}
 
 		private static int ExecuteNonQuery(string connectionString, string commandText)
 		{
@@ -342,8 +380,7 @@ namespace SolidCP.Setup
 
 		internal static void ParseConnectionString(string connectionString, out string dbType, out string nativeConnectionString)
 		{
-			var csb = new System.Data.Common.DbConnectionStringBuilder();
-			csb.ConnectionString = connectionString;
+			var csb = new ConnectionStringBuilder(connectionString);
 			dbType = ((string)(csb["dbtype"] ?? "")).ToLowerInvariant();
 			csb.Remove("dbtype");
 			nativeConnectionString = csb.ToString();
@@ -417,10 +454,16 @@ namespace SolidCP.Setup
 			}
 		}
 
+		public static string ChangeDb(string connectionString, string database)
+		{
+			var csb = new ConnectionStringBuilder(connectionString);
+			csb["database"] = database;
+			return csb.ToString();
+		}
 		public static DataSet ExecuteSql(string Conn, string Query)
-        {
-            return ExecuteQuery(Conn, Query);
-        }
+		{
+			return ExecuteQuery(Conn, Query);
+		}
 
 		/// <summary>
 		/// Checks if the database exists.
@@ -438,11 +481,11 @@ namespace SolidCP.Setup
 					return (ExecuteQuery(connectionString,
 						String.Format("select name from master..sysdatabases where name = '{0}'", databaseName)).Tables[0].Rows.Count > 0);
 				case "mysql":
+
 					return (ExecuteQuery(connectionString,
 						$"SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{databaseName}'").Tables[0].Rows.Count > 0);
 				case "sqlite":
-					var csb = new System.Data.Common.DbConnectionStringBuilder();
-					csb.ConnectionString = connectionString;
+					var csb = new ConnectionStringBuilder(connectionString);
 					var dbFile = (string)(csb["data source"] ?? "");
 					var assemblyPath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
 					if (!Path.IsPathRooted(dbFile)) dbFile = Path.GetFullPath(Path.Combine(assemblyPath, "..", dbFile));
@@ -450,8 +493,8 @@ namespace SolidCP.Setup
 				default: return false;
 			}
 		}
-        public static bool IsEmptyDatabase(string ConnStr, string DbName)
-        {
+		public static bool IsEmptyDatabase(string ConnStr, string DbName)
+		{
 			string dbType;
 			int Tmp;
 			ParseConnectionString(ConnStr, out dbType, out ConnStr);
@@ -464,8 +507,7 @@ namespace SolidCP.Setup
 					Tmp = (int)ExecuteSql(ConnStr, $"SELECT COUNT(DISTINCT `TABLE_NAME`) AS anyAliasName FROM `INFORMATION_SCHEMA`. `COLUMNS` WHERE `table_schema` = '{DbName}';").Tables[0].Rows[0][0];
 					return Tmp == 0;
 				case "sqlite":
-					var csb = new System.Data.Common.DbConnectionStringBuilder();
-					csb.ConnectionString = ConnStr;
+					var csb = new ConnectionStringBuilder(ConnStr);
 					var dbFile = (string)(csb["data source"] ?? "");
 					var assemblyPath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
 					if (!Path.IsPathRooted(dbFile)) dbFile = Path.GetFullPath(Path.Combine(assemblyPath, "..", dbFile));
@@ -475,7 +517,7 @@ namespace SolidCP.Setup
 					return Tmp == 0;
 				default: return false;
 			}
-        }
+		}
 
 		/// <summary>
 		/// Creates database.
@@ -492,7 +534,7 @@ namespace SolidCP.Setup
 					// create database in the default location
 					commandText = string.Format("CREATE DATABASE [{0}] COLLATE Latin1_General_CI_AS;", databaseName);
 					// create database
-					ExecuteNonQuery(ConnStr, commandText);
+					ExecuteNonQuery(connectionString, commandText);
 					// grant users access
 					//UpdateDatabaseUsers(database.Name, database.Users);
 					break;
@@ -500,11 +542,10 @@ namespace SolidCP.Setup
 					// create database in the default location
 					commandText = $"CREATE DATABASE {databaseName};";
 					// create database
-					ExecuteNonQuery(ConnStr, commandText);
+					ExecuteNonQuery(connectionString, commandText);
 					break;
 				case "sqlite":
-					var csb = new System.Data.Common.DbConnectionStringBuilder();
-					csb.ConnectionString = ConnStr;
+					var csb = new ConnectionStringBuilder(ConnStr);
 					var dbFile = (string)(csb["data source"] ?? "");
 					var assemblyPath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
 					if (!Path.IsPathRooted(dbFile)) dbFile = Path.GetFullPath(Path.Combine(assemblyPath, "..", dbFile));
@@ -514,8 +555,12 @@ namespace SolidCP.Setup
 			}
 		}
 
-		internal static void CreateDatabaseSqlite(string dbFile) => SQLiteConnection.CreateFile(dbFile);
-
+		internal static void CreateDatabaseSqlite(string dbFile)
+		{
+			var path = Path.GetDirectoryName(dbFile);
+			if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+			SQLiteConnection.CreateFile(dbFile);
+		}
 		/// <summary>
 		/// Creates database user.
 		/// </summary>
@@ -526,8 +571,7 @@ namespace SolidCP.Setup
 		internal static bool CreateUser(string connectionString, string userName, string password, string database)
 		{
 			string dbType, ConnStr, server;
-			var csb = new System.Data.Common.DbConnectionStringBuilder();
-			csb.ConnectionString = connectionString;
+			var csb = new ConnectionStringBuilder(connectionString);
 			server = csb["server"] as string;
 			ParseConnectionString(connectionString, out dbType, out ConnStr);
 			bool userCreated = false;
@@ -548,21 +592,21 @@ namespace SolidCP.Setup
 					{
 						// create user
 						var host = server == "localhost" ? server : Environment.MachineName;
-						ExecuteNonQuery(ConnStr, $"CREATE USER '{userName}'@'{host}' IDENTIFIED BY '{password}';");
+						ExecuteNonQuery(connectionString, $"CREATE USER '{userName}'@'{host}' IDENTIFIED BY '{password}';");
+						ExecuteNonQuery(connectionString, $"CREATE USER '{userName}'@'%' IDENTIFIED BY '{password}';");
 						userCreated = true;
 					}
 					AddUserToDatabase(connectionString, database, userName);
 					return userCreated;
 				case "sqlite": return true;
 				default: return false;
-			}			
+			}
 		}
 
 		private static void AddUserToDatabase(string connectionString, string databaseName, string user)
 		{
 			string dbType, ConnStr, server;
-			var csb = new System.Data.Common.DbConnectionStringBuilder();
-			csb.ConnectionString = connectionString;
+			var csb = new ConnectionStringBuilder(connectionString);
 			server = csb["server"] as string;
 			ParseConnectionString(connectionString, out dbType, out ConnStr);
 			switch (dbType.ToLower())
@@ -574,7 +618,7 @@ namespace SolidCP.Setup
 					// grant database access
 					try
 					{
-						ExecuteNonQuery(ConnStr,
+						ExecuteNonQuery(connectionString,
 							string.Format("USE {0};EXEC sp_grantdbaccess '{1}';", databaseName, user));
 					}
 					catch (SqlException ex)
@@ -583,7 +627,7 @@ namespace SolidCP.Setup
 						{
 							// the user already exists in the database
 							// so, try to auto fix his login in the database
-							ExecuteNonQuery(ConnStr,
+							ExecuteNonQuery(connectionString,
 								string.Format("USE {0};EXEC sp_change_users_login 'Auto_Fix', '{1}';", databaseName, user));
 						}
 						else
@@ -593,13 +637,14 @@ namespace SolidCP.Setup
 					}
 
 					// add database owner
-					ExecuteNonQuery(ConnStr,
+					ExecuteNonQuery(connectionString,
 						string.Format("USE {0};EXEC sp_addrolemember 'db_owner', '{1}';", databaseName, user));
 					break;
 				case "mysql":
 					var host = server == "localhost" ? server : Environment.MachineName;
-					ExecuteNonQuery(ConnStr, $"GRANT CREATE, ALTER, DROP, INSERT, UPDATE, DELETE, SELECT, REFERENCES, RELOAD on {databaseName}.* TO '{user}'@'{host}' WITH GRANT OPTION;");
-					ExecuteNonQuery(ConnStr, "FLUSH PRIVILEGES;");
+					ExecuteNonQuery(connectionString, $"GRANT ALL ON {databaseName}.* TO '{user}'@'{host}';");
+					ExecuteNonQuery(connectionString, $"GRANT ALL ON {databaseName}.* TO '{user}'@'%';");
+					ExecuteNonQuery(connectionString, "FLUSH PRIVILEGES;");
 					break;
 				case "sqlite":
 					break;
@@ -616,8 +661,7 @@ namespace SolidCP.Setup
 		internal static bool UserExists(string connectionString, string username)
 		{
 			string dbType, ConnStr, server;
-			var csb = new System.Data.Common.DbConnectionStringBuilder();
-			csb.ConnectionString = connectionString;
+			var csb = new ConnectionStringBuilder(connectionString);
 			server = csb["server"] as string;
 			ParseConnectionString(connectionString, out dbType, out ConnStr);
 			switch (dbType.ToLower())
@@ -627,8 +671,7 @@ namespace SolidCP.Setup
 						string.Format("select name from master..syslogins where name = '{0}'", username)).Tables[0].Rows.Count > 0);
 				case "mysql":
 					var host = server == "localhost" ? server : Environment.MachineName;
-					var Tmp = (int)ExecuteQuery(ConnStr, $"SELECT EXISTS(SELECT 1 FROM mysql.user WHERE user = '{username}' AND host = '{host}')").Tables[0].Rows[0][0];
-					return Tmp == 1;
+					return 1 == (long)ExecuteQuery(connectionString, $"SELECT EXISTS(SELECT 1 FROM mysql.user WHERE user = '{username}' AND host = '{host}')").Tables[0].Rows[0][0];
 				case "sqlite": return true;
 				default: return false;
 			}
@@ -643,8 +686,7 @@ namespace SolidCP.Setup
 		internal static bool LoginExists(string connectionString, string loginName)
 		{
 			string dbType, ConnStr, server;
-			var csb = new System.Data.Common.DbConnectionStringBuilder();
-			csb.ConnectionString = connectionString;
+			var csb = new ConnectionStringBuilder(connectionString);
 			server = csb["server"] as string;
 			ParseConnectionString(connectionString, out dbType, out ConnStr);
 			switch (dbType.ToLower())
@@ -664,8 +706,7 @@ namespace SolidCP.Setup
 		internal static void DeleteLogin(string connectionString, string loginName)
 		{
 			string dbType, ConnStr, server;
-			var csb = new System.Data.Common.DbConnectionStringBuilder();
-			csb.ConnectionString = connectionString;
+			var csb = new ConnectionStringBuilder(connectionString);
 			server = csb["server"] as string;
 			ParseConnectionString(connectionString, out dbType, out ConnStr);
 			switch (dbType.ToLower())
@@ -679,16 +720,15 @@ namespace SolidCP.Setup
 			}
 		}
 
-        /// <summary>
-        /// Deletes database user
-        /// </summary>
+		/// <summary>
+		/// Deletes database user
+		/// </summary>
 		/// <param name="connectionString">Connection string</param>
 		/// <param name="username">Username</param>
-        internal static void DeleteUser(string connectionString, string username)
-        {
+		internal static void DeleteUser(string connectionString, string username)
+		{
 			string dbType, ConnStr, server;
-			var csb = new System.Data.Common.DbConnectionStringBuilder();
-			csb.ConnectionString = connectionString;
+			var csb = new ConnectionStringBuilder(connectionString);
 			server = csb["server"] as string;
 			ParseConnectionString(connectionString, out dbType, out ConnStr);
 			switch (dbType.ToLower())
@@ -697,10 +737,10 @@ namespace SolidCP.Setup
 					// remove user from databases
 					string[] userDatabases = GetUserDatabases(connectionString, username);
 					foreach (string database in userDatabases)
-						RemoveUserFromDatabase(ConnStr, database, username);
+						RemoveUserFromDatabase(connectionString, database, username);
 
 					// close all user connection
-					CloseUserConnections(ConnStr, username);
+					CloseUserConnections(connectionString, username);
 
 					// drop login
 					ExecuteNonQuery(connectionString, String.Format("EXEC sp_droplogin '{0}'", username));
@@ -708,10 +748,11 @@ namespace SolidCP.Setup
 				case "mysql":
 					var host = server == "localhost" ? server : Environment.MachineName;
 					ExecuteNonQuery(connectionString, $"DROP USER '{username}'@'{host}';");
+					ExecuteNonQuery(connectionString, $"DROP USER '{username}'@'%';");
 					break;
 				default: break;
 			}
-        }
+		}
 
 		/// <summary>
 		/// Deletes database
@@ -720,11 +761,8 @@ namespace SolidCP.Setup
 		/// <param name="databaseName">Database name</param>
 		internal static void DeleteDatabase(string connectionString, string databaseName)
 		{
-				string dbType, ConnStr, server;
-				var csb = new System.Data.Common.DbConnectionStringBuilder();
-				csb.ConnectionString = connectionString;
-				server = csb["server"] as string;
-				ParseConnectionString(connectionString, out dbType, out ConnStr);
+			string dbType, ConnStr;
+			ParseConnectionString(connectionString, out dbType, out ConnStr);
 			switch (dbType.ToLower())
 			{
 				case "mssql":
@@ -749,6 +787,7 @@ namespace SolidCP.Setup
 					break;
 				case "sqlite":
 					SQLiteConnection.ClearAllPools();
+					var csb = new ConnectionStringBuilder(connectionString);
 					var dbFile = (string)(csb["data source"] ?? "");
 					var assemblyPath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
 					if (!Path.IsPathRooted(dbFile)) dbFile = Path.GetFullPath(Path.Combine(assemblyPath, "..", dbFile));
@@ -804,7 +843,7 @@ namespace SolidCP.Setup
 		}
 
 		private static string[] GetUserDatabases(string connectionString, string username)
-        {
+		{
 			string dbType, ConnStr;
 			ParseConnectionString(connectionString, out dbType, out ConnStr);
 
@@ -850,7 +889,7 @@ namespace SolidCP.Setup
 
 					DROP TABLE #UserDatabases
 					", username);
-			    DataView dvDatabases = ExecuteQuery(connectionString, cmdText).Tables[0].DefaultView;
+				DataView dvDatabases = ExecuteQuery(connectionString, cmdText).Tables[0].DefaultView;
 
 				string[] databases = new string[dvDatabases.Count];
 				for (int i = 0; i < dvDatabases.Count; i++)
@@ -878,8 +917,8 @@ namespace SolidCP.Setup
 			}
 		}
 
-        private static void CloseUserConnections(string connectionString, string userName)
-        {
+		private static void CloseUserConnections(string connectionString, string userName)
+		{
 			string dbType, ConnStr;
 			ParseConnectionString(connectionString, out dbType, out ConnStr);
 
@@ -894,7 +933,7 @@ namespace SolidCP.Setup
 					KillProcess(connectionString, (short)(dv[i]["spid"]));
 				}
 			}
-        }
+		}
 
 		private static void KillProcess(string connectionString, short spid)
 		{
@@ -966,7 +1005,7 @@ namespace SolidCP.Setup
 		internal static bool IsValidDatabaseName(string name)
 		{
 			if (name == null || name.Trim().Length == 0 || name.Length > 128)
-				return false; 
+				return false;
 
 			return Regex.IsMatch(name, "^[0-9A-z_@#$]+$", RegexOptions.Singleline);
 		}
@@ -1040,6 +1079,245 @@ namespace SolidCP.Setup
 				ExecuteNonQuery(connectionString,
 					String.Format(@"RESTORE DATABASE [{0}] FROM DISK = '{1}' WITH FILE = {2}, REPLACE",
 						databaseName, bakFile, position));
+			}
+		}
+		public class Script: IDisposable
+		{
+			public bool IsMySql = false;
+			public bool IsSqlite = false;
+			public bool IsMsSql = false;
+			public string Delimiter = null;
+			public Stream Source;
+			public StreamReader Reader;
+			public string File = "";
+
+			public Script(Stream stream, string connectionString)
+			{
+				Source = stream;
+				string dbtype;
+				ParseConnectionString(connectionString, out dbtype, out connectionString);
+				IsMySql = dbtype.Equals("mysql", StringComparison.OrdinalIgnoreCase);
+				IsMsSql = dbtype.Equals("mssql", StringComparison.OrdinalIgnoreCase);
+				IsSqlite = dbtype.Equals("sqlite", StringComparison.OrdinalIgnoreCase);
+				Reset();
+			}
+			public Script(string fileName, string connectionString) : this(new FileStream(fileName, FileMode.Open, FileAccess.Read), connectionString) { }
+
+			public void Dispose()
+			{
+				Source?.Dispose();
+				Source = null;
+				Reader?.Dispose();
+				Reader = null;
+			}
+			public void Reset()
+			{
+				Source.Seek(0, SeekOrigin.Begin);
+				Reader = new StreamReader(Source);
+				if (IsMySql) Delimiter = ";";
+			}
+
+			public bool HasDelimiter(string line)
+			{
+				if (IsMySql)
+				{
+					var delimiter = Delimiter;
+					var match = Regex.Match(line, @"^DELIMITER\s+(.*?)\s*$", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+					if (match.Success) Delimiter = match.Groups[1].Value;
+					return line.EndsWith(delimiter);
+				}
+				else if (IsSqlite) return line.EndsWith(";");
+				else
+				{
+					return Regex.IsMatch(line,
+						@"^\s*GO\s*$",
+						RegexOptions.Singleline | RegexOptions.IgnoreCase);
+				}
+			}
+			public bool IsDelimiter(string cmd) => IsMsSql && HasDelimiter(cmd);
+
+			public string ReadNextStatement()
+			{
+				StringBuilder sb = new StringBuilder();
+				string lineOfText;
+
+				while (true)
+				{
+					lineOfText = Reader.ReadLine();
+					if (lineOfText == null)
+					{
+						if (sb.Length > 0)
+						{
+							return sb.ToString();
+						}
+						else
+						{
+							return null;
+						}
+					}
+
+					if (HasDelimiter(lineOfText))
+					{
+						if (!IsDelimiter(lineOfText)) sb.Append(lineOfText + Environment.NewLine);
+						break;
+					}
+
+					sb.Append(lineOfText + Environment.NewLine);
+				}
+
+				return sb.ToString();
+			}
+		}
+		public static System.Data.Common.DbConnection MsSqlConnection(string connectionString)
+		{
+			return new SqlConnection(connectionString);
+		}
+		public static System.Data.Common.DbConnection MySqlConnection(string connectionString)
+		{
+			return new MySqlConnection(connectionString);
+		}
+		public static System.Data.Common.DbConnection SqliteConnection(string connectionString)
+		{
+			return new SQLiteConnection(connectionString);
+		}
+		public static System.Data.Common.DbCommand MsSqlCommand() => new SqlCommand();
+		public static System.Data.Common.DbCommand MySqlCommand() => new MySqlCommand();
+		public static System.Data.Common.DbCommand SqliteCommand() => new SQLiteCommand();
+
+		public static System.Data.Common.DbConnection DbConnection(string connectionString)
+		{
+			string dbtype;
+			ParseConnectionString(connectionString, out dbtype, out connectionString);
+			switch (dbtype.ToLowerInvariant())
+			{
+				case "mssql": return MsSqlConnection(connectionString);
+				case "mysql": return MySqlConnection(connectionString);
+				case "sqlite": return SqliteConnection(connectionString);
+				default: throw new NotSupportedException();
+			}
+		}
+
+		public static System.Data.Common.DbCommand DbCommand(string connectionString)
+		{
+			string dbtype;
+			ParseConnectionString(connectionString, out dbtype, out connectionString);
+			switch (dbtype.ToLowerInvariant())
+			{
+				case "mssql": return MsSqlCommand();
+				case "mysql": return MySqlCommand();
+				case "sqlite": return SqliteCommand();
+				default: throw new NotSupportedException();
+			}
+		}
+
+		static void ProcessMySqlScript(System.Data.Common.DbConnection connection, string connectionString, Script script, int commandCount = 0,
+			Action<int> OnProgressChange = null, Func<string, string> ProcessInstallVariables = null)
+		{
+			// iterate through delimited command text
+			var command = new MySqlScript(connectionString);
+			command.Connection = (MySqlConnection)connection;
+			command.Delimiter = ";";
+			int i = 0;
+			command.Query = ProcessInstallVariables?.Invoke(script.Reader.ReadToEnd());
+			command.StatementExecuted += (sender, args) =>
+				OnProgressChange?.Invoke(Convert.ToInt32(++i * 100 / commandCount));
+			command.Error += (sender, args) =>
+				throw new Exception("Error executing SQL command: " + args.StatementText, args.Exception);
+			command.Execute();
+		}
+
+		public static void RunSqlScript(string connectionString, Script script, int commandCount = 0,
+			Action<int> OnProgressChange = null, Func<string, string> ProcessInstallVariables = null,
+			string database = null)
+		{
+
+			var connection = DbConnection(connectionString);
+			connection.Open();
+			string sql;
+			int i = 0;
+
+			try
+			{
+				// iterate through delimited command text
+				var command = DbCommand(connectionString);
+				command.Connection = connection;
+				command.CommandType = System.Data.CommandType.Text;
+				command.CommandTimeout = 600;
+
+				if (!string.IsNullOrEmpty(database))
+				{
+					if (script.IsMsSql)
+					{
+						command.CommandText = $"USE [{database}]";
+						command.ExecuteNonQuery();
+					}
+					else if (script.IsMySql)
+					{
+						command.CommandText = $"USE {database}";
+						command.ExecuteNonQuery();
+					}
+				}
+
+				if (!script.IsMySql)
+				{
+					while (null != (sql = script.ReadNextStatement()))
+					{
+						sql = ProcessInstallVariables?.Invoke(sql);
+						command.CommandText = sql;
+						try
+						{
+							command.ExecuteNonQuery();
+						}
+						catch (Exception ex)
+						{
+							throw new Exception("Error executing SQL command: " + sql, ex);
+						}
+
+						i++;
+						if (commandCount != 0)
+						{
+							OnProgressChange?.Invoke(Convert.ToInt32(i * 100 / commandCount));
+						}
+					}
+				} else
+				{
+					ProcessMySqlScript(connection, connectionString, script, commandCount, OnProgressChange, ProcessInstallVariables);
+				}
+			}
+			catch (Exception ex)
+			{
+				throw new Exception("Can't run SQL script " + script.File, ex);
+			}
+			finally
+			{
+				connection.Close();
+			}
+		}
+
+		public static void RunSqlScript(string connectionString, Stream sql, Action<int> OnProgressChange = null,
+			Action<int> SetCommandCount = null, Func<string, string> ProcessInstallVariables = null, string scriptFile = "",
+			string database = null)
+		{
+			using (var script = new Script(sql, connectionString) { File = scriptFile })
+			{
+				int commandCount = 0;
+				try
+				{
+					while (null != script.ReadNextStatement())
+					{
+						commandCount++;
+					}
+				}
+				catch (Exception ex)
+				{
+					throw new Exception("Can't read SQL script " + script.File, ex);
+				}
+
+				SetCommandCount?.Invoke(commandCount);
+
+				script.Reset();
+
+				RunSqlScript(connectionString, script, commandCount, OnProgressChange, ProcessInstallVariables, database);
 			}
 		}
 	}

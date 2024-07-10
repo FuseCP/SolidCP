@@ -55,6 +55,7 @@ namespace SolidCP.Import.Enterprise
 			UpdateFormState();
 		}
 
+		Controller EnterpriseServer => new Controller();
 		private void InitializeForm()
 		{
 			animatedIcon.Images.Add(SolidCP.Import.Enterprise.Properties.Resources.ProgressImage1);
@@ -94,11 +95,14 @@ namespace SolidCP.Import.Enterprise
 			int status = -1;
 			try
 			{
-				status = UserController.AuthenticateUser(txtUserName.Text, txtPassword.Text, string.Empty);
-				if (status == 0)
+				using (var ES = EnterpriseServer)
 				{
-					UserInfo userInfo = UserController.GetUser(txtUserName.Text);
-					SecurityContext.SetThreadPrincipal(userInfo);
+					status = ES.UserController.AuthenticateUser(txtUserName.Text, txtPassword.Text, string.Empty);
+					if (status == 0)
+					{
+						UserInfo userInfo = ES.UserController.GetUser(txtUserName.Text);
+						ES.SecurityContext.SetThreadPrincipal(userInfo);
+					}
 				}
 			}
 			catch (Exception ex)

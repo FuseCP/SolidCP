@@ -50,6 +50,7 @@ namespace SolidCP.EnterpriseServer
     public sealed class Scheduler: ControllerBase
     {
         public Scheduler(ControllerBase provider) : base(provider) { }
+        public Scheduler() : this(null) { }
 
         public SchedulerJob nextSchedule = null;
 

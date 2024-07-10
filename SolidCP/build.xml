@@ -30,6 +30,7 @@
 		<WebDavPortalSrc>$(TrunkFolder)\Sources\SolidCP.WebDavPortal</WebDavPortalSrc>
 		<ServerSrc>$(TrunkFolder)\Sources\SolidCP.Server</ServerSrc>
 		<EnterpriseServerSrc>$(TrunkFolder)\Sources\SolidCP.EnterpriseServer</EnterpriseServerSrc>
+		<EnterpriseServerDataSrc>$(TrunkFolder)\Sources\SolidCP.EnterpriseServer.Data</EnterpriseServerDataSrc>
 		<SchedulerServiceSrc>$(TrunkFolder)\Sources\SolidCP.SchedulerService\bin</SchedulerServiceSrc>
 		<ImportCsvSrc>$(TrunkFolder)\Sources\Tools\SolidCP.Import.CsvBulk\bin\$(BuildConfiguration)</ImportCsvSrc>
 		<HyperVUtilsSrc>$(RootFolder)\SolidCP.HyperV.Utils\Sources\SolidCP.HyperV.Utils\bin\$(BuildConfiguration)</HyperVUtilsSrc>
@@ -69,6 +70,9 @@
 		<!-- Use aspnet_compiler to precompile WebPortal if set to true (This also checks all ascx and aspx files for errors) -->
 		<UseAspNetPrecompile>true</UseAspNetPrecompile>
 
+		<!-- Build Linux install deb & rpm packages -->
+		<BuildLinuxInstallPackages>true</BuildLinuxInstallPackages>
+
 		<ftphost></ftphost>
 		<ftpUsername></ftpUsername>
 		<ftpPassword></ftpPassword>
@@ -82,13 +86,14 @@
 	</PropertyGroup>
 
 	<Target Name="RestorePackages">
-		<Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(TrunkFolder)\Sources\SolidCP.EnterpriseServer.sln" />
+		<Exec Command="dotnet restore $(TrunkFolder)\Sources\SolidCP.EnterpriseServer.sln" />
 		<Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(TrunkFolder)\Sources\SolidCP.WebPortal.sln" />
 		<!--  The following does not work due to project imports in SolidCP.Providers.Virtualization.Proxmox
 			 that depend on PackageReference
 			<Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(TrunkFolder)\Sources\SolidCP.Server.sln" />-->
 		<!-- This works -->
 		<Exec Command="dotnet restore $(TrunkFolder)\Sources\SolidCP.Server.sln" />
+		<Exec Command="dotnet restore $(TrunkFolder)\Sources\Tools\SolidCP.Import.Enterprise.sln" />
 	</Target>
 
 	<Target Name="GenerateBuildVersionFilesInstaller" DependsOnTargets="RestorePackages">
@@ -418,7 +423,6 @@
 	</Target>
 
 	<Target Name="CreateUniversalSetupBuild" DependsOnTargets="ZipDeploy">
-
 		<PropertyGroup>
 			<InstallerProjectRoot>$(RootFolder)\SolidCP.Installer\Sources\</InstallerProjectRoot>
 			<InstallerProjectBin>$(InstallerProjectRoot)SolidCP.UniversalInstaller\bin\$(BuildConfiguration)\net48\</InstallerProjectBin>
@@ -439,8 +443,7 @@
 		<!-- build MSI package -->
 	</Target>
 
-	<Target Name="CreateInstallPackages" DependsOnTargets="CreateUniversalSetupBuild">
-
+	<Target Name="CreateInstallPackages" DependsOnTargets="CreateUniversalSetupBuild" Condition="'$(BuildLinuxInstallPackages)' == 'true'">
 		<PropertyGroup>
 			<InstallerProjectRoot>$(RootFolder)\SolidCP.Installer\Sources\</InstallerProjectRoot>
 			<InstallerProjectBin>$(InstallerProjectRoot)SolidCP.UniversalInstaller\bin\$(BuildConfiguration)\net48\</InstallerProjectBin>
@@ -745,11 +748,20 @@
 	<Target Name="CreateEnterpriseServerUpdate" DependsOnTargets="CreateServerUpdate" >
 		<Exec Command="$(DiffCmd) %22$(PreviousBuildFolder)\EnterpriseServer%22 %22$(EnterpriseServerInstall)%22 %22$(EnterpriseServerUpdate)%22 /ex:web.config"/>
 		<Copy SourceFiles="$(TrunkFolder)\Database\update_db.sql" DestinationFolder="$(EnterpriseServerUpdate)\Setup" />
+		
+		<ItemGroup>
+			<InstallScripts Include="$(EnterpriseServerDataSrc)\Migrations\**\install.*.sql" />
+			<InstallScripts Include="$(EnterpriseServerDataSrc)\Migrations\**\install.*.bundle.exe" />
+		</ItemGroup>
+
+		<Copy SourceFiles="@(InstallScripts)" DestinationFolder="$(EnterpriseServerUpdate)\Setup" />
+
 		<!-- Update variables in the file -->
 		<FileUpdate Files="$(EnterpriseServerUpdate)\Setup\update_db.sql" Regex="\${release.version}" ReplacementText="$(FileVersion)" />
 		<FileUpdate Files="$(EnterpriseServerUpdate)\Setup\update_db.sql" Regex="\${release.date}" ReplacementText="$(ReleaseDate)" />
 
 		<Copy SourceFiles="$(TrunkFolder)\Database\update_db.sql" DestinationFolder="$(UpdateFolder)" />
+		<Copy SourceFiles="@(InstallScripts)" DestinationFolder="$(UpdateFolder)" />
 		<!-- Update variables in the file -->
 		<FileUpdate Files="$(UpdateFolder)\update_db.sql" Regex="\${release.version}" ReplacementText="$(FileVersion)" />
 		<FileUpdate Files="$(UpdateFolder)\update_db.sql" Regex="\${release.date}" ReplacementText="$(ReleaseDate)" />
@@ -771,39 +783,65 @@
   <Target Name="CreateEnterpriseServerDatabase" DependsOnTargets="CreateWebDavPortalUpdate">
 		<MakeDir Directories="$(DatabaseFolder)"/>
 
+		<ItemGroup>
+			<InstallScripts Include="$(EnterpriseServerDataSrc)\Migrations\**\install.*.sql" />
+			<InstallScripts Include="$(EnterpriseServerDataSrc)\Migrations\**\install.*.bundle.exe" />
+		</ItemGroup>
+
+		<!--
 		<Exec Command="$(SqlCmd) -Q &quot;IF DB_ID (N'$(DataBaseName)') IS NOT NULL DROP DATABASE $(DataBaseName)&quot;" />
 		<Exec Command="$(SqlCmd) -Q &quot;CREATE DATABASE $(DataBaseName) COLLATE Latin1_General_CI_AS&quot;" />
-
-		<Copy SourceFiles="$(TrunkFolder)\Database\install_db.sql" DestinationFolder="$(DatabaseFolder)" />
+		-->
+		<!--<Copy SourceFiles="$(TrunkFolder)\Database\install_db.sql" DestinationFolder="$(DatabaseFolder)" />-->
+		<Copy SourceFiles="@(InstallScripts)" DestinationFolder="$(TrunkFolder)\Database" />
+		<Copy SourceFiles="@(InstallScripts)" DestinationFolder="$(DatabaseFolder)" />
 		<Copy SourceFiles="$(TrunkFolder)\Database\update_db.sql" DestinationFolder="$(DatabaseFolder)" />
+		
+		<ItemGroup>
+			<ModelSnapshots Include="$(EnterpriseServerDataSrc)\Migrations\**\*DbContextModelSnapshot.cs" />
+		</ItemGroup>
 
+		<PropertyGroup>
+			<VersionTag>$(VersionLabel.Replace(".", "_"))</VersionTag>
+		</PropertyGroup>
+
+		<!-- Create a backup of the EntityFramework Model Snapshots -->
+		<Copy SourceFiles="@(ModelSnapshots)"
+			DestinationFiles="@(ModelSnapshots -> '$(EnterpriseServerDataSrc)\Migrations\%(RecursiveDir)%(Filename)_$(VersionTag)%(Extension)')" />
+
+		<FileUpdate Files="@(ModelSnapshots -> '$(EnterpriseServerDataSrc)\Migrations\%(RecursiveDir)%(Filename)_$(VersionTag)%(Extension)')"
+			Regex="\[DbContext\(typeof\([a-zA-Z0-9_]+DbContext\)\)]([ \t\r\n]*)partial class ([a-zA-Z0-9_]*)DbContextModelSnapshot\s*:\s*ModelSnapshot"
+			ReplacementText="public class $2DbContext_$(VersionTag): $2DbContext {$1    public $2DbContext_$(VersionTag)(): base(null) { }$1}$1$1[DbContext(typeof($2DbContext_$(VersionTag)))]$1partial class $2DbContextModelSnapshot_$(VersionTag) : ModelSnapshot" />
+		
 		<!-- Update variables in files -->
-		<FileUpdate Files="$(DatabaseFolder)\install_db.sql" Regex="\${install.database}" ReplacementText="$(DataBaseName)" />
+		<!--<FileUpdate Files="$(DatabaseFolder)\install_db.sql" Regex="\${install.database}" ReplacementText="$(DataBaseName)" />
 		<FileUpdate Files="$(DatabaseFolder)\update_db.sql" Regex="\${install.database}" ReplacementText="$(DataBaseName)" />
 		<FileUpdate Files="$(DatabaseFolder)\update_db.sql" Regex="\${release.version}" ReplacementText="$(FileVersion)" />
-		<FileUpdate Files="$(DatabaseFolder)\update_db.sql" Regex="\${release.date}" ReplacementText="$(ReleaseDate)" />
+		<FileUpdate Files="$(DatabaseFolder)\update_db.sql" Regex="\${release.date}" ReplacementText="$(ReleaseDate)" />-->
 
-		<Exec Command="$(SqlCmd) -i $(DatabaseFolder)\install_db.sql" />
-		<Exec Command="$(SqlCmd) -i $(DatabaseFolder)\update_db.sql" />
+		<!--<Exec Command="$(SqlCmd) -i $(DatabaseFolder)\install_db.sql" />
+		<Exec Command="$(SqlCmd) -i $(DatabaseFolder)\update_db.sql" />-->
 
-		<Delete Files="$(DatabaseFolder)\install_db.sql" />
-		<Delete Files="$(DatabaseFolder)\update_db.sql" />
+		<!--<Delete Files="$(DatabaseFolder)\install_db.sql" />
+		<Delete Files="$(DatabaseFolder)\update_db.sql" />-->
 	</Target>
 
 	<Target Name="ScriptEnterpriseServerDatabase" DependsOnTargets="CreateEnterpriseServerDatabase">
-		<ConvertToAbsolutePath Paths="$(DatabaseFolder)">
+		<!--<ConvertToAbsolutePath Paths="$(DatabaseFolder)">
 			<Output TaskParameter="AbsolutePaths" PropertyName="DatabaseFolderAbsolute"/>
 		</ConvertToAbsolutePath>
 
 		<Exec Command="$(MSDeployPath) -verb:sync -source:dbFullSql=&quot;$(MSDeployConnectionString)&quot; -dest:dbFullSql=&quot;$(DatabaseFolderAbsolute)\install_db_temp.sql&quot;"/>
-		<Exec Command="copy $(TrunkFolder)\Resources\database_header.sql+$(DatabaseFolder)\install_db_temp.sql $(DatabaseFolder)\install_db.sql" />
+		<Exec Command="copy $(TrunkFolder)\Resources\database_header.sql+$(DatabaseFolder)\install_db_temp.sql $(DatabaseFolder)\install_db.sql" />-->
 
 		<MakeDir Directories="$(EnterpriseServerInstall)\Setup"/>
 
-		<Copy SourceFiles="$(DatabaseFolder)\install_db.sql" DestinationFolder="$(EnterpriseServerInstall)\Setup" />
+		<ItemGroup>
+			<InstallScripts Include="$(DatabaseFolder)\install.*.sql" />
+			<InstallScripts Include="$(DatabaseFolder)\install.*.bundle.exe" />
+		</ItemGroup>
 
-
-		<Delete Files="$(DatabaseFolder)\install_db_temp.sql" />
+		<Copy SourceFiles="@(InstallScrips)" DestinationFolder="$(EnterpriseServerInstall)\Setup" />
 	</Target>
 
 	<!-- Compile and deploy Setup.dll -->
@@ -966,7 +1004,7 @@
 
   </Target>
 
-  <Target Name="Deploy" DependsOnTargets="CreateInstallPackages" />
+  <Target Name="Deploy" DependsOnTargets="CreateInstallPackages;CreateUniversalSetupBuild" />
 	
   <Target Name="uploadwebpi" DependsOnTargets="BuildWebPlatformInstallerFeed">
 		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPFeed-$(Version).xml" LocalFile="$(DeployFolder)\SolidCPFeed.xml" />

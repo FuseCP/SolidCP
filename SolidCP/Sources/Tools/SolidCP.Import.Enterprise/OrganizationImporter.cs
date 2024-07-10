@@ -40,10 +40,9 @@ using SolidCP.Providers;
 using System.Threading;
 using System.DirectoryServices;
 
-
 namespace SolidCP.Import.Enterprise
 {
-	public class OrganizationImporter
+	public class OrganizationImporter: ControllerBase
 	{
 		public const int EXCHANGE_CONTAINER_ERROR = -2790;
 		
@@ -54,10 +53,8 @@ namespace SolidCP.Import.Enterprise
 		private Thread thread;
 
 
-		public OrganizationImporter()
-		{
-
-		}
+		public OrganizationImporter(): this(null) { }
+		public OrganizationImporter(ControllerBase provider) : base(provider) { }
 
 		public void Initialize(string username, ApplicationForm appForm)
 		{
@@ -203,7 +200,7 @@ namespace SolidCP.Import.Enterprise
 			this.progressBar.Value = 0;
 		}
 
-		public static bool IsThreadAbortException(Exception ex)
+		public bool IsThreadAbortException(Exception ex)
 		{
 			Exception innerException = ex;
 			while (innerException != null)
@@ -358,7 +355,7 @@ namespace SolidCP.Import.Enterprise
 
 
 
-		public static int CreateOrganization(int packageId, string organizationId, string organizationName)
+		public int CreateOrganization(int packageId, string organizationId, string organizationName)
 		{
 			int itemId;
 			int errorCode;
@@ -411,10 +408,10 @@ namespace SolidCP.Import.Enterprise
 
 			// register org ID
 
-			DataProvider.AddExchangeOrganization(itemId, organizationId);
+			Database.AddExchangeOrganization(itemId, organizationId);
 
 			// register domain                
-			DataProvider.AddExchangeOrganizationDomain(itemId, domainId, true);
+			Database.AddExchangeOrganizationDomain(itemId, domainId, true);
 
 			// register organization domain service item
 			OrganizationDomain orgDomain = new OrganizationDomain();
@@ -427,7 +424,7 @@ namespace SolidCP.Import.Enterprise
 			return itemId;
 		}
 
-		private static Organization PopulateOrganization(int packageId, string organizationId, string addressListsContainer)
+		private Organization PopulateOrganization(int packageId, string organizationId, string addressListsContainer)
 		{
 			Organization org = new Organization();
 			org.OrganizationId = organizationId;
@@ -461,7 +458,7 @@ namespace SolidCP.Import.Enterprise
 			return org;
 		}
 
-		private static string GetDatabaseName()
+		private string GetDatabaseName()
 		{
 			string ret;
 			if (String.IsNullOrEmpty(Global.MailboxCluster))
@@ -475,7 +472,7 @@ namespace SolidCP.Import.Enterprise
 			return ret;
 		}
 
-		private static bool CheckQuotas(int packageId, out int errorCode)
+		private bool CheckQuotas(int packageId, out int errorCode)
 		{
 
 			// check account
@@ -505,12 +502,12 @@ namespace SolidCP.Import.Enterprise
 			return true;
 		}
 
-		private static bool OrganizationIdentifierExists(string organizationId)
+		private bool OrganizationIdentifierExists(string organizationId)
 		{
-			return DataProvider.ExchangeOrganizationExists(organizationId);
+			return Database.ExchangeOrganizationExists(organizationId);
 		}
 
-		private static string CreateTemporyDomainName(int serviceId, string organizationId)
+		private string CreateTemporyDomainName(int serviceId, string organizationId)
 		{
 			// load service settings
 			StringDictionary serviceSettings = ServerController.GetServiceSettingsAdmin(serviceId);
@@ -519,7 +516,7 @@ namespace SolidCP.Import.Enterprise
 			return String.IsNullOrEmpty(tempDomain) ? null : organizationId + "." + tempDomain;
 		}
 
-		private static int CreateDomain(string domainName, int packageId, out bool domainCreated)
+		private int CreateDomain(string domainName, int packageId, out bool domainCreated)
 		{
 			// trying to locate (register) temp domain
 			DomainInfo domain = null;
@@ -539,7 +536,7 @@ namespace SolidCP.Import.Enterprise
 				if (domain.PackageId != packageId)
 					return checkResult;
 
-				if (DataProvider.ExchangeOrganizationDomainExists(domain.DomainId))
+				if (Database.ExchangeOrganizationDomainExists(domain.DomainId))
 					return BusinessErrorCodes.ERROR_ORGANIZATION_DOMAIN_IS_IN_USE;
 
 				domainId = domain.DomainId;
@@ -565,7 +562,7 @@ namespace SolidCP.Import.Enterprise
 			return domainId;
 		}
 
-		private static DomainInfo CreateNewDomain(int packageId, string domainName)
+		private DomainInfo CreateNewDomain(int packageId, string domainName)
 		{
 			// new domain
 			DomainInfo domain = new DomainInfo();
@@ -577,7 +574,7 @@ namespace SolidCP.Import.Enterprise
 			return domain;
 		}
 
-		private static int AddOrganizationToPackageItems(Organization org, int serviceId, int packageId, string organizationName, string organizationId, string domainName)
+		private int AddOrganizationToPackageItems(Organization org, int serviceId, int packageId, string organizationName, string organizationId, string domainName)
 		{
 			org.ServiceId = serviceId;
 			org.PackageId = packageId;
@@ -611,7 +608,7 @@ namespace SolidCP.Import.Enterprise
 			}
 		}
 
-		private static int AddOrganizationDomain(int itemId, string domainName)
+		private int AddOrganizationDomain(int itemId, string domainName)
 		{
 			Log.WriteStart(string.Format("Importing domain {0}...", domainName)); 
 
@@ -639,7 +636,7 @@ namespace SolidCP.Import.Enterprise
 				if (domain.PackageId != org.PackageId)
 					return checkResult;
 
-				if (DataProvider.ExchangeOrganizationDomainExists(domain.DomainId))
+				if (Database.ExchangeOrganizationDomainExists(domain.DomainId))
 					return BusinessErrorCodes.ERROR_ORGANIZATION_DOMAIN_IS_IN_USE;
 			}
 			else if (checkResult == BusinessErrorCodes.ERROR_RESTRICTED_DOMAIN)
@@ -663,7 +660,7 @@ namespace SolidCP.Import.Enterprise
 
 
 			// register domain
-			DataProvider.AddExchangeOrganizationDomain(itemId, domain.DomainId, false);
+			Database.AddExchangeOrganizationDomain(itemId, domain.DomainId, false);
 
 			// register service item
 			OrganizationDomain exchDomain = new OrganizationDomain();
@@ -676,7 +673,7 @@ namespace SolidCP.Import.Enterprise
 
 		}
 
-		private static void ImportMailbox(DirectoryEntry directoryEntry)
+		private void ImportMailbox(DirectoryEntry directoryEntry)
 		{
 			int ret = -1;
 			string name = null;
@@ -700,7 +697,7 @@ namespace SolidCP.Import.Enterprise
 			}
 		}
 
-		private static void ImportContact(DirectoryEntry directoryEntry)
+		private void ImportContact(DirectoryEntry directoryEntry)
 		{
 			int ret = -1;
 			string name = null;
@@ -724,7 +721,7 @@ namespace SolidCP.Import.Enterprise
 			}
 		}
 
-		private static void ImportGroup(DirectoryEntry directoryEntry)
+		private void ImportGroup(DirectoryEntry directoryEntry)
 		{
 			int ret = -1;
 			string name = null;
@@ -748,7 +745,7 @@ namespace SolidCP.Import.Enterprise
 			}
 		}
 
-		private static int AddMailbox(int itemId, DirectoryEntry entry)
+		private int AddMailbox(int itemId, DirectoryEntry entry)
 		{
 			string accountName = (string)entry.Properties["name"].Value;
 			Log.WriteStart(string.Format("Importing user {0}...", accountName)); 
@@ -865,7 +862,7 @@ namespace SolidCP.Import.Enterprise
 
 		}
 
-		private static int AddContact(int itemId, DirectoryEntry entry)
+		private int AddContact(int itemId, DirectoryEntry entry)
 		{
 			string accountName = (string)entry.Properties["name"].Value;
 			Log.WriteStart(string.Format("Importing contact {0}...", accountName));
@@ -890,7 +887,7 @@ namespace SolidCP.Import.Enterprise
 			return accountId;
 		}
 
-		private static int AddGroup(int itemId, DirectoryEntry entry)
+		private int AddGroup(int itemId, DirectoryEntry entry)
 		{
 			string accountName = (string)entry.Properties["name"].Value;
 			Log.WriteStart(string.Format("Importing group {0}...", accountName));
@@ -962,42 +959,42 @@ namespace SolidCP.Import.Enterprise
 			return accountId;
 		}
 
-		private static bool EmailAddressExists(string emailAddress)
+		private bool EmailAddressExists(string emailAddress)
 		{
-			return DataProvider.ExchangeAccountEmailAddressExists(emailAddress, true);
+			return Database.ExchangeAccountEmailAddressExists(emailAddress, true);
 		}
 
-		private static bool AccountExists(string accountName)
+		private bool AccountExists(string accountName)
 		{
-			return DataProvider.ExchangeAccountExists(accountName);
+			return Database.ExchangeAccountExists(accountName);
 		}
 
-		private static int AddAccount(int itemId, ExchangeAccountType accountType,
+		private int AddAccount(int itemId, ExchangeAccountType accountType,
 			string accountName, string displayName, string primaryEmailAddress, bool mailEnabledPublicFolder,
 			MailboxManagerActions mailboxManagerActions, string samAccountName, string accountPassword)
 		{
-			return DataProvider.AddExchangeAccount(itemId, (int)accountType,
+			return Database.AddExchangeAccount(itemId, accountType,
 				accountName, displayName, primaryEmailAddress, mailEnabledPublicFolder,
 				mailboxManagerActions.ToString(), samAccountName,0, string.Empty);
 		}
 
-		private static int AddOrganizationUser(int itemId, string accountName, string displayName, string email, string samAccountName, string accountPassword)
+		private int AddOrganizationUser(int itemId, string accountName, string displayName, string email, string samAccountName, string accountPassword)
 		{
-			return DataProvider.AddExchangeAccount(itemId, (int)ExchangeAccountType.User, accountName, displayName, email, false, string.Empty,
+			return Database.AddExchangeAccount(itemId, ExchangeAccountType.User, accountName, displayName, email, false, string.Empty,
                                             samAccountName, 0 , string.Empty);
 
 		}
 
-		private static void AddAccountEmailAddress(int accountId, string emailAddress)
+		private void AddAccountEmailAddress(int accountId, string emailAddress)
 		{
-			DataProvider.AddExchangeAccountEmailAddress(accountId, emailAddress);
+			Database.AddExchangeAccountEmailAddress(accountId, emailAddress);
 		}
 		
-		private static void UpdateExchangeAccount(int  accountId, string accountName, ExchangeAccountType accountType,
+		private void UpdateExchangeAccount(int  accountId, string accountName, ExchangeAccountType accountType,
             string displayName, string primaryEmailAddress, bool mailEnabledPublicFolder,
             string mailboxManagerActions, string samAccountName, string accountPassword, int mailboxPlanId)
 		{
-            DataProvider.UpdateExchangeAccount(accountId, 
+            Database.UpdateExchangeAccount(accountId, 
                 accountName, 
                 accountType, 
                 displayName, 

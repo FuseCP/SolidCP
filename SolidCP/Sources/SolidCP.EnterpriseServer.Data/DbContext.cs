@@ -6,6 +6,7 @@ using System.Data;
 using System.Data.Common;
 using SolidCP.Providers.OS;
 using SolidCP.EnterpriseServer;
+using SolidCP.Providers.Common;
 using System.Configuration;
 using System.Linq;
 using System.IO;
@@ -29,16 +30,17 @@ namespace SolidCP.EnterpriseServer.Data
             get => connectionString ?? (ConnectionString = DbSettings.ConnectionString);
             set
             {
-                var csb = new DbConnectionStringBuilder();
-                csb.ConnectionString = value;
-                var dbTypeStr = (string)csb["DbType"];
+                connectionString = value;
+				DbType dbType = DbType.Unknown;
+				var csb = new ConnectionStringBuilder(value);
+                var dbTypeStr = csb["DbType"] as string;
                 if (!string.IsNullOrEmpty(dbTypeStr))
                 {
-                    DbType dbType;
                     if (Enum.TryParse<DbType>(dbTypeStr, out dbType)) DbType = dbType;
-                    csb["DbType"] = null;
+                    csb.Remove("DbType");
                 }
-                if (IsSqlite)
+
+                if (dbType == DbType.Sqlite || dbType == DbType.SqliteFX)
                 {
                     var dbFile = (string)csb["Data Source"];
                     if (!Path.IsPathRooted(dbFile))
@@ -178,7 +180,7 @@ namespace SolidCP.EnterpriseServer.Data
         {
             /*if (dbType == DbType.Unknown)
             {
-                var csb = new DbConnectionStringBuilder() { ConnectionString = connectionString };
+                var csb = new ConnectionStringBuilder(connectionString);
                 if (!Enum.TryParse<DbType>((string)(csb["DbType"] ?? "Unknown"), out dbType)) dbType = DbType.Other;
             }*/
             if (dbType == DbType.Unknown) DbType = DbSettings.GetDbType(connectionString);

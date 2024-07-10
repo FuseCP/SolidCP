@@ -241,7 +241,7 @@ namespace SolidCP.Setup
 			this.tabMySql.Padding = new System.Windows.Forms.Padding(3);
 			this.tabMySql.Size = new System.Drawing.Size(443, 163);
 			this.tabMySql.TabIndex = 1;
-			this.tabMySql.Text = "  MySQL/MariaDB  ";
+			this.tabMySql.Text = "  MySQL / MariaDB  ";
 			// 
 			// txtMySqlPort
 			// 

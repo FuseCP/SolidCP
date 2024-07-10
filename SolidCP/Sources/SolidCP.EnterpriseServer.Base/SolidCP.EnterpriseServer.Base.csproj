@@ -6,9 +6,9 @@
         <TargetFrameworks>netstandard2.0</TargetFrameworks>
         <PublishUrl>publish\</PublishUrl>
         <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-        <OutputPath>..\SolidCP.EnterpriseServer\bin\netstandard</OutputPath>
+        <OutputPath>..\..\Bin</OutputPath>
         <Nullable>disable</Nullable>
-        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
         <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>

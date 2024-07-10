@@ -39,6 +39,7 @@ using System.Data;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using SolidCP.Providers.Common;
 
 namespace SolidCP.Setup
 {
@@ -58,6 +59,8 @@ namespace SolidCP.Setup
 			this.lblIntro.Text = "The connection information will be used by the Setup Wizard to install the database objects only. Click Next to continue.";
 			this.txtMsSqlDatabase.Text = SetupVariables.Database;
 			this.txtMsSqlServer.Text = SetupVariables.DatabaseServer;
+			this.txtMySqlDatabase.Text = SetupVariables.Database;
+			this.txtSqliteDatabase.Text = SetupVariables.Database;
 			this.AllowMoveBack = true;
 			this.AllowMoveNext = true;
 			this.AllowCancel = true;
@@ -70,7 +73,7 @@ namespace SolidCP.Setup
 			bool windowsAuthentication = false;
 			if (!string.IsNullOrEmpty(SetupVariables.DbInstallConnectionString))
 			{
-				var csb = new System.Data.Common.DbConnectionStringBuilder();
+				var csb = new ConnectionStringBuilder();
 				csb.ConnectionString = SetupVariables.DbInstallConnectionString;
 				var dbType = (csb["dbtype"] as string)?.ToLower();
 
@@ -124,24 +127,49 @@ namespace SolidCP.Setup
 				}
 				string dbtype;
 				string server;
+				string database;
+				string dbuser;
+				string dbpassword;
+				int? dbport;
 				switch (tabControl.SelectedIndex)
 				{
 					case 0:
 						dbtype = "MsSql";
 						server = txtMsSqlServer.Text.Trim();
+						database = txtMsSqlDatabase.Text.Trim();
+						if (cbMsSqlAuthentication.SelectedIndex != 0)
+						{
+							dbuser = txtMsSqlLogin.Text.Trim();
+							dbpassword = txtMsSqlPassword.Text.Trim();
+						} else
+						{
+							dbuser = dbpassword = null;
+						}
+						dbport = null;
 						break;
 					case 1:
 						dbtype = "MySql";
 						server = txtMySqlServer.Text.Trim();
+						database = txtMySqlDatabase.Text.Trim();
+						dbuser = txtMySqlUser.Text.Trim();
+						dbpassword = txtMySqlPassword.Text.Trim();
+						int port;
+						if (int.TryParse(txtMySqlPort.Text.Trim(), out port)) dbport = port;
+						else
+						{
+							e.Cancel = true;
+							ShowWarning("Enter a valid port.");
+							return;
+						}
 						break;
 					case 2:
 						dbtype = "Sqlite";
 						server = "(local)";
+						database = txtSqliteDatabase.Text.Trim();
+						dbuser = dbpassword = null;
+						dbport = null;
 						break;
-					default:
-						dbtype = null;
-						server = "none";
-						break;
+					default: throw new NotSupportedException();
 				}
 				string connectionString = CreateConnectionString(dbtype);
 				string component = SetupVariables.ComponentFullName;
@@ -175,7 +203,7 @@ namespace SolidCP.Setup
 					ShowWarning("Database Server does not exist or access denied");
 					return;
 				}
-				string database = this.txtMsSqlDatabase.Text;
+				
 				if (SqlUtils.DatabaseExists(connectionString, database))
 				{
 					e.Cancel = true;
@@ -186,6 +214,10 @@ namespace SolidCP.Setup
 				Log.WriteInfo(string.Format("Server \"{0}\" selected for {1}", server, component));
 				SetupVariables.Database = database;
 				SetupVariables.DatabaseServer = server;
+				SetupVariables.DatabaseType = dbtype;
+				SetupVariables.DatabasePort = dbport ?? 0;
+				//SetupVariables.DatabaseUser = dbuser;
+				//SetupVariables.DatabaseUserPassword = dbpassword;
 				SetupVariables.DbInstallConnectionString = connectionString;
 
 				//AppConfig.SetComponentSettingStringValue(SetupVariables.ComponentId, "Database", database);
@@ -305,10 +337,9 @@ namespace SolidCP.Setup
 						return SqlUtils.BuildMsSqlServerMasterConnectionString(txtMsSqlServer.Text.Trim(), txtMsSqlLogin.Text.Trim(), txtMsSqlPassword.Text.Trim());
 					}
 				case "MySql":
-					return SqlUtils.BuildMySqlServerConnectionString(txtMySqlServer.Text.Trim(),
-					txtMySqlPort.Text.Trim(), txtMySqlUser.Text.Trim(), txtMySqlPassword.Text.Trim(),
-					txtMySqlDatabase.Text.Trim());
-				case "Sqlite": return SqlUtils.BuildSqliteConnectionString(txtSqliteDatabase.Text.Trim());
+					return SqlUtils.BuildMySqlServerMasterConnectionString(txtMySqlServer.Text.Trim(),
+					txtMySqlPort.Text.Trim(), txtMySqlUser.Text.Trim(), txtMySqlPassword.Text.Trim());
+				case "Sqlite": return SqlUtils.BuildSqliteMasterConnectionString(txtSqliteDatabase.Text.Trim(), SetupVariables);
 				default: return "";
 			}
 		}
