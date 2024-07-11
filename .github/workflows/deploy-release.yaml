@@ -78,6 +78,7 @@ jobs:
       with: 
         distribution: Ubuntu-24.04
         additional-packages: rpm
+        use-cache: 'false'
 
     - name: Prepare RPM on WSL Ubuntu
       shell: wsl-bash {0}
