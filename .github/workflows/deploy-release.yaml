@@ -74,16 +74,22 @@ jobs:
         dotnet-version: 8.0.x
 
     - name: Install WSL Ubuntu
-      run: |
-        wsl --update
-        wsl --install -d Ubuntu-24.04
+      uses: Vampire/setup-wsl@v3
+      with: 
+        distribution: Ubuntu-24.04
+        additional-packages: rpm
 
-    - name: Install RPM on WSL Ubuntu
+    - name: Prepare RPM on WSL Ubuntu
+      shell: wsl-bash {0}
       run: |
-        wslbash -c 'apt -y install rpm'
-        wslbash -c 'mkdir -p ~/rpmbuild/{RPMS,SRPMS,BUILD,SOURCES,SPECS,tmp}'
-        wslbash -c 'echo "%_topdir   %(echo $HOME)/rpmbuild" >> ~/.rpmmacros'
-        wslbash -c 'echo "%_tmppath  %{_topdir}/tmp" >> ~/.rpmmacros'
+        mkdir -p ~/rpmbuild/{RPMS,SRPMS,BUILD,SOURCES,SPECS,tmp}
+        
+        cat <<EOF >~/.rpmmacros
+        %_topdir   %(echo $HOME)/rpmbuild
+        %_tmppath  %{_topdir}/tmp
+        EOF
+
+        cat ~/.rpmmacros
 
     - name: Checkout
       uses: actions/checkout@v4
