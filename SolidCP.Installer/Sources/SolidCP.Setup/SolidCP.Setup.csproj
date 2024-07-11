@@ -10,7 +10,7 @@
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <BuildDependsOn>$(BuildDependsOn);AfterBuildMigrated</BuildDependsOn>
     </PropertyGroup>
-    <Target Name="CopyResources">
+    <Target Name="CopyResources" BeforeTargets="ResolveReferences">
         <Message Text="Copying Installer Resources" Importance="high" />
         <ItemGroup>
             <FilesToCopy Include="..\..\..\SolidCP\Lib\Mono.Posix.NETStandard.dll" />
@@ -63,7 +63,7 @@
         <!--<Copy SourceFiles="@(FilesToCopyX64)" DestinationFolder="Resources\x64" SkipUnchangedFiles="true" />
         <Copy SourceFiles="@(FilesToCopyX86)" DestinationFolder="Resources\x86" SkipUnchangedFiles="true" />-->
     </Target>
-    <Target Name="DeleteDlls">
+    <Target Name="DeleteDlls" AfterTargets="Build">
         <Message Text="Deleting unused files" Importance="high" />
         <ItemGroup>
             <FilesToDelete Include="bin\$(Configuration)\**\*.*" />
@@ -72,8 +72,6 @@
         </ItemGroup>
         <Delete Files="@(FilesToDelete)" />
     </Target>
-    <Target Name="BeforeBuildMigrated" DependsOnTargets="CopyResources" BeforeTargets="PreBuildEvent" />
-    <Target Name="AfterBuildMigrated" DependsOnTargets="DeleteDlls" />
     <ItemGroup>
       <Compile Remove="Common\SqlUtils.cs" />
     </ItemGroup>
