@@ -105,7 +105,35 @@
 		<AssemblyInfo CodeLanguage="VB" OutputFile="$(TrunkFolder)\Sources\VersionInfo.vb" AssemblyCompany="SolidCP" AssemblyCopyright="Copyright © 2023 SolidCP." AssemblyVersion="$(VersionLabel)" AssemblyFileVersion="$(FileVersion)" AssemblyInformationalVersion="$(Version)" />
 	</Target>
 
-	<Target Name="CompileSources" DependsOnTargets="GenerateBuildVersionFiles">
+	<Target Name="BackupModelSnapshots" DependsOnTargets="GenerateBuildVersionFiles">
+		<ItemGroup>
+			<ModelSnapshots Include="$(EnterpriseServerDataSrc)\Migrations\**\*DbContextModelSnapshot.cs" />
+		</ItemGroup>
+
+		<PropertyGroup>
+			<VersionTag>$(VersionLabel.Replace(".", "_"))</VersionTag>
+			<ReplacementText>public class $2DbContext_$(VersionTag): $2DbContext {
+#if NetCore
+        public $2DbContext_$(VersionTag)(string connectionString, bool initSeedData = false): base(connectionString, initSeedData) { }
+	    public $2DbContext_$(VersionTag)(DbContext context): base(context) { }
+	    public $2DbContext_$(VersionTag)(DbContextOptions&lt;Context.DbContextBase&gt; options): base(options) { }
+#else
+	    public $2DbContext_$(VersionTag)(DbContext context): base(context) { }        
+#endif
+	}$1$1[DbContext(typeof($2DbContext_$(VersionTag)))]$1partial class $2DbContextModelSnapshot_$(VersionTag) : ModelSnapshot
+			</ReplacementText>
+		</PropertyGroup>
+
+		<!-- Create a backup of the EntityFramework Model Snapshots -->
+		<Copy SourceFiles="@(ModelSnapshots)"
+			DestinationFiles="@(ModelSnapshots -> '$(EnterpriseServerDataSrc)\Migrations\%(RecursiveDir)%(Filename)_$(VersionTag)%(Extension)')" />
+
+		<FileUpdate Files="@(ModelSnapshots -> '$(EnterpriseServerDataSrc)\Migrations\%(RecursiveDir)%(Filename)_$(VersionTag)%(Extension)')"
+			Regex="\[DbContext\(typeof\([a-zA-Z0-9_]+DbContext\)\)]([ \t\r\n]*)partial class ([a-zA-Z0-9_]*)DbContextModelSnapshot\s*:\s*ModelSnapshot"
+			ReplacementText="$(ReplacementText)" />
+	</Target>
+
+	<Target Name="CompileSources" DependsOnTargets="BackupModelSnapshots">
 		<!-- SolidCP -->
 		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.Server.sln;$(TrunkFolder)\Sources\SolidCP.EnterpriseServer.sln;$(TrunkFolder)\Sources\SolidCP.WebPortal.sln;$(TrunkFolder)\Sources\SolidCP.WebDavPortal.sln" Properties="Configuration=$(BuildConfiguration)" />
 
@@ -800,35 +828,7 @@
 		<Copy SourceFiles="$(TrunkFolder)\Database\update_db.sql" DestinationFolder="$(DatabaseFolder)" />		
 	</Target>
 
-	<Target Name="BackupModelSnapshots" DependsOnTargets="PublishSqlInstallScripts">
-		<ItemGroup>
-			<ModelSnapshots Include="$(EnterpriseServerDataSrc)\Migrations\**\*DbContextModelSnapshot.cs" />
-		</ItemGroup>
-
-		<PropertyGroup>
-			<VersionTag>$(VersionLabel.Replace(".", "_"))</VersionTag>
-			<ReplacementText>public class $2DbContext_$(VersionTag): $2DbContext {
-#if NetCore
-        public $2DbContext_$(VersionTag)(string connectionStirng, bool initSeedData = false): base(connectionString, initSeedData) { }
-	    public $2DbContext_$(VersionTag)(DbContext context): base(context) { }
-	    public $2DbContext_$(VersionTag)(DbContextOptions&lt;DbContextBase&gt; options): base(options) { }
-#else
-	    public $2DbContext_$(VersionTag)(DbContext context): base(context) { }        
-#endif
-	}$1$1[DbContext(typeof($2DbContext_$(VersionTag)))]$1partial class $2DbContextModelSnapshot_$(VersionTag) : ModelSnapshot
-			</ReplacementText>
-		</PropertyGroup>
-
-		<!-- Create a backup of the EntityFramework Model Snapshots -->
-		<Copy SourceFiles="@(ModelSnapshots)"
-			DestinationFiles="@(ModelSnapshots -> '$(EnterpriseServerDataSrc)\Migrations\%(RecursiveDir)%(Filename)_$(VersionTag)%(Extension)')" />
-
-		<FileUpdate Files="@(ModelSnapshots -> '$(EnterpriseServerDataSrc)\Migrations\%(RecursiveDir)%(Filename)_$(VersionTag)%(Extension)')"
-			Regex="\[DbContext\(typeof\([a-zA-Z0-9_]+DbContext\)\)]([ \t\r\n]*)partial class ([a-zA-Z0-9_]*)DbContextModelSnapshot\s*:\s*ModelSnapshot"
-			ReplacementText="$(ReplacementText)" />
-	</Target>
-
-	<Target Name="ScriptEnterpriseServerDatabase" DependsOnTargets="BackupModelSnapshots">
+	<Target Name="ScriptEnterpriseServerDatabase" DependsOnTargets="PublishSqlInstallScripts">
 		<!--<ConvertToAbsolutePath Paths="$(DatabaseFolder)">
 			<Output TaskParameter="AbsolutePaths" PropertyName="DatabaseFolderAbsolute"/>
 		</ConvertToAbsolutePath>

@@ -14,7 +14,7 @@
         <ApplicationManifest>SolidCP.Installer.manifest</ApplicationManifest>
     </PropertyGroup>
     <Target Name="CopySetupPDBfile" Condition=" '$(Configuration)' == 'Debug' " AfterTargets="Build">
-        <Copy SourceFiles="..\..\Build\$(Configuration)\SolidCP.Setup.pdb" DestinationFolder="$(OutputPath)" ContinueOnError="true" />
+        <Copy SourceFiles="..\..\Build\$(Configuration)\Setup.pdb" DestinationFolder="$(OutputPath)" ContinueOnError="true" />
     </Target>
     <Target Name="CopyResources" BeforeTargets="ResolveReferences">
         <Message Text="Copying Installer Resources" Importance="high" />
