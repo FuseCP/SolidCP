@@ -37,13 +37,14 @@
 # refer to https://github.com/microsoft/github-actions-for-desktop-apps
 
 name: Deploy Release
+run-name: Deploy Release by @${{ github.actor }}
 
 on:
   push:
     branches: [ "GitHubActions" ]
   pull_request:
     branches: [ "GitHubActions" ]
-  workflow-dispatch:
+  workflow-dispatch
 
 jobs:
 
