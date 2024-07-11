@@ -79,7 +79,8 @@ jobs:
       uses: microsoft/setup-msbuild@v2
 
     - name: Run deploy-release
-      run: SolidCP\deploy-release.bat
+      working-directory: SolidCP
+      run: deploy-release.bat
 
     # Execute all unit tests in the solution
     # - name: Execute unit tests
