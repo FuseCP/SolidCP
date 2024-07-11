@@ -37,6 +37,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using SolidCP.Setup.Actions;
+using SolidCP.UniversalInstaller.Core;
 
 namespace SolidCP.Setup
 {

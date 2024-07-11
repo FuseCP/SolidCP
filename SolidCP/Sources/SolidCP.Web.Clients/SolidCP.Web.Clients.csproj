@@ -1,43 +1,42 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<TargetFrameworks>net48;net8.0</TargetFrameworks>
-		<ImplicitUsings>disable</ImplicitUsings>
-		<Nullable>disable</Nullable>
-		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
-		<gRPC>false</gRPC>
-		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
-		<OutputPath>..\..\Bin\</OutputPath>
-		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-		<SignAssembly>true</SignAssembly>
-		<DefineConstants Condition="'$(gRPC)' == 'true'">$(DefineConstants);gRPC</DefineConstants>
-		<AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>
-		<IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
-	</PropertyGroup>
-	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
-		<PackageReference Include="Grpc.Net.Client" Version="2.59.0" Condition="'$(gRPC)' == 'true'" />
-		<PackageReference Include="Grpc.Net.Client.Web" Version="2.59.0" Condition="'$(gRPC)' == 'true'" />
-		<PackageReference Include="protobuf-net.Grpc" Version="1.1.1" Condition="'$(gRPC)' == 'true'" />
-		<PackageReference Include="System.ServiceModel.Http" Version="8.0.0" />
-		<PackageReference Include="System.ServiceModel.NetTcp" Version="8.0.0" />
-		<PackageReference Include="System.ServiceModel.Primitives" Version="8.0.0" />
-		<PackageReference Include="System.ServiceModel.NetNamedPipe" Version="8.0.0" />
-	</ItemGroup>
-	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
-		<Reference Include="System.ServiceModel" />
-		<Reference Include="System.ServiceModel.Channels" />
-		<Reference Include="System.IdentityModel" />
-		<Reference Include="System.Net" />
-		<Reference Include="System.Configuration" />
-	</ItemGroup>
-	<ItemGroup>
-		<Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
-	</ItemGroup>
-	<ItemGroup>
-	  <PackageReference Include="SSH.NET" Version="2024.0.0" />
-	  <PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.0" />
-	</ItemGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
-	</ItemGroup>
-	
+  <PropertyGroup>
+    <TargetFrameworks>net48;net8.0</TargetFrameworks>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <gRPC>false</gRPC>
+    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+    <OutputPath>..\..\Bin\</OutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <SignAssembly>true</SignAssembly>
+    <DefineConstants Condition="'$(gRPC)' == 'true'">$(DefineConstants);gRPC</DefineConstants>
+    <AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <PackageReference Include="Grpc.Net.Client" Version="2.59.0" />
+    <PackageReference Include="Grpc.Net.Client.Web" Version="2.59.0" />
+    <PackageReference Include="protobuf-net.Grpc" Version="1.1.1" />
+    <PackageReference Include="System.ServiceModel.Http" Version="8.0.0" />
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="8.0.0" />
+    <PackageReference Include="System.ServiceModel.Primitives" Version="8.0.0" />
+    <PackageReference Include="System.ServiceModel.NetNamedPipe" Version="8.0.0" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Channels" />
+    <Reference Include="System.IdentityModel" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="SSH.NET" Version="2024.0.0" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
+  </ItemGroup>
 </Project>

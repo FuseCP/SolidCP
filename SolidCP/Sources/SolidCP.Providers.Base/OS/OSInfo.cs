@@ -101,7 +101,7 @@ namespace SolidCP.Providers.OS
 					}
 					if (name == null)
 					{
-						var osRelease = Current.DefaultShell.Exec("lsb_release -a").Output().Result;
+						var osRelease = Shell.Standard.Exec("lsb_release -a").Output().Result;
 						var match = Regex.Match(osRelease, "(?<=^Distributor ID\\s*:\\s*)[^\\s$]+(?=\\s|$)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
 						if (match.Success) name = match.Value;
 						match = Regex.Match(osRelease, @"(?<=^Release\s*:[^0-9]*?)[0-9]+\.[0-9]+(\.[0-9]+)?(\.[0-9]+)?", RegexOptions.IgnoreCase | RegexOptions.Multiline);
@@ -164,13 +164,13 @@ namespace SolidCP.Providers.OS
 					}
 					if (name == null)
 					{
-						var osRelease = Shell.Default.Exec("lsb_release -a").Output().Result;
+						var osRelease = Shell.Standard.Exec("lsb_release -a").Output().Result;
 						var match = Regex.Match(osRelease, "(?<=^Description\\s*:\\s*)[^\\s$]+(?=\\s|$)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
 						if (match.Success) name = match.Value;
 					}
 					if (name == null)
 					{
-						name = Shell.Default.Exec("uname").Output().Result;
+						name = Shell.Standard.Exec("uname").Output().Result;
 					}
 					return name;
 

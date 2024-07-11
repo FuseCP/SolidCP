@@ -41,6 +41,8 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 using SolidCP.Providers.Common;
+using SolidCP.UniversalInstaller.Core;
+using Data = SolidCP.EnterpriseServer.Data;
 
 namespace SolidCP.Setup.Actions
 {
@@ -295,8 +297,10 @@ namespace SolidCP.Setup.Actions
 
 	public class ExecuteInstallSqlAction : Action, IInstallAction
 	{
-		public string dbType = "";
-		public string SqlFilePath => $@"Setup\install.{dbType}.sql";
+		public Data.DbType dbType = Data.DbType.Unknown;
+
+		public string DbTypeId => dbType != Data.DbType.MariaDb ? dbType.ToString().ToLowerInvariant() : "mysql"; 
+		public string SqlFilePath => $@"Setup\install.{DbTypeId}.sql";
 		public const string ExecuteProgressMessage = "Creating database objects...";
 
 		void IInstallAction.Run(SetupVariables vars)
@@ -305,7 +309,7 @@ namespace SolidCP.Setup.Actions
 			{
 				var component = vars.ComponentFullName;
 				var componentId = vars.ComponentId;
-				dbType = vars.DatabaseType.ToLower();
+				dbType = vars.DatabaseType;
 
 				var path = Path.Combine(vars.InstallationFolder, SqlFilePath);
 
@@ -369,11 +373,13 @@ namespace SolidCP.Setup.Actions
 				}
 				//
 				string cmd;
-				switch (vars.DatabaseType.ToLower())
+				switch (vars.DatabaseType)
 				{
-					case "mssql": cmd = string.Format(MsSqlStatement, vars.Database, password); break;
-					case "mysql": cmd = string.Format(MySqlStatement, vars.Database, password); break;
-					case "sqlite": cmd = string.Format(SqliteStatement, password); break;
+					case Data.DbType.MsSql: cmd = string.Format(MsSqlStatement, vars.Database, password); break;
+					case Data.DbType.MySql:
+					case Data.DbType.MariaDb: cmd = string.Format(MySqlStatement, vars.Database, password); break;
+					case Data.DbType.Sqlite:
+					case Data.DbType.SqliteFX: cmd = string.Format(SqliteStatement, password); break;
 					default: throw new NotSupportedException("This database type is not supported.");
 				}
 				SqlUtils.ExecuteQuery(vars.DbInstallConnectionString, cmd);
@@ -417,7 +423,9 @@ namespace SolidCP.Setup.Actions
 		{
 			Log.WriteStart("Updating web.config file (connection string)");
 			var file = Path.Combine(vars.InstallationFolder, vars.ConfigurationFile);
-			SqlUtils.SetConnectionString(vars);
+			vars.ConnectionString = SqlUtils.BuildConnectionString(vars.DatabaseType, vars.DatabaseServer,
+				vars.DatabasePort, vars.Database, vars.Database, vars.DatabaseUserPassword,
+				vars.EnterpriseServerPath, vars.EmbedEnterpriseServer);
 			var Xml = XDocument.Load(file);
 			var connectionStrings = Xml
 				.Element("configuration")
@@ -460,7 +468,9 @@ namespace SolidCP.Setup.Actions
 				content = reader.ReadToEnd();
 			}
 
-			SqlUtils.SetConnectionString(vars);
+			vars.ConnectionString = SqlUtils.BuildConnectionString(vars.DatabaseType, vars.DatabaseServer,
+				vars.DatabasePort, vars.Database, vars.Database, vars.DatabaseUserPassword,
+				vars.EnterpriseServerPath, vars.EmbedEnterpriseServer);
 			content = Utils.ReplaceScriptVariable(content, "installer.connectionstring", vars.ConnectionString);
 
 			using (var writer = new StreamWriter(file))

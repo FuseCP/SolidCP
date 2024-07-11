@@ -43,7 +43,8 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using System.Xml;
-using Microsoft.Deployment.WindowsInstaller;
+//using Microsoft.Deployment.WindowsInstaller;
+using WixToolset.Dtf.WindowsInstaller;
 using SolidCP.Setup;
 
 namespace SolidCP.SchedulerServiceInstaller

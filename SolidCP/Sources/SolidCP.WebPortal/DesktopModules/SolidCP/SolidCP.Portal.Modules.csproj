@@ -29,8 +29,7 @@
     <DefineConstants>TRACE;DEBUG;Modules</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <WarningsAsErrors>618</WarningsAsErrors>
+        <WarningsAsErrors>618</WarningsAsErrors>
     <Prefer32Bit>false</Prefer32Bit>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
@@ -40,8 +39,7 @@
     <DefineConstants>TRACE;Modules</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <WarningsAsErrors>618</WarningsAsErrors>
+        <WarningsAsErrors>618</WarningsAsErrors>
     <Prefer32Bit>false</Prefer32Bit>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>

@@ -8,8 +8,7 @@
         <ApplicationIcon>application.ico</ApplicationIcon>
         <StartupObject>SolidCP.Import.Enterprise.Program</StartupObject>
         <PublishUrl>publish\</PublishUrl>
-        <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-        <NoWarn>NU1605</NoWarn>
+                <NoWarn>NU1605</NoWarn>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <OutputPath>bin\debug\</OutputPath>

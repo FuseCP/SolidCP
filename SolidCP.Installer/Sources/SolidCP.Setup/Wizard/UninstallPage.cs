@@ -43,6 +43,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using SolidCP.Providers.OS;
+using SolidCP.UniversalInstaller.Core;
 
 namespace SolidCP.Setup
 {

@@ -26,6 +26,8 @@ using SolidCP.Setup.Common;
 using SolidCP.Setup.Web;
 using SolidCP.Setup.Windows;
 using SolidCP.Providers.OS;
+using Data = SolidCP.EnterpriseServer.Data;
+using SolidCP.UniversalInstaller.Core;
 using System.Windows.Forms;
 
 namespace SolidCP.Setup.Internal
@@ -240,12 +242,14 @@ namespace SolidCP.Setup.Internal
 			Dst.NewDatabaseUser = true;
 			Dst.ServerAdminPassword = Utils.GetStringSetupParameter(Hash, Global.Parameters.ServerAdminPassword);
 			Dst.UpdateServerAdminPassword = true;
-			Dst.DatabaseType = Utils.GetStringSetupParameter(Hash, Global.Parameters.DatabaseType);
+			Data.DbType dbType = Data.DbType.Unknown;
+			Enum.TryParse(Utils.GetStringSetupParameter(Hash, Global.Parameters.DatabaseType), out dbType);
+			Dst.DatabaseType = dbType;
 			Dst.DatabasePort = (int)(Utils.GetSetupParameter(Hash, Global.Parameters.DatabasePort) ?? 0);
 
-			switch (Dst.DatabaseType.ToLowerInvariant())
+			switch (Dst.DatabaseType)
 			{
-				case "mssql":
+				case Data.DbType.MsSql:
 					// DB_LOGIN, DB_PASSWORD.
 					bool WinAuth = Utils.GetStringSetupParameter(Hash, "DbAuth").ToLowerInvariant().Equals("Windows Authentication".ToLowerInvariant());
 					Dst.DbInstallConnectionString = SqlUtils.BuildMsSqlServerMasterConnectionString(
@@ -253,15 +257,18 @@ namespace SolidCP.Setup.Internal
 												WinAuth ? null : Utils.GetStringSetupParameter(Hash, Global.Parameters.DbServerAdmin),
 												WinAuth ? null : Utils.GetStringSetupParameter(Hash, Global.Parameters.DbServerAdminPassword));
 					break;
-				case "mysql":
+				case Data.DbType.MySql:
+				case Data.DbType.MariaDb:
 					Dst.DbInstallConnectionString = SqlUtils.BuildMySqlServerMasterConnectionString(
 												Dst.DatabaseServer,
-												Dst.DatabasePort.ToString(),
+												Dst.DatabasePort,
 												Utils.GetStringSetupParameter(Hash, Global.Parameters.DbServerAdmin),
 												Utils.GetStringSetupParameter(Hash, Global.Parameters.DbServerAdminPassword));
 					break;
-				case "sqlite":
-					Dst.DbInstallConnectionString = SqlUtils.BuildSqliteMasterConnectionString(Dst.Database, Dst);
+				case Data.DbType.Sqlite:
+				case Data.DbType.SqliteFX:
+					Dst.DbInstallConnectionString = SqlUtils.BuildSqliteMasterConnectionString(Dst.Database,
+						Dst.InstallationFolder, Dst.EnterpriseServerPath, Dst.EmbedEnterpriseServer);
 					break;
 				default: throw new NotSupportedException("This database type is not supported.");
 			}
@@ -4931,7 +4938,9 @@ namespace SolidCP.Setup.Internal
 					}
 					else
 					{
-						SqlUtils.SetConnectionString(Context);
+						Context.ConnectionString = SqlUtils.BuildConnectionString(Context.DatabaseType,
+							Context.DatabaseServer, Context.DatabasePort, Context.Database, Context.Database,
+							Context.DatabaseUserPassword, Context.EnterpriseServerPath, Context.EmbedEnterpriseServer);
 						//Context.ConnectionString = string.Format(Context.ConnectionString, Context.DatabaseServer, Context.Database, Context.DatabaseUser, Context.DatabaseUserPassword);
 					}
 					if (string.IsNullOrWhiteSpace(Context.ServiceName) || string.IsNullOrWhiteSpace(Context.ServiceFile))

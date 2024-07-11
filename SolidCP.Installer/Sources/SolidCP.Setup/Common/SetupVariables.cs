@@ -135,7 +135,7 @@ namespace SolidCP.Setup
 
 		public int DatabasePort { get; set; }
 
-		public string DatabaseType { get; set; }
+		public SolidCP.EnterpriseServer.Data.DbType DatabaseType { get; set; }
 		/// <summary>
 		/// Database install connection string
 		/// </summary>

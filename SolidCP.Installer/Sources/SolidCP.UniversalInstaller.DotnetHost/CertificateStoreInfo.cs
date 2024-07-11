@@ -7,7 +7,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Reflection;
 using SolidCP.Providers.OS;
 
-namespace SolidCP.UniversalInstaller.Core
+namespace SolidCP.UniversalInstaller.Core.DotnetHost
 {
 	public class CertificateStoreInfo
 	{

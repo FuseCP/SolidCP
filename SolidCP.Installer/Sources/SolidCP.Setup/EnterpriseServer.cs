@@ -38,6 +38,8 @@ using System.Windows.Forms;
 using System.Collections;
 using System.Text;
 using SolidCP.Setup.Actions;
+using Data = SolidCP.EnterpriseServer.Data;
+using SolidCP.UniversalInstaller.Core;
 
 namespace SolidCP.Setup
 {
@@ -101,27 +103,33 @@ namespace SolidCP.Setup
 					setupVariables.Database = Utils.GetStringSetupParameter(args, Global.Parameters.DatabaseName);
 					setupVariables.DatabaseServer = Utils.GetStringSetupParameter(args, Global.Parameters.DatabaseServer);
 					setupVariables.DatabasePort = (int)Utils.GetSetupParameter(args, Global.Parameters.DatabasePort);
-					setupVariables.DatabaseType = Utils.GetStringSetupParameter(args, Global.Parameters.DatabaseType);
+					Data.DbType dbType = Data.DbType.Unknown;
+					Enum.TryParse(Utils.GetStringSetupParameter(args, Global.Parameters.DatabaseType), out dbType);
+					setupVariables.DatabaseType = dbType;
 					//
-					switch (setupVariables.DatabaseType.ToLower())
+					switch (setupVariables.DatabaseType)
 					{
-						case "mssql":
+						case Data.DbType.MsSql:
 							setupVariables.DbInstallConnectionString = SqlUtils.BuildMsSqlServerMasterConnectionString(
 								setupVariables.DatabaseServer,
 								Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdmin),
 								Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdminPassword)
 							);
 							break;
-						case "mysql":
+						case Data.DbType.MySql:
+						case Data.DbType.MariaDb:
 							setupVariables.DbInstallConnectionString = SqlUtils.BuildMySqlServerMasterConnectionString(
 								setupVariables.DatabaseServer,
-								setupVariables.DatabasePort.ToString(),
+								setupVariables.DatabasePort,
 								Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdmin),
 								Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdminPassword)
 							);
 							break;
-						case "sqlite":
-							setupVariables.DbInstallConnectionString = SqlUtils.BuildSqliteMasterConnectionString(setupVariables.Database, setupVariables);
+						case Data.DbType.Sqlite:
+						case Data.DbType.SqliteFX:
+							setupVariables.DbInstallConnectionString =
+								SqlUtils.BuildSqliteMasterConnectionString(setupVariables.Database,
+									setupVariables.InstallationFolder, setupVariables.EnterpriseServerPath, setupVariables.EmbedEnterpriseServer);
 							break;
 						default: break;
 					}

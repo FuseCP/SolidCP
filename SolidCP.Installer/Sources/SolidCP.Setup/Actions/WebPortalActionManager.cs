@@ -38,6 +38,7 @@ using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 using SolidCP.Setup.Common;
+using SolidCP.UniversalInstaller.Core;
 
 namespace SolidCP.Setup.Actions
 {
@@ -362,14 +363,16 @@ namespace SolidCP.Setup.Actions
                 var connectionString = esConnectionString;
                 var csb = new SolidCP.Providers.Common.ConnectionStringBuilder(connectionString);
                 var dbType = csb["DbType"] as string;
-                if (dbType.Equals("sqlite", StringComparison.OrdinalIgnoreCase))
+                if (dbType.Equals("sqlite", StringComparison.OrdinalIgnoreCase) ||
+                    dbType.Equals("sqlitefx", StringComparison.OrdinalIgnoreCase))
                 {
                     // adjust SQLite data source
                     var database = csb["data source"] as string;
                     if (!Path.IsPathRooted(database))
                     {
-                        database = Path.Combine(enterpriseServerPath, database);
-                        connectionString = SqlUtils.BuildSqliteConnectionString(database, vars, false);
+                        if (!database.Contains(Path.DirectorySeparatorChar) && !database.Contains('.')) database = $"{database}.sqlite";
+						database = Path.Combine(enterpriseServerPath, database);
+                        connectionString = SqlUtils.BuildSqliteConnectionString(database);
                     }
                 }
 

@@ -33,6 +33,7 @@
 using System;
 using System.Threading;
 using System.Xml;
+using SolidCP.UniversalInstaller.Core;
 
 namespace SolidCP.Setup
 {

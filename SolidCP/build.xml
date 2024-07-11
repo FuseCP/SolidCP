@@ -65,13 +65,13 @@
 
 		<!-- Include pdb's since users can send back StackTraces to ISP's, and with the pdb's the StackTraces contain
 				line numbers and the ISP's can debug SolidCP. -->
-		<IncludeReleasePdbs>true</IncludeReleasePdbs>
+		<IncludeReleasePdbs Condition="'$(IncludeReleasePdbs)' == ''">true</IncludeReleasePdbs>
 
 		<!-- Use aspnet_compiler to precompile WebPortal if set to true (This also checks all ascx and aspx files for errors) -->
-		<UseAspNetPrecompile>true</UseAspNetPrecompile>
+		<UseAspNetPrecompile Condition="'$(UseAspNetPrecompile)' == ''">true</UseAspNetPrecompile>
 
-		<!-- Build Linux install deb & rpm packages -->
-		<BuildLinuxInstallPackages>true</BuildLinuxInstallPackages>
+		<!-- Build Linux install deb & rpm packages (This requires a WSL distro with rpmbuild installed) -->
+		<BuildLinuxInstallPackages Condition="'$(BuildLinuxInstallPackages)' == ''">true</BuildLinuxInstallPackages>
 
 		<ftphost></ftphost>
 		<ftpUsername></ftpUsername>

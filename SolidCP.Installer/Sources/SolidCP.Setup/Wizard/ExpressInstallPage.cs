@@ -42,20 +42,18 @@ using System.Xml;
 using System.Threading;
 using System.Windows.Forms;
 using System.Linq;
+using System.Reflection;
+using System.Collections.Specialized;
 
 using SolidCP.Setup.Common;
 using SolidCP.Setup.Web;
 using SolidCP.Setup.Windows;
-using System.Data.SqlClient;
-
 using SolidCP.EnterpriseServer;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.ResultObjects;
 using SolidCP.Providers.OS;
-using System.Reflection;
-using System.Collections.Specialized;
 using SolidCP.Setup.Actions;
-using System.Diagnostics;
+using SolidCP.UniversalInstaller.Core;
 
 namespace SolidCP.Setup
 {

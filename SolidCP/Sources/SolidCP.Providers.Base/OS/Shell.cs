@@ -448,6 +448,13 @@ namespace SolidCP.Providers.OS
 		public readonly static Shell Default = new CmdShell(); // OSInfo.Current.DefaultShell;
 #else
 		public static Shell Default => OSInfo.Current.DefaultShell;
+		static Shell standard = null;
+		public static Shell Standard => standard ??= new StandardShell();
 #endif
+	}
+
+	public class StandardShell : Shell
+	{
+		public override string ShellExe => OSInfo.IsWindows ? "cmd" : "sh";
 	}
 }

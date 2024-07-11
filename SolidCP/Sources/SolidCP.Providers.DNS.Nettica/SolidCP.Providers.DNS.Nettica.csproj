@@ -4,8 +4,7 @@
 		<TargetFramework>net48</TargetFramework>
 		<PublishUrl>publish\</PublishUrl>
 		<OutputPath>..\SolidCP.Server\bin\DNS\</OutputPath>
-		<CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+				<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 		<LangVersion>11</LangVersion>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>

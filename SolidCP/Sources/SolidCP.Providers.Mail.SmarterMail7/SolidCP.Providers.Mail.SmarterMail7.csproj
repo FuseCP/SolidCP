@@ -16,8 +16,7 @@
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
 		<DebugType>pdbonly</DebugType>
-		<CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-	</PropertyGroup>
+			</PropertyGroup>
 	<ItemGroup>
 		<Reference Include="System.Web.Services" />
 	</ItemGroup>

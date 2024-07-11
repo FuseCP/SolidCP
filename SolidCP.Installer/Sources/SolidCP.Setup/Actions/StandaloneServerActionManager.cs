@@ -32,14 +32,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Text;
 using System.Reflection;
 using System.IO;
+using System.Data;
 using SolidCP.EnterpriseServer;
 using SolidCP.Providers.ResultObjects;
-using System.Collections.Specialized;
 using SolidCP.Providers.Common;
-using System.Data;
+using SolidCP.UniversalInstaller.Core;
 
 namespace SolidCP.Setup.Actions
 {

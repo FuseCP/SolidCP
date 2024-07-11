@@ -40,6 +40,8 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using SolidCP.Providers.Common;
+using Data = SolidCP.EnterpriseServer.Data;
+using SolidCP.UniversalInstaller.Core;
 
 namespace SolidCP.Setup
 {
@@ -125,16 +127,16 @@ namespace SolidCP.Setup
 					e.Cancel = true;
 					return;
 				}
-				string dbtype;
+				Data.DbType dbtype = Data.DbType.Unknown;
 				string server;
 				string database;
 				string dbuser;
 				string dbpassword;
-				int? dbport;
+				int? dbport = null;
 				switch (tabControl.SelectedIndex)
 				{
 					case 0:
-						dbtype = "MsSql";
+						dbtype = Data.DbType.MsSql;
 						server = txtMsSqlServer.Text.Trim();
 						database = txtMsSqlDatabase.Text.Trim();
 						if (cbMsSqlAuthentication.SelectedIndex != 0)
@@ -148,7 +150,7 @@ namespace SolidCP.Setup
 						dbport = null;
 						break;
 					case 1:
-						dbtype = "MySql";
+						dbtype = Data.DbType.MySql;
 						server = txtMySqlServer.Text.Trim();
 						database = txtMySqlDatabase.Text.Trim();
 						dbuser = txtMySqlUser.Text.Trim();
@@ -163,7 +165,7 @@ namespace SolidCP.Setup
 						}
 						break;
 					case 2:
-						dbtype = "Sqlite";
+						dbtype = Data.DbType.Sqlite;
 						server = "(local)";
 						database = txtSqliteDatabase.Text.Trim();
 						dbuser = dbpassword = null;
@@ -176,7 +178,7 @@ namespace SolidCP.Setup
 
 				if (CheckConnection(connectionString))
 				{
-					if (dbtype == "MsSql")
+					if (dbtype == Data.DbType.MsSql)
 					{
 						// check SQL server version
 						string sqlVersion = GetMsSqlServerVersion(connectionString);
@@ -323,11 +325,11 @@ namespace SolidCP.Setup
 			return SqlUtils.GetMsSqlServerSecurityMode(connectionString);
 		}
 
-		private string CreateConnectionString(string dbtype)
+		private string CreateConnectionString(Data.DbType dbtype)
 		{
 			switch (dbtype)
 			{
-				case "MsSql":
+				case Data.DbType.MsSql:
 					if (cbMsSqlAuthentication.SelectedIndex == 0)
 					{
 						return SqlUtils.BuildMsSqlServerMasterConnectionString(txtMsSqlServer.Text.Trim(), null, null);
@@ -336,10 +338,15 @@ namespace SolidCP.Setup
 					{
 						return SqlUtils.BuildMsSqlServerMasterConnectionString(txtMsSqlServer.Text.Trim(), txtMsSqlLogin.Text.Trim(), txtMsSqlPassword.Text.Trim());
 					}
-				case "MySql":
+				case Data.DbType.MySql:
+				case Data.DbType.MariaDb:
+					int port = 3306;
+					int.TryParse(txtMySqlPort.Text.Trim(), out port);
 					return SqlUtils.BuildMySqlServerMasterConnectionString(txtMySqlServer.Text.Trim(),
-					txtMySqlPort.Text.Trim(), txtMySqlUser.Text.Trim(), txtMySqlPassword.Text.Trim());
-				case "Sqlite": return SqlUtils.BuildSqliteMasterConnectionString(txtSqliteDatabase.Text.Trim(), SetupVariables);
+						port, txtMySqlUser.Text.Trim(), txtMySqlPassword.Text.Trim());
+				case Data.DbType.Sqlite:
+				case Data.DbType.SqliteFX:
+					return SqlUtils.BuildSqliteMasterConnectionString(txtSqliteDatabase.Text.Trim(), SetupVariables.InstallationFolder, SetupVariables.EnterpriseServerPath, SetupVariables.EmbedEnterpriseServer);
 				default: return "";
 			}
 		}

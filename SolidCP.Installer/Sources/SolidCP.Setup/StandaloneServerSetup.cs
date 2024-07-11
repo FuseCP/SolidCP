@@ -37,11 +37,13 @@ using System.Configuration;
 using System.Windows.Forms;
 using System.Collections;
 using System.Text;
-using SolidCP.Setup.Web;
-using SolidCP.Setup.Actions;
 using System.Threading;
 using System.Security.Cryptography;
 using System.Security.Policy;
+using SolidCP.Setup.Web;
+using SolidCP.Setup.Actions;
+using Data = SolidCP.EnterpriseServer.Data;
+using SolidCP.UniversalInstaller.Core;
 
 namespace SolidCP.Setup
 {
@@ -210,13 +212,15 @@ namespace SolidCP.Setup
 					}
 					//
 					esServerSetup.Database = Utils.GetStringSetupParameter(args, Global.Parameters.DatabaseName);
-					esServerSetup.DatabaseType = Utils.GetStringSetupParameter(args, Global.Parameters.DatabaseType);
+					Data.DbType dbType = Data.DbType.Unknown;
+					Enum.TryParse(Utils.GetStringSetupParameter(args, Global.Parameters.DatabaseType), out dbType);
+					esServerSetup.DatabaseType = dbType;
 					esServerSetup.DatabasePort = (int)(Utils.GetSetupParameter(args, Global.Parameters.DatabasePort) ?? 0);
 					esServerSetup.DatabaseServer = Utils.GetStringSetupParameter(args, Global.Parameters.DatabaseServer);
 
-					switch (esServerSetup.DatabaseType.ToLowerInvariant())
+					switch (dbType)
 					{
-						case "mssql":
+						case Data.DbType.MsSql:
 							// DB_LOGIN, DB_PASSWORD.
 							bool WinAuth = Utils.GetStringSetupParameter(args, "DbAuth").ToLowerInvariant().Equals("Windows Authentication".ToLowerInvariant());
 							esServerSetup.DbInstallConnectionString = SqlUtils.BuildMsSqlServerMasterConnectionString(
@@ -224,15 +228,17 @@ namespace SolidCP.Setup
 														WinAuth ? null : Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdmin),
 														WinAuth ? null : Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdminPassword));
 							break;
-						case "mysql":
+						case Data.DbType.MySql:
+						case Data.DbType.MariaDb:
 							esServerSetup.DbInstallConnectionString = SqlUtils.BuildMySqlServerMasterConnectionString(
 														esServerSetup.DatabaseServer,
-														esServerSetup.DatabasePort.ToString(),
+														esServerSetup.DatabasePort,
 														Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdmin),
 														Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdminPassword));
 							break;
-						case "sqlite":
-							esServerSetup.DbInstallConnectionString = SqlUtils.BuildSqliteMasterConnectionString(esServerSetup.Database, esServerSetup);
+						case Data.DbType.Sqlite:
+						case Data.DbType.SqliteFX:
+							esServerSetup.DbInstallConnectionString = SqlUtils.BuildSqliteMasterConnectionString(esServerSetup.Database, esServerSetup.InstallationFolder, esServerSetup.EnterpriseServerPath, esServerSetup.EmbedEnterpriseServer);
 							break;
 						default: throw new NotSupportedException("This database type is not supported.");
 					}

@@ -472,7 +472,7 @@ namespace SolidCP.Installer
 			string tmpFile = Path.ChangeExtension(Path.GetTempFileName(), ".exe");
 			using (Stream writeStream = File.Create(tmpFile))
 			{
-				using (Stream readStream = typeof(Program).Assembly.GetManifestResourceStream("SolidCP.Installer.Updater.exe"))
+				using (Stream readStream = typeof(Program).Assembly.GetManifestResourceStream("SolidCP.Installer.Resources.SolidCP.Updater.exe"))
 				{
 					byte[] buffer = new byte[(int)readStream.Length];
 					readStream.Read(buffer, 0, buffer.Length);

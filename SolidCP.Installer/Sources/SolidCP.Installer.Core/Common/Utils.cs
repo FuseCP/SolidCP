@@ -48,7 +48,6 @@ using System.Threading;
 using SolidCP.Installer.Core;
 using SolidCP.Installer.Configuration;
 using SolidCP.Providers.OS;
-using SolidCP.UniversalInstaller;
 using System.Xml;
 using System.Data;
 
@@ -388,6 +387,11 @@ namespace SolidCP.Installer.Common
 			WindowsIdentity user = WindowsIdentity.GetCurrent();
 			WindowsPrincipal principal = new WindowsPrincipal(user);
 			return principal.IsInRole(WindowsBuiltInRole.Administrator);
+		}
+
+		public static void RestartAsAdmin()
+		{
+			UniversalInstaller.Installer.Current.RestartAsAdmin();
 		}
 		public static bool IsAdministratorUnix()
 		{
