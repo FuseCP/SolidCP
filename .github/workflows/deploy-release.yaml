@@ -66,24 +66,13 @@ jobs:
     #  Wap_Project_Path: your-wap-project-path                   # Replace with the path to your Wap project, i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-
+      
     # Install the .NET Core workload
     - name: Install .NET Core
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
 
-    # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
-    - name: Setup MSBuild.exe
-      uses: microsoft/setup-msbuild@v2
-
-    - name: Checkout Submodules
-      run: git submodule update --init --recursive
-      
     - name: Install WSL Ubuntu
       run: |
         wal --update
@@ -95,6 +84,14 @@ jobs:
         wslbash -c 'mkdir -p ~/rpmbuild/{RPMS,SRPMS,BUILD,SOURCES,SPECS,tmp}'
         wslbash -c 'echo "%_topdir   %(echo $HOME)/rpmbuild" >> ~/.rpmmacros'
         wslbash -c 'echo "%_tmppath  %{_topdir}/tmp" >> ~/.rpmmacros'
+
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 1
+
+    - name: Checkout Submodules
+      run: git submodule update --init --recursive
 
     - name: Run deploy-release.bat
       working-directory: SolidCP
