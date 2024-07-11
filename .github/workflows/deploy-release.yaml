@@ -75,7 +75,7 @@ jobs:
 
     - name: Install WSL Ubuntu
       run: |
-        wal --update
+        wsl --update
         wsl --install -d Ubuntu-24.04
 
     - name: Install RPM on WSL Ubuntu
