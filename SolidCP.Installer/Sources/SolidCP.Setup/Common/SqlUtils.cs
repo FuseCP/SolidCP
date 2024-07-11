@@ -86,7 +86,8 @@ namespace SolidCP.Setup
 
 		public static string BuildSqliteMasterConnectionString(string database, SetupVariables vars)
 		{
-			var integrated = vars.EmbedEnterpriseServer;
+			//var integrated = vars.EmbedEnterpriseServer;
+			const bool integrated = false;
 
 			if (!Path.IsPathRooted(database)) {
 				if (!database.Contains(Path.DirectorySeparatorChar.ToString()))
@@ -100,12 +101,12 @@ namespace SolidCP.Setup
 			return $"DbType=Sqlite;Data Source={database}";
 		}
 
-		public static string BuildSqliteConnectionString(string database, SetupVariables vars)
+		public static string BuildSqliteConnectionString(string database, SetupVariables vars, bool integrated = false)
 		{
 			if (!Path.IsPathRooted(database) && !database.Contains(Path.DirectorySeparatorChar.ToString()))
 			{
 				database = $"{database}.sqlite";
-				var integrated = vars.EmbedEnterpriseServer;
+				//var integrated = vars.EmbedEnterpriseServer;
 				if (integrated) database = Path.Combine(vars.EnterpriseServerPath, "App_Data", database);
 				else database = Path.Combine("App_Data", database);
 			}
@@ -126,7 +127,7 @@ namespace SolidCP.Setup
 						vars.DatabaseUserPassword, vars.Database);
 					break;
 				case "sqlite":
-					vars.ConnectionString = SqlUtils.BuildSqliteConnectionString(vars.Database, vars);
+					vars.ConnectionString = SqlUtils.BuildSqliteConnectionString(vars.Database, vars, false);
 					break;
 			}
 		}

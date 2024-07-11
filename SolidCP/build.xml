@@ -783,26 +783,40 @@
   <Target Name="CreateEnterpriseServerDatabase" DependsOnTargets="CreateWebDavPortalUpdate">
 		<MakeDir Directories="$(DatabaseFolder)"/>
 
+		<!--<Exec Command="$(SqlCmd) -Q &quot;IF DB_ID (N'$(DataBaseName)') IS NOT NULL DROP DATABASE $(DataBaseName)&quot;" />
+		<Exec Command="$(SqlCmd) -Q &quot;CREATE DATABASE $(DataBaseName) COLLATE Latin1_General_CI_AS&quot;" />
+		
+		<Copy SourceFiles="$(TrunkFolder)\Database\install_db.sql" DestinationFolder="$(DatabaseFolder)" />-->
+	</Target>
+
+	<Target Name="PublishSqlInstallScripts" DependsOnTargets="CreateEnterpriseServerDatabase">
 		<ItemGroup>
 			<InstallScripts Include="$(EnterpriseServerDataSrc)\Migrations\**\install.*.sql" />
 			<InstallScripts Include="$(EnterpriseServerDataSrc)\Migrations\**\install.*.bundle.exe" />
 		</ItemGroup>
-
-		<!--
-		<Exec Command="$(SqlCmd) -Q &quot;IF DB_ID (N'$(DataBaseName)') IS NOT NULL DROP DATABASE $(DataBaseName)&quot;" />
-		<Exec Command="$(SqlCmd) -Q &quot;CREATE DATABASE $(DataBaseName) COLLATE Latin1_General_CI_AS&quot;" />
-		-->
 		<!--<Copy SourceFiles="$(TrunkFolder)\Database\install_db.sql" DestinationFolder="$(DatabaseFolder)" />-->
 		<Copy SourceFiles="@(InstallScripts)" DestinationFolder="$(TrunkFolder)\Database" />
 		<Copy SourceFiles="@(InstallScripts)" DestinationFolder="$(DatabaseFolder)" />
-		<Copy SourceFiles="$(TrunkFolder)\Database\update_db.sql" DestinationFolder="$(DatabaseFolder)" />
-		
+		<Copy SourceFiles="$(TrunkFolder)\Database\update_db.sql" DestinationFolder="$(DatabaseFolder)" />		
+	</Target>
+
+	<Target Name="BackupModelSnapshots" DependsOnTargets="PublishSqlInstallScripts">
 		<ItemGroup>
 			<ModelSnapshots Include="$(EnterpriseServerDataSrc)\Migrations\**\*DbContextModelSnapshot.cs" />
 		</ItemGroup>
 
 		<PropertyGroup>
 			<VersionTag>$(VersionLabel.Replace(".", "_"))</VersionTag>
+			<ReplacementText>public class $2DbContext_$(VersionTag): $2DbContext {
+#if NetCore
+        public $2DbContext_$(VersionTag)(string connectionStirng, bool initSeedData = false): base(connectionString, initSeedData) { }
+	    public $2DbContext_$(VersionTag)(DbContext context): base(context) { }
+	    public $2DbContext_$(VersionTag)(DbContextOptions<DbContextBase> options): base(options) { }
+#else
+	    public $2DbContext_$(VersionTag)(DbContext context): base(context) { }        
+#endif
+	}$1$1[DbContext(typeof($2DbContext_$(VersionTag)))]$1partial class $2DbContextModelSnapshot_$(VersionTag) : ModelSnapshot
+			</ReplacementText>
 		</PropertyGroup>
 
 		<!-- Create a backup of the EntityFramework Model Snapshots -->
@@ -811,22 +825,10 @@
 
 		<FileUpdate Files="@(ModelSnapshots -> '$(EnterpriseServerDataSrc)\Migrations\%(RecursiveDir)%(Filename)_$(VersionTag)%(Extension)')"
 			Regex="\[DbContext\(typeof\([a-zA-Z0-9_]+DbContext\)\)]([ \t\r\n]*)partial class ([a-zA-Z0-9_]*)DbContextModelSnapshot\s*:\s*ModelSnapshot"
-			ReplacementText="public class $2DbContext_$(VersionTag): $2DbContext {$1    public $2DbContext_$(VersionTag)(): base(null) { }$1}$1$1[DbContext(typeof($2DbContext_$(VersionTag)))]$1partial class $2DbContextModelSnapshot_$(VersionTag) : ModelSnapshot" />
-		
-		<!-- Update variables in files -->
-		<!--<FileUpdate Files="$(DatabaseFolder)\install_db.sql" Regex="\${install.database}" ReplacementText="$(DataBaseName)" />
-		<FileUpdate Files="$(DatabaseFolder)\update_db.sql" Regex="\${install.database}" ReplacementText="$(DataBaseName)" />
-		<FileUpdate Files="$(DatabaseFolder)\update_db.sql" Regex="\${release.version}" ReplacementText="$(FileVersion)" />
-		<FileUpdate Files="$(DatabaseFolder)\update_db.sql" Regex="\${release.date}" ReplacementText="$(ReleaseDate)" />-->
-
-		<!--<Exec Command="$(SqlCmd) -i $(DatabaseFolder)\install_db.sql" />
-		<Exec Command="$(SqlCmd) -i $(DatabaseFolder)\update_db.sql" />-->
-
-		<!--<Delete Files="$(DatabaseFolder)\install_db.sql" />
-		<Delete Files="$(DatabaseFolder)\update_db.sql" />-->
+			ReplacementText="$(ReplacementText)" />
 	</Target>
 
-	<Target Name="ScriptEnterpriseServerDatabase" DependsOnTargets="CreateEnterpriseServerDatabase">
+	<Target Name="ScriptEnterpriseServerDatabase" DependsOnTargets="BackupModelSnapshots">
 		<!--<ConvertToAbsolutePath Paths="$(DatabaseFolder)">
 			<Output TaskParameter="AbsolutePaths" PropertyName="DatabaseFolderAbsolute"/>
 		</ConvertToAbsolutePath>

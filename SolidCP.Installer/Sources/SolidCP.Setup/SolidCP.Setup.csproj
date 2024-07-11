@@ -344,6 +344,12 @@
     <Compile Include="Wizard\SQLServersPage.Designer.cs">
       <DependentUpon>SQLServersPage.cs</DependentUpon>
     </Compile>
+    <Compile Include="Wizard\EmbedEnterpriseServer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Wizard\EmbedEnterpriseServer.Designer.cs">
+      <DependentUpon>EmbedEnterpriseServer.cs</DependentUpon>
+    </Compile>
     <Compile Include="Wizard\UserAccountPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -475,6 +481,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Wizard\SQLServersPage.resx">
       <DependentUpon>SQLServersPage.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Wizard\EmbedEnterpriseServer.resx">
+      <DependentUpon>EmbedEnterpriseServer.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Wizard\UserAccountPage.resx">

@@ -547,6 +547,8 @@ namespace SolidCP.Setup.Actions
 			//
 			AppConfig.SetComponentSettingStringValue(vars.ComponentId, Global.Parameters.ConnectionString, vars.ConnectionString);
 			AppConfig.SetComponentSettingStringValue(vars.ComponentId, Global.Parameters.DatabaseServer, vars.DatabaseServer);
+			AppConfig.SetComponentSettingStringValue(vars.ComponentId, Global.Parameters.DatabasePort, vars.DatabasePort.ToString());
+			AppConfig.SetComponentSettingStringValue(vars.ComponentId, Global.Parameters.DatabaseServer, vars.DatabaseServer);
 			AppConfig.SetComponentSettingStringValue(vars.ComponentId, Global.Parameters.InstallConnectionString, vars.DbInstallConnectionString);
 			AppConfig.SetComponentSettingStringValue(vars.ComponentId, Global.Parameters.CryptoKey, vars.CryptoKey);
 			//
