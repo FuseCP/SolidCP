@@ -13,10 +13,10 @@
         <RunPostBuildEvent>Always</RunPostBuildEvent>-->
         <ApplicationManifest>SolidCP.Installer.manifest</ApplicationManifest>
     </PropertyGroup>
-    <Target Name="CopySetupPDBfile" Condition=" '$(Configuration)' == 'Debug' ">
+    <Target Name="CopySetupPDBfile" Condition=" '$(Configuration)' == 'Debug' " AfterTargets="Build">
         <Copy SourceFiles="..\..\Build\$(Configuration)\SolidCP.Setup.pdb" DestinationFolder="$(OutputPath)" ContinueOnError="true" />
     </Target>
-    <Target Name="CopyResources">
+    <Target Name="CopyResources" BeforeTargets="ResolveReferences">
         <Message Text="Copying Installer Resources" Importance="high" />
         <ItemGroup>
             <!--
@@ -66,7 +66,7 @@
         </ItemGroup>
         <Copy SourceFiles="@(FilesToCopy)" DestinationFolder="Resources" SkipUnchangedFiles="true" />
     </Target>
-    <Target Name="DeleteDlls">
+    <Target Name="DeleteDlls" AfterTargets="Build">
         <Message Text="Deleting unused files" Importance="high" />
         <ItemGroup>
             <FilesToDelete Include="bin\$(Configuration)\**\*.*" />
@@ -82,8 +82,6 @@
         </ItemGroup>
         <Delete Files="@(FilesToDelete)" ContinueOnError="true" />
     </Target>
-    <Target Name="BeforeBuildMigrated" DependsOnTargets="CopyResources" BeforeTargets="PreBuildEvent" />
-    <Target Name="AfterBuildMigrated" DependsOnTargets="CopySetupPDBFile;DeleteDlls" AfterTargets="Build" />
     <ItemGroup>
       <None Remove="Resources\SolidCP.Updater.exe" />
     </ItemGroup>

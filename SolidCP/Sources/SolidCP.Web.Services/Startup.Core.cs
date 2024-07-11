@@ -80,7 +80,7 @@ namespace SolidCP.Web.Services
 		static string CryptoKey = null;
 		static string AltCryptoKey = null;
 		static bool? EncryptionEnabled = null;
-		static string? ExposeWebServices = null;
+		static string ExposeWebServices = null;
 
 		public static void Init(string[] args)
 		{
@@ -122,13 +122,13 @@ namespace SolidCP.Web.Services
 			Configuration.DataProviderType = DataProviderType = builder.Configuration.GetValue<string>("EnterpriseServer:DataProviderType");
 			Configuration.WebApplicationsPath = WebApplicationsPath = builder.Configuration.GetValue<string>("EnterpriseServer:WebApplicationPath");
 			Configuration.ServerRequestTimeout = ServerRequestTimeout = builder.Configuration.GetValue<int?>("EnterpriseServer:ServerRequestTimeout") ?? -1;
-			Configuration.ConnectionString = ConnectionString = builder.Configuration.GetValue<string?>("EnterpriseServer:ConnectionString");
-			Configuration.ProviderName = ProviderName = builder.Configuration.GetValue<string?>("EnterpriseServer:ProviderName");
-			Configuration.AltConnectionString = AltConnectionString = builder.Configuration.GetValue<string?>("EnterpriseServer:AltConnectionString");
-			Configuration.AltProviderName = AltProviderName = builder.Configuration.GetValue<string?>("EnterpriseServer:AltProviderName");
+			Configuration.ConnectionString = ConnectionString = builder.Configuration.GetValue<string>("EnterpriseServer:ConnectionString");
+			Configuration.ProviderName = ProviderName = builder.Configuration.GetValue<string>("EnterpriseServer:ProviderName");
+			Configuration.AltConnectionString = AltConnectionString = builder.Configuration.GetValue<string>("EnterpriseServer:AltConnectionString");
+			Configuration.AltProviderName = AltProviderName = builder.Configuration.GetValue<string>("EnterpriseServer:AltProviderName");
 			Configuration.AlwaysUseEntityFramework = AlwaysUseEntityFramework = builder.Configuration.GetValue<bool?>("EnterpriseServer:AlwaysUseEntityFramework") ?? false;
-			Configuration.CryptoKey = CryptoKey = builder.Configuration.GetValue<string?>("EnterpriseServer:CryptoKey");
-			Configuration.AltCryptoKey = AltCryptoKey = builder.Configuration.GetValue<string?>("EnterpriseServer:AltCryptoKey");
+			Configuration.CryptoKey = CryptoKey = builder.Configuration.GetValue<string>("EnterpriseServer:CryptoKey");
+			Configuration.AltCryptoKey = AltCryptoKey = builder.Configuration.GetValue<string>("EnterpriseServer:AltCryptoKey");
 			Configuration.EncryptionEnabled = EncryptionEnabled = builder.Configuration.GetValue<bool?>("EnterpriseServer:EncryptionEnabled");
 
 			if (TraceLevel != TraceLevel.Off)

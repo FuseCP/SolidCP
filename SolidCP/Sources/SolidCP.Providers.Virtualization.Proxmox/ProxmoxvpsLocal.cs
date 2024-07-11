@@ -5,7 +5,7 @@ using System.Text;
 using System.Linq;
 using System.Text.RegularExpressions;
 using SolidCP.Providers.OS;
-using SolidCP.Providers.HostedSolution;
+using SolidCP.Providers.HostedSolution.Proxmox;
 using System.IO;
 
 namespace SolidCP.Providers.Virtualization
