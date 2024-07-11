@@ -57,7 +57,7 @@ using System.Threading;
 using System.Xml;
 using SolidCP.Providers;
 using SolidCP.Providers.OS;
-using SolidCP.Providers.HostedSolution;
+using SolidCP.Providers.HostedSolution.Proxmox;
 using SolidCP.Providers.Utils;
 using SolidCP.Server.Utils;
 

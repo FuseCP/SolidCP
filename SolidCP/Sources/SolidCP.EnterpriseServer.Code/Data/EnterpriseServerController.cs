@@ -95,27 +95,27 @@ namespace SolidCP.EnterpriseServer
 
 		public new UserCreationWizard UserCreationWizard => base.UserCreationWizard;
 
-		public Code.Virtualization2012.UseCase.ChangeVirtualMachineAdministratorPasswordHandler ChangeVirtualMachineAdministratorPasswordHandler => base.ChangeVirtualMachineAdministratorPasswordHandler;
+		public new Code.Virtualization2012.UseCase.ChangeVirtualMachineAdministratorPasswordHandler ChangeVirtualMachineAdministratorPasswordHandler => base.ChangeVirtualMachineAdministratorPasswordHandler;
 
-		public Code.Virtualization2012.UseCase.ChangeVirtualMachineStateHandler ChangeVirtualMachineStateHandler => base.ChangeVirtualMachineStateHandler;
+		public new Code.Virtualization2012.UseCase.ChangeVirtualMachineStateHandler ChangeVirtualMachineStateHandler => base.ChangeVirtualMachineStateHandler;
 
-		public Code.Virtualization2012.UseCase.CreateVirtualMachineHandler CreateVirtualMachineHandler => base.CreateVirtualMachineHandler;
+		public new Code.Virtualization2012.UseCase.CreateVirtualMachineHandler CreateVirtualMachineHandler => base.CreateVirtualMachineHandler;
 
-		public Code.Virtualization2012.UseCase.DeleteVirtualMachineHandler DeleteVirtualMachineHandler => base.DeleteVirtualMachineHandler;
+		public new Code.Virtualization2012.UseCase.DeleteVirtualMachineHandler DeleteVirtualMachineHandler => base.DeleteVirtualMachineHandler;
 
-		public Code.Virtualization2012.UseCase.ImportVirtualMachineHandler ImportVirtualMachineHandler => base.ImportVirtualMachineHandler;
+		public new Code.Virtualization2012.UseCase.ImportVirtualMachineHandler ImportVirtualMachineHandler => base.ImportVirtualMachineHandler;
 
-		public Code.Virtualization2012.UseCase.ReinstallVirtualMachineHandler ReinstallVirtualMachineHandler => base.ReinstallVirtualMachineHandler;
+		public new Code.Virtualization2012.UseCase.ReinstallVirtualMachineHandler ReinstallVirtualMachineHandler => base.ReinstallVirtualMachineHandler;
 
-		public Code.Virtualization2012.UseCase.UpdateVirtualMachineHostNameHandler UpdateVirtualMachineHostNameHandler => base.UpdateVirtualMachineHostNameHandler;
+		public new Code.Virtualization2012.UseCase.UpdateVirtualMachineHostNameHandler UpdateVirtualMachineHostNameHandler => base.UpdateVirtualMachineHostNameHandler;
 
-		public Code.Virtualization2012.UseCase.UpdateVirtualMachineResourceHandler UpdateVirtualMachineResourceHandler => base.UpdateVirtualMachineResourceHandler;
+		public new Code.Virtualization2012.UseCase.UpdateVirtualMachineResourceHandler UpdateVirtualMachineResourceHandler => base.UpdateVirtualMachineResourceHandler;
 
-		public Code.Virtualization2012.Tasks.CreateVirtualMachineTask CreateVirtualMachineTask => base.CreateVirtualMachineTask;
+		public new Code.Virtualization2012.Tasks.CreateVirtualMachineTask CreateVirtualMachineTask => base.CreateVirtualMachineTask;
 
-		public Code.Virtualization2012.Tasks.DeleteVirtualMachineTask DeleteVirtualMachineTask => base.DeleteVirtualMachineTask;
+		public new Code.Virtualization2012.Tasks.DeleteVirtualMachineTask DeleteVirtualMachineTask => base.DeleteVirtualMachineTask;
 
-		public Code.Virtualization2012.Tasks.ReinstallVirtualMachineTask ReinstallVirtualMachineTask => base.ReinstallVirtualMachineTask;
+		public new Code.Virtualization2012.Tasks.ReinstallVirtualMachineTask ReinstallVirtualMachineTask => base.ReinstallVirtualMachineTask;
 
 		public new SecurityContext SecurityContext => base.SecurityContext;
 
@@ -128,31 +128,31 @@ namespace SolidCP.EnterpriseServer
 		public new ServiceProviderProxy ServiceProviderProxy => base.ServiceProviderProxy;
 
 		public new Code.VirtualizationProxmox.VirtualizationHelperProxmox VirtualizationHelperProxmox => base.VirtualizationHelperProxmox;
-		public Code.Virtualization2012.Helpers.PS.PowerShellScript PowerShellScript => base.PowerShellScript;
+		public new Code.Virtualization2012.Helpers.PS.PowerShellScript PowerShellScript => base.PowerShellScript;
 
-		public Code.Virtualization2012.Helpers.VM.IpAddressExternalHelper IpAddressExternalHelper => base.IpAddressExternalHelper;
+		public new Code.Virtualization2012.Helpers.VM.IpAddressExternalHelper IpAddressExternalHelper => base.IpAddressExternalHelper;
 
-		public Code.Virtualization2012.Helpers.VM.IpAddressPrivateHelper IpAddressPrivateHelper => base.IpAddressPrivateHelper;
+		public new Code.Virtualization2012.Helpers.VM.IpAddressPrivateHelper IpAddressPrivateHelper => base.IpAddressPrivateHelper;
 
-		public Code.Virtualization2012.Helpers.VM.KvpExchangeHelper KvpExchangeHelper => base.KvpExchangeHelper;
+		public new Code.Virtualization2012.Helpers.VM.KvpExchangeHelper KvpExchangeHelper => base.KvpExchangeHelper;
 
-		public Code.Virtualization2012.Helpers.VM.NetworkAdapterDetailsHelper NetworkAdapterDetailsHelper => base.NetworkAdapterDetailsHelper;
+		public new Code.Virtualization2012.Helpers.VM.NetworkAdapterDetailsHelper NetworkAdapterDetailsHelper => base.NetworkAdapterDetailsHelper;
 
-		public Code.Virtualization2012.Helpers.VM.NetworkHelper NetworkHelper => base.NetworkHelper;
+		public new Code.Virtualization2012.Helpers.VM.NetworkHelper NetworkHelper => base.NetworkHelper;
 
-		public Code.Virtualization2012.Helpers.VM.NetworkVLANHelper NetworkVLANHelper => base.NetworkVLANHelper;
+		public new Code.Virtualization2012.Helpers.VM.NetworkVLANHelper NetworkVLANHelper => base.NetworkVLANHelper;
 
-		public Code.Virtualization2012.Helpers.GuacaHelper GuacaHelper => base.GuacaHelper;
+		public new Code.Virtualization2012.Helpers.GuacaHelper GuacaHelper => base.GuacaHelper;
 
-		public Code.Virtualization2012.Helpers.JobHelper JobHelper => base.JobHelper;
+		public new Code.Virtualization2012.Helpers.JobHelper JobHelper => base.JobHelper;
 
-		public Code.Virtualization2012.ReplicationHelper ReplicationHelper => base.ReplicationHelper;
+		public new Code.Virtualization2012.ReplicationHelper ReplicationHelper => base.ReplicationHelper;
 
-		public Code.Virtualization2012.VirtualizationHelper VirtualizationHelper => base.VirtualizationHelper;
+		public new Code.Virtualization2012.VirtualizationHelper VirtualizationHelper => base.VirtualizationHelper;
 
-		public Code.Virtualization2012.Helpers.VirtualizationUtils VirtualizationUtils => base.VirtualizationUtils;
+		public new Code.Virtualization2012.Helpers.VirtualizationUtils VirtualizationUtils => base.VirtualizationUtils;
 
-		public Code.Virtualization2012.Helpers.VirtualMachineHelper VirtualMachineHelper => base.VirtualMachineHelper;
+		public new Code.Virtualization2012.Helpers.VirtualMachineHelper VirtualMachineHelper => base.VirtualMachineHelper;
 
 		public new Scheduler Scheduler => base.Scheduler;
 	}

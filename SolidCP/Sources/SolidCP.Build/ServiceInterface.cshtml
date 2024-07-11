@@ -17,9 +17,9 @@
 [ServiceKnownType("GetKnownTypes", typeof(SolidCP.Providers.GlobalKnownTypes))]
 [ServiceContract(Namespace="@(WebServiceNamespace)")]
 #if NETFRAMEWORK
-[SwaggerWcf("/api/@(Class.Identifier)")]
+    [SwaggerWcf("/api/@(Class.Identifier)")]
 #else
-[OpenApiBasePath("/api/@(Class.Identifier)")]
+    [OpenApiBasePath("/api/@(Class.Identifier)")]
 #endif
 public interface I@(Class.Identifier) {
 
