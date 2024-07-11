@@ -38,11 +38,12 @@
 
 name: Deploy Release
 
-# on:
-#  push:
-#    branches: [ "GitHubActions" ]
-#  pull_request:
-#    branches: [ "GitHubActions" ]
+on:
+  push:
+    branches: [ "GitHubActions" ]
+  pull_request:
+    branches: [ "GitHubActions" ]
+  workflow-dispatch:
 
 jobs:
 
@@ -79,7 +80,7 @@ jobs:
 
     - name: Run deploy-release
       run: SolidCP\deploy-release.bat
-      
+
     # Execute all unit tests in the solution
     # - name: Execute unit tests
     #   run: dotnet test
