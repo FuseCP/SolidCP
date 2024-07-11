@@ -85,7 +85,7 @@ jobs:
       run: git submodule update --init --recursive
       
     - name: Install WSL Ubuntu
-      run: wsl --install Ubuntu-24.04
+      run: wsl install Ubuntu-24.04
 
     - name: Install RPM on WSL Ubuntu
       run: |
