@@ -811,7 +811,7 @@
 #if NetCore
         public $2DbContext_$(VersionTag)(string connectionStirng, bool initSeedData = false): base(connectionString, initSeedData) { }
 	    public $2DbContext_$(VersionTag)(DbContext context): base(context) { }
-	    public $2DbContext_$(VersionTag)(DbContextOptions<DbContextBase> options): base(options) { }
+	    public $2DbContext_$(VersionTag)(DbContextOptions&lt;DbContextBase&gt; options): base(options) { }
 #else
 	    public $2DbContext_$(VersionTag)(DbContext context): base(context) { }        
 #endif
