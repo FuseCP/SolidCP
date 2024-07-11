@@ -135,7 +135,10 @@
 
 	<Target Name="CompileSources" DependsOnTargets="BackupModelSnapshots">
 		<!-- SolidCP -->
-		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.Server.sln;$(TrunkFolder)\Sources\SolidCP.EnterpriseServer.sln;$(TrunkFolder)\Sources\SolidCP.WebPortal.sln;$(TrunkFolder)\Sources\SolidCP.WebDavPortal.sln" Properties="Configuration=$(BuildConfiguration)" />
+		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.Server.sln" Properties="Configuration=$(BuildConfiguration)" />
+		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.EnterpriseServer.sln" Properties="Configuration=$(BuildConfiguration)" />
+		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.WebPortal.sln" Properties="Configuration=$(BuildConfiguration)" />
+		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.WebDavPortal.sln" Properties="Configuration=$(BuildConfiguration)" />
 
 		<!-- Tools -->
 		<MSBuild Projects="$(TrunkFolder)\Sources\Tools\SolidCP.Import.CsvBulk.sln" Properties="Configuration=$(BuildConfiguration)" />
@@ -144,8 +147,8 @@
 		<MSBuild Projects="$(TrunkFolder)\Sources\Tools\SolidCP.Import.Enterprise.sln" Properties="Configuration=$(BuildConfiguration)" />
 		<MSBuild Projects="$(TrunkFolder)\Sources\Tools\SolidCP.AWStats.Viewer.sln" Properties="Configuration=$(BuildConfiguration)" />
 		<MSBuild Projects="$(TrunkFolder)\Sources\Tools\SCPTransportAgent.sln" Properties="Configuration=$(BuildConfiguration)" />
-    <MSBuild Projects="$(TrunkFolder)\Sources\Tools\SolidCP.FixDefaultPublicFolderMailbox.sln" Properties="Configuration=$(BuildConfiguration)" />
-  </Target>
+  		<MSBuild Projects="$(TrunkFolder)\Sources\Tools\SolidCP.FixDefaultPublicFolderMailbox.sln" Properties="Configuration=$(BuildConfiguration)" />
+ 	</Target>
 
 	<Target Name="PrepareBuilds" DependsOnTargets="CompileSources">
 		<!-- Remove build output folders in reversed order (e.q. root folder removed last) -->
