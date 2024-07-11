@@ -44,7 +44,6 @@ on:
     branches: [ "GitHubActions" ]
   pull_request:
     branches: [ "GitHubActions" ]
-  workflow-dispatch
 
 jobs:
 
