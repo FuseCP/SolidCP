@@ -851,7 +851,7 @@
 		<Delete Files="$(DatabaseFolder)\install_db_temp.sql" />
 	</Target>
 
-	<Target Name="PublishSqlInstallScripts" DependsOnTargets="ScriptEnterpriseServerDatabase">
+	<Target Name="PublishSqlInstallScripts" DependsOnTargets="ScriptEnterpriseServerDatabase;CreateWebDavPortalUpdate">
 		<MakeDir Directories="$(DatabaseFolder)" />
 		<MakeDir Directories="$(EnterpriseServerInstall)\Setup"/>
 
@@ -867,7 +867,7 @@
 	</Target>
 
 	<!-- Compile and deploy Setup.dll -->
-	<Target Name="CreateSetupDLL" DependsOnTargets="ScriptEnterpriseServerDatabase">
+	<Target Name="CreateSetupDLL" DependsOnTargets="PublishSqlInstallScripts">
 		<!-- Compile Setup.dll -->
 		<MSBuild Projects="$(SetupTrunkFolder)\Sources\SolidCP.Installer.sln"  Properties="Configuration=$(BuildConfiguration)" />
 
