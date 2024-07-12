@@ -35,6 +35,7 @@
             <FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.IO.FileSystem.AccessControl.dll" />
             <FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.Security.AccessControl.dll" />
             <FilesToCopy Include="..\..\..\SolidCP\Bin\net48\Renci.SshNet.dll" />-->
+            <!--<FilesToCopy Include="..\..\Build\$(Configuration)\Microsoft.Web.Administration.dll" />-->
             <FilesToCopy Include="..\..\Build\$(Configuration)\Newtonsoft.Json.dll" />
             <FilesToCopy Include="..\..\Build\$(Configuration)\System.Text.Encoding.CodePages.dll" />
             <FilesToCopy Include="..\..\Build\$(Configuration)\System.Diagnostics.EventLog.dll" />
@@ -265,14 +266,14 @@
         <Content Include="application.ico" />
         <None Include="Resources\%24this.Icon.ico" />
         <EmbeddedResource Include="Resources\DotNetZip.dll" />
-        <EmbeddedResource Include="Resources\Microsoft.Web.Administration.dll" />
+        <!--<EmbeddedResource Include="Resources\Microsoft.Web.Administration.dll" />-->
         <EmbeddedResource Include="Resources\Microsoft.Win32.Registry.dll" />
         <EmbeddedResource Include="Resources\Newtonsoft.Json.dll" />
-        <!--<EmbeddedResource Include="Resources\System.Diagnostics.EventLog.dll" />-->
+        <EmbeddedResource Include="Resources\System.Diagnostics.EventLog.dll" />
         <EmbeddedResource Include="Resources\System.IO.FileSystem.AccessControl.dll" />
         <EmbeddedResource Include="Resources\System.Security.AccessControl.dll" />
         <EmbeddedResource Include="Resources\System.Security.Principal.Windows.dll" />
-        <!--<EmbeddedResource Include="Resources\System.Text.Encoding.CodePages.dll" />-->
+        <EmbeddedResource Include="Resources\System.Text.Encoding.CodePages.dll" />
     </ItemGroup>
     <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
         <EmbeddedResource Include="Resources\SolidCP.UniversalInstaller.Core.pdb" />

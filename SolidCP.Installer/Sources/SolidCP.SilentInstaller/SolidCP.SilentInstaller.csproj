@@ -112,7 +112,7 @@
     </ItemGroup>
     <ItemGroup>
         <EmbeddedResource Include="Resources\DotNetZip.dll" />
-        <EmbeddedResource Include="Resources\Microsoft.Web.Administration.dll" />
+        <!--<EmbeddedResource Include="Resources\Microsoft.Web.Administration.dll" />-->
         <EmbeddedResource Include="Resources\Microsoft.Win32.Registry.dll" />
         <EmbeddedResource Include="Resources\Newtonsoft.Json.dll" />
         <EmbeddedResource Include="Resources\System.Diagnostics.EventLog.dll" />

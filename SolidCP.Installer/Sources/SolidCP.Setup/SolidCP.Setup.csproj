@@ -33,6 +33,7 @@
             <FilesToCopy Include="..\..\Build\$(Configuration)\System.Security.AccessControl.dll" />
             <FilesToCopy Include="..\..\Build\$(Configuration)\Renci.SshNet.dll" />
             <FilesToCopy Include="..\..\Build\$(Configuration)\MySql.Data.dll" />
+            <FilesToCopy Include="..\..\Build\$(Configuration)\System.Data.SQLite.dll" />
             <FilesToCopy Include="..\..\Build\$(Configuration)\BouncyCastle.Cryptography.dll" />
             <FilesToCopy Include="..\..\Build\$(Configuration)\Google.Protobuf.dll" />
             <FilesToCopy Include="..\..\Build\$(Configuration)\K4os.Compression.LZ4.Streams.dll" />
