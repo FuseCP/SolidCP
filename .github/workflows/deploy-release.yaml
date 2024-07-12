@@ -114,6 +114,13 @@ jobs:
       working-directory: SolidCP
       run: .\deploy-release.bat
 
+    - name: Publish build artifacts
+        uses: actions/upload-artifact@v2
+        with: 
+          name: SolidCP
+          path: SolidCP\Deploy\Release
+
+
     # Execute all unit tests in the solution
     # - name: Execute unit tests
     #   run: dotnet test

@@ -442,7 +442,7 @@
 
 		<!-- copy installer binaries for upgrade -->
 		<ItemGroup>
-			<InstallerBinaries Include="$(InstallerProjectBin)\**\*.dll" />
+			<!--<InstallerBinaries Include="$(InstallerProjectBin)\**\*.dll" />-->
 			<InstallerBinaries Include="$(InstallerProjectBin)\**\*.exe" />
 			<InstallerExe Include="$(InstallerProjectBin)\SolidCP.Installer.exe" />
 		</ItemGroup>
