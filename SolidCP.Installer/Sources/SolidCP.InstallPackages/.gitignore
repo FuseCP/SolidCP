@@ -4,3 +4,4 @@
 **/www/debian/pool/main/
 **/www/fedora/pool/main/
 Debian/*.tar
+Fedora/*.tar
