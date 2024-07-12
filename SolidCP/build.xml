@@ -73,6 +73,9 @@
 		<!-- Build Linux install deb & rpm packages (This requires a WSL distro with rpmbuild installed) -->
 		<BuildLinuxInstallPackages Condition="'$(BuildLinuxInstallPackages)' == ''">true</BuildLinuxInstallPackages>
 
+		<!-- Build legacy database sql script from install_db.sql & update_db.sql -->
+		<BuildLegacyDatabaseScript Condition="'$(BuildLegacyDatabaseScript)' == ''">false</BuildLegacyDatabaseScript>
+
 		<ftphost></ftphost>
 		<ftpUsername></ftpUsername>
 		<ftpPassword></ftpPassword>
@@ -811,16 +814,47 @@
 		<DatabaseFolder>$(DeployFolder)\Database</DatabaseFolder>
 	</PropertyGroup>
 
-  <Target Name="CreateEnterpriseServerDatabase" DependsOnTargets="CreateWebDavPortalUpdate">
+    <Target Name="CreateEnterpriseServerDatabase" DependsOnTargets="CreateWebDavPortalUpdate" Condition="'$(BuildLegacyDatabaseScript)' == 'true'">
 		<MakeDir Directories="$(DatabaseFolder)"/>
 
-		<!--<Exec Command="$(SqlCmd) -Q &quot;IF DB_ID (N'$(DataBaseName)') IS NOT NULL DROP DATABASE $(DataBaseName)&quot;" />
+		<Exec Command="$(SqlCmd) -Q &quot;IF DB_ID (N'$(DataBaseName)') IS NOT NULL DROP DATABASE $(DataBaseName)&quot;" />
 		<Exec Command="$(SqlCmd) -Q &quot;CREATE DATABASE $(DataBaseName) COLLATE Latin1_General_CI_AS&quot;" />
-		
-		<Copy SourceFiles="$(TrunkFolder)\Database\install_db.sql" DestinationFolder="$(DatabaseFolder)" />-->
+
+		<Copy SourceFiles="$(EnterpriseServerDataSrc)\LegacyScripts\install_db.sql" DestinationFolder="$(DatabaseFolder)" />
+		<Copy SourceFiles="$(EnterpriseServerDataSrc)\LegacyScripts\update_db.sql" DestinationFolder="$(DatabaseFolder)" />
+
+		<!-- Update variables in files -->
+		<FileUpdate Files="$(DatabaseFolder)\install_db.sql" Regex="\${install.database}" ReplacementText="$(DataBaseName)" />
+		<FileUpdate Files="$(DatabaseFolder)\update_db.sql" Regex="\${install.database}" ReplacementText="$(DataBaseName)" />
+		<FileUpdate Files="$(DatabaseFolder)\update_db.sql" Regex="\${release.version}" ReplacementText="$(FileVersion)" />
+		<FileUpdate Files="$(DatabaseFolder)\update_db.sql" Regex="\${release.date}" ReplacementText="$(ReleaseDate)" />
+
+		<Exec Command="$(SqlCmd) -i $(DatabaseFolder)\install_db.sql" />
+		<Exec Command="$(SqlCmd) -i $(DatabaseFolder)\update_db.sql" />
+
+		<Delete Files="$(DatabaseFolder)\install_db.sql" />
+		<Delete Files="$(DatabaseFolder)\update_db.sql" />
 	</Target>
 
-	<Target Name="PublishSqlInstallScripts" DependsOnTargets="CreateEnterpriseServerDatabase">
+	<Target Name="ScriptEnterpriseServerDatabase" DependsOnTargets="CreateEnterpriseServerDatabase" Condition="'$(BuildLegacyDatabaseScript)' == 'true'">
+		<ConvertToAbsolutePath Paths="$(DatabaseFolder)">
+			<Output TaskParameter="AbsolutePaths" PropertyName="DatabaseFolderAbsolute"/>
+		</ConvertToAbsolutePath>
+
+		<Exec Command="$(MSDeployPath) -verb:sync -source:dbFullSql=&quot;$(MSDeployConnectionString)&quot; -dest:dbFullSql=&quot;$(DatabaseFolderAbsolute)\install_db_temp.sql&quot;"/>
+		<Exec Command="copy $(TrunkFolder)\Resources\database_header.sql+$(DatabaseFolder)\install_db_temp.sql $(DatabaseFolder)\install_db.sql" />
+
+		<MakeDir Directories="$(EnterpriseServerInstall)\Setup"/>
+
+		<Copy SourceFiles="$(DatabaseFolder)\install_db.sql" DestinationFolder="$(EnterpriseServerInstall)\Setup" />
+
+		<Delete Files="$(DatabaseFolder)\install_db_temp.sql" />
+	</Target>
+
+	<Target Name="PublishSqlInstallScripts" DependsOnTargets="ScriptEnterpriseServerDatabase">
+		<MakeDir Directories="$(DatabaseFolder)" />
+		<MakeDir Directories="$(EnterpriseServerInstall)\Setup"/>
+
 		<ItemGroup>
 			<InstallScripts Include="$(EnterpriseServerDataSrc)\Migrations\**\install.*.sql" />
 			<InstallScripts Include="$(EnterpriseServerDataSrc)\Migrations\**\install.*.bundle.exe" />
@@ -828,24 +862,7 @@
 		<!--<Copy SourceFiles="$(TrunkFolder)\Database\install_db.sql" DestinationFolder="$(DatabaseFolder)" />-->
 		<Copy SourceFiles="@(InstallScripts)" DestinationFolder="$(TrunkFolder)\Database" />
 		<Copy SourceFiles="@(InstallScripts)" DestinationFolder="$(DatabaseFolder)" />
-		<Copy SourceFiles="$(TrunkFolder)\Database\update_db.sql" DestinationFolder="$(DatabaseFolder)" />		
-	</Target>
-
-	<Target Name="ScriptEnterpriseServerDatabase" DependsOnTargets="PublishSqlInstallScripts">
-		<!--<ConvertToAbsolutePath Paths="$(DatabaseFolder)">
-			<Output TaskParameter="AbsolutePaths" PropertyName="DatabaseFolderAbsolute"/>
-		</ConvertToAbsolutePath>
-
-		<Exec Command="$(MSDeployPath) -verb:sync -source:dbFullSql=&quot;$(MSDeployConnectionString)&quot; -dest:dbFullSql=&quot;$(DatabaseFolderAbsolute)\install_db_temp.sql&quot;"/>
-		<Exec Command="copy $(TrunkFolder)\Resources\database_header.sql+$(DatabaseFolder)\install_db_temp.sql $(DatabaseFolder)\install_db.sql" />-->
-
-		<MakeDir Directories="$(EnterpriseServerInstall)\Setup"/>
-
-		<ItemGroup>
-			<InstallScripts Include="$(DatabaseFolder)\install.*.sql" />
-			<InstallScripts Include="$(DatabaseFolder)\install.*.bundle.exe" />
-		</ItemGroup>
-
+		<Copy SourceFiles="$(EnterpriseServerDataSrc)\LegacyScripts\update_db.sql" DestinationFolder="$(DatabaseFolder)" />
 		<Copy SourceFiles="@(InstallScrips)" DestinationFolder="$(EnterpriseServerInstall)\Setup" />
 	</Target>
 
