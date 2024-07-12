@@ -49,7 +49,7 @@
 
     <Target Name="Dos2Unix" DependsOnTargets="CleanOutput">
         <ItemGroup>
-            <TextFiles Include="$(PackagesFolder)\src\usr\bin\solidcp-universalinstaller" />        
+            <TextFiles Include="$(PackagesFolder)\src\bin\solidcp-universalinstaller" />        
             <TextFiles Include="$(PackagesFolder)\src\doc\*.*" />
             <TextFiles Include="$(PackagesFolder)\src\man\*.*" />
             <TextFiles Include="$(PackagesFolder)\src\dektop\*.*" />
