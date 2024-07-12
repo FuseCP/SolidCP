@@ -131,7 +131,7 @@
 
         <Exec Command="powershell -NonInteractive -ExecutionPolicy Unrestricted -command  &quot;&amp; { .\src\scripts\ConfigureFedora.ps1 '$(FileVersion)' }&quot;" />
 
-        <Exec Command="$(WpkgCmd) -r &quot;$(PackagesFolder)\Fedora&quot;">
+        <Exec Command="$(WpkgCmd) -rd &quot;$(PackagesFolder)\Fedora&quot;">
             <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfWpkg" />
         </Exec>
         <Message Text="$(OutputOfWpkg)" />
