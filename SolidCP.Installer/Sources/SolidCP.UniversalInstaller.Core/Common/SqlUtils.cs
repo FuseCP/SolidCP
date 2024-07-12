@@ -117,7 +117,7 @@ namespace SolidCP.UniversalInstaller.Core
 		{
 			switch (type)
 			{
-				case Data.DbType.MsSql:
+				case Data.DbType.SqlServer:
 					return BuildMsSqlServerConnectionString(server, database, user, password);
 				case Data.DbType.MariaDb:
 				case Data.DbType.MySql:
@@ -135,7 +135,7 @@ namespace SolidCP.UniversalInstaller.Core
 			ParseConnectionString(connectionString, out dbtype, out connectionString);
 			switch (dbtype)
 			{
-				case Data.DbType.MsSql: return CheckMsSqlConnection(connectionString);
+				case Data.DbType.SqlServer: return CheckMsSqlConnection(connectionString);
 				case Data.DbType.MySql:
 				case Data.DbType.MariaDb: return CheckMySqlConnection(connectionString);
 				case Data.DbType.Sqlite:
@@ -313,7 +313,7 @@ namespace SolidCP.UniversalInstaller.Core
 			ParseConnectionString(connectionString, out dbType, out nativeConnectionString);
 			switch (dbType)
 			{
-				case Data.DbType.MsSql: return ExecuteNonQueryMsSql(nativeConnectionString, commandText);
+				case Data.DbType.SqlServer: return ExecuteNonQueryMsSql(nativeConnectionString, commandText);
 				case Data.DbType.MySql:
 				case Data.DbType.MariaDb: return ExecuteNonQueryMySql(nativeConnectionString, commandText);
 				case Data.DbType.Sqlite:
@@ -396,7 +396,7 @@ namespace SolidCP.UniversalInstaller.Core
 			ParseConnectionString(connectionString, out dbType, out nativeConnectionString);
 			switch (dbType)
 			{
-				case Data.DbType.MsSql:
+				case Data.DbType.SqlServer:
 					return ExecuteQueryMsSql(nativeConnectionString, commandText);
 				case Data.DbType.MySql:
 				case Data.DbType.MariaDb:
@@ -488,7 +488,7 @@ namespace SolidCP.UniversalInstaller.Core
 			ParseConnectionString(connectionString, out dbType, out nativeConnectionString);
 			switch (dbType)
 			{
-				case Data.DbType.MsSql:
+				case Data.DbType.SqlServer:
 					return (ExecuteQuery(connectionString,
 						String.Format("select name from master..sysdatabases where name = '{0}'", databaseName)).Tables[0].Rows.Count > 0);
 				case Data.DbType.MySql:
@@ -512,7 +512,7 @@ namespace SolidCP.UniversalInstaller.Core
 			ParseConnectionString(ConnStr, out dbType, out ConnStr);
 			switch (dbType)
 			{
-				case Data.DbType.MsSql:
+				case Data.DbType.SqlServer:
 					Tmp = (int)ExecuteSql(ConnStr, string.Format("use [{0}]; select case when exists(select * from information_schema.tables) then 1 else 0 end;", DbName)).Tables[0].Rows[0][0];
 					return Tmp == 0;
 				case Data.DbType.MySql:
@@ -545,7 +545,7 @@ namespace SolidCP.UniversalInstaller.Core
 			ParseConnectionString(connectionString, out dbType, out ConnStr);
 			switch (dbType)
 			{
-				case Data.DbType.MsSql:
+				case Data.DbType.SqlServer:
 					// create database in the default location
 					commandText = string.Format("CREATE DATABASE [{0}] COLLATE Latin1_General_CI_AS;", databaseName);
 					// create database
@@ -595,7 +595,7 @@ namespace SolidCP.UniversalInstaller.Core
 			bool userCreated = false;
 			switch (dbType)
 			{
-				case Data.DbType.MsSql:
+				case Data.DbType.SqlServer:
 					if (!UserExists(connectionString, userName))
 					{
 						ExecuteNonQuery(connectionString,
@@ -632,7 +632,7 @@ namespace SolidCP.UniversalInstaller.Core
 			ParseConnectionString(connectionString, out dbType, out ConnStr);
 			switch (dbType)
 			{
-				case Data.DbType.MsSql:
+				case Data.DbType.SqlServer:
 					if (user == "sa")
 						return;
 
@@ -690,7 +690,7 @@ namespace SolidCP.UniversalInstaller.Core
 			ParseConnectionString(connectionString, out dbType, out ConnStr);
 			switch (dbType)
 			{
-				case Data.DbType.MsSql:
+				case Data.DbType.SqlServer:
 					return (ExecuteQuery(connectionString,
 						string.Format("select name from master..syslogins where name = '{0}'", username)).Tables[0].Rows.Count > 0);
 				case Data.DbType.MySql:
@@ -718,7 +718,7 @@ namespace SolidCP.UniversalInstaller.Core
 			ParseConnectionString(connectionString, out dbType, out ConnStr);
 			switch (dbType)
 			{
-				case Data.DbType.MsSql:
+				case Data.DbType.SqlServer:
 					return (ExecuteQuery(connectionString,
 						string.Format("SELECT * FROM sys.server_principals WHERE name = N'{0}'", loginName)).Tables[0].Rows.Count > 0);
 				default: return UserExists(connectionString, loginName);
@@ -739,7 +739,7 @@ namespace SolidCP.UniversalInstaller.Core
 			ParseConnectionString(connectionString, out dbType, out ConnStr);
 			switch (dbType)
 			{
-				case Data.DbType.MsSql:
+				case Data.DbType.SqlServer:
 					// drop login
 					if (LoginExists(connectionString, loginName))
 						ExecuteNonQuery(connectionString, String.Format("DROP LOGIN [{0}]", loginName));
@@ -762,7 +762,7 @@ namespace SolidCP.UniversalInstaller.Core
 			ParseConnectionString(connectionString, out dbType, out ConnStr);
 			switch (dbType)
 			{
-				case Data.DbType.MsSql:
+				case Data.DbType.SqlServer:
 					// remove user from databases
 					string[] userDatabases = GetUserDatabases(connectionString, username);
 					foreach (string database in userDatabases)
@@ -796,7 +796,7 @@ namespace SolidCP.UniversalInstaller.Core
 			ParseConnectionString(connectionString, out dbType, out ConnStr);
 			switch (dbType)
 			{
-				case Data.DbType.MsSql:
+				case Data.DbType.SqlServer:
 					// remove all users from database
 					string[] users = GetDatabaseUsers(connectionString, databaseName);
 					foreach (string user in users)
@@ -836,7 +836,7 @@ namespace SolidCP.UniversalInstaller.Core
 			string ConnStr;
 			ParseConnectionString(connectionString, out dbType, out ConnStr);
 
-			if (dbType == Data.DbType.MsSql)
+			if (dbType == Data.DbType.SqlServer)
 			{
 				string cmdText = String.Format(@"
 				select su.name FROM {0}..sysusers as su
@@ -861,7 +861,7 @@ namespace SolidCP.UniversalInstaller.Core
 			string ConnStr;
 			ParseConnectionString(connectionString, out dbType, out ConnStr);
 
-			if (dbType == Data.DbType.MsSql)
+			if (dbType == Data.DbType.SqlServer)
 			{
 				DataView dvObjects = ExecuteQuery(connectionString,
 				String.Format("select so.name from {0}..sysobjects as so" +
@@ -883,7 +883,7 @@ namespace SolidCP.UniversalInstaller.Core
 			string ConnStr;
 			ParseConnectionString(connectionString, out dbType, out ConnStr);
 
-			if (dbType == Data.DbType.MsSql)
+			if (dbType == Data.DbType.SqlServer)
 			{
 				string cmdText = String.Format(@"
 					DECLARE @Username varchar(100)
@@ -941,7 +941,7 @@ namespace SolidCP.UniversalInstaller.Core
 			string ConnStr;
 			ParseConnectionString(connectionString, out dbType, out ConnStr);
 
-			if (dbType == Data.DbType.MsSql)
+			if (dbType == Data.DbType.SqlServer)
 			{
 				DataView dv = ExecuteQuery(connectionString,
 					String.Format(@"SELECT spid FROM master..sysprocesses WHERE dbid = DB_ID('{0}') AND spid > 50 AND spid <> @@spid", databaseName)).Tables[0].DefaultView;
@@ -960,7 +960,7 @@ namespace SolidCP.UniversalInstaller.Core
 			string ConnStr;
 			ParseConnectionString(connectionString, out dbType, out ConnStr);
 
-			if (dbType == Data.DbType.MsSql)
+			if (dbType == Data.DbType.SqlServer)
 			{
 				DataView dv = ExecuteQuery(connectionString,
 					String.Format(@"SELECT spid FROM master..sysprocesses WHERE loginame = '{0}'", userName)).Tables[0].DefaultView;
@@ -979,7 +979,7 @@ namespace SolidCP.UniversalInstaller.Core
 			string ConnStr;
 			ParseConnectionString(connectionString, out dbType, out ConnStr);
 
-			if (dbType == Data.DbType.MsSql)
+			if (dbType == Data.DbType.SqlServer)
 			{
 				try
 				{
@@ -998,7 +998,7 @@ namespace SolidCP.UniversalInstaller.Core
 			string ConnStr;
 			ParseConnectionString(connectionString, out dbType, out ConnStr);
 
-			if (dbType == Data.DbType.MsSql)
+			if (dbType == Data.DbType.SqlServer)
 			{
 				// change ownership of user's objects
 				string[] userObjects = GetUserDatabaseObjects(connectionString, databaseName, user);
@@ -1055,7 +1055,7 @@ namespace SolidCP.UniversalInstaller.Core
 			Data.DbType dbType;
 			string ConnStr;
 			ParseConnectionString(connectionString, out dbType, out ConnStr);
-			if (dbType == Data.DbType.MsSql)
+			if (dbType == Data.DbType.SqlServer)
 			{
 				string bakFile = databaseName + ".bak";
 				// backup database
@@ -1074,7 +1074,7 @@ namespace SolidCP.UniversalInstaller.Core
 			ParseConnectionString(connectionString, out dbType, out ConnStr);
 			bakFile = databaseName + ".bak";
 			position = "1";
-			if (dbType == Data.DbType.MsSql)
+			if (dbType == Data.DbType.SqlServer)
 			{
 				string backupName = "Backup " + DateTime.Now.ToString("yyyyMMddHHmmss");
 				// backup database
@@ -1097,7 +1097,7 @@ namespace SolidCP.UniversalInstaller.Core
 			Data.DbType dbType;
 			string ConnStr;
 			ParseConnectionString(connectionString, out dbType, out ConnStr);
-			if (dbType == Data.DbType.MsSql)
+			if (dbType == Data.DbType.SqlServer)
 			{
 				// close current database connections
 				CloseDatabaseConnections(connectionString, databaseName);
@@ -1114,7 +1114,7 @@ namespace SolidCP.UniversalInstaller.Core
 			Data.DbType dbType;
 			string ConnStr;
 			ParseConnectionString(connectionString, out dbType, out ConnStr);
-			if (dbType == Data.DbType.MsSql)
+			if (dbType == Data.DbType.SqlServer)
 			{
 				// close current database connections
 				CloseDatabaseConnections(connectionString, databaseName);
@@ -1129,7 +1129,7 @@ namespace SolidCP.UniversalInstaller.Core
 		{
 			public bool IsMySql => DbType == Data.DbType.MySql || DbType == Data.DbType.MariaDb;
 			public bool IsSqlite => DbType == Data.DbType.Sqlite || DbType == Data.DbType.SqliteFX;
-			public bool IsMsSql => DbType == Data.DbType.MsSql;
+			public bool IsMsSql => DbType == Data.DbType.SqlServer;
 			public Data.DbType DbType = Data.DbType.Unknown;
 			public string Delimiter = null;
 			public Stream Source;
@@ -1233,7 +1233,7 @@ namespace SolidCP.UniversalInstaller.Core
 			ParseConnectionString(connectionString, out dbtype, out connectionString);
 			switch (dbtype)
 			{
-				case Data.DbType.MsSql: return MsSqlConnection(connectionString);
+				case Data.DbType.SqlServer: return MsSqlConnection(connectionString);
 				case Data.DbType.MySql:
 				case Data.DbType.MariaDb: return MySqlConnection(connectionString);
 				case Data.DbType.Sqlite:
@@ -1248,7 +1248,7 @@ namespace SolidCP.UniversalInstaller.Core
 			ParseConnectionString(connectionString, out dbtype, out connectionString);
 			switch (dbtype)
 			{
-				case Data.DbType.MsSql: return MsSqlCommand();
+				case Data.DbType.SqlServer: return MsSqlCommand();
 				case Data.DbType.MySql:
 				case Data.DbType.MariaDb: return MySqlCommand();
 				case Data.DbType.Sqlite:

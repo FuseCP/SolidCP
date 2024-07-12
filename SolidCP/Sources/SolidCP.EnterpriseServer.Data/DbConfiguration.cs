@@ -71,7 +71,7 @@ namespace SolidCP.EnterpriseServer.Data
 			SetDatabaseInitializer<PostgreSqlDbContext>(null);
 			SetDatabaseInitializer<Context.DbContextBase>(null);
 
-			if (LoadedDatabaseProviders.Contains(DbType.MsSql)) SetProvidersMsSql();
+			if (LoadedDatabaseProviders.Contains(DbType.SqlServer)) SetProvidersMsSql();
 			if (LoadedDatabaseProviders.Contains(DbType.MySql) || LoadedDatabaseProviders.Contains(DbType.MariaDb))
 			{
 				SetProvidersMySql();

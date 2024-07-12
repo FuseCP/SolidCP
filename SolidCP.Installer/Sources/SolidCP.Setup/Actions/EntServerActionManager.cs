@@ -375,7 +375,7 @@ namespace SolidCP.Setup.Actions
 				string cmd;
 				switch (vars.DatabaseType)
 				{
-					case Data.DbType.MsSql: cmd = string.Format(MsSqlStatement, vars.Database, password); break;
+					case Data.DbType.SqlServer: cmd = string.Format(MsSqlStatement, vars.Database, password); break;
 					case Data.DbType.MySql:
 					case Data.DbType.MariaDb: cmd = string.Format(MySqlStatement, vars.Database, password); break;
 					case Data.DbType.Sqlite:

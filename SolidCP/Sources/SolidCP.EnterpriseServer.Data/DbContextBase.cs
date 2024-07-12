@@ -54,7 +54,7 @@ namespace SolidCP.EnterpriseServer.Context
 		public Action<string> Log { get; set; }
 		public Data.DbType DbType { get; set; } = Data.DbType.Unknown;
         public bool InitSeedData { get; set; } = false;
-		public bool IsMsSql => DbType == Data.DbType.MsSql;
+		public bool IsMsSql => DbType == Data.DbType.SqlServer;
 		public bool IsMySql => DbType == Data.DbType.MySql;
 		public bool IsSqlite => IsSqliteCore || IsSqliteFX;
 		public bool IsSqliteFX => DbType == Data.DbType.SqliteFX;
@@ -260,7 +260,7 @@ namespace SolidCP.EnterpriseServer.Context
 
 			switch (options.DbType)
 			{
-				case Data.DbType.MsSql:
+				case Data.DbType.SqlServer:
 					builder.UseSqlServer(options.ConnectionString);
 					break;
 				case Data.DbType.Sqlite:

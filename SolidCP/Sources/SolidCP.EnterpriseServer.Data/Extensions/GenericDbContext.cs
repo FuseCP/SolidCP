@@ -54,7 +54,7 @@ namespace SolidCP.EnterpriseServer.Data
 		{
 			if (options is DbOptions<Context.DbContextBase> opts)
 			{
-				DbType = DbType.MsSql;
+				DbType = DbType.SqlServer;
 				InitSeedData = opts.InitSeedData;
 			}
 		}
@@ -65,11 +65,11 @@ namespace SolidCP.EnterpriseServer.Data
 				(options is Data.Extensions.DbOptions<GenericDbContext<TProvider>> opts2) ? opts2.ConnectionString : "")) { }
 		*/
 		public MsSqlDbContext(string connectionString, bool initSeedData = false) :
-			base(new DbOptions<Context.DbContextBase>(DbType.MsSql, connectionString, initSeedData)) { }
+			base(new DbOptions<Context.DbContextBase>(DbType.SqlServer, connectionString, initSeedData)) { }
 #elif NetFX
 		public MsSqlDbContext(Data.DbContext context) : base(context)
 		{
-			DbType = DbType.MsSql;
+			DbType = DbType.SqlServer;
 			InitSeedData = context.InitSeedData;
 		}
 #endif

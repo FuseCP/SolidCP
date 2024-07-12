@@ -90,7 +90,7 @@ namespace SolidCP.EnterpriseServer.Data
 
                     switch (DbType)
 					{
-						case DbType.MsSql:
+						case DbType.SqlServer:
 						    dbConnection = MsSqlDbConnection;
                             break;
 						case DbType.MySql:
@@ -136,7 +136,7 @@ namespace SolidCP.EnterpriseServer.Data
                     switch (DbType)
                     {
                         default:
-                        case DbType.MsSql: contextType = typeof(MsSqlDbContext); break;
+                        case DbType.SqlServer: contextType = typeof(MsSqlDbContext); break;
                         case DbType.MySql: contextType = typeof(MySqlDbContext); break;
                         case DbType.MariaDb: contextType = typeof(MySqlDbContext); break;
                         case DbType.PostgreSql: contextType = typeof(PostgreSqlDbContext); break;
@@ -195,7 +195,7 @@ namespace SolidCP.EnterpriseServer.Data
             BaseContext.Log += WriteToLog;
         }
 
-        public bool IsMsSql => DbType == DbType.MsSql;
+        public bool IsMsSql => DbType == DbType.SqlServer;
         public bool IsMySql => DbType == DbType.MySql;
 		public bool IsSqlite => IsSqliteCore || IsSqliteFX;
         public bool IsSqliteFX => DbType == DbType.SqliteFX;

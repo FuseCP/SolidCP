@@ -136,7 +136,7 @@ namespace SolidCP.Setup
 				switch (tabControl.SelectedIndex)
 				{
 					case 0:
-						dbtype = Data.DbType.MsSql;
+						dbtype = Data.DbType.SqlServer;
 						server = txtMsSqlServer.Text.Trim();
 						database = txtMsSqlDatabase.Text.Trim();
 						if (cbMsSqlAuthentication.SelectedIndex != 0)
@@ -178,7 +178,7 @@ namespace SolidCP.Setup
 
 				if (CheckConnection(connectionString))
 				{
-					if (dbtype == Data.DbType.MsSql)
+					if (dbtype == Data.DbType.SqlServer)
 					{
 						// check SQL server version
 						string sqlVersion = GetMsSqlServerVersion(connectionString);
@@ -329,7 +329,7 @@ namespace SolidCP.Setup
 		{
 			switch (dbtype)
 			{
-				case Data.DbType.MsSql:
+				case Data.DbType.SqlServer:
 					if (cbMsSqlAuthentication.SelectedIndex == 0)
 					{
 						return SqlUtils.BuildMsSqlServerMasterConnectionString(txtMsSqlServer.Text.Trim(), null, null);

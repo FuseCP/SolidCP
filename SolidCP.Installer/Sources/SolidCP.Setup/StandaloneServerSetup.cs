@@ -220,7 +220,7 @@ namespace SolidCP.Setup
 
 					switch (dbType)
 					{
-						case Data.DbType.MsSql:
+						case Data.DbType.SqlServer:
 							// DB_LOGIN, DB_PASSWORD.
 							bool WinAuth = Utils.GetStringSetupParameter(args, "DbAuth").ToLowerInvariant().Equals("Windows Authentication".ToLowerInvariant());
 							esServerSetup.DbInstallConnectionString = SqlUtils.BuildMsSqlServerMasterConnectionString(

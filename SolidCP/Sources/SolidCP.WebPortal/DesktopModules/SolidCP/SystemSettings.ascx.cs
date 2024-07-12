@@ -211,7 +211,7 @@ namespace SolidCP.Portal
                 chkCanPeerChangeMFa.Checked = settings.GetValueOrDefault(SCP.SystemSettings.MFA_CAN_PEER_CHANGE_MFA, true);
             }
 
-            var isMsSql = DbHelper.DbType == EnterpriseServer.Data.DbType.MsSql;
+            var isMsSql = DbHelper.DbType == EnterpriseServer.Data.DbType.SqlServer;
             chkAlwaysUseEntityFramework.Enabled = isMsSql;
             btnDebugSettings.Enabled = isMsSql;
 			if (!isMsSql) chkAlwaysUseEntityFramework.Checked = true;
@@ -513,7 +513,7 @@ namespace SolidCP.Portal
 
         private void SaveDebug()
         {
-            var isMsSql = ES.Services.System.GetDatabaseType() == EnterpriseServer.Data.DbType.MsSql;
+            var isMsSql = ES.Services.System.GetDatabaseType() == EnterpriseServer.Data.DbType.SqlServer;
             if (isMsSql)
             {
                 try

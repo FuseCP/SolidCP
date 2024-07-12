@@ -52,7 +52,7 @@ namespace SolidCP.EnterpriseServer.Data
 
 		public static void GetData(IEntityType EntityType, ModelCodeGenerationOptions Options, IServiceProvider services, int indent)
 		{
-			using (var db = new DbContext(Options.ConnectionString, DbType.MsSql))
+			using (var db = new DbContext(Options.ConnectionString, DbType.SqlServer))
 			{
 				var entityType = EntityType.ClrType;
 				var setType = typeof(DbSet<>).MakeGenericType(entityType);
@@ -125,7 +125,7 @@ namespace SolidCP.EnterpriseServer.Data
 			DbContext context = null;
 			switch (context.DbType)
 			{
-				case DbType.MsSql:
+				case DbType.SqlServer:
 					builder.UseSqlServer(context.ConnectionString);
 					break;
 				case DbType.Sqlite:

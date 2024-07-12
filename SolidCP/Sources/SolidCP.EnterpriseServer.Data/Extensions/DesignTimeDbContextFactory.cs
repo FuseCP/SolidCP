@@ -32,7 +32,7 @@ namespace SolidCP.EnterpriseServer.Data.Extensions
 			switch (dbType)
 			{
 				default:
-				case DbType.MsSql: return new MsSqlDbContext(connectionString, true);
+				case DbType.SqlServer: return new MsSqlDbContext(connectionString, true);
 				case DbType.MySql: return new MySqlDbContext(connectionString, true);
 				case DbType.MariaDb: return new MariaDbDbContext(connectionString, true);
 				case DbType.Sqlite: return new SqliteDbContext(connectionString, true);

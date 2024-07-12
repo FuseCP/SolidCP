@@ -109,7 +109,7 @@ namespace SolidCP.Setup
 					//
 					switch (setupVariables.DatabaseType)
 					{
-						case Data.DbType.MsSql:
+						case Data.DbType.SqlServer:
 							setupVariables.DbInstallConnectionString = SqlUtils.BuildMsSqlServerMasterConnectionString(
 								setupVariables.DatabaseServer,
 								Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdmin),

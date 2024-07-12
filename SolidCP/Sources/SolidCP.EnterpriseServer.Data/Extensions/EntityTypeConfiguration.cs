@@ -46,7 +46,7 @@ namespace SolidCP.EnterpriseServer.Data
 #endif
 		public DbType DbType { get; set; } = DbType.Unknown;
 		public bool InitSeedData { get; set; } = false;
-		public bool IsMsSql => DbType == DbType.MsSql;
+		public bool IsMsSql => DbType == DbType.SqlServer;
 		public bool IsMySql => DbType == DbType.MySql;
 		public bool IsMariaDb => DbType == DbType.MariaDb;
 		public bool IsSqlite => IsSqliteCore || IsSqliteFX;

@@ -35,6 +35,6 @@ namespace SolidCP.Portal
 
 		static bool? showUseEntityFrameworkCheckbox = null;
 		public static bool ShowUseEntityFrameworkCheckbox => PortalUtils.AuthTicket != null && PortalUtils.AuthTicket.Name == "serveradmin" && (showUseEntityFrameworkCheckbox ??=
-			DbType == EnterpriseServer.Data.DbType.MsSql && UseEntityFramework);
+			DbType == EnterpriseServer.Data.DbType.SqlServer && UseEntityFramework);
 	}
 }

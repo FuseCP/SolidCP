@@ -31,7 +31,7 @@ namespace SolidCP.EnterpriseServer.Data
 
 			var connectionString = args[0];
 
-			using (var db = new DbContext(connectionString, DbType.MsSql))
+			using (var db = new DbContext(connectionString, DbType.SqlServer))
 			{
 				if (args.Length >= 3)
 				{
