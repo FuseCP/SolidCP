@@ -77,7 +77,7 @@ jobs:
       uses: Vampire/setup-wsl@v3
       with: 
         distribution: Ubuntu-24.04
-        additional-packages: rpm
+        additional-packages: rpm rpmlint
         use-cache: 'false'
 
     - name: Prepare RPM on WSL Ubuntu
@@ -95,7 +95,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
       with:
-        fetch-depth: 1
+        fetch-depth: 0
 
     - name: Checkout Submodules
       run: git submodule update --init --recursive
