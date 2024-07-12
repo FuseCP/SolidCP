@@ -90,11 +90,13 @@ namespace SolidCP.Providers.OS
 				string proc, machine = "", user = "";
 				string[] sources;
 				proc = Environment.GetEnvironmentVariable("PATH");
-				if (OSInfo.IsWindows)
+				if (IsWindows)
 				{
 					machine = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Machine);
 					user = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.User);
-					sources = new string[] { proc, machine, user };
+					sources = new string[] { proc, machine, user,
+						Environment.GetFolderPath(Environment.SpecialFolder.SystemX86),
+						Environment.GetFolderPath(Environment.SpecialFolder.System) };
 				} else sources = new string[] { proc };
 
 				return sources
@@ -444,17 +446,21 @@ namespace SolidCP.Providers.OS
 
 			if (Redirect) Console.Error.Write(text);
 		}
-#if wpkg
-		public readonly static Shell Default = new CmdShell(); // OSInfo.Current.DefaultShell;
-#else
-		public static Shell Default => OSInfo.Current.DefaultShell;
+
 		static Shell standard = null;
 		public static Shell Standard => standard ??= new StandardShell();
+
+#if wpkg
+		public readonly static Shell Default = new StandardShell(); // OSInfo.Current.DefaultShell;
+		public static bool IsWindows => RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows);
+#else
+		public static Shell Default => OSInfo.Current.DefaultShell;
+		public static bool IsWindows => OSInfo.IsWindows;
 #endif
 	}
 
 	public class StandardShell : Shell
 	{
-		public override string ShellExe => OSInfo.IsWindows ? "cmd" : "sh";
+		public override string ShellExe => Shell.IsWindows ? "cmd" : "sh";
 	}
 }
