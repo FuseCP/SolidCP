@@ -1,1 +1,5 @@
 *.exe
+!src/bin
+!**/usr/bin
+**/www/debian/pool/main/
+**/www/fedora/pool/main/
