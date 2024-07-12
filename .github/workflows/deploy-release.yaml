@@ -106,6 +106,8 @@ jobs:
         wsl --list --verbose
         wsl which rpmbuild
         wsl --distribution Ubuntu-24.04 which rpmbuild
+        wsl --list --verbose
+        echo $env:PATH
 
     - name: Run deploy-release.bat
       working-directory: SolidCP
