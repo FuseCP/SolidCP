@@ -13,7 +13,6 @@ install.*.exe
 #build
 [Oo]bj/
 [Bb]in/
-!**/usr/bin/*
 **/Resources/*.dll
 **/Resources/*.pdb
 **/Resources/*.exe
@@ -63,7 +62,6 @@ msbuild.log
 
 bin/Debug
 bin/Release
-**/bin/
 **/bin_dotnet/
 *.vshost.*
 *.pdb
@@ -80,13 +78,11 @@ packages/
 /SolidCP.Installer/Sources/packages/
 /SolidCP.Installer/Sources/Setup.WIXBootstrapper/SolidCP.msi
 /SolidCP.Installer/Sources/SolidCP.Installer/[Uu]pdater.exe
+/SolidCP.Installer/Sources/SolidCP.Installer/SolidCP.[Uu]pdater.exe
 /SolidCP/SolidCP-Auto-Upgrade.ps1
 /SolidCP/Dev_CleanRelease.ps1
 /SolidCP/CleanRelease_Marc_Dev.ps1
 /SolidCP/CleanRelease_marc.ps1
 /SolidCP/CleanRelease2.ps1
 /SolidCP/CleanDebug.ps1
-
-**/www/debian/pool/main/
-**/www/fedora/pool/main/
-SolidCP.Installer/Sources/VersionInfo.cs
+/SolidCP.Installer/Sources/VersionInfo.cs
