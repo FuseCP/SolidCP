@@ -781,20 +781,21 @@
 
 	<Target Name="CreateEnterpriseServerUpdate" DependsOnTargets="CreateServerUpdate" >
 		<Exec Command="$(DiffCmd) %22$(PreviousBuildFolder)\EnterpriseServer%22 %22$(EnterpriseServerInstall)%22 %22$(EnterpriseServerUpdate)%22 /ex:web.config"/>
-		<Copy SourceFiles="$(TrunkFolder)\Database\update_db.sql" DestinationFolder="$(EnterpriseServerUpdate)\Setup" />
 		
 		<ItemGroup>
 			<InstallScripts Include="$(EnterpriseServerDataSrc)\Migrations\**\install.*.sql" />
 			<InstallScripts Include="$(EnterpriseServerDataSrc)\Migrations\**\install.*.bundle.exe" />
+			<UpdateScript Include="$(EnterpriseServerDataSrc)\LegacyScripts\update_db.sql" />
 		</ItemGroup>
 
 		<Copy SourceFiles="@(InstallScripts)" DestinationFolder="$(EnterpriseServerUpdate)\Setup" />
+		<Copy SourceFiles="@(UpdateScript)" DestinationFolder="$(EnterpriseServerUpdate)\Setup" />
 
 		<!-- Update variables in the file -->
 		<FileUpdate Files="$(EnterpriseServerUpdate)\Setup\update_db.sql" Regex="\${release.version}" ReplacementText="$(FileVersion)" />
 		<FileUpdate Files="$(EnterpriseServerUpdate)\Setup\update_db.sql" Regex="\${release.date}" ReplacementText="$(ReleaseDate)" />
 
-		<Copy SourceFiles="$(TrunkFolder)\Database\update_db.sql" DestinationFolder="$(UpdateFolder)" />
+		<Copy SourceFiles="@(UpdateScript)" DestinationFolder="$(UpdateFolder)" />
 		<Copy SourceFiles="@(InstallScripts)" DestinationFolder="$(UpdateFolder)" />
 		<!-- Update variables in the file -->
 		<FileUpdate Files="$(UpdateFolder)\update_db.sql" Regex="\${release.version}" ReplacementText="$(FileVersion)" />
@@ -1023,7 +1024,6 @@
 		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\MailTemplates.zip&quot; &quot;$(MailTemplatesInstall)\*&quot;" />
 		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-Auto-Upgrade-Tool.zip&quot; &quot;$(SolidCP-Auto-Upgrade-ToolInstall)\*&quot;" />
 		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-dSHeuristics.zip&quot; &quot;$(SolidCP-dSHeuristicsInstall)\*&quot;" />
-
   </Target>
 
   <Target Name="Deploy" DependsOnTargets="CreateInstallPackages;CreateUniversalSetupBuild" />
