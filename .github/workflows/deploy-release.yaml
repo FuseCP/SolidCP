@@ -94,7 +94,7 @@ jobs:
         #use-cache: 'false'
 
     - name: Show WSL distro
-        wsl --list --verbose
+      run: wsl --list --verbose
 
     - name: Checkout
       uses: actions/checkout@v4
