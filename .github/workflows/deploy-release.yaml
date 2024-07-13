@@ -89,18 +89,6 @@ jobs:
         use-cache: 'true'
         #use-cache: 'false'
 
-    - name: Prepare RPM on WSL Ubuntu
-      shell: wsl-bash {0}
-      run: |
-        mkdir -p ~/rpmbuild/{RPMS,SRPMS,BUILD,SOURCES,SPECS,tmp}
-        
-        cat <<EOF >~/.rpmmacros
-        %_topdir   %(echo $HOME)/rpmbuild
-        %_tmppath  %{_topdir}/tmp
-        EOF
-
-        cat ~/.rpmmacros
-
     - name: Checkout
       uses: actions/checkout@v4
       with:
@@ -113,11 +101,6 @@ jobs:
       run: |
         wsl --version
         wsl --list --verbose
-    #    wsl which rpmbuild
-    #    wsl --distribution Ubuntu-24.04 which rpmbuild
-    #    wsl --list --verbose
-    #    echo $env:PATH
-    #    cmd /c "where wsl"
 
     - name: Run deploy-release.bat
       working-directory: SolidCP
