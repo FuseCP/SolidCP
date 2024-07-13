@@ -73,6 +73,9 @@
 		<!-- Build Linux install deb & rpm packages (This requires a WSL distro with rpmbuild installed) -->
 		<BuildLinuxInstallPackages Condition="'$(BuildLinuxInstallPackages)' == ''">true</BuildLinuxInstallPackages>
 
+		<!-- Build legacy database sql script from install_db.sql & update_db.sql -->
+		<BuildLegacyDatabaseScript Condition="'$(BuildLegacyDatabaseScript)' == ''">false</BuildLegacyDatabaseScript>
+
 		<ftphost></ftphost>
 		<ftpUsername></ftpUsername>
 		<ftpPassword></ftpPassword>
@@ -85,9 +88,22 @@
 		<InstallerRemoteUri>http://installer.solidcp.com/files/$(Version)/SolidCP-$(Version)-webpi.msi</InstallerRemoteUri>
 	</PropertyGroup>
 
-	<Target Name="RestorePackages">
+	<Target Name="ShowParameters">
+		<Message Text="Version: $(Version)" Importance="High" />
+		<Message Text="FileVersion: $(FileVersion)" Importance="High" />
+		<Message Text="VersionLabel: $(VersionLabel)" Importance="High" />
+		<Message Text="IncludeReleasePdbs: $(IncludeReleasePdbs)" Importance="High" />
+		<Message Text="UseAspNetPrecompile: $(UseAspNetPrecompile)" Importance="High" />
+		<Message Text="BuildLinuxInstallPackages: $(BuildLinuxInstallPackages)" Importance="High" />
+		<Message Text="BuildLegacyDatabaseScript: $(BuildLegacyDatabaseScript)" Importance="High" />
+		<Message Text="MsBuildSwitches: $(MsBuildSwitches)" Importance="High" />
+	</Target>
+
+	<Target Name="RestorePackages" DependsOnTargets="ShowParameters">
 		<Exec Command="dotnet restore $(TrunkFolder)\Sources\SolidCP.EnterpriseServer.sln" />
-		<Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(TrunkFolder)\Sources\SolidCP.WebPortal.sln" />
+		<!-- Cannot restore WebPortal here, since it'll try to restore EnterpriseServer too because EnterpriseServer.Client will reference EnterpriseServer,
+			so we need to build EnterpriseServer before restoring WebPortal, and then EnterpriseServer.Client won't reference EnterpriseServer anymore -->
+		<!--<Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(TrunkFolder)\Sources\SolidCP.WebPortal.sln" />-->
 		<!--  The following does not work due to project imports in SolidCP.Providers.Virtualization.Proxmox
 			 that depend on PackageReference
 			<Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(TrunkFolder)\Sources\SolidCP.Server.sln" />-->
@@ -137,6 +153,10 @@
 		<!-- SolidCP -->
 		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.Server.sln" Properties="Configuration=$(BuildConfiguration)" />
 		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.EnterpriseServer.sln" Properties="Configuration=$(BuildConfiguration)" />
+		
+		<!-- Restore WebPortal now, after we've built EnterpriseServer, so EnterpriseServer.Client won't reference EnterpriseServer anymore. -->
+		<Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(TrunkFolder)\Sources\SolidCP.WebPortal.sln" />
+		
 		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.WebPortal.sln" Properties="Configuration=$(BuildConfiguration)" />
 		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.WebDavPortal.sln" Properties="Configuration=$(BuildConfiguration)" />
 
@@ -281,7 +301,7 @@
 		<Copy SourceFiles="@(PortalBuildFiles)" DestinationFolder="$(PortalBuild)\%(RecursiveDir)" Condition=" '$(UseAspNetPrecompile)' != 'true' " />
 
 		<!-- Use aspnet_compiler to percompile WebPortal if UseAspNetPrecompile is set to true -->
-		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.WebPortal\SolidCP.WebPortal.csproj" Properties="Configuration=$(BuildConfiguration)" Targets="Deploy" 
+		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.WebPortal\SolidCP.WebPortal.csproj" Properties="Configuration=$(BuildConfiguration)" Targets="DeployWithPrecompile" 
 			Condition=" '$(UseAspNetPrecompile)' == 'true' " />
 	</Target>
 
@@ -432,14 +452,14 @@
 			<InstallerProjectBin>$(InstallerProjectRoot)SolidCP.Installer\bin\$(BuildConfiguration)</InstallerProjectBin>
 		</PropertyGroup>
 
-		<Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(InstallerProjectRoot)\SolidCP.Installer.sln" />
+		<Exec Command="dotnet restore $(InstallerProjectRoot)\SolidCP.Installer.sln" />
 
 		<!-- compile Installer -->
 		<MSBuild Projects="$(InstallerProjectRoot)\SolidCP.Installer.sln" Properties="Configuration=$(BuildConfiguration)" />
 
 		<!-- copy installer binaries for upgrade -->
 		<ItemGroup>
-			<InstallerBinaries Include="$(InstallerProjectBin)\**\*.dll" />
+			<!--<InstallerBinaries Include="$(InstallerProjectBin)\**\*.dll" />-->
 			<InstallerBinaries Include="$(InstallerProjectBin)\**\*.exe" />
 			<InstallerExe Include="$(InstallerProjectBin)\SolidCP.Installer.exe" />
 		</ItemGroup>
@@ -459,7 +479,7 @@
 			<InstallerProjectBin>$(InstallerProjectRoot)SolidCP.UniversalInstaller\bin\$(BuildConfiguration)\net48\</InstallerProjectBin>
 		</PropertyGroup>
 
-	    <Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(InstallerProjectRoot)SolidCP.UniversalInstaller.sln" />
+	    <Exec Command="dotnet restore $(InstallerProjectRoot)SolidCP.UniversalInstaller.sln" />
 
 		<!-- compile Installer -->
 		<MSBuild Projects="$(InstallerProjectRoot)SolidCP.UniversalInstaller.sln" Properties="Configuration=$(BuildConfiguration)" />
@@ -778,20 +798,21 @@
 
 	<Target Name="CreateEnterpriseServerUpdate" DependsOnTargets="CreateServerUpdate" >
 		<Exec Command="$(DiffCmd) %22$(PreviousBuildFolder)\EnterpriseServer%22 %22$(EnterpriseServerInstall)%22 %22$(EnterpriseServerUpdate)%22 /ex:web.config"/>
-		<Copy SourceFiles="$(TrunkFolder)\Database\update_db.sql" DestinationFolder="$(EnterpriseServerUpdate)\Setup" />
 		
 		<ItemGroup>
 			<InstallScripts Include="$(EnterpriseServerDataSrc)\Migrations\**\install.*.sql" />
 			<InstallScripts Include="$(EnterpriseServerDataSrc)\Migrations\**\install.*.bundle.exe" />
+			<UpdateScript Include="$(EnterpriseServerDataSrc)\LegacyScripts\update_db.sql" />
 		</ItemGroup>
 
 		<Copy SourceFiles="@(InstallScripts)" DestinationFolder="$(EnterpriseServerUpdate)\Setup" />
+		<Copy SourceFiles="@(UpdateScript)" DestinationFolder="$(EnterpriseServerUpdate)\Setup" />
 
 		<!-- Update variables in the file -->
 		<FileUpdate Files="$(EnterpriseServerUpdate)\Setup\update_db.sql" Regex="\${release.version}" ReplacementText="$(FileVersion)" />
 		<FileUpdate Files="$(EnterpriseServerUpdate)\Setup\update_db.sql" Regex="\${release.date}" ReplacementText="$(ReleaseDate)" />
 
-		<Copy SourceFiles="$(TrunkFolder)\Database\update_db.sql" DestinationFolder="$(UpdateFolder)" />
+		<Copy SourceFiles="@(UpdateScript)" DestinationFolder="$(UpdateFolder)" />
 		<Copy SourceFiles="@(InstallScripts)" DestinationFolder="$(UpdateFolder)" />
 		<!-- Update variables in the file -->
 		<FileUpdate Files="$(UpdateFolder)\update_db.sql" Regex="\${release.version}" ReplacementText="$(FileVersion)" />
@@ -811,16 +832,47 @@
 		<DatabaseFolder>$(DeployFolder)\Database</DatabaseFolder>
 	</PropertyGroup>
 
-  <Target Name="CreateEnterpriseServerDatabase" DependsOnTargets="CreateWebDavPortalUpdate">
+    <Target Name="CreateEnterpriseServerDatabase" DependsOnTargets="CreateWebDavPortalUpdate" Condition="'$(BuildLegacyDatabaseScript)' == 'true'">
 		<MakeDir Directories="$(DatabaseFolder)"/>
 
-		<!--<Exec Command="$(SqlCmd) -Q &quot;IF DB_ID (N'$(DataBaseName)') IS NOT NULL DROP DATABASE $(DataBaseName)&quot;" />
+		<Exec Command="$(SqlCmd) -Q &quot;IF DB_ID (N'$(DataBaseName)') IS NOT NULL DROP DATABASE $(DataBaseName)&quot;" />
 		<Exec Command="$(SqlCmd) -Q &quot;CREATE DATABASE $(DataBaseName) COLLATE Latin1_General_CI_AS&quot;" />
-		
-		<Copy SourceFiles="$(TrunkFolder)\Database\install_db.sql" DestinationFolder="$(DatabaseFolder)" />-->
+
+		<Copy SourceFiles="$(EnterpriseServerDataSrc)\LegacyScripts\install_db.sql" DestinationFolder="$(DatabaseFolder)" />
+		<Copy SourceFiles="$(EnterpriseServerDataSrc)\LegacyScripts\update_db.sql" DestinationFolder="$(DatabaseFolder)" />
+
+		<!-- Update variables in files -->
+		<FileUpdate Files="$(DatabaseFolder)\install_db.sql" Regex="\${install.database}" ReplacementText="$(DataBaseName)" />
+		<FileUpdate Files="$(DatabaseFolder)\update_db.sql" Regex="\${install.database}" ReplacementText="$(DataBaseName)" />
+		<FileUpdate Files="$(DatabaseFolder)\update_db.sql" Regex="\${release.version}" ReplacementText="$(FileVersion)" />
+		<FileUpdate Files="$(DatabaseFolder)\update_db.sql" Regex="\${release.date}" ReplacementText="$(ReleaseDate)" />
+
+		<Exec Command="$(SqlCmd) -i $(DatabaseFolder)\install_db.sql" />
+		<Exec Command="$(SqlCmd) -i $(DatabaseFolder)\update_db.sql" />
+
+		<Delete Files="$(DatabaseFolder)\install_db.sql" />
+		<Delete Files="$(DatabaseFolder)\update_db.sql" />
 	</Target>
 
-	<Target Name="PublishSqlInstallScripts" DependsOnTargets="CreateEnterpriseServerDatabase">
+	<Target Name="ScriptEnterpriseServerDatabase" DependsOnTargets="CreateEnterpriseServerDatabase" Condition="'$(BuildLegacyDatabaseScript)' == 'true'">
+		<ConvertToAbsolutePath Paths="$(DatabaseFolder)">
+			<Output TaskParameter="AbsolutePaths" PropertyName="DatabaseFolderAbsolute"/>
+		</ConvertToAbsolutePath>
+
+		<Exec Command="$(MSDeployPath) -verb:sync -source:dbFullSql=&quot;$(MSDeployConnectionString)&quot; -dest:dbFullSql=&quot;$(DatabaseFolderAbsolute)\install_db_temp.sql&quot;"/>
+		<Exec Command="copy $(TrunkFolder)\Resources\database_header.sql+$(DatabaseFolder)\install_db_temp.sql $(DatabaseFolder)\install_db.sql" />
+
+		<MakeDir Directories="$(EnterpriseServerInstall)\Setup"/>
+
+		<Copy SourceFiles="$(DatabaseFolder)\install_db.sql" DestinationFolder="$(EnterpriseServerInstall)\Setup" />
+
+		<Delete Files="$(DatabaseFolder)\install_db_temp.sql" />
+	</Target>
+
+	<Target Name="PublishSqlInstallScripts" DependsOnTargets="ScriptEnterpriseServerDatabase;CreateWebDavPortalUpdate">
+		<MakeDir Directories="$(DatabaseFolder)" />
+		<MakeDir Directories="$(EnterpriseServerInstall)\Setup"/>
+
 		<ItemGroup>
 			<InstallScripts Include="$(EnterpriseServerDataSrc)\Migrations\**\install.*.sql" />
 			<InstallScripts Include="$(EnterpriseServerDataSrc)\Migrations\**\install.*.bundle.exe" />
@@ -828,29 +880,12 @@
 		<!--<Copy SourceFiles="$(TrunkFolder)\Database\install_db.sql" DestinationFolder="$(DatabaseFolder)" />-->
 		<Copy SourceFiles="@(InstallScripts)" DestinationFolder="$(TrunkFolder)\Database" />
 		<Copy SourceFiles="@(InstallScripts)" DestinationFolder="$(DatabaseFolder)" />
-		<Copy SourceFiles="$(TrunkFolder)\Database\update_db.sql" DestinationFolder="$(DatabaseFolder)" />		
-	</Target>
-
-	<Target Name="ScriptEnterpriseServerDatabase" DependsOnTargets="PublishSqlInstallScripts">
-		<!--<ConvertToAbsolutePath Paths="$(DatabaseFolder)">
-			<Output TaskParameter="AbsolutePaths" PropertyName="DatabaseFolderAbsolute"/>
-		</ConvertToAbsolutePath>
-
-		<Exec Command="$(MSDeployPath) -verb:sync -source:dbFullSql=&quot;$(MSDeployConnectionString)&quot; -dest:dbFullSql=&quot;$(DatabaseFolderAbsolute)\install_db_temp.sql&quot;"/>
-		<Exec Command="copy $(TrunkFolder)\Resources\database_header.sql+$(DatabaseFolder)\install_db_temp.sql $(DatabaseFolder)\install_db.sql" />-->
-
-		<MakeDir Directories="$(EnterpriseServerInstall)\Setup"/>
-
-		<ItemGroup>
-			<InstallScripts Include="$(DatabaseFolder)\install.*.sql" />
-			<InstallScripts Include="$(DatabaseFolder)\install.*.bundle.exe" />
-		</ItemGroup>
-
+		<Copy SourceFiles="$(EnterpriseServerDataSrc)\LegacyScripts\update_db.sql" DestinationFolder="$(DatabaseFolder)" />
 		<Copy SourceFiles="@(InstallScrips)" DestinationFolder="$(EnterpriseServerInstall)\Setup" />
 	</Target>
 
 	<!-- Compile and deploy Setup.dll -->
-	<Target Name="CreateSetupDLL" DependsOnTargets="ScriptEnterpriseServerDatabase">
+	<Target Name="CreateSetupDLL" DependsOnTargets="PublishSqlInstallScripts">
 		<!-- Compile Setup.dll -->
 		<MSBuild Projects="$(SetupTrunkFolder)\Sources\SolidCP.Installer.sln"  Properties="Configuration=$(BuildConfiguration)" />
 
@@ -1006,7 +1041,6 @@
 		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\MailTemplates.zip&quot; &quot;$(MailTemplatesInstall)\*&quot;" />
 		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-Auto-Upgrade-Tool.zip&quot; &quot;$(SolidCP-Auto-Upgrade-ToolInstall)\*&quot;" />
 		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-dSHeuristics.zip&quot; &quot;$(SolidCP-dSHeuristicsInstall)\*&quot;" />
-
   </Target>
 
   <Target Name="Deploy" DependsOnTargets="CreateInstallPackages;CreateUniversalSetupBuild" />

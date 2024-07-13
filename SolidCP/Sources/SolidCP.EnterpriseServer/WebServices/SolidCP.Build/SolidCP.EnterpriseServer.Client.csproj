@@ -1,41 +1,57 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFrameworks>net48;net8.0</TargetFrameworks>
-    <Nullable>disable</Nullable>
-    <LangVersion>11</LangVersion>
-    <DefineConstants>$(DefineConstants);Client</DefineConstants>
-    <ImplicitUsings>disable</ImplicitUsings>
-    <OutputPath>..\..\..\..\Bin</OutputPath>
-    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>
-    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-    <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
-  </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="Microsoft.NET.Sdk.Razor.SourceGenerators\**" />
-    <EmbeddedResource Remove="Microsoft.NET.Sdk.Razor.SourceGenerators\**" />
-    <None Remove="Microsoft.NET.Sdk.Razor.SourceGenerators\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\..\..\VersionInfo.cs" Link="VersionInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj" />
-    <ProjectReference Include="..\..\..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj" />
-    <!--<ProjectReference Include="..\..\..\SolidCP.EnterpriseServer\SolidCP.EnterpriseServer.csproj">
-			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-			<OutputItemType>None</OutputItemType>
-			<PrivateAssets>All</PrivateAssets>
-		</ProjectReference>-->
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.DirectoryServices" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
-    <PackageReference Include="System.ServiceModel.Primitives" Version="8.0.0" />
-    <PackageReference Include="System.DirectoryServices" Version="8.0.0" />
-  </ItemGroup>
+    <PropertyGroup>
+        <TargetFrameworks>net48;net8.0</TargetFrameworks>
+        <Nullable>disable</Nullable>
+        <LangVersion>11</LangVersion>
+        <DefineConstants>$(DefineConstants);Client</DefineConstants>
+        <ImplicitUsings>disable</ImplicitUsings>
+        <OutputPath>..\..\..\..\Bin</OutputPath>
+        <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>
+        <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+        <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
+    </PropertyGroup>
+    <ItemGroup>
+        <Compile Remove="Microsoft.NET.Sdk.Razor.SourceGenerators\**" />
+        <EmbeddedResource Remove="Microsoft.NET.Sdk.Razor.SourceGenerators\**" />
+        <None Remove="Microsoft.NET.Sdk.Razor.SourceGenerators\**" />
+        <Services Include="SolidCP.Build.WebServices\**\*.g.cs" />
+        <Folder Include="SolidCP.Build.WebServices" />
+    </ItemGroup>
+    <PropertyGroup>
+        <AnyServices>@(Services)</AnyServices>
+    </PropertyGroup>
+    <ItemGroup>
+        <Compile Include="..\..\..\VersionInfo.cs" Link="VersionInfo.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj" />
+        <ProjectReference Include="..\..\..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj" />
+        <ProjectReference Include="..\..\..\SolidCP.EnterpriseServer\SolidCP.EnterpriseServer.csproj"
+            ReferenceOutputAssembly="false" PrivateAssets="All" Condition="'$(AnyServices)' == ''" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+        <Reference Include="System.ServiceModel" />
+        <Reference Include="System.DirectoryServices" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+        <PackageReference Include="System.ServiceModel.Primitives" Version="8.0.0" />
+        <PackageReference Include="System.DirectoryServices" Version="8.0.0" />
+    </ItemGroup>
+
+    <Target Name="RerunAnalyzer" Condition="'$(AnyServices)' == ''" BeforeTargets="ResolveProjectReferences">
+        <Touch Files="..\..\Properties\AssemblyInfo.cs" />
+        <Message Text="RerunAnalyzer" Importance="high" />
+    </Target>
+    
+    <Target Name="ReevaluateCompile" Condition="'$(AnyServices)' == ''" AfterTargets="ResolveProjectReferences">
+        <ItemGroup>
+            <Compile Remove="**/*.cs" />
+            <Compile Include="**/*.cs" Exclude="obj/**/*.cs" />
+        </ItemGroup>
+        <Message Text="ReevaluateCompile: @(Compile)" Importance="high" />
+    </Target>
+
 </Project>

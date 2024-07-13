@@ -20,7 +20,7 @@
 
 		<GZipCmd Condition=" '$(OS)' == 'Windows_NT' ">"$(RootFolder)\tools\gzip\bin\gzip.exe"</GZipCmd>
 		<GZipCmd Condition=" '$(OS)' == 'Unix' ">gzip</GZipCmd>
-        <NuGetCmd Condition=" '$(OS)' == 'Windows_NT' ">$(TrunkFolder)\Sources\.nuget\NuGet.exe</NuGetCmd>
+        <NuGetCmd Condition=" '$(OS)' == 'Windows_NT' ">dotnet</NuGetCmd>
         <NuGetCmd Condition=" '$(OS)' == 'Unix' ">dotnet</NuGetCmd>
         <WpkgCmd>"$(RootFolder)\tools\wpkg\bin\$(Configuration)\wpkg.exe"</WpkgCmd>
     </PropertyGroup>
@@ -59,7 +59,7 @@
             <TextFiles Include="$(PackagesFolder)\Fedora\usr\bin\*.*" />
         </ItemGroup>
 
-        <Exec Command="$(WpkgCmd) -d2u &quot;@(TextFiles)&quot;">
+        <Exec Command="$(WpkgCmd) -d2u &quot;@(TextFiles)&quot;"  LogStandardErrorAsError="true">
             <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfDos2Unix" />
         </Exec>
         <Message Text="$(OutputOfDos2Unix)" />
@@ -82,22 +82,25 @@
         <Copy SourceFiles="@(BinFiles)" DestinationFolder="$(PackagesFolder)\Debian\usr\bin" />
 
         <Delete Files="$(PackagesFolder)\Debian\usr\share\man\man1\solidcp-universalinstaller.1.gz" />
-        <Exec Command="$(GZipCmd) -9 -n &quot;$(PackagesFolder)\Debian\usr\share\man\man1\solidcp-universalinstaller.1&quot;">
+        <Exec Command="$(GZipCmd) -9 -n &quot;$(PackagesFolder)\Debian\usr\share\man\man1\solidcp-universalinstaller.1&quot;"
+             LogStandardErrorAsError="true">
             <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfZip" />
         </Exec>
         <Message Text="$(OutputOfZip)" />
         <Delete Files="$(PackagesFolder)\Debian\usr\share\man\man1\solidcp-universalinstaller" />
 
         <Delete Files="$(PackagesFolder)\Debian\usr\share\doc\solidcp\changelog.Debian.gz" />
-        <Exec Command="$(GZipCmd) -9 -n &quot;$(PackagesFolder)\Debian\usr\share\doc\solidcp\changelog.Debian&quot;">
+        <Exec Command="$(GZipCmd) -9 -n &quot;$(PackagesFolder)\Debian\usr\share\doc\solidcp\changelog.Debian&quot;"
+             LogStandardErrorAsError="true">
              <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfGZip" />
         </Exec>
         <Message Text="$(OutputOfGZip)" />
         <Delete Files="$(PackagesFolder)\Debian\usr\share\doc\solidcp\changelog.Debian" />
 
-        <Exec Command="powershell -NonInteractive -ExecutionPolicy Unrestricted -command  &quot;&amp; { .\src\scripts\ConfigureDebian.ps1 '$(FileVersion)' }&quot;" />
+        <Exec Command="powershell -NonInteractive -ExecutionPolicy Unrestricted -command  &quot;&amp; { .\src\scripts\ConfigureDebian.ps1 '$(FileVersion)' }&quot;"
+            LogStandardErrorAsError="true" />
 
-        <Exec Command="$(WpkgCmd) -b &quot;$(PackagesFolder)\Debian&quot;">
+        <Exec Command="$(WpkgCmd) -b &quot;$(PackagesFolder)\Debian&quot;"  LogStandardErrorAsError="true">
             <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfWpkg" />
         </Exec>
         <Message Text="$(OutputOfWpkg)" />
@@ -123,15 +126,17 @@
         <Copy SourceFiles="@(BinFiles)" DestinationFolder="$(PackagesFolder)\Fedora\usr\bin" />
 
         <Delete Files="$(PackagesFolder)\Fedora\usr\share\man\man1\solidcp-universalinstaller.1.gz" />
-        <Exec Command="$(GZipCmd) -9 -n &quot;$(PackagesFolder)\Fedora\usr\share\man\man1\solidcp-universalinstaller.1&quot;">
+        <Exec Command="$(GZipCmd) -9 -n &quot;$(PackagesFolder)\Fedora\usr\share\man\man1\solidcp-universalinstaller.1&quot;"
+             LogStandardErrorAsError="true">
             <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfZip" />
         </Exec>
         <Message Text="$(OutputOfZip)" />
         <Delete Files="$(PackagesFolder)\Fedora\usr\share\man\man1\solidcp-universalinstaller" />
 
-        <Exec Command="powershell -NonInteractive -ExecutionPolicy Unrestricted -command  &quot;&amp; { .\src\scripts\ConfigureFedora.ps1 '$(FileVersion)' }&quot;" />
+        <Exec Command="powershell -NonInteractive -ExecutionPolicy Unrestricted -command  &quot;&amp; { .\src\scripts\ConfigureFedora.ps1 '$(FileVersion)' }&quot;"
+             LogStandardErrorAsError="true" />
 
-        <Exec Command="$(WpkgCmd) -r &quot;$(PackagesFolder)\Fedora&quot;">
+        <Exec Command="$(WpkgCmd) -rd &quot;$(PackagesFolder)\Fedora&quot;" LogStandardErrorAsError="true">
             <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfWpkg" />
         </Exec>
         <Message Text="$(OutputOfWpkg)" />

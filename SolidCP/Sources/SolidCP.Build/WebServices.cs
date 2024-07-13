@@ -368,7 +368,6 @@ namespace SolidCP.Build
 			.ToString();
 
 			context.AddSource("WCFServiceTypes.g", $"#if !Client{NewLine}{typesText}{NewLine}#endif");
-
 		}
 
 		public void Initialize(GeneratorInitializationContext context) {

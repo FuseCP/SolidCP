@@ -7,7 +7,8 @@
 		<ImplicitUsings>disable</ImplicitUsings>
 		<OutputPath>..\..\..\..\Bin</OutputPath>
 		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
-		<SignAssembly>true</SignAssembly>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+        <SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
@@ -15,21 +16,20 @@
 
 	<ItemGroup>
 		<Compile Remove="Microsoft.NET.Sdk.Razor.SourceGenerators\**" />
-		<EmbeddedResource Remove="Microsoft.NET.Sdk.Razor.SourceGenerators\**" />
+        <Compile Include="..\..\..\VersionInfo.cs" Link="VersionInfo.cs" />
+        <EmbeddedResource Remove="Microsoft.NET.Sdk.Razor.SourceGenerators\**" />
 		<None Remove="Microsoft.NET.Sdk.Razor.SourceGenerators\**" />
-	</ItemGroup>
-	<ItemGroup>
-		<Compile Include="..\..\..\VersionInfo.cs" Link="VersionInfo.cs" />
-	</ItemGroup>
+        <Services Include="SolidCP.Build.WebServices\**\*.g.cs" />
+        <Folder Include="SolidCP.Build.WebServices" />
+    </ItemGroup>
+    <PropertyGroup>
+        <AnyServices>@(Services)</AnyServices>
+    </PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj" />
-		<!--<ProjectReference Include="..\..\..\SolidCP.Server\SolidCP.Server.csproj">
-			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-			<OutputItemType>None</OutputItemType>
-			<PrivateAssets>All</PrivateAssets>
-			<SetConfiguration>Configuration=$(Configuration)</SetConfiguration>
-		</ProjectReference>-->
-	</ItemGroup>
+        <ProjectReference Include="..\..\..\SolidCP.Server\SolidCP.Server.csproj" Condition="'$(AnyServices)' == ''"
+		 ReferenceOutputAssembly="false" PrivateAssets="All" />
+    </ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
 		<Reference Include="System.ServiceModel" />
 		<Reference Include="System.ServiceModel.Web" />
@@ -40,4 +40,16 @@
 		<PackageReference Include="System.DirectoryServices" Version="8.0.0" />
 		<PackageReference Include="CoreWCF.Primitives" Version="1.5.2" />
 	</ItemGroup>
+
+    <Target Name="RerunAnalyzer" Condition="'$(AnyServices)' == ''" BeforeTargets="ResolveProjectReferences">
+        <Touch Files="..\..\Properties\AssemblyInfo.cs" />
+    </Target>
+    
+    <Target Name="ReevaluateCompile" Condition="'$(AnyServices)' == ''" AfterTargets="ResolveProjectReferences">
+        <ItemGroup>
+            <Compile Remove="**/*.cs" />
+            <Compile Include="**/*.cs" Exclude="obj/**/*.cs" />
+        </ItemGroup>
+    </Target>
+
 </Project>

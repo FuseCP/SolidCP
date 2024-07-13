@@ -37,13 +37,13 @@
 # refer to https://github.com/microsoft/github-actions-for-desktop-apps
 
 name: Deploy Release
-run-name: Deploy Release by @${{ github.actor }}
+run-name: ${{ github.event.head_commit.message }} by @${{ github.actor }}
 
 on:
   push:
-    branches: [ "GitHubActions" ]
+    branches: [ "release" ]
   pull_request:
-    branches: [ "GitHubActions" ]
+    branches: [ "release" ]
 
 jobs:
 
@@ -59,51 +59,63 @@ jobs:
     timeout-minutes: 40
 
     env:
-      Solution_Name: build.xml                         # Replace with your solution name, i.e. MyWpfApp.sln.
+      Configuration: ${{ matrix.configuration }}
+      IncludeReleasePdbs: "true"
+      UseAspNetPrecompile: "true"
+      BuildLinuxInstallPackages: "true"
+      BuildLegacyDatabaseScript: "false"
       GitHubAction: true
-    #  Test_Project_Path: your-test-project-path                 # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
-    #  Wap_Project_Directory: your-wap-project-directory-name    # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
-    #  Wap_Project_Path: your-wap-project-path                   # Replace with the path to your Wap project, i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
 
     steps:
       
     # Install the .NET Core workload
-    - name: Install .NET Core
+    - name: Install .NET 8
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
 
-    - name: Install WSL Ubuntu 24.04
+    - name: Update WSL
+      run: |
+        wsl --update
+        wsl --version
+
+    - name: Install WSL Ubuntu 24.04 with rpm tools
       uses: Vampire/setup-wsl@v3
       with: 
         distribution: Ubuntu-24.04
         additional-packages: rpm rpmlint
         use-cache: 'true'
-        # use-cache: 'false'
+        #use-cache: 'false'
 
-    - name: Prepare RPM on WSL Ubuntu
-      shell: wsl-bash {0}
+    - name: Show WSL distro info
       run: |
-        mkdir -p ~/rpmbuild/{RPMS,SRPMS,BUILD,SOURCES,SPECS,tmp}
-        
-        cat <<EOF >~/.rpmmacros
-        %_topdir   %(echo $HOME)/rpmbuild
-        %_tmppath  %{_topdir}/tmp
-        EOF
-
-        cat ~/.rpmmacros
+        wsl --list --verbose
+        wsl --distribution Ubuntu-24.04 echo '"rpmbuild: $(which rpmbuild)"'
 
     - name: Checkout
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
-    - name: Checkout Submodules
+    - name: Checkout submodules
       run: git submodule update --init --recursive
 
     - name: Run deploy-release.bat
       working-directory: SolidCP
-      run: .\deploy-release.bat
+      run: |
+        echo "msbuild switches: $env:MsBuildSwitches"
+        .\deploy-release.bat
+
+    - name: Publish build artifacts
+      uses: actions/upload-artifact@v2
+      with: 
+        name: SolidCP
+        path: SolidCP\Deploy\Release
+
+    - name: Run unit tests
+      working-directory: SolidCP\Sources
+      run: |
+        dotnet test SolidCP.EnterpriseServer.Tests
 
     # Execute all unit tests in the solution
     # - name: Execute unit tests

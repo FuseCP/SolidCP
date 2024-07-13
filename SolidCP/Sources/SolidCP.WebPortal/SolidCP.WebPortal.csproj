@@ -1321,8 +1321,8 @@
   <Target Name="Precompile" DependsOnTargets="DeleteConfigObjFiles">
     <Exec Command="$(AspNetCompiler) -p . -v /" />
   </Target>
-  <Target Name="Deploy" DependsOnTargets="DeleteConfigObjFiles">
-    <Exec Command="$(AspNetCompiler) -p . -f -v / $(DeployDir)" />
+  <Target Name="DeployWithPrecompile" DependsOnTargets="DeleteConfigObjFiles">
+    <AspNetCompiler PhysicalPath="." VirtualPath="/"  TargetPath="$(DeployDir)" Force="true"  />
     <ItemGroup>
       <AppDlls Include="$(DeployDir)\bin\App_*.dll" Exclude="$(DeployDir)\bin\App_global.asax.dll;$(DeployDir)\bin\App_Browsers.dll;$(DeployDir)\bin\App_GlobalResources.dll;$(DeployDir)\bin\App_Theme_Default.dll" />
     </ItemGroup>

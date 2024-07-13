@@ -5,14 +5,11 @@ using System.Data;
 using System.Text;
 using System.Xml.Serialization;
 using System.Runtime.Serialization;
-using System.Threading.Tasks;
 using System.Collections;
-using Twilio.TwiML.Voice;
 using System.Reflection;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.Identity.Client;
 
-namespace SolidCP.EnterpriseServer
+namespace SolidCP.EnterpriseServer.Data
 {
     public class EntityDataTable<TEntity>: DataTable, IEntityDataSet where TEntity: class
     {

@@ -6,11 +6,10 @@ using System.Text;
 using System.Reflection;
 using System.Data;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Threading.Tasks;
 using System.Collections;
-using SolidCP.Providers.HostedSolution;
+using System.Runtime.CompilerServices;
 
-namespace SolidCP.EnterpriseServer
+namespace SolidCP.EnterpriseServer.Data
 {
 	public class PropertyDescription
 	{
@@ -41,7 +40,8 @@ namespace SolidCP.EnterpriseServer
         public virtual Type Type { get; private set; }
 
         PropertyCollection properties = null;
-        public virtual PropertyCollection Properties
+
+		public virtual PropertyCollection Properties
         {
             get
             {
