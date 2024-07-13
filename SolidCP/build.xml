@@ -446,7 +446,7 @@
 			<InstallerProjectBin>$(InstallerProjectRoot)SolidCP.Installer\bin\$(BuildConfiguration)</InstallerProjectBin>
 		</PropertyGroup>
 
-		<Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(InstallerProjectRoot)\SolidCP.Installer.sln" />
+		<Exec Command="dotnet restore $(InstallerProjectRoot)\SolidCP.Installer.sln" />
 
 		<!-- compile Installer -->
 		<MSBuild Projects="$(InstallerProjectRoot)\SolidCP.Installer.sln" Properties="Configuration=$(BuildConfiguration)" />
@@ -473,7 +473,7 @@
 			<InstallerProjectBin>$(InstallerProjectRoot)SolidCP.UniversalInstaller\bin\$(BuildConfiguration)\net48\</InstallerProjectBin>
 		</PropertyGroup>
 
-	    <Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(InstallerProjectRoot)SolidCP.UniversalInstaller.sln" />
+	    <Exec Command="dotnet restore $(InstallerProjectRoot)SolidCP.UniversalInstaller.sln" />
 
 		<!-- compile Installer -->
 		<MSBuild Projects="$(InstallerProjectRoot)SolidCP.UniversalInstaller.sln" Properties="Configuration=$(BuildConfiguration)" />

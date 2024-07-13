@@ -91,9 +91,9 @@
         <ProjectReference Include="..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj" />
         <ProjectReference Include="..\SolidCP.EnterpriseServer.Data\SolidCP.EnterpriseServer.Data.csproj" />
         <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
-        <ProjectReference Include="..\SolidCP.Server\WebServices\SolidCP.Build\SolidCP.Server.Client.csproj" />
         <ProjectReference Include="..\SolidCP.Templates\SolidCP.Templates.csproj" />
         <ProjectReference Include="..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj" />
         <ProjectReference Include="..\SolidCP.Web.Services\SolidCP.Web.Services.csproj" />
+        <ProjectReference Include="..\SolidCP.Server\WebServices\SolidCP.Build\SolidCP.Server.Client.csproj" />
     </ItemGroup>
 </Project>

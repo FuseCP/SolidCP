@@ -9,9 +9,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Threading.Tasks;
 using System.Collections;
 
-namespace SolidCP.EnterpriseServer
+namespace SolidCP.EnterpriseServer.Data
 {
-
 	public class CountDataReader<TEntity>: EntityDataReader<TEntity> where TEntity: class
 	{
 		public CountDataReader(IEnumerable<TEntity> set, int count = -1) : base(set) {
@@ -21,7 +20,21 @@ namespace SolidCP.EnterpriseServer
 		bool isReadingCount = true;
 
 		int count = -1;
-		int Count => count != -1 ? count : Set.Count();
+		int Count
+		{
+			get
+			{
+				if (count == -1)
+				{
+#if NETCOREAPP
+					if (!Set.TryGetNonEnumeratedCount(out count)) count = Set.Count();
+#else
+					count = Set.Count();
+#endif
+				}
+				return count;
+			}
+		}
 		public override int FieldCount => isReadingCount ? 1 : base.FieldCount;
 		public override IDataReader GetData(int i)
 		{
