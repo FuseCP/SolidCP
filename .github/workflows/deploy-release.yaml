@@ -109,9 +109,10 @@ jobs:
     - name: Checkout Submodules
       run: git submodule update --init --recursive
 
-    #- name: Check installed WSL distros
-    #  run: |
-    #    wsl --list --verbose
+    - name: Check installed WSL distro
+      run: |
+        wsl --version
+        wsl --list --verbose
     #    wsl which rpmbuild
     #    wsl --distribution Ubuntu-24.04 which rpmbuild
     #    wsl --list --verbose
