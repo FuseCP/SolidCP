@@ -37,7 +37,7 @@
 # refer to https://github.com/microsoft/github-actions-for-desktop-apps
 
 name: Deploy Release
-run-name: Deploy Release by @${{ github.actor }}
+run-name: ${{ github.event.head_commit.message }} by @${{ github.actor }}
 
 on:
   push:
