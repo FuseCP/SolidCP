@@ -89,4 +89,8 @@ IF EXIST "%ProgramFiles(x86)%\MSBuild\14.0\Bin\MSBuild.exe" (
  )
 
 :Build
+
+echo "Version: %SolidCPVersion%"
+echo "FileVersion: %SolidCPFileVersion%"
+
 %SCPMSBuild%  build.xml /target:Build /p:BuildConfiguration=Debug /p:Version="%SolidCPVersion%" /p:FileVersion="%SolidCPFileVersion%" /p:VersionLabel="%SolidCPFileVersion%" /v:n %MsBuildSwitches% /fileLogger /flp:verbosity=normal /p:VisualStudioVersion=%SCPVSVer%
