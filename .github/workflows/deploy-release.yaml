@@ -45,6 +45,13 @@ on:
   pull_request:
     branches: [ "GitHubActions" ]
 
+env:
+  IncludeReleasePdbs: "true"
+  UseAspNetPrecompile: "true"
+  BuildLinuxInstallPackages: "true"
+  BuildLegacyDatabaseScript: "false"
+
+
 jobs:
 
   build:
