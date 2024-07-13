@@ -29,11 +29,12 @@
         <BinFiles Include="$(PackagesFolder)\src\bin\*.*" />
     </ItemGroup>
 
+
     <Target Name="BuildWpkg">
 	    <Exec Command="$(NuGetCmd) restore $(RootFolder)\tools\wpkg\wpkg.sln" />
         <MSBuild Projects="$(RootFolder)\tools\wpkg\wpkg.sln" Properties="Configuration=$(Configuration)" />
     </Target>
-
+    
     <Target Name="BuildUniversalInstaller" Condition=" '$(OS)' == 'Unix' ">
         <Exec Command="$(NuGetCmd) restore $(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller.sln" />
         <MSBuild Projects="$(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller.sln" Properties="Configuration=$(Configuration)" />
@@ -146,7 +147,6 @@
         </ItemGroup>
 
         <Move SourceFiles="@(RpmFiles)" DestinationFolder="$(PackagesFolder)\bin" />
-
     </Target>
 
     <Target Name="Build" DependsOnTargets="Fedora" />
