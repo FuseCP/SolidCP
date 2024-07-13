@@ -41,9 +41,9 @@ run-name: ${{ github.event.head_commit.message }} by @${{ github.actor }}
 
 on:
   push:
-    branches: [ "GitHubActions" ]
+    branches: [ "release" ]
   pull_request:
-    branches: [ "GitHubActions" ]
+    branches: [ "release" ]
 
 env:
   IncludeReleasePdbs: "true"
