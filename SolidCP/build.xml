@@ -295,7 +295,7 @@
 		<Copy SourceFiles="@(PortalBuildFiles)" DestinationFolder="$(PortalBuild)\%(RecursiveDir)" Condition=" '$(UseAspNetPrecompile)' != 'true' " />
 
 		<!-- Use aspnet_compiler to percompile WebPortal if UseAspNetPrecompile is set to true -->
-		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.WebPortal\SolidCP.WebPortal.csproj" Properties="Configuration=$(BuildConfiguration)" Targets="Deploy" 
+		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.WebPortal\SolidCP.WebPortal.csproj" Properties="Configuration=$(BuildConfiguration)" Targets="DeployWithPrecompile" 
 			Condition=" '$(UseAspNetPrecompile)' == 'true' " />
 	</Target>
 

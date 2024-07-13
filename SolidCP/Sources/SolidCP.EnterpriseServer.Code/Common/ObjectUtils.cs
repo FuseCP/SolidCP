@@ -82,8 +82,8 @@ namespace SolidCP.EnterpriseServer
 			return dobj;
 		}
 
-		private static Hashtable typeProperties = new Hashtable();
-
+		public static bool IsAnonymous(Type type) => Data.ObjectUtils.IsAnonymous(type);
+		public static PropertyInfo[] GetTypeProperties(Type type) => Data.ObjectUtils.GetTypeProperties(type);
 		public static Hashtable GetObjectProperties(object obj, bool persistentOnly)
 		{
 			Hashtable hash = new Hashtable();
@@ -490,14 +490,6 @@ namespace SolidCP.EnterpriseServer
 			} // for properties
 
 			return obj;
-		}
-		public static bool IsAnonymous(Type type)
-		{
-			return Attribute.IsDefined(type, typeof(CompilerGeneratedAttribute), false) &&
-				type.IsGenericType &&
-				(type.Name.Contains("AnonymousType") || type.Name.Contains("AnonType")) &&
-				(type.Name.StartsWith("<>") || type.Name.StartsWith("VB$")) &&
-				type.Attributes.HasFlag(TypeAttributes.NotPublic);
 		}
 
 		public static DataTable DataTableFromEntitySet<TEntity>(IEnumerable<TEntity> set)
@@ -931,17 +923,6 @@ namespace SolidCP.EnterpriseServer
 				}
 			}
 			return hash;
-		}
-
-		public static PropertyInfo[] GetTypeProperties(Type type)
-		{
-			string typeName = type.AssemblyQualifiedName;
-			if (typeProperties[typeName] != null)
-				return (PropertyInfo[])typeProperties[typeName];
-
-			PropertyInfo[] props = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
-			typeProperties[typeName] = props;
-			return props;
 		}
 
 		public static object GetNull(Type type)

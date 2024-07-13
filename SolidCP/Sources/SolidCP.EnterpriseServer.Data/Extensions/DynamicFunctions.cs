@@ -12,7 +12,7 @@ using System.Data.Entity;
 using Microsoft.EntityFrameworkCore;
 #endif
 
-namespace SolidCP.EnterpriseServer
+namespace SolidCP.EnterpriseServer.Data
 {
 	public static class DynamicFunctions
 	{

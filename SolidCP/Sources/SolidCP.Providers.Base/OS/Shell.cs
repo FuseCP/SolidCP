@@ -94,10 +94,12 @@ namespace SolidCP.Providers.OS
 				{
 					machine = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Machine);
 					user = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.User);
-					sources = new string[] { proc, machine, user,
+					sources = new string[] {
+						Environment.GetFolderPath(Environment.SpecialFolder.System),
 						Environment.GetFolderPath(Environment.SpecialFolder.SystemX86),
-						Environment.GetFolderPath(Environment.SpecialFolder.System) };
-				} else sources = new string[] { proc };
+						proc, machine, user };
+				}
+				else sources = new string[] { proc };
 
 				return sources
 					.SelectMany(paths => paths.Split(new char[] { Path.PathSeparator }, StringSplitOptions.RemoveEmptyEntries))

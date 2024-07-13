@@ -146,5 +146,11 @@
       <Folder Include="Migrations\MySql\" />
       <Folder Include="Migrations\PostgreSql\" />
     </ItemGroup>
+	
+    <ItemGroup>
+      <Compile Update="Extensions\EntityDataTable.cs">
+        <SubType>Component</SubType>
+      </Compile>
+    </ItemGroup>
 		
 </Project>
