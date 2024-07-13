@@ -76,7 +76,7 @@ jobs:
     steps:
       
     # Install the .NET Core workload
-    - name: Install .NET Core
+    - name: Install .NET 8
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
@@ -89,7 +89,7 @@ jobs:
         use-cache: 'true'
         #use-cache: 'false'
 
-    - name: Check installed WSL distro
+    - name: Configure WSL
       run: |
         wsl --update
         wsl --version
@@ -100,7 +100,7 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Checkout Submodules
+    - name: Checkout submodules
       run: git submodule update --init --recursive
 
     - name: Run deploy-release.bat
