@@ -4,10 +4,10 @@ FOR /F "tokens=*" %%G IN ('DIR /B /AD /S bin') DO RMDIR /S /Q "%%G"
 FOR /F "tokens=*" %%G IN ('DIR /B /AD /S obj') DO RMDIR /S /Q "%%G"
 FOR /F "tokens=*" %%G IN ('DIR /B /AD /S bin_dotnet') DO RMDIR /S /Q "%%G"
 
-IF not defined MsBuildSwitches ( Set MsBuildSwitches=/m )
-IF not defined SolidCPVersion ( Set SolidCPVersion=1.4.5 )
-IF not defined SolidCPFileVersion ( Set SolidCPFileVersion=1.4.9 )
-IF not defined Configuration ( Set Configuration=Debug )
+IF not defined MsBuildSwitches ( Set MsBuildSwitches=/m)
+IF not defined SolidCPVersion ( Set SolidCPVersion=1.4.5)
+IF not defined SolidCPFileVersion ( Set SolidCPFileVersion=1.4.9)
+IF not defined Configuration ( Set Configuration=Debug)
 
 IF EXIST "%ProgramFiles%\Microsoft Visual Studio\2022\Community\MSBuild\Current\bin\MSBuild.exe" (
 	Set SCPMSBuild="%ProgramFiles%\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe"
