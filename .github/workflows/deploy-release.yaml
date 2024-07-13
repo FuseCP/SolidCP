@@ -50,6 +50,7 @@ env:
   UseAspNetPrecompile: "true"
   BuildLinuxInstallPackages: "true"
   BuildLegacyDatabaseScript: "false"
+  MSBUILD_SWITCHES: ""
 
 
 jobs:
