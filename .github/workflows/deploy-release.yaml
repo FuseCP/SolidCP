@@ -52,7 +52,6 @@ env:
   BuildLegacyDatabaseScript: "false"
   MsBuildSwitches: ""
 
-
 jobs:
 
   build:
@@ -81,6 +80,11 @@ jobs:
       with:
         dotnet-version: 8.0.x
 
+    - name: Update WSL
+      run: |
+        wsl --update
+        wsl --version
+
     - name: Install WSL Ubuntu 24.04
       uses: Vampire/setup-wsl@v3
       with: 
@@ -89,10 +93,7 @@ jobs:
         use-cache: 'true'
         #use-cache: 'false'
 
-    - name: Configure WSL
-      run: |
-        wsl --update
-        wsl --version
+    - name: Show WSL distro
         wsl --list --verbose
 
     - name: Checkout
