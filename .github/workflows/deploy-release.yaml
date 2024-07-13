@@ -45,13 +45,6 @@ on:
   pull_request:
     branches: [ "release" ]
 
-env:
-  IncludeReleasePdbs: "true"
-  UseAspNetPrecompile: "true"
-  BuildLinuxInstallPackages: "true"
-  BuildLegacyDatabaseScript: "false"
-  MsBuildSwitches: ""
-
 jobs:
 
   build:
@@ -68,6 +61,11 @@ jobs:
     env:
       Solution_Name: build.xml                         # Replace with your solution name, i.e. MyWpfApp.sln.
       GitHubAction: true
+      IncludeReleasePdbs: "true"
+      UseAspNetPrecompile: "true"
+      BuildLinuxInstallPackages: "true"
+      BuildLegacyDatabaseScript: "false"
+  MsBuildSwitches: ""
     #  Test_Project_Path: your-test-project-path                 # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
     #  Wap_Project_Directory: your-wap-project-directory-name    # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
     #  Wap_Project_Path: your-wap-project-path                   # Replace with the path to your Wap project, i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
