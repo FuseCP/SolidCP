@@ -101,6 +101,8 @@ jobs:
 
         cat ~/.rpmmacros
 
+        rpmdev-setuptree
+
     - name: Checkout
       uses: actions/checkout@v4
       with:
