@@ -49,7 +49,7 @@ namespace SolidCP.EnterpriseServer.Tests
 			esClient.Url = "https://localhost:44332";
 			esClient.Protocol = Web.Clients.Protocols.BasicHttps;
 			esClient.Credentials.UserName = "serveradmin";
-			esClient.Credentials.Password = "0192iw0192IW";
+			esClient.Credentials.Password = "";
 			var settings = esClient.GetSystemSettings(SystemSettings.ACCESS_IP_SETTINGS);
 			Assert.IsTrue(true);
 		}
