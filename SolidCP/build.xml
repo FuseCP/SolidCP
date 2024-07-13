@@ -96,6 +96,7 @@
 		<Message Text="UseAspNetPrecompile: $(UseAspNetPrecompile)" Importance="High" />
 		<Message Text="BuildLinuxInstallPackages: $(BuildLinuxInstallPackages)" Importance="High" />
 		<Message Text="BuildLegacyDatabaseScript: $(BuildLegacyDatabaseScript)" Importance="High" />
+		<Message Text="MsBuildSwitches: $(MsBuildSwitches)" Importance="High" />
 	</Target>
 
 	<Target Name="RestorePackages" DependsOnTargets="ShowParameters">

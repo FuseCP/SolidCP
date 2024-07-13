@@ -8,7 +8,7 @@ FOR /F "tokens=*" %%G IN ('DIR /B /AD /S bin_dotnet') DO RMDIR /S /Q "%%G"
 IF defined MSBUILD_SWITCHES (
 	Set MsBuildSwitches="%MSBUILD_SWITCHES%"
 ) ELSE (
-	Set MsBuildSwitches=" /m "
+	Set MsBuildSwitches=/m
 )
 IF defined SOLIDCP_VERSION (
 	Set SolidCPVersion="%SOLIDCP_VERSION%"

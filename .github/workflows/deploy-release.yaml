@@ -91,6 +91,7 @@ jobs:
 
     - name: Check installed WSL distro
       run: |
+        wsl --update
         wsl --version
         wsl --list --verbose
 
