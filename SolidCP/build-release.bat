@@ -6,19 +6,19 @@ FOR /F "tokens=*" %%G IN ('DIR /B /AD /S bin_dotnet') DO RMDIR /S /Q "%%G"
 
 
 IF defined MSBUILD_SWITCHES (
-	Set MsBuildSwitches = "%MSBUILD_SWITCHES%"
+	Set MsBuildSwitches="%MSBUILD_SWITCHES%"
 ) ELSE (
-	Set MsBuildSwitches = " /m "
+	Set MsBuildSwitches=" /m "
 )
 IF defined SOLIDCP_VERSION (
-	Set SolidCPVersion = "%SOLIDCP_VERSION%"
+	Set SolidCPVersion="%SOLIDCP_VERSION%"
 ) ELSE (
-	Set SolidCPVersion = "1.4.5"
+	Set SolidCPVersion=1.4.5
 )
 IF defined SOLIDCP_FILEVERSION (
-	Set SolidCPFileVersion = "%SOLIDCP_FILEVERSION%"
+	Set SolidCPFileVersion="%SOLIDCP_FILEVERSION%"
 ) ELSE (
-	Set SolidCPFileVersion = "1.4.9"
+	Set SolidCPFileVersion=1.4.9
 )
 
 IF EXIST "%ProgramFiles%\Microsoft Visual Studio\2022\Community\MSBuild\Current\bin\MSBuild.exe" (
@@ -89,8 +89,4 @@ IF EXIST "%ProgramFiles(x86)%\MSBuild\14.0\Bin\MSBuild.exe" (
  )
 
 :Build
-
-echo "Version: %SolidCPVersion%"
-echo "FileVersion: %SolidCPFileVersion%"
-
 %SCPMSBuild% build.xml /target:Build /p:BuildConfiguration=Release /p:Version="%SolidCPVersion%" /p:FileVersion="%SolidCPFileVersion%" /p:VersionLabel="%SolidCPFileVersion%" /v:n %MsBuildSwitches% /fileLogger /flp:verbosity=normal /p:VisualStudioVersion=%SCPVSVer%

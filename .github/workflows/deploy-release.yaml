@@ -85,8 +85,8 @@ jobs:
       with: 
         distribution: Ubuntu-24.04
         additional-packages: rpm rpmlint
-        use-cache: 'true'
-        # use-cache: 'false'
+        #use-cache: 'true'
+        use-cache: 'false'
 
     - name: Prepare RPM on WSL Ubuntu
       shell: wsl-bash {0}
@@ -108,14 +108,14 @@ jobs:
     - name: Checkout Submodules
       run: git submodule update --init --recursive
 
-    - name: Check installed WSL distros
-      run: |
-        wsl --list --verbose
-        wsl which rpmbuild
-        wsl --distribution Ubuntu-24.04 which rpmbuild
-        wsl --list --verbose
-        echo $env:PATH
-        cmd /c "where wsl"
+    #- name: Check installed WSL distros
+    #  run: |
+    #    wsl --list --verbose
+    #    wsl which rpmbuild
+    #    wsl --distribution Ubuntu-24.04 which rpmbuild
+    #    wsl --list --verbose
+    #    echo $env:PATH
+    #    cmd /c "where wsl"
 
     - name: Run deploy-release.bat
       working-directory: SolidCP
@@ -127,6 +127,10 @@ jobs:
         name: SolidCP
         path: SolidCP\Deploy\Release
 
+    - name: Run Tests
+      working-directory: SolidCP\Sources
+      run: |
+        dotnet test SolidCP.EnterpriseServer.Tests
 
     # Execute all unit tests in the solution
     # - name: Execute unit tests

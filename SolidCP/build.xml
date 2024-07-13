@@ -88,7 +88,17 @@
 		<InstallerRemoteUri>http://installer.solidcp.com/files/$(Version)/SolidCP-$(Version)-webpi.msi</InstallerRemoteUri>
 	</PropertyGroup>
 
-	<Target Name="RestorePackages">
+	<Target Name="ShowParameters">
+		<Message Text="Version: $(Version)" Importance="High" />
+		<Message Text="FileVersion: $(FileVersion)" Importance="High" />
+		<Message Text="VersionLabel: $(VersionLabel)" Importance="High" />
+		<Message Text="IncludeReleasePdbs: $(IncludeReleasePdbs)" Importance="High" />
+		<Message Text="UseAspNetPrecompile: $(UseAspNetPrecompile)" Importance="High" />
+		<Message Text="BuildLinuxInstallPackages: $(BuildLinuxInstallPackages)" Importance="High" />
+		<Message Text="BuildLegacyDatabaseScript: $(BuildLegacyDatabaseScript)" Importance="High" />
+	</Target>
+
+	<Target Name="RestorePackages" DependsOnTargets="ShowParameters">
 		<Exec Command="dotnet restore $(TrunkFolder)\Sources\SolidCP.EnterpriseServer.sln" />
 		<Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(TrunkFolder)\Sources\SolidCP.WebPortal.sln" />
 		<!--  The following does not work due to project imports in SolidCP.Providers.Virtualization.Proxmox
