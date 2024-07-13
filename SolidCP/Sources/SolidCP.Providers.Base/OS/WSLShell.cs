@@ -1,12 +1,9 @@
-﻿using Renci.SshNet.Security;
-using System;
+﻿using System;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using static SolidCP.Providers.OS.WSLShell;
 using System.Runtime.InteropServices;
 
 namespace SolidCP.Providers.OS
