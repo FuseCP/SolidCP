@@ -86,8 +86,8 @@ jobs:
       with: 
         distribution: Ubuntu-24.04
         additional-packages: rpm rpmlint
-        #use-cache: 'true'
-        use-cache: 'false'
+        use-cache: 'true'
+        #use-cache: 'false'
 
     - name: Prepare RPM on WSL Ubuntu
       shell: wsl-bash {0}
