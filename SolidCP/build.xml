@@ -101,7 +101,9 @@
 
 	<Target Name="RestorePackages" DependsOnTargets="ShowParameters">
 		<Exec Command="dotnet restore $(TrunkFolder)\Sources\SolidCP.EnterpriseServer.sln" />
-		<Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(TrunkFolder)\Sources\SolidCP.WebPortal.sln" />
+		<!-- Cannot restore WebPortal here, since it'll try to restore EnterpriseServer too because EnterpriseServer.Client will reference EnterpriseServer,
+			so we need to build EnterpriseServer before restoring WebPortal, and then EnterpriseServer.Client won't reference EnterpriseServer anymore -->
+		<!--<Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(TrunkFolder)\Sources\SolidCP.WebPortal.sln" />-->
 		<!--  The following does not work due to project imports in SolidCP.Providers.Virtualization.Proxmox
 			 that depend on PackageReference
 			<Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(TrunkFolder)\Sources\SolidCP.Server.sln" />-->
@@ -151,6 +153,10 @@
 		<!-- SolidCP -->
 		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.Server.sln" Properties="Configuration=$(BuildConfiguration)" />
 		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.EnterpriseServer.sln" Properties="Configuration=$(BuildConfiguration)" />
+		
+		<!-- Restore WebPortal now, after we've built EnterpriseServer, so EnterpriseServer.Client won't reference EnterpriseServer anymore. -->
+		<Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(TrunkFolder)\Sources\SolidCP.WebPortal.sln" />
+		
 		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.WebPortal.sln" Properties="Configuration=$(BuildConfiguration)" />
 		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.WebDavPortal.sln" Properties="Configuration=$(BuildConfiguration)" />
 
