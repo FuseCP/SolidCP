@@ -106,7 +106,9 @@ jobs:
 
     - name: Run deploy-release.bat
       working-directory: SolidCP
-      run: .\deploy-release.bat
+      run: |
+        echo "msbuild switches: $env:MsBuildSwitches"
+        .\deploy-release.bat
 
     - name: Publish build artifacts
       uses: actions/upload-artifact@v2
