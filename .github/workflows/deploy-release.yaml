@@ -60,6 +60,13 @@ jobs:
 
     env:
       Solution_Name: build.xml                         # Replace with your solution name, i.e. MyWpfApp.sln.
+      Configuration: ${{ matrix.configuration }}
+      IncludeReleasePdbs: "true"
+      UseAspNetPrecompile: "false"
+      BuildLinuxInstallPackages: "true"
+      BuildLegacyDatabaseScript: "false"
+      MsBuildSwitches: " "
+      GitHubAction: true
 
     steps:
       
@@ -100,14 +107,6 @@ jobs:
       run: |
         echo "msbuild switches: $env:MsBuildSwitches"
         .\deploy-release.bat
-      env:
-        Configuration: ${{ matrix.configuration }}
-        IncludeReleasePdbs: "true"
-        UseAspNetPrecompile: "true"
-        BuildLinuxInstallPackages: "true"
-        BuildLegacyDatabaseScript: "false"
-        MsBuildSwitches: ""
-        GitHubAction: true
 
     - name: Publish build artifacts
       uses: actions/upload-artifact@v2
