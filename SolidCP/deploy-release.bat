@@ -4,6 +4,7 @@ FOR /F "tokens=*" %%G IN ('DIR /B /AD /S bin') DO RMDIR /S /Q "%%G"
 FOR /F "tokens=*" %%G IN ('DIR /B /AD /S obj') DO RMDIR /S /Q "%%G"
 FOR /F "tokens=*" %%G IN ('DIR /B /AD /S bin_dotnet') DO RMDIR /S /Q "%%G"
 
+echo "MsBuildSwitches: %MsBuildSwitches%"
 IF not defined MsBuildSwitches ( Set MsBuildSwitches=/m)
 IF not defined SolidCPVersion ( Set SolidCPVersion=1.4.5)
 IF not defined SolidCPFileVersion ( Set SolidCPFileVersion=1.4.9)
