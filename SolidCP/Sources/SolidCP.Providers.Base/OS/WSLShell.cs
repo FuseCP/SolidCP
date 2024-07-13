@@ -521,6 +521,7 @@ namespace SolidCP.Providers.OS
 		public bool IsInstalled(WSLDistro distro) => !IsWindows || Regex.IsMatch(WSLList, $@"^\*?\s+{Regex.Escape(distro)}\s", RegexOptions.IgnoreCase | RegexOptions.Multiline);
 		public bool IsInstalledAny() => !IsWindows || IsWslInstalled && InstalledDistros.Length > 0;
 		public bool IsInstalled() => !IsWindows || IsInstalled(CurrentDistroName);
+		public void UpdateWsl() => BaseShell.Exec("wsl --update");
 		public void ShutdownAll()
 		{
 			if (IsWindows) base.Exec("wsl --shutdown");
@@ -537,6 +538,7 @@ namespace SolidCP.Providers.OS
 		{
 			if (IsWindows) base.Exec($"wsl --unregister {distro}");
 		}
+
 		public void Import(WSLDistro distro, string file)
 		{
 			if (IsWindows) base.Exec($"wsl --import {distro} {file}{(file.EndsWith(".vhdx", StringComparison.OrdinalIgnoreCase) ? " --vhd" : "")}");
