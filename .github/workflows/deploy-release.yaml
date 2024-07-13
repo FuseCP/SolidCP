@@ -89,6 +89,11 @@ jobs:
         use-cache: 'true'
         #use-cache: 'false'
 
+    - name: Check installed WSL distro
+      run: |
+        wsl --version
+        wsl --list --verbose
+
     - name: Checkout
       uses: actions/checkout@v4
       with:
@@ -96,11 +101,6 @@ jobs:
 
     - name: Checkout Submodules
       run: git submodule update --init --recursive
-
-    - name: Check installed WSL distro
-      run: |
-        wsl --version
-        wsl --list --verbose
 
     - name: Run deploy-release.bat
       working-directory: SolidCP
@@ -112,7 +112,7 @@ jobs:
         name: SolidCP
         path: SolidCP\Deploy\Release
 
-    - name: Run Tests
+    - name: Run unit tests
       working-directory: SolidCP\Sources
       run: |
         dotnet test SolidCP.EnterpriseServer.Tests
