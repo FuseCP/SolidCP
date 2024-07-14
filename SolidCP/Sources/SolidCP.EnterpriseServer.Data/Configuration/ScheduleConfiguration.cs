@@ -17,7 +17,7 @@ public partial class ScheduleConfiguration : EntityTypeConfiguration<Schedule>
 	public override void Configure()
 	{
 
-		if (IsMsSql)
+		if (IsSqlServer)
 		{
 			Property(e => e.FromTime).HasColumnType("datetime");
 			Property(e => e.ToTime).HasColumnType("datetime");

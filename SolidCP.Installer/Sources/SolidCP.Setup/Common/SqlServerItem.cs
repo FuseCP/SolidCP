@@ -30,6 +30,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+using SolidCP.EnterpriseServer.Data;
+
 ﻿namespace SolidCP.Setup
 {
 	public sealed class SqlServerItem
@@ -39,5 +41,7 @@
 		public string User { get; set; }
 		public string Password { get; set; }
 		public string Database { get; set; }
+		public DbType DatabaseType { get; set; }
+		public int Port { get; set; }
 	}
 }

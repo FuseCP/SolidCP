@@ -239,7 +239,7 @@ namespace SolidCP.EnterpriseServer
 
 		public int SetUseEntityFramework(bool useEntityFramework)
 		{
-			if (Database.IsMsSql)
+			if (Database.IsSqlServer)
 			{
 				// check account
 				int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsAdmin

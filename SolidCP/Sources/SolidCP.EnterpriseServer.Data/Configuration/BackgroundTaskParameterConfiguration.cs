@@ -18,7 +18,7 @@ public partial class BackgroundTaskParameterConfiguration: EntityTypeConfigurati
 {
     public override void Configure() {
 		HasKey(e => e.ParameterId).HasName("PK__Backgrou__F80C629777BF580B");
-		if (IsMsSql)
+		if (IsSqlServer)
 		{
 			Property(e => e.SerializerValue).HasColumnType("ntext");
 		}

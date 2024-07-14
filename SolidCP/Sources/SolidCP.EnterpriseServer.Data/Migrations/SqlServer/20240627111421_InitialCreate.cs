@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
+namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration

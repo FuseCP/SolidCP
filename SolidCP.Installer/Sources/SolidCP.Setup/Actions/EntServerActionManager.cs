@@ -197,11 +197,11 @@ namespace SolidCP.Setup.Actions
 				Log.WriteStart(LogStartInstallMessage);
 				Log.WriteInfo(String.Format("Database Name: \"{0}\"", database));
 				//
-				if (SqlUtils.DatabaseExists(connectionString, database))
+				if (Data.DatabaseUtils.DatabaseExists(connectionString, database))
 				{
 					throw new Exception(String.Format("Database \"{0}\" already exists", database));
 				}
-				SqlUtils.CreateDatabase(connectionString, database);
+				Data.DatabaseUtils.CreateDatabase(connectionString, database);
 				//
 				Log.WriteEnd("Created database");
 				//
@@ -226,9 +226,9 @@ namespace SolidCP.Setup.Actions
 				//
 				Log.WriteInfo(String.Format("Deleting database \"{0}\"", vars.Database));
 				//
-				if (SqlUtils.DatabaseExists(vars.DbInstallConnectionString, vars.Database))
+				if (Data.DatabaseUtils.DatabaseExists(vars.DbInstallConnectionString, vars.Database))
 				{
-					SqlUtils.DeleteDatabase(vars.DbInstallConnectionString, vars.Database);
+					Data.DatabaseUtils.DeleteDatabase(vars.DbInstallConnectionString, vars.Database, vars.InstallationFolder);
 					//
 					Log.WriteEnd("Deleted database");
 				}
@@ -255,7 +255,7 @@ namespace SolidCP.Setup.Actions
 				//
 				vars.DatabaseUserPassword = Utils.GetRandomString(20);
 				//user name should be the same as database
-				vars.NewDatabaseUser = SqlUtils.CreateUser(vars.DbInstallConnectionString, vars.Database, vars.DatabaseUserPassword, vars.Database);
+				vars.NewDatabaseUser = Data.DatabaseUtils.CreateUser(vars.DbInstallConnectionString, vars.Database, vars.DatabaseUserPassword, vars.Database);
 				//
 				Log.WriteEnd("Created database user");
 				InstallLog.AppendLine("- Created database user \"{0}\"", vars.Database);
@@ -277,9 +277,9 @@ namespace SolidCP.Setup.Actions
 				Log.WriteStart("Deleting database user");
 				Log.WriteInfo(String.Format("Deleting database user \"{0}\"", vars.Database));
 				//
-				if (SqlUtils.UserExists(vars.DbInstallConnectionString, vars.Database))
+				if (Data.DatabaseUtils.UserExists(vars.DbInstallConnectionString, vars.Database))
 				{
-					SqlUtils.DeleteUser(vars.DbInstallConnectionString, vars.Database);
+					Data.DatabaseUtils.DeleteUser(vars.DbInstallConnectionString, vars.Database);
 					//
 					Log.WriteEnd("Deleted database user");
 				}
@@ -346,10 +346,6 @@ namespace SolidCP.Setup.Actions
 
 	public class UpdateServeradminPasswAction : Action, IInstallAction
 	{
-		public const string MsSqlStatement = @"USE [{0}]; UPDATE [dbo].[Users] SET [Password] = '{1}' WHERE [UserID] = 1;";
-		public const string SqliteStatement = @"UPDATE Users SET Password = '{0}' WHERE UserID = 1;";
-		public const string MySqlStatement = @"USE {0}; UPDATE Users SET Password = '{1}' WHERE UserID = 1;";
-
 		void IInstallAction.Run(SetupVariables vars)
 		{
 			try
@@ -372,17 +368,7 @@ namespace SolidCP.Setup.Actions
 					password = Utils.Encrypt(vars.CryptoKey, password);
 				}
 				//
-				string cmd;
-				switch (vars.DatabaseType)
-				{
-					case Data.DbType.SqlServer: cmd = string.Format(MsSqlStatement, vars.Database, password); break;
-					case Data.DbType.MySql:
-					case Data.DbType.MariaDb: cmd = string.Format(MySqlStatement, vars.Database, password); break;
-					case Data.DbType.Sqlite:
-					case Data.DbType.SqliteFX: cmd = string.Format(SqliteStatement, password); break;
-					default: throw new NotSupportedException("This database type is not supported.");
-				}
-				SqlUtils.ExecuteQuery(vars.DbInstallConnectionString, cmd);
+				Data.DatabaseUtils.SetServerAdminPassword(vars.DbInstallConnectionString, vars.Database, password);
 				//
 				Log.WriteEnd("Updated serveradmin password");
 				//
@@ -423,7 +409,7 @@ namespace SolidCP.Setup.Actions
 		{
 			Log.WriteStart("Updating web.config file (connection string)");
 			var file = Path.Combine(vars.InstallationFolder, vars.ConfigurationFile);
-			vars.ConnectionString = SqlUtils.BuildConnectionString(vars.DatabaseType, vars.DatabaseServer,
+			vars.ConnectionString = Data.DatabaseUtils.BuildConnectionString(vars.DatabaseType, vars.DatabaseServer,
 				vars.DatabasePort, vars.Database, vars.Database, vars.DatabaseUserPassword,
 				vars.EnterpriseServerPath, vars.EmbedEnterpriseServer);
 			var Xml = XDocument.Load(file);
@@ -468,7 +454,7 @@ namespace SolidCP.Setup.Actions
 				content = reader.ReadToEnd();
 			}
 
-			vars.ConnectionString = SqlUtils.BuildConnectionString(vars.DatabaseType, vars.DatabaseServer,
+			vars.ConnectionString = Data.DatabaseUtils.BuildConnectionString(vars.DatabaseType, vars.DatabaseServer,
 				vars.DatabasePort, vars.Database, vars.Database, vars.DatabaseUserPassword,
 				vars.EnterpriseServerPath, vars.EmbedEnterpriseServer);
 			content = Utils.ReplaceScriptVariable(content, "installer.connectionstring", vars.ConnectionString);

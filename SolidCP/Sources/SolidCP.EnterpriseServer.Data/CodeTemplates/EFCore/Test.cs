@@ -19,7 +19,6 @@ namespace SolidCP.EnterpriseServer.Data
 {
 	internal class Test
 	{
-
 		public void Do(IEntityType EntityType, ModelCodeGenerationOptions Options, IServiceProvider services)
 		{
 			var annotationCodeGenerator = services.GetRequiredService<IAnnotationCodeGenerator>();
@@ -37,7 +36,6 @@ namespace SolidCP.EnterpriseServer.Data
 			var entityData = (StringBuilder)getEntityDataMethod.Invoke(null, new object[] { EntityType, Options, 12 });
 
 			var sb = new StringBuilder();
-			var firstProperty = true;
 			foreach (var property in EntityType.GetProperties())
 			{
 				var propertyFluentApiCalls = property.GetFluentApiCalls(annotationCodeGenerator)

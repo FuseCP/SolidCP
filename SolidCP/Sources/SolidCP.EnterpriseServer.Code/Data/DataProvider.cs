@@ -102,7 +102,7 @@ namespace SolidCP.EnterpriseServer
 		{
 			get
 			{
-				return !IsMsSql || !HasProcedures ||
+				return !IsSqlServer || !HasProcedures ||
 					(useEntityFramework ??= 
 						(DbSettings.AlwaysUseEntityFramework ||
 						AlwaysUseEntityFramework));

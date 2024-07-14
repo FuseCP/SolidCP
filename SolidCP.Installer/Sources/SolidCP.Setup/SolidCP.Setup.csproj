@@ -59,6 +59,7 @@
             <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\IIs80\SolidCP.Providers.Web.IIs80.pdb" />
             <FilesToCopy Include="..\..\..\SolidCP\Bin\netstandard2.0\SolidCP.EnterpriseServer.Base.pdb" />
             <FilesToCopy Include="..\..\..\SolidCP\Bin\net48\SolidCP.EnterpriseServer.Client.pdb" />
+            <FilesToCopy Include="..\..\..\SolidCP\Bin\net48\SolidCP.EnterpriseServer.Data.pdb" />
             <FilesToCopy Include="..\..\..\SolidCP\Bin\net48\SolidCP.Web.Clients.pdb" />
         </ItemGroup>
         <Copy SourceFiles="@(FilesToCopy)" DestinationFolder="Resources" SkipUnchangedFiles="true" />
@@ -74,9 +75,6 @@
         </ItemGroup>
         <Delete Files="@(FilesToDelete)" />
     </Target>
-    <ItemGroup>
-      <Compile Remove="Common\SqlUtils.cs" />
-    </ItemGroup>
     <ItemGroup>
       <None Remove="Resources\BouncyCastle.Cryptography.dll" />
       <None Remove="Resources\DotNetZip.dll" />
@@ -189,9 +187,7 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
-        <Compile Update="Forms\InstallerForm.cs">
-            <SubType>Form</SubType>
-        </Compile>
+        <Compile Update="Forms\InstallerForm.cs" />
         <Compile Update="Forms\InstallerForm.Designer.cs">
             <DependentUpon>InstallerForm.cs</DependentUpon>
         </Compile>
@@ -200,150 +196,97 @@
             <DesignTime>True</DesignTime>
             <DependentUpon>Resources.resx</DependentUpon>
         </Compile>
-        <Compile Update="Wizard\BannerWizardPage.cs">
-            <SubType>UserControl</SubType>
-        </Compile>
-        <Compile Update="Wizard\ConfirmUninstallPage.cs">
-            <SubType>UserControl</SubType>
-        </Compile>
+        <Compile Update="Wizard\BannerWizardPage.cs" />
+        <Compile Update="Wizard\ConfirmUninstallPage.cs" />
         <Compile Update="Wizard\ConfirmUninstallPage.Designer.cs">
             <DependentUpon>ConfirmUninstallPage.cs</DependentUpon>
         </Compile>
-        <Compile Update="Wizard\ConfigurationCheckPage.cs">
-            <SubType>UserControl</SubType>
-        </Compile>
+        <Compile Update="Wizard\ConfigurationCheckPage.cs" />
         <Compile Update="Wizard\ConfigurationCheckPage.Designer.cs">
             <DependentUpon>ConfigurationCheckPage.cs</DependentUpon>
         </Compile>
-        <Compile Update="Wizard\ExpressInstallPage2.cs">
-            <SubType>UserControl</SubType>
-        </Compile>
+        <Compile Update="Wizard\ExpressInstallPage2.cs" />
         <Compile Update="Wizard\ExpressInstallPage2.Designer.cs">
             <DependentUpon>ExpressInstallPage2.cs</DependentUpon>
         </Compile>
-        <Compile Update="Wizard\InsecureHttpWarning.cs">
-            <SubType>UserControl</SubType>
-        </Compile>
+        <Compile Update="Wizard\InsecureHttpWarning.cs" />
         <Compile Update="Wizard\InsecureHttpWarning.Designer.cs">
             <DependentUpon>InsecureHttpWarning.cs</DependentUpon>
         </Compile>
-        <Compile Update="Wizard\SetupCompletePage.cs">
-            <SubType>UserControl</SubType>
-        </Compile>
+        <Compile Update="Wizard\SetupCompletePage.cs" />
         <Compile Update="Wizard\SetupCompletePage.Designer.cs">
             <DependentUpon>SetupCompletePage.cs</DependentUpon>
         </Compile>
-        <Compile Update="Wizard\ServerAdminPasswordPage.cs">
-            <SubType>UserControl</SubType>
-        </Compile>
+        <Compile Update="Wizard\ServerAdminPasswordPage.cs" />
         <Compile Update="Wizard\ServerAdminPasswordPage.Designer.cs">
             <DependentUpon>ServerAdminPasswordPage.cs</DependentUpon>
         </Compile>
-        <Compile Update="Wizard\ServiceAddressPage.cs">
-            <SubType>UserControl</SubType>
-        </Compile>
+        <Compile Update="Wizard\ServiceAddressPage.cs" />
         <Compile Update="Wizard\ServiceAddressPage.Designer.cs">
             <DependentUpon>ServiceAddressPage.cs</DependentUpon>
         </Compile>
-        <Compile Update="Wizard\LicenseAgreementPage.cs">
-            <SubType>UserControl</SubType>
-        </Compile>
+        <Compile Update="Wizard\LicenseAgreementPage.cs" />
         <Compile Update="Wizard\LicenseAgreementPage.Designer.cs">
             <DependentUpon>LicenseAgreementPage.cs</DependentUpon>
         </Compile>
-        <Compile Update="Wizard\SQLServersPage.cs">
-            <SubType>UserControl</SubType>
-        </Compile>
+        <Compile Update="Wizard\SQLServersPage.cs" />
         <Compile Update="Wizard\SQLServersPage.Designer.cs">
             <DependentUpon>SQLServersPage.cs</DependentUpon>
         </Compile>
-        <Compile Update="Wizard\EmbedEnterpriseServer.cs">
-            <SubType>UserControl</SubType>
-        </Compile>
+        <Compile Update="Wizard\EmbedEnterpriseServer.cs" />
         <Compile Update="Wizard\EmbedEnterpriseServer.Designer.cs">
             <DependentUpon>EmbedEnterpriseServer.cs</DependentUpon>
         </Compile>
-        <Compile Update="Wizard\UserAccountPage.cs">
-            <SubType>UserControl</SubType>
-        </Compile>
+        <Compile Update="Wizard\UserAccountPage.cs" />
         <Compile Update="Wizard\UserAccountPage.Designer.cs">
             <DependentUpon>UserAccountPage.cs</DependentUpon>
         </Compile>
-        <Compile Update="Wizard\UrlPage.cs">
-            <SubType>UserControl</SubType>
-        </Compile>
+        <Compile Update="Wizard\UrlPage.cs" />
         <Compile Update="Wizard\UrlPage.Designer.cs">
             <DependentUpon>UrlPage.cs</DependentUpon>
         </Compile>
-        <Compile Update="Wizard\CertificatePage.cs">
-            <SubType>UserControl</SubType>
-        </Compile>
+        <Compile Update="Wizard\CertificatePage.cs" />
         <Compile Update="Wizard\CertificatePage.Designer.cs">
             <DependentUpon>CertificatePage.cs</DependentUpon>
         </Compile>
-        <Compile Update="Wizard\WebPage.cs">
-            <SubType>UserControl</SubType>
-        </Compile>
+        <Compile Update="Wizard\WebPage.cs" />
         <Compile Update="Wizard\WebPage.Designer.cs">
             <DependentUpon>WebPage.cs</DependentUpon>
         </Compile>
-        <Compile Update="Wizard\InstallFolderPage.cs">
-            <SubType>UserControl</SubType>
-        </Compile>
+        <Compile Update="Wizard\InstallFolderPage.cs" />
         <Compile Update="Wizard\InstallFolderPage.Designer.cs">
             <DependentUpon>InstallFolderPage.cs</DependentUpon>
         </Compile>
-        <Compile Update="Wizard\DatabasePage.cs">
-            <SubType>UserControl</SubType>
-        </Compile>
+        <Compile Update="Wizard\DatabasePage.cs" />
         <Compile Update="Wizard\DatabasePage.Designer.cs">
             <DependentUpon>DatabasePage.cs</DependentUpon>
         </Compile>
-        <Compile Update="Wizard\ServerPasswordPage.cs">
-            <SubType>UserControl</SubType>
-        </Compile>
+        <Compile Update="Wizard\ServerPasswordPage.cs" />
         <Compile Update="Wizard\ServerPasswordPage.Designer.cs">
             <DependentUpon>ServerPasswordPage.cs</DependentUpon>
         </Compile>
-        <Compile Update="Wizard\RollBackPage.cs">
-            <SubType>UserControl</SubType>
-        </Compile>
+        <Compile Update="Wizard\RollBackPage.cs" />
         <Compile Update="Wizard\RollBackPage.Designer.cs">
             <DependentUpon>RollBackPage.cs</DependentUpon>
         </Compile>
-        <Compile Update="Wizard\ExpressInstallPage.cs">
-            <SubType>UserControl</SubType>
-        </Compile>
+        <Compile Update="Wizard\ExpressInstallPage.cs" />
         <Compile Update="Wizard\ExpressInstallPage.Designer.cs">
             <DependentUpon>ExpressInstallPage.cs</DependentUpon>
         </Compile>
-        <Compile Update="Wizard\FinishPage.cs">
-            <SubType>UserControl</SubType>
-        </Compile>
+        <Compile Update="Wizard\FinishPage.cs" />
         <Compile Update="Wizard\FinishPage.Designer.cs">
             <DependentUpon>FinishPage.cs</DependentUpon>
         </Compile>
-        <Compile Update="Wizard\IntroductionPage.cs">
-            <SubType>UserControl</SubType>
-        </Compile>
-        <Compile Update="Wizard\MarginWizardPage.cs">
-            <SubType>UserControl</SubType>
-        </Compile>
-        <Compile Update="Wizard\UninstallPage.cs">
-            <SubType>UserControl</SubType>
-        </Compile>
+        <Compile Update="Wizard\IntroductionPage.cs" />
+        <Compile Update="Wizard\MarginWizardPage.cs" />
+        <Compile Update="Wizard\UninstallPage.cs" />
         <Compile Update="Wizard\UninstallPage.Designer.cs">
             <DependentUpon>UninstallPage.cs</DependentUpon>
         </Compile>
-        <Compile Update="Wizard\Wizard.cs">
-            <SubType>Component</SubType>
-        </Compile>
-        <Compile Update="Wizard\WizardPageBase.cs">
-            <SubType>UserControl</SubType>
-        </Compile>
+        <Compile Update="Wizard\Wizard.cs" />
+        <Compile Update="Wizard\WizardPageBase.cs" />
     </ItemGroup>
     <ItemGroup>
-        <None Include="Common\SqlUtils.cs" />
         <None Include="Resources\BannerImage.GIF" />
         <None Include="Resources\Icons.MenuFileOpenIcon.png" />
         <None Include="Resources\MarginImage.GIF" />
@@ -449,6 +392,7 @@
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj" OutputItemType="EmbeddedResource" />
+        <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.EnterpriseServer.Data\SolidCP.EnterpriseServer.Data.csproj" OutputItemType="EmbeddedResource" />
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.EnterpriseServer\WebServices\SolidCP.Build\SolidCP.EnterpriseServer.Client.csproj" OutputItemType="EmbeddedResource" />
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" OutputItemType="EmbeddedResource" />
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Unix\SolidCP.Providers.OS.Unix.csproj" OutputItemType="EmbeddedResource" />

@@ -20,7 +20,7 @@ public partial class IpAddressConfiguration: EntityTypeConfiguration<IpAddress>
         Property(e => e.InternalIp).IsUnicode(false);
         Property(e => e.SubnetMask).IsUnicode(false);
         Property(e => e.DefaultGateway).IsUnicode(false);
-		if (IsMsSql) Property(e => e.Comments).HasColumnType("ntext");
+		if (IsSqlServer) Property(e => e.Comments).HasColumnType("ntext");
 		else if (IsCore && (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql))
 		{
             Property(e => e.Comments).HasColumnType("TEXT");

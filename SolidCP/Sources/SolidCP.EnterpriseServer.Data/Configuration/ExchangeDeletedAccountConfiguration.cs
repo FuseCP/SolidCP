@@ -17,6 +17,6 @@ public partial class ExchangeDeletedAccountConfiguration : EntityTypeConfigurati
 	public override void Configure()
 	{
 		HasKey(e => e.Id).HasName("PK__Exchange__3214EC27EF1C22C1");
-		if (IsMsSql) Property(e => e.ExpirationDate).HasColumnType("datetime");
+		if (IsSqlServer) Property(e => e.ExpirationDate).HasColumnType("datetime");
     }
 }

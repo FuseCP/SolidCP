@@ -263,7 +263,7 @@ namespace SolidCP.EnterpriseServer.Context
 
             switch (options.DbType)
             {
-                case Data.DbType.MsSql:
+                case Data.DbType.SqlServer:
                     builder.UseSqlServer(options.ConnectionString);
                     break;
                 case Data.DbType.SqlLite:

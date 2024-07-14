@@ -17,7 +17,7 @@ public partial class ServerConfiguration: EntityTypeConfiguration<Server>
     public override void Configure() {
 
         Property(e => e.ADAuthenticationType).IsUnicode(false);
-		if (IsMsSql) Property(e => e.Comments).HasColumnType("ntext");
+		if (IsSqlServer) Property(e => e.Comments).HasColumnType("ntext");
 		else if (IsCore && (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql))
 		{
 			Property(e => e.Comments).HasColumnType("TEXT");

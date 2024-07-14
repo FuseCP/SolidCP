@@ -223,14 +223,14 @@ namespace SolidCP.Setup
 						case Data.DbType.SqlServer:
 							// DB_LOGIN, DB_PASSWORD.
 							bool WinAuth = Utils.GetStringSetupParameter(args, "DbAuth").ToLowerInvariant().Equals("Windows Authentication".ToLowerInvariant());
-							esServerSetup.DbInstallConnectionString = SqlUtils.BuildMsSqlServerMasterConnectionString(
+							esServerSetup.DbInstallConnectionString = Data.DatabaseUtils.BuildSqlServerMasterConnectionString(
 														esServerSetup.DatabaseServer,
 														WinAuth ? null : Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdmin),
 														WinAuth ? null : Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdminPassword));
 							break;
 						case Data.DbType.MySql:
 						case Data.DbType.MariaDb:
-							esServerSetup.DbInstallConnectionString = SqlUtils.BuildMySqlServerMasterConnectionString(
+							esServerSetup.DbInstallConnectionString = Data.DatabaseUtils.BuildMySqlMasterConnectionString(
 														esServerSetup.DatabaseServer,
 														esServerSetup.DatabasePort,
 														Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdmin),
@@ -238,7 +238,7 @@ namespace SolidCP.Setup
 							break;
 						case Data.DbType.Sqlite:
 						case Data.DbType.SqliteFX:
-							esServerSetup.DbInstallConnectionString = SqlUtils.BuildSqliteMasterConnectionString(esServerSetup.Database, esServerSetup.InstallationFolder, esServerSetup.EnterpriseServerPath, esServerSetup.EmbedEnterpriseServer);
+							esServerSetup.DbInstallConnectionString = Data.DatabaseUtils.BuildSqliteMasterConnectionString(esServerSetup.Database, esServerSetup.InstallationFolder, esServerSetup.EnterpriseServerPath, esServerSetup.EmbedEnterpriseServer);
 							break;
 						default: throw new NotSupportedException("This database type is not supported.");
 					}

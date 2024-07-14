@@ -44,6 +44,7 @@ using System.Threading;
 using System.Windows.Forms;
 using SolidCP.Providers.OS;
 using SolidCP.UniversalInstaller.Core;
+using SolidCP.EnterpriseServer.Data;
 
 namespace SolidCP.Setup
 {
@@ -542,9 +543,9 @@ namespace SolidCP.Setup
 			{
 				Log.WriteStart("Deleting SQL server database");
 				Log.WriteInfo(string.Format("Deleting \"{0}\" SQL server database", database));
-				if (SqlUtils.DatabaseExists(connectionString, database))
+				if (DatabaseUtils.DatabaseExists(connectionString, database))
 				{
-					SqlUtils.DeleteDatabase(connectionString, database);
+					DatabaseUtils.DeleteDatabase(connectionString, database);
 					Log.WriteEnd("Deleted database");
 					InstallLog.AppendLine(string.Format("- Deleted \"{0}\" SQL server database ", database));
 				}
@@ -566,9 +567,9 @@ namespace SolidCP.Setup
 			{
 				Log.WriteStart("Deleting SQL server user");
 				Log.WriteInfo(string.Format("Deleting \"{0}\" SQL server user", username));
-				if (SqlUtils.UserExists(connectionString, username))
+				if (DatabaseUtils.UserExists(connectionString, username))
 				{
-					SqlUtils.DeleteUser(connectionString, username);
+					DatabaseUtils.DeleteUser(connectionString, username);
 					Log.WriteEnd("Deleted SQL server user");
 					InstallLog.AppendLine(string.Format("- Deleted \"{0}\" SQL server user ", username));
 				}
@@ -590,9 +591,9 @@ namespace SolidCP.Setup
 			{
 				Log.WriteStart("Deleting SQL server login");
 				Log.WriteInfo(string.Format("Deleting \"{0}\" SQL server login", loginName));
-				if (SqlUtils.LoginExists(connectionString, loginName))
+				if (DatabaseUtils.LoginExists(connectionString, loginName))
 				{
-					SqlUtils.DeleteLogin(connectionString, loginName);
+					DatabaseUtils.DeleteLogin(connectionString, loginName);
 					Log.WriteEnd("Deleted SQL server login");
 					InstallLog.AppendLine(string.Format("- Deleted \"{0}\" SQL server login ", loginName));
 				}

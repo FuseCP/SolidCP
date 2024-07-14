@@ -16,7 +16,7 @@ public partial class PackagesBandwidthConfiguration: EntityTypeConfiguration<Pac
 {
     public override void Configure() {
 
-        if (IsMsSql) Property(e => e.LogDate).HasColumnType("datetime");
+        if (IsSqlServer) Property(e => e.LogDate).HasColumnType("datetime");
 
 #if NetCore
         HasOne(d => d.Group).WithMany(p => p.PackagesBandwidths)

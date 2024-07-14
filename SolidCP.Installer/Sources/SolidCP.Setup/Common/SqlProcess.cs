@@ -38,6 +38,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using SolidCP.Setup.Actions;
 using SolidCP.UniversalInstaller.Core;
+using SolidCP.EnterpriseServer.Data;
 
 namespace SolidCP.Setup
 {
@@ -77,7 +78,7 @@ namespace SolidCP.Setup
 		}
 
 
-		internal void RunMsSql(int commandCount)
+		internal void RunSqlServer(int commandCount)
 		{
 			SqlConnection connection = new SqlConnection(connectionString);
 			string sql;
@@ -137,7 +138,7 @@ namespace SolidCP.Setup
 			//
 			using (var stream = new FileStream(scriptFile, FileMode.Open, FileAccess.Read))
 			{
-				SqlUtils.RunSqlScript(connectionString, stream, OnProgressChange, SetCommandCount, ProcessInstallVariables, scriptFile, database);
+				DatabaseUtils.RunSqlScript(connectionString, stream, OnProgressChange, SetCommandCount, ProcessInstallVariables, scriptFile, database);
 			}
 		}
 

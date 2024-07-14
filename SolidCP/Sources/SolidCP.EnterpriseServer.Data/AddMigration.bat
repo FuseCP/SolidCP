@@ -4,8 +4,8 @@ set DOTNET_HOST_FACTORY_RESOLVER_DEFAULT_TIMEOUT_IN_SECONDS=0
 echo "Add migration for Sqlite"
 dotnet ef migrations add --framework net8.0 -o Migrations\Sqlite --context SqliteDbContext %migration% -- "DbType=Sqlite;Data Source=..\SolidCP.EnterpriseServer\App_Data\SolidCP.sqlite;"
 
-echo "Add migration for MS SQL"
-dotnet ef migrations add --framework net8.0 --no-build -o Migrations\MsSql --context MsSqlDbContext %migration% -- "DbType=MsSql;Server=(local);Database=SolidCP;Uid=sa;Pwd=Password12;"
+echo "Add migration for SQL Server"
+dotnet ef migrations add --framework net8.0 --no-build -o Migrations\SqlServer --context SqlServerDbContext %migration% -- "DbType=SqlServer;Server=(local);Database=SolidCP;Uid=sa;Pwd=Password12;"
 
 echo "Add migration for MySQL and MariaDB"
 dotnet ef migrations add --framework net8.0 --no-build -o Migrations\MySql --context MySqlDbContext %migration% -- "DbType=MySql;Server=localhost;Database=SolidCP;Uid=root;Pwd=Password12;"
@@ -19,11 +19,11 @@ dotnet ef migrations script --framework net8.0 -o Migrations\Sqlite\install.sqli
 echo "Create install.sqlite.bundle.exe bundle for Sqlite"
 dotnet ef migrations bundle --framework net8.0 --no-build -o Migrations\Sqlite\install.sqlite.bundle.exe --context SqliteDbContext -- "DbType=Sqlite;Data Source=..\SolidCP.EnterpriseServer\App_Data\SolidCP.sqlite;"
 
-echo "Create install.mssql.sql for MS SQL"
-dotnet ef migrations script --framework net8.0 --no-build -o Migrations\MsSql\install.mssql.sql --context MsSqlDbContext -i -- "DbType=MsSql;Server=(local);Database=SolidCP;Uid=sa;Pwd=Password12;"
+echo "Create install.sqlserver.sql for SQL Server"
+dotnet ef migrations script --framework net8.0 --no-build -o Migrations\SqlServer\install.sqlserver.sql --context SqlServerDbContext -i -- "DbType=SqlServer;Server=(local);Database=SolidCP;Uid=sa;Pwd=Password12;"
 
-echo "Create install.mssql.bundle.exe bundle for MS SQL"
-dotnet ef migrations bundle --framework net8.0 --no-build -o Migrations\MsSql\install.mssql.bundle.exe --context MsSqlDbContext -- "DbType=MsSql;Server=(local);Database=SolidCP;Uid=sa;Pwd=Password12;"
+echo "Create install.sqlserver.bundle.exe bundle for SQL Server"
+dotnet ef migrations bundle --framework net8.0 --no-build -o Migrations\SqlServer\install.sqlserver.bundle.exe --context SqlServerDbContext -- "DbType=SqlServer;Server=(local);Database=SolidCP;Uid=sa;Pwd=Password12;"
 
 echo "Create install.mysql.sql for MySQL and MariaDB"
 dotnet ef migrations script --framework net8.0 --no-build -o Migrations\MySql\install.mysql.sql --context MySqlDbContext -i -- "DbType=MySql;Server=localhost;Database=SolidCP;Uid=root;Pwd=Password12;"

@@ -287,7 +287,7 @@ namespace SolidCP.EnterpriseServer.Data
 		public virtual IQueryable<UsersDetailed> UsersDetailed
 		{
 			get {
-				if (IsMsSql) return UsersDetailedView;
+				if (IsSqlServer) return UsersDetailedView;
 				else
 				{
 					return Users

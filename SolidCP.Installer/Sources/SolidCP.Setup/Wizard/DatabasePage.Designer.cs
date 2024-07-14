@@ -60,19 +60,19 @@ namespace SolidCP.Setup
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.txtMsSqlServer = new System.Windows.Forms.TextBox();
+			this.txtSqlServerServer = new System.Windows.Forms.TextBox();
 			this.lblPassword = new System.Windows.Forms.Label();
 			this.lblLogin = new System.Windows.Forms.Label();
-			this.txtMsSqlLogin = new System.Windows.Forms.TextBox();
+			this.txtSqlServerLogin = new System.Windows.Forms.TextBox();
 			this.lblAuthentication = new System.Windows.Forms.Label();
 			this.lblSqlServer = new System.Windows.Forms.Label();
-			this.txtMsSqlPassword = new System.Windows.Forms.TextBox();
+			this.txtSqlServerPassword = new System.Windows.Forms.TextBox();
 			this.lblIntro = new System.Windows.Forms.Label();
-			this.txtMsSqlDatabase = new System.Windows.Forms.TextBox();
+			this.txtSqlServerDatabase = new System.Windows.Forms.TextBox();
 			this.lblDatabase = new System.Windows.Forms.Label();
-			this.cbMsSqlAuthentication = new System.Windows.Forms.ComboBox();
+			this.cbSqlServerAuthentication = new System.Windows.Forms.ComboBox();
 			this.tabControl = new System.Windows.Forms.TabControl();
-			this.tabMsSql = new System.Windows.Forms.TabPage();
+			this.tabSqlServer = new System.Windows.Forms.TabPage();
 			this.tabMySql = new System.Windows.Forms.TabPage();
 			this.txtMySqlPort = new System.Windows.Forms.TextBox();
 			this.label2 = new System.Windows.Forms.Label();
@@ -88,18 +88,18 @@ namespace SolidCP.Setup
 			this.txtSqliteDatabase = new System.Windows.Forms.TextBox();
 			this.label6 = new System.Windows.Forms.Label();
 			this.tabControl.SuspendLayout();
-			this.tabMsSql.SuspendLayout();
+			this.tabSqlServer.SuspendLayout();
 			this.tabMySql.SuspendLayout();
 			this.tabSqlite.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// txtMsSqlServer
+			// txtSqlServerServer
 			// 
-			this.txtMsSqlServer.Location = new System.Drawing.Point(127, 17);
-			this.txtMsSqlServer.Name = "txtMsSqlServer";
-			this.txtMsSqlServer.Size = new System.Drawing.Size(248, 20);
-			this.txtMsSqlServer.TabIndex = 2;
-			this.txtMsSqlServer.Text = "localhost\\SQLExpress";
+			this.txtSqlServerServer.Location = new System.Drawing.Point(127, 17);
+			this.txtSqlServerServer.Name = "txtSqlServerServer";
+			this.txtSqlServerServer.Size = new System.Drawing.Size(248, 20);
+			this.txtSqlServerServer.TabIndex = 2;
+			this.txtSqlServerServer.Text = "localhost\\SQLExpress";
 			// 
 			// lblPassword
 			// 
@@ -117,13 +117,13 @@ namespace SolidCP.Setup
 			this.lblLogin.TabIndex = 5;
 			this.lblLogin.Text = "Login name:";
 			// 
-			// txtMsSqlLogin
+			// txtSqlServerLogin
 			// 
-			this.txtMsSqlLogin.Enabled = false;
-			this.txtMsSqlLogin.Location = new System.Drawing.Point(167, 70);
-			this.txtMsSqlLogin.Name = "txtMsSqlLogin";
-			this.txtMsSqlLogin.Size = new System.Drawing.Size(208, 20);
-			this.txtMsSqlLogin.TabIndex = 6;
+			this.txtSqlServerLogin.Enabled = false;
+			this.txtSqlServerLogin.Location = new System.Drawing.Point(167, 70);
+			this.txtSqlServerLogin.Name = "txtSqlServerLogin";
+			this.txtSqlServerLogin.Size = new System.Drawing.Size(208, 20);
+			this.txtSqlServerLogin.TabIndex = 6;
 			// 
 			// lblAuthentication
 			// 
@@ -141,14 +141,14 @@ namespace SolidCP.Setup
 			this.lblSqlServer.TabIndex = 1;
 			this.lblSqlServer.Text = "SQL Server:";
 			// 
-			// txtMsSqlPassword
+			// txtSqlServerPassword
 			// 
-			this.txtMsSqlPassword.Enabled = false;
-			this.txtMsSqlPassword.Location = new System.Drawing.Point(167, 96);
-			this.txtMsSqlPassword.Name = "txtMsSqlPassword";
-			this.txtMsSqlPassword.PasswordChar = '*';
-			this.txtMsSqlPassword.Size = new System.Drawing.Size(208, 20);
-			this.txtMsSqlPassword.TabIndex = 8;
+			this.txtSqlServerPassword.Enabled = false;
+			this.txtSqlServerPassword.Location = new System.Drawing.Point(167, 96);
+			this.txtSqlServerPassword.Name = "txtSqlServerPassword";
+			this.txtSqlServerPassword.PasswordChar = '*';
+			this.txtSqlServerPassword.Size = new System.Drawing.Size(208, 20);
+			this.txtSqlServerPassword.TabIndex = 8;
 			// 
 			// lblIntro
 			// 
@@ -162,14 +162,14 @@ namespace SolidCP.Setup
 			this.lblIntro.Text = "The connection information will be used by the Setup Wizard to install the databa" +
     "se objects only. ";
 			// 
-			// txtMsSqlDatabase
+			// txtSqlServerDatabase
 			// 
-			this.txtMsSqlDatabase.Location = new System.Drawing.Point(127, 125);
-			this.txtMsSqlDatabase.MaxLength = 128;
-			this.txtMsSqlDatabase.Name = "txtMsSqlDatabase";
-			this.txtMsSqlDatabase.Size = new System.Drawing.Size(248, 20);
-			this.txtMsSqlDatabase.TabIndex = 10;
-			this.txtMsSqlDatabase.Text = "SolidCP";
+			this.txtSqlServerDatabase.Location = new System.Drawing.Point(127, 125);
+			this.txtSqlServerDatabase.MaxLength = 128;
+			this.txtSqlServerDatabase.Name = "txtSqlServerDatabase";
+			this.txtSqlServerDatabase.Size = new System.Drawing.Size(248, 20);
+			this.txtSqlServerDatabase.TabIndex = 10;
+			this.txtSqlServerDatabase.Text = "SolidCP";
 			// 
 			// lblDatabase
 			// 
@@ -179,22 +179,22 @@ namespace SolidCP.Setup
 			this.lblDatabase.TabIndex = 9;
 			this.lblDatabase.Text = "Database:";
 			// 
-			// cbMsSqlAuthentication
+			// cbSqlServerAuthentication
 			// 
-			this.cbMsSqlAuthentication.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cbMsSqlAuthentication.FormattingEnabled = true;
-			this.cbMsSqlAuthentication.Items.AddRange(new object[] {
+			this.cbSqlServerAuthentication.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cbSqlServerAuthentication.FormattingEnabled = true;
+			this.cbSqlServerAuthentication.Items.AddRange(new object[] {
             "Windows Authentication",
             "SQL Server Authentication"});
-			this.cbMsSqlAuthentication.Location = new System.Drawing.Point(127, 43);
-			this.cbMsSqlAuthentication.Name = "cbMsSqlAuthentication";
-			this.cbMsSqlAuthentication.Size = new System.Drawing.Size(248, 21);
-			this.cbMsSqlAuthentication.TabIndex = 4;
-			this.cbMsSqlAuthentication.SelectedIndexChanged += new System.EventHandler(this.OnAuthenticationChanged);
+			this.cbSqlServerAuthentication.Location = new System.Drawing.Point(127, 43);
+			this.cbSqlServerAuthentication.Name = "cbSqlServerAuthentication";
+			this.cbSqlServerAuthentication.Size = new System.Drawing.Size(248, 21);
+			this.cbSqlServerAuthentication.TabIndex = 4;
+			this.cbSqlServerAuthentication.SelectedIndexChanged += new System.EventHandler(this.OnAuthenticationChanged);
 			// 
 			// tabControl
 			// 
-			this.tabControl.Controls.Add(this.tabMsSql);
+			this.tabControl.Controls.Add(this.tabSqlServer);
 			this.tabControl.Controls.Add(this.tabMySql);
 			this.tabControl.Controls.Add(this.tabSqlite);
 			this.tabControl.Location = new System.Drawing.Point(0, 36);
@@ -203,25 +203,25 @@ namespace SolidCP.Setup
 			this.tabControl.Size = new System.Drawing.Size(451, 189);
 			this.tabControl.TabIndex = 11;
 			// 
-			// tabMsSql
+			// tabSqlServer
 			// 
-			this.tabMsSql.BackColor = System.Drawing.SystemColors.Control;
-			this.tabMsSql.Controls.Add(this.lblSqlServer);
-			this.tabMsSql.Controls.Add(this.cbMsSqlAuthentication);
-			this.tabMsSql.Controls.Add(this.txtMsSqlPassword);
-			this.tabMsSql.Controls.Add(this.txtMsSqlDatabase);
-			this.tabMsSql.Controls.Add(this.lblAuthentication);
-			this.tabMsSql.Controls.Add(this.lblDatabase);
-			this.tabMsSql.Controls.Add(this.txtMsSqlLogin);
-			this.tabMsSql.Controls.Add(this.txtMsSqlServer);
-			this.tabMsSql.Controls.Add(this.lblLogin);
-			this.tabMsSql.Controls.Add(this.lblPassword);
-			this.tabMsSql.Location = new System.Drawing.Point(4, 22);
-			this.tabMsSql.Name = "tabMsSql";
-			this.tabMsSql.Padding = new System.Windows.Forms.Padding(3);
-			this.tabMsSql.Size = new System.Drawing.Size(443, 163);
-			this.tabMsSql.TabIndex = 0;
-			this.tabMsSql.Text = "   SQL Server  ";
+			this.tabSqlServer.BackColor = System.Drawing.SystemColors.Control;
+			this.tabSqlServer.Controls.Add(this.lblSqlServer);
+			this.tabSqlServer.Controls.Add(this.cbSqlServerAuthentication);
+			this.tabSqlServer.Controls.Add(this.txtSqlServerPassword);
+			this.tabSqlServer.Controls.Add(this.txtSqlServerDatabase);
+			this.tabSqlServer.Controls.Add(this.lblAuthentication);
+			this.tabSqlServer.Controls.Add(this.lblDatabase);
+			this.tabSqlServer.Controls.Add(this.txtSqlServerLogin);
+			this.tabSqlServer.Controls.Add(this.txtSqlServerServer);
+			this.tabSqlServer.Controls.Add(this.lblLogin);
+			this.tabSqlServer.Controls.Add(this.lblPassword);
+			this.tabSqlServer.Location = new System.Drawing.Point(4, 22);
+			this.tabSqlServer.Name = "tabSqlServer";
+			this.tabSqlServer.Padding = new System.Windows.Forms.Padding(3);
+			this.tabSqlServer.Size = new System.Drawing.Size(443, 163);
+			this.tabSqlServer.TabIndex = 0;
+			this.tabSqlServer.Text = "   SQL Server  ";
 			// 
 			// tabMySql
 			// 
@@ -362,8 +362,8 @@ namespace SolidCP.Setup
 			this.Name = "DatabasePage";
 			this.Size = new System.Drawing.Size(457, 228);
 			this.tabControl.ResumeLayout(false);
-			this.tabMsSql.ResumeLayout(false);
-			this.tabMsSql.PerformLayout();
+			this.tabSqlServer.ResumeLayout(false);
+			this.tabSqlServer.PerformLayout();
 			this.tabMySql.ResumeLayout(false);
 			this.tabMySql.PerformLayout();
 			this.tabSqlite.ResumeLayout(false);
@@ -374,19 +374,19 @@ namespace SolidCP.Setup
 
 		#endregion
 
-		private System.Windows.Forms.TextBox txtMsSqlServer;
+		private System.Windows.Forms.TextBox txtSqlServerServer;
 		private System.Windows.Forms.Label lblPassword;
 		private System.Windows.Forms.Label lblLogin;
-		private System.Windows.Forms.TextBox txtMsSqlLogin;
+		private System.Windows.Forms.TextBox txtSqlServerLogin;
 		private System.Windows.Forms.Label lblAuthentication;
 		private System.Windows.Forms.Label lblSqlServer;
-		private System.Windows.Forms.TextBox txtMsSqlPassword;
+		private System.Windows.Forms.TextBox txtSqlServerPassword;
 		private System.Windows.Forms.Label lblIntro;
-		private System.Windows.Forms.TextBox txtMsSqlDatabase;
+		private System.Windows.Forms.TextBox txtSqlServerDatabase;
 		private System.Windows.Forms.Label lblDatabase;
-		private System.Windows.Forms.ComboBox cbMsSqlAuthentication;
+		private System.Windows.Forms.ComboBox cbSqlServerAuthentication;
 		private System.Windows.Forms.TabControl tabControl;
-		private System.Windows.Forms.TabPage tabMsSql;
+		private System.Windows.Forms.TabPage tabSqlServer;
 		private System.Windows.Forms.TabPage tabMySql;
 		private System.Windows.Forms.TabPage tabSqlite;
 		private System.Windows.Forms.TextBox txtMySqlPort;

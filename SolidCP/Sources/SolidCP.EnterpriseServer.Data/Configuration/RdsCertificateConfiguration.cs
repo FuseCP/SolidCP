@@ -17,7 +17,7 @@ public partial class RdsCertificateConfiguration: EntityTypeConfiguration<RdsCer
 {
     public override void Configure() {
 
-		if (IsMsSql)
+		if (IsSqlServer)
 		{
 			Property(e => e.Content).HasColumnType("ntext");
 			Property(e => e.ValidFrom).HasColumnType("datetime");

@@ -16,14 +16,14 @@ public partial class BlackBerryUserConfiguration: EntityTypeConfiguration<BlackB
 {
     public override void Configure() {
 
-		if (IsMsSql)
+		if (IsSqlServer)
 		{
 			Property(e => e.CreatedDate).HasColumnType("datetime");
 			Property(e => e.ModifiedDate).HasColumnType("datetime");
 		}
 
 #if NetCore
-        if (IsMsSql) Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");
+        if (IsSqlServer) Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");
 
         HasOne(d => d.Account).WithMany(p => p.BlackBerryUsers)
                 .OnDelete(DeleteBehavior.ClientSetNull)

@@ -17,7 +17,7 @@ public partial class RdsMessageConfiguration: EntityTypeConfiguration<RdsMessage
     public override void Configure() {
         Property(e => e.UserName).IsFixedLength();
 
-		if (IsMsSql)
+		if (IsSqlServer)
 		{
 			Property(e => e.MessageText).HasColumnType("ntext");
 			Property(e => e.Date).HasColumnType("datetime");

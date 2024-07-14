@@ -18,7 +18,7 @@ public partial class SslCertificateConfiguration: EntityTypeConfiguration<SslCer
 
         Property(e => e.Id).ValueGeneratedOnAdd();
 
-		if (IsMsSql)
+		if (IsSqlServer)
 		{
 			Property(e => e.Csr).HasColumnType("ntext");
 			Property(e => e.Certificate).HasColumnType("ntext");

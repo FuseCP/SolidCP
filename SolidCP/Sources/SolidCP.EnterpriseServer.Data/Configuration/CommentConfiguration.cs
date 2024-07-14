@@ -17,10 +17,10 @@ public partial class CommentConfiguration: EntityTypeConfiguration<Comment>
     public override void Configure() {
 
         Property(e => e.ItemTypeId).IsUnicode(false);
-        if (IsMsSql) Property(e => e.CreatedDate).HasColumnType("datetime");
+        if (IsSqlServer) Property(e => e.CreatedDate).HasColumnType("datetime");
 
 #if NetCore
-		if (IsMsSql) Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");
+		if (IsSqlServer) Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");
 
         HasOne(d => d.User).WithMany(p => p.CommentsNavigation).HasConstraintName("FK_Comments_Users");
 #else
