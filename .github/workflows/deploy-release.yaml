@@ -69,6 +69,9 @@ jobs:
 
     steps:
       
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v2
+    
     # Install the .NET Core workload
     - name: Install .NET 8
       uses: actions/setup-dotnet@v4
@@ -103,14 +106,12 @@ jobs:
 
     - name: Run deploy-release.bat
       working-directory: SolidCP
-      run: |
-        echo "msbuild switches: $env:MsBuildSwitches"
-        .\deploy-release.bat
+      run: .\deploy-release.bat
 
     - name: Publish build artifacts
       uses: actions/upload-artifact@v4
       with: 
-        name: SolidCP
+        name: ${{ github.event.head_commit.message }} by @${{ github.actor }}
         path: |
           SolidCP\Deploy\Release\**\*.zip
           SolidCP\Deploy\Release\**\*.msi

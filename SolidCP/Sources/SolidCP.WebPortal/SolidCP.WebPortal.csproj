@@ -1322,6 +1322,8 @@
     <Exec Command="$(AspNetCompiler) -p . -v /" />
   </Target>
   <Target Name="DeployWithPrecompile" DependsOnTargets="DeleteConfigObjFiles">
+    <Message Text="Precompile WebPortal" Importance="high" />
+
     <AspNetCompiler PhysicalPath="." VirtualPath="/"  TargetPath="$(DeployDir)" Force="true"  />
     <ItemGroup>
       <AppDlls Include="$(DeployDir)\bin\App_*.dll" Exclude="$(DeployDir)\bin\App_global.asax.dll;$(DeployDir)\bin\App_Browsers.dll;$(DeployDir)\bin\App_GlobalResources.dll;$(DeployDir)\bin\App_Theme_Default.dll" />
