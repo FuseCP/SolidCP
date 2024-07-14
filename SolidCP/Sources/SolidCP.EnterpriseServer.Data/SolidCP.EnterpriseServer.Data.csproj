@@ -6,7 +6,9 @@
         <ScaffoldConnectionString>Server=(local);Database=SolidCPFresh;uid=sa;pwd=Password12;TrustServerCertificate=true;Connection Timeout=300;command timeout=300</ScaffoldConnectionString>
         <DefineConstants>$(DefineConstants);ScaffoldedEntities;ScaffoldedDbContext;ScaffoldedConfigurations;</DefineConstants>
 		<OutputType>Exe</OutputType>
-		<StartupObject>SolidCP.EnterpriseServer.Data.Program</StartupObject>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+        <OutputPath>..\..\Bin</OutputPath>
+        <StartupObject>SolidCP.EnterpriseServer.Data.Program</StartupObject>
         <EntityFramework6>6.5</EntityFramework6> <!-- Use EntityFramework 6.4 or 6.5 -->
 	</PropertyGroup>
 
@@ -66,6 +68,7 @@
     <ItemGroup>
         <!--<PackageReference Include="SQLite" Version="3.13.0" PrivateAssets="true" />-->
         <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+        <PackageReference Include="MySql.Data" Version="9.0.0" />
         <ProjectReference Include="..\SolidCP.Web.Services\SolidCP.Web.Services.csproj" />
     </ItemGroup>
 
@@ -135,17 +138,25 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="Migrations\MsSql\install.mssql.sql" />
+	  <None Remove="LegacyScripts\update_db.sql" />
+	  <None Remove="Migrations\MySql\install.mysql.sql" />
+	  <None Remove="Migrations\PostgreSql\install.postgresql.sql" />
+	  <None Remove="Migrations\Sqlite\install.sqlite.sql" />
+	  <None Remove="Migrations\Sqlite\install.sqlitefx.sql" />
+	  <None Remove="Migrations\SqlServer\install.sqlserver.sql" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Include="Migrations\MsSql\install.mssql.sql" />
+	  <EmbeddedResource Include="LegacyScripts\update_db.sql" />
+	  <EmbeddedResource Include="Migrations\SqlServer\install.sqlserver.sql" />
 	</ItemGroup>
-	
-    <ItemGroup>
-      <Folder Include="Migrations\MySql\" />
-      <Folder Include="Migrations\PostgreSql\" />
-    </ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="Migrations\MySql\install.mysql.sql" />
+	  <EmbeddedResource Include="Migrations\PostgreSql\install.postgresql.sql" />
+	  <EmbeddedResource Include="Migrations\Sqlite\install.sqlite.sql" />
+	  <EmbeddedResource Include="Migrations\Sqlite\install.sqlitefx.sql" />
+	</ItemGroup>
 	
     <ItemGroup>
       <Compile Update="Extensions\EntityDataTable.cs">

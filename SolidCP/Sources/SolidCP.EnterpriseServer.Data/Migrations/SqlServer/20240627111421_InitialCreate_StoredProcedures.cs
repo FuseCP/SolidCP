@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
+namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 {
 	public partial class InitialCreate
 	{

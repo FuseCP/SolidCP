@@ -9,7 +9,6 @@ using SolidCP.EnterpriseServer.Data;
 using System.Linq.Expressions;
 using System.Linq.Dynamic;
 using System.Linq.Dynamic.Core;
-using SolidCP.UniversalInstaller.Core;
 #if NETFRAMEWORK
 using System.Data.Entity;
 #else
@@ -44,7 +43,7 @@ namespace SolidCP.EnterpriseServer.Tests
 					.FirstOrDefault())
 				using (var reader = new StreamReader(scriptResource))
 				{
-					SqlUtils.ExecuteSql(ConnectionString, reader.ReadToEnd());
+					DatabaseUtils.ExecuteSql(ConnectionString, reader.ReadToEnd());
 				}
 			}
 		}

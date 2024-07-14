@@ -16,7 +16,7 @@ public partial class ServiceItemConfiguration: EntityTypeConfiguration<ServiceIt
 {
     public override void Configure() {
 
-		if (IsMsSql) Property(e => e.CreatedDate).HasColumnType("datetime");
+		if (IsSqlServer) Property(e => e.CreatedDate).HasColumnType("datetime");
 
 #if NetCore
         HasOne(d => d.ItemType).WithMany(p => p.ServiceItems).HasConstraintName("FK_ServiceItems_ServiceItemTypes");

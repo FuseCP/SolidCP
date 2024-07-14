@@ -110,7 +110,7 @@ namespace SolidCP.Setup
 					switch (setupVariables.DatabaseType)
 					{
 						case Data.DbType.SqlServer:
-							setupVariables.DbInstallConnectionString = SqlUtils.BuildMsSqlServerMasterConnectionString(
+							setupVariables.DbInstallConnectionString = Data.DatabaseUtils.BuildSqlServerMasterConnectionString(
 								setupVariables.DatabaseServer,
 								Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdmin),
 								Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdminPassword)
@@ -118,7 +118,7 @@ namespace SolidCP.Setup
 							break;
 						case Data.DbType.MySql:
 						case Data.DbType.MariaDb:
-							setupVariables.DbInstallConnectionString = SqlUtils.BuildMySqlServerMasterConnectionString(
+							setupVariables.DbInstallConnectionString = Data.DatabaseUtils.BuildMySqlMasterConnectionString(
 								setupVariables.DatabaseServer,
 								setupVariables.DatabasePort,
 								Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdmin),
@@ -128,7 +128,7 @@ namespace SolidCP.Setup
 						case Data.DbType.Sqlite:
 						case Data.DbType.SqliteFX:
 							setupVariables.DbInstallConnectionString =
-								SqlUtils.BuildSqliteMasterConnectionString(setupVariables.Database,
+								Data.DatabaseUtils.BuildSqliteMasterConnectionString(setupVariables.Database,
 									setupVariables.InstallationFolder, setupVariables.EnterpriseServerPath, setupVariables.EmbedEnterpriseServer);
 							break;
 						default: break;

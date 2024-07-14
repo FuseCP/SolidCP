@@ -16,7 +16,7 @@ public partial class SfBUserConfiguration: EntityTypeConfiguration<SfBUser>
 {
     public override void Configure() {
 
-		if (IsMsSql)
+		if (IsSqlServer)
 		{
 			Property(e => e.CreatedDate).HasColumnType("datetime");
 			Property(e => e.ModifiedDate).HasColumnType("datetime");

@@ -88,18 +88,28 @@ namespace SolidCP.Setup.Internal
 				var ConnStr = setupVariables.InstallConnectionString;
 				if (CheckConnectionInfo(ConnStr, out MsgStr))
 				{
-					string V = SqlUtils.GetMsSqlServerVersion(ConnStr);
-					var Valid = new string[] { "9.", "10.", "11.", "12.", "13.", "14.", "15.", "16." }.Any(x => V.StartsWith(x));
-					if (Valid)
-						if (SqlUtils.GetMsSqlServerSecurityMode(ConnStr) == 0)
-						{
-							MsgBuilder.AppendLine("Good connection.");
-							Result = CheckStatuses.Success;
-						}
+					Data.DbType dbtype;
+					string nativeConnectionString;
+					Data.DatabaseUtils.ParseConnectionString(ConnStr, out dbtype, out nativeConnectionString);
+					if (dbtype == Data.DbType.SqlServer)
+					{
+						string V = Data.DatabaseUtils.GetSqlServerVersion(ConnStr);
+						var Valid = new string[] { "9.", "10.", "11.", "12.", "13.", "14.", "15.", "16." }.Any(x => V.StartsWith(x));
+						if (Valid)
+							if (Data.DatabaseUtils.GetSqlServerSecurityMode(ConnStr) == 0)
+							{
+								MsgBuilder.AppendLine("Good connection.");
+								Result = CheckStatuses.Success;
+							}
+							else
+								MsgBuilder.AppendLine("Please switch SQL Server authentication to mixed SQL Server and Windows Authentication mode.");
 						else
-							MsgBuilder.AppendLine("Please switch SQL Server authentication to mixed SQL Server and Windows Authentication mode.");
-					else
-						MsgBuilder.AppendLine("This program can be installed on SQL Server 2005/2008/2012/2014/2016/2017/2019/2022 only.");
+							MsgBuilder.AppendLine("This program can be installed on SQL Server 2005/2008/2012/2014/2016/2017/2019/2022 only.");
+					} else
+					{
+						MsgBuilder.AppendLine("Good connection.");
+						Result = CheckStatuses.Success;
+					}
 				}
 				else
 				{
@@ -153,7 +163,7 @@ namespace SolidCP.Setup.Internal
 		}
 		public static bool SkipCreateDb(string ConnStr, string DbName)
 		{
-			return SqlUtils.DatabaseExists(ConnStr, DbName) && !SqlUtils.IsEmptyDatabase(ConnStr, DbName);
+			return Data.DatabaseUtils.DatabaseExists(ConnStr, DbName) && !Data.DatabaseUtils.IsEmptyDatabase(ConnStr, DbName);
 		}
 	}
 	public interface IWiXSetup
@@ -252,14 +262,14 @@ namespace SolidCP.Setup.Internal
 				case Data.DbType.SqlServer:
 					// DB_LOGIN, DB_PASSWORD.
 					bool WinAuth = Utils.GetStringSetupParameter(Hash, "DbAuth").ToLowerInvariant().Equals("Windows Authentication".ToLowerInvariant());
-					Dst.DbInstallConnectionString = SqlUtils.BuildMsSqlServerMasterConnectionString(
+					Dst.DbInstallConnectionString = Data.DatabaseUtils.BuildSqlServerMasterConnectionString(
 												Dst.DatabaseServer,
 												WinAuth ? null : Utils.GetStringSetupParameter(Hash, Global.Parameters.DbServerAdmin),
 												WinAuth ? null : Utils.GetStringSetupParameter(Hash, Global.Parameters.DbServerAdminPassword));
 					break;
 				case Data.DbType.MySql:
 				case Data.DbType.MariaDb:
-					Dst.DbInstallConnectionString = SqlUtils.BuildMySqlServerMasterConnectionString(
+					Dst.DbInstallConnectionString = Data.DatabaseUtils.BuildMySqlMasterConnectionString(
 												Dst.DatabaseServer,
 												Dst.DatabasePort,
 												Utils.GetStringSetupParameter(Hash, Global.Parameters.DbServerAdmin),
@@ -267,7 +277,7 @@ namespace SolidCP.Setup.Internal
 					break;
 				case Data.DbType.Sqlite:
 				case Data.DbType.SqliteFX:
-					Dst.DbInstallConnectionString = SqlUtils.BuildSqliteMasterConnectionString(Dst.Database,
+					Dst.DbInstallConnectionString = Data.DatabaseUtils.BuildSqliteMasterConnectionString(Dst.Database,
 						Dst.InstallationFolder, Dst.EnterpriseServerPath, Dst.EmbedEnterpriseServer);
 					break;
 				default: throw new NotSupportedException("This database type is not supported.");
@@ -764,13 +774,13 @@ namespace SolidCP.Setup.Internal
 		{
 			try
 			{
-				Log.WriteStart("Deleting SQL server database");
-				Log.WriteInfo(string.Format("Deleting \"{0}\" SQL server database", database));
-				if (SqlUtils.DatabaseExists(connectionString, database))
+				Log.WriteStart("Deleting database");
+				Log.WriteInfo(string.Format("Deleting \"{0}\" database", database));
+				if (Data.DatabaseUtils.DatabaseExists(connectionString, database))
 				{
-					SqlUtils.DeleteDatabase(connectionString, database);
+					Data.DatabaseUtils.DeleteDatabase(connectionString, database);
 					Log.WriteEnd("Deleted database");
-					InstallLog.AppendLine(string.Format("- Deleted \"{0}\" SQL server database ", database));
+					InstallLog.AppendLine(string.Format("- Deleted \"{0}\" database ", database));
 				}
 			}
 			catch (Exception ex)
@@ -788,13 +798,13 @@ namespace SolidCP.Setup.Internal
 		{
 			try
 			{
-				Log.WriteStart("Deleting SQL server user");
-				Log.WriteInfo(string.Format("Deleting \"{0}\" SQL server user", username));
-				if (SqlUtils.UserExists(connectionString, username))
+				Log.WriteStart("Deleting database user");
+				Log.WriteInfo(string.Format("Deleting \"{0}\" database user", username));
+				if (Data.DatabaseUtils.UserExists(connectionString, username))
 				{
-					SqlUtils.DeleteUser(connectionString, username);
-					Log.WriteEnd("Deleted SQL server user");
-					InstallLog.AppendLine(string.Format("- Deleted \"{0}\" SQL server user ", username));
+					Data.DatabaseUtils.DeleteUser(connectionString, username);
+					Log.WriteEnd("Deleted database user");
+					InstallLog.AppendLine(string.Format("- Deleted \"{0}\" database user ", username));
 				}
 			}
 			catch (Exception ex)
@@ -814,9 +824,9 @@ namespace SolidCP.Setup.Internal
 			{
 				Log.WriteStart("Deleting SQL server login");
 				Log.WriteInfo(string.Format("Deleting \"{0}\" SQL server login", loginName));
-				if (SqlUtils.LoginExists(connectionString, loginName))
+				if (Data.DatabaseUtils.LoginExists(connectionString, loginName))
 				{
-					SqlUtils.DeleteLogin(connectionString, loginName);
+					Data.DatabaseUtils.DeleteLogin(connectionString, loginName);
 					Log.WriteEnd("Deleted SQL server login");
 					InstallLog.AppendLine(string.Format("- Deleted \"{0}\" SQL server login ", loginName));
 				}
@@ -1397,7 +1407,7 @@ namespace SolidCP.Setup.Internal
 				}
 
 				string query = string.Format("INSERT INTO Licenses ( SerialNumber ) VALUES ('{0}')", licenseKey);
-				SqlUtils.ExecuteQuery(connectionString, query);
+				Data.DatabaseUtils.ExecuteQuery(connectionString, query);
 
 				Log.WriteEnd("Updated license information");
 				InstallLog.AppendLine("- Updated license information");
@@ -1666,58 +1676,69 @@ namespace SolidCP.Setup.Internal
 			int serviceId = -1;
 			try
 			{
+				Data.DbType dbtype;
+				string nativeConnectionString;
+				Data.DatabaseUtils.ParseConnectionString(Context.DbInstallConnectionString, out dbtype, out nativeConnectionString);
+				
 				Log.WriteStart("Adding Sql service");
 
 				SqlServerItem item = ParseConnectionString(Context.DbInstallConnectionString);
 				string serverName = item.Server.ToLower();
-				if (serverName.StartsWith("(local)") ||
+				if ((serverName.StartsWith("(local)") ||
 					serverName.StartsWith("localhost") ||
-					serverName.StartsWith(System.Environment.MachineName.ToLower()))
+					serverName.StartsWith(System.Environment.MachineName.ToLower())) &&
+					(dbtype == Data.DbType.SqlServer 
+					/* TODO || dbtype == Data.DbType.MySql || dbtype == Data.DbType.MariaDb */))
 				{
 					ServiceInfo serviceInfo = new ServiceInfo();
 					serviceInfo.ServerId = serverId;
-					serviceInfo.ServiceName = "SQL Server";
+					if (dbtype == Data.DbType.SqlServer) serviceInfo.ServiceName = "SQL Server";
+					else if (dbtype == Data.DbType.MySql) serviceInfo.ServiceName = "MySQL Server";
+					else if (dbtype == Data.DbType.MariaDb) serviceInfo.ServiceName = "MariaDB Server";
 					serviceInfo.Comments = string.Empty;
 
 					string connectionString = Context.DbInstallConnectionString;
 					//check SQL version
-					if (SqlUtils.CheckSqlConnection(connectionString))
+					if (Data.DatabaseUtils.CheckSqlConnection(connectionString))
 					{
-						// check SQL server version
-						string sqlVersion = SqlUtils.GetMsSqlServerVersion(connectionString);
-						if (sqlVersion.StartsWith("9."))
+						if (dbtype == Data.DbType.SqlServer)
 						{
-							serviceInfo.ProviderId = 16;
+							// check SQL server version
+							string sqlVersion = Data.DatabaseUtils.GetSqlServerVersion(connectionString);
+							if (sqlVersion.StartsWith("9."))
+							{
+								serviceInfo.ProviderId = 16;
+							}
+							else if (sqlVersion.StartsWith("10."))
+							{
+								serviceInfo.ProviderId = 202;
+							}
+							else if (sqlVersion.StartsWith("11."))
+							{
+								serviceInfo.ProviderId = 209;
+							}
+							else if (sqlVersion.StartsWith("12."))
+							{
+								serviceInfo.ProviderId = 1203;
+							}
+							else if (sqlVersion.StartsWith("13."))
+							{
+								serviceInfo.ProviderId = 1701;
+							}
+							else if (sqlVersion.StartsWith("14."))
+							{
+								serviceInfo.ProviderId = 1704;
+							}
+							else if (sqlVersion.StartsWith("15."))
+							{
+								serviceInfo.ProviderId = 1705;
+							}
+							else if (sqlVersion.StartsWith("16."))
+							{
+								serviceInfo.ProviderId = 1706;
+							}
+							serviceId = ES.Services.Servers.AddService(serviceInfo);
 						}
-						else if (sqlVersion.StartsWith("10."))
-						{
-							serviceInfo.ProviderId = 202;
-						}
-						else if (sqlVersion.StartsWith("11."))
-						{
-							serviceInfo.ProviderId = 209;
-						}
-						else if (sqlVersion.StartsWith("12."))
-						{
-							serviceInfo.ProviderId = 1203;
-						}
-						else if (sqlVersion.StartsWith("13."))
-						{
-							serviceInfo.ProviderId = 1701;
-						}
-						else if (sqlVersion.StartsWith("14."))
-						{
-							serviceInfo.ProviderId = 1704;
-						}
-						else if (sqlVersion.StartsWith("15."))
-						{
-							serviceInfo.ProviderId = 1705;
-						}
-						else if (sqlVersion.StartsWith("16."))
-						{
-							serviceInfo.ProviderId = 1706;
-						}
-						serviceId = ES.Services.Servers.AddService(serviceInfo);
 					}
 					else
 						Log.WriteInfo("SQL Server connection error");
@@ -2219,6 +2240,16 @@ namespace SolidCP.Setup.Internal
 						case "password":
 							ret.Password = value;
 							break;
+						case "port":
+							int port;
+							if (!int.TryParse(value, out port)) port = 3306;
+							ret.Port = port;
+							break;
+						case "dbtype":
+							SolidCP.EnterpriseServer.Data.DbType dbtype;
+							if (!Enum.TryParse(value, out dbtype)) dbtype = Data.DbType.Unknown;
+							ret.DatabaseType = dbtype;
+							break;
 					}
 				}
 			}
@@ -2272,13 +2303,13 @@ namespace SolidCP.Setup.Internal
 
 					string loginName = string.Format("{0}\\{1}", domain, userAccount);
 
-					if (!SqlUtils.LoginExists(connectionString, loginName))
+					if (!Data.DatabaseUtils.LoginExists(connectionString, loginName))
 					{
 						query = string.Format("CREATE LOGIN [{0}] FROM WINDOWS WITH DEFAULT_DATABASE=[master]", loginName);
-						SqlUtils.ExecuteQuery(connectionString, query);
+						Data.DatabaseUtils.ExecuteQuery(connectionString, query);
 					}
 					query = string.Format("EXEC master..sp_addsrvrolemember @loginame = N'{0}', @rolename = N'sysadmin'", loginName);
-					SqlUtils.ExecuteQuery(connectionString, query);
+					Data.DatabaseUtils.ExecuteQuery(connectionString, query);
 
 					AppConfig.SetComponentSettingStringValue(Context.EnterpriseServerComponentId, "DatabaseLogin", loginName);
 
@@ -2308,6 +2339,7 @@ namespace SolidCP.Setup.Internal
 
 				string path = Path.Combine(Context.InstallationFolder, Context.ConfigurationFile);
 				string password = Context.ServerAdminPassword;
+				string database = Context.Database;
 
 				if (!File.Exists(path))
 				{
@@ -2336,8 +2368,7 @@ namespace SolidCP.Setup.Internal
 					password = Utils.Encrypt(cryptoKey, password);
 				}
 
-				string query = string.Format("UPDATE Users SET Password = '{0}' WHERE UserID = 1", password);
-				SqlUtils.ExecuteQuery(connectionString, query);
+				Data.DatabaseUtils.SetServerAdminPassword(connectionString, database, password);
 
 				Log.WriteEnd("Updated serveradmin password");
 				InstallLog.AppendLine("- Updated password for the serveradmin account");
@@ -3021,7 +3052,7 @@ namespace SolidCP.Setup.Internal
 				Log.WriteStart(string.Format("Backing up database \"{0}\"", database));
 				string bakFile;
 				string position;
-				SqlUtils.BackupDatabase(connectionString, database, out bakFile, out position);
+				Data.DatabaseUtils.BackupDatabase(connectionString, database, out bakFile, out position);
 				Log.WriteEnd("Backed up database");
 				InstallLog.AppendLine(string.Format("- Backed up {0} database", database));
 				RollBack.RegisterDatabaseBackupAction(connectionString, database, bakFile, position);
@@ -3298,10 +3329,10 @@ namespace SolidCP.Setup.Internal
 		{
 			Log.WriteStart(string.Format("Creating database user {0}", userName));
 
-			if (SqlUtils.UserExists(connectionString, userName))
+			if (Data.DatabaseUtils.UserExists(connectionString, userName))
 				throw new Exception(string.Format("Database user {0} already exists", userName));
 
-			bool userCreated = SqlUtils.CreateUser(connectionString, userName, password, database);
+			bool userCreated = Data.DatabaseUtils.CreateUser(connectionString, userName, password, database);
 
 			// save user details
 			string componentId = Context.ComponentId;
@@ -3395,14 +3426,14 @@ namespace SolidCP.Setup.Internal
 				string connectionString = Context.DbInstallConnectionString;
 				string database = Context.Database;
 
-				Log.WriteStart("Creating SQL Server database");
-				Log.WriteInfo(string.Format("Creating SQL Server database \"{0}\"", database));
-				if (SqlUtils.DatabaseExists(connectionString, database))
+				Log.WriteStart("Creating database");
+				Log.WriteInfo(string.Format("Creating database \"{0}\"", database));
+				if (Data.DatabaseUtils.DatabaseExists(connectionString, database))
 				{
-					throw new Exception(string.Format("SQL Server database \"{0}\" already exists", database));
+					throw new Exception(string.Format("Database \"{0}\" already exists", database));
 				}
-				SqlUtils.CreateDatabase(connectionString, database);
-				Log.WriteEnd("Created SQL Server database");
+				Data.DatabaseUtils.CreateDatabase(connectionString, database);
+				Log.WriteEnd("Created database");
 
 				// rollback
 				RollBack.RegisterDatabaseAction(connectionString, database);
@@ -4938,7 +4969,7 @@ namespace SolidCP.Setup.Internal
 					}
 					else
 					{
-						Context.ConnectionString = SqlUtils.BuildConnectionString(Context.DatabaseType,
+						Context.ConnectionString = Data.DatabaseUtils.BuildConnectionString(Context.DatabaseType,
 							Context.DatabaseServer, Context.DatabasePort, Context.Database, Context.Database,
 							Context.DatabaseUserPassword, Context.EnterpriseServerPath, Context.EmbedEnterpriseServer);
 						//Context.ConnectionString = string.Format(Context.ConnectionString, Context.DatabaseServer, Context.Database, Context.DatabaseUser, Context.DatabaseUserPassword);

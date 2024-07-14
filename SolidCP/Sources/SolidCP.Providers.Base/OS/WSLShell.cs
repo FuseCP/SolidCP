@@ -432,13 +432,14 @@ namespace SolidCP.Providers.OS
 			public static implicit operator WSLDistro(Distro distro) => new WSLDistro() { Distro = distro, OtherDistroName = null };
 			public override string ToString() => GetDistroName(this) ?? OtherDistroName;
 		}
-		public bool Debug { get; set; }
+		public bool Debug { get; set; } = false;
+
 		public enum Distro { Default, Ubuntu, Debian, Kali, Ubuntu18, Ubuntu20, Ubuntu22, Ubuntu24, Oracle7, Oracle8, Oracle9, openSUSELeap, SUSE15_4, SUSE15_5, openSUSEThumbleweed, FedoraRemix, Native, Other };
 		public override string ShellExe => IsWindows ?
 			(CurrentDistro == Distro.Default ? "wsl" : $"wsl --distribution {CurrentDistroName}") :
 			"bash";
 
-		public WSLShell() : base() { BaseShell = Shell.Default; }
+		public WSLShell() : base() => BaseShell = Shell.Default.Clone;
 		public WSLShell(WSLDistro distro) : this() => Use(distro);
 
 		Shell baseShell = null;
@@ -464,10 +465,13 @@ namespace SolidCP.Providers.OS
 						value.LogCommandEnd += OnBaseLogCommandEnd;
 						value.LogOutput += OnBaseLogOutput;
 						value.LogError += OnBaseLogError;
+						value.Redirect = false;
+						value.LogFile = null;
 					}
 				}
 			}
 		}
+
 		public static string GetDistroName(WSLDistro distro)
 		{
 			if (!IsWindows) return "unix";
@@ -634,6 +638,7 @@ namespace SolidCP.Providers.OS
 				clone.Redirect = Redirect;
 				clone.LogFile = LogFile;
 				clone.Debug = Debug;
+				clone.BaseShell = BaseShell.Clone;
 				return clone;
 			}
 		}

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Design;
 namespace SolidCP.EnterpriseServer.Data.Extensions
 {
 	public class DesignTimeDbContextFactory: IDesignTimeDbContextFactory<Context.DbContextBase>,
-		IDesignTimeDbContextFactory<MsSqlDbContext>,
+		IDesignTimeDbContextFactory<SqlServerDbContext>,
 		IDesignTimeDbContextFactory<MySqlDbContext>,
 		IDesignTimeDbContextFactory<MariaDbDbContext>,
 		IDesignTimeDbContextFactory<PostgreSqlDbContext>,
@@ -19,7 +19,7 @@ namespace SolidCP.EnterpriseServer.Data.Extensions
 
 		public Context.DbContextBase CreateDbContext(string[] args)
 		{
-			const string DefaultConnectionString = "DbType=MsSql; Server=(local); Database=SolidCPFresh; uid=sa; pwd=Password12; TrustServerCertificate=true; Connection Timeout=300; command timeout=300";
+			const string DefaultConnectionString = "DbType=SqlServer; Server=(local); Database=SolidCPFresh; uid=sa; pwd=Password12; TrustServerCertificate=true; Connection Timeout=300; command timeout=300";
 
 			var connectionString = args.Length > 0 ? args[0] : DefaultConnectionString;
 
@@ -32,7 +32,7 @@ namespace SolidCP.EnterpriseServer.Data.Extensions
 			switch (dbType)
 			{
 				default:
-				case DbType.SqlServer: return new MsSqlDbContext(connectionString, true);
+				case DbType.SqlServer: return new SqlServerDbContext(connectionString, true);
 				case DbType.MySql: return new MySqlDbContext(connectionString, true);
 				case DbType.MariaDb: return new MariaDbDbContext(connectionString, true);
 				case DbType.Sqlite: return new SqliteDbContext(connectionString, true);
@@ -40,9 +40,9 @@ namespace SolidCP.EnterpriseServer.Data.Extensions
 			}
 		}
 
-		MsSqlDbContext IDesignTimeDbContextFactory<MsSqlDbContext>.CreateDbContext(string[] args)
+		SqlServerDbContext IDesignTimeDbContextFactory<SqlServerDbContext>.CreateDbContext(string[] args)
 		{
-			return (MsSqlDbContext)CreateDbContext(args);
+			return (SqlServerDbContext)CreateDbContext(args);
 		}
 		MySqlDbContext IDesignTimeDbContextFactory<MySqlDbContext>.CreateDbContext(string[] args)
 		{

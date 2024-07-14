@@ -282,6 +282,7 @@ namespace SolidCP.EnterpriseServer.Data
 			return n;
 		}
 
+		// can use an optimized bulk instert
 		protected virtual bool AddRangeQueryable(IQueryable<DatedId> ids, out int n, int level = 0)
 		{
 			n = 0;

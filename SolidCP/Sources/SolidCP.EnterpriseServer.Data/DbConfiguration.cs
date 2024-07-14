@@ -33,7 +33,7 @@ namespace SolidCP.EnterpriseServer.Data
 			}
 		}
 
-		void SetProvidersMsSql()
+		void SetProvidersSqlServer()
 		{
 			SetProviderServices("Microsoft.Data.SqlClient", MicrosoftSqlProviderServices.Instance);
 			SetProviderFactory("Microsoft.Data.SqlClient", SqlClientFactory.Instance);
@@ -64,14 +64,14 @@ namespace SolidCP.EnterpriseServer.Data
 		}
 		public DbConfiguration()
 		{
-			SetDatabaseInitializer<MsSqlDbContext>(null);
+			SetDatabaseInitializer<SqlServerDbContext>(null);
 			SetDatabaseInitializer<MySqlDbContext>(null);
 			SetDatabaseInitializer<MariaDbDbContext>(null);
 			SetDatabaseInitializer<SqliteDbContext>(null);
 			SetDatabaseInitializer<PostgreSqlDbContext>(null);
 			SetDatabaseInitializer<Context.DbContextBase>(null);
 
-			if (LoadedDatabaseProviders.Contains(DbType.SqlServer)) SetProvidersMsSql();
+			if (LoadedDatabaseProviders.Contains(DbType.SqlServer)) SetProvidersSqlServer();
 			if (LoadedDatabaseProviders.Contains(DbType.MySql) || LoadedDatabaseProviders.Contains(DbType.MariaDb))
 			{
 				SetProvidersMySql();

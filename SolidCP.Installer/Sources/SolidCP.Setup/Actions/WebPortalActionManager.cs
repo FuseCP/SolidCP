@@ -39,6 +39,7 @@ using System.Xml;
 using System.Xml.Linq;
 using SolidCP.Setup.Common;
 using SolidCP.UniversalInstaller.Core;
+using SolidCP.EnterpriseServer.Data;
 
 namespace SolidCP.Setup.Actions
 {
@@ -372,7 +373,7 @@ namespace SolidCP.Setup.Actions
                     {
                         if (!database.Contains(Path.DirectorySeparatorChar) && !database.Contains('.')) database = $"{database}.sqlite";
 						database = Path.Combine(enterpriseServerPath, database);
-                        connectionString = SqlUtils.BuildSqliteConnectionString(database);
+                        connectionString = DatabaseUtils.BuildSqliteConnectionString(database);
                     }
                 }
 

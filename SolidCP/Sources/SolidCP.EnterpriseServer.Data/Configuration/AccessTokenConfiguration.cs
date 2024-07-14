@@ -18,7 +18,7 @@ public partial class AccessTokenConfiguration: EntityTypeConfiguration<AccessTok
 		HasKey(e => e.Id).HasName("PK__AccessTo__3214EC27DEAEF66E");
 
 		Property(e => e.SmsResponse).IsUnicode(false);
-        if (IsMsSql) Property(e => e.ExpirationDate).HasColumnType("datetime");
+        if (IsSqlServer) Property(e => e.ExpirationDate).HasColumnType("datetime");
 		else if (IsCore && IsSqliteFX) Property(e => e.AccessTokenGuid).HasColumnType("BLOB");
 
 #if NetCore

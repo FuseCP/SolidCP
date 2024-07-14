@@ -17,7 +17,7 @@ public partial class BackgroundTaskLogConfiguration: EntityTypeConfiguration<Bac
     public override void Configure() {
 		HasKey(e => e.LogId).HasName("PK__Backgrou__5E5499A86067A6E5");
 
-		if (IsMsSql)
+		if (IsSqlServer)
         {
             Property(e => e.Date).HasColumnType("datetime");
 			Property(e => e.Text).HasColumnType("ntext");

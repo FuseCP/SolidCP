@@ -55,7 +55,7 @@ namespace SolidCP.EnterpriseServer.Data
             }
         }
 
-        DbConnection MsSqlDbConnection => new Microsoft.Data.SqlClient.SqlConnection(ConnectionString);
+        DbConnection SqlServerDbConnection => new Microsoft.Data.SqlClient.SqlConnection(ConnectionString);
 #if NETFRAMEWORK
         DbConnection MySqlDbConnection => new MySql.Data.MySqlClient.MySqlConnection(ConnectionString);
 #else
@@ -91,7 +91,7 @@ namespace SolidCP.EnterpriseServer.Data
                     switch (DbType)
 					{
 						case DbType.SqlServer:
-						    dbConnection = MsSqlDbConnection;
+						    dbConnection = SqlServerDbConnection;
                             break;
 						case DbType.MySql:
 						case DbType.MariaDb:
@@ -136,7 +136,7 @@ namespace SolidCP.EnterpriseServer.Data
                     switch (DbType)
                     {
                         default:
-                        case DbType.SqlServer: contextType = typeof(MsSqlDbContext); break;
+                        case DbType.SqlServer: contextType = typeof(SqlServerDbContext); break;
                         case DbType.MySql: contextType = typeof(MySqlDbContext); break;
                         case DbType.MariaDb: contextType = typeof(MySqlDbContext); break;
                         case DbType.PostgreSql: contextType = typeof(PostgreSqlDbContext); break;
@@ -195,14 +195,14 @@ namespace SolidCP.EnterpriseServer.Data
             BaseContext.Log += WriteToLog;
         }
 
-        public bool IsMsSql => DbType == DbType.SqlServer;
+        public bool IsSqlServer => DbType == DbType.SqlServer;
         public bool IsMySql => DbType == DbType.MySql;
 		public bool IsSqlite => IsSqliteCore || IsSqliteFX;
         public bool IsSqliteFX => DbType == DbType.SqliteFX;
         public bool IsSqliteCore => DbType == DbType.Sqlite;
 		public bool IsPostgreSql => DbType == DbType.PostgreSql;
         public bool IsMariaDb => DbType == DbType.MariaDb;
-        public bool HasProcedures => IsMsSql && UseStoredProcedures;
+        public bool HasProcedures => IsSqlServer && UseStoredProcedures;
 
 #if NetCore
         public const bool IsCore = true;

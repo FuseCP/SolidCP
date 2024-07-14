@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		VersionInfo.cs = VersionInfo.cs
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Installer", "SolidCP.Installer\SolidCP.Installer.csproj", "{A358C6E2-F57D-4AB9-B13D-FD3048134143}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Installer", "SolidCP.Installer\SolidCP.Installer.csproj", "{A358C6E2-F57D-4AB9-B13D-FD3048134143}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Updater", "SolidCP.Updater\SolidCP.Updater.csproj", "{F01A019E-1501-45A2-94D8-C621866A3ECD}"
 EndProject
@@ -60,6 +60,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.SilentInstaller", "SolidCP.SilentInstaller\SolidCP.SilentInstaller.csproj", "{6D72B8A9-D10F-4D3D-96FD-E69FBA3CC063}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.SchedulerServiceInstaller", "SolidCP.SchedulerServiceInstaller\SolidCP.SchedulerServiceInstaller.csproj", "{22B66568-AA66-4859-90BF-8799CB5D2C21}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.EnterpriseServer.Data", "..\..\SolidCP\Sources\SolidCP.EnterpriseServer.Data\SolidCP.EnterpriseServer.Data.csproj", "{351C8F3C-7E44-4D92-A398-186CF62B88DA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -363,6 +365,18 @@ Global
 		{22B66568-AA66-4859-90BF-8799CB5D2C21}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{22B66568-AA66-4859-90BF-8799CB5D2C21}.Release|x86.ActiveCfg = Release|Any CPU
 		{22B66568-AA66-4859-90BF-8799CB5D2C21}.Release|x86.Build.0 = Release|Any CPU
+		{351C8F3C-7E44-4D92-A398-186CF62B88DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{351C8F3C-7E44-4D92-A398-186CF62B88DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{351C8F3C-7E44-4D92-A398-186CF62B88DA}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{351C8F3C-7E44-4D92-A398-186CF62B88DA}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{351C8F3C-7E44-4D92-A398-186CF62B88DA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{351C8F3C-7E44-4D92-A398-186CF62B88DA}.Debug|x86.Build.0 = Debug|Any CPU
+		{351C8F3C-7E44-4D92-A398-186CF62B88DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{351C8F3C-7E44-4D92-A398-186CF62B88DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{351C8F3C-7E44-4D92-A398-186CF62B88DA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{351C8F3C-7E44-4D92-A398-186CF62B88DA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{351C8F3C-7E44-4D92-A398-186CF62B88DA}.Release|x86.ActiveCfg = Release|Any CPU
+		{351C8F3C-7E44-4D92-A398-186CF62B88DA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

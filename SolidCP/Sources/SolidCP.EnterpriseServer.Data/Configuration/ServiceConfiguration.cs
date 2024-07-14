@@ -16,7 +16,7 @@ public partial class ServiceConfiguration: EntityTypeConfiguration<Service>
 {
     public override void Configure() {
 
-		if (IsMsSql) Property(e => e.Comments).HasColumnType("ntext");
+		if (IsSqlServer) Property(e => e.Comments).HasColumnType("ntext");
 		else if (IsCore && (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql))
 		{
             Property(e => e.Comments).HasColumnType("TEXT");

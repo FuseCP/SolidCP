@@ -38,6 +38,7 @@ using System.Reflection;
 using System.IO;
 using System.Data;
 using SolidCP.EnterpriseServer;
+using SolidCP.EnterpriseServer.Data;
 using SolidCP.Providers.ResultObjects;
 using SolidCP.Providers.Common;
 using SolidCP.UniversalInstaller.Core;
@@ -256,22 +257,22 @@ namespace SolidCP.Setup.Actions
 					serviceInfo.ProviderId = 1;
 				}
 				else if (version == OS.WindowsVersion.WindowsServer2008 ||
-                    version == OS.WindowsVersion.WindowsServer2008R2 ||
-                    version == OS.WindowsVersion.Windows7)
+					version == OS.WindowsVersion.WindowsServer2008R2 ||
+					version == OS.WindowsVersion.Windows7)
 				{
 					serviceInfo.ProviderId = 100;
 				}
-                else if (version == OS.WindowsVersion.WindowsServer2012 ||
-                    version == OS.WindowsVersion.Windows8)
-                {
-                    serviceInfo.ProviderId = 104;
-                }
-                else if (version == OS.WindowsVersion.WindowsServer2016 ||
-                    version == OS.WindowsVersion.Windows10)
-                {
-                    serviceInfo.ProviderId = 111;
-                }
-                int serviceId = ES.Services.Servers.AddService(serviceInfo);
+				else if (version == OS.WindowsVersion.WindowsServer2012 ||
+					version == OS.WindowsVersion.Windows8)
+				{
+					serviceInfo.ProviderId = 104;
+				}
+				else if (version == OS.WindowsVersion.WindowsServer2016 ||
+					version == OS.WindowsVersion.Windows10)
+				{
+					serviceInfo.ProviderId = 111;
+				}
+				int serviceId = ES.Services.Servers.AddService(serviceInfo);
 				if (serviceId > 0)
 				{
 					InstallService(serviceId);
@@ -333,19 +334,19 @@ namespace SolidCP.Setup.Actions
 				serviceInfo.Comments = string.Empty;
 
 				//check IIS version
-                if (ServerSetup.IISVersion.Major == 7)
+				if (ServerSetup.IISVersion.Major == 7)
 				{
 					serviceInfo.ProviderId = 101;
 				}
-                else if (ServerSetup.IISVersion.Major == 8)
-                {
-                    serviceInfo.ProviderId = 105;
-                }
-                else if (ServerSetup.IISVersion.Major == 10)
-                {
-                    serviceInfo.ProviderId = 112;
-                }
-                else if (ServerSetup.IISVersion.Major == 6)
+				else if (ServerSetup.IISVersion.Major == 8)
+				{
+					serviceInfo.ProviderId = 105;
+				}
+				else if (ServerSetup.IISVersion.Major == 10)
+				{
+					serviceInfo.ProviderId = 112;
+				}
+				else if (ServerSetup.IISVersion.Major == 6)
 				{
 					serviceInfo.ProviderId = 2;
 				}
@@ -499,83 +500,89 @@ namespace SolidCP.Setup.Actions
 			{
 				Log.WriteStart("Adding Sql service");
 
-				SqlServerItem item = ParseConnectionString(EnterpriseServerSetup.DbInstallConnectionString);
-				string serverName = item.Server.ToLower();
-				if (serverName.StartsWith("(local)") ||
-					serverName.StartsWith("localhost") ||
-					serverName.StartsWith(System.Environment.MachineName.ToLower()))
+				SolidCP.EnterpriseServer.Data.DbType dbtype;
+				string nativeConnectionString;
+				DatabaseUtils.ParseConnectionString(EnterpriseServerSetup.DbInstallConnectionString, out dbtype, out nativeConnectionString);
+				if (dbtype == SolidCP.EnterpriseServer.Data.DbType.SqlServer)
 				{
-					ServiceInfo serviceInfo = new ServiceInfo();
-					serviceInfo.ServerId = serverId;
-					serviceInfo.ServiceName = "SQL Server";
-					serviceInfo.Comments = string.Empty;
+					SqlServerItem item = ParseConnectionString(nativeConnectionString);
+					string serverName = item.Server.ToLower();
+					if (serverName.StartsWith("(local)") ||
+						serverName.StartsWith("localhost") ||
+						serverName.StartsWith(System.Environment.MachineName.ToLower()))
+					{
+						ServiceInfo serviceInfo = new ServiceInfo();
+						serviceInfo.ServerId = serverId;
+						serviceInfo.ServiceName = "SQL Server";
+						serviceInfo.Comments = string.Empty;
 
-					string connectionString = EnterpriseServerSetup.DbInstallConnectionString;
-					//check SQL version
-					if (SqlUtils.CheckSqlConnection(connectionString))
-					{
-						// check SQL server version
-						string sqlVersion = SqlUtils.GetMsSqlServerVersion(connectionString);
-						if (sqlVersion.StartsWith("9."))
+						string connectionString = EnterpriseServerSetup.DbInstallConnectionString;
+						//check SQL version
+						if (DatabaseUtils.CheckSqlConnection(connectionString))
 						{
-							serviceInfo.ProviderId = 16;
+							// check SQL server version
+							string sqlVersion = DatabaseUtils.GetSqlServerVersion(connectionString);
+							if (sqlVersion.StartsWith("9."))
+							{
+								serviceInfo.ProviderId = 16;
+							}
+							else if (sqlVersion.StartsWith("10."))
+							{
+								serviceInfo.ProviderId = 202;
+							}
+							else if (sqlVersion.StartsWith("11."))
+							{
+								serviceInfo.ProviderId = 209;
+							}
+							else if (sqlVersion.StartsWith("12."))
+							{
+								serviceInfo.ProviderId = 1203;
+							}
+							else if (sqlVersion.StartsWith("13."))
+							{
+								serviceInfo.ProviderId = 1701;
+							}
+							else if (sqlVersion.StartsWith("14."))
+							{
+								serviceInfo.ProviderId = 1704;
+							}
+							else if (sqlVersion.StartsWith("15."))
+							{
+								serviceInfo.ProviderId = 1705;
+							}
+							else if (sqlVersion.StartsWith("16."))
+							{
+								serviceInfo.ProviderId = 1706;
+							}
+							serviceId = ES.Services.Servers.AddService(serviceInfo);
 						}
-						else if (sqlVersion.StartsWith("10."))
+						else
+							Log.WriteInfo("SQL Server connection error");
+						//configure service
+						if (serviceId > 0)
 						{
-							serviceInfo.ProviderId = 202;
+							StringDictionary settings = GetServiceSettings(serviceId);
+							if (settings != null)
+							{
+								settings["InternalAddress"] = item.Server;
+								settings["ExternalAddress"] = string.Empty;
+								settings["UseTrustedConnection"] = item.WindowsAuthentication.ToString();
+								settings["SaLogin"] = item.User;
+								settings["SaPassword"] = item.Password;
+								UpdateServiceSettings(serviceId, settings);
+							}
+							InstallService(serviceId);
+							Log.WriteEnd("Added Sql service");
 						}
-						else if (sqlVersion.StartsWith("11."))
+						else
 						{
-							serviceInfo.ProviderId = 209;
+							Log.WriteError(string.Format("Enterprise Server error: {0}", serviceId));
 						}
-                        else if (sqlVersion.StartsWith("12."))
-                        {
-                            serviceInfo.ProviderId = 1203;
-                        }
-                        else if (sqlVersion.StartsWith("13."))
-                        {
-                            serviceInfo.ProviderId = 1701;
-                        }
-                        else if (sqlVersion.StartsWith("14."))
-                        {
-                            serviceInfo.ProviderId = 1704;
-                        }
-                        else if (sqlVersion.StartsWith("15."))
-                        {
-                            serviceInfo.ProviderId = 1705;
-                        }
-                        else if (sqlVersion.StartsWith("16."))
-                        {
-                            serviceInfo.ProviderId = 1706;
-                        }
-                        serviceId = ES.Services.Servers.AddService(serviceInfo);
 					}
 					else
-						Log.WriteInfo("SQL Server connection error");
-					//configure service
-					if (serviceId > 0)
 					{
-						StringDictionary settings = GetServiceSettings(serviceId);
-						if (settings != null)
-						{
-							settings["InternalAddress"] = item.Server;
-							settings["ExternalAddress"] = string.Empty;
-							settings["UseTrustedConnection"] = item.WindowsAuthentication.ToString();
-							settings["SaLogin"] = item.User;
-							settings["SaPassword"] = item.Password;
-							UpdateServiceSettings(serviceId, settings);
-						}
-						InstallService(serviceId);
-						Log.WriteEnd("Added Sql service");
+						Log.WriteError("Microsoft SQL Server was not found");
 					}
-					else
-					{
-						Log.WriteError(string.Format("Enterprise Server error: {0}", serviceId));
-					}
-				}
-				else
-				{
-					Log.WriteError("Microsoft SQL Server was not found");
 				}
 				return serviceId;
 			}
@@ -883,7 +890,7 @@ namespace SolidCP.Setup.Actions
 				Log.WriteStart("Adding hosting space");
 				// gather form info
 				PackageResult res = ES.Services.Packages.AddPackageWithResources(userId, planId,
-                    name, 1, false, false, string.Empty, false, false, false, null, false, string.Empty);
+					name, 1, false, false, string.Empty, false, false, false, null, false, string.Empty);
 				if (res.Result > 0)
 					Log.WriteEnd("Added hosting space");
 				else
@@ -922,7 +929,7 @@ namespace SolidCP.Setup.Actions
 			try
 			{
 				Begin(LogStartMessage);
-				
+
 				AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(ResolvePortalAssembly);
 
 				// Check connection
@@ -934,7 +941,7 @@ namespace SolidCP.Setup.Actions
 
 				//
 				OnInstallProgressChanged(LogStartMessage, 10);
-				
+
 				//Add server
 				int serverId = AddServer(ServerSetup.RemoteServerUrl, "My Server", ServerSetup.ServerPassword);
 				if (serverId < 0)
@@ -942,25 +949,25 @@ namespace SolidCP.Setup.Actions
 					Log.WriteError(String.Format("Enterprise Server error: {0}", serverId));
 					return;
 				}
-				
+
 				//Add IP address
 				string portalIP = PortalSetup.WebSiteIP;
 				int ipAddressId = AddIpAddress(portalIP, serverId);
 
 				OnInstallProgressChanged(LogStartMessage, 20);
-				
+
 				//Add OS service
 				int osServiceId = AddOSService(serverId);
 				OnInstallProgressChanged(LogStartMessage, 30);
-				
+
 				//Add Web service
 				int webServiceId = AddWebService(serverId, ipAddressId);
 				OnInstallProgressChanged(LogStartMessage, 40);
-				
+
 				//Add Sql service
 				int sqlServiceId = AddSqlService(serverId);
 				OnInstallProgressChanged(LogStartMessage, 50);
-				
+
 				//Add Dns service
 				int dnsServiceId = AddDnsService(serverId, ipAddressId);
 				OnInstallProgressChanged(LogStartMessage, 60);
@@ -968,24 +975,24 @@ namespace SolidCP.Setup.Actions
 				//Add virtual server
 				int virtualServerId = AddVirtualServer("My Server Resources", serverId, new int[] { osServiceId, webServiceId, sqlServiceId, dnsServiceId });
 				OnInstallProgressChanged(LogStartMessage, 70);
-				
+
 				//Add user
 				int userId = AddUser("admin", EnterpriseServerSetup.PeerAdminPassword, "Server", "Administrator", "admin@myhosting.com");
 				OnInstallProgressChanged(LogStartMessage, 80);
-				
+
 				//Add plan
 				int planId = -1;
 				if (virtualServerId > 0)
 				{
 					planId = AddHostingPlan("My Server", virtualServerId);
 				}
-				
+
 				//Add package
 				if (userId > 0 && planId > 0)
 				{
 					int packageId = AddPackage("My Server", userId, planId);
 				}
-				
+
 				ConfigureWebPolicy(1);
 
 				//

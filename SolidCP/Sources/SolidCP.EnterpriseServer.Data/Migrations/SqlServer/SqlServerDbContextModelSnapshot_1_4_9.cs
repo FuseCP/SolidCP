@@ -3,20 +3,28 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SolidCP.EnterpriseServer.Data;
 
 #nullable disable
 
-namespace SolidCP.EnterpriseServer.Data.Migrations.MsSql
+namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 {
-    [DbContext(typeof(MsSqlDbContext))]
-    [Migration("20240709093225_AddedDMZ")]
-    partial class AddedDMZ
+    public class SqlServerDbContext_1_4_9: SqlServerDbContext {
+#if NetCore
+        public SqlServerDbContext_1_4_9(string connectionString, bool initSeedData = false): base(connectionString, initSeedData) { }
+	    public SqlServerDbContext_1_4_9(DbContext context): base(context) { }
+	    public SqlServerDbContext_1_4_9(DbContextOptions<Context.DbContextBase> options): base(options) { }
+#else
+	    public SqlServerDbContext_1_4_9(DbContext context): base(context) { }        
+#endif
+	}
+    
+    [DbContext(typeof(SqlServerDbContext_1_4_9))]
+    partial class SqlServerDbContextModelSnapshot_1_4_9 : ModelSnapshot
+			
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

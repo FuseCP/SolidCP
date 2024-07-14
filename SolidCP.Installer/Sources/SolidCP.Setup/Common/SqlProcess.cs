@@ -38,6 +38,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using SolidCP.Setup.Actions;
 using SolidCP.UniversalInstaller.Core;
+using SolidCP.EnterpriseServer.Data;
 
 namespace SolidCP.Setup
 {
@@ -65,23 +66,24 @@ namespace SolidCP.Setup
 			this.database = db;
 		}
 
-		private void OnProgressChange(int percentage)
+		private void OnProgressChange(float ratio)
 		{
 			if (ProgressChange == null)
 				return;
 			//
 			ProgressChange(this, new ActionProgressEventArgs<int>
 			{
-				EventData = percentage
+				EventData = (int)(ratio * 100 + 0.5)
 			});
 		}
 
 
-		internal void RunMsSql(int commandCount)
+		internal void RunSqlServer(int commandCount)
 		{
 			SqlConnection connection = new SqlConnection(connectionString);
 			string sql;
 			int i = 0;
+			float n = commandCount;
 
 			try
 			{
@@ -110,7 +112,7 @@ namespace SolidCP.Setup
 						i++;
 						if (commandCount != 0)
 						{
-							OnProgressChange(Convert.ToInt32(i * 100 / commandCount));
+							OnProgressChange((float)i / n);
 						}
 					}
 				}
@@ -137,7 +139,7 @@ namespace SolidCP.Setup
 			//
 			using (var stream = new FileStream(scriptFile, FileMode.Open, FileAccess.Read))
 			{
-				SqlUtils.RunSqlScript(connectionString, stream, OnProgressChange, SetCommandCount, ProcessInstallVariables, scriptFile, database);
+				DatabaseUtils.RunSqlScript(connectionString, stream, OnProgressChange, SetCommandCount, ProcessInstallVariables, scriptFile, database);
 			}
 		}
 

@@ -16,7 +16,7 @@ public partial class PackageAddonConfiguration: EntityTypeConfiguration<PackageA
 {
     public override void Configure() {
 
-		if (IsMsSql)
+		if (IsSqlServer)
 		{
 			Property(e => e.Comments).HasColumnType("ntext");
 			Property(e => e.PurchaseDate).HasColumnType("datetime");

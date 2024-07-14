@@ -37,7 +37,7 @@ public string ExecutionLog { get; set; }
 ```
 for example you would write in the Fluent API:
 ```
-if (IsMsSql) {
+if (IsSqlServer) {
     Property(e => e.ExecutionLog).HasColumnType("ntext");
 } else if (IsCore && (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)) {
     Property(e => e.ExecutionLog).HasColumnType("TEXT");

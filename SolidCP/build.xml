@@ -79,8 +79,6 @@
 		<ftphost></ftphost>
 		<ftpUsername></ftpUsername>
 		<ftpPassword></ftpPassword>
-
-
 </PropertyGroup>
 
 	<PropertyGroup Label="WebPlatformFeed">

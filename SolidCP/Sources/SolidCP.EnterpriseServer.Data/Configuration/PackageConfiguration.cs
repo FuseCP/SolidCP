@@ -16,7 +16,7 @@ public partial class PackageConfiguration: EntityTypeConfiguration<Package>
 {
     public override void Configure() {
 
-		if (IsMsSql)
+		if (IsSqlServer)
 		{
 			Property(e => e.StatusIdChangeDate).HasColumnType("datetime");
 			Property(e => e.PurchaseDate).HasColumnType("datetime");
@@ -28,7 +28,7 @@ public partial class PackageConfiguration: EntityTypeConfiguration<Package>
         }
 
 #if NetCore
-        if (IsMsSql) {
+        if (IsSqlServer) {
             Core.ToTable(tb => tb.HasTrigger("Update_StatusIDchangeDate"));
             Property(e => e.StatusIdChangeDate).HasDefaultValueSql("(getdate())");
         }

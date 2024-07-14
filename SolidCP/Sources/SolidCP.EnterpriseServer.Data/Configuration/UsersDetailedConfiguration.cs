@@ -17,13 +17,13 @@ public partial class UsersDetailedConfiguration: EntityTypeConfiguration<UsersDe
 {
     public override void Configure() {
 
-		if (IsMsSql)
+		if (IsSqlServer)
 		{
 			Property(e => e.Comments).HasColumnType("ntext");
 			Property(e => e.Changed).HasColumnType("datetime");
 			Property(e => e.Created).HasColumnType("datetime");
 		}
-		else if (IsCore && (IsMsSql || IsMariaDb || IsSqlite || IsPostgreSql))
+		else if (IsCore && (IsSqlServer || IsMariaDb || IsSqlite || IsPostgreSql))
 		{
 			Property(e => e.Comments).HasColumnType("TEXT");
 		}

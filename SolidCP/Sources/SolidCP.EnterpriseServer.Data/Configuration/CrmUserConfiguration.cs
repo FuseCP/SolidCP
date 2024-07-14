@@ -17,7 +17,7 @@ public partial class CrmUserConfiguration : EntityTypeConfiguration<CrmUser>
 	public override void Configure()
 	{
 
-		if (IsMsSql)
+		if (IsSqlServer)
 		{
 			Property(e => e.ChangedDate).HasColumnType("datetime");
 			Property(e => e.CreatedDate).HasColumnType("datetime");
@@ -29,7 +29,7 @@ public partial class CrmUserConfiguration : EntityTypeConfiguration<CrmUser>
 		}
 
 #if NetCore
-			if (IsMsSql)
+			if (IsSqlServer)
 		{
 			Property(e => e.ChangedDate).HasDefaultValueSql("(getdate())");
 			Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");

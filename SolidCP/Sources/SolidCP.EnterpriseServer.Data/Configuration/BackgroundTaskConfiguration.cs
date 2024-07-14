@@ -18,7 +18,7 @@ public partial class BackgroundTaskConfiguration: EntityTypeConfiguration<Backgr
 {
     public override void Configure() {
 		HasKey(e => e.Id).HasName("PK__Backgrou__3214EC273A1145AC");
-		if (IsMsSql)
+		if (IsSqlServer)
         {
             Property(e => e.StartDate).HasColumnType("datetime");
             Property(e => e.FinishDate).HasColumnType("datetime");
