@@ -110,7 +110,15 @@ jobs:
       uses: actions/upload-artifact@v4
       with: 
         name: SolidCP
-        path: SolidCP\Deploy\Release
+        path: |
+          SolidCP\Deploy\Release\**\*.zip
+          SolidCP\Deploy\Release\**\*.msi
+          SolidCP\Deploy\Release\**\*.exe
+          SolidCP\Deploy\Release\Packages
+          SolidCP\Deploy\Release\Database
+          !SolidCP\Deploy\Release\Install
+          !SolidCP\Deploy\Release\Update
+        compression-level: 0
 
     - name: Run unit tests
       working-directory: SolidCP\Sources
