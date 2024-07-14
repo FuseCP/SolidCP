@@ -1,40 +1,21 @@
 using System.Runtime.Serialization;
 using SolidCP.EnterpriseServer;
 using SolidCP.EnterpriseServer.Client;
-using SolidCP.Server.Tests;
 
-namespace SolidCP.EnterpriseServer.Tests
+namespace SolidCP.Tests
 {
 	[TestClass]
 	public class TestServerSettings
 	{
 		static readonly object Lock = new object();
-		static Kestrel? KestrelServer = null;
-		static IISExpress? IISExpressServer = null;
 		public TestContext? TestContext { get; set; }
 
 		[ClassInitialize]
 		public static void InitTest(TestContext context)
 		{
-			lock (Lock)
-			{
-				//if (KestrelServer == null) KestrelServer = new Kestrel();
-				if (IISExpressServer == null) IISExpressServer = new IISExpress();
-			}
+			Kestrel.Start();
+			IISExpress.Start();
 		}
-
-		[ClassCleanup]
-		public static void Dispose()
-		{
-			lock (Lock)
-			{
-				//KestrelServer?.Dispose();
-				KestrelServer = null;
-				//IISExpressServer?.Dispose();
-				IISExpressServer = null;
-			}
-		}
-
 
 		[TestMethod]
 		public async Task Test()

@@ -6,7 +6,7 @@ IF not defined NoRebuild (
 	FOR /F "tokens=*" %%G IN ('DIR /B /AD /S bin_dotnet') DO RMDIR /S /Q "%%G"
 )
 
-IF not defined MsBuildSwitches ( Set MsBuildSwitches="/v:n /m")
+IF not defined MsBuildSwitches ( Set MsBuildSwitches=/v:n /m)
 IF not defined SolidCPVersion ( Set SolidCPVersion=1.4.5)
 IF not defined SolidCPFileVersion ( Set SolidCPFileVersion=1.4.9)
 IF not defined Configuration ( Set Configuration=Release)

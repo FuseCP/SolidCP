@@ -7,20 +7,21 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 
-namespace SolidCP.Server.Tests
+namespace SolidCP.Tests
 {
     public class Kestrel: IDisposable
     {
         Process? process = null;
         public Kestrel()
         {
-            var exe = new FileInfo(@"..\..\..\..\SolidCP.EnterpriseServer\bin\net.core\SolidCP.EnterpriseServer.exe").FullName;
+            var exe = Path.Combine(TestWebSite.Path, "bin", "bin_dotnet", "SolidCP.EnterpriseServer.exe");
+            var workingDir = Path.GetFileName(exe);
             var startInfo = new ProcessStartInfo(exe)
             {
                 CreateNoWindow = false,
                 UseShellExecute = true,
                 WindowStyle = ProcessWindowStyle.Normal,
-                WorkingDirectory = new DirectoryInfo(@"..\..\..\..\SolidCP.EnterpriseServer\bin\net.core").FullName
+                WorkingDirectory = workingDir
             };
             process = Process.Start(startInfo);
             
@@ -47,5 +48,8 @@ namespace SolidCP.Server.Tests
             if (process != null && !process.HasExited) process.Kill();
             process = null;
         }
-    }
+		public static void Start() { }
+
+		public static readonly Kestrel Current = new Kestrel();
+	}
 }
