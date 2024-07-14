@@ -64,6 +64,7 @@ jobs:
       UseAspNetPrecompile: "true"
       BuildLinuxInstallPackages: "true"
       BuildLegacyDatabaseScript: "false"
+      MsBuildSwitches: "/v:m /m"
       GitHubAction: true
 
     steps:
