@@ -138,17 +138,25 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="LegacyScripts\update_db.sql" />
+	  <None Remove="Migrations\MySql\install.mysql.sql" />
+	  <None Remove="Migrations\PostgreSql\install.postgresql.sql" />
+	  <None Remove="Migrations\Sqlite\install.sqlite.sql" />
+	  <None Remove="Migrations\Sqlite\install.sqlitefx.sql" />
 	  <None Remove="Migrations\SqlServer\install.sqlserver.sql" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Include="Migrations\SqlServer\install.sqlserver.sql" />
+	  <EmbeddedResource Include="LegacyScripts\update_db.sql" />
+	  <EmbeddedResource Include="Migrations\SqlServer\install.sqlserver.sql" />
 	</ItemGroup>
-	
-    <ItemGroup>
-      <Folder Include="Migrations\MySql\" />
-      <Folder Include="Migrations\PostgreSql\" />
-    </ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="Migrations\MySql\install.mysql.sql" />
+	  <EmbeddedResource Include="Migrations\PostgreSql\install.postgresql.sql" />
+	  <EmbeddedResource Include="Migrations\Sqlite\install.sqlite.sql" />
+	  <EmbeddedResource Include="Migrations\Sqlite\install.sqlitefx.sql" />
+	</ItemGroup>
 	
     <ItemGroup>
       <Compile Update="Extensions\EntityDataTable.cs">

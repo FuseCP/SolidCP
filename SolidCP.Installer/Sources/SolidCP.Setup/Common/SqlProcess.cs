@@ -66,14 +66,14 @@ namespace SolidCP.Setup
 			this.database = db;
 		}
 
-		private void OnProgressChange(int percentage)
+		private void OnProgressChange(float ratio)
 		{
 			if (ProgressChange == null)
 				return;
 			//
 			ProgressChange(this, new ActionProgressEventArgs<int>
 			{
-				EventData = percentage
+				EventData = (int)(ratio * 100 + 0.5)
 			});
 		}
 
@@ -83,6 +83,7 @@ namespace SolidCP.Setup
 			SqlConnection connection = new SqlConnection(connectionString);
 			string sql;
 			int i = 0;
+			float n = commandCount;
 
 			try
 			{
@@ -111,7 +112,7 @@ namespace SolidCP.Setup
 						i++;
 						if (commandCount != 0)
 						{
-							OnProgressChange(Convert.ToInt32(i * 100 / commandCount));
+							OnProgressChange((float)i / n);
 						}
 					}
 				}

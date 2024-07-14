@@ -10,7 +10,6 @@
 
     <ItemGroup>
         <None Remove="app.config" />
-        <None Remove="install.sqlite.sql" />
     </ItemGroup>
 
     <ItemGroup>
@@ -18,10 +17,6 @@
             <SubType>Designer</SubType>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-    </ItemGroup>
-
-    <ItemGroup>
-      <EmbeddedResource Include="install.sqlite.sql" />
     </ItemGroup>
 
     <ItemGroup>

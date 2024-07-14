@@ -35,6 +35,7 @@ using System.Text.RegularExpressions;
 using System.Data;
 using Microsoft.Data.SqlClient;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using MySql.Data;
 using MySql.Data.MySqlClient;
@@ -508,7 +509,7 @@ namespace SolidCP.EnterpriseServer.Data
 		/// <param name="databaseName">Database name.</param>
 		/// <param name="connectionString">Connection string.</param>
 		/// <returns>Returns True if the database exists.</returns>
-		public static bool DatabaseExists(string connectionString, string databaseName)
+		public static bool DatabaseExists(string connectionString, string databaseName, string installationFolder = null)
 		{
 			Data.DbType dbType;
 			string nativeConnectionString;
@@ -527,7 +528,11 @@ namespace SolidCP.EnterpriseServer.Data
 					var csb = new ConnectionStringBuilder(connectionString);
 					var dbFile = (string)(csb["data source"] ?? "");
 					var assemblyPath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
-					if (!Path.IsPathRooted(dbFile)) dbFile = Path.GetFullPath(Path.Combine(assemblyPath, "..", dbFile));
+					if (!Path.IsPathRooted(dbFile))
+					{
+						if (installationFolder == null) throw new NotSupportedException("DatabaseExists for SQLite and an app local database need the installationFolder parameter");
+						dbFile = Path.GetFullPath(Path.Combine(installationFolder, dbFile));
+					}
 					return File.Exists(dbFile);
 				default: return false;
 			}
@@ -565,7 +570,7 @@ namespace SolidCP.EnterpriseServer.Data
 		/// </summary>
 		/// <param name="connectionString">Connection string.</param>
 		/// <param name="databaseName">Database name.</param>
-		public static void CreateDatabase(string connectionString, string databaseName)
+		public static void CreateDatabase(string connectionString, string databaseName, string installationFolder = null)
 		{
 			Data.DbType dbType;
 			string ConnStr, commandText;
@@ -592,7 +597,11 @@ namespace SolidCP.EnterpriseServer.Data
 					var csb = new ConnectionStringBuilder(ConnStr);
 					var dbFile = (string)(csb["data source"] ?? "");
 					var assemblyPath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
-					if (!Path.IsPathRooted(dbFile)) dbFile = Path.GetFullPath(Path.Combine(assemblyPath, "..", dbFile));
+					if (!Path.IsPathRooted(dbFile))
+					{
+						if (installationFolder == null) throw new NotSupportedException("CreateDatabase for SQLite with a app local database needs the installationFolder parameter");
+						dbFile = Path.GetFullPath(Path.Combine(installationFolder, dbFile));
+					}
 					CreateDatabaseSqlite(dbFile);
 					break;
 				default: break;
@@ -1308,16 +1317,17 @@ namespace SolidCP.EnterpriseServer.Data
 		}
 
 		static void ProcessMySqlScript(System.Data.Common.DbConnection connection, string connectionString, Script script, int commandCount = 0,
-			Action<int> OnProgressChange = null, Func<string, string> ProcessInstallVariables = null)
+			Action<float> OnProgressChange = null, Func<string, string> ProcessInstallVariables = null)
 		{
 			// iterate through delimited command text
 			var command = new MySqlScript(connectionString);
 			command.Connection = (MySqlConnection)connection;
 			command.Delimiter = ";";
 			int i = 0;
+			float n = commandCount;
 			command.Query = ProcessInstallVariables?.Invoke(script.Reader.ReadToEnd());
 			command.StatementExecuted += (sender, args) =>
-				OnProgressChange?.Invoke(Convert.ToInt32(++i * 100 / commandCount));
+				OnProgressChange?.Invoke((float)++i / n);
 			command.Error += (sender, args) =>
 				throw new Exception("Error executing SQL command: " + args.StatementText, args.Exception);
 			command.Execute();
@@ -1346,7 +1356,7 @@ namespace SolidCP.EnterpriseServer.Data
 			DatabaseUtils.ExecuteQuery(connectionString, cmd);
 		}
 		public static void RunSqlScript(string connectionString, Script script, int commandCount = 0,
-					Action<int> OnProgressChange = null, Func<string, string> ProcessInstallVariables = null,
+					Action<float> OnProgressChange = null, Func<string, string> ProcessInstallVariables = null,
 					string database = null)
 		{
 
@@ -1354,6 +1364,7 @@ namespace SolidCP.EnterpriseServer.Data
 			connection.Open();
 			string sql;
 			int i = 0;
+			float n = commandCount;
 
 			try
 			{
@@ -1395,7 +1406,7 @@ namespace SolidCP.EnterpriseServer.Data
 						i++;
 						if (commandCount != 0)
 						{
-							OnProgressChange?.Invoke(Convert.ToInt32(i * 100 / commandCount));
+							OnProgressChange?.Invoke((float)i / n);
 						}
 					}
 				}
@@ -1414,8 +1425,45 @@ namespace SolidCP.EnterpriseServer.Data
 			}
 		}
 
-		public static void RunSqlScript(string connectionString, Stream sql, Action<int> OnProgressChange = null,
-			Action<int> SetCommandCount = null, Func<string, string> ProcessInstallVariables = null, string scriptFile = "",
+		public static void InstallFreshDatabase(string masterConnectionString, string databaseName,
+			string user, string password, Action<float> OnProgressChange = null,
+			Action<int> ReportCommandCount = null, Func<string, string> ProcessInstallVariables = null, string scriptFile = "",
+			string database = null)
+		{
+			DbType dbType;
+			string nativeConnectionString;
+			ParseConnectionString(masterConnectionString, out dbType, out nativeConnectionString);
+
+			var assembly = Assembly.GetExecutingAssembly();
+			var resourceNames = assembly.GetManifestResourceNames();
+			var dbFileName = $"install.{dbType.ToString().ToLowerInvariant()}.sql";
+			var dbFileNameEndsWith = $".{dbFileName}";
+
+			var installSqlStream = resourceNames
+				.Where(name => name.EndsWith(dbFileNameEndsWith))
+				.Select(name => assembly.GetManifestResourceStream(name))
+				.FirstOrDefault();
+			if (installSqlStream != null)
+			{
+				if (!DatabaseExists(masterConnectionString, databaseName)) CreateDatabase(masterConnectionString, databaseName);
+				else throw new InvalidOperationException($"Database {databaseName} already exists.");
+
+				if (dbType != DbType.Sqlite && dbType != DbType.SqliteFX)
+				{
+					if (!UserExists(masterConnectionString, user)) CreateUser(masterConnectionString, user, password, databaseName);
+					else throw new InvalidOperationException($"Database user {user} already exists.");
+				}
+
+				using (installSqlStream)
+				{
+					RunSqlScript(masterConnectionString, installSqlStream, OnProgressChange, ReportCommandCount,
+						ProcessInstallVariables, dbFileName, databaseName);
+				}
+			}
+		}
+
+		public static void RunSqlScript(string connectionString, Stream sql, Action<float> OnProgressChange = null,
+			Action<int> ReportCommandCount = null, Func<string, string> ProcessInstallVariables = null, string scriptFile = "",
 			string database = null)
 		{
 			using (var script = new Script(sql, connectionString) { File = scriptFile })
@@ -1433,7 +1481,7 @@ namespace SolidCP.EnterpriseServer.Data
 					throw new Exception("Can't read SQL script " + script.File, ex);
 				}
 
-				SetCommandCount?.Invoke(commandCount);
+				ReportCommandCount?.Invoke(commandCount);
 
 				script.Reset();
 

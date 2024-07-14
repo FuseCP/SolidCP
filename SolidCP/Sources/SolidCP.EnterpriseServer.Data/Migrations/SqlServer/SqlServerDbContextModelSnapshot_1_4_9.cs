@@ -4063,7 +4063,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                             EditorControl = "MSSQL",
                             GroupId = 5,
                             ProviderName = "MSSQL",
-                            ProviderType = "SolidCP.Providers.Database.SqlServerServer, SolidCP.Providers.Database.SqlServer"
+                            ProviderType = "SolidCP.Providers.Database.MsSqlServer, SolidCP.Providers.Database.SqlServer"
                         },
                         new
                         {
