@@ -201,5 +201,84 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             return nic;
         }
         #endregion
+
+        #region DmzNetworkDetails
+        public NetworkAdapterDetails GetDmzNetworkDetails(int packageId)
+        {
+            // load service
+            int serviceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.VPS2012);
+
+            return GetDmzNetworkDetailsInternal(serviceId);
+        }
+
+        public NetworkAdapterDetails GetDmzNetworkAdapterDetails(int itemId)
+        {
+            // load service item
+            VirtualMachine vm = (VirtualMachine)PackageController.GetPackageItem(itemId);
+            if (vm == null)
+                return null;
+
+            // load default internal adapter
+            NetworkAdapterDetails nic = GetDmzNetworkDetailsInternal(vm.ServiceId);
+
+            // update NIC
+            nic.MacAddress = NetworkHelper.GetSymbolDelimitedMacAddress(vm.DmzNicMacAddress, "-");
+            nic.VLAN = vm.DmzNetworkVlan;
+            if (!String.IsNullOrEmpty(vm.CustomDmzGateway)) nic.DefaultGateway = vm.CustomDmzGateway;
+            if (!String.IsNullOrEmpty(vm.CustomDmzDNS1)) nic.PreferredNameServer = vm.CustomDmzDNS1;
+            if (!String.IsNullOrEmpty(vm.CustomDmzDNS2)) nic.AlternateNameServer = vm.CustomDmzDNS2;
+            if (!String.IsNullOrEmpty(vm.CustomDmzMask))
+            {
+                nic.SubnetMask = vm.CustomDmzMask;
+                nic.SubnetMaskCidr = NetworkHelper.GetSubnetMaskCidr(nic.SubnetMask);
+            }
+
+            // load IP addresses
+            nic.IPAddresses = ObjectUtils.CreateListFromDataReader<NetworkAdapterIPAddress>(
+            Database.GetItemDmzIPAddresses(SecurityContext.User.UserId, itemId)).ToArray();
+
+            foreach (NetworkAdapterIPAddress ip in nic.IPAddresses)
+            {
+                ip.SubnetMask = nic.SubnetMask;
+                ip.SubnetMaskCidr = nic.SubnetMaskCidr;
+                ip.DefaultGateway = nic.DefaultGateway;
+            }
+
+            return nic;
+        }
+
+        public NetworkAdapterDetails GetDmzNetworkDetailsInternal(int serviceId)
+        {
+            // load service settings
+            StringDictionary settings = ServerController.GetServiceSettings(serviceId);
+
+            // create NIC object
+            NetworkAdapterDetails nic = new NetworkAdapterDetails();
+
+            string networkFormat = settings["DmzNetworkFormat"];
+            if (String.IsNullOrEmpty(networkFormat))
+            {
+                // custom format
+                nic.NetworkFormat = settings["DmzIPAddress"];
+                var v6 = IPAddress.Parse(nic.NetworkFormat).V6;
+                nic.SubnetMask = NetworkHelper.GetPrivateNetworkSubnetMask(settings["DmzSubnetMask"], v6);
+            }
+            else
+            {
+                // standard format
+                string[] formatPair = settings["DmzNetworkFormat"].Split('/');
+                nic.NetworkFormat = formatPair[0];
+                var v6 = IPAddress.Parse(nic.NetworkFormat).V6;
+                nic.SubnetMask = NetworkHelper.GetPrivateNetworkSubnetMask(formatPair[1], v6);
+            }
+
+            nic.SubnetMaskCidr = NetworkHelper.GetSubnetMaskCidr(nic.SubnetMask);
+            nic.DefaultGateway = settings["DmzDefaultGateway"];
+            nic.PreferredNameServer = settings["DmzPreferredNameServer"];
+            nic.AlternateNameServer = settings["DmzAlternateNameServer"];
+
+            return nic;
+        }
+        #endregion
     }
 }

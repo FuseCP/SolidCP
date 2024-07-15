@@ -23,12 +23,12 @@ public partial class UserConfiguration: EntityTypeConfiguration<User>
 		Property(e => e.Fax).IsUnicode(false);
 		Property(e => e.InstantMessenger).IsUnicode(false);
 
-		if (IsMsSql)
+		if (IsSqlServer)
 		{
 			Property(e => e.Comments).HasColumnType("ntext");
 			Property(e => e.Changed).HasColumnType("datetime");
 			Property(e => e.Created).HasColumnType("datetime");
-		} else if (IsCore && (IsMsSql || IsMariaDb || IsSqlite || IsPostgreSql))
+		} else if (IsCore && (IsSqlServer || IsMariaDb || IsSqlite || IsPostgreSql))
 		{
 			Property(e => e.Comments).HasColumnType("TEXT");
 		}

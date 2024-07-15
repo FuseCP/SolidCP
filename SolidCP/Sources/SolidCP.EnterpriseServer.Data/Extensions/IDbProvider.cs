@@ -11,9 +11,9 @@ namespace SolidCP.EnterpriseServer.Data
 		DbType DbType { get; }
 	}
 
-	public class MsSqlProvider : IDbProvider
+	public class SqlServerProvider : IDbProvider
 	{
-		public DbType DbType => DbType.MsSql;
+		public DbType DbType => DbType.SqlServer;
 	}
 
 	public class MySqlProvider : IDbProvider

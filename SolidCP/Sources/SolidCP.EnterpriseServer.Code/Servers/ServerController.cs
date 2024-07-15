@@ -1253,13 +1253,13 @@ namespace SolidCP.EnterpriseServer
 
 		#endregion
 
-		#region Private Network VLANs
-		public VLANsPaged GetPrivateNetworVLANsPaged(int serverId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
-		{
-			VLANsPaged result = new VLANsPaged();
+        #region Private / DMZ Network VLANs
+        public VLANsPaged GetPrivateNetworkVLANsPaged(int serverId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
+        {
+            VLANsPaged result = new VLANsPaged();
 
 			// get reader
-			IDataReader reader = Database.GetPrivateNetworVLANsPaged(SecurityContext.User.UserId, serverId, filterColumn, filterValue, sortColumn, startRow, maximumRows);
+			IDataReader reader = Database.GetPrivateNetworkVLANsPaged(SecurityContext.User.UserId, serverId, filterColumn, filterValue, sortColumn, startRow, maximumRows);
 
 			// number of items = first data reader
 			reader.Read();
@@ -1447,11 +1447,29 @@ namespace SolidCP.EnterpriseServer
 			return result;
 		}
 
-		public ResultObject DeallocatePackageVLANs(int packageId, int[] packageVlanId)
+		public PackageVLANsPaged GetPackageDmzNetworkVLANs(int packageId, string sortColumn, int startRow, int maximumRows)
 		{
-			#region Check account and space statuses
-			// create result object
-			ResultObject res = new ResultObject();
+			PackageVLANsPaged result = new PackageVLANsPaged();
+
+			// get reader
+			IDataReader reader = Database.GetPackageDmzNetworkVLANs(packageId, sortColumn, startRow, maximumRows);
+
+			// number of items = first data reader
+			reader.Read();
+			result.Count = (int)reader[0];
+
+			// items = second data reader
+			reader.NextResult();
+			result.Items = ObjectUtils.CreateListFromDataReader<PackageVLAN>(reader).ToArray();
+
+			return result;
+		}
+
+		public ResultObject DeallocatePackageVLANs(int packageId, int[] packageVlanId)
+        {
+            #region Check account and space statuses
+            // create result object
+            ResultObject res = new ResultObject();
 
 			// check account
 			if (!SecurityContext.CheckAccount(res, DemandAccount.NotDemo | DemandAccount.IsActive))
@@ -1495,21 +1513,21 @@ namespace SolidCP.EnterpriseServer
 				 Database.GetUnallottedVLANs(packageId, serviceId));
 		}
 
-		public void AllocatePackageVLANs(int packageId, int[] vlanIds)
+		public void AllocatePackageVLANs(int packageId, int[] vlanIds, bool isDmz)
 		{
 			if (vlanIds == null || vlanIds.Length == 0) return;
 			// prepare XML document
 			string xml = PrepareXML(vlanIds);
 
 			// save to database
-			Database.AllocatePackageVLANs(packageId, xml);
+			Database.AllocatePackageVLANs(packageId, isDmz, xml);
 		}
 
-		public ResultObject AllocatePackageVLANs(int packageId, string groupName, bool allocateRandom, int vlansNumber, int[] vlanId)
-		{
-			#region Check account and space statuses
-			// create result object
-			ResultObject res = new ResultObject();
+		public ResultObject AllocatePackageVLANs(int packageId, string groupName, bool allocateRandom, int vlansNumber, int[] vlanId, bool isDmz)
+        {
+            #region Check account and space statuses
+            // create result object
+            ResultObject res = new ResultObject();
 
 			// check account
 			if (!SecurityContext.CheckAccount(res, DemandAccount.NotDemo | DemandAccount.IsActive))
@@ -1530,7 +1548,15 @@ namespace SolidCP.EnterpriseServer
 				return res; // just exit
 			}
 
-			string quotaName = Quotas.VPS2012_PRIVATE_VLANS_NUMBER;
+			string quotaName;
+			if (isDmz)
+            {
+				quotaName = Quotas.VPS2012_DMZ_VLANS_NUMBER;
+			}
+            else
+            {
+				quotaName = Quotas.VPS2012_PRIVATE_VLANS_NUMBER;
+			}
 
 			// get maximum server IPs
 			List<VLANInfo> vlans = ServerController.GetUnallottedVLANs(packageId, groupName);
@@ -1578,22 +1604,22 @@ namespace SolidCP.EnterpriseServer
 				// prepare XML document
 				string xml = PrepareXML(vlanId);
 
-				// save to database
-				try
-				{
-					Database.AllocatePackageVLANs(packageId, xml);
-				}
-				catch (Exception ex)
-				{
-					TaskManager.CompleteResultTask(res, "VPS_CANNOT_ADD_VLANS_TO_DATABASE", ex);
-					return res;
-				}
-			}
-			catch (Exception ex)
-			{
-				TaskManager.CompleteResultTask(res, "VPS_ALLOCATE_PRIVATE_VLANS_GENERAL_ERROR", ex);
-				return res;
-			}
+                // save to database
+                try
+                {
+                    Database.AllocatePackageVLANs(packageId, isDmz, xml);
+                }
+                catch (Exception ex)
+                {
+                    TaskManager.CompleteResultTask(res, "VPS_CANNOT_ADD_VLANS_TO_DATABASE", ex);
+                    return res;
+                }
+            }
+            catch (Exception ex)
+            {
+                TaskManager.CompleteResultTask(res, "VPS_ALLOCATE_PRIVATE_VLANS_GENERAL_ERROR", ex);
+                return res;
+            }
 
 			TaskManager.CompleteResultTask();
 			return res;
@@ -2091,38 +2117,47 @@ namespace SolidCP.EnterpriseServer
 				true, number, new int[0]);
 		}
 
-		public ResultObject AllocateMaximumPackageVLANs(int packageId, string groupName)
-		{
+        public ResultObject AllocateMaximumPackageVLANs(int packageId, string groupName, bool isDmz)
+        {
 			// get maximum server VLANs
 			int maxAvailableVLANs = GetUnallottedVLANs(packageId, groupName).Count;
 
 			// get hosting plan VLANs
 			int number = 0;
 
-			PackageContext cntx = PackageController.GetPackageContext(packageId);
-			string quotaName = Quotas.VPS2012_PRIVATE_VLANS_NUMBER;
-			if (cntx.Quotas.ContainsKey(quotaName))
-			{
-				if (cntx.Quotas[quotaName].QuotaAllocatedValue == -1)
-				{
-					// unlimited
-					//number = maxAvailableVLANs; // assign max available server VLANs
-					if (maxAvailableVLANs > 0)
-					{
-						number = 1;//assign 1 VLAN or the entire free pool if unlimited. What is better???
-					}
-					else number = 0;
-				}
-				else
-				{
-					// quota
-					number = cntx.Quotas[quotaName].QuotaAllocatedValue - cntx.Quotas[quotaName].QuotaUsedValue;
-				}
+            string quotaName;
+			if (isDmz)
+            {
+				quotaName = Quotas.VPS2012_DMZ_VLANS_NUMBER;
+			}
+            else
+            {
+				quotaName = Quotas.VPS2012_PRIVATE_VLANS_NUMBER;
 			}
 
-			// allocate
-			return AllocatePackageVLANs(packageId, groupName, true, number, new int[0]);
-		}
+			PackageContext cntx = PackageController.GetPackageContext(packageId);
+			if (cntx.Quotas.ContainsKey(quotaName))
+            {
+                if (cntx.Quotas[quotaName].QuotaAllocatedValue == -1)
+                {
+                    // unlimited
+                    //number = maxAvailableVLANs; // assign max available server VLANs
+                    if (maxAvailableVLANs > 0)
+                    {
+                        number = 1;//assign 1 VLAN or the entire free pool if unlimited. What is better???
+                    }
+                    else number = 0;
+                }
+                else
+                {
+                    // quota
+                    number = cntx.Quotas[quotaName].QuotaAllocatedValue - cntx.Quotas[quotaName].QuotaUsedValue;
+                }
+            }
+
+            // allocate
+            return AllocatePackageVLANs(packageId, groupName, true, number, new int[0], isDmz);
+        }
 
 		public ResultObject DeallocatePackageIPAddresses(int packageId, int[] addressId)
 		{

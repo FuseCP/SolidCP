@@ -4,7 +4,7 @@ namespace SolidCP.UniversalInstaller
 {
 
 	[Flags]
-	public enum Packages { Server, EnterpriseServer, WebPortal }
+	public enum Packages { Server = 1, EnterpriseServer = 2, WebPortal = 4 }
 
 	public abstract class UI
 	{

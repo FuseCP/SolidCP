@@ -139,13 +139,20 @@ namespace SolidCP.Portal
 
         #region Package Private Network VLANs
         PackageVLANsPaged packageVLANs;
-        public PackageVLAN[] GetPackageVLANs(int packageId, string sortColumn, int maximumRows, int startRowIndex)
+        public PackageVLAN[] GetPackageVLANs(int packageId, bool isDmz, string sortColumn, int maximumRows, int startRowIndex)
         {
-            packageVLANs = ES.Services.Servers.GetPackagePrivateNetworkVLANs(packageId, sortColumn, startRowIndex, maximumRows);
+            if (isDmz)
+            {
+                packageVLANs = ES.Services.Servers.GetPackageDmzNetworkVLANs(packageId, sortColumn, startRowIndex, maximumRows);
+            }
+            else
+            {
+                packageVLANs = ES.Services.Servers.GetPackagePrivateNetworkVLANs(packageId, sortColumn, startRowIndex, maximumRows);
+            }
             return packageVLANs.Items;
         }
 
-        public int GetPackageVLANsCount(int packageId)
+        public int GetPackageVLANsCount(int packageId, bool isDmz)
         {
             return packageVLANs.Count;
         }
@@ -164,6 +171,22 @@ namespace SolidCP.Portal
         public int GetPackagePrivateIPAddressesCount(int packageId, string filterColumn, string filterValue)
         {
             return privateAddresses.Count;
+        }
+        #endregion
+
+        #region Package DMZ IP Addresses
+        DmzIPAddressesPaged dmzAddresses;
+        public DmzIPAddress[] GetPackageDmzIPAddresses(int packageId, string filterColumn, string filterValue,
+            string sortColumn, int maximumRows, int startRowIndex)
+        {
+            dmzAddresses = ES.Services.VPS2012.GetPackageDmzIPAddressesPaged(packageId, filterColumn, filterValue,
+                sortColumn, startRowIndex, maximumRows);
+            return dmzAddresses.Items;
+        }
+
+        public int GetPackageDmzIPAddressesCount(int packageId, string filterColumn, string filterValue)
+        {
+            return dmzAddresses.Count;
         }
         #endregion
 

@@ -17,7 +17,7 @@ public partial class HostingPlanConfiguration : EntityTypeConfiguration<HostingP
 	public override void Configure()
 	{
 
-		if (IsMsSql)
+		if (IsSqlServer)
 		{
 			Property(e => e.PlanDescription).HasColumnType("ntext");
 			Property(e => e.SetupPrice).HasColumnType("money");

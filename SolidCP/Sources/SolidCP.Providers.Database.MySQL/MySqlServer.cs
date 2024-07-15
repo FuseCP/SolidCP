@@ -625,7 +625,7 @@ namespace SolidCP.Providers.Database
 						ServerName, ServerPort,
 						RootLogin, RootPassword, database.Name, Path.GetFileName(sqlFile));
 
-					FileUtils.ExecuteSystemCommand(batchfilename, args);
+					Shell.Default.Exec($"{batchfilename} {args}");
 				}
 				finally
 				{

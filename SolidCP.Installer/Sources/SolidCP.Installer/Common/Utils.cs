@@ -47,9 +47,7 @@ using System.Security;
 using System.Security.Permissions;
 using System.Runtime.InteropServices;
 using System.Threading;
-using SolidCP.Installer.Core;
 using System.Linq;
-using SolidCP.Providers.OS;
 
 namespace SolidCP.Installer.Common
 {

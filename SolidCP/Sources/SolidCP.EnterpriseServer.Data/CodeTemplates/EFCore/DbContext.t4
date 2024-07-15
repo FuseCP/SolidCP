@@ -138,7 +138,7 @@ namespace <#= NamespaceHint.Replace(".Data.Configuration.Sources", ".Context") #
 
             switch (options.DbType)
             {
-                case Data.DbType.MsSql:
+                case Data.DbType.SqlServer:
                     builder.UseSqlServer(options.ConnectionString);
                     break;
                 case Data.DbType.SqlLite:
@@ -483,7 +483,7 @@ namespace SolidCP.EnterpriseServer.Data {
     else tmpVarName = $"_{ccTmpVarName}";
 #>
         DbSet<<#= entityType.Name #>> <#= tmpVarName #> = null;
-        public virtual DbSet<<#= entityType.Name #>> <#= entityType.GetDbSetName() #> => <#= tmpVarName #> ?? (<#= tmpVarName #> = Set<<#= entityType.Name #>>());
+        public virtual DbSet<<#= entityType.Name #>> <#= entityType.GetDbSetName() #> => <#= tmpVarName #> ??= Set<<#= entityType.Name #>>();
 
 <#
     }

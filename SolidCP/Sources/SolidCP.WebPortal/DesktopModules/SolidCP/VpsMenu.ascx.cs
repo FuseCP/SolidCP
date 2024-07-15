@@ -102,6 +102,9 @@ namespace SolidCP.Portal
                 || (cntx.Quotas.ContainsKey(Quotas.PROXMOX_PRIVATE_NETWORK_ENABLED)
                 && !cntx.Quotas[Quotas.PROXMOX_PRIVATE_NETWORK_ENABLED].QuotaExhausted))
                 vpsItems.Add(CreateMenuItem("PrivateNetwork", "vdc_private_network"));
+            if ((cntx.Quotas.ContainsKey(Quotas.VPS2012_DMZ_NETWORK_ENABLED)
+                && !cntx.Quotas[Quotas.VPS2012_DMZ_NETWORK_ENABLED].QuotaExhausted))
+                vpsItems.Add(CreateMenuItem("DmzNetwork", "vdc_dmz_network"));
             vpsItems.Add(CreateMenuItem("AuditLog", "vdc_audit_log"));
         }
         private MenuItem CreateMenuItem(string text, string key)

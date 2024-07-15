@@ -22,6 +22,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Tasks
         internal void CreateVirtualMachineNewTask(string taskId, VirtualMachine vm, LibraryItem osTemplate,
                 int externalAddressesNumber, bool randomExternalAddresses, int[] externalAddresses,
                 int privateAddressesNumber, bool randomPrivateAddresses, string[] privateAddresses,
+                int dmzAddressesNumber, bool randomDmzAddresses, string[] dmzAddresses,
                 string summaryLetterEmail)
         {
             // start task
@@ -30,7 +31,8 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Tasks
             TaskManager.StartTask(taskId, "VPS2012", "CREATE", vm.Name, vm.Id, vm.PackageId, maximumExecutionSeconds);
 
             CreateVirtualMachineInternal(taskId, vm, osTemplate, externalAddressesNumber, randomExternalAddresses, externalAddresses,
-                privateAddressesNumber, randomPrivateAddresses, privateAddresses, summaryLetterEmail);
+                privateAddressesNumber, randomPrivateAddresses, privateAddresses,
+                dmzAddressesNumber, randomDmzAddresses, dmzAddresses, summaryLetterEmail);
 
             // complete task
             TaskManager.CompleteTask();
@@ -39,6 +41,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Tasks
         internal void CreateVirtualMachineContinueTask(string taskId, VirtualMachine vm, LibraryItem osTemplate,
                 int externalAddressesNumber, bool randomExternalAddresses, int[] externalAddresses,
                 int privateAddressesNumber, bool randomPrivateAddresses, string[] privateAddresses,
+                int dmzAddressesNumber, bool randomDmzAddresses, string[] dmzAddresses,
                 string summaryLetterEmail)
         {
             if (taskId != vm.CurrentTaskId) {
@@ -50,7 +53,8 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Tasks
             }
 
             CreateVirtualMachineInternal(taskId, vm, osTemplate, externalAddressesNumber, randomExternalAddresses, externalAddresses,
-                privateAddressesNumber, randomPrivateAddresses, privateAddresses, summaryLetterEmail);
+                privateAddressesNumber, randomPrivateAddresses, privateAddresses,
+                dmzAddressesNumber, randomDmzAddresses, dmzAddresses, summaryLetterEmail);
 
         }
 
@@ -59,6 +63,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Tasks
         private void CreateVirtualMachineInternal(string taskId, VirtualMachine vm, LibraryItem osTemplate,
                 int externalAddressesNumber, bool randomExternalAddresses, int[] externalAddresses,
                 int privateAddressesNumber, bool randomPrivateAddresses, string[] privateAddresses,
+                int dmzAddressesNumber, bool randomDmzAddresses, string[] dmzAddresses,
                 string summaryLetterEmail)
         {
             // start task
@@ -197,11 +202,6 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Tasks
                         {
                             // provision IP addresses
                             ResultObject extResult = IpAddressPrivateHelper.AddVirtualMachinePrivateIPAddresses(vm.Id, randomPrivateAddresses, privateAddressesNumber, privateAddresses, false, false, null, null, null, null);
-
-                            // set primary IP address
-                            privNic = NetworkAdapterDetailsHelper.GetPrivateNetworkAdapterDetails(vm.Id);
-                            if (privNic.IPAddresses.Length > 0)
-                                IpAddressPrivateHelper.SetVirtualMachinePrimaryPrivateIPAddress(vm.Id, privNic.IPAddresses[0].AddressId, false);
                         }
 
                         // connecto to network
@@ -224,6 +224,46 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Tasks
                 catch (Exception ex)
                 {
                     TaskManager.WriteError(ex, "VPS_CREATE_SETUP_PRIVATE_NETWORK_ERROR");
+                    return;
+                }
+                #endregion
+
+                #region Setup DMZ network
+                TaskManager.Write("VPS_CREATE_SETUP_DMZ_NETWORK");
+                TaskManager.IndicatorCurrent = 60;
+
+                try
+                {
+                    if (vm.DmzNetworkEnabled)
+                    {
+                        NetworkAdapterDetails dmzNic = NetworkAdapterDetailsHelper.GetDmzNetworkDetailsInternal(vm.ServiceId);
+
+                        if (!dmzNic.IsDHCP)
+                        {
+                            // provision IP addresses
+                            ResultObject extResult = IpAddressPrivateHelper.AddVirtualMachineDmzIPAddresses(vm.Id, randomDmzAddresses, dmzAddressesNumber, dmzAddresses, false, false, null, null, null, null);
+                        }
+
+                        // connecto to network
+                        vm.DmzSwitchId = settings["DmzNetworkId"];
+
+                        if (string.IsNullOrEmpty(vm.DmzSwitchId))
+                        {
+                            // create/load private virtual switch
+                            vm.DmzSwitchId = VirtualizationHelper.EnsureDmzVirtualSwitch(vm);
+                            if (vm.DmzSwitchId == null)
+                                return; // exit on error
+                        }
+                        vm.DmzNicMacAddress = NetworkHelper.GenerateMacAddress();
+                    }
+                    else
+                    {
+                        TaskManager.Write("VPS_CREATE_SETUP_DMZ_NETWORK_SKIP");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    TaskManager.WriteError(ex, "VPS_CREATE_SETUP_DMZ_NETWORK_ERROR");
                     return;
                 }
                 #endregion
@@ -580,6 +620,16 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Tasks
 
                         if (result.ReturnValue != ReturnCode.JobStarted)
                             TaskManager.WriteWarning("VPS_CREATE_SET_PRIVATE_NIC_KVP_ERROR", result.ReturnValue.ToString());
+                    }
+
+                    // DMZ NIC
+                    TaskManager.Write("VPS_CREATE_SET_DMZ_NIC_KVP");
+                    if (vm.DmzNetworkEnabled)
+                    {
+                        result = KvpExchangeHelper.SendNetworkAdapterKVP(vm.Id, "DMZ");
+
+                        if (result.ReturnValue != ReturnCode.JobStarted)
+                            TaskManager.WriteWarning("VPS_CREATE_SET_DMZ_NIC_KVP_ERROR", result.ReturnValue.ToString());
                     }
                 }
                 #endregion

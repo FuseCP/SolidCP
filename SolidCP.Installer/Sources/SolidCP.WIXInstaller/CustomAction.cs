@@ -47,12 +47,14 @@ using System.ServiceProcess;
 using System.Text;
 using System.Xml;
 
-using Microsoft.Deployment.WindowsInstaller;
+//using Microsoft.Deployment.WindowsInstaller;
+using WixToolset.Dtf.WindowsInstaller;
 
 using SolidCP.Setup;
 using SolidCP.Setup.Internal;
 using SolidCP.WIXInstaller.Common;
 using SolidCP.WIXInstaller.Common.Util;
+using SolidCP.UniversalInstaller.Core;
 
 namespace SolidCP.WIXInstaller
 {
@@ -937,7 +939,7 @@ namespace SolidCP.WIXInstaller
         #endregion
         private static string GetConnectionString(string serverName, string databaseName, string login = null, string password = null)
         {
-            return SqlUtils.BuildDbServerConnectionString(serverName, databaseName, login, password);
+            return SqlUtils.BuildMsSqlServerConnectionString(serverName, databaseName, login, password);
         }
         private static void AddCheck(ListViewCtrl view, Session session, string PropertyID)
         {

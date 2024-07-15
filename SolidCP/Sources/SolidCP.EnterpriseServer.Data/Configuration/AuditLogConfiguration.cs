@@ -19,7 +19,7 @@ public partial class AuditLogConfiguration: EntityTypeConfiguration<AuditLog>
 		Property(e => e.RecordId).IsUnicode(false);
 		Property(e => e.SourceName).IsUnicode(false);
 		Property(e => e.TaskName).IsUnicode(false);
-		if (IsMsSql)
+		if (IsSqlServer)
 		{
 			Property(e => e.StartDate).HasColumnType("datetime");
 			Property(e => e.FinishDate).HasColumnType("datetime");

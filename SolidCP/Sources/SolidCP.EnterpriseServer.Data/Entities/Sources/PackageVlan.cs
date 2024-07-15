@@ -27,6 +27,8 @@ public partial class PackageVlan
     [Column("PackageID")]
     public int PackageId { get; set; }
 
+    public bool IsDmz { get; set; }
+
     [ForeignKey("PackageId")]
     [InverseProperty("PackageVlans")]
     public virtual Package Package { get; set; }

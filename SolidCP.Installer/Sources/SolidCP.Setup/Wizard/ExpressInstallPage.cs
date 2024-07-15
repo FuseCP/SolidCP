@@ -42,20 +42,18 @@ using System.Xml;
 using System.Threading;
 using System.Windows.Forms;
 using System.Linq;
+using System.Reflection;
+using System.Collections.Specialized;
 
 using SolidCP.Setup.Common;
 using SolidCP.Setup.Web;
 using SolidCP.Setup.Windows;
-using System.Data.SqlClient;
-
 using SolidCP.EnterpriseServer;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.ResultObjects;
 using SolidCP.Providers.OS;
-using System.Reflection;
-using System.Collections.Specialized;
 using SolidCP.Setup.Actions;
-using System.Diagnostics;
+using SolidCP.EnterpriseServer.Data;
 
 namespace SolidCP.Setup
 {
@@ -678,7 +676,7 @@ namespace SolidCP.Setup
 				}
 
 				string query = string.Format("INSERT INTO Licenses ( SerialNumber ) VALUES ('{0}')", licenseKey);
-				SqlUtils.ExecuteQuery(connectionString, query);
+				DatabaseUtils.ExecuteQuery(connectionString, query);
 
 				Log.WriteEnd("Updated license information");
 				InstallLog.AppendLine("- Updated license information");
@@ -951,10 +949,10 @@ namespace SolidCP.Setup
 
 					string connectionString = Wizard.SetupVariables.DbInstallConnectionString;
 					//check SQL version
-					if (SqlUtils.CheckSqlConnection(connectionString))
+					if (DatabaseUtils.CheckSqlConnection(connectionString))
 					{
 						// check SQL server version
-						string sqlVersion = SqlUtils.GetSqlServerVersion(connectionString);
+						string sqlVersion = DatabaseUtils.GetSqlServerVersion(connectionString);
 						if (sqlVersion.StartsWith("9."))
 						{
 							serviceInfo.ProviderId = 16;
@@ -1542,13 +1540,13 @@ namespace SolidCP.Setup
 
 					string loginName = string.Format("{0}\\{1}", domain, userAccount);
 
-					if (!SqlUtils.LoginExists(connectionString, loginName))
+					if (!DatabaseUtils.LoginExists(connectionString, loginName))
 					{
 						query = string.Format("CREATE LOGIN [{0}] FROM WINDOWS WITH DEFAULT_DATABASE=[master]", loginName);
-						SqlUtils.ExecuteQuery(connectionString, query);
+						DatabaseUtils.ExecuteQuery(connectionString, query);
 					}
 					query = string.Format("EXEC master..sp_addsrvrolemember @loginame = N'{0}', @rolename = N'sysadmin'", loginName);
-					SqlUtils.ExecuteQuery(connectionString, query);
+					DatabaseUtils.ExecuteQuery(connectionString, query);
 					
 					AppConfig.SetComponentSettingStringValue(Wizard.SetupVariables.EnterpriseServerComponentId, "DatabaseLogin", loginName);
 					
@@ -1607,7 +1605,7 @@ namespace SolidCP.Setup
 				}
 
 				string query = string.Format("UPDATE Users SET Password = '{0}' WHERE UserID = 1", password);
-				SqlUtils.ExecuteQuery(connectionString, query);
+				DatabaseUtils.ExecuteQuery(connectionString, query);
 
 				Log.WriteEnd("Updated serveradmin password");
 				InstallLog.AppendLine("- Updated password for the serveradmin account");
@@ -2272,7 +2270,7 @@ namespace SolidCP.Setup
 				Log.WriteStart(string.Format("Backing up database \"{0}\"", database));
 				string bakFile;
 				string position;
-				SqlUtils.BackupDatabase(connectionString, database, out bakFile, out position);
+				DatabaseUtils.BackupDatabase(connectionString, database, out bakFile, out position);
 				Log.WriteEnd("Backed up database");
 				InstallLog.AppendLine(string.Format("- Backed up {0} database", database));
 				RollBack.RegisterDatabaseBackupAction(connectionString, database, bakFile, position);
@@ -2497,10 +2495,10 @@ namespace SolidCP.Setup
 		{
 			Log.WriteStart(string.Format("Creating database user {0}", userName));
 
-			if (SqlUtils.UserExists(connectionString, userName))
+			if (DatabaseUtils.UserExists(connectionString, userName))
 				throw new Exception(string.Format("Database user {0} already exists", userName)); 
 			
-			bool userCreated = SqlUtils.CreateUser(connectionString, userName, password, database);
+			bool userCreated = DatabaseUtils.CreateUser(connectionString, userName, password, database);
 
 			// save user details
 			string componentId = Wizard.SetupVariables.ComponentId;
@@ -2596,11 +2594,11 @@ namespace SolidCP.Setup
 
 				Log.WriteStart("Creating SQL Server database");
 				Log.WriteInfo(string.Format("Creating SQL Server database \"{0}\"", database));
-				if (SqlUtils.DatabaseExists(connectionString, database))
+				if (DatabaseUtils.DatabaseExists(connectionString, database))
 				{
 					throw new Exception(string.Format("SQL Server database \"{0}\" already exists", database));
 				}
-				SqlUtils.CreateDatabase(connectionString, database);
+				DatabaseUtils.CreateDatabase(connectionString, database);
 				Log.WriteEnd("Created SQL Server database");
 				
 				// rollback

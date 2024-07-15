@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Diagnostics;
 
-namespace SolidCP.Server.Tests
+namespace SolidCP.Tests
 {
     public class IISExpress: IDisposable
     {
@@ -17,7 +17,8 @@ namespace SolidCP.Server.Tests
             var iisExprPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "IIS Express");
             var appcmd = Path.Combine(iisExprPath, "AppCmd.exe");
             var iisexpress = Path.Combine(iisExprPath, "iisexpress.exe");
-            var server = new DirectoryInfo(@"..\..\..\..\SolidCP.EnterpriseServer").FullName;
+            var server = TestWebSite.Path;
+            
             // setup iis express
             Process.Start(appcmd, "delete site enterprise.tests").WaitForExit();
             Process.Start(appcmd, $"add site /name:enterprise.tests /physicalPath:\"{server}\" /bindings:http/*:9033:localhost,https/*:44332:localhost").WaitForExit();
@@ -28,7 +29,7 @@ namespace SolidCP.Server.Tests
                 CreateNoWindow = false,
                 UseShellExecute = true,
                 WindowStyle = ProcessWindowStyle.Normal,
-                WorkingDirectory = new DirectoryInfo(@"..\..\..\..\SolidCP.EnterpriseServer\bin\net.core").FullName,
+                WorkingDirectory = Path.GetDirectoryName(server),
                 Arguments = "/site:enterprise.tests"
             };
             process = Process.Start(startInfo);
@@ -56,6 +57,10 @@ namespace SolidCP.Server.Tests
             if (process != null && !process.HasExited) process.Kill();
             process = null;
         }
+
+        public static void Start() { }
+
+        public static readonly IISExpress Current = new IISExpress();
 
     }
 }

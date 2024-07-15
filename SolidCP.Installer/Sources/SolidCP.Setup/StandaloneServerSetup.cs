@@ -37,9 +37,13 @@ using System.Configuration;
 using System.Windows.Forms;
 using System.Collections;
 using System.Text;
+using System.Threading;
+using System.Security.Cryptography;
+using System.Security.Policy;
 using SolidCP.Setup.Web;
 using SolidCP.Setup.Actions;
-using System.Threading;
+using Data = SolidCP.EnterpriseServer.Data;
+using SolidCP.UniversalInstaller.Core;
 
 namespace SolidCP.Setup
 {
@@ -208,12 +212,36 @@ namespace SolidCP.Setup
 					}
 					//
 					esServerSetup.Database = Utils.GetStringSetupParameter(args, Global.Parameters.DatabaseName);
+					Data.DbType dbType = Data.DbType.Unknown;
+					Enum.TryParse(Utils.GetStringSetupParameter(args, Global.Parameters.DatabaseType), out dbType);
+					esServerSetup.DatabaseType = dbType;
+					esServerSetup.DatabasePort = (int)(Utils.GetSetupParameter(args, Global.Parameters.DatabasePort) ?? 0);
 					esServerSetup.DatabaseServer = Utils.GetStringSetupParameter(args, Global.Parameters.DatabaseServer);
-					esServerSetup.DbInstallConnectionString = SqlUtils.BuildDbServerMasterConnectionString(
-						esServerSetup.DatabaseServer,
-						Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdmin),
-						Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdminPassword)
-					);
+
+					switch (dbType)
+					{
+						case Data.DbType.SqlServer:
+							// DB_LOGIN, DB_PASSWORD.
+							bool WinAuth = Utils.GetStringSetupParameter(args, "DbAuth").ToLowerInvariant().Equals("Windows Authentication".ToLowerInvariant());
+							esServerSetup.DbInstallConnectionString = Data.DatabaseUtils.BuildSqlServerMasterConnectionString(
+														esServerSetup.DatabaseServer,
+														WinAuth ? null : Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdmin),
+														WinAuth ? null : Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdminPassword));
+							break;
+						case Data.DbType.MySql:
+						case Data.DbType.MariaDb:
+							esServerSetup.DbInstallConnectionString = Data.DatabaseUtils.BuildMySqlMasterConnectionString(
+														esServerSetup.DatabaseServer,
+														esServerSetup.DatabasePort,
+														Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdmin),
+														Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdminPassword));
+							break;
+						case Data.DbType.Sqlite:
+						case Data.DbType.SqliteFX:
+							esServerSetup.DbInstallConnectionString = Data.DatabaseUtils.BuildSqliteMasterConnectionString(esServerSetup.Database, esServerSetup.InstallationFolder, esServerSetup.EnterpriseServerPath, esServerSetup.EmbedEnterpriseServer);
+							break;
+						default: throw new NotSupportedException("This database type is not supported.");
+					}
 
 					//
 					stdssam.ActionError += new EventHandler<ActionErrorEventArgs>((object sender, ActionErrorEventArgs e) =>
@@ -275,20 +303,21 @@ namespace SolidCP.Setup
 				var page3 = new WebPage { SetupVariables = portalSetup };
 				var page4 = new InsecureHttpWarningPage() { SetupVariables = portalSetup };
 				var page5 = new CertificatePage { SetupVariables = portalSetup };
+				var page6 = new EmbedEnterpriseServerPage { SetupVariables = portalSetup };
 				// Assign EnterpriseServer setup variables set to acquire corresponding settings
-				var page6 = new DatabasePage { SetupVariables = esServerSetup };
+				var page7 = new DatabasePage { SetupVariables = esServerSetup };
 				// Assign EnterpriseServer setup variables set to acquire corresponding settings
-				var page7 = new ServerAdminPasswordPage
+				var page8 = new ServerAdminPasswordPage
 				{
 					SetupVariables = esServerSetup,
 					NoteText = "Note: Both serveradmin and admin accounts will use this password. You can always change password for serveradmin or admin accounts through control panel."
 				};
 				//
-				var page8 = new ExpressInstallPage2();
+				var page9 = new ExpressInstallPage2();
 				// Assign WebPortal setup variables set to acquire corresponding settings
-				var page9 = new SetupCompletePage { SetupVariables = portalSetup };
+				var page10 = new SetupCompletePage { SetupVariables = portalSetup };
 				//
-				wizard.Controls.AddRange(new Control[] { introPage, licPage, page2, page3, page4, page5, page6, page7, page8, page9 });
+				wizard.Controls.AddRange(new Control[] { introPage, licPage, page2, page3, page4, page5, page6, page7, page8, page9, page10 });
 				wizard.LinkPages();
 				wizard.SelectedPage = introPage;
 				// Run wizard

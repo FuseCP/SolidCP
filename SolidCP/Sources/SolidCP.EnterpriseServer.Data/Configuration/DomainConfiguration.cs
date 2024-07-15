@@ -19,7 +19,7 @@ public partial class DomainConfiguration: EntityTypeConfiguration<Domain>
 
     public override void Configure() {
 
-		if (IsMsSql)
+		if (IsSqlServer)
 		{
 			Property(e => e.CreationDate).HasColumnType("datetime");
 			Property(e => e.ExpirationDate).HasColumnType("datetime");

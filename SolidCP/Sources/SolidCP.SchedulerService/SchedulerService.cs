@@ -67,7 +67,10 @@ namespace SolidCP.SchedulerService
 
             try
             {
-                Scheduler.Start();
+                using (var scheduler = new Scheduler())
+                {
+                    scheduler.Start();
+                }
             }
             finally
             {

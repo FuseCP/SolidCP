@@ -1,3 +1,4 @@
 # Set line endings to LF for unix shell scripts, even on Windows.
 # See https://help.github.com/articles/dealing-with-line-endings/
 *.sh text eol=lf
+*.bat text eol=crlf

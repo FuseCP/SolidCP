@@ -156,7 +156,7 @@
             <FilesToMove Include="bin\SkiaSharp.*" />
             <FilesToDelete Include="bin\WebServices\**\*.*" />
             <FilesToDelete Include="bin_dotnet\WebServices\**\*.*" />
-            <FilesToDelete Include="bin\refs\**\*.*" />
+            <!--<FilesToDelete Include="bin\refs\**\*.*" />-->
         </ItemGroup>
         
         <Delete Files="@(FilesToDelete)" ContinueOnError="true" />

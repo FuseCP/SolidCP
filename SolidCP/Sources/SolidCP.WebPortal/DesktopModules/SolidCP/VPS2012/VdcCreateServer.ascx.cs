@@ -97,6 +97,13 @@ namespace SolidCP.Portal.VPS2012
                 wizard.WizardSteps.Remove(stepPrivateNetwork);
                 chkPrivateNetworkEnabled.Checked = false;
             }
+
+            // dmz network
+            if (!PackagesHelper.IsQuotaEnabled(PanelSecurity.PackageId, Quotas.VPS2012_DMZ_NETWORK_ENABLED))
+            {
+                wizard.WizardSteps.Remove(stepDmzNetwork);
+                chkDmzNetworkEnabled.Checked = false;
+            }
         }
 
         private bool IsMailConfigured(UserInfo user)
@@ -252,8 +259,10 @@ namespace SolidCP.Portal.VPS2012
                 {
                     if (!String.IsNullOrEmpty(item.ExternalIP) && !String.IsNullOrEmpty(item.IPAddress))
                     {
+                        if (!item.IPAddress.Equals(txtGateway.Text)) chkCustomGateway.Checked = true;
                         txtGateway.Text = item.IPAddress;
                         txtDNS1.Text = item.IPAddress;
+                        litPrivateNetworkFormat.Text = item.IPAddress;
                         VirtualMachine vm = ES.Services.VPS2012.GetVirtualMachineItem(item.ItemID);
                         if (vm != null && !String.IsNullOrEmpty(vm.CustomPrivateMask)) txtMask.Text = vm.CustomPrivateMask;
                         break;
@@ -287,6 +296,60 @@ namespace SolidCP.Portal.VPS2012
                 }
             }
 
+            // dmz network
+            if (PackagesHelper.IsQuotaEnabled(PanelSecurity.PackageId, Quotas.VPS2012_DMZ_NETWORK_ENABLED))
+            {
+                NetworkAdapterDetails nic = ES.Services.VPS2012.GetDmzNetworkDetails(PanelSecurity.PackageId);
+                litDmzNetworkFormat.Text = nic.NetworkFormat;
+                litDmzSubnetMask.Text = nic.SubnetMask;
+                txtDmzGateway.Text = nic.DefaultGateway;
+                txtDmzDNS1.Text = nic.PreferredNameServer;
+                txtDmzDNS2.Text = nic.AlternateNameServer;
+                txtDmzMask.Text = nic.SubnetMask;
+
+                //firewall find
+                VirtualMachines2012Helper vmh = new VirtualMachines2012Helper();
+                VirtualMachineMetaItem[] machines = vmh.GetVirtualMachines(PanelSecurity.PackageId, "", "", "SI.ItemID", 20, 0);
+                foreach (var item in machines)
+                {
+                    if (!String.IsNullOrEmpty(item.ExternalIP) && !String.IsNullOrEmpty(item.DmzIP))
+                    {
+                        if (!item.DmzIP.Equals(txtDmzGateway.Text)) chkDmzCustomGateway.Checked = true;
+                        txtDmzGateway.Text = item.DmzIP;
+                        txtDmzDNS1.Text = item.DmzIP;
+                        litDmzNetworkFormat.Text = item.DmzIP;
+                        VirtualMachine vm = ES.Services.VPS2012.GetVirtualMachineItem(item.ItemID);
+                        if (vm != null && !String.IsNullOrEmpty(vm.CustomDmzMask)) txtDmzMask.Text = vm.CustomDmzMask;
+                        break;
+                    }
+                }
+
+                // set max number
+                QuotaValueInfo dmzQuota = cntx.Quotas[Quotas.VPS2012_DMZ_IP_ADDRESSES_NUMBER];
+                int maxDmz = dmzQuota.QuotaAllocatedValue;
+                if (maxDmz == -1)
+                    maxDmz = 10;
+
+                // handle DHCP mode
+                if (nic.IsDHCP)
+                {
+                    maxDmz = 0;
+                    ViewState["DHCP"] = true;
+                }
+
+                txtDmzAddressesNumber.Text = "1";
+                litMaxDmzAddresses.Text = String.Format(GetLocalizedString("litMaxDmzAddresses.Text"), maxDmz);
+
+                listDmzNetworkVLAN.Items.Clear();
+                PackageVLANsPaged vlans = ES.Services.Servers.GetPackageDmzNetworkVLANs(PanelSecurity.PackageId, "", 0, Int32.MaxValue);
+                if (vlans != null && vlans.Count > 0)
+                {
+                    foreach (PackageVLAN vlan in vlans.Items)
+                    {
+                        listDmzNetworkVLAN.Items.Add(new ListItem(String.Format("VLAN {0}", vlan.Vlan.ToString()), vlan.Vlan.ToString()));
+                    }
+                }
+            }
 
 
             // RAM size
@@ -415,6 +478,13 @@ namespace SolidCP.Portal.VPS2012
             PrivateAddressesListRow.Visible = radioPrivateSelected.Checked;
             listPrivateNetworkVLAN.Visible = listPrivateNetworkVLAN.Items.Count > 1;
             trCustomGateway.Visible = chkCustomGateway.Checked;
+
+            // dmz network
+            tableDmzNetwork.Visible = chkDmzNetworkEnabled.Checked && (ViewState["DHCP"] == null);
+            DmzAddressesNumberRow.Visible = radioDmzRandom.Checked;
+            DmzAddressesListRow.Visible = radioDmzSelected.Checked;
+            listDmzNetworkVLAN.Visible = listDmzNetworkVLAN.Items.Count > 1;
+            trDmzCustomGateway.Visible = chkDmzCustomGateway.Checked;
         }
 
         private void BindExternalIps()
@@ -522,6 +592,16 @@ namespace SolidCP.Portal.VPS2012
             string[] privIps = Utils.ParseDelimitedString(txtPrivateAddressesList.Text, '\n', '\r', ' ', '\t');
 
             litPrivateAddressesList.Text = PortalAntiXSS.Encode(String.Join(", ", privIps));
+
+            // dmz network
+            optionDmzNetwork.Value = chkDmzNetworkEnabled.Checked;
+            SummDmzAddressesNumberRow.Visible = radioDmzRandom.Checked && chkDmzNetworkEnabled.Checked && (ViewState["DHCP"] == null);
+            litDmzAddressesNumber.Text = PortalAntiXSS.Encode(txtDmzAddressesNumber.Text.Trim());
+            SummDmzAddressesListRow.Visible = radioDmzSelected.Checked && chkDmzNetworkEnabled.Checked && (ViewState["DHCP"] == null);
+
+            string[] dmzIps = Utils.ParseDelimitedString(txtDmzAddressesList.Text, '\n', '\r', ' ', '\t');
+
+            litDmzAddressesList.Text = PortalAntiXSS.Encode(String.Join(", ", dmzIps));
         }
 
         protected void wizard_FinishButtonClick(object sender, WizardNavigationEventArgs e)
@@ -564,6 +644,7 @@ namespace SolidCP.Portal.VPS2012
                 virtualMachine.ExternalNetworkEnabled = false; //setting up after
                 virtualMachine.ExternalNicMacAddress = txtExternalMACAddress.Text.Trim().Replace(" ", "").Replace(":", "").Replace("-", "");
                 virtualMachine.PrivateNetworkEnabled = chkPrivateNetworkEnabled.Checked;
+                virtualMachine.DmzNetworkEnabled = chkDmzNetworkEnabled.Checked;
 
 
                 string adminPassword = (string)ViewState["Password"];
@@ -575,6 +656,9 @@ namespace SolidCP.Portal.VPS2012
 
                 // private IPs
                 string[] privIps = Utils.ParseDelimitedString(txtPrivateAddressesList.Text, '\n', '\r', ' ', '\t');
+
+                // dmz IPs
+                string[] dmzIps = Utils.ParseDelimitedString(txtDmzAddressesList.Text, '\n', '\r', ' ', '\t');
 
                 string summaryEmail = chkSendSummary.Checked ? txtSummaryEmail.Text.Trim() : null;
 
@@ -600,11 +684,26 @@ namespace SolidCP.Portal.VPS2012
                     virtualMachine.CustomPrivateMask = txtMask.Text;
                 }
 
+                // set dmz network vlan
+                if (listDmzNetworkVLAN.Items.Count > 0)
+                {
+                    virtualMachine.DmzNetworkVlan = Convert.ToInt32(listDmzNetworkVLAN.SelectedValue);
+                }
+
+                if (chkDmzCustomGateway.Checked)
+                {
+                    virtualMachine.CustomDmzGateway = txtDmzGateway.Text;
+                    virtualMachine.CustomDmzDNS1 = txtDmzDNS1.Text;
+                    virtualMachine.CustomDmzDNS2 = txtDmzDNS2.Text;
+                    virtualMachine.CustomDmzMask = txtDmzMask.Text;
+                }
+
                 // create virtual machine
                 IntResult res = ES.Services.VPS2012.CreateNewVirtualMachine(virtualMachine,
                     listOperatingSystems.SelectedValue, adminPassword, summaryEmail,
                     Utils.ParseInt(txtExternalAddressesNumber.Text.Trim()), radioExternalRandom.Checked, extIps.ToArray(),
-                    Utils.ParseInt(txtPrivateAddressesNumber.Text.Trim()), radioPrivateRandom.Checked, privIps
+                    Utils.ParseInt(txtPrivateAddressesNumber.Text.Trim()), radioPrivateRandom.Checked, privIps,
+                    Utils.ParseInt(txtDmzAddressesNumber.Text.Trim()), radioDmzRandom.Checked, dmzIps
                     );
                 //IntResult res = ES.Services.VPS2012.CreateVirtualMachine(PanelSecurity.PackageId,
                 //    hostname, listOperatingSystems.SelectedValue, adminPassword, summaryEmail,

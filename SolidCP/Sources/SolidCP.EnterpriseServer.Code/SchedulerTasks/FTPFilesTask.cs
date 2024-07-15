@@ -52,8 +52,10 @@ namespace SolidCP.EnterpriseServer
 
             BackgroundTask topTask = TaskManager.TopTask;
 
-            // get input parameters
-            string filePath = (string)topTask.GetParamValue("FILE_PATH");
+			// get input parameters
+			string username = (string)topTask.GetParamValue("USERNAME");
+			string password = (string)topTask.GetParamValue("PASSWORD");
+			string filePath = (string)topTask.GetParamValue("FILE_PATH");
             string ftpServer = (string)topTask.GetParamValue("FTP_SERVER");
             string ftpUsername = (string)topTask.GetParamValue("FTP_USERNAME");
             string ftpPassword = (string)topTask.GetParamValue("FTP_PASSWORD");
@@ -131,7 +133,8 @@ namespace SolidCP.EnterpriseServer
 
             Server.Client.OperatingSystem winServer = new Server.Client.OperatingSystem();
             ServiceProviderProxy.ServerInit(winServer, service.ServerId);
-            TaskManager.Write(winServer.ExecuteSystemCommand("ftp.exe", "-s:" + fullCmdPath));
+            //TODO implement this as a method of OperatingSystem
+            TaskManager.Write(winServer.ExecuteSystemCommand(username, password, "ftp.exe", "-s:" + fullCmdPath));
 
             // delete batch file
             FilesController.DeleteFiles(topTask.PackageId, new string[] { cmdPath });

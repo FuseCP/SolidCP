@@ -15,9 +15,9 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 public partial class BackgroundTaskLogConfiguration: EntityTypeConfiguration<BackgroundTaskLog>
 {
     public override void Configure() {
-        HasKey(e => e.LogId).HasName("PK__Backgrou__5E5499A830A1D5BF");
+		HasKey(e => e.LogId).HasName("PK__Backgrou__5E5499A86067A6E5");
 
-        if (IsMsSql)
+		if (IsSqlServer)
         {
             Property(e => e.Date).HasColumnType("datetime");
 			Property(e => e.Text).HasColumnType("ntext");
@@ -32,9 +32,9 @@ public partial class BackgroundTaskLogConfiguration: EntityTypeConfiguration<Bac
 #if NetCore // EF Core
 		HasOne(d => d.Task).WithMany(p => p.BackgroundTaskLogs)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Backgroun__TaskI__06ADD4BD");
+                .HasConstraintName("FK__Backgroun__TaskI__7D8391DF");
 #else
-        HasRequired(d => d.Task).WithMany(p => p.BackgroundTaskLogs);
+		HasRequired(d => d.Task).WithMany(p => p.BackgroundTaskLogs);
 #endif
     }
 }

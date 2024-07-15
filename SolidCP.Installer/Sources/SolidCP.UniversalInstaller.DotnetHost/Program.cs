@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Security.Cryptography.X509Certificates;
 
-namespace SolidCP.UniversalInstaller.Core
+namespace SolidCP.UniversalInstaller.Core.DotnetHost
 {
 	public class Program
 	{

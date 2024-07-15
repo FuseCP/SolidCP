@@ -243,4 +243,7 @@
   <data name="lblHddMinIOPS.Text" xml:space="preserve">
     <value>Minimum:</value>
   </data>
+  <data name="optionDmzNetwork.Text" xml:space="preserve">
+    <value>DMZ network enabled</value>
+  </data>
 </root>

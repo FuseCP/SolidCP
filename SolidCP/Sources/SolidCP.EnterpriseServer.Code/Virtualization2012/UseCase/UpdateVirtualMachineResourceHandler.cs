@@ -95,10 +95,11 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
 
             QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_EXTERNAL_NETWORK_ENABLED, vmSettings.ExternalNetworkEnabled, VirtualizationErrorCodes.QUOTA_EXCEEDED_EXTERNAL_NETWORK_ENABLED);
             QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_PRIVATE_NETWORK_ENABLED, vmSettings.PrivateNetworkEnabled, VirtualizationErrorCodes.QUOTA_EXCEEDED_PRIVATE_NETWORK_ENABLED);
+            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_DMZ_NETWORK_ENABLED, vmSettings.DmzNetworkEnabled, VirtualizationErrorCodes.QUOTA_EXCEEDED_DMZ_NETWORK_ENABLED);
 
             // check acceptable values
-            if (vmSettings.RamSize <= 0)
-                quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_RAM);
+            if (vmSettings.RamSize < 32)
+                quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_RAM_HV);
             foreach (var hddSize in vmSettings.HddSize)
             {
                 if (hddSize <= 0)
@@ -155,8 +156,10 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
 
                 vm.ExternalNetworkEnabled = vmSettings.ExternalNetworkEnabled;
                 vm.PrivateNetworkEnabled = vmSettings.PrivateNetworkEnabled;
+                vm.DmzNetworkEnabled = vmSettings.DmzNetworkEnabled;
                 vm.defaultaccessvlan = vmSettings.defaultaccessvlan;
                 vm.PrivateNetworkVlan = vmSettings.PrivateNetworkVlan;
+                vm.DmzNetworkVlan = vmSettings.DmzNetworkVlan;
                 /////////////////////////////////////////////
 
                 // dynamic memory
@@ -199,6 +202,22 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
                         vm.PrivateSwitchId = VirtualizationHelper.EnsurePrivateVirtualSwitch(vm);
                     }
                     vm.PrivateNicMacAddress = NetworkHelper.GenerateMacAddress();
+                }
+                #endregion
+
+                #region setup DMZ network
+                if (vm.DmzNetworkEnabled
+                    && String.IsNullOrEmpty(vm.DmzNicMacAddress))
+                {
+                    // connecto to network
+                    vm.DmzSwitchId = settings["DmzNetworkId"];
+
+                    if (String.IsNullOrEmpty(vm.DmzSwitchId))
+                    {
+                        // create/load DMZ virtual switch
+                        vm.DmzSwitchId = VirtualizationHelper.EnsureDmzVirtualSwitch(vm);
+                    }
+                    vm.DmzNicMacAddress = NetworkHelper.GenerateMacAddress();
                 }
                 #endregion
 
@@ -277,6 +296,9 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
                 //else //why should we do that??
                 //    // send KVP config items
                 //    SendNetworkAdapterKVP(itemId, "Private");
+
+                if (!vm.DmzNetworkEnabled)
+                    Database.DeleteItemDmzIPAddresses(SecurityContext.User.UserId, itemId);
 
                 // start if required
                 if (wasStarted && !isSuccessChangedWihoutReboot)

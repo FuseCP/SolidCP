@@ -1,0 +1,70 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <ProjectGuid>{C09CE910-F16B-48A1-B2CC-C99B8C1CF775}</ProjectGuid>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>
+        <TargetFrameworks>netstandard2.0</TargetFrameworks>
+        <PublishUrl>publish\</PublishUrl>
+        <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+        <OutputPath>..\..\Bin</OutputPath>
+        <Nullable>disable</Nullable>
+        <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+        <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+        <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
+        <LangVersion>12</LangVersion>
+        <EntityFramework6>6.5</EntityFramework6> <!-- Use EntityFramework 6.4 or 6.5 -->
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <DebugType>portable</DebugType>
+        <WarningsAsErrors>618</WarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <DebugType>portable</DebugType>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net48' AND '$(EntityFramework6)' == '6.4'">
+        <DefineConstants>$(DefineConstants);EF64</DefineConstants>
+    </PropertyGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net48' AND '$(EntityFramework6)' == '6.4'">
+        <PackageReference Include="EntityFramework" Version="6.4.4" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net48' AND '$(EntityFramework6)' == '6.5'">
+        <PackageReference Include="EntityFramework" Version="6.5.1" />
+    </ItemGroup>
+    
+    <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
+        <Compile Update="Reports\OverusageReport.Designer.cs">
+            <AutoGen>True</AutoGen>
+            <DesignTime>True</DesignTime>
+            <DependentUpon>OverusageReport.xsd</DependentUpon>
+        </Compile>
+    </ItemGroup>
+    <ItemGroup>
+        <None Include="SolidCP.snk" />
+        <None Include="Reports\OverusageReport.xsc">
+            <DependentUpon>OverusageReport.xsd</DependentUpon>
+        </None>
+        <None Include="Reports\OverusageReport.xsd">
+            <SubType>Designer</SubType>
+            <Generator>MSDataSetGenerator</Generator>
+            <LastGenOutput>OverusageReport.Designer.cs</LastGenOutput>
+        </None>
+        <None Include="Reports\OverusageReport.xss">
+            <DependentUpon>OverusageReport.xsd</DependentUpon>
+        </None>
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
+    </ItemGroup>
+</Project>

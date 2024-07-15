@@ -867,6 +867,9 @@
   <data name="ModuleTitle.VdcAddPrivateNetworkVLAN" xml:space="preserve">
     <value>تخصيص شبكات VLAN</value>
   </data>
+  <data name="ModuleTitle.VdcAddDmzNetworkVLAN" xml:space="preserve">
+    <value>تخصيص شبكات VLAN</value>
+  </data>
   <data name="ModuleTitle.VdcAddExternalAddress" xml:space="preserve">
     <value>تخصيص عناوين IP</value>
   </data>

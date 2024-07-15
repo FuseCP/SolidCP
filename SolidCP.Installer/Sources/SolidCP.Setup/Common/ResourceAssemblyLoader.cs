@@ -6,6 +6,8 @@ using System.Reflection;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using SolidCP.Providers.OS;
+using System.Runtime.InteropServices;
 
 namespace SolidCP.Setup
 {
@@ -23,6 +25,62 @@ namespace SolidCP.Setup
 
 		static Dictionary<string, Assembly> LoadedAssemblies = new Dictionary<string, Assembly>();
 		static ConcurrentDictionary<string, object> Locks = new ConcurrentDictionary<string, object>();
+
+
+		static void AddEnvironmentPaths(IEnumerable<string> paths)
+		{
+			var path = new[] { Environment.GetEnvironmentVariable("PATH") ?? string.Empty };
+
+			paths = paths.Where(p => !string.IsNullOrEmpty(p));
+
+			string newPath = string.Join(Path.PathSeparator.ToString(), path.Concat(paths));
+
+			Environment.SetEnvironmentVariable("PATH", newPath);
+		}
+
+		static void LoadNativeDll(Assembly a, string dllName)
+		{
+			var arch = RuntimeInformation.ProcessArchitecture;
+
+			string file;
+			if (arch == Architecture.X64)
+			{
+				file = $"x64.{dllName}";
+			}
+			else if (arch == Architecture.X86)
+			{
+				file = file = $"x86.{dllName}";
+			}
+			else throw new NotSupportedException($"Architecture {arch} not supported.");
+
+			var executingAssembly = Assembly.GetExecutingAssembly();
+			var resourceName = executingAssembly.GetManifestResourceNames()
+				.FirstOrDefault(r => r.EndsWith(file));
+
+			var tmpPath = Path.Combine(Path.GetTempPath(), "SolidCP.Installer", arch.ToString());
+			var tmpFile = Path.Combine(tmpPath, dllName);
+			if (!Directory.Exists(tmpPath)) Directory.CreateDirectory(tmpPath);
+
+			try
+			{
+				using (var stream = executingAssembly.GetManifestResourceStream(resourceName))
+				using (var fileStream = new FileStream(tmpFile, FileMode.Create, FileAccess.Write))
+				{
+					stream.CopyTo(fileStream);
+				}
+			}
+			catch { }
+
+			AddEnvironmentPaths(new[] { tmpPath });
+		}
+
+		static void LoadNativeDlls(Assembly a)
+		{
+			var name = a.GetName().Name;
+
+			if (name == "System.Data.SQLite") LoadNativeDll(a, "SQLite.Interop.dll");
+			//else if (name == "SkiaSharp") LoadNativeDll(a, "libSkiaSharp.dll");
+		}
 
 		public static Assembly Resolve(object sender, ResolveEventArgs args)
 		{
@@ -85,6 +143,7 @@ namespace SolidCP.Setup
 
 		public static void Init()
 		{
+			AppDomain.CurrentDomain.AssemblyLoad += (sender, args) => LoadNativeDlls(args.LoadedAssembly);
 			AppDomain.CurrentDomain.AssemblyResolve += Resolve;
 		}
 	}

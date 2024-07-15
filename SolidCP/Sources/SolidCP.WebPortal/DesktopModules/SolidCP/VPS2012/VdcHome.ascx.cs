@@ -49,16 +49,18 @@ namespace SolidCP.Portal.VPS2012
                 searchBox.AddCriteria("Username", GetLocalizedString("SearchField.Username"));
                 searchBox.AddCriteria("ExternalIP", GetLocalizedString("SearchField.ExternalIP"));
                 searchBox.AddCriteria("IPAddress", GetLocalizedString("SearchField.IPAddress"));
+                searchBox.AddCriteria("DmzIP", GetLocalizedString("SearchField.DmzIP"));
             }
             searchBox.AjaxData = this.GetSearchBoxAjaxData();
 
             // toggle columns
+            gvServers.Columns[3].Visible = PackagesHelper.IsQuotaEnabled(PanelSecurity.PackageId, Quotas.VPS2012_DMZ_NETWORK_ENABLED);
             bool isUserSelected = PanelSecurity.SelectedUser.Role == SolidCP.EnterpriseServer.UserRole.User;
-            gvServers.Columns[3].Visible = !isUserSelected;
             gvServers.Columns[4].Visible = !isUserSelected;
+            gvServers.Columns[5].Visible = !isUserSelected;
 
             // replication
-            gvServers.Columns[5].Visible = false;
+            gvServers.Columns[6].Visible = false;
             btnReplicaStates.Visible = PackagesHelper.IsQuotaEnabled(PanelSecurity.PackageId, Quotas.VPS2012_REPLICATION_ENABLED);
 
             // check package quotas
@@ -67,11 +69,11 @@ namespace SolidCP.Portal.VPS2012
 
             btnCreate.Visible = manageAllowed;
             btnImport.Visible = (PanelSecurity.EffectiveUser.Role == UserRole.Administrator);
-            gvServers.Columns[6].Visible = manageAllowed; // delete column
-            gvServers.Columns[7].Visible = reinstallAlloew; // reinstall column
+            gvServers.Columns[7].Visible = manageAllowed; // delete column
+            gvServers.Columns[8].Visible = reinstallAlloew; // reinstall column
 
             // admin operations column
-            gvServers.Columns[8].Visible = (PanelSecurity.EffectiveUser.Role == UserRole.Administrator);
+            gvServers.Columns[9].Visible = (PanelSecurity.EffectiveUser.Role == UserRole.Administrator);
 
         }
 
@@ -106,7 +108,7 @@ namespace SolidCP.Portal.VPS2012
         private VirtualMachine[] _machines;
         public string GetReplicationStatus(int itemID)
         {
-            if (!gvServers.Columns[5].Visible)
+            if (!gvServers.Columns[6].Visible)
                 return "";
 
             if (_machines == null)
@@ -126,7 +128,7 @@ namespace SolidCP.Portal.VPS2012
         {
             if (e.Exception != null)
             {
-                messageBox.ShowErrorMessage("EXCHANGE_GET_MAILBOXES", e.Exception);
+                messageBox.ShowErrorMessage("VPS_ERROR_GET_VDC_HOME", e.Exception);
                 e.ExceptionHandled = true;
             }
         }
@@ -143,7 +145,7 @@ namespace SolidCP.Portal.VPS2012
 
         protected void btnReplicaStates_Click(object sender, EventArgs e)
         {
-            gvServers.Columns[5].Visible = PackagesHelper.IsQuotaEnabled(PanelSecurity.PackageId, Quotas.VPS2012_REPLICATION_ENABLED);
+            gvServers.Columns[6].Visible = PackagesHelper.IsQuotaEnabled(PanelSecurity.PackageId, Quotas.VPS2012_REPLICATION_ENABLED);
         }
 
         protected void gvServers_RowCommand(object sender, GridViewCommandEventArgs e)

@@ -123,7 +123,7 @@ namespace SolidCP.Portal.Proxmox
         {
             if (e.Exception != null)
             {
-                messageBox.ShowErrorMessage("EXCHANGE_GET_MAILBOXES", e.Exception);
+                messageBox.ShowErrorMessage("VPS_ERROR_GET_VDC_HOME", e.Exception);
                 e.ExceptionHandled = true;
             }
         }

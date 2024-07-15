@@ -52,8 +52,9 @@ namespace SolidCP.Import.Enterprise
 		public SpaceForm()
 		{
 			InitializeComponent();
-			
 		}
+
+		Controller EnterpriseServer => new Controller();
 
 		public void InitializeForm(string username, string password)
 		{
@@ -68,8 +69,11 @@ namespace SolidCP.Import.Enterprise
 			UserInfo info = null;
 			try
 			{
-				info = UserController.GetUser(username);
-				SecurityContext.SetThreadPrincipal(info);
+				using (var ES = EnterpriseServer)
+				{
+					info = ES.UserController.GetUser(username);
+					ES.SecurityContext.SetThreadPrincipal(info);
+				}
 			}
 			catch (Exception ex)
 			{
@@ -119,9 +123,12 @@ namespace SolidCP.Import.Enterprise
 			DataSet ds = null;
 			try
 			{
-				ds = PackageController.GetRawMyPackages(info.UserId);
+				using (var ES = EnterpriseServer)
+				{
+					ds = ES.PackageController.GetRawMyPackages(info.UserId);
+				}
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				ShowError("Unable to load spaces.", ex);
 			}
@@ -145,9 +152,12 @@ namespace SolidCP.Import.Enterprise
 			DataSet ds = null;
 			try
 			{
-				ds = UserController.GetRawUsers(info.UserId, false);
+				using (var ES = EnterpriseServer)
+				{
+					ds = ES.UserController.GetRawUsers(info.UserId, false);
+				}
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				ShowError("Unable to load users.", ex);
 			}
@@ -224,7 +234,10 @@ namespace SolidCP.Import.Enterprise
 			PackageContext cntx = null;
 			try
 			{
-				cntx = PackageController.GetPackageContext(data.PackageId);
+				using (var ES = EnterpriseServer)
+				{
+					cntx = ES.PackageController.GetPackageContext(data.PackageId);
+				}
 			}
 			catch (Exception ex)
 			{

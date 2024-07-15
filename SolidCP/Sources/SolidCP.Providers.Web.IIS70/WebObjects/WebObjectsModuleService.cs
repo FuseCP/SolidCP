@@ -94,8 +94,7 @@ namespace SolidCP.Providers.Web.Iis.WebObjects
 					{
 						string cmd = FileUtils.EvaluateSystemVariables(@"%windir%\system32\inetsrv\appcmd.exe");
 						//
-						FileUtils.ExecuteSystemCommand(cmd,
-							String.Format("unlock config -section:{0}", sectionName));
+						OS.Shell.Default.Exec($"{cmd} unlock config -section:{sectionName}");
 					}
 					catch (Exception ex)
 					{

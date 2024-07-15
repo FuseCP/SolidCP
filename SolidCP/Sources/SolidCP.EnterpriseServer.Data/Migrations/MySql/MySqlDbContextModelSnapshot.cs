@@ -66,7 +66,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         .HasColumnType("int");
 
                     b.HasKey("Id")
-                        .HasName("PK__AccessTo__3214EC27A32557FE");
+                        .HasName("PK__AccessTo__3214EC27DEAEF66E");
 
                     b.HasIndex(new[] { "AccountId" }, "AccessTokensIdx_AccountID");
 
@@ -91,7 +91,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         .HasColumnName("UserID");
 
                     b.HasKey("Id")
-                        .HasName("PK__Addition__3214EC272F1861EB");
+                        .HasName("PK__Addition__3214EC27E665DDE2");
 
                     b.ToTable("AdditionalGroups");
                 });
@@ -2251,7 +2251,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         .HasColumnName("UserID");
 
                     b.HasKey("Id")
-                        .HasName("PK__Backgrou__3214EC271AFAB817");
+                        .HasName("PK__Backgrou__3214EC273A1145AC");
 
                     b.ToTable("BackgroundTasks");
                 });
@@ -2291,7 +2291,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         .HasColumnType("TEXT");
 
                     b.HasKey("LogId")
-                        .HasName("PK__Backgrou__5E5499A830A1D5BF");
+                        .HasName("PK__Backgrou__5E5499A86067A6E5");
 
                     b.HasIndex(new[] { "TaskId" }, "BackgroundTaskLogsIdx_TaskID");
 
@@ -2323,7 +2323,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         .HasColumnType("varchar(255)");
 
                     b.HasKey("ParameterId")
-                        .HasName("PK__Backgrou__F80C6297E2E5AF88");
+                        .HasName("PK__Backgrou__F80C629777BF580B");
 
                     b.HasIndex(new[] { "TaskId" }, "BackgroundTaskParametersIdx_TaskID");
 
@@ -2344,7 +2344,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         .HasColumnName("TaskID");
 
                     b.HasKey("TaskStackId")
-                        .HasName("PK__Backgrou__5E44466F62E48BE6");
+                        .HasName("PK__Backgrou__5E44466FB8A5F217");
 
                     b.HasIndex(new[] { "TaskId" }, "BackgroundTaskStackIdx_TaskID");
 
@@ -2474,6 +2474,36 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                     b.ToTable("CRMUsers");
                 });
 
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.DmzIpAddress", b =>
+                {
+                    b.Property<int>("DmzAddressId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("DmzAddressID");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("DmzAddressId"));
+
+                    b.Property<string>("IpAddress")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(15)")
+                        .HasColumnName("IPAddress");
+
+                    b.Property<bool>("IsPrimary")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("int")
+                        .HasColumnName("ItemID");
+
+                    b.HasKey("DmzAddressId");
+
+                    b.HasIndex(new[] { "ItemId" }, "DmzIPAddressesIdx_ItemID");
+
+                    b.ToTable("DmzIPAddresses");
+                });
+
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Domain", b =>
                 {
                     b.Property<int>("DomainId")
@@ -2571,7 +2601,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         .HasColumnType("varchar(255)");
 
                     b.HasKey("Id")
-                        .HasName("PK__DomainDn__3214EC2758B0A6F1");
+                        .HasName("PK__DomainDn__3214EC27A6FC0498");
 
                     b.HasIndex(new[] { "DomainId" }, "DomainDnsRecordsIdx_DomainId");
 
@@ -3755,6 +3785,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         .HasColumnName("PackageVlanID");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("PackageVlanId"));
+
+                    b.Property<bool>("IsDmz")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("PackageId")
                         .HasColumnType("int")
@@ -8081,7 +8114,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         {
                             QuotaId = 701,
                             GroupId = 71,
-                            ItemTypeId = 39,
+                            ItemTypeId = 71,
                             QuotaDescription = "Databases",
                             QuotaName = "MsSQL2016.Databases",
                             QuotaOrder = 1,
@@ -8092,7 +8125,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         {
                             QuotaId = 702,
                             GroupId = 71,
-                            ItemTypeId = 40,
+                            ItemTypeId = 72,
                             QuotaDescription = "Users",
                             QuotaName = "MsSQL2016.Users",
                             QuotaOrder = 2,
@@ -8404,6 +8437,36 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                             QuotaName = "MsSQL2022.MaxLogSize",
                             QuotaOrder = 4,
                             QuotaTypeId = 3,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 750,
+                            GroupId = 33,
+                            QuotaDescription = "DMZ Network",
+                            QuotaName = "VPS2012.DMZNetworkEnabled",
+                            QuotaOrder = 22,
+                            QuotaTypeId = 1,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 751,
+                            GroupId = 33,
+                            QuotaDescription = "Number of DMZ IP addresses per VPS",
+                            QuotaName = "VPS2012.DMZIPAddressesNumber",
+                            QuotaOrder = 23,
+                            QuotaTypeId = 3,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 752,
+                            GroupId = 33,
+                            QuotaDescription = "Number of DMZ Network VLANs",
+                            QuotaName = "VPS2012.DMZVLANsNumber",
+                            QuotaOrder = 24,
+                            QuotaTypeId = 2,
                             ServiceQuota = false
                         });
                 });
@@ -14521,7 +14584,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         {
                             UserId = 1,
                             Address = "",
-                            Changed = new DateTime(2010, 7, 16, 12, 53, 2, 453, DateTimeKind.Utc),
+                            Changed = new DateTime(2010, 7, 16, 10, 53, 2, 453, DateTimeKind.Utc),
                             City = "",
                             Comments = "",
                             Country = "",
@@ -15520,110 +15583,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         });
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.UsersDetailed", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("UserID");
-
-                    b.Property<DateTime?>("Changed")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Comments")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("CompanyName")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<DateTime?>("Created")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<bool?>("EcommerceEnabled")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<int?>("FailedLogins")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FirstName")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<string>("FullName")
-                        .HasMaxLength(101)
-                        .HasColumnType("varchar(101)");
-
-                    b.Property<bool>("IsDemo")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("IsPeer")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("LastName")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<int?>("LoginStatusId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("OwnerEmail")
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("OwnerFirstName")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<string>("OwnerFullName")
-                        .HasMaxLength(101)
-                        .HasColumnType("varchar(101)");
-
-                    b.Property<int?>("OwnerId")
-                        .HasColumnType("int")
-                        .HasColumnName("OwnerID");
-
-                    b.Property<string>("OwnerLastName")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<int?>("OwnerRoleId")
-                        .HasColumnType("int")
-                        .HasColumnName("OwnerRoleID");
-
-                    b.Property<string>("OwnerUsername")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<int?>("PackagesNumber")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int")
-                        .HasColumnName("RoleID");
-
-                    b.Property<int>("StatusId")
-                        .HasColumnType("int")
-                        .HasColumnName("StatusID");
-
-                    b.Property<string>("SubscriberNumber")
-                        .HasMaxLength(32)
-                        .HasColumnType("varchar(32)");
-
-                    b.Property<string>("Username")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.HasKey("UserId");
-
-                    b.ToTable((string)null);
-
-                    b.ToView("UsersDetailed", (string)null);
-                });
-
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Version", b =>
                 {
                     b.Property<string>("DatabaseVersion")
@@ -15770,7 +15729,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         .HasColumnType("int");
 
                     b.HasKey("Id")
-                        .HasName("PK__WebDavAc__3214EC27B27DC571");
+                        .HasName("PK__WebDavAc__3214EC2708781F08");
 
                     b.HasIndex(new[] { "AccountId" }, "WebDavAccessTokensIdx_AccountID");
 
@@ -15818,7 +15777,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         .WithMany("BackgroundTaskLogs")
                         .HasForeignKey("TaskId")
                         .IsRequired()
-                        .HasConstraintName("FK__Backgroun__TaskI__06ADD4BD");
+                        .HasConstraintName("FK__Backgroun__TaskI__7D8391DF");
 
                     b.Navigation("Task");
                 });
@@ -15829,7 +15788,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         .WithMany("BackgroundTaskParameters")
                         .HasForeignKey("TaskId")
                         .IsRequired()
-                        .HasConstraintName("FK__Backgroun__TaskI__03D16812");
+                        .HasConstraintName("FK__Backgroun__TaskI__7AA72534");
 
                     b.Navigation("Task");
                 });
@@ -15840,7 +15799,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         .WithMany("BackgroundTaskStacks")
                         .HasForeignKey("TaskId")
                         .IsRequired()
-                        .HasConstraintName("FK__Backgroun__TaskI__098A4168");
+                        .HasConstraintName("FK__Backgroun__TaskI__005FFE8A");
 
                     b.Navigation("Task");
                 });
@@ -15877,6 +15836,18 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         .HasConstraintName("FK_CRMUsers_ExchangeAccounts");
 
                     b.Navigation("Account");
+                });
+
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.DmzIpAddress", b =>
+                {
+                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.ServiceItem", "Item")
+                        .WithMany("DmzIpAddresses")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_DmzIPAddresses_ServiceItems");
+
+                    b.Navigation("Item");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Domain", b =>
@@ -16090,12 +16061,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.HostingPlan", b =>
                 {
-                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.Package", "Package")
-                        .WithMany("HostingPlans")
-                        .HasForeignKey("PackageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .HasConstraintName("FK_HostingPlans_Packages");
-
                     b.HasOne("SolidCP.EnterpriseServer.Data.Entities.Server", "Server")
                         .WithMany("HostingPlans")
                         .HasForeignKey("ServerId")
@@ -16105,8 +16070,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         .WithMany("HostingPlans")
                         .HasForeignKey("UserId")
                         .HasConstraintName("FK_HostingPlans_Users");
-
-                    b.Navigation("Package");
 
                     b.Navigation("Server");
 
@@ -16194,9 +16157,10 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         .HasForeignKey("ParentPackageId")
                         .HasConstraintName("FK_Packages_Packages");
 
-                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.HostingPlan", "Plan")
+                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.HostingPlan", "HostingPlan")
                         .WithMany("Packages")
                         .HasForeignKey("PlanId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_Packages_HostingPlans");
 
                     b.HasOne("SolidCP.EnterpriseServer.Data.Entities.Server", "Server")
@@ -16210,9 +16174,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         .IsRequired()
                         .HasConstraintName("FK_Packages_Users");
 
-                    b.Navigation("ParentPackage");
+                    b.Navigation("HostingPlan");
 
-                    b.Navigation("Plan");
+                    b.Navigation("ParentPackage");
 
                     b.Navigation("Server");
 
@@ -16903,8 +16867,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.Navigation("GlobalDnsRecords");
 
-                    b.Navigation("HostingPlans");
-
                     b.Navigation("PackageAddons");
 
                     b.Navigation("PackageIpAddresses");
@@ -17029,6 +16991,8 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ServiceItem", b =>
                 {
+                    b.Navigation("DmzIpAddresses");
+
                     b.Navigation("DomainMailDomains");
 
                     b.Navigation("DomainWebSites");

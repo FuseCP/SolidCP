@@ -50,6 +50,8 @@ namespace SolidCP.EnterpriseServer
 
             // get input parameters
             string serverName = (string)topTask.GetParamValue("SERVER_NAME");
+            string username = (string)topTask.GetParamValue("USERNAME");
+            string password = (string)topTask.GetParamValue("PASSWORD");
             string execPath = (string)topTask.GetParamValue("EXECUTABLE_PATH");
             string execParams = (string)topTask.GetParamValue("EXECUTABLE_PARAMS");
 
@@ -80,7 +82,7 @@ namespace SolidCP.EnterpriseServer
             // execute system command
             Server.Client.OperatingSystem winServer = new Server.Client.OperatingSystem();
             ServiceProviderProxy.ServerInit(winServer, server.ServerId);
-            TaskManager.Write(winServer.ExecuteSystemCommand(execPath, execParams));
+            TaskManager.Write(winServer.ExecuteSystemCommand(username, password, execPath, execParams));
         }
     }
 }

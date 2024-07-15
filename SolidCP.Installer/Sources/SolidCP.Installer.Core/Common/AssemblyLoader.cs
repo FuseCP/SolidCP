@@ -39,7 +39,6 @@ using System.Text;
 using System.Runtime.Remoting.Lifetime;
 using System.IO;
 using SolidCP.Providers.OS;
-using System.ServiceModel.Configuration;
 
 namespace SolidCP.Installer.Common
 {

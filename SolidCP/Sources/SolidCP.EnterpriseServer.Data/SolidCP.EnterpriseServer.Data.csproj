@@ -6,9 +6,10 @@
         <ScaffoldConnectionString>Server=(local);Database=SolidCPFresh;uid=sa;pwd=Password12;TrustServerCertificate=true;Connection Timeout=300;command timeout=300</ScaffoldConnectionString>
         <DefineConstants>$(DefineConstants);ScaffoldedEntities;ScaffoldedDbContext;ScaffoldedConfigurations;</DefineConstants>
 		<OutputType>Exe</OutputType>
-		<StartupObject>SolidCP.EnterpriseServer.Data.Program</StartupObject>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+        <OutputPath>..\..\Bin</OutputPath>
+        <StartupObject>SolidCP.EnterpriseServer.Data.Program</StartupObject>
         <EntityFramework6>6.5</EntityFramework6> <!-- Use EntityFramework 6.4 or 6.5 -->
-        <OutputPath></OutputPath>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net48'">
@@ -19,21 +20,19 @@
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.6" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.6" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.6" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="8.0.6" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.6" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.6" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.7" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="8.0.7" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.7" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.7" />
         <PackageReference Include="Azure.Identity" Version="1.12.0" />
-        <!--<PackageReference Include="CData.MariaDB.EntityFrameworkCore" Version="23.0.8839" />-->
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.6" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.7" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
         <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
-        <PackageReference Include="System.Drawing.Common" Version="8.0.6" />
         <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="8.103.0" />
         <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.1" />
-        <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.6" />
+        <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.7" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
@@ -45,7 +44,7 @@
         <PackageReference Include="Z.EntityFramework.Plus.EF6" Version="8.103.0" />
         <PackageReference Include="Microsoft.EntityFramework.SqlServer" Version="6.5.1" />
         <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.1" />
-        <PackageReference Include="MySql.Data.EntityFramework" Version="8.4.0" />
+        <PackageReference Include="MySql.Data.EntityFramework" Version="9.0.0" />
         <PackageReference Include="BouncyCastle.Cryptography" Version="2.4.0" />
         <PackageReference Include="EntityFramework6.Npgsql" Version="6.4.3" />
         <PackageReference Include="System.Data.SQLite.EF6" Version="1.0.118" />
@@ -56,7 +55,7 @@
         <PackageReference Include="EntityFramework" Version="6.4.4" />
         <PackageReference Include="Z.EntityFramework.Plus.EF6" Version="8.103.0" />
         <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
-        <PackageReference Include="MySql.Data.EntityFramework" Version="8.4.0" />
+        <PackageReference Include="MySql.Data.EntityFramework" Version="9.0.0" />
         <PackageReference Include="BouncyCastle.Cryptography" Version="2.4.0" />
         <PackageReference Include="EntityFramework6.Npgsql" Version="6.4.3" />
         <PackageReference Include="System.Data.SQLite.EF6" Version="1.0.118" />
@@ -69,6 +68,7 @@
     <ItemGroup>
         <!--<PackageReference Include="SQLite" Version="3.13.0" PrivateAssets="true" />-->
         <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+        <PackageReference Include="MySql.Data" Version="9.0.0" />
         <ProjectReference Include="..\SolidCP.Web.Services\SolidCP.Web.Services.csproj" />
     </ItemGroup>
 
@@ -138,16 +138,30 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="Migrations\MsSql\install.mssql.sql" />
+	  <None Remove="LegacyScripts\update_db.sql" />
+	  <None Remove="Migrations\MySql\install.mysql.sql" />
+	  <None Remove="Migrations\PostgreSql\install.postgresql.sql" />
+	  <None Remove="Migrations\Sqlite\install.sqlite.sql" />
+	  <None Remove="Migrations\Sqlite\install.sqlitefx.sql" />
+	  <None Remove="Migrations\SqlServer\install.sqlserver.sql" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Include="Migrations\MsSql\install.mssql.sql" />
+	  <EmbeddedResource Include="LegacyScripts\update_db.sql" />
+	  <EmbeddedResource Include="Migrations\SqlServer\install.sqlserver.sql" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="Migrations\MySql\install.mysql.sql" />
+	  <EmbeddedResource Include="Migrations\PostgreSql\install.postgresql.sql" />
+	  <EmbeddedResource Include="Migrations\Sqlite\install.sqlite.sql" />
+	  <EmbeddedResource Include="Migrations\Sqlite\install.sqlitefx.sql" />
 	</ItemGroup>
 	
     <ItemGroup>
-      <Folder Include="Migrations\MySql\" />
-      <Folder Include="Migrations\PostgreSql\" />
+      <Compile Update="Extensions\EntityDataTable.cs">
+        <SubType>Component</SubType>
+      </Compile>
     </ItemGroup>
 		
 </Project>

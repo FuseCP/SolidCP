@@ -42,8 +42,8 @@ namespace SolidCP.Providers.Virtualization
 				(sender, certificate, chain, sslPolicyErrors) =>
 					true
 			};
-			if (timeout == -1) options.MaxTimeout = int.MaxValue;
-			else if (timeout != 0) options.MaxTimeout = timeout;
+			if (timeout <= 0) options.Timeout = null;
+			else options.Timeout = TimeSpan.FromMilliseconds(timeout);
 			return new RestClient(options);
 		}
 		public Result Login(User user)

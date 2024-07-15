@@ -4695,6 +4695,21 @@
   <data name="Error.VPS_ERROR_GET_VM_DETAILS" xml:space="preserve">
     <value>Fehler beim Lesen der allgemeinen VPS-Details</value>
   </data>
+  <data name="Error.VPS_ERROR_GET_PRIVATE_NETWORK" xml:space="preserve">
+    <value>Fehler beim Lesen des privaten Netzwerks</value>
+  </data>
+  <data name="Error.VPS_ERROR_GET_DMZ_NETWORK" xml:space="preserve">
+    <value>Fehler beim Lesen des DMZ-Netzwerks</value>
+  </data>
+  <data name="Error.VPS_ERROR_GET_VDC_HOME" xml:space="preserve">
+    <value>Beim Abrufen allgemeiner Details ist ein Fehler aufgetreten</value>
+  </data>
+  <data name="Error.PACKAGE_PHONE_NUMBER" xml:space="preserve">
+    <value>Fehler beim Abrufen der Telefonnummer</value>
+  </data>
+  <data name="Error.PACKAGE_IP_ADDRESS" xml:space="preserve">
+    <value>Fehler beim Abrufen der IP-Adresse</value>
+  </data>
   <data name="Error.VPS_ERROR_CREATE" xml:space="preserve">
     <value>Fehler beim Erstellen des virtuellen Servers</value>
   </data>
@@ -4884,6 +4899,9 @@
   <data name="VPS.VPS_QUOTA_WRONG_RAM" xml:space="preserve">
     <value>RAM-Größe muß eine postitive Zahl und größer als Null sein.</value>
   </data>
+  <data name="VPS.VPS_QUOTA_WRONG_RAM_HV" xml:space="preserve">
+    <value>RAM-Größe muss größer als 32 MB sein</value>
+  </data>
   <data name="VPS.VPS_QUOTA_NOT_IN_DYNAMIC_RAM" xml:space="preserve">
     <value>RAM-Größe muss zwischen dem Minimum und Maximum des dynamischen Speichers liegen</value>
   </data>
@@ -4925,6 +4943,9 @@
   </data>
   <data name="ErrorDescription.VPS_LOAD_VM_ITEM" xml:space="preserve">
     <value>Mögliche Ursachen für diesen Fehler sind:&lt;br/&gt;1. Die dem VPS-Metaeintrag zugeordnete virtuelle Maschine wurde vom Virtualisierungsserver gelöscht.&lt;br/&gt;2. Hyper-V-Verwaltungsdienst wurde gestoppt.&lt;br/&gt;3. Keine Verbindung zum, auf dem Virtualisierungsserver installierten, SolidCP-Server.&lt;br/&gt;&lt;br/&gt;Lösungen:&lt;br/&gt;1. Stellen Sie sicher, dass die zugeordnete virtuelle Maschine auf dem Hyper-V-Server existiert; andernfalls erstellen Sie diese VPS aus SolidCP erneut.&lt;br/&gt;2. Überprüfen Sie, dass der Hyper-V-Verwaltungsdienst gestartet ist.&lt;br/&gt;3. Überprüfen Sie die SolidCP-Serververbindung.</value>
+  </data>
+    <data name="ErrorDescription.VPS_LOAD_PVEVM_ITEM" xml:space="preserve">
+    <value>Mögliche Ursachen für diesen Fehler sind:&lt;br/&gt;1. Die dem VPS-Metaeintrag zugeordnete virtuelle Maschine wurde vom Virtualisierungsserver gelöscht.&lt;br/&gt;2. Proxmox-Verwaltungsdienst wurde gestoppt.&lt;br/&gt;3. Keine Verbindung zum, auf dem Virtualisierungsserver installierten, SolidCP-Server.&lt;br/&gt;&lt;br/&gt;Lösungen:&lt;br/&gt;1. Stellen Sie sicher, dass die zugeordnete virtuelle Maschine auf dem Proxmox-Server existiert; andernfalls erstellen Sie diese VPS aus SolidCP erneut.&lt;br/&gt;2. Überprüfen Sie, dass der Proxmox-Verwaltungsdienst gestartet ist.&lt;br/&gt;3. Überprüfen Sie die SolidCP-Serververbindung.</value>
   </data>
   <data name="ErrorDescription.VPS_PROVISION_ERROR" xml:space="preserve">
     <value>Es gab einen schwerwiegenden Fehler während der Bereitstellung, so dass der ganze Prozess abgebrochen wurde. Klicken Sie auf den "Autitprotokoll"-Reiter und überprüfen Sie welche Fehler während der VPS-Anlage aufgetreten sind.&lt;br/&gt;&lt;br/&gt;Beseitigen Sie den Grund des Problems und legen den VPS erneut an.</value>
@@ -5028,6 +5049,12 @@
   <data name="TaskActivity.VPS_CREATE_PRIVATE_VIRTUAL_SWITCH_ERROR" xml:space="preserve">
     <value>Fehler beim Erstellen des virtuellen Switches</value>
   </data>
+  <data name="TaskActivity.VPS_CREATE_DMZ_VIRTUAL_SWITCH" xml:space="preserve">
+    <value>DMZ virtueller Switcht wird erstellt:  {0}</value>
+  </data>
+  <data name="TaskActivity.VPS_CREATE_DMZ_VIRTUAL_SWITCH_ERROR" xml:space="preserve">
+    <value>Fehler beim Erstellen des virtuellen Switches</value>
+  </data>
   <data name="TaskActivity.VPS_CREATE_RAM_SIZE" xml:space="preserve">
     <value>RAM: {0} MB</value>
   </data>
@@ -5049,6 +5076,15 @@
   <data name="TaskActivity.VPS_CREATE_SETUP_PRIVATE_NETWORK_SKIP" xml:space="preserve">
     <value>Einrichtung des privaten Netzwerks - Übersprungen</value>
   </data>
+  <data name="TaskActivity.VPS_CREATE_SETUP_DMZ_NETWORK" xml:space="preserve">
+    <value>DMZ Netzwerk einrichten</value>
+  </data>
+  <data name="TaskActivity.VPS_CREATE_SETUP_DMZ_NETWORK_ERROR" xml:space="preserve">
+    <value>Fehler beim Einrichten des DMZ Netzwerks: {0}</value>
+  </data>
+  <data name="TaskActivity.VPS_CREATE_SETUP_DMZ_NETWORK_SKIP" xml:space="preserve">
+    <value>Einrichtung des DMZ Netzwerks - Übersprungen</value>
+  </data>
   <data name="TaskActivity.VPS_CREATE_SET_COMPUTER_NAME_KVP" xml:space="preserve">
     <value>"Computername"-Parameter im Bereitstellungsprozess werden gesetzt</value>
   </data>
@@ -5066,6 +5102,12 @@
   </data>
   <data name="TaskActivity.VPS_CREATE_SET_PRIVATE_NIC_KVP_ERROR" xml:space="preserve">
     <value>Fehler bei Setzen der Parameter für die Bereitstellungsaufgabe "private Netzwerkkarte".</value>
+  </data>
+  <data name="TaskActivity.VPS_CREATE_SET_DMZ_NIC_KVP" xml:space="preserve">
+    <value>"DMZ Netzwerkkarte"-Parameter im Bereitstellungsprozess werden gesetzt</value>
+  </data>
+  <data name="TaskActivity.VPS_CREATE_SET_DMZ_NIC_KVP_ERROR" xml:space="preserve">
+    <value>Fehler bei Setzen der Parameter für die Bereitstellungsaufgabe "DMZ Netzwerkkarte".</value>
   </data>
   <data name="TaskActivity.VPS_CREATE_STARTED_VPS" xml:space="preserve">
     <value>VPS gestartet</value>
@@ -5873,6 +5915,15 @@
   </data>
   <data name="Quota.VPS2012.ReplicationEnabled" xml:space="preserve">
     <value>Benutzer darf Replikation aktivieren</value>
+  </data>
+  <data name="Quota.VPS2012.DMZNetworkEnabled" xml:space="preserve">
+    <value>DMZ Netzwerk</value>
+  </data>
+  <data name="Quota.VPS2012.DMZIPAddressesNumber" xml:space="preserve">
+    <value>Anzahl DMZ IP-Adressen pro VPS</value>
+  </data>
+  <data name="Quota.VPS2012.DMZVLANsNumber" xml:space="preserve">
+    <value>Anzahl DMZ Netzwerk VLANs</value>
   </data>
   <data name="Error.CreateCheckPointError" xml:space="preserve">
     <value>Fehler beim Erstellen des Kontrollpunkts</value>
@@ -6828,6 +6879,9 @@
   <data name="AuditLogTask.VPS2012_ADD_PRIVATE_IP" xml:space="preserve">
     <value>Private IP hinzufügen</value>
   </data>
+  <data name="AuditLogTask.VPS2012_ADD_DMZ_IP" xml:space="preserve">
+    <value>DMZ IP hinzufügen</value>
+  </data>
   <data name="AuditLogTask.VPS2012_APPLY_SNAPSHOT" xml:space="preserve">
     <value>VPS-Snapshot anwenden</value>
   </data>
@@ -6848,6 +6902,9 @@
   </data>
   <data name="AuditLogTask.VPS2012_DELETE_PRIVATE_IP" xml:space="preserve">
     <value>Private IP löschen</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_DELETE_DMZ_IP" xml:space="preserve">
+    <value>DMZ-IP löschen</value>
   </data>
   <data name="AuditLogTask.VPS2012_DELETE_SNAPSHOT" xml:space="preserve">
     <value>VPS Snapshot löschen</value>
@@ -6873,11 +6930,20 @@
   <data name="AuditLogTask.VPS2012_RESTORE_PRIVATE_IP" xml:space="preserve">
     <value>Restore private IP</value>
   </data>
+  <data name="AuditLogTask.VPS2012_RESTORE_DMZ_IP" xml:space="preserve">
+    <value>Restore DMZ IP</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_RESTORE_DMZ_IP" xml:space="preserve">
+    <value>Restore DMZ IP</value>
+  </data>
   <data name="AuditLogTask.VPS2012_SET_PRIMARY_EXTERNAL_IP" xml:space="preserve">
     <value>Primäre externe IP festlegen</value>
   </data>
   <data name="AuditLogTask.VPS2012_SET_PRIMARY_PRIVATE_IP" xml:space="preserve">
     <value>Primäre private IP festlegen</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_SET_PRIMARY_DMZ_IP" xml:space="preserve">
+    <value>Primäre DMZ IP festlegen</value>
   </data>
   <data name="AuditLogTask.VPS2012_TAKE_SNAPSHOT" xml:space="preserve">
     <value>VPS-Snapshot erstellen</value>
@@ -6894,17 +6960,26 @@
   <data name="TaskActivity.VPS2012_ADD_PRIVATE_IP" xml:space="preserve">
     <value>Private IP-Adressen werden zugewiesen</value>
   </data>
+  <data name="TaskActivity.VPS2012_ADD_DMZ_IP" xml:space="preserve">
+    <value>DMZ IP-Adressen werden zugewiesen</value>
+  </data>
   <data name="TaskActivity.VPS2012_DELETE_EXTERNAL_IP" xml:space="preserve">
     <value>Delete external IP</value>
   </data>
   <data name="TaskActivity.VPS2012_DELETE_PRIVATE_IP" xml:space="preserve">
     <value>Delete private IP</value>
   </data>
+  <data name="TaskActivity.VPS2012_DELETE_DMZ_IP" xml:space="preserve">
+    <value>Delete DMZ-IP</value>
+  </data>
   <data name="TaskActivity.VPS2012_SET_PRIMARY_EXTERNAL_IP" xml:space="preserve">
     <value>Primäre externe IP-Adresse wird gesetzt</value>
   </data>
   <data name="TaskActivity.VPS2012_SET_PRIMARY_PRIVATE_IP" xml:space="preserve">
     <value>Primäre private IP-Adresse wird gesetzt</value>
+  </data>
+  <data name="TaskActivity.VPS2012_SET_PRIMARY_DMZ_IP" xml:space="preserve">
+    <value>Primäre DMZ IP-Adresse wird gesetzt</value>
   </data>
   <data name="Quota.PROXMOX.Bandwidth" xml:space="preserve">
     <value>Monatliche Bandbreite, GB</value>
@@ -6965,9 +7040,6 @@
   </data>
   <data name="Quota.PROXMOX.StartShutdownAllowed" xml:space="preserve">
     <value>Erlaube VPS zu Starten, Auszuschalten und Herunterzufahren</value>
-  </data>
-  <data name="ErrorDescription.VPS_LOAD_PVEVM_ITEM1" xml:space="preserve">
-    <value>Mögliche Ursachen für diesen Fehler sind:&lt;br/&gt;1. Die dem VPS-Metaeintrag zugeordnete virtuelle Maschine wurde vom Virtualisierungsserver gelöscht.&lt;br/&gt;2. Proxmox-Verwaltungsdienst wurde gestoppt.&lt;br/&gt;3. Keine Verbindung zum, auf dem Virtualisierungsserver installierten, SolidCP-Server.&lt;br/&gt;&lt;br/&gt;Lösungen:&lt;br/&gt;1. Stellen Sie sicher, dass die zugeordnete virtuelle Maschine auf dem Proxmox-Server existiert; andernfalls erstellen Sie diese VPS aus SolidCP erneut.&lt;br/&gt;2. Überprüfen Sie, dass der Proxmox-Verwaltungsdienst gestartet ist.&lt;br/&gt;3. Überprüfen Sie die SolidCP-Serververbindung.</value>
   </data>
   <data name="Error.VPS_LOAD_PVEVM_ITEM" xml:space="preserve">
     <value>Fehler beim Laden der virtellen Maschineninformationen</value>

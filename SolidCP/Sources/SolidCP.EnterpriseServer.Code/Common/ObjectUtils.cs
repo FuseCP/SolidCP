@@ -82,8 +82,8 @@ namespace SolidCP.EnterpriseServer
 			return dobj;
 		}
 
-		private static Hashtable typeProperties = new Hashtable();
-
+		public static bool IsAnonymous(Type type) => Data.ObjectUtils.IsAnonymous(type);
+		public static PropertyInfo[] GetTypeProperties(Type type) => Data.ObjectUtils.GetTypeProperties(type);
 		public static Hashtable GetObjectProperties(object obj, bool persistentOnly)
 		{
 			Hashtable hash = new Hashtable();
@@ -146,7 +146,7 @@ namespace SolidCP.EnterpriseServer
 
 		public static void FillCollectionFromDataTable<T>(List<T> list, DataTable table)
 		{
-			if (table is IEntityDataSet entitySet) FillCollectionFromEntitySet(list, entitySet);
+			if (table is Data.IEntityDataSet entitySet) FillCollectionFromEntitySet(list, entitySet);
 			else FillCollectionFromDataView(list, table.DefaultView);
 		}
 
@@ -197,7 +197,7 @@ namespace SolidCP.EnterpriseServer
 			} // for rows
 		}
 
-		public static void FillCollectionFromEntitySet<T>(List<T> list, IEntityDataSet set) =>
+		public static void FillCollectionFromEntitySet<T>(List<T> list, Data.IEntityDataSet set) =>
 			FillCollectionFromEntitySet(list, set.Set, set.Type);
 
 		public static void FillCollectionFromEntitySet<T, TEntity>(List<T> list, IEnumerable<TEntity> set) =>
@@ -288,7 +288,7 @@ namespace SolidCP.EnterpriseServer
 
 		public static void FillCollectionFromDataReader<T>(List<T> list, IDataReader reader)
 		{
-			if (reader is IEntityDataSet entitySet)
+			if (reader is Data.IEntityDataSet entitySet)
 			{
 				FillCollectionFromEntitySet(list, entitySet);
 			}
@@ -491,14 +491,6 @@ namespace SolidCP.EnterpriseServer
 
 			return obj;
 		}
-		public static bool IsAnonymous(Type type)
-		{
-			return Attribute.IsDefined(type, typeof(CompilerGeneratedAttribute), false) &&
-				type.IsGenericType &&
-				(type.Name.Contains("AnonymousType") || type.Name.Contains("AnonType")) &&
-				(type.Name.StartsWith("<>") || type.Name.StartsWith("VB$")) &&
-				type.Attributes.HasFlag(TypeAttributes.NotPublic);
-		}
 
 		public static DataTable DataTableFromEntitySet<TEntity>(IEnumerable<TEntity> set)
 		{
@@ -563,11 +555,11 @@ namespace SolidCP.EnterpriseServer
 
 		public static T FillObjectFromEntitySet<T, TEntity>(IEnumerable<TEntity> set) where T : class => FillObjectFromEntity<T, TEntity>(set.LastOrDefault());
 		public static T FillObjectFromEntitySet<T>(IEnumerable set, Type etype) where T : class => FillObjectFromEntity<T>(set.OfType<object>().LastOrDefault(), etype);
-		public static T FillObjectFromEntitySet<T>(IEntityDataSet set) where T : class => FillObjectFromEntitySet<T>(set.Set, set.Type);
+		public static T FillObjectFromEntitySet<T>(Data.IEntityDataSet set) where T : class => FillObjectFromEntitySet<T>(set.Set, set.Type);
 
 		public static T FillObjectFromDataReader<T>(IDataReader reader) where T: class
 		{
-			if (reader is IEntityDataSet entitySet) return FillObjectFromEntitySet<T>(entitySet);
+			if (reader is Data.IEntityDataSet entitySet) return FillObjectFromEntitySet<T>(entitySet);
 			
 			Type type = typeof(T);
 
@@ -651,7 +643,7 @@ namespace SolidCP.EnterpriseServer
 		public static object CreateObjectFromDataTable(Type type, DataTable table,
 			string nameColumn, string valueColumn, bool persistentOnly)
 		{
-			if (table is IEntityDataSet entitySet) return CreateObjectFromEntitySet(type, entitySet, nameColumn, valueColumn, persistentOnly);
+			if (table is Data.IEntityDataSet entitySet) return CreateObjectFromEntitySet(type, entitySet, nameColumn, valueColumn, persistentOnly);
 			else return CreateObjectFromDataView(type, table.DefaultView, nameColumn, valueColumn, persistentOnly);
 		}
 
@@ -672,7 +664,7 @@ namespace SolidCP.EnterpriseServer
 		public static object CreateObjectFromDataReader(Type type, IDataReader reader,
 			string nameColumn, string valueColumn, bool persistentOnly)
 		{
-			if (reader is IEntityDataSet entitySet) return CreateObjectFromEntitySet(type, entitySet, nameColumn, valueColumn, persistentOnly);
+			if (reader is Data.IEntityDataSet entitySet) return CreateObjectFromEntitySet(type, entitySet, nameColumn, valueColumn, persistentOnly);
 
 			// create hash of properties from datareader
 			Hashtable propValues = new Hashtable();
@@ -705,7 +697,7 @@ namespace SolidCP.EnterpriseServer
 			string nameColumn, string valueColumn, bool persistentOnly) =>
 			CreateObjectFromEntitySet(type, set, typeof(TEntity), nameColumn, valueColumn, persistentOnly);
 
-		public static object CreateObjectFromEntitySet(Type type, IEntityDataSet set,
+		public static object CreateObjectFromEntitySet(Type type, Data.IEntityDataSet set,
 			string nameColumn, string valueColumn, bool persistentOnly) =>
 			CreateObjectFromEntitySet(type, set.Set, set.Type, nameColumn, valueColumn, persistentOnly);
 		
@@ -931,17 +923,6 @@ namespace SolidCP.EnterpriseServer
 				}
 			}
 			return hash;
-		}
-
-		public static PropertyInfo[] GetTypeProperties(Type type)
-		{
-			string typeName = type.AssemblyQualifiedName;
-			if (typeProperties[typeName] != null)
-				return (PropertyInfo[])typeProperties[typeName];
-
-			PropertyInfo[] props = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
-			typeProperties[typeName] = props;
-			return props;
 		}
 
 		public static object GetNull(Type type)

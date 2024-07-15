@@ -4702,6 +4702,21 @@
   <data name="Error.VPS_ERROR_GET_VM_DETAILS" xml:space="preserve">
     <value>Error getting VPS general details</value>
   </data>
+  <data name="Error.VPS_ERROR_GET_PRIVATE_NETWORK" xml:space="preserve">
+    <value>Error getting VPS private network details</value>
+  </data>
+  <data name="Error.VPS_ERROR_GET_DMZ_NETWORK" xml:space="preserve">
+    <value>Error getting VPS DMZ network details</value>
+  </data>
+  <data name="Error.VPS_ERROR_GET_VDC_HOME" xml:space="preserve">
+    <value>Error getting general details</value>
+  </data>
+  <data name="Error.PACKAGE_PHONE_NUMBER" xml:space="preserve">
+    <value>Error getting phone number</value>
+  </data>
+  <data name="Error.PACKAGE_IP_ADDRESS" xml:space="preserve">
+    <value>Error getting IP address</value>
+  </data>
   <data name="Error.VPS_ERROR_CREATE" xml:space="preserve">
     <value>Error creating virtual server</value>
   </data>
@@ -4725,6 +4740,9 @@
   </data>
   <data name="Error.VPS_LOAD_VM_META_ITEM" xml:space="preserve">
     <value>Cannot load virtual machine meta-item</value>
+  </data>
+  <data name="Error.VPS_LOAD_PVEVM_ITEM" xml:space="preserve">
+    <value>Error loading virtual machine information</value>
   </data>
   <data name="Warning.VPS_CHANGE_VM_CONFIGURATION_SNAPSHOT" xml:space="preserve">
     <value>Configuration changes can only be made when no snapshots have been taken</value>
@@ -4891,6 +4909,9 @@
   <data name="VPS.VPS_QUOTA_WRONG_RAM" xml:space="preserve">
     <value>RAM size must be a positive number and greater than zero</value>
   </data>
+  <data name="VPS.VPS_QUOTA_WRONG_RAM_HV" xml:space="preserve">
+    <value>RAM size must be greater than 32 MB</value>
+  </data>
   <data name="VPS.VPS_QUOTA_NOT_IN_DYNAMIC_RAM" xml:space="preserve">
     <value>RAM size must be between the minimum and maximum of the dynamic memory</value>
   </data>
@@ -5038,6 +5059,12 @@
   <data name="TaskActivity.VPS_CREATE_PRIVATE_VIRTUAL_SWITCH_ERROR" xml:space="preserve">
     <value>Error creating virtual switch</value>
   </data>
+  <data name="TaskActivity.VPS_CREATE_DMZ_VIRTUAL_SWITCH" xml:space="preserve">
+    <value>Creating DMZ virtual switch: {0}</value>
+  </data>
+  <data name="TaskActivity.VPS_CREATE_DMZ_VIRTUAL_SWITCH_ERROR" xml:space="preserve">
+    <value>Error creating virtual switch</value>
+  </data>
   <data name="TaskActivity.VPS_CREATE_RAM_SIZE" xml:space="preserve">
     <value>RAM: {0} MB</value>
   </data>
@@ -5059,6 +5086,15 @@
   <data name="TaskActivity.VPS_CREATE_SETUP_PRIVATE_NETWORK_SKIP" xml:space="preserve">
     <value>Private network setup - Skipped</value>
   </data>
+  <data name="TaskActivity.VPS_CREATE_SETUP_DMZ_NETWORK" xml:space="preserve">
+    <value>Setup DMZ network</value>
+  </data>
+  <data name="TaskActivity.VPS_CREATE_SETUP_DMZ_NETWORK_ERROR" xml:space="preserve">
+    <value>Error setting up DMZ network: {0}</value>
+  </data>
+  <data name="TaskActivity.VPS_CREATE_SETUP_DMZ_NETWORK_SKIP" xml:space="preserve">
+    <value>DMZ network setup - Skipped</value>
+  </data>
   <data name="TaskActivity.VPS_CREATE_SET_COMPUTER_NAME_KVP" xml:space="preserve">
     <value>Setting "computer name" provisioning task parameters</value>
   </data>
@@ -5076,6 +5112,12 @@
   </data>
   <data name="TaskActivity.VPS_CREATE_SET_PRIVATE_NIC_KVP_ERROR" xml:space="preserve">
     <value>Error setting "private NIC" provisioning task parameters</value>
+  </data>
+  <data name="TaskActivity.VPS_CREATE_SET_DMZ_NIC_KVP" xml:space="preserve">
+    <value>Setting "DMZ NIC" provisioning task parameters</value>
+  </data>
+  <data name="TaskActivity.VPS_CREATE_SET_DMZ_NIC_KVP_ERROR" xml:space="preserve">
+    <value>Error setting "DMZ NIC" provisioning task parameters</value>
   </data>
   <data name="TaskActivity.VPS_CREATE_STARTED_VPS" xml:space="preserve">
     <value>VPS started</value>
@@ -5883,6 +5925,15 @@
   </data>
   <data name="Quota.VPS2012.ReplicationEnabled" xml:space="preserve">
     <value>Allow user to Replication</value>
+  </data>
+  <data name="Quota.VPS2012.DMZNetworkEnabled" xml:space="preserve">
+    <value>DMZ Network</value>
+  </data>
+  <data name="Quota.VPS2012.DMZIPAddressesNumber" xml:space="preserve">
+    <value>Number of DMZ IP addresses per VPS</value>
+  </data>
+  <data name="Quota.VPS2012.DMZVLANsNumber" xml:space="preserve">
+    <value>Number of DMZ Network VLANs</value>
   </data>
   <data name="Error.CreateCheckPointError" xml:space="preserve">
     <value>Error creating CheckPoint</value>
@@ -6856,17 +6907,26 @@
   <data name="Error.VPS_ERROR_RESTORE_PRIVATE_IP" xml:space="preserve">
     <value>Cannot restore network adapter private IP address</value>
   </data>
+  <data name="Error.VPS_ERROR_RESTORE_DMZ_IP" xml:space="preserve">
+    <value>Cannot restore network adapter DMZ IP address</value>
+  </data>
   <data name="VPS.VPS_RESTORE_VIRTUAL_MACHINE_EXTERNAL_IP_ADDRESS_ERROR" xml:space="preserve">
     <value>Error restoring external IP address. Check Audit Log for more details.</value>
   </data>
   <data name="VPS.VPS_RESTORE_VIRTUAL_MACHINE_PRIVATE_IP_ADDRESS_ERROR" xml:space="preserve">
     <value>Error restoring private IP address. Check Audit Log for more details.</value>
   </data>
+  <data name="VPS.VPS_RESTORE_VIRTUAL_MACHINE_DMZ_IP_ADDRESS_ERROR" xml:space="preserve">
+    <value>Error restoring DMZ IP address. Check Audit Log for more details.</value>
+  </data>
   <data name="AuditLogTask.VPS_RESTORE_EXTERNAL_IP" xml:space="preserve">
     <value>Restore external IP</value>
   </data>
   <data name="AuditLogTask.VPS_RESTORE_PRIVATE_IP" xml:space="preserve">
     <value>Restore private IP</value>
+  </data>
+  <data name="AuditLogTask.VPS_RESTORE_DMZ_IP" xml:space="preserve">
+    <value>Restore DMZ IP</value>
   </data>
   <data name="Quota.RDS.DisableUserDeleteServer" xml:space="preserve">
     <value>Disable user from removing server</value>
@@ -6910,6 +6970,9 @@
   <data name="AuditLogTask.VPS2012_ADD_PRIVATE_IP" xml:space="preserve">
     <value>Add private IP</value>
   </data>
+  <data name="AuditLogTask.VPS2012_ADD_DMZ_IP" xml:space="preserve">
+    <value>Add DMZ IP</value>
+  </data>
   <data name="AuditLogTask.VPS2012_APPLY_SNAPSHOT" xml:space="preserve">
     <value>Apply VPS snapshot</value>
   </data>
@@ -6927,6 +6990,9 @@
   </data>
   <data name="AuditLogTask.VPS2012_DELETE_PRIVATE_IP" xml:space="preserve">
     <value>Delete private IP</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_DELETE_DMZ_IP" xml:space="preserve">
+    <value>Delete DMZ IP</value>
   </data>
   <data name="AuditLogTask.VPS2012_DELETE_SNAPSHOT" xml:space="preserve">
     <value>Delete VPS snapshot</value>
@@ -6949,11 +7015,17 @@
   <data name="AuditLogTask.VPS2012_RESTORE_PRIVATE_IP" xml:space="preserve">
     <value>Restore private IP</value>
   </data>
+  <data name="AuditLogTask.VPS2012_RESTORE_DMZ_IP" xml:space="preserve">
+    <value>Restore DMZ IP</value>
+  </data>
   <data name="AuditLogTask.VPS2012_SET_PRIMARY_EXTERNAL_IP" xml:space="preserve">
     <value>Set primary external IP</value>
   </data>
   <data name="AuditLogTask.VPS2012_SET_PRIMARY_PRIVATE_IP" xml:space="preserve">
     <value>Set primary private IP</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_SET_PRIMARY_DMZ_IP" xml:space="preserve">
+    <value>Set primary DMZ IP</value>
   </data>
   <data name="AuditLogTask.VPS2012_TAKE_SNAPSHOT" xml:space="preserve">
     <value>Take VPS snapshot</value>
@@ -6970,17 +7042,26 @@
   <data name="TaskActivity.VPS2012_ADD_PRIVATE_IP" xml:space="preserve">
     <value>Assigning private IP addresses</value>
   </data>
+  <data name="TaskActivity.VPS2012_ADD_DMZ_IP" xml:space="preserve">
+    <value>Assigning DMZ IP addresses</value>
+  </data>
   <data name="TaskActivity.VPS2012_DELETE_EXTERNAL_IP" xml:space="preserve">
     <value>Delete external IP</value>
   </data>
   <data name="TaskActivity.VPS2012_DELETE_PRIVATE_IP" xml:space="preserve">
     <value>Delete private IP</value>
   </data>
+  <data name="TaskActivity.VPS2012_DELETE_DMZ_IP" xml:space="preserve">
+    <value>Delete DMZ IP</value>
+  </data>
   <data name="TaskActivity.VPS2012_SET_PRIMARY_EXTERNAL_IP" xml:space="preserve">
     <value>Setting external primary IP address</value>
   </data>
   <data name="TaskActivity.VPS2012_SET_PRIMARY_PRIVATE_IP" xml:space="preserve">
     <value>Setting private primary IP address</value>
+  </data>
+  <data name="TaskActivity.VPS2012_SET_PRIMARY_DMZ_IP" xml:space="preserve">
+    <value>Setting DMZ primary IP address</value>
   </data>
   <data name="Quota.PROXMOX.Bandwidth" xml:space="preserve">
     <value>Monthly bandwidth, GB</value>

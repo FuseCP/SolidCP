@@ -1257,6 +1257,11 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_Modules.ascx.resx</File>
+    <Key>ModuleTitle.VdcAddDmzNetworkVLAN</Key>
+    <DefaultValue>Allocate VLANs</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_Modules.ascx.resx</File>
     <Key>ModuleTitle.VdcAddExternalAddress</Key>
     <DefaultValue>Allocate IP Addresses</DefaultValue>
   </Resource>
@@ -1264,6 +1269,11 @@
     <File>App_GlobalResources\SolidCP_Modules.ascx.resx</File>
     <Key>ModuleTitle.VdcPrivateNetwork</Key>
     <DefaultValue>Private Network</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_Modules.ascx.resx</File>
+    <Key>ModuleTitle.VdcDmzNetwork</Key>
+    <DefaultValue>DMZ Network</DefaultValue>
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_Modules.ascx.resx</File>
@@ -9793,6 +9803,31 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Error.VPS_ERROR_GET_PRIVATE_NETWORK</Key>
+    <DefaultValue>Error getting VPS private network details</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Error.VPS_ERROR_GET_DMZ_NETWORK</Key>
+    <DefaultValue>Error getting VPS DMZ network details</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Error.VPS_ERROR_GET_VDC_HOME</Key>
+    <DefaultValue>Error getting general details</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Error.PACKAGE_PHONE_NUMBER</Key>
+    <DefaultValue>Error getting phone number</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Error.PACKAGE_IP_ADDRESS</Key>
+    <DefaultValue>Error getting IP address</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>Error.VPS_ERROR_CREATE</Key>
     <DefaultValue>Error creating virtual server</DefaultValue>
   </Resource>
@@ -9830,6 +9865,11 @@
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>Error.VPS_LOAD_VM_META_ITEM</Key>
     <DefaultValue>Cannot load virtual machine meta-item</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Error.VPS_LOAD_PVEVM_ITEM</Key>
+    <DefaultValue>Error loading virtual machine information</DefaultValue>
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
@@ -10108,6 +10148,11 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>VPS.VPS_QUOTA_WRONG_RAM_HV</Key>
+    <DefaultValue>RAM size must be greater than 32 MB</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>VPS.VPS_QUOTA_NOT_IN_DYNAMIC_RAM</Key>
     <DefaultValue>RAM size must be between the minimum and maximum of the dynamic memory</DefaultValue>
   </Resource>
@@ -10353,6 +10398,16 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>TaskActivity.VPS_CREATE_DMZ_VIRTUAL_SWITCH</Key>
+    <DefaultValue>Creating DMZ virtual switch: {0}</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>TaskActivity.VPS_CREATE_DMZ_VIRTUAL_SWITCH_ERROR</Key>
+    <DefaultValue>Error creating virtual switch</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>TaskActivity.VPS_CREATE_RAM_SIZE</Key>
     <DefaultValue>RAM: {0} MB</DefaultValue>
   </Resource>
@@ -10388,6 +10443,21 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>TaskActivity.VPS_CREATE_SETUP_DMZ_NETWORK</Key>
+    <DefaultValue>Setup DMZ network</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>TaskActivity.VPS_CREATE_SETUP_DMZ_NETWORK_ERROR</Key>
+    <DefaultValue>Error setting up DMZ network: {0}</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>TaskActivity.VPS_CREATE_SETUP_DMZ_NETWORK_SKIP</Key>
+    <DefaultValue>DMZ network setup - Skipped</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>TaskActivity.VPS_CREATE_SET_COMPUTER_NAME_KVP</Key>
     <DefaultValue>Setting "computer name" provisioning task parameters</DefaultValue>
   </Resource>
@@ -10415,6 +10485,16 @@
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>TaskActivity.VPS_CREATE_SET_PRIVATE_NIC_KVP_ERROR</Key>
     <DefaultValue>Error setting "private NIC" provisioning task parameters</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>TaskActivity.VPS_CREATE_SET_DMZ_NIC_KVP</Key>
+    <DefaultValue>Setting "DMZ NIC" provisioning task parameters</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>TaskActivity.VPS_CREATE_SET_DMZ_NIC_KVP_ERROR</Key>
+    <DefaultValue>Error setting "DMZ NIC" provisioning task parameters</DefaultValue>
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
@@ -11760,6 +11840,21 @@
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>Quota.VPS2012.ReplicationEnabled</Key>
     <DefaultValue>Allow user to Replication</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.VPS2012.DMZNetworkEnabled</Key>
+    <DefaultValue>DMZ Network</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.VPS2012.DMZIPAddressesNumber</Key>
+    <DefaultValue>Number of DMZ IP addresses per VPS</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.VPS2012.DMZVLANsNumber</Key>
+    <DefaultValue>Number of DMZ Network VLANs</DefaultValue>
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
@@ -13383,6 +13478,11 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Error.VPS_ERROR_RESTORE_DMZ_IP</Key>
+    <DefaultValue>Cannot restore network adapter DMZ IP address</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>VPS.VPS_RESTORE_VIRTUAL_MACHINE_EXTERNAL_IP_ADDRESS_ERROR</Key>
     <DefaultValue>Error restoring external IP address. Check Audit Log for more details.</DefaultValue>
   </Resource>
@@ -13393,6 +13493,11 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>VPS.VPS_RESTORE_VIRTUAL_MACHINE_DMZ_IP_ADDRESS_ERROR</Key>
+    <DefaultValue>Error restoring DMZ IP address. Check Audit Log for more details.</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>AuditLogTask.VPS_RESTORE_EXTERNAL_IP</Key>
     <DefaultValue>Restore external IP</DefaultValue>
   </Resource>
@@ -13400,6 +13505,11 @@
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>AuditLogTask.VPS_RESTORE_PRIVATE_IP</Key>
     <DefaultValue>Restore private IP</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VPS_RESTORE_DMZ_IP</Key>
+    <DefaultValue>Restore DMZ IP</DefaultValue>
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
@@ -13473,6 +13583,11 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VPS2012_ADD_DMZ_IP</Key>
+    <DefaultValue>Add DMZ IP</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>AuditLogTask.VPS2012_APPLY_SNAPSHOT</Key>
     <DefaultValue>Apply VPS snapshot</DefaultValue>
   </Resource>
@@ -13500,6 +13615,11 @@
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>AuditLogTask.VPS2012_DELETE_PRIVATE_IP</Key>
     <DefaultValue>Delete private IP</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VPS2012_DELETE_DMZ_IP</Key>
+    <DefaultValue>Delete DMZ IP</DefaultValue>
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
@@ -13538,6 +13658,11 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VPS2012_RESTORE_DMZ_IP</Key>
+    <DefaultValue>Restore DMZ IP</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>AuditLogTask.VPS2012_SET_PRIMARY_EXTERNAL_IP</Key>
     <DefaultValue>Set primary external IP</DefaultValue>
   </Resource>
@@ -13545,6 +13670,11 @@
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>AuditLogTask.VPS2012_SET_PRIMARY_PRIVATE_IP</Key>
     <DefaultValue>Set primary private IP</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VPS2012_SET_PRIMARY_DMZ_IP</Key>
+    <DefaultValue>Set primary DMZ IP</DefaultValue>
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
@@ -13573,6 +13703,11 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>TaskActivity.VPS2012_ADD_DMZ_IP</Key>
+    <DefaultValue>Assigning DMZ IP addresses</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>TaskActivity.VPS2012_DELETE_EXTERNAL_IP</Key>
     <DefaultValue>Delete external IP</DefaultValue>
   </Resource>
@@ -13583,6 +13718,11 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>TaskActivity.VPS2012_DELETE_DMZ_IP</Key>
+    <DefaultValue>Delete DMZ IP</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>TaskActivity.VPS2012_SET_PRIMARY_EXTERNAL_IP</Key>
     <DefaultValue>Setting external primary IP address</DefaultValue>
   </Resource>
@@ -13590,6 +13730,11 @@
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>TaskActivity.VPS2012_SET_PRIMARY_PRIVATE_IP</Key>
     <DefaultValue>Setting private primary IP address</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>TaskActivity.VPS2012_SET_PRIMARY_DMZ_IP</Key>
+    <DefaultValue>Setting DMZ primary IP address</DefaultValue>
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
@@ -13690,11 +13835,6 @@
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>Quota.PROXMOX.StartShutdownAllowed</Key>
     <DefaultValue>Allow user to Start, Turn off and Shutdown VPS</DefaultValue>
-  </Resource>
-  <Resource>
-    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
-    <Key>Error.VPS_LOAD_PVEVM_ITEM</Key>
-    <DefaultValue>Error loading virtual machine information</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\ApplyEnableHardQuotaFeature.ascx.resx</File>
@@ -23458,6 +23598,16 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <DefaultValue>*** Please do not forget to configure your email templates (From name/  From Email address).  They can be configured at:</DefaultValue>
   </Resource>
   <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\SystemSettings.ascx.resx</File>
+    <Key>HeaderDebugSettings.Text</Key>
+    <DefaultValue>DEBUG SETTINGS</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\SystemSettings.ascx.resx</File>
+    <Key>SettingchkAlwaysUseEntityFramework.Text</Key>
+    <DefaultValue>Use Entity Framework for database access</DefaultValue>
+  </Resource>
+  <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\Tasks.ascx.resx</File>
     <Key>gvTasks.Empty</Key>
     <DefaultValue>There are no running tasks at the moment.</DefaultValue>
@@ -24154,7 +24304,7 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\UserCreateUserAccount.ascx.resx</File>
-    <Key>chkAccountLetter.Text</Key>
+    <Key>lblAccountLetter.Text</Key>
     <DefaultValue>Send Account Summary Letter</DefaultValue>
   </Resource>
   <Resource>
@@ -24281,6 +24431,11 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <File>DesktopModules\SolidCP\App_LocalResources\UserCreateUserAccount.ascx.resx</File>
     <Key>lblSubscriberNumber</Key>
     <DefaultValue>Account Number:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\UserCreateUserAccount.ascx.resx</File>
+    <Key>chkAccountLetter.Text</Key>
+    <DefaultValue>Yes</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\UserCustomers.ascx.resx</File>
@@ -25291,6 +25446,11 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <File>DesktopModules\SolidCP\App_LocalResources\VpsMenu.ascx.resx</File>
     <Key>Text.PrivateNetwork</Key>
     <DefaultValue>Private Network</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\VpsMenu.ascx.resx</File>
+    <Key>Text.DmzNetwork</Key>
+    <DefaultValue>DMZ Network</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\WebApplicationGallery.ascx.resx</File>
@@ -39230,6 +39390,11 @@ https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/abo
 https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_remote_troubleshooting?view=powershell-7.2#how-to-connect-remotely-from-a-workgroup-based-computer</DefaultValue>
   </Resource>
   <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperV2012R2_Settings.ascx.resx</File>
+    <Key>locDmzNetwork.Text</Key>
+    <DefaultValue>DMZ Network</DefaultValue>
+  </Resource>
+  <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperVForPrivateCloud_Settings.ascx.resx</File>
     <Key>chkVpsFolderIncludesUsername.Text</Key>
     <DefaultValue>User name</DefaultValue>
@@ -52482,6 +52647,11 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\SkinControls\App_LocalResources\SiteFooter.ascx.resx</File>
+    <Key>chkUseEntityFramework.Text</Key>
+    <DefaultValue>Use EntityFramework for database access</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\SkinControls\App_LocalResources\SiteFooter.ascx.resx</File>
     <Key>locPoweredBy.Text</Key>
     <DefaultValue>Powered by &lt;a href="https://solidcp.com" target="_blank"&gt;SolidCP&lt;/a&gt;.</DefaultValue>
   </Resource>
@@ -57131,6 +57301,16 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <DefaultValue>Started:</DefaultValue>
   </Resource>
   <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcAddDmzNetworkVLAN.ascx.resx</File>
+    <Key>FormComments.Text</Key>
+    <DefaultValue>&lt;p&gt;The form allows allocating of additional VLANs to this hosting space. These VLANs are used to configure VPS network adapter connected to DMZ network.&lt;/p&gt;&lt;p&gt;VPS module is looking for free VLANs in "Private Network VLANs" pool, so SolidCP administrator must make sure there are sufficient number of unallotted VLANs in that pool.&lt;/p&gt;</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcAddDmzNetworkVLAN.ascx.resx</File>
+    <Key>locTitle.Text</Key>
+    <DefaultValue>Allocate VLANs</DefaultValue>
+  </Resource>
+  <Resource>
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcAddExternalAddress.ascx.resx</File>
     <Key>FormComments.Text</Key>
     <DefaultValue>&lt;p&gt;The form allows allocating of additional External IP addresses to this hosting space. These IP addresses are used to configure VPS network adapter connected to External network.&lt;/p&gt;&lt;p&gt;VPS module is looking for free external IP addresses in "VPS External Network" pool, so SolidCP administrator must make sure there are sufficient number of unallotted IP addresses in that pool.&lt;/p&gt;</DefaultValue>
@@ -57202,6 +57382,11 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
+    <Key>stepDmzNetwork.Title</Key>
+    <DefaultValue>DMZ Network</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
     <Key>stepSummary.Title</Key>
     <DefaultValue>Summary</DefaultValue>
   </Resource>
@@ -57224,6 +57409,11 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
     <Key>PrivateAddressesValidator.ErrorMessage</Key>
     <DefaultValue>Enter the number of private IP addresses</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
+    <Key>DmzAddressesValidator.ErrorMessage</Key>
+    <DefaultValue>Enter the number of DMZ IP addresses</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
@@ -57274,6 +57464,11 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
     <Key>chkPrivateNetworkEnabled.Text</Key>
     <DefaultValue>Private network enabled</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
+    <Key>chkDmzNetworkEnabled.Text</Key>
+    <DefaultValue>DMZ network enabled</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
@@ -57432,7 +57627,17 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
+    <Key>locDmzAddressesList.Text</Key>
+    <DefaultValue>IP addresses list:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
     <Key>locPrivateAddressesNumber.Text</Key>
+    <DefaultValue>Number of IP addresses:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
+    <Key>locDmzAddressesNumber.Text</Key>
     <DefaultValue>Number of IP addresses:</DefaultValue>
   </Resource>
   <Resource>
@@ -57452,7 +57657,27 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
+    <Key>locDmzNetwork.Text</Key>
+    <DefaultValue>DMZ Network</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
+    <Key>locDmzNetworkEnabled.Text</Key>
+    <DefaultValue>DMZ network enabled:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
+    <Key>locDmzNetworkFormat.Text</Key>
+    <DefaultValue>Network addresses format:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
     <Key>locPrivateSubnetMask.Text</Key>
+    <DefaultValue>Subnet mask:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
+    <Key>locDmzSubnetMask.Text</Key>
     <DefaultValue>Subnet mask:</DefaultValue>
   </Resource>
   <Resource>
@@ -57563,6 +57788,11 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   <Resource>
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
     <Key>litMaxPrivateAddresses.Text</Key>
+    <DefaultValue>({0} max)</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
+    <Key>litMaxDmzAddresses.Text</Key>
     <DefaultValue>({0} max)</DefaultValue>
   </Resource>
   <Resource>
@@ -57721,6 +57951,66 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <DefaultValue>Enter a numeric value</DefaultValue>
   </Resource>
   <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcDmzNetwork.ascx.resx</File>
+    <Key>FormComments.Text</Key>
+    <DefaultValue>&lt;p&gt;If this form is available in the hosting space, it means that the VMs in this hosting space can be connected to a dedicated DMZ network that is only available in this hosting space.&lt;/p&gt; &lt;p&gt;</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcDmzNetwork.ascx.resx</File>
+    <Key>gvAddresses.Empty</Key>
+    <DefaultValue>No DMZ IP addresses have been used in this hosting space.</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcDmzNetwork.ascx.resx</File>
+    <Key>SearchField.IPAddress</Key>
+    <DefaultValue>IP Address</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcDmzNetwork.ascx.resx</File>
+    <Key>SearchField.ItemName</Key>
+    <DefaultValue>VPS Name</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcDmzNetwork.ascx.resx</File>
+    <Key>gvAddressesIPAddress.HeaderText</Key>
+    <DefaultValue>IP</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcDmzNetwork.ascx.resx</File>
+    <Key>gvAddressesItemName.HeaderText</Key>
+    <DefaultValue>VPS</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcDmzNetwork.ascx.resx</File>
+    <Key>gvAddressesPrimary.HeaderText</Key>
+    <DefaultValue>Primary</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcDmzNetwork.ascx.resx</File>
+    <Key>locTitle.Text</Key>
+    <DefaultValue>DMZ Network</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcDmzNetwork.ascx.resx</File>
+    <Key>locVpsAddressesQuota.Text</Key>
+    <DefaultValue>IP addresses per VPS:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcDmzNetwork.ascx.resx</File>
+    <Key>secQuotas.Text</Key>
+    <DefaultValue>Quotas</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcDmzNetwork.ascx.resx</File>
+    <Key>secVLAN.Text</Key>
+    <DefaultValue>VLAN</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcDmzNetwork.ascx.resx</File>
+    <Key>locVLANsQuota.Text</Key>
+    <DefaultValue>DMZ Network VLANs:</DefaultValue>
+  </Resource>
+  <Resource>
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcExternalNetwork.ascx.resx</File>
     <Key>FormComments.Text</Key>
     <DefaultValue>&lt;p&gt;The form displays the list of IP addresses from "VPS External Network" pool allocated to the hosting space. Alternatively, this form could be considered as a "map" of external IP addresses and their assignments to virtual machines.&lt;/p&gt;&lt;p&gt;If any IP has already assigned to some VPS then there will be VPS host name in the "Item name" column.&lt;/p&gt;&lt;p&gt;If there are lot of VPS in the hosting space you can easily search them by their external IP.&lt;/p&gt;&lt;p&gt;"Number of IP addresses" quota shows the maximum number of external IP addresses that could be allocated to this space.&lt;/p&gt;</DefaultValue>
@@ -57794,6 +58084,11 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcHome.ascx.resx</File>
     <Key>SearchField.IPAddress</Key>
     <DefaultValue>Private IP</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcHome.ascx.resx</File>
+    <Key>SearchField.DmzIP</Key>
+    <DefaultValue>DMZ IP</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcHome.ascx.resx</File>
@@ -57904,6 +58199,11 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcHome.ascx.resx</File>
     <Key>locCPUQuota.Text</Key>
     <DefaultValue>CPU's</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcHome.ascx.resx</File>
+    <Key>gvServersDmzIP.HeaderText</Key>
+    <DefaultValue>DMZ IP</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcImportServer.ascx.resx</File>
@@ -58229,6 +58529,106 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcPrivateNetwork.ascx.resx</File>
     <Key>locVLANsQuota.Text</Key>
     <DefaultValue>Private Network VLANs:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsAddDmzAddress.ascx.resx</File>
+    <Key>btnAdd.Text</Key>
+    <DefaultValue>Add</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsAddDmzAddress.ascx.resx</File>
+    <Key>btnCancel.Text</Key>
+    <DefaultValue>Cancel</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsAddDmzAddress.ascx.resx</File>
+    <Key>FormComments.Text</Key>
+    <DefaultValue>&lt;p&gt;This form allows assigning of new IP addresses to VPS "DMZ" network adapter.&lt;/p&gt;</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsAddDmzAddress.ascx.resx</File>
+    <Key>locOnePerLine.Text</Key>
+    <DefaultValue>* Type one IP address per line</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsAddDmzAddress.ascx.resx</File>
+    <Key>locDmzAddresses.Text</Key>
+    <DefaultValue>Number of IP addresses:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsAddDmzAddress.ascx.resx</File>
+    <Key>locSubTitle.Text</Key>
+    <DefaultValue>Add DMZ IP Addresses</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsAddDmzAddress.ascx.resx</File>
+    <Key>locTitle.Text</Key>
+    <DefaultValue>Network</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsAddDmzAddress.ascx.resx</File>
+    <Key>DmzAddressesValidator.ErrorMessage</Key>
+    <DefaultValue>Enter the number of DMZ IP addresses</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsAddDmzAddress.ascx.resx</File>
+    <Key>radioDmzRandom.Text</Key>
+    <DefaultValue>Randomly select next available IP addresses to the addresses format</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsAddDmzAddress.ascx.resx</File>
+    <Key>radioDmzSelected.Text</Key>
+    <DefaultValue>Assign specified IP addresses</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsAddDmzAddress.ascx.resx</File>
+    <Key>litMaxDmzAddresses.Text</Key>
+    <DefaultValue>({0} max)</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsAddDmzAddress.ascx.resx</File>
+    <Key>btnAddByInject.Text</Key>
+    <DefaultValue>Add and InjectIP (BETA)</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsAddDmzAddress.ascx.resx</File>
+    <Key>chkCustomGateway.Text</Key>
+    <DefaultValue>Change Gateway / DNS / Subnet mask</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsAddDmzAddress.ascx.resx</File>
+    <Key>DNSValidator.ErrorMessage</Key>
+    <DefaultValue>Enter DNS server IP</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsAddDmzAddress.ascx.resx</File>
+    <Key>GatewayValidator.ErrorMessage</Key>
+    <DefaultValue>Enter Gateway</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsAddDmzAddress.ascx.resx</File>
+    <Key>locDNS1.Text</Key>
+    <DefaultValue>Preferred DNS server:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsAddDmzAddress.ascx.resx</File>
+    <Key>locDNS2.Text</Key>
+    <DefaultValue>Alternate DNS server:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsAddDmzAddress.ascx.resx</File>
+    <Key>locGateway.Text</Key>
+    <DefaultValue>Gateway:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsAddDmzAddress.ascx.resx</File>
+    <Key>locMask.Text</Key>
+    <DefaultValue>Subnet mask:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsAddDmzAddress.ascx.resx</File>
+    <Key>MaskValidator.ErrorMessage</Key>
+    <DefaultValue>Enter subnet mask</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsAddExternalAddress.ascx.resx</File>
@@ -58616,6 +59016,11 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <DefaultValue>Minimum:</DefaultValue>
   </Resource>
   <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsConfiguration.ascx.resx</File>
+    <Key>optionDmzNetwork.Text</Key>
+    <DefaultValue>DMZ network enabled</DefaultValue>
+  </Resource>
+  <Resource>
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsDvd.ascx.resx</File>
     <Key>btnEjectDisk.OnClientClick</Key>
     <DefaultValue>ShowProgressDialog('Ejecting disk...');</DefaultValue>
@@ -58899,6 +59304,11 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsEditConfiguration.ascx.resx</File>
     <Key>valHddSize.ErrorMessage</Key>
     <DefaultValue>Enter a numeric value</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsEditConfiguration.ascx.resx</File>
+    <Key>chkDmzNetworkEnabled.Text</Key>
+    <DefaultValue>DMZ network enabled</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsGeneral.ascx.resx</File>
@@ -59469,6 +59879,71 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsNetwork.ascx.resx</File>
     <Key>locPrivGateway.Text</Key>
     <DefaultValue>Default gateway:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsNetwork.ascx.resx</File>
+    <Key>btnAddDmzAddress.Text</Key>
+    <DefaultValue>Add IP...</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsNetwork.ascx.resx</File>
+    <Key>btnDeleteDmz.Text</Key>
+    <DefaultValue>Delete</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsNetwork.ascx.resx</File>
+    <Key>btnDeleteDmzByInject.Text</Key>
+    <DefaultValue>Delete By Injection (BETA)</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsNetwork.ascx.resx</File>
+    <Key>btnRestoreDmzAddress.Text</Key>
+    <DefaultValue>Restore DMZ IPs</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsNetwork.ascx.resx</File>
+    <Key>btnRestoreExternalAddress.Text</Key>
+    <DefaultValue>Restore External IPs</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsNetwork.ascx.resx</File>
+    <Key>btnRestorePrivateAddress.Text</Key>
+    <DefaultValue>Restore Private IPs</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsNetwork.ascx.resx</File>
+    <Key>btnSetPrimaryDmz.Text</Key>
+    <DefaultValue>Set As Primary</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsNetwork.ascx.resx</File>
+    <Key>gvDmzAddresses.Empty</Key>
+    <DefaultValue>No IP addresses are assigned to DMZ network adapter.</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsNetwork.ascx.resx</File>
+    <Key>locDmzAddress.Text</Key>
+    <DefaultValue>Server address:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsNetwork.ascx.resx</File>
+    <Key>locDmzGateway.Text</Key>
+    <DefaultValue>Default gateway:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsNetwork.ascx.resx</File>
+    <Key>locDmzSubnet.Text</Key>
+    <DefaultValue>Subnet mask:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsNetwork.ascx.resx</File>
+    <Key>locTotalDmz.Text</Key>
+    <DefaultValue>IP addresses:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsNetwork.ascx.resx</File>
+    <Key>secDmzNetwork.Text</Key>
+    <DefaultValue>DMZ Network</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsPermissions.ascx.resx</File>
@@ -60219,6 +60694,11 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <File>DesktopModules\SolidCP\VPS2012\UserControls\App_LocalResources\Menu.ascx.resx</File>
     <Key>Text.PrivateNetwork</Key>
     <DefaultValue>Private Network</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\UserControls\App_LocalResources\Menu.ascx.resx</File>
+    <Key>Text.DmzNetwork</Key>
+    <DefaultValue>DMZ Network</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPS2012\UserControls\App_LocalResources\Menu.ascx.resx</File>

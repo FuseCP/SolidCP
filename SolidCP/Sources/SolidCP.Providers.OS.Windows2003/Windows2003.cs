@@ -1574,7 +1574,7 @@ namespace SolidCP.Providers.OS
 			{
 				Log.WriteStart("GetTerminalServicesSessions");
 				List<TerminalSession> sessions = new List<TerminalSession>();
-				string ret = FileUtils.ExecuteSystemCommand("qwinsta", "");
+				string ret = OS.Shell.Default.Exec("qwinsta").Output().Result;
 
 				// parse returned string
 				StringReader reader = new StringReader(ret);
@@ -1631,7 +1631,7 @@ namespace SolidCP.Providers.OS
 			try
 			{
 				Log.WriteStart("CloseTerminalServicesSession");
-				FileUtils.ExecuteSystemCommand("rwinsta", sessionId.ToString());
+				OS.Shell.Default.Exec($"rwinsta {sessionId}");
 				Log.WriteEnd("CloseTerminalServicesSession");
 			}
 			catch (Exception ex)
@@ -1873,11 +1873,11 @@ namespace SolidCP.Providers.OS
 		#endregion
 
 		#region System Commands
-		public string ExecuteSystemCommand(string path, string args)
+		public string ExecuteSystemCommand(string user, string password, string path, string args)
 		{
 			try
 			{
-				string result = FileUtils.ExecuteSystemCommand(path, args);
+				string result = FileUtils.ExecuteSystemCommand(user, password, path, args);
 				return result;
 			}
 			catch (Exception ex)

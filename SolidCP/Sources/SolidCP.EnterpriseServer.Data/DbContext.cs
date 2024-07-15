@@ -6,6 +6,7 @@ using System.Data;
 using System.Data.Common;
 using SolidCP.Providers.OS;
 using SolidCP.EnterpriseServer;
+using SolidCP.Providers.Common;
 using System.Configuration;
 using System.Linq;
 using System.IO;
@@ -26,11 +27,35 @@ namespace SolidCP.EnterpriseServer.Data
         static string connectionString = null;
         public string ConnectionString
         {
-            get => connectionString ??= DbSettings.NativeConnectionString;
-            set => connectionString = DbSettings.GetNativeConnectionString(value);
+            get => connectionString ?? (ConnectionString = DbSettings.ConnectionString);
+            set
+            {
+                connectionString = value;
+				DbType dbType = DbType.Unknown;
+				var csb = new ConnectionStringBuilder(value);
+                var dbTypeStr = csb["DbType"] as string;
+                if (!string.IsNullOrEmpty(dbTypeStr))
+                {
+                    if (Enum.TryParse<DbType>(dbTypeStr, out dbType)) DbType = dbType;
+                    csb.Remove("DbType");
+                }
+
+                if (dbType == DbType.Sqlite || dbType == DbType.SqliteFX)
+                {
+                    var dbFile = (string)csb["Data Source"];
+                    if (!Path.IsPathRooted(dbFile))
+                    {
+                        dbFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dbFile);
+                        csb["Data Source"] = dbFile;
+                    }
+                    csb["BinaryGUID"] = "false";
+                    csb["Foreign Keys"] = "true";
+                }
+                connectionString = csb.ToString();
+            }
         }
 
-        DbConnection MsSqlDbConnection => new Microsoft.Data.SqlClient.SqlConnection(ConnectionString);
+        DbConnection SqlServerDbConnection => new Microsoft.Data.SqlClient.SqlConnection(ConnectionString);
 #if NETFRAMEWORK
         DbConnection MySqlDbConnection => new MySql.Data.MySqlClient.MySqlConnection(ConnectionString);
 #else
@@ -44,20 +69,7 @@ namespace SolidCP.EnterpriseServer.Data
             get
             {
 #if NETFRAMEWORK
-				//factory ??= new System.Data.SQLite.EF6.SQLiteProviderFactory();
-				/* factory ??= DbProviderFactories.GetFactory("System.Data.SQLite.EF6");
-                var conn = factory.CreateConnection();*/
-				var csb = new DbConnectionStringBuilder();
-                csb.ConnectionString = ConnectionString;
-                var dbFile = (string)csb["Data Source"];
-                if (!Path.IsPathRooted(dbFile))
-                {
-                    dbFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dbFile);
-                    csb["Data Source"] = dbFile;
-                    ConnectionString = csb.ToString();
-                }
-				var conn = new System.Data.SQLite.SQLiteConnection(ConnectionString);
-				return conn;
+                return new System.Data.SQLite.SQLiteConnection(ConnectionString);
 #else
                 return new Microsoft.Data.Sqlite.SqliteConnection(ConnectionString);
 #endif
@@ -78,8 +90,8 @@ namespace SolidCP.EnterpriseServer.Data
 
                     switch (DbType)
 					{
-						case DbType.MsSql:
-						    dbConnection = MsSqlDbConnection;
+						case DbType.SqlServer:
+						    dbConnection = SqlServerDbConnection;
                             break;
 						case DbType.MySql:
 						case DbType.MariaDb:
@@ -124,7 +136,7 @@ namespace SolidCP.EnterpriseServer.Data
                     switch (DbType)
                     {
                         default:
-                        case DbType.MsSql: contextType = typeof(MsSqlDbContext); break;
+                        case DbType.SqlServer: contextType = typeof(SqlServerDbContext); break;
                         case DbType.MySql: contextType = typeof(MySqlDbContext); break;
                         case DbType.MariaDb: contextType = typeof(MySqlDbContext); break;
                         case DbType.PostgreSql: contextType = typeof(PostgreSqlDbContext); break;
@@ -168,13 +180,13 @@ namespace SolidCP.EnterpriseServer.Data
         {
             /*if (dbType == DbType.Unknown)
             {
-                var csb = new DbConnectionStringBuilder() { ConnectionString = connectionString };
+                var csb = new ConnectionStringBuilder(connectionString);
                 if (!Enum.TryParse<DbType>((string)(csb["DbType"] ?? "Unknown"), out dbType)) dbType = DbType.Other;
             }*/
             if (dbType == DbType.Unknown) DbType = DbSettings.GetDbType(connectionString);
             else DbType = dbType;
-            ConnectionString = connectionString;
-            InitSeedData = initSeedData;
+			ConnectionString = connectionString;
+			InitSeedData = initSeedData;
 #if NETSTANDARD
             BaseContext = (IGenericDbContext)Activator.CreateInstance(ContextType, this);
 #else
@@ -183,14 +195,14 @@ namespace SolidCP.EnterpriseServer.Data
             BaseContext.Log += WriteToLog;
         }
 
-        public bool IsMsSql => DbType == DbType.MsSql;
+        public bool IsSqlServer => DbType == DbType.SqlServer;
         public bool IsMySql => DbType == DbType.MySql;
 		public bool IsSqlite => IsSqliteCore || IsSqliteFX;
         public bool IsSqliteFX => DbType == DbType.SqliteFX;
         public bool IsSqliteCore => DbType == DbType.Sqlite;
 		public bool IsPostgreSql => DbType == DbType.PostgreSql;
         public bool IsMariaDb => DbType == DbType.MariaDb;
-        public bool HasProcedures => IsMsSql && UseStoredProcedures;
+        public bool HasProcedures => IsSqlServer && UseStoredProcedures;
 
 #if NetCore
         public const bool IsCore = true;

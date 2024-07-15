@@ -89,6 +89,9 @@ namespace SolidCP.Portal.VPS2012.UserControls
             if (cntx.Quotas.ContainsKey(Quotas.VPS2012_PRIVATE_NETWORK_ENABLED)
                 && !cntx.Quotas[Quotas.VPS2012_PRIVATE_NETWORK_ENABLED].QuotaExhausted)
                 items.Add(CreateMenuItem("PrivateNetwork", "vdc_private_network"));
+            if (cntx.Quotas.ContainsKey(Quotas.VPS2012_DMZ_NETWORK_ENABLED)
+                && !cntx.Quotas[Quotas.VPS2012_DMZ_NETWORK_ENABLED].QuotaExhausted)
+                items.Add(CreateMenuItem("DmzNetwork", "vdc_dmz_network"));
             //items.Add(CreateMenuItem("UserPermissions", "vdc_permissions"));
             items.Add(CreateMenuItem("AuditLog", "vdc_audit_log"));
             // selected menu item

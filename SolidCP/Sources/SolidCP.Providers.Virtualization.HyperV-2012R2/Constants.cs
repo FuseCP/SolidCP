@@ -16,6 +16,7 @@ namespace SolidCP.Providers.Virtualization
 
         public const string EXTERNAL_NETWORK_ADAPTER_NAME = "External Network Adapter";
         public const string PRIVATE_NETWORK_ADAPTER_NAME = "Private Network Adapter";
+        public const string DMZ_NETWORK_ADAPTER_NAME = "DMZ Network Adapter";
         public const string MANAGEMENT_NETWORK_ADAPTER_NAME = "Management Network Adapter";
 
         public const Int64 Size1G = 0x40000000;

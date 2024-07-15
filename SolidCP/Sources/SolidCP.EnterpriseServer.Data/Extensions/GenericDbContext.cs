@@ -44,17 +44,17 @@ namespace SolidCP.EnterpriseServer.Data
 #endif
 	}
 
-	public class MsSqlDbContext: GenericDbContext<MsSqlProvider>
+	public class SqlServerDbContext: GenericDbContext<SqlServerProvider>
 	{
 #if NetCore
 
-		public MsSqlDbContext(Data.DbContext context) : this(new DbOptions<Context.DbContextBase>(context)) { }
+		public SqlServerDbContext(Data.DbContext context) : this(new DbOptions<Context.DbContextBase>(context)) { }
 
-		public MsSqlDbContext(DbContextOptions<Context.DbContextBase> options) : base(options)
+		public SqlServerDbContext(DbContextOptions<Context.DbContextBase> options) : base(options)
 		{
 			if (options is DbOptions<Context.DbContextBase> opts)
 			{
-				DbType = DbType.MsSql;
+				DbType = DbType.SqlServer;
 				InitSeedData = opts.InitSeedData;
 			}
 		}
@@ -64,12 +64,12 @@ namespace SolidCP.EnterpriseServer.Data
 				(options is Data.Extensions.DbOptions<GenericDbContext<TProvider>> opts) ? opts.DbType : DbType.Unknown,
 				(options is Data.Extensions.DbOptions<GenericDbContext<TProvider>> opts2) ? opts2.ConnectionString : "")) { }
 		*/
-		public MsSqlDbContext(string connectionString, bool initSeedData = false) :
-			base(new DbOptions<Context.DbContextBase>(DbType.MsSql, connectionString, initSeedData)) { }
+		public SqlServerDbContext(string connectionString, bool initSeedData = false) :
+			base(new DbOptions<Context.DbContextBase>(DbType.SqlServer, connectionString, initSeedData)) { }
 #elif NetFX
-		public MsSqlDbContext(Data.DbContext context) : base(context)
+		public SqlServerDbContext(Data.DbContext context) : base(context)
 		{
-			DbType = DbType.MsSql;
+			DbType = DbType.SqlServer;
 			InitSeedData = context.InitSeedData;
 		}
 #endif

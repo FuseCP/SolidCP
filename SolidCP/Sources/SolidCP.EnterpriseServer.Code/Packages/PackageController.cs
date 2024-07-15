@@ -804,8 +804,12 @@ namespace SolidCP.EnterpriseServer
                 StringDictionary vps2012Settings = ServerController.GetServiceSettings(vps2012ServiceId);
                 if (Utils.ParseBool(vps2012Settings["AutoAssignExternalIP"], true))
                     ServerController.AllocateMaximumPackageIPAddresses(packageId, ResourceGroups.VPS2012, IPAddressPool.VpsExternalNetwork);
+
+                // VLANs
                 if (Utils.ParseBool(vps2012Settings["AutoAssignVLAN"], true))
-                    ServerController.AllocateMaximumPackageVLANs(packageId, ResourceGroups.VPS2012);
+                    ServerController.AllocateMaximumPackageVLANs(packageId, ResourceGroups.VPS2012, false);
+                if (Utils.ParseBool(vps2012Settings["DmzAutoAssignVLAN"], true))
+                    ServerController.AllocateMaximumPackageVLANs(packageId, ResourceGroups.VPS2012, true);
 
                 // allocate "VPSForPC" IP addresses
                 int vpsfcpServiceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.VPSForPC);
@@ -1222,6 +1226,65 @@ namespace SolidCP.EnterpriseServer
 
             // Update the Hard quota on home folder in case it was enabled and in case there was a change in disk space
             UpdatePackageHardQuota(addon.PackageId);
+
+            // check resources to allocate
+            PackageContext cntx = PackageController.GetPackageContext(addon.PackageId);
+            if (cntx != null && cntx.Quotas.Count > 0)
+            {
+                foreach (KeyValuePair<string, QuotaValueInfo> quota in cntx.Quotas)
+                {
+                    int unusedQty;
+                    if (quota.Value.QuotaAllocatedValue == -1)
+                    {
+                        unusedQty = 1;
+                    }
+                    else
+                    {
+                        unusedQty = quota.Value.QuotaAllocatedValue - quota.Value.QuotaUsedValue;
+                    }
+                    if (unusedQty == 0) continue;
+
+                    int vps2012ServiceId;
+                    StringDictionary vps2012Settings = null;
+
+                    switch (quota.Value.QuotaName)
+                    {
+                        case Quotas.VPS2012_EXTERNAL_IP_ADDRESSES_NUMBER:
+                            if (vps2012Settings == null)
+                            {
+                                vps2012ServiceId = PackageController.GetPackageServiceId(addon.PackageId, ResourceGroups.VPS2012, false);
+                                vps2012Settings = ServerController.GetServiceSettings(vps2012ServiceId);
+                            }
+                            if (Utils.ParseBool(vps2012Settings["AutoAssignExternalIP"], true))
+                                ServerController.AllocateMaximumPackageIPAddresses(addon.PackageId, ResourceGroups.VPS2012, IPAddressPool.VpsExternalNetwork);
+                            break;
+                        case Quotas.WEB_IP_ADDRESSES:
+                            int webServiceId = PackageController.GetPackageServiceId(addon.PackageId, ResourceGroups.Web, false);
+                            StringDictionary webSettings = ServerController.GetServiceSettings(webServiceId);
+                            if (Utils.ParseBool(webSettings["AutoAssignDedicatedIP"], true))
+                                ServerController.AllocateMaximumPackageIPAddresses(addon.PackageId, ResourceGroups.Web, IPAddressPool.WebSites);
+                            break;
+                        case Quotas.VPS2012_PRIVATE_VLANS_NUMBER:
+                            if (vps2012Settings == null)
+                            {
+                                vps2012ServiceId = PackageController.GetPackageServiceId(addon.PackageId, ResourceGroups.VPS2012, false);
+                                vps2012Settings = ServerController.GetServiceSettings(vps2012ServiceId);
+                            }
+                            if (Utils.ParseBool(vps2012Settings["AutoAssignVLAN"], true))
+                                ServerController.AllocateMaximumPackageVLANs(addon.PackageId, ResourceGroups.VPS2012, false);
+                            break;
+                        case Quotas.VPS2012_DMZ_VLANS_NUMBER:
+                            if (vps2012Settings == null)
+                            {
+                                vps2012ServiceId = PackageController.GetPackageServiceId(addon.PackageId, ResourceGroups.VPS2012, false);
+                                vps2012Settings = ServerController.GetServiceSettings(vps2012ServiceId);
+                            }
+                            if (Utils.ParseBool(vps2012Settings["DmzAutoAssignVLAN"], true))
+                                ServerController.AllocateMaximumPackageVLANs(addon.PackageId, ResourceGroups.VPS2012, true);
+                            break;
+                    }
+                }
+            }
             return result;
         }
 
@@ -1281,7 +1344,12 @@ namespace SolidCP.EnterpriseServer
 
         public int GetPackageServiceId(int packageId, string groupName)
         {
-            return Database.GetPackageServiceId(SecurityContext.User.UserId, packageId, groupName);
+            return Database.GetPackageServiceId(SecurityContext.User.UserId, packageId, groupName, true);
+        }
+
+        public int GetPackageServiceId(int packageId, string groupName, bool updatePackage)
+        {
+            return Database.GetPackageServiceId(SecurityContext.User.UserId, packageId, groupName, updatePackage);
         }
 
         public List<ServiceProviderItem> GetPackageItemsByName(int packageId, string itemName)

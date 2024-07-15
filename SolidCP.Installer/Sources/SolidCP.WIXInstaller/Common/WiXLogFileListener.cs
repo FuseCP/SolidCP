@@ -2,7 +2,8 @@
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using Microsoft.Deployment.WindowsInstaller;
+//using Microsoft.Deployment.WindowsInstaller;
+using WixToolset.Dtf.WindowsInstaller;
 
 namespace SolidCP.WIXInstaller.Common
 {

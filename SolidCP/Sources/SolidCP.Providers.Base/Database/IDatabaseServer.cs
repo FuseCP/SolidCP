@@ -36,7 +36,7 @@ using System.Data;
 namespace SolidCP.Providers.Database
 {
 	/// <summary>
-	/// Summary description for IMsSqlProvider.
+	/// Summary description for ISqlServerProvider.
 	/// </summary>
 	public interface IDatabaseServer
 	{

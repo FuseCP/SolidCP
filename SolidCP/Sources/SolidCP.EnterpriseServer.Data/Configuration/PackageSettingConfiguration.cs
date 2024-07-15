@@ -16,7 +16,7 @@ public partial class PackageSettingConfiguration: EntityTypeConfiguration<Packag
 {
     public override void Configure() {
 
-		if (IsMsSql) Property(e => e.PropertyValue).HasColumnType("ntext");
+		if (IsSqlServer) Property(e => e.PropertyValue).HasColumnType("ntext");
 		else if (IsCore && (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql))
 		{
 			Property(e => e.PropertyValue).HasColumnType("TEXT");

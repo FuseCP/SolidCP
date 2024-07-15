@@ -1,0 +1,95 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<RootNamespace>SolidCP.Providers.Web</RootNamespace>
+		<TargetFramework>net48</TargetFramework>
+		<PublishUrl>publish\</PublishUrl>
+		<WarningsAsErrors>618</WarningsAsErrors>
+		<OutputPath>..\SolidCP.Server\bin\Providers\</OutputPath>
+		<CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+		<LangVersion>11</LangVersion>
+		<Nullable>disable</Nullable>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+		<DebugType>full</DebugType>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+		<DebugType>portable</DebugType>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="DotNetZip.NetStandard" Version="1.12.0" />
+	</ItemGroup>
+	<ItemGroup>
+		<Reference Include="Microsoft.Practices.EnterpriseLibrary.Caching">
+		  <HintPath>..\..\Lib\Microsoft.Practices.EnterpriseLibrary.Caching.dll</HintPath>
+		</Reference>
+		<Reference Include="Microsoft.Web.Administration, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+			<HintPath>..\..\Lib\References\Microsoft\Microsoft.Web.Administration.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+		</Reference>
+		<Reference Include="Microsoft.Web.Management, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+			<HintPath>..\..\Lib\References\Microsoft\Microsoft.Web.Management.dll</HintPath>
+			<Private>True</Private>
+			<SpecificVersion>False</SpecificVersion>
+		</Reference>
+		<Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+			<HintPath>..\..\Lib\References\Microsoft\Windows2012\System.Management.Automation.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+		</Reference>
+		<Reference Include="System.DirectoryServices" />
+		<Reference Include="System.Management" />
+		<Reference Include="System.Web" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
+		<ProjectReference Include="..\SolidCP.Providers.Web.IIs60\SolidCP.Providers.Web.IIs60.csproj" />
+		<ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Remove="SolidCP.Providers.Web.IIS70\IIs70.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\Authentication\AnonymAuthModuleService.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\Authentication\AuthenticationGlobals.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\Authentication\BasicAuthModuleService.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\Authentication\WindowsAuthenticationModuleService.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\ClassicAsp\ClassicAspGlobals.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\ClassicAsp\ClassicAspModuleService.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\Common\ConfigurationModuleService.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\Common\FastCgiApplication.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\Common\FastCgiApplicationCollection.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\Common\FastCgiSection.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\Common\HttpErrorResponseMode.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\Common\IsapiCgiRestrictionCollection.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\Common\IsapiCgiRestrictionElement.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\Common\IsapiCgiRestrictionSection.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\Compression\CompressionModuleService.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\DefaultDocuments\DefaultDocumentModuleService.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\Delegation\DelegationRulesModuleService.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\DirectoryBrowse\DirectoryBrowseGlobals.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\DirectoryBrowse\DirectoryBrowseModuleService.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\DirectoryBrowse\DirectoryBrowseSection.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\DirectoryBrowse\DirectoryBrowseShowFlags.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\Extensions\ExtensionsModuleService.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\Handlers\HandlerAccessPolicy.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\Handlers\HandlerAction.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\Handlers\HandlerActionCollection.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\Handlers\HandlerRequiredAccess.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\Handlers\HandlersModuleService.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\Handlers\HandlersSection.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\Handlers\ResourceType.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\HttpRedirect\HttpRedirectModuleService.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\MimeTypes\MimeTypesModuleService.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\Properties\AssemblyInfo.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\SSL\CertEnrollInterop.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\SSL\SSLModuleService.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\Utility\ConfigurationUtility.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\WebObjects\CustomHttpErrorsModuleService.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\WebObjects\CustomHttpHeadersModuleService.cs" />
+		<Compile Remove="SolidCP.Providers.Web.IIS70\WebObjects\WebObjectsModuleService.cs" />
+	</ItemGroup>
+</Project>

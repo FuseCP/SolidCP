@@ -19,7 +19,6 @@ namespace SolidCP.EnterpriseServer.Data
 {
 	internal class Test
 	{
-
 		public void Do(IEntityType EntityType, ModelCodeGenerationOptions Options, IServiceProvider services)
 		{
 			var annotationCodeGenerator = services.GetRequiredService<IAnnotationCodeGenerator>();
@@ -37,7 +36,6 @@ namespace SolidCP.EnterpriseServer.Data
 			var entityData = (StringBuilder)getEntityDataMethod.Invoke(null, new object[] { EntityType, Options, 12 });
 
 			var sb = new StringBuilder();
-			var firstProperty = true;
 			foreach (var property in EntityType.GetProperties())
 			{
 				var propertyFluentApiCalls = property.GetFluentApiCalls(annotationCodeGenerator)
@@ -52,7 +50,7 @@ namespace SolidCP.EnterpriseServer.Data
 
 		public static void GetData(IEntityType EntityType, ModelCodeGenerationOptions Options, IServiceProvider services, int indent)
 		{
-			using (var db = new DbContext(Options.ConnectionString, DbType.MsSql))
+			using (var db = new DbContext(Options.ConnectionString, DbType.SqlServer))
 			{
 				var entityType = EntityType.ClrType;
 				var setType = typeof(DbSet<>).MakeGenericType(entityType);
@@ -125,7 +123,7 @@ namespace SolidCP.EnterpriseServer.Data
 			DbContext context = null;
 			switch (context.DbType)
 			{
-				case DbType.MsSql:
+				case DbType.SqlServer:
 					builder.UseSqlServer(context.ConnectionString);
 					break;
 				case DbType.Sqlite:

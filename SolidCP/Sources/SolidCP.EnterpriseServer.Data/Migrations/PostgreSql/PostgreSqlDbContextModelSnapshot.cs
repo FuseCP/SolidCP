@@ -67,7 +67,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         .HasColumnType("integer");
 
                     b.HasKey("Id")
-                        .HasName("PK__AccessTo__3214EC27A32557FE");
+                        .HasName("PK__AccessTo__3214EC27DEAEF66E");
 
                     b.HasIndex(new[] { "AccountId" }, "AccessTokensIdx_AccountID");
 
@@ -92,7 +92,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         .HasColumnName("UserID");
 
                     b.HasKey("Id")
-                        .HasName("PK__Addition__3214EC272F1861EB");
+                        .HasName("PK__Addition__3214EC27E665DDE2");
 
                     b.ToTable("AdditionalGroups", "public");
                 });
@@ -2252,7 +2252,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         .HasColumnName("UserID");
 
                     b.HasKey("Id")
-                        .HasName("PK__Backgrou__3214EC271AFAB817");
+                        .HasName("PK__Backgrou__3214EC273A1145AC");
 
                     b.ToTable("BackgroundTasks", "public");
                 });
@@ -2292,7 +2292,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         .HasColumnType("TEXT");
 
                     b.HasKey("LogId")
-                        .HasName("PK__Backgrou__5E5499A830A1D5BF");
+                        .HasName("PK__Backgrou__5E5499A86067A6E5");
 
                     b.HasIndex(new[] { "TaskId" }, "BackgroundTaskLogsIdx_TaskID");
 
@@ -2324,7 +2324,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         .HasColumnType("character varying(255)");
 
                     b.HasKey("ParameterId")
-                        .HasName("PK__Backgrou__F80C6297E2E5AF88");
+                        .HasName("PK__Backgrou__F80C629777BF580B");
 
                     b.HasIndex(new[] { "TaskId" }, "BackgroundTaskParametersIdx_TaskID");
 
@@ -2345,7 +2345,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         .HasColumnName("TaskID");
 
                     b.HasKey("TaskStackId")
-                        .HasName("PK__Backgrou__5E44466F62E48BE6");
+                        .HasName("PK__Backgrou__5E44466FB8A5F217");
 
                     b.HasIndex(new[] { "TaskId" }, "BackgroundTaskStackIdx_TaskID");
 
@@ -2475,6 +2475,36 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.ToTable("CRMUsers", "public");
                 });
 
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.DmzIpAddress", b =>
+                {
+                    b.Property<int>("DmzAddressId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("DmzAddressID");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("DmzAddressId"));
+
+                    b.Property<string>("IpAddress")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .IsUnicode(false)
+                        .HasColumnType("character varying(15)")
+                        .HasColumnName("IPAddress");
+
+                    b.Property<bool>("IsPrimary")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("integer")
+                        .HasColumnName("ItemID");
+
+                    b.HasKey("DmzAddressId");
+
+                    b.HasIndex(new[] { "ItemId" }, "DmzIPAddressesIdx_ItemID");
+
+                    b.ToTable("DmzIPAddresses", "public");
+                });
+
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Domain", b =>
                 {
                     b.Property<int>("DomainId")
@@ -2572,7 +2602,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         .HasColumnType("character varying(255)");
 
                     b.HasKey("Id")
-                        .HasName("PK__DomainDn__3214EC2758B0A6F1");
+                        .HasName("PK__DomainDn__3214EC27A6FC0498");
 
                     b.HasIndex(new[] { "DomainId" }, "DomainDnsRecordsIdx_DomainId");
 
@@ -3756,6 +3786,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         .HasColumnName("PackageVlanID");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PackageVlanId"));
+
+                    b.Property<bool>("IsDmz")
+                        .HasColumnType("boolean");
 
                     b.Property<int>("PackageId")
                         .HasColumnType("integer")
@@ -8082,7 +8115,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         {
                             QuotaId = 701,
                             GroupId = 71,
-                            ItemTypeId = 39,
+                            ItemTypeId = 71,
                             QuotaDescription = "Databases",
                             QuotaName = "MsSQL2016.Databases",
                             QuotaOrder = 1,
@@ -8093,7 +8126,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         {
                             QuotaId = 702,
                             GroupId = 71,
-                            ItemTypeId = 40,
+                            ItemTypeId = 72,
                             QuotaDescription = "Users",
                             QuotaName = "MsSQL2016.Users",
                             QuotaOrder = 2,
@@ -8405,6 +8438,36 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                             QuotaName = "MsSQL2022.MaxLogSize",
                             QuotaOrder = 4,
                             QuotaTypeId = 3,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 750,
+                            GroupId = 33,
+                            QuotaDescription = "DMZ Network",
+                            QuotaName = "VPS2012.DMZNetworkEnabled",
+                            QuotaOrder = 22,
+                            QuotaTypeId = 1,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 751,
+                            GroupId = 33,
+                            QuotaDescription = "Number of DMZ IP addresses per VPS",
+                            QuotaName = "VPS2012.DMZIPAddressesNumber",
+                            QuotaOrder = 23,
+                            QuotaTypeId = 3,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 752,
+                            GroupId = 33,
+                            QuotaDescription = "Number of DMZ Network VLANs",
+                            QuotaName = "VPS2012.DMZVLANsNumber",
+                            QuotaOrder = 24,
+                            QuotaTypeId = 2,
                             ServiceQuota = false
                         });
                 });
@@ -15667,7 +15730,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         .HasColumnType("integer");
 
                     b.HasKey("Id")
-                        .HasName("PK__WebDavAc__3214EC27B27DC571");
+                        .HasName("PK__WebDavAc__3214EC2708781F08");
 
                     b.HasIndex(new[] { "AccountId" }, "WebDavAccessTokensIdx_AccountID");
 
@@ -15715,7 +15778,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         .WithMany("BackgroundTaskLogs")
                         .HasForeignKey("TaskId")
                         .IsRequired()
-                        .HasConstraintName("FK__Backgroun__TaskI__06ADD4BD");
+                        .HasConstraintName("FK__Backgroun__TaskI__7D8391DF");
 
                     b.Navigation("Task");
                 });
@@ -15726,7 +15789,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         .WithMany("BackgroundTaskParameters")
                         .HasForeignKey("TaskId")
                         .IsRequired()
-                        .HasConstraintName("FK__Backgroun__TaskI__03D16812");
+                        .HasConstraintName("FK__Backgroun__TaskI__7AA72534");
 
                     b.Navigation("Task");
                 });
@@ -15737,7 +15800,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         .WithMany("BackgroundTaskStacks")
                         .HasForeignKey("TaskId")
                         .IsRequired()
-                        .HasConstraintName("FK__Backgroun__TaskI__098A4168");
+                        .HasConstraintName("FK__Backgroun__TaskI__005FFE8A");
 
                     b.Navigation("Task");
                 });
@@ -15774,6 +15837,18 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         .HasConstraintName("FK_CRMUsers_ExchangeAccounts");
 
                     b.Navigation("Account");
+                });
+
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.DmzIpAddress", b =>
+                {
+                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.ServiceItem", "Item")
+                        .WithMany("DmzIpAddresses")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_DmzIPAddresses_ServiceItems");
+
+                    b.Navigation("Item");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Domain", b =>
@@ -16917,6 +16992,8 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ServiceItem", b =>
                 {
+                    b.Navigation("DmzIpAddresses");
+
                     b.Navigation("DomainMailDomains");
 
                     b.Navigation("DomainWebSites");

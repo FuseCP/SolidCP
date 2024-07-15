@@ -1,48 +1,41 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<RootNamespace>SolidCP.Providers.OS</RootNamespace>
-		<TargetFramework>net48</TargetFramework>
-		<PublishUrl>publish\</PublishUrl>
-		<WarningsAsErrors>618</WarningsAsErrors>
-		<OutputPath>..\SolidCP.Server\bin\Providers\</OutputPath>
-		<CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
-		<LangVersion>11</LangVersion>
-		<Nullable>disable</Nullable>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-		<DebugType>portable</DebugType>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-		<DebugType>portable</DebugType>
-	</PropertyGroup>
-	<ItemGroup>
-		<PackageReference Include="Microsoft.Web.Deployment" Version="4.0.5" />
-	</ItemGroup>
-	<ItemGroup>
-		<Reference Include="Microsoft.Web.Management, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-			<SpecificVersion>False</SpecificVersion>
-			<HintPath>..\..\Lib\References\Microsoft\Microsoft.Web.Management.dll</HintPath>
-		</Reference>
-		<Reference Include="Microsoft.Web.PlatformInstaller, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-			<SpecificVersion>False</SpecificVersion>
-			<HintPath>..\..\Lib\References\Microsoft\Microsoft.Web.PlatformInstaller.dll</HintPath>
-			<Private>True</Private>
-		</Reference>
-		<Reference Include="System.Management" />
-		<Reference Include="System.Runtime.Remoting" />
-		<Reference Include="System.ServiceProcess" />
-		<Reference Include="System.Web" />
-	</ItemGroup>
-	<ItemGroup>
-		<Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
-	</ItemGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
-		<ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
-		<ProjectReference Include="..\SolidCP.Server.WPIServiceContract\SolidCP.Server.WPIServiceContract.csproj" />
-	</ItemGroup>
+  <PropertyGroup>
+    <RootNamespace>SolidCP.Providers.OS</RootNamespace>
+    <TargetFramework>net48</TargetFramework>
+    <PublishUrl>publish\</PublishUrl>
+    <WarningsAsErrors>618</WarningsAsErrors>
+    <OutputPath>..\SolidCP.Server\bin\Providers\</OutputPath>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+    <LangVersion>11</LangVersion>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Web.Deployment" Version="4.0.5" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Web.Management, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Lib\References\Microsoft\Microsoft.Web.Management.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Microsoft.Web.PlatformInstaller, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Lib\References\Microsoft\Microsoft.Web.PlatformInstaller.dll</HintPath>
+      <Private>True</Private>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="System.Management" />
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Web" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
+    <ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
+    <ProjectReference Include="..\SolidCP.Server.WPIServiceContract\SolidCP.Server.WPIServiceContract.csproj" />
+  </ItemGroup>
 </Project>

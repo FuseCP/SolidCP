@@ -38,6 +38,8 @@ using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 using SolidCP.Setup.Common;
+using SolidCP.UniversalInstaller.Core;
+using SolidCP.EnterpriseServer.Data;
 
 namespace SolidCP.Setup.Actions
 {
@@ -326,14 +328,14 @@ namespace SolidCP.Setup.Actions
                     return;
                 }
 
-                var probingPaths = string.Join(";", new string[] { "bin", "bin\\Code" }
+                var probingPaths = string.Join(";", new string[] { "bin", "bin\\Code", "bin\\netstandard" }
                     .Select(path => Path.Combine(vars.EnterpriseServerPath, path)));
-                var doc = XElement.Load(configPath);
-                var appSettings = doc.Element("appSettings");
+                var webConfig = XElement.Load(configPath);
+                var appSettings = webConfig.Element("appSettings");
                 if (appSettings == null)
                 {
                     appSettings = new XElement("appSettings");
-                    doc.Add(appSettings);
+                    webConfig.Add(appSettings);
                 }
                 
                 AddOrSetAppSettings(appSettings, "SolidCP.CryptoKey", Utils.GetRandomString(20), true, "1234567890");
@@ -342,10 +344,49 @@ namespace SolidCP.Setup.Actions
                 AddOrSetAppSettings(appSettings, "SolidCP.EnterpriseServer.ServerRequestTimeout", "3600", true, "3600");
                 AddOrSetAppSettings(appSettings, "SolidCP.AltConnectionString", "ConnectionString", true, "ConnectionString");
                 AddOrSetAppSettings(appSettings, "SolidCP.AltCryptoKey", "CryptoKey", true, "CryptoKey");
-                AddOrSetAppSettings(appSettings, "ExternalProbingPaths", probingPaths);
-                AddOrSetAppSettings(appSettings, "ExposeWebServices", vars.ExposeEnterpriseServerWebservices.ToString().ToLower());
+                AddOrSetAppSettings(appSettings, "ExternalProbingPaths", probingPaths, true);
+                AddOrSetAppSettings(appSettings, "ExposeWebServices", vars.ExposeEnterpriseServerWebservices ? "EnterpriseServer" : "none", true);
 
-                File.WriteAllText(configPath, doc.ToString());
+                // Set connection string
+
+                // Read EnterpriseServer web.config's connection string
+                var enterpriseServerPath = vars.EnterpriseServerPath;
+                var esWebConfigFile = Path.Combine(enterpriseServerPath, "web.config");
+                var esWebConfig = XElement.Load(esWebConfigFile);
+                var esConnectionString = esWebConfig
+                    .Element("configuration")
+                    .Element("connectionStrings")
+                    ?.Elements("add")
+                    .Where(e => (string)e.Attribute("name") == "EnterpriseServer")
+                    .Select(e => (string)e.Attribute("connectionString"))
+                    .FirstOrDefault();
+
+                var connectionString = esConnectionString;
+                var csb = new SolidCP.Providers.Common.ConnectionStringBuilder(connectionString);
+                var dbType = csb["DbType"] as string;
+                if (dbType.Equals("sqlite", StringComparison.OrdinalIgnoreCase) ||
+                    dbType.Equals("sqlitefx", StringComparison.OrdinalIgnoreCase))
+                {
+                    // adjust SQLite data source
+                    var database = csb["data source"] as string;
+                    if (!Path.IsPathRooted(database))
+                    {
+                        if (!database.Contains(Path.DirectorySeparatorChar) && !database.Contains('.')) database = $"{database}.sqlite";
+						database = Path.Combine(enterpriseServerPath, database);
+                        connectionString = DatabaseUtils.BuildSqliteConnectionString(database);
+                    }
+                }
+
+				var connectionStrings = webConfig
+					.Element("configuration")
+					?.Element("connectionStrings");
+				var ConnNode = connectionStrings
+					?.Elements("add")
+					.FirstOrDefault(e => (string)e.Attribute("name") == "EnterpriseServer");
+				if (ConnNode == null) connectionStrings.Add(ConnNode = new XElement("add", new XAttribute("name", "EnterpriseServer")));
+				ConnNode.Attribute("connectionString").SetValue(connectionString);
+				ConnNode.Attribute("providerName")?.Remove();
+				webConfig.Save(configPath);
             }
             catch (Exception ex)
             {

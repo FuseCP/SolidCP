@@ -38,7 +38,7 @@ fi
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%{_bindir}/solidcp-universalinstaller
+/usr/bin/solidcp-universalinstaller
 /usr/share/solidcp/SolidCP.UniversalInstaller.exe
 /usr/share/pixmaps/SolidCP.png
 /usr/share/applications/solidcp-universalinstaller.desktop

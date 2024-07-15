@@ -627,4 +627,7 @@ https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/abo
 &lt;br&gt;
 https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_remote_troubleshooting?view=powershell-7.2#how-to-connect-remotely-from-a-workgroup-based-computer</value>
   </data>
+  <data name="locDmzNetwork.Text" xml:space="preserve">
+    <value>DMZ Network</value>
+  </data>
 </root>

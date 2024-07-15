@@ -39,6 +39,10 @@ using System.Text;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Xml;
+using System.Xml.Linq;
+using SolidCP.Providers.Common;
+using SolidCP.UniversalInstaller.Core;
+using Data = SolidCP.EnterpriseServer.Data;
 
 namespace SolidCP.Setup.Actions
 {
@@ -178,7 +182,7 @@ namespace SolidCP.Setup.Actions
 
 	public class CreateDatabaseAction : Action, IInstallAction, IUninstallAction
 	{
-		public const string LogStartInstallMessage = "Creating SQL Server database...";
+		public const string LogStartInstallMessage = "Creating database...";
 		public const string LogStartUninstallMessage = "Deleting database";
 
 		void IInstallAction.Run(SetupVariables vars)
@@ -191,17 +195,17 @@ namespace SolidCP.Setup.Actions
 				var database = vars.Database;
 
 				Log.WriteStart(LogStartInstallMessage);
-				Log.WriteInfo(String.Format("SQL Server Database Name: \"{0}\"", database));
+				Log.WriteInfo(String.Format("Database Name: \"{0}\"", database));
 				//
-				if (SqlUtils.DatabaseExists(connectionString, database))
+				if (Data.DatabaseUtils.DatabaseExists(connectionString, database))
 				{
-					throw new Exception(String.Format("SQL Server database \"{0}\" already exists", database));
+					throw new Exception(String.Format("Database \"{0}\" already exists", database));
 				}
-				SqlUtils.CreateDatabase(connectionString, database);
+				Data.DatabaseUtils.CreateDatabase(connectionString, database);
 				//
-				Log.WriteEnd("Created SQL Server database");
+				Log.WriteEnd("Created database");
 				//
-				InstallLog.AppendLine(String.Format("- Created a new SQL Server database \"{0}\"", database));
+				InstallLog.AppendLine(String.Format("- Created a new database \"{0}\"", database));
 			}
 			catch (Exception ex)
 			{
@@ -222,9 +226,9 @@ namespace SolidCP.Setup.Actions
 				//
 				Log.WriteInfo(String.Format("Deleting database \"{0}\"", vars.Database));
 				//
-				if (SqlUtils.DatabaseExists(vars.DbInstallConnectionString, vars.Database))
+				if (Data.DatabaseUtils.DatabaseExists(vars.DbInstallConnectionString, vars.Database))
 				{
-					SqlUtils.DeleteDatabase(vars.DbInstallConnectionString, vars.Database);
+					Data.DatabaseUtils.DeleteDatabase(vars.DbInstallConnectionString, vars.Database, vars.InstallationFolder);
 					//
 					Log.WriteEnd("Deleted database");
 				}
@@ -251,7 +255,7 @@ namespace SolidCP.Setup.Actions
 				//
 				vars.DatabaseUserPassword = Utils.GetRandomString(20);
 				//user name should be the same as database
-				vars.NewDatabaseUser = SqlUtils.CreateUser(vars.DbInstallConnectionString, vars.Database, vars.DatabaseUserPassword, vars.Database);
+				vars.NewDatabaseUser = Data.DatabaseUtils.CreateUser(vars.DbInstallConnectionString, vars.Database, vars.DatabaseUserPassword, vars.Database);
 				//
 				Log.WriteEnd("Created database user");
 				InstallLog.AppendLine("- Created database user \"{0}\"", vars.Database);
@@ -273,9 +277,9 @@ namespace SolidCP.Setup.Actions
 				Log.WriteStart("Deleting database user");
 				Log.WriteInfo(String.Format("Deleting database user \"{0}\"", vars.Database));
 				//
-				if (SqlUtils.UserExists(vars.DbInstallConnectionString, vars.Database))
+				if (Data.DatabaseUtils.UserExists(vars.DbInstallConnectionString, vars.Database))
 				{
-					SqlUtils.DeleteUser(vars.DbInstallConnectionString, vars.Database);
+					Data.DatabaseUtils.DeleteUser(vars.DbInstallConnectionString, vars.Database);
 					//
 					Log.WriteEnd("Deleted database user");
 				}
@@ -293,7 +297,10 @@ namespace SolidCP.Setup.Actions
 
 	public class ExecuteInstallSqlAction : Action, IInstallAction
 	{
-		public const string SqlFilePath = @"Setup\install_db.sql";
+		public Data.DbType dbType = Data.DbType.Unknown;
+
+		public string DbTypeId => dbType != Data.DbType.MariaDb ? dbType.ToString().ToLowerInvariant() : "mysql"; 
+		public string SqlFilePath => $@"Setup\install.{DbTypeId}.sql";
 		public const string ExecuteProgressMessage = "Creating database objects...";
 
 		void IInstallAction.Run(SetupVariables vars)
@@ -302,6 +309,7 @@ namespace SolidCP.Setup.Actions
 			{
 				var component = vars.ComponentFullName;
 				var componentId = vars.ComponentId;
+				dbType = vars.DatabaseType;
 
 				var path = Path.Combine(vars.InstallationFolder, SqlFilePath);
 
@@ -338,8 +346,6 @@ namespace SolidCP.Setup.Actions
 
 	public class UpdateServeradminPasswAction : Action, IInstallAction
 	{
-		public const string SqlStatement = @"USE [{0}]; UPDATE [dbo].[Users] SET [Password] = '{1}' WHERE [UserID] = 1;";
-
 		void IInstallAction.Run(SetupVariables vars)
 		{
 			try
@@ -362,7 +368,7 @@ namespace SolidCP.Setup.Actions
 					password = Utils.Encrypt(vars.CryptoKey, password);
 				}
 				//
-				SqlUtils.ExecuteQuery(vars.DbInstallConnectionString, String.Format(SqlStatement, vars.Database, password));
+				Data.DatabaseUtils.SetServerAdminPassword(vars.DbInstallConnectionString, vars.Database, password);
 				//
 				Log.WriteEnd("Updated serveradmin password");
 				//
@@ -403,22 +409,34 @@ namespace SolidCP.Setup.Actions
 		{
 			Log.WriteStart("Updating web.config file (connection string)");
 			var file = Path.Combine(vars.InstallationFolder, vars.ConfigurationFile);
-			vars.ConnectionString = String.Format(vars.ConnectionString, vars.DatabaseServer, vars.Database, vars.Database, vars.DatabaseUserPassword);
-			var Xml = new XmlDocument();
-			Xml.Load(file);
-			var ConnNode = Xml.SelectSingleNode("configuration/connectionStrings/add[@name='EnterpriseServer']") as XmlElement;
-			if (ConnNode != null)
-				ConnNode.SetAttribute("connectionString", vars.ConnectionString);
+			vars.ConnectionString = Data.DatabaseUtils.BuildConnectionString(vars.DatabaseType, vars.DatabaseServer,
+				vars.DatabasePort, vars.Database, vars.Database, vars.DatabaseUserPassword,
+				vars.EnterpriseServerPath, vars.EmbedEnterpriseServer);
+			var Xml = XDocument.Load(file);
+			var connectionStrings = Xml
+				.Element("configuration")
+				?.Element("connectionStrings");
+			var ConnNode = connectionStrings
+				?.Elements("add")
+				.FirstOrDefault(e => (string)e.Attribute("name") == "EnterpriseServer");
+			if (ConnNode == null) connectionStrings.Add(ConnNode = new XElement("add", new XAttribute("name", "EnterpriseServer")));
+			ConnNode.Attribute("connectionString").SetValue(vars.ConnectionString);
+			ConnNode.Attribute("providerName")?.Remove();
 			Xml.Save(file);
 			Log.WriteEnd(String.Format("Updated {0} file", vars.ConfigurationFile));
 			// Schedular
 			var file1 = Path.Combine(vars.InstallationFolder, "Bin", "SolidCP.SchedulerService.exe.config");
-			var Xml1 = new XmlDocument();
-			Xml1.Load(file);
-			var ConnNode1 = Xml1.SelectSingleNode("configuration/connectionStrings/add[@name='EnterpriseServer']") as XmlElement;
-			if (ConnNode1 != null)
-				ConnNode1.SetAttribute("connectionString", vars.ConnectionString);
-			Xml.Save(file1);
+			var Xml1 = XDocument.Load(file1);
+			var connectionStrings1 = Xml1
+				.Element("configuration")
+				?.Element("connectionStrings");
+			var ConnNode1 = connectionStrings1
+				?.Elements("add")
+				.FirstOrDefault(e => (string)e.Attribute("name") == "EnterpriseServer");
+			if (ConnNode1 == null) connectionStrings1.Add(ConnNode1 = new XElement("add", new XAttribute("name", "EnterpriseServer")));
+			ConnNode1.Attribute("connectionString").SetValue(vars.ConnectionString);
+			ConnNode1.Attribute("providerName")?.Remove();
+			Xml1.Save(file1);
 			Log.WriteEnd(String.Format("Updated {0} file", vars.ConfigurationFile));
 		}
 	}
@@ -436,7 +454,9 @@ namespace SolidCP.Setup.Actions
 				content = reader.ReadToEnd();
 			}
 
-			vars.ConnectionString = String.Format(vars.ConnectionString, vars.DatabaseServer, vars.Database, vars.Database, vars.DatabaseUserPassword);
+			vars.ConnectionString = Data.DatabaseUtils.BuildConnectionString(vars.DatabaseType, vars.DatabaseServer,
+				vars.DatabasePort, vars.Database, vars.Database, vars.DatabaseUserPassword,
+				vars.EnterpriseServerPath, vars.EmbedEnterpriseServer);
 			content = Utils.ReplaceScriptVariable(content, "installer.connectionstring", vars.ConnectionString);
 
 			using (var writer = new StreamWriter(file))
@@ -518,10 +538,12 @@ namespace SolidCP.Setup.Actions
 			AppConfig.SetComponentSettingStringValue(vars.ComponentId, "Database", vars.Database);
 			AppConfig.SetComponentSettingBooleanValue(vars.ComponentId, "NewDatabase", vars.CreateDatabase);
 			//
-			AppConfig.SetComponentSettingStringValue(vars.ComponentId, "DatabaseUser", vars.Database);
+			AppConfig.SetComponentSettingStringValue(vars.ComponentId, "DatabaseUser", vars.DatabaseUser);
 			AppConfig.SetComponentSettingBooleanValue(vars.ComponentId, "NewDatabaseUser", vars.NewDatabaseUser);
 			//
 			AppConfig.SetComponentSettingStringValue(vars.ComponentId, Global.Parameters.ConnectionString, vars.ConnectionString);
+			AppConfig.SetComponentSettingStringValue(vars.ComponentId, Global.Parameters.DatabaseServer, vars.DatabaseServer);
+			AppConfig.SetComponentSettingStringValue(vars.ComponentId, Global.Parameters.DatabasePort, vars.DatabasePort.ToString());
 			AppConfig.SetComponentSettingStringValue(vars.ComponentId, Global.Parameters.DatabaseServer, vars.DatabaseServer);
 			AppConfig.SetComponentSettingStringValue(vars.ComponentId, Global.Parameters.InstallConnectionString, vars.DbInstallConnectionString);
 			AppConfig.SetComponentSettingStringValue(vars.ComponentId, Global.Parameters.CryptoKey, vars.CryptoKey);

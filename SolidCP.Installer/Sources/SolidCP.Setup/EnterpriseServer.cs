@@ -38,6 +38,8 @@ using System.Windows.Forms;
 using System.Collections;
 using System.Text;
 using SolidCP.Setup.Actions;
+using Data = SolidCP.EnterpriseServer.Data;
+using SolidCP.UniversalInstaller.Core;
 
 namespace SolidCP.Setup
 {
@@ -100,12 +102,37 @@ namespace SolidCP.Setup
 					setupVariables.ServerAdminPassword = Utils.GetStringSetupParameter(args, Global.Parameters.ServerAdminPassword);
 					setupVariables.Database = Utils.GetStringSetupParameter(args, Global.Parameters.DatabaseName);
 					setupVariables.DatabaseServer = Utils.GetStringSetupParameter(args, Global.Parameters.DatabaseServer);
+					setupVariables.DatabasePort = (int)Utils.GetSetupParameter(args, Global.Parameters.DatabasePort);
+					Data.DbType dbType = Data.DbType.Unknown;
+					Enum.TryParse(Utils.GetStringSetupParameter(args, Global.Parameters.DatabaseType), out dbType);
+					setupVariables.DatabaseType = dbType;
 					//
-					setupVariables.DbInstallConnectionString = SqlUtils.BuildDbServerMasterConnectionString(
-						setupVariables.DatabaseServer,
-						Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdmin),
-						Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdminPassword)
-					);
+					switch (setupVariables.DatabaseType)
+					{
+						case Data.DbType.SqlServer:
+							setupVariables.DbInstallConnectionString = Data.DatabaseUtils.BuildSqlServerMasterConnectionString(
+								setupVariables.DatabaseServer,
+								Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdmin),
+								Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdminPassword)
+							);
+							break;
+						case Data.DbType.MySql:
+						case Data.DbType.MariaDb:
+							setupVariables.DbInstallConnectionString = Data.DatabaseUtils.BuildMySqlMasterConnectionString(
+								setupVariables.DatabaseServer,
+								setupVariables.DatabasePort,
+								Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdmin),
+								Utils.GetStringSetupParameter(args, Global.Parameters.DbServerAdminPassword)
+							);
+							break;
+						case Data.DbType.Sqlite:
+						case Data.DbType.SqliteFX:
+							setupVariables.DbInstallConnectionString =
+								Data.DatabaseUtils.BuildSqliteMasterConnectionString(setupVariables.Database,
+									setupVariables.InstallationFolder, setupVariables.EnterpriseServerPath, setupVariables.EmbedEnterpriseServer);
+							break;
+						default: break;
+					}
 					//
 					eam.ActionError += new EventHandler<ActionErrorEventArgs>((object sender, ActionErrorEventArgs e) =>
 					{

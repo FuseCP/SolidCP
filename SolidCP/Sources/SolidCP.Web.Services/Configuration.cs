@@ -42,6 +42,6 @@ namespace SolidCP.Web.Services
 		public static string CryptoKey = null;
 		public static string AltCryptoKey = null;
 		public static bool? EncryptionEnabled = null;
-		public static string? ExposeWebServices = null;
+		public static string ExposeWebServices = null;
 	}
 }

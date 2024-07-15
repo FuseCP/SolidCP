@@ -76,6 +76,8 @@ namespace SolidCP.Setup
 			public const string Component = "Component";
 			public const string FullFilePath = "FullFilePath";
 			public const string DatabaseServer = "DatabaseServer";
+			public const string DatabasePort = "DatabasePort";
+			public const string DatabaseType = "DatabaseType";
 			public const string DbServerAdmin = "DbServerAdmin";
 			public const string DbServerAdminPassword = "DbServerAdminPassword";
 			public const string DatabaseName = "DatabaseName";
@@ -211,7 +213,7 @@ namespace SolidCP.Setup
 			public const string ServiceAccount = "SCPEnterprise";
 			public const string DefaultPort = "9002";
 			public const string DefaultIP = "127.0.0.1";
-			public const string DefaultDbServer = @"localhost\sqlexpress";
+			public const string DefaultDbServer = @"localhost\SQLExpress";
 			public const string DefaultDatabase = "SolidCP";
 			public const string AspNetConnectionStringFormat = "server={0};database={1};uid={2};pwd={3};";
 			public const string ComponentCode = "enterprise server";

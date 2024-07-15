@@ -33,6 +33,8 @@
 using System;
 using System.Threading;
 using System.Xml;
+using SolidCP.UniversalInstaller.Core;
+using SolidCP.EnterpriseServer.Data;
 
 namespace SolidCP.Setup
 {
@@ -356,9 +358,9 @@ namespace SolidCP.Setup
 			{
 				Log.WriteStart("Deleting database");
 				Log.WriteInfo(string.Format("Deleting database \"{0}\"", name));
-				if ( SqlUtils.DatabaseExists(connectionString, name) )
+				if ( DatabaseUtils.DatabaseExists(connectionString, name) )
 				{
-					SqlUtils.DeleteDatabase(connectionString, name);
+					DatabaseUtils.DeleteDatabase(connectionString, name);
 					Log.WriteEnd("Deleted database");
 				}
 			}
@@ -378,9 +380,9 @@ namespace SolidCP.Setup
 			{
 				Log.WriteStart("Restoring database");
 				Log.WriteInfo(string.Format("Restoring database \"{0}\"", name));
-				if (SqlUtils.DatabaseExists(connectionString, name))
+				if (DatabaseUtils.DatabaseExists(connectionString, name))
 				{
-					SqlUtils.RestoreDatabase(connectionString, name, bakFile, position);
+					DatabaseUtils.RestoreDatabase(connectionString, name, bakFile, position);
 					Log.WriteEnd("Restored database");
 				}
 			}
@@ -401,9 +403,9 @@ namespace SolidCP.Setup
             {
                 Log.WriteStart("Deleting database user");
                 Log.WriteInfo(string.Format("Deleting database user \"{0}\"", username));
-                if (SqlUtils.UserExists(connectionString, username))
+                if (DatabaseUtils.UserExists(connectionString, username))
                 {
-                    SqlUtils.DeleteUser(connectionString, username);
+                    DatabaseUtils.DeleteUser(connectionString, username);
                     Log.WriteEnd("Deleted database user");
                 }
             }

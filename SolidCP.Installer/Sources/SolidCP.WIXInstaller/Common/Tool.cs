@@ -3,7 +3,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
-using Microsoft.Deployment.WindowsInstaller;
+//using Microsoft.Deployment.WindowsInstaller;
+using WixToolset.Dtf.WindowsInstaller;
 using Microsoft.Win32;
 
 using SolidCP.Setup;

@@ -11,16 +11,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		VersionInfo.cs = VersionInfo.cs
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Setup", "SolidCP.Setup\SolidCP.Setup.csproj", "{3951C0EC-BD98-450E-B228-CDBE5BD4AD49}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Setup", "SolidCP.Setup\SolidCP.Setup.csproj", "{3951C0EC-BD98-450E-B228-CDBE5BD4AD49}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Installer.Core", "SolidCP.Installer.Core\SolidCP.Installer.Core.csproj", "{0E4A3F5B-0BB1-4F63-863D-7B0182B378CF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.WIXInstaller", "SolidCP.WIXInstaller\SolidCP.WIXInstaller.csproj", "{3343FFD8-7CCE-451B-95AE-3D97244313A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Installer.Core", "SolidCP.Installer.Core\SolidCP.Installer.Core.csproj", "{0E4A3F5B-0BB1-4F63-863D-7B0182B378CF}"
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Setup.WIXInstaller", "Setup.WIXInstaller\Setup.WIXInstaller.wixproj", "{978F0A18-7C81-4561-8F6D-5A165484AD0A}"
-	ProjectSection(ProjectDependencies) = postProject
-		{3343FFD8-7CCE-451B-95AE-3D97244313A2} = {3343FFD8-7CCE-451B-95AE-3D97244313A2}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.EnterpriseServer.Base", "..\..\SolidCP\Sources\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj", "{C09CE910-F16B-48A1-B2CC-C99B8C1CF775}"
 EndProject
@@ -29,6 +24,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Providers.Base", "..\..\SolidCP\Sources\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj", "{684C932A-6C75-46AC-A327-F3689D89EB42}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Web.Clients", "..\..\SolidCP\Sources\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj", "{11E1B4BE-5BB3-4C7A-B927-AA9C5100FF4E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.WIXInstaller", "SolidCP.WIXInstaller\SolidCP.WIXInstaller.csproj", "{1F0B0675-FBA5-4813-8B56-7F986980BCB3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.UniversalInstaller.Core", "SolidCP.UniversalInstaller.Core\SolidCP.UniversalInstaller.Core.csproj", "{00686A84-CE3B-40DF-AD37-4B642149B4C7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,14 +59,6 @@ Global
 		{0E4A3F5B-0BB1-4F63-863D-7B0182B378CF}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{0E4A3F5B-0BB1-4F63-863D-7B0182B378CF}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{0E4A3F5B-0BB1-4F63-863D-7B0182B378CF}.Release|x86.ActiveCfg = Release|Any CPU
-		{3343FFD8-7CCE-451B-95AE-3D97244313A2}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{3343FFD8-7CCE-451B-95AE-3D97244313A2}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{3343FFD8-7CCE-451B-95AE-3D97244313A2}.Debug|x86.ActiveCfg = Debug|x86
-		{3343FFD8-7CCE-451B-95AE-3D97244313A2}.Debug|x86.Build.0 = Debug|x86
-		{3343FFD8-7CCE-451B-95AE-3D97244313A2}.Release|Any CPU.ActiveCfg = Release|x86
-		{3343FFD8-7CCE-451B-95AE-3D97244313A2}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{3343FFD8-7CCE-451B-95AE-3D97244313A2}.Release|x86.ActiveCfg = Release|x86
-		{3343FFD8-7CCE-451B-95AE-3D97244313A2}.Release|x86.Build.0 = Release|x86
 		{978F0A18-7C81-4561-8F6D-5A165484AD0A}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{978F0A18-7C81-4561-8F6D-5A165484AD0A}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{978F0A18-7C81-4561-8F6D-5A165484AD0A}.Debug|x86.ActiveCfg = Debug|x86
@@ -124,8 +115,35 @@ Global
 		{11E1B4BE-5BB3-4C7A-B927-AA9C5100FF4E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{11E1B4BE-5BB3-4C7A-B927-AA9C5100FF4E}.Release|x86.ActiveCfg = Release|Any CPU
 		{11E1B4BE-5BB3-4C7A-B927-AA9C5100FF4E}.Release|x86.Build.0 = Release|Any CPU
+		{1F0B0675-FBA5-4813-8B56-7F986980BCB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F0B0675-FBA5-4813-8B56-7F986980BCB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F0B0675-FBA5-4813-8B56-7F986980BCB3}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{1F0B0675-FBA5-4813-8B56-7F986980BCB3}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{1F0B0675-FBA5-4813-8B56-7F986980BCB3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1F0B0675-FBA5-4813-8B56-7F986980BCB3}.Debug|x86.Build.0 = Debug|Any CPU
+		{1F0B0675-FBA5-4813-8B56-7F986980BCB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F0B0675-FBA5-4813-8B56-7F986980BCB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F0B0675-FBA5-4813-8B56-7F986980BCB3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{1F0B0675-FBA5-4813-8B56-7F986980BCB3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{1F0B0675-FBA5-4813-8B56-7F986980BCB3}.Release|x86.ActiveCfg = Release|Any CPU
+		{1F0B0675-FBA5-4813-8B56-7F986980BCB3}.Release|x86.Build.0 = Release|Any CPU
+		{00686A84-CE3B-40DF-AD37-4B642149B4C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00686A84-CE3B-40DF-AD37-4B642149B4C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00686A84-CE3B-40DF-AD37-4B642149B4C7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{00686A84-CE3B-40DF-AD37-4B642149B4C7}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{00686A84-CE3B-40DF-AD37-4B642149B4C7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{00686A84-CE3B-40DF-AD37-4B642149B4C7}.Debug|x86.Build.0 = Debug|Any CPU
+		{00686A84-CE3B-40DF-AD37-4B642149B4C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00686A84-CE3B-40DF-AD37-4B642149B4C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00686A84-CE3B-40DF-AD37-4B642149B4C7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{00686A84-CE3B-40DF-AD37-4B642149B4C7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{00686A84-CE3B-40DF-AD37-4B642149B4C7}.Release|x86.ActiveCfg = Release|Any CPU
+		{00686A84-CE3B-40DF-AD37-4B642149B4C7}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A2B61BAC-20D0-4223-8ED8-E712CE8686FA}
 	EndGlobalSection
 EndGlobal

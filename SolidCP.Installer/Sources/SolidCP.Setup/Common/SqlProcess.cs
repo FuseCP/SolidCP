@@ -34,8 +34,11 @@ using System;
 using System.Data.SqlClient;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using SolidCP.Setup.Actions;
+using SolidCP.UniversalInstaller.Core;
+using SolidCP.EnterpriseServer.Data;
 
 namespace SolidCP.Setup
 {
@@ -63,50 +66,28 @@ namespace SolidCP.Setup
 			this.database = db;
 		}
 
-		private void OnProgressChange(int percentage)
+		private void OnProgressChange(float ratio)
 		{
 			if (ProgressChange == null)
 				return;
 			//
 			ProgressChange(this, new ActionProgressEventArgs<int>
 			{
-				EventData = percentage
+				EventData = (int)(ratio * 100 + 0.5)
 			});
 		}
 
-		/// <summary>
-		/// Executes sql script file.
-		/// </summary>
-		internal void Run()
+
+		internal void RunSqlServer(int commandCount)
 		{
-			int commandCount = 0;
-			int i = 0;
-			string sql = string.Empty;
-
-			try
-			{
-				using (StreamReader sr = new StreamReader(scriptFile))
-				{
-					while( null != (sql = ReadNextStatementFromStream(sr))) 
-					{
-						commandCount++;
-					}					
-				}
-			}
-			catch(Exception ex)
-			{
-				throw new Exception("Can't read SQL script " + scriptFile, ex);
-			}
-
-			Log.WriteInfo(string.Format("Executing {0} database commands", commandCount));
-			//
-			OnProgressChange(0);
-			//
 			SqlConnection connection = new SqlConnection(connectionString);
+			string sql;
+			int i = 0;
+			float n = commandCount;
 
 			try
 			{
-				// iterate through "GO" delimited command text
+				// iterate through delimited command text
 				using (StreamReader reader = new StreamReader(scriptFile))
 				{
 					SqlCommand command = new SqlCommand();
@@ -131,7 +112,7 @@ namespace SolidCP.Setup
 						i++;
 						if (commandCount != 0)
 						{
-							OnProgressChange(Convert.ToInt32(i * 100 / commandCount));
+							OnProgressChange((float)i / n);
 						}
 					}
 				}
@@ -146,6 +127,23 @@ namespace SolidCP.Setup
 			}
 		}
 
+		void SetCommandCount(int n) => Log.WriteInfo($"Executing {n} database commands");
+
+		/// <summary>
+		/// Executes sql script file.
+		/// </summary>
+		internal void Run()
+		{
+			//
+			OnProgressChange(0);
+			//
+			using (var stream = new FileStream(scriptFile, FileMode.Open, FileAccess.Read))
+			{
+				DatabaseUtils.RunSqlScript(connectionString, stream, OnProgressChange, SetCommandCount, ProcessInstallVariables, scriptFile, database);
+			}
+		}
+
+		public bool IsDelimiter(string cmd) => Regex.IsMatch(cmd, "^(GO|DELIMITER)(?=$|[^a-zA-Z])", RegexOptions.Singleline | RegexOptions.IgnoreCase);
 		private string ReadNextStatementFromStream(StreamReader reader)
 		{
 			StringBuilder sb = new StringBuilder();
@@ -166,7 +164,7 @@ namespace SolidCP.Setup
 					}
 				}
 
-				if(lineOfText.TrimEnd().ToUpper() == "GO") 
+				if(IsDelimiter(lineOfText)) 
 				{
 					break;
 				}

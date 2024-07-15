@@ -3,7 +3,6 @@
     <ProjectGuid>{53D22D35-4013-415F-BA09-F67A0DBBB0C1}</ProjectGuid>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PublishUrl>publish\</PublishUrl>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <WarningsAsErrors>618</WarningsAsErrors>
     <OutputPath>..\..\Bin\</OutputPath>
     <Nullable>disable</Nullable>

@@ -237,4 +237,7 @@
   <data name="HddMinIOPS.Text" xml:space="preserve">
     <value>{0} IOPS</value>
   </data>
+  <data name="optionDmzNetwork.Text" xml:space="preserve">
+    <value>DMZ Netzwerk aktiviert</value>
+  </data>
 </root>

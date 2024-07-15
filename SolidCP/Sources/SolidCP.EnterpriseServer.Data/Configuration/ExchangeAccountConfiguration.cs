@@ -18,10 +18,10 @@ public partial class ExchangeAccountConfiguration : EntityTypeConfiguration<Exch
 	{
 
 		Property(d => d.MailboxManagerActions).IsUnicode(false);
-		if (IsMsSql) Property(e => e.CreatedDate).HasColumnType("datetime");
+		if (IsSqlServer) Property(e => e.CreatedDate).HasColumnType("datetime");
 
 #if NetCore
-        if (IsMsSql) Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");
+        if (IsSqlServer) Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");
 
         HasOne(d => d.Item).WithMany(p => p.ExchangeAccounts).HasConstraintName("FK_ExchangeAccounts_ServiceItems");
 

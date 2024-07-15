@@ -80,7 +80,7 @@ namespace SolidCP.Installer
 			if (!Utils.CheckSecurity())
 			{
 				//ShowSecurityError();
-				UniversalInstaller.Installer.Current.RestartAsAdmin();
+				Utils.RestartAsAdmin();
 				return;
 			}
 
