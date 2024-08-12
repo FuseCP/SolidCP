@@ -964,7 +964,7 @@ namespace SolidCP.Import.Enterprise
 
 		private static bool EmailAddressExists(string emailAddress)
 		{
-			return DataProvider.ExchangeAccountEmailAddressExists(emailAddress);
+			return DataProvider.ExchangeAccountEmailAddressExists(emailAddress, true);
 		}
 
 		private static bool AccountExists(string accountName)
