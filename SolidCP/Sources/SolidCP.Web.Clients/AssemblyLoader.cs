@@ -235,16 +235,19 @@ namespace SolidCP.Web.Clients
 			Environment.SetEnvironmentVariable("PATH", newPath);
 		}
 
-        static void LoadNativeDll(Assembly a, string assemblyPath, Architecture arch, string dllName)
+        static void LoadNativeDll(Assembly a, string assemblyPath, Architecture? arch, string dllName, bool archExtension = false)
         {
             string file;
             if (arch == Architecture.X64)
             {
-                file = Path.Combine(assemblyPath, "x64", dllName);
+                if (archExtension) file = Path.Combine(assemblyPath, Path.ChangeExtension(dllName, $"x64.dll"));
+                else file = Path.Combine(assemblyPath, "x64", dllName);
             }
             else if (arch == Architecture.X86)
             {
-                file = Path.Combine(assemblyPath, "x86", dllName);
+				if (archExtension) file = Path.Combine(assemblyPath, Path.ChangeExtension(dllName, $"x86.dll"));
+				else file = Path.Combine(assemblyPath, "x86", dllName);
+				file = Path.Combine(assemblyPath, "x86", dllName);
             }
             else throw new NotSupportedException($"Architecture {arch} not supported.");
 
@@ -271,6 +274,7 @@ namespace SolidCP.Web.Clients
 
             if (a.GetName().Name == "System.Data.SQLite") LoadNativeDll(a, assemblyPath, arch, "SQLite.Interop.dll");
             if (a.GetName().Name == "SkiaSharp") LoadNativeDll(a, assemblyPath, arch, "libSkiaSharp.dll");
+            if (a.GetName().Name == "Microsoft.Data.SqlClient") LoadNativeDll(a, assemblyPath, arch, "Microsoft.Data.SqlClient.SNI.dll", true);
         }
 
         static string exepath = null;
