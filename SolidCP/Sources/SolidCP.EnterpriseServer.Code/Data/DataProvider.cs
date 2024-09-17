@@ -34,6 +34,7 @@ using System;
 using System.Configuration;
 using System.Data;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Xml.Linq;
 using System.Linq.Dynamic.Core;
 using System.Text;
@@ -1261,6 +1262,38 @@ RETURN
 			public string FullName;
 		}
 
+		public static Expression<Func<TElement, bool>> BuildOrExpression<TElement, TValue>(
+			Expression<Func<TElement, TValue>> valueSelector,
+			IEnumerable<TValue> values
+		)
+		{
+			if (null == valueSelector)
+				throw new ArgumentNullException("valueSelector");
+
+			if (null == values)
+				throw new ArgumentNullException("values");
+
+			ParameterExpression p = valueSelector.Parameters.Single();
+
+			if (!values.Any())
+				return e => false;
+
+			var equals = values.Select(value =>
+				(Expression)Expression.Equal(
+					 valueSelector.Body,
+					 Expression.Constant(
+						 value,
+						 typeof(TValue)
+					 )
+				)
+			);
+			var body = equals.Aggregate<Expression>(
+					 (accumulate, equal) => Expression.Or(accumulate, equal)
+			 );
+
+			return Expression.Lambda<Func<TElement, bool>>(body, p);
+		}
+
 		public DataSet GetSearchObject(int actorId, int userId, string filterColumn, string filterValue,
 			int statusId, int roleId, string sortColumn, int startRow, int maximumRows, string colType, string fullType,
 			bool recursive, bool onlyFind)
@@ -2133,7 +2166,7 @@ RETURN
 
 				if (colType == null) colType = "";
 
-			/*------------------------------------------------Users---------------------------------------------------------------*/
+				/*------------------------------------------------Users---------------------------------------------------------------*/
 
 				const string columnUsername = "Username";
 				const string columnEmail = "Email";
@@ -2142,370 +2175,680 @@ RETURN
 
 				if (string.IsNullOrEmpty(filterColumn) && !string.IsNullOrEmpty(filterValue)) filterColumn = "TextSearch";
 
-				var usersTree = UsersTree(userId, recursive);
-				var users = Users
-					.Where(u => u.UserId != userId && !u.IsPeer &&
-					(statusId == 0 || statusId > 0 && u.StatusId == statusId) &&
-					(roleId == 0 || roleId > 0 && u.RoleId == roleId))
-					.Join(usersTree, id => id.UserId, tid => tid, (u, t) => u);
-				var userItems = users.Join(
-					Users.Select(u => new TextSearchItem()
-					{
-						ItemId = u.UserId,
-						TextSearch = u.Username,
-						ColumnType = columnUsername
-					})
-					.Union(Users.Select(u => new TextSearchItem()
-					{
-						ItemId = u.UserId,
-						TextSearch = u.Email,
-						ColumnType = columnEmail
-					}))
-					.Union(Users.Select(u => new TextSearchItem()
-					{
-						ItemId = u.UserId,
-						TextSearch = u.CompanyName,
-						ColumnType = columnCompanyName
-					}))
-					.Union(Users.Select(u => new TextSearchItem()
-					{
-						ItemId = u.UserId,
-						TextSearch = u.FirstName + " " + u.LastName,
-						ColumnType = columnFullName
-					})),
-					u => u.UserId, it => it.ItemId, (u, it) => new Code.SearchItem()
-					{
-						ItemId = u.UserId,
-						TextSearch = it.TextSearch,
-						ColumnType = it.ColumnType,
-						AccountId = 0,
-						PackageId = 0,
-						Username = u.Username,
-						FullName = u.FirstName + " " + u.LastName,
-						FullType = "AccountHome"
-					})
-					.Where(it => !string.IsNullOrEmpty(it.TextSearch));
-
-				if (!string.IsNullOrEmpty(filterValue))
+				using (var usersTree = UsersTree(userId, recursive))
 				{
+					var users = Users
+						.Where(u => u.UserId != userId && !u.IsPeer &&
+						(statusId == 0 || statusId > 0 && u.StatusId == statusId) &&
+						(roleId == 0 || roleId > 0 && u.RoleId == roleId))
+						.Join(usersTree, id => id.UserId, tid => tid, (u, t) => u);
+					var userItems = users.Join(
+						Users.Select(u => new TextSearchItem()
+						{
+							ItemId = u.UserId,
+							TextSearch = u.Username,
+							ColumnType = columnUsername
+						})
+						.Union(Users.Select(u => new TextSearchItem()
+						{
+							ItemId = u.UserId,
+							TextSearch = u.Email,
+							ColumnType = columnEmail
+						}))
+						.Union(Users.Select(u => new TextSearchItem()
+						{
+							ItemId = u.UserId,
+							TextSearch = u.CompanyName,
+							ColumnType = columnCompanyName
+						}))
+						.Union(Users.Select(u => new TextSearchItem()
+						{
+							ItemId = u.UserId,
+							TextSearch = u.FirstName + " " + u.LastName,
+							ColumnType = columnFullName
+						})),
+						u => u.UserId, it => it.ItemId, (u, it) => new SearchItem()
+						{
+							ItemId = u.UserId,
+							TextSearch = it.TextSearch,
+							ColumnType = it.ColumnType,
+							FullType = "AccountHome",
+							PackageId = 0,
+							AccountId = 0,
+							Username = u.Username,
+							FullName = u.FirstName + " " + u.LastName,
+						})
+						.Where(it => !string.IsNullOrEmpty(it.TextSearch));
+
+					if (!string.IsNullOrEmpty(filterValue))
+					{
 #if NETFRAMEWORK
-					userItems = userItems.Where(it => DbFunctions.Like(it.TextSearch, filterValue));
+						userItems = userItems.Where(it => DbFunctions.Like(it.TextSearch, filterValue));
 #else
-					userItems = userItems.Where(it => EF.Functions.Like(it.TextSearch, filterValue));
+						userItems = userItems.Where(it => EF.Functions.Like(it.TextSearch, filterValue));
 #endif
-				}
+					}
 
-				userItems = userItems.OrderBy(it => it.TextSearch);
+					userItems = userItems.OrderBy(it => it.TextSearch);
 
-				if (onlyFind) userItems = userItems.Take(maximumRows);
+					if (onlyFind) userItems = userItems.Take(maximumRows);
 
-			/*--------------------------------------------Space----------------------------------------------------------*/
+					/*--------------------------------------------Space----------------------------------------------------------*/
 
-				var itemsService = ServiceItems
-					.Select(si => new ItemService()
-					{
-						ItemId = si.ItemId,
-						ItemTypeId = si.ItemTypeId,
-						UserId = si.Package.UserId,
-						Username = si.Package.User.Username,
-						FullName = si.Package.User.FirstName + " " + si.Package.User.LastName
-					})
-					.Join(usersTree, si => si.UserId, ut => ut, (u, ut) => u);
-
-				var itemsDomain = Domains
-					.Select(d => new ItemsDomain()
-					{
-						ItemId = d.DomainId,
-						UserId = d.Package.UserId,
-						Username = d.Package.User.Username,
-						FullName = d.Package.User.FirstName + " " + d.Package.User.LastName
-					})
-					.Join(usersTree, di => di.UserId, ut => ut, (di, ut) => di);
-
-				var spaceItemsServices = itemsService
-					.Join(ServiceItems
-						.Where(si => si.ItemType.Searchable == true && si.ItemTypeId != 200 && si.ItemTypeId != 201),
-						it => it.ItemId, si => si.ItemId, (it, si) => new SearchItem()
+					var itemsService = ServiceItems
+						.Select(si => new ItemService()
 						{
 							ItemId = si.ItemId,
-							TextSearch = si.ItemName,
-							ColumnType = si.ItemType.DisplayName,
-							FullType = si.ItemType.DisplayName,
-							PackageId = si.PackageId,
-							AccountId = 0,
-							Username = it.Username,
-							FullName = it.FullName
-						});
+							ItemTypeId = si.ItemTypeId,
+							UserId = si.Package.UserId,
+							Username = si.Package.User.Username,
+							FullName = si.Package.User.FirstName + " " + si.Package.User.LastName
+						})
+						.Join(usersTree, si => si.UserId, ut => ut, (u, ut) => u);
 
-				if (!string.IsNullOrEmpty(filterValue))
-				{
+					var itemsDomain = Domains
+						.Select(d => new ItemsDomain()
+						{
+							ItemId = d.DomainId,
+							UserId = d.Package.UserId,
+							Username = d.Package.User.Username,
+							FullName = d.Package.User.FirstName + " " + d.Package.User.LastName
+						})
+						.Join(usersTree, di => di.UserId, ut => ut, (di, ut) => di);
+
+					var spaceItemsServices = itemsService
+						.Join(ServiceItems
+							.Where(si => si.ItemType.Searchable == true && si.ItemTypeId != 200 && si.ItemTypeId != 201),
+							it => it.ItemId, si => si.ItemId, (it, si) => new SearchItem()
+							{
+								ItemId = si.ItemId,
+								TextSearch = si.ItemName,
+								ColumnType = si.ItemType.DisplayName,
+								FullType = si.ItemType.DisplayName,
+								PackageId = si.PackageId,
+								AccountId = 0,
+								Username = it.Username,
+								FullName = it.FullName
+							});
+
+					if (!string.IsNullOrEmpty(filterValue))
+					{
 #if NETFRAMEWORK
 					spaceItemsServices = spaceItemsServices.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
 #else
-					spaceItemsServices = spaceItemsServices.Where(si => EF.Functions.Like(si.TextSearch, filterValue));
+						spaceItemsServices = spaceItemsServices.Where(si => EF.Functions.Like(si.TextSearch, filterValue));
 #endif
-				}
+					}
 
-				if (onlyFind) spaceItemsServices = spaceItemsServices.Take(maximumRows);
+					if (onlyFind) spaceItemsServices = spaceItemsServices.Take(maximumRows);
 
-				var spaceItemsDomains = itemsDomain
-					.Join(Domains
-						.Where(d => !d.IsDomainPointer),
-						si => si.ItemId, d => d.DomainId, (si, d) => new SearchItem()
-						{
-							ItemId = si.ItemId,
-							TextSearch = d.DomainName,
-							ColumnType = "Domain",
-							FullType = "Domains",
-							PackageId = d.PackageId,
-							AccountId = 0,
-							Username = si.Username,
-							FullName = si.FullName
-						});
+					var spaceItemsDomains = itemsDomain
+						.Join(Domains
+							.Where(d => !d.IsDomainPointer),
+							si => si.ItemId, d => d.DomainId, (si, d) => new SearchItem()
+							{
+								ItemId = si.ItemId,
+								TextSearch = d.DomainName,
+								ColumnType = "Domain",
+								FullType = "Domains",
+								PackageId = d.PackageId,
+								AccountId = 0,
+								Username = si.Username,
+								FullName = si.FullName
+							});
 
-				if (!string.IsNullOrEmpty(filterValue))
-				{
+					if (!string.IsNullOrEmpty(filterValue))
+					{
 #if NETFRAMEWORK
 					spaceItemsDomains = spaceItemsDomains.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
 #else
-					spaceItemsDomains = spaceItemsDomains.Where(si => EF.Functions.Like(si.TextSearch, filterValue));
+						spaceItemsDomains = spaceItemsDomains.Where(si => EF.Functions.Like(si.TextSearch, filterValue));
 #endif
-				}
+					}
 
-				if (onlyFind) spaceItemsDomains = spaceItemsDomains.Take(maximumRows);
+					if (onlyFind) spaceItemsDomains = spaceItemsDomains.Take(maximumRows);
 
-				var spaceItemsEac = itemsService
-					.Join(ServiceItems, it => it.ItemId, si => si.ItemId, (it, si) => new
+					var spaceItemsEac = itemsService
+						.Join(ServiceItems, it => it.ItemId, si => si.ItemId, (it, si) => new
+						{
+							IT = it,
+							SI = si
+						})
+						.Join(ExchangeAccounts, si => si.SI.ItemId, ea => ea.ItemId, (si, ea) => new SearchItem()
+						{
+							ItemId = si.SI.ItemId,
+							TextSearch = ea.DisplayName,
+							ColumnType = "ExchangeAccount",
+							FullType = ea.AccountType == ExchangeAccountType.Mailbox ? "Mailbox" :
+								(ea.AccountType == ExchangeAccountType.Contact ? "Contact" :
+								(ea.AccountType == ExchangeAccountType.DistributionList ? "DistributionList" :
+								(ea.AccountType == ExchangeAccountType.PublicFolder ? "PublicFolder" :
+								(ea.AccountType == ExchangeAccountType.Room ? "Room" :
+								(ea.AccountType == ExchangeAccountType.Equipment ? "Equipment" :
+								(ea.AccountType == ExchangeAccountType.User ? "User" :
+								(ea.AccountType == ExchangeAccountType.SecurityGroup ? "SecurityGroup" :
+								(ea.AccountType == ExchangeAccountType.DefaultSecurityGroup ? "DefaultSecurityGroup" :
+								(ea.AccountType == ExchangeAccountType.SharedMailbox ? "SharedMailbox" :
+								(ea.AccountType == ExchangeAccountType.DeletedUser ? "DeletedUser" :
+								(ea.AccountType == ExchangeAccountType.JournalingMailbox ? "JournalingMailbox" :
+								((int)ea.AccountType).ToString()))))))))))),
+							PackageId = si.SI.PackageId,
+							AccountId = ea.AccountId,
+							Username = si.IT.Username,
+							FullName = si.IT.FullName
+						});
+
+					if (!string.IsNullOrEmpty(filterValue))
 					{
-						IT = it,
-						SI = si
-					})
-					.Join(ExchangeAccounts, si => si.SI.ItemId, ea => ea.ItemId, (si, ea) => new SearchItem()
-					{
-						ItemId = si.SI.ItemId,
-						TextSearch = ea.DisplayName,
-						ColumnType = "ExchangeAccount",
-						FullType = ea.AccountType == ExchangeAccountType.Mailbox ? "Mailbox" :
-							(ea.AccountType == ExchangeAccountType.Contact ? "Contact" :
-							(ea.AccountType == ExchangeAccountType.DistributionList ? "DistributionList" :
-							(ea.AccountType == ExchangeAccountType.PublicFolder ? "PublicFolder" :
-							(ea.AccountType == ExchangeAccountType.Room ? "Room" :
-							(ea.AccountType == ExchangeAccountType.Equipment ? "Equipment" :
-							(ea.AccountType == ExchangeAccountType.User ? "User" :
-							(ea.AccountType == ExchangeAccountType.SecurityGroup ? "SecurityGroup" :
-							(ea.AccountType == ExchangeAccountType.DefaultSecurityGroup ? "DefaultSecurityGroup" :
-							(ea.AccountType == ExchangeAccountType.SharedMailbox ? "SharedMailbox" :
-							(ea.AccountType == ExchangeAccountType.DeletedUser ? "DeletedUser" :
-							(ea.AccountType == ExchangeAccountType.JournalingMailbox ? "JournalingMailbox" :
-							((int)ea.AccountType).ToString()))))))))))),
-						PackageId = si.SI.PackageId,
-						AccountId = ea.AccountId,
-						Username = si.IT.Username,
-						FullName = si.IT.FullName
-					});
-
-				if (!string.IsNullOrEmpty(filterValue))
-				{
 #if NETFRAMEWORK
 					spaceItemsEac = spaceItemsEac.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
 #else
-					spaceItemsEac = spaceItemsEac.Where(si => EF.Functions.Like(si.TextSearch, filterValue));
+						spaceItemsEac = spaceItemsEac.Where(si => EF.Functions.Like(si.TextSearch, filterValue));
 #endif
-				}
+					}
 
-				if (onlyFind) spaceItemsEac = spaceItemsEac.Take(maximumRows);
+					if (onlyFind) spaceItemsEac = spaceItemsEac.Take(maximumRows);
 
-				var spaceItemsEacPem = itemsService
-					.Join(ServiceItems, it => it.ItemId, si => si.ItemId, (it, si) => new
+					var spaceItemsEacPem = itemsService
+						.Join(ServiceItems, it => it.ItemId, si => si.ItemId, (it, si) => new
+						{
+							IT = it,
+							SI = si
+						})
+						.Join(ExchangeAccounts, si => si.SI.ItemId, ea => ea.ItemId, (si, ea) => new SearchItem()
+						{
+							ItemId = si.SI.ItemId,
+							TextSearch = ea.PrimaryEmailAddress,
+							ColumnType = "ExchangeAccount",
+							FullType = ea.AccountType == ExchangeAccountType.Mailbox ? "Mailbox" :
+								(ea.AccountType == ExchangeAccountType.Contact ? "Contact" :
+								(ea.AccountType == ExchangeAccountType.DistributionList ? "DistributionList" :
+								(ea.AccountType == ExchangeAccountType.PublicFolder ? "PublicFolder" :
+								(ea.AccountType == ExchangeAccountType.Room ? "Room" :
+								(ea.AccountType == ExchangeAccountType.Equipment ? "Equipment" :
+								(ea.AccountType == ExchangeAccountType.User ? "User" :
+								(ea.AccountType == ExchangeAccountType.SecurityGroup ? "SecurityGroup" :
+								(ea.AccountType == ExchangeAccountType.DefaultSecurityGroup ? "DefaultSecurityGroup" :
+								(ea.AccountType == ExchangeAccountType.SharedMailbox ? "SharedMailbox" :
+								(ea.AccountType == ExchangeAccountType.DeletedUser ? "DeletedUser" :
+								(ea.AccountType == ExchangeAccountType.JournalingMailbox ? "JournalingMailbox" :
+								((int)ea.AccountType).ToString()))))))))))),
+							PackageId = si.SI.PackageId,
+							AccountId = ea.AccountId,
+							Username = si.IT.Username,
+							FullName = si.IT.FullName
+						});
+
+					if (!string.IsNullOrEmpty(filterValue))
 					{
-						IT = it,
-						SI = si
-					})
-					.Join(ExchangeAccounts, si => si.SI.ItemId, ea => ea.ItemId, (si, ea) => new SearchItem()
-					{
-						ItemId = si.SI.ItemId,
-						TextSearch = ea.PrimaryEmailAddress,
-						ColumnType = "ExchangeAccount",
-						FullType = ea.AccountType == ExchangeAccountType.Mailbox ? "Mailbox" :
-							(ea.AccountType == ExchangeAccountType.Contact ? "Contact" :
-							(ea.AccountType == ExchangeAccountType.DistributionList ? "DistributionList" :
-							(ea.AccountType == ExchangeAccountType.PublicFolder ? "PublicFolder" :
-							(ea.AccountType == ExchangeAccountType.Room ? "Room" :
-							(ea.AccountType == ExchangeAccountType.Equipment ? "Equipment" :
-							(ea.AccountType == ExchangeAccountType.User ? "User" :
-							(ea.AccountType == ExchangeAccountType.SecurityGroup ? "SecurityGroup" :
-							(ea.AccountType == ExchangeAccountType.DefaultSecurityGroup ? "DefaultSecurityGroup" :
-							(ea.AccountType == ExchangeAccountType.SharedMailbox ? "SharedMailbox" :
-							(ea.AccountType == ExchangeAccountType.DeletedUser ? "DeletedUser" :
-							(ea.AccountType == ExchangeAccountType.JournalingMailbox ? "JournalingMailbox" :
-							((int)ea.AccountType).ToString()))))))))))),
-						PackageId = si.SI.PackageId,
-						AccountId = ea.AccountId,
-						Username = si.IT.Username,
-						FullName = si.IT.FullName
-					});
-
-				if (!string.IsNullOrEmpty(filterValue))
-				{
 #if NETFRAMEWORK
 					spaceItemsEacPem = spaceItemsEacPem.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
 #else
-					spaceItemsEacPem = spaceItemsEacPem.Where(si => EF.Functions.Like(si.TextSearch, filterValue));
+						spaceItemsEacPem = spaceItemsEacPem.Where(si => EF.Functions.Like(si.TextSearch, filterValue));
 #endif
-				}
+					}
 
-				if (onlyFind) spaceItemsEacPem = spaceItemsEacPem.Take(maximumRows);
+					if (onlyFind) spaceItemsEacPem = spaceItemsEacPem.Take(maximumRows);
 
-				var spaceItemsEacEm = itemsService
-					.Where(si => si.ItemTypeId == 29)
-					.Join(ExchangeAccounts, si => si.ItemId, ea => ea.ItemId, (si, ea) => new
-					{
-						IT = si,
-						EA = ea
-					})
-					.Join(ServiceItems, ea => ea.IT.ItemId, si => si.ItemId, (ea, si) => new
-					{
-						ea.IT,
-						ea.EA,
-						SI = si
-					})
-					.Join(ExchangeAccountEmailAddresses, ea => ea.EA.AccountId, em => em.AccountId, (ea, em) => new SearchItem()
-					{
-						ItemId = ea.IT.ItemId,
-						TextSearch = em.EmailAddress,
-						ColumnType = "ExchangeAccount",
-						FullType = ea.EA.AccountType == ExchangeAccountType.Mailbox ? "Mailbox" :
-							(ea.EA.AccountType == ExchangeAccountType.Contact ? "Contact" :
-							(ea.EA.AccountType == ExchangeAccountType.DistributionList ? "DistributionList" :
-							(ea.EA.AccountType == ExchangeAccountType.PublicFolder ? "PublicFolder" :
-							(ea.EA.AccountType == ExchangeAccountType.Room ? "Room" :
-							(ea.EA.AccountType == ExchangeAccountType.Equipment ? "Equipment" :
-							(ea.EA.AccountType == ExchangeAccountType.User ? "User" :
-							(ea.EA.AccountType == ExchangeAccountType.SecurityGroup ? "SecurityGroup" :
-							(ea.EA.AccountType == ExchangeAccountType.DefaultSecurityGroup ? "DefaultSecurityGroup" :
-							(ea.EA.AccountType == ExchangeAccountType.SharedMailbox ? "SharedMailbox" :
-							(ea.EA.AccountType == ExchangeAccountType.DeletedUser ? "DeletedUser" :
-							(ea.EA.AccountType == ExchangeAccountType.JournalingMailbox ? "JournalingMailbox" :
-							((int)ea.EA.AccountType).ToString()))))))))))),
-						PackageId = ea.SI.PackageId,
-						AccountId = ea.EA.AccountId,
-						Username = ea.IT.Username,
-						FullName = ea.IT.FullName
-					});
+					var spaceItemsEacEm = itemsService
+						.Where(si => si.ItemTypeId == 29)
+						.Join(ExchangeAccounts, si => si.ItemId, ea => ea.ItemId, (si, ea) => new
+						{
+							IT = si,
+							EA = ea
+						})
+						.Join(ServiceItems, ea => ea.IT.ItemId, si => si.ItemId, (ea, si) => new
+						{
+							ea.IT,
+							ea.EA,
+							SI = si
+						})
+						.Join(ExchangeAccountEmailAddresses, ea => ea.EA.AccountId, em => em.AccountId, (ea, em) => new SearchItem()
+						{
+							ItemId = ea.IT.ItemId,
+							TextSearch = em.EmailAddress,
+							ColumnType = "ExchangeAccount",
+							FullType = ea.EA.AccountType == ExchangeAccountType.Mailbox ? "Mailbox" :
+								(ea.EA.AccountType == ExchangeAccountType.Contact ? "Contact" :
+								(ea.EA.AccountType == ExchangeAccountType.DistributionList ? "DistributionList" :
+								(ea.EA.AccountType == ExchangeAccountType.PublicFolder ? "PublicFolder" :
+								(ea.EA.AccountType == ExchangeAccountType.Room ? "Room" :
+								(ea.EA.AccountType == ExchangeAccountType.Equipment ? "Equipment" :
+								(ea.EA.AccountType == ExchangeAccountType.User ? "User" :
+								(ea.EA.AccountType == ExchangeAccountType.SecurityGroup ? "SecurityGroup" :
+								(ea.EA.AccountType == ExchangeAccountType.DefaultSecurityGroup ? "DefaultSecurityGroup" :
+								(ea.EA.AccountType == ExchangeAccountType.SharedMailbox ? "SharedMailbox" :
+								(ea.EA.AccountType == ExchangeAccountType.DeletedUser ? "DeletedUser" :
+								(ea.EA.AccountType == ExchangeAccountType.JournalingMailbox ? "JournalingMailbox" :
+								((int)ea.EA.AccountType).ToString()))))))))))),
+							PackageId = ea.SI.PackageId,
+							AccountId = ea.EA.AccountId,
+							Username = ea.IT.Username,
+							FullName = ea.IT.FullName
+						});
 
-				if (!string.IsNullOrEmpty(filterValue))
-				{
+					if (!string.IsNullOrEmpty(filterValue))
+					{
 #if NETFRAMEWORK
 					spaceItemsEacEm = spaceItemsEacEm.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
 #else
-					spaceItemsEacEm = spaceItemsEacEm.Where(si => EF.Functions.Like(si.TextSearch, filterValue));
+						spaceItemsEacEm = spaceItemsEacEm.Where(si => EF.Functions.Like(si.TextSearch, filterValue));
 #endif
-				}
+					}
 
-				if (onlyFind) spaceItemsEacEm = spaceItemsEacEm.Take(maximumRows);
+					if (onlyFind) spaceItemsEacEm = spaceItemsEacEm.Take(maximumRows);
 
-				var spaceItems = spaceItemsServices
-					.Union(spaceItemsDomains)
-					.Union(spaceItemsEac)
-					.Union(spaceItemsEacPem)
-					.Union(spaceItemsEacEm)
-					.OrderBy(it => it.TextSearch);
+					var spaceItems = spaceItemsServices
+						.Union(spaceItemsDomains)
+						.Union(spaceItemsEac)
+						.Union(spaceItemsEacPem)
+						.Union(spaceItemsEacEm);
 
-			/*-------------------------------------------Lync-----------------------------------------------------*/
+					if (onlyFind) spaceItems = spaceItems.OrderBy(it => it.TextSearch);
 
-				var isAdmin = CheckIsUserAdmin(actorId);
+					/*-------------------------------------------Lync-----------------------------------------------------*/
 
-				var lyncItems = ExchangeAccounts
-					.Join(LyncUsers, ea => ea.AccountId, lu => lu.AccountId, (ea, lu) => new
+					var isAdmin = CheckIsUserAdmin(actorId);
+
+					var lyncItems = ExchangeAccounts
+						.Join(LyncUsers, ea => ea.AccountId, lu => lu.AccountId, (ea, lu) => new
+						{
+							EA = ea,
+							LU = lu
+						})
+						.Join(ServiceItems
+							.Where(si => isAdmin || si.Package.UserId == userId),
+							ea => ea.EA.ItemId, si => si.ItemId, (ea, si) => new SearchItem()
+							{
+								ItemId = si.ItemId,
+								TextSearch = ea.EA.AccountName,
+								ColumnType = "LyncAccount",
+								FullType = "LyncUsers",
+								PackageId = si.PackageId,
+								AccountId = ea.EA.AccountId,
+								Username = si.Package.User.Username,
+								FullName = si.Package.User.FirstName + " " + si.Package.User.LastName
+							});
+
+					if (!string.IsNullOrEmpty(filterValue))
 					{
-						EA = ea,
-						LU = lu
-					})
-					.Join(ServiceItems
-						.Where(si => isAdmin || si.Package.UserId == userId),
-						ea => ea.EA.ItemId, si => si.ItemId, (ea, si) => new SearchItem()
-					{
-						 ItemId = si.ItemId,
-						 TextSearch = ea.EA.AccountName,
-						 ColumnType = "LyncAccount",
-						 FullType = "LyncUsers",
-						 PackageId = si.PackageId,
-						 AccountId = ea.EA.AccountId,
-						 Username = si.Package.User.Username,
-						 FullName = si.Package.User.FirstName + " " + si.Package.User.LastName
-					 });
-
-				if (!string.IsNullOrEmpty(filterValue))
-				{
 #if NETFRAMEWORK
 					lyncItems = lyncItems.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
 #else
-					lyncItems = lyncItems.Where(si => EF.Functions.Like(si.TextSearch, filterValue));
+						lyncItems = lyncItems.Where(si => EF.Functions.Like(si.TextSearch, filterValue));
 #endif
+					}
+
+					if (onlyFind)
+					{
+						lyncItems = lyncItems.OrderBy(li => li.TextSearch);
+						lyncItems = lyncItems.Take(maximumRows);
+					}
+
+					/*-------------------------------------------SfB-----------------------------------------------------*/
+
+					var sfbItems = ExchangeAccounts
+						.Join(SfBUsers, ea => ea.AccountId, su => su.AccountId, (ea, su) => new
+						{
+							EA = ea,
+							SU = su
+						})
+						.Join(ServiceItems
+							.Where(si => isAdmin || si.Package.UserId == userId),
+							ea => ea.EA.ItemId, si => si.ItemId, (ea, si) => new SearchItem()
+							{
+								ItemId = si.ItemId,
+								TextSearch = ea.EA.AccountName,
+								ColumnType = "LyncAccount",
+								FullType = "LyncUsers",
+								PackageId = si.PackageId,
+								AccountId = ea.EA.AccountId,
+								Username = si.Package.User.Username,
+								FullName = si.Package.User.FirstName + " " + si.Package.User.LastName
+							});
+
+					if (!string.IsNullOrEmpty(filterValue))
+					{
+#if NETFRAMEWORK
+					sfbItems = sfbItems.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
+#else
+						sfbItems = sfbItems.Where(si => EF.Functions.Like(si.TextSearch, filterValue));
+#endif
+					}
+
+					if (onlyFind)
+					{
+						sfbItems = sfbItems.OrderBy(si => si.TextSearch);
+						sfbItems = sfbItems.Take(maximumRows);
+					}
+
+					/*------------------------------------RDS------------------------------------------------*/
+
+					IQueryable<SearchItem> rdsItems;
+
+					if (!isAdmin) rdsItems = Enumerable.Empty<SearchItem>().AsQueryable();
+					else
+					{
+						rdsItems = RdsCollections
+							.Join(ServiceItems
+									.Where(si => isAdmin || si.Package.UserId == userId),
+								r => r.ItemId, si => si.ItemId, (r, si) => new SearchItem()
+								{
+									ItemId = si.ItemId,
+									TextSearch = r.Name,
+									ColumnType = "RDSCollection",
+									FullType = "RDSCollections",
+									PackageId = si.PackageId,
+									AccountId = r.Id,
+									Username = si.Package.User.Username,
+									FullName = si.Package.User.FirstName + " " + si.Package.User.LastName
+								});
+
+						if (!string.IsNullOrEmpty(filterValue))
+						{
+#if NETFRAMEWORK
+						rdsItems = rdsItems.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
+#else
+							rdsItems = rdsItems.Where(si => EF.Functions.Like(si.TextSearch, filterValue));
+#endif
+						}
+
+						if (onlyFind)
+						{
+							rdsItems = rdsItems.OrderBy(si => si.TextSearch);
+							rdsItems = rdsItems.Take(maximumRows);
+						}
+					}
+
+					/*------------------------------------CRM------------------------------------------------*/
+
+					var crmItems = ExchangeAccounts
+						.Join(CrmUsers, ea => ea.AccountId, cu => cu.AccountId, (ea, cu) => new
+						{
+							EA = ea,
+							CU = cu
+						})
+						.Join(ServiceItems
+							.Where(si => isAdmin || si.Package.UserId == userId),
+							ea => ea.EA.ItemId, si => si.ItemId, (ea, si) => new SearchItem()
+							{
+								ItemId = si.ItemId,
+								TextSearch = ea.EA.AccountName,
+								ColumnType = "CRMSite",
+								FullType = "CRMSites",
+								PackageId = si.PackageId,
+								AccountId = ea.EA.AccountId,
+								Username = si.Package.User.Username,
+								FullName = si.Package.User.FirstName + " " + si.Package.User.LastName
+							});
+
+					if (!string.IsNullOrEmpty(filterValue))
+					{
+#if NETFRAMEWORK
+					crmItems = crmItems.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
+#else
+						crmItems = crmItems.Where(si => EF.Functions.Like(si.TextSearch, filterValue));
+#endif
+					}
+
+					if (onlyFind)
+					{
+						crmItems = crmItems.OrderBy(li => li.TextSearch);
+						crmItems = crmItems.Take(maximumRows);
+					}
+
+					/*------------------------------------VirtualServer------------------------------------------------*/
+
+					IQueryable<SearchItem> vpsItems;
+
+					if (!isAdmin) vpsItems = Enumerable.Empty<SearchItem>().AsQueryable();
+					else
+					{
+						var packageId = Packages
+							.Where(p => p.UserId == userId)
+							.Min(p => p.PackageId);
+						vpsItems = Servers
+							.Where(s => s.VirtualServer)
+							.Join(Packages, s => s.ServerId, p => p.ServerId, (s, p) => new SearchItem()
+							{
+								ItemId = userId,
+								TextSearch = s.ServerName,
+								ColumnType = "VirtualServer",
+								FullType = "VirtualServers",
+								PackageId = packageId,
+								AccountId = 0,
+								Username = p.User.Username,
+								FullName = p.User.FirstName + " " + p.User.LastName
+							});
+
+						if (!string.IsNullOrEmpty(filterValue))
+						{
+#if NETFRAMEWORK
+						vpsItems = vpsItems.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
+#else
+							vpsItems = vpsItems.Where(si => EF.Functions.Like(si.TextSearch, filterValue));
+#endif
+						}
+
+						if (onlyFind)
+						{
+							vpsItems = vpsItems.OrderBy(si => si.TextSearch);
+							vpsItems = vpsItems.Take(maximumRows);
+						}
+					}
+
+					/*------------------------------------WebDAVFolder------------------------------------------------*/
+
+					var wdavItems = EnterpriseFolders
+						.Join(ServiceItems
+							.Where(si => isAdmin || si.Package.UserId == userId),
+							ef => ef.ItemId, si => si.ItemId, (ef, si) => new SearchItem()
+							{
+								ItemId = ef.ItemId,
+								TextSearch = ef.FolderName,
+								ColumnType = "WebDAVFolder",
+								FullType = "Folders",
+								PackageId = si.PackageId,
+								AccountId = ef.EnterpriseFolderId,
+								Username = si.Package.User.Username,
+								FullName = si.Package.User.FirstName + " " + si.Package.User.LastName
+							});
+
+					if (!string.IsNullOrEmpty(filterValue))
+					{
+#if NETFRAMEWORK
+					wdavItems = wdavItems.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
+#else
+						wdavItems = wdavItems.Where(si => EF.Functions.Like(si.TextSearch, filterValue));
+#endif
+					}
+
+					if (onlyFind)
+					{
+						wdavItems = wdavItems.OrderBy(li => li.TextSearch);
+						wdavItems = wdavItems.Take(maximumRows);
+					}
+
+				/*------------------------------------VPS-IP------------------------------------------------*/
+
+					var vpsIpItems = ServiceItems
+						.GroupJoin(PrivateIpAddresses, si => si.ItemId, pip => pip.ItemId, (si, pips) => new
+						{
+							Item = si,
+							Pips = pips
+						})
+						.SelectMany(it => it.Pips, (si, pip) => new
+						{
+							si.Item,
+							PrivateIp = pip != null ? pip.IpAddress : ""
+						})
+						.GroupJoin(PackageIpAddresses, si => si.Item.ItemId, paip => paip.ItemId, (si, paips) => new
+						{
+							si.Item,
+							si.PrivateIp,
+							Paips = paips
+						})
+						.SelectMany(si => si.Paips, (si, paip) => new
+						{
+							si.Item,
+							si.PrivateIp,
+							ExternalIp = paip != null && paip.Address != null ? paip.Address.ExternalIp : ""
+						})
+#if NETFRAMEWORK
+						.Where(si => (DbFunctions.Like(filterValue, "%.%") || DbFunctions.Like(filterValue, "%:%")) &&
+							(DbFunctions.Like(si.PrivateIp, filterValue) || DbFunctions.Like(si.ExternalIp, filterValue)))
+#else
+						.Where(si => (EF.Functions.Like(filterValue, "%.%") || EF.Functions.Like(filterValue, "%:%")) &&
+							(EF.Functions.Like(si.PrivateIp, filterValue) || EF.Functions.Like(si.ExternalIp, filterValue)))
+#endif
+						.Join(usersTree, si => si.Item.Package.UserId, ut => ut, (si, ut) => si)
+						.Join(ServiceItemTypes
+							.Where(sit => sit.DisplayName == "VirtualMachine"),
+							si => si.Item.ItemTypeId, sit => sit.ItemTypeId, (si, sit) => new SearchItem()
+						{
+							ItemId = si.Item.ItemId,
+							TextSearch = si.Item.ItemName,
+							ColumnType = sit.DisplayName,
+							FullType = sit.DisplayName,
+							PackageId = si.Item.PackageId,
+							AccountId = 0,
+							Username = si.Item.Package.User.Username,
+							FullName = si.Item.Package.User.FirstName + " " + si.Item.Package.User.LastName
+						});
+
+
+					if (onlyFind)
+					{
+						vpsIpItems = vpsIpItems.OrderBy(li => li.TextSearch);
+						vpsIpItems = vpsIpItems.Take(maximumRows);
+					}
+
+					/* Disabled ------------------------------------SharePoint------------------------------------------------*/
+
+					/*var shpItemsLeft = ServiceItems
+						.Where(si => isAdmin || si.Package.UserId == userId)
+						.Join(ServiceItemTypes, si => si.ItemTypeId, sit => sit.ItemTypeId, (si, sit) => new
+						{
+							Item = si,
+							SIT = sit
+
+						})
+						.Join(ServiceItemProperties, si => si.Item.ItemId, sip => sip.ItemId, (si, sip) => new
+						{
+							si.Item,
+							si.SIT,
+							SIP = sip
+						});
+						
+					var shpItems = ServiceItemProperties
+						.GroupJoin(shpItemsLeft, t => t.ItemId, l => l.Item.ItemId, (sip, sis) => new
+						{
+							T = sip,
+							SIS = sis
+						})
+						.SelectMany(t => t.SIS, (t, sis) => new SearchItem() {
+							ItemId = sis != null ? sis.SIS.SIP.PropertyValue : 0,
+							TextSearch = ef.FolderName,
+							ColumnType = ,
+							FullType = "Folders",
+							PackageId = si.PackageId,
+							AccountId = ef.EnterpriseFolderId,
+							Username = si.Package.User.Username,
+							FullName = si.Package.User.FirstName + " " + si.Package.User.LastName
+						});
+
+					if (!string.IsNullOrEmpty(filterValue))
+					{
+#if NETFRAMEWORK
+						shpItems = shpItems.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
+#else
+						shpItems = shpItems.Where(si => EF.Functions.Like(si.TextSearch, filterValue));
+#endif
+					}
+
+					if (onlyFind)
+					{
+						shpItems = shpItems.OrderBy(li => li.TextSearch);
+						shpItems = shpItems.Take(maximumRows);
+					}*/
+
+					/*-------------------------------------------Return-------------------------------------------------------*/
+
+					if (string.IsNullOrEmpty(sortColumn)) sortColumn = "TextSearch";
+
+					if (string.IsNullOrEmpty(colType) || colType == "AccountHome")
+					{
+						if (!string.IsNullOrEmpty(fullType)) userItems = userItems.Where(x => x.FullType == fullType);
+					}
+
+					var itemsFilter = spaceItems
+						.Union(lyncItems)
+						.Union(sfbItems)
+						.Union(rdsItems)
+						.Union(crmItems)
+						.Union(vpsItems)
+						.Union(wdavItems)
+						.Union(vpsIpItems);
+						//.Union(shpItems);
+
+					if (!string.IsNullOrEmpty(colType)) {
+						var types = colType
+							.Split(',')
+							.Select(s => s.Trim())
+							.Where(s => !string.IsNullOrEmpty(s));
+						itemsFilter = itemsFilter.Where(BuildOrExpression<SearchItem, string>(x => x.ColumnType, types));
+					}
+					if (!string.IsNullOrEmpty(fullType))
+					{
+						itemsFilter = itemsFilter.Where(x => x.FullType == fullType);
+					}
+
+					IQueryable<SearchItem> itemsReturn = Enumerable.Empty<SearchItem>().AsQueryable();
+
+					if (string.IsNullOrEmpty(colType) || colType == "AccountHome")
+					{
+						if (sortColumn == "TextSearch")
+						{
+							itemsReturn = userItems;
+						} else
+						{
+							itemsFilter = itemsFilter.Union(userItems);
+						}
+					}
+
+					itemsReturn = itemsReturn
+						.Union(itemsFilter
+							.OrderBy(sortColumn));
+
+					var count = itemsReturn.Count();
+
+					var colTypesSet = itemsReturn;
+					if (!string.IsNullOrEmpty(fullType)) colTypesSet = colTypesSet.Where(ct => ct.FullType == fullType);
+					var colTypes = colTypesSet
+						.Select(ct => ct.ColumnType)
+						.Distinct()
+						.Select(ct => new { ColumnType = ct });
+
+					var result = itemsReturn
+						.AsEnumerable()
+						.Select((x, i) => new
+						{
+							ItemPosition = i,
+							x.ItemId,
+							x.TextSearch,
+							x.ColumnType,
+							x.FullType,
+							x.PackageId,
+							x.AccountId,
+							x.Username,
+							x.FullName
+						})
+						.ToArray();
+
+					if (maximumRows > 0) result = result.Skip(startRow).Take(maximumRows).ToArray();
+
+					return EntityDataSet(count, colTypes, result);
 				}
-
-				if (onlyFind) lyncItems = lyncItems.Take(maximumRows);
-
-				lyncItems = lyncItems.OrderBy(li => li.TextSearch);
-
-				/*
-DECLARE @IsAdmin bit
-SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
-
-SET @sql = '
-SET @curValue = cursor local for
-SELECT '
-
-IF @OnlyFind = 1
-SET @sql = @sql + 'TOP ' + CAST(@MaximumRows AS varchar(12)) + ' '
-
-SET @sql = @sql + '
-SI.ItemID as ItemID,
-ea.AccountName as TextSearch,
-''LyncAccount'' as ColumnType,
-''LyncUsers'' as FullType,
-SI.PackageID as PackageID,
-ea.AccountID as AccountID,
-U.Username,
-U.FirstName + '' '' + U.LastName as Fullname
-FROM
-ExchangeAccounts as ea
-INNER JOIN
-LyncUsers as LU
-INNER JOIN
-LyncUserPlans as lp
-ON
-LU.LyncUserPlanId = lp.LyncUserPlanId
-ON
-ea.AccountID = LU.AccountID
-INNER JOIN
-ServiceItems AS SI ON ea.ItemID = SI.ItemID
-INNER JOIN
-Packages AS P ON SI.PackageID = P.PackageID
-INNER JOIN
-Users AS U ON U.UserID = P.UserID
-WHERE ' + CAST((@HasUserRights) AS varchar(12)) + ' = 1
-AND(' + CAST((@IsAdmin) AS varchar(12)) + ' = 1 OR P.UserID = @UserID)'
-IF @FilterValue<> ''
-SET @sql = @sql + ' AND ea.AccountName LIKE ''' + @FilterValue + ''''
-IF @OnlyFind = 1
-SET @sql = @sql + ' ORDER BY TextSearch'
-SET @sql = @sql + ' ;open @curValue'
-
-CLOSE @curAll
-DEALLOCATE @curAll
-exec sp_executesql @sql, N'@UserID int, @curValue cursor output', @UserID, @curAll output
-
-FETCH NEXT FROM @curAll INTO @ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname
-WHILE @@FETCH_STATUS = 0
-BEGIN
-INSERT INTO @ItemsAll(ItemID, TextSearch, ColumnType, FullType, PackageID, AccountID, Username, Fullname)
-VALUES(@ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname)
-FETCH NEXT FROM @curAll INTO @ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname
-END				*/
-
-			throw new NotImplementedException();
-
 			}
 			else
 			{
@@ -2961,9 +3304,9 @@ exec sp_executesql @sql, N'@FilterValue nvarchar(50), @Recursive bit, @PoolID in
 
 RETURN
 				*/
-				#endregion
+					#endregion
 
-				throw new NotImplementedException();
+					throw new NotImplementedException();
 			}
 			else
 			{

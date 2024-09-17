@@ -11,13 +11,13 @@
 		<IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
 	</PropertyGroup>
 	<ItemGroup Condition="'$(TargetFramework)'=='net8.0'">
-		<PackageReference Include="CoreWCF.Http" Version="1.5.2" />
-		<PackageReference Include="CoreWCF.NetTcp" Version="1.5.2" />
-		<PackageReference Include="CoreWCF.Primitives" Version="1.5.2" />
-		<PackageReference Include="CoreWCF.NetFramingBase" Version="1.5.2" />
-		<PackageReference Include="CoreWCF.WebHttp" Version="1.5.2" />
+		<PackageReference Include="CoreWCF.Http" Version="1.6.0" />
+		<PackageReference Include="CoreWCF.NetTcp" Version="1.6.0" />
+		<PackageReference Include="CoreWCF.Primitives" Version="1.6.0" />
+		<PackageReference Include="CoreWCF.NetFramingBase" Version="1.6.0" />
+		<PackageReference Include="CoreWCF.WebHttp" Version="1.6.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.6.2" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.7.3" />
 		<!--
     <ProjectReference Include="..\..\Lib\CoreWCF\src\CoreWCF.Http\src\CoreWCF.Http.csproj" />
     <ProjectReference Include="..\..\Lib\CoreWCF\src\CoreWCF.NetTcp\src\CoreWCF.NetTcp.csproj" />
