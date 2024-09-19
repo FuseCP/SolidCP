@@ -2806,7 +2806,7 @@ RETURN
 					{
 						var types = colType
 							.Split(',')
-							.Select(s => s.Trim())
+							.Select(s => s.Trim().Trim('\''))
 							.Where(s => !string.IsNullOrEmpty(s));
 						itemsFilter = itemsFilter.Where(BuildOrExpression<SearchItem, string>(x => x.ColumnType, types));
 					}
@@ -3341,496 +3341,499 @@ RETURN
 					(Recursive ? UserChildren(UserID, Recursive) : new TempIdSet(this)) : null)
 				{
 
-				switch (PagedStored)
-				{
-					case "Domains":
+					switch (PagedStored)
+					{
+						case "Domains":
 
-						var domains = Domains
-							.Where(d => !d.IsPreviewDomain && !d.IsDomainPointer)
-							.Join(packagesTree, d => d.PackageId, pt => pt, (d, pt) => d)
-							.GroupJoin(ServiceItems, d => d.ZoneItemId, si => si.ItemId, (d, sis) => new
-							{
-								D = d,
-								SIS = sis
-							})
-							.SelectMany(d => d.SIS.DefaultIfEmpty(), (d, si) => new
-							{
-								d.D,
-								SI = si
-							})
-							.Join(Services
-								.Where(s => ServerID == 0 || ServerID > 0 && s.ServerId == ServerID),
-								d => d.SI != null ? d.SI.ServiceId : -1, svc => svc.ServiceId, (d, svc) => new
+							var domains = Domains
+								.Where(d => !d.IsPreviewDomain && !d.IsDomainPointer)
+								.Join(packagesTree, d => d.PackageId, pt => pt, (d, pt) => d)
+								.GroupJoin(ServiceItems, d => d.ZoneItemId, si => si.ItemId, (d, sis) => new
 								{
-									d.D.DomainId,
-									d.D.DomainName,
-									d.D.Package.User.Username,
-									FullName = d.D.Package.User.FirstName + " " + d.D.Package.User.LastName,
-									d.D.Package.User.Email
-								});
-
-						search = domains
-							.Select(d => new TextSearchItem()
-							{
-								ItemId = d.DomainId,
-								TextSearch = d.DomainName,
-								ColumnType = "DomainName"
-							})
-							.Concat(domains.Select(d => new TextSearchItem()
-							{
-								ItemId = d.DomainId,
-								TextSearch = d.Username,
-								ColumnType = "Username",
-							}))
-							.Concat(domains.Select(d => new TextSearchItem()
-							{
-								ItemId = d.DomainId,
-								TextSearch = d.FullName,
-								ColumnType = "FullName"
-							}))
-							.Concat(domains.Select(d => new TextSearchItem()
-							{
-								ItemId = d.DomainId,
-								TextSearch = d.Email,
-								ColumnType = "Email"
-							}));
-						break;
-
-					case "IPAddresses":
-
-						var isAdmin = CheckIsUserAdmin(ActorID);
-
-						var ipAddresses = IpAddresses
-							.Where(ip => isAdmin &&
-								(PoolID == 0 || PoolID > 0 && ip.PoolId == PoolID) &&
-								(ServerID == 0 || ServerID > 0 && ip.ServerId == ServerID))
-							.GroupJoin(PackageIpAddresses, ip => ip.AddressId, pip => pip.AddressId, (ip, pips) => new
-							{
-								IP = ip,
-								PIPS = pips
-							})
-							.SelectMany(ip => ip.PIPS.DefaultIfEmpty(), (ip, pip) => new
-							{
-								ip.IP.AddressId,
-								ip.IP.ExternalIp,
-								ip.IP.InternalIp,
-								ip.IP.DefaultGateway,
-								ip.IP.Server.ServerName,
-								Username = pip != null ? pip.Package.User.Username : null,
-								ItemName = pip != null ? pip.Item.ItemName : null
-							});
-
-						search = ipAddresses
-							.Select(ip => new TextSearchItem()
-							{
-								ItemId = ip.AddressId,
-								TextSearch = ip.ExternalIp,
-								ColumnType = "ExternalIP"
-							})
-							.Concat(ipAddresses.Select(ip => new TextSearchItem()
-							{
-								ItemId = ip.AddressId,
-								TextSearch = ip.InternalIp,
-								ColumnType = "InternalIP",
-							}))
-							.Concat(ipAddresses.Select(ip => new TextSearchItem()
-							{
-								ItemId = ip.AddressId,
-								TextSearch = ip.DefaultGateway,
-								ColumnType = "DefaultGateway"
-							}))
-							.Concat(ipAddresses.Select(ip => new TextSearchItem()
-							{
-								ItemId = ip.AddressId,
-								TextSearch = ip.ServerName,
-								ColumnType = "ServerName"
-							}))
-							.Concat(ipAddresses.Select(ip => new TextSearchItem()
-							{
-								ItemId = ip.AddressId,
-								TextSearch = ip.Username,
-								ColumnType = "UserName"
-							}))
-							.Concat(ipAddresses.Select(ip => new TextSearchItem()
-							{
-								ItemId = ip.AddressId,
-								TextSearch = ip.ItemName,
-								ColumnType = "ItemName"
-							}));
-						break;
-
-					case "Schedules":
-
-						var schedules = Schedules
-							.Join(packagesTree, s => s.PackageId, pt => pt, (s, pt) => s)
-							.Select(s => new
-							{
-								s.ScheduleId,
-								s.ScheduleName,
-								s.Package.User.Username,
-								FullName = s.Package.User.FirstName + " " + s.Package.User.LastName,
-								s.Package.User.Email
-							});
-
-						search = schedules
-							.Select(s => new TextSearchItem()
-							{
-								ItemId = s.ScheduleId,
-								TextSearch = s.ScheduleName,
-								ColumnType = "ScheduleName"
-							})
-							.Concat(schedules.Select(s => new TextSearchItem()
-							{
-								ItemId = s.ScheduleId,
-								TextSearch = s.Username,
-								ColumnType = "Username",
-							}))
-							.Concat(schedules.Select(s => new TextSearchItem()
-							{
-								ItemId = s.ScheduleId,
-								TextSearch = s.FullName,
-								ColumnType = "FullName"
-							}))
-							.Concat(schedules.Select(s => new TextSearchItem()
-							{
-								ItemId = s.ScheduleId,
-								TextSearch = s.Email,
-								ColumnType = "Email"
-							}));
-
-						break;
-
-					case "NestedPackages":
-
-						var packages = Packages
-							.Join(HostingPlans, p => p.PlanId, hp => hp.PlanId, (p, hp) => new
-							{
-								p.PackageId,
-								p.PackageName,
-								p.User.Username,
-								FullName = p.User.FirstName + " " + p.User.LastName,
-								p.User.Email
-							});
-
-						search = packages
-							.Select(p => new TextSearchItem()
-							{
-								ItemId = p.PackageId,
-								TextSearch = p.PackageName,
-								ColumnType = "PackageName"
-							})
-							.Concat(packages.Select(p => new TextSearchItem()
-							{
-								ItemId = p.PackageId,
-								TextSearch = p.Username,
-								ColumnType = "Username",
-							}))
-							.Concat(packages.Select(p => new TextSearchItem()
-							{
-								ItemId = p.PackageId,
-								TextSearch = p.FullName,
-								ColumnType = "FullName"
-							}))
-							.Concat(packages.Select(p => new TextSearchItem()
-							{
-								ItemId = p.PackageId,
-								TextSearch = p.Email,
-								ColumnType = "Email"
-							}));
-
-						break;
-
-					case "PackageIPAddresses":
-
-						var pips = PackageIpAddresses
-							.Where(pip =>
-								(PoolID == 0 || PoolID > 0 && pip.Address.PoolId == PoolID) &&
-								(OrgID == 0 || OrgID > 0 && pip.OrgId == OrgID))
-							.Join(packagesTree, pip => pip.PackageId, pt => pt, (pip, pt) => pip)
-							.GroupJoin(ServiceItems, pip => pip.ItemId, si => si.ItemId, (pip, sis) => new
-							{
-								pip.PackageAddressId,
-								pip.Address.ExternalIp,
-								pip.Address.InternalIp,
-								pip.Address.DefaultGateway,
-								SIS = sis,
-								pip.Package.User.Username
-							})
-							.SelectMany(pip => pip.SIS.DefaultIfEmpty(), (pip, si) => new
-							{
-								pip.PackageAddressId,
-								pip.ExternalIp,
-								pip.InternalIp,
-								pip.DefaultGateway,
-								ItemName = si != null ? si.ItemName : null,
-								pip.Username
-							});
-
-						search = pips
-							.Select(p => new TextSearchItem()
-							{
-								ItemId = p.PackageAddressId,
-								TextSearch = p.ExternalIp,
-								ColumnType = "ExternalIP"
-							})
-							.Concat(pips.Select(p => new TextSearchItem()
-							{
-								ItemId = p.PackageAddressId,
-								TextSearch = p.InternalIp,
-								ColumnType = "InternalIP",
-							}))
-							.Concat(pips.Select(p => new TextSearchItem()
-							{
-								ItemId = p.PackageAddressId,
-								TextSearch = p.DefaultGateway,
-								ColumnType = "DefaultGateway"
-							}))
-							.Concat(pips.Select(p => new TextSearchItem()
-							{
-								ItemId = p.PackageAddressId,
-								TextSearch = p.ItemName,
-								ColumnType = "ItemName"
-							}))
-							.Concat(pips.Select(p => new TextSearchItem()
-							{
-								ItemId = p.PackageAddressId,
-								TextSearch = p.Username,
-								ColumnType = "UserName"
-							}));
-
-						break;
-
-					case "ServiceItems":
-
-						if (!CheckActorPackageRights(ActorID, PackageID))
-							throw new AccessViolationException("You are not allowed to access this package");
-
-						var groupId = ResourceGroups
-							.Where(g => g.GroupName == GroupName)
-							.Select(g => (int?)g.GroupId)
-							.FirstOrDefault();
-						var itemTypeId = ServiceItemTypes
-							.Where(sit => sit.TypeName == ItemTypeName && (groupId == null || sit.GroupId == groupId))
-							.Select(sit => sit.ItemTypeId)
-							.FirstOrDefault();
-
-						var srvcItems = ServiceItems
-							.Where(si => si.ItemTypeId == itemTypeId &&
-								(ServerID == 0 || si.Package.ServerId == ServerID))
-							.Join(packagesTree, si => si.PackageId, pt => pt, (si, pt) => si)
-							.Select(si => new
-							{
-								si.ItemId,
-								si.ItemName,
-								si.Package.User.Username,
-								FullName = si.Package.User.FirstName + " " + si.Package.User.LastName,
-								si.Package.User.Email
-							});
-
-						search = srvcItems
-							.Select(p => new TextSearchItem()
-							{
-								ItemId = p.ItemId,
-								TextSearch = p.ItemName,
-								ColumnType = "ItemName"
-							})
-							.Concat(srvcItems.Select(p => new TextSearchItem()
-							{
-								ItemId = p.ItemId,
-								TextSearch = p.Username,
-								ColumnType = "Username",
-							}))
-							.Concat(srvcItems.Select(p => new TextSearchItem()
-							{
-								ItemId = p.ItemId,
-								TextSearch = p.FullName,
-								ColumnType = "FullName"
-							}))
-							.Concat(srvcItems.Select(p => new TextSearchItem()
-							{
-								ItemId = p.ItemId,
-								TextSearch = p.Email,
-								ColumnType = "Email"
-							}));
-
-						break;
-
-					case "Users":
-
-						if (!Recursive)
-						{
-							userChildren.AddRange(Users
-								.Where(u => u.OwnerId == UserID)
-								.Select(u => u.UserId));
-							SaveChanges();
-						}
-
-						var hasUserRights = CheckActorUserRights(ActorID, UserID);
-
-						var users = Users
-							.Join(userChildren, u => u.UserId, uc => uc, (u, uc) => u)
-							.Where(u => hasUserRights && u.UserId != UserID && !u.IsPeer &&
-								(StatusID == 0 || u.StatusId == StatusID) &&
-								(RoleID == 0 || u.RoleId == RoleID))
-							.Select(u => new
-							{
-								u.UserId,
-								u.Username,
-								FullName = u.FirstName + " " + u.LastName,
-								u.Email,
-								u.CompanyName
-							});
-
-						search = users
-							.Select(u => new TextSearchItem()
-							{
-								ItemId = u.UserId,
-								TextSearch = u.Username,
-								ColumnType = "UserName"
-							})
-							.Concat(users.Select(u => new TextSearchItem()
-							{
-								ItemId = u.UserId,
-								TextSearch = u.FullName,
-								ColumnType = "FullName",
-							}))
-							.Concat(users.Select(u => new TextSearchItem()
-							{
-								ItemId = u.UserId,
-								TextSearch = u.Email,
-								ColumnType = "Email"
-							}))
-							.Concat(users.Select(u => new TextSearchItem()
-							{
-								ItemId = u.UserId,
-								TextSearch = u.CompanyName,
-								ColumnType = "CompanyName"
-							}));
-						break;
-
-					case "VirtualMachines":
-
-						if (!CheckActorPackageRights(ActorID, PackageID))
-							throw new AccessViolationException("You are not allowed to access this package");
-
-						var packageIps = PackageIpAddresses
-							.Where(p => p.IsPrimary == true)
-							.Join(IpAddresses
-								.Where(ip => ip.PoolId == 3), // external ip address
-								p => p.AddressId, ip => ip.AddressId, (p, ip) => new
+									D = d,
+									SIS = sis
+								})
+								.SelectMany(d => d.SIS.DefaultIfEmpty(), (d, si) => new
 								{
-									p.ItemId,
-									ip.ExternalIp
-								});
-						var vms = Packages
-							.Join(packagesTree, p => p.PackageId, pt => pt, (p, pt) => p)
-							.Join(ServiceItems
-								.Where(si => si.ItemTypeId == vpsTypeId),
-								p => p.PackageId, si => si.PackageId, (p, si) => new
-								{
-									P = p,
+									d.D,
 									SI = si
 								})
-							.GroupJoin(packageIps, p => p.SI.ItemId, pip => pip.ItemId, (p, pips) => new
+								.Join(Services
+									.Where(s => ServerID == 0 || ServerID > 0 && s.ServerId == ServerID),
+									d => d.SI != null ? d.SI.ServiceId : -1, svc => svc.ServiceId, (d, svc) => new
+									{
+										d.D.DomainId,
+										d.D.DomainName,
+										d.D.Package.User.Username,
+										FullName = d.D.Package.User.FirstName + " " + d.D.Package.User.LastName,
+										d.D.Package.User.Email
+									});
+
+							search = domains
+								.Select(d => new TextSearchItem()
+								{
+									ItemId = d.DomainId,
+									TextSearch = d.DomainName,
+									ColumnType = "DomainName"
+								})
+								.Concat(domains.Select(d => new TextSearchItem()
+								{
+									ItemId = d.DomainId,
+									TextSearch = d.Username,
+									ColumnType = "Username",
+								}))
+								.Concat(domains.Select(d => new TextSearchItem()
+								{
+									ItemId = d.DomainId,
+									TextSearch = d.FullName,
+									ColumnType = "FullName"
+								}))
+								.Concat(domains.Select(d => new TextSearchItem()
+								{
+									ItemId = d.DomainId,
+									TextSearch = d.Email,
+									ColumnType = "Email"
+								}));
+							break;
+
+						case "IPAddresses":
+
+							var isAdmin = CheckIsUserAdmin(ActorID);
+
+							var ipAddresses = IpAddresses
+								.Where(ip => isAdmin &&
+									(PoolID == 0 || PoolID > 0 && ip.PoolId == PoolID) &&
+									(ServerID == 0 || ServerID > 0 && ip.ServerId == ServerID))
+								.GroupJoin(PackageIpAddresses, ip => ip.AddressId, pip => pip.AddressId, (ip, pips) => new
+								{
+									IP = ip,
+									PIPS = pips
+								})
+								.SelectMany(ip => ip.PIPS.DefaultIfEmpty(), (ip, pip) => new
+								{
+									ip.IP.AddressId,
+									ip.IP.ExternalIp,
+									ip.IP.InternalIp,
+									ip.IP.DefaultGateway,
+									ip.IP.Server.ServerName,
+									Username = pip != null ? pip.Package.User.Username : null,
+									ItemName = pip != null ? pip.Item.ItemName : null
+								});
+
+							search = ipAddresses
+								.Select(ip => new TextSearchItem()
+								{
+									ItemId = ip.AddressId,
+									TextSearch = ip.ExternalIp,
+									ColumnType = "ExternalIP"
+								})
+								.Concat(ipAddresses.Select(ip => new TextSearchItem()
+								{
+									ItemId = ip.AddressId,
+									TextSearch = ip.InternalIp,
+									ColumnType = "InternalIP",
+								}))
+								.Concat(ipAddresses.Select(ip => new TextSearchItem()
+								{
+									ItemId = ip.AddressId,
+									TextSearch = ip.DefaultGateway,
+									ColumnType = "DefaultGateway"
+								}))
+								.Concat(ipAddresses.Select(ip => new TextSearchItem()
+								{
+									ItemId = ip.AddressId,
+									TextSearch = ip.ServerName,
+									ColumnType = "ServerName"
+								}))
+								.Concat(ipAddresses.Select(ip => new TextSearchItem()
+								{
+									ItemId = ip.AddressId,
+									TextSearch = ip.Username,
+									ColumnType = "UserName"
+								}))
+								.Concat(ipAddresses.Select(ip => new TextSearchItem()
+								{
+									ItemId = ip.AddressId,
+									TextSearch = ip.ItemName,
+									ColumnType = "ItemName"
+								}));
+							break;
+
+						case "Schedules":
+
+							var schedules = Schedules
+								.Join(packagesTree, s => s.PackageId, pt => pt, (s, pt) => s)
+								.Select(s => new
+								{
+									s.ScheduleId,
+									s.ScheduleName,
+									s.Package.User.Username,
+									FullName = s.Package.User.FirstName + " " + s.Package.User.LastName,
+									s.Package.User.Email
+								});
+
+							search = schedules
+								.Select(s => new TextSearchItem()
+								{
+									ItemId = s.ScheduleId,
+									TextSearch = s.ScheduleName,
+									ColumnType = "ScheduleName"
+								})
+								.Concat(schedules.Select(s => new TextSearchItem()
+								{
+									ItemId = s.ScheduleId,
+									TextSearch = s.Username,
+									ColumnType = "Username",
+								}))
+								.Concat(schedules.Select(s => new TextSearchItem()
+								{
+									ItemId = s.ScheduleId,
+									TextSearch = s.FullName,
+									ColumnType = "FullName"
+								}))
+								.Concat(schedules.Select(s => new TextSearchItem()
+								{
+									ItemId = s.ScheduleId,
+									TextSearch = s.Email,
+									ColumnType = "Email"
+								}));
+
+							break;
+
+						case "NestedPackages":
+
+							var packages = Packages
+								.Join(HostingPlans, p => p.PlanId, hp => hp.PlanId, (p, hp) => new
+								{
+									p.PackageId,
+									p.PackageName,
+									p.User.Username,
+									FullName = p.User.FirstName + " " + p.User.LastName,
+									p.User.Email
+								});
+
+							search = packages
+								.Select(p => new TextSearchItem()
+								{
+									ItemId = p.PackageId,
+									TextSearch = p.PackageName,
+									ColumnType = "PackageName"
+								})
+								.Concat(packages.Select(p => new TextSearchItem()
+								{
+									ItemId = p.PackageId,
+									TextSearch = p.Username,
+									ColumnType = "Username",
+								}))
+								.Concat(packages.Select(p => new TextSearchItem()
+								{
+									ItemId = p.PackageId,
+									TextSearch = p.FullName,
+									ColumnType = "FullName"
+								}))
+								.Concat(packages.Select(p => new TextSearchItem()
+								{
+									ItemId = p.PackageId,
+									TextSearch = p.Email,
+									ColumnType = "Email"
+								}));
+
+							break;
+
+						case "PackageIPAddresses":
+
+							var pips = PackageIpAddresses
+								.Where(pip =>
+									(PoolID == 0 || PoolID > 0 && pip.Address.PoolId == PoolID) &&
+									(OrgID == 0 || OrgID > 0 && pip.OrgId == OrgID))
+								.Join(packagesTree, pip => pip.PackageId, pt => pt, (pip, pt) => pip)
+								.GroupJoin(ServiceItems, pip => pip.ItemId, si => si.ItemId, (pip, sis) => new
+								{
+									pip.PackageAddressId,
+									pip.Address.ExternalIp,
+									pip.Address.InternalIp,
+									pip.Address.DefaultGateway,
+									SIS = sis,
+									pip.Package.User.Username
+								})
+								.SelectMany(pip => pip.SIS.DefaultIfEmpty(), (pip, si) => new
+								{
+									pip.PackageAddressId,
+									pip.ExternalIp,
+									pip.InternalIp,
+									pip.DefaultGateway,
+									ItemName = si != null ? si.ItemName : null,
+									pip.Username
+								});
+
+							search = pips
+								.Select(p => new TextSearchItem()
+								{
+									ItemId = p.PackageAddressId,
+									TextSearch = p.ExternalIp,
+									ColumnType = "ExternalIP"
+								})
+								.Concat(pips.Select(p => new TextSearchItem()
+								{
+									ItemId = p.PackageAddressId,
+									TextSearch = p.InternalIp,
+									ColumnType = "InternalIP",
+								}))
+								.Concat(pips.Select(p => new TextSearchItem()
+								{
+									ItemId = p.PackageAddressId,
+									TextSearch = p.DefaultGateway,
+									ColumnType = "DefaultGateway"
+								}))
+								.Concat(pips.Select(p => new TextSearchItem()
+								{
+									ItemId = p.PackageAddressId,
+									TextSearch = p.ItemName,
+									ColumnType = "ItemName"
+								}))
+								.Concat(pips.Select(p => new TextSearchItem()
+								{
+									ItemId = p.PackageAddressId,
+									TextSearch = p.Username,
+									ColumnType = "UserName"
+								}));
+
+							break;
+
+						case "ServiceItems":
+
+							if (!CheckActorPackageRights(ActorID, PackageID))
+								throw new AccessViolationException("You are not allowed to access this package");
+
+							var groupId = ResourceGroups
+								.Where(g => g.GroupName == GroupName)
+								.Select(g => (int?)g.GroupId)
+								.FirstOrDefault();
+							var itemTypeId = ServiceItemTypes
+								.Where(sit => sit.TypeName == ItemTypeName && (groupId == null || sit.GroupId == groupId))
+								.Select(sit => sit.ItemTypeId)
+								.FirstOrDefault();
+
+							var srvcItems = ServiceItems
+								.Where(si => si.ItemTypeId == itemTypeId &&
+									(ServerID == 0 || si.Package.ServerId == ServerID))
+								.Join(packagesTree, si => si.PackageId, pt => pt, (si, pt) => si)
+								.Select(si => new
+								{
+									si.ItemId,
+									si.ItemName,
+									si.Package.User.Username,
+									FullName = si.Package.User.FirstName + " " + si.Package.User.LastName,
+									si.Package.User.Email
+								});
+
+							search = srvcItems
+								.Select(p => new TextSearchItem()
+								{
+									ItemId = p.ItemId,
+									TextSearch = p.ItemName,
+									ColumnType = "ItemName"
+								})
+								.Concat(srvcItems.Select(p => new TextSearchItem()
+								{
+									ItemId = p.ItemId,
+									TextSearch = p.Username,
+									ColumnType = "Username",
+								}))
+								.Concat(srvcItems.Select(p => new TextSearchItem()
+								{
+									ItemId = p.ItemId,
+									TextSearch = p.FullName,
+									ColumnType = "FullName"
+								}))
+								.Concat(srvcItems.Select(p => new TextSearchItem()
+								{
+									ItemId = p.ItemId,
+									TextSearch = p.Email,
+									ColumnType = "Email"
+								}));
+
+							break;
+
+						case "Users":
+
+							if (!Recursive)
 							{
-								p.P,
-								p.SI,
-								PIPS = pips
-							})
-							.SelectMany(p => p.PIPS.DefaultIfEmpty(), (p, pkip) => new
-							{
-								p.P,
-								p.SI,
-								ExternalIp = pkip != null ? pkip.ExternalIp : null
-							})
-							.GroupJoin(PrivateIpAddresses
-								.Where(ip => ip.IsPrimary == true),
-								p => p.SI.ItemId, pip => pip.ItemId, (p, pips) => new
+								userChildren.AddRange(Users
+									.Where(u => u.OwnerId == UserID)
+									.Select(u => u.UserId));
+								SaveChanges();
+							}
+
+							var hasUserRights = CheckActorUserRights(ActorID, UserID);
+
+							var users = Users
+								.Join(userChildren, u => u.UserId, uc => uc, (u, uc) => u)
+								.Where(u => hasUserRights && u.UserId != UserID && !u.IsPeer &&
+									(StatusID == 0 || u.StatusId == StatusID) &&
+									(RoleID == 0 || u.RoleId == RoleID))
+								.Select(u => new
+								{
+									u.UserId,
+									u.Username,
+									FullName = u.FirstName + " " + u.LastName,
+									u.Email,
+									u.CompanyName
+								});
+
+							search = users
+								.Select(u => new TextSearchItem()
+								{
+									ItemId = u.UserId,
+									TextSearch = u.Username,
+									ColumnType = "UserName"
+								})
+								.Concat(users.Select(u => new TextSearchItem()
+								{
+									ItemId = u.UserId,
+									TextSearch = u.FullName,
+									ColumnType = "FullName",
+								}))
+								.Concat(users.Select(u => new TextSearchItem()
+								{
+									ItemId = u.UserId,
+									TextSearch = u.Email,
+									ColumnType = "Email"
+								}))
+								.Concat(users.Select(u => new TextSearchItem()
+								{
+									ItemId = u.UserId,
+									TextSearch = u.CompanyName,
+									ColumnType = "CompanyName"
+								}));
+							break;
+
+						case "VirtualMachines":
+
+							if (!CheckActorPackageRights(ActorID, PackageID))
+								throw new AccessViolationException("You are not allowed to access this package");
+
+							var packageIps = PackageIpAddresses
+								.Where(p => p.IsPrimary == true)
+								.Join(IpAddresses
+									.Where(ip => ip.PoolId == 3), // external ip address
+									p => p.AddressId, ip => ip.AddressId, (p, ip) => new
+									{
+										p.ItemId,
+										ip.ExternalIp
+									});
+							var vms = Packages
+								.Join(packagesTree, p => p.PackageId, pt => pt, (p, pt) => p)
+								.Join(ServiceItems
+									.Where(si => si.ItemTypeId == vpsTypeId),
+									p => p.PackageId, si => si.PackageId, (p, si) => new
+									{
+										P = p,
+										SI = si
+									})
+								.GroupJoin(packageIps, p => p.SI.ItemId, pip => pip.ItemId, (p, pips) => new
 								{
 									p.P,
 									p.SI,
-									p.ExternalIp,
 									PIPS = pips
 								})
-							.SelectMany(p => p.PIPS.DefaultIfEmpty(), (p, privip) => new
-							{
-								p.SI.ItemId,
-								p.SI.ItemName,
-								p.SI.Package.User.Username,
-								p.ExternalIp,
-								IpAddress = privip != null ? privip.IpAddress : null
-							});
+								.SelectMany(p => p.PIPS.DefaultIfEmpty(), (p, pkip) => new
+								{
+									p.P,
+									p.SI,
+									ExternalIp = pkip != null ? pkip.ExternalIp : null
+								})
+								.GroupJoin(PrivateIpAddresses
+									.Where(ip => ip.IsPrimary == true),
+									p => p.SI.ItemId, pip => pip.ItemId, (p, pips) => new
+									{
+										p.P,
+										p.SI,
+										p.ExternalIp,
+										PIPS = pips
+									})
+								.SelectMany(p => p.PIPS.DefaultIfEmpty(), (p, privip) => new
+								{
+									p.SI.ItemId,
+									p.SI.ItemName,
+									p.SI.Package.User.Username,
+									p.ExternalIp,
+									IpAddress = privip != null ? privip.IpAddress : null
+								});
 
-						search = vms
-							.Select(v => new TextSearchItem()
-							{
-								ItemId = v.ItemId,
-								TextSearch = v.ItemName,
-								ColumnType = "ItemName"
-							})
-							.Concat(vms.Select(v => new TextSearchItem()
-							{
-								ItemId = v.ItemId,
-								TextSearch = v.ExternalIp,
-								ColumnType = "ExternalIP",
-							}))
-							.Concat(vms.Select(v => new TextSearchItem()
-							{
-								ItemId = v.ItemId,
-								TextSearch = v.Username,
-								ColumnType = "Username"
-							}))
-							.Concat(vms.Select(v => new TextSearchItem()
-							{
-								ItemId = v.ItemId,
-								TextSearch = v.IpAddress,
-								ColumnType = "IPAddress"
-							}));
-						break;
+							search = vms
+								.Select(v => new TextSearchItem()
+								{
+									ItemId = v.ItemId,
+									TextSearch = v.ItemName,
+									ColumnType = "ItemName"
+								})
+								.Concat(vms.Select(v => new TextSearchItem()
+								{
+									ItemId = v.ItemId,
+									TextSearch = v.ExternalIp,
+									ColumnType = "ExternalIP",
+								}))
+								.Concat(vms.Select(v => new TextSearchItem()
+								{
+									ItemId = v.ItemId,
+									TextSearch = v.Username,
+									ColumnType = "Username"
+								}))
+								.Concat(vms.Select(v => new TextSearchItem()
+								{
+									ItemId = v.ItemId,
+									TextSearch = v.IpAddress,
+									ColumnType = "IPAddress"
+								}));
+							break;
 
-					case "PackagePrivateIPAddresses":
+						case "PackagePrivateIPAddresses":
 
-						var ips = PrivateIpAddresses
-							.Where(ip => ip.Item.PackageId == PackageID)
-							.Select(ip => new
-							{
-								ip.PrivateAddressId,
-								ip.IpAddress,
-								ip.Item.ItemName
-							});
+							var ips = PrivateIpAddresses
+								.Where(ip => ip.Item.PackageId == PackageID)
+								.Select(ip => new
+								{
+									ip.PrivateAddressId,
+									ip.IpAddress,
+									ip.Item.ItemName
+								});
 
+							search = ips
+								.Select(ip => new TextSearchItem()
+								{
+									ItemId = ip.PrivateAddressId,
+									TextSearch = ip.IpAddress,
+									ColumnType = "IpAddress"
+								})
+								.Concat(ips.Select(ip => new TextSearchItem()
+								{
+									ItemId = ip.PrivateAddressId,
+									TextSearch = ip.ItemName,
+									ColumnType = "ItemName",
+								}));
 
-						search = ips
-							.Select(ip => new TextSearchItem()
-							{
-								ItemId = ip.PrivateAddressId,
-								TextSearch = ip.IpAddress,
-								ColumnType = "IpAddress"
-							})
-							.Concat(ips.Select(ip => new TextSearchItem()
-							{
-								ItemId = ip.PrivateAddressId,
-								TextSearch = ip.ItemName,
-								ColumnType = "ItemName",
-							}));
+							break;
 
-						break;
+						default:
+							search = Enumerable.Empty<TextSearchItem>().AsQueryable();
+							break;
 					}
 
 					search = search
 						.Where(ds =>
-#if NETFRAMEWORK
+	#if NETFRAMEWORK
 							DbFunctions.Like(ds.TextSearch, FilterValue)
-#else
+	#else
 							EF.Functions.Like(ds.TextSearch, FilterValue)
-#endif
+	#endif
 						);
 
 					if (!string.IsNullOrEmpty(FilterColumns))
 					{
 						var columns = FilterColumns
 							.Split(',')
-							.Select(s => s.Trim())
+							.Select(s => s.Trim().Trim('\''))
 							.Where(s => !string.IsNullOrEmpty(s));
 						search = search
 							.Where(BuildOrExpression<TextSearchItem, string>(x => x.ColumnType, columns));
