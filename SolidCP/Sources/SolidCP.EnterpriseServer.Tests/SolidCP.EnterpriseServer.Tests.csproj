@@ -37,6 +37,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj" />
+        <ProjectReference Include="..\SolidCP.EnterpriseServer.Code\SolidCP.EnterpriseServer.Code.csproj" />
         <ProjectReference Include="..\SolidCP.EnterpriseServer.Data\SolidCP.EnterpriseServer.Data.csproj" />
         <ProjectReference Include="..\SolidCP.EnterpriseServer\WebServices\SolidCP.Build\SolidCP.EnterpriseServer.Client.csproj" />
     </ItemGroup>

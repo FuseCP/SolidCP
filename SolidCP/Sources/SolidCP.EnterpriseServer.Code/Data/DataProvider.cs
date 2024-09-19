@@ -1238,14 +1238,14 @@ RETURN
 			}
 		}
 
-		class TextSearchItem
+		public class TextSearchItem
 		{
 			public int ItemId;
 			public string TextSearch;
 			public string ColumnType;
 		}
 
-		class ItemService
+		public class ItemService
 		{
 			public int ItemId;
 			public int? ItemTypeId;
@@ -1254,7 +1254,7 @@ RETURN
 			public string FullName;
 		}
 
-		class ItemsDomain
+		public class ItemsDomain
 		{
 			public int ItemId;
 			public int UserId;
@@ -2175,13 +2175,22 @@ RETURN
 
 				if (string.IsNullOrEmpty(filterColumn) && !string.IsNullOrEmpty(filterValue)) filterColumn = "TextSearch";
 
-				using (var usersTree = UsersTree(userId, recursive))
+				using (var userChildren = recursive ? UserChildren(userId) : new TempIdSet(this))
 				{
+					if (!recursive)
+					{
+						userChildren.AddRange(Users
+							.Where(u => u.OwnerId == userId)
+							.Select(u => u.UserId));
+						SaveChanges();
+					}
+
 					var users = Users
 						.Where(u => u.UserId != userId && !u.IsPeer &&
-						(statusId == 0 || statusId > 0 && u.StatusId == statusId) &&
-						(roleId == 0 || roleId > 0 && u.RoleId == roleId))
-						.Join(usersTree, id => id.UserId, tid => tid, (u, t) => u);
+							(statusId == 0 || statusId > 0 && u.StatusId == statusId) &&
+							(roleId == 0 || roleId > 0 && u.RoleId == roleId))
+						.Join(userChildren, id => id.UserId, tid => tid, (u, t) => u);
+
 					var userItems = users.Join(
 						Users.Select(u => new TextSearchItem()
 						{
@@ -2244,7 +2253,7 @@ RETURN
 							Username = si.Package.User.Username,
 							FullName = si.Package.User.FirstName + " " + si.Package.User.LastName
 						})
-						.Join(usersTree, si => si.UserId, ut => ut, (u, ut) => u);
+						.Join(userChildren, si => si.UserId, ut => ut, (u, ut) => u);
 
 					var itemsDomain = Domains
 						.Select(d => new ItemsDomain()
@@ -2254,7 +2263,7 @@ RETURN
 							Username = d.Package.User.Username,
 							FullName = d.Package.User.FirstName + " " + d.Package.User.LastName
 						})
-						.Join(usersTree, di => di.UserId, ut => ut, (di, ut) => di);
+						.Join(userChildren, di => di.UserId, ut => ut, (di, ut) => di);
 
 					var spaceItemsServices = itemsService
 						.Join(ServiceItems
@@ -2274,7 +2283,7 @@ RETURN
 					if (!string.IsNullOrEmpty(filterValue))
 					{
 #if NETFRAMEWORK
-					spaceItemsServices = spaceItemsServices.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
+						spaceItemsServices = spaceItemsServices.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
 #else
 						spaceItemsServices = spaceItemsServices.Where(si => EF.Functions.Like(si.TextSearch, filterValue));
 #endif
@@ -2300,7 +2309,7 @@ RETURN
 					if (!string.IsNullOrEmpty(filterValue))
 					{
 #if NETFRAMEWORK
-					spaceItemsDomains = spaceItemsDomains.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
+						spaceItemsDomains = spaceItemsDomains.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
 #else
 						spaceItemsDomains = spaceItemsDomains.Where(si => EF.Functions.Like(si.TextSearch, filterValue));
 #endif
@@ -2341,7 +2350,7 @@ RETURN
 					if (!string.IsNullOrEmpty(filterValue))
 					{
 #if NETFRAMEWORK
-					spaceItemsEac = spaceItemsEac.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
+						spaceItemsEac = spaceItemsEac.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
 #else
 						spaceItemsEac = spaceItemsEac.Where(si => EF.Functions.Like(si.TextSearch, filterValue));
 #endif
@@ -2382,7 +2391,7 @@ RETURN
 					if (!string.IsNullOrEmpty(filterValue))
 					{
 #if NETFRAMEWORK
-					spaceItemsEacPem = spaceItemsEacPem.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
+						spaceItemsEacPem = spaceItemsEacPem.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
 #else
 						spaceItemsEacPem = spaceItemsEacPem.Where(si => EF.Functions.Like(si.TextSearch, filterValue));
 #endif
@@ -2430,7 +2439,7 @@ RETURN
 					if (!string.IsNullOrEmpty(filterValue))
 					{
 #if NETFRAMEWORK
-					spaceItemsEacEm = spaceItemsEacEm.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
+						spaceItemsEacEm = spaceItemsEacEm.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
 #else
 						spaceItemsEacEm = spaceItemsEacEm.Where(si => EF.Functions.Like(si.TextSearch, filterValue));
 #endif
@@ -2473,7 +2482,7 @@ RETURN
 					if (!string.IsNullOrEmpty(filterValue))
 					{
 #if NETFRAMEWORK
-					lyncItems = lyncItems.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
+						lyncItems = lyncItems.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
 #else
 						lyncItems = lyncItems.Where(si => EF.Functions.Like(si.TextSearch, filterValue));
 #endif
@@ -2510,7 +2519,7 @@ RETURN
 					if (!string.IsNullOrEmpty(filterValue))
 					{
 #if NETFRAMEWORK
-					sfbItems = sfbItems.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
+						sfbItems = sfbItems.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
 #else
 						sfbItems = sfbItems.Where(si => EF.Functions.Like(si.TextSearch, filterValue));
 #endif
@@ -2547,7 +2556,7 @@ RETURN
 						if (!string.IsNullOrEmpty(filterValue))
 						{
 #if NETFRAMEWORK
-						rdsItems = rdsItems.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
+							rdsItems = rdsItems.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
 #else
 							rdsItems = rdsItems.Where(si => EF.Functions.Like(si.TextSearch, filterValue));
 #endif
@@ -2585,7 +2594,7 @@ RETURN
 					if (!string.IsNullOrEmpty(filterValue))
 					{
 #if NETFRAMEWORK
-					crmItems = crmItems.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
+						crmItems = crmItems.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
 #else
 						crmItems = crmItems.Where(si => EF.Functions.Like(si.TextSearch, filterValue));
 #endif
@@ -2624,7 +2633,7 @@ RETURN
 						if (!string.IsNullOrEmpty(filterValue))
 						{
 #if NETFRAMEWORK
-						vpsItems = vpsItems.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
+							vpsItems = vpsItems.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
 #else
 							vpsItems = vpsItems.Where(si => EF.Functions.Like(si.TextSearch, filterValue));
 #endif
@@ -2657,7 +2666,7 @@ RETURN
 					if (!string.IsNullOrEmpty(filterValue))
 					{
 #if NETFRAMEWORK
-					wdavItems = wdavItems.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
+						wdavItems = wdavItems.Where(si => DbFunctions.Like(si.TextSearch, filterValue));
 #else
 						wdavItems = wdavItems.Where(si => EF.Functions.Like(si.TextSearch, filterValue));
 #endif
@@ -2669,7 +2678,7 @@ RETURN
 						wdavItems = wdavItems.Take(maximumRows);
 					}
 
-				/*------------------------------------VPS-IP------------------------------------------------*/
+					/*------------------------------------VPS-IP------------------------------------------------*/
 
 					var vpsIpItems = ServiceItems
 						.GroupJoin(PrivateIpAddresses, si => si.ItemId, pip => pip.ItemId, (si, pips) => new
@@ -2701,20 +2710,20 @@ RETURN
 						.Where(si => (EF.Functions.Like(filterValue, "%.%") || EF.Functions.Like(filterValue, "%:%")) &&
 							(EF.Functions.Like(si.PrivateIp, filterValue) || EF.Functions.Like(si.ExternalIp, filterValue)))
 #endif
-						.Join(usersTree, si => si.Item.Package.UserId, ut => ut, (si, ut) => si)
+						.Join(userChildren, si => si.Item.Package.UserId, ut => ut, (si, ut) => si)
 						.Join(ServiceItemTypes
 							.Where(sit => sit.DisplayName == "VirtualMachine"),
 							si => si.Item.ItemTypeId, sit => sit.ItemTypeId, (si, sit) => new SearchItem()
-						{
-							ItemId = si.Item.ItemId,
-							TextSearch = si.Item.ItemName,
-							ColumnType = sit.DisplayName,
-							FullType = sit.DisplayName,
-							PackageId = si.Item.PackageId,
-							AccountId = 0,
-							Username = si.Item.Package.User.Username,
-							FullName = si.Item.Package.User.FirstName + " " + si.Item.Package.User.LastName
-						});
+							{
+								ItemId = si.Item.ItemId,
+								TextSearch = si.Item.ItemName,
+								ColumnType = sit.DisplayName,
+								FullType = sit.DisplayName,
+								PackageId = si.Item.PackageId,
+								AccountId = 0,
+								Username = si.Item.Package.User.Username,
+								FullName = si.Item.Package.User.FirstName + " " + si.Item.Package.User.LastName
+							});
 
 
 					if (onlyFind)
@@ -2723,7 +2732,8 @@ RETURN
 						vpsIpItems = vpsIpItems.Take(maximumRows);
 					}
 
-					/* Disabled ------------------------------------SharePoint------------------------------------------------*/
+					/*------------------------------------SharePoint------------------------------------------------*/
+					// Disabled, has a complicated RIGHT JOIN, don't know if this is a bug
 
 					/*var shpItemsLeft = ServiceItems
 						.Where(si => isAdmin || si.Package.UserId == userId)
@@ -2781,17 +2791,19 @@ RETURN
 						if (!string.IsNullOrEmpty(fullType)) userItems = userItems.Where(x => x.FullType == fullType);
 					}
 
-					var itemsFilter = spaceItems
-						.Union(lyncItems)
-						.Union(sfbItems)
-						.Union(rdsItems)
-						.Union(crmItems)
-						.Union(vpsItems)
-						.Union(wdavItems)
-						.Union(vpsIpItems);
-						//.Union(shpItems);
+					// bug: Needs a call to Take for subquery ordering taking effect in EF6
+					var itemsFilter = spaceItems.Take(int.MaxValue)
+						.Concat(lyncItems.Take(int.MaxValue))
+						.Concat(sfbItems.Take(int.MaxValue))
+						.Concat(rdsItems.Take(int.MaxValue))
+						.Concat(crmItems.Take(int.MaxValue))
+						.Concat(vpsItems.Take(int.MaxValue))
+						.Concat(wdavItems.Take(int.MaxValue))
+						.Concat(vpsIpItems.Take(int.MaxValue));
+					//.Concat(shpItems.Take(int.MaxValue));
 
-					if (!string.IsNullOrEmpty(colType)) {
+					if (!string.IsNullOrEmpty(colType))
+					{
 						var types = colType
 							.Split(',')
 							.Select(s => s.Trim())
@@ -2810,15 +2822,18 @@ RETURN
 						if (sortColumn == "TextSearch")
 						{
 							itemsReturn = userItems;
-						} else
+						}
+						else
 						{
-							itemsFilter = itemsFilter.Union(userItems);
+							itemsFilter = itemsFilter.Concat(userItems);
 						}
 					}
 
+					itemsFilter = itemsFilter.OrderBy(sortColumn);
+
 					itemsReturn = itemsReturn
-						.Union(itemsFilter
-							.OrderBy(sortColumn));
+						// bug: Needs a call to Take for subquery ordering taking effect in EF6
+						.Concat(itemsFilter.Take(int.MaxValue));
 
 					var count = itemsReturn.Count();
 
@@ -3304,9 +3319,537 @@ exec sp_executesql @sql, N'@FilterValue nvarchar(50), @Recursive bit, @PoolID in
 
 RETURN
 				*/
-					#endregion
+				#endregion
 
-					throw new NotImplementedException();
+				//throw new NotImplementedException();
+
+				int vpsTypeId;
+				switch (VPSType)
+				{
+					case "VPS": vpsTypeId = 33; break;
+					case "VPS2012": vpsTypeId = 41; break;
+					case "Proxmox": vpsTypeId = 143; break;
+					case "VPSForPC": vpsTypeId = 35; break;
+					default: vpsTypeId = 33; break;
+				}
+
+				IQueryable<TextSearchItem> search = null;
+
+				using (var packagesTree = (PagedStored == "Domains" || PagedStored == "Schedules") ?
+					PackagesTree(PackageID, Recursive) : null)
+				using (var userChildren = PagedStored == "Users" ?
+					(Recursive ? UserChildren(UserID, Recursive) : new TempIdSet(this)) : null)
+				{
+
+				switch (PagedStored)
+					{
+						case "Domains":
+
+							var domains = Domains
+								.Where(d => !d.IsPreviewDomain && !d.IsDomainPointer)
+								.Join(packagesTree, d => d.PackageId, pt => pt, (d, pt) => d)
+								.GroupJoin(ServiceItems, d => d.ZoneItemId, si => si.ItemId, (d, sis) => new
+								{
+									D = d,
+									SIS = sis
+								})
+								.SelectMany(d => d.SIS.DefaultIfEmpty(), (d, si) => new
+								{
+									d.D,
+									SI = si
+								})
+								.Join(Services
+									.Where(s => ServerID == 0 || ServerID > 0 && s.ServerId == ServerID),
+									d => d.SI != null ? d.SI.ServiceId : -1, svc => svc.ServiceId, (d, svc) => new
+									{
+										d.D.DomainId,
+										d.D.DomainName,
+										d.D.Package.User.Username,
+										FullName = d.D.Package.User.FirstName + " " + d.D.Package.User.LastName,
+										d.D.Package.User.Email
+									});
+
+							search = domains
+								.Select(d => new TextSearchItem()
+								{
+									ItemId = d.DomainId,
+									TextSearch = d.DomainName,
+									ColumnType = "DomainName"
+								})
+								.Concat(domains.Select(d => new TextSearchItem()
+								{
+									ItemId = d.DomainId,
+									TextSearch = d.Username,
+									ColumnType = "Username",
+								}))
+								.Concat(domains.Select(d => new TextSearchItem()
+								{
+									ItemId = d.DomainId,
+									TextSearch = d.FullName,
+									ColumnType = "FullName"
+								}))
+								.Concat(domains.Select(d => new TextSearchItem()
+								{
+									ItemId = d.DomainId,
+									TextSearch = d.Email,
+									ColumnType = "Email"
+								}));
+							break;
+
+						case "IPAddresses":
+
+							var isAdmin = CheckIsUserAdmin(ActorID);
+
+							var ipAddresses = IpAddresses
+								.Where(ip => isAdmin &&
+									(PoolID == 0 || PoolID > 0 && ip.PoolId == PoolID) &&
+									(ServerID == 0 || ServerID > 0 && ip.ServerId == ServerID))
+								.GroupJoin(PackageIpAddresses, ip => ip.AddressId, pip => pip.AddressId, (ip, pips) => new
+								{
+									IP = ip,
+									PIPS = pips
+								})
+								.SelectMany(ip => ip.PIPS.DefaultIfEmpty(), (ip, pip) => new
+								{
+									ip.IP.AddressId,
+									ip.IP.ExternalIp,
+									ip.IP.InternalIp,
+									ip.IP.DefaultGateway,
+									ip.IP.Server.ServerName,
+									Username = pip != null ? pip.Package.User.Username : null,
+									ItemName = pip != null ? pip.Item.ItemName : null
+								});
+
+							search = ipAddresses
+								.Select(ip => new TextSearchItem()
+								{
+									ItemId = ip.AddressId,
+									TextSearch = ip.ExternalIp,
+									ColumnType = "ExternalIP"
+								})
+								.Concat(ipAddresses.Select(ip => new TextSearchItem()
+								{
+									ItemId = ip.AddressId,
+									TextSearch = ip.InternalIp,
+									ColumnType = "InternalIP",
+								}))
+								.Concat(ipAddresses.Select(ip => new TextSearchItem()
+								{
+									ItemId = ip.AddressId,
+									TextSearch = ip.DefaultGateway,
+									ColumnType = "DefaultGateway"
+								}))
+								.Concat(ipAddresses.Select(ip => new TextSearchItem()
+								{
+									ItemId = ip.AddressId,
+									TextSearch = ip.ServerName,
+									ColumnType = "ServerName"
+								}))
+								.Concat(ipAddresses.Select(ip => new TextSearchItem()
+								{
+									ItemId = ip.AddressId,
+									TextSearch = ip.Username,
+									ColumnType = "UserName"
+								}))
+								.Concat(ipAddresses.Select(ip => new TextSearchItem()
+								{
+									ItemId = ip.AddressId,
+									TextSearch = ip.ItemName,
+									ColumnType = "ItemName"
+								}));
+							break;
+
+						case "Schedules":
+
+							var schedules = Schedules
+								.Join(packagesTree, s => s.PackageId, pt => pt, (s, pt) => s)
+								.Select(s => new
+								{
+									s.ScheduleId,
+									s.ScheduleName,
+									s.Package.User.Username,
+									FullName = s.Package.User.FirstName + " " + s.Package.User.LastName,
+									s.Package.User.Email
+								});
+
+							search = schedules
+								.Select(s => new TextSearchItem()
+								{
+									ItemId = s.ScheduleId,
+									TextSearch = s.ScheduleName,
+									ColumnType = "ScheduleName"
+								})
+								.Concat(schedules.Select(s => new TextSearchItem()
+								{
+									ItemId = s.ScheduleId,
+									TextSearch = s.Username,
+									ColumnType = "Username",
+								}))
+								.Concat(schedules.Select(s => new TextSearchItem()
+								{
+									ItemId = s.ScheduleId,
+									TextSearch = s.FullName,
+									ColumnType = "FullName"
+								}))
+								.Concat(schedules.Select(s => new TextSearchItem()
+								{
+									ItemId = s.ScheduleId,
+									TextSearch = s.Email,
+									ColumnType = "Email"
+								}));
+
+							break;
+
+						case "NestedPackages":
+
+							var packages = Packages
+								.Join(HostingPlans, p => p.PlanId, hp => hp.PlanId, (p, hp) => new
+								{
+									p.PackageId,
+									p.PackageName,
+									p.User.Username,
+									FullName = p.User.FirstName + " " + p.User.LastName,
+									p.User.Email
+								});
+
+							search = packages
+								.Select(p => new TextSearchItem()
+								{
+									ItemId = p.PackageId,
+									TextSearch = p.PackageName,
+									ColumnType = "PackageName"
+								})
+								.Concat(packages.Select(p => new TextSearchItem()
+								{
+									ItemId = p.PackageId,
+									TextSearch = p.Username,
+									ColumnType = "Username",
+								}))
+								.Concat(packages.Select(p => new TextSearchItem()
+								{
+									ItemId = p.PackageId,
+									TextSearch = p.FullName,
+									ColumnType = "FullName"
+								}))
+								.Concat(packages.Select(p => new TextSearchItem()
+								{
+									ItemId = p.PackageId,
+									TextSearch = p.Email,
+									ColumnType = "Email"
+								}));
+
+							break;
+
+						case "PackageIPAddresses":
+
+							var pips = PackageIpAddresses
+								.Where(pip =>
+									(PoolID == 0 || PoolID > 0 && pip.Address.PoolId == PoolID) &&
+									(OrgID == 0 || OrgID > 0 && pip.OrgId == OrgID))
+								.Join(packagesTree, pip => pip.PackageId, pt => pt, (pip, pt) => pip)
+								.GroupJoin(ServiceItems, pip => pip.ItemId, si => si.ItemId, (pip, sis) => new
+								{
+									pip.PackageAddressId,
+									pip.Address.ExternalIp,
+									pip.Address.InternalIp,
+									pip.Address.DefaultGateway,
+									SIS = sis,
+									pip.Package.User.Username
+								})
+								.SelectMany(pip => pip.SIS.DefaultIfEmpty(), (pip, si) => new
+								{
+									pip.PackageAddressId,
+									pip.ExternalIp,
+									pip.InternalIp,
+									pip.DefaultGateway,
+									ItemName = si != null ? si.ItemName : null,
+									pip.Username
+								});
+
+							search = pips
+								.Select(p => new TextSearchItem()
+								{
+									ItemId = p.PackageAddressId,
+									TextSearch = p.ExternalIp,
+									ColumnType = "ExternalIP"
+								})
+								.Concat(pips.Select(p => new TextSearchItem()
+								{
+									ItemId = p.PackageAddressId,
+									TextSearch = p.InternalIp,
+									ColumnType = "InternalIP",
+								}))
+								.Concat(pips.Select(p => new TextSearchItem()
+								{
+									ItemId = p.PackageAddressId,
+									TextSearch = p.DefaultGateway,
+									ColumnType = "DefaultGateway"
+								}))
+								.Concat(pips.Select(p => new TextSearchItem()
+								{
+									ItemId = p.PackageAddressId,
+									TextSearch = p.ItemName,
+									ColumnType = "ItemName"
+								}))
+								.Concat(pips.Select(p => new TextSearchItem()
+								{
+									ItemId = p.PackageAddressId,
+									TextSearch = p.Username,
+									ColumnType = "UserName"
+								}));
+
+							break;
+
+						case "ServiceItems":
+
+							if (!CheckActorPackageRights(ActorID, PackageID))
+								throw new AccessViolationException("You are not allowed to access this package");
+
+							var groupId = ResourceGroups
+								.Where(g => g.GroupName == GroupName)
+								.Select(g => (int?)g.GroupId)
+								.FirstOrDefault();
+							var itemTypeId = ServiceItemTypes
+								.Where(sit => sit.TypeName == ItemTypeName && (groupId == null || sit.GroupId == groupId))
+								.Select(sit => sit.ItemTypeId)
+								.FirstOrDefault();
+
+							var srvcItems = ServiceItems
+								.Where(si => si.ItemTypeId == itemTypeId &&
+									(ServerID == 0 || si.Package.ServerId == ServerID))
+								.Join(packagesTree, si => si.PackageId, pt => pt, (si, pt) => si)
+								.Select(si => new
+								{
+									si.ItemId,
+									si.ItemName,
+									si.Package.User.Username,
+									FullName = si.Package.User.FirstName + " " + si.Package.User.LastName,
+									si.Package.User.Email
+								});
+
+							search = srvcItems
+								.Select(p => new TextSearchItem()
+								{
+									ItemId = p.ItemId,
+									TextSearch = p.ItemName,
+									ColumnType = "ItemName"
+								})
+								.Concat(srvcItems.Select(p => new TextSearchItem()
+								{
+									ItemId = p.ItemId,
+									TextSearch = p.Username,
+									ColumnType = "Username",
+								}))
+								.Concat(srvcItems.Select(p => new TextSearchItem()
+								{
+									ItemId = p.ItemId,
+									TextSearch = p.FullName,
+									ColumnType = "FullName"
+								}))
+								.Concat(srvcItems.Select(p => new TextSearchItem()
+								{
+									ItemId = p.ItemId,
+									TextSearch = p.Email,
+									ColumnType = "Email"
+								}));
+
+							break;
+
+						case "Users":
+
+							if (!Recursive)
+							{
+								userChildren.AddRange(Users
+									.Where(u => u.OwnerId == UserID)
+									.Select(u => u.UserId));
+								SaveChanges();
+							}
+
+							var hasUserRights = CheckActorUserRights(ActorID, UserID);
+
+							var users = Users
+								.Join(userChildren, u => u.UserId, uc => uc, (u, uc) => u)
+								.Where(u => hasUserRights && u.UserId != UserID && !u.IsPeer &&
+									(StatusID == 0 || u.StatusId == StatusID) &&
+									(RoleID == 0 || u.RoleId == RoleID))
+								.Select(u => new
+								{
+									u.UserId,
+									u.Username,
+									FullName = u.FirstName + " " + u.LastName,
+									u.Email,
+									u.CompanyName
+								});
+
+							search = users
+								.Select(u => new TextSearchItem()
+								{
+									ItemId = u.UserId,
+									TextSearch = u.Username,
+									ColumnType = "UserName"
+								})
+								.Concat(users.Select(u => new TextSearchItem()
+								{
+									ItemId = u.UserId,
+									TextSearch = u.FullName,
+									ColumnType = "FullName",
+								}))
+								.Concat(users.Select(u => new TextSearchItem()
+								{
+									ItemId = u.UserId,
+									TextSearch = u.Email,
+									ColumnType = "Email"
+								}))
+								.Concat(users.Select(u => new TextSearchItem()
+								{
+									ItemId = u.UserId,
+									TextSearch = u.CompanyName,
+									ColumnType = "CompanyName"
+								}));
+							break;
+
+						case "VirtualMachines":
+
+							if (!CheckActorPackageRights(ActorID, PackageID))
+								throw new AccessViolationException("You are not allowed to access this package");
+
+							var packageIps = PackageIpAddresses
+								.Where(p => p.IsPrimary == true)
+								.Join(IpAddresses
+									.Where(ip => ip.PoolId == 3), // external ip address
+									p => p.AddressId, ip => ip.AddressId, (p, ip) => new
+									{
+										p.ItemId,
+										ip.ExternalIp
+									});
+							var vms = Packages
+								.Join(packagesTree, p => p.PackageId, pt => pt, (p, pt) => p)
+								.Join(ServiceItems
+									.Where(si => si.ItemTypeId == vpsTypeId),
+									p => p.PackageId, si => si.PackageId, (p, si) => new
+									{
+										P = p,
+										SI = si
+									})
+								.GroupJoin(packageIps, p => p.SI.ItemId, pip => pip.ItemId, (p, pips) => new
+								{
+									p.P,
+									p.SI,
+									PIPS = pips
+								})
+								.SelectMany(p => p.PIPS.DefaultIfEmpty(), (p, pkip) => new
+								{
+									p.P,
+									p.SI,
+									ExternalIp = pkip != null ? pkip.ExternalIp : null
+								})
+								.GroupJoin(PrivateIpAddresses
+									.Where(ip => ip.IsPrimary == true),
+									p => p.SI.ItemId, pip => pip.ItemId, (p, pips) => new
+									{
+										p.P,
+										p.SI,
+										p.ExternalIp,
+										PIPS = pips
+									})
+								.SelectMany(p => p.PIPS.DefaultIfEmpty(), (p, privip) => new
+								{
+									p.SI.ItemId,
+									p.SI.ItemName,
+									p.SI.Package.User.Username,
+									p.ExternalIp,
+									IpAddress = privip != null ? privip.IpAddress : null
+								});
+
+							search = vms
+								.Select(v => new TextSearchItem()
+								{
+									ItemId = v.ItemId,
+									TextSearch = v.ItemName,
+									ColumnType = "ItemName"
+								})
+								.Concat(vms.Select(v => new TextSearchItem()
+								{
+									ItemId = v.ItemId,
+									TextSearch = v.ExternalIp,
+									ColumnType = "ExternalIP",
+								}))
+								.Concat(vms.Select(v => new TextSearchItem()
+								{
+									ItemId = v.ItemId,
+									TextSearch = v.Username,
+									ColumnType = "Username"
+								}))
+								.Concat(vms.Select(v => new TextSearchItem()
+								{
+									ItemId = v.ItemId,
+									TextSearch = v.IpAddress,
+									ColumnType = "IPAddress"
+								}));
+							break;
+
+						case "PackagePrivateIPAddresses":
+
+							var ips = PrivateIpAddresses
+								.Where(ip => ip.Item.PackageId == PackageID)
+								.Select(ip => new
+								{
+									ip.PrivateAddressId,
+									ip.IpAddress,
+									ip.Item.ItemName
+								});
+
+
+							search = ips
+								.Select(ip => new TextSearchItem()
+								{
+									ItemId = ip.PrivateAddressId,
+									TextSearch = ip.IpAddress,
+									ColumnType = "IpAddress"
+								})
+								.Concat(ips.Select(ip => new TextSearchItem()
+								{
+									ItemId = ip.PrivateAddressId,
+									TextSearch = ip.ItemName,
+									ColumnType = "ItemName",
+								}));
+
+							break;
+					}
+
+					search = search
+						.Where(ds =>
+#if NETFRAMEWORK
+							DbFunctions.Like(ds.TextSearch, FilterValue)
+#else
+							EF.Functions.Like(ds.TextSearch, FilterValue)
+#endif
+						);
+
+					if (!string.IsNullOrEmpty(FilterColumns))
+					{
+						var columns = FilterColumns
+							.Split(',')
+							.Select(s => s.Trim())
+							.Where(s => !string.IsNullOrEmpty(s));
+						search = search
+							.Where(BuildOrExpression<TextSearchItem, string>(x => x.ColumnType, columns));
+					}
+
+					var result = search
+						.GroupBy(s => new { s.TextSearch, s.ColumnType })
+						.Select(g => new
+						{
+							ItemId = g.Min(s => s.ItemId),
+							g.Key.TextSearch,
+							g.Key.ColumnType,
+							Count = g.Count()
+						})
+						.OrderBy(x => x.TextSearch)
+						.Take(MaximumRows);
+
+					return EntityDataSet(result);
+				}
 			}
 			else
 			{
@@ -5221,39 +5764,39 @@ DELETE FROM Comments
 WHERE ItemID = @UserID AND ItemTypeID = 'USER'
 
 IF (@@ERROR <> 0 )
-      BEGIN
-            ROLLBACK TRANSACTION
-            RETURN -1
-      END
+	  BEGIN
+			ROLLBACK TRANSACTION
+			RETURN -1
+	  END
 
 --delete reseller addon
 DELETE FROM HostingPlans WHERE UserID = @UserID AND IsAddon = 'True'
 
 IF (@@ERROR <> 0 )
-      BEGIN
-            ROLLBACK TRANSACTION
-            RETURN -1
-      END
+	  BEGIN
+			ROLLBACK TRANSACTION
+			RETURN -1
+	  END
 
 -- delete user peers
 DELETE FROM Users
 WHERE IsPeer = 1 AND OwnerID = @UserID
 
 IF (@@ERROR <> 0 )
-      BEGIN
-            ROLLBACK TRANSACTION
-            RETURN -1
-      END
+	  BEGIN
+			ROLLBACK TRANSACTION
+			RETURN -1
+	  END
 
 -- delete user
 DELETE FROM Users
 WHERE UserID = @UserID
 
 IF (@@ERROR <> 0 )
-      BEGIN
-            ROLLBACK TRANSACTION
-            RETURN -1
-      END
+	  BEGIN
+			ROLLBACK TRANSACTION
+			RETURN -1
+	  END
 
 COMMIT TRAN
 
@@ -5513,22 +6056,22 @@ BEGIN
 END;
 
 WITH generation AS (
-    SELECT UserID,
-           Username,
+	SELECT UserID,
+		   Username,
 		   OwnerID,
 		   IsPeer,
-           0 AS generation_number
-    FROM Users
+		   0 AS generation_number
+	FROM Users
 	where UserID = @UserID
 UNION ALL
-    SELECT child.UserID,
-         child.Username,
-         child.OwnerId,
+	SELECT child.UserID,
+		 child.Username,
+		 child.OwnerId,
 		 child.IsPeer,
 		 generation_number + 1 AS generation_number
-    FROM Users child
-    JOIN generation g
-      ON g.UserID = child.OwnerId
+	FROM Users child
+	JOIN generation g
+	  ON g.UserID = child.OwnerId
 )
 
 Select @Result = count(*)
@@ -5548,7 +6091,7 @@ END
 
 RETURN 0
 END
-			
+
 CREATE PROCEDURE [dbo].[CanChangeMfa]
 (
 	@CallerID int,
@@ -8038,13 +8581,13 @@ BEGIN
   BEGIN
    -- physical server
    SELECT
-    V.VlanID,
-    V.Vlan,
-    V.ServerID
+	V.VlanID,
+	V.Vlan,
+	V.ServerID
    FROM dbo.PrivateNetworkVLANs AS V
    WHERE
-    (V.ServerID = @ServerID OR V.ServerID IS NULL)
-    AND V.VlanID NOT IN (SELECT PV.VlanID FROM dbo.PackageVLANs AS PV)
+	(V.ServerID = @ServerID OR V.ServerID IS NULL)
+	AND V.VlanID NOT IN (SELECT PV.VlanID FROM dbo.PackageVLANs AS PV)
    ORDER BY V.ServerID DESC, V.Vlan
   END
   ELSE
@@ -8056,17 +8599,17 @@ BEGIN
    INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
    WHERE S.ServiceID = @ServiceID
    SELECT
-    V.VlanID,
-    V.Vlan,
-    V.ServerID
+	V.VlanID,
+	V.Vlan,
+	V.ServerID
    FROM dbo.PrivateNetworkVLANs AS V
    WHERE
-    (V.ServerID IN (
-     SELECT SVC.ServerID FROM [dbo].[Services] AS SVC
-     INNER JOIN [dbo].[Providers] AS P ON SVC.ProviderID = P.ProviderID
-     WHERE [SVC].[ServiceID] = @ServiceId AND P.GroupID = @GroupID
-    ) OR V.ServerID IS NULL)
-    AND V.VlanID NOT IN (SELECT PV.VlanID FROM dbo.PackageVLANs AS PV)
+	(V.ServerID IN (
+	 SELECT SVC.ServerID FROM [dbo].[Services] AS SVC
+	 INNER JOIN [dbo].[Providers] AS P ON SVC.ProviderID = P.ProviderID
+	 WHERE [SVC].[ServiceID] = @ServiceId AND P.GroupID = @GroupID
+	) OR V.ServerID IS NULL)
+	AND V.VlanID NOT IN (SELECT PV.VlanID FROM dbo.PackageVLANs AS PV)
    ORDER BY V.ServerID DESC, V.Vlan
   END
  END
@@ -11773,7 +12316,7 @@ SELECT
 	S.ServiceQuotaValue,
 	SRV.ServerName,
 	S.ProviderID,
-    PROV.ProviderName,
+	PROV.ProviderName,
 	S.ServiceName + ' on ' + SRV.ServerName AS FullServiceName
 FROM Services AS S
 INNER JOIN Providers AS PROV ON S.ProviderID = PROV.ProviderID
@@ -15380,8 +15923,8 @@ FROM OPENXML(@idoc, '/items/item',1) WITH
 (
 	ItemID int '@id',
 	LogDate nvarchar(10) '@date',
-    BytesSent bigint '@sent',
-    BytesReceived bigint '@received'
+	BytesSent bigint '@sent',
+	BytesReceived bigint '@received'
 )
 
 -- delete current statistics

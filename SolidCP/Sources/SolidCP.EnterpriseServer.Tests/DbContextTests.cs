@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 using System.Diagnostics;
+using SolidCP.EnterpriseServer.Code;
 using SolidCP.EnterpriseServer.Data;
 using System.Linq.Expressions;
 using System.Linq.Dynamic;
@@ -73,5 +74,6 @@ namespace SolidCP.EnterpriseServer.Tests
 				Assert.AreEqual(nstatic, ndynamic);
 			}
 		}
+
 	}
 }
