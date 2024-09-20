@@ -32318,7 +32318,7 @@ RETURN
 
 					var count = items.Count();
 
-					if (string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
+					if (!string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
 					else items = items.OrderBy(i => i.ItemName);
 
 					items = items.Skip(startRow).Take(maximumRows);

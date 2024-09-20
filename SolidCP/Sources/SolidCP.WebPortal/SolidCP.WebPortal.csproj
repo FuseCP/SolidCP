@@ -684,7 +684,128 @@
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="novnc\**\*.*" />
+    <Content Include="novnc\app\error-handler.js" />
+    <Content Include="novnc\app\images\alt.svg" />
+    <Content Include="novnc\app\images\clipboard.svg" />
+    <Content Include="novnc\app\images\connect.svg" />
+    <Content Include="novnc\app\images\ctrl.svg" />
+    <Content Include="novnc\app\images\ctrlaltdel.svg" />
+    <Content Include="novnc\app\images\disconnect.svg" />
+    <Content Include="novnc\app\images\drag.svg" />
+    <Content Include="novnc\app\images\error.svg" />
+    <Content Include="novnc\app\images\esc.svg" />
+    <Content Include="novnc\app\images\expander.svg" />
+    <Content Include="novnc\app\images\fullscreen.svg" />
+    <Content Include="novnc\app\images\handle.svg" />
+    <Content Include="novnc\app\images\handle_bg.svg" />
+    <Content Include="novnc\app\images\icons\Makefile" />
+    <Content Include="novnc\app\images\icons\novnc-icon-sm.svg" />
+    <Content Include="novnc\app\images\icons\novnc-icon.svg" />
+    <Content Include="novnc\app\images\icons\novnc-ios-120.png" />
+    <Content Include="novnc\app\images\icons\novnc-ios-152.png" />
+    <Content Include="novnc\app\images\icons\novnc-ios-167.png" />
+    <Content Include="novnc\app\images\icons\novnc-ios-180.png" />
+    <Content Include="novnc\app\images\icons\novnc-ios-40.png" />
+    <Content Include="novnc\app\images\icons\novnc-ios-58.png" />
+    <Content Include="novnc\app\images\icons\novnc-ios-60.png" />
+    <Content Include="novnc\app\images\icons\novnc-ios-80.png" />
+    <Content Include="novnc\app\images\icons\novnc-ios-87.png" />
+    <Content Include="novnc\app\images\icons\novnc-ios-icon.svg" />
+    <Content Include="novnc\app\images\icons\novnc.ico" />
+    <Content Include="novnc\app\images\info.svg" />
+    <Content Include="novnc\app\images\keyboard.svg" />
+    <Content Include="novnc\app\images\power.svg" />
+    <Content Include="novnc\app\images\settings.svg" />
+    <Content Include="novnc\app\images\tab.svg" />
+    <Content Include="novnc\app\images\toggleextrakeys.svg" />
+    <Content Include="novnc\app\images\warning.svg" />
+    <Content Include="novnc\app\images\windows.svg" />
+    <Content Include="novnc\app\locale\cs.json" />
+    <Content Include="novnc\app\locale\de.json" />
+    <Content Include="novnc\app\locale\el.json" />
+    <Content Include="novnc\app\locale\es.json" />
+    <Content Include="novnc\app\locale\fr.json" />
+    <Content Include="novnc\app\locale\it.json" />
+    <Content Include="novnc\app\locale\ja.json" />
+    <Content Include="novnc\app\locale\ko.json" />
+    <Content Include="novnc\app\locale\nl.json" />
+    <Content Include="novnc\app\locale\pl.json" />
+    <Content Include="novnc\app\locale\pt_BR.json" />
+    <Content Include="novnc\app\locale\README" />
+    <Content Include="novnc\app\locale\ru.json" />
+    <Content Include="novnc\app\locale\sv.json" />
+    <Content Include="novnc\app\locale\tr.json" />
+    <Content Include="novnc\app\locale\zh_CN.json" />
+    <Content Include="novnc\app\locale\zh_TW.json" />
+    <Content Include="novnc\app\localization.js" />
+    <Content Include="novnc\app\solidcp.js" />
+    <Content Include="novnc\app\sounds\bell.mp3" />
+    <Content Include="novnc\app\sounds\bell.oga" />
+    <Content Include="novnc\app\sounds\CREDITS" />
+    <Content Include="novnc\app\styles\base.css" />
+    <Content Include="novnc\app\styles\input.css" />
+    <Content Include="novnc\app\styles\Orbitron700.ttf" />
+    <Content Include="novnc\app\styles\Orbitron700.woff" />
+    <Content Include="novnc\app\ui.js" />
+    <Content Include="novnc\app\webutil.js" />
+    <Content Include="novnc\core\base64.js" />
+    <Content Include="novnc\core\crypto\aes.js" />
+    <Content Include="novnc\core\crypto\bigint.js" />
+    <Content Include="novnc\core\crypto\crypto.js" />
+    <Content Include="novnc\core\crypto\des.js" />
+    <Content Include="novnc\core\crypto\dh.js" />
+    <Content Include="novnc\core\crypto\md5.js" />
+    <Content Include="novnc\core\crypto\rsa.js" />
+    <Content Include="novnc\core\decoders\copyrect.js" />
+    <Content Include="novnc\core\decoders\hextile.js" />
+    <Content Include="novnc\core\decoders\jpeg.js" />
+    <Content Include="novnc\core\decoders\raw.js" />
+    <Content Include="novnc\core\decoders\rre.js" />
+    <Content Include="novnc\core\decoders\tight.js" />
+    <Content Include="novnc\core\decoders\tightpng.js" />
+    <Content Include="novnc\core\decoders\zrle.js" />
+    <Content Include="novnc\core\deflator.js" />
+    <Content Include="novnc\core\display.js" />
+    <Content Include="novnc\core\encodings.js" />
+    <Content Include="novnc\core\inflator.js" />
+    <Content Include="novnc\core\input\domkeytable.js" />
+    <Content Include="novnc\core\input\fixedkeys.js" />
+    <Content Include="novnc\core\input\gesturehandler.js" />
+    <Content Include="novnc\core\input\keyboard.js" />
+    <Content Include="novnc\core\input\keysym.js" />
+    <Content Include="novnc\core\input\keysymdef.js" />
+    <Content Include="novnc\core\input\util.js" />
+    <Content Include="novnc\core\input\vkeys.js" />
+    <Content Include="novnc\core\input\xtscancodes.js" />
+    <Content Include="novnc\core\ra2.js" />
+    <Content Include="novnc\core\rfb.js" />
+    <Content Include="novnc\core\util\browser.js" />
+    <Content Include="novnc\core\util\cursor.js" />
+    <Content Include="novnc\core\util\element.js" />
+    <Content Include="novnc\core\util\events.js" />
+    <Content Include="novnc\core\util\eventtarget.js" />
+    <Content Include="novnc\core\util\int.js" />
+    <Content Include="novnc\core\util\logging.js" />
+    <Content Include="novnc\core\util\strings.js" />
+    <Content Include="novnc\core\websock.js" />
+    <Content Include="novnc\package.json" />
+    <Content Include="novnc\solidcp.js" />
+    <Content Include="novnc\vendor\pako\lib\utils\common.js" />
+    <Content Include="novnc\vendor\pako\lib\zlib\adler32.js" />
+    <Content Include="novnc\vendor\pako\lib\zlib\constants.js" />
+    <Content Include="novnc\vendor\pako\lib\zlib\crc32.js" />
+    <Content Include="novnc\vendor\pako\lib\zlib\deflate.js" />
+    <Content Include="novnc\vendor\pako\lib\zlib\gzheader.js" />
+    <Content Include="novnc\vendor\pako\lib\zlib\inffast.js" />
+    <Content Include="novnc\vendor\pako\lib\zlib\inflate.js" />
+    <Content Include="novnc\vendor\pako\lib\zlib\inftrees.js" />
+    <Content Include="novnc\vendor\pako\lib\zlib\messages.js" />
+    <Content Include="novnc\vendor\pako\lib\zlib\trees.js" />
+    <Content Include="novnc\vendor\pako\lib\zlib\zstream.js" />
+    <Content Include="novnc\vendor\pako\LICENSE" />
+    <Content Include="novnc\vendor\pako\README.md" />
+    <Content Include="novnc\vnc.aspx" />
+    <Content Include="novnc\vnc.html" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Browsers\CSSFriendlyAdapters.browser" />
@@ -1323,8 +1444,7 @@
   </Target>
   <Target Name="DeployWithPrecompile" DependsOnTargets="DeleteConfigObjFiles">
     <Message Text="Precompile WebPortal" Importance="high" />
-
-    <AspNetCompiler PhysicalPath="." VirtualPath="/"  TargetPath="$(DeployDir)" Force="true"  />
+    <AspNetCompiler PhysicalPath="." VirtualPath="/" TargetPath="$(DeployDir)" Force="true" />
     <ItemGroup>
       <AppDlls Include="$(DeployDir)\bin\App_*.dll" Exclude="$(DeployDir)\bin\App_global.asax.dll;$(DeployDir)\bin\App_Browsers.dll;$(DeployDir)\bin\App_GlobalResources.dll;$(DeployDir)\bin\App_Theme_Default.dll" />
     </ItemGroup>
