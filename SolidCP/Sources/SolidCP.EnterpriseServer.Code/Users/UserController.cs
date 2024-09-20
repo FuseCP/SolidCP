@@ -285,6 +285,8 @@ namespace SolidCP.EnterpriseServer
 			//TaskManager.StartTask("USER", "GET_BY_USERNAME_PASSWORD", username);
 			//TaskManager.WriteParameter("IP", ip);
 
+			if (ip == null) ip = "";
+
 			try
 			{
 				// try to get user from database

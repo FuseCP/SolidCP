@@ -82,7 +82,7 @@ namespace SolidCP.EnterpriseServer
 
 #if UseEntityFramework
 		public bool? useEntityFramework = null;
-		public bool? alwaysUseEntityFramework = null;
+		public static bool? alwaysUseEntityFramework = null;
 		public bool AlwaysUseEntityFramework
 		{
 			get
@@ -91,9 +91,9 @@ namespace SolidCP.EnterpriseServer
 				{
 					alwaysUseEntityFramework = false;
 					var system = new SystemController(new ControllerBase(this));
-					var settings = system.GetSystemSettings(EnterpriseServer.SystemSettings.DEBUG_SETTINGS);
+					var settings = system.GetSystemSettingsInternal(EnterpriseServer.SystemSettings.DEBUG_SETTINGS, true);
 					alwaysUseEntityFramework = settings
-						.GetValueOrDefault(EnterpriseServer.SystemSettings.ALWAYS_USE_ENTITYFRAMEWORK, false);
+						?.GetValueOrDefault(EnterpriseServer.SystemSettings.ALWAYS_USE_ENTITYFRAMEWORK, false) ?? false;
 				}
 				return alwaysUseEntityFramework ?? false;
 			}
