@@ -16964,7 +16964,7 @@ END
 				int? quotaValue = null;
 
 				// check if this is a root 'System' package
-				if (package.ParentPackageId == null)
+				if (package?.ParentPackageId == null)
 				{
 					if (quotaTypeId == 1) // boolean
 						quotaValue = 1; // enabled
@@ -17045,7 +17045,7 @@ END
 		}
 
 		public DataSet GetHostingPlanQuotas(int actorId, int packageId, int planId, int serverId)
-		{
+		{ 
 			if (UseEntityFramework)
 			{
 				#region Stored Procedure
