@@ -68,7 +68,7 @@ namespace SolidCP.Portal
         public DataTable GetOrganizations(int packageId, bool recursive)
         {
             orgs = ES.Services.Organizations.GetRawOrganizationsPaged(packageId,
-                recursive, "ItemName", "%", "ItemName", -1, int.MaxValue);
+                recursive, "ItemName", "%", "ItemName", 0, int.MaxValue);
 
             return orgs.Tables[1];
         }
