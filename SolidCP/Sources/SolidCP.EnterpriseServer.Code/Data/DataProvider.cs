@@ -16772,7 +16772,7 @@ END
 			while (groupEnabled)
 			{
 				// check if this is a root "System" package
-				if (package.ParentPackageId == null)
+				if (package?.ParentPackageId == null)
 				{
 					return serverId != 0 && (pid == -1 || serverId == null || serverId > 0);
 				}
@@ -16807,7 +16807,7 @@ END
 					}
 				}
 
-				pid = package.ParentPackageId;
+				pid = package?.ParentPackageId;
 				package = Packages
 					.Where(p => p.PackageId == pid)
 					.Select(p => new
