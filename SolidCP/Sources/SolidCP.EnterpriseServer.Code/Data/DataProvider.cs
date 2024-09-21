@@ -20065,8 +20065,8 @@ RETURN
 						g.CalculateDiskSpace,
 						g.CalculateBandwidth,
 						ParentEnabled = g.GroupName == "Service Levels" ?
-							Local.GetPackageServiceLevelResource(package.ParentPackageId, g.GroupId, 0) :
-							Local.GetPackageAllocatedResource(package.ParentPackageId, g.GroupId, 0)
+							Local.GetPackageServiceLevelResource(package?.ParentPackageId, g.GroupId, 0) :
+							Local.GetPackageAllocatedResource(package?.ParentPackageId, g.GroupId, 0)
 					});
 
 				// return quotas
@@ -20093,7 +20093,7 @@ RETURN
 							q.AllocatedQuota * nofOrgs :
 							q.AllocatedQuota,
 						QuotaValuePerOrganization = q.AllocatedQuota,
-						ParentQuotaValue = Local.GetPackageAllocatedQuota(package.ParentPackageId, q.Quota.QuotaId),
+						ParentQuotaValue = Local.GetPackageAllocatedQuota(package?.ParentPackageId, q.Quota.QuotaId),
 						QuotaUsedValue = Local.CalculateQuotaUsage(packageId, q.Quota.QuotaId),
 						q.Quota.PerOrganization
 					});
