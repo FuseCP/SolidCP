@@ -17038,7 +17038,7 @@ END
 					if (quotaValue != -1 && (result == -1 || quotaValue < result)) result = quotaValue.Value;
 				}
 
-				pid = package.ParentPackageId;
+				pid = package?.ParentPackageId;
 			}
 
 			return result;
