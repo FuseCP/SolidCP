@@ -6277,17 +6277,18 @@ RETURN
 					throw new AccessViolationException("You are not allowed to access this account");
 
 				var id = userId;
-				var setting = UserSettings.FirstOrDefault(s => s.UserId == id);
-				while (setting == null)
+				var setting = UserSettings.Where(s => s.SettingsName == settingsName && s.UserId == id);
+				while (!setting.Any())
 				{
 					var user = Users
 						.Select(u => new { u.UserId, u.OwnerId })
 						.FirstOrDefault(u => u.UserId == id);
 					if (user != null && user.OwnerId.HasValue) id = user.OwnerId.Value;
-					setting = UserSettings.FirstOrDefault(s => s.UserId == id);
+					else break;
+					setting = UserSettings.Where(s => s.SettingsName == settingsName && s.UserId == id);
 				}
 
-				return EntityDataReader(new Data.Entities.UserSetting[] { setting });
+				return EntityDataReader(setting);
 			}
 			else
 			{
