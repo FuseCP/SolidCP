@@ -14178,6 +14178,8 @@ RETURN
 
 				// select item properties, get corresponding item properties
 				var properties = ServiceItemProperties
+					.Where(sip => sip.ItemId == itemId)
+					.AsEnumerable()
 					.Join(items, p => p.ItemId, i => i.ItemId, (p, i) => new
 					{
 						p.ItemId,
