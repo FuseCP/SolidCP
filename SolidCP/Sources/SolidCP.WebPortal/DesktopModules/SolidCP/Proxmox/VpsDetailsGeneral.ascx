@@ -113,7 +113,9 @@
 
 									<asp:ImageButton ID="btnOpenVNC" runat="server" OnClientClick="OpenRemoteDesktopWindow(800,600);" SkinID="PveRdc32"
 										meta:resourcekey="btnOpenVNC" />
-                           <a href="javascript:OpenRemoteDesktopWindow(800,600);"><asp:Localize ID="locRdpText" runat="server" meta:resourcekey="locRdpText" Text="Remote desktop" /></a>
+									<a href="javascript:OpenRemoteDesktopWindow(800,600);" runat="server" id="lnkOpenVNC">
+										<asp:Localize ID="locRdpText" runat="server" meta:resourcekey="locRdpText" Text="Remote desktop" />
+									</a>
 
 								</p>
 							</ContentTemplate>

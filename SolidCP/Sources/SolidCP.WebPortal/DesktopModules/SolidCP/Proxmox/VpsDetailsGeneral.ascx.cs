@@ -95,13 +95,12 @@ namespace SolidCP.Portal.Proxmox
                 //string path = TunnelUri.QueryEncode($"{baseUrl}/novnc/websocket?user={TunnelUri.QueryEncode(PanelSecurity.LoggedUser.Username)}&item={serviceItem.Id}");
                 RdpPageUrl = $"{baseUrl}/novnc/vnc.aspx?item={PanelRequest.ItemID}";
 
-                btnOpenVNC.Visible = displayRDP;
+                btnOpenVNC.Visible = lnkOpenVNC.Visible = displayRDP;
 
                 //lnkHostname.NavigateUrl = "javascript:OpenRemoteDesktopWindow('', 800, 600)";
 
                 litHostname.Text = item.Hostname.ToUpper();
                 litHostname.Visible = !displayRDP;
-
 
                 litDomain.Text = item.Domain;
 

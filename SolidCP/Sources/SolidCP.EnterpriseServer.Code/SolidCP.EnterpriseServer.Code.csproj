@@ -42,7 +42,7 @@
         <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="QRCoder" Version="1.6.0" />
-        <PackageReference Include="RestSharp" Version="111.3.0" />
+        <PackageReference Include="RestSharp" Version="112.0.0" />
         <PackageReference Include="SkiaSharp" Version="2.88.8" GeneratePathProperty="true" ExcludeAssets="buildTransitive" />
         <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.8" GeneratePathProperty="true" ExcludeAssets="all" />
         <PackageReference Include="SkiaSharp.NativeAssets.macOS" Version="2.88.8" GeneratePathProperty="true" ExcludeAssets="all" />
@@ -52,7 +52,7 @@
         <PackageReference Include="System.Diagnostics.EventLog" Version="8.0.0" />
         <PackageReference Include="System.DirectoryServices" Version="8.0.0" />
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.6.3" />
-        <PackageReference Include="System.Linq.Dynamic.Core" Version="1.4.3" />
+        <PackageReference Include="System.Linq.Dynamic.Core" Version="1.4.5" />
         <PackageReference Include="System.Memory" Version="4.5.5" />
         <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
         <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
@@ -66,20 +66,20 @@
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net48' AND '$(EntityFramework6)' == '6.5'">
-        <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.1" />
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
         <PackageReference Include="Azure.Identity" Version="1.12.0" />
-        <PackageReference Include="EntityFramework.DynamicLinq" Version="1.4.3" />
+        <PackageReference Include="EntityFramework.DynamicLinq" Version="1.4.5" />
     </ItemGroup>
         
     <ItemGroup Condition="'$(TargetFramework)' == 'net48' AND '$(EntityFramework6)' == '6.4'">
         <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
-        <PackageReference Include="EntityFramework.DynamicLinq" Version="1.4.3" />
+        <PackageReference Include="EntityFramework.DynamicLinq" Version="1.4.5" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
-        <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.1" />
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
         <PackageReference Include="Azure.Identity" Version="1.12.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.DynamicLinq" Version="8.4.3" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.DynamicLinq" Version="8.4.5" />
     </ItemGroup>
   
     <!-- hack for SkiaSharp, so the native dlls go in the right place -->

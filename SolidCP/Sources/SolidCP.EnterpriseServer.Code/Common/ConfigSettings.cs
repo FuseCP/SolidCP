@@ -188,7 +188,7 @@ namespace SolidCP.EnterpriseServer
 		{
 			get
 			{
-				if (serverRequestTimeout != null)
+				if (serverRequestTimeout == null)
 				{
 					if (OSInfo.IsNetFX)
 					{

@@ -13835,6 +13835,21 @@
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>Quota.PROXMOX.StartShutdownAllowed</Key>
     <DefaultValue>Allow user to Start, Turn off and Shutdown VPS</DefaultValue>
+</Resource>
+<Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.VPS2012.DMZNetworkEnabled</Key>
+    <DefaultValue>DMZ Network</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.VPS2012.DMZIPAddressesNumber</Key>
+    <DefaultValue>Number of DMZ IP addresses per VPS</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.VPS2012.DMZVLANsNumber</Key>
+    <DefaultValue>Number of DMZ Network VLANs</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\ApplyEnableHardQuotaFeature.ascx.resx</File>

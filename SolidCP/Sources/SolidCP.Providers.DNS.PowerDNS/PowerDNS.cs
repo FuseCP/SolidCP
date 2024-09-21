@@ -482,7 +482,7 @@ namespace SolidCP.Providers.DNS
         /// <param name="nameServers"></param>
         protected void PDNSAddZone(string zoneName, string zoneType, string[] nameServers)
         {
-            string domainId = AddDomainAndReturnDomainId(zoneName, zoneType);
+            string domainId = AddDomainAndReturnDomainId(zoneName, zoneType, nameServers);
             if (string.IsNullOrEmpty(domainId))
                 throw new ArgumentOutOfRangeException(string.Format("Unable to add Power DNS zone '{0}'.", zoneName));
 
@@ -506,18 +506,23 @@ namespace SolidCP.Providers.DNS
             );
 
 
-            //add NS records for secondary servers
-            foreach (string server in nameServers)
+            if (zoneType != "SLAVE")
             {
-                AddRecord(
-                      domainId
-                    , zoneName
-                    , server
-                    , ConvertDnsRecordTypeToString(DnsRecordType.NS)
-                    , GetDefaultRecordTTL(DnsRecordType.NS)
-                    , "0"
-                );
+                //add NS records for secondary servers
+                foreach (string server in nameServers)
+                {
+                    AddRecord(
+                          domainId
+                        , zoneName
+                        , server
+                        , ConvertDnsRecordTypeToString(DnsRecordType.NS)
+                        , GetDefaultRecordTTL(DnsRecordType.NS)
+                        , "0"
+                    );
+                }
             }
+
+
         }
 
         #endregion
@@ -1063,9 +1068,9 @@ namespace SolidCP.Providers.DNS
         /// <param name="zoneName">Domain name in Power DNS database.</param>
         /// <param name="domainType">Can be Native or Slave</param>
         /// <returns>An id of the inserted domain</returns>
-        protected string AddDomainAndReturnDomainId(string zoneName, string domainType)
+        protected string AddDomainAndReturnDomainId(string zoneName, string domainType, string[] nameServers)
         {
-            AddDomain(zoneName, domainType);
+            AddDomain(zoneName, domainType, nameServers);
 
             return GetDomainId(zoneName);
         }
@@ -1075,7 +1080,7 @@ namespace SolidCP.Providers.DNS
         /// </summary>
         /// <param name="zoneName">Domain name in Power DNS database.</param>
         /// <param name="domainType">Can be Native or Slave</param>
-        protected void AddDomain(string zoneName, string domainType)
+        protected void AddDomain(string zoneName, string domainType, string[] nameServers)
         {
             try
             {
@@ -1085,9 +1090,21 @@ namespace SolidCP.Providers.DNS
                 MySqlParameter DomainType = new MySqlParameter("?DomainType", MySqlDbType.VarString);
                 DomainType.Value = domainType;
 
+                MySqlParameter MasterServer = new MySqlParameter("?MasterServer", MySqlDbType.VarString);
+                if (domainType == "SLAVE")
+                {
+                    MasterServer.Value = nameServers[0];
+                } 
+                else
+                {
+                    MasterServer.Value = null;
+                }
+
+
                 ExecuteNonQuery(
-                    "INSERT INTO domains (name, type) VALUES (?DomainName, ?DomainType)"
+                    "INSERT INTO domains (name, master, type) VALUES (?DomainName, ?MasterServer, ?DomainType)"
                     , DomainName
+                    , MasterServer
                     , DomainType
                 );
             }

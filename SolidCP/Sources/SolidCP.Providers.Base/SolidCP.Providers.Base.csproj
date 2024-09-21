@@ -16,10 +16,6 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AntiXSSLibrary">
-      <HintPath>..\packages\AntiXSS Library v4.2\NET35\AntiXSSLibrary.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Microsoft.Web.Administration, Version=7.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\Lib\References\Microsoft\Microsoft.Web.Administration.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
