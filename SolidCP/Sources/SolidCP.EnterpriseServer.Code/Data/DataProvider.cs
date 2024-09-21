@@ -15348,7 +15348,7 @@ END
 			var id = packageId;
 			bool groupEnabled = true;
 
-			while (groupEnabled)
+			while (id != null && groupEnabled)
 			{
 				var package = Packages
 					.Where(p => p.PackageId == id)
@@ -15356,7 +15356,7 @@ END
 					.FirstOrDefault();
 
 				// check if this is a root 'System' package
-				if (package.ParentPackageId == null)
+				if (package?.ParentPackageId == null)
 				{
 					if (serverId == -1 || serverId == null) return true;
 
@@ -15415,7 +15415,7 @@ END
 					}
 				}
 
-				id = package.ParentPackageId;
+				id = package?.ParentPackageId;
 			}
 
 			return false;
