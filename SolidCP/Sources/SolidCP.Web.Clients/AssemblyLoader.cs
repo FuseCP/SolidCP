@@ -207,7 +207,7 @@ namespace SolidCP.Web.Clients
 #if NETFRAMEWORK
 				exposeWebServices = ConfigurationManager.AppSettings["ExposeWebServices"];
 #endif
-                var exposeAnyWebServices = string.IsNullOrEmpty(exposeWebServices) &&
+                var exposeAnyWebServices = string.IsNullOrEmpty(exposeWebServices) ||
                 !string.Equals(exposeWebServices, "none", StringComparison.OrdinalIgnoreCase);
                 if (exposeAnyWebServices) StartWebServices();
             }
