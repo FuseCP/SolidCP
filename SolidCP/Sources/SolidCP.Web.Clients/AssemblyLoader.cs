@@ -265,6 +265,8 @@ namespace SolidCP.Web.Clients
         static ConcurrentDictionary<string, string> OriginalFiles = new ConcurrentDictionary<string, string>();
 	    static void LoadNativeDlls(Assembly a)
         {
+            if (a.IsDynamic) return;
+
             var file = new Uri(a.CodeBase).LocalPath;
             string originalFile = null;
             if (!OriginalFiles.TryGetValue(file, out originalFile)) originalFile = file;
