@@ -350,24 +350,6 @@ CREATE PROCEDURE MigrationsScript()
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitalCreate') THEN
 
-    CREATE TABLE `PackageService` (
-        `PackageId` int NOT NULL,
-        `ServiceId` int NOT NULL,
-        CONSTRAINT `PK_PackageService` PRIMARY KEY (`PackageId`, `ServiceId`)
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitalCreate') THEN
-
     CREATE TABLE `PackageSettings` (
         `PackageID` int NOT NULL,
         `SettingsName` varchar(50) CHARACTER SET utf8mb4 NOT NULL,

@@ -42,7 +42,6 @@ namespace SolidCP.EnterpriseServer.Context
                 InitSeedData = opts.InitSeedData;
             }
 		}
-
 #elif NetFX
 		public DbContextBase(Data.DbContext context): base(context.DbConnection, true) { 
             DbType = context.DbType;

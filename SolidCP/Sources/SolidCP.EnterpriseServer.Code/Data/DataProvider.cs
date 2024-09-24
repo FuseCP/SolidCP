@@ -12782,6 +12782,7 @@ RETURN
 				{
 					GlobalDnsRecords.Where(r => r.ServiceId == serviceId).ExecuteDelete();
 					Services.Where(s => s.ServiceId == serviceId).ExecuteDelete();
+					PackageServices.Where(s => s.ServiceId == serviceId).ExecuteDelete();
 
 					transaction.Commit();
 					return 0;
@@ -15643,10 +15644,11 @@ RETURN
 					.Select(g => g.GroupId)
 					.FirstOrDefault();
 				var package = Packages
-					.Include(p => p.Services)
-					.FirstOrDefault(p => p.PackageId == packageId);
-				var serviceId = package.Services
-					.Join(Providers, s => s.ProviderId, p => p.ProviderId, (s, p) => new
+					.Where(p => p.PackageId == packageId);
+				var serviceId = package
+                    .Join(PackageServices, p => p.PackageId, ps => ps.PackageId, (p, ps) => ps.ServiceId)
+                    .Join(Services, ps => ps, s => s.ServiceId, (ps, s) => s)
+                    .Join(Providers, s => s.ProviderId, p => p.ProviderId, (s, p) => new
 					{
 						s.ServiceId,
 						p.GroupId
@@ -16011,7 +16013,7 @@ RETURN
 							bandwidthsToDelete.ExecuteDelete();
 
 							// insert new statistics
-							var newBandwiths = groupedItems
+							var newBandwidths = groupedItems
 								.Select(item => new Data.Entities.PackagesBandwidth
 								{
 									PackageId = packageId,
@@ -16020,7 +16022,7 @@ RETURN
 									BytesSent = item.Sum(x => x.BytesSent),
 									BytesReceived = item.Sum(x => x.BytesReceived)
 								});
-							PackagesBandwidths.AddRange(newBandwiths);
+							PackagesBandwidths.AddRange(newBandwidths);
 
 							SaveChanges();
 
@@ -17303,7 +17305,7 @@ RETURN
 					PlanId = planId,
 					GroupId = (int)e.Attribute("id"),
 					CalculateDiskSpace = (int)e.Attribute("calculateDiskSpace") == 1,
-					CalculateBandwidth = (int)e.Attribute("calculateBandwith") == 1
+					CalculateBandwidth = (int)e.Attribute("calculateBandwidth") == 1
 				});
 			var quotas = xml.Element("quotas")
 				.Elements()
@@ -21784,24 +21786,29 @@ RETURN
 				*/
 				#endregion
 
+				if (packageId <= 1) return;
+
 				var random = new Random();
 
-				var package = Packages
+				var packages = Packages
 					.Include(p => p.Server)
-					.Include(p => p.Services)
-#if NetCore
-					.ThenInclude(s => s.Provider)
-#else
-					.Include(p => p.Services.Select(s => s.Provider))
-#endif
 					.Where(p => p.PackageId == packageId)
-					.SingleOrDefault();
+					.Select(p => new {
+						Package = p,
+						Server = p.Server,
+						Services = PackageServices
+							.Where(ps => ps.PackageId == packageId)
+							.Join(Services, ps => ps.ServiceId, s => s.ServiceId, (ps, s) => new {
+								s.ServerId,
+								s.ServiceId,
+								s.Provider.GroupId
+							})
+					});
+				var package = packages.FirstOrDefault();
 
 				// get the list of available groups from hosting plan
-				var packageGroups = Packages
-					.Where(p => p.PackageId == packageId)
-					.SelectMany(p => p.Services)
-					.Select(s => s.Provider.GroupId)
+				var packageGroups = packages
+					.SelectMany(p => p.Services.Select(s => s.GroupId))
 					.ToArray();
 				var groups = ResourceGroups
 					.AsEnumerable()
@@ -21816,11 +21823,18 @@ RETURN
 					{
 						var services = package.Services.ToHashSet();
 						foreach (var service in package.Services
-							.Where(s => s.ServerId == package.ServerId)
-							.Join(groupIds, s => s.Provider.GroupId, g => g, (s, g) => s))
+							.Where(s => s.ServerId == package.Package.ServerId)
+							.Join(groupIds, s => s.GroupId, g => g, (s, g) => s))
 						{
-							if (!services.Contains(service)) package.Services.Add(service);
-						}
+							if (!services.Contains(service))
+                            {
+                                PackageServices.Add(new Data.Entities.PackageService()
+								{
+									PackageId = packageId,
+									ServiceId = service.ServiceId
+								});
+                            }
+                        }
 					}
 				}
 				else
@@ -21831,12 +21845,12 @@ RETURN
 					{
 						// read group information
 						var virtualGroup = VirtualGroups
-							.Where(v => v.ServerId == package.ServerId && v.GroupId == group.GroupId)
+							.Where(v => v.ServerId == package.Package.ServerId && v.GroupId == group.GroupId)
 							.Select(v => new { v.DistributionType, v.BindDistributionToPrimary })
 							.FirstOrDefault();
 						var virtualServices = VirtualServices
 							.Include(v => v.Service)
-							.Where(v => v.ServerId == package.ServerId &&
+							.Where(v => v.ServerId == package.Package.ServerId &&
 								v.Service.Provider.GroupId == group.GroupId);
 
 						// bind distribution to primary
@@ -21846,21 +21860,29 @@ RETURN
 							// if only one service found just use it and do not distribute
 							if (virtualServices.Count() == 1)
 							{
-								package.Services.Add(virtualServices
-									.Select(v => v.Service)
-									.First());
+								PackageServices.Add(virtualServices
+                                    .Select(v => new Data.Entities.PackageService()
+                                    {
+                                        PackageId = package.Package.PackageId,
+                                        ServiceId = v.ServiceId
+                                    })
+                                    .First());
 							}
 							else
 							{
 								// try to get primary distribution server
 								var primaryServerId = package.Services
-									.Where(s => s.Provider.GroupId == package.Server.PrimaryGroupId)
+									.Where(s => s.GroupId == package.Server.PrimaryGroupId)
 									.Select(s => s.ServerId)
 									.FirstOrDefault();
 								foreach (var virtualService in virtualServices
 									.Where(v => v.Service.ServerId == primaryServerId))
 								{
-									package.Services.Add(virtualService.Service);
+                                    PackageServices.Add(new Data.Entities.PackageService()
+                                        {
+                                            PackageId = package.Package.PackageId,
+                                            ServiceId = virtualService.ServiceId
+                                        });
 								}
 							}
 						}
@@ -21881,16 +21903,30 @@ RETURN
 								var service = services
 									.OrderBy(s => s.ItemsNumber)
 									.FirstOrDefault();
-								if (service != null) package.Services.Add(service.Service);
+								if (service != null)
+                                {
+                                    PackageServices.Add(new Data.Entities.PackageService()
+                                    {
+                                        PackageId = package.Package.PackageId,
+                                        ServiceId = service.ServiceId
+                                    });
+                                }
 							}
 							else // Randomized distribution
 							{
 								var service = services
 									.OrderBy(s => s.RandomNumber)
 									.FirstOrDefault();
-								if (service != null) package.Services.Add(service.Service);
-							}
-						}
+								if (service != null)
+                                {
+                                    PackageServices.Add(new Data.Entities.PackageService()
+                                    {
+                                        PackageId = package.Package.PackageId,
+                                        ServiceId = service.ServiceId
+                                    });
+								}
+                            }
+                        }
 
 						if (group.PrimaryGroup) primaryGroupId = group.GroupId;
 					}
@@ -38342,9 +38378,11 @@ WHERE (Packages.PackageID = @PackageID) AND (Quotas.GroupID = @GroupID) AND (Hos
 		{
 			if (UseEntityFramework)
 			{
-				var serviceId = Packages.Where(p => p.PackageId == packageId)
-					.SelectMany(p => p.Services.Where(s => s.ProviderId == providerId))
-					.Select(s => (int?)s.ServiceId)
+				var serviceId = PackageServices
+					.Where(p => p.PackageId == packageId)
+					.Join(Services
+						.Where(s => s.ProviderId == providerId),
+						ps => ps.ServiceId, s => s.ServiceId, (ps, s) => (int?)ps.ServiceId)
 					.FirstOrDefault() ?? -1;
 				return serviceId;
 			}

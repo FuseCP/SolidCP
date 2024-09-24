@@ -43,8 +43,8 @@ public partial class PackageConfiguration: EntityTypeConfiguration<Package>
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Packages_Users");
 
-        HasMany(d => d.Services).WithMany(p => p.Packages)
-            .UsingEntity<PackageService>();
+       /* HasMany(d => d.Services).WithMany(p => p.Packages)
+            .UsingEntity<PackageService>(); */
             /*  r => r.HasOne<Service>().WithMany()
                         .HasForeignKey("ServiceId")
                         .HasConstraintName("FK_PackageServices_Services"),
@@ -64,10 +64,10 @@ public partial class PackageConfiguration: EntityTypeConfiguration<Package>
         HasRequired(p => p.User).WithMany(p => p.Packages);
 
         // TODO EF is this correct?
-        HasMany(p => p.Services).WithMany(p => p.Packages)
-            .Map(c => c.ToTable("PackageService")
+        /* HasMany(p => p.Services).WithMany(p => p.Packages)
+            .Map(c => c.ToTable("PackageServices")
                 .MapRightKey("ServiceID")
-                .MapLeftKey("PackageID"));
+                .MapLeftKey("PackageID")); */
 #endif
 
         #region Seed Data

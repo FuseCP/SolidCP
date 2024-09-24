@@ -201,18 +201,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 });
 
             migrationBuilder.CreateTable(
-                name: "PackageService",
-                columns: table => new
-                {
-                    PackageId = table.Column<int>(type: "int", nullable: false),
-                    ServiceId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PackageService", x => new { x.PackageId, x.ServiceId });
-                });
-
-            migrationBuilder.CreateTable(
                 name: "PackageSettings",
                 columns: table => new
                 {
@@ -4649,9 +4637,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
             migrationBuilder.DropTable(
                 name: "PackagesDiskspace");
-
-            migrationBuilder.DropTable(
-                name: "PackageService");
 
             migrationBuilder.DropTable(
                 name: "PackageServices");

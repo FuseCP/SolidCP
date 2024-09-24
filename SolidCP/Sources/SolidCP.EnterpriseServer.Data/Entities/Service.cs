@@ -65,8 +65,8 @@ public partial class Service
     [InverseProperty("Service")]
     public virtual ICollection<VirtualService> VirtualServices { get; set; } = new List<VirtualService>();
 
-    [ForeignKey("ServiceId")]
+/*    [ForeignKey("ServiceId")]
     [InverseProperty("Services")]
-    public virtual ICollection<Package> Packages { get; set; } = new List<Package>();
+    public virtual ICollection<Package> Packages { get; set; } = new List<Package>(); */
 }
 #endif

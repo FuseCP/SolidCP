@@ -213,19 +213,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 });
 
             migrationBuilder.CreateTable(
-                name: "PackageService",
-                schema: "public",
-                columns: table => new
-                {
-                    PackageId = table.Column<int>(type: "integer", nullable: false),
-                    ServiceId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PackageService", x => new { x.PackageId, x.ServiceId });
-                });
-
-            migrationBuilder.CreateTable(
                 name: "PackageSettings",
                 schema: "public",
                 columns: table => new
@@ -4943,10 +4930,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.DropTable(
                 name: "PackagesDiskspace",
-                schema: "public");
-
-            migrationBuilder.DropTable(
-                name: "PackageService",
                 schema: "public");
 
             migrationBuilder.DropTable(

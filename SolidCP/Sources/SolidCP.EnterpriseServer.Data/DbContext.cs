@@ -10,6 +10,8 @@ using SolidCP.Providers.Common;
 using System.Configuration;
 using System.Linq;
 using System.IO;
+using System.Diagnostics.Eventing.Reader;
+
 #if NetFX
 using System.Data.Entity;
 #else
@@ -172,8 +174,13 @@ namespace SolidCP.EnterpriseServer.Data
 			var context = new Context.DbContextBase(this);
 			BaseContext = context;
 #endif
+#if NETFRAMEWORK
+            Database.CommandTimeout = 60;
+#else
+            Database.SetCommandTimeout(60);
+#endif
 
-			BaseContext.Log += WriteToLog;
+            BaseContext.Log += WriteToLog;
 		}
 
 		public DbContext(string connectionString, DbType dbType = DbType.Unknown, bool initSeedData = false)
@@ -191,6 +198,11 @@ namespace SolidCP.EnterpriseServer.Data
             BaseContext = (IGenericDbContext)Activator.CreateInstance(ContextType, this);
 #else
             BaseContext = new Context.DbContextBase(this);
+#endif
+#if NETFRAMEWORK
+            Database.CommandTimeout = 120;
+#else
+            Database.SetCommandTimeout(120);
 #endif
             BaseContext.Log += WriteToLog;
         }

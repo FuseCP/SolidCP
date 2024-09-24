@@ -203,19 +203,6 @@ IF NOT EXISTS (
     WHERE [MigrationId] = N'20240627111421_InitialCreate'
 )
 BEGIN
-    CREATE TABLE [PackageService] (
-        [PackageId] int NOT NULL,
-        [ServiceId] int NOT NULL,
-        CONSTRAINT [PK_PackageService] PRIMARY KEY ([PackageId], [ServiceId])
-    );
-END;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240627111421_InitialCreate'
-)
-BEGIN
     CREATE TABLE [PackageSettings] (
         [PackageID] int NOT NULL,
         [SettingsName] nvarchar(50) NOT NULL,
