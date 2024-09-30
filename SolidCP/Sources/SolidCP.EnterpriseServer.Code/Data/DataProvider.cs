@@ -23061,7 +23061,6 @@ RETURN
 				{
 					packages = packages.OrderBy(sortColumn);
 					packages = packages.Skip(startRow).Take(maximumRows);
-
 				}
 
 				var packagesSelected = packages
@@ -31924,7 +31923,7 @@ RETURN
 
 					var count = items.Count();
 
-					if (string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
+					if (!string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
 					else items = items.OrderBy(i => i.ItemName);
 
 					items = items.Skip(startRow).Take(maximumRows);
@@ -32162,7 +32161,7 @@ GO
 
 					var count = items.Count();
 
-					if (string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
+					if (!string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
 					else items = items.OrderBy(i => i.ItemName);
 
 					items = items.Skip(startRow).Take(maximumRows);
@@ -32602,7 +32601,7 @@ RETURN
 
 					var count = items.Count();
 
-					if (string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
+					if (!string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
 					else items = items.OrderBy(i => i.ItemName);
 
 					items = items.Skip(startRow).Take(maximumRows);
