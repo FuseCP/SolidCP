@@ -459,8 +459,11 @@ namespace SolidCP.EnterpriseServer
 					object propVal = prop.EntityProperty.GetValue(entity);
 					if (propVal == DBNull.Value || propVal == null)
 						prop.Property.SetValue(obj, GetNull(prop.Property.PropertyType), null);
-					else
+					else if (prop.Property.PropertyType == prop.EntityProperty.PropertyType)
 					{
+						prop.Property.SetValue(obj, propVal);
+					} else
+					{ 
 						try
 						{
 							string strVal = propVal.ToString();
@@ -949,10 +952,20 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (type == typeof(string))
 				return val;
+			if (type == typeof(Int16))
+				return Int16.Parse(val);
 			if (type == typeof(Int32))
 				return Int32.Parse(val);
 			if (type == typeof(Int64))
 				return Int64.Parse(val);
+			if (type == typeof(UInt16))
+				return UInt16.Parse(val);
+			if (type == typeof(UInt32))
+				return UInt32.Parse(val);
+			if (type == typeof(UInt64))
+				return UInt64.Parse(val);
+			if (type == typeof(Guid))
+				return Guid.Parse(val);
 			if (type == typeof(Boolean))
 				return Boolean.Parse(val);
 			if (type == typeof(Decimal))
