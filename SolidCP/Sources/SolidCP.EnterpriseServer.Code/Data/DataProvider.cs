@@ -8468,12 +8468,14 @@ GO
 							u.Username
 						});
 
+					var count = vlans.Count();
+
 					if (!string.IsNullOrEmpty(sortColumn)) vlans = vlans.OrderBy(sortColumn);
 					else vlans = vlans.OrderBy(v => v.Vlan);
 
 					vlans = vlans.Skip(startRow).Take(maximumRows);
 
-					return EntityDataReader(vlans);
+					return EntityDataReader(count, vlans);
 				}
 			}
 			else
@@ -8944,12 +8946,14 @@ END
 							u.Username
 						});
 
+					var count = vlans.Count();
+
 					if (!string.IsNullOrEmpty(sortColumn)) vlans = vlans.OrderBy(sortColumn);
 					else vlans = vlans.OrderBy(v => v.Vlan);
 
 					vlans = vlans.Skip(startRow).Take(maximumRows);
 
-					return EntityDataReader(vlans);
+					return EntityDataReader(count, vlans);
 				}
 			}
 			else
