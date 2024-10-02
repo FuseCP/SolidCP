@@ -1028,6 +1028,13 @@ END
 			return sb.ToString();
 		}
 
+		public string ColumnName(string sortColumn)
+		{
+			var i = sortColumn.LastIndexOf('.');
+			if (i >= 0) return sortColumn.Substring(i + 1);
+			else return sortColumn;
+		}
+
 		public DataSet GetUsersPaged(int actorId, int userId, string filterColumn, string filterValue,
 			 int statusId, int roleId, string sortColumn, int startRow, int maximumRows, bool recursive)
 		{
@@ -1179,7 +1186,7 @@ RETURN
 
 					if (!string.IsNullOrEmpty(sortColumn))
 					{
-						users = users.OrderBy(sortColumn);
+						users = users.OrderBy(ColumnName(sortColumn));
 					}
 
 					var count = users.Count();
@@ -2829,7 +2836,7 @@ RETURN
 						}
 					}
 
-					itemsFilter = itemsFilter.OrderBy(sortColumn);
+					itemsFilter = itemsFilter.OrderBy(ColumnName(sortColumn));
 
 					itemsReturn = itemsReturn
 						// bug: Needs a call to Take for subquery ordering taking effect in EF6
@@ -4121,7 +4128,7 @@ RETURN
 
 					if (!string.IsNullOrEmpty(sortColumn))
 					{
-						users = users.OrderBy(sortColumn);
+						users = users.OrderBy(ColumnName(sortColumn));
 					}
 
 					return EntityDataSet(count, users);
@@ -8189,7 +8196,7 @@ END
 
 				var count = vlans.Count();
 
-				vlans = vlans.OrderBy(sortColumn);
+				vlans = vlans.OrderBy(ColumnName(sortColumn));
 
 				vlans = vlans.Skip(startRow).Take(maximumRows);
 
@@ -8470,7 +8477,7 @@ GO
 
 					var count = vlans.Count();
 
-					if (!string.IsNullOrEmpty(sortColumn)) vlans = vlans.OrderBy(sortColumn);
+					if (!string.IsNullOrEmpty(sortColumn)) vlans = vlans.OrderBy(ColumnName(sortColumn));
 					else vlans = vlans.OrderBy(v => v.Vlan);
 
 					vlans = vlans.Skip(startRow).Take(maximumRows);
@@ -8948,7 +8955,7 @@ END
 
 					var count = vlans.Count();
 
-					if (!string.IsNullOrEmpty(sortColumn)) vlans = vlans.OrderBy(sortColumn);
+					if (!string.IsNullOrEmpty(sortColumn)) vlans = vlans.OrderBy(ColumnName(sortColumn));
 					else vlans = vlans.OrderBy(v => v.Vlan);
 
 					vlans = vlans.Skip(startRow).Take(maximumRows);
@@ -9329,7 +9336,7 @@ END
 				var count = addresses.Count();
 
 				if (string.IsNullOrEmpty(sortColumn)) addresses = addresses.OrderBy(a => a.ExternalIp);
-				else addresses = addresses.OrderBy(sortColumn);
+				else addresses = addresses.OrderBy(ColumnName(sortColumn));
 
 				addresses = addresses.Skip(startRow).Take(maximumRows);
 
@@ -11258,7 +11265,7 @@ RETURN
 
 					var count = domains.Count();
 
-					if (!string.IsNullOrEmpty(sortColumn)) domains = domains.OrderBy(sortColumn);
+					if (!string.IsNullOrEmpty(sortColumn)) domains = domains.OrderBy(ColumnName(sortColumn));
 					else domains = domains.OrderBy(d => d.DomainName);
 
 					domains = domains.Skip(startRow).Take(maximumRows);
@@ -13493,7 +13500,7 @@ RETURN
 
 					var count = items.Count();
 
-					if (!string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
+					if (!string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(ColumnName(sortColumn));
 					else items = items.OrderBy(i => i.ItemName);
 
 					items = items.Skip(startRow).Take(maximumRows);
@@ -18426,7 +18433,7 @@ RETURN
 						var count = items.Count();
 
 						if (string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(it => it.ItemName);
-						else items = items.OrderBy(sortColumn);
+						else items = items.OrderBy(ColumnName(sortColumn));
 
 						items = items.Skip(startRow).Take(maximumRows);
 
@@ -18476,7 +18483,7 @@ RETURN
 						var count = domains.Count();
 
 						if (string.IsNullOrEmpty(sortColumn)) domains = domains.OrderBy(it => it.ItemName);
-						else domains = domains.OrderBy(sortColumn);
+						else domains = domains.OrderBy(ColumnName(sortColumn));
 
 						domains = domains.Skip(startRow).Take(maximumRows);
 
@@ -18628,7 +18635,7 @@ RETURN
 
 					var count = packages.Count();
 
-					if (!string.IsNullOrEmpty(sortColumn)) packages = packages.OrderBy(sortColumn);
+					if (!string.IsNullOrEmpty(sortColumn)) packages = packages.OrderBy(ColumnName(sortColumn));
 
 					packages = packages.Skip(startRow).Take(maximumRows);
 
@@ -18839,7 +18846,7 @@ RETURN
 
 				var count = packages.Count();
 
-				if (!string.IsNullOrEmpty(sortColumn)) packages = packages.OrderBy(sortColumn);
+				if (!string.IsNullOrEmpty(sortColumn)) packages = packages.OrderBy(ColumnName(sortColumn));
 				else packages = packages.OrderBy(p => p.PackageName);
 
 				packages = packages.Skip(startRow).Take(maximumRows);
@@ -22544,7 +22551,7 @@ RETURN
 
 					var count = logs.Count();
 
-					if (!string.IsNullOrEmpty(sortColumn)) logs = logs.OrderBy(sortColumn);
+					if (!string.IsNullOrEmpty(sortColumn)) logs = logs.OrderBy(ColumnName(sortColumn));
 					else logs = logs.OrderByDescending(l => l.StartDate);
 
 					logs = logs.Skip(startRow).Take(maximumRows);
@@ -23052,7 +23059,7 @@ RETURN
 				if (!string.IsNullOrEmpty(sortColumn) && !sortColumn.StartsWith("PackagesNumber") &&
 					!sortColumn.StartsWith("QuotaValue"))
 				{
-					packages = packages.OrderBy(sortColumn);
+					packages = packages.OrderBy(ColumnName(sortColumn));
 					packages = packages.Skip(startRow).Take(maximumRows);
 				}
 
@@ -23301,7 +23308,7 @@ RETURN
 				if (!string.IsNullOrEmpty(sortColumn) && !sortColumn.StartsWith("PackagesNumber") &&
 					!sortColumn.StartsWith("QuotaValue"))
 				{
-					packages = packages.OrderBy(sortColumn);
+					packages = packages.OrderBy(ColumnName(sortColumn));
 					packages = packages.Skip(startRow).Take(maximumRows);
 				}
 
@@ -25127,7 +25134,7 @@ END
 
 					if (!string.IsNullOrEmpty(sortColumn))
 					{
-						schedules = schedules.OrderBy(sortColumn);
+						schedules = schedules.OrderBy(ColumnName(sortColumn));
 					}
 					else
 					{
@@ -28141,7 +28148,7 @@ RETURN
 					}
 				}
 
-				if (!string.IsNullOrEmpty(sortColumn)) accounts = accounts.OrderBy(sortColumn);
+				if (!string.IsNullOrEmpty(sortColumn)) accounts = accounts.OrderBy(ColumnName(sortColumn));
 				else accounts = accounts.OrderBy(a => a.DisplayName);
 
 				var accountsSelected = accounts
@@ -28329,7 +28336,7 @@ RETURN
 
 				var count = accounts.Count();
 
-				if (!string.IsNullOrEmpty(sortColumn)) accounts = accounts.OrderBy(sortColumn);
+				if (!string.IsNullOrEmpty(sortColumn)) accounts = accounts.OrderBy(ColumnName(sortColumn));
 				else accounts = accounts.OrderBy(a => a.DisplayName);
 
 				accounts = accounts.Skip(startRow).Take(maximumRows);
@@ -28474,7 +28481,7 @@ RETURN
 					accounts = accounts.Where(DynamicFunctions.ColumnLike(accounts, filterColumn, filterValue));
 				}
 
-				if (!string.IsNullOrEmpty(sortColumn)) accounts = accounts.OrderBy(sortColumn);
+				if (!string.IsNullOrEmpty(sortColumn)) accounts = accounts.OrderBy(ColumnName(sortColumn));
 				else accounts = accounts.OrderBy(a => a.DisplayName);
 
 				var accountsSelected = accounts
@@ -31036,7 +31043,7 @@ RETURN
 
 				if (!string.IsNullOrEmpty(sortColumn))
 				{
-					accounts = accounts.OrderBy(sortColumn);
+					accounts = accounts.OrderBy(ColumnName(sortColumn));
 				}
 				else
 				{
@@ -31916,7 +31923,7 @@ RETURN
 
 					var count = items.Count();
 
-					if (!string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
+					if (!string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(ColumnName(sortColumn));
 					else items = items.OrderBy(i => i.ItemName);
 
 					items = items.Skip(startRow).Take(maximumRows);
@@ -32154,7 +32161,7 @@ GO
 
 					var count = items.Count();
 
-					if (!string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
+					if (!string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(ColumnName(sortColumn));
 					else items = items.OrderBy(i => i.ItemName);
 
 					items = items.Skip(startRow).Take(maximumRows);
@@ -32371,7 +32378,7 @@ RETURN
 
 					var count = items.Count();
 
-					if (!string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
+					if (!string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(ColumnName(sortColumn));
 					else items = items.OrderBy(i => i.ItemName);
 
 					items = items.Skip(startRow).Take(maximumRows);
@@ -32594,7 +32601,7 @@ RETURN
 
 					var count = items.Count();
 
-					if (!string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
+					if (!string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(ColumnName(sortColumn));
 					else items = items.OrderBy(i => i.ItemName);
 
 					items = items.Skip(startRow).Take(maximumRows);
@@ -33112,7 +33119,7 @@ END
 					var count = addresses.Count();
 
 					if (string.IsNullOrEmpty(sortColumn)) addresses = addresses.OrderBy(a => a.ExternalIp);
-					else addresses = addresses.OrderBy(sortColumn);
+					else addresses = addresses.OrderBy(ColumnName(sortColumn));
 
 					addresses = addresses.Skip(startRow).Take(maximumRows);
 					return EntityDataReader(count, addresses);
@@ -33385,7 +33392,7 @@ END
 				var count = addresses.Count();
 
 				if (string.IsNullOrEmpty(sortColumn)) addresses = addresses.OrderBy(pa => pa.IpAddress);
-				else addresses = addresses.OrderBy(sortColumn);
+				else addresses = addresses.OrderBy(ColumnName(sortColumn));
 
 				addresses = addresses.Skip(startRow).Take(maximumRows);
 				return EntityDataReader(count, addresses);
@@ -33567,7 +33574,7 @@ END
 				var count = addresses.Count();
 
 				if (string.IsNullOrEmpty(sortColumn)) addresses = addresses.OrderBy(pa => pa.IpAddress);
-				else addresses = addresses.OrderBy(sortColumn);
+				else addresses = addresses.OrderBy(ColumnName(sortColumn));
 
 				addresses = addresses.Skip(startRow).Take(maximumRows);
 				return EntityDataReader(count, addresses);
@@ -36235,7 +36242,7 @@ END
 
 				if (string.Equals(sortDirection, "ASC", StringComparison.OrdinalIgnoreCase))
 				{
-					users = users.OrderBy(sortColumn);
+					users = users.OrderBy(ColumnName(sortColumn));
 				}
 				else
 				{
@@ -37393,7 +37400,7 @@ END
 
 				if (string.Equals(sortDirection, "ASC", StringComparison.OrdinalIgnoreCase))
 				{
-					users = users.OrderBy(sortColumn);
+					users = users.OrderBy(ColumnName(sortColumn));
 				}
 				else
 				{
@@ -38959,7 +38966,7 @@ RETURN
 
 				if (!string.IsNullOrEmpty(sortColumn))
 				{
-					folders = folders.OrderBy(sortColumn);
+					folders = folders.OrderBy(ColumnName(sortColumn));
 				}
 
 				folders = folders.Skip(startRow).Take(maximumRows);
@@ -39872,7 +39879,7 @@ RETURN
 
 				if (!string.IsNullOrEmpty(sortColumn))
 				{
-					levels = levels.OrderBy(sortColumn);
+					levels = levels.OrderBy(ColumnName(sortColumn));
 				}
 
 				levels = levels.Skip(startRow).Take(maximumRows);
@@ -40259,7 +40266,7 @@ RETURN
 
 				if (!string.IsNullOrEmpty(sortColumn))
 				{
-					spaces = spaces.OrderBy(sortColumn);
+					spaces = spaces.OrderBy(ColumnName(sortColumn));
 				}
 
 				spaces = spaces.Skip(startRow).Take(maximumRows);
@@ -41853,7 +41860,7 @@ RETURN
 
 				var count = collections.Count();
 
-				if (!string.IsNullOrEmpty(sortColumn)) collections = collections.OrderBy(sortColumn);
+				if (!string.IsNullOrEmpty(sortColumn)) collections = collections.OrderBy(ColumnName(sortColumn));
 
 				collections = collections.Skip(startRow).Take(maximumRows);
 
@@ -42428,7 +42435,7 @@ RETURN
 				if (!string.IsNullOrEmpty(sortColumn))
 				{
 					if (sortColumn.StartsWith("S.")) sortColumn = sortColumn.Substring(2);
-					servers = servers.OrderBy(sortColumn);
+					servers = servers.OrderBy(ColumnName(sortColumn));
 				}
 
 				servers = servers.Skip(startRow).Take(maximumRows);
