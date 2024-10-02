@@ -175,17 +175,6 @@ END $EF$;
 DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240708170548_InitialCreate') THEN
-    CREATE TABLE public."PackageService" (
-        "PackageId" integer NOT NULL,
-        "ServiceId" integer NOT NULL,
-        CONSTRAINT "PK_PackageService" PRIMARY KEY ("PackageId", "ServiceId")
-    );
-    END IF;
-END $EF$;
-
-DO $EF$
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240708170548_InitialCreate') THEN
     CREATE TABLE public."PackageSettings" (
         "PackageID" integer NOT NULL,
         "SettingsName" character varying(50) NOT NULL,

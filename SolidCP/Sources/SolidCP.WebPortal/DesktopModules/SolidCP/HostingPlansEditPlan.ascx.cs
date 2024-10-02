@@ -83,10 +83,8 @@ namespace SolidCP.Portal
             rowTargetServer.Visible = isUserAdmin;
             rowTargetSpace.Visible = !isUserAdmin;
 
-            if(isUserAdmin)
-                BindServers();
-            else
-                BindSpaces();
+            if(isUserAdmin) BindServers();
+            else BindSpaces();
 
             if (PanelRequest.PlanID == 0)
             {
@@ -149,7 +147,7 @@ namespace SolidCP.Portal
             plan.RecurrenceLength = 1;
             plan.RecurrenceUnit = 2; // month
 
-            plan.PackageId = Utils.ParseInt(ddlSpace.SelectedValue, 0);
+            plan.PackageId = Utils.ParseInt(ddlSpace.SelectedValue, 1);
             plan.ServerId = Utils.ParseInt(ddlServer.SelectedValue, 0);
             // if this is non-admin
             // get server info from parent package

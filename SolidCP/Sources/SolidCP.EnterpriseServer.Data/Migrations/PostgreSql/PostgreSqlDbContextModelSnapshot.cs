@@ -23,19 +23,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("PackageService", b =>
-                {
-                    b.Property<int>("PackageId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ServiceId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("PackageId", "ServiceId");
-
-                    b.ToTable("PackageService", "public");
-                });
-
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.AccessToken", b =>
                 {
                     b.Property<int>("Id")

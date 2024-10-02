@@ -32,6 +32,7 @@ namespace SolidCP.Providers.Virtualization
 
         public ConfigFile(string xml)
         {
+            xml = xml.Trim();
             Xml = xml;
             Load(xml);
         }

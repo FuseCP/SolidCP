@@ -5,11 +5,8 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BB38798E-1528-493C-868E-005102316536}"
 	ProjectSection(SolutionItems) = preProject
 		..\..\.gitignore = ..\..\.gitignore
-		..\Database\install_db.sql = ..\Database\install_db.sql
 		..\..\LICENSE.txt = ..\..\LICENSE.txt
-		..\..\Readme.htm = ..\..\Readme.htm
-		..\..\ReleaseNotes.htm = ..\..\ReleaseNotes.htm
-		..\Database\update_db.sql = ..\Database\update_db.sql
+		SolidCP.EnterpriseServer.Data\LegacyScripts\update_db.sql = SolidCP.EnterpriseServer.Data\LegacyScripts\update_db.sql
 		VersionInfo.vb = VersionInfo.vb
 	EndProjectSection
 EndProject

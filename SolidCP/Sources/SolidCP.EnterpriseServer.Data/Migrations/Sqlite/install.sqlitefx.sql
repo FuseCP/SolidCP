@@ -105,12 +105,6 @@ CREATE TABLE "OCSUsers" (
     "ModifiedDate" TEXT NOT NULL
 );
 
-CREATE TABLE "PackageService" (
-    "PackageId" INTEGER NOT NULL,
-    "ServiceId" INTEGER NOT NULL,
-    CONSTRAINT "PK_PackageService" PRIMARY KEY ("PackageId", "ServiceId")
-);
-
 CREATE TABLE "PackageSettings" (
     "PackageID" INTEGER NOT NULL,
     "SettingsName" TEXT NOT NULL,

@@ -111,8 +111,8 @@ public partial class Package
     [InverseProperty("Packages")]
     public virtual User User { get; set; }
 
-    [ForeignKey("PackageId")]
+    /* [ForeignKey("PackageId")]
     [InverseProperty("Packages")]
-    public virtual ICollection<Service> Services { get; set; } = new List<Service>();
+    public virtual ICollection<Service> Services { get; set; } = new List<Service>(); */
 }
 #endif

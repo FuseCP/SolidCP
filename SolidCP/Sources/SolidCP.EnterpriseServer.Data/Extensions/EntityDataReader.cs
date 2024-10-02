@@ -114,7 +114,8 @@ namespace SolidCP.EnterpriseServer.Data
 		private object GetValueFromProperty(PropertyDescription p)
 		{
 			try {
-				var val = p.Info.GetValue(Enumerator.Current);
+				var current = Enumerator.Current;
+				var val = p.Info.GetValue(current);
 				if (p.IsNullable || p.IsString)
 				{
 					if (val == null) return DBNull.Value;

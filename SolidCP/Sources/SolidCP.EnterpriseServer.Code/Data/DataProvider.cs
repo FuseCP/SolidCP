@@ -1028,6 +1028,13 @@ END
 			return sb.ToString();
 		}
 
+		public string ColumnName(string sortColumn)
+		{
+			var i = sortColumn.LastIndexOf('.');
+			if (i >= 0) return sortColumn.Substring(i + 1);
+			else return sortColumn;
+		}
+
 		public DataSet GetUsersPaged(int actorId, int userId, string filterColumn, string filterValue,
 			 int statusId, int roleId, string sortColumn, int startRow, int maximumRows, bool recursive)
 		{
@@ -1179,7 +1186,7 @@ RETURN
 
 					if (!string.IsNullOrEmpty(sortColumn))
 					{
-						users = users.OrderBy(sortColumn);
+						users = users.OrderBy(ColumnName(sortColumn));
 					}
 
 					var count = users.Count();
@@ -2829,7 +2836,7 @@ RETURN
 						}
 					}
 
-					itemsFilter = itemsFilter.OrderBy(sortColumn);
+					itemsFilter = itemsFilter.OrderBy(ColumnName(sortColumn));
 
 					itemsReturn = itemsReturn
 						// bug: Needs a call to Take for subquery ordering taking effect in EF6
@@ -3822,11 +3829,11 @@ RETURN
 
 					search = search
 						.Where(ds =>
-	#if NETFRAMEWORK
+#if NETFRAMEWORK
 							DbFunctions.Like(ds.TextSearch, FilterValue)
-	#else
+#else
 							EF.Functions.Like(ds.TextSearch, FilterValue)
-	#endif
+#endif
 						);
 
 					if (!string.IsNullOrEmpty(FilterColumns))
@@ -4121,7 +4128,7 @@ RETURN
 
 					if (!string.IsNullOrEmpty(sortColumn))
 					{
-						users = users.OrderBy(sortColumn);
+						users = users.OrderBy(ColumnName(sortColumn));
 					}
 
 					return EntityDataSet(count, users);
@@ -8189,7 +8196,7 @@ END
 
 				var count = vlans.Count();
 
-				vlans = vlans.OrderBy(sortColumn);
+				vlans = vlans.OrderBy(ColumnName(sortColumn));
 
 				vlans = vlans.Skip(startRow).Take(maximumRows);
 
@@ -8468,12 +8475,14 @@ GO
 							u.Username
 						});
 
-					if (!string.IsNullOrEmpty(sortColumn)) vlans = vlans.OrderBy(sortColumn);
+					var count = vlans.Count();
+
+					if (!string.IsNullOrEmpty(sortColumn)) vlans = vlans.OrderBy(ColumnName(sortColumn));
 					else vlans = vlans.OrderBy(v => v.Vlan);
 
 					vlans = vlans.Skip(startRow).Take(maximumRows);
 
-					return EntityDataReader(vlans);
+					return EntityDataReader(count, vlans);
 				}
 			}
 			else
@@ -8944,12 +8953,14 @@ END
 							u.Username
 						});
 
-					if (!string.IsNullOrEmpty(sortColumn)) vlans = vlans.OrderBy(sortColumn);
+					var count = vlans.Count();
+
+					if (!string.IsNullOrEmpty(sortColumn)) vlans = vlans.OrderBy(ColumnName(sortColumn));
 					else vlans = vlans.OrderBy(v => v.Vlan);
 
 					vlans = vlans.Skip(startRow).Take(maximumRows);
 
-					return EntityDataReader(vlans);
+					return EntityDataReader(count, vlans);
 				}
 			}
 			else
@@ -9325,7 +9336,7 @@ END
 				var count = addresses.Count();
 
 				if (string.IsNullOrEmpty(sortColumn)) addresses = addresses.OrderBy(a => a.ExternalIp);
-				else addresses = addresses.OrderBy(sortColumn);
+				else addresses = addresses.OrderBy(ColumnName(sortColumn));
 
 				addresses = addresses.Skip(startRow).Take(maximumRows);
 
@@ -11254,7 +11265,7 @@ RETURN
 
 					var count = domains.Count();
 
-					if (!string.IsNullOrEmpty(sortColumn)) domains = domains.OrderBy(sortColumn);
+					if (!string.IsNullOrEmpty(sortColumn)) domains = domains.OrderBy(ColumnName(sortColumn));
 					else domains = domains.OrderBy(d => d.DomainName);
 
 					domains = domains.Skip(startRow).Take(maximumRows);
@@ -12782,6 +12793,7 @@ RETURN
 				{
 					GlobalDnsRecords.Where(r => r.ServiceId == serviceId).ExecuteDelete();
 					Services.Where(s => s.ServiceId == serviceId).ExecuteDelete();
+					PackageServices.Where(s => s.ServiceId == serviceId).ExecuteDelete();
 
 					transaction.Commit();
 					return 0;
@@ -13488,7 +13500,7 @@ RETURN
 
 					var count = items.Count();
 
-					if (!string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
+					if (!string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(ColumnName(sortColumn));
 					else items = items.OrderBy(i => i.ItemName);
 
 					items = items.Skip(startRow).Take(maximumRows);
@@ -15201,12 +15213,12 @@ RETURN
 
 				using (var transaction = Database.BeginTransaction())
 				{
-#if NETCOREAPP
-					ServiceItems.Where(s => s.ItemId == itemId).ExecuteUpdate(s => s.SetProperty(p => p.ServiceId, destinationServiceId));
-#else
-					foreach (var item in ServiceItems.Where(s => s.ItemId == itemId)) item.ServiceId = destinationServiceId;
-					SaveChanges();
-#endif
+					ServiceItems.Where(s => s.ItemId == itemId)
+						.ExecuteUpdate(s => new Data.Entities.ServiceItem()
+						{
+							ServiceId = destinationServiceId
+						});
+
 					transaction.Commit();
 				}
 			}
@@ -15536,12 +15548,7 @@ END
 							Service = s
 						})
 						.Join(Providers.Where(p => p.GroupId == groupId),
-							ps => ps.Service.ProviderId, p => p.ProviderId, (ps, p) => new
-							{
-								PackageService = ps,
-								Provider = p
-							})
-						.Select(g => g.PackageService)
+							ps => ps.Service.ProviderId, p => p.ProviderId, (ps, p) => ps.PackageService)
 						.ExecuteDelete();
 
 					/*
@@ -15643,9 +15650,10 @@ RETURN
 					.Select(g => g.GroupId)
 					.FirstOrDefault();
 				var package = Packages
-					.Include(p => p.Services)
-					.FirstOrDefault(p => p.PackageId == packageId);
-				var serviceId = package.Services
+					.Where(p => p.PackageId == packageId);
+				var serviceId = package
+					.Join(PackageServices, p => p.PackageId, ps => ps.PackageId, (p, ps) => ps.ServiceId)
+					.Join(Services, ps => ps, s => s.ServiceId, (ps, s) => s)
 					.Join(Providers, s => s.ProviderId, p => p.ProviderId, (s, p) => new
 					{
 						s.ServiceId,
@@ -16011,7 +16019,7 @@ RETURN
 							bandwidthsToDelete.ExecuteDelete();
 
 							// insert new statistics
-							var newBandwiths = groupedItems
+							var newBandwidths = groupedItems
 								.Select(item => new Data.Entities.PackagesBandwidth
 								{
 									PackageId = packageId,
@@ -16020,7 +16028,7 @@ RETURN
 									BytesSent = item.Sum(x => x.BytesSent),
 									BytesReceived = item.Sum(x => x.BytesReceived)
 								});
-							PackagesBandwidths.AddRange(newBandwiths);
+							PackagesBandwidths.AddRange(newBandwidths);
 
 							SaveChanges();
 
@@ -17047,7 +17055,7 @@ END
 		}
 
 		public DataSet GetHostingPlanQuotas(int actorId, int packageId, int planId, int serverId)
-		{ 
+		{
 			if (UseEntityFramework)
 			{
 				#region Stored Procedure
@@ -17303,7 +17311,7 @@ RETURN
 					PlanId = planId,
 					GroupId = (int)e.Attribute("id"),
 					CalculateDiskSpace = (int)e.Attribute("calculateDiskSpace") == 1,
-					CalculateBandwidth = (int)e.Attribute("calculateBandwith") == 1
+					CalculateBandwidth = (int)e.Attribute("calculateBandwidth") == 1
 				});
 			var quotas = xml.Element("quotas")
 				.Elements()
@@ -17665,32 +17673,45 @@ END
 			{
 				if (!package.OverrideQuotas) // hosting plan quotas
 				{
-					return HostingPlanQuotas
+					var quotas = HostingPlanQuotas
 						.Where(q => q.PlanId == package.PlanId)
 						.Join(Quotas.Where(q => q.QuotaTypeId != 3), hq => hq.QuotaId, q => q.QuotaId, (hq, q) => q)
-						.AsEnumerable()
-						.Select(q => new ExceedingQuota
+						.Select(q => new
 						{
+							q.QuotaId,
+							q.QuotaName,
+							q.QuotaTypeId
+						})
+						.ToArray();
+					return quotas
+						.Select(q => new ExceedingQuota() {
 							QuotaId = q.QuotaId,
 							QuotaName = q.QuotaName,
-							QuotaValue = Local.CheckExceedingQuota(packageId, q.QuotaId, q.QuotaTypeId)
+							QuotaValue = CheckExceedingQuota(packageId, q.QuotaId, q.QuotaTypeId)
 						});
 				}
 				else // overriden quotas
 				{
-					return PackageQuotas
+					var quotas = PackageQuotas
 						.Where(q => q.PackageId == packageId)
 						.Join(Quotas.Where(q => q.QuotaTypeId != 3), hq => hq.QuotaId, q => q.QuotaId, (hq, q) => q)
-						.AsEnumerable()
+						.Select(q => new
+						{
+							q.QuotaId,
+							q.QuotaName,
+							q.QuotaTypeId
+						})
+						.ToArray();
+					return quotas
 						.Select(q => new ExceedingQuota
 						{
 							QuotaId = q.QuotaId,
 							QuotaName = q.QuotaName,
-							QuotaValue = Local.CheckExceedingQuota(packageId, q.QuotaId, q.QuotaTypeId)
+							QuotaValue = CheckExceedingQuota(packageId, q.QuotaId, q.QuotaTypeId)
 						});
 				}
 			}
-			return new ExceedingQuota[0];
+			return Enumerable.Empty<ExceedingQuota>();
 		}
 
 		public DataSet UpdateHostingPlan(int actorId, int planId, int packageId, int serverId, string planName,
@@ -17801,7 +17822,7 @@ RETURN
 				plan.RecurrenceUnit = recurrenceUnit;
 				SaveChanges();
 
-				using (var transaction = Database.BeginTransaction())
+				using (var transaction = Database.BeginTransaction(IsolationLevel.ReadUncommitted))
 				{
 					// update quotas
 					UpdateHostingPlanQuotas(actorId, planId, quotasXml);
@@ -18412,7 +18433,7 @@ RETURN
 						var count = items.Count();
 
 						if (string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(it => it.ItemName);
-						else items = items.OrderBy(sortColumn);
+						else items = items.OrderBy(ColumnName(sortColumn));
 
 						items = items.Skip(startRow).Take(maximumRows);
 
@@ -18462,7 +18483,7 @@ RETURN
 						var count = domains.Count();
 
 						if (string.IsNullOrEmpty(sortColumn)) domains = domains.OrderBy(it => it.ItemName);
-						else domains = domains.OrderBy(sortColumn);
+						else domains = domains.OrderBy(ColumnName(sortColumn));
 
 						domains = domains.Skip(startRow).Take(maximumRows);
 
@@ -18614,7 +18635,7 @@ RETURN
 
 					var count = packages.Count();
 
-					if (!string.IsNullOrEmpty(sortColumn)) packages = packages.OrderBy(sortColumn);
+					if (!string.IsNullOrEmpty(sortColumn)) packages = packages.OrderBy(ColumnName(sortColumn));
 
 					packages = packages.Skip(startRow).Take(maximumRows);
 
@@ -18825,7 +18846,7 @@ RETURN
 
 				var count = packages.Count();
 
-				if (!string.IsNullOrEmpty(sortColumn)) packages = packages.OrderBy(sortColumn);
+				if (!string.IsNullOrEmpty(sortColumn)) packages = packages.OrderBy(ColumnName(sortColumn));
 				else packages = packages.OrderBy(p => p.PackageName);
 
 				packages = packages.Skip(startRow).Take(maximumRows);
@@ -21784,24 +21805,32 @@ RETURN
 				*/
 				#endregion
 
+				if (packageId <= 1) return;
+
 				var random = new Random();
 
-				var package = Packages
+				var packages = Packages
 					.Include(p => p.Server)
-					.Include(p => p.Services)
-#if NetCore
-					.ThenInclude(s => s.Provider)
-#else
-					.Include(p => p.Services.Select(s => s.Provider))
-#endif
 					.Where(p => p.PackageId == packageId)
-					.SingleOrDefault();
+					.Select(p => new
+					{
+						Package = p,
+						Server = p.Server
+					});
+				var package = packages.FirstOrDefault();
+				var services = PackageServices
+					.Where(ps => ps.PackageId == packageId)
+					.Join(Services, ps => ps.ServiceId, s => s.ServiceId, (ps, s) => new
+					{
+						s.ServerId,
+						s.ServiceId,
+						s.Provider.GroupId
+					})
+					.ToArray();
 
 				// get the list of available groups from hosting plan
-				var packageGroups = Packages
-					.Where(p => p.PackageId == packageId)
-					.SelectMany(p => p.Services)
-					.Select(s => s.Provider.GroupId)
+				var packageGroups = services
+					.Select(s => s.GroupId)
 					.ToArray();
 				var groups = ResourceGroups
 					.AsEnumerable()
@@ -21814,12 +21843,19 @@ RETURN
 					// just return the list of services based on the plan
 					using (var groupIds = new TempIdSet(this, groups.Select(g => g.GroupId)))
 					{
-						var services = package.Services.ToHashSet();
-						foreach (var service in package.Services
-							.Where(s => s.ServerId == package.ServerId)
+						var servicesSet = services.Select(s => s.ServiceId).ToHashSet();
+						foreach (var service in Services
+							.Where(s => s.ServerId == package.Package.ServerId)
 							.Join(groupIds, s => s.Provider.GroupId, g => g, (s, g) => s))
 						{
-							if (!services.Contains(service)) package.Services.Add(service);
+							if (!servicesSet.Contains(service.ServiceId))
+							{
+								PackageServices.Add(new Data.Entities.PackageService()
+								{
+									PackageId = packageId,
+									ServiceId = service.ServiceId
+								});
+							}
 						}
 					}
 				}
@@ -21831,12 +21867,12 @@ RETURN
 					{
 						// read group information
 						var virtualGroup = VirtualGroups
-							.Where(v => v.ServerId == package.ServerId && v.GroupId == group.GroupId)
+							.Where(v => v.ServerId == package.Package.ServerId && v.GroupId == group.GroupId)
 							.Select(v => new { v.DistributionType, v.BindDistributionToPrimary })
 							.FirstOrDefault();
 						var virtualServices = VirtualServices
 							.Include(v => v.Service)
-							.Where(v => v.ServerId == package.ServerId &&
+							.Where(v => v.ServerId == package.Package.ServerId &&
 								v.Service.Provider.GroupId == group.GroupId);
 
 						// bind distribution to primary
@@ -21846,27 +21882,35 @@ RETURN
 							// if only one service found just use it and do not distribute
 							if (virtualServices.Count() == 1)
 							{
-								package.Services.Add(virtualServices
-									.Select(v => v.Service)
+								PackageServices.Add(virtualServices
+									.Select(v => new Data.Entities.PackageService()
+									{
+										PackageId = package.Package.PackageId,
+										ServiceId = v.ServiceId
+									})
 									.First());
 							}
 							else
 							{
 								// try to get primary distribution server
-								var primaryServerId = package.Services
-									.Where(s => s.Provider.GroupId == package.Server.PrimaryGroupId)
+								var primaryServerId = services
+									.Where(s => s.GroupId == package.Server.PrimaryGroupId)
 									.Select(s => s.ServerId)
 									.FirstOrDefault();
 								foreach (var virtualService in virtualServices
 									.Where(v => v.Service.ServerId == primaryServerId))
 								{
-									package.Services.Add(virtualService.Service);
+									PackageServices.Add(new Data.Entities.PackageService()
+									{
+										PackageId = package.Package.PackageId,
+										ServiceId = virtualService.ServiceId
+									});
 								}
 							}
 						}
 						else // Distribution
 						{
-							var services = virtualServices
+							var vservices = virtualServices
 								.Select(v => new
 								{
 									v.ServiceId,
@@ -21878,17 +21922,31 @@ RETURN
 							if (virtualGroup.DistributionType == 1) // Balanced distribution
 							{
 								// get the less allocated service
-								var service = services
+								var service = vservices
 									.OrderBy(s => s.ItemsNumber)
 									.FirstOrDefault();
-								if (service != null) package.Services.Add(service.Service);
+								if (service != null)
+								{
+									PackageServices.Add(new Data.Entities.PackageService()
+									{
+										PackageId = package.Package.PackageId,
+										ServiceId = service.ServiceId
+									});
+								}
 							}
 							else // Randomized distribution
 							{
-								var service = services
+								var service = vservices
 									.OrderBy(s => s.RandomNumber)
 									.FirstOrDefault();
-								if (service != null) package.Services.Add(service.Service);
+								if (service != null)
+								{
+									PackageServices.Add(new Data.Entities.PackageService()
+									{
+										PackageId = package.Package.PackageId,
+										ServiceId = service.ServiceId
+									});
+								}
 							}
 						}
 
@@ -22493,7 +22551,7 @@ RETURN
 
 					var count = logs.Count();
 
-					if (!string.IsNullOrEmpty(sortColumn)) logs = logs.OrderBy(sortColumn);
+					if (!string.IsNullOrEmpty(sortColumn)) logs = logs.OrderBy(ColumnName(sortColumn));
 					else logs = logs.OrderByDescending(l => l.StartDate);
 
 					logs = logs.Skip(startRow).Take(maximumRows);
@@ -23001,9 +23059,8 @@ RETURN
 				if (!string.IsNullOrEmpty(sortColumn) && !sortColumn.StartsWith("PackagesNumber") &&
 					!sortColumn.StartsWith("QuotaValue"))
 				{
-					packages = packages.OrderBy(sortColumn);
+					packages = packages.OrderBy(ColumnName(sortColumn));
 					packages = packages.Skip(startRow).Take(maximumRows);
-
 				}
 
 				var packagesSelected = packages
@@ -23251,7 +23308,7 @@ RETURN
 				if (!string.IsNullOrEmpty(sortColumn) && !sortColumn.StartsWith("PackagesNumber") &&
 					!sortColumn.StartsWith("QuotaValue"))
 				{
-					packages = packages.OrderBy(sortColumn);
+					packages = packages.OrderBy(ColumnName(sortColumn));
 					packages = packages.Skip(startRow).Take(maximumRows);
 				}
 
@@ -25077,7 +25134,7 @@ END
 
 					if (!string.IsNullOrEmpty(sortColumn))
 					{
-						schedules = schedules.OrderBy(sortColumn);
+						schedules = schedules.OrderBy(ColumnName(sortColumn));
 					}
 					else
 					{
@@ -28091,7 +28148,7 @@ RETURN
 					}
 				}
 
-				if (!string.IsNullOrEmpty(sortColumn)) accounts = accounts.OrderBy(sortColumn);
+				if (!string.IsNullOrEmpty(sortColumn)) accounts = accounts.OrderBy(ColumnName(sortColumn));
 				else accounts = accounts.OrderBy(a => a.DisplayName);
 
 				var accountsSelected = accounts
@@ -28279,7 +28336,7 @@ RETURN
 
 				var count = accounts.Count();
 
-				if (!string.IsNullOrEmpty(sortColumn)) accounts = accounts.OrderBy(sortColumn);
+				if (!string.IsNullOrEmpty(sortColumn)) accounts = accounts.OrderBy(ColumnName(sortColumn));
 				else accounts = accounts.OrderBy(a => a.DisplayName);
 
 				accounts = accounts.Skip(startRow).Take(maximumRows);
@@ -28424,7 +28481,7 @@ RETURN
 					accounts = accounts.Where(DynamicFunctions.ColumnLike(accounts, filterColumn, filterValue));
 				}
 
-				if (!string.IsNullOrEmpty(sortColumn)) accounts = accounts.OrderBy(sortColumn);
+				if (!string.IsNullOrEmpty(sortColumn)) accounts = accounts.OrderBy(ColumnName(sortColumn));
 				else accounts = accounts.OrderBy(a => a.DisplayName);
 
 				var accountsSelected = accounts
@@ -30986,7 +31043,7 @@ RETURN
 
 				if (!string.IsNullOrEmpty(sortColumn))
 				{
-					accounts = accounts.OrderBy(sortColumn);
+					accounts = accounts.OrderBy(ColumnName(sortColumn));
 				}
 				else
 				{
@@ -31866,7 +31923,7 @@ RETURN
 
 					var count = items.Count();
 
-					if (string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
+					if (!string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(ColumnName(sortColumn));
 					else items = items.OrderBy(i => i.ItemName);
 
 					items = items.Skip(startRow).Take(maximumRows);
@@ -32104,7 +32161,7 @@ GO
 
 					var count = items.Count();
 
-					if (string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
+					if (!string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(ColumnName(sortColumn));
 					else items = items.OrderBy(i => i.ItemName);
 
 					items = items.Skip(startRow).Take(maximumRows);
@@ -32321,7 +32378,7 @@ RETURN
 
 					var count = items.Count();
 
-					if (!string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
+					if (!string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(ColumnName(sortColumn));
 					else items = items.OrderBy(i => i.ItemName);
 
 					items = items.Skip(startRow).Take(maximumRows);
@@ -32544,7 +32601,7 @@ RETURN
 
 					var count = items.Count();
 
-					if (string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(sortColumn);
+					if (!string.IsNullOrEmpty(sortColumn)) items = items.OrderBy(ColumnName(sortColumn));
 					else items = items.OrderBy(i => i.ItemName);
 
 					items = items.Skip(startRow).Take(maximumRows);
@@ -33062,7 +33119,7 @@ END
 					var count = addresses.Count();
 
 					if (string.IsNullOrEmpty(sortColumn)) addresses = addresses.OrderBy(a => a.ExternalIp);
-					else addresses = addresses.OrderBy(sortColumn);
+					else addresses = addresses.OrderBy(ColumnName(sortColumn));
 
 					addresses = addresses.Skip(startRow).Take(maximumRows);
 					return EntityDataReader(count, addresses);
@@ -33335,7 +33392,7 @@ END
 				var count = addresses.Count();
 
 				if (string.IsNullOrEmpty(sortColumn)) addresses = addresses.OrderBy(pa => pa.IpAddress);
-				else addresses = addresses.OrderBy(sortColumn);
+				else addresses = addresses.OrderBy(ColumnName(sortColumn));
 
 				addresses = addresses.Skip(startRow).Take(maximumRows);
 				return EntityDataReader(count, addresses);
@@ -33517,7 +33574,7 @@ END
 				var count = addresses.Count();
 
 				if (string.IsNullOrEmpty(sortColumn)) addresses = addresses.OrderBy(pa => pa.IpAddress);
-				else addresses = addresses.OrderBy(sortColumn);
+				else addresses = addresses.OrderBy(ColumnName(sortColumn));
 
 				addresses = addresses.Skip(startRow).Take(maximumRows);
 				return EntityDataReader(count, addresses);
@@ -34215,7 +34272,8 @@ END
 				#endregion
 
 				foreach (var ip in PackageIpAddresses
-					.Where(a => a.ItemId == itemId))
+					.Where(a => a.ItemId == itemId)
+					.ToArray())
 				{
 					if (CheckActorPackageRights(actorId, ip.PackageId))
 					{
@@ -36184,7 +36242,7 @@ END
 
 				if (string.Equals(sortDirection, "ASC", StringComparison.OrdinalIgnoreCase))
 				{
-					users = users.OrderBy(sortColumn);
+					users = users.OrderBy(ColumnName(sortColumn));
 				}
 				else
 				{
@@ -37342,7 +37400,7 @@ END
 
 				if (string.Equals(sortDirection, "ASC", StringComparison.OrdinalIgnoreCase))
 				{
-					users = users.OrderBy(sortColumn);
+					users = users.OrderBy(ColumnName(sortColumn));
 				}
 				else
 				{
@@ -38342,9 +38400,11 @@ WHERE (Packages.PackageID = @PackageID) AND (Quotas.GroupID = @GroupID) AND (Hos
 		{
 			if (UseEntityFramework)
 			{
-				var serviceId = Packages.Where(p => p.PackageId == packageId)
-					.SelectMany(p => p.Services.Where(s => s.ProviderId == providerId))
-					.Select(s => (int?)s.ServiceId)
+				var serviceId = PackageServices
+					.Where(p => p.PackageId == packageId)
+					.Join(Services
+						.Where(s => s.ProviderId == providerId),
+						ps => ps.ServiceId, s => s.ServiceId, (ps, s) => (int?)ps.ServiceId)
 					.FirstOrDefault() ?? -1;
 				return serviceId;
 			}
@@ -38906,7 +38966,7 @@ RETURN
 
 				if (!string.IsNullOrEmpty(sortColumn))
 				{
-					folders = folders.OrderBy(sortColumn);
+					folders = folders.OrderBy(ColumnName(sortColumn));
 				}
 
 				folders = folders.Skip(startRow).Take(maximumRows);
@@ -39819,7 +39879,7 @@ RETURN
 
 				if (!string.IsNullOrEmpty(sortColumn))
 				{
-					levels = levels.OrderBy(sortColumn);
+					levels = levels.OrderBy(ColumnName(sortColumn));
 				}
 
 				levels = levels.Skip(startRow).Take(maximumRows);
@@ -40206,7 +40266,7 @@ RETURN
 
 				if (!string.IsNullOrEmpty(sortColumn))
 				{
-					spaces = spaces.OrderBy(sortColumn);
+					spaces = spaces.OrderBy(ColumnName(sortColumn));
 				}
 
 				spaces = spaces.Skip(startRow).Take(maximumRows);
@@ -41800,7 +41860,7 @@ RETURN
 
 				var count = collections.Count();
 
-				if (!string.IsNullOrEmpty(sortColumn)) collections = collections.OrderBy(sortColumn);
+				if (!string.IsNullOrEmpty(sortColumn)) collections = collections.OrderBy(ColumnName(sortColumn));
 
 				collections = collections.Skip(startRow).Take(maximumRows);
 
@@ -42375,7 +42435,7 @@ RETURN
 				if (!string.IsNullOrEmpty(sortColumn))
 				{
 					if (sortColumn.StartsWith("S.")) sortColumn = sortColumn.Substring(2);
-					servers = servers.OrderBy(sortColumn);
+					servers = servers.OrderBy(ColumnName(sortColumn));
 				}
 
 				servers = servers.Skip(startRow).Take(maximumRows);

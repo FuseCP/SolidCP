@@ -28,19 +28,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.6");
 
-            modelBuilder.Entity("PackageService", b =>
-                {
-                    b.Property<int>("PackageId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ServiceId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("PackageId", "ServiceId");
-
-                    b.ToTable("PackageService");
-                });
-
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.AccessToken", b =>
                 {
                     b.Property<int>("Id")

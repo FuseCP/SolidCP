@@ -523,7 +523,7 @@ namespace SolidCP.EnterpriseServer
                 catch (Exception ex)
                 {
                     // error while adding package
-                    throw ex;
+                    throw;
                 }
 
                 if (result.Result < 0)

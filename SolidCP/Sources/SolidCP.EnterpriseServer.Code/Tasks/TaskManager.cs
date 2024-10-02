@@ -456,6 +456,8 @@ namespace SolidCP.EnterpriseServer
             return sw.ToString();
         }
 
+        void WriteDebug(string msg) => Debug.WriteLine(msg);
+
         static bool IsPurging = false;
         void PurgeCompletedTasks(object obj)
         {
@@ -476,6 +478,8 @@ namespace SolidCP.EnterpriseServer
                 {
                     using (var mgr = AsAsync<TaskManager>())
                     {
+                        //mgr.Database.Log += WriteDebug;
+
                         var tasks = mgr.TaskController.GetProcessTasks(BackgroundTaskStatus.Run);
 
                         foreach (BackgroundTask task in tasks)
