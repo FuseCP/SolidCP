@@ -15206,12 +15206,12 @@ RETURN
 
 				using (var transaction = Database.BeginTransaction())
 				{
-#if NETCOREAPP
-					ServiceItems.Where(s => s.ItemId == itemId).ExecuteUpdate(s => s.SetProperty(p => p.ServiceId, destinationServiceId));
-#else
-					foreach (var item in ServiceItems.Where(s => s.ItemId == itemId)) item.ServiceId = destinationServiceId;
-					SaveChanges();
-#endif
+					ServiceItems.Where(s => s.ItemId == itemId)
+						.ExecuteUpdate(s => new Data.Entities.ServiceItem()
+						{
+							ServiceId = destinationServiceId
+						});
+
 					transaction.Commit();
 				}
 			}
@@ -20596,13 +20596,6 @@ RETURN
 
 					if (exceedingQuotas.Any()) transaction.Rollback();
 					else transaction.Commit();
-
-					/*if (exceedingQuotas.Any()) // Manual Rollback
-					{
-						Packages.Remove(package);
-						PackagesTreeCaches.RemoveRange(parents);
-						SaveChanges();
-					}*/
 
 					return EntityDataSet(exceedingQuotas);
 				}
@@ -34272,7 +34265,8 @@ END
 				#endregion
 
 				foreach (var ip in PackageIpAddresses
-					.Where(a => a.ItemId == itemId))
+					.Where(a => a.ItemId == itemId)
+					.ToArray())
 				{
 					if (CheckActorPackageRights(actorId, ip.PackageId))
 					{
