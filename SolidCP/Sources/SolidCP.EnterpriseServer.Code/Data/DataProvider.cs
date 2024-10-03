@@ -14889,9 +14889,8 @@ RETURN
 					};
 					ServiceItems.Add(item);
 
-					SaveChanges();
-
-					ServiceItemProperties.Where(p => p.ItemId == item.ItemId).ExecuteDelete();
+					ServiceItemProperties.RemoveRange(
+						ServiceItemProperties.Where(p => p.ItemId == item.ItemId));
 
 					var properties = XElement.Parse(xmlProperties)
 						.Elements()
@@ -14903,7 +14902,6 @@ RETURN
 						});
 
 					ServiceItemProperties.AddRange(properties);
-
 					SaveChanges();
 
 					transaction.Commit();
@@ -15024,8 +15022,8 @@ RETURN
 					item.ItemName = itemName;
 
 					ServiceItemProperties
-						.Where(p => p.ItemId == itemId)
-						.ExecuteDelete();
+						.RemoveRange(ServiceItemProperties
+							.Where(p => p.ItemId == itemId));
 
 					var properties = XElement.Parse(xmlProperties)
 						.Elements()
@@ -33679,7 +33677,7 @@ END
 					//TODO .Where(i => i.ItemId == itemId) or not?
 					.Where(i => i.ItemId == itemId) // bugfix added by Simon Egli, 27.6.2024 
 					.Select(i => i.PackageId)
-					.AsEnumerable()
+					.ToArray()
 					.Any(packageId => CheckActorPackageRights(actorId, packageId)))
 				{
 					var ip = new Data.Entities.DmzIpAddress()
@@ -34382,11 +34380,12 @@ RETURN
 				*/
 				#endregion
 
-				if (ServiceItems
+				var packages = ServiceItems
 					//TODO .Where(i => i.ItemId == itemId) or not?
 					.Where(i => i.ItemId == itemId) // bugfix added by Simon Egli, 27.6.2024 
 					.Select(i => i.PackageId)
-					.AsEnumerable()
+					.ToArray();
+				if (packages
 					.Any(packageId => CheckActorPackageRights(actorId, packageId)))
 				{
 					var ip = new Data.Entities.PrivateIpAddress()
@@ -34437,7 +34436,7 @@ END
 				var addresses = PrivateIpAddresses
 					.Where(ip => ip.ItemId == itemId)
 					.Include(ip => ip.Item)
-					.AsEnumerable()
+					.ToArray()
 					.Where(ip => CheckActorPackageRights(actorId, ip.Item.PackageId));
 
 				foreach (var ip in addresses) ip.IsPrimary = ip.PrivateAddressId == privateAddressId;
