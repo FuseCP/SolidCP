@@ -178,7 +178,7 @@
     <value>Gallery feed URL:</value>
   </data>
   <data name="lblWebAppGallery.Text" xml:space="preserve">
-    <value>Web Appication Gallery</value>
+    <value>Web Application Gallery</value>
   </data>
   <data name="lclGalleryFeedNote.Text" xml:space="preserve">
     <value>You could overwrite default Web App Gallery ATOM feed located at Microsoft web site by your own to provide your own applications to your customers. Leave this field blank to use default feed.</value>
