@@ -75,6 +75,8 @@ namespace SolidCP.Portal.ProviderControls
 			Utils.SelectListItem(ddlBrowseMethod, settings["BrowseMethod"]);
 			txtBrowseParameters.Text = settings["BrowseParameters"];
 
+            chkTrustServerCertificate.Checked = Utils.ParseBool(settings["TrustServerCertificate"], false);
+
             ToggleControls();
         }
 
@@ -86,6 +88,7 @@ namespace SolidCP.Portal.ProviderControls
             settings["UseTrustedConnection"] = Convert.ToString(rblAccountType.SelectedIndex == 0);
             settings["SaLogin"] = txtUserName.Text.Trim();
             settings["SaPassword"] = (txtPassword.Text.Length > 0) ? txtPassword.Text : (string)ViewState["PWD"];
+            settings["TrustServerCertificate"] = Convert.ToString(chkTrustServerCertificate.Checked);
             settings["UseDefaultDatabaseLocation"] = Convert.ToString(rblDbLocation.SelectedIndex == 0);
             settings["DatabaseLocation"] = txtDatabasesLocation.Text.Trim();
 

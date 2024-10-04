@@ -66,6 +66,10 @@
 						</table>
 					</td>
 				</tr>
+				<tr>
+					<td><asp:CheckBox ID="chkTrustServerCertificate" runat="server" Value="False" meta:resourcekey="chkTrustServerCertificate" Text="Always trust server certificate"/></td>
+				</tr>
+				<tr><td>&nbsp;</td></tr>
 			</table>
 		</td>
 	</tr>

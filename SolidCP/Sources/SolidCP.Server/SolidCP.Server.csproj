@@ -65,6 +65,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\SolidCP.Build\SolidCP.Build.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\SolidCP.Providers.Database.SqlServer\SolidCP.Providers.Database.SqlServer.csproj" />
         <ProjectReference Include="..\SolidCP.Web.Services\SolidCP.Web.Services.csproj" />
         <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
         <ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
@@ -89,6 +90,7 @@
         <Reference Include="SwaggerWcf">
             <HintPath>..\..\Lib\SwaggerWcf.dll</HintPath>
         </Reference>
+        <PackageReference Include="System.Memory" Version="4.5.5" />
     </ItemGroup>
     <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
         <PackageReference Include="CoreWCF.Primitives" Version="1.6.0" />

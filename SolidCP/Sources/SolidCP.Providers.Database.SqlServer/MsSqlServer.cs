@@ -33,7 +33,7 @@
 using System;
 using System.IO;
 using System.Data;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Collections.Specialized;
 using System.Collections.Generic;
 using System.Text;
@@ -72,16 +72,21 @@ namespace SolidCP.Providers.Database
 			get { return ProviderSettings.GetBool("UseTrustedConnection"); }
 		}
 
+		protected bool TrustServerCertificate
+		{
+			get { return ProviderSettings.GetBool("TrustServerCertificate"); }
+		}
+
 		protected string ConnectionString
 		{
 			get
 			{
-				string connectionString = String.Format("Server={0};User id={1};Password={2};Database=master;",
-					 ServerName, SaLogin, SaPassword);
+				string connectionString = String.Format("Server={0};User id={1};Password={2};Database=master;{3}",
+					 ServerName, SaLogin, SaPassword, TrustServerCertificate ? "TrustServerCertificate=true" : "");
 
 				if (UseTrustedConnection)
-					connectionString = String.Format("Server={0};Integrated security=SSPI;Database=master;",
-					ServerName);
+					connectionString = String.Format("Server={0};Integrated security=SSPI;Database=master;{1}",
+					ServerName, TrustServerCertificate ? "TrustServerCertificate=true" : "");
 
 				return connectionString;
 			}
@@ -99,16 +104,16 @@ namespace SolidCP.Providers.Database
 		#endregion
 
 		#region Databases
-		private string GetSafeConnectionString(string databaseName, string username, string password)
+		private string GetSafeConnectionString(string databaseName, string username, string password, bool trustServerCertificate)
 		{
-			return String.Format("Server={0};User id={1};Password={2};Database={3};",
-									  ServerName, username, password, databaseName);
+			return String.Format("Server={0};User id={1};Password={2};Database={3};{4}",
+									  ServerName, username, password, databaseName, trustServerCertificate ? "TrustServerCertificate=true" : "");
 		}
 
 		public virtual bool CheckConnectivity(string databaseName, string username, string password)
 		{
-			SqlConnection conn = new SqlConnection(String.Format("Server={0};Database={1};User id={2};Password={3};",
-				 ServerName, databaseName, username, password));
+			SqlConnection conn = new SqlConnection(String.Format("Server={0};Database={1};User id={2};Password={3};{4}",
+				 ServerName, databaseName, username, password, TrustServerCertificate ? "TrustServerCertificate=true" : ""));
 			try
 			{
 				conn.Open();
@@ -124,13 +129,13 @@ namespace SolidCP.Providers.Database
 		public virtual DataSet ExecuteSqlQuerySafe(string databaseName, string username, string password, string commandText)
 		{
 			return ExecuteSqlQuery(databaseName, commandText,
-				 GetSafeConnectionString(databaseName, username, password));
+				 GetSafeConnectionString(databaseName, username, password, TrustServerCertificate));
 		}
 
 		public virtual void ExecuteSqlNonQuerySafe(string databaseName, string username, string password, string commandText)
 		{
 			ExecuteSqlNonQuery(databaseName, commandText,
-				 GetSafeConnectionString(databaseName, username, password));
+				 GetSafeConnectionString(databaseName, username, password, TrustServerCertificate));
 		}
 
 		public virtual DataSet ExecuteSqlQuery(string databaseName, string commandText)
