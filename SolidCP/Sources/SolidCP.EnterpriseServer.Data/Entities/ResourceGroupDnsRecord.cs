@@ -30,11 +30,11 @@ public partial class ResourceGroupDnsRecord
 #endif
     public string RecordType { get; set; }
 
-    [Required]
+    [Required(AllowEmptyStrings=true)]
     [StringLength(50)]
     public string RecordName { get; set; }
 
-    [Required]
+	[Required(AllowEmptyStrings = true)]
     [StringLength(200)]
     public string RecordData { get; set; }
 

@@ -31,7 +31,7 @@ public partial class ExchangeAccount
     [StringLength(300)]
     public string AccountName { get; set; }
 
-    [Required]
+    [Required(AllowEmptyStrings = true)]
     [StringLength(300)]
     public string DisplayName { get; set; }
 

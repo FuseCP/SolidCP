@@ -28,12 +28,12 @@ public partial class GlobalDnsRecord
 #endif
     public string RecordType { get; set; }
 
-    [Required]
-    [StringLength(50)]
+	[Required(AllowEmptyStrings = true)]
+	[StringLength(50)]
     public string RecordName { get; set; }
 
-    [Required]
-    [StringLength(500)]
+	[Required(AllowEmptyStrings = true)]
+	[StringLength(500)]
     public string RecordData { get; set; }
 
     [Column("MXPriority")]

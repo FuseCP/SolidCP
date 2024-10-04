@@ -21,7 +21,7 @@ public partial class RdsMessage
     [Column("RDSCollectionId")]
     public int RdsCollectionId { get; set; }
 
-    [Required]
+    [Required(AllowEmptyStrings = true)]
     //[Column(TypeName = "ntext")]
     public string MessageText { get; set; }
 

@@ -18,7 +18,7 @@ public partial class StorageSpaceLevel
     [StringLength(300)]
     public string Name { get; set; }
 
-    [Required]
+    [Required(AllowEmptyStrings = true)]
     public string Description { get; set; }
 
     [InverseProperty("Level")]

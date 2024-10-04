@@ -17820,7 +17820,7 @@ RETURN
 				plan.RecurrenceUnit = recurrenceUnit;
 				SaveChanges();
 
-				using (var transaction = Database.BeginTransaction(IsolationLevel.ReadUncommitted))
+				using (var transaction = Database.BeginTransaction())
 				{
 					// update quotas
 					UpdateHostingPlanQuotas(actorId, planId, quotasXml);
