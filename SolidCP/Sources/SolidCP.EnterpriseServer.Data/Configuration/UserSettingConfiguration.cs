@@ -20,10 +20,15 @@ public partial class UserSettingConfiguration: EntityTypeConfiguration<UserSetti
         else if (IsCore && (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql))
         {
             Property(e => e.PropertyValue).HasColumnType("TEXT");
-        }
+			if (IsSqlite)
+			{
+				Property(e => e.SettingsName).HasColumnType("TEXT COLLATE NOCASE");
+				Property(e => e.PropertyName).HasColumnType("TEXT COLLATE NOCASE");
+			}
+		}
 
 #if NetCore
-        HasOne(d => d.User).WithMany(p => p.UserSettings).HasConstraintName("FK_UserSettings_Users");
+		HasOne(d => d.User).WithMany(p => p.UserSettings).HasConstraintName("FK_UserSettings_Users");
 #else
         HasRequired(d => d.User).WithMany(p => p.UserSettings);
 #endif

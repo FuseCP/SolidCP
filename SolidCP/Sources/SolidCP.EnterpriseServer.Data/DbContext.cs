@@ -52,6 +52,7 @@ namespace SolidCP.EnterpriseServer.Data
                     }
                     csb["BinaryGUID"] = "false";
                     csb["Foreign Keys"] = "true";
+                    csb["BusyTimeout"] = "60000";
                 }
                 connectionString = csb.ToString();
             }
@@ -102,7 +103,7 @@ namespace SolidCP.EnterpriseServer.Data
 						case DbType.Sqlite:
                         case DbType.SqliteFX:
 							dbConnection = SqliteDbConnection;
-							break;
+                            break;
 						case DbType.PostgreSql:
 							dbConnection = PostgreSqlDbConnection;
 							break;

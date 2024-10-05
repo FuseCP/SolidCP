@@ -15,6 +15,8 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 public partial class DmzIpAddressConfiguration: EntityTypeConfiguration<DmzIpAddress>
 {
     public override void Configure() {
+        if (IsSqlite) Property(e => e.IpAddress).HasColumnType("TEXT COLLATE NOCASE");
+
 #if NetCore
         HasOne(d => d.Item).WithMany(p => p.DmzIpAddresses).HasConstraintName("FK_DmzIPAddresses_ServiceItems");
 #else

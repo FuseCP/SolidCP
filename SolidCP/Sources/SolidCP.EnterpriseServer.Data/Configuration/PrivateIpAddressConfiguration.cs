@@ -18,6 +18,8 @@ public partial class PrivateIpAddressConfiguration: EntityTypeConfiguration<Priv
 
         Property(e => e.IpAddress).IsUnicode(false);
 
+        if (IsSqlite) Property(e => e.IpAddress).HasColumnType("TEXT COLLATE NOCASE");
+
 #if NetCore
         HasOne(d => d.Item).WithMany(p => p.PrivateIpAddresses).HasConstraintName("FK_PrivateIPAddresses_ServiceItems");
 #else

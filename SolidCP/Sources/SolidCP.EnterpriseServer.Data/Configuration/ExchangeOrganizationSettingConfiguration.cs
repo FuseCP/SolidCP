@@ -16,5 +16,6 @@ public partial class ExchangeOrganizationSettingConfiguration : EntityTypeConfig
 {
 	public override void Configure()
 	{
+		if (IsSqlite) Property(e => e.SettingsName).HasColumnType("TEXT COLLATE NOCASE");
     }
 }

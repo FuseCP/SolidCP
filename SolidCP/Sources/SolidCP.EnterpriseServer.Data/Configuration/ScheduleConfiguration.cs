@@ -24,6 +24,9 @@ public partial class ScheduleConfiguration : EntityTypeConfiguration<Schedule>
 			Property(e => e.StartTime).HasColumnType("datetime");
 			Property(e => e.NextRun).HasColumnType("datetime");
 			Property(e => e.LastRun).HasColumnType("datetime");
+		} else if (IsSqlite)
+		{
+			Property(e => e.ScheduleTypeId).HasColumnType("TEXT COLLATE NOCASE");
 		}
 
 #if NetCore

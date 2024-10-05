@@ -37,6 +37,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="Data\mgrg2n5g.cgr~" />
+	</ItemGroup>
+
+	<ItemGroup>
         <PackageReference Include="DotNetZip" Version="1.16.0" />
         <PackageReference Include="GoogleAuthenticator" Version="3.2.0" />
         <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />

@@ -16,8 +16,14 @@ public partial class ThemeSettingConfiguration: EntityTypeConfiguration<ThemeSet
 {
     public override void Configure() {
 
-        #region Seed Data
-        HasData(() => new ThemeSetting[] {
+        if (IsSqlite)
+        {
+			Property(e => e.SettingsName).HasColumnType("TEXT COLLATE NOCASE");
+			Property(e => e.PropertyName).HasColumnType("TEXT COLLATE NOCASE");
+		}
+
+		#region Seed Data
+		HasData(() => new ThemeSetting[] {
             new ThemeSetting() { PropertyName = "Light", PropertyValue = "light-theme", SettingsName = "Style", ThemeId = 1 },
             new ThemeSetting() { PropertyName = "Dark", PropertyValue = "dark-theme", SettingsName = "Style", ThemeId = 1 },
             new ThemeSetting() { PropertyName = "Semi Dark", PropertyValue = "semi-dark", SettingsName = "Style", ThemeId = 1 },

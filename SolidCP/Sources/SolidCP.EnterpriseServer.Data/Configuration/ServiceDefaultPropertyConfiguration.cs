@@ -15,6 +15,9 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 public partial class ServiceDefaultPropertyConfiguration: EntityTypeConfiguration<ServiceDefaultProperty>
 {
     public override void Configure() {
+
+        if (IsSqlite) Property(e => e.PropertyName).HasColumnType("TEXT COLLATE NOCASE");
+
         HasKey(e => new { e.ProviderId, e.PropertyName }).HasName("PK_ServiceDefaultProperties_1");
 
 #if NetCore

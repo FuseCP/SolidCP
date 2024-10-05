@@ -16,8 +16,17 @@ public partial class LyncUserPlanConfiguration: EntityTypeConfiguration<LyncUser
 {
     public override void Configure() {
 
+        if (IsSqlite)
+        {
+			Property(e => e.ArchivePolicy).HasColumnType("TEXT COLLATE NOCASE");
+			Property(e => e.LyncUserPlanName).HasColumnType("TEXT COLLATE NOCASE");
+			Property(e => e.TelephonyDialPlanPolicy).HasColumnType("TEXT COLLATE NOCASE");
+			Property(e => e.TelephonyVoicePolicy).HasColumnType("TEXT COLLATE NOCASE");
+			Property(e => e.VoicePolicy).HasColumnType("TEXT COLLATE NOCASE");
+		}
+
 #if NetCore
-        HasOne(d => d.Item).WithMany(p => p.LyncUserPlans).HasConstraintName("FK_LyncUserPlans_ExchangeOrganizations");
+		HasOne(d => d.Item).WithMany(p => p.LyncUserPlans).HasConstraintName("FK_LyncUserPlans_ExchangeOrganizations");
 #else
         HasRequired(d => d.Item).WithMany(p => p.LyncUserPlans);
 #endif

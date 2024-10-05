@@ -19,12 +19,13 @@ public partial class DomainConfiguration: EntityTypeConfiguration<Domain>
 
     public override void Configure() {
 
-		if (IsSqlServer)
-		{
-			Property(e => e.CreationDate).HasColumnType("datetime");
-			Property(e => e.ExpirationDate).HasColumnType("datetime");
-			Property(e => e.LastUpdateDate).HasColumnType("datetime");
-		}
+        if (IsSqlServer)
+        {
+            Property(e => e.CreationDate).HasColumnType("datetime");
+            Property(e => e.ExpirationDate).HasColumnType("datetime");
+            Property(e => e.LastUpdateDate).HasColumnType("datetime");
+        }
+        else if (IsSqlite) Property(e => e.DomainName).HasColumnType("TEXT COLLATE NOCASE"); 
 
 #if NetCore
         HasOne(d => d.MailDomain).WithMany(p => p.DomainMailDomains).HasConstraintName("FK_Domains_ServiceItems_MailDomain");

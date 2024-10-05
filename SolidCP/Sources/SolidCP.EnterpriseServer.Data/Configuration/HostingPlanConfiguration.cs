@@ -26,6 +26,7 @@ public partial class HostingPlanConfiguration : EntityTypeConfiguration<HostingP
 		else if (IsCore && (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql))
 		{
 			Property(e => e.PlanDescription).HasColumnType("TEXT");
+			if (IsSqlite) Property(e => e.PlanName).HasColumnType("TEXT COLLATE NOCASE");
 		}
 
 

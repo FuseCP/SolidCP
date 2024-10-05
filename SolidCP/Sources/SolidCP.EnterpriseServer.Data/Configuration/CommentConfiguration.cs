@@ -18,6 +18,7 @@ public partial class CommentConfiguration: EntityTypeConfiguration<Comment>
 
         Property(e => e.ItemTypeId).IsUnicode(false);
         if (IsSqlServer) Property(e => e.CreatedDate).HasColumnType("datetime");
+        else if (IsSqlite) Property(e => e.ItemTypeId).HasColumnType("TEXT COLLATE NOCASE");
 
 #if NetCore
 		if (IsSqlServer) Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");

@@ -15,5 +15,13 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 public partial class SfBUserPlanConfiguration: EntityTypeConfiguration<SfBUserPlan>
 {
     public override void Configure() {
-    }
+
+        if (IsSqlite)
+        {
+            Property(e => e.ArchivePolicy).HasColumnType("TEXT COLLATE NOCASE");
+			Property(e => e.TelephonyDialPlanPolicy).HasColumnType("TEXT COLLATE NOCASE");
+			Property(e => e.TelephonyVoicePolicy).HasColumnType("TEXT COLLATE NOCASE");
+			Property(e => e.VoicePolicy).HasColumnType("TEXT COLLATE NOCASE");
+		}
+	}
 }

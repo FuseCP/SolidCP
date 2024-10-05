@@ -12916,9 +12916,11 @@ RETURN
 					.Select(p => p.PropertyName)
 					.ToArray();
 
-				// delete old properties
+				// delete old properties (case insensitive, as strings are case insensitve in SQL Server)
 				var serviceProperties = ServiceProperties
-					.Where(s => s.ServiceId == serviceId && propertyNames.Contains(s.PropertyName));
+					.Where(s => s.ServiceId == serviceId)
+					.AsEnumerable()
+					.Where(s => propertyNames.Contains(s.PropertyName, StringComparer.InvariantCultureIgnoreCase));
 				ServiceProperties.RemoveRange(serviceProperties);
 
 				ServiceProperties.AddRange(properties);

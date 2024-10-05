@@ -26,6 +26,7 @@ public partial class AuditLogConfiguration: EntityTypeConfiguration<AuditLog>
 			Property(e => e.ExecutionLog).HasColumnType("ntext");
 		} else if (IsCore && (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql)) {
 			Property(e => e.ExecutionLog).HasColumnType("TEXT");
+			if (IsSqlite) Property(e => e.RecordId).HasColumnType("TEXT COLLATE NOCASE");
 		}
 	}
 }

@@ -16,6 +16,9 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 public partial class RdsCollectionConfiguration : EntityTypeConfiguration<RdsCollection>
 {
     public override void Configure() {
+
+        if (IsSqlite) Property(e => e.Name).HasColumnType("TEXT COLLATE NOCASE");
+
         HasKey(e => e.Id).HasName("PK__RDSColle__3214EC27346D361D");
     }
 }
