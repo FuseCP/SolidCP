@@ -18,7 +18,7 @@ public partial class ResourceGroupDnsRecordConfiguration : EntityTypeConfigurati
 	{
         Property(e => e.RecordType).IsUnicode(false);
 
-        if (IsSqlite) Property(e => e.RecordType).HasColumnType("TEXT COLLATE NOCASE");
+        if (IsCore && IsSqlite) Property(e => e.RecordType).HasColumnType("TEXT COLLATE NOCASE");
 
 #if NetCore
 		Property(e => e.RecordOrder).HasDefaultValue(1);

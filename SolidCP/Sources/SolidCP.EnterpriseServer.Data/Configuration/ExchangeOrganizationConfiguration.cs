@@ -12,7 +12,7 @@ public partial class ExchangeOrganizationConfiguration: EntityTypeConfiguration<
 {
     public override void Configure() {
 
-        if (IsSqlite) Property(e => e.OrganizationId).HasColumnType("TEXT COLLATE NOCASE");
+        if (IsCore && IsSqlite) Property(e => e.OrganizationId).HasColumnType("TEXT COLLATE NOCASE");
 
 #if NetCore
         Property(e => e.ItemId).ValueGeneratedNever();

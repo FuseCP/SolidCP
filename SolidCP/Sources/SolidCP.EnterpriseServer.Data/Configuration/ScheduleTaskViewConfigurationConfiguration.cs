@@ -16,7 +16,7 @@ public partial class ScheduleTaskViewConfigurationConfiguration: EntityTypeConfi
 {
     public override void Configure() {
 
-        if (IsSqlite) Property(e => e.ConfigurationId).HasColumnType("TEXT COLLATE NOCASE");
+        if (IsCore && IsSqlite) Property(e => e.ConfigurationId).HasColumnType("TEXT COLLATE NOCASE");
 
 #if NetCore
         HasOne(d => d.Task).WithMany(p => p.ScheduleTaskViewConfigurations)

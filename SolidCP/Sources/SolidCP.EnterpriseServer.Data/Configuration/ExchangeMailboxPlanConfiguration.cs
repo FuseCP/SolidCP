@@ -16,7 +16,7 @@ public partial class ExchangeMailboxPlanConfiguration: EntityTypeConfiguration<E
 {
     public override void Configure() {
 
-        if (IsSqlite) Property(e => e.MailboxPlan).HasColumnType("TEXT COLLATE NOCASE");
+        if (IsCore && IsSqlite) Property(e => e.MailboxPlan).HasColumnType("TEXT COLLATE NOCASE");
 
 #if NetCore
         HasOne(d => d.Item).WithMany(p => p.ExchangeMailboxPlans).HasConstraintName("FK_ExchangeMailboxPlans_ExchangeOrganizations");

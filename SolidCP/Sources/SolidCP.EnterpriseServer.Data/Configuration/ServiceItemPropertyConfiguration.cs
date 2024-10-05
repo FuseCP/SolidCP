@@ -16,7 +16,7 @@ public partial class ServiceItemPropertyConfiguration: EntityTypeConfiguration<S
 {
     public override void Configure() {
 
-        if (IsSqlite) Property(e => e.PropertyName).HasColumnType("TEXT COLLATE NOCASE");
+        if (IsCore && IsSqlite) Property(e => e.PropertyName).HasColumnType("TEXT COLLATE NOCASE");
 
 #if NetCore
         HasOne(d => d.Item).WithMany(p => p.ServiceItemProperties).HasConstraintName("FK_ServiceItemProperties_ServiceItems");

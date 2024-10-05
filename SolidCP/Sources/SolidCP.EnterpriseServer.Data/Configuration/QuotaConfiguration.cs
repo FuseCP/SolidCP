@@ -16,7 +16,7 @@ public partial class QuotaConfiguration: EntityTypeConfiguration<Quota>
 {
     public override void Configure() {
 
-		if (IsSqlite) Property(e => e.QuotaName).HasColumnType("TEXT COLLATE NOCASE");
+		if (IsCore && IsSqlite) Property(e => e.QuotaName).HasColumnType("TEXT COLLATE NOCASE");
 
 #if NetCore
         Property(e => e.QuotaId).ValueGeneratedNever();

@@ -15,7 +15,7 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 public partial class AdditionalGroupConfiguration: EntityTypeConfiguration<AdditionalGroup>
 {
     public override void Configure() {
-		if (IsSqlite) Property(e => e.GroupName).HasColumnType("TEXT COLLATE NOCASE");
+		if (IsCore && IsSqlite) Property(e => e.GroupName).HasColumnType("TEXT COLLATE NOCASE");
 		
 		HasKey(e => e.Id).HasName("PK__Addition__3214EC27E665DDE2");
 	}

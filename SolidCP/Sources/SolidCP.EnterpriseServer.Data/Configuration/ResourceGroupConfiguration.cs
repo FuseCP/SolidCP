@@ -17,7 +17,7 @@ public partial class ResourceGroupConfiguration : EntityTypeConfiguration<Resour
 {
 	public override void Configure()
 	{
-        if (IsSqlite) Property(e => e.GroupName).HasColumnType("TEXT COLLATE NOCASE");
+        if (IsCore && IsSqlite) Property(e => e.GroupName).HasColumnType("TEXT COLLATE NOCASE");
 
 #if NetCore
         Property(e => e.GroupId).ValueGeneratedNever();

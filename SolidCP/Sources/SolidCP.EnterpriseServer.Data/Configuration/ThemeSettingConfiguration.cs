@@ -16,7 +16,7 @@ public partial class ThemeSettingConfiguration: EntityTypeConfiguration<ThemeSet
 {
     public override void Configure() {
 
-        if (IsSqlite)
+        if (IsCore && IsSqlite)
         {
 			Property(e => e.SettingsName).HasColumnType("TEXT COLLATE NOCASE");
 			Property(e => e.PropertyName).HasColumnType("TEXT COLLATE NOCASE");

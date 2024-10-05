@@ -20,7 +20,7 @@ public partial class SystemSettingConfiguration: EntityTypeConfiguration<SystemS
 		else if (IsCore && (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql))
 		{
 			Property(e => e.PropertyValue).HasColumnType("TEXT");
-			if (IsSqlite)
+			if (IsCore && IsSqlite)
 			{
 				Property(e => e.SettingsName).HasColumnType("TEXT COLLATE NOCASE");
 				Property(e => e.PropertyName).HasColumnType("TEXT COLLATE NOCASE");

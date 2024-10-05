@@ -16,7 +16,7 @@ public partial class SfBUserPlanConfiguration: EntityTypeConfiguration<SfBUserPl
 {
     public override void Configure() {
 
-        if (IsSqlite)
+        if (IsCore && IsSqlite)
         {
             Property(e => e.ArchivePolicy).HasColumnType("TEXT COLLATE NOCASE");
 			Property(e => e.TelephonyDialPlanPolicy).HasColumnType("TEXT COLLATE NOCASE");

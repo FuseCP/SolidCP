@@ -17,7 +17,7 @@ public partial class RdsCollectionConfiguration : EntityTypeConfiguration<RdsCol
 {
     public override void Configure() {
 
-        if (IsSqlite) Property(e => e.Name).HasColumnType("TEXT COLLATE NOCASE");
+        if (IsCore && IsSqlite) Property(e => e.Name).HasColumnType("TEXT COLLATE NOCASE");
 
         HasKey(e => e.Id).HasName("PK__RDSColle__3214EC27346D361D");
     }

@@ -16,7 +16,7 @@ public partial class LyncUserPlanConfiguration: EntityTypeConfiguration<LyncUser
 {
     public override void Configure() {
 
-        if (IsSqlite)
+        if (IsCore && IsSqlite)
         {
 			Property(e => e.ArchivePolicy).HasColumnType("TEXT COLLATE NOCASE");
 			Property(e => e.LyncUserPlanName).HasColumnType("TEXT COLLATE NOCASE");

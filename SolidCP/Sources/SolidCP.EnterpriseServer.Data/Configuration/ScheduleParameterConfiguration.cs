@@ -16,7 +16,7 @@ public partial class ScheduleParameterConfiguration : EntityTypeConfiguration<Sc
 {
 	public override void Configure()
 	{
-		if (IsSqlite) Property(e => e.ParameterId).HasColumnType("TEXT COLLATE NOCASE");
+		if (IsCore && IsSqlite) Property(e => e.ParameterId).HasColumnType("TEXT COLLATE NOCASE");
 
 #if NetCore
         HasOne(d => d.Schedule).WithMany(p => p.ScheduleParameters).HasConstraintName("FK_ScheduleParameters_Schedule");

@@ -22,7 +22,7 @@ public partial class LyncUserConfiguration : EntityTypeConfiguration<LyncUser>
 		{
 			Property(e => e.CreatedDate).HasColumnType("datetime");
 			Property(e => e.ModifiedDate).HasColumnType("datetime");
-		} else if (IsSqlite)
+		} else if (IsCore && IsSqlite)
 		{
 			Property(e => e.SipAddress).HasColumnType("TEXT COLLATE NOCASE");
 		}

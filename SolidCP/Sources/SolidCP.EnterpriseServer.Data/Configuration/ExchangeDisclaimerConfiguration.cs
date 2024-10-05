@@ -16,6 +16,6 @@ public partial class ExchangeDisclaimerConfiguration : EntityTypeConfiguration<E
 {
 	public override void Configure()
 	{
-		if (IsSqlite) Property(e => e.DisclaimerName).HasColumnType("TEXT COLLATE NOCASE");
+		if (IsCore && IsSqlite) Property(e => e.DisclaimerName).HasColumnType("TEXT COLLATE NOCASE");
 	}
 }
