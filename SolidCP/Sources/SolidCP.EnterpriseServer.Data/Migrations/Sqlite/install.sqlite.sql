@@ -8720,3 +8720,136 @@ VALUES ('20241005210532_SQLite_NOCASE', '8.0.8');
 
 COMMIT;
 
+BEGIN TRANSACTION;
+
+INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+VALUES (307, NULL, 'MySQL Server 8.3', 'MySQL', 90, 'MySQL', 'SolidCP.Providers.Database.MySqlServer83, SolidCP.Providers.Database.MySQL');
+SELECT changes();
+
+INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+VALUES (308, NULL, 'MySQL Server 8.4', 'MySQL', 90, 'MySQL', 'SolidCP.Providers.Database.MySqlServer84, SolidCP.Providers.Database.MySQL');
+SELECT changes();
+
+INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+VALUES (320, NULL, 'MySQL Server 9.0', 'MySQL', 90, 'MySQL', 'SolidCP.Providers.Database.MySqlServer90, SolidCP.Providers.Database.MySQL');
+SELECT changes();
+
+
+INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+VALUES (125, 90, NULL, NULL, NULL, 'Database Truncate', 'MySQL9.Truncate', 6, 1, 0);
+SELECT changes();
+
+
+INSERT INTO "ResourceGroups" ("GroupID", "GroupController", "GroupName", "GroupOrder", "ShowGroup")
+VALUES (91, 'SolidCP.EnterpriseServer.DatabaseServerController', 'MySQL9', 12, 1);
+SELECT changes();
+
+
+INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+VALUES (120, 91, NULL, 75, NULL, 'Databases', 'MySQL9.Databases', 1, 2, 0);
+SELECT changes();
+
+INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+VALUES (121, 91, NULL, 76, NULL, 'Users', 'MySQL9.Users', 2, 2, 0);
+SELECT changes();
+
+INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+VALUES (122, 91, NULL, NULL, NULL, 'Database Backups', 'MySQL9.Backup', 4, 1, 0);
+SELECT changes();
+
+INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+VALUES (123, 91, NULL, NULL, NULL, 'Max Database Size', 'MySQL9.MaxDatabaseSize', 3, 3, 0);
+SELECT changes();
+
+INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+VALUES (124, 91, NULL, NULL, NULL, 'Database Restores', 'MySQL9.Restore', 5, 1, 0);
+SELECT changes();
+
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('ExternalAddress', 307, 'localhost');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InstallFolder', 307, '%PROGRAMFILES%\MySQL\MySQL Server 8.0');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InternalAddress', 307, 'localhost,3306');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootLogin', 307, 'root');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootPassword', 307, '');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('sslmode', 307, 'True');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('ExternalAddress', 308, 'localhost');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InstallFolder', 308, '%PROGRAMFILES%\MySQL\MySQL Server 8.0');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InternalAddress', 308, 'localhost,3306');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootLogin', 308, 'root');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootPassword', 308, '');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('sslmode', 308, 'True');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('ExternalAddress', 320, 'localhost');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InstallFolder', 320, '%PROGRAMFILES%\MySQL\MySQL Server 9.0');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InternalAddress', 320, 'localhost,3306');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootLogin', 320, 'root');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootPassword', 320, '');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('sslmode', 320, 'True');
+SELECT changes();
+
+
+INSERT INTO "ServiceItemTypes" ("ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Importable", "Searchable", "Suspendable", "TypeName", "TypeOrder")
+VALUES (90, 1, 0, 1, 'MySQL9Database', 1, 91, 1, 1, 0, 'SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base', 20);
+SELECT changes();
+
+INSERT INTO "ServiceItemTypes" ("ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Importable", "Searchable", "Suspendable", "TypeName", "TypeOrder")
+VALUES (91, 1, 0, 0, 'MySQL9User', 1, 91, 1, 1, 0, 'SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base', 21);
+SELECT changes();
+
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20241006062900_MySql9AndMaraiDB11', '8.0.8');
+
+COMMIT;
+

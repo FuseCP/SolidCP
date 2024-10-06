@@ -7221,3 +7221,111 @@ BEGIN
 END $EF$;
 COMMIT;
 
+START TRANSACTION;
+
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241006063214_MySql9AndMaraiDB11') THEN
+    INSERT INTO public."Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+    VALUES (307, NULL, 'MySQL Server 8.3', 'MySQL', 90, 'MySQL', 'SolidCP.Providers.Database.MySqlServer83, SolidCP.Providers.Database.MySQL');
+    INSERT INTO public."Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+    VALUES (308, NULL, 'MySQL Server 8.4', 'MySQL', 90, 'MySQL', 'SolidCP.Providers.Database.MySqlServer84, SolidCP.Providers.Database.MySQL');
+    INSERT INTO public."Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+    VALUES (320, NULL, 'MySQL Server 9.0', 'MySQL', 90, 'MySQL', 'SolidCP.Providers.Database.MySqlServer90, SolidCP.Providers.Database.MySQL');
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241006063214_MySql9AndMaraiDB11') THEN
+    INSERT INTO public."Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+    VALUES (125, 90, NULL, NULL, NULL, 'Database Truncate', 'MySQL9.Truncate', 6, 1, FALSE);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241006063214_MySql9AndMaraiDB11') THEN
+    INSERT INTO public."ResourceGroups" ("GroupID", "GroupController", "GroupName", "GroupOrder", "ShowGroup")
+    VALUES (91, 'SolidCP.EnterpriseServer.DatabaseServerController', 'MySQL9', 12, TRUE);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241006063214_MySql9AndMaraiDB11') THEN
+    INSERT INTO public."Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+    VALUES (120, 91, NULL, 75, NULL, 'Databases', 'MySQL9.Databases', 1, 2, FALSE);
+    INSERT INTO public."Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+    VALUES (121, 91, NULL, 76, NULL, 'Users', 'MySQL9.Users', 2, 2, FALSE);
+    INSERT INTO public."Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+    VALUES (122, 91, NULL, NULL, NULL, 'Database Backups', 'MySQL9.Backup', 4, 1, FALSE);
+    INSERT INTO public."Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+    VALUES (123, 91, NULL, NULL, NULL, 'Max Database Size', 'MySQL9.MaxDatabaseSize', 3, 3, FALSE);
+    INSERT INTO public."Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+    VALUES (124, 91, NULL, NULL, NULL, 'Database Restores', 'MySQL9.Restore', 5, 1, FALSE);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241006063214_MySql9AndMaraiDB11') THEN
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('ExternalAddress', 307, 'localhost');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('InstallFolder', 307, '%PROGRAMFILES%\MySQL\MySQL Server 8.0');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('InternalAddress', 307, 'localhost,3306');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('RootLogin', 307, 'root');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('RootPassword', 307, '');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('sslmode', 307, 'True');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('ExternalAddress', 308, 'localhost');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('InstallFolder', 308, '%PROGRAMFILES%\MySQL\MySQL Server 8.0');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('InternalAddress', 308, 'localhost,3306');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('RootLogin', 308, 'root');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('RootPassword', 308, '');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('sslmode', 308, 'True');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('ExternalAddress', 320, 'localhost');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('InstallFolder', 320, '%PROGRAMFILES%\MySQL\MySQL Server 9.0');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('InternalAddress', 320, 'localhost,3306');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('RootLogin', 320, 'root');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('RootPassword', 320, '');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('sslmode', 320, 'True');
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241006063214_MySql9AndMaraiDB11') THEN
+    INSERT INTO public."ServiceItemTypes" ("ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Importable", "Searchable", "Suspendable", "TypeName", "TypeOrder")
+    VALUES (90, TRUE, FALSE, TRUE, 'MySQL9Database', TRUE, 91, TRUE, TRUE, FALSE, 'SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base', 20);
+    INSERT INTO public."ServiceItemTypes" ("ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Importable", "Searchable", "Suspendable", "TypeName", "TypeOrder")
+    VALUES (91, TRUE, FALSE, FALSE, 'MySQL9User', TRUE, 91, TRUE, TRUE, FALSE, 'SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base', 21);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241006063214_MySql9AndMaraiDB11') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20241006063214_MySql9AndMaraiDB11', '8.0.8');
+    END IF;
+END $EF$;
+COMMIT;
+

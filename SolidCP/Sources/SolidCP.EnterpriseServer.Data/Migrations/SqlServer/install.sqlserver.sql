@@ -43127,3 +43127,127 @@ GO
 COMMIT;
 GO
 
+BEGIN TRANSACTION;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20241006062940_MySql9AndMaraiDB11'
+)
+BEGIN
+    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ProviderID', N'DisableAutoDiscovery', N'DisplayName', N'EditorControl', N'GroupID', N'ProviderName', N'ProviderType') AND [object_id] = OBJECT_ID(N'[Providers]'))
+        SET IDENTITY_INSERT [Providers] ON;
+    EXEC(N'INSERT INTO [Providers] ([ProviderID], [DisableAutoDiscovery], [DisplayName], [EditorControl], [GroupID], [ProviderName], [ProviderType])
+    VALUES (307, NULL, N''MySQL Server 8.3'', N''MySQL'', 90, N''MySQL'', N''SolidCP.Providers.Database.MySqlServer83, SolidCP.Providers.Database.MySQL''),
+    (308, NULL, N''MySQL Server 8.4'', N''MySQL'', 90, N''MySQL'', N''SolidCP.Providers.Database.MySqlServer84, SolidCP.Providers.Database.MySQL''),
+    (320, NULL, N''MySQL Server 9.0'', N''MySQL'', 90, N''MySQL'', N''SolidCP.Providers.Database.MySqlServer90, SolidCP.Providers.Database.MySQL'')');
+    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ProviderID', N'DisableAutoDiscovery', N'DisplayName', N'EditorControl', N'GroupID', N'ProviderName', N'ProviderType') AND [object_id] = OBJECT_ID(N'[Providers]'))
+        SET IDENTITY_INSERT [Providers] OFF;
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20241006062940_MySql9AndMaraiDB11'
+)
+BEGIN
+    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'QuotaID', N'GroupID', N'HideQuota', N'ItemTypeID', N'PerOrganization', N'QuotaDescription', N'QuotaName', N'QuotaOrder', N'QuotaTypeID', N'ServiceQuota') AND [object_id] = OBJECT_ID(N'[Quotas]'))
+        SET IDENTITY_INSERT [Quotas] ON;
+    EXEC(N'INSERT INTO [Quotas] ([QuotaID], [GroupID], [HideQuota], [ItemTypeID], [PerOrganization], [QuotaDescription], [QuotaName], [QuotaOrder], [QuotaTypeID], [ServiceQuota])
+    VALUES (125, 90, NULL, NULL, NULL, N''Database Truncate'', N''MySQL9.Truncate'', 6, 1, CAST(0 AS bit))');
+    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'QuotaID', N'GroupID', N'HideQuota', N'ItemTypeID', N'PerOrganization', N'QuotaDescription', N'QuotaName', N'QuotaOrder', N'QuotaTypeID', N'ServiceQuota') AND [object_id] = OBJECT_ID(N'[Quotas]'))
+        SET IDENTITY_INSERT [Quotas] OFF;
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20241006062940_MySql9AndMaraiDB11'
+)
+BEGIN
+    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'GroupID', N'GroupController', N'GroupName', N'GroupOrder', N'ShowGroup') AND [object_id] = OBJECT_ID(N'[ResourceGroups]'))
+        SET IDENTITY_INSERT [ResourceGroups] ON;
+    EXEC(N'INSERT INTO [ResourceGroups] ([GroupID], [GroupController], [GroupName], [GroupOrder], [ShowGroup])
+    VALUES (91, N''SolidCP.EnterpriseServer.DatabaseServerController'', N''MySQL9'', 12, CAST(1 AS bit))');
+    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'GroupID', N'GroupController', N'GroupName', N'GroupOrder', N'ShowGroup') AND [object_id] = OBJECT_ID(N'[ResourceGroups]'))
+        SET IDENTITY_INSERT [ResourceGroups] OFF;
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20241006062940_MySql9AndMaraiDB11'
+)
+BEGIN
+    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'QuotaID', N'GroupID', N'HideQuota', N'ItemTypeID', N'PerOrganization', N'QuotaDescription', N'QuotaName', N'QuotaOrder', N'QuotaTypeID', N'ServiceQuota') AND [object_id] = OBJECT_ID(N'[Quotas]'))
+        SET IDENTITY_INSERT [Quotas] ON;
+    EXEC(N'INSERT INTO [Quotas] ([QuotaID], [GroupID], [HideQuota], [ItemTypeID], [PerOrganization], [QuotaDescription], [QuotaName], [QuotaOrder], [QuotaTypeID], [ServiceQuota])
+    VALUES (120, 91, NULL, 75, NULL, N''Databases'', N''MySQL9.Databases'', 1, 2, CAST(0 AS bit)),
+    (121, 91, NULL, 76, NULL, N''Users'', N''MySQL9.Users'', 2, 2, CAST(0 AS bit)),
+    (122, 91, NULL, NULL, NULL, N''Database Backups'', N''MySQL9.Backup'', 4, 1, CAST(0 AS bit)),
+    (123, 91, NULL, NULL, NULL, N''Max Database Size'', N''MySQL9.MaxDatabaseSize'', 3, 3, CAST(0 AS bit)),
+    (124, 91, NULL, NULL, NULL, N''Database Restores'', N''MySQL9.Restore'', 5, 1, CAST(0 AS bit))');
+    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'QuotaID', N'GroupID', N'HideQuota', N'ItemTypeID', N'PerOrganization', N'QuotaDescription', N'QuotaName', N'QuotaOrder', N'QuotaTypeID', N'ServiceQuota') AND [object_id] = OBJECT_ID(N'[Quotas]'))
+        SET IDENTITY_INSERT [Quotas] OFF;
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20241006062940_MySql9AndMaraiDB11'
+)
+BEGIN
+    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'PropertyName', N'ProviderID', N'PropertyValue') AND [object_id] = OBJECT_ID(N'[ServiceDefaultProperties]'))
+        SET IDENTITY_INSERT [ServiceDefaultProperties] ON;
+    EXEC(N'INSERT INTO [ServiceDefaultProperties] ([PropertyName], [ProviderID], [PropertyValue])
+    VALUES (N''ExternalAddress'', 307, N''localhost''),
+    (N''InstallFolder'', 307, N''%PROGRAMFILES%\MySQL\MySQL Server 8.0''),
+    (N''InternalAddress'', 307, N''localhost,3306''),
+    (N''RootLogin'', 307, N''root''),
+    (N''RootPassword'', 307, N''''),
+    (N''sslmode'', 307, N''True''),
+    (N''ExternalAddress'', 308, N''localhost''),
+    (N''InstallFolder'', 308, N''%PROGRAMFILES%\MySQL\MySQL Server 8.0''),
+    (N''InternalAddress'', 308, N''localhost,3306''),
+    (N''RootLogin'', 308, N''root''),
+    (N''RootPassword'', 308, N''''),
+    (N''sslmode'', 308, N''True''),
+    (N''ExternalAddress'', 320, N''localhost''),
+    (N''InstallFolder'', 320, N''%PROGRAMFILES%\MySQL\MySQL Server 9.0''),
+    (N''InternalAddress'', 320, N''localhost,3306''),
+    (N''RootLogin'', 320, N''root''),
+    (N''RootPassword'', 320, N''''),
+    (N''sslmode'', 320, N''True'')');
+    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'PropertyName', N'ProviderID', N'PropertyValue') AND [object_id] = OBJECT_ID(N'[ServiceDefaultProperties]'))
+        SET IDENTITY_INSERT [ServiceDefaultProperties] OFF;
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20241006062940_MySql9AndMaraiDB11'
+)
+BEGIN
+    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'Backupable', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Importable', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
+        SET IDENTITY_INSERT [ServiceItemTypes] ON;
+    EXEC(N'INSERT INTO [ServiceItemTypes] ([ItemTypeID], [Backupable], [CalculateBandwidth], [CalculateDiskspace], [DisplayName], [Disposable], [GroupID], [Importable], [Searchable], [Suspendable], [TypeName], [TypeOrder])
+    VALUES (90, CAST(1 AS bit), CAST(0 AS bit), CAST(1 AS bit), N''MySQL9Database'', CAST(1 AS bit), 91, CAST(1 AS bit), CAST(1 AS bit), CAST(0 AS bit), N''SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base'', 20),
+    (91, CAST(1 AS bit), CAST(0 AS bit), CAST(0 AS bit), N''MySQL9User'', CAST(1 AS bit), 91, CAST(1 AS bit), CAST(1 AS bit), CAST(0 AS bit), N''SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base'', 21)');
+    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'Backupable', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Importable', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
+        SET IDENTITY_INSERT [ServiceItemTypes] OFF;
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20241006062940_MySql9AndMaraiDB11'
+)
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20241006062940_MySql9AndMaraiDB11', N'8.0.8');
+END;
+GO
+
+COMMIT;
+GO
+

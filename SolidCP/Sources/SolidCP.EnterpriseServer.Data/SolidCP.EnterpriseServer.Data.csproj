@@ -137,7 +137,6 @@
 
 	<ItemGroup>
 	  <None Remove="LegacyScripts\update_db.sql" />
-	  <None Remove="Migrations\MySql\install.mysql.sql" />
 	  <None Remove="Migrations\PostgreSql\install.postgresql.sql" />
 	  <None Remove="Migrations\Sqlite\install.sqlite.sql" />
 	  <None Remove="Migrations\SqlServer\install.sqlserver.sql" />
@@ -149,7 +148,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Include="Migrations\MySql\install.mysql.sql" />
 	  <EmbeddedResource Include="Migrations\PostgreSql\install.postgresql.sql" />
 	  <EmbeddedResource Include="Migrations\Sqlite\install.sqlite.sql" />
 	</ItemGroup>

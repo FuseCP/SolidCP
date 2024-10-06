@@ -426,6 +426,12 @@
   <data name="ModuleTitle.MySql8Users" xml:space="preserve">
     <value>MySQL 8 Users</value>
   </data>
+    <data name="ModuleTitle.MySql9Databases" xml:space="preserve">
+    <value>MySQL 9 Databases</value>
+  </data>
+  <data name="ModuleTitle.MySql9Users" xml:space="preserve">
+    <value>MySQL 9 Users</value>
+  </data>
   <data name="ModuleTitle.MariaDBDatabases" xml:space="preserve">
     <value>MariaDB Databases</value>
   </data>

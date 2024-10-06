@@ -6572,6 +6572,139 @@ DROP PROCEDURE MigrationsScript;
 
 COMMIT;
 
+START TRANSACTION;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006063131_MySql9AndMaraiDB11') THEN
+
+    INSERT INTO `Providers` (`ProviderID`, `DisableAutoDiscovery`, `DisplayName`, `EditorControl`, `GroupID`, `ProviderName`, `ProviderType`)
+    VALUES (307, NULL, 'MySQL Server 8.3', 'MySQL', 90, 'MySQL', 'SolidCP.Providers.Database.MySqlServer83, SolidCP.Providers.Database.MySQL'),
+    (308, NULL, 'MySQL Server 8.4', 'MySQL', 90, 'MySQL', 'SolidCP.Providers.Database.MySqlServer84, SolidCP.Providers.Database.MySQL'),
+    (320, NULL, 'MySQL Server 9.0', 'MySQL', 90, 'MySQL', 'SolidCP.Providers.Database.MySqlServer90, SolidCP.Providers.Database.MySQL');
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006063131_MySql9AndMaraiDB11') THEN
+
+    INSERT INTO `Quotas` (`QuotaID`, `GroupID`, `HideQuota`, `ItemTypeID`, `PerOrganization`, `QuotaDescription`, `QuotaName`, `QuotaOrder`, `QuotaTypeID`, `ServiceQuota`)
+    VALUES (125, 90, NULL, NULL, NULL, 'Database Truncate', 'MySQL9.Truncate', 6, 1, FALSE);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006063131_MySql9AndMaraiDB11') THEN
+
+    INSERT INTO `ResourceGroups` (`GroupID`, `GroupController`, `GroupName`, `GroupOrder`, `ShowGroup`)
+    VALUES (91, 'SolidCP.EnterpriseServer.DatabaseServerController', 'MySQL9', 12, TRUE);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006063131_MySql9AndMaraiDB11') THEN
+
+    INSERT INTO `Quotas` (`QuotaID`, `GroupID`, `HideQuota`, `ItemTypeID`, `PerOrganization`, `QuotaDescription`, `QuotaName`, `QuotaOrder`, `QuotaTypeID`, `ServiceQuota`)
+    VALUES (120, 91, NULL, 75, NULL, 'Databases', 'MySQL9.Databases', 1, 2, FALSE),
+    (121, 91, NULL, 76, NULL, 'Users', 'MySQL9.Users', 2, 2, FALSE),
+    (122, 91, NULL, NULL, NULL, 'Database Backups', 'MySQL9.Backup', 4, 1, FALSE),
+    (123, 91, NULL, NULL, NULL, 'Max Database Size', 'MySQL9.MaxDatabaseSize', 3, 3, FALSE),
+    (124, 91, NULL, NULL, NULL, 'Database Restores', 'MySQL9.Restore', 5, 1, FALSE);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006063131_MySql9AndMaraiDB11') THEN
+
+    INSERT INTO `ServiceDefaultProperties` (`PropertyName`, `ProviderID`, `PropertyValue`)
+    VALUES ('ExternalAddress', 307, 'localhost'),
+    ('InstallFolder', 307, '%PROGRAMFILES%\\MySQL\\MySQL Server 8.0'),
+    ('InternalAddress', 307, 'localhost,3306'),
+    ('RootLogin', 307, 'root'),
+    ('RootPassword', 307, ''),
+    ('sslmode', 307, 'True'),
+    ('ExternalAddress', 308, 'localhost'),
+    ('InstallFolder', 308, '%PROGRAMFILES%\\MySQL\\MySQL Server 8.0'),
+    ('InternalAddress', 308, 'localhost,3306'),
+    ('RootLogin', 308, 'root'),
+    ('RootPassword', 308, ''),
+    ('sslmode', 308, 'True'),
+    ('ExternalAddress', 320, 'localhost'),
+    ('InstallFolder', 320, '%PROGRAMFILES%\\MySQL\\MySQL Server 9.0'),
+    ('InternalAddress', 320, 'localhost,3306'),
+    ('RootLogin', 320, 'root'),
+    ('RootPassword', 320, ''),
+    ('sslmode', 320, 'True');
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006063131_MySql9AndMaraiDB11') THEN
+
+    INSERT INTO `ServiceItemTypes` (`ItemTypeID`, `Backupable`, `CalculateBandwidth`, `CalculateDiskspace`, `DisplayName`, `Disposable`, `GroupID`, `Importable`, `Searchable`, `Suspendable`, `TypeName`, `TypeOrder`)
+    VALUES (90, TRUE, FALSE, TRUE, 'MySQL9Database', TRUE, 91, TRUE, TRUE, FALSE, 'SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base', 20),
+    (91, TRUE, FALSE, FALSE, 'MySQL9User', TRUE, 91, TRUE, TRUE, FALSE, 'SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base', 21);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006063131_MySql9AndMaraiDB11') THEN
+
+    INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
+    VALUES ('20241006063131_MySql9AndMaraiDB11', '8.0.8');
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+COMMIT;
+
 DROP PROCEDURE `POMELO_BEFORE_DROP_PRIMARY_KEY`;
 
 DROP PROCEDURE `POMELO_AFTER_ADD_PRIMARY_KEY`;

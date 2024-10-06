@@ -2025,6 +2025,18 @@
   <data name="Quota.MySQL8.Restore" xml:space="preserve">
     <value>Datenbankwiederherstellungen</value>
   </data>
+  <data name="Quota.MySQL9.Backup" xml:space="preserve">
+    <value>Datenbanksicherungen</value>
+  </data>
+  <data name="Quota.MySQL9.Databases" xml:space="preserve">
+    <value>Datenbanken</value>
+  </data>
+  <data name="Quota.MySQL9.MaxDatabaseSize" xml:space="preserve">
+    <value>Max. Datenbankgröße [MB]</value>
+  </data>
+  <data name="Quota.MySQL9.Restore" xml:space="preserve">
+    <value>Datenbankwiederherstellungen</value>
+  </data>
   <data name="Quota.MySQL4.Truncate" xml:space="preserve">
     <value>Datenbankverkleinerung</value>
   </data>
@@ -2041,6 +2053,12 @@
     <value>Datenbankverkleinerung</value>
   </data>
   <data name="Quota.MySQL8.Users" xml:space="preserve">
+    <value>Benutzer</value>
+  </data>
+  <data name="Quota.MySQL9.Truncate" xml:space="preserve">
+    <value>Datenbankverkleinerung</value>
+  </data>
+  <data name="Quota.MySQL9.Users" xml:space="preserve">
     <value>Benutzer</value>
   </data>
   <data name="Quota.MariaDB.Backup" xml:space="preserve">
@@ -2070,6 +2088,9 @@
   <data name="ReportResourceGroup.MySQL8" xml:space="preserve">
     <value>MySQL 8</value>
   </data>
+  <data name="ReportResourceGroup.MySQL9" xml:space="preserve">
+    <value>MySQL 9</value>
+  </data>
   <data name="ResourceGroup.MsSQL2005" xml:space="preserve">
     <value>SQL Server 2005</value>
   </data>
@@ -2087,6 +2108,9 @@
   </data>
   <data name="ResourceGroup.MySQL8" xml:space="preserve">
     <value>MySQL 8</value>
+  </data>
+  <data name="ResourceGroup.MySQL9" xml:space="preserve">
+    <value>MySQL 9</value>
   </data>
   <data name="ResourceGroup.MsSQL2012" xml:space="preserve">
     <value>SQL Server 2012</value>
@@ -2357,6 +2381,12 @@
   </data>
   <data name="ServiceItemType.MySQL8User" xml:space="preserve">
     <value>MySQL 8-Benutzer</value>
+  </data>
+  <data name="ServiceItemType.MySQL9Database" xml:space="preserve">
+    <value>MySQL 9-Datenbank</value>
+  </data>
+  <data name="ServiceItemType.MySQL9User" xml:space="preserve">
+    <value>MySQL 9-Benutzer</value>
   </data>
   <data name="ServiceItemType.MariaDBDatabase" xml:space="preserve">
     <value>MariaDB-Datenbank</value>

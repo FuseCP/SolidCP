@@ -234,9 +234,11 @@ namespace SolidCP.Portal
                 sqlDatabases.AddRange(ES.Services.DatabaseServers.GetSqlDatabases(packageId, ResourceGroups.MySql4, false));
                 sqlDatabases.AddRange(ES.Services.DatabaseServers.GetSqlDatabases(packageId, ResourceGroups.MySql5, false));
                 sqlDatabases.AddRange(ES.Services.DatabaseServers.GetSqlDatabases(packageId, ResourceGroups.MySql8, false));
+                sqlDatabases.AddRange(ES.Services.DatabaseServers.GetSqlDatabases(packageId, ResourceGroups.MySql9, false));
                 sqlUsers.AddRange(ES.Services.DatabaseServers.GetSqlUsers(packageId, ResourceGroups.MySql4, false));
                 sqlUsers.AddRange(ES.Services.DatabaseServers.GetSqlUsers(packageId, ResourceGroups.MySql5, false));
                 sqlUsers.AddRange(ES.Services.DatabaseServers.GetSqlUsers(packageId, ResourceGroups.MySql8, false));
+                sqlUsers.AddRange(ES.Services.DatabaseServers.GetSqlUsers(packageId, ResourceGroups.MySql9, false));
             }
             else if (driverName == "MariaDB")
             {
