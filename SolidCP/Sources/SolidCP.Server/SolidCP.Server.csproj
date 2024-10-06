@@ -73,6 +73,7 @@
     <ItemGroup>
         <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="Mono.Posix-4.5" Version="4.5.0" />
     </ItemGroup>
     <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
         <Reference Include="Microsoft.CSharp" />
