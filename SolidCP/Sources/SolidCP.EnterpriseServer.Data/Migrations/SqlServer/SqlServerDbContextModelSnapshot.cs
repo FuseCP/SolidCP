@@ -12689,7 +12689,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                         {
                             ProviderId = 305,
                             PropertyName = "InstallFolder",
-                            PropertyValue = "%PROGRAMFILES%\\MySQL\\MySQL Server 8.0"
+                            PropertyValue = "%PROGRAMFILES%\\MySQL\\MySQL Server 8.1"
                         },
                         new
                         {
@@ -12725,7 +12725,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                         {
                             ProviderId = 306,
                             PropertyName = "InstallFolder",
-                            PropertyValue = "%PROGRAMFILES%\\MySQL\\MySQL Server 8.0"
+                            PropertyValue = "%PROGRAMFILES%\\MySQL\\MySQL Server 8.2"
                         },
                         new
                         {
@@ -12761,7 +12761,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                         {
                             ProviderId = 307,
                             PropertyName = "InstallFolder",
-                            PropertyValue = "%PROGRAMFILES%\\MySQL\\MySQL Server 8.0"
+                            PropertyValue = "%PROGRAMFILES%\\MySQL\\MySQL Server 8.3"
                         },
                         new
                         {
@@ -12797,7 +12797,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                         {
                             ProviderId = 308,
                             PropertyName = "InstallFolder",
-                            PropertyValue = "%PROGRAMFILES%\\MySQL\\MySQL Server 8.0"
+                            PropertyValue = "%PROGRAMFILES%\\MySQL\\MySQL Server 8.4"
                         },
                         new
                         {

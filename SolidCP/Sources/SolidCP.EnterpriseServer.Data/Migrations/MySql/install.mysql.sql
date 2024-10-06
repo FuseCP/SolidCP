@@ -6848,6 +6848,93 @@ DROP PROCEDURE MigrationsScript;
 
 COMMIT;
 
+START TRANSACTION;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006212105_Bugfix_for_MySQL_8_x') THEN
+
+    UPDATE `ServiceDefaultProperties` SET `PropertyValue` = '%PROGRAMFILES%\\MySQL\\MySQL Server 8.1'
+    WHERE `PropertyName` = 'InstallFolder' AND `ProviderID` = 305;
+    SELECT ROW_COUNT();
+
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006212105_Bugfix_for_MySQL_8_x') THEN
+
+    UPDATE `ServiceDefaultProperties` SET `PropertyValue` = '%PROGRAMFILES%\\MySQL\\MySQL Server 8.2'
+    WHERE `PropertyName` = 'InstallFolder' AND `ProviderID` = 306;
+    SELECT ROW_COUNT();
+
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006212105_Bugfix_for_MySQL_8_x') THEN
+
+    UPDATE `ServiceDefaultProperties` SET `PropertyValue` = '%PROGRAMFILES%\\MySQL\\MySQL Server 8.3'
+    WHERE `PropertyName` = 'InstallFolder' AND `ProviderID` = 307;
+    SELECT ROW_COUNT();
+
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006212105_Bugfix_for_MySQL_8_x') THEN
+
+    UPDATE `ServiceDefaultProperties` SET `PropertyValue` = '%PROGRAMFILES%\\MySQL\\MySQL Server 8.4'
+    WHERE `PropertyName` = 'InstallFolder' AND `ProviderID` = 308;
+    SELECT ROW_COUNT();
+
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006212105_Bugfix_for_MySQL_8_x') THEN
+
+    INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
+    VALUES ('20241006212105_Bugfix_for_MySQL_8_x', '8.0.8');
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+COMMIT;
+
 DROP PROCEDURE `POMELO_BEFORE_DROP_PRIMARY_KEY`;
 
 DROP PROCEDURE `POMELO_AFTER_ADD_PRIMARY_KEY`;

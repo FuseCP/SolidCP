@@ -7517,3 +7517,47 @@ BEGIN
 END $EF$;
 COMMIT;
 
+START TRANSACTION;
+
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241006212130_Bugfix_for_MySQL_8_x') THEN
+    UPDATE public."ServiceDefaultProperties" SET "PropertyValue" = '%PROGRAMFILES%\MySQL\MySQL Server 8.1'
+    WHERE "PropertyName" = 'InstallFolder' AND "ProviderID" = 305;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241006212130_Bugfix_for_MySQL_8_x') THEN
+    UPDATE public."ServiceDefaultProperties" SET "PropertyValue" = '%PROGRAMFILES%\MySQL\MySQL Server 8.2'
+    WHERE "PropertyName" = 'InstallFolder' AND "ProviderID" = 306;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241006212130_Bugfix_for_MySQL_8_x') THEN
+    UPDATE public."ServiceDefaultProperties" SET "PropertyValue" = '%PROGRAMFILES%\MySQL\MySQL Server 8.3'
+    WHERE "PropertyName" = 'InstallFolder' AND "ProviderID" = 307;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241006212130_Bugfix_for_MySQL_8_x') THEN
+    UPDATE public."ServiceDefaultProperties" SET "PropertyValue" = '%PROGRAMFILES%\MySQL\MySQL Server 8.4'
+    WHERE "PropertyName" = 'InstallFolder' AND "ProviderID" = 308;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241006212130_Bugfix_for_MySQL_8_x') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20241006212130_Bugfix_for_MySQL_8_x', '8.0.8');
+    END IF;
+END $EF$;
+COMMIT;
+

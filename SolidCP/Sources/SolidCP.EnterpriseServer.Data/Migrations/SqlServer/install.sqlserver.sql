@@ -43383,3 +43383,63 @@ GO
 COMMIT;
 GO
 
+BEGIN TRANSACTION;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20241006212043_Bugfix_for_MySQL_8_x'
+)
+BEGIN
+    EXEC(N'UPDATE [ServiceDefaultProperties] SET [PropertyValue] = N''%PROGRAMFILES%\MySQL\MySQL Server 8.1''
+    WHERE [PropertyName] = N''InstallFolder'' AND [ProviderID] = 305;
+    SELECT @@ROWCOUNT');
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20241006212043_Bugfix_for_MySQL_8_x'
+)
+BEGIN
+    EXEC(N'UPDATE [ServiceDefaultProperties] SET [PropertyValue] = N''%PROGRAMFILES%\MySQL\MySQL Server 8.2''
+    WHERE [PropertyName] = N''InstallFolder'' AND [ProviderID] = 306;
+    SELECT @@ROWCOUNT');
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20241006212043_Bugfix_for_MySQL_8_x'
+)
+BEGIN
+    EXEC(N'UPDATE [ServiceDefaultProperties] SET [PropertyValue] = N''%PROGRAMFILES%\MySQL\MySQL Server 8.3''
+    WHERE [PropertyName] = N''InstallFolder'' AND [ProviderID] = 307;
+    SELECT @@ROWCOUNT');
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20241006212043_Bugfix_for_MySQL_8_x'
+)
+BEGIN
+    EXEC(N'UPDATE [ServiceDefaultProperties] SET [PropertyValue] = N''%PROGRAMFILES%\MySQL\MySQL Server 8.4''
+    WHERE [PropertyName] = N''InstallFolder'' AND [ProviderID] = 308;
+    SELECT @@ROWCOUNT');
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20241006212043_Bugfix_for_MySQL_8_x'
+)
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20241006212043_Bugfix_for_MySQL_8_x', N'8.0.8');
+END;
+GO
+
+COMMIT;
+GO
+

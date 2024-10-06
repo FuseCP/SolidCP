@@ -9179,3 +9179,30 @@ VALUES ('20241006121657_AddMariaDB11', '8.0.8');
 
 COMMIT;
 
+BEGIN TRANSACTION;
+
+UPDATE "ServiceDefaultProperties" SET "PropertyValue" = '%PROGRAMFILES%\MySQL\MySQL Server 8.1'
+WHERE "PropertyName" = 'InstallFolder' AND "ProviderID" = 305;
+SELECT changes();
+
+
+UPDATE "ServiceDefaultProperties" SET "PropertyValue" = '%PROGRAMFILES%\MySQL\MySQL Server 8.2'
+WHERE "PropertyName" = 'InstallFolder' AND "ProviderID" = 306;
+SELECT changes();
+
+
+UPDATE "ServiceDefaultProperties" SET "PropertyValue" = '%PROGRAMFILES%\MySQL\MySQL Server 8.3'
+WHERE "PropertyName" = 'InstallFolder' AND "ProviderID" = 307;
+SELECT changes();
+
+
+UPDATE "ServiceDefaultProperties" SET "PropertyValue" = '%PROGRAMFILES%\MySQL\MySQL Server 8.4'
+WHERE "PropertyName" = 'InstallFolder' AND "ProviderID" = 308;
+SELECT changes();
+
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20241006212019_Bugfix_for_MySQL_8_x', '8.0.8');
+
+COMMIT;
+
