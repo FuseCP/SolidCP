@@ -41677,7 +41677,7 @@ IF NOT EXISTS (
 )
 BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20240627111421_InitialCreate', N'8.0.6');
+    VALUES (N'20240627111421_InitialCreate', N'8.0.8');
 END;
 GO
 
@@ -42142,6 +42142,7 @@ IF NOT EXISTS (
 )
 BEGIN
 
+    -- DMZ Network
     CREATE PROCEDURE [dbo].[GetPackageDmzIPAddresses]
     	@PackageID int
     AS
@@ -42543,6 +42544,556 @@ IF NOT EXISTS (
     WHERE [MigrationId] = N'20240709093225_AddedDMZ'
 )
 BEGIN
+
+    -- Modified procedures in update_db.sql
+
+    IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetVirtualMachinesPaged2012')
+    DROP PROCEDURE GetVirtualMachinesPaged2012
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    CREATE PROCEDURE [dbo].[GetVirtualMachinesPaged2012]
+    (
+    	@ActorID int,
+    	@PackageID int,
+    	@FilterColumn nvarchar(50) = '',
+    	@FilterValue nvarchar(50) = '',
+    	@SortColumn nvarchar(50),
+    	@StartRow int,
+    	@MaximumRows int,
+    	@Recursive bit
+    )
+    AS
+    -- check rights
+    IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+    RAISERROR('You are not allowed to access this package', 16, 1)
+
+    -- start
+    DECLARE @condition nvarchar(700)
+    SET @condition = '
+    SI.ItemTypeID = 41 -- VPS2012
+    AND ((@Recursive = 0 AND P.PackageID = @PackageID)
+    OR (@Recursive = 1 AND dbo.CheckPackageParent(@PackageID, P.PackageID) = 1))
+    '
+
+    IF @FilterValue <> '' AND @FilterValue IS NOT NULL
+    BEGIN
+    	IF @FilterColumn <> '' AND @FilterColumn IS NOT NULL
+    		SET @condition = @condition + ' AND ' + @FilterColumn + ' LIKE ''' + @FilterValue + ''''
+    	ELSE
+    		SET @condition = @condition + '
+    			AND (ItemName LIKE ''' + @FilterValue + '''
+    			OR Username LIKE ''' + @FilterValue + '''
+    			OR ExternalIP LIKE ''' + @FilterValue + '''
+    			OR IPAddress LIKE ''' + @FilterValue + ''')'
+    END
+
+    IF @SortColumn IS NULL OR @SortColumn = ''
+    SET @SortColumn = 'SI.ItemName ASC'
+
+    DECLARE @sql nvarchar(3500)
+
+    set @sql = '
+    SELECT COUNT(SI.ItemID) FROM Packages AS P
+    INNER JOIN ServiceItems AS SI ON P.PackageID = SI.PackageID
+    INNER JOIN Users AS U ON P.UserID = U.UserID
+    LEFT OUTER JOIN (
+    	SELECT PIP.ItemID, IP.ExternalIP FROM PackageIPAddresses AS PIP
+    	INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
+    	WHERE PIP.IsPrimary = 1 AND IP.PoolID = 3 -- external IP addresses
+    ) AS EIP ON SI.ItemID = EIP.ItemID
+    LEFT OUTER JOIN PrivateIPAddresses AS PIP ON PIP.ItemID = SI.ItemID AND PIP.IsPrimary = 1
+    WHERE ' + @condition + '
+
+    DECLARE @Items AS TABLE
+    (
+    	ItemID int
+    );
+
+    WITH TempItems AS (
+    	SELECT ROW_NUMBER() OVER (ORDER BY ' + @SortColumn + ') as Row,
+    		SI.ItemID
+    	FROM Packages AS P
+    	INNER JOIN ServiceItems AS SI ON P.PackageID = SI.PackageID
+    	INNER JOIN Users AS U ON P.UserID = U.UserID
+    	LEFT OUTER JOIN (
+    		SELECT PIP.ItemID, IP.ExternalIP FROM PackageIPAddresses AS PIP
+    		INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
+    		WHERE PIP.IsPrimary = 1 AND IP.PoolID = 3 -- external IP addresses
+    	) AS EIP ON SI.ItemID = EIP.ItemID
+    	LEFT OUTER JOIN PrivateIPAddresses AS PIP ON PIP.ItemID = SI.ItemID AND PIP.IsPrimary = 1
+    	LEFT OUTER JOIN DmzIPAddresses AS DIP ON DIP.ItemID = SI.ItemID AND DIP.IsPrimary = 1
+    	WHERE ' + @condition + '
+    )
+
+    INSERT INTO @Items
+    SELECT ItemID FROM TempItems
+    WHERE TempItems.Row BETWEEN @StartRow + 1 and @StartRow + @MaximumRows
+
+    SELECT
+    	SI.ItemID,
+    	SI.ItemName,
+    	SI.PackageID,
+    	P.PackageName,
+    	P.UserID,
+    	U.Username,
+
+    	EIP.ExternalIP,
+    	PIP.IPAddress,
+    	DIP.IPAddress AS DmzIP
+    FROM @Items AS TSI
+    INNER JOIN ServiceItems AS SI ON TSI.ItemID = SI.ItemID
+    INNER JOIN Packages AS P ON SI.PackageID = P.PackageID
+    INNER JOIN Users AS U ON P.UserID = U.UserID
+    LEFT OUTER JOIN (
+    	SELECT PIP.ItemID, IP.ExternalIP FROM PackageIPAddresses AS PIP
+    	INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
+    	WHERE PIP.IsPrimary = 1 AND IP.PoolID = 3 -- external IP addresses
+    ) AS EIP ON SI.ItemID = EIP.ItemID
+    LEFT OUTER JOIN PrivateIPAddresses AS PIP ON PIP.ItemID = SI.ItemID AND PIP.IsPrimary = 1
+    LEFT OUTER JOIN DmzIPAddresses AS DIP ON DIP.ItemID = SI.ItemID AND DIP.IsPrimary = 1
+    '
+
+    --print @sql
+
+    exec sp_executesql @sql, N'@PackageID int, @StartRow int, @MaximumRows int, @Recursive bit',
+    @PackageID, @StartRow, @MaximumRows, @Recursive
+
+    RETURN 
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+
+
+    IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetPackagePrivateNetworkVLANs')
+    BEGIN
+    DROP PROCEDURE GetPackagePrivateNetworkVLANs
+    END
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+
+    CREATE PROCEDURE [dbo].[GetPackagePrivateNetworkVLANs]
+    (
+     @PackageID int,
+     @SortColumn nvarchar(50),
+     @StartRow int,
+     @MaximumRows int
+    )
+    AS
+    BEGIN
+    -- start
+    DECLARE @condition nvarchar(700)
+    SET @condition = '
+    dbo.CheckPackageParent(@PackageID, PA.PackageID) = 1
+    AND PA.IsDmz = 0
+    '
+
+    IF @SortColumn IS NULL OR @SortColumn = ''
+    SET @SortColumn = 'V.Vlan ASC'
+
+    DECLARE @sql nvarchar(3500)
+
+    set @sql = '
+    SELECT COUNT(PA.PackageVlanID)
+    FROM dbo.PackageVLANs PA
+    INNER JOIN dbo.PrivateNetworkVLANs AS V ON PA.VlanID = V.VlanID
+    INNER JOIN dbo.Packages P ON PA.PackageID = P.PackageID
+    INNER JOIN dbo.Users U ON U.UserID = P.UserID
+    WHERE ' + @condition + '
+
+    DECLARE @VLANs AS TABLE
+    (
+     PackageVlanID int
+    );
+
+    WITH TempItems AS (
+     SELECT ROW_NUMBER() OVER (ORDER BY ' + @SortColumn + ') as Row,
+      PA.PackageVlanID
+     FROM dbo.PackageVLANs PA
+     INNER JOIN dbo.PrivateNetworkVLANs AS V ON PA.VlanID = V.VlanID
+     INNER JOIN dbo.Packages P ON PA.PackageID = P.PackageID
+     INNER JOIN dbo.Users U ON U.UserID = P.UserID
+     WHERE ' + @condition + '
+    )
+
+    INSERT INTO @VLANs
+    SELECT PackageVlanID FROM TempItems
+    WHERE TempItems.Row BETWEEN @StartRow + 1 and @StartRow + @MaximumRows
+
+    SELECT
+     PA.PackageVlanID,
+     PA.VlanID,
+     V.Vlan,
+     PA.PackageID,
+     P.PackageName,
+     P.UserID,
+     U.UserName
+    FROM @VLANs AS TA
+    INNER JOIN dbo.PackageVLANs AS PA ON TA.PackageVlanID = PA.PackageVlanID
+    INNER JOIN dbo.PrivateNetworkVLANs AS V ON PA.VlanID = V.VlanID
+    INNER JOIN dbo.Packages P ON PA.PackageID = P.PackageID
+    INNER JOIN dbo.Users U ON U.UserID = P.UserID
+    '
+
+    print @sql
+
+    exec sp_executesql @sql, N'@PackageID int, @StartRow int, @MaximumRows int',
+    @PackageID, @StartRow, @MaximumRows
+
+    END
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+
+    IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'AllocatePackageVLANs')
+    BEGIN
+    DROP PROCEDURE AllocatePackageVLANs
+    END
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+
+    CREATE PROCEDURE [dbo].[AllocatePackageVLANs]
+    (
+    	@PackageID int,
+    	@IsDmz bit,
+    	@xml ntext
+    )
+    AS
+    BEGIN
+
+    	SET NOCOUNT ON;
+
+    	DECLARE @idoc int
+    	--Create an internal representation of the XML document.
+    	EXEC sp_xml_preparedocument @idoc OUTPUT, @xml
+
+    	-- delete
+    	DELETE FROM PackageVLANs
+    	FROM PackageVLANs AS PV
+    	INNER JOIN OPENXML(@idoc, '/items/item', 1) WITH 
+    	(
+    		VlanID int '@id'
+    	) as PX ON PV.VlanID = PX.VlanID
+
+
+    	-- insert
+    	INSERT INTO dbo.PackageVLANs
+    	(		
+    		PackageID,
+    		VlanID,
+    		IsDmz
+    	)
+    	SELECT		
+    		@PackageID,
+    		VlanID,
+    		@IsDmz
+
+    	FROM OPENXML(@idoc, '/items/item', 1) WITH 
+    	(
+    		VlanID int '@id'
+    	) as PX
+
+    	-- remove document
+    	exec sp_xml_removedocument @idoc
+
+    END
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+
+    ALTER FUNCTION [dbo].[CalculateQuotaUsage]
+    (
+    	@PackageID int,
+    	@QuotaID int
+    )
+    RETURNS int
+    AS
+    	BEGIN
+
+    		DECLARE @QuotaTypeID int
+    		DECLARE @QuotaName nvarchar(50)
+    		SELECT @QuotaTypeID = QuotaTypeID, @QuotaName = QuotaName FROM Quotas
+    		WHERE QuotaID = @QuotaID
+
+    		IF @QuotaTypeID <> 2
+    			RETURN 0
+
+    		DECLARE @Result int
+    		DECLARE @vhd TABLE (Size int)
+
+    		IF @QuotaID = 52 -- diskspace
+    			SET @Result = dbo.CalculatePackageDiskspace(@PackageID)
+    		ELSE IF @QuotaID = 51 -- bandwidth
+    			SET @Result = dbo.CalculatePackageBandwidth(@PackageID)
+    		ELSE IF @QuotaID = 53 -- domains
+    			SET @Result = (SELECT COUNT(D.DomainID) FROM PackagesTreeCache AS PT
+    				INNER JOIN Domains AS D ON D.PackageID = PT.PackageID
+    				WHERE IsSubDomain = 0 AND IsPreviewDomain = 0 AND IsDomainPointer = 0 AND PT.ParentPackageID = @PackageID)
+    		ELSE IF @QuotaID = 54 -- sub-domains
+    			SET @Result = (SELECT COUNT(D.DomainID) FROM PackagesTreeCache AS PT
+    				INNER JOIN Domains AS D ON D.PackageID = PT.PackageID
+    				WHERE IsSubDomain = 1 AND IsPreviewDomain = 0 AND IsDomainPointer = 0 AND PT.ParentPackageID = @PackageID)
+    		ELSE IF @QuotaID = 220 -- domain pointers
+    			SET @Result = (SELECT COUNT(D.DomainID) FROM PackagesTreeCache AS PT
+    				INNER JOIN Domains AS D ON D.PackageID = PT.PackageID
+    				WHERE IsDomainPointer = 1 AND PT.ParentPackageID = @PackageID)
+    		ELSE IF @QuotaID = 71 -- scheduled tasks
+    			SET @Result = (SELECT COUNT(S.ScheduleID) FROM PackagesTreeCache AS PT
+    				INNER JOIN Schedule AS S ON S.PackageID = PT.PackageID
+    				WHERE PT.ParentPackageID = @PackageID)
+    		ELSE IF @QuotaID = 305 -- RAM of VPS
+    			SET @Result = (SELECT SUM(CAST(SIP.PropertyValue AS int)) FROM ServiceItemProperties AS SIP
+    							INNER JOIN ServiceItems AS SI ON SIP.ItemID = SI.ItemID
+    							INNER JOIN PackagesTreeCache AS PT ON SI.PackageID = PT.PackageID
+    							WHERE SIP.PropertyName = 'RamSize' AND PT.ParentPackageID = @PackageID)
+    		ELSE IF @QuotaID = 302 -- CpuNumber of VPS
+    			SET @Result = (SELECT SUM(CAST(SIP.PropertyValue AS int)) FROM ServiceItemProperties AS SIP
+    							INNER JOIN ServiceItems AS SI ON SIP.ItemID = SI.ItemID
+    							INNER JOIN PackagesTreeCache AS PT ON SI.PackageID = PT.PackageID
+    							WHERE SIP.PropertyName = 'CpuCores' AND PT.ParentPackageID = @PackageID)
+    		ELSE IF @QuotaID = 306 -- HDD of VPS
+    		BEGIN
+    			INSERT INTO @vhd
+    			SELECT (SELECT SUM(CAST([value] AS int)) AS value FROM dbo.SplitString(SIP.PropertyValue,';')) FROM ServiceItemProperties AS SIP
+    							INNER JOIN ServiceItems AS SI ON SIP.ItemID = SI.ItemID
+    							INNER JOIN PackagesTreeCache AS PT ON SI.PackageID = PT.PackageID
+    							WHERE SIP.PropertyName = 'HddSize' AND PT.ParentPackageID = @PackageID
+    			SET @Result = (SELECT SUM(Size) FROM @vhd)
+    		END
+    		ELSE IF @QuotaID = 309 -- External IP addresses of VPS
+    			SET @Result = (SELECT COUNT(PIP.PackageAddressID) FROM PackageIPAddresses AS PIP
+    							INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
+    							INNER JOIN PackagesTreeCache AS PT ON PIP.PackageID = PT.PackageID
+    							WHERE PT.ParentPackageID = @PackageID AND IP.PoolID = 3)
+    		ELSE IF @QuotaID = 555 -- CpuNumber of VPS2012
+    			SET @Result = (SELECT SUM(CAST(SIP.PropertyValue AS int)) FROM ServiceItemProperties AS SIP
+    							INNER JOIN ServiceItems AS SI ON SIP.ItemID = SI.ItemID
+    							INNER JOIN PackagesTreeCache AS PT ON SI.PackageID = PT.PackageID
+    							WHERE SIP.PropertyName = 'CpuCores' AND PT.ParentPackageID = @PackageID)
+    		ELSE IF @QuotaID = 558 BEGIN -- RAM of VPS2012
+    			DECLARE @Result1 int
+    			SET @Result1 = (SELECT SUM(CAST(SIP.PropertyValue AS int)) FROM ServiceItemProperties AS SIP
+    							INNER JOIN ServiceItems AS SI ON SIP.ItemID = SI.ItemID
+    							INNER JOIN PackagesTreeCache AS PT ON SI.PackageID = PT.PackageID
+    							WHERE SIP.PropertyName = 'RamSize' AND PT.ParentPackageID = @PackageID)
+    			DECLARE @Result2 int
+    			SET @Result2 = (SELECT SUM(CAST(SIP.PropertyValue AS int)) FROM ServiceItemProperties AS SIP
+    							INNER JOIN ServiceItems AS SI ON SIP.ItemID = SI.ItemID
+    							INNER JOIN ServiceItemProperties AS SIP2 ON 
+    								SIP2.ItemID = SI.ItemID AND SIP2.PropertyName = 'DynamicMemory.Enabled' AND SIP2.PropertyValue = 'True'
+    							INNER JOIN PackagesTreeCache AS PT ON SI.PackageID = PT.PackageID
+    							WHERE SIP.PropertyName = 'DynamicMemory.Maximum' AND PT.ParentPackageID = @PackageID)
+    			SET @Result = CASE WHEN isnull(@Result1,0) > isnull(@Result2,0) THEN @Result1 ELSE @Result2 END
+    		END
+    		ELSE IF @QuotaID = 559 -- HDD of VPS2012
+    		BEGIN
+    			INSERT INTO @vhd
+    			SELECT (SELECT SUM(CAST([value] AS int)) AS value FROM dbo.SplitString(SIP.PropertyValue,';')) FROM ServiceItemProperties AS SIP
+    							INNER JOIN ServiceItems AS SI ON SIP.ItemID = SI.ItemID
+    							INNER JOIN PackagesTreeCache AS PT ON SI.PackageID = PT.PackageID
+    							WHERE SIP.PropertyName = 'HddSize' AND PT.ParentPackageID = @PackageID
+    			SET @Result = (SELECT SUM(Size) FROM @vhd)
+    		END
+    		ELSE IF @QuotaID = 562 -- External IP addresses of VPS2012
+    			SET @Result = (SELECT COUNT(PIP.PackageAddressID) FROM PackageIPAddresses AS PIP
+    							INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
+    							INNER JOIN PackagesTreeCache AS PT ON PIP.PackageID = PT.PackageID
+    							WHERE PT.ParentPackageID = @PackageID AND IP.PoolID = 3)
+    		ELSE IF @QuotaID = 728 -- Private Network VLANs of VPS2012
+    			SET @Result = (SELECT COUNT(PV.PackageVlanID) FROM PackageVLANs AS PV
+    							INNER JOIN PrivateNetworkVLANs AS V ON PV.VlanID = V.VlanID
+    							INNER JOIN PackagesTreeCache AS PT ON PV.PackageID = PT.PackageID
+    							WHERE PT.ParentPackageID = @PackageID AND PV.IsDmz = 0)
+    		ELSE IF @QuotaID = 752 -- DMZ Network VLANs of VPS2012
+    			SET @Result = (SELECT COUNT(PV.PackageVlanID) FROM PackageVLANs AS PV
+    							INNER JOIN PrivateNetworkVLANs AS V ON PV.VlanID = V.VlanID
+    							INNER JOIN PackagesTreeCache AS PT ON PV.PackageID = PT.PackageID
+    							WHERE PT.ParentPackageID = @PackageID AND PV.IsDmz = 1)
+    		ELSE IF @QuotaID = 100 -- Dedicated Web IP addresses
+    			SET @Result = (SELECT COUNT(PIP.PackageAddressID) FROM PackageIPAddresses AS PIP
+    							INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
+    							INNER JOIN PackagesTreeCache AS PT ON PIP.PackageID = PT.PackageID
+    							WHERE PT.ParentPackageID = @PackageID AND IP.PoolID = 2)
+    		ELSE IF @QuotaID = 350 -- RAM of VPSforPc
+    			SET @Result = (SELECT SUM(CAST(SIP.PropertyValue AS int)) FROM ServiceItemProperties AS SIP
+    							INNER JOIN ServiceItems AS SI ON SIP.ItemID = SI.ItemID
+    							INNER JOIN PackagesTreeCache AS PT ON SI.PackageID = PT.PackageID
+    							WHERE SIP.PropertyName = 'Memory' AND PT.ParentPackageID = @PackageID)
+    		ELSE IF @QuotaID = 347 -- CpuNumber of VPSforPc
+    			SET @Result = (SELECT SUM(CAST(SIP.PropertyValue AS int)) FROM ServiceItemProperties AS SIP
+    							INNER JOIN ServiceItems AS SI ON SIP.ItemID = SI.ItemID
+    							INNER JOIN PackagesTreeCache AS PT ON SI.PackageID = PT.PackageID
+    							WHERE SIP.PropertyName = 'CpuCores' AND PT.ParentPackageID = @PackageID)
+    		ELSE IF @QuotaID = 351 -- HDD of VPSforPc
+    		BEGIN
+    			INSERT INTO @vhd
+    			SELECT (SELECT SUM(CAST([value] AS int)) AS value FROM dbo.SplitString(SIP.PropertyValue,';')) FROM ServiceItemProperties AS SIP
+    							INNER JOIN ServiceItems AS SI ON SIP.ItemID = SI.ItemID
+    							INNER JOIN PackagesTreeCache AS PT ON SI.PackageID = PT.PackageID
+    							WHERE SIP.PropertyName = 'HddSize' AND PT.ParentPackageID = @PackageID
+    			SET @Result = (SELECT SUM(Size) FROM @vhd)
+    		END
+    		ELSE IF @QuotaID = 354 -- External IP addresses of VPSforPc
+    			SET @Result = (SELECT COUNT(PIP.PackageAddressID) FROM PackageIPAddresses AS PIP
+    							INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
+    							INNER JOIN PackagesTreeCache AS PT ON PIP.PackageID = PT.PackageID
+    							WHERE PT.ParentPackageID = @PackageID AND IP.PoolID = 3)
+    		ELSE IF @QuotaID = 319 -- BB Users
+    			SET @Result = (SELECT COUNT(ea.AccountID) FROM ExchangeAccounts ea 
+    							INNER JOIN BlackBerryUsers bu ON ea.AccountID = bu.AccountID
+    							INNER JOIN ServiceItems  si ON ea.ItemID = si.ItemID
+    							INNER JOIN PackagesTreeCache pt ON si.PackageID = pt.PackageID
+    							WHERE pt.ParentPackageID = @PackageID)
+    		ELSE IF @QuotaID = 320 -- OCS Users
+    			SET @Result = (SELECT COUNT(ea.AccountID) FROM ExchangeAccounts ea 
+    							INNER JOIN OCSUsers ocs ON ea.AccountID = ocs.AccountID
+    							INNER JOIN ServiceItems  si ON ea.ItemID = si.ItemID
+    							INNER JOIN PackagesTreeCache pt ON si.PackageID = pt.PackageID
+    							WHERE pt.ParentPackageID = @PackageID)
+    		ELSE IF @QuotaID = 206 -- HostedSolution.Users
+    			SET @Result = (SELECT COUNT(ea.AccountID) FROM ExchangeAccounts AS ea
+    				INNER JOIN ServiceItems  si ON ea.ItemID = si.ItemID
+    				INNER JOIN PackagesTreeCache pt ON si.PackageID = pt.PackageID
+    				WHERE pt.ParentPackageID = @PackageID AND ea.AccountType IN (1,5,6,7))
+    		ELSE IF @QuotaID = 78 -- Exchange2007.Mailboxes
+    			SET @Result = (SELECT COUNT(ea.AccountID) FROM ExchangeAccounts AS ea
+    				INNER JOIN ServiceItems  si ON ea.ItemID = si.ItemID
+    				INNER JOIN PackagesTreeCache pt ON si.PackageID = pt.PackageID
+    				WHERE pt.ParentPackageID = @PackageID 
+    				AND ea.AccountType IN (1)
+    				AND ea.MailboxPlanId IS NOT NULL)
+    		ELSE IF @QuotaID = 731 -- Exchange2013.JournalingMailboxes
+    			SET @Result = (SELECT COUNT(ea.AccountID) FROM ExchangeAccounts AS ea
+    				INNER JOIN ServiceItems  si ON ea.ItemID = si.ItemID
+    				INNER JOIN PackagesTreeCache pt ON si.PackageID = pt.PackageID
+    				WHERE pt.ParentPackageID = @PackageID 
+    				AND ea.AccountType IN (12)
+    				AND ea.MailboxPlanId IS NOT NULL)
+    		ELSE IF @QuotaID = 77 -- Exchange2007.DiskSpace
+    			SET @Result = (SELECT SUM(B.MailboxSizeMB) FROM ExchangeAccounts AS ea 
+    			INNER JOIN ExchangeMailboxPlans AS B ON ea.MailboxPlanId = B.MailboxPlanId 
+    			INNER JOIN ServiceItems  si ON ea.ItemID = si.ItemID
+    			INNER JOIN PackagesTreeCache pt ON si.PackageID = pt.PackageID
+    			WHERE pt.ParentPackageID = @PackageID AND ea.AccountType in (1, 5, 6, 10, 12))
+    		ELSE IF @QuotaID = 370 -- Lync.Users
+    			SET @Result = (SELECT COUNT(ea.AccountID) FROM ExchangeAccounts AS ea
+    				INNER JOIN LyncUsers lu ON ea.AccountID = lu.AccountID
+    				INNER JOIN ServiceItems  si ON ea.ItemID = si.ItemID
+    				INNER JOIN PackagesTreeCache pt ON si.PackageID = pt.PackageID
+    				WHERE pt.ParentPackageID = @PackageID)
+    		ELSE IF @QuotaID = 376 -- Lync.EVUsers
+    			SET @Result = (SELECT COUNT(ea.AccountID) FROM ExchangeAccounts AS ea
+    				INNER JOIN LyncUsers lu ON ea.AccountID = lu.AccountID
+    				INNER JOIN LyncUserPlans lp ON lu.LyncUserPlanId = lp.LyncUserPlanId
+    				INNER JOIN ServiceItems  si ON ea.ItemID = si.ItemID
+    				INNER JOIN PackagesTreeCache pt ON si.PackageID = pt.PackageID
+    				WHERE pt.ParentPackageID = @PackageID AND lp.EnterpriseVoice = 1)
+    		ELSE IF @QuotaID = 381 -- Dedicated Lync Phone Numbers
+    			SET @Result = (SELECT COUNT(PIP.PackageAddressID) FROM PackageIPAddresses AS PIP
+    							INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
+    							INNER JOIN PackagesTreeCache AS PT ON PIP.PackageID = PT.PackageID
+    							WHERE PT.ParentPackageID = @PackageID AND IP.PoolID = 5)
+    		ELSE IF @QuotaID = 430 -- Enterprise Storage
+    			SET @Result = (SELECT SUM(ESF.FolderQuota) FROM EnterpriseFolders AS ESF
+    							INNER JOIN ServiceItems  SI ON ESF.ItemID = SI.ItemID
+    							INNER JOIN PackagesTreeCache PT ON SI.PackageID = PT.PackageID
+    							WHERE PT.ParentPackageID = @PackageID)
+    		ELSE IF @QuotaID = 431 -- Enterprise Storage Folders
+    			SET @Result = (SELECT COUNT(ESF.EnterpriseFolderID) FROM EnterpriseFolders AS ESF
+    							INNER JOIN ServiceItems  SI ON ESF.ItemID = SI.ItemID
+    							INNER JOIN PackagesTreeCache PT ON SI.PackageID = PT.PackageID
+    							WHERE PT.ParentPackageID = @PackageID)
+    		ELSE IF @QuotaID = 423 -- HostedSolution.SecurityGroups
+    			SET @Result = (SELECT COUNT(ea.AccountID) FROM ExchangeAccounts AS ea
+    				INNER JOIN ServiceItems  si ON ea.ItemID = si.ItemID
+    				INNER JOIN PackagesTreeCache pt ON si.PackageID = pt.PackageID
+    				WHERE pt.ParentPackageID = @PackageID AND ea.AccountType IN (8,9))
+    		ELSE IF @QuotaID = 495 -- HostedSolution.DeletedUsers
+    			SET @Result = (SELECT COUNT(ea.AccountID) FROM ExchangeAccounts AS ea
+    				INNER JOIN ServiceItems  si ON ea.ItemID = si.ItemID
+    				INNER JOIN PackagesTreeCache pt ON si.PackageID = pt.PackageID
+    				WHERE pt.ParentPackageID = @PackageID AND ea.AccountType = 11)
+    		ELSE IF @QuotaID = 450
+    			SET @Result = (SELECT COUNT(DISTINCT(RCU.[AccountId])) FROM [dbo].[RDSCollectionUsers] RCU
+    				INNER JOIN ExchangeAccounts EA ON EA.AccountId = RCU.AccountId
+    				INNER JOIN ServiceItems  si ON ea.ItemID = si.ItemID
+    				INNER JOIN PackagesTreeCache pt ON si.PackageID = pt.PackageID
+    				WHERE PT.ParentPackageID = @PackageID)
+    		ELSE IF @QuotaID = 451
+    			SET @Result = (SELECT COUNT(RS.[ID]) FROM [dbo].[RDSServers] RS				
+    				INNER JOIN ServiceItems  si ON RS.ItemID = si.ItemID
+    				INNER JOIN PackagesTreeCache pt ON si.PackageID = pt.PackageID
+    				WHERE PT.ParentPackageID = @PackageID)
+    		ELSE IF @QuotaID = 491
+    			SET @Result = (SELECT COUNT(RC.[ID]) FROM [dbo].[RDSCollections] RC
+    				INNER JOIN ServiceItems  si ON RC.ItemID = si.ItemID
+    				INNER JOIN PackagesTreeCache pt ON si.PackageID = pt.PackageID
+    				WHERE PT.ParentPackageID = @PackageID)
+    		ELSE IF @QuotaName like 'ServiceLevel.%' -- Support Service Level Quota
+    		BEGIN
+    			DECLARE @LevelID int
+
+    			SELECT @LevelID = LevelID FROM SupportServiceLevels
+    			WHERE LevelName = REPLACE(@QuotaName,'ServiceLevel.','')
+
+    			IF (@LevelID IS NOT NULL)
+    			SET @Result = (SELECT COUNT(EA.AccountID)
+    				FROM SupportServiceLevels AS SL
+    				INNER JOIN ExchangeAccounts AS EA ON SL.LevelID = EA.LevelID
+    				INNER JOIN ServiceItems  SI ON EA.ItemID = SI.ItemID
+    				INNER JOIN PackagesTreeCache PT ON SI.PackageID = PT.PackageID
+    				WHERE EA.LevelID = @LevelID AND PT.ParentPackageID = @PackageID)
+    			ELSE SET @Result = 0
+    		END
+    		ELSE
+    			SET @Result = (SELECT COUNT(SI.ItemID) FROM Quotas AS Q
+    			INNER JOIN ServiceItems AS SI ON SI.ItemTypeID = Q.ItemTypeID
+    			INNER JOIN PackagesTreeCache AS PT ON SI.PackageID = PT.PackageID AND PT.ParentPackageID = @PackageID
+    			WHERE Q.QuotaID = @QuotaID)
+
+    		RETURN @Result
+    	END
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+
                 
 END;
 GO
@@ -42553,7 +43104,23 @@ IF NOT EXISTS (
 )
 BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20240709093225_AddedDMZ', N'8.0.6');
+    VALUES (N'20240709093225_AddedDMZ', N'8.0.8');
+END;
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20241005210801_SQLite_NOCASE'
+)
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20241005210801_SQLite_NOCASE', N'8.0.8');
 END;
 GO
 

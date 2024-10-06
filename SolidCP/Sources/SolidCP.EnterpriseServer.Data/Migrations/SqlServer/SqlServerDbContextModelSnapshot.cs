@@ -4674,6 +4674,33 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                         },
                         new
                         {
+                            ProviderId = 307,
+                            DisplayName = "MySQL Server 8.3",
+                            EditorControl = "MySQL",
+                            GroupId = 90,
+                            ProviderName = "MySQL",
+                            ProviderType = "SolidCP.Providers.Database.MySqlServer83, SolidCP.Providers.Database.MySQL"
+                        },
+                        new
+                        {
+                            ProviderId = 308,
+                            DisplayName = "MySQL Server 8.4",
+                            EditorControl = "MySQL",
+                            GroupId = 90,
+                            ProviderName = "MySQL",
+                            ProviderType = "SolidCP.Providers.Database.MySqlServer84, SolidCP.Providers.Database.MySQL"
+                        },
+                        new
+                        {
+                            ProviderId = 320,
+                            DisplayName = "MySQL Server 9.0",
+                            EditorControl = "MySQL",
+                            GroupId = 90,
+                            ProviderName = "MySQL",
+                            ProviderType = "SolidCP.Providers.Database.MySqlServer90, SolidCP.Providers.Database.MySQL"
+                        },
+                        new
+                        {
                             ProviderId = 350,
                             DisableAutoDiscovery = true,
                             DisplayName = "Microsoft Hyper-V 2012 R2",
@@ -6098,6 +6125,68 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                             GroupId = 90,
                             QuotaDescription = "Database Truncate",
                             QuotaName = "MySQL8.Truncate",
+                            QuotaOrder = 6,
+                            QuotaTypeId = 1,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 120,
+                            GroupId = 91,
+                            ItemTypeId = 75,
+                            QuotaDescription = "Databases",
+                            QuotaName = "MySQL9.Databases",
+                            QuotaOrder = 1,
+                            QuotaTypeId = 2,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 121,
+                            GroupId = 91,
+                            ItemTypeId = 76,
+                            QuotaDescription = "Users",
+                            QuotaName = "MySQL9.Users",
+                            QuotaOrder = 2,
+                            QuotaTypeId = 2,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 122,
+                            GroupId = 91,
+                            QuotaDescription = "Database Backups",
+                            QuotaName = "MySQL9.Backup",
+                            QuotaOrder = 4,
+                            QuotaTypeId = 1,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 123,
+                            GroupId = 91,
+                            QuotaDescription = "Max Database Size",
+                            QuotaName = "MySQL9.MaxDatabaseSize",
+                            QuotaOrder = 3,
+                            QuotaTypeId = 3,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 124,
+                            GroupId = 91,
+                            QuotaDescription = "Database Restores",
+                            QuotaName = "MySQL9.Restore",
+                            QuotaOrder = 5,
+                            QuotaTypeId = 1,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 125,
+                            GroupId = 90,
+                            QuotaDescription = "Database Truncate",
+                            QuotaName = "MySQL9.Truncate",
                             QuotaOrder = 6,
                             QuotaTypeId = 1,
                             ServiceQuota = false
@@ -9073,6 +9162,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                             GroupId = 90,
                             GroupController = "SolidCP.EnterpriseServer.DatabaseServerController",
                             GroupName = "MySQL8",
+                            GroupOrder = 12,
+                            ShowGroup = true
+                        },
+                        new
+                        {
+                            GroupId = 91,
+                            GroupController = "SolidCP.EnterpriseServer.DatabaseServerController",
+                            GroupName = "MySQL9",
                             GroupOrder = 12,
                             ShowGroup = true
                         },
@@ -12539,6 +12636,114 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                         },
                         new
                         {
+                            ProviderId = 307,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 307,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MySQL\\MySQL Server 8.0"
+                        },
+                        new
+                        {
+                            ProviderId = 307,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost,3306"
+                        },
+                        new
+                        {
+                            ProviderId = 307,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 307,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 307,
+                            PropertyName = "sslmode",
+                            PropertyValue = "True"
+                        },
+                        new
+                        {
+                            ProviderId = 308,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 308,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MySQL\\MySQL Server 8.0"
+                        },
+                        new
+                        {
+                            ProviderId = 308,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost,3306"
+                        },
+                        new
+                        {
+                            ProviderId = 308,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 308,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 308,
+                            PropertyName = "sslmode",
+                            PropertyValue = "True"
+                        },
+                        new
+                        {
+                            ProviderId = 320,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 320,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MySQL\\MySQL Server 9.0"
+                        },
+                        new
+                        {
+                            ProviderId = 320,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost,3306"
+                        },
+                        new
+                        {
+                            ProviderId = 320,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 320,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 320,
+                            PropertyName = "sslmode",
+                            PropertyValue = "True"
+                        },
+                        new
+                        {
                             ProviderId = 410,
                             PropertyName = "admode",
                             PropertyValue = "False"
@@ -13667,6 +13872,36 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                             Suspendable = false,
                             TypeName = "SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base",
                             TypeOrder = 1
+                        },
+                        new
+                        {
+                            ItemTypeId = 90,
+                            Backupable = true,
+                            CalculateBandwidth = false,
+                            CalculateDiskspace = true,
+                            DisplayName = "MySQL9Database",
+                            Disposable = true,
+                            GroupId = 91,
+                            Importable = true,
+                            Searchable = true,
+                            Suspendable = false,
+                            TypeName = "SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base",
+                            TypeOrder = 20
+                        },
+                        new
+                        {
+                            ItemTypeId = 91,
+                            Backupable = true,
+                            CalculateBandwidth = false,
+                            CalculateDiskspace = false,
+                            DisplayName = "MySQL9User",
+                            Disposable = true,
+                            GroupId = 91,
+                            Importable = true,
+                            Searchable = true,
+                            Suspendable = false,
+                            TypeName = "SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base",
+                            TypeOrder = 21
                         },
                         new
                         {

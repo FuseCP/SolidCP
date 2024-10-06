@@ -6982,7 +6982,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240708170548_InitialCreate') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20240708170548_InitialCreate', '8.0.6');
+    VALUES ('20240708170548_InitialCreate', '8.0.8');
     END IF;
 END $EF$;
 COMMIT;
@@ -7204,7 +7204,19 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240709093134_AddedDMZ') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20240709093134_AddedDMZ', '8.0.6');
+    VALUES ('20240709093134_AddedDMZ', '8.0.8');
+    END IF;
+END $EF$;
+COMMIT;
+
+START TRANSACTION;
+
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241005210923_SQLite_NOCASE') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20241005210923_SQLite_NOCASE', '8.0.8');
     END IF;
 END $EF$;
 COMMIT;
