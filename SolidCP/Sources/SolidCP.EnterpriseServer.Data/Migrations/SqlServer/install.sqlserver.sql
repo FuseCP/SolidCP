@@ -43251,3 +43251,135 @@ GO
 COMMIT;
 GO
 
+BEGIN TRANSACTION;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20241006121728_AddMariaDB11'
+)
+BEGIN
+    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ProviderID', N'DisableAutoDiscovery', N'DisplayName', N'EditorControl', N'GroupID', N'ProviderName', N'ProviderType') AND [object_id] = OBJECT_ID(N'[Providers]'))
+        SET IDENTITY_INSERT [Providers] ON;
+    EXEC(N'INSERT INTO [Providers] ([ProviderID], [DisableAutoDiscovery], [DisplayName], [EditorControl], [GroupID], [ProviderName], [ProviderType])
+    VALUES (1574, NULL, N''MariaDB 10.7'', N''MariaDB'', 50, N''MariaDB'', N''SolidCP.Providers.Database.MariaDB107, SolidCP.Providers.Database.MariaDB''),
+    (1575, NULL, N''MariaDB 10.8'', N''MariaDB'', 50, N''MariaDB'', N''SolidCP.Providers.Database.MariaDB108, SolidCP.Providers.Database.MariaDB''),
+    (1576, NULL, N''MariaDB 10.9'', N''MariaDB'', 50, N''MariaDB'', N''SolidCP.Providers.Database.MariaDB109, SolidCP.Providers.Database.MariaDB''),
+    (1577, NULL, N''MariaDB 10.10'', N''MariaDB'', 50, N''MariaDB'', N''SolidCP.Providers.Database.MariaDB1010, SolidCP.Providers.Database.MariaDB''),
+    (1578, NULL, N''MariaDB 10.11'', N''MariaDB'', 50, N''MariaDB'', N''SolidCP.Providers.Database.MariaDB1011, SolidCP.Providers.Database.MariaDB''),
+    (1579, NULL, N''MariaDB 11.0'', N''MariaDB'', 50, N''MariaDB'', N''SolidCP.Providers.Database.MariaDB110, SolidCP.Providers.Database.MariaDB''),
+    (1580, NULL, N''MariaDB 11.1'', N''MariaDB'', 50, N''MariaDB'', N''SolidCP.Providers.Database.MariaDB111, SolidCP.Providers.Database.MariaDB''),
+    (1581, NULL, N''MariaDB 11.2'', N''MariaDB'', 50, N''MariaDB'', N''SolidCP.Providers.Database.MariaDB112, SolidCP.Providers.Database.MariaDB''),
+    (1582, NULL, N''MariaDB 11.3'', N''MariaDB'', 50, N''MariaDB'', N''SolidCP.Providers.Database.MariaDB113, SolidCP.Providers.Database.MariaDB''),
+    (1583, NULL, N''MariaDB 11.4'', N''MariaDB'', 50, N''MariaDB'', N''SolidCP.Providers.Database.MariaDB114, SolidCP.Providers.Database.MariaDB''),
+    (1584, NULL, N''MariaDB 11.5'', N''MariaDB'', 50, N''MariaDB'', N''SolidCP.Providers.Database.MariaDB115, SolidCP.Providers.Database.MariaDB''),
+    (1585, NULL, N''MariaDB 11.6'', N''MariaDB'', 50, N''MariaDB'', N''SolidCP.Providers.Database.MariaDB116, SolidCP.Providers.Database.MariaDB''),
+    (1586, NULL, N''MariaDB 11.7'', N''MariaDB'', 50, N''MariaDB'', N''SolidCP.Providers.Database.MariaDB117, SolidCP.Providers.Database.MariaDB'')');
+    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ProviderID', N'DisableAutoDiscovery', N'DisplayName', N'EditorControl', N'GroupID', N'ProviderName', N'ProviderType') AND [object_id] = OBJECT_ID(N'[Providers]'))
+        SET IDENTITY_INSERT [Providers] OFF;
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20241006121728_AddMariaDB11'
+)
+BEGIN
+    EXEC(N'UPDATE [ServiceDefaultProperties] SET [PropertyValue] = N''%PROGRAMFILES%\MariaDB 10.6''
+    WHERE [PropertyName] = N''InstallFolder'' AND [ProviderID] = 1573;
+    SELECT @@ROWCOUNT');
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20241006121728_AddMariaDB11'
+)
+BEGIN
+    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'PropertyName', N'ProviderID', N'PropertyValue') AND [object_id] = OBJECT_ID(N'[ServiceDefaultProperties]'))
+        SET IDENTITY_INSERT [ServiceDefaultProperties] ON;
+    EXEC(N'INSERT INTO [ServiceDefaultProperties] ([PropertyName], [ProviderID], [PropertyValue])
+    VALUES (N''ExternalAddress'', 1574, N''localhost''),
+    (N''InstallFolder'', 1574, N''%PROGRAMFILES%\MariaDB 10.7''),
+    (N''InternalAddress'', 1574, N''localhost''),
+    (N''RootLogin'', 1574, N''root''),
+    (N''RootPassword'', 1574, N''''),
+    (N''ExternalAddress'', 1575, N''localhost''),
+    (N''InstallFolder'', 1575, N''%PROGRAMFILES%\MariaDB 10.8''),
+    (N''InternalAddress'', 1575, N''localhost''),
+    (N''RootLogin'', 1575, N''root''),
+    (N''RootPassword'', 1575, N''''),
+    (N''ExternalAddress'', 1576, N''localhost''),
+    (N''InstallFolder'', 1576, N''%PROGRAMFILES%\MariaDB 10.9''),
+    (N''InternalAddress'', 1576, N''localhost''),
+    (N''RootLogin'', 1576, N''root''),
+    (N''RootPassword'', 1576, N''''),
+    (N''ExternalAddress'', 1577, N''localhost''),
+    (N''InstallFolder'', 1577, N''%PROGRAMFILES%\MariaDB 10.10''),
+    (N''InternalAddress'', 1577, N''localhost''),
+    (N''RootLogin'', 1577, N''root''),
+    (N''RootPassword'', 1577, N''''),
+    (N''ExternalAddress'', 1578, N''localhost''),
+    (N''InstallFolder'', 1578, N''%PROGRAMFILES%\MariaDB 10.11''),
+    (N''InternalAddress'', 1578, N''localhost''),
+    (N''RootLogin'', 1578, N''root''),
+    (N''RootPassword'', 1578, N''''),
+    (N''ExternalAddress'', 1579, N''localhost''),
+    (N''InstallFolder'', 1579, N''%PROGRAMFILES%\MariaDB 11.0''),
+    (N''InternalAddress'', 1579, N''localhost''),
+    (N''RootLogin'', 1579, N''root''),
+    (N''RootPassword'', 1579, N''''),
+    (N''ExternalAddress'', 1580, N''localhost''),
+    (N''InstallFolder'', 1580, N''%PROGRAMFILES%\MariaDB 11.1''),
+    (N''InternalAddress'', 1580, N''localhost''),
+    (N''RootLogin'', 1580, N''root''),
+    (N''RootPassword'', 1580, N''''),
+    (N''ExternalAddress'', 1581, N''localhost''),
+    (N''InstallFolder'', 1581, N''%PROGRAMFILES%\MariaDB 11.2''),
+    (N''InternalAddress'', 1581, N''localhost''),
+    (N''RootLogin'', 1581, N''root''),
+    (N''RootPassword'', 1581, N''''),
+    (N''ExternalAddress'', 1582, N''localhost''),
+    (N''InstallFolder'', 1582, N''%PROGRAMFILES%\MariaDB 11.3'');
+    INSERT INTO [ServiceDefaultProperties] ([PropertyName], [ProviderID], [PropertyValue])
+    VALUES (N''InternalAddress'', 1582, N''localhost''),
+    (N''RootLogin'', 1582, N''root''),
+    (N''RootPassword'', 1582, N''''),
+    (N''ExternalAddress'', 1583, N''localhost''),
+    (N''InstallFolder'', 1583, N''%PROGRAMFILES%\MariaDB 11.4''),
+    (N''InternalAddress'', 1583, N''localhost''),
+    (N''RootLogin'', 1583, N''root''),
+    (N''RootPassword'', 1583, N''''),
+    (N''ExternalAddress'', 1584, N''localhost''),
+    (N''InstallFolder'', 1584, N''%PROGRAMFILES%\MariaDB 11.5''),
+    (N''InternalAddress'', 1584, N''localhost''),
+    (N''RootLogin'', 1584, N''root''),
+    (N''RootPassword'', 1584, N''''),
+    (N''ExternalAddress'', 1585, N''localhost''),
+    (N''InstallFolder'', 1585, N''%PROGRAMFILES%\MariaDB 11.6''),
+    (N''InternalAddress'', 1585, N''localhost''),
+    (N''RootLogin'', 1585, N''root''),
+    (N''RootPassword'', 1585, N''''),
+    (N''ExternalAddress'', 1586, N''localhost''),
+    (N''InstallFolder'', 1586, N''%PROGRAMFILES%\MariaDB 11.7''),
+    (N''InternalAddress'', 1586, N''localhost''),
+    (N''RootLogin'', 1586, N''root''),
+    (N''RootPassword'', 1586, N'''')');
+    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'PropertyName', N'ProviderID', N'PropertyValue') AND [object_id] = OBJECT_ID(N'[ServiceDefaultProperties]'))
+        SET IDENTITY_INSERT [ServiceDefaultProperties] OFF;
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20241006121728_AddMariaDB11'
+)
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20241006121728_AddMariaDB11', N'8.0.8');
+END;
+GO
+
+COMMIT;
+GO
+

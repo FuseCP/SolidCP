@@ -4966,6 +4966,123 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         },
                         new
                         {
+                            ProviderId = 1574,
+                            DisplayName = "MariaDB 10.7",
+                            EditorControl = "MariaDB",
+                            GroupId = 50,
+                            ProviderName = "MariaDB",
+                            ProviderType = "SolidCP.Providers.Database.MariaDB107, SolidCP.Providers.Database.MariaDB"
+                        },
+                        new
+                        {
+                            ProviderId = 1575,
+                            DisplayName = "MariaDB 10.8",
+                            EditorControl = "MariaDB",
+                            GroupId = 50,
+                            ProviderName = "MariaDB",
+                            ProviderType = "SolidCP.Providers.Database.MariaDB108, SolidCP.Providers.Database.MariaDB"
+                        },
+                        new
+                        {
+                            ProviderId = 1576,
+                            DisplayName = "MariaDB 10.9",
+                            EditorControl = "MariaDB",
+                            GroupId = 50,
+                            ProviderName = "MariaDB",
+                            ProviderType = "SolidCP.Providers.Database.MariaDB109, SolidCP.Providers.Database.MariaDB"
+                        },
+                        new
+                        {
+                            ProviderId = 1577,
+                            DisplayName = "MariaDB 10.10",
+                            EditorControl = "MariaDB",
+                            GroupId = 50,
+                            ProviderName = "MariaDB",
+                            ProviderType = "SolidCP.Providers.Database.MariaDB1010, SolidCP.Providers.Database.MariaDB"
+                        },
+                        new
+                        {
+                            ProviderId = 1578,
+                            DisplayName = "MariaDB 10.11",
+                            EditorControl = "MariaDB",
+                            GroupId = 50,
+                            ProviderName = "MariaDB",
+                            ProviderType = "SolidCP.Providers.Database.MariaDB1011, SolidCP.Providers.Database.MariaDB"
+                        },
+                        new
+                        {
+                            ProviderId = 1579,
+                            DisplayName = "MariaDB 11.0",
+                            EditorControl = "MariaDB",
+                            GroupId = 50,
+                            ProviderName = "MariaDB",
+                            ProviderType = "SolidCP.Providers.Database.MariaDB110, SolidCP.Providers.Database.MariaDB"
+                        },
+                        new
+                        {
+                            ProviderId = 1580,
+                            DisplayName = "MariaDB 11.1",
+                            EditorControl = "MariaDB",
+                            GroupId = 50,
+                            ProviderName = "MariaDB",
+                            ProviderType = "SolidCP.Providers.Database.MariaDB111, SolidCP.Providers.Database.MariaDB"
+                        },
+                        new
+                        {
+                            ProviderId = 1581,
+                            DisplayName = "MariaDB 11.2",
+                            EditorControl = "MariaDB",
+                            GroupId = 50,
+                            ProviderName = "MariaDB",
+                            ProviderType = "SolidCP.Providers.Database.MariaDB112, SolidCP.Providers.Database.MariaDB"
+                        },
+                        new
+                        {
+                            ProviderId = 1582,
+                            DisplayName = "MariaDB 11.3",
+                            EditorControl = "MariaDB",
+                            GroupId = 50,
+                            ProviderName = "MariaDB",
+                            ProviderType = "SolidCP.Providers.Database.MariaDB113, SolidCP.Providers.Database.MariaDB"
+                        },
+                        new
+                        {
+                            ProviderId = 1583,
+                            DisplayName = "MariaDB 11.4",
+                            EditorControl = "MariaDB",
+                            GroupId = 50,
+                            ProviderName = "MariaDB",
+                            ProviderType = "SolidCP.Providers.Database.MariaDB114, SolidCP.Providers.Database.MariaDB"
+                        },
+                        new
+                        {
+                            ProviderId = 1584,
+                            DisplayName = "MariaDB 11.5",
+                            EditorControl = "MariaDB",
+                            GroupId = 50,
+                            ProviderName = "MariaDB",
+                            ProviderType = "SolidCP.Providers.Database.MariaDB115, SolidCP.Providers.Database.MariaDB"
+                        },
+                        new
+                        {
+                            ProviderId = 1585,
+                            DisplayName = "MariaDB 11.6",
+                            EditorControl = "MariaDB",
+                            GroupId = 50,
+                            ProviderName = "MariaDB",
+                            ProviderType = "SolidCP.Providers.Database.MariaDB116, SolidCP.Providers.Database.MariaDB"
+                        },
+                        new
+                        {
+                            ProviderId = 1586,
+                            DisplayName = "MariaDB 11.7",
+                            EditorControl = "MariaDB",
+                            GroupId = 50,
+                            ProviderName = "MariaDB",
+                            ProviderType = "SolidCP.Providers.Database.MariaDB117, SolidCP.Providers.Database.MariaDB"
+                        },
+                        new
+                        {
                             ProviderId = 1601,
                             DisableAutoDiscovery = true,
                             DisplayName = "Mail Cleaner",
@@ -12899,7 +13016,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         {
                             ProviderId = 1573,
                             PropertyName = "InstallFolder",
-                            PropertyValue = "%PROGRAMFILES%\\MariaDB 10.5"
+                            PropertyValue = "%PROGRAMFILES%\\MariaDB 10.6"
                         },
                         new
                         {
@@ -12916,6 +13033,396 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         new
                         {
                             ProviderId = 1573,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 1574,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1574,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MariaDB 10.7"
+                        },
+                        new
+                        {
+                            ProviderId = 1574,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1574,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 1574,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 1575,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1575,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MariaDB 10.8"
+                        },
+                        new
+                        {
+                            ProviderId = 1575,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1575,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 1575,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 1576,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1576,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MariaDB 10.9"
+                        },
+                        new
+                        {
+                            ProviderId = 1576,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1576,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 1576,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 1577,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1577,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MariaDB 10.10"
+                        },
+                        new
+                        {
+                            ProviderId = 1577,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1577,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 1577,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 1578,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1578,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MariaDB 10.11"
+                        },
+                        new
+                        {
+                            ProviderId = 1578,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1578,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 1578,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 1579,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1579,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MariaDB 11.0"
+                        },
+                        new
+                        {
+                            ProviderId = 1579,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1579,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 1579,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 1580,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1580,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MariaDB 11.1"
+                        },
+                        new
+                        {
+                            ProviderId = 1580,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1580,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 1580,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 1581,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1581,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MariaDB 11.2"
+                        },
+                        new
+                        {
+                            ProviderId = 1581,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1581,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 1581,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 1582,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1582,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MariaDB 11.3"
+                        },
+                        new
+                        {
+                            ProviderId = 1582,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1582,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 1582,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 1583,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1583,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MariaDB 11.4"
+                        },
+                        new
+                        {
+                            ProviderId = 1583,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1583,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 1583,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 1584,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1584,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MariaDB 11.5"
+                        },
+                        new
+                        {
+                            ProviderId = 1584,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1584,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 1584,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 1585,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1585,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MariaDB 11.6"
+                        },
+                        new
+                        {
+                            ProviderId = 1585,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1585,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 1585,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 1586,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1586,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MariaDB 11.7"
+                        },
+                        new
+                        {
+                            ProviderId = 1586,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1586,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 1586,
                             PropertyName = "RootPassword",
                             PropertyValue = ""
                         },

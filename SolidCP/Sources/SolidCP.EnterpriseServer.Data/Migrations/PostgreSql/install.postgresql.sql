@@ -7329,3 +7329,191 @@ BEGIN
 END $EF$;
 COMMIT;
 
+START TRANSACTION;
+
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241006121805_AddMariaDB11') THEN
+    INSERT INTO public."Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+    VALUES (1574, NULL, 'MariaDB 10.7', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB107, SolidCP.Providers.Database.MariaDB');
+    INSERT INTO public."Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+    VALUES (1575, NULL, 'MariaDB 10.8', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB108, SolidCP.Providers.Database.MariaDB');
+    INSERT INTO public."Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+    VALUES (1576, NULL, 'MariaDB 10.9', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB109, SolidCP.Providers.Database.MariaDB');
+    INSERT INTO public."Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+    VALUES (1577, NULL, 'MariaDB 10.10', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB1010, SolidCP.Providers.Database.MariaDB');
+    INSERT INTO public."Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+    VALUES (1578, NULL, 'MariaDB 10.11', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB1011, SolidCP.Providers.Database.MariaDB');
+    INSERT INTO public."Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+    VALUES (1579, NULL, 'MariaDB 11.0', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB110, SolidCP.Providers.Database.MariaDB');
+    INSERT INTO public."Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+    VALUES (1580, NULL, 'MariaDB 11.1', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB111, SolidCP.Providers.Database.MariaDB');
+    INSERT INTO public."Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+    VALUES (1581, NULL, 'MariaDB 11.2', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB112, SolidCP.Providers.Database.MariaDB');
+    INSERT INTO public."Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+    VALUES (1582, NULL, 'MariaDB 11.3', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB113, SolidCP.Providers.Database.MariaDB');
+    INSERT INTO public."Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+    VALUES (1583, NULL, 'MariaDB 11.4', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB114, SolidCP.Providers.Database.MariaDB');
+    INSERT INTO public."Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+    VALUES (1584, NULL, 'MariaDB 11.5', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB115, SolidCP.Providers.Database.MariaDB');
+    INSERT INTO public."Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+    VALUES (1585, NULL, 'MariaDB 11.6', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB116, SolidCP.Providers.Database.MariaDB');
+    INSERT INTO public."Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+    VALUES (1586, NULL, 'MariaDB 11.7', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB117, SolidCP.Providers.Database.MariaDB');
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241006121805_AddMariaDB11') THEN
+    UPDATE public."ServiceDefaultProperties" SET "PropertyValue" = '%PROGRAMFILES%\MariaDB 10.6'
+    WHERE "PropertyName" = 'InstallFolder' AND "ProviderID" = 1573;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241006121805_AddMariaDB11') THEN
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('ExternalAddress', 1574, 'localhost');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('InstallFolder', 1574, '%PROGRAMFILES%\MariaDB 10.7');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('InternalAddress', 1574, 'localhost');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('RootLogin', 1574, 'root');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('RootPassword', 1574, '');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('ExternalAddress', 1575, 'localhost');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('InstallFolder', 1575, '%PROGRAMFILES%\MariaDB 10.8');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('InternalAddress', 1575, 'localhost');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('RootLogin', 1575, 'root');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('RootPassword', 1575, '');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('ExternalAddress', 1576, 'localhost');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('InstallFolder', 1576, '%PROGRAMFILES%\MariaDB 10.9');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('InternalAddress', 1576, 'localhost');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('RootLogin', 1576, 'root');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('RootPassword', 1576, '');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('ExternalAddress', 1577, 'localhost');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('InstallFolder', 1577, '%PROGRAMFILES%\MariaDB 10.10');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('InternalAddress', 1577, 'localhost');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('RootLogin', 1577, 'root');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('RootPassword', 1577, '');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('ExternalAddress', 1578, 'localhost');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('InstallFolder', 1578, '%PROGRAMFILES%\MariaDB 10.11');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('InternalAddress', 1578, 'localhost');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('RootLogin', 1578, 'root');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('RootPassword', 1578, '');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('ExternalAddress', 1579, 'localhost');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('InstallFolder', 1579, '%PROGRAMFILES%\MariaDB 11.0');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('InternalAddress', 1579, 'localhost');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('RootLogin', 1579, 'root');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('RootPassword', 1579, '');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('ExternalAddress', 1580, 'localhost');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('InstallFolder', 1580, '%PROGRAMFILES%\MariaDB 11.1');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('InternalAddress', 1580, 'localhost');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('RootLogin', 1580, 'root');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('RootPassword', 1580, '');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('ExternalAddress', 1581, 'localhost');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('InstallFolder', 1581, '%PROGRAMFILES%\MariaDB 11.2');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('InternalAddress', 1581, 'localhost');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('RootLogin', 1581, 'root');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('RootPassword', 1581, '');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('ExternalAddress', 1582, 'localhost');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('InstallFolder', 1582, '%PROGRAMFILES%\MariaDB 11.3');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('InternalAddress', 1582, 'localhost');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('RootLogin', 1582, 'root');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('RootPassword', 1582, '');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('ExternalAddress', 1583, 'localhost');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('InstallFolder', 1583, '%PROGRAMFILES%\MariaDB 11.4');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('InternalAddress', 1583, 'localhost');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('RootLogin', 1583, 'root');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('RootPassword', 1583, '');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('ExternalAddress', 1584, 'localhost');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('InstallFolder', 1584, '%PROGRAMFILES%\MariaDB 11.5');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('InternalAddress', 1584, 'localhost');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('RootLogin', 1584, 'root');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('RootPassword', 1584, '');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('ExternalAddress', 1585, 'localhost');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('InstallFolder', 1585, '%PROGRAMFILES%\MariaDB 11.6');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('InternalAddress', 1585, 'localhost');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('RootLogin', 1585, 'root');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('RootPassword', 1585, '');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('ExternalAddress', 1586, 'localhost');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('InstallFolder', 1586, '%PROGRAMFILES%\MariaDB 11.7');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('InternalAddress', 1586, 'localhost');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('RootLogin', 1586, 'root');
+    INSERT INTO public."ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+    VALUES ('RootPassword', 1586, '');
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241006121805_AddMariaDB11') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20241006121805_AddMariaDB11', '8.0.8');
+    END IF;
+END $EF$;
+COMMIT;
+

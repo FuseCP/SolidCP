@@ -2,86 +2,88 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SolidCP.EnterpriseServer.Data;
 
 #nullable disable
 
-namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
+namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 {
-    [DbContext(typeof(PostgreSqlDbContext))]
-    partial class PostgreSqlDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(SqlServerDbContext))]
+    [Migration("20241006121728_AddMariaDB11")]
+    partial class AddMariaDB11
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasDefaultSchema("public")
                 .HasAnnotation("ProductVersion", "8.0.8")
-                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.AccessToken", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<Guid>("AccessTokenGuid")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("AccountId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("AccountID");
 
                     b.Property<DateTime>("ExpirationDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.Property<int>("ItemId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("SmsResponse")
                         .HasMaxLength(100)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<int>("TokenType")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.HasKey("Id")
                         .HasName("PK__AccessTo__3214EC27DEAEF66E");
 
                     b.HasIndex(new[] { "AccountId" }, "AccessTokensIdx_AccountID");
 
-                    b.ToTable("AccessTokens", "public");
+                    b.ToTable("AccessTokens");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.AdditionalGroup", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("GroupName")
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("UserID");
 
                     b.HasKey("Id")
                         .HasName("PK__Addition__3214EC27E665DDE2");
 
-                    b.ToTable("AdditionalGroups", "public");
+                    b.ToTable("AdditionalGroups");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.AuditLog", b =>
@@ -89,58 +91,58 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.Property<string>("RecordId")
                         .HasMaxLength(32)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(32)")
+                        .HasColumnType("varchar(32)")
                         .HasColumnName("RecordID");
 
                     b.Property<string>("ExecutionLog")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("ntext");
 
                     b.Property<DateTime>("FinishDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.Property<int?>("ItemId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ItemID");
 
                     b.Property<string>("ItemName")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int?>("PackageId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("PackageID");
 
                     b.Property<int>("SeverityId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("SeverityID");
 
                     b.Property<string>("SourceName")
                         .IsRequired()
                         .HasMaxLength(50)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("varchar(50)");
 
                     b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.Property<string>("TaskName")
                         .IsRequired()
                         .HasMaxLength(50)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("varchar(50)");
 
                     b.Property<int?>("UserId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("UserID");
 
                     b.Property<string>("Username")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("RecordId")
                         .HasName("PK_Log");
 
-                    b.ToTable("AuditLog", "public");
+                    b.ToTable("AuditLog");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.AuditLogSource", b =>
@@ -148,11 +150,11 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.Property<string>("SourceName")
                         .HasMaxLength(100)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("SourceName");
 
-                    b.ToTable("AuditLogSources", "public");
+                    b.ToTable("AuditLogSources");
 
                     b.HasData(
                         new
@@ -314,23 +316,23 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.Property<string>("SourceName")
                         .HasMaxLength(100)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(100)")
+                        .HasColumnType("varchar(100)")
                         .HasColumnOrder(1);
 
                     b.Property<string>("TaskName")
                         .HasMaxLength(100)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(100)")
+                        .HasColumnType("varchar(100)")
                         .HasColumnOrder(2);
 
                     b.Property<string>("TaskDescription")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("SourceName", "TaskName")
                         .HasName("PK_LogActions");
 
-                    b.ToTable("AuditLogTasks", "public");
+                    b.ToTable("AuditLogTasks");
 
                     b.HasData(
                         new
@@ -2167,168 +2169,168 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool?>("Completed")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<int>("EffectiveUserId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("EffectiveUserID");
 
                     b.Property<DateTime?>("FinishDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.Property<Guid>("Guid")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("IndicatorCurrent")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int>("IndicatorMaximum")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int?>("ItemId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ItemID");
 
                     b.Property<string>("ItemName")
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<int>("MaximumExecutionTime")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<bool?>("NotifyOnComplete")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<int>("PackageId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("PackageID");
 
                     b.Property<int>("ScheduleId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ScheduleID");
 
                     b.Property<int>("Severity")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("Source")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.Property<int>("Status")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("TaskId")
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
+                        .HasColumnType("nvarchar(255)")
                         .HasColumnName("TaskID");
 
                     b.Property<string>("TaskName")
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("UserID");
 
                     b.HasKey("Id")
                         .HasName("PK__Backgrou__3214EC273A1145AC");
 
-                    b.ToTable("BackgroundTasks", "public");
+                    b.ToTable("BackgroundTasks");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.BackgroundTaskLog", b =>
                 {
                     b.Property<int>("LogId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("LogID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("LogId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LogId"));
 
                     b.Property<DateTime?>("Date")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.Property<string>("ExceptionStackTrace")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("ntext");
 
                     b.Property<int?>("InnerTaskStart")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int?>("Severity")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int>("TaskId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("TaskID");
 
                     b.Property<string>("Text")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("ntext");
 
                     b.Property<int?>("TextIdent")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("XmlParameters")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("ntext");
 
                     b.HasKey("LogId")
                         .HasName("PK__Backgrou__5E5499A86067A6E5");
 
                     b.HasIndex(new[] { "TaskId" }, "BackgroundTaskLogsIdx_TaskID");
 
-                    b.ToTable("BackgroundTaskLogs", "public");
+                    b.ToTable("BackgroundTaskLogs");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.BackgroundTaskParameter", b =>
                 {
                     b.Property<int>("ParameterId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ParameterID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ParameterId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ParameterId"));
 
                     b.Property<string>("Name")
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("SerializerValue")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("ntext");
 
                     b.Property<int>("TaskId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("TaskID");
 
                     b.Property<string>("TypeName")
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("ParameterId")
                         .HasName("PK__Backgrou__F80C629777BF580B");
 
                     b.HasIndex(new[] { "TaskId" }, "BackgroundTaskParametersIdx_TaskID");
 
-                    b.ToTable("BackgroundTaskParameters", "public");
+                    b.ToTable("BackgroundTaskParameters");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.BackgroundTaskStack", b =>
                 {
                     b.Property<int>("TaskStackId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("TaskStackID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("TaskStackId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TaskStackId"));
 
                     b.Property<int>("TaskId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("TaskID");
 
                     b.HasKey("TaskStackId")
@@ -2336,217 +2338,225 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "TaskId" }, "BackgroundTaskStackIdx_TaskID");
 
-                    b.ToTable("BackgroundTaskStack", "public");
+                    b.ToTable("BackgroundTaskStack");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.BlackBerryUser", b =>
                 {
                     b.Property<int>("BlackBerryUserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("BlackBerryUserId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BlackBerryUserId"));
 
                     b.Property<int>("AccountId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
 
                     b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.HasKey("BlackBerryUserId");
 
                     b.HasIndex(new[] { "AccountId" }, "BlackBerryUsersIdx_AccountId");
 
-                    b.ToTable("BlackBerryUsers", "public");
+                    b.ToTable("BlackBerryUsers");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Cluster", b =>
                 {
                     b.Property<int>("ClusterId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ClusterID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ClusterId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ClusterId"));
 
                     b.Property<string>("ClusterName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("ClusterId");
 
-                    b.ToTable("Clusters", "public");
+                    b.ToTable("Clusters");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Comment", b =>
                 {
                     b.Property<int>("CommentId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("CommentID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CommentId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CommentId"));
 
                     b.Property<string>("CommentText")
                         .HasMaxLength(1000)
-                        .HasColumnType("character varying(1000)");
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
 
                     b.Property<int>("ItemId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ItemID");
 
                     b.Property<string>("ItemTypeId")
                         .IsRequired()
                         .HasMaxLength(50)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("varchar(50)")
                         .HasColumnName("ItemTypeID");
 
                     b.Property<int?>("SeverityId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("SeverityID");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("UserID");
 
                     b.HasKey("CommentId");
 
                     b.HasIndex(new[] { "UserId" }, "CommentsIdx_UserID");
 
-                    b.ToTable("Comments", "public");
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.CrmUser", b =>
                 {
                     b.Property<int>("CrmUserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("CRMUserID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CrmUserId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CrmUserId"));
 
                     b.Property<int>("AccountId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("AccountID");
 
                     b.Property<Guid?>("BusinessUnitId")
-                        .HasColumnType("uuid")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("BusinessUnitID");
 
                     b.Property<int?>("CalType")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("CALType");
 
                     b.Property<DateTime>("ChangedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
 
                     b.Property<Guid?>("CrmUserGuid")
-                        .HasColumnType("uuid")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("CRMUserGuid");
 
                     b.HasKey("CrmUserId");
 
                     b.HasIndex(new[] { "AccountId" }, "CRMUsersIdx_AccountID");
 
-                    b.ToTable("CRMUsers", "public");
+                    b.ToTable("CRMUsers");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.DmzIpAddress", b =>
                 {
                     b.Property<int>("DmzAddressId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("DmzAddressID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("DmzAddressId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DmzAddressId"));
 
                     b.Property<string>("IpAddress")
                         .IsRequired()
                         .HasMaxLength(15)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(15)")
+                        .HasColumnType("varchar(15)")
                         .HasColumnName("IPAddress");
 
                     b.Property<bool>("IsPrimary")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<int>("ItemId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ItemID");
 
                     b.HasKey("DmzAddressId");
 
                     b.HasIndex(new[] { "ItemId" }, "DmzIPAddressesIdx_ItemID");
 
-                    b.ToTable("DmzIPAddresses", "public");
+                    b.ToTable("DmzIPAddresses");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Domain", b =>
                 {
                     b.Property<int>("DomainId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("DomainID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("DomainId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DomainId"));
 
                     b.Property<DateTime?>("CreationDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.Property<int?>("DomainItemId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("DomainName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ExpirationDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.Property<bool>("HostingAllowed")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsDomainPointer")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsPreviewDomain")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsSubDomain")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastUpdateDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.Property<int?>("MailDomainId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("MailDomainID");
 
                     b.Property<int>("PackageId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("PackageID");
 
                     b.Property<string>("RegistrarName")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("WebSiteId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("WebSiteID");
 
                     b.Property<int?>("ZoneItemId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ZoneItemID");
 
                     b.HasKey("DomainId");
@@ -2559,105 +2569,105 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "ZoneItemId" }, "DomainsIdx_ZoneItemID");
 
-                    b.ToTable("Domains", "public");
+                    b.ToTable("Domains");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.DomainDnsRecord", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("Date")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.Property<string>("DnsServer")
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<int>("DomainId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int>("RecordType")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("Value")
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id")
                         .HasName("PK__DomainDn__3214EC27A6FC0498");
 
                     b.HasIndex(new[] { "DomainId" }, "DomainDnsRecordsIdx_DomainId");
 
-                    b.ToTable("DomainDnsRecords", "public");
+                    b.ToTable("DomainDnsRecords");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.EnterpriseFolder", b =>
                 {
                     b.Property<int>("EnterpriseFolderId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("EnterpriseFolderID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("EnterpriseFolderId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EnterpriseFolderId"));
 
                     b.Property<string>("Domain")
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("FolderName")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<int>("FolderQuota")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("HomeFolder")
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<int>("ItemId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ItemID");
 
                     b.Property<string>("LocationDrive")
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<int?>("StorageSpaceFolderId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.HasKey("EnterpriseFolderId");
 
                     b.HasIndex(new[] { "StorageSpaceFolderId" }, "EnterpriseFoldersIdx_StorageSpaceFolderId");
 
-                    b.ToTable("EnterpriseFolders", "public");
+                    b.ToTable("EnterpriseFolders");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.EnterpriseFoldersOwaPermission", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AccountId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("AccountID");
 
                     b.Property<int>("FolderId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("FolderID");
 
                     b.Property<int>("ItemId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ItemID");
 
                     b.HasKey("Id")
@@ -2667,81 +2677,83 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "FolderId" }, "EnterpriseFoldersOwaPermissionsIdx_FolderID");
 
-                    b.ToTable("EnterpriseFoldersOwaPermissions", "public");
+                    b.ToTable("EnterpriseFoldersOwaPermissions");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeAccount", b =>
                 {
                     b.Property<int>("AccountId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("AccountID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("AccountId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AccountId"));
 
                     b.Property<string>("AccountName")
                         .IsRequired()
                         .HasMaxLength(300)
-                        .HasColumnType("character varying(300)");
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<int>("AccountType")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int?>("ArchivingMailboxPlanId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
 
                     b.Property<string>("DisplayName")
                         .IsRequired()
                         .HasMaxLength(300)
-                        .HasColumnType("character varying(300)");
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<bool?>("EnableArchiving")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<int?>("ExchangeDisclaimerId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsVip")
-                        .HasColumnType("boolean")
+                        .HasColumnType("bit")
                         .HasColumnName("IsVIP");
 
                     b.Property<int>("ItemId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ItemID");
 
                     b.Property<int?>("LevelId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("LevelID");
 
                     b.Property<bool?>("MailEnabledPublicFolder")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<string>("MailboxManagerActions")
                         .HasMaxLength(200)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(200)");
+                        .HasColumnType("varchar(200)");
 
                     b.Property<int?>("MailboxPlanId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("PrimaryEmailAddress")
                         .HasMaxLength(300)
-                        .HasColumnType("character varying(300)");
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<string>("SamAccountName")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("SubscriberNumber")
                         .HasMaxLength(32)
-                        .HasColumnType("character varying(32)");
+                        .HasColumnType("nvarchar(32)");
 
                     b.Property<string>("UserPrincipalName")
                         .HasMaxLength(300)
-                        .HasColumnType("character varying(300)");
+                        .HasColumnType("nvarchar(300)");
 
                     b.HasKey("AccountId");
 
@@ -2752,26 +2764,26 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.HasIndex(new[] { "AccountName" }, "IX_ExchangeAccounts_UniqueAccountName")
                         .IsUnique();
 
-                    b.ToTable("ExchangeAccounts", "public");
+                    b.ToTable("ExchangeAccounts");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeAccountEmailAddress", b =>
                 {
                     b.Property<int>("AddressId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("AddressID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("AddressId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AddressId"));
 
                     b.Property<int>("AccountId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("AccountID");
 
                     b.Property<string>("EmailAddress")
                         .IsRequired()
                         .HasMaxLength(300)
-                        .HasColumnType("character varying(300)");
+                        .HasColumnType("nvarchar(300)");
 
                     b.HasKey("AddressId");
 
@@ -2780,182 +2792,182 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.HasIndex(new[] { "EmailAddress" }, "IX_ExchangeAccountEmailAddresses_UniqueEmail")
                         .IsUnique();
 
-                    b.ToTable("ExchangeAccountEmailAddresses", "public");
+                    b.ToTable("ExchangeAccountEmailAddresses");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeDeletedAccount", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AccountId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("AccountID");
 
                     b.Property<DateTime>("ExpirationDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.Property<string>("FileName")
                         .HasMaxLength(128)
-                        .HasColumnType("character varying(128)");
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("FolderName")
                         .HasMaxLength(128)
-                        .HasColumnType("character varying(128)");
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<int>("OriginAt")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("OriginAT");
 
                     b.Property<string>("StoragePath")
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id")
                         .HasName("PK__Exchange__3214EC27EF1C22C1");
 
-                    b.ToTable("ExchangeDeletedAccounts", "public");
+                    b.ToTable("ExchangeDeletedAccounts");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeDisclaimer", b =>
                 {
                     b.Property<int>("ExchangeDisclaimerId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ExchangeDisclaimerId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExchangeDisclaimerId"));
 
                     b.Property<string>("DisclaimerName")
                         .IsRequired()
                         .HasMaxLength(300)
-                        .HasColumnType("character varying(300)");
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<string>("DisclaimerText")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ItemId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ItemID");
 
                     b.HasKey("ExchangeDisclaimerId");
 
-                    b.ToTable("ExchangeDisclaimers", "public");
+                    b.ToTable("ExchangeDisclaimers");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeMailboxPlan", b =>
                 {
                     b.Property<int>("MailboxPlanId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("MailboxPlanId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MailboxPlanId"));
 
                     b.Property<bool?>("AllowLitigationHold")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<int?>("ArchiveSizeMb")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ArchiveSizeMB");
 
                     b.Property<int?>("ArchiveWarningPct")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<bool?>("Archiving")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("EnableActiveSync")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool?>("EnableArchiving")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool?>("EnableAutoReply")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool?>("EnableForceArchiveDeletion")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("EnableImap")
-                        .HasColumnType("boolean")
+                        .HasColumnType("bit")
                         .HasColumnName("EnableIMAP");
 
                     b.Property<bool>("EnableMapi")
-                        .HasColumnType("boolean")
+                        .HasColumnType("bit")
                         .HasColumnName("EnableMAPI");
 
                     b.Property<bool>("EnableOwa")
-                        .HasColumnType("boolean")
+                        .HasColumnType("bit")
                         .HasColumnName("EnableOWA");
 
                     b.Property<bool>("EnablePop")
-                        .HasColumnType("boolean")
+                        .HasColumnType("bit")
                         .HasColumnName("EnablePOP");
 
                     b.Property<bool>("HideFromAddressBook")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsDefault")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool?>("IsForJournaling")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<int>("IssueWarningPct")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int>("ItemId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ItemID");
 
                     b.Property<int>("KeepDeletedItemsDays")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("LitigationHoldMsg")
                         .HasMaxLength(512)
-                        .HasColumnType("character varying(512)");
+                        .HasColumnType("nvarchar(512)");
 
                     b.Property<string>("LitigationHoldUrl")
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("MailboxPlan")
                         .IsRequired()
                         .HasMaxLength(300)
-                        .HasColumnType("character varying(300)");
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<int?>("MailboxPlanType")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int>("MailboxSizeMb")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("MailboxSizeMB");
 
                     b.Property<int>("MaxReceiveMessageSizeKb")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("MaxReceiveMessageSizeKB");
 
                     b.Property<int>("MaxRecipients")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int>("MaxSendMessageSizeKb")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("MaxSendMessageSizeKB");
 
                     b.Property<int>("ProhibitSendPct")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int>("ProhibitSendReceivePct")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int?>("RecoverableItemsSpace")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int?>("RecoverableItemsWarningPct")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.HasKey("MailboxPlanId");
 
@@ -2964,53 +2976,53 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.HasIndex(new[] { "MailboxPlanId" }, "IX_ExchangeMailboxPlans")
                         .IsUnique();
 
-                    b.ToTable("ExchangeMailboxPlans", "public");
+                    b.ToTable("ExchangeMailboxPlans");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeMailboxPlanRetentionPolicyTag", b =>
                 {
                     b.Property<int>("PlanTagId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("PlanTagID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PlanTagId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PlanTagId"));
 
                     b.Property<int>("MailboxPlanId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int>("TagId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("TagID");
 
                     b.HasKey("PlanTagId")
                         .HasName("PK__Exchange__E467073C50CD805B");
 
-                    b.ToTable("ExchangeMailboxPlanRetentionPolicyTags", "public");
+                    b.ToTable("ExchangeMailboxPlanRetentionPolicyTags");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeOrganization", b =>
                 {
                     b.Property<int>("ItemId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ItemID");
 
                     b.Property<int?>("ExchangeMailboxPlanId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ExchangeMailboxPlanID");
 
                     b.Property<int?>("LyncUserPlanId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("LyncUserPlanID");
 
                     b.Property<string>("OrganizationId")
                         .IsRequired()
                         .HasMaxLength(128)
-                        .HasColumnType("character varying(128)")
+                        .HasColumnType("nvarchar(128)")
                         .HasColumnName("OrganizationID");
 
                     b.Property<int?>("SfBuserPlanId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("SfBUserPlanID");
 
                     b.HasKey("ItemId");
@@ -3018,33 +3030,33 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.HasIndex(new[] { "OrganizationId" }, "IX_ExchangeOrganizations_UniqueOrg")
                         .IsUnique();
 
-                    b.ToTable("ExchangeOrganizations", "public");
+                    b.ToTable("ExchangeOrganizations");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeOrganizationDomain", b =>
                 {
                     b.Property<int>("OrganizationDomainId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("OrganizationDomainID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("OrganizationDomainId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrganizationDomainId"));
 
                     b.Property<int?>("DomainId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("DomainID");
 
                     b.Property<int>("DomainTypeId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("DomainTypeID");
 
                     b.Property<bool?>("IsHost")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
+                        .HasColumnType("bit")
                         .HasDefaultValue(false);
 
                     b.Property<int>("ItemId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ItemID");
 
                     b.HasKey("OrganizationDomainId");
@@ -3052,52 +3064,53 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     b.HasIndex(new[] { "ItemId" }, "ExchangeOrganizationDomainsIdx_ItemID");
 
                     b.HasIndex(new[] { "DomainId" }, "IX_ExchangeOrganizationDomains_UniqueDomain")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[DomainID] IS NOT NULL");
 
-                    b.ToTable("ExchangeOrganizationDomains", "public");
+                    b.ToTable("ExchangeOrganizationDomains");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeOrganizationSetting", b =>
                 {
                     b.Property<int>("ItemId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnOrder(1);
 
                     b.Property<string>("SettingsName")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnOrder(2);
 
                     b.Property<string>("Xml")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ItemId", "SettingsName");
 
                     b.HasIndex(new[] { "ItemId" }, "ExchangeOrganizationSettingsIdx_ItemId");
 
-                    b.ToTable("ExchangeOrganizationSettings", "public");
+                    b.ToTable("ExchangeOrganizationSettings");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeOrganizationSsFolder", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("ItemId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int>("StorageSpaceFolderId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasMaxLength(100)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("Id")
                         .HasName("PK__Exchange__3214EC072DDBA072");
@@ -3106,94 +3119,94 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "StorageSpaceFolderId" }, "ExchangeOrganizationSsFoldersIdx_StorageSpaceFolderId");
 
-                    b.ToTable("ExchangeOrganizationSsFolders", "public");
+                    b.ToTable("ExchangeOrganizationSsFolders");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeRetentionPolicyTag", b =>
                 {
                     b.Property<int>("TagId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("TagID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("TagId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TagId"));
 
                     b.Property<int>("AgeLimitForRetention")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int>("ItemId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ItemID");
 
                     b.Property<int>("RetentionAction")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("TagName")
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<int>("TagType")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.HasKey("TagId")
                         .HasName("PK__Exchange__657CFA4C02667D37");
 
-                    b.ToTable("ExchangeRetentionPolicyTags", "public");
+                    b.ToTable("ExchangeRetentionPolicyTags");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.GlobalDnsRecord", b =>
                 {
                     b.Property<int>("RecordId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("RecordID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("RecordId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecordId"));
 
                     b.Property<int?>("IpAddressId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("IPAddressID");
 
                     b.Property<int>("MXPriority")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("MXPriority");
 
                     b.Property<int?>("PackageId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("PackageID");
 
                     b.Property<string>("RecordData")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("RecordName")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("RecordType")
                         .IsRequired()
                         .HasMaxLength(10)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(10)");
+                        .HasColumnType("varchar(10)");
 
                     b.Property<int?>("ServerId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ServerID");
 
                     b.Property<int?>("ServiceId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ServiceID");
 
                     b.Property<int?>("SrvPort")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int?>("SrvPriority")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int?>("SrvWeight")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.HasKey("RecordId");
 
@@ -3205,54 +3218,54 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "ServiceId" }, "GlobalDnsRecordsIdx_ServiceID");
 
-                    b.ToTable("GlobalDnsRecords", "public");
+                    b.ToTable("GlobalDnsRecords");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.HostingPlan", b =>
                 {
                     b.Property<int>("PlanId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("PlanID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PlanId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PlanId"));
 
                     b.Property<bool>("Available")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool?>("IsAddon")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<int?>("PackageId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("PackageID");
 
                     b.Property<string>("PlanDescription")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("ntext");
 
                     b.Property<string>("PlanName")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<int?>("RecurrenceLength")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int?>("RecurrenceUnit")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<decimal?>("RecurringPrice")
-                        .HasColumnType("numeric");
+                        .HasColumnType("money");
 
                     b.Property<int?>("ServerId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ServerID");
 
                     b.Property<decimal?>("SetupPrice")
-                        .HasColumnType("numeric");
+                        .HasColumnType("money");
 
                     b.Property<int?>("UserId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("UserID");
 
                     b.HasKey("PlanId");
@@ -3263,219 +3276,223 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "UserId" }, "HostingPlansIdx_UserID");
 
-                    b.ToTable("HostingPlans", "public");
+                    b.ToTable("HostingPlans");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.HostingPlanQuota", b =>
                 {
                     b.Property<int>("PlanId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("PlanID")
                         .HasColumnOrder(1);
 
                     b.Property<int>("QuotaId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("QuotaID")
                         .HasColumnOrder(2);
 
                     b.Property<int>("QuotaValue")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.HasKey("PlanId", "QuotaId")
                         .HasName("PK_HostingPlanQuotas_1");
 
                     b.HasIndex("QuotaId");
 
-                    b.ToTable("HostingPlanQuotas", "public");
+                    b.ToTable("HostingPlanQuotas");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.HostingPlanResource", b =>
                 {
                     b.Property<int>("PlanId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("PlanID")
                         .HasColumnOrder(1);
 
                     b.Property<int>("GroupId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("GroupID")
                         .HasColumnOrder(2);
 
                     b.Property<bool?>("CalculateBandwidth")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool?>("CalculateDiskSpace")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.HasKey("PlanId", "GroupId");
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("HostingPlanResources", "public");
+                    b.ToTable("HostingPlanResources");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.IpAddress", b =>
                 {
                     b.Property<int>("AddressId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("AddressID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("AddressId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AddressId"));
 
                     b.Property<string>("Comments")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("ntext");
 
                     b.Property<string>("DefaultGateway")
                         .HasMaxLength(15)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(15)");
+                        .HasColumnType("varchar(15)");
 
                     b.Property<string>("ExternalIp")
                         .IsRequired()
                         .HasMaxLength(24)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(24)")
+                        .HasColumnType("varchar(24)")
                         .HasColumnName("ExternalIP");
 
                     b.Property<string>("InternalIp")
                         .HasMaxLength(24)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(24)")
+                        .HasColumnType("varchar(24)")
                         .HasColumnName("InternalIP");
 
                     b.Property<int?>("PoolId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("PoolID");
 
                     b.Property<int?>("ServerId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ServerID");
 
                     b.Property<string>("SubnetMask")
                         .HasMaxLength(15)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(15)");
+                        .HasColumnType("varchar(15)");
 
                     b.Property<int?>("Vlan")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("VLAN");
 
                     b.HasKey("AddressId");
 
                     b.HasIndex(new[] { "ServerId" }, "IPAddressesIdx_ServerID");
 
-                    b.ToTable("IPAddresses", "public");
+                    b.ToTable("IPAddresses");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.LyncUser", b =>
                 {
                     b.Property<int>("LyncUserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("LyncUserID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("LyncUserId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LyncUserId"));
 
                     b.Property<int>("AccountId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("AccountID");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
 
                     b.Property<int>("LyncUserPlanId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("LyncUserPlanID");
 
                     b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
 
                     b.Property<string>("SipAddress")
                         .HasMaxLength(300)
-                        .HasColumnType("character varying(300)");
+                        .HasColumnType("nvarchar(300)");
 
                     b.HasKey("LyncUserId");
 
                     b.HasIndex(new[] { "LyncUserPlanId" }, "LyncUsersIdx_LyncUserPlanID");
 
-                    b.ToTable("LyncUsers", "public");
+                    b.ToTable("LyncUsers");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.LyncUserPlan", b =>
                 {
                     b.Property<int>("LyncUserPlanId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("LyncUserPlanId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LyncUserPlanId"));
 
                     b.Property<bool>("AllowOrganizeMeetingsWithExternalAnonymous")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<string>("ArchivePolicy")
                         .HasMaxLength(300)
-                        .HasColumnType("character varying(300)");
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<bool>("Conferencing")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("EnterpriseVoice")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("Federation")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IM")
-                        .HasColumnType("boolean")
+                        .HasColumnType("bit")
                         .HasColumnName("IM");
 
                     b.Property<bool>("IsDefault")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<int>("ItemId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ItemID");
 
                     b.Property<string>("LyncUserPlanName")
                         .IsRequired()
                         .HasMaxLength(300)
-                        .HasColumnType("character varying(300)");
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<int?>("LyncUserPlanType")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<bool>("Mobility")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("MobilityEnableOutsideVoice")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("PublicIMConnectivity")
-                        .HasColumnType("boolean")
+                        .HasColumnType("bit")
                         .HasColumnName("PublicIMConnectivity");
 
                     b.Property<bool>("RemoteUserAccess")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<string>("ServerUri")
                         .HasMaxLength(300)
-                        .HasColumnType("character varying(300)")
+                        .HasColumnType("nvarchar(300)")
                         .HasColumnName("ServerURI");
 
                     b.Property<int?>("Telephony")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("TelephonyDialPlanPolicy")
                         .HasMaxLength(300)
-                        .HasColumnType("character varying(300)");
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<string>("TelephonyVoicePolicy")
                         .HasMaxLength(300)
-                        .HasColumnType("character varying(300)");
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<int>("VoicePolicy")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.HasKey("LyncUserPlanId");
 
@@ -3484,89 +3501,95 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "ItemId" }, "LyncUserPlansIdx_ItemID");
 
-                    b.ToTable("LyncUserPlans", "public");
+                    b.ToTable("LyncUserPlans");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.OcsUser", b =>
                 {
                     b.Property<int>("OcsuserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("OCSUserID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("OcsuserId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OcsuserId"));
 
                     b.Property<int>("AccountId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("AccountID");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
 
                     b.Property<string>("InstanceId")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("InstanceID");
 
                     b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
 
                     b.HasKey("OcsuserId");
 
-                    b.ToTable("OCSUsers", "public");
+                    b.ToTable("OCSUsers");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Package", b =>
                 {
                     b.Property<int>("PackageId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("PackageID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PackageId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PackageId"));
 
                     b.Property<DateTime?>("BandwidthUpdated")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.Property<bool>("DefaultTopPackage")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("OverrideQuotas")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<string>("PackageComments")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("ntext");
 
                     b.Property<string>("PackageName")
                         .HasMaxLength(300)
-                        .HasColumnType("character varying(300)");
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<int?>("ParentPackageId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ParentPackageID");
 
                     b.Property<int?>("PlanId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("PlanID");
 
                     b.Property<DateTime?>("PurchaseDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.Property<int?>("ServerId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ServerID");
 
                     b.Property<int>("StatusId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("StatusID");
 
                     b.Property<DateTime>("StatusIdChangeDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("StatusIDchangeDate");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("StatusIDchangeDate")
+                        .HasDefaultValueSql("(getdate())");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("UserID");
 
                     b.HasKey("PackageId");
@@ -3579,7 +3602,12 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "UserId" }, "PackageIndex_UserID");
 
-                    b.ToTable("Packages", "public");
+                    b.ToTable("Packages", t =>
+                        {
+                            t.HasTrigger("Update_StatusIDchangeDate");
+                        });
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
 
                     b.HasData(
                         new
@@ -3599,30 +3627,30 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 {
                     b.Property<int>("PackageAddonId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("PackageAddonID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PackageAddonId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PackageAddonId"));
 
                     b.Property<string>("Comments")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("ntext");
 
                     b.Property<int?>("PackageId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("PackageID");
 
                     b.Property<int?>("PlanId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("PlanID");
 
                     b.Property<DateTime?>("PurchaseDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.Property<int?>("Quantity")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int?>("StatusId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("StatusID");
 
                     b.HasKey("PackageAddonId");
@@ -3631,35 +3659,35 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "PlanId" }, "PackageAddonsIdx_PlanID");
 
-                    b.ToTable("PackageAddons", "public");
+                    b.ToTable("PackageAddons");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageIpAddress", b =>
                 {
                     b.Property<int>("PackageAddressId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("PackageAddressID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PackageAddressId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PackageAddressId"));
 
                     b.Property<int>("AddressId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("AddressID");
 
                     b.Property<bool?>("IsPrimary")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<int?>("ItemId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ItemID");
 
                     b.Property<int?>("OrgId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("OrgID");
 
                     b.Property<int>("PackageId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("PackageID");
 
                     b.HasKey("PackageAddressId");
@@ -3670,66 +3698,66 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "PackageId" }, "PackageIPAddressesIdx_PackageID");
 
-                    b.ToTable("PackageIPAddresses", "public");
+                    b.ToTable("PackageIPAddresses");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageQuota", b =>
                 {
                     b.Property<int>("PackageId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("PackageID")
                         .HasColumnOrder(1);
 
                     b.Property<int>("QuotaId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("QuotaID")
                         .HasColumnOrder(2);
 
                     b.Property<int>("QuotaValue")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.HasKey("PackageId", "QuotaId");
 
                     b.HasIndex("QuotaId");
 
-                    b.ToTable("PackageQuotas", "public");
+                    b.ToTable("PackageQuotas");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageResource", b =>
                 {
                     b.Property<int>("PackageId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("PackageID")
                         .HasColumnOrder(1);
 
                     b.Property<int>("GroupId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("GroupID")
                         .HasColumnOrder(2);
 
                     b.Property<bool>("CalculateBandwidth")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("CalculateDiskspace")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.HasKey("PackageId", "GroupId")
                         .HasName("PK_PackageResources_1");
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("PackageResources", "public");
+                    b.ToTable("PackageResources");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageService", b =>
                 {
                     b.Property<int>("PackageId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("PackageID")
                         .HasColumnOrder(1);
 
                     b.Property<int>("ServiceId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ServiceID")
                         .HasColumnOrder(2);
 
@@ -3737,52 +3765,52 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("PackageServices", "public");
+                    b.ToTable("PackageServices");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageSetting", b =>
                 {
                     b.Property<int>("PackageId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("PackageID")
                         .HasColumnOrder(1);
 
                     b.Property<string>("SettingsName")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnOrder(2);
 
                     b.Property<string>("PropertyName")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnOrder(3);
 
                     b.Property<string>("PropertyValue")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("ntext");
 
                     b.HasKey("PackageId", "SettingsName", "PropertyName");
 
-                    b.ToTable("PackageSettings", "public");
+                    b.ToTable("PackageSettings");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageVlan", b =>
                 {
                     b.Property<int>("PackageVlanId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("PackageVlanID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PackageVlanId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PackageVlanId"));
 
                     b.Property<bool>("IsDmz")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<int>("PackageId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("PackageID");
 
                     b.Property<int>("VlanId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("VlanID");
 
                     b.HasKey("PackageVlanId")
@@ -3792,23 +3820,23 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "VlanId" }, "PackageVLANsIdx_VlanID");
 
-                    b.ToTable("PackageVLANs", "public");
+                    b.ToTable("PackageVLANs");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackagesBandwidth", b =>
                 {
                     b.Property<int>("PackageId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("PackageID")
                         .HasColumnOrder(1);
 
                     b.Property<int>("GroupId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("GroupID")
                         .HasColumnOrder(2);
 
                     b.Property<DateTime>("LogDate")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("datetime")
                         .HasColumnOrder(3);
 
                     b.Property<long>("BytesReceived")
@@ -3821,18 +3849,18 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("PackagesBandwidth", "public");
+                    b.ToTable("PackagesBandwidth");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackagesDiskspace", b =>
                 {
                     b.Property<int>("PackageId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("PackageID")
                         .HasColumnOrder(1);
 
                     b.Property<int>("GroupId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("GroupID")
                         .HasColumnOrder(2);
 
@@ -3843,18 +3871,18 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("PackagesDiskspace", "public");
+                    b.ToTable("PackagesDiskspace");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackagesTreeCache", b =>
                 {
                     b.Property<int>("ParentPackageId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ParentPackageID")
                         .HasColumnOrder(1);
 
                     b.Property<int>("PackageId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("PackageID")
                         .HasColumnOrder(2);
 
@@ -3862,10 +3890,11 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex("PackageId");
 
-                    b.HasIndex(new[] { "ParentPackageId", "PackageId" }, "PackagesTreeCacheIndex")
-                        .HasAnnotation("SqlServer:Clustered", true);
+                    b.HasIndex(new[] { "ParentPackageId", "PackageId" }, "PackagesTreeCacheIndex");
 
-                    b.ToTable("PackagesTreeCache", "public");
+                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex(new[] { "ParentPackageId", "PackageId" }, "PackagesTreeCacheIndex"));
+
+                    b.ToTable("PackagesTreeCache");
 
                     b.HasData(
                         new
@@ -3879,95 +3908,95 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 {
                     b.Property<int>("PrivateAddressId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("PrivateAddressID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PrivateAddressId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PrivateAddressId"));
 
                     b.Property<string>("IpAddress")
                         .IsRequired()
                         .HasMaxLength(15)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(15)")
+                        .HasColumnType("varchar(15)")
                         .HasColumnName("IPAddress");
 
                     b.Property<bool>("IsPrimary")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<int>("ItemId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ItemID");
 
                     b.HasKey("PrivateAddressId");
 
                     b.HasIndex(new[] { "ItemId" }, "PrivateIPAddressesIdx_ItemID");
 
-                    b.ToTable("PrivateIPAddresses", "public");
+                    b.ToTable("PrivateIPAddresses");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PrivateNetworkVlan", b =>
                 {
                     b.Property<int>("VlanId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("VlanID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("VlanId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VlanId"));
 
                     b.Property<string>("Comments")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("ntext");
 
                     b.Property<int?>("ServerId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ServerID");
 
                     b.Property<int>("Vlan")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.HasKey("VlanId")
                         .HasName("PK__PrivateN__8348135581B53618");
 
                     b.HasIndex(new[] { "ServerId" }, "PrivateNetworkVLANsIdx_ServerID");
 
-                    b.ToTable("PrivateNetworkVLANs", "public");
+                    b.ToTable("PrivateNetworkVLANs");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Provider", b =>
                 {
                     b.Property<int>("ProviderId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ProviderID");
 
                     b.Property<bool?>("DisableAutoDiscovery")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<string>("DisplayName")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("EditorControl")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("GroupId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("GroupID");
 
                     b.Property<string>("ProviderName")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("ProviderType")
                         .HasMaxLength(400)
-                        .HasColumnType("character varying(400)");
+                        .HasColumnType("nvarchar(400)");
 
                     b.HasKey("ProviderId")
                         .HasName("PK_ServiceTypes");
 
                     b.HasIndex(new[] { "GroupId" }, "ProvidersIdx_GroupID");
 
-                    b.ToTable("Providers", "public");
+                    b.ToTable("Providers");
 
                     b.HasData(
                         new
@@ -5255,46 +5284,46 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Quota", b =>
                 {
                     b.Property<int>("QuotaId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("QuotaID");
 
                     b.Property<int>("GroupId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("GroupID");
 
                     b.Property<bool?>("HideQuota")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<int?>("ItemTypeId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ItemTypeID");
 
                     b.Property<int?>("PerOrganization")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("QuotaDescription")
                         .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("QuotaName")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("QuotaOrder")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasDefaultValue(1);
 
                     b.Property<int>("QuotaTypeId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasDefaultValue(2)
                         .HasColumnName("QuotaTypeID");
 
                     b.Property<bool?>("ServiceQuota")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
+                        .HasColumnType("bit")
                         .HasDefaultValue(false);
 
                     b.HasKey("QuotaId");
@@ -5303,7 +5332,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "ItemTypeId" }, "QuotasIdx_ItemTypeID");
 
-                    b.ToTable("Quotas", "public");
+                    b.ToTable("Quotas");
 
                     b.HasData(
                         new
@@ -8669,156 +8698,156 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("ntext");
 
                     b.Property<DateTime?>("ExpiryDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.Property<string>("FileName")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Hash")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<int>("ServiceId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("ValidFrom")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.HasKey("Id");
 
-                    b.ToTable("RDSCertificates", "public");
+                    b.ToTable("RDSCertificates");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsCollection", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("DisplayName")
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<int>("ItemId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ItemID");
 
                     b.Property<string>("Name")
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id")
                         .HasName("PK__RDSColle__3214EC27346D361D");
 
-                    b.ToTable("RDSCollections", "public");
+                    b.ToTable("RDSCollections");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsCollectionSetting", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("ActiveSessionLimitMin")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<bool?>("AuthenticateUsingNla")
-                        .HasColumnType("boolean")
+                        .HasColumnType("bit")
                         .HasColumnName("AuthenticateUsingNLA");
 
                     b.Property<bool?>("AutomaticReconnectionEnabled")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<string>("BrokenConnectionAction")
                         .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("ClientDeviceRedirectionOptions")
                         .HasMaxLength(250)
-                        .HasColumnType("character varying(250)");
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<bool?>("ClientPrinterAsDefault")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool?>("ClientPrinterRedirected")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<int?>("DisconnectedSessionLimitMin")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("EncryptionLevel")
                         .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<int?>("IdleSessionLimitMin")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int?>("MaxRedirectedMonitors")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<bool?>("RdEasyPrintDriverEnabled")
-                        .HasColumnType("boolean")
+                        .HasColumnType("bit")
                         .HasColumnName("RDEasyPrintDriverEnabled");
 
                     b.Property<int>("RdsCollectionId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("RDSCollectionId");
 
                     b.Property<string>("SecurityLayer")
                         .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<bool?>("TemporaryFoldersDeletedOnExit")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool?>("TemporaryFoldersPerSession")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
                     b.HasIndex(new[] { "RdsCollectionId" }, "RDSCollectionSettingsIdx_RDSCollectionId");
 
-                    b.ToTable("RDSCollectionSettings", "public");
+                    b.ToTable("RDSCollectionSettings");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsCollectionUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AccountId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("AccountID");
 
                     b.Property<int>("RdsCollectionId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("RDSCollectionId");
 
                     b.HasKey("Id")
@@ -8828,76 +8857,76 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "RdsCollectionId" }, "RDSCollectionUsersIdx_RDSCollectionId");
 
-                    b.ToTable("RDSCollectionUsers", "public");
+                    b.ToTable("RDSCollectionUsers");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsMessage", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.Property<string>("MessageText")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("ntext");
 
                     b.Property<int>("RdsCollectionId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("RDSCollectionId");
 
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasMaxLength(250)
-                        .HasColumnType("character(250)")
+                        .HasColumnType("nchar(250)")
                         .IsFixedLength();
 
                     b.HasKey("Id");
 
                     b.HasIndex(new[] { "RdsCollectionId" }, "RDSMessagesIdx_RDSCollectionId");
 
-                    b.ToTable("RDSMessages", "public");
+                    b.ToTable("RDSMessages");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsServer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("ConnectionEnabled")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
+                        .HasColumnType("bit")
                         .HasDefaultValue(true);
 
                     b.Property<int?>("Controller")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("FqdName")
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<int?>("ItemId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ItemID");
 
                     b.Property<string>("Name")
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<int?>("RdsCollectionId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("RDSCollectionId");
 
                     b.HasKey("Id")
@@ -8905,65 +8934,65 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "RdsCollectionId" }, "RDSServersIdx_RDSCollectionId");
 
-                    b.ToTable("RDSServers", "public");
+                    b.ToTable("RDSServers");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsServerSetting", b =>
                 {
                     b.Property<int>("RdsServerId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnOrder(1);
 
                     b.Property<string>("SettingsName")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnOrder(2);
 
                     b.Property<string>("PropertyName")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnOrder(3);
 
                     b.Property<bool>("ApplyAdministrators")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("ApplyUsers")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<string>("PropertyValue")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("ntext");
 
                     b.HasKey("RdsServerId", "SettingsName", "PropertyName");
 
-                    b.ToTable("RDSServerSettings", "public");
+                    b.ToTable("RDSServerSettings");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ResourceGroup", b =>
                 {
                     b.Property<int>("GroupId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("GroupID");
 
                     b.Property<string>("GroupController")
                         .HasMaxLength(1000)
-                        .HasColumnType("character varying(1000)");
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("GroupName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("GroupOrder")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasDefaultValue(1);
 
                     b.Property<bool?>("ShowGroup")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.HasKey("GroupId");
 
-                    b.ToTable("ResourceGroups", "public");
+                    b.ToTable("ResourceGroups");
 
                     b.HasData(
                         new
@@ -9277,45 +9306,45 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 {
                     b.Property<int>("RecordId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("RecordID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("RecordId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecordId"));
 
                     b.Property<int>("GroupId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("GroupID");
 
                     b.Property<int?>("MXPriority")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("MXPriority");
 
                     b.Property<string>("RecordData")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("RecordName")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("RecordOrder")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasDefaultValue(1);
 
                     b.Property<string>("RecordType")
                         .IsRequired()
                         .HasMaxLength(50)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("varchar(50)");
 
                     b.HasKey("RecordId");
 
                     b.HasIndex(new[] { "GroupId" }, "ResourceGroupDnsRecordsIdx_GroupID");
 
-                    b.ToTable("ResourceGroupDnsRecords", "public");
+                    b.ToTable("ResourceGroupDnsRecords");
 
                     b.HasData(
                         new
@@ -9484,64 +9513,64 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 {
                     b.Property<int>("ScheduleId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ScheduleID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ScheduleId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ScheduleId"));
 
                     b.Property<bool>("Enabled")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("FromTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.Property<int?>("HistoriesNumber")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int?>("Interval")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("LastRun")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.Property<int?>("MaxExecutionTime")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("NextRun")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.Property<int?>("PackageId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("PackageID");
 
                     b.Property<string>("PriorityId")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("PriorityID");
 
                     b.Property<string>("ScheduleName")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("ScheduleTypeId")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("ScheduleTypeID");
 
                     b.Property<DateTime?>("StartTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.Property<string>("TaskId")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("TaskID");
 
                     b.Property<DateTime?>("ToTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.Property<int?>("WeekMonthDay")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.HasKey("ScheduleId");
 
@@ -9549,7 +9578,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "TaskId" }, "ScheduleIdx_TaskID");
 
-                    b.ToTable("Schedule", "public");
+                    b.ToTable("Schedule");
 
                     b.HasData(
                         new
@@ -9593,23 +9622,23 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ScheduleParameter", b =>
                 {
                     b.Property<int>("ScheduleId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ScheduleID")
                         .HasColumnOrder(1);
 
                     b.Property<string>("ParameterId")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("ParameterID")
                         .HasColumnOrder(2);
 
                     b.Property<string>("ParameterValue")
                         .HasMaxLength(1000)
-                        .HasColumnType("character varying(1000)");
+                        .HasColumnType("nvarchar(1000)");
 
                     b.HasKey("ScheduleId", "ParameterId");
 
-                    b.ToTable("ScheduleParameters", "public");
+                    b.ToTable("ScheduleParameters");
 
                     b.HasData(
                         new
@@ -9630,21 +9659,21 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 {
                     b.Property<string>("TaskId")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("TaskID");
 
                     b.Property<int>("RoleId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("RoleID");
 
                     b.Property<string>("TaskType")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
+                        .HasColumnType("nvarchar(500)");
 
                     b.HasKey("TaskId");
 
-                    b.ToTable("ScheduleTasks", "public");
+                    b.ToTable("ScheduleTasks");
 
                     b.HasData(
                         new
@@ -9791,31 +9820,31 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 {
                     b.Property<string>("TaskId")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("TaskID")
                         .HasColumnOrder(1);
 
                     b.Property<string>("ParameterId")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("ParameterID")
                         .HasColumnOrder(2);
 
                     b.Property<string>("DataTypeId")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("DataTypeID");
 
                     b.Property<string>("DefaultValue")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ParameterOrder")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.HasKey("TaskId", "ParameterId");
 
-                    b.ToTable("ScheduleTaskParameters", "public");
+                    b.ToTable("ScheduleTaskParameters");
 
                     b.HasData(
                         new
@@ -10508,31 +10537,31 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 {
                     b.Property<string>("ConfigurationId")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("ConfigurationID")
                         .HasColumnOrder(2);
 
                     b.Property<string>("TaskId")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("TaskID")
                         .HasColumnOrder(1);
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Environment")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("ConfigurationId", "TaskId");
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("ScheduleTaskViewConfiguration", "public");
+                    b.ToTable("ScheduleTaskViewConfiguration");
 
                     b.HasData(
                         new
@@ -10695,124 +10724,124 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 {
                     b.Property<int>("ServerId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ServerID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ServerId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ServerId"));
 
                     b.Property<string>("ADAuthenticationType")
                         .HasMaxLength(50)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("varchar(50)")
                         .HasColumnName("ADAuthenticationType");
 
                     b.Property<bool?>("ADEnabled")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
+                        .HasColumnType("bit")
                         .HasDefaultValue(false)
                         .HasColumnName("ADEnabled");
 
                     b.Property<string>("ADParentDomain")
                         .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("ADParentDomainController")
                         .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("ADPassword")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("ADPassword");
 
                     b.Property<string>("ADRootDomain")
                         .HasMaxLength(200)
-                        .HasColumnType("character varying(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("ADRootDomain");
 
                     b.Property<string>("ADUsername")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("ADUsername");
 
                     b.Property<string>("Comments")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("ntext");
 
                     b.Property<string>("InstantDomainAlias")
                         .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<bool?>("IsCore")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<int>("OSPlatform")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("OSPlatform");
 
                     b.Property<string>("Password")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("PasswordIsSHA256")
-                        .HasColumnType("boolean")
+                        .HasColumnType("bit")
                         .HasColumnName("PasswordIsSHA256");
 
                     b.Property<int?>("PrimaryGroupId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("PrimaryGroupID");
 
                     b.Property<string>("ServerName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("ServerUrl")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
+                        .HasColumnType("nvarchar(255)")
                         .HasDefaultValue("");
 
                     b.Property<bool>("VirtualServer")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.HasKey("ServerId");
 
                     b.HasIndex(new[] { "PrimaryGroupId" }, "ServersIdx_PrimaryGroupID");
 
-                    b.ToTable("Servers", "public");
+                    b.ToTable("Servers");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Service", b =>
                 {
                     b.Property<int>("ServiceId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ServiceID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ServiceId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ServiceId"));
 
                     b.Property<int?>("ClusterId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ClusterID");
 
                     b.Property<string>("Comments")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("ntext");
 
                     b.Property<int>("ProviderId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ProviderID");
 
                     b.Property<int>("ServerId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ServerID");
 
                     b.Property<string>("ServiceName")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int?>("ServiceQuotaValue")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.HasKey("ServiceId");
 
@@ -10822,29 +10851,29 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "ServerId" }, "ServicesIdx_ServerID");
 
-                    b.ToTable("Services", "public");
+                    b.ToTable("Services");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ServiceDefaultProperty", b =>
                 {
                     b.Property<int>("ProviderId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ProviderID")
                         .HasColumnOrder(1);
 
                     b.Property<string>("PropertyName")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnOrder(2);
 
                     b.Property<string>("PropertyValue")
                         .HasMaxLength(1000)
-                        .HasColumnType("character varying(1000)");
+                        .HasColumnType("nvarchar(1000)");
 
                     b.HasKey("ProviderId", "PropertyName")
                         .HasName("PK_ServiceDefaultProperties_1");
 
-                    b.ToTable("ServiceDefaultProperties", "public");
+                    b.ToTable("ServiceDefaultProperties");
 
                     b.HasData(
                         new
@@ -13559,28 +13588,28 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 {
                     b.Property<int>("ItemId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ItemID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ItemId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ItemId"));
 
                     b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.Property<string>("ItemName")
                         .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<int?>("ItemTypeId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ItemTypeID");
 
                     b.Property<int?>("PackageId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("PackageID");
 
                     b.Property<int?>("ServiceId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ServiceID");
 
                     b.HasKey("ItemId");
@@ -13591,82 +13620,82 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "ServiceId" }, "ServiceItemsIdx_ServiceID");
 
-                    b.ToTable("ServiceItems", "public");
+                    b.ToTable("ServiceItems");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ServiceItemProperty", b =>
                 {
                     b.Property<int>("ItemId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ItemID")
                         .HasColumnOrder(1);
 
                     b.Property<string>("PropertyName")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnOrder(2);
 
                     b.Property<string>("PropertyValue")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ItemId", "PropertyName");
 
-                    b.ToTable("ServiceItemProperties", "public");
+                    b.ToTable("ServiceItemProperties");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ServiceItemType", b =>
                 {
                     b.Property<int>("ItemTypeId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ItemTypeID");
 
                     b.Property<bool>("Backupable")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
+                        .HasColumnType("bit")
                         .HasDefaultValue(true);
 
                     b.Property<bool?>("CalculateBandwidth")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool?>("CalculateDiskspace")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<string>("DisplayName")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool?>("Disposable")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<int?>("GroupId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("GroupID");
 
                     b.Property<bool>("Importable")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
+                        .HasColumnType("bit")
                         .HasDefaultValue(true);
 
                     b.Property<bool?>("Searchable")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool?>("Suspendable")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<string>("TypeName")
                         .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<int>("TypeOrder")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasDefaultValue(1);
 
                     b.HasKey("ItemTypeId");
 
                     b.HasIndex(new[] { "GroupId" }, "ServiceItemTypesIdx_GroupID");
 
-                    b.ToTable("ServiceItemTypes", "public");
+                    b.ToTable("ServiceItemTypes");
 
                     b.HasData(
                         new
@@ -14479,252 +14508,252 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ServiceProperty", b =>
                 {
                     b.Property<int>("ServiceId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ServiceID")
                         .HasColumnOrder(1);
 
                     b.Property<string>("PropertyName")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnOrder(2);
 
                     b.Property<string>("PropertyValue")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ServiceId", "PropertyName")
                         .HasName("PK_ServiceProperties_1");
 
-                    b.ToTable("ServiceProperties", "public");
+                    b.ToTable("ServiceProperties");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.SfBUser", b =>
                 {
                     b.Property<int>("SfBUserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("SfBUserID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SfBUserId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SfBUserId"));
 
                     b.Property<int>("AccountId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("AccountID");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.Property<int>("SfBUserPlanId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("SfBUserPlanID");
 
                     b.Property<string>("SipAddress")
                         .HasMaxLength(300)
-                        .HasColumnType("character varying(300)");
+                        .HasColumnType("nvarchar(300)");
 
                     b.HasKey("SfBUserId");
 
-                    b.ToTable("SfBUsers", "public");
+                    b.ToTable("SfBUsers");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.SfBUserPlan", b =>
                 {
                     b.Property<int>("SfBUserPlanId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("SfBUserPlanId");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SfBUserPlanId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SfBUserPlanId"));
 
                     b.Property<bool>("AllowOrganizeMeetingsWithExternalAnonymous")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<string>("ArchivePolicy")
                         .HasMaxLength(300)
-                        .HasColumnType("character varying(300)");
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<bool>("Conferencing")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("EnterpriseVoice")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("Federation")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IM")
-                        .HasColumnType("boolean")
+                        .HasColumnType("bit")
                         .HasColumnName("IM");
 
                     b.Property<bool>("IsDefault")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<int>("ItemId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ItemID");
 
                     b.Property<bool>("Mobility")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("MobilityEnableOutsideVoice")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("PublicIMConnectivity")
-                        .HasColumnType("boolean")
+                        .HasColumnType("bit")
                         .HasColumnName("PublicIMConnectivity");
 
                     b.Property<bool>("RemoteUserAccess")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<string>("ServerUri")
                         .HasMaxLength(300)
-                        .HasColumnType("character varying(300)")
+                        .HasColumnType("nvarchar(300)")
                         .HasColumnName("ServerURI");
 
                     b.Property<string>("SfBUserPlanName")
                         .IsRequired()
                         .HasMaxLength(300)
-                        .HasColumnType("character varying(300)")
+                        .HasColumnType("nvarchar(300)")
                         .HasColumnName("SfBUserPlanName");
 
                     b.Property<int?>("SfBUserPlanType")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("SfBUserPlanType");
 
                     b.Property<int?>("Telephony")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("TelephonyDialPlanPolicy")
                         .HasMaxLength(300)
-                        .HasColumnType("character varying(300)");
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<string>("TelephonyVoicePolicy")
                         .HasMaxLength(300)
-                        .HasColumnType("character varying(300)");
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<int>("VoicePolicy")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.HasKey("SfBUserPlanId");
 
-                    b.ToTable("SfBUserPlans", "public");
+                    b.ToTable("SfBUserPlans");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.SslCertificate", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Certificate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("ntext");
 
                     b.Property<string>("Csr")
-                        .HasColumnType("TEXT")
+                        .HasColumnType("ntext")
                         .HasColumnName("CSR");
 
                     b.Property<int?>("CsrLength")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("CSRLength");
 
                     b.Property<string>("DistinguishedName")
                         .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<DateTime?>("ExpiryDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.Property<string>("FriendlyName")
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Hash")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("ntext");
 
                     b.Property<string>("Hostname")
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<bool?>("Installed")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool?>("IsRenewal")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<string>("Pfx")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("ntext");
 
                     b.Property<int?>("PreviousId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("SerialNumber")
                         .HasMaxLength(250)
-                        .HasColumnType("character varying(250)");
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<int>("SiteId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("SiteID");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("UserID");
 
                     b.Property<DateTime?>("ValidFrom")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.HasKey("Id");
 
-                    b.ToTable("SSLCertificates", "public");
+                    b.ToTable("SSLCertificates");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.StorageSpace", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<long>("FsrmQuotaSizeBytes")
                         .HasColumnType("bigint");
 
                     b.Property<int>("FsrmQuotaType")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsDisabled")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsShared")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<int>("LevelId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(300)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(300)");
+                        .HasColumnType("varchar(300)");
 
                     b.Property<string>("Path")
                         .IsRequired()
                         .IsUnicode(false)
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(max)");
 
                     b.Property<int>("ServerId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int>("ServiceId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("UncPath")
                         .IsUnicode(false)
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(max)");
 
                     b.HasKey("Id")
                         .HasName("PK__StorageS__3214EC07B8B9A6D1");
@@ -14733,88 +14762,88 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "ServiceId" }, "StorageSpacesIdx_ServiceId");
 
-                    b.ToTable("StorageSpaces", "public");
+                    b.ToTable("StorageSpaces");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.StorageSpaceFolder", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<long>("FsrmQuotaSizeBytes")
                         .HasColumnType("bigint");
 
                     b.Property<int>("FsrmQuotaType")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsShared")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(300)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(300)");
+                        .HasColumnType("varchar(300)");
 
                     b.Property<string>("Path")
                         .IsRequired()
                         .IsUnicode(false)
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(max)");
 
                     b.Property<int>("StorageSpaceId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("UncPath")
                         .IsUnicode(false)
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(max)");
 
                     b.HasKey("Id")
                         .HasName("PK__StorageS__3214EC07AC0C9EB6");
 
                     b.HasIndex(new[] { "StorageSpaceId" }, "StorageSpaceFoldersIdx_StorageSpaceId");
 
-                    b.ToTable("StorageSpaceFolders", "public");
+                    b.ToTable("StorageSpaceFolders");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.StorageSpaceLevel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(300)
-                        .HasColumnType("character varying(300)");
+                        .HasColumnType("nvarchar(300)");
 
                     b.HasKey("Id")
                         .HasName("PK__StorageS__3214EC07B8D82363");
 
-                    b.ToTable("StorageSpaceLevels", "public");
+                    b.ToTable("StorageSpaceLevels");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.StorageSpaceLevelResourceGroup", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("GroupId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int>("LevelId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.HasKey("Id")
                         .HasName("PK__StorageS__3214EC07EBEBED98");
@@ -14823,51 +14852,51 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "LevelId" }, "StorageSpaceLevelResourceGroupsIdx_LevelId");
 
-                    b.ToTable("StorageSpaceLevelResourceGroups", "public");
+                    b.ToTable("StorageSpaceLevelResourceGroups");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.SupportServiceLevel", b =>
                 {
                     b.Property<int>("LevelId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("LevelID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("LevelId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LevelId"));
 
                     b.Property<string>("LevelDescription")
                         .HasMaxLength(1000)
-                        .HasColumnType("character varying(1000)");
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("LevelName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("LevelId")
                         .HasName("PK__SupportS__09F03C065BA08AFB");
 
-                    b.ToTable("SupportServiceLevels", "public");
+                    b.ToTable("SupportServiceLevels");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.SystemSetting", b =>
                 {
                     b.Property<string>("SettingsName")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnOrder(1);
 
                     b.Property<string>("PropertyName")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnOrder(2);
 
                     b.Property<string>("PropertyValue")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("ntext");
 
                     b.HasKey("SettingsName", "PropertyName");
 
-                    b.ToTable("SystemSettings", "public");
+                    b.ToTable("SystemSettings");
 
                     b.HasData(
                         new
@@ -14924,64 +14953,64 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 {
                     b.Property<int>("Key")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Key"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Key"));
 
                     b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Id")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int>("Level")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<Guid>("Scope")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Key");
 
                     b.HasIndex("Created", "Scope", "Level");
 
-                    b.ToTable("TempIds", "public");
+                    b.ToTable("TempIds");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Theme", b =>
                 {
                     b.Property<int>("ThemeId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ThemeID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ThemeId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ThemeId"));
 
                     b.Property<string>("DisplayName")
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<int>("DisplayOrder")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int>("Enabled")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("LTRName")
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
+                        .HasColumnType("nvarchar(255)")
                         .HasColumnName("LTRName");
 
                     b.Property<string>("RTLName")
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
+                        .HasColumnType("nvarchar(255)")
                         .HasColumnName("RTLName");
 
                     b.HasKey("ThemeId");
 
-                    b.ToTable("Themes", "public");
+                    b.ToTable("Themes");
 
                     b.HasData(
                         new
@@ -14998,28 +15027,28 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ThemeSetting", b =>
                 {
                     b.Property<int>("ThemeId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ThemeID")
                         .HasColumnOrder(1);
 
                     b.Property<string>("SettingsName")
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
+                        .HasColumnType("nvarchar(255)")
                         .HasColumnOrder(2);
 
                     b.Property<string>("PropertyName")
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
+                        .HasColumnType("nvarchar(255)")
                         .HasColumnOrder(3);
 
                     b.Property<string>("PropertyValue")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("ThemeId", "SettingsName", "PropertyName");
 
-                    b.ToTable("ThemeSettings", "public");
+                    b.ToTable("ThemeSettings");
 
                     b.HasData(
                         new
@@ -15168,146 +15197,147 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 {
                     b.Property<int>("UserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("UserID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UserId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
 
                     b.Property<string>("AdditionalParams")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Address")
                         .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime?>("Changed")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.Property<string>("City")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Comments")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("ntext");
 
                     b.Property<string>("CompanyName")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Country")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime?>("Created")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.Property<bool?>("EcommerceEnabled")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<string>("Email")
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<int?>("FailedLogins")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("Fax")
                         .HasMaxLength(30)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(30)");
+                        .HasColumnType("varchar(30)");
 
                     b.Property<string>("FirstName")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool?>("HtmlMail")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
+                        .HasColumnType("bit")
                         .HasDefaultValue(true);
 
                     b.Property<string>("InstantMessenger")
                         .HasMaxLength(100)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<bool>("IsDemo")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsPeer")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int?>("LoginStatusId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int>("MfaMode")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int?>("OneTimePasswordState")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int?>("OwnerId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("OwnerID");
 
                     b.Property<string>("Password")
                         .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("PinSecret")
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("PrimaryPhone")
                         .HasMaxLength(30)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(30)");
+                        .HasColumnType("varchar(30)");
 
                     b.Property<int>("RoleId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("RoleID");
 
                     b.Property<string>("SecondaryEmail")
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("SecondaryPhone")
                         .HasMaxLength(30)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(30)");
+                        .HasColumnType("varchar(30)");
 
                     b.Property<string>("State")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("StatusId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("StatusID");
 
                     b.Property<string>("SubscriberNumber")
                         .HasMaxLength(32)
-                        .HasColumnType("character varying(32)");
+                        .HasColumnType("nvarchar(32)");
 
                     b.Property<string>("Username")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Zip")
                         .HasMaxLength(20)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(20)");
+                        .HasColumnType("varchar(20)");
 
                     b.HasKey("UserId");
 
                     b.HasIndex(new[] { "Username" }, "IX_Users_Username")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[Username] IS NOT NULL");
 
                     b.HasIndex(new[] { "OwnerId" }, "UsersIdx_OwnerID");
 
-                    b.ToTable("Users", "public");
+                    b.ToTable("Users");
 
                     b.HasData(
                         new
@@ -15344,26 +15374,26 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.UserSetting", b =>
                 {
                     b.Property<int>("UserId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("UserID")
                         .HasColumnOrder(1);
 
                     b.Property<string>("SettingsName")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnOrder(2);
 
                     b.Property<string>("PropertyName")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnOrder(3);
 
                     b.Property<string>("PropertyValue")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("ntext");
 
                     b.HasKey("UserId", "SettingsName", "PropertyName");
 
-                    b.ToTable("UserSettings", "public");
+                    b.ToTable("UserSettings");
 
                     b.HasData(
                         new
@@ -16313,19 +16343,123 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         });
                 });
 
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.UsersDetailed", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("UserID");
+
+                    b.Property<DateTime?>("Changed")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("Comments")
+                        .HasColumnType("ntext");
+
+                    b.Property<string>("CompanyName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("Created")
+                        .HasColumnType("datetime");
+
+                    b.Property<bool?>("EcommerceEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<int?>("FailedLogins")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FirstName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("FullName")
+                        .HasMaxLength(101)
+                        .HasColumnType("nvarchar(101)");
+
+                    b.Property<bool>("IsDemo")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsPeer")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("LoginStatusId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("OwnerEmail")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("OwnerFirstName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("OwnerFullName")
+                        .HasMaxLength(101)
+                        .HasColumnType("nvarchar(101)");
+
+                    b.Property<int?>("OwnerId")
+                        .HasColumnType("int")
+                        .HasColumnName("OwnerID");
+
+                    b.Property<string>("OwnerLastName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("OwnerRoleId")
+                        .HasColumnType("int")
+                        .HasColumnName("OwnerRoleID");
+
+                    b.Property<string>("OwnerUsername")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("PackagesNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int")
+                        .HasColumnName("RoleID");
+
+                    b.Property<int>("StatusId")
+                        .HasColumnType("int")
+                        .HasColumnName("StatusID");
+
+                    b.Property<string>("SubscriberNumber")
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
+                    b.Property<string>("Username")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("UsersDetailed", (string)null);
+                });
+
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Version", b =>
                 {
                     b.Property<string>("DatabaseVersion")
                         .HasMaxLength(50)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("varchar(50)");
 
                     b.Property<DateTime>("BuildDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.HasKey("DatabaseVersion");
 
-                    b.ToTable("Versions", "public");
+                    b.ToTable("Versions");
 
                     b.HasData(
                         new
@@ -16374,23 +16508,23 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                 {
                     b.Property<int>("VirtualGroupId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("VirtualGroupID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("VirtualGroupId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VirtualGroupId"));
 
                     b.Property<bool?>("BindDistributionToPrimary")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<int?>("DistributionType")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int>("GroupId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("GroupID");
 
                     b.Property<int>("ServerId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ServerID");
 
                     b.HasKey("VirtualGroupId");
@@ -16399,24 +16533,24 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "ServerId" }, "VirtualGroupsIdx_ServerID");
 
-                    b.ToTable("VirtualGroups", "public");
+                    b.ToTable("VirtualGroups");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.VirtualService", b =>
                 {
                     b.Property<int>("VirtualServiceId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("VirtualServiceID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("VirtualServiceId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VirtualServiceId"));
 
                     b.Property<int>("ServerId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ServerID");
 
                     b.Property<int>("ServiceId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ServiceID");
 
                     b.HasKey("VirtualServiceId");
@@ -16425,68 +16559,68 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
                     b.HasIndex(new[] { "ServiceId" }, "VirtualServicesIdx_ServiceID");
 
-                    b.ToTable("VirtualServices", "public");
+                    b.ToTable("VirtualServices");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.WebDavAccessToken", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<Guid>("AccessToken")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("AccountId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("AccountID");
 
                     b.Property<string>("AuthData")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ExpirationDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.Property<string>("FilePath")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ItemId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.HasKey("Id")
                         .HasName("PK__WebDavAc__3214EC2708781F08");
 
                     b.HasIndex(new[] { "AccountId" }, "WebDavAccessTokensIdx_AccountID");
 
-                    b.ToTable("WebDavAccessTokens", "public");
+                    b.ToTable("WebDavAccessTokens");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.WebDavPortalUsersSetting", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AccountId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("Settings")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id")
                         .HasName("PK__WebDavPo__3214EC278AF5195E");
 
                     b.HasIndex(new[] { "AccountId" }, "WebDavPortalUsersSettingsIdx_AccountId");
 
-                    b.ToTable("WebDavPortalUsersSettings", "public");
+                    b.ToTable("WebDavPortalUsersSettings");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.AccessToken", b =>
