@@ -86,7 +86,7 @@ namespace SolidCP.Portal.ProviderControls
 
 			// OS Templates
 			//txtOSTemplatesPath.Text = settings["OsTemplatesPath"];
-			repOsTemplates.DataSource = new ConfigFile(settings["OsTemplates"]).LibraryItems; //ES.Services.VPS2012.GetOperatingSystemTemplatesByServiceId(PanelRequest.ServiceId).ToList();
+			repOsTemplates.DataSource = new ConfigFile(settings["OsTemplates"])?.LibraryItems; //ES.Services.VPS2012.GetOperatingSystemTemplatesByServiceId(PanelRequest.ServiceId).ToList();
 			repOsTemplates.DataBind();
 
 			// DVD Path
