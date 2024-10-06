@@ -9,7 +9,7 @@
 	</legend>
 
 	<table cellpadding="2" cellspacing="0" style="margin: 10px;">
-		<tr>
+		<tr id="rowServerHost" runat="server">
 			<td class="SubHead" style="width: 200px;">
 				<asp:Localize ID="locProxmoxClusterServerHost" runat="server" meta:resourcekey="locProxmoxClusterServerHost" Text="Proxmox Cluster Server Host:"></asp:Localize>
 			</td>

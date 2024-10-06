@@ -18,6 +18,7 @@
         <PackageReference Include="System.Management" Version="8.0.0" />
         <PackageReference Include="System.Security.Principal.Windows" Version="5.0.0" />
         <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />
+        <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" />
     </ItemGroup>
     <ItemGroup>
         <Reference Include="System.DirectoryServices" />
