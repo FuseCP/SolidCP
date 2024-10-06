@@ -20971,7 +20971,6 @@ BEGIN
 END;
 GO
 
-
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
     WHERE [MigrationId] = N'20241006063131_MySql9AndMaraiDB11'
@@ -20982,6 +20981,18 @@ BEGIN
 		(N'20241006063131_MySql9AndMaraiDB11', N'8.0.6');
 END;
 GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20241006121748_AddMariaDB11'
+)
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES
+		(N'20241006121748_AddMariaDB11', N'8.0.6');
+END;
+GO
+
 
 -- DMZ Network
 IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaName] = 'VPS2012.DMZNetworkEnabled')
