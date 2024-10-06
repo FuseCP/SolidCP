@@ -73,6 +73,7 @@ namespace SolidCP.Providers.OS
 
 		Shell Sh { get; }
 		Shell Bash { get; }
+		Shell PowerShell { get; }
 		Installer Apt { get; }
 		Installer Yum { get; }
 		Installer Brew { get; }

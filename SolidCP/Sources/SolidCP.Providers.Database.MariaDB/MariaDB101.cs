@@ -933,14 +933,11 @@ namespace SolidCP.Providers.Database
 			RegistryKey HKLM = Registry.LocalMachine;
 
 			RegistryKey key = HKLM.OpenSubKey(@$"SOFTWARE\Monty Program AB\MariaDB {version} (x64)");
+			if (key == null) key = HKLM.OpenSubKey(@$"SOFTWARE\Wow6432Node\Monty Program AB\MariaDB {version}");
+			if (key == null) key = HKLM.OpenSubKey(@$"SOFTWARE\MariaDB {version} (x64)");
+			if (key == null) key = HKLM.OpenSubKey(@$"SOFTWARE\Wow6432Node\MariaDB {version}");
 
-			if (key == null)
-			{
-				key = HKLM.OpenSubKey(@$"SOFTWARE\Wow6432Node\Monty Program AB\MariaDB {version}");
-				if (key == null) return false;
-			}
-
-			return true;
+			return key != null;
 		}
 
 		protected virtual bool IsInstalledUnix(string version)

@@ -312,13 +312,23 @@ namespace SolidCP.Providers.OS
 			}
 		}
 
-		public virtual Shell ExecScriptAsync(string script, Encoding encoding = null, StringDictionary environmentVariables = null)
+		public virtual Shell ExecScriptAsync(string script, string args = null, Encoding encoding = null, StringDictionary environmentVariables = null)
 		{
 			script = script.Trim();
 			// adjust new lines to OS type
 			script = Regex.Replace(script, @"\r?\n", Environment.NewLine);
 			var file = ToTempFile(script.Trim());
-			var shell = ExecAsync($"{ShellExe} \"{file}\"", encoding);
+			var cmd = new StringBuilder();
+			cmd.Append(ShellExe);
+			cmd.Append(" \"");
+			cmd.Append(file);
+			cmd.Append("\"");
+			if (args != null)
+			{
+				cmd.Append(" ");
+				cmd.Append(args);
+			}
+			var shell = ExecAsync(cmd.ToString(), encoding);
 			if (shell.Process != null)
 			{
 				shell.Process.Exited += (sender, args) =>
@@ -329,7 +339,7 @@ namespace SolidCP.Providers.OS
 			return shell;
 		}
 
-		public virtual Shell ExecScript(string script, Encoding encoding = null, StringDictionary environmentVariables = null) => ExecScriptAsync(script, encoding, environmentVariables).Task().Result;
+		public virtual Shell ExecScript(string script, string args = null, Encoding encoding = null, StringDictionary environmentVariables = null) => ExecScriptAsync(script, args, encoding, environmentVariables).Task().Result;
 
 
 		/* public virtual async Task<Shell> Wait(int milliseconds = Timeout.Infinite)
