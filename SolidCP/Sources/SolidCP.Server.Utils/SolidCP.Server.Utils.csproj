@@ -1,31 +1,32 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <PublishUrl>publish\</PublishUrl>
-    <OutputPath>..\..\Bin\</OutputPath>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-    <WarningsAsErrors>618</WarningsAsErrors>
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <PublishUrl>publish\</PublishUrl>
+        <OutputPath>..\..\Bin\</OutputPath>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+        <WarningsAsErrors>618</WarningsAsErrors>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <LangVersion>11</LangVersion>
-    <Nullable>disable</Nullable>
-    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="DotNetZip.NetStandard" Version="1.12.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="System.Diagnostics.EventLog" Version="8.0.0" />
-    <PackageReference Include="System.DirectoryServices" Version="8.0.0" />
-    <PackageReference Include="System.Management" Version="8.0.0" />
-    <PackageReference Include="System.Security.Principal.Windows" Version="5.0.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System.DirectoryServices" />
-    <Reference Include="System.Management" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
-  </ItemGroup>
+        <LangVersion>11</LangVersion>
+        <Nullable>disable</Nullable>
+        <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="DotNetZip" Version="1.16.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="System.Diagnostics.EventLog" Version="8.0.0" />
+        <PackageReference Include="System.DirectoryServices" Version="8.0.0" />
+        <PackageReference Include="System.Management" Version="8.0.0" />
+        <PackageReference Include="System.Security.Principal.Windows" Version="5.0.0" />
+        <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />
+    </ItemGroup>
+    <ItemGroup>
+        <Reference Include="System.DirectoryServices" />
+        <Reference Include="System.Management" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
+    </ItemGroup>
 </Project>

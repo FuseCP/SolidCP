@@ -22,6 +22,9 @@ public partial class OcsUserConfiguration : EntityTypeConfiguration<OcsUser>
 		{
 			Property(e => e.CreatedDate).HasColumnType("datetime");
 			Property(e => e.ModifiedDate).HasColumnType("datetime");
+		} else if (IsCore && IsSqlite)
+		{
+			Property(e => e.InstanceId).HasColumnType("TEXT COLLATE NOCASE");
 		}
 
 #if NetCore

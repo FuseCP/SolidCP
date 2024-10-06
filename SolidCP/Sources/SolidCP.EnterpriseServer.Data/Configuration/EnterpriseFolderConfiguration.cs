@@ -16,6 +16,8 @@ public partial class EnterpriseFolderConfiguration: EntityTypeConfiguration<Ente
 {
     public override void Configure() {
 
+        if (IsCore && IsSqlite) Property(e => e.Domain).HasColumnType("TEXT COLLATE NOCASE");
+
 #if NetCore
         HasOne(d => d.StorageSpaceFolder).WithMany(p => p.EnterpriseFolders)
                 .OnDelete(DeleteBehavior.Cascade)

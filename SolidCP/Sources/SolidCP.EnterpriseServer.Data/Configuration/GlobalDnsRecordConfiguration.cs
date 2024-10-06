@@ -18,8 +18,9 @@ public partial class GlobalDnsRecordConfiguration : EntityTypeConfiguration<Glob
 {
 	public override void Configure()
 	{
+		Property(e => e.RecordType).IsUnicode(false);
 
-        Property(e => e.RecordType).IsUnicode(false);
+		if (IsCore && IsSqlite) Property(e => e.RecordType).HasColumnType("TEXT COLLATE NOCASE");
 
 #if NetCore
         HasOne(d => d.IpAddress).WithMany(p => p.GlobalDnsRecords).HasConstraintName("FK_GlobalDnsRecords_IPAddresses");

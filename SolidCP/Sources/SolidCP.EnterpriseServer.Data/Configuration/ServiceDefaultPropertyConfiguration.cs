@@ -15,6 +15,9 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 public partial class ServiceDefaultPropertyConfiguration: EntityTypeConfiguration<ServiceDefaultProperty>
 {
     public override void Configure() {
+
+        if (IsCore && IsSqlite) Property(e => e.PropertyName).HasColumnType("TEXT COLLATE NOCASE");
+
         HasKey(e => new { e.ProviderId, e.PropertyName }).HasName("PK_ServiceDefaultProperties_1");
 
 #if NetCore
@@ -362,7 +365,25 @@ Protocol=dbmssocn" },
             new ServiceDefaultProperty() { ProviderId = 306, PropertyName = "RootLogin", PropertyValue = "root" },
             new ServiceDefaultProperty() { ProviderId = 306, PropertyName = "RootPassword", PropertyValue = "" },
             new ServiceDefaultProperty() { ProviderId = 306, PropertyName = "sslmode", PropertyValue = "True" },
-            new ServiceDefaultProperty() { ProviderId = 410, PropertyName = "admode", PropertyValue = "False" },
+			new ServiceDefaultProperty() { ProviderId = 307, PropertyName = "ExternalAddress", PropertyValue = "localhost" },
+			new ServiceDefaultProperty() { ProviderId = 307, PropertyName = "InstallFolder", PropertyValue = "%PROGRAMFILES%\\MySQL\\MySQL Server 8.0" },
+			new ServiceDefaultProperty() { ProviderId = 307, PropertyName = "InternalAddress", PropertyValue = "localhost,3306" },
+			new ServiceDefaultProperty() { ProviderId = 307, PropertyName = "RootLogin", PropertyValue = "root" },
+			new ServiceDefaultProperty() { ProviderId = 307, PropertyName = "RootPassword", PropertyValue = "" },
+			new ServiceDefaultProperty() { ProviderId = 307, PropertyName = "sslmode", PropertyValue = "True" },
+			new ServiceDefaultProperty() { ProviderId = 308, PropertyName = "ExternalAddress", PropertyValue = "localhost" },
+			new ServiceDefaultProperty() { ProviderId = 308, PropertyName = "InstallFolder", PropertyValue = "%PROGRAMFILES%\\MySQL\\MySQL Server 8.0" },
+			new ServiceDefaultProperty() { ProviderId = 308, PropertyName = "InternalAddress", PropertyValue = "localhost,3306" },
+			new ServiceDefaultProperty() { ProviderId = 308, PropertyName = "RootLogin", PropertyValue = "root" },
+			new ServiceDefaultProperty() { ProviderId = 308, PropertyName = "RootPassword", PropertyValue = "" },
+			new ServiceDefaultProperty() { ProviderId = 308, PropertyName = "sslmode", PropertyValue = "True" },
+			new ServiceDefaultProperty() { ProviderId = 320, PropertyName = "ExternalAddress", PropertyValue = "localhost" },
+			new ServiceDefaultProperty() { ProviderId = 320, PropertyName = "InstallFolder", PropertyValue = "%PROGRAMFILES%\\MySQL\\MySQL Server 9.0" },
+			new ServiceDefaultProperty() { ProviderId = 320, PropertyName = "InternalAddress", PropertyValue = "localhost,3306" },
+			new ServiceDefaultProperty() { ProviderId = 320, PropertyName = "RootLogin", PropertyValue = "root" },
+			new ServiceDefaultProperty() { ProviderId = 320, PropertyName = "RootPassword", PropertyValue = "" },
+			new ServiceDefaultProperty() { ProviderId = 320, PropertyName = "sslmode", PropertyValue = "True" },
+			new ServiceDefaultProperty() { ProviderId = 410, PropertyName = "admode", PropertyValue = "False" },
             new ServiceDefaultProperty() { ProviderId = 410, PropertyName = "expirelimit", PropertyValue = "1209600" },
             new ServiceDefaultProperty() { ProviderId = 410, PropertyName = "minimumttl", PropertyValue = "86400" },
             new ServiceDefaultProperty() { ProviderId = 410, PropertyName = "nameservers", PropertyValue = "ns1.yourdomain.com;ns2.yourdomain.com" },

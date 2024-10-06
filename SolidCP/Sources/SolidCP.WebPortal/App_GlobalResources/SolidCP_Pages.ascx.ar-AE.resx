@@ -345,6 +345,12 @@
   <data name="PageTitle.SpaceMySql8" xml:space="preserve">
     <value>{user} - {space} - MySQL 8.x</value>
   </data>
+  <data name="PageName.SpaceMySql9" xml:space="preserve">
+    <value>إصدار MySQL 9.x.</value>
+  </data>
+  <data name="PageTitle.SpaceMySql9" xml:space="preserve">
+    <value>{user} - {space} - MySQL 9.x</value>
+  </data>
   <data name="PageName.SpaceMariaDB" xml:space="preserve">
     <value>MariaDB</value>
   </data>

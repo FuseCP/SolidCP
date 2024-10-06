@@ -16,6 +16,8 @@ public partial class QuotaConfiguration: EntityTypeConfiguration<Quota>
 {
     public override void Configure() {
 
+		if (IsCore && IsSqlite) Property(e => e.QuotaName).HasColumnType("TEXT COLLATE NOCASE");
+
 #if NetCore
         Property(e => e.QuotaId).ValueGeneratedNever();
         Property(e => e.QuotaOrder).HasDefaultValue(1);
@@ -209,6 +211,18 @@ public partial class QuotaConfiguration: EntityTypeConfiguration<Quota>
 			new Quota() { QuotaId = 114, GroupId = 90, QuotaDescription = "Database Restores", QuotaName = "MySQL8.Restore", QuotaOrder = 5, QuotaTypeId = 1,
 				ServiceQuota = false },
 			new Quota() { QuotaId = 115, GroupId = 90, QuotaDescription = "Database Truncate", QuotaName = "MySQL8.Truncate", QuotaOrder = 6, QuotaTypeId = 1,
+				ServiceQuota = false },
+			new Quota() { QuotaId = 120, GroupId = 91, ItemTypeId = 75, QuotaDescription = "Databases", QuotaName = "MySQL9.Databases", QuotaOrder = 1,
+				QuotaTypeId = 2, ServiceQuota = false },
+			new Quota() { QuotaId = 121, GroupId = 91, ItemTypeId = 76, QuotaDescription = "Users", QuotaName = "MySQL9.Users", QuotaOrder = 2,
+				QuotaTypeId = 2, ServiceQuota = false },
+			new Quota() { QuotaId = 122, GroupId = 91, QuotaDescription = "Database Backups", QuotaName = "MySQL9.Backup", QuotaOrder = 4, QuotaTypeId = 1,
+				ServiceQuota = false },
+			new Quota() { QuotaId = 123, GroupId = 91, QuotaDescription = "Max Database Size", QuotaName = "MySQL9.MaxDatabaseSize", QuotaOrder = 3, QuotaTypeId = 3,
+				ServiceQuota = false },
+			new Quota() { QuotaId = 124, GroupId = 91, QuotaDescription = "Database Restores", QuotaName = "MySQL9.Restore", QuotaOrder = 5, QuotaTypeId = 1,
+				ServiceQuota = false },
+			new Quota() { QuotaId = 125, GroupId = 90, QuotaDescription = "Database Truncate", QuotaName = "MySQL9.Truncate", QuotaOrder = 6, QuotaTypeId = 1,
 				ServiceQuota = false },
 			new Quota() { QuotaId = 200, GroupId = 20, ItemTypeId = 200, PerOrganization = 1, QuotaDescription = "SharePoint Site Collections", QuotaName = "HostedSharePoint.Sites",
 				QuotaOrder = 1, QuotaTypeId = 2, ServiceQuota = false },

@@ -15,7 +15,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.6");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.AccessToken", b =>
                 {
@@ -62,7 +62,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("GroupName")
                         .HasMaxLength(255)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<int>("UserId")
                         .HasColumnType("INTEGER")
@@ -79,7 +79,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     b.Property<string>("RecordId")
                         .HasMaxLength(32)
                         .IsUnicode(false)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnName("RecordID");
 
                     b.Property<string>("ExecutionLog")
@@ -2281,7 +2281,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("Name")
                         .HasMaxLength(255)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<string>("SerializerValue")
                         .HasColumnType("TEXT");
@@ -2382,7 +2382,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .IsRequired()
                         .HasMaxLength(50)
                         .IsUnicode(false)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnName("ItemTypeID");
 
                     b.Property<int?>("SeverityId")
@@ -2447,7 +2447,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .IsRequired()
                         .HasMaxLength(15)
                         .IsUnicode(false)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnName("IPAddress");
 
                     b.Property<bool>("IsPrimary")
@@ -2480,7 +2480,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     b.Property<string>("DomainName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<DateTime?>("ExpirationDate")
                         .HasColumnType("TEXT");
@@ -2573,7 +2573,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("Domain")
                         .HasMaxLength(255)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<string>("FolderName")
                         .IsRequired()
@@ -2788,7 +2788,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     b.Property<string>("DisclaimerName")
                         .IsRequired()
                         .HasMaxLength(300)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<string>("DisclaimerText")
                         .HasColumnType("TEXT");
@@ -2879,7 +2879,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     b.Property<string>("MailboxPlan")
                         .IsRequired()
                         .HasMaxLength(300)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<int?>("MailboxPlanType")
                         .HasColumnType("INTEGER");
@@ -2958,7 +2958,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     b.Property<string>("OrganizationId")
                         .IsRequired()
                         .HasMaxLength(128)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnName("OrganizationID");
 
                     b.Property<int?>("SfBuserPlanId")
@@ -3015,7 +3015,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("SettingsName")
                         .HasMaxLength(100)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnOrder(2);
 
                     b.Property<string>("Xml")
@@ -3045,7 +3045,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .IsRequired()
                         .HasMaxLength(100)
                         .IsUnicode(false)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.HasKey("Id")
                         .HasName("PK__Exchange__3214EC072DDBA072");
@@ -3076,7 +3076,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("TagName")
                         .HasMaxLength(255)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<int>("TagType")
                         .HasColumnType("INTEGER");
@@ -3120,7 +3120,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .IsRequired()
                         .HasMaxLength(10)
                         .IsUnicode(false)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<int?>("ServerId")
                         .HasColumnType("INTEGER")
@@ -3175,7 +3175,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     b.Property<string>("PlanName")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<int?>("RecurrenceLength")
                         .HasColumnType("INTEGER");
@@ -3269,19 +3269,19 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     b.Property<string>("DefaultGateway")
                         .HasMaxLength(15)
                         .IsUnicode(false)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<string>("ExternalIp")
                         .IsRequired()
                         .HasMaxLength(24)
                         .IsUnicode(false)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnName("ExternalIP");
 
                     b.Property<string>("InternalIp")
                         .HasMaxLength(24)
                         .IsUnicode(false)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnName("InternalIP");
 
                     b.Property<int?>("PoolId")
@@ -3295,7 +3295,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     b.Property<string>("SubnetMask")
                         .HasMaxLength(15)
                         .IsUnicode(false)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<int?>("Vlan")
                         .HasColumnType("INTEGER")
@@ -3331,7 +3331,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("SipAddress")
                         .HasMaxLength(300)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.HasKey("LyncUserId");
 
@@ -3351,7 +3351,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("ArchivePolicy")
                         .HasMaxLength(300)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<bool>("Conferencing")
                         .HasColumnType("INTEGER");
@@ -3376,7 +3376,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     b.Property<string>("LyncUserPlanName")
                         .IsRequired()
                         .HasMaxLength(300)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<int?>("LyncUserPlanType")
                         .HasColumnType("INTEGER");
@@ -3404,14 +3404,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("TelephonyDialPlanPolicy")
                         .HasMaxLength(300)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<string>("TelephonyVoicePolicy")
                         .HasMaxLength(300)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<int>("VoicePolicy")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.HasKey("LyncUserPlanId");
 
@@ -3440,7 +3440,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     b.Property<string>("InstanceId")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnName("InstanceID");
 
                     b.Property<DateTime>("ModifiedDate")
@@ -3677,12 +3677,12 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("SettingsName")
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnOrder(2);
 
                     b.Property<string>("PropertyName")
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnOrder(3);
 
                     b.Property<string>("PropertyValue")
@@ -3812,7 +3812,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .IsRequired()
                         .HasMaxLength(15)
                         .IsUnicode(false)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnName("IPAddress");
 
                     b.Property<bool>("IsPrimary")
@@ -4570,6 +4570,33 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         },
                         new
                         {
+                            ProviderId = 307,
+                            DisplayName = "MySQL Server 8.3",
+                            EditorControl = "MySQL",
+                            GroupId = 90,
+                            ProviderName = "MySQL",
+                            ProviderType = "SolidCP.Providers.Database.MySqlServer83, SolidCP.Providers.Database.MySQL"
+                        },
+                        new
+                        {
+                            ProviderId = 308,
+                            DisplayName = "MySQL Server 8.4",
+                            EditorControl = "MySQL",
+                            GroupId = 90,
+                            ProviderName = "MySQL",
+                            ProviderType = "SolidCP.Providers.Database.MySqlServer84, SolidCP.Providers.Database.MySQL"
+                        },
+                        new
+                        {
+                            ProviderId = 320,
+                            DisplayName = "MySQL Server 9.0",
+                            EditorControl = "MySQL",
+                            GroupId = 90,
+                            ProviderName = "MySQL",
+                            ProviderType = "SolidCP.Providers.Database.MySqlServer90, SolidCP.Providers.Database.MySQL"
+                        },
+                        new
+                        {
                             ProviderId = 350,
                             DisableAutoDiscovery = true,
                             DisplayName = "Microsoft Hyper-V 2012 R2",
@@ -5057,7 +5084,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     b.Property<string>("QuotaName")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<int>("QuotaOrder")
                         .ValueGeneratedOnAdd()
@@ -5994,6 +6021,68 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                             GroupId = 90,
                             QuotaDescription = "Database Truncate",
                             QuotaName = "MySQL8.Truncate",
+                            QuotaOrder = 6,
+                            QuotaTypeId = 1,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 120,
+                            GroupId = 91,
+                            ItemTypeId = 75,
+                            QuotaDescription = "Databases",
+                            QuotaName = "MySQL9.Databases",
+                            QuotaOrder = 1,
+                            QuotaTypeId = 2,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 121,
+                            GroupId = 91,
+                            ItemTypeId = 76,
+                            QuotaDescription = "Users",
+                            QuotaName = "MySQL9.Users",
+                            QuotaOrder = 2,
+                            QuotaTypeId = 2,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 122,
+                            GroupId = 91,
+                            QuotaDescription = "Database Backups",
+                            QuotaName = "MySQL9.Backup",
+                            QuotaOrder = 4,
+                            QuotaTypeId = 1,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 123,
+                            GroupId = 91,
+                            QuotaDescription = "Max Database Size",
+                            QuotaName = "MySQL9.MaxDatabaseSize",
+                            QuotaOrder = 3,
+                            QuotaTypeId = 3,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 124,
+                            GroupId = 91,
+                            QuotaDescription = "Database Restores",
+                            QuotaName = "MySQL9.Restore",
+                            QuotaOrder = 5,
+                            QuotaTypeId = 1,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 125,
+                            GroupId = 90,
+                            QuotaDescription = "Database Truncate",
+                            QuotaName = "MySQL9.Truncate",
                             QuotaOrder = 6,
                             QuotaTypeId = 1,
                             ServiceQuota = false
@@ -8437,7 +8526,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("Name")
                         .HasMaxLength(255)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.HasKey("Id")
                         .HasName("PK__RDSColle__3214EC27346D361D");
@@ -8620,12 +8709,12 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("SettingsName")
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnOrder(2);
 
                     b.Property<string>("PropertyName")
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnOrder(3);
 
                     b.Property<bool>("ApplyAdministrators")
@@ -8655,7 +8744,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     b.Property<string>("GroupName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<int>("GroupOrder")
                         .ValueGeneratedOnAdd()
@@ -8962,6 +9051,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         },
                         new
                         {
+                            GroupId = 91,
+                            GroupController = "SolidCP.EnterpriseServer.DatabaseServerController",
+                            GroupName = "MySQL9",
+                            GroupOrder = 12,
+                            ShowGroup = true
+                        },
+                        new
+                        {
                             GroupId = 167,
                             GroupName = "Proxmox",
                             GroupOrder = 20,
@@ -9003,7 +9100,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .IsRequired()
                         .HasMaxLength(50)
                         .IsUnicode(false)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.HasKey("RecordId");
 
@@ -9217,7 +9314,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("ScheduleTypeId")
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnName("ScheduleTypeID");
 
                     b.Property<DateTime?>("StartTime")
@@ -9291,7 +9388,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("ParameterId")
                         .HasMaxLength(100)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnName("ParameterID")
                         .HasColumnOrder(2);
 
@@ -9489,7 +9586,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("ParameterId")
                         .HasMaxLength(100)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnName("ParameterID")
                         .HasColumnOrder(2);
 
@@ -10200,7 +10297,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                 {
                     b.Property<string>("ConfigurationId")
                         .HasMaxLength(100)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnName("ConfigurationID")
                         .HasColumnOrder(2);
 
@@ -10393,7 +10490,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     b.Property<string>("ADAuthenticationType")
                         .HasMaxLength(50)
                         .IsUnicode(false)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnName("ADAuthenticationType");
 
                     b.Property<bool?>("ADEnabled")
@@ -10522,7 +10619,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("PropertyName")
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnOrder(2);
 
                     b.Property<string>("PropertyValue")
@@ -12415,6 +12512,114 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         },
                         new
                         {
+                            ProviderId = 307,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 307,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MySQL\\MySQL Server 8.0"
+                        },
+                        new
+                        {
+                            ProviderId = 307,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost,3306"
+                        },
+                        new
+                        {
+                            ProviderId = 307,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 307,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 307,
+                            PropertyName = "sslmode",
+                            PropertyValue = "True"
+                        },
+                        new
+                        {
+                            ProviderId = 308,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 308,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MySQL\\MySQL Server 8.0"
+                        },
+                        new
+                        {
+                            ProviderId = 308,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost,3306"
+                        },
+                        new
+                        {
+                            ProviderId = 308,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 308,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 308,
+                            PropertyName = "sslmode",
+                            PropertyValue = "True"
+                        },
+                        new
+                        {
+                            ProviderId = 320,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 320,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MySQL\\MySQL Server 9.0"
+                        },
+                        new
+                        {
+                            ProviderId = 320,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost,3306"
+                        },
+                        new
+                        {
+                            ProviderId = 320,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 320,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 320,
+                            PropertyName = "sslmode",
+                            PropertyValue = "True"
+                        },
+                        new
+                        {
                             ProviderId = 410,
                             PropertyName = "admode",
                             PropertyValue = "False"
@@ -12791,7 +12996,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("PropertyName")
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnOrder(2);
 
                     b.Property<string>("PropertyValue")
@@ -13544,6 +13749,36 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         },
                         new
                         {
+                            ItemTypeId = 90,
+                            Backupable = true,
+                            CalculateBandwidth = false,
+                            CalculateDiskspace = true,
+                            DisplayName = "MySQL9Database",
+                            Disposable = true,
+                            GroupId = 91,
+                            Importable = true,
+                            Searchable = true,
+                            Suspendable = false,
+                            TypeName = "SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base",
+                            TypeOrder = 20
+                        },
+                        new
+                        {
+                            ItemTypeId = 91,
+                            Backupable = true,
+                            CalculateBandwidth = false,
+                            CalculateDiskspace = false,
+                            DisplayName = "MySQL9User",
+                            Disposable = true,
+                            GroupId = 91,
+                            Importable = true,
+                            Searchable = true,
+                            Suspendable = false,
+                            TypeName = "SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base",
+                            TypeOrder = 21
+                        },
+                        new
+                        {
                             ItemTypeId = 143,
                             Backupable = false,
                             CalculateBandwidth = false,
@@ -13643,7 +13878,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("PropertyName")
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnOrder(2);
 
                     b.Property<string>("PropertyValue")
@@ -13697,7 +13932,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("ArchivePolicy")
                         .HasMaxLength(300)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<bool>("Conferencing")
                         .HasColumnType("INTEGER");
@@ -13752,14 +13987,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("TelephonyDialPlanPolicy")
                         .HasMaxLength(300)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<string>("TelephonyVoicePolicy")
                         .HasMaxLength(300)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<int>("VoicePolicy")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.HasKey("SfBUserPlanId");
 
@@ -13996,12 +14231,12 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                 {
                     b.Property<string>("SettingsName")
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnOrder(1);
 
                     b.Property<string>("PropertyName")
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnOrder(2);
 
                     b.Property<string>("PropertyValue")
@@ -14142,12 +14377,12 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("SettingsName")
                         .HasMaxLength(255)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnOrder(2);
 
                     b.Property<string>("PropertyName")
                         .HasMaxLength(255)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnOrder(3);
 
                     b.Property<string>("PropertyValue")
@@ -14486,12 +14721,12 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("SettingsName")
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnOrder(2);
 
                     b.Property<string>("PropertyName")
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnOrder(3);
 
                     b.Property<string>("PropertyValue")

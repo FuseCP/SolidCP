@@ -110,8 +110,6 @@
     <ItemGroup>
         <None Include="CodeTemplates\EFCore\Aliases.cs" />
         <Compile Remove="CodeTemplates\EFCore\Aliases.cs" />
-        <Compile Remove="Configuration\TempIdConfiguration.cs" />
-        <None Include="Configuration\TempIdConfiguration.cs" />
 		<!--<Compile Remove="Configuration\**\*.cs" />
 		<None Include="Configuration\**\*.cs" />-->
 
@@ -139,10 +137,8 @@
 
 	<ItemGroup>
 	  <None Remove="LegacyScripts\update_db.sql" />
-	  <None Remove="Migrations\MySql\install.mysql.sql" />
 	  <None Remove="Migrations\PostgreSql\install.postgresql.sql" />
 	  <None Remove="Migrations\Sqlite\install.sqlite.sql" />
-	  <None Remove="Migrations\Sqlite\install.sqlitefx.sql" />
 	  <None Remove="Migrations\SqlServer\install.sqlserver.sql" />
 	</ItemGroup>
 
@@ -152,10 +148,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Include="Migrations\MySql\install.mysql.sql" />
 	  <EmbeddedResource Include="Migrations\PostgreSql\install.postgresql.sql" />
 	  <EmbeddedResource Include="Migrations\Sqlite\install.sqlite.sql" />
-	  <EmbeddedResource Include="Migrations\Sqlite\install.sqlitefx.sql" />
 	</ItemGroup>
 	
     <ItemGroup>

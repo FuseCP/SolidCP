@@ -7571,7 +7571,7 @@ CREATE INDEX "WebDavAccessTokensIdx_AccountID" ON "WebDavAccessTokens" ("Account
 CREATE INDEX "WebDavPortalUsersSettingsIdx_AccountId" ON "WebDavPortalUsersSettings" ("AccountId");
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20240630180133_InitalCreate', '8.0.6');
+VALUES ('20240630180133_InitalCreate', '8.0.8');
 
 COMMIT;
 
@@ -7867,7 +7867,989 @@ CREATE INDEX "DomainDnsRecordsIdx_DomainId" ON "DomainDnsRecords" ("DomainId");
 CREATE INDEX "AccessTokensIdx_AccountID" ON "AccessTokens" ("AccountID");
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20240709093108_AddedDMZ', '8.0.6');
+VALUES ('20240709093108_AddedDMZ', '8.0.8');
+
+COMMIT;
+
+BEGIN TRANSACTION;
+
+CREATE TABLE "ef_temp_UserSettings" (
+    "UserID" INTEGER NOT NULL,
+    "SettingsName" TEXT COLLATE NOCASE NOT NULL,
+    "PropertyName" TEXT COLLATE NOCASE NOT NULL,
+    "PropertyValue" TEXT NULL,
+    CONSTRAINT "PK_UserSettings" PRIMARY KEY ("UserID", "SettingsName", "PropertyName"),
+    CONSTRAINT "FK_UserSettings_Users" FOREIGN KEY ("UserID") REFERENCES "Users" ("UserID") ON DELETE CASCADE
+);
+
+INSERT INTO "ef_temp_UserSettings" ("UserID", "SettingsName", "PropertyName", "PropertyValue")
+SELECT "UserID", "SettingsName", "PropertyName", "PropertyValue"
+FROM "UserSettings";
+
+CREATE TABLE "ef_temp_ThemeSettings" (
+    "ThemeID" INTEGER NOT NULL,
+    "SettingsName" TEXT COLLATE NOCASE NOT NULL,
+    "PropertyName" TEXT COLLATE NOCASE NOT NULL,
+    "PropertyValue" TEXT NOT NULL,
+    CONSTRAINT "PK_ThemeSettings" PRIMARY KEY ("ThemeID", "SettingsName", "PropertyName")
+);
+
+INSERT INTO "ef_temp_ThemeSettings" ("ThemeID", "SettingsName", "PropertyName", "PropertyValue")
+SELECT "ThemeID", "SettingsName", "PropertyName", "PropertyValue"
+FROM "ThemeSettings";
+
+CREATE TABLE "ef_temp_SystemSettings" (
+    "SettingsName" TEXT COLLATE NOCASE NOT NULL,
+    "PropertyName" TEXT COLLATE NOCASE NOT NULL,
+    "PropertyValue" TEXT NULL,
+    CONSTRAINT "PK_SystemSettings" PRIMARY KEY ("SettingsName", "PropertyName")
+);
+
+INSERT INTO "ef_temp_SystemSettings" ("SettingsName", "PropertyName", "PropertyValue")
+SELECT "SettingsName", "PropertyName", "PropertyValue"
+FROM "SystemSettings";
+
+CREATE TABLE "ef_temp_SfBUserPlans" (
+    "SfBUserPlanId" INTEGER NOT NULL CONSTRAINT "PK_SfBUserPlans" PRIMARY KEY AUTOINCREMENT,
+    "AllowOrganizeMeetingsWithExternalAnonymous" INTEGER NOT NULL,
+    "ArchivePolicy" TEXT COLLATE NOCASE NULL,
+    "Conferencing" INTEGER NOT NULL,
+    "EnterpriseVoice" INTEGER NOT NULL,
+    "Federation" INTEGER NOT NULL,
+    "IM" INTEGER NOT NULL,
+    "IsDefault" INTEGER NOT NULL,
+    "ItemID" INTEGER NOT NULL,
+    "Mobility" INTEGER NOT NULL,
+    "MobilityEnableOutsideVoice" INTEGER NOT NULL,
+    "PublicIMConnectivity" INTEGER NOT NULL,
+    "RemoteUserAccess" INTEGER NOT NULL,
+    "ServerURI" TEXT NULL,
+    "SfBUserPlanName" TEXT NOT NULL,
+    "SfBUserPlanType" INTEGER NULL,
+    "Telephony" INTEGER NULL,
+    "TelephonyDialPlanPolicy" TEXT COLLATE NOCASE NULL,
+    "TelephonyVoicePolicy" TEXT COLLATE NOCASE NULL,
+    "VoicePolicy" TEXT COLLATE NOCASE NOT NULL
+);
+
+INSERT INTO "ef_temp_SfBUserPlans" ("SfBUserPlanId", "AllowOrganizeMeetingsWithExternalAnonymous", "ArchivePolicy", "Conferencing", "EnterpriseVoice", "Federation", "IM", "IsDefault", "ItemID", "Mobility", "MobilityEnableOutsideVoice", "PublicIMConnectivity", "RemoteUserAccess", "ServerURI", "SfBUserPlanName", "SfBUserPlanType", "Telephony", "TelephonyDialPlanPolicy", "TelephonyVoicePolicy", "VoicePolicy")
+SELECT "SfBUserPlanId", "AllowOrganizeMeetingsWithExternalAnonymous", "ArchivePolicy", "Conferencing", "EnterpriseVoice", "Federation", "IM", "IsDefault", "ItemID", "Mobility", "MobilityEnableOutsideVoice", "PublicIMConnectivity", "RemoteUserAccess", "ServerURI", "SfBUserPlanName", "SfBUserPlanType", "Telephony", "TelephonyDialPlanPolicy", "TelephonyVoicePolicy", "VoicePolicy"
+FROM "SfBUserPlans";
+
+CREATE TABLE "ef_temp_ServiceProperties" (
+    "ServiceID" INTEGER NOT NULL,
+    "PropertyName" TEXT COLLATE NOCASE NOT NULL,
+    "PropertyValue" TEXT NULL,
+    CONSTRAINT "PK_ServiceProperties_1" PRIMARY KEY ("ServiceID", "PropertyName"),
+    CONSTRAINT "FK_ServiceProperties_Services" FOREIGN KEY ("ServiceID") REFERENCES "Services" ("ServiceID") ON DELETE CASCADE
+);
+
+INSERT INTO "ef_temp_ServiceProperties" ("ServiceID", "PropertyName", "PropertyValue")
+SELECT "ServiceID", "PropertyName", "PropertyValue"
+FROM "ServiceProperties";
+
+CREATE TABLE "ef_temp_ServiceItemProperties" (
+    "ItemID" INTEGER NOT NULL,
+    "PropertyName" TEXT COLLATE NOCASE NOT NULL,
+    "PropertyValue" TEXT NULL,
+    CONSTRAINT "PK_ServiceItemProperties" PRIMARY KEY ("ItemID", "PropertyName"),
+    CONSTRAINT "FK_ServiceItemProperties_ServiceItems" FOREIGN KEY ("ItemID") REFERENCES "ServiceItems" ("ItemID") ON DELETE CASCADE
+);
+
+INSERT INTO "ef_temp_ServiceItemProperties" ("ItemID", "PropertyName", "PropertyValue")
+SELECT "ItemID", "PropertyName", "PropertyValue"
+FROM "ServiceItemProperties";
+
+CREATE TABLE "ef_temp_ServiceDefaultProperties" (
+    "ProviderID" INTEGER NOT NULL,
+    "PropertyName" TEXT COLLATE NOCASE NOT NULL,
+    "PropertyValue" TEXT NULL,
+    CONSTRAINT "PK_ServiceDefaultProperties_1" PRIMARY KEY ("ProviderID", "PropertyName"),
+    CONSTRAINT "FK_ServiceDefaultProperties_Providers" FOREIGN KEY ("ProviderID") REFERENCES "Providers" ("ProviderID")
+);
+
+INSERT INTO "ef_temp_ServiceDefaultProperties" ("ProviderID", "PropertyName", "PropertyValue")
+SELECT "ProviderID", "PropertyName", "PropertyValue"
+FROM "ServiceDefaultProperties";
+
+CREATE TABLE "ef_temp_Servers" (
+    "ServerID" INTEGER NOT NULL CONSTRAINT "PK_Servers" PRIMARY KEY AUTOINCREMENT,
+    "ADAuthenticationType" TEXT COLLATE NOCASE NULL,
+    "ADEnabled" INTEGER NULL DEFAULT 0,
+    "ADParentDomain" TEXT NULL,
+    "ADParentDomainController" TEXT NULL,
+    "ADPassword" TEXT NULL,
+    "ADRootDomain" TEXT NULL,
+    "ADUsername" TEXT NULL,
+    "Comments" TEXT NULL,
+    "InstantDomainAlias" TEXT NULL,
+    "IsCore" INTEGER NULL,
+    "OSPlatform" INTEGER NOT NULL,
+    "Password" TEXT NULL,
+    "PasswordIsSHA256" INTEGER NOT NULL,
+    "PrimaryGroupID" INTEGER NULL,
+    "ServerName" TEXT NOT NULL,
+    "ServerUrl" TEXT NULL DEFAULT '',
+    "VirtualServer" INTEGER NOT NULL,
+    CONSTRAINT "FK_Servers_ResourceGroups" FOREIGN KEY ("PrimaryGroupID") REFERENCES "ResourceGroups" ("GroupID")
+);
+
+INSERT INTO "ef_temp_Servers" ("ServerID", "ADAuthenticationType", "ADEnabled", "ADParentDomain", "ADParentDomainController", "ADPassword", "ADRootDomain", "ADUsername", "Comments", "InstantDomainAlias", "IsCore", "OSPlatform", "Password", "PasswordIsSHA256", "PrimaryGroupID", "ServerName", "ServerUrl", "VirtualServer")
+SELECT "ServerID", "ADAuthenticationType", "ADEnabled", "ADParentDomain", "ADParentDomainController", "ADPassword", "ADRootDomain", "ADUsername", "Comments", "InstantDomainAlias", "IsCore", "OSPlatform", "Password", "PasswordIsSHA256", "PrimaryGroupID", "ServerName", "ServerUrl", "VirtualServer"
+FROM "Servers";
+
+CREATE TABLE "ef_temp_ScheduleTaskViewConfiguration" (
+    "TaskID" TEXT NOT NULL,
+    "ConfigurationID" TEXT COLLATE NOCASE NOT NULL,
+    "Description" TEXT NOT NULL,
+    "Environment" TEXT NOT NULL,
+    CONSTRAINT "PK_ScheduleTaskViewConfiguration" PRIMARY KEY ("ConfigurationID", "TaskID"),
+    CONSTRAINT "FK_ScheduleTaskViewConfiguration_ScheduleTaskViewConfiguration" FOREIGN KEY ("TaskID") REFERENCES "ScheduleTasks" ("TaskID")
+);
+
+INSERT INTO "ef_temp_ScheduleTaskViewConfiguration" ("ConfigurationID", "TaskID", "Description", "Environment")
+SELECT "ConfigurationID", "TaskID", "Description", "Environment"
+FROM "ScheduleTaskViewConfiguration";
+
+CREATE TABLE "ef_temp_ScheduleTaskParameters" (
+    "TaskID" TEXT NOT NULL,
+    "ParameterID" TEXT COLLATE NOCASE NOT NULL,
+    "DataTypeID" TEXT NOT NULL,
+    "DefaultValue" TEXT NULL,
+    "ParameterOrder" INTEGER NOT NULL,
+    CONSTRAINT "PK_ScheduleTaskParameters" PRIMARY KEY ("TaskID", "ParameterID"),
+    CONSTRAINT "FK_ScheduleTaskParameters_ScheduleTasks" FOREIGN KEY ("TaskID") REFERENCES "ScheduleTasks" ("TaskID")
+);
+
+INSERT INTO "ef_temp_ScheduleTaskParameters" ("TaskID", "ParameterID", "DataTypeID", "DefaultValue", "ParameterOrder")
+SELECT "TaskID", "ParameterID", "DataTypeID", "DefaultValue", "ParameterOrder"
+FROM "ScheduleTaskParameters";
+
+CREATE TABLE "ef_temp_ScheduleParameters" (
+    "ScheduleID" INTEGER NOT NULL,
+    "ParameterID" TEXT COLLATE NOCASE NOT NULL,
+    "ParameterValue" TEXT NULL,
+    CONSTRAINT "PK_ScheduleParameters" PRIMARY KEY ("ScheduleID", "ParameterID"),
+    CONSTRAINT "FK_ScheduleParameters_Schedule" FOREIGN KEY ("ScheduleID") REFERENCES "Schedule" ("ScheduleID") ON DELETE CASCADE
+);
+
+INSERT INTO "ef_temp_ScheduleParameters" ("ScheduleID", "ParameterID", "ParameterValue")
+SELECT "ScheduleID", "ParameterID", "ParameterValue"
+FROM "ScheduleParameters";
+
+CREATE TABLE "ef_temp_Schedule" (
+    "ScheduleID" INTEGER NOT NULL CONSTRAINT "PK_Schedule" PRIMARY KEY AUTOINCREMENT,
+    "Enabled" INTEGER NOT NULL,
+    "FromTime" TEXT NULL,
+    "HistoriesNumber" INTEGER NULL,
+    "Interval" INTEGER NULL,
+    "LastRun" TEXT NULL,
+    "MaxExecutionTime" INTEGER NULL,
+    "NextRun" TEXT NULL,
+    "PackageID" INTEGER NULL,
+    "PriorityID" TEXT NULL,
+    "ScheduleName" TEXT NULL,
+    "ScheduleTypeID" TEXT COLLATE NOCASE NULL,
+    "StartTime" TEXT NULL,
+    "TaskID" TEXT NOT NULL,
+    "ToTime" TEXT NULL,
+    "WeekMonthDay" INTEGER NULL,
+    CONSTRAINT "FK_Schedule_Packages" FOREIGN KEY ("PackageID") REFERENCES "Packages" ("PackageID") ON DELETE CASCADE,
+    CONSTRAINT "FK_Schedule_ScheduleTasks" FOREIGN KEY ("TaskID") REFERENCES "ScheduleTasks" ("TaskID")
+);
+
+INSERT INTO "ef_temp_Schedule" ("ScheduleID", "Enabled", "FromTime", "HistoriesNumber", "Interval", "LastRun", "MaxExecutionTime", "NextRun", "PackageID", "PriorityID", "ScheduleName", "ScheduleTypeID", "StartTime", "TaskID", "ToTime", "WeekMonthDay")
+SELECT "ScheduleID", "Enabled", "FromTime", "HistoriesNumber", "Interval", "LastRun", "MaxExecutionTime", "NextRun", "PackageID", "PriorityID", "ScheduleName", "ScheduleTypeID", "StartTime", "TaskID", "ToTime", "WeekMonthDay"
+FROM "Schedule";
+
+CREATE TABLE "ef_temp_ResourceGroups" (
+    "GroupID" INTEGER NOT NULL CONSTRAINT "PK_ResourceGroups" PRIMARY KEY,
+    "GroupController" TEXT NULL,
+    "GroupName" TEXT COLLATE NOCASE NOT NULL,
+    "GroupOrder" INTEGER NOT NULL DEFAULT 1,
+    "ShowGroup" INTEGER NULL
+);
+
+INSERT INTO "ef_temp_ResourceGroups" ("GroupID", "GroupController", "GroupName", "GroupOrder", "ShowGroup")
+SELECT "GroupID", "GroupController", "GroupName", "GroupOrder", "ShowGroup"
+FROM "ResourceGroups";
+
+CREATE TABLE "ef_temp_ResourceGroupDnsRecords" (
+    "RecordID" INTEGER NOT NULL CONSTRAINT "PK_ResourceGroupDnsRecords" PRIMARY KEY AUTOINCREMENT,
+    "GroupID" INTEGER NOT NULL,
+    "MXPriority" INTEGER NULL,
+    "RecordData" TEXT NOT NULL,
+    "RecordName" TEXT NOT NULL,
+    "RecordOrder" INTEGER NOT NULL DEFAULT 1,
+    "RecordType" TEXT COLLATE NOCASE NOT NULL,
+    CONSTRAINT "FK_ResourceGroupDnsRecords_ResourceGroups" FOREIGN KEY ("GroupID") REFERENCES "ResourceGroups" ("GroupID") ON DELETE CASCADE
+);
+
+INSERT INTO "ef_temp_ResourceGroupDnsRecords" ("RecordID", "GroupID", "MXPriority", "RecordData", "RecordName", "RecordOrder", "RecordType")
+SELECT "RecordID", "GroupID", "MXPriority", "RecordData", "RecordName", "RecordOrder", "RecordType"
+FROM "ResourceGroupDnsRecords";
+
+CREATE TABLE "ef_temp_RDSServerSettings" (
+    "RdsServerId" INTEGER NOT NULL,
+    "SettingsName" TEXT COLLATE NOCASE NOT NULL,
+    "PropertyName" TEXT COLLATE NOCASE NOT NULL,
+    "ApplyAdministrators" INTEGER NOT NULL,
+    "ApplyUsers" INTEGER NOT NULL,
+    "PropertyValue" TEXT NULL,
+    CONSTRAINT "PK_RDSServerSettings" PRIMARY KEY ("RdsServerId", "SettingsName", "PropertyName")
+);
+
+INSERT INTO "ef_temp_RDSServerSettings" ("RdsServerId", "SettingsName", "PropertyName", "ApplyAdministrators", "ApplyUsers", "PropertyValue")
+SELECT "RdsServerId", "SettingsName", "PropertyName", "ApplyAdministrators", "ApplyUsers", "PropertyValue"
+FROM "RDSServerSettings";
+
+CREATE TABLE "ef_temp_RDSCollections" (
+    "ID" INTEGER NOT NULL CONSTRAINT "PK__RDSColle__3214EC27346D361D" PRIMARY KEY AUTOINCREMENT,
+    "Description" TEXT NULL,
+    "DisplayName" TEXT NULL,
+    "ItemID" INTEGER NOT NULL,
+    "Name" TEXT COLLATE NOCASE NULL
+);
+
+INSERT INTO "ef_temp_RDSCollections" ("ID", "Description", "DisplayName", "ItemID", "Name")
+SELECT "ID", "Description", "DisplayName", "ItemID", "Name"
+FROM "RDSCollections";
+
+CREATE TABLE "ef_temp_Quotas" (
+    "QuotaID" INTEGER NOT NULL CONSTRAINT "PK_Quotas" PRIMARY KEY,
+    "GroupID" INTEGER NOT NULL,
+    "HideQuota" INTEGER NULL,
+    "ItemTypeID" INTEGER NULL,
+    "PerOrganization" INTEGER NULL,
+    "QuotaDescription" TEXT NULL,
+    "QuotaName" TEXT COLLATE NOCASE NOT NULL,
+    "QuotaOrder" INTEGER NOT NULL DEFAULT 1,
+    "QuotaTypeID" INTEGER NOT NULL DEFAULT 2,
+    "ServiceQuota" INTEGER NULL DEFAULT 0,
+    CONSTRAINT "FK_Quotas_ResourceGroups" FOREIGN KEY ("GroupID") REFERENCES "ResourceGroups" ("GroupID") ON DELETE CASCADE,
+    CONSTRAINT "FK_Quotas_ServiceItemTypes" FOREIGN KEY ("ItemTypeID") REFERENCES "ServiceItemTypes" ("ItemTypeID")
+);
+
+INSERT INTO "ef_temp_Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+SELECT "QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota"
+FROM "Quotas";
+
+CREATE TABLE "ef_temp_PrivateIPAddresses" (
+    "PrivateAddressID" INTEGER NOT NULL CONSTRAINT "PK_PrivateIPAddresses" PRIMARY KEY AUTOINCREMENT,
+    "IPAddress" TEXT COLLATE NOCASE NOT NULL,
+    "IsPrimary" INTEGER NOT NULL,
+    "ItemID" INTEGER NOT NULL,
+    CONSTRAINT "FK_PrivateIPAddresses_ServiceItems" FOREIGN KEY ("ItemID") REFERENCES "ServiceItems" ("ItemID") ON DELETE CASCADE
+);
+
+INSERT INTO "ef_temp_PrivateIPAddresses" ("PrivateAddressID", "IPAddress", "IsPrimary", "ItemID")
+SELECT "PrivateAddressID", "IPAddress", "IsPrimary", "ItemID"
+FROM "PrivateIPAddresses";
+
+CREATE TABLE "ef_temp_PackageSettings" (
+    "PackageID" INTEGER NOT NULL,
+    "SettingsName" TEXT COLLATE NOCASE NOT NULL,
+    "PropertyName" TEXT COLLATE NOCASE NOT NULL,
+    "PropertyValue" TEXT NULL,
+    CONSTRAINT "PK_PackageSettings" PRIMARY KEY ("PackageID", "SettingsName", "PropertyName")
+);
+
+INSERT INTO "ef_temp_PackageSettings" ("PackageID", "SettingsName", "PropertyName", "PropertyValue")
+SELECT "PackageID", "SettingsName", "PropertyName", "PropertyValue"
+FROM "PackageSettings";
+
+CREATE TABLE "ef_temp_OCSUsers" (
+    "OCSUserID" INTEGER NOT NULL CONSTRAINT "PK_OCSUsers" PRIMARY KEY AUTOINCREMENT,
+    "AccountID" INTEGER NOT NULL,
+    "CreatedDate" TEXT NOT NULL,
+    "InstanceID" TEXT COLLATE NOCASE NOT NULL,
+    "ModifiedDate" TEXT NOT NULL
+);
+
+INSERT INTO "ef_temp_OCSUsers" ("OCSUserID", "AccountID", "CreatedDate", "InstanceID", "ModifiedDate")
+SELECT "OCSUserID", "AccountID", "CreatedDate", "InstanceID", "ModifiedDate"
+FROM "OCSUsers";
+
+CREATE TABLE "ef_temp_LyncUsers" (
+    "LyncUserID" INTEGER NOT NULL CONSTRAINT "PK_LyncUsers" PRIMARY KEY AUTOINCREMENT,
+    "AccountID" INTEGER NOT NULL,
+    "CreatedDate" TEXT NOT NULL,
+    "LyncUserPlanID" INTEGER NOT NULL,
+    "ModifiedDate" TEXT NOT NULL,
+    "SipAddress" TEXT COLLATE NOCASE NULL,
+    CONSTRAINT "FK_LyncUsers_LyncUserPlans" FOREIGN KEY ("LyncUserPlanID") REFERENCES "LyncUserPlans" ("LyncUserPlanId")
+);
+
+INSERT INTO "ef_temp_LyncUsers" ("LyncUserID", "AccountID", "CreatedDate", "LyncUserPlanID", "ModifiedDate", "SipAddress")
+SELECT "LyncUserID", "AccountID", "CreatedDate", "LyncUserPlanID", "ModifiedDate", "SipAddress"
+FROM "LyncUsers";
+
+CREATE TABLE "ef_temp_LyncUserPlans" (
+    "LyncUserPlanId" INTEGER NOT NULL CONSTRAINT "PK_LyncUserPlans" PRIMARY KEY AUTOINCREMENT,
+    "AllowOrganizeMeetingsWithExternalAnonymous" INTEGER NOT NULL,
+    "ArchivePolicy" TEXT COLLATE NOCASE NULL,
+    "Conferencing" INTEGER NOT NULL,
+    "EnterpriseVoice" INTEGER NOT NULL,
+    "Federation" INTEGER NOT NULL,
+    "IM" INTEGER NOT NULL,
+    "IsDefault" INTEGER NOT NULL,
+    "ItemID" INTEGER NOT NULL,
+    "LyncUserPlanName" TEXT COLLATE NOCASE NOT NULL,
+    "LyncUserPlanType" INTEGER NULL,
+    "Mobility" INTEGER NOT NULL,
+    "MobilityEnableOutsideVoice" INTEGER NOT NULL,
+    "PublicIMConnectivity" INTEGER NOT NULL,
+    "RemoteUserAccess" INTEGER NOT NULL,
+    "ServerURI" TEXT NULL,
+    "Telephony" INTEGER NULL,
+    "TelephonyDialPlanPolicy" TEXT COLLATE NOCASE NULL,
+    "TelephonyVoicePolicy" TEXT COLLATE NOCASE NULL,
+    "VoicePolicy" TEXT COLLATE NOCASE NOT NULL,
+    CONSTRAINT "FK_LyncUserPlans_ExchangeOrganizations" FOREIGN KEY ("ItemID") REFERENCES "ExchangeOrganizations" ("ItemID") ON DELETE CASCADE
+);
+
+INSERT INTO "ef_temp_LyncUserPlans" ("LyncUserPlanId", "AllowOrganizeMeetingsWithExternalAnonymous", "ArchivePolicy", "Conferencing", "EnterpriseVoice", "Federation", "IM", "IsDefault", "ItemID", "LyncUserPlanName", "LyncUserPlanType", "Mobility", "MobilityEnableOutsideVoice", "PublicIMConnectivity", "RemoteUserAccess", "ServerURI", "Telephony", "TelephonyDialPlanPolicy", "TelephonyVoicePolicy", "VoicePolicy")
+SELECT "LyncUserPlanId", "AllowOrganizeMeetingsWithExternalAnonymous", "ArchivePolicy", "Conferencing", "EnterpriseVoice", "Federation", "IM", "IsDefault", "ItemID", "LyncUserPlanName", "LyncUserPlanType", "Mobility", "MobilityEnableOutsideVoice", "PublicIMConnectivity", "RemoteUserAccess", "ServerURI", "Telephony", "TelephonyDialPlanPolicy", "TelephonyVoicePolicy", "VoicePolicy"
+FROM "LyncUserPlans";
+
+CREATE TABLE "ef_temp_IPAddresses" (
+    "AddressID" INTEGER NOT NULL CONSTRAINT "PK_IPAddresses" PRIMARY KEY AUTOINCREMENT,
+    "Comments" TEXT NULL,
+    "DefaultGateway" TEXT COLLATE NOCASE NULL,
+    "ExternalIP" TEXT COLLATE NOCASE NOT NULL,
+    "InternalIP" TEXT COLLATE NOCASE NULL,
+    "PoolID" INTEGER NULL,
+    "ServerID" INTEGER NULL,
+    "SubnetMask" TEXT COLLATE NOCASE NULL,
+    "VLAN" INTEGER NULL,
+    CONSTRAINT "FK_IPAddresses_Servers" FOREIGN KEY ("ServerID") REFERENCES "Servers" ("ServerID") ON DELETE CASCADE
+);
+
+INSERT INTO "ef_temp_IPAddresses" ("AddressID", "Comments", "DefaultGateway", "ExternalIP", "InternalIP", "PoolID", "ServerID", "SubnetMask", "VLAN")
+SELECT "AddressID", "Comments", "DefaultGateway", "ExternalIP", "InternalIP", "PoolID", "ServerID", "SubnetMask", "VLAN"
+FROM "IPAddresses";
+
+CREATE TABLE "ef_temp_HostingPlans" (
+    "PlanID" INTEGER NOT NULL CONSTRAINT "PK_HostingPlans" PRIMARY KEY AUTOINCREMENT,
+    "Available" INTEGER NOT NULL,
+    "IsAddon" INTEGER NULL,
+    "PackageID" INTEGER NULL,
+    "PlanDescription" TEXT NULL,
+    "PlanName" TEXT COLLATE NOCASE NOT NULL,
+    "RecurrenceLength" INTEGER NULL,
+    "RecurrenceUnit" INTEGER NULL,
+    "RecurringPrice" TEXT NULL,
+    "ServerID" INTEGER NULL,
+    "SetupPrice" TEXT NULL,
+    "UserID" INTEGER NULL,
+    CONSTRAINT "FK_HostingPlans_Servers" FOREIGN KEY ("ServerID") REFERENCES "Servers" ("ServerID"),
+    CONSTRAINT "FK_HostingPlans_Users" FOREIGN KEY ("UserID") REFERENCES "Users" ("UserID")
+);
+
+INSERT INTO "ef_temp_HostingPlans" ("PlanID", "Available", "IsAddon", "PackageID", "PlanDescription", "PlanName", "RecurrenceLength", "RecurrenceUnit", "RecurringPrice", "ServerID", "SetupPrice", "UserID")
+SELECT "PlanID", "Available", "IsAddon", "PackageID", "PlanDescription", "PlanName", "RecurrenceLength", "RecurrenceUnit", "RecurringPrice", "ServerID", "SetupPrice", "UserID"
+FROM "HostingPlans";
+
+CREATE TABLE "ef_temp_GlobalDnsRecords" (
+    "RecordID" INTEGER NOT NULL CONSTRAINT "PK_GlobalDnsRecords" PRIMARY KEY AUTOINCREMENT,
+    "IPAddressID" INTEGER NULL,
+    "MXPriority" INTEGER NOT NULL,
+    "PackageID" INTEGER NULL,
+    "RecordData" TEXT NOT NULL,
+    "RecordName" TEXT NOT NULL,
+    "RecordType" TEXT COLLATE NOCASE NOT NULL,
+    "ServerID" INTEGER NULL,
+    "ServiceID" INTEGER NULL,
+    "SrvPort" INTEGER NULL,
+    "SrvPriority" INTEGER NULL,
+    "SrvWeight" INTEGER NULL,
+    CONSTRAINT "FK_GlobalDnsRecords_IPAddresses" FOREIGN KEY ("IPAddressID") REFERENCES "IPAddresses" ("AddressID"),
+    CONSTRAINT "FK_GlobalDnsRecords_Packages" FOREIGN KEY ("PackageID") REFERENCES "Packages" ("PackageID") ON DELETE CASCADE,
+    CONSTRAINT "FK_GlobalDnsRecords_Servers" FOREIGN KEY ("ServerID") REFERENCES "Servers" ("ServerID"),
+    CONSTRAINT "FK_GlobalDnsRecords_Services" FOREIGN KEY ("ServiceID") REFERENCES "Services" ("ServiceID") ON DELETE CASCADE
+);
+
+INSERT INTO "ef_temp_GlobalDnsRecords" ("RecordID", "IPAddressID", "MXPriority", "PackageID", "RecordData", "RecordName", "RecordType", "ServerID", "ServiceID", "SrvPort", "SrvPriority", "SrvWeight")
+SELECT "RecordID", "IPAddressID", "MXPriority", "PackageID", "RecordData", "RecordName", "RecordType", "ServerID", "ServiceID", "SrvPort", "SrvPriority", "SrvWeight"
+FROM "GlobalDnsRecords";
+
+CREATE TABLE "ef_temp_ExchangeRetentionPolicyTags" (
+    "TagID" INTEGER NOT NULL CONSTRAINT "PK__Exchange__657CFA4C02667D37" PRIMARY KEY AUTOINCREMENT,
+    "AgeLimitForRetention" INTEGER NOT NULL,
+    "ItemID" INTEGER NOT NULL,
+    "RetentionAction" INTEGER NOT NULL,
+    "TagName" TEXT COLLATE NOCASE NULL,
+    "TagType" INTEGER NOT NULL
+);
+
+INSERT INTO "ef_temp_ExchangeRetentionPolicyTags" ("TagID", "AgeLimitForRetention", "ItemID", "RetentionAction", "TagName", "TagType")
+SELECT "TagID", "AgeLimitForRetention", "ItemID", "RetentionAction", "TagName", "TagType"
+FROM "ExchangeRetentionPolicyTags";
+
+CREATE TABLE "ef_temp_ExchangeOrganizationSsFolders" (
+    "Id" INTEGER NOT NULL CONSTRAINT "PK__Exchange__3214EC072DDBA072" PRIMARY KEY AUTOINCREMENT,
+    "ItemId" INTEGER NOT NULL,
+    "StorageSpaceFolderId" INTEGER NOT NULL,
+    "Type" TEXT COLLATE NOCASE NOT NULL,
+    CONSTRAINT "FK_ExchangeOrganizationSsFolders_ItemId" FOREIGN KEY ("ItemId") REFERENCES "ExchangeOrganizations" ("ItemID") ON DELETE CASCADE,
+    CONSTRAINT "FK_ExchangeOrganizationSsFolders_StorageSpaceFolderId" FOREIGN KEY ("StorageSpaceFolderId") REFERENCES "StorageSpaceFolders" ("Id") ON DELETE CASCADE
+);
+
+INSERT INTO "ef_temp_ExchangeOrganizationSsFolders" ("Id", "ItemId", "StorageSpaceFolderId", "Type")
+SELECT "Id", "ItemId", "StorageSpaceFolderId", "Type"
+FROM "ExchangeOrganizationSsFolders";
+
+CREATE TABLE "ef_temp_ExchangeOrganizationSettings" (
+    "ItemId" INTEGER NOT NULL,
+    "SettingsName" TEXT COLLATE NOCASE NOT NULL,
+    "Xml" TEXT NOT NULL,
+    CONSTRAINT "PK_ExchangeOrganizationSettings" PRIMARY KEY ("ItemId", "SettingsName"),
+    CONSTRAINT "FK_ExchangeOrganizationSettings_ExchangeOrganizations_ItemId" FOREIGN KEY ("ItemId") REFERENCES "ExchangeOrganizations" ("ItemID") ON DELETE CASCADE
+);
+
+INSERT INTO "ef_temp_ExchangeOrganizationSettings" ("ItemId", "SettingsName", "Xml")
+SELECT "ItemId", "SettingsName", "Xml"
+FROM "ExchangeOrganizationSettings";
+
+CREATE TABLE "ef_temp_ExchangeOrganizations" (
+    "ItemID" INTEGER NOT NULL CONSTRAINT "PK_ExchangeOrganizations" PRIMARY KEY,
+    "ExchangeMailboxPlanID" INTEGER NULL,
+    "LyncUserPlanID" INTEGER NULL,
+    "OrganizationID" TEXT COLLATE NOCASE NOT NULL,
+    "SfBUserPlanID" INTEGER NULL,
+    CONSTRAINT "FK_ExchangeOrganizations_ServiceItems" FOREIGN KEY ("ItemID") REFERENCES "ServiceItems" ("ItemID") ON DELETE CASCADE
+);
+
+INSERT INTO "ef_temp_ExchangeOrganizations" ("ItemID", "ExchangeMailboxPlanID", "LyncUserPlanID", "OrganizationID", "SfBUserPlanID")
+SELECT "ItemID", "ExchangeMailboxPlanID", "LyncUserPlanID", "OrganizationID", "SfBUserPlanID"
+FROM "ExchangeOrganizations";
+
+CREATE TABLE "ef_temp_ExchangeMailboxPlans" (
+    "MailboxPlanId" INTEGER NOT NULL CONSTRAINT "PK_ExchangeMailboxPlans" PRIMARY KEY AUTOINCREMENT,
+    "AllowLitigationHold" INTEGER NULL,
+    "ArchiveSizeMB" INTEGER NULL,
+    "ArchiveWarningPct" INTEGER NULL,
+    "Archiving" INTEGER NULL,
+    "EnableActiveSync" INTEGER NOT NULL,
+    "EnableArchiving" INTEGER NULL,
+    "EnableAutoReply" INTEGER NULL,
+    "EnableForceArchiveDeletion" INTEGER NULL,
+    "EnableIMAP" INTEGER NOT NULL,
+    "EnableMAPI" INTEGER NOT NULL,
+    "EnableOWA" INTEGER NOT NULL,
+    "EnablePOP" INTEGER NOT NULL,
+    "HideFromAddressBook" INTEGER NOT NULL,
+    "IsDefault" INTEGER NOT NULL,
+    "IsForJournaling" INTEGER NULL,
+    "IssueWarningPct" INTEGER NOT NULL,
+    "ItemID" INTEGER NOT NULL,
+    "KeepDeletedItemsDays" INTEGER NOT NULL,
+    "LitigationHoldMsg" TEXT NULL,
+    "LitigationHoldUrl" TEXT NULL,
+    "MailboxPlan" TEXT COLLATE NOCASE NOT NULL,
+    "MailboxPlanType" INTEGER NULL,
+    "MailboxSizeMB" INTEGER NOT NULL,
+    "MaxReceiveMessageSizeKB" INTEGER NOT NULL,
+    "MaxRecipients" INTEGER NOT NULL,
+    "MaxSendMessageSizeKB" INTEGER NOT NULL,
+    "ProhibitSendPct" INTEGER NOT NULL,
+    "ProhibitSendReceivePct" INTEGER NOT NULL,
+    "RecoverableItemsSpace" INTEGER NULL,
+    "RecoverableItemsWarningPct" INTEGER NULL,
+    CONSTRAINT "FK_ExchangeMailboxPlans_ExchangeOrganizations" FOREIGN KEY ("ItemID") REFERENCES "ExchangeOrganizations" ("ItemID") ON DELETE CASCADE
+);
+
+INSERT INTO "ef_temp_ExchangeMailboxPlans" ("MailboxPlanId", "AllowLitigationHold", "ArchiveSizeMB", "ArchiveWarningPct", "Archiving", "EnableActiveSync", "EnableArchiving", "EnableAutoReply", "EnableForceArchiveDeletion", "EnableIMAP", "EnableMAPI", "EnableOWA", "EnablePOP", "HideFromAddressBook", "IsDefault", "IsForJournaling", "IssueWarningPct", "ItemID", "KeepDeletedItemsDays", "LitigationHoldMsg", "LitigationHoldUrl", "MailboxPlan", "MailboxPlanType", "MailboxSizeMB", "MaxReceiveMessageSizeKB", "MaxRecipients", "MaxSendMessageSizeKB", "ProhibitSendPct", "ProhibitSendReceivePct", "RecoverableItemsSpace", "RecoverableItemsWarningPct")
+SELECT "MailboxPlanId", "AllowLitigationHold", "ArchiveSizeMB", "ArchiveWarningPct", "Archiving", "EnableActiveSync", "EnableArchiving", "EnableAutoReply", "EnableForceArchiveDeletion", "EnableIMAP", "EnableMAPI", "EnableOWA", "EnablePOP", "HideFromAddressBook", "IsDefault", "IsForJournaling", "IssueWarningPct", "ItemID", "KeepDeletedItemsDays", "LitigationHoldMsg", "LitigationHoldUrl", "MailboxPlan", "MailboxPlanType", "MailboxSizeMB", "MaxReceiveMessageSizeKB", "MaxRecipients", "MaxSendMessageSizeKB", "ProhibitSendPct", "ProhibitSendReceivePct", "RecoverableItemsSpace", "RecoverableItemsWarningPct"
+FROM "ExchangeMailboxPlans";
+
+CREATE TABLE "ef_temp_ExchangeDisclaimers" (
+    "ExchangeDisclaimerId" INTEGER NOT NULL CONSTRAINT "PK_ExchangeDisclaimers" PRIMARY KEY AUTOINCREMENT,
+    "DisclaimerName" TEXT COLLATE NOCASE NOT NULL,
+    "DisclaimerText" TEXT NULL,
+    "ItemID" INTEGER NOT NULL
+);
+
+INSERT INTO "ef_temp_ExchangeDisclaimers" ("ExchangeDisclaimerId", "DisclaimerName", "DisclaimerText", "ItemID")
+SELECT "ExchangeDisclaimerId", "DisclaimerName", "DisclaimerText", "ItemID"
+FROM "ExchangeDisclaimers";
+
+CREATE TABLE "ef_temp_EnterpriseFolders" (
+    "EnterpriseFolderID" INTEGER NOT NULL CONSTRAINT "PK_EnterpriseFolders" PRIMARY KEY AUTOINCREMENT,
+    "Domain" TEXT COLLATE NOCASE NULL,
+    "FolderName" TEXT NOT NULL,
+    "FolderQuota" INTEGER NOT NULL,
+    "HomeFolder" TEXT NULL,
+    "ItemID" INTEGER NOT NULL,
+    "LocationDrive" TEXT NULL,
+    "StorageSpaceFolderId" INTEGER NULL,
+    CONSTRAINT "FK_EnterpriseFolders_StorageSpaceFolderId" FOREIGN KEY ("StorageSpaceFolderId") REFERENCES "StorageSpaceFolders" ("Id") ON DELETE CASCADE
+);
+
+INSERT INTO "ef_temp_EnterpriseFolders" ("EnterpriseFolderID", "Domain", "FolderName", "FolderQuota", "HomeFolder", "ItemID", "LocationDrive", "StorageSpaceFolderId")
+SELECT "EnterpriseFolderID", "Domain", "FolderName", "FolderQuota", "HomeFolder", "ItemID", "LocationDrive", "StorageSpaceFolderId"
+FROM "EnterpriseFolders";
+
+CREATE TABLE "ef_temp_Domains" (
+    "DomainID" INTEGER NOT NULL CONSTRAINT "PK_Domains" PRIMARY KEY AUTOINCREMENT,
+    "CreationDate" TEXT NULL,
+    "DomainItemId" INTEGER NULL,
+    "DomainName" TEXT COLLATE NOCASE NOT NULL,
+    "ExpirationDate" TEXT NULL,
+    "HostingAllowed" INTEGER NOT NULL,
+    "IsDomainPointer" INTEGER NOT NULL,
+    "IsPreviewDomain" INTEGER NOT NULL,
+    "IsSubDomain" INTEGER NOT NULL,
+    "LastUpdateDate" TEXT NULL,
+    "MailDomainID" INTEGER NULL,
+    "PackageID" INTEGER NOT NULL,
+    "RegistrarName" TEXT NULL,
+    "WebSiteID" INTEGER NULL,
+    "ZoneItemID" INTEGER NULL,
+    CONSTRAINT "FK_Domains_Packages" FOREIGN KEY ("PackageID") REFERENCES "Packages" ("PackageID") ON DELETE CASCADE,
+    CONSTRAINT "FK_Domains_ServiceItems_MailDomain" FOREIGN KEY ("MailDomainID") REFERENCES "ServiceItems" ("ItemID"),
+    CONSTRAINT "FK_Domains_ServiceItems_WebSite" FOREIGN KEY ("WebSiteID") REFERENCES "ServiceItems" ("ItemID"),
+    CONSTRAINT "FK_Domains_ServiceItems_ZoneItem" FOREIGN KEY ("ZoneItemID") REFERENCES "ServiceItems" ("ItemID")
+);
+
+INSERT INTO "ef_temp_Domains" ("DomainID", "CreationDate", "DomainItemId", "DomainName", "ExpirationDate", "HostingAllowed", "IsDomainPointer", "IsPreviewDomain", "IsSubDomain", "LastUpdateDate", "MailDomainID", "PackageID", "RegistrarName", "WebSiteID", "ZoneItemID")
+SELECT "DomainID", "CreationDate", "DomainItemId", "DomainName", "ExpirationDate", "HostingAllowed", "IsDomainPointer", "IsPreviewDomain", "IsSubDomain", "LastUpdateDate", "MailDomainID", "PackageID", "RegistrarName", "WebSiteID", "ZoneItemID"
+FROM "Domains";
+
+CREATE TABLE "ef_temp_DmzIPAddresses" (
+    "DmzAddressID" INTEGER NOT NULL CONSTRAINT "PK_DmzIPAddresses" PRIMARY KEY AUTOINCREMENT,
+    "IPAddress" TEXT COLLATE NOCASE NOT NULL,
+    "IsPrimary" INTEGER NOT NULL,
+    "ItemID" INTEGER NOT NULL,
+    CONSTRAINT "FK_DmzIPAddresses_ServiceItems" FOREIGN KEY ("ItemID") REFERENCES "ServiceItems" ("ItemID") ON DELETE CASCADE
+);
+
+INSERT INTO "ef_temp_DmzIPAddresses" ("DmzAddressID", "IPAddress", "IsPrimary", "ItemID")
+SELECT "DmzAddressID", "IPAddress", "IsPrimary", "ItemID"
+FROM "DmzIPAddresses";
+
+CREATE TABLE "ef_temp_Comments" (
+    "CommentID" INTEGER NOT NULL CONSTRAINT "PK_Comments" PRIMARY KEY AUTOINCREMENT,
+    "CommentText" TEXT NULL,
+    "CreatedDate" TEXT NOT NULL,
+    "ItemID" INTEGER NOT NULL,
+    "ItemTypeID" TEXT COLLATE NOCASE NOT NULL,
+    "SeverityID" INTEGER NULL,
+    "UserID" INTEGER NOT NULL,
+    CONSTRAINT "FK_Comments_Users" FOREIGN KEY ("UserID") REFERENCES "Users" ("UserID") ON DELETE CASCADE
+);
+
+INSERT INTO "ef_temp_Comments" ("CommentID", "CommentText", "CreatedDate", "ItemID", "ItemTypeID", "SeverityID", "UserID")
+SELECT "CommentID", "CommentText", "CreatedDate", "ItemID", "ItemTypeID", "SeverityID", "UserID"
+FROM "Comments";
+
+CREATE TABLE "ef_temp_BackgroundTaskParameters" (
+    "ParameterID" INTEGER NOT NULL CONSTRAINT "PK__Backgrou__F80C629777BF580B" PRIMARY KEY AUTOINCREMENT,
+    "Name" TEXT COLLATE NOCASE NULL,
+    "SerializerValue" TEXT NULL,
+    "TaskID" INTEGER NOT NULL,
+    "TypeName" TEXT NULL,
+    CONSTRAINT "FK__Backgroun__TaskI__7AA72534" FOREIGN KEY ("TaskID") REFERENCES "BackgroundTasks" ("ID")
+);
+
+INSERT INTO "ef_temp_BackgroundTaskParameters" ("ParameterID", "Name", "SerializerValue", "TaskID", "TypeName")
+SELECT "ParameterID", "Name", "SerializerValue", "TaskID", "TypeName"
+FROM "BackgroundTaskParameters";
+
+CREATE TABLE "ef_temp_AuditLog" (
+    "RecordID" TEXT COLLATE NOCASE NOT NULL CONSTRAINT "PK_Log" PRIMARY KEY,
+    "ExecutionLog" TEXT NULL,
+    "FinishDate" TEXT NOT NULL,
+    "ItemID" INTEGER NULL,
+    "ItemName" TEXT NULL,
+    "PackageID" INTEGER NULL,
+    "SeverityID" INTEGER NOT NULL,
+    "SourceName" TEXT NOT NULL,
+    "StartDate" TEXT NOT NULL,
+    "TaskName" TEXT NOT NULL,
+    "UserID" INTEGER NULL,
+    "Username" TEXT NULL
+);
+
+INSERT INTO "ef_temp_AuditLog" ("RecordID", "ExecutionLog", "FinishDate", "ItemID", "ItemName", "PackageID", "SeverityID", "SourceName", "StartDate", "TaskName", "UserID", "Username")
+SELECT "RecordID", "ExecutionLog", "FinishDate", "ItemID", "ItemName", "PackageID", "SeverityID", "SourceName", "StartDate", "TaskName", "UserID", "Username"
+FROM "AuditLog";
+
+CREATE TABLE "ef_temp_AdditionalGroups" (
+    "ID" INTEGER NOT NULL CONSTRAINT "PK__Addition__3214EC27E665DDE2" PRIMARY KEY AUTOINCREMENT,
+    "GroupName" TEXT COLLATE NOCASE NULL,
+    "UserID" INTEGER NOT NULL
+);
+
+INSERT INTO "ef_temp_AdditionalGroups" ("ID", "GroupName", "UserID")
+SELECT "ID", "GroupName", "UserID"
+FROM "AdditionalGroups";
+
+COMMIT;
+
+PRAGMA foreign_keys = 0;
+
+BEGIN TRANSACTION;
+
+DROP TABLE "UserSettings";
+
+ALTER TABLE "ef_temp_UserSettings" RENAME TO "UserSettings";
+
+DROP TABLE "ThemeSettings";
+
+ALTER TABLE "ef_temp_ThemeSettings" RENAME TO "ThemeSettings";
+
+DROP TABLE "SystemSettings";
+
+ALTER TABLE "ef_temp_SystemSettings" RENAME TO "SystemSettings";
+
+DROP TABLE "SfBUserPlans";
+
+ALTER TABLE "ef_temp_SfBUserPlans" RENAME TO "SfBUserPlans";
+
+DROP TABLE "ServiceProperties";
+
+ALTER TABLE "ef_temp_ServiceProperties" RENAME TO "ServiceProperties";
+
+DROP TABLE "ServiceItemProperties";
+
+ALTER TABLE "ef_temp_ServiceItemProperties" RENAME TO "ServiceItemProperties";
+
+DROP TABLE "ServiceDefaultProperties";
+
+ALTER TABLE "ef_temp_ServiceDefaultProperties" RENAME TO "ServiceDefaultProperties";
+
+DROP TABLE "Servers";
+
+ALTER TABLE "ef_temp_Servers" RENAME TO "Servers";
+
+DROP TABLE "ScheduleTaskViewConfiguration";
+
+ALTER TABLE "ef_temp_ScheduleTaskViewConfiguration" RENAME TO "ScheduleTaskViewConfiguration";
+
+DROP TABLE "ScheduleTaskParameters";
+
+ALTER TABLE "ef_temp_ScheduleTaskParameters" RENAME TO "ScheduleTaskParameters";
+
+DROP TABLE "ScheduleParameters";
+
+ALTER TABLE "ef_temp_ScheduleParameters" RENAME TO "ScheduleParameters";
+
+DROP TABLE "Schedule";
+
+ALTER TABLE "ef_temp_Schedule" RENAME TO "Schedule";
+
+DROP TABLE "ResourceGroups";
+
+ALTER TABLE "ef_temp_ResourceGroups" RENAME TO "ResourceGroups";
+
+DROP TABLE "ResourceGroupDnsRecords";
+
+ALTER TABLE "ef_temp_ResourceGroupDnsRecords" RENAME TO "ResourceGroupDnsRecords";
+
+DROP TABLE "RDSServerSettings";
+
+ALTER TABLE "ef_temp_RDSServerSettings" RENAME TO "RDSServerSettings";
+
+DROP TABLE "RDSCollections";
+
+ALTER TABLE "ef_temp_RDSCollections" RENAME TO "RDSCollections";
+
+DROP TABLE "Quotas";
+
+ALTER TABLE "ef_temp_Quotas" RENAME TO "Quotas";
+
+DROP TABLE "PrivateIPAddresses";
+
+ALTER TABLE "ef_temp_PrivateIPAddresses" RENAME TO "PrivateIPAddresses";
+
+DROP TABLE "PackageSettings";
+
+ALTER TABLE "ef_temp_PackageSettings" RENAME TO "PackageSettings";
+
+DROP TABLE "OCSUsers";
+
+ALTER TABLE "ef_temp_OCSUsers" RENAME TO "OCSUsers";
+
+DROP TABLE "LyncUsers";
+
+ALTER TABLE "ef_temp_LyncUsers" RENAME TO "LyncUsers";
+
+DROP TABLE "LyncUserPlans";
+
+ALTER TABLE "ef_temp_LyncUserPlans" RENAME TO "LyncUserPlans";
+
+DROP TABLE "IPAddresses";
+
+ALTER TABLE "ef_temp_IPAddresses" RENAME TO "IPAddresses";
+
+DROP TABLE "HostingPlans";
+
+ALTER TABLE "ef_temp_HostingPlans" RENAME TO "HostingPlans";
+
+DROP TABLE "GlobalDnsRecords";
+
+ALTER TABLE "ef_temp_GlobalDnsRecords" RENAME TO "GlobalDnsRecords";
+
+DROP TABLE "ExchangeRetentionPolicyTags";
+
+ALTER TABLE "ef_temp_ExchangeRetentionPolicyTags" RENAME TO "ExchangeRetentionPolicyTags";
+
+DROP TABLE "ExchangeOrganizationSsFolders";
+
+ALTER TABLE "ef_temp_ExchangeOrganizationSsFolders" RENAME TO "ExchangeOrganizationSsFolders";
+
+DROP TABLE "ExchangeOrganizationSettings";
+
+ALTER TABLE "ef_temp_ExchangeOrganizationSettings" RENAME TO "ExchangeOrganizationSettings";
+
+DROP TABLE "ExchangeOrganizations";
+
+ALTER TABLE "ef_temp_ExchangeOrganizations" RENAME TO "ExchangeOrganizations";
+
+DROP TABLE "ExchangeMailboxPlans";
+
+ALTER TABLE "ef_temp_ExchangeMailboxPlans" RENAME TO "ExchangeMailboxPlans";
+
+DROP TABLE "ExchangeDisclaimers";
+
+ALTER TABLE "ef_temp_ExchangeDisclaimers" RENAME TO "ExchangeDisclaimers";
+
+DROP TABLE "EnterpriseFolders";
+
+ALTER TABLE "ef_temp_EnterpriseFolders" RENAME TO "EnterpriseFolders";
+
+DROP TABLE "Domains";
+
+ALTER TABLE "ef_temp_Domains" RENAME TO "Domains";
+
+DROP TABLE "DmzIPAddresses";
+
+ALTER TABLE "ef_temp_DmzIPAddresses" RENAME TO "DmzIPAddresses";
+
+DROP TABLE "Comments";
+
+ALTER TABLE "ef_temp_Comments" RENAME TO "Comments";
+
+DROP TABLE "BackgroundTaskParameters";
+
+ALTER TABLE "ef_temp_BackgroundTaskParameters" RENAME TO "BackgroundTaskParameters";
+
+DROP TABLE "AuditLog";
+
+ALTER TABLE "ef_temp_AuditLog" RENAME TO "AuditLog";
+
+DROP TABLE "AdditionalGroups";
+
+ALTER TABLE "ef_temp_AdditionalGroups" RENAME TO "AdditionalGroups";
+
+COMMIT;
+
+PRAGMA foreign_keys = 1;
+
+BEGIN TRANSACTION;
+
+CREATE INDEX "ServersIdx_PrimaryGroupID" ON "Servers" ("PrimaryGroupID");
+
+CREATE INDEX "IX_ScheduleTaskViewConfiguration_TaskID" ON "ScheduleTaskViewConfiguration" ("TaskID");
+
+CREATE INDEX "ScheduleIdx_PackageID" ON "Schedule" ("PackageID");
+
+CREATE INDEX "ScheduleIdx_TaskID" ON "Schedule" ("TaskID");
+
+CREATE INDEX "ResourceGroupDnsRecordsIdx_GroupID" ON "ResourceGroupDnsRecords" ("GroupID");
+
+CREATE INDEX "QuotasIdx_GroupID" ON "Quotas" ("GroupID");
+
+CREATE INDEX "QuotasIdx_ItemTypeID" ON "Quotas" ("ItemTypeID");
+
+CREATE INDEX "PrivateIPAddressesIdx_ItemID" ON "PrivateIPAddresses" ("ItemID");
+
+CREATE INDEX "LyncUsersIdx_LyncUserPlanID" ON "LyncUsers" ("LyncUserPlanID");
+
+CREATE UNIQUE INDEX "IX_LyncUserPlans" ON "LyncUserPlans" ("LyncUserPlanId");
+
+CREATE INDEX "LyncUserPlansIdx_ItemID" ON "LyncUserPlans" ("ItemID");
+
+CREATE INDEX "IPAddressesIdx_ServerID" ON "IPAddresses" ("ServerID");
+
+CREATE INDEX "HostingPlansIdx_PackageID" ON "HostingPlans" ("PackageID");
+
+CREATE INDEX "HostingPlansIdx_ServerID" ON "HostingPlans" ("ServerID");
+
+CREATE INDEX "HostingPlansIdx_UserID" ON "HostingPlans" ("UserID");
+
+CREATE INDEX "GlobalDnsRecordsIdx_IPAddressID" ON "GlobalDnsRecords" ("IPAddressID");
+
+CREATE INDEX "GlobalDnsRecordsIdx_PackageID" ON "GlobalDnsRecords" ("PackageID");
+
+CREATE INDEX "GlobalDnsRecordsIdx_ServerID" ON "GlobalDnsRecords" ("ServerID");
+
+CREATE INDEX "GlobalDnsRecordsIdx_ServiceID" ON "GlobalDnsRecords" ("ServiceID");
+
+CREATE INDEX "ExchangeOrganizationSsFoldersIdx_ItemId" ON "ExchangeOrganizationSsFolders" ("ItemId");
+
+CREATE INDEX "ExchangeOrganizationSsFoldersIdx_StorageSpaceFolderId" ON "ExchangeOrganizationSsFolders" ("StorageSpaceFolderId");
+
+CREATE INDEX "ExchangeOrganizationSettingsIdx_ItemId" ON "ExchangeOrganizationSettings" ("ItemId");
+
+CREATE UNIQUE INDEX "IX_ExchangeOrganizations_UniqueOrg" ON "ExchangeOrganizations" ("OrganizationID");
+
+CREATE INDEX "ExchangeMailboxPlansIdx_ItemID" ON "ExchangeMailboxPlans" ("ItemID");
+
+CREATE UNIQUE INDEX "IX_ExchangeMailboxPlans" ON "ExchangeMailboxPlans" ("MailboxPlanId");
+
+CREATE INDEX "EnterpriseFoldersIdx_StorageSpaceFolderId" ON "EnterpriseFolders" ("StorageSpaceFolderId");
+
+CREATE INDEX "DomainsIdx_MailDomainID" ON "Domains" ("MailDomainID");
+
+CREATE INDEX "DomainsIdx_PackageID" ON "Domains" ("PackageID");
+
+CREATE INDEX "DomainsIdx_WebSiteID" ON "Domains" ("WebSiteID");
+
+CREATE INDEX "DomainsIdx_ZoneItemID" ON "Domains" ("ZoneItemID");
+
+CREATE INDEX "DmzIPAddressesIdx_ItemID" ON "DmzIPAddresses" ("ItemID");
+
+CREATE INDEX "CommentsIdx_UserID" ON "Comments" ("UserID");
+
+CREATE INDEX "BackgroundTaskParametersIdx_TaskID" ON "BackgroundTaskParameters" ("TaskID");
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20241005210532_SQLite_NOCASE', '8.0.8');
+
+COMMIT;
+
+BEGIN TRANSACTION;
+
+INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+VALUES (307, NULL, 'MySQL Server 8.3', 'MySQL', 90, 'MySQL', 'SolidCP.Providers.Database.MySqlServer83, SolidCP.Providers.Database.MySQL');
+SELECT changes();
+
+INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+VALUES (308, NULL, 'MySQL Server 8.4', 'MySQL', 90, 'MySQL', 'SolidCP.Providers.Database.MySqlServer84, SolidCP.Providers.Database.MySQL');
+SELECT changes();
+
+INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+VALUES (320, NULL, 'MySQL Server 9.0', 'MySQL', 90, 'MySQL', 'SolidCP.Providers.Database.MySqlServer90, SolidCP.Providers.Database.MySQL');
+SELECT changes();
+
+
+INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+VALUES (125, 90, NULL, NULL, NULL, 'Database Truncate', 'MySQL9.Truncate', 6, 1, 0);
+SELECT changes();
+
+
+INSERT INTO "ResourceGroups" ("GroupID", "GroupController", "GroupName", "GroupOrder", "ShowGroup")
+VALUES (91, 'SolidCP.EnterpriseServer.DatabaseServerController', 'MySQL9', 12, 1);
+SELECT changes();
+
+
+INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+VALUES (120, 91, NULL, 75, NULL, 'Databases', 'MySQL9.Databases', 1, 2, 0);
+SELECT changes();
+
+INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+VALUES (121, 91, NULL, 76, NULL, 'Users', 'MySQL9.Users', 2, 2, 0);
+SELECT changes();
+
+INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+VALUES (122, 91, NULL, NULL, NULL, 'Database Backups', 'MySQL9.Backup', 4, 1, 0);
+SELECT changes();
+
+INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+VALUES (123, 91, NULL, NULL, NULL, 'Max Database Size', 'MySQL9.MaxDatabaseSize', 3, 3, 0);
+SELECT changes();
+
+INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+VALUES (124, 91, NULL, NULL, NULL, 'Database Restores', 'MySQL9.Restore', 5, 1, 0);
+SELECT changes();
+
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('ExternalAddress', 307, 'localhost');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InstallFolder', 307, '%PROGRAMFILES%\MySQL\MySQL Server 8.0');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InternalAddress', 307, 'localhost,3306');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootLogin', 307, 'root');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootPassword', 307, '');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('sslmode', 307, 'True');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('ExternalAddress', 308, 'localhost');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InstallFolder', 308, '%PROGRAMFILES%\MySQL\MySQL Server 8.0');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InternalAddress', 308, 'localhost,3306');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootLogin', 308, 'root');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootPassword', 308, '');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('sslmode', 308, 'True');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('ExternalAddress', 320, 'localhost');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InstallFolder', 320, '%PROGRAMFILES%\MySQL\MySQL Server 9.0');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InternalAddress', 320, 'localhost,3306');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootLogin', 320, 'root');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootPassword', 320, '');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('sslmode', 320, 'True');
+SELECT changes();
+
+
+INSERT INTO "ServiceItemTypes" ("ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Importable", "Searchable", "Suspendable", "TypeName", "TypeOrder")
+VALUES (90, 1, 0, 1, 'MySQL9Database', 1, 91, 1, 1, 0, 'SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base', 20);
+SELECT changes();
+
+INSERT INTO "ServiceItemTypes" ("ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Importable", "Searchable", "Suspendable", "TypeName", "TypeOrder")
+VALUES (91, 1, 0, 0, 'MySQL9User', 1, 91, 1, 1, 0, 'SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base', 21);
+SELECT changes();
+
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20241006062900_MySql9AndMaraiDB11', '8.0.8');
 
 COMMIT;
 

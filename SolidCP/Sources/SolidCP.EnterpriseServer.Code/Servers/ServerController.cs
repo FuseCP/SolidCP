@@ -3231,6 +3231,7 @@ namespace SolidCP.EnterpriseServer
 								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MySql4, domain, "");
 								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MySql5, domain, "");
 								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MySql8, domain, "");
+								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MySql9, domain, "");
 								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MariaDB, domain, "");
 								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Statistics, domain, "");
 								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.VPS, domain, "");

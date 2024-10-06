@@ -17,6 +17,7 @@ public partial class ResourceGroupConfiguration : EntityTypeConfiguration<Resour
 {
 	public override void Configure()
 	{
+        if (IsCore && IsSqlite) Property(e => e.GroupName).HasColumnType("TEXT COLLATE NOCASE");
 
 #if NetCore
         Property(e => e.GroupId).ValueGeneratedNever();
@@ -62,7 +63,8 @@ public partial class ResourceGroupConfiguration : EntityTypeConfiguration<Resour
             new ResourceGroup() { GroupId = 73, GroupController = "SolidCP.EnterpriseServer.HostedSharePointServerEntController", GroupName = "Sharepoint Enterprise Server", GroupOrder = 15, ShowGroup = true },
             new ResourceGroup() { GroupId = 74, GroupController = "SolidCP.EnterpriseServer.DatabaseServerController", GroupName = "MsSQL2019", GroupOrder = 10, ShowGroup = true },
             new ResourceGroup() { GroupId = 75, GroupController = "SolidCP.EnterpriseServer.DatabaseServerController", GroupName = "MsSQL2022", GroupOrder = 10, ShowGroup = true },
-            new ResourceGroup() { GroupId = 90, GroupController = "SolidCP.EnterpriseServer.DatabaseServerController", GroupName = "MySQL8", GroupOrder = 12, ShowGroup = true },
+			new ResourceGroup() { GroupId = 90, GroupController = "SolidCP.EnterpriseServer.DatabaseServerController", GroupName = "MySQL8", GroupOrder = 12, ShowGroup = true },
+			new ResourceGroup() { GroupId = 91, GroupController = "SolidCP.EnterpriseServer.DatabaseServerController", GroupName = "MySQL9", GroupOrder = 12, ShowGroup = true },
             new ResourceGroup() { GroupId = 167, GroupName = "Proxmox", GroupOrder = 20, ShowGroup = true }
         });
         #endregion

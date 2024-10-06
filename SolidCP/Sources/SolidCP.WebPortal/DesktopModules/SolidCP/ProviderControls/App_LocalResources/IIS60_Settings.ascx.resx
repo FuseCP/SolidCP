@@ -199,7 +199,7 @@
     <value>Shared SSL Web Sites:</value>
   </data>
   <data name="lblWebAppGallery.Text" xml:space="preserve">
-    <value>Web Appication Gallery</value>
+    <value>Web Application Gallery</value>
   </data>
   <data name="lblWebFarms.Text" xml:space="preserve">
     <value>Web Farms Support:</value>

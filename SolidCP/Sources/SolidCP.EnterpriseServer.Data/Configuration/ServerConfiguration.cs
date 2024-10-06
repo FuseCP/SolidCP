@@ -21,6 +21,7 @@ public partial class ServerConfiguration: EntityTypeConfiguration<Server>
 		else if (IsCore && (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql))
 		{
 			Property(e => e.Comments).HasColumnType("TEXT");
+			if (IsSqlite) Property(e => e.ADAuthenticationType).HasColumnType("TEXT COLLATE NOCASE");
 		}
 
 #if NetCore

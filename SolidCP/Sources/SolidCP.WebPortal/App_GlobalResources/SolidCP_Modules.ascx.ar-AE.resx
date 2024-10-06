@@ -423,6 +423,12 @@
   <data name="ModuleTitle.MySql8Users" xml:space="preserve">
     <value>مستخدمو MySQL 8</value>
   </data>
+  <data name="ModuleTitle.MySql9Databases" xml:space="preserve">
+    <value>قواعد بيانات MySQL 9</value>
+  </data>
+  <data name="ModuleTitle.MySql9Users" xml:space="preserve">
+    <value>مستخدمو MySQL 9</value>
+  </data>
   <data name="ModuleTitle.MariaDBDatabases" xml:space="preserve">
     <value>قواعد بيانات MariaDB</value>
   </data>

@@ -2013,6 +2013,15 @@
   <data name="Quota.MySQL8.MaxDatabaseSize" xml:space="preserve">
     <value>الحد الأقصى لحجم قاعدة البيانات ، ميجا بايت</value>
   </data>
+  <data name="Quota.MySQL9.Backup" xml:space="preserve">
+    <value>النسخ الاحتياطي لقاعدة البيانات</value>
+  </data>
+  <data name="Quota.MySQL9.Databases" xml:space="preserve">
+    <value>قواعد بيانات</value>
+  </data>
+  <data name="Quota.MySQL9.MaxDatabaseSize" xml:space="preserve">
+    <value>الحد الأقصى لحجم قاعدة البيانات ، ميجا بايت</value>
+  </data>
   <data name="Quota.MySQL4.MaxDatabaseSize" xml:space="preserve">
     <value>الحد الأقصى لحجم قاعدة البيانات ، ميجا بايت</value>
   </data>
@@ -2020,6 +2029,9 @@
     <value>استعادة قاعدة البيانات</value>
   </data>
   <data name="Quota.MySQL8.Restore" xml:space="preserve">
+    <value>استعادة قاعدة البيانات</value>
+  </data>
+  <data name="Quota.MySQL9.Restore" xml:space="preserve">
     <value>استعادة قاعدة البيانات</value>
   </data>
   <data name="Quota.MySQL4.Truncate" xml:space="preserve">
@@ -2038,6 +2050,12 @@
     <value>اقتطاع قاعدة البيانات</value>
   </data>
   <data name="Quota.MySQL8.Users" xml:space="preserve">
+    <value>المستخدمون</value>
+  </data>
+  <data name="Quota.MySQL9.Truncate" xml:space="preserve">
+    <value>اقتطاع قاعدة البيانات</value>
+  </data>
+  <data name="Quota.MySQL9.Users" xml:space="preserve">
     <value>المستخدمون</value>
   </data>
   <data name="Quota.MariaDB.Backup" xml:space="preserve">
@@ -2067,6 +2085,9 @@
   <data name="ReportResourceGroup.MySQL8" xml:space="preserve">
     <value>MySQL 8</value>
   </data>
+  <data name="ReportResourceGroup.MySQL9" xml:space="preserve">
+    <value>MySQL 9</value>
+  </data>
   <data name="ResourceGroup.MsSQL2005" xml:space="preserve">
     <value>خادم SQL 2005</value>
   </data>
@@ -2084,6 +2105,9 @@
   </data>
   <data name="ResourceGroup.MySQL8" xml:space="preserve">
     <value>MySQL 8</value>
+  </data>
+  <data name="ResourceGroup.MySQL9" xml:space="preserve">
+    <value>MySQL 9</value>
   </data>
   <data name="ResourceGroup.MsSQL2012" xml:space="preserve">
     <value>خادم SQL 2012</value>
@@ -2348,6 +2372,12 @@
   </data>
   <data name="ServiceItemType.MySQL8User" xml:space="preserve">
     <value>مستخدم MySQL 8</value>
+  </data>
+  <data name="ServiceItemType.MySQL9Database" xml:space="preserve">
+    <value>قاعدة بيانات MySQL 9</value>
+  </data>
+  <data name="ServiceItemType.MySQL9User" xml:space="preserve">
+    <value>مستخدم MySQL 9</value>
   </data>
   <data name="ServiceItemType.MariaDBDatabase" xml:space="preserve">
     <value>قاعدة بيانات MariaDB</value>

@@ -256,6 +256,7 @@ namespace SolidCP.Portal
 																				 (resourceGroup.GroupName == ResourceGroups.MySql4) |
 																				 (resourceGroup.GroupName == ResourceGroups.MySql5) |
 																				 (resourceGroup.GroupName == ResourceGroups.MySql8) |
+																				 (resourceGroup.GroupName == ResourceGroups.MySql9) |
 																				 (resourceGroup.GroupName == ResourceGroups.MariaDB) |
 																				 (resourceGroup.GroupName == ResourceGroups.Statistics) |
 																				 (resourceGroup.GroupName == ResourceGroups.VPS) |

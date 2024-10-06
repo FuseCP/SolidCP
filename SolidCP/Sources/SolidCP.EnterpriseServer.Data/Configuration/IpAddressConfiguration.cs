@@ -24,8 +24,14 @@ public partial class IpAddressConfiguration: EntityTypeConfiguration<IpAddress>
 		else if (IsCore && (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql))
 		{
             Property(e => e.Comments).HasColumnType("TEXT");
-        }
-
+            if (IsCore && IsSqlite)
+            {
+                Property(e => e.ExternalIp).HasColumnType("TEXT COLLATE NOCASE");
+				Property(e => e.InternalIp).HasColumnType("TEXT COLLATE NOCASE");
+				Property(e => e.SubnetMask).HasColumnType("TEXT COLLATE NOCASE");
+				Property(e => e.DefaultGateway).HasColumnType("TEXT COLLATE NOCASE");
+			}
+		}
 
 #if NetCore
         HasOne(d => d.Server).WithMany(p => p.IpAddresses)

@@ -126,6 +126,9 @@ public partial class ProviderConfiguration: EntityTypeConfiguration<Provider>
 			new Provider() { ProviderId = 304, DisplayName = "MySQL Server 8.0", EditorControl = "MySQL", GroupId = 90, ProviderName = "MySQL", ProviderType = "SolidCP.Providers.Database.MySqlServer80, SolidCP.Providers.Database.MySQL" },
 			new Provider() { ProviderId = 305, DisplayName = "MySQL Server 8.1", EditorControl = "MySQL", GroupId = 90, ProviderName = "MySQL", ProviderType = "SolidCP.Providers.Database.MySqlServer81, SolidCP.Providers.Database.MySQL" },
 			new Provider() { ProviderId = 306, DisplayName = "MySQL Server 8.2", EditorControl = "MySQL", GroupId = 90, ProviderName = "MySQL", ProviderType = "SolidCP.Providers.Database.MySqlServer82, SolidCP.Providers.Database.MySQL" },
+			new Provider() { ProviderId = 307, DisplayName = "MySQL Server 8.3", EditorControl = "MySQL", GroupId = 90, ProviderName = "MySQL", ProviderType = "SolidCP.Providers.Database.MySqlServer83, SolidCP.Providers.Database.MySQL" },
+			new Provider() { ProviderId = 308, DisplayName = "MySQL Server 8.4", EditorControl = "MySQL", GroupId = 90, ProviderName = "MySQL", ProviderType = "SolidCP.Providers.Database.MySqlServer84, SolidCP.Providers.Database.MySQL" },
+			new Provider() { ProviderId = 320, DisplayName = "MySQL Server 9.0", EditorControl = "MySQL", GroupId = 90, ProviderName = "MySQL", ProviderType = "SolidCP.Providers.Database.MySqlServer90, SolidCP.Providers.Database.MySQL" },
 			new Provider() { ProviderId = 350, DisableAutoDiscovery = true, DisplayName = "Microsoft Hyper-V 2012 R2", EditorControl = "HyperV2012R2", GroupId = 33, ProviderName = "HyperV2012R2",
 				ProviderType = "SolidCP.Providers.Virtualization.HyperV2012R2, SolidCP.Providers.Virtualization." +
 				"HyperV2012R2" },

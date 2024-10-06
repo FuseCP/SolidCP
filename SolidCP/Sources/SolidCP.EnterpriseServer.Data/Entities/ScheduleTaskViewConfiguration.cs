@@ -29,7 +29,7 @@ public partial class ScheduleTaskViewConfiguration
     [StringLength(100)]
     public string Environment { get; set; }
 
-    [Required]
+    [Required(AllowEmptyStrings = true)]
     [StringLength(100)]
     public string Description { get; set; }
 

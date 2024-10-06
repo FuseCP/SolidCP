@@ -25,6 +25,7 @@ public partial class BackgroundTaskParameterConfiguration: EntityTypeConfigurati
 		else if (IsCore && (IsMySql || IsMariaDb || IsSqlite || IsPostgreSql))
 		{
 			Property(e => e.SerializerValue).HasColumnType("TEXT");
+			if (IsSqlite) Property(e => e.Name).HasColumnType("TEXT COLLATE NOCASE");
 		}
 
 #if NetCore

@@ -61,13 +61,13 @@ namespace SolidCP.Web.Services
 			var readerQuotas = new XmlDictionaryReaderQuotas
 			{
 				MaxBytesPerRead = 4096,
-				MaxDepth = 32,
-				MaxArrayLength = 16384,
-				MaxStringContentLength = 16384,
-				MaxNameTableCharCount = 16384
+				MaxDepth = 32000,
+				MaxArrayLength = 16384000,
+				MaxStringContentLength = 16384000,
+				MaxNameTableCharCount = 16384000
 			};
-			binding.MaxReceivedMessageSize = 5242880;
-			binding.MaxBufferSize = 5242880;
+			binding.MaxReceivedMessageSize = int.MaxValue;
+			binding.MaxBufferSize = int.MaxValue;
 			binding.ReaderQuotas = readerQuotas;
 			binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
 			if (Authorization.ServiceAuthorizationManager == null || !(Authorization.ServiceAuthorizationManager is RestAuthorizationManager))

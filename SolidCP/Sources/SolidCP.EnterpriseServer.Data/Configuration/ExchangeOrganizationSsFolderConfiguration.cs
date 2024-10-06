@@ -20,6 +20,8 @@ public partial class ExchangeOrganizationSsFolderConfiguration : EntityTypeConfi
 
 		Property(e => e.Type).IsUnicode(false);
 
+		if (IsCore && IsSqlite) Property(e => e.Type).HasColumnType("TEXT COLLATE NOCASE");
+
 #if NetCore
         HasOne(d => d.Item).WithMany(p => p.ExchangeOrganizationSsFolders)
             .HasConstraintName("FK_ExchangeOrganizationSsFolders_ItemId");

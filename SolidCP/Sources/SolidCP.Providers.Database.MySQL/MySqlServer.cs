@@ -153,10 +153,9 @@ namespace SolidCP.Providers.Database
 			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
 		}
 
+		static bool isLoading = false;
 		static System.Reflection.Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
 		{
-
-
 			//
 			if (!args.Name.Contains("MySql.Data"))
 				return null;
@@ -164,27 +163,29 @@ namespace SolidCP.Providers.Database
 			if (args.Name.Contains("MySql.Data.resources"))
 				return null;
 
-			//
-			string connectorKeyName = "SOFTWARE\\MySQL AB\\MySQL Connector/Net";
-			string connectorVersion = String.Empty;
-			//
-			if (PInvoke.RegistryHive.HKLM.SubKeyExists_x86(connectorKeyName))
+			string assemblyFullName = "MySql.Data";
+
+			if (OSInfo.IsWindows)
 			{
-				connectorVersion = PInvoke.RegistryHive.HKLM.GetSubKeyValue_x86(connectorKeyName, "Version");
+				// Use MySql Connector if it's installed
+				string connectorKeyName = "SOFTWARE\\MySQL AB\\MySQL Connector/Net";
+				string connectorVersion = String.Empty;
+				//
+				if (PInvoke.RegistryHive.HKLM.SubKeyExists_x86(connectorKeyName))
+				{
+					connectorVersion = PInvoke.RegistryHive.HKLM.GetSubKeyValue_x86(connectorKeyName, "Version");
+					assemblyFullName = string.Format("MySql.Data, Version={0}.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d", connectorVersion);
+				}
 			}
 
-
-
-			string assemblyFullName = string.Format("MySql.Data, Version={0}.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d", connectorVersion);
-
-			if (assemblyFullName == args.Name)
+			if (assemblyFullName == args.Name || isLoading)
 			{
 				return null; //avoid of stack overflow
 			}
 
+			isLoading = true;
 
 			return Assembly.Load(assemblyFullName);
-
 		}
 
 		#endregion

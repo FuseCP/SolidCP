@@ -16,6 +16,8 @@ public partial class ScheduleTaskParameterConfiguration: EntityTypeConfiguration
 {
     public override void Configure() {
 
+        if (IsCore && IsSqlite) Property(e => e.ParameterId).HasColumnType("TEXT COLLATE NOCASE");
+
 #if NetCore
         HasOne(d => d.Task).WithMany(p => p.ScheduleTaskParameters)
                 .OnDelete(DeleteBehavior.ClientSetNull)
