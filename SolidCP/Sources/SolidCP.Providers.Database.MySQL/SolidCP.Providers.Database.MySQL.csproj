@@ -16,7 +16,7 @@
 		<DebugType>portable</DebugType>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="MySql.Data" Version="9.0.0" />
+		<PackageReference Include="MySql.Data" Version="9.0.0" GeneratePathProperty="true" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
@@ -25,4 +25,13 @@
 		<ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
 		<ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
 	</ItemGroup>
+
+    <Target Name="CopyPackageReferences" AfterTargets="Build">
+        <ItemGroup>
+            <CopyToOutputFiles Include="$(PkgMySql_Data)\lib\netstandard2.0\**\*.*" />
+        </ItemGroup>
+
+        <Copy SourceFiles="@(CopyToOutputFiles)" DestinationFolder="$(OutputPath)\%(RecursiveDir)" />
+    </Target>
+
 </Project>
