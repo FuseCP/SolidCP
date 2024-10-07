@@ -6274,7 +6274,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         new
                         {
                             QuotaId = 125,
-                            GroupId = 90,
+                            GroupId = 91,
                             QuotaDescription = "Database Truncate",
                             QuotaName = "MySQL9.Truncate",
                             QuotaOrder = 6,

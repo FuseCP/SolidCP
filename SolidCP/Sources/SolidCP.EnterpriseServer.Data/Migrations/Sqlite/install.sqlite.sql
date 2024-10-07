@@ -9206,3 +9206,15 @@ VALUES ('20241006212019_Bugfix_for_MySQL_8_x', '8.0.8');
 
 COMMIT;
 
+BEGIN TRANSACTION;
+
+UPDATE "Quotas" SET "GroupID" = 91
+WHERE "QuotaID" = 125;
+SELECT changes();
+
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20241007112814_BugfixMySQL8TruncateQuota', '8.0.8');
+
+COMMIT;
+

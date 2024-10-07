@@ -43443,3 +43443,30 @@ GO
 COMMIT;
 GO
 
+BEGIN TRANSACTION;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20241007112832_BugfixMySQL8TruncateQuota'
+)
+BEGIN
+    EXEC(N'UPDATE [Quotas] SET [GroupID] = 91
+    WHERE [QuotaID] = 125;
+    SELECT @@ROWCOUNT');
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20241007112832_BugfixMySQL8TruncateQuota'
+)
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20241007112832_BugfixMySQL8TruncateQuota', N'8.0.8');
+END;
+GO
+
+COMMIT;
+GO
+

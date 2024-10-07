@@ -7561,3 +7561,23 @@ BEGIN
 END $EF$;
 COMMIT;
 
+START TRANSACTION;
+
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241007112914_BugfixMySQL8TruncateQuota') THEN
+    UPDATE public."Quotas" SET "GroupID" = 91
+    WHERE "QuotaID" = 125;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241007112914_BugfixMySQL8TruncateQuota') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20241007112914_BugfixMySQL8TruncateQuota', '8.0.8');
+    END IF;
+END $EF$;
+COMMIT;
+
