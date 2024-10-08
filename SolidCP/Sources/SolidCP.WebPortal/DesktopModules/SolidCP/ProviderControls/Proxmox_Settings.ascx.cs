@@ -45,28 +45,37 @@ namespace SolidCP.Portal.ProviderControls
 {
 	public partial class Proxmox_Settings : SolidCPControlBase, IHostingServiceProviderSettings
 	{
+		// Distinguish between Proxmox and Proxmox (localhost)
+		protected bool IsLocal {
+			get {
+				var isLocal = (bool?)ViewState[nameof(IsLocal)];
+				if (isLocal == null)
+				{
+					var service = ES.Services.Servers.GetServiceInfo(PanelRequest.ServiceId);
+					var provider = ES.Services.Servers.GetProvider(service.ProviderId);
+					isLocal = IsLocal = provider.ProviderType == "SolidCP.Providers.Virtualization.ProxmoxvpsLocal, SolidCP.Providers.Virtualization.Proxmoxvps";
+				}
+				return isLocal.Value;
+			}
+			set => ViewState[nameof(IsLocal)] = value;
+		}
 		protected void Page_Load(object sender, EventArgs e)
 		{
 		}
 
 		void IHostingServiceProviderSettings.BindSettings(StringDictionary settings)
 		{
-			// Distinguish between Proxmox and Proxmox (localhost)
-			var service = ES.Services.Servers.GetServiceInfo(PanelRequest.ServiceId);
-			var provider = ES.Services.Servers.GetProvider(service.ProviderId);
-			var isLocal = provider.ProviderType == "SolidCP.Providers.Virtualization.ProxmoxvpsLocal, SolidCP.Providers.Virtualization.Proxmoxvps";
-		
 			// Proxmox Cluster Settings
-			txtProxmoxClusterServerHost.Text = settings["ProxmoxClusterServerHost"];
+			txtProxmoxClusterServerHost.Text = IsLocal ? "localhost" : settings["ProxmoxClusterServerHost"];
 			txtProxmoxClusterServerPort.Text = settings["ProxmoxClusterServerPort"] ?? "8006";
 			txtProxmoxClusterAdminUser.Text = settings["ProxmoxClusterAdminUser"];
 			var realm = settings["ProxmoxClusterRealm"] ?? "pam";
 			if (string.Equals(realm, "pam", StringComparison.OrdinalIgnoreCase)) lstProxmoxClusterRealm.SelectedIndex = 0;
 			else lstProxmoxClusterRealm.SelectedIndex = 1;
-			bool trustCert = isLocal;
-			bool.TryParse(settings["ProxmoxTrustClusterServerCertificate"] ?? $"{isLocal}", out trustCert);
+			bool trustCert = IsLocal;
+			bool.TryParse(settings["ProxmoxTrustClusterServerCertificate"] ?? $"{IsLocal}", out trustCert);
 			chkProxmoxTrustServerCertificate.Checked = trustCert;
-			chkProxmoxTrustServerCertificate.Enabled = !isLocal;
+			chkProxmoxTrustServerCertificate.Enabled = !IsLocal;
 			ViewState["PWD"] = settings["ProxmoxClusterAdminPass"];
 			rowPassword.Visible = ((string)ViewState["PWD"]) != "";
 
@@ -82,11 +91,13 @@ namespace SolidCP.Portal.ProviderControls
 			txtDeploySSHScript.Text = settings["DeploySSHScript"];
 			txtDeploySSHScriptParams.Text = settings["DeploySSHScriptParams"];
 			DeploySSHServerHostValidator.Visible = DeploySSHServerPortValidator.Visible =
-				DeploySSHUserValidator.Visible = pnlSshSettings.Visible = !isLocal;
-
+				DeploySSHUserValidator.Visible = pnlSshSettings.Visible =
+				ProxmoxClusterServerHostValidator.Visible = 
+				rowServerHost.Visible = !IsLocal;
+			
 			// OS Templates
 			//txtOSTemplatesPath.Text = settings["OsTemplatesPath"];
-			repOsTemplates.DataSource = new ConfigFile(settings["OsTemplates"]).LibraryItems; //ES.Services.VPS2012.GetOperatingSystemTemplatesByServiceId(PanelRequest.ServiceId).ToList();
+			repOsTemplates.DataSource = new ConfigFile(settings["OsTemplates"])?.LibraryItems; //ES.Services.VPS2012.GetOperatingSystemTemplatesByServiceId(PanelRequest.ServiceId).ToList();
 			repOsTemplates.DataBind();
 
 			// DVD Path
@@ -99,7 +110,6 @@ namespace SolidCP.Portal.ProviderControls
 
 		void IHostingServiceProviderSettings.SaveSettings(StringDictionary settings)
 		{
-
 			// Proxmox Cluster Settings
 			settings["ProxmoxClusterServerHost"] = txtProxmoxClusterServerHost.Text.Trim();
 			settings["ProxmoxClusterServerPort"] = txtProxmoxClusterServerPort.Text.Trim();

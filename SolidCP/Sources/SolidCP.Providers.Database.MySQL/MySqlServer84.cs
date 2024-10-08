@@ -49,6 +49,6 @@ namespace SolidCP.Providers.Database
 	{
 		public MySqlServer84(): base() {	}
 
-		public override bool IsInstalled() => IsInstalled("8.2");
+		public override bool IsInstalled() => IsInstalled("8.4");
 	}
 }

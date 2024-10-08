@@ -3,6 +3,7 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <PublishUrl>publish\</PublishUrl>
         <OutputPath>..\..\Bin\</OutputPath>
+        <ServerPath>..\SolidCP.Server\bin\netstandard</ServerPath>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <WarningsAsErrors>618</WarningsAsErrors>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -18,6 +19,7 @@
         <PackageReference Include="System.Management" Version="8.0.0" />
         <PackageReference Include="System.Security.Principal.Windows" Version="5.0.0" />
         <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />
+        <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" GeneratePathProperty="true" />
     </ItemGroup>
     <ItemGroup>
         <Reference Include="System.DirectoryServices" />
@@ -29,4 +31,12 @@
     <ItemGroup>
         <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
     </ItemGroup>
+
+    <Target Name="CopyPackageReferences" AfterTargets="Build">
+        <ItemGroup>
+            <CopyToOutputFiles Include="$(PkgMono_Posix_NETStandard)\lib\net40\*.*" />
+            <CopyToOutputFiles Include="$(PkgMono_Posix_NETStandard)\runtimes\**\*.*" />
+        </ItemGroup>
+        <Copy SourceFiles="@(CopyToOutputFiles)" DestinationFolder="$(ServerPath)\%(RecursiveDir)" />
+    </Target>
 </Project>

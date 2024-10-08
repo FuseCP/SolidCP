@@ -8853,3 +8853,368 @@ VALUES ('20241006062900_MySql9AndMaraiDB11', '8.0.8');
 
 COMMIT;
 
+BEGIN TRANSACTION;
+
+INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+VALUES (1574, NULL, 'MariaDB 10.7', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB107, SolidCP.Providers.Database.MariaDB');
+SELECT changes();
+
+INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+VALUES (1575, NULL, 'MariaDB 10.8', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB108, SolidCP.Providers.Database.MariaDB');
+SELECT changes();
+
+INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+VALUES (1576, NULL, 'MariaDB 10.9', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB109, SolidCP.Providers.Database.MariaDB');
+SELECT changes();
+
+INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+VALUES (1577, NULL, 'MariaDB 10.10', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB1010, SolidCP.Providers.Database.MariaDB');
+SELECT changes();
+
+INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+VALUES (1578, NULL, 'MariaDB 10.11', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB1011, SolidCP.Providers.Database.MariaDB');
+SELECT changes();
+
+INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+VALUES (1579, NULL, 'MariaDB 11.0', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB110, SolidCP.Providers.Database.MariaDB');
+SELECT changes();
+
+INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+VALUES (1580, NULL, 'MariaDB 11.1', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB111, SolidCP.Providers.Database.MariaDB');
+SELECT changes();
+
+INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+VALUES (1581, NULL, 'MariaDB 11.2', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB112, SolidCP.Providers.Database.MariaDB');
+SELECT changes();
+
+INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+VALUES (1582, NULL, 'MariaDB 11.3', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB113, SolidCP.Providers.Database.MariaDB');
+SELECT changes();
+
+INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+VALUES (1583, NULL, 'MariaDB 11.4', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB114, SolidCP.Providers.Database.MariaDB');
+SELECT changes();
+
+INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+VALUES (1584, NULL, 'MariaDB 11.5', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB115, SolidCP.Providers.Database.MariaDB');
+SELECT changes();
+
+INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+VALUES (1585, NULL, 'MariaDB 11.6', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB116, SolidCP.Providers.Database.MariaDB');
+SELECT changes();
+
+INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+VALUES (1586, NULL, 'MariaDB 11.7', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB117, SolidCP.Providers.Database.MariaDB');
+SELECT changes();
+
+
+UPDATE "ServiceDefaultProperties" SET "PropertyValue" = '%PROGRAMFILES%\MariaDB 10.6'
+WHERE "PropertyName" = 'InstallFolder' AND "ProviderID" = 1573;
+SELECT changes();
+
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('ExternalAddress', 1574, 'localhost');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InstallFolder', 1574, '%PROGRAMFILES%\MariaDB 10.7');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InternalAddress', 1574, 'localhost');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootLogin', 1574, 'root');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootPassword', 1574, '');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('ExternalAddress', 1575, 'localhost');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InstallFolder', 1575, '%PROGRAMFILES%\MariaDB 10.8');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InternalAddress', 1575, 'localhost');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootLogin', 1575, 'root');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootPassword', 1575, '');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('ExternalAddress', 1576, 'localhost');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InstallFolder', 1576, '%PROGRAMFILES%\MariaDB 10.9');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InternalAddress', 1576, 'localhost');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootLogin', 1576, 'root');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootPassword', 1576, '');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('ExternalAddress', 1577, 'localhost');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InstallFolder', 1577, '%PROGRAMFILES%\MariaDB 10.10');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InternalAddress', 1577, 'localhost');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootLogin', 1577, 'root');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootPassword', 1577, '');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('ExternalAddress', 1578, 'localhost');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InstallFolder', 1578, '%PROGRAMFILES%\MariaDB 10.11');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InternalAddress', 1578, 'localhost');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootLogin', 1578, 'root');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootPassword', 1578, '');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('ExternalAddress', 1579, 'localhost');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InstallFolder', 1579, '%PROGRAMFILES%\MariaDB 11.0');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InternalAddress', 1579, 'localhost');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootLogin', 1579, 'root');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootPassword', 1579, '');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('ExternalAddress', 1580, 'localhost');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InstallFolder', 1580, '%PROGRAMFILES%\MariaDB 11.1');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InternalAddress', 1580, 'localhost');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootLogin', 1580, 'root');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootPassword', 1580, '');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('ExternalAddress', 1581, 'localhost');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InstallFolder', 1581, '%PROGRAMFILES%\MariaDB 11.2');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InternalAddress', 1581, 'localhost');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootLogin', 1581, 'root');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootPassword', 1581, '');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('ExternalAddress', 1582, 'localhost');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InstallFolder', 1582, '%PROGRAMFILES%\MariaDB 11.3');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InternalAddress', 1582, 'localhost');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootLogin', 1582, 'root');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootPassword', 1582, '');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('ExternalAddress', 1583, 'localhost');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InstallFolder', 1583, '%PROGRAMFILES%\MariaDB 11.4');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InternalAddress', 1583, 'localhost');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootLogin', 1583, 'root');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootPassword', 1583, '');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('ExternalAddress', 1584, 'localhost');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InstallFolder', 1584, '%PROGRAMFILES%\MariaDB 11.5');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InternalAddress', 1584, 'localhost');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootLogin', 1584, 'root');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootPassword', 1584, '');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('ExternalAddress', 1585, 'localhost');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InstallFolder', 1585, '%PROGRAMFILES%\MariaDB 11.6');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InternalAddress', 1585, 'localhost');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootLogin', 1585, 'root');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootPassword', 1585, '');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('ExternalAddress', 1586, 'localhost');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InstallFolder', 1586, '%PROGRAMFILES%\MariaDB 11.7');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('InternalAddress', 1586, 'localhost');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootLogin', 1586, 'root');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RootPassword', 1586, '');
+SELECT changes();
+
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20241006121657_AddMariaDB11', '8.0.8');
+
+COMMIT;
+
+BEGIN TRANSACTION;
+
+UPDATE "ServiceDefaultProperties" SET "PropertyValue" = '%PROGRAMFILES%\MySQL\MySQL Server 8.1'
+WHERE "PropertyName" = 'InstallFolder' AND "ProviderID" = 305;
+SELECT changes();
+
+
+UPDATE "ServiceDefaultProperties" SET "PropertyValue" = '%PROGRAMFILES%\MySQL\MySQL Server 8.2'
+WHERE "PropertyName" = 'InstallFolder' AND "ProviderID" = 306;
+SELECT changes();
+
+
+UPDATE "ServiceDefaultProperties" SET "PropertyValue" = '%PROGRAMFILES%\MySQL\MySQL Server 8.3'
+WHERE "PropertyName" = 'InstallFolder' AND "ProviderID" = 307;
+SELECT changes();
+
+
+UPDATE "ServiceDefaultProperties" SET "PropertyValue" = '%PROGRAMFILES%\MySQL\MySQL Server 8.4'
+WHERE "PropertyName" = 'InstallFolder' AND "ProviderID" = 308;
+SELECT changes();
+
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20241006212019_Bugfix_for_MySQL_8_x', '8.0.8');
+
+COMMIT;
+
+BEGIN TRANSACTION;
+
+UPDATE "Quotas" SET "GroupID" = 91
+WHERE "QuotaID" = 125;
+SELECT changes();
+
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20241007112814_BugfixMySQL8TruncateQuota', '8.0.8');
+
+COMMIT;
+

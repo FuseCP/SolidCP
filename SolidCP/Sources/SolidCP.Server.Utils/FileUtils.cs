@@ -40,9 +40,10 @@ using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Management;
 using Ionic.Zip;
 using SolidCP.Providers.OS;
-using System.Management;
+using Mono.Unix;
 
 namespace SolidCP.Providers.Utils
 {
@@ -279,12 +280,21 @@ namespace SolidCP.Providers.Utils
                 i++;
             }
 
-			// Set permissions
-			// We decided to inherit NTFS permissions from the parent folder to comply with with the native security schema in Windows,
-			// when a user decides on his own how to implement security practices for NTFS permissions schema and harden the server.
-			SecurityUtils.GrantNtfsPermissionsBySid(path, SystemSID.ADMINISTRATORS, NTFSPermission.FullControl, true, true);
-			SecurityUtils.GrantNtfsPermissionsBySid(path, SystemSID.SYSTEM, NTFSPermission.FullControl, true, true);
-			//
+            if (OSInfo.IsWindows) {
+			    // Set permissions
+			    // We decided to inherit NTFS permissions from the parent folder to comply with with the native security schema in Windows,
+			    // when a user decides on his own how to implement security practices for NTFS permissions schema and harden the server.
+			    SecurityUtils.GrantNtfsPermissionsBySid(path, SystemSID.ADMINISTRATORS, NTFSPermission.FullControl, true, true);
+			    SecurityUtils.GrantNtfsPermissionsBySid(path, SystemSID.SYSTEM, NTFSPermission.FullControl, true, true);
+			} else if (OSInfo.IsUnix)
+            {
+                var unixDirInfo = new UnixDirectoryInfo(path);
+                unixDirInfo.FileAccessPermissions =
+                    FileAccessPermissions.GroupRead | FileAccessPermissions.GroupWrite | FileAccessPermissions.GroupExecute |
+                    FileAccessPermissions.UserRead | FileAccessPermissions.UserWrite | FileAccessPermissions.UserExecute |
+                    FileAccessPermissions.OtherRead;
+                unixDirInfo.Refresh();
+            }
             return path;
         }
 

@@ -745,19 +745,20 @@ namespace SolidCP.Providers.OS
 
 		public bool IsUnix() => true;
 
-		Shell bash, sh;
+		Shell bash, sh, ps;
 
 		Installer apt, yum, brew, zypper, apk, dnf, pacman;
 
-		public Shell Bash => bash ?? (bash = new Bash());
-		public Shell Sh => sh ?? (sh = new Sh());
-		public Installer Apt => apt ?? (apt = new Apt());
-		public Installer Yum => yum ?? (yum = new Yum());
-		public Installer Brew => brew ?? (brew = new Brew());
-		public Installer Zypper => zypper ?? (zypper = new Zypper());
-		public Installer Dnf => dnf ?? (dnf = new Dnf());
-		public Installer Pacman => pacman ?? (pacman = new Pacman());
-		public Installer Apk => apk ?? (apk = new Apk());
+		public Shell Bash => bash ??= new Bash();
+		public Shell Sh => sh ??= new Sh();
+		public Shell PowerShell => ps ??= new UnixPowerShell();
+		public Installer Apt => apt ??= new Apt();
+		public Installer Yum => yum ??= new Yum();
+		public Installer Brew => brew ??= new Brew();
+		public Installer Zypper => zypper ??= new Zypper();
+		public Installer Dnf => dnf ??= new Dnf();
+		public Installer Pacman => pacman ??= new Pacman();
+		public Installer Apk => apk ??= new Apk();
 
 		public virtual Shell DefaultShell => Bash;
 		public virtual Installer DefaultInstaller

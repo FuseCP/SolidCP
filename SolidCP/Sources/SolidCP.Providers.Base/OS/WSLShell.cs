@@ -608,7 +608,7 @@ namespace SolidCP.Providers.OS
 				return BaseShell.ExecAsync(command, encoding, environmentVariables);
 			}
 		}
-		public override Shell ExecScriptAsync(string script, Encoding encoding = null, StringDictionary environmentVariables = null)
+		public override Shell ExecScriptAsync(string script, string args = null, Encoding encoding = null, StringDictionary environmentVariables = null)
 		{
 			LogCommand?.Invoke($"bash {script}");
 

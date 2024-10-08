@@ -1016,7 +1016,19 @@ namespace SolidCP.Providers.DNS
             {
                 rndcArguments += " " + zoneName;
             }
-            var shell = Shell.Default.Exec($"{cmd} {rndcArguments}");
+
+            Shell shell = null;
+            if (cmd.EndsWith(".bat"))
+            {
+                var bat = File.ReadAllText(cmd);
+                shell = OSInfo.Windows.Cmd.ExecScript(bat, rndcArguments);
+            } else if (cmd.EndsWith(".ps1"))
+            {
+				var ps1 = File.ReadAllText(cmd);
+				if (OSInfo.IsWindows) shell = OSInfo.Windows.PowerShell.ExecScript(ps1, rndcArguments);
+				else if (OSInfo.IsUnix) shell = OSInfo.Unix.PowerShell.ExecScript(ps1, rndcArguments);
+			}
+			else shell = Shell.Default.Exec($"{cmd} {rndcArguments}");
 
             var output = shell.Output().Result;
             if (shell.ExitCode().Result != 0 || Regex.IsMatch(output, "error", RegexOptions.IgnoreCase))

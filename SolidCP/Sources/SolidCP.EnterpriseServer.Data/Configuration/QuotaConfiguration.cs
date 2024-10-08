@@ -222,7 +222,7 @@ public partial class QuotaConfiguration: EntityTypeConfiguration<Quota>
 				ServiceQuota = false },
 			new Quota() { QuotaId = 124, GroupId = 91, QuotaDescription = "Database Restores", QuotaName = "MySQL9.Restore", QuotaOrder = 5, QuotaTypeId = 1,
 				ServiceQuota = false },
-			new Quota() { QuotaId = 125, GroupId = 90, QuotaDescription = "Database Truncate", QuotaName = "MySQL9.Truncate", QuotaOrder = 6, QuotaTypeId = 1,
+			new Quota() { QuotaId = 125, GroupId = 91, QuotaDescription = "Database Truncate", QuotaName = "MySQL9.Truncate", QuotaOrder = 6, QuotaTypeId = 1,
 				ServiceQuota = false },
 			new Quota() { QuotaId = 200, GroupId = 20, ItemTypeId = 200, PerOrganization = 1, QuotaDescription = "SharePoint Site Collections", QuotaName = "HostedSharePoint.Sites",
 				QuotaOrder = 1, QuotaTypeId = 2, ServiceQuota = false },

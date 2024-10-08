@@ -6705,6 +6705,272 @@ DROP PROCEDURE MigrationsScript;
 
 COMMIT;
 
+START TRANSACTION;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006121748_AddMariaDB11') THEN
+
+    INSERT INTO `Providers` (`ProviderID`, `DisableAutoDiscovery`, `DisplayName`, `EditorControl`, `GroupID`, `ProviderName`, `ProviderType`)
+    VALUES (1574, NULL, 'MariaDB 10.7', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB107, SolidCP.Providers.Database.MariaDB'),
+    (1575, NULL, 'MariaDB 10.8', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB108, SolidCP.Providers.Database.MariaDB'),
+    (1576, NULL, 'MariaDB 10.9', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB109, SolidCP.Providers.Database.MariaDB'),
+    (1577, NULL, 'MariaDB 10.10', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB1010, SolidCP.Providers.Database.MariaDB'),
+    (1578, NULL, 'MariaDB 10.11', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB1011, SolidCP.Providers.Database.MariaDB'),
+    (1579, NULL, 'MariaDB 11.0', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB110, SolidCP.Providers.Database.MariaDB'),
+    (1580, NULL, 'MariaDB 11.1', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB111, SolidCP.Providers.Database.MariaDB'),
+    (1581, NULL, 'MariaDB 11.2', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB112, SolidCP.Providers.Database.MariaDB'),
+    (1582, NULL, 'MariaDB 11.3', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB113, SolidCP.Providers.Database.MariaDB'),
+    (1583, NULL, 'MariaDB 11.4', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB114, SolidCP.Providers.Database.MariaDB'),
+    (1584, NULL, 'MariaDB 11.5', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB115, SolidCP.Providers.Database.MariaDB'),
+    (1585, NULL, 'MariaDB 11.6', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB116, SolidCP.Providers.Database.MariaDB'),
+    (1586, NULL, 'MariaDB 11.7', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB117, SolidCP.Providers.Database.MariaDB');
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006121748_AddMariaDB11') THEN
+
+    UPDATE `ServiceDefaultProperties` SET `PropertyValue` = '%PROGRAMFILES%\\MariaDB 10.6'
+    WHERE `PropertyName` = 'InstallFolder' AND `ProviderID` = 1573;
+    SELECT ROW_COUNT();
+
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006121748_AddMariaDB11') THEN
+
+    INSERT INTO `ServiceDefaultProperties` (`PropertyName`, `ProviderID`, `PropertyValue`)
+    VALUES ('ExternalAddress', 1574, 'localhost'),
+    ('InstallFolder', 1574, '%PROGRAMFILES%\\MariaDB 10.7'),
+    ('InternalAddress', 1574, 'localhost'),
+    ('RootLogin', 1574, 'root'),
+    ('RootPassword', 1574, ''),
+    ('ExternalAddress', 1575, 'localhost'),
+    ('InstallFolder', 1575, '%PROGRAMFILES%\\MariaDB 10.8'),
+    ('InternalAddress', 1575, 'localhost'),
+    ('RootLogin', 1575, 'root'),
+    ('RootPassword', 1575, ''),
+    ('ExternalAddress', 1576, 'localhost'),
+    ('InstallFolder', 1576, '%PROGRAMFILES%\\MariaDB 10.9'),
+    ('InternalAddress', 1576, 'localhost'),
+    ('RootLogin', 1576, 'root'),
+    ('RootPassword', 1576, ''),
+    ('ExternalAddress', 1577, 'localhost'),
+    ('InstallFolder', 1577, '%PROGRAMFILES%\\MariaDB 10.10'),
+    ('InternalAddress', 1577, 'localhost'),
+    ('RootLogin', 1577, 'root'),
+    ('RootPassword', 1577, ''),
+    ('ExternalAddress', 1578, 'localhost'),
+    ('InstallFolder', 1578, '%PROGRAMFILES%\\MariaDB 10.11'),
+    ('InternalAddress', 1578, 'localhost'),
+    ('RootLogin', 1578, 'root'),
+    ('RootPassword', 1578, ''),
+    ('ExternalAddress', 1579, 'localhost'),
+    ('InstallFolder', 1579, '%PROGRAMFILES%\\MariaDB 11.0'),
+    ('InternalAddress', 1579, 'localhost'),
+    ('RootLogin', 1579, 'root'),
+    ('RootPassword', 1579, ''),
+    ('ExternalAddress', 1580, 'localhost'),
+    ('InstallFolder', 1580, '%PROGRAMFILES%\\MariaDB 11.1'),
+    ('InternalAddress', 1580, 'localhost'),
+    ('RootLogin', 1580, 'root'),
+    ('RootPassword', 1580, ''),
+    ('ExternalAddress', 1581, 'localhost'),
+    ('InstallFolder', 1581, '%PROGRAMFILES%\\MariaDB 11.2'),
+    ('InternalAddress', 1581, 'localhost'),
+    ('RootLogin', 1581, 'root'),
+    ('RootPassword', 1581, ''),
+    ('ExternalAddress', 1582, 'localhost'),
+    ('InstallFolder', 1582, '%PROGRAMFILES%\\MariaDB 11.3');
+    INSERT INTO `ServiceDefaultProperties` (`PropertyName`, `ProviderID`, `PropertyValue`)
+    VALUES ('InternalAddress', 1582, 'localhost'),
+    ('RootLogin', 1582, 'root'),
+    ('RootPassword', 1582, ''),
+    ('ExternalAddress', 1583, 'localhost'),
+    ('InstallFolder', 1583, '%PROGRAMFILES%\\MariaDB 11.4'),
+    ('InternalAddress', 1583, 'localhost'),
+    ('RootLogin', 1583, 'root'),
+    ('RootPassword', 1583, ''),
+    ('ExternalAddress', 1584, 'localhost'),
+    ('InstallFolder', 1584, '%PROGRAMFILES%\\MariaDB 11.5'),
+    ('InternalAddress', 1584, 'localhost'),
+    ('RootLogin', 1584, 'root'),
+    ('RootPassword', 1584, ''),
+    ('ExternalAddress', 1585, 'localhost'),
+    ('InstallFolder', 1585, '%PROGRAMFILES%\\MariaDB 11.6'),
+    ('InternalAddress', 1585, 'localhost'),
+    ('RootLogin', 1585, 'root'),
+    ('RootPassword', 1585, ''),
+    ('ExternalAddress', 1586, 'localhost'),
+    ('InstallFolder', 1586, '%PROGRAMFILES%\\MariaDB 11.7'),
+    ('InternalAddress', 1586, 'localhost'),
+    ('RootLogin', 1586, 'root'),
+    ('RootPassword', 1586, '');
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006121748_AddMariaDB11') THEN
+
+    INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
+    VALUES ('20241006121748_AddMariaDB11', '8.0.8');
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+COMMIT;
+
+START TRANSACTION;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006212105_Bugfix_for_MySQL_8_x') THEN
+
+    UPDATE `ServiceDefaultProperties` SET `PropertyValue` = '%PROGRAMFILES%\\MySQL\\MySQL Server 8.1'
+    WHERE `PropertyName` = 'InstallFolder' AND `ProviderID` = 305;
+    SELECT ROW_COUNT();
+
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006212105_Bugfix_for_MySQL_8_x') THEN
+
+    UPDATE `ServiceDefaultProperties` SET `PropertyValue` = '%PROGRAMFILES%\\MySQL\\MySQL Server 8.2'
+    WHERE `PropertyName` = 'InstallFolder' AND `ProviderID` = 306;
+    SELECT ROW_COUNT();
+
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006212105_Bugfix_for_MySQL_8_x') THEN
+
+    UPDATE `ServiceDefaultProperties` SET `PropertyValue` = '%PROGRAMFILES%\\MySQL\\MySQL Server 8.3'
+    WHERE `PropertyName` = 'InstallFolder' AND `ProviderID` = 307;
+    SELECT ROW_COUNT();
+
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006212105_Bugfix_for_MySQL_8_x') THEN
+
+    UPDATE `ServiceDefaultProperties` SET `PropertyValue` = '%PROGRAMFILES%\\MySQL\\MySQL Server 8.4'
+    WHERE `PropertyName` = 'InstallFolder' AND `ProviderID` = 308;
+    SELECT ROW_COUNT();
+
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006212105_Bugfix_for_MySQL_8_x') THEN
+
+    INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
+    VALUES ('20241006212105_Bugfix_for_MySQL_8_x', '8.0.8');
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+COMMIT;
+
+START TRANSACTION;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241007112853_BugfixMySQL8TruncateQuota') THEN
+
+    UPDATE `Quotas` SET `GroupID` = 91
+    WHERE `QuotaID` = 125;
+    SELECT ROW_COUNT();
+
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241007112853_BugfixMySQL8TruncateQuota') THEN
+
+    INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
+    VALUES ('20241007112853_BugfixMySQL8TruncateQuota', '8.0.8');
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+COMMIT;
+
 DROP PROCEDURE `POMELO_BEFORE_DROP_PRIMARY_KEY`;
 
 DROP PROCEDURE `POMELO_AFTER_ADD_PRIMARY_KEY`;

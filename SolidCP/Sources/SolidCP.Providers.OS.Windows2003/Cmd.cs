@@ -8,6 +8,6 @@ namespace SolidCP.Providers.OS
 {
     public class Cmd : Shell
 	{
-		public override string ShellExe => "cmd";
+		public override string ShellExe => "cmd.exe /C";
 	}
 }

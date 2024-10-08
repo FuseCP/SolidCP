@@ -1368,6 +1368,7 @@
   <ItemGroup>
     <ExcludeFromPackageFiles Include="**\Web.config">
       <FromTarget>Project</FromTarget>
+      <Visible>False</Visible>
     </ExcludeFromPackageFiles>
   </ItemGroup>
   <ItemGroup>

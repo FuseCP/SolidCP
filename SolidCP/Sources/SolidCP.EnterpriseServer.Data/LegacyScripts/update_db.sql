@@ -17510,6 +17510,226 @@ INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [Property
 INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1570, N'RootPassword', N'')
 END
 GO
+
+
+-- MariaDB 10.4-11.7
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1571')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1571, 50, N'MariaDB', N'MariaDB 10.4', N'SolidCP.Providers.Database.MariaDB104, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1572')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1572, 50, N'MariaDB', N'MariaDB 10.5', N'SolidCP.Providers.Database.MariaDB105, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
+END
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1573')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1573, 50, N'MariaDB', N'MariaDB 10.6', N'SolidCP.Providers.Database.MariaDB106, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
+END
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1574')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1574, 50, N'MariaDB', N'MariaDB 10.7', N'SolidCP.Providers.Database.MariaDB107, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
+END
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1575')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1575, 50, N'MariaDB', N'MariaDB 10.8', N'SolidCP.Providers.Database.MariaDB108, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
+END
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1576')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1576, 50, N'MariaDB', N'MariaDB 10.9', N'SolidCP.Providers.Database.MariaDB109, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
+END
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1577')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1577, 50, N'MariaDB', N'MariaDB 10.10', N'SolidCP.Providers.Database.MariaDB1010, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
+END
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1578')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1578, 50, N'MariaDB', N'MariaDB 10.11', N'SolidCP.Providers.Database.MariaDB1011, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
+END
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1579')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1579, 50, N'MariaDB', N'MariaDB 11.0', N'SolidCP.Providers.Database.MariaDB110, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
+END
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1580')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1580, 50, N'MariaDB', N'MariaDB 11.1', N'SolidCP.Providers.Database.MariaDB111, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
+END
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1581')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1581, 50, N'MariaDB', N'MariaDB 11.2', N'SolidCP.Providers.Database.MariaDB112, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
+END
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1582')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1582, 50, N'MariaDB', N'MariaDB 11.3', N'SolidCP.Providers.Database.MariaDB113, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
+END
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1583')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1583, 50, N'MariaDB', N'MariaDB 11.4', N'SolidCP.Providers.Database.MariaDB114, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
+END
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1584')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1584, 50, N'MariaDB', N'MariaDB 11.5', N'SolidCP.Providers.Database.MariaDB115, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
+END
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1585')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1585, 50, N'MariaDB', N'MariaDB 11.6', N'SolidCP.Providers.Database.MariaDB116, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
+END
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1586')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1586, 50, N'MariaDB', N'MariaDB 11.7', N'SolidCP.Providers.Database.MariaDB117, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
+END
+
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1571')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1571, N'ExternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1571, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 10.4')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1571, N'InternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1571, N'RootLogin', N'root')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1571, N'RootPassword', N'')
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1572')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1572, N'ExternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1572, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 10.5')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1572, N'InternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1572, N'RootLogin', N'root')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1572, N'RootPassword', N'')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1573')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1573, N'ExternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1573, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 10.6')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1573, N'InternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1573, N'RootLogin', N'root')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1573, N'RootPassword', N'')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1574')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1574, N'ExternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1574, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 10.7')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1574, N'InternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1574, N'RootLogin', N'root')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1574, N'RootPassword', N'')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1575')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1575, N'ExternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1575, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 10.8')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1575, N'InternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1575, N'RootLogin', N'root')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1575, N'RootPassword', N'')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1576')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1576, N'ExternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1576, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 10.9')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1576, N'InternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1576, N'RootLogin', N'root')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1576, N'RootPassword', N'')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1577')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1577, N'ExternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1577, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 10.10')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1577, N'InternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1577, N'RootLogin', N'root')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1577, N'RootPassword', N'')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1578')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1578, N'ExternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1578, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 10.11')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1578, N'InternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1578, N'RootLogin', N'root')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1578, N'RootPassword', N'')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1579')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1579, N'ExternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1579, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 11.0')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1579, N'InternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1579, N'RootLogin', N'root')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1579, N'RootPassword', N'')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1580')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1580, N'ExternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1580, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 11.1')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1580, N'InternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1580, N'RootLogin', N'root')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1580, N'RootPassword', N'')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1581')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1581, N'ExternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1581, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 11.2')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1581, N'InternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1581, N'RootLogin', N'root')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1581, N'RootPassword', N'')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1582')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1582, N'ExternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1582, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 11.3')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1582, N'InternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1582, N'RootLogin', N'root')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1582, N'RootPassword', N'')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1583')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1583, N'ExternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1583, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 11.4')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1583, N'InternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1583, N'RootLogin', N'root')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1583, N'RootPassword', N'')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1584')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1584, N'ExternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1584, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 11.5')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1584, N'InternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1584, N'RootLogin', N'root')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1584, N'RootPassword', N'')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1585')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1585, N'ExternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1585, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 11.6')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1585, N'InternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1585, N'RootLogin', N'root')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1585, N'RootPassword', N'')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1586')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1586, N'ExternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1586, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 11.7')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1586, N'InternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1586, N'RootLogin', N'root')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1586, N'RootPassword', N'')
+END
+GO
+
+--
+
+
 IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Hosted Microsoft Exchange Server 2019')
 BEGIN
 INSERT [dbo].[Providers] ([ProviderId], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(93, 12, N'Exchange2016', N'Hosted Microsoft Exchange Server 2019', N'SolidCP.Providers.HostedSolution.Exchange2019, SolidCP.Providers.HostedSolution.Exchange2019', N'Exchange',	NULL)
@@ -20751,7 +20971,6 @@ BEGIN
 END;
 GO
 
-
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
     WHERE [MigrationId] = N'20241006063131_MySql9AndMaraiDB11'
@@ -20762,6 +20981,18 @@ BEGIN
 		(N'20241006063131_MySql9AndMaraiDB11', N'8.0.6');
 END;
 GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20241006121748_AddMariaDB11'
+)
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES
+		(N'20241006121748_AddMariaDB11', N'8.0.6');
+END;
+GO
+
 
 -- DMZ Network
 IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaName] = 'VPS2012.DMZNetworkEnabled')
