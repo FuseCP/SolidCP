@@ -27,7 +27,8 @@ public class @(Class.Identifier): SolidCP.Web.Clients.ClientBase<I@(Class.Identi
 					.WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.AsyncKeyword)))
 					.WithParameterList(m.ParameterList),
 			IsVoid = (m.ReturnType is PredefinedTypeSyntax && ((PredefinedTypeSyntax)m.ReturnType).Keyword.IsKind(SyntaxKind.VoidKeyword)),
-			IsRefPar = (m.ParameterList.Parameters.Any(p => p.Modifiers.Any())),
+			IsRefPar = (m.ParameterList.Parameters.Any(p => p.Modifiers.Any(
+				m => m.IsKind(SyntaxKind.OutKeyword) || m.IsKind(SyntaxKind.RefKeyword)))),
 			HasSoapHeader = m.AttributeLists
 				.SelectMany(at => at.Attributes)
 				.Any(at => Regex.IsMatch(at.Name.ToString(), "(?:(?:SolidCP.)?Providers.)?SoapHeader(?:Attribute)?"))
@@ -49,7 +50,9 @@ public class @(Class.Identifier): SolidCP.Web.Clients.ClientBase<I@(Class.Identi
 			if (!first) {
 				<text>, </text>
 			} else { first = false; }
-			<text>@(par.Modifiers.Any() ? $"{par.Modifiers} " : "")@(par.Identifier)</text>
+			<text>@(par.Modifiers.Any(m =>
+					m.IsKind(SyntaxKind.OutKeyword) || m.IsKind(SyntaxKind.RefKeyword)) ?
+				$"{par.Modifiers} " : "")@(par.Identifier)</text>
 		}
 
 		<text>);

@@ -39,7 +39,8 @@ public interface I@(Class.Identifier) {
 		{
 			Method = m,
 			IsVoid = (m.ReturnType is PredefinedTypeSyntax && ((PredefinedTypeSyntax)m.ReturnType).Keyword.IsKind(SyntaxKind.VoidKeyword)),
-			IsRefPar = (m.ParameterList.Parameters.Any(p => p.Modifiers.Any())),
+			IsRefPar = (m.ParameterList.Parameters.Any(p => p.Modifiers.Any(
+				m => m.IsKind(SyntaxKind.OutKeyword) || m.IsKind(SyntaxKind.RefKeyword)))),
 			WithTokens = new Func<MethodDeclarationSyntax, MethodDeclarationSyntax>(method => method
 					.WithAttributeLists(List(m.AttributeLists
 						.Append(AttributeList(SingletonSeparatedList(Attribute(IdentifierName("OperationContract"),

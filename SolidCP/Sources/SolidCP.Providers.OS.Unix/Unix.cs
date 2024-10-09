@@ -33,139 +33,150 @@ namespace SolidCP.Providers.OS
 		#endregion
 
 		#region Files
+
+		public string UnixPath(string path) => path.Replace('\\', Path.DirectorySeparatorChar);
+
+		public string PathCombine(params string[] segments) => Path.Combine(segments);
+
 		public virtual string CreatePackageFolder(string initialPath)
 		{
-			return FileUtils.CreatePackageFolder(initialPath);
+			return FileUtils.CreatePackageFolder(UnixPath(initialPath));
 		}
 
 		public virtual bool FileExists(string path)
 		{
-			return FileUtils.FileExists(path);
+			return FileUtils.FileExists(UnixPath(path));
 		}
 
 		public virtual bool DirectoryExists(string path)
 		{
-			return FileUtils.DirectoryExists(path);
+			return FileUtils.DirectoryExists(UnixPath(path));
 		}
 
 		public virtual SystemFile GetFile(string path)
 		{
-			return FileUtils.GetFile(path);
+			return FileUtils.GetFile(UnixPath(path));
 		}
 
 		public virtual SystemFile[] GetFiles(string path)
 		{
-			return FileUtils.GetFiles(path);
+			return FileUtils.GetFiles(UnixPath(path));
 		}
 
 		public virtual SystemFile[] GetDirectoriesRecursive(string rootFolder, string path)
 		{
-			return FileUtils.GetDirectoriesRecursive(rootFolder, path);
+			return FileUtils.GetDirectoriesRecursive(rootFolder, UnixPath(path));
 		}
 
 		public virtual SystemFile[] GetFilesRecursive(string rootFolder, string path)
 		{
-			return FileUtils.GetFilesRecursive(rootFolder, path);
+			return FileUtils.GetFilesRecursive(rootFolder, UnixPath(path));
 		}
 
 		public virtual SystemFile[] GetFilesRecursiveByPattern(string rootFolder, string path, string pattern)
 		{
-			return FileUtils.GetFilesRecursiveByPattern(rootFolder, path, pattern);
+			return FileUtils.GetFilesRecursiveByPattern(rootFolder, UnixPath(path), pattern);
 		}
 
 		public virtual byte[] GetFileBinaryContent(string path)
 		{
-			return FileUtils.GetFileBinaryContent(path);
+			return FileUtils.GetFileBinaryContent(UnixPath(path));
 		}
 
 		public virtual byte[] GetFileBinaryContentUsingEncoding(string path, string encoding)
 		{
-			return FileUtils.GetFileBinaryContent(path, encoding);
+			return FileUtils.GetFileBinaryContent(UnixPath(path), encoding);
 		}
 
 		public virtual byte[] GetFileBinaryChunk(string path, int offset, int length)
 		{
-			return FileUtils.GetFileBinaryChunk(path, offset, length);
+			return FileUtils.GetFileBinaryChunk(UnixPath(path), offset, length);
 		}
 
 		public virtual string GetFileTextContent(string path)
 		{
-			return FileUtils.GetFileTextContent(path);
+			return FileUtils.GetFileTextContent(UnixPath(path));
 		}
 
 		public virtual void CreateFile(string path)
 		{
-			FileUtils.CreateFile(path);
+			FileUtils.CreateFile(UnixPath(path));
 		}
 
 		public virtual void CreateDirectory(string path)
 		{
-			FileUtils.CreateDirectory(path);
+			FileUtils.CreateDirectory(UnixPath(path));
 		}
 
 		public virtual void ChangeFileAttributes(string path, DateTime createdTime, DateTime changedTime)
 		{
-			FileUtils.ChangeFileAttributes(path, createdTime, changedTime);
+			FileUtils.ChangeFileAttributes(UnixPath(path), createdTime, changedTime);
 		}
 
 		public virtual void DeleteFile(string path)
 		{
-			FileUtils.DeleteFile(path);
+			FileUtils.DeleteFile(UnixPath(path));
 		}
 
 		public virtual void DeleteFiles(string[] files)
 		{
-			FileUtils.DeleteFiles(files);
+			FileUtils.DeleteFiles(files
+				.Select(file => UnixPath(file))
+				.ToArray());
 		}
 
 		public virtual void DeleteEmptyDirectories(string[] directories)
 		{
-			FileUtils.DeleteEmptyDirectories(directories);
+			FileUtils.DeleteEmptyDirectories(directories
+				.Select(dir => UnixPath(dir))
+				.ToArray());
 		}
 
 		public virtual void UpdateFileBinaryContent(string path, byte[] content)
 		{
-			FileUtils.UpdateFileBinaryContent(path, content);
+			FileUtils.UpdateFileBinaryContent(UnixPath(path), content);
 		}
 
 		public virtual void UpdateFileBinaryContentUsingEncoding(string path, byte[] content, string encoding)
 		{
-			FileUtils.UpdateFileBinaryContent(path, content, encoding);
+			FileUtils.UpdateFileBinaryContent(UnixPath(path), content, encoding);
 		}
 
 		public virtual void AppendFileBinaryContent(string path, byte[] chunk)
 		{
-			FileUtils.AppendFileBinaryContent(path, chunk);
+			FileUtils.AppendFileBinaryContent(UnixPath(path), chunk);
 		}
 
 		public virtual void UpdateFileTextContent(string path, string content)
 		{
-			FileUtils.UpdateFileTextContent(path, content);
+			FileUtils.UpdateFileTextContent(UnixPath(path), content);
 		}
 
 		public virtual void MoveFile(string sourcePath, string destinationPath)
 		{
-			FileUtils.MoveFile(sourcePath, destinationPath);
+			FileUtils.MoveFile(UnixPath(sourcePath), UnixPath(destinationPath));
 		}
 
 		public virtual void CopyFile(string sourcePath, string destinationPath)
 		{
-			FileUtils.CopyFile(sourcePath, destinationPath);
+			FileUtils.CopyFile(UnixPath(sourcePath), UnixPath(destinationPath));
 		}
 
 		public virtual void ZipFiles(string zipFile, string rootPath, string[] files)
 		{
-			FileUtils.ZipFiles(zipFile, rootPath, files);
+			FileUtils.ZipFiles(UnixPath(zipFile), UnixPath(rootPath), files
+				.Select(file => UnixPath(file))
+				.ToArray());
 		}
 
 		public virtual string[] UnzipFiles(string zipFile, string destFolder)
 		{
-			return FileUtils.UnzipFiles(zipFile, destFolder);
+			return FileUtils.UnzipFiles(UnixPath(zipFile), UnixPath(destFolder));
 		}
 
 		public virtual void CreateBackupZip(string zipFile, string rootPath)
 		{
-			FileUtils.CreateBackupZip(zipFile, rootPath);
+			FileUtils.CreateBackupZip(UnixPath(zipFile), UnixPath(rootPath));
 		}
 		#endregion
 
@@ -289,7 +300,7 @@ namespace SolidCP.Providers.OS
 
 		public UnixFileMode GetUnixPermissions(string path)
 		{
-			var info = UnixFileInfo.GetFileSystemEntry(path);
+			var info = UnixFileInfo.GetFileSystemEntry(UnixPath(path));
 			if (info != null && info.Exists) return (UnixFileMode)info.FileAccessPermissions;
 			throw new FileNotFoundException(path);
 		}
@@ -298,7 +309,7 @@ namespace SolidCP.Providers.OS
 		{
 			if (!resetChildPermissions)
 			{
-				var info = Mono.Unix.UnixFileSystemInfo.GetFileSystemEntry(path);
+				var info = Mono.Unix.UnixFileSystemInfo.GetFileSystemEntry(UnixPath(path));
 				if (info != null && info.Exists)
 				{
 					info.FileAccessPermissions = (FileAccessPermissions)mode;
@@ -308,7 +319,7 @@ namespace SolidCP.Providers.OS
 			}
 			else
 			{
-				foreach (var e in Directory.EnumerateFileSystemEntries(path))
+				foreach (var e in Directory.EnumerateFileSystemEntries(UnixPath(path)))
 				{
 					var info = Mono.Unix.UnixFileSystemInfo.GetFileSystemEntry(e);
 					if (info != null && info.Exists)
@@ -325,7 +336,7 @@ namespace SolidCP.Providers.OS
 		{
 			if (!setChildren)
 			{
-				var info = Mono.Unix.UnixFileSystemInfo.GetFileSystemEntry(path);
+				var info = Mono.Unix.UnixFileSystemInfo.GetFileSystemEntry(UnixPath(path));
 				if (info != null && info.Exists)
 				{
 					info.SetOwner(owner, group);
@@ -334,7 +345,7 @@ namespace SolidCP.Providers.OS
 			}
 			else
 			{
-				foreach (var e in Directory.EnumerateFileSystemEntries(path))
+				foreach (var e in Directory.EnumerateFileSystemEntries(UnixPath(path)))
 				{
 					var info = Mono.Unix.UnixFileSystemInfo.GetFileSystemEntry(e);
 					if (info != null && info.Exists)
@@ -357,7 +368,7 @@ namespace SolidCP.Providers.OS
 
 		public void DeleteDirectoryRecursive(string rootPath)
 		{
-			FileUtils.DeleteDirectoryRecursive(rootPath);
+			FileUtils.DeleteDirectoryRecursive(UnixPath(rootPath));
 		}
 
 		public override bool IsInstalled()
@@ -443,7 +454,7 @@ namespace SolidCP.Providers.OS
 			return Regex.Replace(fullpath.Substring(logDir.Length), "(?:\\.?[0-9]+)?(?:\\.log(?:\\.gz)?$)", "");
 		}
 
-		public IEnumerable<string> EnumerateLogFiles(string path)
+		protected IEnumerable<string> EnumerateLogFiles(string path)
 		{
 			string[] files = null;
 			try
