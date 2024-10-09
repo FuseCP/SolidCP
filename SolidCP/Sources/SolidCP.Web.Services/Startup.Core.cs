@@ -33,6 +33,17 @@ namespace SolidCP.Web.Services
 {
 	public static class StartupCore
 	{
+
+		public const int KB = Configuration.KB;
+		public const int MB = Configuration.MB;
+		public const int MaxReceivedMessageSize = Configuration.MaxReceivedMessageSize;
+		public const int MaxBufferSize = Configuration.MaxBufferSize;
+		public const int MaxBytesPerRead = Configuration.MaxBytesPerRead;
+		public const int MaxDepth = Configuration.MaxDepth;
+		public const int MaxArrayLength = Configuration.MaxArrayLength;
+		public const int MaxStringContentLength = Configuration.MaxStringContentLength;
+		public const int MaxNameTableCharCount = Configuration.MaxNameTableCharCount;
+
 		public const bool AllowInsecureHttp = Configuration.AllowInsecureHttp;
 		public static void Log(string msg)
 		{
@@ -260,6 +271,34 @@ namespace SolidCP.Web.Services
 
 		public static IServiceBuilder AddServiceEndpoint(this IServiceBuilder builder, Type service, Type contract, Binding binding, Uri address)
 		{
+			var readerQuotas = new XmlDictionaryReaderQuotas
+			{
+				MaxBytesPerRead = MaxBytesPerRead,
+				MaxDepth = MaxDepth,
+				MaxArrayLength = MaxArrayLength,
+				MaxStringContentLength = MaxStringContentLength,
+				MaxNameTableCharCount = MaxNameTableCharCount
+			};
+			if (binding is BasicHttpBinding basicBinding)
+			{
+				basicBinding.MaxReceivedMessageSize = MaxReceivedMessageSize;
+				basicBinding.MaxBufferSize = MaxBufferSize;
+				basicBinding.ReaderQuotas = readerQuotas;
+			} else if (binding is WSHttpBinding wsBinding)
+			{
+				wsBinding.MaxReceivedMessageSize = MaxReceivedMessageSize;
+				wsBinding.ReaderQuotas = readerQuotas;
+			} else if (binding is NetHttpBinding netBinding)
+			{
+				netBinding.MaxReceivedMessageSize = MaxReceivedMessageSize;
+				netBinding.MaxBufferSize = MaxBufferSize;
+				netBinding.ReaderQuotas = readerQuotas;
+			} else if (binding is NetTcpBinding tcpBinding)
+			{
+				tcpBinding.MaxReceivedMessageSize = MaxReceivedMessageSize;
+				tcpBinding.MaxBufferSize = MaxBufferSize;
+				tcpBinding.ReaderQuotas = readerQuotas;
+			}
 			builder.AddServiceEndpoint(service, contract, binding, address, address, conf => conf.EndpointBehaviors.Add(new SoapHeaderMessageInspector()));
 			return builder;
 		}
@@ -267,14 +306,14 @@ namespace SolidCP.Web.Services
 		{
 			var readerQuotas = new XmlDictionaryReaderQuotas
 			{
-				MaxBytesPerRead = 4096,
-				MaxDepth = 32000,
-				MaxArrayLength = 16384000,
-				MaxStringContentLength = 16384000,
-				MaxNameTableCharCount = 16384000
+				MaxBytesPerRead = MaxBytesPerRead,
+				MaxDepth = MaxDepth,
+				MaxArrayLength = MaxArrayLength,
+				MaxStringContentLength = MaxStringContentLength,
+				MaxNameTableCharCount = MaxNameTableCharCount
 			};
-			binding.MaxReceivedMessageSize = int.MaxValue;
-			binding.MaxBufferSize = int.MaxValue;
+			binding.MaxReceivedMessageSize = MaxReceivedMessageSize;
+			binding.MaxBufferSize = MaxBufferSize;
 			binding.ReaderQuotas = readerQuotas;
 			builder.AddServiceWebEndpoint(service, contract, binding, address, address, behavior =>
 			{
