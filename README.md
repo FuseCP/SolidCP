@@ -7,3 +7,5 @@ To download the latest Binaries or find more information visit our website at:
 [solidcp.com](https://solidcp.com)
 
 Here are some [tutorials for SolidCP](https://www.youtube.com/playlist?list=PLViYFEOr_vWBMyf_Co7RXs9rDQQK4y5pj).
+
+Here's a [programmer's introduction video to the SolidCP Linux port](https://youtu.be/RBxv2wvfMdw).

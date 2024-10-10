@@ -122,11 +122,11 @@ namespace SolidCP.EnterpriseServer
 		public DataProvider(ControllerBase provider) : base() { Provider = provider; }
 		public DataProvider(string connectionString) : base(connectionString) { Provider = null; }
 
-		private DataProvider local = null;
-		public DataProvider Local => local ??= new DataProvider();
+		private DataProvider clone = null;
+		public new DataProvider Clone => clone ??= new DataProvider(ConnectionString);
 		public override void Dispose()
 		{
-			local?.Dispose();
+			clone?.Dispose();
 			base.Dispose();
 		}
 
@@ -1014,7 +1014,7 @@ END
 				//	CheckUserParent(actorId, c.UserId));
 				.Where(c => c.ItemId == itemId && c.ItemTypeId == itemTypeId)
 				.AsEnumerable()
-				.Where(c => Local.CheckUserParent(actorId, c.UserId));
+				.Where(c => Clone.CheckUserParent(actorId, c.UserId));
 
 			var sb = new StringBuilder();
 			foreach (var comment in comments)
@@ -1207,7 +1207,7 @@ RETURN
 							u.Created,
 							u.Changed,
 							u.IsDemo,
-							Comments = Local.GetItemComments(u.UserId, "USER", actorId),
+							Comments = Clone.GetItemComments(u.UserId, "USER", actorId),
 							u.IsPeer,
 							u.Username,
 							u.FirstName,
@@ -5137,7 +5137,7 @@ AS
 						MfaMode = u.MfaMode,
 						PinSecret = CanGetUserPassword(actorId, u.UserId) ? u.PinSecret : ""
 					})
-					.Where(u => Local.CanGetUserDetails(actorId, u.UserId));
+					.Where(u => Clone.CanGetUserDetails(actorId, u.UserId));
 
 				return EntityDataReader(user);
 			}
@@ -11459,7 +11459,7 @@ END
 						d.IsDomainPointer
 					})
 					.AsEnumerable()
-					.Where(d => Local.CheckActorPackageRights(actorId, d.PackageId));
+					.Where(d => Clone.CheckActorPackageRights(actorId, d.PackageId));
 				return EntityDataReader(domains);
 			}
 			else
@@ -11534,7 +11534,7 @@ RETURN
 						d.IsDomainPointer
 					})
 					.AsEnumerable()
-					.Where(d => Local.CheckActorPackageRights(actorId, d.PackageId));
+					.Where(d => Clone.CheckActorPackageRights(actorId, d.PackageId));
 				return EntityDataSet(domains);
 			}
 			else
@@ -11606,7 +11606,7 @@ RETURN
 						d.IsDomainPointer
 					})
 					.AsEnumerable()
-					.Where(d => Local.CheckActorPackageRights(actorId, d.PackageId));
+					.Where(d => Clone.CheckActorPackageRights(actorId, d.PackageId));
 				return EntityDataSet(domains);
 			}
 			else
@@ -14188,7 +14188,7 @@ RETURN
 						i.Item.CreatedDate
 					})
 					.AsEnumerable()
-					.Where(s => Local.CheckActorPackageRights(actorId, s.PackageId));
+					.Where(s => Clone.CheckActorPackageRights(actorId, s.PackageId));
 
 				// select item properties, get corresponding item properties
 				var properties = ServiceItemProperties
@@ -17154,8 +17154,8 @@ RETURN
 						g.GroupName,
 						g.Enabled,
 						ParentEnabled = g.GroupName == "Service Levels" ?
-							Local.GetPackageServiceLevelResource(packageId, g.GroupId, serverId) :
-							Local.GetPackageAllocatedResource(packageId, g.GroupId, serverId),
+							Clone.GetPackageServiceLevelResource(packageId, g.GroupId, serverId) :
+							Clone.GetPackageAllocatedResource(packageId, g.GroupId, serverId),
 						g.CalculateDiskSpace,
 						g.CalculateBandwidth
 					});
@@ -17189,7 +17189,7 @@ RETURN
 						q.QuotaDescription,
 						q.QuotaTypeId,
 						q.QuotaValue,
-						ParentQuotaValue = Local.GetPackageAllocatedQuota(packageId, q.QuotaId),
+						ParentQuotaValue = Clone.GetPackageAllocatedQuota(packageId, q.QuotaId),
 					});
 
 				return EntityDataSet(groups, quotas);
@@ -18066,7 +18066,7 @@ RETURN
 						p.PlanId,
 						p.PurchaseDate,
 						p.StatusIdChangeDate,
-						Comments = Local.GetItemComments(p.PackageId, "PACKAGE", actorId),
+						Comments = Clone.GetItemComments(p.PackageId, "PACKAGE", actorId),
 						// server
 						p.ServerId,
 						p.ServerName,
@@ -18647,7 +18647,7 @@ RETURN
 							p.PackageName,
 							p.StatusId,
 							p.PurchaseDate,
-							Comments = Local.GetItemComments(p.PackageId, "PACKAGE", actorId),
+							Comments = Clone.GetItemComments(p.PackageId, "PACKAGE", actorId),
 							// server
 							p.ServerId,
 							p.ServerName,
@@ -18860,7 +18860,7 @@ RETURN
 						p.StatusId,
 						p.PurchaseDate,
 						p.StatusIdChangeDate,
-						Comments = Local.GetItemComments(p.PackageId, "PACKAGE", actorId),
+						Comments = Clone.GetItemComments(p.PackageId, "PACKAGE", actorId),
 						// server
 						p.ServerId,
 						p.ServerName,
@@ -20079,8 +20079,8 @@ RETURN
 						CalculateBandwidth = hr != null ? hr.CalculateBandwidth : false,
 					})
 					.AsEnumerable()
-					.Where(r => r.GroupName != "Service Levels" && Local.GetPackageAllocatedResource(packageId, r.GroupId, 0) ||
-						r.GroupName == "Service Levels" && Local.GetPackageServiceLevelResource(packageId, r.GroupId, 0))
+					.Where(r => r.GroupName != "Service Levels" && Clone.GetPackageAllocatedResource(packageId, r.GroupId, 0) ||
+						r.GroupName == "Service Levels" && Clone.GetPackageServiceLevelResource(packageId, r.GroupId, 0))
 					.Select(g => new
 					{
 						g.GroupId,
@@ -20088,8 +20088,8 @@ RETURN
 						g.CalculateDiskSpace,
 						g.CalculateBandwidth,
 						ParentEnabled = g.GroupName == "Service Levels" ?
-							Local.GetPackageServiceLevelResource(package?.ParentPackageId, g.GroupId, 0) :
-							Local.GetPackageAllocatedResource(package?.ParentPackageId, g.GroupId, 0)
+							Clone.GetPackageServiceLevelResource(package?.ParentPackageId, g.GroupId, 0) :
+							Clone.GetPackageAllocatedResource(package?.ParentPackageId, g.GroupId, 0)
 					});
 
 				// return quotas
@@ -20103,7 +20103,7 @@ RETURN
 					.Select(q => new
 					{
 						Quota = q,
-						AllocatedQuota = Local.GetPackageAllocatedQuota(packageId, q.QuotaId)
+						AllocatedQuota = Clone.GetPackageAllocatedQuota(packageId, q.QuotaId)
 					})
 					.Select(q => new
 					{
@@ -20116,8 +20116,8 @@ RETURN
 							q.AllocatedQuota * nofOrgs :
 							q.AllocatedQuota,
 						QuotaValuePerOrganization = q.AllocatedQuota,
-						ParentQuotaValue = Local.GetPackageAllocatedQuota(package?.ParentPackageId, q.Quota.QuotaId),
-						QuotaUsedValue = Local.CalculateQuotaUsage(packageId, q.Quota.QuotaId),
+						ParentQuotaValue = Clone.GetPackageAllocatedQuota(package?.ParentPackageId, q.Quota.QuotaId),
+						QuotaUsedValue = Clone.CalculateQuotaUsage(packageId, q.Quota.QuotaId),
 						q.Quota.PerOrganization
 					});
 				return EntityDataSet(groups, quotas);
@@ -20224,15 +20224,15 @@ RETURN
 						CalculateBandwidth = hr != null ? hr.CalculateBandwidth : false,
 					})
 					.AsEnumerable()
-					.Where(r => r.GroupName != "Service Levels" && Local.GetPackageAllocatedResource(packageId, r.GroupId, 0) ||
-						r.GroupName == "Service Levels" && Local.GetPackageServiceLevelResource(packageId, r.GroupId, 0))
+					.Where(r => r.GroupName != "Service Levels" && Clone.GetPackageAllocatedResource(packageId, r.GroupId, 0) ||
+						r.GroupName == "Service Levels" && Clone.GetPackageServiceLevelResource(packageId, r.GroupId, 0))
 					.Select(g => new
 					{
 						g.GroupId,
 						g.GroupName,
 						ParentEnabled = g.GroupName == "Service Levels" ?
-							Local.GetPackageServiceLevelResource(package.ParentPackageId, g.GroupId, 0) :
-							Local.GetPackageAllocatedResource(package.ParentPackageId, g.GroupId, 0)
+							Clone.GetPackageServiceLevelResource(package.ParentPackageId, g.GroupId, 0) :
+							Clone.GetPackageAllocatedResource(package.ParentPackageId, g.GroupId, 0)
 					});
 				// return quotas
 				var nofOrgs = GetPackageAllocatedQuota(packageId, 205); // 205 - HostedSolution.Organizations
@@ -20245,7 +20245,7 @@ RETURN
 					.Select(q => new
 					{
 						Quota = q,
-						AllocatedQuota = Local.GetPackageAllocatedQuota(packageId, q.QuotaId)
+						AllocatedQuota = Clone.GetPackageAllocatedQuota(packageId, q.QuotaId)
 					})
 					.Select(q => new
 					{
@@ -20258,8 +20258,8 @@ RETURN
 							q.AllocatedQuota * nofOrgs :
 							q.AllocatedQuota,
 						QuotaValuePerOrganization = q.AllocatedQuota,
-						ParentQuotaValue = Local.GetPackageAllocatedQuota(package.ParentPackageId, q.Quota.QuotaId),
-						QuotaUsedValue = Local.CalculateQuotaUsage(packageId, q.Quota.QuotaId),
+						ParentQuotaValue = Clone.GetPackageAllocatedQuota(package.ParentPackageId, q.Quota.QuotaId),
+						QuotaUsedValue = Clone.CalculateQuotaUsage(packageId, q.Quota.QuotaId),
 						q.Quota.PerOrganization
 					});
 				return EntityDataSet(groups, quotas);
@@ -20363,11 +20363,11 @@ RETURN
 					.Select(g => new
 					{
 						Enabled = g.GroupName == "Service Levels" ?
-							Local.GetPackageServiceLevelResource(packageId, g.GroupId, package.ServerId) :
-							Local.GetPackageAllocatedResource(packageId, g.GroupId, package.ServerId),
+							Clone.GetPackageServiceLevelResource(packageId, g.GroupId, package.ServerId) :
+							Clone.GetPackageAllocatedResource(packageId, g.GroupId, package.ServerId),
 						ParentEnabled = g.GroupName == "Service Levels" ?
-							Local.GetPackageServiceLevelResource(package.ParentPackageId, g.GroupId, package.ServerId) :
-							Local.GetPackageAllocatedResource(package.ParentPackageId, g.GroupId, package.ServerId)
+							Clone.GetPackageServiceLevelResource(package.ParentPackageId, g.GroupId, package.ServerId) :
+							Clone.GetPackageAllocatedResource(package.ParentPackageId, g.GroupId, package.ServerId)
 					});
 				// return quotas
 				var nofOrgs = GetPackageAllocatedQuota(packageId, 205); // 205 - HostedSolution.Organizations
@@ -20380,7 +20380,7 @@ RETURN
 					.Select(q => new
 					{
 						Quota = q,
-						AllocatedQuota = Local.GetPackageAllocatedQuota(packageId, q.QuotaId)
+						AllocatedQuota = Clone.GetPackageAllocatedQuota(packageId, q.QuotaId)
 					})
 					.Select(q => new
 					{
@@ -20393,8 +20393,8 @@ RETURN
 							q.AllocatedQuota * nofOrgs :
 							q.AllocatedQuota,
 						QuotaValuePerOrganization = q.AllocatedQuota,
-						ParentQuotaValue = Local.GetPackageAllocatedQuota(package.ParentPackageId, q.Quota.QuotaId),
-						QuotaUsedValue = Local.CalculateQuotaUsage(packageId, q.Quota.QuotaId),
+						ParentQuotaValue = Clone.GetPackageAllocatedQuota(package.ParentPackageId, q.Quota.QuotaId),
+						QuotaUsedValue = Clone.CalculateQuotaUsage(packageId, q.Quota.QuotaId),
 						q.Quota.PerOrganization
 					});
 				return EntityDataSet(groups, quotas);
@@ -21834,7 +21834,7 @@ RETURN
 					.ToArray();
 				var groups = ResourceGroups
 					.AsEnumerable()
-					.Where(r => Local.GetPackageAllocatedResource(packageId, r.GroupId, null) &&
+					.Where(r => Clone.GetPackageAllocatedResource(packageId, r.GroupId, null) &&
 						!packageGroups.Contains(r.GroupId))
 					.Select(r => new { r.GroupId, PrimaryGroup = r.GroupId == package.Server.PrimaryGroupId });
 
@@ -22278,7 +22278,7 @@ RETURN
 					.Select(q => new
 					{
 						Quota = q,
-						AllocatedQuota = Local.GetPackageAllocatedQuota(packageId, q.QuotaId)
+						AllocatedQuota = Clone.GetPackageAllocatedQuota(packageId, q.QuotaId)
 					})
 					.Select(q => new
 					{
@@ -22289,7 +22289,7 @@ RETURN
 						QuotaAllocatedValue = q.Quota.PerOrganization == 1 && q.AllocatedQuota != -1 ?
 							q.AllocatedQuota * orgsCount : q.AllocatedQuota,
 						QuotaAllocatedValuePerOrganization = q.AllocatedQuota,
-						QuotaUsedValue = Local.CalculateQuotaUsage(packageId, q.Quota.QuotaId)
+						QuotaUsedValue = Clone.CalculateQuotaUsage(packageId, q.Quota.QuotaId)
 					});
 				return EntityDataReader(quotas);
 			}
@@ -23069,7 +23069,7 @@ RETURN
 					{
 						Package = p,
 						QuotaValue = p.GroupedPackageId != null ?
-							Local.GetPackageAllocatedQuota(p.GroupedPackageId, 51) : 0
+							Clone.GetPackageAllocatedQuota(p.GroupedPackageId, 51) : 0
 					})
 					.Select(p => new
 					{
@@ -23088,7 +23088,7 @@ RETURN
 						p.Package.FullName,
 						p.Package.RoleId,
 						p.Package.Email,
-						UserComments = Local.GetItemComments(p.Package.UserId, "USER", actorId)
+						UserComments = Clone.GetItemComments(p.Package.UserId, "USER", actorId)
 					});
 
 				if (string.IsNullOrEmpty(sortColumn))
@@ -23318,7 +23318,7 @@ RETURN
 					{
 						Package = p,
 						QuotaValue = p.GroupedPackageId != null ?
-							Local.GetPackageAllocatedQuota(p.GroupedPackageId, 51) : 0,
+							Clone.GetPackageAllocatedQuota(p.GroupedPackageId, 51) : 0,
 					})
 					.Select(p => new
 					{
@@ -23337,7 +23337,7 @@ RETURN
 						p.Package.FullName,
 						p.Package.RoleId,
 						p.Package.Email,
-						UserComments = Local.GetItemComments(p.Package.UserId, "USER", actorId)
+						UserComments = Clone.GetItemComments(p.Package.UserId, "USER", actorId)
 					});
 
 				if (string.IsNullOrEmpty(sortColumn))
@@ -25229,7 +25229,7 @@ RETURN
 				var schedule = Schedules
 					.Where(s => s.ScheduleId == scheduleId)
 					.AsEnumerable()
-					.Where(s => Local.CheckActorPackageRights(actorId, s.PackageId))
+					.Where(s => Clone.CheckActorPackageRights(actorId, s.PackageId))
 					.Take(1)
 					.Select(s => new
 					{
@@ -26221,7 +26221,7 @@ RETURN
 				var comments = Comments
 					.Where(c => c.ItemTypeId == itemTypeId && c.ItemId == itemId)
 					.AsEnumerable()
-					.Where(c => Local.CheckUserParent(userId, c.UserId))
+					.Where(c => Clone.CheckUserParent(userId, c.UserId))
 					.OrderBy(c => c.CreatedDate)
 					.Select(c => new
 					{
@@ -33731,7 +33731,7 @@ END
 					.Where(ip => ip.ItemId == itemId)
 					.Include(ip => ip.Item)
 					.AsEnumerable()
-					.Where(ip => Local.CheckActorPackageRights(actorId, ip.Item.PackageId));
+					.Where(ip => Clone.CheckActorPackageRights(actorId, ip.Item.PackageId));
 
 				foreach (var ip in addresses) ip.IsPrimary = ip.DmzAddressId == dmzAddressId;
 
@@ -33775,7 +33775,7 @@ END
 					.Where(ip => ip.DmzAddressId == dmzAddressId)
 					.Include(ip => ip.Item)
 					.AsEnumerable()
-					.Where(ip => Local.CheckActorPackageRights(actorId, ip.Item.PackageId));
+					.Where(ip => Clone.CheckActorPackageRights(actorId, ip.Item.PackageId));
 
 				DmzIpAddresses.RemoveRange(addresses);
 
@@ -33829,7 +33829,7 @@ END
 					})
 					.OrderBy(ip => ip.IsPrimary)
 					.AsEnumerable()
-					.Where(ip => Local.CheckActorPackageRights(actorId, ip.PackageId))
+					.Where(ip => Clone.CheckActorPackageRights(actorId, ip.PackageId))
 					.Select(ip => new
 					{
 						ip.AddressId,
@@ -33875,7 +33875,7 @@ END
 					.Where(ip => ip.ItemId == itemId)
 					.Include(ip => ip.Item)
 					.AsEnumerable()
-					.Where(ip => Local.CheckActorPackageRights(actorId, ip.Item.PackageId));
+					.Where(ip => Clone.CheckActorPackageRights(actorId, ip.Item.PackageId));
 
 				DmzIpAddresses.RemoveRange(addresses);
 
@@ -33940,7 +33940,7 @@ END
 					.OrderBy(a => a.Address.DefaultGateway)
 					.ThenBy(a => a.Address.ExternalIp)
 					.AsEnumerable()
-					.Where(a => Local.CheckActorPackageRights(actorId, a.PackageId))
+					.Where(a => Clone.CheckActorPackageRights(actorId, a.PackageId))
 					.Select(a => new
 					{
 						a.PackageAddressId,
@@ -34078,7 +34078,7 @@ RETURN
 					})
 					.OrderByDescending(a => a.IsPrimary)
 					.AsEnumerable()
-					.Where(a => Local.CheckActorPackageRights(actorId, a.PackageId));
+					.Where(a => Clone.CheckActorPackageRights(actorId, a.PackageId));
 				return EntityDataReader(addresses);
 			}
 			else
@@ -34120,7 +34120,7 @@ END
 				var address = PackageIpAddresses
 					.Where(a => a.PackageAddressId == packageAddressId)
 					.AsEnumerable()
-					.Where(a => Local.CheckActorPackageRights(actorId, a.PackageId))
+					.Where(a => Clone.CheckActorPackageRights(actorId, a.PackageId))
 					.FirstOrDefault();
 				if (address != null)
 				{
@@ -34326,7 +34326,7 @@ RETURN
 					.Where(a => a.ItemId == itemId)
 					.OrderByDescending(a => a.IsPrimary)
 					.AsEnumerable()
-					.Where(a => Local.CheckActorPackageRights(actorId, a.Item.PackageId))
+					.Where(a => Clone.CheckActorPackageRights(actorId, a.Item.PackageId))
 					.Select(a => new
 					{
 						AddressId = a.PrivateAddressId,
@@ -34484,7 +34484,7 @@ END
 						.Include(a => a.Item)
 						.Where(pa => pa.PrivateAddressId == privateAddressId)
 						.AsEnumerable()
-						.Where(pa => Local.CheckActorPackageRights(actorId, pa.Item.PackageId)));
+						.Where(pa => Clone.CheckActorPackageRights(actorId, pa.Item.PackageId)));
 				return SaveChanges();
 			}
 			else
@@ -34524,7 +34524,7 @@ END
 						.Include(a => a.Item)
 						.Where(pa => pa.ItemId == itemId)
 						.AsEnumerable()
-						.Where(pa => Local.CheckActorPackageRights(actorId, pa.Item.PackageId)));
+						.Where(pa => Clone.CheckActorPackageRights(actorId, pa.Item.PackageId)));
 				return SaveChanges();
 			}
 			else
@@ -35714,7 +35714,7 @@ RETURN
 						i.PackageId
 					})
 					.AsEnumerable()
-					.Where(c => Local.CheckActorPackageRights(actorId, c.PackageId));
+					.Where(c => Clone.CheckActorPackageRights(actorId, c.PackageId));
 				return EntityDataReader(cert);
 			}
 			else

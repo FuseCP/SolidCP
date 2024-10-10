@@ -7581,3 +7581,23 @@ BEGIN
 END $EF$;
 COMMIT;
 
+START TRANSACTION;
+
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241010082011_FixUsersHomeForUnix') THEN
+    UPDATE public."ServiceDefaultProperties" SET "PropertyValue" = '/var/www/HostingSpaces'
+    WHERE "PropertyName" = 'UsersHome' AND "ProviderID" = 500;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241010082011_FixUsersHomeForUnix') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20241010082011_FixUsersHomeForUnix', '8.0.8');
+    END IF;
+END $EF$;
+COMMIT;
+

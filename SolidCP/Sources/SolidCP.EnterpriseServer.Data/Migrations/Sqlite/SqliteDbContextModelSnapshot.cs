@@ -12787,7 +12787,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         {
                             ProviderId = 500,
                             PropertyName = "UsersHome",
-                            PropertyValue = "%HOME%"
+                            PropertyValue = "/var/www/HostingSpaces"
                         },
                         new
                         {

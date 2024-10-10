@@ -6736,6 +6736,8 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="ProviderControls\App_LocalResources\Proxmox_Settings.ascx.de-DE.resx" />
+    <Content Include="ProviderControls\App_LocalResources\Windows2016_Settings.ascx.resx" />
+    <Content Include="ProviderControls\App_LocalResources\Windows2016_Settings.ascx.de-DE.resx" />
     <EmbeddedResource Include="RDS\App_LocalResources\RDSEditCollectionSettings.ascx.resx" />
     <Content Include="RDSServersEditServer.ascx" />
     <Content Include="RDS\AssignedRDSServers.ascx" />

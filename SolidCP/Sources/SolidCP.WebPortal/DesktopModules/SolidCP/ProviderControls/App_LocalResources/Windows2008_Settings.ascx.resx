@@ -120,6 +120,9 @@
   <data name="chkEnableHardQuota.Text" xml:space="preserve">
     <value>Enable Hard Quota:</value>
   </data>
+  <data name="lblFileServiceInfo" xml:space="preserve">
+    <value>Install File Services role on the file server to enable the check box</value>
+  </data>
   <data name="lblLocationDrive.Text" xml:space="preserve">
     <value>Location Drive:</value>
   </data>

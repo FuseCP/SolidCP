@@ -12911,7 +12911,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                         {
                             ProviderId = 500,
                             PropertyName = "UsersHome",
-                            PropertyValue = "%HOME%"
+                            PropertyValue = "/var/www/HostingSpaces"
                         },
                         new
                         {

@@ -28,7 +28,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <asp:Label runat="server" ID="lblFileServiceInfo" Text="Install File Services role on the file server to enable the check box" Font-Italic="true" Visible="false"></asp:Label></td>
+                        <asp:Label runat="server" ID="lblFileServiceInfo" meta:resourcekey="lblFileServiceInfo" Text="Install File Services role on the file server to enable the check box" Font-Italic="true" Visible="false"></asp:Label></td>
                 </tr>
             </table>
         </td>

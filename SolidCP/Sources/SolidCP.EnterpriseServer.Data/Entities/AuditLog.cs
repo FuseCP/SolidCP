@@ -38,14 +38,14 @@ public partial class AuditLog
     //[Column(TypeName = "datetime")]
     public DateTime FinishDate { get; set; }
 
-    [Required]
+    [Required(AllowEmptyStrings = true)]
     [StringLength(50)]
 #if NetCore
     [Unicode(false)]
 #endif
     public string SourceName { get; set; }
 
-    [Required]
+    [Required(AllowEmptyStrings = true)]
     [StringLength(50)]
 #if NetCore
     [Unicode(false)]
