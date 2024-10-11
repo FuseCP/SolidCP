@@ -85,9 +85,9 @@ namespace SolidCP.Setup
 			this.label4 = new System.Windows.Forms.Label();
 			this.label5 = new System.Windows.Forms.Label();
 			this.tabSqlite = new System.Windows.Forms.TabPage();
+			this.label7 = new System.Windows.Forms.Label();
 			this.txtSqliteDatabase = new System.Windows.Forms.TextBox();
 			this.label6 = new System.Windows.Forms.Label();
-			this.label7 = new System.Windows.Forms.Label();
 			this.tabControl.SuspendLayout();
 			this.tabSqlServer.SuspendLayout();
 			this.tabMySql.SuspendLayout();
@@ -338,6 +338,15 @@ namespace SolidCP.Setup
 			this.tabSqlite.TabIndex = 2;
 			this.tabSqlite.Text = "  SQLite  ";
 			// 
+			// label7
+			// 
+			this.label7.AutoSize = true;
+			this.label7.Location = new System.Drawing.Point(40, 87);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(309, 13);
+			this.label7.TabIndex = 23;
+			this.label7.Text = "(Usage of SQLite on a production server is not recommended.)";
+			// 
 			// txtSqliteDatabase
 			// 
 			this.txtSqliteDatabase.Location = new System.Drawing.Point(127, 24);
@@ -354,15 +363,6 @@ namespace SolidCP.Setup
 			this.label6.Size = new System.Drawing.Size(100, 23);
 			this.label6.TabIndex = 21;
 			this.label6.Text = "Database:";
-			// 
-			// label7
-			// 
-			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(40, 87);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(309, 13);
-			this.label7.TabIndex = 23;
-			this.label7.Text = "(We do not recommend usage of SQLite on a production server)";
 			// 
 			// DatabasePage
 			// 
