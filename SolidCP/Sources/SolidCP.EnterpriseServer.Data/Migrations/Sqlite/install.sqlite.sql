@@ -9218,3 +9218,15 @@ VALUES ('20241007112814_BugfixMySQL8TruncateQuota', '8.0.8');
 
 COMMIT;
 
+BEGIN TRANSACTION;
+
+UPDATE "ServiceDefaultProperties" SET "PropertyValue" = '/var/www/HostingSpaces'
+WHERE "PropertyName" = 'UsersHome' AND "ProviderID" = 500;
+SELECT changes();
+
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20241010081831_FixUsersHomeForUnix', '8.0.8');
+
+COMMIT;
+

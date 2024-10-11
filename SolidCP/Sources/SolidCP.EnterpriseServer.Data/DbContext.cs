@@ -240,8 +240,16 @@ namespace SolidCP.EnterpriseServer.Data
 
 		public int SaveChanges() => BaseContext.SaveChanges();
         public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken)) => BaseContext.SaveChangesAsync(cancellationToken);
-        public virtual void Dispose() => BaseContext.Dispose();
         public Action<string> Log { get; set; }
         private void WriteToLog(string msg) => Log?.Invoke(msg);
+
+		private DbContext clone = null;
+		public DbContext Clone => clone ??= new DbContext(ConnectionString, DbType);
+		public virtual void Dispose()
+		{
+			clone?.Dispose();
+			if (BaseContext is IDisposable baseContext) baseContext.Dispose();
+		}
+
 	}
 }

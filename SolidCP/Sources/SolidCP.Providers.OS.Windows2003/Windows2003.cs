@@ -89,6 +89,8 @@ namespace SolidCP.Providers.OS
 		#endregion
 
 		#region Files
+		public string PathCombine(params string[] segments) => Path.Combine(segments);
+
 		public virtual string CreatePackageFolder(string initialPath)
 		{
 			return FileUtils.CreatePackageFolder(initialPath);

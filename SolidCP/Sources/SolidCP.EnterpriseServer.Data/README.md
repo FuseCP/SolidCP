@@ -1,16 +1,20 @@
 ﻿# SolidCP.EnterpriseServer.Data
 This project contains the EntityFramework database layer of SolidCP.EnterpriseServer. It uses EntityFramework Core 8 when running in .NET 8 or EntityFramework 6 when running in .NET Framework.
 
+# Programmer's Introduction Video
+Here's a [programmer's introduction video of the SolidCP EntityFramework port](https://youtu.be/fRJz-iDz4_s).
+
 # Database Support
 This implementation supports the following database flavors:
 
-- SQL Server
+- Microsoft SQL Server
 - MySQL
 - MariaDB
 - SQLite
 
 PostgreSQL support is implemented, but is limited to .NET 8, because the EntityFramework 6 PostgreSQL driver for .NET Framework is buggy and not maintained anymore. But PostgreSQL should work when running EnterpriseServer on .NET 8 using EntityFramework Core.
-Probably one could also support Oracle, adding support for it should be rather trivial, but we have chosen not to support it at the moment. 
+Probably one could also support Oracle, adding support for it should be rather trivial, but we have chosen not to support it at the moment.
+Even we support SQLite, we do not recommend using SQLite on a production server.
 
 # Folder Structure
 The entity classes for the entities are contained in the Entities folder. The entity model Fluent API configuration classes are contained in the Configuration folder. Migrations are contained in the Migrations folder and in the subfolder
@@ -54,12 +58,12 @@ In the above code, the `HasColumnType("TEXT")` command is only run when running 
 # Migrations
 Migrations are only managed with EF Core, not with EF 6. They are always executed with .NET 8 or with SQL scripts by the installer, not with .NET Framework.
 
-To create a new migration, you can run AddMigration.bat, or if you just want a migration for the database flavor
+To create a new migration, you can run MigrationAdd.bat, or if you just want a migration for the database flavor
 you're developing with, copy the individual lines in AddMigration.bat to a command line shell.
 
 When you create SolidCP release with deploy-release.bat, deploy-release.bat creates backups of the Model Snapshots
 ..DbContextModelSnapshot.cs files, so you can always create migrations based on the last SolidCP release. When
-creating a SolidCP release, one can combine all new migrations into one by using the DbContext in the snapshot backup .cs file for the `dotnet ef migrations add` command or by reverting the Model Snapshot to that of the last release and creating a new migration. During development, when you have to change the database model often you might want to revert the last migration and then calculate a new migration with the command `dotnet ef migrations remove`.
+creating a SolidCP release, one can combine all new migrations into one by using the DbContext in the snapshot backup .cs file for the `dotnet ef migrations add` command or by reverting the Model Snapshot to that of the last release and creating a new migration. During development, when you have to change the database model often you might want to revert the last migration and then calculate a new migration with the MigrationRemove.bat script or the command `dotnet ef migrations remove`.
 
 # Usage of SolidCP.EnterpriseServer.Data
 SolidCP.EnterpriseServer.Data provides a class DbContext, that can be used as EF DbContext to access the database,
@@ -70,8 +74,8 @@ depending on wether you run on NET 8 or on NET Framework.
 
 # Connection Strings
 SolidCP.EnterpriseServer.Data uses an additional setting in the connection strings, `DbType`. You can set the
-`DtType` token in the connection string to either `DbType=SqlServer`, `DbType=MySql`, `DbType=MariaDb` or
-`DbType=Sqlite` you don't have to specify a providerName with your connection string as SolidCP will determine
+`DtType` token in the connection string to either `DbType=SqlServer`, `DbType=MySql`, `DbType=MariaDb`,
+`DbType=Sqlite` or `DbType=PostgreSql`. You don't have to specify a providerName with your connection string as SolidCP will determine
 the correct database type according to the `DbType` token in your connection string automatically. So for
 example correct connection strings would be:
 

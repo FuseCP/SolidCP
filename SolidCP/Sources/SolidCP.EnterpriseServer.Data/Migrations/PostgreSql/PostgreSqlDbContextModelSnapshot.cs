@@ -12885,7 +12885,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         {
                             ProviderId = 500,
                             PropertyName = "UsersHome",
-                            PropertyValue = "%HOME%"
+                            PropertyValue = "/var/www/HostingSpaces"
                         },
                         new
                         {

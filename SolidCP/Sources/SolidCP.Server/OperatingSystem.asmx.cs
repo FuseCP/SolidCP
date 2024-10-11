@@ -113,6 +113,23 @@ namespace SolidCP.Server
 
 		#region Files
 		[WebMethod, SoapHeader("settings")]
+		public string PathCombine(params string[] segments)
+		{
+			try
+			{
+				Log.WriteStart("'{0}' PathCombine", ProviderSettings.ProviderName);
+				string result = OSProvider.PathCombine(segments);
+				Log.WriteEnd("'{0}' PathCombine", ProviderSettings.ProviderName);
+				return result;
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError(String.Format("'{0}' PathCombine", ProviderSettings.ProviderName), ex);
+				throw;
+			}
+		}
+
+		[WebMethod, SoapHeader("settings")]
 		public string CreatePackageFolder(string initialPath)
 		{
 			try

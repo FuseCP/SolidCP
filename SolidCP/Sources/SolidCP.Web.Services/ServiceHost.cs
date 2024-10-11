@@ -21,6 +21,17 @@ namespace SolidCP.Web.Services
 
 	public class ServiceHost : System.ServiceModel.ServiceHost
 	{
+
+		public const int KB = Configuration.KB;
+		public const int MB = Configuration.MB;
+		public const int MaxReceivedMessageSize = Configuration.MaxReceivedMessageSize;
+		public const int MaxBufferSize = Configuration.MaxBufferSize;
+		public const int MaxBytesPerRead = Configuration.MaxBytesPerRead;
+		public const int MaxDepth = Configuration.MaxDepth;
+		public const int MaxArrayLength = Configuration.MaxArrayLength;
+		public const int MaxStringContentLength = Configuration.MaxStringContentLength;
+		public const int MaxNameTableCharCount = Configuration.MaxNameTableCharCount;
+
 		public ServiceHost() : base() { }
 		public ServiceHost(Type serviceType, params Uri[] baseAddresses) : base(serviceType, baseAddresses)
 		{
@@ -51,23 +62,56 @@ namespace SolidCP.Web.Services
 
 		void AddEndpoint(Type contract, Binding binding, string address)
 		{
-			binding.CloseTimeout = binding.OpenTimeout = binding.ReceiveTimeout = binding.SendTimeout = TimeSpan.FromMinutes(10);
+			//binding.CloseTimeout = binding.OpenTimeout = binding.ReceiveTimeout = binding.SendTimeout = TimeSpan.FromMinutes(10);
+			var readerQuotas = new XmlDictionaryReaderQuotas
+			{
+				MaxBytesPerRead = MaxBytesPerRead,
+				MaxDepth = MaxDepth,
+				MaxArrayLength = MaxArrayLength,
+				MaxStringContentLength = MaxStringContentLength,
+				MaxNameTableCharCount = MaxNameTableCharCount
+			};
+			if (binding is BasicHttpBinding basicBinding)
+			{
+				basicBinding.MaxReceivedMessageSize = MaxReceivedMessageSize;
+				basicBinding.MaxBufferSize = MaxBufferSize;
+				basicBinding.ReaderQuotas = readerQuotas;
+			} else if (binding is WSHttpBinding wsBinding)
+			{
+				wsBinding.MaxReceivedMessageSize = MaxReceivedMessageSize;
+				wsBinding.ReaderQuotas = readerQuotas;
+			} else if (binding is NetHttpBinding netBinding)
+			{
+				netBinding.MaxReceivedMessageSize = MaxReceivedMessageSize;
+				netBinding.MaxBufferSize = MaxBufferSize;
+				netBinding.ReaderQuotas = readerQuotas;
+			} else if (binding is NetTcpBinding tcpBinding)
+			{
+				tcpBinding.MaxReceivedMessageSize = MaxReceivedMessageSize;
+				tcpBinding.MaxBufferSize = MaxBufferSize;
+				tcpBinding.ReaderQuotas = readerQuotas;
+			} else if (binding is NetNamedPipeBinding pipeBinding)
+			{
+				pipeBinding.MaxReceivedMessageSize = MaxReceivedMessageSize;
+				pipeBinding.MaxBufferSize = MaxBufferSize;
+				pipeBinding.ReaderQuotas = readerQuotas;
+			}
 			var endpoint = AddServiceEndpoint(contract, binding, address);
 			endpoint.EndpointBehaviors.Add(new SoapHeaderMessageInspector());
 		}
 		void AddWebEndpoint(Type contract, WebHttpBinding binding, string address)
 		{
-			binding.CloseTimeout = binding.OpenTimeout = binding.ReceiveTimeout = binding.SendTimeout = TimeSpan.FromMinutes(10);
+			//binding.CloseTimeout = binding.OpenTimeout = binding.ReceiveTimeout = binding.SendTimeout = TimeSpan.FromMinutes(10);
 			var readerQuotas = new XmlDictionaryReaderQuotas
 			{
-				MaxBytesPerRead = 4096,
-				MaxDepth = 32000,
-				MaxArrayLength = 16384000,
-				MaxStringContentLength = 16384000,
-				MaxNameTableCharCount = 16384000
+				MaxBytesPerRead = MaxBytesPerRead,
+				MaxDepth = MaxDepth,
+				MaxArrayLength = MaxArrayLength,
+				MaxStringContentLength = MaxStringContentLength,
+				MaxNameTableCharCount = MaxNameTableCharCount
 			};
-			binding.MaxReceivedMessageSize = int.MaxValue;
-			binding.MaxBufferSize = int.MaxValue;
+			binding.MaxReceivedMessageSize = MaxReceivedMessageSize;
+			binding.MaxBufferSize = MaxBufferSize;
 			binding.ReaderQuotas = readerQuotas;
 			binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
 			if (Authorization.ServiceAuthorizationManager == null || !(Authorization.ServiceAuthorizationManager is RestAuthorizationManager))

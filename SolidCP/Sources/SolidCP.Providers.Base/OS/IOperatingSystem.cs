@@ -51,6 +51,7 @@ namespace SolidCP.Providers.OS
 	public interface IOperatingSystem
 	{
 		// files
+		public string PathCombine(params string[] segments);
 		string CreatePackageFolder(string initialPath);
 		bool FileExists(string path);
 		bool DirectoryExists(string path);

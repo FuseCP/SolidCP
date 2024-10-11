@@ -43470,3 +43470,30 @@ GO
 COMMIT;
 GO
 
+BEGIN TRANSACTION;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20241010081909_FixUsersHomeForUnix'
+)
+BEGIN
+    EXEC(N'UPDATE [ServiceDefaultProperties] SET [PropertyValue] = N''/var/www/HostingSpaces''
+    WHERE [PropertyName] = N''UsersHome'' AND [ProviderID] = 500;
+    SELECT @@ROWCOUNT');
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20241010081909_FixUsersHomeForUnix'
+)
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20241010081909_FixUsersHomeForUnix', N'8.0.8');
+END;
+GO
+
+COMMIT;
+GO
+

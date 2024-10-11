@@ -121,6 +121,6 @@
     <value>Log Directory:</value>
   </data>
   <data name="lblUsersHome.Text" xml:space="preserve">
-    <value>Users Home Directory:</value>
+    <value>Hosting Spaces Folder:</value>
   </data>
 </root>

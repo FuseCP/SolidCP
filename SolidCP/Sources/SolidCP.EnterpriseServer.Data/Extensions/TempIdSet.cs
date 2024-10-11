@@ -151,7 +151,7 @@ namespace SolidCP.EnterpriseServer.Data
 				await Task.Delay(TimeSpan.FromSeconds(2));
 				var now = DateTime.Now;
 				var old = now.Subtract(TimeSpan.FromSeconds(30));
-				Context.TempIds
+				Context.Clone.TempIds
 					.Where(id => id.Scope == Scope || id.Created < old)
 					.ExecuteDelete();
 			});

@@ -10,6 +10,16 @@ namespace SolidCP.Web.Services
 {
 	public class Configuration
 	{
+		public const int KB = 1024;
+		public const int MB = 1024 * 1024;
+		public const int MaxReceivedMessageSize = 32 * MB;
+		public const int MaxBufferSize = 32 * MB;
+		public const int MaxBytesPerRead = 4 * KB;
+		public const int MaxDepth = 1024;
+		public const int MaxArrayLength = 1 * MB;
+		public const int MaxStringContentLength = 16 * MB;
+		public const int MaxNameTableCharCount = 16 * MB;
+
 		public const bool AllowInsecureHttp = PolicyAttribute.AllowInsecureHttp;
 
 		public static int? HttpPort = null;

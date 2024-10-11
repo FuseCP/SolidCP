@@ -51,7 +51,7 @@ using Microsoft.Data.Sqlite;
 namespace SolidCP.EnterpriseServer.Data
 {
 	/// <summary>
-	/// Sql utils class.
+	/// Sql utils class used by the SolidCP Installer.
 	/// </summary>
 	public sealed class DatabaseUtils
 	{
