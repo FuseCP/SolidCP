@@ -17340,17 +17340,17 @@ END
 
 IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'MySQL Server 8.2')
 BEGIN
-INSERT [Providers] ([ProviderID], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(306, 90, N'MySQL', N'MySQL Server 8.2', N'SolidCP.Providers.Database.MySqlServer81, SolidCP.Providers.Database.MySQL', N'MySQL', NULL)
+INSERT [Providers] ([ProviderID], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(306, 90, N'MySQL', N'MySQL Server 8.2', N'SolidCP.Providers.Database.MySqlServer82, SolidCP.Providers.Database.MySQL', N'MySQL', NULL)
 END
 
 IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'MySQL Server 8.3')
 BEGIN
-INSERT [Providers] ([ProviderID], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(307, 90, N'MySQL', N'MySQL Server 8.3', N'SolidCP.Providers.Database.MySqlServer81, SolidCP.Providers.Database.MySQL', N'MySQL', NULL)
+INSERT [Providers] ([ProviderID], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(307, 90, N'MySQL', N'MySQL Server 8.3', N'SolidCP.Providers.Database.MySqlServer83, SolidCP.Providers.Database.MySQL', N'MySQL', NULL)
 END
 
 IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'MySQL Server 8.4')
 BEGIN
-INSERT [Providers] ([ProviderID], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(308, 90, N'MySQL', N'MySQL Server 8.4', N'SolidCP.Providers.Database.MySqlServer81, SolidCP.Providers.Database.MySQL', N'MySQL', NULL)
+INSERT [Providers] ([ProviderID], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(308, 90, N'MySQL', N'MySQL Server 8.4', N'SolidCP.Providers.Database.MySqlServer84, SolidCP.Providers.Database.MySQL', N'MySQL', NULL)
 END
 
 IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '304')
