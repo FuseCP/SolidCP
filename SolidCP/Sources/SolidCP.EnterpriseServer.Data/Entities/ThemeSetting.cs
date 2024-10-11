@@ -11,23 +11,22 @@ namespace SolidCP.EnterpriseServer.Data.Entities;
 
 #if NetCore
 //[Keyless]
-[PrimaryKey("ThemeId", "SettingsName", "PropertyName")]
+[Index("ThemeId", Name = "ThemeSettingsIdx_ThemeID")]
 #endif
 public partial class ThemeSetting
 {
     [Key]
-    [Column("ThemeID", Order = 1)]
+    [Column("ThemeSettingID")]
+    public int ThemeSettingId { get; set; }
+
+    [Column("ThemeID")]
     public int ThemeId { get; set; }
 
     [Required]
-    [Key]
-    [Column(Order = 2)]
     [StringLength(255)]
     public string SettingsName { get; set; }
 
     [Required]
-    [Key]
-    [Column(Order = 3)]
     [StringLength(255)]
     public string PropertyName { get; set; }
 

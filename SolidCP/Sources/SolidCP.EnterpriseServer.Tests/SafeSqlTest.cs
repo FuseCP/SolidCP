@@ -1,19 +1,46 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using SolidCP.EnterpriseServer.Data;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
+namespace SolidCP.EnterpriseServer.Tests
 {
-	public partial class InitialCreate
+	[TestClass]
+	public class SafeSqlTest
 	{
-		partial void StoredProceduresUp(MigrationBuilder migrationBuilder)
+		[TestMethod]
+		public void TestSafeSql()
 		{
-			StoredProceduresDown(migrationBuilder);
+			var sql = @"CREATE FUNCTION
+GO
 
-			if (migrationBuilder.IsSqlServer()) migrationBuilder.SafeSql(@"
+'CREATE FUNCTION'
+'GO'
+
+GO
+
+CREATE VIEW
+GO;
+
+CREATE VIEW
+[GO]
+
+CREATE VIEW
+GO
+-- CREATE VIEW
+GO
+/* CREATE VIEW */
+GO
+";
+			var safesql = MigrationBuilderExtension.SafeSql(sql);
+
+			var sql2 = MigrationBuilderExtension.SafeSql(
+
+			#region SQL
+				@"
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1730,7 +1757,7 @@ BEGIN
 
 	IF @Recursive = 1
 	BEGIN
-		-- insert ""root"" user
+		-- insert """"root"""" user
 		INSERT @T VALUES(@OwnerID)
 
 		-- get all children recursively
@@ -4351,7 +4378,7 @@ AS
 XML Format:
 
 <services>
-	<service id=""16"" />
+	<service id=""""16"""" />
 </services>
 
 */
@@ -5118,7 +5145,7 @@ BEGIN
 	INNER JOIN Packages AS P ON PIP.PackageID = P.PackageId
 	WHERE PIP.PackageAddressID = @PackageAddressID
 
-	IF (@ParentPackageID = 1) -- ""System"" space
+	IF (@ParentPackageID = 1) -- """"System"""" space
 	BEGIN
 		DELETE FROM dbo.PackageIPAddresses
 		WHERE PackageAddressID = @PackageAddressID
@@ -5153,7 +5180,7 @@ BEGIN
 	INNER JOIN Packages AS P ON PV.PackageID = P.PackageId
 	WHERE PV.PackageVlanID = @PackageVlanID
 
-	IF (@ParentPackageID = 1) -- ""System"" space
+	IF (@ParentPackageID = 1) -- """"System"""" space
 	BEGIN
 		DELETE FROM dbo.PackageVLANs
 		WHERE PackageVlanID = @PackageVlanID
@@ -6531,7 +6558,7 @@ AS
 XML Format:
 
 <services>
-	<service id=""16"" />
+	<service id=""""16"""" />
 </services>
 
 */
@@ -12200,7 +12227,7 @@ ORDER BY Q.QuotaOrder
 
 RETURN
 
-GO
+GOSSL
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER OFF
@@ -12788,7 +12815,7 @@ SELECT TOP 1
 	RS.RdsCollectionId,
 	RS.ConnectionEnabled,
 	SI.ItemName,
-	RC.Name AS ""CollectionName""
+	RC.Name AS CollectionName
 	FROM RDSServers AS RS
 	LEFT OUTER JOIN  ServiceItems AS SI ON SI.ItemId = RS.ItemId
 	LEFT OUTER JOIN  RDSCollections AS RC ON RC.ID = RdsCollectionId
@@ -16701,7 +16728,7 @@ BEGIN
  WHERE PackageID = @PackageId
 END
 
-IF (@ParentPackageID = 1 OR @PoolID = 4 /* management network */) -- ""System"" space
+IF (@ParentPackageID = 1 OR @PoolID = 4 /* management network */) -- """"System"""" space
 BEGIN
   -- check if server is physical
   IF EXISTS(SELECT * FROM Servers WHERE ServerID = @ServerID AND VirtualServer = 0)
@@ -16806,7 +16833,7 @@ BEGIN
  WHERE PackageID = @PackageId
 END
 
-IF @ParentPackageID = 1 -- ""System"" space
+IF @ParentPackageID = 1 -- """"System"""" space
 BEGIN
   -- check if server is physical
   IF EXISTS(SELECT * FROM Servers WHERE ServerID = @ServerID AND VirtualServer = 0)
@@ -17474,12 +17501,12 @@ GO
 Algorythm:
 	0. Get the primary distribution resource from hosting plan
 	1. Check whether user has Resource of requested type in his user plans/add-ons
-		EXCEPTION ""The requested service is not available for the user. The resource of the requested type {type} should be assigned to him through hosting plan or add-on""
+		EXCEPTION """"The requested service is not available for the user. The resource of the requested type {type} should be assigned to him through hosting plan or add-on""""
 		1.1 If the number of returned reources is greater than 1
-			EXCEPTION ""User has several resources assigned of the requested type""
+			EXCEPTION """"User has several resources assigned of the requested type""""
 
 	2. If the requested resource has 0 services
-		EXCEPTION ""The resource {name} of type {type} should contain atleast one service
+		EXCEPTION """"The resource {name} of type {type} should contain atleast one service
 	3. If the requested resource has one service
 		remember the ID of this single service
 	4. If the requested resource has several services DO distribution:
@@ -17488,11 +17515,11 @@ Algorythm:
 			if PRIMARY DISTRIBUTION RESOURCE and exists in UserServices
 				return serviceId from UserServices table
 
-			remember any service from that resource according to distribution type (""BALANCED"" or ""RANDOM"") - get the number of ServiceItems for each service
+			remember any service from that resource according to distribution type (""""BALANCED"""" or """"RANDOM"""") - get the number of ServiceItems for each service
 
 		4.2. If the resource is BOUNDED to primary distribution resource
 			- If the primary distribution resource is NULL
-			EXCEPTION ""Requested resource marked as bound to primary distribution resource, but there is no any resources in hosting plan marked as primary""
+			EXCEPTION """"Requested resource marked as bound to primary distribution resource, but there is no any resources in hosting plan marked as primary""""
 
 			- Get the service id of the primary distribution resource
 			GetServiceId(userId, primaryResourceId)
@@ -19405,7 +19432,7 @@ BEGIN
 /*
 XML Format:
 <properties>
-	<property name="""" value=""""/>
+	<property name="""""""" value=""""""""/>
 </properties>
 */
 	SET NOCOUNT ON;
@@ -20097,10 +20124,10 @@ XML Format:
 
 <plan>
 	<groups>
-		<group id=""16"" enabled=""1"" calculateDiskSpace=""1"" calculateBandwidth=""1""/>
+		<group id=""""16"""" enabled=""""1"""" calculateDiskSpace=""""1"""" calculateBandwidth=""""1""""/>
 	</groups>
 	<quotas>
-		<quota id=""2"" value=""2""/>
+		<quota id=""""2"""" value=""""2""""/>
 	</quotas>
 </plan>
 
@@ -20648,10 +20675,10 @@ XML Format:
 
 <plan>
 	<groups>
-		<group id=""16"" enabled=""1"" calculateDiskSpace=""1"" calculateBandwidth=""1""/>
+		<group id=""""16"""" enabled=""""1"""" calculateDiskSpace=""""1"""" calculateBandwidth=""""1""""/>
 	</groups>
 	<quotas>
-		<quota id=""2"" value=""2""/>
+		<quota id=""""2"""" value=""""2""""/>
 	</quotas>
 </plan>
 
@@ -21706,7 +21733,7 @@ AS
 XML Format:
 
 <groups>
-	<group id=""16"" distributionType=""1"" bindDistributionToPrimary=""1""/>
+	<group id=""""16"""" distributionType=""""1"""" bindDistributionToPrimary=""""1""""/>
 </groups>
 
 */
@@ -21779,1013 +21806,10 @@ AS
 UPDATE [dbo].[Domains] SET [CreationDate] = @DomainCreationDate, [ExpirationDate] = @DomainExpirationDate, [LastUpdateDate] = @DomainLastUpdateDate, [RegistrarName] = @DomainRegistrarName WHERE [DomainID] = @DomainId
 GO
 			");
+			#endregion
+
+			Debug.WriteLine(safesql);
 		}
 
-		partial void StoredProceduresDown(MigrationBuilder migrationBuilder)
-		{
-			if (migrationBuilder.IsSqlServer()) migrationBuilder.SafeSql(@"
-DROP PROCEDURE IF EXISTS [dbo].[UpdateWhoisDomainInfo]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateWebDavPortalUsersSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateVirtualGroups]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateUserThemeSetting]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateUserSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateUserPinSecret]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateUserMfaMode]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateUserFailedLoginAttempt]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateSupportServiceLevel]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateStorageSpaceLevel]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateStorageSpaceFolder]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateStorageSpace]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateSfBUserPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateSfBUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateServiceProperties]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateServiceItem]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateServiceFully]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateService]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateServer]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateSchedule]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateRDSServerSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateRDSServer]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateRDSCollectionSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateRDSCollection]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdatePrivateNetworVLAN]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdatePackageSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdatePackageQuotas]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdatePackageName]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdatePackageDiskSpace]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdatePackageBandwidthUpdate]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdatePackageBandwidth]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdatePackageAddon]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdatePackage]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateLyncUserPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateLyncUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateIPAddresses]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateIPAddress]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateHostingPlanQuotas]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateHostingPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateExchangeRetentionPolicyTag]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateExchangeOrganizationSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateExchangeMailboxPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateExchangeDisclaimer]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateExchangeAccountUserPrincipalName]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateExchangeAccountSLSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateExchangeAccount]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateEnterpriseFolder]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateEntepriseFolderStorageSpaceFolder]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateDomainLastUpdateDate]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateDomainExpirationDate]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateDomainDates]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateDomainCreationDate]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateDomain]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateDnsRecord]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateCRMUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateBackgroundTask]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateAdditionalGroup]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SfBUserExists]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SetUserOneTimePassword]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SetSystemSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SetSfBUserSfBUserPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SetOrganizationDefaultSfBUserPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SetOrganizationDefaultLyncUserPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SetOrganizationDefaultExchangeMailboxPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SetLyncUserLyncUserPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SetItemPrivatePrimaryIPAddress]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SetItemPrimaryIPAddress]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SetExchangeAccountMailboxplan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SetExchangeAccountDisclaimerId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SetAccessTokenSmsResponse]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SearchServiceItemsPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SearchOrganizationAccounts]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SearchExchangeAccountsByTypes]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SearchExchangeAccounts]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SearchExchangeAccount]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[RemoveStorageSpaceLevel]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[RemoveStorageSpaceFolder]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[RemoveStorageSpace]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[RemoveRDSUserFromRDSCollection]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[RemoveRDSServerFromOrganization]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[RemoveRDSServerFromCollection]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[OrganizationUserExists]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[OrganizationExists]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[MoveServiceItem]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[LyncUserExists]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[InsertStorageSpaceLevel]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[InsertStorageSpace]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[InsertCRMUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetWebDavPortalUsersSettingsByAccountId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetWebDavAccessTokenById]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetWebDavAccessTokenByAccessToken]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetVirtualServices]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetVirtualServers]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetVirtualMachinesPagedProxmox]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetVirtualMachinesPagedForPC]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetVirtualMachinesPaged2012]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetVirtualMachinesPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUsersSummary]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUsersPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserServiceID]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUsers]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserPeers]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserParents]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserPackagesServerUrls]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserEnterpriseFolderWithOwaEditPermission]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserDomainsPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserByUsernameInternally]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserByUsername]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserByIdInternally]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserById]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserByExchangeOrganizationIdInternally]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserAvailableHostingPlans]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserAvailableHostingAddons]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUnallottedVLANs]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUnallottedIPAddresses]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetThreadBackgroundTasks]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetThemeSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetThemeSetting]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetThemes]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSystemSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSupportServiceLevels]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSupportServiceLevel]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpacesPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpacesByResourceGroupName]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpacesByLevelId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpaceLevelsPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpaceLevelById]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpaceFoldersByStorageSpaceId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpaceFolderById]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpaceByServiceAndPath]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpaceById]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSSLCertificateByID]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSiteCert]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSfBUsersCount]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSfBUsersByPlanId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSfBUsers]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSfBUserPlans]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSfBUserPlanByAccountId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSfBUserPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServicesByServerIDGroupName]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServicesByServerID]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServicesByGroupName]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServicesByGroupID]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceProperties]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemTypes]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemType]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemsPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemsForStatistics]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemsCountByNameAndServiceId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemsCount]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemsByService]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemsByPackage]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemsByName]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItems]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemByName]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItem]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetService]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServerShortDetails]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServers]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServerInternal]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServerByName]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServer]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSearchTableByColumns]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSearchObject]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSearchableServiceItemTypes]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetScheduleTaskViewConfigurations]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetScheduleTasks]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetScheduleTaskEmailTemplate]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetScheduleTask]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSchedulesPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSchedules]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetScheduleParameters]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetScheduleInternal]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetScheduleBackgroundTasks]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSchedule]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetResourceGroups]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetResourceGroupByName]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetResourceGroup]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetResellerDomains]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSServersPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSServerSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSServersByItemId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSServersByCollectionId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSServers]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSServerById]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSMessages]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSControllerServiceIDbyFQDN]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSCollectionUsersByRDSCollectionId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSCollectionsPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSCollectionSettingsByCollectionId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSCollectionsByItemId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSCollectionByName]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSCollectionById]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSCertificateByServiceId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRawServicesByServerID]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetQuotas]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetProviderServiceQuota]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetProviders]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetProviderByServiceID]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetProvider]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetProcessBackgroundTasks]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPrivateNetworVLANsPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPrivateNetworVLAN]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPendingSSLForWebsite]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetParentPackageQuotas]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageUnassignedIPAddresses]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackagesPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageServiceID]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackagesDiskspacePaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackagesBandwidthPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackages]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageQuotasForEdit]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageQuotas]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageQuota]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackagePrivateNetworkVLANs]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackagePrivateIPAddressesPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackagePrivateIPAddresses]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackagePackages]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageIPAddressesCount]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageIPAddresses]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageIPAddress]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageDiskspace]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageBandwidthUpdate]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageBandwidth]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageAddons]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageAddon]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackage]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationStoragSpacesFolderByType]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationStoragSpaceFolders]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationStatistics]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationRdsUsersCount]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationRdsServersCount]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationRdsCollectionsCount]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationObjectsByDomain]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationGroupsByDisplayName]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationDeletedUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationCRMUserCount]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOCSUsersCount]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOCSUsers]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetNextSchedule]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetNestedPackagesSummary]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetNestedPackagesPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetMyPackages]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetLyncUsersCount]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetLyncUsersByPlanId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetLyncUsers]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetLyncUserPlans]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetLyncUserPlanByAccountId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetLyncUserPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetLevelResourceGroups]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetItemPrivateIPAddresses]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetItemIPAddresses]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetItemIdByOrganizationId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetIPAddressesPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetIPAddresses]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetIPAddress]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetInstanceID]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetHostingPlans]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetHostingPlanQuotas]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetHostingPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetHostingAddons]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetGroupProviders]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetFilterURLByHostingPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetFilterURL]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeRetentionPolicyTags]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeRetentionPolicyTag]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeOrganizationStatistics]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeOrganizationSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeOrganizationDomains]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeOrganization]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeMailboxPlans]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeMailboxPlanRetentionPolicyTags]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeMailboxPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeMailboxes]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeDisclaimers]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeDisclaimer]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeAccountsPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeAccounts]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeAccountEmailAddresses]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeAccountDisclaimerId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeAccountByMailboxPlanId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeAccountByAccountNameWithoutItemId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeAccountByAccountName]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeAccount]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetEnterpriseFoldersPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetEnterpriseFolders]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetEnterpriseFolderOwaUsers]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetEnterpriseFolderId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetEnterpriseFolder]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDomainsPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDomainsByZoneID]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDomainsByDomainItemID]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDomains]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDomainDnsRecords]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDomainByName]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDomainAllDnsRecords]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDomain]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDnsRecordsTotal]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDnsRecordsByService]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDnsRecordsByServer]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDnsRecordsByPackage]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDnsRecordsByGroup]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDnsRecord]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetCRMUsersCount]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetCRMUsers]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetCRMUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetCRMOrganizationUsers]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetComments]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetClusters]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetCertificatesForSite]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetBlackBerryUsersCount]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetBlackBerryUsers]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetBackgroundTopTask]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetBackgroundTasks]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetBackgroundTaskParams]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetBackgroundTaskLogs]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetBackgroundTask]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetAvailableVirtualServices]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetAuditLogTasks]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetAuditLogSources]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetAuditLogRecordsPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetAuditLogRecord]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetAllServers]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetAllPackages]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetAdditionalGroups]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetAccessTokenByAccessToken]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[ExchangeOrganizationExists]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[ExchangeOrganizationDomainExists]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[ExchangeAccountExists]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[ExchangeAccountEmailAddressExists]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DistributePackageServices]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteVirtualServices]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteUserThemeSetting]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteUserEmailAddresses]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteSupportServiceLevel]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteSfBUserPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteSfBUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteServiceItem]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteService]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteServer]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteSchedule]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteRDSServerSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteRDSServer]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteRDSCollectionSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteRDSCollection]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeletePrivateNetworkVLAN]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeletePackageAddon]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeletePackage]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteOrganizationUsers]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteOrganizationStoragSpacesFolder]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteOrganizationDeletedUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteOCSUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteLyncUserPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteLyncUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteLevelResourceGroups]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteItemPrivateIPAddresses]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteItemPrivateIPAddress]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteItemIPAddresses]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteItemIPAddress]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteIPAddress]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteHostingPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteExpiredWebDavAccessTokens]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteExpiredAccessTokenTokens]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteExchangeRetentionPolicyTag]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteExchangeOrganizationDomain]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteExchangeOrganization]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteExchangeMailboxPlanRetentionPolicyTag]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteExchangeMailboxPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteExchangeDisclaimer]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteExchangeAccountEmailAddress]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteExchangeAccount]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteEnterpriseFolder]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteDomainDnsRecord]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteDomain]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteDnsRecord]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteCRMOrganization]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteComment]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteCluster]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteCertificate]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteBlackBerryUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteBackgroundTasks]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteBackgroundTaskParams]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteBackgroundTask]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteAuditLogRecordsComplete]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteAuditLogRecords]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteAllLogRecords]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteAllEnterpriseFolderOwaUsers]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteAdditionalGroup]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteAccessToken]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeallocatePackageVLAN]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeallocatePackageIPAddress]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[CreateStorageSpaceFolder]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[ConvertToExchangeOrganization]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[CompleteSSLRequest]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckUserExists]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckSSLExistsForWebsite]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckSSL]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckSfBUserExists]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckServiceLevelUsage]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckServiceItemExistsInService]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckServiceItemExists]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckRDSServer]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckOCSUserExists]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckLyncUserExists]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckDomainUsedByHostedOrganization]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckDomain]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckBlackBerryUserExists]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[ChangeUserPassword]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[ChangePackageUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[ChangeExchangeAcceptedDomainType]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[CanChangeMfa]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AllocatePackageVLANs]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AllocatePackageIPAddresses]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddWebDavPortalUsersSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddWebDavAccessToken]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddVirtualServices]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddUserToRDSCollection]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddSupportServiceLevel]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddSSLRequest]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddSfBUserPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddSfBUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddServiceItem]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddService]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddServer]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddSchedule]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddRDSServerToOrganization]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddRDSServerToCollection]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddRDSServer]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddRDSMessage]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddRDSCollectionSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddRDSCollection]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddRDSCertificate]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddPrivateNetworkVlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddPFX]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddPackageAddon]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddPackage]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddOrganizationStoragSpacesFolder]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddOrganizationDeletedUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddOCSUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddLyncUserPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddLyncUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddLevelResourceGroups]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddItemPrivateIPAddress]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddItemIPAddress]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddIPAddress]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddHostingPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddExchangeRetentionPolicyTag]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddExchangeOrganizationDomain]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddExchangeOrganization]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddExchangeMailboxPlanRetentionPolicyTag]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddExchangeMailboxPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddExchangeDisclaimer]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddExchangeAccountEmailAddress]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddExchangeAccount]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddEnterpriseFolderOwaUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddEnterpriseFolder]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddDomainDnsRecord]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddDomain]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddDnsRecord]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddComment]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddCluster]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddBlackBerryUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddBackgroundTaskStack]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddBackgroundTaskParam]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddBackgroundTaskLog]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddBackgroundTask]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddAuditLogRecord]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddAdditionalGroup]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddAccessToken]
-GO
-DROP FUNCTION IF EXISTS [dbo].[UsersTree]
-GO
-DROP FUNCTION IF EXISTS [dbo].[UserParents]
-GO
-DROP FUNCTION IF EXISTS [dbo].[SplitString]
-GO
-DROP FUNCTION IF EXISTS [dbo].[PackagesTree]
-GO
-DROP FUNCTION IF EXISTS [dbo].[PackageParents]
-GO
-DROP FUNCTION IF EXISTS [dbo].[GetPackageServiceLevelResource]
-GO
-DROP FUNCTION IF EXISTS [dbo].[GetPackageExceedingQuotas]
-GO
-DROP FUNCTION IF EXISTS [dbo].[GetPackageAllocatedResource]
-GO
-DROP FUNCTION IF EXISTS [dbo].[GetPackageAllocatedQuota]
-GO
-DROP FUNCTION IF EXISTS [dbo].[GetItemComments]
-GO
-DROP FUNCTION IF EXISTS [dbo].[GetFullIPAddress]
-GO
-DROP FUNCTION IF EXISTS [dbo].[CheckUserParent]
-GO
-DROP FUNCTION IF EXISTS [dbo].[CheckPackageParent]
-GO
-DROP FUNCTION IF EXISTS [dbo].[CheckIsUserAdmin]
-GO
-DROP FUNCTION IF EXISTS [dbo].[CheckExceedingQuota]
-GO
-DROP FUNCTION IF EXISTS [dbo].[CheckActorUserRights]
-GO
-DROP FUNCTION IF EXISTS [dbo].[CheckActorParentPackageRights]
-GO
-DROP FUNCTION IF EXISTS [dbo].[CheckActorPackageRights]
-GO
-DROP FUNCTION IF EXISTS [dbo].[CanUpdateUserDetails]
-GO
-DROP FUNCTION IF EXISTS [dbo].[CanUpdatePackageDetails]
-GO
-DROP FUNCTION IF EXISTS [dbo].[CanGetUserPassword]
-GO
-DROP FUNCTION IF EXISTS [dbo].[CanGetUserDetails]
-GO
-DROP FUNCTION IF EXISTS [dbo].[CanCreateUser]
-GO
-DROP FUNCTION IF EXISTS [dbo].[CanChangeMfaFunc]
-GO
-DROP FUNCTION IF EXISTS [dbo].[CalculateQuotaUsage]
-GO
-DROP FUNCTION IF EXISTS [dbo].[CalculatePackageDiskspace]
-GO
-DROP FUNCTION IF EXISTS [dbo].[CalculatePackageBandwidth]
-GO");
-		}
 	}
 }

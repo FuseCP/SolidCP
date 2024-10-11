@@ -1,15 +1,15 @@
-USE [${install.database}]
-GO
+-- USE [${install.database}]
+-- GO
 -- update database version
-DECLARE @build_version nvarchar(10), @build_date datetime
-SET @build_version = N'${release.version}'
-SET @build_date = '${release.date}T00:00:00' -- ISO 8601 Format (YYYY-MM-DDTHH:MM:SS)
+-- DECLARE @build_version nvarchar(10), @build_date datetime
+-- SET @build_version = N'${release.version}'
+-- SET @build_date = '${release.date}T00:00:00' -- ISO 8601 Format (YYYY-MM-DDTHH:MM:SS)
 
-IF NOT EXISTS (SELECT * FROM [dbo].[Versions] WHERE [DatabaseVersion] = @build_version)
-BEGIN
-	INSERT [dbo].[Versions] ([DatabaseVersion], [BuildDate]) VALUES (@build_version, @build_date)
-END
-GO
+-- IF NOT EXISTS (SELECT * FROM [dbo].[Versions] WHERE [DatabaseVersion] = @build_version)
+-- BEGIN
+-- 	INSERT [dbo].[Versions] ([DatabaseVersion], [BuildDate]) VALUES (@build_version, @build_date)
+-- END
+-- GO
 
 -- Fix for Some problems with collate in GetDnsRecordsTotal
 IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetDnsRecordsTotal')
@@ -17816,7 +17816,7 @@ SELECT TOP 1
 	RS.RdsCollectionId,
 	RS.ConnectionEnabled,
 	SI.ItemName,
-	RC.Name AS "CollectionName"
+	RC.Name AS CollectionName
 	FROM RDSServers AS RS
 	LEFT OUTER JOIN  ServiceItems AS SI ON SI.ItemId = RS.ItemId
 	LEFT OUTER JOIN  RDSCollections AS RC ON RC.ID = RdsCollectionId

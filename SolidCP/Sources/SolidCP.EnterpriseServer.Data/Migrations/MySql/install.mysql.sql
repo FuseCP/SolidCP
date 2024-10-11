@@ -6024,7 +6024,7 @@ BEGIN
     IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitalCreate') THEN
 
     INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
-    VALUES ('20240630175848_InitalCreate', '8.0.8');
+    VALUES ('20240630175848_InitalCreate', '8.0.10');
 
     END IF;
 END //
@@ -6543,7 +6543,7 @@ BEGIN
     IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
 
     INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
-    VALUES ('20240709093159_AddedDMZ', '8.0.8');
+    VALUES ('20240709093159_AddedDMZ', '8.0.10');
 
     END IF;
 END //
@@ -6562,7 +6562,7 @@ BEGIN
     IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241005210853_SQLite_NOCASE') THEN
 
     INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
-    VALUES ('20241005210853_SQLite_NOCASE', '8.0.8');
+    VALUES ('20241005210853_SQLite_NOCASE', '8.0.10');
 
     END IF;
 END //
@@ -6695,7 +6695,7 @@ BEGIN
     IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006063131_MySql9AndMaraiDB11') THEN
 
     INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
-    VALUES ('20241006063131_MySql9AndMaraiDB11', '8.0.8');
+    VALUES ('20241006063131_MySql9AndMaraiDB11', '8.0.10');
 
     END IF;
 END //
@@ -6838,7 +6838,7 @@ BEGIN
     IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006121748_AddMariaDB11') THEN
 
     INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
-    VALUES ('20241006121748_AddMariaDB11', '8.0.8');
+    VALUES ('20241006121748_AddMariaDB11', '8.0.10');
 
     END IF;
 END //
@@ -6925,7 +6925,7 @@ BEGIN
     IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006212105_Bugfix_for_MySQL_8_x') THEN
 
     INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
-    VALUES ('20241006212105_Bugfix_for_MySQL_8_x', '8.0.8');
+    VALUES ('20241006212105_Bugfix_for_MySQL_8_x', '8.0.10');
 
     END IF;
 END //
@@ -6961,7 +6961,7 @@ BEGIN
     IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241007112853_BugfixMySQL8TruncateQuota') THEN
 
     INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
-    VALUES ('20241007112853_BugfixMySQL8TruncateQuota', '8.0.8');
+    VALUES ('20241007112853_BugfixMySQL8TruncateQuota', '8.0.10');
 
     END IF;
 END //
@@ -6997,7 +6997,486 @@ BEGIN
     IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241010081944_FixUsersHomeForUnix') THEN
 
     INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
-    VALUES ('20241010081944_FixUsersHomeForUnix', '8.0.8');
+    VALUES ('20241010081944_FixUsersHomeForUnix', '8.0.10');
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+COMMIT;
+
+START TRANSACTION;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+
+    CALL POMELO_BEFORE_DROP_PRIMARY_KEY(NULL, 'ThemeSettings');
+    ALTER TABLE `ThemeSettings` DROP PRIMARY KEY;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+
+    DELETE FROM `ThemeSettings`
+    WHERE `PropertyName` = '#0727d7' AND `SettingsName` = 'color-header' AND `ThemeID` = 1;
+    SELECT ROW_COUNT();
+
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+
+    DELETE FROM `ThemeSettings`
+    WHERE `PropertyName` = '#157d4c' AND `SettingsName` = 'color-header' AND `ThemeID` = 1;
+    SELECT ROW_COUNT();
+
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+
+    DELETE FROM `ThemeSettings`
+    WHERE `PropertyName` = '#23282c' AND `SettingsName` = 'color-header' AND `ThemeID` = 1;
+    SELECT ROW_COUNT();
+
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+
+    DELETE FROM `ThemeSettings`
+    WHERE `PropertyName` = '#673ab7' AND `SettingsName` = 'color-header' AND `ThemeID` = 1;
+    SELECT ROW_COUNT();
+
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+
+    DELETE FROM `ThemeSettings`
+    WHERE `PropertyName` = '#795548' AND `SettingsName` = 'color-header' AND `ThemeID` = 1;
+    SELECT ROW_COUNT();
+
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+
+    DELETE FROM `ThemeSettings`
+    WHERE `PropertyName` = '#d3094e' AND `SettingsName` = 'color-header' AND `ThemeID` = 1;
+    SELECT ROW_COUNT();
+
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+
+    DELETE FROM `ThemeSettings`
+    WHERE `PropertyName` = '#e10a1f' AND `SettingsName` = 'color-header' AND `ThemeID` = 1;
+    SELECT ROW_COUNT();
+
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+
+    DELETE FROM `ThemeSettings`
+    WHERE `PropertyName` = '#ff9800' AND `SettingsName` = 'color-header' AND `ThemeID` = 1;
+    SELECT ROW_COUNT();
+
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+
+    DELETE FROM `ThemeSettings`
+    WHERE `PropertyName` = '#1f0e3b' AND `SettingsName` = 'color-Sidebar' AND `ThemeID` = 1;
+    SELECT ROW_COUNT();
+
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+
+    DELETE FROM `ThemeSettings`
+    WHERE `PropertyName` = '#230924' AND `SettingsName` = 'color-Sidebar' AND `ThemeID` = 1;
+    SELECT ROW_COUNT();
+
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+
+    DELETE FROM `ThemeSettings`
+    WHERE `PropertyName` = '#408851' AND `SettingsName` = 'color-Sidebar' AND `ThemeID` = 1;
+    SELECT ROW_COUNT();
+
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+
+    DELETE FROM `ThemeSettings`
+    WHERE `PropertyName` = '#5b737f' AND `SettingsName` = 'color-Sidebar' AND `ThemeID` = 1;
+    SELECT ROW_COUNT();
+
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+
+    DELETE FROM `ThemeSettings`
+    WHERE `PropertyName` = '#6c85ec' AND `SettingsName` = 'color-Sidebar' AND `ThemeID` = 1;
+    SELECT ROW_COUNT();
+
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+
+    DELETE FROM `ThemeSettings`
+    WHERE `PropertyName` = '#903a85' AND `SettingsName` = 'color-Sidebar' AND `ThemeID` = 1;
+    SELECT ROW_COUNT();
+
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+
+    DELETE FROM `ThemeSettings`
+    WHERE `PropertyName` = '#a04846' AND `SettingsName` = 'color-Sidebar' AND `ThemeID` = 1;
+    SELECT ROW_COUNT();
+
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+
+    DELETE FROM `ThemeSettings`
+    WHERE `PropertyName` = '#a65314' AND `SettingsName` = 'color-Sidebar' AND `ThemeID` = 1;
+    SELECT ROW_COUNT();
+
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+
+    DELETE FROM `ThemeSettings`
+    WHERE `PropertyName` = 'Dark' AND `SettingsName` = 'Style' AND `ThemeID` = 1;
+    SELECT ROW_COUNT();
+
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+
+    DELETE FROM `ThemeSettings`
+    WHERE `PropertyName` = 'Light' AND `SettingsName` = 'Style' AND `ThemeID` = 1;
+    SELECT ROW_COUNT();
+
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+
+    DELETE FROM `ThemeSettings`
+    WHERE `PropertyName` = 'Minimal' AND `SettingsName` = 'Style' AND `ThemeID` = 1;
+    SELECT ROW_COUNT();
+
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+
+    DELETE FROM `ThemeSettings`
+    WHERE `PropertyName` = 'Semi Dark' AND `SettingsName` = 'Style' AND `ThemeID` = 1;
+    SELECT ROW_COUNT();
+
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+
+    ALTER TABLE `ThemeSettings` MODIFY COLUMN `PropertyName` varchar(255) CHARACTER SET utf8mb4 NOT NULL;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+
+    ALTER TABLE `ThemeSettings` MODIFY COLUMN `SettingsName` varchar(255) CHARACTER SET utf8mb4 NOT NULL;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+
+    ALTER TABLE `ThemeSettings` MODIFY COLUMN `ThemeID` int NOT NULL;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+
+    ALTER TABLE `ThemeSettings` ADD `ThemeSettingID` int NOT NULL DEFAULT 0 AUTO_INCREMENT,
+    ADD CONSTRAINT `PK_ThemeSettings` PRIMARY KEY (`ThemeSettingID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+
+    INSERT INTO `ThemeSettings` (`ThemeSettingID`, `PropertyName`, `PropertyValue`, `SettingsName`, `ThemeID`)
+    VALUES (1, 'Light', 'light-theme', 'Style', 1),
+    (2, 'Dark', 'dark-theme', 'Style', 1),
+    (3, 'Semi Dark', 'semi-dark', 'Style', 1),
+    (4, 'Minimal', 'minimal-theme', 'Style', 1),
+    (5, '#0727d7', 'headercolor1', 'color-header', 1),
+    (6, '#23282c', 'headercolor2', 'color-header', 1),
+    (7, '#e10a1f', 'headercolor3', 'color-header', 1),
+    (8, '#157d4c', 'headercolor4', 'color-header', 1),
+    (9, '#673ab7', 'headercolor5', 'color-header', 1),
+    (10, '#795548', 'headercolor6', 'color-header', 1),
+    (11, '#d3094e', 'headercolor7', 'color-header', 1),
+    (12, '#ff9800', 'headercolor8', 'color-header', 1),
+    (13, '#6c85ec', 'sidebarcolor1', 'color-Sidebar', 1),
+    (14, '#5b737f', 'sidebarcolor2', 'color-Sidebar', 1),
+    (15, '#408851', 'sidebarcolor3', 'color-Sidebar', 1),
+    (16, '#230924', 'sidebarcolor4', 'color-Sidebar', 1),
+    (17, '#903a85', 'sidebarcolor5', 'color-Sidebar', 1),
+    (18, '#a04846', 'sidebarcolor6', 'color-Sidebar', 1),
+    (19, '#a65314', 'sidebarcolor7', 'color-Sidebar', 1),
+    (20, '#1f0e3b', 'sidebarcolor8', 'color-Sidebar', 1);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+
+    CREATE INDEX `ThemeSettingsIdx_ThemeID` ON `ThemeSettings` (`ThemeID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+
+    INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
+    VALUES ('20241011210006_RemoveCompositeKeyInThemeSetting', '8.0.10');
 
     END IF;
 END //

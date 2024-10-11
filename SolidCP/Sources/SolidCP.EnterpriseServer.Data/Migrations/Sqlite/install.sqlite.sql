@@ -7571,7 +7571,7 @@ CREATE INDEX "WebDavAccessTokensIdx_AccountID" ON "WebDavAccessTokens" ("Account
 CREATE INDEX "WebDavPortalUsersSettingsIdx_AccountId" ON "WebDavPortalUsersSettings" ("AccountId");
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20240630180133_InitalCreate', '8.0.8');
+VALUES ('20240630180133_InitalCreate', '8.0.10');
 
 COMMIT;
 
@@ -7867,7 +7867,7 @@ CREATE INDEX "DomainDnsRecordsIdx_DomainId" ON "DomainDnsRecords" ("DomainId");
 CREATE INDEX "AccessTokensIdx_AccountID" ON "AccessTokens" ("AccountID");
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20240709093108_AddedDMZ', '8.0.8');
+VALUES ('20240709093108_AddedDMZ', '8.0.10');
 
 COMMIT;
 
@@ -8716,7 +8716,7 @@ CREATE INDEX "CommentsIdx_UserID" ON "Comments" ("UserID");
 CREATE INDEX "BackgroundTaskParametersIdx_TaskID" ON "BackgroundTaskParameters" ("TaskID");
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20241005210532_SQLite_NOCASE', '8.0.8');
+VALUES ('20241005210532_SQLite_NOCASE', '8.0.10');
 
 COMMIT;
 
@@ -8849,7 +8849,7 @@ SELECT changes();
 
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20241006062900_MySql9AndMaraiDB11', '8.0.8');
+VALUES ('20241006062900_MySql9AndMaraiDB11', '8.0.10');
 
 COMMIT;
 
@@ -9175,7 +9175,7 @@ SELECT changes();
 
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20241006121657_AddMariaDB11', '8.0.8');
+VALUES ('20241006121657_AddMariaDB11', '8.0.10');
 
 COMMIT;
 
@@ -9202,7 +9202,7 @@ SELECT changes();
 
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20241006212019_Bugfix_for_MySQL_8_x', '8.0.8');
+VALUES ('20241006212019_Bugfix_for_MySQL_8_x', '8.0.10');
 
 COMMIT;
 
@@ -9214,7 +9214,7 @@ SELECT changes();
 
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20241007112814_BugfixMySQL8TruncateQuota', '8.0.8');
+VALUES ('20241007112814_BugfixMySQL8TruncateQuota', '8.0.10');
 
 COMMIT;
 
@@ -9226,7 +9226,229 @@ SELECT changes();
 
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20241010081831_FixUsersHomeForUnix', '8.0.8');
+VALUES ('20241010081831_FixUsersHomeForUnix', '8.0.10');
+
+COMMIT;
+
+BEGIN TRANSACTION;
+
+DELETE FROM "ThemeSettings"
+WHERE "PropertyName" = '#0727d7' AND "SettingsName" = 'color-header' AND "ThemeID" = 1;
+SELECT changes();
+
+
+DELETE FROM "ThemeSettings"
+WHERE "PropertyName" = '#157d4c' AND "SettingsName" = 'color-header' AND "ThemeID" = 1;
+SELECT changes();
+
+
+DELETE FROM "ThemeSettings"
+WHERE "PropertyName" = '#23282c' AND "SettingsName" = 'color-header' AND "ThemeID" = 1;
+SELECT changes();
+
+
+DELETE FROM "ThemeSettings"
+WHERE "PropertyName" = '#673ab7' AND "SettingsName" = 'color-header' AND "ThemeID" = 1;
+SELECT changes();
+
+
+DELETE FROM "ThemeSettings"
+WHERE "PropertyName" = '#795548' AND "SettingsName" = 'color-header' AND "ThemeID" = 1;
+SELECT changes();
+
+
+DELETE FROM "ThemeSettings"
+WHERE "PropertyName" = '#d3094e' AND "SettingsName" = 'color-header' AND "ThemeID" = 1;
+SELECT changes();
+
+
+DELETE FROM "ThemeSettings"
+WHERE "PropertyName" = '#e10a1f' AND "SettingsName" = 'color-header' AND "ThemeID" = 1;
+SELECT changes();
+
+
+DELETE FROM "ThemeSettings"
+WHERE "PropertyName" = '#ff9800' AND "SettingsName" = 'color-header' AND "ThemeID" = 1;
+SELECT changes();
+
+
+DELETE FROM "ThemeSettings"
+WHERE "PropertyName" = '#1f0e3b' AND "SettingsName" = 'color-Sidebar' AND "ThemeID" = 1;
+SELECT changes();
+
+
+DELETE FROM "ThemeSettings"
+WHERE "PropertyName" = '#230924' AND "SettingsName" = 'color-Sidebar' AND "ThemeID" = 1;
+SELECT changes();
+
+
+DELETE FROM "ThemeSettings"
+WHERE "PropertyName" = '#408851' AND "SettingsName" = 'color-Sidebar' AND "ThemeID" = 1;
+SELECT changes();
+
+
+DELETE FROM "ThemeSettings"
+WHERE "PropertyName" = '#5b737f' AND "SettingsName" = 'color-Sidebar' AND "ThemeID" = 1;
+SELECT changes();
+
+
+DELETE FROM "ThemeSettings"
+WHERE "PropertyName" = '#6c85ec' AND "SettingsName" = 'color-Sidebar' AND "ThemeID" = 1;
+SELECT changes();
+
+
+DELETE FROM "ThemeSettings"
+WHERE "PropertyName" = '#903a85' AND "SettingsName" = 'color-Sidebar' AND "ThemeID" = 1;
+SELECT changes();
+
+
+DELETE FROM "ThemeSettings"
+WHERE "PropertyName" = '#a04846' AND "SettingsName" = 'color-Sidebar' AND "ThemeID" = 1;
+SELECT changes();
+
+
+DELETE FROM "ThemeSettings"
+WHERE "PropertyName" = '#a65314' AND "SettingsName" = 'color-Sidebar' AND "ThemeID" = 1;
+SELECT changes();
+
+
+DELETE FROM "ThemeSettings"
+WHERE "PropertyName" = 'Dark' AND "SettingsName" = 'Style' AND "ThemeID" = 1;
+SELECT changes();
+
+
+DELETE FROM "ThemeSettings"
+WHERE "PropertyName" = 'Light' AND "SettingsName" = 'Style' AND "ThemeID" = 1;
+SELECT changes();
+
+
+DELETE FROM "ThemeSettings"
+WHERE "PropertyName" = 'Minimal' AND "SettingsName" = 'Style' AND "ThemeID" = 1;
+SELECT changes();
+
+
+DELETE FROM "ThemeSettings"
+WHERE "PropertyName" = 'Semi Dark' AND "SettingsName" = 'Style' AND "ThemeID" = 1;
+SELECT changes();
+
+
+ALTER TABLE "ThemeSettings" ADD "ThemeSettingID" INTEGER NOT NULL DEFAULT 0;
+
+INSERT INTO "ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+VALUES (1, 'Light', 'light-theme', 'Style', 1);
+SELECT changes();
+
+INSERT INTO "ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+VALUES (2, 'Dark', 'dark-theme', 'Style', 1);
+SELECT changes();
+
+INSERT INTO "ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+VALUES (3, 'Semi Dark', 'semi-dark', 'Style', 1);
+SELECT changes();
+
+INSERT INTO "ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+VALUES (4, 'Minimal', 'minimal-theme', 'Style', 1);
+SELECT changes();
+
+INSERT INTO "ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+VALUES (5, '#0727d7', 'headercolor1', 'color-header', 1);
+SELECT changes();
+
+INSERT INTO "ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+VALUES (6, '#23282c', 'headercolor2', 'color-header', 1);
+SELECT changes();
+
+INSERT INTO "ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+VALUES (7, '#e10a1f', 'headercolor3', 'color-header', 1);
+SELECT changes();
+
+INSERT INTO "ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+VALUES (8, '#157d4c', 'headercolor4', 'color-header', 1);
+SELECT changes();
+
+INSERT INTO "ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+VALUES (9, '#673ab7', 'headercolor5', 'color-header', 1);
+SELECT changes();
+
+INSERT INTO "ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+VALUES (10, '#795548', 'headercolor6', 'color-header', 1);
+SELECT changes();
+
+INSERT INTO "ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+VALUES (11, '#d3094e', 'headercolor7', 'color-header', 1);
+SELECT changes();
+
+INSERT INTO "ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+VALUES (12, '#ff9800', 'headercolor8', 'color-header', 1);
+SELECT changes();
+
+INSERT INTO "ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+VALUES (13, '#6c85ec', 'sidebarcolor1', 'color-Sidebar', 1);
+SELECT changes();
+
+INSERT INTO "ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+VALUES (14, '#5b737f', 'sidebarcolor2', 'color-Sidebar', 1);
+SELECT changes();
+
+INSERT INTO "ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+VALUES (15, '#408851', 'sidebarcolor3', 'color-Sidebar', 1);
+SELECT changes();
+
+INSERT INTO "ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+VALUES (16, '#230924', 'sidebarcolor4', 'color-Sidebar', 1);
+SELECT changes();
+
+INSERT INTO "ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+VALUES (17, '#903a85', 'sidebarcolor5', 'color-Sidebar', 1);
+SELECT changes();
+
+INSERT INTO "ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+VALUES (18, '#a04846', 'sidebarcolor6', 'color-Sidebar', 1);
+SELECT changes();
+
+INSERT INTO "ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+VALUES (19, '#a65314', 'sidebarcolor7', 'color-Sidebar', 1);
+SELECT changes();
+
+INSERT INTO "ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+VALUES (20, '#1f0e3b', 'sidebarcolor8', 'color-Sidebar', 1);
+SELECT changes();
+
+
+CREATE INDEX "ThemeSettingsIdx_ThemeID" ON "ThemeSettings" ("ThemeID");
+
+CREATE TABLE "ef_temp_ThemeSettings" (
+    "ThemeSettingID" INTEGER NOT NULL CONSTRAINT "PK_ThemeSettings" PRIMARY KEY AUTOINCREMENT,
+    "PropertyName" TEXT COLLATE NOCASE NOT NULL,
+    "PropertyValue" TEXT NOT NULL,
+    "SettingsName" TEXT COLLATE NOCASE NOT NULL,
+    "ThemeID" INTEGER NOT NULL
+);
+
+INSERT INTO "ef_temp_ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+SELECT "ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID"
+FROM "ThemeSettings";
+
+COMMIT;
+
+PRAGMA foreign_keys = 0;
+
+BEGIN TRANSACTION;
+
+DROP TABLE "ThemeSettings";
+
+ALTER TABLE "ef_temp_ThemeSettings" RENAME TO "ThemeSettings";
+
+COMMIT;
+
+PRAGMA foreign_keys = 1;
+
+BEGIN TRANSACTION;
+
+CREATE INDEX "ThemeSettingsIdx_ThemeID" ON "ThemeSettings" ("ThemeID");
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20241011205752_RemoveCompositeKeyInThemeSetting', '8.0.10');
 
 COMMIT;
 

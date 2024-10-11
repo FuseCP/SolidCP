@@ -18,6 +18,7 @@ dotnet ef migrations script --framework net8.0 -o Migrations\Sqlite\install.sqli
 
 echo "Create install.sqlserver.sql for SQL Server"
 dotnet ef migrations script --framework net8.0 --no-build -o Migrations\SqlServer\install.sqlserver.sql --context SqlServerDbContext -i -- "DbType=SqlServer;Server=(local);Database=SolidCP;Uid=sa;Pwd=Password12;"
+REM dotnet ef migrations script --framework net8.0 --no-build -o Migrations\SqlServer\install.sqlserver.debug.sql --context SqlServerDbContext -- "DbType=SqlServer;Server=(local);Database=SolidCP;Uid=sa;Pwd=Password12;"
 
 echo "Create install.mysql.sql for MySQL and MariaDB"
 dotnet ef migrations script --framework net8.0 --no-build -o Migrations\MySql\install.mysql.sql --context MySqlDbContext -i -- "DbType=MySql;Server=localhost;Database=SolidCP;Uid=root;Pwd=Password12;"

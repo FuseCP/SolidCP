@@ -36,16 +36,7 @@ namespace SolidCP.EnterpriseServer.Tests
 				if (!Directory.Exists(dbPath)) Directory.CreateDirectory(dbPath);
 				if (File.Exists(dbFile)) File.Delete(dbFile);
 				File.WriteAllText(dbFile, "");
-				var assembly = Assembly.GetExecutingAssembly();
-				var resNames = assembly.GetManifestResourceNames();
-				using (var scriptResource = resNames
-					.Where(name => name.EndsWith("install.sqlite.sql"))
-					.Select(name => assembly.GetManifestResourceStream(name))
-					.FirstOrDefault())
-				using (var reader = new StreamReader(scriptResource))
-				{
-					DatabaseUtils.ExecuteSql(ConnectionString, reader.ReadToEnd());
-				}
+				DatabaseUtils.ExecuteSql(ConnectionString, DatabaseUtils.InstallScriptSqlite());
 			}
 		}
 

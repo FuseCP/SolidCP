@@ -17,7 +17,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -15023,170 +15023,198 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ThemeSetting", b =>
                 {
-                    b.Property<int>("ThemeId")
+                    b.Property<int>("ThemeSettingId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("ThemeID")
-                        .HasColumnOrder(1);
+                        .HasColumnName("ThemeSettingID");
 
-                    b.Property<string>("SettingsName")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnOrder(2);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ThemeSettingId"));
 
                     b.Property<string>("PropertyName")
+                        .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnOrder(3);
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("PropertyValue")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.HasKey("ThemeId", "SettingsName", "PropertyName");
+                    b.Property<string>("SettingsName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<int>("ThemeId")
+                        .HasColumnType("int")
+                        .HasColumnName("ThemeID");
+
+                    b.HasKey("ThemeSettingId");
+
+                    b.HasIndex(new[] { "ThemeId" }, "ThemeSettingsIdx_ThemeID");
 
                     b.ToTable("ThemeSettings");
 
                     b.HasData(
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "Style",
+                            ThemeSettingId = 1,
                             PropertyName = "Light",
-                            PropertyValue = "light-theme"
+                            PropertyValue = "light-theme",
+                            SettingsName = "Style",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "Style",
+                            ThemeSettingId = 2,
                             PropertyName = "Dark",
-                            PropertyValue = "dark-theme"
+                            PropertyValue = "dark-theme",
+                            SettingsName = "Style",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "Style",
+                            ThemeSettingId = 3,
                             PropertyName = "Semi Dark",
-                            PropertyValue = "semi-dark"
-                        },
-                        new
-                        {
-                            ThemeId = 1,
+                            PropertyValue = "semi-dark",
                             SettingsName = "Style",
+                            ThemeId = 1
+                        },
+                        new
+                        {
+                            ThemeSettingId = 4,
                             PropertyName = "Minimal",
-                            PropertyValue = "minimal-theme"
+                            PropertyValue = "minimal-theme",
+                            SettingsName = "Style",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "color-header",
+                            ThemeSettingId = 5,
                             PropertyName = "#0727d7",
-                            PropertyValue = "headercolor1"
+                            PropertyValue = "headercolor1",
+                            SettingsName = "color-header",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "color-header",
+                            ThemeSettingId = 6,
                             PropertyName = "#23282c",
-                            PropertyValue = "headercolor2"
+                            PropertyValue = "headercolor2",
+                            SettingsName = "color-header",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "color-header",
+                            ThemeSettingId = 7,
                             PropertyName = "#e10a1f",
-                            PropertyValue = "headercolor3"
+                            PropertyValue = "headercolor3",
+                            SettingsName = "color-header",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "color-header",
+                            ThemeSettingId = 8,
                             PropertyName = "#157d4c",
-                            PropertyValue = "headercolor4"
+                            PropertyValue = "headercolor4",
+                            SettingsName = "color-header",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "color-header",
+                            ThemeSettingId = 9,
                             PropertyName = "#673ab7",
-                            PropertyValue = "headercolor5"
+                            PropertyValue = "headercolor5",
+                            SettingsName = "color-header",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "color-header",
+                            ThemeSettingId = 10,
                             PropertyName = "#795548",
-                            PropertyValue = "headercolor6"
+                            PropertyValue = "headercolor6",
+                            SettingsName = "color-header",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "color-header",
+                            ThemeSettingId = 11,
                             PropertyName = "#d3094e",
-                            PropertyValue = "headercolor7"
-                        },
-                        new
-                        {
-                            ThemeId = 1,
+                            PropertyValue = "headercolor7",
                             SettingsName = "color-header",
+                            ThemeId = 1
+                        },
+                        new
+                        {
+                            ThemeSettingId = 12,
                             PropertyName = "#ff9800",
-                            PropertyValue = "headercolor8"
+                            PropertyValue = "headercolor8",
+                            SettingsName = "color-header",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "color-Sidebar",
+                            ThemeSettingId = 13,
                             PropertyName = "#6c85ec",
-                            PropertyValue = "sidebarcolor1"
+                            PropertyValue = "sidebarcolor1",
+                            SettingsName = "color-Sidebar",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "color-Sidebar",
+                            ThemeSettingId = 14,
                             PropertyName = "#5b737f",
-                            PropertyValue = "sidebarcolor2"
+                            PropertyValue = "sidebarcolor2",
+                            SettingsName = "color-Sidebar",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "color-Sidebar",
+                            ThemeSettingId = 15,
                             PropertyName = "#408851",
-                            PropertyValue = "sidebarcolor3"
+                            PropertyValue = "sidebarcolor3",
+                            SettingsName = "color-Sidebar",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "color-Sidebar",
+                            ThemeSettingId = 16,
                             PropertyName = "#230924",
-                            PropertyValue = "sidebarcolor4"
+                            PropertyValue = "sidebarcolor4",
+                            SettingsName = "color-Sidebar",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "color-Sidebar",
+                            ThemeSettingId = 17,
                             PropertyName = "#903a85",
-                            PropertyValue = "sidebarcolor5"
+                            PropertyValue = "sidebarcolor5",
+                            SettingsName = "color-Sidebar",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "color-Sidebar",
+                            ThemeSettingId = 18,
                             PropertyName = "#a04846",
-                            PropertyValue = "sidebarcolor6"
+                            PropertyValue = "sidebarcolor6",
+                            SettingsName = "color-Sidebar",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "color-Sidebar",
+                            ThemeSettingId = 19,
                             PropertyName = "#a65314",
-                            PropertyValue = "sidebarcolor7"
+                            PropertyValue = "sidebarcolor7",
+                            SettingsName = "color-Sidebar",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "color-Sidebar",
+                            ThemeSettingId = 20,
                             PropertyName = "#1f0e3b",
-                            PropertyValue = "sidebarcolor8"
+                            PropertyValue = "sidebarcolor8",
+                            SettingsName = "color-Sidebar",
+                            ThemeId = 1
                         });
                 });
 

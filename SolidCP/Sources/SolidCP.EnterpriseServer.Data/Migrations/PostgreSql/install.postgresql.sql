@@ -6982,7 +6982,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240708170548_InitialCreate') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20240708170548_InitialCreate', '8.0.8');
+    VALUES ('20240708170548_InitialCreate', '8.0.10');
     END IF;
 END $EF$;
 COMMIT;
@@ -7204,7 +7204,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240709093134_AddedDMZ') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20240709093134_AddedDMZ', '8.0.8');
+    VALUES ('20240709093134_AddedDMZ', '8.0.10');
     END IF;
 END $EF$;
 COMMIT;
@@ -7216,7 +7216,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241005210923_SQLite_NOCASE') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20241005210923_SQLite_NOCASE', '8.0.8');
+    VALUES ('20241005210923_SQLite_NOCASE', '8.0.10');
     END IF;
 END $EF$;
 COMMIT;
@@ -7324,7 +7324,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241006063214_MySql9AndMaraiDB11') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20241006063214_MySql9AndMaraiDB11', '8.0.8');
+    VALUES ('20241006063214_MySql9AndMaraiDB11', '8.0.10');
     END IF;
 END $EF$;
 COMMIT;
@@ -7512,7 +7512,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241006121805_AddMariaDB11') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20241006121805_AddMariaDB11', '8.0.8');
+    VALUES ('20241006121805_AddMariaDB11', '8.0.10');
     END IF;
 END $EF$;
 COMMIT;
@@ -7556,7 +7556,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241006212130_Bugfix_for_MySQL_8_x') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20241006212130_Bugfix_for_MySQL_8_x', '8.0.8');
+    VALUES ('20241006212130_Bugfix_for_MySQL_8_x', '8.0.10');
     END IF;
 END $EF$;
 COMMIT;
@@ -7576,7 +7576,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241007112914_BugfixMySQL8TruncateQuota') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20241007112914_BugfixMySQL8TruncateQuota', '8.0.8');
+    VALUES ('20241007112914_BugfixMySQL8TruncateQuota', '8.0.10');
     END IF;
 END $EF$;
 COMMIT;
@@ -7596,7 +7596,265 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241010082011_FixUsersHomeForUnix') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20241010082011_FixUsersHomeForUnix', '8.0.8');
+    VALUES ('20241010082011_FixUsersHomeForUnix', '8.0.10');
+    END IF;
+END $EF$;
+COMMIT;
+
+START TRANSACTION;
+
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241011210121_RemoveCompositeKeyInThemeSetting') THEN
+    ALTER TABLE public."ThemeSettings" DROP CONSTRAINT "PK_ThemeSettings";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241011210121_RemoveCompositeKeyInThemeSetting') THEN
+    DELETE FROM public."ThemeSettings"
+    WHERE "PropertyName" = '#0727d7' AND "SettingsName" = 'color-header' AND "ThemeID" = 1;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241011210121_RemoveCompositeKeyInThemeSetting') THEN
+    DELETE FROM public."ThemeSettings"
+    WHERE "PropertyName" = '#157d4c' AND "SettingsName" = 'color-header' AND "ThemeID" = 1;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241011210121_RemoveCompositeKeyInThemeSetting') THEN
+    DELETE FROM public."ThemeSettings"
+    WHERE "PropertyName" = '#23282c' AND "SettingsName" = 'color-header' AND "ThemeID" = 1;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241011210121_RemoveCompositeKeyInThemeSetting') THEN
+    DELETE FROM public."ThemeSettings"
+    WHERE "PropertyName" = '#673ab7' AND "SettingsName" = 'color-header' AND "ThemeID" = 1;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241011210121_RemoveCompositeKeyInThemeSetting') THEN
+    DELETE FROM public."ThemeSettings"
+    WHERE "PropertyName" = '#795548' AND "SettingsName" = 'color-header' AND "ThemeID" = 1;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241011210121_RemoveCompositeKeyInThemeSetting') THEN
+    DELETE FROM public."ThemeSettings"
+    WHERE "PropertyName" = '#d3094e' AND "SettingsName" = 'color-header' AND "ThemeID" = 1;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241011210121_RemoveCompositeKeyInThemeSetting') THEN
+    DELETE FROM public."ThemeSettings"
+    WHERE "PropertyName" = '#e10a1f' AND "SettingsName" = 'color-header' AND "ThemeID" = 1;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241011210121_RemoveCompositeKeyInThemeSetting') THEN
+    DELETE FROM public."ThemeSettings"
+    WHERE "PropertyName" = '#ff9800' AND "SettingsName" = 'color-header' AND "ThemeID" = 1;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241011210121_RemoveCompositeKeyInThemeSetting') THEN
+    DELETE FROM public."ThemeSettings"
+    WHERE "PropertyName" = '#1f0e3b' AND "SettingsName" = 'color-Sidebar' AND "ThemeID" = 1;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241011210121_RemoveCompositeKeyInThemeSetting') THEN
+    DELETE FROM public."ThemeSettings"
+    WHERE "PropertyName" = '#230924' AND "SettingsName" = 'color-Sidebar' AND "ThemeID" = 1;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241011210121_RemoveCompositeKeyInThemeSetting') THEN
+    DELETE FROM public."ThemeSettings"
+    WHERE "PropertyName" = '#408851' AND "SettingsName" = 'color-Sidebar' AND "ThemeID" = 1;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241011210121_RemoveCompositeKeyInThemeSetting') THEN
+    DELETE FROM public."ThemeSettings"
+    WHERE "PropertyName" = '#5b737f' AND "SettingsName" = 'color-Sidebar' AND "ThemeID" = 1;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241011210121_RemoveCompositeKeyInThemeSetting') THEN
+    DELETE FROM public."ThemeSettings"
+    WHERE "PropertyName" = '#6c85ec' AND "SettingsName" = 'color-Sidebar' AND "ThemeID" = 1;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241011210121_RemoveCompositeKeyInThemeSetting') THEN
+    DELETE FROM public."ThemeSettings"
+    WHERE "PropertyName" = '#903a85' AND "SettingsName" = 'color-Sidebar' AND "ThemeID" = 1;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241011210121_RemoveCompositeKeyInThemeSetting') THEN
+    DELETE FROM public."ThemeSettings"
+    WHERE "PropertyName" = '#a04846' AND "SettingsName" = 'color-Sidebar' AND "ThemeID" = 1;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241011210121_RemoveCompositeKeyInThemeSetting') THEN
+    DELETE FROM public."ThemeSettings"
+    WHERE "PropertyName" = '#a65314' AND "SettingsName" = 'color-Sidebar' AND "ThemeID" = 1;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241011210121_RemoveCompositeKeyInThemeSetting') THEN
+    DELETE FROM public."ThemeSettings"
+    WHERE "PropertyName" = 'Dark' AND "SettingsName" = 'Style' AND "ThemeID" = 1;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241011210121_RemoveCompositeKeyInThemeSetting') THEN
+    DELETE FROM public."ThemeSettings"
+    WHERE "PropertyName" = 'Light' AND "SettingsName" = 'Style' AND "ThemeID" = 1;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241011210121_RemoveCompositeKeyInThemeSetting') THEN
+    DELETE FROM public."ThemeSettings"
+    WHERE "PropertyName" = 'Minimal' AND "SettingsName" = 'Style' AND "ThemeID" = 1;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241011210121_RemoveCompositeKeyInThemeSetting') THEN
+    DELETE FROM public."ThemeSettings"
+    WHERE "PropertyName" = 'Semi Dark' AND "SettingsName" = 'Style' AND "ThemeID" = 1;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241011210121_RemoveCompositeKeyInThemeSetting') THEN
+    ALTER TABLE public."ThemeSettings" ADD "ThemeSettingID" integer GENERATED BY DEFAULT AS IDENTITY;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241011210121_RemoveCompositeKeyInThemeSetting') THEN
+    ALTER TABLE public."ThemeSettings" ADD CONSTRAINT "PK_ThemeSettings" PRIMARY KEY ("ThemeSettingID");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241011210121_RemoveCompositeKeyInThemeSetting') THEN
+    INSERT INTO public."ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+    VALUES (1, 'Light', 'light-theme', 'Style', 1);
+    INSERT INTO public."ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+    VALUES (2, 'Dark', 'dark-theme', 'Style', 1);
+    INSERT INTO public."ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+    VALUES (3, 'Semi Dark', 'semi-dark', 'Style', 1);
+    INSERT INTO public."ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+    VALUES (4, 'Minimal', 'minimal-theme', 'Style', 1);
+    INSERT INTO public."ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+    VALUES (5, '#0727d7', 'headercolor1', 'color-header', 1);
+    INSERT INTO public."ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+    VALUES (6, '#23282c', 'headercolor2', 'color-header', 1);
+    INSERT INTO public."ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+    VALUES (7, '#e10a1f', 'headercolor3', 'color-header', 1);
+    INSERT INTO public."ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+    VALUES (8, '#157d4c', 'headercolor4', 'color-header', 1);
+    INSERT INTO public."ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+    VALUES (9, '#673ab7', 'headercolor5', 'color-header', 1);
+    INSERT INTO public."ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+    VALUES (10, '#795548', 'headercolor6', 'color-header', 1);
+    INSERT INTO public."ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+    VALUES (11, '#d3094e', 'headercolor7', 'color-header', 1);
+    INSERT INTO public."ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+    VALUES (12, '#ff9800', 'headercolor8', 'color-header', 1);
+    INSERT INTO public."ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+    VALUES (13, '#6c85ec', 'sidebarcolor1', 'color-Sidebar', 1);
+    INSERT INTO public."ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+    VALUES (14, '#5b737f', 'sidebarcolor2', 'color-Sidebar', 1);
+    INSERT INTO public."ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+    VALUES (15, '#408851', 'sidebarcolor3', 'color-Sidebar', 1);
+    INSERT INTO public."ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+    VALUES (16, '#230924', 'sidebarcolor4', 'color-Sidebar', 1);
+    INSERT INTO public."ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+    VALUES (17, '#903a85', 'sidebarcolor5', 'color-Sidebar', 1);
+    INSERT INTO public."ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+    VALUES (18, '#a04846', 'sidebarcolor6', 'color-Sidebar', 1);
+    INSERT INTO public."ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+    VALUES (19, '#a65314', 'sidebarcolor7', 'color-Sidebar', 1);
+    INSERT INTO public."ThemeSettings" ("ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID")
+    VALUES (20, '#1f0e3b', 'sidebarcolor8', 'color-Sidebar', 1);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241011210121_RemoveCompositeKeyInThemeSetting') THEN
+    CREATE INDEX "ThemeSettingsIdx_ThemeID" ON public."ThemeSettings" ("ThemeID");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241011210121_RemoveCompositeKeyInThemeSetting') THEN
+    PERFORM setval(
+        pg_get_serial_sequence('public."ThemeSettings"', 'ThemeSettingID'),
+        GREATEST(
+            (SELECT MAX("ThemeSettingID") FROM public."ThemeSettings") + 1,
+            nextval(pg_get_serial_sequence('public."ThemeSettings"', 'ThemeSettingID'))),
+        false);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20241011210121_RemoveCompositeKeyInThemeSetting') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20241011210121_RemoveCompositeKeyInThemeSetting', '8.0.10');
     END IF;
 END $EF$;
 COMMIT;
