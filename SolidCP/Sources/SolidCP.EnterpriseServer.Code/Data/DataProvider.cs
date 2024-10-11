@@ -7421,7 +7421,7 @@ RETURN
 					.Where(vs => vs.ServerId == serverId && (isAdmin || forAutodiscover))
 					.Select(s => new
 					{
-						s.ServerId,
+						s.ServiceId,
 						s.Service.ServiceName,
 						s.Service.Comments,
 						s.Service.Provider.GroupId,
