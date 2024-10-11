@@ -87,6 +87,7 @@ namespace SolidCP.Setup
 			this.tabSqlite = new System.Windows.Forms.TabPage();
 			this.txtSqliteDatabase = new System.Windows.Forms.TextBox();
 			this.label6 = new System.Windows.Forms.Label();
+			this.label7 = new System.Windows.Forms.Label();
 			this.tabControl.SuspendLayout();
 			this.tabSqlServer.SuspendLayout();
 			this.tabMySql.SuspendLayout();
@@ -327,6 +328,7 @@ namespace SolidCP.Setup
 			// tabSqlite
 			// 
 			this.tabSqlite.BackColor = System.Drawing.SystemColors.Control;
+			this.tabSqlite.Controls.Add(this.label7);
 			this.tabSqlite.Controls.Add(this.txtSqliteDatabase);
 			this.tabSqlite.Controls.Add(this.label6);
 			this.tabSqlite.Location = new System.Drawing.Point(4, 22);
@@ -338,7 +340,7 @@ namespace SolidCP.Setup
 			// 
 			// txtSqliteDatabase
 			// 
-			this.txtSqliteDatabase.Location = new System.Drawing.Point(129, 33);
+			this.txtSqliteDatabase.Location = new System.Drawing.Point(127, 24);
 			this.txtSqliteDatabase.MaxLength = 128;
 			this.txtSqliteDatabase.Name = "txtSqliteDatabase";
 			this.txtSqliteDatabase.Size = new System.Drawing.Size(248, 20);
@@ -347,11 +349,20 @@ namespace SolidCP.Setup
 			// 
 			// label6
 			// 
-			this.label6.Location = new System.Drawing.Point(23, 36);
+			this.label6.Location = new System.Drawing.Point(21, 27);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(100, 23);
 			this.label6.TabIndex = 21;
 			this.label6.Text = "Database:";
+			// 
+			// label7
+			// 
+			this.label7.AutoSize = true;
+			this.label7.Location = new System.Drawing.Point(40, 87);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(309, 13);
+			this.label7.TabIndex = 23;
+			this.label7.Text = "(We do not recommend usage of SQLite on a production server)";
 			// 
 			// DatabasePage
 			// 
@@ -401,5 +412,6 @@ namespace SolidCP.Setup
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.TextBox txtSqliteDatabase;
 		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.Label label7;
 	}
 }
