@@ -10,12 +10,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
     /// <inheritdoc />
     public partial class InitialCreate : Migration
     {
+
+		#region Stored Procedures
 		protected void StoredProceduresUp(MigrationBuilder migrationBuilder)
 		{
 			StoredProceduresDown(migrationBuilder);
 
 			if (migrationBuilder.IsSqlServer())
-				migrationBuilder.SafeSql(DatabaseUtils.InstallScript("20241012060936_InitialCreate_StoredProcedures.sql"));
+				migrationBuilder.SafeSql(DatabaseUtils.InstallScript("20241012194301_InitialCreate_StoredProcedures.sql"));
 		}
 
 		protected void StoredProceduresDown(MigrationBuilder migrationBuilder)
@@ -1040,6 +1042,8 @@ GO
 DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 			");
 		}
+		#endregion
+
 
 		/// <inheritdoc />
 		protected override void Up(MigrationBuilder migrationBuilder)
@@ -4054,6 +4058,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     { 378, 41, null, null, null, "Allow Mobile Calls", "Lync.EVMobile", 9, 1, false },
                     { 379, 41, null, null, null, "Allow International Calls", "Lync.EVInternational", 10, 1, false },
                     { 380, 41, null, null, null, "Enable Plans Editing", "Lync.EnablePlansEditing", 11, 1, false },
+                    { 381, 41, null, null, null, "Phone Numbers", "Lync.PhoneNumbers", 12, 2, false },
                     { 400, 20, null, null, null, "Use shared SSL Root", "HostedSharePoint.UseSharedSSL", 3, 1, false },
                     { 409, 1, null, null, null, "Not allow Tenants to Delete Top Level Domains", "OS.NotAllowTenantDeleteDomains", 13, 1, false },
                     { 410, 1, null, null, null, "Not allow Tenants to Create Top Level Domains", "OS.NotAllowTenantCreateDomains", 12, 1, false },
@@ -5651,6 +5656,8 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            StoredProceduresDown(migrationBuilder);
+            
             migrationBuilder.DropTable(
                 name: "AccessTokens");
 
@@ -5926,8 +5933,6 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.DropTable(
                 name: "ResourceGroups");
-
-            StoredProceduresDown(migrationBuilder);
         }
     }
 }

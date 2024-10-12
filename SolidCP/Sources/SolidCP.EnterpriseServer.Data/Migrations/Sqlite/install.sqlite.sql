@@ -4050,6 +4050,10 @@ VALUES (380, 41, NULL, NULL, NULL, 'Enable Plans Editing', 'Lync.EnablePlansEdit
 SELECT changes();
 
 INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+VALUES (381, 41, NULL, NULL, NULL, 'Phone Numbers', 'Lync.PhoneNumbers', 12, 2, 0);
+SELECT changes();
+
+INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
 VALUES (400, 20, NULL, NULL, NULL, 'Use shared SSL Root', 'HostedSharePoint.UseSharedSSL', 3, 1, 0);
 SELECT changes();
 
@@ -8025,7 +8029,7 @@ CREATE INDEX "WebDavAccessTokensIdx_AccountID" ON "WebDavAccessTokens" ("Account
 CREATE INDEX "WebDavPortalUsersSettingsIdx_AccountId" ON "WebDavPortalUsersSettings" ("AccountId");
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20241012060915_InitialCreate', '8.0.10');
+VALUES ('20241012194211_InitialCreate', '8.0.10');
 
 COMMIT;
 

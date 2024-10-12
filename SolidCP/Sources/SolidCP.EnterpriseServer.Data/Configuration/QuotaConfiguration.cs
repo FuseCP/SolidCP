@@ -408,6 +408,8 @@ public partial class QuotaConfiguration: EntityTypeConfiguration<Quota>
 				ServiceQuota = false },
 			new Quota() { QuotaId = 380, GroupId = 41, QuotaDescription = "Enable Plans Editing", QuotaName = "Lync.EnablePlansEditing", QuotaOrder = 11, QuotaTypeId = 1,
 				ServiceQuota = false },
+			new Quota() { QuotaId = 381, GroupId = 41, QuotaDescription = "Phone Numbers", QuotaName = "Lync.PhoneNumbers", QuotaOrder = 12, QuotaTypeId = 2,
+				ServiceQuota = false },
 			new Quota() { QuotaId = 400, GroupId = 20, QuotaDescription = "Use shared SSL Root", QuotaName = "HostedSharePoint.UseSharedSSL", QuotaOrder = 3, QuotaTypeId = 1,
 				ServiceQuota = false },
 			new Quota() { QuotaId = 409, GroupId = 1, QuotaDescription = "Not allow Tenants to Delete Top Level Domains", QuotaName = "OS.NotAllowTenantDeleteDomains", QuotaOrder = 13, QuotaTypeId = 1,
