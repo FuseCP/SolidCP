@@ -1,6 +1,8 @@
+using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.Serialization;
 using SolidCP.EnterpriseServer;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Tests
 {
@@ -46,5 +48,13 @@ namespace SolidCP.Tests
 			Assert.IsTrue(true);
 		}
 
-	}
+        [TestMethod]
+		public void TestWindowsOSVersion() {
+
+			var os = OSInfo.WindowsVersion;
+
+			Debug.WriteLine(os.ToString());
+		}
+
+    }
 }

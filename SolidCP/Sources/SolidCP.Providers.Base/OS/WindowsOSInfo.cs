@@ -41,120 +41,120 @@ using System.Text.RegularExpressions;
 
 namespace SolidCP.Providers.OS
 {
-	public enum WindowsVersion
-	{
-		Unknown = 0,
-		NonWindows,
-		Windows95,
-		Windows98,
-		WindowsMe,
-		WindowsNT351,
-		WindowsNT4,
-		Windows2000,
-		WindowsXP,
-		WindowsServer2003,
-		Vista,
-		WindowsServer2008,
-		Windows7,
-		WindowsServer2008R2,
-		Windows8,
-		WindowsServer2012,
-		Windows81,
-		WindowsServer2012R2,
-		WindowsServer2016,
-		Windows10,
-		WindowsServer2019,
-		Windows11,
-		WindowsServer2022
-	}
+    public enum WindowsVersion
+    {
+        Unknown = 0,
+        NonWindows,
+        Windows95,
+        Windows98,
+        WindowsMe,
+        WindowsNT351,
+        WindowsNT4,
+        Windows2000,
+        WindowsXP,
+        WindowsServer2003,
+        Vista,
+        WindowsServer2008,
+        Windows7,
+        WindowsServer2008R2,
+        Windows8,
+        WindowsServer2012,
+        Windows81,
+        WindowsServer2012R2,
+        WindowsServer2016,
+        Windows10,
+        WindowsServer2019,
+        Windows11,
+        WindowsServer2022
+    }
 
-	public sealed class WindowsOSInfo
-	{
-		[StructLayout(LayoutKind.Sequential)]
-		public struct OSVERSIONINFO
-		{
-			public Int32 dwOSVersionInfoSize;
-			public Int32 dwMajorVersion;
-			public Int32 dwMinorVersion;
-			public Int32 dwBuildNumber;
-			public Int32 dwPlatformID;
-			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
-			public string szCSDVersion;
-		}
-		[StructLayout(LayoutKind.Sequential)]
-		public struct OSVERSIONINFOEX
-		{
-			public Int32 dwOSVersionInfoSize;
-			public Int32 dwMajorVersion;
-			public Int32 dwMinorVersion;
-			public Int32 dwBuildNumber;
-			public Int32 dwPlatformID;
-			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
-			public string szCSDVersion;
-			public short wServicePackMajor;
-			public short wServicePackMinor;
-			public short wSuiteMask;
-			public byte wProductType;
-			public byte wReserved;
-		}
-		[StructLayout(LayoutKind.Sequential)]
-		public struct SYSTEM_INFO
-		{
-			public Int32 dwOemID;
-			public Int32 dwPageSize;
-			public Int32 wProcessorArchitecture;
-			public Int32 lpMinimumApplicationAddress;
-			public Int32 lpMaximumApplicationAddress;
-			public Int32 dwActiveProcessorMask;
-			public Int32 dwNumberOrfProcessors;
-			public Int32 dwProcessorType;
-			public Int32 dwAllocationGranularity;
-			public Int32 dwReserved;
-		}
-		public enum WinSuiteMask : int
-		{
-			VER_SUITE_SMALLBUSINESS = 1,
-			VER_SUITE_ENTERPRISE = 2,
-			VER_SUITE_BACKOFFICE = 4,
-			VER_SUITE_COMMUNICATIONS = 8,
-			VER_SUITE_TERMINAL = 16,
-			VER_SUITE_SMALLBUSINESS_RESTRICTED = 32,
-			VER_SUITE_EMBEDDEDNT = 64,
-			VER_SUITE_DATACENTER = 128,
-			VER_SUITE_SINGLEUSERTS = 256,
-			VER_SUITE_PERSONAL = 512,
-			VER_SUITE_BLADE = 1024,
-			VER_SUITE_STORAGE_SERVER = 8192,
-			VER_SUITE_COMPUTE_SERVER = 16384
-		}
-		public enum WinPlatform : byte
-		{
-			VER_NT_WORKSTATION = 1,
-			VER_NT_DOMAIN_CONTROLLER = 2,
-			VER_NT_SERVER = 3
-		}
-		public enum OSMajorVersion : byte
-		{
-			VER_OS_NT4 = 4,
-			VER_OS_2K_XP_2K3 = 5,
-			VER_OS_VISTA_LONGHORN = 6
-		}
+    public sealed class WindowsOSInfo
+    {
+        [StructLayout(LayoutKind.Sequential)]
+        public struct OSVERSIONINFO
+        {
+            public Int32 dwOSVersionInfoSize;
+            public Int32 dwMajorVersion;
+            public Int32 dwMinorVersion;
+            public Int32 dwBuildNumber;
+            public Int32 dwPlatformID;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+            public string szCSDVersion;
+        }
+        [StructLayout(LayoutKind.Sequential)]
+        public struct OSVERSIONINFOEX
+        {
+            public Int32 dwOSVersionInfoSize;
+            public Int32 dwMajorVersion;
+            public Int32 dwMinorVersion;
+            public Int32 dwBuildNumber;
+            public Int32 dwPlatformID;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+            public string szCSDVersion;
+            public short wServicePackMajor;
+            public short wServicePackMinor;
+            public short wSuiteMask;
+            public byte wProductType;
+            public byte wReserved;
+        }
+        [StructLayout(LayoutKind.Sequential)]
+        public struct SYSTEM_INFO
+        {
+            public Int32 dwOemID;
+            public Int32 dwPageSize;
+            public Int32 wProcessorArchitecture;
+            public Int32 lpMinimumApplicationAddress;
+            public Int32 lpMaximumApplicationAddress;
+            public Int32 dwActiveProcessorMask;
+            public Int32 dwNumberOrfProcessors;
+            public Int32 dwProcessorType;
+            public Int32 dwAllocationGranularity;
+            public Int32 dwReserved;
+        }
+        public enum WinSuiteMask : int
+        {
+            VER_SUITE_SMALLBUSINESS = 1,
+            VER_SUITE_ENTERPRISE = 2,
+            VER_SUITE_BACKOFFICE = 4,
+            VER_SUITE_COMMUNICATIONS = 8,
+            VER_SUITE_TERMINAL = 16,
+            VER_SUITE_SMALLBUSINESS_RESTRICTED = 32,
+            VER_SUITE_EMBEDDEDNT = 64,
+            VER_SUITE_DATACENTER = 128,
+            VER_SUITE_SINGLEUSERTS = 256,
+            VER_SUITE_PERSONAL = 512,
+            VER_SUITE_BLADE = 1024,
+            VER_SUITE_STORAGE_SERVER = 8192,
+            VER_SUITE_COMPUTE_SERVER = 16384
+        }
+        public enum WinPlatform : byte
+        {
+            VER_NT_WORKSTATION = 1,
+            VER_NT_DOMAIN_CONTROLLER = 2,
+            VER_NT_SERVER = 3
+        }
+        public enum OSMajorVersion : byte
+        {
+            VER_OS_NT4 = 4,
+            VER_OS_2K_XP_2K3 = 5,
+            VER_OS_VISTA_LONGHORN = 6
+        }
 
-		private const Int32 SM_SERVERR2 = 89;
-		private const Int32 SM_MEDIACENTER = 87;
-		private const Int32 SM_TABLETPC = 86;
+        private const Int32 SM_SERVERR2 = 89;
+        private const Int32 SM_MEDIACENTER = 87;
+        private const Int32 SM_TABLETPC = 86;
 
-		[DllImport("kernel32")]
-		private static extern int GetSystemInfo(ref SYSTEM_INFO lpSystemInfo);
-		[DllImport("user32")]
-		private static extern int GetSystemMetrics(int nIndex);
-		[DllImport("kernel32", EntryPoint = "GetVersion")]
-		private static extern int GetVersionAdv(ref OSVERSIONINFO lpVersionInformation);
-		[DllImport("kernel32")]
-		private static extern int GetVersionEx(ref OSVERSIONINFOEX lpVersionInformation);
+        [DllImport("kernel32")]
+        private static extern int GetSystemInfo(ref SYSTEM_INFO lpSystemInfo);
+        [DllImport("user32")]
+        private static extern int GetSystemMetrics(int nIndex);
+        [DllImport("kernel32", EntryPoint = "GetVersion")]
+        private static extern int GetVersionAdv(ref OSVERSIONINFO lpVersionInformation);
+        [DllImport("kernel32")]
+        private static extern int GetVersionEx(ref OSVERSIONINFOEX lpVersionInformation);
 
 
-		/*public static string GetVersionEx()
+        /*public static string GetVersionEx()
 		{
 			OSVERSIONINFO osvi = new OSVERSIONINFO();
 			OSVERSIONINFOEX xosvi = new OSVERSIONINFOEX();
@@ -305,269 +305,290 @@ namespace SolidCP.Providers.OS
 			}
 		}*/
 
-		/// <summary>
-		/// Determine OS version
-		/// </summary>
-		/// <returns></returns>
-		static WindowsVersion? version;
-		public static WindowsVersion GetVersion()
-		{
+        public static int GetCurrentBuild()
+        {
+            var reg = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
 
-			if (version.HasValue) return version.Value;
+            var currentBuildStr = reg?.GetValue("CurrentBuild") as string;
+            return int.Parse(currentBuildStr ?? "0");
+        }
 
-			if (!OSInfo.IsWindows)
-			{
-				version = WindowsVersion.NonWindows;
-				return WindowsVersion.NonWindows;
-			}
+        /// <summary>
+        /// Determine OS version
+        /// </summary>
+        /// <returns></returns>
+        static WindowsVersion? version;
+        public static WindowsVersion GetVersion()
+        {
 
-			WindowsVersion ret = WindowsVersion.Unknown;
+            if (version.HasValue) return version.Value;
 
-			OSVERSIONINFOEX info = new OSVERSIONINFOEX();
-			info.dwOSVersionInfoSize = Marshal.SizeOf(typeof(OSVERSIONINFOEX));
-			GetVersionEx(ref info);
+            if (!OSInfo.IsWindows)
+            {
+                version = WindowsVersion.NonWindows;
+                return WindowsVersion.NonWindows;
+            }
 
-			// Get OperatingSystem information from the system namespace.
-			System.OperatingSystem osInfo = System.Environment.OSVersion;
+            WindowsVersion ret = WindowsVersion.Unknown;
 
-			Version ver = osInfo.Version;
-			string osDesc = RuntimeInformation.OSDescription;
-			var match = Regex.Match(osDesc, @"[0-9]+(?:\.[0-9]+){0,3}");
-			if (match.Success) ver = new Version(match.Value);
+            OSVERSIONINFOEX info = new OSVERSIONINFOEX();
+            info.dwOSVersionInfoSize = Marshal.SizeOf(typeof(OSVERSIONINFOEX));
+            GetVersionEx(ref info);
 
-			// Determine the platform.
-			switch (osInfo.Platform)
-			{
-				// Platform is Windows 95, Windows 98, Windows 98 Second Edition, or Windows Me.
-				case System.PlatformID.Win32Windows:
-					switch (osInfo.Version.Minor)
-					{
-						case 0:
-							ret = WindowsVersion.Windows95;
-							break;
-						case 10:
-							ret = WindowsVersion.Windows98;
-							break;
-						case 90:
-							ret = WindowsVersion.WindowsMe;
-							break;
-					}
-					break;
+            // Get OperatingSystem information from the system namespace.
+            System.OperatingSystem osInfo = System.Environment.OSVersion;
 
-				// Platform is Windows NT 3.51, Windows NT 4.0, Windows 2000, or Windows XP.
-				case System.PlatformID.Win32NT:
-					switch (ver.Major)
-					{
-						case 3:
-							ret = WindowsVersion.WindowsNT351;
-							break;
-						case 4:
-							ret = WindowsVersion.WindowsNT4;
-							break;
-						case 5:
-							switch (ver.Minor)
-							{
-								case 0:
-									ret = WindowsVersion.Windows2000;
-									break;
-								case 1:
-									ret = WindowsVersion.WindowsXP;
-									break;
-								case 2:
-									int i = GetSystemMetrics(SM_SERVERR2);
-									if (i != 0)
-									{
-										//Server 2003 R2
-										ret = WindowsVersion.WindowsServer2003;
-									}
-									else
-									{
-										if (info.wProductType == (byte)WinPlatform.VER_NT_WORKSTATION)
-										{
-											//XP Pro x64
-											ret = WindowsVersion.WindowsXP;
-										}
-										else
-										{
-											ret = WindowsVersion.WindowsServer2003;
-										}
-										break;
-									}
-									break;
-							}
-							break;
-						case 6:
-							switch (ver.Minor)
-							{
-								case 0:
-									if (info.wProductType == (byte)WinPlatform.VER_NT_WORKSTATION)
-										ret = WindowsVersion.Vista;
-									else
-										ret = WindowsVersion.WindowsServer2008;
-									break;
-								case 1:
-									if (info.wProductType == (byte)WinPlatform.VER_NT_WORKSTATION)
-										ret = WindowsVersion.Windows7;
-									else
-										ret = WindowsVersion.WindowsServer2008R2;
-									break;
-								case 2:
-									if (info.wProductType == (byte)WinPlatform.VER_NT_WORKSTATION)
-										ret = WindowsVersion.Windows8;
-									else
-										ret = WindowsVersion.WindowsServer2012;
-									break;
-								case 3:
-									if (info.wProductType == (byte)WinPlatform.VER_NT_WORKSTATION)
-										ret = WindowsVersion.Windows81;
-									else
-										ret = WindowsVersion.WindowsServer2012R2;
-									break;
-							}
-							break;
-						case 10:
-							int ReleaseId = GetReleaseId();
-							// Server 2016
-							if ((ReleaseId == 1607 || ReleaseId == 1709 || ReleaseId == 1803) &&
-								info.wProductType != (byte)WinPlatform.VER_NT_WORKSTATION) ret = WindowsVersion.WindowsServer2016;
-							// Windows 10 below 1903
-							else if (ReleaseId == 1507 || ReleaseId == 1511 || ReleaseId == 1607 || ReleaseId == 1703 || ReleaseId == 1709 || ReleaseId == 1803) ret = WindowsVersion.Windows10;
-							// Server 2019 and Windows 10 above 1903
-							else if (ReleaseId == 1809 || ReleaseId == 1903 || ReleaseId == 1909 || ReleaseId == 2004 || ReleaseId == 2009)
-							{
-								if (info.wProductType == (byte)WinPlatform.VER_NT_WORKSTATION) ret = WindowsVersion.Windows10;
-								else ret = WindowsVersion.WindowsServer2019;
-							}
-							else
-							{
-								var reg = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+            Version ver = osInfo.Version;
+            string osDesc = RuntimeInformation.OSDescription;
+            var match = Regex.Match(osDesc, @"[0-9]+(?:\.[0-9]+){0,3}");
+            if (match.Success) ver = new Version(match.Value);
 
-								var currentBuildStr = (string)reg.GetValue("CurrentBuild");
-								var currentBuild = int.Parse(currentBuildStr);
+            // Determine the platform.
+            switch (osInfo.Platform)
+            {
+                // Platform is Windows 95, Windows 98, Windows 98 Second Edition, or Windows Me.
+                case System.PlatformID.Win32Windows:
+                    switch (osInfo.Version.Minor)
+                    {
+                        case 0:
+                            ret = WindowsVersion.Windows95;
+                            break;
+                        case 10:
+                            ret = WindowsVersion.Windows98;
+                            break;
+                        case 90:
+                            ret = WindowsVersion.WindowsMe;
+                            break;
+                    }
+                    break;
 
-								if (currentBuild >= 22000 && info.wProductType == (byte)WinPlatform.VER_NT_WORKSTATION)
-								{
-									ret = WindowsVersion.Windows11;
-								}
-								else if (currentBuild >= 20348 && info.wProductType != (byte)WinPlatform.VER_NT_WORKSTATION)
-								{
-									ret = WindowsVersion.WindowsServer2022;
-								}
-							}
-							break;
-					}
-					break;
-			}
-			version = ret;
-			return ret;
-		}
+                // Platform is Windows NT 3.51, Windows NT 4.0, Windows 2000, or Windows XP.
+                case System.PlatformID.Win32NT:
+                    switch (ver.Major)
+                    {
+                        case 3:
+                            ret = WindowsVersion.WindowsNT351;
+                            break;
+                        case 4:
+                            ret = WindowsVersion.WindowsNT4;
+                            break;
+                        case 5:
+                            switch (ver.Minor)
+                            {
+                                case 0:
+                                    ret = WindowsVersion.Windows2000;
+                                    break;
+                                case 1:
+                                    ret = WindowsVersion.WindowsXP;
+                                    break;
+                                case 2:
+                                    int i = GetSystemMetrics(SM_SERVERR2);
+                                    if (i != 0)
+                                    {
+                                        //Server 2003 R2
+                                        ret = WindowsVersion.WindowsServer2003;
+                                    }
+                                    else
+                                    {
+                                        if (info.wProductType == (byte)WinPlatform.VER_NT_WORKSTATION)
+                                        {
+                                            //XP Pro x64
+                                            ret = WindowsVersion.WindowsXP;
+                                        }
+                                        else
+                                        {
+                                            ret = WindowsVersion.WindowsServer2003;
+                                        }
+                                        break;
+                                    }
+                                    break;
+                            }
+                            break;
+                        case 6:
+                            switch (ver.Minor)
+                            {
+                                case 0:
+                                    if (info.wProductType == (byte)WinPlatform.VER_NT_WORKSTATION)
+                                        ret = WindowsVersion.Vista;
+                                    else
+                                        ret = WindowsVersion.WindowsServer2008;
+                                    break;
+                                case 1:
+                                    if (info.wProductType == (byte)WinPlatform.VER_NT_WORKSTATION)
+                                        ret = WindowsVersion.Windows7;
+                                    else
+                                        ret = WindowsVersion.WindowsServer2008R2;
+                                    break;
+                                case 2:
+                                    if (info.wProductType == (byte)WinPlatform.VER_NT_WORKSTATION)
+                                        ret = WindowsVersion.Windows8;
+                                    else
+                                        ret = WindowsVersion.WindowsServer2012;
+                                    break;
+                                case 3:
+                                    if (info.wProductType == (byte)WinPlatform.VER_NT_WORKSTATION)
+                                        ret = WindowsVersion.Windows81;
+                                    else
+                                        ret = WindowsVersion.WindowsServer2012R2;
+                                    break;
+                            }
+                            break;
+                        case 10:
+                            int ReleaseId = GetReleaseId();
+                            // Server 2016
+                            if ((ReleaseId == 1607 || ReleaseId == 1709 || ReleaseId == 1803) &&
+                                info.wProductType != (byte)WinPlatform.VER_NT_WORKSTATION) ret = WindowsVersion.WindowsServer2016;
+                            // Windows 10 below 1903
+                            else if (ReleaseId == 1507 || ReleaseId == 1511 || ReleaseId == 1607 || ReleaseId == 1703 || ReleaseId == 1709 || ReleaseId == 1803) ret = WindowsVersion.Windows10;
+                            // Server 2019, Server 2022, Windows 10 above 1903 & Windows 11
+                            else
+                            {
+                                var currentBuild = GetCurrentBuild();
 
-		public static bool IsWindows11()
-		{
-			try
-			{
-				var reg = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+                                if (ReleaseId == 1809 || ReleaseId == 1903 || ReleaseId == 1909 || ReleaseId == 2004 || ReleaseId == 2009)
+                                {
 
-				var currentBuildStr = (string)reg.GetValue("CurrentBuild");
-				var currentBuild = int.Parse(currentBuildStr);
+                                    if (currentBuild >= 22000 && info.wProductType == (byte)WinPlatform.VER_NT_WORKSTATION)
+                                    {
+                                        ret = WindowsVersion.Windows11;
+                                    }
+                                    else if (currentBuild >= 20348 && info.wProductType != (byte)WinPlatform.VER_NT_WORKSTATION)
+                                    {
+                                        ret = WindowsVersion.WindowsServer2022;
+                                    }
+                                    else
+                                    {
+                                        if (info.wProductType == (byte)WinPlatform.VER_NT_WORKSTATION) ret = WindowsVersion.Windows10;
+                                        else ret = WindowsVersion.WindowsServer2019;
+                                    }
+                                }
+                                else
+                                {
+                                    if (currentBuild >= 22000 && info.wProductType == (byte)WinPlatform.VER_NT_WORKSTATION)
+                                    {
+                                        ret = WindowsVersion.Windows11;
+                                    }
+                                    else if (currentBuild >= 20348 && info.wProductType != (byte)WinPlatform.VER_NT_WORKSTATION)
+                                    {
+                                        ret = WindowsVersion.WindowsServer2022;
+                                    }
+                                }
+                            }
+                            break;
+                    }
+                    break;
+            }
+            version = ret;
+            return ret;
+        }
 
-				return currentBuild >= 22000;
-			}
-			catch { }
-			return false;
-		}
-		public static int GetReleaseId()
-		{
-			return Convert.ToInt32(Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId", "0"));
-		}
+        public static bool IsWindows11()
+        {
+            try
+            {
+                var reg = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
 
-		/// <summary>
-		/// Returns Windows directory
-		/// </summary>
-		/// <returns></returns>
-		public static string GetWindowsDirectory()
-		{
-			return Environment.GetEnvironmentVariable("windir");
-		}
-		/// <summary>
-		/// Checks Whether the FSRM role services are installed
-		/// </summary>
-		/// <returns></returns>
-		public static bool CheckFileServicesInstallation()
-		{
+                var currentBuildStr = (string)reg.GetValue("CurrentBuild");
+                var currentBuild = int.Parse(currentBuildStr);
 
-			ManagementClass objMC = new ManagementClass("Win32_ServerFeature");
-			ManagementObjectCollection objMOC = objMC.GetInstances();
+                return currentBuild >= 22000;
+            }
+            catch { }
+            return false;
+        }
+        public static int GetReleaseId()
+        {
+            return Convert.ToInt32(Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId", "0"));
+        }
 
-			// 01.09.2015 roland.breitschaft@x-company.de
-			// Problem: Method not work on German Systems, because the searched Feature-Name does not exist
-			// Fix: Add German String for FSRM-Feature            
+        /// <summary>
+        /// Returns Windows directory
+        /// </summary>
+        /// <returns></returns>
+        public static string GetWindowsDirectory()
+        {
+            return Environment.GetEnvironmentVariable("windir");
+        }
+        /// <summary>
+        /// Checks Whether the FSRM role services are installed
+        /// </summary>
+        /// <returns></returns>
+        public static bool CheckFileServicesInstallation()
+        {
 
-			//foreach (ManagementObject objMO in objMOC)
-			//    if (objMO.Properties["Name"].Value.ToString().ToLower().Contains("file server resource manager"))
-			//        return true;
-			foreach (ManagementObject objMO in objMOC)
-			{
-				var id = objMO.Properties["ID"].Value.ToString().ToLower();
-				var name = objMO.Properties["Name"].Value.ToString().ToLower();
-				if (id.Contains("72") || id.Contains("104"))
-					return true;
-				else if (name.Contains("file server resource manager")
-					 || name.Contains("ressourcen-manager f�r dateiserver"))
-					return true;
-			}
+            ManagementClass objMC = new ManagementClass("Win32_ServerFeature");
+            ManagementObjectCollection objMOC = objMC.GetInstances();
 
-			return false;
-		}
+            // 01.09.2015 roland.breitschaft@x-company.de
+            // Problem: Method not work on German Systems, because the searched Feature-Name does not exist
+            // Fix: Add German String for FSRM-Feature            
 
-		public static string NetFXVersion
-		{
-			get
-			{
-				const string subkey = @"SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\";
+            //foreach (ManagementObject objMO in objMOC)
+            //    if (objMO.Properties["Name"].Value.ToString().ToLower().Contains("file server resource manager"))
+            //        return true;
+            foreach (ManagementObject objMO in objMOC)
+            {
+                var id = objMO.Properties["ID"].Value.ToString().ToLower();
+                var name = objMO.Properties["Name"].Value.ToString().ToLower();
+                if (id.Contains("72") || id.Contains("104"))
+                    return true;
+                else if (name.Contains("file server resource manager")
+                     || name.Contains("ressourcen-manager f�r dateiserver"))
+                    return true;
+            }
 
-				using (var ndpKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32).OpenSubKey(subkey))
-				{
-					if (ndpKey != null && ndpKey.GetValue("Release") != null)
-					{
-						return CheckFor45PlusVersion((int)ndpKey.GetValue("Release"));
-					}
-					else
-					{
-						return $"{Environment.Version.Major}.{Environment.Version.Minor}";
-					}
-				}
-			}
-		}
-		// Checking the version using >= enables forward compatibility.
-		static string CheckFor45PlusVersion(int releaseKey)
-		{
-			if (releaseKey >= 533320)
-				return "4.8.1";
-			if (releaseKey >= 528040)
-				return "4.8";
-			if (releaseKey >= 461808)
-				return "4.7.2";
-			if (releaseKey >= 461308)
-				return "4.7.1";
-			if (releaseKey >= 460798)
-				return "4.7";
-			if (releaseKey >= 394802)
-				return "4.6.2";
-			if (releaseKey >= 394254)
-				return "4.6.1";
-			if (releaseKey >= 393295)
-				return "4.6";
-			if (releaseKey >= 379893)
-				return "4.5.2";
-			if (releaseKey >= 378675)
-				return "4.5.1";
-			if (releaseKey >= 378389)
-				return "4.5";
-			// This code should never execute. A non-null release key should mean
-			// that 4.5 or later is installed.
-			return "4.0";
-		}
-	}
+            return false;
+        }
+
+
+        public static string NetFXVersion
+        {
+            get
+            {
+                const string subkey = @"SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\";
+
+                using (var ndpKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32).OpenSubKey(subkey))
+                {
+                    if (ndpKey != null && ndpKey.GetValue("Release") != null)
+                    {
+                        return CheckFor45PlusVersion((int)ndpKey.GetValue("Release"));
+                    }
+                    else
+                    {
+                        return $"{Environment.Version.Major}.{Environment.Version.Minor}";
+                    }
+                }
+            }
+        }
+        // Checking the version using >= enables forward compatibility.
+        static string CheckFor45PlusVersion(int releaseKey)
+        {
+            if (releaseKey >= 533320)
+                return "4.8.1";
+            if (releaseKey >= 528040)
+                return "4.8";
+            if (releaseKey >= 461808)
+                return "4.7.2";
+            if (releaseKey >= 461308)
+                return "4.7.1";
+            if (releaseKey >= 460798)
+                return "4.7";
+            if (releaseKey >= 394802)
+                return "4.6.2";
+            if (releaseKey >= 394254)
+                return "4.6.1";
+            if (releaseKey >= 393295)
+                return "4.6";
+            if (releaseKey >= 379893)
+                return "4.5.2";
+            if (releaseKey >= 378675)
+                return "4.5.1";
+            if (releaseKey >= 378389)
+                return "4.5";
+            // This code should never execute. A non-null release key should mean
+            // that 4.5 or later is installed.
+            return "4.0";
+        }
+    }
 }
 
