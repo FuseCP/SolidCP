@@ -23,6 +23,8 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 		protected void StoredProceduresDown(MigrationBuilder migrationBuilder)
 		{
 			if (migrationBuilder.IsSqlServer()) migrationBuilder.SafeSql(@"
+DROP VIEW IF EXISTS [dbo].[UsersDetailed]
+GO
 DROP PROCEDURE IF EXISTS [dbo].[UpdateWhoisDomainInfo]
 GO
 DROP PROCEDURE IF EXISTS [dbo].[UpdateWebDavPortalUsersSettings]
