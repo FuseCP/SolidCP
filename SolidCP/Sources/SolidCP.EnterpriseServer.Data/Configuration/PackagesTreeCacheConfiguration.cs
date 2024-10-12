@@ -15,7 +15,7 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 public partial class PackagesTreeCacheConfiguration: EntityTypeConfiguration<PackagesTreeCache>
 {
     public override void Configure() {
-        HasIndex(e => new { e.ParentPackageId, e.PackageId }, "PackagesTreeCacheIndex").IsClustered();
+        //HasIndex(e => new { e.ParentPackageId, e.PackageId }, "PackagesTreeCacheIndex").IsClustered();
 
 #if NetCore
         HasOne(d => d.Package).WithMany()

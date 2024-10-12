@@ -20910,67 +20910,6 @@ END
 RETURN
 GO
 
--- Support for EntityFramework
-
-IF OBJECT_ID(N'[TempIds]') IS NULL
-BEGIN
-    CREATE TABLE [TempIds] (
-        [Key] int NOT NULL IDENTITY,
-        [Created] datetime2 NOT NULL,
-        [Scope] uniqueidentifier NOT NULL,
-        [Level] int NOT NULL,
-        [Id] int NOT NULL,
-        [Date] datetime2 NOT NULL,
-        CONSTRAINT [PK_TempIds] PRIMARY KEY ([Key])
-    );
-
-	CREATE INDEX [IX_TempIds_Created_Scope_Level] ON [TempIds] ([Created], [Scope], [Level]);
-END;
-GO
-
-IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
-BEGIN
-    CREATE TABLE [__EFMigrationsHistory] (
-        [MigrationId] nvarchar(150) NOT NULL,
-        [ProductVersion] nvarchar(32) NOT NULL,
-        CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
-    );
-END;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240627111421_InitialCreate'
-)
-BEGIN
-    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES
-		(N'20240627111421_InitialCreate', N'8.0.6');
-END;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
-)
-BEGIN
-    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES
-		(N'20240709093225_AddedDMZ', N'8.0.6');
-END;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20241005210853_SQLite_NOCASE'
-)
-BEGIN
-    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES
-		(N'20241005210853_SQLite_NOCASE', N'8.0.6');
-END;
-GO
-
 -- DMZ Network
 IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaName] = 'VPS2012.DMZNetworkEnabled')
 BEGIN
@@ -21375,8 +21314,57 @@ END
 GO
 
 
+-- Support for EntityFramework
 -- Remaining Migrations MySql9AndMaraiDB11, AddMariaDB11, Bugfix_for_MySQL_8_x, BugfixMySQL8TruncateQuota,
 -- & FixUsersHomeForUnix
+
+IF OBJECT_ID(N'[TempIds]') IS NULL
+BEGIN
+    CREATE TABLE [TempIds] (
+        [Key] int NOT NULL IDENTITY,
+        [Created] datetime2 NOT NULL,
+        [Scope] uniqueidentifier NOT NULL,
+        [Level] int NOT NULL,
+        [Id] int NOT NULL,
+        [Date] datetime2 NOT NULL,
+        CONSTRAINT [PK_TempIds] PRIMARY KEY ([Key])
+    );
+
+	CREATE INDEX [IX_TempIds_Created_Scope_Level] ON [TempIds] ([Created], [Scope], [Level]);
+END;
+GO
+
+IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
+BEGIN
+    CREATE TABLE [__EFMigrationsHistory] (
+        [MigrationId] nvarchar(150) NOT NULL,
+        [ProductVersion] nvarchar(32) NOT NULL,
+        CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+    );
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
+)
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES
+		(N'20240709093225_AddedDMZ', N'8.0.6');
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20241005210853_SQLite_NOCASE'
+)
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES
+		(N'20241005210853_SQLite_NOCASE', N'8.0.6');
+END;
+GO
 
 BEGIN TRANSACTION;
 GO
@@ -21742,6 +21730,54 @@ IF NOT EXISTS (
 BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
     VALUES (N'20241010081909_FixUsersHomeForUnix', N'8.0.8');
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20241012060936_InitialCreate'
+)
+BEGIN
+    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ThemeSettingID', N'PropertyName', N'PropertyValue', N'SettingsName', N'ThemeID') AND [object_id] = OBJECT_ID(N'[ThemeSettings]'))
+        SET IDENTITY_INSERT [ThemeSettings] ON;
+
+	DELETE FROM ThemeSettings;
+
+    EXEC(N'INSERT INTO [ThemeSettings] ([ThemeSettingID], [PropertyName], [PropertyValue], [SettingsName], [ThemeID])
+    VALUES (1, N''Light'', N''light-theme'', N''Style'', 1),
+    (2, N''Dark'', N''dark-theme'', N''Style'', 1),
+    (3, N''Semi Dark'', N''semi-dark'', N''Style'', 1),
+    (4, N''Minimal'', N''minimal-theme'', N''Style'', 1),
+    (5, N''#0727d7'', N''headercolor1'', N''color-header'', 1),
+    (6, N''#23282c'', N''headercolor2'', N''color-header'', 1),
+    (7, N''#e10a1f'', N''headercolor3'', N''color-header'', 1),
+    (8, N''#157d4c'', N''headercolor4'', N''color-header'', 1),
+    (9, N''#673ab7'', N''headercolor5'', N''color-header'', 1),
+    (10, N''#795548'', N''headercolor6'', N''color-header'', 1),
+    (11, N''#d3094e'', N''headercolor7'', N''color-header'', 1),
+    (12, N''#ff9800'', N''headercolor8'', N''color-header'', 1),
+    (13, N''#6c85ec'', N''sidebarcolor1'', N''color-Sidebar'', 1),
+    (14, N''#5b737f'', N''sidebarcolor2'', N''color-Sidebar'', 1),
+    (15, N''#408851'', N''sidebarcolor3'', N''color-Sidebar'', 1),
+    (16, N''#230924'', N''sidebarcolor4'', N''color-Sidebar'', 1),
+    (17, N''#903a85'', N''sidebarcolor5'', N''color-Sidebar'', 1),
+    (18, N''#a04846'', N''sidebarcolor6'', N''color-Sidebar'', 1),
+    (19, N''#a65314'', N''sidebarcolor7'', N''color-Sidebar'', 1),
+    (20, N''#1f0e3b'', N''sidebarcolor8'', N''color-Sidebar'', 1)');
+
+    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ThemeSettingID', N'PropertyName', N'PropertyValue', N'SettingsName', N'ThemeID') AND [object_id] = OBJECT_ID(N'[ThemeSettings]'))
+        SET IDENTITY_INSERT [ThemeSettings] OFF;
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20241012060936_InitialCreate'
+)
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES
+		(N'20241012060936_InitialCreate', N'8.0.10');
 END;
 GO
 

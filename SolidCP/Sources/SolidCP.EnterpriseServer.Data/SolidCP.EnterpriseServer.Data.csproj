@@ -5,21 +5,22 @@
         <LangVersion>10</LangVersion>
         <ScaffoldConnectionString>Server=(local);Database=SolidCPFresh;uid=sa;pwd=Password12;TrustServerCertificate=true;Connection Timeout=300;command timeout=300</ScaffoldConnectionString>
         <DefineConstants>$(DefineConstants);ScaffoldedEntities;ScaffoldedDbContext;ScaffoldedConfigurations;</DefineConstants>
-		<OutputType>Exe</OutputType>
+        <OutputType>Exe</OutputType>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <OutputPath>..\..\Bin</OutputPath>
         <StartupObject>SolidCP.EnterpriseServer.Data.Program</StartupObject>
-        <EntityFramework6>6.5</EntityFramework6> <!-- Use EntityFramework 6.4 or 6.5 -->
-	</PropertyGroup>
+        <EntityFramework6>6.5</EntityFramework6>
+        <!-- Use EntityFramework 6.4 or 6.5 -->
+    </PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)' == 'net48'">
-		<OutputType>Library</OutputType>
-		<ImplicitUsings>disable</ImplicitUsings>
-		<!--<StartupObject>SolidCP.EnterpriseServer.Data.Program</StartupObject>-->
-		<StartupObject></StartupObject>
-	</PropertyGroup>
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net48'">
+        <OutputType>Library</OutputType>
+        <ImplicitUsings>disable</ImplicitUsings>
+        <!--<StartupObject>SolidCP.EnterpriseServer.Data.Program</StartupObject>-->
+        <StartupObject></StartupObject>
+    </PropertyGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.10" />
@@ -38,7 +39,7 @@
     <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
         <Reference Include="System.Data.Entity" />
     </ItemGroup>
-    
+
     <ItemGroup Condition="'$(TargetFramework)' == 'net48' AND '$(EntityFramework6)' == '6.5'">
         <PackageReference Include="EntityFramework" Version="6.5.1" />
         <PackageReference Include="Z.EntityFramework.Plus.EF6" Version="8.103.5" />
@@ -75,13 +76,13 @@
     <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
         <DefineConstants>$(DefineConstants);NetCore</DefineConstants>
         <!--<AssemblyName>$(MSBuildProjectName).Core</AssemblyName>-->
-		<PackageId>$(MSBuildProjectName)</PackageId>
-	</PropertyGroup>
+        <PackageId>$(MSBuildProjectName)</PackageId>
+    </PropertyGroup>
 
     <PropertyGroup Condition="'$(TargetFramework)' == 'net48'">
         <DefineConstants>$(DefineConstants);NetFX</DefineConstants>
         <!--<AssemblyName>$(MSBuildProjectName).NetFX</AssemblyName>-->
-		<PackageId>$(MSBuildProjectName)</PackageId>
+        <PackageId>$(MSBuildProjectName)</PackageId>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(TargetFramework)' == 'net48' AND '$(EntityFramework6)' == '6.4'">
@@ -102,60 +103,48 @@
         <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
     </ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
-		<None Include="Migrations\**\*.cs" />
-		<Compile Remove="Migrations\**\*.cs" />
-	</ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+        <None Include="Migrations\**\*.cs" />
+        <Compile Remove="Migrations\**\*.cs" />
+    </ItemGroup>
 
     <ItemGroup>
         <None Include="CodeTemplates\EFCore\Aliases.cs" />
         <Compile Remove="CodeTemplates\EFCore\Aliases.cs" />
-		<!--<Compile Remove="Configuration\**\*.cs" />
+        <!--<Compile Remove="Configuration\**\*.cs" />
 		<None Include="Configuration\**\*.cs" />-->
-
-		<None Include="DbContextBase.Source.cs" />
-		<Compile Remove="DbContextBase.Source.cs" />
+        <None Include="DbContextBase.Source.cs" />
+        <Compile Remove="DbContextBase.Source.cs" />
+        <None Include="Migrations\Backup\**\*.*" />
+        <Compile Remove="Migrations\Backup\**\*.cs" />
+        <None Include="Configuration\Sources\**\*.*" />
+        <Compile Remove="Configuration\Sources\**\*.*" />
+        <None Include="Entities\Sources\**\*.*" />
+        <Compile Remove="Entities\Sources\**\*.*" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Update="CodeTemplates\EFCore\EntityData.t4.bak">
-          <Generator></Generator>
-        </None>
         <None Update="CodeTemplates\EFCore\EntityType.t4">
-          <Generator></Generator>
+            <Generator></Generator>
         </None>
         <None Update="CodeTemplates\EFCore\EntityTypeConfiguration.t4">
-          <Generator></Generator>
+            <Generator></Generator>
         </None>
     </ItemGroup>
 
-	<ItemGroup>
-		<None Include="Configuration\Sources\**\*.*" />
-		<Compile Remove="Configuration\Sources\**\*.*" />
-		<None Include="Entities\Sources\**\*.*" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Remove="LegacyScripts\update_db.sql" />
-	  <None Remove="Migrations\PostgreSql\install.postgresql.sql" />
-	  <None Remove="Migrations\Sqlite\install.sqlite.sql" />
-	  <None Remove="Migrations\SqlServer\install.sqlserver.sql" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <EmbeddedResource Include="LegacyScripts\update_db.sql" />
-	  <EmbeddedResource Include="Migrations\SqlServer\install.sqlserver.sql" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <EmbeddedResource Include="Migrations\PostgreSql\install.postgresql.sql" />
-	  <EmbeddedResource Include="Migrations\Sqlite\install.sqlite.sql" />
-	</ItemGroup>
-	
     <ItemGroup>
-      <Compile Update="Extensions\EntityDataTable.cs">
-        <SubType>Component</SubType>
-      </Compile>
+      <None Remove="Migrations\SqlServer\20241012060936_InitialCreate_StoredProcedures.sql" />
     </ItemGroup>
-		
+
+    <ItemGroup>
+        <EmbeddedResource Include="LegacyScripts\update_db.sql" />
+        <EmbeddedResource Include="Migrations\SqlServer\20241012060936_InitialCreate_StoredProcedures.sql" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Update="Extensions\EntityDataTable.cs">
+            <SubType>Component</SubType>
+        </Compile>
+    </ItemGroup>
+
 </Project>

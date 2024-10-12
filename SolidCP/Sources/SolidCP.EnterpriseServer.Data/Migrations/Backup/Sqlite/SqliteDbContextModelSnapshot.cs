@@ -3788,9 +3788,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.HasIndex("PackageId");
 
-                    b.HasIndex(new[] { "ParentPackageId", "PackageId" }, "PackagesTreeCacheIndex")
-                        .HasAnnotation("SqlServer:Clustered", true);
-
                     b.ToTable("PackagesTreeCache");
 
                     b.HasData(

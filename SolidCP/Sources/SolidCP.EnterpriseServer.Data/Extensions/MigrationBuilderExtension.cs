@@ -41,12 +41,15 @@ namespace SolidCP.EnterpriseServer.Data
 
 			void ParseIdent()
 			{
-				if (identifier.Count > 0)
+				if (identifier.Count > 0 || i >= query.Length)
 				{
 					var ident = new string(identifier.ToArray());
-					if (ident.Equals("GO", StringComparison.OrdinalIgnoreCase))
+					if (ident.Equals("GO", StringComparison.OrdinalIgnoreCase) || i >= query.Length)
 					{
-						int end = query.LastIndexOf('\n', i - 3);
+						int end;
+						if (i >= query.Length) end = query.Length - 1;
+						else end = query.LastIndexOf('\n', i - 3);
+						
 						if (end == -1) end = 0;
 						length = end - start + 1;
 
@@ -56,11 +59,12 @@ namespace SolidCP.EnterpriseServer.Data
 							HasSpecialCommand = hasSpecialCommand
 						});
 
-						start = query.IndexOf('\n', i);
+						if (i < query.Length) start = query.IndexOf('\n', i);
 						if (start == -1) start = query.Length;
 						hasSpecialCommand = false;
 					}
-					else if (preIdent.Equals("CREATE", StringComparison.OrdinalIgnoreCase) &&
+					else if ((preIdent.Equals("CREATE", StringComparison.OrdinalIgnoreCase) ||
+						preIdent.Equals("AlTER", StringComparison.OrdinalIgnoreCase)) &&
 						(ident.Equals("FUNCTION", StringComparison.OrdinalIgnoreCase) ||
 						ident.Equals("VIEW", StringComparison.OrdinalIgnoreCase) ||
 						ident.Equals("PROCEDURE", StringComparison.OrdinalIgnoreCase) ||
@@ -158,9 +162,9 @@ namespace SolidCP.EnterpriseServer.Data
 				}
 			}
 
-			File.WriteAllText(@"C:\GitHub\test.sql", str.ToString());
+			File.WriteAllText(@"C:\GitHub\test.sql", str.ToString().Trim());
 
-			return str.ToString();
+			return str.ToString().Trim();
 		}
 	}
 }
