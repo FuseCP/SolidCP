@@ -517,6 +517,16 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_Modules.ascx.resx</File>
+    <Key>ModuleTitle.MySql9Databases</Key>
+    <DefaultValue>MySQL 9 Databases</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_Modules.ascx.resx</File>
+    <Key>ModuleTitle.MySql9Users</Key>
+    <DefaultValue>MySQL 9 Users</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_Modules.ascx.resx</File>
     <Key>ModuleTitle.MariaDBDatabases</Key>
     <DefaultValue>MariaDB Databases</DefaultValue>
   </Resource>
@@ -1794,6 +1804,16 @@
     <File>App_GlobalResources\SolidCP_Pages.ascx.resx</File>
     <Key>PageTitle.SpaceMySql8</Key>
     <DefaultValue>{user} - {space} - MySQL 8.x</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_Pages.ascx.resx</File>
+    <Key>PageName.SpaceMySql9</Key>
+    <DefaultValue>MySQL 9.x</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_Pages.ascx.resx</File>
+    <Key>PageTitle.SpaceMySql9</Key>
+    <DefaultValue>{user} - {space} - MySQL 9.x</DefaultValue>
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_Pages.ascx.resx</File>
@@ -5327,6 +5347,21 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.MySQL9.Backup</Key>
+    <DefaultValue>Database Backups</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.MySQL9.Databases</Key>
+    <DefaultValue>Databases</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.MySQL9.MaxDatabaseSize</Key>
+    <DefaultValue>Max Database Size, MB</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>Quota.MySQL4.MaxDatabaseSize</Key>
     <DefaultValue>Max Database Size, MB</DefaultValue>
   </Resource>
@@ -5338,6 +5373,11 @@
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>Quota.MySQL8.Restore</Key>
+    <DefaultValue>Database Restores</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.MySQL9.Restore</Key>
     <DefaultValue>Database Restores</DefaultValue>
   </Resource>
   <Resource>
@@ -5368,6 +5408,16 @@
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>Quota.MySQL8.Users</Key>
+    <DefaultValue>Users</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.MySQL9.Truncate</Key>
+    <DefaultValue>Database Truncate</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.MySQL9.Users</Key>
     <DefaultValue>Users</DefaultValue>
   </Resource>
   <Resource>
@@ -5417,6 +5467,11 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>ReportResourceGroup.MySQL9</Key>
+    <DefaultValue>MySQL 9</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>ResourceGroup.MsSQL2005</Key>
     <DefaultValue>SQL Server 2005</DefaultValue>
   </Resource>
@@ -5444,6 +5499,11 @@
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>ResourceGroup.MySQL8</Key>
     <DefaultValue>MySQL 8</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>ResourceGroup.MySQL9</Key>
+    <DefaultValue>MySQL 9</DefaultValue>
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
@@ -5894,6 +5954,16 @@
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>ServiceItemType.MySQL8User</Key>
     <DefaultValue>MySQL 8 User</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>ServiceItemType.MySQL9Database</Key>
+    <DefaultValue>MySQL 9 Database</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>ServiceItemType.MySQL9User</Key>
+    <DefaultValue>MySQL 9 User</DefaultValue>
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
@@ -42113,7 +42183,7 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\IIS60_Settings.ascx.resx</File>
     <Key>lblWebAppGallery.Text</Key>
-    <DefaultValue>Web Appication Gallery</DefaultValue>
+    <DefaultValue>Web Application Gallery</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\IIS60_Settings.ascx.resx</File>
@@ -42298,7 +42368,7 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\IIS70_Settings.ascx.resx</File>
     <Key>lblWebAppGallery.Text</Key>
-    <DefaultValue>Web Appication Gallery</DefaultValue>
+    <DefaultValue>Web Application Gallery</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\IIS70_Settings.ascx.resx</File>
@@ -43406,6 +43476,11 @@ for your installation of ADO.NET Driver for MySQL (also known as MySQL Connector
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\MSSQL_EditUser.ascx.resx</File>
     <Key>Text.SelectDatabase</Key>
     <DefaultValue>&lt;Select Database&gt;</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\MSSQL_Settings.ascx.resx</File>
+    <Key>chkTrustServerCertificate.Text</Key>
+    <DefaultValue>Always trust server certificate</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\MSSQL_Settings.ascx.resx</File>
@@ -47398,7 +47473,7 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Unix_Settings.ascx.resx</File>
     <Key>lblUsersHome.Text</Key>
-    <DefaultValue>Users Home Directory:</DefaultValue>
+    <DefaultValue>Hosting Spaces Folder:</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\vsftpd_Settings.ascx.resx</File>
@@ -47417,6 +47492,11 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Windows2008_Settings.ascx.resx</File>
+    <Key>lblFileServiceInfo</Key>
+    <DefaultValue>Install File Services role on the file server to enable the check box</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Windows2008_Settings.ascx.resx</File>
     <Key>lblLocationDrive.Text</Key>
     <DefaultValue>Location Drive:</DefaultValue>
   </Resource>
@@ -47432,6 +47512,26 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Windows2012_Settings.ascx.resx</File>
+    <Key>lblFileServiceInfo</Key>
+    <DefaultValue>Install File Services role on the file server to enable the check box</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Windows2012_Settings.ascx.resx</File>
+    <Key>lblSpacesFolder.Text</Key>
+    <DefaultValue>Hosting Spaces Folder:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Windows2016_Settings.ascx.resx</File>
+    <Key>chkEnableHardQuota.Text</Key>
+    <DefaultValue>Enable Hard Quota:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Windows2016_Settings.ascx.resx</File>
+    <Key>lblFileServiceInfo</Key>
+    <DefaultValue>Install File Services role on the file server to enable the check box</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Windows2016_Settings.ascx.resx</File>
     <Key>lblSpacesFolder.Text</Key>
     <DefaultValue>Hosting Spaces Folder:</DefaultValue>
   </Resource>
