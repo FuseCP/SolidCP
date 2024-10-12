@@ -7255,6 +7255,16 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         },
                         new
                         {
+                            QuotaId = 381,
+                            GroupId = 41,
+                            QuotaDescription = "Phone Numbers",
+                            QuotaName = "Lync.PhoneNumbers",
+                            QuotaOrder = 12,
+                            QuotaTypeId = 2,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
                             QuotaId = 400,
                             GroupId = 20,
                             QuotaDescription = "Use shared SSL Root",

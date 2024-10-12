@@ -3,7 +3,6 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SolidCP.EnterpriseServer.Data;
 
@@ -12,11 +11,9 @@ using SolidCP.EnterpriseServer.Data;
 namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 {
     [DbContext(typeof(MySqlDbContext))]
-    [Migration("20241012060957_InitialCreate")]
-    partial class InitialCreate
+    partial class MySqlDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -7254,6 +7251,16 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                             QuotaName = "Lync.EnablePlansEditing",
                             QuotaOrder = 11,
                             QuotaTypeId = 1,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 381,
+                            GroupId = 41,
+                            QuotaDescription = "Phone Numbers",
+                            QuotaName = "Lync.PhoneNumbers",
+                            QuotaOrder = 12,
+                            QuotaTypeId = 2,
                             ServiceQuota = false
                         },
                         new

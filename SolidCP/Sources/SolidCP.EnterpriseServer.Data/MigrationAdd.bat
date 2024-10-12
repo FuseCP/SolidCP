@@ -37,3 +37,8 @@ REM dotnet ef migrations bundle --framework net8.0 --no-build -o Migrations\MySq
 
 echo "Create install.postgresql.bundle.exe bundle for PostgreSQL"
 REM dotnet ef migrations bundle --framework net8.0 --no-build -o Migrations\PostgreSql\install.postgresql.bundle.exe --context PostgreSqlDbContext -i -- "DbType=PostgreSql;Host=localhost;User ID=postgres;Password=Password12;Port=5433;Database=SolidCP;"
+
+copy Migrations\Sqlite\install.sqlite.sql ..\..\Database
+copy Migrations\Sqlite\install.sqlserver.sql ..\..\Database
+copy Migrations\Sqlite\install.mysql.sql ..\..\Database
+copy Migrations\Sqlite\install.postgresql.sql ..\..\Database
