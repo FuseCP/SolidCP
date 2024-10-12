@@ -97,7 +97,10 @@ namespace SolidCP.EnterpriseServer
 				}
 				return alwaysUseEntityFramework ?? false;
 			}
-			set { alwaysUseEntityFramework = value; }
+			set {
+				alwaysUseEntityFramework = value;
+				useEntityFramework = null;
+			}
 		}
 		public bool UseEntityFramework
 		{
@@ -7404,7 +7407,6 @@ RETURN
 				// virtual groups
 				var virtGroups = ResourceGroups
 					.Where(g => (isAdmin || forAutodiscover) && g.ShowGroup == true)
-					.OrderBy(g => g.GroupOrder)
 					.SelectMany(g => g.VirtualGroups
 						.Where(vg => vg.ServerId == serverId)
 						.DefaultIfEmpty(),
@@ -7413,9 +7415,19 @@ RETURN
 							VirtualGroupId = (int?)(vg != null ? vg.VirtualGroupId : null),
 							g.GroupId,
 							g.GroupName,
+							g.GroupOrder,
 							DistributionType = (vg != null ? vg.DistributionType : null) ?? 1,
 							BindDistributionToPrimary = (vg != null ? vg.BindDistributionToPrimary : null) ?? true
-						});
+						})
+					.OrderBy(g => g.GroupOrder)
+					.Select(g => new
+					{
+						g.VirtualGroupId,
+						g.GroupId,
+						g.GroupName,
+						g.DistributionType,
+						g.BindDistributionToPrimary
+					});
 
 				var services = VirtualServices
 					.Where(vs => vs.ServerId == serverId && (isAdmin || forAutodiscover))
@@ -12585,13 +12597,12 @@ RETURN
 					var dnsRecords = ResourceGroupDnsRecords
 						.Where(r => r.GroupId == groupId)
 						.OrderBy(r => r.RecordOrder)
-						.AsEnumerable()
 						.Select(r => new Data.Entities.GlobalDnsRecord
 						{
 							RecordType = r.RecordType,
 							RecordName = r.RecordName,
 							RecordData = r.RecordData == "[ip]" ? "" : r.RecordData,
-							MXPriority = r.MXPriority ?? 0,
+							MXPriority = r.MXPriority != null ? r.MXPriority.Value : 0,
 							IpAddressId = r.RecordData == "[ip]" ? addressId : null,
 							ServiceId = serviceId,
 							ServerId = null,
@@ -15378,7 +15389,7 @@ END
 					{
 						if (!VirtualServices
 							.Where(v => v.ServerId == serverId)
-							.Join(Services, v => v.ServerId, s => s.ServiceId, (v, s) => s)
+							.Join(Services, v => v.ServiceId, s => s.ServiceId, (v, s) => s)
 							.Join(Providers, s => s.ProviderId, p => p.ProviderId, (s, p) => p)
 							.Any(p => p.GroupId == groupId))
 						{
@@ -16267,7 +16278,6 @@ RETURN
 
 				var plans = HostingPlans
 					.Where(pl => pl.UserId == userId && pl.IsAddon == false)
-					.OrderBy(pl => pl.PlanName)
 					// we have to do a GroupJoin here since hp.Packages is not related to hp.PackageId
 					.GroupJoin(Packages, hp => hp.PackageId, p => p.PackageId, (hp, ps) => new
 					{
@@ -16295,8 +16305,8 @@ RETURN
 						VirtualServer = pl.Plan.Server != null ? pl.Plan.Server.VirtualServer : true,
 						// package
 						PackageName = p != null ? p.PackageName : "None"
-
-					});
+					})
+					.OrderBy(pl => pl.PlanName);
 				return EntityDataSet(plans);
 			}
 			else
@@ -17131,7 +17141,6 @@ RETURN
 				// get resource groups
 				var groups = ResourceGroups
 					.Where(r => r.ShowGroup == true)
-					.OrderBy(r => r.GroupOrder)
 					.GroupJoin(HostingPlanResources,
 						g => new { g.GroupId, PlanId = planId },
 						hr => new { hr.GroupId, hr.PlanId }, (g, hr) => new
@@ -17143,19 +17152,21 @@ RETURN
 					{
 						g.Group.GroupId,
 						g.Group.GroupName,
+						g.Group.GroupOrder,
 						Enabled = plan != null,
 						CalculateDiskSpace = plan != null ? plan.CalculateDiskSpace : true,
 						CalculateBandwidth = plan != null ? plan.CalculateBandwidth : true
 					})
-					.AsEnumerable()
+					.OrderBy(r => r.GroupOrder)
+					.ToArray()
 					.Select(g => new
 					{
 						g.GroupId,
 						g.GroupName,
 						g.Enabled,
 						ParentEnabled = g.GroupName == "Service Levels" ?
-							Clone.GetPackageServiceLevelResource(packageId, g.GroupId, serverId) :
-							Clone.GetPackageAllocatedResource(packageId, g.GroupId, serverId),
+							GetPackageServiceLevelResource(packageId, g.GroupId, serverId) :
+							GetPackageAllocatedResource(packageId, g.GroupId, serverId),
 						g.CalculateDiskSpace,
 						g.CalculateBandwidth
 					});
@@ -17163,7 +17174,6 @@ RETURN
 				// get quotas by groups
 				var quotas = Quotas
 					.Where(q => q.HideQuota != true)
-					.OrderBy(q => q.QuotaOrder)
 					.GroupJoin(HostingPlanQuotas,
 						q => new { q.QuotaId, PlanId = planId },
 						hq => new { hq.QuotaId, hq.PlanId }, (q, hq) => new
@@ -17178,9 +17188,11 @@ RETURN
 						q.Quota.QuotaName,
 						q.Quota.QuotaDescription,
 						q.Quota.QuotaTypeId,
+						q.Quota.QuotaOrder,
 						QuotaValue = hq != null ? hq.QuotaValue : 0
 					})
-					.AsEnumerable()
+					.OrderBy(q => q.QuotaOrder)
+					.ToArray()
 					.Select(q => new
 					{
 						q.QuotaId,
@@ -17189,7 +17201,7 @@ RETURN
 						q.QuotaDescription,
 						q.QuotaTypeId,
 						q.QuotaValue,
-						ParentQuotaValue = Clone.GetPackageAllocatedQuota(packageId, q.QuotaId),
+						ParentQuotaValue = GetPackageAllocatedQuota(packageId, q.QuotaId),
 					});
 
 				return EntityDataSet(groups, quotas);
@@ -20062,7 +20074,6 @@ RETURN
 
 				// get resource groups
 				var groups = ResourceGroups
-					.OrderBy(r => r.GroupOrder)
 					.GroupJoin(HostingPlanResources,
 						r => new { r.GroupId, PlanId = packagePlanId },
 						hr => new { hr.GroupId, PlanId = (int?)hr.PlanId },
@@ -20075,12 +20086,14 @@ RETURN
 					{
 						g.Group.GroupId,
 						g.Group.GroupName,
+						g.Group.GroupOrder,
 						CalculateDiskSpace = hr != null ? hr.CalculateDiskSpace : false,
 						CalculateBandwidth = hr != null ? hr.CalculateBandwidth : false,
 					})
 					.AsEnumerable()
 					.Where(r => r.GroupName != "Service Levels" && Clone.GetPackageAllocatedResource(packageId, r.GroupId, 0) ||
 						r.GroupName == "Service Levels" && Clone.GetPackageServiceLevelResource(packageId, r.GroupId, 0))
+					.OrderBy(r => r.GroupOrder)
 					.Select(g => new
 					{
 						g.GroupId,
@@ -20209,7 +20222,6 @@ RETURN
 					.FirstOrDefault();
 				// get resource groups
 				var groups = ResourceGroups
-					.OrderBy(r => r.GroupOrder)
 					.GroupJoin(HostingPlanResources.Where(r => r.PlanId == package.PlanId),
 						r => r.GroupId, hr => hr.GroupId, (r, hr) => new
 						{
@@ -20220,12 +20232,14 @@ RETURN
 					{
 						g.Group.GroupId,
 						g.Group.GroupName,
+						g.Group.GroupOrder,
 						CalculateDiskSpace = hr != null ? hr.CalculateDiskSpace : false,
 						CalculateBandwidth = hr != null ? hr.CalculateBandwidth : false,
 					})
 					.AsEnumerable()
 					.Where(r => r.GroupName != "Service Levels" && Clone.GetPackageAllocatedResource(packageId, r.GroupId, 0) ||
 						r.GroupName == "Service Levels" && Clone.GetPackageServiceLevelResource(packageId, r.GroupId, 0))
+					.OrderBy(r => r.GroupOrder)
 					.Select(g => new
 					{
 						g.GroupId,
@@ -20345,7 +20359,6 @@ RETURN
 					.FirstOrDefault();
 				// get resource groups
 				var groups = ResourceGroups
-					.OrderBy(r => r.GroupOrder)
 					.GroupJoin(HostingPlanResources.Where(r => r.PlanId == package.PlanId), r => r.GroupId, hr => hr.GroupId, (r, hr) => new
 					{
 						Group = r,
@@ -20356,10 +20369,12 @@ RETURN
 					{
 						g.Group.GroupId,
 						g.Group.GroupName,
+						g.Group.GroupOrder,
 						CalculateDiskSpace = hr != null ? hr.CalculateDiskSpace : false,
 						CalculateBandwidth = hr != null ? hr.CalculateBandwidth : false,
 					})
 					.AsEnumerable()
+					.OrderBy(r => r.GroupOrder)
 					.Select(g => new
 					{
 						Enabled = g.GroupName == "Service Levels" ?
@@ -23462,17 +23477,18 @@ RETURN
 						BytesReceived = p.Sum(pb => (long?)pb.PB.BytesReceived) ?? 0
 					});
 				var packages = ResourceGroups
-					.OrderBy(rg => rg.GroupOrder)
 					.GroupJoin(packagesGrouped, r => r.GroupId, g => g.GroupId, (rg, pg) => new
 					{
 						rg.GroupId,
 						rg.GroupName,
+						rg.GroupOrder,
 						PackageGroup = pg
 					})
 					.SelectMany(g => g.PackageGroup.DefaultIfEmpty(), (g, pg) => new
 					{
 						g.GroupId,
 						g.GroupName,
+						g.GroupOrder,
 						MegaBytesSent = pg != null ? (pg.BytesSent + MB / 2) / MB : 0,
 						MegaBytesReceived = pg != null ? (pg.BytesReceived + MB / 2) / MB : 0,
 						MegaBytesTotal = pg != null ? (pg.BytesSent + pg.BytesReceived + MB / 2) / MB : 0,
@@ -23480,8 +23496,13 @@ RETURN
 						BytesReceived = pg != null ? pg.BytesReceived : 0,
 						BytesTotal = pg != null ? pg.BytesSent + pg.BytesReceived : 0
 					})
-					.Where(g => g.BytesTotal > 0);
-
+					.Where(g => g.BytesTotal > 0)
+					.OrderBy(g => g.GroupOrder)
+					.Select(g => new {
+						g.GroupId, g.GroupName,
+						g.MegaBytesSent, g.MegaBytesReceived, g.MegaBytesTotal,
+						g.BytesSent, g.BytesReceived, g.BytesTotal
+					});
 				return EntityDataSet(packages);
 			}
 			else
@@ -23555,21 +23576,27 @@ RETURN
 						Diskspace = p.Sum(pb => (long?)pb.PD.DiskSpace) ?? 0
 					});
 				var packages = ResourceGroups
-					.OrderBy(rg => rg.GroupOrder)
 					.GroupJoin(packagesGrouped, r => r.GroupId, g => g.GroupId, (rg, pg) => new
 					{
 						rg.GroupId,
 						rg.GroupName,
+						rg.GroupOrder,
 						PackageGroup = pg
 					})
 					.SelectMany(g => g.PackageGroup.DefaultIfEmpty(), (g, pg) => new
 					{
 						g.GroupId,
 						g.GroupName,
+						g.GroupOrder,
 						Diskspace = pg != null ? (pg.Diskspace + MB / 2) / MB : 0,
 						DiskspaceBytes = pg != null ? pg.Diskspace : 0
 					})
-					.Where(g => g.DiskspaceBytes > 0);
+					.Where(g => g.DiskspaceBytes > 0)
+					.OrderBy(g => g.GroupOrder)
+					.Select(g => new
+					{
+						g.GroupId, g.GroupName, g.Diskspace, g.DiskspaceBytes
+					});
 
 				return EntityDataSet(packages);
 			}
@@ -25550,7 +25577,6 @@ RETURN
 
 				var parameters = ScheduleTaskParameters
 					.Where(stp => stp.TaskId == taskId)
-					.OrderBy(stp => stp.ParameterOrder)
 					.GroupJoin(ScheduleParameters, stp => new { stp.ParameterId, ScheduleId = scheduleId },
 						sp => new { sp.ParameterId, sp.ScheduleId }, (stp, sp) => new
 						{
@@ -25558,6 +25584,7 @@ RETURN
 							stp.ParameterId,
 							stp.DataTypeId,
 							stp.DefaultValue,
+							stp.ParameterOrder,
 							Parameters = sp
 						})
 					.SelectMany(s => s.Parameters.DefaultIfEmpty(), (s, sp) => new
@@ -25566,7 +25593,13 @@ RETURN
 						s.ParameterId,
 						s.DataTypeId,
 						s.DefaultValue,
+						s.ParameterOrder,
 						ParameterValue = sp != null ? sp.ParameterValue : null,
+					})
+					.OrderBy(s => s.ParameterOrder)
+					.Select(s => new
+					{
+						s.ScheduleId, s.ParameterId, s.DataTypeId, s.DefaultValue, s.ParameterValue 
 					});
 
 				return EntityDataReader(parameters);
