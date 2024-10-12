@@ -4857,6 +4857,15 @@ IF NOT EXISTS (
     WHERE [MigrationId] = N'20241012194301_InitialCreate'
 )
 BEGIN
+    DROP VIEW IF EXISTS [dbo].[UsersDetailed]
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20241012194301_InitialCreate'
+)
+BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateWhoisDomainInfo]
 END;
 GO
@@ -9430,6 +9439,25 @@ IF NOT EXISTS (
 )
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20241012194301_InitialCreate'
+)
+BEGIN
+    EXECUTE sp_executesql N'-- Create UserDetailed view
+    CREATE VIEW [dbo].[UsersDetailed]
+    AS
+    SELECT     U.UserID, U.RoleID, U.StatusID, U.LoginStatusId, U.SubscriberNumber, U.FailedLogins, U.OwnerID, U.Created, U.Changed, U.IsDemo, U.Comments, U.IsPeer, U.Username, U.FirstName, U.LastName, U.Email,
+                          U.CompanyName, U.FirstName + '' '' + U.LastName AS FullName, UP.Username AS OwnerUsername, UP.FirstName AS OwnerFirstName,
+                          UP.LastName AS OwnerLastName, UP.RoleID AS OwnerRoleID, UP.FirstName + '' '' + UP.LastName AS OwnerFullName, UP.Email AS OwnerEmail, UP.RoleID AS Expr1,
+                              (SELECT     COUNT(PackageID) AS Expr1
+                                FROM          dbo.Packages AS P
+                                WHERE      (UserID = U.UserID)) AS PackagesNumber, U.EcommerceEnabled
+    FROM         dbo.Users AS U LEFT OUTER JOIN
+                          dbo.Users AS UP ON U.OwnerID = UP.UserID'
 END;
 GO
 
