@@ -2,7 +2,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using SolidCP.EnterpriseServer;
 
-namespace SolidCP.EnterpriseServer.Tests
+namespace SolidCP.Tests
 {
 	[TestClass]
 	public class UnitTests

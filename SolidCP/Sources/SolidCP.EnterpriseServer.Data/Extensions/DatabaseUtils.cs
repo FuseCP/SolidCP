@@ -62,12 +62,12 @@ namespace SolidCP.EnterpriseServer.Data
 		{
 		}
 
-		public static string InstallScript(string name)
+		public static string InstallScript(string scriptName)
 		{
 			var assembly = Assembly.GetExecutingAssembly();
 			var resNames = assembly.GetManifestResourceNames();
 			using (var scriptResource = resNames
-				.Where(name => name.EndsWith($".{name}"))
+				.Where(name => name.EndsWith(scriptName))
 				.Select(name => assembly.GetManifestResourceStream(name))
 				.FirstOrDefault())
 			using (var reader = new StreamReader(scriptResource)) return reader.ReadToEnd();

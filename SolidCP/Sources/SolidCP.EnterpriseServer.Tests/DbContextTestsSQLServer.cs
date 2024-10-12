@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SolidCP.EnterpriseServer;
 
-namespace SolidCP.EnterpriseServer.Tests
+namespace SolidCP.Tests
 {
 	[TestClass]
 	public class DbContextTestsSQLServer

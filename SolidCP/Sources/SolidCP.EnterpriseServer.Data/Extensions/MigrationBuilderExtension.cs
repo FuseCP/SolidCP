@@ -162,7 +162,7 @@ namespace SolidCP.EnterpriseServer.Data
 				}
 			}
 
-			File.WriteAllText(@"C:\GitHub\test.sql", str.ToString().Trim());
+			//File.WriteAllText(@"C:\GitHub\test.sql", str.ToString().Trim());
 
 			return str.ToString().Trim();
 		}

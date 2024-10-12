@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Reflection;
 using System.Diagnostics;
 using SolidCP.EnterpriseServer.Code;
+using SolidCP.EnterpriseServer;
 using SolidCP.EnterpriseServer.Data;
 using System.Linq.Expressions;
 using System.Linq.Dynamic;
@@ -16,7 +17,8 @@ using System.Data.Entity;
 using Microsoft.EntityFrameworkCore;
 #endif
 
-namespace SolidCP.EnterpriseServer.Tests
+
+namespace SolidCP.Tests
 {
 	[TestClass]
 	public class DbContextTests
@@ -43,7 +45,7 @@ namespace SolidCP.EnterpriseServer.Tests
 		[TestMethod]
 		public void TestDbAccess()
 		{
-			using (var db = new Data.DbContext(ConnectionString))
+			using (var db = new EnterpriseServer.Data.DbContext(ConnectionString))
 			{
 				var providers = db.Providers.ToArray();
 				Assert.IsTrue(providers.Length > 0);
@@ -53,7 +55,7 @@ namespace SolidCP.EnterpriseServer.Tests
 		[TestMethod]
 		public void TestDynamicLike()
 		{
-			using (var db = new Data.DbContext(ConnectionString))
+			using (var db = new EnterpriseServer.Data.DbContext(ConnectionString))
 			{
 				var columnName = "ProviderName";
 				var columnValue = "%S";

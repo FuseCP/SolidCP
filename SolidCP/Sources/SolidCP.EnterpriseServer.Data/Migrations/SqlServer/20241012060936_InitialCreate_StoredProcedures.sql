@@ -2701,6 +2701,98 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
+CREATE PROCEDURE [dbo].[UpdateHostingPlanQuotas]
+(
+	@ActorID int,
+	@PlanID int,
+	@Xml ntext
+)
+AS
+
+/*
+XML Format:
+
+<plan>
+	<groups>
+		<group id=""16"" enabled=""1"" calculateDiskSpace=""1"" calculateBandwidth=""1""/>
+	</groups>
+	<quotas>
+		<quota id=""2"" value=""2""/>
+	</quotas>
+</plan>
+
+*/
+
+-- check rights
+DECLARE @UserID int
+SELECT @UserID = UserID FROM HostingPlans
+WHERE PlanID = @PlanID
+
+-- check rights
+IF dbo.CheckActorUserRights(@ActorID, @UserID) = 0
+RAISERROR('You are not allowed to access this account', 16, 1)
+
+DECLARE @idoc int
+--Create an internal representation of the XML document.
+EXEC sp_xml_preparedocument @idoc OUTPUT, @xml
+
+-- delete old HP resources
+DELETE FROM HostingPlanResources
+WHERE PlanID = @PlanID
+
+-- delete old HP quotas
+DELETE FROM HostingPlanQuotas
+WHERE PlanID = @PlanID
+
+-- update HP resources
+INSERT INTO HostingPlanResources
+(
+	PlanID,
+	GroupID,
+	CalculateDiskSpace,
+	CalculateBandwidth
+)
+SELECT
+	@PlanID,
+	GroupID,
+	CalculateDiskSpace,
+	CalculateBandwidth
+FROM OPENXML(@idoc, '/plan/groups/group',1) WITH
+(
+	GroupID int '@id',
+	CalculateDiskSpace bit '@calculateDiskSpace',
+	CalculateBandwidth bit '@calculateBandwidth'
+) as XRG
+
+-- update HP quotas
+INSERT INTO HostingPlanQuotas
+(
+	PlanID,
+	QuotaID,
+	QuotaValue
+)
+SELECT
+	@PlanID,
+	QuotaID,
+	QuotaValue
+FROM OPENXML(@idoc, '/plan/quotas/quota',1) WITH
+(
+	QuotaID int '@id',
+	QuotaValue int '@value'
+) as PV
+
+-- remove document
+exec sp_xml_removedocument @idoc
+
+RETURN
+
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
 CREATE PROCEDURE [dbo].[AddHostingPlan]
 (
 	@ActorID int,
@@ -20064,97 +20156,6 @@ RETURN
 GO
 SET ANSI_NULLS ON
 GO
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[UpdateHostingPlanQuotas]
-(
-	@ActorID int,
-	@PlanID int,
-	@Xml ntext
-)
-AS
-
-/*
-XML Format:
-
-<plan>
-	<groups>
-		<group id=""16"" enabled=""1"" calculateDiskSpace=""1"" calculateBandwidth=""1""/>
-	</groups>
-	<quotas>
-		<quota id=""2"" value=""2""/>
-	</quotas>
-</plan>
-
-*/
-
--- check rights
-DECLARE @UserID int
-SELECT @UserID = UserID FROM HostingPlans
-WHERE PlanID = @PlanID
-
--- check rights
-IF dbo.CheckActorUserRights(@ActorID, @UserID) = 0
-RAISERROR('You are not allowed to access this account', 16, 1)
-
-DECLARE @idoc int
---Create an internal representation of the XML document.
-EXEC sp_xml_preparedocument @idoc OUTPUT, @xml
-
--- delete old HP resources
-DELETE FROM HostingPlanResources
-WHERE PlanID = @PlanID
-
--- delete old HP quotas
-DELETE FROM HostingPlanQuotas
-WHERE PlanID = @PlanID
-
--- update HP resources
-INSERT INTO HostingPlanResources
-(
-	PlanID,
-	GroupID,
-	CalculateDiskSpace,
-	CalculateBandwidth
-)
-SELECT
-	@PlanID,
-	GroupID,
-	CalculateDiskSpace,
-	CalculateBandwidth
-FROM OPENXML(@idoc, '/plan/groups/group',1) WITH
-(
-	GroupID int '@id',
-	CalculateDiskSpace bit '@calculateDiskSpace',
-	CalculateBandwidth bit '@calculateBandwidth'
-) as XRG
-
--- update HP quotas
-INSERT INTO HostingPlanQuotas
-(
-	PlanID,
-	QuotaID,
-	QuotaValue
-)
-SELECT
-	@PlanID,
-	QuotaID,
-	QuotaValue
-FROM OPENXML(@idoc, '/plan/quotas/quota',1) WITH
-(
-	QuotaID int '@id',
-	QuotaValue int '@value'
-) as PV
-
--- remove document
-exec sp_xml_removedocument @idoc
-
-RETURN
-
-GO
-SET ANSI_NULLS ON
-GO
 SET QUOTED_IDENTIFIER OFF
 GO
 
@@ -20309,6 +20310,111 @@ WHERE LyncUserPlanId = @LyncUserPlanId
 
 RETURN
 GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[UpdatePackageQuotas]
+(
+	@ActorID int,
+	@PackageID int,
+	@Xml ntext
+)
+AS
+
+/*
+XML Format:
+
+<plan>
+	<groups>
+		<group id=""16"" enabled=""1"" calculateDiskSpace=""1"" calculateBandwidth=""1""/>
+	</groups>
+	<quotas>
+		<quota id=""2"" value=""2""/>
+	</quotas>
+</plan>
+
+*/
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+DECLARE @OverrideQuotas bit
+SELECT @OverrideQuotas = OverrideQuotas FROM Packages
+WHERE PackageID = @PackageID
+
+IF @OverrideQuotas = 0
+BEGIN
+	-- delete old Package resources
+	DELETE FROM PackageResources
+	WHERE PackageID = @PackageID
+
+	-- delete old Package quotas
+	DELETE FROM PackageQuotas
+	WHERE PackageID = @PackageID
+END
+
+IF @OverrideQuotas = 1 AND @Xml IS NOT NULL
+BEGIN
+	-- delete old Package resources
+	DELETE FROM PackageResources
+	WHERE PackageID = @PackageID
+
+	-- delete old Package quotas
+	DELETE FROM PackageQuotas
+	WHERE PackageID = @PackageID
+
+	DECLARE @idoc int
+	--Create an internal representation of the XML document.
+	EXEC sp_xml_preparedocument @idoc OUTPUT, @xml
+
+	-- update Package resources
+	INSERT INTO PackageResources
+	(
+		PackageID,
+		GroupID,
+		CalculateDiskSpace,
+		CalculateBandwidth
+	)
+	SELECT
+		@PackageID,
+		GroupID,
+		CalculateDiskSpace,
+		CalculateBandwidth
+	FROM OPENXML(@idoc, '/plan/groups/group',1) WITH
+	(
+		GroupID int '@id',
+		CalculateDiskSpace bit '@calculateDiskSpace',
+		CalculateBandwidth bit '@calculateBandwidth'
+	) as XRG
+
+	-- update Package quotas
+	INSERT INTO PackageQuotas
+	(
+		PackageID,
+		QuotaID,
+		QuotaValue
+	)
+	SELECT
+		@PackageID,
+		QuotaID,
+		QuotaValue
+	FROM OPENXML(@idoc, '/plan/quotas/quota',1) WITH
+	(
+		QuotaID int '@id',
+		QuotaValue int '@value'
+	) as PV
+
+	-- remove document
+	exec sp_xml_removedocument @idoc
+END
+RETURN
+
+GO
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -20610,109 +20716,6 @@ UPDATE Packages SET
 WHERE
 	PackageID = @PackageID
 
-RETURN
-
-GO
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[UpdatePackageQuotas]
-(
-	@ActorID int,
-	@PackageID int,
-	@Xml ntext
-)
-AS
-
-/*
-XML Format:
-
-<plan>
-	<groups>
-		<group id=""16"" enabled=""1"" calculateDiskSpace=""1"" calculateBandwidth=""1""/>
-	</groups>
-	<quotas>
-		<quota id=""2"" value=""2""/>
-	</quotas>
-</plan>
-
-*/
-
--- check rights
-IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
-RAISERROR('You are not allowed to access this package', 16, 1)
-
-DECLARE @OverrideQuotas bit
-SELECT @OverrideQuotas = OverrideQuotas FROM Packages
-WHERE PackageID = @PackageID
-
-IF @OverrideQuotas = 0
-BEGIN
-	-- delete old Package resources
-	DELETE FROM PackageResources
-	WHERE PackageID = @PackageID
-
-	-- delete old Package quotas
-	DELETE FROM PackageQuotas
-	WHERE PackageID = @PackageID
-END
-
-IF @OverrideQuotas = 1 AND @Xml IS NOT NULL
-BEGIN
-	-- delete old Package resources
-	DELETE FROM PackageResources
-	WHERE PackageID = @PackageID
-
-	-- delete old Package quotas
-	DELETE FROM PackageQuotas
-	WHERE PackageID = @PackageID
-
-	DECLARE @idoc int
-	--Create an internal representation of the XML document.
-	EXEC sp_xml_preparedocument @idoc OUTPUT, @xml
-
-	-- update Package resources
-	INSERT INTO PackageResources
-	(
-		PackageID,
-		GroupID,
-		CalculateDiskSpace,
-		CalculateBandwidth
-	)
-	SELECT
-		@PackageID,
-		GroupID,
-		CalculateDiskSpace,
-		CalculateBandwidth
-	FROM OPENXML(@idoc, '/plan/groups/group',1) WITH
-	(
-		GroupID int '@id',
-		CalculateDiskSpace bit '@calculateDiskSpace',
-		CalculateBandwidth bit '@calculateBandwidth'
-	) as XRG
-
-	-- update Package quotas
-	INSERT INTO PackageQuotas
-	(
-		PackageID,
-		QuotaID,
-		QuotaValue
-	)
-	SELECT
-		@PackageID,
-		QuotaID,
-		QuotaValue
-	FROM OPENXML(@idoc, '/plan/quotas/quota',1) WITH
-	(
-		QuotaID int '@id',
-		QuotaValue int '@value'
-	) as PV
-
-	-- remove document
-	exec sp_xml_removedocument @idoc
-END
 RETURN
 
 GO

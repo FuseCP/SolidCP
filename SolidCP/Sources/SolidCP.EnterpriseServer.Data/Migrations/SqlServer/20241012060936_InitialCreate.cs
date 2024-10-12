@@ -5645,8 +5645,6 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                 table: "WebDavPortalUsersSettings",
                 column: "AccountId");
 
-            StoredProceduresDown(migrationBuilder);
-
             StoredProceduresUp(migrationBuilder);
         }
 
