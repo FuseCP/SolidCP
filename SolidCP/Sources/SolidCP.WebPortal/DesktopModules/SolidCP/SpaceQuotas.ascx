@@ -32,7 +32,6 @@
         <td class="SubHead" nowrap><asp:Label ID="lblOrganizations" runat="server" meta:resourcekey="lblOrganizations" Text="Organizations:"></asp:Label></td>
         <td class="Normal"><scp:Quota ID="quotaOrganizations" runat="server" QuotaName="HostedSolution.Organizations" DisplayGauge="True" /></td>
     </tr>
-
     <tr ID="pnlUserAccounts" runat="server">
         <td class="SubHead" nowrap><asp:Label ID="lblUserAccounts" runat="server" meta:resourcekey="lblUserAccounts" Text="User Accounts:"></asp:Label></td>
         <td class="Normal"><scp:Quota ID="quotaUserAccounts" runat="server" QuotaName="HostedSolution.Users" DisplayGauge="True" /></td>
@@ -73,7 +72,6 @@
         <td class="SubHead" nowrap><asp:Label ID="lblSfBPhone" runat="server" meta:resourcekey="lblSfBPhone" Text="Skype for Business Phone Numbers:"></asp:Label></td>
         <td class="Normal"><scp:Quota ID="quotaSfBPhone" runat="server" QuotaName="SfB.PhoneNumbers" DisplayGauge="True" /></td>
     </tr>
-
     <tr ID="pnlBlackBerryUsers" runat="server">
         <td class="SubHead" nowrap><asp:Label ID="lblBlackBerryUsers" runat="server" meta:resourcekey="lblBlackBerryUsers" Text="BlackBerry Users:"></asp:Label></td>
         <td class="Normal"><scp:Quota ID="quotaBlackBerryUsers" runat="server" QuotaName="BlackBerry.Users" DisplayGauge="True" /></td>
@@ -86,7 +84,6 @@
         <td class="SubHead" nowrap><asp:Label ID="lblEnterpriseSharepointSites" runat="server" meta:resourcekey="lblEnterpriseSharepointSites" Text="Sharepoint Server Sites:"></asp:Label></td>
         <td class="Normal"><scp:Quota ID="quotaEnterpriseSharepointSites" runat="server" QuotaName="HostedSharePointEnterprise.Sites" DisplayGauge="True" /></td>
     </tr>    
-
     <tr ID="pnlWebSites" runat="server">
         <td class="SubHead" nowrap><asp:Label ID="lblWebSites" runat="server" meta:resourcekey="lblWebSites" Text="Web Sites:"></asp:Label></td>
         <td class="Normal"><scp:Quota ID="quotaWebSites" runat="server" QuotaName="Web.Sites" DisplayGauge="True" /></td>
@@ -123,23 +120,22 @@
         <td class="SubHead" nowrap><asp:Label ID="lblMsSQL2022Databases" runat="server" meta:resourcekey="lblMsSQL2022Databases" Text="MsSQL2022 Databases:"></asp:Label></td>
         <td class="Normal"><scp:Quota ID="quotamssql2022databases" runat="server" QuotaName="MsSQL2022.Databases" DisplayGauge="True"/></td>
     </tr>
-        <tr ID="pnlMySQL5Databases" runat="server">
+    <tr ID="pnlMySQL5Databases" runat="server">
         <td class="SubHead" nowrap><asp:Label ID="lblMySQL5Databases" runat="server" meta:resourcekey="lblMySQL5Databases" Text="MySQL5 Databases:"></asp:Label></td>
         <td class="Normal"><scp:Quota ID="quotamysql5databases" runat="server" QuotaName="MySQL5.Databases" DisplayGauge="True"/></td>
     </tr>
-        <tr ID="pnlMySQL8Databases" runat="server">
+    <tr ID="pnlMySQL8Databases" runat="server">
         <td class="SubHead" nowrap><asp:Label ID="lblMySQL8Databases" runat="server" meta:resourcekey="lblMySQL8Databases" Text="MySQL8 Databases:"></asp:Label></td>
         <td class="Normal"><scp:Quota ID="quotamysql8databases" runat="server" QuotaName="MySQL8.Databases" DisplayGauge="True"/></td>
     </tr>
-        <tr ID="pnlMySQL9Databases" runat="server">
+    <tr ID="pnlMySQL9Databases" runat="server">
         <td class="SubHead" nowrap><asp:Label ID="lblMySQL9Databases" runat="server" meta:resourcekey="lblMySQL9Databases" Text="MySQL9 Databases:"></asp:Label></td>
         <td class="Normal"><scp:Quota ID="quotamysql9databases" runat="server" QuotaName="MySQL9.Databases" DisplayGauge="True"/></td>
     </tr>
-        <tr ID="pnlMariaDBDatabases" runat="server">
+    <tr ID="pnlMariaDBDatabases" runat="server">
         <td class="SubHead" nowrap><asp:Label ID="lblMariaDBDatabases" runat="server" meta:resourcekey="lblMariaDBDatabases" Text="MariaDB Databases:"></asp:Label></td>
         <td class="Normal"><scp:Quota ID="quotamariadbdatabases" runat="server" QuotaName="MariaDB.Databases" DisplayGauge="True"/></td>
     </tr>
-
 	<tr id="pnlHyperVForPC" runat="server">
 		<td class="SubHead" nowrap><asp:Label ID="lblHyperVForPC" runat="server" meta:resourcekey="lblHyperVForPC" Text="Number of VM:" /></td>
 		<td class="Normal"><scp:Quota ID="quotaNumberOfVm" runat="server" QuotaName="VPSForPC.ServersNumber" DisplayGauge="True" /></td>
