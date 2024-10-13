@@ -354,9 +354,10 @@ namespace SolidCP.Setup
 			this.label7.AutoSize = true;
 			this.label7.Location = new System.Drawing.Point(21, 27);
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(380, 13);
+			this.label7.Size = new System.Drawing.Size(377, 26);
 			this.label7.TabIndex = 23;
-			this.label7.Text = "(Note that by using SQLite, SolidCP will run slower than with using SQL Server.)";
+			this.label7.Text = "(Note that by using SQLite, SolidCP will run slower than with using SQL Server.\r\n" +
+    " It is not recommended to use SQLite on a production server.)";
 			// 
 			// txtSqliteDatabase
 			// 

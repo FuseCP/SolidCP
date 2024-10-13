@@ -52,7 +52,7 @@ namespace SolidCP.EnterpriseServer.Data
                     }
                     csb["BinaryGUID"] = "false";
                     csb["Foreign Keys"] = "true";
-                    csb["BusyTimeout"] = "60000";
+                    csb["BusyTimeout"] = "10000";
                 }
                 connectionString = csb.ToString();
             }
