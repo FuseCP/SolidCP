@@ -368,7 +368,7 @@ namespace SolidCP.EnterpriseServer
 				}
 				return null;
 			}
-			public void Remember(UserInfoInternal user)
+			public void AddToCache(UserInfoInternal user)
 			{
 				lock (this)
 				{
@@ -431,20 +431,28 @@ namespace SolidCP.EnterpriseServer
 				// compare user passwords
 				if (CryptoUtils.SHAEquals(user.Password, password) || user.Password == password)
 				{
-					// Queue call to AuditLog for better speed in SOAP calls
-					ThreadPool.QueueUserWorkItem(state =>
+					// Queue call to AuditLog for better speed in SOAP calls (except for SQLite)
+					if (!Database.IsSqlite)
 					{
-						using (var asyncController = AsAsync<UserController>())
+						ThreadPool.QueueUserWorkItem(state =>
 						{
-							asyncController.AuditLog.AddAuditLogInfoRecord("USER", "GET_BY_USERNAME_PASSWORD", username, new string[] { "IP: " + ip });
-						}
-					});
-					
-					CachedUsers.Remember(user);
+							using (var asyncController = AsAsync<UserController>())
+							{
+								asyncController.AuditLog.AddAuditLogInfoRecord("USER", "GET_BY_USERNAME_PASSWORD", username, new string[] { "IP: " + ip });
+							}
+						});
+					}
+					else AuditLog.AddAuditLogInfoRecord("USER", "GET_BY_USERNAME_PASSWORD", username, new string[] { "IP: " + ip });
+
+					CachedUsers.AddToCache(user);
 
 					return new UserInfo(user);
 				}
-
+				// Don't cache when password is empty (Password could be set manually in the DB later on)
+				else if (!string.IsNullOrEmpty(user.Password))
+				{
+					CachedUsers.AddToCache(user);
+				}
 
 				return null;
 			}
