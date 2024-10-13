@@ -134,6 +134,7 @@ namespace SolidCP.EnterpriseServer
 							OneTimePasswordHelper.FireSuccessAuth(user);
 							break;
 						case OneTimePasswordStates.Expired:
+							CachedUsers.Clear(username);
 							if (lockOut >= 0) Database.UpdateUserFailedLoginAttempt(user.UserId, lockOut, false);
 							TaskManager.WriteWarning("Expired one time password");
 							return BusinessErrorCodes.ERROR_USER_EXPIRED_ONETIMEPASSWORD;
@@ -141,6 +142,8 @@ namespace SolidCP.EnterpriseServer
 				}
 				else
 				{
+					CachedUsers.Clear(username);
+
 					if (lockOut >= 0)
 						Database.UpdateUserFailedLoginAttempt(user.UserId, lockOut, false);
 
@@ -153,12 +156,16 @@ namespace SolidCP.EnterpriseServer
 				// check status
 				if (user.Status == UserStatus.Cancelled)
 				{
+					CachedUsers.Clear(username);
+
 					TaskManager.WriteWarning("Account cancelled");
 					return BusinessErrorCodes.ERROR_USER_ACCOUNT_CANCELLED;
 				}
 
 				if (user.Status == UserStatus.Pending)
 				{
+					CachedUsers.Clear(username);
+
 					TaskManager.WriteWarning("Account pending");
 					return BusinessErrorCodes.ERROR_USER_ACCOUNT_PENDING;
 				}

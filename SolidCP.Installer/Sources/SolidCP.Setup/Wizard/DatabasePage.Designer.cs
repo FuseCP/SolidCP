@@ -88,6 +88,7 @@ namespace SolidCP.Setup
 			this.label7 = new System.Windows.Forms.Label();
 			this.txtSqliteDatabase = new System.Windows.Forms.TextBox();
 			this.label6 = new System.Windows.Forms.Label();
+			this.label8 = new System.Windows.Forms.Label();
 			this.tabControl.SuspendLayout();
 			this.tabSqlServer.SuspendLayout();
 			this.tabMySql.SuspendLayout();
@@ -227,6 +228,7 @@ namespace SolidCP.Setup
 			// tabMySql
 			// 
 			this.tabMySql.BackColor = System.Drawing.SystemColors.Control;
+			this.tabMySql.Controls.Add(this.label8);
 			this.tabMySql.Controls.Add(this.txtMySqlPort);
 			this.tabMySql.Controls.Add(this.label2);
 			this.tabMySql.Controls.Add(this.label1);
@@ -246,7 +248,7 @@ namespace SolidCP.Setup
 			// 
 			// txtMySqlPort
 			// 
-			this.txtMySqlPort.Location = new System.Drawing.Point(132, 44);
+			this.txtMySqlPort.Location = new System.Drawing.Point(132, 55);
 			this.txtMySqlPort.MaxLength = 128;
 			this.txtMySqlPort.Name = "txtMySqlPort";
 			this.txtMySqlPort.Size = new System.Drawing.Size(248, 20);
@@ -255,7 +257,7 @@ namespace SolidCP.Setup
 			// 
 			// label2
 			// 
-			this.label2.Location = new System.Drawing.Point(26, 47);
+			this.label2.Location = new System.Drawing.Point(26, 58);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(100, 23);
 			this.label2.TabIndex = 21;
@@ -263,7 +265,7 @@ namespace SolidCP.Setup
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(26, 21);
+			this.label1.Location = new System.Drawing.Point(26, 32);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(100, 23);
 			this.label1.TabIndex = 11;
@@ -271,7 +273,7 @@ namespace SolidCP.Setup
 			// 
 			// txtMySqlPassword
 			// 
-			this.txtMySqlPassword.Location = new System.Drawing.Point(172, 97);
+			this.txtMySqlPassword.Location = new System.Drawing.Point(172, 108);
 			this.txtMySqlPassword.Name = "txtMySqlPassword";
 			this.txtMySqlPassword.PasswordChar = '*';
 			this.txtMySqlPassword.Size = new System.Drawing.Size(208, 20);
@@ -279,7 +281,7 @@ namespace SolidCP.Setup
 			// 
 			// txtMySqlDatabase
 			// 
-			this.txtMySqlDatabase.Location = new System.Drawing.Point(132, 126);
+			this.txtMySqlDatabase.Location = new System.Drawing.Point(132, 137);
 			this.txtMySqlDatabase.MaxLength = 128;
 			this.txtMySqlDatabase.Name = "txtMySqlDatabase";
 			this.txtMySqlDatabase.Size = new System.Drawing.Size(248, 20);
@@ -288,7 +290,7 @@ namespace SolidCP.Setup
 			// 
 			// label3
 			// 
-			this.label3.Location = new System.Drawing.Point(26, 129);
+			this.label3.Location = new System.Drawing.Point(26, 140);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(100, 23);
 			this.label3.TabIndex = 19;
@@ -296,14 +298,14 @@ namespace SolidCP.Setup
 			// 
 			// txtMySqlUser
 			// 
-			this.txtMySqlUser.Location = new System.Drawing.Point(172, 71);
+			this.txtMySqlUser.Location = new System.Drawing.Point(172, 82);
 			this.txtMySqlUser.Name = "txtMySqlUser";
 			this.txtMySqlUser.Size = new System.Drawing.Size(208, 20);
 			this.txtMySqlUser.TabIndex = 16;
 			// 
 			// txtMySqlServer
 			// 
-			this.txtMySqlServer.Location = new System.Drawing.Point(132, 18);
+			this.txtMySqlServer.Location = new System.Drawing.Point(132, 29);
 			this.txtMySqlServer.Name = "txtMySqlServer";
 			this.txtMySqlServer.Size = new System.Drawing.Size(248, 20);
 			this.txtMySqlServer.TabIndex = 12;
@@ -311,7 +313,7 @@ namespace SolidCP.Setup
 			// 
 			// label4
 			// 
-			this.label4.Location = new System.Drawing.Point(40, 74);
+			this.label4.Location = new System.Drawing.Point(40, 85);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(100, 23);
 			this.label4.TabIndex = 15;
@@ -319,7 +321,7 @@ namespace SolidCP.Setup
 			// 
 			// label5
 			// 
-			this.label5.Location = new System.Drawing.Point(40, 100);
+			this.label5.Location = new System.Drawing.Point(40, 111);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(100, 23);
 			this.label5.TabIndex = 17;
@@ -341,15 +343,15 @@ namespace SolidCP.Setup
 			// label7
 			// 
 			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(40, 87);
+			this.label7.Location = new System.Drawing.Point(21, 27);
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(309, 13);
+			this.label7.Size = new System.Drawing.Size(380, 13);
 			this.label7.TabIndex = 23;
-			this.label7.Text = "(Usage of SQLite on a production server is not recommended.)";
+			this.label7.Text = "(Note that by using SQLite, SolidCP will run slower than with using SQL Server.)";
 			// 
 			// txtSqliteDatabase
 			// 
-			this.txtSqliteDatabase.Location = new System.Drawing.Point(127, 24);
+			this.txtSqliteDatabase.Location = new System.Drawing.Point(128, 79);
 			this.txtSqliteDatabase.MaxLength = 128;
 			this.txtSqliteDatabase.Name = "txtSqliteDatabase";
 			this.txtSqliteDatabase.Size = new System.Drawing.Size(248, 20);
@@ -358,11 +360,20 @@ namespace SolidCP.Setup
 			// 
 			// label6
 			// 
-			this.label6.Location = new System.Drawing.Point(21, 27);
+			this.label6.Location = new System.Drawing.Point(22, 82);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(100, 23);
 			this.label6.TabIndex = 21;
 			this.label6.Text = "Database:";
+			// 
+			// label8
+			// 
+			this.label8.AutoSize = true;
+			this.label8.Location = new System.Drawing.Point(26, 3);
+			this.label8.Name = "label8";
+			this.label8.Size = new System.Drawing.Size(398, 13);
+			this.label8.TabIndex = 24;
+			this.label8.Text = "(Note that by using MySQL/MariaDB, SolidCP will run slower than with SQL Server)";
 			// 
 			// DatabasePage
 			// 
@@ -413,5 +424,6 @@ namespace SolidCP.Setup
 		private System.Windows.Forms.TextBox txtSqliteDatabase;
 		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.Label label8;
 	}
 }
