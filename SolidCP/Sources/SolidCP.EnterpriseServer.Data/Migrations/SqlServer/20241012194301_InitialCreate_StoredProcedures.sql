@@ -13,7 +13,7 @@ GO
 
 SET ANSI_NULLS ON
 GO
-SET QUOTED_IDENTIFIER ON
+SET QUOTED_IDENTIFIER ONGet
 GO
 
 CREATE FUNCTION [dbo].[CalculatePackageBandwidth]
@@ -9630,7 +9630,7 @@ SELECT
 FROM ResourceGroups AS RG 
 LEFT OUTER JOIN HostingPlanResources AS HPR ON RG.GroupID = HPR.GroupID AND HPR.PlanID = @PlanID
 WHERE (RG.ShowGroup = 1)
-ORDER BY RG.GroupOrder
+ORDER BY RG.GroupOrder, RG.GroupName
 
 -- get quotas by groups
 SELECT

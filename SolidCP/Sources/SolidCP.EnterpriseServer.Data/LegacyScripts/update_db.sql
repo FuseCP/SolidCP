@@ -21314,6 +21314,71 @@ END
 GO
 
 
+
+-- Fix ordering of GetHostingPlanQuotas
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetHostingPlanQuotas')
+BEGIN
+DROP PROCEDURE GetHostingPlanQuotas
+END
+GO
+
+CREATE PROCEDURE [dbo].[GetHostingPlanQuotas]
+(
+	@ActorID int,
+	@PlanID int,
+	@PackageID int,
+	@ServerID int
+)
+AS
+
+-- check rights
+IF dbo.CheckActorParentPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+DECLARE @IsAddon bit
+
+IF @ServerID = 0
+SELECT @ServerID = ServerID FROM Packages
+WHERE PackageID = @PackageID
+
+-- get resource groups
+SELECT
+	RG.GroupID,
+	RG.GroupName,
+	CASE
+		WHEN HPR.CalculateDiskSpace IS NULL THEN CAST(0 as bit)
+		ELSE CAST(1 as bit)
+	END AS Enabled,
+	--dbo.GetPackageAllocatedResource(@PackageID, RG.GroupID, @ServerID) AS ParentEnabled,
+	CASE
+		WHEN RG.GroupName = 'Service Levels' THEN dbo.GetPackageServiceLevelResource(@PackageID, RG.GroupID, @ServerID)
+		ELSE dbo.GetPackageAllocatedResource(@PackageID, RG.GroupID, @ServerID)
+	END AS ParentEnabled,
+	ISNULL(HPR.CalculateDiskSpace, 1) AS CalculateDiskSpace,
+	ISNULL(HPR.CalculateBandwidth, 1) AS CalculateBandwidth
+FROM ResourceGroups AS RG 
+LEFT OUTER JOIN HostingPlanResources AS HPR ON RG.GroupID = HPR.GroupID AND HPR.PlanID = @PlanID
+WHERE (RG.ShowGroup = 1)
+ORDER BY RG.GroupOrder, RG.GroupName
+
+-- get quotas by groups
+SELECT
+	Q.QuotaID,
+	Q.GroupID,
+	Q.QuotaName,
+	Q.QuotaDescription,
+	Q.QuotaTypeID,
+	ISNULL(HPQ.QuotaValue, 0) AS QuotaValue,
+	dbo.GetPackageAllocatedQuota(@PackageID, Q.QuotaID) AS ParentQuotaValue
+FROM Quotas AS Q
+LEFT OUTER JOIN HostingPlanQuotas AS HPQ ON Q.QuotaID = HPQ.QuotaID AND HPQ.PlanID = @PlanID
+WHERE Q.HideQuota IS NULL OR Q.HideQuota = 0
+ORDER BY Q.QuotaOrder
+RETURN
+GO
+
+
 -- Support for EntityFramework
 -- Remaining Migrations MySql9AndMaraiDB11, AddMariaDB11, Bugfix_for_MySQL_8_x, BugfixMySQL8TruncateQuota,
 -- & FixUsersHomeForUnix

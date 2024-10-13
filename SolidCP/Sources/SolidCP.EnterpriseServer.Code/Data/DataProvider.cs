@@ -17107,7 +17107,7 @@ SELECT
 FROM ResourceGroups AS RG 
 LEFT OUTER JOIN HostingPlanResources AS HPR ON RG.GroupID = HPR.GroupID AND HPR.PlanID = @PlanID
 WHERE (RG.ShowGroup = 1)
-ORDER BY RG.GroupOrder
+ORDER BY RG.GroupOrder, RG.GroupName
 
 -- get quotas by groups
 SELECT
@@ -17157,7 +17157,8 @@ RETURN
 						CalculateDiskSpace = plan != null ? plan.CalculateDiskSpace : true,
 						CalculateBandwidth = plan != null ? plan.CalculateBandwidth : true
 					})
-					.OrderBy(r => r.GroupOrder)
+					.OrderBy(g => g.GroupOrder)
+					.ThenBy(g => g.GroupName)
 					.ToArray()
 					.Select(g => new
 					{
