@@ -74,6 +74,7 @@ namespace SolidCP.Setup
 			this.tabControl = new System.Windows.Forms.TabControl();
 			this.tabSqlServer = new System.Windows.Forms.TabPage();
 			this.tabMySql = new System.Windows.Forms.TabPage();
+			this.label8 = new System.Windows.Forms.Label();
 			this.txtMySqlPort = new System.Windows.Forms.TextBox();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
@@ -88,7 +89,6 @@ namespace SolidCP.Setup
 			this.label7 = new System.Windows.Forms.Label();
 			this.txtSqliteDatabase = new System.Windows.Forms.TextBox();
 			this.label6 = new System.Windows.Forms.Label();
-			this.label8 = new System.Windows.Forms.Label();
 			this.tabControl.SuspendLayout();
 			this.tabSqlServer.SuspendLayout();
 			this.tabMySql.SuspendLayout();
@@ -246,6 +246,15 @@ namespace SolidCP.Setup
 			this.tabMySql.TabIndex = 1;
 			this.tabMySql.Text = "  MySQL / MariaDB  ";
 			// 
+			// label8
+			// 
+			this.label8.AutoSize = true;
+			this.label8.Location = new System.Drawing.Point(26, 8);
+			this.label8.Name = "label8";
+			this.label8.Size = new System.Drawing.Size(398, 13);
+			this.label8.TabIndex = 24;
+			this.label8.Text = "(Note that by using MySQL/MariaDB, SolidCP will run slower than with SQL Server)";
+			// 
 			// txtMySqlPort
 			// 
 			this.txtMySqlPort.Location = new System.Drawing.Point(132, 55);
@@ -292,7 +301,7 @@ namespace SolidCP.Setup
 			// 
 			this.label3.Location = new System.Drawing.Point(26, 140);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(100, 23);
+			this.label3.Size = new System.Drawing.Size(100, 17);
 			this.label3.TabIndex = 19;
 			this.label3.Text = "Database:";
 			// 
@@ -365,15 +374,6 @@ namespace SolidCP.Setup
 			this.label6.Size = new System.Drawing.Size(100, 23);
 			this.label6.TabIndex = 21;
 			this.label6.Text = "Database:";
-			// 
-			// label8
-			// 
-			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(26, 3);
-			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(398, 13);
-			this.label8.TabIndex = 24;
-			this.label8.Text = "(Note that by using MySQL/MariaDB, SolidCP will run slower than with SQL Server)";
 			// 
 			// DatabasePage
 			// 
