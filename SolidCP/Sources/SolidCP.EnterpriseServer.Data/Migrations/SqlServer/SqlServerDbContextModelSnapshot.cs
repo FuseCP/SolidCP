@@ -57,7 +57,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "AccountId" }, "AccessTokensIdx_AccountID");
 
-                    b.ToTable("AccessTokens");
+                    b.ToTable("AccessTokens", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.AdditionalGroup", b =>
@@ -80,7 +80,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     b.HasKey("Id")
                         .HasName("PK__Addition__3214EC27E665DDE2");
 
-                    b.ToTable("AdditionalGroups");
+                    b.ToTable("AdditionalGroups", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.AuditLog", b =>
@@ -139,7 +139,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     b.HasKey("RecordId")
                         .HasName("PK_Log");
 
-                    b.ToTable("AuditLog");
+                    b.ToTable("AuditLog", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.AuditLogSource", b =>
@@ -151,7 +151,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasKey("SourceName");
 
-                    b.ToTable("AuditLogSources");
+                    b.ToTable("AuditLogSources", (string)null);
 
                     b.HasData(
                         new
@@ -329,7 +329,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     b.HasKey("SourceName", "TaskName")
                         .HasName("PK_LogActions");
 
-                    b.ToTable("AuditLogTasks");
+                    b.ToTable("AuditLogTasks", (string)null);
 
                     b.HasData(
                         new
@@ -2240,7 +2240,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     b.HasKey("Id")
                         .HasName("PK__Backgrou__3214EC273A1145AC");
 
-                    b.ToTable("BackgroundTasks");
+                    b.ToTable("BackgroundTasks", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.BackgroundTaskLog", b =>
@@ -2282,7 +2282,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "TaskId" }, "BackgroundTaskLogsIdx_TaskID");
 
-                    b.ToTable("BackgroundTaskLogs");
+                    b.ToTable("BackgroundTaskLogs", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.BackgroundTaskParameter", b =>
@@ -2314,7 +2314,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "TaskId" }, "BackgroundTaskParametersIdx_TaskID");
 
-                    b.ToTable("BackgroundTaskParameters");
+                    b.ToTable("BackgroundTaskParameters", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.BackgroundTaskStack", b =>
@@ -2335,7 +2335,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "TaskId" }, "BackgroundTaskStackIdx_TaskID");
 
-                    b.ToTable("BackgroundTaskStack");
+                    b.ToTable("BackgroundTaskStack", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.BlackBerryUser", b =>
@@ -2361,7 +2361,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "AccountId" }, "BlackBerryUsersIdx_AccountId");
 
-                    b.ToTable("BlackBerryUsers");
+                    b.ToTable("BlackBerryUsers", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Cluster", b =>
@@ -2380,7 +2380,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasKey("ClusterId");
 
-                    b.ToTable("Clusters");
+                    b.ToTable("Clusters", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Comment", b =>
@@ -2424,7 +2424,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "UserId" }, "CommentsIdx_UserID");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.CrmUser", b =>
@@ -2466,7 +2466,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "AccountId" }, "CRMUsersIdx_AccountID");
 
-                    b.ToTable("CRMUsers");
+                    b.ToTable("CRMUsers", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.DmzIpAddress", b =>
@@ -2496,7 +2496,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "ItemId" }, "DmzIPAddressesIdx_ItemID");
 
-                    b.ToTable("DmzIPAddresses");
+                    b.ToTable("DmzIPAddresses", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Domain", b =>
@@ -2566,7 +2566,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "ZoneItemId" }, "DomainsIdx_ZoneItemID");
 
-                    b.ToTable("Domains");
+                    b.ToTable("Domains", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.DomainDnsRecord", b =>
@@ -2600,7 +2600,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "DomainId" }, "DomainDnsRecordsIdx_DomainId");
 
-                    b.ToTable("DomainDnsRecords");
+                    b.ToTable("DomainDnsRecords", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.EnterpriseFolder", b =>
@@ -2643,7 +2643,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "StorageSpaceFolderId" }, "EnterpriseFoldersIdx_StorageSpaceFolderId");
 
-                    b.ToTable("EnterpriseFolders");
+                    b.ToTable("EnterpriseFolders", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.EnterpriseFoldersOwaPermission", b =>
@@ -2674,7 +2674,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "FolderId" }, "EnterpriseFoldersOwaPermissionsIdx_FolderID");
 
-                    b.ToTable("EnterpriseFoldersOwaPermissions");
+                    b.ToTable("EnterpriseFoldersOwaPermissions", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeAccount", b =>
@@ -2761,7 +2761,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     b.HasIndex(new[] { "AccountName" }, "IX_ExchangeAccounts_UniqueAccountName")
                         .IsUnique();
 
-                    b.ToTable("ExchangeAccounts");
+                    b.ToTable("ExchangeAccounts", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeAccountEmailAddress", b =>
@@ -2789,7 +2789,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     b.HasIndex(new[] { "EmailAddress" }, "IX_ExchangeAccountEmailAddresses_UniqueEmail")
                         .IsUnique();
 
-                    b.ToTable("ExchangeAccountEmailAddresses");
+                    b.ToTable("ExchangeAccountEmailAddresses", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeDeletedAccount", b =>
@@ -2827,7 +2827,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     b.HasKey("Id")
                         .HasName("PK__Exchange__3214EC27EF1C22C1");
 
-                    b.ToTable("ExchangeDeletedAccounts");
+                    b.ToTable("ExchangeDeletedAccounts", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeDisclaimer", b =>
@@ -2852,7 +2852,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasKey("ExchangeDisclaimerId");
 
-                    b.ToTable("ExchangeDisclaimers");
+                    b.ToTable("ExchangeDisclaimers", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeMailboxPlan", b =>
@@ -2973,7 +2973,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     b.HasIndex(new[] { "MailboxPlanId" }, "IX_ExchangeMailboxPlans")
                         .IsUnique();
 
-                    b.ToTable("ExchangeMailboxPlans");
+                    b.ToTable("ExchangeMailboxPlans", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeMailboxPlanRetentionPolicyTag", b =>
@@ -2995,7 +2995,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     b.HasKey("PlanTagId")
                         .HasName("PK__Exchange__E467073C50CD805B");
 
-                    b.ToTable("ExchangeMailboxPlanRetentionPolicyTags");
+                    b.ToTable("ExchangeMailboxPlanRetentionPolicyTags", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeOrganization", b =>
@@ -3027,7 +3027,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     b.HasIndex(new[] { "OrganizationId" }, "IX_ExchangeOrganizations_UniqueOrg")
                         .IsUnique();
 
-                    b.ToTable("ExchangeOrganizations");
+                    b.ToTable("ExchangeOrganizations", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeOrganizationDomain", b =>
@@ -3064,7 +3064,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                         .IsUnique()
                         .HasFilter("[DomainID] IS NOT NULL");
 
-                    b.ToTable("ExchangeOrganizationDomains");
+                    b.ToTable("ExchangeOrganizationDomains", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeOrganizationSetting", b =>
@@ -3086,7 +3086,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "ItemId" }, "ExchangeOrganizationSettingsIdx_ItemId");
 
-                    b.ToTable("ExchangeOrganizationSettings");
+                    b.ToTable("ExchangeOrganizationSettings", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeOrganizationSsFolder", b =>
@@ -3116,7 +3116,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "StorageSpaceFolderId" }, "ExchangeOrganizationSsFoldersIdx_StorageSpaceFolderId");
 
-                    b.ToTable("ExchangeOrganizationSsFolders");
+                    b.ToTable("ExchangeOrganizationSsFolders", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeRetentionPolicyTag", b =>
@@ -3148,7 +3148,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     b.HasKey("TagId")
                         .HasName("PK__Exchange__657CFA4C02667D37");
 
-                    b.ToTable("ExchangeRetentionPolicyTags");
+                    b.ToTable("ExchangeRetentionPolicyTags", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.GlobalDnsRecord", b =>
@@ -3215,7 +3215,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "ServiceId" }, "GlobalDnsRecordsIdx_ServiceID");
 
-                    b.ToTable("GlobalDnsRecords");
+                    b.ToTable("GlobalDnsRecords", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.HostingPlan", b =>
@@ -3273,7 +3273,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "UserId" }, "HostingPlansIdx_UserID");
 
-                    b.ToTable("HostingPlans");
+                    b.ToTable("HostingPlans", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.HostingPlanQuota", b =>
@@ -3296,7 +3296,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex("QuotaId");
 
-                    b.ToTable("HostingPlanQuotas");
+                    b.ToTable("HostingPlanQuotas", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.HostingPlanResource", b =>
@@ -3321,7 +3321,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("HostingPlanResources");
+                    b.ToTable("HostingPlanResources", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.IpAddress", b =>
@@ -3375,7 +3375,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "ServerId" }, "IPAddressesIdx_ServerID");
 
-                    b.ToTable("IPAddresses");
+                    b.ToTable("IPAddresses", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.LyncUser", b =>
@@ -3413,7 +3413,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "LyncUserPlanId" }, "LyncUsersIdx_LyncUserPlanID");
 
-                    b.ToTable("LyncUsers");
+                    b.ToTable("LyncUsers", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.LyncUserPlan", b =>
@@ -3498,7 +3498,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "ItemId" }, "LyncUserPlansIdx_ItemID");
 
-                    b.ToTable("LyncUserPlans");
+                    b.ToTable("LyncUserPlans", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.OcsUser", b =>
@@ -3532,7 +3532,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasKey("OcsuserId");
 
-                    b.ToTable("OCSUsers");
+                    b.ToTable("OCSUsers", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Package", b =>
@@ -3599,7 +3599,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "UserId" }, "PackageIndex_UserID");
 
-                    b.ToTable("Packages", t =>
+                    b.ToTable("Packages", null, t =>
                         {
                             t.HasTrigger("Update_StatusIDchangeDate");
                         });
@@ -3656,7 +3656,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "PlanId" }, "PackageAddonsIdx_PlanID");
 
-                    b.ToTable("PackageAddons");
+                    b.ToTable("PackageAddons", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageIpAddress", b =>
@@ -3695,7 +3695,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "PackageId" }, "PackageIPAddressesIdx_PackageID");
 
-                    b.ToTable("PackageIPAddresses");
+                    b.ToTable("PackageIPAddresses", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageQuota", b =>
@@ -3717,7 +3717,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex("QuotaId");
 
-                    b.ToTable("PackageQuotas");
+                    b.ToTable("PackageQuotas", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageResource", b =>
@@ -3743,7 +3743,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("PackageResources");
+                    b.ToTable("PackageResources", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageService", b =>
@@ -3762,7 +3762,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("PackageServices");
+                    b.ToTable("PackageServices", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageSetting", b =>
@@ -3787,7 +3787,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasKey("PackageId", "SettingsName", "PropertyName");
 
-                    b.ToTable("PackageSettings");
+                    b.ToTable("PackageSettings", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageVlan", b =>
@@ -3817,7 +3817,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "VlanId" }, "PackageVLANsIdx_VlanID");
 
-                    b.ToTable("PackageVLANs");
+                    b.ToTable("PackageVLANs", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackagesBandwidth", b =>
@@ -3846,7 +3846,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("PackagesBandwidth");
+                    b.ToTable("PackagesBandwidth", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackagesDiskspace", b =>
@@ -3868,7 +3868,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("PackagesDiskspace");
+                    b.ToTable("PackagesDiskspace", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackagesTreeCache", b =>
@@ -3887,7 +3887,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex("PackageId");
 
-                    b.ToTable("PackagesTreeCache");
+                    b.ToTable("PackagesTreeCache", (string)null);
 
                     b.HasData(
                         new
@@ -3924,7 +3924,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "ItemId" }, "PrivateIPAddressesIdx_ItemID");
 
-                    b.ToTable("PrivateIPAddresses");
+                    b.ToTable("PrivateIPAddresses", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PrivateNetworkVlan", b =>
@@ -3951,7 +3951,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "ServerId" }, "PrivateNetworkVLANsIdx_ServerID");
 
-                    b.ToTable("PrivateNetworkVLANs");
+                    b.ToTable("PrivateNetworkVLANs", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Provider", b =>
@@ -3989,7 +3989,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "GroupId" }, "ProvidersIdx_GroupID");
 
-                    b.ToTable("Providers");
+                    b.ToTable("Providers", (string)null);
 
                     b.HasData(
                         new
@@ -5325,7 +5325,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "ItemTypeId" }, "QuotasIdx_ItemTypeID");
 
-                    b.ToTable("Quotas");
+                    b.ToTable("Quotas", (string)null);
 
                     b.HasData(
                         new
@@ -8731,7 +8731,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasKey("Id");
 
-                    b.ToTable("RDSCertificates");
+                    b.ToTable("RDSCertificates", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsCollection", b =>
@@ -8762,7 +8762,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     b.HasKey("Id")
                         .HasName("PK__RDSColle__3214EC27346D361D");
 
-                    b.ToTable("RDSCollections");
+                    b.ToTable("RDSCollections", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsCollectionSetting", b =>
@@ -8833,7 +8833,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "RdsCollectionId" }, "RDSCollectionSettingsIdx_RDSCollectionId");
 
-                    b.ToTable("RDSCollectionSettings");
+                    b.ToTable("RDSCollectionSettings", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsCollectionUser", b =>
@@ -8860,7 +8860,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "RdsCollectionId" }, "RDSCollectionUsersIdx_RDSCollectionId");
 
-                    b.ToTable("RDSCollectionUsers");
+                    b.ToTable("RDSCollectionUsers", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsMessage", b =>
@@ -8892,7 +8892,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "RdsCollectionId" }, "RDSMessagesIdx_RDSCollectionId");
 
-                    b.ToTable("RDSMessages");
+                    b.ToTable("RDSMessages", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsServer", b =>
@@ -8937,7 +8937,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "RdsCollectionId" }, "RDSServersIdx_RDSCollectionId");
 
-                    b.ToTable("RDSServers");
+                    b.ToTable("RDSServers", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsServerSetting", b =>
@@ -8967,7 +8967,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasKey("RdsServerId", "SettingsName", "PropertyName");
 
-                    b.ToTable("RDSServerSettings");
+                    b.ToTable("RDSServerSettings", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ResourceGroup", b =>
@@ -8995,7 +8995,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasKey("GroupId");
 
-                    b.ToTable("ResourceGroups");
+                    b.ToTable("ResourceGroups", (string)null);
 
                     b.HasData(
                         new
@@ -9347,7 +9347,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "GroupId" }, "ResourceGroupDnsRecordsIdx_GroupID");
 
-                    b.ToTable("ResourceGroupDnsRecords");
+                    b.ToTable("ResourceGroupDnsRecords", (string)null);
 
                     b.HasData(
                         new
@@ -9581,7 +9581,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "TaskId" }, "ScheduleIdx_TaskID");
 
-                    b.ToTable("Schedule");
+                    b.ToTable("Schedule", (string)null);
 
                     b.HasData(
                         new
@@ -9641,7 +9641,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasKey("ScheduleId", "ParameterId");
 
-                    b.ToTable("ScheduleParameters");
+                    b.ToTable("ScheduleParameters", (string)null);
 
                     b.HasData(
                         new
@@ -9676,7 +9676,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasKey("TaskId");
 
-                    b.ToTable("ScheduleTasks");
+                    b.ToTable("ScheduleTasks", (string)null);
 
                     b.HasData(
                         new
@@ -9847,7 +9847,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasKey("TaskId", "ParameterId");
 
-                    b.ToTable("ScheduleTaskParameters");
+                    b.ToTable("ScheduleTaskParameters", (string)null);
 
                     b.HasData(
                         new
@@ -10564,7 +10564,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("ScheduleTaskViewConfiguration");
+                    b.ToTable("ScheduleTaskViewConfiguration", (string)null);
 
                     b.HasData(
                         new
@@ -10811,7 +10811,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "PrimaryGroupId" }, "ServersIdx_PrimaryGroupID");
 
-                    b.ToTable("Servers");
+                    b.ToTable("Servers", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Service", b =>
@@ -10854,7 +10854,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "ServerId" }, "ServicesIdx_ServerID");
 
-                    b.ToTable("Services");
+                    b.ToTable("Services", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ServiceDefaultProperty", b =>
@@ -10876,7 +10876,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     b.HasKey("ProviderId", "PropertyName")
                         .HasName("PK_ServiceDefaultProperties_1");
 
-                    b.ToTable("ServiceDefaultProperties");
+                    b.ToTable("ServiceDefaultProperties", (string)null);
 
                     b.HasData(
                         new
@@ -13623,7 +13623,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "ServiceId" }, "ServiceItemsIdx_ServiceID");
 
-                    b.ToTable("ServiceItems");
+                    b.ToTable("ServiceItems", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ServiceItemProperty", b =>
@@ -13643,7 +13643,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasKey("ItemId", "PropertyName");
 
-                    b.ToTable("ServiceItemProperties");
+                    b.ToTable("ServiceItemProperties", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ServiceItemType", b =>
@@ -13698,7 +13698,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "GroupId" }, "ServiceItemTypesIdx_GroupID");
 
-                    b.ToTable("ServiceItemTypes");
+                    b.ToTable("ServiceItemTypes", (string)null);
 
                     b.HasData(
                         new
@@ -14526,7 +14526,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     b.HasKey("ServiceId", "PropertyName")
                         .HasName("PK_ServiceProperties_1");
 
-                    b.ToTable("ServiceProperties");
+                    b.ToTable("ServiceProperties", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.SfBUser", b =>
@@ -14558,7 +14558,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasKey("SfBUserId");
 
-                    b.ToTable("SfBUsers");
+                    b.ToTable("SfBUsers", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.SfBUserPlan", b =>
@@ -14641,7 +14641,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasKey("SfBUserPlanId");
 
-                    b.ToTable("SfBUserPlans");
+                    b.ToTable("SfBUserPlans", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.SslCertificate", b =>
@@ -14711,7 +14711,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasKey("Id");
 
-                    b.ToTable("SSLCertificates");
+                    b.ToTable("SSLCertificates", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.StorageSpace", b =>
@@ -14765,7 +14765,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "ServiceId" }, "StorageSpacesIdx_ServiceId");
 
-                    b.ToTable("StorageSpaces");
+                    b.ToTable("StorageSpaces", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.StorageSpaceFolder", b =>
@@ -14808,7 +14808,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "StorageSpaceId" }, "StorageSpaceFoldersIdx_StorageSpaceId");
 
-                    b.ToTable("StorageSpaceFolders");
+                    b.ToTable("StorageSpaceFolders", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.StorageSpaceLevel", b =>
@@ -14831,7 +14831,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     b.HasKey("Id")
                         .HasName("PK__StorageS__3214EC07B8D82363");
 
-                    b.ToTable("StorageSpaceLevels");
+                    b.ToTable("StorageSpaceLevels", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.StorageSpaceLevelResourceGroup", b =>
@@ -14855,7 +14855,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "LevelId" }, "StorageSpaceLevelResourceGroupsIdx_LevelId");
 
-                    b.ToTable("StorageSpaceLevelResourceGroups");
+                    b.ToTable("StorageSpaceLevelResourceGroups", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.SupportServiceLevel", b =>
@@ -14879,7 +14879,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     b.HasKey("LevelId")
                         .HasName("PK__SupportS__09F03C065BA08AFB");
 
-                    b.ToTable("SupportServiceLevels");
+                    b.ToTable("SupportServiceLevels", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.SystemSetting", b =>
@@ -14899,7 +14899,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasKey("SettingsName", "PropertyName");
 
-                    b.ToTable("SystemSettings");
+                    b.ToTable("SystemSettings", (string)null);
 
                     b.HasData(
                         new
@@ -14979,7 +14979,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex("Created", "Scope", "Level");
 
-                    b.ToTable("TempIds");
+                    b.ToTable("TempIds", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Theme", b =>
@@ -15013,7 +15013,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasKey("ThemeId");
 
-                    b.ToTable("Themes");
+                    b.ToTable("Themes", (string)null);
 
                     b.HasData(
                         new
@@ -15059,7 +15059,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "ThemeId" }, "ThemeSettingsIdx_ThemeID");
 
-                    b.ToTable("ThemeSettings");
+                    b.ToTable("ThemeSettings", (string)null);
 
                     b.HasData(
                         new
@@ -15368,7 +15368,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "OwnerId" }, "UsersIdx_OwnerID");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
 
                     b.HasData(
                         new
@@ -15424,7 +15424,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasKey("UserId", "SettingsName", "PropertyName");
 
-                    b.ToTable("UserSettings");
+                    b.ToTable("UserSettings", (string)null);
 
                     b.HasData(
                         new
@@ -16490,7 +16490,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasKey("DatabaseVersion");
 
-                    b.ToTable("Versions");
+                    b.ToTable("Versions", (string)null);
 
                     b.HasData(
                         new
@@ -16564,7 +16564,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "ServerId" }, "VirtualGroupsIdx_ServerID");
 
-                    b.ToTable("VirtualGroups");
+                    b.ToTable("VirtualGroups", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.VirtualService", b =>
@@ -16590,7 +16590,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "ServiceId" }, "VirtualServicesIdx_ServiceID");
 
-                    b.ToTable("VirtualServices");
+                    b.ToTable("VirtualServices", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.WebDavAccessToken", b =>
@@ -16628,7 +16628,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "AccountId" }, "WebDavAccessTokensIdx_AccountID");
 
-                    b.ToTable("WebDavAccessTokens");
+                    b.ToTable("WebDavAccessTokens", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.WebDavPortalUsersSetting", b =>
@@ -16651,7 +16651,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
                     b.HasIndex(new[] { "AccountId" }, "WebDavPortalUsersSettingsIdx_AccountId");
 
-                    b.ToTable("WebDavPortalUsersSettings");
+                    b.ToTable("WebDavPortalUsersSettings", (string)null);
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.AccessToken", b =>

@@ -1,16 +1,16 @@
 set DOTNET_HOST_FACTORY_RESOLVER_DEFAULT_TIMEOUT_IN_SECONDS=0
 
 echo "Remove migration for Sqlite"
-dotnet ef migrations remove --framework net8.0 -o Migrations\Sqlite --context SqliteDbContext %migration% -- "DbType=Sqlite;Data Source=..\SolidCP.EnterpriseServer\App_Data\SolidCP.sqlite;"
+dotnet ef migrations remove --framework net8.0 --context SqliteDbContext -- "DbType=Sqlite;Data Source=..\SolidCP.EnterpriseServer\App_Data\SolidCP.sqlite;"
 
 echo "Remove migration for SQL Server"
-dotnet ef migrations remove --framework net8.0 --no-build -o Migrations\SqlServer --context SqlServerDbContext %migration% -- "DbType=SqlServer;Server=(local);Database=SolidCP;Uid=sa;Pwd=Password12;"
+dotnet ef migrations remove --framework net8.0 --no-build --context SqlServerDbContext -- "DbType=SqlServer;Server=(local);Database=SolidCP;Uid=sa;Pwd=Password12;"
 
 echo "Remove migration for MySQL and MariaDB"
-dotnet ef migrations remove --framework net8.0 --no-build -o Migrations\MySql --context MySqlDbContext %migration% -- "DbType=MySql;Server=localhost;Database=SolidCP;Uid=root;Pwd=Password12;"
+dotnet ef migrations remove --framework net8.0 --no-build --context MySqlDbContext -- "DbType=MySql;Server=localhost;Database=SolidCP;Uid=root;Pwd=Password12;"
 
 echo "Remove migration for PostgreSQL"
-dotnet ef migrations remove --framework net8.0 --no-build -o Migrations\PostgreSql --context PostgreSqlDbContext %migration% -- "DbType=PostgreSql;Host=localhost;User ID=postgres;Password=Password12;Port=5433;Database=SolidCP;"
+dotnet ef migrations remove --framework net8.0 --no-build --context PostgreSqlDbContext -- "DbType=PostgreSql;Host=localhost;User ID=postgres;Password=Password12;Port=5433;Database=SolidCP;"
 
 echo "Create install.sqlite.sql for Sqlite"
 dotnet ef migrations script --framework net8.0 -o Migrations\Sqlite\install.sqlite.sql --context SqliteDbContext -- "DbType=Sqlite;Data Source=..\SolidCP.EnterpriseServer\App_Data\SolidCP.sqlite;"

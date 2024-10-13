@@ -5,7 +5,7 @@ echo "Add migration for Sqlite"
 dotnet ef migrations add --framework net8.0 -o Migrations\Sqlite --context SqliteDbContext %migration% -- "DbType=Sqlite;Data Source=..\SolidCP.EnterpriseServer\App_Data\SolidCP.sqlite;"
 
 echo "Add migration for SQL Server"
-dotnet ef migrations add --framework net8.0 --no-build -o Migrations\SqlServer --context SqlServerDbContext %migration% -- "DbType=SqlServer;Server=(local);Database=SolidCP;Uid=sa;Pwd=Password12;"
+dotnet ef migrations add --framework net8.0 --no-build -o Migrations\SqlServer --context SqlServerDbContext %migration% -- "DbType=SqlServer;Server=(local);Database=SolidCP;Uid=sa;Pwd=Password12;TrustServerCertificate=true"
 
 echo "Add migration for MySQL and MariaDB"
 dotnet ef migrations add --framework net8.0 --no-build -o Migrations\MySql --context MySqlDbContext %migration% -- "DbType=MySql;Server=localhost;Database=SolidCP;Uid=root;Pwd=Password12;"

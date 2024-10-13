@@ -59,11 +59,14 @@ namespace SolidCP.EnterpriseServer.Data
 		public EntityTypeConfiguration(DbType dbType, bool initSeedData = false) : this() { DbType = dbType; InitSeedData = initSeedData; }
 
 #if NetCore
-		EntityTypeBuilder<TEntity>? Model = null;
-		public void Configure(EntityTypeBuilder<TEntity> model) { Model = model; Configure(); }
-		public EntityTypeBuilder<TEntity> Core => Model!;
+		EntityTypeBuilder<TEntity>? Builder = null;
+		public void Configure(EntityTypeBuilder<TEntity> builder) { Builder = builder; Configure(); }
+		public EntityTypeBuilder<TEntity> Core => Builder!;
+		public ModelBuilder ModelBuilder { get; set; }
 #elif NetFX
-		public MC.EntityTypeConfiguration<TEntity> NetFX => (MC.EntityTypeConfiguration<TEntity>)this;
+		public DbModelBuilder ModelBuilder { get; set; }
+#else
+		public DummyModel ModelBuilder { get; set; }	
 #endif
 		public abstract void Configure();
 
@@ -82,7 +85,7 @@ namespace SolidCP.EnterpriseServer.Data
 		// Returns:
 		//     The same typeBuilder instance so that multiple configuration calls can be chained.
 #if NetCore
-		public virtual EntityTypeBuilder<TEntity> HasAnnotation(string annotation, object? value) => Model!.HasAnnotation(annotation, value);
+		public virtual EntityTypeBuilder<TEntity> HasAnnotation(string annotation, object? value) => Builder!.HasAnnotation(annotation, value);
 #endif
 
 		//
@@ -96,7 +99,7 @@ namespace SolidCP.EnterpriseServer.Data
 		// Returns:
 		//     The same builder instance so that multiple configuration calls can be chained.
 #if NetCore
-		public virtual EntityTypeBuilder<TEntity> HasBaseType(string? name) => Model!.HasBaseType(name);
+		public virtual EntityTypeBuilder<TEntity> HasBaseType(string? name) => Builder!.HasBaseType(name);
 #endif
 
 		//
@@ -110,7 +113,7 @@ namespace SolidCP.EnterpriseServer.Data
 		// Returns:
 		//     The same builder instance so that multiple configuration calls can be chained.
 #if NetCore
-		public virtual EntityTypeBuilder<TEntity> HasBaseType(Type? entityType) => Model!.HasBaseType(entityType);
+		public virtual EntityTypeBuilder<TEntity> HasBaseType(Type? entityType) => Builder!.HasBaseType(entityType);
 #endif
 
 		//
@@ -124,7 +127,7 @@ namespace SolidCP.EnterpriseServer.Data
 		// Returns:
 		//     The same builder instance so that multiple configuration calls can be chained.
 #if NetCore
-		public virtual EntityTypeBuilder<TEntity> HasBaseType<TBaseType>() => Model!.HasBaseType<TBaseType>();
+		public virtual EntityTypeBuilder<TEntity> HasBaseType<TBaseType>() => Builder!.HasBaseType<TBaseType>();
 #endif
 
 		//
@@ -142,7 +145,7 @@ namespace SolidCP.EnterpriseServer.Data
 		// Returns:
 		//     An object that can be used to configure the primary key.
 #if NetCore
-		public virtual KeyBuilder HasKey(Expression<Func<TEntity, object?>> keyExpression) => Model!.HasKey(keyExpression);
+		public virtual KeyBuilder HasKey(Expression<Func<TEntity, object?>> keyExpression) => Builder!.HasKey(keyExpression);
 #elif NetFX
 		public virtual PrimaryKeyIndexConfiguration HasKey(Expression<Func<TEntity, object?>> keyExpression)
 		{
@@ -164,7 +167,7 @@ namespace SolidCP.EnterpriseServer.Data
 		// Returns:
 		//     An object that can be used to configure the primary key.
 #if NetCore
-		public virtual KeyBuilder<TEntity> HasKey(params string[] propertyNames ) => Model!.HasKey(propertyNames);
+		public virtual KeyBuilder<TEntity> HasKey(params string[] propertyNames) => Builder!.HasKey(propertyNames);
 #endif
 
 		//
@@ -186,7 +189,7 @@ namespace SolidCP.EnterpriseServer.Data
 		// Returns:
 		//     An object that can be used to configure the key.
 #if NetCore
-		public virtual KeyBuilder<TEntity> HasAlternateKey(Expression<Func<TEntity, object?>> keyExpression) => Model!.HasAlternateKey(keyExpression);
+		public virtual KeyBuilder<TEntity> HasAlternateKey(Expression<Func<TEntity, object?>> keyExpression) => Builder!.HasAlternateKey(keyExpression);
 #endif
 
 		//
@@ -205,7 +208,7 @@ namespace SolidCP.EnterpriseServer.Data
 		// Returns:
 		//     An object that can be used to configure the key.
 #if NetCore
-		public virtual KeyBuilder<TEntity> HasAlternateKey(params string[] propertyNames) => Model!.HasAlternateKey(propertyNames);
+		public virtual KeyBuilder<TEntity> HasAlternateKey(params string[] propertyNames) => Builder!.HasAlternateKey(propertyNames);
 #endif
 
 		//
@@ -216,7 +219,7 @@ namespace SolidCP.EnterpriseServer.Data
 		// Returns:
 		//     The same builder instance so that multiple configuration calls can be chained.
 #if NetCore
-		public virtual EntityTypeBuilder<TEntity> HasNoKey() => Model!.HasNoKey();
+		public virtual EntityTypeBuilder<TEntity> HasNoKey() => Builder!.HasNoKey();
 #endif
 
 		//
@@ -233,7 +236,7 @@ namespace SolidCP.EnterpriseServer.Data
 		// Returns:
 		//     An object that can be used to configure the property.
 #if NetCore
-		public virtual PropertyBuilder<TProperty> Property<TProperty>(Expression<Func<TEntity, TProperty>> propertyExpression) => Model!.Property(propertyExpression);
+		public virtual PropertyBuilder<TProperty> Property<TProperty>(Expression<Func<TEntity, TProperty>> propertyExpression) => Builder!.Property(propertyExpression);
 #endif
 
 		//
@@ -250,7 +253,7 @@ namespace SolidCP.EnterpriseServer.Data
 		// Returns:
 		//     An object that can be used to configure the property.
 #if NetCore
-		public virtual PrimitiveCollectionBuilder<TProperty> PrimitiveCollection<TProperty>(Expression<Func<TEntity, TProperty>> propertyExpression) => Model!.PrimitiveCollection(propertyExpression);
+		public virtual PrimitiveCollectionBuilder<TProperty> PrimitiveCollection<TProperty>(Expression<Func<TEntity, TProperty>> propertyExpression) => Builder!.PrimitiveCollection(propertyExpression);
 #endif
 
 		//
@@ -274,7 +277,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//     name of a CLR property or field on the complex type. This overload cannot be
 		//     used to add a new shadow state complex property.
 #if NetCore
-		public virtual EntityTypeBuilder<TEntity> ComplexProperty(string propertyName, Action<ComplexPropertyBuilder> buildAction) => Model!.ComplexProperty(propertyName, buildAction);
+		public virtual EntityTypeBuilder<TEntity> ComplexProperty(string propertyName, Action<ComplexPropertyBuilder> buildAction) => Builder!.ComplexProperty(propertyName, buildAction);
 #endif
 
 		//
@@ -305,7 +308,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//     The current value for the property is stored in the Microsoft.EntityFrameworkCore.ChangeTracking.ChangeTracker
 		//     rather than being stored in instances of the complex class.
 #if NetCore
-		public virtual EntityTypeBuilder<TEntity> ComplexProperty<TProperty>(string propertyName, Action<ComplexPropertyBuilder<TProperty>> buildAction) => Model!.ComplexProperty(propertyName, buildAction);
+		public virtual EntityTypeBuilder<TEntity> ComplexProperty<TProperty>(string propertyName, Action<ComplexPropertyBuilder<TProperty>> buildAction) => Builder!.ComplexProperty(propertyName, buildAction);
 #endif
 
 		//
@@ -339,7 +342,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//     The current value for the property is stored in the Microsoft.EntityFrameworkCore.ChangeTracking.ChangeTracker
 		//     rather than being stored in instances of the complex class.
 #if NetCore
-		public virtual EntityTypeBuilder<TEntity> ComplexProperty<TProperty>(string propertyName, string complexTypeName, Action<ComplexPropertyBuilder<TProperty>> buildAction) => Model!.ComplexProperty(propertyName, complexTypeName, buildAction);
+		public virtual EntityTypeBuilder<TEntity> ComplexProperty<TProperty>(string propertyName, string complexTypeName, Action<ComplexPropertyBuilder<TProperty>> buildAction) => Builder!.ComplexProperty(propertyName, complexTypeName, buildAction);
 #endif
 
 		//
@@ -370,7 +373,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//     complex class. The current value for the property is stored in the Microsoft.EntityFrameworkCore.ChangeTracking.ChangeTracker
 		//     rather than being stored in instances of the complex class.
 #if NetCore
-		public virtual EntityTypeBuilder<TEntity> ComplexProperty(Type propertyType, string propertyName, Action<ComplexPropertyBuilder> buildAction) => Model!.ComplexProperty(propertyType, propertyName, buildAction);
+		public virtual EntityTypeBuilder<TEntity> ComplexProperty(Type propertyType, string propertyName, Action<ComplexPropertyBuilder> buildAction) => Builder!.ComplexProperty(propertyType, propertyName, buildAction);
 #endif
 
 		//
@@ -421,7 +424,7 @@ namespace SolidCP.EnterpriseServer.Data
 		// Returns:
 		//     An object that can be used to configure the complex property.
 #if NetCore
-		public virtual ComplexPropertyBuilder<TProperty> ComplexProperty<TProperty>(Expression<Func<TEntity, TProperty>> propertyExpression) => Model!.ComplexProperty(propertyExpression);
+		public virtual ComplexPropertyBuilder<TProperty> ComplexProperty<TProperty>(Expression<Func<TEntity, TProperty>> propertyExpression) => Builder!.ComplexProperty(propertyExpression);
 #endif
 
 		//
@@ -441,7 +444,7 @@ namespace SolidCP.EnterpriseServer.Data
 		// Returns:
 		//     An object that can be used to configure the complex property.
 #if NetCore
-		public virtual ComplexPropertyBuilder<TProperty> ComplexProperty<TProperty>(Expression<Func<TEntity, TProperty>> propertyExpression, string complexTypeName) => Model!.ComplexProperty(propertyExpression, complexTypeName);
+		public virtual ComplexPropertyBuilder<TProperty> ComplexProperty<TProperty>(Expression<Func<TEntity, TProperty>> propertyExpression, string complexTypeName) => Builder!.ComplexProperty(propertyExpression, complexTypeName);
 #endif
 
 		//
@@ -460,7 +463,7 @@ namespace SolidCP.EnterpriseServer.Data
 		// Returns:
 		//     The same builder instance so that multiple configuration calls can be chained.
 #if NetCore
-		public virtual EntityTypeBuilder<TEntity> ComplexProperty<TProperty>(Expression<Func<TEntity, TProperty>> propertyExpression, Action<ComplexPropertyBuilder<TProperty>> buildAction) => Model!.ComplexProperty(propertyExpression, buildAction);
+		public virtual EntityTypeBuilder<TEntity> ComplexProperty<TProperty>(Expression<Func<TEntity, TProperty>> propertyExpression, Action<ComplexPropertyBuilder<TProperty>> buildAction) => Builder!.ComplexProperty(propertyExpression, buildAction);
 #endif
 
 		//
@@ -482,7 +485,7 @@ namespace SolidCP.EnterpriseServer.Data
 		// Returns:
 		//     The same builder instance so that multiple configuration calls can be chained.
 #if NetCore
-		public virtual EntityTypeBuilder<TEntity> ComplexProperty<TProperty>(Expression<Func<TEntity, TProperty>> propertyExpression, string complexTypeName, Action<ComplexPropertyBuilder<TProperty>> buildAction) => Model!.ComplexProperty(propertyExpression, complexTypeName, buildAction);
+		public virtual EntityTypeBuilder<TEntity> ComplexProperty<TProperty>(Expression<Func<TEntity, TProperty>> propertyExpression, string complexTypeName, Action<ComplexPropertyBuilder<TProperty>> buildAction) => Builder!.ComplexProperty(propertyExpression, complexTypeName, buildAction);
 #endif
 
 		//
@@ -503,7 +506,7 @@ namespace SolidCP.EnterpriseServer.Data
 		// Returns:
 		//     An object that can be used to configure the navigation property.
 #if NetCore
-		public virtual NavigationBuilder<TEntity, TNavigation> Navigation<TNavigation>(Expression<Func<TEntity, TNavigation?>> navigationExpression) where TNavigation : class => Model!.Navigation(navigationExpression);
+		public virtual NavigationBuilder<TEntity, TNavigation> Navigation<TNavigation>(Expression<Func<TEntity, TNavigation?>> navigationExpression) where TNavigation : class => Builder!.Navigation(navigationExpression);
 #endif
 
 		//
@@ -524,7 +527,7 @@ namespace SolidCP.EnterpriseServer.Data
 		// Returns:
 		//     An object that can be used to configure the navigation property.
 #if NetCore
-		public virtual NavigationBuilder<TEntity, TNavigation> Navigation<TNavigation>(Expression<Func<TEntity, IEnumerable<TNavigation>?>> navigationExpression) where TNavigation : class => Model!.Navigation(navigationExpression);
+		public virtual NavigationBuilder<TEntity, TNavigation> Navigation<TNavigation>(Expression<Func<TEntity, IEnumerable<TNavigation>?>> navigationExpression) where TNavigation : class => Builder!.Navigation(navigationExpression);
 #endif
 
 		//
@@ -537,7 +540,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//   propertyExpression:
 		//     A lambda expression representing the property to be ignored (blog => blog.Url).
 #if NetCore
-		public virtual EntityTypeBuilder<TEntity> Ignore(Expression<Func<TEntity, object?>> propertyExpression) => Model!.Ignore(propertyExpression);
+		public virtual EntityTypeBuilder<TEntity> Ignore(Expression<Func<TEntity, object?>> propertyExpression) => Builder!.Ignore(propertyExpression);
 #endif
 
 		//
@@ -550,7 +553,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//   propertyName:
 		//     The name of the property to be removed from the entity type.
 #if NetCore
-		public virtual EntityTypeBuilder<TEntity> Ignore(string propertyName) => Model!.Ignore(propertyName);
+		public virtual EntityTypeBuilder<TEntity> Ignore(string propertyName) => Builder!.Ignore(propertyName);
 #endif
 
 		//
@@ -565,7 +568,7 @@ namespace SolidCP.EnterpriseServer.Data
 		// Returns:
 		//     The same builder instance so that multiple configuration calls can be chained.
 #if NetCore
-		public virtual EntityTypeBuilder<TEntity> HasQueryFilter(LambdaExpression? filter) => Model!.HasQueryFilter(filter);
+		public virtual EntityTypeBuilder<TEntity> HasQueryFilter(LambdaExpression? filter) => Builder!.HasQueryFilter(filter);
 #endif
 
 		//
@@ -580,7 +583,7 @@ namespace SolidCP.EnterpriseServer.Data
 		// Returns:
 		//     The same builder instance so that multiple configuration calls can be chained.
 #if NetCore
-		public virtual EntityTypeBuilder<TEntity> HasQueryFilter(Expression<Func<TEntity, bool>>? filter) => Model!.HasQueryFilter(filter);
+		public virtual EntityTypeBuilder<TEntity> HasQueryFilter(Expression<Func<TEntity, bool>>? filter) => Builder!.HasQueryFilter(filter);
 #endif
 
 		//
@@ -596,7 +599,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//     The same builder instance so that multiple calls can be chained.
 #if NetCore
 		[Obsolete("Use InMemoryEntityTypeBuilderExtensions.ToInMemoryQuery")]
-		public virtual EntityTypeBuilder<TEntity> ToQuery(Expression<Func<IQueryable<TEntity>>> query) => Model!.ToQuery(query);
+		public virtual EntityTypeBuilder<TEntity> ToQuery(Expression<Func<IQueryable<TEntity>>> query) => Builder!.ToQuery(query);
 #endif
 
 		//
@@ -639,7 +642,7 @@ namespace SolidCP.EnterpriseServer.Data
 		// Returns:
 		//     An object that can be used to configure the index.
 #if NetCore
-		public virtual IndexBuilder<TEntity> HasIndex(Expression<Func<TEntity, object?>> indexExpression, string name) => Model!.HasIndex(indexExpression, name);
+		public virtual IndexBuilder<TEntity> HasIndex(Expression<Func<TEntity, object?>> indexExpression, string name) => Builder!.HasIndex(indexExpression, name);
 #elif NetFX
 		public virtual IndexConfiguration HasIndex(Expression<Func<TEntity, object?>> indexExpression, string name) => base.HasIndex(indexExpression).HasName(name);
 #endif
@@ -657,7 +660,7 @@ namespace SolidCP.EnterpriseServer.Data
 		// Returns:
 		//     An object that can be used to configure the index.
 #if NetCore
-		public virtual IndexBuilder<TEntity> HasIndex(params string[] propertyNames) => Model!.HasIndex(propertyNames);
+		public virtual IndexBuilder<TEntity> HasIndex(params string[] propertyNames) => Builder!.HasIndex(propertyNames);
 #endif
 
 		//
@@ -676,7 +679,7 @@ namespace SolidCP.EnterpriseServer.Data
 		// Returns:
 		//     An object that can be used to configure the index.
 #if NetCore
-		public virtual IndexBuilder<TEntity> HasIndex(string[] propertyNames, string name) => Model!.HasIndex(propertyNames, name);
+		public virtual IndexBuilder<TEntity> HasIndex(string[] propertyNames, string name) => Builder!.HasIndex(propertyNames, name);
 #endif
 
 		//
@@ -709,7 +712,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//     After calling this method, you should chain a call to Microsoft.EntityFrameworkCore.Metadata.Builders.OwnedNavigationBuilder`2.WithOwner(System.String)
 		//     to fully configure the relationship.
 #if NetCore
-		public virtual OwnedNavigationBuilder<TEntity, TRelatedEntity> OwnsOne<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(string navigationName) where TRelatedEntity : class => Model!.OwnsOne<TRelatedEntity>(navigationName);
+		public virtual OwnedNavigationBuilder<TEntity, TRelatedEntity> OwnsOne<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(string navigationName) where TRelatedEntity : class => Builder!.OwnsOne<TRelatedEntity>(navigationName);
 #endif
 
 		//
@@ -745,7 +748,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//     After calling this method, you should chain a call to Microsoft.EntityFrameworkCore.Metadata.Builders.OwnedNavigationBuilder`2.WithOwner(System.String)
 		//     to fully configure the relationship.
 #if NetCore
-		public virtual OwnedNavigationBuilder<TEntity, TRelatedEntity> OwnsOne<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(string ownedTypeName, string navigationName) where TRelatedEntity : class => Model!.OwnsOne<TRelatedEntity>(ownedTypeName, navigationName);
+		public virtual OwnedNavigationBuilder<TEntity, TRelatedEntity> OwnsOne<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(string ownedTypeName, string navigationName) where TRelatedEntity : class => Builder!.OwnsOne<TRelatedEntity>(ownedTypeName, navigationName);
 #endif
 
 		//
@@ -778,7 +781,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//     After calling this method, you should chain a call to Microsoft.EntityFrameworkCore.Metadata.Builders.OwnedNavigationBuilder`2.WithOwner(System.String)
 		//     to fully configure the relationship.
 #if NetCore
-		public virtual OwnedNavigationBuilder<TEntity, TRelatedEntity> OwnsOne<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(Expression<Func<TEntity, TRelatedEntity?>> navigationExpression) where TRelatedEntity : class => Model!.OwnsOne(navigationExpression);
+		public virtual OwnedNavigationBuilder<TEntity, TRelatedEntity> OwnsOne<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(Expression<Func<TEntity, TRelatedEntity?>> navigationExpression) where TRelatedEntity : class => Builder!.OwnsOne(navigationExpression);
 #endif
 
 		//
@@ -814,7 +817,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//     After calling this method, you should chain a call to Microsoft.EntityFrameworkCore.Metadata.Builders.OwnedNavigationBuilder`2.WithOwner(System.String)
 		//     to fully configure the relationship.
 #if NetCore
-		public virtual OwnedNavigationBuilder<TEntity, TRelatedEntity> OwnsOne<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(string ownedTypeName, Expression<Func<TEntity, TRelatedEntity?>> navigationExpression) where TRelatedEntity : class => Model!.OwnsOne(ownedTypeName, navigationExpression);
+		public virtual OwnedNavigationBuilder<TEntity, TRelatedEntity> OwnsOne<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(string ownedTypeName, Expression<Func<TEntity, TRelatedEntity?>> navigationExpression) where TRelatedEntity : class => Builder!.OwnsOne(ownedTypeName, navigationExpression);
 
 #endif
 
@@ -851,7 +854,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//     After calling this method, you should chain a call to Microsoft.EntityFrameworkCore.Metadata.Builders.OwnedNavigationBuilder`2.WithOwner(System.String)
 		//     to fully configure the relationship.
 #if NetCore
-		public virtual EntityTypeBuilder<TEntity> OwnsOne<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(string navigationName, Action<OwnedNavigationBuilder<TEntity, TRelatedEntity>> buildAction) where TRelatedEntity : class => Model!.OwnsOne(navigationName, buildAction);
+		public virtual EntityTypeBuilder<TEntity> OwnsOne<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(string navigationName, Action<OwnedNavigationBuilder<TEntity, TRelatedEntity>> buildAction) where TRelatedEntity : class => Builder!.OwnsOne(navigationName, buildAction);
 #endif
 
 		//
@@ -886,7 +889,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//     After calling this method, you should chain a call to Microsoft.EntityFrameworkCore.Metadata.Builders.OwnedNavigationBuilder.WithOwner(System.String)
 		//     to fully configure the relationship.
 #if NetCore
-		public virtual EntityTypeBuilder<TEntity> OwnsOne(string ownedTypeName, string navigationName, Action<OwnedNavigationBuilder> buildAction) => Model!.OwnsOne(ownedTypeName, navigationName, buildAction);
+		public virtual EntityTypeBuilder<TEntity> OwnsOne(string ownedTypeName, string navigationName, Action<OwnedNavigationBuilder> buildAction) => Builder!.OwnsOne(ownedTypeName, navigationName, buildAction);
 #endif
 
 		//
@@ -921,7 +924,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//     After calling this method, you should chain a call to Microsoft.EntityFrameworkCore.Metadata.Builders.OwnedNavigationBuilder.WithOwner(System.String)
 		//     to fully configure the relationship.
 #if NetCore
-		public virtual EntityTypeBuilder<TEntity> OwnsOne([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] Type ownedType, string navigationName, Action<OwnedNavigationBuilder> buildAction) => Model!.OwnsOne(ownedType, navigationName, buildAction);
+		public virtual EntityTypeBuilder<TEntity> OwnsOne([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] Type ownedType, string navigationName, Action<OwnedNavigationBuilder> buildAction) => Builder!.OwnsOne(ownedType, navigationName, buildAction);
 #endif
 
 		//
@@ -959,7 +962,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//     After calling this method, you should chain a call to Microsoft.EntityFrameworkCore.Metadata.Builders.OwnedNavigationBuilder.WithOwner(System.String)
 		//     to fully configure the relationship.
 #if NetCore
-		public virtual EntityTypeBuilder<TEntity> OwnsOne(string ownedTypeName, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] Type ownedType, string navigationName, Action<OwnedNavigationBuilder> buildAction) => Model!.OwnsOne(ownedTypeName, ownedType, navigationName, buildAction);
+		public virtual EntityTypeBuilder<TEntity> OwnsOne(string ownedTypeName, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] Type ownedType, string navigationName, Action<OwnedNavigationBuilder> buildAction) => Builder!.OwnsOne(ownedTypeName, ownedType, navigationName, buildAction);
 #endif
 
 		//
@@ -998,7 +1001,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//     After calling this method, you should chain a call to Microsoft.EntityFrameworkCore.Metadata.Builders.OwnedNavigationBuilder`2.WithOwner(System.String)
 		//     to fully configure the relationship.
 #if NetCore
-		public virtual EntityTypeBuilder<TEntity> OwnsOne<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(string ownedTypeName, string navigationName, Action<OwnedNavigationBuilder<TEntity, TRelatedEntity>> buildAction) where TRelatedEntity : class => Model!.OwnsOne(ownedTypeName, navigationName, buildAction);
+		public virtual EntityTypeBuilder<TEntity> OwnsOne<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(string ownedTypeName, string navigationName, Action<OwnedNavigationBuilder<TEntity, TRelatedEntity>> buildAction) where TRelatedEntity : class => Builder!.OwnsOne(ownedTypeName, navigationName, buildAction);
 #endif
 
 		//
@@ -1034,7 +1037,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//     After calling this method, you should chain a call to Microsoft.EntityFrameworkCore.Metadata.Builders.OwnedNavigationBuilder`2.WithOwner(System.String)
 		//     to fully configure the relationship.
 #if NetCore
-		public virtual EntityTypeBuilder<TEntity> OwnsOne<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(Expression<Func<TEntity, TRelatedEntity?>> navigationExpression, Action<OwnedNavigationBuilder<TEntity, TRelatedEntity>> buildAction) where TRelatedEntity : class => Model!.OwnsOne(navigationExpression, buildAction);
+		public virtual EntityTypeBuilder<TEntity> OwnsOne<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(Expression<Func<TEntity, TRelatedEntity?>> navigationExpression, Action<OwnedNavigationBuilder<TEntity, TRelatedEntity>> buildAction) where TRelatedEntity : class => Builder!.OwnsOne(navigationExpression, buildAction);
 #endif
 
 		//
@@ -1073,7 +1076,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//     After calling this method, you should chain a call to Microsoft.EntityFrameworkCore.Metadata.Builders.OwnedNavigationBuilder`2.WithOwner(System.String)
 		//     to fully configure the relationship.
 #if NetCore
-		public virtual EntityTypeBuilder<TEntity> OwnsOne<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(string ownedTypeName, Expression<Func<TEntity, TRelatedEntity?>> navigationExpression, Action<OwnedNavigationBuilder<TEntity, TRelatedEntity>> buildAction) where TRelatedEntity : class => Model!.OwnsOne(ownedTypeName, navigationExpression, buildAction);
+		public virtual EntityTypeBuilder<TEntity> OwnsOne<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(string ownedTypeName, Expression<Func<TEntity, TRelatedEntity?>> navigationExpression, Action<OwnedNavigationBuilder<TEntity, TRelatedEntity>> buildAction) where TRelatedEntity : class => Builder!.OwnsOne(ownedTypeName, navigationExpression, buildAction);
 #endif
 
 		//
@@ -1106,7 +1109,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//     After calling this method, you should chain a call to Microsoft.EntityFrameworkCore.Metadata.Builders.OwnedNavigationBuilder`2.WithOwner(System.String)
 		//     to fully configure the relationship.
 #if NetCore
-		public virtual OwnedNavigationBuilder<TEntity, TRelatedEntity> OwnsMany<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(string navigationName) where TRelatedEntity : class => Model!.OwnsMany<TRelatedEntity>(navigationName);
+		public virtual OwnedNavigationBuilder<TEntity, TRelatedEntity> OwnsMany<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(string navigationName) where TRelatedEntity : class => Builder!.OwnsMany<TRelatedEntity>(navigationName);
 #endif
 
 		//
@@ -1142,7 +1145,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//     After calling this method, you should chain a call to Microsoft.EntityFrameworkCore.Metadata.Builders.OwnedNavigationBuilder`2.WithOwner(System.String)
 		//     to fully configure the relationship.
 #if NetCore
-		public virtual OwnedNavigationBuilder<TEntity, TRelatedEntity> OwnsMany<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(string ownedTypeName, string navigationName) where TRelatedEntity : class => Model!.OwnsMany<TRelatedEntity>(ownedTypeName, navigationName);
+		public virtual OwnedNavigationBuilder<TEntity, TRelatedEntity> OwnsMany<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(string ownedTypeName, string navigationName) where TRelatedEntity : class => Builder!.OwnsMany<TRelatedEntity>(ownedTypeName, navigationName);
 #endif
 
 		//
@@ -1175,7 +1178,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//     After calling this method, you should chain a call to Microsoft.EntityFrameworkCore.Metadata.Builders.OwnedNavigationBuilder`2.WithOwner(System.String)
 		//     to fully configure the relationship.
 #if NetCore
-		public virtual OwnedNavigationBuilder<TEntity, TRelatedEntity> OwnsMany<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(Expression<Func<TEntity, IEnumerable<TRelatedEntity>?>> navigationExpression) where TRelatedEntity : class => Model!.OwnsMany(navigationExpression);
+		public virtual OwnedNavigationBuilder<TEntity, TRelatedEntity> OwnsMany<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(Expression<Func<TEntity, IEnumerable<TRelatedEntity>?>> navigationExpression) where TRelatedEntity : class => Builder!.OwnsMany(navigationExpression);
 #endif
 
 		//
@@ -1247,7 +1250,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//     After calling this method, you should chain a call to Microsoft.EntityFrameworkCore.Metadata.Builders.OwnedNavigationBuilder`2.WithOwner(System.String)
 		//     to fully configure the relationship.
 #if NetCore
-		public virtual EntityTypeBuilder<TEntity> OwnsMany<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(string navigationName, Action<OwnedNavigationBuilder<TEntity, TRelatedEntity>> buildAction) where TRelatedEntity : class => Model!.OwnsMany(navigationName, buildAction);
+		public virtual EntityTypeBuilder<TEntity> OwnsMany<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(string navigationName, Action<OwnedNavigationBuilder<TEntity, TRelatedEntity>> buildAction) where TRelatedEntity : class => Builder!.OwnsMany(navigationName, buildAction);
 #endif
 
 		//
@@ -1282,7 +1285,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//     After calling this method, you should chain a call to Microsoft.EntityFrameworkCore.Metadata.Builders.OwnedNavigationBuilder.WithOwner(System.String)
 		//     to fully configure the relationship.
 #if NetCore
-		public virtual EntityTypeBuilder<TEntity> OwnsMany(string ownedTypeName, string navigationName, Action<OwnedNavigationBuilder> buildAction) => Model!.OwnsMany(ownedTypeName, navigationName, buildAction);
+		public virtual EntityTypeBuilder<TEntity> OwnsMany(string ownedTypeName, string navigationName, Action<OwnedNavigationBuilder> buildAction) => Builder!.OwnsMany(ownedTypeName, navigationName, buildAction);
 #endif
 
 		//
@@ -1317,7 +1320,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//     After calling this method, you should chain a call to Microsoft.EntityFrameworkCore.Metadata.Builders.OwnedNavigationBuilder.WithOwner(System.String)
 		//     to fully configure the relationship.
 #if NetCore
-		public virtual EntityTypeBuilder<TEntity> OwnsMany([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] Type ownedType, string navigationName, Action<OwnedNavigationBuilder> buildAction) => Model.OwnsMany(ownedType, navigationName, buildAction);
+		public virtual EntityTypeBuilder<TEntity> OwnsMany([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] Type ownedType, string navigationName, Action<OwnedNavigationBuilder> buildAction) => Builder.OwnsMany(ownedType, navigationName, buildAction);
 #endif
 
 		//
@@ -1355,7 +1358,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//     After calling this method, you should chain a call to Microsoft.EntityFrameworkCore.Metadata.Builders.OwnedNavigationBuilder.WithOwner(System.String)
 		//     to fully configure the relationship.
 #if NetCore
-		public virtual EntityTypeBuilder<TEntity> OwnsMany(string ownedTypeName, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] Type ownedType, string navigationName, Action<OwnedNavigationBuilder> buildAction) => Model.OwnsMany(ownedType, navigationName, buildAction);
+		public virtual EntityTypeBuilder<TEntity> OwnsMany(string ownedTypeName, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] Type ownedType, string navigationName, Action<OwnedNavigationBuilder> buildAction) => Builder.OwnsMany(ownedType, navigationName, buildAction);
 #endif
 
 		//
@@ -1394,7 +1397,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//     After calling this method, you should chain a call to Microsoft.EntityFrameworkCore.Metadata.Builders.OwnedNavigationBuilder`2.WithOwner(System.String)
 		//     to fully configure the relationship.
 #if NetCore
-		public virtual EntityTypeBuilder<TEntity> OwnsMany<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(string ownedTypeName, string navigationName, Action<OwnedNavigationBuilder<TEntity, TRelatedEntity>> buildAction) where TRelatedEntity : class => Model.OwnsMany(ownedTypeName, navigationName, buildAction);
+		public virtual EntityTypeBuilder<TEntity> OwnsMany<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(string ownedTypeName, string navigationName, Action<OwnedNavigationBuilder<TEntity, TRelatedEntity>> buildAction) where TRelatedEntity : class => Builder.OwnsMany(ownedTypeName, navigationName, buildAction);
 #endif
 
 		//
@@ -1430,7 +1433,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//     After calling this method, you should chain a call to Microsoft.EntityFrameworkCore.Metadata.Builders.OwnedNavigationBuilder`2.WithOwner(System.String)
 		//     to fully configure the relationship.
 #if NetCore
-		public virtual EntityTypeBuilder<TEntity> OwnsMany<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(Expression<Func<TEntity, IEnumerable<TRelatedEntity>?>> navigationExpression, Action<OwnedNavigationBuilder<TEntity, TRelatedEntity>> buildAction) where TRelatedEntity : class => Model.OwnsMany(navigationExpression, buildAction);
+		public virtual EntityTypeBuilder<TEntity> OwnsMany<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(Expression<Func<TEntity, IEnumerable<TRelatedEntity>?>> navigationExpression, Action<OwnedNavigationBuilder<TEntity, TRelatedEntity>> buildAction) where TRelatedEntity : class => Builder.OwnsMany(navigationExpression, buildAction);
 #endif
 
 		//
@@ -1469,7 +1472,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//     After calling this method, you should chain a call to Microsoft.EntityFrameworkCore.Metadata.Builders.OwnedNavigationBuilder`2.WithOwner(System.String)
 		//     to fully configure the relationship.
 #if NetCore
-		public virtual EntityTypeBuilder<TEntity> OwnsMany<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(string ownedTypeName, Expression<Func<TEntity, IEnumerable<TRelatedEntity>?>> navigationExpression, Action<OwnedNavigationBuilder<TEntity, TRelatedEntity>> buildAction) where TRelatedEntity : class => Model.OwnsMany(ownedTypeName, navigationExpression, buildAction);
+		public virtual EntityTypeBuilder<TEntity> OwnsMany<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(string ownedTypeName, Expression<Func<TEntity, IEnumerable<TRelatedEntity>?>> navigationExpression, Action<OwnedNavigationBuilder<TEntity, TRelatedEntity>> buildAction) where TRelatedEntity : class => Builder.OwnsMany(ownedTypeName, navigationExpression, buildAction);
 #endif
 
 		//
@@ -1501,7 +1504,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//     to fully configure the relationship. Calling just this method without the chained
 		//     call will not produce a valid relationship.
 #if NetCore
-		public virtual ReferenceNavigationBuilder<TEntity, TRelatedEntity> HasOne<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(string? navigationName) where TRelatedEntity : class => Model.HasOne<TRelatedEntity>(navigationName);
+		public virtual ReferenceNavigationBuilder<TEntity, TRelatedEntity> HasOne<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(string? navigationName) where TRelatedEntity : class => Builder.HasOne<TRelatedEntity>(navigationName);
 #endif
 
 		//
@@ -1534,7 +1537,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//     to fully configure the relationship. Calling just this method without the chained
 		//     call will not produce a valid relationship.
 #if NetCore
-		public virtual ReferenceNavigationBuilder<TEntity, TRelatedEntity> HasOne<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(Expression<Func<TEntity, TRelatedEntity?>>? navigationExpression = null) where TRelatedEntity : class => Model.HasOne(navigationExpression);
+		public virtual ReferenceNavigationBuilder<TEntity, TRelatedEntity> HasOne<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(Expression<Func<TEntity, TRelatedEntity?>>? navigationExpression = null) where TRelatedEntity : class => Builder.HasOne(navigationExpression);
 #endif
 
 		//
@@ -1565,7 +1568,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//     to fully configure the relationship. Calling just this method without the chained
 		//     call will not produce a valid relationship.
 #if NetCore
-		public virtual CollectionNavigationBuilder<TEntity, TRelatedEntity> HasMany<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(string? navigationName) where TRelatedEntity : class => Model.HasMany<TRelatedEntity>(navigationName);
+		public virtual CollectionNavigationBuilder<TEntity, TRelatedEntity> HasMany<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(string? navigationName) where TRelatedEntity : class => Builder.HasMany<TRelatedEntity>(navigationName);
 #endif
 
 		//
@@ -1597,7 +1600,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//     to fully configure the relationship. Calling just this method without the chained
 		//     call will not produce a valid relationship.
 #if NetCore
-		public virtual CollectionNavigationBuilder<TEntity, TRelatedEntity> HasMany<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(Expression<Func<TEntity, IEnumerable<TRelatedEntity>?>>? navigationExpression = null) where TRelatedEntity : class => Model.HasMany(navigationExpression);
+		public virtual CollectionNavigationBuilder<TEntity, TRelatedEntity> HasMany<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] TRelatedEntity>(Expression<Func<TEntity, IEnumerable<TRelatedEntity>?>>? navigationExpression = null) where TRelatedEntity : class => Builder.HasMany(navigationExpression);
 #endif
 
 		//
@@ -1613,7 +1616,7 @@ namespace SolidCP.EnterpriseServer.Data
 		// Returns:
 		//     The same builder instance so that multiple configuration calls can be chained.
 #if NetCore
-		public virtual EntityTypeBuilder<TEntity> HasChangeTrackingStrategy(ChangeTrackingStrategy changeTrackingStrategy) => Model.HasChangeTrackingStrategy(changeTrackingStrategy);
+		public virtual EntityTypeBuilder<TEntity> HasChangeTrackingStrategy(ChangeTrackingStrategy changeTrackingStrategy) => Builder.HasChangeTrackingStrategy(changeTrackingStrategy);
 #endif
 
 		//
@@ -1640,7 +1643,7 @@ namespace SolidCP.EnterpriseServer.Data
 		//     Calling this method overrides for all properties of this entity type any access
 		//     mode that was set on the model.
 #if NetCore
-		public virtual EntityTypeBuilder<TEntity> UsePropertyAccessMode(PropertyAccessMode propertyAccessMode) => Model.UsePropertyAccessMode(propertyAccessMode);
+		public virtual EntityTypeBuilder<TEntity> UsePropertyAccessMode(PropertyAccessMode propertyAccessMode) => Builder.UsePropertyAccessMode(propertyAccessMode);
 
 #endif
 
@@ -1649,24 +1652,56 @@ namespace SolidCP.EnterpriseServer.Data
 		{
 			Func<IEnumerable<TEntity>> dataProvider;
 			IEnumerable<TEntity> data = null;
-			public EntityData(Func<IEnumerable<TEntity>> dataProvider) { this.dataProvider = dataProvider; }
-			public IEnumerator<TEntity> GetEnumerator()
+			EntityTypeConfiguration<TEntity> configuration;
+			public EntityData(Func<IEnumerable<TEntity>> dataProvider, EntityTypeConfiguration<TEntity> configuration)
+			{
+				this.dataProvider = dataProvider;
+				this.configuration = configuration;
+			}
+
+			void Init()
 			{
 				if (data == null) data = dataProvider();
 				if (!(data is Array || data is ICollection)) data = data.ToArray();
+
+				/*
+				if (configuration.IsSqlServer)
+				{
+					var etype = configuration.ModelBuilder.Model.FindEntityType(typeof(TEntity));
+					foreach (var prop in etype.GetProperties())
+					{
+						var ptype = prop.ClrType;
+						if ((ptype == typeof(int) || ptype == typeof(long) || ptype == typeof(short) ||
+							ptype == typeof(uint) || ptype == typeof(ulong) || ptype == typeof(ushort)) &&
+							prop.ValueGenerated != ValueGenerated.Never && prop.GetDefaultValueSql() == null &&
+							(prop.GetDefaultValue() == null || Convert.ToInt64(prop.GetDefaultValue()) == default))
+							{
+								var info = prop.PropertyInfo;
+								long max = data.Max(element => Convert.ToInt64(info.GetValue(element)));
+								Console.WriteLine($"    Set seed for {prop.Name} to {max + 1}.");
+								prop.SetIdentitySeed(max + 1);
+							}
+						}
+					}
+				}*/
+			}
+
+			public IEnumerator<TEntity> GetEnumerator()
+			{
+				Init();
 
 				foreach (var d in data) yield return d;
 			}
 			IEnumerator IEnumerable.GetEnumerator()
 			{
-				if (data == null) data = dataProvider();
-				if (!(data is Array || data is ICollection)) data = data.ToArray();
+				Init();
 
 				foreach (var d in data) yield return d;
 			}
 		}
+
 		static TEntity[] emptyData = new TEntity[0];
-		public virtual DataBuilder<TEntity> HasData(Func<IEnumerable<TEntity>> dataProvider) => InitSeedData ? Model.HasData(new EntityData(dataProvider)) : Model.HasData(emptyData);
+		public virtual DataBuilder<TEntity> HasData(Func<IEnumerable<TEntity>> dataProvider) => InitSeedData ? Builder.HasData(new EntityData(dataProvider, this)) : Builder.HasData(emptyData);
 #endif
 #if NetFX
 		public virtual object HasData(Func<IEnumerable<TEntity>> dataProvider) => new object();
@@ -1741,7 +1776,7 @@ namespace SolidCP.EnterpriseServer.Data
 #elif NetFX
 		//public virtual object HasData(IEnumerable<object> data) => new object();
 #endif
-	
+
 		//
 		// Summary:
 		//     Configures the discriminator property used to identify the entity type in the
@@ -1759,7 +1794,7 @@ namespace SolidCP.EnterpriseServer.Data
 		// Returns:
 		//     A builder that allows the discriminator property to be configured.
 #if NetCore
-		public virtual DiscriminatorBuilder<TDiscriminator> HasDiscriminator<TDiscriminator>(Expression<Func<TEntity, TDiscriminator>> propertyExpression) => Model.HasDiscriminator(propertyExpression);
+		public virtual DiscriminatorBuilder<TDiscriminator> HasDiscriminator<TDiscriminator>(Expression<Func<TEntity, TDiscriminator>> propertyExpression) => Builder.HasDiscriminator(propertyExpression);
 #endif
 
 		//
@@ -1769,7 +1804,7 @@ namespace SolidCP.EnterpriseServer.Data
 		// Returns:
 		//     The same builder instance so that multiple configuration calls can be chained.
 #if NetCore
-		public virtual EntityTypeBuilder<TEntity> HasNoDiscriminator() => Model.HasNoDiscriminator();
+		public virtual EntityTypeBuilder<TEntity> HasNoDiscriminator() => Builder.HasNoDiscriminator();
 #endif
 	}
 }
