@@ -21931,7 +21931,7 @@ RETURN
 								{
 									v.ServiceId,
 									ItemsNumber = v.Service.ServiceItems.Count(),
-									RandomNumber = random.Next(),
+									//RandomNumber = random.Next(),
 									v.Service
 								});
 
@@ -21953,7 +21953,8 @@ RETURN
 							else // Randomized distribution
 							{
 								var service = vservices
-									.OrderBy(s => s.RandomNumber)
+									.AsEnumerable()
+									.OrderBy(s => random.Next())
 									.FirstOrDefault();
 								if (service != null)
 								{

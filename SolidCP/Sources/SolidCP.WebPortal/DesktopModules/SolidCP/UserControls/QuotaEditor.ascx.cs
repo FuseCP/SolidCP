@@ -215,25 +215,22 @@ namespace SolidCP.Portal
 
         private void WriteScriptBlock()
         {
-            string scriptKey = "QuataScript";
+            string scriptKey = "QuotaScript";
             if (!Page.ClientScript.IsClientScriptBlockRegistered(scriptKey))
             {
                 Page.ClientScript.RegisterClientScriptBlock(GetType(), scriptKey, @"<script language='javascript' type='text/javascript'>
-                        function ToggleQuota(txtId, chkId, minValue)
-                        {   
-                            var unlimited = document.getElementById(chkId).checked;
-                            document.getElementById(txtId).style.display = unlimited ? 'none' : 'inline';
-                            document.getElementById(txtId).value = unlimited ? '-1' : '0';
-                            if (minValue > 0) 
-                            {
-                                if (document.getElementById(txtId).value < minValue) document.getElementById(txtId).value = minValue;
-                            }
+                    function ToggleQuota(txtId, chkId, minValue)
+                    {   
+                        var unlimited = document.getElementById(chkId).checked;
+                        document.getElementById(txtId).style.display = unlimited ? 'none' : 'inline';
+                        document.getElementById(txtId).value = unlimited ? '-1' : '0';
+                        if (minValue > 0) 
+                        {
+                            if (document.getElementById(txtId).value < minValue) document.getElementById(txtId).value = minValue;
                         }
-                        </script>");
+                    }
+                    </script>");
             }
-
         }
-
-
     }
 }
