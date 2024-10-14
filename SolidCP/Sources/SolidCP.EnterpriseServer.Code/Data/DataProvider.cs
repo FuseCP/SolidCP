@@ -7675,7 +7675,8 @@ RETURN
 				</groups> */
 
 				var groupsXml = XElement.Parse(xml);
-				var groups = groupsXml.Elements()
+				var groups = groupsXml
+					.Elements()
 					.Select(group => new Data.Entities.VirtualGroup
 					{
 						ServerId = serverId,
@@ -8826,9 +8827,11 @@ GO
 				#endregion
 
 				var items = XElement.Parse(xml);
-				using (var ids = items
+				var idsEnumerable = items
 					.Elements()
 					.Select(e => (int)e.Attribute("id"))
+					.ToArray();
+				using (var ids = idsEnumerable
 					.ToTempIdSet(this))
 				{
 					// delete
@@ -8838,7 +8841,7 @@ GO
 
 					// insert
 					PackageVlans.AddRange(
-						ids.Select(id => new Data.Entities.PackageVlan
+						idsEnumerable.Select(id => new Data.Entities.PackageVlan
 						{
 							PackageId = packageId,
 							VlanId = id,
@@ -16037,6 +16040,7 @@ RETURN
 
 							// insert new statistics
 							var newBandwidths = groupedItems
+								.AsEnumerable()
 								.Select(item => new Data.Entities.PackagesBandwidth
 								{
 									PackageId = packageId,
@@ -21906,6 +21910,8 @@ RETURN
 							if (virtualServices.Count() == 1)
 							{
 								PackageServices.Add(virtualServices
+									.Select(v => v.ServiceId)
+									.AsEnumerable()
 									.Select(v => new Data.Entities.PackageService()
 									{
 										PackageId = package.Package.PackageId,
@@ -32980,10 +32986,14 @@ END
 
 				var addressIds = XElement.Parse(xml)
 					.Elements()
-					.Select(e => (int)e.Attribute("id"));
-				PackageIpAddresses
-					.Join(addressIds, ip => ip.AddressId, id => id, (ip, id) => ip)
-					.ExecuteDelete();
+					.Select(e => (int)e.Attribute("id"))
+					.ToArray();
+				using (var addressIdsIdSet = addressIds.ToTempIdSet(this))
+				{
+					PackageIpAddresses
+						.Join(addressIds, ip => ip.AddressId, id => id, (ip, id) => ip)
+						.ExecuteDelete();
+				}
 				var newIps = addressIds
 					.Select(id => new Data.Entities.PackageIpAddress
 					{
