@@ -276,4 +276,7 @@
   <data name="lblAdParentDomainController.text" xml:space="preserve">
     <value>Parent Domain Controller:</value>
   </data>
+  <data name="btnDiscoverServices.Text" xml:space="preserve">
+    <value>Search Installed Software</value>
+  </data>
 </root>

@@ -4974,7 +4974,7 @@
   <data name="ErrorDescription.VPS_LOAD_VM_ITEM" xml:space="preserve">
     <value>Mögliche Ursachen für diesen Fehler sind:&lt;br/&gt;1. Die dem VPS-Metaeintrag zugeordnete virtuelle Maschine wurde vom Virtualisierungsserver gelöscht.&lt;br/&gt;2. Hyper-V-Verwaltungsdienst wurde gestoppt.&lt;br/&gt;3. Keine Verbindung zum, auf dem Virtualisierungsserver installierten, SolidCP-Server.&lt;br/&gt;&lt;br/&gt;Lösungen:&lt;br/&gt;1. Stellen Sie sicher, dass die zugeordnete virtuelle Maschine auf dem Hyper-V-Server existiert; andernfalls erstellen Sie diese VPS aus SolidCP erneut.&lt;br/&gt;2. Überprüfen Sie, dass der Hyper-V-Verwaltungsdienst gestartet ist.&lt;br/&gt;3. Überprüfen Sie die SolidCP-Serververbindung.</value>
   </data>
-    <data name="ErrorDescription.VPS_LOAD_PVEVM_ITEM" xml:space="preserve">
+  <data name="ErrorDescription.VPS_LOAD_PVEVM_ITEM" xml:space="preserve">
     <value>Mögliche Ursachen für diesen Fehler sind:&lt;br/&gt;1. Die dem VPS-Metaeintrag zugeordnete virtuelle Maschine wurde vom Virtualisierungsserver gelöscht.&lt;br/&gt;2. Proxmox-Verwaltungsdienst wurde gestoppt.&lt;br/&gt;3. Keine Verbindung zum, auf dem Virtualisierungsserver installierten, SolidCP-Server.&lt;br/&gt;&lt;br/&gt;Lösungen:&lt;br/&gt;1. Stellen Sie sicher, dass die zugeordnete virtuelle Maschine auf dem Proxmox-Server existiert; andernfalls erstellen Sie diese VPS aus SolidCP erneut.&lt;br/&gt;2. Überprüfen Sie, dass der Proxmox-Verwaltungsdienst gestartet ist.&lt;br/&gt;3. Überprüfen Sie die SolidCP-Serververbindung.</value>
   </data>
   <data name="ErrorDescription.VPS_PROVISION_ERROR" xml:space="preserve">
@@ -6963,9 +6963,6 @@
   <data name="AuditLogTask.VPS2012_RESTORE_DMZ_IP" xml:space="preserve">
     <value>Restore DMZ IP</value>
   </data>
-  <data name="AuditLogTask.VPS2012_RESTORE_DMZ_IP" xml:space="preserve">
-    <value>Restore DMZ IP</value>
-  </data>
   <data name="AuditLogTask.VPS2012_SET_PRIMARY_EXTERNAL_IP" xml:space="preserve">
     <value>Primäre externe IP festlegen</value>
   </data>
@@ -7073,5 +7070,8 @@
   </data>
   <data name="Error.VPS_LOAD_PVEVM_ITEM" xml:space="preserve">
     <value>Fehler beim Laden der virtellen Maschineninformationen</value>
+  </data>
+  <data name="Error.SERVER_DISCOVER_SERVICES" xml:space="preserve">
+    <value>Fehler beim Suchen nach Software</value>
   </data>
 </root>

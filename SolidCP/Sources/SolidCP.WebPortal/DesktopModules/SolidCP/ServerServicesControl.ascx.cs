@@ -52,7 +52,7 @@ namespace SolidCP.Portal
             BindServices();
         }
 
-        private void BindServices()
+        public void BindServices()
         {
             dsServices = ES.Services.Servers.GetRawServicesByServerId(PanelRequest.ServerId);
             dlServiceGroups.DataSource = dsServices.Tables[0];

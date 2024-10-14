@@ -295,27 +295,30 @@ namespace SolidCP.EnterpriseServer
 
         private void WriteLogRecord(Guid guid, int severity, string text, string stackTrace, params string[] textParameters)
         {
-            List<BackgroundTask> tasks = TaskController.GetTasks(guid);
-
-            if (tasks.Count > 0)
+            using (var taskController = AsAsync<TaskManager>().TaskController)
             {
-                BackgroundTask rootTask = tasks[0];
+                List<BackgroundTask> tasks = taskController.GetTasks(guid);
 
-                BackgroundTaskLogRecord log = new BackgroundTaskLogRecord(
-                    rootTask.Id,
-                    tasks.Count - 1,
-                    false,
-                    text,
-                    stackTrace,
-                    textParameters);
-
-                TaskController.AddLog(log);
-
-                if (severity > rootTask.Severity)
+                if (tasks.Count > 0)
                 {
-                    rootTask.Severity = severity;
+                    BackgroundTask rootTask = tasks[0];
 
-                    TaskController.UpdateTask(rootTask);
+                    BackgroundTaskLogRecord log = new BackgroundTaskLogRecord(
+                        rootTask.Id,
+                        tasks.Count - 1,
+                        false,
+                        text,
+                        stackTrace,
+                        textParameters);
+
+                    taskController.AddLog(log);
+
+                    if (severity > rootTask.Severity)
+                    {
+                        rootTask.Severity = severity;
+
+                        taskController.UpdateTask(rootTask);
+                    }
                 }
             }
         }

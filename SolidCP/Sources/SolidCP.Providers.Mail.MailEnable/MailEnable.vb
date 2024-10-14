@@ -2029,6 +2029,10 @@ Public Class MailEnable
             key = Registry.LocalMachine.OpenSubKey("SOFTWARE\Mail Enable\Mail Enable")
         End If
 
+        If (key Is Nothing) Then
+            Return False
+        End If
+
         version = CStr(key.GetValue("Enterprise Version"))
         If (version Is Nothing) Then
             version = CStr(key.GetValue("Version"))

@@ -1362,8 +1362,11 @@
   <data name="Success.SERVER_UPDATE_SERVER_PSW" xml:space="preserve">
     <value>Server password has been updated</value>
   </data>
-  <data name="Error.STATS_UPDATE_STAT" xml:space="preserve">
+    <data name="Error.STATS_UPDATE_STAT" xml:space="preserve">
     <value>Error updating advanced statistics site</value>
+  </data>
+  <data name="Error.SERVER_DISCOVER_SERVICES" xml:space="preserve">
+    <value>Error searching for software</value>
   </data>
   <data name="Error.109" xml:space="preserve">
     <value>User with specified username was not found</value>

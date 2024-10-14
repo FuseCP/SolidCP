@@ -97,7 +97,8 @@ namespace SolidCP.EnterpriseServer
 				}
 				return alwaysUseEntityFramework ?? false;
 			}
-			set {
+			set
+			{
 				alwaysUseEntityFramework = value;
 				useEntityFramework = null;
 			}
@@ -12597,6 +12598,7 @@ RETURN
 					var dnsRecords = ResourceGroupDnsRecords
 						.Where(r => r.GroupId == groupId)
 						.OrderBy(r => r.RecordOrder)
+						.AsEnumerable()
 						.Select(r => new Data.Entities.GlobalDnsRecord
 						{
 							RecordType = r.RecordType,
@@ -12613,7 +12615,6 @@ RETURN
 
 					transaction.Commit();
 				}
-
 				return serviceId;
 			}
 			else
@@ -12636,6 +12637,11 @@ RETURN
 				return Convert.ToInt32(prmServiceId.Value);
 			}
 		}
+
+		public IEnumerable<int> GetServiceIdsByServerId(int serverId) =>
+			Services
+				.Where(s => s.ServerId == serverId)
+				.Select(s => s.ProviderId);
 
 		public void UpdateServiceFully(int serviceId, int providerId, string serviceName, int serviceQuotaValue,
 			 int clusterId, string comments)
@@ -17697,7 +17703,8 @@ END
 						})
 						.ToArray();
 					return quotas
-						.Select(q => new ExceedingQuota() {
+						.Select(q => new ExceedingQuota()
+						{
 							QuotaId = q.QuotaId,
 							QuotaName = q.QuotaName,
 							QuotaValue = CheckExceedingQuota(packageId, q.QuotaId, q.QuotaTypeId)
@@ -23500,10 +23507,16 @@ RETURN
 					})
 					.Where(g => g.BytesTotal > 0)
 					.OrderBy(g => g.GroupOrder)
-					.Select(g => new {
-						g.GroupId, g.GroupName,
-						g.MegaBytesSent, g.MegaBytesReceived, g.MegaBytesTotal,
-						g.BytesSent, g.BytesReceived, g.BytesTotal
+					.Select(g => new
+					{
+						g.GroupId,
+						g.GroupName,
+						g.MegaBytesSent,
+						g.MegaBytesReceived,
+						g.MegaBytesTotal,
+						g.BytesSent,
+						g.BytesReceived,
+						g.BytesTotal
 					});
 				return EntityDataSet(packages);
 			}
@@ -23597,7 +23610,10 @@ RETURN
 					.OrderBy(g => g.GroupOrder)
 					.Select(g => new
 					{
-						g.GroupId, g.GroupName, g.Diskspace, g.DiskspaceBytes
+						g.GroupId,
+						g.GroupName,
+						g.Diskspace,
+						g.DiskspaceBytes
 					});
 
 				return EntityDataSet(packages);
@@ -25601,7 +25617,11 @@ RETURN
 					.OrderBy(s => s.ParameterOrder)
 					.Select(s => new
 					{
-						s.ScheduleId, s.ParameterId, s.DataTypeId, s.DefaultValue, s.ParameterValue 
+						s.ScheduleId,
+						s.ParameterId,
+						s.DataTypeId,
+						s.DefaultValue,
+						s.ParameterValue
 					});
 
 				return EntityDataReader(parameters);

@@ -119,6 +119,9 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
+        public int DiscoverAndAddServices(int serverId) => ServerController.DiscoverAndAddServices(serverId);
+
+		[WebMethod]
         public int UpdateServer(ServerInfo server)
         {
             return ServerController.UpdateServer(server);

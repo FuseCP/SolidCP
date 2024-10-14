@@ -356,7 +356,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		private void FindServices(ServerInfo server)
+		private void DiscoverServices(ServerInfo server)
 		{
 			try
 			{
@@ -371,8 +371,10 @@ namespace SolidCP.EnterpriseServer
 					throw new ApplicationException("Could not get providers list.");
 				}
 
+				var installedServiceIds = Database.GetServiceIdsByServerId(server.ServerId)
+					.ToHashSet();
 				var discovery = providers
-					.Where(provider => !provider.DisableAutoDiscovery);
+					.Where(provider => !provider.DisableAutoDiscovery && !installedServiceIds.Contains(provider.ProviderId));
 
 				foreach (var provider in discovery)
 				{
@@ -387,11 +389,12 @@ namespace SolidCP.EnterpriseServer
 								service.ServerId = server.ServerId;
 								service.ProviderId = provider.ProviderId;
 								service.ServiceName = provider.DisplayName;
-								AddService(service);
+								using (var clone = AsAsync<ServerController>()) clone.AddService(service);
 							}
 							catch (Exception ex)
 							{
 								TaskManager.WriteError(ex);
+								throw;
 							}
 						}
 					}
@@ -411,6 +414,39 @@ namespace SolidCP.EnterpriseServer
 			{
 				throw new ApplicationException("Could not find services. General error has occurred.", ex);
 			}
+		}
+
+		public int DiscoverAndAddServices(int serverId)
+		{
+			// check account
+			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive
+				| DemandAccount.IsAdmin);
+			if (accountCheck < 0) return accountCheck;
+
+			var server = GetServerById(serverId, true);
+
+			// init passwords
+			if (server.Password == null)
+				server.Password = "";
+			if (server.ADPassword == null)
+				server.ADPassword = "";
+
+			TaskManager.StartTask("SERVER", "DISCOVER_AND_ADD_SERVICES", server.ServerName);
+
+			try
+			{
+				DiscoverServices(server);
+			}
+			catch (Exception ex)
+			{
+				TaskManager.WriteError(ex);
+			}
+		
+			TaskManager.ItemId = server.ServerId;
+
+			TaskManager.CompleteTask();
+
+			return server.ServerId;
 		}
 
 		public int AddServer(ServerInfo server, bool autoDiscovery)
@@ -457,7 +493,7 @@ namespace SolidCP.EnterpriseServer
 				server.ServerId = serverId;
 				try
 				{
-					FindServices(server);
+					DiscoverServices(server);
 				}
 				catch (Exception ex)
 				{

@@ -431,18 +431,14 @@ namespace SolidCP.EnterpriseServer
 				// compare user passwords
 				if (CryptoUtils.SHAEquals(user.Password, password) || user.Password == password)
 				{
-					// Queue call to AuditLog for better speed in SOAP calls (except for SQLite)
-					if (!Database.IsSqlite)
+					// Queue call to AuditLog for better speed in SOAP calls
+					/* ThreadPool.QueueUserWorkItem(state =>
 					{
-						ThreadPool.QueueUserWorkItem(state =>
+						using (var asyncController = AsAsync<UserController>())
 						{
-							using (var asyncController = AsAsync<UserController>())
-							{
-								asyncController.AuditLog.AddAuditLogInfoRecord("USER", "GET_BY_USERNAME_PASSWORD", username, new string[] { "IP: " + ip });
-							}
-						});
-					}
-					else AuditLog.AddAuditLogInfoRecord("USER", "GET_BY_USERNAME_PASSWORD", username, new string[] { "IP: " + ip });
+							asyncController.AuditLog.AddAuditLogInfoRecord("USER", "GET_BY_USERNAME_PASSWORD", username, new string[] { "IP: " + ip });
+						}
+					}); */
 
 					CachedUsers.AddToCache(user);
 

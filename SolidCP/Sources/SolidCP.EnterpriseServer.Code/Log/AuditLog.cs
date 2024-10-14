@@ -137,7 +137,7 @@ namespace SolidCP.EnterpriseServer
         {
             try
             {
-                Database.AddAuditLogRecord(recordId, severityId, userId, username, packageId, itemId, itemName,
+                using (var database = new DataProvider()) database.AddAuditLogRecord(recordId, severityId, userId, username, packageId, itemId, itemName,
                     startDate, finishDate, sourceName, taskName, executionLog);
             }
             catch { }
