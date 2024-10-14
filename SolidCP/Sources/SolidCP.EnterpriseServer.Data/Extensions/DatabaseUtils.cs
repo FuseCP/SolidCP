@@ -62,6 +62,23 @@ namespace SolidCP.EnterpriseServer.Data
 		{
 		}
 
+		public static string InstallScript(string scriptName)
+		{
+			var assembly = Assembly.GetExecutingAssembly();
+			var resNames = assembly.GetManifestResourceNames();
+			using (var scriptResource = resNames
+				.Where(name => name.EndsWith(scriptName))
+				.Select(name => assembly.GetManifestResourceStream(name))
+				.FirstOrDefault())
+			using (var reader = new StreamReader(scriptResource)) return reader.ReadToEnd();
+		}
+
+		public static string InstallScriptSqlServer() => InstallScript("install.sqlserver.sql");
+		public static string InstallScriptMySql() => InstallScript("install.mysql.sql");
+		public static string InstallScriptSqlite() => InstallScript("install.sqlite.sql");
+		public static string InstallScriptPostgreSql() => InstallScript("install.postgresql.sql");
+		public static string InstallScriptUpdateDb() => InstallScript("update_db.sql");
+
 		public static string BuildSqlServerMasterConnectionString(string dbServer, string dbLogin, string dbPassw)
 		{
 			return BuildSqlServerConnectionString(dbServer, "master", dbLogin, dbPassw);

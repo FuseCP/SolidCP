@@ -9,6 +9,9 @@ install.*.exe
 
 # SQLite databases
 *.sqlite
+*.sqlite-journal
+*.sqlite-shm
+*.sqlite-wal
 
 #build
 [Oo]bj/

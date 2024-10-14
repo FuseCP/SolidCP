@@ -38,6 +38,7 @@ using Microsoft.Win32;
 
 using SolidCP.Server.Utils;
 using SolidCP.Providers.Utils;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Providers.DNS
 {
@@ -247,11 +248,14 @@ namespace SolidCP.Providers.DNS
 			}
 		}
 
-		public override bool IsInstalled()
-		{
-			if (!OS.OSInfo.IsWindows) return false;
+		protected virtual bool IsDNSInstalled() => ps.Test_DnsServer();
 
-			return ps.Test_DnsServer();
+        public override bool IsInstalled()
+		{
+			if (!OSInfo.IsWindows) return false;
+
+			return IsDNSInstalled() && WindowsVersion.WindowsServer2012 <= OSInfo.WindowsVersion &&
+				OSInfo.WindowsVersion < WindowsVersion.WindowsServer2016;
 		}
 	}
 }

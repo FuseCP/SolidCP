@@ -5,47 +5,44 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
+namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
     {
-        partial void StoredProceduresUp(MigrationBuilder migrationBuilder);
-		partial void StoredProceduresDown(MigrationBuilder migrationBuilder);
-
-		/// <inheritdoc />
-		protected override void Up(MigrationBuilder migrationBuilder)
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
                 name: "AdditionalGroups",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserID = table.Column<int>(type: "int", nullable: false),
-                    GroupName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true)
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    UserID = table.Column<int>(type: "INTEGER", nullable: false),
+                    GroupName = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 255, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__Addition__3214EC272F1861EB", x => x.ID);
+                    table.PrimaryKey("PK__Addition__3214EC27E665DDE2", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
                 name: "AuditLog",
                 columns: table => new
                 {
-                    RecordID = table.Column<string>(type: "varchar(32)", unicode: false, maxLength: 32, nullable: false),
-                    UserID = table.Column<int>(type: "int", nullable: true),
-                    Username = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    ItemID = table.Column<int>(type: "int", nullable: true),
-                    SeverityID = table.Column<int>(type: "int", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    FinishDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    SourceName = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    TaskName = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    ItemName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    ExecutionLog = table.Column<string>(type: "ntext", nullable: true),
-                    PackageID = table.Column<int>(type: "int", nullable: true)
+                    RecordID = table.Column<string>(type: "TEXT COLLATE NOCASE", unicode: false, maxLength: 32, nullable: false),
+                    UserID = table.Column<int>(type: "INTEGER", nullable: true),
+                    Username = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
+                    ItemID = table.Column<int>(type: "INTEGER", nullable: true),
+                    SeverityID = table.Column<int>(type: "INTEGER", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    FinishDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    SourceName = table.Column<string>(type: "TEXT", unicode: false, maxLength: 50, nullable: false),
+                    TaskName = table.Column<string>(type: "TEXT", unicode: false, maxLength: 50, nullable: false),
+                    ItemName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
+                    ExecutionLog = table.Column<string>(type: "TEXT", nullable: true),
+                    PackageID = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -56,7 +53,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "AuditLogSources",
                 columns: table => new
                 {
-                    SourceName = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false)
+                    SourceName = table.Column<string>(type: "TEXT", unicode: false, maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -67,9 +64,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "AuditLogTasks",
                 columns: table => new
                 {
-                    SourceName = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false),
-                    TaskName = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false),
-                    TaskDescription = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true)
+                    SourceName = table.Column<string>(type: "TEXT", unicode: false, maxLength: 100, nullable: false),
+                    TaskName = table.Column<string>(type: "TEXT", unicode: false, maxLength: 100, nullable: false),
+                    TaskDescription = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -80,40 +77,40 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "BackgroundTasks",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TaskID = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    ScheduleID = table.Column<int>(type: "int", nullable: false),
-                    PackageID = table.Column<int>(type: "int", nullable: false),
-                    UserID = table.Column<int>(type: "int", nullable: false),
-                    EffectiveUserID = table.Column<int>(type: "int", nullable: false),
-                    TaskName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    ItemID = table.Column<int>(type: "int", nullable: true),
-                    ItemName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    StartDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    FinishDate = table.Column<DateTime>(type: "datetime", nullable: true),
-                    IndicatorCurrent = table.Column<int>(type: "int", nullable: false),
-                    IndicatorMaximum = table.Column<int>(type: "int", nullable: false),
-                    MaximumExecutionTime = table.Column<int>(type: "int", nullable: false),
-                    Source = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Severity = table.Column<int>(type: "int", nullable: false),
-                    Completed = table.Column<bool>(type: "bit", nullable: true),
-                    NotifyOnComplete = table.Column<bool>(type: "bit", nullable: true),
-                    Status = table.Column<int>(type: "int", nullable: false)
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Guid = table.Column<Guid>(type: "TEXT", nullable: false),
+                    TaskID = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    ScheduleID = table.Column<int>(type: "INTEGER", nullable: false),
+                    PackageID = table.Column<int>(type: "INTEGER", nullable: false),
+                    UserID = table.Column<int>(type: "INTEGER", nullable: false),
+                    EffectiveUserID = table.Column<int>(type: "INTEGER", nullable: false),
+                    TaskName = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    ItemID = table.Column<int>(type: "INTEGER", nullable: true),
+                    ItemName = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    StartDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    FinishDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    IndicatorCurrent = table.Column<int>(type: "INTEGER", nullable: false),
+                    IndicatorMaximum = table.Column<int>(type: "INTEGER", nullable: false),
+                    MaximumExecutionTime = table.Column<int>(type: "INTEGER", nullable: false),
+                    Source = table.Column<string>(type: "TEXT", nullable: true),
+                    Severity = table.Column<int>(type: "INTEGER", nullable: false),
+                    Completed = table.Column<bool>(type: "INTEGER", nullable: true),
+                    NotifyOnComplete = table.Column<bool>(type: "INTEGER", nullable: true),
+                    Status = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__Backgrou__3214EC271AFAB817", x => x.ID);
+                    table.PrimaryKey("PK__Backgrou__3214EC273A1145AC", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Clusters",
                 columns: table => new
                 {
-                    ClusterID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ClusterName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    ClusterID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ClusterName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -124,14 +121,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "ExchangeDeletedAccounts",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AccountID = table.Column<int>(type: "int", nullable: false),
-                    OriginAT = table.Column<int>(type: "int", nullable: false),
-                    StoragePath = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    FolderName = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true),
-                    FileName = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true),
-                    ExpirationDate = table.Column<DateTime>(type: "datetime", nullable: false)
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    AccountID = table.Column<int>(type: "INTEGER", nullable: false),
+                    OriginAT = table.Column<int>(type: "INTEGER", nullable: false),
+                    StoragePath = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    FolderName = table.Column<string>(type: "TEXT", maxLength: 128, nullable: true),
+                    FileName = table.Column<string>(type: "TEXT", maxLength: 128, nullable: true),
+                    ExpirationDate = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -142,11 +139,11 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "ExchangeDisclaimers",
                 columns: table => new
                 {
-                    ExchangeDisclaimerId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ItemID = table.Column<int>(type: "int", nullable: false),
-                    DisclaimerName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    DisclaimerText = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ExchangeDisclaimerId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ItemID = table.Column<int>(type: "INTEGER", nullable: false),
+                    DisclaimerName = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 300, nullable: false),
+                    DisclaimerText = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -157,10 +154,10 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "ExchangeMailboxPlanRetentionPolicyTags",
                 columns: table => new
                 {
-                    PlanTagID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TagID = table.Column<int>(type: "int", nullable: false),
-                    MailboxPlanId = table.Column<int>(type: "int", nullable: false)
+                    PlanTagID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    TagID = table.Column<int>(type: "INTEGER", nullable: false),
+                    MailboxPlanId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -171,13 +168,13 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "ExchangeRetentionPolicyTags",
                 columns: table => new
                 {
-                    TagID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ItemID = table.Column<int>(type: "int", nullable: false),
-                    TagName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    TagType = table.Column<int>(type: "int", nullable: false),
-                    AgeLimitForRetention = table.Column<int>(type: "int", nullable: false),
-                    RetentionAction = table.Column<int>(type: "int", nullable: false)
+                    TagID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ItemID = table.Column<int>(type: "INTEGER", nullable: false),
+                    TagName = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 255, nullable: true),
+                    TagType = table.Column<int>(type: "INTEGER", nullable: false),
+                    AgeLimitForRetention = table.Column<int>(type: "INTEGER", nullable: false),
+                    RetentionAction = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -188,12 +185,12 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "OCSUsers",
                 columns: table => new
                 {
-                    OCSUserID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AccountID = table.Column<int>(type: "int", nullable: false),
-                    InstanceID = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())"),
-                    ModifiedDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())")
+                    OCSUserID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    AccountID = table.Column<int>(type: "INTEGER", nullable: false),
+                    InstanceID = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 50, nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -204,10 +201,10 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "PackageSettings",
                 columns: table => new
                 {
-                    PackageID = table.Column<int>(type: "int", nullable: false),
-                    SettingsName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PropertyName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PropertyValue = table.Column<string>(type: "ntext", nullable: true)
+                    PackageID = table.Column<int>(type: "INTEGER", nullable: false),
+                    SettingsName = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 50, nullable: false),
+                    PropertyName = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 50, nullable: false),
+                    PropertyValue = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -218,14 +215,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "RDSCertificates",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ServiceId = table.Column<int>(type: "int", nullable: false),
-                    Content = table.Column<string>(type: "ntext", nullable: false),
-                    Hash = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    FileName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    ValidFrom = table.Column<DateTime>(type: "datetime", nullable: true),
-                    ExpiryDate = table.Column<DateTime>(type: "datetime", nullable: true)
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ServiceId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Content = table.Column<string>(type: "TEXT", nullable: false),
+                    Hash = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
+                    FileName = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
+                    ValidFrom = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    ExpiryDate = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -236,12 +233,12 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "RDSCollections",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ItemID = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    DisplayName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true)
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ItemID = table.Column<int>(type: "INTEGER", nullable: false),
+                    Name = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 255, nullable: true),
+                    Description = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    DisplayName = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -252,12 +249,12 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "RDSServerSettings",
                 columns: table => new
                 {
-                    RdsServerId = table.Column<int>(type: "int", nullable: false),
-                    SettingsName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PropertyName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PropertyValue = table.Column<string>(type: "ntext", nullable: true),
-                    ApplyUsers = table.Column<bool>(type: "bit", nullable: false),
-                    ApplyAdministrators = table.Column<bool>(type: "bit", nullable: false)
+                    RdsServerId = table.Column<int>(type: "INTEGER", nullable: false),
+                    SettingsName = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 50, nullable: false),
+                    PropertyName = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 50, nullable: false),
+                    PropertyValue = table.Column<string>(type: "TEXT", nullable: true),
+                    ApplyUsers = table.Column<bool>(type: "INTEGER", nullable: false),
+                    ApplyAdministrators = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -268,11 +265,11 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "ResourceGroups",
                 columns: table => new
                 {
-                    GroupID = table.Column<int>(type: "int", nullable: false),
-                    GroupName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    GroupOrder = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
-                    GroupController = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    ShowGroup = table.Column<bool>(type: "bit", nullable: true)
+                    GroupID = table.Column<int>(type: "INTEGER", nullable: false),
+                    GroupName = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 100, nullable: false),
+                    GroupOrder = table.Column<int>(type: "INTEGER", nullable: false, defaultValue: 1),
+                    GroupController = table.Column<string>(type: "TEXT", maxLength: 1000, nullable: true),
+                    ShowGroup = table.Column<bool>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -283,9 +280,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "ScheduleTasks",
                 columns: table => new
                 {
-                    TaskID = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    TaskType = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    RoleID = table.Column<int>(type: "int", nullable: false)
+                    TaskID = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    TaskType = table.Column<string>(type: "TEXT", maxLength: 500, nullable: false),
+                    RoleID = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -296,27 +293,27 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "SfBUserPlans",
                 columns: table => new
                 {
-                    SfBUserPlanId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ItemID = table.Column<int>(type: "int", nullable: false),
-                    SfBUserPlanName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    SfBUserPlanType = table.Column<int>(type: "int", nullable: true),
-                    IM = table.Column<bool>(type: "bit", nullable: false),
-                    Mobility = table.Column<bool>(type: "bit", nullable: false),
-                    MobilityEnableOutsideVoice = table.Column<bool>(type: "bit", nullable: false),
-                    Federation = table.Column<bool>(type: "bit", nullable: false),
-                    Conferencing = table.Column<bool>(type: "bit", nullable: false),
-                    EnterpriseVoice = table.Column<bool>(type: "bit", nullable: false),
-                    VoicePolicy = table.Column<int>(type: "int", nullable: false),
-                    IsDefault = table.Column<bool>(type: "bit", nullable: false),
-                    RemoteUserAccess = table.Column<bool>(type: "bit", nullable: false),
-                    PublicIMConnectivity = table.Column<bool>(type: "bit", nullable: false),
-                    AllowOrganizeMeetingsWithExternalAnonymous = table.Column<bool>(type: "bit", nullable: false),
-                    Telephony = table.Column<int>(type: "int", nullable: true),
-                    ServerURI = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
-                    ArchivePolicy = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
-                    TelephonyDialPlanPolicy = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
-                    TelephonyVoicePolicy = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true)
+                    SfBUserPlanId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ItemID = table.Column<int>(type: "INTEGER", nullable: false),
+                    SfBUserPlanName = table.Column<string>(type: "TEXT", maxLength: 300, nullable: false),
+                    SfBUserPlanType = table.Column<int>(type: "INTEGER", nullable: true),
+                    IM = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Mobility = table.Column<bool>(type: "INTEGER", nullable: false),
+                    MobilityEnableOutsideVoice = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Federation = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Conferencing = table.Column<bool>(type: "INTEGER", nullable: false),
+                    EnterpriseVoice = table.Column<bool>(type: "INTEGER", nullable: false),
+                    VoicePolicy = table.Column<int>(type: "TEXT COLLATE NOCASE", nullable: false),
+                    IsDefault = table.Column<bool>(type: "INTEGER", nullable: false),
+                    RemoteUserAccess = table.Column<bool>(type: "INTEGER", nullable: false),
+                    PublicIMConnectivity = table.Column<bool>(type: "INTEGER", nullable: false),
+                    AllowOrganizeMeetingsWithExternalAnonymous = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Telephony = table.Column<int>(type: "INTEGER", nullable: true),
+                    ServerURI = table.Column<string>(type: "TEXT", maxLength: 300, nullable: true),
+                    ArchivePolicy = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 300, nullable: true),
+                    TelephonyDialPlanPolicy = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 300, nullable: true),
+                    TelephonyVoicePolicy = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 300, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -327,13 +324,13 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "SfBUsers",
                 columns: table => new
                 {
-                    SfBUserID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AccountID = table.Column<int>(type: "int", nullable: false),
-                    SfBUserPlanID = table.Column<int>(type: "int", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    ModifiedDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    SipAddress = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true)
+                    SfBUserID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    AccountID = table.Column<int>(type: "INTEGER", nullable: false),
+                    SfBUserPlanID = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    SipAddress = table.Column<string>(type: "TEXT", maxLength: 300, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -344,24 +341,24 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "SSLCertificates",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserID = table.Column<int>(type: "int", nullable: false),
-                    SiteID = table.Column<int>(type: "int", nullable: false),
-                    FriendlyName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    Hostname = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    DistinguishedName = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    CSR = table.Column<string>(type: "ntext", nullable: true),
-                    CSRLength = table.Column<int>(type: "int", nullable: true),
-                    Certificate = table.Column<string>(type: "ntext", nullable: true),
-                    Hash = table.Column<string>(type: "ntext", nullable: true),
-                    Installed = table.Column<bool>(type: "bit", nullable: true),
-                    IsRenewal = table.Column<bool>(type: "bit", nullable: true),
-                    ValidFrom = table.Column<DateTime>(type: "datetime", nullable: true),
-                    ExpiryDate = table.Column<DateTime>(type: "datetime", nullable: true),
-                    SerialNumber = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
-                    Pfx = table.Column<string>(type: "ntext", nullable: true),
-                    PreviousId = table.Column<int>(type: "int", nullable: true)
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    UserID = table.Column<int>(type: "INTEGER", nullable: false),
+                    SiteID = table.Column<int>(type: "INTEGER", nullable: false),
+                    FriendlyName = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    Hostname = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    DistinguishedName = table.Column<string>(type: "TEXT", maxLength: 500, nullable: true),
+                    CSR = table.Column<string>(type: "TEXT", nullable: true),
+                    CSRLength = table.Column<int>(type: "INTEGER", nullable: true),
+                    Certificate = table.Column<string>(type: "TEXT", nullable: true),
+                    Hash = table.Column<string>(type: "TEXT", nullable: true),
+                    Installed = table.Column<bool>(type: "INTEGER", nullable: true),
+                    IsRenewal = table.Column<bool>(type: "INTEGER", nullable: true),
+                    ValidFrom = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    ExpiryDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    SerialNumber = table.Column<string>(type: "TEXT", maxLength: 250, nullable: true),
+                    Pfx = table.Column<string>(type: "TEXT", nullable: true),
+                    PreviousId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -372,10 +369,10 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "StorageSpaceLevels",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 300, nullable: false),
+                    Description = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -386,10 +383,10 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "SupportServiceLevels",
                 columns: table => new
                 {
-                    LevelID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    LevelName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    LevelDescription = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true)
+                    LevelID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    LevelName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    LevelDescription = table.Column<string>(type: "TEXT", maxLength: 1000, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -400,9 +397,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "SystemSettings",
                 columns: table => new
                 {
-                    SettingsName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PropertyName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PropertyValue = table.Column<string>(type: "ntext", nullable: true)
+                    SettingsName = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 50, nullable: false),
+                    PropertyName = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 50, nullable: false),
+                    PropertyValue = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -413,13 +410,13 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "TempIds",
                 columns: table => new
                 {
-                    Key = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Scope = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Level = table.Column<int>(type: "int", nullable: false),
-                    Id = table.Column<int>(type: "int", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Key = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Created = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Scope = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Level = table.Column<int>(type: "INTEGER", nullable: false),
+                    Id = table.Column<int>(type: "INTEGER", nullable: false),
+                    Date = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -430,13 +427,13 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "Themes",
                 columns: table => new
                 {
-                    ThemeID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    DisplayName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    LTRName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    RTLName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    Enabled = table.Column<int>(type: "int", nullable: false),
-                    DisplayOrder = table.Column<int>(type: "int", nullable: false)
+                    ThemeID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    DisplayName = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    LTRName = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    RTLName = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    Enabled = table.Column<int>(type: "INTEGER", nullable: false),
+                    DisplayOrder = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -447,55 +444,57 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "ThemeSettings",
                 columns: table => new
                 {
-                    ThemeID = table.Column<int>(type: "int", nullable: false),
-                    SettingsName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    PropertyName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    PropertyValue = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false)
+                    ThemeSettingID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ThemeID = table.Column<int>(type: "INTEGER", nullable: false),
+                    SettingsName = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 255, nullable: false),
+                    PropertyName = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 255, nullable: false),
+                    PropertyValue = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ThemeSettings", x => new { x.ThemeID, x.SettingsName, x.PropertyName });
+                    table.PrimaryKey("PK_ThemeSettings", x => x.ThemeSettingID);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
-                    UserID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OwnerID = table.Column<int>(type: "int", nullable: true),
-                    RoleID = table.Column<int>(type: "int", nullable: false),
-                    StatusID = table.Column<int>(type: "int", nullable: false),
-                    IsDemo = table.Column<bool>(type: "bit", nullable: false),
-                    IsPeer = table.Column<bool>(type: "bit", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Password = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    Created = table.Column<DateTime>(type: "datetime", nullable: true),
-                    Changed = table.Column<DateTime>(type: "datetime", nullable: true),
-                    Comments = table.Column<string>(type: "ntext", nullable: true),
-                    SecondaryEmail = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    Address = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    City = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    State = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Country = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Zip = table.Column<string>(type: "varchar(20)", unicode: false, maxLength: 20, nullable: true),
-                    PrimaryPhone = table.Column<string>(type: "varchar(30)", unicode: false, maxLength: 30, nullable: true),
-                    SecondaryPhone = table.Column<string>(type: "varchar(30)", unicode: false, maxLength: 30, nullable: true),
-                    Fax = table.Column<string>(type: "varchar(30)", unicode: false, maxLength: 30, nullable: true),
-                    InstantMessenger = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: true),
-                    HtmlMail = table.Column<bool>(type: "bit", nullable: true, defaultValue: true),
-                    CompanyName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    EcommerceEnabled = table.Column<bool>(type: "bit", nullable: true),
-                    AdditionalParams = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LoginStatusId = table.Column<int>(type: "int", nullable: true),
-                    FailedLogins = table.Column<int>(type: "int", nullable: true),
-                    SubscriberNumber = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: true),
-                    OneTimePasswordState = table.Column<int>(type: "int", nullable: true),
-                    MfaMode = table.Column<int>(type: "int", nullable: false),
-                    PinSecret = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true)
+                    UserID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    OwnerID = table.Column<int>(type: "INTEGER", nullable: true),
+                    RoleID = table.Column<int>(type: "INTEGER", nullable: false),
+                    StatusID = table.Column<int>(type: "INTEGER", nullable: false),
+                    IsDemo = table.Column<bool>(type: "INTEGER", nullable: false),
+                    IsPeer = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Username = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
+                    Password = table.Column<string>(type: "TEXT", maxLength: 200, nullable: true),
+                    FirstName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
+                    LastName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
+                    Email = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    Created = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    Changed = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    Comments = table.Column<string>(type: "TEXT", nullable: true),
+                    SecondaryEmail = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    Address = table.Column<string>(type: "TEXT", maxLength: 200, nullable: true),
+                    City = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
+                    State = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
+                    Country = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
+                    Zip = table.Column<string>(type: "TEXT", unicode: false, maxLength: 20, nullable: true),
+                    PrimaryPhone = table.Column<string>(type: "TEXT", unicode: false, maxLength: 30, nullable: true),
+                    SecondaryPhone = table.Column<string>(type: "TEXT", unicode: false, maxLength: 30, nullable: true),
+                    Fax = table.Column<string>(type: "TEXT", unicode: false, maxLength: 30, nullable: true),
+                    InstantMessenger = table.Column<string>(type: "TEXT", unicode: false, maxLength: 100, nullable: true),
+                    HtmlMail = table.Column<bool>(type: "INTEGER", nullable: true, defaultValue: true),
+                    CompanyName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
+                    EcommerceEnabled = table.Column<bool>(type: "INTEGER", nullable: true),
+                    AdditionalParams = table.Column<string>(type: "TEXT", nullable: true),
+                    LoginStatusId = table.Column<int>(type: "INTEGER", nullable: true),
+                    FailedLogins = table.Column<int>(type: "INTEGER", nullable: true),
+                    SubscriberNumber = table.Column<string>(type: "TEXT", maxLength: 32, nullable: true),
+                    OneTimePasswordState = table.Column<int>(type: "INTEGER", nullable: true),
+                    MfaMode = table.Column<int>(type: "INTEGER", nullable: false),
+                    PinSecret = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -511,8 +510,8 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "Versions",
                 columns: table => new
                 {
-                    DatabaseVersion = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    BuildDate = table.Column<DateTime>(type: "datetime", nullable: false)
+                    DatabaseVersion = table.Column<string>(type: "TEXT", unicode: false, maxLength: 50, nullable: false),
+                    BuildDate = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -523,22 +522,22 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "BackgroundTaskLogs",
                 columns: table => new
                 {
-                    LogID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TaskID = table.Column<int>(type: "int", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime", nullable: true),
-                    ExceptionStackTrace = table.Column<string>(type: "ntext", nullable: true),
-                    InnerTaskStart = table.Column<int>(type: "int", nullable: true),
-                    Severity = table.Column<int>(type: "int", nullable: true),
-                    Text = table.Column<string>(type: "ntext", nullable: true),
-                    TextIdent = table.Column<int>(type: "int", nullable: true),
-                    XmlParameters = table.Column<string>(type: "ntext", nullable: true)
+                    LogID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    TaskID = table.Column<int>(type: "INTEGER", nullable: false),
+                    Date = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    ExceptionStackTrace = table.Column<string>(type: "TEXT", nullable: true),
+                    InnerTaskStart = table.Column<int>(type: "INTEGER", nullable: true),
+                    Severity = table.Column<int>(type: "INTEGER", nullable: true),
+                    Text = table.Column<string>(type: "TEXT", nullable: true),
+                    TextIdent = table.Column<int>(type: "INTEGER", nullable: true),
+                    XmlParameters = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__Backgrou__5E5499A830A1D5BF", x => x.LogID);
+                    table.PrimaryKey("PK__Backgrou__5E5499A86067A6E5", x => x.LogID);
                     table.ForeignKey(
-                        name: "FK__Backgroun__TaskI__06ADD4BD",
+                        name: "FK__Backgroun__TaskI__7D8391DF",
                         column: x => x.TaskID,
                         principalTable: "BackgroundTasks",
                         principalColumn: "ID");
@@ -548,18 +547,18 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "BackgroundTaskParameters",
                 columns: table => new
                 {
-                    ParameterID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TaskID = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    SerializerValue = table.Column<string>(type: "ntext", nullable: true),
-                    TypeName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true)
+                    ParameterID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    TaskID = table.Column<int>(type: "INTEGER", nullable: false),
+                    Name = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 255, nullable: true),
+                    SerializerValue = table.Column<string>(type: "TEXT", nullable: true),
+                    TypeName = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__Backgrou__F80C6297E2E5AF88", x => x.ParameterID);
+                    table.PrimaryKey("PK__Backgrou__F80C629777BF580B", x => x.ParameterID);
                     table.ForeignKey(
-                        name: "FK__Backgroun__TaskI__03D16812",
+                        name: "FK__Backgroun__TaskI__7AA72534",
                         column: x => x.TaskID,
                         principalTable: "BackgroundTasks",
                         principalColumn: "ID");
@@ -569,15 +568,15 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "BackgroundTaskStack",
                 columns: table => new
                 {
-                    TaskStackID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TaskID = table.Column<int>(type: "int", nullable: false)
+                    TaskStackID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    TaskID = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__Backgrou__5E44466F62E48BE6", x => x.TaskStackID);
+                    table.PrimaryKey("PK__Backgrou__5E44466FB8A5F217", x => x.TaskStackID);
                     table.ForeignKey(
-                        name: "FK__Backgroun__TaskI__098A4168",
+                        name: "FK__Backgroun__TaskI__005FFE8A",
                         column: x => x.TaskID,
                         principalTable: "BackgroundTasks",
                         principalColumn: "ID");
@@ -587,24 +586,24 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "RDSCollectionSettings",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RDSCollectionId = table.Column<int>(type: "int", nullable: false),
-                    DisconnectedSessionLimitMin = table.Column<int>(type: "int", nullable: true),
-                    ActiveSessionLimitMin = table.Column<int>(type: "int", nullable: true),
-                    IdleSessionLimitMin = table.Column<int>(type: "int", nullable: true),
-                    BrokenConnectionAction = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    AutomaticReconnectionEnabled = table.Column<bool>(type: "bit", nullable: true),
-                    TemporaryFoldersDeletedOnExit = table.Column<bool>(type: "bit", nullable: true),
-                    TemporaryFoldersPerSession = table.Column<bool>(type: "bit", nullable: true),
-                    ClientDeviceRedirectionOptions = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
-                    ClientPrinterRedirected = table.Column<bool>(type: "bit", nullable: true),
-                    ClientPrinterAsDefault = table.Column<bool>(type: "bit", nullable: true),
-                    RDEasyPrintDriverEnabled = table.Column<bool>(type: "bit", nullable: true),
-                    MaxRedirectedMonitors = table.Column<int>(type: "int", nullable: true),
-                    SecurityLayer = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    EncryptionLevel = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    AuthenticateUsingNLA = table.Column<bool>(type: "bit", nullable: true)
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    RDSCollectionId = table.Column<int>(type: "INTEGER", nullable: false),
+                    DisconnectedSessionLimitMin = table.Column<int>(type: "INTEGER", nullable: true),
+                    ActiveSessionLimitMin = table.Column<int>(type: "INTEGER", nullable: true),
+                    IdleSessionLimitMin = table.Column<int>(type: "INTEGER", nullable: true),
+                    BrokenConnectionAction = table.Column<string>(type: "TEXT", maxLength: 20, nullable: true),
+                    AutomaticReconnectionEnabled = table.Column<bool>(type: "INTEGER", nullable: true),
+                    TemporaryFoldersDeletedOnExit = table.Column<bool>(type: "INTEGER", nullable: true),
+                    TemporaryFoldersPerSession = table.Column<bool>(type: "INTEGER", nullable: true),
+                    ClientDeviceRedirectionOptions = table.Column<string>(type: "TEXT", maxLength: 250, nullable: true),
+                    ClientPrinterRedirected = table.Column<bool>(type: "INTEGER", nullable: true),
+                    ClientPrinterAsDefault = table.Column<bool>(type: "INTEGER", nullable: true),
+                    RDEasyPrintDriverEnabled = table.Column<bool>(type: "INTEGER", nullable: true),
+                    MaxRedirectedMonitors = table.Column<int>(type: "INTEGER", nullable: true),
+                    SecurityLayer = table.Column<string>(type: "TEXT", maxLength: 20, nullable: true),
+                    EncryptionLevel = table.Column<string>(type: "TEXT", maxLength: 20, nullable: true),
+                    AuthenticateUsingNLA = table.Column<bool>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -621,12 +620,12 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "RDSMessages",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RDSCollectionId = table.Column<int>(type: "int", nullable: false),
-                    MessageText = table.Column<string>(type: "ntext", nullable: false),
-                    UserName = table.Column<string>(type: "nchar(250)", fixedLength: true, maxLength: 250, nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    RDSCollectionId = table.Column<int>(type: "INTEGER", nullable: false),
+                    MessageText = table.Column<string>(type: "TEXT", nullable: false),
+                    UserName = table.Column<string>(type: "TEXT", fixedLength: true, maxLength: 250, nullable: false),
+                    Date = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -643,15 +642,15 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "RDSServers",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ItemID = table.Column<int>(type: "int", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    FqdName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    RDSCollectionId = table.Column<int>(type: "int", nullable: true),
-                    ConnectionEnabled = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
-                    Controller = table.Column<int>(type: "int", nullable: true)
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ItemID = table.Column<int>(type: "INTEGER", nullable: true),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    FqdName = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    Description = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    RDSCollectionId = table.Column<int>(type: "INTEGER", nullable: true),
+                    ConnectionEnabled = table.Column<bool>(type: "INTEGER", nullable: false, defaultValue: true),
+                    Controller = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -667,13 +666,13 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "Providers",
                 columns: table => new
                 {
-                    ProviderID = table.Column<int>(type: "int", nullable: false),
-                    GroupID = table.Column<int>(type: "int", nullable: false),
-                    ProviderName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    DisplayName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    ProviderType = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: true),
-                    EditorControl = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    DisableAutoDiscovery = table.Column<bool>(type: "bit", nullable: true)
+                    ProviderID = table.Column<int>(type: "INTEGER", nullable: false),
+                    GroupID = table.Column<int>(type: "INTEGER", nullable: false),
+                    ProviderName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
+                    DisplayName = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
+                    ProviderType = table.Column<string>(type: "TEXT", maxLength: 400, nullable: true),
+                    EditorControl = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
+                    DisableAutoDiscovery = table.Column<bool>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -689,14 +688,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "ResourceGroupDnsRecords",
                 columns: table => new
                 {
-                    RecordID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RecordOrder = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
-                    GroupID = table.Column<int>(type: "int", nullable: false),
-                    RecordType = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    RecordName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    RecordData = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    MXPriority = table.Column<int>(type: "int", nullable: true)
+                    RecordID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    RecordOrder = table.Column<int>(type: "INTEGER", nullable: false, defaultValue: 1),
+                    GroupID = table.Column<int>(type: "INTEGER", nullable: false),
+                    RecordType = table.Column<string>(type: "TEXT COLLATE NOCASE", unicode: false, maxLength: 50, nullable: false),
+                    RecordName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    RecordData = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
+                    MXPriority = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -713,25 +712,25 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "Servers",
                 columns: table => new
                 {
-                    ServerID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ServerName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ServerUrl = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true, defaultValue: ""),
-                    Password = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    Comments = table.Column<string>(type: "ntext", nullable: true),
-                    VirtualServer = table.Column<bool>(type: "bit", nullable: false),
-                    InstantDomainAlias = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    PrimaryGroupID = table.Column<int>(type: "int", nullable: true),
-                    ADRootDomain = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    ADUsername = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    ADPassword = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    ADAuthenticationType = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: true),
-                    ADEnabled = table.Column<bool>(type: "bit", nullable: true, defaultValue: false),
-                    ADParentDomain = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    ADParentDomainController = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    OSPlatform = table.Column<int>(type: "int", nullable: false),
-                    IsCore = table.Column<bool>(type: "bit", nullable: true),
-                    PasswordIsSHA256 = table.Column<bool>(type: "bit", nullable: false)
+                    ServerID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ServerName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    ServerUrl = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true, defaultValue: ""),
+                    Password = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
+                    Comments = table.Column<string>(type: "TEXT", nullable: true),
+                    VirtualServer = table.Column<bool>(type: "INTEGER", nullable: false),
+                    InstantDomainAlias = table.Column<string>(type: "TEXT", maxLength: 200, nullable: true),
+                    PrimaryGroupID = table.Column<int>(type: "INTEGER", nullable: true),
+                    ADRootDomain = table.Column<string>(type: "TEXT", maxLength: 200, nullable: true),
+                    ADUsername = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
+                    ADPassword = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
+                    ADAuthenticationType = table.Column<string>(type: "TEXT COLLATE NOCASE", unicode: false, maxLength: 50, nullable: true),
+                    ADEnabled = table.Column<bool>(type: "INTEGER", nullable: true, defaultValue: false),
+                    ADParentDomain = table.Column<string>(type: "TEXT", maxLength: 200, nullable: true),
+                    ADParentDomainController = table.Column<string>(type: "TEXT", maxLength: 200, nullable: true),
+                    OSPlatform = table.Column<int>(type: "INTEGER", nullable: false),
+                    IsCore = table.Column<bool>(type: "INTEGER", nullable: true),
+                    PasswordIsSHA256 = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -747,18 +746,18 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "ServiceItemTypes",
                 columns: table => new
                 {
-                    ItemTypeID = table.Column<int>(type: "int", nullable: false),
-                    GroupID = table.Column<int>(type: "int", nullable: true),
-                    DisplayName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    TypeName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    TypeOrder = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
-                    CalculateDiskspace = table.Column<bool>(type: "bit", nullable: true),
-                    CalculateBandwidth = table.Column<bool>(type: "bit", nullable: true),
-                    Suspendable = table.Column<bool>(type: "bit", nullable: true),
-                    Disposable = table.Column<bool>(type: "bit", nullable: true),
-                    Searchable = table.Column<bool>(type: "bit", nullable: true),
-                    Importable = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
-                    Backupable = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
+                    ItemTypeID = table.Column<int>(type: "INTEGER", nullable: false),
+                    GroupID = table.Column<int>(type: "INTEGER", nullable: true),
+                    DisplayName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
+                    TypeName = table.Column<string>(type: "TEXT", maxLength: 200, nullable: true),
+                    TypeOrder = table.Column<int>(type: "INTEGER", nullable: false, defaultValue: 1),
+                    CalculateDiskspace = table.Column<bool>(type: "INTEGER", nullable: true),
+                    CalculateBandwidth = table.Column<bool>(type: "INTEGER", nullable: true),
+                    Suspendable = table.Column<bool>(type: "INTEGER", nullable: true),
+                    Disposable = table.Column<bool>(type: "INTEGER", nullable: true),
+                    Searchable = table.Column<bool>(type: "INTEGER", nullable: true),
+                    Importable = table.Column<bool>(type: "INTEGER", nullable: false, defaultValue: true),
+                    Backupable = table.Column<bool>(type: "INTEGER", nullable: false, defaultValue: true)
                 },
                 constraints: table =>
                 {
@@ -774,11 +773,11 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "ScheduleTaskParameters",
                 columns: table => new
                 {
-                    TaskID = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ParameterID = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    DataTypeID = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    DefaultValue = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ParameterOrder = table.Column<int>(type: "int", nullable: false)
+                    TaskID = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    ParameterID = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 100, nullable: false),
+                    DataTypeID = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    DefaultValue = table.Column<string>(type: "TEXT", nullable: true),
+                    ParameterOrder = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -794,10 +793,10 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "ScheduleTaskViewConfiguration",
                 columns: table => new
                 {
-                    TaskID = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ConfigurationID = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Environment = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    TaskID = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    ConfigurationID = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 100, nullable: false),
+                    Environment = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -813,10 +812,10 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "StorageSpaceLevelResourceGroups",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    LevelId = table.Column<int>(type: "int", nullable: false),
-                    GroupId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    LevelId = table.Column<int>(type: "INTEGER", nullable: false),
+                    GroupId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -839,14 +838,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "Comments",
                 columns: table => new
                 {
-                    CommentID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ItemTypeID = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    ItemID = table.Column<int>(type: "int", nullable: false),
-                    UserID = table.Column<int>(type: "int", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())"),
-                    CommentText = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    SeverityID = table.Column<int>(type: "int", nullable: true)
+                    CommentID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ItemTypeID = table.Column<string>(type: "TEXT COLLATE NOCASE", unicode: false, maxLength: 50, nullable: false),
+                    ItemID = table.Column<int>(type: "INTEGER", nullable: false),
+                    UserID = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    CommentText = table.Column<string>(type: "TEXT", maxLength: 1000, nullable: true),
+                    SeverityID = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -863,10 +862,10 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "UserSettings",
                 columns: table => new
                 {
-                    UserID = table.Column<int>(type: "int", nullable: false),
-                    SettingsName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PropertyName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PropertyValue = table.Column<string>(type: "ntext", nullable: true)
+                    UserID = table.Column<int>(type: "INTEGER", nullable: false),
+                    SettingsName = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 50, nullable: false),
+                    PropertyName = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 50, nullable: false),
+                    PropertyValue = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -883,9 +882,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "ServiceDefaultProperties",
                 columns: table => new
                 {
-                    ProviderID = table.Column<int>(type: "int", nullable: false),
-                    PropertyName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PropertyValue = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true)
+                    ProviderID = table.Column<int>(type: "INTEGER", nullable: false),
+                    PropertyName = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 50, nullable: false),
+                    PropertyValue = table.Column<string>(type: "TEXT", maxLength: 1000, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -898,19 +897,52 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 });
 
             migrationBuilder.CreateTable(
+                name: "HostingPlans",
+                columns: table => new
+                {
+                    PlanID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    UserID = table.Column<int>(type: "INTEGER", nullable: true),
+                    PackageID = table.Column<int>(type: "INTEGER", nullable: true),
+                    ServerID = table.Column<int>(type: "INTEGER", nullable: true),
+                    PlanName = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 200, nullable: false),
+                    PlanDescription = table.Column<string>(type: "TEXT", nullable: true),
+                    Available = table.Column<bool>(type: "INTEGER", nullable: false),
+                    SetupPrice = table.Column<decimal>(type: "TEXT", nullable: true),
+                    RecurringPrice = table.Column<decimal>(type: "TEXT", nullable: true),
+                    RecurrenceUnit = table.Column<int>(type: "INTEGER", nullable: true),
+                    RecurrenceLength = table.Column<int>(type: "INTEGER", nullable: true),
+                    IsAddon = table.Column<bool>(type: "INTEGER", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HostingPlans", x => x.PlanID);
+                    table.ForeignKey(
+                        name: "FK_HostingPlans_Servers",
+                        column: x => x.ServerID,
+                        principalTable: "Servers",
+                        principalColumn: "ServerID");
+                    table.ForeignKey(
+                        name: "FK_HostingPlans_Users",
+                        column: x => x.UserID,
+                        principalTable: "Users",
+                        principalColumn: "UserID");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "IPAddresses",
                 columns: table => new
                 {
-                    AddressID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ExternalIP = table.Column<string>(type: "varchar(24)", unicode: false, maxLength: 24, nullable: false),
-                    InternalIP = table.Column<string>(type: "varchar(24)", unicode: false, maxLength: 24, nullable: true),
-                    ServerID = table.Column<int>(type: "int", nullable: true),
-                    Comments = table.Column<string>(type: "ntext", nullable: true),
-                    SubnetMask = table.Column<string>(type: "varchar(15)", unicode: false, maxLength: 15, nullable: true),
-                    DefaultGateway = table.Column<string>(type: "varchar(15)", unicode: false, maxLength: 15, nullable: true),
-                    PoolID = table.Column<int>(type: "int", nullable: true),
-                    VLAN = table.Column<int>(type: "int", nullable: true)
+                    AddressID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ExternalIP = table.Column<string>(type: "TEXT COLLATE NOCASE", unicode: false, maxLength: 24, nullable: false),
+                    InternalIP = table.Column<string>(type: "TEXT COLLATE NOCASE", unicode: false, maxLength: 24, nullable: true),
+                    ServerID = table.Column<int>(type: "INTEGER", nullable: true),
+                    Comments = table.Column<string>(type: "TEXT", nullable: true),
+                    SubnetMask = table.Column<string>(type: "TEXT COLLATE NOCASE", unicode: false, maxLength: 15, nullable: true),
+                    DefaultGateway = table.Column<string>(type: "TEXT COLLATE NOCASE", unicode: false, maxLength: 15, nullable: true),
+                    PoolID = table.Column<int>(type: "INTEGER", nullable: true),
+                    VLAN = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -927,11 +959,11 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "PrivateNetworkVLANs",
                 columns: table => new
                 {
-                    VlanID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Vlan = table.Column<int>(type: "int", nullable: false),
-                    ServerID = table.Column<int>(type: "int", nullable: true),
-                    Comments = table.Column<string>(type: "ntext", nullable: true)
+                    VlanID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Vlan = table.Column<int>(type: "INTEGER", nullable: false),
+                    ServerID = table.Column<int>(type: "INTEGER", nullable: true),
+                    Comments = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -948,14 +980,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "Services",
                 columns: table => new
                 {
-                    ServiceID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ServerID = table.Column<int>(type: "int", nullable: false),
-                    ProviderID = table.Column<int>(type: "int", nullable: false),
-                    ServiceName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Comments = table.Column<string>(type: "ntext", nullable: true),
-                    ServiceQuotaValue = table.Column<int>(type: "int", nullable: true),
-                    ClusterID = table.Column<int>(type: "int", nullable: true)
+                    ServiceID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ServerID = table.Column<int>(type: "INTEGER", nullable: false),
+                    ProviderID = table.Column<int>(type: "INTEGER", nullable: false),
+                    ServiceName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    Comments = table.Column<string>(type: "TEXT", nullable: true),
+                    ServiceQuotaValue = table.Column<int>(type: "INTEGER", nullable: true),
+                    ClusterID = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -981,12 +1013,12 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "VirtualGroups",
                 columns: table => new
                 {
-                    VirtualGroupID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ServerID = table.Column<int>(type: "int", nullable: false),
-                    GroupID = table.Column<int>(type: "int", nullable: false),
-                    DistributionType = table.Column<int>(type: "int", nullable: true),
-                    BindDistributionToPrimary = table.Column<bool>(type: "bit", nullable: true)
+                    VirtualGroupID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ServerID = table.Column<int>(type: "INTEGER", nullable: false),
+                    GroupID = table.Column<int>(type: "INTEGER", nullable: false),
+                    DistributionType = table.Column<int>(type: "INTEGER", nullable: true),
+                    BindDistributionToPrimary = table.Column<bool>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1008,16 +1040,16 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "Quotas",
                 columns: table => new
                 {
-                    QuotaID = table.Column<int>(type: "int", nullable: false),
-                    GroupID = table.Column<int>(type: "int", nullable: false),
-                    QuotaOrder = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
-                    QuotaName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    QuotaDescription = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    QuotaTypeID = table.Column<int>(type: "int", nullable: false, defaultValue: 2),
-                    ServiceQuota = table.Column<bool>(type: "bit", nullable: true, defaultValue: false),
-                    ItemTypeID = table.Column<int>(type: "int", nullable: true),
-                    HideQuota = table.Column<bool>(type: "bit", nullable: true),
-                    PerOrganization = table.Column<int>(type: "int", nullable: true)
+                    QuotaID = table.Column<int>(type: "INTEGER", nullable: false),
+                    GroupID = table.Column<int>(type: "INTEGER", nullable: false),
+                    QuotaOrder = table.Column<int>(type: "INTEGER", nullable: false, defaultValue: 1),
+                    QuotaName = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 50, nullable: false),
+                    QuotaDescription = table.Column<string>(type: "TEXT", maxLength: 200, nullable: true),
+                    QuotaTypeID = table.Column<int>(type: "INTEGER", nullable: false, defaultValue: 2),
+                    ServiceQuota = table.Column<bool>(type: "INTEGER", nullable: true, defaultValue: false),
+                    ItemTypeID = table.Column<int>(type: "INTEGER", nullable: true),
+                    HideQuota = table.Column<bool>(type: "INTEGER", nullable: true),
+                    PerOrganization = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1036,12 +1068,82 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 });
 
             migrationBuilder.CreateTable(
+                name: "HostingPlanResources",
+                columns: table => new
+                {
+                    PlanID = table.Column<int>(type: "INTEGER", nullable: false),
+                    GroupID = table.Column<int>(type: "INTEGER", nullable: false),
+                    CalculateDiskSpace = table.Column<bool>(type: "INTEGER", nullable: true),
+                    CalculateBandwidth = table.Column<bool>(type: "INTEGER", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HostingPlanResources", x => new { x.PlanID, x.GroupID });
+                    table.ForeignKey(
+                        name: "FK_HostingPlanResources_HostingPlans",
+                        column: x => x.PlanID,
+                        principalTable: "HostingPlans",
+                        principalColumn: "PlanID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_HostingPlanResources_ResourceGroups",
+                        column: x => x.GroupID,
+                        principalTable: "ResourceGroups",
+                        principalColumn: "GroupID");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Packages",
+                columns: table => new
+                {
+                    PackageID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ParentPackageID = table.Column<int>(type: "INTEGER", nullable: true),
+                    UserID = table.Column<int>(type: "INTEGER", nullable: false),
+                    PackageName = table.Column<string>(type: "TEXT", maxLength: 300, nullable: true),
+                    PackageComments = table.Column<string>(type: "TEXT", nullable: true),
+                    ServerID = table.Column<int>(type: "INTEGER", nullable: true),
+                    StatusID = table.Column<int>(type: "INTEGER", nullable: false),
+                    PlanID = table.Column<int>(type: "INTEGER", nullable: true),
+                    PurchaseDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    OverrideQuotas = table.Column<bool>(type: "INTEGER", nullable: false),
+                    BandwidthUpdated = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    DefaultTopPackage = table.Column<bool>(type: "INTEGER", nullable: false),
+                    StatusIDchangeDate = table.Column<DateTime>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Packages", x => x.PackageID);
+                    table.ForeignKey(
+                        name: "FK_Packages_HostingPlans",
+                        column: x => x.PlanID,
+                        principalTable: "HostingPlans",
+                        principalColumn: "PlanID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Packages_Packages",
+                        column: x => x.ParentPackageID,
+                        principalTable: "Packages",
+                        principalColumn: "PackageID");
+                    table.ForeignKey(
+                        name: "FK_Packages_Servers",
+                        column: x => x.ServerID,
+                        principalTable: "Servers",
+                        principalColumn: "ServerID");
+                    table.ForeignKey(
+                        name: "FK_Packages_Users",
+                        column: x => x.UserID,
+                        principalTable: "Users",
+                        principalColumn: "UserID");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ServiceProperties",
                 columns: table => new
                 {
-                    ServiceID = table.Column<int>(type: "int", nullable: false),
-                    PropertyName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PropertyValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ServiceID = table.Column<int>(type: "INTEGER", nullable: false),
+                    PropertyName = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 50, nullable: false),
+                    PropertyValue = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1058,18 +1160,18 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "StorageSpaces",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "varchar(300)", unicode: false, maxLength: 300, nullable: false),
-                    ServiceId = table.Column<int>(type: "int", nullable: false),
-                    ServerId = table.Column<int>(type: "int", nullable: false),
-                    LevelId = table.Column<int>(type: "int", nullable: false),
-                    Path = table.Column<string>(type: "varchar(max)", unicode: false, nullable: false),
-                    IsShared = table.Column<bool>(type: "bit", nullable: false),
-                    UncPath = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
-                    FsrmQuotaType = table.Column<int>(type: "int", nullable: false),
-                    FsrmQuotaSizeBytes = table.Column<long>(type: "bigint", nullable: false),
-                    IsDisabled = table.Column<bool>(type: "bit", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", unicode: false, maxLength: 300, nullable: false),
+                    ServiceId = table.Column<int>(type: "INTEGER", nullable: false),
+                    ServerId = table.Column<int>(type: "INTEGER", nullable: false),
+                    LevelId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Path = table.Column<string>(type: "TEXT", unicode: false, nullable: false),
+                    IsShared = table.Column<bool>(type: "INTEGER", nullable: false),
+                    UncPath = table.Column<string>(type: "TEXT", unicode: false, nullable: true),
+                    FsrmQuotaType = table.Column<int>(type: "INTEGER", nullable: false),
+                    FsrmQuotaSizeBytes = table.Column<long>(type: "INTEGER", nullable: false),
+                    IsDisabled = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1092,10 +1194,10 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "VirtualServices",
                 columns: table => new
                 {
-                    VirtualServiceID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ServerID = table.Column<int>(type: "int", nullable: false),
-                    ServiceID = table.Column<int>(type: "int", nullable: false)
+                    VirtualServiceID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ServerID = table.Column<int>(type: "INTEGER", nullable: false),
+                    ServiceID = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1114,478 +1216,46 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 });
 
             migrationBuilder.CreateTable(
-                name: "StorageSpaceFolders",
+                name: "HostingPlanQuotas",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "varchar(300)", unicode: false, maxLength: 300, nullable: false),
-                    StorageSpaceId = table.Column<int>(type: "int", nullable: false),
-                    Path = table.Column<string>(type: "varchar(max)", unicode: false, nullable: false),
-                    UncPath = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
-                    IsShared = table.Column<bool>(type: "bit", nullable: false),
-                    FsrmQuotaType = table.Column<int>(type: "int", nullable: false),
-                    FsrmQuotaSizeBytes = table.Column<long>(type: "bigint", nullable: false)
+                    PlanID = table.Column<int>(type: "INTEGER", nullable: false),
+                    QuotaID = table.Column<int>(type: "INTEGER", nullable: false),
+                    QuotaValue = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__StorageS__3214EC07AC0C9EB6", x => x.Id);
+                    table.PrimaryKey("PK_HostingPlanQuotas_1", x => new { x.PlanID, x.QuotaID });
                     table.ForeignKey(
-                        name: "FK_StorageSpaceFolders_StorageSpaceId",
-                        column: x => x.StorageSpaceId,
-                        principalTable: "StorageSpaces",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "EnterpriseFolders",
-                columns: table => new
-                {
-                    EnterpriseFolderID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ItemID = table.Column<int>(type: "int", nullable: false),
-                    FolderName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    FolderQuota = table.Column<int>(type: "int", nullable: false),
-                    LocationDrive = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    HomeFolder = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    Domain = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    StorageSpaceFolderId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EnterpriseFolders", x => x.EnterpriseFolderID);
-                    table.ForeignKey(
-                        name: "FK_EnterpriseFolders_StorageSpaceFolderId",
-                        column: x => x.StorageSpaceFolderId,
-                        principalTable: "StorageSpaceFolders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AccessTokens",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AccessTokenGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ExpirationDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    AccountID = table.Column<int>(type: "int", nullable: false),
-                    ItemId = table.Column<int>(type: "int", nullable: false),
-                    TokenType = table.Column<int>(type: "int", nullable: false),
-                    SmsResponse = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__AccessTo__3214EC27A32557FE", x => x.ID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "BlackBerryUsers",
-                columns: table => new
-                {
-                    BlackBerryUserId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AccountId = table.Column<int>(type: "int", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())"),
-                    ModifiedDate = table.Column<DateTime>(type: "datetime", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BlackBerryUsers", x => x.BlackBerryUserId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CRMUsers",
-                columns: table => new
-                {
-                    CRMUserID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AccountID = table.Column<int>(type: "int", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())"),
-                    ChangedDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())"),
-                    CRMUserGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    BusinessUnitID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    CALType = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CRMUsers", x => x.CRMUserID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DomainDnsRecords",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    DomainId = table.Column<int>(type: "int", nullable: false),
-                    RecordType = table.Column<int>(type: "int", nullable: false),
-                    DnsServer = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    Value = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    Date = table.Column<DateTime>(type: "datetime", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__DomainDn__3214EC2758B0A6F1", x => x.ID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Domains",
-                columns: table => new
-                {
-                    DomainID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PackageID = table.Column<int>(type: "int", nullable: false),
-                    ZoneItemID = table.Column<int>(type: "int", nullable: true),
-                    DomainName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    HostingAllowed = table.Column<bool>(type: "bit", nullable: false),
-                    WebSiteID = table.Column<int>(type: "int", nullable: true),
-                    MailDomainID = table.Column<int>(type: "int", nullable: true),
-                    IsSubDomain = table.Column<bool>(type: "bit", nullable: false),
-                    IsPreviewDomain = table.Column<bool>(type: "bit", nullable: false),
-                    IsDomainPointer = table.Column<bool>(type: "bit", nullable: false),
-                    DomainItemId = table.Column<int>(type: "int", nullable: true),
-                    CreationDate = table.Column<DateTime>(type: "datetime", nullable: true),
-                    ExpirationDate = table.Column<DateTime>(type: "datetime", nullable: true),
-                    LastUpdateDate = table.Column<DateTime>(type: "datetime", nullable: true),
-                    RegistrarName = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Domains", x => x.DomainID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "EnterpriseFoldersOwaPermissions",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ItemID = table.Column<int>(type: "int", nullable: false),
-                    FolderID = table.Column<int>(type: "int", nullable: false),
-                    AccountID = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__Enterpri__3214EC27D1B48691", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_EnterpriseFoldersOwaPermissions_FolderId",
-                        column: x => x.FolderID,
-                        principalTable: "EnterpriseFolders",
-                        principalColumn: "EnterpriseFolderID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ExchangeAccountEmailAddresses",
-                columns: table => new
-                {
-                    AddressID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AccountID = table.Column<int>(type: "int", nullable: false),
-                    EmailAddress = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ExchangeAccountEmailAddresses", x => x.AddressID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ExchangeAccounts",
-                columns: table => new
-                {
-                    AccountID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ItemID = table.Column<int>(type: "int", nullable: false),
-                    AccountType = table.Column<int>(type: "int", nullable: false),
-                    AccountName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    DisplayName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    PrimaryEmailAddress = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
-                    MailEnabledPublicFolder = table.Column<bool>(type: "bit", nullable: true),
-                    MailboxManagerActions = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: true),
-                    SamAccountName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())"),
-                    MailboxPlanId = table.Column<int>(type: "int", nullable: true),
-                    SubscriberNumber = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: true),
-                    UserPrincipalName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
-                    ExchangeDisclaimerId = table.Column<int>(type: "int", nullable: true),
-                    ArchivingMailboxPlanId = table.Column<int>(type: "int", nullable: true),
-                    EnableArchiving = table.Column<bool>(type: "bit", nullable: true),
-                    LevelID = table.Column<int>(type: "int", nullable: true),
-                    IsVIP = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ExchangeAccounts", x => x.AccountID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "RDSCollectionUsers",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RDSCollectionId = table.Column<int>(type: "int", nullable: false),
-                    AccountID = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__RDSColle__3214EC2780141EF7", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_RDSCollectionUsers_RDSCollectionId",
-                        column: x => x.RDSCollectionId,
-                        principalTable: "RDSCollections",
-                        principalColumn: "ID",
+                        name: "FK_HostingPlanQuotas_HostingPlans",
+                        column: x => x.PlanID,
+                        principalTable: "HostingPlans",
+                        principalColumn: "PlanID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_RDSCollectionUsers_UserId",
-                        column: x => x.AccountID,
-                        principalTable: "ExchangeAccounts",
-                        principalColumn: "AccountID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "WebDavAccessTokens",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AuthData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AccessToken = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ExpirationDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    AccountID = table.Column<int>(type: "int", nullable: false),
-                    ItemId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__WebDavAc__3214EC27B27DC571", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_WebDavAccessTokens_UserId",
-                        column: x => x.AccountID,
-                        principalTable: "ExchangeAccounts",
-                        principalColumn: "AccountID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "WebDavPortalUsersSettings",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AccountId = table.Column<int>(type: "int", nullable: false),
-                    Settings = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__WebDavPo__3214EC278AF5195E", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_WebDavPortalUsersSettings_UserId",
-                        column: x => x.AccountId,
-                        principalTable: "ExchangeAccounts",
-                        principalColumn: "AccountID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ExchangeMailboxPlans",
-                columns: table => new
-                {
-                    MailboxPlanId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ItemID = table.Column<int>(type: "int", nullable: false),
-                    MailboxPlan = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    MailboxPlanType = table.Column<int>(type: "int", nullable: true),
-                    EnableActiveSync = table.Column<bool>(type: "bit", nullable: false),
-                    EnableIMAP = table.Column<bool>(type: "bit", nullable: false),
-                    EnableMAPI = table.Column<bool>(type: "bit", nullable: false),
-                    EnableOWA = table.Column<bool>(type: "bit", nullable: false),
-                    EnablePOP = table.Column<bool>(type: "bit", nullable: false),
-                    IsDefault = table.Column<bool>(type: "bit", nullable: false),
-                    IssueWarningPct = table.Column<int>(type: "int", nullable: false),
-                    KeepDeletedItemsDays = table.Column<int>(type: "int", nullable: false),
-                    MailboxSizeMB = table.Column<int>(type: "int", nullable: false),
-                    MaxReceiveMessageSizeKB = table.Column<int>(type: "int", nullable: false),
-                    MaxRecipients = table.Column<int>(type: "int", nullable: false),
-                    MaxSendMessageSizeKB = table.Column<int>(type: "int", nullable: false),
-                    ProhibitSendPct = table.Column<int>(type: "int", nullable: false),
-                    ProhibitSendReceivePct = table.Column<int>(type: "int", nullable: false),
-                    HideFromAddressBook = table.Column<bool>(type: "bit", nullable: false),
-                    AllowLitigationHold = table.Column<bool>(type: "bit", nullable: true),
-                    RecoverableItemsWarningPct = table.Column<int>(type: "int", nullable: true),
-                    RecoverableItemsSpace = table.Column<int>(type: "int", nullable: true),
-                    LitigationHoldUrl = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    LitigationHoldMsg = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: true),
-                    Archiving = table.Column<bool>(type: "bit", nullable: true),
-                    EnableArchiving = table.Column<bool>(type: "bit", nullable: true),
-                    ArchiveSizeMB = table.Column<int>(type: "int", nullable: true),
-                    ArchiveWarningPct = table.Column<int>(type: "int", nullable: true),
-                    EnableAutoReply = table.Column<bool>(type: "bit", nullable: true),
-                    IsForJournaling = table.Column<bool>(type: "bit", nullable: true),
-                    EnableForceArchiveDeletion = table.Column<bool>(type: "bit", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ExchangeMailboxPlans", x => x.MailboxPlanId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ExchangeOrganizationDomains",
-                columns: table => new
-                {
-                    OrganizationDomainID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ItemID = table.Column<int>(type: "int", nullable: false),
-                    DomainID = table.Column<int>(type: "int", nullable: true),
-                    IsHost = table.Column<bool>(type: "bit", nullable: true, defaultValue: false),
-                    DomainTypeID = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ExchangeOrganizationDomains", x => x.OrganizationDomainID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ExchangeOrganizations",
-                columns: table => new
-                {
-                    ItemID = table.Column<int>(type: "int", nullable: false),
-                    OrganizationID = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    ExchangeMailboxPlanID = table.Column<int>(type: "int", nullable: true),
-                    LyncUserPlanID = table.Column<int>(type: "int", nullable: true),
-                    SfBUserPlanID = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ExchangeOrganizations", x => x.ItemID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ExchangeOrganizationSettings",
-                columns: table => new
-                {
-                    ItemId = table.Column<int>(type: "int", nullable: false),
-                    SettingsName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Xml = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ExchangeOrganizationSettings", x => new { x.ItemId, x.SettingsName });
-                    table.ForeignKey(
-                        name: "FK_ExchangeOrganizationSettings_ExchangeOrganizations_ItemId",
-                        column: x => x.ItemId,
-                        principalTable: "ExchangeOrganizations",
-                        principalColumn: "ItemID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ExchangeOrganizationSsFolders",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ItemId = table.Column<int>(type: "int", nullable: false),
-                    Type = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false),
-                    StorageSpaceFolderId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__Exchange__3214EC072DDBA072", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ExchangeOrganizationSsFolders_ItemId",
-                        column: x => x.ItemId,
-                        principalTable: "ExchangeOrganizations",
-                        principalColumn: "ItemID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ExchangeOrganizationSsFolders_StorageSpaceFolderId",
-                        column: x => x.StorageSpaceFolderId,
-                        principalTable: "StorageSpaceFolders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "LyncUserPlans",
-                columns: table => new
-                {
-                    LyncUserPlanId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ItemID = table.Column<int>(type: "int", nullable: false),
-                    LyncUserPlanName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    LyncUserPlanType = table.Column<int>(type: "int", nullable: true),
-                    IM = table.Column<bool>(type: "bit", nullable: false),
-                    Mobility = table.Column<bool>(type: "bit", nullable: false),
-                    MobilityEnableOutsideVoice = table.Column<bool>(type: "bit", nullable: false),
-                    Federation = table.Column<bool>(type: "bit", nullable: false),
-                    Conferencing = table.Column<bool>(type: "bit", nullable: false),
-                    EnterpriseVoice = table.Column<bool>(type: "bit", nullable: false),
-                    VoicePolicy = table.Column<int>(type: "int", nullable: false),
-                    IsDefault = table.Column<bool>(type: "bit", nullable: false),
-                    RemoteUserAccess = table.Column<bool>(type: "bit", nullable: false),
-                    PublicIMConnectivity = table.Column<bool>(type: "bit", nullable: false),
-                    AllowOrganizeMeetingsWithExternalAnonymous = table.Column<bool>(type: "bit", nullable: false),
-                    Telephony = table.Column<int>(type: "int", nullable: true),
-                    ServerURI = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
-                    ArchivePolicy = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
-                    TelephonyDialPlanPolicy = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
-                    TelephonyVoicePolicy = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_LyncUserPlans", x => x.LyncUserPlanId);
-                    table.ForeignKey(
-                        name: "FK_LyncUserPlans_ExchangeOrganizations",
-                        column: x => x.ItemID,
-                        principalTable: "ExchangeOrganizations",
-                        principalColumn: "ItemID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "LyncUsers",
-                columns: table => new
-                {
-                    LyncUserID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AccountID = table.Column<int>(type: "int", nullable: false),
-                    LyncUserPlanID = table.Column<int>(type: "int", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())"),
-                    ModifiedDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())"),
-                    SipAddress = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_LyncUsers", x => x.LyncUserID);
-                    table.ForeignKey(
-                        name: "FK_LyncUsers_LyncUserPlans",
-                        column: x => x.LyncUserPlanID,
-                        principalTable: "LyncUserPlans",
-                        principalColumn: "LyncUserPlanId");
+                        name: "FK_HostingPlanQuotas_Quotas",
+                        column: x => x.QuotaID,
+                        principalTable: "Quotas",
+                        principalColumn: "QuotaID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "GlobalDnsRecords",
                 columns: table => new
                 {
-                    RecordID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RecordType = table.Column<string>(type: "varchar(10)", unicode: false, maxLength: 10, nullable: false),
-                    RecordName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    RecordData = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    MXPriority = table.Column<int>(type: "int", nullable: false),
-                    ServiceID = table.Column<int>(type: "int", nullable: true),
-                    ServerID = table.Column<int>(type: "int", nullable: true),
-                    PackageID = table.Column<int>(type: "int", nullable: true),
-                    IPAddressID = table.Column<int>(type: "int", nullable: true),
-                    SrvPriority = table.Column<int>(type: "int", nullable: true),
-                    SrvWeight = table.Column<int>(type: "int", nullable: true),
-                    SrvPort = table.Column<int>(type: "int", nullable: true)
+                    RecordID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    RecordType = table.Column<string>(type: "TEXT COLLATE NOCASE", unicode: false, maxLength: 10, nullable: false),
+                    RecordName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    RecordData = table.Column<string>(type: "TEXT", maxLength: 500, nullable: false),
+                    MXPriority = table.Column<int>(type: "INTEGER", nullable: false),
+                    ServiceID = table.Column<int>(type: "INTEGER", nullable: true),
+                    ServerID = table.Column<int>(type: "INTEGER", nullable: true),
+                    PackageID = table.Column<int>(type: "INTEGER", nullable: true),
+                    IPAddressID = table.Column<int>(type: "INTEGER", nullable: true),
+                    SrvPriority = table.Column<int>(type: "INTEGER", nullable: true),
+                    SrvWeight = table.Column<int>(type: "INTEGER", nullable: true),
+                    SrvPort = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1595,6 +1265,12 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                         column: x => x.IPAddressID,
                         principalTable: "IPAddresses",
                         principalColumn: "AddressID");
+                    table.ForeignKey(
+                        name: "FK_GlobalDnsRecords_Packages",
+                        column: x => x.PackageID,
+                        principalTable: "Packages",
+                        principalColumn: "PackageID",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_GlobalDnsRecords_Servers",
                         column: x => x.ServerID,
@@ -1609,131 +1285,17 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 });
 
             migrationBuilder.CreateTable(
-                name: "HostingPlanQuotas",
-                columns: table => new
-                {
-                    PlanID = table.Column<int>(type: "int", nullable: false),
-                    QuotaID = table.Column<int>(type: "int", nullable: false),
-                    QuotaValue = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_HostingPlanQuotas_1", x => new { x.PlanID, x.QuotaID });
-                    table.ForeignKey(
-                        name: "FK_HostingPlanQuotas_Quotas",
-                        column: x => x.QuotaID,
-                        principalTable: "Quotas",
-                        principalColumn: "QuotaID");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "HostingPlanResources",
-                columns: table => new
-                {
-                    PlanID = table.Column<int>(type: "int", nullable: false),
-                    GroupID = table.Column<int>(type: "int", nullable: false),
-                    CalculateDiskSpace = table.Column<bool>(type: "bit", nullable: true),
-                    CalculateBandwidth = table.Column<bool>(type: "bit", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_HostingPlanResources", x => new { x.PlanID, x.GroupID });
-                    table.ForeignKey(
-                        name: "FK_HostingPlanResources_ResourceGroups",
-                        column: x => x.GroupID,
-                        principalTable: "ResourceGroups",
-                        principalColumn: "GroupID");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "HostingPlans",
-                columns: table => new
-                {
-                    PlanID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserID = table.Column<int>(type: "int", nullable: true),
-                    PackageID = table.Column<int>(type: "int", nullable: true),
-                    ServerID = table.Column<int>(type: "int", nullable: true),
-                    PlanName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    PlanDescription = table.Column<string>(type: "ntext", nullable: true),
-                    Available = table.Column<bool>(type: "bit", nullable: false),
-                    SetupPrice = table.Column<decimal>(type: "money", nullable: true),
-                    RecurringPrice = table.Column<decimal>(type: "money", nullable: true),
-                    RecurrenceUnit = table.Column<int>(type: "int", nullable: true),
-                    RecurrenceLength = table.Column<int>(type: "int", nullable: true),
-                    IsAddon = table.Column<bool>(type: "bit", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_HostingPlans", x => x.PlanID);
-                    table.ForeignKey(
-                        name: "FK_HostingPlans_Servers",
-                        column: x => x.ServerID,
-                        principalTable: "Servers",
-                        principalColumn: "ServerID");
-                    table.ForeignKey(
-                        name: "FK_HostingPlans_Users",
-                        column: x => x.UserID,
-                        principalTable: "Users",
-                        principalColumn: "UserID");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Packages",
-                columns: table => new
-                {
-                    PackageID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ParentPackageID = table.Column<int>(type: "int", nullable: true),
-                    UserID = table.Column<int>(type: "int", nullable: false),
-                    PackageName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
-                    PackageComments = table.Column<string>(type: "ntext", nullable: true),
-                    ServerID = table.Column<int>(type: "int", nullable: true),
-                    StatusID = table.Column<int>(type: "int", nullable: false),
-                    PlanID = table.Column<int>(type: "int", nullable: true),
-                    PurchaseDate = table.Column<DateTime>(type: "datetime", nullable: true),
-                    OverrideQuotas = table.Column<bool>(type: "bit", nullable: false),
-                    BandwidthUpdated = table.Column<DateTime>(type: "datetime", nullable: true),
-                    DefaultTopPackage = table.Column<bool>(type: "bit", nullable: false),
-                    StatusIDchangeDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Packages", x => x.PackageID);
-                    table.ForeignKey(
-                        name: "FK_Packages_HostingPlans",
-                        column: x => x.PlanID,
-                        principalTable: "HostingPlans",
-                        principalColumn: "PlanID");
-                    table.ForeignKey(
-                        name: "FK_Packages_Packages",
-                        column: x => x.ParentPackageID,
-                        principalTable: "Packages",
-                        principalColumn: "PackageID");
-                    table.ForeignKey(
-                        name: "FK_Packages_Servers",
-                        column: x => x.ServerID,
-                        principalTable: "Servers",
-                        principalColumn: "ServerID");
-                    table.ForeignKey(
-                        name: "FK_Packages_Users",
-                        column: x => x.UserID,
-                        principalTable: "Users",
-                        principalColumn: "UserID");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "PackageAddons",
                 columns: table => new
                 {
-                    PackageAddonID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PackageID = table.Column<int>(type: "int", nullable: true),
-                    PlanID = table.Column<int>(type: "int", nullable: true),
-                    Quantity = table.Column<int>(type: "int", nullable: true),
-                    PurchaseDate = table.Column<DateTime>(type: "datetime", nullable: true),
-                    Comments = table.Column<string>(type: "ntext", nullable: true),
-                    StatusID = table.Column<int>(type: "int", nullable: true)
+                    PackageAddonID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    PackageID = table.Column<int>(type: "INTEGER", nullable: true),
+                    PlanID = table.Column<int>(type: "INTEGER", nullable: true),
+                    Quantity = table.Column<int>(type: "INTEGER", nullable: true),
+                    PurchaseDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    Comments = table.Column<string>(type: "TEXT", nullable: true),
+                    StatusID = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1755,9 +1317,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "PackageQuotas",
                 columns: table => new
                 {
-                    PackageID = table.Column<int>(type: "int", nullable: false),
-                    QuotaID = table.Column<int>(type: "int", nullable: false),
-                    QuotaValue = table.Column<int>(type: "int", nullable: false)
+                    PackageID = table.Column<int>(type: "INTEGER", nullable: false),
+                    QuotaID = table.Column<int>(type: "INTEGER", nullable: false),
+                    QuotaValue = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1778,10 +1340,10 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "PackageResources",
                 columns: table => new
                 {
-                    PackageID = table.Column<int>(type: "int", nullable: false),
-                    GroupID = table.Column<int>(type: "int", nullable: false),
-                    CalculateDiskspace = table.Column<bool>(type: "bit", nullable: false),
-                    CalculateBandwidth = table.Column<bool>(type: "bit", nullable: false)
+                    PackageID = table.Column<int>(type: "INTEGER", nullable: false),
+                    GroupID = table.Column<int>(type: "INTEGER", nullable: false),
+                    CalculateDiskspace = table.Column<bool>(type: "INTEGER", nullable: false),
+                    CalculateBandwidth = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1802,11 +1364,11 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "PackagesBandwidth",
                 columns: table => new
                 {
-                    PackageID = table.Column<int>(type: "int", nullable: false),
-                    GroupID = table.Column<int>(type: "int", nullable: false),
-                    LogDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    BytesSent = table.Column<long>(type: "bigint", nullable: false),
-                    BytesReceived = table.Column<long>(type: "bigint", nullable: false)
+                    PackageID = table.Column<int>(type: "INTEGER", nullable: false),
+                    GroupID = table.Column<int>(type: "INTEGER", nullable: false),
+                    LogDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    BytesSent = table.Column<long>(type: "INTEGER", nullable: false),
+                    BytesReceived = table.Column<long>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1827,9 +1389,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "PackagesDiskspace",
                 columns: table => new
                 {
-                    PackageID = table.Column<int>(type: "int", nullable: false),
-                    GroupID = table.Column<int>(type: "int", nullable: false),
-                    DiskSpace = table.Column<long>(type: "bigint", nullable: false)
+                    PackageID = table.Column<int>(type: "INTEGER", nullable: false),
+                    GroupID = table.Column<int>(type: "INTEGER", nullable: false),
+                    DiskSpace = table.Column<long>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1850,8 +1412,8 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "PackageServices",
                 columns: table => new
                 {
-                    PackageID = table.Column<int>(type: "int", nullable: false),
-                    ServiceID = table.Column<int>(type: "int", nullable: false)
+                    PackageID = table.Column<int>(type: "INTEGER", nullable: false),
+                    ServiceID = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1874,8 +1436,8 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "PackagesTreeCache",
                 columns: table => new
                 {
-                    ParentPackageID = table.Column<int>(type: "int", nullable: false),
-                    PackageID = table.Column<int>(type: "int", nullable: false)
+                    ParentPackageID = table.Column<int>(type: "INTEGER", nullable: false),
+                    PackageID = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1896,10 +1458,11 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "PackageVLANs",
                 columns: table => new
                 {
-                    PackageVlanID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    VlanID = table.Column<int>(type: "int", nullable: false),
-                    PackageID = table.Column<int>(type: "int", nullable: false)
+                    PackageVlanID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    VlanID = table.Column<int>(type: "INTEGER", nullable: false),
+                    PackageID = table.Column<int>(type: "INTEGER", nullable: false),
+                    IsDmz = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1922,23 +1485,23 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "Schedule",
                 columns: table => new
                 {
-                    ScheduleID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TaskID = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    PackageID = table.Column<int>(type: "int", nullable: true),
-                    ScheduleName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    ScheduleTypeID = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Interval = table.Column<int>(type: "int", nullable: true),
-                    FromTime = table.Column<DateTime>(type: "datetime", nullable: true),
-                    ToTime = table.Column<DateTime>(type: "datetime", nullable: true),
-                    StartTime = table.Column<DateTime>(type: "datetime", nullable: true),
-                    LastRun = table.Column<DateTime>(type: "datetime", nullable: true),
-                    NextRun = table.Column<DateTime>(type: "datetime", nullable: true),
-                    Enabled = table.Column<bool>(type: "bit", nullable: false),
-                    PriorityID = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    HistoriesNumber = table.Column<int>(type: "int", nullable: true),
-                    MaxExecutionTime = table.Column<int>(type: "int", nullable: true),
-                    WeekMonthDay = table.Column<int>(type: "int", nullable: true)
+                    ScheduleID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    TaskID = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    PackageID = table.Column<int>(type: "INTEGER", nullable: true),
+                    ScheduleName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
+                    ScheduleTypeID = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 50, nullable: true),
+                    Interval = table.Column<int>(type: "INTEGER", nullable: true),
+                    FromTime = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    ToTime = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    StartTime = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    LastRun = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    NextRun = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    Enabled = table.Column<bool>(type: "INTEGER", nullable: false),
+                    PriorityID = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
+                    HistoriesNumber = table.Column<int>(type: "INTEGER", nullable: true),
+                    MaxExecutionTime = table.Column<int>(type: "INTEGER", nullable: true),
+                    WeekMonthDay = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1960,13 +1523,13 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "ServiceItems",
                 columns: table => new
                 {
-                    ItemID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PackageID = table.Column<int>(type: "int", nullable: true),
-                    ItemTypeID = table.Column<int>(type: "int", nullable: true),
-                    ServiceID = table.Column<int>(type: "int", nullable: true),
-                    ItemName = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true)
+                    ItemID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    PackageID = table.Column<int>(type: "INTEGER", nullable: true),
+                    ItemTypeID = table.Column<int>(type: "INTEGER", nullable: true),
+                    ServiceID = table.Column<int>(type: "INTEGER", nullable: true),
+                    ItemName = table.Column<string>(type: "TEXT", maxLength: 500, nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1989,12 +1552,37 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 });
 
             migrationBuilder.CreateTable(
+                name: "StorageSpaceFolders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", unicode: false, maxLength: 300, nullable: false),
+                    StorageSpaceId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Path = table.Column<string>(type: "TEXT", unicode: false, nullable: false),
+                    UncPath = table.Column<string>(type: "TEXT", unicode: false, nullable: true),
+                    IsShared = table.Column<bool>(type: "INTEGER", nullable: false),
+                    FsrmQuotaType = table.Column<int>(type: "INTEGER", nullable: false),
+                    FsrmQuotaSizeBytes = table.Column<long>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__StorageS__3214EC07AC0C9EB6", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_StorageSpaceFolders_StorageSpaceId",
+                        column: x => x.StorageSpaceId,
+                        principalTable: "StorageSpaces",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ScheduleParameters",
                 columns: table => new
                 {
-                    ScheduleID = table.Column<int>(type: "int", nullable: false),
-                    ParameterID = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ParameterValue = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true)
+                    ScheduleID = table.Column<int>(type: "INTEGER", nullable: false),
+                    ParameterID = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 100, nullable: false),
+                    ParameterValue = table.Column<string>(type: "TEXT", maxLength: 1000, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -2008,16 +1596,127 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 });
 
             migrationBuilder.CreateTable(
+                name: "DmzIPAddresses",
+                columns: table => new
+                {
+                    DmzAddressID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ItemID = table.Column<int>(type: "INTEGER", nullable: false),
+                    IPAddress = table.Column<string>(type: "TEXT COLLATE NOCASE", unicode: false, maxLength: 15, nullable: false),
+                    IsPrimary = table.Column<bool>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DmzIPAddresses", x => x.DmzAddressID);
+                    table.ForeignKey(
+                        name: "FK_DmzIPAddresses_ServiceItems",
+                        column: x => x.ItemID,
+                        principalTable: "ServiceItems",
+                        principalColumn: "ItemID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Domains",
+                columns: table => new
+                {
+                    DomainID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    PackageID = table.Column<int>(type: "INTEGER", nullable: false),
+                    ZoneItemID = table.Column<int>(type: "INTEGER", nullable: true),
+                    DomainName = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 100, nullable: false),
+                    HostingAllowed = table.Column<bool>(type: "INTEGER", nullable: false),
+                    WebSiteID = table.Column<int>(type: "INTEGER", nullable: true),
+                    MailDomainID = table.Column<int>(type: "INTEGER", nullable: true),
+                    IsSubDomain = table.Column<bool>(type: "INTEGER", nullable: false),
+                    IsPreviewDomain = table.Column<bool>(type: "INTEGER", nullable: false),
+                    IsDomainPointer = table.Column<bool>(type: "INTEGER", nullable: false),
+                    DomainItemId = table.Column<int>(type: "INTEGER", nullable: true),
+                    CreationDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    ExpirationDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    LastUpdateDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    RegistrarName = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Domains", x => x.DomainID);
+                    table.ForeignKey(
+                        name: "FK_Domains_Packages",
+                        column: x => x.PackageID,
+                        principalTable: "Packages",
+                        principalColumn: "PackageID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Domains_ServiceItems_MailDomain",
+                        column: x => x.MailDomainID,
+                        principalTable: "ServiceItems",
+                        principalColumn: "ItemID");
+                    table.ForeignKey(
+                        name: "FK_Domains_ServiceItems_WebSite",
+                        column: x => x.WebSiteID,
+                        principalTable: "ServiceItems",
+                        principalColumn: "ItemID");
+                    table.ForeignKey(
+                        name: "FK_Domains_ServiceItems_ZoneItem",
+                        column: x => x.ZoneItemID,
+                        principalTable: "ServiceItems",
+                        principalColumn: "ItemID");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ExchangeOrganizationDomains",
+                columns: table => new
+                {
+                    OrganizationDomainID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ItemID = table.Column<int>(type: "INTEGER", nullable: false),
+                    DomainID = table.Column<int>(type: "INTEGER", nullable: true),
+                    IsHost = table.Column<bool>(type: "INTEGER", nullable: true, defaultValue: false),
+                    DomainTypeID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ExchangeOrganizationDomains", x => x.OrganizationDomainID);
+                    table.ForeignKey(
+                        name: "FK_ExchangeOrganizationDomains_ServiceItems",
+                        column: x => x.ItemID,
+                        principalTable: "ServiceItems",
+                        principalColumn: "ItemID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ExchangeOrganizations",
+                columns: table => new
+                {
+                    ItemID = table.Column<int>(type: "INTEGER", nullable: false),
+                    OrganizationID = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 128, nullable: false),
+                    ExchangeMailboxPlanID = table.Column<int>(type: "INTEGER", nullable: true),
+                    LyncUserPlanID = table.Column<int>(type: "INTEGER", nullable: true),
+                    SfBUserPlanID = table.Column<int>(type: "INTEGER", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ExchangeOrganizations", x => x.ItemID);
+                    table.ForeignKey(
+                        name: "FK_ExchangeOrganizations_ServiceItems",
+                        column: x => x.ItemID,
+                        principalTable: "ServiceItems",
+                        principalColumn: "ItemID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PackageIPAddresses",
                 columns: table => new
                 {
-                    PackageAddressID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PackageID = table.Column<int>(type: "int", nullable: false),
-                    AddressID = table.Column<int>(type: "int", nullable: false),
-                    ItemID = table.Column<int>(type: "int", nullable: true),
-                    IsPrimary = table.Column<bool>(type: "bit", nullable: true),
-                    OrgID = table.Column<int>(type: "int", nullable: true)
+                    PackageAddressID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    PackageID = table.Column<int>(type: "INTEGER", nullable: false),
+                    AddressID = table.Column<int>(type: "INTEGER", nullable: false),
+                    ItemID = table.Column<int>(type: "INTEGER", nullable: true),
+                    IsPrimary = table.Column<bool>(type: "INTEGER", nullable: true),
+                    OrgID = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -2044,11 +1743,11 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "PrivateIPAddresses",
                 columns: table => new
                 {
-                    PrivateAddressID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ItemID = table.Column<int>(type: "int", nullable: false),
-                    IPAddress = table.Column<string>(type: "varchar(15)", unicode: false, maxLength: 15, nullable: false),
-                    IsPrimary = table.Column<bool>(type: "bit", nullable: false)
+                    PrivateAddressID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ItemID = table.Column<int>(type: "INTEGER", nullable: false),
+                    IPAddress = table.Column<string>(type: "TEXT COLLATE NOCASE", unicode: false, maxLength: 15, nullable: false),
+                    IsPrimary = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -2065,9 +1764,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "ServiceItemProperties",
                 columns: table => new
                 {
-                    ItemID = table.Column<int>(type: "int", nullable: false),
-                    PropertyName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PropertyValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ItemID = table.Column<int>(type: "INTEGER", nullable: false),
+                    PropertyName = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 50, nullable: false),
+                    PropertyValue = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -2077,6 +1776,431 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                         column: x => x.ItemID,
                         principalTable: "ServiceItems",
                         principalColumn: "ItemID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EnterpriseFolders",
+                columns: table => new
+                {
+                    EnterpriseFolderID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ItemID = table.Column<int>(type: "INTEGER", nullable: false),
+                    FolderName = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
+                    FolderQuota = table.Column<int>(type: "INTEGER", nullable: false),
+                    LocationDrive = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    HomeFolder = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    Domain = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 255, nullable: true),
+                    StorageSpaceFolderId = table.Column<int>(type: "INTEGER", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EnterpriseFolders", x => x.EnterpriseFolderID);
+                    table.ForeignKey(
+                        name: "FK_EnterpriseFolders_StorageSpaceFolderId",
+                        column: x => x.StorageSpaceFolderId,
+                        principalTable: "StorageSpaceFolders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DomainDnsRecords",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    DomainId = table.Column<int>(type: "INTEGER", nullable: false),
+                    RecordType = table.Column<int>(type: "INTEGER", nullable: false),
+                    DnsServer = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    Value = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    Date = table.Column<DateTime>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__DomainDn__3214EC27A6FC0498", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_DomainDnsRecords_DomainId",
+                        column: x => x.DomainId,
+                        principalTable: "Domains",
+                        principalColumn: "DomainID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ExchangeMailboxPlans",
+                columns: table => new
+                {
+                    MailboxPlanId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ItemID = table.Column<int>(type: "INTEGER", nullable: false),
+                    MailboxPlan = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 300, nullable: false),
+                    MailboxPlanType = table.Column<int>(type: "INTEGER", nullable: true),
+                    EnableActiveSync = table.Column<bool>(type: "INTEGER", nullable: false),
+                    EnableIMAP = table.Column<bool>(type: "INTEGER", nullable: false),
+                    EnableMAPI = table.Column<bool>(type: "INTEGER", nullable: false),
+                    EnableOWA = table.Column<bool>(type: "INTEGER", nullable: false),
+                    EnablePOP = table.Column<bool>(type: "INTEGER", nullable: false),
+                    IsDefault = table.Column<bool>(type: "INTEGER", nullable: false),
+                    IssueWarningPct = table.Column<int>(type: "INTEGER", nullable: false),
+                    KeepDeletedItemsDays = table.Column<int>(type: "INTEGER", nullable: false),
+                    MailboxSizeMB = table.Column<int>(type: "INTEGER", nullable: false),
+                    MaxReceiveMessageSizeKB = table.Column<int>(type: "INTEGER", nullable: false),
+                    MaxRecipients = table.Column<int>(type: "INTEGER", nullable: false),
+                    MaxSendMessageSizeKB = table.Column<int>(type: "INTEGER", nullable: false),
+                    ProhibitSendPct = table.Column<int>(type: "INTEGER", nullable: false),
+                    ProhibitSendReceivePct = table.Column<int>(type: "INTEGER", nullable: false),
+                    HideFromAddressBook = table.Column<bool>(type: "INTEGER", nullable: false),
+                    AllowLitigationHold = table.Column<bool>(type: "INTEGER", nullable: true),
+                    RecoverableItemsWarningPct = table.Column<int>(type: "INTEGER", nullable: true),
+                    RecoverableItemsSpace = table.Column<int>(type: "INTEGER", nullable: true),
+                    LitigationHoldUrl = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    LitigationHoldMsg = table.Column<string>(type: "TEXT", maxLength: 512, nullable: true),
+                    Archiving = table.Column<bool>(type: "INTEGER", nullable: true),
+                    EnableArchiving = table.Column<bool>(type: "INTEGER", nullable: true),
+                    ArchiveSizeMB = table.Column<int>(type: "INTEGER", nullable: true),
+                    ArchiveWarningPct = table.Column<int>(type: "INTEGER", nullable: true),
+                    EnableAutoReply = table.Column<bool>(type: "INTEGER", nullable: true),
+                    IsForJournaling = table.Column<bool>(type: "INTEGER", nullable: true),
+                    EnableForceArchiveDeletion = table.Column<bool>(type: "INTEGER", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ExchangeMailboxPlans", x => x.MailboxPlanId);
+                    table.ForeignKey(
+                        name: "FK_ExchangeMailboxPlans_ExchangeOrganizations",
+                        column: x => x.ItemID,
+                        principalTable: "ExchangeOrganizations",
+                        principalColumn: "ItemID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ExchangeOrganizationSettings",
+                columns: table => new
+                {
+                    ItemId = table.Column<int>(type: "INTEGER", nullable: false),
+                    SettingsName = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 100, nullable: false),
+                    Xml = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ExchangeOrganizationSettings", x => new { x.ItemId, x.SettingsName });
+                    table.ForeignKey(
+                        name: "FK_ExchangeOrganizationSettings_ExchangeOrganizations_ItemId",
+                        column: x => x.ItemId,
+                        principalTable: "ExchangeOrganizations",
+                        principalColumn: "ItemID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ExchangeOrganizationSsFolders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ItemId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Type = table.Column<string>(type: "TEXT COLLATE NOCASE", unicode: false, maxLength: 100, nullable: false),
+                    StorageSpaceFolderId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__Exchange__3214EC072DDBA072", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ExchangeOrganizationSsFolders_ItemId",
+                        column: x => x.ItemId,
+                        principalTable: "ExchangeOrganizations",
+                        principalColumn: "ItemID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ExchangeOrganizationSsFolders_StorageSpaceFolderId",
+                        column: x => x.StorageSpaceFolderId,
+                        principalTable: "StorageSpaceFolders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LyncUserPlans",
+                columns: table => new
+                {
+                    LyncUserPlanId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ItemID = table.Column<int>(type: "INTEGER", nullable: false),
+                    LyncUserPlanName = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 300, nullable: false),
+                    LyncUserPlanType = table.Column<int>(type: "INTEGER", nullable: true),
+                    IM = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Mobility = table.Column<bool>(type: "INTEGER", nullable: false),
+                    MobilityEnableOutsideVoice = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Federation = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Conferencing = table.Column<bool>(type: "INTEGER", nullable: false),
+                    EnterpriseVoice = table.Column<bool>(type: "INTEGER", nullable: false),
+                    VoicePolicy = table.Column<int>(type: "TEXT COLLATE NOCASE", nullable: false),
+                    IsDefault = table.Column<bool>(type: "INTEGER", nullable: false),
+                    RemoteUserAccess = table.Column<bool>(type: "INTEGER", nullable: false),
+                    PublicIMConnectivity = table.Column<bool>(type: "INTEGER", nullable: false),
+                    AllowOrganizeMeetingsWithExternalAnonymous = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Telephony = table.Column<int>(type: "INTEGER", nullable: true),
+                    ServerURI = table.Column<string>(type: "TEXT", maxLength: 300, nullable: true),
+                    ArchivePolicy = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 300, nullable: true),
+                    TelephonyDialPlanPolicy = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 300, nullable: true),
+                    TelephonyVoicePolicy = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 300, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LyncUserPlans", x => x.LyncUserPlanId);
+                    table.ForeignKey(
+                        name: "FK_LyncUserPlans_ExchangeOrganizations",
+                        column: x => x.ItemID,
+                        principalTable: "ExchangeOrganizations",
+                        principalColumn: "ItemID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ExchangeAccounts",
+                columns: table => new
+                {
+                    AccountID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ItemID = table.Column<int>(type: "INTEGER", nullable: false),
+                    AccountType = table.Column<int>(type: "INTEGER", nullable: false),
+                    AccountName = table.Column<string>(type: "TEXT", maxLength: 300, nullable: false),
+                    DisplayName = table.Column<string>(type: "TEXT", maxLength: 300, nullable: false),
+                    PrimaryEmailAddress = table.Column<string>(type: "TEXT", maxLength: 300, nullable: true),
+                    MailEnabledPublicFolder = table.Column<bool>(type: "INTEGER", nullable: true),
+                    MailboxManagerActions = table.Column<string>(type: "TEXT", unicode: false, maxLength: 200, nullable: true),
+                    SamAccountName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    MailboxPlanId = table.Column<int>(type: "INTEGER", nullable: true),
+                    SubscriberNumber = table.Column<string>(type: "TEXT", maxLength: 32, nullable: true),
+                    UserPrincipalName = table.Column<string>(type: "TEXT", maxLength: 300, nullable: true),
+                    ExchangeDisclaimerId = table.Column<int>(type: "INTEGER", nullable: true),
+                    ArchivingMailboxPlanId = table.Column<int>(type: "INTEGER", nullable: true),
+                    EnableArchiving = table.Column<bool>(type: "INTEGER", nullable: true),
+                    LevelID = table.Column<int>(type: "INTEGER", nullable: true),
+                    IsVIP = table.Column<bool>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ExchangeAccounts", x => x.AccountID);
+                    table.ForeignKey(
+                        name: "FK_ExchangeAccounts_ExchangeMailboxPlans",
+                        column: x => x.MailboxPlanId,
+                        principalTable: "ExchangeMailboxPlans",
+                        principalColumn: "MailboxPlanId");
+                    table.ForeignKey(
+                        name: "FK_ExchangeAccounts_ServiceItems",
+                        column: x => x.ItemID,
+                        principalTable: "ServiceItems",
+                        principalColumn: "ItemID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LyncUsers",
+                columns: table => new
+                {
+                    LyncUserID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    AccountID = table.Column<int>(type: "INTEGER", nullable: false),
+                    LyncUserPlanID = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    SipAddress = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 300, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LyncUsers", x => x.LyncUserID);
+                    table.ForeignKey(
+                        name: "FK_LyncUsers_LyncUserPlans",
+                        column: x => x.LyncUserPlanID,
+                        principalTable: "LyncUserPlans",
+                        principalColumn: "LyncUserPlanId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AccessTokens",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    AccessTokenGuid = table.Column<Guid>(type: "TEXT", nullable: false),
+                    ExpirationDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    AccountID = table.Column<int>(type: "INTEGER", nullable: false),
+                    ItemId = table.Column<int>(type: "INTEGER", nullable: false),
+                    TokenType = table.Column<int>(type: "INTEGER", nullable: false),
+                    SmsResponse = table.Column<string>(type: "TEXT", unicode: false, maxLength: 100, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__AccessTo__3214EC27DEAEF66E", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_AccessTokens_UserId",
+                        column: x => x.AccountID,
+                        principalTable: "ExchangeAccounts",
+                        principalColumn: "AccountID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BlackBerryUsers",
+                columns: table => new
+                {
+                    BlackBerryUserId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    AccountId = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BlackBerryUsers", x => x.BlackBerryUserId);
+                    table.ForeignKey(
+                        name: "FK_BlackBerryUsers_ExchangeAccounts",
+                        column: x => x.AccountId,
+                        principalTable: "ExchangeAccounts",
+                        principalColumn: "AccountID");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CRMUsers",
+                columns: table => new
+                {
+                    CRMUserID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    AccountID = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ChangedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    CRMUserGuid = table.Column<Guid>(type: "TEXT", nullable: true),
+                    BusinessUnitID = table.Column<Guid>(type: "TEXT", nullable: true),
+                    CALType = table.Column<int>(type: "INTEGER", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CRMUsers", x => x.CRMUserID);
+                    table.ForeignKey(
+                        name: "FK_CRMUsers_ExchangeAccounts",
+                        column: x => x.AccountID,
+                        principalTable: "ExchangeAccounts",
+                        principalColumn: "AccountID");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EnterpriseFoldersOwaPermissions",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ItemID = table.Column<int>(type: "INTEGER", nullable: false),
+                    FolderID = table.Column<int>(type: "INTEGER", nullable: false),
+                    AccountID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__Enterpri__3214EC27D1B48691", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_EnterpriseFoldersOwaPermissions_AccountId",
+                        column: x => x.AccountID,
+                        principalTable: "ExchangeAccounts",
+                        principalColumn: "AccountID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EnterpriseFoldersOwaPermissions_FolderId",
+                        column: x => x.FolderID,
+                        principalTable: "EnterpriseFolders",
+                        principalColumn: "EnterpriseFolderID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ExchangeAccountEmailAddresses",
+                columns: table => new
+                {
+                    AddressID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    AccountID = table.Column<int>(type: "INTEGER", nullable: false),
+                    EmailAddress = table.Column<string>(type: "TEXT", maxLength: 300, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ExchangeAccountEmailAddresses", x => x.AddressID);
+                    table.ForeignKey(
+                        name: "FK_ExchangeAccountEmailAddresses_ExchangeAccounts",
+                        column: x => x.AccountID,
+                        principalTable: "ExchangeAccounts",
+                        principalColumn: "AccountID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RDSCollectionUsers",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    RDSCollectionId = table.Column<int>(type: "INTEGER", nullable: false),
+                    AccountID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__RDSColle__3214EC2780141EF7", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_RDSCollectionUsers_RDSCollectionId",
+                        column: x => x.RDSCollectionId,
+                        principalTable: "RDSCollections",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RDSCollectionUsers_UserId",
+                        column: x => x.AccountID,
+                        principalTable: "ExchangeAccounts",
+                        principalColumn: "AccountID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "WebDavAccessTokens",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    FilePath = table.Column<string>(type: "TEXT", nullable: false),
+                    AuthData = table.Column<string>(type: "TEXT", nullable: false),
+                    AccessToken = table.Column<Guid>(type: "TEXT", nullable: false),
+                    ExpirationDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    AccountID = table.Column<int>(type: "INTEGER", nullable: false),
+                    ItemId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__WebDavAc__3214EC2708781F08", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_WebDavAccessTokens_UserId",
+                        column: x => x.AccountID,
+                        principalTable: "ExchangeAccounts",
+                        principalColumn: "AccountID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "WebDavPortalUsersSettings",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    AccountId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Settings = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__WebDavPo__3214EC278AF5195E", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_WebDavPortalUsersSettings_UserId",
+                        column: x => x.AccountId,
+                        principalTable: "ExchangeAccounts",
+                        principalColumn: "AccountID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -2480,6 +2604,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     { 74, "SolidCP.EnterpriseServer.DatabaseServerController", "MsSQL2019", 10, true },
                     { 75, "SolidCP.EnterpriseServer.DatabaseServerController", "MsSQL2022", 10, true },
                     { 90, "SolidCP.EnterpriseServer.DatabaseServerController", "MySQL8", 12, true },
+                    { 91, "SolidCP.EnterpriseServer.DatabaseServerController", "MySQL9", 12, true },
                     { 167, null, "Proxmox", 20, true }
                 });
 
@@ -2530,29 +2655,29 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
             migrationBuilder.InsertData(
                 table: "ThemeSettings",
-                columns: new[] { "PropertyName", "SettingsName", "ThemeID", "PropertyValue" },
+                columns: new[] { "ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID" },
                 values: new object[,]
                 {
-                    { "#0727d7", "color-header", 1, "headercolor1" },
-                    { "#157d4c", "color-header", 1, "headercolor4" },
-                    { "#23282c", "color-header", 1, "headercolor2" },
-                    { "#673ab7", "color-header", 1, "headercolor5" },
-                    { "#795548", "color-header", 1, "headercolor6" },
-                    { "#d3094e", "color-header", 1, "headercolor7" },
-                    { "#e10a1f", "color-header", 1, "headercolor3" },
-                    { "#ff9800", "color-header", 1, "headercolor8" },
-                    { "#1f0e3b", "color-Sidebar", 1, "sidebarcolor8" },
-                    { "#230924", "color-Sidebar", 1, "sidebarcolor4" },
-                    { "#408851", "color-Sidebar", 1, "sidebarcolor3" },
-                    { "#5b737f", "color-Sidebar", 1, "sidebarcolor2" },
-                    { "#6c85ec", "color-Sidebar", 1, "sidebarcolor1" },
-                    { "#903a85", "color-Sidebar", 1, "sidebarcolor5" },
-                    { "#a04846", "color-Sidebar", 1, "sidebarcolor6" },
-                    { "#a65314", "color-Sidebar", 1, "sidebarcolor7" },
-                    { "Dark", "Style", 1, "dark-theme" },
-                    { "Light", "Style", 1, "light-theme" },
-                    { "Minimal", "Style", 1, "minimal-theme" },
-                    { "Semi Dark", "Style", 1, "semi-dark" }
+                    { 1, "Light", "light-theme", "Style", 1 },
+                    { 2, "Dark", "dark-theme", "Style", 1 },
+                    { 3, "Semi Dark", "semi-dark", "Style", 1 },
+                    { 4, "Minimal", "minimal-theme", "Style", 1 },
+                    { 5, "#0727d7", "headercolor1", "color-header", 1 },
+                    { 6, "#23282c", "headercolor2", "color-header", 1 },
+                    { 7, "#e10a1f", "headercolor3", "color-header", 1 },
+                    { 8, "#157d4c", "headercolor4", "color-header", 1 },
+                    { 9, "#673ab7", "headercolor5", "color-header", 1 },
+                    { 10, "#795548", "headercolor6", "color-header", 1 },
+                    { 11, "#d3094e", "headercolor7", "color-header", 1 },
+                    { 12, "#ff9800", "headercolor8", "color-header", 1 },
+                    { 13, "#6c85ec", "sidebarcolor1", "color-Sidebar", 1 },
+                    { 14, "#5b737f", "sidebarcolor2", "color-Sidebar", 1 },
+                    { 15, "#408851", "sidebarcolor3", "color-Sidebar", 1 },
+                    { 16, "#230924", "sidebarcolor4", "color-Sidebar", 1 },
+                    { 17, "#903a85", "sidebarcolor5", "color-Sidebar", 1 },
+                    { 18, "#a04846", "sidebarcolor6", "color-Sidebar", 1 },
+                    { 19, "#a65314", "sidebarcolor7", "color-Sidebar", 1 },
+                    { 20, "#1f0e3b", "sidebarcolor8", "color-Sidebar", 1 }
                 });
 
             migrationBuilder.InsertData(
@@ -2563,7 +2688,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "UserID", "AdditionalParams", "Address", "Changed", "City", "Comments", "CompanyName", "Country", "Created", "EcommerceEnabled", "Email", "FailedLogins", "Fax", "FirstName", "HtmlMail", "InstantMessenger", "IsDemo", "IsPeer", "LastName", "LoginStatusId", "MfaMode", "OneTimePasswordState", "OwnerID", "Password", "PinSecret", "PrimaryPhone", "RoleID", "SecondaryEmail", "SecondaryPhone", "State", "StatusID", "SubscriberNumber", "Username", "Zip" },
-                values: new object[] { 1, null, "", new DateTime(2010, 7, 16, 12, 53, 2, 453, DateTimeKind.Utc), "", "", null, "", new DateTime(2010, 7, 16, 12, 53, 2, 453, DateTimeKind.Utc), true, "serveradmin@myhosting.com", null, "", "Enterprise", true, "", false, false, "Administrator", null, 0, null, null, "", null, "", 1, "", "", "", 1, null, "serveradmin", "" });
+                values: new object[] { 1, null, "", new DateTime(2010, 7, 16, 10, 53, 2, 453, DateTimeKind.Utc), "", "", null, "", new DateTime(2010, 7, 16, 12, 53, 2, 453, DateTimeKind.Utc), true, "serveradmin@myhosting.com", null, "", "Enterprise", true, "", false, false, "Administrator", null, 0, null, null, "", null, "", 1, "", "", "", 1, null, "serveradmin", "" });
 
             migrationBuilder.InsertData(
                 table: "Versions",
@@ -2577,8 +2702,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     { "1.1.2.13", new DateTime(2011, 4, 15, 0, 0, 0, 0, DateTimeKind.Utc) },
                     { "1.2.0.38", new DateTime(2011, 7, 13, 0, 0, 0, 0, DateTimeKind.Utc) },
                     { "1.2.1.6", new DateTime(2012, 3, 29, 0, 0, 0, 0, DateTimeKind.Utc) },
-                    { "1.4.9", new DateTime(2024, 4, 20, 0, 0, 0, 0, DateTimeKind.Utc) },
-                    { "2.0.0.228", new DateTime(2012, 12, 7, 0, 0, 0, 0, DateTimeKind.Utc) }
+                    { "1.4.9", new DateTime(2024, 4, 20, 0, 0, 0, 0, DateTimeKind.Utc) }
                 });
 
             migrationBuilder.InsertData(
@@ -2665,6 +2789,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     { 304, null, "MySQL Server 8.0", "MySQL", 90, "MySQL", "SolidCP.Providers.Database.MySqlServer80, SolidCP.Providers.Database.MySQL" },
                     { 305, null, "MySQL Server 8.1", "MySQL", 90, "MySQL", "SolidCP.Providers.Database.MySqlServer81, SolidCP.Providers.Database.MySQL" },
                     { 306, null, "MySQL Server 8.2", "MySQL", 90, "MySQL", "SolidCP.Providers.Database.MySqlServer82, SolidCP.Providers.Database.MySQL" },
+                    { 307, null, "MySQL Server 8.3", "MySQL", 90, "MySQL", "SolidCP.Providers.Database.MySqlServer83, SolidCP.Providers.Database.MySQL" },
+                    { 308, null, "MySQL Server 8.4", "MySQL", 90, "MySQL", "SolidCP.Providers.Database.MySqlServer84, SolidCP.Providers.Database.MySQL" },
+                    { 320, null, "MySQL Server 9.0", "MySQL", 90, "MySQL", "SolidCP.Providers.Database.MySqlServer90, SolidCP.Providers.Database.MySQL" },
                     { 350, true, "Microsoft Hyper-V 2012 R2", "HyperV2012R2", 33, "HyperV2012R2", "SolidCP.Providers.Virtualization.HyperV2012R2, SolidCP.Providers.Virtualization.HyperV2012R2" },
                     { 351, true, "Microsoft Hyper-V Virtual Machine Management", "HyperVvmm", 33, "HyperVvmm", "SolidCP.Providers.Virtualization.HyperVvmm, SolidCP.Providers.Virtualization.HyperVvmm" },
                     { 352, true, "Microsoft Hyper-V 2016", "HyperV2012R2", 33, "HyperV2016", "SolidCP.Providers.Virtualization.HyperV2016, SolidCP.Providers.Virtualization.HyperV2016" },
@@ -2696,6 +2823,19 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     { 1571, true, "MariaDB 10.4", "MariaDB", 50, "MariaDB", "SolidCP.Providers.Database.MariaDB104, SolidCP.Providers.Database.MariaDB" },
                     { 1572, null, "MariaDB 10.5", "MariaDB", 50, "MariaDB", "SolidCP.Providers.Database.MariaDB105, SolidCP.Providers.Database.MariaDB" },
                     { 1573, null, "MariaDB 10.6", "MariaDB", 50, "MariaDB", "SolidCP.Providers.Database.MariaDB106, SolidCP.Providers.Database.MariaDB" },
+                    { 1574, null, "MariaDB 10.7", "MariaDB", 50, "MariaDB", "SolidCP.Providers.Database.MariaDB107, SolidCP.Providers.Database.MariaDB" },
+                    { 1575, null, "MariaDB 10.8", "MariaDB", 50, "MariaDB", "SolidCP.Providers.Database.MariaDB108, SolidCP.Providers.Database.MariaDB" },
+                    { 1576, null, "MariaDB 10.9", "MariaDB", 50, "MariaDB", "SolidCP.Providers.Database.MariaDB109, SolidCP.Providers.Database.MariaDB" },
+                    { 1577, null, "MariaDB 10.10", "MariaDB", 50, "MariaDB", "SolidCP.Providers.Database.MariaDB1010, SolidCP.Providers.Database.MariaDB" },
+                    { 1578, null, "MariaDB 10.11", "MariaDB", 50, "MariaDB", "SolidCP.Providers.Database.MariaDB1011, SolidCP.Providers.Database.MariaDB" },
+                    { 1579, null, "MariaDB 11.0", "MariaDB", 50, "MariaDB", "SolidCP.Providers.Database.MariaDB110, SolidCP.Providers.Database.MariaDB" },
+                    { 1580, null, "MariaDB 11.1", "MariaDB", 50, "MariaDB", "SolidCP.Providers.Database.MariaDB111, SolidCP.Providers.Database.MariaDB" },
+                    { 1581, null, "MariaDB 11.2", "MariaDB", 50, "MariaDB", "SolidCP.Providers.Database.MariaDB112, SolidCP.Providers.Database.MariaDB" },
+                    { 1582, null, "MariaDB 11.3", "MariaDB", 50, "MariaDB", "SolidCP.Providers.Database.MariaDB113, SolidCP.Providers.Database.MariaDB" },
+                    { 1583, null, "MariaDB 11.4", "MariaDB", 50, "MariaDB", "SolidCP.Providers.Database.MariaDB114, SolidCP.Providers.Database.MariaDB" },
+                    { 1584, null, "MariaDB 11.5", "MariaDB", 50, "MariaDB", "SolidCP.Providers.Database.MariaDB115, SolidCP.Providers.Database.MariaDB" },
+                    { 1585, null, "MariaDB 11.6", "MariaDB", 50, "MariaDB", "SolidCP.Providers.Database.MariaDB116, SolidCP.Providers.Database.MariaDB" },
+                    { 1586, null, "MariaDB 11.7", "MariaDB", 50, "MariaDB", "SolidCP.Providers.Database.MariaDB117, SolidCP.Providers.Database.MariaDB" },
                     { 1601, true, "Mail Cleaner", "MailCleaner", 61, "MailCleaner", "SolidCP.Providers.Filters.MailCleaner, SolidCP.Providers.Filters.MailCleaner" },
                     { 1602, true, "SpamExperts Mail Filter", "SpamExperts", 61, "SpamExperts", "SolidCP.Providers.Filters.SpamExperts, SolidCP.Providers.Filters.SpamExperts" },
                     { 1701, null, "Microsoft SQL Server 2016", "MSSQL", 71, "MsSQL", "SolidCP.Providers.Database.MsSqlServer2016, SolidCP.Providers.Database.SqlServer" },
@@ -2791,6 +2931,10 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     { 113, 90, null, null, null, "Max Database Size", "MySQL8.MaxDatabaseSize", 3, 3, false },
                     { 114, 90, null, null, null, "Database Restores", "MySQL8.Restore", 5, 1, false },
                     { 115, 90, null, null, null, "Database Truncate", "MySQL8.Truncate", 6, 1, false },
+                    { 122, 91, null, null, null, "Database Backups", "MySQL9.Backup", 4, 1, false },
+                    { 123, 91, null, null, null, "Max Database Size", "MySQL9.MaxDatabaseSize", 3, 3, false },
+                    { 124, 91, null, null, null, "Database Restores", "MySQL9.Restore", 5, 1, false },
+                    { 125, 91, null, null, null, "Database Truncate", "MySQL9.Truncate", 6, 1, false },
                     { 203, 10, null, null, null, "Max Log Size", "MsSQL2005.MaxLogSize", 4, 3, false },
                     { 204, 5, null, null, null, "Max Log Size", "MsSQL2000.MaxLogSize", 4, 3, false },
                     { 207, 13, null, null, 1, "Domains per Organizations", "HostedSolution.Domains", 3, 3, false },
@@ -2879,6 +3023,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     { 378, 41, null, null, null, "Allow Mobile Calls", "Lync.EVMobile", 9, 1, false },
                     { 379, 41, null, null, null, "Allow International Calls", "Lync.EVInternational", 10, 1, false },
                     { 380, 41, null, null, null, "Enable Plans Editing", "Lync.EnablePlansEditing", 11, 1, false },
+                    { 381, 41, null, null, null, "Phone Numbers", "Lync.PhoneNumbers", 12, 2, false },
                     { 400, 20, null, null, null, "Use shared SSL Root", "HostedSharePoint.UseSharedSSL", 3, 1, false },
                     { 409, 1, null, null, null, "Not allow Tenants to Delete Top Level Domains", "OS.NotAllowTenantDeleteDomains", 13, 1, false },
                     { 410, 1, null, null, null, "Not allow Tenants to Create Top Level Domains", "OS.NotAllowTenantCreateDomains", 12, 1, false },
@@ -2997,7 +3142,10 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     { 735, 75, null, null, null, "Database Backups", "MsSQL2022.Backup", 5, 1, false },
                     { 736, 75, null, null, null, "Database Restores", "MsSQL2022.Restore", 6, 1, false },
                     { 737, 75, null, null, null, "Database Truncate", "MsSQL2022.Truncate", 7, 1, false },
-                    { 738, 75, null, null, null, "Max Log Size", "MsSQL2022.MaxLogSize", 4, 3, false }
+                    { 738, 75, null, null, null, "Max Log Size", "MsSQL2022.MaxLogSize", 4, 3, false },
+                    { 750, 33, null, null, null, "DMZ Network", "VPS2012.DMZNetworkEnabled", 22, 1, false },
+                    { 751, 33, null, null, null, "Number of DMZ IP addresses per VPS", "VPS2012.DMZIPAddressesNumber", 23, 3, false },
+                    { 752, 33, null, null, null, "Number of DMZ Network VLANs", "VPS2012.DMZVLANsNumber", 24, 2, false }
                 });
 
             migrationBuilder.InsertData(
@@ -3278,7 +3426,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     { 77, true, false, true, "MsSQL2019Database", true, 74, true, true, false, "SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base", 1 },
                     { 78, true, false, false, "MsSQL2019User", true, 74, true, true, false, "SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base", 1 },
                     { 79, true, false, true, "MsSQL2022Database", true, 75, true, true, false, "SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base", 1 },
-                    { 80, true, false, false, "MsSQL2022User", true, 75, true, true, false, "SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base", 1 }
+                    { 80, true, false, false, "MsSQL2022User", true, 75, true, true, false, "SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base", 1 },
+                    { 90, true, false, true, "MySQL9Database", true, 91, true, true, false, "SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base", 20 },
+                    { 91, true, false, false, "MySQL9User", true, 91, true, true, false, "SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base", 21 }
                 });
 
             migrationBuilder.InsertData(
@@ -3309,7 +3459,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     { "CC", "AccountSummaryLetter", 1, "support@HostingCompany.com" },
                     { "EnableLetter", "AccountSummaryLetter", 1, "False" },
                     { "From", "AccountSummaryLetter", 1, "support@HostingCompany.com" },
-                    { "HtmlBody", "AccountSummaryLetter", 1, "<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head>\r\n    <title>Account Summary Information</title>\r\n    <style type=\"text/css\">\r\n		.Summary { background-color: ##ffffff; padding: 5px; }\r\n		.Summary .Header { padding: 10px 0px 10px 10px; font-size: 16pt; background-color: ##E5F2FF; color: ##1F4978; border-bottom: solid 2px ##86B9F7; }\r\n        .Summary A { color: ##0153A4; }\r\n        .Summary { font-family: Tahoma; font-size: 9pt; }\r\n        .Summary H1 { font-size: 1.7em; color: ##1F4978; border-bottom: dotted 3px ##efefef; }\r\n        .Summary H2 { font-size: 1.3em; color: ##1F4978; }\r\n        .Summary TABLE { border: solid 1px ##e5e5e5; }\r\n        .Summary TH,\r\n        .Summary TD.Label { padding: 5px; font-size: 8pt; font-weight: bold; background-color: ##f5f5f5; }\r\n        .Summary TD { padding: 8px; font-size: 9pt; }\r\n        .Summary UL LI { font-size: 1.1em; font-weight: bold; }\r\n        .Summary UL UL LI { font-size: 0.9em; font-weight: normal; }\r\n    </style>\r\n</head>\r\n<body>\r\n<div class=\"Summary\">\r\n\r\n<a name=\"top\"></a>\r\n<div class=\"Header\">\r\n	Hosting Account Information\r\n</div>\r\n\r\n<ad:if test=\"#Signup#\">\r\n<p>\r\nHello #user.FirstName#,\r\n</p>\r\n\r\n<p>\r\nNew user account has been created and below you can find its summary information.\r\n</p>\r\n\r\n<h1>Control Panel URL</h1>\r\n<table>\r\n    <thead>\r\n        <tr>\r\n            <th>Control Panel URL</th>\r\n            <th>Username</th>\r\n            <th>Password</th>\r\n        </tr>\r\n    </thead>\r\n    <tbody>\r\n        <tr>\r\n            <td><a href=\"http://panel.HostingCompany.com\">http://panel.HostingCompany.com</a></td>\r\n            <td>#user.Username#</td>\r\n            <td>#user.Password#</td>\r\n        </tr>\r\n    </tbody>\r\n</table>\r\n</ad:if>\r\n\r\n<h1>Hosting Spaces</h1>\r\n<p>\r\n    The following hosting spaces have been created under your account:\r\n</p>\r\n<ad:foreach collection=\"#Spaces#\" var=\"Space\" index=\"i\">\r\n<h2>#Space.PackageName#</h2>\r\n<table>\r\n	<tbody>\r\n		<tr>\r\n			<td class=\"Label\">Hosting Plan:</td>\r\n			<td>\r\n				<ad:if test=\"#not(isnull(Plans[Space.PlanId]))#\">#Plans[Space.PlanId].PlanName#<ad:else>System</ad:if>\r\n			</td>\r\n		</tr>\r\n		<ad:if test=\"#not(isnull(Plans[Space.PlanId]))#\">\r\n		<tr>\r\n			<td class=\"Label\">Purchase Date:</td>\r\n			<td>\r\n				#Space.PurchaseDate#\r\n			</td>\r\n		</tr>\r\n		<tr>\r\n			<td class=\"Label\">Disk Space, MB:</td>\r\n			<td><ad:NumericQuota space=\"#SpaceContexts[Space.PackageId]#\" quota=\"OS.Diskspace\" /></td>\r\n		</tr>\r\n		<tr>\r\n			<td class=\"Label\">Bandwidth, MB/Month:</td>\r\n			<td><ad:NumericQuota space=\"#SpaceContexts[Space.PackageId]#\" quota=\"OS.Bandwidth\" /></td>\r\n		</tr>\r\n		<tr>\r\n			<td class=\"Label\">Maximum Number of Domains:</td>\r\n			<td><ad:NumericQuota space=\"#SpaceContexts[Space.PackageId]#\" quota=\"OS.Domains\" /></td>\r\n		</tr>\r\n		<tr>\r\n			<td class=\"Label\">Maximum Number of Sub-Domains:</td>\r\n			<td><ad:NumericQuota space=\"#SpaceContexts[Space.PackageId]#\" quota=\"OS.SubDomains\" /></td>\r\n		</tr>\r\n		</ad:if>\r\n	</tbody>\r\n</table>\r\n</ad:foreach>\r\n\r\n<ad:if test=\"#Signup#\">\r\n<p>\r\nIf you have any questions regarding your hosting account, feel free to contact our support department at any time.\r\n</p>\r\n\r\n<p>\r\nBest regards,<br />\r\nSolidCP.<br />\r\nWeb Site: <a href=\"https://solidcp.com\">https://solidcp.com</a><br />\r\nE-Mail: <a href=\"mailto:support@solidcp.com\">support@solidcp.com</a>\r\n</p>\r\n</ad:if>\r\n\r\n<ad:template name=\"NumericQuota\">\r\n	<ad:if test=\"#space.Quotas.ContainsKey(quota)#\">\r\n		<ad:if test=\"#space.Quotas[quota].QuotaAllocatedValue isnot -1#\">#space.Quotas[quota].QuotaAllocatedValue#<ad:else>Unlimited</ad:if>\r\n	<ad:else>\r\n		0\r\n	</ad:if>\r\n</ad:template>\r\n\r\n</div>\r\n</body>\r\n</html>" },
+                    { "HtmlBody", "AccountSummaryLetter", 1, "<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head>\r\n    <title>Account Summary Information</title>\r\n    <style type=\"text/css\">\r\n		.Summary { background-color: ##ffffff; padding: 5px; }\r\n		.Summary .Header { padding: 10px 0px 10px 10px; font-size: 16pt; background-color: ##E5F2FF; color: ##1F4978; border-bottom: solid 2px ##86B9F7; }\r\n        .Summary A { color: ##0153A4; }\r\n        .Summary { font-family: Tahoma; font-size: 9pt; }\r\n        .Summary H1 { font-size: 1.7em; color: ##1F4978; border-bottom: dotted 3px ##efefef; }\r\n        .Summary H2 { font-size: 1.3em; color: ##1F4978; }\r\n        .Summary TABLE { border: solid 1px ##e5e5e5; }\r\n        .Summary TH,\r\n        .Summary TD.Label { padding: 5px; font-size: 8pt; font-weight: bold; background-color: ##f5f5f5; }\r\n        .Summary TD { padding: 8px; font-size: 9pt; }\r\n        .Summary UL LI { font-size: 1.1em; font-weight: bold; }\r\n        .Summary UL UL LI { font-size: 0.9em; font-weight: normal; }\r\n    </style>\r\n</head>\r\n<body>\r\n<div class=\"Summary\">\r\n\r\n<a name=\"top\"></a>\r\n<div class=\"Header\">\r\n	Hosting Account Information\r\n</div>\r\n\r\n<ad:if test=\"#Signup#\">\r\n<p>\r\nHello #user.FirstName#,\r\n</p>\r\n\r\n<p>\r\nNew user account has been created and below you can find its summary information.\r\n</p>\r\n\r\n<h1>Control Panel URL</h1>\r\n<table>\r\n    <thead>\r\n        <tr>\r\n            <th>Control Panel URL</th>\r\n            <th>Username</th>\r\n            <th>Password</th>\r\n        </tr>\r\n    </thead>\r\n    <tbody>\r\n        <tr>\r\n            <td><a href=\"http://panel.HostingCompany.com\">http://panel.HostingCompany.com</a></td>\r\n            <td>#user.Username#</td>\r\n            <td>#user.Password#</td>\r\n        </tr>\r\n    </tbody>\r\n</table>\r\n</ad:if>\r\n\r\n<h1>Hosting Spaces</h1>\r\n<p>\r\n    The following hosting spaces have been created under your account:\r\n</p>\r\n<ad:foreach collection=\"#Spaces#\" var=\"Space\" index=\"i\">\r\n<h2>#Space.PackageName#</h2>\r\n<table>\r\n	<tbody>\r\n		<tr>\r\n			<td class=\"Label\">Hosting Plan:</td>\r\n			<td>\r\n				<ad:if test=\"#not(isnull(Plans[Space.PlanId]))#\">#Plans[Space.PlanId].PlanName#<ad:else>System</ad:if>\r\n			</td>\r\n		</tr>\r\n		<ad:if test=\"#not(isnull(Plans[Space.PlanId]))#\">\r\n		<tr>\r\n			<td class=\"Label\">Purchase Date:</td>\r\n			<td>\r\n# Space.PurchaseDate#\r\n			</td>\r\n		</tr>\r\n		<tr>\r\n			<td class=\"Label\">Disk Space, MB:</td>\r\n			<td><ad:NumericQuota space=\"#SpaceContexts[Space.PackageId]#\" quota=\"OS.Diskspace\" /></td>\r\n		</tr>\r\n		<tr>\r\n			<td class=\"Label\">Bandwidth, MB/Month:</td>\r\n			<td><ad:NumericQuota space=\"#SpaceContexts[Space.PackageId]#\" quota=\"OS.Bandwidth\" /></td>\r\n		</tr>\r\n		<tr>\r\n			<td class=\"Label\">Maximum Number of Domains:</td>\r\n			<td><ad:NumericQuota space=\"#SpaceContexts[Space.PackageId]#\" quota=\"OS.Domains\" /></td>\r\n		</tr>\r\n		<tr>\r\n			<td class=\"Label\">Maximum Number of Sub-Domains:</td>\r\n			<td><ad:NumericQuota space=\"#SpaceContexts[Space.PackageId]#\" quota=\"OS.SubDomains\" /></td>\r\n		</tr>\r\n		</ad:if>\r\n	</tbody>\r\n</table>\r\n</ad:foreach>\r\n\r\n<ad:if test=\"#Signup#\">\r\n<p>\r\nIf you have any questions regarding your hosting account, feel free to contact our support department at any time.\r\n</p>\r\n\r\n<p>\r\nBest regards,<br />\r\nSolidCP.<br />\r\nWeb Site: <a href=\"https://solidcp.com\">https://solidcp.com</a><br />\r\nE-Mail: <a href=\"mailto:support@solidcp.com\">support@solidcp.com</a>\r\n</p>\r\n</ad:if>\r\n\r\n<ad:template name=\"NumericQuota\">\r\n	<ad:if test=\"#space.Quotas.ContainsKey(quota)#\">\r\n		<ad:if test=\"#space.Quotas[quota].QuotaAllocatedValue isnot -1#\">#space.Quotas[quota].QuotaAllocatedValue#<ad:else>Unlimited</ad:if>\r\n	<ad:else>\r\n		0\r\n	</ad:if>\r\n</ad:template>\r\n\r\n</div>\r\n</body>\r\n</html>" },
                     { "Priority", "AccountSummaryLetter", 1, "Normal" },
                     { "Subject", "AccountSummaryLetter", 1, "<ad:if test=\"#Signup#\">SolidCP  account has been created for<ad:else>SolidCP  account summary for</ad:if> #user.FirstName# #user.LastName#" },
                     { "TextBody", "AccountSummaryLetter", 1, "=================================\r\n   Hosting Account Information\r\n=================================\r\n<ad:if test=\"#Signup#\">Hello #user.FirstName#,\r\n\r\nNew user account has been created and below you can find its summary information.\r\n\r\nControl Panel URL: https://panel.solidcp.com\r\nUsername: #user.Username#\r\nPassword: #user.Password#\r\n</ad:if>\r\n\r\nHosting Spaces\r\n==============\r\nThe following hosting spaces have been created under your account:\r\n\r\n<ad:foreach collection=\"#Spaces#\" var=\"Space\" index=\"i\">\r\n=== #Space.PackageName# ===\r\nHosting Plan: <ad:if test=\"#not(isnull(Plans[Space.PlanId]))#\">#Plans[Space.PlanId].PlanName#<ad:else>System</ad:if>\r\n<ad:if test=\"#not(isnull(Plans[Space.PlanId]))#\">Purchase Date: #Space.PurchaseDate#\r\nDisk Space, MB: <ad:NumericQuota space=\"#SpaceContexts[Space.PackageId]#\" quota=\"OS.Diskspace\" />\r\nBandwidth, MB/Month: <ad:NumericQuota space=\"#SpaceContexts[Space.PackageId]#\" quota=\"OS.Bandwidth\" />\r\nMaximum Number of Domains: <ad:NumericQuota space=\"#SpaceContexts[Space.PackageId]#\" quota=\"OS.Domains\" />\r\nMaximum Number of Sub-Domains: <ad:NumericQuota space=\"#SpaceContexts[Space.PackageId]#\" quota=\"OS.SubDomains\" />\r\n</ad:if>\r\n</ad:foreach>\r\n\r\n<ad:if test=\"#Signup#\">If you have any questions regarding your hosting account, feel free to contact our support department at any time.\r\n\r\nBest regards,\r\nSolidCP.\r\nWeb Site: https://solidcp.com\">\r\nE-Mail: support@solidcp.com\r\n</ad:if><ad:template name=\"NumericQuota\"><ad:if test=\"#space.Quotas.ContainsKey(quota)#\"><ad:if test=\"#space.Quotas[quota].QuotaAllocatedValue isnot -1#\">#space.Quotas[quota].QuotaAllocatedValue#<ad:else>Unlimited</ad:if><ad:else>0</ad:if></ad:template>" },
@@ -3333,7 +3483,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     { "NoChangesTextBody", "DomainLookupLetter", 1, "=================================\r\n   MX and NS Changes Information\r\n=================================\r\n<ad:if test=\"#user#\">\r\nHello #user.FirstName#,\r\n</ad:if>\r\n\r\nNo MX and NS changes have been founded.\r\n\r\nIf you have any questions regarding your hosting account, feel free to contact our support department at any time.\r\n\r\nBest regards\r\n" },
                     { "Priority", "DomainLookupLetter", 1, "Normal" },
                     { "Subject", "DomainLookupLetter", 1, "MX and NS changes notification" },
-                    { "TextBody", "DomainLookupLetter", 1, "=================================\r\n   MX and NS Changes Information\r\n=================================\r\n<ad:if test=\"#user#\">\r\nHello #user.FirstName#,\r\n</ad:if>\r\n\r\nPlease, find below details of MX and NS changes.\r\n\r\n\r\n<ad:foreach collection=\"#Domains#\" var=\"Domain\" index=\"i\">\r\n\r\n #Domain.DomainName# - #DomainUsers[Domain.PackageId].FirstName# #DomainUsers[Domain.PackageId].LastName#\r\n Registrar:      #iif(isnull(Domain.Registrar), \"\", Domain.Registrar)#\r\n ExpirationDate: #iif(isnull(Domain.ExpirationDate), \"\", Domain.ExpirationDate)#\r\n\r\n        <ad:foreach collection=\"#Domain.DnsChanges#\" var=\"DnsChange\" index=\"j\">\r\n            DNS:       #DnsChange.DnsServer#\r\n            Type:      #DnsChange.Type#\r\n	    Status:    #DnsChange.Status#\r\n            Old Value: #DnsChange.OldRecord.Value#\r\n            New Value: #DnsChange.NewRecord.Value#\r\n\r\n    	</ad:foreach>\r\n</ad:foreach>\r\n\r\n\r\n\r\nIf you have any questions regarding your hosting account, feel free to contact our support department at any time.\r\n\r\nBest regards\r\n" },
+                    { "TextBody", "DomainLookupLetter", 1, "=================================\r\n   MX and NS Changes Information\r\n=================================\r\n<ad:if test=\"#user#\">\r\nHello #user.FirstName#,\r\n</ad:if>\r\n\r\nPlease, find below details of MX and NS changes.\r\n\r\n\r\n<ad:foreach collection=\"#Domains#\" var=\"Domain\" index=\"i\">\r\n\r\n# Domain.DomainName# - #DomainUsers[Domain.PackageId].FirstName# #DomainUsers[Domain.PackageId].LastName#\r\n Registrar:      #iif(isnull(Domain.Registrar), \"\", Domain.Registrar)#\r\n ExpirationDate: #iif(isnull(Domain.ExpirationDate), \"\", Domain.ExpirationDate)#\r\n\r\n        <ad:foreach collection=\"#Domain.DnsChanges#\" var=\"DnsChange\" index=\"j\">\r\n            DNS:       #DnsChange.DnsServer#\r\n            Type:      #DnsChange.Type#\r\n	    Status:    #DnsChange.Status#\r\n            Old Value: #DnsChange.OldRecord.Value#\r\n            New Value: #DnsChange.NewRecord.Value#\r\n\r\n    	</ad:foreach>\r\n</ad:foreach>\r\n\r\n\r\n\r\nIf you have any questions regarding your hosting account, feel free to contact our support department at any time.\r\n\r\nBest regards\r\n" },
                     { "From", "ExchangeMailboxSetupLetter", 1, "support@HostingCompany.com" },
                     { "HtmlBody", "ExchangeMailboxSetupLetter", 1, "<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head>\r\n    <title>Account Summary Information</title>\r\n    <style type=\"text/css\">\r\n        body {font-family: 'Segoe UI Light','Open Sans',Arial!important;color:black;}\r\n        p {color:black;}\r\n		.Summary { background-color: ##ffffff; padding: 5px; }\r\n		.SummaryHeader { padding: 10px 0px 10px 10px; font-size: 16pt; background-color: ##E5F2FF; color: ##1F4978; border-bottom: solid 2px ##86B9F7; }\r\n        .Summary A { color: ##0153A4; }\r\n        .Summary { font-family: Tahoma; font-size: 9pt; }\r\n        .Summary H1 { font-size: 1.5em; color: ##1F4978; border-bottom: dotted 3px ##efefef; font-weight:normal; }\r\n        .Summary H2 { font-size: 1.2em; color: ##1F4978; } \r\n        .Summary TABLE { border: solid 1px ##e5e5e5; }\r\n        .Summary TH,\r\n        .Summary TD.Label { padding: 5px; font-size: 8pt; font-weight: bold; background-color: ##f5f5f5; }\r\n        .Summary TD { padding: 8px; font-size: 9pt; color:black;}\r\n        .Summary UL LI { font-size: 1.1em; font-weight: bold; }\r\n        .Summary UL UL LI { font-size: 0.9em; font-weight: normal; }\r\n        .Label { color:##1F4978; }\r\n        .menu-bar a {padding: 15px 0;display: inline-block;}\r\n    </style>\r\n</head>\r\n<body>\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\"><!-- was 800 -->\r\n<tbody>\r\n<tr>\r\n<td style=\"padding: 10px 20px 10px 20px; background-color: ##e1e1e1;\">\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">\r\n<tbody>\r\n<tr>\r\n<td style=\"text-align: left; padding: 0px 0px 2px 0px;\"><a href=\"\"><img src=\"\" border=\"0\" alt=\"\" /></a></td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">\r\n<tbody>\r\n<tr>\r\n<td style=\"padding-bottom: 10px;\">\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">\r\n<tbody>\r\n<tr>\r\n<td style=\"background-color: ##2e8bcc; padding: 3px;\">\r\n<table class=\"menu-bar\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">\r\n<tbody>\r\n<tr>\r\n<td style=\"text-align: center;\" width=\"20%\"><a style=\"color: ##ffffff; text-transform: uppercase; font-size: 9px; font-weight: bold; font-family: Arial, Helvetica, sans-serif; text-decoration: none;\" href=\"\"</a></td>\r\n<td style=\"text-align: center;\" width=\"20%\"><a style=\"color: ##ffffff; text-transform: uppercase; font-size: 9px; font-weight: bold; font-family: Arial, Helvetica, sans-serif; text-decoration: none;\" href=\"\"></a></td>\r\n<td style=\"text-align: center;\" width=\"20%\"><a style=\"color: ##ffffff; text-transform: uppercase; font-size: 9px; font-weight: bold; font-family: Arial, Helvetica, sans-serif; text-decoration: none;\" href=\"\"></a></td>\r\n<td style=\"text-align: center;\" width=\"20%\"><a style=\"color: ##ffffff; text-transform: uppercase; font-size: 9px; font-weight: bold; font-family: Arial, Helvetica, sans-serif; text-decoration: none;\" href=\"\"></a></td>\r\n<td style=\"text-align: center;\" width=\"20%\"><a style=\"color: ##ffffff; text-transform: uppercase; font-size: 9px; font-weight: bold; font-family: Arial, Helvetica, sans-serif; text-decoration: none;\" href=\"\"></a></td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">\r\n<tbody>\r\n<tr>\r\n<td style=\"background-color: ##ffffff;\">\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\"><!-- was 759 -->\r\n<tbody>\r\n<tr>\r\n<td style=\"vertical-align: top; padding: 10px 10px 0px 10px;\" width=\"100%\">\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">\r\n<tbody>\r\n<tr>\r\n<td style=\"font-family: 'Segoe UI Light','Open Sans',Arial; padding: 0px 10px 0px 0px;\">\r\n<!-- Begin Content -->\r\n<div class=\"Summary\">\r\n    <ad:if test=\"#Email#\">\r\n    <p>\r\n    Hello #Account.DisplayName#,\r\n    </p>\r\n    <p>\r\n    Thanks for choosing as your Exchange hosting provider.\r\n    </p>\r\n    </ad:if>\r\n    <ad:if test=\"#not(PMM)#\">\r\n    <h1>User Accounts</h1>\r\n    <p>\r\n    The following user accounts have been created for you.\r\n    </p>\r\n    <table>\r\n        <tr>\r\n            <td class=\"Label\">Username:</td>\r\n            <td>#Account.UserPrincipalName#</td>\r\n        </tr>\r\n        <tr>\r\n            <td class=\"Label\">E-mail:</td>\r\n            <td>#Account.PrimaryEmailAddress#</td>\r\n        </tr>\r\n		<ad:if test=\"#PswResetUrl#\">\r\n        <tr>\r\n            <td class=\"Label\">Password Reset Url:</td>\r\n            <td><a href=\"#PswResetUrl#\" target=\"_blank\">Click here</a></td>\r\n        </tr>\r\n		</ad:if>\r\n    </table>\r\n    </ad:if>\r\n    <h1>DNS</h1>\r\n    <p>\r\n    In order for us to accept mail for your domain, you will need to point your MX records to:\r\n    </p>\r\n    <table>\r\n        <ad:foreach collection=\"#SmtpServers#\" var=\"SmtpServer\" index=\"i\">\r\n            <tr>\r\n                <td class=\"Label\">#SmtpServer#</td>\r\n            </tr>\r\n        </ad:foreach>\r\n    </table>\r\n   <h1>\r\n    Webmail (OWA, Outlook Web Access)</h1>\r\n    <p>\r\n    <a href=\"\" target=\"_blank\"></a>\r\n    </p>\r\n    <h1>\r\n    Outlook (Windows Clients)</h1>\r\n    <p>\r\n    To configure MS Outlook to work with the servers, please reference:\r\n    </p>\r\n    <p>\r\n    <a href=\"\" target=\"_blank\"></a>\r\n    </p>\r\n    <p>\r\n    If you need to download and install the Outlook client:</p>\r\n        \r\n        <table>\r\n            <tr><td colspan=\"2\" class=\"Label\"><font size=\"3\">MS Outlook Client</font></td></tr>\r\n            <tr>\r\n                <td class=\"Label\">\r\n                    Download URL:</td>\r\n                <td><a href=\"\"></a></td>\r\n            </tr>\r\n<tr>\r\n                <td class=\"Label\"></td>\r\n                <td><a href=\"\"></a></td>\r\n            </tr>\r\n            <tr>\r\n                <td class=\"Label\">\r\n                    KEY:</td>\r\n                <td></td>\r\n            </tr>\r\n        </table>\r\n \r\n       <h1>\r\n    ActiveSync, iPhone, iPad</h1>\r\n    <table>\r\n        <tr>\r\n            <td class=\"Label\">Server:</td>\r\n            <td>#ActiveSyncServer#</td>\r\n        </tr>\r\n        <tr>\r\n            <td class=\"Label\">Domain:</td>\r\n            <td>#SamDomain#</td>\r\n        </tr>\r\n        <tr>\r\n            <td class=\"Label\">SSL:</td>\r\n            <td>must be checked</td>\r\n        </tr>\r\n        <tr>\r\n            <td class=\"Label\">Your username:</td>\r\n            <td>#SamUsername#</td>\r\n        </tr>\r\n    </table>\r\n \r\n    <h1>Password Changes</h1>\r\n    <p>\r\n    Passwords can be changed at any time using Webmail or the <a href=\"\" target=\"_blank\">Control Panel</a>.</p>\r\n    <h1>Control Panel</h1>\r\n    <p>\r\n    If you need to change the details of your account, you can easily do this using <a href=\"\" target=\"_blank\">Control Panel</a>.</p>\r\n    <h1>Support</h1>\r\n    <p>\r\n    You have 2 options, email <a href=\"mailto:\"></a> or use the web interface at <a href=\"\"></a></p>\r\n    \r\n</div>\r\n<!-- End Content -->\r\n<br></td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td style=\"background-color: ##ffffff; border-top: 1px solid ##999999;\">\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">\r\n<tbody>\r\n<tr>\r\n<td style=\"vertical-align: top; padding: 0px 20px 15px 20px;\">\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">\r\n<tbody>\r\n<tr>\r\n<td style=\"font-family: Arial, Helvetica, sans-serif; text-align: left; font-size: 9px; color: ##717073; padding: 20px 0px 0px 0px;\">\r\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">\r\n<tbody>\r\n<tr>\r\n<td style=\"font-family: Arial, Helvetica, sans-serif; font-size: 9px; text-align: left; color: ##1666af; vertical-align: top;\" width=\"33%\"><a style=\"font-weight: bold; text-transform: uppercase; text-decoration: underline; color: ##1666af;\" href=\"\"></a><br />Learn more about the services can provide to improve your business.</td>\r\n<td style=\"font-family: Arial, Helvetica, sans-serif; font-size: 9px; text-align: left; color: ##1666af; padding: 0px 10px 0px 10px; vertical-align: top;\" width=\"34%\"><a style=\"font-weight: bold; text-transform: uppercase; text-decoration: underline; color: ##1666af;\" href=\"\">Privacy Policy</a><br /> follows strict guidelines in protecting your privacy. Learn about our <a style=\"font-weight: bold; text-decoration: underline; color: ##1666af;\" href=\"\">Privacy Policy</a>.</td>\r\n<td style=\"font-family: Arial, Helvetica, sans-serif; font-size: 9px; text-align: left; color: ##1666af; vertical-align: top;\" width=\"33%\"><a style=\"font-weight: bold; text-transform: uppercase; text-decoration: underline; color: ##1666af;\" href=\"\">Contact Us</a><br />Questions? For more information, <a style=\"font-weight: bold; text-decoration: underline; color: ##1666af;\" href=\"\">contact us</a>.</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</body>\r\n</html>" },
                     { "Priority", "ExchangeMailboxSetupLetter", 1, "Normal" },
@@ -3358,9 +3508,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     { "HtmlBody", "OrganizationUserPasswordRequestLetter", 1, "<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head>\r\n    <title>Password request notification</title>\r\n    <style type=\"text/css\">\r\n		.Summary { background-color: ##ffffff; padding: 5px; }\r\n		.Summary .Header { padding: 10px 0px 10px 10px; font-size: 16pt; background-color: ##E5F2FF; color: ##1F4978; border-bottom: solid 2px ##86B9F7; }\r\n        .Summary A { color: ##0153A4; }\r\n        .Summary { font-family: Tahoma; font-size: 9pt; }\r\n        .Summary H1 { font-size: 1.7em; color: ##1F4978; border-bottom: dotted 3px ##efefef; }\r\n        .Summary H2 { font-size: 1.3em; color: ##1F4978; } \r\n        .Summary TABLE { border: solid 1px ##e5e5e5; }\r\n        .Summary TH,\r\n        .Summary TD.Label { padding: 5px; font-size: 8pt; font-weight: bold; background-color: ##f5f5f5; }\r\n        .Summary TD { padding: 8px; font-size: 9pt; }\r\n        .Summary UL LI { font-size: 1.1em; font-weight: bold; }\r\n        .Summary UL UL LI { font-size: 0.9em; font-weight: normal; }\r\n    </style>\r\n</head>\r\n<body>\r\n<div class=\"Summary\">\r\n<div class=\"Header\">\r\n<img src=\"#logoUrl#\">\r\n</div>\r\n<h1>Password request notification</h1>\r\n\r\n<ad:if test=\"#user#\">\r\n<p>\r\nHello #user.FirstName#,\r\n</p>\r\n</ad:if>\r\n\r\n<p>\r\nYour account have been created. In order to create a password for your account, please follow next link:\r\n</p>\r\n\r\n<a href=\"#passwordResetLink#\" target=\"_blank\">#passwordResetLink#</a>\r\n\r\n<p>\r\nIf you have any questions regarding your hosting account, feel free to contact our support department at any time.\r\n</p>\r\n\r\n<p>\r\nBest regards\r\n</p>\r\n</div>\r\n</body>" },
                     { "LogoUrl", "OrganizationUserPasswordRequestLetter", 1, "" },
                     { "Priority", "OrganizationUserPasswordRequestLetter", 1, "Normal" },
-                    { "SMSBody", "OrganizationUserPasswordRequestLetter", 1, "\r\nUser have been created. Password request url:\r\n#passwordResetLink#" },
+                    { "SMSBody", "OrganizationUserPasswordRequestLetter", 1, "\r\nUser have been created. Password request url:\r\n# passwordResetLink#" },
                     { "Subject", "OrganizationUserPasswordRequestLetter", 1, "Password request notification" },
-                    { "TextBody", "OrganizationUserPasswordRequestLetter", 1, "=========================================\r\n   Password request notification\r\n=========================================\r\n\r\n<ad:if test=\"#user#\">\r\nHello #user.FirstName#,\r\n</ad:if>\r\n\r\nYour account have been created. In order to create a password for your account, please follow next link:\r\n\r\n#passwordResetLink#\r\n\r\nIf you have any questions regarding your hosting account, feel free to contact our support department at any time.\r\n\r\nBest regards" },
+                    { "TextBody", "OrganizationUserPasswordRequestLetter", 1, "=========================================\r\n   Password request notification\r\n=========================================\r\n\r\n<ad:if test=\"#user#\">\r\nHello #user.FirstName#,\r\n</ad:if>\r\n\r\nYour account have been created. In order to create a password for your account, please follow next link:\r\n\r\n# passwordResetLink#\r\n\r\nIf you have any questions regarding your hosting account, feel free to contact our support department at any time.\r\n\r\nBest regards" },
                     { "DsnNamePolicy", "OsPolicy", 1, "True;-;2;40;;;" },
                     { "CC", "PackageSummaryLetter", 1, "support@HostingCompany.com" },
                     { "EnableLetter", "PackageSummaryLetter", 1, "True" },
@@ -3390,27 +3540,27 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     { "LogoUrl", "UserPasswordExpirationLetter", 1, "" },
                     { "Priority", "UserPasswordExpirationLetter", 1, "Normal" },
                     { "Subject", "UserPasswordExpirationLetter", 1, "Password expiration notification" },
-                    { "TextBody", "UserPasswordExpirationLetter", 1, "=========================================\r\n   Password expiration notification\r\n=========================================\r\n\r\n<ad:if test=\"#user#\">\r\nHello #user.FirstName#,\r\n</ad:if>\r\n\r\nYour password expiration date is #user.PasswordExpirationDateTime#. You can reset your own password by visiting the following page:\r\n\r\n#passwordResetLink#\r\n\r\nIf you have any questions regarding your hosting account, feel free to contact our support department at any time.\r\n\r\nBest regards" },
+                    { "TextBody", "UserPasswordExpirationLetter", 1, "=========================================\r\n   Password expiration notification\r\n=========================================\r\n\r\n<ad:if test=\"#user#\">\r\nHello #user.FirstName#,\r\n</ad:if>\r\n\r\nYour password expiration date is #user.PasswordExpirationDateTime#. You can reset your own password by visiting the following page:\r\n\r\n# passwordResetLink#\r\n\r\nIf you have any questions regarding your hosting account, feel free to contact our support department at any time.\r\n\r\nBest regards" },
                     { "From", "UserPasswordResetLetter", 1, "support@HostingCompany.com" },
                     { "HtmlBody", "UserPasswordResetLetter", 1, "<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head>\r\n    <title>Password reset notification</title>\r\n    <style type=\"text/css\">\r\n		.Summary { background-color: ##ffffff; padding: 5px; }\r\n		.Summary .Header { padding: 10px 0px 10px 10px; font-size: 16pt; background-color: ##E5F2FF; color: ##1F4978; border-bottom: solid 2px ##86B9F7; }\r\n        .Summary A { color: ##0153A4; }\r\n        .Summary { font-family: Tahoma; font-size: 9pt; }\r\n        .Summary H1 { font-size: 1.7em; color: ##1F4978; border-bottom: dotted 3px ##efefef; }\r\n        .Summary H2 { font-size: 1.3em; color: ##1F4978; } \r\n        .Summary TABLE { border: solid 1px ##e5e5e5; }\r\n        .Summary TH,\r\n        .Summary TD.Label { padding: 5px; font-size: 8pt; font-weight: bold; background-color: ##f5f5f5; }\r\n        .Summary TD { padding: 8px; font-size: 9pt; }\r\n        .Summary UL LI { font-size: 1.1em; font-weight: bold; }\r\n        .Summary UL UL LI { font-size: 0.9em; font-weight: normal; }\r\n    </style>\r\n</head>\r\n<body>\r\n<div class=\"Summary\">\r\n<div class=\"Header\">\r\n<img src=\"#logoUrl#\">\r\n</div>\r\n<h1>Password reset notification</h1>\r\n\r\n<ad:if test=\"#user#\">\r\n<p>\r\nHello #user.FirstName#,\r\n</p>\r\n</ad:if>\r\n\r\n<p>\r\nWe received a request to reset the password for your account. If you made this request, click the link below. If you did not make this request, you can ignore this email.\r\n</p>\r\n\r\n<a href=\"#passwordResetLink#\" target=\"_blank\">#passwordResetLink#</a>\r\n\r\n\r\n<p>\r\nIf you have any questions regarding your hosting account, feel free to contact our support department at any time.\r\n</p>\r\n\r\n<p>\r\nBest regards\r\n</p>\r\n</div>\r\n</body>" },
                     { "LogoUrl", "UserPasswordResetLetter", 1, "" },
-                    { "PasswordResetLinkSmsBody", "UserPasswordResetLetter", 1, "Password reset link:\r\n#passwordResetLink#\r\n" },
+                    { "PasswordResetLinkSmsBody", "UserPasswordResetLetter", 1, "Password reset link:\r\n# passwordResetLink#\r\n" },
                     { "Priority", "UserPasswordResetLetter", 1, "Normal" },
                     { "Subject", "UserPasswordResetLetter", 1, "Password reset notification" },
-                    { "TextBody", "UserPasswordResetLetter", 1, "=========================================\r\n   Password reset notification\r\n=========================================\r\n\r\n<ad:if test=\"#user#\">\r\nHello #user.FirstName#,\r\n</ad:if>\r\n\r\nWe received a request to reset the password for your account. If you made this request, click the link below. If you did not make this request, you can ignore this email.\r\n\r\n#passwordResetLink#\r\n\r\nIf you have any questions regarding your hosting account, feel free to contact our support department at any time.\r\n\r\nBest regards" },
+                    { "TextBody", "UserPasswordResetLetter", 1, "=========================================\r\n   Password reset notification\r\n=========================================\r\n\r\n<ad:if test=\"#user#\">\r\nHello #user.FirstName#,\r\n</ad:if>\r\n\r\nWe received a request to reset the password for your account. If you made this request, click the link below. If you did not make this request, you can ignore this email.\r\n\r\n# passwordResetLink#\r\n\r\nIf you have any questions regarding your hosting account, feel free to contact our support department at any time.\r\n\r\nBest regards" },
                     { "From", "UserPasswordResetPincodeLetter", 1, "support@HostingCompany.com" },
-                    { "HtmlBody", "UserPasswordResetPincodeLetter", 1, "<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head>\r\n    <title>Password reset notification</title>\r\n    <style type=\"text/css\">\r\n		.Summary { background-color: ##ffffff; padding: 5px; }\r\n		.Summary .Header { padding: 10px 0px 10px 10px; font-size: 16pt; background-color: ##E5F2FF; color: ##1F4978; border-bottom: solid 2px ##86B9F7; }\r\n        .Summary A { color: ##0153A4; }\r\n        .Summary { font-family: Tahoma; font-size: 9pt; }\r\n        .Summary H1 { font-size: 1.7em; color: ##1F4978; border-bottom: dotted 3px ##efefef; }\r\n        .Summary H2 { font-size: 1.3em; color: ##1F4978; } \r\n        .Summary TABLE { border: solid 1px ##e5e5e5; }\r\n        .Summary TH,\r\n        .Summary TD.Label { padding: 5px; font-size: 8pt; font-weight: bold; background-color: ##f5f5f5; }\r\n        .Summary TD { padding: 8px; font-size: 9pt; }\r\n        .Summary UL LI { font-size: 1.1em; font-weight: bold; }\r\n        .Summary UL UL LI { font-size: 0.9em; font-weight: normal; }\r\n    </style>\r\n</head>\r\n<body>\r\n<div class=\"Summary\">\r\n<div class=\"Header\">\r\n<img src=\"#logoUrl#\">\r\n</div>\r\n<h1>Password reset notification</h1>\r\n\r\n<ad:if test=\"#user#\">\r\n<p>\r\nHello #user.FirstName#,\r\n</p>\r\n</ad:if>\r\n\r\n<p>\r\nWe received a request to reset the password for your account. Your password reset pincode:\r\n</p>\r\n\r\n#passwordResetPincode#\r\n\r\n<p>\r\nIf you have any questions regarding your hosting account, feel free to contact our support department at any time.\r\n</p>\r\n\r\n<p>\r\nBest regards\r\n</p>\r\n</div>\r\n</body>" },
+                    { "HtmlBody", "UserPasswordResetPincodeLetter", 1, "<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head>\r\n    <title>Password reset notification</title>\r\n    <style type=\"text/css\">\r\n		.Summary { background-color: ##ffffff; padding: 5px; }\r\n		.Summary .Header { padding: 10px 0px 10px 10px; font-size: 16pt; background-color: ##E5F2FF; color: ##1F4978; border-bottom: solid 2px ##86B9F7; }\r\n        .Summary A { color: ##0153A4; }\r\n        .Summary { font-family: Tahoma; font-size: 9pt; }\r\n        .Summary H1 { font-size: 1.7em; color: ##1F4978; border-bottom: dotted 3px ##efefef; }\r\n        .Summary H2 { font-size: 1.3em; color: ##1F4978; } \r\n        .Summary TABLE { border: solid 1px ##e5e5e5; }\r\n        .Summary TH,\r\n        .Summary TD.Label { padding: 5px; font-size: 8pt; font-weight: bold; background-color: ##f5f5f5; }\r\n        .Summary TD { padding: 8px; font-size: 9pt; }\r\n        .Summary UL LI { font-size: 1.1em; font-weight: bold; }\r\n        .Summary UL UL LI { font-size: 0.9em; font-weight: normal; }\r\n    </style>\r\n</head>\r\n<body>\r\n<div class=\"Summary\">\r\n<div class=\"Header\">\r\n<img src=\"#logoUrl#\">\r\n</div>\r\n<h1>Password reset notification</h1>\r\n\r\n<ad:if test=\"#user#\">\r\n<p>\r\nHello #user.FirstName#,\r\n</p>\r\n</ad:if>\r\n\r\n<p>\r\nWe received a request to reset the password for your account. Your password reset pincode:\r\n</p>\r\n\r\n# passwordResetPincode#\r\n\r\n<p>\r\nIf you have any questions regarding your hosting account, feel free to contact our support department at any time.\r\n</p>\r\n\r\n<p>\r\nBest regards\r\n</p>\r\n</div>\r\n</body>" },
                     { "LogoUrl", "UserPasswordResetPincodeLetter", 1, "" },
-                    { "PasswordResetPincodeSmsBody", "UserPasswordResetPincodeLetter", 1, "\r\nYour password reset pincode:\r\n#passwordResetPincode#" },
+                    { "PasswordResetPincodeSmsBody", "UserPasswordResetPincodeLetter", 1, "\r\nYour password reset pincode:\r\n# passwordResetPincode#" },
                     { "Priority", "UserPasswordResetPincodeLetter", 1, "Normal" },
                     { "Subject", "UserPasswordResetPincodeLetter", 1, "Password reset notification" },
-                    { "TextBody", "UserPasswordResetPincodeLetter", 1, "=========================================\r\n   Password reset notification\r\n=========================================\r\n\r\n<ad:if test=\"#user#\">\r\nHello #user.FirstName#,\r\n</ad:if>\r\n\r\nWe received a request to reset the password for your account. Your password reset pincode:\r\n\r\n#passwordResetPincode#\r\n\r\nIf you have any questions regarding your hosting account, feel free to contact our support department at any time.\r\n\r\nBest regards" },
+                    { "TextBody", "UserPasswordResetPincodeLetter", 1, "=========================================\r\n   Password reset notification\r\n=========================================\r\n\r\n<ad:if test=\"#user#\">\r\nHello #user.FirstName#,\r\n</ad:if>\r\n\r\nWe received a request to reset the password for your account. Your password reset pincode:\r\n\r\n# passwordResetPincode#\r\n\r\nIf you have any questions regarding your hosting account, feel free to contact our support department at any time.\r\n\r\nBest regards" },
                     { "CC", "VerificationCodeLetter", 1, "support@HostingCompany.com" },
                     { "From", "VerificationCodeLetter", 1, "support@HostingCompany.com" },
                     { "HtmlBody", "VerificationCodeLetter", 1, "<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head>\r\n    <title>Verification code</title>\r\n    <style type=\"text/css\">\r\n		.Summary { background-color: ##ffffff; padding: 5px; }\r\n		.Summary .Header { padding: 10px 0px 10px 10px; font-size: 16pt; background-color: ##E5F2FF; color: ##1F4978; border-bottom: solid 2px ##86B9F7; }\r\n        .Summary A { color: ##0153A4; }\r\n        .Summary { font-family: Tahoma; font-size: 9pt; }\r\n        .Summary H1 { font-size: 1.7em; color: ##1F4978; border-bottom: dotted 3px ##efefef; }\r\n        .Summary H2 { font-size: 1.3em; color: ##1F4978; }\r\n        .Summary TABLE { border: solid 1px ##e5e5e5; }\r\n        .Summary TH,\r\n        .Summary TD.Label { padding: 5px; font-size: 8pt; font-weight: bold; background-color: ##f5f5f5; }\r\n        .Summary TD { padding: 8px; font-size: 9pt; }\r\n        .Summary UL LI { font-size: 1.1em; font-weight: bold; }\r\n        .Summary UL UL LI { font-size: 0.9em; font-weight: normal; }\r\n    </style>\r\n</head>\r\n<body>\r\n<div class=\"Summary\">\r\n\r\n<a name=\"top\"></a>\r\n<div class=\"Header\">\r\n	Verification code\r\n</div>\r\n\r\n<p>\r\nHello #user.FirstName#,\r\n</p>\r\n\r\n<p>\r\nto complete the sign in, enter the verification code on the device. \r\n</p>\r\n\r\n<table>\r\n    <thead>\r\n        <tr>\r\n            <th>Verification code</th>\r\n        </tr>\r\n    </thead>\r\n    <tbody>\r\n        <tr>\r\n            <td>#verificationCode#</td>\r\n        </tr>\r\n    </tbody>\r\n</table>\r\n\r\n<p>\r\nBest regards,<br />\r\n\r\n</p>\r\n\r\n</div>\r\n</body>\r\n</html>" },
                     { "Priority", "VerificationCodeLetter", 1, "Normal" },
                     { "Subject", "VerificationCodeLetter", 1, "Verification code" },
-                    { "TextBody", "VerificationCodeLetter", 1, "=================================\r\n   Verification code\r\n=================================\r\n<ad:if test=\"#user#\">\r\nHello #user.FirstName#,\r\n</ad:if>\r\n\r\nto complete the sign in, enter the verification code on the device.\r\n\r\nVerification code\r\n#verificationCode#\r\n\r\nBest regards,\r\n" },
+                    { "TextBody", "VerificationCodeLetter", 1, "=================================\r\n   Verification code\r\n=================================\r\n<ad:if test=\"#user#\">\r\nHello #user.FirstName#,\r\n</ad:if>\r\n\r\nto complete the sign in, enter the verification code on the device.\r\n\r\nVerification code\r\n# verificationCode#\r\n\r\nBest regards,\r\n" },
                     { "AddParkingPage", "WebPolicy", 1, "True" },
                     { "AddRandomDomainString", "WebPolicy", 1, "False" },
                     { "AnonymousAccountPolicy", "WebPolicy", 1, "True;;5;20;;_web;" },
@@ -3472,6 +3622,8 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     { 69, 11, null, 24, null, "Users", "MySQL5.Users", 2, 2, false },
                     { 110, 90, null, 75, null, "Databases", "MySQL8.Databases", 1, 2, false },
                     { 111, 90, null, 76, null, "Users", "MySQL8.Users", 2, 2, false },
+                    { 120, 91, null, 75, null, "Databases", "MySQL9.Databases", 1, 2, false },
+                    { 121, 91, null, 76, null, "Users", "MySQL9.Users", 2, 2, false },
                     { 200, 20, null, 200, 1, "SharePoint Site Collections", "HostedSharePoint.Sites", 1, 2, false },
                     { 205, 13, null, 29, null, "Organizations", "HostedSolution.Organizations", 1, 2, false },
                     { 206, 13, null, 30, 1, "Users", "HostedSolution.Users", 2, 2, false },
@@ -3488,8 +3640,8 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     { 573, 50, null, 202, null, "Databases", "MariaDB.Databases", 1, 2, false },
                     { 574, 50, null, 203, null, "Users", "MariaDB.Users", 2, 2, false },
                     { 673, 167, null, 41, null, "Number of VPS", "PROXMOX.ServersNumber", 1, 2, false },
-                    { 701, 71, null, 39, null, "Databases", "MsSQL2016.Databases", 1, 2, false },
-                    { 702, 71, null, 40, null, "Users", "MsSQL2016.Users", 2, 2, false },
+                    { 701, 71, null, 71, null, "Databases", "MsSQL2016.Databases", 1, 2, false },
+                    { 702, 71, null, 72, null, "Users", "MsSQL2016.Users", 2, 2, false },
                     { 711, 72, null, 73, null, "Databases", "MsSQL2017.Databases", 1, 2, false },
                     { 712, 72, null, 74, null, "Users", "MsSQL2017.Users", 2, 2, false },
                     { 721, 74, null, 77, null, "Databases", "MsSQL2019.Databases", 1, 2, false },
@@ -3814,17 +3966,35 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     { "RootPassword", 304, "" },
                     { "sslmode", 304, "True" },
                     { "ExternalAddress", 305, "localhost" },
-                    { "InstallFolder", 305, "%PROGRAMFILES%\\MySQL\\MySQL Server 8.0" },
+                    { "InstallFolder", 305, "%PROGRAMFILES%\\MySQL\\MySQL Server 8.1" },
                     { "InternalAddress", 305, "localhost,3306" },
                     { "RootLogin", 305, "root" },
                     { "RootPassword", 305, "" },
                     { "sslmode", 305, "True" },
                     { "ExternalAddress", 306, "localhost" },
-                    { "InstallFolder", 306, "%PROGRAMFILES%\\MySQL\\MySQL Server 8.0" },
+                    { "InstallFolder", 306, "%PROGRAMFILES%\\MySQL\\MySQL Server 8.2" },
                     { "InternalAddress", 306, "localhost,3306" },
                     { "RootLogin", 306, "root" },
                     { "RootPassword", 306, "" },
                     { "sslmode", 306, "True" },
+                    { "ExternalAddress", 307, "localhost" },
+                    { "InstallFolder", 307, "%PROGRAMFILES%\\MySQL\\MySQL Server 8.3" },
+                    { "InternalAddress", 307, "localhost,3306" },
+                    { "RootLogin", 307, "root" },
+                    { "RootPassword", 307, "" },
+                    { "sslmode", 307, "True" },
+                    { "ExternalAddress", 308, "localhost" },
+                    { "InstallFolder", 308, "%PROGRAMFILES%\\MySQL\\MySQL Server 8.4" },
+                    { "InternalAddress", 308, "localhost,3306" },
+                    { "RootLogin", 308, "root" },
+                    { "RootPassword", 308, "" },
+                    { "sslmode", 308, "True" },
+                    { "ExternalAddress", 320, "localhost" },
+                    { "InstallFolder", 320, "%PROGRAMFILES%\\MySQL\\MySQL Server 9.0" },
+                    { "InternalAddress", 320, "localhost,3306" },
+                    { "RootLogin", 320, "root" },
+                    { "RootPassword", 320, "" },
+                    { "sslmode", 320, "True" },
                     { "admode", 410, "False" },
                     { "expirelimit", 410, "1209600" },
                     { "minimumttl", 410, "86400" },
@@ -3833,7 +4003,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     { "responsibleperson", 410, "hostmaster.[DOMAIN_NAME]" },
                     { "retrydelay", 410, "600" },
                     { "LogDir", 500, "/var/log" },
-                    { "UsersHome", 500, "%HOME%" },
+                    { "UsersHome", 500, "/var/www/HostingSpaces" },
                     { "ExternalAddress", 1550, "localhost" },
                     { "InstallFolder", 1550, "%PROGRAMFILES%\\MariaDB 10.1" },
                     { "InternalAddress", 1550, "localhost" },
@@ -3855,10 +4025,75 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     { "RootLogin", 1572, "root" },
                     { "RootPassword", 1572, "" },
                     { "ExternalAddress", 1573, "localhost" },
-                    { "InstallFolder", 1573, "%PROGRAMFILES%\\MariaDB 10.5" },
+                    { "InstallFolder", 1573, "%PROGRAMFILES%\\MariaDB 10.6" },
                     { "InternalAddress", 1573, "localhost" },
                     { "RootLogin", 1573, "root" },
                     { "RootPassword", 1573, "" },
+                    { "ExternalAddress", 1574, "localhost" },
+                    { "InstallFolder", 1574, "%PROGRAMFILES%\\MariaDB 10.7" },
+                    { "InternalAddress", 1574, "localhost" },
+                    { "RootLogin", 1574, "root" },
+                    { "RootPassword", 1574, "" },
+                    { "ExternalAddress", 1575, "localhost" },
+                    { "InstallFolder", 1575, "%PROGRAMFILES%\\MariaDB 10.8" },
+                    { "InternalAddress", 1575, "localhost" },
+                    { "RootLogin", 1575, "root" },
+                    { "RootPassword", 1575, "" },
+                    { "ExternalAddress", 1576, "localhost" },
+                    { "InstallFolder", 1576, "%PROGRAMFILES%\\MariaDB 10.9" },
+                    { "InternalAddress", 1576, "localhost" },
+                    { "RootLogin", 1576, "root" },
+                    { "RootPassword", 1576, "" },
+                    { "ExternalAddress", 1577, "localhost" },
+                    { "InstallFolder", 1577, "%PROGRAMFILES%\\MariaDB 10.10" },
+                    { "InternalAddress", 1577, "localhost" },
+                    { "RootLogin", 1577, "root" },
+                    { "RootPassword", 1577, "" },
+                    { "ExternalAddress", 1578, "localhost" },
+                    { "InstallFolder", 1578, "%PROGRAMFILES%\\MariaDB 10.11" },
+                    { "InternalAddress", 1578, "localhost" },
+                    { "RootLogin", 1578, "root" },
+                    { "RootPassword", 1578, "" },
+                    { "ExternalAddress", 1579, "localhost" },
+                    { "InstallFolder", 1579, "%PROGRAMFILES%\\MariaDB 11.0" },
+                    { "InternalAddress", 1579, "localhost" },
+                    { "RootLogin", 1579, "root" },
+                    { "RootPassword", 1579, "" },
+                    { "ExternalAddress", 1580, "localhost" },
+                    { "InstallFolder", 1580, "%PROGRAMFILES%\\MariaDB 11.1" },
+                    { "InternalAddress", 1580, "localhost" },
+                    { "RootLogin", 1580, "root" },
+                    { "RootPassword", 1580, "" },
+                    { "ExternalAddress", 1581, "localhost" },
+                    { "InstallFolder", 1581, "%PROGRAMFILES%\\MariaDB 11.2" },
+                    { "InternalAddress", 1581, "localhost" },
+                    { "RootLogin", 1581, "root" },
+                    { "RootPassword", 1581, "" },
+                    { "ExternalAddress", 1582, "localhost" },
+                    { "InstallFolder", 1582, "%PROGRAMFILES%\\MariaDB 11.3" },
+                    { "InternalAddress", 1582, "localhost" },
+                    { "RootLogin", 1582, "root" },
+                    { "RootPassword", 1582, "" },
+                    { "ExternalAddress", 1583, "localhost" },
+                    { "InstallFolder", 1583, "%PROGRAMFILES%\\MariaDB 11.4" },
+                    { "InternalAddress", 1583, "localhost" },
+                    { "RootLogin", 1583, "root" },
+                    { "RootPassword", 1583, "" },
+                    { "ExternalAddress", 1584, "localhost" },
+                    { "InstallFolder", 1584, "%PROGRAMFILES%\\MariaDB 11.5" },
+                    { "InternalAddress", 1584, "localhost" },
+                    { "RootLogin", 1584, "root" },
+                    { "RootPassword", 1584, "" },
+                    { "ExternalAddress", 1585, "localhost" },
+                    { "InstallFolder", 1585, "%PROGRAMFILES%\\MariaDB 11.6" },
+                    { "InternalAddress", 1585, "localhost" },
+                    { "RootLogin", 1585, "root" },
+                    { "RootPassword", 1585, "" },
+                    { "ExternalAddress", 1586, "localhost" },
+                    { "InstallFolder", 1586, "%PROGRAMFILES%\\MariaDB 11.7" },
+                    { "InternalAddress", 1586, "localhost" },
+                    { "RootLogin", 1586, "root" },
+                    { "RootPassword", 1586, "" },
                     { "UsersHome", 1800, "%SYSTEMDRIVE%\\HostingSpaces" },
                     { "UsersHome", 1802, "%SYSTEMDRIVE%\\HostingSpaces" },
                     { "AdminLogin", 1901, "Admin" },
@@ -3925,6 +4160,11 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "CRMUsersIdx_AccountID",
                 table: "CRMUsers",
                 column: "AccountID");
+
+            migrationBuilder.CreateIndex(
+                name: "DmzIPAddressesIdx_ItemID",
+                table: "DmzIPAddresses",
+                column: "ItemID");
 
             migrationBuilder.CreateIndex(
                 name: "DomainDnsRecordsIdx_DomainId",
@@ -4013,8 +4253,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "IX_ExchangeOrganizationDomains_UniqueDomain",
                 table: "ExchangeOrganizationDomains",
                 column: "DomainID",
-                unique: true,
-                filter: "[DomainID] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_ExchangeOrganizations_UniqueOrg",
@@ -4179,12 +4418,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 column: "PackageID");
 
             migrationBuilder.CreateIndex(
-                name: "PackagesTreeCacheIndex",
-                table: "PackagesTreeCache",
-                columns: new[] { "ParentPackageID", "PackageID" })
-                .Annotation("SqlServer:Clustered", true);
-
-            migrationBuilder.CreateIndex(
                 name: "PackageVLANsIdx_PackageID",
                 table: "PackageVLANs",
                 column: "PackageID");
@@ -4335,11 +4568,15 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 columns: new[] { "Created", "Scope", "Level" });
 
             migrationBuilder.CreateIndex(
+                name: "ThemeSettingsIdx_ThemeID",
+                table: "ThemeSettings",
+                column: "ThemeID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_Username",
                 table: "Users",
                 column: "Username",
-                unique: true,
-                filter: "[Username] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "UsersIdx_OwnerID",
@@ -4375,173 +4612,11 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "WebDavPortalUsersSettingsIdx_AccountId",
                 table: "WebDavPortalUsersSettings",
                 column: "AccountId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_AccessTokens_UserId",
-                table: "AccessTokens",
-                column: "AccountID",
-                principalTable: "ExchangeAccounts",
-                principalColumn: "AccountID",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_BlackBerryUsers_ExchangeAccounts",
-                table: "BlackBerryUsers",
-                column: "AccountId",
-                principalTable: "ExchangeAccounts",
-                principalColumn: "AccountID");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_CRMUsers_ExchangeAccounts",
-                table: "CRMUsers",
-                column: "AccountID",
-                principalTable: "ExchangeAccounts",
-                principalColumn: "AccountID");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_DomainDnsRecords_DomainId",
-                table: "DomainDnsRecords",
-                column: "DomainId",
-                principalTable: "Domains",
-                principalColumn: "DomainID",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Domains_Packages",
-                table: "Domains",
-                column: "PackageID",
-                principalTable: "Packages",
-                principalColumn: "PackageID",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Domains_ServiceItems_MailDomain",
-                table: "Domains",
-                column: "MailDomainID",
-                principalTable: "ServiceItems",
-                principalColumn: "ItemID");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Domains_ServiceItems_WebSite",
-                table: "Domains",
-                column: "WebSiteID",
-                principalTable: "ServiceItems",
-                principalColumn: "ItemID");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Domains_ServiceItems_ZoneItem",
-                table: "Domains",
-                column: "ZoneItemID",
-                principalTable: "ServiceItems",
-                principalColumn: "ItemID");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_EnterpriseFoldersOwaPermissions_AccountId",
-                table: "EnterpriseFoldersOwaPermissions",
-                column: "AccountID",
-                principalTable: "ExchangeAccounts",
-                principalColumn: "AccountID",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_ExchangeAccountEmailAddresses_ExchangeAccounts",
-                table: "ExchangeAccountEmailAddresses",
-                column: "AccountID",
-                principalTable: "ExchangeAccounts",
-                principalColumn: "AccountID",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_ExchangeAccounts_ExchangeMailboxPlans",
-                table: "ExchangeAccounts",
-                column: "MailboxPlanId",
-                principalTable: "ExchangeMailboxPlans",
-                principalColumn: "MailboxPlanId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_ExchangeAccounts_ServiceItems",
-                table: "ExchangeAccounts",
-                column: "ItemID",
-                principalTable: "ServiceItems",
-                principalColumn: "ItemID",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_ExchangeMailboxPlans_ExchangeOrganizations",
-                table: "ExchangeMailboxPlans",
-                column: "ItemID",
-                principalTable: "ExchangeOrganizations",
-                principalColumn: "ItemID",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_ExchangeOrganizationDomains_ServiceItems",
-                table: "ExchangeOrganizationDomains",
-                column: "ItemID",
-                principalTable: "ServiceItems",
-                principalColumn: "ItemID",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_ExchangeOrganizations_ServiceItems",
-                table: "ExchangeOrganizations",
-                column: "ItemID",
-                principalTable: "ServiceItems",
-                principalColumn: "ItemID",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_GlobalDnsRecords_Packages",
-                table: "GlobalDnsRecords",
-                column: "PackageID",
-                principalTable: "Packages",
-                principalColumn: "PackageID",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_HostingPlanQuotas_HostingPlans",
-                table: "HostingPlanQuotas",
-                column: "PlanID",
-                principalTable: "HostingPlans",
-                principalColumn: "PlanID",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_HostingPlanResources_HostingPlans",
-                table: "HostingPlanResources",
-                column: "PlanID",
-                principalTable: "HostingPlans",
-                principalColumn: "PlanID",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_HostingPlans_Packages",
-                table: "HostingPlans",
-                column: "PackageID",
-                principalTable: "Packages",
-                principalColumn: "PackageID",
-                onDelete: ReferentialAction.Cascade);
-
-            StoredProceduresUp(migrationBuilder);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            StoredProceduresDown(migrationBuilder);
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_HostingPlans_Users",
-                table: "HostingPlans");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Packages_Users",
-                table: "Packages");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_HostingPlans_Packages",
-                table: "HostingPlans");
-
             migrationBuilder.DropTable(
                 name: "AccessTokens");
 
@@ -4574,6 +4649,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 
             migrationBuilder.DropTable(
                 name: "CRMUsers");
+
+            migrationBuilder.DropTable(
+                name: "DmzIPAddresses");
 
             migrationBuilder.DropTable(
                 name: "DomainDnsRecords");
@@ -4789,10 +4867,16 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "ServiceItems");
 
             migrationBuilder.DropTable(
+                name: "Packages");
+
+            migrationBuilder.DropTable(
                 name: "ServiceItemTypes");
 
             migrationBuilder.DropTable(
                 name: "Services");
+
+            migrationBuilder.DropTable(
+                name: "HostingPlans");
 
             migrationBuilder.DropTable(
                 name: "Clusters");
@@ -4801,16 +4885,10 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "Providers");
 
             migrationBuilder.DropTable(
-                name: "Users");
-
-            migrationBuilder.DropTable(
-                name: "Packages");
-
-            migrationBuilder.DropTable(
-                name: "HostingPlans");
-
-            migrationBuilder.DropTable(
                 name: "Servers");
+
+            migrationBuilder.DropTable(
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "ResourceGroups");

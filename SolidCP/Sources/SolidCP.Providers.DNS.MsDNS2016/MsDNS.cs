@@ -31,6 +31,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
+using SolidCP.Providers.OS;
 using SolidCP.Server.Utils;
 
 namespace SolidCP.Providers.DNS
@@ -159,5 +160,12 @@ namespace SolidCP.Providers.DNS
             }
         }
         #endregion
+
+        public override bool IsInstalled()
+        {
+            if (!OSInfo.IsWindows) return false;
+
+            return IsDNSInstalled() && WindowsVersion.WindowsServer2016 <= OSInfo.WindowsVersion;
+        }
     }
 }

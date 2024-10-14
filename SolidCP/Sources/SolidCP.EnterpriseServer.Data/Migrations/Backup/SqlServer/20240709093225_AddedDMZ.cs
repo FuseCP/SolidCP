@@ -287,7 +287,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 principalColumn: "PlanID",
                 onDelete: ReferentialAction.Cascade);
 
-			migrationBuilder.Sql(@"
+			migrationBuilder.SafeSql(@"
 -- DMZ Network
 CREATE PROCEDURE [dbo].[GetPackageDmzIPAddresses]
 	@PackageID int
@@ -1120,7 +1120,6 @@ AS
 		RETURN @Result
 	END
 GO
-
             ");
 
 		}
@@ -1381,7 +1380,7 @@ GO
                 principalTable: "HostingPlans",
                 principalColumn: "PlanID");
 
-			migrationBuilder.Sql(@"
+			migrationBuilder.SafeSql(@"
 DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzNetworkVLANs]
 GO
 DROP PROCEDURE IF EXISTS [dbo].[DeleteItemDmzIPAddresses]
@@ -1457,8 +1456,6 @@ BEGIN
     RETURN
 END
 GO
-
-
 
 IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetVirtualMachinesPaged2012')
 DROP PROCEDURE GetVirtualMachinesPaged2012

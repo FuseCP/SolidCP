@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Reflection;
 using System.Diagnostics;
 using SolidCP.EnterpriseServer.Code;
+using SolidCP.EnterpriseServer;
 using SolidCP.EnterpriseServer.Data;
 using System.Linq.Expressions;
 using System.Linq.Dynamic;
@@ -16,7 +17,8 @@ using System.Data.Entity;
 using Microsoft.EntityFrameworkCore;
 #endif
 
-namespace SolidCP.EnterpriseServer.Tests
+
+namespace SolidCP.Tests
 {
 	[TestClass]
 	public class DbContextTests
@@ -36,23 +38,14 @@ namespace SolidCP.EnterpriseServer.Tests
 				if (!Directory.Exists(dbPath)) Directory.CreateDirectory(dbPath);
 				if (File.Exists(dbFile)) File.Delete(dbFile);
 				File.WriteAllText(dbFile, "");
-				var assembly = Assembly.GetExecutingAssembly();
-				var resNames = assembly.GetManifestResourceNames();
-				using (var scriptResource = resNames
-					.Where(name => name.EndsWith("install.sqlite.sql"))
-					.Select(name => assembly.GetManifestResourceStream(name))
-					.FirstOrDefault())
-				using (var reader = new StreamReader(scriptResource))
-				{
-					DatabaseUtils.ExecuteSql(ConnectionString, reader.ReadToEnd());
-				}
+				DatabaseUtils.ExecuteSql(ConnectionString, DatabaseUtils.InstallScriptSqlite());
 			}
 		}
 
 		[TestMethod]
 		public void TestDbAccess()
 		{
-			using (var db = new Data.DbContext(ConnectionString))
+			using (var db = new EnterpriseServer.Data.DbContext(ConnectionString))
 			{
 				var providers = db.Providers.ToArray();
 				Assert.IsTrue(providers.Length > 0);
@@ -62,7 +55,7 @@ namespace SolidCP.EnterpriseServer.Tests
 		[TestMethod]
 		public void TestDynamicLike()
 		{
-			using (var db = new Data.DbContext(ConnectionString))
+			using (var db = new EnterpriseServer.Data.DbContext(ConnectionString))
 			{
 				var columnName = "ProviderName";
 				var columnValue = "%S";

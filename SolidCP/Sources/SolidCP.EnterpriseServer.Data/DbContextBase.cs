@@ -290,6 +290,7 @@ namespace SolidCP.EnterpriseServer.Context
 		{
 			configuration.DbType = DbType;
 			configuration.InitSeedData = InitSeedData;
+			configuration.ModelBuilder = model;
 #if NetFX
 			configuration.Configure();
 #endif

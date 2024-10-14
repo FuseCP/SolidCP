@@ -1152,13 +1152,13 @@ namespace SolidCP.Providers.DNS
 		/// Supports managed resources disposal
 		/// </summary>
 		/// <returns></returns>
-		protected bool IsDNSInstalled()
+		protected virtual bool IsDNSInstalled()
 		{
 			using (RegistryKey root = Registry.LocalMachine)
 			{
 				using (RegistryKey key = root.OpenSubKey("SYSTEM\\CurrentControlSet\\Services\\DNS"))
 				{
-					bool res = key != null;
+					bool res = key != null && OSInfo.WindowsVersion < WindowsVersion.WindowsServer2012;
 					if (key != null)
 						key.Close();
 

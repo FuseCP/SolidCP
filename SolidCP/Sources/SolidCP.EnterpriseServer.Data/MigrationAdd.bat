@@ -5,7 +5,7 @@ echo "Add migration for Sqlite"
 dotnet ef migrations add --framework net8.0 -o Migrations\Sqlite --context SqliteDbContext %migration% -- "DbType=Sqlite;Data Source=..\SolidCP.EnterpriseServer\App_Data\SolidCP.sqlite;"
 
 echo "Add migration for SQL Server"
-dotnet ef migrations add --framework net8.0 --no-build -o Migrations\SqlServer --context SqlServerDbContext %migration% -- "DbType=SqlServer;Server=(local);Database=SolidCP;Uid=sa;Pwd=Password12;"
+dotnet ef migrations add --framework net8.0 --no-build -o Migrations\SqlServer --context SqlServerDbContext %migration% -- "DbType=SqlServer;Server=(local);Database=SolidCP;Uid=sa;Pwd=Password12;TrustServerCertificate=true"
 
 echo "Add migration for MySQL and MariaDB"
 dotnet ef migrations add --framework net8.0 --no-build -o Migrations\MySql --context MySqlDbContext %migration% -- "DbType=MySql;Server=localhost;Database=SolidCP;Uid=root;Pwd=Password12;"
@@ -18,6 +18,7 @@ dotnet ef migrations script --framework net8.0 -o Migrations\Sqlite\install.sqli
 
 echo "Create install.sqlserver.sql for SQL Server"
 dotnet ef migrations script --framework net8.0 --no-build -o Migrations\SqlServer\install.sqlserver.sql --context SqlServerDbContext -i -- "DbType=SqlServer;Server=(local);Database=SolidCP;Uid=sa;Pwd=Password12;"
+REM dotnet ef migrations script --framework net8.0 --no-build -o Migrations\SqlServer\install.sqlserver.debug.sql --context SqlServerDbContext -- "DbType=SqlServer;Server=(local);Database=SolidCP;Uid=sa;Pwd=Password12;"
 
 echo "Create install.mysql.sql for MySQL and MariaDB"
 dotnet ef migrations script --framework net8.0 --no-build -o Migrations\MySql\install.mysql.sql --context MySqlDbContext -i -- "DbType=MySql;Server=localhost;Database=SolidCP;Uid=root;Pwd=Password12;"
@@ -36,3 +37,8 @@ REM dotnet ef migrations bundle --framework net8.0 --no-build -o Migrations\MySq
 
 echo "Create install.postgresql.bundle.exe bundle for PostgreSQL"
 REM dotnet ef migrations bundle --framework net8.0 --no-build -o Migrations\PostgreSql\install.postgresql.bundle.exe --context PostgreSqlDbContext -i -- "DbType=PostgreSql;Host=localhost;User ID=postgres;Password=Password12;Port=5433;Database=SolidCP;"
+
+copy /Y Migrations\Sqlite\install.sqlite.sql ..\..\Database
+copy /Y Migrations\SqlServer\install.sqlserver.sql ..\..\Database
+copy /Y Migrations\MySql\install.mysql.sql ..\..\Database
+copy /Y Migrations\PostgreSql\install.postgresql.sql ..\..\Database

@@ -13,7 +13,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 		{
 			StoredProceduresDown(migrationBuilder);
 
-			if (migrationBuilder.IsSqlServer()) migrationBuilder.Sql(@"
+			if (migrationBuilder.IsSqlServer()) migrationBuilder.SafeSql(@"
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -12200,7 +12200,7 @@ ORDER BY Q.QuotaOrder
 
 RETURN
 
-GOSSL
+GO
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER OFF
@@ -21783,7 +21783,7 @@ GO
 
 		partial void StoredProceduresDown(MigrationBuilder migrationBuilder)
 		{
-			if (migrationBuilder.IsSqlServer()) migrationBuilder.Sql(@"
+			if (migrationBuilder.IsSqlServer()) migrationBuilder.SafeSql(@"
 DROP PROCEDURE IF EXISTS [dbo].[UpdateWhoisDomainInfo]
 GO
 DROP PROCEDURE IF EXISTS [dbo].[UpdateWebDavPortalUsersSettings]
@@ -22785,8 +22785,7 @@ GO
 DROP FUNCTION IF EXISTS [dbo].[CalculatePackageDiskspace]
 GO
 DROP FUNCTION IF EXISTS [dbo].[CalculatePackageBandwidth]
-GO
-			");
+GO");
 		}
 	}
 }

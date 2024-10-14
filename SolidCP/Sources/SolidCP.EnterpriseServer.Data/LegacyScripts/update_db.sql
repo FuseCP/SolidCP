@@ -1,15 +1,15 @@
-USE [${install.database}]
-GO
+-- USE [${install.database}]
+-- GO
 -- update database version
-DECLARE @build_version nvarchar(10), @build_date datetime
-SET @build_version = N'${release.version}'
-SET @build_date = '${release.date}T00:00:00' -- ISO 8601 Format (YYYY-MM-DDTHH:MM:SS)
+-- DECLARE @build_version nvarchar(10), @build_date datetime
+-- SET @build_version = N'${release.version}'
+-- SET @build_date = '${release.date}T00:00:00' -- ISO 8601 Format (YYYY-MM-DDTHH:MM:SS)
 
-IF NOT EXISTS (SELECT * FROM [dbo].[Versions] WHERE [DatabaseVersion] = @build_version)
-BEGIN
-	INSERT [dbo].[Versions] ([DatabaseVersion], [BuildDate]) VALUES (@build_version, @build_date)
-END
-GO
+-- IF NOT EXISTS (SELECT * FROM [dbo].[Versions] WHERE [DatabaseVersion] = @build_version)
+-- BEGIN
+-- 	INSERT [dbo].[Versions] ([DatabaseVersion], [BuildDate]) VALUES (@build_version, @build_date)
+-- END
+-- GO
 
 -- Fix for Some problems with collate in GetDnsRecordsTotal
 IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetDnsRecordsTotal')
@@ -2564,7 +2564,7 @@ GO
 
 -- Lync Phone Numbers Quota
 
-IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaName] LIKE ('Lync.%'))
+IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaName] = 'Lync.PhoneNumbers')
 BEGIN
 	INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (381, 41, 12, N'Lync.PhoneNumbers', N'Phone Numbers', 2, 0, NULL, NULL)
 END
@@ -17816,7 +17816,7 @@ SELECT TOP 1
 	RS.RdsCollectionId,
 	RS.ConnectionEnabled,
 	SI.ItemName,
-	RC.Name AS "CollectionName"
+	RC.Name AS CollectionName
 	FROM RDSServers AS RS
 	LEFT OUTER JOIN  ServiceItems AS SI ON SI.ItemId = RS.ItemId
 	LEFT OUTER JOIN  RDSCollections AS RC ON RC.ID = RdsCollectionId
@@ -20129,7 +20129,7 @@ GO
 
 IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '500')
 BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (500, N'UsersHome', N'%HOME%')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (500, N'UsersHome', N'/var/www/HostingSpaces')
 INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (500, N'LogDir', N'/var/log')
 END
 GO
@@ -20660,7 +20660,7 @@ GO
 IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1573')
 BEGIN
 INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1573, N'ExternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1573, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 10.5')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1573, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 10.6')
 INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1573, N'InternalAddress', N'localhost')
 INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1573, N'RootLogin', N'root')
 INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1573, N'RootPassword', N'')
@@ -20908,67 +20908,6 @@ BEGIN
 END
 
 RETURN
-GO
-
--- Support for EntityFramework
-
-IF OBJECT_ID(N'[TempIds]') IS NULL
-BEGIN
-    CREATE TABLE [TempIds] (
-        [Key] int NOT NULL IDENTITY,
-        [Created] datetime2 NOT NULL,
-        [Scope] uniqueidentifier NOT NULL,
-        [Level] int NOT NULL,
-        [Id] int NOT NULL,
-        [Date] datetime2 NOT NULL,
-        CONSTRAINT [PK_TempIds] PRIMARY KEY ([Key])
-    );
-
-	CREATE INDEX [IX_TempIds_Created_Scope_Level] ON [TempIds] ([Created], [Scope], [Level]);
-END;
-GO
-
-IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
-BEGIN
-    CREATE TABLE [__EFMigrationsHistory] (
-        [MigrationId] nvarchar(150) NOT NULL,
-        [ProductVersion] nvarchar(32) NOT NULL,
-        CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
-    );
-END;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240627111421_InitialCreate'
-)
-BEGIN
-    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES
-		(N'20240627111421_InitialCreate', N'8.0.6');
-END;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240709093225_AddedDMZ'
-)
-BEGIN
-    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES
-		(N'20240709093225_AddedDMZ', N'8.0.6');
-END;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20241005210853_SQLite_NOCASE'
-)
-BEGIN
-    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES
-		(N'20241005210853_SQLite_NOCASE', N'8.0.6');
-END;
 GO
 
 -- DMZ Network
@@ -21375,131 +21314,99 @@ END
 GO
 
 
+
+-- Fix ordering of GetHostingPlanQuotas
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetHostingPlanQuotas')
+BEGIN
+DROP PROCEDURE GetHostingPlanQuotas
+END
+GO
+
+CREATE PROCEDURE [dbo].[GetHostingPlanQuotas]
+(
+	@ActorID int,
+	@PlanID int,
+	@PackageID int,
+	@ServerID int
+)
+AS
+
+-- check rights
+IF dbo.CheckActorParentPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+DECLARE @IsAddon bit
+
+IF @ServerID = 0
+SELECT @ServerID = ServerID FROM Packages
+WHERE PackageID = @PackageID
+
+-- get resource groups
+SELECT
+	RG.GroupID,
+	RG.GroupName,
+	CASE
+		WHEN HPR.CalculateDiskSpace IS NULL THEN CAST(0 as bit)
+		ELSE CAST(1 as bit)
+	END AS Enabled,
+	--dbo.GetPackageAllocatedResource(@PackageID, RG.GroupID, @ServerID) AS ParentEnabled,
+	CASE
+		WHEN RG.GroupName = 'Service Levels' THEN dbo.GetPackageServiceLevelResource(@PackageID, RG.GroupID, @ServerID)
+		ELSE dbo.GetPackageAllocatedResource(@PackageID, RG.GroupID, @ServerID)
+	END AS ParentEnabled,
+	ISNULL(HPR.CalculateDiskSpace, 1) AS CalculateDiskSpace,
+	ISNULL(HPR.CalculateBandwidth, 1) AS CalculateBandwidth
+FROM ResourceGroups AS RG 
+LEFT OUTER JOIN HostingPlanResources AS HPR ON RG.GroupID = HPR.GroupID AND HPR.PlanID = @PlanID
+WHERE (RG.ShowGroup = 1)
+ORDER BY RG.GroupOrder, RG.GroupName
+
+-- get quotas by groups
+SELECT
+	Q.QuotaID,
+	Q.GroupID,
+	Q.QuotaName,
+	Q.QuotaDescription,
+	Q.QuotaTypeID,
+	ISNULL(HPQ.QuotaValue, 0) AS QuotaValue,
+	dbo.GetPackageAllocatedQuota(@PackageID, Q.QuotaID) AS ParentQuotaValue
+FROM Quotas AS Q
+LEFT OUTER JOIN HostingPlanQuotas AS HPQ ON Q.QuotaID = HPQ.QuotaID AND HPQ.PlanID = @PlanID
+WHERE Q.HideQuota IS NULL OR Q.HideQuota = 0
+ORDER BY Q.QuotaOrder
+RETURN
+GO
+
+
+-- Support for EntityFramework
 -- Remaining Migrations MySql9AndMaraiDB11, AddMariaDB11, Bugfix_for_MySQL_8_x, BugfixMySQL8TruncateQuota,
 -- & FixUsersHomeForUnix
 
-BEGIN TRANSACTION;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20241006062940_MySql9AndMaraiDB11'
-)
+IF OBJECT_ID(N'[TempIds]') IS NULL
 BEGIN
-    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ProviderID', N'DisableAutoDiscovery', N'DisplayName', N'EditorControl', N'GroupID', N'ProviderName', N'ProviderType') AND [object_id] = OBJECT_ID(N'[Providers]'))
-        SET IDENTITY_INSERT [Providers] ON;
-    EXEC(N'INSERT INTO [Providers] ([ProviderID], [DisableAutoDiscovery], [DisplayName], [EditorControl], [GroupID], [ProviderName], [ProviderType])
-    VALUES (307, NULL, N''MySQL Server 8.3'', N''MySQL'', 90, N''MySQL'', N''SolidCP.Providers.Database.MySqlServer83, SolidCP.Providers.Database.MySQL''),
-    (308, NULL, N''MySQL Server 8.4'', N''MySQL'', 90, N''MySQL'', N''SolidCP.Providers.Database.MySqlServer84, SolidCP.Providers.Database.MySQL''),
-    (320, NULL, N''MySQL Server 9.0'', N''MySQL'', 90, N''MySQL'', N''SolidCP.Providers.Database.MySqlServer90, SolidCP.Providers.Database.MySQL'')');
-    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ProviderID', N'DisableAutoDiscovery', N'DisplayName', N'EditorControl', N'GroupID', N'ProviderName', N'ProviderType') AND [object_id] = OBJECT_ID(N'[Providers]'))
-        SET IDENTITY_INSERT [Providers] OFF;
+    CREATE TABLE [TempIds] (
+        [Key] int NOT NULL IDENTITY,
+        [Created] datetime2 NOT NULL,
+        [Scope] uniqueidentifier NOT NULL,
+        [Level] int NOT NULL,
+        [Id] int NOT NULL,
+        [Date] datetime2 NOT NULL,
+        CONSTRAINT [PK_TempIds] PRIMARY KEY ([Key])
+    );
+
+	CREATE INDEX [IX_TempIds_Created_Scope_Level] ON [TempIds] ([Created], [Scope], [Level]);
 END;
 GO
 
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20241006062940_MySql9AndMaraiDB11'
-)
+IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
 BEGIN
-    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'QuotaID', N'GroupID', N'HideQuota', N'ItemTypeID', N'PerOrganization', N'QuotaDescription', N'QuotaName', N'QuotaOrder', N'QuotaTypeID', N'ServiceQuota') AND [object_id] = OBJECT_ID(N'[Quotas]'))
-        SET IDENTITY_INSERT [Quotas] ON;
-    EXEC(N'INSERT INTO [Quotas] ([QuotaID], [GroupID], [HideQuota], [ItemTypeID], [PerOrganization], [QuotaDescription], [QuotaName], [QuotaOrder], [QuotaTypeID], [ServiceQuota])
-    VALUES (125, 90, NULL, NULL, NULL, N''Database Truncate'', N''MySQL9.Truncate'', 6, 1, CAST(0 AS bit))');
-    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'QuotaID', N'GroupID', N'HideQuota', N'ItemTypeID', N'PerOrganization', N'QuotaDescription', N'QuotaName', N'QuotaOrder', N'QuotaTypeID', N'ServiceQuota') AND [object_id] = OBJECT_ID(N'[Quotas]'))
-        SET IDENTITY_INSERT [Quotas] OFF;
+    CREATE TABLE [__EFMigrationsHistory] (
+        [MigrationId] nvarchar(150) NOT NULL,
+        [ProductVersion] nvarchar(32) NOT NULL,
+        CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+    );
 END;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20241006062940_MySql9AndMaraiDB11'
-)
-BEGIN
-    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'GroupID', N'GroupController', N'GroupName', N'GroupOrder', N'ShowGroup') AND [object_id] = OBJECT_ID(N'[ResourceGroups]'))
-        SET IDENTITY_INSERT [ResourceGroups] ON;
-    EXEC(N'INSERT INTO [ResourceGroups] ([GroupID], [GroupController], [GroupName], [GroupOrder], [ShowGroup])
-    VALUES (91, N''SolidCP.EnterpriseServer.DatabaseServerController'', N''MySQL9'', 12, CAST(1 AS bit))');
-    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'GroupID', N'GroupController', N'GroupName', N'GroupOrder', N'ShowGroup') AND [object_id] = OBJECT_ID(N'[ResourceGroups]'))
-        SET IDENTITY_INSERT [ResourceGroups] OFF;
-END;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20241006062940_MySql9AndMaraiDB11'
-)
-BEGIN
-    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'QuotaID', N'GroupID', N'HideQuota', N'ItemTypeID', N'PerOrganization', N'QuotaDescription', N'QuotaName', N'QuotaOrder', N'QuotaTypeID', N'ServiceQuota') AND [object_id] = OBJECT_ID(N'[Quotas]'))
-        SET IDENTITY_INSERT [Quotas] ON;
-    EXEC(N'INSERT INTO [Quotas] ([QuotaID], [GroupID], [HideQuota], [ItemTypeID], [PerOrganization], [QuotaDescription], [QuotaName], [QuotaOrder], [QuotaTypeID], [ServiceQuota])
-    VALUES (120, 91, NULL, 75, NULL, N''Databases'', N''MySQL9.Databases'', 1, 2, CAST(0 AS bit)),
-    (121, 91, NULL, 76, NULL, N''Users'', N''MySQL9.Users'', 2, 2, CAST(0 AS bit)),
-    (122, 91, NULL, NULL, NULL, N''Database Backups'', N''MySQL9.Backup'', 4, 1, CAST(0 AS bit)),
-    (123, 91, NULL, NULL, NULL, N''Max Database Size'', N''MySQL9.MaxDatabaseSize'', 3, 3, CAST(0 AS bit)),
-    (124, 91, NULL, NULL, NULL, N''Database Restores'', N''MySQL9.Restore'', 5, 1, CAST(0 AS bit))');
-    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'QuotaID', N'GroupID', N'HideQuota', N'ItemTypeID', N'PerOrganization', N'QuotaDescription', N'QuotaName', N'QuotaOrder', N'QuotaTypeID', N'ServiceQuota') AND [object_id] = OBJECT_ID(N'[Quotas]'))
-        SET IDENTITY_INSERT [Quotas] OFF;
-END;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20241006062940_MySql9AndMaraiDB11'
-)
-BEGIN
-    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'PropertyName', N'ProviderID', N'PropertyValue') AND [object_id] = OBJECT_ID(N'[ServiceDefaultProperties]'))
-        SET IDENTITY_INSERT [ServiceDefaultProperties] ON;
-    EXEC(N'INSERT INTO [ServiceDefaultProperties] ([PropertyName], [ProviderID], [PropertyValue])
-    VALUES (N''ExternalAddress'', 307, N''localhost''),
-    (N''InstallFolder'', 307, N''%PROGRAMFILES%\MySQL\MySQL Server 8.0''),
-    (N''InternalAddress'', 307, N''localhost,3306''),
-    (N''RootLogin'', 307, N''root''),
-    (N''RootPassword'', 307, N''''),
-    (N''sslmode'', 307, N''True''),
-    (N''ExternalAddress'', 308, N''localhost''),
-    (N''InstallFolder'', 308, N''%PROGRAMFILES%\MySQL\MySQL Server 8.0''),
-    (N''InternalAddress'', 308, N''localhost,3306''),
-    (N''RootLogin'', 308, N''root''),
-    (N''RootPassword'', 308, N''''),
-    (N''sslmode'', 308, N''True''),
-    (N''ExternalAddress'', 320, N''localhost''),
-    (N''InstallFolder'', 320, N''%PROGRAMFILES%\MySQL\MySQL Server 9.0''),
-    (N''InternalAddress'', 320, N''localhost,3306''),
-    (N''RootLogin'', 320, N''root''),
-    (N''RootPassword'', 320, N''''),
-    (N''sslmode'', 320, N''True'')');
-    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'PropertyName', N'ProviderID', N'PropertyValue') AND [object_id] = OBJECT_ID(N'[ServiceDefaultProperties]'))
-        SET IDENTITY_INSERT [ServiceDefaultProperties] OFF;
-END;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20241006062940_MySql9AndMaraiDB11'
-)
-BEGIN
-    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'Backupable', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Importable', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
-        SET IDENTITY_INSERT [ServiceItemTypes] ON;
-    EXEC(N'INSERT INTO [ServiceItemTypes] ([ItemTypeID], [Backupable], [CalculateBandwidth], [CalculateDiskspace], [DisplayName], [Disposable], [GroupID], [Importable], [Searchable], [Suspendable], [TypeName], [TypeOrder])
-    VALUES (90, CAST(1 AS bit), CAST(0 AS bit), CAST(1 AS bit), N''MySQL9Database'', CAST(1 AS bit), 91, CAST(1 AS bit), CAST(1 AS bit), CAST(0 AS bit), N''SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base'', 20),
-    (91, CAST(1 AS bit), CAST(0 AS bit), CAST(0 AS bit), N''MySQL9User'', CAST(1 AS bit), 91, CAST(1 AS bit), CAST(1 AS bit), CAST(0 AS bit), N''SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base'', 21)');
-    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'Backupable', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Importable', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
-        SET IDENTITY_INSERT [ServiceItemTypes] OFF;
-END;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20241006062940_MySql9AndMaraiDB11'
-)
-BEGIN
-    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20241006062940_MySql9AndMaraiDB11', N'8.0.8');
-END;
-GO
-
-COMMIT;
 GO
 
 BEGIN TRANSACTION;
@@ -21507,241 +21414,49 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20241006121728_AddMariaDB11'
+    WHERE [MigrationId] = N'20241012060936_InitialCreate'
 )
 BEGIN
-    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ProviderID', N'DisableAutoDiscovery', N'DisplayName', N'EditorControl', N'GroupID', N'ProviderName', N'ProviderType') AND [object_id] = OBJECT_ID(N'[Providers]'))
-        SET IDENTITY_INSERT [Providers] ON;
-    EXEC(N'INSERT INTO [Providers] ([ProviderID], [DisableAutoDiscovery], [DisplayName], [EditorControl], [GroupID], [ProviderName], [ProviderType])
-    VALUES (1574, NULL, N''MariaDB 10.7'', N''MariaDB'', 50, N''MariaDB'', N''SolidCP.Providers.Database.MariaDB107, SolidCP.Providers.Database.MariaDB''),
-    (1575, NULL, N''MariaDB 10.8'', N''MariaDB'', 50, N''MariaDB'', N''SolidCP.Providers.Database.MariaDB108, SolidCP.Providers.Database.MariaDB''),
-    (1576, NULL, N''MariaDB 10.9'', N''MariaDB'', 50, N''MariaDB'', N''SolidCP.Providers.Database.MariaDB109, SolidCP.Providers.Database.MariaDB''),
-    (1577, NULL, N''MariaDB 10.10'', N''MariaDB'', 50, N''MariaDB'', N''SolidCP.Providers.Database.MariaDB1010, SolidCP.Providers.Database.MariaDB''),
-    (1578, NULL, N''MariaDB 10.11'', N''MariaDB'', 50, N''MariaDB'', N''SolidCP.Providers.Database.MariaDB1011, SolidCP.Providers.Database.MariaDB''),
-    (1579, NULL, N''MariaDB 11.0'', N''MariaDB'', 50, N''MariaDB'', N''SolidCP.Providers.Database.MariaDB110, SolidCP.Providers.Database.MariaDB''),
-    (1580, NULL, N''MariaDB 11.1'', N''MariaDB'', 50, N''MariaDB'', N''SolidCP.Providers.Database.MariaDB111, SolidCP.Providers.Database.MariaDB''),
-    (1581, NULL, N''MariaDB 11.2'', N''MariaDB'', 50, N''MariaDB'', N''SolidCP.Providers.Database.MariaDB112, SolidCP.Providers.Database.MariaDB''),
-    (1582, NULL, N''MariaDB 11.3'', N''MariaDB'', 50, N''MariaDB'', N''SolidCP.Providers.Database.MariaDB113, SolidCP.Providers.Database.MariaDB''),
-    (1583, NULL, N''MariaDB 11.4'', N''MariaDB'', 50, N''MariaDB'', N''SolidCP.Providers.Database.MariaDB114, SolidCP.Providers.Database.MariaDB''),
-    (1584, NULL, N''MariaDB 11.5'', N''MariaDB'', 50, N''MariaDB'', N''SolidCP.Providers.Database.MariaDB115, SolidCP.Providers.Database.MariaDB''),
-    (1585, NULL, N''MariaDB 11.6'', N''MariaDB'', 50, N''MariaDB'', N''SolidCP.Providers.Database.MariaDB116, SolidCP.Providers.Database.MariaDB''),
-    (1586, NULL, N''MariaDB 11.7'', N''MariaDB'', 50, N''MariaDB'', N''SolidCP.Providers.Database.MariaDB117, SolidCP.Providers.Database.MariaDB'')');
-    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ProviderID', N'DisableAutoDiscovery', N'DisplayName', N'EditorControl', N'GroupID', N'ProviderName', N'ProviderType') AND [object_id] = OBJECT_ID(N'[Providers]'))
-        SET IDENTITY_INSERT [Providers] OFF;
+    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ThemeSettingID', N'PropertyName', N'PropertyValue', N'SettingsName', N'ThemeID') AND [object_id] = OBJECT_ID(N'[ThemeSettings]'))
+        SET IDENTITY_INSERT [ThemeSettings] ON;
+
+	DELETE FROM ThemeSettings;
+
+    EXEC(N'INSERT INTO [ThemeSettings] ([ThemeSettingID], [PropertyName], [PropertyValue], [SettingsName], [ThemeID])
+    VALUES (1, N''Light'', N''light-theme'', N''Style'', 1),
+    (2, N''Dark'', N''dark-theme'', N''Style'', 1),
+    (3, N''Semi Dark'', N''semi-dark'', N''Style'', 1),
+    (4, N''Minimal'', N''minimal-theme'', N''Style'', 1),
+    (5, N''#0727d7'', N''headercolor1'', N''color-header'', 1),
+    (6, N''#23282c'', N''headercolor2'', N''color-header'', 1),
+    (7, N''#e10a1f'', N''headercolor3'', N''color-header'', 1),
+    (8, N''#157d4c'', N''headercolor4'', N''color-header'', 1),
+    (9, N''#673ab7'', N''headercolor5'', N''color-header'', 1),
+    (10, N''#795548'', N''headercolor6'', N''color-header'', 1),
+    (11, N''#d3094e'', N''headercolor7'', N''color-header'', 1),
+    (12, N''#ff9800'', N''headercolor8'', N''color-header'', 1),
+    (13, N''#6c85ec'', N''sidebarcolor1'', N''color-Sidebar'', 1),
+    (14, N''#5b737f'', N''sidebarcolor2'', N''color-Sidebar'', 1),
+    (15, N''#408851'', N''sidebarcolor3'', N''color-Sidebar'', 1),
+    (16, N''#230924'', N''sidebarcolor4'', N''color-Sidebar'', 1),
+    (17, N''#903a85'', N''sidebarcolor5'', N''color-Sidebar'', 1),
+    (18, N''#a04846'', N''sidebarcolor6'', N''color-Sidebar'', 1),
+    (19, N''#a65314'', N''sidebarcolor7'', N''color-Sidebar'', 1),
+    (20, N''#1f0e3b'', N''sidebarcolor8'', N''color-Sidebar'', 1)');
+
+    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ThemeSettingID', N'PropertyName', N'PropertyValue', N'SettingsName', N'ThemeID') AND [object_id] = OBJECT_ID(N'[ThemeSettings]'))
+        SET IDENTITY_INSERT [ThemeSettings] OFF;
 END;
 GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20241006121728_AddMariaDB11'
-)
-BEGIN
-    EXEC(N'UPDATE [ServiceDefaultProperties] SET [PropertyValue] = N''%PROGRAMFILES%\MariaDB 10.6''
-    WHERE [PropertyName] = N''InstallFolder'' AND [ProviderID] = 1573;
-    SELECT @@ROWCOUNT');
-END;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20241006121728_AddMariaDB11'
-)
-BEGIN
-    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'PropertyName', N'ProviderID', N'PropertyValue') AND [object_id] = OBJECT_ID(N'[ServiceDefaultProperties]'))
-        SET IDENTITY_INSERT [ServiceDefaultProperties] ON;
-    EXEC(N'INSERT INTO [ServiceDefaultProperties] ([PropertyName], [ProviderID], [PropertyValue])
-    VALUES (N''ExternalAddress'', 1574, N''localhost''),
-    (N''InstallFolder'', 1574, N''%PROGRAMFILES%\MariaDB 10.7''),
-    (N''InternalAddress'', 1574, N''localhost''),
-    (N''RootLogin'', 1574, N''root''),
-    (N''RootPassword'', 1574, N''''),
-    (N''ExternalAddress'', 1575, N''localhost''),
-    (N''InstallFolder'', 1575, N''%PROGRAMFILES%\MariaDB 10.8''),
-    (N''InternalAddress'', 1575, N''localhost''),
-    (N''RootLogin'', 1575, N''root''),
-    (N''RootPassword'', 1575, N''''),
-    (N''ExternalAddress'', 1576, N''localhost''),
-    (N''InstallFolder'', 1576, N''%PROGRAMFILES%\MariaDB 10.9''),
-    (N''InternalAddress'', 1576, N''localhost''),
-    (N''RootLogin'', 1576, N''root''),
-    (N''RootPassword'', 1576, N''''),
-    (N''ExternalAddress'', 1577, N''localhost''),
-    (N''InstallFolder'', 1577, N''%PROGRAMFILES%\MariaDB 10.10''),
-    (N''InternalAddress'', 1577, N''localhost''),
-    (N''RootLogin'', 1577, N''root''),
-    (N''RootPassword'', 1577, N''''),
-    (N''ExternalAddress'', 1578, N''localhost''),
-    (N''InstallFolder'', 1578, N''%PROGRAMFILES%\MariaDB 10.11''),
-    (N''InternalAddress'', 1578, N''localhost''),
-    (N''RootLogin'', 1578, N''root''),
-    (N''RootPassword'', 1578, N''''),
-    (N''ExternalAddress'', 1579, N''localhost''),
-    (N''InstallFolder'', 1579, N''%PROGRAMFILES%\MariaDB 11.0''),
-    (N''InternalAddress'', 1579, N''localhost''),
-    (N''RootLogin'', 1579, N''root''),
-    (N''RootPassword'', 1579, N''''),
-    (N''ExternalAddress'', 1580, N''localhost''),
-    (N''InstallFolder'', 1580, N''%PROGRAMFILES%\MariaDB 11.1''),
-    (N''InternalAddress'', 1580, N''localhost''),
-    (N''RootLogin'', 1580, N''root''),
-    (N''RootPassword'', 1580, N''''),
-    (N''ExternalAddress'', 1581, N''localhost''),
-    (N''InstallFolder'', 1581, N''%PROGRAMFILES%\MariaDB 11.2''),
-    (N''InternalAddress'', 1581, N''localhost''),
-    (N''RootLogin'', 1581, N''root''),
-    (N''RootPassword'', 1581, N''''),
-    (N''ExternalAddress'', 1582, N''localhost''),
-    (N''InstallFolder'', 1582, N''%PROGRAMFILES%\MariaDB 11.3'');
-    INSERT INTO [ServiceDefaultProperties] ([PropertyName], [ProviderID], [PropertyValue])
-    VALUES (N''InternalAddress'', 1582, N''localhost''),
-    (N''RootLogin'', 1582, N''root''),
-    (N''RootPassword'', 1582, N''''),
-    (N''ExternalAddress'', 1583, N''localhost''),
-    (N''InstallFolder'', 1583, N''%PROGRAMFILES%\MariaDB 11.4''),
-    (N''InternalAddress'', 1583, N''localhost''),
-    (N''RootLogin'', 1583, N''root''),
-    (N''RootPassword'', 1583, N''''),
-    (N''ExternalAddress'', 1584, N''localhost''),
-    (N''InstallFolder'', 1584, N''%PROGRAMFILES%\MariaDB 11.5''),
-    (N''InternalAddress'', 1584, N''localhost''),
-    (N''RootLogin'', 1584, N''root''),
-    (N''RootPassword'', 1584, N''''),
-    (N''ExternalAddress'', 1585, N''localhost''),
-    (N''InstallFolder'', 1585, N''%PROGRAMFILES%\MariaDB 11.6''),
-    (N''InternalAddress'', 1585, N''localhost''),
-    (N''RootLogin'', 1585, N''root''),
-    (N''RootPassword'', 1585, N''''),
-    (N''ExternalAddress'', 1586, N''localhost''),
-    (N''InstallFolder'', 1586, N''%PROGRAMFILES%\MariaDB 11.7''),
-    (N''InternalAddress'', 1586, N''localhost''),
-    (N''RootLogin'', 1586, N''root''),
-    (N''RootPassword'', 1586, N'''')');
-    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'PropertyName', N'ProviderID', N'PropertyValue') AND [object_id] = OBJECT_ID(N'[ServiceDefaultProperties]'))
-        SET IDENTITY_INSERT [ServiceDefaultProperties] OFF;
-END;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20241006121728_AddMariaDB11'
+    WHERE [MigrationId] = N'20241012060936_InitialCreate'
 )
 BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20241006121728_AddMariaDB11', N'8.0.8');
-END;
-GO
-
-COMMIT;
-GO
-
-BEGIN TRANSACTION;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20241006212043_Bugfix_for_MySQL_8_x'
-)
-BEGIN
-    EXEC(N'UPDATE [ServiceDefaultProperties] SET [PropertyValue] = N''%PROGRAMFILES%\MySQL\MySQL Server 8.1''
-    WHERE [PropertyName] = N''InstallFolder'' AND [ProviderID] = 305;
-    SELECT @@ROWCOUNT');
-END;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20241006212043_Bugfix_for_MySQL_8_x'
-)
-BEGIN
-    EXEC(N'UPDATE [ServiceDefaultProperties] SET [PropertyValue] = N''%PROGRAMFILES%\MySQL\MySQL Server 8.2''
-    WHERE [PropertyName] = N''InstallFolder'' AND [ProviderID] = 306;
-    SELECT @@ROWCOUNT');
-END;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20241006212043_Bugfix_for_MySQL_8_x'
-)
-BEGIN
-    EXEC(N'UPDATE [ServiceDefaultProperties] SET [PropertyValue] = N''%PROGRAMFILES%\MySQL\MySQL Server 8.3''
-    WHERE [PropertyName] = N''InstallFolder'' AND [ProviderID] = 307;
-    SELECT @@ROWCOUNT');
-END;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20241006212043_Bugfix_for_MySQL_8_x'
-)
-BEGIN
-    EXEC(N'UPDATE [ServiceDefaultProperties] SET [PropertyValue] = N''%PROGRAMFILES%\MySQL\MySQL Server 8.4''
-    WHERE [PropertyName] = N''InstallFolder'' AND [ProviderID] = 308;
-    SELECT @@ROWCOUNT');
-END;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20241006212043_Bugfix_for_MySQL_8_x'
-)
-BEGIN
-    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20241006212043_Bugfix_for_MySQL_8_x', N'8.0.8');
-END;
-GO
-
-COMMIT;
-GO
-
-BEGIN TRANSACTION;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20241007112832_BugfixMySQL8TruncateQuota'
-)
-BEGIN
-    EXEC(N'UPDATE [Quotas] SET [GroupID] = 91
-    WHERE [QuotaID] = 125;
-    SELECT @@ROWCOUNT');
-END;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20241007112832_BugfixMySQL8TruncateQuota'
-)
-BEGIN
-    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20241007112832_BugfixMySQL8TruncateQuota', N'8.0.8');
-END;
-GO
-
-COMMIT;
-GO
-
-BEGIN TRANSACTION;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20241010081909_FixUsersHomeForUnix'
-)
-BEGIN
-    EXEC(N'UPDATE [ServiceDefaultProperties] SET [PropertyValue] = N''/var/www/HostingSpaces''
-    WHERE [PropertyName] = N''UsersHome'' AND [ProviderID] = 500;
-    SELECT @@ROWCOUNT');
-END;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20241010081909_FixUsersHomeForUnix'
-)
-BEGIN
-    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20241010081909_FixUsersHomeForUnix', N'8.0.8');
+    VALUES
+		(N'20241012060936_InitialCreate', N'8.0.10');
 END;
 GO
 

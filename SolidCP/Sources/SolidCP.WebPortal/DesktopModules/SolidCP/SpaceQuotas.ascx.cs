@@ -182,11 +182,14 @@ namespace SolidCP.Portal
 				// Find out a quota value info within the package context
 				QuotaValueInfo qvi = Array.Find<QuotaValueInfo>(
 						cntx.QuotasArray, x => x.QuotaName == quotaCtl.QuotaName);
-				
-				// Skip processing if quota not defined in the package context
-				if (qvi == null)
-					continue;
-				
+
+                // Skip processing if quota not defined in the package context
+                if (qvi == null)
+                {
+                    containerCtl.Visible = false;
+                    continue;
+                }
+
 				// Show or hide corresponding quotas' containers
 				switch (qvi.QuotaTypeId)
 				{

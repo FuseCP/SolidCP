@@ -300,6 +300,27 @@ namespace SolidCP.Portal
 			RedirectToBrowsePage();
 		}
 
+		protected void btnDiscoverServices_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				int result = ES.Services.Servers.DiscoverAndAddServices(PanelRequest.ServerId);
+				if (result < 0)
+				{
+					ShowResultMessage(result);
+					return;
+				} else
+				{
+					ServerServicesControl.BindServices();
+				}
+			}
+			catch (Exception ex)
+			{
+				ShowErrorMessage("SERVER_DISCOVER_SERVICES", ex);
+				return;
+			}
+		}
+
 		protected void btnChangeServerPassword_Click(object sender, EventArgs e)
 		{
 			try

@@ -33,6 +33,7 @@
 using System;
 using System.Data;
 using System.Collections;
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Xml;
 using System.Net.Mail;
@@ -71,6 +72,7 @@ namespace SolidCP.EnterpriseServer
 				}
 			});
 		}
+
 		public int AuthenticateUser(string username, string password, string ip)
 		{
 			// start task
@@ -132,6 +134,7 @@ namespace SolidCP.EnterpriseServer
 							OneTimePasswordHelper.FireSuccessAuth(user);
 							break;
 						case OneTimePasswordStates.Expired:
+							CachedUsers.Clear(username);
 							if (lockOut >= 0) Database.UpdateUserFailedLoginAttempt(user.UserId, lockOut, false);
 							TaskManager.WriteWarning("Expired one time password");
 							return BusinessErrorCodes.ERROR_USER_EXPIRED_ONETIMEPASSWORD;
@@ -139,6 +142,8 @@ namespace SolidCP.EnterpriseServer
 				}
 				else
 				{
+					CachedUsers.Clear(username);
+
 					if (lockOut >= 0)
 						Database.UpdateUserFailedLoginAttempt(user.UserId, lockOut, false);
 
@@ -151,12 +156,16 @@ namespace SolidCP.EnterpriseServer
 				// check status
 				if (user.Status == UserStatus.Cancelled)
 				{
+					CachedUsers.Clear(username);
+
 					TaskManager.WriteWarning("Account cancelled");
 					return BusinessErrorCodes.ERROR_USER_ACCOUNT_CANCELLED;
 				}
 
 				if (user.Status == UserStatus.Pending)
 				{
+					CachedUsers.Clear(username);
+
 					TaskManager.WriteWarning("Account pending");
 					return BusinessErrorCodes.ERROR_USER_ACCOUNT_PENDING;
 				}
@@ -277,6 +286,125 @@ namespace SolidCP.EnterpriseServer
 			return Database.CanUserChangeMfa(currentUserId, changeUserId, canPeerChangeMfa);
 		}
 
+		public class UserCacheInfo
+		{
+			public UserInfoInternal User;
+			public DateTime LastAccess;
+		}
+
+		public class UserCache : KeyedCollection<string, UserCacheInfo>
+		{
+			public const int MaxSize = 32;
+			public static readonly TimeSpan MaxAge = TimeSpan.FromMinutes(30);
+
+			protected override string GetKeyForItem(UserCacheInfo item) => item.User.Username;
+
+			public void Truncate()
+			{
+				var now = DateTime.Now;
+				int i = 0;
+				IEnumerable<UserCacheInfo> outdated;
+
+				outdated = Enumerate()
+					.OrderByDescending(user => user.LastAccess)
+					.TakeWhile(user => user.LastAccess < now - MaxAge || Count - i++ > MaxSize);
+
+				foreach (var item in outdated)
+				{
+					lock (this)
+					{
+						Remove(item);
+					}
+				}
+			}
+
+			protected override void InsertItem(int index, UserCacheInfo item)
+			{
+				item.LastAccess = DateTime.Now;
+				base.InsertItem(index, item);
+			}
+			protected override void SetItem(int index, UserCacheInfo item)
+			{
+				item.LastAccess = DateTime.Now;
+				base.SetItem(index, item);
+			}
+
+			public IEnumerable<UserCacheInfo> Enumerate()
+			{
+				int i = 0, count;
+				lock (this) count = Count;
+				while (i < count)
+				{
+					lock (this)
+					{
+						yield return base[i++];
+						count = Count;
+					}
+				}
+			}
+
+			public UserInfoInternal Get(int userId) => Enumerate().FirstOrDefault(u => u.User.UserId == userId)?.User;
+
+			public UserInfoInternal Get(string username)
+			{
+				UserCacheInfo info;
+				lock (this)
+				{
+
+#if NETFRAMEWORK
+					if (Contains(username))
+					{
+						info = base[username];
+						info.LastAccess = DateTime.Now;
+						return info.User;
+					}
+#else
+					if (TryGetValue(username, out info))
+					{
+						info.LastAccess = DateTime.Now;
+						return info.User;
+					}
+#endif
+				}
+				return null;
+			}
+			public void AddToCache(UserInfoInternal user)
+			{
+				lock (this)
+				{
+					if (Contains(user.Username))
+					{
+						var cache = base[user.Username];
+						cache.User = user;
+						cache.LastAccess = DateTime.Now;
+					}
+					else
+					{
+						var cache = new UserCacheInfo() { User = user, LastAccess = DateTime.Now };
+						Add(cache);
+					}
+				}
+				if (Count > 2 * MaxSize) Truncate();
+			}
+			public void Clear(string username)
+			{
+				lock (this)
+				{
+					if (Contains(username)) Remove(username);
+				}
+			}
+			public void Clear(int userId)
+			{
+				var user = Enumerate().FirstOrDefault(u => u.User.UserId == userId);
+				if (user != null)
+				{
+					lock (this) Remove(user);
+				}
+			}
+		}
+
+		static UserCache CachedUsers = new UserCache();
+
 		public UserInfo GetUserByUsernamePassword(string username, string password, string ip)
 		{
 			// place log record
@@ -289,7 +417,7 @@ namespace SolidCP.EnterpriseServer
 
 			try
 			{
-				// try to get user from database
+				// try to get user from cache or database
 				UserInfoInternal user = GetUserInternally(username);
 
 				// check if the user exists
@@ -303,10 +431,24 @@ namespace SolidCP.EnterpriseServer
 				// compare user passwords
 				if (CryptoUtils.SHAEquals(user.Password, password) || user.Password == password)
 				{
-					AuditLog.AddAuditLogInfoRecord("USER", "GET_BY_USERNAME_PASSWORD", username, new string[] { "IP: " + ip });
+					// Queue call to AuditLog for better speed in SOAP calls
+					/* ThreadPool.QueueUserWorkItem(state =>
+					{
+						using (var asyncController = AsAsync<UserController>())
+						{
+							asyncController.AuditLog.AddAuditLogInfoRecord("USER", "GET_BY_USERNAME_PASSWORD", username, new string[] { "IP: " + ip });
+						}
+					}); */
+
+					CachedUsers.AddToCache(user);
+
 					return new UserInfo(user);
 				}
-
+				// Don't cache when password is empty (Password could be set manually in the DB later on)
+				else if (!string.IsNullOrEmpty(user.Password))
+				{
+					CachedUsers.AddToCache(user);
+				}
 
 				return null;
 			}
@@ -341,6 +483,9 @@ namespace SolidCP.EnterpriseServer
 					TaskManager.WriteWarning("Account not found");
 					return BusinessErrorCodes.ERROR_USER_NOT_FOUND;
 				}
+
+				// Clear cached user
+				CachedUsers.Clear(username);
 
 				// change password
 				Database.ChangeUserPassword(-1, user.UserId,
@@ -485,12 +630,12 @@ namespace SolidCP.EnterpriseServer
 
 		internal UserInfoInternal GetUserInternally(int userId)
 		{
-			return GetUser(Database.GetUserByIdInternally(userId));
+			return CachedUsers.Get(userId) ?? GetUser(Database.GetUserByIdInternally(userId));
 		}
 
 		internal UserInfoInternal GetUserInternally(string username)
 		{
-			return GetUser(Database.GetUserByUsernameInternally(username));
+			return CachedUsers.Get(username) ?? GetUser(Database.GetUserByUsernameInternally(username));
 		}
 
 		public UserInfoInternal GetUser(int userId)
@@ -738,6 +883,8 @@ namespace SolidCP.EnterpriseServer
 
 		public int UpdateUserAsync(string taskId, UserInfo user)
 		{
+			CachedUsers.Clear(user.Username);
+
 			UserAsyncWorker usersWorker = new UserAsyncWorker();
 			usersWorker.ThreadUserId = SecurityContext.User.UserId;
 			usersWorker.TaskId = taskId;
@@ -748,6 +895,8 @@ namespace SolidCP.EnterpriseServer
 
 		public int UpdateUser(string taskId, UserInfo user)
 		{
+			CachedUsers.Clear(user.Username);
+
 			try
 			{
 				// start task
@@ -842,6 +991,8 @@ namespace SolidCP.EnterpriseServer
 
 		public int DeleteUser(string taskId, int userId)
 		{
+			CachedUsers.Clear(userId);
+
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
 			if (accountCheck < 0) return accountCheck;
@@ -861,6 +1012,8 @@ namespace SolidCP.EnterpriseServer
 
 		public int ChangeUserPassword(int userId, string password)
 		{
+			CachedUsers.Clear(userId);
+
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
 			if (accountCheck < 0) return accountCheck;
@@ -896,6 +1049,8 @@ namespace SolidCP.EnterpriseServer
 
 		public int ChangeUserStatus(string taskId, int userId, UserStatus status)
 		{
+			CachedUsers.Clear(userId);
+
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
 			if (accountCheck < 0) return accountCheck;

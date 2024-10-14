@@ -196,8 +196,16 @@
                 <asp:Panel ID="ServicesPanel" runat="server" Height="0" Style="overflow: hidden;">
                     <table width="100%">
                         <tr>
+                            <td class="Normal">
+                                <div>
+                                    <asp:Button ID="btnDiscoverServices" meta:resourcekey="btnDiscoverServices" runat="server" CssClass="btn btn-primary" CausesValidation="false" OnClick="btnDiscoverServices_Click"  OnClientClick="ShowProgressDialog('Search installed software...');" Text = "'Search installed software" />
+                                </div>      
+                                <div>&nbsp;</div>
+                            </td>
+                        </tr>
+                        <tr>
                             <td>
-                                <uc4:ServerServicesControl ID="ServerServicesControl1" runat="server"></uc4:ServerServicesControl>
+                                <uc4:ServerServicesControl ID="ServerServicesControl" runat="server"></uc4:ServerServicesControl>
                             </td>
                         </tr>
                     </table>

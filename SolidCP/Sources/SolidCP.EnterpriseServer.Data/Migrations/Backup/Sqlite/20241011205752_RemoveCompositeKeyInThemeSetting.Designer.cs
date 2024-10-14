@@ -11,14 +11,14 @@ using SolidCP.EnterpriseServer.Data;
 namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 {
     [DbContext(typeof(SqliteDbContext))]
-    [Migration("20240630180133_InitalCreate")]
-    partial class InitalCreate
+    [Migration("20241011205752_RemoveCompositeKeyInThemeSetting")]
+    partial class RemoveCompositeKeyInThemeSetting
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.6");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.10");
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.AccessToken", b =>
                 {
@@ -49,7 +49,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id")
-                        .HasName("PK__AccessTo__3214EC27A32557FE");
+                        .HasName("PK__AccessTo__3214EC27DEAEF66E");
 
                     b.HasIndex(new[] { "AccountId" }, "AccessTokensIdx_AccountID");
 
@@ -65,14 +65,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("GroupName")
                         .HasMaxLength(255)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<int>("UserId")
                         .HasColumnType("INTEGER")
                         .HasColumnName("UserID");
 
                     b.HasKey("Id")
-                        .HasName("PK__Addition__3214EC272F1861EB");
+                        .HasName("PK__Addition__3214EC27E665DDE2");
 
                     b.ToTable("AdditionalGroups");
                 });
@@ -82,7 +82,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     b.Property<string>("RecordId")
                         .HasMaxLength(32)
                         .IsUnicode(false)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnName("RecordID");
 
                     b.Property<string>("ExecutionLog")
@@ -2230,7 +2230,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnName("UserID");
 
                     b.HasKey("Id")
-                        .HasName("PK__Backgrou__3214EC271AFAB817");
+                        .HasName("PK__Backgrou__3214EC273A1145AC");
 
                     b.ToTable("BackgroundTasks");
                 });
@@ -2268,7 +2268,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("TEXT");
 
                     b.HasKey("LogId")
-                        .HasName("PK__Backgrou__5E5499A830A1D5BF");
+                        .HasName("PK__Backgrou__5E5499A86067A6E5");
 
                     b.HasIndex(new[] { "TaskId" }, "BackgroundTaskLogsIdx_TaskID");
 
@@ -2284,7 +2284,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("Name")
                         .HasMaxLength(255)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<string>("SerializerValue")
                         .HasColumnType("TEXT");
@@ -2298,7 +2298,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("TEXT");
 
                     b.HasKey("ParameterId")
-                        .HasName("PK__Backgrou__F80C6297E2E5AF88");
+                        .HasName("PK__Backgrou__F80C629777BF580B");
 
                     b.HasIndex(new[] { "TaskId" }, "BackgroundTaskParametersIdx_TaskID");
 
@@ -2317,7 +2317,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnName("TaskID");
 
                     b.HasKey("TaskStackId")
-                        .HasName("PK__Backgrou__5E44466F62E48BE6");
+                        .HasName("PK__Backgrou__5E44466FB8A5F217");
 
                     b.HasIndex(new[] { "TaskId" }, "BackgroundTaskStackIdx_TaskID");
 
@@ -2385,7 +2385,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .IsRequired()
                         .HasMaxLength(50)
                         .IsUnicode(false)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnName("ItemTypeID");
 
                     b.Property<int?>("SeverityId")
@@ -2439,6 +2439,34 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     b.ToTable("CRMUsers");
                 });
 
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.DmzIpAddress", b =>
+                {
+                    b.Property<int>("DmzAddressId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("DmzAddressID");
+
+                    b.Property<string>("IpAddress")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .IsUnicode(false)
+                        .HasColumnType("TEXT COLLATE NOCASE")
+                        .HasColumnName("IPAddress");
+
+                    b.Property<bool>("IsPrimary")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("ItemID");
+
+                    b.HasKey("DmzAddressId");
+
+                    b.HasIndex(new[] { "ItemId" }, "DmzIPAddressesIdx_ItemID");
+
+                    b.ToTable("DmzIPAddresses");
+                });
+
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Domain", b =>
                 {
                     b.Property<int>("DomainId")
@@ -2455,7 +2483,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     b.Property<string>("DomainName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<DateTime?>("ExpirationDate")
                         .HasColumnType("TEXT");
@@ -2532,7 +2560,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id")
-                        .HasName("PK__DomainDn__3214EC2758B0A6F1");
+                        .HasName("PK__DomainDn__3214EC27A6FC0498");
 
                     b.HasIndex(new[] { "DomainId" }, "DomainDnsRecordsIdx_DomainId");
 
@@ -2548,7 +2576,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("Domain")
                         .HasMaxLength(255)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<string>("FolderName")
                         .IsRequired()
@@ -2763,7 +2791,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     b.Property<string>("DisclaimerName")
                         .IsRequired()
                         .HasMaxLength(300)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<string>("DisclaimerText")
                         .HasColumnType("TEXT");
@@ -2854,7 +2882,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     b.Property<string>("MailboxPlan")
                         .IsRequired()
                         .HasMaxLength(300)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<int?>("MailboxPlanType")
                         .HasColumnType("INTEGER");
@@ -2933,7 +2961,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     b.Property<string>("OrganizationId")
                         .IsRequired()
                         .HasMaxLength(128)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnName("OrganizationID");
 
                     b.Property<int?>("SfBuserPlanId")
@@ -2990,7 +3018,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("SettingsName")
                         .HasMaxLength(100)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnOrder(2);
 
                     b.Property<string>("Xml")
@@ -3020,7 +3048,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .IsRequired()
                         .HasMaxLength(100)
                         .IsUnicode(false)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.HasKey("Id")
                         .HasName("PK__Exchange__3214EC072DDBA072");
@@ -3051,7 +3079,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("TagName")
                         .HasMaxLength(255)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<int>("TagType")
                         .HasColumnType("INTEGER");
@@ -3095,7 +3123,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .IsRequired()
                         .HasMaxLength(10)
                         .IsUnicode(false)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<int?>("ServerId")
                         .HasColumnType("INTEGER")
@@ -3150,7 +3178,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     b.Property<string>("PlanName")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<int?>("RecurrenceLength")
                         .HasColumnType("INTEGER");
@@ -3244,19 +3272,19 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     b.Property<string>("DefaultGateway")
                         .HasMaxLength(15)
                         .IsUnicode(false)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<string>("ExternalIp")
                         .IsRequired()
                         .HasMaxLength(24)
                         .IsUnicode(false)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnName("ExternalIP");
 
                     b.Property<string>("InternalIp")
                         .HasMaxLength(24)
                         .IsUnicode(false)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnName("InternalIP");
 
                     b.Property<int?>("PoolId")
@@ -3270,7 +3298,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     b.Property<string>("SubnetMask")
                         .HasMaxLength(15)
                         .IsUnicode(false)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<int?>("Vlan")
                         .HasColumnType("INTEGER")
@@ -3306,7 +3334,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("SipAddress")
                         .HasMaxLength(300)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.HasKey("LyncUserId");
 
@@ -3326,7 +3354,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("ArchivePolicy")
                         .HasMaxLength(300)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<bool>("Conferencing")
                         .HasColumnType("INTEGER");
@@ -3351,7 +3379,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     b.Property<string>("LyncUserPlanName")
                         .IsRequired()
                         .HasMaxLength(300)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<int?>("LyncUserPlanType")
                         .HasColumnType("INTEGER");
@@ -3379,14 +3407,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("TelephonyDialPlanPolicy")
                         .HasMaxLength(300)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<string>("TelephonyVoicePolicy")
                         .HasMaxLength(300)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<int>("VoicePolicy")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.HasKey("LyncUserPlanId");
 
@@ -3415,7 +3443,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     b.Property<string>("InstanceId")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnName("InstanceID");
 
                     b.Property<DateTime>("ModifiedDate")
@@ -3652,12 +3680,12 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("SettingsName")
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnOrder(2);
 
                     b.Property<string>("PropertyName")
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnOrder(3);
 
                     b.Property<string>("PropertyValue")
@@ -3674,6 +3702,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
                         .HasColumnName("PackageVlanID");
+
+                    b.Property<bool>("IsDmz")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("PackageId")
                         .HasColumnType("INTEGER")
@@ -3784,7 +3815,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .IsRequired()
                         .HasMaxLength(15)
                         .IsUnicode(false)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnName("IPAddress");
 
                     b.Property<bool>("IsPrimary")
@@ -4542,6 +4573,33 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         },
                         new
                         {
+                            ProviderId = 307,
+                            DisplayName = "MySQL Server 8.3",
+                            EditorControl = "MySQL",
+                            GroupId = 90,
+                            ProviderName = "MySQL",
+                            ProviderType = "SolidCP.Providers.Database.MySqlServer83, SolidCP.Providers.Database.MySQL"
+                        },
+                        new
+                        {
+                            ProviderId = 308,
+                            DisplayName = "MySQL Server 8.4",
+                            EditorControl = "MySQL",
+                            GroupId = 90,
+                            ProviderName = "MySQL",
+                            ProviderType = "SolidCP.Providers.Database.MySqlServer84, SolidCP.Providers.Database.MySQL"
+                        },
+                        new
+                        {
+                            ProviderId = 320,
+                            DisplayName = "MySQL Server 9.0",
+                            EditorControl = "MySQL",
+                            GroupId = 90,
+                            ProviderName = "MySQL",
+                            ProviderType = "SolidCP.Providers.Database.MySqlServer90, SolidCP.Providers.Database.MySQL"
+                        },
+                        new
+                        {
                             ProviderId = 350,
                             DisableAutoDiscovery = true,
                             DisplayName = "Microsoft Hyper-V 2012 R2",
@@ -4834,6 +4892,123 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         },
                         new
                         {
+                            ProviderId = 1574,
+                            DisplayName = "MariaDB 10.7",
+                            EditorControl = "MariaDB",
+                            GroupId = 50,
+                            ProviderName = "MariaDB",
+                            ProviderType = "SolidCP.Providers.Database.MariaDB107, SolidCP.Providers.Database.MariaDB"
+                        },
+                        new
+                        {
+                            ProviderId = 1575,
+                            DisplayName = "MariaDB 10.8",
+                            EditorControl = "MariaDB",
+                            GroupId = 50,
+                            ProviderName = "MariaDB",
+                            ProviderType = "SolidCP.Providers.Database.MariaDB108, SolidCP.Providers.Database.MariaDB"
+                        },
+                        new
+                        {
+                            ProviderId = 1576,
+                            DisplayName = "MariaDB 10.9",
+                            EditorControl = "MariaDB",
+                            GroupId = 50,
+                            ProviderName = "MariaDB",
+                            ProviderType = "SolidCP.Providers.Database.MariaDB109, SolidCP.Providers.Database.MariaDB"
+                        },
+                        new
+                        {
+                            ProviderId = 1577,
+                            DisplayName = "MariaDB 10.10",
+                            EditorControl = "MariaDB",
+                            GroupId = 50,
+                            ProviderName = "MariaDB",
+                            ProviderType = "SolidCP.Providers.Database.MariaDB1010, SolidCP.Providers.Database.MariaDB"
+                        },
+                        new
+                        {
+                            ProviderId = 1578,
+                            DisplayName = "MariaDB 10.11",
+                            EditorControl = "MariaDB",
+                            GroupId = 50,
+                            ProviderName = "MariaDB",
+                            ProviderType = "SolidCP.Providers.Database.MariaDB1011, SolidCP.Providers.Database.MariaDB"
+                        },
+                        new
+                        {
+                            ProviderId = 1579,
+                            DisplayName = "MariaDB 11.0",
+                            EditorControl = "MariaDB",
+                            GroupId = 50,
+                            ProviderName = "MariaDB",
+                            ProviderType = "SolidCP.Providers.Database.MariaDB110, SolidCP.Providers.Database.MariaDB"
+                        },
+                        new
+                        {
+                            ProviderId = 1580,
+                            DisplayName = "MariaDB 11.1",
+                            EditorControl = "MariaDB",
+                            GroupId = 50,
+                            ProviderName = "MariaDB",
+                            ProviderType = "SolidCP.Providers.Database.MariaDB111, SolidCP.Providers.Database.MariaDB"
+                        },
+                        new
+                        {
+                            ProviderId = 1581,
+                            DisplayName = "MariaDB 11.2",
+                            EditorControl = "MariaDB",
+                            GroupId = 50,
+                            ProviderName = "MariaDB",
+                            ProviderType = "SolidCP.Providers.Database.MariaDB112, SolidCP.Providers.Database.MariaDB"
+                        },
+                        new
+                        {
+                            ProviderId = 1582,
+                            DisplayName = "MariaDB 11.3",
+                            EditorControl = "MariaDB",
+                            GroupId = 50,
+                            ProviderName = "MariaDB",
+                            ProviderType = "SolidCP.Providers.Database.MariaDB113, SolidCP.Providers.Database.MariaDB"
+                        },
+                        new
+                        {
+                            ProviderId = 1583,
+                            DisplayName = "MariaDB 11.4",
+                            EditorControl = "MariaDB",
+                            GroupId = 50,
+                            ProviderName = "MariaDB",
+                            ProviderType = "SolidCP.Providers.Database.MariaDB114, SolidCP.Providers.Database.MariaDB"
+                        },
+                        new
+                        {
+                            ProviderId = 1584,
+                            DisplayName = "MariaDB 11.5",
+                            EditorControl = "MariaDB",
+                            GroupId = 50,
+                            ProviderName = "MariaDB",
+                            ProviderType = "SolidCP.Providers.Database.MariaDB115, SolidCP.Providers.Database.MariaDB"
+                        },
+                        new
+                        {
+                            ProviderId = 1585,
+                            DisplayName = "MariaDB 11.6",
+                            EditorControl = "MariaDB",
+                            GroupId = 50,
+                            ProviderName = "MariaDB",
+                            ProviderType = "SolidCP.Providers.Database.MariaDB116, SolidCP.Providers.Database.MariaDB"
+                        },
+                        new
+                        {
+                            ProviderId = 1586,
+                            DisplayName = "MariaDB 11.7",
+                            EditorControl = "MariaDB",
+                            GroupId = 50,
+                            ProviderName = "MariaDB",
+                            ProviderType = "SolidCP.Providers.Database.MariaDB117, SolidCP.Providers.Database.MariaDB"
+                        },
+                        new
+                        {
                             ProviderId = 1601,
                             DisableAutoDiscovery = true,
                             DisplayName = "Mail Cleaner",
@@ -5029,7 +5204,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     b.Property<string>("QuotaName")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<int>("QuotaOrder")
                         .ValueGeneratedOnAdd()
@@ -5966,6 +6141,68 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                             GroupId = 90,
                             QuotaDescription = "Database Truncate",
                             QuotaName = "MySQL8.Truncate",
+                            QuotaOrder = 6,
+                            QuotaTypeId = 1,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 120,
+                            GroupId = 91,
+                            ItemTypeId = 75,
+                            QuotaDescription = "Databases",
+                            QuotaName = "MySQL9.Databases",
+                            QuotaOrder = 1,
+                            QuotaTypeId = 2,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 121,
+                            GroupId = 91,
+                            ItemTypeId = 76,
+                            QuotaDescription = "Users",
+                            QuotaName = "MySQL9.Users",
+                            QuotaOrder = 2,
+                            QuotaTypeId = 2,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 122,
+                            GroupId = 91,
+                            QuotaDescription = "Database Backups",
+                            QuotaName = "MySQL9.Backup",
+                            QuotaOrder = 4,
+                            QuotaTypeId = 1,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 123,
+                            GroupId = 91,
+                            QuotaDescription = "Max Database Size",
+                            QuotaName = "MySQL9.MaxDatabaseSize",
+                            QuotaOrder = 3,
+                            QuotaTypeId = 3,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 124,
+                            GroupId = 91,
+                            QuotaDescription = "Database Restores",
+                            QuotaName = "MySQL9.Restore",
+                            QuotaOrder = 5,
+                            QuotaTypeId = 1,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 125,
+                            GroupId = 91,
+                            QuotaDescription = "Database Truncate",
+                            QuotaName = "MySQL9.Truncate",
                             QuotaOrder = 6,
                             QuotaTypeId = 1,
                             ServiceQuota = false
@@ -7996,7 +8233,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         {
                             QuotaId = 701,
                             GroupId = 71,
-                            ItemTypeId = 39,
+                            ItemTypeId = 71,
                             QuotaDescription = "Databases",
                             QuotaName = "MsSQL2016.Databases",
                             QuotaOrder = 1,
@@ -8007,7 +8244,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         {
                             QuotaId = 702,
                             GroupId = 71,
-                            ItemTypeId = 40,
+                            ItemTypeId = 72,
                             QuotaDescription = "Users",
                             QuotaName = "MsSQL2016.Users",
                             QuotaOrder = 2,
@@ -8320,6 +8557,36 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                             QuotaOrder = 4,
                             QuotaTypeId = 3,
                             ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 750,
+                            GroupId = 33,
+                            QuotaDescription = "DMZ Network",
+                            QuotaName = "VPS2012.DMZNetworkEnabled",
+                            QuotaOrder = 22,
+                            QuotaTypeId = 1,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 751,
+                            GroupId = 33,
+                            QuotaDescription = "Number of DMZ IP addresses per VPS",
+                            QuotaName = "VPS2012.DMZIPAddressesNumber",
+                            QuotaOrder = 23,
+                            QuotaTypeId = 3,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 752,
+                            GroupId = 33,
+                            QuotaDescription = "Number of DMZ Network VLANs",
+                            QuotaName = "VPS2012.DMZVLANsNumber",
+                            QuotaOrder = 24,
+                            QuotaTypeId = 2,
+                            ServiceQuota = false
                         });
                 });
 
@@ -8379,7 +8646,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("Name")
                         .HasMaxLength(255)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.HasKey("Id")
                         .HasName("PK__RDSColle__3214EC27346D361D");
@@ -8562,12 +8829,12 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("SettingsName")
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnOrder(2);
 
                     b.Property<string>("PropertyName")
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnOrder(3);
 
                     b.Property<bool>("ApplyAdministrators")
@@ -8597,7 +8864,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     b.Property<string>("GroupName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<int>("GroupOrder")
                         .ValueGeneratedOnAdd()
@@ -8904,6 +9171,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         },
                         new
                         {
+                            GroupId = 91,
+                            GroupController = "SolidCP.EnterpriseServer.DatabaseServerController",
+                            GroupName = "MySQL9",
+                            GroupOrder = 12,
+                            ShowGroup = true
+                        },
+                        new
+                        {
                             GroupId = 167,
                             GroupName = "Proxmox",
                             GroupOrder = 20,
@@ -8945,7 +9220,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .IsRequired()
                         .HasMaxLength(50)
                         .IsUnicode(false)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.HasKey("RecordId");
 
@@ -9159,7 +9434,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("ScheduleTypeId")
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnName("ScheduleTypeID");
 
                     b.Property<DateTime?>("StartTime")
@@ -9233,7 +9508,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("ParameterId")
                         .HasMaxLength(100)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnName("ParameterID")
                         .HasColumnOrder(2);
 
@@ -9431,7 +9706,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("ParameterId")
                         .HasMaxLength(100)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnName("ParameterID")
                         .HasColumnOrder(2);
 
@@ -10142,7 +10417,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                 {
                     b.Property<string>("ConfigurationId")
                         .HasMaxLength(100)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnName("ConfigurationID")
                         .HasColumnOrder(2);
 
@@ -10335,7 +10610,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     b.Property<string>("ADAuthenticationType")
                         .HasMaxLength(50)
                         .IsUnicode(false)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnName("ADAuthenticationType");
 
                     b.Property<bool?>("ADEnabled")
@@ -10464,7 +10739,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("PropertyName")
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnOrder(2);
 
                     b.Property<string>("PropertyValue")
@@ -12293,7 +12568,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         {
                             ProviderId = 305,
                             PropertyName = "InstallFolder",
-                            PropertyValue = "%PROGRAMFILES%\\MySQL\\MySQL Server 8.0"
+                            PropertyValue = "%PROGRAMFILES%\\MySQL\\MySQL Server 8.1"
                         },
                         new
                         {
@@ -12329,7 +12604,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         {
                             ProviderId = 306,
                             PropertyName = "InstallFolder",
-                            PropertyValue = "%PROGRAMFILES%\\MySQL\\MySQL Server 8.0"
+                            PropertyValue = "%PROGRAMFILES%\\MySQL\\MySQL Server 8.2"
                         },
                         new
                         {
@@ -12352,6 +12627,114 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         new
                         {
                             ProviderId = 306,
+                            PropertyName = "sslmode",
+                            PropertyValue = "True"
+                        },
+                        new
+                        {
+                            ProviderId = 307,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 307,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MySQL\\MySQL Server 8.3"
+                        },
+                        new
+                        {
+                            ProviderId = 307,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost,3306"
+                        },
+                        new
+                        {
+                            ProviderId = 307,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 307,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 307,
+                            PropertyName = "sslmode",
+                            PropertyValue = "True"
+                        },
+                        new
+                        {
+                            ProviderId = 308,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 308,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MySQL\\MySQL Server 8.4"
+                        },
+                        new
+                        {
+                            ProviderId = 308,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost,3306"
+                        },
+                        new
+                        {
+                            ProviderId = 308,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 308,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 308,
+                            PropertyName = "sslmode",
+                            PropertyValue = "True"
+                        },
+                        new
+                        {
+                            ProviderId = 320,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 320,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MySQL\\MySQL Server 9.0"
+                        },
+                        new
+                        {
+                            ProviderId = 320,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost,3306"
+                        },
+                        new
+                        {
+                            ProviderId = 320,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 320,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 320,
                             PropertyName = "sslmode",
                             PropertyValue = "True"
                         },
@@ -12407,7 +12790,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         {
                             ProviderId = 500,
                             PropertyName = "UsersHome",
-                            PropertyValue = "%HOME%"
+                            PropertyValue = "/var/www/HostingSpaces"
                         },
                         new
                         {
@@ -12539,7 +12922,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         {
                             ProviderId = 1573,
                             PropertyName = "InstallFolder",
-                            PropertyValue = "%PROGRAMFILES%\\MariaDB 10.5"
+                            PropertyValue = "%PROGRAMFILES%\\MariaDB 10.6"
                         },
                         new
                         {
@@ -12556,6 +12939,396 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         new
                         {
                             ProviderId = 1573,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 1574,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1574,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MariaDB 10.7"
+                        },
+                        new
+                        {
+                            ProviderId = 1574,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1574,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 1574,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 1575,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1575,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MariaDB 10.8"
+                        },
+                        new
+                        {
+                            ProviderId = 1575,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1575,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 1575,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 1576,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1576,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MariaDB 10.9"
+                        },
+                        new
+                        {
+                            ProviderId = 1576,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1576,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 1576,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 1577,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1577,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MariaDB 10.10"
+                        },
+                        new
+                        {
+                            ProviderId = 1577,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1577,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 1577,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 1578,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1578,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MariaDB 10.11"
+                        },
+                        new
+                        {
+                            ProviderId = 1578,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1578,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 1578,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 1579,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1579,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MariaDB 11.0"
+                        },
+                        new
+                        {
+                            ProviderId = 1579,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1579,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 1579,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 1580,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1580,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MariaDB 11.1"
+                        },
+                        new
+                        {
+                            ProviderId = 1580,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1580,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 1580,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 1581,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1581,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MariaDB 11.2"
+                        },
+                        new
+                        {
+                            ProviderId = 1581,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1581,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 1581,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 1582,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1582,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MariaDB 11.3"
+                        },
+                        new
+                        {
+                            ProviderId = 1582,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1582,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 1582,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 1583,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1583,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MariaDB 11.4"
+                        },
+                        new
+                        {
+                            ProviderId = 1583,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1583,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 1583,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 1584,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1584,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MariaDB 11.5"
+                        },
+                        new
+                        {
+                            ProviderId = 1584,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1584,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 1584,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 1585,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1585,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MariaDB 11.6"
+                        },
+                        new
+                        {
+                            ProviderId = 1585,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1585,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 1585,
+                            PropertyName = "RootPassword",
+                            PropertyValue = ""
+                        },
+                        new
+                        {
+                            ProviderId = 1586,
+                            PropertyName = "ExternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1586,
+                            PropertyName = "InstallFolder",
+                            PropertyValue = "%PROGRAMFILES%\\MariaDB 11.7"
+                        },
+                        new
+                        {
+                            ProviderId = 1586,
+                            PropertyName = "InternalAddress",
+                            PropertyValue = "localhost"
+                        },
+                        new
+                        {
+                            ProviderId = 1586,
+                            PropertyName = "RootLogin",
+                            PropertyValue = "root"
+                        },
+                        new
+                        {
+                            ProviderId = 1586,
                             PropertyName = "RootPassword",
                             PropertyValue = ""
                         },
@@ -12733,7 +13506,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("PropertyName")
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnOrder(2);
 
                     b.Property<string>("PropertyValue")
@@ -13486,6 +14259,36 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         },
                         new
                         {
+                            ItemTypeId = 90,
+                            Backupable = true,
+                            CalculateBandwidth = false,
+                            CalculateDiskspace = true,
+                            DisplayName = "MySQL9Database",
+                            Disposable = true,
+                            GroupId = 91,
+                            Importable = true,
+                            Searchable = true,
+                            Suspendable = false,
+                            TypeName = "SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base",
+                            TypeOrder = 20
+                        },
+                        new
+                        {
+                            ItemTypeId = 91,
+                            Backupable = true,
+                            CalculateBandwidth = false,
+                            CalculateDiskspace = false,
+                            DisplayName = "MySQL9User",
+                            Disposable = true,
+                            GroupId = 91,
+                            Importable = true,
+                            Searchable = true,
+                            Suspendable = false,
+                            TypeName = "SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base",
+                            TypeOrder = 21
+                        },
+                        new
+                        {
                             ItemTypeId = 143,
                             Backupable = false,
                             CalculateBandwidth = false,
@@ -13585,7 +14388,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("PropertyName")
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnOrder(2);
 
                     b.Property<string>("PropertyValue")
@@ -13639,7 +14442,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("ArchivePolicy")
                         .HasMaxLength(300)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<bool>("Conferencing")
                         .HasColumnType("INTEGER");
@@ -13694,14 +14497,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("TelephonyDialPlanPolicy")
                         .HasMaxLength(300)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<string>("TelephonyVoicePolicy")
                         .HasMaxLength(300)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<int>("VoicePolicy")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.HasKey("SfBUserPlanId");
 
@@ -13938,12 +14741,12 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                 {
                     b.Property<string>("SettingsName")
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnOrder(1);
 
                     b.Property<string>("PropertyName")
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnOrder(2);
 
                     b.Property<string>("PropertyValue")
@@ -14077,170 +14880,196 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ThemeSetting", b =>
                 {
-                    b.Property<int>("ThemeId")
+                    b.Property<int>("ThemeSettingId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
-                        .HasColumnName("ThemeID")
-                        .HasColumnOrder(1);
-
-                    b.Property<string>("SettingsName")
-                        .HasMaxLength(255)
-                        .HasColumnType("TEXT")
-                        .HasColumnOrder(2);
+                        .HasColumnName("ThemeSettingID");
 
                     b.Property<string>("PropertyName")
+                        .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("TEXT")
-                        .HasColumnOrder(3);
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<string>("PropertyValue")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("TEXT");
 
-                    b.HasKey("ThemeId", "SettingsName", "PropertyName");
+                    b.Property<string>("SettingsName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT COLLATE NOCASE");
+
+                    b.Property<int>("ThemeId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("ThemeID");
+
+                    b.HasKey("ThemeSettingId");
+
+                    b.HasIndex(new[] { "ThemeId" }, "ThemeSettingsIdx_ThemeID");
 
                     b.ToTable("ThemeSettings");
 
                     b.HasData(
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "Style",
+                            ThemeSettingId = 1,
                             PropertyName = "Light",
-                            PropertyValue = "light-theme"
+                            PropertyValue = "light-theme",
+                            SettingsName = "Style",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "Style",
+                            ThemeSettingId = 2,
                             PropertyName = "Dark",
-                            PropertyValue = "dark-theme"
+                            PropertyValue = "dark-theme",
+                            SettingsName = "Style",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "Style",
+                            ThemeSettingId = 3,
                             PropertyName = "Semi Dark",
-                            PropertyValue = "semi-dark"
-                        },
-                        new
-                        {
-                            ThemeId = 1,
+                            PropertyValue = "semi-dark",
                             SettingsName = "Style",
+                            ThemeId = 1
+                        },
+                        new
+                        {
+                            ThemeSettingId = 4,
                             PropertyName = "Minimal",
-                            PropertyValue = "minimal-theme"
+                            PropertyValue = "minimal-theme",
+                            SettingsName = "Style",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "color-header",
+                            ThemeSettingId = 5,
                             PropertyName = "#0727d7",
-                            PropertyValue = "headercolor1"
+                            PropertyValue = "headercolor1",
+                            SettingsName = "color-header",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "color-header",
+                            ThemeSettingId = 6,
                             PropertyName = "#23282c",
-                            PropertyValue = "headercolor2"
+                            PropertyValue = "headercolor2",
+                            SettingsName = "color-header",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "color-header",
+                            ThemeSettingId = 7,
                             PropertyName = "#e10a1f",
-                            PropertyValue = "headercolor3"
+                            PropertyValue = "headercolor3",
+                            SettingsName = "color-header",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "color-header",
+                            ThemeSettingId = 8,
                             PropertyName = "#157d4c",
-                            PropertyValue = "headercolor4"
+                            PropertyValue = "headercolor4",
+                            SettingsName = "color-header",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "color-header",
+                            ThemeSettingId = 9,
                             PropertyName = "#673ab7",
-                            PropertyValue = "headercolor5"
+                            PropertyValue = "headercolor5",
+                            SettingsName = "color-header",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "color-header",
+                            ThemeSettingId = 10,
                             PropertyName = "#795548",
-                            PropertyValue = "headercolor6"
+                            PropertyValue = "headercolor6",
+                            SettingsName = "color-header",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "color-header",
+                            ThemeSettingId = 11,
                             PropertyName = "#d3094e",
-                            PropertyValue = "headercolor7"
-                        },
-                        new
-                        {
-                            ThemeId = 1,
+                            PropertyValue = "headercolor7",
                             SettingsName = "color-header",
+                            ThemeId = 1
+                        },
+                        new
+                        {
+                            ThemeSettingId = 12,
                             PropertyName = "#ff9800",
-                            PropertyValue = "headercolor8"
+                            PropertyValue = "headercolor8",
+                            SettingsName = "color-header",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "color-Sidebar",
+                            ThemeSettingId = 13,
                             PropertyName = "#6c85ec",
-                            PropertyValue = "sidebarcolor1"
+                            PropertyValue = "sidebarcolor1",
+                            SettingsName = "color-Sidebar",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "color-Sidebar",
+                            ThemeSettingId = 14,
                             PropertyName = "#5b737f",
-                            PropertyValue = "sidebarcolor2"
+                            PropertyValue = "sidebarcolor2",
+                            SettingsName = "color-Sidebar",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "color-Sidebar",
+                            ThemeSettingId = 15,
                             PropertyName = "#408851",
-                            PropertyValue = "sidebarcolor3"
+                            PropertyValue = "sidebarcolor3",
+                            SettingsName = "color-Sidebar",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "color-Sidebar",
+                            ThemeSettingId = 16,
                             PropertyName = "#230924",
-                            PropertyValue = "sidebarcolor4"
+                            PropertyValue = "sidebarcolor4",
+                            SettingsName = "color-Sidebar",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "color-Sidebar",
+                            ThemeSettingId = 17,
                             PropertyName = "#903a85",
-                            PropertyValue = "sidebarcolor5"
+                            PropertyValue = "sidebarcolor5",
+                            SettingsName = "color-Sidebar",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "color-Sidebar",
+                            ThemeSettingId = 18,
                             PropertyName = "#a04846",
-                            PropertyValue = "sidebarcolor6"
+                            PropertyValue = "sidebarcolor6",
+                            SettingsName = "color-Sidebar",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "color-Sidebar",
+                            ThemeSettingId = 19,
                             PropertyName = "#a65314",
-                            PropertyValue = "sidebarcolor7"
+                            PropertyValue = "sidebarcolor7",
+                            SettingsName = "color-Sidebar",
+                            ThemeId = 1
                         },
                         new
                         {
-                            ThemeId = 1,
-                            SettingsName = "color-Sidebar",
+                            ThemeSettingId = 20,
                             PropertyName = "#1f0e3b",
-                            PropertyValue = "sidebarcolor8"
+                            PropertyValue = "sidebarcolor8",
+                            SettingsName = "color-Sidebar",
+                            ThemeId = 1
                         });
                 });
 
@@ -14392,7 +15221,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         {
                             UserId = 1,
                             Address = "",
-                            Changed = new DateTime(2010, 7, 16, 12, 53, 2, 453, DateTimeKind.Utc),
+                            Changed = new DateTime(2010, 7, 16, 10, 53, 2, 453, DateTimeKind.Utc),
                             City = "",
                             Comments = "",
                             Country = "",
@@ -14428,12 +15257,12 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Property<string>("SettingsName")
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnOrder(2);
 
                     b.Property<string>("PropertyName")
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT")
+                        .HasColumnType("TEXT COLLATE NOCASE")
                         .HasColumnOrder(3);
 
                     b.Property<string>("PropertyValue")
@@ -15391,110 +16220,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         });
                 });
 
-            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.UsersDetailed", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("UserID");
-
-                    b.Property<DateTime?>("Changed")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Comments")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("CompanyName")
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("Created")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool?>("EcommerceEnabled")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(255)
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("FailedLogins")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("FirstName")
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("FullName")
-                        .HasMaxLength(101)
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsDemo")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("IsPeer")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("LastName")
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("LoginStatusId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("OwnerEmail")
-                        .HasMaxLength(255)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("OwnerFirstName")
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("OwnerFullName")
-                        .HasMaxLength(101)
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("OwnerId")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("OwnerID");
-
-                    b.Property<string>("OwnerLastName")
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("OwnerRoleId")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("OwnerRoleID");
-
-                    b.Property<string>("OwnerUsername")
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("PackagesNumber")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("RoleId")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("RoleID");
-
-                    b.Property<int>("StatusId")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("StatusID");
-
-                    b.Property<string>("SubscriberNumber")
-                        .HasMaxLength(32)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Username")
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("UserId");
-
-                    b.ToTable((string)null);
-
-                    b.ToView("UsersDetailed", (string)null);
-                });
-
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Version", b =>
                 {
                     b.Property<string>("DatabaseVersion")
@@ -15549,11 +16274,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         {
                             DatabaseVersion = "1.4.9",
                             BuildDate = new DateTime(2024, 4, 20, 0, 0, 0, 0, DateTimeKind.Utc)
-                        },
-                        new
-                        {
-                            DatabaseVersion = "2.0.0.228",
-                            BuildDate = new DateTime(2012, 12, 7, 0, 0, 0, 0, DateTimeKind.Utc)
                         });
                 });
 
@@ -15640,7 +16360,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id")
-                        .HasName("PK__WebDavAc__3214EC27B27DC571");
+                        .HasName("PK__WebDavAc__3214EC2708781F08");
 
                     b.HasIndex(new[] { "AccountId" }, "WebDavAccessTokensIdx_AccountID");
 
@@ -15686,7 +16406,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .WithMany("BackgroundTaskLogs")
                         .HasForeignKey("TaskId")
                         .IsRequired()
-                        .HasConstraintName("FK__Backgroun__TaskI__06ADD4BD");
+                        .HasConstraintName("FK__Backgroun__TaskI__7D8391DF");
 
                     b.Navigation("Task");
                 });
@@ -15697,7 +16417,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .WithMany("BackgroundTaskParameters")
                         .HasForeignKey("TaskId")
                         .IsRequired()
-                        .HasConstraintName("FK__Backgroun__TaskI__03D16812");
+                        .HasConstraintName("FK__Backgroun__TaskI__7AA72534");
 
                     b.Navigation("Task");
                 });
@@ -15708,7 +16428,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .WithMany("BackgroundTaskStacks")
                         .HasForeignKey("TaskId")
                         .IsRequired()
-                        .HasConstraintName("FK__Backgroun__TaskI__098A4168");
+                        .HasConstraintName("FK__Backgroun__TaskI__005FFE8A");
 
                     b.Navigation("Task");
                 });
@@ -15745,6 +16465,18 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasConstraintName("FK_CRMUsers_ExchangeAccounts");
 
                     b.Navigation("Account");
+                });
+
+            modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.DmzIpAddress", b =>
+                {
+                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.ServiceItem", "Item")
+                        .WithMany("DmzIpAddresses")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_DmzIPAddresses_ServiceItems");
+
+                    b.Navigation("Item");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Domain", b =>
@@ -15958,12 +16690,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.HostingPlan", b =>
                 {
-                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.Package", "Package")
-                        .WithMany("HostingPlans")
-                        .HasForeignKey("PackageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .HasConstraintName("FK_HostingPlans_Packages");
-
                     b.HasOne("SolidCP.EnterpriseServer.Data.Entities.Server", "Server")
                         .WithMany("HostingPlans")
                         .HasForeignKey("ServerId")
@@ -15973,8 +16699,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .WithMany("HostingPlans")
                         .HasForeignKey("UserId")
                         .HasConstraintName("FK_HostingPlans_Users");
-
-                    b.Navigation("Package");
 
                     b.Navigation("Server");
 
@@ -16062,9 +16786,10 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasForeignKey("ParentPackageId")
                         .HasConstraintName("FK_Packages_Packages");
 
-                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.HostingPlan", "Plan")
+                    b.HasOne("SolidCP.EnterpriseServer.Data.Entities.HostingPlan", "HostingPlan")
                         .WithMany("Packages")
                         .HasForeignKey("PlanId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_Packages_HostingPlans");
 
                     b.HasOne("SolidCP.EnterpriseServer.Data.Entities.Server", "Server")
@@ -16078,9 +16803,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .IsRequired()
                         .HasConstraintName("FK_Packages_Users");
 
-                    b.Navigation("ParentPackage");
+                    b.Navigation("HostingPlan");
 
-                    b.Navigation("Plan");
+                    b.Navigation("ParentPackage");
 
                     b.Navigation("Server");
 
@@ -16771,8 +17496,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
                     b.Navigation("GlobalDnsRecords");
 
-                    b.Navigation("HostingPlans");
-
                     b.Navigation("PackageAddons");
 
                     b.Navigation("PackageIpAddresses");
@@ -16897,6 +17620,8 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ServiceItem", b =>
                 {
+                    b.Navigation("DmzIpAddresses");
+
                     b.Navigation("DomainMailDomains");
 
                     b.Navigation("DomainWebSites");

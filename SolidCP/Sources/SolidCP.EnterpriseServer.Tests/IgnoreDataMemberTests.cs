@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 using SolidCP.EnterpriseServer;
 using System.Xml;
 
-namespace SolidCP.EnterpriseServer.Tests
+namespace SolidCP.Tests
 {
 	[TestClass]
 	public class IgnoreDataMemberTests
