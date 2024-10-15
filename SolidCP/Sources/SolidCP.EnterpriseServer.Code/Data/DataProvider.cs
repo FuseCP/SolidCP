@@ -21911,11 +21911,12 @@ RETURN
 							{
 								PackageServices.Add(virtualServices
 									.Select(v => v.ServiceId)
+									.Take(1)
 									.AsEnumerable()
-									.Select(v => new Data.Entities.PackageService()
+									.Select(serviceId => new Data.Entities.PackageService()
 									{
 										PackageId = package.Package.PackageId,
-										ServiceId = v.ServiceId
+										ServiceId = serviceId
 									})
 									.First());
 							}
