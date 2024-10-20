@@ -6377,6 +6377,8 @@ CREATE PROCEDURE [dbo].[DeleteServiceItem]
 )
 AS
 
+SET QUOTED_IDENTIFIER ON
+
 -- check rights
 DECLARE @PackageID int
 SELECT @PackageID = PackageID FROM ServiceItems

@@ -14489,7 +14489,7 @@ RETURN
 						i.Item.ItemId,
 						i.Item.ItemName,
 						i.Item.ItemTypeId,
-						i.Type.DisplayName,
+						i.Type.TypeName,
 						i.Item.ServiceId,
 						i.Item.PackageId,
 						i.Package.PackageName,
