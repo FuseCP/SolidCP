@@ -21464,3 +21464,62 @@ COMMIT;
 GO
 
 -- End of Migrations
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'DeleteServiceItem')
+DROP PROCEDURE DeleteServiceItem
+GO
+
+CREATE PROCEDURE [dbo].[DeleteServiceItem]
+(
+	@ActorID int,
+	@ItemID int
+)
+AS
+
+SET QUOTED_IDENTIFIER ON
+
+-- check rights
+DECLARE @PackageID int
+SELECT @PackageID = PackageID FROM ServiceItems
+WHERE ItemID = @ItemID
+
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+BEGIN TRAN
+
+UPDATE Domains
+SET ZoneItemID = NULL
+WHERE ZoneItemID = @ItemID
+
+DELETE FROM Domains
+WHERE WebSiteID = @ItemID AND IsDomainPointer = 1
+
+UPDATE Domains
+SET WebSiteID = NULL
+WHERE WebSiteID = @ItemID
+
+UPDATE Domains
+SET MailDomainID = NULL
+WHERE MailDomainID = @ItemID
+
+-- delete item comments
+DELETE FROM Comments
+WHERE ItemID = @ItemID AND ItemTypeID = 'SERVICE_ITEM'
+
+-- delete item properties
+DELETE FROM ServiceItemProperties
+WHERE ItemID = @ItemID
+
+-- delete external IP addresses
+EXEC dbo.DeleteItemIPAddresses @ActorID, @ItemID
+
+-- delete item
+DELETE FROM ServiceItems
+WHERE ItemID = @ItemID
+
+COMMIT TRAN
+
+RETURN
+
+GO
