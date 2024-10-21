@@ -9475,7 +9475,7 @@ IF NOT EXISTS (
     WHERE [MigrationId] = N'20241012194301_InitialCreate'
 )
 BEGIN
-    SET QUOTED_IDENTIFIER ONGet
+    SET QUOTED_IDENTIFIER ON
 END;
 GO
 
@@ -18977,6 +18977,8 @@ BEGIN
     	@ItemID int
     )
     AS
+
+    SET QUOTED_IDENTIFIER ON
 
     -- check rights
     DECLARE @PackageID int

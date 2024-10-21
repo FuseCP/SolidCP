@@ -13,7 +13,7 @@ GO
 
 SET ANSI_NULLS ON
 GO
-SET QUOTED_IDENTIFIER ONGet
+SET QUOTED_IDENTIFIER ON
 GO
 
 CREATE FUNCTION [dbo].[CalculatePackageBandwidth]
@@ -6376,6 +6376,8 @@ CREATE PROCEDURE [dbo].[DeleteServiceItem]
 	@ItemID int
 )
 AS
+
+SET QUOTED_IDENTIFIER ON
 
 -- check rights
 DECLARE @PackageID int
