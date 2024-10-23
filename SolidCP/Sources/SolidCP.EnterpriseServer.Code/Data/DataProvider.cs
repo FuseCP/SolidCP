@@ -127,7 +127,8 @@ namespace SolidCP.EnterpriseServer
 		public DataProvider(string connectionString) : base(connectionString) { Provider = null; }
 
 		private DataProvider clone = null;
-		public new DataProvider Clone => clone ??= new DataProvider(ConnectionString);
+		public new DataProvider Clone => clone ??= Context;
+		public DataProvider Context => new DataProvider(ConnectionString);
 		public override void Dispose()
 		{
 			clone?.Dispose();
