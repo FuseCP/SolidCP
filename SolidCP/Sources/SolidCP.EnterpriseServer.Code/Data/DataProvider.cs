@@ -14910,6 +14910,7 @@ RETURN
 						CreatedDate = DateTime.Now
 					};
 					ServiceItems.Add(item);
+					SaveChanges();
 
 					ServiceItemProperties.RemoveRange(
 						ServiceItemProperties.Where(p => p.ItemId == item.ItemId));
