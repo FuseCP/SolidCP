@@ -106,18 +106,21 @@ namespace SolidCP.EnterpriseServer
 
         public int AddTask(BackgroundTask task)
         {
-            int taskId = Database.AddBackgroundTask(task.Guid, task.TaskId, task.ScheduleId, task.PackageId, task.UserId,
-                                                        task.EffectiveUserId, task.TaskName, task.ItemId, task.ItemName,
-                                                        task.StartDate, task.IndicatorCurrent, task.IndicatorMaximum,
-                                                        task.MaximumExecutionTime, task.Source, task.Severity, task.Completed,
-                                                        task.NotifyOnComplete, task.Status);
+            using (var clone = AsAsync<TaskController>())
+            {
+                int taskId = clone.Database.AddBackgroundTask(task.Guid, task.TaskId, task.ScheduleId, task.PackageId, task.UserId,
+                                                            task.EffectiveUserId, task.TaskName, task.ItemId, task.ItemName,
+                                                            task.StartDate, task.IndicatorCurrent, task.IndicatorMaximum,
+                                                            task.MaximumExecutionTime, task.Source, task.Severity, task.Completed,
+                                                            task.NotifyOnComplete, task.Status);
 
-            AddTaskParams(taskId, task.Params);
+                clone.AddTaskParams(taskId, task.Params);
 
-            Database.AddBackgroundTaskStack(taskId);
-
-            return taskId;
-        }
+                clone.Database.AddBackgroundTaskStack(taskId);
+			
+                return taskId;
+			}
+		}
 
         public void UpdateTaskWithParams(BackgroundTask task)
         {
@@ -143,11 +146,13 @@ namespace SolidCP.EnterpriseServer
                 return false;
             }
 
-            Database.UpdateBackgroundTask(task.Guid, task.Id, task.ScheduleId, task.PackageId, task.TaskName, task.ItemId,
+            using (var db = Database.Context)
+            {
+                db.UpdateBackgroundTask(task.Guid, task.Id, task.ScheduleId, task.PackageId, task.TaskName, task.ItemId,
                                               task.ItemName, task.FinishDate, task.IndicatorCurrent,
                                               task.IndicatorMaximum, task.MaximumExecutionTime, task.Source,
                                               task.Severity, task.Completed, task.NotifyOnComplete, task.Status);
-
+            }
             return true;
         }
 
@@ -170,9 +175,12 @@ namespace SolidCP.EnterpriseServer
 
         public void AddTaskParams(int taskId, List<BackgroundTaskParameter> parameters)
         {
-            foreach (BackgroundTaskParameter param in SerializeParams(parameters))
+            using (var db = Database.Context)
             {
-                Database.AddBackgroundTaskParam(taskId, param.Name, param.SerializerValue, param.TypeName);
+                foreach (BackgroundTaskParameter param in SerializeParams(parameters))
+                {
+                    db.AddBackgroundTaskParam(taskId, param.Name, param.SerializerValue, param.TypeName);
+                }
             }
         }
 
@@ -186,8 +194,11 @@ namespace SolidCP.EnterpriseServer
 
         public void AddLog(BackgroundTaskLogRecord log)
         {
-            Database.AddBackgroundTaskLog(log.TaskId, log.Date, log.ExceptionStackTrace, log.InnerTaskStart,
+            using (var db = Database.Context)
+            {
+                db.AddBackgroundTaskLog(log.TaskId, log.Date, log.ExceptionStackTrace, log.InnerTaskStart,
                                               log.Severity, log.Text, log.TextIdent, BuildParametersXml(log.TextParameters));
+            }
         }
 
         public List<BackgroundTaskLogRecord> GetLogs(BackgroundTask task, DateTime startLogTime)
