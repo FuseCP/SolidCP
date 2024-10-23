@@ -26889,9 +26889,9 @@ RETURN
 					ExchangeAccountType.Equipment, ExchangeAccountType.SharedMailbox, ExchangeAccountType.JournalingMailbox };
 				var specialAccounts = accounts
 					.Where(a => accountTypes.Any(t => t == a.AccountType));
-				var archiveSize = archiveSizeUnlimited ? -1 : specialAccounts
+				int archiveSize = archiveSizeUnlimited ? -1 : specialAccounts
 					.Where(a => a.MailboxPlan.EnableArchiving == true)
-					.Sum(a => a.MailboxPlan.ArchiveSizeMb);
+					.Sum(a => a.MailboxPlan.ArchiveSizeMb) ?? 0;
 				var tmp = new
 				{
 					CreatedMailboxes = accounts.Count(a => a.AccountType == ExchangeAccountType.Mailbox),
@@ -26905,11 +26905,11 @@ RETURN
 					CreatedJournalingMailboxes = accounts.Count(a => a.AccountType == ExchangeAccountType.JournalingMailbox),
 					CreatedDomains = ExchangeOrganizationDomains.Count(d => d.ItemId == itemId),
 					UsedDiskSpaces = specialAccounts
-							.Select(a => a.MailboxPlan.MailboxSizeMb),
+							.Select(a => (int?)a.MailboxPlan.MailboxSizeMb),
 					UsedLitigationHoldSpaces = specialAccounts
 							.Where(a => a.MailboxPlan.AllowLitigationHold == true)
 							.Select(a => a.MailboxPlan.RecoverableItemsSpace),
-					UsedArchingStorage = archiveSize
+					//UsedArchingStorage = archiveSize
 				};
 				if (mailboxSizeUnlimited)
 				{
@@ -26923,15 +26923,15 @@ RETURN
 						tmp.CreatedPublicFolders,
 						tmp.CreatedJournalingMailboxes,
 						tmp.CreatedDomains,
-						UsedDiskSpace = tmp.UsedDiskSpaces.Min(),
-						UsedLitigationHoldSpace = tmp.UsedLitigationHoldSpaces.Min(),
+						UsedDiskSpace = tmp.UsedDiskSpaces.Min() ?? 0,
+						UsedLitigationHoldSpace = tmp.UsedLitigationHoldSpaces.Min() ?? 0,
 						UsedArchingStorage = archiveSize
 					};
 					return EntityDataReader(new[] { sizes });
 				}
 				else
 				{
-					var sizes = new
+                    var sizes = new
 					{
 						tmp.CreatedMailboxes,
 						tmp.CreatedSharedMailboxes,
@@ -26941,8 +26941,8 @@ RETURN
 						tmp.CreatedPublicFolders,
 						tmp.CreatedJournalingMailboxes,
 						tmp.CreatedDomains,
-						UsedDiskSpace = tmp.UsedDiskSpaces.Sum(),
-						UsedLitigationHoldSpace = tmp.UsedLitigationHoldSpaces.Sum(),
+						UsedDiskSpace = tmp.UsedDiskSpaces.Sum() ?? 0,
+						UsedLitigationHoldSpace = tmp.UsedLitigationHoldSpaces.Sum() ?? 0,
 						UsedArchingStorage = archiveSize
 					};
 					return EntityDataReader(new[] { sizes });
