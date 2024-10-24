@@ -746,6 +746,7 @@ RETURN
 		#endregion
 
 		#region Users
+		public bool IsFreshDatabase => Users.Count() == 1;
 		public bool CheckUserExists(string username)
 		{
 			if (UseEntityFramework)

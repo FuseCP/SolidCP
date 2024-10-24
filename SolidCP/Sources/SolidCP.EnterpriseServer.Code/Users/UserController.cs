@@ -126,8 +126,14 @@ namespace SolidCP.EnterpriseServer
 
 				// compare user passwords
 				if (CryptoUtils.SHAEquals(user.Password, password) || user.Password == password ||
-					string.IsNullOrEmpty(user.Password) && string.IsNullOrEmpty(password)) // se, allow empty password
+					string.IsNullOrEmpty(user.Password) && string.IsNullOrEmpty(password) &&
+					Database.IsFreshDatabase) // allow empty password on fresh database
 				{
+					if (string.IsNullOrEmpty(user.Password) && string.IsNullOrEmpty(password))
+					{
+						user.OneTimePasswordState = OneTimePasswordStates.Active;
+					}
+
 					switch (user.OneTimePasswordState)
 					{
 						case OneTimePasswordStates.Active:
@@ -431,7 +437,8 @@ namespace SolidCP.EnterpriseServer
 
 				// compare user passwords
 				if (CryptoUtils.SHAEquals(user.Password, password) || user.Password == password ||
-					string.IsNullOrEmpty(user.Password) && string.IsNullOrEmpty(password))
+					string.IsNullOrEmpty(user.Password) && string.IsNullOrEmpty(password) &&
+					Database.IsFreshDatabase)
 				{
 					// Queue call to AuditLog for better speed in SOAP calls
 					/* ThreadPool.QueueUserWorkItem(state =>
