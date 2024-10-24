@@ -2871,9 +2871,9 @@ RETURN
 							x.Username,
 							x.FullName
 						})
-						.ToArray();
+						.ToList();
 
-					if (maximumRows > 0) result = result.Skip(startRow).Take(maximumRows).ToArray();
+					if (maximumRows > 0) result = result.Skip(startRow).Take(maximumRows).ToList();
 
 					return EntityDataSet(count, colTypes, result);
 				}
@@ -7327,7 +7327,7 @@ RETURN
 				var virtualServiceIds = VirtualServices
 					.Where(v => v.ServerId == serverId)
 					.Select(v => v.ServiceId)
-					.ToArray();
+					.ToList();
 				var services = Services
 					.Where(s => isAdmin && !virtualServiceIds.Any(id => id == s.ServiceId))
 					.Select(s => new
@@ -7597,7 +7597,7 @@ RETURN
 				var services = XElement.Parse(xml);
 				var serviceIds = services.Elements()
 					.Select(service => (int)service.Attribute("id"))
-					.ToArray();
+					.ToList();
 				var toDelete = VirtualServices
 					.Where(vs => vs.ServerId == serverId)
 					.Join(serviceIds, vs => vs.ServiceId, sid => sid, (vs, sid) => vs);
@@ -8832,7 +8832,7 @@ GO
 				var idsEnumerable = items
 					.Elements()
 					.Select(e => (int)e.Attribute("id"))
-					.ToArray();
+					.ToList();
 				using (var ids = idsEnumerable
 					.ToTempIdSet(this))
 				{
@@ -9568,11 +9568,11 @@ END
 				var addressIds = items
 					.Elements()
 					.Select(e => (int)e.Attribute("id"))
-					.ToArray();
+					.ToList();
 
 				var addresses = IpAddresses
 					.Join(addressIds, ip => ip.AddressId, id => id, (ip, id) => ip)
-					.ToArray();
+					.ToList();
 
 				foreach (var ip in addresses)
 				{
@@ -10544,7 +10544,7 @@ RETURN
 						r.SrvPort,
 						r.IpAddressId
 					})
-					.ToArray();
+					.ToList();
 				var record = records
 					.SingleOrDefault();
 
@@ -11370,7 +11370,7 @@ RETURN
 						d.IsPreviewDomain,
 						d.IsDomainPointer
 					})
-					.ToArray()
+					.ToList()
 					.Where(d => CheckActorPackageRights(actorId, d.PackageId));
 				return EntityDataReader(domains);
 			}
@@ -12933,10 +12933,10 @@ RETURN
 						PropertyName = (string)e.Attribute("name"),
 						PropertyValue = (string)e.Attribute("value")
 					})
-					.ToArray();
+					.ToList();
 				var propertyNames = properties
 					.Select(p => p.PropertyName)
-					.ToArray();
+					.ToList();
 
 				// delete old properties (case insensitive, as strings are case insensitve in SQL Server)
 				var serviceProperties = ServiceProperties
@@ -13181,7 +13181,7 @@ RETURN
 						.Where(s => s.Type.TypeName == itemTypeName &&
 							(groupName == null || groupName != null && groupName == s.ResourceGroup.GroupName))
 						.Select(s => s.Item.ItemId)
-						.ToArray();
+						.ToList();
 
 					// select service items
 					var serviceItems = items
@@ -15883,7 +15883,7 @@ RETURN
 						ItemId = (int)e.Attribute("id"),
 						Bytes = (long)e.Attribute("bytes")
 					})
-					.ToArray();
+					.ToList();
 				using (var tempIds = items.Select(item => item.ItemId).ToTempIdSet(this))
 				{
 					var diskspace = tempIds
@@ -16007,7 +16007,7 @@ RETURN
 						BytesSent = (long)e.Attribute("sent"),
 						BytesReceived = (long)e.Attribute("received")
 					})
-					.ToArray();
+					.ToList();
 
 				using (var itemIds = items.Select(item => item.ItemId).ToTempIdSet(this))
 				{
@@ -17172,7 +17172,7 @@ RETURN
 					})
 					.OrderBy(g => g.GroupOrder)
 					.ThenBy(g => g.GroupName)
-					.ToArray()
+					.ToList()
 					.Select(g => new
 					{
 						g.GroupId,
@@ -17206,7 +17206,7 @@ RETURN
 						QuotaValue = hq != null ? hq.QuotaValue : 0
 					})
 					.OrderBy(q => q.QuotaOrder)
-					.ToArray()
+					.ToList()
 					.Select(q => new
 					{
 						q.QuotaId,
@@ -17708,7 +17708,7 @@ END
 							q.QuotaName,
 							q.QuotaTypeId
 						})
-						.ToArray();
+						.ToList();
 					return quotas
 						.Select(q => new ExceedingQuota()
 						{
@@ -17728,7 +17728,7 @@ END
 							q.QuotaName,
 							q.QuotaTypeId
 						})
-						.ToArray();
+						.ToList();
 					return quotas
 						.Select(q => new ExceedingQuota
 						{
@@ -17856,7 +17856,7 @@ RETURN
 
 					var exceedingQuotas = GetPackageExceedingQuotas(packageId)
 						.Where(q => q.QuotaValue > 0)
-						.ToArray();
+						.ToList();
 
 					if (exceedingQuotas.Any()) transaction.Rollback();
 					else transaction.Commit();
@@ -19636,7 +19636,7 @@ GO
 							Property = p,
 							Item = s
 						})
-						.Join(ServiceItemProperties.Where(p => p.PropertyName == "DynamicMemory.Enabled" && p.PropertyValue.Equals("True", StringComparison.OrdinalIgnoreCase)),
+						.Join(ServiceItemProperties.Where(p => p.PropertyName == "DynamicMemory.Enabled" && p.PropertyValue == "True"),
 							p => p.Item.ItemId, sp => sp.ItemId, (p, sp) => p)
 						.Join(PackagesTreeCaches, p => p.Item.PackageId, t => t.PackageId, (p, t) => new
 						{
@@ -20629,7 +20629,7 @@ RETURN
 
 					var exceedingQuotas = GetPackageExceedingQuotas(packageId)
 						.Where(q => q.QuotaValue > 0)
-						.ToArray();
+						.ToList();
 
 					if (exceedingQuotas.Any()) transaction.Rollback();
 					else transaction.Commit();
@@ -21424,7 +21424,7 @@ RETURN
 
 					var exceedingQuotas = GetPackageExceedingQuotas(packageId)
 						.Where(q => q.QuotaValue > 0)
-						.ToArray();
+						.ToList();
 
 					if (exceedingQuotas.Any()) transaction.Rollback();
 					else transaction.Commit();
@@ -21538,7 +21538,7 @@ RETURN
 
 						var exceedingQuotas = GetPackageExceedingQuotas(package.PackageId)
 							.Where(q => q.QuotaValue > 0)
-							.ToArray();
+							.ToList();
 
 						if (exceedingQuotas.Any()) transaction.Rollback();
 						else transaction.Commit();
@@ -21856,12 +21856,12 @@ RETURN
 						s.ServiceId,
 						s.Provider.GroupId
 					})
-					.ToArray();
+					.ToList();
 
 				// get the list of available groups from hosting plan
 				var packageGroups = services
 					.Select(s => s.GroupId)
-					.ToArray();
+					.ToList();
 				var groups = ResourceGroups
 					.AsEnumerable()
 					.Where(r => Clone.GetPackageAllocatedResource(packageId, r.GroupId, null) &&
@@ -23804,14 +23804,14 @@ WHERE T.Guid = (
 			var descendants = Users
 				.Where(u => u.OwnerId == userId)
 				.Select(u => u.UserId)
-				.ToArray();
+				.ToList();
 			while (descendants.Any())
 			{
 				foreach (var child in descendants) yield return child;
 
 				descendants = Users
 					.Join(descendants, u => u.OwnerId, d => d, (u, d) => u.UserId)
-					.ToArray();
+					.ToList();
 			}
 		}
 
@@ -23869,7 +23869,7 @@ INNER JOIN (SELECT T.Guid, MIN(T.StartDate) AS Date
 				#endregion
 
 				var children = GetChildUsersId(actorId)
-					.ToArray();
+					.ToList();
 				var tasksGrouped = BackgroundTasks
 					.Join(children, t => t.UserId, uid => uid, (t, uid) => t)
 					.Join(BackgroundTaskStacks, t => t.Id, ts => ts.TaskId, (t, ts) => t)
@@ -24935,7 +24935,7 @@ RETURN
 						.OrderByDescending(s => s.Enabled)
 						.ThenBy(s => s.NextRun)
 						.Select(s => s.ScheduleId)
-						.ToArray();
+						.ToList();
 					var schedules = scheduleIds
 						.Join(Schedules, sid => sid, s => s.ScheduleId, (sid, s) => s)
 						.Select(s => new
@@ -28270,7 +28270,7 @@ RETURN
 					else if (Enum.TryParse<ExchangeAccountType>(t, out etype)) return etype;
 					else throw new NotSupportedException($"Value {t} is not a valid ExchangeAccountType.");
 				})
-				.ToArray();
+				.ToList();
 
 			if (UseEntityFramework)
 			{
@@ -28380,7 +28380,7 @@ RETURN
 				if (!string.IsNullOrEmpty(filterColumn) && !string.IsNullOrEmpty(filterValue))
 				{
 					if (filterColumn == "PrimaryEmailAddress" &&
-						(accountTypes.Length != 1 || accountTypes[0] != ExchangeAccountType.Contact))
+						(accountTypes.Count != 1 || accountTypes[0] != ExchangeAccountType.Contact))
 					{
 #if NETFRAMEWORK
 						accounts = accounts.Where(a => a.ExchangeAccountEmailAddresses.Any(e => DbFunctions.Like(e.EmailAddress, filterValue)));
@@ -32842,7 +32842,7 @@ END
 						// physical server
 						var packageIps = PackageIpAddresses
 							.Select(pip => pip.AddressId)
-							.ToArray();
+							.ToList();
 						var addresses = IpAddresses
 							.Where(ip => (ip.ServerId == serverId || ip.ServerId == null) &&
 								(poolId == 0 || ip.PoolId == poolId) &&
@@ -32873,7 +32873,7 @@ END
 							.FirstOrDefault();
 						var packageIps = PackageIpAddresses
 							.Select(pip => pip.AddressId)
-							.ToArray();
+							.ToList();
 						var addresses = IpAddresses
 							.Where(ip => (ip.ServerId == null || ip.ServerId == serverId) &&
 								(poolId == 0 || ip.PoolId == poolId) &&
@@ -32991,7 +32991,7 @@ END
 				var addressIds = XElement.Parse(xml)
 					.Elements()
 					.Select(e => (int)e.Attribute("id"))
-					.ToArray();
+					.ToList();
 				using (var addressIdsIdSet = addressIds.ToTempIdSet(this))
 				{
 					PackageIpAddresses
@@ -33748,7 +33748,7 @@ END
 					//TODO .Where(i => i.ItemId == itemId) or not?
 					.Where(i => i.ItemId == itemId) // bugfix added by Simon Egli, 27.6.2024 
 					.Select(i => i.PackageId)
-					.ToArray()
+					.ToList()
 					.Any(packageId => CheckActorPackageRights(actorId, packageId)))
 				{
 					var ip = new Data.Entities.DmzIpAddress()
@@ -34342,7 +34342,7 @@ END
 
 				foreach (var ip in PackageIpAddresses
 					.Where(a => a.ItemId == itemId)
-					.ToArray())
+					.ToList())
 				{
 					if (CheckActorPackageRights(actorId, ip.PackageId))
 					{
@@ -34455,7 +34455,7 @@ RETURN
 					//TODO .Where(i => i.ItemId == itemId) or not?
 					.Where(i => i.ItemId == itemId) // bugfix added by Simon Egli, 27.6.2024 
 					.Select(i => i.PackageId)
-					.ToArray();
+					.ToList();
 				if (packages
 					.Any(packageId => CheckActorPackageRights(actorId, packageId)))
 				{
@@ -34507,7 +34507,7 @@ END
 				var addresses = PrivateIpAddresses
 					.Where(ip => ip.ItemId == itemId)
 					.Include(ip => ip.Item)
-					.ToArray()
+					.ToList()
 					.Where(ip => CheckActorPackageRights(actorId, ip.Item.PackageId));
 
 				foreach (var ip in addresses) ip.IsPrimary = ip.PrivateAddressId == privateAddressId;
