@@ -10421,7 +10421,7 @@ RETURN
 				records = records.DistinctBy(r => r.RecordType + r.RecordName);
 #else
 				records = records.GroupBy(r => new { r.RecordType, r.RecordName })
-					.Select(g => g.First());
+					.Select(g => g.FirstOrDefault());
 #endif
 				var recordsSelected = records
 					.Select(r => new
