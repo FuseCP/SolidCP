@@ -12,7 +12,11 @@ public partial class ServicePropertyConfiguration: EntityTypeConfiguration<Servi
 {
     public override void Configure() {
 
-        if (IsCore && IsSqlite) Property(e => e.PropertyName).HasColumnType("TEXT COLLATE NOCASE");
+        if (IsCore && IsSqlite)
+        {
+            Property(e => e.PropertyName).HasColumnType("TEXT COLLATE NOCASE");
+            Property(e => e.PropertyValue).HasColumnType("TEXT COLLATE NOCASE");
+        }
 
         HasKey(e => new { e.ServiceId, e.PropertyName }).HasName("PK_ServiceProperties_1");
 
