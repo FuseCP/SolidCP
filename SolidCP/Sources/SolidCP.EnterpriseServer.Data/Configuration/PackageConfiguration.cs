@@ -28,6 +28,9 @@ public partial class PackageConfiguration: EntityTypeConfiguration<Package>
         }
 
 #if NetCore
+        Property(e => e.OverrideQuotas).HasDefaultValue(0);
+        Property(e => e.DefaultTopPackage).HasDefaultValue(0);
+
         if (IsSqlServer) {
             Core.ToTable(tb => tb.HasTrigger("Update_StatusIDchangeDate"));
             Property(e => e.StatusIdChangeDate).HasDefaultValueSql("(getdate())");

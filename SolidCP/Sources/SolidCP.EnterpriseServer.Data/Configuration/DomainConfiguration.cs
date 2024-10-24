@@ -25,10 +25,14 @@ public partial class DomainConfiguration: EntityTypeConfiguration<Domain>
             Property(e => e.ExpirationDate).HasColumnType("datetime");
             Property(e => e.LastUpdateDate).HasColumnType("datetime");
         }
-        else if (IsCore && IsSqlite) Property(e => e.DomainName).HasColumnType("TEXT COLLATE NOCASE"); 
+        else if (IsCore && IsSqlite) Property(e => e.DomainName).HasColumnType("TEXT COLLATE NOCASE");
 
 #if NetCore
-        HasOne(d => d.MailDomain).WithMany(p => p.DomainMailDomains).HasConstraintName("FK_Domains_ServiceItems_MailDomain");
+		Property(e => e.HostingAllowed).HasDefaultValue(false);
+		Property(e => e.IsSubDomain).HasDefaultValue(false);
+		Property(e => e.IsPreviewDomain).HasDefaultValue(false);
+
+		HasOne(d => d.MailDomain).WithMany(p => p.DomainMailDomains).HasConstraintName("FK_Domains_ServiceItems_MailDomain");
 
         HasOne(d => d.Package).WithMany(p => p.Domains).HasConstraintName("FK_Domains_Packages");
 

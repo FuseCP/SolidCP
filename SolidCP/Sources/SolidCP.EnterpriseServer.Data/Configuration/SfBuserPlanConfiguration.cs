@@ -23,5 +23,12 @@ public partial class SfBUserPlanConfiguration: EntityTypeConfiguration<SfBUserPl
 			Property(e => e.TelephonyVoicePolicy).HasColumnType("TEXT COLLATE NOCASE");
 			Property(e => e.VoicePolicy).HasColumnType("TEXT COLLATE NOCASE");
 		}
+
+#if NetCore
+		Property(e => e.RemoteUserAccess).HasDefaultValue(false);
+		Property(e => e.PublicIMConnectivity).HasDefaultValue(false);
+		Property(e => e.AllowOrganizeMeetingsWithExternalAnonymous).HasDefaultValue(false);
+#endif
+
 	}
 }

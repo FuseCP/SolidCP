@@ -35,6 +35,9 @@ public partial class UserConfiguration: EntityTypeConfiguration<User>
 
 #if NetCore
         Property(e => e.HtmlMail).HasDefaultValue(true);
+		Property(e => e.IsDemo).HasDefaultValue(false);
+		Property(e => e.IsPeer).HasDefaultValue(false);
+		Property(e => e.MfaMode).HasDefaultValue(0);
 
         HasOne(d => d.Owner).WithMany(p => p.ChildUsers).HasConstraintName("FK_Users_Users");
 #else

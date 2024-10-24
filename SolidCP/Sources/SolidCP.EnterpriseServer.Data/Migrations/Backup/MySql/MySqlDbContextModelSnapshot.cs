@@ -2515,16 +2515,22 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         .HasColumnType("datetime(6)");
 
                     b.Property<bool>("HostingAllowed")
-                        .HasColumnType("tinyint(1)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsDomainPointer")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("IsPreviewDomain")
-                        .HasColumnType("tinyint(1)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsSubDomain")
-                        .HasColumnType("tinyint(1)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
 
                     b.Property<DateTime?>("LastUpdateDate")
                         .HasColumnType("datetime(6)");
@@ -2614,7 +2620,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         .HasColumnType("varchar(255)");
 
                     b.Property<int>("FolderQuota")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<string>("HomeFolder")
                         .HasMaxLength(255)
@@ -2704,7 +2712,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         .HasColumnType("int");
 
                     b.Property<bool>("IsVip")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false)
                         .HasColumnName("IsVIP");
 
                     b.Property<int>("ItemId")
@@ -3034,7 +3044,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         .HasColumnName("DomainID");
 
                     b.Property<int>("DomainTypeId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
+                        .HasDefaultValue(0)
                         .HasColumnName("DomainTypeID");
 
                     b.Property<bool?>("IsHost")
@@ -3410,7 +3422,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("LyncUserPlanId"));
 
                     b.Property<bool>("AllowOrganizeMeetingsWithExternalAnonymous")
-                        .HasColumnType("tinyint(1)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("ArchivePolicy")
                         .HasMaxLength(300)
@@ -3451,11 +3465,15 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("PublicIMConnectivity")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false)
                         .HasColumnName("PublicIMConnectivity");
 
                     b.Property<bool>("RemoteUserAccess")
-                        .HasColumnType("tinyint(1)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("ServerUri")
                         .HasMaxLength(300)
@@ -3529,10 +3547,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         .HasColumnType("datetime(6)");
 
                     b.Property<bool>("DefaultTopPackage")
-                        .HasColumnType("tinyint(1)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("OverrideQuotas")
-                        .HasColumnType("tinyint(1)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("PackageComments")
                         .HasColumnType("TEXT");
@@ -3774,7 +3796,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("PackageVlanId"));
 
                     b.Property<bool>("IsDmz")
-                        .HasColumnType("tinyint(1)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
 
                     b.Property<int>("PackageId")
                         .HasColumnType("int")
@@ -9817,7 +9841,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         .HasColumnType("longtext");
 
                     b.Property<int>("ParameterOrder")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.HasKey("TaskId", "ParameterId");
 
@@ -10752,7 +10778,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         .HasColumnType("tinyint(1)");
 
                     b.Property<int>("OSPlatform")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
+                        .HasDefaultValue(0)
                         .HasColumnName("OSPlatform");
 
                     b.Property<string>("Password")
@@ -10760,7 +10788,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         .HasColumnType("varchar(100)");
 
                     b.Property<bool>("PasswordIsSHA256")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false)
                         .HasColumnName("PasswordIsSHA256");
 
                     b.Property<int?>("PrimaryGroupId")
@@ -10779,7 +10809,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         .HasDefaultValue("");
 
                     b.Property<bool>("VirtualServer")
-                        .HasColumnType("tinyint(1)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
 
                     b.HasKey("ServerId");
 
@@ -14545,7 +14577,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("SfBUserPlanId"));
 
                     b.Property<bool>("AllowOrganizeMeetingsWithExternalAnonymous")
-                        .HasColumnType("tinyint(1)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("ArchivePolicy")
                         .HasMaxLength(300)
@@ -14578,11 +14612,15 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("PublicIMConnectivity")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false)
                         .HasColumnName("PublicIMConnectivity");
 
                     b.Property<bool>("RemoteUserAccess")
-                        .HasColumnType("tinyint(1)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("ServerUri")
                         .HasMaxLength(300)
@@ -14703,7 +14741,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDisabled")
-                        .HasColumnType("tinyint(1)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsShared")
                         .HasColumnType("tinyint(1)");
@@ -15265,10 +15305,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         .HasColumnType("varchar(100)");
 
                     b.Property<bool>("IsDemo")
-                        .HasColumnType("tinyint(1)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsPeer")
-                        .HasColumnType("tinyint(1)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("LastName")
                         .HasMaxLength(50)
@@ -15278,7 +15322,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         .HasColumnType("int");
 
                     b.Property<int>("MfaMode")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<int?>("OneTimePasswordState")
                         .HasColumnType("int");

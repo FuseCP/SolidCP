@@ -19,6 +19,7 @@ public partial class ExchangeOrganizationDomainConfiguration : EntityTypeConfigu
 
 #if NetCore
         Property(e => e.IsHost).HasDefaultValue(false);
+		Property(e => e.DomainTypeId).HasDefaultValue(0);
 
         HasOne(d => d.Item).WithMany(p => p.ExchangeOrganizationDomains).HasConstraintName("FK_ExchangeOrganizationDomains_ServiceItems");
 #else

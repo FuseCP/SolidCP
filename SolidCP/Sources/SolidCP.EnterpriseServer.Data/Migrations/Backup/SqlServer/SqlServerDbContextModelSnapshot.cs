@@ -2523,16 +2523,22 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                         .HasColumnType("datetime");
 
                     b.Property<bool>("HostingAllowed")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsDomainPointer")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsPreviewDomain")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsSubDomain")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<DateTime?>("LastUpdateDate")
                         .HasColumnType("datetime");
@@ -2622,7 +2628,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<int>("FolderQuota")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<string>("HomeFolder")
                         .HasMaxLength(255)
@@ -2714,7 +2722,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                         .HasColumnType("int");
 
                     b.Property<bool>("IsVip")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
+                        .HasDefaultValue(false)
                         .HasColumnName("IsVIP");
 
                     b.Property<int>("ItemId")
@@ -3044,7 +3054,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                         .HasColumnName("DomainID");
 
                     b.Property<int>("DomainTypeId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
+                        .HasDefaultValue(0)
                         .HasColumnName("DomainTypeID");
 
                     b.Property<bool?>("IsHost")
@@ -3425,7 +3437,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LyncUserPlanId"));
 
                     b.Property<bool>("AllowOrganizeMeetingsWithExternalAnonymous")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("ArchivePolicy")
                         .HasMaxLength(300)
@@ -3466,11 +3480,15 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                         .HasColumnType("bit");
 
                     b.Property<bool>("PublicIMConnectivity")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
+                        .HasDefaultValue(false)
                         .HasColumnName("PublicIMConnectivity");
 
                     b.Property<bool>("RemoteUserAccess")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("ServerUri")
                         .HasMaxLength(300)
@@ -3548,10 +3566,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                         .HasColumnType("datetime");
 
                     b.Property<bool>("DefaultTopPackage")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("OverrideQuotas")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("PackageComments")
                         .HasColumnType("ntext");
@@ -3800,7 +3822,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PackageVlanId"));
 
                     b.Property<bool>("IsDmz")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<int>("PackageId")
                         .HasColumnType("int")
@@ -9843,7 +9867,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ParameterOrder")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.HasKey("TaskId", "ParameterId");
 
@@ -10778,7 +10804,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                         .HasColumnType("bit");
 
                     b.Property<int>("OSPlatform")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
+                        .HasDefaultValue(0)
                         .HasColumnName("OSPlatform");
 
                     b.Property<string>("Password")
@@ -10786,7 +10814,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("PasswordIsSHA256")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
+                        .HasDefaultValue(false)
                         .HasColumnName("PasswordIsSHA256");
 
                     b.Property<int?>("PrimaryGroupId")
@@ -10805,7 +10835,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                         .HasDefaultValue("");
 
                     b.Property<bool>("VirtualServer")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.HasKey("ServerId");
 
@@ -14571,7 +14603,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SfBUserPlanId"));
 
                     b.Property<bool>("AllowOrganizeMeetingsWithExternalAnonymous")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("ArchivePolicy")
                         .HasMaxLength(300)
@@ -14604,11 +14638,15 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                         .HasColumnType("bit");
 
                     b.Property<bool>("PublicIMConnectivity")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
+                        .HasDefaultValue(false)
                         .HasColumnName("PublicIMConnectivity");
 
                     b.Property<bool>("RemoteUserAccess")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("ServerUri")
                         .HasMaxLength(300)
@@ -14729,7 +14767,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDisabled")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsShared")
                         .HasColumnType("bit");
@@ -15291,10 +15331,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                         .HasColumnType("varchar(100)");
 
                     b.Property<bool>("IsDemo")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsPeer")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("LastName")
                         .HasMaxLength(50)
@@ -15304,7 +15348,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                         .HasColumnType("int");
 
                     b.Property<int>("MfaMode")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<int?>("OneTimePasswordState")
                         .HasColumnType("int");

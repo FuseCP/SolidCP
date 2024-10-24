@@ -21,6 +21,8 @@ public partial class ExchangeAccountConfiguration : EntityTypeConfiguration<Exch
 		if (IsSqlServer) Property(e => e.CreatedDate).HasColumnType("datetime");
 
 #if NetCore
+		Property(e => e.IsVip).HasDefaultValue(false);
+
         if (IsSqlServer) Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");
 
         HasOne(d => d.Item).WithMany(p => p.ExchangeAccounts).HasConstraintName("FK_ExchangeAccounts_ServiceItems");

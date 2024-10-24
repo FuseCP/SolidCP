@@ -133,12 +133,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="Migrations\SqlServer\20241012194301_InitialCreate_StoredProcedures.sql" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <EmbeddedResource Include="LegacyScripts\update_db.sql" />
-        <EmbeddedResource Include="Migrations\SqlServer\20241012194301_InitialCreate_StoredProcedures.sql" />
+      <None Remove="Migrations\SqlServer\20241024041433_InitialCreate_StoredProcedures.sql" />
+      <EmbeddedResource Include="Migrations\SqlServer\20241024041433_InitialCreate_StoredProcedures.sql" />
+      <EmbeddedResource Include="LegacyScripts\update_db.sql" />
     </ItemGroup>
 
     <ItemGroup>

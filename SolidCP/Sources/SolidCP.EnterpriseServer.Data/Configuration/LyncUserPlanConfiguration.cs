@@ -26,6 +26,10 @@ public partial class LyncUserPlanConfiguration: EntityTypeConfiguration<LyncUser
 		}
 
 #if NetCore
+		Property(e => e.RemoteUserAccess).HasDefaultValue(false);
+		Property(e => e.PublicIMConnectivity).HasDefaultValue(false);
+		Property(e => e.AllowOrganizeMeetingsWithExternalAnonymous).HasDefaultValue(false);
+
 		HasOne(d => d.Item).WithMany(p => p.LyncUserPlans).HasConstraintName("FK_LyncUserPlans_ExchangeOrganizations");
 #else
         HasRequired(d => d.Item).WithMany(p => p.LyncUserPlans);
