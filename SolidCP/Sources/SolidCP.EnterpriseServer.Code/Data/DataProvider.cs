@@ -25991,7 +25991,7 @@ RETURN
 						schedule.FromTime = fromTime;
 						schedule.ToTime = toTime;
 						schedule.StartTime = startTime;
-						schedule.LastRun = lastRun;
+						schedule.LastRun = lastRun == DateTime.MinValue ? null : lastRun;
 						schedule.NextRun = nextRun;
 						schedule.Enabled = enabled;
 						schedule.PriorityId = priorityId;
@@ -26612,8 +26612,8 @@ RETURN
 					MailEnabledPublicFolder = mailEnabledPublicFolder,
 					MailboxManagerActions = mailboxManagerActions,
 					SamAccountName = samAccountName,
-					MailboxPlanId = mailboxPlanId,
-					SubscriberNumber = subscriberNumber,
+					MailboxPlanId = mailboxPlanId == 0 ? null : mailboxPlanId,
+					SubscriberNumber = string.IsNullOrEmpty(subscriberNumber) ? null : subscriberNumber,
 					UserPrincipalName = primaryEmailAddress,
 					CreatedDate = DateTime.Now
 				};
@@ -27284,7 +27284,9 @@ RETURN
 				*/
 				#endregion
 
-				return ExchangeAccounts.Any(a => a.SamAccountName.EndsWith($"\\{accountName}"));
+				var path = $"\\{accountName}";
+
+                return ExchangeAccounts.Any(a => a.SamAccountName.EndsWith(path));
 			}
 			else
 			{
@@ -27372,9 +27374,9 @@ RETURN
 					account.MailboxManagerActions = mailboxManagerActions;
 					account.AccountType = accountType;
 					account.SamAccountName = samAccountName;
-					account.MailboxPlanId = mailboxPlanId == -1 ? null : mailboxPlanId;
-					account.SubscriberNumber = subscriberNumber;
-					account.ArchivingMailboxPlanId = archivePlanId;
+					account.MailboxPlanId = (mailboxPlanId == -1 || mailboxPlanId == 0) ? null : mailboxPlanId;
+					account.SubscriberNumber = string.IsNullOrEmpty(subscriberNumber) ? null : subscriberNumber;
+					account.ArchivingMailboxPlanId = archivePlanId < 1 ? null : archivePlanId;
 					account.EnableArchiving = EnableArchiving;
 					SaveChanges();
 				}
@@ -27439,7 +27441,7 @@ RETURN
 				var account = ExchangeAccounts.FirstOrDefault(a => a.AccountId == accountId);
 				if (account != null)
 				{
-					account.LevelId = levelId != -1 ? levelId : null;
+					account.LevelId = (levelId != -1 && levelId != 0) ? levelId : null;
 					account.IsVip = isVIP;
 					SaveChanges();
 				}
@@ -29407,8 +29409,8 @@ RETURN
 #if NETFRAMEWORK
 				foreach (var account in ExchangeAccounts.Where(a => a.AccountId == accountId))
 				{
-					account.MailboxPlanId = mailboxPlanId;
-					account.ArchivingMailboxPlanId = archivePlanId;
+					account.MailboxPlanId = mailboxPlanId == 0 ? null : mailboxPlanId;
+					account.ArchivingMailboxPlanId = archivePlanId < 1 ? null : archivePlanId;
 					account.EnableArchiving = EnableArchiving;
 				}
 				SaveChanges();
@@ -37117,6 +37119,7 @@ RETURN
 					CommandType.StoredProcedure,
 					"SetLyncUserLyncUserplan",
 					new SqlParameter("@AccountID", accountId),
+					// TODO: Bug, LyncUserPlanId is not nullable in the table
 					new SqlParameter("@LyncUserPlanId", (lyncUserPlanId == 0) ? (object)DBNull.Value : (object)lyncUserPlanId));
 			}
 		}
@@ -38223,6 +38226,7 @@ RETURN
 					CommandType.StoredProcedure,
 					"SetSfBUserSfBUserPlan",
 					new SqlParameter("@AccountID", accountId),
+					// TODO: Bug SfBUserPlanId is not nullable in the table
 					new SqlParameter("@SfBUserPlanId", (sfbUserPlanId == 0) ? (object)DBNull.Value : (object)sfbUserPlanId));
 			}
 		}
