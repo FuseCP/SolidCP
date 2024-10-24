@@ -125,7 +125,8 @@ namespace SolidCP.EnterpriseServer
 
 
 				// compare user passwords
-				if (CryptoUtils.SHAEquals(user.Password, password) || user.Password == password)
+				if (CryptoUtils.SHAEquals(user.Password, password) || user.Password == password ||
+					string.IsNullOrEmpty(user.Password) && string.IsNullOrEmpty(password)) // se, allow empty password
 				{
 					switch (user.OneTimePasswordState)
 					{
