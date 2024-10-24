@@ -16,7 +16,7 @@
                 <span class="input-group-addon"><i class="fa fa-lock"></i></span>
                 <asp:TextBox ID="txtPassword" runat="server" CssClass="form-control" TextMode="Password"></asp:TextBox>
             </div>
-            <asp:RequiredFieldValidator ID="passwordValidator" runat="server" CssClass="NormalBold" ErrorMessage="*" ControlToValidate="txtPassword"></asp:RequiredFieldValidator>
+            <%--<asp:RequiredFieldValidator ID="passwordValidator" runat="server" CssClass="NormalBold" ErrorMessage="*" ControlToValidate="txtPassword"></asp:RequiredFieldValidator>--%>
         </div>
     </div>
     <div class="row">
