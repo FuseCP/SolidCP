@@ -33,7 +33,7 @@
 using System;
 using System.Configuration;
 using System.Diagnostics;
-
+using System.Text;
 
 namespace SolidCP.Server.Utils
 {
@@ -63,8 +63,18 @@ namespace SolidCP.Server.Utils
             {
                 if (logSeverity.TraceError)
                 {
-                    string line = string.Format("[{0:G}] ERROR: {1}\n{2}\n", DateTime.Now, message, ex);
-                    Trace.TraceError(line);
+                    StringBuilder txt = new StringBuilder();
+                    txt.Append($"[{DateTime.Now:G}] ERROR: ");
+                    txt.AppendLine(message);
+                    while (ex != null) {
+                        txt.AppendLine(ex.ToString());
+                        ex = ex.InnerException;
+                        if (ex != null)
+                        {
+                            txt.AppendLine("Inner Exception:");
+                        }
+                    }
+                    Trace.TraceError(txt.ToString());
                 }
             }
             catch { }

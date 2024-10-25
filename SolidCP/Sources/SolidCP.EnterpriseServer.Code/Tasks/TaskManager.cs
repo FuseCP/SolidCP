@@ -45,6 +45,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using SolidCP.Providers;
 using SolidCP.Providers.HostedSolution;
+using SolidCP.EnterpriseServer.Data.Extensions;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -262,12 +263,28 @@ namespace SolidCP.EnterpriseServer
             WriteLogRecord(guid, 1, text, null, textParameters);
         }
 
-        public Exception WriteError(Exception ex)
+        public void WriteValidationError(Exception ex)
+        {
+            var valErrMsg = ex.ValidationErrorMessage();
+            if (valErrMsg != null) WriteLogRecord(Guid, 2, valErrMsg, "");
+		}
+
+		public Exception WriteError(Exception ex)
         {
             // ERROR
             WriteLogRecord(Guid, 2, ex.Message, ex.StackTrace);
+            WriteValidationError(ex);
 
-            return new Exception((TopTask != null)
+            var innerEx = ex.InnerException;
+            while (innerEx != null)
+            {
+				WriteLogRecord(Guid, 2, $"Inner Exception:{Environment.NewLine}{innerEx.Message}", innerEx.StackTrace);
+                WriteValidationError(innerEx);
+
+                innerEx = innerEx.InnerException;
+			}
+
+			return new Exception((TopTask != null)
                                      ? String.Format("Error executing '{0}' task on '{1}' {2}",
                                                      TopTask.TaskName, TopTask.ItemName, TopTask.Source)
                                      : String.Format("Error executing task"), ex);
@@ -284,10 +301,22 @@ namespace SolidCP.EnterpriseServer
                 prms[0] = ex.Message;
             }
 
-            WriteLogRecord(Guid, 2, text, ex.Message + "\n" + ex.StackTrace, prms);
-        }
+            WriteLogRecord(Guid, 2, text, ex.Message + Environment.NewLine + ex.StackTrace, prms);
+            WriteValidationError(ex);
 
-        public void WriteError(string text, params string[] textParameters)
+			var innerEx = ex.InnerException;
+			while (innerEx != null)
+			{
+				WriteLogRecord(Guid, 2,
+                    $"Inner Exception:{Environment.NewLine}{innerEx.Message}",
+                    innerEx.StackTrace);
+                WriteValidationError(innerEx);
+
+				innerEx = innerEx.InnerException;
+			}
+		}
+
+		public void WriteError(string text, params string[] textParameters)
         {
             // ERROR
             WriteLogRecord(Guid, 2, text, null, textParameters);
