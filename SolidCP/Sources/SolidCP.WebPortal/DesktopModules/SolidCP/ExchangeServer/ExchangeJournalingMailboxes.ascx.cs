@@ -88,17 +88,20 @@ namespace SolidCP.Portal.ExchangeServer
         private void BindServiceLevelsStats(OrganizationStatistics stats)
         {
             List<ServiceLevelQuotaValueInfo> serviceLevelQuotas = new List<ServiceLevelQuotaValueInfo>();
-            foreach (var quota in stats.ServiceLevels)
+            if (stats.ServiceLevels != null)
             {
-                serviceLevelQuotas.Add(new ServiceLevelQuotaValueInfo
+                foreach (var quota in stats.ServiceLevels)
                 {
-                    QuotaName = quota.QuotaName,
-                    QuotaDescription = quota.QuotaDescription + " in this Organization:",
-                    QuotaTypeId = quota.QuotaTypeId,
-                    QuotaValue = quota.QuotaAllocatedValue,
-                    QuotaUsedValue = quota.QuotaUsedValue,
-                    QuotaAvailable = quota.QuotaAllocatedValue - quota.QuotaUsedValue
-                });
+                    serviceLevelQuotas.Add(new ServiceLevelQuotaValueInfo
+                    {
+                        QuotaName = quota.QuotaName,
+                        QuotaDescription = quota.QuotaDescription + " in this Organization:",
+                        QuotaTypeId = quota.QuotaTypeId,
+                        QuotaValue = quota.QuotaAllocatedValue,
+                        QuotaUsedValue = quota.QuotaUsedValue,
+                        QuotaAvailable = quota.QuotaAllocatedValue - quota.QuotaUsedValue
+                    });
+                }
             }
             dlServiceLevelQuotas.DataSource = serviceLevelQuotas;
             dlServiceLevelQuotas.DataBind();
