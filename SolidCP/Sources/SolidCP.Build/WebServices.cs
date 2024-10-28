@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using System.Runtime.InteropServices;
 
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using System.Collections.Immutable;
 
 namespace SolidCP.Build
 {
@@ -107,61 +108,34 @@ namespace SolidCP.Build
 	}
 
 	[Generator(LanguageNames.CSharp)]
-	public class WebServices : ISourceGenerator
+	public class WebServices : IIncrementalGenerator
 	{
 
+		public const string WebServiceAttributeName = "SolidCP.Web.Services.WebServiceAttribute";
 		public const bool Debug = false; // Set to true to debug SolidCP.Build
 		public const bool EmitOpenApiTypes = false;
 
 		public static readonly string NewLine = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "\r\n" : "\n";
 
-		public void Execute(GeneratorExecutionContext context)
+		public static void Execute(Compilation compilation, ImmutableArray<ClassDeclarationSyntax> classes, SourceProductionContext context)
 		{
 
 #if DEBUG
 			if (Debug && !Debugger.IsAttached) Debugger.Launch();
 #endif
 
-			// get WebServices
-			var classesWithAttributes = context.Compilation.SyntaxTrees
-				.Select(tree => new
-				{
-					Tree = tree,
-					Classes = tree.GetRoot()
-						.DescendantNodes()
-						.OfType<ClassDeclarationSyntax>()
-						.Where(classDeclaration => classDeclaration
-							.DescendantNodes()
-							.OfType<AttributeSyntax>()
-							.Any())
-				})
-				.ToList();
-			var classesWithModel = classesWithAttributes
+			var classesWithModel = classes
 				.Select(c => new
 				{
-					Model = context.Compilation.GetSemanticModel(c.Tree),
-					Classes = c.Classes
+					Model = compilation.GetSemanticModel(c.SyntaxTree),
+					Class = c
 				})
-				.SelectMany(c => c.Classes
-					.Select(d => new
-					{
-						Model = c.Model,
-						Class = d
-					}))
-				.ToList();
-
-			var webServiceClasses = classesWithModel
-				.Where(c => c.Class.AttributeLists
-				.Any(al => al.Attributes
-					.Any(a =>
-						((INamedTypeSymbol)c.Model.GetTypeInfo(a).Type).GetFullTypeName() == "SolidCP.Web.Services.WebServiceAttribute")))
 				.ToList();
 
 			var wcfTtypes = new List<QualifiedNameSyntax>();
 
-			foreach (var ws in webServiceClasses)
+			foreach (var ws in classesWithModel)
 			{
-
 				var tree = ws.Class.SyntaxTree;
 				var oldTree = tree.GetRoot() as CompilationUnitSyntax;
 				CompilationUnitSyntax serverTree;
@@ -370,7 +344,55 @@ namespace SolidCP.Build
 			context.AddSource("WCFServiceTypes.g", $"#if !Client{NewLine}{typesText}{NewLine}#endif");
 		}
 
-		public void Initialize(GeneratorInitializationContext context) {
+		public void Initialize(IncrementalGeneratorInitializationContext context)
+		{
+			IncrementalValuesProvider<ClassDeclarationSyntax> classDeclarations = context.SyntaxProvider
+				.CreateSyntaxProvider(
+					predicate: static (s, _) => IsSyntaxTargetForGeneration(s),
+					transform: static (ctx, _) => GetSemanticTargetForGeneration(ctx))
+				.Where(static m => m is not null);
+
+			static bool IsSyntaxTargetForGeneration(SyntaxNode node)
+				=> node is ClassDeclarationSyntax m && m.AttributeLists.Count > 0;
+
+			static ClassDeclarationSyntax? GetSemanticTargetForGeneration(GeneratorSyntaxContext context)
+			{
+				// we know the node is a MethodDeclarationSyntax thanks to IsSyntaxTargetForGeneration
+				var classDeclarationSyntax = (ClassDeclarationSyntax)context.Node;
+
+				// loop through all the attributes on the method
+				foreach (AttributeListSyntax attributeListSyntax in classDeclarationSyntax.AttributeLists)
+				{
+					foreach (AttributeSyntax attributeSyntax in attributeListSyntax.Attributes)
+					{
+						IMethodSymbol attributeSymbol = context.SemanticModel.GetSymbolInfo(attributeSyntax).Symbol as IMethodSymbol;
+						if (attributeSymbol == null)
+						{
+							// weird, we couldn't get the symbol, ignore it
+							continue;
+						}
+
+						INamedTypeSymbol attributeContainingTypeSymbol = attributeSymbol.ContainingType;
+						string fullName = attributeContainingTypeSymbol.ToDisplayString();
+
+						// Is the attribute the [WebService] attribute?
+						if (fullName == WebServiceAttributeName)
+						{
+							// return the parent class of the method
+							return classDeclarationSyntax;
+						}
+					}
+				}
+
+				// we didn't find the attribute we were looking for
+				return null;
+			}
+
+			IncrementalValueProvider<(Compilation, ImmutableArray<ClassDeclarationSyntax>)> compilationAndClasses
+				= context.CompilationProvider.Combine(classDeclarations.Collect());
+
+			context.RegisterSourceOutput(compilationAndClasses,
+				static (spc, source) => Execute(source.Item1, source.Item2, spc));
 		}
 	}
 }

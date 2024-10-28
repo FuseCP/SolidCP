@@ -168,9 +168,9 @@ CREATE TABLE "SfBUserPlans" (
     "EnterpriseVoice" INTEGER NOT NULL,
     "VoicePolicy" TEXT COLLATE NOCASE NOT NULL,
     "IsDefault" INTEGER NOT NULL,
-    "RemoteUserAccess" INTEGER NOT NULL,
-    "PublicIMConnectivity" INTEGER NOT NULL,
-    "AllowOrganizeMeetingsWithExternalAnonymous" INTEGER NOT NULL,
+    "RemoteUserAccess" INTEGER NOT NULL DEFAULT 0,
+    "PublicIMConnectivity" INTEGER NOT NULL DEFAULT 0,
+    "AllowOrganizeMeetingsWithExternalAnonymous" INTEGER NOT NULL DEFAULT 0,
     "Telephony" INTEGER NULL,
     "ServerURI" TEXT NULL,
     "ArchivePolicy" TEXT COLLATE NOCASE NULL,
@@ -257,8 +257,8 @@ CREATE TABLE "Users" (
     "OwnerID" INTEGER NULL,
     "RoleID" INTEGER NOT NULL,
     "StatusID" INTEGER NOT NULL,
-    "IsDemo" INTEGER NOT NULL,
-    "IsPeer" INTEGER NOT NULL,
+    "IsDemo" INTEGER NOT NULL DEFAULT 0,
+    "IsPeer" INTEGER NOT NULL DEFAULT 0,
     "Username" TEXT NULL,
     "Password" TEXT NULL,
     "FirstName" TEXT NULL,
@@ -285,7 +285,7 @@ CREATE TABLE "Users" (
     "FailedLogins" INTEGER NULL,
     "SubscriberNumber" TEXT NULL,
     "OneTimePasswordState" INTEGER NULL,
-    "MfaMode" INTEGER NOT NULL,
+    "MfaMode" INTEGER NOT NULL DEFAULT 0,
     "PinSecret" TEXT NULL,
     CONSTRAINT "FK_Users_Users" FOREIGN KEY ("OwnerID") REFERENCES "Users" ("UserID")
 );
@@ -393,7 +393,7 @@ CREATE TABLE "Servers" (
     "ServerUrl" TEXT NULL DEFAULT '',
     "Password" TEXT NULL,
     "Comments" TEXT NULL,
-    "VirtualServer" INTEGER NOT NULL,
+    "VirtualServer" INTEGER NOT NULL DEFAULT 0,
     "InstantDomainAlias" TEXT NULL,
     "PrimaryGroupID" INTEGER NULL,
     "ADRootDomain" TEXT NULL,
@@ -403,9 +403,9 @@ CREATE TABLE "Servers" (
     "ADEnabled" INTEGER NULL DEFAULT 0,
     "ADParentDomain" TEXT NULL,
     "ADParentDomainController" TEXT NULL,
-    "OSPlatform" INTEGER NOT NULL,
+    "OSPlatform" INTEGER NOT NULL DEFAULT 0,
     "IsCore" INTEGER NULL,
-    "PasswordIsSHA256" INTEGER NOT NULL,
+    "PasswordIsSHA256" INTEGER NOT NULL DEFAULT 0,
     CONSTRAINT "FK_Servers_ResourceGroups" FOREIGN KEY ("PrimaryGroupID") REFERENCES "ResourceGroups" ("GroupID")
 );
 
@@ -430,7 +430,7 @@ CREATE TABLE "ScheduleTaskParameters" (
     "ParameterID" TEXT COLLATE NOCASE NOT NULL,
     "DataTypeID" TEXT NOT NULL,
     "DefaultValue" TEXT NULL,
-    "ParameterOrder" INTEGER NOT NULL,
+    "ParameterOrder" INTEGER NOT NULL DEFAULT 0,
     CONSTRAINT "PK_ScheduleTaskParameters" PRIMARY KEY ("TaskID", "ParameterID"),
     CONSTRAINT "FK_ScheduleTaskParameters_ScheduleTasks" FOREIGN KEY ("TaskID") REFERENCES "ScheduleTasks" ("TaskID")
 );
@@ -576,9 +576,9 @@ CREATE TABLE "Packages" (
     "StatusID" INTEGER NOT NULL,
     "PlanID" INTEGER NULL,
     "PurchaseDate" TEXT NULL,
-    "OverrideQuotas" INTEGER NOT NULL,
+    "OverrideQuotas" INTEGER NOT NULL DEFAULT 0,
     "BandwidthUpdated" TEXT NULL,
-    "DefaultTopPackage" INTEGER NOT NULL,
+    "DefaultTopPackage" INTEGER NOT NULL DEFAULT 0,
     "StatusIDchangeDate" TEXT NOT NULL,
     CONSTRAINT "FK_Packages_HostingPlans" FOREIGN KEY ("PlanID") REFERENCES "HostingPlans" ("PlanID") ON DELETE CASCADE,
     CONSTRAINT "FK_Packages_Packages" FOREIGN KEY ("ParentPackageID") REFERENCES "Packages" ("PackageID"),
@@ -605,7 +605,7 @@ CREATE TABLE "StorageSpaces" (
     "UncPath" TEXT NULL,
     "FsrmQuotaType" INTEGER NOT NULL,
     "FsrmQuotaSizeBytes" INTEGER NOT NULL,
-    "IsDisabled" INTEGER NOT NULL,
+    "IsDisabled" INTEGER NOT NULL DEFAULT 0,
     CONSTRAINT "FK_StorageSpaces_ServerId" FOREIGN KEY ("ServerId") REFERENCES "Servers" ("ServerID") ON DELETE CASCADE,
     CONSTRAINT "FK_StorageSpaces_ServiceId" FOREIGN KEY ("ServiceId") REFERENCES "Services" ("ServiceID") ON DELETE CASCADE
 );
@@ -717,7 +717,7 @@ CREATE TABLE "PackageVLANs" (
     "PackageVlanID" INTEGER NOT NULL CONSTRAINT "PK__PackageV__A9AABBF9C0C25CB3" PRIMARY KEY AUTOINCREMENT,
     "VlanID" INTEGER NOT NULL,
     "PackageID" INTEGER NOT NULL,
-    "IsDmz" INTEGER NOT NULL,
+    "IsDmz" INTEGER NOT NULL DEFAULT 0,
     CONSTRAINT "FK_PackageID" FOREIGN KEY ("PackageID") REFERENCES "Packages" ("PackageID") ON DELETE CASCADE,
     CONSTRAINT "FK_VlanID" FOREIGN KEY ("VlanID") REFERENCES "PrivateNetworkVLANs" ("VlanID") ON DELETE CASCADE
 );
@@ -788,11 +788,11 @@ CREATE TABLE "Domains" (
     "PackageID" INTEGER NOT NULL,
     "ZoneItemID" INTEGER NULL,
     "DomainName" TEXT COLLATE NOCASE NOT NULL,
-    "HostingAllowed" INTEGER NOT NULL,
+    "HostingAllowed" INTEGER NOT NULL DEFAULT 0,
     "WebSiteID" INTEGER NULL,
     "MailDomainID" INTEGER NULL,
-    "IsSubDomain" INTEGER NOT NULL,
-    "IsPreviewDomain" INTEGER NOT NULL,
+    "IsSubDomain" INTEGER NOT NULL DEFAULT 0,
+    "IsPreviewDomain" INTEGER NOT NULL DEFAULT 0,
     "IsDomainPointer" INTEGER NOT NULL,
     "DomainItemId" INTEGER NULL,
     "CreationDate" TEXT NULL,
@@ -810,7 +810,7 @@ CREATE TABLE "ExchangeOrganizationDomains" (
     "ItemID" INTEGER NOT NULL,
     "DomainID" INTEGER NULL,
     "IsHost" INTEGER NULL DEFAULT 0,
-    "DomainTypeID" INTEGER NOT NULL,
+    "DomainTypeID" INTEGER NOT NULL DEFAULT 0,
     CONSTRAINT "FK_ExchangeOrganizationDomains_ServiceItems" FOREIGN KEY ("ItemID") REFERENCES "ServiceItems" ("ItemID") ON DELETE CASCADE
 );
 
@@ -855,7 +855,7 @@ CREATE TABLE "EnterpriseFolders" (
     "EnterpriseFolderID" INTEGER NOT NULL CONSTRAINT "PK_EnterpriseFolders" PRIMARY KEY AUTOINCREMENT,
     "ItemID" INTEGER NOT NULL,
     "FolderName" TEXT NOT NULL,
-    "FolderQuota" INTEGER NOT NULL,
+    "FolderQuota" INTEGER NOT NULL DEFAULT 0,
     "LocationDrive" TEXT NULL,
     "HomeFolder" TEXT NULL,
     "Domain" TEXT COLLATE NOCASE NULL,
@@ -938,9 +938,9 @@ CREATE TABLE "LyncUserPlans" (
     "EnterpriseVoice" INTEGER NOT NULL,
     "VoicePolicy" TEXT COLLATE NOCASE NOT NULL,
     "IsDefault" INTEGER NOT NULL,
-    "RemoteUserAccess" INTEGER NOT NULL,
-    "PublicIMConnectivity" INTEGER NOT NULL,
-    "AllowOrganizeMeetingsWithExternalAnonymous" INTEGER NOT NULL,
+    "RemoteUserAccess" INTEGER NOT NULL DEFAULT 0,
+    "PublicIMConnectivity" INTEGER NOT NULL DEFAULT 0,
+    "AllowOrganizeMeetingsWithExternalAnonymous" INTEGER NOT NULL DEFAULT 0,
     "Telephony" INTEGER NULL,
     "ServerURI" TEXT NULL,
     "ArchivePolicy" TEXT COLLATE NOCASE NULL,
@@ -967,7 +967,7 @@ CREATE TABLE "ExchangeAccounts" (
     "ArchivingMailboxPlanId" INTEGER NULL,
     "EnableArchiving" INTEGER NULL,
     "LevelID" INTEGER NULL,
-    "IsVIP" INTEGER NOT NULL,
+    "IsVIP" INTEGER NOT NULL DEFAULT 0,
     CONSTRAINT "FK_ExchangeAccounts_ExchangeMailboxPlans" FOREIGN KEY ("MailboxPlanId") REFERENCES "ExchangeMailboxPlans" ("MailboxPlanId"),
     CONSTRAINT "FK_ExchangeAccounts_ServiceItems" FOREIGN KEY ("ItemID") REFERENCES "ServiceItems" ("ItemID") ON DELETE CASCADE
 );
@@ -2801,8 +2801,8 @@ VALUES (1, 'SolidCP v1', 1, 1, 'Default', 'Default');
 SELECT changes();
 
 
-INSERT INTO "Users" ("UserID", "AdditionalParams", "Address", "Changed", "City", "Comments", "CompanyName", "Country", "Created", "EcommerceEnabled", "Email", "FailedLogins", "Fax", "FirstName", "HtmlMail", "InstantMessenger", "IsDemo", "IsPeer", "LastName", "LoginStatusId", "MfaMode", "OneTimePasswordState", "OwnerID", "Password", "PinSecret", "PrimaryPhone", "RoleID", "SecondaryEmail", "SecondaryPhone", "State", "StatusID", "SubscriberNumber", "Username", "Zip")
-VALUES (1, NULL, '', '2010-07-16 10:53:02.453', '', '', NULL, '', '2010-07-16 12:53:02.453', 1, 'serveradmin@myhosting.com', NULL, '', 'Enterprise', 1, '', 0, 0, 'Administrator', NULL, 0, NULL, NULL, '', NULL, '', 1, '', '', '', 1, NULL, 'serveradmin', '');
+INSERT INTO "Users" ("UserID", "AdditionalParams", "Address", "Changed", "City", "Comments", "CompanyName", "Country", "Created", "EcommerceEnabled", "Email", "FailedLogins", "Fax", "FirstName", "HtmlMail", "InstantMessenger", "LastName", "LoginStatusId", "OneTimePasswordState", "OwnerID", "Password", "PinSecret", "PrimaryPhone", "RoleID", "SecondaryEmail", "SecondaryPhone", "State", "StatusID", "SubscriberNumber", "Username", "Zip")
+VALUES (1, NULL, '', '2010-07-16 10:53:02.453', '', '', NULL, '', '2010-07-16 12:53:02.453', 1, 'serveradmin@myhosting.com', NULL, '', 'Enterprise', 1, '', 'Administrator', NULL, NULL, NULL, '', NULL, '', 1, '', '', '', 1, NULL, 'serveradmin', '');
 SELECT changes();
 
 
@@ -2839,8 +2839,8 @@ VALUES ('1.4.9', '2024-04-20 00:00:00');
 SELECT changes();
 
 
-INSERT INTO "Packages" ("PackageID", "BandwidthUpdated", "DefaultTopPackage", "OverrideQuotas", "PackageComments", "PackageName", "ParentPackageID", "PlanID", "PurchaseDate", "ServerID", "StatusID", "StatusIDchangeDate", "UserID")
-VALUES (1, NULL, 0, 0, '', 'System', NULL, NULL, NULL, NULL, 1, '2024-04-20 11:02:58.56', 1);
+INSERT INTO "Packages" ("PackageID", "BandwidthUpdated", "PackageComments", "PackageName", "ParentPackageID", "PlanID", "PurchaseDate", "ServerID", "StatusID", "StatusIDchangeDate", "UserID")
+VALUES (1, NULL, '', 'System', NULL, NULL, NULL, NULL, 1, '2024-04-20 11:02:58.56', 1);
 SELECT changes();
 
 
@@ -8029,7 +8029,7 @@ CREATE INDEX "WebDavAccessTokensIdx_AccountID" ON "WebDavAccessTokens" ("Account
 CREATE INDEX "WebDavPortalUsersSettingsIdx_AccountId" ON "WebDavPortalUsersSettings" ("AccountId");
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20241012194211_InitialCreate', '8.0.10');
+VALUES ('20241024041409_InitialCreate', '8.0.10');
 
 COMMIT;
 

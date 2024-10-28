@@ -7,14 +7,13 @@
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Nullable>disable</Nullable>
-	</PropertyGroup>
+        <OutputPath>..\SolidCP.Server\bin\DNS\</OutputPath>
+    </PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 		<DebugType>full</DebugType>
-		<OutputPath>..\SolidCP.Server\bin\DNS</OutputPath>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
 		<DebugType>pdbonly</DebugType>
-		<OutputPath>..\SolidCP.Server\bin\Dns2012\</OutputPath>
 	</PropertyGroup>
 	<ItemGroup>
 	  <Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />

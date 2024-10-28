@@ -16,7 +16,7 @@
 		<DebugType>portable</DebugType>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="MySql.Data" Version="9.0.0" GeneratePathProperty="true" />
+		<PackageReference Include="MySql.Data" Version="9.1.0" GeneratePathProperty="true" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />

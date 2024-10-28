@@ -2486,16 +2486,22 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("HostingAllowed")
-                        .HasColumnType("INTEGER");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsDomainPointer")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsPreviewDomain")
-                        .HasColumnType("INTEGER");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsSubDomain")
-                        .HasColumnType("INTEGER");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(false);
 
                     b.Property<DateTime?>("LastUpdateDate")
                         .HasColumnType("TEXT");
@@ -2581,7 +2587,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("TEXT");
 
                     b.Property<int>("FolderQuota")
-                        .HasColumnType("INTEGER");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(0);
 
                     b.Property<string>("HomeFolder")
                         .HasMaxLength(255)
@@ -2667,7 +2675,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsVip")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
+                        .HasDefaultValue(false)
                         .HasColumnName("IsVIP");
 
                     b.Property<int>("ItemId")
@@ -2985,7 +2995,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnName("DomainID");
 
                     b.Property<int>("DomainTypeId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
+                        .HasDefaultValue(0)
                         .HasColumnName("DomainTypeID");
 
                     b.Property<bool?>("IsHost")
@@ -3347,7 +3359,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("AllowOrganizeMeetingsWithExternalAnonymous")
-                        .HasColumnType("INTEGER");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("ArchivePolicy")
                         .HasMaxLength(300)
@@ -3388,11 +3402,15 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("PublicIMConnectivity")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
+                        .HasDefaultValue(false)
                         .HasColumnName("PublicIMConnectivity");
 
                     b.Property<bool>("RemoteUserAccess")
-                        .HasColumnType("INTEGER");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("ServerUri")
                         .HasMaxLength(300)
@@ -3462,10 +3480,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("DefaultTopPackage")
-                        .HasColumnType("INTEGER");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("OverrideQuotas")
-                        .HasColumnType("INTEGER");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("PackageComments")
                         .HasColumnType("TEXT");
@@ -3701,7 +3723,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnName("PackageVlanID");
 
                     b.Property<bool>("IsDmz")
-                        .HasColumnType("INTEGER");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(false);
 
                     b.Property<int>("PackageId")
                         .HasColumnType("INTEGER")
@@ -9724,7 +9748,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("TEXT");
 
                     b.Property<int>("ParameterOrder")
-                        .HasColumnType("INTEGER");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(0);
 
                     b.HasKey("TaskId", "ParameterId");
 
@@ -10657,7 +10683,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("OSPlatform")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
+                        .HasDefaultValue(0)
                         .HasColumnName("OSPlatform");
 
                     b.Property<string>("Password")
@@ -10665,7 +10693,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("PasswordIsSHA256")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
+                        .HasDefaultValue(false)
                         .HasColumnName("PasswordIsSHA256");
 
                     b.Property<int?>("PrimaryGroupId")
@@ -10684,7 +10714,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasDefaultValue("");
 
                     b.Property<bool>("VirtualServer")
-                        .HasColumnType("INTEGER");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(false);
 
                     b.HasKey("ServerId");
 
@@ -14442,7 +14474,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnName("SfBUserPlanId");
 
                     b.Property<bool>("AllowOrganizeMeetingsWithExternalAnonymous")
-                        .HasColumnType("INTEGER");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("ArchivePolicy")
                         .HasMaxLength(300)
@@ -14475,11 +14509,15 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("PublicIMConnectivity")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
+                        .HasDefaultValue(false)
                         .HasColumnName("PublicIMConnectivity");
 
                     b.Property<bool>("RemoteUserAccess")
-                        .HasColumnType("INTEGER");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("ServerUri")
                         .HasMaxLength(300)
@@ -14596,7 +14634,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsDisabled")
-                        .HasColumnType("INTEGER");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsShared")
                         .HasColumnType("INTEGER");
@@ -15142,10 +15182,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsDemo")
-                        .HasColumnType("INTEGER");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsPeer")
-                        .HasColumnType("INTEGER");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("LastName")
                         .HasMaxLength(50)
@@ -15155,7 +15199,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("MfaMode")
-                        .HasColumnType("INTEGER");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(0);
 
                     b.Property<int?>("OneTimePasswordState")
                         .HasColumnType("INTEGER");

@@ -2516,16 +2516,22 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("HostingAllowed")
-                        .HasColumnType("boolean");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsDomainPointer")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("IsPreviewDomain")
-                        .HasColumnType("boolean");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsSubDomain")
-                        .HasColumnType("boolean");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.Property<DateTime?>("LastUpdateDate")
                         .HasColumnType("timestamp with time zone");
@@ -2615,7 +2621,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         .HasColumnType("character varying(255)");
 
                     b.Property<int>("FolderQuota")
-                        .HasColumnType("integer");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
 
                     b.Property<string>("HomeFolder")
                         .HasMaxLength(255)
@@ -2705,7 +2713,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         .HasColumnType("integer");
 
                     b.Property<bool>("IsVip")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
+                        .HasDefaultValue(false)
                         .HasColumnName("IsVIP");
 
                     b.Property<int>("ItemId")
@@ -3035,7 +3045,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         .HasColumnName("DomainID");
 
                     b.Property<int>("DomainTypeId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
+                        .HasDefaultValue(0)
                         .HasColumnName("DomainTypeID");
 
                     b.Property<bool?>("IsHost")
@@ -3411,7 +3423,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("LyncUserPlanId"));
 
                     b.Property<bool>("AllowOrganizeMeetingsWithExternalAnonymous")
-                        .HasColumnType("boolean");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("ArchivePolicy")
                         .HasMaxLength(300)
@@ -3452,11 +3466,15 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         .HasColumnType("boolean");
 
                     b.Property<bool>("PublicIMConnectivity")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
+                        .HasDefaultValue(false)
                         .HasColumnName("PublicIMConnectivity");
 
                     b.Property<bool>("RemoteUserAccess")
-                        .HasColumnType("boolean");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("ServerUri")
                         .HasMaxLength(300)
@@ -3530,10 +3548,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("DefaultTopPackage")
-                        .HasColumnType("boolean");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("OverrideQuotas")
-                        .HasColumnType("boolean");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("PackageComments")
                         .HasColumnType("TEXT");
@@ -3775,7 +3797,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PackageVlanId"));
 
                     b.Property<bool>("IsDmz")
-                        .HasColumnType("boolean");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.Property<int>("PackageId")
                         .HasColumnType("integer")
@@ -9818,7 +9842,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         .HasColumnType("text");
 
                     b.Property<int>("ParameterOrder")
-                        .HasColumnType("integer");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
 
                     b.HasKey("TaskId", "ParameterId");
 
@@ -10753,7 +10779,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         .HasColumnType("boolean");
 
                     b.Property<int>("OSPlatform")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
+                        .HasDefaultValue(0)
                         .HasColumnName("OSPlatform");
 
                     b.Property<string>("Password")
@@ -10761,7 +10789,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         .HasColumnType("character varying(100)");
 
                     b.Property<bool>("PasswordIsSHA256")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
+                        .HasDefaultValue(false)
                         .HasColumnName("PasswordIsSHA256");
 
                     b.Property<int?>("PrimaryGroupId")
@@ -10780,7 +10810,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         .HasDefaultValue("");
 
                     b.Property<bool>("VirtualServer")
-                        .HasColumnType("boolean");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.HasKey("ServerId");
 
@@ -14546,7 +14578,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SfBUserPlanId"));
 
                     b.Property<bool>("AllowOrganizeMeetingsWithExternalAnonymous")
-                        .HasColumnType("boolean");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("ArchivePolicy")
                         .HasMaxLength(300)
@@ -14579,11 +14613,15 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         .HasColumnType("boolean");
 
                     b.Property<bool>("PublicIMConnectivity")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
+                        .HasDefaultValue(false)
                         .HasColumnName("PublicIMConnectivity");
 
                     b.Property<bool>("RemoteUserAccess")
-                        .HasColumnType("boolean");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("ServerUri")
                         .HasMaxLength(300)
@@ -14704,7 +14742,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         .HasColumnType("integer");
 
                     b.Property<bool>("IsDisabled")
-                        .HasColumnType("boolean");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsShared")
                         .HasColumnType("boolean");
@@ -15266,10 +15306,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         .HasColumnType("character varying(100)");
 
                     b.Property<bool>("IsDemo")
-                        .HasColumnType("boolean");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsPeer")
-                        .HasColumnType("boolean");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("LastName")
                         .HasMaxLength(50)
@@ -15279,7 +15323,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         .HasColumnType("integer");
 
                     b.Property<int>("MfaMode")
-                        .HasColumnType("integer");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
 
                     b.Property<int?>("OneTimePasswordState")
                         .HasColumnType("integer");

@@ -36,7 +36,7 @@ namespace SolidCP.EnterpriseServer
 		{
 			var clone = Clone();
 			clone.Provider = null;
-			clone.db = new DataProvider();
+			clone.db = Database != null ? Database.Context : new DataProvider();
 			return (T)clone;
 		}
 

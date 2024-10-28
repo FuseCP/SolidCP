@@ -22,6 +22,8 @@ public partial class StorageSpaceConfiguration: EntityTypeConfiguration<StorageS
         Property(e => e.UncPath).IsUnicode(false);
 
 #if NetCore
+        Property(e => e.IsDisabled).HasDefaultValue(false);
+
         HasOne(d => d.Server).WithMany(p => p.StorageSpaces).HasConstraintName("FK_StorageSpaces_ServerId");
 
         HasOne(d => d.Service).WithMany(p => p.StorageSpaces).HasConstraintName("FK_StorageSpaces_ServiceId");

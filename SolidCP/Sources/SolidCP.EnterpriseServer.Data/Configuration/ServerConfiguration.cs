@@ -26,7 +26,11 @@ public partial class ServerConfiguration: EntityTypeConfiguration<Server>
 
 #if NetCore
         Property(e => e.ADEnabled).HasDefaultValue(false);
+		Property(e => e.VirtualServer).HasDefaultValue(false);
         Property(e => e.ServerUrl).HasDefaultValue("");
+		Property(e => e.OSPlatform).HasDefaultValue(Providers.OS.OSPlatform.Unknown);
+		Property(e => e.PasswordIsSHA256).HasDefaultValue(false);
+
 
         HasOne(d => d.PrimaryGroup).WithMany(p => p.Servers).HasConstraintName("FK_Servers_ResourceGroups");
 #else
