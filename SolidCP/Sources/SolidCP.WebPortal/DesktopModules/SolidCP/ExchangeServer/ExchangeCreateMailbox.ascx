@@ -72,15 +72,21 @@
                                     <div class="col-sm-4">
                                         <div class="input-group">
                                             <asp:TextBox ID="txtFirstName" runat="server" CssClass="form-control" onKeyUp="buildDisplayName();" placeholder="First Name" MaxLength="64"></asp:TextBox>
+                                            <asp:RegularExpressionValidator ID="valFirstName" runat="server" ErrorMessage="Enter valid name" ControlToValidate="txtFirstName" meta:resourcekey="valRequireCorrectName" 
+                                                ValidationExpression="^[^'&quot;]+$" SetFocusOnError="True" ValidationGroup="CreateMailbox" Display="Dynamic" Text="*"></asp:RegularExpressionValidator>
                                             <span class="input-group-addon" title="Required"><i class="fa fa-asterisk" aria-hidden="true"></i></span>
                                         </div>
                                     </div>
                                     <div class="col-sm-2">
                                             <asp:TextBox ID="txtInitials" runat="server" MaxLength="6" CssClass="form-control" onKeyUp="buildDisplayName();" placeholder="Initials"></asp:TextBox>
+                                            <asp:RegularExpressionValidator ID="valInitials" runat="server" ErrorMessage="Enter valid name" ControlToValidate="txtInitials" meta:resourcekey="valRequireCorrectName" 
+                                                ValidationExpression="^[^'&quot;]+$" SetFocusOnError="True" ValidationGroup="CreateMailbox" Display="Dynamic" Text="*"></asp:RegularExpressionValidator>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="input-group">
                                             <asp:TextBox ID="txtLastName" runat="server" CssClass="form-control" onKeyUp="buildDisplayName();" placeholder="Last Name" MaxLength="64"></asp:TextBox>
+                                            <asp:RegularExpressionValidator ID="valLastName" runat="server" ErrorMessage="Enter valid name" ControlToValidate="txtLastName" meta:resourcekey="valRequireCorrectName" 
+                                                ValidationExpression="^[^'&quot;]+$" SetFocusOnError="True" ValidationGroup="CreateMailbox" Display="Dynamic" Text="*"></asp:RegularExpressionValidator>
                                             <span class="input-group-addon" title="Required"><i class="fa fa-asterisk" aria-hidden="true"></i></span>
                                         </div>
                                     </div>
@@ -96,6 +102,8 @@
                                         </div>
                                         <asp:RequiredFieldValidator ID="valRequireDisplayName" runat="server" meta:resourcekey="valRequireDisplayName" ControlToValidate="txtDisplayName"
                                             ErrorMessage="Enter Display Name" ValidationGroup="CreateMailbox" Display="Dynamic" Text="*" SetFocusOnError="True"></asp:RequiredFieldValidator>
+                                        <asp:RegularExpressionValidator ID="valDisplayName" runat="server" ErrorMessage="Enter valid name" ControlToValidate="txtDisplayName" meta:resourcekey="valRequireCorrectName" 
+                                                ValidationExpression="^[^'&quot;]+$" SetFocusOnError="True" ValidationGroup="CreateMailbox" Display="Dynamic" Text="*"></asp:RegularExpressionValidator>
                                     </div>
                                 </div>
                               

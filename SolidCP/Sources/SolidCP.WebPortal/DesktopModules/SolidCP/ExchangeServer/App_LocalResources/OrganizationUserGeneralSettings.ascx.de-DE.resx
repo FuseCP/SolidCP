@@ -273,4 +273,10 @@
   <data name="Generalinfo.Text" xml:space="preserve">
     <value>Allgemeine Informationen</value>
   </data>
+  <data name="valRequireCorrectName.ErrorMessage" xml:space="preserve">
+    <value>Geben Sie einen gültigen Namen ein</value>
+  </data>
+  <data name="valRequireCorrectName.Text" xml:space="preserve">
+    <value>*</value>
+  </data>
 </root>

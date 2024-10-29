@@ -57,6 +57,8 @@
                                             <span class="input-group-addon" title="Required"><i class="fa fa-asterisk" aria-hidden="true"></i></span>
                                 <asp:RequiredFieldValidator ID="valRequireDisplayName" runat="server" meta:resourcekey="valRequireDisplayName" ControlToValidate="txtDisplayName"
                                     ErrorMessage="Enter Display Name" ValidationGroup="EditMailbox" Display="Dynamic" Text="*" SetFocusOnError="True"></asp:RequiredFieldValidator>
+                                <asp:RegularExpressionValidator ID="valDisplayName" runat="server" ErrorMessage="Enter valid name" ControlToValidate="txtDisplayName" meta:resourcekey="valRequireCorrectName" 
+                                                ValidationExpression="^[^'&quot;]+$" SetFocusOnError="True" ValidationGroup="EditMailbox" Display="Dynamic" Text="*"></asp:RegularExpressionValidator>
                                         </div>
                                     </div>
        </div>

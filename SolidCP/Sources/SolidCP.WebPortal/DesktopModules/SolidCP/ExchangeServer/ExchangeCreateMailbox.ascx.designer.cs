@@ -123,6 +123,15 @@ namespace SolidCP.Portal.ExchangeServer
         protected global::System.Web.UI.WebControls.TextBox txtFirstName;
 
         /// <summary>
+        /// valFirstName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator valFirstName;
+
+        /// <summary>
         /// txtInitials control.
         /// </summary>
         /// <remarks>
@@ -132,6 +141,15 @@ namespace SolidCP.Portal.ExchangeServer
         protected global::System.Web.UI.WebControls.TextBox txtInitials;
 
         /// <summary>
+        /// valInitials control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator valInitials;
+
+        /// <summary>
         /// txtLastName control.
         /// </summary>
         /// <remarks>
@@ -139,6 +157,15 @@ namespace SolidCP.Portal.ExchangeServer
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtLastName;
+
+        /// <summary>
+        /// valLastName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator valLastName;
 
         /// <summary>
         /// locDisplayName control.
@@ -166,6 +193,15 @@ namespace SolidCP.Portal.ExchangeServer
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator valRequireDisplayName;
+
+        /// <summary>
+        /// valDisplayName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator valDisplayName;
 
         /// <summary>
         /// locSubscriberNumber control.

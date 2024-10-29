@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="btnCreate.OnClientClick" xml:space="preserve">
     <value>ShowProgressDialog('Postfach wird erstellt...');</value>
@@ -194,5 +194,11 @@
   </data>
   <data name="chkUserMustChangePassword.Text" xml:space="preserve">
     <value>Benutzer muss Passwort bei der nächsten Anmeldung ändern</value>
+  </data>
+  <data name="valRequireCorrectName.ErrorMessage" xml:space="preserve">
+    <value>Geben Sie einen gültigen Namen ein</value>
+  </data>
+  <data name="valRequireCorrectName.Text" xml:space="preserve">
+    <value>*</value>
   </data>
 </root>
