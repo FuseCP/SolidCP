@@ -31,6 +31,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
+using System.Text.RegularExpressions;
 //using System.Collections.Generic;
 //using System.Linq;
 using System.Web;
@@ -44,6 +45,18 @@ namespace SolidCP.Portal
 {
     public class PortalAntiXSS
     {
+        public static string CheckExchangeRecipientName(string input)
+        {
+            Regex pattern = new Regex("['\"]");
+            return pattern.Replace(input, "");
+        }
+
+        public static string CheckExchangeDomainName(string input)
+        {
+            Regex pattern = new Regex(@"[~!@#$%^&*()\+=\{\}\[\]\\:"";'<>,.?/]");
+            return pattern.Replace(input, "");
+        }
+
         public static string Encode(string input)
         {
             return Encoder.HtmlEncode(input);

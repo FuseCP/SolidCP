@@ -150,9 +150,9 @@ namespace SolidCP.Portal.ExchangeServer
 
             try
             {
-                string name = IsNewUser ? email.AccountName : userSelector.GetPrimaryEmailAddress().Split('@')[0];
-                string displayName = IsNewUser ? txtDisplayName.Text.Trim() : userSelector.GetDisplayName();
-                string accountName = IsNewUser ? string.Empty : userSelector.GetAccount();
+                string name = PortalAntiXSS.CheckExchangeRecipientName(IsNewUser ? email.AccountName : userSelector.GetPrimaryEmailAddress().Split('@')[0]);
+                string displayName = PortalAntiXSS.CheckExchangeRecipientName(IsNewUser ? txtDisplayName.Text.Trim() : userSelector.GetDisplayName());
+                string accountName = PortalAntiXSS.CheckExchangeRecipientName(IsNewUser ? string.Empty : userSelector.GetAccount());
 
                 bool enableArchive = chkEnableArchiving.Checked;
 
@@ -160,7 +160,7 @@ namespace SolidCP.Portal.ExchangeServer
                                                ? (ExchangeAccountType)Utils.ParseInt(rbMailboxType.SelectedValue, 1)
                                                : ExchangeAccountType.Mailbox;
 
-                string domain = IsNewUser ? email.DomainName : userSelector.GetPrimaryEmailAddress().Split('@')[1];
+                string domain = PortalAntiXSS.CheckExchangeDomainName(IsNewUser ? email.DomainName : userSelector.GetPrimaryEmailAddress().Split('@')[1]);
 
                 int accountId = IsNewUser ? 0 : userSelector.GetAccountId();
 
@@ -222,6 +222,11 @@ namespace SolidCP.Portal.ExchangeServer
         private void SetUserAttributes(int accountId)
         {
             OrganizationUser user = ES.Services.Organizations.GetUserGeneralSettings(PanelRequest.ItemID, accountId);
+
+            txtDisplayName.Text = PortalAntiXSS.CheckExchangeRecipientName(txtDisplayName.Text.Trim());
+            txtFirstName.Text = PortalAntiXSS.CheckExchangeRecipientName(txtFirstName.Text.Trim());
+            txtInitials.Text = PortalAntiXSS.CheckExchangeRecipientName(txtInitials.Text.Trim());
+            txtLastName.Text = PortalAntiXSS.CheckExchangeRecipientName(txtLastName.Text.Trim());
 
             ES.Services.Organizations.SetUserGeneralSettings(
                     PanelRequest.ItemID, accountId,

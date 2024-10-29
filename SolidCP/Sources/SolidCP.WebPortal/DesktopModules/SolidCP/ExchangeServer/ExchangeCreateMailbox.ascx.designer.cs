@@ -7,11 +7,13 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SolidCP.Portal.ExchangeServer {
-    
-    
-    public partial class ExchangeCreateMailbox {
-        
+namespace SolidCP.Portal.ExchangeServer
+{
+
+
+    public partial class ExchangeCreateMailbox
+    {
+
         /// <summary>
         /// asyncTasks control.
         /// </summary>
@@ -20,7 +22,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.EnableAsyncTasksSupport asyncTasks;
-        
+
         /// <summary>
         /// divWrapper control.
         /// </summary>
@@ -29,7 +31,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divWrapper;
-        
+
         /// <summary>
         /// Image1 control.
         /// </summary>
@@ -38,7 +40,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Image Image1;
-        
+
         /// <summary>
         /// locTitle control.
         /// </summary>
@@ -47,7 +49,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locTitle;
-        
+
         /// <summary>
         /// messageBox control.
         /// </summary>
@@ -56,7 +58,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.UserControls.SimpleMessageBox messageBox;
-        
+
         /// <summary>
         /// UpdatePanel1 control.
         /// </summary>
@@ -65,7 +67,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UpdatePanel UpdatePanel1;
-        
+
         /// <summary>
         /// TopComments control.
         /// </summary>
@@ -74,7 +76,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal TopComments;
-        
+
         /// <summary>
         /// rbtnCreateNewMailbox control.
         /// </summary>
@@ -83,7 +85,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RadioButton rbtnCreateNewMailbox;
-        
+
         /// <summary>
         /// rbtnUserExistingUser control.
         /// </summary>
@@ -92,7 +94,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RadioButton rbtnUserExistingUser;
-        
+
         /// <summary>
         /// NewUserDiv control.
         /// </summary>
@@ -101,7 +103,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl NewUserDiv;
-        
+
         /// <summary>
         /// locName control.
         /// </summary>
@@ -110,7 +112,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locName;
-        
+
         /// <summary>
         /// txtFirstName control.
         /// </summary>
@@ -119,7 +121,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtFirstName;
-        
+
         /// <summary>
         /// txtInitials control.
         /// </summary>
@@ -128,7 +130,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtInitials;
-        
+
         /// <summary>
         /// txtLastName control.
         /// </summary>
@@ -137,7 +139,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtLastName;
-        
+
         /// <summary>
         /// locDisplayName control.
         /// </summary>
@@ -146,7 +148,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locDisplayName;
-        
+
         /// <summary>
         /// txtDisplayName control.
         /// </summary>
@@ -155,7 +157,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtDisplayName;
-        
+
         /// <summary>
         /// valRequireDisplayName control.
         /// </summary>
@@ -164,7 +166,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator valRequireDisplayName;
-        
+
         /// <summary>
         /// locSubscriberNumber control.
         /// </summary>
@@ -173,7 +175,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locSubscriberNumber;
-        
+
         /// <summary>
         /// txtSubscriberNumber control.
         /// </summary>
@@ -182,7 +184,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtSubscriberNumber;
-        
+
         /// <summary>
         /// valRequireSubscriberNumber control.
         /// </summary>
@@ -191,7 +193,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator valRequireSubscriberNumber;
-        
+
         /// <summary>
         /// locAccount control.
         /// </summary>
@@ -200,7 +202,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locAccount;
-        
+
         /// <summary>
         /// email control.
         /// </summary>
@@ -209,7 +211,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.ExchangeServer.UserControls.EmailAddress email;
-        
+
         /// <summary>
         /// sendToControl control.
         /// </summary>
@@ -218,7 +220,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.UserControls.SendToControl sendToControl;
-        
+
         /// <summary>
         /// PasswordBlock control.
         /// </summary>
@@ -227,7 +229,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl PasswordBlock;
-        
+
         /// <summary>
         /// password control.
         /// </summary>
@@ -236,7 +238,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.PasswordControl password;
-        
+
         /// <summary>
         /// chkUserMustChangePassword control.
         /// </summary>
@@ -245,7 +247,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkUserMustChangePassword;
-        
+
         /// <summary>
         /// locMailboxType control.
         /// </summary>
@@ -254,7 +256,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locMailboxType;
-        
+
         /// <summary>
         /// rbMailboxType control.
         /// </summary>
@@ -263,7 +265,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RadioButtonList rbMailboxType;
-        
+
         /// <summary>
         /// ExistingUserDiv control.
         /// </summary>
@@ -272,7 +274,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl ExistingUserDiv;
-        
+
         /// <summary>
         /// Localize1 control.
         /// </summary>
@@ -281,7 +283,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize Localize1;
-        
+
         /// <summary>
         /// userSelector control.
         /// </summary>
@@ -290,7 +292,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.ExchangeServer.UserControls.UserSelector userSelector;
-        
+
         /// <summary>
         /// locMailboxplanName control.
         /// </summary>
@@ -299,7 +301,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locMailboxplanName;
-        
+
         /// <summary>
         /// mailboxPlanSelector control.
         /// </summary>
@@ -308,7 +310,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.ExchangeServer.UserControls.MailboxPlanSelector mailboxPlanSelector;
-        
+
         /// <summary>
         /// divRetentionPolicy control.
         /// </summary>
@@ -317,7 +319,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divRetentionPolicy;
-        
+
         /// <summary>
         /// locRetentionPolicyName control.
         /// </summary>
@@ -326,7 +328,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locRetentionPolicyName;
-        
+
         /// <summary>
         /// archivingMailboxPlanSelector control.
         /// </summary>
@@ -335,7 +337,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.ExchangeServer.UserControls.MailboxPlanSelector archivingMailboxPlanSelector;
-        
+
         /// <summary>
         /// divArchiving control.
         /// </summary>
@@ -344,7 +346,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divArchiving;
-        
+
         /// <summary>
         /// chkEnableArchiving control.
         /// </summary>
@@ -353,7 +355,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkEnableArchiving;
-        
+
         /// <summary>
         /// CheckBox1 control.
         /// </summary>
@@ -362,7 +364,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox CheckBox1;
-        
+
         /// <summary>
         /// chkSendInstructions control.
         /// </summary>
@@ -371,7 +373,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkSendInstructions;
-        
+
         /// <summary>
         /// sendInstructionEmail control.
         /// </summary>
@@ -380,7 +382,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.UserControls.EmailControl sendInstructionEmail;
-        
+
         /// <summary>
         /// btnCreate control.
         /// </summary>
@@ -389,7 +391,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::CPCC.StyleButton btnCreate;
-        
+
         /// <summary>
         /// ValidationSummary1 control.
         /// </summary>
