@@ -208,7 +208,7 @@
                         "assemblyVersion": "4.11.0.0",
                         "fileVersion": "4.1100.24.37604"
                     },
-                    "lib/net8.0/WebFormsForCore.Compilers.dll": {
+                    "lib/net8.0/EstrellasDeEsperanza.WebFormsForCore.Compilers.dll": {
                         "assemblyVersion": "8.0.0.0",
                         "fileVersion": "8.0.0.0"
                     },
@@ -2489,7 +2489,12 @@
                     "SolidCP.Portal.Modules.dll": {
                         "assemblyVersion": "1.0.0",
                         "fileVersion": "1.4.9"
-                    }
+                    },
+                    "ADODB.dll": {},
+                    "Humanizer.dll": {},
+                    "Microsoft.CodeAnalysis.Workspaces.dll": {},
+                    "Microsoft.CodeAnalysis.CSharp.Workspaces.dll": {},
+                    "Microsoft.CodeAnalysis.VisualBasic.Workspaces.dll": {}
                 }
             },
             "SolidCP.Web.Clients/1.0.0": {
@@ -4008,6 +4013,11 @@
             "sha512": ""
         },
         "SolidCP.Providers.Base/1.0.0": {
+            "type": "project",
+            "serviceable": false,
+            "sha512": ""
+        },
+        "SolidCP.Portal.Modules/1.0.0": {
             "type": "project",
             "serviceable": false,
             "sha512": ""

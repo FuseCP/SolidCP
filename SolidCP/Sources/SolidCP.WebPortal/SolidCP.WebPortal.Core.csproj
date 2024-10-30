@@ -248,6 +248,9 @@
     <ItemGroup>
       <Compile Include="DesktopModules\SolidCP\Code\Framework\ES.cs" />
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="bin_dotnet\" />
+    </ItemGroup>
 
     <Target Name="ChangeAliasesOfNugetRefs" Condition="$(TargetFramework) != 'net48'" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
         <ItemGroup>
@@ -258,4 +261,12 @@
         </ItemGroup>
     </Target>
 
+    <Target Name="CopyDepsJson" Condition="$(TargetFramework) != 'net48'" AfterTargets="Build">
+        <ItemGroup>
+            <DepsJson Include="SolidCP.WebPortal.deps.json"/>
+        </ItemGroup>
+
+        <Copy SourceFiles="@(DepsJson)" DestinationFolder="$(OutputPath)" />
+    </Target>
+            
 </Project>
