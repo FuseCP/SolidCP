@@ -51,12 +51,6 @@ namespace SolidCP.Portal
             return pattern.Replace(input, "");
         }
 
-        public static string CheckExchangeDomainName(string input)
-        {
-            Regex pattern = new Regex(@"[~!@#$%^&*()\+=\{\}\[\]\\:"";'<>,.?/]");
-            return pattern.Replace(input, "");
-        }
-
         public static string Encode(string input)
         {
             return Encoder.HtmlEncode(input);
