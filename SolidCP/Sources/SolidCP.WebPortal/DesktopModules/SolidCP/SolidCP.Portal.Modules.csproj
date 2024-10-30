@@ -152,7 +152,6 @@
     <Compile Include="Code\Framework\ISchedulerTaskView.cs" />
     <Compile Include="Code\Framework\WebPortalPageTitleProvider.cs" />
     <Compile Include="Code\Framework\WebPortalThemeProvider.cs" />
-    <Compile Include="Code\Helpers\AjaxHandler.cs" />
     <Compile Include="Code\Helpers\AppInstallerHelpers.cs" />
     <Compile Include="Code\Framework\SolidCPControlBase.cs">
       <SubType>ASPXCodeBehind</SubType>
@@ -165,7 +164,6 @@
     <Compile Include="Code\Framework\PanelFormatter.cs" />
     <Compile Include="Code\Framework\PanelGlobals.cs" />
     <Compile Include="Code\Framework\PanelRequest.cs" />
-    <Compile Include="Code\Framework\PanelSecurity.cs" />
     <Compile Include="Code\Framework\Utils.cs" />
     <Compile Include="Code\Helpers\AsyncLoadHandler.cs" />
     <Compile Include="Code\Helpers\AuditLogHelper.cs" />
@@ -9280,10 +9278,9 @@
       <Project>{652639d5-59ce-4f42-8a5f-87cb1e812961}</Project>
       <Name>SolidCP.Web.Clients</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\SolidCP.WebPortal\SolidCP.WebPortal.csproj">
-      <Project>{C99EFB18-FFE7-45BB-8CA8-29336F3E8C68}</Project>
+    <ProjectReference Include="..\..\SolidCP.WebPortal.csproj">
+      <Project>{c99efb18-ffe7-45bb-8ca8-29336f3e8c68}</Project>
       <Name>SolidCP.WebPortal</Name>
-      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -9354,11 +9351,11 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="MoveDllsToBin" AfterTargets="Build">
-    <Message Text="Move Portal dll files to bin" Importance="high" />
+    <Message Text="Copy Portal dll files to bin_dotnet" Importance="high" />
     <ItemGroup>
-      <FilesNeededInBin Include="..\..\bin\Lazy\SolidCP.Portal.Modules.*" />
+      <FilesNeededInBin Include="..\..\bin\SolidCP.Portal.Modules.*" />
     </ItemGroup>
-    <Move SourceFiles="@(FilesNeededInBin)" DestinationFolder="..\..\bin" />
+    <Copy SourceFiles="@(FilesNeededInBin)" DestinationFolder="..\..\bin_dotnet" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

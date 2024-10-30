@@ -1,0 +1,10 @@
+﻿<Project>
+  <PropertyGroup Condition="$(TargetFramework) == 'net8.0'">
+    <BaseOutputPath>$(MSBuildProjectDirectory)/bin_dotnet</BaseOutputPath>
+    <BaseIntermediateOutputPath>$(MSBuildProjectDirectory)/obj/net8.0</BaseIntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(TargetFramework) != 'net8.0'">
+    <BaseOutputPath>$(MSBuildProjectDirectory)/bin</BaseOutputPath>
+    <BaseIntermediateOutputPath>$(MSBuildProjectDirectory)/obj/net48</BaseIntermediateOutputPath>
+  </PropertyGroup>
+</Project>
