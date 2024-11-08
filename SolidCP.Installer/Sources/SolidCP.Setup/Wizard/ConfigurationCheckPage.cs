@@ -251,7 +251,7 @@ namespace SolidCP.Setup
                     version == OS.WindowsVersion.Windows8 ||
                     version == OS.WindowsVersion.Windows10))
 				{
-					details = "OS required: Windows Server 2008/2008 R2/2012 or Windows Vista/7/8.";
+					details = "OS required: Windows Server 2008/2008 R2/2012/2022/2025 or Windows Vista/7/8/10/11.";
 					Log.WriteError(string.Format("OS check: {0}", details), null);
 #if DEBUG
 					return CheckStatuses.Warning;

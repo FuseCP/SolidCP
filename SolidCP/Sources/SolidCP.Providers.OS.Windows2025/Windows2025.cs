@@ -57,7 +57,7 @@ using SolidCP.Providers.DNS;
 namespace SolidCP.Providers.OS
 {
 
-    public class Windows2022 : Windows2003
+    public class Windows2025 : Windows2003
     {
         #region Properties
         internal string PrimaryDomainController
@@ -70,8 +70,7 @@ namespace SolidCP.Providers.OS
         public override bool IsInstalled()
         {
             Server.Utils.OS.WindowsVersion version = SolidCP.Server.Utils.OS.GetVersion();
-            return version == SolidCP.Server.Utils.OS.WindowsVersion.WindowsServer2022
-                || version == SolidCP.Server.Utils.OS.WindowsVersion.Windows11;
+            return version == SolidCP.Server.Utils.OS.WindowsVersion.WindowsServer2025;
         }
         
         public override void SetQuotaLimitOnFolder(string folderPath, string shareNameDrive, QuotaType quotaType, string quotaLimit, int mode, string wmiUserName, string wmiPassword)

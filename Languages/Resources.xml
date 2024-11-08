@@ -30157,6 +30157,16 @@ After creating your virtual directory go to FP administrator and create a subweb
     <DefaultValue>User must change password at next logon</DefaultValue>
   </Resource>
   <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreateMailbox.ascx.resx</File>
+    <Key>valRequireCorrectName.ErrorMessage</Key>
+    <DefaultValue>Enter valid name</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreateMailbox.ascx.resx</File>
+    <Key>valRequireCorrectName.Text</Key>
+    <DefaultValue>*</DefaultValue>
+  </Resource>
+  <Resource>
     <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreatePublicFolder.ascx.resx</File>
     <Key>btnCreate.OnClientClick</Key>
     <DefaultValue>ShowProgressDialog('Creating public folder...');</DefaultValue>
@@ -34015,6 +34025,16 @@ After creating your virtual directory go to FP administrator and create a subweb
     <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\OrganizationUserGeneralSettings.ascx.resx</File>
     <Key>Generalinfo.Text</Key>
     <DefaultValue>General Information</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\OrganizationUserGeneralSettings.ascx.resx</File>
+    <Key>valRequireCorrectName.ErrorMessage</Key>
+    <DefaultValue>Enter valid name</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\OrganizationUserGeneralSettings.ascx.resx</File>
+    <Key>valRequireCorrectName.Text</Key>
+    <DefaultValue>*</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\OrganizationUserMemberOf.ascx.resx</File>

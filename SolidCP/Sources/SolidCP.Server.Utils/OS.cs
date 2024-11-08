@@ -298,7 +298,11 @@ namespace SolidCP.Server.Utils
             WindowsServer2012R2,
             WindowsServer2016,
             Windows10,
-            WindowsServer2019
+            WindowsServer2019,
+			Windows11,
+            WindowsServer2022,
+            WindowsServer2025
+
         }
 
 		/// <summary>
@@ -407,13 +411,22 @@ namespace SolidCP.Server.Utils
                             }
                             break;
                         case 10:
-                            int ReleaseId = GetReleaseId();
-                            // Server 2016
-                            if (ReleaseId == 1607 || ReleaseId == 1803 || ReleaseId == 1709 || ReleaseId == 1803) ret = WindowsVersion.WindowsServer2016;
-                            // Windows 10 below 1903
-                            else if (ReleaseId == 1507 || ReleaseId == 1511 || ReleaseId == 1607 || ReleaseId == 1703 || ReleaseId == 1709 || ReleaseId == 1803) ret = WindowsVersion.Windows10;
-                            // Server 2019 and Windows 10 above 1903
-                            else if (ReleaseId == 1809 || ReleaseId >= 1903) ret = WindowsVersion.WindowsServer2019;
+                            string InstallationType = GetInstallationType();
+                            if (InstallationType.Contains("Client"))
+							{
+								// Windows 10 below 1903
+								if (osInfo.Version.Build < 20000) ret = WindowsVersion.Windows10;
+                                if (osInfo.Version.Build > 20000) ret = WindowsVersion.Windows11;
+                                break;
+                            }
+							else if (InstallationType.Contains("Server"))
+							{  
+                                if (osInfo.Version.Build < 17000) ret = WindowsVersion.WindowsServer2016;
+								if (osInfo.Version.Build > 17000 && osInfo.Version.Build < 20000) ret = WindowsVersion.WindowsServer2019;
+								if (osInfo.Version.Build > 20000 && osInfo.Version.Build < 26000) ret = WindowsVersion.WindowsServer2022;
+                                if (osInfo.Version.Build > 26000) ret = WindowsVersion.WindowsServer2025;
+                                break;
+                            }
                             break;
 					}
 					break;
@@ -421,7 +434,12 @@ namespace SolidCP.Server.Utils
 			return ret;
 		}
 
-        public static int GetReleaseId()
+        public static string GetInstallationType()
+        {
+            return Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "InstallationType", "").ToString();
+        }
+        
+		public static int GetReleaseId()
         {
             return Convert.ToInt32(Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId", "0"));
         }

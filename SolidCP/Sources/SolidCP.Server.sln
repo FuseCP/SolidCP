@@ -177,9 +177,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.OS.Window
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.Web.IIs100", "SolidCP.Providers.Web.IIs100\SolidCP.Providers.Web.IIs100.csproj", "{9B99F215-5029-4779-BC2F-6D83CBB42205}"
 	ProjectSection(ProjectDependencies) = postProject
-		{D73CCF4C-9CFF-4D61-9030-34DCAF0C50D6} = {D73CCF4C-9CFF-4D61-9030-34DCAF0C50D6}
-		{A28BD694-C308-449F-8FD2-F08F3D54ABA0} = {A28BD694-C308-449F-8FD2-F08F3D54ABA0}
 		{297C61C5-ECCE-49DE-B742-6BDA00B21B89} = {297C61C5-ECCE-49DE-B742-6BDA00B21B89}
+		{A28BD694-C308-449F-8FD2-F08F3D54ABA0} = {A28BD694-C308-449F-8FD2-F08F3D54ABA0}
+		{D73CCF4C-9CFF-4D61-9030-34DCAF0C50D6} = {D73CCF4C-9CFF-4D61-9030-34DCAF0C50D6}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.FTP.IIs100", "SolidCP.Providers.FTP.IIs100\SolidCP.Providers.FTP.IIs100.csproj", "{AE3C2141-B43A-4B50-A521-F4D7DA6837E8}"
@@ -263,6 +263,22 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.OS.Windows2022", "SolidCP.Providers.OS.Windows2022\SolidCP.Providers.OS.Windows2022.csproj", "{05B23C2B-15CE-48EF-995C-C5E517A04011}"
 	ProjectSection(ProjectDependencies) = postProject
 		{C4B1EA53-1417-473F-BB8E-E71BE84DB3A5} = {C4B1EA53-1417-473F-BB8E-E71BE84DB3A5}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.OS.Windows2025", "SolidCP.Providers.OS.Windows2025\SolidCP.Providers.OS.Windows2025.csproj", "{6E7DAC3B-B044-40F7-8307-3121A030B9A4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{05B23C2B-15CE-48EF-995C-C5E517A04011} = {05B23C2B-15CE-48EF-995C-C5E517A04011}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.RemoteDesktopServices.Windows2025", "SolidCP.Providers.TerminalServices.Windows2025\SolidCP.Providers.RemoteDesktopServices.Windows2025.csproj", "{835050B9-4F49-4735-927E-9EAD2B23473B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2A5247C2-0CBE-426B-8A78-4C25366E7659} = {2A5247C2-0CBE-426B-8A78-4C25366E7659}
+		{411EFA7F-DE87-4D37-BD15-95787CF77411} = {411EFA7F-DE87-4D37-BD15-95787CF77411}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.Virtualization.HyperV2025", "SolidCP.Providers.Virtualization.HyperV-2025\SolidCP.Providers.Virtualization.HyperV2025.csproj", "{32ABD57E-9A0F-4B6E-863A-180C4D84E76F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{117C74E2-E821-463E-B73D-E660114EB391} = {117C74E2-E821-463E-B73D-E660114EB391}
 	EndProjectSection
 EndProject
 Global
@@ -1267,6 +1283,42 @@ Global
 		{05B23C2B-15CE-48EF-995C-C5E517A04011}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{05B23C2B-15CE-48EF-995C-C5E517A04011}.Release|x86.ActiveCfg = Release|Any CPU
 		{05B23C2B-15CE-48EF-995C-C5E517A04011}.Release|x86.Build.0 = Release|Any CPU
+		{6E7DAC3B-B044-40F7-8307-3121A030B9A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E7DAC3B-B044-40F7-8307-3121A030B9A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E7DAC3B-B044-40F7-8307-3121A030B9A4}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{6E7DAC3B-B044-40F7-8307-3121A030B9A4}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{6E7DAC3B-B044-40F7-8307-3121A030B9A4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6E7DAC3B-B044-40F7-8307-3121A030B9A4}.Debug|x86.Build.0 = Debug|Any CPU
+		{6E7DAC3B-B044-40F7-8307-3121A030B9A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E7DAC3B-B044-40F7-8307-3121A030B9A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E7DAC3B-B044-40F7-8307-3121A030B9A4}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{6E7DAC3B-B044-40F7-8307-3121A030B9A4}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{6E7DAC3B-B044-40F7-8307-3121A030B9A4}.Release|x86.ActiveCfg = Release|Any CPU
+		{6E7DAC3B-B044-40F7-8307-3121A030B9A4}.Release|x86.Build.0 = Release|Any CPU
+		{835050B9-4F49-4735-927E-9EAD2B23473B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{835050B9-4F49-4735-927E-9EAD2B23473B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{835050B9-4F49-4735-927E-9EAD2B23473B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{835050B9-4F49-4735-927E-9EAD2B23473B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{835050B9-4F49-4735-927E-9EAD2B23473B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{835050B9-4F49-4735-927E-9EAD2B23473B}.Debug|x86.Build.0 = Debug|Any CPU
+		{835050B9-4F49-4735-927E-9EAD2B23473B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{835050B9-4F49-4735-927E-9EAD2B23473B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{835050B9-4F49-4735-927E-9EAD2B23473B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{835050B9-4F49-4735-927E-9EAD2B23473B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{835050B9-4F49-4735-927E-9EAD2B23473B}.Release|x86.ActiveCfg = Release|Any CPU
+		{835050B9-4F49-4735-927E-9EAD2B23473B}.Release|x86.Build.0 = Release|Any CPU
+		{32ABD57E-9A0F-4B6E-863A-180C4D84E76F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32ABD57E-9A0F-4B6E-863A-180C4D84E76F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32ABD57E-9A0F-4B6E-863A-180C4D84E76F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{32ABD57E-9A0F-4B6E-863A-180C4D84E76F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{32ABD57E-9A0F-4B6E-863A-180C4D84E76F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{32ABD57E-9A0F-4B6E-863A-180C4D84E76F}.Debug|x86.Build.0 = Debug|Any CPU
+		{32ABD57E-9A0F-4B6E-863A-180C4D84E76F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32ABD57E-9A0F-4B6E-863A-180C4D84E76F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32ABD57E-9A0F-4B6E-863A-180C4D84E76F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{32ABD57E-9A0F-4B6E-863A-180C4D84E76F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{32ABD57E-9A0F-4B6E-863A-180C4D84E76F}.Release|x86.ActiveCfg = Release|Any CPU
+		{32ABD57E-9A0F-4B6E-863A-180C4D84E76F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

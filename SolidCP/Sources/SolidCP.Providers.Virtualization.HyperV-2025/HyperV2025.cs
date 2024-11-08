@@ -1,8 +1,8 @@
-﻿// Copyright (c) 2018, SolidCP
+﻿// Copyright (c) 2022, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
 // SolidCP is a fork of WebsitePanel:
-// Copyright (c) 2015, Outercurve Foundation.
+// Copyright (c) 2014, Outercurve Foundation.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
@@ -32,43 +32,37 @@
 
 using System;
 using System.IO;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.NetworkInformation;
-using System.Net.Sockets;
-using System.Runtime.Remoting;
+using System.Collections.ObjectModel;
+
 using System.Text;
-using System.Reflection;
-using Microsoft.Win32;
-using SolidCP.Providers.HostedSolution;
-using SolidCP.Server.Utils;
-using SolidCP.Providers.Utils;
-using SolidCP.Providers.OS;
-using SolidCP.Providers.Common;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 using System.Management;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
-using System.Collections.ObjectModel;
-using System.DirectoryServices;
-using System.Security.Cryptography.X509Certificates;
-using System.Collections;
+
+using System.Reflection;
+using System.Globalization;
+
 using System.Xml;
-using SolidCP.EnterpriseServer.Base.RDS;
-using System.Security.Principal;
-using System.Security.AccessControl;
+using SolidCP.Providers;
+using SolidCP.Providers.HostedSolution;
+using SolidCP.Providers.Utils;
+using SolidCP.Server.Utils;
 
+using Vds = Microsoft.Storage.Vds;
+using System.Configuration;
+﻿using System.Linq;
+using SolidCP.Providers.Virtualization;
+using SolidCP.Providers.Virtualization.Extensions;
 
-namespace SolidCP.Providers.RemoteDesktopServices
+namespace SolidCP.Providers.Virtualization
 {
-    public class Windows2022 : Windows2012
+    public class HyperV2025 : HyperV2022
     {
-        public override bool IsInstalled()
-        {
-            Server.Utils.OS.WindowsVersion version = SolidCP.Server.Utils.OS.GetVersion();
-            return version == SolidCP.Server.Utils.OS.WindowsVersion.WindowsServer2022;
-        }
+
     }
 }
-
