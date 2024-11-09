@@ -22,6 +22,7 @@
                     "EstrellasDeEsperanza.WebFormsForCore.WebGrease": "1.1.1-beta",
                     "JavaScriptEngineSwitcher.Core": "3.24.1",
                     "JavaScriptEngineSwitcher.Msie": "3.19.0",
+                    "Microsoft.VisualBasic": "10.3.0",
                     "MsieJavaScriptEngine": "3.0.9",
                     "Newtonsoft.Json": "13.0.3",
                     "SolidCP.EnterpriseServer.Base": "1.0.0",
@@ -999,6 +1000,12 @@
                     }
                 }
             },
+            "Microsoft.VisualBasic/10.3.0": {
+                "runtime": {
+                    "lib/netstandard2.0/Microsoft.VisualBasic.dll": {
+                    }
+                }
+            },
             "Microsoft.Web.Infrastructure/1.0.0": {},
             "Microsoft.Win32.Primitives/4.0.1": {
                 "dependencies": {
@@ -1427,6 +1434,12 @@
                 "dependencies": {
                     "System.Runtime": "4.3.0",
                     "System.Runtime.Extensions": "4.3.0"
+                },
+                "runtime": {
+                    "lib/netstandard1.1/System.Drawing.Primitives.dll": {
+                        "assemblyVersion": "4.3.0.0",
+                        "fileVersion": "4.3.0.0"
+                    }
                 }
             },
             "System.Dynamic.Runtime/4.0.11": {
@@ -3079,6 +3092,13 @@
             "sha512": "sha512-N4KeF3cpcm1PUHym1RmakkzfkEv3GRMyofVv40uXsQhCQeglr2OHNcUk2WOG51AKpGO8ynGpo9M/kFXSzghwug==",
             "path": "microsoft.sqlserver.server/1.0.0",
             "hashPath": "microsoft.sqlserver.server.1.0.0.nupkg.sha512"
+        },
+        "Microsoft.VisualBasic/10.3.0": {
+            "type": "package",
+            "serviceable": true,
+            "sha512": "sha512-AvMDjmJHjz9bdlvxiSdEHHcWP+sZtp7zwule5ab6DaUbgoBnwCsd7nymj69vSz18ypXuEv3SI7ZUNwbIKrvtMA==",
+            "path": "microsoft.visualbasic/10.3.0",
+            "hashPath": "microsoft.visualbasic.10.3.0.nupkg.sha512"
         },
         "Microsoft.Web.Infrastructure/1.0.0": {
             "type": "package",

@@ -7,6 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+#if ReportViewer
 namespace SolidCP.Portal.VPSForPC {
     
     
@@ -94,3 +95,4 @@ namespace SolidCP.Portal.VPSForPC {
         protected global::System.Web.UI.DataVisualization.Charting.Chart ChartCounter;
     }
 }
+#endif

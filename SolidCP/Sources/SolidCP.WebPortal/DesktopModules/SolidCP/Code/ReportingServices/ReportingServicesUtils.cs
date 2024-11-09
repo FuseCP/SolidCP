@@ -30,6 +30,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#if ReportViewer
 using System;
 using System.Configuration;
 using System.Data;
@@ -185,3 +186,4 @@ namespace SolidCP.Portal.ReportingServices
 		#endregion
 	}
 }
+#endif

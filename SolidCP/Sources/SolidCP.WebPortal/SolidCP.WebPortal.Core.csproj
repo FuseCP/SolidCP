@@ -107,13 +107,13 @@
         <PackageReference Include="WebGrease" Version="1.6.0" />
     </ItemGroup>
     <ItemGroup Condition="$(TargetFramework) != 'net48'">
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web" Version="1.1.1-beta" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Compilers" Version="1.1.1-beta" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Extensions" Version="1.1.1-beta" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization" Version="1.1.1-beta" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization.WebForms" Version="1.1.1-beta" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Infrastructure" Version="1.1.1-beta" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.WebGrease" Version="1.1.1-beta" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web" Version="1.1.2-beta" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Compilers" Version="1.1.2-beta" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Extensions" Version="1.1.2-beta" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization" Version="1.1.2-beta" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization.WebForms" Version="1.1.2-beta" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Infrastructure" Version="1.1.2-beta" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.WebGrease" Version="1.1.2-beta" />
     </ItemGroup>
     <ItemGroup>
         <Reference Include="AjaxControlToolkit, Version=3.5.40412.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e, processorArchitecture=MSIL">
@@ -199,6 +199,7 @@
     </ItemGroup>
     <ItemGroup>
         <Content Include="Default.aspx" />
+        <None Remove="SolidCP.WebPortal.deps.json" />
         <Content Include="SolidCP.WebPortal.deps.json">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
@@ -243,9 +244,6 @@
         <Compile Remove="DesktopModules\**\*.cs" />
     </ItemGroup>
     <ItemGroup>
-      <None Remove="SolidCP.WebPortal.deps.json" />
-    </ItemGroup>
-    <ItemGroup>
       <Compile Include="DesktopModules\SolidCP\Code\Framework\ES.cs" />
     </ItemGroup>
     <ItemGroup>
@@ -261,9 +259,14 @@
         </ItemGroup>
     </Target>
 
+    <ItemGroup>
+        <MSVBS2 Include="$(PkgMicrosoft_VisualBasic)\lib\netcore50\*.*" />
+    </ItemGroup>
+
     <Target Name="CopyDepsJson" Condition="$(TargetFramework) != 'net48'" AfterTargets="Build">
+        
         <ItemGroup>
-            <DepsJson Include="SolidCP.WebPortal.deps.json"/>
+            <DepsJson Include="SolidCP.WebPortal.deps.json" />
         </ItemGroup>
 
         <Copy SourceFiles="@(DepsJson)" DestinationFolder="$(OutputPath)" />
