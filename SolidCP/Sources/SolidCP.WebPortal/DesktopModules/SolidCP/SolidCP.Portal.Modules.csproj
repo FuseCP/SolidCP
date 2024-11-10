@@ -12,6 +12,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SolidCP.Portal</RootNamespace>
     <AssemblyName>SolidCP.Portal.Modules</AssemblyName>
+    <BaseIntermediateOutputPath>obj\$(Configuration)\net48\</BaseIntermediateOutputPath>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>4.0</OldToolsVersion>
@@ -26,7 +27,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <DefineConstants>TRACE;DEBUG;Modules</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;Modules;Reporting</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <WarningsAsErrors>618</WarningsAsErrors>
@@ -36,7 +37,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>portable</DebugType>
     <Optimize>true</Optimize>
-    <DefineConstants>TRACE;Modules</DefineConstants>
+    <DefineConstants>TRACE;Modules;Reporting</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <WarningsAsErrors>618</WarningsAsErrors>
@@ -2172,6 +2173,7 @@
     </Compile>
     <Compile Include="VPSForPC\MonitoringPage.aspx.cs">
       <DependentUpon>MonitoringPage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="VPSForPC\MonitoringPage.aspx.designer.cs">
       <DependentUpon>MonitoringPage.aspx</DependentUpon>
@@ -2213,6 +2215,7 @@
     </Compile>
     <Compile Include="VPSForPC\VpsMonitoring.ascx.cs">
       <DependentUpon>VpsMonitoring.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="VPSForPC\VpsMonitoring.ascx.designer.cs">
       <DependentUpon>VpsMonitoring.ascx</DependentUpon>
@@ -2640,6 +2643,7 @@
     </Compile>
     <Compile Include="OverusageReport.ascx.cs">
       <DependentUpon>OverusageReport.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="OverusageReport.ascx.designer.cs">
       <DependentUpon>OverusageReport.ascx</DependentUpon>

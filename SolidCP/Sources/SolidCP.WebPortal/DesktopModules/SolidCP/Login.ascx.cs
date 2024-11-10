@@ -143,7 +143,10 @@ namespace SolidCP.Portal
 			Response.Redirect(EditUrl("scpa"), true);
 		}
 
-
+		protected override void Render(HtmlTextWriter writer)
+		{
+			base.Render(writer);
+		}
 		private void BindControls()
 		{
 			// load languages

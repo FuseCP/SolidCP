@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-#if ReportViewer
+#if Reporting
 namespace SolidCP.Portal.VPSForPC {
     
     

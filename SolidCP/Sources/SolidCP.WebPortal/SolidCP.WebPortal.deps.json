@@ -30,6 +30,7 @@
                     "SolidCP.Providers.Base": "1.0.0",
                     "SolidCP.Web.Clients": "1.0.0",
                     "SolidCP.Portal.Modules": "1.0.0",
+                    "SolidCP.Providers.Virtualization.NoVNC": "1.0.0",
                     "AjaxControlToolkit": "4.1.51116.0",
                     "AntiXssLibrary": "4.2.0.0",
                     "Microsoft.ReportViewer.Common": "8.0.0.0",
@@ -2510,6 +2511,11 @@
                     "Microsoft.CodeAnalysis.VisualBasic.Workspaces.dll": {}
                 }
             },
+            "SolidCP.Providers.Virtualization.NoVNC/1.0.0": {
+                "runtime": {
+                    "SolidCP.Providers.Virtualization.NoVNC.dll": {}
+                }
+            },
             "SolidCP.Web.Clients/1.0.0": {
                 "dependencies": {
                     "SSH.NET": "2024.1.0",
@@ -4038,6 +4044,11 @@
             "sha512": ""
         },
         "SolidCP.Portal.Modules/1.0.0": {
+            "type": "project",
+            "serviceable": false,
+            "sha512": ""
+        },
+        "SolidCP.Providers.Virtualization.NoVNC/1.0.0": {
             "type": "project",
             "serviceable": false,
             "sha512": ""

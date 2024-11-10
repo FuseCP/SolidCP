@@ -27,11 +27,11 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="8.0.10" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.10" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.10" />
-        <PackageReference Include="Azure.Identity" Version="1.12.1" />
+        <PackageReference Include="Azure.Identity" Version="1.13.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.10" />
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.8" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.10" />
         <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
-        <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="8.103.5" />
+        <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="8.103.6.1" />
         <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
         <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.10" />
     </ItemGroup>
@@ -42,9 +42,10 @@
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net48' AND '$(EntityFramework6)' == '6.5'">
         <PackageReference Include="EntityFramework" Version="6.5.1" />
-        <PackageReference Include="Z.EntityFramework.Plus.EF6" Version="8.103.5" />
+        <PackageReference Include="Z.EntityFramework.Plus.EF6" Version="8.103.6.1" />
         <PackageReference Include="Microsoft.EntityFramework.SqlServer" Version="6.5.1" />
         <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
+        <PackageReference Include="Azure.Identity" Version="1.13.1" />
         <PackageReference Include="MySql.Data.EntityFramework" Version="9.1.0" />
         <PackageReference Include="BouncyCastle.Cryptography" Version="2.4.0" />
         <PackageReference Include="EntityFramework6.Npgsql" Version="6.4.3" />
@@ -54,7 +55,7 @@
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net48' AND '$(EntityFramework6)' == '6.4'">
         <PackageReference Include="EntityFramework" Version="6.4.4" />
-        <PackageReference Include="Z.EntityFramework.Plus.EF6" Version="8.103.5" />
+        <PackageReference Include="Z.EntityFramework.Plus.EF6" Version="8.103.6.1" />
         <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
         <PackageReference Include="MySql.Data.EntityFramework" Version="9.1.0" />
         <PackageReference Include="BouncyCastle.Cryptography" Version="2.4.0" />

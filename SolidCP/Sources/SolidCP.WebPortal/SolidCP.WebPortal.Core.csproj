@@ -17,80 +17,6 @@
         <OutputPath>bin_dotnet\</OutputPath>
         <OutputType>Exe</OutputType>
     </PropertyGroup>
-    <PropertyGroup>
-        <AspNetCompiler>$(WINDIR)\Microsoft.NET\Framework\v4.0.30319\aspnet_compiler.exe</AspNetCompiler>
-        <DeployDir>..\..\Build\$(Configuration)\Portal</DeployDir>
-    </PropertyGroup>
-    <PropertyGroup>
-        <IncludeSetAclProviderOnDestination>False</IncludeSetAclProviderOnDestination>
-        <ExcludeFilesFromPackage>True</ExcludeFilesFromPackage>
-        <CopyAllFilesToSingleFolderForPackageDependsOn>
-            PreDeploySolidCPProjectBinaries;
-            $(CopyAllFilesToSingleFolderForPackageDependsOn);
-        </CopyAllFilesToSingleFolderForPackageDependsOn>
-    </PropertyGroup>
-    <Target Name="MoveDllsToBinLazy" AfterTargets="Build">
-        <Message Text="Move dll files to bin\Lazy" Importance="high" />
-        <ItemGroup>
-            <FilesToMove Include="bin\AdvancedStringBuilder.*" />
-            <!--<FilesToMove Include="bin\AntiXssLibrary.*" />-->
-            <FilesToMove Include="bin\Antlr3.Runtime.*" />
-            <FilesToMove Include="bin\Newtonsoft.Json.*" />
-            <FilesToMove Include="bin\BundleTransformer.Core.*" />
-            <FilesToMove Include="bin\BundleTransformer.Less.*" />
-            <FilesToMove Include="bin\CPCC.*" />
-            <FilesToMove Include="bin\JavaScriptEngineSwitcher.Core.*" />
-            <FilesToMove Include="bin\JavaScriptEngineSwitcher.Msie.*" />
-            <FilesToMove Include="bin\Microsoft.ReportViewer.Common.*" />
-            <FilesToMove Include="bin\Microsoft.ReportViewer.ProcessingObjectModel.*" />
-            <FilesToMove Include="bin\Microsoft.ReportViewer.WebForms.*" />
-            <FilesToMove Include="bin\Microsoft.Win32.Registry.*" />
-            <FilesToMove Include="bin\MsieJavaScriptEngine.*" />
-            <FilesToMove Include="bin\SolidCP.Providers.Base.*" />
-            <FilesToMove Include="bin\System.Security.AccessControl.*" />
-            <FilesToMove Include="bin\System.Security.Principal.Windows.*" />
-            <FilesToMove Include="bin\System.Web.Optimization.*" />
-            <FilesToMove Include="bin\WebGrease.*" />
-            <FilesToMove Include="bin\Microsoft.Data.Sqlite.*" />
-            <FilesToMove Include="bin\.*" />
-        </ItemGroup>
-        <Move SourceFiles="@(FilesToMove)" DestinationFolder="bin\Lazy" />
-        <!--<Message Text="Restore needed dlls from bin\Lazy to bin" Importance="high" />
-    <ItemGroup>
-      <FilesNeededInBin Include="bin\Lazy\SolidCP.Portal.Modules.*" />
-      <FilesNeededInBin Include="bin\Lazy\SolidCP.Portal.Modules.dll.config" />
-    </ItemGroup>
-    <Move SourceFiles="@(FilesNeededInBin)" DestinationFolder="bin" />-->
-    </Target>
-    <Target Name="PreDeploySolidCPProjectBinaries">
-        <ItemGroup>
-            <_CustomFiles Include="$(TargetDir)\SolidCP.*" />
-            <FilesForPackagingFromProject Include="@(_CustomFiles)">
-                <DestinationRelativePath>bin\%(Filename)%(Extension)</DestinationRelativePath>
-            </FilesForPackagingFromProject>
-        </ItemGroup>
-    </Target>
-    <Target Name="DeleteConfigObjFiles">
-        <ItemGroup>
-            <ConfigObjFiles Include="obj/**/*.config" />
-        </ItemGroup>
-        <Delete Files="@(ConfigIObjFiles)" />
-    </Target>
-    <Target Name="Precompile" DependsOnTargets="DeleteConfigObjFiles">
-        <Exec Command="$(AspNetCompiler) -p . -v /" />
-    </Target>
-    <Target Name="DeployWithPrecompile" DependsOnTargets="DeleteConfigObjFiles">
-        <Message Text="Precompile WebPortal" Importance="high" />
-        <AspNetCompiler PhysicalPath="." VirtualPath="/" TargetPath="$(DeployDir)" Force="true" />
-        <ItemGroup>
-            <AppDlls Include="$(DeployDir)\bin\App_*.dll" Exclude="$(DeployDir)\bin\App_global.asax.dll;$(DeployDir)\bin\App_Browsers.dll;$(DeployDir)\bin\App_GlobalResources.dll;$(DeployDir)\bin\App_Theme_Default.dll" />
-        </ItemGroup>
-        <Move SourceFiles="@(AppDlls)" DestinationFolder="$(DeployDir)\bin\Lazy" />
-        <!-- Create App_GlobalResources.list file, because there is no App_GlobalResources folder anymore -->
-        <Exec Command="powershell &quot;Get-ChildItem App_GlobalResources -recurse -include *.resx | ForEach-Object { $_.Name } &gt; $(DeployDir)\App_Data\App_GlobalResources.list&quot;" />
-        <!-- Correct ExternalProbingPaths in web.config -->
-        <Exec Command="powershell &quot;(Get-Content Web.config) -replace '\.\.\\SolidCP.EnterpriseServer', '..\EnterpriseServer' | Set-Content -Path $(DeployDir)\Web.config&quot;" />
-    </Target>
     <ItemGroup>
         <PackageReference Include="AdvancedStringBuilder" Version="0.1.1" />
         <PackageReference Include="Antlr" Version="3.5.0.2" />
@@ -124,7 +50,7 @@
             <HintPath>..\..\Lib\AntiXssLibrary.dll</HintPath>
             <SpecificVersion>False</SpecificVersion>
         </Reference>
-        <Reference Include="Microsoft.ReportViewer.Common, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+        <!--<Reference Include="Microsoft.ReportViewer.Common, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
             <HintPath>..\..\Lib\Microsoft.ReportViewer.Common.dll</HintPath>
             <Private>True</Private>
             <SpecificVersion>False</SpecificVersion>
@@ -138,7 +64,7 @@
             <HintPath>..\..\Lib\Microsoft.ReportViewer.WebForms.dll</HintPath>
             <Private>True</Private>
             <SpecificVersion>False</SpecificVersion>
-        </Reference>
+        </Reference>-->
         <!--<Reference Include="System.Web" />
         <Reference Include="System.Web.ApplicationServices" />
         <Reference Include="System.Web.Extensions" />
@@ -258,10 +184,6 @@
             <ReferencePath Remove="%(Identity)" Condition="'%(FileName)' == 'System.Web' AND $([System.Text.RegularExpressions.Regex]::IsMatch(%(Identity),'\\dotnet\\'))" />
         </ItemGroup>
     </Target>
-
-    <ItemGroup>
-        <MSVBS2 Include="$(PkgMicrosoft_VisualBasic)\lib\netcore50\*.*" />
-    </ItemGroup>
 
     <Target Name="CopyDepsJson" Condition="$(TargetFramework) != 'net48'" AfterTargets="Build">
         
