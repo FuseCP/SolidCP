@@ -28,6 +28,7 @@
     <RestorePackages>true</RestorePackages>
     <UseGlobalApplicationHostFile />
     <Use64BitIISExpress />
+    <BaseIntermediateOutputPath>obj\$(Configuration)\net48\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -42,7 +43,6 @@
     <FilesToIncludeForPublish>AllFilesInTheProject</FilesToIncludeForPublish>
     <Prefer32Bit>false</Prefer32Bit>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <IntermediateOutputPath>C:\Users\simon\AppData\Local\Temp\vs4372.tmp\Debug\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>portable</DebugType>
@@ -54,7 +54,6 @@
     <WarningsAsErrors>618</WarningsAsErrors>
     <Prefer32Bit>false</Prefer32Bit>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <IntermediateOutputPath>C:\Users\simon\AppData\Local\Temp\vs4372.tmp\Release\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup>
     <AspNetCompiler>$(WINDIR)\Microsoft.NET\Framework\v4.0.30319\aspnet_compiler.exe</AspNetCompiler>

@@ -2495,7 +2495,8 @@
                     "SolidCP.Providers.Base.dll": {
                         "assemblyVersion": "1.0.0",
                         "fileVersion": "1.4.9"
-                    }
+                    },
+                    "Microsoft.Web.Administration.dll": {}
                 }
             },
             "SolidCP.Portal.Modules/1.0.0": {
@@ -2546,7 +2547,8 @@
                     "AntiXssLibrary.dll": {
                         "assemblyVersion": "4.2.0.0",
                         "fileVersion": "4.2.0.0"
-                    }
+                    },
+                    "HtmlSanitizationLibrary.dll": {}
                 }
             },
             "Microsoft.ReportViewer.Common/8.0.0.0": {

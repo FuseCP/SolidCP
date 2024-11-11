@@ -23,7 +23,7 @@
         <DefineConstants>TRACE;Modules</DefineConstants>
     </PropertyGroup>
     <ItemGroup>
-        <Reference Include="AjaxControlToolkit, Version=1.0.10301.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e, processorArchitecture=MSIL">
+        <!--<Reference Include="AjaxControlToolkit, Version=1.0.10301.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e, processorArchitecture=MSIL">
             <SpecificVersion>False</SpecificVersion>
             <HintPath>..\..\..\..\Lib\AjaxControlToolkit.dll</HintPath>
             <Private>True</Private>
@@ -31,7 +31,7 @@
         <Reference Include="AntiXssLibrary, Version=1.5.0.0, Culture=neutral, PublicKeyToken=5906d2bb3d8a12c4, processorArchitecture=MSIL">
             <SpecificVersion>False</SpecificVersion>
             <HintPath>..\..\..\..\Lib\AntiXssLibrary.dll</HintPath>
-        </Reference>
+        </Reference>-->
         <!--<Reference Include="Microsoft.ReportViewer.WebForms, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Lib\Microsoft.ReportViewer.WebForms.dll</HintPath>
@@ -9325,9 +9325,11 @@
         <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web" Version="1.1.2-beta" />
         <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Mobile" Version="1.1.2-beta" />
         <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Extensions" Version="1.1.2-beta" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.AjaxControlToolkit" Version="1.1.2-beta" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="System.Web.Services.Description" Version="8.0.0.0" Aliases="SD" />
         <PackageReference Include="ReportViewerCore.NETCore" Version="15.1.23" />
+        <PackageReference Include="AntiXSS" Version="4.3.0" />
     </ItemGroup>
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

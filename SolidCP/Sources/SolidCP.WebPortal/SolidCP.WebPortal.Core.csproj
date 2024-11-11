@@ -8,6 +8,8 @@
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <RestoreSources>$(RestoreSources);../../Lib/WebFormsForCore/nupkg;https://api.nuget.org/v3/index.json</RestoreSources>
         <CopyDebugSymbolFilesFromPackages>true</CopyDebugSymbolFilesFromPackages>
+        <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+        <BaseIntermediateOutputPath>obj\$(Configuration)\$(TargetFramework)\</BaseIntermediateOutputPath>
     </PropertyGroup>
     <PropertyGroup Condition="$(TargetFramework) == 'net48'">
         <OutputPath>bin\</OutputPath>
@@ -26,11 +28,13 @@
         <PackageReference Include="JavaScriptEngineSwitcher.Msie" Version="3.19.0" />
         <PackageReference Include="MsieJavaScriptEngine" Version="3.0.9" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="AntiXSS" Version="4.3.0" />
     </ItemGroup>
     <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
         <PackageReference Include="Microsoft.AspNet.Web.Optimization" Version="1.1.3" />
         <PackageReference Include="Microsoft.Web.Infrastructure" Version="2.0.0" />
         <PackageReference Include="WebGrease" Version="1.6.0" />
+        <PackageReference Include="AjaxControlToolkit" Version="20.1" />
     </ItemGroup>
     <ItemGroup Condition="$(TargetFramework) != 'net48'">
         <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web" Version="1.1.2-beta" />
@@ -40,16 +44,17 @@
         <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization.WebForms" Version="1.1.2-beta" />
         <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Infrastructure" Version="1.1.2-beta" />
         <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.WebGrease" Version="1.1.2-beta" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.AjaxControlToolkit" Version="1.1.2-beta" />
     </ItemGroup>
     <ItemGroup>
-        <Reference Include="AjaxControlToolkit, Version=3.5.40412.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e, processorArchitecture=MSIL">
+        <!--<Reference Include="AjaxControlToolkit, Version=3.5.40412.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e, processorArchitecture=MSIL">
             <HintPath>..\..\Lib\AjaxControlToolkit.dll</HintPath>
             <SpecificVersion>False</SpecificVersion>
         </Reference>
         <Reference Include="AntiXssLibrary, Version=1.5.0.0, Culture=neutral, PublicKeyToken=5906d2bb3d8a12c4, processorArchitecture=MSIL">
             <HintPath>..\..\Lib\AntiXssLibrary.dll</HintPath>
             <SpecificVersion>False</SpecificVersion>
-        </Reference>
+        </Reference>-->
         <!--<Reference Include="Microsoft.ReportViewer.Common, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
             <HintPath>..\..\Lib\Microsoft.ReportViewer.Common.dll</HintPath>
             <Private>True</Private>

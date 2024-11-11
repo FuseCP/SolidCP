@@ -11,8 +11,8 @@ public class Program
 		var builder = WebApplication.CreateBuilder(args);
 
 		// Add services to the container.
-		builder.Services.AddRazorPages();
-		builder.Services.AddControllersWithViews();
+		//builder.Services.AddRazorPages();
+		//builder.Services.AddControllersWithViews();
 
 		var app = builder.Build();
 
@@ -22,7 +22,7 @@ public class Program
 
 		app.UseWebForms();
 
-		app.MapDefaultControllerRoute();
+		//app.MapDefaultControllerRoute();
 
 		app.Run();
 
