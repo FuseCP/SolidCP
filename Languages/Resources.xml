@@ -4622,6 +4622,11 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.DNS.EditTTL</Key>
+    <DefaultValue>DNS Edit TTL (Requires Editor to be enabled)</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>Quota.FTP.Accounts</Key>
     <DefaultValue>FTP Accounts</DefaultValue>
   </Resource>
@@ -14293,6 +14298,11 @@
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\DnsZoneRecords.ascx.resx</File>
+    <Key>gvRecordsTTL.Header</Key>
+    <DefaultValue>TTL</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\DnsZoneRecords.ascx.resx</File>
     <Key>gvRecordsType.Header</Key>
     <DefaultValue>Type</DefaultValue>
   </Resource>
@@ -14300,6 +14310,11 @@
     <File>DesktopModules\SolidCP\App_LocalResources\DnsZoneRecords.ascx.resx</File>
     <Key>lblMXPriority.Text</Key>
     <DefaultValue>MX Priority:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\DnsZoneRecords.ascx.resx</File>
+    <Key>lblRecordTTL.Text</Key>
+    <DefaultValue>Record TTL:</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\DnsZoneRecords.ascx.resx</File>

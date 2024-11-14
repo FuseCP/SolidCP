@@ -782,18 +782,18 @@ namespace SolidCP.EnterpriseServer
 
         [WebMethod]
         public int AddDnsZoneRecord(int domainId, string recordName, DnsRecordType recordType,
-            string recordData, int mxPriority, int srvPriority, int srvWeight, int srvPortNumber)
+            string recordData, int mxPriority, int srvPriority, int srvWeight, int srvPortNumber, int RecordTTL)
         {
-            return ServerController.AddDnsZoneRecord(domainId, recordName, recordType, recordData, mxPriority, srvPriority, srvWeight, srvPortNumber);
+            return ServerController.AddDnsZoneRecord(domainId, recordName, recordType, recordData, mxPriority, srvPriority, srvWeight, srvPortNumber, RecordTTL);
         }
 
         [WebMethod]
         public int UpdateDnsZoneRecord(int domainId,
             string originalRecordName, string originalRecordData,
-            string recordName, DnsRecordType recordType, string recordData, int mxPriority, int srvPriority, int srvWeight, int srvPortNumber)
+            string recordName, DnsRecordType recordType, string recordData, int mxPriority, int srvPriority, int srvWeight, int srvPortNumber,int recordTTL)
         {
             return ServerController.UpdateDnsZoneRecord(domainId, originalRecordName, originalRecordData,
-                recordName, recordType, recordData, mxPriority, srvPriority, srvWeight, srvPortNumber);
+                recordName, recordType, recordData, mxPriority, srvPriority, srvWeight, srvPortNumber, recordTTL);
         }
 
         [WebMethod]

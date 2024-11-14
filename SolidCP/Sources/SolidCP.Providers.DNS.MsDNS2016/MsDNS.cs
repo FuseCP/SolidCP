@@ -64,21 +64,21 @@ namespace SolidCP.Providers.DNS
                     name = ".";
 
                 if (record.RecordType == DnsRecordType.A)
-                    ps.Add_DnsServerResourceRecordA(zoneName, name, record.RecordData);
+                    ps.Add_DnsServerResourceRecordA(zoneName, name, record.RecordData, TimeSpan.FromSeconds(record.RecordTTL));
                 else if (record.RecordType == DnsRecordType.AAAA)
-                    ps.Add_DnsServerResourceRecordAAAA(zoneName, name, record.RecordData);
+                    ps.Add_DnsServerResourceRecordAAAA(zoneName, name, record.RecordData, TimeSpan.FromSeconds(record.RecordTTL));
                 else if (record.RecordType == DnsRecordType.CNAME)
-                    ps.Add_DnsServerResourceRecordCName(zoneName, name, record.RecordData);
+                    ps.Add_DnsServerResourceRecordCName(zoneName, name, record.RecordData, TimeSpan.FromSeconds(record.RecordTTL));
                 else if (record.RecordType == DnsRecordType.MX)
-                    ps.Add_DnsServerResourceRecordMX(zoneName, name, record.RecordData, (ushort)record.MxPriority);
+                    ps.Add_DnsServerResourceRecordMX(zoneName, name, record.RecordData, (ushort)record.MxPriority, TimeSpan.FromSeconds(record.RecordTTL));
                 else if (record.RecordType == DnsRecordType.NS)
-                    ps.Add_DnsServerResourceRecordNS(zoneName, name, record.RecordData);
+                    ps.Add_DnsServerResourceRecordNS(zoneName, name, record.RecordData, TimeSpan.FromSeconds(record.RecordTTL));
                 else if (record.RecordType == DnsRecordType.TXT)
-                    ps.Add_DnsServerResourceRecordTXT(zoneName, name, record.RecordData);
+                    ps.Add_DnsServerResourceRecordTXT(zoneName, name, record.RecordData, TimeSpan.FromSeconds(record.RecordTTL));
                 else if (record.RecordType == DnsRecordType.SRV)
-                    ps.Add_DnsServerResourceRecordSRV(zoneName, name, record.RecordData, (ushort)record.SrvPort, (ushort)record.SrvPriority, (ushort)record.SrvWeight);
+                    ps.Add_DnsServerResourceRecordSRV(zoneName, name, record.RecordData, (ushort)record.SrvPort, (ushort)record.SrvPriority, (ushort)record.SrvWeight, TimeSpan.FromSeconds(record.RecordTTL));
                 else if (record.RecordType == DnsRecordType.CAA)
-                    ps.Add_DnsServerResourceRecordCAA(zoneName, name, record.RecordData);
+                    ps.Add_DnsServerResourceRecordCAA(zoneName, name, record.RecordData, TimeSpan.FromSeconds(record.RecordTTL));
                 else
                     throw new Exception("Unknown record type");
             }

@@ -50,6 +50,7 @@ namespace SolidCP.EnterpriseServer
         private string recordType;
         private string recordName;
         private string recordData;
+        private int recordTTL;
         private int mxPriority;
         private int ipAddressId;
         private int srvPriority;
@@ -110,6 +111,12 @@ namespace SolidCP.EnterpriseServer
         {
             get { return recordData; }
             set { recordData = value; }
+        }
+
+        public int RecordTTL
+        {
+            get { return recordTTL; }
+            set { recordTTL = value; }
         }
 
         public int MxPriority

@@ -141,6 +141,9 @@
   <data name="gvRecords.Empty" xml:space="preserve">
     <value>Keine DNS-Einträge definiert</value>
   </data>
+  <data name="gvRecordsTTL.Header" xml:space="preserve">
+    <value>TTL</value>
+  </data>
   <data name="gvRecordsData.Header" xml:space="preserve">
     <value>Daten</value>
   </data>
@@ -152,6 +155,9 @@
   </data>
   <data name="lblMXPriority.Text" xml:space="preserve">
     <value>MX Priorität:</value>
+  </data>
+  <data name="lblRecordTTL.Text" xml:space="preserve">
+    <value>TTL:</value>
   </data>
   <data name="lblRecordData.Text" xml:space="preserve">
     <value>Eintragsdaten:</value>

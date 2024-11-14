@@ -62,12 +62,31 @@
 	    </tr>
 	    <tr>
 		    <td class="SubHead" noWrap>
-		        <asp:Label ID="lblMinimumTtl" runat="server" meta:resourcekey="lblMinimumTtl" Text="Minimum TTL:"></asp:Label>
+		        <asp:Label ID="lblMinimumTtl" runat="server" meta:resourcekey="lblMinimumTtl" Text="SOA TTL:"></asp:Label>
 		    </td>
 		    <td class="Normal">
                 <uc4:ScheduleInterval ID="intTtl" runat="server" />
 		    </td>
 	    </tr>
+			<!-- Zone Settings -->
+		<tr>
+			<td class="SubHead">
+				<asp:Label ID="lblRecordDefaultTTL" runat="server" meta:resourcekey="lblRecordDefaultTtl" Text="Zone Record Default TTL (seconds)"></asp:Label>
+			</td>
+			<td class="Normal">
+				<asp:TextBox ID="txtRecordDefaultTTL" runat="server" Width="100px" CssClass="form-control"></asp:TextBox>
+			</td>
+		</tr>
+		<tr>
+			<td class="SubHead">
+				<asp:Label ID="lblRecordMinimumTTL" runat="server" meta:resourcekey="lblRecordMinimumTtl" Text="Record Minimum TTL (seconds):"></asp:Label>
+			</td>
+			<td class="Normal">
+				<asp:TextBox ID="txtRecordMinimumTTL" runat="server" Width="100px" CssClass="form-control"></asp:TextBox>
+			</td>
+		</tr>
+
+
 		<tr>
 		    <td class="SubHead" valign="top">
 		        <asp:Label ID="lblSecondaryDNS" runat="server" meta:resourcekey="lblSecondaryDNS" Text="Secondary DNS Services:"></asp:Label>

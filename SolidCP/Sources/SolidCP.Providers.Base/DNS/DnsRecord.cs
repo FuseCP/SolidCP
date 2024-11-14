@@ -46,6 +46,7 @@ namespace SolidCP.Providers.DNS
         private int srvPriority;
         private int srvWeight;
         private int srvPort;
+        private int recordTTL;
 
 
         public string RecordName
@@ -64,6 +65,12 @@ namespace SolidCP.Providers.DNS
         {
             get { return this.recordData; }
             set { this.recordData = value; }
+        }
+
+        public int RecordTTL
+        {
+            get { return this.recordTTL; }
+            set { this.recordTTL = value; }
         }
 
         public int MxPriority

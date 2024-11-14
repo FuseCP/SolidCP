@@ -147,11 +147,17 @@
   <data name="gvRecordsName.Header" xml:space="preserve">
     <value>Name</value>
   </data>
+  <data name="gvRecordsTTL.Header" xml:space="preserve">
+    <value>TTL</value>
+  </data>
   <data name="gvRecordsType.Header" xml:space="preserve">
     <value>Type</value>
   </data>
   <data name="lblMXPriority.Text" xml:space="preserve">
     <value>MX Priority:</value>
+  </data>
+  <data name="lblRecordTTL.Text" xml:space="preserve">
+    <value>Record TTL:</value>
   </data>
   <data name="lblRecordData.Text" xml:space="preserve">
     <value>Record Data:</value>

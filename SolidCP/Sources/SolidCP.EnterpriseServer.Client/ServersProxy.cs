@@ -6761,7 +6761,7 @@ namespace SolidCP.EnterpriseServer
 
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/AddDnsZoneRecord", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public int AddDnsZoneRecord(int domainId, string recordName, DnsRecordType recordType, string recordData, int mxPriority, int srvPriority, int srvWeight, int srvPortNumber)
+        public int AddDnsZoneRecord(int domainId, string recordName, DnsRecordType recordType, string recordData, int mxPriority, int srvPriority, int srvWeight, int srvPortNumber, int RecordTTL)
         {
             object[] results = this.Invoke("AddDnsZoneRecord", new object[] {
                     domainId,
@@ -6771,12 +6771,13 @@ namespace SolidCP.EnterpriseServer
                     mxPriority,
                     srvPriority,
                     srvWeight,
-                    srvPortNumber});
+                    srvPortNumber,
+                    RecordTTL});
             return ((int)(results[0]));
         }
 
         /// <remarks/>
-        public System.IAsyncResult BeginAddDnsZoneRecord(int domainId, string recordName, DnsRecordType recordType, string recordData, int mxPriority, int srvPriority, int srvWeight, int srvPortNumber, System.AsyncCallback callback, object asyncState)
+        public System.IAsyncResult BeginAddDnsZoneRecord(int domainId, string recordName, DnsRecordType recordType, string recordData, int mxPriority, int srvPriority, int srvWeight, int srvPortNumber, int recordTTL, System.AsyncCallback callback, object asyncState)
         {
             return this.BeginInvoke("AddDnsZoneRecord", new object[] {
                     domainId,
@@ -6786,7 +6787,8 @@ namespace SolidCP.EnterpriseServer
                     mxPriority,
                     srvPriority,
                     srvWeight,
-                    srvPortNumber}, callback, asyncState);
+                    srvPortNumber,
+                    recordTTL}, callback, asyncState);
         }
 
         /// <remarks/>
@@ -6797,13 +6799,13 @@ namespace SolidCP.EnterpriseServer
         }
 
         /// <remarks/>
-        public void AddDnsZoneRecordAsync(int domainId, string recordName, DnsRecordType recordType, string recordData, int mxPriority, int srvPriority, int srvWeight, int srvPortNumber)
+        public void AddDnsZoneRecordAsync(int domainId, string recordName, DnsRecordType recordType, string recordData, int mxPriority, int srvPriority, int srvWeight, int srvPortNumber, int recordTTL)
         {
-            this.AddDnsZoneRecordAsync(domainId, recordName, recordType, recordData, mxPriority, srvPriority, srvWeight, srvPortNumber, null);
+            this.AddDnsZoneRecordAsync(domainId, recordName, recordType, recordData, mxPriority, srvPriority, srvWeight, srvPortNumber, recordTTL, null);
         }
 
         /// <remarks/>
-        public void AddDnsZoneRecordAsync(int domainId, string recordName, DnsRecordType recordType, string recordData, int mxPriority, int srvPriority, int srvWeight, int srvPortNumber, object userState)
+        public void AddDnsZoneRecordAsync(int domainId, string recordName, DnsRecordType recordType, string recordData, int mxPriority, int srvPriority, int srvWeight, int srvPortNumber, int recordTTL, object userState)
         {
             if ((this.AddDnsZoneRecordOperationCompleted == null))
             {
@@ -6817,7 +6819,8 @@ namespace SolidCP.EnterpriseServer
                     mxPriority,
                     srvPriority,
                     srvWeight,
-                    srvPortNumber}, this.AddDnsZoneRecordOperationCompleted, userState);
+                    srvPortNumber,
+                    recordTTL}, this.AddDnsZoneRecordOperationCompleted, userState);
         }
 
         private void OnAddDnsZoneRecordOperationCompleted(object arg)
@@ -6831,7 +6834,7 @@ namespace SolidCP.EnterpriseServer
 
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/UpdateDnsZoneRecord", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public int UpdateDnsZoneRecord(int domainId, string originalRecordName, string originalRecordData, string recordName, DnsRecordType recordType, string recordData, int mxPriority, int srvPriority, int srvWeight, int srvPortNumber)
+        public int UpdateDnsZoneRecord(int domainId, string originalRecordName, string originalRecordData, string recordName, DnsRecordType recordType, string recordData, int mxPriority, int srvPriority, int srvWeight, int srvPortNumber, int recordTTL)
         {
             object[] results = this.Invoke("UpdateDnsZoneRecord", new object[] {
                     domainId,
@@ -6843,12 +6846,13 @@ namespace SolidCP.EnterpriseServer
                     mxPriority,
                     srvPriority,
                     srvWeight,
-                    srvPortNumber});
+                    srvPortNumber,
+                    recordTTL});
             return ((int)(results[0]));
         }
 
         /// <remarks/>
-        public System.IAsyncResult BeginUpdateDnsZoneRecord(int domainId, string originalRecordName, string originalRecordData, string recordName, DnsRecordType recordType, string recordData, int mxPriority, int srvPriority, int srvWeight, int srvPortNumber, System.AsyncCallback callback, object asyncState)
+        public System.IAsyncResult BeginUpdateDnsZoneRecord(int domainId, string originalRecordName, string originalRecordData, string recordName, DnsRecordType recordType, string recordData, int mxPriority, int srvPriority, int srvWeight, int srvPortNumber, int recordTTL, System.AsyncCallback callback, object asyncState)
         {
             return this.BeginInvoke("UpdateDnsZoneRecord", new object[] {
                     domainId,
@@ -6860,7 +6864,8 @@ namespace SolidCP.EnterpriseServer
                     mxPriority,
                     srvPriority,
                     srvWeight,
-                    srvPortNumber}, callback, asyncState);
+                    srvPortNumber,
+                    recordTTL}, callback, asyncState);
         }
 
         /// <remarks/>
@@ -6871,13 +6876,13 @@ namespace SolidCP.EnterpriseServer
         }
 
         /// <remarks/>
-        public void UpdateDnsZoneRecordAsync(int domainId, string originalRecordName, string originalRecordData, string recordName, DnsRecordType recordType, string recordData, int mxPriority, int srvPriority, int srvWeight, int srvPortNumber)
+        public void UpdateDnsZoneRecordAsync(int domainId, string originalRecordName, string originalRecordData, string recordName, DnsRecordType recordType, string recordData, int mxPriority, int srvPriority, int srvWeight, int srvPortNumber, int recordTTL)
         {
-            this.UpdateDnsZoneRecordAsync(domainId, originalRecordName, originalRecordData, recordName, recordType, recordData, mxPriority, srvPriority, srvWeight, srvPortNumber, null);
+            this.UpdateDnsZoneRecordAsync(domainId, originalRecordName, originalRecordData, recordName, recordType, recordData, mxPriority, srvPriority, srvWeight, srvPortNumber, recordTTL, null);
         }
 
         /// <remarks/>
-        public void UpdateDnsZoneRecordAsync(int domainId, string originalRecordName, string originalRecordData, string recordName, DnsRecordType recordType, string recordData, int mxPriority, int srvPriority, int srvWeight, int srvPortNumber, object userState)
+        public void UpdateDnsZoneRecordAsync(int domainId, string originalRecordName, string originalRecordData, string recordName, DnsRecordType recordType, string recordData, int mxPriority, int srvPriority, int srvWeight, int srvPortNumber, int recordTTL, object userState)
         {
             if ((this.UpdateDnsZoneRecordOperationCompleted == null))
             {
@@ -6893,7 +6898,8 @@ namespace SolidCP.EnterpriseServer
                     mxPriority,
                     srvPriority,
                     srvWeight,
-                    srvPortNumber}, this.UpdateDnsZoneRecordOperationCompleted, userState);
+                    srvPortNumber,
+                    recordTTL}, this.UpdateDnsZoneRecordOperationCompleted, userState);
         }
 
         private void OnUpdateDnsZoneRecordOperationCompleted(object arg)

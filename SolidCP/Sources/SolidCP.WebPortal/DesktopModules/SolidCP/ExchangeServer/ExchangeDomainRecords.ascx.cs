@@ -191,7 +191,8 @@ namespace SolidCP.Portal.ExchangeServer
                                                                       Int32.Parse(txtMXPriority.Text.Trim()),
                                                                       Int32.Parse(txtSRVPriority.Text.Trim()),
                                                                       Int32.Parse(txtSRVWeight.Text.Trim()),
-                                                                      Int32.Parse(txtSRVPort.Text.Trim()));
+                                                                      Int32.Parse(txtSRVPort.Text.Trim()),
+                                                                      0);
 
                     if (result < 0)
                     {
@@ -219,7 +220,8 @@ namespace SolidCP.Portal.ExchangeServer
                                                                          Int32.Parse(txtMXPriority.Text.Trim()),
                                                                          Int32.Parse(txtSRVPriority.Text.Trim()),
                                                                          Int32.Parse(txtSRVWeight.Text.Trim()),
-                                                                         Int32.Parse(txtSRVPort.Text.Trim()));
+                                                                         Int32.Parse(txtSRVPort.Text.Trim()),
+                                                                         0);
 
                     if (result < 0)
                     {

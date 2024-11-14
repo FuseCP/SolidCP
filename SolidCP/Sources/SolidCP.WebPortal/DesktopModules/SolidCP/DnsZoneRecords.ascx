@@ -31,6 +31,7 @@
                     <asp:Literal ID="litMxPriority" runat="server" Text='<%# Eval("MxPriority") %>' Visible="false"></asp:Literal>
                     <asp:Literal ID="litRecordName" runat="server" Text='<%# Eval("RecordName") %>' Visible="false"></asp:Literal>
                     <asp:Literal ID="litRecordType" runat="server" Text='<%# Eval("RecordType") %>' Visible="false"></asp:Literal>
+                    <asp:Literal ID="litRecordTTL" runat="server" Text='<%# Eval("RecordTTL") %>' Visible="false"></asp:Literal>
                     <asp:Literal ID="litRecordData" runat="server" Text='<%# Eval("RecordData") %>' Visible="false"></asp:Literal>
                     <asp:Literal ID="litSrvPriority" runat="server" Text='<%# Eval("SrvPriority") %>' Visible="false"></asp:Literal>
                     <asp:Literal ID="litSrvWeight" runat="server" Text='<%# Eval("SrvWeight") %>' Visible="false"></asp:Literal>
@@ -40,6 +41,7 @@
             </asp:TemplateField>
             <asp:BoundField DataField="RecordName" SortExpression="RecordName" HeaderText="gvRecordsName" ItemStyle-Width="20%" />
             <asp:BoundField DataField="RecordType" SortExpression="RecordType" HeaderText="gvRecordsType" ItemStyle-Width="70px" />
+            <asp:BoundField DataField="RecordTTL" SortExpression="RecordTTL" HeaderText="gvRecordsTTL" ItemStyle-Width="70px" Visible="false"/>
             <asp:TemplateField SortExpression="RecordData" HeaderText="gvRecordsData" >
                 <ItemStyle Width="69%" />
                 <ItemTemplate>
@@ -93,7 +95,7 @@
                     <asp:Label ID="lblRecordName" runat="server" meta:resourcekey="lblRecordName" Text="Record Name:"></asp:Label>
                 </asp:Label>
                 <div class="form-inline">
-                    <asp:TextBox ID="txtRecordName" runat="server" CssClass="form-control" Width="300px"></asp:TextBox>
+                    <asp:TextBox ID="txtRecordName" runat="server" CssClass="form-control" Width="300px"></asp:TextBox><asp:Label ID="lblDomainName" runat="server" meta:resourcekey="lblDomainName" Text=""></asp:Label>
                 </div>
             </div>
         </div>
@@ -154,6 +156,18 @@
                     <asp:TextBox ID="txtSRVPort" runat="server" CssClass="form-control" Width="115px"></asp:TextBox>
                     <asp:RequiredFieldValidator ID="valRequireSrvPort" runat="server" ControlToValidate="txtSRVPort" ErrorMessage="*" ValidationGroup="DnsZoneRecord" Display="Dynamic"></asp:RequiredFieldValidator>
                     <asp:RegularExpressionValidator ID="valRequireCorrectSrvPort" runat="server" ControlToValidate="txtSRVPort" ErrorMessage="*" ValidationExpression="\d{1,3}"></asp:RegularExpressionValidator>
+                </div>
+            </div>
+        </div>
+        <div class="row" id="rowRecordTTL" runat="server">
+            <div class="form-group col-sm-8">
+                <asp:Label runat="server" CssClass="control-label col-sm-3" AssociatedControlID="txtRecordTTL">
+                    <asp:Label ID="lblRecordTTL" runat="server" meta:resourcekey="lblRecordTTL" Text="Record TTL:"></asp:Label>
+                </asp:Label>
+                <div class="form-inline">
+                    <asp:TextBox ID="txtRecordTTL" runat="server" CssClass="form-control" Width="300px"></asp:TextBox>
+                    <asp:RequiredFieldValidator ID="valRequireRecordTTL" runat="server" ControlToValidate="txtRecordTTL" ErrorMessage="*" ValidationGroup="DnsZoneRecord" Display="Dynamic"></asp:RequiredFieldValidator>
+                    <asp:RegularExpressionValidator ID="valRequireCorrectRecordTTL" runat="server" ControlToValidate="txtRecordTTL" ErrorMessage="*" ValidationExpression="^(\d+)|(?=\s*)$"></asp:RegularExpressionValidator>
                 </div>
             </div>
         </div>

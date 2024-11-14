@@ -15947,7 +15947,8 @@ SELECT
 	Z.ItemName AS ZoneName,
 	D.IsSubDomain,
 	D.IsPreviewDomain,
-	D.IsDomainPointer
+	D.IsDomainPointer,
+	Z.ServiceID AS ZoneServiceID
 FROM Domains AS D
 INNER JOIN Packages AS P ON D.PackageID = P.PackageID
 LEFT OUTER JOIN ServiceItems AS WS ON D.WebSiteID = WS.ItemID
@@ -20297,5 +20298,44 @@ GO
 IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Remote Desktop Services Windows 2025')
 BEGIN
 INSERT [dbo].[Providers] ([ProviderId], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(1505, 45, N'RemoteDesktopServices2025', N'Remote Desktop Services Windows 2025', N'SolidCP.Providers.RemoteDesktopServices.Windows2025,SolidCP.Providers.RemoteDesktopServices.Windows2019', N'RDS',	1)
+END
+GO
+
+-- DNSEditor TTL
+IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaName] = 'DNS.EditTTL')
+BEGIN
+	INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota], [PerOrganization]) VALUES (753, 7, 2, N'DNS.EditTTL', N'Allow editing TTL in DNS Editor', 1, 0, NULL, NULL, NULL)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [PropertyName] = 'RecordDefaultTTL')
+BEGIN
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (7, N'RecordDefaultTTL', N'86400')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (9, N'RecordDefaultTTL', N'86400')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (24, N'RecordDefaultTTL', N'86400')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (28, N'RecordDefaultTTL', N'86400')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (55, N'RecordDefaultTTL', N'86400')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (56, N'RecordDefaultTTL', N'86400')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (410, N'RecordDefaultTTL', N'86400')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1703, N'RecordDefaultTTL', N'86400')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1901, N'RecordDefaultTTL', N'86400')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1902, N'RecordDefaultTTL', N'86400')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1903, N'RecordDefaultTTL', N'86400')
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [PropertyName] = 'RecordMinimumTTL')
+BEGIN
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (7, N'RecordMinimumTTL', N'3600')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (9, N'RecordMinimumTTL', N'3600')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (24, N'RecordMinimumTTL', N'3600')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (28, N'RecordMinimumTTL', N'3600')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (55, N'RecordMinimumTTL', N'3600')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (56, N'RecordMinimumTTL', N'3600')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (410, N'RecordMinimumTTL', N'3600')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1703, N'RecordMinimumTTL', N'3600')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1901, N'RecordMinimumTTL', N'3600')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1902, N'RecordMinimumTTL', N'3600')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1903, N'RecordMinimumTTL', N'3600')
 END
 GO

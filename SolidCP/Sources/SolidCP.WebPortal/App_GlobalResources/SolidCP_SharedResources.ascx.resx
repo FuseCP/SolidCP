@@ -1593,6 +1593,9 @@
   <data name="Quota.DNS.Editor" xml:space="preserve">
     <value>DNS Editor</value>
   </data>
+  <data name="Quota.DNS.EditTTL" xml:space="preserve">
+    <value>DNS Edit TTL (Requires Editor to be enabled)</value>
+  </data>
   <data name="Quota.FTP.Accounts" xml:space="preserve">
     <value>FTP Accounts</value>
   </data>
