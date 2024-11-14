@@ -90,10 +90,33 @@ namespace SolidCP.Providers.DNS
                 {
                     if (res.RecordName.Equals(record.RecordName) && res.RecordType.Equals(record.RecordType)
                         && res.RecordData.Equals(record.RecordData)) add = false;
+                    if (res.RecordData.Length >= 255 && res.RecordType.Equals(DnsRecordType.TXT))
+                    {
+                        res.RecordData = GetWMIZoneRecordData(ps, res, zoneName);
+                    }
                 }
                 if (add) result.Add(record);
             }
             return result.ToArray();
+        }
+
+        private static string GetWMIZoneRecordData(this PowerShellHelper ps, DnsRecord res, string zoneName)
+        {
+            string RecordData = "Unable to show fully";
+
+            string wmiNamespace = @"Root\MicrosoftDNS";
+            string wmiquery = "select * from MicrosoftDNS_TXTType Where OwnerName=\'" + res.RecordName + "." + zoneName + "\'";
+
+            var cmd = new Command("Get-WmiObject");
+            cmd.addParam("Namespace", wmiNamespace);
+            cmd.addParam("Query", wmiquery);
+            Collection<PSObject> results = ps.RunPipeline(cmd);
+            PSObject result = results[0];
+
+            RecordData = result.Members["RecordData"].Value.ToString();
+
+
+            return RecordData;
         }
 
         #region Records add / remove
