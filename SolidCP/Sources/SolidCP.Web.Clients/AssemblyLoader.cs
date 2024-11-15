@@ -190,7 +190,7 @@ namespace SolidCP.Web.Clients
                         }
                     }
                 }
-                catch { }
+                catch (Exception ex) { }
 
                 try
                 {
@@ -202,10 +202,10 @@ namespace SolidCP.Web.Clients
                         init.Invoke(null, new object[0]);
                     }
                 }
-                catch { }
+                catch (Exception ex) { }
 
 #if NETFRAMEWORK
-				exposeWebServices = ConfigurationManager.AppSettings["ExposeWebServices"];
+				exposeWebServices = exposeWebServices ?? ConfigurationManager.AppSettings["ExposeWebServices"];
 #endif
                 var exposeAnyWebServices = string.IsNullOrEmpty(exposeWebServices) ||
                 !string.Equals(exposeWebServices, "none", StringComparison.OrdinalIgnoreCase);

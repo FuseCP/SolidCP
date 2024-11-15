@@ -134,16 +134,22 @@ namespace SolidCP.WebPortal
 				request.Method = "GET";
 				request.GetResponseAsync();
 			} else if (!serverUrl.StartsWith("assembly://"))
-			{
+			{ // Start EnterpriseServer
 				var esTestClient = new SolidCP.EnterpriseServer.Client.esTest();
 				esTestClient.Url = serverUrl;
 				TouchTask = esTestClient.TouchAsync();
 			} else
 			{
+#if NETFRAMEWORK
 				Web.Clients.AssemblyLoader.Init();
+#else
+				var probingPaths = ConfigurationManager.AppSettings["ExternalProbingPathsNetCore"];
+				var exposeWebServices = ConfigurationManager.AppSettings["ExposeWebServices"];
+				Web.Clients.AssemblyLoader.Init(probingPaths, exposeWebServices);
+#endif
 			}
 
-            VncWebSocketHandler.Init();
+			VncWebSocketHandler.Init();
 
             ScriptManager.ScriptResourceMapping.AddDefinition("jquery",
 				new ScriptResourceDefinition
@@ -179,7 +185,15 @@ namespace SolidCP.WebPortal
 		{
 			try
 			{
-				using (HttpWebRequest.Create(keepAliveUrl).GetResponse()) { }
+				/*
+				var httpClientHandler = new HttpClientHandler() {
+					AllowAutoRedirect = false,
+				};
+
+				using (var client = new HttpClient(httpClientHandler))
+				{
+					client.GetAsync(keepAliveUrl);
+				}*/
 			}
 			catch { }
 		}
