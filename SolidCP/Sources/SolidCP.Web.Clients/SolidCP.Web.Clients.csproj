@@ -17,10 +17,10 @@
     <!--<PackageReference Include="Grpc.Net.Client" Version="2.59.0" />
     <PackageReference Include="Grpc.Net.Client.Web" Version="2.59.0" />
     <PackageReference Include="protobuf-net.Grpc" Version="1.1.1" />-->
-    <PackageReference Include="System.ServiceModel.Http" Version="8.0.0" />
-    <PackageReference Include="System.ServiceModel.NetTcp" Version="8.0.0" />
-    <PackageReference Include="System.ServiceModel.Primitives" Version="8.0.0" />
-    <PackageReference Include="System.ServiceModel.NetNamedPipe" Version="8.0.0" />
+    <PackageReference Include="System.ServiceModel.Http" Version="8.1.0" />
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="8.1.0" />
+    <PackageReference Include="System.ServiceModel.Primitives" Version="8.1.0" />
+    <PackageReference Include="System.ServiceModel.NetNamedPipe" Version="8.1.0" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
     <Reference Include="System.ServiceModel" />
@@ -33,7 +33,7 @@
     <Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="SSH.NET" Version="2024.1.0" />
+    <PackageReference Include="SSH.NET" Version="2024.2.0" />
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.1" />
   </ItemGroup>
   <ItemGroup>

@@ -158,24 +158,26 @@ namespace SolidCP.Web.Clients
             timer = null;
         }
 
-        public static bool Initialized = false;
+        public static int Initialized = 0;
         public static Timer timer = new Timer(arg => Dispose(), null, 10000, Timeout.Infinite);
         public static void Init(string probingPaths = null, string exposeWebServices = null, bool loadEnterpriseServer = true)
         {
-            if (Initialized) return;
-            Initialized = true;
+
+            if (Interlocked.Exchange(ref Initialized, 1) == 1) return;
 
 #if NETFRAMEWORK
 			ProbingPaths = ConfigurationManager.AppSettings["ExternalProbingPaths"];
-#else
-            ProbingPaths = probingPaths;
-#endif
+
             AppDomain.CurrentDomain.AssemblyLoad += (sender, args) => LoadNativeDlls(args.LoadedAssembly);
+#else
+			ProbingPaths = probingPaths;
+#endif
 
             if (!string.IsNullOrEmpty(ProbingPaths))
             {
+#if NETFRAMEWORK
                 AppDomain.CurrentDomain.AssemblyResolve += Resolve;
-
+#endif
                 try
                 {
                     if (loadEnterpriseServer)
@@ -222,7 +224,7 @@ namespace SolidCP.Web.Clients
 			method?.Invoke(null, new object[0]);
 #else
 #endif
-        }
+		}
 
 		static void AddEnvironmentPaths(IEnumerable<string> paths)
 		{

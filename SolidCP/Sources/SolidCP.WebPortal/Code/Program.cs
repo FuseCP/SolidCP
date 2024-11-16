@@ -2,13 +2,23 @@
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-
+using SolidCP.Web.Services;
+using SolidCP.Web.Clients;
 public class Program
 {
 
 	public static void Main(string[] args)
 	{
-		var builder = WebApplication.CreateBuilder(args);
+		Configuration.IsPortal = true;
+		Server.UseWebForms = app =>
+		{
+			app.UseWebForms();
+			AssemblyLoader.Init(Configuration.ProbingPaths, Configuration.ExposeWebServices, true);
+		};
+		
+		StartupCore.Init(args);
+		
+		/*var builder = WebApplication.CreateBuilder(args);
 
 		// Add services to the container.
 		//builder.Services.AddRazorPages();
@@ -24,7 +34,7 @@ public class Program
 
 		//app.MapDefaultControllerRoute();
 
-		app.Run();
+		app.Run();*/
 
 	}
 }

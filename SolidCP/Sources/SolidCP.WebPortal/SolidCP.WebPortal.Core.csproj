@@ -11,6 +11,7 @@
         <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
         <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
         <BaseIntermediateOutputPath>obj\$(Configuration)\$(TargetFramework)\</BaseIntermediateOutputPath>
+        <MSBuildProjectExtensionPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionPath>
     </PropertyGroup>
     <PropertyGroup Condition="$(TargetFramework) == 'net48'">
         <OutputPath>bin\</OutputPath>
@@ -32,49 +33,20 @@
         <PackageReference Include="AntiXSS" Version="4.3.0" />
     </ItemGroup>
     <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
-        <PackageReference Include="Microsoft.AspNet.Web.Optimization" Version="1.1.3" />
+        <PackageReference Include="Microsoft.AspNet.Web.Optimization" Version="1.2.0" />
         <PackageReference Include="Microsoft.Web.Infrastructure" Version="2.0.0" />
         <PackageReference Include="WebGrease" Version="1.6.0" />
         <PackageReference Include="AjaxControlToolkit" Version="20.1" />
     </ItemGroup>
     <ItemGroup Condition="$(TargetFramework) != 'net48'">
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web" Version="1.1.2-beta" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Compilers" Version="1.1.2-beta" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Extensions" Version="1.1.2-beta" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization" Version="1.1.2-beta" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization.WebForms" Version="1.1.2-beta" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Infrastructure" Version="1.1.2-beta" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.WebGrease" Version="1.1.2-beta" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.AjaxControlToolkit" Version="1.1.2-beta" />
-    </ItemGroup>
-    <ItemGroup>
-        <!--<Reference Include="AjaxControlToolkit, Version=3.5.40412.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e, processorArchitecture=MSIL">
-            <HintPath>..\..\Lib\AjaxControlToolkit.dll</HintPath>
-            <SpecificVersion>False</SpecificVersion>
-        </Reference>
-        <Reference Include="AntiXssLibrary, Version=1.5.0.0, Culture=neutral, PublicKeyToken=5906d2bb3d8a12c4, processorArchitecture=MSIL">
-            <HintPath>..\..\Lib\AntiXssLibrary.dll</HintPath>
-            <SpecificVersion>False</SpecificVersion>
-        </Reference>-->
-        <!--<Reference Include="Microsoft.ReportViewer.Common, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-            <HintPath>..\..\Lib\Microsoft.ReportViewer.Common.dll</HintPath>
-            <Private>True</Private>
-            <SpecificVersion>False</SpecificVersion>
-        </Reference>
-        <Reference Include="Microsoft.ReportViewer.ProcessingObjectModel, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-            <HintPath>..\..\Lib\Microsoft.ReportViewer.ProcessingObjectModel.dll</HintPath>
-            <Private>True</Private>
-            <SpecificVersion>False</SpecificVersion>
-        </Reference>
-        <Reference Include="Microsoft.ReportViewer.WebForms, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-            <HintPath>..\..\Lib\Microsoft.ReportViewer.WebForms.dll</HintPath>
-            <Private>True</Private>
-            <SpecificVersion>False</SpecificVersion>
-        </Reference>-->
-        <!--<Reference Include="System.Web" />
-        <Reference Include="System.Web.ApplicationServices" />
-        <Reference Include="System.Web.Extensions" />
-        <Reference Include="System.Configuration" />-->
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web" Version="1.2.0" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Compilers" Version="1.2.0" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Extensions" Version="1.2.0" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization" Version="1.2.0" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization.WebForms" Version="1.2.0" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Infrastructure" Version="1.2.0" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.WebGrease" Version="1.2.0" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.AjaxControlToolkit" Version="1.2.0" />
     </ItemGroup>
     <ItemGroup>
         <Content Include="tinymce\**\*.*" />
@@ -89,6 +61,9 @@
         <Content Include="**\*.ashx" Exclude="DesktopModules\**\*.ashx" />
         <Content Include="App_GlobalResources\*.resx">
             <SubType>Designer</SubType>
+        </Content>
+        <Content Include="appsettings.json">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="browserconfig.xml" />
         <Content Include="bin\AjaxControlToolkit.dll" />
@@ -131,10 +106,6 @@
     </ItemGroup>
     <ItemGroup>
         <Content Include="Default.aspx" />
-        <None Remove="SolidCP.WebPortal.deps.json" />
-        <Content Include="SolidCP.WebPortal.deps.json">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
         <Content Include="Web6.config">
             <SubType>Designer</SubType>
         </Content>
@@ -171,15 +142,24 @@
         <ProjectReference Include="..\SolidCP.EnterpriseServer\WebServices\SolidCP.Build\SolidCP.EnterpriseServer.Client.csproj" />
         <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
         <ProjectReference Include="..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj" />
+        <ProjectReference Include="..\SolidCP.Web.Services\SolidCP.Web.Services.csproj" />
     </ItemGroup>
     <ItemGroup>
         <Compile Remove="DesktopModules\**\*.cs" />
+    </ItemGroup>
+    <ItemGroup>
+      <None Remove="appsettings.json" />
     </ItemGroup>
     <ItemGroup>
       <Compile Include="DesktopModules\SolidCP\Code\Framework\ES.cs" />
     </ItemGroup>
     <ItemGroup>
       <Folder Include="bin_dotnet\" />
+    </ItemGroup>
+    <ItemGroup>
+      <None Update="SolidCP.WebPortal.deps.json.old">
+        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
     <Target Name="ChangeAliasesOfNugetRefs" Condition="$(TargetFramework) != 'net48'" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
@@ -191,13 +171,13 @@
         </ItemGroup>
     </Target>
 
-    <Target Name="CopyDepsJson" Condition="$(TargetFramework) != 'net48'" AfterTargets="Build">
+    <!--<Target Name="CopyDepsJson" Condition="$(TargetFramework) != 'net48'" AfterTargets="Build">
         
         <ItemGroup>
             <DepsJson Include="SolidCP.WebPortal.deps.json" />
         </ItemGroup>
 
         <Copy SourceFiles="@(DepsJson)" DestinationFolder="$(OutputPath)" />
-    </Target>
+    </Target>-->
             
 </Project>

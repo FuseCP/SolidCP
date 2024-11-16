@@ -29,6 +29,7 @@
                     "SolidCP.EnterpriseServer.Client": "1.0.0",
                     "SolidCP.Providers.Base": "1.0.0",
                     "SolidCP.Web.Clients": "1.0.0",
+                    "SolidCP.Web.Services": "1.0.0",
                     "SolidCP.Portal.Modules": "1.0.0",
                     "SolidCP.Providers.Virtualization.NoVNC": "1.0.0",
                     "AjaxControlToolkit": "4.1.51116.0",
@@ -2529,6 +2530,14 @@
                 },
                 "runtime": {
                     "SolidCP.Web.Clients.dll": {
+                        "assemblyVersion": "1.0.0",
+                        "fileVersion": "1.4.9"
+                    }
+                }
+            },
+            "SolidCP.Web.Services/1.0.0": {
+                "runtime": {
+                    "SolidCP.Web.Services.dll": {
                         "assemblyVersion": "1.0.0",
                         "fileVersion": "1.4.9"
                     }

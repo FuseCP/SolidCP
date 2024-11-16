@@ -122,8 +122,9 @@ namespace SolidCP.WebPortal
 		{
 			if (Debug && !Debugger.IsAttached) Debugger.Launch();
 
+#if NETFRAMEWORK
 			Web.Clients.CertificateValidator.Init();
-
+#endif
 			// start Enterprise Server
 			string serverUrl = PortalConfiguration.SiteSettings["EnterpriseServer"];
 			if (serverUrl.StartsWith("http://") || serverUrl.StartsWith("https://"))
@@ -142,16 +143,12 @@ namespace SolidCP.WebPortal
 			{
 #if NETFRAMEWORK
 				Web.Clients.AssemblyLoader.Init();
-#else
-				var probingPaths = ConfigurationManager.AppSettings["ExternalProbingPathsNetCore"];
-				var exposeWebServices = ConfigurationManager.AppSettings["ExposeWebServices"];
-				Web.Clients.AssemblyLoader.Init(probingPaths, exposeWebServices);
 #endif
 			}
 
 			VncWebSocketHandler.Init();
 
-            ScriptManager.ScriptResourceMapping.AddDefinition("jquery",
+			ScriptManager.ScriptResourceMapping.AddDefinition("jquery",
 				new ScriptResourceDefinition
 				{
 					Path = "~/JavaScript/jquery-2.1.0.min.js"

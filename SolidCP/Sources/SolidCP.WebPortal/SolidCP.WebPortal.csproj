@@ -455,20 +455,6 @@
     <Content Include="App_Themes\Default\Styles\images\ui-icons_ef8c08_256x240.png" />
     <Content Include="App_Themes\Default\Styles\images\ui-icons_ffd27a_256x240.png" />
     <Content Include="App_Themes\Default\Styles\images\ui-icons_ffffff_256x240.png" />
-    <Content Include="bin\AjaxControlToolkit.dll" />
-    <Content Include="bin\AntiXssLibrary.dll" />
-    <Content Include="bin\Microsoft.ReportViewer.Common.dll" />
-    <Content Include="bin\Microsoft.ReportViewer.ProcessingObjectModel.dll" />
-    <Content Include="bin\Microsoft.ReportViewer.WebForms.dll" />
-    <Content Include="bin\Microsoft.Web.Services3.dll" />
-    <Content Include="bin\SolidCP.Portal.Ecommerce.Modules.dll" />
-    <Content Include="bin\SolidCP.Portal.Ecommerce.Modules.pdb" />
-    <Content Include="bin\SolidCP.Portal.Modules.dll" />
-    <Content Include="bin\SolidCP.Portal.Modules.pdb" />
-    <Content Include="bin\SolidCP.Providers.Base.dll" />
-    <Content Include="bin\SolidCP.Providers.Base.pdb" />
-    <Content Include="bin\SolidCP.WebPortal.dll" />
-    <Content Include="bin\SolidCP.WebPortal.pdb" />
     <Content Include="Error.htm" />
     <Content Include="JavaScript\jquery-1.4.4.min.js" />
     <Content Include="JavaScript\jquery-ui-1.8.9.min.js" />
@@ -834,9 +820,6 @@
     <Content Include="App_Themes\Default\Common.skin" />
     <Content Include="App_Themes\Default\DataBoundControls.skin" />
     <Content Include="App_Themes\Default\Icons.skin" />
-    <Content Include="bin\SolidCP.Portal.Ecommerce.Modules.dll.config" />
-    <Content Include="bin\SolidCP.Portal.Modules.dll.config" />
-    <Content Include="bin\SolidCP.WebPortal.dll.config" />
     <Content Include="EnterpriseFolderDataHandler.ashx" />
     <Content Include="App_Themes\Default\fonts\fontawesome-webfont.eot" />
     <Content Include="App_Themes\Default\fonts\fontawesome-webfont.ttf" />
@@ -1326,6 +1309,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Code\" />
+    <Folder Include="bin\" />
     <Folder Include="DesktopModules\SolidCP\Code\Helpers\" />
   </ItemGroup>
   <PropertyGroup>

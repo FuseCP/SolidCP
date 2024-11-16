@@ -11,6 +11,7 @@
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <RestoreSources>$(RestoreSources);../../../../Lib/WebFormsForCore/nupkg;https://api.nuget.org/v3/index.json</RestoreSources>
         <BaseIntermediateOutputPath>obj\$(Configuration)\$(TargetFramework)\</BaseIntermediateOutputPath>
+        <MSBuildProjectExtensionPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionPath>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <DebugType>portable</DebugType>
@@ -9322,10 +9323,10 @@
         <WCFMetadata Include="Connected Services\" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web" Version="1.1.2-beta" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Mobile" Version="1.1.2-beta" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Extensions" Version="1.1.2-beta" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.AjaxControlToolkit" Version="1.1.2-beta" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web" Version="1.2.0" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Mobile" Version="1.2.0" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Extensions" Version="1.2.0" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.AjaxControlToolkit" Version="1.2.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="System.Web.Services.Description" Version="8.0.0.0" Aliases="SD" />
         <PackageReference Include="ReportViewerCore.NETCore" Version="15.1.23" />

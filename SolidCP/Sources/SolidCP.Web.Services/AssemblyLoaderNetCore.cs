@@ -25,7 +25,9 @@ namespace SolidCP.Web.Services
 		static string[] Paths => paths != null ? paths : paths =
 			Configuration.ProbingPaths
 				.Replace('\\', Path.DirectorySeparatorChar)
-				.Split(';');
+				.Split(';')
+				.Concat(new string[] { Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) })
+				.ToArray();
 
 		public static Assembly Resolve(AssemblyLoadContext context, AssemblyName name)
 		{
