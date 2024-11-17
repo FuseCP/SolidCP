@@ -4404,8 +4404,9 @@ RETURN
 
 				using (var parents = UserParents(actorId, userId).ToTempIdSet(this))
 				{
+					var tempIds = parents.TempIds();
 					var users = Users
-						.Join(parents.TempIds(), u => u.UserId, p => p.Id, (user, parent) => new { User = user, Order = parent.Key })
+						.Join(tempIds, u => u.UserId, p => p.Id, (user, parent) => new { User = user, Order = parent.Key })
 						.OrderByDescending(u => u.Order)
 						.Select(u => new
 						{
