@@ -32,7 +32,7 @@ Version 1.5.0
 - Added support for Server 2025.
 - Adding support for DNS TTL editing when using Microsoft DNS Server 2016 and PowerDNS. Requires a quota is enabled to allow it for hosting plans.
 - [MSDNS2016] Created method to fallback to WMI for reading TXT records over 255 length. #164
-
+- [PowerDNS] Fix for slave zone creation #185
 
 
 Version 1.4.9
