@@ -809,8 +809,8 @@ namespace SolidCP.Providers.Mail
 		}
 
 		public void CreateAccount(MailAccount mailbox)
-		{
-			try
+        {
+            try
 			{
 				var userDataArray = new
 				{
@@ -818,8 +818,8 @@ namespace SolidCP.Providers.Mail
 					userName = mailbox.Name,
 					fullName = mailbox.FullName,
 					password = mailbox.Password,
-					maxMailboxSize = mailbox.MaxMailboxSize
-				};
+					maxMailboxSize = mailbox.MaxMailboxSize * 1048576
+                };
 
 				var userContactInfoArray = new
 				{
@@ -850,7 +850,7 @@ namespace SolidCP.Providers.Mail
 					forwardList = forwardListArray
 				};
 
-				dynamic result = ExecDomainPostCommand("settings/domain/user-put", GetDomainName(mailbox.Name), userputPram).Result;
+                dynamic result = ExecDomainPostCommand("settings/domain/user-put", GetDomainName(mailbox.Name), userputPram).Result;
 
 				bool success = Convert.ToBoolean(result["success"]);
 				if (!success)
