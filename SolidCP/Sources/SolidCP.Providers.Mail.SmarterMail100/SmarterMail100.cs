@@ -943,7 +943,7 @@ namespace SolidCP.Providers.Mail
 				if (!success)
 					throw new Exception(result["message"]);
 
-				dynamic userDataresult = ExecGetCommand("settings/sysadmin/user/" + mailboxName).Result;
+                dynamic userDataresult = ExecDomainGetCommand("settings/domain/user/" + mailboxName, GetDomainName(mailboxName)).Result;
 
 				bool userDatasuccess = Convert.ToBoolean(userDataresult["success"]);
 				if (!userDatasuccess)
