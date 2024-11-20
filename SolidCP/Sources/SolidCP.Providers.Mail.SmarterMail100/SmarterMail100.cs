@@ -818,7 +818,7 @@ namespace SolidCP.Providers.Mail
 					userName = mailbox.Name,
 					fullName = mailbox.FullName,
 					password = mailbox.Password,
-					maxMailboxSize = mailbox.MaxMailboxSize * 1048576
+					maxMailboxSize = (long)mailbox.MaxMailboxSize * 1048576
                 };
 
 				var userContactInfoArray = new
