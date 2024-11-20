@@ -832,7 +832,6 @@ namespace SolidCP.Providers.Mail
 				{
 					userContactInfo = userContactInfoArray,
 					replyToAddress = mailbox.ReplyTo,
-					signature = mailbox.Signature,
 					isEnabled = mailbox.Enabled,
 					enableMailForwarding = mailbox.ForwardingEnabled
 				};
@@ -877,7 +876,7 @@ namespace SolidCP.Providers.Mail
 
 				//TODO: Signature
 
-				if (mailbox.Signature != null)
+				if (mailbox.Signature.Length > 0)
 				{
 					var signatureConfigArray = new
 					{
