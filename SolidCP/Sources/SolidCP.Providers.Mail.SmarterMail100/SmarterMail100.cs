@@ -598,7 +598,7 @@ namespace SolidCP.Providers.Mail
 			try
 			{
 				var input_post = new { };
-				dynamic result = ExecPostCommand("settings/domain/user-delete/" + domainName + "/true", input_post).Result;
+				dynamic result = ExecPostCommand("settings/sysadmin/domain-delete/" + domainName + "/true", input_post).Result;
 
 				bool success = Convert.ToBoolean(result["success"]);
 				if (!success)
@@ -763,6 +763,25 @@ namespace SolidCP.Providers.Mail
                     catch (Exception ex)
                     {
                         Log.WriteError(String.Format("Error switching '{0}' SmarterMail domain", item.Name), ex);
+                    }
+                }
+            }
+        }
+
+        public override void DeleteServiceItems(ServiceProviderItem[] items)
+        {
+            foreach (ServiceProviderItem item in items)
+            {
+                if (item is MailDomain)
+                {
+                    try
+                    {
+                        // delete mail domain
+                        DeleteDomain(item.Name);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.WriteError(String.Format("Error deleting '{0}' SmarterMail domain", item.Name), ex);
                     }
                 }
             }
