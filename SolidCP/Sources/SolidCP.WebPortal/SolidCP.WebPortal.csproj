@@ -2,16 +2,14 @@
     <PropertyGroup>
         <RootNamespace>SolidCP.WebPortal</RootNamespace>
         <AssemblyName>SolidCP.WebPortal</AssemblyName>
-        <TargetFrameworks>net48</TargetFrameworks>
+        <TargetFrameworks>net48;net8.0</TargetFrameworks>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <RestoreSources>$(RestoreSources);../../Lib/WebFormsForCore/nupkg;https://api.nuget.org/v3/index.json</RestoreSources>
-        <!--<CopyDebugSymbolFilesFromPackages>true</CopyDebugSymbolFilesFromPackages>
-        <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
-        <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>-->
-        <!--<BaseIntermediateOutputPath>obj\$(Configuration)\$(TargetFramework)\</BaseIntermediateOutputPath>-->
-        <!--<MSBuildProjectExtensionPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionPath>-->
+        <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
+        <!--<GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+        <CopyDebugSymbolFilesFromPackages>true</CopyDebugSymbolFilesFromPackages>-->
     </PropertyGroup>
     <PropertyGroup Condition="$(TargetFramework) == 'net48'">
         <OutputPath>bin\</OutputPath>
@@ -53,15 +51,15 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup Condition="$(TargetFramework) != 'net48'">
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web" Version="1.2.0" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Build" Version="1.2.0" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Compilers" Version="1.2.0" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Extensions" Version="1.2.0" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization" Version="1.2.0" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization.WebForms" Version="1.2.0" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Infrastructure" Version="1.2.0" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.WebGrease" Version="1.2.0" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.AjaxControlToolkit" Version="1.2.0" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web" Version="1.2.2" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Build" Version="1.2.2" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Compilers" Version="1.2.2" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Extensions" Version="1.2.2" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization" Version="1.2.2" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization.WebForms" Version="1.2.2" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Infrastructure" Version="1.2.2" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.WebGrease" Version="1.2.2" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.AjaxControlToolkit" Version="1.2.2" />
     </ItemGroup>
     <ItemGroup>
         <Content Include="tinymce\**\*.*" />
@@ -69,11 +67,11 @@
         <Content Include="novnc\**\*.*" />
         <Content Include="JavaScript\**\*.*" />
         <Content Include="Styles\**\*.*" />
-        <Content Include="**\*.png" Exclude="DesktopModules\**\*.png;obj\**\*.png" />
-        <Content Include="**\*.ico" Exclude="DesktopModules\**\*.ico;obj\**\*.ico" />
-        <Content Include="**\*.svc" Exclude="DesktopModules\**\*.svc;obj\**\*.svc" />
-        <Content Include="**\*.ascx" Exclude="DesktopModules\**\*.ascx;obj\**\*.ascx" />
-        <Content Include="**\*.ashx" Exclude="DesktopModules\**\*.ashx;obj\**\*.ashx" />
+        <Content Include="**\*.png" Exclude="DesktopModules\**\*.png" />
+        <Content Include="**\*.ico" Exclude="DesktopModules\**\*.ico" />
+        <Content Include="**\*.svc" Exclude="DesktopModules\**\*.svc" />
+        <Content Include="**\*.ascx" Exclude="DesktopModules\**\*.ascx" />
+        <Content Include="**\*.ashx" Exclude="DesktopModules\**\*.ashx" />
         <Content Include="App_GlobalResources\*.resx">
             <SubType>Designer</SubType>
         </Content>
@@ -145,6 +143,8 @@
     <ItemGroup>
         <Compile Remove="DesktopModules\**\*.cs" />
         <Compile Remove="obj\**\*.cs" />
+        <None Remove="obj\**\*.*" />
+        <None Remove="bin_dotnet\**\*.*" />
     </ItemGroup>
     <ItemGroup>
         <None Remove="appsettings.json" />
@@ -165,12 +165,16 @@
     <Target Name="ChangeAliasesOfNugetRefs" Condition="$(TargetFramework) != 'net48'" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
         <ItemGroup>
             <!-- Do not import System.Configuration.ConfigurationManager version 8 -->
-            <ReferencePath Remove="%(Identity)" Condition="'%(FileName)' == 'System.Configuration.ConfigurationManager' AND $([System.Text.RegularExpressions.Regex]::IsMatch(%(Identity),'\\8.0.0\\'))" />
+            <ReferencePath Remove="%(Identity)" Condition="'%(FileName)' == 'System.Configuration.ConfigurationManager' AND $([System.Text.RegularExpressions.Regex]::IsMatch(%(Identity),'\\8\.0\..\\'))" />
             <!-- Do not import System.Web -->
             <ReferencePath Remove="%(Identity)" Condition="'%(FileName)' == 'System.Web' AND $([System.Text.RegularExpressions.Regex]::IsMatch(%(Identity),'\\dotnet\\'))" />
         </ItemGroup>
     </Target>
 
+    <Target Name="CopyCoreWebConfig" AfterTargets="Build">
+        <Copy SourceFiles="Core.Web.config" DestinationFiles="bin_dotnet\Web.config" />
+    </Target>
+    
     <!--<Target Name="CopyDepsJson" Condition="$(TargetFramework) != 'net48'" AfterTargets="Build">
         
         <ItemGroup>

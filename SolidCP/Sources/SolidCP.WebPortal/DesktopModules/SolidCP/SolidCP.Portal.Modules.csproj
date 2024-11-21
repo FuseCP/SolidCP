@@ -4,13 +4,13 @@
         <RootNamespace>SolidCP.Portal</RootNamespace>
         <AssemblyName>SolidCP.Portal.Modules</AssemblyName>
         <TargetFrameworks>net48;net8.0</TargetFrameworks>
+        <LangVersion>13</LangVersion>
         <EnableDefaultItems>false</EnableDefaultItems>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
         <RestoreSources>$(RestoreSources);../../../../Lib/WebFormsForCore/nupkg;https://api.nuget.org/v3/index.json</RestoreSources>
-        <BaseIntermediateOutputPath>obj\$(Configuration)\$(TargetFramework)\</BaseIntermediateOutputPath>
-        <MSBuildProjectExtensionPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionPath>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <DebugType>portable</DebugType>
@@ -35,10 +35,11 @@
     </ItemGroup>
     
     <ItemGroup Condition="$(TargetFramework) != 'net48'">
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web" Version="1.2.0" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Mobile" Version="1.2.0" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Extensions" Version="1.2.0" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.AjaxControlToolkit" Version="1.2.0" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web" Version="1.2.2" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Build" Version="1.2.2" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Mobile" Version="1.2.2" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Extensions" Version="1.2.2" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.AjaxControlToolkit" Version="1.2.2" />
         <PackageReference Include="System.Web.Services.Description" Version="8.1.0.0" Aliases="SD" />
         <PackageReference Include="ReportViewerCore.NETCore" Version="15.1.25" />
     </ItemGroup>

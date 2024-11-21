@@ -11,7 +11,6 @@
         <AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>
         <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-        <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
     </PropertyGroup>
     <ItemGroup>
         <Compile Remove="Microsoft.NET.Sdk.Razor.SourceGenerators\**" />

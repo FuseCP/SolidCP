@@ -1,9 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <ProjectGuid>{68B50D26-3F14-4AC7-977A-2F6128088019}</ProjectGuid>
         <TargetFrameworks>net48;net8.0</TargetFrameworks>
-        <AssemblyTitle>CPCC</AssemblyTitle>
-        <Product>CPCC</Product>
         <OutputPath>bin\$(Configuration)</OutputPath>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <RestoreSources>$(RestoreSources);../../Lib/WebFormsForCore/nupkg;https://api.nuget.org/v3/index.json</RestoreSources>
@@ -27,7 +24,7 @@
         <Reference Include="System.Net.Http" />
     </ItemGroup>
     <ItemGroup Condition="$(TargetFramework) != 'net48'">
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web" Version="1.2.0" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web" Version="1.2.2" />
     </ItemGroup>
     <ItemGroup>
         <Compile Include="..\VersionInfo.cs" Link="Properties\VersionInfo.cs" />

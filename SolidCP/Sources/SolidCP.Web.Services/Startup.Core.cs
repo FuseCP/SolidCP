@@ -43,8 +43,10 @@ namespace SolidCP.Web.Services
 		public const int MaxArrayLength = Configuration.MaxArrayLength;
 		public const int MaxStringContentLength = Configuration.MaxStringContentLength;
 		public const int MaxNameTableCharCount = Configuration.MaxNameTableCharCount;
-
 		public const bool AllowInsecureHttp = Configuration.AllowInsecureHttp;
+
+		public static bool IsIIS => OSInfo.IsWindows && NativeMethods.IsAspNetCoreModuleLoaded();
+
 		public static void Log(string msg)
 		{
 			Console.WriteLine(msg);
@@ -161,59 +163,70 @@ namespace SolidCP.Web.Services
 				Log($"Listen on net.tcp port {NetTcpPort.Value}");
 			}
 
-			builder.WebHost.UseKestrel(options =>
+			if (IsIIS)
 			{
-				options.AllowSynchronousIO = true;
+				builder.Services.Configure<IISServerOptions>(options =>
+				{
+					options.AllowSynchronousIO = true;
+				});
+				builder.WebHost.UseIIS();
+			}
+			else
+			{
+				builder.WebHost.UseKestrel(options =>
+				{
+					options.AllowSynchronousIO = true;
 
-				if (OSInfo.IsUnix && OSInfo.Unix.IsSystemd) options.UseSystemd();
+					if (OSInfo.IsUnix && OSInfo.Unix.IsSystemd) options.UseSystemd();
 
-				if (HttpPort.HasValue) options.ListenAnyIP(HttpPort.Value, listenOptions =>
-					{
-						if (Debugger.IsAttached) listenOptions.UseConnectionLogging();
-					});
-				if (HttpsPort.HasValue) options.ListenAnyIP(HttpsPort.Value, listenOptions =>
-					{
-						listenOptions.UseHttps(listenOptions =>
-							{
-								if (string.IsNullOrEmpty(CertificateFile) || string.IsNullOrEmpty(CertificatePassword))
+					if (HttpPort.HasValue) options.ListenAnyIP(HttpPort.Value, listenOptions =>
+						{
+							if (Debugger.IsAttached) listenOptions.UseConnectionLogging();
+						});
+					if (HttpsPort.HasValue) options.ListenAnyIP(HttpsPort.Value, listenOptions =>
+						{
+							listenOptions.UseHttps(listenOptions =>
 								{
-									if (!string.IsNullOrEmpty(Name))
+									if (string.IsNullOrEmpty(CertificateFile) || string.IsNullOrEmpty(CertificatePassword))
 									{
-										X509Store store = new X509Store(StoreName, StoreLocation);
-										store.Open(OpenFlags.ReadOnly);
-										Certificate = store.Certificates.Find(FindType, Name, false).FirstOrDefault();
-										if (Certificate != null) Log($"Use certificate {Certificate.GetNameInfo(X509NameType.SimpleName, false)} {Certificate.FriendlyName} found in {StoreName} at {StoreLocation}");
-										else Error($"Certificate for {Name} not found in {StoreName} at {StoreLocation}");
-									}
-								}
-								else
-								{
-									var file = new FileInfo(CertificateFile).FullName;
-									if (File.Exists(file))
-									{
-										if (!string.IsNullOrEmpty(KeyFile))
+										if (!string.IsNullOrEmpty(Name))
 										{
-											var keyFile = new FileInfo(KeyFile).FullName;
-											if (File.Exists(keyFile)) CertificatePassword = File.ReadAllText(keyFile);
+											X509Store store = new X509Store(StoreName, StoreLocation);
+											store.Open(OpenFlags.ReadOnly);
+											Certificate = store.Certificates.Find(FindType, Name, false).FirstOrDefault();
+											if (Certificate != null) Log($"Use certificate {Certificate.GetNameInfo(X509NameType.SimpleName, false)} {Certificate.FriendlyName} found in {StoreName} at {StoreLocation}");
+											else Error($"Certificate for {Name} not found in {StoreName} at {StoreLocation}");
 										}
-										var certs = new X509Certificate2Collection();
-
-										certs.Import(file, CertificatePassword, X509KeyStorageFlags.DefaultKeySet);
-										Certificate = certs.FirstOrDefault();
-										if (Certificate != null) Log($"Use certificate {Certificate.SubjectName} from {file}.");
-										else Error($"The certificate {file} was not found.");
 									}
-								}
+									else
+									{
+										var file = new FileInfo(CertificateFile).FullName;
+										if (File.Exists(file))
+										{
+											if (!string.IsNullOrEmpty(KeyFile))
+											{
+												var keyFile = new FileInfo(KeyFile).FullName;
+												if (File.Exists(keyFile)) CertificatePassword = File.ReadAllText(keyFile);
+											}
+											var certs = new X509Certificate2Collection();
 
-								// if (Certificate == null) return;
+											certs.Import(file, CertificatePassword, X509KeyStorageFlags.DefaultKeySet);
+											Certificate = certs.FirstOrDefault();
+											if (Certificate != null) Log($"Use certificate {Certificate.SubjectName} from {file}.");
+											else Error($"The certificate {file} was not found.");
+										}
+									}
 
-								listenOptions.ServerCertificate = Certificate;
+									// if (Certificate == null) return;
 
-							});
+									listenOptions.ServerCertificate = Certificate;
 
-						if (Debugger.IsAttached) listenOptions.UseConnectionLogging();
-					});
-			});
+								});
+
+							if (Debugger.IsAttached) listenOptions.UseConnectionLogging();
+						});
+				});
+			}
 
 			Server.ContentRoot = builder.Environment.ContentRootPath;
 			Server.WebRoot = builder.Environment.WebRootPath;
