@@ -33,6 +33,15 @@ Version 1.5.0
 - Adding support for DNS TTL editing when using Microsoft DNS Server 2016 and PowerDNS. Requires a quota is enabled to allow it for hosting plans.
 - [MSDNS2016] Created method to fallback to WMI for reading TXT records over 255 length. #164
 - [PowerDNS] Fix for slave zone creation #185
+- [SmarterMail100] Fix for wrong mailbox size during account creation
+- [SmarterMail100] Fix for large numbers when going from MB to kb
+- [SmarterMail100] Fix for Signature to only be set when not blank
+- [SmarterMail100] Fix for getting mail accoount into. API now requires domain access token key
+- [SmarterMail100] Fixing UpdateAccount due to API changes also some log cleanup
+- [SmarterMail100] Fix for suspending hosting space in SolidCP not causing domain to be disabled.
+- [SmarterMail100] Fix for Deleting Space and/or User Account in SCP does not remove the domain off the SM server
+- [SmarterMail100] Fixed creating groups
+- [SmarterMail100] Added tinymce to the Signature and Autoresponder messages so they can be html when using latest SmarterMail
 
 
 Version 1.4.9
