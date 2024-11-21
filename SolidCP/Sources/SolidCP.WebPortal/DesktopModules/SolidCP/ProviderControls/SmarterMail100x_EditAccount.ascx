@@ -1,6 +1,26 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="SmarterMail100x_EditAccount.ascx.cs" Inherits="SolidCP.Portal.ProviderControls.SmarterMail100x_EditAccount" %>
 <%@ Register TagPrefix="scp" TagName="CollapsiblePanel" Src="../UserControls/CollapsiblePanel.ascx" %>
+<script src='/tinymce/tinymce.min.js'></script>
 
+<script type="text/javascript">
+    tinymce.init({
+        selector: ".tinymce",
+        plugins: ['advlist autolink lists link image charmap preview hr anchor pagebreak searchreplace htmlchar_count visualblocks visualchars code fullscreen insertdatetime media nonbreaking save table contextmenu directionality template paste textcolor colorpicker textpattern imagetools codesample'],
+        toolbar: false,
+        custom_undo_redo_levels: 10,
+        height: 250,
+        max_chars: 5000,
+        menu: {
+            edit: { title: 'Edit', items: 'undo redo | cut copy paste pastetext | selectall' },
+            insert: { title: 'Insert', items: 'media image link | hr charmap' },
+            view: { title: 'View', items: 'visualaid' },
+            format: { title: 'Format', items: 'bold italic underline strikethrough superscript subscript | formats | removeformat' },
+            table: { title: 'Table', items: 'inserttable tableprops deletetable | cell row column' },
+            tools: { title: 'Tools', items: 'code preview' },
+        },
+        toolbar1: 'undo redo | bold italic underline | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media',
+    });
+</script>
 
 <div runat="server" id="passwordRow" class="form-group hide">
     <asp:Label ID="Label1" runat="server" CssClass="control-label col-sm-2" >
@@ -55,7 +75,7 @@
         <asp:Localize ID="LocSignature" runat="server" meta:resourcekey="lblSignature" Text="Signature:" />
     </asp:Label>
     <div runat="server" class="col-sm-10">
-            <asp:TextBox ID="txtSignature" runat="server" Width="400px" TextMode="MultiLine" Rows="4" CssClass="form-control"></asp:TextBox>
+            <asp:TextBox ID="txtSignature" runat="server" Width="400px" TextMode="MultiLine" Rows="5" cols="20" CssClass="tinymce"></asp:TextBox>
     </div>
 </div>
 
@@ -83,8 +103,8 @@
             <td class="SubHead" valign="top">
                 <asp:Label ID="lblMessage" runat="server" meta:resourcekey="lblMessage" Text="Message:"></asp:Label></td>
             <td class="normal">
-                <asp:TextBox ID="txtMessage" runat="server" Width="400px"  TextMode="MultiLine" Rows="5"
-                    CssClass="form-control"></asp:TextBox>
+                <asp:TextBox ID="txtMessage" runat="server" Width="400px"  TextMode="MultiLine" Rows="5" cols="20"
+                    CssClass="tinymce"></asp:TextBox>
             </td>
         </tr>
     </table>
