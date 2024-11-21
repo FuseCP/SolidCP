@@ -1452,20 +1452,23 @@ namespace SolidCP.Providers.Mail
 		{
 			try 
 			{
-				dynamic result = ExecDomainGetCommand("settings/domain/aliases/" + GetAccountName(groupName), GetDomainName(groupName)).Result;
+				string groupNameUser = GetAccountName(groupName);
+
+                dynamic result = ExecDomainGetCommand("settings/domain/aliases/" + groupNameUser, GetDomainName(groupName)).Result;
 
 				bool success = Convert.ToBoolean(result["success"]);
 				if (!success)
 					throw new Exception(result["message"]);
 
-				Log.WriteInfo("GroupExists - A gridInfo: {0}", result);
-				if (result["gridInfo"].ToString() != "")
+				if (result["gridInfo"].Count > 0)
 				{
-					Log.WriteInfo("GroupExists - B group: {0}\n\n gridinfo:\n {1}", groupName, result["gridInfo"].ToString()); 
-					if (result["gridInfo"]["name"].ToString() == groupName)
+					foreach (dynamic gridinfo in (result["gridInfo"]))
 					{
-						Log.WriteInfo("GroupExists - Found group: {0}", groupName);
-						return true;
+                        if (gridinfo.name == groupNameUser)
+						{
+							Log.WriteInfo("GroupExists - Found group: {0}", groupName);
+							return true;
+						}
 					}
 				}
 
