@@ -197,8 +197,6 @@ namespace SolidCP.Providers.Mail
 
 		public async Task<AuthToken> GetDomainAccessToken(string domain)
 		{
-			Log.WriteStart("GetAccessToken");
-
 			AuthToken authToken = await GetAccessToken();
 
 			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
@@ -228,11 +226,7 @@ namespace SolidCP.Providers.Mail
 
 		public async Task<AuthToken> GetUserAccessToken(string email)
 		{
-			Log.WriteStart("GetUserAccessToken");
-
 			AuthToken authToken = await GetAccessToken();
-
-			Log.WriteStart("GetUserAccessToken - GetAccessToken");
 
 			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
 			ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
@@ -262,8 +256,6 @@ namespace SolidCP.Providers.Mail
 
 		private async Task<object> ExecGetCommand(string command)
 		{
-			Log.WriteStart("ExecGetCommand {0}", command);
-
 			AuthToken auth = await GetAccessToken();
 
 			var commandurl = ServiceUrl + "/api/v1/" + command;
@@ -284,8 +276,6 @@ namespace SolidCP.Providers.Mail
 
 		private async Task<object> ExecPostCommand(string command, object param)
 		{
-			Log.WriteStart("ExecPostCommand {0}", command);
-
 			AuthToken authToken = await GetAccessToken();
 
 			var commandurl = ServiceUrl + "/api/v1/" + command;
@@ -350,8 +340,6 @@ namespace SolidCP.Providers.Mail
 
 		private async Task<object> ExecUserGetCommand(string command, string email)
 		{
-			Log.WriteStart("ExecGetCommand {0}", command);
-
 			AuthToken auth = await GetUserAccessToken(email);
 
 			var commandurl = ServiceUrl + "/api/v1/" + command;
@@ -1054,10 +1042,11 @@ namespace SolidCP.Providers.Mail
 
 					var passwordPram = new
 					{
-						userData = passworduserDataArray
+						email = mailbox.Name,
+                        userData = passworduserDataArray
 					};
 
-					dynamic passwordresult = ExecDomainPostCommand("settings/domain/user/" + mailbox.Name, GetDomainName(mailbox.Name), passwordPram).Result;
+                    dynamic passwordresult = ExecDomainPostCommand("settings/domain/post-user/", GetDomainName(mailbox.Name), passwordPram).Result;
 
 					bool passwordsuccess = Convert.ToBoolean(passwordresult["success"]);
 					if (!passwordsuccess)
@@ -1077,15 +1066,15 @@ namespace SolidCP.Providers.Mail
 					isEnabled = mailbox.Enabled,
 					enableMailForwarding = mailbox.ForwardingEnabled,
 					replyToAddress = mailbox.ReplyTo
-					//signature = mailbox.Signature,
 				};
 
 				var userputPram = new
 				{
+					email = mailbox.Name,
 					userMailSettings = userMailSettingsArray
 				};
 
-				dynamic result = ExecDomainPostCommand("settings/domain/user-mail/" + mailbox.Name, GetDomainName(mailbox.Name), userputPram).Result;
+                dynamic result = ExecDomainPostCommand("settings/domain/post-user-mail", GetDomainName(mailbox.Name), userputPram).Result;
 
 				bool success = Convert.ToBoolean(result["success"]);
 				if (!success)
@@ -1094,15 +1083,16 @@ namespace SolidCP.Providers.Mail
 				var updateUseruserDataArray = new
 				{
 					fullName = mailbox.FirstName + " " + mailbox.LastName,
-					maxMailboxSize = Convert.ToInt64(mailbox.MaxMailboxSize) * 1048576
-				};
+					maxMailboxSize = (long)mailbox.MaxMailboxSize * 1048576
+                };
 
 				var updateUserPram = new
 				{
+					email = mailbox.Name,
 					userData = updateUseruserDataArray,
 				};
 
-				dynamic updateUserresult = ExecDomainPostCommand("settings/domain/user/" + mailbox.Name, GetDomainName(mailbox.Name), updateUserPram).Result;
+                dynamic updateUserresult = ExecDomainPostCommand("settings/domain/post-user", GetDomainName(mailbox.Name), updateUserPram).Result;
 
 				bool updateUsersuccess = Convert.ToBoolean(updateUserresult["success"]);
 				if (!updateUsersuccess)
@@ -1147,9 +1137,7 @@ namespace SolidCP.Providers.Mail
 
 				// TODO: Signature
 
-				Log.WriteInfo("Sig: {0}", mailbox.Signature);
-
-				if(mailbox.Signature != null)
+                if (mailbox.Signature != null)
                 {
 					//Check if creating a new Signature or updating one
 					if (account.SignatureGuid == null)
