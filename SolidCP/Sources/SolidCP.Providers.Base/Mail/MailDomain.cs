@@ -68,6 +68,12 @@ namespace SolidCP.Providers.Mail
         public const string SMARTERMAIL6_SYNCML_ENABLED = "EnableSyncML";
         #endregion 
 
+        #region Smarter Mail 100.x String Constants
+        public const string SMARTERMAIL100_MESSAGES_PER_HOUR_ACTION = "messagesAction";
+        public const string SMARTERMAIL100_BANDWIDTH_PER_HOUR_ACTION = "bandwidthAction";
+        public const string SMARTERMAIL100_BOUNCES_PER_HOUR_Action = "bouncesAction";
+        #endregion
+
         //license type
 		public const string SMARTERMAIL_LICENSE_TYPE = "LicenseType";
 

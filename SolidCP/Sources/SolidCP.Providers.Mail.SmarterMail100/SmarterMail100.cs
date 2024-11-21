@@ -443,8 +443,6 @@ namespace SolidCP.Providers.Mail
 				if (!success)
 					throw new Exception(result["message"]);
 
-				Log.WriteInfo("GetDomain: DomainSettings {0}", result["domainSettings"]);
-
                 // fill domain properties
                 MailDomain domain = new MailDomain();
 				domain.Name = domainName;
@@ -475,17 +473,14 @@ namespace SolidCP.Providers.Mail
 
 				//Throttling
 				domain[MailDomain.SMARTERMAIL5_MESSAGES_PER_HOUR] = result["domainSettings"]["throttleSettings"]["messagesPerHour"].ToString();
-				string SM_MESSAGES_PER_HOUR_ENABLED = result["domainSettings"]["throttleSettings"]["messagesAction"].ToString();
-				domain[MailDomain.SMARTERMAIL5_MESSAGES_PER_HOUR_ENABLED] = GetBoolean(SM_MESSAGES_PER_HOUR_ENABLED);
-				domain[MailDomain.SMARTERMAIL5_BANDWIDTH_PER_HOUR] = result["domainSettings"]["throttleSettings"]["bandwidthPerHour"].ToString();
-				string SM_BANDWIDTH_PER_HOUR_ENABLED = result["domainSettings"]["throttleSettings"]["bandwidthAction"].ToString();
-				domain[MailDomain.SMARTERMAIL5_BANDWIDTH_PER_HOUR_ENABLED] = GetBoolean(SM_BANDWIDTH_PER_HOUR_ENABLED);
-				domain[MailDomain.SMARTERMAIL5_BOUNCES_PER_HOUR] = result["domainSettings"]["throttleSettings"]["bouncesPerHour"].ToString();
-				string SM_BOUNCES_PER_HOUR_ENABLED = result["domainSettings"]["throttleSettings"]["bouncesAction"].ToString();
-				domain[MailDomain.SMARTERMAIL5_BOUNCES_PER_HOUR_ENABLED] = GetBoolean(SM_BOUNCES_PER_HOUR_ENABLED);
+				domain[MailDomain.SMARTERMAIL100_MESSAGES_PER_HOUR_ACTION] = result["domainSettings"]["throttleSettings"]["messagesAction"].ToString();
+                domain[MailDomain.SMARTERMAIL5_BANDWIDTH_PER_HOUR] = result["domainSettings"]["throttleSettings"]["bandwidthPerHour"].ToString();
+				domain[MailDomain.SMARTERMAIL100_BANDWIDTH_PER_HOUR_ACTION] = result["domainSettings"]["throttleSettings"]["bouncesAction"].ToString();
+                domain[MailDomain.SMARTERMAIL5_BOUNCES_PER_HOUR] = result["domainSettings"]["throttleSettings"]["bouncesPerHour"].ToString();
+				domain[MailDomain.SMARTERMAIL100_BOUNCES_PER_HOUR_Action] = result["domainSettings"]["throttleSettings"]["bandwidthAction"].ToString();
 
-				//Limits
-				domain.MaxDomainSizeInMB = (int)Convert.ToInt64(Convert.ToInt64(result["domainSettings"]["maxSize"].ToString()) / 1048576);
+                //Limits
+                domain.MaxDomainSizeInMB = (int)Convert.ToInt64(Convert.ToInt64(result["domainSettings"]["maxSize"].ToString()) / 1048576);
 				domain.MaxDomainAliases = (int)Convert.ToInt64(result["domainSettings"]["maxDomainAliases"].ToString());
 				domain.MaxDomainUsers = (int)Convert.ToInt64(result["domainSettings"]["maxUsers"].ToString());
 				domain.MaxAliases = (int)Convert.ToInt64(result["domainSettings"]["maxAliases"].ToString());
@@ -707,9 +702,9 @@ namespace SolidCP.Providers.Mail
 
 				var throttleSettingsArray = new
 				{
-					bandwidthAction = domain[MailDomain.SMARTERMAIL5_BANDWIDTH_PER_HOUR_ENABLED],
+					bandwidthAction = domain[MailDomain.SMARTERMAIL100_BANDWIDTH_PER_HOUR_ACTION],
 					bandwidthPerHour = domain[MailDomain.SMARTERMAIL5_BANDWIDTH_PER_HOUR],
-					bouncesAction = domain[MailDomain.SMARTERMAIL5_BANDWIDTH_PER_HOUR_ENABLED],
+					bouncesAction = domain[MailDomain.SMARTERMAIL100_BANDWIDTH_PER_HOUR_ACTION],
 					bouncesPerHour = domain[MailDomain.SMARTERMAIL5_BOUNCES_PER_HOUR]
 				};
 
@@ -726,9 +721,10 @@ namespace SolidCP.Providers.Mail
 					maxSize = domain.MaxDomainSizeInMB,
 					maxDomainAliases = domain.MaxDomainAliases,
 					maxUsers = domain.MaxDomainUsers,
-					maxMessageSize = domain.MaxMessageSize,
+					maxMessageSize = (long)domain.MaxMessageSize * 1048576,
 					maxRecipients = domain.MaxRecipients,
-				};
+                    isEnabled = domain.Enabled
+                };
 
 				var domainSettingsPram = new
 				{
@@ -748,11 +744,35 @@ namespace SolidCP.Providers.Mail
 			}
 		}
 
-		#endregion
+        public override void ChangeServiceItemsState(ServiceProviderItem[] items, bool enabled)
+        {
+            foreach (ServiceProviderItem item in items)
+            {
+                if (item is MailDomain)
+                {
+                    try
+                    {
+                        // enable/disable mail domain
+                        if (DomainExists(item.Name))
+                        {
+                            MailDomain mailDomain = GetDomain(item.Name);
+                            mailDomain.Enabled = enabled;
+                            UpdateDomain(mailDomain);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.WriteError(String.Format("Error switching '{0}' SmarterMail domain", item.Name), ex);
+                    }
+                }
+            }
+        }
 
-		#region Mail Accounts
+        #endregion
 
-		public bool AccountExists(string mailboxName)
+        #region Mail Accounts
+
+        public bool AccountExists(string mailboxName)
 		{
 			dynamic result = ExecGetCommand("settings/sysadmin/user/" + mailboxName).Result;
 
