@@ -583,7 +583,24 @@ namespace SolidCP.Providers.Mail
 				bool success = Convert.ToBoolean(result["success"]);
 				if (!success)
 					throw new Exception(result["message"]);
-			}
+
+				var domainSettingsArray = new
+				{
+                    enableMailForwarding = domain.Enabled
+                };
+
+				var domainSettingsPram = new
+				{
+					domainSettings = domainSettingsArray
+				};
+
+				dynamic updateresult = ExecPostCommand("settings/sysadmin/domain-settings/" + domain.Name, domainSettingsPram).Result;
+
+                bool updatesuccess = Convert.ToBoolean(updateresult["success"]);
+                if (!updatesuccess)
+                    throw new Exception(updateresult["message"]);
+
+            }
 			catch (Exception ex)
 			{
 				if (DomainExists(domain.Name))
