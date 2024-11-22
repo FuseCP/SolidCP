@@ -989,7 +989,7 @@ namespace SolidCP.Providers.Mail
 				{
 					domain = GetDomainName(mailbox.Name),
 					userName = mailbox.Name,
-					fullName = mailbox.FullName,
+					fullName = mailbox.FirstName + " " + mailbox.LastName,
 					password = mailbox.Password,
 					maxMailboxSize = (long)mailbox.MaxMailboxSize * 1048576
                 };
