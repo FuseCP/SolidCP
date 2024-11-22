@@ -70,11 +70,6 @@ namespace SolidCP.WebPortal
         public const string MODULE_ICON_CONTROL_ID = "imgModuleIcon";
         public const string DESKTOP_MODULES_FOLDER = "DesktopModules";
 
-		protected override void Render(HtmlTextWriter writer)
-		{
-			base.Render(writer);
-            Debug.WriteLine("Render finished");
-		}
 		protected string CultureCookieName
         {
             get { return PortalConfiguration.SiteSettings["CultureCookieName"]; }
