@@ -41,6 +41,8 @@ using FileUtils = SolidCP.Providers.Utils.FileUtils;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Globalization;
+using System.Collections;
 
 namespace SolidCP.Providers.Mail
 {
