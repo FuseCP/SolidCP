@@ -20341,7 +20341,7 @@ END
 GO
 
 --SmarterMail100 Support for new options
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '67' AND [PropertyName] = N'DomainHostName')
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '67' AND [PropertyName] = N'DefaultDomainHostName')
 BEGIN
 INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (67, N'DefaultDomainHostName', N'mail.[DOMAIN_NAME]')
 END
