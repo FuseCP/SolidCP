@@ -20341,8 +20341,29 @@ END
 GO
 
 --SmarterMail100 Support for new options
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '67' AND [PropertyName] = N'DefaultDomainHostName')
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '67' AND [PropertyName] = N'defaultdomainhostname')
 BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (67, N'DefaultDomainHostName', N'mail.[DOMAIN_NAME]')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (67, N'defaultdomainhostname', N'mail.[DOMAIN_NAME]')
+END
+GO
+
+-- Add defaultdomainhostname property to existing SM100 providers
+IF NOT EXISTS (Select * from [ServiceProperties] INNER JOIN Services ON ServiceProperties.ServiceID=Services.ServiceID Where Services.ProviderID = 67 AND ServiceProperties.PropertyName = N'defaultdomainhostname')
+BEGIN
+DECLARE service_cursor CURSOR FOR SELECT ServiceId FROM Services WHERE ProviderID = 67
+DECLARE @ServiceID INT
+OPEN service_cursor
+FETCH NEXT FROM service_cursor INTO @ServiceID
+WHILE @@FETCH_STATUS = 0
+BEGIN
+	BEGIN
+		INSERT [dbo].[ServiceProperties] ([ServiceID], [PropertyName], [PropertyValue]) VALUES (@ServiceID, N'defaultdomainhostname', N'mail.[DOMAIN_NAME]')
+	END
+	
+	FETCH NEXT FROM service_cursor INTO @ServiceID
+END
+
+CLOSE service_cursor
+DEALLOCATE service_cursor
 END
 GO
