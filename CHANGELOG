@@ -42,6 +42,7 @@ Version 1.5.0
 - [SmarterMail100] Fix for Deleting Space and/or User Account in SCP does not remove the domain off the SM server
 - [SmarterMail100] Fixed creating groups
 - [SmarterMail100] Added tinymce to the Signature and Autoresponder messages so they can be html when using latest SmarterMail
+- [SmarterMail100] Added support for calculating diskspace and bandwidth
 
 
 Version 1.4.9

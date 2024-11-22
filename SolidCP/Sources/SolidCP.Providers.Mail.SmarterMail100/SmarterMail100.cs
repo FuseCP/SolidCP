@@ -787,6 +787,129 @@ namespace SolidCP.Providers.Mail
             }
         }
 
+		public override ServiceProviderItemDiskSpace[] GetServiceItemsDiskSpace(ServiceProviderItem[] items)
+		{
+			List<ServiceProviderItemDiskSpace> itemsDiskspace = new List<ServiceProviderItemDiskSpace>();
+
+            CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
+            DateTimeFormatInfo dtfi = culture.DateTimeFormat;
+            dtfi.DateSeparator = "-";
+
+            DateTime date = DateTime.Now;
+
+            // update items with diskspace
+            foreach (ServiceProviderItem item in items)
+			{
+				if (item is MailAccount)
+				{
+					try
+					{
+                        var userstatsPram = new
+                        {
+                            email = item.Name
+                        };
+
+                        dynamic result = ExecDomainPostCommand("report/user-stats/" + date.ToString("d", dtfi) + "/" + date.ToString("d", dtfi), GetDomainName(item.Name), userstatsPram).Result;
+
+                        bool success = Convert.ToBoolean(result["success"]);
+                        if (!success)
+                            throw new Exception(result["message"]);
+
+                        Log.WriteStart(String.Format("Calculating mail account '{0}' size", item.Name));
+						// calculate disk space
+						ServiceProviderItemDiskSpace diskspace = new ServiceProviderItemDiskSpace();
+						diskspace.ItemId = item.Id;
+						//diskspace.DiskSpace = 0;
+						diskspace.DiskSpace = result.bytesSize;
+						itemsDiskspace.Add(diskspace);
+						Log.WriteEnd(String.Format("Calculating mail account '{0}' size", item.Name));
+					}
+					catch (Exception ex)
+					{
+						Log.WriteError(ex);
+					}
+				}
+			}
+			return itemsDiskspace.ToArray();
+		}
+
+		public override ServiceProviderItemBandwidth[] GetServiceItemsBandwidth(ServiceProviderItem[] items, DateTime since)
+        {
+            ServiceProviderItemBandwidth[] itemsBandwidth = new ServiceProviderItemBandwidth[items.Length];
+
+            // update items with diskspace
+            for (int i = 0; i < items.Length; i++)
+            {
+                ServiceProviderItem item = items[i];
+
+                // create new bandwidth object
+                itemsBandwidth[i] = new ServiceProviderItemBandwidth();
+                itemsBandwidth[i].ItemId = item.Id;
+                itemsBandwidth[i].Days = new DailyStatistics[0];
+
+                if (item is MailDomain)
+                {
+                    try
+                    {
+                        // get daily statistics
+                        Log.WriteInfo("[Smartermail100] Calculating Bandwidth for domain {0}", item.Name);
+                        itemsBandwidth[i].Days = GetDomainStatistics(since, item.Name);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.WriteError(ex);
+                        System.Diagnostics.Debug.WriteLine(ex);
+                    }
+                }
+            }
+
+            return itemsBandwidth;
+        }
+
+        public DailyStatistics[] GetDomainStatistics(DateTime since, string maildomainName)
+        {
+
+            ArrayList days = new ArrayList();
+            // read statistics
+            DateTime now = DateTime.Now;
+            DateTime date = since;
+
+            CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
+            DateTimeFormatInfo dtfi = culture.DateTimeFormat;
+            dtfi.DateSeparator = "-";
+
+            try
+            {
+                while (date < now)
+                {
+                    dynamic result = ExecGetCommand("report/domain-stats/" + date.ToString("d", dtfi) + "/" + date.ToString("d", dtfi) + "/" + maildomainName).Result;
+
+                    bool success = Convert.ToBoolean(result["success"]);
+                    if (!success)
+                        throw new Exception(result["message"]);
+
+                    if (result.bytesReceived != 0 | result.bytesSent != 0)
+                    {
+                        DailyStatistics dailyStats = new DailyStatistics();
+                        dailyStats.Year = date.Year;
+                        dailyStats.Month = date.Month;
+                        dailyStats.Day = date.Day;
+                        dailyStats.BytesSent = result.bytesSent;
+                        dailyStats.BytesReceived = result.bytesReceived;
+                        days.Add(dailyStats);
+                    }
+
+                    // advance day
+                    date = date.AddDays(1);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError("Could not get SmarterMail domain statistics", ex);
+            }
+            return (DailyStatistics[])days.ToArray(typeof(DailyStatistics));
+        }
+
         #endregion
 
         #region Mail Accounts
