@@ -20339,3 +20339,10 @@ BEGIN
 	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1903, N'RecordMinimumTTL', N'3600')
 END
 GO
+
+--SmarterMail100 Support for new options
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '67' AND [PropertyName] = N'DomainHostName')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (67, N'DefaultDomainHostName', N'mail.[DOMAIN_NAME]')
+END
+GO

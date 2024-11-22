@@ -71,16 +71,6 @@ namespace SolidCP.Providers.Mail
 			}
 		}
 
-		protected bool InheritDomainDefaultLimits
-		{
-			get
-			{
-				bool res;
-				bool.TryParse(ProviderSettings[Constants.InheritDomainDefaultLimits], out res);
-				return res;
-			}
-		}
-
 		protected bool EnableDomainAdministrators
 		{
 			get
@@ -118,10 +108,16 @@ namespace SolidCP.Providers.Mail
 		{
 			get { return ProviderSettings["ServiceUrl"]; }
 		}
-		#endregion
 
-		#region Constants
-		public const string SYSTEM_DOMAIN_ADMIN = "system.domain.admin";
+        protected string DefaultDomainHostName
+        {
+            get { return ProviderSettings["DefaultDomainHostName"]; }
+        }
+
+        #endregion
+
+        #region Constants
+        public const string SYSTEM_DOMAIN_ADMIN = "system.domain.admin";
 		public const string SYSTEM_CATCH_ALL = "system.catch.all";
 		#endregion
 
@@ -557,12 +553,20 @@ namespace SolidCP.Providers.Mail
 		{
 			try
 			{
+				string domainHostname = "mail." + domain.Name;
+
+
+                if (DefaultDomainHostName.Length > 0)
+				{
+					domainHostname = DefaultDomainHostName.ToLower().Replace("[domain_name]", domain.Name);
+				}
+				
 				var domainDataArray = new
 				{
 					name = domain.Name,
 					path = DomainsPath + "\\" + domain.Name,
-					hostname = "mail." + domain.Name,
-					isEnabled = domain.Enabled.ToString(),
+					hostname = domainHostname,
+                    isEnabled = domain.Enabled.ToString(),
 					userLimit = domain.MaxDomainUsers,
 					domainAliasCount = domain.MaxDomainAliases,
 					listLimit = domain.MaxLists,
