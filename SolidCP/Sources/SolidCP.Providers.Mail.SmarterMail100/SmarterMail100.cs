@@ -561,7 +561,7 @@ namespace SolidCP.Providers.Mail
 				{
 					name = domain.Name,
 					path = DomainsPath + "\\" + domain.Name,
-					hostname = domain.Name,
+					hostname = "mail." + domain.Name,
 					isEnabled = domain.Enabled.ToString(),
 					userLimit = domain.MaxDomainUsers,
 					domainAliasCount = domain.MaxDomainAliases,
