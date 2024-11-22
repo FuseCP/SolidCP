@@ -1318,7 +1318,7 @@ namespace SolidCP.Providers.Mail
 
 				// TODO: Signature
 
-                if (mailbox.Signature != null)
+                if (mailbox.Signature.Length > 0)
                 {
 					//Check if creating a new Signature or updating one
 					if (account.SignatureGuid == null)
