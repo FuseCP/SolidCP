@@ -20,7 +20,7 @@ namespace SolidCP.WebPortal {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl htmltheme;
+        protected global::System.Web.UI.HtmlControls.HtmlElement htmltheme;
         
         /// <summary>
         /// AdaptersInvariantImportCSS control.

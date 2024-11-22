@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "SolidCP.WebPortal.Core": {
+    "SolidCP.WebPortal": {
       "commandName": "Project"
     },
     "WSL": {

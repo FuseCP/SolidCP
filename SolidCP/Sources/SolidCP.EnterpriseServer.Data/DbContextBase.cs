@@ -6,6 +6,7 @@ using System.Diagnostics;
 using SolidCP.EnterpriseServer.Data.Configuration;
 using SolidCP.EnterpriseServer.Data.Entities;
 
+
 #if NetCore
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -251,6 +252,16 @@ namespace SolidCP.EnterpriseServer.Context
 
 #if NetCore
 		static ConcurrentDictionary<string, ServerVersion> serverVersions = new ConcurrentDictionary<string, ServerVersion>();
+
+		protected void UseSqlServer(DbContextOptionsBuilder builder, string connectionString) => builder.UseSqlServer(connectionString);
+		protected void UseSqlite(DbContextOptionsBuilder builder, string connectionString) => builder.UseSqlite(connectionString);
+		protected void UseMySqlOrMariaDb(DbContextOptionsBuilder builder, string connectionString)
+		{
+			ServerVersion serverVersion = serverVersions.GetOrAdd(connectionString, connectionString => ServerVersion.AutoDetect(connectionString));
+			builder.UseMySql(connectionString, serverVersion);
+		}
+		protected void UsePostgreSql(DbContextOptionsBuilder builder, string connectionString) => builder.UseNpgsql(connectionString);
+
 		protected override void OnConfiguring(DbContextOptionsBuilder builder)
 		{
 			if (!(builder.Options is Data.DbOptions<DbContextBase> options)) throw new NotSupportedException("This type of Options is not supported");
@@ -260,18 +271,17 @@ namespace SolidCP.EnterpriseServer.Context
 			switch (options.DbType)
 			{
 				case Data.DbType.SqlServer:
-					builder.UseSqlServer(options.ConnectionString);
+					UseSqlServer(builder, options.ConnectionString);
 					break;
 				case Data.DbType.Sqlite:
-					builder.UseSqlite(options.ConnectionString);
+					UseSqlite(builder, options.ConnectionString);
 					break;
 				case Data.DbType.MySql:
 				case Data.DbType.MariaDb:
-					ServerVersion serverVersion = serverVersions.GetOrAdd(options.ConnectionString, connectionString => ServerVersion.AutoDetect(connectionString));
-					builder.UseMySql(options.ConnectionString, serverVersion);
+					UseMySqlOrMariaDb(builder, options.ConnectionString);
 					break;
 				case Data.DbType.PostgreSql:
-					builder.UseNpgsql(options.ConnectionString);
+					UsePostgreSql(builder, options.ConnectionString);
 					break;
 				default: throw new NotSupportedException("This DB flavor is not supported");
 			}

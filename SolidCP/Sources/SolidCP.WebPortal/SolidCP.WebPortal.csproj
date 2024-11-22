@@ -2,7 +2,7 @@
     <PropertyGroup>
         <RootNamespace>SolidCP.WebPortal</RootNamespace>
         <AssemblyName>SolidCP.WebPortal</AssemblyName>
-        <TargetFrameworks>net48;net8.0</TargetFrameworks>
+        <TargetFrameworks>net8.0;net48</TargetFrameworks>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>

@@ -589,7 +589,7 @@ CREATE TABLE "Packages" (
 CREATE TABLE "ServiceProperties" (
     "ServiceID" INTEGER NOT NULL,
     "PropertyName" TEXT COLLATE NOCASE NOT NULL,
-    "PropertyValue" TEXT NULL,
+    "PropertyValue" TEXT COLLATE NOCASE NULL,
     CONSTRAINT "PK_ServiceProperties_1" PRIMARY KEY ("ServiceID", "PropertyName"),
     CONSTRAINT "FK_ServiceProperties_Services" FOREIGN KEY ("ServiceID") REFERENCES "Services" ("ServiceID") ON DELETE CASCADE
 );
