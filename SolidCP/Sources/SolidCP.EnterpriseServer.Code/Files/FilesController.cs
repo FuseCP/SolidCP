@@ -36,7 +36,6 @@ using System.IO;
 using System.Data;
 using System.Collections.Specialized;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Text;
 using System.Text.RegularExpressions;
 #if NETFRAMEWORK
@@ -72,7 +71,7 @@ namespace SolidCP.EnterpriseServer
             return os;
         }
 
-        ImmutableDictionary<string, string> HomeFolders = ImmutableDictionary<string, string>.Empty;
+        Dictionary<string, string> HomeFolders = new();
         public string GetHomeFolder(int packageId)
         {            
             // check context
@@ -93,7 +92,7 @@ namespace SolidCP.EnterpriseServer
             if (HttpContext.Current != null)
                 HttpContext.Current.Items[key] = path;
 #else
-            Interlocked.Exchange(ref HomeFolders, HomeFolders.Add(key, path));
+            HomeFolders.Add(key, path);
 #endif
 
             return path;

@@ -244,12 +244,12 @@ namespace SolidCP.Web.Services
 
 			app.MapRazorPages();
 
-			Server.UseWebForms?.Invoke(app);
-
 			ConfigureWCF(app);
 
 			var tunnelHandler = new TunnelHandlerCore();
 			tunnelHandler.Init(app);
+
+			Server.UseWebForms?.Invoke(app);
 
 			app.Run();
 		}
