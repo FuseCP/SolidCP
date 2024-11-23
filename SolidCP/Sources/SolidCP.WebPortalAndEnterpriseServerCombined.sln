@@ -59,6 +59,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Templates", "SolidC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.WebPortal", "SolidCP.WebPortal\SolidCP.WebPortal.csproj", "{C99EFB18-FFE7-45BB-8CA8-29336F3E8C68}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebFormsForCore.Web", "..\Lib\WebFormsForCore\src\WebFormsForCore.Web\WebFormsForCore.Web.csproj", "{CAD80F90-A6CB-40AC-A1EE-819361B57729}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -235,6 +237,14 @@ Global
 		{C99EFB18-FFE7-45BB-8CA8-29336F3E8C68}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C99EFB18-FFE7-45BB-8CA8-29336F3E8C68}.Release|x86.ActiveCfg = Release|Any CPU
 		{C99EFB18-FFE7-45BB-8CA8-29336F3E8C68}.Release|x86.Build.0 = Release|Any CPU
+		{CAD80F90-A6CB-40AC-A1EE-819361B57729}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAD80F90-A6CB-40AC-A1EE-819361B57729}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAD80F90-A6CB-40AC-A1EE-819361B57729}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CAD80F90-A6CB-40AC-A1EE-819361B57729}.Debug|x86.Build.0 = Debug|Any CPU
+		{CAD80F90-A6CB-40AC-A1EE-819361B57729}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAD80F90-A6CB-40AC-A1EE-819361B57729}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAD80F90-A6CB-40AC-A1EE-819361B57729}.Release|x86.ActiveCfg = Release|Any CPU
+		{CAD80F90-A6CB-40AC-A1EE-819361B57729}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

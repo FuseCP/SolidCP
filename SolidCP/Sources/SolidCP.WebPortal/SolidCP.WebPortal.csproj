@@ -1,15 +1,17 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
     <PropertyGroup>
         <RootNamespace>SolidCP.WebPortal</RootNamespace>
         <AssemblyName>SolidCP.WebPortal</AssemblyName>
         <TargetFrameworks>net8.0;net48</TargetFrameworks>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <EnableDefaultContentItems>false</EnableDefaultContentItems>
+        <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <RestoreSources>$(RestoreSources);../../Lib/WebFormsForCore/nupkg;https://api.nuget.org/v3/index.json</RestoreSources>
         <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
-        <!--<GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
-        <CopyDebugSymbolFilesFromPackages>true</CopyDebugSymbolFilesFromPackages>-->
+        <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+        <CopyDebugSymbolFilesFromPackages>true</CopyDebugSymbolFilesFromPackages>
     </PropertyGroup>
     <PropertyGroup Condition="$(TargetFramework) == 'net48'">
         <OutputPath>bin\</OutputPath>
@@ -83,6 +85,12 @@
         <Content Include="**\*.svc" Exclude="DesktopModules\**\*.svc" />
         <Content Include="**\*.ascx" Exclude="DesktopModules\**\*.ascx" />
         <Content Include="**\*.ashx" Exclude="DesktopModules\**\*.ashx" />
+        <None Remove="DesktopModules\**\*.*" />
+        <EmbeddedResource Remove="DesktopModules\**\*.resx" />
+        <Compile Include="Code\**\*.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
         <Content Include="App_GlobalResources\*.resx">
             <SubType>Designer</SubType>
         </Content>
@@ -93,13 +101,11 @@
         <Content Include="Error.htm" />
     </ItemGroup>
     <ItemGroup>
+        <Compile Remove="DesktopModules\**\*.cs" />
+        <Compile Remove="obj\**\*.cs" />
+        <Compile Include="*.cs" />
         <Compile Include="..\VersionInfo.cs" Link="Code\VersionInfo.cs" />
-        <Compile Update="Code\WebPortalControlBase.cs">
-            <SubType>ASPXCodeBehind</SubType>
-        </Compile>
-        <Compile Update="Code\PortalControlBase.cs">
-            <SubType>ASPXCodeBehind</SubType>
-        </Compile>
+        <Compile Include="DesktopModules\SolidCP\Code\Framework\ES.cs" Link="Code\ES.cs" />
         <Compile Update="Default.aspx.cs">
             <SubType>ASPXCodeBehind</SubType>
             <DependentUpon>Default.aspx</DependentUpon>
@@ -113,8 +119,6 @@
     </ItemGroup>
     <ItemGroup>
         <Content Include="Global.asax" />
-    </ItemGroup>
-    <ItemGroup>
         <Content Include="Default.aspx" />
         <Content Include="Web6.config">
             <SubType>Designer</SubType>
@@ -125,13 +129,7 @@
     </ItemGroup>
     <ItemGroup>
         <Content Include="App_Browsers\CSSFriendlyAdapters.browser" />
-        <Content Include="App_Data\ModulesData.config">
-            <SubType>Designer</SubType>
-        </Content>
-        <Content Include="App_Data\SiteSettings.config">
-            <SubType>Designer</SubType>
-        </Content>
-        <Content Include="App_Data\ESModule_ControlsHierarchy.config">
+        <Content Include="App_Data\*.config">
             <SubType>Designer</SubType>
         </Content>
         <Content Include="manifest.json" />
@@ -152,22 +150,12 @@
         <ProjectReference Include="..\SolidCP.Web.Services\SolidCP.Web.Services.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Remove="DesktopModules\**\*.cs" />
-        <Compile Remove="obj\**\*.cs" />
         <None Remove="obj\**\*.*" />
         <None Remove="bin_dotnet\**\*.*" />
-    </ItemGroup>
-    <ItemGroup>
         <None Remove="appsettings.json" />
-    </ItemGroup>
-    <ItemGroup>
-        <Compile Include="DesktopModules\SolidCP\Code\Framework\ES.cs" />
-    </ItemGroup>
-    <ItemGroup>
         <None Update="SolidCP.WebPortal.deps.json.old">
             <CopyToOutputDirectory>Never</CopyToOutputDirectory>
         </None>
-
         <AspNetControls Remove="DesktopModules\**\*.ascx" />
         <AspNetControls Remove="DesktopModules\**\*.aspx" />
         <AspNetControls Remove="DesktopModules\**\*.master" />

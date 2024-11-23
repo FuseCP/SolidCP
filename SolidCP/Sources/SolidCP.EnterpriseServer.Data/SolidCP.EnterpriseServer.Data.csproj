@@ -4,7 +4,9 @@
         <TargetFrameworks>net8.0;net48</TargetFrameworks>
         <LangVersion>10</LangVersion>
         <ScaffoldConnectionString>Server=(local);Database=SolidCPFresh;uid=sa;pwd=Password12;TrustServerCertificate=true;Connection Timeout=300;command timeout=300</ScaffoldConnectionString>
+        <SupportOracle Condition="$(TargetFramework) != 'net48'">True</SupportOracle>
         <DefineConstants>$(DefineConstants);ScaffoldedEntities;ScaffoldedDbContext;ScaffoldedConfigurations;</DefineConstants>
+        <DefineConstants Condition="$(SupportOracle) == 'True'">$(DefineConstants);Oracle</DefineConstants>
         <OutputType>Exe</OutputType>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <OutputPath>..\..\Bin</OutputPath>
@@ -32,6 +34,7 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.0" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.1" />
         <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0-preview.1" />
+        <PackageReference Include="Oracle.EntityFrameworkCore" Version="8.23.60" Condition="$(SupportOracle) == 'True'" />
         <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="9.103.6.2" />
         <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
         <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.0" />

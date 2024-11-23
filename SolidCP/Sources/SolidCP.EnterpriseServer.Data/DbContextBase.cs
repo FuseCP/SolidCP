@@ -261,7 +261,9 @@ namespace SolidCP.EnterpriseServer.Context
 			builder.UseMySql(connectionString, serverVersion);
 		}
 		protected void UsePostgreSql(DbContextOptionsBuilder builder, string connectionString) => builder.UseNpgsql(connectionString);
-
+#if Oracle
+		protected void UseOracle(DbContextOptionsBuilder builder, string connectionString) => builder.UseOracle(connectionString);
+#endif
 		protected override void OnConfiguring(DbContextOptionsBuilder builder)
 		{
 			if (!(builder.Options is Data.DbOptions<DbContextBase> options)) throw new NotSupportedException("This type of Options is not supported");
@@ -283,6 +285,11 @@ namespace SolidCP.EnterpriseServer.Context
 				case Data.DbType.PostgreSql:
 					UsePostgreSql(builder, options.ConnectionString);
 					break;
+#if Oracle
+				case Data.DbType.Oracle:
+					UseOracle(builder, options.ConnectionString);
+					break;
+#endif
 				default: throw new NotSupportedException("This DB flavor is not supported");
 			}
 

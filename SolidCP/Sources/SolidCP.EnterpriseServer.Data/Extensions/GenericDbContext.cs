@@ -139,6 +139,38 @@ namespace SolidCP.EnterpriseServer.Data
 #endif
 	}
 
+	public class OracleDbContext : GenericDbContext<OracleProvider>
+	{
+#if NetCore
+
+		public OracleDbContext(Data.DbContext context) : this(new DbOptions<Context.DbContextBase>(context)) { }
+
+		public OracleDbContext(DbContextOptions<Context.DbContextBase> options) : base(options)
+		{
+			if (options is DbOptions<Context.DbContextBase> opts)
+			{
+				DbType = DbType.Oracle;
+				InitSeedData = opts.InitSeedData;
+			}
+		}
+
+		/*public GenericDbContext(DbContextOptions<GenericDbContext<TProvider>> options) :
+			base(new DbOptions<Context.DbContextBase>(
+				(options is Data.Extensions.DbOptions<GenericDbContext<TProvider>> opts) ? opts.DbType : DbType.Unknown,
+				(options is Data.Extensions.DbOptions<GenericDbContext<TProvider>> opts2) ? opts2.ConnectionString : "")) { }
+		*/
+		public OracleDbContext(string connectionString, bool initSeedData = false) :
+			base(new DbOptions<Context.DbContextBase>(DbType.Oracle, connectionString, initSeedData))
+		{ }
+#elif NetFX
+		public OracleDbContext(Data.DbContext context) : base(context)
+		{
+			DbType = DbType.Oracle;
+			InitSeedData = context.InitSeedData;
+		}
+#endif
+	}
+
 	public class MariaDbDbContext : GenericDbContext<MariaDbProvider>
 	{
 #if NetCore
