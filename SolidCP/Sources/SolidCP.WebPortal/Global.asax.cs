@@ -129,11 +129,9 @@ namespace SolidCP.WebPortal
 			string serverUrl = PortalConfiguration.SiteSettings["EnterpriseServer"];
 			if (serverUrl.StartsWith("http://") || serverUrl.StartsWith("https://"))
 			{
-				HttpWebRequest request = (HttpWebRequest)WebRequest.Create(serverUrl);
-				request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-				request.Proxy = null;
-				request.Method = "GET";
-				request.GetResponseAsync();
+				var httpClientHandler = new HttpClientHandler() { AllowAutoRedirect = false };
+				using (var client = new HttpClient(httpClientHandler))
+					client.GetAsync(serverUrl);
 			} else if (!serverUrl.StartsWith("assembly://"))
 			{ // Start EnterpriseServer
 				var esTestClient = new SolidCP.EnterpriseServer.Client.esTest();
@@ -182,15 +180,9 @@ namespace SolidCP.WebPortal
 		{
 			try
 			{
-				/*
-				var httpClientHandler = new HttpClientHandler() {
-					AllowAutoRedirect = false,
-				};
-
+				var httpClientHandler = new HttpClientHandler() { AllowAutoRedirect = false };
 				using (var client = new HttpClient(httpClientHandler))
-				{
 					client.GetAsync(keepAliveUrl);
-				}*/
 			}
 			catch { }
 		}

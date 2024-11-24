@@ -12,7 +12,7 @@ public class Program
 		Configuration.IsPortal = true;
 		Server.UseWebForms = app =>
 		{
-			app.UseWebForms();
+			app.UseWebForms(options => options.AddHandleExtensions(".less"));
 			AssemblyLoader.Init(Configuration.ProbingPaths, Configuration.ExposeWebServices, true);
 		};
 		

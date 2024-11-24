@@ -33,6 +33,7 @@ namespace SolidCP.Web.Services
 {
 	public static class StartupCore
 	{
+		public static bool IsUnixSystemd => Directory.Exists("/run/systemd/system");
 
 		public const int KB = Configuration.KB;
 		public const int MB = Configuration.MB;
@@ -177,7 +178,7 @@ namespace SolidCP.Web.Services
 				{
 					options.AllowSynchronousIO = true;
 
-					if (OSInfo.IsUnix && OSInfo.Unix.IsSystemd) options.UseSystemd();
+					if (OSInfo.IsUnix && IsUnixSystemd) options.UseSystemd();
 
 					if (HttpPort.HasValue) options.ListenAnyIP(HttpPort.Value, listenOptions =>
 						{
