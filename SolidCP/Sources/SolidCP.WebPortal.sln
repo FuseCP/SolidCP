@@ -10,11 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		VersionInfo.vb = VersionInfo.vb
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CPCC", "CPCC\CPCC.csproj", "{68B50D26-3F14-4AC7-977A-2F6128088019}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Portal.Modules", "SolidCP.WebPortal\DesktopModules\SolidCP\SolidCP.Portal.Modules.csproj", "{12232731-5C45-4ED6-98F8-D47ABE728280}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.WebPortal", "SolidCP.WebPortal\SolidCP.WebPortal.csproj", "{C99EFB18-FFE7-45BB-8CA8-29336F3E8C68}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CPCC", "CPCC\CPCC.csproj", "{68B50D26-3F14-4AC7-977A-2F6128088019}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.WebDavPortal", "SolidCP.WebDavPortal\SolidCP.WebDavPortal.csproj", "{73A51A0A-9CF3-4516-BF25-28E5E4129FC9}"
 EndProject
@@ -35,9 +31,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Providers.Base", "S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Server.Utils", "SolidCP.Server.Utils\SolidCP.Server.Utils.csproj", "{E91E52F3-9555-4D00-B577-2B1DBDD87CA7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.Virtualization.NoVNC", "..\Lib\novnc-solidcp\SolidCP.Providers.Virtualization.NoVNC.csproj", "{D99EFB18-FFE7-45BB-8CA8-29336F3E8C68}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.EnterpriseServer.Client", "SolidCP.EnterpriseServer\WebServices\SolidCP.Build\SolidCP.EnterpriseServer.Client.csproj", "{063123C1-AF4C-4C67-BA13-E2EBC7370D4A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Web.Services", "SolidCP.Web.Services\SolidCP.Web.Services.csproj", "{32DF2D89-0A09-4A46-9A2A-340A8E9D515A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Providers.Virtualization.NoVNC", "..\Lib\novnc-solidcp\SolidCP.Providers.Virtualization.NoVNC.csproj", "{E715A042-FB64-4606-9759-9C56CC9AF07A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.WebPortal", "SolidCP.WebPortal\SolidCP.WebPortal.csproj", "{A0B623E2-199C-42AD-BEF4-73A8A7910399}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Portal.Modules", "SolidCP.WebPortal\DesktopModules\SolidCP\SolidCP.Portal.Modules.csproj", "{6D5E301C-A53B-46C9-8CF0-F37E0C2E62EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,14 +51,6 @@ Global
 		{68B50D26-3F14-4AC7-977A-2F6128088019}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68B50D26-3F14-4AC7-977A-2F6128088019}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68B50D26-3F14-4AC7-977A-2F6128088019}.Release|Any CPU.Build.0 = Release|Any CPU
-		{12232731-5C45-4ED6-98F8-D47ABE728280}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{12232731-5C45-4ED6-98F8-D47ABE728280}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{12232731-5C45-4ED6-98F8-D47ABE728280}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{12232731-5C45-4ED6-98F8-D47ABE728280}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C99EFB18-FFE7-45BB-8CA8-29336F3E8C68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C99EFB18-FFE7-45BB-8CA8-29336F3E8C68}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C99EFB18-FFE7-45BB-8CA8-29336F3E8C68}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C99EFB18-FFE7-45BB-8CA8-29336F3E8C68}.Release|Any CPU.Build.0 = Release|Any CPU
 		{73A51A0A-9CF3-4516-BF25-28E5E4129FC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{73A51A0A-9CF3-4516-BF25-28E5E4129FC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73A51A0A-9CF3-4516-BF25-28E5E4129FC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -81,14 +75,26 @@ Global
 		{E91E52F3-9555-4D00-B577-2B1DBDD87CA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E91E52F3-9555-4D00-B577-2B1DBDD87CA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E91E52F3-9555-4D00-B577-2B1DBDD87CA7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D99EFB18-FFE7-45BB-8CA8-29336F3E8C68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D99EFB18-FFE7-45BB-8CA8-29336F3E8C68}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D99EFB18-FFE7-45BB-8CA8-29336F3E8C68}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D99EFB18-FFE7-45BB-8CA8-29336F3E8C68}.Release|Any CPU.Build.0 = Release|Any CPU
 		{063123C1-AF4C-4C67-BA13-E2EBC7370D4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{063123C1-AF4C-4C67-BA13-E2EBC7370D4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{063123C1-AF4C-4C67-BA13-E2EBC7370D4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{063123C1-AF4C-4C67-BA13-E2EBC7370D4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32DF2D89-0A09-4A46-9A2A-340A8E9D515A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32DF2D89-0A09-4A46-9A2A-340A8E9D515A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32DF2D89-0A09-4A46-9A2A-340A8E9D515A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32DF2D89-0A09-4A46-9A2A-340A8E9D515A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E715A042-FB64-4606-9759-9C56CC9AF07A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E715A042-FB64-4606-9759-9C56CC9AF07A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E715A042-FB64-4606-9759-9C56CC9AF07A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E715A042-FB64-4606-9759-9C56CC9AF07A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0B623E2-199C-42AD-BEF4-73A8A7910399}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0B623E2-199C-42AD-BEF4-73A8A7910399}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0B623E2-199C-42AD-BEF4-73A8A7910399}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0B623E2-199C-42AD-BEF4-73A8A7910399}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D5E301C-A53B-46C9-8CF0-F37E0C2E62EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D5E301C-A53B-46C9-8CF0-F37E0C2E62EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D5E301C-A53B-46C9-8CF0-F37E0C2E62EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D5E301C-A53B-46C9-8CF0-F37E0C2E62EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

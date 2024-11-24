@@ -39,6 +39,7 @@ using System.Xml.Linq;
 using System.Linq.Dynamic.Core;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 #if !EF64
 using Microsoft.Data.SqlClient;
@@ -89,11 +90,21 @@ namespace SolidCP.EnterpriseServer
 			{
 				if (alwaysUseEntityFramework == null)
 				{
-					alwaysUseEntityFramework = false;
-					var system = new SystemController(new ControllerBase(this));
-					var settings = system.GetSystemSettingsInternal(EnterpriseServer.SystemSettings.DEBUG_SETTINGS, true);
-					alwaysUseEntityFramework = settings
-						?.GetValueOrDefault(EnterpriseServer.SystemSettings.ALWAYS_USE_ENTITYFRAMEWORK, false) ?? false;
+					if (IsSqlServer)
+					{
+						alwaysUseEntityFramework = false;
+						Task.Run(async () =>
+						{
+							using (var context = Context)
+							{
+								alwaysUseEntityFramework = await context.SystemSettings
+									.Where(s => s.SettingsName == EnterpriseServer.SystemSettings.DEBUG_SETTINGS &&
+										s.PropertyName == EnterpriseServer.SystemSettings.ALWAYS_USE_ENTITYFRAMEWORK)
+									.AnyAsync(p => p.PropertyValue == "True" || p.PropertyValue == "true");
+							}
+						});
+					}
+					else alwaysUseEntityFramework = true;
 				}
 				return alwaysUseEntityFramework ?? false;
 			}
@@ -181,7 +192,7 @@ END
 				return EntityDataReader(settings);
 			}
 			return SqlHelper.ExecuteReader(
-				 ConnectionString,
+				 NativeConnectionString,
 				 CommandType.StoredProcedure,
 				 "GetSystemSettings",
 				 new SqlParameter("@SettingsName", settingsName)
@@ -262,7 +273,7 @@ XML Format:
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					 ConnectionString,
+					 NativeConnectionString,
 					 CommandType.StoredProcedure,
 					 "SetSystemSettings",
 					 new SqlParameter("@SettingsName", settingsName),
@@ -316,7 +327,7 @@ END
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetThemes");
 			}
 		}
@@ -360,7 +371,7 @@ END
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetThemeSettings",
 					 new SqlParameter("@ThemeID", ThemeID));
 			}
@@ -407,7 +418,7 @@ END
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetThemeSetting",
 					 new SqlParameter("@ThemeID", ThemeID),
 					 new SqlParameter("@SettingsName", SettingsName));
@@ -613,7 +624,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetUserSettings",
 					 new SqlParameter("@ActorId", actorId),
 					 new SqlParameter("@UserID", userId),
@@ -689,7 +700,7 @@ END
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "UpdateUserThemeSetting",
 					 new SqlParameter("@ActorId", actorId),
 					 new SqlParameter("@UserID", userId),
@@ -735,7 +746,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "DeleteUserThemeSetting",
 					 new SqlParameter("@ActorId", actorId),
 					 new SqlParameter("@UserID", userId),
@@ -777,7 +788,7 @@ RETURN
 				SqlParameter prmExists = new SqlParameter("@Exists", SqlDbType.Bit);
 				prmExists.Direction = ParameterDirection.Output;
 
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "CheckUserExists",
 					 prmExists,
 					 new SqlParameter("@username", username));
@@ -1236,7 +1247,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetUsersPaged",
 					 new SqlParameter("@actorId", actorId),
 					 new SqlParameter("@UserID", userId),
@@ -2880,7 +2891,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetSearchObject",
 					 new SqlParameter("@ActorId", actorId),
 					 new SqlParameter("@UserID", userId),
@@ -3870,7 +3881,7 @@ RETURN
 			else
 			{
 
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetSearchTableByColumns",
 					 new SqlParameter("@PagedStored", PagedStored),
 					 new SqlParameter("@FilterValue", FilterValue),
@@ -3952,7 +3963,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetUsersSummary",
 					 new SqlParameter("@actorId", actorId),
 					 new SqlParameter("@UserID", userId));
@@ -4142,7 +4153,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetUserDomainsPaged",
 					 new SqlParameter("@actorId", actorId),
 					 new SqlParameter("@UserID", userId),
@@ -4349,7 +4360,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetUsers",
 					 new SqlParameter("@ActorId", actorId),
 					 new SqlParameter("@OwnerID", ownerId),
@@ -4404,8 +4415,9 @@ RETURN
 
 				using (var parents = UserParents(actorId, userId).ToTempIdSet(this))
 				{
+					var tempIds = parents.TempIds();
 					var users = Users
-						.Join(parents.TempIds(), u => u.UserId, p => p.Id, (user, parent) => new { User = user, Order = parent.Key })
+						.Join(tempIds, u => u.UserId, p => p.Id, (user, parent) => new { User = user, Order = parent.Key })
 						.OrderByDescending(u => u.Order)
 						.Select(u => new
 						{
@@ -4433,7 +4445,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetUserParents",
 					 new SqlParameter("@ActorId", actorId),
 					 new SqlParameter("@UserID", userId));
@@ -4513,7 +4525,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetUserPeers",
 					 new SqlParameter("@ActorId", actorId),
 					 new SqlParameter("@userId", userId));
@@ -4612,7 +4624,7 @@ RETURN
 			}
 			else
 			{
-				return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return (IDataReader)SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetUserByExchangeOrganizationIdInternally",
 					 new SqlParameter("@ItemID", itemId));
 			}
@@ -4716,7 +4728,7 @@ AS
 			}
 			else
 			{
-				return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return (IDataReader)SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetUserByIdInternally",
 					 new SqlParameter("@UserID", userId));
 			}
@@ -4818,7 +4830,7 @@ AS
 			}
 			else
 			{
-				return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return (IDataReader)SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetUserByUsernameInternally",
 					 new SqlParameter("@Username", username));
 			}
@@ -5040,7 +5052,7 @@ AS
 			}
 			else
 			{
-				return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return (IDataReader)SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetUserById",
 					 new SqlParameter("@ActorId", actorId),
 					 new SqlParameter("@UserID", userId));
@@ -5149,7 +5161,7 @@ AS
 			}
 			else
 			{
-				return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return (IDataReader)SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetUserByUsername",
 					 new SqlParameter("@ActorId", actorId),
 					 new SqlParameter("@Username", username));
@@ -5411,7 +5423,7 @@ RETURN
 				prmUserId.Direction = ParameterDirection.Output;
 
 				// add user to SolidCP Users table
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "AddUser",
 					 prmUserId,
 					 new SqlParameter("@ActorId", actorId),
@@ -5670,7 +5682,7 @@ AS
 			else
 			{
 				// update user
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "UpdateUser",
 					 new SqlParameter("@ActorId", actorId),
 					 new SqlParameter("@RoleID", roleId),
@@ -5749,7 +5761,7 @@ END
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "UpdateUserFailedLoginAttempt",
 					 new SqlParameter("@UserID", userId),
 					 new SqlParameter("@LockOut", lockOut),
@@ -5838,7 +5850,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "DeleteUser",
 					 new SqlParameter("@ActorId", actorId),
 					 new SqlParameter("@UserID", userId));
@@ -5883,7 +5895,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "ChangeUserPassword",
 					 new SqlParameter("@ActorId", actorId),
 					 new SqlParameter("@UserID", userId),
@@ -5921,7 +5933,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "SetUserOneTimePassword",
 					 new SqlParameter("@UserID", userId),
 					 new SqlParameter("@Password", password),
@@ -5965,7 +5977,7 @@ AS
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "UpdateUserPinSecret",
 					 new SqlParameter("@ActorId", actorId),
 					 new SqlParameter("@UserID", userId),
@@ -6011,7 +6023,7 @@ AS
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "UpdateUserMfaMode",
 					 new SqlParameter("@ActorId", actorId),
 					 new SqlParameter("@UserID", userId),
@@ -6171,7 +6183,7 @@ AS
 			{
 				SqlParameter prmResult = new SqlParameter("@Result", SqlDbType.Bit);
 				prmResult.Direction = ParameterDirection.Output;
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "CanChangeMfa",
 					 new SqlParameter("@CallerID", callerId),
 					 new SqlParameter("@ChangeUserID", changeUserId),
@@ -6215,7 +6227,7 @@ AS
 			}
 			else
 			{
-				return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return (IDataReader)SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetUserPackagesServerUrls",
 					 new SqlParameter("@UserId", userId));
 			}
@@ -6305,7 +6317,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetUserSettings",
 					 new SqlParameter("@ActorId", actorId),
 					 new SqlParameter("@UserID", userId),
@@ -6391,7 +6403,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "UpdateUserSettings",
 					 new SqlParameter("@UserID", userId),
 					 new SqlParameter("@ActorId", actorId),
@@ -6497,7 +6509,7 @@ ORDER BY S.VirtualServer, S.ServerName
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetAllServers",
 					 new SqlParameter("@actorId", actorId));
 			}
@@ -6593,7 +6605,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetServers",
 					 new SqlParameter("@actorId", actorId));
 			}
@@ -6675,7 +6687,7 @@ RETURN
 			}
 			else
 			{
-				return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return (IDataReader)SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetServer",
 					 new SqlParameter("@actorId", actorId),
 					 new SqlParameter("@ServerID", serverId),
@@ -6724,7 +6736,7 @@ RETURN
 			}
 			else
 			{
-				return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return (IDataReader)SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetServerShortDetails",
 					 new SqlParameter("@ServerID", serverId));
 			}
@@ -6802,7 +6814,7 @@ RETURN
 			}
 			else
 			{
-				return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return (IDataReader)SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetServerByName",
 					 new SqlParameter("@actorId", actorId),
 					 new SqlParameter("@ServerName", serverName));
@@ -6875,7 +6887,7 @@ RETURN
 			}
 			else
 			{
-				return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return (IDataReader)SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetServerInternal",
 					 new SqlParameter("@ServerID", serverId));
 			}
@@ -6987,7 +6999,7 @@ RETURN
 				SqlParameter prmServerId = new SqlParameter("@ServerID", SqlDbType.Int);
 				prmServerId.Direction = ParameterDirection.Output;
 
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "AddServer",
 					 prmServerId,
 					 new SqlParameter("@ServerName", serverName),
@@ -7091,7 +7103,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "UpdateServer",
 					 new SqlParameter("@ServerID", serverId),
 					 new SqlParameter("@ServerName", serverName),
@@ -7202,7 +7214,7 @@ RETURN
 				SqlParameter prmResult = new SqlParameter("@Result", SqlDbType.Int);
 				prmResult.Direction = ParameterDirection.Output;
 
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "DeleteServer",
 					 prmResult,
 					 new SqlParameter("@ServerID", serverId));
@@ -7265,7 +7277,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetVirtualServers",
 					 new SqlParameter("@actorId", actorId));
 			}
@@ -7347,7 +7359,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetAvailableVirtualServices",
 					 new SqlParameter("@actorId", actorId),
 					 new SqlParameter("@ServerID", serverId));
@@ -7447,7 +7459,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetVirtualServices",
 					 new SqlParameter("@actorId", actorId),
 					 new SqlParameter("@ServerID", serverId),
@@ -7537,7 +7549,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "AddVirtualServices",
 					 new SqlParameter("@ServerID", serverId),
 					 new SqlParameter("@xml", xml));
@@ -7607,7 +7619,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "DeleteVirtualServices",
 					 new SqlParameter("@ServerID", serverId),
 					 new SqlParameter("@xml", xml));
@@ -7696,7 +7708,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "UpdateVirtualGroups",
 					 new SqlParameter("@ServerID", serverId),
 					 new SqlParameter("@xml", xml));
@@ -7758,7 +7770,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetProviders");
 			}
 		}
@@ -7814,7 +7826,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetGroupProviders",
 					 new SqlParameter("@groupId", groupId));
 			}
@@ -7862,7 +7874,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetProvider",
 					 new SqlParameter("@ProviderID", providerId));
 			}
@@ -7909,7 +7921,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetProviderByServiceID",
 					 new SqlParameter("@ServiceID", serviceId));
 			}
@@ -8001,7 +8013,7 @@ RETURN
 				SqlParameter prmAddresId = new SqlParameter("@VlanID", SqlDbType.Int);
 				prmAddresId.Direction = ParameterDirection.Output;
 
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "AddPrivateNetworkVlan",
 					 prmAddresId,
 					 new SqlParameter("@Vlan", vlan),
@@ -8049,7 +8061,7 @@ RETURN
 				SqlParameter prmResult = new SqlParameter("@Result", SqlDbType.Int);
 				prmResult.Direction = ParameterDirection.Output;
 
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "DeletePrivateNetworkVLAN",
 					 prmResult,
 					 new SqlParameter("@VlanID", vlanId));
@@ -8220,7 +8232,7 @@ END
 			}
 			else
 			{
-				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				IDataReader reader = SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 												 "GetPrivateNetworVLANsPaged",
 													 new SqlParameter("@ActorId", actorId),
 													 new SqlParameter("@ServerId", serverId),
@@ -8266,7 +8278,7 @@ END
 			}
 			else
 			{
-				return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return (IDataReader)SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetPrivateNetworVLAN",
 					 new SqlParameter("@VlanID", vlanId));
 			}
@@ -8311,7 +8323,7 @@ END
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "UpdatePrivateNetworVLAN",
 					 new SqlParameter("@VlanID", vlanId),
 					 new SqlParameter("@ServerID", serverId),
@@ -8503,7 +8515,7 @@ GO
 			}
 			else
 			{
-				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				IDataReader reader = SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 												 "GetPackagePrivateNetworkVLANs",
 													 new SqlParameter("@PackageID", packageId),
 													 new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
@@ -8568,7 +8580,7 @@ END
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure, "DeallocatePackageVLAN",
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure, "DeallocatePackageVLAN",
 												  new SqlParameter("@PackageVlanID", id));
 			}
 		}
@@ -8766,7 +8778,7 @@ END
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 												 "GetUnallottedVLANs",
 													 new SqlParameter("@PackageId", packageId),
 													 new SqlParameter("@ServiceId", serviceId));
@@ -8983,7 +8995,7 @@ END
 			}
 			else
 			{
-				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				IDataReader reader = SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 										 "GetPackageDmzNetworkVLANs",
 											new SqlParameter("@PackageID", packageId),
 											new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
@@ -9044,7 +9056,7 @@ END
 			}
 			else
 			{
-				return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return (IDataReader)SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetIPAddress",
 					new SqlParameter("@AddressID", ipAddressId));
 			}
@@ -9151,7 +9163,7 @@ END
 			}
 			else
 			{
-				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				IDataReader reader = SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					"GetIPAddresses",
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@PoolId", poolId),
@@ -9362,7 +9374,7 @@ END
 			}
 			else
 			{
-				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				IDataReader reader = SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					"GetIPAddressesPaged",
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@PoolId", poolId),
@@ -9433,7 +9445,7 @@ END
 				SqlParameter prmAddresId = new SqlParameter("@AddressID", SqlDbType.Int);
 				prmAddresId.Direction = ParameterDirection.Output;
 
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "AddIPAddress",
 					 prmAddresId,
 					 new SqlParameter("@ServerID", serverId),
@@ -9506,7 +9518,7 @@ END
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "UpdateIPAddress",
 				 new SqlParameter("@AddressID", addressId),
 				 new SqlParameter("@externalIP", externalIP),
@@ -9588,7 +9600,7 @@ END
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "UpdateIPAddresses",
 				 new SqlParameter("@Xml", xmlIds),
 				 new SqlParameter("@ServerID", serverId),
@@ -9661,7 +9673,7 @@ RETURN
 				SqlParameter prmResult = new SqlParameter("@Result", SqlDbType.Int);
 				prmResult.Direction = ParameterDirection.Output;
 
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "DeleteIPAddress",
 					 prmResult,
 					 new SqlParameter("@AddressID", ipAddressId));
@@ -9707,7 +9719,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetClusters",
 				 new SqlParameter("@actorId", actorId));
 			}
@@ -9751,7 +9763,7 @@ RETURN
 				SqlParameter prmId = new SqlParameter("@ClusterID", SqlDbType.Int);
 				prmId.Direction = ParameterDirection.Output;
 
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "AddCluster",
 					 prmId,
 					 new SqlParameter("@ClusterName", clusterName));
@@ -9800,7 +9812,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "DeleteCluster",
 				 new SqlParameter("@ClusterId", clusterId));
 			}
@@ -9917,7 +9929,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetDnsRecordsByService",
 				 new SqlParameter("@actorId", actorId),
 				 new SqlParameter("@ServiceId", serviceId));
@@ -10016,7 +10028,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetDnsRecordsByServer",
 				 new SqlParameter("@actorId", actorId),
 				 new SqlParameter("@ServerId", serverId));
@@ -10172,7 +10184,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetDnsRecordsByPackage",
 				 new SqlParameter("@actorId", actorId),
 				 new SqlParameter("@PackageId", packageId));
@@ -10224,7 +10236,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetDnsRecordsByGroup",
 				 new SqlParameter("@GroupId", groupId));
 			}
@@ -10470,7 +10482,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetDnsRecordsTotal",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@packageId", packageId));
@@ -10558,7 +10570,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetDnsRecord",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@RecordId", recordId));
@@ -10692,7 +10704,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "AddDnsRecord",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@ServiceId", serviceId),
@@ -10793,7 +10805,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "UpdateDnsRecord",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@RecordId", recordId),
@@ -10863,7 +10875,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "DeleteDnsRecord",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@RecordId", recordId));
@@ -11007,7 +11019,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 				 ObjectQualifier + "GetDomains",
 				 new SqlParameter("@ActorId", actorId),
 				 new SqlParameter("@PackageId", packageId),
@@ -11082,7 +11094,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetResellerDomains",
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@PackageId", packageId));
@@ -11297,7 +11309,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetDomainsPaged",
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@PackageId", packageId),
@@ -11376,7 +11388,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetDomain",
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@domainId", domainId));
@@ -11482,7 +11494,7 @@ END
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetDomainByName",
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@domainName", domainName),
@@ -11557,7 +11569,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetDomainsByZoneID",
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@ZoneID", zoneId));
@@ -11629,7 +11641,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetDomainsByDomainItemID",
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@DomainID", domainId));
@@ -11731,7 +11743,7 @@ RETURN
 				SqlParameter prmId = new SqlParameter("@Result", SqlDbType.Int);
 				prmId.Direction = ParameterDirection.Output;
 
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "CheckDomain",
 					prmId,
 					new SqlParameter("@packageId", packageId),
@@ -11793,7 +11805,7 @@ AS
 				SqlParameter prmId = new SqlParameter("@Result", SqlDbType.Int);
 				prmId.Direction = ParameterDirection.Output;
 
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "CheckDomainUsedByHostedOrganization",
 					prmId,
 					new SqlParameter("@domainName", domainName));
@@ -11892,7 +11904,7 @@ RETURN
 				SqlParameter prmId = new SqlParameter("@DomainID", SqlDbType.Int);
 				prmId.Direction = ParameterDirection.Output;
 
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "AddDomain",
 					prmId,
 					new SqlParameter("@ActorId", actorId),
@@ -11971,7 +11983,7 @@ WHERE
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "UpdateDomain",
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@DomainId", domainId),
@@ -12022,7 +12034,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "DeleteDomain",
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@DomainId", domainId));
@@ -12101,7 +12113,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetServicesByServerID",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@ServerID", serverId));
@@ -12171,7 +12183,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetServicesByServerIDGroupName",
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@ServerID", serverId),
@@ -12252,7 +12264,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetRawServicesByServerID",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@ServerID", serverId));
@@ -12318,7 +12330,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetServicesByGroupID",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@groupId", groupId));
@@ -12401,7 +12413,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetServicesByGroupName",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@GroupName", groupName),
@@ -12457,7 +12469,7 @@ RETURN
 			}
 			else
 			{
-				return (IDataReader)SqlHelper.ExecuteReader(ConnectionString,
+				return (IDataReader)SqlHelper.ExecuteReader(NativeConnectionString,
 					CommandType.StoredProcedure,
 					ObjectQualifier + "GetService",
 					new SqlParameter("@actorId", actorId),
@@ -12627,7 +12639,7 @@ RETURN
 				SqlParameter prmServiceId = new SqlParameter("@ServiceID", SqlDbType.Int);
 				prmServiceId.Direction = ParameterDirection.Output;
 
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "AddService",
 					prmServiceId,
 					new SqlParameter("@ServerID", serverId),
@@ -12697,7 +12709,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "UpdateServiceFully",
 					new SqlParameter("@ProviderID", providerId),
 					new SqlParameter("@ServiceName", serviceName),
@@ -12754,7 +12766,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "UpdateService",
 					new SqlParameter("@ServiceName", serviceName),
 					new SqlParameter("@ServiceID", serviceId),
@@ -12826,7 +12838,7 @@ RETURN
 				SqlParameter prmResult = new SqlParameter("@Result", SqlDbType.Int);
 				prmResult.Direction = ParameterDirection.Output;
 
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "DeleteService",
 					prmResult,
 					new SqlParameter("@ServiceID", serviceId));
@@ -12864,7 +12876,7 @@ RETURN
 			}
 			else
 			{
-				return (IDataReader)SqlHelper.ExecuteReader(ConnectionString,
+				return (IDataReader)SqlHelper.ExecuteReader(NativeConnectionString,
 					CommandType.StoredProcedure,
 					ObjectQualifier + "GetServiceProperties",
 					new SqlParameter("@actorId", actorId),
@@ -12951,7 +12963,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "UpdateServiceProperties",
 					new SqlParameter("@ServiceId", serviceId),
 					new SqlParameter("@Xml", xml));
@@ -12995,7 +13007,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString,
+				return SqlHelper.ExecuteReader(NativeConnectionString,
 					CommandType.StoredProcedure,
 					ObjectQualifier + "GetResourceGroup",
 					new SqlParameter("@groupId", groupId));
@@ -13033,7 +13045,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString,
+				return SqlHelper.ExecuteDataset(NativeConnectionString,
 					CommandType.StoredProcedure,
 					ObjectQualifier + "GetResourceGroups");
 			}
@@ -13073,7 +13085,7 @@ WHERE RG.GroupName = @GroupName
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString,
+				return SqlHelper.ExecuteReader(NativeConnectionString,
 					CommandType.StoredProcedure,
 					ObjectQualifier + "GetResourceGroupByName",
 					new SqlParameter("@groupName", groupName));
@@ -13255,7 +13267,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetServiceItems",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@PackageID", packageId),
@@ -13546,7 +13558,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetServiceItemsPaged",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@packageId", packageId),
@@ -13595,7 +13607,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetSearchableServiceItemTypes");
 			}
 		}
@@ -13743,7 +13755,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetServiceItemsByService",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@ServiceID", serviceId));
@@ -13798,7 +13810,7 @@ RETURN
 				SqlParameter prmTotalNumber = new SqlParameter("@TotalNumber", SqlDbType.Int);
 				prmTotalNumber.Direction = ParameterDirection.Output;
 
-				DataSet ds = SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				DataSet ds = SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetServiceItemsCount",
 					prmTotalNumber,
 					new SqlParameter("@itemTypeName", typeName),
@@ -13922,7 +13934,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetServiceItemsForStatistics",
 					new SqlParameter("@ActorID", actorId),
 					new SqlParameter("@ServiceID", serviceId),
@@ -14077,7 +14089,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetServiceItemsByPackage",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@PackageID", packageId));
@@ -14227,7 +14239,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetServiceItem",
 					new SqlParameter("@ItemID", itemId),
 					new SqlParameter("@actorId", actorId));
@@ -14276,7 +14288,7 @@ RETURN
 				SqlParameter prmExists = new SqlParameter("@Exists", SqlDbType.Bit);
 				prmExists.Direction = ParameterDirection.Output;
 
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "CheckServiceItemExistsInService",
 					prmExists,
 					new SqlParameter("@serviceId", serviceId),
@@ -14355,7 +14367,7 @@ RETURN
 				SqlParameter prmExists = new SqlParameter("@Exists", SqlDbType.Bit);
 				prmExists.Direction = ParameterDirection.Output;
 
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "CheckServiceItemExists",
 					prmExists,
 					new SqlParameter("@itemName", itemName),
@@ -14519,7 +14531,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetServiceItemByName",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@packageId", packageId),
@@ -14675,7 +14687,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetServiceItemsByName",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@packageId", packageId),
@@ -14729,7 +14741,7 @@ RETURN
 			{
 				int res = 0;
 
-				object obj = SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure,
+				object obj = SqlHelper.ExecuteScalar(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetServiceItemsCountByNameAndServiceId",
 					new SqlParameter("@ActorID", actorId),
 					new SqlParameter("@ServiceId", serviceId),
@@ -14940,7 +14952,7 @@ RETURN
 				SqlParameter prmItemId = new SqlParameter("@ItemID", SqlDbType.Int);
 				prmItemId.Direction = ParameterDirection.Output;
 
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "AddServiceItem",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@PackageID", packageId),
@@ -15068,7 +15080,7 @@ RETURN
 			else
 			{
 				// update item
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "UpdateServiceItem",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@ItemName", itemName),
@@ -15184,7 +15196,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "DeleteServiceItem",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@ItemID", itemId));
@@ -15247,7 +15259,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "MoveServiceItem",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@ItemID", itemId),
@@ -15612,7 +15624,7 @@ END
 				SqlParameter prmServiceId = new SqlParameter("@ServiceID", SqlDbType.Int);
 				prmServiceId.Direction = ParameterDirection.Output;
 
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetPackageServiceID",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@PackageID", packageId),
@@ -15696,7 +15708,7 @@ RETURN
 				SqlParameter prmFilterUrl = new SqlParameter("@FilterUrl", SqlDbType.NVarChar, 200);
 				prmFilterUrl.Direction = ParameterDirection.Output;
 
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetFilterURL",
 					new SqlParameter("@ActorID", actorId),
 					new SqlParameter("@PackageID", packageId),
@@ -15808,7 +15820,7 @@ RETURN
 				SqlParameter prmFilterUrl = new SqlParameter("@FilterUrl", SqlDbType.NVarChar, 200);
 				prmFilterUrl.Direction = ParameterDirection.Output;
 
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetFilterURLByHostingPlan",
 					new SqlParameter("@ActorID", actorId),
 					new SqlParameter("@PlanID", PlanID),
@@ -16049,8 +16061,8 @@ RETURN
 									PackageId = packageId,
 									GroupId = item.Key.Id,
 									LogDate = item.Key.Date,
-									BytesSent = item.Sum(x => x.BytesSent),
-									BytesReceived = item.Sum(x => x.BytesReceived)
+									BytesSent = item.Sum(x => (long?)x.BytesSent) ?? 0,
+									BytesReceived = item.Sum(x => (long?)x.BytesReceived) ?? 0
 								});
 							PackagesBandwidths.AddRange(newBandwidths);
 
@@ -16099,7 +16111,7 @@ RETURN
 				SqlParameter prmUpdateDate = new SqlParameter("@UpdateDate", SqlDbType.DateTime);
 				prmUpdateDate.Direction = ParameterDirection.Output;
 
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetPackageBandwidthUpdate",
 					prmUpdateDate,
 					new SqlParameter("@packageId", packageId));
@@ -16137,7 +16149,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "UpdatePackageBandwidthUpdate",
 					new SqlParameter("@packageId", packageId),
 					new SqlParameter("@updateDate", updateDate));
@@ -16182,7 +16194,7 @@ WHERE
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetServiceItemType",
 					new SqlParameter("@ItemTypeID", itemTypeId));
@@ -16223,7 +16235,7 @@ ORDER BY TypeOrder
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetServiceItemTypes");
 			}
@@ -16324,7 +16336,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 				ObjectQualifier + "GetHostingPlans",
 				new SqlParameter("@actorId", actorId),
 				new SqlParameter("@userId", userId));
@@ -16397,7 +16409,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetHostingAddons",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@userId", userId));
@@ -16484,7 +16496,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetUserAvailableHostingPlans",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@userId", userId));
@@ -16571,7 +16583,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetUserAvailableHostingAddons",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@userId", userId));
@@ -16632,7 +16644,7 @@ RETURN
 			}
 			else
 			{
-				return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return (IDataReader)SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetHostingPlan",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@PlanId", planId));
@@ -17222,7 +17234,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetHostingPlanQuotas",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@packageId", packageId),
@@ -17484,7 +17496,7 @@ RETURN
 				SqlParameter prmPlanId = new SqlParameter("@PlanID", SqlDbType.Int);
 				prmPlanId.Direction = ParameterDirection.Output;
 
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "AddHostingPlan",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@userId", userId),
@@ -17866,7 +17878,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "UpdateHostingPlan",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@planId", planId),
@@ -17901,7 +17913,7 @@ RETURN
 				SqlParameter prmPlanId = new SqlParameter("@DestinationPlanID", SqlDbType.Int);
 				prmPlanId.Direction = ParameterDirection.Output;
 
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "CopyHostingPlan",
 					new SqlParameter("@SourcePlanID", planId),
 					new SqlParameter("@UserID", userId),
@@ -17981,7 +17993,7 @@ RETURN
 				SqlParameter prmResult = new SqlParameter("@Result", SqlDbType.Int);
 				prmResult.Direction = ParameterDirection.Output;
 
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "DeleteHostingPlan",
 					prmResult,
 					new SqlParameter("@actorId", actorId),
@@ -18115,7 +18127,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetMyPackages",
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@UserID", userId));
@@ -18203,7 +18215,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetPackages",
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@UserID", userId));
@@ -18263,7 +18275,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetNestedPackagesSummary",
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@PackageID", packageId));
@@ -18520,7 +18532,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "SearchServiceItemsPaged",
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@UserID", userId),
@@ -18698,7 +18710,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetPackagesPaged",
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@UserID", userId),
@@ -18910,7 +18922,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetNestedPackagesPaged",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@packageId", packageId),
@@ -19042,7 +19054,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetPackagePackages",
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@packageId", packageId),
@@ -19109,7 +19121,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetPackage",
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@PackageID", packageId));
@@ -20152,7 +20164,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetPackageQuotas",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@PackageID", packageId));
@@ -20295,7 +20307,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetParentPackageQuotas",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@PackageID", packageId));
@@ -20431,7 +20443,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetPackageQuotasForEdit",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@PackageID", packageId));
@@ -20642,7 +20654,7 @@ RETURN
 				SqlParameter prmPackageId = new SqlParameter("@PackageID", SqlDbType.Int);
 				prmPackageId.Direction = ParameterDirection.Output;
 
-				DataSet ds = SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				DataSet ds = SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "AddPackage",
 					prmPackageId,
 					new SqlParameter("@ActorId", actorId),
@@ -20929,7 +20941,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "UpdatePackage",
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@packageId", packageId),
@@ -20986,7 +20998,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "ChangePackageUser",
 					new SqlParameter("@PackageId", packageId),
 					new SqlParameter("@ActorId", actorId),
@@ -21057,7 +21069,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "UpdatePackageName",
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@packageId", packageId),
@@ -21195,7 +21207,7 @@ END
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "DeletePackage",
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@PackageID", packageId));
@@ -21258,7 +21270,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetPackageAddons",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@PackageID", packageId));
@@ -21323,7 +21335,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetPackageAddon",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@PackageAddonID", packageAddonId));
@@ -21437,7 +21449,7 @@ RETURN
 				SqlParameter prmPackageAddonId = new SqlParameter("@PackageAddonID", SqlDbType.Int);
 				prmPackageAddonId.Direction = ParameterDirection.Output;
 
-				DataSet ds = SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				DataSet ds = SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "AddPackageAddon",
 					prmPackageAddonId,
 					new SqlParameter("@actorId", actorId),
@@ -21550,7 +21562,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "UpdatePackageAddon",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@PackageAddonID", packageAddonId),
@@ -21606,7 +21618,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "DeletePackageAddon",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@PackageAddonID", packageAddonId));
@@ -21630,7 +21642,7 @@ RETURN
 			else
 			{
 				// get server packages
-				IDataReader packagesReader = SqlHelper.ExecuteReader(ConnectionString, CommandType.Text,
+				IDataReader packagesReader = SqlHelper.ExecuteReader(NativeConnectionString, CommandType.Text,
 					 @"SELECT PackageID FROM Packages WHERE ServerID = @ServerID",
 					 new SqlParameter("@ServerID", serverId));
 
@@ -21992,7 +22004,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "DistributePackageServices",
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@PackageID", packageId));
@@ -22113,7 +22125,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetPackageSettings",
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@PackageId", packageId),
@@ -22204,7 +22216,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "UpdatePackageSettings",
 					new SqlParameter("@PackageId", packageId),
 					new SqlParameter("@ActorId", actorId),
@@ -22251,7 +22263,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetProviderServiceQuota",
 					new SqlParameter("@providerId", providerId));
 			}
@@ -22329,7 +22341,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetPackageQuota",
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@PackageID", packageId),
@@ -22421,7 +22433,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "AddAuditLogRecord",
 					new SqlParameter("@recordId", recordId),
 					new SqlParameter("@severityId", severityId),
@@ -22636,7 +22648,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetAuditLogRecordsPaged",
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@UserID", userId),
@@ -22674,7 +22686,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetAuditLogSources");
 			}
 		}
@@ -22708,7 +22720,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetAuditLogTasks",
 					new SqlParameter("@sourceName", sourceName));
 			}
@@ -22792,7 +22804,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetAuditLogRecord",
 					new SqlParameter("@recordId", recordId));
 			}
@@ -22865,7 +22877,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "DeleteAuditLogRecords",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@userId", userId),
@@ -22913,7 +22925,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "DeleteAuditLogRecordsComplete");
 			}
 		}
@@ -23050,7 +23062,7 @@ RETURN
 					{
 						PackageId = p.Key,
 						// QuotaValue = GetPackageAllocatedQuota(p.Key, 51),
-						Bandwidth = p.Sum(s => s.PB.BytesSent + s.PB.BytesReceived)
+						Bandwidth = p.Sum(s => (long?)(s.PB.BytesSent + s.PB.BytesReceived)) ?? 0
 					});
 				var packages = Packages
 					.Where(p => packageId == -1 && p.UserId == userId ||
@@ -23066,13 +23078,13 @@ RETURN
 						p.Package.PackageName,
 						p.Package.StatusId,
 						p.Package.UserId,
-						Bandwidth = pg != null ? pg.Bandwidth : 0,
+						Bandwidth = pg != null ? (long?)pg.Bandwidth : null,
 						GroupedPackageId = pg != null ? (int?)pg.PackageId : null
 					})
 					.Join(UsersDetailed, p => p.UserId, u => u.UserId, (p, u) => new
 					{
 						p.PackageId,
-						p.Bandwidth,
+						Bandwidth = p.Bandwidth ?? 0,
 						p.GroupedPackageId,
 						//UsagePercentage = p.PG != null ? (p.PG.QuotaValue > 0 ? p.PG.Bandwidth * 100 / p.PG.QuotaValue : 0) : 0,
 						PackagesNumber = Packages.Count(np => np.ParentPackageId == p.PackageId),
@@ -23298,7 +23310,7 @@ RETURN
 					{
 						PackageId = p.Key,
 						// QuotaValue = GetPackageAllocatedQuota(p.Key, 51),
-						Diskspace = p.Sum(s => s.PD.DiskSpace) / 1024 / 1024
+						Diskspace = (p.Sum(s => (long?)s.PD.DiskSpace) ?? 0) / 1024 / 1024
 					});
 				var packages = Packages
 					.Where(p => packageId == -1 && p.UserId == userId ||
@@ -23315,7 +23327,7 @@ RETURN
 						p.Package.StatusId,
 						p.Package.UserId,
 						GroupedPackageId = pg != null ? (int?)pg.PackageId : null,
-						Diskspace = pg != null ? pg.Diskspace : 0
+						Diskspace = pg != null ? (long?)pg.Diskspace : null
 					})
 					.Join(UsersDetailed, p => p.UserId, u => u.UserId, (p, u) => new
 					{
@@ -23358,8 +23370,8 @@ RETURN
 					{
 						p.Package.PackageId,
 						p.QuotaValue,
-						p.Package.Diskspace,
-						UsagePercentage = (int)(p.QuotaValue > 0 ? p.Package.Diskspace * 100 / p.QuotaValue : 0),
+						Diskspace = p.Package.Diskspace ?? 0,
+						UsagePercentage = (int)(p.QuotaValue > 0 ? (p.Package.Diskspace ?? 0) * 100 / p.QuotaValue : 0),
 						//PackagesNumber = Local.Packages.Count(np => np.ParentPackageId == p.Package.PackageId),
 						p.Package.PackagesNumber,
 						p.Package.PackageName,
@@ -23508,25 +23520,25 @@ RETURN
 						g.GroupId,
 						g.GroupName,
 						g.GroupOrder,
-						MegaBytesSent = pg != null ? (pg.BytesSent + MB / 2) / MB : 0,
-						MegaBytesReceived = pg != null ? (pg.BytesReceived + MB / 2) / MB : 0,
-						MegaBytesTotal = pg != null ? (pg.BytesSent + pg.BytesReceived + MB / 2) / MB : 0,
-						BytesSent = pg != null ? pg.BytesSent : 0,
-						BytesReceived = pg != null ? pg.BytesReceived : 0,
-						BytesTotal = pg != null ? pg.BytesSent + pg.BytesReceived : 0
+						MegaBytesSent = pg != null ? (long?)((pg.BytesSent + MB / 2) / MB) : null,
+						MegaBytesReceived = pg != null ? (long?)((pg.BytesReceived + MB / 2) / MB) : null,
+						MegaBytesTotal = pg != null ? (long?)((pg.BytesSent + pg.BytesReceived + MB / 2) / MB) : null,
+						BytesSent = pg != null ? (long?)pg.BytesSent : null,
+						BytesReceived = pg != null ? (long?)pg.BytesReceived : null,
+						BytesTotal = pg != null ? (long?)(pg.BytesSent + pg.BytesReceived) : null
 					})
-					.Where(g => g.BytesTotal > 0)
+					.Where(g => g.BytesTotal != null && g.BytesTotal.Value > 0)
 					.OrderBy(g => g.GroupOrder)
 					.Select(g => new
 					{
 						g.GroupId,
 						g.GroupName,
-						g.MegaBytesSent,
-						g.MegaBytesReceived,
-						g.MegaBytesTotal,
-						g.BytesSent,
-						g.BytesReceived,
-						g.BytesTotal
+						MegaBytesSent = g.MegaBytesSent ?? 0,
+						MegaBytesReceived = g.MegaBytesReceived ?? 0,
+						MegaBytesTotal = g.MegaBytesTotal ?? 0,
+						BytesSent = g.BytesSent ?? 0,
+						BytesReceived = g.BytesReceived ?? 0,
+						BytesTotal = g.BytesTotal ?? 0
 					});
 				return EntityDataSet(packages);
 			}
@@ -23613,17 +23625,17 @@ RETURN
 						g.GroupId,
 						g.GroupName,
 						g.GroupOrder,
-						Diskspace = pg != null ? (pg.Diskspace + MB / 2) / MB : 0,
-						DiskspaceBytes = pg != null ? pg.Diskspace : 0
+						Diskspace = pg != null ? (long?)((pg.Diskspace + MB / 2) / MB) : null,
+						DiskspaceBytes = pg != null ? (long?)pg.Diskspace : null
 					})
-					.Where(g => g.DiskspaceBytes > 0)
+					.Where(g => g.DiskspaceBytes != null && g.DiskspaceBytes.Value > 0)
 					.OrderBy(g => g.GroupOrder)
 					.Select(g => new
 					{
 						g.GroupId,
 						g.GroupName,
-						g.Diskspace,
-						g.DiskspaceBytes
+						Diskspace = g.Diskspace ?? 0,
+						DiskspaceBytes = g.DiskspaceBytes ?? 0
 					});
 
 				return EntityDataSet(packages);
@@ -23712,7 +23724,7 @@ WHERE T.TaskID = @TaskID
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetBackgroundTask",
 					new SqlParameter("@taskId", taskId));
 			}
@@ -23791,7 +23803,7 @@ WHERE T.Guid = (
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetScheduleBackgroundTasks",
 					new SqlParameter("@scheduleId", scheduleId));
 			}
@@ -23904,7 +23916,7 @@ INNER JOIN (SELECT T.Guid, MIN(T.StartDate) AS Date
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetBackgroundTasks",
 					new SqlParameter("@actorId", actorId));
 			}
@@ -23979,7 +23991,7 @@ WHERE T.Guid = @Guid
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetThreadBackgroundTasks",
 					new SqlParameter("@guid", guid));
 			}
@@ -24050,7 +24062,7 @@ WHERE T.Completed = 0 AND T.Status = @Status
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetProcessBackgroundTasks",
 					new SqlParameter("@status", (int)status));
 			}
@@ -24129,7 +24141,7 @@ ORDER BY T.StartDate ASC
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetBackgroundTopTask",
 					new SqlParameter("@guid", guid));
 			}
@@ -24247,7 +24259,7 @@ RETURN
 				SqlParameter prmId = new SqlParameter("@BackgroundTaskID", SqlDbType.Int);
 				prmId.Direction = ParameterDirection.Output;
 
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "AddBackgroundTask",
 					prmId,
 					new SqlParameter("@guid", guid),
@@ -24335,7 +24347,7 @@ VALUES
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "AddBackgroundTaskLog",
 					new SqlParameter("@taskId", taskId),
 					new SqlParameter("@date", date),
@@ -24394,7 +24406,7 @@ ORDER BY L.Date
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetBackgroundTaskLogs",
 					new SqlParameter("@taskId", taskId),
 					new SqlParameter("@startLogTime", startLogTime));
@@ -24475,7 +24487,7 @@ WHERE ID = @TaskID
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "UpdateBackgroundTask",
 					new SqlParameter("@Guid", guid),
 					new SqlParameter("@taskId", taskId),
@@ -24527,7 +24539,7 @@ WHERE P.TaskID = @TaskID
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetBackgroundTaskParams",
 					new SqlParameter("@taskId", taskId));
 			}
@@ -24577,7 +24589,7 @@ VALUES
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "AddBackgroundTaskParam",
 					new SqlParameter("@taskId", taskId),
 					new SqlParameter("@name", name),
@@ -24607,7 +24619,7 @@ WHERE TaskID = @TaskID
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "DeleteBackgroundTaskParams",
 					new SqlParameter("@taskId", taskId));
 			}
@@ -24645,7 +24657,7 @@ VALUES
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "AddBackgroundTaskStack",
 					new SqlParameter("@taskId", taskId));
 			}
@@ -24696,7 +24708,7 @@ WHERE ID IN (SELECT ID FROM BackgroundTasks WHERE Guid = @Guid)
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "DeleteBackgroundTasks",
 					new SqlParameter("@guid", guid));
 			}
@@ -24738,7 +24750,7 @@ WHERE ID = @ID
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "DeleteBackgroundTask",
 					new SqlParameter("@id", taskId));
 			}
@@ -24786,7 +24798,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetScheduleTasks",
 					new SqlParameter("@actorId", actorId));
 			}
@@ -24837,7 +24849,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetScheduleTask",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@taskId", taskId));
@@ -24993,7 +25005,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetSchedules",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@packageId", packageId),
@@ -25203,7 +25215,7 @@ END
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetSchedulesPaged",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@packageId", packageId),
@@ -25342,7 +25354,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetSchedule",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@scheduleId", scheduleId));
@@ -25417,7 +25429,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetScheduleInternal",
 					new SqlParameter("@scheduleId", scheduleId));
 			}
@@ -25554,7 +25566,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetNextSchedule");
 			}
 		}
@@ -25638,7 +25650,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetScheduleParameters",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@taskId", taskId),
@@ -25689,7 +25701,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetScheduleTaskViewConfigurations",
 					new SqlParameter("@taskId", taskId));
 			}
@@ -25853,7 +25865,7 @@ RETURN
 				SqlParameter prmId = new SqlParameter("@ScheduleID", SqlDbType.Int);
 				prmId.Direction = ParameterDirection.Output;
 
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "AddSchedule",
 					prmId,
 					new SqlParameter("@actorId", actorId),
@@ -26019,7 +26031,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "UpdateSchedule",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@scheduleId", scheduleId),
@@ -26096,7 +26108,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "DeleteSchedule",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@scheduleId", scheduleId));
@@ -26119,7 +26131,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetScheduleHistories",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@scheduleId", scheduleId));
@@ -26141,7 +26153,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetScheduleHistory",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@scheduleHistoryId", scheduleHistoryId));
@@ -26167,7 +26179,7 @@ RETURN
 				SqlParameter prmId = new SqlParameter("@ScheduleHistoryID", SqlDbType.Int);
 				prmId.Direction = ParameterDirection.Output;
 
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "AddScheduleHistory",
 					prmId,
 					new SqlParameter("@actorId", actorId),
@@ -26198,7 +26210,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "UpdateScheduleHistory",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@scheduleHistoryId", scheduleHistoryId),
@@ -26224,7 +26236,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "DeleteScheduleHistories",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@scheduleId", scheduleId));
@@ -26310,7 +26322,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetComments",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@userId", userId),
@@ -26370,7 +26382,7 @@ RETURN				*/
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "AddComment",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@itemTypeId", itemTypeId),
@@ -26422,7 +26434,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "DeleteComment",
 					new SqlParameter("@actorId", actorId),
 					new SqlParameter("@commentId", commentId));
@@ -26455,7 +26467,7 @@ RETURN
 
 		private DataSet ExecuteLongDataSet(string commandText, CommandType commandType, params SqlParameter[] parameters)
 		{
-			SqlConnection conn = new SqlConnection(ConnectionString);
+			SqlConnection conn = new SqlConnection(NativeConnectionString);
 			SqlCommand cmd = new SqlCommand(commandText, conn);
 			cmd.CommandType = commandType;
 			cmd.CommandTimeout = 300;
@@ -26485,7 +26497,7 @@ RETURN
 
 		private void ExecuteLongNonQuery(string spName, params SqlParameter[] parameters)
 		{
-			SqlConnection conn = new SqlConnection(ConnectionString);
+			SqlConnection conn = new SqlConnection(NativeConnectionString);
 			SqlCommand cmd = new SqlCommand(spName, conn);
 			cmd.CommandType = CommandType.StoredProcedure;
 			cmd.CommandTimeout = 300;
@@ -26627,7 +26639,7 @@ RETURN
 				outParam.Direction = ParameterDirection.Output;
 
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddExchangeAccount",
 					outParam,
@@ -26683,7 +26695,7 @@ RETURN
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddExchangeAccountEmailAddress",
 					new SqlParameter("@AccountID", accountId),
@@ -26730,7 +26742,7 @@ RETURN
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddExchangeOrganization",
 					new SqlParameter("@ItemID", itemId),
@@ -26771,7 +26783,7 @@ RETURN
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddExchangeOrganizationDomain",
 					new SqlParameter("@ItemID", itemId),
@@ -26815,7 +26827,7 @@ RETURN
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"ChangeExchangeAcceptedDomainType",
 					new SqlParameter("@ItemID", itemId),
@@ -26933,7 +26945,7 @@ RETURN
 				}
 				else
 				{
-                    var sizes = new
+					var sizes = new
 					{
 						tmp.CreatedMailboxes,
 						tmp.CreatedSharedMailboxes,
@@ -26953,7 +26965,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetExchangeOrganizationStatistics",
 					new SqlParameter("@ItemID", itemId));
@@ -26990,7 +27002,7 @@ END
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"DeleteUserEmailAddresses",
 					new SqlParameter("@AccountID", accountId),
@@ -27030,7 +27042,7 @@ RETURN
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"DeleteExchangeAccount",
 					new SqlParameter("@ItemID", itemId),
@@ -27062,7 +27074,7 @@ RETURN
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"DeleteExchangeAccountEmailAddress",
 					new SqlParameter("@AccountID", accountId),
@@ -27099,7 +27111,7 @@ RETURN
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"DeleteExchangeOrganization",
 					new SqlParameter("@ItemID", itemId));
@@ -27130,7 +27142,7 @@ RETURN
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"DeleteExchangeOrganizationDomain",
 					new SqlParameter("@ItemId", itemId),
@@ -27174,7 +27186,7 @@ AS
 				outParam.Direction = ParameterDirection.Output;
 
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"ExchangeAccountEmailAddressExists",
 					new SqlParameter("@EmailAddress", emailAddress),
@@ -27214,7 +27226,7 @@ RETURN
 				outParam.Direction = ParameterDirection.Output;
 
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"ExchangeOrganizationDomainExists",
 					new SqlParameter("@DomainID", domainId),
@@ -27253,7 +27265,7 @@ RETURN
 				outParam.Direction = ParameterDirection.Output;
 
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"ExchangeOrganizationExists",
 					new SqlParameter("@OrganizationID", organizationId),
@@ -27286,7 +27298,7 @@ RETURN
 
 				var path = $"\\{accountName}";
 
-                return ExchangeAccounts.Any(a => a.SamAccountName.EndsWith(path));
+				return ExchangeAccounts.Any(a => a.SamAccountName.EndsWith(path));
 			}
 			else
 			{
@@ -27294,7 +27306,7 @@ RETURN
 				outParam.Direction = ParameterDirection.Output;
 
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"ExchangeAccountExists",
 					new SqlParameter("@AccountName", accountName),
@@ -27384,7 +27396,7 @@ RETURN
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"UpdateExchangeAccount",
 					new SqlParameter("@AccountID", accountId),
@@ -27449,7 +27461,7 @@ RETURN
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"UpdateExchangeAccountSLSettings",
 					new SqlParameter("@AccountID", accountId),
@@ -27490,7 +27502,7 @@ RETURN
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"UpdateExchangeAccountUserPrincipalName",
 					new SqlParameter("@AccountID", accountId),
@@ -27574,7 +27586,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetExchangeAccount",
 					new SqlParameter("@ItemID", itemId),
@@ -27654,7 +27666,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetExchangeAccountByAccountName",
 					new SqlParameter("@ItemID", itemId),
@@ -27822,7 +27834,7 @@ END
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetExchangeAccountByMailboxPlanId",
 					new SqlParameter("@ItemID", itemId),
@@ -27861,7 +27873,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetExchangeAccountEmailAddresses",
 					new SqlParameter("@AccountID", accountId));
@@ -27905,7 +27917,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetExchangeOrganizationDomains",
 					new SqlParameter("@ItemID", itemId));
@@ -27970,7 +27982,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetExchangeAccounts",
 					new SqlParameter("@ItemID", itemId),
@@ -28049,7 +28061,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetExchangeAccountByAccountNameWithoutItemId",
 					new SqlParameter("@UserPrincipalName", userPrincipalName));
@@ -28109,7 +28121,7 @@ END
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetExchangeMailboxes",
 					new SqlParameter("@ItemID", itemId));
@@ -28240,7 +28252,7 @@ RETURN
 				var accountTypesAsString = string.Join(",", accountTypes.Select(t => (int)t));
 
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"SearchExchangeAccountsByTypes",
 					new SqlParameter("@ActorID", actorId),
@@ -28433,7 +28445,7 @@ RETURN
 				accountTypesAsString = string.Join(",", accountTypes.Select(t => ((int)t).ToString()));
 
 				return SqlHelper.ExecuteDataset(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetExchangeAccountsPaged",
 					new SqlParameter("@ActorID", actorId),
@@ -28570,7 +28582,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"SearchExchangeAccounts",
 					new SqlParameter("@ActorID", actorId),
@@ -28671,7 +28683,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"SearchExchangeAccount",
 					new SqlParameter("@ActorID", actorId),
@@ -28872,7 +28884,7 @@ RETURN
 				outParam.Direction = ParameterDirection.Output;
 
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddExchangeMailboxPlan",
 					outParam,
@@ -29031,7 +29043,7 @@ RETURN
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"UpdateExchangeMailboxPlan",
 					new SqlParameter("@MailboxPlanID", mailboxPlanID),
@@ -29092,7 +29104,7 @@ RETURN
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"DeleteExchangeMailboxPlan",
 					new SqlParameter("@MailboxPlanId", mailboxPlanId));
@@ -29191,7 +29203,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetExchangeMailboxPlan",
 					new SqlParameter("@MailboxPlanId", mailboxPlanId));
@@ -29285,7 +29297,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetExchangeMailboxPlans",
 					new SqlParameter("@ItemID", itemId),
@@ -29331,7 +29343,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetExchangeOrganization",
 					new SqlParameter("@ItemID", itemId));
@@ -29372,7 +29384,7 @@ RETURN
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"SetOrganizationDefaultExchangeMailboxPlan",
 					new SqlParameter("@ItemID", itemId),
@@ -29425,7 +29437,7 @@ RETURN
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"SetExchangeAccountMailboxplan",
 					new SqlParameter("@AccountID", accountId),
@@ -29496,7 +29508,7 @@ RETURN
 				outParam.Direction = ParameterDirection.Output;
 
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddExchangeRetentionPolicyTag",
 					outParam,
@@ -29554,7 +29566,7 @@ RETURN
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"UpdateExchangeRetentionPolicyTag",
 					new SqlParameter("@TagID", TagID),
@@ -29591,7 +29603,7 @@ RETURN
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"DeleteExchangeRetentionPolicyTag",
 					new SqlParameter("@TagID", TagID));
@@ -29640,7 +29652,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetExchangeRetentionPolicyTag",
 					new SqlParameter("@TagID", TagID));
@@ -29690,7 +29702,7 @@ RETURN				*/
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetExchangeRetentionPolicyTags",
 					new SqlParameter("@ItemID", itemId));
@@ -29744,7 +29756,7 @@ RETURN
 				outParam.Direction = ParameterDirection.Output;
 
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddExchangeMailboxPlanRetentionPolicyTag",
 					outParam,
@@ -29778,7 +29790,7 @@ RETURN
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"DeleteExchangeMailboxPlanRetentionPolicyTag",
 					new SqlParameter("@PlanTagID", PlanTagID));
@@ -29849,7 +29861,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetExchangeMailboxPlanRetentionPolicyTags",
 					new SqlParameter("@MailboxPlanId", MailboxPlanId));
@@ -29908,7 +29920,7 @@ RETURN
 				outParam.Direction = ParameterDirection.Output;
 
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddExchangeDisclaimer",
 					outParam,
@@ -29964,7 +29976,7 @@ RETURN
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"UpdateExchangeDisclaimer",
 					new SqlParameter("@ExchangeDisclaimerId", disclaimer.ExchangeDisclaimerId),
@@ -29997,7 +30009,7 @@ RETURN
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"DeleteExchangeDisclaimer",
 					new SqlParameter("@ExchangeDisclaimerId", exchangeDisclaimerId));
@@ -30042,7 +30054,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetExchangeDisclaimer",
 					new SqlParameter("@ExchangeDisclaimerId", exchangeDisclaimerId));
@@ -30090,7 +30102,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetExchangeDisclaimers",
 					new SqlParameter("@ItemID", itemId));
@@ -30135,7 +30147,7 @@ RETURN
 				if (ExchangeDisclaimerId != -1) id = ExchangeDisclaimerId;
 
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"SetExchangeAccountDisclaimerId",
 					new SqlParameter("@AccountID", AccountID),
@@ -30248,7 +30260,7 @@ RETURN
 				prmId.Direction = ParameterDirection.Output;
 
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddAccessToken",
 					prmId,
@@ -30299,7 +30311,7 @@ RETURN
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"SetAccessTokenSmsResponse",
 					new SqlParameter("@AccessToken", accessToken),
@@ -30326,7 +30338,7 @@ WHERE ExpirationDate < getdate()
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"DeleteExpiredAccessTokenTokens");
 			}
@@ -30375,7 +30387,7 @@ Where AccessTokenGuid = @AccessToken AND ExpirationDate > getdate() AND TokenTyp
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetAccessTokenByAccessToken",
 					new SqlParameter("@AccessToken", accessToken),
@@ -30407,7 +30419,7 @@ WHERE AccessTokenGuid = @AccessToken AND TokenType = @TokenType
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"DeleteAccessToken",
 					new SqlParameter("@AccessToken", accessToken),
@@ -30457,7 +30469,7 @@ UPDATE [dbo].[ExchangeOrganizationSettings] SET [Xml] = @Xml WHERE [ItemId] = @I
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "UpdateExchangeOrganizationSettings",
 					new SqlParameter("@ItemId", itemId),
 					new SqlParameter("@SettingsName", settingsName),
@@ -30499,7 +30511,7 @@ Where ItemId = @ItemId AND SettingsName = @SettingsName
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetExchangeOrganizationSettings",
 					new SqlParameter("@ItemId", itemId),
 					new SqlParameter("@SettingsName", settingsName));
@@ -30568,7 +30580,7 @@ RETURN
 				outParam.Direction = ParameterDirection.Output;
 
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddOrganizationDeletedUser",
 					outParam,
@@ -30605,7 +30617,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString,
 					CommandType.StoredProcedure,
 					"DeleteOrganizationDeletedUser",
 					new SqlParameter("@ID", id));
@@ -30654,7 +30666,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetOrganizationDeletedUser",
 					new SqlParameter("@AccountID", accountId));
@@ -30689,7 +30701,7 @@ WHERE AG.UserID = @UserID
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetAdditionalGroups",
 					new SqlParameter("@UserID", userId));
@@ -30742,7 +30754,7 @@ RETURN
 				prmId.Direction = ParameterDirection.Output;
 
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddAdditionalGroup",
 					prmId,
@@ -30777,7 +30789,7 @@ WHERE ID = @GroupID
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString,
 					CommandType.StoredProcedure,
 					"DeleteAdditionalGroup",
 					new SqlParameter("@GroupID", groupId));
@@ -30820,7 +30832,7 @@ WHERE ID = @GroupID
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"UpdateAdditionalGroup",
 					new SqlParameter("@GroupID", groupId),
@@ -30850,7 +30862,7 @@ END
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure, "DeleteOrganizationUsers",
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure, "DeleteOrganizationUsers",
 					new SqlParameter("@ItemID", itemId));
 			}
 		}
@@ -30883,7 +30895,7 @@ END				*/
 			}
 			else
 			{
-				object obj = SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "GetItemIdByOrganizationId",
+				object obj = SqlHelper.ExecuteScalar(NativeConnectionString, CommandType.StoredProcedure, "GetItemIdByOrganizationId",
 					new SqlParameter("@OrganizationId", id));
 
 				return (obj == null || DBNull.Value == obj) ? 0 : (int)obj;
@@ -30935,7 +30947,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetOrganizationStatistics",
 					new SqlParameter("@ItemID", itemId));
@@ -30987,7 +30999,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetOrganizationGroupsByDisplayName",
 					new SqlParameter("@ItemID", itemId),
@@ -31122,7 +31134,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"SearchOrganizationAccounts",
 					new SqlParameter("@ActorID", actorId),
@@ -31288,7 +31300,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteDataset(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetOrganizationObjectsByDomain",
 					new SqlParameter("@ItemID", itemId),
@@ -31363,7 +31375,7 @@ END
 					new SqlParameter("@CALType", CALType)
 				};
 
-				return (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "GetCRMUsersCount", sqlParams);
+				return (int)SqlHelper.ExecuteScalar(NativeConnectionString, CommandType.StoredProcedure, "GetCRMUsersCount", sqlParams);
 			}
 		}
 
@@ -31533,7 +31545,7 @@ DROP TABLE #TempCRMUsers
 				};
 
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetCRMUsers", sqlParams);
 			}
@@ -31584,7 +31596,7 @@ END
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure, "GetCRMOrganizationUsers",
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure, "GetCRMOrganizationUsers",
 					new SqlParameter[] { new SqlParameter("@ItemID", itemId) });
 			}
 		}
@@ -31641,7 +31653,7 @@ END
 			}
 			else
 			{
-				SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure, "InsertCRMUser",
+				SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure, "InsertCRMUser",
 					new SqlParameter[] {
 						new SqlParameter("@ItemID", itemId),
 						new SqlParameter("@CrmUserID", crmId),
@@ -31688,7 +31700,7 @@ END
 			}
 			else
 			{
-				SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure, "UpdateCRMUser",
+				SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure, "UpdateCRMUser",
 					new SqlParameter[] {
 						new SqlParameter("@ItemID", itemId),
 						new SqlParameter("@CALType", CALType)
@@ -31729,7 +31741,7 @@ END
 			}
 			else
 			{
-				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure, "GetCRMUser",
+				IDataReader reader = SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure, "GetCRMUser",
 					new SqlParameter[] { new SqlParameter("@AccountID", accountId) });
 				return reader;
 			}
@@ -31765,7 +31777,7 @@ END
 			}
 			else
 			{
-				return (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "GetOrganizationCRMUserCount",
+				return (int)SqlHelper.ExecuteScalar(NativeConnectionString, CommandType.StoredProcedure, "GetOrganizationCRMUserCount",
 					new SqlParameter[] { new SqlParameter("@ItemID", itemId) });
 			}
 		}
@@ -31790,7 +31802,7 @@ END
 			}
 			else
 			{
-				SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "DeleteCRMOrganization",
+				SqlHelper.ExecuteScalar(NativeConnectionString, CommandType.StoredProcedure, "DeleteCRMOrganization",
 					new SqlParameter[] { new SqlParameter("@ItemID", organizationId) });
 			}
 		}
@@ -31950,7 +31962,7 @@ RETURN
 						{
 							p.Package,
 							p.Item,
-							pip.IpAddress
+							IpAddress = pip != null ? pip.IpAddress : null
 						})
 						.GroupJoin(externalIpAddresses, p => p.Item.ItemId, eip => eip.ItemId, (p, eip) => new
 						{
@@ -32004,7 +32016,7 @@ RETURN
 			}
 			else
 			{
-				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				IDataReader reader = SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					"GetVirtualMachinesPaged",
 					new SqlParameter("@ActorID", actorId),
 					new SqlParameter("@PackageID", packageId),
@@ -32172,7 +32184,7 @@ GO
 						{
 							p.Package,
 							p.Item,
-							IpAddress = pip.IpAddress
+							IpAddress = pip != null ? pip.IpAddress : null
 						})
 						.GroupJoin(DmzIpAddresses.Where(ip => ip.IsPrimary), p => p.Item.ItemId, dip => dip.ItemId, (p, dip) => new
 						{
@@ -32242,7 +32254,7 @@ GO
 			}
 			else
 			{
-				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				IDataReader reader = SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					"GetVirtualMachinesPaged2012",
 					new SqlParameter("@ActorID", actorId),
 					new SqlParameter("@PackageID", packageId),
@@ -32459,7 +32471,7 @@ RETURN
 			}
 			else
 			{
-				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				IDataReader reader = SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					"GetVirtualMachinesPagedProxmox",
 					new SqlParameter("@ActorID", actorId),
 					new SqlParameter("@PackageID", packageId),
@@ -32682,7 +32694,7 @@ RETURN
 			}
 			else
 			{
-				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				IDataReader reader = SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					"GetVirtualMachinesPagedForPC",
 					new SqlParameter("@ActorID", actorId),
 					new SqlParameter("@PackageID", packageId),
@@ -32929,7 +32941,7 @@ END
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					"GetUnallottedIPAddresses",
 					new SqlParameter("@PackageId", packageId),
 					new SqlParameter("@ServiceId", serviceId),
@@ -33202,7 +33214,7 @@ END
 			}
 			else
 			{
-				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				IDataReader reader = SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					"GetPackageIPAddresses",
 					new SqlParameter("@PackageID", packageId),
 					new SqlParameter("@OrgID", orgId),
@@ -33263,7 +33275,7 @@ END
 			}
 			else
 			{
-				object obj = SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure,
+				object obj = SqlHelper.ExecuteScalar(NativeConnectionString, CommandType.StoredProcedure,
 					"GetPackageIPAddressesCount",
 					new SqlParameter("@PackageID", packageId),
 					new SqlParameter("@OrgID", orgId),
@@ -33341,7 +33353,7 @@ END
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure, "DeallocatePackageIPAddress",
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure, "DeallocatePackageIPAddress",
 					new SqlParameter("@PackageAddressID", id));
 			}
 		}
@@ -33470,7 +33482,7 @@ END
 			}
 			else
 			{
-				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				IDataReader reader = SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					"GetPackagePrivateIPAddressesPaged",
 					new SqlParameter("@PackageID", packageId),
 					new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
@@ -33521,7 +33533,7 @@ END
 			}
 			else
 			{
-				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				IDataReader reader = SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					"GetPackagePrivateIPAddresses",
 					new SqlParameter("@PackageID", packageId));
 				return reader;
@@ -33652,7 +33664,7 @@ END
 			}
 			else
 			{
-				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				IDataReader reader = SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 										 "GetPackageDmzIPAddressesPaged",
 											new SqlParameter("@PackageID", packageId),
 											new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
@@ -33703,7 +33715,7 @@ END
 			}
 			else
 			{
-				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				IDataReader reader = SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 									 "GetPackageDmzIPAddresses",
 										new SqlParameter("@PackageID", packageId));
 				return reader;
@@ -33766,7 +33778,7 @@ END
 			}
 			else
 			{
-				return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 								"AddItemDmzIPAddress",
 								new SqlParameter("@ActorID", actorId),
 								new SqlParameter("@ItemID", itemId),
@@ -33810,7 +33822,7 @@ END
 			}
 			else
 			{
-				return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 								"SetItemDmzPrimaryIPAddress",
 								new SqlParameter("@ActorID", actorId),
 								new SqlParameter("@ItemID", itemId),
@@ -33855,7 +33867,7 @@ END
 			}
 			else
 			{
-				return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 									"DeleteItemDmzIPAddress",
 									new SqlParameter("@ActorID", actorId),
 									new SqlParameter("@ItemID", itemId),
@@ -33913,7 +33925,7 @@ END
 			else
 			{
 
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 									"GetItemDmzIPAddresses",
 									new SqlParameter("@ActorID", actorId),
 									new SqlParameter("@ItemID", itemId));
@@ -33955,7 +33967,7 @@ END
 			}
 			else
 			{
-				return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 								"DeleteItemDmzIPAddresses",
 								new SqlParameter("@ActorID", actorId),
 								new SqlParameter("@ItemID", itemId));
@@ -34029,7 +34041,7 @@ END
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					"GetPackageUnassignedIPAddresses",
 					new SqlParameter("@ActorID", actorId),
 					new SqlParameter("@PackageID", packageId),
@@ -34096,7 +34108,7 @@ END
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					"GetPackageIPAddress",
 					new SqlParameter("@PackageAddressId", packageAddressId));
 			}
@@ -34154,7 +34166,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					"GetItemIPAddresses",
 					new SqlParameter("@ActorID", actorId),
 					new SqlParameter("@ItemID", itemId),
@@ -34203,7 +34215,7 @@ END
 			}
 			else
 			{
-				return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					"AddItemIPAddress",
 					new SqlParameter("@ActorID", actorId),
 					new SqlParameter("@ItemID", itemId),
@@ -34262,7 +34274,7 @@ END
 			}
 			else
 			{
-				return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					"SetItemPrimaryIPAddress",
 					new SqlParameter("@ActorID", actorId),
 					new SqlParameter("@ItemID", itemId),
@@ -34309,7 +34321,7 @@ END
 			}
 			else
 			{
-				return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					"DeleteItemIPAddress",
 					new SqlParameter("@ActorID", actorId),
 					new SqlParameter("@ItemID", itemId),
@@ -34356,7 +34368,7 @@ END
 			}
 			else
 			{
-				return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					"DeleteItemIPAddresses",
 					new SqlParameter("@ActorID", actorId),
 					new SqlParameter("@ItemID", itemId));
@@ -34408,7 +34420,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					"GetItemPrivateIPAddresses",
 					new SqlParameter("@ActorID", actorId),
 					new SqlParameter("@ItemID", itemId));
@@ -34474,7 +34486,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					"AddItemPrivateIPAddress",
 					new SqlParameter("@ActorID", actorId),
 					new SqlParameter("@ItemID", itemId),
@@ -34519,7 +34531,7 @@ END
 			}
 			else
 			{
-				return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					"SetItemPrivatePrimaryIPAddress",
 					new SqlParameter("@ActorID", actorId),
 					new SqlParameter("@ItemID", itemId),
@@ -34560,7 +34572,7 @@ END
 			}
 			else
 			{
-				return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					"DeleteItemPrivateIPAddress",
 					new SqlParameter("@ActorID", actorId),
 					new SqlParameter("@ItemID", itemId),
@@ -34600,7 +34612,7 @@ END
 			}
 			else
 			{
-				return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					"DeleteItemPrivateIPAddresses",
 					new SqlParameter("@ActorID", actorId),
 					new SqlParameter("@ItemID", itemId));
@@ -34651,7 +34663,7 @@ END
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddBlackBerryUser",
 					new[] { new SqlParameter("@AccountID", accountId) });
@@ -34681,7 +34693,7 @@ END
 			}
 			else
 			{
-				int res = (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "CheckBlackBerryUserExists",
+				int res = (int)SqlHelper.ExecuteScalar(NativeConnectionString, CommandType.StoredProcedure, "CheckBlackBerryUserExists",
 					new SqlParameter("@AccountID", accountId));
 				return res > 0;
 			}
@@ -34859,7 +34871,7 @@ DROP TABLE #TempBlackBerryUsers
 
 
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetBlackBerryUsers", sqlParams);
 			}
@@ -34927,7 +34939,7 @@ WHERE
 					GetFilterSqlParam("@Email", email),
 				};
 
-				return (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "GetBlackBerryUsersCount", sqlParams);
+				return (int)SqlHelper.ExecuteScalar(NativeConnectionString, CommandType.StoredProcedure, "GetBlackBerryUsersCount", sqlParams);
 			}
 		}
 		public void DeleteBlackBerryUser(int accountId)
@@ -34955,7 +34967,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString,
 					CommandType.StoredProcedure,
 					"DeleteBlackBerryUser",
 					new[] { new SqlParameter("@AccountID", accountId) });
@@ -35009,7 +35021,7 @@ END				*/
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddOCSUser",
 					new[] {
@@ -35042,7 +35054,7 @@ END
 			}
 			else
 			{
-				int res = (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "CheckOCSUserExists",
+				int res = (int)SqlHelper.ExecuteScalar(NativeConnectionString, CommandType.StoredProcedure, "CheckOCSUserExists",
 					new SqlParameter("@AccountID", accountId));
 				return res > 0;
 			}
@@ -35221,7 +35233,7 @@ DROP TABLE #TempOCSUsers
 				};
 
 				return SqlHelper.ExecuteReader(
-					 ConnectionString,
+					 NativeConnectionString,
 					 CommandType.StoredProcedure,
 					 "GetOCSUsers", sqlParams);
 			}
@@ -35288,7 +35300,7 @@ WHERE
 					GetFilterSqlParam("@Email", email),
 				};
 
-				return (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "GetOCSUsersCount", sqlParams);
+				return (int)SqlHelper.ExecuteScalar(NativeConnectionString, CommandType.StoredProcedure, "GetOCSUsersCount", sqlParams);
 			}
 		}
 
@@ -35317,7 +35329,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString,
 					CommandType.StoredProcedure,
 					"DeleteOCSUser",
 					new[] { new SqlParameter("@InstanceId", instanceId) });
@@ -35350,7 +35362,7 @@ END
 			}
 			else
 			{
-				return (string)SqlHelper.ExecuteScalar(ConnectionString,
+				return (string)SqlHelper.ExecuteScalar(NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetInstanceID",
 					new[] { new SqlParameter("@AccountID", accountId) });
@@ -35424,7 +35436,7 @@ RETURN
 			{
 				SqlParameter prmId = new SqlParameter("@SSLID", SqlDbType.Int);
 				prmId.Direction = ParameterDirection.Output;
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "AddSSLRequest", prmId,
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@PackageId", packageId),
@@ -35505,7 +35517,7 @@ WHERE
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "CompleteSSLRequest",
 					new SqlParameter("@ActorID", actorId),
 					new SqlParameter("@PackageID", packageId),
@@ -35579,7 +35591,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "AddPFX",
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@PackageId", packageId),
@@ -35608,7 +35620,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetSSL",
 					new SqlParameter("@SSLID", id));
 			}
@@ -35672,7 +35684,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetCertificatesForSite",
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@PackageId", packageId),
@@ -35732,7 +35744,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetPendingSSLForWebsite",
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@PackageId", packageId),
@@ -35790,7 +35802,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetSSLCertificateByID",
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@ID", id));
@@ -35840,7 +35852,7 @@ RETURN
 				SqlParameter prmId = new SqlParameter("@Result", SqlDbType.Int);
 				prmId.Direction = ParameterDirection.Output;
 
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "CheckSSL",
 					prmId,
 					new SqlParameter("@siteID", siteID),
@@ -35864,7 +35876,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetSSLCertificateByID",
 					new SqlParameter("@ActorId", actorId),
 					new SqlParameter("@ID", siteID));
@@ -35909,7 +35921,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "DeleteCertificate",
 					new SqlParameter("@ActorID", actorId),
 					new SqlParameter("@PackageID", packageId),
@@ -35958,7 +35970,7 @@ RETURN
 			{
 				SqlParameter prmId = new SqlParameter("@Result", SqlDbType.Bit);
 				prmId.Direction = ParameterDirection.Output;
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "CheckSSLExistsForWebsite", prmId,
 					new SqlParameter("@siteID", siteId),
 					new SqlParameter("@SerialNumber", ""));
@@ -36012,7 +36024,7 @@ VALUES
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddLyncUser",
 					new[] {
@@ -36061,7 +36073,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString,
 					CommandType.StoredProcedure,
 					"UpdateLyncUser",
 					new[] {
@@ -36095,7 +36107,7 @@ END
 			}
 			else
 			{
-				int res = (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "CheckLyncUserExists",
+				int res = (int)SqlHelper.ExecuteScalar(NativeConnectionString, CommandType.StoredProcedure, "CheckLyncUserExists",
 					new SqlParameter("@AccountID", accountId));
 				return res > 0;
 			}
@@ -36154,7 +36166,7 @@ AS
 				outParam.Direction = ParameterDirection.Output;
 
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"LyncUserExists",
 					new SqlParameter("@AccountID", accountId),
@@ -36337,7 +36349,7 @@ END
 
 
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetLyncUsers", sqlParams);
 			}
@@ -36401,7 +36413,7 @@ AS
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetLyncUsersByPlanId",
 					new SqlParameter("@ItemID", itemId),
@@ -36443,7 +36455,7 @@ WHERE
 			{
 				SqlParameter[] sqlParams = new[] { new SqlParameter("@ItemID", itemId) };
 
-				return (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "GetLyncUsersCount", sqlParams);
+				return (int)SqlHelper.ExecuteScalar(NativeConnectionString, CommandType.StoredProcedure, "GetLyncUsersCount", sqlParams);
 			}
 		}
 
@@ -36472,7 +36484,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString,
 					CommandType.StoredProcedure,
 					"DeleteLyncUser",
 					new[] { new SqlParameter("@AccountId", accountId) });
@@ -36638,7 +36650,7 @@ RETURN
 				outParam.Direction = ParameterDirection.Output;
 
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddLyncUserPlan",
 					outParam,
@@ -36762,7 +36774,7 @@ RETURN
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"UpdateLyncUserPlan",
 					new SqlParameter("@LyncUserPlanId", lyncUserPlan.LyncUserPlanId),
@@ -36812,7 +36824,7 @@ RETURN
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"DeleteLyncUserPlan",
 					new SqlParameter("@LyncUserPlanId", lyncUserPlanId));
@@ -36895,7 +36907,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetLyncUserPlan",
 					new SqlParameter("@LyncUserPlanId", lyncUserPlanId));
@@ -36959,7 +36971,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetLyncUserPlans",
 					new SqlParameter("@ItemID", itemId));
@@ -37006,7 +37018,7 @@ RETURN
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"SetOrganizationDefaultLyncUserPlan",
 					new SqlParameter("@ItemID", itemId),
@@ -37069,7 +37081,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetLyncUserPlanByAccountId",
 					new SqlParameter("@AccountID", AccountId));
@@ -37115,7 +37127,7 @@ RETURN
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"SetLyncUserLyncUserplan",
 					new SqlParameter("@AccountID", accountId),
@@ -37170,7 +37182,7 @@ VALUES
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddSfBUser",
 					new[] {
@@ -37219,7 +37231,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString,
 					CommandType.StoredProcedure,
 					"UpdateSfBUser",
 					new[] {
@@ -37252,7 +37264,7 @@ END
 			}
 			else
 			{
-				int res = (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "CheckSfBUserExists",
+				int res = (int)SqlHelper.ExecuteScalar(NativeConnectionString, CommandType.StoredProcedure, "CheckSfBUserExists",
 				new SqlParameter("@AccountID", accountId));
 				return res > 0;
 			}
@@ -37309,7 +37321,7 @@ AS
 				outParam.Direction = ParameterDirection.Output;
 
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"SfBUserExists",
 					new SqlParameter("@AccountID", accountId),
@@ -37496,7 +37508,7 @@ END
 				};
 
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetSfBUsers", sqlParams);
 			}
@@ -37565,7 +37577,7 @@ AS
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetSfBUsersByPlanId",
 					new SqlParameter("@ItemID", itemId),
@@ -37607,7 +37619,7 @@ WHERE
 			{
 				SqlParameter[] sqlParams = new[] { new SqlParameter("@ItemID", itemId) };
 
-				return (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "GetSfBUsersCount", sqlParams);
+				return (int)SqlHelper.ExecuteScalar(NativeConnectionString, CommandType.StoredProcedure, "GetSfBUsersCount", sqlParams);
 			}
 		}
 
@@ -37636,7 +37648,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString,
 					CommandType.StoredProcedure,
 					"DeleteSfBUser",
 					new[] { new SqlParameter("@AccountId", accountId) });
@@ -37784,7 +37796,7 @@ RETURN
 				outParam.Direction = ParameterDirection.Output;
 
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddSfBUserPlan",
 					outParam,
@@ -37871,7 +37883,7 @@ RETURN
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"UpdateSfBUserPlan",
 					new SqlParameter("@SfBUserPlanId", sfbUserPlan.SfBUserPlanId),
@@ -37921,7 +37933,7 @@ RETURN
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"DeleteSfBUserPlan",
 					new SqlParameter("@SfBUserPlanId", sfbUserPlanId));
@@ -37999,7 +38011,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetSfBUserPlan",
 					new SqlParameter("@SfBUserPlanId", sfbUserPlanId));
@@ -38063,7 +38075,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetSfBUserPlans",
 					new SqlParameter("@ItemID", itemId));
@@ -38110,7 +38122,7 @@ RETURN
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"SetOrganizationDefaultSfBUserPlan",
 					new SqlParameter("@ItemID", itemId),
@@ -38175,7 +38187,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetSfBUserPlanByAccountId",
 					new SqlParameter("@AccountID", AccountId));
@@ -38222,7 +38234,7 @@ RETURN
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"SetSfBUserSfBUserPlan",
 					new SqlParameter("@AccountID", accountId),
@@ -38281,7 +38293,7 @@ RETURN
 			}
 			else
 			{
-				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.Text,
+				IDataReader reader = SqlHelper.ExecuteReader(NativeConnectionString, CommandType.Text,
 @"SELECT TOP 1
 	PackageServices.ServiceID
 FROM PackageServices
@@ -38315,7 +38327,7 @@ WHERE PackageServices.PackageID = @PackageID AND Services.ProviderID = @Provider
 			}
 			else
 			{
-				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.Text,
+				IDataReader reader = SqlHelper.ExecuteReader(NativeConnectionString, CommandType.Text,
 @"SELECT TOP 1 
 	ProviderID, GroupID
 FROM Providers
@@ -38348,7 +38360,7 @@ WHERE ProviderName = @ProviderName",
 			}
 			else
 			{
-				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.Text,
+				IDataReader reader = SqlHelper.ExecuteReader(NativeConnectionString, CommandType.Text,
 @"SELECT
 	Q.QuotaID,
 	Q.GroupID,
@@ -38381,7 +38393,7 @@ WHERE P.ProviderID = @ProviderID",
 				int quotaId;
 
 				// find quota id
-				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.Text,
+				IDataReader reader = SqlHelper.ExecuteReader(NativeConnectionString, CommandType.Text,
 @"SELECT TOP 1 QuotaID
 FROM Quotas
 WHERE QuotaName = @QuotaName AND GroupID = @GroupID",
@@ -38392,12 +38404,12 @@ WHERE QuotaName = @QuotaName AND GroupID = @GroupID",
 				quotaId = (int)reader["QuotaID"];
 
 				// delete references from HostingPlanQuotas
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.Text,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.Text,
 					"DELETE FROM HostingPlanQuotas WHERE QuotaID = @QuotaID",
 					new SqlParameter("@QuotaID", quotaId));
 
 				// delete from Quotas
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.Text,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.Text,
 					"DELETE FROM Quotas WHERE QuotaID = @QuotaID",
 					new SqlParameter("@QuotaID", quotaId));
 			}
@@ -38422,7 +38434,7 @@ WHERE QuotaName = @QuotaName AND GroupID = @GroupID",
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.Text,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.Text,
 @"INSERT INTO Quotas (QuotaID, GroupID, QuotaOrder, QuotaName, QuotaDescription, QuotaTypeID, ServiceQuota)
 VALUES (@QuotaID, @GroupID, @QuotaOrder, @QuotaName, @QuotaDescription, 1, 0)",
 					new SqlParameter("@QuotaID", quotaId),
@@ -38449,7 +38461,7 @@ VALUES (@QuotaID, @GroupID, @QuotaOrder, @QuotaName, @QuotaDescription, 1, 0)",
 						q.Quota.QuotaDescription,
 						q.Quota.GroupId,
 						q.QuotaValue,
-						p.PackageId
+						PackageId = p != null ? p.PackageId : 0
 					})
 					.Where(q => q.PackageId == packageId && q.GroupId == groupId && q.QuotaValue == 1)
 					.Select(q => new { q.QuotaId, q.QuotaName, q.QuotaDescription });
@@ -38457,7 +38469,7 @@ VALUES (@QuotaID, @GroupID, @QuotaOrder, @QuotaName, @QuotaDescription, 1, 0)",
 			}
 			else
 			{
-				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.Text,
+				IDataReader reader = SqlHelper.ExecuteReader(NativeConnectionString, CommandType.Text,
 @"SELECT HostingPlanQuotas.QuotaID, Quotas.QuotaName, Quotas.QuotaDescription
 FROM HostingPlanQuotas 
 INNER JOIN Packages ON HostingPlanQuotas.PlanID = Packages.PlanID 
@@ -38484,7 +38496,7 @@ WHERE (Packages.PackageID = @PackageID) AND (Quotas.GroupID = @GroupID) AND (Hos
 			}
 			else
 			{
-				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.Text,
+				IDataReader reader = SqlHelper.ExecuteReader(NativeConnectionString, CommandType.Text,
 @"SELECT PackageServices.ServiceID 
 FROM PackageServices
 INNER JOIN Services ON PackageServices.ServiceID = Services.ServiceID
@@ -38512,7 +38524,7 @@ WHERE Services.ProviderID = @ProviderID and PackageID = @PackageID",
 			}
 			else
 			{
-				IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.Text,
+				IDataReader reader = SqlHelper.ExecuteReader(NativeConnectionString, CommandType.Text,
 @"SELECT TOP 1 
 ServerID
 FROM Packages
@@ -38592,7 +38604,7 @@ RETURN
 				prmId.Direction = ParameterDirection.Output;
 
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddWebDavAccessToken",
 					prmId,
@@ -38627,7 +38639,7 @@ WHERE ExpirationDate < getdate()
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"DeleteExpiredWebDavAccessTokens");
 			}
@@ -38665,7 +38677,7 @@ WHERE ID = @Id AND ExpirationDate > getdate()
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetWebDavAccessTokenById",
 					new SqlParameter("@Id", id));
@@ -38704,7 +38716,7 @@ WHERE AccessToken = @AccessToken AND ExpirationDate > getdate()
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetWebDavAccessTokenByAccessToken",
 					new SqlParameter("@AccessToken", accessToken));
@@ -38777,7 +38789,7 @@ RETURN
 				prmId.Direction = ParameterDirection.Output;
 
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddEnterpriseFolder",
 					prmId,
@@ -38824,7 +38836,7 @@ RETURN
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"UpdateEntepriseFolderStorageSpaceFolder",
 					new SqlParameter("@ItemID", itemId),
@@ -38857,7 +38869,7 @@ WHERE ItemID = @ItemID AND FolderName = @FolderName
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"DeleteEnterpriseFolder",
 					new SqlParameter("@ItemID", itemId),
@@ -38898,7 +38910,7 @@ WHERE ItemID = @ItemID AND FolderName = @FolderID
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"UpdateEnterpriseFolder",
 					new SqlParameter("@ItemID", itemId),
@@ -38934,7 +38946,7 @@ WHERE ItemID = @ItemID
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetEnterpriseFolders",
 					new SqlParameter("@ItemID", itemId));
@@ -39050,7 +39062,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteDataset(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetEnterpriseFoldersPaged",
 					new SqlParameter("@ItemId", itemId),
@@ -39124,7 +39136,7 @@ WHERE ItemID = @ItemID AND FolderName = @FolderName
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetEnterpriseFolder",
 					new SqlParameter("@ItemID", itemId),
@@ -39160,7 +39172,7 @@ WHERE AccountId = @AccountId
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetWebDavPortalUsersSettingsByAccountId",
 					new SqlParameter("@AccountId", accountId));
@@ -39213,7 +39225,7 @@ RETURN
 				settingsId.Direction = ParameterDirection.Output;
 
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddWebDavPortalUsersSettings",
 					settingsId,
@@ -39255,7 +39267,7 @@ WHERE AccountId = @AccountId
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"UpdateWebDavPortalUsersSettings",
 					new SqlParameter("@AccountId", accountId),
@@ -39286,7 +39298,7 @@ WHERE ItemId = @ItemID AND FolderID = @FolderID
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"DeleteAllEnterpriseFolderOwaUsers",
 					new SqlParameter("@ItemID", itemId),
@@ -39343,7 +39355,7 @@ RETURN
 				id.Direction = ParameterDirection.Output;
 
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddEnterpriseFolderOwaUser",
 					id,
@@ -39405,7 +39417,7 @@ WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetEnterpriseFolderOwaUsers",
 					new SqlParameter("@ItemID", itemId),
@@ -39441,7 +39453,7 @@ SELECT TOP 1
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetEnterpriseFolderId",
 					new SqlParameter("@ItemID", itemId),
@@ -39477,7 +39489,7 @@ SELECT
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetUserEnterpriseFolderWithOwaEditPermission",
 					new SqlParameter("@ItemID", itemId),
@@ -39506,7 +39518,7 @@ RETURN
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetSupportServiceLevels");
 			}
 		}
@@ -39644,7 +39656,7 @@ RETURN
 				outParam.Direction = ParameterDirection.Output;
 
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddSupportServiceLevel",
 					outParam,
@@ -39724,7 +39736,7 @@ RETURN
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"UpdateSupportServiceLevel",
 					new SqlParameter("@LevelID", levelId),
@@ -39810,7 +39822,7 @@ RETURN
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"DeleteSupportServiceLevel",
 					new SqlParameter("@LevelID", levelId));
@@ -39840,7 +39852,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetSupportServiceLevel",
 					new SqlParameter("@LevelID", levelID));
@@ -39872,7 +39884,7 @@ RETURN
 			}
 			else
 			{
-				int res = (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.StoredProcedure, "CheckServiceLevelUsage",
+				int res = (int)SqlHelper.ExecuteScalar(NativeConnectionString, CommandType.StoredProcedure, "CheckServiceLevelUsage",
 					new SqlParameter("@LevelID", levelID));
 				return res > 0;
 			}
@@ -39963,7 +39975,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteDataset(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetStorageSpaceLevelsPaged",
 					new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
@@ -40003,7 +40015,7 @@ WHERE SL.Id = @ID
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetStorageSpaceLevelById",
 					new SqlParameter("@ID", id));
@@ -40040,7 +40052,7 @@ AS
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"UpdateStorageSpaceLevel",
 					new SqlParameter("@ID", level.Id),
@@ -40097,7 +40109,7 @@ RETURN
 				id.Direction = ParameterDirection.Output;
 
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"InsertStorageSpaceLevel",
 					id,
@@ -40131,7 +40143,7 @@ AS
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"RemoveStorageSpaceLevel",
 					new SqlParameter("@ID", id));
@@ -40177,7 +40189,7 @@ AS
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetLevelResourceGroups",
 					new SqlParameter("@LevelId", levelId));
@@ -40206,7 +40218,7 @@ AS
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"DeleteLevelResourceGroups",
 					new SqlParameter("@LevelId", levelId));
@@ -40241,7 +40253,7 @@ AS
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddLevelResourceGroups",
 					new SqlParameter("@LevelId", levelId),
@@ -40350,7 +40362,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteDataset(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetStorageSpacesPaged",
 					new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
@@ -40414,7 +40426,7 @@ AS
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetStorageSpaceById",
 					new SqlParameter("@ID", id));
@@ -40475,7 +40487,7 @@ WHERE SS.ServerId = @ServerId AND SS.Path = @Path
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetStorageSpaceByServiceAndPath",
 					new SqlParameter("@ServerId", serverId),
@@ -40531,7 +40543,7 @@ AS
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"UpdateStorageSpace",
 					new SqlParameter("@ID", space.Id),
@@ -40628,7 +40640,7 @@ RETURN
 				id.Direction = ParameterDirection.Output;
 
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"InsertStorageSpace",
 					id,
@@ -40668,7 +40680,7 @@ AS
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"RemoveStorageSpace",
 					new SqlParameter("@ID", id));
@@ -40731,7 +40743,7 @@ WHERE SS.LevelId = @LevelId
 			else
 			{
 				return SqlHelper.ExecuteDataset(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetStorageSpacesByLevelId",
 					new SqlParameter("@LevelId", levelId));
@@ -40794,7 +40806,7 @@ WHERE RG.GroupName = @ResourceGroupName
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetStorageSpacesByResourceGroupName",
 					new SqlParameter("@ResourceGroupName", groupName));
@@ -40869,7 +40881,7 @@ RETURN
 				id.Direction = ParameterDirection.Output;
 
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"CreateStorageSpaceFolder",
 					id,
@@ -40941,7 +40953,7 @@ WHERE ID = @ID
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"UpdateStorageSpaceFolder",
 					new SqlParameter("@ID", id),
@@ -41000,7 +41012,7 @@ WHERE StorageSpaceId = @StorageSpaceId
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetStorageSpaceFoldersByStorageSpaceId",
 					new SqlParameter("@StorageSpaceId", id));
@@ -41051,7 +41063,7 @@ WHERE Id = @ID
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetStorageSpaceFolderById",
 					new SqlParameter("@ID", id));
@@ -41080,7 +41092,7 @@ WHERE ID=@ID
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"RemoveStorageSpaceFolder",
 					new SqlParameter("@ID", id));
@@ -41132,7 +41144,7 @@ RETURN
 				SqlParameter prmId = new SqlParameter("@Result", SqlDbType.Int);
 				prmId.Direction = ParameterDirection.Output;
 
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "CheckRDSServer",
 					prmId,
 					new SqlParameter("@ServerFQDN", ServerFQDN));
@@ -41173,7 +41185,7 @@ AS
 			}
 			else
 			{
-				return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetRDSServerSettings",
 					new SqlParameter("@ServerId", serverId),
 					new SqlParameter("@SettingsName", settingsName));
@@ -41257,7 +41269,7 @@ RETURN
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "UpdateRDSServerSettings",
 					new SqlParameter("@ServerId", serverId),
 					new SqlParameter("@SettingsName", settingsName),
@@ -41326,7 +41338,7 @@ RETURN
 				rdsCertificateId.Direction = ParameterDirection.Output;
 
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddRDSCertificate",
 					rdsCertificateId,
@@ -41385,7 +41397,7 @@ SELECT TOP 1
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetRDSCertificateByServiceId",
 					new SqlParameter("@ServiceId", serviceId));
@@ -41456,7 +41468,7 @@ SELECT TOP 1
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetRDSCollectionSettingsByCollectionId",
 					new SqlParameter("@RDSCollectionID", collectionId));
@@ -41574,7 +41586,7 @@ RETURN
 				rdsCollectionSettingsId.Direction = ParameterDirection.Output;
 
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddRDSCollectionSettings",
 					rdsCollectionSettingsId,
@@ -41684,7 +41696,7 @@ WHERE ID = @Id
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"UpdateRDSCollectionSettings",
 					new SqlParameter("@Id", id),
@@ -41729,7 +41741,7 @@ WHERE Id = @Id
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"DeleteRDSCollectionSettings",
 					new SqlParameter("@Id", id));
@@ -41765,7 +41777,7 @@ SELECT
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetRDSCollectionsByItemId",
 					new SqlParameter("@ItemID", itemId));
@@ -41803,7 +41815,7 @@ SELECT TOP 1
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetRDSCollectionByName",
 					new SqlParameter("@Name", name));
@@ -41849,7 +41861,7 @@ SELECT TOP 1
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetRDSCollectionById",
 					new SqlParameter("@ID", id));
@@ -41943,7 +41955,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteDataset(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetRDSCollectionsPaged",
 					new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
@@ -42009,7 +42021,7 @@ RETURN
 				rdsCollectionId.Direction = ParameterDirection.Output;
 
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddRDSCollection",
 					rdsCollectionId,
@@ -42052,7 +42064,7 @@ RETURN
 				SqlParameter count = new SqlParameter("@TotalNumber", SqlDbType.Int);
 				count.Direction = ParameterDirection.Output;
 
-				DataSet ds = SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				DataSet ds = SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetOrganizationRdsUsersCount",
 					count,
 					new SqlParameter("@ItemId", itemId));
@@ -42088,7 +42100,7 @@ RETURN
 				SqlParameter count = new SqlParameter("@TotalNumber", SqlDbType.Int);
 				count.Direction = ParameterDirection.Output;
 
-				DataSet ds = SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				DataSet ds = SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetOrganizationRdsCollectionsCount",
 					count,
 					new SqlParameter("@ItemId", itemId));
@@ -42124,7 +42136,7 @@ RETURN
 				SqlParameter count = new SqlParameter("@TotalNumber", SqlDbType.Int);
 				count.Direction = ParameterDirection.Output;
 
-				DataSet ds = SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+				DataSet ds = SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetOrganizationRdsServersCount",
 					count,
 					new SqlParameter("@ItemId", itemId));
@@ -42179,7 +42191,7 @@ WHERE ID = @Id
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"UpdateRDSCollection",
 					new SqlParameter("@Id", id),
@@ -42210,7 +42222,7 @@ AS
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"DeleteRDSServerSettings",
 					new SqlParameter("@ServerId", serverId));
@@ -42253,7 +42265,7 @@ WHERE Id = @Id
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"DeleteRDSCollection",
 					new SqlParameter("@Id", id));
@@ -42313,7 +42325,7 @@ RETURN
 				rdsServerId.Direction = ParameterDirection.Output;
 
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddRDSServer",
 					rdsServerId,
@@ -42374,7 +42386,7 @@ SELECT
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetRDSServersByItemId",
 					new SqlParameter("@ItemID", itemId));
@@ -42519,7 +42531,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteDataset(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetRDSServersPaged",
 					new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
@@ -42589,7 +42601,7 @@ WHERE RS.Id = @Id
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetRDSServerById",
 					new SqlParameter("@ID", id));
@@ -42643,7 +42655,7 @@ WHERE RdsCollectionId = @RdsCollectionId
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetRDSServersByCollectionId",
 					new SqlParameter("@RdsCollectionId", collectionId));
@@ -42671,7 +42683,7 @@ WHERE Id = @Id
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"DeleteRDSServer",
 					new SqlParameter("@Id", id));
@@ -42737,7 +42749,7 @@ WHERE ID = @Id
 			{
 
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"UpdateRDSServer",
 					new SqlParameter("@Id", id),
@@ -42780,7 +42792,7 @@ WHERE ID = @Id
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddRDSServerToCollection",
 					new SqlParameter("@Id", serverId),
@@ -42818,7 +42830,7 @@ WHERE ID = @Id
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddRDSServerToOrganization",
 					new SqlParameter("@Id", serverId),
@@ -42855,7 +42867,7 @@ WHERE ID = @Id
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"RemoveRDSServerFromOrganization",
 					new SqlParameter("@Id", serverId));
@@ -42891,7 +42903,7 @@ WHERE ID = @Id
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"RemoveRDSServerFromCollection",
 					new SqlParameter("@Id", serverId));
@@ -42961,7 +42973,7 @@ WHERE AccountID IN (Select AccountId from RDSCollectionUsers where RDSCollection
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetRDSCollectionUsersByRDSCollectionId",
 					new SqlParameter("@id", id));
@@ -43005,7 +43017,7 @@ VALUES
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddUserToRDSCollection",
 					new SqlParameter("@RDSCollectionId", rdsCollectionId),
@@ -43038,7 +43050,7 @@ WHERE AccountId = @AccountId AND RDSCollectionId = @RDSCollectionId
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"RemoveRDSUserFromRDSCollection",
 					new SqlParameter("@RDSCollectionId", rdsCollectionId),
@@ -43077,7 +43089,7 @@ RETURN
 				SqlParameter prmController = new SqlParameter("@Controller", SqlDbType.Int);
 				prmController.Direction = ParameterDirection.Output;
 
-				SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "GetRDSControllerServiceIDbyFQDN",
 					new SqlParameter("@RdsfqdnName", fqdnName),
 					prmController);
@@ -43134,7 +43146,7 @@ SELECT
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetAllPackages");
 			}
@@ -43180,7 +43192,7 @@ SELECT
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetDomainDnsRecords",
 					new SqlParameter("@DomainId", domainId),
@@ -43227,7 +43239,7 @@ SELECT
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetDomainAllDnsRecords",
 					new SqlParameter("@DomainId", domainId));
@@ -43283,7 +43295,7 @@ VALUES
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddDomainDnsRecord",
 					new SqlParameter("@DomainId", domainDnsRecord.DomainId),
@@ -43320,7 +43332,7 @@ SELECT
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetScheduleTaskEmailTemplate",
 					new SqlParameter("@taskId", taskId));
@@ -43350,7 +43362,7 @@ WHERE Id = @Id
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"DeleteDomainDnsRecord",
 					new SqlParameter("@Id", id));
@@ -43465,7 +43477,7 @@ UPDATE [dbo].[Domains] SET [LastUpdateDate] = @Date WHERE [DomainID] = @DomainId
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-				ConnectionString,
+				NativeConnectionString,
 				CommandType.StoredProcedure,
 				storedProcedure,
 				new SqlParameter("@DomainId", domainId),
@@ -43503,7 +43515,7 @@ UPDATE [dbo].[Domains] SET [CreationDate] = @DomainCreationDate, [ExpirationDate
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"UpdateDomainDates",
 					new SqlParameter("@DomainId", domainId),
@@ -43545,7 +43557,7 @@ UPDATE [dbo].[Domains] SET [CreationDate] = @DomainCreationDate, [ExpirationDate
 			else
 			{
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"UpdateWhoisDomainInfo",
 					new SqlParameter("@DomainId", domainId),
@@ -43602,7 +43614,7 @@ AS
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetOrganizationStoragSpaceFolders",
 					new SqlParameter("@ItemId", itemId));
@@ -43655,7 +43667,7 @@ AS
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetOrganizationStoragSpacesFolderByType",
 					new SqlParameter("@ItemId", itemId),
@@ -43686,7 +43698,7 @@ AS
 			}
 			else
 			{
-				SqlHelper.ExecuteNonQuery(ConnectionString,
+				SqlHelper.ExecuteNonQuery(NativeConnectionString,
 					CommandType.StoredProcedure,
 					"DeleteOrganizationStoragSpacesFolder",
 					new SqlParameter("@ID", id));
@@ -43740,7 +43752,7 @@ AS
 				outParam.Direction = ParameterDirection.Output;
 
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddOrganizationStoragSpacesFolder",
 					outParam,
@@ -43766,7 +43778,7 @@ AS
 			else
 			{
 				return SqlHelper.ExecuteReader(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetOrganizationStorageSpacesFolderById",
 					new SqlParameter("@ItemId", itemId),
@@ -43801,7 +43813,7 @@ RETURN
 			else
 			{
 				return SqlHelper.ExecuteDataset(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"GetRDSMessages",
 					new SqlParameter("@RDSCollectionId", rdsCollectionId));
@@ -43860,7 +43872,7 @@ RETURN				*/
 				rdsMessageId.Direction = ParameterDirection.Output;
 
 				SqlHelper.ExecuteNonQuery(
-					ConnectionString,
+					NativeConnectionString,
 					CommandType.StoredProcedure,
 					"AddRDSMessage",
 					rdsMessageId,

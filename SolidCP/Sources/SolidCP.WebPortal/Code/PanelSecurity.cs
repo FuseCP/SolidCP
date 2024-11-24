@@ -37,6 +37,7 @@ using System.Text;
 using System.Web;
 
 using SolidCP.EnterpriseServer;
+using SolidCP.WebPortal;
 
 namespace SolidCP.Portal
 {
@@ -45,6 +46,24 @@ namespace SolidCP.Portal
 	/// </summary>
 	public class PanelSecurity
 	{
+
+		public static int ParseInt(object val, int defaultValue)
+		{
+			int result = defaultValue;
+			if (val != null && !String.IsNullOrEmpty(val.ToString()))
+			{
+				try
+				{
+					result = Int32.Parse(val.ToString());
+				}
+				catch
+				{
+					/* do nothing */
+				}
+			}
+			return result;
+		}
+
 		public static int PackageId
 		{
 			get
@@ -53,7 +72,7 @@ namespace SolidCP.Portal
 				string sSpaceId = request[PortalUtils.SPACE_ID_PARAM];
 				if (!String.IsNullOrEmpty(sSpaceId))
 				{
-					return Utils.ParseInt(sSpaceId, 0);
+					return ParseInt(sSpaceId, 0);
 				}
 				return 0;
 			}
@@ -75,7 +94,7 @@ namespace SolidCP.Portal
 			{
 				string[] parts = pair.Split('=');
 				UserInfo user = new UserInfo();
-				user.UserId = Utils.ParseInt(parts[0], 0);
+				user.UserId = ParseInt(parts[0], 0);
 				user.Username = parts[1];
 				users.Add(user);
 			}
@@ -164,7 +183,7 @@ namespace SolidCP.Portal
 				string sUserId = request[PortalUtils.USER_ID_PARAM];
 				if (!String.IsNullOrEmpty(sUserId))
 				{
-					return Utils.ParseInt(sUserId, 0);
+					return ParseInt(sUserId, 0);
 				}
 				else
 				{

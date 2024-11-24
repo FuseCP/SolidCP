@@ -1143,7 +1143,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                 {
                     ServiceID = table.Column<int>(type: "INTEGER", nullable: false),
                     PropertyName = table.Column<string>(type: "TEXT COLLATE NOCASE", maxLength: 50, nullable: false),
-                    PropertyValue = table.Column<string>(type: "TEXT", nullable: true)
+                    PropertyValue = table.Column<string>(type: "TEXT COLLATE NOCASE", nullable: true)
                 },
                 constraints: table =>
                 {

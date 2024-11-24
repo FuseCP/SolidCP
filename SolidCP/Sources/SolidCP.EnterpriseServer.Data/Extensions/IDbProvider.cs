@@ -32,5 +32,8 @@ namespace SolidCP.EnterpriseServer.Data
 	{
 		public DbType DbType => DbType.Sqlite;
 	}
-
+	public class OracleProvider : IDbProvider
+	{
+		public DbType DbType => DbType.Oracle;
+	}
 }

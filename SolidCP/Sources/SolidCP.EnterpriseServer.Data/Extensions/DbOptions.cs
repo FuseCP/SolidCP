@@ -24,7 +24,7 @@ namespace SolidCP.EnterpriseServer.Data
 		}
 		public DbOptions(DbContext context) {
 			DbType = context.DbType;
-			ConnectionString = context.ConnectionString;
+			ConnectionString = context.NativeConnectionString;
 			InitSeedData = context.InitSeedData;
 		}
 	}

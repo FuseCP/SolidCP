@@ -1,1 +1,1 @@
-<%@ WebHandler Language="C#" Class="SolidCP.WebPortal.SolidCPAjaxHandler,SolidCP.Portal.Modules" %>
+<%@ WebHandler Language="C#" Class="SolidCP.WebPortal.SolidCPAjaxHandler,SolidCP.WebPortal" %>

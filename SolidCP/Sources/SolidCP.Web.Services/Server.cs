@@ -5,6 +5,7 @@ using SolidCP.Providers.OS;
 #if !NETFRAMEWORK
 using CoreWCF;
 using CoreWCF.Channels;
+using Microsoft.AspNetCore.Builder;
 #else
 using System.Web;
 #endif
@@ -30,6 +31,8 @@ namespace SolidCP.Web.Services
 				return ip;
 			}
 		}
+
+		public static Action<WebApplication> UseWebForms = null;
 #else
 		public static string UserHostAddress => System.Web.HttpContext.Current.Request.UserHostAddress;
 		public static string MapPath(string path) => System.Web.Hosting.HostingEnvironment.MapPath(path);

@@ -71,23 +71,28 @@ namespace SolidCP.EnterpriseServer
             return os;
         }
 
-
+        Dictionary<string, string> HomeFolders = new();
         public string GetHomeFolder(int packageId)
-        {
+        {            
             // check context
             string key = "HomeFolder" + packageId.ToString();
+            string path;
 
 #if NETFRAMEWORK
             if (HttpContext.Current != null && HttpContext.Current.Items[key] != null)
                 return (string)HttpContext.Current.Items[key];
+#else
+            if (HomeFolders.TryGetValue(key, out path)) return path;
 #endif
             List<ServiceProviderItem> items = PackageController.GetPackageItemsByType(packageId, typeof(HomeFolder));
-            string path = (items.Count > 0) ? items[0].Name : null;
+            path = (items.Count > 0) ? items[0].Name : null;
 
 #if NETFRAMEWORK
             // place to context
             if (HttpContext.Current != null)
                 HttpContext.Current.Items[key] = path;
+#else
+            HomeFolders.Add(key, path);
 #endif
 
             return path;

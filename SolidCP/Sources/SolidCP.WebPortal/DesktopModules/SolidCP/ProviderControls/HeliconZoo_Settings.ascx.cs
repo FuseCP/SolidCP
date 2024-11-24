@@ -41,7 +41,7 @@ using SolidCP.Portal;
 using SolidCP.Providers.HeliconZoo;
 using SolidCP.Providers.OS;
 
-
+namespace SolidCP.Portal.ProviderControls;
 public partial class HeliconZoo_Settings : SolidCPControlBase, IHostingServiceProviderSettings
 {
     private class EnvBoxPair

@@ -7,6 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+#if Reporting
 namespace SolidCP.Portal.VPSForPC {
     
     
@@ -166,3 +167,4 @@ namespace SolidCP.Portal.VPSForPC {
         protected global::System.Web.UI.WebControls.Localize FormComments;
     }
 }
+#endif

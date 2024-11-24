@@ -36,13 +36,13 @@ namespace SolidCP.EnterpriseServer.Data
 			if (level == 0)
 			{
 				Query = context.TempIds
-					.Where(id => id.Scope == Scope)
+					.Where(id => id.Scope == scope)
 					.Select(id => id.Id);
 			}
 			else
 			{
 				Query = context.TempIds
-					.Where(id => id.Scope == Scope && id.Level == level)
+					.Where(id => id.Scope == scope && id.Level == level)
 					.Select(id => id.Id);
 			}
 		}
@@ -52,31 +52,33 @@ namespace SolidCP.EnterpriseServer.Data
 
 		public IQueryable<int> OfLevel(int level)
 		{
+			var scope = Scope;
 			if (level == 0)
 			{
 				return Context.TempIds
-					.Where(id => id.Scope == Scope)
+					.Where(id => id.Scope == scope)
 					.Select(id => id.Id);
 			}
 			else
 			{
 				return Context.TempIds
-					.Where(id => id.Scope == Scope && id.Level == level)
+					.Where(id => id.Scope == scope && id.Level == level)
 					.Select(id => id.Id);
 			}
 		}
 
 		public IQueryable<TempId> TempIds(int level = 0)
 		{
+			var scope = Scope;
 			if (level == 0)
 			{
 				return Context.TempIds
-					.Where(id => id.Scope == Scope);
+					.Where(id => id.Scope == scope);
 			}
 			else
 			{
 				return Context.TempIds
-					.Where(id => id.Scope == Scope && id.Level == level);
+					.Where(id => id.Scope == scope && id.Level == level);
 			}
 		}
 		public virtual void Add(int id, int level = 0)
@@ -101,11 +103,12 @@ namespace SolidCP.EnterpriseServer.Data
 				const int BatchSize = 1024;
 				var buffer = new TempId[BatchSize];
 				var created = DateTime.Now;
+				var scope = Scope;
 				var tempIds = ids
 					.Select(id => new TempId()
 					{
 						Id = id,
-						Scope = Scope,
+						Scope = scope,
 						Level = level,
 						Created = created,
 						Date = default
@@ -133,11 +136,12 @@ namespace SolidCP.EnterpriseServer.Data
 			n = 0;
 			return false;
 			var created = DateTime.Now;
+			var scope = Scope;
 			var tempIds = ids
 				.Select(id => new TempId()
 				{
 					Id = id,
-					Scope = Scope,
+					Scope = scope,
 					Level = level,
 					Created = created,
 					Date = default
@@ -146,13 +150,14 @@ namespace SolidCP.EnterpriseServer.Data
 
 		public void Dispose()
 		{
+			var scope = Scope;
 			Task.Run(async () =>
 			{
 				await Task.Delay(TimeSpan.FromSeconds(2));
 				var now = DateTime.Now;
 				var old = now.Subtract(TimeSpan.FromSeconds(30));
 				Context.Clone.TempIds
-					.Where(id => id.Scope == Scope || id.Created < old)
+					.Where(id => id.Scope == scope || id.Created < old)
 					.ExecuteDelete();
 			});
 		}
@@ -190,13 +195,13 @@ namespace SolidCP.EnterpriseServer.Data
 			if (level == 0)
 			{
 				Query = context.TempIds
-					.Where(id => id.Scope == Scope)
+					.Where(id => id.Scope == scope)
 					.Select(id => new DatedId { Id = id.Id, Date = id.Date });
 			}
 			else
 			{
 				Query = context.TempIds
-					.Where(id => id.Scope == Scope && id.Level == level)
+					.Where(id => id.Scope == scope && id.Level == level)
 					.Select(id => new DatedId { Id = id.Id, Date = id.Date });
 			}
 		}
@@ -206,31 +211,33 @@ namespace SolidCP.EnterpriseServer.Data
 
 		public IQueryable<DatedId> OfLevel(int level)
 		{
+			var scope = Scope;
 			if (level == 0)
 			{
 				return Context.TempIds
-					.Where(id => id.Scope == Scope)
+					.Where(id => id.Scope == scope)
 					.Select(id => new DatedId { Id = id.Id, Date = id.Date });
 			}
 			else
 			{
 				return Context.TempIds
-					.Where(id => id.Scope == Scope && id.Level == level)
+					.Where(id => id.Scope == scope && id.Level == level)
 					.Select(id => new DatedId { Id = id.Id, Date = id.Date });
 			}
 		}
 
 		public IQueryable<TempId> TempIds(int level = 0)
 		{
+			var scope = Scope;
 			if (level == 0)
 			{
 				return Context.TempIds
-					.Where(id => id.Scope == Scope);
+					.Where(id => id.Scope == scope);
 			}
 			else
 			{
 				return Context.TempIds
-					.Where(id => id.Scope == Scope && id.Level == level);
+					.Where(id => id.Scope == scope && id.Level == level);
 			}
 		}
 		public virtual void Add(DatedId id, int level = 0)
@@ -255,11 +262,12 @@ namespace SolidCP.EnterpriseServer.Data
 				const int BatchSize = 1024;
 				var buffer = new TempId[BatchSize];
 				var created = DateTime.Now;
+				var scope = Scope;
 				var tempIds = ids
 					.Select(id => new TempId()
 					{
 						Id = id.Id,
-						Scope = Scope,
+						Scope = scope,
 						Level = level,
 						Created = created,
 						Date = id.Date
@@ -287,12 +295,13 @@ namespace SolidCP.EnterpriseServer.Data
 		{
 			n = 0;
 			return false;
+			var scope = Scope;
 			var created = DateTime.Now;
 			var tempIds = ids
 				.Select(id => new TempId()
 				{
 					Id = id.Id,
-					Scope = Scope,
+					Scope = scope,
 					Level = level,
 					Created = created,
 					Date = id.Date
@@ -301,13 +310,14 @@ namespace SolidCP.EnterpriseServer.Data
 
 		public void Dispose()
 		{
+			var scope = Scope;
 			Task.Run(async () =>
 			{
 				await Task.Delay(TimeSpan.FromSeconds(2));
 				var now = DateTime.Now;
 				var old = now.Subtract(TimeSpan.FromSeconds(30));
 				Context.TempIds
-					.Where(id => id.Scope == Scope || id.Created < old)
+					.Where(id => id.Scope == scope || id.Created < old)
 					.ExecuteDelete();
 			});
 		}
