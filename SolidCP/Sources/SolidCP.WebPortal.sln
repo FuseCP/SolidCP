@@ -33,18 +33,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Server.Utils", "Sol
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.EnterpriseServer.Client", "SolidCP.EnterpriseServer\WebServices\SolidCP.Build\SolidCP.EnterpriseServer.Client.csproj", "{063123C1-AF4C-4C67-BA13-E2EBC7370D4A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebFormsForCore.Build", "..\Lib\WebFormsForCore\src\WebFormsForCore.Build\WebFormsForCore.Build.csproj", "{15A77027-1A99-40D8-B631-E9AF59031498}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebFormsForCore.Configuration", "..\Lib\WebFormsForCore\src\WebFormsForCore.Configuration\WebFormsForCore.Configuration.csproj", "{78F0C2B4-B817-49E0-9CC4-4226412242AF}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebFormsForCore.Web.RegularExpressions", "..\Lib\WebFormsForCore\src\WebFormsForCore.Web.RegularExpressions\WebFormsForCore.Web.RegularExpressions.csproj", "{2EAC8E5F-F9DE-4DA2-955C-4885B73E6B53}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebFormsForCore.Web.ApplicationServices", "..\Lib\WebFormsForCore\src\WebFormsForCore.Web.ApplicationServices\WebFormsForCore.Web.ApplicationServices.csproj", "{9EC21CFE-F1D6-411F-BBF6-B5430E244307}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebFormsForCore.Serialization.Formatters", "..\Lib\WebFormsForCore\src\WebFormsForCore.Serialization.Formatters\WebFormsForCore.Serialization.Formatters.csproj", "{36664BAB-F839-4B27-9093-3E56998DA1E8}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebFormsForCore.Web", "..\Lib\WebFormsForCore\src\WebFormsForCore.Web\WebFormsForCore.Web.csproj", "{3A4328EA-476F-4E62-A3B7-4E8EC8B6BF59}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Web.Services", "SolidCP.Web.Services\SolidCP.Web.Services.csproj", "{32DF2D89-0A09-4A46-9A2A-340A8E9D515A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Providers.Virtualization.NoVNC", "..\Lib\novnc-solidcp\SolidCP.Providers.Virtualization.NoVNC.csproj", "{E715A042-FB64-4606-9759-9C56CC9AF07A}"
@@ -91,30 +79,6 @@ Global
 		{063123C1-AF4C-4C67-BA13-E2EBC7370D4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{063123C1-AF4C-4C67-BA13-E2EBC7370D4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{063123C1-AF4C-4C67-BA13-E2EBC7370D4A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{15A77027-1A99-40D8-B631-E9AF59031498}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{15A77027-1A99-40D8-B631-E9AF59031498}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{15A77027-1A99-40D8-B631-E9AF59031498}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{15A77027-1A99-40D8-B631-E9AF59031498}.Release|Any CPU.Build.0 = Release|Any CPU
-		{78F0C2B4-B817-49E0-9CC4-4226412242AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{78F0C2B4-B817-49E0-9CC4-4226412242AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{78F0C2B4-B817-49E0-9CC4-4226412242AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{78F0C2B4-B817-49E0-9CC4-4226412242AF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2EAC8E5F-F9DE-4DA2-955C-4885B73E6B53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2EAC8E5F-F9DE-4DA2-955C-4885B73E6B53}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2EAC8E5F-F9DE-4DA2-955C-4885B73E6B53}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2EAC8E5F-F9DE-4DA2-955C-4885B73E6B53}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9EC21CFE-F1D6-411F-BBF6-B5430E244307}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9EC21CFE-F1D6-411F-BBF6-B5430E244307}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9EC21CFE-F1D6-411F-BBF6-B5430E244307}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9EC21CFE-F1D6-411F-BBF6-B5430E244307}.Release|Any CPU.Build.0 = Release|Any CPU
-		{36664BAB-F839-4B27-9093-3E56998DA1E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{36664BAB-F839-4B27-9093-3E56998DA1E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{36664BAB-F839-4B27-9093-3E56998DA1E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{36664BAB-F839-4B27-9093-3E56998DA1E8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3A4328EA-476F-4E62-A3B7-4E8EC8B6BF59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3A4328EA-476F-4E62-A3B7-4E8EC8B6BF59}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3A4328EA-476F-4E62-A3B7-4E8EC8B6BF59}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3A4328EA-476F-4E62-A3B7-4E8EC8B6BF59}.Release|Any CPU.Build.0 = Release|Any CPU
 		{32DF2D89-0A09-4A46-9A2A-340A8E9D515A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{32DF2D89-0A09-4A46-9A2A-340A8E9D515A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32DF2D89-0A09-4A46-9A2A-340A8E9D515A}.Release|Any CPU.ActiveCfg = Release|Any CPU
