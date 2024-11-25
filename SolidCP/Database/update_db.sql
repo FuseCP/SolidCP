@@ -20343,14 +20343,21 @@ GO
 --SmarterMail100 Support for new options
 IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '67' AND [PropertyName] = N'defaultdomainhostname')
 BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (67, N'defaultdomainhostname', N'mail.[DOMAIN_NAME]')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (11, N'defaultdomainhostname', N'mail.[DOMAIN_NAME]')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (14, N'defaultdomainhostname', N'mail.[DOMAIN_NAME]')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (29, N'defaultdomainhostname', N'mail.[DOMAIN_NAME]')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (60, N'defaultdomainhostname', N'mail.[DOMAIN_NAME]')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (64, N'defaultdomainhostname', N'mail.[DOMAIN_NAME]')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (65, N'defaultdomainhostname', N'mail.[DOMAIN_NAME]')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (66, N'defaultdomainhostname', N'mail.[DOMAIN_NAME]')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (67, N'defaultdomainhostname', N'mail.[DOMAIN_NAME]')
 END
 GO
 
--- Add defaultdomainhostname property to existing SM100 providers
+-- Add defaultdomainhostname property to existing SM providers
 IF NOT EXISTS (Select * from [ServiceProperties] INNER JOIN Services ON ServiceProperties.ServiceID=Services.ServiceID Where Services.ProviderID = 67 AND ServiceProperties.PropertyName = N'defaultdomainhostname')
 BEGIN
-DECLARE service_cursor CURSOR FOR SELECT ServiceId FROM Services WHERE ProviderID = 67
+DECLARE service_cursor CURSOR FOR SELECT ServiceId FROM Services WHERE ProviderID IN (11, 14, 29, 60, 64, 65, 65, 66, 67)
 DECLARE @ServiceID INT
 OPEN service_cursor
 FETCH NEXT FROM service_cursor INTO @ServiceID
