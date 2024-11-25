@@ -10,6 +10,8 @@ using Z.EntityFramework.Plus;
 
 #if NETCOREAPP
 using Microsoft.EntityFrameworkCore;
+#else
+using System.Data.Entity;
 #endif
 
 namespace SolidCP.EnterpriseServer.Data
@@ -134,7 +136,6 @@ namespace SolidCP.EnterpriseServer.Data
 		protected virtual bool AddRangeQueryable(IQueryable<int> ids, out int n, int level = 0)
 		{
 			n = 0;
-			return false;
 			var created = DateTime.Now;
 			var scope = Scope;
 			var tempIds = ids
@@ -143,9 +144,12 @@ namespace SolidCP.EnterpriseServer.Data
 					Id = id,
 					Scope = scope,
 					Level = level,
-					Created = created,
-					Date = default
+					Created = (DateTime)(object)created,
+					Date = (DateTime)(object)default
 				});
+			n = tempIds.ExecuteInsert();
+
+			return true;
 		}
 
 		public void Dispose()

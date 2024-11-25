@@ -24,6 +24,8 @@ namespace SolidCP.EnterpriseServer.Data
     public partial class DbContext : IDisposable
     {
 
+        public DateTime DateTimeMin = new DateTime(1735, 1, 1);
+
         public const bool UseStoredProcedures = true;
 
         string connectionString = null;
@@ -60,11 +62,13 @@ namespace SolidCP.EnterpriseServer.Data
                         dbFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dbFile);
                         csb["Data Source"] = dbFile;
                     }
+#if NETFRAMEWORK
                     csb["BinaryGUID"] = "false";
-                    csb["Foreign Keys"] = "true";
                     csb["Busy Timeout"] = "10000";
                     csb["Journal Mode"] = "WAL";
                     csb["Synchronous"] = "Normal";
+#endif
+					csb["Foreign Keys"] = "true";
                 }
                 nativeConnectionString = csb.ToString();
             }
