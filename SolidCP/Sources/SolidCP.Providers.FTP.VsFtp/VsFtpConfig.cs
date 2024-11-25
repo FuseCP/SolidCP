@@ -91,14 +91,23 @@ namespace SolidCP.Providers.FTP
 			}
 		}
 
-		public string UserListFile => this["userlist_file"];
-		public bool UserListDeny => this["userlist_deny"] == "YES";
-		public bool UserListEnable => this["userlist_enable"] == "YES";
-		public bool LocalEnable => this["local_enable"] == "YES";
-
-		public IEnumerable<string> UserList => UserListFile != null ? File.ReadLines(UserListFile).Select(u => u.Trim()) : new string[0];
-
-
+		bool Bool(string txt) => txt.Equals("YES", StringComparison.OrdinalIgnoreCase);
+		public bool Listen { get => Bool(this["listen"]); set => this["listen"] = value ? "YES" : "NO"; }
+		public bool ListenIpV6 { get => Bool(this["listen_ipv6"]); set => this["listen_ipv6"] = value ? "YES" : "NO"; }
+		public bool AnonymousEnable { get => Bool(this["anonymous_enable"]); set => this["anonymous_enable"] = value ? "YES" : "NO"; }
+		public bool LocalEnable { get => Bool(this["local_enable"]); set => this["local_enable"] = value ? "YES" : "NO"; }
+		public bool WriteEnable { get => Bool(this["write_enable"]); set => this["write_enable"] = value ? "YES" : "NO"; }
+		public string LocalUmask { get => this["local_umask"]; set => this["local_umask"] = value; }
+		public string LocalRoot { get => this["local_root"]; set => this["local_root"] = value; }
+		public bool ChrootLocalUser { get => Bool(this["chroot_local_user"]); set => this["chroot_local_user"] = value ? "YES" : "NO"; }
+		public bool AllowWritableChroot { get => Bool(this["allow_writable_chroot"]); set => this["allow_writable_chroot"] = value ? "YES" : "NO"; }
+		public bool HideIds { get => Bool(this["hide_ids"]); set => this["hide_ids"] = value ? "YES" : "NO"; }
+		public string UserConfigDir { get => this["user_config_dir"]; set => this["user_config_dir"] = value; }
+		public bool GuestEnable { get => Bool(this["guest_enable"]); set => this["guest_enable"] = value ? "YES" : "NO"; }
+		public bool VirtualUseLocalPrivs { get => Bool(this["virtual_use_local_privs"]); set => this["virtual_use_local_privs"] = value ? "YES" : "NO"; }
+		public string PamServiceName { get => this["pam_service_name"]; set => this["pam_service_name"] = value; }
+		public string NoprivUser { get => this["nopriv_user"]; set => this["nopriv_user"] = value; }
+		public string GuestUsername { get => this["guest_username"]; set => this["guest_username"] = value; }
 	}
 }
 

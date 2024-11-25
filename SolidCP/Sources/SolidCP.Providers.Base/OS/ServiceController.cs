@@ -32,7 +32,11 @@ namespace SolidCP.Providers.OS
 		{
 			ChangeStatus(serviceId, OSServiceStatus.Stopped);
 		}
-
+		public virtual void Restart(string serviceId)
+		{
+			Stop(serviceId);
+			Start(serviceId);
+		}
 		public virtual void Enable(string serviceId)
 		{
 

@@ -81,7 +81,7 @@ namespace SolidCP.Providers.OS
 				}
 			}
 		}
-
+		public override void Restart(string serviceId) => Shell.Exec($"systemctl restart {serviceId}");
 		public override void Disable(string serviceId)
 		{
 			Shell.Exec($"systemctl disable {serviceId}.service");
