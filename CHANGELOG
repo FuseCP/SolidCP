@@ -43,13 +43,13 @@ Version 1.5.0
 - [SmarterMail100] Fixed creating groups
 - [SmarterMail100] Added tinymce to the Signature and Autoresponder messages so they can be html when using latest SmarterMail
 - [SmarterMail100] Added support for calculating diskspace and bandwidth
-[SmarterMail100] On domain creation set the enableMailForwarding
-[SmarterMail100] Fix for the signature being set on UpdateAccount
-[SmarterMail100] Setting host to mail.domain.com on AddDomain
-[SmarterMail100] Added a Default Domain Host name and dropped InheritDefaultLimits from provider settings
-[SmarterMail100] Setting Full Name on CreateAccount
-[SmarterMail100] Add defaultdomainhostname property to existing SM100 providers
-[SmarterMail] Add defaultdomainhostname property to all Smartermail providers (Although currently unused for others)
+- [SmarterMail100] On domain creation set the enableMailForwarding
+- [SmarterMail100] Fix for the signature being set on UpdateAccount
+- [SmarterMail100] Setting host to mail.domain.com on AddDomain
+- [SmarterMail100] Added a Default Domain Host name and dropped InheritDefaultLimits from provider settings
+- [SmarterMail100] Setting Full Name on CreateAccount
+- [SmarterMail100] Add defaultdomainhostname property to existing SM100 providers
+- [SmarterMail] Add defaultdomainhostname property to all Smartermail providers (Although currently unused for others)
 
 Version 1.4.9
 - Smartermail100 (Latest API) - Work sponsored by Enterprise Guardian Inc.
