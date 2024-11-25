@@ -84,6 +84,7 @@ namespace SolidCP.EnterpriseServer
 #if UseEntityFramework
 		public bool? useEntityFramework = null;
 		public static bool? alwaysUseEntityFramework = null;
+		int queryAlwaysUseEFStarted = 0;
 		public bool AlwaysUseEntityFramework
 		{
 			get
@@ -92,17 +93,27 @@ namespace SolidCP.EnterpriseServer
 				{
 					if (IsSqlServer)
 					{
-						alwaysUseEntityFramework = false;
-						Task.Run(async () =>
+						if (Interlocked.Exchange(ref queryAlwaysUseEFStarted, 1) == 0)
 						{
-							using (var context = Context)
+							Task.Run(async () =>
 							{
-								alwaysUseEntityFramework = await context.SystemSettings
-									.Where(s => s.SettingsName == EnterpriseServer.SystemSettings.DEBUG_SETTINGS &&
-										s.PropertyName == EnterpriseServer.SystemSettings.ALWAYS_USE_ENTITYFRAMEWORK)
-									.AnyAsync(p => p.PropertyValue == "True" || p.PropertyValue == "true");
-							}
-						});
+								using (var context = Context)
+								{
+									try
+									{
+										alwaysUseEntityFramework = (await context.SystemSettings
+											.Where(s => s.SettingsName == EnterpriseServer.SystemSettings.DEBUG_SETTINGS &&
+												s.PropertyName == EnterpriseServer.SystemSettings.ALWAYS_USE_ENTITYFRAMEWORK)
+											.Select(p => p.PropertyValue)
+											.FirstOrDefaultAsync()
+											.ConfigureAwait(false))?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? false; 
+									} catch (Exception ex)
+									{
+
+									}
+								}
+							});
+						}
 					}
 					else alwaysUseEntityFramework = true;
 				}

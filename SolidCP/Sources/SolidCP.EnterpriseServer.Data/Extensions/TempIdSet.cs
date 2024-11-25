@@ -144,8 +144,8 @@ namespace SolidCP.EnterpriseServer.Data
 					Id = id,
 					Scope = scope,
 					Level = level,
-					Created = (DateTime)(object)created,
-					Date = (DateTime)(object)default
+					Created = created,
+					Date = default
 				});
 			n = tempIds.ExecuteInsert();
 
@@ -297,8 +297,6 @@ namespace SolidCP.EnterpriseServer.Data
 		// can use an optimized bulk instert
 		protected virtual bool AddRangeQueryable(IQueryable<DatedId> ids, out int n, int level = 0)
 		{
-			n = 0;
-			return false;
 			var scope = Scope;
 			var created = DateTime.Now;
 			var tempIds = ids
@@ -310,6 +308,8 @@ namespace SolidCP.EnterpriseServer.Data
 					Created = created,
 					Date = id.Date
 				});
+			n = tempIds.ExecuteInsert();
+			return true;
 		}
 
 		public void Dispose()
