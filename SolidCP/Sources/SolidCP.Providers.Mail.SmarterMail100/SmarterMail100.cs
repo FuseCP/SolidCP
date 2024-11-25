@@ -663,13 +663,17 @@ namespace SolidCP.Providers.Mail
 				if (!success)
 					throw new Exception(result["message"]);
 
-				foreach (dynamic domain in result["domainAliasData"])
+				if (result["domainAliasData"] != null)
 				{
-					string domainAliasName = domain["name"].ToString();
-					domainAliasNames.Add(domainAliasName);
+                    foreach (dynamic domain in result["domainAliasData"])
+					{
+						string domainAliasName = domain["name"].ToString();
+						domainAliasNames.Add(domainAliasName);
+					}
 				}
 
-				return domainAliasNames.ToArray();
+
+                return domainAliasNames.ToArray();
 			}
 			catch (Exception ex)
 			{
@@ -1983,7 +1987,7 @@ namespace SolidCP.Providers.Mail
 					//list.Moderated
 					list.Password = member["password"].ToString();
 					list.RequirePassword = Convert.ToBoolean(member.requirePassword);
-					list.PostingMode = member["postingPermissions"].ToString();
+					list.PostingMode = (PostingMode)Convert.ToInt64(member["postingPermissions"]);
 					list.SubjectPrefix = member["subject"].ToString();
 					list.EnableSubjectPrefix = Convert.ToBoolean(member["prependSubject"]);
 					//list.MaxMessageSize
