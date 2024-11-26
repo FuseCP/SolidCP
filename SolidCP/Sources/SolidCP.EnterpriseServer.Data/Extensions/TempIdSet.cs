@@ -138,6 +138,7 @@ namespace SolidCP.EnterpriseServer.Data
 			n = 0;
 			var created = DateTime.Now;
 			var scope = Scope;
+			var date = default(DateTime);
 			var tempIds = ids
 				.Select(id => new TempId()
 				{
@@ -145,7 +146,7 @@ namespace SolidCP.EnterpriseServer.Data
 					Scope = scope,
 					Level = level,
 					Created = created,
-					Date = default
+					Date = date
 				});
 			n = tempIds.ExecuteInsert();
 
