@@ -90,8 +90,8 @@ namespace SolidCP.EnterpriseServer.Data
 				Id = id,
 				Scope = Scope,
 				Level = level,
-				Created = DateTime.Now,
-				Date = default
+				Created = DateTime.UtcNow,
+				Date = default(DateTime).ToUniversalTime()
 			};
 			Context.TempIds.Add(tempId);
 		}
@@ -104,7 +104,7 @@ namespace SolidCP.EnterpriseServer.Data
 			{
 				const int BatchSize = 1024;
 				var buffer = new TempId[BatchSize];
-				var created = DateTime.Now;
+				var created = DateTime.UtcNow;
 				var scope = Scope;
 				var tempIds = ids
 					.Select(id => new TempId()
@@ -113,7 +113,7 @@ namespace SolidCP.EnterpriseServer.Data
 						Scope = scope,
 						Level = level,
 						Created = created,
-						Date = default
+						Date = default(DateTime).ToUniversalTime()
 					});
 				var enumerator = tempIds.GetEnumerator();
 				while (enumerator.MoveNext())
@@ -135,10 +135,13 @@ namespace SolidCP.EnterpriseServer.Data
 
 		protected virtual bool AddRangeQueryable(IQueryable<int> ids, out int n, int level = 0)
 		{
+#if NETFRAMEWORK
 			n = 0;
-			var created = DateTime.Now;
+			return false;
+#else
+			var created = DateTime.UtcNow;
 			var scope = Scope;
-			var date = default(DateTime);
+			var date = default(DateTime).ToUniversalTime();
 			var tempIds = ids
 				.Select(id => new TempId()
 				{
@@ -151,6 +154,7 @@ namespace SolidCP.EnterpriseServer.Data
 			n = tempIds.ExecuteInsert();
 
 			return true;
+#endif
 		}
 
 		public void Dispose()
@@ -252,7 +256,7 @@ namespace SolidCP.EnterpriseServer.Data
 				Id = id.Id,
 				Scope = Scope,
 				Level = level,
-				Created = DateTime.Now,
+				Created = DateTime.UtcNow,
 				Date = id.Date
 			};
 			Context.TempIds.Add(tempId);
@@ -266,7 +270,7 @@ namespace SolidCP.EnterpriseServer.Data
 			{
 				const int BatchSize = 1024;
 				var buffer = new TempId[BatchSize];
-				var created = DateTime.Now;
+				var created = DateTime.UtcNow;
 				var scope = Scope;
 				var tempIds = ids
 					.Select(id => new TempId()
@@ -298,8 +302,12 @@ namespace SolidCP.EnterpriseServer.Data
 		// can use an optimized bulk instert
 		protected virtual bool AddRangeQueryable(IQueryable<DatedId> ids, out int n, int level = 0)
 		{
+#if NETFRAMEWORK
+			n = 0;
+			return false;
+#else
 			var scope = Scope;
-			var created = DateTime.Now;
+			var created = DateTime.UtcNow;
 			var tempIds = ids
 				.Select(id => new TempId()
 				{
@@ -311,6 +319,7 @@ namespace SolidCP.EnterpriseServer.Data
 				});
 			n = tempIds.ExecuteInsert();
 			return true;
+#endif
 		}
 
 		public void Dispose()
@@ -319,7 +328,7 @@ namespace SolidCP.EnterpriseServer.Data
 			Task.Run(async () =>
 			{
 				await Task.Delay(TimeSpan.FromSeconds(2));
-				var now = DateTime.Now;
+				var now = DateTime.UtcNow;
 				var old = now.Subtract(TimeSpan.FromSeconds(30));
 				Context.TempIds
 					.Where(id => id.Scope == scope || id.Created < old)
