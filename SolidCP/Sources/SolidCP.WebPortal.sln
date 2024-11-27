@@ -41,6 +41,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.WebPortal", "SolidC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Portal.Modules", "SolidCP.WebPortal\DesktopModules\SolidCP\SolidCP.Portal.Modules.csproj", "{6D5E301C-A53B-46C9-8CF0-F37E0C2E62EE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebFormsForCore.Web", "..\Lib\WebFormsForCore\src\WebFormsForCore.Web\WebFormsForCore.Web.csproj", "{BE07D0AB-14C3-4B68-A6E5-0451A8E0630D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -95,6 +97,10 @@ Global
 		{6D5E301C-A53B-46C9-8CF0-F37E0C2E62EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6D5E301C-A53B-46C9-8CF0-F37E0C2E62EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6D5E301C-A53B-46C9-8CF0-F37E0C2E62EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE07D0AB-14C3-4B68-A6E5-0451A8E0630D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE07D0AB-14C3-4B68-A6E5-0451A8E0630D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE07D0AB-14C3-4B68-A6E5-0451A8E0630D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE07D0AB-14C3-4B68-A6E5-0451A8E0630D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

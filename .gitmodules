@@ -10,4 +10,4 @@
 	branch = solidcp1.4.0
 [submodule "SolidCP/Lib/WebFormsForCore"]
 	path = SolidCP/Lib/WebFormsForCore
-	url = https://github.com/simonegli8/WebFormsForCore
+	url = https://github.com/webformsforcore/WebFormsForCore
