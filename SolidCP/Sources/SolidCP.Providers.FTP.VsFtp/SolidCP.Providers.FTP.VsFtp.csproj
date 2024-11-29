@@ -13,7 +13,15 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 	</PropertyGroup>
 	<ItemGroup>
+	  <Compile Remove="CryptSharp\Properties\AssemblyInfo.cs" />
+	  <Compile Remove="CryptSharp\Properties\AssemblyInfo.SCryptSubset.cs" />
+	</ItemGroup>
+	<ItemGroup>
 		<Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Include="CryptSharp\Properties\AssemblyInfo.cs" />
+	  <None Include="CryptSharp\Properties\AssemblyInfo.SCryptSubset.cs" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" />

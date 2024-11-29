@@ -40,11 +40,13 @@ using System.Linq;
 using System.Diagnostics;
 using Mono.Posix;
 using Mono.Unix;
+using CryptSharp;
 
 using SolidCP.Providers;
 using SolidCP.Providers.OS;
 using SolidCP.Providers.FTP;
 using SolidCP.Server.Utils;
+using Mono.Unix.Native;
 
 namespace SolidCP.Providers.FTP
 {
@@ -53,16 +55,17 @@ namespace SolidCP.Providers.FTP
 		readonly string NewLine = Environment.NewLine;
 		const string PasswordFile = "/etc/vsftpd/ftpd.passwd";
 		const string UsersConfigFolder = "/etc/vsftpd/users";
-		const string VsftpdUser = "vsftpd";
-		const string VsftpdGroup = "vsftpd";
+		const string VsftpdUser = "solidcp-vsftpd";
+		const string SolidCPUser = "solidcp";
+		const string VsftpdGroup = "solidcp";
 		const string LocalRoot = "/var/www";
 		const string LocalUmask = "022";
 
 		IUnixOperatingSystem Unix => OSInfo.Unix;
-		public string ConfigPath => ProviderSettings[nameof(ConfigPath)];
+		public string ConfigFile => ProviderSettings[nameof(ConfigFile)];
 
 		VsFtpConfig config = null;
-		public VsFtpConfig Config => config ?? (config = new VsFtpConfig(ConfigPath));
+		public VsFtpConfig Config => config ??= new VsFtpConfig(ConfigFile);
 
 		public Shell Shell => Shell.Default;
 		public void Restart() => Unix.ServiceController.Restart("vsftpd");
@@ -70,13 +73,11 @@ namespace SolidCP.Providers.FTP
 		{
 			if (!Regex.IsMatch(Config.Text, @"^# This file has been modified by SolidCP\.", RegexOptions.Multiline))
 			{
-				// Create vsftpd group
-
-				// Create vsftpd user
+				// Create solidcp-vsftpd user
 				Shell.Exec($"useradd --home /home/{VsftpdUser} --gid {VsftpdGroup} -m --shell /bin/false {VsftpdUser}");
 
 				// Configure PAM
-				File.WriteAllText("/etc/pam.d/vsftpd", @$"auth required pam_pwdfile.so pwdfile {PasswordFile}{NewLine}account required pam_permit.so");
+				File.WriteAllText($"/etc/pam.d/{VsftpdUser}", @$"auth required pam_pwdfile.so pwdfile {PasswordFile}{NewLine}account required pam_permit.so");
 
 				// Configure vsftpd
 				Config.Text = $"# This file has been modified by SolidCP.{NewLine}{Config.Text}{NewLine}# SolidCP settings";
@@ -86,8 +87,8 @@ namespace SolidCP.Providers.FTP
 				Config.LocalUmask = LocalUmask;
 				Config.LocalRoot = LocalRoot;
 				Config.ChrootLocalUser = true;
-				Config.AllowWritableChroot = true;
-				Config.HideIds = true;
+				Config.AllowWriteableChroot = true;
+				//Config.HideIds = true;
 				if (!Directory.Exists(UsersConfigFolder)) Directory.CreateDirectory(UsersConfigFolder);
 				Config.GuestEnable = true;
 				Config.VirtualUseLocalPrivs = true;
@@ -161,7 +162,8 @@ namespace SolidCP.Providers.FTP
 					.Select(m => m.Value);
 			}
 		}
-		IEnumerable<string> Users => Directory.EnumerateDirectories(UsersConfigFolder);
+		IEnumerable<string> Users => Directory.EnumerateFiles(UsersConfigFolder)
+			.Select(Path.GetFileName);
 
 		public virtual bool AccountExists(string accountName) {
 			EnsureSetup();	
@@ -178,15 +180,16 @@ namespace SolidCP.Providers.FTP
 				return user == accountName;
 			}))
 			{
-				var homedir = new VsFtpConfig(File.ReadAllText($"{UsersConfigFolder}/{accountName}")).LocalRoot;
+				var configFile = $"{UsersConfigFolder}/{accountName}";
+				var userConfig = new VsFtpConfig(configFile);
 
 				var ftp = new FtpAccount()
 				{
-					CanRead = true,
-					CanWrite = true,
-					CreatedDate = DateTime.MinValue,
+					CanRead = userConfig.DownloadEnable,
+					CanWrite = userConfig.WriteEnable,
+					CreatedDate = File.GetCreationTime(configFile),
 					Enabled = EnabledUsers.Any(user => user == accountName),
-					Folder = homedir,
+					Folder = userConfig.LocalRoot,
 					Name = accountName,
 					GroupName = VsftpdGroup,
 					Id = n,
@@ -205,9 +208,8 @@ namespace SolidCP.Providers.FTP
 		}
 		public string PasswordToken(string password)
 		{
-			var mkpasswd = Shell.Exec("mkpasswd -m sha-512 -R 100000");
-			mkpasswd.StandardInput.WriteLine(password);
-			return mkpasswd.Output().Result;
+			var token = Crypter.Sha512.Crypt(password, new CrypterOptions() { { CrypterOption.Rounds, 100000 } });
+			return token;
 		}
 
 		public virtual void CreateAccount(FtpAccount account)
@@ -219,18 +221,36 @@ namespace SolidCP.Providers.FTP
 			if (!Directory.Exists(account.Folder) && !string.IsNullOrEmpty(account.Folder))
 			{
 				Directory.CreateDirectory(account.Folder);
-				Unix.ChangeUnixFileOwner(account.Folder, VsftpdUser, VsftpdGroup);
+				Unix.ChangeUnixFileOwner(account.Folder, SolidCPUser, VsftpdGroup);
 			}
 
 			// Create user's config file
-			var config = new VsFtpConfig($"{UsersConfigFolder}/{account.Name}");
+			var configFile = $"{UsersConfigFolder}/{account.Name}";
+			var config = new VsFtpConfig(configFile);
 			config.LocalRoot = account.Folder;
+			config.WriteEnable = account.CanWrite;
+			config.DownloadEnable = account.CanRead;
 			config.Save();
+			account.CreatedDate = File.GetCreationTime(configFile);
 
-			// Create user entry in ftpd.passwd file
-			if (account.Enabled) File.AppendAllText(PasswordFile, $"{NewLine}{account.Name}:{PasswordToken(account.Password)}");
+			SetPassword(account);
 
 			Restart();
+		}
+
+		void SetPassword(FtpAccount account)
+		{
+			// Update user's password
+			var passwd = File.ReadAllText(PasswordFile).Trim();
+			// remove old password
+			passwd = Regex.Replace(passwd, @$"(?<=^|\n){Regex.Escape(account.Name)}:.*?(?:\r?\n|$)", "", RegexOptions.Singleline).Trim();
+			// add new password
+			if (account.Enabled)
+			{
+				if (!string.IsNullOrWhiteSpace(passwd)) passwd += NewLine;
+				passwd += $"{account.Name}:{PasswordToken(account.Password)}";
+			}
+			File.WriteAllText(PasswordFile, passwd);
 		}
 
 		public virtual void UpdateAccount(FtpAccount account)
@@ -248,16 +268,13 @@ namespace SolidCP.Providers.FTP
 			// Update user's config file
 			var config = new VsFtpConfig($"{UsersConfigFolder}/{account.Name}");
 			config.LocalRoot = account.Folder;
+			config.WriteEnable = account.CanWrite;
+			config.DownloadEnable = account.CanRead;
 			config.Save();
 
-			// Update user's password
-			var passwd = File.ReadAllText(PasswordFile);
-			// remove old password
-			passwd = Regex.Replace(passwd, @$"^{Regex.Escape(account.Name)}:.*?\r?\n", "", RegexOptions.Multiline);
-			// add new password
-			if (account.Enabled) passwd += $"{NewLine}{account.Name}:{PasswordToken(account.Password)}";
-			File.WriteAllText(PasswordFile, passwd);
+			SetPassword(account);
 
+			Restart();
 		}
 
 		public virtual void DeleteAccount(string accountName)
@@ -268,7 +285,7 @@ namespace SolidCP.Providers.FTP
 			{
 				// Remove user from password file
 				var passwd = File.ReadAllText(PasswordFile);
-				passwd = Regex.Replace(passwd, @$"^{Regex.Escape(accountName)}:.*?\r?\n", "", RegexOptions.Multiline);
+				passwd = Regex.Replace(passwd, @$"^{Regex.Escape(accountName)}:.*?(?:\r?\n|$)", "", RegexOptions.Multiline);
 				File.WriteAllText(PasswordFile, passwd);
 
 				// Remove user's config file
@@ -352,4 +369,3 @@ namespace SolidCP.Providers.FTP
 
 	}
 }
-

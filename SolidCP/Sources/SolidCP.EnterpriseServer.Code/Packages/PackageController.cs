@@ -1081,10 +1081,14 @@ namespace SolidCP.EnterpriseServer
 
                 // build initial path
                 string usersHome = osSesstings["UsersHome"];
-                if (!usersHome.EndsWith("\\"))
-                    usersHome += '\\';
-
-                initialPath = Path.Combine(usersHome, user.Username);
+                if (usersHome.Contains("\\"))
+                {
+                    if (!usersHome.EndsWith("\\")) usersHome += '\\';
+                } else
+                {
+                    if (!usersHome.EndsWith("/")) usersHome += '/';
+                }
+                initialPath = usersHome + user.Username;
             }
 
             OS.OperatingSystem os = new OS.OperatingSystem();

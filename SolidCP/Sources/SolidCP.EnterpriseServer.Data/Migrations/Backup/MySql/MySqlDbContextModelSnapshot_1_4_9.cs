@@ -5101,7 +5101,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         new
                         {
                             ProviderId = 1910,
-                            DisplayName = "vsftpd FTP Server 3 (Experimental)",
+                            DisplayName = "vsftpd FTP Server 3",
                             EditorControl = "vsftpd",
                             GroupId = 3,
                             ProviderName = "vsftpd",

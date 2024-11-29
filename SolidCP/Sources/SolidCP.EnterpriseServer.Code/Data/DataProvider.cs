@@ -1169,10 +1169,6 @@ RETURN
 				var hasRights = CheckActorUserRights(actorId, userId);
 				TempIdSet childUsers = null;
 				if (recursive) childUsers = UserChildren(userId, recursive);
-				else
-				{
-					childUsers = new TempIdSet(this, new[] { userId });
-				}
 				using (childUsers)
 				{
 					var users = UsersDetailed;
@@ -1190,7 +1186,7 @@ RETURN
 						else
 						{
 							users = users
-								.Join(childUsers, u => u.OwnerId, ch => ch, (u, ch) => u);
+								.Where(u => u.OwnerId == userId);
 						}
 					}
 					else
@@ -1206,9 +1202,15 @@ RETURN
 						}
 						else
 						{
-							users = users.Where(u => u.Username == filterValue ||
-								u.FullName == filterValue ||
-								u.Email == filterValue);
+#if NETFRAMEWORK
+							users = users.Where(u => DbFunctions.Like(u.Username, filterValue) ||
+								DbFunctions.Like(u.FullName, filterValue) ||
+								DbFunctions.Like(u.Email, filterValue));
+#else
+							users = users.Where(u => EF.Functions.Like(u.Username, filterValue) ||
+								EF.Functions.Like(u.FullName, filterValue) ||
+								EF.Functions.Like(u.Email, filterValue));
+#endif
 						}
 					}
 
@@ -6244,7 +6246,7 @@ AS
 			}
 		}
 
-		#endregion
+#endregion
 
 		#region User Settings
 		public IDataReader GetUserSettings(int actorId, int userId, string settingsName)

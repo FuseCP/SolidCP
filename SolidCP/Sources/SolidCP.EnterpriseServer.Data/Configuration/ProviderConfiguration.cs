@@ -234,7 +234,7 @@ public partial class ProviderConfiguration: EntityTypeConfiguration<Provider>
 			new Provider() { ProviderId = 1901, DisplayName = "SimpleDNS Plus 8.x", EditorControl = "SimpleDNS", GroupId = 7, ProviderName = "SimpleDNS", ProviderType = "SolidCP.Providers.DNS.SimpleDNS8, SolidCP.Providers.DNS.SimpleDNS80" },
 			new Provider() { ProviderId = 1902, DisplayName = "Microsoft DNS Server 2016", EditorControl = "MSDNS", GroupId = 7, ProviderName = "MSDNS.2016", ProviderType = "SolidCP.Providers.DNS.MsDNS2016, SolidCP.Providers.DNS.MsDNS2016" },
 			new Provider() { ProviderId = 1903, DisplayName = "SimpleDNS Plus 9.x", EditorControl = "SimpleDNS", GroupId = 7, ProviderName = "SimpleDNS", ProviderType = "SolidCP.Providers.DNS.SimpleDNS9, SolidCP.Providers.DNS.SimpleDNS90" },
-			new Provider() { ProviderId = 1910, DisplayName = "vsftpd FTP Server 3 (Experimental)", EditorControl = "vsftpd", GroupId = 3, ProviderName = "vsftpd", ProviderType = "SolidCP.Providers.FTP.VsFtp3, SolidCP.Providers.FTP.VsFtp" },
+			new Provider() { ProviderId = 1910, DisplayName = "vsftpd FTP Server 3", EditorControl = "vsftpd", GroupId = 3, ProviderName = "vsftpd", ProviderType = "SolidCP.Providers.FTP.VsFtp3, SolidCP.Providers.FTP.VsFtp" },
 			new Provider() { ProviderId = 1911, DisplayName = "Apache Web Server 2.4 (Experimental)", EditorControl = "Apache", GroupId = 2, ProviderName = "Apache", ProviderType = "SolidCP.Providers.Web.Apache24, SolidCP.Providers.Web.Apache" }
 		});
 		#endregion

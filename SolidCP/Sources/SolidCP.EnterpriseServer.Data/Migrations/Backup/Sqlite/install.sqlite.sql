@@ -3317,7 +3317,7 @@ VALUES (1903, NULL, 'SimpleDNS Plus 9.x', 'SimpleDNS', 7, 'SimpleDNS', 'SolidCP.
 SELECT changes();
 
 INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
-VALUES (1910, NULL, 'vsftpd FTP Server 3 (Experimental)', 'vsftpd', 3, 'vsftpd', 'SolidCP.Providers.FTP.VsFtp3, SolidCP.Providers.FTP.VsFtp');
+VALUES (1910, NULL, 'vsftpd FTP Server 3', 'vsftpd', 3, 'vsftpd', 'SolidCP.Providers.FTP.VsFtp3, SolidCP.Providers.FTP.VsFtp');
 SELECT changes();
 
 INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
