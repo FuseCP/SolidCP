@@ -478,7 +478,7 @@ namespace SolidCP.Providers.Mail
 				domain[MailDomain.SMARTERMAIL100_BOUNCES_PER_HOUR_Action] = result["domainSettings"]["throttleSettings"]["bandwidthAction"].ToString();
 
                 //Limits
-                domain.MaxDomainSizeInMB = (int)Convert.ToInt64(Convert.ToInt64(result["domainSettings"]["maxSize"].ToString()) / 1048576);
+                domain.MaxDomainSizeInMB = (int)Convert.ToInt64((long)result["domainSettings"]["maxSize"] / 1048576);
 				domain.MaxDomainAliases = (int)Convert.ToInt64(result["domainSettings"]["maxDomainAliases"].ToString());
 				domain.MaxDomainUsers = (int)Convert.ToInt64(result["domainSettings"]["maxUsers"].ToString());
 				domain.MaxAliases = (int)Convert.ToInt64(result["domainSettings"]["maxAliases"].ToString());
@@ -487,7 +487,7 @@ namespace SolidCP.Providers.Mail
 				domain.MaxRecipients = (int)Convert.ToInt64(result["domainSettings"]["maxRecipients"].ToString());
 
 
-				domain.MaxMailboxSizeInMB = (int)Convert.ToInt64(Convert.ToInt64(result["domainSettings"]["maxMailboxSize"].ToString()) / 1048576);
+				domain.MaxMailboxSizeInMB = (int)Convert.ToInt64((long)result["domainSettings"]["maxMailboxSize"] / 1048576);
 				domain.MaxRecipients = (int)Convert.ToInt64(result["domainSettings"]["maxRecipients"].ToString());
 				domain.RequireSmtpAuthentication = Convert.ToBoolean(result["domainSettings"]["requireSmtpAuthentication"]);
 				domain.ListCommandAddress = result["domainSettings"]["listCommandAddress"].ToString();
@@ -571,7 +571,7 @@ namespace SolidCP.Providers.Mail
 					domainAliasCount = domain.MaxDomainAliases,
 					listLimit = domain.MaxLists,
 					size = domain.MaxDomainSizeInMB,
-					maxSize = domain.MaxDomainSizeInMB,
+					maxSize = domain.MaxDomainSizeInMB * 1048576,
 					sizeMb = domain.MaxDomainSizeInMB,
 				};
 
@@ -745,7 +745,7 @@ namespace SolidCP.Providers.Mail
 					calendarPublicAvailability = domain.SharedCalendars,
 					maxMessages = domain[MailDomain.SMARTERMAIL5_MESSAGES_PER_HOUR],
 					throttleSettings = throttleSettingsArray,
-					maxSize = domain.MaxDomainSizeInMB,
+					maxSize = (long)domain.MaxDomainSizeInMB * 1048576,
 					maxDomainAliases = domain.MaxDomainAliases,
 					maxUsers = domain.MaxDomainUsers,
 					maxMessageSize = (long)domain.MaxMessageSize * 1048576,
