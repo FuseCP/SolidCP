@@ -1525,16 +1525,16 @@ namespace SolidCP.Providers.Mail
 		{
 			MailAlias alias = new MailAlias();
 
-			dynamic result = ExecDomainGetCommand("settings/domain/aliases/" + GetAccountName(mailAliasName), GetDomainName(mailAliasName)).Result;
+			dynamic result = ExecDomainGetCommand("settings/domain/alias/" + GetAccountName(mailAliasName), GetDomainName(mailAliasName)).Result;
 
 			bool success = Convert.ToBoolean(result["success"]);
 			if (!success)
 				throw new Exception(result["message"]);
 
-			alias.Name = result["gridInfo"][0]["name"].ToString();
-			if (result["gridInfo"][0]["targets"] != null)
+			alias.Name = result["alias"]["name"].ToString();
+			if (result["alias"]["aliasTargetList"] != null)
 			{
-				alias.ForwardTo = result["gridInfo"][0]["targets"][0].ToString();
+				alias.ForwardTo = result["alias"]["aliasTargetList"][0].ToString();
 			}
 			else
 			{
@@ -1675,7 +1675,7 @@ namespace SolidCP.Providers.Mail
 		{
 			try
 			{
-				dynamic result = ExecDomainGetCommand("settings/domain/aliases/" + GetAccountName(groupName), GetDomainName(groupName)).Result;
+				dynamic result = ExecDomainGetCommand("settings/domain/alias/" + GetAccountName(groupName), GetDomainName(groupName)).Result;
 
 				bool success = Convert.ToBoolean(result["success"]);
 				if (!success)
@@ -1684,7 +1684,7 @@ namespace SolidCP.Providers.Mail
 
 				List<string> targets = new List<string>();
 
-				foreach (string target in result["gridInfo"][0]["targets"])
+				foreach (string target in result["alias"]["aliasTargetList"])
 
 				{
 					string targetName = target;
