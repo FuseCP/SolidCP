@@ -29,10 +29,10 @@ namespace SolidCP.EnterpriseServer.Data
 
 		public DbContext Context { get; private set; }
 
-		public TempIdSet(DbContext context, Guid scope = default(Guid), int level = 0)
+		public TempIdSet(DbContext context, Guid scope = default, int level = 0)
 		{
-
-			Scope = scope == default ? Guid.NewGuid() : scope;
+			if (scope == default) scope = Guid.NewGuid();
+			Scope = scope;
 			Context = context;
 
 			if (level == 0)
@@ -49,7 +49,7 @@ namespace SolidCP.EnterpriseServer.Data
 			}
 		}
 
-		public TempIdSet(DbContext context, IEnumerable<int> ids, Guid scope = default(Guid), int level = 0):
+		public TempIdSet(DbContext context, IEnumerable<int> ids, Guid scope = default, int level = 0):
 			this(context, scope, level) => AddRange(ids, level);
 
 		public IQueryable<int> OfLevel(int level)
@@ -195,10 +195,10 @@ namespace SolidCP.EnterpriseServer.Data
 
 		public DbContext Context { get; private set; }
 
-		public TempDatedIdSet(DbContext context, Guid scope = default(Guid), int level = 0)
+		public TempDatedIdSet(DbContext context, Guid scope = default, int level = 0)
 		{
-
-			Scope = scope == default ? Guid.NewGuid() : scope;
+			if (scope == default) scope = Guid.NewGuid();
+			Scope = scope;
 			Context = context;
 
 			if (level == 0)

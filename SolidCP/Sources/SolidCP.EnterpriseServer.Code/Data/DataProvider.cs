@@ -15587,7 +15587,6 @@ END
 				if (!GetPackageAllocatedResource(packageId, groupId, null))
 				{
 					// remove all resource services from the space
-					// var servicesToRemove =
 					PackageServices
 						.Where(ps => ps.PackageId == packageId)
 						.Join(Services, ps => ps.ServiceId, s => s.ServiceId, (ps, s) => new
@@ -15598,12 +15597,6 @@ END
 						.Join(Providers.Where(p => p.GroupId == groupId),
 							ps => ps.Service.ProviderId, p => p.ProviderId, (ps, p) => ps.PackageService)
 						.ExecuteDelete();
-
-					/*
-					foreach (var service in servicesToRemove) package.Services.Remove(service);
-
-					SaveChanges();
-					*/
 				}
 
 				// check if the service is already distributed
@@ -20502,13 +20495,14 @@ END
 			#endregion
 
 			int? pid = packageId;
+			var parentPackageId = Packages
+				.Where(p => p.PackageId == pid)
+				.Select(p => p.ParentPackageId);
+			pid = parentPackageId.FirstOrDefault();
 			while (pid != null)
 			{
 				yield return pid.Value;
-				pid = Packages
-					.Where(p => p.PackageId == pid)
-					.Select(p => p.ParentPackageId)
-					.FirstOrDefault();
+				pid = parentPackageId.FirstOrDefault();
 			}
 		}
 
@@ -20659,8 +20653,13 @@ RETURN
 					if (exceedingQuotas.Any()) transaction.Rollback();
 					else transaction.Commit();
 
-					return EntityDataSet(exceedingQuotas);
+					var result = EntityDataSet(exceedingQuotas);
+
+					DistributePackageServices(actorId, packageId);
+
+					return result;
 				}
+
 			}
 			else
 			{
@@ -21888,9 +21887,9 @@ RETURN
 					.Select(s => s.GroupId)
 					.ToList();
 				var groups = ResourceGroups
+					.Where(r => !packageGroups.Contains(r.GroupId))
 					.AsEnumerable()
-					.Where(r => Clone.GetPackageAllocatedResource(packageId, r.GroupId, null) &&
-						!packageGroups.Contains(r.GroupId))
+					.Where(r => Clone.GetPackageAllocatedResource(packageId, r.GroupId, null))
 					.Select(r => new { r.GroupId, PrimaryGroup = r.GroupId == package.Server.PrimaryGroupId });
 
 				if (!package.Server.VirtualServer)

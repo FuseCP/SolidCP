@@ -1069,9 +1069,14 @@ namespace SolidCP.EnterpriseServer
 
             if (!String.IsNullOrEmpty(packageSettings["ChildSpacesFolder"]))
             {
-                initialPath = Path.Combine(
-                    FilesController.GetFullPackagePath(resellerPackageId, packageSettings["ChildSpacesFolder"]),
-                    user.Username);
+                var packagePath = FilesController.GetFullPackagePath(resellerPackageId, packageSettings["ChildSpacesFolder"]);
+                if (packagePath.Contains("\\"))
+                {
+                    initialPath = $"{packagePath}\\{user.Username}";
+                } else
+                {
+                    initialPath = $"{packagePath}/{user.Username}";
+                }
 
             }
             else
