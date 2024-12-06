@@ -84,8 +84,11 @@ namespace SolidCP.Providers.DNS.SimpleDNS90.Models.Response
             var response = new ZoneRecordsResponse();
 
             //Check that the record is in SDNS format
-            if (!record.RecordName.Contains(zoneName))
+            if (!record.RecordName.Contains(zoneName) && record.RecordName.Length > 0)
                 record.RecordName = $"{record.RecordName}.{zoneName}";
+
+            if (record.RecordName == "")
+                record.RecordName = $"{zoneName}";
 
             //Build up the response
             response.Name = record.RecordName;
@@ -182,20 +185,12 @@ namespace SolidCP.Providers.DNS.SimpleDNS90.Models.Response
                     break;
             }
 
-            //Remove domain from recordName
-            //string recordName;
-            int index = record.Name.LastIndexOf("." + zoneName);
-            if (index >= 0)
-            {
-                resultRecord.RecordName = record.Name.Remove(index);
-            }
-
             //Build up the rest of the record
             //If data is already set, don't change it
             if (string.IsNullOrWhiteSpace(resultRecord.RecordData))
                 resultRecord.RecordData = record.Data;
             //Build the remaining fields of the record
-            //resultRecord.RecordName = recordName;
+            resultRecord.RecordName = record.Name;
             resultRecord.RecordText = $"{record.Name}\t{record.TTL}\t{record.Type}\t{record.Data}";
             resultRecord.RecordTTL = (int)record.TTL;
 

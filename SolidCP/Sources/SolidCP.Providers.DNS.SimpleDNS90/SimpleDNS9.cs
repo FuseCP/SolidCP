@@ -499,6 +499,7 @@ namespace SolidCP.Providers.DNS
             List<ZoneRecordsResponse> recordlist = new List<ZoneRecordsResponse>();
             foreach (ZoneRecordsResponse rec in records)
             {
+                rec.Name = CorrectHost(zoneName, rec.Name).ToString();
                 if (dnsTypes.Contains(rec.Type))
                     recordlist.Add(rec);
             }
@@ -575,6 +576,20 @@ namespace SolidCP.Providers.DNS
 
             //Call API to PATCH record
             ApiPatch($"zones/{zoneName}/records", deleteRequests.ToJson());
+        }
+
+        private string CorrectHost(string zoneName, string host)
+        {
+            if (string.IsNullOrEmpty(host))
+                return "";
+            
+            if (host == String.Empty)
+                return "";
+
+            if (host.ToLower() == zoneName.ToLower())
+                return "";
+            else
+                return host.Substring(0, (host.Length - zoneName.Length - 1));
         }
     }
 }
