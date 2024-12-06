@@ -959,6 +959,7 @@ Public Class MailEnable
     End Function
 
     Public Sub CreateMailAlias(ByVal mailAlias As MailAlias) Implements IMailServer.CreateMailAlias
+        mailAlias.Password = GeneratePassword("30")
         CreateAccount(mailAlias)
     End Sub
 
@@ -1602,6 +1603,64 @@ Public Class MailEnable
     Private Function GetDomainName(ByVal email As String) As String
         Return email.Substring(email.IndexOf("@") + 1)
     End Function
+
+    Public Shared Function GeneratePassword(length As Integer) As String
+        Const uppercaseLetters As String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        Const lowercaseLetters As String = "abcdefghijklmnopqrstuvwxyz"
+        Const digits As String = "0123456789"
+        Const specialChars As String = "!@#$%^&*()_-+=?"
+
+        Dim random As New Random()
+        Dim password(length - 1) As Char
+
+        ' Ensure at least 2 of each character type
+        Dim index As Integer = 0
+        password(index) = uppercaseLetters(random.Next(uppercaseLetters.Length))
+        index += 1
+        password(index) = uppercaseLetters(random.Next(uppercaseLetters.Length))
+        index += 1
+        password(index) = lowercaseLetters(random.Next(lowercaseLetters.Length))
+        index += 1
+        password(index) = lowercaseLetters(random.Next(lowercaseLetters.Length))
+        index += 1
+        password(index) = digits(random.Next(digits.Length))
+        index += 1
+        password(index) = digits(random.Next(digits.Length))
+        index += 1
+        password(index) = specialChars(random.Next(specialChars.Length))
+        index += 1
+        password(index) = specialChars(random.Next(specialChars.Length))
+
+        ' Fill the remaining characters randomly
+        For i As Integer = index To length - 1
+            Dim charSet As String = uppercaseLetters & lowercaseLetters & digits & specialChars
+            password(i) = charSet(random.Next(charSet.Length))
+        Next
+
+        ' Shuffle the password characters to randomize the order
+        Shuffle(password)
+
+        Return New String(password)
+    End Function
+
+    Private Shared Sub Shuffle(array() As Char)
+        Dim rng As New Random()
+        Dim n As Integer = array.Length
+        While n > 1
+            Dim k As Integer = rng.Next(n)
+            n -= 1
+            Dim temp As Char = array(n)
+            array(n) = array(k)
+            array(k) = temp
+        End While
+    End Sub
+
+    Public Shared Sub Main()
+        Dim passwordLength As Integer = 30
+        Dim randomPassword As String = GeneratePassword(passwordLength)
+        Console.WriteLine("Random Password: " + randomPassword)
+    End Sub
+
 #End Region
 
 #Region "HostingServiceProvider methods"
