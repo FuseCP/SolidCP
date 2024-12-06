@@ -58,6 +58,7 @@ namespace SolidCP.Portal.ProviderControls
             txtSubject.Text = item.ResponderSubject;
             txtMessage.Text = item.ResponderMessage;
             txtForward.Text = item.ForwardingAddresses != null ? String.Join("; ", item.ForwardingAddresses) : "";
+            chkDeleteOnForward.Checked = item.DeleteOnForward;
         }
 
         public void SaveItem(MailAccount item)
@@ -67,6 +68,7 @@ namespace SolidCP.Portal.ProviderControls
             item.ResponderSubject = txtSubject.Text;
             item.ResponderMessage = txtMessage.Text;
             item.ForwardingAddresses = Utils.ParseDelimitedString(txtForward.Text, ';', ' ', ',');
+            item.DeleteOnForward = chkDeleteOnForward.Checked;
         }
     }
 }
