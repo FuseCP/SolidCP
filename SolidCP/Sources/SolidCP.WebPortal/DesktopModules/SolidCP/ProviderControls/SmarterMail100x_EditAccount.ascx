@@ -9,7 +9,6 @@
         toolbar: false,
         custom_undo_redo_levels: 10,
         height: 250,
-        max_chars: 5000,
         menu: {
             edit: { title: 'Edit', items: 'undo redo | cut copy paste pastetext | selectall' },
             insert: { title: 'Insert', items: 'media image link | hr charmap' },
