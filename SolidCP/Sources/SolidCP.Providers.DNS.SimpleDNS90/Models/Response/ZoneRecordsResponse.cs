@@ -121,6 +121,14 @@ namespace SolidCP.Providers.DNS.SimpleDNS90.Models.Response
                     }
                     response.Data = $"{record.RecordData}";
                     break;
+                case DnsRecordType.TXT:
+                    if (!record.RecordData.StartsWith("\"") && record.RecordData.Length > 0)
+                    {
+                        response.Data = $"\"{record.RecordData}\"";
+                        break;
+                    }
+                    response.Data = record.RecordData ?? "";
+                    break;
                 default:
                     response.Data = record.RecordData ?? "";
                     break;
