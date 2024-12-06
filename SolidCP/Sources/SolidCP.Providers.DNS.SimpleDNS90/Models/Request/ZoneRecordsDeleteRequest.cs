@@ -41,7 +41,7 @@ namespace SolidCP.Providers.DNS.SimpleDNS90.Models.Request
         {
             Name = baseResponse.Name;
             Type = baseResponse.Type;
-            Ttl = baseResponse.Ttl;
+            TTL = baseResponse.TTL;
             Data = baseResponse.Data;
             Comment = baseResponse.Comment;
             Remove = true;

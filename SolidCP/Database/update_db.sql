@@ -19274,6 +19274,18 @@ INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName]
 END
 GO
 
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1903' AND [PropertyName] = 'SimpleDnsUrl')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1903, N'AdminLogin', N'Admin')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1903, N'ExpireLimit', N'1209600')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1903, N'NameServers', N'ns1.yourdomain.com;ns2.yourdomain.com')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1903, N'RefreshInterval', N'3600')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1903, N'ResponsiblePerson', N'hostmaster.[DOMAIN_NAME]')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1903, N'RetryDelay', N'600')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1903, N'SimpleDnsUrl', N'http://127.0.0.1:8053')
+END
+GO
+
 -- User MFA
 IF NOT EXISTS(select 1 from sys.columns COLS INNER JOIN sys.objects OBJS ON OBJS.object_id=COLS.object_id and OBJS.type='U' AND OBJS.name='Users' AND COLS.name='MfaMode')
 BEGIN
