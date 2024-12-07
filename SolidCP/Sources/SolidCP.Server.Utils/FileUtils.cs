@@ -41,6 +41,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Management;
+using System.Linq;
 using Ionic.Zip;
 using SolidCP.Providers.OS;
 using Mono.Unix;
@@ -288,11 +289,20 @@ namespace SolidCP.Providers.Utils
 			    SecurityUtils.GrantNtfsPermissionsBySid(path, SystemSID.SYSTEM, NTFSPermission.FullControl, true, true);
 			} else if (OSInfo.IsUnix)
             {
-                var unixDirInfo = new UnixDirectoryInfo(path);
+                if (!UnixGroupInfo.GetLocalGroups().Any(group => group.GroupName == "solidcp"))
+                {
+                    Shell.Standard.Exec("groupadd solidcp");
+                }
+			    if (!UnixUserInfo.GetLocalUsers().Any(user => user.UserName == "solidcp"))
+                {
+					Shell.Standard.Exec($"useradd --home /home/solidcp --gid solidcp -m --shell /bin/false solidcp");
+				}
+
+				var unixDirInfo = new UnixDirectoryInfo(path);
                 unixDirInfo.FileAccessPermissions =
                     FileAccessPermissions.GroupRead | FileAccessPermissions.GroupWrite | FileAccessPermissions.GroupExecute |
-                    FileAccessPermissions.UserRead | FileAccessPermissions.UserWrite | FileAccessPermissions.UserExecute |
-                    FileAccessPermissions.OtherRead;
+                    FileAccessPermissions.UserRead | FileAccessPermissions.UserWrite | FileAccessPermissions.UserExecute;
+                unixDirInfo.SetOwner("solidcp", "solidcp");
                 unixDirInfo.Refresh();
             }
             return path;

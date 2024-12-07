@@ -273,4 +273,10 @@
   <data name="Generalinfo.Text" xml:space="preserve">
     <value>General Information</value>
   </data>
+  <data name="valRequireCorrectName.ErrorMessage" xml:space="preserve">
+    <value>Enter valid name</value>
+  </data>
+  <data name="valRequireCorrectName.Text" xml:space="preserve">
+    <value>*</value>
+  </data>
 </root>

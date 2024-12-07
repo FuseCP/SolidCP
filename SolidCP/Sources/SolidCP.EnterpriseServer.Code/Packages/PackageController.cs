@@ -1069,9 +1069,14 @@ namespace SolidCP.EnterpriseServer
 
             if (!String.IsNullOrEmpty(packageSettings["ChildSpacesFolder"]))
             {
-                initialPath = Path.Combine(
-                    FilesController.GetFullPackagePath(resellerPackageId, packageSettings["ChildSpacesFolder"]),
-                    user.Username);
+                var packagePath = FilesController.GetFullPackagePath(resellerPackageId, packageSettings["ChildSpacesFolder"]);
+                if (packagePath.Contains("\\"))
+                {
+                    initialPath = $"{packagePath}\\{user.Username}";
+                } else
+                {
+                    initialPath = $"{packagePath}/{user.Username}";
+                }
 
             }
             else
@@ -1081,10 +1086,14 @@ namespace SolidCP.EnterpriseServer
 
                 // build initial path
                 string usersHome = osSesstings["UsersHome"];
-                if (!usersHome.EndsWith("\\"))
-                    usersHome += '\\';
-
-                initialPath = Path.Combine(usersHome, user.Username);
+                if (usersHome.Contains("\\"))
+                {
+                    if (!usersHome.EndsWith("\\")) usersHome += '\\';
+                } else
+                {
+                    if (!usersHome.EndsWith("/")) usersHome += '/';
+                }
+                initialPath = usersHome + user.Username;
             }
 
             OS.OperatingSystem os = new OS.OperatingSystem();

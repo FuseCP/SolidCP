@@ -589,7 +589,7 @@ CREATE TABLE "Packages" (
 CREATE TABLE "ServiceProperties" (
     "ServiceID" INTEGER NOT NULL,
     "PropertyName" TEXT COLLATE NOCASE NOT NULL,
-    "PropertyValue" TEXT NULL,
+    "PropertyValue" TEXT COLLATE NOCASE NULL,
     CONSTRAINT "PK_ServiceProperties_1" PRIMARY KEY ("ServiceID", "PropertyName"),
     CONSTRAINT "FK_ServiceProperties_Services" FOREIGN KEY ("ServiceID") REFERENCES "Services" ("ServiceID") ON DELETE CASCADE
 );
@@ -3393,7 +3393,7 @@ VALUES (1903, NULL, 'SimpleDNS Plus 9.x', 'SimpleDNS', 7, 'SimpleDNS', 'SolidCP.
 SELECT changes();
 
 INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
-VALUES (1910, NULL, 'vsftpd FTP Server 3 (Experimental)', 'vsftpd', 3, 'vsftpd', 'SolidCP.Providers.FTP.VsFtp3, SolidCP.Providers.FTP.VsFtp');
+VALUES (1910, NULL, 'vsftpd FTP Server 3', 'vsftpd', 3, 'vsftpd', 'SolidCP.Providers.FTP.VsFtp3, SolidCP.Providers.FTP.VsFtp');
 SELECT changes();
 
 INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")

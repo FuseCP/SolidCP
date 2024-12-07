@@ -195,4 +195,10 @@
   <data name="chkUserMustChangePassword.Text" xml:space="preserve">
     <value>User must change password at next logon</value>
   </data>
+  <data name="valRequireCorrectName.ErrorMessage" xml:space="preserve">
+    <value>Enter valid name</value>
+  </data>
+  <data name="valRequireCorrectName.Text" xml:space="preserve">
+    <value>*</value>
+  </data>
 </root>

@@ -20619,7 +20619,7 @@ GO
 
 IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderName] = 'vsftpd FTP Server 3')
 BEGIN
-UPDATE [dbo].[Providers] SET [ProviderName] = 'vsftpd FTP Server 3 (Experimental)' WHERE [ProviderName] = 'vsftpd FTP Server 3'
+UPDATE [dbo].[Providers] SET [ProviderName] = 'vsftpd FTP Server 3' WHERE [ProviderName] = 'vsftpd FTP Server 3'
 END
 GO
 

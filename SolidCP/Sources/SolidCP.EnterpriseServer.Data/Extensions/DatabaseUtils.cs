@@ -547,8 +547,8 @@ namespace SolidCP.EnterpriseServer.Data
 					var assemblyPath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
 					if (!Path.IsPathRooted(dbFile))
 					{
-						if (installationFolder == null) throw new NotSupportedException("DatabaseExists for SQLite and an app local database need the installationFolder parameter");
-						dbFile = Path.GetFullPath(Path.Combine(installationFolder, dbFile));
+						if (!string.IsNullOrEmpty(installationFolder)) dbFile = Path.Combine(installationFolder, dbFile);
+						dbFile = Path.GetFullPath(dbFile);
 					}
 					return File.Exists(dbFile);
 				default: return false;
@@ -616,8 +616,8 @@ namespace SolidCP.EnterpriseServer.Data
 					var assemblyPath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
 					if (!Path.IsPathRooted(dbFile))
 					{
-						if (installationFolder == null) throw new NotSupportedException("CreateDatabase for SQLite with a app local database needs the installationFolder parameter");
-						dbFile = Path.GetFullPath(Path.Combine(installationFolder, dbFile));
+						if (!string.IsNullOrEmpty(installationFolder)) dbFile = Path.Combine(installationFolder, dbFile);
+						dbFile = Path.GetFullPath(dbFile);
 					}
 					CreateDatabaseSqlite(dbFile);
 					break;
@@ -1409,7 +1409,7 @@ namespace SolidCP.EnterpriseServer.Data
 				{
 					while (null != (sql = script.ReadNextStatement()))
 					{
-						sql = ProcessInstallVariables?.Invoke(sql);
+						sql = ProcessInstallVariables?.Invoke(sql) ?? sql;
 						command.CommandText = sql;
 						try
 						{

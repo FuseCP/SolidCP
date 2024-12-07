@@ -3009,7 +3009,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                     { 1901, null, "SimpleDNS Plus 8.x", "SimpleDNS", 7, "SimpleDNS", "SolidCP.Providers.DNS.SimpleDNS8, SolidCP.Providers.DNS.SimpleDNS80" },
                     { 1902, null, "Microsoft DNS Server 2016", "MSDNS", 7, "MSDNS.2016", "SolidCP.Providers.DNS.MsDNS2016, SolidCP.Providers.DNS.MsDNS2016" },
                     { 1903, null, "SimpleDNS Plus 9.x", "SimpleDNS", 7, "SimpleDNS", "SolidCP.Providers.DNS.SimpleDNS9, SolidCP.Providers.DNS.SimpleDNS90" },
-                    { 1910, null, "vsftpd FTP Server 3 (Experimental)", "vsftpd", 3, "vsftpd", "SolidCP.Providers.FTP.VsFtp3, SolidCP.Providers.FTP.VsFtp" },
+                    { 1910, null, "vsftpd FTP Server 3", "vsftpd", 3, "vsftpd", "SolidCP.Providers.FTP.VsFtp3, SolidCP.Providers.FTP.VsFtp" },
                     { 1911, null, "Apache Web Server 2.4 (Experimental)", "Apache", 2, "Apache", "SolidCP.Providers.Web.Apache24, SolidCP.Providers.Web.Apache" }
                 });
 

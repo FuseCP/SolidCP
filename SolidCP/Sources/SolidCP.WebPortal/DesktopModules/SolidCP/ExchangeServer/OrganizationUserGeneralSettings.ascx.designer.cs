@@ -168,6 +168,15 @@ namespace SolidCP.Portal.HostedSolution
         protected global::System.Web.UI.WebControls.RequiredFieldValidator valRequireDisplayName;
 
         /// <summary>
+        /// valDisplayName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator valDisplayName;
+
+        /// <summary>
         /// sendToControl control.
         /// </summary>
         /// <remarks>

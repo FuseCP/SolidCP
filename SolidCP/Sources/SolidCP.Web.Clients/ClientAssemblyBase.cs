@@ -54,14 +54,19 @@ namespace SolidCP.Web.Clients
 				var policy = Activator.CreateInstance(policyType, Client.Policy.Policy);
 				validatorPolicyField.SetValue(validator, policy);
 
+#if NETFRAMEWORK
 				var validateMethod = validatorType.GetMethod("Validate", BindingFlags.Public | BindingFlags.Instance);
+#else
+				MethodInfo validateMethod = null;
+#endif
 				if (validateMethod != null) validateMethod.Invoke(validator, new object[] { Client.Credentials.UserName, Client.Credentials.Password });
 				else
 				{
 					validateMethod = validatorType.GetMethod("ValidateAsync", BindingFlags.Public | BindingFlags.Instance);
 					if (validateMethod != null)
 					{
-						(validateMethod.Invoke(validator, new object[] { Client.Credentials.UserName, Client.Credentials.Password }) as Task).Wait();
+						var valueTask = (ValueTask)validateMethod.Invoke(validator, new object[] { Client.Credentials.UserName, Client.Credentials.Password });
+						if (!valueTask.IsCompleted || valueTask.IsFaulted) valueTask.AsTask().Wait();
 					}
 					else throw new NotSupportedException("Validator method not found.");
 				}

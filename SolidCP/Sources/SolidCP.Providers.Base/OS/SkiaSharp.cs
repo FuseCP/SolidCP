@@ -43,7 +43,7 @@ namespace SolidCP.Providers.OS
 
                     if (File.Exists(nativeDllPath))
                     {
-                        // call NativeLibrary.Load via reflection, becuase it's not available in NET Standard
+                        // call NativeLibrary.Load via reflection, because it's not available in NET Standard
                         var nativeLibrary = Type.GetType("System.Runtime.InteropServices.NativeLibrary, System.Runtime.InteropServices");
                         var load = nativeLibrary.GetMethod("Load", new Type[] { typeof(string), typeof(Assembly), typeof(DllImportSearchPath?) });
                         dll = (IntPtr)load?.Invoke(null, new object[] { nativeDllPath, assembly, searchPath });

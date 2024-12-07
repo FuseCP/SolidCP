@@ -122,30 +122,31 @@ namespace SolidCP.WebPortal
 		{
 			if (Debug && !Debugger.IsAttached) Debugger.Launch();
 
+#if NETFRAMEWORK
 			Web.Clients.CertificateValidator.Init();
-
+#endif
 			// start Enterprise Server
 			string serverUrl = PortalConfiguration.SiteSettings["EnterpriseServer"];
 			if (serverUrl.StartsWith("http://") || serverUrl.StartsWith("https://"))
 			{
-				HttpWebRequest request = (HttpWebRequest)WebRequest.Create(serverUrl);
-				request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-				request.Proxy = null;
-				request.Method = "GET";
-				request.GetResponseAsync();
+				var httpClientHandler = new HttpClientHandler() { AllowAutoRedirect = false };
+				using (var client = new HttpClient(httpClientHandler))
+					client.GetAsync(serverUrl);
 			} else if (!serverUrl.StartsWith("assembly://"))
-			{
+			{ // Start EnterpriseServer
 				var esTestClient = new SolidCP.EnterpriseServer.Client.esTest();
 				esTestClient.Url = serverUrl;
 				TouchTask = esTestClient.TouchAsync();
 			} else
 			{
+#if NETFRAMEWORK
 				Web.Clients.AssemblyLoader.Init();
+#endif
 			}
 
-            VncWebSocketHandler.Init();
+			VncWebSocketHandler.Init();
 
-            ScriptManager.ScriptResourceMapping.AddDefinition("jquery",
+			ScriptManager.ScriptResourceMapping.AddDefinition("jquery",
 				new ScriptResourceDefinition
 				{
 					Path = "~/JavaScript/jquery-2.1.0.min.js"
@@ -179,7 +180,9 @@ namespace SolidCP.WebPortal
 		{
 			try
 			{
-				using (HttpWebRequest.Create(keepAliveUrl).GetResponse()) { }
+				var httpClientHandler = new HttpClientHandler() { AllowAutoRedirect = false };
+				using (var client = new HttpClient(httpClientHandler))
+					client.GetAsync(keepAliveUrl);
 			}
 			catch { }
 		}

@@ -24,15 +24,27 @@ namespace SolidCP.EnterpriseServer.Data
     public partial class DbContext : IDisposable
     {
 
+        public DateTime DateTimeMin = new DateTime(1735, 1, 1);
+
         public const bool UseStoredProcedures = true;
 
-        static string connectionString = null;
+        string connectionString = null;
+        string nativeConnectionString = null;
         public string ConnectionString
         {
-            get => connectionString ?? (ConnectionString = DbSettings.ConnectionString);
-            set
+            get => connectionString ??= DbSettings.ConnectionString;
+            set => connectionString = value;
+        }
+
+        public string NativeConnectionString {
+            get
             {
-                connectionString = value;
+                if (nativeConnectionString != null) return nativeConnectionString;
+                NativeConnectionString = ConnectionString;
+                return nativeConnectionString;
+            }
+            set {
+                nativeConnectionString = value;
 				DbType dbType = DbType.Unknown;
 				var csb = new ConnectionStringBuilder(value);
                 var dbTypeStr = csb["DbType"] as string;
@@ -50,33 +62,39 @@ namespace SolidCP.EnterpriseServer.Data
                         dbFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dbFile);
                         csb["Data Source"] = dbFile;
                     }
+#if NETFRAMEWORK
                     csb["BinaryGUID"] = "false";
-                    csb["Foreign Keys"] = "true";
                     csb["Busy Timeout"] = "10000";
                     csb["Journal Mode"] = "WAL";
                     csb["Synchronous"] = "Normal";
+#endif
+					csb["Foreign Keys"] = "true";
                 }
-                connectionString = csb.ToString();
+                nativeConnectionString = csb.ToString();
             }
         }
 
-        DbConnection SqlServerDbConnection => new Microsoft.Data.SqlClient.SqlConnection(ConnectionString);
+        DbConnection SqlServerDbConnection => new Microsoft.Data.SqlClient.SqlConnection(NativeConnectionString);
 #if NETFRAMEWORK
-        DbConnection MySqlDbConnection => new MySql.Data.MySqlClient.MySqlConnection(ConnectionString);
+        DbConnection MySqlDbConnection => new MySql.Data.MySqlClient.MySqlConnection(NativeConnectionString);
 #else
-        DbConnection MySqlDbConnection => new MySqlConnector.MySqlConnection(ConnectionString);
+        DbConnection MySqlDbConnection => new MySqlConnector.MySqlConnection(NativeConnectionString);
 
 #endif
-		DbConnection PostgreSqlDbConnection => new Npgsql.NpgsqlConnection(ConnectionString);
+		DbConnection PostgreSqlDbConnection => new Npgsql.NpgsqlConnection(NativeConnectionString);
+
+#if Oracle
+        DbConnection OracleConnection => new Oracle.ManagedDataAccess.Client.OracleConnection(NativeConnectionString);
+#endif
 
         DbConnection SqliteDbConnection
         {
             get
             {
 #if NETFRAMEWORK
-                return new System.Data.SQLite.SQLiteConnection(ConnectionString);
+                return new System.Data.SQLite.SQLiteConnection(NativeConnectionString);
 #else
-                return new Microsoft.Data.Sqlite.SqliteConnection(ConnectionString);
+                return new Microsoft.Data.Sqlite.SqliteConnection(NativeConnectionString);
 #endif
             }
         }
@@ -109,7 +127,14 @@ namespace SolidCP.EnterpriseServer.Data
 						case DbType.PostgreSql:
 							dbConnection = PostgreSqlDbConnection;
 							break;
-					}
+                        case DbType.Oracle:
+#if Oracle
+                            dbConnection = OracleConnection;
+#else
+                            throw new NotSupportedException("Oracle is not supported.");
+#endif
+                            break;
+                    }
                 }
                 return dbConnection;
 			}
@@ -147,6 +172,9 @@ namespace SolidCP.EnterpriseServer.Data
                         case DbType.PostgreSql: contextType = typeof(PostgreSqlDbContext); break;
                         case DbType.Sqlite:
                         case DbType.SqliteFX: contextType = typeof(SqliteDbContext); break;
+#if Oracle
+                        case DbType.Oracle: contextType = typeof(OracleDbContext); break;
+#endif
                     }
                 }
                 return contextType;
@@ -193,9 +221,9 @@ namespace SolidCP.EnterpriseServer.Data
                 var csb = new ConnectionStringBuilder(connectionString);
                 if (!Enum.TryParse<DbType>((string)(csb["DbType"] ?? "Unknown"), out dbType)) dbType = DbType.Other;
             }*/
-            if (dbType == DbType.Unknown) DbType = DbSettings.GetDbType(connectionString);
-            else DbType = dbType;
 			ConnectionString = connectionString;
+			if (dbType != DbType.Unknown) DbType = dbType;
+
 			InitSeedData = initSeedData;
 #if NETSTANDARD
             BaseContext = (IGenericDbContext)Activator.CreateInstance(ContextType, this);
@@ -217,6 +245,7 @@ namespace SolidCP.EnterpriseServer.Data
         public bool IsSqliteCore => DbType == DbType.Sqlite;
 		public bool IsPostgreSql => DbType == DbType.PostgreSql;
         public bool IsMariaDb => DbType == DbType.MariaDb;
+        public bool IsOracle => DbType == DbType.Oracle;
         public bool HasProcedures => IsSqlServer && UseStoredProcedures;
 
 #if NetCore

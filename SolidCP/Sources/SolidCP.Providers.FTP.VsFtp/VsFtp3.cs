@@ -40,22 +40,66 @@ using System.Linq;
 using System.Diagnostics;
 using Mono.Posix;
 using Mono.Unix;
+using CryptSharp;
 
 using SolidCP.Providers;
 using SolidCP.Providers.OS;
 using SolidCP.Providers.FTP;
 using SolidCP.Server.Utils;
+using Mono.Unix.Native;
 
 namespace SolidCP.Providers.FTP
 {
 	public class VsFtp3 : HostingServiceProviderBase, IFtpServer
 	{
-		public string ConfigPath => ProviderSettings[nameof(ConfigPath)];
+		readonly string NewLine = Environment.NewLine;
+		const string PasswordFile = "/etc/vsftpd/ftpd.passwd";
+		const string UsersConfigFolder = "/etc/vsftpd/users";
+		const string VsftpdUser = "solidcp-vsftpd";
+		const string SolidCPUser = "solidcp";
+		const string VsftpdGroup = "solidcp";
+		const string LocalRoot = "/var/www";
+		const string LocalUmask = "022";
+
+		IUnixOperatingSystem Unix => OSInfo.Unix;
+		public string ConfigFile => ProviderSettings[nameof(ConfigFile)];
 
 		VsFtpConfig config = null;
-		public VsFtpConfig Config => config ?? (config = new VsFtpConfig(ConfigPath));
+		public VsFtpConfig Config => config ??= new VsFtpConfig(ConfigFile);
 
 		public Shell Shell => Shell.Default;
+		public void Restart() => Unix.ServiceController.Restart("vsftpd");
+		public void EnsureSetup()
+		{
+			if (!Regex.IsMatch(Config.Text, @"^# This file has been modified by SolidCP\.", RegexOptions.Multiline))
+			{
+				// Create solidcp-vsftpd user
+				Shell.Exec($"useradd --home /home/{VsftpdUser} --gid {VsftpdGroup} -m --shell /bin/false {VsftpdUser}");
+
+				// Configure PAM
+				File.WriteAllText($"/etc/pam.d/{VsftpdUser}", @$"auth required pam_pwdfile.so pwdfile {PasswordFile}{NewLine}account required pam_permit.so");
+
+				// Configure vsftpd
+				Config.Text = $"# This file has been modified by SolidCP.{NewLine}{Config.Text}{NewLine}# SolidCP settings";
+				Config.AnonymousEnable = false;
+				Config.LocalEnable = true;
+				Config.WriteEnable = true;
+				Config.LocalUmask = LocalUmask;
+				Config.LocalRoot = LocalRoot;
+				Config.ChrootLocalUser = true;
+				Config.AllowWriteableChroot = true;
+				//Config.HideIds = true;
+				if (!Directory.Exists(UsersConfigFolder)) Directory.CreateDirectory(UsersConfigFolder);
+				Config.GuestEnable = true;
+				Config.VirtualUseLocalPrivs = true;
+				Config.PamServiceName = VsftpdUser;
+				Config.NoprivUser = VsftpdUser;
+				Config.GuestUsername = VsftpdUser;
+				Config.Save();
+
+				Restart();
+			}
+		}
 
 		#region Sites
 
@@ -108,140 +152,150 @@ namespace SolidCP.Providers.FTP
 
 		#region Accounts
 
-		IEnumerable<string> Users
+		IEnumerable<string> EnabledUsers
 		{
 			get
 			{
-				if (Config.UserListEnable)
-				{
-					if (!Config.UserListDeny)
-					{
-						return Config.UserList;
-					}
-					else
-					{
-						var denyUsers = Config.UserList;
-						var users = UnixUserInfo.GetLocalUsers().Select(user => user.UserName);
-						return users.Except(denyUsers);
-					}
-				}
-				else if (Config.LocalEnable)
-				{
-					return UnixUserInfo.GetLocalUsers().Select(user => user.UserName);
-				}
-				return new string[0];
-
+				var passwdFile = File.ReadAllText(PasswordFile);
+				return Regex.Matches(passwdFile, "^.*?(?=:)", RegexOptions.Multiline)
+					.OfType<Match>()
+					.Select(m => m.Value);
 			}
 		}
-		public virtual bool AccountExists(string accountName) => Users.Any(user => user == accountName);
+		IEnumerable<string> Users => Directory.EnumerateFiles(UsersConfigFolder)
+			.Select(Path.GetFileName);
 
+		public virtual bool AccountExists(string accountName) {
+			EnsureSetup();	
+			return Users.Any(user => user == accountName);
+		}
 		public virtual FtpAccount GetAccount(string accountName)
 		{
-			try
+			EnsureSetup();
+
+			int n = 0;
+			if (Users.Any(user =>
 			{
-				var user = new UnixUserInfo(accountName);
+				n++;
+				return user == accountName;
+			}))
+			{
+				var configFile = $"{UsersConfigFolder}/{accountName}";
+				var userConfig = new VsFtpConfig(configFile);
 
 				var ftp = new FtpAccount()
 				{
-					CanRead = true,
-					CanWrite = true,
-					CreatedDate = DateTime.MinValue,
-					Enabled = true,
-					Folder = user.HomeDirectory,
-					Name = user.UserName,
-					GroupName = user.GroupName,
-					Id = Convert.ToInt32(user.UserId),
-					Password = user.Password
+					CanRead = userConfig.DownloadEnable,
+					CanWrite = userConfig.WriteEnable,
+					CreatedDate = File.GetCreationTime(configFile),
+					Enabled = EnabledUsers.Any(user => user == accountName),
+					Folder = userConfig.LocalRoot,
+					Name = accountName,
+					GroupName = VsftpdGroup,
+					Id = n,
+					Password = "****"
 				};
 				return ftp;
 			}
-			catch
-			{
-				return null;
-			}
+
+			return null;
 		}
 
-		public virtual FtpAccount[] GetAccounts() => Users.Select(user => GetAccount(user)).ToArray();
+		public virtual FtpAccount[] GetAccounts()
+		{
+			EnsureSetup();
+			return Users.Select(user => GetAccount(user)).ToArray();
+		}
+		public string PasswordToken(string password)
+		{
+			var token = Crypter.Sha512.Crypt(password, new CrypterOptions() { { CrypterOption.Rounds, 100000 } });
+			return token;
+		}
 
 		public virtual void CreateAccount(FtpAccount account)
 		{
-			bool exists;
-			try
-			{
-				var user = new UnixUserInfo(account.Name);
-				exists = true;
-			}
-			catch
-			{
-				exists = false;
-			}
-			if (exists) throw new ArgumentException($"User {account.Name} already exists.");
+			EnsureSetup();
 
-			if (!Directory.Exists(account.Folder) && !string.IsNullOrEmpty(account.Folder)) Directory.CreateDirectory(account.Folder);
-			// add user and set password
-			Shell.Exec($"useradd -s /bin/nologin{(!string.IsNullOrEmpty(account.Folder) ? $" -d {account.Folder}" : "")} {account.Name}");
-			Shell.Exec($"echo \"{account.Password}\" | passwd {account.Name} -stdin");
+			if (AccountExists(account.Name)) throw new InvalidOperationException($"User {account.Name} already exists.");
 
-			// add to userlist file if necessary
-			if ((!Config.LocalEnable || Config.UserListEnable) && !Config.UserListDeny && account.Enabled)
+			if (!Directory.Exists(account.Folder) && !string.IsNullOrEmpty(account.Folder))
 			{
-				if (!Config.UserList.Any(user => user == account.Name))
-				{
-					File.AppendAllLines(Config.UserListFile, new string[1] { account.Name });
-				}
+				Directory.CreateDirectory(account.Folder);
+				Unix.ChangeUnixFileOwner(account.Folder, SolidCPUser, VsftpdGroup);
 			}
+
+			// Create user's config file
+			var configFile = $"{UsersConfigFolder}/{account.Name}";
+			var config = new VsFtpConfig(configFile);
+			config.LocalRoot = account.Folder;
+			config.WriteEnable = account.CanWrite;
+			config.DownloadEnable = account.CanRead;
+			config.Save();
+			account.CreatedDate = File.GetCreationTime(configFile);
+
+			SetPassword(account);
+
+			Restart();
+		}
+
+		void SetPassword(FtpAccount account)
+		{
+			// Update user's password
+			var passwd = File.ReadAllText(PasswordFile).Trim();
+			// remove old password
+			passwd = Regex.Replace(passwd, @$"(?<=^|\n){Regex.Escape(account.Name)}:.*?(?:\r?\n|$)", "", RegexOptions.Singleline).Trim();
+			// add new password
+			if (account.Enabled)
+			{
+				if (!string.IsNullOrWhiteSpace(passwd)) passwd += NewLine;
+				passwd += $"{account.Name}:{PasswordToken(account.Password)}";
+			}
+			File.WriteAllText(PasswordFile, passwd);
 		}
 
 		public virtual void UpdateAccount(FtpAccount account)
 		{
-			if (!Directory.Exists(account.Folder) && !string.IsNullOrEmpty(account.Folder)) Directory.CreateDirectory(account.Folder);
+			EnsureSetup();
 
-			Shell.Exec($"usermod -p {account.Folder} {account.Name}");
-			Shell.Exec($"echo \"{account.Password}\" | passwd {account.Name} -stdin");
+			if (!AccountExists(account.Name)) throw new InvalidOperationException($"Ftp user account {account.Name} does not exist.");
 
-			// add to userlist file if necessary
-			if ((!Config.LocalEnable || Config.UserListEnable) && !Config.UserListDeny && account.Enabled)
+			if (!Directory.Exists(account.Folder) && !string.IsNullOrEmpty(account.Folder))
 			{
-				AddToUserList(account.Name);
-			}
-			if ((!Config.LocalEnable || Config.UserListEnable) && Config.UserListDeny && !account.Enabled)
-			{
-				AddToUserList(account.Name);
+				Directory.CreateDirectory(account.Folder);
+				Unix.ChangeUnixFileOwner(account.Folder, VsftpdUser, VsftpdGroup);
 			}
 
+			// Update user's config file
+			var config = new VsFtpConfig($"{UsersConfigFolder}/{account.Name}");
+			config.LocalRoot = account.Folder;
+			config.WriteEnable = account.CanWrite;
+			config.DownloadEnable = account.CanRead;
+			config.Save();
+
+			SetPassword(account);
+
+			Restart();
 		}
 
 		public virtual void DeleteAccount(string accountName)
 		{
+			EnsureSetup();
+
 			if (AccountExists(accountName))
 			{
-				Shell.Exec($"userdel {accountName}");
-				// remove from userlist file if necessary
-				if (!Config.LocalEnable || Config.UserListEnable)
-				{
-					RemoveFromUserList(accountName);
-				}
+				// Remove user from password file
+				var passwd = File.ReadAllText(PasswordFile);
+				passwd = Regex.Replace(passwd, @$"^{Regex.Escape(accountName)}:.*?(?:\r?\n|$)", "", RegexOptions.Multiline);
+				File.WriteAllText(PasswordFile, passwd);
+
+				// Remove user's config file
+				File.Delete($"{UsersConfigFolder}/{accountName}");
+
+				Restart();
 			}
 			else throw new ArgumentException($"User {accountName} does not exist.");
 		}
 		#endregion
-
-		void AddToUserList(string userName)
-		{
-			if (Config.UserListFile != null && !Config.UserList.Any(user => user == userName))
-			{
-				File.AppendAllLines(Config.UserListFile, new string[1] { userName });
-			}
-		}
-
-		void RemoveFromUserList(string userName)
-		{
-			if (Config.UserListFile != null && Config.UserList.Any(user => user == userName))
-			{
-				var list = Config.UserList.Where(user => user != userName).ToArray();
-				File.WriteAllLines(Config.UserListFile, list);
-			}
-		}
 
 		public override void ChangeServiceItemsState(ServiceProviderItem[] items, bool enabled)
 		{
@@ -315,4 +369,3 @@ namespace SolidCP.Providers.FTP
 
 	}
 }
-

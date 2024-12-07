@@ -2816,7 +2816,7 @@ BEGIN
     INSERT INTO public."Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
     VALUES (1903, NULL, 'SimpleDNS Plus 9.x', 'SimpleDNS', 7, 'SimpleDNS', 'SolidCP.Providers.DNS.SimpleDNS9, SolidCP.Providers.DNS.SimpleDNS90');
     INSERT INTO public."Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
-    VALUES (1910, NULL, 'vsftpd FTP Server 3 (Experimental)', 'vsftpd', 3, 'vsftpd', 'SolidCP.Providers.FTP.VsFtp3, SolidCP.Providers.FTP.VsFtp');
+    VALUES (1910, NULL, 'vsftpd FTP Server 3', 'vsftpd', 3, 'vsftpd', 'SolidCP.Providers.FTP.VsFtp3, SolidCP.Providers.FTP.VsFtp');
     INSERT INTO public."Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
     VALUES (1911, NULL, 'Apache Web Server 2.4 (Experimental)', 'Apache', 2, 'Apache', 'SolidCP.Providers.Web.Apache24, SolidCP.Providers.Web.Apache');
     END IF;

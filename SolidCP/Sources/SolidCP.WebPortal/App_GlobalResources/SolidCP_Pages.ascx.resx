@@ -558,12 +558,6 @@
   <data name="PageName.SpaceStoragesGroup" xml:space="preserve">
     <value>Space Storages</value>
   </data>
-  <data name="PageName.SpaceMariaDB" xml:space="preserve">
-    <value>MariaDB</value>
-  </data>
-  <data name="PageTitle.SpaceMariaDB" xml:space="preserve">
-    <value>{user} - {space} - MariaDB</value>
-  </data>
   <data name="PageName.AutoUpdateServers" xml:space="preserve">
     <value>Auto Update Servers</value>
   </data>

@@ -46,6 +46,7 @@ using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 using System.Globalization;
+using System.Diagnostics;
 using SolidCP.Portal;
 using SolidCP.Providers.OS;
 using System.Linq;
@@ -69,7 +70,7 @@ namespace SolidCP.WebPortal
         public const string MODULE_ICON_CONTROL_ID = "imgModuleIcon";
         public const string DESKTOP_MODULES_FOLDER = "DesktopModules";
 
-        protected string CultureCookieName
+		protected string CultureCookieName
         {
             get { return PortalConfiguration.SiteSettings["CultureCookieName"]; }
         }

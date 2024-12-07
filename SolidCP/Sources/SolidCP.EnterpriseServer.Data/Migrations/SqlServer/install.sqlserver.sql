@@ -9,8 +9,6 @@ END;
 GO
 
 BEGIN TRANSACTION;
-GO
-
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
     WHERE [MigrationId] = N'20241024041433_InitialCreate'
@@ -23,7 +21,6 @@ BEGIN
         CONSTRAINT [PK__Addition__3214EC27E665DDE2] PRIMARY KEY ([ID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -46,7 +43,6 @@ BEGIN
         CONSTRAINT [PK_Log] PRIMARY KEY ([RecordID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -58,7 +54,6 @@ BEGIN
         CONSTRAINT [PK_AuditLogSources] PRIMARY KEY ([SourceName])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -72,7 +67,6 @@ BEGIN
         CONSTRAINT [PK_LogActions] PRIMARY KEY ([SourceName], [TaskName])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -103,7 +97,6 @@ BEGIN
         CONSTRAINT [PK__Backgrou__3214EC273A1145AC] PRIMARY KEY ([ID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -116,7 +109,6 @@ BEGIN
         CONSTRAINT [PK_Clusters] PRIMARY KEY ([ClusterID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -134,7 +126,6 @@ BEGIN
         CONSTRAINT [PK__Exchange__3214EC27EF1C22C1] PRIMARY KEY ([ID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -149,7 +140,6 @@ BEGIN
         CONSTRAINT [PK_ExchangeDisclaimers] PRIMARY KEY ([ExchangeDisclaimerId])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -163,7 +153,6 @@ BEGIN
         CONSTRAINT [PK__Exchange__E467073C50CD805B] PRIMARY KEY ([PlanTagID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -180,7 +169,6 @@ BEGIN
         CONSTRAINT [PK__Exchange__657CFA4C02667D37] PRIMARY KEY ([TagID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -196,7 +184,6 @@ BEGIN
         CONSTRAINT [PK_OCSUsers] PRIMARY KEY ([OCSUserID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -211,7 +198,6 @@ BEGIN
         CONSTRAINT [PK_PackageSettings] PRIMARY KEY ([PackageID], [SettingsName], [PropertyName])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -229,7 +215,6 @@ BEGIN
         CONSTRAINT [PK_RDSCertificates] PRIMARY KEY ([ID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -245,7 +230,6 @@ BEGIN
         CONSTRAINT [PK__RDSColle__3214EC27346D361D] PRIMARY KEY ([ID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -262,7 +246,6 @@ BEGIN
         CONSTRAINT [PK_RDSServerSettings] PRIMARY KEY ([RdsServerId], [SettingsName], [PropertyName])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -278,7 +261,6 @@ BEGIN
         CONSTRAINT [PK_ResourceGroups] PRIMARY KEY ([GroupID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -292,7 +274,6 @@ BEGIN
         CONSTRAINT [PK_ScheduleTasks] PRIMARY KEY ([TaskID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -323,7 +304,6 @@ BEGIN
         CONSTRAINT [PK_SfBUserPlans] PRIMARY KEY ([SfBUserPlanId])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -340,7 +320,6 @@ BEGIN
         CONSTRAINT [PK_SfBUsers] PRIMARY KEY ([SfBUserID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -368,7 +347,6 @@ BEGIN
         CONSTRAINT [PK_SSLCertificates] PRIMARY KEY ([ID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -382,7 +360,6 @@ BEGIN
         CONSTRAINT [PK__StorageS__3214EC07B8D82363] PRIMARY KEY ([Id])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -396,7 +373,6 @@ BEGIN
         CONSTRAINT [PK__SupportS__09F03C065BA08AFB] PRIMARY KEY ([LevelID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -410,7 +386,6 @@ BEGIN
         CONSTRAINT [PK_SystemSettings] PRIMARY KEY ([SettingsName], [PropertyName])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -427,7 +402,6 @@ BEGIN
         CONSTRAINT [PK_TempIds] PRIMARY KEY ([Key])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -444,7 +418,6 @@ BEGIN
         CONSTRAINT [PK_Themes] PRIMARY KEY ([ThemeID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -460,7 +433,6 @@ BEGIN
         CONSTRAINT [PK_ThemeSettings] PRIMARY KEY ([ThemeSettingID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -506,7 +478,6 @@ BEGIN
         CONSTRAINT [FK_Users_Users] FOREIGN KEY ([OwnerID]) REFERENCES [Users] ([UserID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -519,7 +490,6 @@ BEGIN
         CONSTRAINT [PK_Versions] PRIMARY KEY ([DatabaseVersion])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -540,7 +510,6 @@ BEGIN
         CONSTRAINT [FK__Backgroun__TaskI__7D8391DF] FOREIGN KEY ([TaskID]) REFERENCES [BackgroundTasks] ([ID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -557,7 +526,6 @@ BEGIN
         CONSTRAINT [FK__Backgroun__TaskI__7AA72534] FOREIGN KEY ([TaskID]) REFERENCES [BackgroundTasks] ([ID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -571,7 +539,6 @@ BEGIN
         CONSTRAINT [FK__Backgroun__TaskI__005FFE8A] FOREIGN KEY ([TaskID]) REFERENCES [BackgroundTasks] ([ID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -600,7 +567,6 @@ BEGIN
         CONSTRAINT [FK_RDSCollectionSettings_RDSCollections] FOREIGN KEY ([RDSCollectionId]) REFERENCES [RDSCollections] ([ID]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -617,7 +583,6 @@ BEGIN
         CONSTRAINT [FK_RDSMessages_RDSCollections] FOREIGN KEY ([RDSCollectionId]) REFERENCES [RDSCollections] ([ID]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -637,7 +602,6 @@ BEGIN
         CONSTRAINT [FK_RDSServers_RDSCollectionId] FOREIGN KEY ([RDSCollectionId]) REFERENCES [RDSCollections] ([ID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -656,7 +620,6 @@ BEGIN
         CONSTRAINT [FK_Providers_ResourceGroups] FOREIGN KEY ([GroupID]) REFERENCES [ResourceGroups] ([GroupID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -675,7 +638,6 @@ BEGIN
         CONSTRAINT [FK_ResourceGroupDnsRecords_ResourceGroups] FOREIGN KEY ([GroupID]) REFERENCES [ResourceGroups] ([GroupID]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -705,7 +667,6 @@ BEGIN
         CONSTRAINT [FK_Servers_ResourceGroups] FOREIGN KEY ([PrimaryGroupID]) REFERENCES [ResourceGroups] ([GroupID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -729,7 +690,6 @@ BEGIN
         CONSTRAINT [FK_ServiceItemTypes_ResourceGroups] FOREIGN KEY ([GroupID]) REFERENCES [ResourceGroups] ([GroupID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -746,7 +706,6 @@ BEGIN
         CONSTRAINT [FK_ScheduleTaskParameters_ScheduleTasks] FOREIGN KEY ([TaskID]) REFERENCES [ScheduleTasks] ([TaskID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -762,7 +721,6 @@ BEGIN
         CONSTRAINT [FK_ScheduleTaskViewConfiguration_ScheduleTaskViewConfiguration] FOREIGN KEY ([TaskID]) REFERENCES [ScheduleTasks] ([TaskID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -778,7 +736,6 @@ BEGIN
         CONSTRAINT [FK_StorageSpaceLevelResourceGroups_LevelId] FOREIGN KEY ([LevelId]) REFERENCES [StorageSpaceLevels] ([Id]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -797,7 +754,6 @@ BEGIN
         CONSTRAINT [FK_Comments_Users] FOREIGN KEY ([UserID]) REFERENCES [Users] ([UserID]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -813,7 +769,6 @@ BEGIN
         CONSTRAINT [FK_UserSettings_Users] FOREIGN KEY ([UserID]) REFERENCES [Users] ([UserID]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -828,7 +783,6 @@ BEGIN
         CONSTRAINT [FK_ServiceDefaultProperties_Providers] FOREIGN KEY ([ProviderID]) REFERENCES [Providers] ([ProviderID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -853,7 +807,6 @@ BEGIN
         CONSTRAINT [FK_HostingPlans_Users] FOREIGN KEY ([UserID]) REFERENCES [Users] ([UserID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -874,7 +827,6 @@ BEGIN
         CONSTRAINT [FK_IPAddresses_Servers] FOREIGN KEY ([ServerID]) REFERENCES [Servers] ([ServerID]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -890,7 +842,6 @@ BEGIN
         CONSTRAINT [FK_ServerID] FOREIGN KEY ([ServerID]) REFERENCES [Servers] ([ServerID]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -911,7 +862,6 @@ BEGIN
         CONSTRAINT [FK_Services_Servers] FOREIGN KEY ([ServerID]) REFERENCES [Servers] ([ServerID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -929,7 +879,6 @@ BEGIN
         CONSTRAINT [FK_VirtualGroups_Servers] FOREIGN KEY ([ServerID]) REFERENCES [Servers] ([ServerID]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -952,7 +901,6 @@ BEGIN
         CONSTRAINT [FK_Quotas_ServiceItemTypes] FOREIGN KEY ([ItemTypeID]) REFERENCES [ServiceItemTypes] ([ItemTypeID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -969,7 +917,6 @@ BEGIN
         CONSTRAINT [FK_HostingPlanResources_ResourceGroups] FOREIGN KEY ([GroupID]) REFERENCES [ResourceGroups] ([GroupID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -997,7 +944,6 @@ BEGIN
         CONSTRAINT [FK_Packages_Users] FOREIGN KEY ([UserID]) REFERENCES [Users] ([UserID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1012,7 +958,6 @@ BEGIN
         CONSTRAINT [FK_ServiceProperties_Services] FOREIGN KEY ([ServiceID]) REFERENCES [Services] ([ServiceID]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1036,7 +981,6 @@ BEGIN
         CONSTRAINT [FK_StorageSpaces_ServiceId] FOREIGN KEY ([ServiceId]) REFERENCES [Services] ([ServiceID]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1052,7 +996,6 @@ BEGIN
         CONSTRAINT [FK_VirtualServices_Services] FOREIGN KEY ([ServiceID]) REFERENCES [Services] ([ServiceID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1068,7 +1011,6 @@ BEGIN
         CONSTRAINT [FK_HostingPlanQuotas_Quotas] FOREIGN KEY ([QuotaID]) REFERENCES [Quotas] ([QuotaID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1095,7 +1037,6 @@ BEGIN
         CONSTRAINT [FK_GlobalDnsRecords_Services] FOREIGN KEY ([ServiceID]) REFERENCES [Services] ([ServiceID]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1115,7 +1056,6 @@ BEGIN
         CONSTRAINT [FK_PackageAddons_Packages] FOREIGN KEY ([PackageID]) REFERENCES [Packages] ([PackageID]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1131,7 +1071,6 @@ BEGIN
         CONSTRAINT [FK_PackageQuotas_Quotas] FOREIGN KEY ([QuotaID]) REFERENCES [Quotas] ([QuotaID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1148,7 +1087,6 @@ BEGIN
         CONSTRAINT [FK_PackageResources_ResourceGroups] FOREIGN KEY ([GroupID]) REFERENCES [ResourceGroups] ([GroupID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1166,7 +1104,6 @@ BEGIN
         CONSTRAINT [FK_PackagesBandwidth_ResourceGroups] FOREIGN KEY ([GroupID]) REFERENCES [ResourceGroups] ([GroupID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1182,7 +1119,6 @@ BEGIN
         CONSTRAINT [FK_PackagesDiskspace_ResourceGroups] FOREIGN KEY ([GroupID]) REFERENCES [ResourceGroups] ([GroupID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1197,7 +1133,6 @@ BEGIN
         CONSTRAINT [FK_PackageServices_Services] FOREIGN KEY ([ServiceID]) REFERENCES [Services] ([ServiceID]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1212,7 +1147,6 @@ BEGIN
         CONSTRAINT [FK_PackagesTreeCache_Packages1] FOREIGN KEY ([PackageID]) REFERENCES [Packages] ([PackageID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1229,7 +1163,6 @@ BEGIN
         CONSTRAINT [FK_VlanID] FOREIGN KEY ([VlanID]) REFERENCES [PrivateNetworkVLANs] ([VlanID]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1258,7 +1191,6 @@ BEGIN
         CONSTRAINT [FK_Schedule_ScheduleTasks] FOREIGN KEY ([TaskID]) REFERENCES [ScheduleTasks] ([TaskID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1278,7 +1210,6 @@ BEGIN
         CONSTRAINT [FK_ServiceItems_Services] FOREIGN KEY ([ServiceID]) REFERENCES [Services] ([ServiceID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1298,7 +1229,6 @@ BEGIN
         CONSTRAINT [FK_StorageSpaceFolders_StorageSpaceId] FOREIGN KEY ([StorageSpaceId]) REFERENCES [StorageSpaces] ([Id]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1313,7 +1243,6 @@ BEGIN
         CONSTRAINT [FK_ScheduleParameters_Schedule] FOREIGN KEY ([ScheduleID]) REFERENCES [Schedule] ([ScheduleID]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1329,7 +1258,6 @@ BEGIN
         CONSTRAINT [FK_DmzIPAddresses_ServiceItems] FOREIGN KEY ([ItemID]) REFERENCES [ServiceItems] ([ItemID]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1359,7 +1287,6 @@ BEGIN
         CONSTRAINT [FK_Domains_ServiceItems_ZoneItem] FOREIGN KEY ([ZoneItemID]) REFERENCES [ServiceItems] ([ItemID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1376,7 +1303,6 @@ BEGIN
         CONSTRAINT [FK_ExchangeOrganizationDomains_ServiceItems] FOREIGN KEY ([ItemID]) REFERENCES [ServiceItems] ([ItemID]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1393,7 +1319,6 @@ BEGIN
         CONSTRAINT [FK_ExchangeOrganizations_ServiceItems] FOREIGN KEY ([ItemID]) REFERENCES [ServiceItems] ([ItemID]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1413,7 +1338,6 @@ BEGIN
         CONSTRAINT [FK_PackageIPAddresses_ServiceItems] FOREIGN KEY ([ItemID]) REFERENCES [ServiceItems] ([ItemID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1429,7 +1353,6 @@ BEGIN
         CONSTRAINT [FK_PrivateIPAddresses_ServiceItems] FOREIGN KEY ([ItemID]) REFERENCES [ServiceItems] ([ItemID]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1444,7 +1367,6 @@ BEGIN
         CONSTRAINT [FK_ServiceItemProperties_ServiceItems] FOREIGN KEY ([ItemID]) REFERENCES [ServiceItems] ([ItemID]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1464,7 +1386,6 @@ BEGIN
         CONSTRAINT [FK_EnterpriseFolders_StorageSpaceFolderId] FOREIGN KEY ([StorageSpaceFolderId]) REFERENCES [StorageSpaceFolders] ([Id]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1482,7 +1403,6 @@ BEGIN
         CONSTRAINT [FK_DomainDnsRecords_DomainId] FOREIGN KEY ([DomainId]) REFERENCES [Domains] ([DomainID]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1525,7 +1445,6 @@ BEGIN
         CONSTRAINT [FK_ExchangeMailboxPlans_ExchangeOrganizations] FOREIGN KEY ([ItemID]) REFERENCES [ExchangeOrganizations] ([ItemID]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1540,7 +1459,6 @@ BEGIN
         CONSTRAINT [FK_ExchangeOrganizationSettings_ExchangeOrganizations_ItemId] FOREIGN KEY ([ItemId]) REFERENCES [ExchangeOrganizations] ([ItemID]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1557,7 +1475,6 @@ BEGIN
         CONSTRAINT [FK_ExchangeOrganizationSsFolders_StorageSpaceFolderId] FOREIGN KEY ([StorageSpaceFolderId]) REFERENCES [StorageSpaceFolders] ([Id]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1589,7 +1506,6 @@ BEGIN
         CONSTRAINT [FK_LyncUserPlans_ExchangeOrganizations] FOREIGN KEY ([ItemID]) REFERENCES [ExchangeOrganizations] ([ItemID]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1620,7 +1536,6 @@ BEGIN
         CONSTRAINT [FK_ExchangeAccounts_ServiceItems] FOREIGN KEY ([ItemID]) REFERENCES [ServiceItems] ([ItemID]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1638,7 +1553,6 @@ BEGIN
         CONSTRAINT [FK_LyncUsers_LyncUserPlans] FOREIGN KEY ([LyncUserPlanID]) REFERENCES [LyncUserPlans] ([LyncUserPlanId])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1657,7 +1571,6 @@ BEGIN
         CONSTRAINT [FK_AccessTokens_UserId] FOREIGN KEY ([AccountID]) REFERENCES [ExchangeAccounts] ([AccountID]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1673,7 +1586,6 @@ BEGIN
         CONSTRAINT [FK_BlackBerryUsers_ExchangeAccounts] FOREIGN KEY ([AccountId]) REFERENCES [ExchangeAccounts] ([AccountID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1692,7 +1604,6 @@ BEGIN
         CONSTRAINT [FK_CRMUsers_ExchangeAccounts] FOREIGN KEY ([AccountID]) REFERENCES [ExchangeAccounts] ([AccountID])
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1709,7 +1620,6 @@ BEGIN
         CONSTRAINT [FK_EnterpriseFoldersOwaPermissions_FolderId] FOREIGN KEY ([FolderID]) REFERENCES [EnterpriseFolders] ([EnterpriseFolderID]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1724,7 +1634,6 @@ BEGIN
         CONSTRAINT [FK_ExchangeAccountEmailAddresses_ExchangeAccounts] FOREIGN KEY ([AccountID]) REFERENCES [ExchangeAccounts] ([AccountID]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1740,7 +1649,6 @@ BEGIN
         CONSTRAINT [FK_RDSCollectionUsers_UserId] FOREIGN KEY ([AccountID]) REFERENCES [ExchangeAccounts] ([AccountID]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1759,7 +1667,6 @@ BEGIN
         CONSTRAINT [FK_WebDavAccessTokens_UserId] FOREIGN KEY ([AccountID]) REFERENCES [ExchangeAccounts] ([AccountID]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1774,7 +1681,6 @@ BEGIN
         CONSTRAINT [FK_WebDavPortalUsersSettings_UserId] FOREIGN KEY ([AccountId]) REFERENCES [ExchangeAccounts] ([AccountID]) ON DELETE CASCADE
     );
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -1825,7 +1731,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'SourceName') AND [object_id] = OBJECT_ID(N'[AuditLogSources]'))
         SET IDENTITY_INSERT [AuditLogSources] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -2150,7 +2055,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'SourceName', N'TaskName', N'TaskDescription') AND [object_id] = OBJECT_ID(N'[AuditLogTasks]'))
         SET IDENTITY_INSERT [AuditLogTasks] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -2203,7 +2107,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'GroupID', N'GroupController', N'GroupName', N'GroupOrder', N'ShowGroup') AND [object_id] = OBJECT_ID(N'[ResourceGroups]'))
         SET IDENTITY_INSERT [ResourceGroups] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -2239,7 +2142,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'TaskID', N'RoleID', N'TaskType') AND [object_id] = OBJECT_ID(N'[ScheduleTasks]'))
         SET IDENTITY_INSERT [ScheduleTasks] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -2260,7 +2162,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'PropertyName', N'SettingsName', N'PropertyValue') AND [object_id] = OBJECT_ID(N'[SystemSettings]'))
         SET IDENTITY_INSERT [SystemSettings] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -2293,7 +2194,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ThemeSettingID', N'PropertyName', N'PropertyValue', N'SettingsName', N'ThemeID') AND [object_id] = OBJECT_ID(N'[ThemeSettings]'))
         SET IDENTITY_INSERT [ThemeSettings] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -2307,7 +2207,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ThemeID', N'DisplayName', N'DisplayOrder', N'Enabled', N'LTRName', N'RTLName') AND [object_id] = OBJECT_ID(N'[Themes]'))
         SET IDENTITY_INSERT [Themes] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -2321,7 +2220,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'UserID', N'AdditionalParams', N'Address', N'Changed', N'City', N'Comments', N'CompanyName', N'Country', N'Created', N'EcommerceEnabled', N'Email', N'FailedLogins', N'Fax', N'FirstName', N'HtmlMail', N'InstantMessenger', N'LastName', N'LoginStatusId', N'OneTimePasswordState', N'OwnerID', N'Password', N'PinSecret', N'PrimaryPhone', N'RoleID', N'SecondaryEmail', N'SecondaryPhone', N'State', N'StatusID', N'SubscriberNumber', N'Username', N'Zip') AND [object_id] = OBJECT_ID(N'[Users]'))
         SET IDENTITY_INSERT [Users] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -2342,7 +2240,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'DatabaseVersion', N'BuildDate') AND [object_id] = OBJECT_ID(N'[Versions]'))
         SET IDENTITY_INSERT [Versions] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -2356,7 +2253,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'PackageID', N'BandwidthUpdated', N'PackageComments', N'PackageName', N'ParentPackageID', N'PlanID', N'PurchaseDate', N'ServerID', N'StatusID', N'StatusIDchangeDate', N'UserID') AND [object_id] = OBJECT_ID(N'[Packages]'))
         SET IDENTITY_INSERT [Packages] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -2506,12 +2402,11 @@ BEGIN
     (1901, NULL, N''SimpleDNS Plus 8.x'', N''SimpleDNS'', 7, N''SimpleDNS'', N''SolidCP.Providers.DNS.SimpleDNS8, SolidCP.Providers.DNS.SimpleDNS80''),
     (1902, NULL, N''Microsoft DNS Server 2016'', N''MSDNS'', 7, N''MSDNS.2016'', N''SolidCP.Providers.DNS.MsDNS2016, SolidCP.Providers.DNS.MsDNS2016''),
     (1903, NULL, N''SimpleDNS Plus 9.x'', N''SimpleDNS'', 7, N''SimpleDNS'', N''SolidCP.Providers.DNS.SimpleDNS9, SolidCP.Providers.DNS.SimpleDNS90''),
-    (1910, NULL, N''vsftpd FTP Server 3 (Experimental)'', N''vsftpd'', 3, N''vsftpd'', N''SolidCP.Providers.FTP.VsFtp3, SolidCP.Providers.FTP.VsFtp''),
+    (1910, NULL, N''vsftpd FTP Server 3'', N''vsftpd'', 3, N''vsftpd'', N''SolidCP.Providers.FTP.VsFtp3, SolidCP.Providers.FTP.VsFtp''),
     (1911, NULL, N''Apache Web Server 2.4 (Experimental)'', N''Apache'', 2, N''Apache'', N''SolidCP.Providers.Web.Apache24, SolidCP.Providers.Web.Apache'')');
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ProviderID', N'DisableAutoDiscovery', N'DisplayName', N'EditorControl', N'GroupID', N'ProviderName', N'ProviderType') AND [object_id] = OBJECT_ID(N'[Providers]'))
         SET IDENTITY_INSERT [Providers] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -2815,7 +2710,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'QuotaID', N'GroupID', N'HideQuota', N'ItemTypeID', N'PerOrganization', N'QuotaDescription', N'QuotaName', N'QuotaOrder', N'QuotaTypeID', N'ServiceQuota') AND [object_id] = OBJECT_ID(N'[Quotas]'))
         SET IDENTITY_INSERT [Quotas] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -2844,7 +2738,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'RecordID', N'GroupID', N'MXPriority', N'RecordData', N'RecordName', N'RecordOrder', N'RecordType') AND [object_id] = OBJECT_ID(N'[ResourceGroupDnsRecords]'))
         SET IDENTITY_INSERT [ResourceGroupDnsRecords] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -2948,7 +2841,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ParameterID', N'TaskID', N'DataTypeID', N'DefaultValue', N'ParameterOrder') AND [object_id] = OBJECT_ID(N'[ScheduleTaskParameters]'))
         SET IDENTITY_INSERT [ScheduleTaskParameters] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -2983,7 +2875,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ConfigurationID', N'TaskID', N'Description', N'Environment') AND [object_id] = OBJECT_ID(N'[ScheduleTaskViewConfiguration]'))
         SET IDENTITY_INSERT [ScheduleTaskViewConfiguration] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -2997,7 +2888,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'Backupable', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
         SET IDENTITY_INSERT [ServiceItemTypes] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -3017,7 +2907,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'Backupable', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Importable', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
         SET IDENTITY_INSERT [ServiceItemTypes] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -3031,7 +2920,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'Backupable', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Importable', N'Searchable', N'Suspendable', N'TypeName') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
         SET IDENTITY_INSERT [ServiceItemTypes] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -3045,7 +2933,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
         SET IDENTITY_INSERT [ServiceItemTypes] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -3059,7 +2946,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'Backupable', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Importable', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
         SET IDENTITY_INSERT [ServiceItemTypes] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -3076,7 +2962,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
         SET IDENTITY_INSERT [ServiceItemTypes] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -3094,7 +2979,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'Backupable', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Importable', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
         SET IDENTITY_INSERT [ServiceItemTypes] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -3108,7 +2992,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'Backupable', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
         SET IDENTITY_INSERT [ServiceItemTypes] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -3122,7 +3005,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'Backupable', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Searchable', N'Suspendable', N'TypeName') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
         SET IDENTITY_INSERT [ServiceItemTypes] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -3137,7 +3019,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'Backupable', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
         SET IDENTITY_INSERT [ServiceItemTypes] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -3152,7 +3033,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'Backupable', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Importable', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
         SET IDENTITY_INSERT [ServiceItemTypes] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -3169,7 +3049,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
         SET IDENTITY_INSERT [ServiceItemTypes] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -3186,7 +3065,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'Backupable', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Importable', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
         SET IDENTITY_INSERT [ServiceItemTypes] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -3201,7 +3079,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
         SET IDENTITY_INSERT [ServiceItemTypes] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -3226,7 +3103,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'Backupable', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Importable', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
         SET IDENTITY_INSERT [ServiceItemTypes] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -3241,7 +3117,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
         SET IDENTITY_INSERT [ServiceItemTypes] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -3258,7 +3133,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'Backupable', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Importable', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
         SET IDENTITY_INSERT [ServiceItemTypes] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -3409,7 +3283,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'PropertyName', N'SettingsName', N'UserID', N'PropertyValue') AND [object_id] = OBJECT_ID(N'[UserSettings]'))
         SET IDENTITY_INSERT [UserSettings] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -3423,7 +3296,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'PackageID', N'ParentPackageID') AND [object_id] = OBJECT_ID(N'[PackagesTreeCache]'))
         SET IDENTITY_INSERT [PackagesTreeCache] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -3482,7 +3354,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'QuotaID', N'GroupID', N'HideQuota', N'ItemTypeID', N'PerOrganization', N'QuotaDescription', N'QuotaName', N'QuotaOrder', N'QuotaTypeID', N'ServiceQuota') AND [object_id] = OBJECT_ID(N'[Quotas]'))
         SET IDENTITY_INSERT [Quotas] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -3497,7 +3368,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ScheduleID', N'Enabled', N'FromTime', N'HistoriesNumber', N'Interval', N'LastRun', N'MaxExecutionTime', N'NextRun', N'PackageID', N'PriorityID', N'ScheduleName', N'ScheduleTypeID', N'StartTime', N'TaskID', N'ToTime', N'WeekMonthDay') AND [object_id] = OBJECT_ID(N'[Schedule]'))
         SET IDENTITY_INSERT [Schedule] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -3971,7 +3841,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'PropertyName', N'ProviderID', N'PropertyValue') AND [object_id] = OBJECT_ID(N'[ServiceDefaultProperties]'))
         SET IDENTITY_INSERT [ServiceDefaultProperties] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -3986,7 +3855,6 @@ BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ParameterID', N'ScheduleID', N'ParameterValue') AND [object_id] = OBJECT_ID(N'[ScheduleParameters]'))
         SET IDENTITY_INSERT [ScheduleParameters] OFF;
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -3995,7 +3863,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [AccessTokensIdx_AccountID] ON [AccessTokens] ([AccountID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4004,7 +3871,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [BackgroundTaskLogsIdx_TaskID] ON [BackgroundTaskLogs] ([TaskID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4013,7 +3879,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [BackgroundTaskParametersIdx_TaskID] ON [BackgroundTaskParameters] ([TaskID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4022,7 +3887,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [BackgroundTaskStackIdx_TaskID] ON [BackgroundTaskStack] ([TaskID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4031,7 +3895,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [BlackBerryUsersIdx_AccountId] ON [BlackBerryUsers] ([AccountId]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4040,7 +3903,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [CommentsIdx_UserID] ON [Comments] ([UserID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4049,7 +3911,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [CRMUsersIdx_AccountID] ON [CRMUsers] ([AccountID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4058,7 +3919,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [DmzIPAddressesIdx_ItemID] ON [DmzIPAddresses] ([ItemID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4067,7 +3927,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [DomainDnsRecordsIdx_DomainId] ON [DomainDnsRecords] ([DomainId]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4076,7 +3935,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [DomainsIdx_MailDomainID] ON [Domains] ([MailDomainID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4085,7 +3943,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [DomainsIdx_PackageID] ON [Domains] ([PackageID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4094,7 +3951,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [DomainsIdx_WebSiteID] ON [Domains] ([WebSiteID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4103,7 +3959,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [DomainsIdx_ZoneItemID] ON [Domains] ([ZoneItemID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4112,7 +3967,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [EnterpriseFoldersIdx_StorageSpaceFolderId] ON [EnterpriseFolders] ([StorageSpaceFolderId]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4121,7 +3975,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [EnterpriseFoldersOwaPermissionsIdx_AccountID] ON [EnterpriseFoldersOwaPermissions] ([AccountID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4130,7 +3983,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [EnterpriseFoldersOwaPermissionsIdx_FolderID] ON [EnterpriseFoldersOwaPermissions] ([FolderID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4139,7 +3991,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [ExchangeAccountEmailAddressesIdx_AccountID] ON [ExchangeAccountEmailAddresses] ([AccountID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4148,7 +3999,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE UNIQUE INDEX [IX_ExchangeAccountEmailAddresses_UniqueEmail] ON [ExchangeAccountEmailAddresses] ([EmailAddress]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4157,7 +4007,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [ExchangeAccountsIdx_ItemID] ON [ExchangeAccounts] ([ItemID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4166,7 +4015,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [ExchangeAccountsIdx_MailboxPlanId] ON [ExchangeAccounts] ([MailboxPlanId]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4175,7 +4023,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE UNIQUE INDEX [IX_ExchangeAccounts_UniqueAccountName] ON [ExchangeAccounts] ([AccountName]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4184,7 +4031,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [ExchangeMailboxPlansIdx_ItemID] ON [ExchangeMailboxPlans] ([ItemID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4193,7 +4039,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE UNIQUE INDEX [IX_ExchangeMailboxPlans] ON [ExchangeMailboxPlans] ([MailboxPlanId]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4202,7 +4047,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [ExchangeOrganizationDomainsIdx_ItemID] ON [ExchangeOrganizationDomains] ([ItemID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4211,7 +4055,6 @@ IF NOT EXISTS (
 BEGIN
     EXEC(N'CREATE UNIQUE INDEX [IX_ExchangeOrganizationDomains_UniqueDomain] ON [ExchangeOrganizationDomains] ([DomainID]) WHERE [DomainID] IS NOT NULL');
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4220,7 +4063,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE UNIQUE INDEX [IX_ExchangeOrganizations_UniqueOrg] ON [ExchangeOrganizations] ([OrganizationID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4229,7 +4071,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [ExchangeOrganizationSettingsIdx_ItemId] ON [ExchangeOrganizationSettings] ([ItemId]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4238,7 +4079,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [ExchangeOrganizationSsFoldersIdx_ItemId] ON [ExchangeOrganizationSsFolders] ([ItemId]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4247,7 +4087,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [ExchangeOrganizationSsFoldersIdx_StorageSpaceFolderId] ON [ExchangeOrganizationSsFolders] ([StorageSpaceFolderId]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4256,7 +4095,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [GlobalDnsRecordsIdx_IPAddressID] ON [GlobalDnsRecords] ([IPAddressID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4265,7 +4103,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [GlobalDnsRecordsIdx_PackageID] ON [GlobalDnsRecords] ([PackageID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4274,7 +4111,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [GlobalDnsRecordsIdx_ServerID] ON [GlobalDnsRecords] ([ServerID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4283,7 +4119,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [GlobalDnsRecordsIdx_ServiceID] ON [GlobalDnsRecords] ([ServiceID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4292,7 +4127,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [IX_HostingPlanQuotas_QuotaID] ON [HostingPlanQuotas] ([QuotaID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4301,7 +4135,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [IX_HostingPlanResources_GroupID] ON [HostingPlanResources] ([GroupID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4310,7 +4143,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [HostingPlansIdx_PackageID] ON [HostingPlans] ([PackageID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4319,7 +4151,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [HostingPlansIdx_ServerID] ON [HostingPlans] ([ServerID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4328,7 +4159,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [HostingPlansIdx_UserID] ON [HostingPlans] ([UserID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4337,7 +4167,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [IPAddressesIdx_ServerID] ON [IPAddresses] ([ServerID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4346,7 +4175,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE UNIQUE INDEX [IX_LyncUserPlans] ON [LyncUserPlans] ([LyncUserPlanId]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4355,7 +4183,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [LyncUserPlansIdx_ItemID] ON [LyncUserPlans] ([ItemID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4364,7 +4191,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [LyncUsersIdx_LyncUserPlanID] ON [LyncUsers] ([LyncUserPlanID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4373,7 +4199,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [PackageAddonsIdx_PackageID] ON [PackageAddons] ([PackageID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4382,7 +4207,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [PackageAddonsIdx_PlanID] ON [PackageAddons] ([PlanID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4391,7 +4215,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [PackageIPAddressesIdx_AddressID] ON [PackageIPAddresses] ([AddressID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4400,7 +4223,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [PackageIPAddressesIdx_ItemID] ON [PackageIPAddresses] ([ItemID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4409,7 +4231,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [PackageIPAddressesIdx_PackageID] ON [PackageIPAddresses] ([PackageID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4418,7 +4239,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [IX_PackageQuotas_QuotaID] ON [PackageQuotas] ([QuotaID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4427,7 +4247,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [IX_PackageResources_GroupID] ON [PackageResources] ([GroupID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4436,7 +4255,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [PackageIndex_ParentPackageID] ON [Packages] ([ParentPackageID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4445,7 +4263,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [PackageIndex_PlanID] ON [Packages] ([PlanID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4454,7 +4271,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [PackageIndex_ServerID] ON [Packages] ([ServerID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4463,7 +4279,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [PackageIndex_UserID] ON [Packages] ([UserID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4472,7 +4287,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [IX_PackagesBandwidth_GroupID] ON [PackagesBandwidth] ([GroupID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4481,7 +4295,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [IX_PackagesDiskspace_GroupID] ON [PackagesDiskspace] ([GroupID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4490,7 +4303,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [IX_PackageServices_ServiceID] ON [PackageServices] ([ServiceID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4499,7 +4311,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [IX_PackagesTreeCache_PackageID] ON [PackagesTreeCache] ([PackageID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4508,7 +4319,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [PackageVLANsIdx_PackageID] ON [PackageVLANs] ([PackageID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4517,7 +4327,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [PackageVLANsIdx_VlanID] ON [PackageVLANs] ([VlanID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4526,7 +4335,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [PrivateIPAddressesIdx_ItemID] ON [PrivateIPAddresses] ([ItemID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4535,7 +4343,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [PrivateNetworkVLANsIdx_ServerID] ON [PrivateNetworkVLANs] ([ServerID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4544,7 +4351,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [ProvidersIdx_GroupID] ON [Providers] ([GroupID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4553,7 +4359,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [QuotasIdx_GroupID] ON [Quotas] ([GroupID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4562,7 +4367,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [QuotasIdx_ItemTypeID] ON [Quotas] ([ItemTypeID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4571,7 +4375,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [RDSCollectionSettingsIdx_RDSCollectionId] ON [RDSCollectionSettings] ([RDSCollectionId]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4580,7 +4383,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [RDSCollectionUsersIdx_AccountID] ON [RDSCollectionUsers] ([AccountID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4589,7 +4391,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [RDSCollectionUsersIdx_RDSCollectionId] ON [RDSCollectionUsers] ([RDSCollectionId]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4598,7 +4399,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [RDSMessagesIdx_RDSCollectionId] ON [RDSMessages] ([RDSCollectionId]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4607,7 +4407,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [RDSServersIdx_RDSCollectionId] ON [RDSServers] ([RDSCollectionId]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4616,7 +4415,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [ResourceGroupDnsRecordsIdx_GroupID] ON [ResourceGroupDnsRecords] ([GroupID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4625,7 +4423,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [ScheduleIdx_PackageID] ON [Schedule] ([PackageID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4634,7 +4431,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [ScheduleIdx_TaskID] ON [Schedule] ([TaskID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4643,7 +4439,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [IX_ScheduleTaskViewConfiguration_TaskID] ON [ScheduleTaskViewConfiguration] ([TaskID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4652,7 +4447,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [ServersIdx_PrimaryGroupID] ON [Servers] ([PrimaryGroupID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4661,7 +4455,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [ServiceItemsIdx_ItemTypeID] ON [ServiceItems] ([ItemTypeID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4670,7 +4463,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [ServiceItemsIdx_PackageID] ON [ServiceItems] ([PackageID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4679,7 +4471,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [ServiceItemsIdx_ServiceID] ON [ServiceItems] ([ServiceID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4688,7 +4479,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [ServiceItemTypesIdx_GroupID] ON [ServiceItemTypes] ([GroupID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4697,7 +4487,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [ServicesIdx_ClusterID] ON [Services] ([ClusterID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4706,7 +4495,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [ServicesIdx_ProviderID] ON [Services] ([ProviderID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4715,7 +4503,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [ServicesIdx_ServerID] ON [Services] ([ServerID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4724,7 +4511,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [StorageSpaceFoldersIdx_StorageSpaceId] ON [StorageSpaceFolders] ([StorageSpaceId]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4733,7 +4519,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [StorageSpaceLevelResourceGroupsIdx_GroupId] ON [StorageSpaceLevelResourceGroups] ([GroupId]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4742,7 +4527,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [StorageSpaceLevelResourceGroupsIdx_LevelId] ON [StorageSpaceLevelResourceGroups] ([LevelId]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4751,7 +4535,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [StorageSpacesIdx_ServerId] ON [StorageSpaces] ([ServerId]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4760,7 +4543,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [StorageSpacesIdx_ServiceId] ON [StorageSpaces] ([ServiceId]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4769,7 +4551,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [IX_TempIds_Created_Scope_Level] ON [TempIds] ([Created], [Scope], [Level]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4778,7 +4559,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [ThemeSettingsIdx_ThemeID] ON [ThemeSettings] ([ThemeID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4787,7 +4567,6 @@ IF NOT EXISTS (
 BEGIN
     EXEC(N'CREATE UNIQUE INDEX [IX_Users_Username] ON [Users] ([Username]) WHERE [Username] IS NOT NULL');
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4796,7 +4575,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [UsersIdx_OwnerID] ON [Users] ([OwnerID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4805,7 +4583,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [VirtualGroupsIdx_GroupID] ON [VirtualGroups] ([GroupID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4814,7 +4591,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [VirtualGroupsIdx_ServerID] ON [VirtualGroups] ([ServerID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4823,7 +4599,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [VirtualServicesIdx_ServerID] ON [VirtualServices] ([ServerID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4832,7 +4607,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [VirtualServicesIdx_ServiceID] ON [VirtualServices] ([ServiceID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4841,7 +4615,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [WebDavAccessTokensIdx_AccountID] ON [WebDavAccessTokens] ([AccountID]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4850,7 +4623,6 @@ IF NOT EXISTS (
 BEGIN
     CREATE INDEX [WebDavPortalUsersSettingsIdx_AccountId] ON [WebDavPortalUsersSettings] ([AccountId]);
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4859,7 +4631,6 @@ IF NOT EXISTS (
 BEGIN
     DROP VIEW IF EXISTS [dbo].[UsersDetailed]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4868,7 +4639,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateWhoisDomainInfo]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4877,7 +4647,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateWebDavPortalUsersSettings]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4886,7 +4655,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateVirtualGroups]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4895,7 +4663,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateUserThemeSetting]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4904,7 +4671,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateUserSettings]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4913,7 +4679,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateUserPinSecret]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4922,7 +4687,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateUserMfaMode]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4931,7 +4695,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateUserFailedLoginAttempt]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4940,7 +4703,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateUser]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4949,7 +4711,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateSupportServiceLevel]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4958,7 +4719,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateStorageSpaceLevel]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4967,7 +4727,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateStorageSpaceFolder]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4976,7 +4735,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateStorageSpace]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4985,7 +4743,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateSfBUserPlan]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -4994,7 +4751,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateSfBUser]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5003,7 +4759,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateServiceProperties]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5012,7 +4767,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateServiceItem]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5021,7 +4775,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateServiceFully]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5030,7 +4783,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateService]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5039,7 +4791,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateServer]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5048,7 +4799,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateSchedule]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5057,7 +4807,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateRDSServerSettings]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5066,7 +4815,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateRDSServer]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5075,7 +4823,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateRDSCollectionSettings]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5084,7 +4831,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateRDSCollection]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5093,7 +4839,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdatePrivateNetworVLAN]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5102,7 +4847,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdatePackageSettings]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5111,7 +4855,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdatePackageQuotas]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5120,7 +4863,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdatePackageName]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5129,7 +4871,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdatePackageDiskSpace]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5138,7 +4879,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdatePackageBandwidthUpdate]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5147,7 +4887,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdatePackageBandwidth]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5156,7 +4895,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdatePackageAddon]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5165,7 +4903,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdatePackage]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5174,7 +4911,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateLyncUserPlan]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5183,7 +4919,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateLyncUser]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5192,7 +4927,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateIPAddresses]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5201,7 +4935,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateIPAddress]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5210,7 +4943,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateHostingPlanQuotas]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5219,7 +4951,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateHostingPlan]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5228,7 +4959,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateExchangeRetentionPolicyTag]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5237,7 +4967,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateExchangeOrganizationSettings]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5246,7 +4975,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateExchangeMailboxPlan]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5255,7 +4983,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateExchangeDisclaimer]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5264,7 +4991,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateExchangeAccountUserPrincipalName]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5273,7 +4999,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateExchangeAccountSLSettings]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5282,7 +5007,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateExchangeAccount]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5291,7 +5015,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateEnterpriseFolder]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5300,7 +5023,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateEntepriseFolderStorageSpaceFolder]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5309,7 +5031,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateDomainLastUpdateDate]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5318,7 +5039,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateDomainExpirationDate]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5327,7 +5047,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateDomainDates]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5336,7 +5055,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateDomainCreationDate]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5345,7 +5063,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateDomain]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5354,7 +5071,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateDnsRecord]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5363,7 +5079,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateCRMUser]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5372,7 +5087,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateBackgroundTask]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5381,7 +5095,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[UpdateAdditionalGroup]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5390,7 +5103,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[SfBUserExists]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5399,7 +5111,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[SetUserOneTimePassword]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5408,7 +5119,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[SetSystemSettings]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5417,7 +5127,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[SetSfBUserSfBUserPlan]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5426,7 +5135,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[SetOrganizationDefaultSfBUserPlan]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5435,7 +5143,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[SetOrganizationDefaultLyncUserPlan]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5444,7 +5151,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[SetOrganizationDefaultExchangeMailboxPlan]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5453,7 +5159,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[SetLyncUserLyncUserPlan]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5462,7 +5167,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[SetItemPrivatePrimaryIPAddress]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5471,7 +5175,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[SetItemPrimaryIPAddress]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5480,7 +5183,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[SetExchangeAccountMailboxplan]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5489,7 +5191,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[SetExchangeAccountDisclaimerId]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5498,7 +5199,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[SetAccessTokenSmsResponse]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5507,7 +5207,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[SearchServiceItemsPaged]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5516,7 +5215,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[SearchOrganizationAccounts]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5525,7 +5223,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[SearchExchangeAccountsByTypes]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5534,7 +5231,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[SearchExchangeAccounts]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5543,7 +5239,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[SearchExchangeAccount]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5552,7 +5247,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[RemoveStorageSpaceLevel]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5561,7 +5255,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[RemoveStorageSpaceFolder]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5570,7 +5263,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[RemoveStorageSpace]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5579,7 +5271,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[RemoveRDSUserFromRDSCollection]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5588,7 +5279,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[RemoveRDSServerFromOrganization]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5597,7 +5287,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[RemoveRDSServerFromCollection]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5606,7 +5295,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[OrganizationUserExists]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5615,7 +5303,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[OrganizationExists]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5624,7 +5311,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[MoveServiceItem]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5633,7 +5319,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[LyncUserExists]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5642,7 +5327,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[InsertStorageSpaceLevel]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5651,7 +5335,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[InsertStorageSpace]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5660,7 +5343,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[InsertCRMUser]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5669,7 +5351,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetWebDavPortalUsersSettingsByAccountId]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5678,7 +5359,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetWebDavAccessTokenById]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5687,7 +5367,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetWebDavAccessTokenByAccessToken]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5696,7 +5375,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetVirtualServices]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5705,7 +5383,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetVirtualServers]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5714,7 +5391,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetVirtualMachinesPagedProxmox]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5723,7 +5399,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetVirtualMachinesPagedForPC]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5732,7 +5407,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetVirtualMachinesPaged2012]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5741,7 +5415,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetVirtualMachinesPaged]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5750,7 +5423,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetUsersSummary]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5759,7 +5431,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetUsersPaged]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5768,7 +5439,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetUserSettings]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5777,7 +5447,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetUserServiceID]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5786,7 +5455,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetUsers]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5795,7 +5463,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetUserPeers]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5804,7 +5471,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetUserParents]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5813,7 +5479,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetUserPackagesServerUrls]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5822,7 +5487,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetUserEnterpriseFolderWithOwaEditPermission]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5831,7 +5495,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetUserDomainsPaged]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5840,7 +5503,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetUserByUsernameInternally]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5849,7 +5511,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetUserByUsername]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5858,7 +5519,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetUserByIdInternally]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5867,7 +5527,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetUserById]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5876,7 +5535,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetUserByExchangeOrganizationIdInternally]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5885,7 +5543,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetUserAvailableHostingPlans]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5894,7 +5551,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetUserAvailableHostingAddons]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5903,7 +5559,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetUnallottedVLANs]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5912,7 +5567,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetUnallottedIPAddresses]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5921,7 +5575,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetThreadBackgroundTasks]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5930,7 +5583,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetThemeSettings]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5939,7 +5591,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetThemeSetting]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5948,7 +5599,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetThemes]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5957,7 +5607,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetSystemSettings]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5966,7 +5615,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetSupportServiceLevels]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5975,7 +5623,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetSupportServiceLevel]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5984,7 +5631,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpacesPaged]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -5993,7 +5639,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpacesByResourceGroupName]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6002,7 +5647,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpacesByLevelId]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6011,7 +5655,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpaceLevelsPaged]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6020,7 +5663,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpaceLevelById]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6029,7 +5671,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpaceFoldersByStorageSpaceId]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6038,7 +5679,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpaceFolderById]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6047,7 +5687,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpaceByServiceAndPath]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6056,7 +5695,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpaceById]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6065,7 +5703,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetSSLCertificateByID]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6074,7 +5711,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetSiteCert]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6083,7 +5719,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetSfBUsersCount]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6092,7 +5727,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetSfBUsersByPlanId]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6101,7 +5735,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetSfBUsers]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6110,7 +5743,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetSfBUserPlans]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6119,7 +5751,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetSfBUserPlanByAccountId]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6128,7 +5759,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetSfBUserPlan]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6137,7 +5767,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetServicesByServerIDGroupName]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6146,7 +5775,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetServicesByServerID]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6155,7 +5783,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetServicesByGroupName]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6164,7 +5791,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetServicesByGroupID]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6173,7 +5799,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetServiceProperties]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6182,7 +5807,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemTypes]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6191,7 +5815,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemType]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6200,7 +5823,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemsPaged]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6209,7 +5831,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemsForStatistics]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6218,7 +5839,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemsCountByNameAndServiceId]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6227,7 +5847,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemsCount]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6236,7 +5855,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemsByService]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6245,7 +5863,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemsByPackage]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6254,7 +5871,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemsByName]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6263,7 +5879,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetServiceItems]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6272,7 +5887,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemByName]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6281,7 +5895,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetServiceItem]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6290,7 +5903,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetService]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6299,7 +5911,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetServerShortDetails]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6308,7 +5919,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetServers]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6317,7 +5927,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetServerInternal]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6326,7 +5935,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetServerByName]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6335,7 +5943,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetServer]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6344,7 +5951,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetSearchTableByColumns]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6353,7 +5959,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetSearchObject]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6362,7 +5967,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetSearchableServiceItemTypes]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6371,7 +5975,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetScheduleTaskViewConfigurations]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6380,7 +5983,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetScheduleTasks]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6389,7 +5991,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetScheduleTaskEmailTemplate]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6398,7 +5999,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetScheduleTask]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6407,7 +6007,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetSchedulesPaged]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6416,7 +6015,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetSchedules]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6425,7 +6023,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetScheduleParameters]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6434,7 +6031,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetScheduleInternal]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6443,7 +6039,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetScheduleBackgroundTasks]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6452,7 +6047,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetSchedule]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6461,7 +6055,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetResourceGroups]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6470,7 +6063,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetResourceGroupByName]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6479,7 +6071,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetResourceGroup]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6488,7 +6079,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetResellerDomains]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6497,7 +6087,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetRDSServersPaged]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6506,7 +6095,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetRDSServerSettings]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6515,7 +6103,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetRDSServersByItemId]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6524,7 +6111,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetRDSServersByCollectionId]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6533,7 +6119,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetRDSServers]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6542,7 +6127,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetRDSServerById]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6551,7 +6135,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetRDSMessages]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6560,7 +6143,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetRDSControllerServiceIDbyFQDN]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6569,7 +6151,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetRDSCollectionUsersByRDSCollectionId]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6578,7 +6159,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetRDSCollectionsPaged]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6587,7 +6167,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetRDSCollectionSettingsByCollectionId]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6596,7 +6175,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetRDSCollectionsByItemId]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6605,7 +6183,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetRDSCollectionByName]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6614,7 +6191,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetRDSCollectionById]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6623,7 +6199,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetRDSCertificateByServiceId]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6632,7 +6207,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetRawServicesByServerID]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6641,7 +6215,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetQuotas]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6650,7 +6223,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetProviderServiceQuota]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6659,7 +6231,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetProviders]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6668,7 +6239,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetProviderByServiceID]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6677,7 +6247,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetProvider]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6686,7 +6255,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetProcessBackgroundTasks]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6695,7 +6263,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetPrivateNetworVLANsPaged]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6704,7 +6271,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetPrivateNetworVLAN]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6713,7 +6279,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetPendingSSLForWebsite]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6722,7 +6287,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetParentPackageQuotas]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6731,7 +6295,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetPackageUnassignedIPAddresses]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6740,7 +6303,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetPackagesPaged]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6749,7 +6311,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetPackageSettings]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6758,7 +6319,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetPackageServiceID]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6767,7 +6327,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetPackagesDiskspacePaged]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6776,7 +6335,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetPackagesBandwidthPaged]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6785,7 +6343,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetPackages]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6794,7 +6351,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetPackageQuotasForEdit]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6803,7 +6359,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetPackageQuotas]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6812,7 +6367,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetPackageQuota]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6821,7 +6375,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetPackagePrivateNetworkVLANs]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6830,7 +6383,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetPackagePrivateIPAddressesPaged]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6839,7 +6391,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetPackagePrivateIPAddresses]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6848,7 +6399,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetPackagePackages]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6857,7 +6407,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetPackageIPAddressesCount]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6866,7 +6415,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetPackageIPAddresses]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6875,7 +6423,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetPackageIPAddress]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6884,7 +6431,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetPackageDiskspace]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6893,7 +6439,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetPackageBandwidthUpdate]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6902,7 +6447,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetPackageBandwidth]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6911,7 +6455,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetPackageAddons]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6920,7 +6463,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetPackageAddon]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6929,7 +6471,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetPackage]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6938,7 +6479,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationStoragSpacesFolderByType]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6947,7 +6487,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationStoragSpaceFolders]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6956,7 +6495,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationStatistics]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6965,7 +6503,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationRdsUsersCount]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6974,7 +6511,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationRdsServersCount]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6983,7 +6519,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationRdsCollectionsCount]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -6992,7 +6527,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationObjectsByDomain]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7001,7 +6535,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationGroupsByDisplayName]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7010,7 +6543,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationDeletedUser]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7019,7 +6551,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationCRMUserCount]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7028,7 +6559,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetOCSUsersCount]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7037,7 +6567,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetOCSUsers]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7046,7 +6575,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetNextSchedule]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7055,7 +6583,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetNestedPackagesSummary]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7064,7 +6591,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetNestedPackagesPaged]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7073,7 +6599,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetMyPackages]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7082,7 +6607,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetLyncUsersCount]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7091,7 +6615,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetLyncUsersByPlanId]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7100,7 +6623,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetLyncUsers]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7109,7 +6631,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetLyncUserPlans]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7118,7 +6639,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetLyncUserPlanByAccountId]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7127,7 +6647,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetLyncUserPlan]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7136,7 +6655,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetLevelResourceGroups]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7145,7 +6663,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetItemPrivateIPAddresses]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7154,7 +6671,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetItemIPAddresses]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7163,7 +6679,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetItemIdByOrganizationId]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7172,7 +6687,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetIPAddressesPaged]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7181,7 +6695,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetIPAddresses]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7190,7 +6703,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetIPAddress]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7199,7 +6711,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetInstanceID]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7208,7 +6719,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetHostingPlans]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7217,7 +6727,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetHostingPlanQuotas]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7226,7 +6735,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetHostingPlan]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7235,7 +6743,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetHostingAddons]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7244,7 +6751,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetGroupProviders]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7253,7 +6759,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetFilterURLByHostingPlan]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7262,7 +6767,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetFilterURL]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7271,7 +6775,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetExchangeRetentionPolicyTags]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7280,7 +6783,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetExchangeRetentionPolicyTag]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7289,7 +6791,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetExchangeOrganizationStatistics]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7298,7 +6799,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetExchangeOrganizationSettings]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7307,7 +6807,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetExchangeOrganizationDomains]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7316,7 +6815,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetExchangeOrganization]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7325,7 +6823,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetExchangeMailboxPlans]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7334,7 +6831,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetExchangeMailboxPlanRetentionPolicyTags]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7343,7 +6839,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetExchangeMailboxPlan]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7352,7 +6847,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetExchangeMailboxes]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7361,7 +6855,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetExchangeDisclaimers]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7370,7 +6863,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetExchangeDisclaimer]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7379,7 +6871,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetExchangeAccountsPaged]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7388,7 +6879,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetExchangeAccounts]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7397,7 +6887,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetExchangeAccountEmailAddresses]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7406,7 +6895,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetExchangeAccountDisclaimerId]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7415,7 +6903,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetExchangeAccountByMailboxPlanId]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7424,7 +6911,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetExchangeAccountByAccountNameWithoutItemId]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7433,7 +6919,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetExchangeAccountByAccountName]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7442,7 +6927,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetExchangeAccount]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7451,7 +6935,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetEnterpriseFoldersPaged]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7460,7 +6943,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetEnterpriseFolders]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7469,7 +6951,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetEnterpriseFolderOwaUsers]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7478,7 +6959,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetEnterpriseFolderId]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7487,7 +6967,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetEnterpriseFolder]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7496,7 +6975,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetDomainsPaged]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7505,7 +6983,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetDomainsByZoneID]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7514,7 +6991,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetDomainsByDomainItemID]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7523,7 +6999,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetDomains]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7532,7 +7007,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetDomainDnsRecords]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7541,7 +7015,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetDomainByName]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7550,7 +7023,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetDomainAllDnsRecords]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7559,7 +7031,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetDomain]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7568,7 +7039,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetDnsRecordsTotal]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7577,7 +7047,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetDnsRecordsByService]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7586,7 +7055,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetDnsRecordsByServer]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7595,7 +7063,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetDnsRecordsByPackage]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7604,7 +7071,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetDnsRecordsByGroup]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7613,7 +7079,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetDnsRecord]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7622,7 +7087,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetCRMUsersCount]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7631,7 +7095,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetCRMUsers]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7640,7 +7103,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetCRMUser]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7649,7 +7111,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetCRMOrganizationUsers]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7658,7 +7119,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetComments]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7667,7 +7127,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetClusters]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7676,7 +7135,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetCertificatesForSite]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7685,7 +7143,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetBlackBerryUsersCount]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7694,7 +7151,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetBlackBerryUsers]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7703,7 +7159,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetBackgroundTopTask]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7712,7 +7167,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetBackgroundTasks]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7721,7 +7175,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetBackgroundTaskParams]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7730,7 +7183,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetBackgroundTaskLogs]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7739,7 +7191,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetBackgroundTask]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7748,7 +7199,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetAvailableVirtualServices]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7757,7 +7207,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetAuditLogTasks]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7766,7 +7215,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetAuditLogSources]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7775,7 +7223,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetAuditLogRecordsPaged]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7784,7 +7231,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetAuditLogRecord]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7793,7 +7239,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetAllServers]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7802,7 +7247,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetAllPackages]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7811,7 +7255,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetAdditionalGroups]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7820,7 +7263,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetAccessTokenByAccessToken]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7829,7 +7271,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[ExchangeOrganizationExists]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7838,7 +7279,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[ExchangeOrganizationDomainExists]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7847,7 +7287,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[ExchangeAccountExists]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7856,7 +7295,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[ExchangeAccountEmailAddressExists]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7865,7 +7303,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DistributePackageServices]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7874,7 +7311,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteVirtualServices]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7883,7 +7319,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteUserThemeSetting]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7892,7 +7327,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteUserEmailAddresses]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7901,7 +7335,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteUser]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7910,7 +7343,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteSupportServiceLevel]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7919,7 +7351,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteSfBUserPlan]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7928,7 +7359,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteSfBUser]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7937,7 +7367,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteServiceItem]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7946,7 +7375,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteService]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7955,7 +7383,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteServer]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7964,7 +7391,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteSchedule]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7973,7 +7399,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteRDSServerSettings]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7982,7 +7407,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteRDSServer]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -7991,7 +7415,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteRDSCollectionSettings]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8000,7 +7423,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteRDSCollection]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8009,7 +7431,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeletePrivateNetworkVLAN]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8018,7 +7439,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeletePackageAddon]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8027,7 +7447,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeletePackage]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8036,7 +7455,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteOrganizationUsers]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8045,7 +7463,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteOrganizationStoragSpacesFolder]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8054,7 +7471,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteOrganizationDeletedUser]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8063,7 +7479,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteOCSUser]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8072,7 +7487,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteLyncUserPlan]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8081,7 +7495,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteLyncUser]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8090,7 +7503,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteLevelResourceGroups]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8099,7 +7511,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteItemPrivateIPAddresses]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8108,7 +7519,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteItemPrivateIPAddress]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8117,7 +7527,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteItemIPAddresses]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8126,7 +7535,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteItemIPAddress]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8135,7 +7543,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteIPAddress]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8144,7 +7551,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteHostingPlan]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8153,7 +7559,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteExpiredWebDavAccessTokens]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8162,7 +7567,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteExpiredAccessTokenTokens]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8171,7 +7575,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteExchangeRetentionPolicyTag]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8180,7 +7583,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteExchangeOrganizationDomain]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8189,7 +7591,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteExchangeOrganization]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8198,7 +7599,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteExchangeMailboxPlanRetentionPolicyTag]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8207,7 +7607,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteExchangeMailboxPlan]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8216,7 +7615,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteExchangeDisclaimer]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8225,7 +7623,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteExchangeAccountEmailAddress]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8234,7 +7631,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteExchangeAccount]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8243,7 +7639,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteEnterpriseFolder]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8252,7 +7647,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteDomainDnsRecord]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8261,7 +7655,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteDomain]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8270,7 +7663,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteDnsRecord]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8279,7 +7671,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteCRMOrganization]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8288,7 +7679,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteComment]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8297,7 +7687,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteCluster]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8306,7 +7695,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteCertificate]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8315,7 +7703,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteBlackBerryUser]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8324,7 +7711,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteBackgroundTasks]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8333,7 +7719,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteBackgroundTaskParams]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8342,7 +7727,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteBackgroundTask]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8351,7 +7735,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteAuditLogRecordsComplete]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8360,7 +7743,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteAuditLogRecords]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8369,7 +7751,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteAllLogRecords]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8378,7 +7759,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteAllEnterpriseFolderOwaUsers]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8387,7 +7767,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteAdditionalGroup]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8396,7 +7775,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteAccessToken]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8405,7 +7783,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeallocatePackageVLAN]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8414,7 +7791,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeallocatePackageIPAddress]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8423,7 +7799,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[CreateStorageSpaceFolder]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8432,7 +7807,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[ConvertToExchangeOrganization]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8441,7 +7815,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[CompleteSSLRequest]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8450,7 +7823,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[CheckUserExists]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8459,7 +7831,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[CheckSSLExistsForWebsite]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8468,7 +7839,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[CheckSSL]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8477,7 +7847,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[CheckSfBUserExists]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8486,7 +7855,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[CheckServiceLevelUsage]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8495,7 +7863,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[CheckServiceItemExistsInService]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8504,7 +7871,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[CheckServiceItemExists]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8513,7 +7879,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[CheckRDSServer]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8522,7 +7887,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[CheckOCSUserExists]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8531,7 +7895,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[CheckLyncUserExists]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8540,7 +7903,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[CheckDomainUsedByHostedOrganization]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8549,7 +7911,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[CheckDomain]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8558,7 +7919,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[CheckBlackBerryUserExists]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8567,7 +7927,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[ChangeUserPassword]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8576,7 +7935,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[ChangePackageUser]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8585,7 +7943,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[ChangeExchangeAcceptedDomainType]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8594,7 +7951,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[CanChangeMfa]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8603,7 +7959,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AllocatePackageVLANs]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8612,7 +7967,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AllocatePackageIPAddresses]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8621,7 +7975,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddWebDavPortalUsersSettings]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8630,7 +7983,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddWebDavAccessToken]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8639,7 +7991,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddVirtualServices]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8648,7 +7999,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddUserToRDSCollection]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8657,7 +8007,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddUser]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8666,7 +8015,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddSupportServiceLevel]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8675,7 +8023,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddSSLRequest]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8684,7 +8031,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddSfBUserPlan]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8693,7 +8039,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddSfBUser]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8702,7 +8047,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddServiceItem]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8711,7 +8055,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddService]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8720,7 +8063,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddServer]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8729,7 +8071,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddSchedule]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8738,7 +8079,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddRDSServerToOrganization]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8747,7 +8087,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddRDSServerToCollection]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8756,7 +8095,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddRDSServer]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8765,7 +8103,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddRDSMessage]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8774,7 +8111,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddRDSCollectionSettings]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8783,7 +8119,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddRDSCollection]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8792,7 +8127,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddRDSCertificate]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8801,7 +8135,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddPrivateNetworkVlan]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8810,7 +8143,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddPFX]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8819,7 +8151,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddPackageAddon]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8828,7 +8159,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddPackage]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8837,7 +8167,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddOrganizationStoragSpacesFolder]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8846,7 +8175,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddOrganizationDeletedUser]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8855,7 +8183,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddOCSUser]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8864,7 +8191,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddLyncUserPlan]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8873,7 +8199,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddLyncUser]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8882,7 +8207,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddLevelResourceGroups]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8891,7 +8215,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddItemPrivateIPAddress]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8900,7 +8223,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddItemIPAddress]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8909,7 +8231,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddIPAddress]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8918,7 +8239,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddHostingPlan]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8927,7 +8247,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddExchangeRetentionPolicyTag]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8936,7 +8255,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddExchangeOrganizationDomain]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8945,7 +8263,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddExchangeOrganization]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8954,7 +8271,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddExchangeMailboxPlanRetentionPolicyTag]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8963,7 +8279,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddExchangeMailboxPlan]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8972,7 +8287,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddExchangeDisclaimer]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8981,7 +8295,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddExchangeAccountEmailAddress]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8990,7 +8303,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddExchangeAccount]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -8999,7 +8311,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddEnterpriseFolderOwaUser]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9008,7 +8319,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddEnterpriseFolder]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9017,7 +8327,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddDomainDnsRecord]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9026,7 +8335,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddDomain]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9035,7 +8343,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddDnsRecord]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9044,7 +8351,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddComment]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9053,7 +8359,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddCluster]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9062,7 +8367,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddBlackBerryUser]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9071,7 +8375,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddBackgroundTaskStack]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9080,7 +8383,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddBackgroundTaskParam]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9089,7 +8391,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddBackgroundTaskLog]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9098,7 +8399,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddBackgroundTask]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9107,7 +8407,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddAuditLogRecord]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9116,7 +8415,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddAdditionalGroup]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9125,7 +8423,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddAccessToken]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9134,7 +8431,6 @@ IF NOT EXISTS (
 BEGIN
     DROP FUNCTION IF EXISTS [dbo].[UsersTree]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9143,7 +8439,6 @@ IF NOT EXISTS (
 BEGIN
     DROP FUNCTION IF EXISTS [dbo].[UserParents]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9152,7 +8447,6 @@ IF NOT EXISTS (
 BEGIN
     DROP FUNCTION IF EXISTS [dbo].[SplitString]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9161,7 +8455,6 @@ IF NOT EXISTS (
 BEGIN
     DROP FUNCTION IF EXISTS [dbo].[PackagesTree]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9170,7 +8463,6 @@ IF NOT EXISTS (
 BEGIN
     DROP FUNCTION IF EXISTS [dbo].[PackageParents]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9179,7 +8471,6 @@ IF NOT EXISTS (
 BEGIN
     DROP FUNCTION IF EXISTS [dbo].[GetPackageServiceLevelResource]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9188,7 +8479,6 @@ IF NOT EXISTS (
 BEGIN
     DROP FUNCTION IF EXISTS [dbo].[GetPackageExceedingQuotas]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9197,7 +8487,6 @@ IF NOT EXISTS (
 BEGIN
     DROP FUNCTION IF EXISTS [dbo].[GetPackageAllocatedResource]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9206,7 +8495,6 @@ IF NOT EXISTS (
 BEGIN
     DROP FUNCTION IF EXISTS [dbo].[GetPackageAllocatedQuota]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9215,7 +8503,6 @@ IF NOT EXISTS (
 BEGIN
     DROP FUNCTION IF EXISTS [dbo].[GetItemComments]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9224,7 +8511,6 @@ IF NOT EXISTS (
 BEGIN
     DROP FUNCTION IF EXISTS [dbo].[GetFullIPAddress]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9233,7 +8519,6 @@ IF NOT EXISTS (
 BEGIN
     DROP FUNCTION IF EXISTS [dbo].[CheckUserParent]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9242,7 +8527,6 @@ IF NOT EXISTS (
 BEGIN
     DROP FUNCTION IF EXISTS [dbo].[CheckPackageParent]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9251,7 +8535,6 @@ IF NOT EXISTS (
 BEGIN
     DROP FUNCTION IF EXISTS [dbo].[CheckIsUserAdmin]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9260,7 +8543,6 @@ IF NOT EXISTS (
 BEGIN
     DROP FUNCTION IF EXISTS [dbo].[CheckExceedingQuota]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9269,7 +8551,6 @@ IF NOT EXISTS (
 BEGIN
     DROP FUNCTION IF EXISTS [dbo].[CheckActorUserRights]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9278,7 +8559,6 @@ IF NOT EXISTS (
 BEGIN
     DROP FUNCTION IF EXISTS [dbo].[CheckActorParentPackageRights]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9287,7 +8567,6 @@ IF NOT EXISTS (
 BEGIN
     DROP FUNCTION IF EXISTS [dbo].[CheckActorPackageRights]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9296,7 +8575,6 @@ IF NOT EXISTS (
 BEGIN
     DROP FUNCTION IF EXISTS [dbo].[CanUpdateUserDetails]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9305,7 +8583,6 @@ IF NOT EXISTS (
 BEGIN
     DROP FUNCTION IF EXISTS [dbo].[CanUpdatePackageDetails]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9314,7 +8591,6 @@ IF NOT EXISTS (
 BEGIN
     DROP FUNCTION IF EXISTS [dbo].[CanGetUserPassword]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9323,7 +8599,6 @@ IF NOT EXISTS (
 BEGIN
     DROP FUNCTION IF EXISTS [dbo].[CanGetUserDetails]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9332,7 +8607,6 @@ IF NOT EXISTS (
 BEGIN
     DROP FUNCTION IF EXISTS [dbo].[CanCreateUser]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9341,7 +8615,6 @@ IF NOT EXISTS (
 BEGIN
     DROP FUNCTION IF EXISTS [dbo].[CanChangeMfaFunc]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9350,7 +8623,6 @@ IF NOT EXISTS (
 BEGIN
     DROP FUNCTION IF EXISTS [dbo].[CalculateQuotaUsage]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9359,7 +8631,6 @@ IF NOT EXISTS (
 BEGIN
     DROP FUNCTION IF EXISTS [dbo].[CalculatePackageDiskspace]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9368,7 +8639,6 @@ IF NOT EXISTS (
 BEGIN
     DROP FUNCTION IF EXISTS [dbo].[CalculatePackageBandwidth]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9377,7 +8647,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzNetworkVLANs]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9386,7 +8655,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteItemDmzIPAddresses]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9395,7 +8663,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetItemDmzIPAddresses]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9404,7 +8671,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[DeleteItemDmzIPAddress]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9413,7 +8679,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[SetItemDmzPrimaryIPAddress]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9422,7 +8687,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[AddItemDmzIPAddress]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9431,7 +8695,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddressesPaged]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9440,7 +8703,6 @@ IF NOT EXISTS (
 BEGIN
     DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9459,7 +8721,6 @@ BEGIN
     FROM dbo.Users AS U
     LEFT OUTER JOIN dbo.Users AS UP ON U.OwnerID = UP.UserID'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9468,7 +8729,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9477,7 +8737,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9521,7 +8780,6 @@ BEGIN
     RETURN @Bandwidth
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9530,7 +8788,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9539,7 +8796,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9568,7 +8824,6 @@ BEGIN
     RETURN @Diskspace
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9577,7 +8832,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9586,7 +8840,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9841,7 +9094,6 @@ BEGIN
     		RETURN @Result
     	END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9850,7 +9102,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9859,7 +9110,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9949,7 +9199,6 @@ BEGIN
     RETURN 0
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9958,7 +9207,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -9967,7 +9215,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10030,7 +9277,6 @@ BEGIN
     RETURN 0
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10039,7 +9285,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10048,7 +9293,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10121,7 +9365,6 @@ BEGIN
     RETURN 0
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10130,7 +9373,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10139,7 +9381,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10219,7 +9460,6 @@ BEGIN
     RETURN 0
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10228,7 +9468,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10237,7 +9476,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10302,7 +9540,6 @@ BEGIN
     RETURN 0
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10311,7 +9548,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10320,7 +9556,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10391,7 +9626,6 @@ BEGIN
     RETURN 0
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10400,7 +9634,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10409,7 +9642,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10446,7 +9678,6 @@ BEGIN
     RETURN 0
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10455,7 +9686,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10464,7 +9694,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10497,7 +9726,6 @@ BEGIN
     RETURN 0
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10506,7 +9734,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10515,7 +9742,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10587,7 +9813,6 @@ BEGIN
     RETURN 0
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10596,7 +9821,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10605,7 +9829,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10674,7 +9897,6 @@ BEGIN
     RETURN @ExceedValue
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10683,7 +9905,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10692,7 +9913,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10717,7 +9937,6 @@ BEGIN
     RETURN 0
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10726,7 +9945,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10735,7 +9953,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10783,7 +10000,6 @@ BEGIN
     RETURN 0
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10792,7 +10008,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10801,7 +10016,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10863,7 +10077,6 @@ BEGIN
     RETURN 0
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10872,7 +10085,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10881,7 +10093,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10908,7 +10119,6 @@ BEGIN
     RETURN @IP
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10917,7 +10127,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10926,7 +10135,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10959,7 +10167,6 @@ BEGIN
     RETURN @text
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10968,7 +10175,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -10977,7 +10183,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11094,7 +10299,6 @@ BEGIN
     RETURN @Result
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11103,7 +10307,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11112,7 +10315,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11229,7 +10431,6 @@ BEGIN
     RETURN @Result
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11238,7 +10439,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11247,7 +10447,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11302,7 +10501,6 @@ BEGIN
     RETURN
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11311,7 +10509,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11320,7 +10517,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11421,7 +10617,6 @@ BEGIN
     RETURN @Result
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11430,7 +10625,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11439,7 +10633,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11478,7 +10671,6 @@ BEGIN
     RETURN
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11487,7 +10679,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11496,7 +10687,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11536,7 +10726,6 @@ BEGIN
     RETURN
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11545,7 +10734,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11554,7 +10742,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11587,7 +10774,6 @@ BEGIN
      RETURN
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11596,7 +10782,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11605,7 +10790,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11657,7 +10841,6 @@ BEGIN
     RETURN
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11666,7 +10849,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11675,7 +10857,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11712,7 +10893,6 @@ BEGIN
     RETURN
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11721,7 +10901,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11730,7 +10909,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11768,7 +10946,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11777,7 +10954,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11786,7 +10962,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11816,7 +10991,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11825,7 +10999,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11834,7 +11007,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11893,7 +11065,6 @@ BEGIN
     )
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11902,7 +11073,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11911,7 +11081,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11989,7 +11158,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -11998,7 +11166,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12007,7 +11174,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12050,7 +11216,6 @@ BEGIN
     	@XmlParameters
     )'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12059,7 +11224,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12068,7 +11232,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12099,7 +11262,6 @@ BEGIN
     	@TypeName
     )'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12108,7 +11270,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12117,7 +11278,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12139,7 +11299,6 @@ BEGIN
     	@TaskID
     )'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12148,7 +11307,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12157,7 +11315,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12185,7 +11342,6 @@ BEGIN
     )
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12194,7 +11350,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12203,7 +11358,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12228,7 +11382,6 @@ BEGIN
     SET @ClusterID = SCOPE_IDENTITY()
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12237,7 +11390,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12246,7 +11398,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12282,7 +11433,6 @@ BEGIN
     )
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12291,7 +11441,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12300,7 +11449,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12385,7 +11533,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12394,7 +11541,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12403,7 +11549,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12463,7 +11608,6 @@ BEGIN
     SET @DomainID = SCOPE_IDENTITY()
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12472,7 +11616,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12481,7 +11624,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12515,7 +11657,6 @@ BEGIN
     	@Date
     )'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12524,7 +11665,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12533,7 +11673,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12578,7 +11717,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12587,7 +11725,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12596,7 +11733,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12628,7 +11764,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12637,7 +11772,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12646,7 +11780,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12702,7 +11835,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12711,7 +11843,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12720,7 +11851,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12745,7 +11875,6 @@ BEGIN
     )
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12754,7 +11883,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12763,7 +11891,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12796,7 +11923,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12805,7 +11931,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12814,7 +11939,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12940,7 +12064,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12949,7 +12072,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12958,7 +12080,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -12991,7 +12112,6 @@ BEGIN
 
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13000,7 +12120,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13009,7 +12128,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13033,7 +12151,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13042,7 +12159,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13051,7 +12167,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13071,7 +12186,6 @@ BEGIN
     (@ItemID, @DomainID, @IsHost)
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13080,7 +12194,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13089,7 +12202,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13131,7 +12243,6 @@ BEGIN
 
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13140,7 +12251,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13149,7 +12259,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13241,7 +12350,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13250,7 +12358,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13259,7 +12366,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13337,7 +12443,6 @@ BEGIN
     COMMIT TRAN
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13346,7 +12451,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13355,7 +12459,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13387,7 +12490,6 @@ BEGIN
      RETURN
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13396,7 +12498,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13405,7 +12506,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13430,7 +12530,6 @@ BEGIN
     		AND dbo.CheckActorPackageRights(@ActorID, PIP.PackageID) = 1
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13439,7 +12538,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13448,7 +12546,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13485,7 +12582,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13494,7 +12590,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13503,7 +12598,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13519,7 +12613,6 @@ BEGIN
     	INSERT INTO [dbo].[StorageSpaceLevelResourceGroups] (LevelId, GroupId)
     	VALUES (@LevelId, @GroupId)'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13528,7 +12621,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13537,7 +12629,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13565,7 +12656,6 @@ BEGIN
     	@SipAddress
     )'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13574,7 +12664,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13583,7 +12672,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13694,7 +12782,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13703,7 +12790,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13712,7 +12798,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13743,7 +12828,6 @@ BEGIN
     )
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13752,7 +12836,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13761,7 +12844,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13803,7 +12885,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13812,7 +12893,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13821,7 +12901,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13851,7 +12930,6 @@ BEGIN
 
     	SET @Id = @StorageSpaceFolderId'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13860,7 +12938,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13869,7 +12946,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13955,7 +13031,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13964,7 +13039,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -13973,7 +13047,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14040,7 +13113,6 @@ BEGIN
     COMMIT TRAN
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14049,7 +13121,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14058,7 +13129,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14097,7 +13167,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14106,7 +13175,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14115,7 +13183,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14142,7 +13209,6 @@ BEGIN
      RETURN
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14151,7 +13217,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14160,7 +13225,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14201,7 +13265,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14210,7 +13273,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14219,7 +13281,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14255,7 +13316,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14264,7 +13324,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14273,7 +13332,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14345,7 +13403,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14354,7 +13411,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14363,7 +13419,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14398,7 +13453,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14407,7 +13461,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14416,7 +13469,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14451,7 +13503,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14460,7 +13511,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14469,7 +13519,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14488,7 +13537,6 @@ BEGIN
     	RDSCollectionId = @RDSCollectionId
     WHERE ID = @Id'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14497,7 +13545,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14506,7 +13553,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14525,7 +13571,6 @@ BEGIN
     	ItemID = @ItemID
     WHERE ID = @Id'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14534,7 +13579,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14543,7 +13587,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14646,7 +13689,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14655,7 +13697,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14664,7 +13705,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14737,7 +13777,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14746,7 +13785,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14755,7 +13793,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14846,7 +13883,6 @@ BEGIN
     END
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14855,7 +13891,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14864,7 +13899,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14983,7 +14017,6 @@ BEGIN
     COMMIT TRAN
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -14992,7 +14025,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15001,7 +14033,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15029,7 +14060,6 @@ BEGIN
     	@SipAddress
     )'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15038,7 +14068,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15047,7 +14076,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15141,7 +14169,6 @@ BEGIN
     SET @SfBUserPlanId = SCOPE_IDENTITY()
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15150,7 +14177,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15159,7 +14185,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15200,7 +14225,6 @@ BEGIN
     SET @SSLID = SCOPE_IDENTITY()
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15209,7 +14233,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15218,7 +14241,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15299,7 +14321,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15308,7 +14329,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15318,7 +14338,6 @@ BEGIN
     -- SET QUOTED_IDENTIFIER OFF
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15439,7 +14458,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15448,7 +14466,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15457,7 +14474,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15482,7 +14498,6 @@ BEGIN
     	@AccountId
     )'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15491,7 +14506,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15500,7 +14514,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15549,7 +14562,6 @@ BEGIN
     COMMIT TRAN
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15558,7 +14570,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15567,7 +14578,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15608,7 +14618,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15617,7 +14626,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15626,7 +14634,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15656,7 +14663,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15665,7 +14671,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15674,7 +14679,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15726,7 +14730,6 @@ BEGIN
 
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15735,7 +14738,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15744,7 +14746,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15794,7 +14795,6 @@ BEGIN
 
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15803,7 +14803,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15812,7 +14811,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15830,7 +14828,6 @@ BEGIN
     	SET @Result = dbo.CanChangeMfaFunc(@CallerID, @ChangeUserID, @CanPeerChangeMfa)
     	RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15839,7 +14836,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15848,7 +14844,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15867,7 +14862,6 @@ BEGIN
     WHERE ItemID=ItemID AND DomainID=@DomainID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15876,7 +14870,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15885,7 +14878,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15914,7 +14906,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15923,7 +14914,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15932,7 +14922,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15957,7 +14946,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15966,7 +14954,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15975,7 +14962,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -15993,7 +14979,6 @@ BEGIN
     	WHERE AccountID = @AccountID
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16002,7 +14987,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16011,7 +14995,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16073,7 +15056,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16082,7 +15064,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16091,7 +15072,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16127,7 +15107,6 @@ BEGIN
 
     	RETURN @Result'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16136,7 +15115,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16145,7 +15123,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16163,7 +15140,6 @@ BEGIN
     	WHERE AccountID = @AccountID
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16172,7 +15148,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16181,7 +15156,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16199,7 +15173,6 @@ BEGIN
     	WHERE AccountID = @AccountID
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16208,7 +15181,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16217,7 +15189,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16251,7 +15222,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16260,7 +15230,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16269,7 +15238,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16303,7 +15271,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16312,7 +15279,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16321,7 +15287,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16349,7 +15314,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16358,7 +15322,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16367,7 +15330,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16385,7 +15347,6 @@ BEGIN
     WHERE EA.LevelID = @LevelID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16394,7 +15355,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16403,7 +15363,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16421,7 +15380,6 @@ BEGIN
     	WHERE AccountID = @AccountID
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16430,7 +15388,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16439,7 +15396,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16475,7 +15431,6 @@ BEGIN
 
     SET ANSI_NULLS ON'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16484,7 +15439,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16493,7 +15447,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16529,7 +15482,6 @@ BEGIN
 
     SET ANSI_NULLS ON'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16538,7 +15490,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16547,7 +15498,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16569,7 +15519,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16578,7 +15527,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16587,7 +15535,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16630,7 +15577,6 @@ BEGIN
     WHERE
     	[ID] = @ID;'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16639,7 +15585,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16648,7 +15593,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16670,7 +15614,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16679,7 +15622,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16688,7 +15630,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16728,7 +15669,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16737,7 +15677,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16746,7 +15685,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16782,7 +15720,6 @@ BEGIN
 
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16791,7 +15728,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16800,7 +15736,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16836,7 +15771,6 @@ BEGIN
 
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16845,7 +15779,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16854,7 +15787,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16870,7 +15802,6 @@ BEGIN
     DELETE FROM AccessTokens
     WHERE AccessTokenGuid = @AccessToken AND TokenType = @TokenType'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16879,7 +15810,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16888,7 +15818,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16904,7 +15833,6 @@ BEGIN
     DELETE FROM AdditionalGroups
     WHERE ID = @GroupID'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16913,7 +15841,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16922,7 +15849,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16938,7 +15864,6 @@ BEGIN
     DELETE FROM EnterpriseFoldersOwaPermissions
     WHERE ItemId = @ItemID AND FolderID = @FolderID'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16947,7 +15872,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16956,7 +15880,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16970,7 +15893,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16979,7 +15901,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -16988,7 +15909,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17028,7 +15948,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17037,7 +15956,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17046,7 +15964,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17060,7 +15977,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17069,7 +15985,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17078,7 +15993,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17103,7 +16017,6 @@ BEGIN
     DELETE FROM BackgroundTasks
     WHERE ID = @ID'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17112,7 +16025,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17121,7 +16033,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17137,7 +16048,6 @@ BEGIN
     DELETE FROM BackgroundTaskParameters
     WHERE TaskID = @TaskID'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17146,7 +16056,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17155,7 +16064,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17180,7 +16088,6 @@ BEGIN
     DELETE FROM BackgroundTasks
     WHERE ID IN (SELECT ID FROM BackgroundTasks WHERE Guid = @Guid)'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17189,7 +16096,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17198,7 +16104,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17218,7 +16123,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17227,7 +16131,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17236,7 +16139,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17267,7 +16169,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17276,7 +16177,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17285,7 +16185,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17308,7 +16207,6 @@ BEGIN
     WHERE ClusterID = @ClusterID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17317,7 +16215,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17326,7 +16223,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17355,7 +16251,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17364,7 +16259,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17373,7 +16267,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17388,7 +16281,6 @@ BEGIN
     DELETE FROM dbo.CRMUsers WHERE AccountID IN (SELECT AccountID FROM dbo.ExchangeAccounts WHERE ItemID = @ItemID)
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17397,7 +16289,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17406,7 +16297,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17442,7 +16332,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17451,7 +16340,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17460,7 +16348,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17487,7 +16374,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17496,7 +16382,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17505,7 +16390,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17520,7 +16404,6 @@ BEGIN
     DELETE FROM DomainDnsRecords
     WHERE Id = @Id'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17529,7 +16412,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17538,7 +16420,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17555,7 +16436,6 @@ BEGIN
     DELETE FROM EnterpriseFolders
     WHERE ItemID = @ItemID AND FolderName = @FolderName'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17564,7 +16444,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17573,7 +16452,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17597,7 +16475,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17606,7 +16483,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17615,7 +16491,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17632,7 +16507,6 @@ BEGIN
     WHERE AccountID = @AccountID AND EmailAddress = @EmailAddress
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17641,7 +16515,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17650,7 +16523,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17668,7 +16540,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17677,7 +16548,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17686,7 +16556,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17705,7 +16574,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17714,7 +16582,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17723,7 +16590,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17740,7 +16606,6 @@ BEGIN
     	PlanTagID = @PlanTagID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17749,7 +16614,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17758,7 +16622,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17776,7 +16639,6 @@ BEGIN
     COMMIT TRAN
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17785,7 +16647,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17794,7 +16655,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17811,7 +16671,6 @@ BEGIN
     WHERE DomainID = @DomainID AND ItemID = @ItemID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17820,7 +16679,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17829,7 +16687,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17846,7 +16703,6 @@ BEGIN
     	TagID = @TagID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17855,7 +16711,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17864,7 +16719,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17876,7 +16730,6 @@ BEGIN
     DELETE FROM AccessTokens
     WHERE ExpirationDate < getdate()'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17885,7 +16738,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17894,7 +16746,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17906,7 +16757,6 @@ BEGIN
     DELETE FROM WebDavAccessTokens
     WHERE ExpirationDate < getdate()'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17915,7 +16765,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17924,7 +16773,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17968,7 +16816,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17977,7 +16824,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -17986,7 +16832,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18025,7 +16870,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18034,7 +16878,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18043,7 +16886,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18068,7 +16910,6 @@ BEGIN
     		AND dbo.CheckActorPackageRights(@ActorID, PIP.PackageID) = 1
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18077,7 +16918,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18086,7 +16926,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18110,7 +16949,6 @@ BEGIN
     		AND dbo.CheckActorPackageRights(@ActorID, PIP.PackageID) = 1
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18119,7 +16957,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18128,7 +16965,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18150,7 +16986,6 @@ BEGIN
     	AND dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18159,7 +16994,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18168,7 +17002,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18189,7 +17022,6 @@ BEGIN
     	AND dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18198,7 +17030,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18207,7 +17038,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18223,7 +17053,6 @@ BEGIN
     	FROM [dbo].[StorageSpaceLevelResourceGroups]
     	WHERE LevelId = @LevelId'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18232,7 +17061,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18241,7 +17069,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18261,7 +17088,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18270,7 +17096,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18279,7 +17104,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18298,7 +17122,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18307,7 +17130,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18316,7 +17138,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18336,7 +17157,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18345,7 +17165,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18354,7 +17173,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18369,7 +17187,6 @@ BEGIN
     DELETE FROM	ExchangeDeletedAccounts WHERE AccountID = @ID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18378,7 +17195,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18387,7 +17203,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18403,7 +17218,6 @@ BEGIN
     	FROM [ExchangeOrganizationSsFolders]
     	WHERE StorageSpaceFolderId = @Id'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18412,7 +17226,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18421,7 +17234,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18437,7 +17249,6 @@ BEGIN
         DELETE FROM ExchangeAccounts WHERE ItemID = @ItemID
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18446,16 +17257,14 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
     WHERE [MigrationId] = N'20241024041433_InitialCreate'
 )
 BEGIN
-    SET QUOTED_IDENTIFIER OFF
+    SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18532,7 +17341,6 @@ BEGIN
     	COMMIT TRAN
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18541,7 +17349,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18550,7 +17357,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18578,7 +17384,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18587,7 +17392,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18596,7 +17400,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18621,7 +17424,6 @@ BEGIN
     WHERE VlanID = @VlanID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18630,7 +17432,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18639,7 +17440,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18660,7 +17460,6 @@ BEGIN
     DELETE FROM RDSCollections
     WHERE Id = @Id'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18669,7 +17468,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18678,7 +17476,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18694,7 +17491,6 @@ BEGIN
     DELETE FROM DeleteRDSCollectionSettings
     WHERE Id = @Id'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18703,7 +17499,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18712,7 +17507,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18727,7 +17521,6 @@ BEGIN
     DELETE FROM RDSServers
     WHERE Id = @Id'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18736,7 +17529,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18745,7 +17537,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18759,7 +17550,6 @@ BEGIN
     AS
     	DELETE FROM RDSServerSettings WHERE RDSServerId = @ServerId'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18768,7 +17558,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18777,7 +17566,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18812,7 +17600,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18821,7 +17608,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18830,7 +17616,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18887,7 +17672,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18896,7 +17680,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18905,7 +17688,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18947,7 +17729,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18956,7 +17737,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -18966,7 +17746,6 @@ BEGIN
     -- SET QUOTED_IDENTIFIER OFF
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19024,7 +17803,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19033,7 +17811,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19042,7 +17819,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19062,7 +17838,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19071,7 +17846,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19080,7 +17854,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19099,7 +17872,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19108,7 +17880,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19117,7 +17888,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19157,7 +17927,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19166,7 +17935,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19175,7 +17943,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19237,7 +18004,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19246,7 +18012,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19255,7 +18020,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19277,7 +18041,6 @@ BEGIN
     	AccountID = @AccountID AND LOWER(EmailAddress) <> LOWER(@PrimaryEmailAddress)
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19286,7 +18049,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19295,7 +18057,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19321,7 +18082,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19330,7 +18090,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19339,7 +18098,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19384,7 +18142,6 @@ BEGIN
     COMMIT TRAN
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19393,7 +18150,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19402,7 +18158,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19593,7 +18348,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19602,7 +18356,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19611,7 +18364,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19637,7 +18389,6 @@ BEGIN
 
     	RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19646,7 +18397,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19655,7 +18405,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19676,7 +18425,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19685,7 +18433,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19694,7 +18441,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19714,7 +18460,6 @@ BEGIN
     END
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19723,7 +18468,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19732,7 +18476,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19753,7 +18496,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19762,7 +18504,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19771,7 +18512,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19795,7 +18535,6 @@ BEGIN
     	FROM AccessTokens 
     	Where AccessTokenGuid = @AccessToken AND ExpirationDate > getdate() AND TokenType = @TokenType'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19804,7 +18543,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19813,7 +18551,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19833,7 +18570,6 @@ BEGIN
     FROM AdditionalGroups AS AG
     WHERE AG.UserID = @UserID'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19842,7 +18578,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19851,7 +18586,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19874,7 +18608,6 @@ BEGIN
           ,[BandwidthUpdated]
       FROM [dbo].[Packages]'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19883,7 +18616,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19892,7 +18624,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19919,7 +18650,6 @@ BEGIN
     WHERE @IsAdmin = 1
     ORDER BY S.VirtualServer, S.ServerName'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19928,7 +18658,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19937,7 +18666,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19973,7 +18701,6 @@ BEGIN
     WHERE RecordID = @RecordID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19982,7 +18709,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -19991,7 +18717,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20095,7 +18820,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20104,7 +18828,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20113,7 +18836,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20127,7 +18849,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20136,7 +18857,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20145,7 +18865,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20165,7 +18884,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20174,7 +18892,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20183,7 +18900,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20224,7 +18940,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20233,7 +18948,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20242,7 +18956,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20281,7 +18994,6 @@ BEGIN
     	ON TS.TaskId = T.ID
     WHERE T.TaskID = @TaskID'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20290,7 +19002,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20299,7 +19010,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20326,7 +19036,6 @@ BEGIN
     WHERE L.TaskID = @TaskID AND L.Date >= @StartLogTime
     ORDER BY L.Date'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20335,7 +19044,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20344,7 +19052,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20366,7 +19073,6 @@ BEGIN
     FROM BackgroundTaskParameters AS P
     WHERE P.TaskID = @TaskID'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20375,7 +19081,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20384,7 +19089,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20436,7 +19140,6 @@ BEGIN
     			WHERE T.UserID in (select id from GetChildUsersId)
     			GROUP BY T.Guid) AS TT ON TT.Guid = T.Guid AND TT.Date = T.StartDate'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20445,7 +19148,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20454,7 +19156,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20494,7 +19195,6 @@ BEGIN
     WHERE T.Guid = @Guid
     ORDER BY T.StartDate ASC'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20503,7 +19203,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20512,7 +19211,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20622,7 +19320,6 @@ BEGIN
 
     DROP TABLE #TempBlackBerryUsers'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20631,7 +19328,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20640,7 +19336,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20677,7 +19372,6 @@ BEGIN
     WHERE
     	ea.ItemID = @ItemID AND ea.DisplayName LIKE @Name AND ea.PrimaryEmailAddress LIKE @Email'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20686,7 +19380,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20695,7 +19388,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20729,7 +19421,6 @@ BEGIN
 
     SET ANSI_NULLS ON'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20738,7 +19429,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20747,7 +19437,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20773,7 +19462,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20782,7 +19470,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20791,7 +19478,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20836,7 +19522,6 @@ BEGIN
     ORDER BY C.CreatedDate ASC
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20845,7 +19530,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20854,7 +19538,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20882,7 +19565,6 @@ BEGIN
     		ea.ItemID = @ItemID
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20891,7 +19573,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20900,7 +19581,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20921,7 +19601,6 @@ BEGIN
     	AccountID = @AccountID
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20930,7 +19609,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -20939,7 +19617,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21049,7 +19726,6 @@ BEGIN
 
     DROP TABLE #TempCRMUsers'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21058,7 +19734,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21067,7 +19742,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21107,7 +19781,6 @@ BEGIN
     	AND ((cu.CALType = @CALType) OR (@CALType = -1))
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21116,7 +19789,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21125,7 +19797,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21173,7 +19844,6 @@ BEGIN
     WHERE NR.RecordID = @RecordID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21182,7 +19852,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21191,7 +19860,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21217,7 +19885,6 @@ BEGIN
     ORDER BY RGR.RecordOrder
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21226,7 +19893,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21235,7 +19901,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21281,7 +19946,6 @@ BEGIN
     WHERE NR.PackageID = @PackageID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21290,7 +19954,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21299,7 +19962,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21342,7 +20004,6 @@ BEGIN
     	NR.ServerID = @ServerID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21351,7 +20012,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21360,7 +20020,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21403,7 +20062,6 @@ BEGIN
     	NR.ServiceID = @ServiceID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21412,7 +20070,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21421,7 +20078,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21548,7 +20204,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21557,7 +20212,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21566,7 +20220,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21605,7 +20258,6 @@ BEGIN
     	AND dbo.CheckActorPackageRights(@ActorID, P.PackageID) = 1
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21614,7 +20266,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21623,7 +20274,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21645,7 +20295,6 @@ BEGIN
       FROM [dbo].[DomainDnsRecords]
       WHERE [DomainId]  = @DomainId'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21654,7 +20303,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21663,7 +20311,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21735,7 +20382,6 @@ BEGIN
     	RETURN
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21744,7 +20390,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21753,7 +20398,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21776,7 +20420,6 @@ BEGIN
       FROM [dbo].[DomainDnsRecords]
       WHERE [DomainId]  = @DomainId AND [RecordType] = @RecordType'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21785,7 +20428,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21794,7 +20436,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21839,7 +20480,6 @@ BEGIN
     LEFT OUTER JOIN ServiceItems AS Z ON D.ZoneItemID = Z.ItemID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21848,7 +20488,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21857,7 +20496,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21896,7 +20534,6 @@ BEGIN
     	AND dbo.CheckActorPackageRights(@ActorID, P.PackageID) = 1
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21905,7 +20542,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21914,7 +20550,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21953,7 +20588,6 @@ BEGIN
     	AND dbo.CheckActorPackageRights(@ActorID, P.PackageID) = 1
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21962,7 +20596,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -21971,7 +20604,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22086,7 +20718,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22095,7 +20726,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22104,7 +20734,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22138,7 +20767,6 @@ BEGIN
     LEFT OUTER JOIN StorageSpaceFolders as ssf on ssf.Id = ST.StorageSpaceFolderId
     WHERE ItemID = @ItemID AND FolderName = @FolderName'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22147,7 +20775,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22156,7 +20783,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22174,7 +20800,6 @@ BEGIN
     	FROM EnterpriseFolders
     	WHERE ItemId = @ItemID AND FolderName = @FolderName'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22183,7 +20808,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22192,7 +20816,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22220,7 +20843,6 @@ BEGIN
     	LEFT JOIN  ExchangeAccounts AS EA ON EA.AccountID = EFOP.AccountID
     	WHERE EFOP.ItemID = @ItemID AND EFOP.FolderID = @FolderID'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22229,7 +20851,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22238,7 +20859,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22254,7 +20874,6 @@ BEGIN
     SELECT DISTINCT LocationDrive, HomeFolder, Domain FROM EnterpriseFolders
     WHERE ItemID = @ItemID'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22263,7 +20882,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22272,7 +20890,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22340,7 +20957,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22349,7 +20965,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22358,7 +20973,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22400,7 +21014,6 @@ BEGIN
     	E.AccountID = @AccountID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22409,7 +21022,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22418,7 +21030,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22458,7 +21069,6 @@ BEGIN
     	E.AccountName = @AccountName
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22467,7 +21077,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22476,7 +21085,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22513,7 +21121,6 @@ BEGIN
     	E.UserPrincipalName = @UserPrincipalName
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22522,7 +21129,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22531,7 +21137,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22633,7 +21238,6 @@ BEGIN
     RETURN
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22642,7 +21246,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22651,7 +21254,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22671,7 +21273,6 @@ BEGIN
     	AccountID= @AccountID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22680,7 +21281,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22689,7 +21289,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22711,7 +21310,6 @@ BEGIN
     	AccountID = @AccountID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22720,7 +21318,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22729,7 +21326,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22763,7 +21359,6 @@ BEGIN
     ORDER BY DisplayName
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22772,7 +21367,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22781,7 +21375,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22876,7 +21469,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22885,7 +21477,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22894,7 +21485,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22917,7 +21507,6 @@ BEGIN
     	ExchangeDisclaimerId = @ExchangeDisclaimerId
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22926,7 +21515,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22935,7 +21523,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22959,7 +21546,6 @@ BEGIN
     ORDER BY DisclaimerName
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22968,7 +21554,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -22977,7 +21562,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23007,7 +21591,6 @@ BEGIN
 
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23016,7 +21599,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23025,7 +21607,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23075,7 +21656,6 @@ BEGIN
     	MailboxPlanId = @MailboxPlanId
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23084,7 +21664,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23093,7 +21672,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23119,7 +21697,6 @@ BEGIN
     	D.MailboxPlanId = @MailboxPlanId 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23128,7 +21705,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23137,7 +21713,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23185,7 +21760,6 @@ BEGIN
     ORDER BY MailboxPlan
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23194,7 +21768,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23203,7 +21776,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23226,7 +21798,6 @@ BEGIN
     	ItemID = @ItemID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23235,7 +21806,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23244,7 +21814,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23267,7 +21836,6 @@ BEGIN
     WHERE ED.ItemID = @ItemID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23276,7 +21844,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23285,7 +21852,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23306,7 +21872,6 @@ BEGIN
     FROM ExchangeOrganizationSettings 
     Where ItemId = @ItemId AND SettingsName = @SettingsName'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23315,7 +21880,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23324,7 +21888,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23382,7 +21945,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23391,7 +21953,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23400,7 +21961,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23425,7 +21985,6 @@ BEGIN
     	TagID = @TagID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23434,7 +21993,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23443,7 +22001,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23469,7 +22026,6 @@ BEGIN
     ORDER BY TagName
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23478,7 +22034,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23487,7 +22042,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23527,7 +22081,6 @@ BEGIN
     -- print  @FilterUrl
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23536,7 +22089,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23545,7 +22097,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23599,7 +22150,6 @@ BEGIN
      --print @FilterUrl
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23608,7 +22158,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23617,7 +22166,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23642,7 +22190,6 @@ BEGIN
     ORDER BY RG.GroupOrder, PROV.DisplayName
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23651,7 +22198,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23660,7 +22206,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23699,7 +22244,6 @@ BEGIN
     ORDER BY PlanName
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23708,7 +22252,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23717,7 +22260,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23749,7 +22291,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23758,7 +22299,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23767,7 +22307,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23828,7 +22367,6 @@ BEGIN
     ORDER BY Q.QuotaOrder
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23837,7 +22375,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23846,7 +22383,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23898,7 +22434,6 @@ BEGIN
     ORDER BY HP.PlanName
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23907,7 +22442,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23916,7 +22450,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23932,7 +22465,6 @@ BEGIN
     	SELECT InstanceID FROM OCSUsers WHERE AccountID = @AccountID
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23941,7 +22473,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23950,7 +22481,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23980,7 +22510,6 @@ BEGIN
      RETURN
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23989,7 +22518,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -23998,7 +22526,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24046,7 +22573,6 @@ BEGIN
     AND (@ServerID = 0 OR @ServerID <> 0 AND IP.ServerID = @ServerID)
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24055,7 +22581,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24064,7 +22589,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24178,7 +22702,6 @@ BEGIN
 
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24187,7 +22710,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24196,7 +22718,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24217,7 +22738,6 @@ BEGIN
     		OrganizationId = @OrganizationId
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24226,7 +22746,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24235,7 +22754,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24267,7 +22785,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24276,7 +22793,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24285,7 +22801,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24311,7 +22826,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24320,7 +22834,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24329,7 +22842,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24352,7 +22864,6 @@ BEGIN
     	ON SG.GroupId = G.GroupId
     	WHERE SG.LevelId = @LevelId'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24361,7 +22872,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24370,7 +22880,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24417,7 +22926,6 @@ BEGIN
     	LyncUserPlanId = @LyncUserPlanId
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24426,7 +22934,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24435,7 +22942,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24466,7 +22972,6 @@ BEGIN
     	LyncUserPlanId IN (SELECT LyncUserPlanId FROM LyncUsers WHERE AccountID = @AccountID)
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24475,7 +22980,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24484,7 +22988,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24516,7 +23019,6 @@ BEGIN
     ORDER BY LyncUserPlanName
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24525,7 +23027,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24534,7 +23035,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24662,7 +23162,6 @@ BEGIN
 
     DROP TABLE #TempLyncUsers'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24671,7 +23170,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24680,7 +23178,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24717,7 +23214,6 @@ BEGIN
     		ea.ItemID = @ItemID AND
     		ou.LyncUserPlanId = @PlanId'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24726,7 +23222,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24735,7 +23230,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24759,7 +23253,6 @@ BEGIN
     WHERE
     	ea.ItemID = @ItemID'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24768,7 +23261,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24777,7 +23269,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24832,7 +23323,6 @@ BEGIN
     WHERE P.UserID = @UserID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24841,7 +23331,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24850,7 +23339,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24957,7 +23445,6 @@ BEGIN
     RETURN
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24966,7 +23453,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -24975,7 +23461,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25004,7 +23489,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25013,7 +23497,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25022,7 +23505,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25085,7 +23567,6 @@ BEGIN
     WHERE S.ScheduleID = @ScheduleID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25094,7 +23575,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25103,7 +23583,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25216,7 +23695,6 @@ BEGIN
 
     DROP TABLE #TempOCSUsers'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25225,7 +23703,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25234,7 +23711,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25271,7 +23747,6 @@ BEGIN
     WHERE
     	ea.ItemID = @ItemID AND ea.DisplayName LIKE @Name AND ea.PrimaryEmailAddress LIKE @Email'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25280,7 +23755,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25289,7 +23763,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25311,7 +23784,6 @@ BEGIN
     WHERE EA.ItemID = @ItemID
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25320,7 +23792,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25329,7 +23800,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25354,7 +23824,6 @@ BEGIN
     	EDA.AccountID = @AccountID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25363,7 +23832,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25372,7 +23840,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25398,7 +23865,6 @@ BEGIN
     	ItemID = @ItemID AND DisplayName = @DisplayName AND (AccountType IN (8, 9))
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25407,7 +23873,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25416,7 +23881,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25490,7 +23954,6 @@ BEGIN
     	DisplayName
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25499,7 +23962,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25508,7 +23970,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25526,7 +23987,6 @@ BEGIN
       FROM [dbo].[RDSCollections] WHERE [ItemId]  = @ItemId
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25535,7 +23995,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25544,7 +24003,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25562,7 +24020,6 @@ BEGIN
       FROM [dbo].[RDSServers] WHERE [ItemId]  = @ItemId
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25571,7 +24028,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25580,7 +24036,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25599,7 +24054,6 @@ BEGIN
       WHERE [RDSCollectionId] in (SELECT [ID] FROM [RDSCollections] where [ItemId]  = @ItemId )
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25608,7 +24062,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25617,7 +24070,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25636,7 +24088,6 @@ BEGIN
     	(SELECT COUNT(*) FROM ExchangeAccounts WHERE AccountType = 11  AND ItemID = @ItemID) AS DeletedUsers
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25645,7 +24096,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25654,7 +24104,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25679,7 +24128,6 @@ BEGIN
     	INNER JOIN [StorageSpaceFolders] AS SSF ON SSF.Id = OSSF.StorageSpaceFolderId
     	WHERE ItemId = @ItemId'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25688,7 +24136,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25697,7 +24144,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25723,7 +24169,6 @@ BEGIN
     	INNER JOIN [StorageSpaceFolders] AS SSF ON SSF.Id = OSSF.StorageSpaceFolderId
     	WHERE ItemId = @ItemId AND Type = @Type'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25732,7 +24177,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25741,7 +24185,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25775,7 +24218,6 @@ BEGIN
     WHERE P.PackageID = @PackageID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25784,7 +24226,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25793,7 +24234,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25827,7 +24267,6 @@ BEGIN
     WHERE PA.PackageAddonID = @PackageAddonID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25836,7 +24275,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25845,7 +24283,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25878,7 +24315,6 @@ BEGIN
     WHERE PA.PackageID = @PackageID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25887,7 +24323,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25896,7 +24331,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25948,7 +24382,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25957,7 +24390,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25966,7 +24398,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25983,7 +24414,6 @@ BEGIN
     	WHERE PackageID = @PackageID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -25992,7 +24422,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26001,7 +24430,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26043,7 +24471,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26052,7 +24479,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26061,7 +24487,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26095,7 +24520,6 @@ BEGIN
     WHERE PA.PackageAddressID = @PackageAddressID
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26104,7 +24528,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26113,7 +24536,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26220,7 +24642,6 @@ BEGIN
 
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26229,7 +24650,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26238,7 +24658,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26272,7 +24691,6 @@ BEGIN
 
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26281,7 +24699,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26290,7 +24707,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26343,7 +24759,6 @@ BEGIN
     	AND P.PackageID <> @PackageID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26352,7 +24767,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26361,7 +24775,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26385,7 +24798,6 @@ BEGIN
 
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26394,7 +24806,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26403,7 +24814,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26482,7 +24892,6 @@ BEGIN
 
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26491,7 +24900,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26500,7 +24908,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26576,7 +24983,6 @@ BEGIN
 
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26585,7 +24991,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26594,7 +24999,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26635,7 +25039,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26644,7 +25047,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26653,7 +25055,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26719,7 +25120,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26728,7 +25128,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26737,7 +25136,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26798,7 +25196,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26807,7 +25204,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26816,7 +25212,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26865,7 +25260,6 @@ BEGIN
     	P.UserID = @UserID	
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26874,7 +25268,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26883,7 +25276,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -26993,7 +25385,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27002,7 +25393,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27011,7 +25401,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27118,7 +25507,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27127,7 +25515,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27136,7 +25523,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27213,7 +25599,6 @@ BEGIN
 
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27222,7 +25607,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27231,7 +25615,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27301,7 +25684,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27310,7 +25692,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27319,7 +25700,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27409,7 +25789,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27418,7 +25797,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27427,7 +25805,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27465,7 +25842,6 @@ BEGIN
      ORDER BY IP.DefaultGateway, IP.ExternalIP
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27474,7 +25850,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27483,7 +25858,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27549,7 +25923,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27558,7 +25931,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27567,7 +25939,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27599,7 +25970,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27608,7 +25978,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27617,7 +25986,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27642,7 +26010,6 @@ BEGIN
      RETURN
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27651,7 +26018,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27660,7 +26026,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27759,7 +26124,6 @@ BEGIN
 
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27768,7 +26132,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27777,7 +26140,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27813,7 +26175,6 @@ BEGIN
     FROM BackgroundTasks AS T
     WHERE T.Completed = 0 AND T.Status = @Status'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27822,7 +26183,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27831,7 +26191,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27856,7 +26215,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27865,7 +26223,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27874,7 +26231,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27899,7 +26255,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27908,7 +26263,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27917,7 +26271,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27940,7 +26293,6 @@ BEGIN
     ORDER BY RG.GroupOrder, PROV.DisplayName
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27949,7 +26301,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27958,7 +26309,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27984,7 +26334,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -27993,7 +26342,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28002,7 +26350,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28022,7 +26369,6 @@ BEGIN
     ORDER BY RG.GroupOrder, Q.QuotaOrder
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28031,7 +26377,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28040,7 +26385,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28084,7 +26428,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28093,7 +26436,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28102,7 +26444,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28126,7 +26467,6 @@ BEGIN
     	WHERE ServiceId = @ServiceId
     	ORDER BY Id DESC'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28135,7 +26475,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28144,7 +26483,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28166,7 +26504,6 @@ BEGIN
     	FROM RDSCollections
     	WHERE ID = @ID'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28175,7 +26512,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28184,7 +26520,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28206,7 +26541,6 @@ BEGIN
     	FROM RDSCollections
     	WHERE DisplayName = @Name'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28215,7 +26549,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28224,7 +26557,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28245,7 +26577,6 @@ BEGIN
     	FROM RDSCollections
     	WHERE ItemID = @ItemID'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28254,7 +26585,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28263,7 +26593,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28298,7 +26627,6 @@ BEGIN
     	FROM RDSCollectionSettings
     	WHERE RDSCollectionID = @RDSCollectionID'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28307,7 +26635,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28316,7 +26643,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28375,7 +26701,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28384,7 +26709,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28393,7 +26717,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28427,7 +26750,6 @@ BEGIN
     	FROM ExchangeAccounts
     	WHERE AccountID IN (Select AccountId from RDSCollectionUsers where RDSCollectionId = @Id)'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28436,7 +26758,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28445,7 +26766,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28465,7 +26785,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28474,7 +26793,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28483,7 +26801,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28498,7 +26815,6 @@ BEGIN
     SELECT Id, RDSCollectionId, MessageText, UserName, [Date] FROM [dbo].[RDSMessages] WHERE RDSCollectionId = @RDSCollectionId
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28507,7 +26823,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28516,7 +26831,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28543,7 +26857,6 @@ BEGIN
     	LEFT OUTER JOIN  RDSCollections AS RC ON RC.ID = RdsCollectionId
     	WHERE RS.Id = @Id'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28552,7 +26865,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28561,7 +26873,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28581,7 +26892,6 @@ BEGIN
     	FROM RDSServers AS RS
     	LEFT OUTER JOIN  ServiceItems AS SI ON SI.ItemId = RS.ItemId'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28590,7 +26900,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28599,7 +26908,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28623,7 +26931,6 @@ BEGIN
     	LEFT OUTER JOIN  ServiceItems AS SI ON SI.ItemId = RS.ItemId
     	WHERE RdsCollectionId = @RdsCollectionId'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28632,7 +26939,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28641,7 +26947,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28665,7 +26970,6 @@ BEGIN
     	LEFT OUTER JOIN  ServiceItems AS SI ON SI.ItemId = RS.ItemId
     	WHERE RS.ItemID = @ItemID'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28674,7 +26978,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28683,7 +26986,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28700,7 +27002,6 @@ BEGIN
     	FROM RDSServerSettings
     	WHERE RDSServerId = @ServerId AND SettingsName = @SettingsName'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28709,7 +27010,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28718,7 +27018,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28801,7 +27100,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28810,7 +27108,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28819,7 +27116,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28859,7 +27155,6 @@ BEGIN
     WHERE HostingAllowed = 1
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28868,7 +27163,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28877,7 +27171,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28899,7 +27192,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28908,7 +27200,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28917,7 +27208,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28939,7 +27229,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28948,7 +27237,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28957,7 +27245,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28974,7 +27261,6 @@ BEGIN
     ORDER BY GroupOrder
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28983,7 +27269,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -28992,7 +27277,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29056,7 +27340,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29065,7 +27348,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29074,7 +27356,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29114,7 +27395,6 @@ BEGIN
     	WHERE ScheduleID = @ScheduleID
     		AND Completed = 0 AND Status IN (1, 3))'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29123,7 +27403,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29132,7 +27411,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29171,7 +27449,6 @@ BEGIN
     WHERE ScheduleID = @ScheduleID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29180,7 +27457,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29189,7 +27465,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29225,7 +27500,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29234,7 +27508,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29243,7 +27516,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29322,7 +27594,6 @@ BEGIN
     LEFT OUTER JOIN ScheduleParameters AS SP ON STP.ParameterID = SP.ParameterID AND SP.ScheduleID = S.ScheduleID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29331,7 +27602,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29340,7 +27610,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29456,7 +27725,6 @@ BEGIN
 
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29465,7 +27733,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29474,7 +27741,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29503,7 +27769,6 @@ BEGIN
     	AND @RoleID <= RoleID -- was >= but this seems like a bug, since lower RoleID is more privileged, and in GetScheduleTasks it is also <=.
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29512,7 +27777,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29521,7 +27785,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29540,7 +27803,6 @@ BEGIN
     	[Template]
       FROM [dbo].[ScheduleTasksEmailTemplates] where [TaskID] = @TaskID'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29549,7 +27811,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29558,7 +27819,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29584,7 +27844,6 @@ BEGIN
     WHERE @RoleID <= RoleID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29593,7 +27852,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29602,7 +27860,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29627,7 +27884,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29636,7 +27892,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29645,7 +27900,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29664,7 +27918,6 @@ BEGIN
     ORDER BY TypeOrder
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29673,7 +27926,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -29682,7 +27934,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -30543,7 +28794,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -30552,7 +28802,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -30561,7 +28810,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -30993,7 +29241,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31002,7 +29249,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31011,7 +29257,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31056,7 +29301,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31065,7 +29309,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31074,7 +29317,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31116,7 +29358,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31125,7 +29366,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31134,7 +29374,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31171,7 +29410,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31180,7 +29418,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31189,7 +29426,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31233,7 +29469,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31242,7 +29477,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31251,7 +29485,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31276,7 +29509,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31285,7 +29517,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31294,7 +29525,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31323,7 +29553,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31332,7 +29561,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31341,7 +29569,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31409,7 +29636,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31418,7 +29644,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31427,7 +29652,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31503,7 +29727,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31512,7 +29735,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31521,7 +29743,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31596,7 +29817,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31605,7 +29825,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31614,7 +29833,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31685,7 +29903,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31694,7 +29911,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31703,7 +29919,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31772,7 +29987,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31781,7 +29995,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31790,7 +30003,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31860,7 +30072,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31869,7 +30080,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31878,7 +30088,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31908,7 +30117,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31917,7 +30125,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31926,7 +30133,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31953,7 +30159,6 @@ BEGIN
     AND ((@GroupName IS NULL) OR (@GroupName IS NOT NULL AND RG.GroupName = @GroupName))
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31962,7 +30167,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -31971,7 +30175,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32035,7 +30238,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32044,7 +30246,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32053,7 +30254,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32194,7 +30394,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32203,7 +30402,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32212,7 +30410,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32242,7 +30439,6 @@ BEGIN
     WHERE
     	[ItemTypeID] = @ItemTypeID'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32251,7 +30447,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32260,7 +30455,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32286,7 +30480,6 @@ BEGIN
     	[ServiceItemTypes]
     ORDER BY TypeOrder'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32295,7 +30488,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32304,7 +30496,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32325,7 +30516,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32334,7 +30524,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32343,7 +30532,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32376,7 +30564,6 @@ BEGIN
     	AND @IsAdmin = 1
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32385,7 +30572,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32394,7 +30580,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32430,7 +30615,6 @@ BEGIN
     	AND (@IsAdmin = 1 OR @forAutodiscover = 1)
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32439,7 +30623,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32448,7 +30631,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32485,7 +30667,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32494,7 +30675,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32503,7 +30683,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32540,7 +30719,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32549,7 +30727,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32558,7 +30735,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32598,7 +30774,6 @@ BEGIN
     	SfBUserPlanId = @SfBUserPlanId
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32607,7 +30782,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32616,7 +30790,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32647,7 +30820,6 @@ BEGIN
     	SfBUserPlanId IN (SELECT SfBUserPlanId FROM SfBUsers WHERE AccountID = @AccountID)
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32656,7 +30828,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32665,7 +30836,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32697,7 +30867,6 @@ BEGIN
     ORDER BY SfBUserPlanName
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32706,7 +30875,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32715,7 +30883,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32843,7 +31010,6 @@ BEGIN
     	DROP TABLE #TempSfBUsers
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32852,7 +31018,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32861,7 +31026,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32898,7 +31062,6 @@ BEGIN
     		ea.ItemID = @ItemID AND
     		ou.SfBUserPlanId = @PlanId'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32907,7 +31070,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32916,7 +31078,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32940,7 +31101,6 @@ BEGIN
     WHERE
     	ea.ItemID = @ItemID'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32949,7 +31109,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32958,7 +31117,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32984,7 +31142,6 @@ BEGIN
 
     SET ANSI_NULLS ON'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -32993,7 +31150,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33002,7 +31158,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33027,7 +31182,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33036,7 +31190,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33045,7 +31198,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33073,7 +31225,6 @@ BEGIN
     	FROM [dbo].[StorageSpaces] AS SS
     	WHERE SS.Id = @Id'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33082,7 +31233,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33091,7 +31241,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33120,7 +31269,6 @@ BEGIN
     FROM StorageSpaces AS SS
     WHERE SS.ServerId = @ServerId AND SS.Path = @Path'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33129,7 +31277,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33138,7 +31285,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33162,7 +31308,6 @@ BEGIN
     FROM StorageSpaceFolders
     WHERE Id = @ID'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33171,7 +31316,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33180,7 +31324,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33204,7 +31347,6 @@ BEGIN
     FROM StorageSpaceFolders
     WHERE StorageSpaceId = @StorageSpaceId'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33213,7 +31355,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33222,7 +31363,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33241,7 +31381,6 @@ BEGIN
     FROM StorageSpaceLevels AS SL
     WHERE SL.Id = @ID'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33250,7 +31389,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33259,7 +31397,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33312,7 +31449,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33321,7 +31457,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33330,7 +31465,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33360,7 +31494,6 @@ BEGIN
     ON SSL.Id = SS.LevelId
     WHERE SS.LevelId = @LevelId'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33369,7 +31502,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33378,7 +31510,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33408,7 +31539,6 @@ BEGIN
     INNER JOIN ResourceGroups AS RG ON SSLRG.GroupID = RG.GroupID
     WHERE RG.GroupName = @ResourceGroupName'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33417,7 +31547,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33426,7 +31555,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33488,7 +31616,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33497,7 +31624,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33506,7 +31632,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33523,7 +31648,6 @@ BEGIN
     WHERE LevelID = @LevelID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33532,7 +31656,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33541,7 +31664,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33554,7 +31676,6 @@ BEGIN
     FROM SupportServiceLevels
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33563,7 +31684,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33572,7 +31692,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33596,7 +31715,6 @@ BEGIN
 
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33605,7 +31723,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33614,7 +31731,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33639,7 +31755,6 @@ BEGIN
     		DisplayOrder;
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33648,7 +31763,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33657,7 +31771,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33684,7 +31797,6 @@ BEGIN
     		AND SettingsName = @SettingsName;
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33693,7 +31805,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33702,7 +31813,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33727,7 +31837,6 @@ BEGIN
     		ThemeID = @ThemeID;
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33736,7 +31845,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33745,7 +31853,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33784,7 +31891,6 @@ BEGIN
     	ON TS.TaskId = T.ID
     WHERE T.Guid = @Guid'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33793,7 +31899,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33802,7 +31907,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33910,7 +32014,6 @@ BEGIN
      END
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33919,7 +32022,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -33928,7 +32030,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34016,7 +32117,6 @@ BEGIN
      END
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34025,7 +32125,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34034,7 +32133,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34083,7 +32181,6 @@ BEGIN
     ORDER BY PlanName
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34092,7 +32189,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34101,7 +32197,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34150,7 +32245,6 @@ BEGIN
     ORDER BY PlanName
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34159,7 +32253,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34168,7 +32261,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34218,7 +32310,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34227,7 +32318,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34236,7 +32326,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34293,7 +32382,6 @@ BEGIN
 
     	RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34302,7 +32390,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34311,7 +32398,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34363,7 +32449,6 @@ BEGIN
 
     	RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34372,7 +32457,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34381,7 +32465,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34437,7 +32520,6 @@ BEGIN
 
     	RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34446,7 +32528,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34455,7 +32536,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34508,7 +32588,6 @@ BEGIN
 
     	RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34517,7 +32596,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34526,7 +32604,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34606,7 +32683,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34615,7 +32691,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34624,7 +32699,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34643,7 +32717,6 @@ BEGIN
     	LEFT JOIN  [dbo].[EnterpriseFolders] AS EF ON EF.EnterpriseFolderID = EFOP.FolderID
     	WHERE EFOP.ItemID = @ItemID AND EFOP.AccountID = @AccountID'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34652,7 +32725,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34661,7 +32733,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34680,7 +32751,6 @@ BEGIN
     	WHERE Packages.UserID = @UserId
     	RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34689,7 +32759,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34698,7 +32767,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34740,7 +32808,6 @@ BEGIN
     ORDER BY UP.UserOrder DESC
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34749,7 +32816,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34758,7 +32824,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34801,7 +32866,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34810,7 +32874,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34819,7 +32882,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34872,7 +32934,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34881,7 +32942,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -34890,7 +32950,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -35137,7 +33196,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -35146,7 +33204,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -35155,7 +33212,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -35216,7 +33272,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -35225,7 +33280,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -35234,7 +33288,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -35335,7 +33388,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -35344,7 +33396,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -35353,7 +33404,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -35388,7 +33438,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -35397,7 +33446,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -35406,7 +33454,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -35520,7 +33567,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -35529,7 +33575,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -35538,7 +33583,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -35651,7 +33695,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -35660,7 +33703,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -35669,7 +33711,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -35786,7 +33827,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -35795,7 +33835,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -35804,7 +33843,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -35917,7 +33955,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -35926,7 +33963,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -35935,7 +33971,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -35967,7 +34002,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -35976,7 +34010,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -35985,7 +34018,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36035,7 +34067,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36044,7 +34075,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36053,7 +34083,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36076,7 +34105,6 @@ BEGIN
     	FROM WebDavAccessTokens 
     	Where AccessToken = @AccessToken AND ExpirationDate > getdate()'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36085,7 +34113,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36094,7 +34121,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36117,7 +34143,6 @@ BEGIN
     	FROM WebDavAccessTokens 
     	Where ID = @Id AND ExpirationDate > getdate()'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36126,7 +34151,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36135,7 +34159,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36154,7 +34177,6 @@ BEGIN
     	FROM WebDavPortalUsersSettings AS US
     	WHERE AccountId = @AccountId'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36163,7 +34185,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36172,7 +34193,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36208,7 +34228,6 @@ BEGIN
 
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36217,7 +34236,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36226,7 +34244,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36280,7 +34297,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36289,7 +34305,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36298,7 +34313,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36328,7 +34342,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36337,7 +34350,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36346,7 +34358,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36385,7 +34396,6 @@ BEGIN
 
     	RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36394,7 +34404,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36403,7 +34412,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36437,7 +34445,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36446,7 +34453,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36455,7 +34461,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36476,7 +34481,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36485,7 +34489,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36494,7 +34497,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36515,7 +34517,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36524,7 +34525,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36533,7 +34533,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36551,7 +34550,6 @@ BEGIN
     	RDSCollectionId = NULL
     WHERE ID = @Id'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36560,7 +34558,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36569,7 +34566,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36587,7 +34583,6 @@ BEGIN
     	ItemID = NULL
     WHERE ID = @Id'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36596,7 +34591,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36605,7 +34599,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36622,7 +34615,6 @@ BEGIN
     DELETE FROM RDSCollectionUsers
     WHERE AccountId = @AccountId AND RDSCollectionId = @RDSCollectionId'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36631,7 +34623,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36640,7 +34631,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36654,7 +34644,6 @@ BEGIN
     AS
     	DELETE FROM StorageSpaces WHERE ID = @ID'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36663,7 +34652,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36672,7 +34660,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36688,7 +34675,6 @@ BEGIN
     FROM StorageSpaceFolders
     WHERE ID=@ID'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36697,7 +34683,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36706,7 +34691,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36720,7 +34704,6 @@ BEGIN
     AS
     	DELETE FROM StorageSpaceLevels WHERE ID = @ID'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36729,7 +34712,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36738,7 +34720,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36789,7 +34770,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36798,7 +34778,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36807,7 +34786,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36882,7 +34860,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36891,7 +34868,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36900,7 +34876,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36969,7 +34944,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36978,7 +34952,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -36987,7 +34960,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37057,7 +35029,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37066,7 +35037,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37075,7 +35045,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37217,7 +35186,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37226,7 +35194,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37235,7 +35202,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37251,7 +35217,6 @@ BEGIN
     UPDATE [dbo].[AccessTokens] SET [SmsResponse] = @SmsResponse WHERE [AccessTokenGuid] = @AccessToken
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37260,7 +35225,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37269,7 +35233,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37288,7 +35251,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37297,7 +35259,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37306,7 +35267,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37331,7 +35291,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37340,7 +35299,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37349,7 +35307,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37381,7 +35338,6 @@ BEGIN
     	AND dbo.CheckActorPackageRights(@ActorID, PIP.PackageID) = 1
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37390,7 +35346,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37399,7 +35354,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37422,7 +35376,6 @@ BEGIN
     	AND dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37431,7 +35384,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37440,7 +35392,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37461,7 +35412,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37470,7 +35420,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37479,7 +35428,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37500,7 +35448,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37509,7 +35456,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37518,7 +35464,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37539,7 +35484,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37548,7 +35492,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37557,7 +35500,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37578,7 +35520,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37587,7 +35528,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37596,7 +35536,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37617,7 +35556,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37626,7 +35564,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37635,7 +35572,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37685,7 +35621,6 @@ BEGIN
 
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37694,7 +35629,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37703,7 +35637,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37722,7 +35655,6 @@ BEGIN
     WHERE UserID = @UserID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37731,7 +35663,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37740,7 +35671,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37779,7 +35709,6 @@ BEGIN
 
     	RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37788,7 +35717,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37797,7 +35725,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37815,7 +35742,6 @@ BEGIN
     	GroupName = @GroupName
     WHERE ID = @GroupID'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37824,7 +35750,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37833,7 +35758,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37880,7 +35804,6 @@ BEGIN
     	Status = @Status
     WHERE ID = @TaskID'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37889,7 +35812,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37898,7 +35820,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37921,7 +35842,6 @@ BEGIN
 
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37930,7 +35850,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37939,7 +35858,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -37994,7 +35912,6 @@ BEGIN
     	RecordID = @RecordID
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38003,7 +35920,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38012,7 +35928,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38055,7 +35970,6 @@ BEGIN
     	DomainID = @DomainID
     	RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38064,7 +35978,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38073,7 +35986,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38088,7 +36000,6 @@ BEGIN
     AS
     UPDATE [dbo].[Domains] SET [CreationDate] = @Date WHERE [DomainID] = @DomainId'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38097,7 +36008,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38106,7 +36016,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38123,7 +36032,6 @@ BEGIN
     AS
     UPDATE [dbo].[Domains] SET [CreationDate] = @DomainCreationDate, [ExpirationDate] = @DomainExpirationDate, [LastUpdateDate] = @DomainLastUpdateDate WHERE [DomainID] = @DomainId'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38132,7 +36040,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38141,7 +36048,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38156,7 +36062,6 @@ BEGIN
     AS
     UPDATE [dbo].[Domains] SET [ExpirationDate] = @Date WHERE [DomainID] = @DomainId'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38165,7 +36070,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38174,7 +36078,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38189,7 +36092,6 @@ BEGIN
     AS
     UPDATE [dbo].[Domains] SET [LastUpdateDate] = @Date WHERE [DomainID] = @DomainId'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38198,7 +36100,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38207,7 +36108,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38226,7 +36126,6 @@ BEGIN
     SET StorageSpaceFolderId = @StorageSpaceFolderId
     WHERE ItemID = @ItemID AND FolderName = @FolderName'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38235,7 +36134,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38244,7 +36142,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38265,7 +36162,6 @@ BEGIN
     	FolderQuota = @FolderQuota
     WHERE ItemID = @ItemID AND FolderName = @FolderID'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38274,7 +36170,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38283,7 +36178,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38340,7 +36234,6 @@ BEGIN
     COMMIT TRAN
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38349,7 +36242,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38358,7 +36250,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38394,7 +36285,6 @@ BEGIN
     COMMIT TRAN
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38403,7 +36293,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38412,7 +36301,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38433,7 +36321,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38442,7 +36329,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38451,7 +36337,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38474,7 +36359,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38483,7 +36367,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38492,7 +36375,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38568,7 +36450,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38577,7 +36458,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38586,7 +36466,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38607,7 +36486,6 @@ BEGIN
     ELSE
     UPDATE [dbo].[ExchangeOrganizationSettings] SET [Xml] = @Xml WHERE [ItemId] = @ItemId AND [SettingsName]= @SettingsName'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38616,7 +36494,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38625,7 +36502,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38653,7 +36529,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38662,7 +36537,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38671,7 +36545,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38745,7 +36618,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38754,7 +36626,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38763,7 +36634,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38800,7 +36670,6 @@ BEGIN
      RETURN
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38809,7 +36678,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38818,7 +36686,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38860,7 +36727,6 @@ BEGIN
      exec sp_xml_removedocument @idoc
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38869,7 +36735,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38878,7 +36743,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38899,7 +36763,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38908,7 +36771,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38917,7 +36779,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38983,7 +36844,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -38992,7 +36852,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39001,7 +36860,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39105,7 +36963,6 @@ BEGIN
     END
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39114,7 +36971,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39123,7 +36979,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39193,7 +37048,6 @@ BEGIN
     COMMIT TRAN
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39202,7 +37056,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39211,7 +37064,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39269,7 +37121,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39278,7 +37129,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39287,7 +37137,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39364,7 +37213,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39373,7 +37221,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39382,7 +37229,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39401,7 +37247,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39410,7 +37255,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39419,7 +37263,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39471,7 +37314,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39480,7 +37322,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39489,7 +37330,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39524,7 +37364,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39533,7 +37372,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39542,7 +37380,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39597,7 +37434,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39606,7 +37442,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39615,7 +37450,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39642,7 +37476,6 @@ BEGIN
      RETURN
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39651,7 +37484,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39660,7 +37492,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39685,7 +37516,6 @@ BEGIN
     	DisplayName = @DisplayName
     WHERE ID = @Id'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39694,7 +37524,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39703,7 +37532,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39752,7 +37580,6 @@ BEGIN
     	AuthenticateUsingNLA = @AuthenticateUsingNLA
     WHERE ID = @Id'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39761,7 +37588,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39770,7 +37596,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39799,7 +37624,6 @@ BEGIN
     	ConnectionEnabled = @ConnectionEnabled
     WHERE ID = @Id'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39808,7 +37632,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39817,7 +37640,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39869,7 +37691,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39878,7 +37699,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39887,7 +37707,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39975,7 +37794,6 @@ BEGIN
     COMMIT TRAN
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39984,7 +37802,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -39993,7 +37810,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40047,7 +37863,6 @@ BEGIN
 
     SET ANSI_NULLS ON'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40056,7 +37871,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40065,7 +37879,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40094,7 +37907,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40103,7 +37915,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40112,7 +37923,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40143,7 +37953,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40152,7 +37961,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40161,7 +37969,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40239,7 +38046,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40248,7 +38054,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40257,7 +38062,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40309,7 +38113,6 @@ BEGIN
     COMMIT TRAN
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40318,7 +38121,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40327,7 +38129,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40348,7 +38149,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40357,7 +38157,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40366,7 +38165,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40404,7 +38202,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40413,7 +38210,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40422,7 +38218,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40448,7 +38243,6 @@ BEGIN
     	SET Name = @Name, ServiceId = @ServiceId,ServerId=@ServerId,LevelId=@LevelId, Path=@Path,FsrmQuotaType=@FsrmQuotaType,FsrmQuotaSizeBytes=@FsrmQuotaSizeBytes,IsShared=@IsShared,UncPath=@UncPath,IsDisabled=@IsDisabled
     	WHERE ID = @ID'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40457,7 +38251,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40466,7 +38259,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40496,7 +38288,6 @@ BEGIN
     	FsrmQuotaSizeBytes=@FsrmQuotaSizeBytes
     WHERE ID = @ID'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40505,7 +38296,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40514,7 +38304,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40532,7 +38321,6 @@ BEGIN
     	SET Name = @Name, Description = @Description
     	WHERE ID = @ID'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40541,7 +38329,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40550,7 +38337,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40593,7 +38379,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40602,7 +38387,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40611,7 +38395,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER OFF
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40692,7 +38475,6 @@ BEGIN
 
     	RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40701,7 +38483,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40710,7 +38491,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40746,7 +38526,6 @@ BEGIN
     	END
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40755,7 +38534,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40764,7 +38542,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40789,7 +38566,6 @@ BEGIN
 
     	RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40798,7 +38574,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40807,7 +38582,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40832,7 +38606,6 @@ BEGIN
 
     	RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40841,7 +38614,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40850,7 +38622,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40905,7 +38676,6 @@ BEGIN
 
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40914,7 +38684,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40923,7 +38692,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40962,7 +38730,6 @@ BEGIN
     		END
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40971,7 +38738,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -40980,7 +38746,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -41038,7 +38803,6 @@ BEGIN
     COMMIT TRAN
     RETURN'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -41047,7 +38811,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -41056,7 +38819,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -41075,7 +38837,6 @@ BEGIN
     	Settings = @Settings
     WHERE AccountId = @AccountId'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -41084,7 +38845,6 @@ IF NOT EXISTS (
 BEGIN
     SET ANSI_NULLS ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -41093,7 +38853,6 @@ IF NOT EXISTS (
 BEGIN
     SET QUOTED_IDENTIFIER ON
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -41111,7 +38870,6 @@ BEGIN
     AS
     UPDATE [dbo].[Domains] SET [CreationDate] = @DomainCreationDate, [ExpirationDate] = @DomainExpirationDate, [LastUpdateDate] = @DomainLastUpdateDate, [RegistrarName] = @DomainRegistrarName WHERE [DomainID] = @DomainId'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -41137,7 +38895,6 @@ BEGIN
 
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -41217,7 +38974,6 @@ BEGIN
 
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -41252,7 +39008,6 @@ BEGIN
     	END
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -41275,7 +39030,6 @@ BEGIN
     	AND dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -41297,7 +39051,6 @@ BEGIN
     	AND dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -41322,7 +39075,6 @@ BEGIN
     ORDER BY DIP.IsPrimary DESC
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -41343,7 +39095,6 @@ BEGIN
     	AND dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -41420,7 +39171,6 @@ BEGIN
 
     END'
 END;
-GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
@@ -41428,9 +39178,8 @@ IF NOT EXISTS (
 )
 BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20241024041433_InitialCreate', N'8.0.10');
+    VALUES (N'20241024041433_InitialCreate', N'9.0.0');
 END;
-GO
 
 COMMIT;
 GO

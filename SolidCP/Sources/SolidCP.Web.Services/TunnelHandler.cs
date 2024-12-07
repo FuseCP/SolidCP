@@ -127,7 +127,7 @@ namespace SolidCP.Web.Services
         {
             if (context.IsWebSocketRequest)
             {
-                string caller, method, args, argsx;
+                string caller, method;
                 caller = context.Request.QueryString["caller"];
                 method = context.Request.QueryString["method"];
                 if (string.IsNullOrEmpty(caller) || string.IsNullOrEmpty(method))
@@ -168,7 +168,7 @@ namespace SolidCP.Web.Services
         }
 
         public IHttpHandler GetHttpHandler(RequestContext requestContext) => this;
-        public bool IsReusable => true;
+        public override bool IsReusable => true;
     }
 #endif
 }

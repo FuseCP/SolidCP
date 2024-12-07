@@ -2453,7 +2453,7 @@ BEGIN
     (1901, NULL, N''SimpleDNS Plus 8.x'', N''SimpleDNS'', 7, N''SimpleDNS'', N''SolidCP.Providers.DNS.SimpleDNS8, SolidCP.Providers.DNS.SimpleDNS80''),
     (1902, NULL, N''Microsoft DNS Server 2016'', N''MSDNS'', 7, N''MSDNS.2016'', N''SolidCP.Providers.DNS.MsDNS2016, SolidCP.Providers.DNS.MsDNS2016''),
     (1903, NULL, N''SimpleDNS Plus 9.x'', N''SimpleDNS'', 7, N''SimpleDNS'', N''SolidCP.Providers.DNS.SimpleDNS9, SolidCP.Providers.DNS.SimpleDNS90''),
-    (1910, NULL, N''vsftpd FTP Server 3 (Experimental)'', N''vsftpd'', 3, N''vsftpd'', N''SolidCP.Providers.FTP.VsFtp3, SolidCP.Providers.FTP.VsFtp''),
+    (1910, NULL, N''vsftpd FTP Server 3'', N''vsftpd'', 3, N''vsftpd'', N''SolidCP.Providers.FTP.VsFtp3, SolidCP.Providers.FTP.VsFtp''),
     (1911, NULL, N''Apache Web Server 2.4 (Experimental)'', N''Apache'', 2, N''Apache'', N''SolidCP.Providers.Web.Apache24, SolidCP.Providers.Web.Apache'')');
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ProviderID', N'DisableAutoDiscovery', N'DisplayName', N'EditorControl', N'GroupID', N'ProviderName', N'ProviderType') AND [object_id] = OBJECT_ID(N'[Providers]'))
         SET IDENTITY_INSERT [Providers] OFF;

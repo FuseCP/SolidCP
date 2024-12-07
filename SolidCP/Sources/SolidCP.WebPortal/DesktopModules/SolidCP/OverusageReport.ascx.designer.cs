@@ -7,6 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+#if Reporting
 namespace SolidCP.Portal {
     
     
@@ -148,3 +149,4 @@ namespace SolidCP.Portal {
         protected global::Microsoft.Reporting.WebForms.ReportViewer rvContent;
     }
 }
+#endif

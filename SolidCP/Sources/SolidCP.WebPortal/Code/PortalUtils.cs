@@ -904,6 +904,12 @@ namespace SolidCP.Portal
 						}
 					}
 				}
+#if NETCOREAPP
+				catch (ResponseEndException)
+				{
+					throw;
+				}
+#endif
 				catch
 				{
 				}
