@@ -53,10 +53,12 @@
                                     </asp:Label>
                                     <div class="col-sm-10">
                                         <div class="input-group">
-                                            <asp:TextBox ID="txtDisplayName" runat="server" CssClass="form-control"></asp:TextBox>
+                                            <asp:TextBox ID="txtDisplayName" runat="server" CssClass="form-control" MaxLength="64"></asp:TextBox>
                                             <span class="input-group-addon" title="Required"><i class="fa fa-asterisk" aria-hidden="true"></i></span>
                                 <asp:RequiredFieldValidator ID="valRequireDisplayName" runat="server" meta:resourcekey="valRequireDisplayName" ControlToValidate="txtDisplayName"
                                     ErrorMessage="Enter Display Name" ValidationGroup="EditMailbox" Display="Dynamic" Text="*" SetFocusOnError="True"></asp:RequiredFieldValidator>
+                                <asp:RegularExpressionValidator ID="valDisplayName" runat="server" ErrorMessage="Enter valid name" ControlToValidate="txtDisplayName" meta:resourcekey="valRequireCorrectName" 
+                                                ValidationExpression="^[^'&quot;]+$" SetFocusOnError="True" ValidationGroup="EditMailbox" Display="Dynamic" Text="*"></asp:RegularExpressionValidator>
                                         </div>
                                     </div>
        </div>
@@ -95,7 +97,7 @@
                                     </asp:Label>
                                     <div class="col-sm-4">
                                         <div class="input-group">
-                                            <asp:TextBox ID="txtFirstName" runat="server" CssClass="form-control" placeholder="First Name"></asp:TextBox>
+                                            <asp:TextBox ID="txtFirstName" runat="server" CssClass="form-control" placeholder="First Name" MaxLength="64"></asp:TextBox>
                                             <span class="input-group-addon" title="Required"><i class="fa fa-asterisk" aria-hidden="true"></i></span>
                                         </div>
                                     </div>
@@ -104,7 +106,7 @@
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="input-group">
-                                            <asp:TextBox ID="txtLastName" runat="server" CssClass="form-control" onKeyUp="buildDisplayName();" placeholder="Last Name"></asp:TextBox>
+                                            <asp:TextBox ID="txtLastName" runat="server" CssClass="form-control" onKeyUp="buildDisplayName();" placeholder="Last Name" MaxLength="64"></asp:TextBox>
                                             <span class="input-group-addon" title="Required"><i class="fa fa-asterisk" aria-hidden="true"></i></span>
                                         </div>
                                     </div>
