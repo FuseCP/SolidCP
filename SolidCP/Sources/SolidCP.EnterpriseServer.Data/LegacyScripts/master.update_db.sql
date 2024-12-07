@@ -1,15 +1,15 @@
--- USE [${install.database}]
--- GO
+﻿USE [${install.database}]
+GO
 -- update database version
--- DECLARE @build_version nvarchar(10), @build_date datetime
--- SET @build_version = N'${release.version}'
--- SET @build_date = '${release.date}T00:00:00' -- ISO 8601 Format (YYYY-MM-DDTHH:MM:SS)
+DECLARE @build_version nvarchar(10), @build_date datetime
+SET @build_version = N'${release.version}'
+SET @build_date = '${release.date}T00:00:00' -- ISO 8601 Format (YYYY-MM-DDTHH:MM:SS)
 
--- IF NOT EXISTS (SELECT * FROM [dbo].[Versions] WHERE [DatabaseVersion] = @build_version)
--- BEGIN
--- 	INSERT [dbo].[Versions] ([DatabaseVersion], [BuildDate]) VALUES (@build_version, @build_date)
--- END
--- GO
+IF NOT EXISTS (SELECT * FROM [dbo].[Versions] WHERE [DatabaseVersion] = @build_version)
+BEGIN
+	INSERT [dbo].[Versions] ([DatabaseVersion], [BuildDate]) VALUES (@build_version, @build_date)
+END
+GO
 
 -- Fix for Some problems with collate in GetDnsRecordsTotal
 IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetDnsRecordsTotal')
@@ -351,6 +351,7 @@ UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL WHERE [DisplayName] =
 END
 GO
 
+
 IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaName] = 'Exchange2007.AllowLitigationHold')
 BEGIN
 INSERT [dbo].[Quotas]  ([QuotaID], [GroupID],[QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID]) VALUES (420, 12, 24,N'Exchange2007.AllowLitigationHold',N'Allow Litigation Hold',1, 0 , NULL)
@@ -593,9 +594,7 @@ SELECT
 	S.PriorityID,
 	S.MaxExecutionTime,
 	S.WeekMonthDay,
-	-- bug ISNULL(0, ...) always is not NULL
-	-- ISNULL(0, (SELECT TOP 1 SeverityID FROM AuditLog WHERE ItemID = S.ScheduleID AND SourceName = ''SCHEDULER'' ORDER BY StartDate DESC)) AS LastResult,
-	ISNULL((SELECT TOP 1 SeverityID FROM AuditLog WHERE ItemID = S.ScheduleID AND SourceName = 'SCHEDULER' ORDER BY StartDate DESC), 0) AS LastResult,
+	ISNULL(0, (SELECT TOP 1 SeverityID FROM AuditLog WHERE ItemID = S.ScheduleID AND SourceName = 'SCHEDULER' ORDER BY StartDate DESC)) AS LastResult,
 
 	U.Username,
 	U.FirstName,
@@ -2246,119 +2245,116 @@ CREATE PROCEDURE [dbo].[GetSfBUsers]
 	@Count int	
 )
 AS
+
+CREATE TABLE #TempSfBUsers 
+(	
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[AccountID] [int],	
+	[ItemID] [int] NOT NULL,
+	[AccountName] [nvarchar](300)  NOT NULL,
+	[DisplayName] [nvarchar](300)  NOT NULL,
+	[UserPrincipalName] [nvarchar](300) NULL,
+	[SipAddress] [nvarchar](300) NULL,
+	[SamAccountName] [nvarchar](100) NULL,
+	[SfBUserPlanId] [int] NOT NULL,		
+	[SfBUserPlanName] [nvarchar] (300) NOT NULL,		
+)
+
+DECLARE @condition nvarchar(700)
+SET @condition = ''
+
+IF (@SortColumn = 'DisplayName')
 BEGIN
-	CREATE TABLE #TempSfBUsers 
-	(	
-		[ID] [int] IDENTITY(1,1) NOT NULL,
-		[AccountID] [int],	
-		[ItemID] [int] NOT NULL,
-		[AccountName] [nvarchar](300)  NOT NULL,
-		[DisplayName] [nvarchar](300)  NOT NULL,
-		[UserPrincipalName] [nvarchar](300) NULL,
-		[SipAddress] [nvarchar](300) NULL,
-		[SamAccountName] [nvarchar](100) NULL,
-		[SfBUserPlanId] [int] NOT NULL,		
-		[SfBUserPlanName] [nvarchar] (300) NOT NULL,		
-	)
+	SET @condition = 'ORDER BY ea.DisplayName'
+END
 
-	DECLARE @condition nvarchar(700)
-	SET @condition = ''
+IF (@SortColumn = 'UserPrincipalName')
+BEGIN
+	SET @condition = 'ORDER BY ea.UserPrincipalName'
+END
 
-	IF (@SortColumn = 'DisplayName')
+IF (@SortColumn = 'SipAddress')
+BEGIN
+	SET @condition = 'ORDER BY ou.SipAddress'
+END
+
+IF (@SortColumn = 'SfBUserPlanName')
+BEGIN
+	SET @condition = 'ORDER BY lp.SfBUserPlanName'
+END
+
+DECLARE @sql nvarchar(3500)
+
+set @sql = '
+	INSERT INTO 
+		#TempSfBUsers 
+	SELECT 
+		ea.AccountID,
+		ea.ItemID,
+		ea.AccountName,
+		ea.DisplayName,
+		ea.UserPrincipalName,
+		ou.SipAddress,
+		ea.SamAccountName,
+		ou.SfBUserPlanId,
+		lp.SfBUserPlanName				
+	FROM 
+		ExchangeAccounts ea 
+	INNER JOIN 
+		SfBUsers ou
+	INNER JOIN
+		SfBUserPlans lp 
+	ON
+		ou.SfBUserPlanId = lp.SfBUserPlanId				
+	ON 
+		ea.AccountID = ou.AccountID
+	WHERE 
+		ea.ItemID = @ItemID ' + @condition
+
+exec sp_executesql @sql, N'@ItemID int',@ItemID
+
+DECLARE @RetCount int
+SELECT @RetCount = COUNT(ID) FROM #TempSfBUsers 
+
+IF (@SortDirection = 'ASC')
+BEGIN
+	SELECT * FROM #TempSfBUsers 
+	WHERE ID > @StartRow AND ID <= (@StartRow + @Count) 
+END
+ELSE
+BEGIN
+	IF @SortColumn <> '' AND @SortColumn IS NOT NULL
 	BEGIN
-		SET @condition = 'ORDER BY ea.DisplayName'
-	END
-
-	IF (@SortColumn = 'UserPrincipalName')
-	BEGIN
-		SET @condition = 'ORDER BY ea.UserPrincipalName'
-	END
-
-	IF (@SortColumn = 'SipAddress')
-	BEGIN
-		SET @condition = 'ORDER BY ou.SipAddress'
-	END
-
-	IF (@SortColumn = 'SfBUserPlanName')
-	BEGIN
-		SET @condition = 'ORDER BY lp.SfBUserPlanName'
-	END
-
-	DECLARE @sql nvarchar(3500)
-
-	set @sql = '
-		INSERT INTO 
-			#TempSfBUsers 
-		SELECT 
-			ea.AccountID,
-			ea.ItemID,
-			ea.AccountName,
-			ea.DisplayName,
-			ea.UserPrincipalName,
-			ou.SipAddress,
-			ea.SamAccountName,
-			ou.SfBUserPlanId,
-			lp.SfBUserPlanName				
-		FROM 
-			ExchangeAccounts ea 
-		INNER JOIN 
-			SfBUsers ou
-		INNER JOIN
-			SfBUserPlans lp 
-		ON
-			ou.SfBUserPlanId = lp.SfBUserPlanId				
-		ON 
-			ea.AccountID = ou.AccountID
-		WHERE 
-			ea.ItemID = @ItemID ' + @condition
-
-	exec sp_executesql @sql, N'@ItemID int',@ItemID
-
-	DECLARE @RetCount int
-	SELECT @RetCount = COUNT(ID) FROM #TempSfBUsers 
-
-	IF (@SortDirection = 'ASC')
-	BEGIN
-		SELECT * FROM #TempSfBUsers 
-		WHERE ID > @StartRow AND ID <= (@StartRow + @Count) 
-	END
-	ELSE
-	BEGIN
-		IF @SortColumn <> '' AND @SortColumn IS NOT NULL
+		IF (@SortColumn = 'DisplayName')
 		BEGIN
-			IF (@SortColumn = 'DisplayName')
-			BEGIN
-				SELECT * FROM #TempSfBUsers 
-					WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY DisplayName DESC
-			END
-			IF (@SortColumn = 'UserPrincipalName')
-			BEGIN
-				SELECT * FROM #TempSfBUsers 
-					WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
-			END
-
-			IF (@SortColumn = 'SipAddress')
-			BEGIN
-				SELECT * FROM #TempSfBUsers 
-					WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY SipAddress DESC
-			END
-
-			IF (@SortColumn = 'SfBUserPlanName')
-			BEGIN
-				SELECT * FROM #TempSfBUsers 
-					WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY SfBUserPlanName DESC
-			END
+			SELECT * FROM #TempSfBUsers 
+				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY DisplayName DESC
 		END
-		ELSE
+		IF (@SortColumn = 'UserPrincipalName')
 		BEGIN
 			SELECT * FROM #TempSfBUsers 
 				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
-		END	
-	END
-	DROP TABLE #TempSfBUsers
-END
-GO
+		END
 
+		IF (@SortColumn = 'SipAddress')
+		BEGIN
+			SELECT * FROM #TempSfBUsers 
+				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY SipAddress DESC
+		END
+
+		IF (@SortColumn = 'SfBUserPlanName')
+		BEGIN
+			SELECT * FROM #TempSfBUsers 
+				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY SfBUserPlanName DESC
+		END
+	END
+	ELSE
+	BEGIN
+        SELECT * FROM #TempSfBUsers 
+			WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
+	END	
+END
+DROP TABLE #TempSfBUsers
 
 IF  NOT EXISTS (SELECT * FROM sys.objects WHERE type_desc = N'SQL_STORED_PROCEDURE' AND name = N'GetSfBUsersByPlanId')
 BEGIN
@@ -2564,7 +2560,7 @@ GO
 
 -- Lync Phone Numbers Quota
 
-IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaName] = 'Lync.PhoneNumbers')
+IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaName] LIKE ('Lync.%'))
 BEGIN
 	INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (381, 41, 12, N'Lync.PhoneNumbers', N'Phone Numbers', 2, 0, NULL, NULL)
 END
@@ -3165,41 +3161,6 @@ SET
 WHERE ServiceID = @ServiceID
 
 RETURN
-GO
-
-
-IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetPendingSSLForWebsite')
-DROP PROCEDURE GetPendingSSLForWebsite
-GO
-
-CREATE PROCEDURE [dbo].[GetPendingSSLForWebsite]
-(
-	@ActorID int,
-	@PackageID int,
-	@websiteid int,
-	@Recursive bit = 1
-)
-AS
-
--- check rights
-IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
-BEGIN
-	RAISERROR('You are not allowed to access this package', 16, 1)
-	RETURN
-END
-
-SELECT
-	[ID], [UserID], [SiteID], [Hostname], [CSR], [Certificate], [Hash], [Installed]
-FROM
-	[dbo].[SSLCertificates]
-WHERE
-	@websiteid = [SiteID] AND [Installed] = 0 AND [IsRenewal] = 0 -- bugfix Simon Egli, 27.6.2024
-
-RETURN
-GO
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
 GO
 
 -- Lync
@@ -4619,38 +4580,6 @@ print @sql
 exec sp_executesql @sql, N'@ItemID int, @StartRow int, @MaximumRows int',
 @ItemID, @StartRow, @MaximumRows
 
-RETURN
-GO
-
-IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetExchangeAccounts')
-DROP PROCEDURE GetExchangeAccounts
-GO
-
-CREATE PROCEDURE [dbo].[GetExchangeAccounts]
-(
-	@ItemID int,
-	@AccountType int
-)
-AS
-SELECT
-	E.AccountID,
-	E.ItemID,
-	E.AccountType,
-	E.AccountName,
-	E.DisplayName,
-	E.PrimaryEmailAddress,
-	E.MailEnabledPublicFolder,
-	E.MailboxPlanId,
-	P.MailboxPlan,
-	E.SubscriberNumber,
-	E.UserPrincipalName
-FROM
-	ExchangeAccounts  AS E
-LEFT OUTER JOIN ExchangeMailboxPlans AS P ON E.MailboxPlanId = P.MailboxPlanId
-WHERE
-	E.ItemID = @ItemID AND
-	(E.AccountType = @AccountType OR @AccountType = 0)
-ORDER BY DisplayName
 RETURN
 GO
 
@@ -6256,32 +6185,6 @@ SELECT
   FROM [dbo].[ScheduleTasksEmailTemplates] where [TaskID] = @TaskID 
 GO
 
-IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetScheduleTask')
-DROP PROCEDURE GetScheduleTask
-GO
-CREATE PROCEDURE GetScheduleTask
-(
-	@ActorID int,
-	@TaskID nvarchar(100)
-)
-AS
-BEGIN
-	-- get user role
-	DECLARE @RoleID int
-	SELECT @RoleID = RoleID FROM Users
-	WHERE UserID = @ActorID
-
-	SELECT
-		TaskID,
-		TaskType,
-		RoleID
-	FROM ScheduleTasks
-	WHERE
-		TaskID = @TaskID
-		AND @RoleID <= RoleID -- was >= but this seems like a bug, since lower RoleID is more privileged, and in GetScheduleTasks it is also <=.
-END
-GO
-
 IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetDomainDnsRecords')
 DROP PROCEDURE GetDomainDnsRecords
 GO
@@ -7349,7 +7252,7 @@ BEGIN TRAN
 
 -- check rights
 DECLARE @PackageID int
-SELECT @PackageID = PackageID FROM ServiceItems
+SELECT PackageID = @PackageID FROM ServiceItems
 WHERE ItemID = @ItemID
 
 IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
@@ -7834,7 +7737,7 @@ WITH TempItems AS (
 		WHERE PIP.IsPrimary = 1 AND IP.PoolID = 3 -- external IP addresses
 	) AS EIP ON SI.ItemID = EIP.ItemID
 	LEFT OUTER JOIN PrivateIPAddresses AS PIP ON PIP.ItemID = SI.ItemID AND PIP.IsPrimary = 1
-	LEFT OUTER JOIN DmzIPAddresses AS DIP ON DIP.ItemID = SI.ItemID AND DIP.IsPrimary = 1
+	LEFT OUTER JOIN PrivateIPAddresses AS DIP ON DIP.ItemID = SI.ItemID AND DIP.IsPrimary = 1
 	WHERE ' + @condition + '
 )
 
@@ -8264,123 +8167,118 @@ CREATE PROCEDURE [dbo].[GetLyncUsers]
 	@Count int	
 )
 AS
+
+CREATE TABLE #TempLyncUsers 
+(	
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[AccountID] [int],	
+	[ItemID] [int] NOT NULL,
+	[AccountName] [nvarchar](300)  NOT NULL,
+	[DisplayName] [nvarchar](300)  NOT NULL,
+	[UserPrincipalName] [nvarchar](300) NULL,
+	[SipAddress] [nvarchar](300) NULL,
+	[SamAccountName] [nvarchar](100) NULL,
+	[LyncUserPlanId] [int] NOT NULL,		
+	[LyncUserPlanName] [nvarchar] (300) NOT NULL,		
+)
+
+DECLARE @condition nvarchar(700)
+SET @condition = ''
+
+IF (@SortColumn = 'DisplayName')
 BEGIN
+	SET @condition = 'ORDER BY ea.DisplayName'
+END
 
-	CREATE TABLE #TempLyncUsers 
-	(	
-		[ID] [int] IDENTITY(1,1) NOT NULL,
-		[AccountID] [int],	
-		[ItemID] [int] NOT NULL,
-		[AccountName] [nvarchar](300)  NOT NULL,
-		[DisplayName] [nvarchar](300)  NOT NULL,
-		[UserPrincipalName] [nvarchar](300) NULL,
-		[SipAddress] [nvarchar](300) NULL,
-		[SamAccountName] [nvarchar](100) NULL,
-		[LyncUserPlanId] [int] NOT NULL,		
-		[LyncUserPlanName] [nvarchar] (300) NOT NULL,		
-	)
+IF (@SortColumn = 'UserPrincipalName')
+BEGIN
+	SET @condition = 'ORDER BY ea.UserPrincipalName'
+END
 
-	DECLARE @condition nvarchar(700)
-	SET @condition = ''
+IF (@SortColumn = 'SipAddress')
+BEGIN
+	SET @condition = 'ORDER BY ou.SipAddress'
+END
 
-	IF (@SortColumn = 'DisplayName')
+IF (@SortColumn = 'LyncUserPlanName')
+BEGIN
+	SET @condition = 'ORDER BY lp.LyncUserPlanName'
+END
+
+DECLARE @sql nvarchar(3500)
+
+set @sql = '
+	INSERT INTO 
+		#TempLyncUsers 
+	SELECT 
+		ea.AccountID,
+		ea.ItemID,
+		ea.AccountName,
+		ea.DisplayName,
+		ea.UserPrincipalName,
+		ou.SipAddress,
+		ea.SamAccountName,
+		ou.LyncUserPlanId,
+		lp.LyncUserPlanName				
+	FROM 
+		ExchangeAccounts ea 
+	INNER JOIN 
+		LyncUsers ou
+	INNER JOIN
+		LyncUserPlans lp 
+	ON
+		ou.LyncUserPlanId = lp.LyncUserPlanId				
+	ON 
+		ea.AccountID = ou.AccountID
+	WHERE 
+		ea.ItemID = @ItemID ' + @condition
+
+exec sp_executesql @sql, N'@ItemID int',@ItemID
+
+DECLARE @RetCount int
+SELECT @RetCount = COUNT(ID) FROM #TempLyncUsers 
+
+IF (@SortDirection = 'ASC')
+BEGIN
+	SELECT * FROM #TempLyncUsers 
+	WHERE ID > @StartRow AND ID <= (@StartRow + @Count) 
+END
+ELSE
+BEGIN
+	IF @SortColumn <> '' AND @SortColumn IS NOT NULL
 	BEGIN
-		SET @condition = 'ORDER BY ea.DisplayName'
-	END
-
-	IF (@SortColumn = 'UserPrincipalName')
-	BEGIN
-		SET @condition = 'ORDER BY ea.UserPrincipalName'
-	END
-
-	IF (@SortColumn = 'SipAddress')
-	BEGIN
-		SET @condition = 'ORDER BY ou.SipAddress'
-	END
-
-	IF (@SortColumn = 'LyncUserPlanName')
-	BEGIN
-		SET @condition = 'ORDER BY lp.LyncUserPlanName'
-	END
-
-	DECLARE @sql nvarchar(3500)
-
-	set @sql = '
-		INSERT INTO 
-			#TempLyncUsers 
-		SELECT 
-			ea.AccountID,
-			ea.ItemID,
-			ea.AccountName,
-			ea.DisplayName,
-			ea.UserPrincipalName,
-			ou.SipAddress,
-			ea.SamAccountName,
-			ou.LyncUserPlanId,
-			lp.LyncUserPlanName				
-		FROM 
-			ExchangeAccounts ea 
-		INNER JOIN 
-			LyncUsers ou
-		INNER JOIN
-			LyncUserPlans lp 
-		ON
-			ou.LyncUserPlanId = lp.LyncUserPlanId				
-		ON 
-			ea.AccountID = ou.AccountID
-		WHERE 
-			ea.ItemID = @ItemID ' + @condition
-
-	exec sp_executesql @sql, N'@ItemID int',@ItemID
-
-	DECLARE @RetCount int
-	SELECT @RetCount = COUNT(ID) FROM #TempLyncUsers 
-
-	IF (@SortDirection = 'ASC')
-	BEGIN
-		SELECT * FROM #TempLyncUsers 
-		WHERE ID > @StartRow AND ID <= (@StartRow + @Count) 
-	END
-	ELSE
-	BEGIN
-		IF @SortColumn <> '' AND @SortColumn IS NOT NULL
+		IF (@SortColumn = 'DisplayName')
 		BEGIN
-			IF (@SortColumn = 'DisplayName')
-			BEGIN
-				SELECT * FROM #TempLyncUsers 
-					WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY DisplayName DESC
-			END
-			IF (@SortColumn = 'UserPrincipalName')
-			BEGIN
-				SELECT * FROM #TempLyncUsers 
-					WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
-			END
-
-			IF (@SortColumn = 'SipAddress')
-			BEGIN
-				SELECT * FROM #TempLyncUsers 
-					WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY SipAddress DESC
-			END
-
-			IF (@SortColumn = 'LyncUserPlanName')
-			BEGIN
-				SELECT * FROM #TempLyncUsers 
-					WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY LyncUserPlanName DESC
-			END
+			SELECT * FROM #TempLyncUsers 
+				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY DisplayName DESC
 		END
-		ELSE
+		IF (@SortColumn = 'UserPrincipalName')
 		BEGIN
 			SELECT * FROM #TempLyncUsers 
 				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
-		END	
-	END
+		END
 
-	DROP TABLE #TempLyncUsers
+		IF (@SortColumn = 'SipAddress')
+		BEGIN
+			SELECT * FROM #TempLyncUsers 
+				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY SipAddress DESC
+		END
+
+		IF (@SortColumn = 'LyncUserPlanName')
+		BEGIN
+			SELECT * FROM #TempLyncUsers 
+				WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY LyncUserPlanName DESC
+		END
+	END
+	ELSE
+	BEGIN
+        SELECT * FROM #TempLyncUsers 
+			WHERE ID >@RetCount - @Count - @StartRow AND ID <= @RetCount- @StartRow  ORDER BY UserPrincipalName DESC
+	END	
 END
-GO
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER OFF
+
+DROP TABLE #TempLyncUsers
+
 GO
 
 
@@ -8445,8 +8343,7 @@ LEFT JOIN LyncUsers AS LU
 ON LU.AccountID = EA.AccountID
 LEFT JOIN SfBUsers AS SfB  
 ON SfB.AccountID = EA.AccountID
-WHERE ' + @condition + '
-ORDER BY ' + @sortColumn
+WHERE ' + @condition
 
 print @sql
 
@@ -9990,7 +9887,6 @@ CREATE PROCEDURE [dbo].[GetNestedPackagesPaged]
 	@MaximumRows int
 )
 AS
-BEGIN
 
 -- build query and run it to the temporary table
 DECLARE @sql nvarchar(2000)
@@ -10032,8 +9928,6 @@ END
 
 IF @SortColumn <> '' AND @SortColumn IS NOT NULL
 SET @sql = @sql + ' ORDER BY ' + @SortColumn + ' '
-ELSE
-SET @sql = @sql + ' ORDER BY P.PackageName '
 
 SET @sql = @sql + ' SELECT COUNT(PackageID) FROM @Packages;
 SELECT
@@ -10073,8 +9967,8 @@ WHERE TP.ItemPosition BETWEEN @StartRow AND @EndRow'
 exec sp_executesql @sql, N'@StartRow int, @MaximumRows int, @PackageID int, @FilterValue nvarchar(50), @ActorID int, @StatusID int, @PlanID int, @ServerID int',
 @StartRow, @MaximumRows, @PackageID, @FilterValue, @ActorID, @StatusID, @PlanID, @ServerID
 
+
 RETURN
-END
 GO
 
 IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetUsersPaged')
@@ -10225,9 +10119,9 @@ BEGIN
 	ELSE
 		SET @condition = @condition + '
 			AND (ItemName LIKE ''' + @FilterValue + '''
-			OR Username LIKE ''' + @FilterValue + '''
-			OR FullName LIKE ''' + @FilterValue + '''
-			OR Email LIKE ''' + @FilterValue + ''')'
+			OR Username ''' + @FilterValue + '''
+			OR FullName ''' + @FilterValue + '''
+			OR Email ''' + @FilterValue + ''')'
 END
 
 IF @SortColumn IS NULL OR @SortColumn = ''
@@ -12592,7 +12486,7 @@ AS
 
 -- check rights
 DECLARE @PackageID int
-SELECT @PackageID = PackageID FROM ServiceItems
+SELECT PackageID = @PackageID FROM ServiceItems
 WHERE ItemID = @ItemID
 
 IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0 AND @forAutodiscover = 0
@@ -14540,7 +14434,7 @@ GO
 
 
 
-DELETE FROM [dbo].[UserSettings] WHERE [SettingsName] in ('BandwidthXLST','DiskspaceXLST');
+Delete from [dbo].[UserSettings] where [SettingsName] in ('BandwidthXLST','DiskspaceXLST');
 
 INSERT INTO [dbo].[UserSettings] ([UserID],[SettingsName],[PropertyName],[PropertyValue])
 	VALUES (1, 'BandwidthXLST','Transform','<?xml version="1.0" encoding="UTF-8"?>
@@ -14752,22 +14646,6 @@ BEGIN
 UPDATE [dbo].[Providers] SET [EditorControl] = N'Proxmox', [GroupID] = 167 WHERE [ProviderName] = 'Proxmox'
 END
 GO
-
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderName] = 'Proxmox (remote)')
-BEGIN
-
-	IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderName] = 'Proxmox (local)')
-	BEGIN
-	UPDATE [dbo].[Providers] SET [ProviderName] = 'Proxmox (remote)', [DisplayName] = 'Proxmox Virtualization (remote)' WHERE [ProviderName] = 'Proxmox'
-	INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (371, 167, N'Proxmox', N'Proxmox Virtualization', N'SolidCP.Providers.Virtualization.ProxmoxvpsLocal, SolidCP.Providers.Virtualization.Proxmoxvps', N'Proxmox', 0)
-	END
-	ELSE
-	BEGIN
-	UPDATE [dbo].[Providers] SET [ProviderName] = 'Proxmox (remote)', [DisplayName] = 'Proxmox Virtualization (remote)' WHERE [ProviderName] = 'Proxmox'
-	UPDATE [dbo].[Providers] SET [ProviderName] = 'Proxmox', [DisplayName] = 'Proxmox Virtualization' WHERE [ProviderName] = 'Proxmox (local)'
-	END
-
-END
 
 IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetVirtualMachinesPagedProxmox')
 DROP PROCEDURE GetVirtualMachinesPagedProxmox
@@ -15578,8 +15456,6 @@ SELECT
 	S.PriorityID,
 	S.MaxExecutionTime,
 	S.WeekMonthDay,
-	-- bug ISNULL(0, ...) always is not NULL
-	-- ISNULL(0, (SELECT TOP 1 SeverityID FROM AuditLog WHERE ItemID = S.ScheduleID AND SourceName = ''SCHEDULER'' ORDER BY StartDate DESC)) AS LastResult,
 	ISNULL(0, (SELECT TOP 1 SeverityID FROM AuditLog WHERE ItemID = S.ScheduleID AND SourceName = ''SCHEDULER'' ORDER BY StartDate DESC)) AS LastResult,
 
 	-- packages
@@ -17308,12 +17184,6 @@ INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [Property
 END
 GO
 
--- Server 2022
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1802')
-BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1802, N'UsersHome', N'%SYSTEMDRIVE%\HostingSpaces')
-END
-
 -- HyperV2019
 
 IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderName] = 'HyperV2019')
@@ -17322,7 +17192,7 @@ INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName]
 END
 GO
 
--- MySQL 8
+-- MySQL 8.0
 
 IF NOT EXISTS (SELECT * FROM [dbo].[ResourceGroups] WHERE [GroupName] = N'MySQL8')
 BEGIN
@@ -17336,29 +17206,9 @@ INSERT [Providers] ([ProviderID], [GroupId], [ProviderName], [DisplayName], [Pro
 END
 ELSE
 BEGIN
-UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL WHERE [DisplayName] = 'MySQL Server 8.0'
+UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL WHERE [DisplayName] = 'MySQL Server 5.7'
 END
 GO
-
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'MySQL Server 8.1')
-BEGIN
-INSERT [Providers] ([ProviderID], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(305, 90, N'MySQL', N'MySQL Server 8.1', N'SolidCP.Providers.Database.MySqlServer81, SolidCP.Providers.Database.MySQL', N'MySQL', NULL)
-END
-
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'MySQL Server 8.2')
-BEGIN
-INSERT [Providers] ([ProviderID], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(306, 90, N'MySQL', N'MySQL Server 8.2', N'SolidCP.Providers.Database.MySqlServer82, SolidCP.Providers.Database.MySQL', N'MySQL', NULL)
-END
-
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'MySQL Server 8.3')
-BEGIN
-INSERT [Providers] ([ProviderID], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(307, 90, N'MySQL', N'MySQL Server 8.3', N'SolidCP.Providers.Database.MySqlServer83, SolidCP.Providers.Database.MySQL', N'MySQL', NULL)
-END
-
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'MySQL Server 8.4')
-BEGIN
-INSERT [Providers] ([ProviderID], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(308, 90, N'MySQL', N'MySQL Server 8.4', N'SolidCP.Providers.Database.MySqlServer84, SolidCP.Providers.Database.MySQL', N'MySQL', NULL)
-END
 
 IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '304')
 BEGIN
@@ -17368,50 +17218,6 @@ INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [Property
 INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (304, N'RootLogin', N'root')
 INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (304, N'RootPassword', N'')
 INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (304, N'sslmode', N'True')
-END
-GO
-
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '305')
-BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (305, N'ExternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (305, N'InstallFolder', N'%PROGRAMFILES%\MySQL\MySQL Server 8.0')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (305, N'InternalAddress', N'localhost,3306')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (305, N'RootLogin', N'root')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (305, N'RootPassword', N'')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (305, N'sslmode', N'True')
-END
-GO
-
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '306')
-BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (306, N'ExternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (306, N'InstallFolder', N'%PROGRAMFILES%\MySQL\MySQL Server 8.0')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (306, N'InternalAddress', N'localhost,3306')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (306, N'RootLogin', N'root')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (306, N'RootPassword', N'')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (306, N'sslmode', N'True')
-END
-GO
-
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '307')
-BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (307, N'ExternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (307, N'InstallFolder', N'%PROGRAMFILES%\MySQL\MySQL Server 8.0')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (307, N'InternalAddress', N'localhost,3306')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (307, N'RootLogin', N'root')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (307, N'RootPassword', N'')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (307, N'sslmode', N'True')
-END
-GO
-
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '308')
-BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (308, N'ExternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (308, N'InstallFolder', N'%PROGRAMFILES%\MySQL\MySQL Server 8.0')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (308, N'InternalAddress', N'localhost,3306')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (308, N'RootLogin', N'root')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (308, N'RootPassword', N'')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (308, N'sslmode', N'True')
 END
 GO
 
@@ -17433,48 +17239,6 @@ INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDe
 END
 GO
 
--- MySQL 9.0
-
-IF NOT EXISTS (SELECT * FROM [dbo].[ResourceGroups] WHERE [GroupName] = N'MySQL9')
-BEGIN
-INSERT [dbo].[ResourceGroups] ([GroupID], [GroupName], [GroupOrder], [GroupController], [ShowGroup]) VALUES (91, N'MySQL9', 12, N'SolidCP.EnterpriseServer.DatabaseServerController', 1)
-END
-GO
-
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'MySQL Server 9.0')
-BEGIN
-INSERT [Providers] ([ProviderID], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(320, 90, N'MySQL', N'MySQL Server 9.0', N'SolidCP.Providers.Database.MySqlServer90, SolidCP.Providers.Database.MySQL', N'MySQL', NULL)
-END
-GO
-
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '320')
-BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (320, N'ExternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (320, N'InstallFolder', N'%PROGRAMFILES%\MySQL\MySQL Server 9.0')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (320, N'InternalAddress', N'localhost,3306')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (320, N'RootLogin', N'root')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (320, N'RootPassword', N'')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (320, N'sslmode', N'True')
-END
-GO
-
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceItemTypes] WHERE [GroupID] = '91')
-BEGIN
-INSERT [dbo].[ServiceItemTypes] ([ItemTypeID], [GroupID], [DisplayName], [TypeName], [TypeOrder], [CalculateDiskspace], [CalculateBandwidth], [Suspendable], [Disposable], [Searchable], [Importable], [Backupable]) VALUES (90, 91, N'MySQL9Database', N'SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base', 20, 1, 0, 0, 1, 1, 1, 1)
-INSERT [dbo].[ServiceItemTypes] ([ItemTypeID], [GroupID], [DisplayName], [TypeName], [TypeOrder], [CalculateDiskspace], [CalculateBandwidth], [Suspendable], [Disposable], [Searchable], [Importable], [Backupable]) VALUES (91, 91, N'MySQL9User', N'SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base', 21, 0, 0, 0, 1, 1, 1, 1)
-END
-GO
-
-IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [GroupID] = '91')
-BEGIN
-INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota], [PerOrganization]) VALUES (120, 91, 1, N'MySQL9.Databases', N'Databases', 2, 0, 75, NULL, NULL)
-INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota], [PerOrganization]) VALUES (121, 91, 2, N'MySQL9.Users', N'Users', 2, 0, 76, NULL, NULL)
-INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota], [PerOrganization]) VALUES (122, 91, 4, N'MySQL9.Backup', N'Database Backups', 1, 0, NULL, NULL, NULL)
-INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota], [PerOrganization]) VALUES (123, 91, 3, N'MySQL9.MaxDatabaseSize', N'Max Database Size', 3, 0, NULL, NULL, NULL)
-INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota], [PerOrganization]) VALUES (124, 91, 5, N'MySQL9.Restore', N'Database Restores', 1, 0, NULL, NULL, NULL)
-INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota], [PerOrganization]) VALUES (125, 91, 6, N'MySQL9.Truncate', N'Database Truncate', 1, 0, NULL, NULL, NULL)
-END
-GO
 
 
 -- RDS Provider
@@ -17517,226 +17281,6 @@ INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [Property
 INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1570, N'RootPassword', N'')
 END
 GO
-
-
--- MariaDB 10.4-11.7
-
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1571')
-BEGIN
-INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1571, 50, N'MariaDB', N'MariaDB 10.4', N'SolidCP.Providers.Database.MariaDB104, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
-END
-GO
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1572')
-BEGIN
-INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1572, 50, N'MariaDB', N'MariaDB 10.5', N'SolidCP.Providers.Database.MariaDB105, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
-END
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1573')
-BEGIN
-INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1573, 50, N'MariaDB', N'MariaDB 10.6', N'SolidCP.Providers.Database.MariaDB106, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
-END
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1574')
-BEGIN
-INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1574, 50, N'MariaDB', N'MariaDB 10.7', N'SolidCP.Providers.Database.MariaDB107, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
-END
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1575')
-BEGIN
-INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1575, 50, N'MariaDB', N'MariaDB 10.8', N'SolidCP.Providers.Database.MariaDB108, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
-END
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1576')
-BEGIN
-INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1576, 50, N'MariaDB', N'MariaDB 10.9', N'SolidCP.Providers.Database.MariaDB109, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
-END
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1577')
-BEGIN
-INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1577, 50, N'MariaDB', N'MariaDB 10.10', N'SolidCP.Providers.Database.MariaDB1010, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
-END
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1578')
-BEGIN
-INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1578, 50, N'MariaDB', N'MariaDB 10.11', N'SolidCP.Providers.Database.MariaDB1011, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
-END
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1579')
-BEGIN
-INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1579, 50, N'MariaDB', N'MariaDB 11.0', N'SolidCP.Providers.Database.MariaDB110, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
-END
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1580')
-BEGIN
-INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1580, 50, N'MariaDB', N'MariaDB 11.1', N'SolidCP.Providers.Database.MariaDB111, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
-END
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1581')
-BEGIN
-INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1581, 50, N'MariaDB', N'MariaDB 11.2', N'SolidCP.Providers.Database.MariaDB112, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
-END
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1582')
-BEGIN
-INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1582, 50, N'MariaDB', N'MariaDB 11.3', N'SolidCP.Providers.Database.MariaDB113, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
-END
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1583')
-BEGIN
-INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1583, 50, N'MariaDB', N'MariaDB 11.4', N'SolidCP.Providers.Database.MariaDB114, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
-END
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1584')
-BEGIN
-INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1584, 50, N'MariaDB', N'MariaDB 11.5', N'SolidCP.Providers.Database.MariaDB115, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
-END
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1585')
-BEGIN
-INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1585, 50, N'MariaDB', N'MariaDB 11.6', N'SolidCP.Providers.Database.MariaDB116, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
-END
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1586')
-BEGIN
-INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1586, 50, N'MariaDB', N'MariaDB 11.7', N'SolidCP.Providers.Database.MariaDB117, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
-END
-
-
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1571')
-BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1571, N'ExternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1571, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 10.4')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1571, N'InternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1571, N'RootLogin', N'root')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1571, N'RootPassword', N'')
-END
-GO
-
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1572')
-BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1572, N'ExternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1572, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 10.5')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1572, N'InternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1572, N'RootLogin', N'root')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1572, N'RootPassword', N'')
-END
-GO
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1573')
-BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1573, N'ExternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1573, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 10.6')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1573, N'InternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1573, N'RootLogin', N'root')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1573, N'RootPassword', N'')
-END
-GO
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1574')
-BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1574, N'ExternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1574, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 10.7')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1574, N'InternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1574, N'RootLogin', N'root')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1574, N'RootPassword', N'')
-END
-GO
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1575')
-BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1575, N'ExternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1575, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 10.8')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1575, N'InternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1575, N'RootLogin', N'root')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1575, N'RootPassword', N'')
-END
-GO
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1576')
-BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1576, N'ExternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1576, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 10.9')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1576, N'InternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1576, N'RootLogin', N'root')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1576, N'RootPassword', N'')
-END
-GO
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1577')
-BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1577, N'ExternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1577, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 10.10')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1577, N'InternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1577, N'RootLogin', N'root')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1577, N'RootPassword', N'')
-END
-GO
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1578')
-BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1578, N'ExternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1578, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 10.11')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1578, N'InternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1578, N'RootLogin', N'root')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1578, N'RootPassword', N'')
-END
-GO
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1579')
-BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1579, N'ExternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1579, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 11.0')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1579, N'InternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1579, N'RootLogin', N'root')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1579, N'RootPassword', N'')
-END
-GO
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1580')
-BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1580, N'ExternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1580, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 11.1')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1580, N'InternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1580, N'RootLogin', N'root')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1580, N'RootPassword', N'')
-END
-GO
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1581')
-BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1581, N'ExternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1581, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 11.2')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1581, N'InternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1581, N'RootLogin', N'root')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1581, N'RootPassword', N'')
-END
-GO
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1582')
-BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1582, N'ExternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1582, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 11.3')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1582, N'InternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1582, N'RootLogin', N'root')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1582, N'RootPassword', N'')
-END
-GO
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1583')
-BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1583, N'ExternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1583, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 11.4')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1583, N'InternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1583, N'RootLogin', N'root')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1583, N'RootPassword', N'')
-END
-GO
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1584')
-BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1584, N'ExternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1584, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 11.5')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1584, N'InternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1584, N'RootLogin', N'root')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1584, N'RootPassword', N'')
-END
-GO
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1585')
-BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1585, N'ExternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1585, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 11.6')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1585, N'InternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1585, N'RootLogin', N'root')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1585, N'RootPassword', N'')
-END
-GO
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1586')
-BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1586, N'ExternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1586, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 11.7')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1586, N'InternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1586, N'RootLogin', N'root')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1586, N'RootPassword', N'')
-END
-GO
-
---
-
-
 IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Hosted Microsoft Exchange Server 2019')
 BEGIN
 INSERT [dbo].[Providers] ([ProviderId], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(93, 12, N'Exchange2016', N'Hosted Microsoft Exchange Server 2019', N'SolidCP.Providers.HostedSolution.Exchange2019, SolidCP.Providers.HostedSolution.Exchange2019', N'Exchange',	NULL)
@@ -17823,7 +17367,7 @@ SELECT TOP 1
 	RS.RdsCollectionId,
 	RS.ConnectionEnabled,
 	SI.ItemName,
-	RC.Name AS CollectionName
+	RC.Name AS "CollectionName"
 	FROM RDSServers AS RS
 	LEFT OUTER JOIN  ServiceItems AS SI ON SI.ItemId = RS.ItemId
 	LEFT OUTER JOIN  RDSCollections AS RC ON RC.ID = RdsCollectionId
@@ -18964,7 +18508,7 @@ GO
 
 IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1572')
 BEGIN
-INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1572, 50, N'MariaDB', N'MariaDB 10.5', N'SolidCP.Providers.Database.MariaDB105, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1572, 50, N'MariaDB', N'MariaDB 10.5', N'SolidCP.Providers.Database.MariaDB105, SolidCP.Providers.Database.MariaDB', N'MariaDB', N'1')
 END
 ELSE
 BEGIN
@@ -19742,7 +19286,6 @@ INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [Property
 END
 GO
 
-
 -- User MFA
 IF NOT EXISTS(select 1 from sys.columns COLS INNER JOIN sys.objects OBJS ON OBJS.object_id=COLS.object_id and OBJS.type='U' AND OBJS.name='Users' AND COLS.name='MfaMode')
 BEGIN
@@ -20140,20 +19683,6 @@ INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [Property
 END
 GO
 
--- Unix
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Unix System')
-BEGIN
-INSERT [dbo].[Providers] ([ProviderId], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(500, 1, N'UnixSystem', N'Unix System', N'SolidCP.Providers.OS.Unix, SolidCP.Providers.OS.Unix', N'Unix',	NULL)
-END
-GO
-
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '500')
-BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (500, N'UsersHome', N'/var/www/HostingSpaces')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (500, N'LogDir', N'/var/log')
-END
-GO
-
 -- HyperV2022
 
 IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderName] = 'HyperV2022')
@@ -20323,556 +19852,6 @@ BEGIN
 END
 GO
 
--- Server 2025
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Windows Server 2025')
-BEGIN
-INSERT [Providers] ([ProviderID], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(1804, 1, N'Windows2025', N'Windows Server 2025', N'SolidCP.Providers.OS.Windows2025, SolidCP.Providers.OS.Windows2025', N'Windows2012', 1)
-END
-GO
-
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1804')
-BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1804, N'UsersHome', N'%SYSTEMDRIVE%\HostingSpaces')
-END
-GO
-
--- HyperV2025
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderName] = 'HyperV2025')
-BEGIN
-INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1805, 33, N'HyperV2025', N'Microsoft Hyper-V 2025', N'SolidCP.Providers.Virtualization.HyperV2025, SolidCP.Providers.Virtualization.HyperV2025', N'HyperV2012R2', 1)
-END
-GO
-
--- RDS Provider 2025
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Remote Desktop Services Windows 2025')
-BEGIN
-INSERT [dbo].[Providers] ([ProviderId], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(1505, 45, N'RemoteDesktopServices2025', N'Remote Desktop Services Windows 2025', N'SolidCP.Providers.RemoteDesktopServices.Windows2025,SolidCP.Providers.RemoteDesktopServices.Windows2019', N'RDS',	1)
-END
-GO
-
-
--- Add Platform and IsCode columns to Servers
-DECLARE @NoPlatform bit, @NoIsCore bit
-
-SET @NoPlatform = 0
-SET @NoIsCore = 0
-
-IF NOT EXISTS (
-  SELECT * FROM sys.columns 
-  WHERE object_id = OBJECT_ID(N'[dbo].[Servers]') 
-  AND name = 'OSPlatform'
-)
-BEGIN
-	SET @NoPlatform = 1
-END
-
-IF NOT EXISTS (
-  SELECT * FROM sys.columns 
-  WHERE object_id = OBJECT_ID(N'[dbo].[Servers]') 
-  AND name = 'IsCore'
-)
-BEGIN
-	SET @NoIsCore = 1
-END
-
--- Add PasswordIsSHA256 column to Servers
-DECLARE @NoPasswordIsSHA256 bit
-
-SET @NoPasswordIsSHA256 = 0
-
-IF NOT EXISTS (
-  SELECT * FROM sys.columns 
-  WHERE object_id = OBJECT_ID(N'[dbo].[Servers]') 
-  AND name = 'PasswordIsSHA256'
-)
-BEGIN
-	SET @NoPasswordIsSHA256 = 1
-END
-
-DECLARE @NoSHA256Password bit
-
-SET @NoSHA256Password = 0
-
-IF NOT EXISTS (
-  SELECT * FROM sys.columns 
-  WHERE object_id = OBJECT_ID(N'[dbo].[Servers]') 
-  AND name = 'SHA256Password'
-)
-BEGIN
-	SET @NoSHA256Password = 1
-END
-
-IF @NoPlatform = 1
-BEGIN
-	ALTER TABLE [dbo].[Servers] ADD [OSPlatform] INT NOT NULL DEFAULT 0
-END
-
-IF @NoIsCore = 1
-BEGIN
-	ALTER TABLE [dbo].[Servers] ADD [IsCore] BIT NULL
-END
-
-IF @NoPasswordIsSHA256 = 1 AND @NoSHA256Password = 1
-BEGIN
-	ALTER TABLE [dbo].[Servers] ADD [PasswordIsSHA256] BIT NOT NULL DEFAULT 0
-END
-ELSE IF @NoPasswordIsSHA256 = 1 AND @NoSHA256Password = 0
-BEGIN
-    EXEC sp_RENAME '[dbo].[Servers].SHA256Password', 'PasswordIsSHA256', 'COLUMN';
-END
-
-IF @NoPlatform = 1 OR @NoIsCore = 1 OR @NoPasswordIsSHA256 = 1
-EXEC ('
-	ALTER PROCEDURE AddServer
-	(
-		@ServerID int OUTPUT,
-		@ServerName nvarchar(100),
-		@ServerUrl nvarchar(100),
-		@Password nvarchar(100),
-		@Comments ntext,
-		@VirtualServer bit,
-		@InstantDomainAlias nvarchar(200),
-		@PrimaryGroupID int,
-		@ADEnabled bit,
-		@ADRootDomain nvarchar(200),
-		@ADUsername nvarchar(100),
-		@ADPassword nvarchar(100),
-		@ADAuthenticationType varchar(50),
-		@OSPlatform int,
-		@IsCore bit,
-		@PasswordIsSHA256 bit
-	)
-	AS
-
-	IF @PrimaryGroupID = 0
-
-	SET @PrimaryGroupID = NULL
-
-	INSERT INTO Servers
-	(
-		ServerName,
-		ServerUrl,
-		Password,
-		Comments,
-		VirtualServer,
-		InstantDomainAlias,
-		PrimaryGroupID,
-		ADEnabled,
-		ADRootDomain,
-		ADUsername,
-		ADPassword,
-		ADAuthenticationType,
-		OSPlatform,
-		IsCore,
-		PasswordIsSHA256
-	)
-	VALUES
-	(
-		@ServerName,
-		@ServerUrl,
-		@Password,
-		@Comments,
-		@VirtualServer,
-		@InstantDomainAlias,
-		@PrimaryGroupID,
-		@ADEnabled,
-		@ADRootDomain,
-		@ADUsername,
-		@ADPassword,
-		@ADAuthenticationType,
-		@OSPlatform,
-		@IsCore,
-		@PasswordIsSHA256
-	)
-
-	SET @ServerID = SCOPE_IDENTITY()
-
-	RETURN
-	')
-
-IF @NoPlatform = 1 OR @NoIsCore = 1 OR @NoPasswordIsSHA256 = 1
-EXEC('
-	ALTER PROCEDURE GetServerInternal
-	(
-		@ServerID int
-	)
-	AS
-	SELECT
-		ServerID,
-		ServerName,
-		ServerUrl,
-		Password,
-		Comments,
-		VirtualServer,
-		InstantDomainAlias,
-		PrimaryGroupID,
-		ADEnabled,
-		ADRootDomain,
-		ADUsername,
-		ADPassword,
-		ADAuthenticationType,
-		ADParentDomain,
-		ADParentDomainController,
-		OSPlatform,
-		IsCore,
-		PasswordIsSHA256
-	FROM Servers
-	WHERE
-		ServerID = @ServerID
-
-	RETURN
-	')
-	
-IF @NoPlatform = 1 OR @NoIsCore = 1 OR @NoPasswordIsSHA256 = 1
-EXEC('
-	ALTER PROCEDURE GetServerByName
-	(
-		@ActorID int,
-		@ServerName nvarchar(100)
-	)
-	AS
--- check rights
-	DECLARE @IsAdmin bit
-	SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
-
-	SELECT
-		ServerID,
-		ServerName,
-		ServerUrl,
-		Password,
-		Comments,
-		VirtualServer,
-		InstantDomainAlias,
-		PrimaryGroupID,
-		ADRootDomain,
-		ADUsername,
-		ADPassword,
-		ADAuthenticationType,
-		ADParentDomain,
-		ADParentDomainController,
-		OSPlatform,
-		IsCore,
-		PasswordIsSHA256
-	FROM Servers
-	WHERE
-		ServerName = @ServerName
-		AND @IsAdmin = 1
-
-	RETURN
-	')
-
-IF @NoPlatform = 1 OR @NoIsCore = 1 OR @NoPasswordIsSHA256 = 1
-EXEC('
-	ALTER PROCEDURE UpdateServer
-	(
-		@ServerID int,
-		@ServerName nvarchar(100),
-		@ServerUrl nvarchar(100),
-		@Password nvarchar(100),
-		@Comments ntext,
-		@InstantDomainAlias nvarchar(200),
-		@PrimaryGroupID int,
-		@ADEnabled bit,
-		@ADRootDomain nvarchar(200),
-		@ADUsername nvarchar(100),
-		@ADPassword nvarchar(100),
-		@ADAuthenticationType varchar(50),
-		@ADParentDomain nvarchar(200),
-		@ADParentDomainController nvarchar(200),
-		@OSPlatform int,
-		@IsCore bit,
-		@PasswordIsSHA256 bit
-	)
-	AS
-
-	IF @PrimaryGroupID = 0
-	SET @PrimaryGroupID = NULL
-
-	UPDATE Servers SET
-		ServerName = @ServerName,
-		ServerUrl = @ServerUrl,
-		Password = @Password,
-		Comments = @Comments,
-		InstantDomainAlias = @InstantDomainAlias,
-		PrimaryGroupID = @PrimaryGroupID,
-		ADEnabled = @ADEnabled,
-		ADRootDomain = @ADRootDomain,
-		ADUsername = @ADUsername,
-		ADPassword = @ADPassword,
-		ADAuthenticationType = @ADAuthenticationType,
-		ADParentDomain = @ADParentDomain,
-		ADParentDomainController = @ADParentDomainController,
-		OSPlatform = @OSPlatform,
-		IsCore = @IsCore,
-		PasswordIsSHA256 = @PasswordIsSHA256
-	WHERE ServerID = @ServerID
-	RETURN
-	')
-
-IF @NoPlatform = 1 OR @NoIsCore = 1 OR @NoPasswordIsSHA256 = 1
-EXEC('
-ALTER PROCEDURE [dbo].[GetServer]
-(
-	@ActorID int,
-	@ServerID int,
-	@forAutodiscover bit
-)
-AS
--- check rights
-DECLARE @IsAdmin bit
-SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
-
-SELECT
-	ServerID,
-	ServerName,
-	ServerUrl,
-	Password,
-	Comments,
-	VirtualServer,
-	InstantDomainAlias,
-	PrimaryGroupID,
-	ADEnabled,
-	ADRootDomain,
-	ADUsername,
-	ADPassword,
-	ADAuthenticationType,
-	ADParentDomain,
-	ADParentDomainController,
-	OSPlatform,
-	IsCore,
-	PasswordIsSHA256
-
-FROM Servers
-WHERE
-	ServerID = @ServerID
-	AND (@IsAdmin = 1 OR @forAutodiscover = 1)
-
-RETURN
-')
-
-GO
-
--- VsFtp
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1910')
-BEGIN
-INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1910, 3, N'vsftpd', N'vsftpd FTP Server 3', N'SolidCP.Providers.FTP.VsFtp3, SolidCP.Providers.FTP.VsFtp', N'vsftpd', NULL)
-END
-GO
-
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1910')
-BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1910, N'ConfigFile', N'/etc/vsftpd.conf')
-END
-GO
-
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderName] = 'vsftpd FTP Server 3')
-BEGIN
-UPDATE [dbo].[Providers] SET [ProviderName] = 'vsftpd FTP Server 3' WHERE [ProviderName] = 'vsftpd FTP Server 3'
-END
-GO
-
-
--- Apache
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1911')
-BEGIN
-INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1911, 2, N'Apache', N'Apache Web Server 2.4', N'SolidCP.Providers.Web.Apache24, SolidCP.Providers.Web.Apache', N'Apache', NULL)
-END
-GO
-
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1911')
-BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1911, N'ConfigPath', N'/etc/apache2')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1911, N'ConfigFile', N'/etc/apache2/apache2.conf')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1911, N'BinPath', N'')
-END
-GO
-
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderName] = 'Apache Web Server 2.4')
-BEGIN
-UPDATE [dbo].[Providers] SET [ProviderName] = 'Apache Web Server 2.4 (Experimental)' WHERE [ProviderName] = 'Apache Web Server 2.4'
-END
-GO
-
--- MariaDB 10.6
-
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1573')
-BEGIN
-INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1573, 50, N'MariaDB', N'MariaDB 10.6', N'SolidCP.Providers.Database.MariaDB106, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
-END
-ELSE
-BEGIN
-UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL, GroupID = 50 WHERE [ProviderID] = '1573'
-END
-GO
-
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1573')
-BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1573, N'ExternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1573, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 10.6')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1573, N'InternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1573, N'RootLogin', N'root')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1573, N'RootPassword', N'')
-END
-GO
-
--- MySql 8.1
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'MySQL Server 8.1')
-BEGIN
-INSERT [Providers] ([ProviderID], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(305, 90, N'MySQL', N'MySQL Server 8.1', N'SolidCP.Providers.Database.MySqlServer81, SolidCP.Providers.Database.MySQL', N'MySQL', NULL)
-END
-
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '305')
-BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (305, N'ExternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (305, N'InstallFolder', N'%PROGRAMFILES%\MySQL\MySQL Server 8.0')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (305, N'InternalAddress', N'localhost,3306')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (305, N'RootLogin', N'root')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (305, N'RootPassword', N'')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (305, N'sslmode', N'True')
-END
-GO
-
--- MySql 8.2
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'MySQL Server 8.2')
-BEGIN
-INSERT [Providers] ([ProviderID], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(306, 90, N'MySQL', N'MySQL Server 8.2', N'SolidCP.Providers.Database.MySqlServer82, SolidCP.Providers.Database.MySQL', N'MySQL', NULL)
-END
-
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '306')
-BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (306, N'ExternalAddress', N'localhost')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (306, N'InstallFolder', N'%PROGRAMFILES%\MySQL\MySQL Server 8.0')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (306, N'InternalAddress', N'localhost,3306')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (306, N'RootLogin', N'root')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (306, N'RootPassword', N'')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (306, N'sslmode', N'True')
-END
-GO
-
--- Increase size of ServerUrl column for encrypted urls
-ALTER TABLE [dbo].[Servers] ALTER COLUMN [ServerUrl] nvarchar(255) NULL;
-GO
-
-IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'AddServer')
-DROP PROCEDURE AddServer
-GO
-
-CREATE PROCEDURE AddServer
-(
-	@ServerID int OUTPUT,
-	@ServerName nvarchar(100),
-	@ServerUrl nvarchar(255),
-	@Password nvarchar(100),
-	@Comments ntext,
-	@VirtualServer bit,
-	@InstantDomainAlias nvarchar(200),
-	@PrimaryGroupID int,
-	@ADEnabled bit,
-	@ADRootDomain nvarchar(200),
-	@ADUsername nvarchar(100),
-	@ADPassword nvarchar(100),
-	@ADAuthenticationType varchar(50),
-	@OSPlatform int,
-	@IsCore bit,
-	@PasswordIsSHA256 bit
-)
-AS
-
-IF @PrimaryGroupID = 0
-
-SET @PrimaryGroupID = NULL
-
-INSERT INTO Servers
-(
-	ServerName,
-	ServerUrl,
-	Password,
-	Comments,
-	VirtualServer,
-	InstantDomainAlias,
-	PrimaryGroupID,
-	ADEnabled,
-	ADRootDomain,
-	ADUsername,
-	ADPassword,
-	ADAuthenticationType,
-	OSPlatform,
-	IsCore,
-	PasswordIsSHA256
-)
-VALUES
-(
-	@ServerName,
-	@ServerUrl,
-	@Password,
-	@Comments,
-	@VirtualServer,
-	@InstantDomainAlias,
-	@PrimaryGroupID,
-	@ADEnabled,
-	@ADRootDomain,
-	@ADUsername,
-	@ADPassword,
-	@ADAuthenticationType,
-	@OSPlatform,
-	@IsCore,
-	@PasswordIsSHA256
-)
-
-SET @ServerID = SCOPE_IDENTITY()
-
-RETURN
-GO
-
-IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'UpdateServer')
-DROP PROCEDURE UpdateServer
-GO
-
-CREATE PROCEDURE UpdateServer
-(
-	@ServerID int,
-	@ServerName nvarchar(100),
-	@ServerUrl nvarchar(255),
-	@Password nvarchar(100),
-	@Comments ntext,
-	@InstantDomainAlias nvarchar(200),
-	@PrimaryGroupID int,
-	@ADEnabled bit,
-	@ADRootDomain nvarchar(200),
-	@ADUsername nvarchar(100),
-	@ADPassword nvarchar(100),
-	@ADAuthenticationType varchar(50),
-	@ADParentDomain nvarchar(200),
-	@ADParentDomainController nvarchar(200),
-	@OSPlatform int,
-	@IsCore bit,
-	@PasswordIsSHA256 bit
-)
-AS
-
-IF @PrimaryGroupID = 0
-SET @PrimaryGroupID = NULL
-
-UPDATE Servers SET
-	ServerName = @ServerName,
-	ServerUrl = @ServerUrl,
-	Password = @Password,
-	Comments = @Comments,
-	InstantDomainAlias = @InstantDomainAlias,
-	PrimaryGroupID = @PrimaryGroupID,
-	ADEnabled = @ADEnabled,
-	ADRootDomain = @ADRootDomain,
-	ADUsername = @ADUsername,
-	ADPassword = @ADPassword,
-	ADAuthenticationType = @ADAuthenticationType,
-	ADParentDomain = @ADParentDomain,
-	ADParentDomainController = @ADParentDomainController,
-	OSPlatform = @OSPlatform,
-	IsCore = @IsCore,
-	PasswordIsSHA256 = @PasswordIsSHA256
-WHERE ServerID = @ServerID
-RETURN
-
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -20900,62 +19879,6 @@ AS
 		END
 
 	RETURN
-GO
-
--- Initialize user's SSH Tunnel server connections on Login
-
-IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetUserPackagesServerUrls')
-DROP PROCEDURE GetUserPackagesServerUrls
-GO
-
-CREATE PROCEDURE [dbo].[GetUserPackagesServerUrls]
-(
-	@UserId INT
-)
-AS
-	SELECT DISTINCT Servers.ServerUrl
-	FROM Servers
-	INNER JOIN Packages
-	ON Servers.ServerId = Packages.ServerId
-	WHERE Packages.UserID = @UserId
-	RETURN
-GO
-
--- AddItemPrivateIPAddress bugfix added by Simon Egli, 27.6.2024
-
-IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'AddItemPrivateIPAddress')
-DROP PROCEDURE AddItemPrivateIPAddress
-GO
-
-CREATE PROCEDURE [dbo].[AddItemPrivateIPAddress]
-(
-	@ActorID int,
-	@ItemID int,
-	@IPAddress varchar(15)
-)
-AS
-
-IF EXISTS (SELECT ItemID FROM ServiceItems AS SI WHERE
-	ItemID = @ItemID AND -- bugfix added by Simon Egli, 27.6.2024
-	dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1)
-BEGIN
-
-	INSERT INTO PrivateIPAddresses
-	(
-		ItemID,
-		IPAddress,
-		IsPrimary
-	)
-	VALUES
-	(
-		@ItemID,
-		@IPAddress,
-		0 -- not primary
-	)
-
-END
-
-RETURN
 GO
 
 -- DMZ Network
@@ -21110,24 +20033,23 @@ CREATE PROCEDURE [dbo].[AddItemDmzIPAddress]
 )
 AS
 BEGIN
+IF EXISTS (SELECT ItemID FROM ServiceItems AS SI WHERE dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1)
+BEGIN
 
-	IF EXISTS (SELECT ItemID FROM ServiceItems AS SI WHERE ItemID = @ItemID AND dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1)
-	BEGIN
+	INSERT INTO DmzIPAddresses
+	(
+		ItemID,
+		IPAddress,
+		IsPrimary
+	)
+	VALUES
+	(
+		@ItemID,
+		@IPAddress,
+		0 -- not primary
+	)
 
-		INSERT INTO DmzIPAddresses
-		(
-			ItemID,
-			IPAddress,
-			IsPrimary
-		)
-		VALUES
-		(
-			@ItemID,
-			@IPAddress,
-			0 -- not primary
-		)
-
-	END
+END
 END
 GO
 
@@ -21362,229 +20284,32 @@ END
 GO
 
 
-
--- Fix ordering of GetHostingPlanQuotas
-
-IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetHostingPlanQuotas')
+-- Server 2025
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Windows Server 2025')
 BEGIN
-DROP PROCEDURE GetHostingPlanQuotas
+INSERT [Providers] ([ProviderID], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(1804, 1, N'Windows2025', N'Windows Server 2025', N'SolidCP.Providers.OS.Windows2025, SolidCP.Providers.OS.Windows2025', N'Windows2012', 1)
 END
 GO
 
-CREATE PROCEDURE [dbo].[GetHostingPlanQuotas]
-(
-	@ActorID int,
-	@PlanID int,
-	@PackageID int,
-	@ServerID int
-)
-AS
-
--- check rights
-IF dbo.CheckActorParentPackageRights(@ActorID, @PackageID) = 0
-RAISERROR('You are not allowed to access this package', 16, 1)
-
-DECLARE @IsAddon bit
-
-IF @ServerID = 0
-SELECT @ServerID = ServerID FROM Packages
-WHERE PackageID = @PackageID
-
--- get resource groups
-SELECT
-	RG.GroupID,
-	RG.GroupName,
-	CASE
-		WHEN HPR.CalculateDiskSpace IS NULL THEN CAST(0 as bit)
-		ELSE CAST(1 as bit)
-	END AS Enabled,
-	--dbo.GetPackageAllocatedResource(@PackageID, RG.GroupID, @ServerID) AS ParentEnabled,
-	CASE
-		WHEN RG.GroupName = 'Service Levels' THEN dbo.GetPackageServiceLevelResource(@PackageID, RG.GroupID, @ServerID)
-		ELSE dbo.GetPackageAllocatedResource(@PackageID, RG.GroupID, @ServerID)
-	END AS ParentEnabled,
-	ISNULL(HPR.CalculateDiskSpace, 1) AS CalculateDiskSpace,
-	ISNULL(HPR.CalculateBandwidth, 1) AS CalculateBandwidth
-FROM ResourceGroups AS RG 
-LEFT OUTER JOIN HostingPlanResources AS HPR ON RG.GroupID = HPR.GroupID AND HPR.PlanID = @PlanID
-WHERE (RG.ShowGroup = 1)
-ORDER BY RG.GroupOrder, RG.GroupName
-
--- get quotas by groups
-SELECT
-	Q.QuotaID,
-	Q.GroupID,
-	Q.QuotaName,
-	Q.QuotaDescription,
-	Q.QuotaTypeID,
-	ISNULL(HPQ.QuotaValue, 0) AS QuotaValue,
-	dbo.GetPackageAllocatedQuota(@PackageID, Q.QuotaID) AS ParentQuotaValue
-FROM Quotas AS Q
-LEFT OUTER JOIN HostingPlanQuotas AS HPQ ON Q.QuotaID = HPQ.QuotaID AND HPQ.PlanID = @PlanID
-WHERE Q.HideQuota IS NULL OR Q.HideQuota = 0
-ORDER BY Q.QuotaOrder
-RETURN
-GO
-
-
--- Support for EntityFramework
--- Remaining Migrations MySql9AndMaraiDB11, AddMariaDB11, Bugfix_for_MySQL_8_x, BugfixMySQL8TruncateQuota,
--- & FixUsersHomeForUnix
-
-IF OBJECT_ID(N'[TempIds]') IS NULL
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1804')
 BEGIN
-    CREATE TABLE [TempIds] (
-        [Key] int NOT NULL IDENTITY,
-        [Created] datetime2 NOT NULL,
-        [Scope] uniqueidentifier NOT NULL,
-        [Level] int NOT NULL,
-        [Id] int NOT NULL,
-        [Date] datetime2 NOT NULL,
-        CONSTRAINT [PK_TempIds] PRIMARY KEY ([Key])
-    );
-
-	CREATE INDEX [IX_TempIds_Created_Scope_Level] ON [TempIds] ([Created], [Scope], [Level]);
-END;
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1804, N'UsersHome', N'%SYSTEMDRIVE%\HostingSpaces')
+END
 GO
 
-IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
+-- HyperV2025
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderName] = 'HyperV2025')
 BEGIN
-    CREATE TABLE [__EFMigrationsHistory] (
-        [MigrationId] nvarchar(150) NOT NULL,
-        [ProductVersion] nvarchar(32) NOT NULL,
-        CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
-    );
-END;
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1805, 33, N'HyperV2025', N'Microsoft Hyper-V 2025', N'SolidCP.Providers.Virtualization.HyperV2025, SolidCP.Providers.Virtualization.HyperV2025', N'HyperV2012R2', 1)
+END
 GO
 
-BEGIN TRANSACTION;
-GO
+-- RDS Provider 2025
 
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20241012060936_InitialCreate'
-)
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Remote Desktop Services Windows 2025')
 BEGIN
-    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ThemeSettingID', N'PropertyName', N'PropertyValue', N'SettingsName', N'ThemeID') AND [object_id] = OBJECT_ID(N'[ThemeSettings]'))
-        SET IDENTITY_INSERT [ThemeSettings] ON;
-
-	DELETE FROM ThemeSettings;
-
-    EXEC(N'INSERT INTO [ThemeSettings] ([ThemeSettingID], [PropertyName], [PropertyValue], [SettingsName], [ThemeID])
-    VALUES (1, N''Light'', N''light-theme'', N''Style'', 1),
-    (2, N''Dark'', N''dark-theme'', N''Style'', 1),
-    (3, N''Semi Dark'', N''semi-dark'', N''Style'', 1),
-    (4, N''Minimal'', N''minimal-theme'', N''Style'', 1),
-    (5, N''#0727d7'', N''headercolor1'', N''color-header'', 1),
-    (6, N''#23282c'', N''headercolor2'', N''color-header'', 1),
-    (7, N''#e10a1f'', N''headercolor3'', N''color-header'', 1),
-    (8, N''#157d4c'', N''headercolor4'', N''color-header'', 1),
-    (9, N''#673ab7'', N''headercolor5'', N''color-header'', 1),
-    (10, N''#795548'', N''headercolor6'', N''color-header'', 1),
-    (11, N''#d3094e'', N''headercolor7'', N''color-header'', 1),
-    (12, N''#ff9800'', N''headercolor8'', N''color-header'', 1),
-    (13, N''#6c85ec'', N''sidebarcolor1'', N''color-Sidebar'', 1),
-    (14, N''#5b737f'', N''sidebarcolor2'', N''color-Sidebar'', 1),
-    (15, N''#408851'', N''sidebarcolor3'', N''color-Sidebar'', 1),
-    (16, N''#230924'', N''sidebarcolor4'', N''color-Sidebar'', 1),
-    (17, N''#903a85'', N''sidebarcolor5'', N''color-Sidebar'', 1),
-    (18, N''#a04846'', N''sidebarcolor6'', N''color-Sidebar'', 1),
-    (19, N''#a65314'', N''sidebarcolor7'', N''color-Sidebar'', 1),
-    (20, N''#1f0e3b'', N''sidebarcolor8'', N''color-Sidebar'', 1)');
-
-    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ThemeSettingID', N'PropertyName', N'PropertyValue', N'SettingsName', N'ThemeID') AND [object_id] = OBJECT_ID(N'[ThemeSettings]'))
-        SET IDENTITY_INSERT [ThemeSettings] OFF;
-END;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20241012060936_InitialCreate'
-)
-BEGIN
-    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES
-		(N'20241012060936_InitialCreate', N'8.0.10');
-END;
-GO
-
-COMMIT;
-GO
-
--- End of Migrations
-
-IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'DeleteServiceItem')
-DROP PROCEDURE DeleteServiceItem
-GO
-
-CREATE PROCEDURE [dbo].[DeleteServiceItem]
-(
-	@ActorID int,
-	@ItemID int
-)
-AS
-
-SET QUOTED_IDENTIFIER ON
-
--- check rights
-DECLARE @PackageID int
-SELECT @PackageID = PackageID FROM ServiceItems
-WHERE ItemID = @ItemID
-
-IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
-RAISERROR('You are not allowed to access this package', 16, 1)
-
-BEGIN TRAN
-
-UPDATE Domains
-SET ZoneItemID = NULL
-WHERE ZoneItemID = @ItemID
-
-DELETE FROM Domains
-WHERE WebSiteID = @ItemID AND IsDomainPointer = 1
-
-UPDATE Domains
-SET WebSiteID = NULL
-WHERE WebSiteID = @ItemID
-
-UPDATE Domains
-SET MailDomainID = NULL
-WHERE MailDomainID = @ItemID
-
--- delete item comments
-DELETE FROM Comments
-WHERE ItemID = @ItemID AND ItemTypeID = 'SERVICE_ITEM'
-
--- delete item properties
-DELETE FROM ServiceItemProperties
-WHERE ItemID = @ItemID
-
--- delete external IP addresses
-EXEC dbo.DeleteItemIPAddresses @ActorID, @ItemID
-
--- delete item
-DELETE FROM ServiceItems
-WHERE ItemID = @ItemID
-
-COMMIT TRAN
-
-RETURN
-
-GO
-
-
--- Changes from Master branch 07.12.2024
-
--- Add Default properties for SimpleDNS
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1903' AND [PropertyName] = 'SimpleDnsUrl')
-BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1903, N'AdminLogin', N'Admin')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1903, N'ExpireLimit', N'1209600')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1903, N'NameServers', N'ns1.yourdomain.com;ns2.yourdomain.com')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1903, N'RefreshInterval', N'3600')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1903, N'ResponsiblePerson', N'hostmaster.[DOMAIN_NAME]')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1903, N'RetryDelay', N'600')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1903, N'SimpleDnsUrl', N'http://127.0.0.1:8053')
+INSERT [dbo].[Providers] ([ProviderId], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(1505, 45, N'RemoteDesktopServices2025', N'Remote Desktop Services Windows 2025', N'SolidCP.Providers.RemoteDesktopServices.Windows2025,SolidCP.Providers.RemoteDesktopServices.Windows2019', N'RDS',	1)
 END
 GO
 
@@ -21594,6 +20319,7 @@ BEGIN
 	INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota], [PerOrganization]) VALUES (753, 7, 2, N'DNS.EditTTL', N'Allow editing TTL in DNS Editor', 1, 0, NULL, NULL, NULL)
 END
 GO
+
 IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [PropertyName] = 'RecordDefaultTTL')
 BEGIN
 	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (7, N'RecordDefaultTTL', N'86400')
@@ -21609,6 +20335,7 @@ BEGIN
 	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1903, N'RecordDefaultTTL', N'86400')
 END
 GO
+
 IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [PropertyName] = 'RecordMinimumTTL')
 BEGIN
 	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (7, N'RecordMinimumTTL', N'3600')
@@ -21623,7 +20350,7 @@ BEGIN
 	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1902, N'RecordMinimumTTL', N'3600')
 	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1903, N'RecordMinimumTTL', N'3600')
 END
-
+GO
 
 --SmarterMail100 Support for new options
 IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '67' AND [PropertyName] = N'defaultdomainhostname')
