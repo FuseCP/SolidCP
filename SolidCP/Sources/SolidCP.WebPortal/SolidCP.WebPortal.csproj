@@ -56,7 +56,7 @@
     </ItemGroup>
     <ItemGroup Condition="$(TargetFramework) != 'net48'">
         <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web" Version="1.2.4" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Build" Version="1.2.4" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Build" Version="1.2.4" ExcludeAssets="runtime" />
         <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Compilers" Version="1.2.4" />
         <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Extensions" Version="1.2.4" />
         <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Mobile" Version="1.2.4" />
