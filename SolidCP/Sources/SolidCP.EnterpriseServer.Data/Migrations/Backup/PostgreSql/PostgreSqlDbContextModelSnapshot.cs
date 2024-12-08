@@ -18,7 +18,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("public")
-                .HasAnnotation("ProductVersion", "8.0.10")
+                .HasAnnotation("ProductVersion", "9.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -3612,7 +3612,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                             PackageComments = "",
                             PackageName = "System",
                             StatusId = 1,
-                            StatusIdChangeDate = new DateTime(2024, 4, 20, 11, 2, 58, 560, DateTimeKind.Utc),
+                            StatusIdChangeDate = new DateTime(2024, 10, 12, 19, 29, 19, 927, DateTimeKind.Utc),
                             UserId = 1
                         });
                 });
@@ -4366,7 +4366,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         new
                         {
                             ProviderId = 91,
-                            DisableAutoDiscovery = true,
                             DisplayName = "Hosted Microsoft Exchange Server 2013",
                             EditorControl = "Exchange",
                             GroupId = 12,
@@ -4775,7 +4774,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         new
                         {
                             ProviderId = 600,
-                            DisableAutoDiscovery = true,
                             DisplayName = "Enterprise Storage Windows 2012",
                             EditorControl = "EnterpriseStorage",
                             GroupId = 44,
@@ -4785,7 +4783,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         new
                         {
                             ProviderId = 700,
-                            DisableAutoDiscovery = true,
                             DisplayName = "Storage Spaces Windows 2012",
                             EditorControl = "StorageSpaceServices",
                             GroupId = 49,
@@ -4923,6 +4920,26 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         },
                         new
                         {
+                            ProviderId = 1504,
+                            DisableAutoDiscovery = true,
+                            DisplayName = "Remote Desktop Services Windows 2022",
+                            EditorControl = "RDS",
+                            GroupId = 45,
+                            ProviderName = "RemoteDesktopServices2022",
+                            ProviderType = "SolidCP.Providers.RemoteDesktopServices.Windows2022,SolidCP.Providers.RemoteDesktopServices.Windows2022"
+                        },
+                        new
+                        {
+                            ProviderId = 1505,
+                            DisableAutoDiscovery = true,
+                            DisplayName = "Remote Desktop Services Windows 2025",
+                            EditorControl = "RDS",
+                            GroupId = 45,
+                            ProviderName = "RemoteDesktopServices2025",
+                            ProviderType = "SolidCP.Providers.RemoteDesktopServices.Windows2025,SolidCP.Providers.RemoteDesktopServices.Windows2025"
+                        },
+                        new
+                        {
                             ProviderId = 1550,
                             DisplayName = "MariaDB 10.1",
                             EditorControl = "MariaDB",
@@ -4961,7 +4978,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         new
                         {
                             ProviderId = 1571,
-                            DisableAutoDiscovery = true,
                             DisplayName = "MariaDB 10.4",
                             EditorControl = "MariaDB",
                             GroupId = 50,
@@ -5228,6 +5244,26 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         },
                         new
                         {
+                            ProviderId = 1804,
+                            DisableAutoDiscovery = true,
+                            DisplayName = "Windows Server 2025",
+                            EditorControl = "Windows2012",
+                            GroupId = 1,
+                            ProviderName = "Windows2025",
+                            ProviderType = "SolidCP.Providers.OS.Windows2025, SolidCP.Providers.OS.Windows2025"
+                        },
+                        new
+                        {
+                            ProviderId = 1805,
+                            DisableAutoDiscovery = true,
+                            DisplayName = "Microsoft Hyper-V 2025",
+                            EditorControl = "HyperV2012R2",
+                            GroupId = 33,
+                            ProviderName = "HyperV2025",
+                            ProviderType = "SolidCP.Providers.Virtualization.HyperV2025, SolidCP.Providers.Virtualization.HyperV2025"
+                        },
+                        new
+                        {
                             ProviderId = 1901,
                             DisplayName = "SimpleDNS Plus 8.x",
                             EditorControl = "SimpleDNS",
@@ -5265,7 +5301,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         new
                         {
                             ProviderId = 1911,
-                            DisplayName = "Apache Web Server 2.4 (Experimental)",
+                            DisplayName = "Apache Web Server 2.4",
                             EditorControl = "Apache",
                             GroupId = 2,
                             ProviderName = "Apache",
@@ -8693,6 +8729,16 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                             QuotaOrder = 24,
                             QuotaTypeId = 2,
                             ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 753,
+                            GroupId = 7,
+                            QuotaDescription = "Allow editing TTL in DNS Editor",
+                            QuotaName = "DNS.EditTTL",
+                            QuotaOrder = 2,
+                            QuotaTypeId = 1,
+                            ServiceQuota = false
                         });
                 });
 
@@ -11123,6 +11169,18 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         new
                         {
                             ProviderId = 7,
+                            PropertyName = "RecordDefaultTTL",
+                            PropertyValue = "86400"
+                        },
+                        new
+                        {
+                            ProviderId = 7,
+                            PropertyName = "RecordMinimumTTL",
+                            PropertyValue = "3600"
+                        },
+                        new
+                        {
+                            ProviderId = 7,
                             PropertyName = "RefreshInterval",
                             PropertyValue = "3600"
                         },
@@ -11197,6 +11255,18 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                             ProviderId = 9,
                             PropertyName = "NameServers",
                             PropertyValue = "ns1.yourdomain.com;ns2.yourdomain.com"
+                        },
+                        new
+                        {
+                            ProviderId = 9,
+                            PropertyName = "RecordDefaultTTL",
+                            PropertyValue = "86400"
+                        },
+                        new
+                        {
+                            ProviderId = 9,
+                            PropertyName = "RecordMinimumTTL",
+                            PropertyValue = "3600"
                         },
                         new
                         {
@@ -11303,6 +11373,12 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         new
                         {
                             ProviderId = 11,
+                            PropertyName = "defaultdomainhostname",
+                            PropertyValue = "mail.[DOMAIN_NAME]"
+                        },
+                        new
+                        {
+                            ProviderId = 11,
                             PropertyName = "DomainsPath",
                             PropertyValue = "%SYSTEMDRIVE%\\SmarterMail"
                         },
@@ -11341,6 +11417,12 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                             ProviderId = 14,
                             PropertyName = "AdminUsername",
                             PropertyValue = "admin"
+                        },
+                        new
+                        {
+                            ProviderId = 14,
+                            PropertyName = "defaultdomainhostname",
+                            PropertyValue = "mail.[DOMAIN_NAME]"
                         },
                         new
                         {
@@ -11495,6 +11577,18 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         new
                         {
                             ProviderId = 24,
+                            PropertyName = "RecordDefaultTTL",
+                            PropertyValue = "86400"
+                        },
+                        new
+                        {
+                            ProviderId = 24,
+                            PropertyName = "RecordMinimumTTL",
+                            PropertyValue = "3600"
+                        },
+                        new
+                        {
+                            ProviderId = 24,
                             PropertyName = "RefreshInterval",
                             PropertyValue = "3600"
                         },
@@ -11591,6 +11685,18 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         new
                         {
                             ProviderId = 28,
+                            PropertyName = "RecordDefaultTTL",
+                            PropertyValue = "86400"
+                        },
+                        new
+                        {
+                            ProviderId = 28,
+                            PropertyName = "RecordMinimumTTL",
+                            PropertyValue = "3600"
+                        },
+                        new
+                        {
+                            ProviderId = 28,
                             PropertyName = "RefreshInterval",
                             PropertyValue = "3600"
                         },
@@ -11623,6 +11729,12 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                             ProviderId = 29,
                             PropertyName = "AdminUsername",
                             PropertyValue = "admin"
+                        },
+                        new
+                        {
+                            ProviderId = 29,
+                            PropertyName = "defaultdomainhostname",
+                            PropertyValue = "mail.[DOMAIN_NAME]"
                         },
                         new
                         {
@@ -11770,6 +11882,18 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         },
                         new
                         {
+                            ProviderId = 55,
+                            PropertyName = "RecordDefaultTTL",
+                            PropertyValue = "86400"
+                        },
+                        new
+                        {
+                            ProviderId = 55,
+                            PropertyName = "RecordMinimumTTL",
+                            PropertyValue = "3600"
+                        },
+                        new
+                        {
                             ProviderId = 56,
                             PropertyName = "ExpireLimit",
                             PropertyValue = "1209600"
@@ -11813,6 +11937,18 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         new
                         {
                             ProviderId = 56,
+                            PropertyName = "RecordDefaultTTL",
+                            PropertyValue = "86400"
+                        },
+                        new
+                        {
+                            ProviderId = 56,
+                            PropertyName = "RecordMinimumTTL",
+                            PropertyValue = "3600"
+                        },
+                        new
+                        {
+                            ProviderId = 56,
                             PropertyName = "RefreshInterval",
                             PropertyValue = "3600"
                         },
@@ -11839,6 +11975,12 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                             ProviderId = 60,
                             PropertyName = "AdminUsername",
                             PropertyValue = "admin"
+                        },
+                        new
+                        {
+                            ProviderId = 60,
+                            PropertyName = "defaultdomainhostname",
+                            PropertyValue = "mail.[DOMAIN_NAME]"
                         },
                         new
                         {
@@ -11951,6 +12093,12 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         new
                         {
                             ProviderId = 64,
+                            PropertyName = "defaultdomainhostname",
+                            PropertyValue = "mail.[DOMAIN_NAME]"
+                        },
+                        new
+                        {
+                            ProviderId = 64,
                             PropertyName = "DomainsPath",
                             PropertyValue = "%SYSTEMDRIVE%\\SmarterMail"
                         },
@@ -11981,6 +12129,12 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         new
                         {
                             ProviderId = 65,
+                            PropertyName = "defaultdomainhostname",
+                            PropertyValue = "mail.[DOMAIN_NAME]"
+                        },
+                        new
+                        {
+                            ProviderId = 65,
                             PropertyName = "DomainsPath",
                             PropertyValue = "%SYSTEMDRIVE%\\SmarterMail"
                         },
@@ -12011,6 +12165,12 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         new
                         {
                             ProviderId = 66,
+                            PropertyName = "defaultdomainhostname",
+                            PropertyValue = "mail.[DOMAIN_NAME]"
+                        },
+                        new
+                        {
+                            ProviderId = 66,
                             PropertyName = "DomainsPath",
                             PropertyValue = "%SYSTEMDRIVE%\\SmarterMail"
                         },
@@ -12037,6 +12197,12 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                             ProviderId = 67,
                             PropertyName = "AdminUsername",
                             PropertyValue = "admin"
+                        },
+                        new
+                        {
+                            ProviderId = 67,
+                            PropertyName = "defaultdomainhostname",
+                            PropertyValue = "mail.[DOMAIN_NAME]"
                         },
                         new
                         {
@@ -12702,7 +12868,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         {
                             ProviderId = 305,
                             PropertyName = "InstallFolder",
-                            PropertyValue = "%PROGRAMFILES%\\MySQL\\MySQL Server 8.1"
+                            PropertyValue = "%PROGRAMFILES%\\MySQL\\MySQL Server 8.0"
                         },
                         new
                         {
@@ -12738,7 +12904,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         {
                             ProviderId = 306,
                             PropertyName = "InstallFolder",
-                            PropertyValue = "%PROGRAMFILES%\\MySQL\\MySQL Server 8.2"
+                            PropertyValue = "%PROGRAMFILES%\\MySQL\\MySQL Server 8.0"
                         },
                         new
                         {
@@ -12774,7 +12940,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         {
                             ProviderId = 307,
                             PropertyName = "InstallFolder",
-                            PropertyValue = "%PROGRAMFILES%\\MySQL\\MySQL Server 8.3"
+                            PropertyValue = "%PROGRAMFILES%\\MySQL\\MySQL Server 8.0"
                         },
                         new
                         {
@@ -12810,7 +12976,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         {
                             ProviderId = 308,
                             PropertyName = "InstallFolder",
-                            PropertyValue = "%PROGRAMFILES%\\MySQL\\MySQL Server 8.4"
+                            PropertyValue = "%PROGRAMFILES%\\MySQL\\MySQL Server 8.0"
                         },
                         new
                         {
@@ -12895,6 +13061,18 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                             ProviderId = 410,
                             PropertyName = "nameservers",
                             PropertyValue = "ns1.yourdomain.com;ns2.yourdomain.com"
+                        },
+                        new
+                        {
+                            ProviderId = 410,
+                            PropertyName = "RecordDefaultTTL",
+                            PropertyValue = "86400"
+                        },
+                        new
+                        {
+                            ProviderId = 410,
+                            PropertyName = "RecordMinimumTTL",
+                            PropertyValue = "3600"
                         },
                         new
                         {
@@ -13468,6 +13646,18 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         },
                         new
                         {
+                            ProviderId = 1703,
+                            PropertyName = "RecordDefaultTTL",
+                            PropertyValue = "86400"
+                        },
+                        new
+                        {
+                            ProviderId = 1703,
+                            PropertyName = "RecordMinimumTTL",
+                            PropertyValue = "3600"
+                        },
+                        new
+                        {
                             ProviderId = 1800,
                             PropertyName = "UsersHome",
                             PropertyValue = "%SYSTEMDRIVE%\\HostingSpaces"
@@ -13475,6 +13665,12 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         new
                         {
                             ProviderId = 1802,
+                            PropertyName = "UsersHome",
+                            PropertyValue = "%SYSTEMDRIVE%\\HostingSpaces"
+                        },
+                        new
+                        {
+                            ProviderId = 1804,
                             PropertyName = "UsersHome",
                             PropertyValue = "%SYSTEMDRIVE%\\HostingSpaces"
                         },
@@ -13501,6 +13697,18 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                             ProviderId = 1901,
                             PropertyName = "NameServers",
                             PropertyValue = "ns1.yourdomain.com;ns2.yourdomain.com"
+                        },
+                        new
+                        {
+                            ProviderId = 1901,
+                            PropertyName = "RecordDefaultTTL",
+                            PropertyValue = "86400"
+                        },
+                        new
+                        {
+                            ProviderId = 1901,
+                            PropertyName = "RecordMinimumTTL",
+                            PropertyValue = "3600"
                         },
                         new
                         {
@@ -13553,6 +13761,18 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                         new
                         {
                             ProviderId = 1902,
+                            PropertyName = "RecordDefaultTTL",
+                            PropertyValue = "86400"
+                        },
+                        new
+                        {
+                            ProviderId = 1902,
+                            PropertyName = "RecordMinimumTTL",
+                            PropertyValue = "3600"
+                        },
+                        new
+                        {
+                            ProviderId = 1902,
                             PropertyName = "refreshinterval",
                             PropertyValue = "3600"
                         },
@@ -13567,6 +13787,60 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                             ProviderId = 1902,
                             PropertyName = "retrydelay",
                             PropertyValue = "600"
+                        },
+                        new
+                        {
+                            ProviderId = 1903,
+                            PropertyName = "AdminLogin",
+                            PropertyValue = "Admin"
+                        },
+                        new
+                        {
+                            ProviderId = 1903,
+                            PropertyName = "ExpireLimit",
+                            PropertyValue = "1209600"
+                        },
+                        new
+                        {
+                            ProviderId = 1903,
+                            PropertyName = "NameServers",
+                            PropertyValue = "ns1.yourdomain.com;ns2.yourdomain.com"
+                        },
+                        new
+                        {
+                            ProviderId = 1903,
+                            PropertyName = "RecordDefaultTTL",
+                            PropertyValue = "86400"
+                        },
+                        new
+                        {
+                            ProviderId = 1903,
+                            PropertyName = "RecordMinimumTTL",
+                            PropertyValue = "3600"
+                        },
+                        new
+                        {
+                            ProviderId = 1903,
+                            PropertyName = "RefreshInterval",
+                            PropertyValue = "3600"
+                        },
+                        new
+                        {
+                            ProviderId = 1903,
+                            PropertyName = "ResponsiblePerson",
+                            PropertyValue = "hostmaster.[DOMAIN_NAME]"
+                        },
+                        new
+                        {
+                            ProviderId = 1903,
+                            PropertyName = "RetryDelay",
+                            PropertyValue = "600"
+                        },
+                        new
+                        {
+                            ProviderId = 1903,
+                            PropertyName = "SimpleDnsUrl",
+                            PropertyValue = "http://127.0.0.1:8053"
                         },
                         new
                         {

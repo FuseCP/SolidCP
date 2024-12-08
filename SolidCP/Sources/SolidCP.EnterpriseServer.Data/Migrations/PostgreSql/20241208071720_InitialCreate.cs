@@ -1,1061 +1,31 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
+namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
     {
-		#region Stored Procedures
-		protected void StoredProceduresUp(MigrationBuilder migrationBuilder)
-		{
-			StoredProceduresDown(migrationBuilder);
-
-			if (migrationBuilder.IsSqlServer())
-				migrationBuilder.SafeSql(DatabaseUtils.InstallScript("20241024041433_InitialCreate_StoredProcedures.sql"));
-		}
-
-		protected void StoredProceduresDown(MigrationBuilder migrationBuilder)
-		{
-			if (migrationBuilder.IsSqlServer()) migrationBuilder.SafeSql(@"
-DROP VIEW IF EXISTS [dbo].[UsersDetailed]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateWhoisDomainInfo]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateWebDavPortalUsersSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateVirtualGroups]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateUserThemeSetting]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateUserSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateUserPinSecret]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateUserMfaMode]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateUserFailedLoginAttempt]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateSupportServiceLevel]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateStorageSpaceLevel]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateStorageSpaceFolder]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateStorageSpace]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateSfBUserPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateSfBUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateServiceProperties]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateServiceItem]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateServiceFully]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateService]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateServer]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateSchedule]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateRDSServerSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateRDSServer]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateRDSCollectionSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateRDSCollection]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdatePrivateNetworVLAN]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdatePackageSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdatePackageQuotas]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdatePackageName]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdatePackageDiskSpace]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdatePackageBandwidthUpdate]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdatePackageBandwidth]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdatePackageAddon]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdatePackage]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateLyncUserPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateLyncUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateIPAddresses]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateIPAddress]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateHostingPlanQuotas]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateHostingPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateExchangeRetentionPolicyTag]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateExchangeOrganizationSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateExchangeMailboxPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateExchangeDisclaimer]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateExchangeAccountUserPrincipalName]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateExchangeAccountSLSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateExchangeAccount]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateEnterpriseFolder]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateEntepriseFolderStorageSpaceFolder]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateDomainLastUpdateDate]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateDomainExpirationDate]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateDomainDates]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateDomainCreationDate]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateDomain]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateDnsRecord]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateCRMUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateBackgroundTask]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateAdditionalGroup]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SfBUserExists]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SetUserOneTimePassword]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SetSystemSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SetSfBUserSfBUserPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SetOrganizationDefaultSfBUserPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SetOrganizationDefaultLyncUserPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SetOrganizationDefaultExchangeMailboxPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SetLyncUserLyncUserPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SetItemPrivatePrimaryIPAddress]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SetItemPrimaryIPAddress]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SetExchangeAccountMailboxplan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SetExchangeAccountDisclaimerId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SetAccessTokenSmsResponse]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SearchServiceItemsPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SearchOrganizationAccounts]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SearchExchangeAccountsByTypes]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SearchExchangeAccounts]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SearchExchangeAccount]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[RemoveStorageSpaceLevel]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[RemoveStorageSpaceFolder]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[RemoveStorageSpace]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[RemoveRDSUserFromRDSCollection]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[RemoveRDSServerFromOrganization]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[RemoveRDSServerFromCollection]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[OrganizationUserExists]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[OrganizationExists]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[MoveServiceItem]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[LyncUserExists]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[InsertStorageSpaceLevel]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[InsertStorageSpace]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[InsertCRMUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetWebDavPortalUsersSettingsByAccountId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetWebDavAccessTokenById]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetWebDavAccessTokenByAccessToken]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetVirtualServices]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetVirtualServers]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetVirtualMachinesPagedProxmox]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetVirtualMachinesPagedForPC]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetVirtualMachinesPaged2012]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetVirtualMachinesPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUsersSummary]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUsersPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserServiceID]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUsers]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserPeers]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserParents]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserPackagesServerUrls]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserEnterpriseFolderWithOwaEditPermission]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserDomainsPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserByUsernameInternally]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserByUsername]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserByIdInternally]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserById]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserByExchangeOrganizationIdInternally]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserAvailableHostingPlans]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserAvailableHostingAddons]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUnallottedVLANs]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUnallottedIPAddresses]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetThreadBackgroundTasks]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetThemeSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetThemeSetting]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetThemes]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSystemSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSupportServiceLevels]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSupportServiceLevel]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpacesPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpacesByResourceGroupName]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpacesByLevelId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpaceLevelsPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpaceLevelById]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpaceFoldersByStorageSpaceId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpaceFolderById]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpaceByServiceAndPath]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpaceById]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSSLCertificateByID]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSiteCert]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSfBUsersCount]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSfBUsersByPlanId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSfBUsers]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSfBUserPlans]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSfBUserPlanByAccountId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSfBUserPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServicesByServerIDGroupName]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServicesByServerID]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServicesByGroupName]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServicesByGroupID]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceProperties]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemTypes]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemType]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemsPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemsForStatistics]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemsCountByNameAndServiceId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemsCount]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemsByService]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemsByPackage]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemsByName]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItems]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemByName]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItem]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetService]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServerShortDetails]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServers]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServerInternal]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServerByName]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServer]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSearchTableByColumns]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSearchObject]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSearchableServiceItemTypes]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetScheduleTaskViewConfigurations]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetScheduleTasks]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetScheduleTaskEmailTemplate]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetScheduleTask]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSchedulesPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSchedules]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetScheduleParameters]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetScheduleInternal]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetScheduleBackgroundTasks]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSchedule]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetResourceGroups]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetResourceGroupByName]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetResourceGroup]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetResellerDomains]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSServersPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSServerSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSServersByItemId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSServersByCollectionId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSServers]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSServerById]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSMessages]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSControllerServiceIDbyFQDN]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSCollectionUsersByRDSCollectionId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSCollectionsPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSCollectionSettingsByCollectionId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSCollectionsByItemId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSCollectionByName]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSCollectionById]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSCertificateByServiceId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRawServicesByServerID]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetQuotas]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetProviderServiceQuota]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetProviders]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetProviderByServiceID]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetProvider]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetProcessBackgroundTasks]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPrivateNetworVLANsPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPrivateNetworVLAN]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPendingSSLForWebsite]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetParentPackageQuotas]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageUnassignedIPAddresses]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackagesPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageServiceID]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackagesDiskspacePaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackagesBandwidthPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackages]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageQuotasForEdit]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageQuotas]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageQuota]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackagePrivateNetworkVLANs]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackagePrivateIPAddressesPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackagePrivateIPAddresses]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackagePackages]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageIPAddressesCount]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageIPAddresses]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageIPAddress]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageDiskspace]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageBandwidthUpdate]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageBandwidth]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageAddons]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageAddon]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackage]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationStoragSpacesFolderByType]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationStoragSpaceFolders]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationStatistics]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationRdsUsersCount]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationRdsServersCount]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationRdsCollectionsCount]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationObjectsByDomain]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationGroupsByDisplayName]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationDeletedUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationCRMUserCount]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOCSUsersCount]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOCSUsers]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetNextSchedule]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetNestedPackagesSummary]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetNestedPackagesPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetMyPackages]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetLyncUsersCount]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetLyncUsersByPlanId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetLyncUsers]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetLyncUserPlans]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetLyncUserPlanByAccountId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetLyncUserPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetLevelResourceGroups]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetItemPrivateIPAddresses]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetItemIPAddresses]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetItemIdByOrganizationId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetIPAddressesPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetIPAddresses]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetIPAddress]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetInstanceID]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetHostingPlans]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetHostingPlanQuotas]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetHostingPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetHostingAddons]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetGroupProviders]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetFilterURLByHostingPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetFilterURL]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeRetentionPolicyTags]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeRetentionPolicyTag]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeOrganizationStatistics]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeOrganizationSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeOrganizationDomains]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeOrganization]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeMailboxPlans]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeMailboxPlanRetentionPolicyTags]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeMailboxPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeMailboxes]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeDisclaimers]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeDisclaimer]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeAccountsPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeAccounts]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeAccountEmailAddresses]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeAccountDisclaimerId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeAccountByMailboxPlanId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeAccountByAccountNameWithoutItemId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeAccountByAccountName]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeAccount]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetEnterpriseFoldersPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetEnterpriseFolders]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetEnterpriseFolderOwaUsers]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetEnterpriseFolderId]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetEnterpriseFolder]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDomainsPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDomainsByZoneID]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDomainsByDomainItemID]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDomains]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDomainDnsRecords]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDomainByName]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDomainAllDnsRecords]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDomain]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDnsRecordsTotal]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDnsRecordsByService]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDnsRecordsByServer]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDnsRecordsByPackage]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDnsRecordsByGroup]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDnsRecord]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetCRMUsersCount]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetCRMUsers]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetCRMUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetCRMOrganizationUsers]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetComments]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetClusters]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetCertificatesForSite]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetBlackBerryUsersCount]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetBlackBerryUsers]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetBackgroundTopTask]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetBackgroundTasks]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetBackgroundTaskParams]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetBackgroundTaskLogs]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetBackgroundTask]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetAvailableVirtualServices]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetAuditLogTasks]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetAuditLogSources]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetAuditLogRecordsPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetAuditLogRecord]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetAllServers]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetAllPackages]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetAdditionalGroups]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetAccessTokenByAccessToken]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[ExchangeOrganizationExists]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[ExchangeOrganizationDomainExists]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[ExchangeAccountExists]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[ExchangeAccountEmailAddressExists]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DistributePackageServices]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteVirtualServices]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteUserThemeSetting]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteUserEmailAddresses]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteSupportServiceLevel]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteSfBUserPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteSfBUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteServiceItem]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteService]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteServer]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteSchedule]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteRDSServerSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteRDSServer]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteRDSCollectionSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteRDSCollection]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeletePrivateNetworkVLAN]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeletePackageAddon]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeletePackage]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteOrganizationUsers]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteOrganizationStoragSpacesFolder]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteOrganizationDeletedUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteOCSUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteLyncUserPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteLyncUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteLevelResourceGroups]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteItemPrivateIPAddresses]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteItemPrivateIPAddress]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteItemIPAddresses]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteItemIPAddress]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteIPAddress]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteHostingPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteExpiredWebDavAccessTokens]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteExpiredAccessTokenTokens]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteExchangeRetentionPolicyTag]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteExchangeOrganizationDomain]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteExchangeOrganization]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteExchangeMailboxPlanRetentionPolicyTag]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteExchangeMailboxPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteExchangeDisclaimer]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteExchangeAccountEmailAddress]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteExchangeAccount]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteEnterpriseFolder]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteDomainDnsRecord]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteDomain]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteDnsRecord]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteCRMOrganization]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteComment]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteCluster]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteCertificate]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteBlackBerryUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteBackgroundTasks]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteBackgroundTaskParams]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteBackgroundTask]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteAuditLogRecordsComplete]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteAuditLogRecords]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteAllLogRecords]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteAllEnterpriseFolderOwaUsers]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteAdditionalGroup]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteAccessToken]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeallocatePackageVLAN]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeallocatePackageIPAddress]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[CreateStorageSpaceFolder]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[ConvertToExchangeOrganization]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[CompleteSSLRequest]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckUserExists]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckSSLExistsForWebsite]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckSSL]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckSfBUserExists]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckServiceLevelUsage]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckServiceItemExistsInService]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckServiceItemExists]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckRDSServer]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckOCSUserExists]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckLyncUserExists]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckDomainUsedByHostedOrganization]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckDomain]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckBlackBerryUserExists]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[ChangeUserPassword]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[ChangePackageUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[ChangeExchangeAcceptedDomainType]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[CanChangeMfa]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AllocatePackageVLANs]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AllocatePackageIPAddresses]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddWebDavPortalUsersSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddWebDavAccessToken]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddVirtualServices]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddUserToRDSCollection]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddSupportServiceLevel]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddSSLRequest]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddSfBUserPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddSfBUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddServiceItem]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddService]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddServer]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddSchedule]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddRDSServerToOrganization]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddRDSServerToCollection]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddRDSServer]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddRDSMessage]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddRDSCollectionSettings]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddRDSCollection]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddRDSCertificate]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddPrivateNetworkVlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddPFX]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddPackageAddon]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddPackage]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddOrganizationStoragSpacesFolder]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddOrganizationDeletedUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddOCSUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddLyncUserPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddLyncUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddLevelResourceGroups]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddItemPrivateIPAddress]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddItemIPAddress]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddIPAddress]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddHostingPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddExchangeRetentionPolicyTag]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddExchangeOrganizationDomain]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddExchangeOrganization]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddExchangeMailboxPlanRetentionPolicyTag]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddExchangeMailboxPlan]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddExchangeDisclaimer]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddExchangeAccountEmailAddress]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddExchangeAccount]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddEnterpriseFolderOwaUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddEnterpriseFolder]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddDomainDnsRecord]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddDomain]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddDnsRecord]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddComment]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddCluster]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddBlackBerryUser]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddBackgroundTaskStack]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddBackgroundTaskParam]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddBackgroundTaskLog]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddBackgroundTask]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddAuditLogRecord]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddAdditionalGroup]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddAccessToken]
-GO
-DROP FUNCTION IF EXISTS [dbo].[UsersTree]
-GO
-DROP FUNCTION IF EXISTS [dbo].[UserParents]
-GO
-DROP FUNCTION IF EXISTS [dbo].[SplitString]
-GO
-DROP FUNCTION IF EXISTS [dbo].[PackagesTree]
-GO
-DROP FUNCTION IF EXISTS [dbo].[PackageParents]
-GO
-DROP FUNCTION IF EXISTS [dbo].[GetPackageServiceLevelResource]
-GO
-DROP FUNCTION IF EXISTS [dbo].[GetPackageExceedingQuotas]
-GO
-DROP FUNCTION IF EXISTS [dbo].[GetPackageAllocatedResource]
-GO
-DROP FUNCTION IF EXISTS [dbo].[GetPackageAllocatedQuota]
-GO
-DROP FUNCTION IF EXISTS [dbo].[GetItemComments]
-GO
-DROP FUNCTION IF EXISTS [dbo].[GetFullIPAddress]
-GO
-DROP FUNCTION IF EXISTS [dbo].[CheckUserParent]
-GO
-DROP FUNCTION IF EXISTS [dbo].[CheckPackageParent]
-GO
-DROP FUNCTION IF EXISTS [dbo].[CheckIsUserAdmin]
-GO
-DROP FUNCTION IF EXISTS [dbo].[CheckExceedingQuota]
-GO
-DROP FUNCTION IF EXISTS [dbo].[CheckActorUserRights]
-GO
-DROP FUNCTION IF EXISTS [dbo].[CheckActorParentPackageRights]
-GO
-DROP FUNCTION IF EXISTS [dbo].[CheckActorPackageRights]
-GO
-DROP FUNCTION IF EXISTS [dbo].[CanUpdateUserDetails]
-GO
-DROP FUNCTION IF EXISTS [dbo].[CanUpdatePackageDetails]
-GO
-DROP FUNCTION IF EXISTS [dbo].[CanGetUserPassword]
-GO
-DROP FUNCTION IF EXISTS [dbo].[CanGetUserDetails]
-GO
-DROP FUNCTION IF EXISTS [dbo].[CanCreateUser]
-GO
-DROP FUNCTION IF EXISTS [dbo].[CanChangeMfaFunc]
-GO
-DROP FUNCTION IF EXISTS [dbo].[CalculateQuotaUsage]
-GO
-DROP FUNCTION IF EXISTS [dbo].[CalculatePackageDiskspace]
-GO
-DROP FUNCTION IF EXISTS [dbo].[CalculatePackageBandwidth]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzNetworkVLANs]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteItemDmzIPAddresses]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetItemDmzIPAddresses]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteItemDmzIPAddress]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[SetItemDmzPrimaryIPAddress]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[AddItemDmzIPAddress]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddressesPaged]
-GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
-			");
-		}
-		#endregion
-
-		/// <inheritdoc />
-		protected override void Up(MigrationBuilder migrationBuilder)
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "public");
+
             migrationBuilder.CreateTable(
                 name: "AdditionalGroups",
+                schema: "public",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserID = table.Column<int>(type: "int", nullable: false),
-                    GroupName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true)
+                    ID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserID = table.Column<int>(type: "integer", nullable: false),
+                    GroupName = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1064,20 +34,21 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "AuditLog",
+                schema: "public",
                 columns: table => new
                 {
-                    RecordID = table.Column<string>(type: "varchar(32)", unicode: false, maxLength: 32, nullable: false),
-                    UserID = table.Column<int>(type: "int", nullable: true),
-                    Username = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    ItemID = table.Column<int>(type: "int", nullable: true),
-                    SeverityID = table.Column<int>(type: "int", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    FinishDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    SourceName = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    TaskName = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    ItemName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    ExecutionLog = table.Column<string>(type: "ntext", nullable: true),
-                    PackageID = table.Column<int>(type: "int", nullable: true)
+                    RecordID = table.Column<string>(type: "character varying(32)", unicode: false, maxLength: 32, nullable: false),
+                    UserID = table.Column<int>(type: "integer", nullable: true),
+                    Username = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    ItemID = table.Column<int>(type: "integer", nullable: true),
+                    SeverityID = table.Column<int>(type: "integer", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    FinishDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    SourceName = table.Column<string>(type: "character varying(50)", unicode: false, maxLength: 50, nullable: false),
+                    TaskName = table.Column<string>(type: "character varying(50)", unicode: false, maxLength: 50, nullable: false),
+                    ItemName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    ExecutionLog = table.Column<string>(type: "TEXT", nullable: true),
+                    PackageID = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1086,9 +57,10 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "AuditLogSources",
+                schema: "public",
                 columns: table => new
                 {
-                    SourceName = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false)
+                    SourceName = table.Column<string>(type: "character varying(100)", unicode: false, maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1097,11 +69,12 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "AuditLogTasks",
+                schema: "public",
                 columns: table => new
                 {
-                    SourceName = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false),
-                    TaskName = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false),
-                    TaskDescription = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true)
+                    SourceName = table.Column<string>(type: "character varying(100)", unicode: false, maxLength: 100, nullable: false),
+                    TaskName = table.Column<string>(type: "character varying(100)", unicode: false, maxLength: 100, nullable: false),
+                    TaskDescription = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1110,29 +83,30 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "BackgroundTasks",
+                schema: "public",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TaskID = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    ScheduleID = table.Column<int>(type: "int", nullable: false),
-                    PackageID = table.Column<int>(type: "int", nullable: false),
-                    UserID = table.Column<int>(type: "int", nullable: false),
-                    EffectiveUserID = table.Column<int>(type: "int", nullable: false),
-                    TaskName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    ItemID = table.Column<int>(type: "int", nullable: true),
-                    ItemName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    StartDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    FinishDate = table.Column<DateTime>(type: "datetime", nullable: true),
-                    IndicatorCurrent = table.Column<int>(type: "int", nullable: false),
-                    IndicatorMaximum = table.Column<int>(type: "int", nullable: false),
-                    MaximumExecutionTime = table.Column<int>(type: "int", nullable: false),
-                    Source = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Severity = table.Column<int>(type: "int", nullable: false),
-                    Completed = table.Column<bool>(type: "bit", nullable: true),
-                    NotifyOnComplete = table.Column<bool>(type: "bit", nullable: true),
-                    Status = table.Column<int>(type: "int", nullable: false)
+                    ID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Guid = table.Column<Guid>(type: "uuid", nullable: false),
+                    TaskID = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    ScheduleID = table.Column<int>(type: "integer", nullable: false),
+                    PackageID = table.Column<int>(type: "integer", nullable: false),
+                    UserID = table.Column<int>(type: "integer", nullable: false),
+                    EffectiveUserID = table.Column<int>(type: "integer", nullable: false),
+                    TaskName = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    ItemID = table.Column<int>(type: "integer", nullable: true),
+                    ItemName = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    FinishDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IndicatorCurrent = table.Column<int>(type: "integer", nullable: false),
+                    IndicatorMaximum = table.Column<int>(type: "integer", nullable: false),
+                    MaximumExecutionTime = table.Column<int>(type: "integer", nullable: false),
+                    Source = table.Column<string>(type: "text", nullable: true),
+                    Severity = table.Column<int>(type: "integer", nullable: false),
+                    Completed = table.Column<bool>(type: "boolean", nullable: true),
+                    NotifyOnComplete = table.Column<bool>(type: "boolean", nullable: true),
+                    Status = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1141,11 +115,12 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "Clusters",
+                schema: "public",
                 columns: table => new
                 {
-                    ClusterID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ClusterName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    ClusterID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ClusterName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1154,16 +129,17 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "ExchangeDeletedAccounts",
+                schema: "public",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AccountID = table.Column<int>(type: "int", nullable: false),
-                    OriginAT = table.Column<int>(type: "int", nullable: false),
-                    StoragePath = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    FolderName = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true),
-                    FileName = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true),
-                    ExpirationDate = table.Column<DateTime>(type: "datetime", nullable: false)
+                    ID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    AccountID = table.Column<int>(type: "integer", nullable: false),
+                    OriginAT = table.Column<int>(type: "integer", nullable: false),
+                    StoragePath = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    FolderName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true),
+                    FileName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true),
+                    ExpirationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1172,13 +148,14 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "ExchangeDisclaimers",
+                schema: "public",
                 columns: table => new
                 {
-                    ExchangeDisclaimerId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ItemID = table.Column<int>(type: "int", nullable: false),
-                    DisclaimerName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    DisclaimerText = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ExchangeDisclaimerId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ItemID = table.Column<int>(type: "integer", nullable: false),
+                    DisclaimerName = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
+                    DisclaimerText = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1187,12 +164,13 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "ExchangeMailboxPlanRetentionPolicyTags",
+                schema: "public",
                 columns: table => new
                 {
-                    PlanTagID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TagID = table.Column<int>(type: "int", nullable: false),
-                    MailboxPlanId = table.Column<int>(type: "int", nullable: false)
+                    PlanTagID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    TagID = table.Column<int>(type: "integer", nullable: false),
+                    MailboxPlanId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1201,15 +179,16 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "ExchangeRetentionPolicyTags",
+                schema: "public",
                 columns: table => new
                 {
-                    TagID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ItemID = table.Column<int>(type: "int", nullable: false),
-                    TagName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    TagType = table.Column<int>(type: "int", nullable: false),
-                    AgeLimitForRetention = table.Column<int>(type: "int", nullable: false),
-                    RetentionAction = table.Column<int>(type: "int", nullable: false)
+                    TagID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ItemID = table.Column<int>(type: "integer", nullable: false),
+                    TagName = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    TagType = table.Column<int>(type: "integer", nullable: false),
+                    AgeLimitForRetention = table.Column<int>(type: "integer", nullable: false),
+                    RetentionAction = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1218,14 +197,15 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "OCSUsers",
+                schema: "public",
                 columns: table => new
                 {
-                    OCSUserID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AccountID = table.Column<int>(type: "int", nullable: false),
-                    InstanceID = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())"),
-                    ModifiedDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())")
+                    OCSUserID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    AccountID = table.Column<int>(type: "integer", nullable: false),
+                    InstanceID = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1234,12 +214,13 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "PackageSettings",
+                schema: "public",
                 columns: table => new
                 {
-                    PackageID = table.Column<int>(type: "int", nullable: false),
-                    SettingsName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PropertyName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PropertyValue = table.Column<string>(type: "ntext", nullable: true)
+                    PackageID = table.Column<int>(type: "integer", nullable: false),
+                    SettingsName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    PropertyName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    PropertyValue = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1248,16 +229,17 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "RDSCertificates",
+                schema: "public",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ServiceId = table.Column<int>(type: "int", nullable: false),
-                    Content = table.Column<string>(type: "ntext", nullable: false),
-                    Hash = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    FileName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    ValidFrom = table.Column<DateTime>(type: "datetime", nullable: true),
-                    ExpiryDate = table.Column<DateTime>(type: "datetime", nullable: true)
+                    ID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ServiceId = table.Column<int>(type: "integer", nullable: false),
+                    Content = table.Column<string>(type: "TEXT", nullable: false),
+                    Hash = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    FileName = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    ValidFrom = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ExpiryDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1266,14 +248,15 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "RDSCollections",
+                schema: "public",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ItemID = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    DisplayName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true)
+                    ID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ItemID = table.Column<int>(type: "integer", nullable: false),
+                    Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    Description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    DisplayName = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1282,14 +265,15 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "RDSServerSettings",
+                schema: "public",
                 columns: table => new
                 {
-                    RdsServerId = table.Column<int>(type: "int", nullable: false),
-                    SettingsName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PropertyName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PropertyValue = table.Column<string>(type: "ntext", nullable: true),
-                    ApplyUsers = table.Column<bool>(type: "bit", nullable: false),
-                    ApplyAdministrators = table.Column<bool>(type: "bit", nullable: false)
+                    RdsServerId = table.Column<int>(type: "integer", nullable: false),
+                    SettingsName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    PropertyName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    PropertyValue = table.Column<string>(type: "TEXT", nullable: true),
+                    ApplyUsers = table.Column<bool>(type: "boolean", nullable: false),
+                    ApplyAdministrators = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1298,13 +282,14 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "ResourceGroups",
+                schema: "public",
                 columns: table => new
                 {
-                    GroupID = table.Column<int>(type: "int", nullable: false),
-                    GroupName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    GroupOrder = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
-                    GroupController = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    ShowGroup = table.Column<bool>(type: "bit", nullable: true)
+                    GroupID = table.Column<int>(type: "integer", nullable: false),
+                    GroupName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    GroupOrder = table.Column<int>(type: "integer", nullable: false, defaultValue: 1),
+                    GroupController = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
+                    ShowGroup = table.Column<bool>(type: "boolean", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1313,11 +298,12 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "ScheduleTasks",
+                schema: "public",
                 columns: table => new
                 {
-                    TaskID = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    TaskType = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    RoleID = table.Column<int>(type: "int", nullable: false)
+                    TaskID = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    TaskType = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    RoleID = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1326,29 +312,30 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "SfBUserPlans",
+                schema: "public",
                 columns: table => new
                 {
-                    SfBUserPlanId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ItemID = table.Column<int>(type: "int", nullable: false),
-                    SfBUserPlanName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    SfBUserPlanType = table.Column<int>(type: "int", nullable: true),
-                    IM = table.Column<bool>(type: "bit", nullable: false),
-                    Mobility = table.Column<bool>(type: "bit", nullable: false),
-                    MobilityEnableOutsideVoice = table.Column<bool>(type: "bit", nullable: false),
-                    Federation = table.Column<bool>(type: "bit", nullable: false),
-                    Conferencing = table.Column<bool>(type: "bit", nullable: false),
-                    EnterpriseVoice = table.Column<bool>(type: "bit", nullable: false),
-                    VoicePolicy = table.Column<int>(type: "int", nullable: false),
-                    IsDefault = table.Column<bool>(type: "bit", nullable: false),
-                    RemoteUserAccess = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    PublicIMConnectivity = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    AllowOrganizeMeetingsWithExternalAnonymous = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    Telephony = table.Column<int>(type: "int", nullable: true),
-                    ServerURI = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
-                    ArchivePolicy = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
-                    TelephonyDialPlanPolicy = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
-                    TelephonyVoicePolicy = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true)
+                    SfBUserPlanId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ItemID = table.Column<int>(type: "integer", nullable: false),
+                    SfBUserPlanName = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
+                    SfBUserPlanType = table.Column<int>(type: "integer", nullable: true),
+                    IM = table.Column<bool>(type: "boolean", nullable: false),
+                    Mobility = table.Column<bool>(type: "boolean", nullable: false),
+                    MobilityEnableOutsideVoice = table.Column<bool>(type: "boolean", nullable: false),
+                    Federation = table.Column<bool>(type: "boolean", nullable: false),
+                    Conferencing = table.Column<bool>(type: "boolean", nullable: false),
+                    EnterpriseVoice = table.Column<bool>(type: "boolean", nullable: false),
+                    VoicePolicy = table.Column<int>(type: "integer", nullable: false),
+                    IsDefault = table.Column<bool>(type: "boolean", nullable: false),
+                    RemoteUserAccess = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    PublicIMConnectivity = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    AllowOrganizeMeetingsWithExternalAnonymous = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    Telephony = table.Column<int>(type: "integer", nullable: true),
+                    ServerURI = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
+                    ArchivePolicy = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
+                    TelephonyDialPlanPolicy = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
+                    TelephonyVoicePolicy = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1357,15 +344,16 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "SfBUsers",
+                schema: "public",
                 columns: table => new
                 {
-                    SfBUserID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AccountID = table.Column<int>(type: "int", nullable: false),
-                    SfBUserPlanID = table.Column<int>(type: "int", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    ModifiedDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    SipAddress = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true)
+                    SfBUserID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    AccountID = table.Column<int>(type: "integer", nullable: false),
+                    SfBUserPlanID = table.Column<int>(type: "integer", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    SipAddress = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1374,26 +362,27 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "SSLCertificates",
+                schema: "public",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserID = table.Column<int>(type: "int", nullable: false),
-                    SiteID = table.Column<int>(type: "int", nullable: false),
-                    FriendlyName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    Hostname = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    DistinguishedName = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    CSR = table.Column<string>(type: "ntext", nullable: true),
-                    CSRLength = table.Column<int>(type: "int", nullable: true),
-                    Certificate = table.Column<string>(type: "ntext", nullable: true),
-                    Hash = table.Column<string>(type: "ntext", nullable: true),
-                    Installed = table.Column<bool>(type: "bit", nullable: true),
-                    IsRenewal = table.Column<bool>(type: "bit", nullable: true),
-                    ValidFrom = table.Column<DateTime>(type: "datetime", nullable: true),
-                    ExpiryDate = table.Column<DateTime>(type: "datetime", nullable: true),
-                    SerialNumber = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
-                    Pfx = table.Column<string>(type: "ntext", nullable: true),
-                    PreviousId = table.Column<int>(type: "int", nullable: true)
+                    ID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserID = table.Column<int>(type: "integer", nullable: false),
+                    SiteID = table.Column<int>(type: "integer", nullable: false),
+                    FriendlyName = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    Hostname = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    DistinguishedName = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    CSR = table.Column<string>(type: "TEXT", nullable: true),
+                    CSRLength = table.Column<int>(type: "integer", nullable: true),
+                    Certificate = table.Column<string>(type: "TEXT", nullable: true),
+                    Hash = table.Column<string>(type: "TEXT", nullable: true),
+                    Installed = table.Column<bool>(type: "boolean", nullable: true),
+                    IsRenewal = table.Column<bool>(type: "boolean", nullable: true),
+                    ValidFrom = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ExpiryDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    SerialNumber = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
+                    Pfx = table.Column<string>(type: "TEXT", nullable: true),
+                    PreviousId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1402,12 +391,13 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "StorageSpaceLevels",
+                schema: "public",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1416,12 +406,13 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "SupportServiceLevels",
+                schema: "public",
                 columns: table => new
                 {
-                    LevelID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    LevelName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    LevelDescription = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true)
+                    LevelID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    LevelName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    LevelDescription = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1430,11 +421,12 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "SystemSettings",
+                schema: "public",
                 columns: table => new
                 {
-                    SettingsName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PropertyName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PropertyValue = table.Column<string>(type: "ntext", nullable: true)
+                    SettingsName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    PropertyName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    PropertyValue = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1443,15 +435,16 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "TempIds",
+                schema: "public",
                 columns: table => new
                 {
-                    Key = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Scope = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Level = table.Column<int>(type: "int", nullable: false),
-                    Id = table.Column<int>(type: "int", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Key = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Scope = table.Column<Guid>(type: "uuid", nullable: false),
+                    Level = table.Column<int>(type: "integer", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1460,15 +453,16 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "Themes",
+                schema: "public",
                 columns: table => new
                 {
-                    ThemeID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    DisplayName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    LTRName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    RTLName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    Enabled = table.Column<int>(type: "int", nullable: false),
-                    DisplayOrder = table.Column<int>(type: "int", nullable: false)
+                    ThemeID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    DisplayName = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    LTRName = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    RTLName = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    Enabled = table.Column<int>(type: "integer", nullable: false),
+                    DisplayOrder = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1477,14 +471,15 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "ThemeSettings",
+                schema: "public",
                 columns: table => new
                 {
-                    ThemeSettingID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ThemeID = table.Column<int>(type: "int", nullable: false),
-                    SettingsName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    PropertyName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    PropertyValue = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false)
+                    ThemeSettingID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ThemeID = table.Column<int>(type: "integer", nullable: false),
+                    SettingsName = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    PropertyName = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    PropertyValue = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1493,43 +488,44 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "Users",
+                schema: "public",
                 columns: table => new
                 {
-                    UserID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OwnerID = table.Column<int>(type: "int", nullable: true),
-                    RoleID = table.Column<int>(type: "int", nullable: false),
-                    StatusID = table.Column<int>(type: "int", nullable: false),
-                    IsDemo = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    IsPeer = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    Username = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Password = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    Created = table.Column<DateTime>(type: "datetime", nullable: true),
-                    Changed = table.Column<DateTime>(type: "datetime", nullable: true),
-                    Comments = table.Column<string>(type: "ntext", nullable: true),
-                    SecondaryEmail = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    Address = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    City = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    State = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Country = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Zip = table.Column<string>(type: "varchar(20)", unicode: false, maxLength: 20, nullable: true),
-                    PrimaryPhone = table.Column<string>(type: "varchar(30)", unicode: false, maxLength: 30, nullable: true),
-                    SecondaryPhone = table.Column<string>(type: "varchar(30)", unicode: false, maxLength: 30, nullable: true),
-                    Fax = table.Column<string>(type: "varchar(30)", unicode: false, maxLength: 30, nullable: true),
-                    InstantMessenger = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: true),
-                    HtmlMail = table.Column<bool>(type: "bit", nullable: true, defaultValue: true),
-                    CompanyName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    EcommerceEnabled = table.Column<bool>(type: "bit", nullable: true),
-                    AdditionalParams = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LoginStatusId = table.Column<int>(type: "int", nullable: true),
-                    FailedLogins = table.Column<int>(type: "int", nullable: true),
-                    SubscriberNumber = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: true),
-                    OneTimePasswordState = table.Column<int>(type: "int", nullable: true),
-                    MfaMode = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
-                    PinSecret = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true)
+                    UserID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    OwnerID = table.Column<int>(type: "integer", nullable: true),
+                    RoleID = table.Column<int>(type: "integer", nullable: false),
+                    StatusID = table.Column<int>(type: "integer", nullable: false),
+                    IsDemo = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    IsPeer = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    Username = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    Password = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    FirstName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    LastName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    Email = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    Changed = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    Comments = table.Column<string>(type: "TEXT", nullable: true),
+                    SecondaryEmail = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    Address = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    City = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    State = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    Country = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    Zip = table.Column<string>(type: "character varying(20)", unicode: false, maxLength: 20, nullable: true),
+                    PrimaryPhone = table.Column<string>(type: "character varying(30)", unicode: false, maxLength: 30, nullable: true),
+                    SecondaryPhone = table.Column<string>(type: "character varying(30)", unicode: false, maxLength: 30, nullable: true),
+                    Fax = table.Column<string>(type: "character varying(30)", unicode: false, maxLength: 30, nullable: true),
+                    InstantMessenger = table.Column<string>(type: "character varying(100)", unicode: false, maxLength: 100, nullable: true),
+                    HtmlMail = table.Column<bool>(type: "boolean", nullable: true, defaultValue: true),
+                    CompanyName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    EcommerceEnabled = table.Column<bool>(type: "boolean", nullable: true),
+                    AdditionalParams = table.Column<string>(type: "text", nullable: true),
+                    LoginStatusId = table.Column<int>(type: "integer", nullable: true),
+                    FailedLogins = table.Column<int>(type: "integer", nullable: true),
+                    SubscriberNumber = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true),
+                    OneTimePasswordState = table.Column<int>(type: "integer", nullable: true),
+                    MfaMode = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
+                    PinSecret = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1537,16 +533,18 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_Users_Users",
                         column: x => x.OwnerID,
+                        principalSchema: "public",
                         principalTable: "Users",
                         principalColumn: "UserID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "Versions",
+                schema: "public",
                 columns: table => new
                 {
-                    DatabaseVersion = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    BuildDate = table.Column<DateTime>(type: "datetime", nullable: false)
+                    DatabaseVersion = table.Column<string>(type: "character varying(50)", unicode: false, maxLength: 50, nullable: false),
+                    BuildDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1555,18 +553,19 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "BackgroundTaskLogs",
+                schema: "public",
                 columns: table => new
                 {
-                    LogID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TaskID = table.Column<int>(type: "int", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime", nullable: true),
-                    ExceptionStackTrace = table.Column<string>(type: "ntext", nullable: true),
-                    InnerTaskStart = table.Column<int>(type: "int", nullable: true),
-                    Severity = table.Column<int>(type: "int", nullable: true),
-                    Text = table.Column<string>(type: "ntext", nullable: true),
-                    TextIdent = table.Column<int>(type: "int", nullable: true),
-                    XmlParameters = table.Column<string>(type: "ntext", nullable: true)
+                    LogID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    TaskID = table.Column<int>(type: "integer", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ExceptionStackTrace = table.Column<string>(type: "TEXT", nullable: true),
+                    InnerTaskStart = table.Column<int>(type: "integer", nullable: true),
+                    Severity = table.Column<int>(type: "integer", nullable: true),
+                    Text = table.Column<string>(type: "TEXT", nullable: true),
+                    TextIdent = table.Column<int>(type: "integer", nullable: true),
+                    XmlParameters = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1574,20 +573,22 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK__Backgroun__TaskI__7D8391DF",
                         column: x => x.TaskID,
+                        principalSchema: "public",
                         principalTable: "BackgroundTasks",
                         principalColumn: "ID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "BackgroundTaskParameters",
+                schema: "public",
                 columns: table => new
                 {
-                    ParameterID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TaskID = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    SerializerValue = table.Column<string>(type: "ntext", nullable: true),
-                    TypeName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true)
+                    ParameterID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    TaskID = table.Column<int>(type: "integer", nullable: false),
+                    Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    SerializerValue = table.Column<string>(type: "TEXT", nullable: true),
+                    TypeName = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1595,17 +596,19 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK__Backgroun__TaskI__7AA72534",
                         column: x => x.TaskID,
+                        principalSchema: "public",
                         principalTable: "BackgroundTasks",
                         principalColumn: "ID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "BackgroundTaskStack",
+                schema: "public",
                 columns: table => new
                 {
-                    TaskStackID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TaskID = table.Column<int>(type: "int", nullable: false)
+                    TaskStackID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    TaskID = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1613,32 +616,34 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK__Backgroun__TaskI__005FFE8A",
                         column: x => x.TaskID,
+                        principalSchema: "public",
                         principalTable: "BackgroundTasks",
                         principalColumn: "ID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "RDSCollectionSettings",
+                schema: "public",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RDSCollectionId = table.Column<int>(type: "int", nullable: false),
-                    DisconnectedSessionLimitMin = table.Column<int>(type: "int", nullable: true),
-                    ActiveSessionLimitMin = table.Column<int>(type: "int", nullable: true),
-                    IdleSessionLimitMin = table.Column<int>(type: "int", nullable: true),
-                    BrokenConnectionAction = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    AutomaticReconnectionEnabled = table.Column<bool>(type: "bit", nullable: true),
-                    TemporaryFoldersDeletedOnExit = table.Column<bool>(type: "bit", nullable: true),
-                    TemporaryFoldersPerSession = table.Column<bool>(type: "bit", nullable: true),
-                    ClientDeviceRedirectionOptions = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
-                    ClientPrinterRedirected = table.Column<bool>(type: "bit", nullable: true),
-                    ClientPrinterAsDefault = table.Column<bool>(type: "bit", nullable: true),
-                    RDEasyPrintDriverEnabled = table.Column<bool>(type: "bit", nullable: true),
-                    MaxRedirectedMonitors = table.Column<int>(type: "int", nullable: true),
-                    SecurityLayer = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    EncryptionLevel = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    AuthenticateUsingNLA = table.Column<bool>(type: "bit", nullable: true)
+                    ID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    RDSCollectionId = table.Column<int>(type: "integer", nullable: false),
+                    DisconnectedSessionLimitMin = table.Column<int>(type: "integer", nullable: true),
+                    ActiveSessionLimitMin = table.Column<int>(type: "integer", nullable: true),
+                    IdleSessionLimitMin = table.Column<int>(type: "integer", nullable: true),
+                    BrokenConnectionAction = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    AutomaticReconnectionEnabled = table.Column<bool>(type: "boolean", nullable: true),
+                    TemporaryFoldersDeletedOnExit = table.Column<bool>(type: "boolean", nullable: true),
+                    TemporaryFoldersPerSession = table.Column<bool>(type: "boolean", nullable: true),
+                    ClientDeviceRedirectionOptions = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
+                    ClientPrinterRedirected = table.Column<bool>(type: "boolean", nullable: true),
+                    ClientPrinterAsDefault = table.Column<bool>(type: "boolean", nullable: true),
+                    RDEasyPrintDriverEnabled = table.Column<bool>(type: "boolean", nullable: true),
+                    MaxRedirectedMonitors = table.Column<int>(type: "integer", nullable: true),
+                    SecurityLayer = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    EncryptionLevel = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    AuthenticateUsingNLA = table.Column<bool>(type: "boolean", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1646,6 +651,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_RDSCollectionSettings_RDSCollections",
                         column: x => x.RDSCollectionId,
+                        principalSchema: "public",
                         principalTable: "RDSCollections",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
@@ -1653,14 +659,15 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "RDSMessages",
+                schema: "public",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RDSCollectionId = table.Column<int>(type: "int", nullable: false),
-                    MessageText = table.Column<string>(type: "ntext", nullable: false),
-                    UserName = table.Column<string>(type: "nchar(250)", fixedLength: true, maxLength: 250, nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    RDSCollectionId = table.Column<int>(type: "integer", nullable: false),
+                    MessageText = table.Column<string>(type: "TEXT", nullable: false),
+                    UserName = table.Column<string>(type: "character(250)", fixedLength: true, maxLength: 250, nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1668,6 +675,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_RDSMessages_RDSCollections",
                         column: x => x.RDSCollectionId,
+                        principalSchema: "public",
                         principalTable: "RDSCollections",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
@@ -1675,17 +683,18 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "RDSServers",
+                schema: "public",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ItemID = table.Column<int>(type: "int", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    FqdName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    RDSCollectionId = table.Column<int>(type: "int", nullable: true),
-                    ConnectionEnabled = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
-                    Controller = table.Column<int>(type: "int", nullable: true)
+                    ID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ItemID = table.Column<int>(type: "integer", nullable: true),
+                    Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    FqdName = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    Description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    RDSCollectionId = table.Column<int>(type: "integer", nullable: true),
+                    ConnectionEnabled = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
+                    Controller = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1693,21 +702,23 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_RDSServers_RDSCollectionId",
                         column: x => x.RDSCollectionId,
+                        principalSchema: "public",
                         principalTable: "RDSCollections",
                         principalColumn: "ID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "Providers",
+                schema: "public",
                 columns: table => new
                 {
-                    ProviderID = table.Column<int>(type: "int", nullable: false),
-                    GroupID = table.Column<int>(type: "int", nullable: false),
-                    ProviderName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    DisplayName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    ProviderType = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: true),
-                    EditorControl = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    DisableAutoDiscovery = table.Column<bool>(type: "bit", nullable: true)
+                    ProviderID = table.Column<int>(type: "integer", nullable: false),
+                    GroupID = table.Column<int>(type: "integer", nullable: false),
+                    ProviderName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    DisplayName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    ProviderType = table.Column<string>(type: "character varying(400)", maxLength: 400, nullable: true),
+                    EditorControl = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    DisableAutoDiscovery = table.Column<bool>(type: "boolean", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1715,22 +726,24 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_Providers_ResourceGroups",
                         column: x => x.GroupID,
+                        principalSchema: "public",
                         principalTable: "ResourceGroups",
                         principalColumn: "GroupID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "ResourceGroupDnsRecords",
+                schema: "public",
                 columns: table => new
                 {
-                    RecordID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RecordOrder = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
-                    GroupID = table.Column<int>(type: "int", nullable: false),
-                    RecordType = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    RecordName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    RecordData = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    MXPriority = table.Column<int>(type: "int", nullable: true)
+                    RecordID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    RecordOrder = table.Column<int>(type: "integer", nullable: false, defaultValue: 1),
+                    GroupID = table.Column<int>(type: "integer", nullable: false),
+                    RecordType = table.Column<string>(type: "character varying(50)", unicode: false, maxLength: 50, nullable: false),
+                    RecordName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    RecordData = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    MXPriority = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1738,6 +751,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_ResourceGroupDnsRecords_ResourceGroups",
                         column: x => x.GroupID,
+                        principalSchema: "public",
                         principalTable: "ResourceGroups",
                         principalColumn: "GroupID",
                         onDelete: ReferentialAction.Cascade);
@@ -1745,27 +759,28 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "Servers",
+                schema: "public",
                 columns: table => new
                 {
-                    ServerID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ServerName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ServerUrl = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true, defaultValue: ""),
-                    Password = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    Comments = table.Column<string>(type: "ntext", nullable: true),
-                    VirtualServer = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    InstantDomainAlias = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    PrimaryGroupID = table.Column<int>(type: "int", nullable: true),
-                    ADRootDomain = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    ADUsername = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    ADPassword = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    ADAuthenticationType = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: true),
-                    ADEnabled = table.Column<bool>(type: "bit", nullable: true, defaultValue: false),
-                    ADParentDomain = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    ADParentDomainController = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    OSPlatform = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
-                    IsCore = table.Column<bool>(type: "bit", nullable: true),
-                    PasswordIsSHA256 = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
+                    ServerID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ServerName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    ServerUrl = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true, defaultValue: ""),
+                    Password = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    Comments = table.Column<string>(type: "TEXT", nullable: true),
+                    VirtualServer = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    InstantDomainAlias = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    PrimaryGroupID = table.Column<int>(type: "integer", nullable: true),
+                    ADRootDomain = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    ADUsername = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    ADPassword = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    ADAuthenticationType = table.Column<string>(type: "character varying(50)", unicode: false, maxLength: 50, nullable: true),
+                    ADEnabled = table.Column<bool>(type: "boolean", nullable: true, defaultValue: false),
+                    ADParentDomain = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    ADParentDomainController = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    OSPlatform = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
+                    IsCore = table.Column<bool>(type: "boolean", nullable: true),
+                    PasswordIsSHA256 = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {
@@ -1773,26 +788,28 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_Servers_ResourceGroups",
                         column: x => x.PrimaryGroupID,
+                        principalSchema: "public",
                         principalTable: "ResourceGroups",
                         principalColumn: "GroupID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "ServiceItemTypes",
+                schema: "public",
                 columns: table => new
                 {
-                    ItemTypeID = table.Column<int>(type: "int", nullable: false),
-                    GroupID = table.Column<int>(type: "int", nullable: true),
-                    DisplayName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    TypeName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    TypeOrder = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
-                    CalculateDiskspace = table.Column<bool>(type: "bit", nullable: true),
-                    CalculateBandwidth = table.Column<bool>(type: "bit", nullable: true),
-                    Suspendable = table.Column<bool>(type: "bit", nullable: true),
-                    Disposable = table.Column<bool>(type: "bit", nullable: true),
-                    Searchable = table.Column<bool>(type: "bit", nullable: true),
-                    Importable = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
-                    Backupable = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
+                    ItemTypeID = table.Column<int>(type: "integer", nullable: false),
+                    GroupID = table.Column<int>(type: "integer", nullable: true),
+                    DisplayName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    TypeName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    TypeOrder = table.Column<int>(type: "integer", nullable: false, defaultValue: 1),
+                    CalculateDiskspace = table.Column<bool>(type: "boolean", nullable: true),
+                    CalculateBandwidth = table.Column<bool>(type: "boolean", nullable: true),
+                    Suspendable = table.Column<bool>(type: "boolean", nullable: true),
+                    Disposable = table.Column<bool>(type: "boolean", nullable: true),
+                    Searchable = table.Column<bool>(type: "boolean", nullable: true),
+                    Importable = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
+                    Backupable = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true)
                 },
                 constraints: table =>
                 {
@@ -1800,19 +817,21 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_ServiceItemTypes_ResourceGroups",
                         column: x => x.GroupID,
+                        principalSchema: "public",
                         principalTable: "ResourceGroups",
                         principalColumn: "GroupID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "ScheduleTaskParameters",
+                schema: "public",
                 columns: table => new
                 {
-                    TaskID = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ParameterID = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    DataTypeID = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    DefaultValue = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ParameterOrder = table.Column<int>(type: "int", nullable: false, defaultValue: 0)
+                    TaskID = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    ParameterID = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    DataTypeID = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    DefaultValue = table.Column<string>(type: "text", nullable: true),
+                    ParameterOrder = table.Column<int>(type: "integer", nullable: false, defaultValue: 0)
                 },
                 constraints: table =>
                 {
@@ -1820,18 +839,20 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_ScheduleTaskParameters_ScheduleTasks",
                         column: x => x.TaskID,
+                        principalSchema: "public",
                         principalTable: "ScheduleTasks",
                         principalColumn: "TaskID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "ScheduleTaskViewConfiguration",
+                schema: "public",
                 columns: table => new
                 {
-                    TaskID = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ConfigurationID = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Environment = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    TaskID = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    ConfigurationID = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Environment = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1839,18 +860,20 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_ScheduleTaskViewConfiguration_ScheduleTaskViewConfiguration",
                         column: x => x.TaskID,
+                        principalSchema: "public",
                         principalTable: "ScheduleTasks",
                         principalColumn: "TaskID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "StorageSpaceLevelResourceGroups",
+                schema: "public",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    LevelId = table.Column<int>(type: "int", nullable: false),
-                    GroupId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    LevelId = table.Column<int>(type: "integer", nullable: false),
+                    GroupId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1858,12 +881,14 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_StorageSpaceLevelResourceGroups_GroupId",
                         column: x => x.GroupId,
+                        principalSchema: "public",
                         principalTable: "ResourceGroups",
                         principalColumn: "GroupID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_StorageSpaceLevelResourceGroups_LevelId",
                         column: x => x.LevelId,
+                        principalSchema: "public",
                         principalTable: "StorageSpaceLevels",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -1871,16 +896,17 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "Comments",
+                schema: "public",
                 columns: table => new
                 {
-                    CommentID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ItemTypeID = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    ItemID = table.Column<int>(type: "int", nullable: false),
-                    UserID = table.Column<int>(type: "int", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())"),
-                    CommentText = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    SeverityID = table.Column<int>(type: "int", nullable: true)
+                    CommentID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ItemTypeID = table.Column<string>(type: "character varying(50)", unicode: false, maxLength: 50, nullable: false),
+                    ItemID = table.Column<int>(type: "integer", nullable: false),
+                    UserID = table.Column<int>(type: "integer", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CommentText = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
+                    SeverityID = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1888,6 +914,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_Comments_Users",
                         column: x => x.UserID,
+                        principalSchema: "public",
                         principalTable: "Users",
                         principalColumn: "UserID",
                         onDelete: ReferentialAction.Cascade);
@@ -1895,12 +922,13 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "UserSettings",
+                schema: "public",
                 columns: table => new
                 {
-                    UserID = table.Column<int>(type: "int", nullable: false),
-                    SettingsName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PropertyName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PropertyValue = table.Column<string>(type: "ntext", nullable: true)
+                    UserID = table.Column<int>(type: "integer", nullable: false),
+                    SettingsName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    PropertyName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    PropertyValue = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1908,6 +936,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_UserSettings_Users",
                         column: x => x.UserID,
+                        principalSchema: "public",
                         principalTable: "Users",
                         principalColumn: "UserID",
                         onDelete: ReferentialAction.Cascade);
@@ -1915,11 +944,12 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "ServiceDefaultProperties",
+                schema: "public",
                 columns: table => new
                 {
-                    ProviderID = table.Column<int>(type: "int", nullable: false),
-                    PropertyName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PropertyValue = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true)
+                    ProviderID = table.Column<int>(type: "integer", nullable: false),
+                    PropertyName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    PropertyValue = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1927,27 +957,29 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_ServiceDefaultProperties_Providers",
                         column: x => x.ProviderID,
+                        principalSchema: "public",
                         principalTable: "Providers",
                         principalColumn: "ProviderID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "HostingPlans",
+                schema: "public",
                 columns: table => new
                 {
-                    PlanID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserID = table.Column<int>(type: "int", nullable: true),
-                    PackageID = table.Column<int>(type: "int", nullable: true),
-                    ServerID = table.Column<int>(type: "int", nullable: true),
-                    PlanName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    PlanDescription = table.Column<string>(type: "ntext", nullable: true),
-                    Available = table.Column<bool>(type: "bit", nullable: false),
-                    SetupPrice = table.Column<decimal>(type: "money", nullable: true),
-                    RecurringPrice = table.Column<decimal>(type: "money", nullable: true),
-                    RecurrenceUnit = table.Column<int>(type: "int", nullable: true),
-                    RecurrenceLength = table.Column<int>(type: "int", nullable: true),
-                    IsAddon = table.Column<bool>(type: "bit", nullable: true)
+                    PlanID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserID = table.Column<int>(type: "integer", nullable: true),
+                    PackageID = table.Column<int>(type: "integer", nullable: true),
+                    ServerID = table.Column<int>(type: "integer", nullable: true),
+                    PlanName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    PlanDescription = table.Column<string>(type: "TEXT", nullable: true),
+                    Available = table.Column<bool>(type: "boolean", nullable: false),
+                    SetupPrice = table.Column<decimal>(type: "numeric", nullable: true),
+                    RecurringPrice = table.Column<decimal>(type: "numeric", nullable: true),
+                    RecurrenceUnit = table.Column<int>(type: "integer", nullable: true),
+                    RecurrenceLength = table.Column<int>(type: "integer", nullable: true),
+                    IsAddon = table.Column<bool>(type: "boolean", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1955,29 +987,32 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_HostingPlans_Servers",
                         column: x => x.ServerID,
+                        principalSchema: "public",
                         principalTable: "Servers",
                         principalColumn: "ServerID");
                     table.ForeignKey(
                         name: "FK_HostingPlans_Users",
                         column: x => x.UserID,
+                        principalSchema: "public",
                         principalTable: "Users",
                         principalColumn: "UserID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "IPAddresses",
+                schema: "public",
                 columns: table => new
                 {
-                    AddressID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ExternalIP = table.Column<string>(type: "varchar(24)", unicode: false, maxLength: 24, nullable: false),
-                    InternalIP = table.Column<string>(type: "varchar(24)", unicode: false, maxLength: 24, nullable: true),
-                    ServerID = table.Column<int>(type: "int", nullable: true),
-                    Comments = table.Column<string>(type: "ntext", nullable: true),
-                    SubnetMask = table.Column<string>(type: "varchar(15)", unicode: false, maxLength: 15, nullable: true),
-                    DefaultGateway = table.Column<string>(type: "varchar(15)", unicode: false, maxLength: 15, nullable: true),
-                    PoolID = table.Column<int>(type: "int", nullable: true),
-                    VLAN = table.Column<int>(type: "int", nullable: true)
+                    AddressID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ExternalIP = table.Column<string>(type: "character varying(24)", unicode: false, maxLength: 24, nullable: false),
+                    InternalIP = table.Column<string>(type: "character varying(24)", unicode: false, maxLength: 24, nullable: true),
+                    ServerID = table.Column<int>(type: "integer", nullable: true),
+                    Comments = table.Column<string>(type: "TEXT", nullable: true),
+                    SubnetMask = table.Column<string>(type: "character varying(15)", unicode: false, maxLength: 15, nullable: true),
+                    DefaultGateway = table.Column<string>(type: "character varying(15)", unicode: false, maxLength: 15, nullable: true),
+                    PoolID = table.Column<int>(type: "integer", nullable: true),
+                    VLAN = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1985,6 +1020,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_IPAddresses_Servers",
                         column: x => x.ServerID,
+                        principalSchema: "public",
                         principalTable: "Servers",
                         principalColumn: "ServerID",
                         onDelete: ReferentialAction.Cascade);
@@ -1992,13 +1028,14 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "PrivateNetworkVLANs",
+                schema: "public",
                 columns: table => new
                 {
-                    VlanID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Vlan = table.Column<int>(type: "int", nullable: false),
-                    ServerID = table.Column<int>(type: "int", nullable: true),
-                    Comments = table.Column<string>(type: "ntext", nullable: true)
+                    VlanID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Vlan = table.Column<int>(type: "integer", nullable: false),
+                    ServerID = table.Column<int>(type: "integer", nullable: true),
+                    Comments = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -2006,6 +1043,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_ServerID",
                         column: x => x.ServerID,
+                        principalSchema: "public",
                         principalTable: "Servers",
                         principalColumn: "ServerID",
                         onDelete: ReferentialAction.Cascade);
@@ -2013,16 +1051,17 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "Services",
+                schema: "public",
                 columns: table => new
                 {
-                    ServiceID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ServerID = table.Column<int>(type: "int", nullable: false),
-                    ProviderID = table.Column<int>(type: "int", nullable: false),
-                    ServiceName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Comments = table.Column<string>(type: "ntext", nullable: true),
-                    ServiceQuotaValue = table.Column<int>(type: "int", nullable: true),
-                    ClusterID = table.Column<int>(type: "int", nullable: true)
+                    ServiceID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ServerID = table.Column<int>(type: "integer", nullable: false),
+                    ProviderID = table.Column<int>(type: "integer", nullable: false),
+                    ServiceName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Comments = table.Column<string>(type: "TEXT", nullable: true),
+                    ServiceQuotaValue = table.Column<int>(type: "integer", nullable: true),
+                    ClusterID = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -2030,30 +1069,34 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_Services_Clusters",
                         column: x => x.ClusterID,
+                        principalSchema: "public",
                         principalTable: "Clusters",
                         principalColumn: "ClusterID");
                     table.ForeignKey(
                         name: "FK_Services_Providers",
                         column: x => x.ProviderID,
+                        principalSchema: "public",
                         principalTable: "Providers",
                         principalColumn: "ProviderID");
                     table.ForeignKey(
                         name: "FK_Services_Servers",
                         column: x => x.ServerID,
+                        principalSchema: "public",
                         principalTable: "Servers",
                         principalColumn: "ServerID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "VirtualGroups",
+                schema: "public",
                 columns: table => new
                 {
-                    VirtualGroupID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ServerID = table.Column<int>(type: "int", nullable: false),
-                    GroupID = table.Column<int>(type: "int", nullable: false),
-                    DistributionType = table.Column<int>(type: "int", nullable: true),
-                    BindDistributionToPrimary = table.Column<bool>(type: "bit", nullable: true)
+                    VirtualGroupID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ServerID = table.Column<int>(type: "integer", nullable: false),
+                    GroupID = table.Column<int>(type: "integer", nullable: false),
+                    DistributionType = table.Column<int>(type: "integer", nullable: true),
+                    BindDistributionToPrimary = table.Column<bool>(type: "boolean", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -2061,11 +1104,13 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_VirtualGroups_ResourceGroups",
                         column: x => x.GroupID,
+                        principalSchema: "public",
                         principalTable: "ResourceGroups",
                         principalColumn: "GroupID");
                     table.ForeignKey(
                         name: "FK_VirtualGroups_Servers",
                         column: x => x.ServerID,
+                        principalSchema: "public",
                         principalTable: "Servers",
                         principalColumn: "ServerID",
                         onDelete: ReferentialAction.Cascade);
@@ -2073,18 +1118,19 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "Quotas",
+                schema: "public",
                 columns: table => new
                 {
-                    QuotaID = table.Column<int>(type: "int", nullable: false),
-                    GroupID = table.Column<int>(type: "int", nullable: false),
-                    QuotaOrder = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
-                    QuotaName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    QuotaDescription = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    QuotaTypeID = table.Column<int>(type: "int", nullable: false, defaultValue: 2),
-                    ServiceQuota = table.Column<bool>(type: "bit", nullable: true, defaultValue: false),
-                    ItemTypeID = table.Column<int>(type: "int", nullable: true),
-                    HideQuota = table.Column<bool>(type: "bit", nullable: true),
-                    PerOrganization = table.Column<int>(type: "int", nullable: true)
+                    QuotaID = table.Column<int>(type: "integer", nullable: false),
+                    GroupID = table.Column<int>(type: "integer", nullable: false),
+                    QuotaOrder = table.Column<int>(type: "integer", nullable: false, defaultValue: 1),
+                    QuotaName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    QuotaDescription = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    QuotaTypeID = table.Column<int>(type: "integer", nullable: false, defaultValue: 2),
+                    ServiceQuota = table.Column<bool>(type: "boolean", nullable: true, defaultValue: false),
+                    ItemTypeID = table.Column<int>(type: "integer", nullable: true),
+                    HideQuota = table.Column<bool>(type: "boolean", nullable: true),
+                    PerOrganization = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -2092,24 +1138,27 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_Quotas_ResourceGroups",
                         column: x => x.GroupID,
+                        principalSchema: "public",
                         principalTable: "ResourceGroups",
                         principalColumn: "GroupID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Quotas_ServiceItemTypes",
                         column: x => x.ItemTypeID,
+                        principalSchema: "public",
                         principalTable: "ServiceItemTypes",
                         principalColumn: "ItemTypeID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "HostingPlanResources",
+                schema: "public",
                 columns: table => new
                 {
-                    PlanID = table.Column<int>(type: "int", nullable: false),
-                    GroupID = table.Column<int>(type: "int", nullable: false),
-                    CalculateDiskSpace = table.Column<bool>(type: "bit", nullable: true),
-                    CalculateBandwidth = table.Column<bool>(type: "bit", nullable: true)
+                    PlanID = table.Column<int>(type: "integer", nullable: false),
+                    GroupID = table.Column<int>(type: "integer", nullable: false),
+                    CalculateDiskSpace = table.Column<bool>(type: "boolean", nullable: true),
+                    CalculateBandwidth = table.Column<bool>(type: "boolean", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -2117,34 +1166,37 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_HostingPlanResources_HostingPlans",
                         column: x => x.PlanID,
+                        principalSchema: "public",
                         principalTable: "HostingPlans",
                         principalColumn: "PlanID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_HostingPlanResources_ResourceGroups",
                         column: x => x.GroupID,
+                        principalSchema: "public",
                         principalTable: "ResourceGroups",
                         principalColumn: "GroupID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "Packages",
+                schema: "public",
                 columns: table => new
                 {
-                    PackageID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ParentPackageID = table.Column<int>(type: "int", nullable: true),
-                    UserID = table.Column<int>(type: "int", nullable: false),
-                    PackageName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
-                    PackageComments = table.Column<string>(type: "ntext", nullable: true),
-                    ServerID = table.Column<int>(type: "int", nullable: true),
-                    StatusID = table.Column<int>(type: "int", nullable: false),
-                    PlanID = table.Column<int>(type: "int", nullable: true),
-                    PurchaseDate = table.Column<DateTime>(type: "datetime", nullable: true),
-                    OverrideQuotas = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    BandwidthUpdated = table.Column<DateTime>(type: "datetime", nullable: true),
-                    DefaultTopPackage = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    StatusIDchangeDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())")
+                    PackageID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ParentPackageID = table.Column<int>(type: "integer", nullable: true),
+                    UserID = table.Column<int>(type: "integer", nullable: false),
+                    PackageName = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
+                    PackageComments = table.Column<string>(type: "TEXT", nullable: true),
+                    ServerID = table.Column<int>(type: "integer", nullable: true),
+                    StatusID = table.Column<int>(type: "integer", nullable: false),
+                    PlanID = table.Column<int>(type: "integer", nullable: true),
+                    PurchaseDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    OverrideQuotas = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    BandwidthUpdated = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DefaultTopPackage = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    StatusIDchangeDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -2152,33 +1204,38 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_Packages_HostingPlans",
                         column: x => x.PlanID,
+                        principalSchema: "public",
                         principalTable: "HostingPlans",
                         principalColumn: "PlanID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Packages_Packages",
                         column: x => x.ParentPackageID,
+                        principalSchema: "public",
                         principalTable: "Packages",
                         principalColumn: "PackageID");
                     table.ForeignKey(
                         name: "FK_Packages_Servers",
                         column: x => x.ServerID,
+                        principalSchema: "public",
                         principalTable: "Servers",
                         principalColumn: "ServerID");
                     table.ForeignKey(
                         name: "FK_Packages_Users",
                         column: x => x.UserID,
+                        principalSchema: "public",
                         principalTable: "Users",
                         principalColumn: "UserID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "ServiceProperties",
+                schema: "public",
                 columns: table => new
                 {
-                    ServiceID = table.Column<int>(type: "int", nullable: false),
-                    PropertyName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PropertyValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ServiceID = table.Column<int>(type: "integer", nullable: false),
+                    PropertyName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    PropertyValue = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -2186,6 +1243,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_ServiceProperties_Services",
                         column: x => x.ServiceID,
+                        principalSchema: "public",
                         principalTable: "Services",
                         principalColumn: "ServiceID",
                         onDelete: ReferentialAction.Cascade);
@@ -2193,20 +1251,21 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "StorageSpaces",
+                schema: "public",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "varchar(300)", unicode: false, maxLength: 300, nullable: false),
-                    ServiceId = table.Column<int>(type: "int", nullable: false),
-                    ServerId = table.Column<int>(type: "int", nullable: false),
-                    LevelId = table.Column<int>(type: "int", nullable: false),
-                    Path = table.Column<string>(type: "varchar(max)", unicode: false, nullable: false),
-                    IsShared = table.Column<bool>(type: "bit", nullable: false),
-                    UncPath = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
-                    FsrmQuotaType = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(300)", unicode: false, maxLength: 300, nullable: false),
+                    ServiceId = table.Column<int>(type: "integer", nullable: false),
+                    ServerId = table.Column<int>(type: "integer", nullable: false),
+                    LevelId = table.Column<int>(type: "integer", nullable: false),
+                    Path = table.Column<string>(type: "text", unicode: false, nullable: false),
+                    IsShared = table.Column<bool>(type: "boolean", nullable: false),
+                    UncPath = table.Column<string>(type: "text", unicode: false, nullable: true),
+                    FsrmQuotaType = table.Column<int>(type: "integer", nullable: false),
                     FsrmQuotaSizeBytes = table.Column<long>(type: "bigint", nullable: false),
-                    IsDisabled = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
+                    IsDisabled = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {
@@ -2214,12 +1273,14 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_StorageSpaces_ServerId",
                         column: x => x.ServerId,
+                        principalSchema: "public",
                         principalTable: "Servers",
                         principalColumn: "ServerID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_StorageSpaces_ServiceId",
                         column: x => x.ServiceId,
+                        principalSchema: "public",
                         principalTable: "Services",
                         principalColumn: "ServiceID",
                         onDelete: ReferentialAction.Cascade);
@@ -2227,12 +1288,13 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "VirtualServices",
+                schema: "public",
                 columns: table => new
                 {
-                    VirtualServiceID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ServerID = table.Column<int>(type: "int", nullable: false),
-                    ServiceID = table.Column<int>(type: "int", nullable: false)
+                    VirtualServiceID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ServerID = table.Column<int>(type: "integer", nullable: false),
+                    ServiceID = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -2240,23 +1302,26 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_VirtualServices_Servers",
                         column: x => x.ServerID,
+                        principalSchema: "public",
                         principalTable: "Servers",
                         principalColumn: "ServerID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_VirtualServices_Services",
                         column: x => x.ServiceID,
+                        principalSchema: "public",
                         principalTable: "Services",
                         principalColumn: "ServiceID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "HostingPlanQuotas",
+                schema: "public",
                 columns: table => new
                 {
-                    PlanID = table.Column<int>(type: "int", nullable: false),
-                    QuotaID = table.Column<int>(type: "int", nullable: false),
-                    QuotaValue = table.Column<int>(type: "int", nullable: false)
+                    PlanID = table.Column<int>(type: "integer", nullable: false),
+                    QuotaID = table.Column<int>(type: "integer", nullable: false),
+                    QuotaValue = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -2264,33 +1329,36 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_HostingPlanQuotas_HostingPlans",
                         column: x => x.PlanID,
+                        principalSchema: "public",
                         principalTable: "HostingPlans",
                         principalColumn: "PlanID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_HostingPlanQuotas_Quotas",
                         column: x => x.QuotaID,
+                        principalSchema: "public",
                         principalTable: "Quotas",
                         principalColumn: "QuotaID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "GlobalDnsRecords",
+                schema: "public",
                 columns: table => new
                 {
-                    RecordID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RecordType = table.Column<string>(type: "varchar(10)", unicode: false, maxLength: 10, nullable: false),
-                    RecordName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    RecordData = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    MXPriority = table.Column<int>(type: "int", nullable: false),
-                    ServiceID = table.Column<int>(type: "int", nullable: true),
-                    ServerID = table.Column<int>(type: "int", nullable: true),
-                    PackageID = table.Column<int>(type: "int", nullable: true),
-                    IPAddressID = table.Column<int>(type: "int", nullable: true),
-                    SrvPriority = table.Column<int>(type: "int", nullable: true),
-                    SrvWeight = table.Column<int>(type: "int", nullable: true),
-                    SrvPort = table.Column<int>(type: "int", nullable: true)
+                    RecordID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    RecordType = table.Column<string>(type: "character varying(10)", unicode: false, maxLength: 10, nullable: false),
+                    RecordName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    RecordData = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    MXPriority = table.Column<int>(type: "integer", nullable: false),
+                    ServiceID = table.Column<int>(type: "integer", nullable: true),
+                    ServerID = table.Column<int>(type: "integer", nullable: true),
+                    PackageID = table.Column<int>(type: "integer", nullable: true),
+                    IPAddressID = table.Column<int>(type: "integer", nullable: true),
+                    SrvPriority = table.Column<int>(type: "integer", nullable: true),
+                    SrvWeight = table.Column<int>(type: "integer", nullable: true),
+                    SrvPort = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -2298,22 +1366,26 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_GlobalDnsRecords_IPAddresses",
                         column: x => x.IPAddressID,
+                        principalSchema: "public",
                         principalTable: "IPAddresses",
                         principalColumn: "AddressID");
                     table.ForeignKey(
                         name: "FK_GlobalDnsRecords_Packages",
                         column: x => x.PackageID,
+                        principalSchema: "public",
                         principalTable: "Packages",
                         principalColumn: "PackageID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_GlobalDnsRecords_Servers",
                         column: x => x.ServerID,
+                        principalSchema: "public",
                         principalTable: "Servers",
                         principalColumn: "ServerID");
                     table.ForeignKey(
                         name: "FK_GlobalDnsRecords_Services",
                         column: x => x.ServiceID,
+                        principalSchema: "public",
                         principalTable: "Services",
                         principalColumn: "ServiceID",
                         onDelete: ReferentialAction.Cascade);
@@ -2321,16 +1393,17 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "PackageAddons",
+                schema: "public",
                 columns: table => new
                 {
-                    PackageAddonID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PackageID = table.Column<int>(type: "int", nullable: true),
-                    PlanID = table.Column<int>(type: "int", nullable: true),
-                    Quantity = table.Column<int>(type: "int", nullable: true),
-                    PurchaseDate = table.Column<DateTime>(type: "datetime", nullable: true),
-                    Comments = table.Column<string>(type: "ntext", nullable: true),
-                    StatusID = table.Column<int>(type: "int", nullable: true)
+                    PackageAddonID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    PackageID = table.Column<int>(type: "integer", nullable: true),
+                    PlanID = table.Column<int>(type: "integer", nullable: true),
+                    Quantity = table.Column<int>(type: "integer", nullable: true),
+                    PurchaseDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    Comments = table.Column<string>(type: "TEXT", nullable: true),
+                    StatusID = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -2338,11 +1411,13 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_PackageAddons_HostingPlans",
                         column: x => x.PlanID,
+                        principalSchema: "public",
                         principalTable: "HostingPlans",
                         principalColumn: "PlanID");
                     table.ForeignKey(
                         name: "FK_PackageAddons_Packages",
                         column: x => x.PackageID,
+                        principalSchema: "public",
                         principalTable: "Packages",
                         principalColumn: "PackageID",
                         onDelete: ReferentialAction.Cascade);
@@ -2350,11 +1425,12 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "PackageQuotas",
+                schema: "public",
                 columns: table => new
                 {
-                    PackageID = table.Column<int>(type: "int", nullable: false),
-                    QuotaID = table.Column<int>(type: "int", nullable: false),
-                    QuotaValue = table.Column<int>(type: "int", nullable: false)
+                    PackageID = table.Column<int>(type: "integer", nullable: false),
+                    QuotaID = table.Column<int>(type: "integer", nullable: false),
+                    QuotaValue = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -2362,23 +1438,26 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_PackageQuotas_Packages",
                         column: x => x.PackageID,
+                        principalSchema: "public",
                         principalTable: "Packages",
                         principalColumn: "PackageID");
                     table.ForeignKey(
                         name: "FK_PackageQuotas_Quotas",
                         column: x => x.QuotaID,
+                        principalSchema: "public",
                         principalTable: "Quotas",
                         principalColumn: "QuotaID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "PackageResources",
+                schema: "public",
                 columns: table => new
                 {
-                    PackageID = table.Column<int>(type: "int", nullable: false),
-                    GroupID = table.Column<int>(type: "int", nullable: false),
-                    CalculateDiskspace = table.Column<bool>(type: "bit", nullable: false),
-                    CalculateBandwidth = table.Column<bool>(type: "bit", nullable: false)
+                    PackageID = table.Column<int>(type: "integer", nullable: false),
+                    GroupID = table.Column<int>(type: "integer", nullable: false),
+                    CalculateDiskspace = table.Column<bool>(type: "boolean", nullable: false),
+                    CalculateBandwidth = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -2386,22 +1465,25 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_PackageResources_Packages",
                         column: x => x.PackageID,
+                        principalSchema: "public",
                         principalTable: "Packages",
                         principalColumn: "PackageID");
                     table.ForeignKey(
                         name: "FK_PackageResources_ResourceGroups",
                         column: x => x.GroupID,
+                        principalSchema: "public",
                         principalTable: "ResourceGroups",
                         principalColumn: "GroupID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "PackagesBandwidth",
+                schema: "public",
                 columns: table => new
                 {
-                    PackageID = table.Column<int>(type: "int", nullable: false),
-                    GroupID = table.Column<int>(type: "int", nullable: false),
-                    LogDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    PackageID = table.Column<int>(type: "integer", nullable: false),
+                    GroupID = table.Column<int>(type: "integer", nullable: false),
+                    LogDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     BytesSent = table.Column<long>(type: "bigint", nullable: false),
                     BytesReceived = table.Column<long>(type: "bigint", nullable: false)
                 },
@@ -2411,21 +1493,24 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_PackagesBandwidth_Packages",
                         column: x => x.PackageID,
+                        principalSchema: "public",
                         principalTable: "Packages",
                         principalColumn: "PackageID");
                     table.ForeignKey(
                         name: "FK_PackagesBandwidth_ResourceGroups",
                         column: x => x.GroupID,
+                        principalSchema: "public",
                         principalTable: "ResourceGroups",
                         principalColumn: "GroupID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "PackagesDiskspace",
+                schema: "public",
                 columns: table => new
                 {
-                    PackageID = table.Column<int>(type: "int", nullable: false),
-                    GroupID = table.Column<int>(type: "int", nullable: false),
+                    PackageID = table.Column<int>(type: "integer", nullable: false),
+                    GroupID = table.Column<int>(type: "integer", nullable: false),
                     DiskSpace = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
@@ -2434,21 +1519,24 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_PackagesDiskspace_Packages",
                         column: x => x.PackageID,
+                        principalSchema: "public",
                         principalTable: "Packages",
                         principalColumn: "PackageID");
                     table.ForeignKey(
                         name: "FK_PackagesDiskspace_ResourceGroups",
                         column: x => x.GroupID,
+                        principalSchema: "public",
                         principalTable: "ResourceGroups",
                         principalColumn: "GroupID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "PackageServices",
+                schema: "public",
                 columns: table => new
                 {
-                    PackageID = table.Column<int>(type: "int", nullable: false),
-                    ServiceID = table.Column<int>(type: "int", nullable: false)
+                    PackageID = table.Column<int>(type: "integer", nullable: false),
+                    ServiceID = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -2456,12 +1544,14 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_PackageServices_Packages",
                         column: x => x.PackageID,
+                        principalSchema: "public",
                         principalTable: "Packages",
                         principalColumn: "PackageID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PackageServices_Services",
                         column: x => x.ServiceID,
+                        principalSchema: "public",
                         principalTable: "Services",
                         principalColumn: "ServiceID",
                         onDelete: ReferentialAction.Cascade);
@@ -2469,10 +1559,11 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "PackagesTreeCache",
+                schema: "public",
                 columns: table => new
                 {
-                    ParentPackageID = table.Column<int>(type: "int", nullable: false),
-                    PackageID = table.Column<int>(type: "int", nullable: false)
+                    ParentPackageID = table.Column<int>(type: "integer", nullable: false),
+                    PackageID = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -2480,24 +1571,27 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_PackagesTreeCache_Packages",
                         column: x => x.ParentPackageID,
+                        principalSchema: "public",
                         principalTable: "Packages",
                         principalColumn: "PackageID");
                     table.ForeignKey(
                         name: "FK_PackagesTreeCache_Packages1",
                         column: x => x.PackageID,
+                        principalSchema: "public",
                         principalTable: "Packages",
                         principalColumn: "PackageID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "PackageVLANs",
+                schema: "public",
                 columns: table => new
                 {
-                    PackageVlanID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    VlanID = table.Column<int>(type: "int", nullable: false),
-                    PackageID = table.Column<int>(type: "int", nullable: false),
-                    IsDmz = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
+                    PackageVlanID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    VlanID = table.Column<int>(type: "integer", nullable: false),
+                    PackageID = table.Column<int>(type: "integer", nullable: false),
+                    IsDmz = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {
@@ -2505,12 +1599,14 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_PackageID",
                         column: x => x.PackageID,
+                        principalSchema: "public",
                         principalTable: "Packages",
                         principalColumn: "PackageID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_VlanID",
                         column: x => x.VlanID,
+                        principalSchema: "public",
                         principalTable: "PrivateNetworkVLANs",
                         principalColumn: "VlanID",
                         onDelete: ReferentialAction.Cascade);
@@ -2518,25 +1614,26 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "Schedule",
+                schema: "public",
                 columns: table => new
                 {
-                    ScheduleID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TaskID = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    PackageID = table.Column<int>(type: "int", nullable: true),
-                    ScheduleName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    ScheduleTypeID = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Interval = table.Column<int>(type: "int", nullable: true),
-                    FromTime = table.Column<DateTime>(type: "datetime", nullable: true),
-                    ToTime = table.Column<DateTime>(type: "datetime", nullable: true),
-                    StartTime = table.Column<DateTime>(type: "datetime", nullable: true),
-                    LastRun = table.Column<DateTime>(type: "datetime", nullable: true),
-                    NextRun = table.Column<DateTime>(type: "datetime", nullable: true),
-                    Enabled = table.Column<bool>(type: "bit", nullable: false),
-                    PriorityID = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    HistoriesNumber = table.Column<int>(type: "int", nullable: true),
-                    MaxExecutionTime = table.Column<int>(type: "int", nullable: true),
-                    WeekMonthDay = table.Column<int>(type: "int", nullable: true)
+                    ScheduleID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    TaskID = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    PackageID = table.Column<int>(type: "integer", nullable: true),
+                    ScheduleName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    ScheduleTypeID = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    Interval = table.Column<int>(type: "integer", nullable: true),
+                    FromTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ToTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    StartTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastRun = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    NextRun = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    Enabled = table.Column<bool>(type: "boolean", nullable: false),
+                    PriorityID = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    HistoriesNumber = table.Column<int>(type: "integer", nullable: true),
+                    MaxExecutionTime = table.Column<int>(type: "integer", nullable: true),
+                    WeekMonthDay = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -2544,27 +1641,30 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_Schedule_Packages",
                         column: x => x.PackageID,
+                        principalSchema: "public",
                         principalTable: "Packages",
                         principalColumn: "PackageID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Schedule_ScheduleTasks",
                         column: x => x.TaskID,
+                        principalSchema: "public",
                         principalTable: "ScheduleTasks",
                         principalColumn: "TaskID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "ServiceItems",
+                schema: "public",
                 columns: table => new
                 {
-                    ItemID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PackageID = table.Column<int>(type: "int", nullable: true),
-                    ItemTypeID = table.Column<int>(type: "int", nullable: true),
-                    ServiceID = table.Column<int>(type: "int", nullable: true),
-                    ItemName = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true)
+                    ItemID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    PackageID = table.Column<int>(type: "integer", nullable: true),
+                    ItemTypeID = table.Column<int>(type: "integer", nullable: true),
+                    ServiceID = table.Column<int>(type: "integer", nullable: true),
+                    ItemName = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -2572,32 +1672,36 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_ServiceItems_Packages",
                         column: x => x.PackageID,
+                        principalSchema: "public",
                         principalTable: "Packages",
                         principalColumn: "PackageID");
                     table.ForeignKey(
                         name: "FK_ServiceItems_ServiceItemTypes",
                         column: x => x.ItemTypeID,
+                        principalSchema: "public",
                         principalTable: "ServiceItemTypes",
                         principalColumn: "ItemTypeID");
                     table.ForeignKey(
                         name: "FK_ServiceItems_Services",
                         column: x => x.ServiceID,
+                        principalSchema: "public",
                         principalTable: "Services",
                         principalColumn: "ServiceID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "StorageSpaceFolders",
+                schema: "public",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "varchar(300)", unicode: false, maxLength: 300, nullable: false),
-                    StorageSpaceId = table.Column<int>(type: "int", nullable: false),
-                    Path = table.Column<string>(type: "varchar(max)", unicode: false, nullable: false),
-                    UncPath = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
-                    IsShared = table.Column<bool>(type: "bit", nullable: false),
-                    FsrmQuotaType = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(300)", unicode: false, maxLength: 300, nullable: false),
+                    StorageSpaceId = table.Column<int>(type: "integer", nullable: false),
+                    Path = table.Column<string>(type: "text", unicode: false, nullable: false),
+                    UncPath = table.Column<string>(type: "text", unicode: false, nullable: true),
+                    IsShared = table.Column<bool>(type: "boolean", nullable: false),
+                    FsrmQuotaType = table.Column<int>(type: "integer", nullable: false),
                     FsrmQuotaSizeBytes = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
@@ -2606,6 +1710,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_StorageSpaceFolders_StorageSpaceId",
                         column: x => x.StorageSpaceId,
+                        principalSchema: "public",
                         principalTable: "StorageSpaces",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -2613,11 +1718,12 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "ScheduleParameters",
+                schema: "public",
                 columns: table => new
                 {
-                    ScheduleID = table.Column<int>(type: "int", nullable: false),
-                    ParameterID = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ParameterValue = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true)
+                    ScheduleID = table.Column<int>(type: "integer", nullable: false),
+                    ParameterID = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    ParameterValue = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -2625,6 +1731,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_ScheduleParameters_Schedule",
                         column: x => x.ScheduleID,
+                        principalSchema: "public",
                         principalTable: "Schedule",
                         principalColumn: "ScheduleID",
                         onDelete: ReferentialAction.Cascade);
@@ -2632,13 +1739,14 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "DmzIPAddresses",
+                schema: "public",
                 columns: table => new
                 {
-                    DmzAddressID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ItemID = table.Column<int>(type: "int", nullable: false),
-                    IPAddress = table.Column<string>(type: "varchar(15)", unicode: false, maxLength: 15, nullable: false),
-                    IsPrimary = table.Column<bool>(type: "bit", nullable: false)
+                    DmzAddressID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ItemID = table.Column<int>(type: "integer", nullable: false),
+                    IPAddress = table.Column<string>(type: "character varying(15)", unicode: false, maxLength: 15, nullable: false),
+                    IsPrimary = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -2646,6 +1754,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_DmzIPAddresses_ServiceItems",
                         column: x => x.ItemID,
+                        principalSchema: "public",
                         principalTable: "ServiceItems",
                         principalColumn: "ItemID",
                         onDelete: ReferentialAction.Cascade);
@@ -2653,24 +1762,25 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "Domains",
+                schema: "public",
                 columns: table => new
                 {
-                    DomainID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PackageID = table.Column<int>(type: "int", nullable: false),
-                    ZoneItemID = table.Column<int>(type: "int", nullable: true),
-                    DomainName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    HostingAllowed = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    WebSiteID = table.Column<int>(type: "int", nullable: true),
-                    MailDomainID = table.Column<int>(type: "int", nullable: true),
-                    IsSubDomain = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    IsPreviewDomain = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    IsDomainPointer = table.Column<bool>(type: "bit", nullable: false),
-                    DomainItemId = table.Column<int>(type: "int", nullable: true),
-                    CreationDate = table.Column<DateTime>(type: "datetime", nullable: true),
-                    ExpirationDate = table.Column<DateTime>(type: "datetime", nullable: true),
-                    LastUpdateDate = table.Column<DateTime>(type: "datetime", nullable: true),
-                    RegistrarName = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    DomainID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    PackageID = table.Column<int>(type: "integer", nullable: false),
+                    ZoneItemID = table.Column<int>(type: "integer", nullable: true),
+                    DomainName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    HostingAllowed = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    WebSiteID = table.Column<int>(type: "integer", nullable: true),
+                    MailDomainID = table.Column<int>(type: "integer", nullable: true),
+                    IsSubDomain = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    IsPreviewDomain = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    IsDomainPointer = table.Column<bool>(type: "boolean", nullable: false),
+                    DomainItemId = table.Column<int>(type: "integer", nullable: true),
+                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ExpirationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastUpdateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    RegistrarName = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -2678,36 +1788,41 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_Domains_Packages",
                         column: x => x.PackageID,
+                        principalSchema: "public",
                         principalTable: "Packages",
                         principalColumn: "PackageID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Domains_ServiceItems_MailDomain",
                         column: x => x.MailDomainID,
+                        principalSchema: "public",
                         principalTable: "ServiceItems",
                         principalColumn: "ItemID");
                     table.ForeignKey(
                         name: "FK_Domains_ServiceItems_WebSite",
                         column: x => x.WebSiteID,
+                        principalSchema: "public",
                         principalTable: "ServiceItems",
                         principalColumn: "ItemID");
                     table.ForeignKey(
                         name: "FK_Domains_ServiceItems_ZoneItem",
                         column: x => x.ZoneItemID,
+                        principalSchema: "public",
                         principalTable: "ServiceItems",
                         principalColumn: "ItemID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "ExchangeOrganizationDomains",
+                schema: "public",
                 columns: table => new
                 {
-                    OrganizationDomainID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ItemID = table.Column<int>(type: "int", nullable: false),
-                    DomainID = table.Column<int>(type: "int", nullable: true),
-                    IsHost = table.Column<bool>(type: "bit", nullable: true, defaultValue: false),
-                    DomainTypeID = table.Column<int>(type: "int", nullable: false, defaultValue: 0)
+                    OrganizationDomainID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ItemID = table.Column<int>(type: "integer", nullable: false),
+                    DomainID = table.Column<int>(type: "integer", nullable: true),
+                    IsHost = table.Column<bool>(type: "boolean", nullable: true, defaultValue: false),
+                    DomainTypeID = table.Column<int>(type: "integer", nullable: false, defaultValue: 0)
                 },
                 constraints: table =>
                 {
@@ -2715,6 +1830,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_ExchangeOrganizationDomains_ServiceItems",
                         column: x => x.ItemID,
+                        principalSchema: "public",
                         principalTable: "ServiceItems",
                         principalColumn: "ItemID",
                         onDelete: ReferentialAction.Cascade);
@@ -2722,13 +1838,14 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "ExchangeOrganizations",
+                schema: "public",
                 columns: table => new
                 {
-                    ItemID = table.Column<int>(type: "int", nullable: false),
-                    OrganizationID = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    ExchangeMailboxPlanID = table.Column<int>(type: "int", nullable: true),
-                    LyncUserPlanID = table.Column<int>(type: "int", nullable: true),
-                    SfBUserPlanID = table.Column<int>(type: "int", nullable: true)
+                    ItemID = table.Column<int>(type: "integer", nullable: false),
+                    OrganizationID = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    ExchangeMailboxPlanID = table.Column<int>(type: "integer", nullable: true),
+                    LyncUserPlanID = table.Column<int>(type: "integer", nullable: true),
+                    SfBUserPlanID = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -2736,6 +1853,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_ExchangeOrganizations_ServiceItems",
                         column: x => x.ItemID,
+                        principalSchema: "public",
                         principalTable: "ServiceItems",
                         principalColumn: "ItemID",
                         onDelete: ReferentialAction.Cascade);
@@ -2743,15 +1861,16 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "PackageIPAddresses",
+                schema: "public",
                 columns: table => new
                 {
-                    PackageAddressID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PackageID = table.Column<int>(type: "int", nullable: false),
-                    AddressID = table.Column<int>(type: "int", nullable: false),
-                    ItemID = table.Column<int>(type: "int", nullable: true),
-                    IsPrimary = table.Column<bool>(type: "bit", nullable: true),
-                    OrgID = table.Column<int>(type: "int", nullable: true)
+                    PackageAddressID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    PackageID = table.Column<int>(type: "integer", nullable: false),
+                    AddressID = table.Column<int>(type: "integer", nullable: false),
+                    ItemID = table.Column<int>(type: "integer", nullable: true),
+                    IsPrimary = table.Column<bool>(type: "boolean", nullable: true),
+                    OrgID = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -2759,30 +1878,34 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_PackageIPAddresses_IPAddresses",
                         column: x => x.AddressID,
+                        principalSchema: "public",
                         principalTable: "IPAddresses",
                         principalColumn: "AddressID");
                     table.ForeignKey(
                         name: "FK_PackageIPAddresses_Packages",
                         column: x => x.PackageID,
+                        principalSchema: "public",
                         principalTable: "Packages",
                         principalColumn: "PackageID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PackageIPAddresses_ServiceItems",
                         column: x => x.ItemID,
+                        principalSchema: "public",
                         principalTable: "ServiceItems",
                         principalColumn: "ItemID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "PrivateIPAddresses",
+                schema: "public",
                 columns: table => new
                 {
-                    PrivateAddressID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ItemID = table.Column<int>(type: "int", nullable: false),
-                    IPAddress = table.Column<string>(type: "varchar(15)", unicode: false, maxLength: 15, nullable: false),
-                    IsPrimary = table.Column<bool>(type: "bit", nullable: false)
+                    PrivateAddressID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ItemID = table.Column<int>(type: "integer", nullable: false),
+                    IPAddress = table.Column<string>(type: "character varying(15)", unicode: false, maxLength: 15, nullable: false),
+                    IsPrimary = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -2790,6 +1913,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_PrivateIPAddresses_ServiceItems",
                         column: x => x.ItemID,
+                        principalSchema: "public",
                         principalTable: "ServiceItems",
                         principalColumn: "ItemID",
                         onDelete: ReferentialAction.Cascade);
@@ -2797,11 +1921,12 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "ServiceItemProperties",
+                schema: "public",
                 columns: table => new
                 {
-                    ItemID = table.Column<int>(type: "int", nullable: false),
-                    PropertyName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PropertyValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ItemID = table.Column<int>(type: "integer", nullable: false),
+                    PropertyName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    PropertyValue = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -2809,6 +1934,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_ServiceItemProperties_ServiceItems",
                         column: x => x.ItemID,
+                        principalSchema: "public",
                         principalTable: "ServiceItems",
                         principalColumn: "ItemID",
                         onDelete: ReferentialAction.Cascade);
@@ -2816,17 +1942,18 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "EnterpriseFolders",
+                schema: "public",
                 columns: table => new
                 {
-                    EnterpriseFolderID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ItemID = table.Column<int>(type: "int", nullable: false),
-                    FolderName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    FolderQuota = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
-                    LocationDrive = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    HomeFolder = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    Domain = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    StorageSpaceFolderId = table.Column<int>(type: "int", nullable: true)
+                    EnterpriseFolderID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ItemID = table.Column<int>(type: "integer", nullable: false),
+                    FolderName = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    FolderQuota = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
+                    LocationDrive = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    HomeFolder = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    Domain = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    StorageSpaceFolderId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -2834,6 +1961,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_EnterpriseFolders_StorageSpaceFolderId",
                         column: x => x.StorageSpaceFolderId,
+                        principalSchema: "public",
                         principalTable: "StorageSpaceFolders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -2841,15 +1969,16 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "DomainDnsRecords",
+                schema: "public",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    DomainId = table.Column<int>(type: "int", nullable: false),
-                    RecordType = table.Column<int>(type: "int", nullable: false),
-                    DnsServer = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    Value = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    Date = table.Column<DateTime>(type: "datetime", nullable: true)
+                    ID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    DomainId = table.Column<int>(type: "integer", nullable: false),
+                    RecordType = table.Column<int>(type: "integer", nullable: false),
+                    DnsServer = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    Value = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -2857,6 +1986,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_DomainDnsRecords_DomainId",
                         column: x => x.DomainId,
+                        principalSchema: "public",
                         principalTable: "Domains",
                         principalColumn: "DomainID",
                         onDelete: ReferentialAction.Cascade);
@@ -2864,40 +1994,41 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "ExchangeMailboxPlans",
+                schema: "public",
                 columns: table => new
                 {
-                    MailboxPlanId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ItemID = table.Column<int>(type: "int", nullable: false),
-                    MailboxPlan = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    MailboxPlanType = table.Column<int>(type: "int", nullable: true),
-                    EnableActiveSync = table.Column<bool>(type: "bit", nullable: false),
-                    EnableIMAP = table.Column<bool>(type: "bit", nullable: false),
-                    EnableMAPI = table.Column<bool>(type: "bit", nullable: false),
-                    EnableOWA = table.Column<bool>(type: "bit", nullable: false),
-                    EnablePOP = table.Column<bool>(type: "bit", nullable: false),
-                    IsDefault = table.Column<bool>(type: "bit", nullable: false),
-                    IssueWarningPct = table.Column<int>(type: "int", nullable: false),
-                    KeepDeletedItemsDays = table.Column<int>(type: "int", nullable: false),
-                    MailboxSizeMB = table.Column<int>(type: "int", nullable: false),
-                    MaxReceiveMessageSizeKB = table.Column<int>(type: "int", nullable: false),
-                    MaxRecipients = table.Column<int>(type: "int", nullable: false),
-                    MaxSendMessageSizeKB = table.Column<int>(type: "int", nullable: false),
-                    ProhibitSendPct = table.Column<int>(type: "int", nullable: false),
-                    ProhibitSendReceivePct = table.Column<int>(type: "int", nullable: false),
-                    HideFromAddressBook = table.Column<bool>(type: "bit", nullable: false),
-                    AllowLitigationHold = table.Column<bool>(type: "bit", nullable: true),
-                    RecoverableItemsWarningPct = table.Column<int>(type: "int", nullable: true),
-                    RecoverableItemsSpace = table.Column<int>(type: "int", nullable: true),
-                    LitigationHoldUrl = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    LitigationHoldMsg = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: true),
-                    Archiving = table.Column<bool>(type: "bit", nullable: true),
-                    EnableArchiving = table.Column<bool>(type: "bit", nullable: true),
-                    ArchiveSizeMB = table.Column<int>(type: "int", nullable: true),
-                    ArchiveWarningPct = table.Column<int>(type: "int", nullable: true),
-                    EnableAutoReply = table.Column<bool>(type: "bit", nullable: true),
-                    IsForJournaling = table.Column<bool>(type: "bit", nullable: true),
-                    EnableForceArchiveDeletion = table.Column<bool>(type: "bit", nullable: true)
+                    MailboxPlanId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ItemID = table.Column<int>(type: "integer", nullable: false),
+                    MailboxPlan = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
+                    MailboxPlanType = table.Column<int>(type: "integer", nullable: true),
+                    EnableActiveSync = table.Column<bool>(type: "boolean", nullable: false),
+                    EnableIMAP = table.Column<bool>(type: "boolean", nullable: false),
+                    EnableMAPI = table.Column<bool>(type: "boolean", nullable: false),
+                    EnableOWA = table.Column<bool>(type: "boolean", nullable: false),
+                    EnablePOP = table.Column<bool>(type: "boolean", nullable: false),
+                    IsDefault = table.Column<bool>(type: "boolean", nullable: false),
+                    IssueWarningPct = table.Column<int>(type: "integer", nullable: false),
+                    KeepDeletedItemsDays = table.Column<int>(type: "integer", nullable: false),
+                    MailboxSizeMB = table.Column<int>(type: "integer", nullable: false),
+                    MaxReceiveMessageSizeKB = table.Column<int>(type: "integer", nullable: false),
+                    MaxRecipients = table.Column<int>(type: "integer", nullable: false),
+                    MaxSendMessageSizeKB = table.Column<int>(type: "integer", nullable: false),
+                    ProhibitSendPct = table.Column<int>(type: "integer", nullable: false),
+                    ProhibitSendReceivePct = table.Column<int>(type: "integer", nullable: false),
+                    HideFromAddressBook = table.Column<bool>(type: "boolean", nullable: false),
+                    AllowLitigationHold = table.Column<bool>(type: "boolean", nullable: true),
+                    RecoverableItemsWarningPct = table.Column<int>(type: "integer", nullable: true),
+                    RecoverableItemsSpace = table.Column<int>(type: "integer", nullable: true),
+                    LitigationHoldUrl = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    LitigationHoldMsg = table.Column<string>(type: "character varying(512)", maxLength: 512, nullable: true),
+                    Archiving = table.Column<bool>(type: "boolean", nullable: true),
+                    EnableArchiving = table.Column<bool>(type: "boolean", nullable: true),
+                    ArchiveSizeMB = table.Column<int>(type: "integer", nullable: true),
+                    ArchiveWarningPct = table.Column<int>(type: "integer", nullable: true),
+                    EnableAutoReply = table.Column<bool>(type: "boolean", nullable: true),
+                    IsForJournaling = table.Column<bool>(type: "boolean", nullable: true),
+                    EnableForceArchiveDeletion = table.Column<bool>(type: "boolean", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -2905,6 +2036,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_ExchangeMailboxPlans_ExchangeOrganizations",
                         column: x => x.ItemID,
+                        principalSchema: "public",
                         principalTable: "ExchangeOrganizations",
                         principalColumn: "ItemID",
                         onDelete: ReferentialAction.Cascade);
@@ -2912,11 +2044,12 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "ExchangeOrganizationSettings",
+                schema: "public",
                 columns: table => new
                 {
-                    ItemId = table.Column<int>(type: "int", nullable: false),
-                    SettingsName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Xml = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ItemId = table.Column<int>(type: "integer", nullable: false),
+                    SettingsName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Xml = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -2924,6 +2057,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_ExchangeOrganizationSettings_ExchangeOrganizations_ItemId",
                         column: x => x.ItemId,
+                        principalSchema: "public",
                         principalTable: "ExchangeOrganizations",
                         principalColumn: "ItemID",
                         onDelete: ReferentialAction.Cascade);
@@ -2931,13 +2065,14 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "ExchangeOrganizationSsFolders",
+                schema: "public",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ItemId = table.Column<int>(type: "int", nullable: false),
-                    Type = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false),
-                    StorageSpaceFolderId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ItemId = table.Column<int>(type: "integer", nullable: false),
+                    Type = table.Column<string>(type: "character varying(100)", unicode: false, maxLength: 100, nullable: false),
+                    StorageSpaceFolderId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -2945,12 +2080,14 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_ExchangeOrganizationSsFolders_ItemId",
                         column: x => x.ItemId,
+                        principalSchema: "public",
                         principalTable: "ExchangeOrganizations",
                         principalColumn: "ItemID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ExchangeOrganizationSsFolders_StorageSpaceFolderId",
                         column: x => x.StorageSpaceFolderId,
+                        principalSchema: "public",
                         principalTable: "StorageSpaceFolders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -2958,29 +2095,30 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "LyncUserPlans",
+                schema: "public",
                 columns: table => new
                 {
-                    LyncUserPlanId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ItemID = table.Column<int>(type: "int", nullable: false),
-                    LyncUserPlanName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    LyncUserPlanType = table.Column<int>(type: "int", nullable: true),
-                    IM = table.Column<bool>(type: "bit", nullable: false),
-                    Mobility = table.Column<bool>(type: "bit", nullable: false),
-                    MobilityEnableOutsideVoice = table.Column<bool>(type: "bit", nullable: false),
-                    Federation = table.Column<bool>(type: "bit", nullable: false),
-                    Conferencing = table.Column<bool>(type: "bit", nullable: false),
-                    EnterpriseVoice = table.Column<bool>(type: "bit", nullable: false),
-                    VoicePolicy = table.Column<int>(type: "int", nullable: false),
-                    IsDefault = table.Column<bool>(type: "bit", nullable: false),
-                    RemoteUserAccess = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    PublicIMConnectivity = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    AllowOrganizeMeetingsWithExternalAnonymous = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    Telephony = table.Column<int>(type: "int", nullable: true),
-                    ServerURI = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
-                    ArchivePolicy = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
-                    TelephonyDialPlanPolicy = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
-                    TelephonyVoicePolicy = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true)
+                    LyncUserPlanId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ItemID = table.Column<int>(type: "integer", nullable: false),
+                    LyncUserPlanName = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
+                    LyncUserPlanType = table.Column<int>(type: "integer", nullable: true),
+                    IM = table.Column<bool>(type: "boolean", nullable: false),
+                    Mobility = table.Column<bool>(type: "boolean", nullable: false),
+                    MobilityEnableOutsideVoice = table.Column<bool>(type: "boolean", nullable: false),
+                    Federation = table.Column<bool>(type: "boolean", nullable: false),
+                    Conferencing = table.Column<bool>(type: "boolean", nullable: false),
+                    EnterpriseVoice = table.Column<bool>(type: "boolean", nullable: false),
+                    VoicePolicy = table.Column<int>(type: "integer", nullable: false),
+                    IsDefault = table.Column<bool>(type: "boolean", nullable: false),
+                    RemoteUserAccess = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    PublicIMConnectivity = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    AllowOrganizeMeetingsWithExternalAnonymous = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    Telephony = table.Column<int>(type: "integer", nullable: true),
+                    ServerURI = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
+                    ArchivePolicy = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
+                    TelephonyDialPlanPolicy = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
+                    TelephonyVoicePolicy = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -2988,6 +2126,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_LyncUserPlans_ExchangeOrganizations",
                         column: x => x.ItemID,
+                        principalSchema: "public",
                         principalTable: "ExchangeOrganizations",
                         principalColumn: "ItemID",
                         onDelete: ReferentialAction.Cascade);
@@ -2995,27 +2134,28 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "ExchangeAccounts",
+                schema: "public",
                 columns: table => new
                 {
-                    AccountID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ItemID = table.Column<int>(type: "int", nullable: false),
-                    AccountType = table.Column<int>(type: "int", nullable: false),
-                    AccountName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    DisplayName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    PrimaryEmailAddress = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
-                    MailEnabledPublicFolder = table.Column<bool>(type: "bit", nullable: true),
-                    MailboxManagerActions = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: true),
-                    SamAccountName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())"),
-                    MailboxPlanId = table.Column<int>(type: "int", nullable: true),
-                    SubscriberNumber = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: true),
-                    UserPrincipalName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
-                    ExchangeDisclaimerId = table.Column<int>(type: "int", nullable: true),
-                    ArchivingMailboxPlanId = table.Column<int>(type: "int", nullable: true),
-                    EnableArchiving = table.Column<bool>(type: "bit", nullable: true),
-                    LevelID = table.Column<int>(type: "int", nullable: true),
-                    IsVIP = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
+                    AccountID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ItemID = table.Column<int>(type: "integer", nullable: false),
+                    AccountType = table.Column<int>(type: "integer", nullable: false),
+                    AccountName = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
+                    DisplayName = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
+                    PrimaryEmailAddress = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
+                    MailEnabledPublicFolder = table.Column<bool>(type: "boolean", nullable: true),
+                    MailboxManagerActions = table.Column<string>(type: "character varying(200)", unicode: false, maxLength: 200, nullable: true),
+                    SamAccountName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    MailboxPlanId = table.Column<int>(type: "integer", nullable: true),
+                    SubscriberNumber = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true),
+                    UserPrincipalName = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
+                    ExchangeDisclaimerId = table.Column<int>(type: "integer", nullable: true),
+                    ArchivingMailboxPlanId = table.Column<int>(type: "integer", nullable: true),
+                    EnableArchiving = table.Column<bool>(type: "boolean", nullable: true),
+                    LevelID = table.Column<int>(type: "integer", nullable: true),
+                    IsVIP = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {
@@ -3023,11 +2163,13 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_ExchangeAccounts_ExchangeMailboxPlans",
                         column: x => x.MailboxPlanId,
+                        principalSchema: "public",
                         principalTable: "ExchangeMailboxPlans",
                         principalColumn: "MailboxPlanId");
                     table.ForeignKey(
                         name: "FK_ExchangeAccounts_ServiceItems",
                         column: x => x.ItemID,
+                        principalSchema: "public",
                         principalTable: "ServiceItems",
                         principalColumn: "ItemID",
                         onDelete: ReferentialAction.Cascade);
@@ -3035,15 +2177,16 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "LyncUsers",
+                schema: "public",
                 columns: table => new
                 {
-                    LyncUserID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AccountID = table.Column<int>(type: "int", nullable: false),
-                    LyncUserPlanID = table.Column<int>(type: "int", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())"),
-                    ModifiedDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())"),
-                    SipAddress = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true)
+                    LyncUserID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    AccountID = table.Column<int>(type: "integer", nullable: false),
+                    LyncUserPlanID = table.Column<int>(type: "integer", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    SipAddress = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -3051,22 +2194,24 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_LyncUsers_LyncUserPlans",
                         column: x => x.LyncUserPlanID,
+                        principalSchema: "public",
                         principalTable: "LyncUserPlans",
                         principalColumn: "LyncUserPlanId");
                 });
 
             migrationBuilder.CreateTable(
                 name: "AccessTokens",
+                schema: "public",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AccessTokenGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ExpirationDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    AccountID = table.Column<int>(type: "int", nullable: false),
-                    ItemId = table.Column<int>(type: "int", nullable: false),
-                    TokenType = table.Column<int>(type: "int", nullable: false),
-                    SmsResponse = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: true)
+                    ID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    AccessTokenGuid = table.Column<Guid>(type: "uuid", nullable: false),
+                    ExpirationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    AccountID = table.Column<int>(type: "integer", nullable: false),
+                    ItemId = table.Column<int>(type: "integer", nullable: false),
+                    TokenType = table.Column<int>(type: "integer", nullable: false),
+                    SmsResponse = table.Column<string>(type: "character varying(100)", unicode: false, maxLength: 100, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -3074,6 +2219,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_AccessTokens_UserId",
                         column: x => x.AccountID,
+                        principalSchema: "public",
                         principalTable: "ExchangeAccounts",
                         principalColumn: "AccountID",
                         onDelete: ReferentialAction.Cascade);
@@ -3081,13 +2227,14 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "BlackBerryUsers",
+                schema: "public",
                 columns: table => new
                 {
-                    BlackBerryUserId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AccountId = table.Column<int>(type: "int", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())"),
-                    ModifiedDate = table.Column<DateTime>(type: "datetime", nullable: false)
+                    BlackBerryUserId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    AccountId = table.Column<int>(type: "integer", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -3095,22 +2242,24 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_BlackBerryUsers_ExchangeAccounts",
                         column: x => x.AccountId,
+                        principalSchema: "public",
                         principalTable: "ExchangeAccounts",
                         principalColumn: "AccountID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "CRMUsers",
+                schema: "public",
                 columns: table => new
                 {
-                    CRMUserID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AccountID = table.Column<int>(type: "int", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())"),
-                    ChangedDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())"),
-                    CRMUserGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    BusinessUnitID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    CALType = table.Column<int>(type: "int", nullable: true)
+                    CRMUserID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    AccountID = table.Column<int>(type: "integer", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ChangedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CRMUserGuid = table.Column<Guid>(type: "uuid", nullable: true),
+                    BusinessUnitID = table.Column<Guid>(type: "uuid", nullable: true),
+                    CALType = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -3118,19 +2267,21 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_CRMUsers_ExchangeAccounts",
                         column: x => x.AccountID,
+                        principalSchema: "public",
                         principalTable: "ExchangeAccounts",
                         principalColumn: "AccountID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "EnterpriseFoldersOwaPermissions",
+                schema: "public",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ItemID = table.Column<int>(type: "int", nullable: false),
-                    FolderID = table.Column<int>(type: "int", nullable: false),
-                    AccountID = table.Column<int>(type: "int", nullable: false)
+                    ID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ItemID = table.Column<int>(type: "integer", nullable: false),
+                    FolderID = table.Column<int>(type: "integer", nullable: false),
+                    AccountID = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -3138,12 +2289,14 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_EnterpriseFoldersOwaPermissions_AccountId",
                         column: x => x.AccountID,
+                        principalSchema: "public",
                         principalTable: "ExchangeAccounts",
                         principalColumn: "AccountID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_EnterpriseFoldersOwaPermissions_FolderId",
                         column: x => x.FolderID,
+                        principalSchema: "public",
                         principalTable: "EnterpriseFolders",
                         principalColumn: "EnterpriseFolderID",
                         onDelete: ReferentialAction.Cascade);
@@ -3151,12 +2304,13 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "ExchangeAccountEmailAddresses",
+                schema: "public",
                 columns: table => new
                 {
-                    AddressID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AccountID = table.Column<int>(type: "int", nullable: false),
-                    EmailAddress = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false)
+                    AddressID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    AccountID = table.Column<int>(type: "integer", nullable: false),
+                    EmailAddress = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -3164,6 +2318,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_ExchangeAccountEmailAddresses_ExchangeAccounts",
                         column: x => x.AccountID,
+                        principalSchema: "public",
                         principalTable: "ExchangeAccounts",
                         principalColumn: "AccountID",
                         onDelete: ReferentialAction.Cascade);
@@ -3171,12 +2326,13 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "RDSCollectionUsers",
+                schema: "public",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RDSCollectionId = table.Column<int>(type: "int", nullable: false),
-                    AccountID = table.Column<int>(type: "int", nullable: false)
+                    ID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    RDSCollectionId = table.Column<int>(type: "integer", nullable: false),
+                    AccountID = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -3184,12 +2340,14 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_RDSCollectionUsers_RDSCollectionId",
                         column: x => x.RDSCollectionId,
+                        principalSchema: "public",
                         principalTable: "RDSCollections",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_RDSCollectionUsers_UserId",
                         column: x => x.AccountID,
+                        principalSchema: "public",
                         principalTable: "ExchangeAccounts",
                         principalColumn: "AccountID",
                         onDelete: ReferentialAction.Cascade);
@@ -3197,16 +2355,17 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "WebDavAccessTokens",
+                schema: "public",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AuthData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AccessToken = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ExpirationDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    AccountID = table.Column<int>(type: "int", nullable: false),
-                    ItemId = table.Column<int>(type: "int", nullable: false)
+                    ID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    FilePath = table.Column<string>(type: "text", nullable: false),
+                    AuthData = table.Column<string>(type: "text", nullable: false),
+                    AccessToken = table.Column<Guid>(type: "uuid", nullable: false),
+                    ExpirationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    AccountID = table.Column<int>(type: "integer", nullable: false),
+                    ItemId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -3214,6 +2373,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_WebDavAccessTokens_UserId",
                         column: x => x.AccountID,
+                        principalSchema: "public",
                         principalTable: "ExchangeAccounts",
                         principalColumn: "AccountID",
                         onDelete: ReferentialAction.Cascade);
@@ -3221,12 +2381,13 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateTable(
                 name: "WebDavPortalUsersSettings",
+                schema: "public",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AccountId = table.Column<int>(type: "int", nullable: false),
-                    Settings = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    AccountId = table.Column<int>(type: "integer", nullable: false),
+                    Settings = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -3234,12 +2395,14 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     table.ForeignKey(
                         name: "FK_WebDavPortalUsersSettings_UserId",
                         column: x => x.AccountId,
+                        principalSchema: "public",
                         principalTable: "ExchangeAccounts",
                         principalColumn: "AccountID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "AuditLogSources",
                 column: "SourceName",
                 values: new object[]
@@ -3285,6 +2448,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "AuditLogTasks",
                 columns: new[] { "SourceName", "TaskName", "TaskDescription" },
                 values: new object[,]
@@ -3597,6 +2761,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ResourceGroups",
                 columns: new[] { "GroupID", "GroupController", "GroupName", "GroupOrder", "ShowGroup" },
                 values: new object[,]
@@ -3644,6 +2809,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ScheduleTasks",
                 columns: new[] { "TaskID", "RoleID", "TaskType" },
                 values: new object[,]
@@ -3674,6 +2840,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "SystemSettings",
                 columns: new[] { "PropertyName", "SettingsName", "PropertyValue" },
                 values: new object[,]
@@ -3689,6 +2856,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ThemeSettings",
                 columns: new[] { "ThemeSettingID", "PropertyName", "PropertyValue", "SettingsName", "ThemeID" },
                 values: new object[,]
@@ -3716,16 +2884,19 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "Themes",
                 columns: new[] { "ThemeID", "DisplayName", "DisplayOrder", "Enabled", "LTRName", "RTLName" },
                 values: new object[] { 1, "SolidCP v1", 1, 1, "Default", "Default" });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "Users",
                 columns: new[] { "UserID", "AdditionalParams", "Address", "Changed", "City", "Comments", "CompanyName", "Country", "Created", "EcommerceEnabled", "Email", "FailedLogins", "Fax", "FirstName", "HtmlMail", "InstantMessenger", "LastName", "LoginStatusId", "OneTimePasswordState", "OwnerID", "Password", "PinSecret", "PrimaryPhone", "RoleID", "SecondaryEmail", "SecondaryPhone", "State", "StatusID", "SubscriberNumber", "Username", "Zip" },
                 values: new object[] { 1, null, "", new DateTime(2010, 7, 16, 10, 53, 2, 453, DateTimeKind.Utc), "", "", null, "", new DateTime(2010, 7, 16, 12, 53, 2, 453, DateTimeKind.Utc), true, "serveradmin@myhosting.com", null, "", "Enterprise", true, "", "Administrator", null, null, null, "", null, "", 1, "", "", "", 1, null, "serveradmin", "" });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "Versions",
                 columns: new[] { "DatabaseVersion", "BuildDate" },
                 values: new object[,]
@@ -3741,11 +2912,13 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "Packages",
                 columns: new[] { "PackageID", "BandwidthUpdated", "PackageComments", "PackageName", "ParentPackageID", "PlanID", "PurchaseDate", "ServerID", "StatusID", "StatusIDchangeDate", "UserID" },
-                values: new object[] { 1, null, "", "System", null, null, null, null, 1, new DateTime(2024, 4, 20, 11, 2, 58, 560, DateTimeKind.Utc), 1 });
+                values: new object[] { 1, null, "", "System", null, null, null, null, 1, new DateTime(2024, 10, 12, 19, 29, 19, 927, DateTimeKind.Utc), 1 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "Providers",
                 columns: new[] { "ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType" },
                 values: new object[,]
@@ -3791,7 +2964,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     { 66, null, "SmarterMail 10.x +", "SmarterMail100", 4, "SmarterMail", "SolidCP.Providers.Mail.SmarterMail10, SolidCP.Providers.Mail.SmarterMail10" },
                     { 67, null, "SmarterMail 100.x +", "SmarterMail100x", 4, "SmarterMail", "SolidCP.Providers.Mail.SmarterMail100, SolidCP.Providers.Mail.SmarterMail100" },
                     { 90, null, "Hosted Microsoft Exchange Server 2010 SP2", "Exchange", 12, "Exchange2010SP2", "SolidCP.Providers.HostedSolution.Exchange2010SP2, SolidCP.Providers.HostedSolution" },
-                    { 91, true, "Hosted Microsoft Exchange Server 2013", "Exchange", 12, "Exchange2013", "SolidCP.Providers.HostedSolution.Exchange2013, SolidCP.Providers.HostedSolution.Exchange2013" },
+                    { 91, null, "Hosted Microsoft Exchange Server 2013", "Exchange", 12, "Exchange2013", "SolidCP.Providers.HostedSolution.Exchange2013, SolidCP.Providers.HostedSolution.Exchange2013" },
                     { 92, null, "Hosted Microsoft Exchange Server 2016", "Exchange", 12, "Exchange2016", "SolidCP.Providers.HostedSolution.Exchange2016, SolidCP.Providers.HostedSolution.Exchange2016" },
                     { 93, null, "Hosted Microsoft Exchange Server 2019", "Exchange", 12, "Exchange2016", "SolidCP.Providers.HostedSolution.Exchange2019, SolidCP.Providers.HostedSolution.Exchange2019" },
                     { 100, null, "Windows Server 2008", "Windows2008", 1, "Windows2008", "SolidCP.Providers.OS.Windows2008, SolidCP.Providers.OS.Windows2008" },
@@ -3835,8 +3008,8 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     { 400, true, "Microsoft Hyper-V For Private Cloud", "HyperVForPrivateCloud", 40, "HyperVForPC", "SolidCP.Providers.VirtualizationForPC.HyperVForPC, SolidCP.Providers.VirtualizationForPC.HyperVForPC" },
                     { 410, null, "Microsoft DNS Server 2012+", "MSDNS", 7, "MSDNS.2012", "SolidCP.Providers.DNS.MsDNS2012, SolidCP.Providers.DNS.MsDNS2012" },
                     { 500, null, "Unix System", "Unix", 1, "UnixSystem", "SolidCP.Providers.OS.Unix, SolidCP.Providers.OS.Unix" },
-                    { 600, true, "Enterprise Storage Windows 2012", "EnterpriseStorage", 44, "EnterpriseStorage2012", "SolidCP.Providers.EnterpriseStorage.Windows2012, SolidCP.Providers.EnterpriseStorage.Windows2012" },
-                    { 700, true, "Storage Spaces Windows 2012", "StorageSpaceServices", 49, "StorageSpace2012", "SolidCP.Providers.StorageSpaces.Windows2012, SolidCP.Providers.StorageSpaces.Windows2012" },
+                    { 600, null, "Enterprise Storage Windows 2012", "EnterpriseStorage", 44, "EnterpriseStorage2012", "SolidCP.Providers.EnterpriseStorage.Windows2012, SolidCP.Providers.EnterpriseStorage.Windows2012" },
+                    { 700, null, "Storage Spaces Windows 2012", "StorageSpaceServices", 49, "StorageSpace2012", "SolidCP.Providers.StorageSpaces.Windows2012, SolidCP.Providers.StorageSpaces.Windows2012" },
                     { 1201, null, "Hosted MS CRM 2011", "CRM2011", 21, "CRM", "SolidCP.Providers.HostedSolution.CRMProvider2011, SolidCP.Providers.HostedSolution.CRM2011" },
                     { 1202, null, "Hosted MS CRM 2013", "CRM2011", 24, "CRM", "SolidCP.Providers.HostedSolution.CRMProvider2013, SolidCP.Providers.HostedSolution.Crm2013" },
                     { 1203, null, "Microsoft SQL Server 2014", "MSSQL", 46, "MsSQL", "SolidCP.Providers.Database.MsSqlServer2014, SolidCP.Providers.Database.SqlServer" },
@@ -3851,11 +3024,13 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     { 1501, true, "Remote Desktop Services Windows 2012", "RDS", 45, "RemoteDesktopServices2012", "SolidCP.Providers.RemoteDesktopServices.Windows2012,SolidCP.Providers.RemoteDesktopServices.Windows2012" },
                     { 1502, true, "Remote Desktop Services Windows 2016", "RDS", 45, "RemoteDesktopServices2012", "SolidCP.Providers.RemoteDesktopServices.Windows2016,SolidCP.Providers.RemoteDesktopServices.Windows2016" },
                     { 1503, true, "Remote Desktop Services Windows 2019", "RDS", 45, "RemoteDesktopServices2019", "SolidCP.Providers.RemoteDesktopServices.Windows2019,SolidCP.Providers.RemoteDesktopServices.Windows2019" },
+                    { 1504, true, "Remote Desktop Services Windows 2022", "RDS", 45, "RemoteDesktopServices2022", "SolidCP.Providers.RemoteDesktopServices.Windows2022,SolidCP.Providers.RemoteDesktopServices.Windows2022" },
+                    { 1505, true, "Remote Desktop Services Windows 2025", "RDS", 45, "RemoteDesktopServices2025", "SolidCP.Providers.RemoteDesktopServices.Windows2025,SolidCP.Providers.RemoteDesktopServices.Windows2025" },
                     { 1550, null, "MariaDB 10.1", "MariaDB", 50, "MariaDB", "SolidCP.Providers.Database.MariaDB101, SolidCP.Providers.Database.MariaDB" },
                     { 1552, null, "Hosted SharePoint Enterprise 2013", "HostedSharePoint30", 73, "HostedSharePoint2013Ent", "SolidCP.Providers.HostedSolution.HostedSharePointServer2013Ent, SolidCP.Providers.HostedSolution.SharePoint2013Ent" },
                     { 1560, null, "MariaDB 10.2", "MariaDB", 50, "MariaDB", "SolidCP.Providers.Database.MariaDB102, SolidCP.Providers.Database.MariaDB" },
                     { 1570, true, "MariaDB 10.3", "MariaDB", 50, "MariaDB", "SolidCP.Providers.Database.MariaDB103, SolidCP.Providers.Database.MariaDB" },
-                    { 1571, true, "MariaDB 10.4", "MariaDB", 50, "MariaDB", "SolidCP.Providers.Database.MariaDB104, SolidCP.Providers.Database.MariaDB" },
+                    { 1571, null, "MariaDB 10.4", "MariaDB", 50, "MariaDB", "SolidCP.Providers.Database.MariaDB104, SolidCP.Providers.Database.MariaDB" },
                     { 1572, null, "MariaDB 10.5", "MariaDB", 50, "MariaDB", "SolidCP.Providers.Database.MariaDB105, SolidCP.Providers.Database.MariaDB" },
                     { 1573, null, "MariaDB 10.6", "MariaDB", 50, "MariaDB", "SolidCP.Providers.Database.MariaDB106, SolidCP.Providers.Database.MariaDB" },
                     { 1574, null, "MariaDB 10.7", "MariaDB", 50, "MariaDB", "SolidCP.Providers.Database.MariaDB107, SolidCP.Providers.Database.MariaDB" },
@@ -3884,14 +3059,17 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     { 1801, true, "Microsoft Hyper-V 2019", "HyperV2012R2", 33, "HyperV2019", "SolidCP.Providers.Virtualization.HyperV2019, SolidCP.Providers.Virtualization.HyperV2019" },
                     { 1802, null, "Windows Server 2022", "Windows2012", 1, "Windows2022", "SolidCP.Providers.OS.Windows2022, SolidCP.Providers.OS.Windows2022" },
                     { 1803, true, "Microsoft Hyper-V 2022", "HyperV2012R2", 33, "HyperV2022", "SolidCP.Providers.Virtualization.HyperV2022, SolidCP.Providers.Virtualization.HyperV2022" },
+                    { 1804, true, "Windows Server 2025", "Windows2012", 1, "Windows2025", "SolidCP.Providers.OS.Windows2025, SolidCP.Providers.OS.Windows2025" },
+                    { 1805, true, "Microsoft Hyper-V 2025", "HyperV2012R2", 33, "HyperV2025", "SolidCP.Providers.Virtualization.HyperV2025, SolidCP.Providers.Virtualization.HyperV2025" },
                     { 1901, null, "SimpleDNS Plus 8.x", "SimpleDNS", 7, "SimpleDNS", "SolidCP.Providers.DNS.SimpleDNS8, SolidCP.Providers.DNS.SimpleDNS80" },
                     { 1902, null, "Microsoft DNS Server 2016", "MSDNS", 7, "MSDNS.2016", "SolidCP.Providers.DNS.MsDNS2016, SolidCP.Providers.DNS.MsDNS2016" },
                     { 1903, null, "SimpleDNS Plus 9.x", "SimpleDNS", 7, "SimpleDNS", "SolidCP.Providers.DNS.SimpleDNS9, SolidCP.Providers.DNS.SimpleDNS90" },
                     { 1910, null, "vsftpd FTP Server 3", "vsftpd", 3, "vsftpd", "SolidCP.Providers.FTP.VsFtp3, SolidCP.Providers.FTP.VsFtp" },
-                    { 1911, null, "Apache Web Server 2.4 (Experimental)", "Apache", 2, "Apache", "SolidCP.Providers.Web.Apache24, SolidCP.Providers.Web.Apache" }
+                    { 1911, null, "Apache Web Server 2.4", "Apache", 2, "Apache", "SolidCP.Providers.Web.Apache24, SolidCP.Providers.Web.Apache" }
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "Quotas",
                 columns: new[] { "QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota" },
                 values: new object[,]
@@ -4180,10 +3358,12 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     { 738, 75, null, null, null, "Max Log Size", "MsSQL2022.MaxLogSize", 4, 3, false },
                     { 750, 33, null, null, null, "DMZ Network", "VPS2012.DMZNetworkEnabled", 22, 1, false },
                     { 751, 33, null, null, null, "Number of DMZ IP addresses per VPS", "VPS2012.DMZIPAddressesNumber", 23, 3, false },
-                    { 752, 33, null, null, null, "Number of DMZ Network VLANs", "VPS2012.DMZVLANsNumber", 24, 2, false }
+                    { 752, 33, null, null, null, "Number of DMZ Network VLANs", "VPS2012.DMZVLANsNumber", 24, 2, false },
+                    { 753, 7, null, null, null, "Allow editing TTL in DNS Editor", "DNS.EditTTL", 2, 1, false }
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ResourceGroupDnsRecords",
                 columns: new[] { "RecordID", "GroupID", "MXPriority", "RecordData", "RecordName", "RecordOrder", "RecordType" },
                 values: new object[,]
@@ -4207,6 +3387,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ScheduleTaskParameters",
                 columns: new[] { "ParameterID", "TaskID", "DataTypeID", "DefaultValue", "ParameterOrder" },
                 values: new object[,]
@@ -4303,6 +3484,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ScheduleTaskViewConfiguration",
                 columns: new[] { "ConfigurationID", "TaskID", "Description", "Environment" },
                 values: new object[,]
@@ -4332,11 +3514,13 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Searchable", "Suspendable", "TypeName", "TypeOrder" },
                 values: new object[] { 2, true, false, true, "HomeFolder", true, 1, false, false, "SolidCP.Providers.OS.HomeFolder, SolidCP.Providers.Base", 15 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Importable", "Searchable", "Suspendable", "TypeName", "TypeOrder" },
                 values: new object[,]
@@ -4351,21 +3535,25 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Importable", "Searchable", "Suspendable", "TypeName" },
                 values: new object[] { 12, true, false, false, "DNSZone", true, 7, true, false, true, "SolidCP.Providers.DNS.DnsZone, SolidCP.Providers.Base" });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Searchable", "Suspendable", "TypeName", "TypeOrder" },
                 values: new object[] { 13, false, false, "Domain", false, 1, true, false, "SolidCP.Providers.OS.Domain, SolidCP.Providers.Base", 1 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Importable", "Searchable", "Suspendable", "TypeName", "TypeOrder" },
                 values: new object[] { 14, true, false, false, "StatisticsSite", true, 8, true, true, false, "SolidCP.Providers.Statistics.StatsSite, SolidCP.Providers.Base", 17 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Searchable", "Suspendable", "TypeName", "TypeOrder" },
                 values: new object[,]
@@ -4377,6 +3565,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Importable", "Searchable", "Suspendable", "TypeName", "TypeOrder" },
                 values: new object[,]
@@ -4389,16 +3578,19 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Searchable", "Suspendable", "TypeName", "TypeOrder" },
                 values: new object[] { 25, true, false, false, "SharedSSLFolder", true, 2, true, false, "SolidCP.Providers.Web.SharedSSLFolder, SolidCP.Providers.Base", 21 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Searchable", "Suspendable", "TypeName" },
                 values: new object[] { 28, true, false, false, "SecondaryDNSZone", true, 7, false, true, "SolidCP.Providers.DNS.SecondaryDnsZone, SolidCP.Providers.Base" });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Searchable", "Suspendable", "TypeName", "TypeOrder" },
                 values: new object[,]
@@ -4408,6 +3600,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Importable", "Searchable", "Suspendable", "TypeName", "TypeOrder" },
                 values: new object[,]
@@ -4417,6 +3610,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Searchable", "Suspendable", "TypeName", "TypeOrder" },
                 values: new object[,]
@@ -4428,6 +3622,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Importable", "Searchable", "Suspendable", "TypeName", "TypeOrder" },
                 values: new object[,]
@@ -4439,6 +3634,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Searchable", "Suspendable", "TypeName", "TypeOrder" },
                 values: new object[,]
@@ -4448,6 +3644,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Importable", "Searchable", "Suspendable", "TypeName", "TypeOrder" },
                 values: new object[,]
@@ -4467,6 +3664,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Searchable", "Suspendable", "TypeName", "TypeOrder" },
                 values: new object[,]
@@ -4476,6 +3674,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceItemTypes",
                 columns: new[] { "ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Importable", "Searchable", "Suspendable", "TypeName", "TypeOrder" },
                 values: new object[,]
@@ -4487,6 +3686,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "UserSettings",
                 columns: new[] { "PropertyName", "SettingsName", "UserID", "PropertyValue" },
                 values: new object[,]
@@ -4629,11 +3829,13 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "PackagesTreeCache",
                 columns: new[] { "PackageID", "ParentPackageID" },
                 values: new object[] { 1, 1 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "Quotas",
                 columns: new[] { "QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota" },
                 values: new object[,]
@@ -4686,6 +3888,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "Schedule",
                 columns: new[] { "ScheduleID", "Enabled", "FromTime", "HistoriesNumber", "Interval", "LastRun", "MaxExecutionTime", "NextRun", "PackageID", "PriorityID", "ScheduleName", "ScheduleTypeID", "StartTime", "TaskID", "ToTime", "WeekMonthDay" },
                 values: new object[,]
@@ -4695,6 +3898,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ServiceDefaultProperties",
                 columns: new[] { "PropertyName", "ProviderID", "PropertyValue" },
                 values: new object[,]
@@ -4738,6 +3942,8 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     { "ExpireLimit", 7, "1209600" },
                     { "MinimumTTL", 7, "86400" },
                     { "NameServers", 7, "ns1.yourdomain.com;ns2.yourdomain.com" },
+                    { "RecordDefaultTTL", 7, "86400" },
+                    { "RecordMinimumTTL", 7, "3600" },
                     { "RefreshInterval", 7, "3600" },
                     { "ResponsiblePerson", 7, "hostmaster.[DOMAIN_NAME]" },
                     { "RetryDelay", 7, "600" },
@@ -4751,6 +3957,8 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     { "ExpireLimit", 9, "1209600" },
                     { "MinimumTTL", 9, "86400" },
                     { "NameServers", 9, "ns1.yourdomain.com;ns2.yourdomain.com" },
+                    { "RecordDefaultTTL", 9, "86400" },
+                    { "RecordMinimumTTL", 9, "3600" },
                     { "RefreshInterval", 9, "3600" },
                     { "ResponsiblePerson", 9, "hostmaster.[DOMAIN_NAME]" },
                     { "RetryDelay", 9, "600" },
@@ -4768,6 +3976,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     { "Username", 10, "Admin" },
                     { "AdminPassword", 11, "" },
                     { "AdminUsername", 11, "admin" },
+                    { "defaultdomainhostname", 11, "mail.[DOMAIN_NAME]" },
                     { "DomainsPath", 11, "%SYSTEMDRIVE%\\SmarterMail" },
                     { "ServerIPAddress", 11, "127.0.0.1;127.0.0.1" },
                     { "ServiceUrl", 11, "http://127.0.0.1:9998/services" },
@@ -4775,6 +3984,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     { "LogsFolder", 12, "%PROGRAMFILES%\\Gene6 FTP Server\\Log" },
                     { "AdminPassword", 14, "" },
                     { "AdminUsername", 14, "admin" },
+                    { "defaultdomainhostname", 14, "mail.[DOMAIN_NAME]" },
                     { "DomainsPath", 14, "%SYSTEMDRIVE%\\SmarterMail" },
                     { "ServerIPAddress", 14, "127.0.0.1;127.0.0.1" },
                     { "ServiceUrl", 14, "http://127.0.0.1:9998/services" },
@@ -4800,6 +4010,8 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     { "ExpireLimit", 24, "1209600" },
                     { "MinimumTTL", 24, "86400" },
                     { "NameServers", 24, "ns1.yourdomain.com;ns2.yourdomain.com" },
+                    { "RecordDefaultTTL", 24, "86400" },
+                    { "RecordMinimumTTL", 24, "3600" },
                     { "RefreshInterval", 24, "3600" },
                     { "ResponsiblePerson", 24, "hostmaster.[DOMAIN_NAME]" },
                     { "RetryDelay", 24, "600" },
@@ -4816,12 +4028,15 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     { "ExpireLimit", 28, "1209600" },
                     { "MinimumTTL", 28, "86400" },
                     { "NameServers", 28, "ns1.yourdomain.com;ns2.yourdomain.com" },
+                    { "RecordDefaultTTL", 28, "86400" },
+                    { "RecordMinimumTTL", 28, "3600" },
                     { "RefreshInterval", 28, "3600" },
                     { "ResponsiblePerson", 28, "hostmaster.[DOMAIN_NAME]" },
                     { "RetryDelay", 28, "600" },
                     { "SimpleDnsUrl", 28, "http://127.0.0.1:8053" },
                     { "AdminPassword", 29, " " },
                     { "AdminUsername", 29, "admin" },
+                    { "defaultdomainhostname", 29, "mail.[DOMAIN_NAME]" },
                     { "DomainsPath", 29, "%SYSTEMDRIVE%\\SmarterMail" },
                     { "ServerIPAddress", 29, "127.0.0.1;127.0.0.1" },
                     { "ServiceUrl", 29, "http://localhost:9998/services/" },
@@ -4846,6 +4061,8 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     { "MailboxDatabase", 32, "Hosted Exchange Database" },
                     { "RootOU", 32, "SCP Hosting" },
                     { "TempDomain", 32, "my-temp-domain.com" },
+                    { "RecordDefaultTTL", 55, "86400" },
+                    { "RecordMinimumTTL", 55, "3600" },
                     { "ExpireLimit", 56, "1209600" },
                     { "MinimumTTL", 56, "86400" },
                     { "NameServers", 56, "ns1.yourdomain.com;ns2.yourdomain.com" },
@@ -4853,11 +4070,14 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     { "PDNSDbPort", 56, "3306" },
                     { "PDNSDbServer", 56, "localhost" },
                     { "PDNSDbUser", 56, "root" },
+                    { "RecordDefaultTTL", 56, "86400" },
+                    { "RecordMinimumTTL", 56, "3600" },
                     { "RefreshInterval", 56, "3600" },
                     { "ResponsiblePerson", 56, "hostmaster.[DOMAIN_NAME]" },
                     { "RetryDelay", 56, "600" },
                     { "AdminPassword", 60, " " },
                     { "AdminUsername", 60, "admin" },
+                    { "defaultdomainhostname", 60, "mail.[DOMAIN_NAME]" },
                     { "DomainsPath", 60, "%SYSTEMDRIVE%\\SmarterMail" },
                     { "ServerIPAddress", 60, "127.0.0.1;127.0.0.1" },
                     { "ServiceUrl", 60, "http://localhost:9998/services/" },
@@ -4876,21 +4096,25 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     { "AdminUsername", 63, "Administrator" },
                     { "AdminPassword", 64, "" },
                     { "AdminUsername", 64, "admin" },
+                    { "defaultdomainhostname", 64, "mail.[DOMAIN_NAME]" },
                     { "DomainsPath", 64, "%SYSTEMDRIVE%\\SmarterMail" },
                     { "ServerIPAddress", 64, "127.0.0.1;127.0.0.1" },
                     { "ServiceUrl", 64, "http://localhost:9998/services/" },
                     { "AdminPassword", 65, "" },
                     { "AdminUsername", 65, "admin" },
+                    { "defaultdomainhostname", 65, "mail.[DOMAIN_NAME]" },
                     { "DomainsPath", 65, "%SYSTEMDRIVE%\\SmarterMail" },
                     { "ServerIPAddress", 65, "127.0.0.1;127.0.0.1" },
                     { "ServiceUrl", 65, "http://localhost:9998/services/" },
                     { "AdminPassword", 66, "" },
                     { "AdminUsername", 66, "admin" },
+                    { "defaultdomainhostname", 66, "mail.[DOMAIN_NAME]" },
                     { "DomainsPath", 66, "%SYSTEMDRIVE%\\SmarterMail" },
                     { "ServerIPAddress", 66, "127.0.0.1;127.0.0.1" },
                     { "ServiceUrl", 66, "http://localhost:9998/services/" },
                     { "AdminPassword", 67, "" },
                     { "AdminUsername", 67, "admin" },
+                    { "defaultdomainhostname", 67, "mail.[DOMAIN_NAME]" },
                     { "DomainsPath", 67, "%SYSTEMDRIVE%\\SmarterMail\\Domains" },
                     { "ServerIPAddress", 67, "127.0.0.1;127.0.0.1" },
                     { "ServiceUrl", 67, "http://localhost:9998" },
@@ -5001,25 +4225,25 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     { "RootPassword", 304, "" },
                     { "sslmode", 304, "True" },
                     { "ExternalAddress", 305, "localhost" },
-                    { "InstallFolder", 305, "%PROGRAMFILES%\\MySQL\\MySQL Server 8.1" },
+                    { "InstallFolder", 305, "%PROGRAMFILES%\\MySQL\\MySQL Server 8.0" },
                     { "InternalAddress", 305, "localhost,3306" },
                     { "RootLogin", 305, "root" },
                     { "RootPassword", 305, "" },
                     { "sslmode", 305, "True" },
                     { "ExternalAddress", 306, "localhost" },
-                    { "InstallFolder", 306, "%PROGRAMFILES%\\MySQL\\MySQL Server 8.2" },
+                    { "InstallFolder", 306, "%PROGRAMFILES%\\MySQL\\MySQL Server 8.0" },
                     { "InternalAddress", 306, "localhost,3306" },
                     { "RootLogin", 306, "root" },
                     { "RootPassword", 306, "" },
                     { "sslmode", 306, "True" },
                     { "ExternalAddress", 307, "localhost" },
-                    { "InstallFolder", 307, "%PROGRAMFILES%\\MySQL\\MySQL Server 8.3" },
+                    { "InstallFolder", 307, "%PROGRAMFILES%\\MySQL\\MySQL Server 8.0" },
                     { "InternalAddress", 307, "localhost,3306" },
                     { "RootLogin", 307, "root" },
                     { "RootPassword", 307, "" },
                     { "sslmode", 307, "True" },
                     { "ExternalAddress", 308, "localhost" },
-                    { "InstallFolder", 308, "%PROGRAMFILES%\\MySQL\\MySQL Server 8.4" },
+                    { "InstallFolder", 308, "%PROGRAMFILES%\\MySQL\\MySQL Server 8.0" },
                     { "InternalAddress", 308, "localhost,3306" },
                     { "RootLogin", 308, "root" },
                     { "RootPassword", 308, "" },
@@ -5034,6 +4258,8 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     { "expirelimit", 410, "1209600" },
                     { "minimumttl", 410, "86400" },
                     { "nameservers", 410, "ns1.yourdomain.com;ns2.yourdomain.com" },
+                    { "RecordDefaultTTL", 410, "86400" },
+                    { "RecordMinimumTTL", 410, "3600" },
                     { "refreshinterval", 410, "3600" },
                     { "responsibleperson", 410, "hostmaster.[DOMAIN_NAME]" },
                     { "retrydelay", 410, "600" },
@@ -5129,12 +4355,17 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     { "InternalAddress", 1586, "localhost" },
                     { "RootLogin", 1586, "root" },
                     { "RootPassword", 1586, "" },
+                    { "RecordDefaultTTL", 1703, "86400" },
+                    { "RecordMinimumTTL", 1703, "3600" },
                     { "UsersHome", 1800, "%SYSTEMDRIVE%\\HostingSpaces" },
                     { "UsersHome", 1802, "%SYSTEMDRIVE%\\HostingSpaces" },
+                    { "UsersHome", 1804, "%SYSTEMDRIVE%\\HostingSpaces" },
                     { "AdminLogin", 1901, "Admin" },
                     { "ExpireLimit", 1901, "1209600" },
                     { "MinimumTTL", 1901, "86400" },
                     { "NameServers", 1901, "ns1.yourdomain.com;ns2.yourdomain.com" },
+                    { "RecordDefaultTTL", 1901, "86400" },
+                    { "RecordMinimumTTL", 1901, "3600" },
                     { "RefreshInterval", 1901, "3600" },
                     { "ResponsiblePerson", 1901, "hostmaster.[DOMAIN_NAME]" },
                     { "RetryDelay", 1901, "600" },
@@ -5143,9 +4374,20 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                     { "expirelimit", 1902, "1209600" },
                     { "minimumttl", 1902, "86400" },
                     { "nameservers", 1902, "ns1.yourdomain.com;ns2.yourdomain.com" },
+                    { "RecordDefaultTTL", 1902, "86400" },
+                    { "RecordMinimumTTL", 1902, "3600" },
                     { "refreshinterval", 1902, "3600" },
                     { "responsibleperson", 1902, "hostmaster.[DOMAIN_NAME]" },
                     { "retrydelay", 1902, "600" },
+                    { "AdminLogin", 1903, "Admin" },
+                    { "ExpireLimit", 1903, "1209600" },
+                    { "NameServers", 1903, "ns1.yourdomain.com;ns2.yourdomain.com" },
+                    { "RecordDefaultTTL", 1903, "86400" },
+                    { "RecordMinimumTTL", 1903, "3600" },
+                    { "RefreshInterval", 1903, "3600" },
+                    { "ResponsiblePerson", 1903, "hostmaster.[DOMAIN_NAME]" },
+                    { "RetryDelay", 1903, "600" },
+                    { "SimpleDnsUrl", 1903, "http://127.0.0.1:8053" },
                     { "ConfigFile", 1910, "/etc/vsftpd.conf" },
                     { "BinPath", 1911, "" },
                     { "ConfigFile", 1911, "/etc/apache2/apache2.conf" },
@@ -5153,6 +4395,7 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
                 });
 
             migrationBuilder.InsertData(
+                schema: "public",
                 table: "ScheduleParameters",
                 columns: new[] { "ParameterID", "ScheduleID", "ParameterValue" },
                 values: new object[,]
@@ -5163,776 +4406,958 @@ DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
 
             migrationBuilder.CreateIndex(
                 name: "AccessTokensIdx_AccountID",
+                schema: "public",
                 table: "AccessTokens",
                 column: "AccountID");
 
             migrationBuilder.CreateIndex(
                 name: "BackgroundTaskLogsIdx_TaskID",
+                schema: "public",
                 table: "BackgroundTaskLogs",
                 column: "TaskID");
 
             migrationBuilder.CreateIndex(
                 name: "BackgroundTaskParametersIdx_TaskID",
+                schema: "public",
                 table: "BackgroundTaskParameters",
                 column: "TaskID");
 
             migrationBuilder.CreateIndex(
                 name: "BackgroundTaskStackIdx_TaskID",
+                schema: "public",
                 table: "BackgroundTaskStack",
                 column: "TaskID");
 
             migrationBuilder.CreateIndex(
                 name: "BlackBerryUsersIdx_AccountId",
+                schema: "public",
                 table: "BlackBerryUsers",
                 column: "AccountId");
 
             migrationBuilder.CreateIndex(
                 name: "CommentsIdx_UserID",
+                schema: "public",
                 table: "Comments",
                 column: "UserID");
 
             migrationBuilder.CreateIndex(
                 name: "CRMUsersIdx_AccountID",
+                schema: "public",
                 table: "CRMUsers",
                 column: "AccountID");
 
             migrationBuilder.CreateIndex(
                 name: "DmzIPAddressesIdx_ItemID",
+                schema: "public",
                 table: "DmzIPAddresses",
                 column: "ItemID");
 
             migrationBuilder.CreateIndex(
                 name: "DomainDnsRecordsIdx_DomainId",
+                schema: "public",
                 table: "DomainDnsRecords",
                 column: "DomainId");
 
             migrationBuilder.CreateIndex(
                 name: "DomainsIdx_MailDomainID",
+                schema: "public",
                 table: "Domains",
                 column: "MailDomainID");
 
             migrationBuilder.CreateIndex(
                 name: "DomainsIdx_PackageID",
+                schema: "public",
                 table: "Domains",
                 column: "PackageID");
 
             migrationBuilder.CreateIndex(
                 name: "DomainsIdx_WebSiteID",
+                schema: "public",
                 table: "Domains",
                 column: "WebSiteID");
 
             migrationBuilder.CreateIndex(
                 name: "DomainsIdx_ZoneItemID",
+                schema: "public",
                 table: "Domains",
                 column: "ZoneItemID");
 
             migrationBuilder.CreateIndex(
                 name: "EnterpriseFoldersIdx_StorageSpaceFolderId",
+                schema: "public",
                 table: "EnterpriseFolders",
                 column: "StorageSpaceFolderId");
 
             migrationBuilder.CreateIndex(
                 name: "EnterpriseFoldersOwaPermissionsIdx_AccountID",
+                schema: "public",
                 table: "EnterpriseFoldersOwaPermissions",
                 column: "AccountID");
 
             migrationBuilder.CreateIndex(
                 name: "EnterpriseFoldersOwaPermissionsIdx_FolderID",
+                schema: "public",
                 table: "EnterpriseFoldersOwaPermissions",
                 column: "FolderID");
 
             migrationBuilder.CreateIndex(
                 name: "ExchangeAccountEmailAddressesIdx_AccountID",
+                schema: "public",
                 table: "ExchangeAccountEmailAddresses",
                 column: "AccountID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ExchangeAccountEmailAddresses_UniqueEmail",
+                schema: "public",
                 table: "ExchangeAccountEmailAddresses",
                 column: "EmailAddress",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ExchangeAccountsIdx_ItemID",
+                schema: "public",
                 table: "ExchangeAccounts",
                 column: "ItemID");
 
             migrationBuilder.CreateIndex(
                 name: "ExchangeAccountsIdx_MailboxPlanId",
+                schema: "public",
                 table: "ExchangeAccounts",
                 column: "MailboxPlanId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ExchangeAccounts_UniqueAccountName",
+                schema: "public",
                 table: "ExchangeAccounts",
                 column: "AccountName",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ExchangeMailboxPlansIdx_ItemID",
+                schema: "public",
                 table: "ExchangeMailboxPlans",
                 column: "ItemID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ExchangeMailboxPlans",
+                schema: "public",
                 table: "ExchangeMailboxPlans",
                 column: "MailboxPlanId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ExchangeOrganizationDomainsIdx_ItemID",
+                schema: "public",
                 table: "ExchangeOrganizationDomains",
                 column: "ItemID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ExchangeOrganizationDomains_UniqueDomain",
+                schema: "public",
                 table: "ExchangeOrganizationDomains",
                 column: "DomainID",
-                unique: true,
-                filter: "[DomainID] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_ExchangeOrganizations_UniqueOrg",
+                schema: "public",
                 table: "ExchangeOrganizations",
                 column: "OrganizationID",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ExchangeOrganizationSettingsIdx_ItemId",
+                schema: "public",
                 table: "ExchangeOrganizationSettings",
                 column: "ItemId");
 
             migrationBuilder.CreateIndex(
                 name: "ExchangeOrganizationSsFoldersIdx_ItemId",
+                schema: "public",
                 table: "ExchangeOrganizationSsFolders",
                 column: "ItemId");
 
             migrationBuilder.CreateIndex(
                 name: "ExchangeOrganizationSsFoldersIdx_StorageSpaceFolderId",
+                schema: "public",
                 table: "ExchangeOrganizationSsFolders",
                 column: "StorageSpaceFolderId");
 
             migrationBuilder.CreateIndex(
                 name: "GlobalDnsRecordsIdx_IPAddressID",
+                schema: "public",
                 table: "GlobalDnsRecords",
                 column: "IPAddressID");
 
             migrationBuilder.CreateIndex(
                 name: "GlobalDnsRecordsIdx_PackageID",
+                schema: "public",
                 table: "GlobalDnsRecords",
                 column: "PackageID");
 
             migrationBuilder.CreateIndex(
                 name: "GlobalDnsRecordsIdx_ServerID",
+                schema: "public",
                 table: "GlobalDnsRecords",
                 column: "ServerID");
 
             migrationBuilder.CreateIndex(
                 name: "GlobalDnsRecordsIdx_ServiceID",
+                schema: "public",
                 table: "GlobalDnsRecords",
                 column: "ServiceID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_HostingPlanQuotas_QuotaID",
+                schema: "public",
                 table: "HostingPlanQuotas",
                 column: "QuotaID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_HostingPlanResources_GroupID",
+                schema: "public",
                 table: "HostingPlanResources",
                 column: "GroupID");
 
             migrationBuilder.CreateIndex(
                 name: "HostingPlansIdx_PackageID",
+                schema: "public",
                 table: "HostingPlans",
                 column: "PackageID");
 
             migrationBuilder.CreateIndex(
                 name: "HostingPlansIdx_ServerID",
+                schema: "public",
                 table: "HostingPlans",
                 column: "ServerID");
 
             migrationBuilder.CreateIndex(
                 name: "HostingPlansIdx_UserID",
+                schema: "public",
                 table: "HostingPlans",
                 column: "UserID");
 
             migrationBuilder.CreateIndex(
                 name: "IPAddressesIdx_ServerID",
+                schema: "public",
                 table: "IPAddresses",
                 column: "ServerID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LyncUserPlans",
+                schema: "public",
                 table: "LyncUserPlans",
                 column: "LyncUserPlanId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "LyncUserPlansIdx_ItemID",
+                schema: "public",
                 table: "LyncUserPlans",
                 column: "ItemID");
 
             migrationBuilder.CreateIndex(
                 name: "LyncUsersIdx_LyncUserPlanID",
+                schema: "public",
                 table: "LyncUsers",
                 column: "LyncUserPlanID");
 
             migrationBuilder.CreateIndex(
                 name: "PackageAddonsIdx_PackageID",
+                schema: "public",
                 table: "PackageAddons",
                 column: "PackageID");
 
             migrationBuilder.CreateIndex(
                 name: "PackageAddonsIdx_PlanID",
+                schema: "public",
                 table: "PackageAddons",
                 column: "PlanID");
 
             migrationBuilder.CreateIndex(
                 name: "PackageIPAddressesIdx_AddressID",
+                schema: "public",
                 table: "PackageIPAddresses",
                 column: "AddressID");
 
             migrationBuilder.CreateIndex(
                 name: "PackageIPAddressesIdx_ItemID",
+                schema: "public",
                 table: "PackageIPAddresses",
                 column: "ItemID");
 
             migrationBuilder.CreateIndex(
                 name: "PackageIPAddressesIdx_PackageID",
+                schema: "public",
                 table: "PackageIPAddresses",
                 column: "PackageID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PackageQuotas_QuotaID",
+                schema: "public",
                 table: "PackageQuotas",
                 column: "QuotaID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PackageResources_GroupID",
+                schema: "public",
                 table: "PackageResources",
                 column: "GroupID");
 
             migrationBuilder.CreateIndex(
                 name: "PackageIndex_ParentPackageID",
+                schema: "public",
                 table: "Packages",
                 column: "ParentPackageID");
 
             migrationBuilder.CreateIndex(
                 name: "PackageIndex_PlanID",
+                schema: "public",
                 table: "Packages",
                 column: "PlanID");
 
             migrationBuilder.CreateIndex(
                 name: "PackageIndex_ServerID",
+                schema: "public",
                 table: "Packages",
                 column: "ServerID");
 
             migrationBuilder.CreateIndex(
                 name: "PackageIndex_UserID",
+                schema: "public",
                 table: "Packages",
                 column: "UserID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PackagesBandwidth_GroupID",
+                schema: "public",
                 table: "PackagesBandwidth",
                 column: "GroupID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PackagesDiskspace_GroupID",
+                schema: "public",
                 table: "PackagesDiskspace",
                 column: "GroupID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PackageServices_ServiceID",
+                schema: "public",
                 table: "PackageServices",
                 column: "ServiceID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PackagesTreeCache_PackageID",
+                schema: "public",
                 table: "PackagesTreeCache",
                 column: "PackageID");
 
             migrationBuilder.CreateIndex(
                 name: "PackageVLANsIdx_PackageID",
+                schema: "public",
                 table: "PackageVLANs",
                 column: "PackageID");
 
             migrationBuilder.CreateIndex(
                 name: "PackageVLANsIdx_VlanID",
+                schema: "public",
                 table: "PackageVLANs",
                 column: "VlanID");
 
             migrationBuilder.CreateIndex(
                 name: "PrivateIPAddressesIdx_ItemID",
+                schema: "public",
                 table: "PrivateIPAddresses",
                 column: "ItemID");
 
             migrationBuilder.CreateIndex(
                 name: "PrivateNetworkVLANsIdx_ServerID",
+                schema: "public",
                 table: "PrivateNetworkVLANs",
                 column: "ServerID");
 
             migrationBuilder.CreateIndex(
                 name: "ProvidersIdx_GroupID",
+                schema: "public",
                 table: "Providers",
                 column: "GroupID");
 
             migrationBuilder.CreateIndex(
                 name: "QuotasIdx_GroupID",
+                schema: "public",
                 table: "Quotas",
                 column: "GroupID");
 
             migrationBuilder.CreateIndex(
                 name: "QuotasIdx_ItemTypeID",
+                schema: "public",
                 table: "Quotas",
                 column: "ItemTypeID");
 
             migrationBuilder.CreateIndex(
                 name: "RDSCollectionSettingsIdx_RDSCollectionId",
+                schema: "public",
                 table: "RDSCollectionSettings",
                 column: "RDSCollectionId");
 
             migrationBuilder.CreateIndex(
                 name: "RDSCollectionUsersIdx_AccountID",
+                schema: "public",
                 table: "RDSCollectionUsers",
                 column: "AccountID");
 
             migrationBuilder.CreateIndex(
                 name: "RDSCollectionUsersIdx_RDSCollectionId",
+                schema: "public",
                 table: "RDSCollectionUsers",
                 column: "RDSCollectionId");
 
             migrationBuilder.CreateIndex(
                 name: "RDSMessagesIdx_RDSCollectionId",
+                schema: "public",
                 table: "RDSMessages",
                 column: "RDSCollectionId");
 
             migrationBuilder.CreateIndex(
                 name: "RDSServersIdx_RDSCollectionId",
+                schema: "public",
                 table: "RDSServers",
                 column: "RDSCollectionId");
 
             migrationBuilder.CreateIndex(
                 name: "ResourceGroupDnsRecordsIdx_GroupID",
+                schema: "public",
                 table: "ResourceGroupDnsRecords",
                 column: "GroupID");
 
             migrationBuilder.CreateIndex(
                 name: "ScheduleIdx_PackageID",
+                schema: "public",
                 table: "Schedule",
                 column: "PackageID");
 
             migrationBuilder.CreateIndex(
                 name: "ScheduleIdx_TaskID",
+                schema: "public",
                 table: "Schedule",
                 column: "TaskID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ScheduleTaskViewConfiguration_TaskID",
+                schema: "public",
                 table: "ScheduleTaskViewConfiguration",
                 column: "TaskID");
 
             migrationBuilder.CreateIndex(
                 name: "ServersIdx_PrimaryGroupID",
+                schema: "public",
                 table: "Servers",
                 column: "PrimaryGroupID");
 
             migrationBuilder.CreateIndex(
                 name: "ServiceItemsIdx_ItemTypeID",
+                schema: "public",
                 table: "ServiceItems",
                 column: "ItemTypeID");
 
             migrationBuilder.CreateIndex(
                 name: "ServiceItemsIdx_PackageID",
+                schema: "public",
                 table: "ServiceItems",
                 column: "PackageID");
 
             migrationBuilder.CreateIndex(
                 name: "ServiceItemsIdx_ServiceID",
+                schema: "public",
                 table: "ServiceItems",
                 column: "ServiceID");
 
             migrationBuilder.CreateIndex(
                 name: "ServiceItemTypesIdx_GroupID",
+                schema: "public",
                 table: "ServiceItemTypes",
                 column: "GroupID");
 
             migrationBuilder.CreateIndex(
                 name: "ServicesIdx_ClusterID",
+                schema: "public",
                 table: "Services",
                 column: "ClusterID");
 
             migrationBuilder.CreateIndex(
                 name: "ServicesIdx_ProviderID",
+                schema: "public",
                 table: "Services",
                 column: "ProviderID");
 
             migrationBuilder.CreateIndex(
                 name: "ServicesIdx_ServerID",
+                schema: "public",
                 table: "Services",
                 column: "ServerID");
 
             migrationBuilder.CreateIndex(
                 name: "StorageSpaceFoldersIdx_StorageSpaceId",
+                schema: "public",
                 table: "StorageSpaceFolders",
                 column: "StorageSpaceId");
 
             migrationBuilder.CreateIndex(
                 name: "StorageSpaceLevelResourceGroupsIdx_GroupId",
+                schema: "public",
                 table: "StorageSpaceLevelResourceGroups",
                 column: "GroupId");
 
             migrationBuilder.CreateIndex(
                 name: "StorageSpaceLevelResourceGroupsIdx_LevelId",
+                schema: "public",
                 table: "StorageSpaceLevelResourceGroups",
                 column: "LevelId");
 
             migrationBuilder.CreateIndex(
                 name: "StorageSpacesIdx_ServerId",
+                schema: "public",
                 table: "StorageSpaces",
                 column: "ServerId");
 
             migrationBuilder.CreateIndex(
                 name: "StorageSpacesIdx_ServiceId",
+                schema: "public",
                 table: "StorageSpaces",
                 column: "ServiceId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TempIds_Created_Scope_Level",
+                schema: "public",
                 table: "TempIds",
                 columns: new[] { "Created", "Scope", "Level" });
 
             migrationBuilder.CreateIndex(
                 name: "ThemeSettingsIdx_ThemeID",
+                schema: "public",
                 table: "ThemeSettings",
                 column: "ThemeID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_Username",
+                schema: "public",
                 table: "Users",
                 column: "Username",
-                unique: true,
-                filter: "[Username] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "UsersIdx_OwnerID",
+                schema: "public",
                 table: "Users",
                 column: "OwnerID");
 
             migrationBuilder.CreateIndex(
                 name: "VirtualGroupsIdx_GroupID",
+                schema: "public",
                 table: "VirtualGroups",
                 column: "GroupID");
 
             migrationBuilder.CreateIndex(
                 name: "VirtualGroupsIdx_ServerID",
+                schema: "public",
                 table: "VirtualGroups",
                 column: "ServerID");
 
             migrationBuilder.CreateIndex(
                 name: "VirtualServicesIdx_ServerID",
+                schema: "public",
                 table: "VirtualServices",
                 column: "ServerID");
 
             migrationBuilder.CreateIndex(
                 name: "VirtualServicesIdx_ServiceID",
+                schema: "public",
                 table: "VirtualServices",
                 column: "ServiceID");
 
             migrationBuilder.CreateIndex(
                 name: "WebDavAccessTokensIdx_AccountID",
+                schema: "public",
                 table: "WebDavAccessTokens",
                 column: "AccountID");
 
             migrationBuilder.CreateIndex(
                 name: "WebDavPortalUsersSettingsIdx_AccountId",
+                schema: "public",
                 table: "WebDavPortalUsersSettings",
                 column: "AccountId");
-
-            StoredProceduresUp(migrationBuilder);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            StoredProceduresDown(migrationBuilder);
-
             migrationBuilder.DropTable(
-                name: "AccessTokens");
+                name: "AccessTokens",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "AdditionalGroups");
+                name: "AdditionalGroups",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "AuditLog");
+                name: "AuditLog",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "AuditLogSources");
+                name: "AuditLogSources",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "AuditLogTasks");
+                name: "AuditLogTasks",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "BackgroundTaskLogs");
+                name: "BackgroundTaskLogs",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "BackgroundTaskParameters");
+                name: "BackgroundTaskParameters",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "BackgroundTaskStack");
+                name: "BackgroundTaskStack",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "BlackBerryUsers");
+                name: "BlackBerryUsers",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "Comments");
+                name: "Comments",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "CRMUsers");
+                name: "CRMUsers",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "DmzIPAddresses");
+                name: "DmzIPAddresses",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "DomainDnsRecords");
+                name: "DomainDnsRecords",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "EnterpriseFoldersOwaPermissions");
+                name: "EnterpriseFoldersOwaPermissions",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ExchangeAccountEmailAddresses");
+                name: "ExchangeAccountEmailAddresses",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ExchangeDeletedAccounts");
+                name: "ExchangeDeletedAccounts",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ExchangeDisclaimers");
+                name: "ExchangeDisclaimers",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ExchangeMailboxPlanRetentionPolicyTags");
+                name: "ExchangeMailboxPlanRetentionPolicyTags",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ExchangeOrganizationDomains");
+                name: "ExchangeOrganizationDomains",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ExchangeOrganizationSettings");
+                name: "ExchangeOrganizationSettings",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ExchangeOrganizationSsFolders");
+                name: "ExchangeOrganizationSsFolders",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ExchangeRetentionPolicyTags");
+                name: "ExchangeRetentionPolicyTags",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "GlobalDnsRecords");
+                name: "GlobalDnsRecords",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "HostingPlanQuotas");
+                name: "HostingPlanQuotas",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "HostingPlanResources");
+                name: "HostingPlanResources",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "LyncUsers");
+                name: "LyncUsers",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "OCSUsers");
+                name: "OCSUsers",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "PackageAddons");
+                name: "PackageAddons",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "PackageIPAddresses");
+                name: "PackageIPAddresses",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "PackageQuotas");
+                name: "PackageQuotas",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "PackageResources");
+                name: "PackageResources",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "PackagesBandwidth");
+                name: "PackagesBandwidth",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "PackagesDiskspace");
+                name: "PackagesDiskspace",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "PackageServices");
+                name: "PackageServices",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "PackageSettings");
+                name: "PackageSettings",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "PackagesTreeCache");
+                name: "PackagesTreeCache",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "PackageVLANs");
+                name: "PackageVLANs",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "PrivateIPAddresses");
+                name: "PrivateIPAddresses",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "RDSCertificates");
+                name: "RDSCertificates",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "RDSCollectionSettings");
+                name: "RDSCollectionSettings",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "RDSCollectionUsers");
+                name: "RDSCollectionUsers",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "RDSMessages");
+                name: "RDSMessages",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "RDSServers");
+                name: "RDSServers",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "RDSServerSettings");
+                name: "RDSServerSettings",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ResourceGroupDnsRecords");
+                name: "ResourceGroupDnsRecords",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ScheduleParameters");
+                name: "ScheduleParameters",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ScheduleTaskParameters");
+                name: "ScheduleTaskParameters",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ScheduleTaskViewConfiguration");
+                name: "ScheduleTaskViewConfiguration",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ServiceDefaultProperties");
+                name: "ServiceDefaultProperties",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ServiceItemProperties");
+                name: "ServiceItemProperties",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ServiceProperties");
+                name: "ServiceProperties",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "SfBUserPlans");
+                name: "SfBUserPlans",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "SfBUsers");
+                name: "SfBUsers",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "SSLCertificates");
+                name: "SSLCertificates",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "StorageSpaceLevelResourceGroups");
+                name: "StorageSpaceLevelResourceGroups",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "SupportServiceLevels");
+                name: "SupportServiceLevels",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "SystemSettings");
+                name: "SystemSettings",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "TempIds");
+                name: "TempIds",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "Themes");
+                name: "Themes",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ThemeSettings");
+                name: "ThemeSettings",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "UserSettings");
+                name: "UserSettings",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "Versions");
+                name: "Versions",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "VirtualGroups");
+                name: "VirtualGroups",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "VirtualServices");
+                name: "VirtualServices",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "WebDavAccessTokens");
+                name: "WebDavAccessTokens",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "WebDavPortalUsersSettings");
+                name: "WebDavPortalUsersSettings",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "BackgroundTasks");
+                name: "BackgroundTasks",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "Domains");
+                name: "Domains",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "EnterpriseFolders");
+                name: "EnterpriseFolders",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "LyncUserPlans");
+                name: "LyncUserPlans",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "IPAddresses");
+                name: "IPAddresses",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "Quotas");
+                name: "Quotas",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "PrivateNetworkVLANs");
+                name: "PrivateNetworkVLANs",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "RDSCollections");
+                name: "RDSCollections",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "Schedule");
+                name: "Schedule",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "StorageSpaceLevels");
+                name: "StorageSpaceLevels",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ExchangeAccounts");
+                name: "ExchangeAccounts",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "StorageSpaceFolders");
+                name: "StorageSpaceFolders",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ScheduleTasks");
+                name: "ScheduleTasks",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ExchangeMailboxPlans");
+                name: "ExchangeMailboxPlans",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "StorageSpaces");
+                name: "StorageSpaces",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ExchangeOrganizations");
+                name: "ExchangeOrganizations",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ServiceItems");
+                name: "ServiceItems",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "Packages");
+                name: "Packages",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ServiceItemTypes");
+                name: "ServiceItemTypes",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "Services");
+                name: "Services",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "HostingPlans");
+                name: "HostingPlans",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "Clusters");
+                name: "Clusters",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "Providers");
+                name: "Providers",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "Servers");
+                name: "Servers",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Users",
+                schema: "public");
 
             migrationBuilder.DropTable(
-                name: "ResourceGroups");
+                name: "ResourceGroups",
+                schema: "public");
         }
     }
 }

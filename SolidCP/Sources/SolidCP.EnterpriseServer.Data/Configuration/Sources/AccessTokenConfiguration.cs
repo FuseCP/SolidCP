@@ -16,7 +16,7 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 public partial class AccessTokenConfiguration: EntityTypeConfiguration<AccessToken>
 {
     public override void Configure() {
-        HasKey(e => e.Id).HasName("PK__AccessTo__3214EC27ADF84655");
+        HasKey(e => e.Id).HasName("PK__AccessTo__3214EC27A1959676");
 
         HasOne(d => d.Account).WithMany(p => p.AccessTokens).HasConstraintName("FK_AccessTokens_UserId");
     }

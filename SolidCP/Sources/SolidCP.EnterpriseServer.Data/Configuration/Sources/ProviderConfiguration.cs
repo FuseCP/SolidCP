@@ -180,11 +180,11 @@ public partial class ProviderConfiguration: EntityTypeConfiguration<Provider>
                 ProviderType = "SolidCP.Providers.RemoteDesktopServices.Windows2019,SolidCP.Providers.RemoteDesk" +
                 "topServices.Windows2019" },
             new Provider() { ProviderId = 1504, DisableAutoDiscovery = true, DisplayName = "Remote Desktop Services Windows 2022", EditorControl = "RDS", GroupId = 45, ProviderName = "RemoteDesktopServices2022",
-                ProviderType = "SolidCP.Providers.RemoteDesktopServices.Windows2019,SolidCP.Providers.RemoteDesk" +
-                "topServices.Windows2019" },
+                ProviderType = "SolidCP.Providers.RemoteDesktopServices.Windows2022,SolidCP.Providers.RemoteDesk" +
+                "topServices.Windows2022" },
             new Provider() { ProviderId = 1505, DisableAutoDiscovery = true, DisplayName = "Remote Desktop Services Windows 2025", EditorControl = "RDS", GroupId = 45, ProviderName = "RemoteDesktopServices2025",
                 ProviderType = "SolidCP.Providers.RemoteDesktopServices.Windows2025,SolidCP.Providers.RemoteDesk" +
-                "topServices.Windows2019" },
+                "topServices.Windows2025" },
             new Provider() { ProviderId = 1550, DisplayName = "MariaDB 10.1", EditorControl = "MariaDB", GroupId = 50, ProviderName = "MariaDB", ProviderType = "SolidCP.Providers.Database.MariaDB101, SolidCP.Providers.Database.MariaDB" },
             new Provider() { ProviderId = 1552, DisplayName = "Hosted SharePoint Enterprise 2013", EditorControl = "HostedSharePoint30", GroupId = 73, ProviderName = "HostedSharePoint2013Ent", ProviderType = "SolidCP.Providers.HostedSolution.HostedSharePointServer2013Ent, SolidCP.Provider" +
                 "s.HostedSolution.SharePoint2013Ent" },

@@ -45,6 +45,7 @@ using System.Collections.Specialized;
 using System.Data;
 using System.Globalization;
 using System.IO;
+using System.IO.Packaging;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -2558,6 +2559,14 @@ namespace SolidCP.EnterpriseServer
 			// get domain by ID
 			DomainInfo domain = GetDomainItem(domainId);
 
+			//get default TTL
+			StringDictionary settings = GetServiceSettings(domain.ZoneServiceID);
+			domain.RecordDefaultTTL = Convert.ToInt32(settings["RecordDefaultTTL"]);
+			if (domain.RecordDefaultTTL == 0) domain.RecordDefaultTTL = 86400;
+			domain.RecordMinimumTTL = Convert.ToInt32(settings["RecordMinimumTTL"]);
+			if (domain.RecordMinimumTTL == 0) domain.RecordMinimumTTL = 3600;
+			domain.MinimumTTL = Convert.ToInt32(settings["MinimumTTL"]);
+
 			// return
 			return GetDomain(domain, withLog);
 		}
@@ -3677,6 +3686,7 @@ namespace SolidCP.EnterpriseServer
 			// add columns
 			dt.Columns.Add("RecordType", typeof(string));
 			dt.Columns.Add("RecordName", typeof(string));
+			dt.Columns.Add("RecordTTL", typeof(int));
 			dt.Columns.Add("RecordData", typeof(string));
 			dt.Columns.Add("MxPriority", typeof(int));
 			dt.Columns.Add("SrvPriority", typeof(int));
@@ -3687,7 +3697,7 @@ namespace SolidCP.EnterpriseServer
 			DnsRecord[] records = GetDnsZoneRecords(domainId);
 			foreach (DnsRecord record in records)
 			{
-				dt.Rows.Add(record.RecordType, record.RecordName, record.RecordData, record.MxPriority, record.SrvPriority, record.SrvWeight, record.SrvPort);
+				dt.Rows.Add(record.RecordType, record.RecordName, record.RecordTTL, record.RecordData, record.MxPriority, record.SrvPriority, record.SrvWeight, record.SrvPort);
 			}
 
 			return ds;
@@ -3709,7 +3719,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 		public int AddDnsZoneRecord(int domainId, string recordName, DnsRecordType recordType,
-					string recordData, int mxPriority, int srvPriority, int srvWeight, int srvPort)
+					string recordData, int mxPriority, int srvPriority, int srvWeight, int srvPort, int recordTTL)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -3727,6 +3737,41 @@ namespace SolidCP.EnterpriseServer
 
 			if (zoneItem == null)
 				return 0;
+
+			// cover the setting not being set for the provider
+			if (domain.RecordDefaultTTL == 0) domain.RecordDefaultTTL = 86400;
+			if (domain.RecordMinimumTTL == 0) domain.RecordMinimumTTL = 3600;
+			// Check Quota for allowing editing TTL
+			int EditTTL = 0;
+			PackageContext cntx = PackageController.GetPackageContext(domain.PackageId);
+			if (cntx != null && cntx.Quotas.ContainsKey("DNS.EditTTL"))
+			{
+				EditTTL = cntx.Quotas["DNS.EditTTL"].QuotaAllocatedValue;
+				if (EditTTL == -1)
+					EditTTL = 0;
+			}
+			if (recordType == DnsRecordType.SOA)
+			{
+				recordTTL = domain.MinimumTTL;
+			}
+			else if (EditTTL == 1 && recordType != DnsRecordType.SOA)
+			{
+				// Make sure quota meets minimum
+				if (recordTTL == 0)
+				{
+					TaskManager.WriteWarning("Record TTL set to 0. Setting to RecordDefaultTTL {0}", domain.RecordDefaultTTL.ToString());
+					recordTTL = domain.RecordDefaultTTL;
+				}
+				else if (domain.RecordMinimumTTL > recordTTL)
+				{
+					TaskManager.WriteWarning("Tried to set TTL to {0} which is below MinimumTTL. Setting to DefaultTTL {1}", recordTTL.ToString(), domain.RecordDefaultTTL.ToString());
+					recordTTL = domain.RecordDefaultTTL;
+				}
+			}
+			else
+			{
+				recordTTL = domain.RecordDefaultTTL;
+			}
 
 			// place log record
 			TaskManager.StartTask("DNS_ZONE", "ADD_RECORD", domain.DomainName, domain.ZoneItemId);
@@ -3749,6 +3794,7 @@ namespace SolidCP.EnterpriseServer
 				record.SrvPriority = srvPriority;
 				record.SrvWeight = srvWeight;
 				record.SrvPort = srvPort;
+				record.RecordTTL = recordTTL;
 				dns.AddZoneRecord(zoneItem.Name, record);
 
 				return 0;
@@ -3765,7 +3811,7 @@ namespace SolidCP.EnterpriseServer
 
 		public int UpdateDnsZoneRecord(int domainId,
 			string originalRecordName, string originalRecordData,
-			string recordName, DnsRecordType recordType, string recordData, int mxPriority, int srvPriority, int srvWeight, int srvPortNumber)
+			string recordName, DnsRecordType recordType, string recordData, int mxPriority, int srvPriority, int srvWeight, int srvPortNumber, int recordTTL)
 		{
 			// place log record
 			DomainInfo domain = GetDomain(domainId);
@@ -3778,7 +3824,7 @@ namespace SolidCP.EnterpriseServer
 				DeleteDnsZoneRecord(domainId, originalRecordName, recordType, originalRecordData);
 
 				// add new record
-				AddDnsZoneRecord(domainId, recordName, recordType, recordData, mxPriority, srvPriority, srvWeight, srvPortNumber);
+				AddDnsZoneRecord(domainId, recordName, recordType, recordData, mxPriority, srvPriority, srvWeight, srvPortNumber, recordTTL);
 
 				return 0;
 			}

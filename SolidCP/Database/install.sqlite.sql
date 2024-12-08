@@ -4,7 +4,6 @@
 );
 
 BEGIN TRANSACTION;
-
 CREATE TABLE "AdditionalGroups" (
     "ID" INTEGER NOT NULL CONSTRAINT "PK__Addition__3214EC27E665DDE2" PRIMARY KEY AUTOINCREMENT,
     "UserID" INTEGER NOT NULL,
@@ -168,9 +167,9 @@ CREATE TABLE "SfBUserPlans" (
     "EnterpriseVoice" INTEGER NOT NULL,
     "VoicePolicy" TEXT COLLATE NOCASE NOT NULL,
     "IsDefault" INTEGER NOT NULL,
-    "RemoteUserAccess" INTEGER NOT NULL,
-    "PublicIMConnectivity" INTEGER NOT NULL,
-    "AllowOrganizeMeetingsWithExternalAnonymous" INTEGER NOT NULL,
+    "RemoteUserAccess" INTEGER NOT NULL DEFAULT 0,
+    "PublicIMConnectivity" INTEGER NOT NULL DEFAULT 0,
+    "AllowOrganizeMeetingsWithExternalAnonymous" INTEGER NOT NULL DEFAULT 0,
     "Telephony" INTEGER NULL,
     "ServerURI" TEXT NULL,
     "ArchivePolicy" TEXT COLLATE NOCASE NULL,
@@ -257,8 +256,8 @@ CREATE TABLE "Users" (
     "OwnerID" INTEGER NULL,
     "RoleID" INTEGER NOT NULL,
     "StatusID" INTEGER NOT NULL,
-    "IsDemo" INTEGER NOT NULL,
-    "IsPeer" INTEGER NOT NULL,
+    "IsDemo" INTEGER NOT NULL DEFAULT 0,
+    "IsPeer" INTEGER NOT NULL DEFAULT 0,
     "Username" TEXT NULL,
     "Password" TEXT NULL,
     "FirstName" TEXT NULL,
@@ -285,7 +284,7 @@ CREATE TABLE "Users" (
     "FailedLogins" INTEGER NULL,
     "SubscriberNumber" TEXT NULL,
     "OneTimePasswordState" INTEGER NULL,
-    "MfaMode" INTEGER NOT NULL,
+    "MfaMode" INTEGER NOT NULL DEFAULT 0,
     "PinSecret" TEXT NULL,
     CONSTRAINT "FK_Users_Users" FOREIGN KEY ("OwnerID") REFERENCES "Users" ("UserID")
 );
@@ -393,7 +392,7 @@ CREATE TABLE "Servers" (
     "ServerUrl" TEXT NULL DEFAULT '',
     "Password" TEXT NULL,
     "Comments" TEXT NULL,
-    "VirtualServer" INTEGER NOT NULL,
+    "VirtualServer" INTEGER NOT NULL DEFAULT 0,
     "InstantDomainAlias" TEXT NULL,
     "PrimaryGroupID" INTEGER NULL,
     "ADRootDomain" TEXT NULL,
@@ -403,9 +402,9 @@ CREATE TABLE "Servers" (
     "ADEnabled" INTEGER NULL DEFAULT 0,
     "ADParentDomain" TEXT NULL,
     "ADParentDomainController" TEXT NULL,
-    "OSPlatform" INTEGER NOT NULL,
+    "OSPlatform" INTEGER NOT NULL DEFAULT 0,
     "IsCore" INTEGER NULL,
-    "PasswordIsSHA256" INTEGER NOT NULL,
+    "PasswordIsSHA256" INTEGER NOT NULL DEFAULT 0,
     CONSTRAINT "FK_Servers_ResourceGroups" FOREIGN KEY ("PrimaryGroupID") REFERENCES "ResourceGroups" ("GroupID")
 );
 
@@ -430,7 +429,7 @@ CREATE TABLE "ScheduleTaskParameters" (
     "ParameterID" TEXT COLLATE NOCASE NOT NULL,
     "DataTypeID" TEXT NOT NULL,
     "DefaultValue" TEXT NULL,
-    "ParameterOrder" INTEGER NOT NULL,
+    "ParameterOrder" INTEGER NOT NULL DEFAULT 0,
     CONSTRAINT "PK_ScheduleTaskParameters" PRIMARY KEY ("TaskID", "ParameterID"),
     CONSTRAINT "FK_ScheduleTaskParameters_ScheduleTasks" FOREIGN KEY ("TaskID") REFERENCES "ScheduleTasks" ("TaskID")
 );
@@ -576,9 +575,9 @@ CREATE TABLE "Packages" (
     "StatusID" INTEGER NOT NULL,
     "PlanID" INTEGER NULL,
     "PurchaseDate" TEXT NULL,
-    "OverrideQuotas" INTEGER NOT NULL,
+    "OverrideQuotas" INTEGER NOT NULL DEFAULT 0,
     "BandwidthUpdated" TEXT NULL,
-    "DefaultTopPackage" INTEGER NOT NULL,
+    "DefaultTopPackage" INTEGER NOT NULL DEFAULT 0,
     "StatusIDchangeDate" TEXT NOT NULL,
     CONSTRAINT "FK_Packages_HostingPlans" FOREIGN KEY ("PlanID") REFERENCES "HostingPlans" ("PlanID") ON DELETE CASCADE,
     CONSTRAINT "FK_Packages_Packages" FOREIGN KEY ("ParentPackageID") REFERENCES "Packages" ("PackageID"),
@@ -589,7 +588,7 @@ CREATE TABLE "Packages" (
 CREATE TABLE "ServiceProperties" (
     "ServiceID" INTEGER NOT NULL,
     "PropertyName" TEXT COLLATE NOCASE NOT NULL,
-    "PropertyValue" TEXT NULL,
+    "PropertyValue" TEXT COLLATE NOCASE NULL,
     CONSTRAINT "PK_ServiceProperties_1" PRIMARY KEY ("ServiceID", "PropertyName"),
     CONSTRAINT "FK_ServiceProperties_Services" FOREIGN KEY ("ServiceID") REFERENCES "Services" ("ServiceID") ON DELETE CASCADE
 );
@@ -605,7 +604,7 @@ CREATE TABLE "StorageSpaces" (
     "UncPath" TEXT NULL,
     "FsrmQuotaType" INTEGER NOT NULL,
     "FsrmQuotaSizeBytes" INTEGER NOT NULL,
-    "IsDisabled" INTEGER NOT NULL,
+    "IsDisabled" INTEGER NOT NULL DEFAULT 0,
     CONSTRAINT "FK_StorageSpaces_ServerId" FOREIGN KEY ("ServerId") REFERENCES "Servers" ("ServerID") ON DELETE CASCADE,
     CONSTRAINT "FK_StorageSpaces_ServiceId" FOREIGN KEY ("ServiceId") REFERENCES "Services" ("ServiceID") ON DELETE CASCADE
 );
@@ -717,7 +716,7 @@ CREATE TABLE "PackageVLANs" (
     "PackageVlanID" INTEGER NOT NULL CONSTRAINT "PK__PackageV__A9AABBF9C0C25CB3" PRIMARY KEY AUTOINCREMENT,
     "VlanID" INTEGER NOT NULL,
     "PackageID" INTEGER NOT NULL,
-    "IsDmz" INTEGER NOT NULL,
+    "IsDmz" INTEGER NOT NULL DEFAULT 0,
     CONSTRAINT "FK_PackageID" FOREIGN KEY ("PackageID") REFERENCES "Packages" ("PackageID") ON DELETE CASCADE,
     CONSTRAINT "FK_VlanID" FOREIGN KEY ("VlanID") REFERENCES "PrivateNetworkVLANs" ("VlanID") ON DELETE CASCADE
 );
@@ -788,11 +787,11 @@ CREATE TABLE "Domains" (
     "PackageID" INTEGER NOT NULL,
     "ZoneItemID" INTEGER NULL,
     "DomainName" TEXT COLLATE NOCASE NOT NULL,
-    "HostingAllowed" INTEGER NOT NULL,
+    "HostingAllowed" INTEGER NOT NULL DEFAULT 0,
     "WebSiteID" INTEGER NULL,
     "MailDomainID" INTEGER NULL,
-    "IsSubDomain" INTEGER NOT NULL,
-    "IsPreviewDomain" INTEGER NOT NULL,
+    "IsSubDomain" INTEGER NOT NULL DEFAULT 0,
+    "IsPreviewDomain" INTEGER NOT NULL DEFAULT 0,
     "IsDomainPointer" INTEGER NOT NULL,
     "DomainItemId" INTEGER NULL,
     "CreationDate" TEXT NULL,
@@ -810,7 +809,7 @@ CREATE TABLE "ExchangeOrganizationDomains" (
     "ItemID" INTEGER NOT NULL,
     "DomainID" INTEGER NULL,
     "IsHost" INTEGER NULL DEFAULT 0,
-    "DomainTypeID" INTEGER NOT NULL,
+    "DomainTypeID" INTEGER NOT NULL DEFAULT 0,
     CONSTRAINT "FK_ExchangeOrganizationDomains_ServiceItems" FOREIGN KEY ("ItemID") REFERENCES "ServiceItems" ("ItemID") ON DELETE CASCADE
 );
 
@@ -855,7 +854,7 @@ CREATE TABLE "EnterpriseFolders" (
     "EnterpriseFolderID" INTEGER NOT NULL CONSTRAINT "PK_EnterpriseFolders" PRIMARY KEY AUTOINCREMENT,
     "ItemID" INTEGER NOT NULL,
     "FolderName" TEXT NOT NULL,
-    "FolderQuota" INTEGER NOT NULL,
+    "FolderQuota" INTEGER NOT NULL DEFAULT 0,
     "LocationDrive" TEXT NULL,
     "HomeFolder" TEXT NULL,
     "Domain" TEXT COLLATE NOCASE NULL,
@@ -938,9 +937,9 @@ CREATE TABLE "LyncUserPlans" (
     "EnterpriseVoice" INTEGER NOT NULL,
     "VoicePolicy" TEXT COLLATE NOCASE NOT NULL,
     "IsDefault" INTEGER NOT NULL,
-    "RemoteUserAccess" INTEGER NOT NULL,
-    "PublicIMConnectivity" INTEGER NOT NULL,
-    "AllowOrganizeMeetingsWithExternalAnonymous" INTEGER NOT NULL,
+    "RemoteUserAccess" INTEGER NOT NULL DEFAULT 0,
+    "PublicIMConnectivity" INTEGER NOT NULL DEFAULT 0,
+    "AllowOrganizeMeetingsWithExternalAnonymous" INTEGER NOT NULL DEFAULT 0,
     "Telephony" INTEGER NULL,
     "ServerURI" TEXT NULL,
     "ArchivePolicy" TEXT COLLATE NOCASE NULL,
@@ -967,7 +966,7 @@ CREATE TABLE "ExchangeAccounts" (
     "ArchivingMailboxPlanId" INTEGER NULL,
     "EnableArchiving" INTEGER NULL,
     "LevelID" INTEGER NULL,
-    "IsVIP" INTEGER NOT NULL,
+    "IsVIP" INTEGER NOT NULL DEFAULT 0,
     CONSTRAINT "FK_ExchangeAccounts_ExchangeMailboxPlans" FOREIGN KEY ("MailboxPlanId") REFERENCES "ExchangeMailboxPlans" ("MailboxPlanId"),
     CONSTRAINT "FK_ExchangeAccounts_ServiceItems" FOREIGN KEY ("ItemID") REFERENCES "ServiceItems" ("ItemID") ON DELETE CASCADE
 );
@@ -2801,8 +2800,8 @@ VALUES (1, 'SolidCP v1', 1, 1, 'Default', 'Default');
 SELECT changes();
 
 
-INSERT INTO "Users" ("UserID", "AdditionalParams", "Address", "Changed", "City", "Comments", "CompanyName", "Country", "Created", "EcommerceEnabled", "Email", "FailedLogins", "Fax", "FirstName", "HtmlMail", "InstantMessenger", "IsDemo", "IsPeer", "LastName", "LoginStatusId", "MfaMode", "OneTimePasswordState", "OwnerID", "Password", "PinSecret", "PrimaryPhone", "RoleID", "SecondaryEmail", "SecondaryPhone", "State", "StatusID", "SubscriberNumber", "Username", "Zip")
-VALUES (1, NULL, '', '2010-07-16 10:53:02.453', '', '', NULL, '', '2010-07-16 12:53:02.453', 1, 'serveradmin@myhosting.com', NULL, '', 'Enterprise', 1, '', 0, 0, 'Administrator', NULL, 0, NULL, NULL, '', NULL, '', 1, '', '', '', 1, NULL, 'serveradmin', '');
+INSERT INTO "Users" ("UserID", "AdditionalParams", "Address", "Changed", "City", "Comments", "CompanyName", "Country", "Created", "EcommerceEnabled", "Email", "FailedLogins", "Fax", "FirstName", "HtmlMail", "InstantMessenger", "LastName", "LoginStatusId", "OneTimePasswordState", "OwnerID", "Password", "PinSecret", "PrimaryPhone", "RoleID", "SecondaryEmail", "SecondaryPhone", "State", "StatusID", "SubscriberNumber", "Username", "Zip")
+VALUES (1, NULL, '', '2010-07-16 10:53:02.453', '', '', NULL, '', '2010-07-16 12:53:02.453', 1, 'serveradmin@myhosting.com', NULL, '', 'Enterprise', 1, '', 'Administrator', NULL, NULL, NULL, '', NULL, '', 1, '', '', '', 1, NULL, 'serveradmin', '');
 SELECT changes();
 
 
@@ -2839,8 +2838,8 @@ VALUES ('1.4.9', '2024-04-20 00:00:00');
 SELECT changes();
 
 
-INSERT INTO "Packages" ("PackageID", "BandwidthUpdated", "DefaultTopPackage", "OverrideQuotas", "PackageComments", "PackageName", "ParentPackageID", "PlanID", "PurchaseDate", "ServerID", "StatusID", "StatusIDchangeDate", "UserID")
-VALUES (1, NULL, 0, 0, '', 'System', NULL, NULL, NULL, NULL, 1, '2024-04-20 11:02:58.56', 1);
+INSERT INTO "Packages" ("PackageID", "BandwidthUpdated", "PackageComments", "PackageName", "ParentPackageID", "PlanID", "PurchaseDate", "ServerID", "StatusID", "StatusIDchangeDate", "UserID")
+VALUES (1, NULL, '', 'System', NULL, NULL, NULL, NULL, 1, '2024-10-12 19:29:19.927', 1);
 SELECT changes();
 
 
@@ -3009,7 +3008,7 @@ VALUES (90, NULL, 'Hosted Microsoft Exchange Server 2010 SP2', 'Exchange', 12, '
 SELECT changes();
 
 INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
-VALUES (91, 1, 'Hosted Microsoft Exchange Server 2013', 'Exchange', 12, 'Exchange2013', 'SolidCP.Providers.HostedSolution.Exchange2013, SolidCP.Providers.HostedSolution.Exchange2013');
+VALUES (91, NULL, 'Hosted Microsoft Exchange Server 2013', 'Exchange', 12, 'Exchange2013', 'SolidCP.Providers.HostedSolution.Exchange2013, SolidCP.Providers.HostedSolution.Exchange2013');
 SELECT changes();
 
 INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
@@ -3185,11 +3184,11 @@ VALUES (500, NULL, 'Unix System', 'Unix', 1, 'UnixSystem', 'SolidCP.Providers.OS
 SELECT changes();
 
 INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
-VALUES (600, 1, 'Enterprise Storage Windows 2012', 'EnterpriseStorage', 44, 'EnterpriseStorage2012', 'SolidCP.Providers.EnterpriseStorage.Windows2012, SolidCP.Providers.EnterpriseStorage.Windows2012');
+VALUES (600, NULL, 'Enterprise Storage Windows 2012', 'EnterpriseStorage', 44, 'EnterpriseStorage2012', 'SolidCP.Providers.EnterpriseStorage.Windows2012, SolidCP.Providers.EnterpriseStorage.Windows2012');
 SELECT changes();
 
 INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
-VALUES (700, 1, 'Storage Spaces Windows 2012', 'StorageSpaceServices', 49, 'StorageSpace2012', 'SolidCP.Providers.StorageSpaces.Windows2012, SolidCP.Providers.StorageSpaces.Windows2012');
+VALUES (700, NULL, 'Storage Spaces Windows 2012', 'StorageSpaceServices', 49, 'StorageSpace2012', 'SolidCP.Providers.StorageSpaces.Windows2012, SolidCP.Providers.StorageSpaces.Windows2012');
 SELECT changes();
 
 INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
@@ -3249,6 +3248,14 @@ VALUES (1503, 1, 'Remote Desktop Services Windows 2019', 'RDS', 45, 'RemoteDeskt
 SELECT changes();
 
 INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+VALUES (1504, 1, 'Remote Desktop Services Windows 2022', 'RDS', 45, 'RemoteDesktopServices2022', 'SolidCP.Providers.RemoteDesktopServices.Windows2022,SolidCP.Providers.RemoteDesktopServices.Windows2022');
+SELECT changes();
+
+INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+VALUES (1505, 1, 'Remote Desktop Services Windows 2025', 'RDS', 45, 'RemoteDesktopServices2025', 'SolidCP.Providers.RemoteDesktopServices.Windows2025,SolidCP.Providers.RemoteDesktopServices.Windows2025');
+SELECT changes();
+
+INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
 VALUES (1550, NULL, 'MariaDB 10.1', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB101, SolidCP.Providers.Database.MariaDB');
 SELECT changes();
 
@@ -3265,7 +3272,7 @@ VALUES (1570, 1, 'MariaDB 10.3', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Da
 SELECT changes();
 
 INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
-VALUES (1571, 1, 'MariaDB 10.4', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB104, SolidCP.Providers.Database.MariaDB');
+VALUES (1571, NULL, 'MariaDB 10.4', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB104, SolidCP.Providers.Database.MariaDB');
 SELECT changes();
 
 INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
@@ -3381,6 +3388,14 @@ VALUES (1803, 1, 'Microsoft Hyper-V 2022', 'HyperV2012R2', 33, 'HyperV2022', 'So
 SELECT changes();
 
 INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+VALUES (1804, 1, 'Windows Server 2025', 'Windows2012', 1, 'Windows2025', 'SolidCP.Providers.OS.Windows2025, SolidCP.Providers.OS.Windows2025');
+SELECT changes();
+
+INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+VALUES (1805, 1, 'Microsoft Hyper-V 2025', 'HyperV2012R2', 33, 'HyperV2025', 'SolidCP.Providers.Virtualization.HyperV2025, SolidCP.Providers.Virtualization.HyperV2025');
+SELECT changes();
+
+INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
 VALUES (1901, NULL, 'SimpleDNS Plus 8.x', 'SimpleDNS', 7, 'SimpleDNS', 'SolidCP.Providers.DNS.SimpleDNS8, SolidCP.Providers.DNS.SimpleDNS80');
 SELECT changes();
 
@@ -3393,11 +3408,11 @@ VALUES (1903, NULL, 'SimpleDNS Plus 9.x', 'SimpleDNS', 7, 'SimpleDNS', 'SolidCP.
 SELECT changes();
 
 INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
-VALUES (1910, NULL, 'vsftpd FTP Server 3 (Experimental)', 'vsftpd', 3, 'vsftpd', 'SolidCP.Providers.FTP.VsFtp3, SolidCP.Providers.FTP.VsFtp');
+VALUES (1910, NULL, 'vsftpd FTP Server 3', 'vsftpd', 3, 'vsftpd', 'SolidCP.Providers.FTP.VsFtp3, SolidCP.Providers.FTP.VsFtp');
 SELECT changes();
 
 INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
-VALUES (1911, NULL, 'Apache Web Server 2.4 (Experimental)', 'Apache', 2, 'Apache', 'SolidCP.Providers.Web.Apache24, SolidCP.Providers.Web.Apache');
+VALUES (1911, NULL, 'Apache Web Server 2.4', 'Apache', 2, 'Apache', 'SolidCP.Providers.Web.Apache24, SolidCP.Providers.Web.Apache');
 SELECT changes();
 
 
@@ -4539,6 +4554,10 @@ SELECT changes();
 
 INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
 VALUES (752, 33, NULL, NULL, NULL, 'Number of DMZ Network VLANs', 'VPS2012.DMZVLANsNumber', 24, 2, 0);
+SELECT changes();
+
+INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+VALUES (753, 7, NULL, NULL, NULL, 'Allow editing TTL in DNS Editor', 'DNS.EditTTL', 2, 1, 0);
 SELECT changes();
 
 
@@ -6179,6 +6198,14 @@ VALUES ('NameServers', 7, 'ns1.yourdomain.com;ns2.yourdomain.com');
 SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RecordDefaultTTL', 7, '86400');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RecordMinimumTTL', 7, '3600');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
 VALUES ('RefreshInterval', 7, '3600');
 SELECT changes();
 
@@ -6228,6 +6255,14 @@ SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
 VALUES ('NameServers', 9, 'ns1.yourdomain.com;ns2.yourdomain.com');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RecordDefaultTTL', 9, '86400');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RecordMinimumTTL', 9, '3600');
 SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
@@ -6299,6 +6334,10 @@ VALUES ('AdminUsername', 11, 'admin');
 SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('defaultdomainhostname', 11, 'mail.[DOMAIN_NAME]');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
 VALUES ('DomainsPath', 11, '%SYSTEMDRIVE%\SmarterMail');
 SELECT changes();
 
@@ -6324,6 +6363,10 @@ SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
 VALUES ('AdminUsername', 14, 'admin');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('defaultdomainhostname', 14, 'mail.[DOMAIN_NAME]');
 SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
@@ -6427,6 +6470,14 @@ VALUES ('NameServers', 24, 'ns1.yourdomain.com;ns2.yourdomain.com');
 SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RecordDefaultTTL', 24, '86400');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RecordMinimumTTL', 24, '3600');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
 VALUES ('RefreshInterval', 24, '3600');
 SELECT changes();
 
@@ -6491,6 +6542,14 @@ VALUES ('NameServers', 28, 'ns1.yourdomain.com;ns2.yourdomain.com');
 SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RecordDefaultTTL', 28, '86400');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RecordMinimumTTL', 28, '3600');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
 VALUES ('RefreshInterval', 28, '3600');
 SELECT changes();
 
@@ -6512,6 +6571,10 @@ SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
 VALUES ('AdminUsername', 29, 'admin');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('defaultdomainhostname', 29, 'mail.[DOMAIN_NAME]');
 SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
@@ -6611,6 +6674,14 @@ VALUES ('TempDomain', 32, 'my-temp-domain.com');
 SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RecordDefaultTTL', 55, '86400');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RecordMinimumTTL', 55, '3600');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
 VALUES ('ExpireLimit', 56, '1209600');
 SELECT changes();
 
@@ -6639,6 +6710,14 @@ VALUES ('PDNSDbUser', 56, 'root');
 SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RecordDefaultTTL', 56, '86400');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RecordMinimumTTL', 56, '3600');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
 VALUES ('RefreshInterval', 56, '3600');
 SELECT changes();
 
@@ -6656,6 +6735,10 @@ SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
 VALUES ('AdminUsername', 60, 'admin');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('defaultdomainhostname', 60, 'mail.[DOMAIN_NAME]');
 SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
@@ -6731,6 +6814,10 @@ VALUES ('AdminUsername', 64, 'admin');
 SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('defaultdomainhostname', 64, 'mail.[DOMAIN_NAME]');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
 VALUES ('DomainsPath', 64, '%SYSTEMDRIVE%\SmarterMail');
 SELECT changes();
 
@@ -6748,6 +6835,10 @@ SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
 VALUES ('AdminUsername', 65, 'admin');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('defaultdomainhostname', 65, 'mail.[DOMAIN_NAME]');
 SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
@@ -6771,6 +6862,10 @@ VALUES ('AdminUsername', 66, 'admin');
 SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('defaultdomainhostname', 66, 'mail.[DOMAIN_NAME]');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
 VALUES ('DomainsPath', 66, '%SYSTEMDRIVE%\SmarterMail');
 SELECT changes();
 
@@ -6788,6 +6883,10 @@ SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
 VALUES ('AdminUsername', 67, 'admin');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('defaultdomainhostname', 67, 'mail.[DOMAIN_NAME]');
 SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
@@ -7231,7 +7330,7 @@ VALUES ('ExternalAddress', 305, 'localhost');
 SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
-VALUES ('InstallFolder', 305, '%PROGRAMFILES%\MySQL\MySQL Server 8.1');
+VALUES ('InstallFolder', 305, '%PROGRAMFILES%\MySQL\MySQL Server 8.0');
 SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
@@ -7255,7 +7354,7 @@ VALUES ('ExternalAddress', 306, 'localhost');
 SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
-VALUES ('InstallFolder', 306, '%PROGRAMFILES%\MySQL\MySQL Server 8.2');
+VALUES ('InstallFolder', 306, '%PROGRAMFILES%\MySQL\MySQL Server 8.0');
 SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
@@ -7279,7 +7378,7 @@ VALUES ('ExternalAddress', 307, 'localhost');
 SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
-VALUES ('InstallFolder', 307, '%PROGRAMFILES%\MySQL\MySQL Server 8.3');
+VALUES ('InstallFolder', 307, '%PROGRAMFILES%\MySQL\MySQL Server 8.0');
 SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
@@ -7303,7 +7402,7 @@ VALUES ('ExternalAddress', 308, 'localhost');
 SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
-VALUES ('InstallFolder', 308, '%PROGRAMFILES%\MySQL\MySQL Server 8.4');
+VALUES ('InstallFolder', 308, '%PROGRAMFILES%\MySQL\MySQL Server 8.0');
 SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
@@ -7360,6 +7459,14 @@ SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
 VALUES ('nameservers', 410, 'ns1.yourdomain.com;ns2.yourdomain.com');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RecordDefaultTTL', 410, '86400');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RecordMinimumTTL', 410, '3600');
 SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
@@ -7743,11 +7850,23 @@ VALUES ('RootPassword', 1586, '');
 SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RecordDefaultTTL', 1703, '86400');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RecordMinimumTTL', 1703, '3600');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
 VALUES ('UsersHome', 1800, '%SYSTEMDRIVE%\HostingSpaces');
 SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
 VALUES ('UsersHome', 1802, '%SYSTEMDRIVE%\HostingSpaces');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('UsersHome', 1804, '%SYSTEMDRIVE%\HostingSpaces');
 SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
@@ -7764,6 +7883,14 @@ SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
 VALUES ('NameServers', 1901, 'ns1.yourdomain.com;ns2.yourdomain.com');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RecordDefaultTTL', 1901, '86400');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RecordMinimumTTL', 1901, '3600');
 SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
@@ -7799,6 +7926,14 @@ VALUES ('nameservers', 1902, 'ns1.yourdomain.com;ns2.yourdomain.com');
 SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RecordDefaultTTL', 1902, '86400');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RecordMinimumTTL', 1902, '3600');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
 VALUES ('refreshinterval', 1902, '3600');
 SELECT changes();
 
@@ -7808,6 +7943,42 @@ SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
 VALUES ('retrydelay', 1902, '600');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('AdminLogin', 1903, 'Admin');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('ExpireLimit', 1903, '1209600');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('NameServers', 1903, 'ns1.yourdomain.com;ns2.yourdomain.com');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RecordDefaultTTL', 1903, '86400');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RecordMinimumTTL', 1903, '3600');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RefreshInterval', 1903, '3600');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('ResponsiblePerson', 1903, 'hostmaster.[DOMAIN_NAME]');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('RetryDelay', 1903, '600');
+SELECT changes();
+
+INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
+VALUES ('SimpleDnsUrl', 1903, 'http://127.0.0.1:8053');
 SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
@@ -8029,7 +8200,7 @@ CREATE INDEX "WebDavAccessTokensIdx_AccountID" ON "WebDavAccessTokens" ("Account
 CREATE INDEX "WebDavPortalUsersSettingsIdx_AccountId" ON "WebDavPortalUsersSettings" ("AccountId");
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20241012194211_InitialCreate', '8.0.10');
+VALUES ('20241208071543_InitialCreate', '9.0.0');
 
 COMMIT;
 

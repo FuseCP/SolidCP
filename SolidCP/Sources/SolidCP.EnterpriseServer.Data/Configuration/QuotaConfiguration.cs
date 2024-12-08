@@ -683,6 +683,8 @@ public partial class QuotaConfiguration: EntityTypeConfiguration<Quota>
 			new Quota() { QuotaId = 751, GroupId = 33, QuotaDescription = "Number of DMZ IP addresses per VPS", QuotaName = "VPS2012.DMZIPAddressesNumber", QuotaOrder = 23, QuotaTypeId = 3,
 				ServiceQuota = false },
 			new Quota() { QuotaId = 752, GroupId = 33, QuotaDescription = "Number of DMZ Network VLANs", QuotaName = "VPS2012.DMZVLANsNumber", QuotaOrder = 24, QuotaTypeId = 2,
+				ServiceQuota = false },
+			new Quota() { QuotaId = 753, GroupId = 7, QuotaDescription = "Allow editing TTL in DNS Editor", QuotaName = "DNS.EditTTL", QuotaOrder = 2, QuotaTypeId = 1,
 				ServiceQuota = false }
 		});
 		#endregion
