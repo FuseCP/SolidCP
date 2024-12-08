@@ -55,7 +55,7 @@ using SolidCP.Server.Utils;
 
 using Vds = Microsoft.Storage.Vds;
 using System.Configuration;
-﻿using System.Linq;
+using System.Linq;
 using SolidCP.Providers.Virtualization;
 using SolidCP.Providers.Virtualization.Extensions;
 
