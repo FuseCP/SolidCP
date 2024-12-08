@@ -17,6 +17,7 @@ v2.1.1	10th August 2020	 Fix for v1.4.7 web.config version
 v2.2	18th August 2020	 Fix for the Database not backed up, better support for the changes in v2.1 to prevent duplicates and version added to the window title.
 v2.2.1	23rd May 2021		 Fix for v1.4.8 web.config version
 v2.2.2  29th January 2022	 Changes for v1.4.9 web.config changes
+v2.2.3  02th December 2024	 Changes for v1.5.0 web.config changes
 
 Written By Marc Banyard for the SolidCP Project (c) 2016 SolidCP
 Updated By Trevor Robinson.
@@ -479,6 +480,21 @@ function UpgradeSCPentSvr() # Function to upgrade the SolidCP Enterprise Server 
 				ModifyXML "$SCP_EntSvr_Dir\web.config" "Add" "//configuration/appSettings" "add" @( ("key","SolidCP.AltCryptoKey"), ("value","CryptoKey") )
 				ModifyXML "$SCP_EntSvr_Dir\web.config" "Update" "//configuration/system.web/compilation/@targetFramework" "4.8"
 				ModifyXML "$SCP_EntSvr_Dir\web.config" "Update" "//configuration/microsoft.web.services3/security/securityTokenManager/add[@type='WebsitePanel.EnterpriseServer.ServiceUsernameTokenManager, WebsitePanel.EnterpriseServer']/@type" "SolidCP.EnterpriseServer.ServiceUsernameTokenManager, SolidCP.EnterpriseServer.Code"
+				# v1.5.0
+				ModifyXML "$SCP_EntSvr_Dir\web.config" "Add" "//configuration" "runtime"
+				ModifyXML "$SCP_EntSvr_Dir\web.config" "Add" "//configuration/runtime" "assemblyBinding" @("xmlns-temp","urn:schemas-microsoft-com:asm.v1")
+				ModifyXML "$SCP_EntSvr_Dir\web.config" "Add" "//configuration/runtime/assemblyBinding[@xmlns-temp='urn:schemas-microsoft-com:asm.v1']" "dependentAssembly"
+				ModifyXML "$SCP_EntSvr_Dir\web.config" "Add" "//configuration/runtime/assemblyBinding[@xmlns-temp='urn:schemas-microsoft-com:asm.v1']/dependentAssembly" "assemblyIdentity" @( ("name","Microsoft.Bcl.AsyncInterfaces"), ("publicKeyToken","cc7b13ffcd2ddd51"), ("culture","neutral") )
+				ModifyXML "$SCP_EntSvr_Dir\web.config" "Add" "//configuration/runtime/assemblyBinding[@xmlns-temp='urn:schemas-microsoft-com:asm.v1']/dependentAssembly" "bindingRedirect" @( ("oldVersion","0.0.0.0-7.0.0.0"), ("newVersion","7.0.0.0") )
+				ModifyXML "$SCP_EntSvr_Dir\web.config" "Add" "//configuration/runtime/assemblyBinding[@xmlns-temp='urn:schemas-microsoft-com:asm.v1']" "dependentAssembly"
+				ModifyXML "$SCP_EntSvr_Dir\web.config" "Add" "//configuration/runtime/assemblyBinding[@xmlns-temp='urn:schemas-microsoft-com:asm.v1']/dependentAssembly" "assemblyIdentity" @( ("name","System.Text.Json"), ("publicKeyToken","cc7b13ffcd2ddd51"), ("culture","neutral") )
+				ModifyXML "$SCP_EntSvr_Dir\web.config" "Add" "//configuration/runtime/assemblyBinding[@xmlns-temp='urn:schemas-microsoft-com:asm.v1']/dependentAssembly" "bindingRedirect" @( ("oldVersion","0.0.0.0-7.0.0.1"), ("newVersion","7.0.0.1") )
+				ModifyXML "$SCP_EntSvr_Dir\web.config" "Add" "//configuration/runtime/assemblyBinding[@xmlns-temp='urn:schemas-microsoft-com:asm.v1']" "dependentAssembly"
+				ModifyXML "$SCP_EntSvr_Dir\web.config" "Add" "//configuration/runtime/assemblyBinding[@xmlns-temp='urn:schemas-microsoft-com:asm.v1']/dependentAssembly" "assemblyIdentity" @( ("name","System.Runtime.CompilerServices.Unsafe"), ("publicKeyToken","b03f5f7f11d50a3a"), ("culture","neutral") )
+				ModifyXML "$SCP_EntSvr_Dir\web.config" "Add" "//configuration/runtime/assemblyBinding[@xmlns-temp='urn:schemas-microsoft-com:asm.v1']/dependentAssembly" "bindingRedirect" @( ("oldVersion","0.0.0.0-6.0.0.0"), ("newVersion","6.0.0.0") )
+				ModifyXML "$SCP_EntSvr_Dir\web.config" "Add" "//configuration/runtime/assemblyBinding[@xmlns-temp='urn:schemas-microsoft-com:asm.v1']" "dependentAssembly"
+				ModifyXML "$SCP_EntSvr_Dir\web.config" "Add" "//configuration/runtime/assemblyBinding[@xmlns-temp='urn:schemas-microsoft-com:asm.v1']/dependentAssembly" "assemblyIdentity" @( ("name","Newtonsoft.Json"), ("publicKeyToken","30ad4fe6b2a6aeed"), ("culture","neutral") )
+				ModifyXML "$SCP_EntSvr_Dir\web.config" "Add" "//configuration/runtime/assemblyBinding[@xmlns-temp='urn:schemas-microsoft-com:asm.v1']/dependentAssembly" "bindingRedirect" @( ("oldVersion","0.0.0.0-13.0.0.0"), ("newVersion","13.0.0.0") )
 				#ModifyXML "$SCP_EntSvr_Dir\bin\SolidCP.EnterpriseServer.dll.config" "Update" "//configuration/connectionStrings/add[@name='EnterpriseServer']/@connectionString" "$SCP_EntSvr_ConStr"
 				#ModifyXML "$SCP_EntSvr_Dir\bin\SolidCP.EnterpriseServer.dll.config" "Update" "//configuration/appSettings/add[@key='SolidCP.CryptoKey']/@value" "$SCP_EntSvr_CryptoK"
 				ModifyXML "$SCP_EntSvr_Dir\bin\SolidCP.SchedulerService.exe.config" "Update" "//configuration/connectionStrings/add[@name='EnterpriseServer']/@connectionString" "$SCP_EntSvr_ConStr"
@@ -642,8 +658,8 @@ function UpgradeSCPPortal() # Function to upgrade the SolidCP Portal Component
 				ModifyXML "$SCP_Portal_Dir\web.config" "Add" "//configuration/configSections/sectionGroup[@name='system.data.dataset.serialization']" "section" @( ("name","allowedTypes"), ("type","System.Data.AllowedTypesSectionHandler, System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089") )
 				ModifyXML "$SCP_Portal_Dir\web.config" "Add" "//configuration" "system.data.dataset.serialization"
 				ModifyXML "$SCP_Portal_Dir\web.config" "Add" "//configuration/system.data.dataset.serialization" "allowedTypes"
-				ModifyXML "$SCP_Portal_Dir\web.config" "Update" "//configuration/system.data.dataset.serialization/allowedTypes" "add" @( ("type","SolidCP.Providers.ResultObjects.HeliconApeStatus, SolidCP.Providers.Base, Version=1.4.9.0, Culture=neutral, PublicKeyToken=da8782a6fc4d0081") )
-				ModifyXML "$SCP_Portal_Dir\web.config" "Add" "//configuration/system.data.dataset.serialization/allowedTypes" "add" @( ("type","SolidCP.Providers.ResultObjects.HeliconApeStatus, SolidCP.Providers.Base, Version=1.4.9.0, Culture=neutral, PublicKeyToken=da8782a6fc4d0081") )
+				ModifyXML "$SCP_Portal_Dir\web.config" "Update" "//configuration/system.data.dataset.serialization/allowedTypes" "add" @( ("type","SolidCP.Providers.ResultObjects.HeliconApeStatus, SolidCP.Providers.Base, Version=1.5.0.0, Culture=neutral, PublicKeyToken=da8782a6fc4d0081") )
+				ModifyXML "$SCP_Portal_Dir\web.config" "Add" "//configuration/system.data.dataset.serialization/allowedTypes" "add" @( ("type","SolidCP.Providers.ResultObjects.HeliconApeStatus, SolidCP.Providers.Base, Version=1.5.0.0, Culture=neutral, PublicKeyToken=da8782a6fc4d0081") )
 				
 				# Add the edditional "<dependentAssembly>" tags in the Runtime section and remove any additional charichter returns from the end of the file
 				((Get-Content "$SCP_Portal_Dir\web.config" -Raw) -replace '        <bindingRedirect oldVersion="0\.0\.0\.0-13\.0\.0\.0" newVersion="13\.0\.0\.0" \/>[\r\n]+        <assemblyIdentity name="WebGrease" publicKeyToken="31bf3856ad364e35" culture="neutral" \/>', "        <bindingRedirect oldVersion=`"0.0.0.0-13.0.0.0`" newVersion=`"13.0.0.0`" />`r`n      </dependentAssembly>`r`n      <dependentAssembly>`r`n        <assemblyIdentity name=`"WebGrease`" publicKeyToken=`"31bf3856ad364e35`" culture=`"neutral`" />" -replace '</configuration>[\r\n]+', "</configuration>") | Set-Content "$SCP_Portal_Dir\web.config"

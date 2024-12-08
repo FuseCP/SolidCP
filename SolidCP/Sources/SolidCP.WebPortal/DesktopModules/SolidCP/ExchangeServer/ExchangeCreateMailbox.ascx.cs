@@ -160,7 +160,7 @@ namespace SolidCP.Portal.ExchangeServer
                                                ? (ExchangeAccountType)Utils.ParseInt(rbMailboxType.SelectedValue, 1)
                                                : ExchangeAccountType.Mailbox;
 
-                string domain = PortalAntiXSS.CheckExchangeDomainName(IsNewUser ? email.DomainName : userSelector.GetPrimaryEmailAddress().Split('@')[1]);
+                string domain = IsNewUser ? email.DomainName : userSelector.GetPrimaryEmailAddress().Split('@')[1];
 
                 int accountId = IsNewUser ? 0 : userSelector.GetAccountId();
 

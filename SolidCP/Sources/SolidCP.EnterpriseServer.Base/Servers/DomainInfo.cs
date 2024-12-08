@@ -54,7 +54,11 @@ namespace SolidCP.EnterpriseServer
         private bool isDomainPointer;
         private int previewDomainId;
         private string previewDomainName;
-        
+        private int recorddefaultTTL;
+        private int zoneServiceID;
+        private int recordminimumTTL;
+        private int minimumTTL;
+
         [LogProperty]
         public int DomainId
         {
@@ -157,5 +161,9 @@ namespace SolidCP.EnterpriseServer
         public DateTime? ExpirationDate { get; set; }
         public DateTime? LastUpdateDate { get; set; }
         public string RegistrarName { get; set; }
+        public int RecordDefaultTTL { get; set; }
+        public int ZoneServiceID { get; set; }
+        public int RecordMinimumTTL { get; set; }
+        public int MinimumTTL { get; set; }
     }
 }

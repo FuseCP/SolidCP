@@ -315,7 +315,7 @@ namespace SolidCP.Portal
 
         private void AddDnsRecord(int domainId, string recordName, string recordData)
         {
-            int result = ES.Services.Servers.AddDnsZoneRecord(domainId, recordName, DnsRecordType.A, recordData, 0, 0, 0, 0);
+            int result = ES.Services.Servers.AddDnsZoneRecord(domainId, recordName, DnsRecordType.A, recordData, 0, 0, 0, 0, 0);
             if (result < 0)
             {
                 ShowResultMessage(result);

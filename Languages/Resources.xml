@@ -4642,6 +4642,11 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.DNS.EditTTL</Key>
+    <DefaultValue>DNS Edit TTL (Requires Editor to be enabled)</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>Quota.FTP.Accounts</Key>
     <DefaultValue>FTP Accounts</DefaultValue>
   </Resource>
@@ -14473,6 +14478,11 @@
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\DnsZoneRecords.ascx.resx</File>
+    <Key>gvRecordsTTL.Header</Key>
+    <DefaultValue>TTL</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\DnsZoneRecords.ascx.resx</File>
     <Key>gvRecordsType.Header</Key>
     <DefaultValue>Type</DefaultValue>
   </Resource>
@@ -14480,6 +14490,11 @@
     <File>DesktopModules\SolidCP\App_LocalResources\DnsZoneRecords.ascx.resx</File>
     <Key>lblMXPriority.Text</Key>
     <DefaultValue>MX Priority:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\DnsZoneRecords.ascx.resx</File>
+    <Key>lblRecordTTL.Text</Key>
+    <DefaultValue>Record TTL:</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\DnsZoneRecords.ascx.resx</File>
@@ -30407,6 +30422,16 @@ After creating your virtual directory go to FP administrator and create a subweb
     <DefaultValue>User must change password at next logon</DefaultValue>
   </Resource>
   <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreateMailbox.ascx.resx</File>
+    <Key>valRequireCorrectName.ErrorMessage</Key>
+    <DefaultValue>Enter valid name</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreateMailbox.ascx.resx</File>
+    <Key>valRequireCorrectName.Text</Key>
+    <DefaultValue>*</DefaultValue>
+  </Resource>
+  <Resource>
     <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreatePublicFolder.ascx.resx</File>
     <Key>btnCreate.OnClientClick</Key>
     <DefaultValue>ShowProgressDialog('Creating public folder...');</DefaultValue>
@@ -34265,6 +34290,16 @@ After creating your virtual directory go to FP administrator and create a subweb
     <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\OrganizationUserGeneralSettings.ascx.resx</File>
     <Key>Generalinfo.Text</Key>
     <DefaultValue>General Information</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\OrganizationUserGeneralSettings.ascx.resx</File>
+    <Key>valRequireCorrectName.ErrorMessage</Key>
+    <DefaultValue>Enter valid name</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\OrganizationUserGeneralSettings.ascx.resx</File>
+    <Key>valRequireCorrectName.Text</Key>
+    <DefaultValue>*</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\OrganizationUserMemberOf.ascx.resx</File>

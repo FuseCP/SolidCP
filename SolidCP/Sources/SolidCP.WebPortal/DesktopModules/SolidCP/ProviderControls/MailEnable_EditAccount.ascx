@@ -47,5 +47,13 @@
 			    <asp:TextBox id="txtForward" runat="server" Width="200px" CssClass="form-control"></asp:TextBox>
 		    </td>
 	    </tr>
+		<tr>
+            <td class="SubHead">
+            </td>
+            <td class="Normal">
+                <asp:CheckBox ID="chkDeleteOnForward" runat="server" meta:resourcekey="chkDeleteOnForward"
+                    Text="Delete Message on Forward"></asp:CheckBox>
+            </td>
+        </tr>
     </table>
 </asp:Panel>

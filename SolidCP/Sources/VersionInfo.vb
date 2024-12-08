@@ -11,9 +11,13 @@
 Option Strict Off
 Option Explicit On
 
-<Assembly: System.Reflection.AssemblyInformationalVersion("1.4.5"),  _
- Assembly: System.Reflection.AssemblyCompany("SolidCP"),  _
- Assembly: System.Reflection.AssemblyCopyright("Copyright © 2023 SolidCP."),  _
- Assembly: System.Reflection.AssemblyFileVersion("1.4.9"),  _
- Assembly: System.Reflection.AssemblyVersion("1.4.9")> 
+Imports System
+Imports System.Reflection
+Imports System.Runtime.CompilerServices
+Imports System.Runtime.InteropServices
+<Assembly: AssemblyInformationalVersion("1.5.0"),  _
+ Assembly: AssemblyCompany("SolidCP"),  _
+ Assembly: AssemblyCopyright("Copyright © 2024 SolidCP."),  _
+ Assembly: AssemblyFileVersion("1.5.0"),  _
+ Assembly: AssemblyVersion("1.5.0")> 
 

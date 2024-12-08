@@ -1,5 +1,55 @@
-
-
+Version 1.5.0
+- [SQL] GetSearchObject - wrong join fixed
+- MFA form will resent pin instead of logging in when enter key is pressed
+- WHMCS Module v1.1.4
+- Global search shows a mailbox for AD users
+- [AuditLog] Add missing tasks for VPS2012
+- [Twilio] Fixes for updated packages
+- [WebDavPortal] Check if user must change password
+- [SolidCP.WHMCSModule] ClientEdit hook - fix for MFA
+- [SolidCP.WHMCSModule] Fix for PHP8
+- Installer support for SQL 2022
+- [Exchange] Global search - check additional email addresses for any mailbox types
+- Send password reset request for existing users
+- [WebDavPortal] Fix "Please wait" dialog hang up if browser page back button pressed
+- [WHMCSModule] Improve usability of the Addon and Configurable Options pages
+- New quota added - Disable Tenant To Remove Top-Level Domain
+- [Exchange] Add room and equipment mailbox settings
+- [Exchange] Contact Information label fixed
+- [HyperV2012R2+] Add template variables to custom Powershell scripts
+- [Exchange] Mail enabling of public folders - check contacts (#165)
+- [HyperV2012R2+] Reinstal VM fix (KVP was not set when VM was moved)
+- [HyperV2012R2+] KvpExchangeHelper - remove admin password from error logs
+- [HyperV2012R2+] DMZ network
+- AddPackageAddon - assign IPs and VLANs
+- Fix for private / DMZ network custom IPs
+- [HyperV2012R2+] Check the VM RAM >= 32
+- [Exchange] Filter out illegal characters
+- [Exchange] Display name frontend validator
+- [Exchange] Use PortalAntiXSS.Encode for litDisplayName (fix for 96637d1)
+- [HyperV] DMZ VLAN will be removed from DB when settings changed - fixed
+- [Exchange] Add shared mailboxes to journaling recipients
+- Added support for Server 2025.
+- Adding support for DNS TTL editing when using Microsoft DNS Server 2016 and PowerDNS. Requires a quota is enabled to allow it for hosting plans.
+- [MSDNS2016] Created method to fallback to WMI for reading TXT records over 255 length. #164
+- [PowerDNS] Fix for slave zone creation #185
+- [SmarterMail100] Fix for wrong mailbox size during account creation
+- [SmarterMail100] Fix for large numbers when going from MB to kb
+- [SmarterMail100] Fix for Signature to only be set when not blank
+- [SmarterMail100] Fix for getting mail accoount into. API now requires domain access token key
+- [SmarterMail100] Fixing UpdateAccount due to API changes also some log cleanup
+- [SmarterMail100] Fix for suspending hosting space in SolidCP not causing domain to be disabled.
+- [SmarterMail100] Fix for Deleting Space and/or User Account in SCP does not remove the domain off the SM server
+- [SmarterMail100] Fixed creating groups
+- [SmarterMail100] Added tinymce to the Signature and Autoresponder messages so they can be html when using latest SmarterMail
+- [SmarterMail100] Added support for calculating diskspace and bandwidth
+- [SmarterMail100] On domain creation set the enableMailForwarding
+- [SmarterMail100] Fix for the signature being set on UpdateAccount
+- [SmarterMail100] Setting host to mail.domain.com on AddDomain
+- [SmarterMail100] Added a Default Domain Host name and dropped InheritDefaultLimits from provider settings
+- [SmarterMail100] Setting Full Name on CreateAccount
+- [SmarterMail100] Add defaultdomainhostname property to existing SM100 providers
+- [SmarterMail] Add defaultdomainhostname property to all Smartermail providers (Although currently unused for others)
 
 Version 1.4.9
 - Smartermail100 (Latest API) - Work sponsored by Enterprise Guardian Inc.

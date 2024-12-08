@@ -65,6 +65,10 @@ namespace SolidCP.Portal.ProviderControls
         const string ExpireLimit = "ExpireLimit";
         const string MinimumTTL = "MinimumTTL";
 
+        //DNS RecordTTL
+        const string RecordDefaultTTL = "RecordDefaultTTL";
+        const string RecordMinimumTTL = "RecordMinimumTTL";
+
         //name servers
         const string cNameServers = "NameServers";
 
@@ -150,6 +154,9 @@ namespace SolidCP.Portal.ProviderControls
             intExpire.Interval = Utils.ParseInt(settings[ExpireLimit], 0);
             intTtl.Interval = Utils.ParseInt(settings[MinimumTTL], 0);
 
+            //DNS RecordTTL
+            txtRecordDefaultTTL.Text = settings[RecordDefaultTTL];
+            txtRecordMinimumTTL.Text = settings[RecordMinimumTTL];
 
             //name servers
             nameServers.Value = settings[cNameServers];
@@ -186,6 +193,9 @@ namespace SolidCP.Portal.ProviderControls
             settings[ExpireLimit] = intExpire.Interval.ToString();
             settings[MinimumTTL] = intTtl.Interval.ToString();
 
+            //DNS RecordTTL
+            settings[RecordDefaultTTL] = txtRecordDefaultTTL.Text;
+            settings[RecordMinimumTTL] = txtRecordMinimumTTL.Text;
 
             //ip address settings
             secondaryDNSServers.SaveSettings(settings);

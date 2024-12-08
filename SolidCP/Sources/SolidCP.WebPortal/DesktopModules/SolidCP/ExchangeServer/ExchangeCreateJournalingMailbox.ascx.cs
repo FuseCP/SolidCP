@@ -102,6 +102,11 @@ namespace SolidCP.Portal.ExchangeServer
             {
                 ddlRecipient.Items.Add(new ListItem(account.DisplayName + " - " + account.PrimaryEmailAddress, account.PrimaryEmailAddress));
             }
+            accounts = ES.Services.ExchangeServer.GetAccounts(PanelRequest.ItemID, ExchangeAccountType.SharedMailbox);
+            foreach (ExchangeAccount account in accounts)
+            {
+                ddlRecipient.Items.Add(new ListItem(account.DisplayName + " - " + account.PrimaryEmailAddress, account.PrimaryEmailAddress));
+            }
         }
 
         private void BindPasswordSettings()

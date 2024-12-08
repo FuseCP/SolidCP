@@ -290,6 +290,7 @@ namespace SolidCP.Portal.VPS2012
                 virtualMachine.NeedReboot = chkForceReboot.Checked;
                 virtualMachine.defaultaccessvlan = vm.defaultaccessvlan;
                 virtualMachine.PrivateNetworkVlan = vm.PrivateNetworkVlan;
+                virtualMachine.DmzNetworkVlan = vm.DmzNetworkVlan;
 
                 bool setupExternalNetwork = !vm.ExternalNetworkEnabled && chkExternalNetworkEnabled.Checked;
                 bool setupPrivateNetwork = !vm.PrivateNetworkEnabled && chkPrivateNetworkEnabled.Checked;

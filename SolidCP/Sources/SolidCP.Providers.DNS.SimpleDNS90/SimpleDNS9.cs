@@ -66,10 +66,12 @@ namespace SolidCP.Providers.DNS
 
         private string SimpleDnsPassword => ProviderSettings["Password"];
 
+        public int RecordDefaultTTL => ProviderSettings.GetInt("RecordDefaultTTL");
+
         #endregion
 
         #region Private Methods
-        
+
         /// <summary>
         /// Method that will return a correctly configured HttpClient for methods to use
         /// </summary>
@@ -113,34 +115,34 @@ namespace SolidCP.Providers.DNS
                 var content = response.Content.ReadAsStringAsync().Result;
                 //Check if the call was successful
                 if (!response.IsSuccessStatusCode)
-                    Log.WriteWarning($"SimpleDNS 8 API Call (GET) Failed - {content}");
+                    Log.WriteWarning($"SimpleDNS 9 API Call (GET) Failed - {content}");
                 //Return the string result
                 return content;
             }
             catch (InvalidOperationException ex)
             {
                 //Handle error and return null
-                Log.WriteError("SimpleDNS 8 API Call (GET) - HttpClient already sent GET request.", ex);
+                Log.WriteError("SimpleDNS 9 API Call (GET) - HttpClient already sent GET request.", ex);
                 return null;
             }
             catch (HttpRequestException ex)
             {
                 //Handle error and return null
                 Log.WriteError(
-                    "SimpleDNS 8 API Call (GET) - HttpClient GET request failed - network connectivity, DNS failure, server certificate validation or timeout.",
+                    "SimpleDNS 9 API Call (GET) - HttpClient GET request failed - network connectivity, DNS failure, server certificate validation or timeout.",
                     ex);
                 return null;
             }
             catch (TaskCanceledException ex)
             {
                 //Handle error and return null
-                Log.WriteError("SimpleDNS 8 API Call (GET) - HttpClient timed out.", ex);
+                Log.WriteError("SimpleDNS 9 API Call (GET) - HttpClient timed out.", ex);
                 return null;
             }
             catch (Exception ex)
             {
                 //Handle error and return null
-                Log.WriteError("SimpleDNS 8 API Call (GET) - An unhandled exception occured.", ex);
+                Log.WriteError("SimpleDNS 9 API Call (GET) - An unhandled exception occured.", ex);
                 return null;
             }
             finally
@@ -177,34 +179,34 @@ namespace SolidCP.Providers.DNS
                 var responseContent = response.Content.ReadAsStringAsync().Result;
                 //Check if there was an error from the API
                 if (!response.IsSuccessStatusCode)
-                    Log.WriteWarning($"SimpleDNS 8 API Call (PUT) Failed - {responseContent}");
+                    Log.WriteWarning($"SimpleDNS 9 API Call (PUT) Failed - {responseContent}");
                 //Return the content
                 return responseContent;
             }
             catch (InvalidOperationException ex)
             {
                 //Handle error and return null
-                Log.WriteError("SimpleDNS 8 API Call (PUT) - HttpClient already sent GET request.", ex);
+                Log.WriteError("SimpleDNS 9 API Call (PUT) - HttpClient already sent GET request.", ex);
                 return null;
             }
             catch (HttpRequestException ex)
             {
                 //Handle error and return null
                 Log.WriteError(
-                    "SimpleDNS 8 API Call (PUT) - HttpClient PUT request failed - network connectivity, DNS failure, server certificate validation or timeout.",
+                    "SimpleDNS 9 API Call (PUT) - HttpClient PUT request failed - network connectivity, DNS failure, server certificate validation or timeout.",
                     ex);
                 return null;
             }
             catch (TaskCanceledException ex)
             {
                 //Handle error and return null
-                Log.WriteError("SimpleDNS 8 API Call (PUT) - HttpClient timed out.", ex);
+                Log.WriteError("SimpleDNS 9 API Call (PUT) - HttpClient timed out.", ex);
                 return null;
             }
             catch (Exception ex)
             {
                 //Handle error and return null
-                Log.WriteError("SimpleDNS 8 API Call (PUT) - An unhandled exception occured.", ex);
+                Log.WriteError("SimpleDNS 9 API Call (PUT) - An unhandled exception occured.", ex);
                 return null;
             }
             finally
@@ -236,34 +238,34 @@ namespace SolidCP.Providers.DNS
                 var responseContent = response.Content.ReadAsStringAsync().Result;
                 //Check if there was an error from the API
                 if (!response.IsSuccessStatusCode)
-                    Log.WriteWarning($"SimpleDNS 8 API Call (DELETE) Failed - {responseContent}");
+                    Log.WriteWarning($"SimpleDNS 9 API Call (DELETE) Failed - {responseContent}");
                 //Return the content
                 return responseContent;
             }
             catch (InvalidOperationException ex)
             {
                 //Handle error and return null
-                Log.WriteError("SimpleDNS 8 API Call (DELETE) - HttpClient already sent GET request.", ex);
+                Log.WriteError("SimpleDNS 9 API Call (DELETE) - HttpClient already sent GET request.", ex);
                 return null;
             }
             catch (HttpRequestException ex)
             {
                 //Handle error and return null
                 Log.WriteError(
-                    "SimpleDNS 8 API Call (DELETE) - HttpClient PUT request failed - network connectivity, DNS failure, server certificate validation or timeout.",
+                    "SimpleDNS 9 API Call (DELETE) - HttpClient PUT request failed - network connectivity, DNS failure, server certificate validation or timeout.",
                     ex);
                 return null;
             }
             catch (TaskCanceledException ex)
             {
                 //Handle error and return null
-                Log.WriteError("SimpleDNS 8 API Call (DELETE) - HttpClient timed out.", ex);
+                Log.WriteError("SimpleDNS 9 API Call (DELETE) - HttpClient timed out.", ex);
                 return null;
             }
             catch (Exception ex)
             {
                 //Handle error and return null
-                Log.WriteError("SimpleDNS 8 API Call (DELETE) - An unhandled exception occured.", ex);
+                Log.WriteError("SimpleDNS 9 API Call (DELETE) - An unhandled exception occured.", ex);
                 return null;
             }
             finally
@@ -300,34 +302,34 @@ namespace SolidCP.Providers.DNS
                 var responseContent = response.Content.ReadAsStringAsync().Result;
                 //Check if there was an error from the API
                 if (!response.IsSuccessStatusCode)
-                    Log.WriteWarning($"SimpleDNS 8 API Call (PATCH) Failed - {responseContent}");
+                    Log.WriteWarning($"SimpleDNS 9 API Call (PATCH) Failed - {responseContent}");
                 //Return the content
                 return responseContent;
             }
             catch (InvalidOperationException ex)
             {
                 //Handle error and return null
-                Log.WriteError("SimpleDNS 8 API Call (PATCH) - HttpClient already sent GET request.", ex);
+                Log.WriteError("SimpleDNS 9 API Call (PATCH) - HttpClient already sent GET request.", ex);
                 return null;
             }
             catch (HttpRequestException ex)
             {
                 //Handle error and return null
                 Log.WriteError(
-                    "SimpleDNS 8 API Call (PATCH) - HttpClient PUT request failed - network connectivity, DNS failure, server certificate validation or timeout.",
+                    "SimpleDNS 9 API Call (PATCH) - HttpClient PUT request failed - network connectivity, DNS failure, server certificate validation or timeout.",
                     ex);
                 return null;
             }
             catch (TaskCanceledException ex)
             {
                 //Handle error and return null
-                Log.WriteError("SimpleDNS 8 API Call (PATCH) - HttpClient timed out.", ex);
+                Log.WriteError("SimpleDNS 9 API Call (PATCH) - HttpClient timed out.", ex);
                 return null;
             }
             catch (Exception ex)
             {
                 //Handle error and return null
-                Log.WriteError("SimpleDNS 8 API Call (PATCH) - An unhandled exception occured.", ex);
+                Log.WriteError("SimpleDNS 9 API Call (PATCH) - An unhandled exception occured.", ex);
                 return null;
             }
             finally
@@ -497,10 +499,11 @@ namespace SolidCP.Providers.DNS
             List<ZoneRecordsResponse> recordlist = new List<ZoneRecordsResponse>();
             foreach (ZoneRecordsResponse rec in records)
             {
+                rec.Name = CorrectHost(zoneName, rec.Name).ToString();
                 if (dnsTypes.Contains(rec.Type))
                     recordlist.Add(rec);
             }
-            return recordlist.ToDnsRecordArray();
+            return recordlist.ToDnsRecordArray(zoneName);
         }
 
         public void AddZoneRecord(string zoneName, DnsRecord record)
@@ -515,7 +518,7 @@ namespace SolidCP.Providers.DNS
             var content = new List<ZoneRecordsResponse>
             {
                 //Add DnsRecord to it
-                record.ToZoneRecordsResponse(MinimumTTL, zoneName)
+                record.ToZoneRecordsResponse(zoneName)
             };
 
             Log.WriteInfo("AddZoneRecord content: {0}", content.ToJson());
@@ -533,7 +536,7 @@ namespace SolidCP.Providers.DNS
                 return;
 
             //Declare content to be patched
-            var content = records.Select(record => record.ToZoneRecordsResponse(MinimumTTL, zoneName)).ToList();
+            var content = records.Select(record => record.ToZoneRecordsResponse(zoneName)).ToList();
 
             Log.WriteInfo("AddZoneRecords: JSON content zone: {0} \n data: {1}", zoneName, content.ToJson());
 
@@ -553,7 +556,7 @@ namespace SolidCP.Providers.DNS
             var content = new List<ZoneRecordsDeleteRequest>
             {
                 //Convert record into delete request
-                new ZoneRecordsDeleteRequest(record.ToZoneRecordsResponse(MinimumTTL, zoneName))
+                new ZoneRecordsDeleteRequest(record.ToZoneRecordsResponse(zoneName))
             };
 
             //Call API to PATCH record
@@ -569,10 +572,24 @@ namespace SolidCP.Providers.DNS
                 throw new ArgumentNullException(nameof(records));
 
             //Build up list of delete requests
-            var deleteRequests = records.Select(record => new ZoneRecordsDeleteRequest(record.ToZoneRecordsResponse(MinimumTTL, zoneName))).ToList();
+            var deleteRequests = records.Select(record => new ZoneRecordsDeleteRequest(record.ToZoneRecordsResponse(zoneName))).ToList();
 
             //Call API to PATCH record
             ApiPatch($"zones/{zoneName}/records", deleteRequests.ToJson());
+        }
+
+        private string CorrectHost(string zoneName, string host)
+        {
+            if (string.IsNullOrEmpty(host))
+                return "";
+            
+            if (host == String.Empty)
+                return "";
+
+            if (host.ToLower() == zoneName.ToLower())
+                return "";
+            else
+                return host.Substring(0, (host.Length - zoneName.Length - 1));
         }
     }
 }

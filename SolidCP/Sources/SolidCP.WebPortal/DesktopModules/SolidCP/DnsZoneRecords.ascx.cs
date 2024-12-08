@@ -44,6 +44,7 @@ using System.Web.UI.HtmlControls;
 
 using SolidCP.Providers.DNS;
 using SolidCP.EnterpriseServer;
+using SolidCP.Providers.HostedSolution;
 
 namespace SolidCP.Portal
 {
@@ -51,6 +52,7 @@ namespace SolidCP.Portal
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            //int recorddefaultTTL = 0;
             if (!IsPostBack)
             {
                 // save return URL
@@ -66,6 +68,14 @@ namespace SolidCP.Portal
                 {
                     litDomainName.Text = string.Format("{0} ({1})", Utils.UnicodeToAscii(domain.DomainName), domain.DomainName);
                 }
+
+                if (PackagesHelper.CheckGroupQuotaEnabled(PanelSecurity.PackageId, ResourceGroups.Dns, Quotas.DNS_EDITTTL))
+                {
+                    gvRecords.Columns[3].Visible = true;
+                }
+
+
+                //recorddefaultTTL = domain.RecordDefaultTTL;
             }
         }
 
@@ -93,6 +103,7 @@ namespace SolidCP.Portal
             ViewState["RecordName"] = ((Literal)row.Cells[0].FindControl("litRecordName")).Text; ;
             ViewState["RecordType"] = (DnsRecordType)Enum.Parse(typeof(DnsRecordType), ((Literal)row.Cells[0].FindControl("litRecordType")).Text, true);
             ViewState["RecordData"] = ((Literal)row.Cells[0].FindControl("litRecordData")).Text;
+            ViewState["RecordTTL"] = ((Literal)row.Cells[0].FindControl("litRecordTTL")).Text;
         }
 
         private void BindDnsRecord(int recordIndex)
@@ -106,10 +117,16 @@ namespace SolidCP.Portal
                 litRecordType.Text = ViewState["RecordType"].ToString();
                 txtRecordName.Text = ViewState["RecordName"].ToString();
                 txtRecordData.Text = ViewState["RecordData"].ToString();
+                txtRecordTTL.Text = ViewState["RecordTTL"].ToString();
                 txtMXPriority.Text = ViewState["MxPriority"].ToString();
                 txtSRVPriority.Text = ViewState["SrvPriority"].ToString();
                 txtSRVWeight.Text = ViewState["SrvWeight"].ToString();
                 txtSRVPort.Text = ViewState["SrvPort"].ToString();
+
+                if (txtRecordTTL.Text == "0")
+                {
+                    rowRecordTTL.Visible = false;
+                }
             }
             catch (Exception ex)
             {
@@ -131,6 +148,13 @@ namespace SolidCP.Portal
             rowSRVPort.Visible = false;
             lblRecordData.Text = "Record Data:";
             IPValidator.Enabled = false;
+            rowRecordTTL.Visible = false;
+
+            if (PackagesHelper.CheckGroupQuotaEnabled(PanelSecurity.PackageId, ResourceGroups.Dns, Quotas.DNS_EDITTTL))
+            {
+                rowRecordTTL.Visible = true;
+            }
+
 
             switch (ddlRecordType.SelectedValue)
             {
@@ -186,7 +210,8 @@ namespace SolidCP.Portal
                                                                           Int32.Parse(txtMXPriority.Text.Trim()),
                                                                           Int32.Parse(txtSRVPriority.Text.Trim()),
                                                                           Int32.Parse(txtSRVWeight.Text.Trim()),
-                                                                          Int32.Parse(txtSRVPort.Text.Trim()));
+                                                                          Int32.Parse(txtSRVPort.Text.Trim()),
+                                                                          Int32.Parse(txtRecordTTL.Text.Trim()));
 
                         if (result < 0)
                         {
@@ -214,7 +239,8 @@ namespace SolidCP.Portal
                                                                              Int32.Parse(txtMXPriority.Text.Trim()),
                                                                              Int32.Parse(txtSRVPriority.Text.Trim()),
                                                                              Int32.Parse(txtSRVWeight.Text.Trim()),
-                                                                             Int32.Parse(txtSRVPort.Text.Trim()));
+                                                                             Int32.Parse(txtSRVPort.Text.Trim()),
+                                                                             Int32.Parse(txtRecordTTL.Text.Trim()));
 
                         if (result < 0)
                         {
@@ -268,6 +294,10 @@ namespace SolidCP.Portal
         {
             ViewState["NewRecord"] = true;
 
+            DomainInfo domain = ES.Services.Servers.GetDomain(PanelRequest.DomainID);
+            lblDomainName.Text = "." + domain.DomainName;
+
+
             // erase fields
             ddlRecordType.SelectedIndex = 0;
             txtRecordName.Text = "";
@@ -276,6 +306,8 @@ namespace SolidCP.Portal
             txtSRVPriority.Text = "0";
             txtSRVWeight.Text = "0";
             txtSRVPort.Text = "0";
+
+            txtRecordTTL.Text = domain.RecordDefaultTTL.ToString();
 
 
             ShowPanels(true);
@@ -296,6 +328,10 @@ namespace SolidCP.Portal
         protected void btnCancel_Click(object sender, EventArgs e)
         {
             ShowPanels(false);
+        }
+        protected void gvRecords_RowCreated(object sender, GridViewEditEventArgs e)
+        {
+            //txtRecordTTL = defaultTTL;
         }
         protected void gvRecords_RowEditing(object sender, GridViewEditEventArgs e)
         {

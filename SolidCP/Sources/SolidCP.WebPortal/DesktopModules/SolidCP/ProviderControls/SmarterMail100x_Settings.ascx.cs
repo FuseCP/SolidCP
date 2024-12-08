@@ -90,9 +90,9 @@ namespace SolidCP.Portal.ProviderControls
             ViewState["PWD"] = settings["AdminPassword"];
             rowPassword.Visible = ((string)ViewState["PWD"]) != "";
             cbImportDomainAdmin.Checked = Utils.ParseBool(settings[Constants.ImportDomainAdmin], false);
-            cbInheritDefaultLimits.Checked = Utils.ParseBool(settings[Constants.InheritDomainDefaultLimits], false);
             cbEnableDomainAdmin.Checked = Utils.ParseBool(settings[Constants.EnableDomainAdministrators], false);
             chkSEEnable.Checked = Utils.ParseBool(settings["EnableMailFilter"], false);
+            txtDefaultDomainHostName.Text = settings["DefaultDomainHostName"];
         }
 
         public void SaveSettings(StringDictionary settings)
@@ -103,9 +103,9 @@ namespace SolidCP.Portal.ProviderControls
             settings["AdminUsername"] = txtUsername.Text.Trim();
             settings["AdminPassword"] = (txtPassword.Text.Length > 0) ? txtPassword.Text : (string)ViewState["PWD"];
             settings[Constants.ImportDomainAdmin] = cbImportDomainAdmin.Checked.ToString();
-            settings[Constants.InheritDomainDefaultLimits] = cbInheritDefaultLimits.Checked.ToString();
             settings[Constants.EnableDomainAdministrators] = cbEnableDomainAdmin.Checked.ToString();
             settings["EnableMailFilter"] = chkSEEnable.Checked.ToString();
+            settings["DefaultDomainHostName"] = txtDefaultDomainHostName.Text.Trim();
         }
 
         protected void gvSEDestinations_RowCommand(object sender, GridViewCommandEventArgs e)
