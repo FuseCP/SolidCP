@@ -39,12 +39,14 @@ using System.Web.Services;
 using System.Data;
 using System.Xml.Linq;
 using System.Diagnostics;
+using System.Runtime.Remoting.Lifetime;
 
 namespace SolidCP.WebSite.Services
 {
     public class InstallerServiceBase
     {
         protected string RELEASES_FEED_PATH = "~/Data/ProductReleasesFeed.xml";
+        protected bool IncludeBeta = false;
 
 		#region WebMethods
 
@@ -70,13 +72,16 @@ namespace SolidCP.WebSite.Services
 			dt.Columns.Add("UpgradeFilePath", typeof(string));
 			dt.Columns.Add("InstallerPath", typeof(string));
 			dt.Columns.Add("InstallerType", typeof(string));
+            dt.Columns.Add("Platforms", typeof(string));
 
+            var component = release.Parent;
 			dt.Rows.Add(
 				Int32.Parse(release.Element("releaseFileID").Value),
 				release.Element("fullFilePath").Value,
 				release.Element("upgradeFilePath").Value,
 				release.Element("installerPath").Value,
-				release.Element("installerType").Value);
+				release.Element("installerType").Value,
+                component.Element("platforms")?.Value ?? "Windows");
 
 			ds.AcceptChanges(); // save
 			return ds;
@@ -105,19 +110,19 @@ namespace SolidCP.WebSite.Services
 		[WebMethod]
 		public DataSet GetAvailableComponents()
 		{
-			return GetAvailableComponents(false);
+			return GetAvailableComponents(IncludeBeta);
 		}
 
 		[WebMethod]
 		public DataSet GetLatestComponentUpdate(string componentCode)
 		{
-			return GetLatestComponentUpdate(componentCode, false);
+			return GetLatestComponentUpdate(componentCode, IncludeBeta);
 		}
 
 		[WebMethod]
 		public DataSet GetComponentUpdate(string componentCode, string release)
 		{
-			return GetComponentUpdate(componentCode, release, false);
+			return GetComponentUpdate(componentCode, release, IncludeBeta);
 		}
 
 		#endregion
@@ -148,11 +153,13 @@ namespace SolidCP.WebSite.Services
             dt.Columns.Add("UpgradeFilePath", typeof(string));
             dt.Columns.Add("InstallerPath", typeof(string));
             dt.Columns.Add("InstallerType", typeof(string));
-			//
+            dt.Columns.Add("Platforms", typeof(string));
+            //
             var r = releases.FirstOrDefault();
 			//
             if (r != null)
             {
+                var component = r.Parent;
                 dt.Rows.Add(
                     Int32.Parse(r.Element("releaseFileID").Value),
                     r.Attribute("version").Value,
@@ -160,10 +167,11 @@ namespace SolidCP.WebSite.Services
                     r.Element("fullFilePath").Value,
                     r.Element("upgradeFilePath").Value,
                     r.Element("installerPath").Value,
-                    r.Element("installerType").Value);
-            }
+                    r.Element("installerType").Value,
+				    component.Element("platforms")?.Value ?? "Windows");
+			}
 
-            ds.AcceptChanges(); // save
+			ds.AcceptChanges(); // save
             return ds;
         }
 
@@ -188,10 +196,11 @@ namespace SolidCP.WebSite.Services
             dt.Columns.Add("ComponentName", typeof(string));
             dt.Columns.Add("FullFilePath", typeof(string));
             dt.Columns.Add("InstallerPath", typeof(string));
-            dt.Columns.Add("InstallerType", typeof(string));
+			dt.Columns.Add("InstallerType", typeof(string));
+			dt.Columns.Add("Platforms", typeof(string));
 
-            // check each component for the latest available release
-            foreach (var component in components)
+			// check each component for the latest available release
+			foreach (var component in components)
             {
                 var releases = from r in component.Descendants("release")
                                where Boolean.Parse(r.Attribute("available").Value)
@@ -214,8 +223,9 @@ namespace SolidCP.WebSite.Services
                     component.Attribute("name").Value,
                     release.Element("fullFilePath").Value,
                     release.Element("installerPath").Value,
-                    release.Element("installerType").Value);
-            }
+                    release.Element("installerType").Value,
+                    component.Element("platforms")?.Value ?? "Windows");
+			}
 
             ds.AcceptChanges(); // save
             return ds;
@@ -243,6 +253,7 @@ namespace SolidCP.WebSite.Services
                           && Boolean.Parse(r.Attribute("available").Value)
                           && (includeBeta || !includeBeta && !Boolean.Parse(r.Attribute("beta").Value))
                           select r).LastOrDefault();
+            var component = update?.Parent;
 
             DataSet ds = new DataSet();
             DataTable dt = ds.Tables.Add();
@@ -252,9 +263,10 @@ namespace SolidCP.WebSite.Services
             dt.Columns.Add("FullFilePath", typeof(string));
             dt.Columns.Add("UpgradeFilePath", typeof(string));
             dt.Columns.Add("InstallerPath", typeof(string));
-            dt.Columns.Add("InstallerType", typeof(string));
+			dt.Columns.Add("InstallerType", typeof(string));
+			dt.Columns.Add("Platforms", typeof(string));
 
-            if (update != null)
+			if (update != null)
             {
                 dt.Rows.Add(
                     Int32.Parse(update.Element("releaseFileID").Value),
@@ -263,10 +275,11 @@ namespace SolidCP.WebSite.Services
                     update.Element("fullFilePath").Value,
                     update.Element("upgradeFilePath").Value,
                     update.Element("installerPath").Value,
-                    update.Element("installerType").Value);
-            }
+					update.Element("installerType").Value,
+				    component.Element("platforms")?.Value ?? "Windows");
+			}
 
-            ds.AcceptChanges(); // save
+			ds.AcceptChanges(); // save
             return ds;
         }
 

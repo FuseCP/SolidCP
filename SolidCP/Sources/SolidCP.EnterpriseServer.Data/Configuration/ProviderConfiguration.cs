@@ -78,8 +78,7 @@ public partial class ProviderConfiguration: EntityTypeConfiguration<Provider>
 			new Provider() { ProviderId = 67, DisplayName = "SmarterMail 100.x +", EditorControl = "SmarterMail100x", GroupId = 4, ProviderName = "SmarterMail", ProviderType = "SolidCP.Providers.Mail.SmarterMail100, SolidCP.Providers.Mail.SmarterMail100" },
 			new Provider() { ProviderId = 90, DisplayName = "Hosted Microsoft Exchange Server 2010 SP2", EditorControl = "Exchange", GroupId = 12, ProviderName = "Exchange2010SP2", ProviderType = "SolidCP.Providers.HostedSolution.Exchange2010SP2, SolidCP.Providers.HostedSoluti" +
 				"on" },
-			new Provider() { ProviderId = 91, DisableAutoDiscovery = true, DisplayName = "Hosted Microsoft Exchange Server 2013", EditorControl = "Exchange", GroupId = 12, ProviderName = "Exchange2013",
-				ProviderType = "SolidCP.Providers.HostedSolution.Exchange2013, SolidCP.Providers.HostedSolution." +
+			new Provider() { ProviderId = 91, DisplayName = "Hosted Microsoft Exchange Server 2013", EditorControl = "Exchange", GroupId = 12, ProviderName = "Exchange2013", ProviderType = "SolidCP.Providers.HostedSolution.Exchange2013, SolidCP.Providers.HostedSolution." +
 				"Exchange2013" },
 			new Provider() { ProviderId = 92, DisplayName = "Hosted Microsoft Exchange Server 2016", EditorControl = "Exchange", GroupId = 12, ProviderName = "Exchange2016", ProviderType = "SolidCP.Providers.HostedSolution.Exchange2016, SolidCP.Providers.HostedSolution." +
 				"Exchange2016" },
@@ -149,11 +148,9 @@ public partial class ProviderConfiguration: EntityTypeConfiguration<Provider>
 				"ionForPC.HyperVForPC" },
 			new Provider() { ProviderId = 410, DisplayName = "Microsoft DNS Server 2012+", EditorControl = "MSDNS", GroupId = 7, ProviderName = "MSDNS.2012", ProviderType = "SolidCP.Providers.DNS.MsDNS2012, SolidCP.Providers.DNS.MsDNS2012" },
 			new Provider() { ProviderId = 500, DisplayName = "Unix System", EditorControl = "Unix", GroupId = 1, ProviderName = "UnixSystem", ProviderType = "SolidCP.Providers.OS.Unix, SolidCP.Providers.OS.Unix" },
-			new Provider() { ProviderId = 600, DisableAutoDiscovery = true, DisplayName = "Enterprise Storage Windows 2012", EditorControl = "EnterpriseStorage", GroupId = 44, ProviderName = "EnterpriseStorage2012",
-				ProviderType = "SolidCP.Providers.EnterpriseStorage.Windows2012, SolidCP.Providers.EnterpriseSto" +
+			new Provider() { ProviderId = 600, DisplayName = "Enterprise Storage Windows 2012", EditorControl = "EnterpriseStorage", GroupId = 44, ProviderName = "EnterpriseStorage2012", ProviderType = "SolidCP.Providers.EnterpriseStorage.Windows2012, SolidCP.Providers.EnterpriseSto" +
 				"rage.Windows2012" },
-			new Provider() { ProviderId = 700, DisableAutoDiscovery = true, DisplayName = "Storage Spaces Windows 2012", EditorControl = "StorageSpaceServices", GroupId = 49, ProviderName = "StorageSpace2012",
-				ProviderType = "SolidCP.Providers.StorageSpaces.Windows2012, SolidCP.Providers.StorageSpaces.Win" +
+			new Provider() { ProviderId = 700, DisplayName = "Storage Spaces Windows 2012", EditorControl = "StorageSpaceServices", GroupId = 49, ProviderName = "StorageSpace2012", ProviderType = "SolidCP.Providers.StorageSpaces.Windows2012, SolidCP.Providers.StorageSpaces.Win" +
 				"dows2012" },
 			new Provider() { ProviderId = 1201, DisplayName = "Hosted MS CRM 2011", EditorControl = "CRM2011", GroupId = 21, ProviderName = "CRM", ProviderType = "SolidCP.Providers.HostedSolution.CRMProvider2011, SolidCP.Providers.HostedSoluti" +
 				"on.CRM2011" },
@@ -185,14 +182,19 @@ public partial class ProviderConfiguration: EntityTypeConfiguration<Provider>
 			new Provider() { ProviderId = 1503, DisableAutoDiscovery = true, DisplayName = "Remote Desktop Services Windows 2019", EditorControl = "RDS", GroupId = 45, ProviderName = "RemoteDesktopServices2019",
 				ProviderType = "SolidCP.Providers.RemoteDesktopServices.Windows2019,SolidCP.Providers.RemoteDesk" +
 				"topServices.Windows2019" },
+			new Provider() { ProviderId = 1504, DisableAutoDiscovery = true, DisplayName = "Remote Desktop Services Windows 2022", EditorControl = "RDS", GroupId = 45, ProviderName = "RemoteDesktopServices2022",
+				ProviderType = "SolidCP.Providers.RemoteDesktopServices.Windows2022,SolidCP.Providers.RemoteDesk" +
+				"topServices.Windows2022" },
+			new Provider() { ProviderId = 1505, DisableAutoDiscovery = true, DisplayName = "Remote Desktop Services Windows 2025", EditorControl = "RDS", GroupId = 45, ProviderName = "RemoteDesktopServices2025",
+				ProviderType = "SolidCP.Providers.RemoteDesktopServices.Windows2025,SolidCP.Providers.RemoteDesk" +
+				"topServices.Windows2025" },
 			new Provider() { ProviderId = 1550, DisplayName = "MariaDB 10.1", EditorControl = "MariaDB", GroupId = 50, ProviderName = "MariaDB", ProviderType = "SolidCP.Providers.Database.MariaDB101, SolidCP.Providers.Database.MariaDB" },
 			new Provider() { ProviderId = 1552, DisplayName = "Hosted SharePoint Enterprise 2013", EditorControl = "HostedSharePoint30", GroupId = 73, ProviderName = "HostedSharePoint2013Ent", ProviderType = "SolidCP.Providers.HostedSolution.HostedSharePointServer2013Ent, SolidCP.Provider" +
 				"s.HostedSolution.SharePoint2013Ent" },
 			new Provider() { ProviderId = 1560, DisplayName = "MariaDB 10.2", EditorControl = "MariaDB", GroupId = 50, ProviderName = "MariaDB", ProviderType = "SolidCP.Providers.Database.MariaDB102, SolidCP.Providers.Database.MariaDB" },
 			new Provider() { ProviderId = 1570, DisableAutoDiscovery = true, DisplayName = "MariaDB 10.3", EditorControl = "MariaDB", GroupId = 50, ProviderName = "MariaDB",
 				ProviderType = "SolidCP.Providers.Database.MariaDB103, SolidCP.Providers.Database.MariaDB" },
-			new Provider() { ProviderId = 1571, DisableAutoDiscovery = true, DisplayName = "MariaDB 10.4", EditorControl = "MariaDB", GroupId = 50, ProviderName = "MariaDB",
-				ProviderType = "SolidCP.Providers.Database.MariaDB104, SolidCP.Providers.Database.MariaDB" },
+			new Provider() { ProviderId = 1571, DisplayName = "MariaDB 10.4", EditorControl = "MariaDB", GroupId = 50, ProviderName = "MariaDB", ProviderType = "SolidCP.Providers.Database.MariaDB104, SolidCP.Providers.Database.MariaDB" },
 			new Provider() { ProviderId = 1572, DisplayName = "MariaDB 10.5", EditorControl = "MariaDB", GroupId = 50, ProviderName = "MariaDB", ProviderType = "SolidCP.Providers.Database.MariaDB105, SolidCP.Providers.Database.MariaDB" },
 			new Provider() { ProviderId = 1573, DisplayName = "MariaDB 10.6", EditorControl = "MariaDB", GroupId = 50, ProviderName = "MariaDB", ProviderType = "SolidCP.Providers.Database.MariaDB106, SolidCP.Providers.Database.MariaDB" },
 			new Provider() { ProviderId = 1574, DisplayName = "MariaDB 10.7", EditorControl = "MariaDB", GroupId = 50, ProviderName = "MariaDB", ProviderType = "SolidCP.Providers.Database.MariaDB107, SolidCP.Providers.Database.MariaDB" },
@@ -231,12 +233,17 @@ public partial class ProviderConfiguration: EntityTypeConfiguration<Provider>
 			new Provider() { ProviderId = 1803, DisableAutoDiscovery = true, DisplayName = "Microsoft Hyper-V 2022", EditorControl = "HyperV2012R2", GroupId = 33, ProviderName = "HyperV2022",
 				ProviderType = "SolidCP.Providers.Virtualization.HyperV2022, SolidCP.Providers.Virtualization.Hy" +
 				"perV2022" },
+			new Provider() { ProviderId = 1804, DisableAutoDiscovery = true, DisplayName = "Windows Server 2025", EditorControl = "Windows2012", GroupId = 1, ProviderName = "Windows2025",
+				ProviderType = "SolidCP.Providers.OS.Windows2025, SolidCP.Providers.OS.Windows2025" },
+			new Provider() { ProviderId = 1805, DisableAutoDiscovery = true, DisplayName = "Microsoft Hyper-V 2025", EditorControl = "HyperV2012R2", GroupId = 33, ProviderName = "HyperV2025",
+				ProviderType = "SolidCP.Providers.Virtualization.HyperV2025, SolidCP.Providers.Virtualization.Hy" +
+				"perV2025" },
 			new Provider() { ProviderId = 1901, DisplayName = "SimpleDNS Plus 8.x", EditorControl = "SimpleDNS", GroupId = 7, ProviderName = "SimpleDNS", ProviderType = "SolidCP.Providers.DNS.SimpleDNS8, SolidCP.Providers.DNS.SimpleDNS80" },
 			new Provider() { ProviderId = 1902, DisplayName = "Microsoft DNS Server 2016", EditorControl = "MSDNS", GroupId = 7, ProviderName = "MSDNS.2016", ProviderType = "SolidCP.Providers.DNS.MsDNS2016, SolidCP.Providers.DNS.MsDNS2016" },
 			new Provider() { ProviderId = 1903, DisplayName = "SimpleDNS Plus 9.x", EditorControl = "SimpleDNS", GroupId = 7, ProviderName = "SimpleDNS", ProviderType = "SolidCP.Providers.DNS.SimpleDNS9, SolidCP.Providers.DNS.SimpleDNS90" },
 			new Provider() { ProviderId = 1910, DisplayName = "vsftpd FTP Server 3", EditorControl = "vsftpd", GroupId = 3, ProviderName = "vsftpd", ProviderType = "SolidCP.Providers.FTP.VsFtp3, SolidCP.Providers.FTP.VsFtp" },
-			new Provider() { ProviderId = 1911, DisplayName = "Apache Web Server 2.4 (Experimental)", EditorControl = "Apache", GroupId = 2, ProviderName = "Apache", ProviderType = "SolidCP.Providers.Web.Apache24, SolidCP.Providers.Web.Apache" }
+			new Provider() { ProviderId = 1911, DisplayName = "Apache Web Server 2.4", EditorControl = "Apache", GroupId = 2, ProviderName = "Apache", ProviderType = "SolidCP.Providers.Web.Apache24, SolidCP.Providers.Web.Apache" }
 		});
 		#endregion
-    }
+	}
 }

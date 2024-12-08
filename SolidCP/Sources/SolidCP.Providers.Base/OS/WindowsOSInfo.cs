@@ -65,7 +65,8 @@ namespace SolidCP.Providers.OS
         Windows10,
         WindowsServer2019,
         Windows11,
-        WindowsServer2022
+        WindowsServer2022,
+        WindowsServer2025
     }
 
     public sealed class WindowsOSInfo
@@ -454,7 +455,8 @@ namespace SolidCP.Providers.OS
                                     }
                                     else if (currentBuild >= 20348 && info.wProductType != (byte)WinPlatform.VER_NT_WORKSTATION)
                                     {
-                                        ret = WindowsVersion.WindowsServer2022;
+                                        if (currentBuild >= 26000) ret = WindowsVersion.WindowsServer2025;
+                                        else ret = WindowsVersion.WindowsServer2022;
                                     }
                                     else
                                     {

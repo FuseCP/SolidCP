@@ -52,6 +52,7 @@ namespace SolidCP.WebSite.Services
 		public InstallerService_Beta()
 		{
 			RELEASES_FEED_PATH = "~/Data/ProductReleasesFeed.Beta.xml";
+            IncludeBeta = true;
 		}
     }
 }

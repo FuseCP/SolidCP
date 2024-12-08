@@ -7,11 +7,13 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SolidCP.Portal {
-    
-    
-    public partial class DnsZoneRecords {
-        
+namespace SolidCP.Portal
+{
+
+
+    public partial class DnsZoneRecords
+    {
+
         /// <summary>
         /// asyncTasks control.
         /// </summary>
@@ -20,7 +22,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.EnableAsyncTasksSupport asyncTasks;
-        
+
         /// <summary>
         /// pnlRecords control.
         /// </summary>
@@ -29,7 +31,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel pnlRecords;
-        
+
         /// <summary>
         /// litDomainName control.
         /// </summary>
@@ -38,7 +40,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal litDomainName;
-        
+
         /// <summary>
         /// btnAdd control.
         /// </summary>
@@ -47,7 +49,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnAdd;
-        
+
         /// <summary>
         /// gvRecords control.
         /// </summary>
@@ -56,7 +58,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView gvRecords;
-        
+
         /// <summary>
         /// btnBack control.
         /// </summary>
@@ -65,7 +67,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::CPCC.StyleButton btnBack;
-        
+
         /// <summary>
         /// odsDnsRecords control.
         /// </summary>
@@ -74,7 +76,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ObjectDataSource odsDnsRecords;
-        
+
         /// <summary>
         /// pnlEdit control.
         /// </summary>
@@ -83,7 +85,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel pnlEdit;
-        
+
         /// <summary>
         /// lblRecordType control.
         /// </summary>
@@ -92,7 +94,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize lblRecordType;
-        
+
         /// <summary>
         /// ddlRecordType control.
         /// </summary>
@@ -101,7 +103,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlRecordType;
-        
+
         /// <summary>
         /// litRecordType control.
         /// </summary>
@@ -110,7 +112,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal litRecordType;
-        
+
         /// <summary>
         /// lblRecordName control.
         /// </summary>
@@ -119,7 +121,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblRecordName;
-        
+
         /// <summary>
         /// txtRecordName control.
         /// </summary>
@@ -128,7 +130,16 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtRecordName;
-        
+
+        /// <summary>
+        /// lblDomainName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblDomainName;
+
         /// <summary>
         /// rowData control.
         /// </summary>
@@ -137,7 +148,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl rowData;
-        
+
         /// <summary>
         /// lblRecordData control.
         /// </summary>
@@ -146,7 +157,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblRecordData;
-        
+
         /// <summary>
         /// txtRecordData control.
         /// </summary>
@@ -155,7 +166,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtRecordData;
-        
+
         /// <summary>
         /// valRequireData control.
         /// </summary>
@@ -164,7 +175,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator valRequireData;
-        
+
         /// <summary>
         /// IPValidator control.
         /// </summary>
@@ -173,7 +184,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CustomValidator IPValidator;
-        
+
         /// <summary>
         /// rowMXPriority control.
         /// </summary>
@@ -182,7 +193,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl rowMXPriority;
-        
+
         /// <summary>
         /// lblMXPriority control.
         /// </summary>
@@ -191,7 +202,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblMXPriority;
-        
+
         /// <summary>
         /// txtMXPriority control.
         /// </summary>
@@ -200,7 +211,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtMXPriority;
-        
+
         /// <summary>
         /// valRequireMxPriority control.
         /// </summary>
@@ -209,7 +220,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator valRequireMxPriority;
-        
+
         /// <summary>
         /// valRequireCorrectPriority control.
         /// </summary>
@@ -218,7 +229,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RegularExpressionValidator valRequireCorrectPriority;
-        
+
         /// <summary>
         /// rowSRVPriority control.
         /// </summary>
@@ -227,7 +238,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl rowSRVPriority;
-        
+
         /// <summary>
         /// lblSRVPriority control.
         /// </summary>
@@ -236,7 +247,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblSRVPriority;
-        
+
         /// <summary>
         /// txtSRVPriority control.
         /// </summary>
@@ -245,7 +256,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtSRVPriority;
-        
+
         /// <summary>
         /// valRequireSrvPriority control.
         /// </summary>
@@ -254,7 +265,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator valRequireSrvPriority;
-        
+
         /// <summary>
         /// valRequireCorrectSrvPriority control.
         /// </summary>
@@ -263,7 +274,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RegularExpressionValidator valRequireCorrectSrvPriority;
-        
+
         /// <summary>
         /// rowSRVWeight control.
         /// </summary>
@@ -272,7 +283,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl rowSRVWeight;
-        
+
         /// <summary>
         /// lblSRVWeight control.
         /// </summary>
@@ -281,7 +292,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblSRVWeight;
-        
+
         /// <summary>
         /// txtSRVWeight control.
         /// </summary>
@@ -290,7 +301,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtSRVWeight;
-        
+
         /// <summary>
         /// valRequireSrvWeight control.
         /// </summary>
@@ -299,7 +310,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator valRequireSrvWeight;
-        
+
         /// <summary>
         /// valRequireCorrectSrvWeight control.
         /// </summary>
@@ -308,7 +319,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RegularExpressionValidator valRequireCorrectSrvWeight;
-        
+
         /// <summary>
         /// rowSRVPort control.
         /// </summary>
@@ -317,7 +328,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl rowSRVPort;
-        
+
         /// <summary>
         /// lblSRVPort control.
         /// </summary>
@@ -326,7 +337,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblSRVPort;
-        
+
         /// <summary>
         /// txtSRVPort control.
         /// </summary>
@@ -335,7 +346,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtSRVPort;
-        
+
         /// <summary>
         /// valRequireSrvPort control.
         /// </summary>
@@ -344,7 +355,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator valRequireSrvPort;
-        
+
         /// <summary>
         /// valRequireCorrectSrvPort control.
         /// </summary>
@@ -353,7 +364,52 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RegularExpressionValidator valRequireCorrectSrvPort;
-        
+
+        /// <summary>
+        /// rowRecordTTL control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl rowRecordTTL;
+
+        /// <summary>
+        /// lblRecordTTL control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblRecordTTL;
+
+        /// <summary>
+        /// txtRecordTTL control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtRecordTTL;
+
+        /// <summary>
+        /// valRequireRecordTTL control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator valRequireRecordTTL;
+
+        /// <summary>
+        /// valRequireCorrectRecordTTL control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator valRequireCorrectRecordTTL;
+
         /// <summary>
         /// btnCancel control.
         /// </summary>
@@ -362,7 +418,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::CPCC.StyleButton btnCancel;
-        
+
         /// <summary>
         /// btnSave control.
         /// </summary>

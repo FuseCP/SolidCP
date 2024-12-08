@@ -8176,7 +8176,8 @@ SELECT
 	Z.ItemName AS ZoneName,
 	D.IsSubDomain,
 	D.IsPreviewDomain,
-	D.IsDomainPointer
+	D.IsDomainPointer,
+	Z.ServiceID AS ZoneServiceID
 FROM Domains AS D
 INNER JOIN Packages AS P ON D.PackageID = P.PackageID
 LEFT OUTER JOIN ServiceItems AS WS ON D.WebSiteID = WS.ItemID

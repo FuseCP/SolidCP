@@ -32,6 +32,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Xml.Linq;
 using Newtonsoft.Json;
 
 namespace SolidCP.Providers.DNS.SimpleDNS90.Models.Response
@@ -44,8 +45,8 @@ namespace SolidCP.Providers.DNS.SimpleDNS90.Models.Response
         [JsonProperty("Type")]
         public string Type { get; set; }
 
-        [JsonProperty("TTL", NullValueHandling = NullValueHandling.Ignore)]
-        public long? Ttl { get; set; }
+        [JsonProperty("TTL")]
+        public long? TTL { get; set; }
 
         [JsonProperty("Data")]
         public string Data { get; set; }
@@ -61,7 +62,7 @@ namespace SolidCP.Providers.DNS.SimpleDNS90.Models.Response
 
     public static class ZoneRecordsResponseExtensions
     {
-        public static DnsRecord[] ToDnsRecordArray(this List<ZoneRecordsResponse> records)
+        public static DnsRecord[] ToDnsRecordArray(this List<ZoneRecordsResponse> records, string zoneName)
         {
             //Declare the result
             var dnsRecords = new List<DnsRecord>();
@@ -70,26 +71,29 @@ namespace SolidCP.Providers.DNS.SimpleDNS90.Models.Response
             foreach (var record in records)
             {
                 //Convert the ZoneRecordsResponse to DnsRecord
-                dnsRecords.Add(ZoneRecordResponseToDnsRecord(record));
+                dnsRecords.Add(ZoneRecordResponseToDnsRecord(record, zoneName));
             }
 
             //Return the array of DnsRecords
             return dnsRecords.ToArray();
         }
 
-        public static ZoneRecordsResponse ToZoneRecordsResponse(this DnsRecord record, int minimumTTL, string zoneName)
+        public static ZoneRecordsResponse ToZoneRecordsResponse(this DnsRecord record, string zoneName)
         {
             //Declare the result
             var response = new ZoneRecordsResponse();
 
             //Check that the record is in SDNS format
-            //if (!record.RecordName.Contains(zoneName))
-                //record.RecordName = $"{record.RecordName}.{zoneName}";
+            if (!record.RecordName.Contains(zoneName) && record.RecordName.Length > 0)
+                record.RecordName = $"{record.RecordName}.{zoneName}";
+
+            if (record.RecordName == "")
+                record.RecordName = $"{zoneName}";
 
             //Build up the response
             response.Name = record.RecordName;
             response.Type = record.RecordType.ToString();
-            //response.Ttl = record.RecordText == null ? minimumTTL : Convert.ToInt32(record.RecordText.Split('\t')[1]);
+            response.TTL = record.RecordTTL;
             // ReSharper disable once SwitchStatementMissingSomeCases
             switch (record.RecordType)
             {
@@ -117,6 +121,14 @@ namespace SolidCP.Providers.DNS.SimpleDNS90.Models.Response
                     }
                     response.Data = $"{record.RecordData}";
                     break;
+                case DnsRecordType.TXT:
+                    if (!record.RecordData.StartsWith("\"") && record.RecordData.Length > 0)
+                    {
+                        response.Data = $"\"{record.RecordData}\"";
+                        break;
+                    }
+                    response.Data = record.RecordData ?? "";
+                    break;
                 default:
                     response.Data = record.RecordData ?? "";
                     break;
@@ -129,7 +141,7 @@ namespace SolidCP.Providers.DNS.SimpleDNS90.Models.Response
         /// Method to convert <see cref="ZoneRecordsResponse"/> to <see cref="DnsRecord"/>
         /// </summary>
         /// <param name="record">DNS Record in <see cref="ZoneRecordsResponse"/> format</param>
-        private static DnsRecord ZoneRecordResponseToDnsRecord(ZoneRecordsResponse record)
+        private static DnsRecord ZoneRecordResponseToDnsRecord(ZoneRecordsResponse record, string zoneName)
         {
             //Null checking
             if (record == null)
@@ -187,7 +199,8 @@ namespace SolidCP.Providers.DNS.SimpleDNS90.Models.Response
                 resultRecord.RecordData = record.Data;
             //Build the remaining fields of the record
             resultRecord.RecordName = record.Name;
-            resultRecord.RecordText = $"{record.Name}\t{record.Ttl}\t{record.Type}\t{record.Data}";
+            resultRecord.RecordText = $"{record.Name}\t{record.TTL}\t{record.Type}\t{record.Data}";
+            resultRecord.RecordTTL = (int)record.TTL;
 
             //Return the result
             return resultRecord;

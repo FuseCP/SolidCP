@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net48</TargetFramework>
+		<OutputPath>..\SolidCP.Server\bin\HyperV2012R2\</OutputPath>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+		<LangVersion>11</LangVersion>
+		<Nullable>disable</Nullable>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+		<DebugType>full</DebugType>
+		<Optimize>true</Optimize>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+		<DebugType>pdbonly</DebugType>
+	</PropertyGroup>
+	<ItemGroup>
+		<Reference Include="Microsoft.Storage.Vds">
+			<HintPath>..\..\Lib\References\Microsoft\Microsoft.Storage.Vds.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="SolidCP.Providers.Virtualization.HyperV2019, Version=1.2.1.0, Culture=neutral, processorArchitecture=MSIL">
+			<HintPath>..\SolidCP.Server\bin\HyperV2012R2\SolidCP.Providers.Virtualization.HyperV2019.dll</HintPath>
+			<Private>False</Private>
+			<SpecificVersion>False</SpecificVersion>
+		</Reference>
+		<Reference Include="System.Configuration" />
+		<Reference Include="Microsoft.CSharp" />
+		<Reference Include="System.Management" />
+		<Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+			<HintPath>..\..\Lib\References\Microsoft\Windows2012\System.Management.Automation.dll</HintPath>
+			<Private>False</Private>
+			<SpecificVersion>False</SpecificVersion>
+		</Reference>
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
+		<ProjectReference Include="..\SolidCP.Providers.HostedSolution\SolidCP.Providers.HostedSolution.csproj" />
+		<ProjectReference Include="..\SolidCP.Providers.Virtualization.HyperV-2012R2\SolidCP.Providers.Virtualization.HyperV2012R2.csproj" />
+		<ProjectReference Include="..\SolidCP.Providers.Virtualization.HyperV-2022\SolidCP.Providers.Virtualization.HyperV2022.csproj" />
+		<ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
+	</ItemGroup>
+</Project>

@@ -24,6 +24,7 @@
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2016\SolidCP.Providers.OS.Windows2016.csproj" />
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2019\SolidCP.Providers.OS.Windows2019.csproj" />
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2022\SolidCP.Providers.OS.Windows2022.csproj" />
+        <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2025\SolidCP.Providers.OS.Windows2025.csproj" />
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Web.IIs100\SolidCP.Providers.Web.IIs100.csproj" />
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Web.IIs60\SolidCP.Providers.Web.IIs60.csproj" />
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Web.IIS70\SolidCP.Providers.Web.IIs70.csproj" />
@@ -37,7 +38,7 @@
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="DotNetZip.NetStandard" Version="1.12.0" />
-        <PackageReference Include="MySql.Data" Version="9.0.0" />
+        <PackageReference Include="MySql.Data" Version="9.1.0" />
         <PackageReference Include="System.Data.SQLite.Core" Version="1.0.119" />
         <PackageReference Include="System.Net.Http" Version="4.3.4" />
         <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />

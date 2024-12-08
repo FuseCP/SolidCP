@@ -16,7 +16,7 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 public partial class StorageSpaceFolderConfiguration: EntityTypeConfiguration<StorageSpaceFolder>
 {
     public override void Configure() {
-        HasKey(e => e.Id).HasName("PK__StorageS__3214EC075F095DAF");
+        HasKey(e => e.Id).HasName("PK__StorageS__3214EC07E83EAA64");
 
         HasOne(d => d.StorageSpace).WithMany(p => p.StorageSpaceFolders).HasConstraintName("FK_StorageSpaceFolders_StorageSpaceId");
     }

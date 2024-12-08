@@ -16,7 +16,7 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 public partial class PackageVlanConfiguration: EntityTypeConfiguration<PackageVlan>
 {
     public override void Configure() {
-        HasKey(e => e.PackageVlanId).HasName("PK__PackageV__A9AABBF954AA28C0");
+        HasKey(e => e.PackageVlanId).HasName("PK__PackageV__A9AABBF956ADF68C");
 
         HasOne(d => d.Package).WithMany(p => p.PackageVlans).HasConstraintName("FK_PackageID");
 

@@ -16,7 +16,7 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 public partial class ExchangeOrganizationSsFolderConfiguration: EntityTypeConfiguration<ExchangeOrganizationSsFolder>
 {
     public override void Configure() {
-        HasKey(e => e.Id).HasName("PK__Exchange__3214EC079B0946A0");
+        HasKey(e => e.Id).HasName("PK__Exchange__3214EC0747327BDF");
 
         HasOne(d => d.Item).WithMany(p => p.ExchangeOrganizationSsFolders).HasConstraintName("FK_ExchangeOrganizationSsFolders_ItemId");
 

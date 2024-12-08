@@ -148,16 +148,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="Migrations\MySql\install.mysql.sql" />
-      <None Remove="Migrations\PostgreSql\install.postgresql.sql" />
-      <None Remove="Migrations\Sqlite\install.sqlite.sql" />
-      <None Remove="Migrations\SqlServer\20241024041433_InitialCreate_StoredProcedures.sql" />
       <None Remove="Migrations\SqlServer\install.sqlserver.sql" />
-      <EmbeddedResource Include="Migrations\MySql\install.mysql.sql" />
-      <EmbeddedResource Include="Migrations\PostgreSql\install.postgresql.sql" />
-      <EmbeddedResource Include="Migrations\Sqlite\install.sqlite.sql" />
       <EmbeddedResource Include="LegacyScripts\update_db.sql" />
-      <EmbeddedResource Include="Migrations\SqlServer\20241024041433_InitialCreate_StoredProcedures.sql" />
+      <EmbeddedResource Include="Migrations\SqlServer\20241208071618_InitialCreate_StoredProcedures.sql" />
       <EmbeddedResource Include="Migrations\SqlServer\install.sqlserver.sql" />
     </ItemGroup>
 
@@ -165,6 +158,12 @@
         <Compile Update="Extensions\EntityDataTable.cs">
             <SubType>Component</SubType>
         </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Migrations\MySql\" />
+      <Folder Include="Migrations\PostgreSql\" />
+      <Folder Include="Migrations\Sqlite\" />
     </ItemGroup>
 
 </Project>

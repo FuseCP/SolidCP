@@ -59,6 +59,7 @@ namespace SolidCP.Installer.Common
 			public const string InstallerType = "InstallerType";
 			public const string InstallerPath = "InstallerPath";
 			public const string InstallerFolder = "InstallerFolder";
+			public const string Platforms = "Platforms";
 			public const string Version = "Version";
 			public const string ComponentDescription = "ComponentDescription";
 			public const string ComponentCode = "ComponentCode";

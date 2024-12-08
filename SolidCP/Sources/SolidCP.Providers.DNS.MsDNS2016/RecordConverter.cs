@@ -89,6 +89,9 @@ namespace SolidCP.Providers.DNS
             CimKeyedCollection<CimProperty> data = ((CimInstance)obj.Properties["RecordData"].Value).CimInstanceProperties;
             string host = CorrectHost(zoneName, (string)obj.Properties["HostName"].Value);
 
+            TimeSpan ttldata = (TimeSpan)obj.Properties["TimeToLive"].Value;
+            int timetolive = (int)ttldata.TotalSeconds;
+
             switch (tp)
             {
                 // The compiler should create a Dictionary<> from dis switch
@@ -98,6 +101,7 @@ namespace SolidCP.Providers.DNS
                         {
                             RecordType = tp,
                             RecordName = host,
+                            RecordTTL  = timetolive,
                             RecordData = data["IPv4Address"].Value as string,
                         };
                     }
@@ -107,6 +111,7 @@ namespace SolidCP.Providers.DNS
                         {
                             RecordType = tp,
                             RecordName = host,
+                            RecordTTL  = timetolive,
                             RecordData = data["IPv6Address"].Value as string,
                         };
                     }
@@ -116,6 +121,7 @@ namespace SolidCP.Providers.DNS
                         {
                             RecordType = tp,
                             RecordName = host,
+                            RecordTTL  = timetolive,
                             RecordData = RemoveTrailingDot(data["HostNameAlias"].Value as string),
                         };
                     }
@@ -125,6 +131,7 @@ namespace SolidCP.Providers.DNS
                         {
                             RecordType = tp,
                             RecordName = host,
+                            RecordTTL  = timetolive,
                             RecordData = RemoveTrailingDot(data["MailExchange"].Value as string),
                             MxPriority = (UInt16)data["Preference"].Value,
                         };
@@ -135,6 +142,7 @@ namespace SolidCP.Providers.DNS
                         {
                             RecordType = tp,
                             RecordName = host,
+                            RecordTTL = timetolive,
                             RecordData = RemoveTrailingDot(data["NameServer"].Value as string),
                         };
                     }
@@ -144,6 +152,7 @@ namespace SolidCP.Providers.DNS
                         {
                             RecordType = tp,
                             RecordName = host,
+                            RecordTTL = timetolive,
                             RecordData = data["DescriptiveText"].Value as string,
                         };
                     }
@@ -156,6 +165,7 @@ namespace SolidCP.Providers.DNS
                         {
                             RecordType = tp,
                             RecordName = host,
+                            RecordTTL = timetolive,
                             PrimaryNsServer = PrimaryServer,
                             PrimaryPerson = ResponsiblePerson,
                             SerialNumber = (sn.HasValue) ? sn.Value.ToString() : null,
@@ -167,6 +177,7 @@ namespace SolidCP.Providers.DNS
                         {
                             RecordType = tp,
                             RecordName = host,
+                            RecordTTL = timetolive,
                             RecordData = RemoveTrailingDot(data["DomainName"].Value as string),
                             SrvPriority = (UInt16)data["Priority"].Value,
                             SrvWeight = (UInt16)data["Weight"].Value,
@@ -189,6 +200,7 @@ namespace SolidCP.Providers.DNS
                         {
                             RecordType = type,
                             RecordName = host,
+                            RecordTTL = timetolive,
                             RecordData = data["Data"].Value as string,
                         };
                     }

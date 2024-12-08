@@ -3,7 +3,7 @@
 		<Version>$(Version)</Version>
 		<FileVersion>$(BUILD_NUMBER)</FileVersion>
 		<VersionLabel>$(BUILD_NUMBER)</VersionLabel>
-		<ReleaseDate>2023-01-31</ReleaseDate>
+		<ReleaseDate>2024-12-02</ReleaseDate>
 		<BuildConfiguration></BuildConfiguration>
 		<RootFolder>..</RootFolder>
 		<TrunkFolder>$(RootFolder)\SolidCP</TrunkFolder>
@@ -68,7 +68,7 @@
 		<IncludeReleasePdbs Condition="'$(IncludeReleasePdbs)' == ''">true</IncludeReleasePdbs>
 
 		<!-- Use aspnet_compiler to precompile WebPortal if set to true (This also checks all ascx and aspx files for errors) -->
-		<UseAspNetPrecompile Condition="'$(UseAspNetPrecompile)' == ''">true</UseAspNetPrecompile>
+		<UseAspNetPrecompile Condition="'$(UseAspNetPrecompile)' == ''">false</UseAspNetPrecompile>
 
 		<!-- Build Linux install deb & rpm packages (This requires a WSL distro with rpmbuild installed) -->
 		<BuildLinuxInstallPackages Condition="'$(BuildLinuxInstallPackages)' == ''">true</BuildLinuxInstallPackages>
@@ -111,12 +111,12 @@
 	</Target>
 
 	<Target Name="GenerateBuildVersionFilesInstaller" DependsOnTargets="RestorePackages">
-		<AssemblyInfo CodeLanguage="CS" OutputFile="$(RootFolder)\SolidCP.Installer\Sources\VersionInfo.cs" AssemblyCompany="SolidCP" AssemblyCopyright="Copyright © 2023 SolidCP." AssemblyVersion="$(VersionLabel)" AssemblyFileVersion="$(FileVersion)" AssemblyInformationalVersion="$(Version)" />
+		<AssemblyInfo CodeLanguage="CS" OutputFile="$(RootFolder)\SolidCP.Installer\Sources\VersionInfo.cs" AssemblyCompany="SolidCP" AssemblyCopyright="Copyright © 2024 SolidCP." AssemblyVersion="$(VersionLabel)" AssemblyFileVersion="$(FileVersion)" AssemblyInformationalVersion="$(Version)" />
 	</Target>
 
 	<Target Name="GenerateBuildVersionFiles" DependsOnTargets="GenerateBuildVersionFilesInstaller">
-		<AssemblyInfo CodeLanguage="CS" OutputFile="$(TrunkFolder)\Sources\VersionInfo.cs" AssemblyCompany="SolidCP" AssemblyCopyright="Copyright © 2023 SolidCP." AssemblyVersion="$(VersionLabel)" AssemblyFileVersion="$(FileVersion)" AssemblyInformationalVersion="$(Version)" />
-		<AssemblyInfo CodeLanguage="VB" OutputFile="$(TrunkFolder)\Sources\VersionInfo.vb" AssemblyCompany="SolidCP" AssemblyCopyright="Copyright © 2023 SolidCP." AssemblyVersion="$(VersionLabel)" AssemblyFileVersion="$(FileVersion)" AssemblyInformationalVersion="$(Version)" />
+		<AssemblyInfo CodeLanguage="CS" OutputFile="$(TrunkFolder)\Sources\VersionInfo.cs" AssemblyCompany="SolidCP" AssemblyCopyright="Copyright © 2024 SolidCP." AssemblyVersion="$(VersionLabel)" AssemblyFileVersion="$(FileVersion)" AssemblyInformationalVersion="$(Version)" />
+		<AssemblyInfo CodeLanguage="VB" OutputFile="$(TrunkFolder)\Sources\VersionInfo.vb" AssemblyCompany="SolidCP" AssemblyCopyright="Copyright © 2024 SolidCP." AssemblyVersion="$(VersionLabel)" AssemblyFileVersion="$(FileVersion)" AssemblyInformationalVersion="$(Version)" />
 	</Target>
 
 	<Target Name="BackupModelSnapshots" DependsOnTargets="GenerateBuildVersionFiles">

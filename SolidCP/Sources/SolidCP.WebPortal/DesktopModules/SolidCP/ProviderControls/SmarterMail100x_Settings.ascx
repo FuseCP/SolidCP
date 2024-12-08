@@ -53,11 +53,15 @@
 	</tr>
 	<tr>
 	    <td></td>
-	    <td><asp:CheckBox runat="server" ID="cbInheritDefaultLimits" meta:resourcekey="cbInheritDefaultLimits"/></td>
+	    <td><asp:CheckBox runat="server" ID="cbEnableDomainAdmin" meta:resourcekey="cbEnableDomainAdmin"/></td>
 	</tr>
 	<tr>
-	    <td></td>
-	    <td><asp:CheckBox runat="server" ID="cbEnableDomainAdmin" meta:resourcekey="cbEnableDomainAdmin"/></td>
+		<td class="SubHead">
+		    <asp:Label ID="lblDefaultDomainHostName" runat="server" meta:resourcekey="lblDefaultDomainHostName" Text="Default Domain Hostname:"></asp:Label>
+		</td>
+		<td>
+			<asp:TextBox Runat="server" ID="txtDefaultDomainHostName" CssClass="form-control" Width="200px"></asp:TextBox>
+		</td>
 	</tr>
 		
 </table>

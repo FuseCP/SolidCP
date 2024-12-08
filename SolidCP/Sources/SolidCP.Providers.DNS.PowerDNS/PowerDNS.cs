@@ -348,7 +348,7 @@ namespace SolidCP.Providers.DNS
                 soaData.HostMaster = primaryPerson;
                 soaData.Refresh = SOARefreshInterval;
                 soaData.Retry = SOARetryDelay;
-                soaData.DefaultTTL = SOAMinimumTTL;
+                soaData.DefaultTTL = MinimumTTL;
                 soaData.Expire = SOAExpireLimit;
 
                 soaData.IncrementSerial(
@@ -394,6 +394,7 @@ namespace SolidCP.Providers.DNS
                     record.RecordData = reader["content"].ToString();
                     record.RecordName = CorrectHost(zoneName, reader["name"].ToString());
                     record.RecordType = ConvertStringToDnsRecordType(reader["type"].ToString());
+                    record.RecordTTL = int.Parse(reader["ttl"].ToString());
 
                     int mxPriority = 0;
                     if (!string.IsNullOrEmpty(reader["prio"].ToString()))
@@ -537,7 +538,6 @@ namespace SolidCP.Providers.DNS
 
 
             string recordType = ConvertDnsRecordTypeToString(record.RecordType);
-            string ttl = GetDefaultRecordTTL(record.RecordType);
 
 
             //NS record
@@ -567,13 +567,12 @@ namespace SolidCP.Providers.DNS
                 record.RecordName = zoneName;
             }
 
-
             AddRecord(
                   domainId
                 , record.RecordName
                 , record.RecordData
                 , recordType
-                , ttl
+                , record.RecordTTL
                 , record.MxPriority.ToString()
             );
 
@@ -745,6 +744,8 @@ namespace SolidCP.Providers.DNS
                 MySqlParameter RecordPriority = new MySqlParameter("?RecordPriority", MySqlDbType.Int32);
                 RecordPriority.Value = mxPriority;
 
+                Log.WriteInfo("PowerDNS RemoveRecord: \n\n RecordName: {0} \n Type: {1} \n content: {2} \n Prio: {3}", RecordName.Value ?? "", RecordType.Value ?? "", RecordContent.Value ?? "", RecordPriority.Value ?? "");
+
                 if (mxPriority > 0)
                 {
                     ExecuteNonQuery(
@@ -780,7 +781,7 @@ namespace SolidCP.Providers.DNS
         /// <param name="type"></param>
         /// <param name="ttl"></param>
         /// <param name="prio"></param>
-        protected void AddRecord(string domainId, string name, string content, string type, string ttl, string prio)
+        protected void AddRecord(string domainId, string name, string content, string type, int ttl, string prio)
         {
             try
             {
@@ -801,6 +802,8 @@ namespace SolidCP.Providers.DNS
 
                 MySqlParameter RecordPriority = new MySqlParameter("?RecordPriority", MySqlDbType.Int32);
                 RecordPriority.Value = prio;
+
+                Log.WriteInfo("PowerDNS AddRecord: \n\n DomainID: {0} \n RecordName: {1} \n content: {2} \n Type: {3} \n ttl: {4} \n prio: {5}", DomainId.Value, RecordName.Value ?? "", RecordContent.Value ?? "", RecordType.Value ?? "", RecordTtl.Value ?? "", RecordPriority.Value ?? "");
 
                 ExecuteNonQuery(
                      "INSERT INTO records (domain_id, name, content, type, ttl, prio) " +
@@ -835,6 +838,8 @@ namespace SolidCP.Providers.DNS
                 MySqlParameter RecordId = new MySqlParameter("?RecordId", MySqlDbType.Int32);
                 RecordId.Value = recordId;
 
+                Log.WriteInfo("PowerDNS UpdateRecord: \n\n RecordID: {0} \n content: {1}", RecordId.Value = recordId, RecordContent.Value);
+
                 ExecuteNonQuery(
                     "UPDATE records SET content = ?RecordContent " +
                     "WHERE id = ?RecordId LIMIT 1"
@@ -853,22 +858,22 @@ namespace SolidCP.Providers.DNS
         /// </summary>
         /// <param name="recordType"></param>
         /// <returns></returns>
-        public string GetDefaultRecordTTL(DnsRecordType recordType)
+        public int GetDefaultRecordTTL(DnsRecordType recordType)
         {
-            string ttl = string.Empty;
+            int ttl;
 
             switch (recordType)
             {
                 case DnsRecordType.SOA:
-                    ttl = SOAMinimumTTL;
+                    ttl = int.Parse(SOAMinimumTTL);
                     break;
 
                 case DnsRecordType.NS:
-                    ttl = "3600";
+                    ttl = 3600;
                     break;
 
                 default:
-                    ttl = "120";
+                    ttl = 120;
                     break;
             }
 

@@ -94,7 +94,7 @@ namespace SolidCP.Portal.HostedSolution
                 OrganizationUser user = ES.Services.Organizations.GetUserGeneralSettings(PanelRequest.ItemID,
                     PanelRequest.AccountID);
 
-                litDisplayName.Text = user.DisplayName;
+                litDisplayName.Text = PortalAntiXSS.Encode(user.DisplayName);
 
                 lblUserDomainName.Text = user.DomainUserName;
 

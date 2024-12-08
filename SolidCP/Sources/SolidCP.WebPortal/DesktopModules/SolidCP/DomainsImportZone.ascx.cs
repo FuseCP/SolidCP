@@ -80,7 +80,8 @@ namespace SolidCP.Portal
                             record.MxPriority,
                             record.SrvPriority,
                             record.SrvWeight,
-                            record.SrvPort);
+                            record.SrvPort,
+                            record.RecordTTL);
                         //Check if the record couldn't be added for some reason
                         if (result < 0)
                             ShowResultMessage(result);

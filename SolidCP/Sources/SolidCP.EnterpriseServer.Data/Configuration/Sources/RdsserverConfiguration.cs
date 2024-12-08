@@ -16,7 +16,7 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 public partial class RdsserverConfiguration: EntityTypeConfiguration<Rdsserver>
 {
     public override void Configure() {
-        HasKey(e => e.Id).HasName("PK__RDSServe__3214EC277AE01BBB");
+        HasKey(e => e.Id).HasName("PK__RDSServe__3214EC27815F05B3");
 
         Property(e => e.ConnectionEnabled).HasDefaultValue(true);
 

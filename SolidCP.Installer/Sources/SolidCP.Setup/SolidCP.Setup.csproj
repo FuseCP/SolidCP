@@ -404,6 +404,7 @@
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2016\SolidCP.Providers.OS.Windows2016.csproj" OutputItemType="EmbeddedResource" />
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2019\SolidCP.Providers.OS.Windows2019.csproj" OutputItemType="EmbeddedResource" />
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2022\SolidCP.Providers.OS.Windows2022.csproj" OutputItemType="EmbeddedResource" />
+        <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2025\SolidCP.Providers.OS.Windows2025.csproj" OutputItemType="EmbeddedResource" />
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Web.IIs100\SolidCP.Providers.Web.IIs100.csproj" OutputItemType="EmbeddedResource" />
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Web.IIs60\SolidCP.Providers.Web.IIs60.csproj" OutputItemType="EmbeddedResource" />
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Web.IIS70\SolidCP.Providers.Web.IIs70.csproj" OutputItemType="EmbeddedResource" />

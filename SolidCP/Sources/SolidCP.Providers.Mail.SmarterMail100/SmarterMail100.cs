@@ -41,6 +41,8 @@ using FileUtils = SolidCP.Providers.Utils.FileUtils;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Globalization;
+using System.Collections;
 
 namespace SolidCP.Providers.Mail
 {
@@ -65,16 +67,6 @@ namespace SolidCP.Providers.Mail
 			{
 				bool res;
 				bool.TryParse(ProviderSettings[Constants.ImportDomainAdmin], out res);
-				return res;
-			}
-		}
-
-		protected bool InheritDomainDefaultLimits
-		{
-			get
-			{
-				bool res;
-				bool.TryParse(ProviderSettings[Constants.InheritDomainDefaultLimits], out res);
 				return res;
 			}
 		}
@@ -116,10 +108,16 @@ namespace SolidCP.Providers.Mail
 		{
 			get { return ProviderSettings["ServiceUrl"]; }
 		}
-		#endregion
 
-		#region Constants
-		public const string SYSTEM_DOMAIN_ADMIN = "system.domain.admin";
+        protected string DefaultDomainHostName
+        {
+            get { return ProviderSettings["DefaultDomainHostName"]; }
+        }
+
+        #endregion
+
+        #region Constants
+        public const string SYSTEM_DOMAIN_ADMIN = "system.domain.admin";
 		public const string SYSTEM_CATCH_ALL = "system.catch.all";
 		#endregion
 
@@ -197,8 +195,6 @@ namespace SolidCP.Providers.Mail
 
 		public async Task<AuthToken> GetDomainAccessToken(string domain)
 		{
-			Log.WriteStart("GetAccessToken");
-
 			AuthToken authToken = await GetAccessToken();
 
 			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
@@ -228,11 +224,7 @@ namespace SolidCP.Providers.Mail
 
 		public async Task<AuthToken> GetUserAccessToken(string email)
 		{
-			Log.WriteStart("GetUserAccessToken");
-
 			AuthToken authToken = await GetAccessToken();
-
-			Log.WriteStart("GetUserAccessToken - GetAccessToken");
 
 			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
 			ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
@@ -262,8 +254,6 @@ namespace SolidCP.Providers.Mail
 
 		private async Task<object> ExecGetCommand(string command)
 		{
-			Log.WriteStart("ExecGetCommand {0}", command);
-
 			AuthToken auth = await GetAccessToken();
 
 			var commandurl = ServiceUrl + "/api/v1/" + command;
@@ -284,8 +274,6 @@ namespace SolidCP.Providers.Mail
 
 		private async Task<object> ExecPostCommand(string command, object param)
 		{
-			Log.WriteStart("ExecPostCommand {0}", command);
-
 			AuthToken authToken = await GetAccessToken();
 
 			var commandurl = ServiceUrl + "/api/v1/" + command;
@@ -350,8 +338,6 @@ namespace SolidCP.Providers.Mail
 
 		private async Task<object> ExecUserGetCommand(string command, string email)
 		{
-			Log.WriteStart("ExecGetCommand {0}", command);
-
 			AuthToken auth = await GetUserAccessToken(email);
 
 			var commandurl = ServiceUrl + "/api/v1/" + command;
@@ -455,8 +441,6 @@ namespace SolidCP.Providers.Mail
 				if (!success)
 					throw new Exception(result["message"]);
 
-				Log.WriteInfo("GetDomain: DomainSettings {0}", result["domainSettings"]);
-
                 // fill domain properties
                 MailDomain domain = new MailDomain();
 				domain.Name = domainName;
@@ -487,17 +471,14 @@ namespace SolidCP.Providers.Mail
 
 				//Throttling
 				domain[MailDomain.SMARTERMAIL5_MESSAGES_PER_HOUR] = result["domainSettings"]["throttleSettings"]["messagesPerHour"].ToString();
-				string SM_MESSAGES_PER_HOUR_ENABLED = result["domainSettings"]["throttleSettings"]["messagesAction"].ToString();
-				domain[MailDomain.SMARTERMAIL5_MESSAGES_PER_HOUR_ENABLED] = GetBoolean(SM_MESSAGES_PER_HOUR_ENABLED);
-				domain[MailDomain.SMARTERMAIL5_BANDWIDTH_PER_HOUR] = result["domainSettings"]["throttleSettings"]["bandwidthPerHour"].ToString();
-				string SM_BANDWIDTH_PER_HOUR_ENABLED = result["domainSettings"]["throttleSettings"]["bandwidthAction"].ToString();
-				domain[MailDomain.SMARTERMAIL5_BANDWIDTH_PER_HOUR_ENABLED] = GetBoolean(SM_BANDWIDTH_PER_HOUR_ENABLED);
-				domain[MailDomain.SMARTERMAIL5_BOUNCES_PER_HOUR] = result["domainSettings"]["throttleSettings"]["bouncesPerHour"].ToString();
-				string SM_BOUNCES_PER_HOUR_ENABLED = result["domainSettings"]["throttleSettings"]["bouncesAction"].ToString();
-				domain[MailDomain.SMARTERMAIL5_BOUNCES_PER_HOUR_ENABLED] = GetBoolean(SM_BOUNCES_PER_HOUR_ENABLED);
+				domain[MailDomain.SMARTERMAIL100_MESSAGES_PER_HOUR_ACTION] = result["domainSettings"]["throttleSettings"]["messagesAction"].ToString();
+                domain[MailDomain.SMARTERMAIL5_BANDWIDTH_PER_HOUR] = result["domainSettings"]["throttleSettings"]["bandwidthPerHour"].ToString();
+				domain[MailDomain.SMARTERMAIL100_BANDWIDTH_PER_HOUR_ACTION] = result["domainSettings"]["throttleSettings"]["bouncesAction"].ToString();
+                domain[MailDomain.SMARTERMAIL5_BOUNCES_PER_HOUR] = result["domainSettings"]["throttleSettings"]["bouncesPerHour"].ToString();
+				domain[MailDomain.SMARTERMAIL100_BOUNCES_PER_HOUR_Action] = result["domainSettings"]["throttleSettings"]["bandwidthAction"].ToString();
 
-				//Limits
-				domain.MaxDomainSizeInMB = (int)Convert.ToInt64(Convert.ToInt64(result["domainSettings"]["maxSize"].ToString()) / 1048576);
+                //Limits
+                domain.MaxDomainSizeInMB = (int)Convert.ToInt64((long)result["domainSettings"]["maxSize"] / 1048576);
 				domain.MaxDomainAliases = (int)Convert.ToInt64(result["domainSettings"]["maxDomainAliases"].ToString());
 				domain.MaxDomainUsers = (int)Convert.ToInt64(result["domainSettings"]["maxUsers"].ToString());
 				domain.MaxAliases = (int)Convert.ToInt64(result["domainSettings"]["maxAliases"].ToString());
@@ -506,7 +487,7 @@ namespace SolidCP.Providers.Mail
 				domain.MaxRecipients = (int)Convert.ToInt64(result["domainSettings"]["maxRecipients"].ToString());
 
 
-				domain.MaxMailboxSizeInMB = (int)Convert.ToInt64(Convert.ToInt64(result["domainSettings"]["maxMailboxSize"].ToString()) / 1048576);
+				domain.MaxMailboxSizeInMB = (int)Convert.ToInt64((long)result["domainSettings"]["maxMailboxSize"] / 1048576);
 				domain.MaxRecipients = (int)Convert.ToInt64(result["domainSettings"]["maxRecipients"].ToString());
 				domain.RequireSmtpAuthentication = Convert.ToBoolean(result["domainSettings"]["requireSmtpAuthentication"]);
 				domain.ListCommandAddress = result["domainSettings"]["listCommandAddress"].ToString();
@@ -572,17 +553,25 @@ namespace SolidCP.Providers.Mail
 		{
 			try
 			{
+				string domainHostname = "mail." + domain.Name;
+
+
+                if (DefaultDomainHostName.Length > 0)
+				{
+					domainHostname = DefaultDomainHostName.ToLower().Replace("[domain_name]", domain.Name);
+				}
+				
 				var domainDataArray = new
 				{
 					name = domain.Name,
 					path = DomainsPath + "\\" + domain.Name,
-					hostname = domain.Name,
-					isEnabled = domain.Enabled.ToString(),
+					hostname = domainHostname,
+                    isEnabled = domain.Enabled.ToString(),
 					userLimit = domain.MaxDomainUsers,
 					domainAliasCount = domain.MaxDomainAliases,
 					listLimit = domain.MaxLists,
 					size = domain.MaxDomainSizeInMB,
-					maxSize = domain.MaxDomainSizeInMB,
+					maxSize = domain.MaxDomainSizeInMB * 1048576,
 					sizeMb = domain.MaxDomainSizeInMB,
 				};
 
@@ -598,7 +587,24 @@ namespace SolidCP.Providers.Mail
 				bool success = Convert.ToBoolean(result["success"]);
 				if (!success)
 					throw new Exception(result["message"]);
-			}
+
+				var domainSettingsArray = new
+				{
+                    enableMailForwarding = domain.Enabled
+                };
+
+				var domainSettingsPram = new
+				{
+					domainSettings = domainSettingsArray
+				};
+
+				dynamic updateresult = ExecPostCommand("settings/sysadmin/domain-settings/" + domain.Name, domainSettingsPram).Result;
+
+                bool updatesuccess = Convert.ToBoolean(updateresult["success"]);
+                if (!updatesuccess)
+                    throw new Exception(updateresult["message"]);
+
+            }
 			catch (Exception ex)
 			{
 				if (DomainExists(domain.Name))
@@ -615,7 +621,7 @@ namespace SolidCP.Providers.Mail
 			try
 			{
 				var input_post = new { };
-				dynamic result = ExecPostCommand("settings/domain/user-delete/" + domainName + "/true", input_post).Result;
+				dynamic result = ExecPostCommand("settings/sysadmin/domain-delete/" + domainName + "/true", input_post).Result;
 
 				bool success = Convert.ToBoolean(result["success"]);
 				if (!success)
@@ -657,13 +663,17 @@ namespace SolidCP.Providers.Mail
 				if (!success)
 					throw new Exception(result["message"]);
 
-				foreach (dynamic domain in result["domainAliasData"])
+				if (result["domainAliasData"] != null)
 				{
-					string domainAliasName = domain["name"].ToString();
-					domainAliasNames.Add(domainAliasName);
+                    foreach (dynamic domain in result["domainAliasData"])
+					{
+						string domainAliasName = domain["name"].ToString();
+						domainAliasNames.Add(domainAliasName);
+					}
 				}
 
-				return domainAliasNames.ToArray();
+
+                return domainAliasNames.ToArray();
 			}
 			catch (Exception ex)
 			{
@@ -719,9 +729,9 @@ namespace SolidCP.Providers.Mail
 
 				var throttleSettingsArray = new
 				{
-					bandwidthAction = domain[MailDomain.SMARTERMAIL5_BANDWIDTH_PER_HOUR_ENABLED],
+					bandwidthAction = domain[MailDomain.SMARTERMAIL100_BANDWIDTH_PER_HOUR_ACTION],
 					bandwidthPerHour = domain[MailDomain.SMARTERMAIL5_BANDWIDTH_PER_HOUR],
-					bouncesAction = domain[MailDomain.SMARTERMAIL5_BANDWIDTH_PER_HOUR_ENABLED],
+					bouncesAction = domain[MailDomain.SMARTERMAIL100_BANDWIDTH_PER_HOUR_ACTION],
 					bouncesPerHour = domain[MailDomain.SMARTERMAIL5_BOUNCES_PER_HOUR]
 				};
 
@@ -735,12 +745,13 @@ namespace SolidCP.Providers.Mail
 					calendarPublicAvailability = domain.SharedCalendars,
 					maxMessages = domain[MailDomain.SMARTERMAIL5_MESSAGES_PER_HOUR],
 					throttleSettings = throttleSettingsArray,
-					maxSize = domain.MaxDomainSizeInMB,
+					maxSize = (long)domain.MaxDomainSizeInMB * 1048576,
 					maxDomainAliases = domain.MaxDomainAliases,
 					maxUsers = domain.MaxDomainUsers,
-					maxMessageSize = domain.MaxMessageSize,
+					maxMessageSize = (long)domain.MaxMessageSize * 1048576,
 					maxRecipients = domain.MaxRecipients,
-				};
+                    isEnabled = domain.Enabled
+                };
 
 				var domainSettingsPram = new
 				{
@@ -760,11 +771,177 @@ namespace SolidCP.Providers.Mail
 			}
 		}
 
-		#endregion
+        public override void ChangeServiceItemsState(ServiceProviderItem[] items, bool enabled)
+        {
+            foreach (ServiceProviderItem item in items)
+            {
+                if (item is MailDomain)
+                {
+                    try
+                    {
+                        // enable/disable mail domain
+                        if (DomainExists(item.Name))
+                        {
+                            MailDomain mailDomain = GetDomain(item.Name);
+                            mailDomain.Enabled = enabled;
+                            UpdateDomain(mailDomain);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.WriteError(String.Format("Error switching '{0}' SmarterMail domain", item.Name), ex);
+                    }
+                }
+            }
+        }
 
-		#region Mail Accounts
+        public override void DeleteServiceItems(ServiceProviderItem[] items)
+        {
+            foreach (ServiceProviderItem item in items)
+            {
+                if (item is MailDomain)
+                {
+                    try
+                    {
+                        // delete mail domain
+                        DeleteDomain(item.Name);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.WriteError(String.Format("Error deleting '{0}' SmarterMail domain", item.Name), ex);
+                    }
+                }
+            }
+        }
 
-		public bool AccountExists(string mailboxName)
+		public override ServiceProviderItemDiskSpace[] GetServiceItemsDiskSpace(ServiceProviderItem[] items)
+		{
+			List<ServiceProviderItemDiskSpace> itemsDiskspace = new List<ServiceProviderItemDiskSpace>();
+
+            CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
+            DateTimeFormatInfo dtfi = culture.DateTimeFormat;
+            dtfi.DateSeparator = "-";
+
+            DateTime date = DateTime.Now;
+
+            // update items with diskspace
+            foreach (ServiceProviderItem item in items)
+			{
+				if (item is MailAccount)
+				{
+					try
+					{
+                        var userstatsPram = new
+                        {
+                            email = item.Name
+                        };
+
+                        dynamic result = ExecDomainPostCommand("report/user-stats/" + date.ToString("d", dtfi) + "/" + date.ToString("d", dtfi), GetDomainName(item.Name), userstatsPram).Result;
+
+                        bool success = Convert.ToBoolean(result["success"]);
+                        if (!success)
+                            throw new Exception(result["message"]);
+
+                        Log.WriteStart(String.Format("Calculating mail account '{0}' size", item.Name));
+						// calculate disk space
+						ServiceProviderItemDiskSpace diskspace = new ServiceProviderItemDiskSpace();
+						diskspace.ItemId = item.Id;
+						//diskspace.DiskSpace = 0;
+						diskspace.DiskSpace = result.bytesSize;
+						itemsDiskspace.Add(diskspace);
+						Log.WriteEnd(String.Format("Calculating mail account '{0}' size", item.Name));
+					}
+					catch (Exception ex)
+					{
+						Log.WriteError(ex);
+					}
+				}
+			}
+			return itemsDiskspace.ToArray();
+		}
+
+		public override ServiceProviderItemBandwidth[] GetServiceItemsBandwidth(ServiceProviderItem[] items, DateTime since)
+        {
+            ServiceProviderItemBandwidth[] itemsBandwidth = new ServiceProviderItemBandwidth[items.Length];
+
+            // update items with diskspace
+            for (int i = 0; i < items.Length; i++)
+            {
+                ServiceProviderItem item = items[i];
+
+                // create new bandwidth object
+                itemsBandwidth[i] = new ServiceProviderItemBandwidth();
+                itemsBandwidth[i].ItemId = item.Id;
+                itemsBandwidth[i].Days = new DailyStatistics[0];
+
+                if (item is MailDomain)
+                {
+                    try
+                    {
+                        // get daily statistics
+                        Log.WriteInfo("[Smartermail100] Calculating Bandwidth for domain {0}", item.Name);
+                        itemsBandwidth[i].Days = GetDomainStatistics(since, item.Name);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.WriteError(ex);
+                        System.Diagnostics.Debug.WriteLine(ex);
+                    }
+                }
+            }
+
+            return itemsBandwidth;
+        }
+
+        public DailyStatistics[] GetDomainStatistics(DateTime since, string maildomainName)
+        {
+
+            ArrayList days = new ArrayList();
+            // read statistics
+            DateTime now = DateTime.Now;
+            DateTime date = since;
+
+            CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
+            DateTimeFormatInfo dtfi = culture.DateTimeFormat;
+            dtfi.DateSeparator = "-";
+
+            try
+            {
+                while (date < now)
+                {
+                    dynamic result = ExecGetCommand("report/domain-stats/" + date.ToString("d", dtfi) + "/" + date.ToString("d", dtfi) + "/" + maildomainName).Result;
+
+                    bool success = Convert.ToBoolean(result["success"]);
+                    if (!success)
+                        throw new Exception(result["message"]);
+
+                    if (result.bytesReceived != 0 | result.bytesSent != 0)
+                    {
+                        DailyStatistics dailyStats = new DailyStatistics();
+                        dailyStats.Year = date.Year;
+                        dailyStats.Month = date.Month;
+                        dailyStats.Day = date.Day;
+                        dailyStats.BytesSent = result.bytesSent;
+                        dailyStats.BytesReceived = result.bytesReceived;
+                        days.Add(dailyStats);
+                    }
+
+                    // advance day
+                    date = date.AddDays(1);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError("Could not get SmarterMail domain statistics", ex);
+            }
+            return (DailyStatistics[])days.ToArray(typeof(DailyStatistics));
+        }
+
+        #endregion
+
+        #region Mail Accounts
+
+        public bool AccountExists(string mailboxName)
 		{
 			dynamic result = ExecGetCommand("settings/sysadmin/user/" + mailboxName).Result;
 
@@ -809,17 +986,17 @@ namespace SolidCP.Providers.Mail
 		}
 
 		public void CreateAccount(MailAccount mailbox)
-		{
-			try
+        {
+            try
 			{
 				var userDataArray = new
 				{
 					domain = GetDomainName(mailbox.Name),
 					userName = mailbox.Name,
-					fullName = mailbox.FullName,
+					fullName = mailbox.FirstName + " " + mailbox.LastName,
 					password = mailbox.Password,
-					maxMailboxSize = mailbox.MaxMailboxSize
-				};
+					maxMailboxSize = (long)mailbox.MaxMailboxSize * 1048576
+                };
 
 				var userContactInfoArray = new
 				{
@@ -832,7 +1009,6 @@ namespace SolidCP.Providers.Mail
 				{
 					userContactInfo = userContactInfoArray,
 					replyToAddress = mailbox.ReplyTo,
-					signature = mailbox.Signature,
 					isEnabled = mailbox.Enabled,
 					enableMailForwarding = mailbox.ForwardingEnabled
 				};
@@ -850,7 +1026,7 @@ namespace SolidCP.Providers.Mail
 					forwardList = forwardListArray
 				};
 
-				dynamic result = ExecDomainPostCommand("settings/domain/user-put", GetDomainName(mailbox.Name), userputPram).Result;
+                dynamic result = ExecDomainPostCommand("settings/domain/user-put", GetDomainName(mailbox.Name), userputPram).Result;
 
 				bool success = Convert.ToBoolean(result["success"]);
 				if (!success)
@@ -877,7 +1053,7 @@ namespace SolidCP.Providers.Mail
 
 				//TODO: Signature
 
-				if (mailbox.Signature != null)
+				if (mailbox.Signature.Length > 0)
 				{
 					var signatureConfigArray = new
 					{
@@ -944,7 +1120,7 @@ namespace SolidCP.Providers.Mail
 				if (!success)
 					throw new Exception(result["message"]);
 
-				dynamic userDataresult = ExecGetCommand("settings/sysadmin/user/" + mailboxName).Result;
+                dynamic userDataresult = ExecDomainGetCommand("settings/domain/user/" + mailboxName, GetDomainName(mailboxName)).Result;
 
 				bool userDatasuccess = Convert.ToBoolean(userDataresult["success"]);
 				if (!userDatasuccess)
@@ -1055,10 +1231,11 @@ namespace SolidCP.Providers.Mail
 
 					var passwordPram = new
 					{
-						userData = passworduserDataArray
+						email = mailbox.Name,
+                        userData = passworduserDataArray
 					};
 
-					dynamic passwordresult = ExecDomainPostCommand("settings/domain/user/" + mailbox.Name, GetDomainName(mailbox.Name), passwordPram).Result;
+                    dynamic passwordresult = ExecDomainPostCommand("settings/domain/post-user/", GetDomainName(mailbox.Name), passwordPram).Result;
 
 					bool passwordsuccess = Convert.ToBoolean(passwordresult["success"]);
 					if (!passwordsuccess)
@@ -1078,15 +1255,15 @@ namespace SolidCP.Providers.Mail
 					isEnabled = mailbox.Enabled,
 					enableMailForwarding = mailbox.ForwardingEnabled,
 					replyToAddress = mailbox.ReplyTo
-					//signature = mailbox.Signature,
 				};
 
 				var userputPram = new
 				{
+					email = mailbox.Name,
 					userMailSettings = userMailSettingsArray
 				};
 
-				dynamic result = ExecDomainPostCommand("settings/domain/user-mail/" + mailbox.Name, GetDomainName(mailbox.Name), userputPram).Result;
+                dynamic result = ExecDomainPostCommand("settings/domain/post-user-mail", GetDomainName(mailbox.Name), userputPram).Result;
 
 				bool success = Convert.ToBoolean(result["success"]);
 				if (!success)
@@ -1095,15 +1272,16 @@ namespace SolidCP.Providers.Mail
 				var updateUseruserDataArray = new
 				{
 					fullName = mailbox.FirstName + " " + mailbox.LastName,
-					maxMailboxSize = Convert.ToInt64(mailbox.MaxMailboxSize) * 1048576
-				};
+					maxMailboxSize = (long)mailbox.MaxMailboxSize * 1048576
+                };
 
 				var updateUserPram = new
 				{
+					email = mailbox.Name,
 					userData = updateUseruserDataArray,
 				};
 
-				dynamic updateUserresult = ExecDomainPostCommand("settings/domain/user/" + mailbox.Name, GetDomainName(mailbox.Name), updateUserPram).Result;
+                dynamic updateUserresult = ExecDomainPostCommand("settings/domain/post-user", GetDomainName(mailbox.Name), updateUserPram).Result;
 
 				bool updateUsersuccess = Convert.ToBoolean(updateUserresult["success"]);
 				if (!updateUsersuccess)
@@ -1148,9 +1326,7 @@ namespace SolidCP.Providers.Mail
 
 				// TODO: Signature
 
-				Log.WriteInfo("Sig: {0}", mailbox.Signature);
-
-				if(mailbox.Signature != null)
+                if (mailbox.Signature.Length > 0)
                 {
 					//Check if creating a new Signature or updating one
 					if (account.SignatureGuid == null)
@@ -1349,16 +1525,16 @@ namespace SolidCP.Providers.Mail
 		{
 			MailAlias alias = new MailAlias();
 
-			dynamic result = ExecDomainGetCommand("settings/domain/aliases/" + GetAccountName(mailAliasName), GetDomainName(mailAliasName)).Result;
+			dynamic result = ExecDomainGetCommand("settings/domain/alias/" + GetAccountName(mailAliasName), GetDomainName(mailAliasName)).Result;
 
 			bool success = Convert.ToBoolean(result["success"]);
 			if (!success)
 				throw new Exception(result["message"]);
 
-			alias.Name = result["gridInfo"][0]["name"].ToString();
-			if (result["gridInfo"][0]["targets"] != null)
+			alias.Name = result["alias"]["name"].ToString();
+			if (result["alias"]["aliasTargetList"] != null)
 			{
-				alias.ForwardTo = result["gridInfo"][0]["targets"][0].ToString();
+				alias.ForwardTo = result["alias"]["aliasTargetList"][0].ToString();
 			}
 			else
 			{
@@ -1426,20 +1602,23 @@ namespace SolidCP.Providers.Mail
 		{
 			try 
 			{
-				dynamic result = ExecDomainGetCommand("settings/domain/aliases/" + GetAccountName(groupName), GetDomainName(groupName)).Result;
+				string groupNameUser = GetAccountName(groupName);
+
+                dynamic result = ExecDomainGetCommand("settings/domain/aliases/" + groupNameUser, GetDomainName(groupName)).Result;
 
 				bool success = Convert.ToBoolean(result["success"]);
 				if (!success)
 					throw new Exception(result["message"]);
 
-				Log.WriteInfo("GroupExists - A gridInfo: {0}", result);
-				if (result["gridInfo"].ToString() != "")
+				if (result["gridInfo"].Count > 0)
 				{
-					Log.WriteInfo("GroupExists - B group: {0}\n\n gridinfo:\n {1}", groupName, result["gridInfo"].ToString()); 
-					if (result["gridInfo"]["name"].ToString() == groupName)
+					foreach (dynamic gridinfo in (result["gridInfo"]))
 					{
-						Log.WriteInfo("GroupExists - Found group: {0}", groupName);
-						return true;
+                        if (gridinfo.name == groupNameUser)
+						{
+							Log.WriteInfo("GroupExists - Found group: {0}", groupName);
+							return true;
+						}
 					}
 				}
 
@@ -1496,7 +1675,7 @@ namespace SolidCP.Providers.Mail
 		{
 			try
 			{
-				dynamic result = ExecDomainGetCommand("settings/domain/aliases/" + GetAccountName(groupName), GetDomainName(groupName)).Result;
+				dynamic result = ExecDomainGetCommand("settings/domain/alias/" + GetAccountName(groupName), GetDomainName(groupName)).Result;
 
 				bool success = Convert.ToBoolean(result["success"]);
 				if (!success)
@@ -1505,7 +1684,7 @@ namespace SolidCP.Providers.Mail
 
 				List<string> targets = new List<string>();
 
-				foreach (string target in result["gridInfo"][0]["targets"])
+				foreach (string target in result["alias"]["aliasTargetList"])
 
 				{
 					string targetName = target;
@@ -1808,7 +1987,7 @@ namespace SolidCP.Providers.Mail
 					//list.Moderated
 					list.Password = member["password"].ToString();
 					list.RequirePassword = Convert.ToBoolean(member.requirePassword);
-					list.PostingMode = member["postingPermissions"].ToString();
+					list.PostingMode = (PostingMode)Convert.ToInt64(member["postingPermissions"]);
 					list.SubjectPrefix = member["subject"].ToString();
 					list.EnableSubjectPrefix = Convert.ToBoolean(member["prependSubject"]);
 					//list.MaxMessageSize

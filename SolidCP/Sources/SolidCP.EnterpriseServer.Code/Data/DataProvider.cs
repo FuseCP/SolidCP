@@ -11363,7 +11363,8 @@ SELECT
 	Z.ItemName AS ZoneName,
 	D.IsSubDomain,
 	D.IsPreviewDomain,
-	D.IsDomainPointer
+	D.IsDomainPointer,
+	Z.ServiceID AS ZoneServiceID
 FROM Domains AS D
 INNER JOIN Packages AS P ON D.PackageID = P.PackageID
 LEFT OUTER JOIN ServiceItems AS WS ON D.WebSiteID = WS.ItemID
@@ -11393,7 +11394,8 @@ RETURN
 						ZoneName = d.Zone != null ? d.Zone.ItemName : null,
 						d.IsSubDomain,
 						d.IsPreviewDomain,
-						d.IsDomainPointer
+						d.IsDomainPointer,
+						ZoneServiceId = d.Zone != null ? d.Zone.ServiceId : null
 					})
 					.ToList()
 					.Where(d => CheckActorPackageRights(actorId, d.PackageId));

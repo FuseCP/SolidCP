@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net48</TargetFramework>
+		<OutputPath>..\SolidCP.Server\bin\Providers\</OutputPath>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+		<LangVersion>11</LangVersion>
+		<Nullable>disable</Nullable>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+		<DebugType>full</DebugType>
+		<Optimize>true</Optimize>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+		<DebugType>pdbonly</DebugType>
+	</PropertyGroup>
+	<ItemGroup>
+		<Reference Include="System.DirectoryServices" />
+		<Reference Include="System.Management.Automation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+			<HintPath>..\..\Lib\System.Management.Automation.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+		</Reference>
+		<ProjectReference Include="..\SolidCP.Providers.TerminalServices.Windows2012\SolidCP.Providers.RemoteDesktopServices.Windows2012.csproj" />
+		<ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
+		<ProjectReference Include="..\SolidCP.Providers.TerminalServices.Windows2022\SolidCP.Providers.RemoteDesktopServices.Windows2022.csproj" />
+		<ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
+	</ItemGroup>
+</Project>

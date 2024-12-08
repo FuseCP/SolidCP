@@ -7,8 +7,8 @@ IF not defined NoRebuild (
 )
 
 IF not defined MsBuildSwitches ( Set MsBuildSwitches=/v:n /m)
-IF not defined SolidCPVersion ( Set SolidCPVersion=1.4.5)
-IF not defined SolidCPFileVersion ( Set SolidCPFileVersion=1.4.9)
+IF not defined SolidCPVersion ( Set SolidCPVersion=1.5.0)
+IF not defined SolidCPFileVersion ( Set SolidCPFileVersion=1.5.0)
 IF not defined Configuration ( Set Configuration=Release)
  
 IF EXIST "%ProgramFiles%\Microsoft Visual Studio\2022\Community\MSBuild\Current\bin\MSBuild.exe" (

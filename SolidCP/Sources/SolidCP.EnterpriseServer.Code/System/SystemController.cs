@@ -94,8 +94,11 @@ namespace SolidCP.EnterpriseServer
 			}
 			finally
 			{
-				if (reader != null && !reader.IsClosed)
-					reader.Close();
+				if (reader != null)
+				{
+					if (!reader.IsClosed) reader.Close();
+					reader.Dispose();
+				}
 			}
 
 			return settings;

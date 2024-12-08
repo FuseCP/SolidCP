@@ -75,7 +75,7 @@ public partial class PackageConfiguration: EntityTypeConfiguration<Package>
 
         #region Seed Data
 		HasData(() => new Package[] {
-			new Package() { PackageId = 1, PackageComments = "", PackageName = "System", StatusId = 1, StatusIdChangeDate = DateTime.Parse("2024-04-20T11:02:58.560000Z").ToUniversalTime(), UserId = 1 }
+			new Package() { PackageId = 1, PackageComments = "", PackageName = "System", StatusId = 1, StatusIdChangeDate = DateTime.Parse("2024-10-12T19:29:19.9270000Z").ToUniversalTime(), UserId = 1 }
 		});
         #endregion
     }

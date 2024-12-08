@@ -16071,7 +16071,8 @@ SELECT
 	Z.ItemName AS ZoneName,
 	D.IsSubDomain,
 	D.IsPreviewDomain,
-	D.IsDomainPointer
+	D.IsDomainPointer,
+	Z.ServiceID AS ZoneServiceID
 FROM Domains AS D
 INNER JOIN Packages AS P ON D.PackageID = P.PackageID
 LEFT OUTER JOIN ServiceItems AS WS ON D.WebSiteID = WS.ItemID
@@ -17306,6 +17307,12 @@ BEGIN
 INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1800, N'UsersHome', N'%SYSTEMDRIVE%\HostingSpaces')
 END
 GO
+
+-- Server 2022
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1802')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1802, N'UsersHome', N'%SYSTEMDRIVE%\HostingSpaces')
+END
 
 -- HyperV2019
 
@@ -19723,6 +19730,18 @@ INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName]
 END
 GO
 
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1903' AND [PropertyName] = 'SimpleDnsUrl')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1903, N'AdminLogin', N'Admin')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1903, N'ExpireLimit', N'1209600')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1903, N'NameServers', N'ns1.yourdomain.com;ns2.yourdomain.com')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1903, N'RefreshInterval', N'3600')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1903, N'ResponsiblePerson', N'hostmaster.[DOMAIN_NAME]')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1903, N'RetryDelay', N'600')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1903, N'SimpleDnsUrl', N'http://127.0.0.1:8053')
+END
+GO
+
 -- User MFA
 IF NOT EXISTS(select 1 from sys.columns COLS INNER JOIN sys.objects OBJS ON OBJS.object_id=COLS.object_id and OBJS.type='U' AND OBJS.name='Users' AND COLS.name='MfaMode')
 BEGIN
@@ -20144,7 +20163,7 @@ GO
 
 -- RDS Provider 2022
 
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Remote Desktop Services Windows 2019')
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Remote Desktop Services Windows 2022')
 BEGIN
 INSERT [dbo].[Providers] ([ProviderId], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) 
 VALUES(1504, 45, N'RemoteDesktopServices2022', N'Remote Desktop Services Windows 2022', N'SolidCP.Providers.RemoteDesktopServices.Windows2019,SolidCP.Providers.RemoteDesktopServices.Windows2019', N'RDS',	1)
@@ -20302,6 +20321,7 @@ BEGIN
 	UPDATE [dbo].[Quotas] SET [QuotaName] = N'OS.NotAllowTenantCreateDomains', [QuotaDescription] = N'Not allow Tenants to Create Top Level Domains' WHERE [QuotaID] = 410
 END
 GO
+
 
 -- Add Platform and IsCode columns to Servers
 DECLARE @NoPlatform bit, @NoIsCore bit
@@ -21314,7 +21334,6 @@ END
 GO
 
 
-
 -- Fix ordering of GetHostingPlanQuotas
 
 IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetHostingPlanQuotas')
@@ -21522,4 +21541,116 @@ COMMIT TRAN
 
 RETURN
 
+GO
+
+
+-- Changes from Master branch 07.12.2024
+
+-- Server 2025
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Windows Server 2025')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1804, 1, N'Windows2025', N'Windows Server 2025', N'SolidCP.Providers.OS.Windows2025, SolidCP.Providers.OS.Windows2025', N'Windows2012', 1)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1804')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1804, N'UsersHome', N'%SYSTEMDRIVE%\HostingSpaces')
+END
+GO
+
+-- HyperV2025
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderName] = 'HyperV2025')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1805, 33, N'HyperV2025', N'Microsoft Hyper-V 2025', N'SolidCP.Providers.Virtualization.HyperV2025, SolidCP.Providers.Virtualization.HyperV2025', N'HyperV2012R2', 1)
+END
+GO
+
+-- RDS Provider 2025
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Remote Desktop Services Windows 2025')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderId], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(1505, 45, N'RemoteDesktopServices2025', N'Remote Desktop Services Windows 2025', N'SolidCP.Providers.RemoteDesktopServices.Windows2025,SolidCP.Providers.RemoteDesktopServices.Windows2019', N'RDS',	1)
+END
+GO
+
+-- DNSEditor TTL
+IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaName] = 'DNS.EditTTL')
+BEGIN
+	INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota], [PerOrganization]) VALUES (753, 7, 2, N'DNS.EditTTL', N'Allow editing TTL in DNS Editor', 1, 0, NULL, NULL, NULL)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [PropertyName] = 'RecordDefaultTTL')
+BEGIN
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (7, N'RecordDefaultTTL', N'86400')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (9, N'RecordDefaultTTL', N'86400')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (24, N'RecordDefaultTTL', N'86400')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (28, N'RecordDefaultTTL', N'86400')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (55, N'RecordDefaultTTL', N'86400')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (56, N'RecordDefaultTTL', N'86400')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (410, N'RecordDefaultTTL', N'86400')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1703, N'RecordDefaultTTL', N'86400')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1901, N'RecordDefaultTTL', N'86400')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1902, N'RecordDefaultTTL', N'86400')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1903, N'RecordDefaultTTL', N'86400')
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [PropertyName] = 'RecordMinimumTTL')
+BEGIN
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (7, N'RecordMinimumTTL', N'3600')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (9, N'RecordMinimumTTL', N'3600')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (24, N'RecordMinimumTTL', N'3600')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (28, N'RecordMinimumTTL', N'3600')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (55, N'RecordMinimumTTL', N'3600')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (56, N'RecordMinimumTTL', N'3600')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (410, N'RecordMinimumTTL', N'3600')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1703, N'RecordMinimumTTL', N'3600')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1901, N'RecordMinimumTTL', N'3600')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1902, N'RecordMinimumTTL', N'3600')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1903, N'RecordMinimumTTL', N'3600')
+END
+GO
+
+--SmarterMail100 Support for new options
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '67' AND [PropertyName] = N'defaultdomainhostname')
+BEGIN
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (11, N'defaultdomainhostname', N'mail.[DOMAIN_NAME]')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (14, N'defaultdomainhostname', N'mail.[DOMAIN_NAME]')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (29, N'defaultdomainhostname', N'mail.[DOMAIN_NAME]')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (60, N'defaultdomainhostname', N'mail.[DOMAIN_NAME]')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (64, N'defaultdomainhostname', N'mail.[DOMAIN_NAME]')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (65, N'defaultdomainhostname', N'mail.[DOMAIN_NAME]')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (66, N'defaultdomainhostname', N'mail.[DOMAIN_NAME]')
+	INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (67, N'defaultdomainhostname', N'mail.[DOMAIN_NAME]')
+END
+GO
+
+-- Add defaultdomainhostname property to existing SM providers
+IF NOT EXISTS (Select * from [ServiceProperties] INNER JOIN Services ON ServiceProperties.ServiceID=Services.ServiceID Where Services.ProviderID = 67 AND ServiceProperties.PropertyName = N'defaultdomainhostname')
+BEGIN
+DECLARE service_cursor CURSOR FOR SELECT ServiceId FROM Services WHERE ProviderID IN (11, 14, 29, 60, 64, 65, 65, 66, 67)
+DECLARE @ServiceID INT
+OPEN service_cursor
+FETCH NEXT FROM service_cursor INTO @ServiceID
+WHILE @@FETCH_STATUS = 0
+BEGIN
+	BEGIN
+		INSERT [dbo].[ServiceProperties] ([ServiceID], [PropertyName], [PropertyValue]) VALUES (@ServiceID, N'defaultdomainhostname', N'mail.[DOMAIN_NAME]')
+	END
+	
+	FETCH NEXT FROM service_cursor INTO @ServiceID
+END
+
+CLOSE service_cursor
+DEALLOCATE service_cursor
+END
+GO
+
+-- Fix Provider 2025 types
+
+UPDATE [Providers] SET [ProviderType] = 'SolidCP.Providers.RemoteDesktopServices.Windows2022,SolidCP.Providers.RemoteDesktopServices.Windows2022' WHERE [ProviderID] = '1504'
+UPDATE [Providers] SET [ProviderType] = 'SolidCP.Providers.RemoteDesktopServices.Windows2025,SolidCP.Providers.RemoteDesktopServices.Windows2025' WHERE [ProviderID] = '1505'
 GO

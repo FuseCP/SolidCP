@@ -90,82 +90,112 @@ namespace SolidCP.Providers.DNS
                 {
                     if (res.RecordName.Equals(record.RecordName) && res.RecordType.Equals(record.RecordType)
                         && res.RecordData.Equals(record.RecordData)) add = false;
+                    if (res.RecordData.Length >= 255 && res.RecordType.Equals(DnsRecordType.TXT))
+                    {
+                        res.RecordData = GetWMIZoneRecordData(ps, res, zoneName);
+                    }
                 }
                 if (add) result.Add(record);
             }
             return result.ToArray();
         }
 
+        private static string GetWMIZoneRecordData(this PowerShellHelper ps, DnsRecord res, string zoneName)
+        {
+            string RecordData = "Unable to show fully";
+
+            string wmiNamespace = @"Root\MicrosoftDNS";
+            string wmiquery = "select * from MicrosoftDNS_TXTType Where OwnerName=\'" + res.RecordName + "." + zoneName + "\'";
+
+            var cmd = new Command("Get-WmiObject");
+            cmd.addParam("Namespace", wmiNamespace);
+            cmd.addParam("Query", wmiquery);
+            Collection<PSObject> results = ps.RunPipeline(cmd);
+            PSObject result = results[0];
+
+            RecordData = result.Members["RecordData"].Value.ToString();
+
+
+            return RecordData;
+        }
+
         #region Records add / remove
 
-        public static void Add_DnsServerResourceRecordA(this PowerShellHelper ps, string zoneName, string Name, string address)
+        public static void Add_DnsServerResourceRecordA(this PowerShellHelper ps, string zoneName, string Name, string address, TimeSpan timetolive)
         {
             var cmd = new Command("Add-DnsServerResourceRecordA");
             cmd.addParam("ZoneName", zoneName);
             cmd.addParam("Name", Name);
             cmd.addParam("IPv4Address", address);
+            cmd.addParam("TimeToLive", timetolive);
             ps.RunPipeline(cmd);
         }
 
-        public static void Add_DnsServerResourceRecordAAAA(this PowerShellHelper ps, string zoneName, string Name, string address)
+        public static void Add_DnsServerResourceRecordAAAA(this PowerShellHelper ps, string zoneName, string Name, string address, TimeSpan timetolive)
         {
             var cmd = new Command("Add-DnsServerResourceRecordAAAA");
             cmd.addParam("ZoneName", zoneName);
             cmd.addParam("Name", Name);
             cmd.addParam("IPv6Address", address);
+            cmd.addParam("TimeToLive", timetolive);
             ps.RunPipeline(cmd);
         }
 
-        public static void Add_DnsServerResourceRecordCName(this PowerShellHelper ps, string zoneName, string Name, string alias)
+        public static void Add_DnsServerResourceRecordCName(this PowerShellHelper ps, string zoneName, string Name, string alias, TimeSpan timetolive)
         {
             var cmd = new Command("Add-DnsServerResourceRecordCName");
             cmd.addParam("ZoneName", zoneName);
             cmd.addParam("Name", Name);
             cmd.addParam("HostNameAlias", alias);
+            cmd.addParam("TimeToLive", timetolive);
             ps.RunPipeline(cmd);
         }
 
-        public static void Add_DnsServerResourceRecordCAA(this PowerShellHelper ps, string zoneName, string Name, string recordData)
+        public static void Add_DnsServerResourceRecordCAA(this PowerShellHelper ps, string zoneName, string Name, string recordData, TimeSpan timetolive)
         {
             var cmd = new Command("Add-DnsServerResourceRecord");
             cmd.addParam("ZoneName", zoneName);
             cmd.addParam("Name", Name);
             cmd.addParam("RecordData", recordData);
             cmd.addParam("Type", 257);
+            cmd.addParam("TimeToLive", timetolive);
             ps.RunPipeline(cmd);
         }
 
-        public static void Add_DnsServerResourceRecordMX(this PowerShellHelper ps, string zoneName, string Name, string mx, UInt16 pref)
+        public static void Add_DnsServerResourceRecordMX(this PowerShellHelper ps, string zoneName, string Name, string mx, UInt16 pref, TimeSpan timetolive)
         {
             var cmd = new Command("Add-DnsServerResourceRecordMX");
             cmd.addParam("ZoneName", zoneName);
             cmd.addParam("Name", Name);
             cmd.addParam("MailExchange", mx);
             cmd.addParam("Preference", pref);
+            cmd.addParam("TimeToLive", timetolive);
             ps.RunPipeline(cmd);
         }
 
-        public static void Add_DnsServerResourceRecordNS(this PowerShellHelper ps, string zoneName, string Name, string NameServer)
+        public static void Add_DnsServerResourceRecordNS(this PowerShellHelper ps, string zoneName, string Name, string NameServer, TimeSpan timetolive)
         {
             var cmd = new Command("Add-DnsServerResourceRecord");
             cmd.addParam("ZoneName", zoneName);
             cmd.addParam("Name", Name);
             cmd.addParam("NS");
             cmd.addParam("NameServer", NameServer);
+            cmd.addParam("TimeToLive", timetolive);
             ps.RunPipeline(cmd);
         }
 
-        public static void Add_DnsServerResourceRecordTXT(this PowerShellHelper ps, string zoneName, string Name, string txt)
+        public static void Add_DnsServerResourceRecordTXT(this PowerShellHelper ps, string zoneName, string Name, string txt, TimeSpan timetolive)
         {
             var cmd = new Command("Add-DnsServerResourceRecord");
             cmd.addParam("ZoneName", zoneName);
             cmd.addParam("Name", Name);
             cmd.addParam("Txt");
             cmd.addParam("DescriptiveText", txt);
+            cmd.addParam("TimeToLive", timetolive);
             ps.RunPipeline(cmd);
         }
 
-        public static void Add_DnsServerResourceRecordSRV(this PowerShellHelper ps, string zoneName, string Name, string DomainName, UInt16 Port, UInt16 Priority, UInt16 Weight)
+        public static void Add_DnsServerResourceRecordSRV(this PowerShellHelper ps, string zoneName, string Name, string DomainName, UInt16 Port, UInt16 Priority, UInt16 Weight, TimeSpan timetolive)
         {
             var cmd = new Command("Add-DnsServerResourceRecord");
             cmd.addParam("ZoneName", zoneName);
@@ -175,6 +205,7 @@ namespace SolidCP.Providers.DNS
             cmd.addParam("Port", Port);
             cmd.addParam("Priority", Priority);
             cmd.addParam("Weight", Weight);
+            cmd.addParam("TimeToLive", timetolive);
             ps.RunPipeline(cmd);
         }
 
