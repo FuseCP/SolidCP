@@ -16,6 +16,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 public partial class ExchangeDeletedAccountConfiguration: EntityTypeConfiguration<ExchangeDeletedAccount>
 {
     public override void Configure() {
-        HasKey(e => e.Id).HasName("PK__Exchange__3214EC27D6F18B32");
+        HasKey(e => e.Id).HasName("PK__Exchange__3214EC278D6C8EE0");
     }
 }

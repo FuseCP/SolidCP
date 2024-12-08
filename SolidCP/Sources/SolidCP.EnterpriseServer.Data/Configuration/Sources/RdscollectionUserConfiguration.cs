@@ -16,7 +16,7 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 public partial class RdscollectionUserConfiguration: EntityTypeConfiguration<RdscollectionUser>
 {
     public override void Configure() {
-        HasKey(e => e.Id).HasName("PK__RDSColle__3214EC27085BBBD8");
+        HasKey(e => e.Id).HasName("PK__RDSColle__3214EC27E7092CA1");
 
         HasOne(d => d.Account).WithMany(p => p.RdscollectionUsers).HasConstraintName("FK_RDSCollectionUsers_UserId");
 

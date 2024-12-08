@@ -16,7 +16,7 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 public partial class DomainDnsRecordConfiguration: EntityTypeConfiguration<DomainDnsRecord>
 {
     public override void Configure() {
-        HasKey(e => e.Id).HasName("PK__DomainDn__3214EC27A6FC0498");
+        HasKey(e => e.Id).HasName("PK__DomainDn__3214EC27EC0CB65D");
 
         HasOne(d => d.Domain).WithMany(p => p.DomainDnsRecords).HasConstraintName("FK_DomainDnsRecords_DomainId");
     }

@@ -16,6 +16,6 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 public partial class RdscollectionConfiguration: EntityTypeConfiguration<Rdscollection>
 {
     public override void Configure() {
-        HasKey(e => e.Id).HasName("PK__RDSColle__3214EC27F7A7E04B");
+        HasKey(e => e.Id).HasName("PK__RDSColle__3214EC27E55B0A36");
     }
 }

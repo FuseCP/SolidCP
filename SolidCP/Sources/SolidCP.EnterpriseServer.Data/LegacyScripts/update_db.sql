@@ -21659,3 +21659,10 @@ CLOSE service_cursor
 DEALLOCATE service_cursor
 END
 GO
+
+-- Fix Provider 2025 types
+
+UPDATE [Providers] SET [ProviderType] = 'SolidCP.Providers.RemoteDesktopServices.Windows2022,SolidCP.Providers.RemoteDesktopServices.Windows2022' WHERE [ProviderID] = '1504'
+UPDATE [Providers] SET [ProviderType] = 'SolidCP.Providers.RemoteDesktopServices.Windows2025,SolidCP.Providers.RemoteDesktopServices.Windows2025' WHERE [ProviderID] = '1505'
+GO
+

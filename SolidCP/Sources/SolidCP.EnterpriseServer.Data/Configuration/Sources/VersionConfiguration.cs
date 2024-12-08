@@ -28,7 +28,6 @@ public partial class VersionConfiguration: EntityTypeConfiguration<Version>
             new Version() { DatabaseVersion = "1.1.2.13", BuildDate = DateTime.Parse("2011-04-14T22:00:00.0000000Z").ToUniversalTime() },
             new Version() { DatabaseVersion = "1.2.0.38", BuildDate = DateTime.Parse("2011-07-12T22:00:00.0000000Z").ToUniversalTime() },
             new Version() { DatabaseVersion = "1.2.1.6", BuildDate = DateTime.Parse("2012-03-28T22:00:00.0000000Z").ToUniversalTime() },
-            new Version() { DatabaseVersion = "1.4.9", BuildDate = DateTime.Parse("2024-04-19T22:00:00.0000000Z").ToUniversalTime() },
             new Version() { DatabaseVersion = "2.0.0.228", BuildDate = DateTime.Parse("2012-12-06T23:00:00.0000000Z").ToUniversalTime() }
         });
         #endregion
