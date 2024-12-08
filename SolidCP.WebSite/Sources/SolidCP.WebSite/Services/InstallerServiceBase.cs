@@ -46,6 +46,7 @@ namespace SolidCP.WebSite.Services
     public class InstallerServiceBase
     {
         protected string RELEASES_FEED_PATH = "~/Data/ProductReleasesFeed.xml";
+        protected bool IncludeBeta = false;
 
 		#region WebMethods
 
@@ -73,13 +74,14 @@ namespace SolidCP.WebSite.Services
 			dt.Columns.Add("InstallerType", typeof(string));
             dt.Columns.Add("Platforms", typeof(string));
 
+            var component = release.Parent;
 			dt.Rows.Add(
 				Int32.Parse(release.Element("releaseFileID").Value),
 				release.Element("fullFilePath").Value,
 				release.Element("upgradeFilePath").Value,
 				release.Element("installerPath").Value,
 				release.Element("installerType").Value,
-                release.Element("platforms")?.Value ?? "Windows");
+                component.Element("platforms")?.Value ?? "Windows");
 
 			ds.AcceptChanges(); // save
 			return ds;
@@ -108,19 +110,19 @@ namespace SolidCP.WebSite.Services
 		[WebMethod]
 		public DataSet GetAvailableComponents()
 		{
-			return GetAvailableComponents(false);
+			return GetAvailableComponents(IncludeBeta);
 		}
 
 		[WebMethod]
 		public DataSet GetLatestComponentUpdate(string componentCode)
 		{
-			return GetLatestComponentUpdate(componentCode, false);
+			return GetLatestComponentUpdate(componentCode, IncludeBeta);
 		}
 
 		[WebMethod]
 		public DataSet GetComponentUpdate(string componentCode, string release)
 		{
-			return GetComponentUpdate(componentCode, release, false);
+			return GetComponentUpdate(componentCode, release, IncludeBeta);
 		}
 
 		#endregion
@@ -157,6 +159,7 @@ namespace SolidCP.WebSite.Services
 			//
             if (r != null)
             {
+                var component = r.Parent;
                 dt.Rows.Add(
                     Int32.Parse(r.Element("releaseFileID").Value),
                     r.Attribute("version").Value,
@@ -165,7 +168,7 @@ namespace SolidCP.WebSite.Services
                     r.Element("upgradeFilePath").Value,
                     r.Element("installerPath").Value,
                     r.Element("installerType").Value,
-				    r.Element("platforms")?.Value ?? "Windows");
+				    component.Element("platforms")?.Value ?? "Windows");
 			}
 
 			ds.AcceptChanges(); // save
@@ -221,7 +224,7 @@ namespace SolidCP.WebSite.Services
                     release.Element("fullFilePath").Value,
                     release.Element("installerPath").Value,
                     release.Element("installerType").Value,
-                    release.Element("platforms")?.Value ?? "Windows");
+                    component.Element("platforms")?.Value ?? "Windows");
 			}
 
             ds.AcceptChanges(); // save
@@ -250,6 +253,7 @@ namespace SolidCP.WebSite.Services
                           && Boolean.Parse(r.Attribute("available").Value)
                           && (includeBeta || !includeBeta && !Boolean.Parse(r.Attribute("beta").Value))
                           select r).LastOrDefault();
+            var component = update?.Parent;
 
             DataSet ds = new DataSet();
             DataTable dt = ds.Tables.Add();
@@ -272,7 +276,7 @@ namespace SolidCP.WebSite.Services
                     update.Element("upgradeFilePath").Value,
                     update.Element("installerPath").Value,
 					update.Element("installerType").Value,
-				    update.Element("platforms")?.Value ?? "Windows");
+				    component.Element("platforms")?.Value ?? "Windows");
 			}
 
 			ds.AcceptChanges(); // save

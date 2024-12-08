@@ -40,6 +40,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Data;
 using System.Text;
+using System.Linq;
 using System.Windows.Forms;
 
 using SolidCP.Installer.Common;
@@ -219,30 +220,25 @@ namespace SolidCP.Installer.Controls
             ThreadPool.QueueUserWorkItem(o => LoadComponents());
         }
 
-        private void CheckIsAvailableOnUnix(DataRow row)
-        {
-			string applicationName = Utils.GetDbString(row[Global.Parameters.ApplicationName]);
-			string componentName = Utils.GetDbString(row[Global.Parameters.ComponentName]);
-			string componentCode = Utils.GetDbString(row[Global.Parameters.ComponentCode]);
-			string componentDescription = Utils.GetDbString(row[Global.Parameters.ComponentDescription]);
-			string component = Utils.GetDbString(row[Global.Parameters.Component]);
-			string version = Utils.GetDbString(row[Global.Parameters.Version]);
-			string fileName = row[Global.Parameters.FullFilePath].ToString().Replace('\\', Path.DirectorySeparatorChar);
-			string installerPath = Utils.GetDbString(row[Global.Parameters.InstallerPath]).Replace('\\', Path.DirectorySeparatorChar);
-			string installerType = Utils.GetDbString(row[Global.Parameters.InstallerType]);
-
-            if (componentCode != "server" || componentName != "Server asp.net v4.5") row.Delete();
-            else
-            {
-                row[Global.Parameters.ComponentName] = "Server";
-                row[Global.Parameters.Component] = "SolidCP Server";
+		private bool CheckIsAvailableOnPlatform(DataRow row)
+		{
+            string platforms = "Windows";
+            if (row.Table.Columns.IndexOf(Global.Parameters.Platforms) >= 0) {
+                var platformsRow = row[Global.Parameters.Platforms];
+                platforms = Utils.GetDbString(platformsRow);
             }
-        }
 
-        /// <summary>
-        /// Loads list of available components via web service
-        /// </summary>
-        private void LoadComponents()
+            string platformId;
+            if (OSInfo.IsWindows) platformId = "Windows";
+            else platformId = "Unix";
+
+			return platforms.Split(',').Any(platform => string.Equals(platform.Trim(), platformId, StringComparison.OrdinalIgnoreCase));
+		}
+
+		/// <summary>
+		/// Loads list of available components via web service
+		/// </summary>
+		private void LoadComponents()
         {
             try
             {
@@ -252,17 +248,12 @@ namespace SolidCP.Installer.Controls
                 var webService = ServiceProviderProxy.GetInstallerWebService();
                 DataSet dsComponents = webService.GetAvailableComponents();
 
-                //remove already installed components
+                //remove already installed components or components not available on this platform
                 foreach (DataRow row in dsComponents.Tables[0].Rows)
                 {
                     string componentCode = Utils.GetDbString(row["ComponentCode"]);
-                    if (CheckForInstalledComponent(componentCode))
-                    {
-                        row.Delete();
-                    } else if (!OSInfo.IsWindows)
-                    {
-                        CheckIsAvailableOnUnix(row);
-					}
+                    if (CheckForInstalledComponent(componentCode)) row.Delete();
+                    else if (!CheckIsAvailableOnPlatform(row)) row.Delete();
 				}
 
 				this.grdComponents.ClearSelection();

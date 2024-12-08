@@ -68,7 +68,7 @@
 		<IncludeReleasePdbs Condition="'$(IncludeReleasePdbs)' == ''">true</IncludeReleasePdbs>
 
 		<!-- Use aspnet_compiler to precompile WebPortal if set to true (This also checks all ascx and aspx files for errors) -->
-		<UseAspNetPrecompile Condition="'$(UseAspNetPrecompile)' == ''">true</UseAspNetPrecompile>
+		<UseAspNetPrecompile Condition="'$(UseAspNetPrecompile)' == ''">false</UseAspNetPrecompile>
 
 		<!-- Build Linux install deb & rpm packages (This requires a WSL distro with rpmbuild installed) -->
 		<BuildLinuxInstallPackages Condition="'$(BuildLinuxInstallPackages)' == ''">true</BuildLinuxInstallPackages>

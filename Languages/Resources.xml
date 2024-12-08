@@ -4262,6 +4262,11 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Error.SERVER_DISCOVER_SERVICES</Key>
+    <DefaultValue>Error searching for software</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>Error.109</Key>
     <DefaultValue>User with specified username was not found</DefaultValue>
   </Resource>
@@ -19164,6 +19169,11 @@
     <File>DesktopModules\SolidCP\App_LocalResources\ServersEditServer.ascx.resx</File>
     <Key>lblAdParentDomainController.text</Key>
     <DefaultValue>Parent Domain Controller:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\ServersEditServer.ascx.resx</File>
+    <Key>btnDiscoverServices.Text</Key>
+    <DefaultValue>Search Installed Software</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\ServersEditService.ascx.resx</File>

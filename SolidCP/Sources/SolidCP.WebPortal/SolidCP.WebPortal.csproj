@@ -23,6 +23,31 @@
         <OutputPath>bin_dotnet\</OutputPath>
         <OutputType>Exe</OutputType>
     </PropertyGroup>
+    <PropertyGroup>
+        <AspNetCompiler>$(WINDIR)\Microsoft.NET\Framework\v4.0.30319\aspnet_compiler.exe</AspNetCompiler>
+        <DeployDir>..\..\Build\$(Configuration)\Portal</DeployDir>
+    </PropertyGroup>
+    <Target Name="DeleteConfigObjFiles">
+        <ItemGroup>
+            <ConfigObjFiles Include="obj/**/*.config" />
+        </ItemGroup>
+        <Delete Files="@(ConfigIObjFiles)" />
+    </Target>
+    <Target Name="Precompile" DependsOnTargets="DeleteConfigObjFiles">
+        <Exec Command="$(AspNetCompiler) -p . -v /" />
+    </Target>
+    <Target Name="DeployWithPrecompile" DependsOnTargets="DeleteConfigObjFiles">
+        <Message Text="Precompile WebPortal" Importance="high" />
+        <AspNetCompiler PhysicalPath="." VirtualPath="/" TargetPath="$(DeployDir)" Force="true" />
+        <ItemGroup>
+            <AppDlls Include="$(DeployDir)\bin\App_*.dll" Exclude="$(DeployDir)\bin\App_global.asax.dll;$(DeployDir)\bin\App_Browsers.dll;$(DeployDir)\bin\App_GlobalResources.dll;$(DeployDir)\bin\App_Theme_Default.dll" />
+        </ItemGroup>
+        <Move SourceFiles="@(AppDlls)" DestinationFolder="$(DeployDir)\bin\Lazy" />
+        <!-- Create App_GlobalResources.list file, because there is no App_GlobalResources folder anymore -->
+        <Exec Command="powershell &quot;Get-ChildItem App_GlobalResources -recurse -include *.resx | ForEach-Object { $_.Name } &gt; $(DeployDir)\App_Data\App_GlobalResources.list&quot;" />
+        <!-- Correct ExternalProbingPaths in web.config -->
+        <Exec Command="powershell &quot;(Get-Content Web.config) -replace '\.\.\\SolidCP.EnterpriseServer', '..\EnterpriseServer' | Set-Content -Path $(DeployDir)\Web.config&quot;" />
+    </Target>
     <ItemGroup>
         <PackageReference Include="AdvancedStringBuilder" Version="0.1.1" />
         <PackageReference Include="Antlr" Version="3.5.0.2" />

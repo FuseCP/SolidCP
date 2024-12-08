@@ -45,7 +45,7 @@ namespace SolidCP.UniversalInstaller
 		public abstract string WebsiteLogsPath { get; }
 		public int EstimatedOutputLines = 0;
 
-		public Shell Shell { get; set; } = OSInfo.Current.DefaultShell.Clone;
+		public Shell Shell { get; set; } = Shell.Standard.Clone;
 		public Providers.OS.Installer OSInstaller => OSInfo.Current.DefaultInstaller;
 		public IWebServer WebServer => OSInfo.Current.WebServer;
 		public ServiceController ServiceController => OSInfo.Current.ServiceController;
