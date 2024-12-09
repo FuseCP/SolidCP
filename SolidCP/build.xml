@@ -918,6 +918,14 @@
 		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(StandaloneInstall)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or $(IncludeReleasePdbs) " />
 	</Target>
 
+	<Target Name="DeploySqlScripts" DependsOnTargets="CopySetupDLL">
+		<ItemGroup>
+			<SqlInstallScripts Include="$(DatabaseFolder)\*.sql" />
+			<SqlInstallScripts Include="$(DatabaseFolder)\*.bundle.exe" />
+		</ItemGroup>
+		<Copy SourceFiles="@(SqlInstallScripts)" DestinationFolder="$(EnterpriseServerInstall)\Setup" />
+	</Target>
+
     <UsingTask TaskName="RegExpReplace" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
         <ParameterGroup>
           <Path ParameterType="System.String" Required="true" />
@@ -941,7 +949,7 @@
     <TokenReplace Path="C:\Project\Target.config" Token="$MyToken$" Replacement="MyValue"/>
   </Target>
 
-	<Target Name="CreateStandaloneBootstrapper" DependsOnTargets="CreateSetupDLL">
+	<Target Name="CreateStandaloneBootstrapper" DependsOnTargets="DeploySqlScripts">
         <MSBuild Projects='$(RootFolder)\SolidCP.Installer\Sources\Setup.WIXBootstrapper\Setup.WIXBootstrapper.csproj' Properties='Configuration=$(BuildConfiguration)' Targets='Build'>
            <Output TaskParameter="TargetOutputs" ItemName="StandaloneBootstrapper" />
         </MSBuild>

@@ -182,11 +182,11 @@ namespace SolidCP.Setup
 					{
 						// check SQL server version
 						string sqlVersion = GetSqlServerVersion(connectionString);
-						if (!sqlVersion.StartsWith("9.") && !sqlVersion.StartsWith("10.") && !sqlVersion.StartsWith("11.") && !sqlVersion.StartsWith("12.") && !sqlVersion.StartsWith("13.") && !sqlVersion.StartsWith("14.") && !sqlVersion.StartsWith("15.") && !sqlVersion.StartsWith("16."))
+						if (string.Compare(sqlVersion, "12.") <= 0)
 						{
-							// SQL Server 2005 engine required
+							// SQL Server 2014 engine required
 							e.Cancel = true;
-							ShowWarning("This program can be installed on SQL Server 2005/2008/2012/2014/2016/2017/2016/2017/2019/2022 only.");
+							ShowWarning("This program can be installed on SQL Server 2014/2016/2017/2016/2017/2019/2022/2025 only.");
 							return;
 						}
 						int securityMode = GetSqlServerSecurityMode(connectionString);

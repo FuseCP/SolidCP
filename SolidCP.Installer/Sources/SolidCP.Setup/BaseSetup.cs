@@ -42,6 +42,19 @@ namespace SolidCP.Setup
 {
 	public class BaseSetup
 	{
+		static BaseSetup()
+		{
+#if Costura
+			CosturaUtility.Initialize();
+#endif
+			//ResourceAssemblyLoader.Init();
+			AppDomain.CurrentDomain.UnhandledException += OnDomainUnhandledException;
+		}
+		static void OnDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
+		{
+			Log.WriteError("Remote domain error", (Exception)e.ExceptionObject);
+		}
+
 		public static void InitInstall(Hashtable args, SetupVariables vars)
 		{
 			AppConfig.LoadConfiguration();

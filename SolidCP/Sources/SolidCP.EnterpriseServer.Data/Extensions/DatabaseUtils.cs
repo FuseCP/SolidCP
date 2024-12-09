@@ -93,11 +93,11 @@ namespace SolidCP.EnterpriseServer.Data
 		{
 			if (String.IsNullOrEmpty(dbLogin) && String.IsNullOrEmpty(dbPassw))
 			{
-				return String.Format("DbType=SqlServer;Server={0};Database={1};Integrated Security=SSPI;", dbServer, dbName);
+				return String.Format("DbType=SqlServer;Server={0};Database={1};Integrated Security=SSPI;TrustServerCertificate=true;", dbServer, dbName);
 			}
 			else
 			{
-				return String.Format("DbType=SqlServer;Server={0};Database={1};User id={2};Password={3};", dbServer, dbName, dbLogin, dbPassw);
+				return String.Format("DbType=SqlServer;Server={0};Database={1};User id={2};Password={3};TrustServerCertificate=true;", dbServer, dbName, dbLogin, dbPassw);
 			}
 		}
 
@@ -227,7 +227,7 @@ namespace SolidCP.EnterpriseServer.Data
 			ParseConnectionString(connectionString, out dbtype, out nativeConnectionString);
 			if (dbtype == DbType.SqlServer || dbtype == DbType.Unknown)
 			{
-				SqlConnection conn = new SqlConnection(connectionString);
+				SqlConnection conn = new SqlConnection(nativeConnectionString);
 				try
 				{
 					SqlCommand cmd = new SqlCommand("SELECT SERVERPROPERTY('productversion')", conn);
@@ -258,30 +258,39 @@ namespace SolidCP.EnterpriseServer.Data
 		/// <returns>1 - Windows Authentication mode, 0 - Mixed mode.</returns>
 		public static int GetSqlServerSecurityMode(string connectionString)
 		{
-			SqlConnection conn = new SqlConnection(connectionString);
-			int mode = 0;
-			try
+			DbType dbtype;
+			string nativeConnectionString;
+			ParseConnectionString(connectionString, out dbtype, out nativeConnectionString);
+			if (dbtype == DbType.SqlServer || dbtype == DbType.Unknown)
 			{
-				SqlCommand cmd = new SqlCommand("SELECT SERVERPROPERTY('IsIntegratedSecurityOnly')", conn);
-				conn.Open();
-				SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
 
-				if (reader.HasRows)
+				SqlConnection conn = new SqlConnection(nativeConnectionString);
+				int mode = 0;
+				try
 				{
-					reader.Read();
-					mode = Convert.ToInt32(reader[0]);
-					reader.Close();
+					SqlCommand cmd = new SqlCommand("SELECT SERVERPROPERTY('IsIntegratedSecurityOnly')", conn);
+					conn.Open();
+					SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+
+					if (reader.HasRows)
+					{
+						reader.Read();
+						mode = Convert.ToInt32(reader[0]);
+						reader.Close();
+					}
 				}
+				catch
+				{
+				}
+				finally
+				{
+					if (conn != null && conn.State == ConnectionState.Open)
+						conn.Close();
+				}
+				return mode;
 			}
-			catch
-			{
-			}
-			finally
-			{
-				if (conn != null && conn.State == ConnectionState.Open)
-					conn.Close();
-			}
-			return mode;
+
+			throw new ArgumentException("Invalid connection string");
 		}
 
 		/// <summary>

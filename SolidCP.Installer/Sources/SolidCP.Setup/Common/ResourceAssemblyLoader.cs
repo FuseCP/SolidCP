@@ -43,16 +43,26 @@ namespace SolidCP.Setup
 			var arch = RuntimeInformation.ProcessArchitecture;
 
 			string file;
-			if (arch == Architecture.X64)
+			if (dllName.Contains(".arm64.") || dllName.Contains(".x64.") || dllName.Contains(".x86.") || dllName.Contains(".arm."))
 			{
-				file = $"x64.{dllName}";
+				if (!dllName.ToLowerInvariant().Contains($".{Enum.GetName(typeof(Architecture), arch).ToLowerInvariant()}.")) return;
+				file = dllName;
 			}
-			else if (arch == Architecture.X86)
+			else
 			{
-				file = file = $"x86.{dllName}";
+				if (arch == Architecture.X64)
+				{
+					file = $"x64.{dllName}";
+				}
+				else if (arch == Architecture.X86)
+				{
+					file = $"x86.{dllName}";
+				} else if (arch == Architecture.Arm64)
+				{
+					file = $"arm64.{dllName}"; 
+				}
+				else throw new NotSupportedException($"Architecture {arch} not supported.");
 			}
-			else throw new NotSupportedException($"Architecture {arch} not supported.");
-
 			var executingAssembly = Assembly.GetExecutingAssembly();
 			var resourceName = executingAssembly.GetManifestResourceNames()
 				.FirstOrDefault(r => r.EndsWith(file));
@@ -79,7 +89,13 @@ namespace SolidCP.Setup
 			var name = a.GetName().Name;
 
 			if (name == "System.Data.SQLite") LoadNativeDll(a, "SQLite.Interop.dll");
-			//else if (name == "SkiaSharp") LoadNativeDll(a, "libSkiaSharp.dll");
+			else if (name == "SkiaSharp") LoadNativeDll(a, "libSkiaSharp.dll");
+			else if (name == "Microsoft.Data.SqlClient")
+			{
+				LoadNativeDll(a, "Microsoft.Data.SqlClient.SNI.arm64.dll");
+				LoadNativeDll(a, "Microsoft.Data.SqlClient.SNI.x64.dll");
+				LoadNativeDll(a, "Microsoft.Data.SqlClient.SNI.x86.dll");
+			}
 		}
 
 		public static Assembly Resolve(object sender, ResolveEventArgs args)
@@ -143,8 +159,8 @@ namespace SolidCP.Setup
 
 		public static void Init()
 		{
-			AppDomain.CurrentDomain.AssemblyLoad += (sender, args) => LoadNativeDlls(args.LoadedAssembly);
-			AppDomain.CurrentDomain.AssemblyResolve += Resolve;
+			//AppDomain.CurrentDomain.AssemblyLoad += (sender, args) => LoadNativeDlls(args.LoadedAssembly);
+			//AppDomain.CurrentDomain.AssemblyResolve += Resolve;
 		}
 	}
 }

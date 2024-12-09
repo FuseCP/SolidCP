@@ -54,7 +54,6 @@ namespace SolidCP.Setup
 
 		internal static object InstallBase(object obj, string minimalInstallerVersion)
 		{
-			ResourceAssemblyLoader.Init();
 			return InstallBaseRaw(obj, minimalInstallerVersion);
 		}
 		static object InstallBaseRaw(object obj, string minimalInstallerVersion)
@@ -183,7 +182,6 @@ namespace SolidCP.Setup
 
 		public static object Uninstall(object obj)
 		{
-			ResourceAssemblyLoader.Init();
 			return UninstallRaw(obj);
 		}
 		static object UninstallRaw(object obj)
@@ -223,7 +221,6 @@ namespace SolidCP.Setup
 
 		public static object Setup(object obj)
 		{
-			ResourceAssemblyLoader.Init();
 			return SetupRaw(obj);
 		}
 		static object SetupRaw(object obj)
@@ -282,7 +279,6 @@ namespace SolidCP.Setup
 
 		public static object Update(object obj)
 		{
-			ResourceAssemblyLoader.Init();
 			return UpdateRaw(obj);
 		}
 		static object UpdateRaw(object obj)

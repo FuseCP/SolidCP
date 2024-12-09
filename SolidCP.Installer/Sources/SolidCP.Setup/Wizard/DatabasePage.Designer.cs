@@ -101,7 +101,7 @@ namespace SolidCP.Setup
 			this.txtSqlServerServer.Name = "txtSqlServerServer";
 			this.txtSqlServerServer.Size = new System.Drawing.Size(248, 20);
 			this.txtSqlServerServer.TabIndex = 2;
-			this.txtSqlServerServer.Text = "localhost\\SQLExpress";
+			this.txtSqlServerServer.Text = "(local)\\SQLExpress";
 			// 
 			// lblPassword
 			// 
