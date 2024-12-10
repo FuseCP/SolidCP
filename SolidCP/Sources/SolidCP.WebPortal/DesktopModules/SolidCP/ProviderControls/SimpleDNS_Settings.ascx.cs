@@ -77,6 +77,10 @@ namespace SolidCP.Portal.ProviderControls
             intExpire.Interval = Utils.ParseInt(settings["ExpireLimit"], 0);
             intTtl.Interval = Utils.ParseInt(settings["MinimumTTL"], 0);
 
+            //DNS RecordTTL
+            txtRecordDefaultTTL.Text = settings["RecordDefaultTTL"] ?? "86400";
+            txtRecordMinimumTTL.Text = settings["RecordMinimumTTL"] ?? "3600";
+
             iPAddressesList.BindSettings(settings);
             secondaryDNSServers.BindSettings(settings);
             nameServers.Value = settings["NameServers"];
@@ -93,6 +97,10 @@ namespace SolidCP.Portal.ProviderControls
             settings["RetryDelay"] = intRetry.Interval.ToString();
             settings["ExpireLimit"] = intExpire.Interval.ToString();
             settings["MinimumTTL"] = intTtl.Interval.ToString();
+
+            //DNS RecordTTL
+            settings["RecordDefaultTTL"] = txtRecordDefaultTTL.Text;
+            settings["RecordMinimumTTL"] = txtRecordMinimumTTL.Text;
 
             iPAddressesList.SaveSettings(settings);
             secondaryDNSServers.SaveSettings(settings);
