@@ -81,6 +81,7 @@ namespace SolidCP.Providers.FTP
 			if (!Regex.IsMatch(Config.Text, @"^# This file has been modified by SolidCP\.", RegexOptions.Multiline))
 			{
 				// Create solidcp-vsftpd user
+				AddUnixUser(VsftpdUser, VsftpdGroup);
 
 				// Configure PAM
 				File.WriteAllText($"/etc/pam.d/{VsftpdUser}", @$"auth required pam_pwdfile.so pwdfile {PasswordFile}{NewLine}account required pam_permit.so");
