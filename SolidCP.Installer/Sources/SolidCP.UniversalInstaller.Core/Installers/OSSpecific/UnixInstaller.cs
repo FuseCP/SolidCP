@@ -17,26 +17,24 @@ namespace SolidCP.UniversalInstaller
 		public override string InstallExeRootPath { get => base.InstallExeRootPath ?? $"/usr/local/{SolidCP}"; set => base.InstallExeRootPath = value; }
 		public override string InstallWebRootPath { get => base.InstallWebRootPath ?? $"/var/www/{SolidCP}"; set => base.InstallWebRootPath = value; }
 		public override string WebsiteLogsPath => $"/var/log/{SolidCP}";
-		public virtual string UnixServiceId => "solidcp-server";
+		public virtual string UnixServerServiceId => "solidcp-server";
+		public virtual string UnixEnterpriseServerServiceId => "solidcp-enterpriseserver";
+		public virtual string UnixPortalServiceId => "solidcp-portal";
+		public virtual string SolidCPUnixGroup => "solidcp";
 		public virtual string CertificateFolder => "Certificates";
 		public UnixInstaller() : base() { }
 
-		public override void InstallServerWebsite()
+		public void InstallWebsite(string dll, string serviceId, string urls, string user, string group, string description)
 		{
-			// Run SolidCP.Server as a service on Unix
-
-			var websitePath = Path.Combine(InstallWebRootPath, ServerFolder, "bin_dotnet");
-			var dll = Path.Combine(websitePath, "SolidCP.Server.dll");
-
 			if (!File.Exists(dll) && !Debugger.IsAttached)
 			{
 				throw new FileNotFoundException($"The service executable {dll} was not found.");
 			}
 
-			var service = new ServiceDescription()
+			var service = new UnixServiceDescription()
 			{
-				ServiceId = UnixServiceId,
-				Directory = websitePath,
+				ServiceId = UnixServerServiceId,
+				Directory = Path.GetDirectoryName(dll),
 				Description = "SolidCP.Server service, the server management service for the SolidCP control panel.",
 				Executable = $"dotnet {dll}",
 				DependsOn = new List<string>() { "network-online.target" },
@@ -45,32 +43,63 @@ namespace SolidCP.UniversalInstaller
 				RestartSec = "1s",
 				StartLimitBurst = "5",
 				StartLimitIntervalSec = "500",
-				SyslogIdentifier = UnixServiceId
+				User = user,
+				Group = group,
+				SyslogIdentifier = UnixServerServiceId
 			};
 			service.EnvironmentVariables.Add("ASPNETCORE_ENVIRONMENT", "Production");
 
-			ServiceController.Install(service);
-			ServiceController.Enable(service.ServiceId);
-			var status = ServiceController.Info(service.ServiceId);
-			if (status != null && status.Status == OSServiceStatus.Running) ServiceController.Stop(service.ServiceId);
-			ServiceController.Start(service.ServiceId);
+			InstallService(service);
 
-			OpenFirewall(ServerSettings.Urls);
+			OpenFirewall(urls);
+
+		}
+		public override void InstallServerWebsite()
+		{
+			var dll = Path.Combine(InstallWebRootPath, ServerFolder, "bin_dotnet", "SolidCP.Server.dll");
+
+			InstallWebsite(dll, UnixServerServiceId, ServerSettings.Urls, "root", SolidCPUnixGroup,
+				"SolidCP.Server service, the server management service for the SolidCP control panel.");
+		}
+		public virtual void AddUnixUser(string user, string group)
+		{
+			Shell.Exec($"useradd --home /home/{user} --gid {group} -m --shell /bin/false {user}");
+		}
+		public override void InstallEnterpriseServerWebsite()
+		{
+			var dll = Path.Combine(InstallWebRootPath, EnterpriseServerFolder, "bin_dotnet", "SolidCP.EnterpriseServer.dll");
+
+			AddUnixUser(UnixEnterpriseServerServiceId, SolidCPUnixGroup);
+
+			InstallWebsite(dll, UnixEnterpriseServerServiceId, ServerSettings.Urls, UnixEnterpriseServerServiceId, SolidCPUnixGroup,
+				"SolidCP.Server service, the server management service for the SolidCP control panel.");
 		}
 
-		public override void RemoveServerWebsite()
+		public override void InstallPortalWebsite()
 		{
-			var serviceId = UnixServiceId;
+			var dll = Path.Combine(InstallWebRootPath, PortalFolder, "bin_dotnet", "SolidCP.WebPortal.dll");
 
-			if (ServiceController.Info(serviceId) != null)
+			AddUnixUser(UnixPortalServiceId, SolidCPUnixGroup);
+
+			InstallWebsite(dll, UnixPortalServiceId, WebPortalSettings.Urls, UnixPortalServiceId, SolidCPUnixGroup,
+				"SolidCP.Server service, the server management service for the SolidCP control panel.");
+		}
+		public virtual void RemoveWebsite(string serviceId, string urls)
+		{
+			var service = ServiceController[serviceId];
+
+			if (service.Info != null)
 			{
-				ServiceController.Stop(serviceId);
-				ServiceController.Disable(serviceId);
-				ServiceController.Remove(serviceId);
+				service.Stop();
+				service.Disable();
+				service.Remove();
 
-				RemoveFirewallRule(ServerSettings.Urls);
+				RemoveFirewallRule(urls);
 			}
 		}
+		public override void RemoveServerWebsite() => RemoveWebsite(UnixServerServiceId, ServerSettings.Urls);
+		public override void RemoveEnterpriseServerWebsite() => RemoveWebsite(UnixEnterpriseServerServiceId, EnterpriseServerSettings.Urls);
+		public override void RemovePortalWebsite() => RemoveWebsite(UnixPortalServiceId, WebPortalSettings.Urls);
 
 		public override void OpenFirewall(int port)
 		{

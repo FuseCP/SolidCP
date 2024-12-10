@@ -57,6 +57,9 @@ namespace SolidCP.UniversalInstaller
 			Shell.Log?.Invoke(msg);
 		}
 
+		public List<string> Tasks { get; private set; } = new List<string>();
+		public void LogTask(string msg) => Tasks.Add(msg);
+
 		bool firstCheck = true;
 		public bool CheckNet8RuntimeInstalled()
 		{
@@ -165,6 +168,14 @@ namespace SolidCP.UniversalInstaller
 			}
 		}
 
+		public void InstallService(ServiceDescription description)
+		{
+			var service = ServiceController.Install(description);
+			service.Enable();
+			var status = service.Info;
+			if (status != null && status.Status == OSServiceStatus.Running) service.Stop();
+			service.Start();
+		}
 		public virtual Func<string, string> UnzipFilter => null;
 
 		public async Task<string> DownloadFileAsync(string url)

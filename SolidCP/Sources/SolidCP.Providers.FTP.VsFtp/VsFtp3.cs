@@ -60,21 +60,27 @@ namespace SolidCP.Providers.FTP
 		const string VsftpdGroup = "solidcp";
 		const string LocalRoot = "/var/www";
 		const string LocalUmask = "022";
+		const string VsftpServiceId = "vsftpd";
 
 		IUnixOperatingSystem Unix => OSInfo.Unix;
+		ServiceManager Service => Unix.ServiceController[VsftpServiceId];
 		public string ConfigFile => ProviderSettings[nameof(ConfigFile)];
 
 		VsFtpConfig config = null;
 		public VsFtpConfig Config => config ??= new VsFtpConfig(ConfigFile);
 
 		public Shell Shell => Shell.Default;
-		public void Restart() => Unix.ServiceController.Restart("vsftpd");
+		public void Reload() => Service.Reload();
+
+		public void AddUnixUser(string user, string group)
+		{
+			Shell.Exec($"useradd --home /home/{user} --gid {group} -m --shell /bin/false {user}");
+		}
 		public void EnsureSetup()
 		{
 			if (!Regex.IsMatch(Config.Text, @"^# This file has been modified by SolidCP\.", RegexOptions.Multiline))
 			{
 				// Create solidcp-vsftpd user
-				Shell.Exec($"useradd --home /home/{VsftpdUser} --gid {VsftpdGroup} -m --shell /bin/false {VsftpdUser}");
 
 				// Configure PAM
 				File.WriteAllText($"/etc/pam.d/{VsftpdUser}", @$"auth required pam_pwdfile.so pwdfile {PasswordFile}{NewLine}account required pam_permit.so");
@@ -97,7 +103,7 @@ namespace SolidCP.Providers.FTP
 				Config.GuestUsername = VsftpdUser;
 				Config.Save();
 
-				Restart();
+				Reload();
 			}
 		}
 
@@ -235,7 +241,7 @@ namespace SolidCP.Providers.FTP
 
 			SetPassword(account);
 
-			Restart();
+			Reload();
 		}
 
 		void SetPassword(FtpAccount account)
@@ -274,7 +280,7 @@ namespace SolidCP.Providers.FTP
 
 			SetPassword(account);
 
-			Restart();
+			Reload();
 		}
 
 		public virtual void DeleteAccount(string accountName)
@@ -291,7 +297,7 @@ namespace SolidCP.Providers.FTP
 				// Remove user's config file
 				File.Delete($"{UsersConfigFolder}/{accountName}");
 
-				Restart();
+				Reload();
 			}
 			else throw new ArgumentException($"User {accountName} does not exist.");
 		}

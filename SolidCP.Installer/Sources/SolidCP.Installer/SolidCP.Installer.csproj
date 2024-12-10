@@ -14,7 +14,6 @@
         <ApplicationManifest>SolidCP.Installer.manifest</ApplicationManifest>
         <RestoreSources>$(RestoreSources);../../Lib;https://api.nuget.org/v3/index.json</RestoreSources>
         <EmbeddReferences>false</EmbeddReferences>
-        <TargetsTriggeredByCompilation>$(TargetsTriggeredByCompilation);RemoveMonoPosix</TargetsTriggeredByCompilation>
     </PropertyGroup>
     <Target Name="CopySetupPDBfile" Condition=" '$(Configuration)' == 'Debug' " AfterTargets="Build">
         <Copy SourceFiles="..\..\Build\$(Configuration)\Setup.pdb" DestinationFolder="$(OutputPath)" ContinueOnError="true" />
@@ -28,11 +27,11 @@
         </ItemGroup>
         <Copy SourceFiles="@(FilesToCopy)" DestinationFolder="Resources" SkipUnchangedFiles="true" />
     </Target>
-    
-    <Target Name="RemoveMonoPosix" BeforeTargets="FodyTarget" AfterTargets="Build">
-        <Delete Files="$(OutputPath)\Mono.Posix.dll" />
+
+    <Target Name="RemoveMonoPosix" AfterTargets="_CopyFilesMarkedCopyLocal">
+        <Delete Files="$(OutputPath)Mono.Posix.dll" />
     </Target>
-    
+
     <Target Name="DeleteDlls" AfterTargets="Build" Condition="$(EmbeddReferences) == 'true'">
         <Message Text="Deleting unused files" Importance="high" />
         <ItemGroup>

@@ -37,6 +37,7 @@ namespace SolidCP.UniversalInstaller
 				EnterpriseServerSettings.Urls ?? "",
 				"", "");
 		}
+		public virtual void RemoveEnterpriseServerWebsite() { }
 		public virtual void ReadEnterpriseServerConfiguration() { }
 
 		public virtual void ConfigureEnterpriseServer(EnterpriseServerSettings settings) { }

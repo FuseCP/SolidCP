@@ -82,6 +82,7 @@ namespace SolidCP.Providers.OS
 			}
 		}
 		public override void Restart(string serviceId) => Shell.Exec($"systemctl restart {serviceId}");
+		public override void Reload(string serviceId) => Shell.Exec($"systemctl reload {serviceId}");
 		public override void Disable(string serviceId)
 		{
 			Shell.Exec($"systemctl disable {serviceId}.service");
@@ -96,7 +97,7 @@ namespace SolidCP.Providers.OS
 			Shell.Exec("systemctl reboot");
 		}
 
-		public override void Install(ServiceDescription description)
+		public override ServiceManager Install(ServiceDescription description)
 		{
 			var srvcFile = @"[Unit]
 Description=@description
@@ -112,6 +113,8 @@ WorkingDirectory=@workdir
 @Restart_
 @RestartSec
 @Syslog
+@User
+@Group
 
 [Install]
 WantedBy=multi-user.target
@@ -163,6 +166,7 @@ WantedBy=multi-user.target
 				}
 			}
 
+			var unixDescription = description as UnixServiceDescription;
 			srvcFile = srvcFile
 				.Replace("@description", description.Description)
 				.Replace("@dependsOn", deps)
@@ -173,14 +177,18 @@ WantedBy=multi-user.target
 				.Replace("@RestartSec", !string.IsNullOrEmpty(description.RestartSec) ? $"RestartSec={description.RestartSec}" : "")
 				.Replace("@StartLimitIntervalSec", !string.IsNullOrEmpty(description.StartLimitIntervalSec) ? $"StartLimitIntervalSec={description.StartLimitIntervalSec}" : "")
 				.Replace("@StartLimitBurst", !string.IsNullOrEmpty(description.StartLimitBurst) ? $"StartLimitBurst={description.StartLimitBurst}" : "")
-				.Replace("@Syslog", !string.IsNullOrEmpty(description.SyslogIdentifier) ?
-					$"StandardOutput=journal{Environment.NewLine}StandardError=journal{Environment.NewLine}SyslogIdentifier={description.SyslogIdentifier}" : "")
+				.Replace("@User", !string.IsNullOrEmpty(description.User) ? $"User={description.User}" : "")
+				.Replace("@Group", !string.IsNullOrEmpty(unixDescription?.Group) ? $"Group={unixDescription.Group}" : "")
+				.Replace("@Syslog", !string.IsNullOrEmpty(unixDescription?.SyslogIdentifier) ?
+					$"StandardOutput=journal{Environment.NewLine}StandardError=journal{Environment.NewLine}SyslogIdentifier={unixDescription.SyslogIdentifier}" : "")
 				.Replace("\r\n", "\n");
 			srvcFile = Regex.Replace(srvcFile, @"^\s*$(?!^\[.*?\])", "", RegexOptions.Multiline); // remove empty lines
 
 			File.WriteAllText(Path.Combine(ServicesDirectory, $"{description.ServiceId}.service"), srvcFile);
 
 			Shell.Exec($"systemctl daemon-reload");
+
+			return this[description.ServiceId];
 		}
 
 		public override void Remove(string serviceId)

@@ -12,7 +12,6 @@
         <AssemblyName>Setup</AssemblyName>
         <RestoreSources>$(RestoreSources);../../Lib;https://api.nuget.org/v3/index.json</RestoreSources>
         <EmbeddReferences>false</EmbeddReferences>
-        <TargetsTriggeredByCompilation>$(TargetsTriggeredByCompilation);RemoveMonoPosix</TargetsTriggeredByCompilation>
     </PropertyGroup>
     <Target Name="CopyResources" BeforeTargets="ResolveReferences">
         <Message Text="Copying Installer Resources" Importance="high" />
@@ -24,9 +23,8 @@
         <Copy SourceFiles="@(FilesToCopyX86)" DestinationFolder="Resources\x86" SkipUnchangedFiles="true" />-->
     </Target>
 
-    <Target Name="RemoveMonoPosix" AfterTargets="Build">
-        <Message Text="Delete $(OutputPath)\Mono.Posix.dll" Importance="high" />
-        <Delete Files="$(OutputPath)\Mono.Posix.dll" />
+    <Target Name="RemoveMonoPosix" AfterTargets="_CopyFilesMarkedCopyLocal">
+        <Delete Files="$(OutputPath)Mono.Posix.dll" />
     </Target>
 
     <Target Name="DeleteDlls" AfterTargets="Build" Condition="$(EmbeddReferences) == 'true'">

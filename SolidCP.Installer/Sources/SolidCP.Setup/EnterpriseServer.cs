@@ -40,6 +40,7 @@ using System.Text;
 using SolidCP.Setup.Actions;
 using Data = SolidCP.EnterpriseServer.Data;
 using SolidCP.UniversalInstaller.Core;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Setup
 {
@@ -171,13 +172,24 @@ namespace SolidCP.Setup
 				var introPage = new IntroductionPage();
 				var licPage = new LicenseAgreementPage();
 				var page1 = new ConfigurationCheckPage();
-				//
-                ConfigurationCheck check1 = new ConfigurationCheck(CheckTypes.WindowsOperatingSystem, "Operating System Requirement") { SetupVariables = setupVariables };
-                ConfigurationCheck check2 = new ConfigurationCheck(CheckTypes.IISVersion, "IIS Requirement") { SetupVariables = setupVariables };
-                ConfigurationCheck check3 = new ConfigurationCheck(CheckTypes.ASPNET, "ASP.NET Requirement") { SetupVariables = setupVariables };
-				//
-				page1.Checks.AddRange(new ConfigurationCheck[] { check1, check2, check3 });
-				//
+				if (OSInfo.IsWindows)
+				{
+					page1.Checks.AddRange(new ConfigurationCheck[]
+					{
+						new ConfigurationCheck(CheckTypes.WindowsOperatingSystem, "Operating System Requirement"){ SetupVariables = setupVariables },
+						new ConfigurationCheck(CheckTypes.IISVersion, "IIS Requirement"){ SetupVariables = setupVariables },
+						new ConfigurationCheck(CheckTypes.ASPNET, "ASP.NET Requirement"){ SetupVariables = setupVariables }
+					});
+				}
+				else
+				{
+					page1.Checks.AddRange(new ConfigurationCheck[]
+					{
+						new ConfigurationCheck(CheckTypes.OperatingSystem, "Operating System Requirement"){ SetupVariables = setupVariables },
+						new ConfigurationCheck(CheckTypes.Net8Runtime, ".NET 8 Runtime Requirement"){ SetupVariables = setupVariables },
+						new ConfigurationCheck(CheckTypes.Systemd, "Systemd Requirement"){ SetupVariables = setupVariables },
+					});
+				}
 				var page2 = new InstallFolderPage();
 				var page3 = new WebPage();
 				var page4 = new InsecureHttpWarningPage();

@@ -32,6 +32,7 @@ namespace SolidCP.UniversalInstaller
 			InstallPortalWebsite();
 			SetPortalFilePermissions();
 		}
+		public virtual void RemovePortalWebsite() { }
 		public virtual void ReadWebPortalConfiguration()
 		{
 			WebPortalSettings = new WebPortalSettings();

@@ -774,7 +774,7 @@ namespace SolidCP.Setup
 		private void DeleteUnixWebSite(string port)
 		{
 			Log.WriteStart("Deleting web site");
-			var serviceId = (UniversalInstaller.Installer.Current as UniversalInstaller.UnixInstaller)?.UnixServiceId ?? "solidcp-server";
+			var serviceId = (UniversalInstaller.Installer.Current as UniversalInstaller.UnixInstaller)?.UnixServerServiceId ?? "solidcp-server";
 
 			try
 			{
