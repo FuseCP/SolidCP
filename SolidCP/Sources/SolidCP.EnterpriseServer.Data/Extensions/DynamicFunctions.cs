@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if !NETSTANDARD
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -8,7 +10,7 @@ using System.Reflection;
 
 #if NETFRAMEWORK
 using System.Data.Entity;
-#else
+#elif NETCOREAPP
 using Microsoft.EntityFrameworkCore;
 #endif
 
@@ -26,7 +28,7 @@ namespace SolidCP.EnterpriseServer.Data
 			var likeMethod = type.GetMethod("Like", new[] { typeof(string), typeof(string) });
 			// TODO use variable, not constant.
 			var call = Expression.Call(null, likeMethod, property, likeExpressionParameter);
-#else
+#elif NETCOREAPP
 			// Get the Like Method from EF.Functions
 			var efLikeMethod = typeof(DbFunctionsExtensions).GetMethod("Like",
 				BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic,
@@ -43,3 +45,4 @@ namespace SolidCP.EnterpriseServer.Data
 	}
 
 }
+#endif

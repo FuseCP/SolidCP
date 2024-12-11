@@ -8,6 +8,24 @@ namespace SolidCP.UniversalInstaller
 
 	public class ConsoleUI : UI
 	{
+		public override bool IsAvailable => true;
+		public new class SetupWizard : UI.SetupWizard
+		{
+
+			public override UI.SetupWizard BannerWizard()
+			{
+				return base.BannerWizard();
+			}
+			public SetupWizard(UI ui) : base(ui) { }
+			public override void Show()
+			{
+				throw new NotImplementedException();
+			}
+		}
+
+		public override UI.SetupWizard Wizard => new SetupWizard(this);
+
+
 		public override string GetRootPassword()
 		{
 			var rootUser = OSInfo.IsWindows ? "administrator" : "root";

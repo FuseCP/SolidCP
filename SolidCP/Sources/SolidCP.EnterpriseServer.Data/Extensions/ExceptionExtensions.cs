@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Linq;
 #if NetCore
 using Microsoft.EntityFrameworkCore;
-#else
+#elif NetFX
 using System.Data.Entity.Validation;
 #endif
 

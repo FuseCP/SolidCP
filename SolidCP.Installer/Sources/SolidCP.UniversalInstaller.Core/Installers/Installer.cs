@@ -4,7 +4,8 @@ using SolidCP.Providers;
 using SolidCP.Providers.Web;
 using SolidCP.Providers.OS;
 using SolidCP.Providers.Utils;
-using Ionic.Zip;
+//using Ionic.Zip;
+using System.IO.Compression;
 using System.Globalization;
 using System.Security.Policy;
 using System.Diagnostics.Contracts;
@@ -12,7 +13,6 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Data;
-using System.Reflection.Emit;
 
 namespace SolidCP.UniversalInstaller
 {
@@ -28,6 +28,7 @@ namespace SolidCP.UniversalInstaller
 		public virtual string EnterpriseServerUser => $"{SolidCP}EnterpriseServer";
 		public virtual string WebPortalUser => $"{SolidCP}Portal";
 		public virtual string SolidCPWebUsersGroup => "SCP_IUSRS";
+		public virtual string NewLine => Environment.NewLine;
 		public virtual bool CanInstallServer => true;
 		public virtual bool CanInstallEnterpriseServer => OSInfo.IsWindows;
 		public virtual bool CanInstallPortal => OSInfo.IsWindows;
@@ -50,15 +51,16 @@ namespace SolidCP.UniversalInstaller
 		public IWebServer WebServer => OSInfo.Current.WebServer;
 		public ServiceController ServiceController => OSInfo.Current.ServiceController;
 		public UI UI => UI.Current;
-
+		public TextWriter LogWriter { get; set; }
 		public void Log(string msg)
 		{
-			Console.WriteLine(msg);
+			Debug.WriteLine(msg);
 			Shell.Log?.Invoke(msg);
+			LogWriter?.WriteLine(msg);
 		}
 
-		public List<string> Tasks { get; private set; } = new List<string>();
-		public void LogTask(string msg) => Tasks.Add(msg);
+		public List<string> InstallLogs { get; private set; } = new List<string>();
+		public void InstallLog(string msg) => InstallLogs.Add(msg);
 
 		bool firstCheck = true;
 		public bool CheckNet8RuntimeInstalled()
@@ -107,25 +109,28 @@ namespace SolidCP.UniversalInstaller
 				.Where(uri => uri.Host != "localhost" && uri.Host != "127.0.0.1" && uri.Host != "::1")
 				.Select(uri => uri.Port);
 		}
-		public virtual void OpenFirewall(string urls)
-		{
-			foreach (var port in ExternalPortsFromUrls(urls)) OpenFirewall(port);
-		}
-		public virtual void RemoveFirewallRule(string urls)
-		{
-			foreach (var port in ExternalPortsFromUrls(urls)) RemoveFirewallRule(port);
-		}
+		public virtual void OpenFirewall(string urls) => OpenFirewall(ExternalPortsFromUrls(urls));
+		public virtual void RemoveFirewallRule(string urls) => RemoveFirewallRule(ExternalPortsFromUrls(urls));
 		public virtual void OpenFirewall(int port) { }
 		public virtual void RemoveFirewallRule(int port) { }
+		public virtual void OpenFirewall(params IEnumerable<int> ports)
+		{
+			foreach (int port in ports) OpenFirewall(port);
+		}
+		public virtual void RemoveFirewallRule(params IEnumerable<int> ports)
+		{
+			foreach (int port in ports) RemoveFirewallRule(port);
+		}
+
 		public virtual void InstallWebsite(string name, string path, string urls, string username, string password)
 		{
-			/* var remoteServerSettings = new RemoteServerSettings() { ADEnabled = false };
-			// Create web users group
-			if (!SecurityUtils.GroupExists(SolidCPWebUsersGroup, remoteServerSettings, ""))
-			{
-				var group = new SystemGroup() { GroupName = SolidCPWebUsersGroup, Name = SolidCPWebUsersGroup, Description = "SolidCP Website User Group" };
-				SecurityUtils.CreateGroup(group, remoteServerSettings, "", "");
-			} */
+				/* var remoteServerSettings = new RemoteServerSettings() { ADEnabled = false };
+				// Create web users group
+				if (!SecurityUtils.GroupExists(SolidCPWebUsersGroup, remoteServerSettings, ""))
+				{
+					var group = new SystemGroup() { GroupName = SolidCPWebUsersGroup, Name = SolidCPWebUsersGroup, Description = "SolidCP Website User Group" };
+					SecurityUtils.CreateGroup(group, remoteServerSettings, "", "");
+				} */
 
 			var site = new WebSite()
 			{
@@ -155,26 +160,39 @@ namespace SolidCP.UniversalInstaller
 				})
 				.ToArray();
 
-			((HostingServiceProviderBase)WebServer).ProviderSettings.Settings.Add("WebGroupName", SolidCPWebUsersGroup);
-
-			WebServer.CreateSite(site);
-
-			foreach (var binding in site.Bindings)
+			Transaction(() =>
 			{
-				if (binding.IP != "127.0.0.1" && binding.IP != "::1" && binding.Host != "localhost")
-				{
-					OpenFirewall(int.Parse(binding.Port));
-				}
-			}
+				((HostingServiceProviderBase)WebServer).ProviderSettings.Settings.Add("WebGroupName", SolidCPWebUsersGroup);
+
+				WebServer.CreateSite(site);
+			})
+			.WithRollback(() => WebServer.DeleteSite(site.SiteId));
+			
+			int p = 0;
+			var ports = site.Bindings
+				.Where(binding => binding.IP != "127.0.0.1" && binding.IP != "::1" && binding.Host != "localhost")
+				.Select(binding => int.TryParse(binding.Port, out p) ? p : 0);
+			OpenFirewall(ports);
 		}
 
 		public void InstallService(ServiceDescription description)
 		{
-			var service = ServiceController.Install(description);
-			service.Enable();
-			var status = service.Info;
-			if (status != null && status.Status == OSServiceStatus.Running) service.Stop();
-			service.Start();
+			Transaction(() =>
+			{
+				var service = ServiceController.Install(description);
+				service.Enable();
+				var status = service.Info;
+				if (status != null && status.Status == OSServiceStatus.Running) service.Stop();
+				service.Start();
+			})
+			.WithRollback(() => RemoveService(description.ServiceId));
+		}
+		public void RemoveService(string serviceId)
+		{
+			var service = ServiceController[serviceId];
+			service.Stop();
+			service.Disable();
+			service.Remove();
 		}
 		public virtual Func<string, string> UnzipFilter => null;
 
@@ -187,10 +205,8 @@ namespace SolidCP.UniversalInstaller
 			{
 				if (response.StatusCode != System.Net.HttpStatusCode.OK) throw new Exception($"Could not download file {url}. Status code: {response.StatusCode}");
 
-				using (Stream responseStream = await response.Content.ReadAsStreamAsync())
-				using (var file = new FileStream(tmp, FileMode.Create, FileAccess.Write))
-				{
-					await responseStream.CopyToAsync(file);
+				using (var file = new FileStream(tmp, FileMode.Create, FileAccess.Write)) {
+					await response.Content.CopyToAsync(file);
 				}
 			}
 			var name = Regex.Replace(url, @"(.*?/)|(?:\?.*$)", "", RegexOptions.Singleline);
@@ -200,7 +216,7 @@ namespace SolidCP.UniversalInstaller
 		public string DownloadFile(string url) => DownloadFileAsync(url).Result;
 		public string Net48UnzipFilter(string file)
 		{
-			return (!file.StartsWith("Setup/") && !file.StartsWith("bin_dotnet/") && !file.EndsWith(".json")) ? file : null;
+			return (!file.StartsWith("Setup/") && !file.StartsWith("bin_dotnet/") && !Regex.IsMatch(file, "(?:^|/)appsettings.json$")) ? file : null;
 		}
 		public string Net8UnzipFilter(string file)
 		{
@@ -208,47 +224,57 @@ namespace SolidCP.UniversalInstaller
 				!file.EndsWith(".config", StringComparison.OrdinalIgnoreCase) && file != "appsettings.json" &&
 				!file.EndsWith(".aspx") && !file.EndsWith(".asax") && !file.EndsWith(".asmx")) ? file : null;
 		}
-		public void UnzipFromResource(string resourcePath, string destinationPath, Func<string, string> filter = null)
+
+		public void UnzipFromStream(Stream resource, string destinationPath, Func<string, string> filter = null)
 		{
-			var assembly = Assembly.GetEntryAssembly();
-			var resourceName = assembly.GetManifestResourceNames()
-				.FirstOrDefault(res => res.EndsWith(resourcePath, StringComparison.OrdinalIgnoreCase));
-
-			if (resourceName == null) throw new NotSupportedException($"Cannot find {resourcePath} in resources.");
-
-			Directory.CreateDirectory(destinationPath);
-
-			using (var resource = assembly.GetManifestResourceStream(resourceName))
-			using (var zip = ZipFile.Read(resource))
+			Transaction(() =>
 			{
-				foreach (var zipEntry in zip)
+				Directory.CreateDirectory(destinationPath);
+
+				if (filter == null) filter = name => name;
+
+				var dirs = new HashSet<string>();
+				using (var zip = new ZipArchive(resource))
 				{
-					var name = filter?.Invoke(zipEntry.FileName);
-
-					if (name != null)
+					foreach (var zipEntry in zip.Entries)
 					{
-						var fullName = Path.Combine(destinationPath, name.Replace('/', Path.DirectorySeparatorChar));
+						var name = filter?.Invoke(zipEntry.FullName);
 
-						if (zipEntry.IsDirectory) Directory.CreateDirectory(fullName);
-						else
+						if (name != null)
 						{
-							var dir = Path.GetDirectoryName(fullName);
-							if (dir != null && !Directory.Exists(dir)) Directory.CreateDirectory(dir);
+							var fullName = Path.GetFullPath(Path.Combine(destinationPath, name.Replace('/', Path.DirectorySeparatorChar)));
 
-							using (var file = new FileStream(fullName, FileMode.Create, FileAccess.Write))
-							{
-								zipEntry.Extract(file);
-							}
-							Shell.Log?.Invoke($"Extracted {name}{Environment.NewLine}");
+							zipEntry.ExtractToFile(fullName);
+
+							Shell.Log?.Invoke($"Extracted {name}{NewLine}");
 						}
 					}
 				}
-			}
+			})
+			.WithRollback(() => Directory.Delete(destinationPath, true));
+		}
+		
+		public void UnzipFromResource(string resourcePath, string destinationPath, Func<string, string> filter = null)
+		{
+			Transaction(() =>
+			{
+				var assembly = Assembly.GetEntryAssembly();
+				var resourceName = assembly.GetManifestResourceNames()
+					.FirstOrDefault(res => res.EndsWith(resourcePath, StringComparison.OrdinalIgnoreCase));
+
+				if (resourceName == null) throw new NotSupportedException($"Cannot find {resourcePath} in resources.");
+
+				using (var resource = assembly.GetManifestResourceStream(resourceName))
+				{
+
+				}
+			})
+			.WithRollback(() => Directory.Delete(destinationPath));
 		}
 		public virtual void InstallWinAcme() => Shell.Exec("dotnet tool install win-acme --global");
 		public virtual bool IsRunningAsAdmin() => true;
 		public virtual void RestartAsAdmin() { }
-
+		public void Start() { }
 		public void InstallAll()
 		{
 			const int EstimatedOutputLinesPerSite = 200;

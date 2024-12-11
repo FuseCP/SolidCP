@@ -6,11 +6,13 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+#if !NETSTANDARD
 using Z.EntityFramework.Plus;
+#endif
 
 #if NETCOREAPP
 using Microsoft.EntityFrameworkCore;
-#else
+#elif NETFRAMEWORK
 using System.Data.Entity;
 #endif
 
@@ -135,7 +137,7 @@ namespace SolidCP.EnterpriseServer.Data
 
 		protected virtual bool AddRangeQueryable(IQueryable<int> ids, out int n, int level = 0)
 		{
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD
 			n = 0;
 			return false;
 #else
@@ -165,9 +167,19 @@ namespace SolidCP.EnterpriseServer.Data
 				await Task.Delay(TimeSpan.FromSeconds(2));
 				var now = DateTime.Now;
 				var old = now.Subtract(TimeSpan.FromSeconds(30));
+#if !NETSTANDARD
 				Context.Clone.TempIds
 					.Where(id => id.Scope == scope || id.Created < old)
 					.ExecuteDelete();
+#else
+				using (var db = Context.Clone) {
+				
+					var toDelete = db.TempIds
+						.Where(id => id.Scope == scope || id.Created < old);
+					db.TempIds.RemoveRange(toDelete);
+					db.SaveChanges();
+				}
+#endif
 			});
 		}
 
@@ -302,7 +314,7 @@ namespace SolidCP.EnterpriseServer.Data
 		// can use an optimized bulk instert
 		protected virtual bool AddRangeQueryable(IQueryable<DatedId> ids, out int n, int level = 0)
 		{
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD
 			n = 0;
 			return false;
 #else
@@ -330,9 +342,19 @@ namespace SolidCP.EnterpriseServer.Data
 				await Task.Delay(TimeSpan.FromSeconds(2));
 				var now = DateTime.UtcNow;
 				var old = now.Subtract(TimeSpan.FromSeconds(30));
-				Context.TempIds
+#if !NETSTANDARD
+				Context.Clone.TempIds
 					.Where(id => id.Scope == scope || id.Created < old)
 					.ExecuteDelete();
+#else
+				using (var db = Context.Clone) {
+				
+					var toDelete = db.TempIds
+						.Where(id => id.Scope == scope || id.Created < old);
+					db.TempIds.RemoveRange(toDelete);
+					db.SaveChanges();
+				}
+#endif
 			});
 		}
 

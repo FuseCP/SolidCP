@@ -130,9 +130,7 @@ namespace SolidCP.EnterpriseServer
 			get
 			{
 				return !IsSqlServer || !HasProcedures ||
-					(useEntityFramework ??=
-						(DbSettings.AlwaysUseEntityFramework ||
-						AlwaysUseEntityFramework));
+					(useEntityFramework ??= AlwaysUseEntityFramework);
 			}
 			set { useEntityFramework = value; }
 		}

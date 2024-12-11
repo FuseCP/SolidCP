@@ -1,18 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net48</TargetFramework>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <OutputType>Exe</OutputType>
+        <UseWindowsForms>true</UseWindowsForms>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
-        <LangVersion>12</LangVersion>
+        <LangVersion>13</LangVersion>
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
         <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
         <OutputPath>..\..\Build\$(Configuration)</OutputPath>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <StartupObject>SolidCP.UniversalInstaller.Core.Program</StartupObject>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
         <Optimize>false</Optimize>
     </PropertyGroup>
+    <ItemGroup>
+        <Using Remove="System.Windows.Forms" />
+    </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj" />
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.EnterpriseServer.Data\SolidCP.EnterpriseServer.Data.csproj" />
@@ -31,15 +37,12 @@
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Web.IIs80\SolidCP.Providers.Web.IIs80.csproj" />
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Web.LetsEncrypt\SolidCP.Providers.Web.LetsEncrypt.csproj" />
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
-        <ProjectReference Include="..\SolidCP.UniversalInstaller.DotnetHost\SolidCP.UniversalInstaller.DotnetHost.csproj" />
     </ItemGroup>
     <ItemGroup>
         <Compile Include="..\..\..\SolidCP\Sources\VersionInfo.cs" Link="VersionInfo.cs" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="DotNetZip.NetStandard" Version="1.12.0" />
-        <PackageReference Include="MySql.Data" Version="9.1.0" />
-        <PackageReference Include="System.Data.SQLite.Core" Version="1.0.119" />
+        <PackageReference Include="System.IO.Compression" Version="4.3.0" />
         <PackageReference Include="System.Net.Http" Version="4.3.4" />
         <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />
     </ItemGroup>

@@ -1,10 +1,23 @@
-#if NETFRAMEWORK
+using System;
 
 namespace SolidCP.UniversalInstaller {
 
-    public class WinFormsUI: UI {
+    public class NotAvailableUI: UI {
 
-        public override ServerSettings GetServerSettings()
+		public override bool IsAvailable => false;
+
+		public new class SetupWizard : UI.SetupWizard
+		{
+			public SetupWizard(UI ui): base(ui) { }
+			public override void Show()
+			{
+				throw new NotImplementedException();
+			}
+		}
+
+		public override UI.SetupWizard Wizard => new SetupWizard(this);
+
+		public override ServerSettings GetServerSettings()
         {
             throw new NotImplementedException();
         }
@@ -24,8 +37,7 @@ namespace SolidCP.UniversalInstaller {
 		}
 
 		public override Packages GetPackagesToInstall() {
-			UI.Current = new ConsoleUI();
-			return UI.Current.GetPackagesToInstall();
+			throw new NotImplementedException();
         }
         
         public override void ShowInstallationProgress() {
@@ -44,16 +56,7 @@ namespace SolidCP.UniversalInstaller {
 
 		public override string GetRootPassword()
 		{
-			try
-			{
-				var form = new RootPasswordForm();
-				form.ShowDialog();
-				return form.Password;
-			} catch (Exception ex)
-			{
-				UI.Current = new ConsoleUI();
-				return UI.Current.GetRootPassword();
-			}
+			throw new NotImplementedException();
 		}
 
 		public override void ShowInstallationSuccess(Packages packages)
@@ -63,17 +66,16 @@ namespace SolidCP.UniversalInstaller {
 
 		public override void Init()
 		{
+			throw new NotImplementedException();
 		}
 		public override void Exit()
 		{
+			throw new NotImplementedException();
 		}
 
 		public override void CheckPrerequisites()
 		{
-			UI.Current = new ConsoleUI();
-			UI.Current.CheckPrerequisites();			
+			throw new NotImplementedException();
 		}
 	}
 }
-
-#endif

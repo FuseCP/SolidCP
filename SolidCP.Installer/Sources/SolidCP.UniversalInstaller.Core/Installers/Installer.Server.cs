@@ -48,7 +48,7 @@ namespace SolidCP.UniversalInstaller
 		public virtual void InstallServerWebsite() { }
 		public virtual void RemoveServerWebsite() { }
 		public virtual void RemoveServerFolder() {
-			FileUtils.DeleteDirectoryRecursive(Path.Combine(InstallWebRootPath, ServerFolder));
+			Directory.Delete(Path.Combine(InstallWebRootPath, ServerFolder), true);
 		}
 		public virtual void RemoveServerUser() { }
 		public virtual void RemoveServerApplicationPool() { }

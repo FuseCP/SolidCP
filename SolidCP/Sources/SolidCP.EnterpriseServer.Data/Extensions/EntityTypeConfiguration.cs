@@ -1,4 +1,6 @@
-﻿#nullable enable
+﻿#if !NETSTANDARD
+
+#nullable enable
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -1808,3 +1810,4 @@ namespace SolidCP.EnterpriseServer.Data
 #endif
 	}
 }
+#endif

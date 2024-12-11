@@ -122,7 +122,7 @@ namespace SolidCP.UniversalInstaller
 			var appsettingsfile = Path.Combine(InstallWebRootPath, ServerFolder, "bin_dotnet", "appsettings.json");
 			if (File.Exists(appsettingsfile))
 			{
-				var appsettings = JsonConvert.DeserializeObject<ServerAppSettings>(File.ReadAllText(appsettingsfile)) ?? new ServerAppSettings();
+				var appsettings = JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText(appsettingsfile)) ?? new AppSettings();
 				ServerSettings.Urls = appsettings.applicationUrls;
 				ServerSettings.ServerPasswordSHA = appsettings.Server?.Password ?? "";
 				ServerSettings.ServerPassword = "";
@@ -139,15 +139,15 @@ namespace SolidCP.UniversalInstaller
 
 		public override void ConfigureServer()
 		{
-			ServerAppSettings appsettings = null;
+			AppSettings appsettings = null;
             var appsettingsfile = Path.Combine(InstallWebRootPath, ServerFolder, "bin_dotnet", "appsettings.json");
 			if (File.Exists(appsettingsfile))
 			{
-				appsettings = JsonConvert.DeserializeObject<ServerAppSettings>(File.ReadAllText(appsettingsfile)) ?? new ServerAppSettings();
+				appsettings = JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText(appsettingsfile)) ?? new AppSettings();
 			}
 			else
 			{
-				appsettings = new ServerAppSettings();
+				appsettings = new AppSettings();
 			}
 
 			appsettings.applicationUrls = ServerSettings.Urls;
@@ -167,17 +167,17 @@ namespace SolidCP.UniversalInstaller
 				string pwsha1;
 				if (!string.IsNullOrEmpty(ServerSettings.ServerPassword))
 				{
-					pwsha1 = Utils.ComputeSHAServerPassword(ServerSettings.ServerPassword);
+					pwsha1 = CryptoUtils.ComputeSHAServerPassword(ServerSettings.ServerPassword);
 				} else
 				{
 					pwsha1 = ServerSettings.ServerPasswordSHA;
 				}
-				appsettings.Server = new ServerAppSettings.ServerSetting() { Password = pwsha1 };
+				appsettings.Server = new AppSettings.ServerSetting() { Password = pwsha1 };
 			}
 
 			if (!string.IsNullOrEmpty(ServerSettings.LetsEncryptCertificateEmail) && !string.IsNullOrEmpty(ServerSettings.LetsEncryptCertificateDomains))
 			{
-				appsettings.LettuceEncrypt = new ServerAppSettings.LettuceEncryptSetting()
+				appsettings.LettuceEncrypt = new AppSettings.LettuceEncryptSetting()
 				{
 					AcceptTermOfService = true,
 					EmailAddress = ServerSettings.LetsEncryptCertificateEmail,
@@ -198,7 +198,7 @@ namespace SolidCP.UniversalInstaller
 				File.Copy(certFile, shadowFile);
 				OSInfo.Unix.GrantUnixPermissions(shadowFile, UnixFileMode.UserRead | UnixFileMode.UserWrite);
 
-				appsettings.Certificate = new ServerAppSettings.CertificateSetting()
+				appsettings.Certificate = new AppSettings.CertificateSetting()
 				{
 					File = shadowFile,
 					Password = ServerSettings.CertificatePassword
@@ -206,7 +206,7 @@ namespace SolidCP.UniversalInstaller
 			}
 			else if (!string.IsNullOrEmpty(ServerSettings.CertificateStoreLocation) && !string.IsNullOrEmpty(ServerSettings.CertificateStoreName))
 			{
-				appsettings.Certificate = new ServerAppSettings.CertificateSetting()
+				appsettings.Certificate = new AppSettings.CertificateSetting()
 				{
 					FindValue = ServerSettings.CertificateFindValue
 				};
@@ -221,7 +221,7 @@ namespace SolidCP.UniversalInstaller
 			if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 			File.WriteAllText(appsettingsfile, JsonConvert.SerializeObject(appsettings, Formatting.Indented, new JsonSerializerSettings()
 			{
-				ContractResolver = new ServerAppSettings.IgnoreAllowedHostsResolver()
+				ContractResolver = new AppSettings.IgnoreAllowedHostsResolver()
 			}));
 		}
 		public override void InstallServerPrerequisites()

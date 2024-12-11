@@ -56,22 +56,13 @@ namespace SolidCP.UniversalInstaller.Core
 			}
 		}
 
-		static string dotnetHostDll = null;
-		public static string GetDotnetHost(Assembly assembly = null)
+		static string hostDllCore = null;
+		public static string GetHostCore(Assembly assembly = null)
 		{
-			if (dotnetHostDll == null)
+			if (hostDllCore == null)
 			{
-				const string DllName = "SolidCP.UniversalInstaller.DotnetHost.dll";
 				assembly = assembly ?? Assembly.GetExecutingAssembly();
-				var resources = assembly.GetManifestResourceNames();
-				var res = resources
-					.FirstOrDefault(name => name.EndsWith(DllName));
-				var fileName = $"{Path.GetTempFileName()}.{DllName}";
-				using (var stream = assembly.GetManifestResourceStream(res))
-				using (var file = new FileStream(fileName, FileMode.Create, FileAccess.Write))
-				{
-					stream.CopyTo(file);
-				}
+				var fileName = assembly.Location;
 				OSInfo.Unix.GrantUnixPermissions(fileName, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute |
 					 UnixFileMode.GroupRead | UnixFileMode.GroupExecute | UnixFileMode.OtherRead | UnixFileMode.OtherExecute);
 
@@ -87,9 +78,30 @@ namespace SolidCP.UniversalInstaller.Core
 		}
 	}
 }", Encoding.UTF8);
-				dotnetHostDll = fileName;
+				hostDllCore = fileName;
 			}
-			return dotnetHostDll;
+			return hostDllCore;
+		}
+
+		static string hostDllFX = null;
+		public static string GetHostFX(Assembly assembly = null)
+		{
+			if (hostDllFX == null)
+			{
+				const string DllNameFX = "SolidCP.UniversalInstaller.CertificateStoreInfo.NetFX.exe";
+				assembly = assembly ?? Assembly.GetExecutingAssembly();
+				var resources = assembly.GetManifestResourceNames();
+				var res = resources
+					.FirstOrDefault(name => name.EndsWith(DllNameFX));
+				var fileName = $"{Path.GetTempFileName()}.{DllNameFX}";
+				using (var stream = assembly.GetManifestResourceStream(res))
+				using (var file = new FileStream(fileName, FileMode.Create, FileAccess.Write))
+				{
+					stream.CopyTo(file);
+				}
+				hostDllFX = fileName;
+			}
+			return hostDllFX;
 		}
 
 		public static void GetStoreNames(out string[] names, out string[] locations)
@@ -98,7 +110,7 @@ namespace SolidCP.UniversalInstaller.Core
 			{
 				if (Shell.Default.Find("dotnet") != null)
 				{
-					var dll = GetDotnetHost();
+					var dll = GetHostCore();
 					var shell = Shell.Default.Exec($"dotnet \"{dll}\"");
 					var text = shell.Output().Result;
 					var exitCode = shell.ExitCode().Result;
@@ -139,12 +151,11 @@ namespace SolidCP.UniversalInstaller.Core
 			{
 				if (Shell.Default.Find("dotnet") == null) return true;
 
-				var dll = GetDotnetHost();
+				var dll = GetHostCore();
 				var code = Shell.Default.Exec($"dotnet \"{dll}\" {name} {location} {findType} {findValue}").ExitCode().Result;
 				return code == 0;
 			}
 			else return ExistsDirect(location, name, findType, findValue);
 		}
-
 	}
 }

@@ -4,11 +4,10 @@ namespace SolidCP.UniversalInstaller
 {
 
 	[Flags]
-	public enum Packages { Server = 1, EnterpriseServer = 2, WebPortal = 4 }
+	public enum Packages { Server = 1, EnterpriseServer = 2, WebPortal = 4, WebDavPortal = 8 }
 
 	public abstract class UI
 	{
-
 		static UI current;
 		public static UI Current
 		{
@@ -17,7 +16,7 @@ namespace SolidCP.UniversalInstaller
 				if (current == null)
 				{
 #if NETFRAMEWORK
-               current = new WinFormsUI();
+					current = Activator.CreateInstance(new WinFormsUI();
 #else
 					current = new ConsoleUI();
 #endif
@@ -29,11 +28,67 @@ namespace SolidCP.UniversalInstaller
 				current = value;
 			}
 		}
+		public abstract bool IsAvailable { get; }
+		public UI WinFormsUI
+		{
+			get
+			{
+				var type = Type.GetType("SolidCP.UniversalInstaller.WinFormsUI, SolidCP.UniversalInstaller.UI.WinForms");
+				if (type != null) return Activator.CreateInstance(type) as UI;
+				else return new NotAvailableUI();
+			}
+		}
+		public UI ConsoleUI => new ConsoleUI();
+		public UI AvaloniaUI {
+			get {
+				var type = Type.GetType("SolidCP.UniversalInstaller.AvaloniaUI, SolidCP.UniversalInstaller.UI.Avalonia");
+				if (type != null) return Activator.CreateInstance(type) as UI;
+				else return new NotAvailableUI();
+			}
+		}
+
+		public abstract class SetupWizard
+		{
+			public UI UI { get; protected set; }
+			public Installer Installer => UI.Installer;
+			public ServerSettings ServerSettings => Installer.ServerSettings;
+			public EnterpriseServerSettings EnterpriseServerSettings => Installer.EnterpriseServerSettings;
+			public WebPortalSettings WebPortalSettings => Installer.WebPortalSettings;
+
+			public SetupWizard(UI ui) => UI = ui;
+
+			public virtual SetupWizard BannerWizard() => this;
+			public virtual SetupWizard Certificate() => this;
+			public virtual SetupWizard ConfigurationCheck() => this;
+			public virtual SetupWizard ConfirmUninstall() => this;
+			public virtual SetupWizard Database() => this;
+			public virtual SetupWizard EmbeddEnterpriseServer() => this;
+			public virtual SetupWizard Progress() => this;
+			public virtual SetupWizard Download() => this;
+			public virtual SetupWizard Finish() => this;
+			public virtual SetupWizard InsecureHttpWarning() => this;
+			public virtual SetupWizard InstallFolder() => this;
+			public virtual SetupWizard Introduction() => this;
+			public virtual SetupWizard LicenseAgreement() => this;
+			public virtual SetupWizard MarginWizards() => this;
+			public virtual SetupWizard Rollback() => this;
+			public virtual SetupWizard ServerAdminPassword() => this;
+			public virtual SetupWizard ServerPassword() => this;
+			public virtual SetupWizard ServiceAddress() => this;
+			public virtual SetupWizard SetupComplete() => this;
+			public virtual SetupWizard SQLServers() => this;
+			public virtual SetupWizard Uninstall() => this;
+			public virtual SetupWizard Url() => this;
+			public virtual SetupWizard UserAccount() => this;
+			public virtual SetupWizard Web() => this;
+			public abstract void Show();
+		}
 
 		public Installer Installer => Installer.Current;
 		public ServerSettings ServerSettings => Installer.ServerSettings;
 		public EnterpriseServerSettings EnterpriseServerSettings => Installer.EnterpriseServerSettings;
 		public WebPortalSettings WebPortalSettings => Installer.WebPortalSettings;
+		public abstract SetupWizard Wizard { get; }
 		public abstract void Init();
 		public abstract void Exit();
 		public abstract string GetRootPassword();

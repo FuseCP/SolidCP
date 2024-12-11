@@ -174,7 +174,7 @@ namespace SolidCP.UniversalInstaller
 			var server = configuration.Element("SolidCP.server");
 			var security = server?.Element("security");
 			var password = security?.Element("password");
-			var pwsha1 = string.IsNullOrEmpty(settings.ServerPassword) ? settings.ServerPasswordSHA : Utils.ComputeSHAServerPassword(settings.ServerPassword);
+			var pwsha1 = string.IsNullOrEmpty(settings.ServerPassword) ? settings.ServerPasswordSHA : CryptoUtils.ComputeSHAServerPassword(settings.ServerPassword);
 			password.Attribute("value").SetValue(pwsha1);
 
 			// Swagger Version
@@ -274,7 +274,7 @@ namespace SolidCP.UniversalInstaller
 			if (string.IsNullOrEmpty(settings.CryptoKey))
 			{
 				// generate random crypto key
-				settings.CryptoKey = Utils.GetRandomString(20);
+				settings.CryptoKey = CryptoUtils.GetRandomString(20);
 			}
 			var appSettings = configuration.Element("appSettings");
 			var cryptoKey = appSettings.Elements("add").FirstOrDefault(e => e.Attribute("key")?.Value == "CryptoKey");

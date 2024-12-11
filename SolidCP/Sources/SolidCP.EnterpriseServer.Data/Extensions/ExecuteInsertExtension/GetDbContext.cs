@@ -1,4 +1,6 @@
-﻿#if NETCOREAPP
+﻿#if !NETSTANDARD
+
+#if NETCOREAPP
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.EntityFrameworkCore.Query.Internal;
@@ -156,3 +158,4 @@ public static partial class EstrellasDeEsperanzaEntityFrameworkExtensions
 #endif
 	}
 }
+#endif

@@ -220,7 +220,7 @@ namespace SolidCP.Providers
             var decryptor = Decryptor();
             return decryptor.TransformFinalBlock(InputData.Array, InputData.Offset, InputData.Count);
         }
-        static string Hash(string plainText, HashAlgorithm hash)
+        public static string Hash(string plainText, HashAlgorithm hash)
         {
             // Convert plain text into a byte array.
             byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);
@@ -240,5 +240,44 @@ namespace SolidCP.Providers
             if (IsSHA256(hash)) return SHA256(plainText) == hash;
             else return SHA1(plainText) == hash;
         }
-    }
+
+		public static string CreateCryptoKey(int len)
+		{
+			byte[] bytes = new byte[len];
+			new RNGCryptoServiceProvider().GetBytes(bytes);
+
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < bytes.Length; i++)
+			{
+				sb.Append(string.Format("{0:X2}", bytes[i]));
+			}
+
+			return sb.ToString();
+		}
+
+		public static string GetRandomString(int length)
+		{
+			string ptrn = "abcdefghjklmnpqrstwxyz0123456789";
+			StringBuilder sb = new StringBuilder();
+
+			byte[] randomBytes = new byte[4];
+			RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+			rng.GetBytes(randomBytes);
+
+			// Convert 4 bytes into a 32-bit integer value.
+			int seed = (randomBytes[0] & 0x7f) << 24 |
+						randomBytes[1] << 16 |
+						randomBytes[2] << 8 |
+						randomBytes[3];
+
+
+			Random rnd = new Random(seed);
+
+			for (int i = 0; i < length; i++)
+				sb.Append(ptrn[rnd.Next(ptrn.Length - 1)]);
+
+			return sb.ToString();
+		}
+
+	}
 }

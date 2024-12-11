@@ -1,4 +1,4 @@
-﻿#if !NETFRAMEWORK
+﻿#if NETCOREAPP
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;

@@ -36,6 +36,12 @@
         </ItemGroup>
         <Delete Files="@(FilesToDelete)" />
     </Target>
+
+    <ItemGroup>
+      <Compile Remove="Actions\EntServerUnixActionManager.cs" />
+      <Compile Remove="Actions\StandaloneServerUnixActionManager.cs" />
+      <Compile Remove="Actions\WebPortalUnixActionManager.cs" />
+    </ItemGroup>
     <ItemGroup>
         <!--<PackageReference Include="BouncyCastle.Cryptography" Version="2.3.1" />-->
         <PackageReference Include="DotNetZip.NetStandard" Version="1.12.0" />
@@ -108,6 +114,9 @@
         <!--<EmbeddedResource Include="Resources\SolidCP.Installer.Core.pdb" />-->
         <EmbeddedResource Include="Resources\logo.png" />
         <EmbeddedResource Include="EULA.Unix.rtf" />
+        <None Include="Actions\EntServerUnixActionManager.cs" />
+        <None Include="Actions\StandaloneServerUnixActionManager.cs" />
+        <None Include="Actions\WebPortalUnixActionManager.cs" />
         <None Include="Resources\BannerImage.GIF" />
         <None Include="Resources\Icons.MenuFileOpenIcon.png" />
         <None Include="Resources\MarginImage.GIF" />
@@ -332,7 +341,6 @@
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Web.IIs80\SolidCP.Providers.Web.IIs80.csproj" />
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Web.LetsEncrypt\SolidCP.Providers.Web.LetsEncrypt.csproj" />
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
-        <ProjectReference Include="..\SolidCP.UniversalInstaller.DotnetHost\SolidCP.UniversalInstaller.DotnetHost.csproj" />
         <!--
 		<ProjectReference Include="..\SolidCP.Installer.Core\SolidCP.Installer.Core.csproj">
 			<Project>{0E4A3F5B-0BB1-4F63-863D-7B0182B378CF}</Project>

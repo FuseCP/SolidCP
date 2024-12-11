@@ -154,12 +154,15 @@ namespace SolidCP.Setup
 				var page3 = new WebPage();
 				var page4 = new InsecureHttpWarningPage();
 				var page5 = new CertificatePage();
-				var page6 = new UserAccountPage();
+				UserAccountPage page6 = null;
+				if (OSInfo.IsWindows) page6 = new UserAccountPage();
 				var page7 = new UrlPage();
 				var page8 = new ExpressInstallPage2();
 
 				var page9 = new FinishPage();
-				wizard.Controls.AddRange(new Control[] { introPage, licPage, page1, page2, page3, page4, page5, page6, page7, page8, page9 });
+				wizard.Controls.AddRange(new Control[] { introPage, licPage, page1, page2, page3, page4, page5 });
+				if (OSInfo.IsWindows) wizard.Controls.Add(page6);
+				wizard.Controls.AddRange(new Control[] { page7, page8, page9 });
 				wizard.LinkPages();
 				wizard.SelectedPage = introPage;
 				//show wizard

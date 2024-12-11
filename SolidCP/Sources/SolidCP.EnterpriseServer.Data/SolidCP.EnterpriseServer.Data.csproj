@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net8.0;net48</TargetFrameworks>
-        <LangVersion>10</LangVersion>
+        <TargetFrameworks>net8.0;net48;netstandard2.0</TargetFrameworks>
+        <LangVersion>13</LangVersion>
+        <ImplicitUsings>disable</ImplicitUsings>
         <ScaffoldConnectionString>Server=(local);Database=SolidCPFresh;uid=sa;pwd=Password12;TrustServerCertificate=true;Connection Timeout=300;command timeout=300</ScaffoldConnectionString>
         <SupportOracle Condition="$(TargetFramework) != 'net48'">True</SupportOracle>
         <DefineConstants>$(DefineConstants);ScaffoldedEntities;ScaffoldedDbContext;ScaffoldedConfigurations;</DefineConstants>
@@ -10,15 +11,24 @@
         <OutputType>Exe</OutputType>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <OutputPath>..\..\Bin</OutputPath>
-        <StartupObject>SolidCP.EnterpriseServer.Data.Program</StartupObject>
         <EntityFramework6>6.5</EntityFramework6>
+        <PackageId>SolidCP.EnterpriseServer.Data</PackageId>
         <!-- Use EntityFramework 6.4 or 6.5 -->
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(TargetFramework)' == 'net48'">
+        <AssemblyName>SolidCP.EnterpriseServer.Data.NetFX</AssemblyName>
         <OutputType>Library</OutputType>
-        <ImplicitUsings>disable</ImplicitUsings>
-        <!--<StartupObject>SolidCP.EnterpriseServer.Data.Program</StartupObject>-->
+        <StartupObject></StartupObject>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
+        <AssemblyName>SolidCP.EnterpriseServer.Data.NetCore</AssemblyName>
+        <OutputType>Exe</OutputType>
+        <StartupObject>SolidCP.EnterpriseServer.Data.Program</StartupObject>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+        <AssemblyName>SolidCP.EnterpriseServer.Data.NetStandard</AssemblyName>
+        <OutputType>Library</OutputType>
         <StartupObject></StartupObject>
     </PropertyGroup>
 
@@ -50,6 +60,11 @@
         <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="9.0.0" />
     </ItemGroup>
 
+    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
+        <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.0" />
+    </ItemGroup>
+    
     <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
         <Reference Include="System.Data.Entity" />
     </ItemGroup>
@@ -76,9 +91,6 @@
         <PackageReference Include="EntityFramework6.Npgsql" Version="6.4.3" />
         <PackageReference Include="System.Data.SQLite.EF6" Version="1.0.119" />
         <PackageReference Include="System.Data.SQLite" Version="1.0.119" />
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     </ItemGroup>
 
     <ItemGroup>
@@ -118,6 +130,13 @@
         <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
     </ItemGroup>
 
+    <ItemGroup Condition="$(TargetFramework) == 'netstandard2.0'">
+        <None Include="Configuration\**\*.cs" />
+        <Compile Remove="Configuration\**\*.cs" />
+        <None Include="Migrations\**\*.cs" />
+        <Compile Remove="Migrations\**\*.cs" />
+    </ItemGroup>
+    
     <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
         <None Include="Migrations\**\*.cs" />
         <Compile Remove="Migrations\**\*.cs" />
