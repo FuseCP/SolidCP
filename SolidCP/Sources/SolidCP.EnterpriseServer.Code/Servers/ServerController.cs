@@ -2299,13 +2299,16 @@ namespace SolidCP.EnterpriseServer
 			// get domain by ID
 			DomainInfo domain = GetDomainItem(domainId);
 
-            //get default TTL
-            StringDictionary settings = GetServiceSettings(domain.ZoneServiceID);
-            domain.RecordDefaultTTL = Convert.ToInt32(settings["RecordDefaultTTL"]);
-			if (domain.RecordDefaultTTL == 0) domain.RecordDefaultTTL = 86400;
-			domain.RecordMinimumTTL = Convert.ToInt32(settings["RecordMinimumTTL"]);
-			if (domain.RecordMinimumTTL == 0) domain.RecordMinimumTTL = 3600;
-			domain.MinimumTTL = Convert.ToInt32(settings["MinimumTTL"]);
+			//get default TTL
+			if (domainId > 0)
+			{
+				StringDictionary settings = GetServiceSettings(domain.ZoneServiceID);
+				domain.RecordDefaultTTL = Convert.ToInt32(settings["RecordDefaultTTL"]);
+				if (domain.RecordDefaultTTL == 0) domain.RecordDefaultTTL = 86400;
+				domain.RecordMinimumTTL = Convert.ToInt32(settings["RecordMinimumTTL"]);
+				if (domain.RecordMinimumTTL == 0) domain.RecordMinimumTTL = 3600;
+				domain.MinimumTTL = Convert.ToInt32(settings["MinimumTTL"]);
+			}
 
             // return
             return GetDomain(domain, withLog);

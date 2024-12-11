@@ -68,6 +68,17 @@ namespace SolidCP.Providers.DNS
         {
             get { return ProviderSettings.GetBool("AdMode"); }
         }
+
+        public int DNSRecordDefaultTTL
+        {
+            get { return ProviderSettings.GetInt("RecordDefaultTTL"); }
+        }
+
+        public int DNSRecordMinimumTTL
+        {
+            get { return ProviderSettings.GetInt("RecordMinimumTTL"); }
+        }
+
         #endregion
 
         private WmiHelper wmi = null;
