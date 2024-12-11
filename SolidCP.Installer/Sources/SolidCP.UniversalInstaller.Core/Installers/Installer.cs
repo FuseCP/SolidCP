@@ -52,9 +52,10 @@ namespace SolidCP.UniversalInstaller
 		public ServiceController ServiceController => OSInfo.Current.ServiceController;
 		public UI UI => UI.Current;
 		public TextWriter LogWriter { get; set; }
-		public void Log(string msg)
+		public virtual void Log(string msg)
 		{
 			Debug.WriteLine(msg);
+			Trace.WriteLine(msg);
 			Shell.Log?.Invoke(msg);
 			LogWriter?.WriteLine(msg);
 		}

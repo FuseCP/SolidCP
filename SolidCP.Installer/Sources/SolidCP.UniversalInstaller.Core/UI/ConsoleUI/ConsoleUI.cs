@@ -11,7 +11,6 @@ namespace SolidCP.UniversalInstaller
 		public override bool IsAvailable => true;
 		public new class SetupWizard : UI.SetupWizard
 		{
-
 			public override UI.SetupWizard BannerWizard()
 			{
 				return base.BannerWizard();
@@ -25,7 +24,10 @@ namespace SolidCP.UniversalInstaller
 
 		public override UI.SetupWizard Wizard => new SetupWizard(this);
 
-
+		public override void RunMainUI()
+		{
+			
+		}
 		public override string GetRootPassword()
 		{
 			var rootUser = OSInfo.IsWindows ? "administrator" : "root";

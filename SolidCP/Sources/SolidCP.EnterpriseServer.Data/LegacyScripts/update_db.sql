@@ -21629,7 +21629,7 @@ END
 GO
 
 -- Add defaultdomainhostname property to existing SM providers
-IF NOT EXISTS (Select * from [ServiceProperties] INNER JOIN Services ON ServiceProperties.ServiceID=Services.ServiceID Where Services.ProviderID = 67 AND ServiceProperties.PropertyName = N'defaultdomainhostname')
+IF NOT EXISTS (Select * from [ServiceProperties] INNER JOIN Services ON ServiceProperties.ServiceID=Services.ServiceID Where Services.ProviderID IN (11, 14, 29, 60, 64, 65, 65, 66, 67) AND ServiceProperties.PropertyName = N'defaultdomainhostname')
 BEGIN
 DECLARE service_cursor CURSOR FOR SELECT ServiceId FROM Services WHERE ProviderID IN (11, 14, 29, 60, 64, 65, 65, 66, 67)
 DECLARE @ServiceID INT
@@ -21639,6 +21639,28 @@ WHILE @@FETCH_STATUS = 0
 BEGIN
 	BEGIN
 		INSERT [dbo].[ServiceProperties] ([ServiceID], [PropertyName], [PropertyValue]) VALUES (@ServiceID, N'defaultdomainhostname', N'mail.[DOMAIN_NAME]')
+	END
+	
+	FETCH NEXT FROM service_cursor INTO @ServiceID
+END
+
+CLOSE service_cursor
+DEALLOCATE service_cursor
+END
+GO
+
+-- Add RecordDefaultTTL and RecordMinimumTTL property to existing DNS providers
+IF NOT EXISTS (Select * from [ServiceProperties] INNER JOIN Services ON ServiceProperties.ServiceID=Services.ServiceID Where Services.ProviderID IN (7, 9, 24, 28, 55, 56, 410, 1703, 1901, 1902, 1903) AND ServiceProperties.PropertyName = N'RecordMinimumTTL')
+BEGIN
+DECLARE service_cursor CURSOR FOR SELECT ServiceId FROM Services WHERE ProviderID IN (7, 9, 24, 28, 55, 56, 410, 1703, 1901, 1902, 1903)
+DECLARE @ServiceID INT
+OPEN service_cursor
+FETCH NEXT FROM service_cursor INTO @ServiceID
+WHILE @@FETCH_STATUS = 0
+BEGIN
+	BEGIN
+		INSERT [dbo].[ServiceProperties] ([ServiceID], [PropertyName], [PropertyValue]) VALUES (@ServiceID, N'RecordMinimumTTL', N'3600')
+		INSERT [dbo].[ServiceProperties] ([ServiceID], [PropertyName], [PropertyValue]) VALUES (@ServiceID, N'RecordDefaultTTL', N'86400')
 	END
 	
 	FETCH NEXT FROM service_cursor INTO @ServiceID

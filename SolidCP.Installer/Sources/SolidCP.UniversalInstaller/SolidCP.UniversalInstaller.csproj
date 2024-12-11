@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>net48;net8.0</TargetFramework>
+		<TargetFrameworks>net48;net8.0</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<LangVersion>12</LangVersion>
@@ -29,12 +29,5 @@
 	<ItemGroup>
         <Compile Include="..\..\..\SolidCP\Sources\VersionInfo.cs" Link="VersionInfo.cs" />
     </ItemGroup>
-
-	<ItemGroup>
-        <EmbeddedResource Include="..\..\..\SolidCP\Deploy\$(Configuration)\SolidCP-Server.zip" Link="Resources\SolidCP-Server.zip" />
-		<EmbeddedResource Include="..\..\..\SolidCP\Deploy\$(Configuration)\SolidCP-EnterpriseServer.zip" Link="Resources\SolidCP-EnterpriseServer.zip" />
-		<EmbeddedResource Include="..\..\..\SolidCP\Deploy\$(Configuration)\SolidCP-Portal.zip" Link="Resources\SolidCP-Portal.zip" />
-		<EmbeddedResource Include="..\..\..\SolidCP\Deploy\$(Configuration)\SolidCP-Web-Dav-Portal.zip" Link="Resources\SolidCP-Web-Dav-Portal.zip" />
-	</ItemGroup>
 
 </Project>

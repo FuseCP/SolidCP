@@ -22,7 +22,7 @@ namespace SolidCP.UniversalInstaller
 			{
 				Installer.Current.UI.Init();
 				Installer.Current.UI.PrintInstallerVersion();
-				Installer.Current.InstallAll();
+				Installer.Current.UI.RunMainUI();
 			} catch (Exception ex) {
 				Console.WriteLine(ex.ToString());
 			}

@@ -91,6 +91,7 @@ namespace SolidCP.UniversalInstaller
 		public abstract SetupWizard Wizard { get; }
 		public abstract void Init();
 		public abstract void Exit();
+		public abstract void RunMainUI();
 		public abstract string GetRootPassword();
 		public abstract ServerSettings GetServerSettings();
 		public abstract EnterpriseServerSettings GetEnterpriseServerSettings();

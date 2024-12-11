@@ -53,4 +53,11 @@
         <PackageReference Include="Mono.Posix" Version="4.0.0" />
         <Reference Include="System.Windows.Forms" />
     </ItemGroup>
+    <ItemGroup>
+      <Compile Update="InstallerWebServiceClient\Web References\InstallerService\Reference.cs">
+        <DependentUpon>Reference.map</DependentUpon>
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+      </Compile>
+    </ItemGroup>
 </Project>
