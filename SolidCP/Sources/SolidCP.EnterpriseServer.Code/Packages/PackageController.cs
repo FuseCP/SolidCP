@@ -50,6 +50,8 @@ using OS = SolidCP.Server.Client;
 using Reports = SolidCP.EnterpriseServer.Base.Reports;
 using System.Diagnostics;
 using SolidCP.Templates;
+using SolidCP.EnterpriseServer.Data;
+
 
 namespace SolidCP.EnterpriseServer
 {

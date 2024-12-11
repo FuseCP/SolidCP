@@ -30,48 +30,39 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using SolidCP.Installer.Configuration;
-using System.Net;
-using SolidCP.Installer.Services;
-
-namespace SolidCP.Installer.Core
+namespace SolidCP.UniversalInstaller
 {
-	public class ServiceProviderProxy
+	partial class LineBox
 	{
-		public static InstallerService GetInstallerWebService()
-		{
-			var webService = new InstallerService();
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
 
-			string url = AppConfigManager.AppConfiguration.GetStringSetting(ConfigKeys.Web_Service);
-			if (!String.IsNullOrEmpty(url))
-			{
-				webService.Url = url;
-			}
-			else
-			{
-				webService.Url = "http://installer.solidcp.com/Services/InstallerService-1.0.asmx";
-			}
+        /// <summary> 
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
-			// check if we need to add a proxy to access Internet
-			bool useProxy = AppConfigManager.AppConfiguration.GetBooleanSetting(ConfigKeys.Web_Proxy_UseProxy);
-			if (useProxy)
-			{
-				string proxyServer = AppConfigManager.AppConfiguration.Settings[ConfigKeys.Web_Proxy_Address].Value;
-				if (!String.IsNullOrEmpty(proxyServer))
-				{
-					IWebProxy proxy = new WebProxy(proxyServer);
-					string proxyUsername = AppConfigManager.AppConfiguration.Settings[ConfigKeys.Web_Proxy_UserName].Value;
-					string proxyPassword = AppConfigManager.AppConfiguration.Settings[ConfigKeys.Web_Proxy_Password].Value;
-					if (!String.IsNullOrEmpty(proxyUsername))
-						proxy.Credentials = new NetworkCredential(proxyUsername, proxyPassword);
-					webService.Proxy = proxy;
-				}
-			}
+        #region Component Designer generated code
 
-			return webService;
-		}
-	}
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            components = new System.ComponentModel.Container();
+        }
+
+        #endregion
+    }
 }

@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
 using SolidCP.Providers;
+using SolidCP.EnterpriseServer.Data;
 
 namespace SolidCP.EnterpriseServer.Extensions
 {

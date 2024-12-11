@@ -39,6 +39,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using SolidCP.Providers.DomainLookup;
+using SolidCP.EnterpriseServer.Data;
 using Whois.NET;
 
 namespace SolidCP.EnterpriseServer

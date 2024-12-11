@@ -42,6 +42,8 @@ using SolidCP.Providers.DNS;
 using SolidCP.Providers.DomainLookup;
 using SolidCP.Server;
 using SolidCP.Server.Client;
+using SolidCP.EnterpriseServer.Data;
+
 
 namespace SolidCP.EnterpriseServer
 {

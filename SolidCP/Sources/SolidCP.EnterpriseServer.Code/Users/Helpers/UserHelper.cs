@@ -6,6 +6,7 @@ using System.Xml;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using SolidCP.EnterpriseServer.Data;
 
 using SolidCP.EnterpriseServer;
 

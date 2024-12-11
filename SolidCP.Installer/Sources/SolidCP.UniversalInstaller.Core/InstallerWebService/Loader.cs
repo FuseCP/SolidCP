@@ -37,8 +37,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Text;
-
-using SolidCP.Installer.Common;
+using System.IO.Compression;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Collections;
@@ -83,8 +82,6 @@ namespace SolidCP.UniversalInstaller.Core
 
 		private WebClient fileLoader;
 
-		public 
-
 		internal CodeplexLoader(string remoteFile)
 			: base(remoteFile)
 		{
@@ -118,7 +115,7 @@ namespace SolidCP.UniversalInstaller.Core
 						fileLoader.CancelAsync();
 					});
 
-					Installer.Log.WriteStart("Downloading file");
+					Log.WriteStart("Downloading file");
 					Log.WriteInfo("Downloading file \"{0}\" to \"{1}\"", remoteFile, tmpFile);
 
 					// Attach event handlers to track status of the download process
@@ -340,7 +337,7 @@ namespace SolidCP.UniversalInstaller.Core
 			}
 			catch (Exception ex)
 			{
-				if (Utils.IsThreadAbortException(ex))
+				if (ex is ThreadAbortException)
 					return;
 
 				Log.WriteError("Loader module error", ex);
@@ -355,7 +352,7 @@ namespace SolidCP.UniversalInstaller.Core
 			{
 				if (!File.Exists(tmpFile))
 				{
-					var service = ServiceProviderProxy.GetInstallerWebService();
+					var service = Installer.Current.InstallerWebService;
 
 					RaiseOnProgressChangedEvent(0);
 					RaiseOnStatusChangedEvent(DownloadingSetupFilesMessage);
@@ -439,37 +436,17 @@ namespace SolidCP.UniversalInstaller.Core
 				Log.WriteStart("Unzipping file");
 				Log.WriteInfo(string.Format("Unzipping file \"{0}\" to the folder \"{1}\"", zipFile, destFolder));
 
-				long zipSize = 0;
-				var zipInfo = ZipFile.Read(zipFile);
-				try
+				using (var file = new FileStream(zipFile, FileMode.Open, FileAccess.Read))
+				using (var zip = new ZipArchive(file))
 				{
-					foreach (ZipEntry entry in zipInfo)
+					long zipSize = file.Length;
+					long unzipped = 0;
+					
+					foreach (var entry in zip.Entries)
 					{
-						if (!entry.IsDirectory)
-							zipSize += entry.UncompressedSize;
-					}
-				}
-				finally
-				{
-					if (zipInfo != null)
-					{
-						zipInfo.Dispose();
-					}
-				}
+						entry.ExtractToFile(Path.Combine(destFolder, entry.Name), true);
 
-				long unzipped = 0;
-				//
-				var zip = ZipFile.Read(zipFile);
-				//
-				try
-				{
-					foreach (ZipEntry entry in zip)
-					{
-						//
-						entry.Extract(destFolder, ExtractExistingFileAction.OverwriteSilently);
-						//
-						if (!entry.IsDirectory)
-							unzipped += entry.UncompressedSize;
+						unzipped += entry.CompressedLength;
 
 						if (zipSize != 0)
 						{
@@ -494,17 +471,10 @@ namespace SolidCP.UniversalInstaller.Core
 					//
 					Log.WriteEnd("Unzipped file");
 				}
-				finally
-				{
-					if (zip != null)
-					{
-						zip.Dispose();
-					}
-				}
 			}
 			catch (Exception ex)
 			{
-				if (Utils.IsThreadAbortException(ex))
+				if (ex is ThreadAbortException)
 					return;
 				//
 				RaiseOnOperationFailedEvent(ex);

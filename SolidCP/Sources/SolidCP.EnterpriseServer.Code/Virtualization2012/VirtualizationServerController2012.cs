@@ -51,6 +51,7 @@ using System.Threading;
 using SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM;
 using SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.PS;
 using SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase;
+using SolidCP.EnterpriseServer.Data;
 
 namespace SolidCP.EnterpriseServer
 {

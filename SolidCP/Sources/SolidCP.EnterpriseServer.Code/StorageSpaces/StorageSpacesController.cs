@@ -10,6 +10,7 @@ using SolidCP.Providers.OS;
 using SolidCP.Providers.ResultObjects;
 using SolidCP.Providers.StorageSpaces;
 using SolidCP.Server.Client;
+using SolidCP.EnterpriseServer.Data;
 
 namespace SolidCP.EnterpriseServer
 {

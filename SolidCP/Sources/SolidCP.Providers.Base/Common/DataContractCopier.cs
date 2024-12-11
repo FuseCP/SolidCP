@@ -11,7 +11,7 @@ using System.Xml;
 using System.IO;
 using System.Runtime.Serialization;
 
-namespace SolidCP.Web.Clients
+namespace SolidCP.Providers
 {
     public class DataContractCopier
     {

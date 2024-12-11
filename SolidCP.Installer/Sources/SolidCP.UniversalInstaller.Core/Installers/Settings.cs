@@ -4,6 +4,13 @@ using System.Text;
 
 namespace SolidCP.UniversalInstaller
 {
+	public class InstallerSettings
+	{
+		public ServerSettings Server { get; set; }
+		public EnterpriseServerSettings EnterpriseServer { get; set; }
+		public WebPortalSettings WebPortal { get; set; }
+		public InstallerSpecificSettings Installer { get; set; }
+	}
 
 	public class CommonSettings
 	{
@@ -42,5 +49,15 @@ namespace SolidCP.UniversalInstaller
 		public string PortalUser { get; set; }
 		public string PortalUserPassword { get; set; }
 		public bool EmbedEnterpriseServer { get; set; }
+	}
+
+	public class InstallerSpecificSettings
+	{
+		public List<string> InstalledComponents { get; set; }
+		public string WebServiceUrl { get; set; }
+		public bool UseProxy { get; set; }
+		public string ProxyAddress { get; set; }
+		public string ProxyUser { get; set; }
+		public string ProxyPassword { get; set; }
 	}
 }

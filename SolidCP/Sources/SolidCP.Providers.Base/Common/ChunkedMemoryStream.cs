@@ -1,5 +1,4 @@
-﻿using System.IO;
-// ==++==
+﻿// ==++==
 // 
 //   Copyright (c) Microsoft Corporation.  All rights reserved.
 // 
@@ -12,6 +11,7 @@
 //==========================================================================
  
 using System;
+using System.IO;
 using System.Runtime.Remoting.Channels;
  
 namespace System.Runtime.Remoting.Channels

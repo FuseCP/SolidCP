@@ -13634,7 +13634,7 @@ AS
 
 IF @ColType IS NULL
 	SET @ColType = ''
-
+	
 DECLARE @HasUserRights bit
 SET @HasUserRights = dbo.CheckActorUserRights(@ActorID, @UserID)
 
@@ -13797,7 +13797,7 @@ SET @sql = '
  INNER JOIN UsersDetailed AS U ON P.UserID = U.UserID
  WHERE
   dbo.CheckUserParent(@UserID, P.UserID) = 1
-
+  
  SET @curValue = cursor local for
  SELECT '
 
@@ -13909,7 +13909,7 @@ IF @FilterValue <> ''
  SET @sql = @sql + ')'
 IF @OnlyFind = 1
 	SET @sql = @sql + ' ORDER BY TextSearch';
-
+ 
 SET @sql = @sql + ';open @curValue'
 
 exec sp_executesql @sql, N'@UserID int, @FilterValue nvarchar(50), @curValue cursor output',

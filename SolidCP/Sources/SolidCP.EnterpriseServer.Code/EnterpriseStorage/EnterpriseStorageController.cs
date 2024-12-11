@@ -54,6 +54,8 @@ using SolidCP.Providers.Web;
 using SolidCP.Providers.HostedSolution;
 using SolidCP.EnterpriseServer.Base.HostedSolution;
 using SolidCP.Server.Client;
+using SolidCP.EnterpriseServer.Data;
+
 using System.Text.RegularExpressions;
 using System.Threading;
 

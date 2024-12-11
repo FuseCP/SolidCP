@@ -40,6 +40,7 @@ using SolidCP.Providers.Common;
 using SolidCP.Providers.HostedSolution;
 using SolidCP.Providers.ResultObjects;
 using SolidCP.Server.Client;
+using SolidCP.EnterpriseServer.Data;
 
 //using SolidCP.Providers.SfB;
 

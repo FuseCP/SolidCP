@@ -47,6 +47,7 @@ using System.Net.Mail;
 using System.Diagnostics;
 ﻿using System.Linq;
 ﻿using System.Net;
+using SolidCP.EnterpriseServer.Data;
 
 namespace SolidCP.EnterpriseServer
 {

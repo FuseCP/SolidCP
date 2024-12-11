@@ -44,7 +44,6 @@ namespace SolidCP.UniversalInstaller
 {
 	public partial class RootPasswordForm : Form
 	{
-
 		public string Password => txtPassword.Text;
 
 		public RootPasswordForm()

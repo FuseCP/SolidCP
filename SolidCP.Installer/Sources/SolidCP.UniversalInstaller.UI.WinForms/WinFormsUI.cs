@@ -17,6 +17,7 @@ namespace SolidCP.UniversalInstaller {
 			}
 		}
 
+		public override bool IsAvailable => true;
 		public override UI.SetupWizard Wizard => new SetupWizard(this);
 
 		public override ServerSettings GetServerSettings()
@@ -57,6 +58,30 @@ namespace SolidCP.UniversalInstaller {
 			throw new NotImplementedException();
 		}
 
+		public override void RunMainUI()
+		{
+			try
+			{
+				var form = new ApplicationForm();
+				form.ShowDialog();
+				return form.Password;
+			}
+			catch (Exception ex)
+			{
+				try
+				{
+					UI.Current = UI.AvaloniaUI;
+					return UI.Current.GetRootPassword();
+				}
+				catch (Exception ex2)
+				{
+					UI.Current = UI.ConsoleUI;
+					return UI.Current.GetRootPassword();
+				}
+			}
+		}
+
+
 		public override string GetRootPassword()
 		{
 			try
@@ -66,8 +91,15 @@ namespace SolidCP.UniversalInstaller {
 				return form.Password;
 			} catch (Exception ex)
 			{
-				UI.Current = new ConsoleUI();
-				return UI.Current.GetRootPassword();
+				try
+				{
+					UI.Current = UI.AvaloniaUI;
+					return UI.Current.GetRootPassword();
+				} catch (Exception ex2)
+				{
+					UI.Current = UI.ConsoleUI;
+					return UI.Current.GetRootPassword();
+				}
 			}
 		}
 

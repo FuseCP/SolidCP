@@ -36,10 +36,9 @@ using System.Diagnostics;
 using System.IO;
 
 using System.Security.Principal;
-using SolidCP.Installer.Core;
 using System.Reflection;
 
-namespace SolidCP.UniversalInstaller.Core
+namespace SolidCP.UniversalInstaller
 {
 	/// <summary>
 	/// Installer Log.

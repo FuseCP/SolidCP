@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Data;
+using Newtonsoft.Json;
 
 namespace SolidCP.UniversalInstaller
 {
@@ -32,6 +33,8 @@ namespace SolidCP.UniversalInstaller
 		public virtual bool CanInstallServer => true;
 		public virtual bool CanInstallEnterpriseServer => OSInfo.IsWindows;
 		public virtual bool CanInstallPortal => OSInfo.IsWindows;
+		public virtual string InstallerSettingsFile => "SolidCP.Installer.Settings.json";
+
 		static bool? hasDotnet = null;
 		public virtual bool HasDotnet
 		{
@@ -45,6 +48,13 @@ namespace SolidCP.UniversalInstaller
 		public virtual string InstallExeRootPath { get; set; } = null;
 		public abstract string WebsiteLogsPath { get; }
 		public int EstimatedOutputLines = 0;
+		public InstallerSettings InstallerSettings { get; set; } = new InstallerSettings()
+		{
+			Server = new ServerSettings(),
+			EnterpriseServer = new EnterpriseServerSettings(),
+			WebPortal = new WebPortalSettings(),
+			Installer = new InstallerSpecificSettings()
+		};
 
 		public Shell Shell { get; set; } = Shell.Standard.Clone;
 		public Providers.OS.Installer OSInstaller => OSInfo.Current.DefaultInstaller;
@@ -62,6 +72,16 @@ namespace SolidCP.UniversalInstaller
 
 		public List<string> InstallLogs { get; private set; } = new List<string>();
 		public void InstallLog(string msg) => InstallLogs.Add(msg);
+
+
+		public void LoadSettings()
+		{
+			var path = AppDomain.CurrentDomain.BaseDirectory;
+			var settings = JsonConvert.DeserializeObject<InstallerSettings>(
+					File.ReadAllText(Path.Combine(path, InstallerSettingsFile))
+				);
+			InstallerSettings = settings;
+		}
 
 		bool firstCheck = true;
 		public bool CheckNet8RuntimeInstalled()

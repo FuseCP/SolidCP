@@ -29,7 +29,7 @@ namespace SolidCP.UniversalInstaller
 			}
 		}
 		public abstract bool IsAvailable { get; }
-		public UI WinFormsUI
+		public static UI WinFormsUI
 		{
 			get
 			{
@@ -38,8 +38,8 @@ namespace SolidCP.UniversalInstaller
 				else return new NotAvailableUI();
 			}
 		}
-		public UI ConsoleUI => new ConsoleUI();
-		public UI AvaloniaUI {
+		public static UI ConsoleUI => new ConsoleUI();
+		public static UI AvaloniaUI {
 			get {
 				var type = Type.GetType("SolidCP.UniversalInstaller.AvaloniaUI, SolidCP.UniversalInstaller.UI.Avalonia");
 				if (type != null) return Activator.CreateInstance(type) as UI;

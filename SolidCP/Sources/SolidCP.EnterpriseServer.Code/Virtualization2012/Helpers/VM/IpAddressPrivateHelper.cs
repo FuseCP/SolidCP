@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SolidCP.EnterpriseServer.Data;
 
 namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
 {
