@@ -46,11 +46,11 @@ using Microsoft.Win32;
 
 using SolidCP.Installer.Common;
 using SolidCP.UniversalInstaller.Controls;
-using SolidCP.Installer.Services;
-using SolidCP.Installer.Configuration;
+//using SolidCP.Installer.Services;
+//using SolidCP.Installer.Configuration;
 using System.Xml;
 using System.Runtime.Remoting.Lifetime;
-using SolidCP.Installer.Core;
+//using SolidCP.Installer.Core;
 
 namespace SolidCP.UniversalInstaller
 {
@@ -408,7 +408,7 @@ namespace SolidCP.UniversalInstaller
 			Log.WriteStart("Loading installed components");
 			node.Nodes.Clear();
 
-			foreach (ComponentConfigElement componentConfig in AppConfigManager.AppConfiguration.Components)
+			foreach (var componentConfig in Installer.Current.Settings.Installer.InstalledComponents)
 			{
 				string instance = string.Empty;
 				if (componentConfig.Settings["Instance"] != null &&

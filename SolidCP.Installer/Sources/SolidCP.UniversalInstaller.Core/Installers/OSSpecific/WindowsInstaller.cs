@@ -309,12 +309,12 @@ namespace SolidCP.UniversalInstaller
 
 		public override void ReadWebPortalConfiguration()
 		{
-			WebPortalSettings = new WebPortalSettings();
+			Settings.WebPortal = new WebPortalSettings();
 
 			var confFile = Path.Combine(InstallWebRootPath, PortalFolder, "App_Data", "SiteSettings.config");
 			var conf = XElement.Load(confFile);
 			var enterpriseServer = conf.Element("SiteSettings/EnterpriseServer");
-			WebPortalSettings.EnterpriseServerUrl = enterpriseServer.Value;
+			Settings.WebPortal.EnterpriseServerUrl = enterpriseServer.Value;
 		}
 
 		public override void ConfigureWebPortal(WebPortalSettings settings)

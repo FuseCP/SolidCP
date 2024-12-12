@@ -59,10 +59,10 @@ Repeat Password: [!RepeatPassword                                         ]
 
 [    Ok    ]
 ")
-				.Load(ServerSettings)
+				.Load(Settings.Server)
 				.Apply(f => f["RepeatPassword"].Text = f["ServerPassword"].Text)
 				.ShowDialog()
-				.Save(ServerSettings);
+				.Save(Settings.Server);
 
 			while (form["ServerPassword"].Text != form["RepeatPassword"].Text)
 			{
@@ -79,10 +79,10 @@ Passwords don't match!
 
 [    Ok    ]
 ")
-					.Load(ServerSettings)
+					.Load(Settings.Server)
 					.Apply(f => f["RepeatPassword"].Text = f["ServerPassword"].Text)
 					.ShowDialog()
-					.Save(ServerSettings);
+					.Save(Settings.Server);
 			}
 
 			if (!Settings.Server.Urls.Split(',', ';').Select(url => url.Trim()).Any(url => url.StartsWith("https://") || url.StartsWith("net.tcp://")))
@@ -98,9 +98,9 @@ Do you want to proceed?
 				if (form["Back"].Clicked) GetServerSettings();
 			}
 
-			GetCommonSettings(ServerSettings);
+			GetCommonSettings(Settings.Server);
 
-			return ServerSettings;
+			return Settings.Server;
 		}
 		public override EnterpriseServerSettings GetEnterpriseServerSettings()
 		{
@@ -146,7 +146,7 @@ Database Password: [!DatabasePassword                                           
 				if (esurl == null) esurl = urls.FirstOrDefault(url => IsLocalHttps(url));
 				if (esurl != null)
 				{
-					WebPortalSettings.EnterpriseServerUrl = esurl;
+					Settings.WebPortal.EnterpriseServerUrl = esurl;
 				}
 			}
 
@@ -158,11 +158,11 @@ Enterprise Server Url: [?EnterpriseServerUrl http://localhost:9002              
 
 [    Ok    ]
 ")
-				.Load(WebPortalSettings)
+				.Load(Settings.WebPortal)
 				.ShowDialog()
-				.Save(WebPortalSettings);
+				.Save(Settings.WebPortal);
 
-			return WebPortalSettings;
+			return Settings.WebPortal;
 		}
 		public override Packages GetPackagesToInstall()
 		{

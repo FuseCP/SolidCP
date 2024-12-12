@@ -82,21 +82,21 @@ namespace SolidCP.UniversalInstaller
 		{
 			get
 			{
-				string url = InstallerSettings.Installer.WebServiceUrl;
+				string url = Settings.Installer.WebServiceUrl;
 				if (string.IsNullOrEmpty(url)) url = "http://installer.solidcp.com/Services/InstallerService-1.0.asmx";
 
 				var webService = new InstallerWebService(url);
 
 				// check if we need to add a proxy to access Internet
-				bool useProxy = InstallerSettings.Installer.UseProxy;
+				bool useProxy = Settings.Installer.UseProxy;
 				if (useProxy)
 				{
-					string proxyServer = InstallerSettings.Installer.ProxyAddress;
+					string proxyServer = Settings.Installer.ProxyAddress;
 					if (!String.IsNullOrEmpty(proxyServer))
 					{
 						IWebProxy proxy = new WebProxy(proxyServer);
-						string proxyUsername = InstallerSettings.Installer.ProxyUser;
-						string proxyPassword = InstallerSettings.Installer.ProxyPassword;
+						string proxyUsername = Settings.Installer.ProxyUser;
+						string proxyPassword = Settings.Installer.ProxyPassword;
 						if (!String.IsNullOrEmpty(proxyUsername))
 							proxy.Credentials = new NetworkCredential(proxyUsername, proxyPassword);
 						WebRequest.DefaultWebProxy = proxy;

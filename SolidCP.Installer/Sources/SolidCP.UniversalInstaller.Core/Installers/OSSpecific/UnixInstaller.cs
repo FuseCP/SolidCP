@@ -81,7 +81,7 @@ namespace SolidCP.UniversalInstaller
 
 			AddUnixUser(UnixPortalServiceId, SolidCPUnixGroup);
 
-			InstallWebsite(dll, UnixPortalServiceId, WebPortalSettings.Urls, UnixPortalServiceId, SolidCPUnixGroup,
+			InstallWebsite(dll, UnixPortalServiceId, Settings.WebPortal.Urls, UnixPortalServiceId, SolidCPUnixGroup,
 				"SolidCP.Server service, the server management service for the SolidCP control panel.");
 		}
 		public virtual void RemoveWebsite(string serviceId, string urls)
@@ -99,7 +99,7 @@ namespace SolidCP.UniversalInstaller
 		}
 		public override void RemoveServerWebsite() => RemoveWebsite(UnixServerServiceId, Settings.Server.Urls);
 		public override void RemoveEnterpriseServerWebsite() => RemoveWebsite(UnixEnterpriseServerServiceId, Settings.EnterpriseServer.Urls);
-		public override void RemovePortalWebsite() => RemoveWebsite(UnixPortalServiceId, WebPortalSettings.Urls);
+		public override void RemovePortalWebsite() => RemoveWebsite(UnixPortalServiceId, Settings.WebPortal.Urls);
 
 		public override void OpenFirewall(int port)
 		{
@@ -151,7 +151,7 @@ namespace SolidCP.UniversalInstaller
 			}
 
 			appsettings.applicationUrls = Settings.Server.Urls;
-			var allowedHosts = (ServerSettings?.Urls ?? "").Split(',', ';')
+			var allowedHosts = (Settings.Server?.Urls ?? "").Split(',', ';')
 				.Select(url => new Uri(url.Trim()).Host)
 				.ToList();
 			if (allowedHosts.Any(host => host == "localhost"))
