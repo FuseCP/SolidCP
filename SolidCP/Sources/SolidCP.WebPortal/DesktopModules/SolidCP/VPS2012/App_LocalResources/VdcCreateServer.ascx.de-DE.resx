@@ -454,12 +454,12 @@
     <value>Geben Sie einen numerischen Wert ein</value>
   </data>
   <data name="valCoresStatus.Text" xml:space="preserve">
-    <value>(Planzuteilung: {0}, zugewiesen: {1}, verfügbar: {2})</value>
+    <value>(verfügbaren Bereich: {0} Kerne)</value>
   </data>
   <data name="valHddStatus.Text" xml:space="preserve">
-    <value>(Planzuteilung: {0}, zugewiesen: {1}, verfügbar: {2})</value>
+    <value>(verfügbaren Bereich: {0} GB, {1} GB kann für zusätzliche Festplatten verwendet werden, der Gesamtspeicherplatz darf nicht überschritten werden {2} GB)</value>
   </data>
   <data name="valRamStatus.Text" xml:space="preserve">
-    <value>(Planzuteilung: {0}, zugewiesen: {1}, verfügbar: {2})</value>
+    <value>(verfügbaren Bereich: {0} MB, 256 MB Schritte, 1 GB Ist 1024 MB, Die meisten Betriebssysteme erfordern mindestens 2048 MB)</value>
   </data>
 </root>
