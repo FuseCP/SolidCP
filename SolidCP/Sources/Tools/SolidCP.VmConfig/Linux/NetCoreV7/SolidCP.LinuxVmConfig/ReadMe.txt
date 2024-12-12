@@ -47,30 +47,47 @@ SolidCP.LinuxVmConfig must be installed from root user, KVP-Exchange must be ena
 
 -------------------------------
 
-compile as single file app
-
-sudo su
-
-/etc/solidcp/SCPLinux-x64
+sudo mkdir /etc/solidcp
+sudo mkdir /etc/solidcp/SCPLinux-x64
 
 sudo apt update
-suo apt install dotnet-runtime-7.0
+sudo apt upgrade
 
+sudo apt update
+sudo apt-get install dotnet-runtime-7.0 net-tools linux-image-virtual linux-tools-virtual linux-cloud-tools-virtual
 
-sudo apt-get update
-sudo apt-get install linux-image-virtual linux-tools-virtual linux-cloud-tools-virtual
+sudo nano /etc/default/grub
 
+[Update grub file as follows]
+GRUB_CMDLINE_LINUX_DEFAULT="elevator=noop"
+
+sudo update-grub
+
+sudo apt update
+sudo apt upgrade
+
+sudo mkdir /dev/vmbus/hv_fcopy
+sudo systemctl restart hv-fcopy-daemon.service
+
+[Verify the following services are running properly]
 systemctl status hv-kvp-daemon.service
 systemctl status hv-fcopy-daemon.service
 systemctl status hv-vss-daemon.service
 
+sudo chmod 777 /etc/solidcp/SCPLinux-x64
 
-sudo nano /etc/default/grub
-F
-ind the line starting with GRUB_CMDLINE_LINUX_DEFAULT, and add elevator=noop. My line ends up looking like this: GRUB_CMDLINE_LINUX_DEFAULT="quiet splash video=hyperv_fb:1280x720 elevator=noop"
-Write the changes and quit nano.
+[Copy the LinuxVMConfig files to the /etc/solidcp/SCPLinux-x64 folder using SFTP or some other means]
 
-sudo update-grub
+sudo chmod 755 -R /etc/solidcp/SCPLinux-x64
+sudo chmod 774 /etc/solidcp/SCPLinux-x64/SolidCP.LinuxVmConfig
 
-mkdir /dev/vmbus/hv_fcopy (not sure of permissions??)
+sudo su
+cd /etc/solidcp/SCPLinux-x64
+./SolidCP.LinuxVmConfig install
+
+[Verify the solidcp service is running properly]
+systemctl status solidcp
+
+exit
+logout
 
