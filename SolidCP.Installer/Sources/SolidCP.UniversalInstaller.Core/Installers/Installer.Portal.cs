@@ -16,13 +16,12 @@ namespace SolidCP.UniversalInstaller
 {
 	public abstract partial class Installer
 	{
-		public WebPortalSettings WebPortalSettings { get; set; } = new WebPortalSettings();
 		public virtual void InstallPortalPrerequisites() { }
 		public virtual void RemovePortalPrerequisites() { }
 		public virtual void SetPortalFilePermissions() => SetFilePermissions(PortalFolder);
 		public virtual void InstallPortalWebsite()
 		{
-			InstallWebsite($"{SolidCP}WebPortal", Path.Combine(InstallWebRootPath, PortalFolder), WebPortalSettings.Urls ?? "", "", "");
+			InstallWebsite($"{SolidCP}WebPortal", Path.Combine(InstallWebRootPath, PortalFolder), Settings.WebPortal.Urls ?? "", "", "");
 		}
 		public virtual void InstallWebPortal()
 		{
@@ -35,7 +34,7 @@ namespace SolidCP.UniversalInstaller
 		public virtual void RemovePortalWebsite() { }
 		public virtual void ReadWebPortalConfiguration()
 		{
-			WebPortalSettings = new WebPortalSettings();
+			Settings.WebPortal = new WebPortalSettings();
 		}
 		public virtual void ConfigureWebPortal(WebPortalSettings settings)
 		{

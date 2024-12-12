@@ -139,7 +139,7 @@ namespace SolidCP.UniversalInstaller
 		}
 		#endregion
 
-		private SolidCP.Installer.Controls.ProgressIcon progressIcon;
+		private SolidCP.UniversalInstaller.Controls.ProgressIcon progressIcon;
 
 
 	}

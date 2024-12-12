@@ -275,7 +275,7 @@ namespace SolidCP.UniversalInstaller
 			}
 			else
 			{
-				AppConfigManager.LoadConfiguration();
+				//AppConfigManager.LoadConfiguration();
 				Update();
 				//LoadConfiguration();
 				ScopeNode componentsNode = scopeTree.Nodes[0] as ScopeNode;
@@ -356,9 +356,26 @@ namespace SolidCP.UniversalInstaller
 			ShowError(Global.Messages.NotEnoughPermissionsError);
 		}
 
+		public static bool IsSecurityException(Exception ex)
+		{
+			if (ex is System.Security.SecurityException)
+				return true;
+
+			Exception innerException = ex;
+			while (innerException != null)
+			{
+				if (innerException is System.Security.SecurityException)
+					return true;
+				innerException = innerException.InnerException;
+			}
+
+			string str = ex.ToString();
+			return str.Contains("System.Security.SecurityException");
+		}
+
 		internal void ShowError(Exception ex)
 		{
-			if (Utils.IsSecurityException(ex))
+			if (IsSecurityException(ex))
 				ShowSecurityError();
 			else
 				ShowError();
@@ -434,27 +451,22 @@ namespace SolidCP.UniversalInstaller
 			Log.WriteStart("Checking for a new version");
 			//
 			var webService = Installer.Current.InstallerWebService;
-			DataSet ds = webService.GetLatestComponentUpdate("cfg core");
+			var info = webService.GetLatestComponentUpdate("cfg core");
 			//
 			Log.WriteEnd("Checked for a new version");
-			if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+			if (info != null)
 			{
-				DataRow row = ds.Tables[0].Rows[0];
 				Version currentVersion = GetType().Assembly.GetName().Version;
 				Version newVersion = null;
-				try
-				{
-					newVersion = new Version(row["Version"].ToString());
-				}
-				catch (FormatException e)
-				{
-					Log.WriteError("Version error", e);
+				if (info.Version != default) newVersion = info.Version;
+				else {
+					Log.WriteError("Version error");
 					return false;
 				}
 				if (newVersion > currentVersion)
 				{
 					ret = true;
-					fileName = row["UpgradeFilePath"].ToString();
+					fileName = info.UpgradeFilePath;
 					Log.WriteInfo(string.Format("Version {0} is available for download", newVersion));
 				}
 			}

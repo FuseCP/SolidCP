@@ -4,6 +4,7 @@
         <TargetFramework>net48</TargetFramework>
         <RootNamespace>SolidCP.UniversalInstaller</RootNamespace>
         <LangVersion>13</LangVersion>
+        <UseWindowsForms>true</UseWindowsForms>
     </PropertyGroup>
 
     <ItemGroup>
@@ -15,13 +16,15 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\SolidCP.UniversalInstaller.Core\SolidCP.UniversalInstaller.Core.csproj" />
-        <ProjectReference Include="..\SolidCP.Installer.Core\SolidCP.Installer.Core.csproj" />
+      <ProjectReference Include="..\SolidCP.UniversalInstaller.Core\SolidCP.UniversalInstaller.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
         <Reference Include="System.Windows.Forms" />
-        <Reference Include="System.Configuration" />
+        <!--<Reference Include="System.Configuration" />
         <Reference Include="System.Deployment" />
         <Reference Include="System.DirectoryServices" />
-        <Reference Include="System.EnterpriseServices" />
+        <Reference Include="System.EnterpriseServices" />-->
     </ItemGroup>
 
     <ItemGroup>

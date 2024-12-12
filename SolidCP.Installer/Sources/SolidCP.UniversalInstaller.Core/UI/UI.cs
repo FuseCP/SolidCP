@@ -1,4 +1,6 @@
+using System.Diagnostics;
 using System.Reflection;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.UniversalInstaller
 {
@@ -46,14 +48,28 @@ namespace SolidCP.UniversalInstaller
 				else return new NotAvailableUI();
 			}
 		}
+		public void ShowRunningInstance()
+		{
+			if (!(this is ConsoleUI) && OSInfo.IsWindows)
+			{
+				Process currentProcess = Process.GetCurrentProcess();
+				foreach (Process process in Process.GetProcessesByName(currentProcess.ProcessName))
+				{
+					if (process.Id != currentProcess.Id)
+					{
+						//set focus
+						User32.SetForegroundWindow(process.MainWindowHandle);
+						break;
+					}
+				}
+			}
+		}
 
 		public abstract class SetupWizard
 		{
 			public UI UI { get; protected set; }
 			public Installer Installer => UI.Installer;
-			public ServerSettings ServerSettings => Installer.ServerSettings;
-			public EnterpriseServerSettings EnterpriseServerSettings => Installer.EnterpriseServerSettings;
-			public WebPortalSettings WebPortalSettings => Installer.WebPortalSettings;
+			public InstallerSettings Settings => Installer.Settings;
 
 			public SetupWizard(UI ui) => UI = ui;
 
@@ -85,9 +101,7 @@ namespace SolidCP.UniversalInstaller
 		}
 
 		public Installer Installer => Installer.Current;
-		public ServerSettings ServerSettings => Installer.ServerSettings;
-		public EnterpriseServerSettings EnterpriseServerSettings => Installer.EnterpriseServerSettings;
-		public WebPortalSettings WebPortalSettings => Installer.WebPortalSettings;
+		public InstallerSettings Settings => Installer.Settings;
 		public abstract SetupWizard Wizard { get; }
 		public abstract void Init();
 		public abstract void Exit();
@@ -102,11 +116,12 @@ namespace SolidCP.UniversalInstaller
 		public abstract void CloseInstallationProgress();
 		public abstract void ShowError(Exception ex);
 		public abstract void ShowInstallationSuccess(Packages packages);
+		public abstract void ShowLogFile();
 		public virtual void PrintInstallerVersion()
 		{
 			var assembly = Assembly.GetExecutingAssembly();
 			var version = assembly.GetName().Version;
-			Installer.Log($"SolidCP UniversalInstaller {version}");
+			Log.WriteLine($"SolidCP UniversalInstaller {version}");
 		}
 
 		public abstract void CheckPrerequisites();

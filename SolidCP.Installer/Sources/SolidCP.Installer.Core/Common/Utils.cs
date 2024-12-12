@@ -395,7 +395,7 @@ namespace SolidCP.Installer.Common
 		}
 		public static bool IsAdministratorUnix()
 		{
-			return UniversalInstaller.Installer.Current.IsRunningAsAdmin();
+			return UniversalInstaller.Installer.Current.IsRunningAsAdmin;
 		}
 		public static bool IsAdministrator()
 		{

@@ -48,7 +48,7 @@ namespace SolidCP.UniversalInstaller
 				}
 				catch (Exception ex)
 				{
-					Log($"Error: {ex.Message}{NewLine}{ex.StackTrace}");
+					Log.WriteError(ex.Message, ex);
 					Error = ExceptionDispatchInfo.Capture(ex);
 					break;
 				}

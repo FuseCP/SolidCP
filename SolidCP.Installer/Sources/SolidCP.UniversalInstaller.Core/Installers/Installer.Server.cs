@@ -19,8 +19,6 @@ namespace SolidCP.UniversalInstaller
 
 	public abstract partial class Installer
 	{
-		public ServerSettings ServerSettings { get; set; } = new ServerSettings();
-
 		public virtual void InstallServerPrerequisites() { }
 		public virtual void RemoveServerPrerequisites() { }
 

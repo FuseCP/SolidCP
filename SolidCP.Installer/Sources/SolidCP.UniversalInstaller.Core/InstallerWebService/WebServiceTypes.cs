@@ -58,10 +58,12 @@ namespace SolidCP.UniversalInstaller
 		public ComponentUpdateInfo() { }
 		public ComponentUpdateInfo(ElementInfo raw): base(raw)
 		{
-			Version = raw.Version;
+			Version version;
+			if (Version.TryParse(raw.Version, out version)) Version = version;
+			else Version = default;
 			Beta = raw.Beta;
 		}
-		public string Version { get; set; }
+		public Version Version { get; set; }
 		public bool Beta { get; set; }
 	}
 	public class ComponentInfo : ComponentUpdateInfo

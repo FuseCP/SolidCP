@@ -43,26 +43,26 @@ namespace SolidCP.UniversalInstaller
 	/// <summary>
 	/// Installer Log.
 	/// </summary>
-	public sealed class Log
+	public class LogWriter
 	{
 		/// <summary>
 		/// Initializes a new instance of the class.
 		/// </summary>
-		private Log()
+		private LogWriter()
 		{
 		}
 
 		/// <summary>
 		/// Initializes trace listeners.
 		/// </summary>
-		static Log()
+		static LogWriter()
 		{
 			Initialize();
 		}
 
 		static void Initialize()
 		{
-			string fileName = LogFile;
+			string fileName = DefaultFile;
 			//
 			Trace.Listeners.Clear();
 			//
@@ -75,7 +75,7 @@ namespace SolidCP.UniversalInstaller
 			Trace.AutoFlush = true;
 		}
 
-		internal static string LogFile
+		public static string DefaultFile
 		{
 			get
 			{
@@ -95,12 +95,15 @@ namespace SolidCP.UniversalInstaller
 			}
 		}
 
+		string logFile = null;
+		public virtual string File { get => logFile ??= DefaultFile; set => logFile = value; }
+
 		/// <summary>
 		/// Write error to the log.
 		/// </summary>
 		/// <param name="message">Error message.</param>
 		/// <param name="ex">Exception.</param>
-		public static void WriteError(string message, Exception ex)
+		public virtual void WriteError(string message, Exception ex)
 		{
 			try
 			{
@@ -115,7 +118,7 @@ namespace SolidCP.UniversalInstaller
 		/// Write error to the log.
 		/// </summary>
 		/// <param name="message">Error message.</param>
-		public static void WriteError(string message)
+		public virtual void WriteError(string message)
 		{
 			try
 			{
@@ -129,7 +132,7 @@ namespace SolidCP.UniversalInstaller
 		/// Write to log
 		/// </summary>
 		/// <param name="message"></param>
-		public static void Write(string message)
+		public virtual void Write(string message)
 		{
 			try
 			{
@@ -144,7 +147,7 @@ namespace SolidCP.UniversalInstaller
 		/// Write line to log
 		/// </summary>
 		/// <param name="message"></param>
-		public static void WriteLine(string message)
+		public virtual void WriteLine(string message)
 		{
 			try
 			{
@@ -159,7 +162,7 @@ namespace SolidCP.UniversalInstaller
 		/// </summary>
 		/// <param name="format"></param>
 		/// <param name="args"></param>
-		public static void WriteInfo(string format, params object[] args)
+		public virtual void WriteInfo(string format, params object[] args)
 		{
 			WriteInfo(String.Format(format, args));
 		}
@@ -168,7 +171,7 @@ namespace SolidCP.UniversalInstaller
 		/// Write info message to log
 		/// </summary>
 		/// <param name="message"></param>
-		public static void WriteInfo(string message)
+		public virtual void WriteInfo(string message)
 		{
 			try
 			{
@@ -182,7 +185,7 @@ namespace SolidCP.UniversalInstaller
 		/// Write start message to log
 		/// </summary>
 		/// <param name="message"></param>
-		public static void WriteStart(string message)
+		public virtual void WriteStart(string message)
 		{
 			try
 			{
@@ -196,7 +199,7 @@ namespace SolidCP.UniversalInstaller
 		/// Write end message to log
 		/// </summary>
 		/// <param name="message"></param>
-		public static void WriteEnd(string message)
+		public virtual void WriteEnd(string message)
 		{
 			try
 			{
@@ -206,7 +209,7 @@ namespace SolidCP.UniversalInstaller
 			catch { }
 		}
 
-		public static void WriteApplicationStart()
+		public virtual void WriteApplicationStart()
 		{
 			try
 			{
@@ -219,7 +222,7 @@ namespace SolidCP.UniversalInstaller
 			catch { }
 		}
 
-		public static void WriteApplicationEnd()
+		public virtual void WriteApplicationEnd()
 		{
 			try
 			{
@@ -233,15 +236,22 @@ namespace SolidCP.UniversalInstaller
 		/// <summary>
 		/// Opens notepad to view log file.
 		/// </summary>
-		public static void ShowLogFile()
-		{
-			try
-			{
-				string path = LogFile;
-				path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
-				Process.Start("notepad.exe", path);
-			}
-			catch { }
-		}
+		public virtual void ShowLogFile() => Installer.Current.ShowLogFile();
+	}
+
+	public static class Log
+	{
+		public static string File => Installer.Current.Log.File;
+		public static void WriteError(string message, Exception ex) => Installer.Current.Log.WriteError(message, ex);
+		public static void WriteError(string message) => Installer.Current.Log.WriteError(message);
+		public static void Write(string message) => Installer.Current.Log.Write(message);
+		public static void WriteLine(string message) => Installer.Current.Log.WriteLine(message);
+		public static void WriteInfo(string format, params object[] args) => Installer.Current.Log.WriteInfo(format, args);
+		public static void WriteInfo(string message) => Installer.Current.Log.WriteInfo(message);
+		public static void WriteStart(string message) => Installer.Current.Log.WriteStart(message);
+		public static void WriteEnd(string message) => Installer.Current.Log.WriteEnd(message);
+		public static void WriteApplicationStart() => Installer.Current.Log.WriteApplicationStart();
+		public static void WriteApplicationEnd() => Installer.Current.Log.WriteApplicationEnd();
+		public static void ShowLogFile() => Installer.Current.Log.ShowLogFile();
 	}
 }

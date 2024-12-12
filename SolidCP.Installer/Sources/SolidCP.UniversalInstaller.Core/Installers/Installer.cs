@@ -14,6 +14,7 @@ using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Data;
 using Newtonsoft.Json;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace SolidCP.UniversalInstaller
 {
@@ -33,7 +34,9 @@ namespace SolidCP.UniversalInstaller
 		public virtual bool CanInstallServer => true;
 		public virtual bool CanInstallEnterpriseServer => OSInfo.IsWindows;
 		public virtual bool CanInstallPortal => OSInfo.IsWindows;
-		public virtual string InstallerSettingsFile => "SolidCP.Installer.Settings.json";
+		public virtual string InstallerSettingsFile => "installer.settings.json";
+		public virtual bool IsWindows => OSInfo.IsWindows;
+		public virtual bool IsUnix => OSInfo.IsUnix;
 
 		static bool? hasDotnet = null;
 		public virtual bool HasDotnet
@@ -48,7 +51,7 @@ namespace SolidCP.UniversalInstaller
 		public virtual string InstallExeRootPath { get; set; } = null;
 		public abstract string WebsiteLogsPath { get; }
 		public int EstimatedOutputLines = 0;
-		public InstallerSettings InstallerSettings { get; set; } = new InstallerSettings()
+		public InstallerSettings Settings { get; set; } = new InstallerSettings()
 		{
 			Server = new ServerSettings(),
 			EnterpriseServer = new EnterpriseServerSettings(),
@@ -61,18 +64,18 @@ namespace SolidCP.UniversalInstaller
 		public IWebServer WebServer => OSInfo.Current.WebServer;
 		public ServiceController ServiceController => OSInfo.Current.ServiceController;
 		public UI UI => UI.Current;
-		public TextWriter LogWriter { get; set; }
-		public virtual void Log(string msg)
+		public LogWriter Log { get; set; }
+	
+		/* public virtual void Log(string msg)
 		{
 			Debug.WriteLine(msg);
 			Trace.WriteLine(msg);
 			Shell.Log?.Invoke(msg);
 			LogWriter?.WriteLine(msg);
-		}
+		} */
 
 		public List<string> InstallLogs { get; private set; } = new List<string>();
 		public void InstallLog(string msg) => InstallLogs.Add(msg);
-
 
 		public void LoadSettings()
 		{
@@ -80,7 +83,7 @@ namespace SolidCP.UniversalInstaller
 			var settings = JsonConvert.DeserializeObject<InstallerSettings>(
 					File.ReadAllText(Path.Combine(path, InstallerSettingsFile))
 				);
-			InstallerSettings = settings;
+			Settings = settings;
 		}
 
 		bool firstCheck = true;
@@ -231,7 +234,7 @@ namespace SolidCP.UniversalInstaller
 				}
 			}
 			var name = Regex.Replace(url, @"(.*?/)|(?:\?.*$)", "", RegexOptions.Singleline);
-			Log($"Downloaded file {name}{Environment.NewLine}");
+			Log.WriteLine($"Downloaded file {name}");
 			return tmp;
 		}
 		public string DownloadFile(string url) => DownloadFileAsync(url).Result;
@@ -293,7 +296,7 @@ namespace SolidCP.UniversalInstaller
 			.WithRollback(() => Directory.Delete(destinationPath));
 		}
 		public virtual void InstallWinAcme() => Shell.Exec("dotnet tool install win-acme --global");
-		public virtual bool IsRunningAsAdmin() => true;
+		public virtual bool IsRunningAsAdmin => true;
 		public virtual void RestartAsAdmin() { }
 		public void Start() { }
 		public void InstallAll()
@@ -302,7 +305,7 @@ namespace SolidCP.UniversalInstaller
 
 			Shell.LogFile = "SolidCP.Installer.log";
 
-			if (!IsRunningAsAdmin() && !Debugger.IsAttached) RestartAsAdmin();
+			if (!IsRunningAsAdmin && !Debugger.IsAttached) RestartAsAdmin();
 
 			UI.CheckPrerequisites();
 
@@ -315,7 +318,7 @@ namespace SolidCP.UniversalInstaller
 				if (CanInstallServer && packages.HasFlag(Packages.Server))
 				{
 					ReadServerConfiguration();
-					ServerSettings = UI.GetServerSettings();
+					Settings.Server = UI.GetServerSettings();
 					EstimatedOutputLines += EstimatedOutputLinesPerSite;
 					installServer = true;
 				}
@@ -323,14 +326,14 @@ namespace SolidCP.UniversalInstaller
 				if (CanInstallEnterpriseServer && packages.HasFlag(Packages.EnterpriseServer))
 				{
 					ReadEnterpriseServerConfiguration();
-					EnterpriseServerSettings = UI.GetEnterpriseServerSettings();
+					Settings.EnterpriseServer = UI.GetEnterpriseServerSettings();
 					EstimatedOutputLines += EstimatedOutputLinesPerSite;
 					installEnterpriseServer = true;
 				}
 				if (CanInstallPortal && packages.HasFlag(Packages.WebPortal))
 				{
 					ReadWebPortalConfiguration();
-					WebPortalSettings = UI.GetWebPortalSettings();
+					Settings.WebPortal = UI.GetWebPortalSettings();
 					EstimatedOutputLines += EstimatedOutputLinesPerSite;
 					installPortal = true;
 				}

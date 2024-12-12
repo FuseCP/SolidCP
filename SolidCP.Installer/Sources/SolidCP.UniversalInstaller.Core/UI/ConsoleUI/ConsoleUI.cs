@@ -85,7 +85,7 @@ Passwords don't match!
 					.Save(ServerSettings);
 			}
 
-			if (!ServerSettings.Urls.Split(',', ';').Select(url => url.Trim()).Any(url => url.StartsWith("https://") || url.StartsWith("net.tcp://")))
+			if (!Settings.Server.Urls.Split(',', ';').Select(url => url.Trim()).Any(url => url.StartsWith("https://") || url.StartsWith("net.tcp://")))
 			{
 				form = new ConsoleForm(@"
 You did not specify a secure protocol as url.
@@ -115,12 +115,12 @@ Database Password: [!DatabasePassword                                           
 
 [    Ok    ]
 ")
-				.Load(EnterpriseServerSettings)
+				.Load(Settings.EnterpriseServer)
 				.ShowDialog()
-				.Save(EnterpriseServerSettings);
+				.Save(Settings.EnterpriseServer);
 
-			GetCommonSettings(EnterpriseServerSettings);
-			return EnterpriseServerSettings;
+			GetCommonSettings(Settings.EnterpriseServer);
+			return Settings.EnterpriseServer;
 		}
 		bool IsLocalHttp(string url)
 		{
@@ -138,7 +138,7 @@ Database Password: [!DatabasePassword                                           
 		}
 		public override WebPortalSettings GetWebPortalSettings()
 		{
-			var esurls = EnterpriseServerSettings.Urls;
+			var esurls = Settings.EnterpriseServer.Urls;
 			if (!string.IsNullOrEmpty(esurls))
 			{
 				var urls = esurls!.Split(';', ',').Select(url => url.Trim());
@@ -495,6 +495,14 @@ SolidCP cannot be installed on this System.
 				Exit();
 				Environment.Exit(0);
 			}
+		}
+
+		public override void ShowLogFile()
+		{
+			var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Log.File);
+			if (Shell.Standard.Find("nano") != null) Shell.Standard.Exec($"nano \"{path}\"");
+			else if (Installer.IsUnix) Shell.Standard.Exec($"less \"{path}\"");
+			else throw new NotImplementedException();
 		}
 	}
 }

@@ -17,8 +17,6 @@ namespace SolidCP.UniversalInstaller
 {
 	public abstract partial class Installer
 	{
-		public EnterpriseServerSettings EnterpriseServerSettings { get; set; } = new EnterpriseServerSettings();
-
 		public virtual void InstallEnterpriseServerPrerequisites() { }
 		public virtual void RemoveEnterpriseServerPrerequisites() { }
 		public virtual void SetEnterpriseServerFilePermissions() => SetFilePermissions(EnterpriseServerFolder);
@@ -34,7 +32,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			InstallWebsite($"{SolidCP}EnterpriseServer",
 				Path.Combine(InstallWebRootPath, EnterpriseServerFolder),
-				EnterpriseServerSettings.Urls ?? "",
+				Settings.EnterpriseServer.Urls ?? "",
 				"", "");
 		}
 		public virtual void RemoveEnterpriseServerWebsite() { }
