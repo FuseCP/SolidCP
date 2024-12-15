@@ -4940,7 +4940,7 @@
     <value>Error taking snapshot. Check Audit Log and "SolidCP" Windows event log for more details.</value>
   </data>
   <data name="Error.VPS_CREATE_META_ITEM_ERROR" xml:space="preserve">
-    <value>Error creating VPS meta-item: {1}. VPS create opearion aborted.</value>
+    <value>Error creating VPS meta-item: {1}. VPS create operation aborted.</value>
   </data>
   <data name="Error.VPS_CREATE_TASK_START_ERROR" xml:space="preserve">
     <value>Error starting asynchronous provisioning task: {1}. VPS create opearion aborted.</value>
