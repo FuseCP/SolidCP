@@ -57766,6 +57766,81 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <DefaultValue>Enter a numeric value</DefaultValue>
   </Resource>
   <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
+    <Key>valCoresStatus.Text</Key>
+    <DefaultValue>(available range: {0} cores)</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
+    <Key>valHddStatus.Text</Key>
+    <DefaultValue>(available range: {0} GB, {1} GB can be used for additional HDDs, total disk space cannot exceed {2} GB)</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
+    <Key>valRamStatus.Text</Key>
+    <DefaultValue>(available range: {0} MB, 256 MB increments, 1 GB is 1024 MB, most OSs require at least 2048 MB)</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcDmzNetwork.ascx.resx</File>
+    <Key>FormComments.Text</Key>
+    <DefaultValue>&lt;p&gt;If this form is available in the hosting space, it means that the VMs in this hosting space can be connected to a dedicated DMZ network that is only available in this hosting space.&lt;/p&gt; &lt;p&gt;</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcDmzNetwork.ascx.resx</File>
+    <Key>gvAddresses.Empty</Key>
+    <DefaultValue>No DMZ IP addresses have been used in this hosting space.</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcDmzNetwork.ascx.resx</File>
+    <Key>SearchField.IPAddress</Key>
+    <DefaultValue>IP Address</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcDmzNetwork.ascx.resx</File>
+    <Key>SearchField.ItemName</Key>
+    <DefaultValue>VPS Name</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcDmzNetwork.ascx.resx</File>
+    <Key>gvAddressesIPAddress.HeaderText</Key>
+    <DefaultValue>IP</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcDmzNetwork.ascx.resx</File>
+    <Key>gvAddressesItemName.HeaderText</Key>
+    <DefaultValue>VPS</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcDmzNetwork.ascx.resx</File>
+    <Key>gvAddressesPrimary.HeaderText</Key>
+    <DefaultValue>Primary</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcDmzNetwork.ascx.resx</File>
+    <Key>locTitle.Text</Key>
+    <DefaultValue>DMZ Network</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcDmzNetwork.ascx.resx</File>
+    <Key>locVpsAddressesQuota.Text</Key>
+    <DefaultValue>IP addresses per VPS:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcDmzNetwork.ascx.resx</File>
+    <Key>secQuotas.Text</Key>
+    <DefaultValue>Quotas</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcDmzNetwork.ascx.resx</File>
+    <Key>secVLAN.Text</Key>
+    <DefaultValue>VLAN</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcDmzNetwork.ascx.resx</File>
+    <Key>locVLANsQuota.Text</Key>
+    <DefaultValue>DMZ Network VLANs:</DefaultValue>
+  </Resource>
+  <Resource>
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcExternalNetwork.ascx.resx</File>
     <Key>FormComments.Text</Key>
     <DefaultValue>&lt;p&gt;The form displays the list of IP addresses from "VPS External Network" pool allocated to the hosting space. Alternatively, this form could be considered as a "map" of external IP addresses and their assignments to virtual machines.&lt;/p&gt;&lt;p&gt;If any IP has already assigned to some VPS then there will be VPS host name in the "Item name" column.&lt;/p&gt;&lt;p&gt;If there are lot of VPS in the hosting space you can easily search them by their external IP.&lt;/p&gt;&lt;p&gt;"Number of IP addresses" quota shows the maximum number of external IP addresses that could be allocated to this space.&lt;/p&gt;</DefaultValue>
@@ -59062,6 +59137,11 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsEditConfiguration.ascx.resx</File>
+    <Key>chkDmzNetworkEnabled.Text</Key>
+    <DefaultValue>DMZ network enabled</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsEditConfiguration.ascx.resx</File>
     <Key>valCoresStatus.Text</Key>
     <DefaultValue>(available range: {0} cores)</DefaultValue>
   </Resource>
@@ -59074,11 +59154,6 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsEditConfiguration.ascx.resx</File>
     <Key>valRamStatus.Text</Key>
     <DefaultValue>(available range: {0} MB, 256 MB increments, 1 GB is 1024 MB, most OSs require at least 2048 MB)</DefaultValue>
-  </Resource>
-  <Resource>
-    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsEditConfiguration.ascx.resx</File>
-    <Key>chkDmzNetworkEnabled.Text</Key>
-    <DefaultValue>DMZ network enabled</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsGeneral.ascx.resx</File>
