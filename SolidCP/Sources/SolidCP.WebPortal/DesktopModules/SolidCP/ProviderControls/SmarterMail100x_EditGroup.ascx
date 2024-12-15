@@ -30,7 +30,7 @@
 		    <asp:Label ID="lblEnableGAL" runat="server" meta:resourcekey="lblEnableGAL" Text="Show in Global Address List:"></asp:Label>
 		</td>
 		<td class="normal">
-			<asp:CheckBox ID="chkEnableGAL" runat="server" meta:resourcekey="chkEnableGAL" />
+			<asp:CheckBox ID="chkEnableGAL" runat="server" meta:resourcekey="chkEnableGAL" Checked="True"/>
 		</td>
 	</tr>
 	<tr>
