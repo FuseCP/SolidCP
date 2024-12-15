@@ -1469,8 +1469,10 @@ namespace SolidCP.Providers.Mail
 						}
 					}
 
+                    mailAlias.IncludeAllDomainUsers = alias["includeAllDomainUsers"];
 
-					if(members.ToArray().Length == 1)
+
+                    if (members.ToArray().Length == 1 && mailAlias.IncludeAllDomainUsers == false)
 					{
 						Log.WriteInfo("GetMailAliases - Found {0}", alias["name"].ToString());
 						mailAlias.ForwardTo = alias["targets"][0].ToString();
@@ -1662,7 +1664,9 @@ namespace SolidCP.Providers.Mail
 						}
 					}
 
-					if (members.ToArray().Length != 1)
+					mailGroup.IncludeAllDomainUsers = alias["includeAllDomainUsers"];
+
+                    if (members.ToArray().Length != 1 || mailGroup.IncludeAllDomainUsers == true)
 					{
 						mailGroup.Members = members.ToArray();
 						groups.Add(mailGroup);
