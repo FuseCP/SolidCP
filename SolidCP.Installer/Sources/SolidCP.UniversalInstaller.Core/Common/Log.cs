@@ -48,7 +48,7 @@ namespace SolidCP.UniversalInstaller
 		/// <summary>
 		/// Initializes a new instance of the class.
 		/// </summary>
-		private LogWriter()
+		public LogWriter()
 		{
 		}
 

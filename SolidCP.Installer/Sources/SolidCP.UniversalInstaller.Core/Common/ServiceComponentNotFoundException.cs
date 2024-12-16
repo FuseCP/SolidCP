@@ -31,63 +31,17 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
-using System.IO;
-using System.Windows.Forms;
-using System.Configuration;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text;
-using System.Diagnostics;
-using System.DirectoryServices;
-using System.DirectoryServices.ActiveDirectory;
-using System.Reflection;
-
-using System.Security.Principal;
-using System.Security;
-using System.Security.Permissions;
-using System.Runtime.InteropServices;
-using System.Threading;
 using System.Linq;
+using System.Text;
 
 namespace SolidCP.UniversalInstaller
 {
-	public static class UiUtils
+	class ServiceComponentNotFoundException : Exception
 	{
-		public static void ShowRunningInstance()
+		public ServiceComponentNotFoundException(string p)
+			: base(p)
 		{
-			Process currentProcess = Process.GetCurrentProcess();
-			foreach (Process process in Process.GetProcessesByName(currentProcess.ProcessName))
-			{
-				if (process.Id != currentProcess.Id)
-				{
-					//set focus
-					User32.SetForegroundWindow(process.MainWindowHandle);
-					break;
-				}
-			}
-		}
-	}
-
-	public class ResourceUtils
-	{
-		public static void CreateDefaultAppConfig()
-		{
-			var path = AppDomain.CurrentDomain.BaseDirectory;
-			var assembly = Assembly.GetEntryAssembly();
-			var file = Path.Combine(Path.GetDirectoryName(assembly.Location), "installer.settings.json");
-			if (!File.Exists(file))
-			{
-				var resources = assembly.GetManifestResourceNames();
-				var resource = resources.FirstOrDefault(r => r.EndsWith("installer.settings.json") || r.EndsWith("installer.settings.release.json"));
-				if (resource != null)
-				{
-					using (var src = assembly.GetManifestResourceStream(resource))
-					using (var reader = new StreamReader(src))
-					{
-						File.WriteAllText(file, reader.ReadToEnd());
-					}
-				}
-			}
 		}
 	}
 }

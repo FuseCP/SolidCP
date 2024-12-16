@@ -47,11 +47,13 @@ namespace SolidCP.UniversalInstaller
 		{
 			if (!OSInfo.IsWindows) return;
 
-			var version = OSInfo.Current.WebServer.Version;
-			if (version == default)
+			if (OSInfo.Current.WebServer.IsInstalled())
 				Log.WriteError("IIS not found.");
 			else
+			{
+				var version = OSInfo.Current.WebServer.Version;
 				Log.WriteInfo("IIS {0} detected", version);
+			}
 		}
 
 		public void LogOSVersion()
@@ -60,9 +62,10 @@ namespace SolidCP.UniversalInstaller
 
 		}
 		public virtual void ShowLogFile() => UI.ShowLogFile();
+
 		public virtual void StartMain()
 		{
-			//ResourceUtils.CreateDefaultAppConfig();
+			LoadSettings();
 			//
 			//Utils.FixConfigurationSectionDefinition();
 
@@ -83,7 +86,6 @@ namespace SolidCP.UniversalInstaller
 
 			Log.WriteApplicationStart();
 			//AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(OnUnhandledException);
-			UI.Init();
 
 			//check OS version
 			LogOSVersion();

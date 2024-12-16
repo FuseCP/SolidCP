@@ -42,9 +42,7 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 
-using SolidCP.Installer.Common;
-using SolidCP.Installer.Core;
-using SolidCP.Installer.Configuration;
+using SolidCP.UniversalInstaller;
 
 namespace SolidCP.UniversalInstaller.Controls
 {
@@ -81,12 +79,19 @@ namespace SolidCP.UniversalInstaller.Controls
 		/// </summary>
 		private void LoadSettings()
 		{
-			InstallerSection appConfig = AppConfigManager.AppConfiguration;
-			chkAutoUpdate.Checked = appConfig.GetBooleanSetting(ConfigKeys.Web_AutoCheck);
-			chkUseHTTPProxy.Checked = appConfig.GetBooleanSetting(ConfigKeys.Web_Proxy_UseProxy);
-			txtAddress.Text = appConfig.GetStringSetting(ConfigKeys.Web_Proxy_Address);
-			txtUserName.Text = appConfig.GetStringSetting(ConfigKeys.Web_Proxy_UserName);
-			txtPassword.Text = appConfig.GetStringSetting(ConfigKeys.Web_Proxy_Password);
+			var appConfig = Installer.Current.Settings.Installer;
+			chkAutoUpdate.Checked = appConfig.CheckForUpdate;
+			var hasProxy = appConfig.Proxy != null;
+			chkUseHTTPProxy.Checked = hasProxy;
+			if (hasProxy)
+			{
+				txtAddress.Text = appConfig.Proxy.Address;
+				txtUserName.Text = appConfig.Proxy.Username;
+				txtPassword.Text = appConfig.Proxy.Password;
+			} else
+			{
+				txtAddress.Text = txtUserName.Text = txtPassword.Text = "";
+			}
 		}
 
 		private void OnUseHTTPProxyCheckedChanged(object sender, EventArgs e)
@@ -103,12 +108,18 @@ namespace SolidCP.UniversalInstaller.Controls
 		/// <param name="e"></param>
 		private void OnUpdateClick(object sender, EventArgs e)
 		{
-			KeyValueConfigurationCollection settings = AppConfigManager.AppConfiguration.Settings;
-			settings[ConfigKeys.Web_AutoCheck].Value = chkAutoUpdate.Checked.ToString();
-			settings[ConfigKeys.Web_Proxy_UseProxy].Value = chkUseHTTPProxy.Checked.ToString();
-			settings[ConfigKeys.Web_Proxy_Address].Value = txtAddress.Text;
-			settings[ConfigKeys.Web_Proxy_UserName].Value = txtUserName.Text;
-			settings[ConfigKeys.Web_Proxy_Password].Value = txtPassword.Text;
+			var settings = Installer.Current.Settings.Installer;
+			settings.CheckForUpdate = chkAutoUpdate.Checked;
+			if (!chkUseHTTPProxy.Checked) settings.Proxy = null;
+			else
+			{
+				settings.Proxy = new ProxySettings()
+				{
+					Address = txtAddress.Text,
+					Username = txtUserName.Text,
+					Password = txtPassword.Text
+				};
+			}
 			//
 			AppConfigManager.SaveConfiguration(true);
 		}

@@ -971,6 +971,8 @@ namespace SolidCP.EnterpriseServer.Data
 				return Boolean.Parse(val);
 			if (type == typeof(Decimal))
 				return Decimal.Parse(val);
+			if (type == typeof(Version))
+				return Version.Parse(val);
 			if (type == typeof(string[]) && val != null)
 			{
 				return val.Split(';');

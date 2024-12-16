@@ -6,7 +6,7 @@ namespace SolidCP.UniversalInstaller
 {
 
 	[Flags]
-	public enum Platforms { Windows = 1, Unix = 2 };
+	public enum Platforms { Undefined = 0, None = 0, Windows = 1, Unix = 2, All = 3 };
 
 	public class ElementInfo
 	{

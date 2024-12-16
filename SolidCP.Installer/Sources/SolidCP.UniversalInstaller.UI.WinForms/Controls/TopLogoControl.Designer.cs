@@ -64,10 +64,10 @@ namespace SolidCP.UniversalInstaller
 		{
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TopLogoControl));
             this.pnlLogo = new System.Windows.Forms.Panel();
-            this.progressIcon = new SolidCP.Installer.Controls.ProgressIcon();
+            this.progressIcon = new SolidCP.UniversalInstaller.Controls.ProgressIcon();
             this.lblVersion = new System.Windows.Forms.Label();
             this.imgLogo = new System.Windows.Forms.PictureBox();
-            this.line = new SolidCP.Installer.LineBox();
+            this.line = new SolidCP.UniversalInstaller.LineBox();
             this.pnlLogo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgLogo)).BeginInit();
             this.SuspendLayout();

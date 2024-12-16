@@ -17,10 +17,12 @@
 
     <ItemGroup>
       <ProjectReference Include="..\SolidCP.UniversalInstaller.Core\SolidCP.UniversalInstaller.Core.csproj" />
+      <ProjectReference Include="..\SolidCP.UniversalInstaller.WebService\SolidCP.UniversalInstaller.WebService.csproj" />
     </ItemGroup>
 
     <ItemGroup>
         <Reference Include="System.Windows.Forms" />
+        <Reference Include="System.ServiceModel" />
         <!--<Reference Include="System.Configuration" />
         <Reference Include="System.Deployment" />
         <Reference Include="System.DirectoryServices" />

@@ -39,11 +39,6 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using Ionic.Zip;
-
-using SolidCP.Installer.Services;
-using SolidCP.Installer.Common;
-using SolidCP.Installer.Core;
 
 namespace SolidCP.UniversalInstaller.Controls
 {
@@ -73,6 +68,8 @@ namespace SolidCP.UniversalInstaller.Controls
         {
             Start(componentCode, version, callback);
         }
+
+
 
         /// <summary>
         /// Resolves URL of the component's distributive and initiates download process.

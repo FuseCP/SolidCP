@@ -64,8 +64,8 @@ namespace SolidCP.UniversalInstaller
 		public IWebServer WebServer => OSInfo.Current.WebServer;
 		public ServiceController ServiceController => OSInfo.Current.ServiceController;
 		public UI UI => UI.Current;
-		public LogWriter Log { get; set; }
-	
+		LogWriter log = null;
+		public virtual LogWriter Log => log ??= new LogWriter();
 		/* public virtual void Log(string msg)
 		{
 			Debug.WriteLine(msg);
@@ -79,11 +79,21 @@ namespace SolidCP.UniversalInstaller
 
 		public void LoadSettings()
 		{
-			var path = AppDomain.CurrentDomain.BaseDirectory;
-			var settings = JsonConvert.DeserializeObject<InstallerSettings>(
-					File.ReadAllText(Path.Combine(path, InstallerSettingsFile))
-				);
-			Settings = settings;
+			var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, InstallerSettingsFile);
+			if (File.Exists(path))
+			{
+				var settings = JsonConvert.DeserializeObject<InstallerSettings>(
+						File.ReadAllText(path)
+					);
+				Settings = settings;
+			}
+			else SaveSettings();
+		}
+		public void SaveSettings()
+		{
+			var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, InstallerSettingsFile);
+			var json = JsonConvert.SerializeObject(Settings, Formatting.Indented);
+			File.WriteAllText(path, json);
 		}
 
 		bool firstCheck = true;
@@ -298,7 +308,6 @@ namespace SolidCP.UniversalInstaller
 		public virtual void InstallWinAcme() => Shell.Exec("dotnet tool install win-acme --global");
 		public virtual bool IsRunningAsAdmin => true;
 		public virtual void RestartAsAdmin() { }
-		public void Start() { }
 		public void InstallAll()
 		{
 			const int EstimatedOutputLinesPerSite = 200;

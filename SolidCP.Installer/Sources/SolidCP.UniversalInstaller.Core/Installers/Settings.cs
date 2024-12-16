@@ -51,21 +51,19 @@ namespace SolidCP.UniversalInstaller
 		public bool EmbedEnterpriseServer { get; set; }
 	}
 
-	public class ComponentConfiguration
+	public class ProxySettings
 	{
-		public string Instance { get; set; }
-		public string ApplicationName { get; set; }
-		public string Name { get; set; }
-		public Version Release { get; set; }
+		public string Address { get; set; }
+		public string Username { get; set; }
+		public string Password { get; set; }
+
 	}
 
 	public class InstallerSpecificSettings
 	{
-		public List<ComponentConfiguration> InstalledComponents { get; set; }
+		public List<ComponentInfo> InstalledComponents { get; set; } = new List<ComponentInfo>();
 		public string WebServiceUrl { get; set; }
-		public bool UseProxy { get; set; }
-		public string ProxyAddress { get; set; }
-		public string ProxyUser { get; set; }
-		public string ProxyPassword { get; set; }
+		public bool CheckForUpdate { get; set; }
+		public ProxySettings Proxy { get; set; }
 	}
 }

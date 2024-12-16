@@ -434,7 +434,7 @@ namespace SolidCP.Installer
 			Log.WriteStart("Checking for a new version");
 			//
 			var webService = ServiceProviderProxy.GetInstallerWebService();
-			DataSet ds = webService.GetLatestComponentUpdate("cfg core");
+			DataSet ds = webService.GetLatestComponentUpdate(Global.InstallerProductCode);
 			//
 			Log.WriteEnd("Checked for a new version");
 			if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)

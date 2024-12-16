@@ -84,6 +84,7 @@ namespace SolidCP.UniversalInstaller
 			public const string ConnectionString = "ConnectionString";
 			public const string InstallConnectionString = "InstallConnectionString";
 			public const string Release = "Release";
+			public const string UIType = "UIType";
 		}
 
 		public abstract class Messages

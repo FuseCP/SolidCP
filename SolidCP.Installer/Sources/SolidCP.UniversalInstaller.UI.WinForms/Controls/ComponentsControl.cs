@@ -43,10 +43,6 @@ using System.Text;
 using System.Linq;
 using System.Windows.Forms;
 
-using SolidCP.Installer.Common;
-using SolidCP.Installer.Services;
-using SolidCP.Installer.Core;
-using SolidCP.Installer.Configuration;
 using SolidCP.Providers.OS;
 
 namespace SolidCP.UniversalInstaller.Controls
@@ -56,7 +52,7 @@ namespace SolidCP.UniversalInstaller.Controls
     /// </summary>
     internal partial class ComponentsControl : ResultViewControl
     {
-        delegate void SetGridDataSourceCallback(object dataSource, string dataMember);
+        delegate void SetGridDataSourceCallback(List<ComponentInfo> dataSource);
 
         private string componentCode = null;
         private string componentVersion = null;
@@ -77,10 +73,10 @@ namespace SolidCP.UniversalInstaller.Controls
         {
             if (e.ColumnIndex == grdComponents.Columns.IndexOf(colLink))
             {
-                DataRowView row = grdComponents.Rows[e.RowIndex].DataBoundItem as DataRowView;
-                if (row != null)
+                var component = grdComponents.Rows[e.RowIndex].DataBoundItem as ComponentInfo;
+                if (component != null)
                 {
-                    StartInstaller(row);
+                    StartInstaller(component);
                     StartLoadingComponents();
                 }
             }
@@ -90,19 +86,24 @@ namespace SolidCP.UniversalInstaller.Controls
             }
         }
 
-        private void StartInstaller(DataRowView row)
+        public static string GetShellVersion()
         {
-            string applicationName = Utils.GetDbString(row[Global.Parameters.ApplicationName]);
-            string componentName = Utils.GetDbString(row[Global.Parameters.ComponentName]);
-            string componentCode = Utils.GetDbString(row[Global.Parameters.ComponentCode]);
-            string componentDescription = Utils.GetDbString(row[Global.Parameters.ComponentDescription]);
-            string component = Utils.GetDbString(row[Global.Parameters.Component]);
-            string version = Utils.GetDbString(row[Global.Parameters.Version]);
-            string fileName = row[Global.Parameters.FullFilePath].ToString().Replace('\\', Path.DirectorySeparatorChar);
-            string installerPath = Utils.GetDbString(row[Global.Parameters.InstallerPath]).Replace('\\', Path.DirectorySeparatorChar);
-            string installerType = Utils.GetDbString(row[Global.Parameters.InstallerType]);
+            return Assembly.GetEntryAssembly().GetName().Version.ToString();
+        }
 
-            if (CheckForInstalledComponent(componentCode))
+		private void StartInstaller(ComponentInfo info)
+        {
+            string applicationName = info.ApplicationName;
+            string componentName = info.ComponentName;
+            string componentCode = info.ComponentCode;
+            string componentDescription = info.ComponentDescription;
+            string component = info.Component;
+            string version = info.Version.ToString();
+            string fileName = info.FullFilePath.Replace('\\', Path.DirectorySeparatorChar);
+            string installerPath = info.InstallerPath.Replace('\\', Path.DirectorySeparatorChar);
+            string installerType = info.InstallerType;
+
+            if (CheckForInstalledComponent(info))
             {
                 AppContext.AppForm.ShowWarning(Global.Messages.ComponentIsAlreadyInstalled);
                 return;
@@ -139,6 +140,7 @@ namespace SolidCP.UniversalInstaller.Controls
                     args[Global.Parameters.IISVersion] = Global.IISVersion;
                     args[Global.Parameters.SetupXml] = this.componentSettingsXml;
                     args[Global.Parameters.ParentForm] = FindForm();
+                    args[Global.Parameters.UIType] = UI.Current.GetType().FullName;
 
                     //run installer
                     DialogResult res = (DialogResult)AssemblyLoader.Execute(path, installerType, method, new object[] { args });
@@ -165,13 +167,14 @@ namespace SolidCP.UniversalInstaller.Controls
 
         }
 
-        private bool CheckForInstalledComponent(string componentCode)
+        private bool CheckForInstalledComponent(ComponentInfo componentInfo)
         {
+            var componentCode = componentInfo.ComponentCode;
             bool ret = false;
             List<string> installedComponents = new List<string>();
-            foreach (ComponentConfigElement componentConfig in AppConfigManager.AppConfiguration.Components)
+            foreach (var component in Installer.Current.Settings.Installer.InstalledComponents)
             {
-                string code = componentConfig.Settings["ComponentCode"].Value;
+                string code = component.ComponentCode;
                 installedComponents.Add(code);
                 if (code == componentCode)
                 {
@@ -181,8 +184,8 @@ namespace SolidCP.UniversalInstaller.Controls
             }
             if (componentCode == "standalone")
             {
-                if (installedComponents.Contains("server") ||
-                    installedComponents.Contains("enterprise server") ||
+                if ((installedComponents.Contains("server") || installedComponents.Contains("serverunix")) &&
+                    installedComponents.Contains("enterprise server") &&
                     installedComponents.Contains("portal"))
                     ret = true;
             }
@@ -196,10 +199,10 @@ namespace SolidCP.UniversalInstaller.Controls
         /// <param name="e"></param>
         private void OnRowEnter(object sender, DataGridViewCellEventArgs e)
         {
-            DataRowView row = grdComponents.Rows[e.RowIndex].DataBoundItem as DataRowView;
-            if (row != null)
+            var component = grdComponents.Rows[e.RowIndex].DataBoundItem as ComponentInfo;
+            if (component != null)
             {
-                lblDescription.Text = Utils.GetDbString(row["ComponentDescription"]);
+                lblDescription.Text = component.ComponentDescription;
             }
         }
 
@@ -220,20 +223,14 @@ namespace SolidCP.UniversalInstaller.Controls
             ThreadPool.QueueUserWorkItem(o => LoadComponents());
         }
 
-		private bool CheckIsAvailableOnPlatform(DataRow row)
+		private bool CheckIsAvailableOnPlatform(ComponentInfo component)
 		{
-            string platforms = "Windows";
-            if (row.Table.Columns.IndexOf(Global.Parameters.Platforms) >= 0) {
-                var platformsRow = row[Global.Parameters.Platforms];
-                platforms = Utils.GetDbString(platformsRow);
-            }
+            var platforms = component.Platforms;
+            if (platforms == Platforms.Undefined) platforms = Platforms.Windows;
 
-            string platformId;
-            if (OSInfo.IsWindows) platformId = "Windows";
-            else platformId = "Unix";
-
-			return platforms.Split(',').Any(platform => string.Equals(platform.Trim(), platformId, StringComparison.OrdinalIgnoreCase));
-		}
+            return OSInfo.IsWindows && platforms.HasFlag(Platforms.Windows) ||
+                !OSInfo.IsWindows && platforms.HasFlag(Platforms.Unix);
+   		}
 
 		/// <summary>
 		/// Loads list of available components via web service
@@ -245,23 +242,22 @@ namespace SolidCP.UniversalInstaller.Controls
                 Log.WriteStart("Loading list of available components");
                 lblDescription.Text = string.Empty;
                 //load components via web service
-                var webService = ServiceProviderProxy.GetInstallerWebService();
-                DataSet dsComponents = webService.GetAvailableComponents();
+                var webService = Installer.Current.InstallerWebService;
+                var dsComponents = webService.GetAvailableComponents();
 
                 //remove already installed components or components not available on this platform
-                foreach (DataRow row in dsComponents.Tables[0].Rows)
+                foreach (var component in dsComponents.ToArray())
                 {
-                    string componentCode = Utils.GetDbString(row["ComponentCode"]);
-                    if (CheckForInstalledComponent(componentCode)) row.Delete();
-                    else if (!CheckIsAvailableOnPlatform(row)) row.Delete();
+                    string componentCode = component.ComponentCode;
+                    if (CheckForInstalledComponent(component)) dsComponents.Remove(component);
+                    else if (!CheckIsAvailableOnPlatform(component)) dsComponents.Remove(component);
 				}
 
 				this.grdComponents.ClearSelection();
 				this.grdComponents.SelectionChanged += (sender, args) => this.grdComponents.ClearSelection();
 
-				dsComponents.AcceptChanges();
                 Log.WriteEnd("Available components loaded");
-                SetGridDataSource(dsComponents, dsComponents.Tables[0].TableName);
+                SetGridDataSource(dsComponents);
                 AppContext.AppForm.FinishProgress();
             }
             catch (Exception ex)
@@ -277,7 +273,7 @@ namespace SolidCP.UniversalInstaller.Controls
         /// </summary>
         /// <param name="dataSource">Data source</param>
         /// <param name="dataMember">Data member</param>
-        private void SetGridDataSource(object dataSource, string dataMember)
+        private void SetGridDataSource(List<ComponentInfo> dataSource)
         {
             // InvokeRequired required compares the thread ID of the
             // calling thread to the thread ID of the creating thread.
@@ -285,12 +281,12 @@ namespace SolidCP.UniversalInstaller.Controls
             if (this.grdComponents.InvokeRequired)
             {
                 SetGridDataSourceCallback callBack = new SetGridDataSourceCallback(SetGridDataSource);
-                this.grdComponents.Invoke(callBack, new object[] { dataSource, dataMember });
+                this.grdComponents.Invoke(callBack, new object[] { dataSource });
             }
             else
             {
                 this.grdComponents.DataSource = dataSource;
-                this.grdComponents.DataMember = dataMember;
+                //this.grdComponents.DataMember = dataMember;
             }
         }
 
@@ -317,11 +313,11 @@ namespace SolidCP.UniversalInstaller.Controls
             LoadComponents();
             foreach (DataGridViewRow gridRow in grdComponents.Rows)
             {
-                DataRowView row = gridRow.DataBoundItem as DataRowView;
-                if (row != null)
+                var component = gridRow.DataBoundItem as ComponentInfo;
+                if (component != null)
                 {
-                    string code = Utils.GetDbString(row["ComponentCode"]);
-                    string version = Utils.GetDbString(row["Version"]);
+                    string code = component.ComponentCode;
+                    string version = component.Version.ToString();
                     if (code == componentCode)
                     {
                         //check component version if specified
@@ -330,7 +326,7 @@ namespace SolidCP.UniversalInstaller.Controls
                             if (version != componentVersion)
                                 continue;
                         }
-                        StartInstaller(row);
+                        StartInstaller(component);
                         AppContext.AppForm.ProceedUnattendedSetup();
                         break;
                     }

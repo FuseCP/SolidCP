@@ -1,0 +1,120 @@
+﻿using System;
+
+namespace SolidCP.UniversalInstaller
+{
+	public partial class AvaloniaUI : UI
+	{
+		public new class SetupWizard: UI.SetupWizard
+		{
+			public SetupWizard(UI ui): base(ui) { }
+
+			public override UI.SetupWizard BannerWizard() => this;
+			public override UI.SetupWizard Certificate() => this;
+			public override UI.SetupWizard ConfigurationCheck() => this;
+			public override UI.SetupWizard ConfirmUninstall() => this;
+			public override UI.SetupWizard Database() => this;
+			public override UI.SetupWizard EmbeddEnterpriseServer() => this;
+			public override UI.SetupWizard Progress() => this;
+			public override UI.SetupWizard Download() => this;
+			public override UI.SetupWizard Finish() => this;
+			public override UI.SetupWizard InsecureHttpWarning() => this;
+			public override UI.SetupWizard InstallFolder() => this;
+			public override UI.SetupWizard Introduction() => this;
+			public override UI.SetupWizard LicenseAgreement() => this;
+			public override UI.SetupWizard MarginWizards() => this;
+			public override UI.SetupWizard Rollback() => this;
+			public override UI.SetupWizard ServerAdminPassword() => this;
+			public override UI.SetupWizard ServerPassword() => this;
+			public override UI.SetupWizard ServiceAddress() => this;
+			public override UI.SetupWizard SetupComplete() => this;
+			public override UI.SetupWizard SQLServers() => this;
+			public override UI.SetupWizard Uninstall() => this;
+			public override UI.SetupWizard Url() => this;
+			public override UI.SetupWizard UserAccount() => this;
+			public override UI.SetupWizard Web() => this;
+			public override void Show()
+			{
+
+			}
+		}
+
+		public override bool IsAvailable => true;
+
+		public override UI.SetupWizard Wizard => new SetupWizard(this);
+
+		public override void CheckPrerequisites()
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void CloseInstallationProgress()
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void Exit()
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void GetCommonSettings(CommonSettings settings)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override EnterpriseServerSettings GetEnterpriseServerSettings()
+		{
+			throw new NotImplementedException();
+		}
+
+		public override Packages GetPackagesToInstall()
+		{
+			throw new NotImplementedException();
+		}
+
+		public override string GetRootPassword()
+		{
+			throw new NotImplementedException();
+		}
+
+		public override ServerSettings GetServerSettings()
+		{
+			throw new NotImplementedException();
+		}
+
+		public override WebPortalSettings GetWebPortalSettings()
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void Init()
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void RunMainUI()
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void ShowError(Exception ex)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void ShowInstallationProgress()
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void ShowInstallationSuccess(Packages packages)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void ShowLogFile()
+		{
+			throw new NotImplementedException();
+		}
+	}
+}

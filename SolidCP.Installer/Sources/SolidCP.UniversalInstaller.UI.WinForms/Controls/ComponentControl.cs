@@ -41,11 +41,6 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 
-using SolidCP.Installer.Common;
-using SolidCP.Installer.Services;
-using SolidCP.Installer.Core;
-using SolidCP.Installer.Configuration;
-
 namespace SolidCP.UniversalInstaller.Controls
 {
 	/// <summary>
@@ -72,18 +67,18 @@ namespace SolidCP.UniversalInstaller.Controls
 			base.ShowControl(context);
 			if (!IsInitialized)
 			{
-				ComponentConfigElement element = context.ScopeNode.Tag as ComponentConfigElement;
+				ComponentInfo element = context.ScopeNode.Tag as ComponentInfo;
 				if (element != null)
 				{
-					txtApplication.Text = element.GetStringSetting("ApplicationName");
-					txtComponent.Text = element.GetStringSetting("ComponentName");
-					txtVersion.Text = element.GetStringSetting("Release");
-					lblDescription.Text = element.GetStringSetting("ComponentDescription");
+					txtApplication.Text = element.ApplicationName;
+					txtComponent.Text = element.ComponentName;
+					txtVersion.Text = element.Version.ToString();
+					lblDescription.Text = element.ComponentDescription;
 
-					string installer = element.GetStringSetting("Installer");
-					string path = element.GetStringSetting("InstallerPath");
-					string type = element.GetStringSetting("InstallerType");
-					if ( string.IsNullOrEmpty(installer) ||
+					string installer = element.FullFilePath;// element.Installer;
+					string path = element.InstallerPath;
+					string type = element.InstallerType;
+					if (string.IsNullOrEmpty(installer) ||
 						string.IsNullOrEmpty(path) || 
 						string.IsNullOrEmpty(type))
 					{
@@ -135,20 +130,20 @@ namespace SolidCP.UniversalInstaller.Controls
 		private void CheckForUpdate()
 		{
 			Log.WriteStart("Checking for component update");
-			ComponentConfigElement element = AppContext.ScopeNode.Tag as ComponentConfigElement;
+			ComponentInfo element = AppContext.ScopeNode.Tag as ComponentInfo;
 
-			string componentName = element.GetStringSetting("ComponentName");
-			string componentCode = element.GetStringSetting("ComponentCode");
-			string release = element.GetStringSetting("Release");		
+			string componentName = element.ComponentName;
+			string componentCode = element.ComponentCode;
+			string release = element.Version.ToString();		
 	
 			// call web service
-			DataSet ds;
+			ComponentUpdateInfo info;
 			try
 			{
 				Log.WriteInfo(string.Format("Checking {0} {1}", componentName, release));
 				//
-				var webService = ServiceProviderProxy.GetInstallerWebService();
-				ds = webService.GetComponentUpdate(componentCode, release);
+				var webService = Installer.Current.InstallerWebService;
+				info = webService.GetComponentUpdate(componentCode, release);
 				//
 				Log.WriteEnd("Component update checked");
 				AppContext.AppForm.FinishProgress();
@@ -162,18 +157,17 @@ namespace SolidCP.UniversalInstaller.Controls
 			}
 
 			string appName = AppContext.AppForm.Text;
-			if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+			if (info != null)
 			{
-				DataRow row = ds.Tables[0].Rows[0];
-				string newVersion = row["Version"].ToString();
+				string newVersion = info.Version.ToString();
 				Log.WriteInfo(string.Format("Version {0} is available for download", newVersion)); 
 
 				string message = string.Format("{0} {1} is available now.\nWould you like to install new version?", componentName, newVersion);
 				if (MessageBox.Show(AppContext.AppForm, message, appName, MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
 				{
-					string fileToDownload = row["UpgradeFilePath"].ToString();
-					string installerPath = row["InstallerPath"].ToString();
-					string installerType = row["InstallerType"].ToString();
+					string fileToDownload = info.UpgradeFilePath;
+					string installerPath = info.InstallerPath;
+					string installerType = info.InstallerType;
 					UpdateComponent(fileToDownload, installerPath, installerType, newVersion);
 				}
 			}
@@ -207,9 +201,9 @@ namespace SolidCP.UniversalInstaller.Controls
 			{
 				Log.WriteStart("Updating component");
 
-				ComponentConfigElement element = AppContext.ScopeNode.Tag as ComponentConfigElement;
-				string componentId = element.ID;
-				string componentName = element.GetStringSetting("ComponentName");
+				ComponentInfo element = AppContext.ScopeNode.Tag as ComponentInfo;
+				string componentId = element.ComponentCode;
+				string componentName = element.ComponentName;
 
 				try
 				{
@@ -264,14 +258,14 @@ namespace SolidCP.UniversalInstaller.Controls
 		{
 			Log.WriteStart("Uninstalling component");
 			
-			ComponentConfigElement element = AppContext.ScopeNode.Tag as ComponentConfigElement;
-			string installer = element.GetStringSetting(Global.Parameters.Installer);
-			string path = element.GetStringSetting(Global.Parameters.InstallerPath);
-			string type = element.GetStringSetting(Global.Parameters.InstallerType);
-			string componentId = element.ID;
-			string componentCode = element.GetStringSetting(Global.Parameters.ComponentCode);
-			string componentName = element.GetStringSetting(Global.Parameters.ComponentName);
-			string release = element.GetStringSetting(Global.Parameters.Release);
+			ComponentInfo element = AppContext.ScopeNode.Tag as ComponentInfo;
+			string installer = element.FullFilePath; //.GetStringSetting(Global.Parameters.Installer);
+			string path = element.InstallerPath;
+			string type = element.InstallerType;
+			string componentId = element.ComponentCode;
+			string componentCode = element.ComponentCode;
+			string componentName = element.ComponentName;
+			string release = element.Version.ToString();
 
 			try
 			{
@@ -324,15 +318,15 @@ namespace SolidCP.UniversalInstaller.Controls
 		{
 			Log.WriteStart("Starting component setup");
 
-			var element = AppContext.ScopeNode.Tag as ComponentConfigElement;
+			var element = AppContext.ScopeNode.Tag as ComponentInfo;
 
-			string installer = element.GetStringSetting("Installer");
-			string path = element.GetStringSetting("InstallerPath");
-			string type = element.GetStringSetting("InstallerType");
-			string componentId = element.ID;
-			string ccode = element.GetStringSetting("ComponentCode");
-			string componentName = element.GetStringSetting("ComponentName");
-			string cversion = element.GetStringSetting("Release");
+			string installer = element.FullFilePath; //.GetStringSetting("Installer");
+			string path = element.InstallerPath;
+			string type = element.InstallerType;
+			string componentId = element.ComponentCode; //.ID;
+			string ccode = element.ComponentCode;
+			string componentName = element.ComponentName;
+			string cversion = element.Version.ToString();
 
 			try
 			{

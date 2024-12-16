@@ -43,13 +43,14 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using Microsoft.Win32;
-
-using SolidCP.Installer.Common;
-using SolidCP.UniversalInstaller.Controls;
-//using SolidCP.Installer.Services;
-//using SolidCP.Installer.Configuration;
 using System.Xml;
 using System.Runtime.Remoting.Lifetime;
+
+using SolidCP.UniversalInstaller.Controls;
+
+//using SolidCP.Installer.Common;
+//using SolidCP.Installer.Services;
+//using SolidCP.Installer.Configuration;
 //using SolidCP.Installer.Core;
 
 namespace SolidCP.UniversalInstaller
@@ -408,35 +409,23 @@ namespace SolidCP.UniversalInstaller
 			Log.WriteStart("Loading installed components");
 			node.Nodes.Clear();
 
-			foreach (var componentConfig in Installer.Current.Settings.Installer.InstalledComponents)
+			foreach (var component in Installer.Current.Settings.Installer.InstalledComponents)
 			{
 				string instance = string.Empty;
-				if (componentConfig.Settings["Instance"] != null &&
-					!string.IsNullOrEmpty(componentConfig.Settings["Instance"].Value))
+				if (!string.IsNullOrEmpty(component.ComponentCode))
 				{
-					instance = "(" + componentConfig.Settings["Instance"].Value + ")";
+					instance = $"({component.ComponentCode})";
 				}
 				string title = string.Format("{0} {1} {2} {3}",
-					componentConfig.Settings["ApplicationName"].Value,
-					componentConfig.Settings["ComponentName"].Value,
-					componentConfig.Settings["Release"].Value,
+					component.ApplicationName,
+					component.ComponentName,
+					component.Version,
 					instance);
 
-				AddComponentNode(node, title, componentConfig);
+				AddComponentNode(node, title, component);
 			}
 			node.Populated = true;
-			Log.WriteEnd(string.Format("{0} installed component(s) loaded", AppConfigManager.AppConfiguration.Components.Count));
-		}
-
-		/// <summary>
-		/// Returns installer web service
-		/// </summary>
-		internal InstallerService WebService
-		{
-			get
-			{
-				return ServiceProviderProxy.GetInstallerWebService();
-			}
+			Log.WriteEnd(string.Format("{0} installed component(s) loaded", Installer.Current.Settings.Installer.InstalledComponents.Count));
 		}
 
 		/// <summary>
@@ -451,7 +440,7 @@ namespace SolidCP.UniversalInstaller
 			Log.WriteStart("Checking for a new version");
 			//
 			var webService = Installer.Current.InstallerWebService;
-			var info = webService.GetLatestComponentUpdate("cfg core");
+			var info = webService.GetLatestComponentUpdate(Global.InstallerProductCode);
 			//
 			Log.WriteEnd("Checked for a new version");
 			if (info != null)
@@ -484,7 +473,7 @@ namespace SolidCP.UniversalInstaller
 			string tmpFile = Path.ChangeExtension(Path.GetTempFileName(), ".exe");
 			using (Stream writeStream = File.Create(tmpFile))
 			{
-				using (Stream readStream = typeof(Program).Assembly.GetManifestResourceStream("SolidCP.Installer.Resources.SolidCP.Updater.exe"))
+				using (Stream readStream = typeof(Installer).Assembly.GetManifestResourceStream("SolidCP.Installer.Resources.SolidCP.Updater.exe"))
 				{
 					byte[] buffer = new byte[(int)readStream.Length];
 					readStream.Read(buffer, 0, buffer.Length);
@@ -493,20 +482,19 @@ namespace SolidCP.UniversalInstaller
 			}
 			string targetFile = GetType().Module.FullyQualifiedName;
 			//
-			var webService = ServiceProviderProxy.GetInstallerWebService();
-			string url = webService.Url;
+			string url = Installer.Current.Settings.Installer.WebServiceUrl;
 			//
 			string proxyServer = string.Empty;
 			string user = string.Empty;
 			string password = string.Empty;
 
 			// check if we need to add a proxy to access Internet
-			bool useProxy = AppConfigManager.AppConfiguration.GetBooleanSetting(ConfigKeys.Web_Proxy_UseProxy);
+			bool useProxy = Installer.Current.Settings.Installer.Proxy != null;
 			if (useProxy)
 			{
-				proxyServer = AppConfigManager.AppConfiguration.Settings[ConfigKeys.Web_Proxy_Address].Value;
-				user = AppConfigManager.AppConfiguration.Settings[ConfigKeys.Web_Proxy_UserName].Value;
-				password = AppConfigManager.AppConfiguration.Settings[ConfigKeys.Web_Proxy_Password].Value;
+				proxyServer = Installer.Current.Settings.Installer.Proxy.Address;
+				user = Installer.Current.Settings.Installer.Proxy.Username;
+				password = Installer.Current.Settings.Installer.Proxy.Password;
 			}
 
 			ProcessStartInfo info = new ProcessStartInfo();

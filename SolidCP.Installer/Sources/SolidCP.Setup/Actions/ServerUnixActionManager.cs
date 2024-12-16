@@ -213,7 +213,7 @@ Caregories=Network".Replace("\r\n", Environment.NewLine));
 
 				installer.ReadServerConfiguration();
 
-				var settings = installer.ServerSettings;
+				var settings = installer.Settings.Server;
 				settings.Urls = string.Join(";", urls.ToArray());
 				settings.LetsEncryptCertificateDomains = domain;
 				settings.LetsEncryptCertificateEmail = vars.LetsEncryptEmail;

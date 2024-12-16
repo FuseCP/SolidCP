@@ -31,63 +31,64 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
-using System.IO;
-using System.Windows.Forms;
-using System.Configuration;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using System.Diagnostics;
-using System.DirectoryServices;
-using System.DirectoryServices.ActiveDirectory;
+using System.IO;
 using System.Reflection;
-
-using System.Security.Principal;
-using System.Security;
-using System.Security.Permissions;
-using System.Runtime.InteropServices;
-using System.Threading;
-using System.Linq;
+using Newtonsoft.Json;
 
 namespace SolidCP.UniversalInstaller
 {
-	public static class UiUtils
+	public sealed class AppConfigManager
 	{
-		public static void ShowRunningInstance()
-		{
-			Process currentProcess = Process.GetCurrentProcess();
-			foreach (Process process in Process.GetProcessesByName(currentProcess.ProcessName))
-			{
-				if (process.Id != currentProcess.Id)
-				{
-					//set focus
-					User32.SetForegroundWindow(process.MainWindowHandle);
-					break;
-				}
-			}
-		}
-	}
+		public const string AppConfigFileName = "installer.settings.json";
 
-	public class ResourceUtils
-	{
-		public static void CreateDefaultAppConfig()
+		static AppConfigManager()
 		{
-			var path = AppDomain.CurrentDomain.BaseDirectory;
-			var assembly = Assembly.GetEntryAssembly();
-			var file = Path.Combine(Path.GetDirectoryName(assembly.Location), "installer.settings.json");
-			if (!File.Exists(file))
+			LoadConfiguration();
+		}
+
+		#region Core.Configuration
+		/// <summary>
+		/// Loads application configuration
+		/// </summary>
+		public static void LoadConfiguration()
+		{
+			Log.WriteStart("Loading application configuration");
+			//
+			var file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppConfigFileName);
+			//
+			Installer.Current.Settings = JsonConvert.DeserializeObject<InstallerSettings>(File.ReadAllText(file));
+			//
+			Log.WriteEnd("Application configuration loaded");
+		}
+
+		/// <summary>
+		/// Saves application configuration
+		/// </summary>
+		public static void SaveConfiguration(bool showAlert)
+		{
+			try
 			{
-				var resources = assembly.GetManifestResourceNames();
-				var resource = resources.FirstOrDefault(r => r.EndsWith("installer.settings.json") || r.EndsWith("installer.settings.release.json"));
-				if (resource != null)
+				Log.WriteStart("Saving application configuration");
+				var file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppConfigFileName);
+				File.WriteAllText(file, JsonConvert.SerializeObject(Installer.Current.Settings));
+				Log.WriteEnd("Application configuration saved");
+				if (showAlert)
 				{
-					using (var src = assembly.GetManifestResourceStream(resource))
-					using (var reader = new StreamReader(src))
-					{
-						File.WriteAllText(file, reader.ReadToEnd());
-					}
+					//ShowInfo("Application settings updated successfully.");
+				}
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError("Core.Configuration error", ex);
+				if (showAlert)
+				{
+					//ShowError(ex);
 				}
 			}
 		}
+		#endregion
 	}
 }
+

@@ -168,7 +168,7 @@ namespace SolidCP.UniversalInstaller.Core
 		public const string DownloadProgressMessage = "{0} KB of {1} KB";
 		public const string PrepareSetupProgressMessage = "{0}%";
 
-		private const int ChunkSize = 262144;
+		public const int ChunkSize = 262144;
 		private string remoteFile;
 		private CancellationTokenSource cts;
 

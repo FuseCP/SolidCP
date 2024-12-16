@@ -39,69 +39,56 @@ using System.Data;
 using System.Xml;
 using System.Xml.Linq;
 using SolidCP.EnterpriseServer.Data;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.UniversalInstaller
 {
-	public class InstallerWebService : InstallerService_SoapClient
+	public interface IInstallerWebService
 	{
-		public InstallerWebService(string url) : base(new BasicHttpBinding(), new EndpointAddress(url)) { }
-
-		protected DataSet DataSet(ArrayOfXElement xml)
-		{
-			var set = new DataSet();
-			var root = new XElement("DataSet", xml.Nodes);
-			using (var stream = new MemoryStream())
-			using (var writer = XmlWriter.Create(stream))
-			{
-				root.WriteTo(writer);
-				stream.Position = 0;
-				set.ReadXml(stream);
-			}
-			return set;
-		}
-
-		protected List<T> FromResultCollection<T>(ArrayOfXElement xml) where T : class
-			=> ObjectUtils.CreateListFromDataSet<T>(DataSet(xml));
-		protected T FromResult<T>(ArrayOfXElement xml) where T : class => FromResultCollection<T>(xml).FirstOrDefault();
-
-		public new ComponentUpdateInfo GetComponentUpdate(string componentCode, string release)
-			=> FromResult<ComponentUpdateInfo>(base.GetComponentUpdate(componentCode, release));
-		public new async Task<ComponentUpdateInfo> GetComponentUpdateAsync(string componentCode, string release)
-			=> FromResult<ComponentUpdateInfo>(await base.GetComponentUpdateAsync(componentCode, release));
-		public new List<ComponentInfo> GetAvailableComponents() => FromResultCollection<ComponentInfo>(base.GetAvailableComponents());
-		public new async Task<List<ComponentInfo>> GetAvailableComponentsAsync() => FromResultCollection<ComponentInfo>(await base.GetAvailableComponentsAsync());
-		public new ComponentUpdateInfo GetLatestComponentUpdate(string componentCode) => FromResult<ComponentUpdateInfo>(base.GetLatestComponentUpdate(componentCode));
-		public new async Task<ComponentUpdateInfo> GetLatestComponentUpdateAsync(string componentCode) => FromResult<ComponentUpdateInfo>(await base.GetLatestComponentUpdateAsync(componentCode));
-		public new ReleaseFileInfo GetReleaseFileInfo(string componentCode, string version) => FromResultCollection<ReleaseFileInfo>(base.GetReleaseFileInfo(componentCode, version)).Single();
-		public new async Task<ReleaseFileInfo> GetReleaseFileInfoAsync(string componentCode, string version) => FromResultCollection<ReleaseFileInfo>(await base.GetReleaseFileInfoAsync(componentCode, version)).Single();
+		public ComponentUpdateInfo GetComponentUpdate(string componentCode, string release);
+		public Task<ComponentUpdateInfo> GetComponentUpdateAsync(string componentCode, string release);
+		public List<ComponentInfo> GetAvailableComponents();
+		public Task<List<ComponentInfo>> GetAvailableComponentsAsync();
+		public ComponentUpdateInfo GetLatestComponentUpdate(string componentCode);
+		public Task<ComponentUpdateInfo> GetLatestComponentUpdateAsync(string componentCode);
+		public ReleaseFileInfo GetReleaseFileInfo(string componentCode, string version);
+		public Task<ReleaseFileInfo> GetReleaseFileInfoAsync(string componentCode, string version);
+		public byte[] GetFileChunk(string file, int offset, int size);
+		public Task<byte[]> GetFileChunkAsync(string file, int offset, int size);
+		public long GetFileSize(string file);
+		public Task<long> GetFileSizeAsync(string file);
 	}
 
 	public partial class Installer
 	{
-		public virtual InstallerWebService InstallerWebService
+		public virtual IInstallerWebService InstallerWebService
 		{
 			get
 			{
 				string url = Settings.Installer.WebServiceUrl;
 				if (string.IsNullOrEmpty(url)) url = "http://installer.solidcp.com/Services/InstallerService-1.0.asmx";
 
-				var webService = new InstallerWebService(url);
+				var type = OSInfo.IsCore ?
+					Type.GetType("SolidCP.UniversalInstaller.InstallerWebService, SolidCP.UniversalInstaller.WebService.NetCore") :
+					Type.GetType("SolidCP.UniversalInstaller.InstallerWebService, SolidCP.UniversalInstaller.WebService.NetFX");
 
+				var webService = Activator.CreateInstance(type, url) as IInstallerWebService;
+				
 				// check if we need to add a proxy to access Internet
-				bool useProxy = Settings.Installer.UseProxy;
-				if (useProxy)
+				if (Settings.Installer.Proxy != null)
 				{
-					string proxyServer = Settings.Installer.ProxyAddress;
+					string proxyServer = Settings.Installer.Proxy.Address;
 					if (!String.IsNullOrEmpty(proxyServer))
 					{
 						IWebProxy proxy = new WebProxy(proxyServer);
-						string proxyUsername = Settings.Installer.ProxyUser;
-						string proxyPassword = Settings.Installer.ProxyPassword;
+						var proxyUsername = Settings.Installer.Proxy.Username;
+						var proxyPassword = Settings.Installer.Proxy.Password;
 						if (!String.IsNullOrEmpty(proxyUsername))
 							proxy.Credentials = new NetworkCredential(proxyUsername, proxyPassword);
 						WebRequest.DefaultWebProxy = proxy;
-						var binding = (BasicHttpBinding)webService.Endpoint.Binding;
-						binding.UseDefaultWebProxy = true;
+					} else
+					{
+						WebRequest.DefaultWebProxy = null;
 					}
 				}
 

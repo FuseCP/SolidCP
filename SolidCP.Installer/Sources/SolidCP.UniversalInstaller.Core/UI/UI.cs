@@ -6,7 +6,7 @@ namespace SolidCP.UniversalInstaller
 {
 
 	[Flags]
-	public enum Packages { Server = 1, EnterpriseServer = 2, WebPortal = 4, WebDavPortal = 8 }
+	public enum Packages { None = 0, Server = 1, EnterpriseServer = 2, WebPortal = 4, WebDavPortal = 8, All = 15 }
 
 	public abstract class UI
 	{
@@ -17,11 +17,12 @@ namespace SolidCP.UniversalInstaller
 			{
 				if (current == null)
 				{
-#if NETFRAMEWORK
-					current = Activator.CreateInstance(new WinFormsUI();
-#else
-					current = new ConsoleUI();
-#endif
+					var naUI = new NotAvailableUI();
+					UI ui = AvaloniaUI;
+					if (!ui.IsAvailable) ui = WinFormsUI;
+					if (!ui.IsAvailable) ui = ConsoleUI;
+					if (!ui.IsAvailable) ui = naUI;
+					current = ui;
 				}
 				return current;
 			}
@@ -121,6 +122,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			var assembly = Assembly.GetExecutingAssembly();
 			var version = assembly.GetName().Version;
+			Console.WriteLine($"SolidCP UniversalInstaller {version}");
 			Log.WriteLine($"SolidCP UniversalInstaller {version}");
 		}
 
