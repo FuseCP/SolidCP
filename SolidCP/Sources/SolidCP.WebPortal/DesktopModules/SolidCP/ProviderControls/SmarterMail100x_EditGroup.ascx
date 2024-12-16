@@ -49,4 +49,12 @@
 			<asp:CheckBox ID="chkInternalOnly" runat="server" meta:resourcekey="chkInternalOnly" />
 		</td>
 	</tr>
+	<tr>
+		<td class="SubHead">
+		    <asp:Label ID="lblAllowSending" runat="server" meta:resourcekey="lblAllowSending" Text="Allow send from group address:"></asp:Label>
+		</td>
+		<td class="normal">
+			<asp:CheckBox ID="chkAllowSending" runat="server" meta:resourcekey="chkAllowSending" />
+		</td>
+	</tr>
 </table>

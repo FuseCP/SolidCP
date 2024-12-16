@@ -1712,6 +1712,7 @@ namespace SolidCP.Providers.Mail
                 group.EnableChat = result["alias"]["enableForXmpp"];
 				group.InternalOnly = result["alias"]["internalOnly"];
 				group.IncludeAllDomainUsers = result["alias"]["includeAllDomainUsers"];
+                group.AllowSending = result["alias"]["allowSending"];
 
                 return group;
 			}
@@ -1733,7 +1734,8 @@ namespace SolidCP.Providers.Mail
                     hideFromGAL = group.HideFromGAL,
                     enableForXmpp = group.EnableChat,
                     internalOnly = group.InternalOnly,
-                    includeAllDomainUsers = group.IncludeAllDomainUsers
+                    includeAllDomainUsers = group.IncludeAllDomainUsers,
+                    allowSending = group.AllowSending
                 };
 
 				var mailAliasPram = new
@@ -1786,7 +1788,8 @@ namespace SolidCP.Providers.Mail
 					hideFromGAL = group.HideFromGAL,
                     enableForXmpp = group.EnableChat,
                     internalOnly = group.InternalOnly,
-                    includeAllDomainUsers = group.IncludeAllDomainUsers
+                    includeAllDomainUsers = group.IncludeAllDomainUsers,
+                    allowSending = group.AllowSending
                 };
 
 				var mailAliasPram = new

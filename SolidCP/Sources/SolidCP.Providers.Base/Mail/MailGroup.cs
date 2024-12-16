@@ -47,6 +47,7 @@ namespace SolidCP.Providers.Mail
         private bool internalonly;
         private bool includealldomainusers;
         private string displayname;
+        private bool allowsending;
 
 		public MailGroup()
 		{
@@ -89,6 +90,11 @@ namespace SolidCP.Providers.Mail
         {
             get { return this.displayname; }
             set { this.displayname = value; }
+        }
+        public bool AllowSending
+        {
+            get { return this.allowsending; }
+            set { this.allowsending = value; }
         }
     }
 }
