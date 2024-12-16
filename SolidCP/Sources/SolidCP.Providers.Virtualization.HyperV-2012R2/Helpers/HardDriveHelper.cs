@@ -140,7 +140,7 @@ namespace SolidCP.Providers.Virtualization
                             bool addPath = true;
                             foreach (string path in vmSettings.VirtualHardDrivePath)
                             {
-                                if (path != null && path.ToLower().Contains((msHddHyperVFolderName + index.ToString() + Path.GetExtension(vmSettings.OperatingSystemTemplatePath)).ToLower()))
+                                if (path != null && path.ToLower().Contains((vmSettings.Name + index.ToString() + Path.GetExtension(vmSettings.OperatingSystemTemplatePath)).ToLower()))
                                 {
                                     addPath = false;
                                     index++;
