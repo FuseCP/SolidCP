@@ -18,6 +18,6 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyInformationalVersion("1.5.0"),  _
  Assembly: AssemblyCompany("SolidCP"),  _
  Assembly: AssemblyCopyright("Copyright © 2024 SolidCP."),  _
- Assembly: AssemblyFileVersion("1.5.0"),  _
- Assembly: AssemblyVersion("1.5.0")> 
+ Assembly: AssemblyFileVersion("1.5.1"),  _
+ Assembly: AssemblyVersion("1.5.1")> 
 

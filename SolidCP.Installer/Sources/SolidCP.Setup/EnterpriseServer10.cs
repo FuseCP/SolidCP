@@ -64,7 +64,7 @@ namespace SolidCP.Setup
         {
             return UpdateBase(obj,
                  minimalInstallerVersion: "1.0.1",
-                 versionToUpgrade: "1.4.9,1.4.8,1.4.7,1.4.6,1.4.5",
+                 versionToUpgrade: "1.5.0,1.4.9,1.4.8,1.4.7,1.4.6,1.4.5",
                  updateSql: true);
         }
     }
