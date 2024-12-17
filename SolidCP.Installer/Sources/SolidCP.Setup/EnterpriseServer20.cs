@@ -76,7 +76,7 @@ namespace SolidCP.Setup
         public static new object Install(object obj)
         {
             //
-            return EnterpriseServer.InstallBase(obj, minimalInstallerVersion: "2.0.0");
+            return EnterpriseServer.InstallBase(obj, minimalInstallerVersion: "1.0.1");
         }
 
         public static new DialogResult Uninstall(object obj)
@@ -92,8 +92,8 @@ namespace SolidCP.Setup
         public static new DialogResult Update(object obj)
         {
             return UpdateBase(obj,
-                minimalInstallerVersion: "2.0.0",
-                versionToUpgrade: "1.2.1,2.0.0",
+                minimalInstallerVersion: "1.0.1",
+                versionToUpgrade: "1.5.0,1.4.9,1.4.8,1.4.7,1.4.6,1.4.5",
                 updateSql: true);
         }
     }

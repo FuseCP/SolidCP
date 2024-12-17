@@ -56,6 +56,7 @@ using SolidCP.Providers.Database;
 using SolidCP.Providers.FTP;
 using System.Collections;
 using SolidCP.Server.Client;
+using SolidCP.EnterpriseServer.Data;
 
 namespace SolidCP.EnterpriseServer
 {

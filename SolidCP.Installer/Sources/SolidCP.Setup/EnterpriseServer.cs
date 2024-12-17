@@ -40,6 +40,7 @@ using System.Text;
 using SolidCP.Setup.Actions;
 using Data = SolidCP.EnterpriseServer.Data;
 using SolidCP.UniversalInstaller.Core;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Setup
 {
@@ -47,12 +48,10 @@ namespace SolidCP.Setup
 	{
 		public static object Install(object obj)
 		{
-			ResourceAssemblyLoader.Init();
 			return InstallBase(obj, "1.0.1");
 		}
 		public static object InstallBase(object obj, string minimalInstallerVersion)
 		{
-			ResourceAssemblyLoader.Init();
 			return InstallBaseRaw(obj, minimalInstallerVersion);
 		}
 		static object InstallBaseRaw(object obj, string minimalInstallerVersion)
@@ -173,25 +172,39 @@ namespace SolidCP.Setup
 				var introPage = new IntroductionPage();
 				var licPage = new LicenseAgreementPage();
 				var page1 = new ConfigurationCheckPage();
-				//
-                ConfigurationCheck check1 = new ConfigurationCheck(CheckTypes.WindowsOperatingSystem, "Operating System Requirement") { SetupVariables = setupVariables };
-                ConfigurationCheck check2 = new ConfigurationCheck(CheckTypes.IISVersion, "IIS Requirement") { SetupVariables = setupVariables };
-                ConfigurationCheck check3 = new ConfigurationCheck(CheckTypes.ASPNET, "ASP.NET Requirement") { SetupVariables = setupVariables };
-				//
-				page1.Checks.AddRange(new ConfigurationCheck[] { check1, check2, check3 });
-				//
+				if (OSInfo.IsWindows)
+				{
+					page1.Checks.AddRange(new ConfigurationCheck[]
+					{
+						new ConfigurationCheck(CheckTypes.WindowsOperatingSystem, "Operating System Requirement"){ SetupVariables = setupVariables },
+						new ConfigurationCheck(CheckTypes.IISVersion, "IIS Requirement"){ SetupVariables = setupVariables },
+						new ConfigurationCheck(CheckTypes.ASPNET, "ASP.NET Requirement"){ SetupVariables = setupVariables }
+					});
+				}
+				else
+				{
+					page1.Checks.AddRange(new ConfigurationCheck[]
+					{
+						new ConfigurationCheck(CheckTypes.OperatingSystem, "Operating System Requirement"){ SetupVariables = setupVariables },
+						new ConfigurationCheck(CheckTypes.Net8Runtime, ".NET 8 Runtime Requirement"){ SetupVariables = setupVariables },
+						new ConfigurationCheck(CheckTypes.Systemd, "Systemd Requirement"){ SetupVariables = setupVariables },
+					});
+				}
 				var page2 = new InstallFolderPage();
 				var page3 = new WebPage();
 				var page4 = new InsecureHttpWarningPage();
 				var page5 = new CertificatePage();
-				var page6 = new UserAccountPage();
+				UserAccountPage page6 = null;
+				if (OSInfo.IsWindows) page6 = new UserAccountPage();
 				var page7 = new DatabasePage();
 				var passwordPage = new ServerAdminPasswordPage();
 				//
 				var page8 = new ExpressInstallPage2();
 				//
 				var page9 = new FinishPage();
-				wizard.Controls.AddRange(new Control[] { introPage, licPage, page1, page2, page3, page4, page5, page6, page7, passwordPage, page8, page9 });
+				wizard.Controls.AddRange(new Control[] { introPage, licPage, page1, page2, page3, page4, page5 });
+				if (OSInfo.IsWindows) wizard.Controls.Add(page6);
+				wizard.Controls.AddRange(new Control[] { page7, passwordPage, page8, page9 });
 				wizard.LinkPages();
 				wizard.SelectedPage = introPage;
 
@@ -203,13 +216,11 @@ namespace SolidCP.Setup
 
 		public static DialogResult Uninstall(object obj)
 		{
-			ResourceAssemblyLoader.Init();
 			return UninstallBase(obj);
 		}
 
 		public static DialogResult Setup(object obj)
 		{
-			ResourceAssemblyLoader.Init();
 			return SetupRaw(obj);
 		}
 		static DialogResult SetupRaw(object obj)
@@ -269,7 +280,6 @@ namespace SolidCP.Setup
 
 		public static DialogResult Update(object obj)
 		{
-			ResourceAssemblyLoader.Init();
 			return UpdateRaw(obj);
 		}
 		static DialogResult UpdateRaw(object obj)

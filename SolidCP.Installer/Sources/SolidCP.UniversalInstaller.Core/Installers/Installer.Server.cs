@@ -19,8 +19,6 @@ namespace SolidCP.UniversalInstaller
 
 	public abstract partial class Installer
 	{
-		public ServerSettings ServerSettings { get; set; } = new ServerSettings();
-
 		public virtual void InstallServerPrerequisites() { }
 		public virtual void RemoveServerPrerequisites() { }
 
@@ -48,7 +46,7 @@ namespace SolidCP.UniversalInstaller
 		public virtual void InstallServerWebsite() { }
 		public virtual void RemoveServerWebsite() { }
 		public virtual void RemoveServerFolder() {
-			FileUtils.DeleteDirectoryRecursive(Path.Combine(InstallWebRootPath, ServerFolder));
+			Directory.Delete(Path.Combine(InstallWebRootPath, ServerFolder), true);
 		}
 		public virtual void RemoveServerUser() { }
 		public virtual void RemoveServerApplicationPool() { }

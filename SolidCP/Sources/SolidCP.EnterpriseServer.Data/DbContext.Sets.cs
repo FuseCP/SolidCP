@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using SolidCP.EnterpriseServer.Data.Entities;
 #if NETFRAMEWORK
 using System.Data.Entity;
-#else
+#elif NETCOREAPP
 using Microsoft.EntityFrameworkCore;
 #endif
 

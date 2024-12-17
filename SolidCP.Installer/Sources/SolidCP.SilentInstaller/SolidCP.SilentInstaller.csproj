@@ -11,54 +11,8 @@
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     </PropertyGroup>
-    <Target Name="CopyResources" BeforeTargets="ResolveReferences">
-        <Message Text="Copying Installer Resources" Importance="high" />
-        <ItemGroup>
-            <!--<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\IIs100\Microsoft.Web.Administration.dll" />
-            <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\Microsoft.Win32.Registry.dll" />
-            <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\netstandard\DotNetZip.dll" />
-            <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\netstandard\SyslogNet.Client.dll" />
-            <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\Newtonsoft.Json.dll" />
-            <FilesToCopy Include="..\packages\System.Text.Encoding.CodePages.4.3.0\lib\net46\System.Text.Encoding.CodePages.dll" />
-            <FilesToCopy Include="..\packages\System.Diagnostics.EventLog.4.7.0\lib\net461\System.Diagnostics.EventLog.dll" />
-            <FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.Security.Principal.Windows.dll" />
-            <FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.Security.Principal.Windows.dll" />
-            <FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.IO.FileSystem.AccessControl.dll" />
-            <FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.Security.AccessControl.dll" />-->
-            <FilesToCopy Include="..\..\Build\$(Configuration)\Newtonsoft.Json.dll" />
-            <FilesToCopy Include="..\..\Build\$(Configuration)\System.Text.Encoding.CodePages.dll" />
-            <FilesToCopy Include="..\..\Build\$(Configuration)\System.Diagnostics.EventLog.dll" />
-            <FilesToCopy Include="..\..\Build\$(Configuration)\System.Security.Principal.Windows.dll" />
-            <FilesToCopy Include="..\..\Build\$(Configuration)\System.IO.FileSystem.AccessControl.dll" />
-            <FilesToCopy Include="..\..\Build\$(Configuration)\System.Security.AccessControl.dll" />
-            <FilesToCopy Include="..\..\Build\$(Configuration)\Microsoft.Win32.Registry.dll" />
-            <FilesToCopy Include="..\..\Build\$(Configuration)\SolidCP.Updater.exe" />
-            <FilesToCopy Include="..\..\Build\$(Configuration)\DotNetZip.dll" />
-        </ItemGroup>
-        <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
-            <FilesToCopy Include="..\..\Build\$(Configuration)\SolidCP.Installer.Core.pdb" />
-            <FilesToCopy Include="..\..\Build\$(Configuration)\SolidCP.Providers.Base.pdb" />
-            <FilesToCopy Include="..\..\Build\$(Configuration)\SolidCP.UniversalInstaller.Core.pdb" />
-            <!--<FilesToCopy Include="..\..\..\SolidCP\Bin\netstandard2.0\SolidCP.Providers.Base.pdb" />
-            <FilesToCopy Include="..\SolidCP.Installer.Core\bin\$(Configuration)\SolidCP.Installer.Core.pdb" />
-            <FilesToCopy Include="..\SolidCP.UniversalInstaller.Core\bin\$(Configuration)\net48\SolidCP.UniversalInstaller.Core.pdb" />
-            <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\netstandard\SolidCP.Providers.OS.Unix.pdb" />
-            <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.OS.Windows2003.pdb" />
-            <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.OS.Windows2008.pdb" />
-            <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.OS.Windows2012.pdb" />
-            <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.OS.Windows2016.pdb" />
-            <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.OS.Windows2019.pdb" />
-            <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.OS.Windows2022.pdb" />
-            <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Server.Utils.pdb" />
-            <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\IIs100\SolidCP.Providers.Web.IIs100.pdb" />
-			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.Web.IIs60.pdb" />
-			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.Web.IIs70.pdb" />
-			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\IIs80\SolidCP.Providers.Web.IIs80.pdb" />-->
-        </ItemGroup>
-        <Copy SourceFiles="@(FilesToCopy)" DestinationFolder="Resources" SkipUnchangedFiles="true" />
-    </Target>
     <ItemGroup>
-        <Reference Include="System.configuration" />
+        <Reference Include="System.Configuration" />
         <Reference Include="System.Web.Services" />
     </ItemGroup>
     <ItemGroup>
@@ -68,7 +22,6 @@
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" OutputItemType="EmbeddedResource" />
         <ProjectReference Include="..\SolidCP.Installer.Core\SolidCP.Installer.Core.csproj" OutputItemType="EmbeddedResource" />
         <ProjectReference Include="..\SolidCP.UniversalInstaller.Core\SolidCP.UniversalInstaller.Core.csproj" OutputItemType="EmbeddedResource" />
-        <ProjectReference Include="..\SolidCP.UniversalInstaller.DotnetHost\SolidCP.UniversalInstaller.DotnetHost.csproj" />
         <ProjectReference Include="..\SolidCP.Updater\SolidCP.Updater.csproj" OutputItemType="EmbeddedResource" />
         <!--
 		<ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Web.IIs100\SolidCP.Providers.Web.IIs100.csproj">
@@ -104,22 +57,6 @@
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
         <ProjectReference Include="..\SolidCP.Installer.Core\SolidCP.Installer.Core.csproj" />
         <ProjectReference Include="..\SolidCP.UniversalInstaller.Core\SolidCP.UniversalInstaller.Core.csproj" />
-    </ItemGroup>
-    <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
-        <EmbeddedResource Include="Resources\SolidCP.UniversalInstaller.Core.pdb" />
-        <EmbeddedResource Include="Resources\SolidCP.Installer.Core.pdb" />
-        <EmbeddedResource Include="Resources\SolidCP.Providers.Base.pdb" />
-    </ItemGroup>
-    <ItemGroup>
-        <EmbeddedResource Include="Resources\DotNetZip.dll" />
-        <!--<EmbeddedResource Include="Resources\Microsoft.Web.Administration.dll" />-->
-        <EmbeddedResource Include="Resources\Microsoft.Win32.Registry.dll" />
-        <EmbeddedResource Include="Resources\Newtonsoft.Json.dll" />
-        <EmbeddedResource Include="Resources\System.Diagnostics.EventLog.dll" />
-        <EmbeddedResource Include="Resources\System.IO.FileSystem.AccessControl.dll" />
-        <EmbeddedResource Include="Resources\System.Security.AccessControl.dll" />
-        <EmbeddedResource Include="Resources\System.Security.Principal.Windows.dll" />
-        <EmbeddedResource Include="Resources\System.Text.Encoding.CodePages.dll" />
     </ItemGroup>
     <ItemGroup>
         <Compile Remove="obj\x86\Debug\.NETFramework,Version=v4.8.AssemblyAttributes.cs" />

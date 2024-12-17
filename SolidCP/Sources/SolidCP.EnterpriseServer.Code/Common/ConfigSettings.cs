@@ -64,7 +64,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 		public static string ConnectionString => Data.DbSettings.ConnectionString;
-		public static string SpecificConnectionString => Data.DbSettings.NativeConnectionString;
+		public static string NativeConnectionString => Data.DbSettings.NativeConnectionString;
 
 		static string cryptoKey = null;
 		public static string CryptoKey
@@ -123,27 +123,6 @@ namespace SolidCP.EnterpriseServer
 					}
 				}
 				return encryptionEnabled.Value;
-			}
-		}
-
-
-		static string dataProviderType = null;
-		public static string DataProviderType
-		{
-			get
-			{
-				if (dataProviderType == null)
-				{
-					if (OSInfo.IsNetFX)
-					{
-						dataProviderType = ConfigurationManager.AppSettings["SolidCP.EnterpriseServer.DataProvider"];
-					}
-					else
-					{
-						dataProviderType = Web.Services.Configuration.DataProviderType;
-					}
-				}
-				return dataProviderType;
 			}
 		}
 

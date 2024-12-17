@@ -49,7 +49,6 @@ namespace SolidCP.Setup
         }
 		internal static object InstallBase(object obj, string minimalInstallerVersion)
         {
-			ResourceAssemblyLoader.Init();
             return InstallBaseRaw(obj, minimalInstallerVersion);
         }
 		static object InstallBaseRaw(object obj, string minimalInstallerVersion)
@@ -161,7 +160,6 @@ namespace SolidCP.Setup
 
 		public static DialogResult Uninstall(object obj)
         {
-            ResourceAssemblyLoader.Init();
             return UninstallRaw(obj);
         }
 
@@ -208,7 +206,6 @@ namespace SolidCP.Setup
 
 		public static DialogResult Setup(object obj)
         {
-            ResourceAssemblyLoader.Init();
             return SetupRaw(obj);
         }
 
@@ -266,7 +263,6 @@ namespace SolidCP.Setup
 
 		public static DialogResult Update(object obj)
         {
-            ResourceAssemblyLoader.Init();
             return UpdateRaw(obj);
         }
 		static DialogResult UpdateRaw(object obj)

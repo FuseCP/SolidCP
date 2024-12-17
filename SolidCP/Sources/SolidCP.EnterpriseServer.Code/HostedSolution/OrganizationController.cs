@@ -61,6 +61,7 @@ using SolidCP.Providers.DNS;
 using SolidCP.EnterpriseServer.Base.HostedSolution;
 using SolidCP.Providers.OS;
 using SolidCP.Providers.StorageSpaces;
+using SolidCP.EnterpriseServer.Data;
 
 namespace SolidCP.EnterpriseServer
 {

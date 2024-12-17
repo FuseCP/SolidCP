@@ -1,4 +1,6 @@
-﻿#if ScaffoldedDbContext
+﻿#if !NETSTANDARD
+	
+#if ScaffoldedDbContext
 using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
@@ -721,4 +723,5 @@ namespace SolidCP.EnterpriseServer.Data
     }
 #endif
 }
+#endif
 #endif

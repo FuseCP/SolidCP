@@ -54,7 +54,6 @@ namespace SolidCP.Setup
 
 		internal static object InstallBase(object obj, string minimalInstallerVersion)
 		{
-			ResourceAssemblyLoader.Init();
 			return InstallBaseRaw(obj, minimalInstallerVersion);
 		}
 		static object InstallBaseRaw(object obj, string minimalInstallerVersion)
@@ -143,17 +142,17 @@ namespace SolidCP.Setup
 				{
 					page1.Checks.AddRange(new ConfigurationCheck[]
 					{
-					new ConfigurationCheck(CheckTypes.WindowsOperatingSystem, "Operating System Requirement"){ SetupVariables = setupVariables },
-					new ConfigurationCheck(CheckTypes.IISVersion, "IIS Requirement"){ SetupVariables = setupVariables },
-					new ConfigurationCheck(CheckTypes.ASPNET, "ASP.NET Requirement"){ SetupVariables = setupVariables }
+						new ConfigurationCheck(CheckTypes.WindowsOperatingSystem, "Operating System Requirement"){ SetupVariables = setupVariables },
+						new ConfigurationCheck(CheckTypes.IISVersion, "IIS Requirement"){ SetupVariables = setupVariables },
+						new ConfigurationCheck(CheckTypes.ASPNET, "ASP.NET Requirement"){ SetupVariables = setupVariables }
 					});
 				} else
 				{
 					page1.Checks.AddRange(new ConfigurationCheck[]
 					{
-					new ConfigurationCheck(CheckTypes.OperatingSystem, "Operating System Requirement"){ SetupVariables = setupVariables },
-					new ConfigurationCheck(CheckTypes.Net8Runtime, ".NET 8 Runtime Requirement"){ SetupVariables = setupVariables },
-					new ConfigurationCheck(CheckTypes.Systemd, "Systemd Requirement"){ SetupVariables = setupVariables },
+						new ConfigurationCheck(CheckTypes.OperatingSystem, "Operating System Requirement"){ SetupVariables = setupVariables },
+						new ConfigurationCheck(CheckTypes.Net8Runtime, ".NET 8 Runtime Requirement"){ SetupVariables = setupVariables },
+						new ConfigurationCheck(CheckTypes.Systemd, "Systemd Requirement"){ SetupVariables = setupVariables },
 					});
 				}
 				
@@ -183,7 +182,6 @@ namespace SolidCP.Setup
 
 		public static object Uninstall(object obj)
 		{
-			ResourceAssemblyLoader.Init();
 			return UninstallRaw(obj);
 		}
 		static object UninstallRaw(object obj)
@@ -223,7 +221,6 @@ namespace SolidCP.Setup
 
 		public static object Setup(object obj)
 		{
-			ResourceAssemblyLoader.Init();
 			return SetupRaw(obj);
 		}
 		static object SetupRaw(object obj)
@@ -282,7 +279,6 @@ namespace SolidCP.Setup
 
 		public static object Update(object obj)
 		{
-			ResourceAssemblyLoader.Init();
 			return UpdateRaw(obj);
 		}
 		static object UpdateRaw(object obj)

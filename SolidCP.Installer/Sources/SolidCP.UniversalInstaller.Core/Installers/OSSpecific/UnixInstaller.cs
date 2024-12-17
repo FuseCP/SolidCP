@@ -17,26 +17,24 @@ namespace SolidCP.UniversalInstaller
 		public override string InstallExeRootPath { get => base.InstallExeRootPath ?? $"/usr/local/{SolidCP}"; set => base.InstallExeRootPath = value; }
 		public override string InstallWebRootPath { get => base.InstallWebRootPath ?? $"/var/www/{SolidCP}"; set => base.InstallWebRootPath = value; }
 		public override string WebsiteLogsPath => $"/var/log/{SolidCP}";
-		public virtual string UnixServiceId => "solidcp-server";
+		public virtual string UnixServerServiceId => "solidcp-server";
+		public virtual string UnixEnterpriseServerServiceId => "solidcp-enterpriseserver";
+		public virtual string UnixPortalServiceId => "solidcp-portal";
+		public virtual string SolidCPUnixGroup => "solidcp";
 		public virtual string CertificateFolder => "Certificates";
 		public UnixInstaller() : base() { }
 
-		public override void InstallServerWebsite()
+		public void InstallWebsite(string dll, string serviceId, string urls, string user, string group, string description)
 		{
-			// Run SolidCP.Server as a service on Unix
-
-			var websitePath = Path.Combine(InstallWebRootPath, ServerFolder, "bin_dotnet");
-			var dll = Path.Combine(websitePath, "SolidCP.Server.dll");
-
 			if (!File.Exists(dll) && !Debugger.IsAttached)
 			{
 				throw new FileNotFoundException($"The service executable {dll} was not found.");
 			}
 
-			var service = new ServiceDescription()
+			var service = new UnixServiceDescription()
 			{
-				ServiceId = UnixServiceId,
-				Directory = websitePath,
+				ServiceId = UnixServerServiceId,
+				Directory = Path.GetDirectoryName(dll),
 				Description = "SolidCP.Server service, the server management service for the SolidCP control panel.",
 				Executable = $"dotnet {dll}",
 				DependsOn = new List<string>() { "network-online.target" },
@@ -45,32 +43,63 @@ namespace SolidCP.UniversalInstaller
 				RestartSec = "1s",
 				StartLimitBurst = "5",
 				StartLimitIntervalSec = "500",
-				SyslogIdentifier = UnixServiceId
+				User = user,
+				Group = group,
+				SyslogIdentifier = UnixServerServiceId
 			};
 			service.EnvironmentVariables.Add("ASPNETCORE_ENVIRONMENT", "Production");
 
-			ServiceController.Install(service);
-			ServiceController.Enable(service.ServiceId);
-			var status = ServiceController.Info(service.ServiceId);
-			if (status != null && status.Status == OSServiceStatus.Running) ServiceController.Stop(service.ServiceId);
-			ServiceController.Start(service.ServiceId);
+			InstallService(service);
 
-			OpenFirewall(ServerSettings.Urls);
+			OpenFirewall(urls);
+
+		}
+		public override void InstallServerWebsite()
+		{
+			var dll = Path.Combine(InstallWebRootPath, ServerFolder, "bin_dotnet", "SolidCP.Server.dll");
+
+			InstallWebsite(dll, UnixServerServiceId, Settings.Server.Urls, "root", SolidCPUnixGroup,
+				"SolidCP.Server service, the server management service for the SolidCP control panel.");
+		}
+		public virtual void AddUnixUser(string user, string group)
+		{
+			Shell.Exec($"useradd --home /home/{user} --gid {group} -m --shell /bin/false {user}");
+		}
+		public override void InstallEnterpriseServerWebsite()
+		{
+			var dll = Path.Combine(InstallWebRootPath, EnterpriseServerFolder, "bin_dotnet", "SolidCP.EnterpriseServer.dll");
+
+			AddUnixUser(UnixEnterpriseServerServiceId, SolidCPUnixGroup);
+
+			InstallWebsite(dll, UnixEnterpriseServerServiceId, Settings.Server.Urls, UnixEnterpriseServerServiceId, SolidCPUnixGroup,
+				"SolidCP.Server service, the server management service for the SolidCP control panel.");
 		}
 
-		public override void RemoveServerWebsite()
+		public override void InstallPortalWebsite()
 		{
-			var serviceId = UnixServiceId;
+			var dll = Path.Combine(InstallWebRootPath, PortalFolder, "bin_dotnet", "SolidCP.WebPortal.dll");
 
-			if (ServiceController.Info(serviceId) != null)
+			AddUnixUser(UnixPortalServiceId, SolidCPUnixGroup);
+
+			InstallWebsite(dll, UnixPortalServiceId, Settings.WebPortal.Urls, UnixPortalServiceId, SolidCPUnixGroup,
+				"SolidCP.Server service, the server management service for the SolidCP control panel.");
+		}
+		public virtual void RemoveWebsite(string serviceId, string urls)
+		{
+			var service = ServiceController[serviceId];
+
+			if (service.Info != null)
 			{
-				ServiceController.Stop(serviceId);
-				ServiceController.Disable(serviceId);
-				ServiceController.Remove(serviceId);
+				service.Stop();
+				service.Disable();
+				service.Remove();
 
-				RemoveFirewallRule(ServerSettings.Urls);
+				RemoveFirewallRule(urls);
 			}
 		}
+		public override void RemoveServerWebsite() => RemoveWebsite(UnixServerServiceId, Settings.Server.Urls);
+		public override void RemoveEnterpriseServerWebsite() => RemoveWebsite(UnixEnterpriseServerServiceId, Settings.EnterpriseServer.Urls);
+		public override void RemovePortalWebsite() => RemoveWebsite(UnixPortalServiceId, Settings.WebPortal.Urls);
 
 		public override void OpenFirewall(int port)
 		{
@@ -93,36 +122,36 @@ namespace SolidCP.UniversalInstaller
 			var appsettingsfile = Path.Combine(InstallWebRootPath, ServerFolder, "bin_dotnet", "appsettings.json");
 			if (File.Exists(appsettingsfile))
 			{
-				var appsettings = JsonConvert.DeserializeObject<ServerAppSettings>(File.ReadAllText(appsettingsfile)) ?? new ServerAppSettings();
-				ServerSettings.Urls = appsettings.applicationUrls;
-				ServerSettings.ServerPasswordSHA = appsettings.Server?.Password ?? "";
-				ServerSettings.ServerPassword = "";
-				ServerSettings.LetsEncryptCertificateEmail = appsettings.LettuceEncrypt?.EmailAddress;
-				ServerSettings.LetsEncryptCertificateDomains = (appsettings.LettuceEncrypt != null && appsettings.LettuceEncrypt.DomainNames != null) ? string.Join(", ", appsettings.LettuceEncrypt.DomainNames) : "";
-				ServerSettings.CertificateFile = appsettings.Certificate?.File;
-				ServerSettings.CertificatePassword = appsettings.Certificate?.Password;
-				ServerSettings.CertificateStoreLocation = appsettings.Certificate?.StoreLocation.ToString();
-				ServerSettings.CertificateStoreName = appsettings.Certificate?.StoreName.ToString();
-				ServerSettings.CertificateFindType = appsettings.Certificate?.FindType.ToString();
-				ServerSettings.CertificateFindValue = appsettings.Certificate?.FindValue;
+				var appsettings = JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText(appsettingsfile)) ?? new AppSettings();
+				Settings.Server.Urls = appsettings.applicationUrls;
+				Settings.Server.ServerPasswordSHA = appsettings.Server?.Password ?? "";
+				Settings.Server.ServerPassword = "";
+				Settings.Server.LetsEncryptCertificateEmail = appsettings.LettuceEncrypt?.EmailAddress;
+				Settings.Server.LetsEncryptCertificateDomains = (appsettings.LettuceEncrypt != null && appsettings.LettuceEncrypt.DomainNames != null) ? string.Join(", ", appsettings.LettuceEncrypt.DomainNames) : "";
+				Settings.Server.CertificateFile = appsettings.Certificate?.File;
+				Settings.Server.CertificatePassword = appsettings.Certificate?.Password;
+				Settings.Server.CertificateStoreLocation = appsettings.Certificate?.StoreLocation.ToString();
+				Settings.Server.CertificateStoreName = appsettings.Certificate?.StoreName.ToString();
+				Settings.Server.CertificateFindType = appsettings.Certificate?.FindType.ToString();
+				Settings.Server.CertificateFindValue = appsettings.Certificate?.FindValue;
 			}
 		}
 
 		public override void ConfigureServer()
 		{
-			ServerAppSettings appsettings = null;
+			AppSettings appsettings = null;
             var appsettingsfile = Path.Combine(InstallWebRootPath, ServerFolder, "bin_dotnet", "appsettings.json");
 			if (File.Exists(appsettingsfile))
 			{
-				appsettings = JsonConvert.DeserializeObject<ServerAppSettings>(File.ReadAllText(appsettingsfile)) ?? new ServerAppSettings();
+				appsettings = JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText(appsettingsfile)) ?? new AppSettings();
 			}
 			else
 			{
-				appsettings = new ServerAppSettings();
+				appsettings = new AppSettings();
 			}
 
-			appsettings.applicationUrls = ServerSettings.Urls;
-			var allowedHosts = (ServerSettings?.Urls ?? "").Split(',', ';')
+			appsettings.applicationUrls = Settings.Server.Urls;
+			var allowedHosts = (Settings.Server?.Urls ?? "").Split(',', ';')
 				.Select(url => new Uri(url.Trim()).Host)
 				.ToList();
 			if (allowedHosts.Any(host => host == "localhost"))
@@ -133,35 +162,35 @@ namespace SolidCP.UniversalInstaller
 			if (allowedHosts.Any(host => host == "*")) appsettings.AllowedHosts = null;
 			else appsettings.AllowedHosts = string.Join(";", allowedHosts.Distinct());
 
-			if (!string.IsNullOrEmpty(ServerSettings.ServerPassword) || !string.IsNullOrEmpty(ServerSettings.ServerPasswordSHA))
+			if (!string.IsNullOrEmpty(Settings.Server.ServerPassword) || !string.IsNullOrEmpty(Settings.Server.ServerPasswordSHA))
 			{
 				string pwsha1;
-				if (!string.IsNullOrEmpty(ServerSettings.ServerPassword))
+				if (!string.IsNullOrEmpty(Settings.Server.ServerPassword))
 				{
-					pwsha1 = Utils.ComputeSHAServerPassword(ServerSettings.ServerPassword);
+					pwsha1 = CryptoUtils.ComputeSHAServerPassword(Settings.Server.ServerPassword);
 				} else
 				{
-					pwsha1 = ServerSettings.ServerPasswordSHA;
+					pwsha1 = Settings.Server.ServerPasswordSHA;
 				}
-				appsettings.Server = new ServerAppSettings.ServerSetting() { Password = pwsha1 };
+				appsettings.Server = new AppSettings.ServerSetting() { Password = pwsha1 };
 			}
 
-			if (!string.IsNullOrEmpty(ServerSettings.LetsEncryptCertificateEmail) && !string.IsNullOrEmpty(ServerSettings.LetsEncryptCertificateDomains))
+			if (!string.IsNullOrEmpty(Settings.Server.LetsEncryptCertificateEmail) && !string.IsNullOrEmpty(Settings.Server.LetsEncryptCertificateDomains))
 			{
-				appsettings.LettuceEncrypt = new ServerAppSettings.LettuceEncryptSetting()
+				appsettings.LettuceEncrypt = new AppSettings.LettuceEncryptSetting()
 				{
 					AcceptTermOfService = true,
-					EmailAddress = ServerSettings.LetsEncryptCertificateEmail,
-					DomainNames = ServerSettings.LetsEncryptCertificateDomains
+					EmailAddress = Settings.Server.LetsEncryptCertificateEmail,
+					DomainNames = Settings.Server.LetsEncryptCertificateDomains
 						?.Split(',', ';')
 						.Select(domain => domain.Trim())
 						.ToArray() ?? new string[0]
 				};
 			}
-			else if (!string.IsNullOrEmpty(ServerSettings.CertificateFile) && !string.IsNullOrEmpty(ServerSettings.CertificatePassword))
+			else if (!string.IsNullOrEmpty(Settings.Server.CertificateFile) && !string.IsNullOrEmpty(Settings.Server.CertificatePassword))
 			{
 				// create a local copy of the certificate file
-				var certFile = ServerSettings.CertificateFile;
+				var certFile = Settings.Server.CertificateFile;
 				var certFolder = Path.Combine(InstallWebRootPath, CertificateFolder);
 				if (!Directory.Exists(certFolder)) Directory.CreateDirectory(certFolder);
 				var shadowFileName = $"{Guid.NewGuid()}.{Path.GetFileName(certFile)}";
@@ -169,21 +198,21 @@ namespace SolidCP.UniversalInstaller
 				File.Copy(certFile, shadowFile);
 				OSInfo.Unix.GrantUnixPermissions(shadowFile, UnixFileMode.UserRead | UnixFileMode.UserWrite);
 
-				appsettings.Certificate = new ServerAppSettings.CertificateSetting()
+				appsettings.Certificate = new AppSettings.CertificateSetting()
 				{
 					File = shadowFile,
-					Password = ServerSettings.CertificatePassword
+					Password = Settings.Server.CertificatePassword
 				};
 			}
-			else if (!string.IsNullOrEmpty(ServerSettings.CertificateStoreLocation) && !string.IsNullOrEmpty(ServerSettings.CertificateStoreName))
+			else if (!string.IsNullOrEmpty(Settings.Server.CertificateStoreLocation) && !string.IsNullOrEmpty(Settings.Server.CertificateStoreName))
 			{
-				appsettings.Certificate = new ServerAppSettings.CertificateSetting()
+				appsettings.Certificate = new AppSettings.CertificateSetting()
 				{
-					FindValue = ServerSettings.CertificateFindValue
+					FindValue = Settings.Server.CertificateFindValue
 				};
-				Enum.TryParse<StoreLocation>(ServerSettings.CertificateStoreLocation, out appsettings.Certificate.StoreLocation);
-				Enum.TryParse<StoreName>(ServerSettings.CertificateStoreName, out appsettings.Certificate.StoreName);
-				Enum.TryParse<X509FindType>(ServerSettings.CertificateFindType, out appsettings.Certificate.FindType);
+				Enum.TryParse<StoreLocation>(Settings.Server.CertificateStoreLocation, out appsettings.Certificate.StoreLocation);
+				Enum.TryParse<StoreName>(Settings.Server.CertificateStoreName, out appsettings.Certificate.StoreName);
+				Enum.TryParse<X509FindType>(Settings.Server.CertificateFindType, out appsettings.Certificate.FindType);
 			}
 
 			if (string.IsNullOrEmpty(appsettings.probingPaths)) appsettings.probingPaths = "..\\bin\\netstandard";
@@ -192,7 +221,7 @@ namespace SolidCP.UniversalInstaller
 			if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 			File.WriteAllText(appsettingsfile, JsonConvert.SerializeObject(appsettings, Formatting.Indented, new JsonSerializerSettings()
 			{
-				ContractResolver = new ServerAppSettings.IgnoreAllowedHostsResolver()
+				ContractResolver = new AppSettings.IgnoreAllowedHostsResolver()
 			}));
 		}
 		public override void InstallServerPrerequisites()
@@ -200,11 +229,14 @@ namespace SolidCP.UniversalInstaller
 			InstallNet8Runtime();
 		}
 		public override Func<string, string> UnzipFilter => Net8UnzipFilter;
-		public override bool IsRunningAsAdmin()
+		public override bool IsRunningAsAdmin
 		{
-			//var uid = Mono.Posix.Syscall.getuid();
-			var euid = Mono.Unix.Native.Syscall.geteuid();
-			return euid == 0;
+			get
+			{
+				//var uid = Mono.Posix.Syscall.getuid();
+				var euid = Mono.Unix.Native.Syscall.geteuid();
+				return euid == 0;
+			}
 		}
 
 		public override bool CheckOSSupported() => CheckSystemdSupported();
@@ -228,5 +260,17 @@ namespace SolidCP.UniversalInstaller
 			else throw new NotSupportedException();
 			Environment.Exit(shell.ExitCode().Result -1);
 		}
+
+		public override void ShowLogFile()
+		{
+			try
+			{
+				var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Log.File);
+				if (Shell.Find("gedit") != null) Shell.Standard.Exec($"gedit \"{path}\"");
+				else UI.ShowLogFile();
+			}
+			catch { }
+		}
+
 	}
 }

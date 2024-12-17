@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !NETSTANDARD
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -13,7 +14,7 @@ using System.Data.Entity.Core.Metadata.Edm;
 using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Contexts;
 using System.Data.Entity.Core.Mapping;
-#else
+#elif NETCOREAPP
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.EntityFrameworkCore.Query.Internal;
@@ -306,3 +307,4 @@ public static partial class EstrellasDeEsperanzaEntityFrameworkExtensions
 	}
 #endif
 }
+#endif

@@ -213,7 +213,7 @@ Caregories=Network".Replace("\r\n", Environment.NewLine));
 
 				installer.ReadServerConfiguration();
 
-				var settings = installer.ServerSettings;
+				var settings = installer.Settings.Server;
 				settings.Urls = string.Join(";", urls.ToArray());
 				settings.LetsEncryptCertificateDomains = domain;
 				settings.LetsEncryptCertificateEmail = vars.LetsEncryptEmail;
@@ -256,7 +256,7 @@ Caregories=Network".Replace("\r\n", Environment.NewLine));
 				Log.WriteEnd("Installed SolidCP Server");
 
 				//update install log
-				var serviceId = (installer as UniversalInstaller.UnixInstaller)?.UnixServiceId ?? "solidcp-server";
+				var serviceId = (installer as UniversalInstaller.UnixInstaller)?.UnixServerServiceId ?? "solidcp-server";
 
 				if (vars.InstallNet8Runtime) InstallLog.AppendLine("- Installed .NET 8 Runtime.");
 				InstallLog.AppendLine($"- Created a new system service {serviceId} running the website.");
@@ -285,7 +285,7 @@ Caregories=Network".Replace("\r\n", Environment.NewLine));
 		void IUninstallAction.Run(SetupVariables vars)
 		{
 			Log.WriteStart("Deleting web site");
-			var serviceId = (UniversalInstaller.Installer.Current as UniversalInstaller.UnixInstaller)?.UnixServiceId ?? "solidcp-server";
+			var serviceId = (UniversalInstaller.Installer.Current as UniversalInstaller.UnixInstaller)?.UnixServerServiceId ?? "solidcp-server";
 
 			try
 			{

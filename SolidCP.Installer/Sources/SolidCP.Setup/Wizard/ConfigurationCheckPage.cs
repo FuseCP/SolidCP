@@ -628,7 +628,7 @@ namespace SolidCP.Setup
 
 				if (AccountExists(setupVariables))
 				{
-					details = string.Format("Windows account already exists: {0}\\{1}",
+					details = string.Format("User account already exists: {0}\\{1}",
 							   setupVariables.UserDomain, setupVariables.UserAccount);
 					Log.WriteError(string.Format("Account check: {0}", details), null);
 					return CheckStatuses.Error;

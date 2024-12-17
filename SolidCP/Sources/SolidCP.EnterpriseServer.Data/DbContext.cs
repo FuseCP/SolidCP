@@ -10,11 +10,10 @@ using SolidCP.Providers.Common;
 using System.Configuration;
 using System.Linq;
 using System.IO;
-using System.Diagnostics.Eventing.Reader;
 
-#if NetFX
+#if NETFRAMEWORK
 using System.Data.Entity;
-#else
+#elif NETCOREAPP
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 #endif
@@ -74,17 +73,20 @@ namespace SolidCP.EnterpriseServer.Data
             }
         }
 
+#if !NETSTANDARD
         DbConnection SqlServerDbConnection => new Microsoft.Data.SqlClient.SqlConnection(NativeConnectionString);
-#if NETFRAMEWORK
-        DbConnection MySqlDbConnection => new MySql.Data.MySqlClient.MySqlConnection(NativeConnectionString);
-#else
-        DbConnection MySqlDbConnection => new MySqlConnector.MySqlConnection(NativeConnectionString);
-
-#endif
 		DbConnection PostgreSqlDbConnection => new Npgsql.NpgsqlConnection(NativeConnectionString);
 
 #if Oracle
         DbConnection OracleConnection => new Oracle.ManagedDataAccess.Client.OracleConnection(NativeConnectionString);
+#endif
+#endif
+
+#if NETFRAMEWORK
+		DbConnection MySqlDbConnection => new MySql.Data.MySqlClient.MySqlConnection(NativeConnectionString);
+#elif NETCOREAPP
+        DbConnection MySqlDbConnection => new MySqlConnector.MySqlConnection(NativeConnectionString);
+
 #endif
 
         DbConnection SqliteDbConnection
@@ -93,12 +95,15 @@ namespace SolidCP.EnterpriseServer.Data
             {
 #if NETFRAMEWORK
                 return new System.Data.SQLite.SQLiteConnection(NativeConnectionString);
-#else
+#elif NETCOREAPP
                 return new Microsoft.Data.Sqlite.SqliteConnection(NativeConnectionString);
+#else
+                throw new NotSupportedException();
 #endif
             }
         }
-        
+
+#if !NETSTANDARD
         DbConnection dbConnection = null;
         public DbConnection DbConnection
         {
@@ -139,8 +144,10 @@ namespace SolidCP.EnterpriseServer.Data
                 return dbConnection;
 			}
 		}
+#else
+#endif
 
-        DbType dbType = DbType.Unknown;
+		DbType dbType = DbType.Unknown;
         public DbType DbType
         {
             get
@@ -163,10 +170,11 @@ namespace SolidCP.EnterpriseServer.Data
             {
                 if (contextType == null)
                 {
-                    switch (DbType)
+#if !NETSTANDARD
+					switch (DbType)
                     {
-                        default:
-                        case DbType.SqlServer: contextType = typeof(SqlServerDbContext); break;
+						default:
+						case DbType.SqlServer: contextType = typeof(SqlServerDbContext); break;
                         case DbType.MySql: contextType = typeof(MySqlDbContext); break;
                         case DbType.MariaDb: contextType = typeof(MySqlDbContext); break;
                         case DbType.PostgreSql: contextType = typeof(PostgreSqlDbContext); break;
@@ -176,8 +184,60 @@ namespace SolidCP.EnterpriseServer.Data
                         case DbType.Oracle: contextType = typeof(OracleDbContext); break;
 #endif
                     }
-                }
-                return contextType;
+#else
+                    if (IsCore) {
+					    switch (DbType)
+                        {
+						    default:
+						    case DbType.SqlServer:
+                                contextType = Type.GetType("SolidCP.EnterpriseServer.Data.SqlServerDbContext, SolidCP.EnterpriseServer.Data.NetCore");
+                                break;
+                            case DbType.MySql:
+                                contextType = Type.GetType("SolidCP.EnterpriseServer.Data.MySqlDbContext, SolidCP.EnterpriseServer.Data.NetCore");
+                                break;
+                            case DbType.MariaDb:
+                                contextType = Type.GetType("SolidCP.EnterpriseServer.Data.MySqlDbContext, SolidCP.EnterpriseServer.Data.NetCore");
+                                break;
+                            case DbType.PostgreSql:
+                                contextType = Type.GetType("SolidCP.EnterpriseServer.Data.PostgreSqlDbContext, SolidCP.EnterpriseServer.Data.NetCore");
+                                break;
+                            case DbType.Sqlite:
+                            case DbType.SqliteFX:
+                                contextType = Type.GetType("SolidCP.EnterpriseServer.Data.SqliteDbContext, SolidCP.EnterpriseServer.Data.NetCore");
+                                break;
+                            case DbType.Oracle:
+                                contextType = Type.GetType("SolidCP.EnterpriseServer.Data.OracleDbContext, SolidCP.EnterpriseServer.Data.NetCore");
+                                break;
+                        }
+                    } else {
+    					switch (DbType)
+                        {
+						    default:
+						    case DbType.SqlServer:
+                                contextType = Type.GetType("SolidCP.EnterpriseServer.Data.SqlServerDbContext, SolidCP.EnterpriseServer.Data.NetFX");
+                                break;
+                            case DbType.MySql:
+                                contextType = Type.GetType("SolidCP.EnterpriseServer.Data.MySqlDbContext, SolidCP.EnterpriseServer.Data.NetFX");
+                                break;
+                            case DbType.MariaDb:
+                                contextType = Type.GetType("SolidCP.EnterpriseServer.Data.MySqlDbContext, SolidCP.EnterpriseServer.Data.NetFX");
+                                break;
+                            case DbType.PostgreSql:
+                                contextType = Type.GetType("SolidCP.EnterpriseServer.Data.PostgreSqlDbContext, SolidCP.EnterpriseServer.Data.NetFX");
+                                break;
+                            case DbType.Sqlite:
+                            case DbType.SqliteFX:
+                                contextType = Type.GetType("SolidCP.EnterpriseServer.Data.SqliteDbContext, SolidCP.EnterpriseServer.Data.NetCore");
+                                break;
+                            case DbType.Oracle:
+                                contextType = Type.GetType("SolidCP.EnterpriseServer.Data.OracleDbContext, SolidCP.EnterpriseServer.Data.NetCore");
+                                break;
+  
+                        }
+                    }
+#endif
+				}
+				return contextType;
             }
         }
 
@@ -207,7 +267,7 @@ namespace SolidCP.EnterpriseServer.Data
 #endif
 #if NETFRAMEWORK
             Database.CommandTimeout = 60;
-#else
+#elif NETCOREAPP
             Database.SetCommandTimeout(60);
 #endif
 
@@ -232,7 +292,7 @@ namespace SolidCP.EnterpriseServer.Data
 #endif
 #if NETFRAMEWORK
             Database.CommandTimeout = 120;
-#else
+#elif NETCOREAPP
             Database.SetCommandTimeout(120);
 #endif
             BaseContext.Log += WriteToLog;
@@ -263,10 +323,12 @@ namespace SolidCP.EnterpriseServer.Data
 		public Database Database => BaseContext.Database;
         public DbSet<TEntity> Set<TEntity>() where TEntity: class => BaseContext.Set<TEntity>();
         public Context.DbContextBase Context => (Context.DbContextBase)BaseContext;
-#else
+#elif NETCOREAPP
 		public DatabaseFacade Database => BaseContext.Database;
 		public DbSet<TEntity> Set<TEntity>() where TEntity: class => BaseContext.Set<TEntity>();
         public Context.DbContextBase Context => (Context.DbContextBase)BaseContext;
+#else
+        public DbSet<TEntity> Set<TEntity>() where TEntity : class => new DbSet<TEntity>(BaseContext);
 #endif
 
 		public int SaveChanges() => BaseContext.SaveChanges();

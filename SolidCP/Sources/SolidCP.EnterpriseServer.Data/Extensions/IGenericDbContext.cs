@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 #if NETFRAMEWORK
 using System.Data.Entity;
 #endif
-#if !NETFRAMEWORK && !NETSTANDARD
+#if NETCOREAPP
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 #endif
@@ -20,8 +20,7 @@ namespace SolidCP.EnterpriseServer.Data
 	{
 #if NETFRAMEWORK
 		System.Data.Entity.DbSet<TEntity> Set<TEntity>() where TEntity : class;
-#endif
-#if !NETFRAMEWORK && !NETSTANDARD
+#elif NETCOREAPP
         Microsoft.EntityFrameworkCore.DbSet<TEntity> Set<TEntity>() where TEntity : class;
 #endif
 		int SaveChanges();
@@ -30,7 +29,7 @@ namespace SolidCP.EnterpriseServer.Data
 
 #if NETFRAMEWORK
 		Database Database { get; }
-#else
+#elif NETCOREAPP
         DatabaseFacade Database { get; }
 #endif
 	}

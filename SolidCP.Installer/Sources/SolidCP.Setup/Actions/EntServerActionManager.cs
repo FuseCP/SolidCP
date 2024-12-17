@@ -299,8 +299,9 @@ namespace SolidCP.Setup.Actions
 	{
 		public Data.DbType dbType = Data.DbType.Unknown;
 
-		public string DbTypeId => dbType != Data.DbType.MariaDb ? dbType.ToString().ToLowerInvariant() : "mysql"; 
-		public string SqlFilePath => $@"Setup\install.{DbTypeId}.sql";
+		public string DbTypeId => dbType != Data.DbType.MariaDb ? dbType.ToString().ToLowerInvariant() : "mysql";
+		public string SqlFile => $"install.{DbTypeId}.sql";
+		public string SqlFilePath => $@"Setup\{SqlFile}";
 		public const string ExecuteProgressMessage = "Creating database objects...";
 
 		void IInstallAction.Run(SetupVariables vars)
@@ -313,10 +314,13 @@ namespace SolidCP.Setup.Actions
 
 				var path = Path.Combine(vars.InstallationFolder, SqlFilePath);
 
+				string tmpFile = null;
 				if (!FileUtils.FileExists(path))
 				{
-					Log.WriteInfo(String.Format("File {0} not found", path));
-					return;
+					tmpFile = Path.GetTempFileName();
+					var script = Data.DatabaseUtils.InstallScript(SqlFile);
+					File.WriteAllText(tmpFile, script);
+					path = tmpFile;
 				}
 				//
 				SqlProcess process = new SqlProcess(path, vars.DbInstallConnectionString, vars.Database);
@@ -324,6 +328,8 @@ namespace SolidCP.Setup.Actions
 				process.ProgressChange += new EventHandler<ActionProgressEventArgs<int>>(process_ProgressChange);
 				//
 				process.Run();
+
+				if (tmpFile != null) File.Delete(tmpFile);
 				//
 				InstallLog.AppendLine(string.Format("- Installed {0} database objects", component));
 			}

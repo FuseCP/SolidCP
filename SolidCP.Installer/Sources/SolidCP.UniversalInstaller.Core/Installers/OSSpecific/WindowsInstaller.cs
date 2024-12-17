@@ -67,7 +67,7 @@ namespace SolidCP.UniversalInstaller
 			if (!OSInfo.IsNet48)
 			{
 
-				Log("Installing NET Framework 4.8");
+				Log.WriteLine("Installing NET Framework 4.8");
 
 				var file = DownloadFile("https://download.visualstudio.microsoft.com/ndp48-web.exe");
 				if (file != null)
@@ -89,14 +89,14 @@ namespace SolidCP.UniversalInstaller
 		{
 			var websitePath = Path.Combine(InstallWebRootPath, ServerFolder);
 			InstallWebsite($"{SolidCP}Server", websitePath,
-				ServerSettings.Urls ?? "",
-				ServerSettings.Username ?? $"{SolidCP}Server",
-				ServerSettings.Password ?? "");
+				Settings.Server.Urls ?? "",
+				Settings.Server.Username ?? $"{SolidCP}Server",
+				Settings.Server.Password ?? "");
 		}
 
 		public override void ReadServerConfiguration()
 		{
-			ServerSettings = new ServerSettings();
+			Settings.Server = new ServerSettings();
 
 			var confFile = Path.Combine(InstallWebRootPath, ServerFolder, "bin", "web.config");
 
@@ -109,18 +109,18 @@ namespace SolidCP.UniversalInstaller
 				var cert = configuration?.Element("system.serviceModel/behaviors/serviceBehaviors/behavior/serviceCredentials/serviceCertificate");
 				if (cert != null)
 				{
-					ServerSettings.CertificateStoreLocation = cert.Attribute("storeLocation")?.Value;
-					ServerSettings.CertificateStoreName = cert.Attribute("storeName")?.Value;
-					ServerSettings.CertificateFindType = cert.Attribute("X509FindType")?.Value;
-					ServerSettings.CertificateFindValue = cert.Attribute("findValue")?.Value;
+					Settings.Server.CertificateStoreLocation = cert.Attribute("storeLocation")?.Value;
+					Settings.Server.CertificateStoreName = cert.Attribute("storeName")?.Value;
+					Settings.Server.CertificateFindType = cert.Attribute("X509FindType")?.Value;
+					Settings.Server.CertificateFindValue = cert.Attribute("findValue")?.Value;
 				}
 
-				ServerSettings.ServerPasswordSHA = ServerSettings.ServerPassword = "";
+				Settings.Server.ServerPasswordSHA = Settings.Server.ServerPassword = "";
 				// server password
 				var password = configuration?.Element("SolidCP.server/security/password");
 				if (password != null)
 				{
-					ServerSettings.ServerPasswordSHA = password.Attribute("value")?.Value;
+					Settings.Server.ServerPasswordSHA = password.Attribute("value")?.Value;
 				}
 			}
 		}
@@ -174,7 +174,7 @@ namespace SolidCP.UniversalInstaller
 			var server = configuration.Element("SolidCP.server");
 			var security = server?.Element("security");
 			var password = security?.Element("password");
-			var pwsha1 = string.IsNullOrEmpty(settings.ServerPassword) ? settings.ServerPasswordSHA : Utils.ComputeSHAServerPassword(settings.ServerPassword);
+			var pwsha1 = string.IsNullOrEmpty(settings.ServerPassword) ? settings.ServerPasswordSHA : CryptoUtils.ComputeSHAServerPassword(settings.ServerPassword);
 			password.Attribute("value").SetValue(pwsha1);
 
 			// Swagger Version
@@ -192,7 +192,7 @@ namespace SolidCP.UniversalInstaller
 
 		public override void ReadEnterpriseServerConfiguration()
 		{
-			EnterpriseServerSettings = new EnterpriseServerSettings();
+			Settings.EnterpriseServer = new EnterpriseServerSettings();
 
 			var confFile = Path.Combine(InstallWebRootPath, EnterpriseServerFolder, "bin", "web.config");
 			var webconf = XElement.Load(confFile);
@@ -202,10 +202,10 @@ namespace SolidCP.UniversalInstaller
 			var cert = configuration?.Element("system.serviceModel/behaviors/serviceBehaviors/behavior/serviceCredentials/serviceCertificate");
 			if (cert != null)
 			{
-				EnterpriseServerSettings.CertificateStoreLocation = cert.Attribute("storeLocation")?.Value;
-				EnterpriseServerSettings.CertificateStoreName = cert.Attribute("storeName")?.Value;
-				EnterpriseServerSettings.CertificateFindType = cert.Attribute("X509FindType")?.Value;
-				EnterpriseServerSettings.CertificateFindValue = cert.Attribute("findValue")?.Value;
+				Settings.EnterpriseServer.CertificateStoreLocation = cert.Attribute("storeLocation")?.Value;
+				Settings.EnterpriseServer.CertificateStoreName = cert.Attribute("storeName")?.Value;
+				Settings.EnterpriseServer.CertificateFindType = cert.Attribute("X509FindType")?.Value;
+				Settings.EnterpriseServer.CertificateFindValue = cert.Attribute("findValue")?.Value;
 			}
 
 			// connection string
@@ -215,14 +215,14 @@ namespace SolidCP.UniversalInstaller
 			bool windowsAuthentication;
 			ParseConnectionString(cstring?.Attribute("value")?.Value, out server, out user, out password, out windowsAuthentication);
 
-			EnterpriseServerSettings.DatabaseServer = server;
-			EnterpriseServerSettings.DatabaseUser = user;
-			EnterpriseServerSettings.DatabasePassword = password;
-			EnterpriseServerSettings.WindowsAuthentication = windowsAuthentication;
+			Settings.EnterpriseServer.DatabaseServer = server;
+			Settings.EnterpriseServer.DatabaseUser = user;
+			Settings.EnterpriseServer.DatabasePassword = password;
+			Settings.EnterpriseServer.WindowsAuthentication = windowsAuthentication;
 
 			// CryptoKey
 			var cryptoKey = configuration?.Elements("appSettings/add").FirstOrDefault(e => e.Attribute("key")?.Value == "CryptoKey");
-			EnterpriseServerSettings.CryptoKey = cryptoKey?.Attribute("value")?.Value;
+			Settings.EnterpriseServer.CryptoKey = cryptoKey?.Attribute("value")?.Value;
 		}
 
 		public override void ConfigureEnterpriseServer(EnterpriseServerSettings settings)
@@ -274,7 +274,7 @@ namespace SolidCP.UniversalInstaller
 			if (string.IsNullOrEmpty(settings.CryptoKey))
 			{
 				// generate random crypto key
-				settings.CryptoKey = Utils.GetRandomString(20);
+				settings.CryptoKey = CryptoUtils.GetRandomString(20);
 			}
 			var appSettings = configuration.Element("appSettings");
 			var cryptoKey = appSettings.Elements("add").FirstOrDefault(e => e.Attribute("key")?.Value == "CryptoKey");
@@ -309,12 +309,12 @@ namespace SolidCP.UniversalInstaller
 
 		public override void ReadWebPortalConfiguration()
 		{
-			WebPortalSettings = new WebPortalSettings();
+			Settings.WebPortal = new WebPortalSettings();
 
 			var confFile = Path.Combine(InstallWebRootPath, PortalFolder, "App_Data", "SiteSettings.config");
 			var conf = XElement.Load(confFile);
 			var enterpriseServer = conf.Element("SiteSettings/EnterpriseServer");
-			WebPortalSettings.EnterpriseServerUrl = enterpriseServer.Value;
+			Settings.WebPortal.EnterpriseServerUrl = enterpriseServer.Value;
 		}
 
 		public override void ConfigureWebPortal(WebPortalSettings settings)
@@ -326,9 +326,17 @@ namespace SolidCP.UniversalInstaller
 			conf.Save(confFile);
 		}
 
-		public override bool IsRunningAsAdmin()
+		public override bool IsRunningAsAdmin
+			=> new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
+
+		public override void ShowLogFile()
 		{
-			return new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
+			try
+			{
+				var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Log.File);
+				Shell.Standard.Exec($"notepad.exe \"{path}\"");
+			}
+			catch { }
 		}
 
 		public override bool CheckOSSupported() => OSInfo.WindowsVersion >= WindowsVersion.WindowsServer2003;

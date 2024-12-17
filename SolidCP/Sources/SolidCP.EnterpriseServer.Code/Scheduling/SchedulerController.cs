@@ -37,6 +37,8 @@ using System.Text;
 using System.Xml;
 using System.Linq;
 using SolidCP.EnterpriseServer.Base.Scheduling;
+using SolidCP.EnterpriseServer.Data;
+
 
 namespace SolidCP.EnterpriseServer
 {

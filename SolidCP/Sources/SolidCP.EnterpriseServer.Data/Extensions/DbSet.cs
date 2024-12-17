@@ -1,4 +1,4 @@
-﻿#if CustomDbSet
+﻿#if NETSTANDARD
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +11,6 @@ using System.Linq.Expressions;
 using System.Collections;
 using System.Threading;
 using SolidCP.Providers.OS;
-#if NETFRAMEWORK
-using System.Data.Entity;
-#else
-using Microsoft.EntityFrameworkCore;
-#endif
 
 namespace SolidCP.EnterpriseServer.Data
 {
@@ -39,8 +34,8 @@ namespace SolidCP.EnterpriseServer.Data
         }
 #endif
 
-                    #region Helper methods
-                    MethodInfo GetMethod(object obj, string method, Type[] types) => obj.GetType().GetMethod(method, types);
+        #region Helper methods
+        MethodInfo GetMethod(object obj, string method, Type[] types) => obj.GetType().GetMethod(method, types);
         T Invoke<T>(object obj, MethodInfo method, params object[] args) => (T)method.Invoke(obj, args);
         T Invoke<T>(object obj, string method, Type[] types, params object[] args) => (T)Invoke<T>(obj, GetMethod(obj, method, types), args);
         T Invoke<T, U>(object obj, string method, Type[] types, params object[] args) => (T)Invoke<T>(obj, GetMethod(obj, method, types).MakeGenericMethod(typeof(U)), args);

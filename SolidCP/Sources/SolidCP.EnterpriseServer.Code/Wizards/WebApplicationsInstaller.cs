@@ -45,6 +45,7 @@ using System.Net.Mail;
 using System.Web;
 using System.Web.Caching;
 #endif
+using SolidCP.EnterpriseServer.Data;
 
 using SolidCP.Providers;
 using SolidCP.Providers.Web;

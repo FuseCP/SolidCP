@@ -1793,5 +1793,6 @@ namespace SolidCP.Server
 		#endregion
 
 		public Version Version => WebProvider.Version;
+		public bool IsInstalled() => WebProvider.IsInstalled();
 	}
 }

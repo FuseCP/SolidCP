@@ -56,7 +56,7 @@ namespace SolidCP.Installer.Common
 			if (UseLocalSetupDllForDebugging && fileName.EndsWith("Setup.dll", StringComparison.OrdinalIgnoreCase) && 
 				(Debugger.IsAttached || UseLocalSetupDll))
 			{
-				var exe = Assembly.GetExecutingAssembly();
+				var exe = Assembly.GetEntryAssembly();
 				var path = Path.Combine(Path.GetDirectoryName(exe.Location), "Setup.dll");
 				assembly = Assembly.LoadFrom(path);
 			} else assembly = Assembly.LoadFrom(fileName);
@@ -84,7 +84,7 @@ namespace SolidCP.Installer.Common
 
 				domain = AppDomain.CreateDomain("Remote Domain", securityInfo, info);
 				domain.InitializeLifetimeService();
-				domain.UnhandledException += new UnhandledExceptionEventHandler(OnDomainUnhandledException);
+				//domain.UnhandledException += new UnhandledExceptionEventHandler(OnDomainUnhandledException);
 
 				AssemblyLoader loader;
 

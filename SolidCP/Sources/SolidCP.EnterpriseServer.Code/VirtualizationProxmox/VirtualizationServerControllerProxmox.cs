@@ -49,6 +49,7 @@ using System.Linq;
 using System.Net;
 using SolidCP.EnterpriseServer.Code.VirtualizationProxmox;
 using SolidCP.Server.Client;
+using SolidCP.EnterpriseServer.Data;
 //using SolidCP.Providers.VirtualizationProxmox;
 
 namespace SolidCP.EnterpriseServer

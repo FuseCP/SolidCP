@@ -41,14 +41,10 @@ namespace SolidCP.Web.Services
 		public static bool IsLocalService = false;
 		public static TraceLevel TraceLevel = TraceLevel.Off;
 		public static X509Certificate2 Certificate = null;
-		public static string DataProviderType = null;
 		public static string WebApplicationsPath = null;
 		public static int? ServerRequestTimeout = null;
 		public static string ConnectionString = null;
-		public static string ProviderName = null;
-		public static bool AlwaysUseEntityFramework = false;
 		public static string AltConnectionString = null;
-		public static string AltProviderName = null;
 		public static string CryptoKey = null;
 		public static string AltCryptoKey = null;
 		public static bool? EncryptionEnabled = null;

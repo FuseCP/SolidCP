@@ -57,7 +57,7 @@ using SolidCP.Providers.Common;
 using SolidCP.Providers.HostedSolution;
 using SolidCP.Server.Client;
 using SolidCP.Providers.ResultObjects;
-
+using SolidCP.EnterpriseServer.Data;
 
 namespace SolidCP.EnterpriseServer
 {

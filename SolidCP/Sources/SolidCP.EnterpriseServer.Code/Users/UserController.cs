@@ -42,6 +42,7 @@ using System.Xml.Linq;
 using System.Linq;
 using Google.Authenticator;
 using System.Threading;
+using SolidCP.EnterpriseServer.Data;
 
 namespace SolidCP.EnterpriseServer
 {

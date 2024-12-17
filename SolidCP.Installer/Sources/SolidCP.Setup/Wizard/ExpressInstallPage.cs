@@ -2420,7 +2420,7 @@ namespace SolidCP.Setup
 					var isHttps = Utils.IsHttps(ip, domain);
 					port = (isHttps && port == "443" || !isHttps && port == "80") ? "" : $":{port}";
 					installer.ReadServerConfiguration();
-					installer.ServerSettings.Urls = $"{(isHttps ? "https" : "http")}://{(!string.IsNullOrWhiteSpace(domain) ? domain : "localhost")}{port}";
+					installer.Settings.Server.Urls = $"{(isHttps ? "https" : "http")}://{(!string.IsNullOrWhiteSpace(domain) ? domain : "localhost")}{port}";
 					installer.ConfigureServer();
 				}
 
@@ -2673,7 +2673,7 @@ namespace SolidCP.Setup
 				var installer = UniversalInstaller.Installer.Current;
 				installer.InstallWebRootPath = Wizard.SetupVariables.InstallationFolder;
 				installer.ReadServerConfiguration();
-				installer.ServerSettings.ServerPasswordSHA = Wizard.SetupVariables.ServerPassword;
+				installer.Settings.Server.ServerPasswordSHA = Wizard.SetupVariables.ServerPassword;
 				installer.ConfigureServer();
 				Log.WriteEnd("Updated configuration file");
 				InstallLog.AppendLine("- Updated password in the configuration file");
@@ -2746,7 +2746,7 @@ namespace SolidCP.Setup
 				var installer = UniversalInstaller.Installer.Current;
 				installer.InstallWebRootPath = Wizard.SetupVariables.InstallationFolder;
 				installer.ReadServerConfiguration();
-				installer.ServerSettings.ServerPassword = Wizard.SetupVariables.ServerPassword;
+				installer.Settings.Server.ServerPassword = Wizard.SetupVariables.ServerPassword;
 				installer.ConfigureServer();
 				Log.WriteEnd("Updated configuration file");
 				InstallLog.AppendLine("- Updated password in the configuration file");

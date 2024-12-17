@@ -66,7 +66,9 @@ namespace SolidCP.Installer
 		[STAThread]
 		static void Main()
 		{
-			ResourceAssemblyLoader.Init();
+#if Costura
+			CosturaUtility.Initialize();
+#endif
 			Start();
 		}
 

@@ -4,6 +4,7 @@ using System.Linq;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.OS;
 using SolidCP.Providers.StorageSpaces;
+using SolidCP.EnterpriseServer.Data;
 
 namespace SolidCP.EnterpriseServer
 {

@@ -1,0 +1,148 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net48</TargetFramework>
+        <RootNamespace>SolidCP.UniversalInstaller</RootNamespace>
+        <LangVersion>13</LangVersion>
+        <UseWindowsForms>true</UseWindowsForms>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Content Include="Resources\application.ico" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Resources\SolidCP.Updater.exe" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SolidCP.UniversalInstaller.Core\SolidCP.UniversalInstaller.Core.csproj" />
+      <ProjectReference Include="..\SolidCP.UniversalInstaller.WebService\SolidCP.UniversalInstaller.WebService.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Reference Include="System.Windows.Forms" />
+        <Reference Include="System.ServiceModel" />
+        <!--<Reference Include="System.Configuration" />
+        <Reference Include="System.Deployment" />
+        <Reference Include="System.DirectoryServices" />
+        <Reference Include="System.EnterpriseServices" />-->
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Controls\ComponentControl.cs">
+        <SubType>UserControl</SubType>
+      </Compile>
+      <Compile Update="Controls\ComponentControl.Designer.cs">
+        <DependentUpon>ComponentControl.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Controls\ComponentsControl.cs">
+        <SubType>UserControl</SubType>
+      </Compile>
+      <Compile Update="Controls\ComponentsControl.Designer.cs">
+        <DependentUpon>ComponentsControl.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Controls\LineBox.cs">
+        <SubType>Component</SubType>
+      </Compile>
+      <Compile Update="Controls\LineBox.Designer.cs">
+        <DependentUpon>LineBox.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Controls\Loader.cs">
+        <SubType>Form</SubType>
+      </Compile>
+      <Compile Update="Controls\Loader.Designer.cs">
+        <DependentUpon>Loader.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Controls\ProgressIcon.cs">
+        <SubType>UserControl</SubType>
+      </Compile>
+      <Compile Update="Controls\ResultViewControl.cs">
+        <SubType>UserControl</SubType>
+      </Compile>
+      <Compile Update="Controls\ServerControl.cs">
+        <SubType>UserControl</SubType>
+      </Compile>
+      <Compile Update="Controls\ServerControl.Designer.cs">
+        <DependentUpon>ServerControl.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Controls\ServersControl.cs">
+        <SubType>UserControl</SubType>
+      </Compile>
+      <Compile Update="Controls\ServersControl.Designer.cs">
+        <DependentUpon>ServersControl.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Controls\ServiceControl.cs">
+        <SubType>UserControl</SubType>
+      </Compile>
+      <Compile Update="Controls\ServiceControl.Designer.cs">
+        <DependentUpon>ServiceControl.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Controls\SettingsControl.cs">
+        <SubType>UserControl</SubType>
+      </Compile>
+      <Compile Update="Controls\SettingsControl.Designer.cs">
+        <DependentUpon>SettingsControl.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Controls\TopLogoControl.cs">
+        <SubType>UserControl</SubType>
+      </Compile>
+      <Compile Update="Controls\TopLogoControl.Designer.cs">
+        <DependentUpon>TopLogoControl.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Properties\Resources.Designer.cs">
+        <DependentUpon>Resources.resx</DependentUpon>
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Update="ApplicationForm.resx">
+        <SubType>Designer</SubType>
+        <DependentUpon>ApplicationForm.cs</DependentUpon>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Controls\ComponentControl.resx">
+        <SubType>Designer</SubType>
+        <DependentUpon>ComponentControl.cs</DependentUpon>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Controls\ComponentsControl.resx">
+        <SubType>Designer</SubType>
+        <DependentUpon>ComponentsControl.cs</DependentUpon>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Controls\Loader.resx">
+        <SubType>Designer</SubType>
+        <DependentUpon>Loader.cs</DependentUpon>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Controls\ProgressIcon.resx">
+        <SubType>Designer</SubType>
+        <DependentUpon>ProgressIcon.cs</DependentUpon>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Controls\ServerControl.resx">
+        <SubType>Designer</SubType>
+        <DependentUpon>ServerControl.cs</DependentUpon>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Controls\ServersControl.resx">
+        <SubType>Designer</SubType>
+        <DependentUpon>ServersControl.cs</DependentUpon>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Controls\ServiceControl.resx">
+        <SubType>Designer</SubType>
+        <DependentUpon>ServiceControl.cs</DependentUpon>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Controls\SettingsControl.resx">
+        <SubType>Designer</SubType>
+        <DependentUpon>SettingsControl.cs</DependentUpon>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Controls\TopLogoControl.resx">
+        <SubType>Designer</SubType>
+        <DependentUpon>TopLogoControl.cs</DependentUpon>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Properties\Resources.resx">
+        <SubType>Designer</SubType>
+        <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+        <Generator>ResXFileCodeGenerator</Generator>
+      </EmbeddedResource>
+    </ItemGroup>
+
+</Project>

@@ -50,6 +50,7 @@ using SolidCP.Providers.Web;
 using System.Net.Mail;
 using System.Collections;
 using SolidCP.EnterpriseServer.Base.RDS;
+using SolidCP.EnterpriseServer.Data;
 
 namespace SolidCP.EnterpriseServer
 {
