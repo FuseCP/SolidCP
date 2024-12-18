@@ -12,6 +12,7 @@ Version 1.5.1
 - [SimpleDNS Plus 9.x] Fix for preview domain when DNS server supports setting TTL. Fixes records added with 0 TTL.
 - [SmarterMail100] Added extra group options and fixing import bug when no target emails set. - Work sponsored by Enterprise Guardian Inc.
 - [HyperV] Fix for #212 (Additional VHDX bug)
+- [SmarterMail100] Added option to Allow send from group address
 
 
 Version 1.5.0

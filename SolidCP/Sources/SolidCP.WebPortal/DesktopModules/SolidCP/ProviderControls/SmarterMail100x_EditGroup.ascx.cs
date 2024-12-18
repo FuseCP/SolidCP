@@ -49,6 +49,7 @@ namespace SolidCP.Portal.ProviderControls
             chkInternalOnly.Checked = item.InternalOnly;
             chkIncludeAllDomainUsers.Checked = item.IncludeAllDomainUsers;
             txtDisplayName.Text = item.DisplayName;
+            chkAllowSending.Checked = item.AllowSending;
         }
 
         public void SaveItem(MailGroup item)
@@ -59,6 +60,7 @@ namespace SolidCP.Portal.ProviderControls
             item.InternalOnly = chkInternalOnly.Checked;
             item.IncludeAllDomainUsers = chkIncludeAllDomainUsers.Checked;
             item.DisplayName = txtDisplayName.Text;
+            item.AllowSending = chkAllowSending.Checked;
         }
     }
 

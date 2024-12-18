@@ -71,4 +71,4 @@ IF EXIST "%ProgramFiles(x86)%\MSBuild\14.0\Bin\MSBuild.exe" (
  )
 
 :Build
-%SCPMSBuild% build.xml /target:Deploy /p:BuildConfiguration=Debug /p:Version="1.5.0" /p:FileVersion="1.5.0" /p:VersionLabel="1.5.0" /v:n /fileLogger /m /p:VisualStudioVersion=%SCPVSVer%
+%SCPMSBuild% build.xml /target:Deploy /p:BuildConfiguration=Debug /p:Version="1.5.0" /p:FileVersion="1.5.1" /p:VersionLabel="1.5.1" /v:n /fileLogger /m /p:VisualStudioVersion=%SCPVSVer%
