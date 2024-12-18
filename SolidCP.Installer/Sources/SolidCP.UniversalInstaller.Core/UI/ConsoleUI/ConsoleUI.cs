@@ -26,8 +26,17 @@ namespace SolidCP.UniversalInstaller
 
 		public override void RunMainUI()
 		{
-			
+			var form = new ConsoleForm($@"
+SolidCP Installer
+=================
+
+[ Proxy Settings ]
+[ View Available Components ]
+[ View Installed components ]")
+				.ShowDialog();
 		}
+
+
 		public override string GetRootPassword()
 		{
 			var rootUser = OSInfo.IsWindows ? "administrator" : "root";
