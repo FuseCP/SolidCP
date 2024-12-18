@@ -12,10 +12,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Include="Resources\SolidCP.Updater.exe" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\SolidCP.UniversalInstaller.Core\SolidCP.UniversalInstaller.Core.csproj" />
       <ProjectReference Include="..\SolidCP.UniversalInstaller.WebService\SolidCP.UniversalInstaller.WebService.csproj" />
     </ItemGroup>
