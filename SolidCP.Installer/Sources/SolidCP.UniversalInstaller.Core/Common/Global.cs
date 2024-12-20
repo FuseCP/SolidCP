@@ -74,6 +74,7 @@ namespace SolidCP.UniversalInstaller
 			public const string CryptoKey = "CryptoKey";
 			public const string ServerAdminPassword = "ServerAdminPassword";
 			public const string SetupXml = "SetupXml";
+			public const string SettingsJson = "SettingsJson";
 			public const string ParentForm = "ParentForm";
 			public const string Component = "Component";
 			public const string FullFilePath = "FullFilePath";

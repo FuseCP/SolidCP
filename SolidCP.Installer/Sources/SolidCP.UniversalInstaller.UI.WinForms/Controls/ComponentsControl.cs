@@ -93,6 +93,9 @@ namespace SolidCP.UniversalInstaller.Controls
 
 		private void StartInstaller(ComponentInfo info)
         {
+            Installer.Current.Install(info);
+
+
             string applicationName = info.ApplicationName;
             string componentName = info.ComponentName;
             string componentCode = info.ComponentCode;
@@ -103,7 +106,7 @@ namespace SolidCP.UniversalInstaller.Controls
             string installerPath = info.InstallerPath.Replace('\\', Path.DirectorySeparatorChar);
             string installerType = info.InstallerType;
 
-            if (CheckForInstalledComponent(info))
+            if (info.CheckForInstalledComponent())
             {
                 AppContext.AppForm.ShowWarning(Global.Messages.ComponentIsAlreadyInstalled);
                 return;
@@ -140,14 +143,14 @@ namespace SolidCP.UniversalInstaller.Controls
                     args[Global.Parameters.IISVersion] = Global.IISVersion;
                     args[Global.Parameters.SetupXml] = this.componentSettingsXml;
                     args[Global.Parameters.ParentForm] = FindForm();
-                    args[Global.Parameters.UIType] = UI.Current.GetType().FullName;
+                    args[Global.Parameters.UIType] = UI.Current.GetType().Name;
 
                     //run installer
-                    DialogResult res = (DialogResult)AssemblyLoader.Execute(path, installerType, method, new object[] { args });
+                    DialogResult? res = AssemblyLoader.Execute(path, installerType, method, new object[] { args }) as DialogResult?;
                     Log.WriteInfo(string.Format("Installer returned {0}", res));
                     Log.WriteEnd("Installer finished");
                     Update();
-                    if (res == DialogResult.OK)
+                    if (res != null && res.Value == DialogResult.OK)
                     {
                         AppContext.AppForm.ReloadApplication();
                     }
@@ -165,31 +168,6 @@ namespace SolidCP.UniversalInstaller.Controls
                 this.componentCode = null;
             }
 
-        }
-
-        private bool CheckForInstalledComponent(ComponentInfo componentInfo)
-        {
-            var componentCode = componentInfo.ComponentCode;
-            bool ret = false;
-            List<string> installedComponents = new List<string>();
-            foreach (var component in Installer.Current.Settings.Installer.InstalledComponents)
-            {
-                string code = component.ComponentCode;
-                installedComponents.Add(code);
-                if (code == componentCode)
-                {
-                    ret = true;
-                    break;
-                }
-            }
-            if (componentCode == "standalone")
-            {
-                if ((installedComponents.Contains("server") || installedComponents.Contains("serverunix")) &&
-                    installedComponents.Contains("enterprise server") &&
-                    installedComponents.Contains("portal"))
-                    ret = true;
-            }
-            return ret;
         }
 
         /// <summary>
@@ -223,15 +201,6 @@ namespace SolidCP.UniversalInstaller.Controls
             ThreadPool.QueueUserWorkItem(o => LoadComponents());
         }
 
-		private bool CheckIsAvailableOnPlatform(ComponentInfo component)
-		{
-            var platforms = component.Platforms;
-            if (platforms == Platforms.Undefined) platforms = Platforms.Windows;
-
-            return OSInfo.IsWindows && platforms.HasFlag(Platforms.Windows) ||
-                !OSInfo.IsWindows && platforms.HasFlag(Platforms.Unix);
-   		}
-
 		/// <summary>
 		/// Loads list of available components via web service
 		/// </summary>
@@ -249,8 +218,8 @@ namespace SolidCP.UniversalInstaller.Controls
                 foreach (var component in dsComponents.ToArray())
                 {
                     string componentCode = component.ComponentCode;
-                    if (CheckForInstalledComponent(component)) dsComponents.Remove(component);
-                    else if (!CheckIsAvailableOnPlatform(component)) dsComponents.Remove(component);
+                    if (component.CheckForInstalledComponent()) dsComponents.Remove(component);
+                    else if (!component.CheckIsAvailableOnPlatform()) dsComponents.Remove(component);
 				}
 
 				this.grdComponents.ClearSelection();

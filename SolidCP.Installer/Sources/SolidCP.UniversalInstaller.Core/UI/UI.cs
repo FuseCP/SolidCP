@@ -19,7 +19,7 @@ namespace SolidCP.UniversalInstaller
 				{
 					var naUI = new NotAvailableUI();
 					UI ui = AvaloniaUI;
-					if (!ui.IsAvailable) ui = WinFormsUI;
+					//if (!ui.IsAvailable) ui = WinFormsUI;
 					if (!ui.IsAvailable) ui = ConsoleUI;
 					if (!ui.IsAvailable) ui = naUI;
 					current = ui;
@@ -31,6 +31,20 @@ namespace SolidCP.UniversalInstaller
 				current = value;
 			}
 		}
+
+		public static UI Set(string name)
+		{
+			switch (name)
+			{
+				case nameof(AvaloniaUI): Current = AvaloniaUI; break;
+				case nameof(WinFormsUI): Current = WinFormsUI; break;
+				case nameof(NotAvailableUI): Current = new NotAvailableUI(); break;
+				default:
+				case nameof(ConsoleUI): Current = ConsoleUI; break;
+			}
+			return Current;
+		}
+
 		public abstract bool IsAvailable { get; }
 		public static UI WinFormsUI
 		{
@@ -38,15 +52,21 @@ namespace SolidCP.UniversalInstaller
 			{
 				var type = Type.GetType("SolidCP.UniversalInstaller.WinFormsUI, SolidCP.UniversalInstaller.UI.WinForms");
 				if (type != null) return Activator.CreateInstance(type) as UI;
-				else return new NotAvailableUI();
+				else return NotAvailableUI;
 			}
 		}
-		public static UI ConsoleUI => new ConsoleUI();
+
+		static UI consoleUI = null;
+		public static UI ConsoleUI => consoleUI ??= new ConsoleUI();
+
+		static UI notAvailableUI = null;
+		public static UI NotAvailableUI => notAvailableUI ??= new NotAvailableUI();
+
 		public static UI AvaloniaUI {
 			get {
 				var type = Type.GetType("SolidCP.UniversalInstaller.AvaloniaUI, SolidCP.UniversalInstaller.UI.Avalonia");
 				if (type != null) return Activator.CreateInstance(type) as UI;
-				else return new NotAvailableUI();
+				else return NotAvailableUI;
 			}
 		}
 		public void ShowRunningInstance()
@@ -127,5 +147,11 @@ namespace SolidCP.UniversalInstaller
 		}
 
 		public abstract void CheckPrerequisites();
+
+		public abstract void ShowWarning(string msg);
+		public abstract bool DownloadSetup(string fileName);
+		public abstract bool ExecuteSetup(string path, string installerType, string method, object[] args);
+		public object MainForm { get; }
+		public bool IsConsole => this == ConsoleUI;
 	}
 }

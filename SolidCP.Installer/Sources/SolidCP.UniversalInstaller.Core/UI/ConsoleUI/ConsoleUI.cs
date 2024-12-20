@@ -30,12 +30,151 @@ namespace SolidCP.UniversalInstaller
 SolidCP Installer
 =================
 
-[ Proxy Settings ]
+[ Application Settings ]
 [ View Available Components ]
-[ View Installed components ]")
+[ View Installed Components ]
+[ Exit ]")
 				.ShowDialog();
+			if (form["Application Settings"].Clicked) ApplicationSettings();
+			else if (form["View Available Components"].Clicked) AvailableComponents();
+			else if (form["View Installed Components"].Clicked) InstalledComponents();
+			else Environment.Exit(0);
 		}
 
+		public void ApplicationSettings()
+		{
+			var form = new ConsoleForm($@"
+Application Settings
+====================
+
+[x] Automatically check for Updates
+[ Check for Updates ]
+
+[x] Use Proxy
+Address:  [?ProxyAddress                                             ]
+Username: [?ProxyUsername                           ]
+Password: [!ProxyPassword                           ]
+
+[  Save  ]  [  Cancel  ]  [  View Log  ]")
+				.Apply(f =>
+				{
+					f[0].Checked = Settings.Installer.CheckForUpdate;
+					if (Settings.Installer.Proxy != null)
+					{
+						f[2].Checked = true;
+						f["ProxyAddress"].Text = Settings.Installer.Proxy.Address;
+						f["ProxyUsername"].Text = Settings.Installer.Proxy.Username;
+						f["ProxyPassword"].Text = Settings.Installer.Proxy.Password;
+					} else
+					{
+						f[0].Checked = false;
+						f["ProxyAddress"].Text = f["ProxyUsername"].Text = f["ProxyPassword"].Text = "";
+					}
+				})
+				.ShowDialog();
+
+			if (form["Save"].Clicked)
+			{
+				Settings.Installer.CheckForUpdate = form[0].Checked;
+				if (form[2].Checked)
+				{
+					var proxy = Settings.Installer.Proxy = new ProxySettings();
+					proxy.Address = form["ProxyAddress"].Text;
+					proxy.Username = form["ProxyUsername"].Text;
+					proxy.Password = form["ProxyPassword"].Text;
+				}
+				else Settings.Installer.Proxy = null;
+			}
+			else if (form["View Log"].Clicked)
+			{
+				ShowLogFile();
+			}
+			else if (form["Check for Updates"].Clicked)
+			{
+				CheckForUpdate();
+			}
+			
+			RunMainUI();
+		}
+
+
+		public void AvailableComponents()
+		{
+			var str = new StringBuilder();
+			str.AppendLine("Available Components");
+			str.AppendLine("====================");
+			str.AppendLine();
+			//load components via web service
+			var webService = Installer.Current.InstallerWebService;
+			var components = webService.GetAvailableComponents();
+
+			//remove already installed components or components not available on this platform
+			foreach (var component in components.ToArray())
+			{
+				if (component.CheckForInstalledComponent()) components.Remove(component);
+				else if (!component.CheckIsAvailableOnPlatform()) components.Remove(component);
+				else
+				{
+					str.AppendLine($"[  {component.ComponentName}, {component.Version}  ]");
+				}
+			}
+			str.AppendLine();
+			str.AppendLine("[  Cancel  ]");
+			var form = new ConsoleForm(str.ToString())
+				.ShowDialog();
+			if (form["Cancel"].Clicked) RunMainUI();
+			else
+			{
+				for (int i = 0; i < components.Count; i++)
+				{
+					if (form[i].Clicked)
+					{
+						ShowComponentDetails(components[i]);
+						break;
+					}
+				}
+			}
+		}
+
+		public void ShowComponentDetails(ComponentInfo component)
+		{
+			var str = new StringBuilder();
+			var title = $"{component.ComponentName}, {component.Version}";
+			str.AppendLine(title);
+			str.AppendLine(new string('=', title.Length));
+			var desc = component.ComponentDescription;
+			while (!string.IsNullOrWhiteSpace(desc))
+			{
+				if (desc.Length < Console.WindowWidth)
+				{
+					str.AppendLine(desc);
+					desc = "";
+				}
+				else
+				{
+					var space = desc.LastIndexOf(' ', Console.WindowWidth - 1);
+					str.AppendLine(desc.Substring(0, space));
+					desc = desc.Substring(space + 1);
+				}
+			}
+			str.AppendLine();
+			str.AppendLine("[  Cancel  ]  [  Install  ]");
+			var form = new ConsoleForm(str.ToString())
+				.ShowDialog();
+			if (form["Cancel"].Clicked) AvailableComponents();
+			else
+			{
+
+			}
+		}
+		public void InstalledComponents()
+		{
+
+		}
+
+		public void CheckForUpdate()
+		{
+		}
 
 		public override string GetRootPassword()
 		{
@@ -513,5 +652,14 @@ SolidCP cannot be installed on this System.
 			else if (Installer.IsUnix) Shell.Standard.Exec($"less \"{path}\"");
 			else throw new NotImplementedException();
 		}
+
+		public override void ShowWarning(string msg) => throw new NotImplementedException();
+
+		public override bool DownloadSetup(string fileName)
+		{
+			throw new NotImplementedException();
+		}
+		public override bool ExecuteSetup(string path, string installerType, string method, object[] args)
+			=> throw new NotSupportedException();
 	}
 }

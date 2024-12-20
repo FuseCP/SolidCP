@@ -62,6 +62,7 @@ namespace SolidCP.UniversalInstaller
 	public class InstallerSpecificSettings
 	{
 		public List<ComponentInfo> InstalledComponents { get; set; } = new List<ComponentInfo>();
+		public string ComponentSettingsXml { get; set; }
 		public string WebServiceUrl { get; set; }
 		public bool CheckForUpdate { get; set; }
 		public ProxySettings Proxy { get; set; }

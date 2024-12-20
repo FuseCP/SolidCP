@@ -15,6 +15,8 @@ using System.Text.RegularExpressions;
 using System.Data;
 using Newtonsoft.Json;
 using static System.Net.Mime.MediaTypeNames;
+using SolidCP.UniversalInstaller.Core;
+using System.Collections;
 
 namespace SolidCP.UniversalInstaller
 {
@@ -94,6 +96,69 @@ namespace SolidCP.UniversalInstaller
 			var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, InstallerSettingsFile);
 			var json = JsonConvert.SerializeObject(Settings, Formatting.Indented);
 			File.WriteAllText(path, json);
+		}
+
+		public bool Install(ComponentInfo info)
+		{
+			string applicationName = info.ApplicationName;
+			string componentName = info.ComponentName;
+			string componentCode = info.ComponentCode;
+			string componentDescription = info.ComponentDescription;
+			string component = info.Component;
+			string version = info.Version.ToString();
+			string fileName = info.FullFilePath.Replace('\\', Path.DirectorySeparatorChar);
+			string installerPath = info.InstallerPath.Replace('\\', Path.DirectorySeparatorChar);
+			string installerType = info.InstallerType;
+
+			if (info.CheckForInstalledComponent())
+			{
+				UI.Current.ShowWarning(Global.Messages.ComponentIsAlreadyInstalled);
+				return false;
+			}
+			try
+			{
+				// download installer
+				if (UI.Current.DownloadSetup(fileName)) {
+					string tmpFolder = FileUtils.GetTempDirectory();
+					string path = Path.Combine(tmpFolder, installerPath);
+					string method = "Install";
+					Log.WriteStart(string.Format("Running installer {0}.{1} from {2}", installerType, method, path));
+
+					//prepare installer args
+					Hashtable args = new Hashtable();
+
+					args[Global.Parameters.ComponentName] = componentName;
+					args[Global.Parameters.ApplicationName] = applicationName;
+					args[Global.Parameters.ComponentCode] = componentCode;
+					args[Global.Parameters.ComponentDescription] = componentDescription;
+					args[Global.Parameters.Version] = version;
+					args[Global.Parameters.InstallerFolder] = tmpFolder;
+					args[Global.Parameters.InstallerPath] = installerPath;
+					args[Global.Parameters.InstallerType] = installerType;
+					args[Global.Parameters.Installer] = Path.GetFileName(fileName);
+					args[Global.Parameters.ShellVersion] = AssemblyLoader.GetShellVersion();
+					args[Global.Parameters.BaseDirectory] = FileUtils.GetCurrentDirectory();
+					args[Global.Parameters.ShellMode] = Global.VisualInstallerShell;
+					args[Global.Parameters.IISVersion] = Global.IISVersion;
+					args[Global.Parameters.SetupXml] = Settings.Installer.ComponentSettingsXml;
+					args[Global.Parameters.SettingsJson] = JsonConvert.SerializeObject(Settings);
+					args[Global.Parameters.ParentForm] = UI.Current.MainForm;
+					args[Global.Parameters.UIType] = UI.Current.GetType().Name;
+
+					//run installer
+					var res = UI.Current.ExecuteSetup(path, installerType, method, new object[] { args });
+					FileUtils.DeleteTempDirectory();
+
+					return res;
+				}
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError("Installer error", ex);
+				UI.Current.ShowError(ex);
+			}
+
+			return false;
 		}
 
 		bool firstCheck = true;

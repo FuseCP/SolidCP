@@ -518,16 +518,16 @@ namespace SolidCP.UniversalInstaller
 				case ConsoleKey.LeftArrow:
 					var fieldLeftwards = Fields
 						.Where(f => f.CanFocus && f.X + f.Width / 2 < Focus.X + Focus.Width / 2)
-						.OrderByDescending(f => f.X + f.Width / 2)
-						.ThenBy(f => Math.Abs(f.Y + f.Height / 2 - Focus.Y - Focus.Height / 2))
+						.OrderBy(f => Math.Abs(f.Y + f.Height / 2 - Focus.Y - Focus.Height / 2))
+						.ThenByDescending(f => f.X + f.Width / 2)
 						.FirstOrDefault();
 					if (fieldLeftwards != null) SetFocus(fieldLeftwards);
 					break;
 				case ConsoleKey.RightArrow:
 					var fieldRightwards = Fields
 						.Where(f => f.CanFocus && f.X + f.Width / 2 > Focus.X + Focus.Width / 2)
-						.OrderBy(f => f.X + f.Width / 2)
-						.ThenBy(f => Math.Abs(f.Y + f.Height / 2 - Focus.Y - Focus.Height / 2))
+						.OrderBy(f => Math.Abs(f.Y + f.Height / 2 - Focus.Y - Focus.Height / 2))
+						.ThenBy(f => f.X + f.Width / 2)
 						.FirstOrDefault();
 					if (fieldRightwards != null) SetFocus(fieldRightwards);
 					break;

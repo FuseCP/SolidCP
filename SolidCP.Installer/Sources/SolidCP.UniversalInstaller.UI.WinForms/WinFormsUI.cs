@@ -2,6 +2,7 @@
 
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using SolidCP.Providers.OS;
@@ -69,6 +70,7 @@ namespace SolidCP.UniversalInstaller {
 				Application.EnableVisualStyles();
 				Application.SetCompatibleTextRenderingDefault(false);
 				var mainForm = new ApplicationForm();
+				MainForm = MainForm;
 				mainForm.InitializeApplication();
 				Application.Run(mainForm);
 			}
@@ -165,6 +167,40 @@ namespace SolidCP.UniversalInstaller {
 		public override void ShowLogFile()
 		{
 			throw new NotImplementedException();
+		}
+
+		public object MainForm { get; set; }
+		public override void ShowWarning(string msg)
+		{
+			MessageBox.Show((Form)MainForm, msg, ((Form)MainForm).Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+		}
+
+		public override bool DownloadSetup(string fileName)
+		{
+			Controls.Loader form = new Controls.Loader(fileName, (e) => ShowError(e));
+			DialogResult result = form.ShowDialog((Form)MainForm);
+
+			if (result == DialogResult.OK)
+			{
+				((Form)MainForm).Update();
+				return true;
+			}
+			return false;
+		}
+
+		public override bool ExecuteSetup(string path, string installerType, string method, object[] args)
+		{
+			//run installer
+			DialogResult? res = AssemblyLoader.Execute(path, installerType, method, new object[] { args }) as DialogResult?;
+			Log.WriteInfo(string.Format("Installer returned {0}", res));
+			Log.WriteEnd("Installer finished");
+			((Form)MainForm).Update();
+			if (res != null && res.Value == DialogResult.OK)
+			{
+				((ApplicationForm)MainForm).ReloadApplication();
+				return true;
+			}
+			return false;
 		}
 	}
 }

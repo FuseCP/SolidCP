@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SolidCP.Providers.OS;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -82,6 +83,37 @@ namespace SolidCP.UniversalInstaller
 		public string ComponentDescription { get; set; }
 		public string ComponentCode { get; set; }
 		public string ComponentName { get; set; }
+		public bool CheckIsAvailableOnPlatform()
+		{
+			if (Platforms == Platforms.Undefined) Platforms = Platforms.Windows;
+
+			return OSInfo.IsWindows && Platforms.HasFlag(Platforms.Windows) ||
+				!OSInfo.IsWindows && Platforms.HasFlag(Platforms.Unix);
+		}
+		public bool CheckForInstalledComponent()
+		{
+			var componentCode = ComponentCode;
+			bool ret = false;
+			var installedComponents = new HashSet<string>();
+			foreach (var component in Installer.Current.Settings.Installer.InstalledComponents)
+			{
+				string code = component.ComponentCode;
+				installedComponents.Add(code);
+				if (code == componentCode)
+				{
+					ret = true;
+					break;
+				}
+			}
+			if (componentCode == "standalone")
+			{
+				if ((installedComponents.Contains("server") || installedComponents.Contains("serverunix")) &&
+					installedComponents.Contains("enterprise server") &&
+					installedComponents.Contains("portal"))
+					ret = true;
+			}
+			return ret;
+		}
 	}
 
 }
