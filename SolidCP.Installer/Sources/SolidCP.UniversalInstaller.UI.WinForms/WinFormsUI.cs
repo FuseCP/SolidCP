@@ -14,7 +14,7 @@ namespace SolidCP.UniversalInstaller {
 		public class SetupWizard : UI.SetupWizard
 		{
 			public SetupWizard(UI ui): base(ui) { }
-			public override void Show()
+			public override bool Show()
 			{
 				throw new NotImplementedException();
 			}
@@ -191,11 +191,11 @@ namespace SolidCP.UniversalInstaller {
 		public override bool ExecuteSetup(string path, string installerType, string method, object[] args)
 		{
 			//run installer
-			DialogResult? res = AssemblyLoader.Execute(path, installerType, method, new object[] { args }) as DialogResult?;
+			var res = (bool)AssemblyLoader.Execute(path, installerType, method, new object[] { args });
 			Log.WriteInfo(string.Format("Installer returned {0}", res));
 			Log.WriteEnd("Installer finished");
 			((Form)MainForm).Update();
-			if (res != null && res.Value == DialogResult.OK)
+			if (res)
 			{
 				((ApplicationForm)MainForm).ReloadApplication();
 				return true;

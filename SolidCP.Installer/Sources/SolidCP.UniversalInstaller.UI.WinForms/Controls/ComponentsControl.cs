@@ -146,11 +146,11 @@ namespace SolidCP.UniversalInstaller.Controls
                     args[Global.Parameters.UIType] = UI.Current.GetType().Name;
 
                     //run installer
-                    DialogResult? res = AssemblyLoader.Execute(path, installerType, method, new object[] { args }) as DialogResult?;
+                    var res = (bool)AssemblyLoader.Execute(path, installerType, method, new object[] { args });
                     Log.WriteInfo(string.Format("Installer returned {0}", res));
                     Log.WriteEnd("Installer finished");
                     Update();
-                    if (res != null && res.Value == DialogResult.OK)
+                    if (res)
                     {
                         AppContext.AppForm.ReloadApplication();
                     }

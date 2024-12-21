@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 namespace SolidCP.UniversalInstaller
@@ -63,6 +64,14 @@ namespace SolidCP.UniversalInstaller
 	{
 		public List<ComponentInfo> InstalledComponents { get; set; } = new List<ComponentInfo>();
 		public string ComponentSettingsXml { get; set; }
+		public ComponentInfo Component { get; set; }
+		public string TempPath { get; set; }
+
+		Version? installerVersion = null;
+		public Version Version {
+			get => installerVersion ??= Assembly.GetEntryAssembly().GetName().Version;
+			set => installerVersion = value;
+		} 
 		public string WebServiceUrl { get; set; }
 		public bool CheckForUpdate { get; set; }
 		public ProxySettings Proxy { get; set; }

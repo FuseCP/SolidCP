@@ -12,8 +12,8 @@
         <releaseFileID>200</releaseFileID>
         <fullFilePath>~/Files/2.0.0/SolidCP-StandaloneServerSetup.zip</fullFilePath>
         <upgradeFilePath></upgradeFilePath>
-        <installerPath>setup\setup.dll</installerPath>
-        <installerType>SolidCP.Setup.StandaloneServerSetup200</installerType>
+        <installerPath>setup\setup2.dll</installerPath>
+        <installerType>SolidCP.Setup.StandaloneServerSetup160</installerType>
       </release>
       <release version="1.5.0" date="02/12/2024" available="true" beta="false">
         <releaseFileID>150</releaseFileID>
@@ -167,8 +167,8 @@
         <releaseFileID>2200</releaseFileID>
         <fullFilePath>~/Files/2.0.0/SolidCP-Portal.zip</fullFilePath>
         <upgradeFilePath>~/Files/2.0.0/SolidCP-Portal-Update.zip</upgradeFilePath>
-        <installerPath>setup\setup.dll</installerPath>
-        <installerType>SolidCP.Setup.Portal200</installerType>
+        <installerPath>setup\setup2.dll</installerPath>
+        <installerType>SolidCP.Setup.Portal160</installerType>
       </release>
       <release version="1.5.0" date="02/12/2024" available="true" beta="false">
         <releaseFileID>250</releaseFileID>
@@ -322,8 +322,8 @@
         <releaseFileID>3200</releaseFileID>
         <fullFilePath>~/Files/2.0.0/SolidCP-EnterpriseServer.zip</fullFilePath>
         <upgradeFilePath>~/Files/2.0.0/SolidCP-EnterpriseServer-Update.zip</upgradeFilePath>
-        <installerPath>setup\setup.dll</installerPath>
-        <installerType>SolidCP.Setup.EnterpriseServer200</installerType>
+        <installerPath>setup\setup2.dll</installerPath>
+        <installerType>SolidCP.Setup.EnterpriseServer160</installerType>
       </release>
       <release version="1.5.0" date="02/12/2024" available="true" beta="false">
         <releaseFileID>350</releaseFileID>
@@ -477,8 +477,8 @@
         <releaseFileID>4200</releaseFileID>
         <fullFilePath>~/Files/2.0.0/SolidCP-Server.zip</fullFilePath>
         <upgradeFilePath>~/Files/2.0.0/SolidCP-Server-Update.zip</upgradeFilePath>
-        <installerPath>setup\setup.dll</installerPath>
-        <installerType>SolidCP.Setup.Server200</installerType>
+        <installerPath>setup\setup2.dll</installerPath>
+        <installerType>SolidCP.Setup.Server160</installerType>
       </release>
     </releases>
   </component>
@@ -492,8 +492,8 @@
         <releaseFileID>4200</releaseFileID>
         <fullFilePath>~/Files/2.0.0/SolidCP-Server.zip</fullFilePath>
         <upgradeFilePath>~/Files/2.0.0/SolidCP-Server-Update.zip</upgradeFilePath>
-        <installerPath>setup\setup.dll</installerPath>
-        <installerType>SolidCP.Setup.Server200</installerType>
+        <installerPath>setup\setup2.dll</installerPath>
+        <installerType>SolidCP.Setup.Server160</installerType>
       </release>
       <release version="1.5.0" date="02/12/2024" available="true" beta="false">
         <releaseFileID>450</releaseFileID>

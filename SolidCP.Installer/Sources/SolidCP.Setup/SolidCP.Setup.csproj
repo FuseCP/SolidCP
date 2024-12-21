@@ -1,352 +1,56 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <TargetFramework>net48</TargetFramework>
-        <OutputPath>bin\$(Configuration)</OutputPath>
-        <Nullable>disable</Nullable>
-        <LangVersion>12</LangVersion>
-        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-        <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
-        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-        <BuildDependsOn>$(BuildDependsOn);AfterBuildMigrated</BuildDependsOn>
-        <AssemblyName>Setup</AssemblyName>
-        <RestoreSources>$(RestoreSources);../../Lib;https://api.nuget.org/v3/index.json</RestoreSources>
-        <EmbeddReferences>false</EmbeddReferences>
-    </PropertyGroup>
-    <Target Name="CopyResources" BeforeTargets="ResolveReferences">
-        <Message Text="Copying Installer Resources" Importance="high" />
-        <ItemGroup>
-            <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\LetsEncrypt\wacs.exe" />
-        </ItemGroup>
-        <Copy SourceFiles="@(FilesToCopy)" DestinationFolder="Resources" SkipUnchangedFiles="true" />
-        <!--<Copy SourceFiles="@(FilesToCopyX64)" DestinationFolder="Resources\x64" SkipUnchangedFiles="true" />
-        <Copy SourceFiles="@(FilesToCopyX86)" DestinationFolder="Resources\x86" SkipUnchangedFiles="true" />-->
-    </Target>
 
-    <Target Name="RemoveMonoPosix" AfterTargets="_CopyFilesMarkedCopyLocal">
-        <Delete Files="$(OutputPath)Mono.Posix.dll" />
-    </Target>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <AssemblyName>Setup2</AssemblyName>    
+  </PropertyGroup>
 
-    <Target Name="DeleteDlls" AfterTargets="Build" Condition="$(EmbeddReferences) == 'true'">
-        <Message Text="Deleting unused files" Importance="high" />
-        <ItemGroup>
-            <FilesToDelete Include="bin\$(Configuration)\**\*.*" />
-            <FilesToDelete Remove="bin\$(Configuration)\Setup.dll" />
-            <FilesToDelete Remove="bin\$(Configuration)\Setup.pdb" />
-        </ItemGroup>
-        <Delete Files="@(FilesToDelete)" />
-    </Target>
+  <ItemGroup>
+    <Compile Remove="Portal.cs" />
+    <Compile Remove="Portal10.cs" />
+    <Compile Remove="Portal20.cs" />
+    <Compile Remove="Server.cs" />
+    <Compile Remove="Server10.cs" />
+    <Compile Remove="Server20.cs" />
+    <Compile Remove="Serveraspv2.cs" />
+    <Compile Remove="Serveraspv210.cs" />
+    <Compile Remove="StandaloneServerSetup.cs" />
+    <Compile Remove="StandaloneServerSetup10.cs" />
+    <Compile Remove="StandaloneServerSetup20.cs" />
+    <Compile Remove="WebDavPortal.cs" />
+    <Compile Remove="WebDavPortal10.cs" />
+    <Compile Remove="WebDavPortal20.cs" />
+  </ItemGroup>
 
-    <ItemGroup>
-      <Compile Remove="Actions\EntServerUnixActionManager.cs" />
-      <Compile Remove="Actions\StandaloneServerUnixActionManager.cs" />
-      <Compile Remove="Actions\WebPortalUnixActionManager.cs" />
-    </ItemGroup>
-    <ItemGroup>
-        <!--<PackageReference Include="BouncyCastle.Cryptography" Version="2.3.1" />-->
-        <PackageReference Include="DotNetZip.NetStandard" Version="1.12.0" />
-        <!--<PackageReference Include="Microsoft.Data.SqlClient.SNI" GeneratePathProperty="true" Version="5.2.0" />-->
-        <!--<PackageReference Include="Microsoft.Data.SqlClient.SNI.runtime" GeneratePathProperty="true" Version="5.2.0" />-->
-        <!--<PackageReference Include="ZstdSharp.Port" Version="0.8.0" />-->
-    </ItemGroup>
-    <ItemGroup Condition="$(EmbeddReferences) == 'true'">
-        <PackageReference Include="CosturaPortable.Fody" Version="6.0.0">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive; compile</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="Fody" Version="6.9.1">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-    </ItemGroup>
-    <PropertyGroup Label="SqlClientNativeLibraries" Condition="$(EmbeddReferences) == 'true'">
-      <CopySNIFiles>false</CopySNIFiles>
-    </PropertyGroup>
-    <Target Name="EmbedSqlClientNativeLibraries" BeforeTargets="ResolveReferences" Condition="$(EmbeddReferences) == 'true'">
-        <ItemGroup>
-            <EmbeddedResource Include="@(SNIDllFiles)">
-                <Visible>true</Visible>
-                <Link Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').Contains('x86'))">costura_win_x86\%(Filename)%(Extension)</Link>
-                <Link Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').Contains('x64'))">costura_win_x64\%(Filename)%(Extension)</Link>
-                <Link Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').Contains('arm64'))">costura_win_arm64\%(Filename)%(Extension)</Link>
-            </EmbeddedResource>
-        </ItemGroup>
-    </Target>
-    <ItemGroup>
-        <Reference Include="Microsoft.Web.Administration, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-            <HintPath>..\..\Lib\Microsoft.Web.Administration.dll</HintPath>
-            <Private>False</Private>
-            <SpecificVersion>False</SpecificVersion>
-        </Reference>
-        <Reference Include="Microsoft.Web.Management, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-            <HintPath>..\..\Lib\Microsoft.Web.Management.dll</HintPath>
-            <Private>False</Private>
-            <SpecificVersion>False</SpecificVersion>
-        </Reference>
-        <Reference Include="System.ComponentModel.DataAnnotations" />
-        <Reference Include="System.configuration" />
-        <Reference Include="System.Configuration.Install" />
-        <Reference Include="System.DirectoryServices" />
-        <Reference Include="System.Management" />
-        <Reference Include="System.ServiceProcess" />
-        <Reference Include="System.Transactions" />
-        <Reference Include="System.Web.Services" />
-        <Reference Include="System.Windows.Forms" />
-        <!--
-    <Reference Include="SolidCP.EnterpriseServer.Base, Version=1.1.1.0, Culture=neutral, PublicKeyToken=da8782a6fc4d0081, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\SolidCP\Bin\SolidCP.EnterpriseServer.Base.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="SolidCP.EnterpriseServer.Client, Version=1.1.1.0, Culture=neutral, PublicKeyToken=da8782a6fc4d0081, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\SolidCP\Bin\SolidCP.EnterpriseServer.Client.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="SolidCP.Providers.Base">
-      <HintPath>..\..\..\SolidCP\Bin\SolidCP.Providers.Base.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    -->
-    </ItemGroup>
-    <ItemGroup>
-        <EmbeddedResource Include="Resources\wacs.exe" />
-        <!--<EmbeddedResource Include="Resources\SolidCP.Installer.Core.pdb" />-->
-        <EmbeddedResource Include="Resources\logo.png" />
-        <EmbeddedResource Include="EULA.Unix.rtf" />
-        <None Include="Actions\EntServerUnixActionManager.cs" />
-        <None Include="Actions\StandaloneServerUnixActionManager.cs" />
-        <None Include="Actions\WebPortalUnixActionManager.cs" />
-        <None Include="Resources\BannerImage.GIF" />
-        <None Include="Resources\Icons.MenuFileOpenIcon.png" />
-        <None Include="Resources\MarginImage.GIF" />
-    </ItemGroup>
-    <ItemGroup>
-        <Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
-        <Compile Update="Forms\InstallerForm.cs" />
-        <Compile Update="Forms\InstallerForm.Designer.cs">
-            <DependentUpon>InstallerForm.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Properties\Resources.Designer.cs">
-            <AutoGen>True</AutoGen>
-            <DesignTime>True</DesignTime>
-            <DependentUpon>Resources.resx</DependentUpon>
-        </Compile>
-        <Compile Update="Wizard\BannerWizardPage.cs" />
-        <Compile Update="Wizard\ConfirmUninstallPage.cs" />
-        <Compile Update="Wizard\ConfirmUninstallPage.Designer.cs">
-            <DependentUpon>ConfirmUninstallPage.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Wizard\ConfigurationCheckPage.cs" />
-        <Compile Update="Wizard\ConfigurationCheckPage.Designer.cs">
-            <DependentUpon>ConfigurationCheckPage.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Wizard\ExpressInstallPage2.cs" />
-        <Compile Update="Wizard\ExpressInstallPage2.Designer.cs">
-            <DependentUpon>ExpressInstallPage2.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Wizard\InsecureHttpWarning.cs" />
-        <Compile Update="Wizard\InsecureHttpWarning.Designer.cs">
-            <DependentUpon>InsecureHttpWarning.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Wizard\SetupCompletePage.cs" />
-        <Compile Update="Wizard\SetupCompletePage.Designer.cs">
-            <DependentUpon>SetupCompletePage.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Wizard\ServerAdminPasswordPage.cs" />
-        <Compile Update="Wizard\ServerAdminPasswordPage.Designer.cs">
-            <DependentUpon>ServerAdminPasswordPage.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Wizard\ServiceAddressPage.cs" />
-        <Compile Update="Wizard\ServiceAddressPage.Designer.cs">
-            <DependentUpon>ServiceAddressPage.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Wizard\LicenseAgreementPage.cs" />
-        <Compile Update="Wizard\LicenseAgreementPage.Designer.cs">
-            <DependentUpon>LicenseAgreementPage.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Wizard\SQLServersPage.cs" />
-        <Compile Update="Wizard\SQLServersPage.Designer.cs">
-            <DependentUpon>SQLServersPage.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Wizard\EmbedEnterpriseServer.cs" />
-        <Compile Update="Wizard\EmbedEnterpriseServer.Designer.cs">
-            <DependentUpon>EmbedEnterpriseServer.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Wizard\UserAccountPage.cs" />
-        <Compile Update="Wizard\UserAccountPage.Designer.cs">
-            <DependentUpon>UserAccountPage.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Wizard\UrlPage.cs" />
-        <Compile Update="Wizard\UrlPage.Designer.cs">
-            <DependentUpon>UrlPage.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Wizard\CertificatePage.cs" />
-        <Compile Update="Wizard\CertificatePage.Designer.cs">
-            <DependentUpon>CertificatePage.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Wizard\WebPage.cs" />
-        <Compile Update="Wizard\WebPage.Designer.cs">
-            <DependentUpon>WebPage.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Wizard\InstallFolderPage.cs" />
-        <Compile Update="Wizard\InstallFolderPage.Designer.cs">
-            <DependentUpon>InstallFolderPage.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Wizard\DatabasePage.cs" />
-        <Compile Update="Wizard\DatabasePage.Designer.cs">
-            <DependentUpon>DatabasePage.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Wizard\ServerPasswordPage.cs" />
-        <Compile Update="Wizard\ServerPasswordPage.Designer.cs">
-            <DependentUpon>ServerPasswordPage.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Wizard\RollBackPage.cs" />
-        <Compile Update="Wizard\RollBackPage.Designer.cs">
-            <DependentUpon>RollBackPage.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Wizard\ExpressInstallPage.cs" />
-        <Compile Update="Wizard\ExpressInstallPage.Designer.cs">
-            <DependentUpon>ExpressInstallPage.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Wizard\FinishPage.cs" />
-        <Compile Update="Wizard\FinishPage.Designer.cs">
-            <DependentUpon>FinishPage.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Wizard\IntroductionPage.cs" />
-        <Compile Update="Wizard\MarginWizardPage.cs" />
-        <Compile Update="Wizard\UninstallPage.cs" />
-        <Compile Update="Wizard\UninstallPage.Designer.cs">
-            <DependentUpon>UninstallPage.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Wizard\Wizard.cs" />
-        <Compile Update="Wizard\WizardPageBase.cs" />
-    </ItemGroup>
-    <ItemGroup>
-        <EmbeddedResource Update="Forms\InstallerForm.resx">
-            <DependentUpon>InstallerForm.cs</DependentUpon>
-            <SubType>Designer</SubType>
-        </EmbeddedResource>
-        <EmbeddedResource Update="Properties\Resources.resx">
-            <SubType>Designer</SubType>
-            <Generator>ResXFileCodeGenerator</Generator>
-            <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-        </EmbeddedResource>
-        <EmbeddedResource Update="Wizard\ExpressInstallPage2.resx">
-            <DependentUpon>ExpressInstallPage2.cs</DependentUpon>
-            <SubType>Designer</SubType>
-        </EmbeddedResource>
-        <EmbeddedResource Update="Wizard\InsecureHttpWarning.resx">
-            <DependentUpon>InsecureHttpWarning.cs</DependentUpon>
-            <SubType>Designer</SubType>
-        </EmbeddedResource>
-        <EmbeddedResource Update="Wizard\LicenseAgreementPage.resx">
-            <DependentUpon>LicenseAgreementPage.cs</DependentUpon>
-            <SubType>Designer</SubType>
-        </EmbeddedResource>
-        <EmbeddedResource Update="Wizard\SQLServersPage.resx">
-            <DependentUpon>SQLServersPage.cs</DependentUpon>
-            <SubType>Designer</SubType>
-        </EmbeddedResource>
-        <EmbeddedResource Update="Wizard\EmbedEnterpriseServer.resx">
-            <DependentUpon>EmbedEnterpriseServer.cs</DependentUpon>
-            <SubType>Designer</SubType>
-        </EmbeddedResource>
-        <EmbeddedResource Update="Wizard\UserAccountPage.resx">
-            <DependentUpon>UserAccountPage.cs</DependentUpon>
-            <SubType>Designer</SubType>
-        </EmbeddedResource>
-        <EmbeddedResource Update="Wizard\UrlPage.resx">
-            <DependentUpon>UrlPage.cs</DependentUpon>
-            <SubType>Designer</SubType>
-        </EmbeddedResource>
-        <EmbeddedResource Update="Wizard\CertificatePage.resx">
-            <DependentUpon>CertificatePage.cs</DependentUpon>
-            <SubType>Designer</SubType>
-        </EmbeddedResource>
-        <EmbeddedResource Update="Wizard\WebPage.resx">
-            <DependentUpon>WebPage.cs</DependentUpon>
-            <SubType>Designer</SubType>
-        </EmbeddedResource>
-        <EmbeddedResource Update="Wizard\InstallFolderPage.resx">
-            <DependentUpon>InstallFolderPage.cs</DependentUpon>
-            <SubType>Designer</SubType>
-        </EmbeddedResource>
-        <EmbeddedResource Update="Wizard\DatabasePage.resx">
-            <DependentUpon>DatabasePage.cs</DependentUpon>
-            <SubType>Designer</SubType>
-        </EmbeddedResource>
-        <EmbeddedResource Update="Wizard\ServerPasswordPage.resx">
-            <DependentUpon>ServerPasswordPage.cs</DependentUpon>
-            <SubType>Designer</SubType>
-        </EmbeddedResource>
-        <EmbeddedResource Update="Wizard\RollBackPage.resx">
-            <DependentUpon>RollBackPage.cs</DependentUpon>
-            <SubType>Designer</SubType>
-        </EmbeddedResource>
-        <EmbeddedResource Update="Wizard\ExpressInstallPage.resx">
-            <DependentUpon>ExpressInstallPage.cs</DependentUpon>
-            <SubType>Designer</SubType>
-        </EmbeddedResource>
-        <EmbeddedResource Update="Wizard\FinishPage.resx">
-            <DependentUpon>FinishPage.cs</DependentUpon>
-            <SubType>Designer</SubType>
-        </EmbeddedResource>
-        <EmbeddedResource Update="Wizard\UninstallPage.resx">
-            <DependentUpon>UninstallPage.cs</DependentUpon>
-            <SubType>Designer</SubType>
-        </EmbeddedResource>
-    </ItemGroup>
-    <ItemGroup>
-        <EmbeddedResource Include="EULA.rtf" />
-        <EmbeddedResource Update="Wizard\ConfirmUninstallPage.resx">
-            <DependentUpon>ConfirmUninstallPage.cs</DependentUpon>
-            <SubType>Designer</SubType>
-        </EmbeddedResource>
-        <EmbeddedResource Update="Wizard\ConfigurationCheckPage.resx">
-            <DependentUpon>ConfigurationCheckPage.cs</DependentUpon>
-            <SubType>Designer</SubType>
-        </EmbeddedResource>
-        <EmbeddedResource Update="Wizard\SetupCompletePage.resx">
-            <DependentUpon>SetupCompletePage.cs</DependentUpon>
-            <SubType>Designer</SubType>
-        </EmbeddedResource>
-        <EmbeddedResource Update="Wizard\ServerAdminPasswordPage.resx">
-            <DependentUpon>ServerAdminPasswordPage.cs</DependentUpon>
-            <SubType>Designer</SubType>
-        </EmbeddedResource>
-        <EmbeddedResource Update="Wizard\ServiceAddressPage.resx">
-            <DependentUpon>ServiceAddressPage.cs</DependentUpon>
-            <SubType>Designer</SubType>
-        </EmbeddedResource>
-    </ItemGroup>
-    <ItemGroup>
-        <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj" />
-        <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.EnterpriseServer.Data\SolidCP.EnterpriseServer.Data.csproj" />
-        <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.EnterpriseServer\WebServices\SolidCP.Build\SolidCP.EnterpriseServer.Client.csproj" />
-        <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
-        <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Unix\SolidCP.Providers.OS.Unix.csproj" />
-        <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj" />
-        <ProjectReference Include="..\SolidCP.UniversalInstaller.Core\SolidCP.UniversalInstaller.Core.csproj" />
-        <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2003\SolidCP.Providers.OS.Windows2003.csproj" />
-        <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2008\SolidCP.Providers.OS.Windows2008.csproj" />
-        <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2012\SolidCP.Providers.OS.Windows2012.csproj" />
-        <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2016\SolidCP.Providers.OS.Windows2016.csproj" />
-        <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2019\SolidCP.Providers.OS.Windows2019.csproj" />
-        <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2022\SolidCP.Providers.OS.Windows2022.csproj" />
-        <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2025\SolidCP.Providers.OS.Windows2025.csproj" />
-        <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Web.IIs100\SolidCP.Providers.Web.IIs100.csproj" />
-        <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Web.IIs60\SolidCP.Providers.Web.IIs60.csproj" />
-        <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Web.IIS70\SolidCP.Providers.Web.IIs70.csproj" />
-        <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Web.IIs80\SolidCP.Providers.Web.IIs80.csproj" />
-        <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Web.LetsEncrypt\SolidCP.Providers.Web.LetsEncrypt.csproj" />
-        <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
-        <!--
-		<ProjectReference Include="..\SolidCP.Installer.Core\SolidCP.Installer.Core.csproj">
-			<Project>{0E4A3F5B-0BB1-4F63-863D-7B0182B378CF}</Project>
-			<Name>SolidCP.Installer.Core</Name>
-			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-			<OutputItemType>EmbeddedResource</OutputItemType>
-		</ProjectReference>-->
-    </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Portal.cs" />
+    <None Include="Portal10.cs" />
+    <None Include="Portal20.cs" />
+    <None Include="Server.cs" />
+    <None Include="Server10.cs" />
+    <None Include="Server20.cs" />
+    <None Include="Serveraspv2.cs" />
+    <None Include="Serveraspv210.cs" />
+    <None Include="StandaloneServerSetup.cs" />
+    <None Include="StandaloneServerSetup10.cs" />
+    <None Include="StandaloneServerSetup20.cs" />
+    <None Include="WebDavPortal.cs" />
+    <None Include="WebDavPortal10.cs" />
+    <None Include="WebDavPortal20.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SolidCP.Setup.Legacy\SolidCP.Setup.Legacy.csproj" />
+    <ProjectReference Include="..\SolidCP.UniversalInstaller.Core\SolidCP.UniversalInstaller.Core.csproj" />
+  </ItemGroup>
+
 </Project>

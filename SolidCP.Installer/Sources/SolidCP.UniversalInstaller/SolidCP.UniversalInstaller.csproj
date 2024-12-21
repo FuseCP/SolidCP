@@ -22,14 +22,18 @@
 		<Optimize>false</Optimize>
 	</PropertyGroup>
 
-	<ItemGroup>
+    <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
+        <ProjectReference Include="..\SolidCP.Setup\SolidCP.Setup.csproj" />
+    </ItemGroup>
+	
+    <ItemGroup>
 		<ProjectReference Include="..\SolidCP.UniversalInstaller.Core\SolidCP.UniversalInstaller.Core.csproj" />
 		<ProjectReference Include="..\SolidCP.UniversalInstaller.UI.WinForms\SolidCP.UniversalInstaller.UI.WinForms.csproj" />
 		<ProjectReference Include="..\SolidCP.UniversalInstaller.WebService\SolidCP.UniversalInstaller.WebService.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-        <Compile Include="..\..\..\SolidCP\Sources\VersionInfo.cs" Link="VersionInfo.cs" />
+        <Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
     </ItemGroup>
 
 </Project>

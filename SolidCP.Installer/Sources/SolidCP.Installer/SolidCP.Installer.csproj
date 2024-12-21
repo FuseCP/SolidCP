@@ -245,7 +245,7 @@
         <None Include="SolidCP.ico" />
     </ItemGroup>
     <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
-        <ProjectReference Include="..\SolidCP.Setup\SolidCP.Setup.csproj" />
+        <ProjectReference Include="..\SolidCP.Setup.Legacy\SolidCP.Setup.Legacy.csproj" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />

@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Net.Http.Headers;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using System.Text.RegularExpressions;
 using SolidCP.Providers.OS;
 using SolidCP.Providers.Utils.LogParser;
@@ -369,6 +370,7 @@ namespace SolidCP.UniversalInstaller
 		public Installer Installer { get; set; } = Installer.Current;
 		public Shell Shell => Installer.Shell;
 		public string Template = "";
+		public static ConsoleForm Current { get; private set; }
 		public PercentField Progress => Fields
 			.OfType<PercentField>()
 			.FirstOrDefault();
@@ -393,6 +395,7 @@ namespace SolidCP.UniversalInstaller
 		public ConsoleField this[int index] => Fields[index];
 		public ConsoleForm Show()
 		{
+			Current = this;
 			Console.Clear();
 			// count lines in Template
 			int nlines = 0;
@@ -418,6 +421,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			Show();
 			Edit();
+			Current = null;
 			return this;
 		}
 
@@ -489,8 +493,6 @@ namespace SolidCP.UniversalInstaller
 				default: break;
 			}
 			return false;
-
-
 		}
 
 		public void EditChangeFocus(ConsoleKeyInfo key)
@@ -656,6 +658,31 @@ namespace SolidCP.UniversalInstaller
 			Parse(template);
 		}
 
+		public string Wrap(string template)
+		{
+			// Wrap lines that are longer than console width
+			int prevline = 0, sbpos = 0;
+			var sb = new StringBuilder();
+			while (prevline >= 0 && prevline < template.Length)
+			{
+				var newline = template.IndexOf('\n', prevline);
+				if (newline <= 0) newline = template.Length;
+				if (newline - prevline > Console.WindowWidth)
+				{
+					var lastspace = template.LastIndexOf(' ', prevline + Console.WindowWidth);
+					if (lastspace >= 0 && sbpos < template.Length)
+					{
+						sb.Append(template.Substring(sbpos, lastspace));
+						sb.AppendLine();
+						sbpos = lastspace + 1;
+					}
+				}
+				prevline = newline + 1;
+			}
+			if (sbpos < template.Length) sb.Append(template.Substring(sbpos, template.Length - sbpos));
+			
+			return sb.ToString();
+		}
 		public string Trim(string template)
 		{
 			template = Regex.Replace(template, @"(?:\[(?:\?|!|%)\s*[a-zA-Z_][a-zA-Z0-9_]*)|(?:(?<=\[)\*)(?=[^\n\]]*\])|(?<=\[(?:\?|!|%)[^\]]*)\]", "", RegexOptions.Singleline);
@@ -663,7 +690,7 @@ namespace SolidCP.UniversalInstaller
 		}
 		public ConsoleForm Parse(string template)
 		{
-			template = template.Trim();
+			template = Wrap(template.Trim());
 			int n = 0;
 			var fieldMatches = Regex.Matches(template, @"(?<=^(?<prefix>.*?))\[(?<option>\*|%|\?|\!|x|)(?:(?<!\[|\[\*)\s*(?<name>[A-Za-z_][A-Za-z_0-9]*))?(?<text>[^\]]*?)\]", RegexOptions.Singleline);
 			var fields = fieldMatches

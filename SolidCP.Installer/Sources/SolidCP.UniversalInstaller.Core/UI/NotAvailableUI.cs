@@ -9,7 +9,7 @@ namespace SolidCP.UniversalInstaller {
 		public new class SetupWizard : UI.SetupWizard
 		{
 			public SetupWizard(UI ui) : base(ui) { }
-			public override void Show() => throw new NotImplementedException();
+			public override bool Show() => throw new NotImplementedException();
 		}
 
 		public override UI.SetupWizard Wizard => new SetupWizard(this);

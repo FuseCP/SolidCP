@@ -2,6 +2,9 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using System.Text;
 using SolidCP.Providers.OS;
+using Microsoft.Identity.Client;
+using System.Collections;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace SolidCP.UniversalInstaller
 {
@@ -11,14 +14,27 @@ namespace SolidCP.UniversalInstaller
 		public override bool IsAvailable => true;
 		public new class SetupWizard : UI.SetupWizard
 		{
+			List<Action> pages;
 			public override UI.SetupWizard BannerWizard()
 			{
-				return base.BannerWizard();
+				pages.Add(() =>
+				{
+					var form = new ConsoleForm($@"");
+				});
+				return this;
 			}
 			public SetupWizard(UI ui) : base(ui) { }
-			public override void Show()
+			public override bool Show()
 			{
-				throw new NotImplementedException();
+				try
+				{
+					foreach (var page in pages) page();
+
+					return true;
+				} catch (Exception ex)
+				{
+					return false;
+				}
 			}
 		}
 
@@ -119,10 +135,10 @@ Password: [!ProxyPassword                           ]
 				}
 			}
 			str.AppendLine();
-			str.AppendLine("[  Cancel  ]");
+			str.AppendLine("[  Back  ]");
 			var form = new ConsoleForm(str.ToString())
 				.ShowDialog();
-			if (form["Cancel"].Clicked) RunMainUI();
+			if (form["Back"].Clicked) RunMainUI();
 			else
 			{
 				for (int i = 0; i < components.Count; i++)
@@ -142,29 +158,16 @@ Password: [!ProxyPassword                           ]
 			var title = $"{component.ComponentName}, {component.Version}";
 			str.AppendLine(title);
 			str.AppendLine(new string('=', title.Length));
-			var desc = component.ComponentDescription;
-			while (!string.IsNullOrWhiteSpace(desc))
-			{
-				if (desc.Length < Console.WindowWidth)
-				{
-					str.AppendLine(desc);
-					desc = "";
-				}
-				else
-				{
-					var space = desc.LastIndexOf(' ', Console.WindowWidth - 1);
-					str.AppendLine(desc.Substring(0, space));
-					desc = desc.Substring(space + 1);
-				}
-			}
 			str.AppendLine();
-			str.AppendLine("[  Cancel  ]  [  Install  ]");
+			str.AppendLine(component.ComponentDescription);
+			str.AppendLine();
+			str.AppendLine("[  Back  ]  [  Install  ]");
 			var form = new ConsoleForm(str.ToString())
 				.ShowDialog();
-			if (form["Cancel"].Clicked) AvailableComponents();
+			if (form["Back"].Clicked) AvailableComponents();
 			else
 			{
-
+				Installer.Current.Install(component);
 			}
 		}
 		public void InstalledComponents()
@@ -347,17 +350,20 @@ Components to Install
 		}
 
 		ConsoleForm InstallationProgress = null;
-		public override void ShowInstallationProgress()
+		public void ShowInstallationProgress(string title)
 		{
-			InstallationProgress = new ConsoleForm(@"
-Installation Progress:
-======================
+			title ??= "Installation Progress";
+			InstallationProgress = new ConsoleForm(@$"
+{title}:
+{new string('=', title.Length)}=
 
 [%Progress                                                                      ]
 ")
 			.ShowProgress(Installer.Shell, Installer.EstimatedOutputLines)
 			.Show();
 		}
+
+		public override void ShowInstallationProgress() => ShowInstallationProgress(null);
 
 		public override void CloseInstallationProgress()
 		{
@@ -653,13 +659,51 @@ SolidCP cannot be installed on this System.
 			else throw new NotImplementedException();
 		}
 
-		public override void ShowWarning(string msg) => throw new NotImplementedException();
+		public override void ShowWarning(string msg)
+		{
+			Console.Clear();
+			Console.Write("Warning: ");
+			Console.WriteLine(msg);
+			Console.ReadKey();
+			ConsoleForm.Current?.Show();
+		}
 
+		bool downloadComplete = false;
 		public override bool DownloadSetup(string fileName)
 		{
-			throw new NotImplementedException();
+			var loader = Core.LoaderFactory.CreateFileLoader(fileName);
+			loader.ProgressChanged += DownloadProgressChanged;
+			ShowInstallationProgress("Download and Extract Component");
+			loader.OperationCompleted += DownloadAndUnzipCompleted;
+			loader.DownloadComplete += DownloadCompleted;
+			loader.LoadAppDistributive();
+
+			while (!downloadComplete) Thread.Sleep(100);
+
+			return true;
 		}
+
+		float delta = 0;
+		void DownloadCompleted(object sender, EventArgs args)
+		{
+			delta = 0.5f;
+		}
+		void DownloadProgressChanged(object sender, Core.LoaderEventArgs<int> args)
+		{
+			InstallationProgress.Progress.Value = (float)args.EventData / 200 + delta;
+		}
+
+		void DownloadAndUnzipCompleted(object sender, EventArgs args)
+		{
+			InstallationProgress.Close();
+			downloadComplete = true;
+		}
+
 		public override bool ExecuteSetup(string path, string installerType, string method, object[] args)
-			=> throw new NotSupportedException();
+		{
+			bool res = (bool)AssemblyLoader.Execute(path, installerType, method, new object[] { args });
+
+			return res;
+		}
 	}
 }

@@ -10,7 +10,7 @@ namespace SolidCP.UniversalInstaller
 
 			public override UI.SetupWizard BannerWizard() => this;
 			public override UI.SetupWizard Certificate() => this;
-			public override UI.SetupWizard ConfigurationCheck() => this;
+			public override UI.SetupWizard CheckPrerequisites() => this;
 			public override UI.SetupWizard ConfirmUninstall() => this;
 			public override UI.SetupWizard Database() => this;
 			public override UI.SetupWizard EmbeddEnterpriseServer() => this;
@@ -32,9 +32,9 @@ namespace SolidCP.UniversalInstaller
 			public override UI.SetupWizard Url() => this;
 			public override UI.SetupWizard UserAccount() => this;
 			public override UI.SetupWizard Web() => this;
-			public override void Show()
+			public override bool Show()
 			{
-
+				return true;
 			}
 		}
 

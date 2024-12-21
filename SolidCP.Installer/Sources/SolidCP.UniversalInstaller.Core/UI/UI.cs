@@ -96,7 +96,7 @@ namespace SolidCP.UniversalInstaller
 
 			public virtual SetupWizard BannerWizard() => this;
 			public virtual SetupWizard Certificate() => this;
-			public virtual SetupWizard ConfigurationCheck() => this;
+			public virtual SetupWizard CheckPrerequisites() => this;
 			public virtual SetupWizard ConfirmUninstall() => this;
 			public virtual SetupWizard Database() => this;
 			public virtual SetupWizard EmbeddEnterpriseServer() => this;
@@ -118,7 +118,7 @@ namespace SolidCP.UniversalInstaller
 			public virtual SetupWizard Url() => this;
 			public virtual SetupWizard UserAccount() => this;
 			public virtual SetupWizard Web() => this;
-			public abstract void Show();
+			public abstract bool Show();
 		}
 
 		public Installer Installer => Installer.Current;

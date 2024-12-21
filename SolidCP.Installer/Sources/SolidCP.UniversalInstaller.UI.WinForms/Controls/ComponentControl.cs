@@ -231,11 +231,11 @@ namespace SolidCP.UniversalInstaller.Controls
 						args["IISVersion"] = Global.IISVersion;
 						args["ParentForm"] = FindForm();
 
-						result = (DialogResult)AssemblyLoader.Execute(installerPath, type, method, new object[] { args });
+						var res = (bool)AssemblyLoader.Execute(installerPath, type, method, new object[] { args });
 						Log.WriteInfo(string.Format("Installer returned {0}", result));
 						Log.WriteEnd("Installer finished");
 						Update();
-						if (result == DialogResult.OK)
+						if (res)
 						{
 							ReloadApplication();
 						}
@@ -293,7 +293,7 @@ namespace SolidCP.UniversalInstaller.Controls
 						{ Global.Parameters.ParentForm,  FindForm() },
 					};
 					//
-					result = (DialogResult)AssemblyLoader.Execute(path, type, method, new object[] { args });
+					var res = (bool)AssemblyLoader.Execute(path, type, method, new object[] { args });
 					//
 					Log.WriteInfo(string.Format("Installer returned {0}", result));
 					Log.WriteEnd("Installer finished");
@@ -349,12 +349,12 @@ namespace SolidCP.UniversalInstaller.Controls
 					args["ParentForm"] = FindForm();
 					args[Global.Parameters.ShellMode] = Global.VisualInstallerShell;
 					//
-					result = (DialogResult)AssemblyLoader.Execute(path, type, method, new object[] { args });
+					var res = (bool)AssemblyLoader.Execute(path, type, method, new object[] { args });
 					//
 					Log.WriteInfo(string.Format("Installer returned {0}", result));
 					Log.WriteEnd("Installer finished");
 
-					if (result == DialogResult.OK)
+					if (res)
 					{
 						ReloadApplication();
 					}

@@ -175,6 +175,7 @@ namespace SolidCP.UniversalInstaller.Core
 		public event EventHandler<LoaderEventArgs<String>> StatusChanged;
 		public event EventHandler<LoaderEventArgs<Exception>> OperationFailed;
 		public event EventHandler<LoaderEventArgs<Int32>> ProgressChanged;
+		public event EventHandler<EventArgs> DownloadComplete;
 		public event EventHandler<EventArgs> OperationCompleted;
 
 		internal Loader(string remoteFile)
@@ -197,6 +198,7 @@ namespace SolidCP.UniversalInstaller.Core
 			RaiseOnStatusChangedEvent(statusMessage, eventData, true);
 		}
 
+		protected void RaiseDownloadCompleteEvent() => DownloadComplete(this, EventArgs.Empty);
 		protected void RaiseOnStatusChangedEvent(string statusMessage, string eventData, bool cancellable)
 		{
 			if (StatusChanged == null)
@@ -280,19 +282,21 @@ namespace SolidCP.UniversalInstaller.Core
 					// Move the file downloaded from temporary location to Data folder
 					var moveFileTask = downloadFileTask.ContinueWith((t) =>
 					{
+						RaiseDownloadCompleteEvent();
+
 						if (File.Exists(tmpFile))
 						{
 							// copy downloaded file to data folder
 							RaiseOnStatusChangedEvent(CopyingSetupFilesMessage);
 							//
-							RaiseOnProgressChangedEvent(0);
+							//RaiseOnProgressChangedEvent(0);
 
 							// Ensure that the target does not exist.
 							if (File.Exists(destinationFile))
 								FileUtils.DeleteFile(destinationFile);
 							File.Move(tmpFile, destinationFile);
 							//
-							RaiseOnProgressChangedEvent(100);
+							//RaiseOnProgressChangedEvent(100);
 						}
 					}, TaskContinuationOptions.NotOnCanceled);
 					// Unzip file downloaded
@@ -444,7 +448,14 @@ namespace SolidCP.UniversalInstaller.Core
 					
 					foreach (var entry in zip.Entries)
 					{
-						entry.ExtractToFile(Path.Combine(destFolder, entry.Name), true);
+						if (string.IsNullOrEmpty(entry.Name))
+						{
+							Directory.CreateDirectory(Path.Combine(destFolder, entry.FullName.Replace('/', Path.DirectorySeparatorChar)));
+						}
+						else
+						{
+							entry.ExtractToFile(Path.Combine(destFolder, entry.FullName.Replace('/', Path.DirectorySeparatorChar)), true);
+						}
 
 						unzipped += entry.CompressedLength;
 

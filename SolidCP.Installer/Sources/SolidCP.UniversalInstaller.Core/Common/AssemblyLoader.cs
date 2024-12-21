@@ -52,18 +52,26 @@ namespace SolidCP.UniversalInstaller
 		{
 			Assembly assembly = null;
 #if DEBUG
-			if (UseLocalSetupDllForDebugging && fileName.EndsWith("Setup.dll", StringComparison.OrdinalIgnoreCase) && 
+			if (UseLocalSetupDllForDebugging && fileName.EndsWith("Setup.dll", StringComparison.OrdinalIgnoreCase) &&
 				(Debugger.IsAttached || UseLocalSetupDll))
 			{
 				var exe = Assembly.GetEntryAssembly();
 				var path = Path.Combine(Path.GetDirectoryName(exe.Location), "Setup.dll");
 				assembly = Assembly.LoadFrom(path);
-			} else assembly = Assembly.LoadFrom(fileName);
+			}
+			else if (UseLocalSetupDllForDebugging && fileName.EndsWith("Setup2.dll", StringComparison.OrdinalIgnoreCase) &&
+				(Debugger.IsAttached || UseLocalSetupDll))
+			{
+				var exe = Assembly.GetEntryAssembly();
+				var path = Path.Combine(Path.GetDirectoryName(exe.Location), "Setup2.dll");
+				assembly = Assembly.LoadFrom(path);
+			}
+			else assembly = Assembly.LoadFrom(fileName);
 #else
 			assembly = Assembly.LoadFrom(fileName);
 #endif
 			Type type = assembly.GetType(typeName);
-			MethodInfo method = type.GetMethod(methodName);
+			MethodInfo method = type.GetMethod(methodName, new Type[] { typeof(string) });
 			return method.Invoke(Activator.CreateInstance(type), parameters);
 		}
 
@@ -84,15 +92,15 @@ namespace SolidCP.UniversalInstaller
 					info.ApplicationBase = AppDomain.CurrentDomain.BaseDirectory;
 
 					domain = AppDomain.CreateDomain("Remote Domain", securityInfo, info); */
-					Evidence securityInfo;
+					object securityInfo;
 					var evidenceProperty = typeof(AppDomain).GetProperty("Evidence");
-					securityInfo = evidenceProperty.GetValue(AppDomain.CurrentDomain) as Evidence;
-					var domainSetupType = Type.GetType("System.AppDomainSetup, System");
+					securityInfo = evidenceProperty.GetValue(AppDomain.CurrentDomain);
+					var domainSetupType = Type.GetType("System.AppDomainSetup, mscorlib");
 					object info = Activator.CreateInstance(domainSetupType);
 					var appBaseProperty = domainSetupType.GetProperty("ApplicationBase");
 					appBaseProperty.SetValue(info, AppDomain.CurrentDomain.BaseDirectory);
 
-					var createDomainMethod = typeof(AppDomain).GetMethod("CreateDomain", new Type[] { typeof(Evidence), domainSetupType });
+					var createDomainMethod = typeof(AppDomain).GetMethod("CreateDomain", new Type[] { typeof(string), Type.GetType("System.Security.Policy.Evidence, mscorlib"), domainSetupType });
 					domain = createDomainMethod.Invoke(null, new object[] { "Remote Domain", securityInfo, info }) as AppDomain;
 
 					domain.InitializeLifetimeService();
@@ -120,7 +128,7 @@ namespace SolidCP.UniversalInstaller
 					{
 						loader = new AssemblyLoader();
 					}
-					object ret = loader.RemoteRun(fileName, typeName, methodName, parameters);
+					object ret = (bool)loader.RemoteRun(fileName, typeName, methodName, parameters);
 					AppDomain.Unload(domain);
 					return ret;
 				}
