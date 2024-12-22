@@ -94,30 +94,24 @@ namespace SolidCP.UniversalInstaller
 
 			public SetupWizard(UI ui) => UI = ui;
 
-			public virtual SetupWizard BannerWizard() => this;
-			public virtual SetupWizard Certificate() => this;
+			public virtual SetupWizard Introduction() => this;
+			public virtual SetupWizard Certificate(CommonSettings settings) => this;
 			public virtual SetupWizard CheckPrerequisites() => this;
 			public virtual SetupWizard ConfirmUninstall() => this;
 			public virtual SetupWizard Database() => this;
 			public virtual SetupWizard EmbeddEnterpriseServer() => this;
+			public virtual SetupWizard EnterpriseServerUrl() => this;
 			public virtual SetupWizard Progress() => this;
 			public virtual SetupWizard Download() => this;
 			public virtual SetupWizard Finish() => this;
-			public virtual SetupWizard InsecureHttpWarning() => this;
-			public virtual SetupWizard InstallFolder() => this;
-			public virtual SetupWizard Introduction() => this;
+			public virtual SetupWizard InsecureHttpWarning(CommonSettings settings) => this;
+			public virtual SetupWizard InstallFolder(ComponentSettings settings) => this;
 			public virtual SetupWizard LicenseAgreement() => this;
-			public virtual SetupWizard MarginWizards() => this;
-			public virtual SetupWizard Rollback() => this;
 			public virtual SetupWizard ServerAdminPassword() => this;
 			public virtual SetupWizard ServerPassword() => this;
-			public virtual SetupWizard ServiceAddress() => this;
-			public virtual SetupWizard SetupComplete() => this;
-			public virtual SetupWizard SQLServers() => this;
-			public virtual SetupWizard Uninstall() => this;
-			public virtual SetupWizard Url() => this;
-			public virtual SetupWizard UserAccount() => this;
-			public virtual SetupWizard Web() => this;
+			public virtual SetupWizard RunWithProgress(string title, Action action) => this;
+			public virtual SetupWizard UserAccount(CommonSettings settings) => this;
+			public virtual SetupWizard Web(CommonSettings settings) => this;
 			public abstract bool Show();
 		}
 
@@ -133,7 +127,7 @@ namespace SolidCP.UniversalInstaller
 		public abstract WebPortalSettings GetWebPortalSettings();
 		public abstract void GetCommonSettings(CommonSettings settings);
 		public abstract Packages GetPackagesToInstall();
-		public abstract void ShowInstallationProgress();
+		public abstract void ShowInstallationProgress(string title = null);
 		public abstract void CloseInstallationProgress();
 		public abstract void ShowError(Exception ex);
 		public abstract void ShowInstallationSuccess(Packages packages);

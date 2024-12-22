@@ -29,10 +29,12 @@ namespace SolidCP.UniversalInstaller
 		public virtual string ServerFolder => "Server";
 		public virtual string EnterpriseServerFolder => "EnterpriseServer";
 		public virtual string PortalFolder => "Portal";
+		public virtual string WebDavPortalFolder => "WebDavPortal";
 		public virtual string ServerUser => $"{SolidCP}Server";
 		public virtual string EnterpriseServerUser => $"{SolidCP}EnterpriseServer";
 		public virtual string WebPortalUser => $"{SolidCP}Portal";
 		public virtual string SolidCPWebUsersGroup => "SCP_IUSRS";
+		public virtual string UnixAppRootPath => "/usr";
 		public virtual string NewLine => Environment.NewLine;
 		public virtual bool CanInstallServer => true;
 		public virtual bool CanInstallEnterpriseServer => OSInfo.IsWindows;
@@ -59,7 +61,8 @@ namespace SolidCP.UniversalInstaller
 			Server = new ServerSettings(),
 			EnterpriseServer = new EnterpriseServerSettings(),
 			WebPortal = new WebPortalSettings(),
-			Installer = new InstallerSpecificSettings()
+			Installer = new InstallerSpecificSettings(),
+			WebDavPortal = new CommonSettings()
 		};
 
 		public Shell Shell { get; set; } = Shell.Standard.Clone;
@@ -181,6 +184,15 @@ namespace SolidCP.UniversalInstaller
 					UnixFileMode.UserExecute | UnixFileMode.GroupExecute, true);
 			}
 		}
+		public virtual void SetFileOwner(string folder, string owner, string group)
+		{
+			if (!Path.IsPathRooted(folder)) folder = Path.Combine(InstallWebRootPath, folder);
+
+			if (!OSInfo.IsWindows)
+			{
+				OSInfo.Unix.ChangeUnixFileOwner(folder, owner, group, true);
+			}
+		}
 
 		public IEnumerable<int> ExternalPortsFromUrls(string urls)
 		{
@@ -294,15 +306,69 @@ namespace SolidCP.UniversalInstaller
 			return tmp;
 		}
 		public string DownloadFile(string url) => DownloadFileAsync(url).Result;
-		public string Net48UnzipFilter(string file)
+		public string Net48Filter(string file)
 		{
 			return (!file.StartsWith("Setup/") && !file.StartsWith("bin_dotnet/") && !Regex.IsMatch(file, "(?:^|/)appsettings.json$")) ? file : null;
 		}
-		public string Net8UnzipFilter(string file)
+		public string Net8Filter(string file)
 		{
 			return (!file.StartsWith("Setup/") && (!file.StartsWith("bin/") || file.StartsWith("bin/netstandard/")) &&
 				!file.EndsWith(".config", StringComparison.OrdinalIgnoreCase) && file != "appsettings.json" &&
 				!file.EndsWith(".aspx") && !file.EndsWith(".asax") && !file.EndsWith(".asmx")) ? file : null;
+		}
+
+		public string ConfigAndSetupFilter(string file)
+		{
+			return !file.StartsWith("Setup/") && !file.EndsWith("/web.config", StringComparison.OrdinalIgnoreCase) &&
+				!file.EndsWith("/appsettings.json", StringComparison.OrdinalIgnoreCase) ? file : null;
+		}
+		public string SetupFilter(string file)
+		{
+			return !file.StartsWith("Setup/") ? file : null;
+		}
+
+		public void CopyFiles(string source, string destination,
+			Func<string, string> filter = null, string root = null, string destroot = null)
+		{
+			if (root == null && destroot == null)
+			{
+				Transaction(() => CopyFiles(source, destination, filter, source, destination))
+					.WithRollback(() => Directory.Delete(destination, true));
+			}
+			else
+			{
+				if (filter != null && source.StartsWith(root))
+				{
+					int len = root.Length;
+					if (!root.EndsWith(Path.DirectorySeparatorChar.ToString())) len++;
+					var file = source.Substring(len)
+						.Replace(Path.DirectorySeparatorChar, '/');
+					var dest = filter(file);
+					if (dest == null) return;
+					destination = Path.Combine(destroot, dest.Replace('/', Path.DirectorySeparatorChar));
+				}
+				if (root == null) root = source;
+				if (destroot == null) destroot = destination;
+				if (Directory.Exists(source))
+				{
+					if (!Directory.Exists(destination)) Directory.CreateDirectory(destination);
+					foreach (var file in Directory.GetFiles(source))
+					{
+						var name = Path.GetFileName(file);
+						File.Copy(file, Path.Combine(destination, name));
+						Shell.Log?.Invoke($"Copied {name}{NewLine}");
+					}
+					foreach (var dir in Directory.GetDirectories(source))
+					{
+						CopyFiles(dir, Path.Combine(destination, Path.GetFileName(dir)), filter, root, destroot);
+					}
+				}
+				else if (File.Exists(source))
+				{
+					File.Copy(source, destination);
+					Shell.Log?.Invoke($"Copied {Path.GetFileName(source)}{NewLine}");
+				}
+			}
 		}
 
 		public void UnzipFromStream(Stream resource, string destinationPath, Func<string, string> filter = null)
@@ -324,7 +390,10 @@ namespace SolidCP.UniversalInstaller
 						{
 							var fullName = Path.GetFullPath(Path.Combine(destinationPath, name.Replace('/', Path.DirectorySeparatorChar)));
 
-							zipEntry.ExtractToFile(fullName);
+							if (string.IsNullOrEmpty(zipEntry.Name))
+								Directory.CreateDirectory(fullName);
+							else
+								zipEntry.ExtractToFile(fullName);
 
 							Shell.Log?.Invoke($"Extracted {name}{NewLine}");
 						}
@@ -346,7 +415,7 @@ namespace SolidCP.UniversalInstaller
 
 				using (var resource = assembly.GetManifestResourceStream(resourceName))
 				{
-
+					UnzipFromStream(resource, destinationPath, filter);
 				}
 			})
 			.WithRollback(() => Directory.Delete(destinationPath));

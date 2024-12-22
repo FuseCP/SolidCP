@@ -57,17 +57,20 @@ namespace SolidCP.Setup
 			var minVersion = Version.Parse(minimalInstallerVersion);
 			if (Settings.Installer.Version >= minVersion)
 			{
+				var settings = Settings.EnterpriseServer;
 				return UI.Current.Wizard
-					.BannerWizard()
+					.Introduction()
 					.CheckPrerequisites()
 					.LicenseAgreement()
-					.InstallFolder()
-					.UserAccount()
+					.InstallFolder(settings)
+					.Web(settings)
+					.InsecureHttpWarning(settings)
+					.Certificate(settings)
+					.UserAccount(settings)
 					.Database()
-					.Url()
-					.InsecureHttpWarning()
-					.Certificate()
-					.Progress()
+					.RunWithProgress("Install Enterprise Server",
+						Installer.Current.InstallEnterpriseServer)
+					.Finish()
 					.Show();
 			}
 			else
@@ -81,15 +84,47 @@ namespace SolidCP.Setup
 		public override bool Setup(string args)
 		{
 			ParseArgs(args);
+			var settings = Settings.EnterpriseServer;
 			return UI.Current.Wizard
+				.Introduction()
+				.Web(settings)
+				.InsecureHttpWarning(settings)
+				.Certificate(settings)
+				.UserAccount(settings)
+				.Database()
+				.RunWithProgress("Setup Enterprise Server",
+					() => Installer.Current.ConfigureEnterpriseServer())
+				.Finish()
 				.Show();
 		}
 
 		public override bool Update(string args)
 		{
 			ParseArgs(args);
+			var settings = Settings.EnterpriseServer;
 			return UI.Current.Wizard
+				.Introduction()
+				.Web(settings)
+				.InsecureHttpWarning(settings)
+				.Certificate(settings)
+				.UserAccount(settings)
+				.Database()
+				.RunWithProgress("Update Enterprise Server",
+					Installer.Current.UpdateEnterpriseServer)
+				.Finish()
 				.Show();
 		}
+		public override bool Uninstall(string args)
+		{
+			ParseArgs(args);
+			return UI.Current.Wizard
+				.Introduction()
+				.ConfirmUninstall()
+				.RunWithProgress("Uninstall Enterprise Server",
+					Installer.Current.RemoveEnterpriseServer)
+				.Finish()
+				.Show();
+		}
+
 	}
 }

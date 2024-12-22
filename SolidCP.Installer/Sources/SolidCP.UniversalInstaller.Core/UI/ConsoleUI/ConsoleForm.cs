@@ -159,6 +159,15 @@ namespace SolidCP.UniversalInstaller
 
 		Shell shell;
 		int lines = 0;
+		public int Lines
+		{
+			get => lines;
+			set
+			{
+				Value = 1.0f - (float)Math.Exp(-((float)lines / (float)EstimatedMaxProgress));
+			}
+		}
+
 		public Shell Shell
 		{
 			get { return shell; }
@@ -170,10 +179,7 @@ namespace SolidCP.UniversalInstaller
 					if (shell != null)
 					{
 						lines = 0;
-						shell.Log += msg =>
-						{
-							Value = 1.0f - (float)Math.Exp(-((float)lines++ / (float)EstimatedMaxProgress));
-						};
+						shell.Log += msg => Lines++;
 					}
 				}
 			}
@@ -445,6 +451,8 @@ namespace SolidCP.UniversalInstaller
 				field.Show();
 			}
 		}
+
+		public Action Edited; 
 		public ConsoleForm Edit()
 		{
 			if (Focus == null) return this;
@@ -457,6 +465,8 @@ namespace SolidCP.UniversalInstaller
 					if (Focus.Edit(key)) return this;
 				}
 				else if (EditNavigate(key)) return this;
+
+				Edited?.Invoke();
 			} while (true);
 			//return this;
 		}
@@ -670,11 +680,12 @@ namespace SolidCP.UniversalInstaller
 				if (newline - prevline > Console.WindowWidth)
 				{
 					var lastspace = template.LastIndexOf(' ', prevline + Console.WindowWidth);
-					if (lastspace >= 0 && sbpos < template.Length)
+					if (lastspace >= 0 && lastspace > sbpos && sbpos < template.Length)
 					{
-						sb.Append(template.Substring(sbpos, lastspace));
+						sb.Append(template.Substring(sbpos, lastspace - sbpos));
 						sb.AppendLine();
 						sbpos = lastspace + 1;
+						newline = lastspace;
 					}
 				}
 				prevline = newline + 1;

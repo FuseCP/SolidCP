@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using SolidCP.Providers.OS;
+using SolidCP.EnterpriseServer.Data;
 
 namespace SolidCP.UniversalInstaller
 {
@@ -10,14 +12,29 @@ namespace SolidCP.UniversalInstaller
 		public ServerSettings Server { get; set; }
 		public EnterpriseServerSettings EnterpriseServer { get; set; }
 		public WebPortalSettings WebPortal { get; set; }
+		public ComponentSettings Standalone { get; set; }
+		public CommonSettings WebDavPortal { get; set; } 
 		public InstallerSpecificSettings Installer { get; set; }
 	}
 
-	public class CommonSettings
+	public class ComponentSettings
+	{
+		private string installFolder = null;
+		public string InstallFolder
+		{
+			get => installFolder ??= Path.Combine(OSInfo.IsWindows ?
+				Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) :
+				Installer.Current.UnixAppRootPath, Installer.Current.SolidCP);
+			set => installFolder = value;
+		}
+			
+	}
+	public class CommonSettings: ComponentSettings
 	{
 		public string Urls { get; set; }
 		public string Username { get; set; }
 		public string Password { get; set; }
+		public bool UseActiveDirectory { get; set; }
 		public string CertificateStoreName { get; set; }
 		public string CertificateStoreLocation { get; set; }
 		public string CertificateFindValue { get; set; }
@@ -26,30 +43,42 @@ namespace SolidCP.UniversalInstaller
 		public string CertificatePassword { get; set; }
 		public string LetsEncryptCertificateDomains { get; set; }
 		public string LetsEncryptCertificateEmail { get; set; }
+		public bool ConfigureCertificateManually { get; set; }
 	}
 	public class ServerSettings: CommonSettings
 	{
+		public ServerSettings()
+		{
+			Urls = "http://localhost:9003";
+		}
 		public string ServerPassword { get; set; }
 		public string ServerPasswordSHA { get; set; }
 	}
 
 	public class EnterpriseServerSettings: CommonSettings
 	{
-		public string EnterpriseUser { get; set; }
-		public string EnterpriseUserPassword { get; set; }
-		public string DatabaseServer { get; set; }
+		public EnterpriseServerSettings()
+		{
+			Urls = "http://localhost:9002";
+		}
+		public DbType DatabaseType { get; set; } = DbType.Unknown;
+		public string DatabaseServer { get; set; } = "localhost";
+		public int DatabasePort { get; set; }
 		public string DatabaseUser { get; set; }
 		public string DatabasePassword { get; set; }
-		public bool WindowsAuthentication { get; set; }
+		public string DatabaseName { get; set; }
+		public string ServerAdminPassword { get; set; }
+		public bool TrustDatabaseServerCertificate { get; set; } = false;
+		public bool WindowsAuthentication { get; set; } = false;
 		public string CryptoKey { get; set; }
 	}
 
 	public class WebPortalSettings: CommonSettings
 	{
-		public string EnterpriseServerUrl { get; set; }
-		public string PortalUser { get; set; }
-		public string PortalUserPassword { get; set; }
-		public bool EmbedEnterpriseServer { get; set; }
+		public string EnterpriseServerUrl { get; set; } = "assembly://SolidCP.EnterpriseServer";
+		public string EnterpriseServerPath { get; set; } = "..\\EnterpriseServer";
+		public bool EmbedEnterpriseServer { get; set; } = true;
+		public bool ExposeEnterpriseServerWebServices { get; set; } = true;
 	}
 
 	public class ProxySettings

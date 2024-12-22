@@ -2,9 +2,12 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using System.Text;
 using SolidCP.Providers.OS;
+using SolidCP.EnterpriseServer.Data;
 using Microsoft.Identity.Client;
 using System.Collections;
 using System.Runtime.InteropServices.ComTypes;
+using SolidCP.Providers.Web;
+using System.Security.Policy;
 
 namespace SolidCP.UniversalInstaller
 {
@@ -14,21 +17,651 @@ namespace SolidCP.UniversalInstaller
 		public override bool IsAvailable => true;
 		public new class SetupWizard : UI.SetupWizard
 		{
-			List<Action> pages;
-			public override UI.SetupWizard BannerWizard()
+
+			List<Action> Pages = new();
+
+			int CurrentPage = 0;
+
+			protected void Next()
 			{
-				pages.Add(() =>
+				if (CurrentPage < Pages.Count) CurrentPage++;
+			}
+			protected void Back()
+			{
+				if (CurrentPage > 0) CurrentPage--;
+			}
+			protected void Exit() => CurrentPage = -1;
+			protected bool HasExited => CurrentPage < 0 || CurrentPage >= Pages.Count;
+			protected Action Current => CurrentPage >= 0 && CurrentPage < Pages.Count ? Pages[CurrentPage] : () => { };
+
+			public override UI.SetupWizard Introduction()
+			{
+				Pages.Add(() =>
 				{
-					var form = new ConsoleForm($@"");
+					var form = new ConsoleForm($@"
+Welcome to the SolidCP Setup Wizard
+===================================
+
+This wizard will guide you through the installation of the SolidCP product.
+
+It is recommended that you close all other applications before starting Setup. " +
+@"This will make it possible to update relevant system files without having " +
+@"to reboot your computer.
+
+[  Next  ]  [  Cancel  ]")
+						.ShowDialog();
+					if (form["Cancel"].Clicked)
+					{
+						UI.RunMainUI();
+						Exit();
+						Environment.Exit(0);
+					}
+					Next();
 				});
 				return this;
 			}
+
+			public override UI.SetupWizard LicenseAgreement()
+			{
+				Pages.Add(() =>
+				{
+					var form = new ConsoleForm();
+					var license = @"
+LICENSE AGREEMENT
+=================
+
+Copyright (c) 2016 - 2024, SolidCP. 
+All rights Reserved 
+
+This project is distributed under the Creative Commons Share-alike license. 
+
+This project is originally based up on WebsitePanel: 
+ Copyright (c) 2012, Outercurve Foundation.
+All rights reserved.
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+* Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+* Neither the name of the Outercurve Foundation nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ""AS IS"" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.".Trim();
+					license = form.Wrap(license);
+					var sr = new StringReader(license);
+					List<string> lines = new();
+					string line;
+					while ((line = sr.ReadLine()) != null) lines.Add(line);
+
+					int height = Console.WindowHeight - 2;
+					int pages = lines.Count / height + 1;
+					int page = 0;
+					bool lastPage = false;
+					bool firstPage = true;
+					bool exit = false;
+					do
+					{
+						var sb = new StringBuilder();
+						for (int i = page * height; i < (page + 1) * height; i++)
+						{
+							if (i < lines.Count) sb.AppendLine(lines[i]);
+						}
+						sb.AppendLine();
+						lastPage = page >= pages - 1;
+						firstPage = page == 0;
+						if (firstPage && lastPage) sb.Append("[  I Agree  ]  [  Cancel  ]");
+						else if (firstPage) sb.Append("[  Next  ]  [  Cancel  ]");
+						else if (lastPage) sb.Append("[  Previous  ]  [  I Agree  ]  [  Cancel  ]");
+						else sb.Append("[  Previous  ]  [  Next  ]  [  Cancel  ]");
+						form.Parse(sb.ToString());
+						form.ShowDialog();
+						if (form["Cancel"].Clicked)
+						{
+							UI.RunMainUI();
+							Exit();
+							Environment.Exit(0);
+						}
+						else if (lastPage && form["I Agree"].Clicked)
+						{
+							exit = true;
+							Next();
+						}
+						else if (!firstPage && form["Previous"].Clicked) page--;
+						else if (!lastPage && form["Next"].Clicked) page++;
+					} while (!exit);
+				});
+				return this;
+			}
+			public override UI.SetupWizard CheckPrerequisites()
+			{
+				Pages.Add(() =>
+				{
+					UI.CheckPrerequisites();
+					Next();
+				});
+				return this;
+			}
+			public override UI.SetupWizard InstallFolder(ComponentSettings settings)
+			{
+				Pages.Add(() =>
+				{
+					var form = new ConsoleForm(@"
+Install Folder:
+===============
+
+Install Component to:
+[?InstallFolder                                                          ]
+
+[  Next  ]  [  Back  ]")
+					.Load(settings)
+					.ShowDialog();
+					if (form["Next"].Clicked)
+					{
+						form.Save(settings);
+						Next();
+					}
+					else Back();
+				});
+				return this;
+			}
+			public override UI.SetupWizard UserAccount(CommonSettings settings)
+			{
+				Pages.Add(() =>
+				{
+					bool passwordMatch = true;
+					ConsoleForm form;
+					do
+					{
+						form = new ConsoleForm(@$"
+Security Settings:
+==================
+
+Please specify a new user account for the website anonymous access and application pool identity.
+{(OSInfo.IsWindows ? @"
+[x] Create Active Directory account" : "")}
+
+Username:        [?Username                                     ]
+Password:        [!Password                                     ]
+Repeat Password: [!RepeatPassword                                     ]
+{(passwordMatch ? "" : @"
+Passwords must match!
+")}
+[  Next  ]  [  Back  ]
+")
+							.Load(settings)
+							.Apply(f =>
+							{
+								if (OSInfo.IsWindows)
+								{
+									f[0].Checked = settings.UseActiveDirectory;
+								}
+							})
+							.ShowDialog();
+						if (form["Back"].Clicked)
+						{
+							Back();
+							break;
+						} else
+						{
+							passwordMatch = form["Password"].Text == form["RepeatPassword"].Text;
+							if (passwordMatch)
+							{
+								form.Save(settings);
+								settings.UseActiveDirectory = OSInfo.IsWindows && form[0].Checked;
+								Next();
+							}
+						}
+					} while (!passwordMatch);
+				});
+				return this;
+			}
+			public override UI.SetupWizard Web(CommonSettings settings)
+			{
+				Pages.Add(() =>
+				{
+					var form = new ConsoleForm(@"
+Web Site Settings:
+==================
+
+Specify the desired url of the website. You can specify multiple urls separated by a semicolon.
+
+Urls: [?Urls                                                                       ]
+
+[  Next  ]  [  Back  ]
+")
+						.Load(settings)
+						.ShowDialog();
+					if (form["Back"].Clicked)
+					{
+						Back();
+					} else
+					{
+						form.Save(settings);
+						Next();
+					}
+				});
+				return this;
+			}
+			public override UI.SetupWizard EnterpriseServerUrl()
+			{
+				var settings = Settings.WebPortal;
+
+				Pages.Add(() =>
+				{
+					var form = new ConsoleForm(@"
+EnterpriseServer Settings:
+==========================
+
+[x] Embed EnterpriseServer into WebPortal
+
+EnterpriseServer URL: [?EnterpriseServerUrl                                          ]
+
+[x] Expose EnterpriseServer Webservices
+
+Path to EnterpriseServer: [?EnterpriseServerPath                                      ]
+
+[  Next  ]  [  Back  ]
+")
+						.Load(settings)
+						.Apply(f =>
+						{
+							f[0].Checked = settings.EmbedEnterpriseServer;
+							f[2].Checked = settings.ExposeEnterpriseServerWebServices;
+						})
+						.ShowDialog();
+					if (form["Back"].Clicked)
+					{
+						Back();
+					} else
+					{
+						form.Save(settings);
+						settings.EmbedEnterpriseServer = form[0].Checked;
+						settings.ExposeEnterpriseServerWebServices = form[0].Checked;
+						Next();
+					}
+				});
+				return this;
+			}
+			public override UI.SetupWizard EmbeddEnterpriseServer()
+			{
+				var settings = Settings.WebPortal;
+
+				Pages.Add(() =>
+				{
+					var form = new ConsoleForm(@"
+EnterpriseServer Settings:
+==========================
+
+[x] Embed EnterpriseServer into WebPortal
+
+[x] Expose EnterpriseServer Webservices
+
+[  Next  ]  [  Back  ]
+")
+						.Apply(f =>
+						{
+							f[0].Checked = settings.EmbedEnterpriseServer;
+							f[2].Checked = settings.ExposeEnterpriseServerWebServices;
+						})
+						.ShowDialog();
+					if (form["Back"].Clicked)
+					{
+						Back();
+					}
+					else
+					{
+						settings.EmbedEnterpriseServer = form[0].Checked;
+						settings.ExposeEnterpriseServerWebServices = form[0].Checked;
+						Next();
+					}
+				});
+				return this;
+			}
+
+			bool IsIis7 => OSInfo.IsWindows && OSInfo.Windows?.WebServer.Version.Major >= 7;
+			bool IsSecure(Uri uri) => uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase) || (IsIis7 || !OSInfo.IsWindows) && Utils.IsHostLocal(uri.Host);
+			bool IsSecure(string urls) => (urls ?? "").Split(',', ';')
+				.Any(url => IsSecure(new Uri(url)));
+			public override UI.SetupWizard InsecureHttpWarning(CommonSettings settings)
+			{
+				Pages.Add(() =>
+				{
+					if (!IsSecure(settings.Urls))
+					{
+						var form = new ConsoleForm(@"
+Insecure HTTP Warning:
+======================
+
+You've choosen an insecure http protocol for the server. That way you will only be able to access the server from localhost, a LAN IP, via an SSH Tunnel or VPN. You can access the server via SSH Tunnel by specifying the url 
+ssh://<username>:<password>@<host>/<remoteport>
+when adding the server in SolidCP Portal.
+
+[  Next  ]  [  Back  ]")
+							.ShowDialog();
+						if (form["Back"].Clicked) Back();
+						else Next();
+					}
+					else Next();
+				});
+				return this;
+			}
+
+			public override UI.SetupWizard Database()
+			{
+				var settings = Settings.EnterpriseServer;
+				Pages.Add(() =>
+				{
+					var dbType = settings.DatabaseType;
+					ConsoleForm form = null;
+
+					if (dbType == DbType.Unknown)
+					{
+						form = new ConsoleForm(@"
+Database Settings:
+==================
+
+[  Use Microsoft SQL-Server Database  ]
+[  Use MySQL/MariaDB Database  ]
+[  Use SQLite Database  ]
+
+[  Back  ]
+")
+						.ShowDialog();
+						if (form["Back"].Clicked)
+						{
+							Back();
+							return;
+						}
+						else
+						{
+							if (form[0].Clicked) dbType = DbType.SqlServer;
+							else if (form[1].Clicked) dbType = DbType.MySql;
+							else if (form[2].Clicked) dbType = DbType.Sqlite;
+						}
+					}
+
+					settings.DatabaseType = dbType;
+
+					switch (dbType)
+					{
+						default:
+						case DbType.SqlServer:
+							form = new ConsoleForm(@"
+SQL Server Settings:
+====================
+
+Server:   [?DatabaseServer                               ]
+Database: [?DatabaseName                               ]
+User:     [?DatabaseUser                               ]
+Password: [?DatabasePassword                               ]
+Always Trust Server Certificate: [x]
+
+[  Next  ]  [  Back  ]")
+								.Load(settings)
+								.Apply(f => f[3].Checked = settings.TrustDatabaseServerCertificate)
+								.ShowDialog();
+							if (form["Next"].Clicked)
+							{
+								form.Save(settings);
+								settings.TrustDatabaseServerCertificate = form[3].Checked;
+								Next();
+							}
+							else
+							{
+								settings.DatabaseType = DbType.Unknown;
+								Back();
+							}
+							break;
+						case DbType.MySql:
+						case DbType.MariaDb:
+							form = new ConsoleForm(@"
+MySQL/MariaDB Settings:
+=======================
+
+(Note that by using MySQL/MariaDB, SolidCP will run slower than with SQL Server)
+
+Server:   [?DatabaseServer                               ]
+Database: [?DatabaseName                               ]
+Port:     [?DatabasePort                               ]
+User:     [?DatabaseUser                               ]
+Password: [?DatabasePassword                               ]
+
+[  Next  ]  [  Back  ]")
+								.Load(settings)
+								.ShowDialog();
+							if (form["Next"].Clicked)
+							{
+								form.Save(settings);
+								Next();
+							}
+							else
+							{
+								settings.DatabaseType = DbType.Unknown;
+								Back();
+							}
+							break;
+						case DbType.Sqlite:
+						case DbType.SqliteFX:
+							form = new ConsoleForm(@"
+SQLite Settings:
+================
+
+(Note that by using SQLite, SolidCP will run slower than with using SQL Server. It is not recommended to use SQLite on a production server.)
+
+Database: [?DatabaseName                               ]
+
+[  Next  ]  [  Back  ]")
+								.Load(settings)
+								.ShowDialog();
+							if (form["Next"].Clicked)
+							{
+								form.Save(settings);
+								Next();
+							}
+							else
+							{
+								settings.DatabaseType = DbType.Unknown;
+								Back();
+							}
+							break;
+					}
+				});
+				return this;
+			}
+
+			public override UI.SetupWizard ServerPassword()
+			{
+				Pages.Add(() =>
+				{
+					bool passwordMatch = true;
+					do
+					{
+						var form = new ConsoleForm(@$"
+Server Password:
+================
+
+Choose a password to secure access to the Server.
+
+Password:        [!ServerPassword                             ]
+Repeat Password: [!RepeatPassword                             ]
+{(passwordMatch ? "" : @"
+Passwords must match!
+")}
+[  Next  ]  [  Back  ]")
+						.Load(Settings.Server)
+						.ShowDialog();
+						passwordMatch = form["ServerPassword"].Text == form["RepeatPassword"].Text;
+						if (form["Next"].Clicked && passwordMatch)
+						{
+							form.Save(Settings.Server);
+							Next();
+						}
+						else if (form["Back"].Clicked) Back();
+					} while (!passwordMatch);
+
+				});
+				return this;
+			}
+			public override UI.SetupWizard ServerAdminPassword()
+			{
+				Pages.Add(() =>
+				{
+					bool passwordMatch = true;
+					do
+					{
+						var form = new ConsoleForm(@$"
+ServerAdmin Password:
+================
+
+Choose a password for the serveradmin user to log into WebPortal.
+
+Password:        [!ServerAdminPassword                             ]
+Repeat Password: [!RepeatPassword                             ]
+{(passwordMatch ? "" : @"
+Passwords must match!
+")}
+[  Next  ]  [  Back  ]")
+						.Load(Settings.Server)
+						.ShowDialog();
+						passwordMatch = form["ServerAdminPassword"].Text == form["RepeatPassword"].Text;
+						if (form["Next"].Clicked && passwordMatch)
+						{
+							form.Save(Settings.Server);
+							Next();
+						}
+						else if (form["Back"].Clicked) Back();
+					} while (!passwordMatch);
+
+				});
+				return this;
+			}
+
+			public override UI.SetupWizard Certificate(CommonSettings settings)
+			{
+				Pages.Add(() =>
+				{
+					var form = new ConsoleForm(@"
+Certificate Settings:
+=====================
+
+[  Use a certificate from the store  ]
+[  Use a certificate from a file  ]
+[  Use a Let's Encrypt certificate  ]
+[  Configure the certificate manually  ]
+
+[  Back  ]")
+						.ShowDialog();
+					if (form["Back"].Clicked) Back();
+					else if (form[0].Clicked)
+					{
+						form = new ConsoleForm(@"
+Certificate from Store:
+=======================
+
+Store Location:  [?CertificateStoreLocation                                     ]
+Store Name:      [?CertificateStoreName                                     ]
+Find Type:       [?CertificateFindType                                     ]
+Find Value:      [?CertificateFindValue                                     ]
+
+[  Next  ]  [  Back  ]")
+							.Load(settings)
+							.ShowDialog();
+						if (form["Next"].Clicked)
+						{
+							form.Save(settings);
+							Next();
+						}
+						else Back();
+					} else if (form[1].Clicked)
+					{
+						form = new ConsoleForm(@"
+Certificate from File:
+======================
+
+File:     [?CertificateFile                                     ]
+Password: [?CertificatePassword                                     ]
+
+[  Next  ]  [  Back  ]")
+							.Load(settings)
+							.ShowDialog();
+						if (form["Next"].Clicked)
+						{
+							form.Save(settings);
+							Next();
+						}
+						else Back();
+					} else if (form[2].Clicked)
+					{
+						form = new ConsoleForm(@"
+Let's Encrypt Certificate:
+==========================
+
+Email:   [?LetsEncryptCertificateEmail                                     ]
+Domains: [?LetsEncryptCertificateDomains                                     ]
+
+[  Next  ]  [  Back  ]")
+	.Load(settings)
+	.ShowDialog();
+						if (form["Next"].Clicked)
+						{
+							form.Save(settings);
+							Next();
+						}
+						else Back();
+					} else
+					{
+						form = new ConsoleForm(@"
+Configure Certificate Manually:
+===============================
+
+[x] Configure certificate manually
+
+[  Next  ]  [  Back  ]")
+							.Apply(f => f[0].Checked = settings.ConfigureCertificateManually)
+							.ShowDialog();
+						if (form["Next"].Clicked)
+						{
+							settings.ConfigureCertificateManually = form[0].Checked;
+							Next();
+						}
+						else Back();
+					}
+				});
+				return this;
+			}
+			public override UI.SetupWizard Finish()
+			{
+				Pages.Add(() =>
+				{
+					var form = new ConsoleForm($@"
+Successful Installation:
+========================
+
+SolidCP Installer successfully has:
+{string.Join(Environment.NewLine, Installer.Current.InstallLogs
+	.Select(line => $"- {line}"))}
+
+[  Finish  ]")
+						.ShowDialog();
+					UI.RunMainUI();
+					UI.Exit();
+					Environment.Exit(0);
+				});
+				return this;
+			}
+
+			public override UI.SetupWizard RunWithProgress(string title, Action action)
+			{
+				Pages.Add(() =>
+				{
+					UI.ShowInstallationProgress(title);
+					action();
+				});
+				return this;
+			}
+
 			public SetupWizard(UI ui) : base(ui) { }
 			public override bool Show()
 			{
 				try
 				{
-					foreach (var page in pages) page();
+					while (!HasExited) Current();
 
 					return true;
 				} catch (Exception ex)
@@ -113,7 +746,6 @@ Password: [!ProxyPassword                           ]
 			RunMainUI();
 		}
 
-
 		public void AvailableComponents()
 		{
 			var str = new StringBuilder();
@@ -161,7 +793,7 @@ Password: [!ProxyPassword                           ]
 			str.AppendLine();
 			str.AppendLine(component.ComponentDescription);
 			str.AppendLine();
-			str.AppendLine("[  Back  ]  [  Install  ]");
+			str.AppendLine("[  Install  ]  [  Back  ]");
 			var form = new ConsoleForm(str.ToString())
 				.ShowDialog();
 			if (form["Back"].Clicked) AvailableComponents();
@@ -350,7 +982,7 @@ Components to Install
 		}
 
 		ConsoleForm InstallationProgress = null;
-		public void ShowInstallationProgress(string title)
+		public override void ShowInstallationProgress(string title = null)
 		{
 			title ??= "Installation Progress";
 			InstallationProgress = new ConsoleForm(@$"
@@ -362,8 +994,6 @@ Components to Install
 			.ShowProgress(Installer.Shell, Installer.EstimatedOutputLines)
 			.Show();
 		}
-
-		public override void ShowInstallationProgress() => ShowInstallationProgress(null);
 
 		public override void CloseInstallationProgress()
 		{

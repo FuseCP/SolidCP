@@ -19,6 +19,7 @@ namespace SolidCP.UniversalInstaller
 		public virtual void InstallPortalPrerequisites() { }
 		public virtual void RemovePortalPrerequisites() { }
 		public virtual void SetPortalFilePermissions() => SetFilePermissions(PortalFolder);
+		public virtual void SetPortalServerFileOwner() => SetFileOwner(PortalFolder, Settings.WebPortal.Username, SolidCP.ToLower());
 		public virtual void InstallPortalWebsite()
 		{
 			InstallWebsite($"{SolidCP}WebPortal", Path.Combine(InstallWebRootPath, PortalFolder), Settings.WebPortal.Urls ?? "", "", "");
@@ -27,9 +28,10 @@ namespace SolidCP.UniversalInstaller
 		{
 			InstallPortalPrerequisites();
 			ReadWebPortalConfiguration();
-			UnzipPortal();
-			InstallPortalWebsite();
+			CopyPortal();
 			SetPortalFilePermissions();
+			SetPortalServerFileOwner();
+			InstallPortalWebsite();
 		}
 		public virtual void RemovePortalWebsite() { }
 		public virtual void ReadWebPortalConfiguration()
@@ -40,10 +42,11 @@ namespace SolidCP.UniversalInstaller
 		{
 
 		}
-		public virtual void UnzipPortal()
+		public virtual void CopyPortal(Func<string, string> filter = null)
 		{
+			filter ??= SetupFilter;
 			var websitePath = Path.Combine(InstallWebRootPath, PortalFolder);
-			UnzipFromResource("SolidCP-Portal.zip", websitePath, Net48UnzipFilter);
+			CopyFiles(Settings.Installer.TempPath, websitePath, filter);
 		}
 
 	}

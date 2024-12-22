@@ -20,13 +20,31 @@ namespace SolidCP.UniversalInstaller
 		public virtual void InstallEnterpriseServerPrerequisites() { }
 		public virtual void RemoveEnterpriseServerPrerequisites() { }
 		public virtual void SetEnterpriseServerFilePermissions() => SetFilePermissions(EnterpriseServerFolder);
+		public virtual void SetEnterpriseServerFileOwner() => SetFileOwner(EnterpriseServerFolder, Settings.EnterpriseServer.Username, SolidCP.ToLower());
 		public virtual void InstallEnterpriseServer()
 		{
 			InstallEnterpriseServerPrerequisites();
 			ReadEnterpriseServerConfiguration();
-			UnzipEnterpriseServer();
-			InstallEnterpriseServerWebsite();
+			CopyEnterpriseServer();
 			SetEnterpriseServerFilePermissions();
+			SetEnterpriseServerFileOwner();
+			InstallEnterpriseServerWebsite();
+			ConfigureEnterpriseServer();
+		}
+		public virtual void UpdateEnterpriseServerConfig()
+		{
+
+		}
+		public virtual void UpdateEnterpriseServer()
+		{
+			InstallEnterpriseServerPrerequisites();
+			ReadEnterpriseServerConfiguration();
+			CopyEnterpriseServer(ConfigAndSetupFilter);
+			SetEnterpriseServerFilePermissions();
+			SetEnterpriseServerFileOwner();
+			UpdateEnterpriseServerConfig();
+			ConfigureEnterpriseServer();
+			InstallEnterpriseServerWebsite();
 		}
 		public virtual void InstallEnterpriseServerWebsite()
 		{
@@ -36,14 +54,25 @@ namespace SolidCP.UniversalInstaller
 				"", "");
 		}
 		public virtual void RemoveEnterpriseServerWebsite() { }
+		public virtual void RemoveEnterpriseServerFolder()
+		{
+			Directory.Delete(Path.Combine(InstallWebRootPath, EnterpriseServerFolder), true);
+		}
+
+		public virtual void RemoveEnterpriseServer()
+		{
+			RemoveEnterpriseServerWebsite();
+			RemoveEnterpriseServerFolder();
+		}
 		public virtual void ReadEnterpriseServerConfiguration() { }
 
-		public virtual void ConfigureEnterpriseServer(EnterpriseServerSettings settings) { }
+		public virtual void ConfigureEnterpriseServer() { }
 
-		public virtual void UnzipEnterpriseServer()
+		public virtual void CopyEnterpriseServer(Func<string, string> filter = null)
 		{
+			filter ??= SetupFilter;
 			var websitePath = Path.Combine(InstallWebRootPath, EnterpriseServerFolder);
-			UnzipFromResource("SolidCP-EnterpriseServer.zip", websitePath, UnzipFilter);
+			CopyFiles(Settings.Installer.TempPath, websitePath, filter);
 		}
 	}
 }

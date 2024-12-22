@@ -8,8 +8,8 @@ namespace SolidCP.UniversalInstaller
 		{
 			public SetupWizard(UI ui): base(ui) { }
 
-			public override UI.SetupWizard BannerWizard() => this;
-			public override UI.SetupWizard Certificate() => this;
+			public override UI.SetupWizard Introduction() => this;
+			public override UI.SetupWizard Certificate(CommonSettings settings) => this;
 			public override UI.SetupWizard CheckPrerequisites() => this;
 			public override UI.SetupWizard ConfirmUninstall() => this;
 			public override UI.SetupWizard Database() => this;
@@ -17,21 +17,12 @@ namespace SolidCP.UniversalInstaller
 			public override UI.SetupWizard Progress() => this;
 			public override UI.SetupWizard Download() => this;
 			public override UI.SetupWizard Finish() => this;
-			public override UI.SetupWizard InsecureHttpWarning() => this;
-			public override UI.SetupWizard InstallFolder() => this;
-			public override UI.SetupWizard Introduction() => this;
+			public override UI.SetupWizard InsecureHttpWarning(CommonSettings settings) => this;
+			public override UI.SetupWizard InstallFolder(ComponentSettings settings) => this;
 			public override UI.SetupWizard LicenseAgreement() => this;
-			public override UI.SetupWizard MarginWizards() => this;
-			public override UI.SetupWizard Rollback() => this;
 			public override UI.SetupWizard ServerAdminPassword() => this;
 			public override UI.SetupWizard ServerPassword() => this;
-			public override UI.SetupWizard ServiceAddress() => this;
-			public override UI.SetupWizard SetupComplete() => this;
-			public override UI.SetupWizard SQLServers() => this;
-			public override UI.SetupWizard Uninstall() => this;
-			public override UI.SetupWizard Url() => this;
-			public override UI.SetupWizard UserAccount() => this;
-			public override UI.SetupWizard Web() => this;
+	
 			public override bool Show()
 			{
 				return true;
@@ -102,7 +93,7 @@ namespace SolidCP.UniversalInstaller
 			throw new NotImplementedException();
 		}
 
-		public override void ShowInstallationProgress()
+		public override void ShowInstallationProgress(string title = null)
 		{
 			throw new NotImplementedException();
 		}

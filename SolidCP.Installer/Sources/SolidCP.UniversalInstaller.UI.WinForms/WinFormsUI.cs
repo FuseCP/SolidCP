@@ -47,7 +47,7 @@ namespace SolidCP.UniversalInstaller {
 			return UI.Current.GetPackagesToInstall();
         }
         
-        public override void ShowInstallationProgress() {
+        public override void ShowInstallationProgress(string title = null) {
             throw new NotImplementedException();
         }
 

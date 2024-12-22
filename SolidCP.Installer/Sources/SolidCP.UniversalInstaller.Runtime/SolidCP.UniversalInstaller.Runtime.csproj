@@ -5,14 +5,14 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
         <LangVersion>13</LangVersion>
-        <PackageId>SolidCP.UniversalInstaller.WebService</PackageId>
+        <PackageId>SolidCP.UniversalInstaller.Runtime</PackageId>
     </PropertyGroup>
 
     <PropertyGroup Condition="$(TargetFramework) == 'net48'">
-        <AssemblyName>SolidCP.UniversalInstaller.WebService.NetFX</AssemblyName>
+        <AssemblyName>SolidCP.UniversalInstaller.Runtime.NetFX</AssemblyName>
     </PropertyGroup>
     <PropertyGroup Condition="$(TargetFramework) == 'net8.0'">
-        <AssemblyName>SolidCP.UniversalInstaller.WebService.NetCore</AssemblyName>
+        <AssemblyName>SolidCP.UniversalInstaller.Runtime.NetCore</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup Condition="$(TargetFramework) == 'net48'">

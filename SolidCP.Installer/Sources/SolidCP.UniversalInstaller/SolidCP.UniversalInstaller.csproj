@@ -29,8 +29,8 @@
     <ItemGroup>
 		<ProjectReference Include="..\SolidCP.UniversalInstaller.Core\SolidCP.UniversalInstaller.Core.csproj" />
 		<ProjectReference Include="..\SolidCP.UniversalInstaller.UI.WinForms\SolidCP.UniversalInstaller.UI.WinForms.csproj" />
-		<ProjectReference Include="..\SolidCP.UniversalInstaller.WebService\SolidCP.UniversalInstaller.WebService.csproj" />
-	</ItemGroup>
+        <ProjectReference Include="..\SolidCP.UniversalInstaller.Runtime\SolidCP.UniversalInstaller.Runtime.csproj" />
+    </ItemGroup>
 
 	<ItemGroup>
         <Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />

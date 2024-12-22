@@ -228,7 +228,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			InstallNet8Runtime();
 		}
-		public override Func<string, string> UnzipFilter => Net8UnzipFilter;
+		public override Func<string, string> UnzipFilter => Net8Filter;
 		public override bool IsRunningAsAdmin
 		{
 			get

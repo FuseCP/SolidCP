@@ -1913,7 +1913,9 @@ namespace SolidCP.Providers.OS
 		public virtual Web.IWebServer WebServer =>
 			webServer ??
 			(webServer = (Web.IWebServer)Activator.CreateInstance(Type.GetType("SolidCP.Providers.Web.IIs60, SolidCP.Providers.Web.IIs60")));
-		public virtual ServiceController ServiceController => throw new NotImplementedException();
+		
+		ServiceController serviceController = null;
+		public virtual ServiceController ServiceController => serviceController ??= new WindowsServiceController();
 
 		public virtual WSLShell WSL => WSLShell.Default;
 

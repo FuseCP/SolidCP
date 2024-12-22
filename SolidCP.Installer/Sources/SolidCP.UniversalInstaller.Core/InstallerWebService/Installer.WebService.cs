@@ -34,7 +34,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Net;
-using System.ServiceModel;
 using System.Data;
 using System.Xml;
 using System.Xml.Linq;
@@ -69,8 +68,8 @@ namespace SolidCP.UniversalInstaller
 				if (string.IsNullOrEmpty(url)) url = "http://installer.solidcp.com/Services/InstallerService-1.0.asmx";
 
 				var type = OSInfo.IsCore ?
-					Type.GetType("SolidCP.UniversalInstaller.InstallerWebService, SolidCP.UniversalInstaller.WebService.NetCore") :
-					Type.GetType("SolidCP.UniversalInstaller.InstallerWebService, SolidCP.UniversalInstaller.WebService.NetFX");
+					Type.GetType("SolidCP.UniversalInstaller.InstallerWebService, SolidCP.UniversalInstaller.Runtime.NetCore") :
+					Type.GetType("SolidCP.UniversalInstaller.InstallerWebService, SolidCP.UniversalInstaller.Runtime.NetFX");
 
 				var webService = Activator.CreateInstance(type, url) as IInstallerWebService;
 				

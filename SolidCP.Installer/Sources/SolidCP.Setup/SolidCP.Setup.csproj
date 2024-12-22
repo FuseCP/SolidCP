@@ -9,18 +9,14 @@
   <ItemGroup>
     <Compile Remove="Portal.cs" />
     <Compile Remove="Portal10.cs" />
-    <Compile Remove="Portal20.cs" />
     <Compile Remove="Server.cs" />
     <Compile Remove="Server10.cs" />
-    <Compile Remove="Server20.cs" />
     <Compile Remove="Serveraspv2.cs" />
     <Compile Remove="Serveraspv210.cs" />
     <Compile Remove="StandaloneServerSetup.cs" />
     <Compile Remove="StandaloneServerSetup10.cs" />
-    <Compile Remove="StandaloneServerSetup20.cs" />
     <Compile Remove="WebDavPortal.cs" />
     <Compile Remove="WebDavPortal10.cs" />
-    <Compile Remove="WebDavPortal20.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,18 +26,14 @@
   <ItemGroup>
     <None Include="Portal.cs" />
     <None Include="Portal10.cs" />
-    <None Include="Portal20.cs" />
     <None Include="Server.cs" />
     <None Include="Server10.cs" />
-    <None Include="Server20.cs" />
     <None Include="Serveraspv2.cs" />
     <None Include="Serveraspv210.cs" />
     <None Include="StandaloneServerSetup.cs" />
     <None Include="StandaloneServerSetup10.cs" />
-    <None Include="StandaloneServerSetup20.cs" />
     <None Include="WebDavPortal.cs" />
     <None Include="WebDavPortal10.cs" />
-    <None Include="WebDavPortal20.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -30,7 +30,7 @@ namespace SolidCP.UniversalInstaller
 		public override string WebsiteLogsPath => InstallExeRootPath ?? "";
 
 		WinGet WinGet => (WinGet)((IWindowsOperatingSystem)OSInfo.Current).WinGet;
-		public override Func<string, string> UnzipFilter => Net48UnzipFilter;
+		public override Func<string, string> UnzipFilter => Net48Filter;
 
 		public override void InstallNet8Runtime()
 		{
@@ -125,8 +125,9 @@ namespace SolidCP.UniversalInstaller
 			}
 		}
 
-		public override void ConfigureServer(ServerSettings settings)
+		public override void ConfigureServer()
 		{
+			var settings = Settings.Server;
 			var confFile = Path.Combine(InstallWebRootPath, ServerFolder, "bin", "web.config");
 			var webconf = XElement.Load(confFile);
 			var configuration = webconf.Element("configuration");
@@ -225,8 +226,9 @@ namespace SolidCP.UniversalInstaller
 			Settings.EnterpriseServer.CryptoKey = cryptoKey?.Attribute("value")?.Value;
 		}
 
-		public override void ConfigureEnterpriseServer(EnterpriseServerSettings settings)
+		public override void ConfigureEnterpriseServer()
 		{
+			var settings = Settings.EnterpriseServer;
 			var confFile = Path.Combine(InstallWebRootPath, EnterpriseServerFolder, "bin", "web.config");
 			var webconf = XElement.Load(confFile);
 			var configuration = webconf.Element("configuration");
